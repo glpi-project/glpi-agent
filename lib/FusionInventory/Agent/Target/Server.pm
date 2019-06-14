@@ -47,12 +47,12 @@ sub _getCanonicalURL {
         # as parsing relies on scheme, host and path have to be set explicitely
         $url->scheme('http');
         $url->host($string);
-        $url->path('ocsinventory');
+        $url->path('inventory');
     } else {
         die "invalid protocol for URL: $string"
             if $scheme ne 'http' && $scheme ne 'https';
         # complete path if needed
-        $url->path('ocsinventory') if !$url->path();
+        $url->path('inventory') if !$url->path();
     }
 
     return $url;

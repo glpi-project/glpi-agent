@@ -109,7 +109,7 @@ sub _submitInventory {
             if (-d $path) {
                 $file =
                     $path . "/" . $inventory->getDeviceId() .
-                    ($format eq 'xml' ? '.ocs' : '.html');
+                    ($format eq 'xml' ? '.xml' : '.html');
                 last SWITCH;
             }
 
