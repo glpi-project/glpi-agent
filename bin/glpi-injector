@@ -12,7 +12,7 @@ use Pod::Usage;
 use XML::TreePP;
 
 my $options = {
-    useragent => 'FusionInventory-Injector'
+    useragent => 'GLPI-Injector'
 };
 
 my @failedFiles;
@@ -157,11 +157,11 @@ __END__
 
 =head1 NAME
 
-fusioninventory-injector - A tool to push inventory in an OCS Inventory or compatible server.
+glpi-injector - A tool to push inventory in an OCS Inventory or compatible server.
 
 =head1 SYNOPSIS
 
-fusioninventory-injector [options] [--file <file>|--directory <directory>|--stdin|--useragent <user-agent>]
+glpi-injector [options] [--file <file>|--directory <directory>|--stdin|--useragent <user-agent>]
 
   Options:
     -h --help      this menu
@@ -178,8 +178,8 @@ fusioninventory-injector [options] [--file <file>|--directory <directory>|--stdi
     -C --no-compression don't compress sent XML inventories
 
   Examples:
-    fusioninventory-injector -v -f /tmp/toto-2010-09-10-11-42-22.ocs --url https://login:pw@example/plugins/fusioninventory/
-    fusioninventory-injector -v -R -d /srv/ftp/fusion --url https://login:pw@example/plugins/fusioninventory/
+    glpi-injector -v -f /tmp/toto-2010-09-10-11-42-22.ocs --url https://login:pw@example/plugins/fusioninventory/
+    glpi-injector -v -R -d /srv/ftp/fusion --url https://login:pw@example/plugins/fusioninventory/
 
 =head1 DESCRIPTION
 

@@ -67,11 +67,11 @@ __END__
 
 =head1 NAME
 
-fusioninventory-wakeonlan - Standalone wake-on-lan
+glpi-wakeonlan - Standalone wake-on-lan
 
 =head1 SYNOPSIS
 
-fusioninventory-wakeonlan [options]
+glpi-wakeonlan [options]
 
   Options:
     --mac=MAC         target mac address
@@ -82,5 +82,5 @@ fusioninventory-wakeonlan [options]
 
 =head1 DESCRIPTION
 
-F<fusioninventory-wakeonlan> can be used to run a wakeonlan task without a GLPI
+F<glpi-wakeonlan> can be used to run a wakeonlan task without a GLPI
 server.

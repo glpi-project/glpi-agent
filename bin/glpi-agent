@@ -170,11 +170,11 @@ __END__
 
 =head1 NAME
 
-fusioninventory-agent - FusionInventory agent For Linux/UNIX, Windows and MacOSX
+glpi-agent - GLPI perl agent For Linux/UNIX, Windows and MacOSX
 
 =head1 SYNOPSIS
 
-fusioninventory-agent [options] [--server server|--local path]
+glpi-agent [options] [--server server|--local path]
 
   Target definition options:
     -s --server=URI                send tasks result to a server
@@ -261,7 +261,7 @@ fusioninventory-agent [options] [--server server|--local path]
 
 =head1 DESCRIPTION
 
-The F<fusioninventory-agent> agent is a generic multi-platform agent. It can
+The F<glpi-agent> agent is a generic multi-platform agent. It can
 perform a large array of management tasks, such as local inventory, software
 deployment or network discovery. It can be used either standalone, or in
 combination with a compatible server (OCS, GLPI, OTRS) acting as a centralized
@@ -272,8 +272,8 @@ control point.
 Most of the options are available in a I<short> form and a I<long> form.  For
 example, the two lines below are all equivalent:
 
-    % fusioninventory-agent -s localhost
-    % fusioninventory-agent --server localhost
+    % glpi-agent -s localhost
+    % glpi-agent --server localhost
 
 =head2 Target definition options
 

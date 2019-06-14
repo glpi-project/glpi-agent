@@ -76,14 +76,14 @@ __END__
 
 =head1 NAME
 
-fusioninventory-win32-service - FusionInventory Agent service for Windows
+glpi-win32-service - GLPI perl Agent service for Windows
 
 =head1 SYNOPSIS
 
-fusioninventory-win32-service [--register|--delete|--help] [options]
+glpi-win32-service [--register|--delete|--help] [options]
 
   Options are only needed to register or delete the service. They are handy
-  while using Fusioninventory agent from sources.
+  while using GLPI perl agent from sources.
 
   Register options:
     -n --name=NAME                  unique system name for the service
@@ -96,8 +96,8 @@ fusioninventory-win32-service [--register|--delete|--help] [options]
     -n --name=NAME                  unique system name of the service to delete
 
   Samples to use from sources base:
-    perl bin/fusioninventory-win32-service --help
-    perl bin/fusioninventory-win32-service --register
-    perl bin/fusioninventory-win32-service --delete
-    perl bin/fusioninventory-win32-service --register -n fia-test -d "[TEST] FIA Service"
-    perl bin/fusioninventory-win32-service --delete -n fia-test
+    perl bin/glpi-win32-service --help
+    perl bin/glpi-win32-service --register
+    perl bin/glpi-win32-service --delete
+    perl bin/glpi-win32-service --register -n glpi-agent-test -d "[TEST] GLPI Agent Service"
+    perl bin/glpi-win32-service --delete -n glpi-agent-test

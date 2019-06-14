@@ -36,7 +36,7 @@ pod2usage(-verbose => 0, -exitstatus => 0) if $options->{help};
 if ($options->{version}) {
     my $PROVIDER = $FusionInventory::Agent::Version::PROVIDER;
     map { print $_."\n" }
-        "fusioninventory-esx $FusionInventory::Agent::Task::ESX::VERSION",
+        "glpi-esx $FusionInventory::Agent::Task::ESX::VERSION",
         "based on $PROVIDER Agent v$FusionInventory::Agent::Version::VERSION",
         @{$FusionInventory::Agent::Version::COMMENTS};
     exit 0;
@@ -157,11 +157,11 @@ __END__
 
 =head1 NAME
 
-fusioninventory-esx - vCenter/ESX/ESXi remote inventory from command line
+glpi-esx - vCenter/ESX/ESXi remote inventory from command line
 
 =head1 SYNOPSIS
 
-fusioninventory-esx --host <host> --user <user> --password <password> --directory <directory>
+glpi-esx --host <host> --user <user> --password <password> --directory <directory>
 
   Options:
     --help                 this menu
@@ -177,16 +177,16 @@ fusioninventory-esx --host <host> --user <user> --password <password> --director
 
 =head1 EXAMPLES
 
-    % fusioninventory-esx --host myesx --user foo --password bar --directory /tmp
+    % glpi-esx --host myesx --user foo --password bar --directory /tmp
 
 
-You can import the .ocs file in your inventory server with the fusioninventory-injector tool.
+You can import the .ocs file in your inventory server with the glpi-injector tool.
 
-    %fusioninventory-injector -v --file /tmp/*.ocs -u https://example/plugins/fusioninventory/
+    %glpi-injector -v --file /tmp/*.ocs -u https://example/plugins/fusioninventory/
 
 =head1 DESCRIPTION
 
-F<fusioninventory-esx> creates inventory of remote ESX/ESXi and vCenter VMware.
+F<glpi-esx> creates inventory of remote ESX/ESXi and vCenter VMware.
 It uses the SOAP interface of the remote server.
 
 Supported systems:

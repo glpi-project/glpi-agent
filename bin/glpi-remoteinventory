@@ -17,7 +17,7 @@ use File::Which;
 our $VERSION = "1.0";
 
 my $options = {
-    useragent => "FusionInventory-RemoveInventory/$VERSION",
+    useragent => "GLPI-RemoveInventory/$VERSION",
 };
 
 GetOptions(
@@ -225,11 +225,11 @@ __END__
 
 =head1 NAME
 
-fusioninventory-remoteinventory - A tool to pull inventory from an agent
+glpi-remoteinventory - A tool to pull inventory from an agent
 
 =head1 SYNOPSIS
 
-fusioninventory-remoteinventory [options] <host1> [<host2> ...]
+glpi-remoteinventory [options] <host1> [<host2> ...]
 
   Options:
     -h --help      this menu
@@ -251,10 +251,10 @@ fusioninventory-remoteinventory [options] <host1> [<host2> ...]
     -u --useragent set used HTTP User-Agent for requests
 
   Examples:
-    fusioninventory-remoteinventory -T strong-shared-secret 192.168.43.236
-    fusioninventory-remoteinventory -v -T strong-shared-secret 192.168.43.237 | \
-        fusioninventory-injector -url https://login:pw@example/plugins/fusioninventory/
-    fusioninventory-remoteinventory -T strong-shared-secret -d /tmp 192.168.43.236 192.168.43.237
+    glpi-remoteinventory -T strong-shared-secret 192.168.43.236
+    glpi-remoteinventory -v -T strong-shared-secret 192.168.43.237 | \
+        glpi-injector -url https://login:pw@server/plugins/fusioninventory/
+    glpi-remoteinventory -T strong-shared-secret -d /tmp 192.168.43.236 192.168.43.237
 
 =head1 DESCRIPTION
 

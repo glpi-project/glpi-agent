@@ -199,11 +199,11 @@ __END__
 
 =head1 NAME
 
-fusioninventory-netinventory - Standalone network inventory
+glpi-netinventory - Standalone network inventory
 
 =head1 SYNOPSIS
 
-fusioninventory-netinventory [options] [--host <host>|--file <file>]
+glpi-netinventory [options] [--host <host>|--file <file>]
 
   Options:
     --host <HOST>          target host
@@ -222,7 +222,7 @@ fusioninventory-netinventory [options] [--host <host>|--file <file>]
 
 =head1 DESCRIPTION
 
-F<fusioninventory-netinventory> can be used to run a network inventory task without
+F<glpi-netinventory> can be used to run a network inventory task without
 a GLPI server.
 
 =head1 OPTIONS
@@ -313,11 +313,10 @@ Turn the debug mode on. Multiple usage allowed, for additional verbosity.
 
 Run an inventory against a network device, using SNMP version 2c authentication:
 
-    $> fusioninventory-netinventory --host 192.168.0.1 \
-    --credentials version:2c,community:public
+    $> glpi-netinventory --host 192.168.0.1 --credentials version:2c,community:public
 
 Run an inventory against a network device, using SNMP version 3 authentication
 and forcing its type:
 
-    $> fusioninventory-netinventory --host my.device --type NETWORKING \
+    $> glpi-netinventory --host my.device --type NETWORKING \
     --credentials version:3,username:admin,authprotocol:sha,authpassword:s3cr3t

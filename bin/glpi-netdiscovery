@@ -291,11 +291,11 @@ __END__
 
 =head1 NAME
 
-fusioninventory-netdiscovery - Standalone network discovery
+glpi-netdiscovery - Standalone network discovery
 
 =head1 SYNOPSIS
 
-fusioninventory-netdiscovery [options] --first <address> --last <address>
+glpi-netdiscovery [options] --first <address> --last <address>
 
   Options:
     --first <ADDRESS>      IP range first address
@@ -318,7 +318,7 @@ fusioninventory-netdiscovery [options] --first <address> --last <address>
 
 =head1 DESCRIPTION
 
-F<fusioninventory-netdiscovery> can be used to run a network discovery task without a
+F<glpi-netdiscovery> can be used to run a network discovery task without a
 GLPI server.
 
 =head1 OPTIONS
@@ -390,11 +390,10 @@ Turn the debug mode on. Multiple usage allowed, for additional verbosity.
 
 Run a discovery against a network range, using SNMP version 1:
 
-    $> fusioninventory-netdiscovery --first 192.168.0.1 --last 192.168.0.254 \
-    --community public
+    $> glpi-netdiscovery --first 192.168.0.1 --last 192.168.0.254 --community public
 
 Run a discovery against a network range, using multiple SNMP credentials:
 
-    $> fusioninventory-netdiscovery --first 192.168.0.1 --last 192.168.0.254 \
+    $> glpi-netdiscovery --first 192.168.0.1 --last 192.168.0.254 \
     --credentials version:2c,community:public \
     --credentials version:3,username:admin,authprotocol:sha,authpassword:s3cr3t

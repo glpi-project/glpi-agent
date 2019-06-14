@@ -69,11 +69,11 @@ __END__
 
 =head1 NAME
 
-fusioninventory-inventory - Standalone inventory
+glpi-inventory - Standalone inventory
 
 =head1 SYNOPSIS
 
-fusioninventory-inventory [options]
+glpi-inventory [options]
 
   Options:
     --scan-homedirs                scan use home directories (false)
@@ -91,5 +91,5 @@ fusioninventory-inventory [options]
 
 =head1 DESCRIPTION
 
-F<fusioninventory-inventory> can be used to run an inventory task without a GLPI
+F<glpi-inventory> can be used to run an inventory task without a GLPI
 server.
