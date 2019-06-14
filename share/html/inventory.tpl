@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
-    <title>FusionInventory-Agent {$deviceid}</title>
+    <title>GLPI-Agent {$deviceid}</title>
     <style type="text/css">
 <!--/* <![CDATA[ */
  tr.odd \{ 
@@ -15,8 +15,9 @@ tr.even \{
     </style>
 </head>
 <body>
+<div id="background">
 <h1>Inventory for {$deviceid}</h1>
-FusionInventory Agent {$version}<br />
+GLPI Agent {$version}<br />
 <small>DEVICEID {$deviceid}</small>
 
 {
@@ -55,5 +56,6 @@ FusionInventory Agent {$version}<br />
         }
     }
 }
+</div>
 </body>
 </html>

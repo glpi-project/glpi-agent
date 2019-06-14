@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
-    <title>FusionInventory-Agent</title>
+    <title>GLPI-Agent</title>
     <link rel="stylesheet" href="site.css" type="text/css" />
 </head>
 <body>
 <div id="background">
 
 <br />
-This is FusionInventory Agent {$version}<br />
+This is GLPI Agent {$version}<br />
 The current status is {$status}<br />
 
 {
