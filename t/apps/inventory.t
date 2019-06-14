@@ -35,7 +35,7 @@ sub run_inventory {
     my ($args) = @_;
     my @args = $args ? split(/\s+/, $args) : ();
     run(
-        [ $EXECUTABLE_NAME, 'bin/fusioninventory-inventory', @args ],
+        [ $EXECUTABLE_NAME, 'bin/glpi-inventory', @args ],
         \my ($in, $out, $err)
     );
     return ($out, $err, $CHILD_ERROR >> 8);

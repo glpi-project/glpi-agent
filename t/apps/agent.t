@@ -11,12 +11,15 @@ use XML::TreePP;
 
 use FusionInventory::Agent::Tools;
 use FusionInventory::Test::Utils;
+use FusionInventory::Agent::Version;
+
+my $PROVIDER = $FusionInventory::Agent::Version::PROVIDER;
 
 plan tests => 36;
 
 my ($content, $out, $err, $rc);
 
-($out, $err, $rc) = run_executable('fusioninventory-agent', '--help');
+($out, $err, $rc) = run_executable('glpi-agent', '--help');
 ok($rc == 0, '--help exit status');
 is($err, '', '--help stderr');
 like(
@@ -25,16 +28,16 @@ like(
     '--help stdout'
 );
 
-($out, $err, $rc) = run_executable('fusioninventory-agent', '--version');
+($out, $err, $rc) = run_executable('glpi-agent', '--version');
 ok($rc == 0, '--version exit status');
 is($err, '', '--version stderr');
 like(
     $out,
-    qr/^FusionInventory Agent/,
+    qr/^$PROVIDER/,
     '--version stdout'
 );
 
-($out, $err, $rc) = run_executable('fusioninventory-agent', '--config none');
+($out, $err, $rc) = run_executable('glpi-agent', '--config none');
 ok($rc == 1, 'no target exit status');
 like(
     $err,
@@ -44,7 +47,7 @@ like(
 is($out, '', 'no target stdout');
 
 ($out, $err, $rc) = run_executable(
-    'fusioninventory-agent',
+    'glpi-agent',
     '--config none --conf-file /foo/bar'
 );
 ok($rc == 1, 'incompatible options exit status');
@@ -59,7 +62,7 @@ my $base_options = "--debug --no-task ocsdeploy,wakeonlan,snmpquery,netdiscovery
 
 # first inventory
 ($out, $err, $rc) = run_executable(
-    'fusioninventory-agent',
+    'glpi-agent',
     "$base_options --local - --no-category printer"
 );
 
@@ -90,7 +93,7 @@ ok(
 
 # second inventory, without software
 ($out, $err, $rc) = run_executable(
-    'fusioninventory-agent',
+    'glpi-agent',
     "$base_options --local - --no-category printer,software"
 );
 
@@ -126,7 +129,7 @@ EOF
 close($file);
 
 ($out, $err, $rc) = run_executable(
-    'fusioninventory-agent',
+    'glpi-agent',
     "$base_options --local - --no-category printer,software --additional-content $file"
 );
 subtest "third inventory execution and content" => sub {
@@ -161,7 +164,7 @@ my $name = $OSNAME eq 'MSWin32' ? 'OS' : 'PATH';
 my $value = $ENV{$name};
 
 ($out, $err, $rc) = run_executable(
-    'fusioninventory-agent',
+    'glpi-agent',
     "$base_options --local - --no-category printer,software"
 );
 
@@ -189,7 +192,7 @@ ok(
 );
 
 ($out, $err, $rc) = run_executable(
-    'fusioninventory-agent',
+    'glpi-agent',
     "$base_options --local - --no-category printer,software,environment"
 );
 
@@ -211,7 +214,7 @@ ok(
 # output location tests
 my $dir = File::Temp->newdir(CLEANUP => 1);
 ($out, $err, $rc) = run_executable(
-    'fusioninventory-agent',
+    'glpi-agent',
     "$base_options --local $dir"
 );
 subtest "--local <directory> inventory execution" => sub {
@@ -220,7 +223,7 @@ subtest "--local <directory> inventory execution" => sub {
 ok(<$dir/*.ocs>, '--local <directory> result file presence');
 
 ($out, $err, $rc) = run_executable(
-    'fusioninventory-agent', "$base_options --local $dir/foo"
+    'glpi-agent', "$base_options --local $dir/foo"
 );
 subtest "--local <file> inventory execution" => sub {
     check_execution_ok($err, $rc);
@@ -229,7 +232,7 @@ ok(-f "$dir/foo", '--local <file> result file presence');
 
 # consecutive lazy inventory with fake server target, no inventory and no failure
 ($out, $err, $rc) = run_executable(
-    'fusioninventory-agent',
+    'glpi-agent',
     "$base_options --lazy --server=http://localhost/plugins/fusioninventory"
 );
 
@@ -238,7 +241,7 @@ subtest "second inventory execution and content" => sub {
 };
 
 ($out, $err, $rc) = run_executable(
-    'fusioninventory-agent',
+    'glpi-agent',
     "$base_options --lazy --server=http://localhost/plugins/fusioninventory"
 );
 

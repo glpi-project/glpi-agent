@@ -14,7 +14,7 @@ plan tests => 6;
 
 my ($out, $err, $rc);
 
-($out, $err, $rc) = run_executable('fusioninventory-wakeonlan', '--help');
+($out, $err, $rc) = run_executable('glpi-wakeonlan', '--help');
 ok($rc == 0, '--help exit status');
 like(
     $out,
@@ -23,7 +23,7 @@ like(
 );
 is($err, '', '--help stderr');
 
-($out, $err, $rc) = run_executable('fusioninventory-wakeonlan', '--version');
+($out, $err, $rc) = run_executable('glpi-wakeonlan', '--version');
 ok($rc == 0, '--version exit status');
 is($err, '', '--version stderr');
 like(

@@ -23,7 +23,7 @@ plan tests => 12;
 
 my ($out, $err, $rc);
 
-($out, $err, $rc) = run_executable('fusioninventory-netdiscovery', '--help');
+($out, $err, $rc) = run_executable('glpi-netdiscovery', '--help');
 ok($rc == 0, '--help exit status');
 like(
     $out,
@@ -32,7 +32,7 @@ like(
 );
 is($err, '', '--help stderr');
 
-($out, $err, $rc) = run_executable('fusioninventory-netdiscovery', '--version');
+($out, $err, $rc) = run_executable('glpi-netdiscovery', '--version');
 ok($rc == 0, '--version exit status');
 is($err, '', '--version stderr');
 like(
@@ -41,7 +41,7 @@ like(
     '--version stdout'
 );
 
-($out, $err, $rc) = run_executable('fusioninventory-netdiscovery', );
+($out, $err, $rc) = run_executable('glpi-netdiscovery', );
 ok($rc == 2, 'no first address exit status');
 like(
     $err,
@@ -50,7 +50,7 @@ like(
 );
 is($out, '', 'no target stdout');
 
-($out, $err, $rc) = run_executable('fusioninventory-netdiscovery', '--first 192.168.0.1');
+($out, $err, $rc) = run_executable('glpi-netdiscovery', '--first 192.168.0.1');
 ok($rc == 2, 'no last address exit status');
 like(
     $err,

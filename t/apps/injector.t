@@ -13,7 +13,7 @@ plan tests => 3;
 
 my ($out, $err, $rc);
 
-($out, $err, $rc) = run_executable('fusioninventory-injector', '--help');
+($out, $err, $rc) = run_executable('glpi-injector', '--help');
 ok($rc == 0, '--help exit status');
 is($err, '', '--help stderr');
 like(
