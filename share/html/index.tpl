@@ -6,8 +6,8 @@
     <link rel="stylesheet" href="site.css" type="text/css" />
 </head>
 <body>
+<div id="background">
 
-<img src="/logo.png" alt="FusionInventory" />
 <br />
 This is FusionInventory Agent {$version}<br />
 The current status is {$status}<br />
@@ -59,5 +59,6 @@ The current status is {$status}<br />
     }
 }
 
+</div>
 </body>
 </html>
