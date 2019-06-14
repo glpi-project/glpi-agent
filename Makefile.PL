@@ -9,14 +9,14 @@ use inc::Module::Install;
 use English qw(-no_match_vars);
 use lib::FusionInventory::Agent::Version;
 
-name 'FusionInventory-Agent';
+name 'Glpi-Perl-Agent';
 include 'Module::AutoInstall';
-abstract 'FusionInventory unified Agent for UNIX, Linux, Windows and MacOSX';
+abstract 'Glpi unified Agent for UNIX, Linux, Windows and MacOSX';
 license 'gpl';
-repository 'https://github.com/fusioninventory/fusioninventory-agent';
+repository 'https://github.com/glpi-project/glpi-perl-agent';
 version_from 'lib/FusionInventory/Agent/Version.pm';
 perl_version '5.008';
-authors 'FusionInventory Team';
+authors 'Teclib Editions';
 
 provides
     'FusionInventory::Agent' => {
@@ -94,22 +94,22 @@ recommends 'Thread::Queue' => '2.01';
 # Wake-On-LAN
 recommends 'Net::Write::Layer2' => '0';
 
-install_script 'bin/fusioninventory-agent';
-install_script 'bin/fusioninventory-win32-service' if $OSNAME eq 'MSWin32';
-install_script 'bin/fusioninventory-wmi' if $OSNAME eq 'MSWin32';
-install_script 'bin/fusioninventory-injector';
-install_script 'bin/fusioninventory-inventory';
-install_script 'bin/fusioninventory-wakeonlan';
-install_script 'bin/fusioninventory-netdiscovery';
-install_script 'bin/fusioninventory-netinventory';
-install_script 'bin/fusioninventory-esx';
-install_script 'bin/fusioninventory-remoteinventory';
+install_script 'bin/glpi-agent';
+install_script 'bin/glpi-win32-service' if $OSNAME eq 'MSWin32';
+install_script 'bin/glpi-wmi' if $OSNAME eq 'MSWin32';
+install_script 'bin/glpi-injector';
+install_script 'bin/glpi-inventory';
+install_script 'bin/glpi-wakeonlan';
+install_script 'bin/glpi-netdiscovery';
+install_script 'bin/glpi-netinventory';
+install_script 'bin/glpi-esx';
+install_script 'bin/glpi-remoteinventory';
 
 resources
-    homepage    => "http://www.fusioninventory.org",
-    bugtracker  => "https://github.com/fusioninventory/fusioninventory-agent/issues",
-    repository  => "https://github.com/fusioninventory/fusioninventory-agent/",
-    IRC         => "irc://irc.freenode.net/#fusioninventory";
+    homepage    => "http://glpi-project.org/",
+    bugtracker  => "https://github.com/glpi-project/glpi-perl-agent/issues",
+    repository  => "https://github.com/glpi-project/glpi-perl-agent/",
+    IRC         => "irc://irc.freenode.net/#glpi";
 
 makemaker_args(
     test => {
@@ -179,9 +179,9 @@ sub constants {
         INSTALLMAN3DIR       => '$(PREFIX)/share/man/man3',
         INSTALLSITEMAN3DIR   => '$(PREFIX)/share/man/man3',
         INSTALLVENDORMAN3DIR => '$(PREFIX)/share/man/man3',
-        SYSCONFDIR           => '$(PREFIX)/etc/fusioninventory',
-        DATADIR              => '$(PREFIX)/share/fusioninventory',
-        LOCALSTATEDIR        => '$(PREFIX)/var/fusioninventory',
+        SYSCONFDIR           => '$(PREFIX)/etc/glpi',
+        DATADIR              => '$(PREFIX)/share/glpi',
+        LOCALSTATEDIR        => '$(PREFIX)/var/glpi',
     );
 
     # allow variables defined on command line to override defaults

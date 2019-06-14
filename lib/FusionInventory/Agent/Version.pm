@@ -3,8 +3,8 @@ package FusionInventory::Agent::Version;
 use strict;
 use warnings;
 
-our $VERSION = "2.5.2";
-our $PROVIDER = "FusionInventory";
+our $VERSION = "1.0-dev";
+our $PROVIDER = "glpi-perl-agent";
 our $COMMENTS = [];
 
 1;
@@ -33,5 +33,5 @@ agent issue is reported.
 One very useful information should be first defined like in that example:
 
 our $COMMENTS = [
-    "Based on FusionInventory Agent v2.5.1"
+    "Based on FusionInventory Agent v2.5.2"
 ];

@@ -32,7 +32,7 @@ CVS/
 \.swp
 
 
-^FusionInventory-Agent.*
+^Glpi-Perl-Agent.*
 /tarballs/
 ^setup.sh
 

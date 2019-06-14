@@ -1,18 +1,15 @@
-# FusionInventory Agent
-
-[![Travis Build Status](https://travis-ci.org/fusioninventory/fusioninventory-agent.svg?branch=develop)](https://travis-ci.org/fusioninventory/fusioninventory-agent)
-[![Appveyor Build status](https://ci.appveyor.com/api/projects/status/f2oh6p3qnr2bck1b?svg=true)](https://ci.appveyor.com/project/fusioninventory/fusioninventory-agent)
-[![CircleCI Build status](https://circleci.com/gh/fusioninventory/fusioninventory-agent.svg?style=svg)](https://circleci.com/gh/fusioninventory/fusioninventory-agent)
+# GLPI Perl Agent
 
 ## Summary
 
-The FusionInventory agent is a generic management agent. It can perform a
+The GLPI Perl agent is a generic management agent. It can perform a
 certain number of tasks, according to its own execution plan, or on behalf of a
-GLPI server with fusioninventory plugin, acting as a control point.
+GLPI server acting as a control point.
 
 ## Description
 
-See [FusionInventory solution overview](http://fusioninventory.org/overview/)
+This agent is a fork of FusionInventory agent with new features and
+protocols to communicate directly with a GLPI server.
 
 ## Dependencies
 
@@ -108,23 +105,22 @@ See [CONTRIB](CONTRIB.md) to find references to FusionInventory Agent related sc
 
 Project websites:
 
-* main site: <http://www.fusioninventory.org>
-* Github org: <http://github.com/fusioninventory/>
-
-Project mailing lists:
-
-* <http://lists.alioth.debian.org/mailman/listinfo/fusioninventory-user>
-* <http://lists.alioth.debian.org/mailman/listinfo/fusioninventory-devel>
+* main site: <https://glpi-project.org/>
+* forum: <https://forum.glpi-project.org/>
+* Github org: <http://github.com/glpi-project.org/glpi-agent>
 
 Project IRC channel:
 
-* #FusionInventory on FreeNode IRC Network
+* #glpi on FreeNode IRC Network
 
-Please report any issues on Github.
+Project Telegram channel:
+
+* https://t.me/glpien
+
+Please report any issues on project [github issue tracker](https://github.com/glpi-project/glpi-agent/issues).
 
 ## Active authors
 
-* Guillaume Rousse <guillomovitch@gmail.com>
 * Guillaume Bougard <gbougard@teclib.com>
 
 Copyright 2006-2010 [OCS Inventory contributors](https://www.ocsinventory-ng.org/)
@@ -140,7 +136,7 @@ details.
 
 ## Additional pieces of software
 
-The fusioninventory-injector script:
+The glpi-injector script is based on fusioninventory-injector script:
 
 * author: Pascal Danek
 * copyright: 2005 Pascal Danek
