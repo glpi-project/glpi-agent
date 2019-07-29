@@ -231,9 +231,10 @@ sub createDaemon {
 
     my $daemon;
 
-    Proc::Daemon->require();
-    if ($EVAL_ERROR) {
-        $logger->debug("Failed to load recommended Proc::Daemon library: $EVAL_ERROR") if $logger;
+    Proc::Daemon->require() unless $config->{'no-fork'};
+    if ($config->{'no-fork'} || $EVAL_ERROR) {
+        $logger->debug("Failed to load recommended Proc::Daemon library: $EVAL_ERROR")
+            if !$config->{'no-fork'} && $logger;
 
         # Eventually check running process from pid found in pid file
         if ($pidfile) {
