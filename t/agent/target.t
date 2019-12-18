@@ -31,14 +31,14 @@ my $basevardir = tempdir(CLEANUP => $ENV{TEST_DEBUG} ? 0 : 1);
 
 lives_ok {
     $target = FusionInventory::Agent::Target::Server->new(
-        url        => 'http://my.domain.tld/ocsinventory',
+        url        => 'http://my.domain.tld/inventory',
         basevardir => $basevardir
     );
 } 'instanciation: ok';
 
 my $storage_dir = $OSNAME eq 'MSWin32' ?
-    "$basevardir/http..__my.domain.tld_ocsinventory" :
-    "$basevardir/http:__my.domain.tld_ocsinventory" ;
+    "$basevardir/http..__my.domain.tld_inventory" :
+    "$basevardir/http:__my.domain.tld_inventory" ;
 ok(-d $storage_dir, "storage directory creation");
 is($target->{id}, 'server0', "identifier");
 
@@ -46,20 +46,20 @@ $target = FusionInventory::Agent::Target::Server->new(
     url        => 'http://my.domain.tld',
     basevardir => $basevardir
 );
-is($target->getUrl(), 'http://my.domain.tld/ocsinventory', 'missing path');
+is($target->getUrl(), 'http://my.domain.tld/inventory', 'missing path');
 
 $target = FusionInventory::Agent::Target::Server->new(
     url        => 'my.domain.tld',
     basevardir => $basevardir
 );
-is($target->getUrl(), 'http://my.domain.tld/ocsinventory', 'bare hostname');
+is($target->getUrl(), 'http://my.domain.tld/inventory', 'bare hostname');
 
 is($target->getMaxDelay(), 3600, 'default value');
 my $nextRunDate = $target->getNextRunDate();
 
 ok(-f "$storage_dir/target.dump", "state file existence");
 $target = FusionInventory::Agent::Target::Server->new(
-    url        => 'http://my.domain.tld/ocsinventory',
+    url        => 'http://my.domain.tld/inventory',
     basevardir => $basevardir
 );
 is($target->getNextRunDate(), $nextRunDate, 'state persistence');

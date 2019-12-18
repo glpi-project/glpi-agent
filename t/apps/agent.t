@@ -220,7 +220,7 @@ my $dir = File::Temp->newdir(CLEANUP => 1);
 subtest "--local <directory> inventory execution" => sub {
     check_execution_ok($err, $rc);
 };
-ok(<$dir/*.ocs>, '--local <directory> result file presence');
+ok(<$dir/*.xml>, '--local <directory> result file presence');
 
 ($out, $err, $rc) = run_executable(
     'glpi-agent', "$base_options --local $dir/foo"
