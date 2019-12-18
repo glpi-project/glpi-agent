@@ -1,0 +1,34 @@
+name: GLPI Agent CI
+
+on: [push]
+
+jobs:
+  linux-ubuntu-test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install cpanminus
+      run: |
+        sudo apt -y install cpanminus libmodule-install-perl
+    - name: Check environement
+      run: |
+        perl --version
+        cpanm --version
+    - name: Install deps
+      run: |
+        cpanm --sudo --installdeps --verbose --notest .
+        cpanm --sudo --verbose --notest Parse::EDID
+        cpanm --sudo --verbose --notest Test::Perl::Critic Test::Vars Test::Pod Test::Pod::Spelling::CommonMistakes Test::Whitespaces Test::CPAN::Meta
+    - name: Run make
+      run: |
+        perl Makefile.PL
+        make manifest
+        make
+    - name: Run tests
+      run: |
+        make test
+    - name: Run Author tests
+      run: |
+        make test TEST_AUTHOR=1 TEST_FILES="t/02critic.t t/03var.t t/04pod-syntax.t t/06pod-spelling.t t/07whitespaces.t t/09cpanmeta.t"
