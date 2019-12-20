@@ -1,6 +1,6 @@
 name: GLPI Agent CI
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   linux-ubuntu-test:
@@ -9,8 +9,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-      with:
-        fetch-depth: 1
     - name: Install cpanminus
       run: |
         sudo apt -y install cpanminus libmodule-install-perl
@@ -41,8 +39,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-      with:
-        fetch-depth: 1
     - name: Update environment
       run: |
         echo '::add-path::C:\Strawberry\perl\bin'
