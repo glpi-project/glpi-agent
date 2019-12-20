@@ -71,3 +71,33 @@ jobs:
     - name: Run tests
       run: gmake test
       shell: cmd
+
+  macos-test:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Update environment
+      run: |
+        echo '::add-path::/usr/local/Cellar/perl/5.30.0/bin'
+    - name: Check environment
+      run: |
+        echo "PATH=$PATH"
+        perl --version
+        perl -V
+    - name: Install Module::Install
+      run: cpan -T Module::Install
+    - name: Install cpanminus
+      run: |
+        cpan -T App::cpanminus
+    - name: Install deps
+      run: |
+        cpanm --sudo --installdeps --verbose --notest .
+        cpanm --sudo --verbose --notest Parse::EDID
+    - name: Prepare Makefile
+      run: perl Makefile.PL
+    - name: Run make
+      run: make
+    - name: Run tests
+      run: make test
