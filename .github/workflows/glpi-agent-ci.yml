@@ -12,7 +12,7 @@ jobs:
     - name: Install cpanminus
       run: |
         sudo apt -y install cpanminus libmodule-install-perl
-    - name: Check environement
+    - name: Check environment
       run: |
         perl --version
         cpanm --version
@@ -32,3 +32,42 @@ jobs:
     - name: Run Author tests
       run: |
         make test TEST_AUTHOR=1 TEST_FILES="t/02critic.t t/03var.t t/04pod-syntax.t t/06pod-spelling.t t/07whitespaces.t t/09cpanmeta.t"
+
+  windows-test:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Update environment
+      run: |
+        echo '::add-path::C:\Strawberry\perl\bin'
+        echo '::add-path::C:\Strawberry\perl\site\bin'
+        echo '::add-path::C:\Strawberry\c\bin'
+      shell: bash
+    - name: Check environment
+      run: |
+        echo "PATH=%PATH%"
+        perl --version
+        perl -V
+      shell: cmd
+    - name: Install Module::Install
+      run: cpan -T Module::Install
+      shell: cmd
+    - name: Install deps
+      run: |
+        cpanm --notest --verbose --installdeps .
+      shell: cmd
+    - name: Install other modules
+      run: |
+        cpanm --notest --verbose Compress::Zlib Parse::EDID Archive::Extract Win32::Unicode::File
+      shell: cmd
+    - name: Prepare Makefile
+      run: perl Makefile.PL
+      shell: cmd
+    - name: Run gmake
+      run: gmake
+      shell: cmd
+    - name: Run tests
+      run: gmake test
+      shell: cmd

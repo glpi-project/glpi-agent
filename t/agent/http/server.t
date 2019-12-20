@@ -17,6 +17,9 @@ use FusionInventory::Agent::HTTP::Server;
 use FusionInventory::Agent::Logger;
 use FusionInventory::Test::Utils;
 
+plan skip_all => 'Not working on github action windows image'
+    if $OSNAME eq 'MSWin32' && exists($ENV{GITHUB_ACTIONS});
+
 plan tests => 12;
 
 my $logger = FusionInventory::Agent::Logger->new(

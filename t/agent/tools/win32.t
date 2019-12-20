@@ -22,6 +22,8 @@ use Config;
 # check thread support availability
 if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
     plan skip_all => 'thread support required';
+} elsif ($OSNAME eq 'MSWin32' && exists($ENV{GITHUB_ACTIONS})) {
+    plan skip_all => 'Not working on github action windows image';
 }
 
 # REG_SZ & REG_DWORD provided by even faked Win32::TieRegistry module
