@@ -13,7 +13,7 @@ name 'Glpi-Perl-Agent';
 include 'Module::AutoInstall';
 abstract 'Glpi unified Agent for UNIX, Linux, Windows and MacOSX';
 license 'gpl';
-repository 'https://github.com/glpi-project/glpi-perl-agent';
+repository 'https://github.com/glpi-project/glpi-agent';
 version_from 'lib/FusionInventory/Agent/Version.pm';
 perl_version '5.008';
 authors 'Teclib Editions';
@@ -33,6 +33,7 @@ requires 'UNIVERSAL::require' => '0';
 requires 'XML::TreePP'        => '0.26';
 requires 'XML::XPath'         => '0';
 requires 'YAML::Tiny'         => '0';
+requires 'Memoize'            => '0';
 
 if ($OSNAME eq 'MSWin32') {
     requires 'Win32::OLE'         => '0';
@@ -107,8 +108,8 @@ install_script 'bin/glpi-remoteinventory';
 
 resources
     homepage    => "http://glpi-project.org/",
-    bugtracker  => "https://github.com/glpi-project/glpi-perl-agent/issues",
-    repository  => "https://github.com/glpi-project/glpi-perl-agent/",
+    bugtracker  => "https://github.com/glpi-project/glpi-agent/issues",
+    repository  => "https://github.com/glpi-project/glpi-agent/",
     IRC         => "irc://irc.freenode.net/#glpi";
 
 makemaker_args(
@@ -179,9 +180,9 @@ sub constants {
         INSTALLMAN3DIR       => '$(PREFIX)/share/man/man3',
         INSTALLSITEMAN3DIR   => '$(PREFIX)/share/man/man3',
         INSTALLVENDORMAN3DIR => '$(PREFIX)/share/man/man3',
-        SYSCONFDIR           => '$(PREFIX)/etc/glpi',
-        DATADIR              => '$(PREFIX)/share/glpi',
-        LOCALSTATEDIR        => '$(PREFIX)/var/glpi',
+        SYSCONFDIR           => '$(PREFIX)/etc/glpi-agent',
+        DATADIR              => '$(PREFIX)/share/glpi-agent',
+        LOCALSTATEDIR        => '$(PREFIX)/var/glpi-agent',
     );
 
     # allow variables defined on command line to override defaults
