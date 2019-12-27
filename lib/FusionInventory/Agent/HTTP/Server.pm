@@ -232,7 +232,7 @@ sub _handle_plugins {
     if ($status == 200 && $keepalive && --$maxKeepAlive) {
         # Looking for another request
         $request = $client->get_request();
-        $self->_handle_plugins($client, $request, $clientIp, $maxKeepAlive) if $request;
+        $self->_handle_plugins($client, $request, $clientIp, $plugins, $maxKeepAlive) if $request;
     }
 
     $client->close();
