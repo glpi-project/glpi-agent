@@ -16,7 +16,7 @@ a:hover {
   font-family: Arial,Helvetica,sans-serif;
 }
 #background {
-  padding: 100px 100px 300px;
+  padding: 40px 80px 300px;
   background:url(logo.png);
   background-repeat: no-repeat;
   background-origin: content-box;

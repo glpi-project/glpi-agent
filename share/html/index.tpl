@@ -7,7 +7,7 @@
 </head>
 <body>
 <div id="background">
-
+<br />
 <br />
 This is GLPI Agent {$version}<br />
 The current status is {$status}<br />
