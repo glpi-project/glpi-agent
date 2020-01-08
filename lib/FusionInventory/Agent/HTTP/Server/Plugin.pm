@@ -134,7 +134,8 @@ sub debug2 {
 }
 
 sub config {
-    my ($self, $name) = @_;
+    my ($self, $name, $value) = @_;
+    $self->{$name} = $value if (defined($value));
     return $self->{$name};
 }
 
@@ -246,9 +247,11 @@ configuration load. The plugin should carefully check loaded values when used.
 
 Initializes a plugin, by default, this loads a configuration file if defined and found.
 
-=head2 $plugin->config($name)
+=head2 $plugin->config($name, $value)
 
-Returns the loaded configuration value for the given value name.
+Set named configuration value to $value if defined.
+
+Returns the set or loaded configuration value for the given value name.
 
 =head2 $plugin->error($message)
 
