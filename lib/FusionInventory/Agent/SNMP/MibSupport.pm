@@ -11,6 +11,7 @@ use File::Glob;
 use UNIVERSAL::require;
 
 use FusionInventory::Agent::Tools;
+use FusionInventory::Agent::Logger;
 
 sub new {
     my ($class, %params) = @_;
@@ -19,7 +20,7 @@ sub new {
 
     return unless $device;
 
-    my $logger      = $params{logger};
+    my $logger      = $params{logger} || $device->{logger} || FusionInventory::Agent::Logger->new();
     my $sysobjectid = $params{sysobjectid};
     my $sysorid     = $device->walk(sysORID);
 
@@ -41,7 +42,11 @@ sub new {
         next unless $file =~ m{$sub_modules_path/(\S+)\.pm$};
 
         my $module = __PACKAGE__ . "::" . $1;
-        $module->require() or next;
+        $module->require();
+        if ($EVAL_ERROR) {
+            $logger->debug2("$module require error: $EVAL_ERROR");
+            next;
+        }
         my $supported_mibs;
         {
             no strict 'refs'; ## no critic (ProhibitNoStrict)
@@ -56,7 +61,7 @@ sub new {
                     my $mibname = $mib_support->{name}
                         or next;
                     if ($sysobjectid =~ $mib_support->{sysobjectid}) {
-                        $logger->debug2("sysobjectid: $mibname mib support enabled") if $logger;
+                        $logger->debug("sysobjectID match: $mibname mib support enabled") if $logger;
                         $self->{_SUPPORT}->{$module} = $module->new( device => $device );
                         next;
                     }
