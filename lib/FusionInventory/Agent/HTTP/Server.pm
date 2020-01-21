@@ -447,6 +447,17 @@ sub init {
         return;
     }
 
+    my $io_poller;
+
+    IO::Poll->require();
+    if ($EVAL_ERROR) {
+        $logger->debug("Can't use IO::Poll to optimize HTTP requests handling: $!");
+    } else {
+        $io_poller = IO::Poll->new();
+        $io_poller->mask($self->{listener} => IO::Poll::POLLIN);
+        $self->{_poller} = $io_poller;
+    }
+
     $logger->info(
         $log_prefix . "HTTPD service started on port $self->{port}"
     );
@@ -484,6 +495,11 @@ sub init {
                         listener    => $listener,
                         plugins     => [],
                     };
+                    if ($io_poller) {
+                        $io_poller = IO::Poll->new();
+                        $io_poller->mask($listener => IO::Poll::POLLIN);
+                        $self->{_pollers}->{$port} = $io_poller;
+                    }
                 } else {
                     $self->{listeners}->{$port}->{ssl} = $plugin;
                 }
@@ -516,6 +532,11 @@ sub init {
                         plugins     => [ $plugin ],
                     };
                     $logger->info($log_prefix . "HTTPD ".$plugin->name()." Server plugin also started on port $port");
+                    if ($io_poller) {
+                        $io_poller = IO::Poll->new();
+                        $io_poller->mask($listener => IO::Poll::POLLIN);
+                        $self->{_pollers}->{$port} = $io_poller;
+                    }
                 }
             }
             delete $plugins{$plugin->name()};
@@ -585,6 +606,8 @@ sub handleRequests {
     # First try to handle plugin requests on dedicated ports
     my $got_connection = 0;
     foreach my $port (keys(%{$self->{listeners}})) {
+        next if $self->{_pollers} && $self->{_pollers}->{$port} &&
+            ! $self->{_pollers}->{$port}->poll(0);
         my ($client, $socket) = $self->{listeners}->{$port}->{listener}->accept();
         next unless $socket;
 
@@ -605,6 +628,8 @@ sub handleRequests {
         my $request = $client->get_request();
         $self->_handle_plugins($client, $request, $clientIp, $self->{listeners}->{$port}->{plugins}, MaxKeepAlive);
     }
+
+    return $got_connection if $self->{_poller} && ! $self->{_poller}->poll(0);
 
     my ($client, $socket) = $self->{listener}->accept();
     return $got_connection unless $socket;
