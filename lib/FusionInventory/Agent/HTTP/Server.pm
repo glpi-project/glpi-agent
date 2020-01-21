@@ -583,9 +583,12 @@ sub handleRequests {
     return unless $self->{listener}; # init() call failed
 
     # First try to handle plugin requests on dedicated ports
+    my $got_connection = 0;
     foreach my $port (keys(%{$self->{listeners}})) {
         my ($client, $socket) = $self->{listeners}->{$port}->{listener}->accept();
         next unless $socket;
+
+        $got_connection++;
 
         # Upgrade to SSL if required
         my $ssl = $self->{listeners}->{$port}->{ssl};
@@ -604,12 +607,14 @@ sub handleRequests {
     }
 
     my ($client, $socket) = $self->{listener}->accept();
-    return unless $socket;
+    return $got_connection unless $socket;
+
+    $got_connection++;
 
     # Upgrade to SSL if required
     if ($self->{_ssl} && !$self->{_ssl}->upgrade_SSL($client)) {
         $self->{logger}->debug($log_prefix . "HTTPD can't start SSL session");
-        return;
+        return $got_connection;
     }
 
     my $family = sockaddr_family($socket);
@@ -620,7 +625,7 @@ sub handleRequests {
     my $request = $client->get_request();
     $self->_handle($client, $request, $clientIp, MaxKeepAlive);
 
-    return 1;
+    return $got_connection;
 }
 
 1;
@@ -691,4 +696,5 @@ Start the server internal listener.
 
 =head2 $server->handleRequests()
 
-Check if there any incoming request, and honours it if needed.
+Check if there any incoming request, and honours it if needed. Returns the number
+of handled connections.

@@ -305,13 +305,14 @@ sub handleChildren {
 
     return unless $self->{_fork};
 
+    my $count = 0;
     my @processes = keys(%{$self->{_fork}});
     foreach my $pid (@processes) {
         my $child = $self->{_fork}->{$pid};
 
         # Check if any forked process is communicating
         delete $child->{in} unless $child->{in} && $child->{in}->opened;
-        if ($child->{in} && $child->{pollin} && $child->{pollin}->poll(0)) {
+        while ($child->{in} && $child->{pollin} && $child->{pollin}->poll(0)) {
             my $msg = " " x 5;
             if ($child->{in}->sysread($msg, 5)) {
                 $self->{logger}->debug2($child->{name} . "[$pid] message: ".($msg||"n/a"));
@@ -319,6 +320,7 @@ sub handleChildren {
                     $self->child_exit($pid);
                 }
             }
+            $count++;
         }
 
         # Check if any forked process has been finished
@@ -328,6 +330,8 @@ sub handleChildren {
         delete $self->{_fork}->{$pid};
         $self->{logger}->debug2($child->{name} . "[$pid] finished");
     }
+
+    return $count;
 }
 
 sub sleep {
