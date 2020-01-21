@@ -7,6 +7,7 @@ use Cwd;
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 use POSIX ":sys_wait_h"; # WNOHANG
+use Time::HiRes qw(usleep);
 
 # By convention, we just use 5 chars string as possible internal IPC messages.
 # As of this writing, only IPC_LEAVE from children is supported and is only
@@ -131,7 +132,7 @@ sub run {
         }
 
         # This eventually check for http messages, default timeout is 1 second
-        $self->sleep(1);
+        $self->sleep();
     }
 }
 
@@ -170,7 +171,7 @@ sub runTask {
 
         while (waitpid($pid, WNOHANG) == 0) {
             # Wait but eventually handle http server requests
-            $self->sleep(1);
+            $self->sleep();
 
             # Leave earlier while requested
             last unless $self->getTargets();
@@ -330,16 +331,29 @@ sub handleChildren {
 }
 
 sub sleep {
-    my ($self, $delay) = @_;
+    my ($self) = @_;
 
     # Check if any forked process has been finished or is speaking
-    $self->handleChildren();
+    if ($self->handleChildren()) {
+        $self->{_shorter_delay} = time + 60;
+    }
 
     eval {
         local $SIG{PIPE} = 'IGNORE';
         # Check for http interface messages, default timeout is 1 second
-        unless ($self->{server} && $self->{server}->handleRequests()) {
-            delay($delay || 1);
+        if ($self->{server} && $self->{server}->handleRequests()) {
+            $self->{_shorter_delay} = time + 60;
+        } else {
+            if ($self->{_shorter_delay}) {
+                if (time < $self->{_shorter_delay}) {
+                    usleep 100000;
+                } else {
+                    usleep 1000000;
+                    delete $self->{_shorter_delay};
+                }
+            } else {
+                usleep 1000000;
+            }
         }
     };
     $self->{logger}->error($EVAL_ERROR) if ($EVAL_ERROR && $self->{logger});
