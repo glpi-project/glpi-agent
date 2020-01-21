@@ -11,6 +11,7 @@ use Socket;
 use Test::More;
 use Test::Exception;
 use UNIVERSAL::require;
+use Time::HiRes qw(usleep);
 
 use FusionInventory::Test::Agent;
 use FusionInventory::Agent::HTTP::Server;
@@ -43,7 +44,8 @@ ok (
 );
 
 if (my $pid = fork()) {
-    $server->handleRequests();
+    my $timeout = time + 10;
+    while (!$server->handleRequests() && time < $timeout) { usleep 100000; };
     waitpid($pid, 0);
     ok($CHILD_ERROR >> 8, 'server listening on default port');
 } else {
@@ -103,7 +105,8 @@ lives_ok {
 $server->init();
 
 if (my $pid = fork()) {
-    $server->handleRequests();
+    my $timeout = time + 10;
+    while (!$server->handleRequests() && time < $timeout) { usleep 100000; };
     waitpid($pid, 0);
     ok($CHILD_ERROR >> 8, 'server listening on specific port');
 } else {
@@ -112,7 +115,8 @@ if (my $pid = fork()) {
 }
 
 if (my $pid = fork()) {
-    $server->handleRequests();
+    my $timeout = time + 10;
+    while (!$server->handleRequests() && time < $timeout) { usleep 100000; };
     waitpid($pid, 0);
     ok(
         $CHILD_ERROR >> 8,
