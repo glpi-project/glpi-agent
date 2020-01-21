@@ -1,3 +1,10 @@
+Revision history for GLPI agent
+
+1.0 not released yet
+
+core:
+* make internal HTTP server more responsive
+
 Revision history for FusionInventory agent
 
 2.5.2 Mon, 16 Dec 2019
