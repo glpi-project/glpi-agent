@@ -52,7 +52,7 @@ sub _parseProcessList {
         }
     }
 
-    if ($values->{mem} == 0 ) {
+    if (defined($values->{mem}) && $values->{mem} =~ /^0+$/) {
         # Default value
         $values->{mem} = 128;
     }
