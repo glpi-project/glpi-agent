@@ -52,7 +52,6 @@ our @EXPORT = qw(
     file2module
     module2file
     runFunction
-    delay
     slurp
 );
 
@@ -556,17 +555,6 @@ sub runFunction {
     return $result;
 }
 
-sub delay {
-    my ($delay) = @_;
-
-    if ($OSNAME eq 'MSWin32') {
-        Win32->require();
-        Win32::Sleep($delay*1000);
-    }  else {
-        sleep($delay);
-    }
-}
-
 sub slurp {
     my($file) = @_;
 
@@ -818,11 +806,6 @@ Run a function whose name is computed at runtime and return its result.
 =item load enforce module loading first
 
 =back
-
-=head2 delay($second)
-
-Wait for $second. It uses sleep() or Win32::Sleep() depending
-on the Operating System.
 
 =head2 slurp($file)
 
