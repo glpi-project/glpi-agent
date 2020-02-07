@@ -1,0 +1,44 @@
+name: GLPI Agent Packaging
+
+on: [push]
+
+jobs:
+  windows-packaging:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Update environment
+      run: |
+        echo '::add-path::C:\Strawberry\perl\bin'
+        echo '::add-path::C:\Strawberry\perl\site\bin'
+        echo '::add-path::C:\Strawberry\c\bin'
+      shell: bash
+    - name: Check environment
+      run: |
+        echo "PATH=%PATH%"
+        perl --version
+        perl -V
+      shell: cmd
+    - name: Install Module::Install
+      run: cpan -T Module::Install
+      shell: cmd
+    - name: Install deps
+      run: |
+        cpanm --notest --verbose --installdeps .
+      shell: cmd
+    - name: Install other modules
+      run: |
+        cpanm --notest --verbose Compress::Zlib Parse::EDID Archive::Extract Win32::Unicode::File
+      shell: cmd
+    - name: Prepare Makefile
+      run: perl Makefile.PL
+      shell: cmd
+    - name: Run gmake
+      run: gmake
+      shell: cmd
+    - name: Install Perl::Dist::Strawberry
+      run: |
+        cpanm --notest --verbose Perl::Dist::Strawberry
+      shell: cmd
