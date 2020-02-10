@@ -3,12 +3,31 @@
 use strict;
 use warnings;
 
+use Win32::TieRegistry qw( KEY_READ );
+
+# Perl::Dist::Strawberry doesn't detect WiX 3.11 which is installed on windows githib images
+# Algorithm imported from Perl::Dist::Strawberry::Step::OutputMSM_MSI::_detect_wix_dir
+my $wixbin_dir;
+for my $v (qw/3.0 3.5 3.6 3.11/) {
+    my $WIX_REGISTRY_KEY = "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows Installer XML/$v";
+    # 0x200 = KEY_WOW64_32KEY
+    my $r = Win32::TieRegistry->new($WIX_REGISTRY_KEY => { Access => KEY_READ|0x200, Delimiter => q{/} });
+    next unless $r;
+    my $d = $r->TiedRef->{'InstallRoot'};
+    next unless $d && -d $d && -f "$d/candle.exe" && -f "$d/light.exe";
+    $wixbin_dir = $d;
+    last;
+}
+
+die "Can't find WiX installation root in regitry\n" unless $wixbin_dir;
+
 my $app = Perl::Dist::GLPI::Agent->new();
 
 $app->parse_options(
     -job            => "glpi-agent packaging",
     -image_dir      => "C:\\GLPI-Agent",
     -working_dir    => "C:\\GLPI-Agent_build",
+    -wixbin_dir     => $wixbin_dir,
     -notest_modules,
     -nointeractive,
     @ARGV
