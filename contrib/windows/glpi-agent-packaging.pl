@@ -26,8 +26,6 @@ for my $v (qw/3.0 3.5 3.6 3.11/) {
 
 die "Can't find WiX installation root in regitry\n" unless $wixbin_dir;
 
-my ($PERLVERSION, $PERLREVISION
-
 my $app = Perl::Dist::GLPI::Agent->new(
     _perl_version   => PERL_VERSION,
     _revision       => PACKAGE_REVISION,
@@ -112,6 +110,7 @@ sub __gcclib {
 }
 
 sub __perl_source_url {
+    my ($self) = @_;
     return 'http://cpan.metacpan.org/authors/id/S/SH/SHAY/' .
         'perl-'.$self->global->{_perl_version}.'.tar.gz';
 }
