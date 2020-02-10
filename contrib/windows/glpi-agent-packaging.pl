@@ -5,6 +5,11 @@ use warnings;
 
 use Win32::TieRegistry qw( KEY_READ );
 
+use constant {
+    PERL_VERSION        => "5.30.1",
+    PACKAGE_REVISION    => "1", #BEWARE: always start with 1
+};
+
 # Perl::Dist::Strawberry doesn't detect WiX 3.11 which is installed on windows githib images
 # Algorithm imported from Perl::Dist::Strawberry::Step::OutputMSM_MSI::_detect_wix_dir
 my $wixbin_dir;
@@ -21,7 +26,12 @@ for my $v (qw/3.0 3.5 3.6 3.11/) {
 
 die "Can't find WiX installation root in regitry\n" unless $wixbin_dir;
 
-my $app = Perl::Dist::GLPI::Agent->new();
+my ($PERLVERSION, $PERLREVISION
+
+my $app = Perl::Dist::GLPI::Agent->new(
+    _perl_version   => PERL_VERSION,
+    _revision       => PACKAGE_REVISION,
+);
 
 $app->parse_options(
     -job            => "glpi-agent packaging",
@@ -52,20 +62,18 @@ package
 
 use parent qw(Perl::Dist::Strawberry);
 
-use constant {
-    PERL_VERSION            => "5.30",
-    STRAWBERRY_PERL_VERSION => "5.30.2",
-    PACKAGE_REVISION        => "1",
-    BASENAME                => "GLPI-Agent",
-    AGENTVERSION            => "1.0-test",
-};
+use lib 'lib';
+use FusionInventory::Agent::Version;
+
+my $VERSION = $FusionInventory::Agent::Version::VERSION;
+my $PROVIDER = $FusionInventory::Agent::Version::PROVIDER;
 
 sub build_job_pre {
     my ($self) = @_;
     $self->SUPER::build_job_pre();
 
     # Fix output basename
-    $self->global->{output_basename} = BASENAME."-".AGENTVERSION;
+    $self->global->{output_basename} = $PROVIDER."-Agent-".$VERSION;
 }
 
 sub build_job_post {
@@ -103,6 +111,11 @@ sub __gcclib {
         '-bin_'.($date eq '2020Q1' ? '20200207' : '20190522').'.zip';
 }
 
+sub __perl_source_url {
+    return 'http://cpan.metacpan.org/authors/id/S/SH/SHAY/' .
+        'perl-'.$self->global->{_perl_version}.'.tar.gz';
+}
+
 sub __job {
     my ($self) = @_;
 ### job description for building GLPI Agent
@@ -112,7 +125,7 @@ sub __job {
 # <dist_sharedir> is placeholder for Perl::Dist::Strawberry's distribution sharedir
 # <image_dir>     is placeholder for c:\strawberry
     return {
-        app_version     => STRAWBERRY_PERL_VERSION.'.'.PACKAGE_REVISION, #BEWARE: do not use '.0.0' in the last two version digits
+        app_version     => $self->global->{_perl_version}.'.'.$self->global->{_revision}, #BEWARE: do not use '.0.0' in the last two version digits
         bits            => $self->global->{arch},
         beta            => 0,
         app_fullname    => 'Strawberry Perl'.($self->is64bit?' (64-bit)':''),
@@ -124,6 +137,7 @@ sub __job {
 
 sub __job_steps {
     my ($self) = @_;
+    my ($PERL_MAJORMINOR) = $self->global->{_perl_version} =~ /^(\d+\.\d+)\./;
     return
     ### NEXT STEP ###########################
     {
@@ -183,16 +197,16 @@ sub __job_steps {
     ### NEXT STEP ###########################
     {
         plugin     => 'Perl::Dist::Strawberry::Step::InstallPerlCore',
-        url        => 'http://cpan.metacpan.org/authors/id/S/SH/SHAY/perl-'.STRAWBERRY_PERL_VERSION.'.tar.gz',
+        url        => $self->__perl_source_url(),
         cf_email   => 'strawberry-perl@project', #IMPORTANT: keep 'strawberry-perl' before @
         perl_debug => 0,    # can be overridden by --perl_debug=N option
         perl_64bitint => 1, # ignored on 64bit, can be overridden by --perl_64bitint | --noperl_64bitint option
         buildoptextra => '-D__USE_MINGW_ANSI_STDIO',
         patch => { #DST paths are relative to the perl src root
             '<dist_sharedir>/msi/files/perlexe.ico'             => 'win32/perlexe.ico',
-            '<dist_sharedir>/perl-'.PERL_VERSION.'/win32_config.gc.tt'      => 'win32/config.gc',
-            '<dist_sharedir>/perl-'.PERL_VERSION.'/perlexe.rc.tt'           => 'win32/perlexe.rc',
-            '<dist_sharedir>/perl-'.PERL_VERSION.'/win32_config_H.gc'       => 'win32/config_H.gc', # enables gdbm/ndbm/odbm
+            '<dist_sharedir>/perl-'.$PERL_MAJORMINOR.'/win32_config.gc.tt'      => 'win32/config.gc',
+            '<dist_sharedir>/perl-'.$PERL_MAJORMINOR.'/perlexe.rc.tt'           => 'win32/perlexe.rc',
+            '<dist_sharedir>/perl-'.$PERL_MAJORMINOR.'/win32_config_H.gc'       => 'win32/config_H.gc', # enables gdbm/ndbm/odbm
         },
         license => { #SRC paths are relative to the perl src root
             'Readme'   => '<image_dir>/licenses/perl/Readme',
