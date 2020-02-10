@@ -42,3 +42,12 @@ jobs:
       run: |
         cpanm --notest --verbose Perl::Dist::Strawberry
       shell: cmd
+    - name: Build package
+      run: |
+        perl contrib\windows\glpi-agent-packaging.pl
+      shell: cmd
+    - name: List generated files
+      run: |
+        dir
+        dir C:\GLPI-Agent_build\output
+      shell: cmd
