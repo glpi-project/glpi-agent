@@ -6,9 +6,9 @@ use warnings;
 my $app = Perl::Dist::GLPI::Agent->new();
 
 $app->parse_options(
+    -job            => "glpi-agent packaging",
     -image_dir      => "C:\\GLPI-Agent",
     -working_dir    => "C:\\GLPI-Agent_build",
-    -package_url    => "https://github.com/glpi-project/glpi-agent/releases",
     -notest_modules,
     -nointeractive,
     @ARGV
