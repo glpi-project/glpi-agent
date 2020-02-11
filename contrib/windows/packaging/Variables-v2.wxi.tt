@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Include>
+[%- IF beta==0 %]
+<?define ProductName       = "[%_agent_fullname%]" ?>     <!-- e.g. "Strawberry Perl" -->
+<?define UpgradeCode       = "[%msi_upgrade_code%]" ?> <!-- e.g. "{99999113-4E91-3FFC-B400-666BB4B84587}" -->
+[%- ELSE %]
+<?define ProductName       = "[%_agent_fullname%] BETA[%beta%]" ?>
+<?define UpgradeCode       = "[%msi_random_upgrade_code%]" ?> <!-- avoid using "real" upgrade code for beta release -->
+[%- END %]
+<?define ProductGUID       = "[%msi_product_guid%]" ?> <!-- e.g. "{444492A0-D47C-4290-BAF7-8113318CD031}" -->
+<?define MergeModuleGUID   = "[%msm_package_guid%]" ?> <!-- e.g. "{44444D7D-5EC7-3665-9F97-959C988CA754}" -->
+<?define MergeModuleID     = "[%msm_package_id%]" ?>   <!-- e.g. "44444D7D_5EC7_3665_9F97_959C988CA754" -->
+<?define Version4digit     = "[%_agent_fullver%]" ?>   <!-- e.g. "1.0.0.1" -->
+<?define CurrentVersion    = "[%_agent_msiver%]" ?>    <!-- e.g. "1.0.0001" -->
+<?define MinCanUpgradeVer  = "[%_agent_upgver%]" ?>    <!-- e.g. "1.0.0" -->
+[%- IF bits==32 %]
+<?define Platform          = "x86" ?>
+[%- ELSE %]
+<?define Platform          = "x64" ?>
+[%- END %]
+<?define Manufacturer      = "[%app_publisher%]" ?>       <!-- e.g. "strawberryperl.com project" -->
+<?define URLAbout          = "[%url_about%]" ?>           <!-- e.g. "http://strawberryperl.com/" -->
+<?define URLHelp           = "[%url_help%]" ?>            <!-- e.g. "http://strawberryperl.com/support.html" -->
+<?define RootDir           = "[%msi_root_dir%]" ?>        <!-- e.g. "Strawberry" new in MSI-v2 -->
+
+<?define FileMainIcon      = "[%msi_main_icon%]" ?>   <!-- e.g. "<dist_sharedir>\msi\files\strawberry.ico" -->
+<?define FileLicenseRtf    = "[%msi_license_rtf%]" ?> <!-- e.g. "<dist_sharedir>\msi\files\License-short.rtf" -->
+<?define FileDialogBmp     = "[%msi_dialog_bmp%]" ?>  <!-- e.g. "<dist_sharedir>\msi\files\StrawberryDialog.bmp" -->
+<?define FileBannerBmp     = "[%msi_banner_bmp%]" ?>  <!-- e.g. "<dist_sharedir>\msi\files\StrawberryBanner.bmp" -->
+
+[% IF msi_debug %]
+  [%- IF 64 == bits -%]
+<?define FileHelperDLL     = "[%dist_sharedir%]\msi\CA-debug\x64\HelperCAv2.dll" ?>
+<?define PkgComments       = "64bit debug build" ?>
+  [%- ELSE -%]
+<?define FileHelperDLL     = "[%dist_sharedir%]\msi\CA-debug\x86\HelperCAv2.dll" ?>
+<?define PkgComments       = "32bit debug build" ?>
+  [%- END -%]
+[%- ELSE -%]
+  [%- IF 64 == bits -%]
+<?define FileHelperDLL     = "[%dist_sharedir%]\msi\CA-release\x86\HelperCAv2.dll" ?>
+<?define PkgComments       = "64bit release build" ?>
+  [%- ELSE -%]
+<?define FileHelperDLL     = "[%dist_sharedir%]\msi\CA-release\x86\HelperCAv2.dll" ?>
+<?define PkgComments       = "32bit release build" ?>
+  [%- END -%]
+[% END %]
+</Include>
