@@ -384,6 +384,7 @@ sub __job_steps {
          { do=>'copyfile', args=>[ 'lib/setup.pm', '<image_dir>/perl/lib' ] },
          { do=>'copydir', args=>[ 'share', '<image_dir>/share' ] },
          # Override installed MSI templates
+         { do=>'removefile', args=>[ '<dist_sharedir>/msi/MSI_main-v2.wxs.tt', '<dist_sharedir>/msi/Variables-v2.wxi.tt', '<dist_sharedir>/msi/MSI_strings.wxl.tt' ] },
          { do=>'copyfile', args=>[ 'contrib/windows/packaging/MSI_main-v2.wxs.tt', '<dist_sharedir>/msi/MSI_main-v2.wxs.tt' ] },
          { do=>'copyfile', args=>[ 'contrib/windows/packaging/Variables-v2.wxi.tt', '<dist_sharedir>/msi/Variables-v2.wxi.tt' ] },
          { do=>'copyfile', args=>[ 'contrib/windows/packaging/MSI_strings.wxl.tt', '<dist_sharedir>/msi/MSI_strings.wxl.tt' ] },
