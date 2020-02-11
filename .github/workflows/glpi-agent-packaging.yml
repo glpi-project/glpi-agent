@@ -48,6 +48,10 @@ jobs:
       shell: cmd
     - name: List generated files
       run: |
-        dir
         dir C:\GLPI-Agent_build\output
       shell: cmd
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: Outputs
+        path: C:\GLPI-Agent_build\output

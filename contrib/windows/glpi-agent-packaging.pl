@@ -63,15 +63,21 @@ use parent qw(Perl::Dist::Strawberry);
 use lib 'lib';
 use FusionInventory::Agent::Version;
 
-my $VERSION = $FusionInventory::Agent::Version::VERSION;
-my $PROVIDER = $FusionInventory::Agent::Version::PROVIDER;
-
 sub build_job_pre {
     my ($self) = @_;
     $self->SUPER::build_job_pre();
 
+    my $provider = $FusionInventory::Agent::Version::PROVIDER;
+    my $version = $FusionInventory::Agent::Version::VERSION;
+    my $arch = $self->global->{arch}."bit";
+
+    if ($version =~ /-dev$/ && $ENV{GITHUB_SHA}) {
+        my ($github_ref) = $ENV{GITHUB_SHA} =~ /^(\d{8})/;
+        $version =~ s/-dev$/-git$github_ref/;
+    }
+
     # Fix output basename
-    $self->global->{output_basename} = $PROVIDER."-Agent-".$VERSION;
+    $self->global->{output_basename} = "$provider-Agent-$version-$arch" ;
 }
 
 sub build_job_post {
