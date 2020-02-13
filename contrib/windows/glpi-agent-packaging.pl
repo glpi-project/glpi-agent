@@ -48,11 +48,11 @@ my $app = Perl::Dist::GLPI::Agent->new(
     _revision       => PACKAGE_REVISION,
     _provider       => $provider,
     _provided_by    => PROVIDED_BY,
-    _agent_version  => $version,
-    _agent_fullver  => $major.'.'.$minor.'.0.'.PACKAGE_REVISION,
-    _agent_msiver   => $major.'.'.$minor.'.'.sprintf('%04d',PACKAGE_REVISION),
-    _agent_upgver   => '1.0.0', # First upgradable version
-    _agent_fullname => $provider.' Agent',
+    agent_version   => $version,
+    agent_fullver   => $major.'.'.$minor.'.0.'.PACKAGE_REVISION,
+    agent_msiver    => $major.'.'.$minor.'.'.sprintf('%04d',PACKAGE_REVISION),
+    agent_upgver    => '1.0.0', # First upgradable version
+    agent_fullname  => $provider.' Agent',
 );
 
 $app->parse_options(
@@ -116,7 +116,7 @@ sub run {
 
     # Update Version.pm
     my $vars = {
-        version  => $self->global->{_agent_version},
+        version  => $self->global->{agent_version},
         provider => $self->global->{_provider},
         comments => \@comments,
     };
@@ -135,7 +135,7 @@ sub build_job_pre {
     $self->SUPER::build_job_pre();
 
     my $provider = $self->global->{_provider};
-    my $version = $self->global->{_agent_version};
+    my $version = $self->global->{agent_version};
     my $arch = $self->global->{arch}."bit";
 
     # Fix output basename

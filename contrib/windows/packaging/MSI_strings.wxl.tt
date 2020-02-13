@@ -3,8 +3,8 @@
 <WixLocalization Culture="en-US" xmlns="http://schemas.microsoft.com/wix/2006/localization">
   <!-- see https://iirf.svn.codeplex.com/svn/v2.x/Setup/CustomText.wxl -->
 
-  <String Id="WelcomeDlg_Title">[ProductName] [%_agent_version%] Setup</String>
-  <String Id="WelcomeDlgTitle">{\WixUI_Font_Bigger}Welcome to the Setup Wizard for&#13;&#10;[ProductName] [%_agent_version%]</String>
+  <String Id="WelcomeDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="WelcomeDlgTitle">{\WixUI_Font_Bigger}Welcome to the Setup Wizard for&#13;&#10;[ProductName] [%agent_version%]</String>
 
   <!-- custom text on welcome dialog -->
 [%- IF msi_debug==0 && beta==0 %]
@@ -17,7 +17,7 @@
   <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] on your computer. Click Next to continue or Cancel to exit Setup.&#13;&#10;&#13;&#10;BEWARE: this is BETA[%beta%] build!&#13;&#10;&#13;&#10;BEWARE: this is MSI_DEBUG build!</String>
 [%- END %]
 
-  <String Id="PrepareDlg_Title">[ProductName] [%_agent_version%] Setup</String>
-  <String Id="PrepareDlgTitle">{\WixUI_Font_Bigger}Welcome to the Setup Wizard for&#13;&#10;[ProductName] [%_agent_version%]</String>
+  <String Id="PrepareDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="PrepareDlgTitle">{\WixUI_Font_Bigger}Welcome to the Setup Wizard for&#13;&#10;[ProductName] [%agent_version%]</String>
   
 </WixLocalization>
