@@ -1,0 +1,5 @@
+@echo off
+for %%p in (".") do pushd "%%~fsp"
+cd /d "%~dp0\perl\bin"
+perl.exe glpi-[%tag%] %*
+popd

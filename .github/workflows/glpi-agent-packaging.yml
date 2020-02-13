@@ -55,3 +55,13 @@ jobs:
       with:
         name: Outputs
         path: C:\GLPI-Agent_build\output
+    - name: Perl-Dist-Strawberry artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: Perl-Dist-Strawberry
+        path: C:\Strawberry\perl\site\lib\auto\share\dist\Perl-Dist-Strawberry\msi
+    - name: Build artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: Build
+        path: C:\GLPI-Agent_build\build

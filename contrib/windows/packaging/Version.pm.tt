@@ -1,0 +1,12 @@
+package FusionInventory::Agent::Version;
+
+use strict;
+use warnings;
+
+our $VERSION = "[% version %]";
+our $PROVIDER = "[% provider %]";
+our $COMMENTS = [[% FOREACH comment IN comments %]
+    "[% comment %]",[% END %]
+];
+
+1;

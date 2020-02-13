@@ -8,6 +8,7 @@ use Win32::TieRegistry qw( KEY_READ );
 use constant {
     PERL_VERSION        => "5.30.1",
     PACKAGE_REVISION    => "1", #BEWARE: always start with 1
+    PROVIDED_BY         => "Teclib Edition",
 };
 
 use lib 'lib';
@@ -31,9 +32,10 @@ die "Can't find WiX installation root in regitry\n" unless $wixbin_dir;
 
 my $provider = $FusionInventory::Agent::Version::PROVIDER;
 my $version = $FusionInventory::Agent::Version::VERSION;
+my ($major,$minor) = $version =~ /^(\d+)\.(\d+)/;
 
 if ($version =~ /-dev$/ && $ENV{GITHUB_SHA}) {
-    my ($github_ref) = $ENV{GITHUB_SHA} =~ /^(\d{8})/;
+    my ($github_ref) = $ENV{GITHUB_SHA} =~ /^([0-9a-f]{8})/;
     $version =~ s/-dev$/-git/;
     $version .= ($github_ref || $ENV{GITHUB_SHA});
 }
@@ -42,17 +44,18 @@ my $app = Perl::Dist::GLPI::Agent->new(
     _perl_version   => PERL_VERSION,
     _revision       => PACKAGE_REVISION,
     _provider       => $provider,
+    _provided_by    => PROVIDED_BY,
     _agent_version  => $version,
-    _agent_fullver  => '1.0.0.'.PACKAGE_REVISION,
-    _agent_msiver   => '1.0.'.sprintf('%04d',PACKAGE_REVISION),
-    _agent_upgver   => '1.0.0',
+    _agent_fullver  => $major.'.'.$minor.'.0.'.PACKAGE_REVISION,
+    _agent_msiver   => $major.'.'.$minor.'.'.sprintf('%04d',PACKAGE_REVISION),
+    _agent_upgver   => '1.0.0', # First upgradable version
     _agent_fullname => $provider.' Agent',
 );
 
 $app->parse_options(
     -job            => "glpi-agent packaging",
-    -image_dir      => "C:\\GLPI-Agent",
-    -working_dir    => "C:\\GLPI-Agent_build",
+    -image_dir      => "C:\\$provider-Agent",
+    -working_dir    => "C:\\$provider-Agent_build",
     -wixbin_dir     => $wixbin_dir,
     -notest_modules,
     -nointeractive,
@@ -77,12 +80,52 @@ print "All packages building processing passed\n";
 exit(0);
 
 package
+    Perl::Dist::GLPI::Agent::Step::Update;
+
+use parent 'Perl::Dist::Strawberry::Step';
+
+use File::Spec::Functions qw(catfile);
+use Template;
+
+sub run {
+    my $self = shift;
+
+    my $bat = "contrib/windows/packaging/template.bat.tt";
+    my $version = "contrib/windows/packaging/Version.pm.tt";
+
+    my $t = Template->new(ABSOLUTE=>1);
+
+    $self->boss->message(2, "gonna update installation");
+
+    # Install dedicated bat files
+    foreach my $f (qw(agent esx injector inventory netdiscovery netinventory wakeonlan wmi)) {
+        my $dest = catfile($self->global->{image_dir}, 'glpi-'.$f.'.bat');
+        my $tag = { tag => $f };
+        $t->process($bat, $tag, $dest) || die $t->error();
+    }
+
+    my @comments = (
+        "Provided by ".($ENV{PROVIDED_BY}||$self->global->{_provided_by}),
+        "Installer built on ".scalar(gmtime())." UTC",
+    );
+    push @comments, "Built on github actions windows image for $ENV{GITHUB_WORKSPACE} workspace"
+        if $ENV{GITHUB_WORKSPACE};
+
+    # Update Version.pm
+    my $vars = {
+        version  => $self->global->{_agent_version},
+        provider => $self->global->{_provider},
+        comments => \@comments,
+    };
+
+    my $dest = catfile($self->global->{image_dir}, 'perl/agent/FusionInventory/Agent/Version.pm');
+    $t->process($version, $vars, $dest) || die $t->error();
+}
+
+package
     Perl::Dist::GLPI::Agent;
 
 use parent qw(Perl::Dist::Strawberry);
-
-use lib 'lib';
-use FusionInventory::Agent::Version;
 
 sub build_job_pre {
     my ($self) = @_;
@@ -336,27 +379,20 @@ sub __job_steps {
     {
        plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
        commands => [
-         # directories
-         { do=>'createdir', args=>[ '<image_dir>/perl/agent' ] },
-         { do=>'createdir', args=>[ '<image_dir>/perl/newbin' ] },
-         { do=>'createdir', args=>[ '<image_dir>/var' ] },
-         # templated files
-         { do=>'apply_tt', args=>[ '<dist_sharedir>/extra-files/README.txt.tt', '<image_dir>/README-Strawberry-Perl.txt' ] },
-         { do=>'apply_tt', args=>[ '<dist_sharedir>/extra-files/DISTRIBUTIONS.txt.tt', '<image_dir>/DISTRIBUTIONS-Strawberry-Perl.txt' ] },
          # fixed files
-         { do=>'copyfile', args=>[ '<dist_sharedir>/extra-files/licenses/License.rtf', '<image_dir>/licenses/License.rtf' ] },
          { do=>'copyfile', args=>[ '<dist_sharedir>/extra-files/relocation.pl.bat',    '<image_dir>/relocation.pl.bat' ] },
          { do=>'copyfile', args=>[ '<dist_sharedir>/extra-files/update_env.pl.bat',    '<image_dir>/update_env.pl.bat' ] },
          # cleanup (remove unwanted files/dirs)
          { do=>'removefile', args=>[ '<image_dir>/perl/vendor/lib/Crypt/._test.pl', '<image_dir>/perl/vendor/lib/DBD/testme.tmp.pl' ] },
-         { do=>'removefile', args=>[ '<image_dir>/perl/bin/nssm_32.exe.bat', '<image_dir>/perl/bin/nssm_64.exe.bat' ] },
          { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/.+\.dll\.AA[A-Z]$/i ] },
-         { do=>'removedir', args=>[ '<image_dir>/perl/bin/freeglut.dll' ] }, #XXX OpenGL garbage
          # cleanup cpanm related files
          { do=>'removedir', args=>[ '<image_dir>/perl/site/lib/MSWin32-x86-multi-thread-64int' ] },
          { do=>'removedir', args=>[ '<image_dir>/perl/site/lib/MSWin32-x86-multi-thread' ] },
          { do=>'removedir', args=>[ '<image_dir>/perl/site/lib/MSWin32-x64-multi-thread' ] },
-         # cleanup for glpi-agent
+         # updates for glpi-agent
+         { do=>'createdir', args=>[ '<image_dir>/perl/agent' ] },
+         { do=>'createdir', args=>[ '<image_dir>/perl/newbin' ] },
+         { do=>'createdir', args=>[ '<image_dir>/var' ] },
          $self->__movebin('libgcc_s_'.($self->is64bit?'seh':'dw2').'-1.dll'),
          $self->__movebin('libstdc++-6.dll'),
          $self->__movebin('libwinpthread-1.dll'),
@@ -377,6 +413,7 @@ sub __job_steps {
          { do=>'removedir', args=>[ '<image_dir>/include' ] },
          { do=>'removedir', args=>[ '<image_dir>/lib' ] },
          { do=>'removedir', args=>[ '<image_dir>/libexec' ] },
+         { do=>'removedir', args=>[ '<image_dir>/licenses' ] },
          { do=>'removefile', args=>[ '<image_dir>/etc/gdbinit' ] },
          { do=>'copydir', args=>[ 'lib/FusionInventory', '<image_dir>/perl/agent/FusionInventory' ] },
          { do=>'copydir', args=>[ 'etc', '<image_dir>/etc' ] },
@@ -389,6 +426,10 @@ sub __job_steps {
          { do=>'copyfile', args=>[ 'contrib/windows/packaging/Variables-v2.wxi.tt', '<dist_sharedir>/msi/Variables-v2.wxi.tt' ] },
          { do=>'copyfile', args=>[ 'contrib/windows/packaging/MSI_strings.wxl.tt', '<dist_sharedir>/msi/MSI_strings.wxl.tt' ] },
        ],
+    },
+    ### NEXT STEP ###########################
+    {
+        plugin => 'Perl::Dist::GLPI::Agent::Step::Update',
     },
     ### NEXT STEP ###########################
     {
