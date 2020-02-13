@@ -14,6 +14,9 @@ use constant {
 use lib 'lib';
 use FusionInventory::Agent::Version;
 
+# HACK: make "use Perl::Dist::GLPI::Agent::Step::Update" works as included plugin
+$INC{'Perl/Dist/GLPI/Agent/Step/Update.pm'} = __FILE__;
+
 # Perl::Dist::Strawberry doesn't detect WiX 3.11 which is installed on windows githib images
 # Algorithm imported from Perl::Dist::Strawberry::Step::OutputMSM_MSI::_detect_wix_dir
 my $wixbin_dir;
@@ -126,9 +129,6 @@ package
     Perl::Dist::GLPI::Agent;
 
 use parent qw(Perl::Dist::Strawberry);
-
-# Import specific included dist step in our symbol table
-Perl::Dist::GLPI::Agent::Step::Update->import();
 
 sub build_job_pre {
     my ($self) = @_;
