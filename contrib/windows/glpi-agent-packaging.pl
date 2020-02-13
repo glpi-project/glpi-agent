@@ -127,6 +127,9 @@ package
 
 use parent qw(Perl::Dist::Strawberry);
 
+# Import specific included dist step in our symbol table
+Perl::Dist::GLPI::Agent::Step::Update->import();
+
 sub build_job_pre {
     my ($self) = @_;
     $self->SUPER::build_job_pre();
