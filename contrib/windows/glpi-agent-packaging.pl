@@ -110,8 +110,9 @@ sub run {
     my @comments = (
         "Provided by ".($ENV{PROVIDED_BY}||$self->global->{_provided_by}),
         "Installer built on ".scalar(gmtime())." UTC",
+        "Built with Strawberry Perl ".$self->global->{_perl_version},
     );
-    push @comments, "Built on github actions windows image for $ENV{GITHUB_WORKSPACE} workspace"
+    push @comments, "Built on github actions windows image for $ENV{GITHUB_REPOSITORY} repository"
         if $ENV{GITHUB_WORKSPACE};
 
     # Update Version.pm

@@ -12,7 +12,7 @@
 
     <Media Id='1' Cabinet='Perl.cab' CompressionLevel='high' EmbedCab='yes' />
 
-    <Property Id="ARPCOMMENTS" Value="$(var.ProductName) version [%app_version%]" />
+    <Property Id="ARPCOMMENTS" Value="$(var.ProductName) version [%agent_version%]" />
     <Property Id="ARPCONTACT" Value="$(var.Manufacturer)" />
     <Property Id="ARPURLINFOABOUT" Value="$(var.URLAbout)" />
     <Property Id="ARPHELPLINK" Value="$(var.URLHelp)" />
@@ -169,12 +169,6 @@
 [%xml_env%]
 <!-- generated ENV - END -->
         <Environment Id="E_Env_5" Name="PATH" Value="[INSTALLDIR]perl\bin"      Separator=";" Action="set" Part="last" System="yes" Permanent="no" />
-      </Component>
-
-      <!-- xxx the following setion is a HACK -->
-      <Component Id="C_Removal" Guid="{444429AA-91B4-3C1E-891C-BAB97EC5FF1C}" KeyPath="yes">
-        <RemoveFolder Id="rm1" Directory="d_win32" On="uninstall" />
-        <RemoveFile Id="rm2" Directory="d_win32" Name="*" On="uninstall" />
       </Component>
 
       <Directory Id="WINDOWSVOLUME" >
