@@ -184,7 +184,6 @@
     <Feature Id="feat_MSI"  Title="MSI Files" Level="1" />  <!-- all members are included via Feature attribute -->
     <Feature Id="F_MainApplication" Title="Main Application" Level="1">
       <ComponentRef Id="C_Environment" />
-      <ComponentRef Id="C_Removal" />
     </Feature>
 
   </Product>
