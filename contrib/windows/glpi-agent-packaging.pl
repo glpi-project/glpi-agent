@@ -370,6 +370,7 @@ sub __job_steps {
             qw/ Net::NBName Thread::Queue Thread::Semaphore /,
             qw/ Net::SNMP Net::SNMP::Security::USM Net::SNMP::Transport::IPv4::TCP
                 Net::SNMP::Transport::IPv6::TCP Net::SNMP::Transport::IPv6::UDP /,
+            qw/ Net::IP /,
             # For Wake-On-LAN task
             #qw/ Net::Write::Layer2 /,
         ],
@@ -407,6 +408,7 @@ sub __job_steps {
          $self->__movedll('liblzma-5__.dll'),
          $self->__movedll('libssl-1_1'.($self->is64bit?'-x64__':'').'.dll'),
          $self->__movedll('zlib1__.dll'),
+         { do=>'copyfile', args=>[ 'contrib/windows/packaging/dmidecode.exe', '<image_dir>/perl/bin' ] },
          { do=>'copyfile', args=>[ '<image_dir>/perl/bin/perl.exe', '<image_dir>/perl/bin/glpi-agent.exe' ] },
          { do=>'removedir', args=>[ '<image_dir>/bin' ] },
          { do=>'removedir', args=>[ '<image_dir>/c' ] },
