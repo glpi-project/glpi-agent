@@ -383,9 +383,6 @@ sub __job_steps {
     {
        plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
        commands => [
-         # fixed files
-         { do=>'copyfile', args=>[ '<dist_sharedir>/extra-files/relocation.pl.bat',    '<image_dir>/relocation.pl.bat' ] },
-         { do=>'copyfile', args=>[ '<dist_sharedir>/extra-files/update_env.pl.bat',    '<image_dir>/update_env.pl.bat' ] },
          # cleanup (remove unwanted files/dirs)
          { do=>'removefile', args=>[ '<image_dir>/perl/vendor/lib/Crypt/._test.pl', '<image_dir>/perl/vendor/lib/DBD/testme.tmp.pl' ] },
          { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/.+\.dll\.AA[A-Z]$/i ] },
@@ -422,8 +419,8 @@ sub __job_steps {
          { do=>'copydir', args=>[ 'lib/FusionInventory', '<image_dir>/perl/agent/FusionInventory' ] },
          { do=>'copydir', args=>[ 'etc', '<image_dir>/etc' ] },
          { do=>'copydir', args=>[ 'bin', '<image_dir>/perl/bin' ] },
-         { do=>'copyfile', args=>[ 'lib/setup.pm', '<image_dir>/perl/lib' ] },
          { do=>'copydir', args=>[ 'share', '<image_dir>/share' ] },
+         { do=>'copyfile', args=>[ 'contrib/windows/packaging/setup.pm', '<image_dir>/perl/lib' ] },
          # Override installed MSI templates
          { do=>'removefile', args=>[ '<dist_sharedir>/msi/MSI_main-v2.wxs.tt', '<dist_sharedir>/msi/Variables-v2.wxi.tt', '<dist_sharedir>/msi/MSI_strings.wxl.tt' ] },
          { do=>'copyfile', args=>[ 'contrib/windows/packaging/MSI_main-v2.wxs.tt', '<dist_sharedir>/msi/MSI_main-v2.wxs.tt' ] },
@@ -437,12 +434,6 @@ sub __job_steps {
     },
     ### NEXT STEP ###########################
     {
-       plugin => 'Perl::Dist::Strawberry::Step::CreateRelocationFile',
-       reloc_in  => '<dist_sharedir>/relocation/relocation.txt.initial',
-       reloc_out => '<image_dir>/relocation.txt',
-    },
-    ### NEXT STEP ###########################
-    {
        plugin => 'Perl::Dist::Strawberry::Step::OutputZIP', # no options needed
     },
     ### NEXT STEP ###########################
@@ -451,8 +442,6 @@ sub __job_steps {
        exclude  => [
            #'dirname\subdir1\subdir2',
            #'dirname\file.pm',
-           'relocation.pl.bat',
-           'update_env.pl.bat',
        ],
        #BEWARE: msi_upgrade_code is a fixed value for all same arch releases (for ever)
        msi_upgrade_code    => $self->is64bit ? '0DEF72A8-E5EE-4116-97DC-753718E19CD5' : '7F25A9A4-BCAE-4C15-822D-EAFBD752CFEC', 
