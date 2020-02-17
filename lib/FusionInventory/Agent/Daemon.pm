@@ -312,10 +312,9 @@ sub handleChildren {
 
         # Check if any forked process is communicating
         delete $child->{in} unless $child->{in} && $child->{in}->opened;
-        while ($child->{in} && $child->{pollin} && $child->{pollin}->poll(0)) {
+        while ($child->{in} && $child->{pollin} && $child->{poll} && &{$child->{poll}}($child->{pollin})) {
             my $msg = " " x 5;
             if ($child->{in}->sysread($msg, 5)) {
-                $self->{logger}->debug2($child->{name} . "[$pid] message: ".($msg||"n/a"));
                 if ($msg eq IPC_LEAVE) {
                     $self->child_exit($pid);
                 }
@@ -387,11 +386,16 @@ sub fork {
             $logger->debug("forking $name process without IO::Pipe support: $!");
         }
 
-        IO::Poll->require();
-        if ($EVAL_ERROR) {
-            $logger->debug("Can't use IO::Poll to support internal IPC: $!");
+        if ($OSNAME ne 'MSWin32') {
+            IO::Poll->require();
+            if ($EVAL_ERROR) {
+                $logger->debug("Can't use IO::Poll to support internal IPC: $!");
+            } else {
+                $ipc_poller = IO::Poll->new();
+            }
         } else {
-            $ipc_poller = IO::Poll->new();
+            FusionInventory::Agent::Tools::Win32->require();
+            $ipc_poller = FusionInventory::Agent::Tools::Win32::newPoller();
         }
     }
 
@@ -410,8 +414,18 @@ sub fork {
             $child_ipc->reader();
             $parent_ipc->writer();
             if ($ipc_poller) {
-                $ipc_poller->mask($child_ipc => IO::Poll::POLLIN);
+                $ipc_poller->mask($child_ipc => IO::Poll::POLLIN)
+                    unless $OSNAME eq 'MSWin32';
                 $self->{_fork}->{$pid}->{pollin} = $ipc_poller;
+                $self->{_fork}->{$pid}->{poll} = $OSNAME ne 'MSWin32' ?
+                    sub {
+                        my ($poller) = @_;
+                        return $poller->poll(0) ;
+                    } :
+                    sub {
+                        my ($poller) = @_;
+                        return FusionInventory::Agent::Tools::Win32::getPoller($poller);
+                    };
             }
             $self->{_fork}->{$pid}->{in}  = $child_ipc;
             $self->{_fork}->{$pid}->{out} = $parent_ipc;
@@ -429,7 +443,8 @@ sub fork {
             $child_ipc->writer();
             $parent_ipc->reader();
             if ($ipc_poller) {
-                $ipc_poller->mask($parent_ipc => IO::Poll::POLLIN);
+                $ipc_poller->mask($parent_ipc => IO::Poll::POLLIN)
+                    unless $OSNAME eq 'MSWin32';
                 $self->{_ipc_pollin} = $ipc_poller;
             }
             $self->{_ipc_in}  = $parent_ipc;

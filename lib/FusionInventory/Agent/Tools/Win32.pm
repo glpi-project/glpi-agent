@@ -9,6 +9,8 @@ use threads;
 use threads 'exit' => 'threads_only';
 use threads::shared;
 
+use Thread::Semaphore;
+
 use UNIVERSAL::require();
 
 use constant KEY_WOW64_64 => 0x100;
@@ -1098,6 +1100,20 @@ sub _call_win32_ole_dependent_api {
             return $result;
         }
     }
+}
+
+sub newPoller {
+    return Thread::Semaphore->new(0);
+}
+
+sub setPoller {
+    my ($poller) = @_;
+    $poller->up();
+}
+
+sub getPoller {
+    my ($poller) = @_;
+    return $poller->down_nb();
 }
 
 sub _remoteWmi {
