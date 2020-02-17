@@ -48,7 +48,7 @@ jobs:
       shell: cmd
     - name: List generated files
       run: |
-        dir C:\GLPI-Agent_build\output
+        dir C:\Strawberry-perl-for-GLPI-Agent_build\output
       shell: cmd
     - name: Upload Output artifacts
       uses: actions/upload-artifact@v1
