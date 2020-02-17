@@ -57,8 +57,8 @@ my $app = Perl::Dist::GLPI::Agent->new(
 
 $app->parse_options(
     -job            => "glpi-agent packaging",
-    -image_dir      => "C:\\$provider-Agent",
-    -working_dir    => "C:\\$provider-Agent_build",
+    -image_dir      => "C:\\Strawberry-perl-for-$provider-Agent",
+    -working_dir    => "C:\\Strawberry-perl-for-$provider-Agent_build",
     -wixbin_dir     => $wixbin_dir,
     -notest_modules,
     -nointeractive,
@@ -124,6 +124,12 @@ sub run {
 
     my $dest = catfile($self->global->{image_dir}, 'perl/agent/FusionInventory/Agent/Version.pm');
     $t->process($version, $vars, $dest) || die $t->error();
+
+    # Update default conf to include conf.d folder
+    open CONF, ">>", "etc/agent.cfg"
+        or die "Can't open default conf: $!\n";
+    print CONF "include 'conf.d/'\n";
+    close(CONF);
 }
 
 package
@@ -157,6 +163,11 @@ sub load_jobfile {
 sub is64bit {
     my ($self) = @_;
     return $self->global->{arch} == 64;
+}
+
+sub __default_install_dir {
+    my ($self) = @_;
+    return $self->global->{_provider}-'Agent';
 }
 
 sub __tools {
@@ -420,6 +431,7 @@ sub __job_steps {
          { do=>'removefile', args=>[ '<image_dir>/etc/gdbinit' ] },
          { do=>'copydir', args=>[ 'lib/FusionInventory', '<image_dir>/perl/agent/FusionInventory' ] },
          { do=>'copydir', args=>[ 'etc', '<image_dir>/etc' ] },
+         { do=>'createdir', args=>[ '<image_dir>/etc/conf.d' ] },
          { do=>'copydir', args=>[ 'bin', '<image_dir>/perl/bin' ] },
          { do=>'copydir', args=>[ 'share', '<image_dir>/share' ] },
          { do=>'copyfile', args=>[ 'contrib/windows/packaging/setup.pm', '<image_dir>/perl/lib' ] },
@@ -452,7 +464,7 @@ sub __job_steps {
        app_publisher       => 'GLPI Project',
        url_about           => 'https://glpi-project.org/',
        url_help            => 'https://glpi-project.org/discussions/',
-       msi_root_dir        => 'Strawberry',
+       msi_root_dir        => $self->__default_install_dir,
        msi_main_icon       => 'share/html/logo.png',
        msi_license_rtf     => '<dist_sharedir>\msi\files\License-short.rtf',
        msi_dialog_bmp      => '<dist_sharedir>\msi\files\StrawberryDialog.bmp',

@@ -50,13 +50,13 @@ jobs:
       run: |
         dir C:\GLPI-Agent_build\output
       shell: cmd
-    - name: Upload artifacts
+    - name: Upload Output artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: Outputs
-        path: C:\GLPI-Agent_build\output
-    - name: Build artifacts
+        name: Output
+        path: C:\Strawberry-perl-for-GLPI-Agent_build\output
+    - name: Upload MSI-Build artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: Build
-        path: C:\GLPI-Agent_build\build\msi
+        name: MSI-Build
+        path: C:\Strawberry-perl-for-GLPI-Agent_build\build\msi
