@@ -53,6 +53,7 @@ my $app = Perl::Dist::GLPI::Agent->new(
     agent_msiver    => $major.'.'.$minor.'.'.sprintf('%04d',PACKAGE_REVISION),
     agent_upgver    => '1.0.0', # First upgradable version
     agent_fullname  => $provider.' Agent',
+    agent_rootdir   => $provider.'-Agent',
 );
 
 $app->parse_options(
@@ -163,11 +164,6 @@ sub load_jobfile {
 sub is64bit {
     my ($self) = @_;
     return $self->global->{arch} == 64;
-}
-
-sub __default_install_dir {
-    my ($self) = @_;
-    return $self->global->{_provider}-'Agent';
 }
 
 sub __tools {
@@ -464,7 +460,7 @@ sub __job_steps {
        app_publisher       => 'GLPI Project',
        url_about           => 'https://glpi-project.org/',
        url_help            => 'https://glpi-project.org/discussions/',
-       msi_root_dir        => $self->__default_install_dir,
+       msi_root_dir        => 'Strawberry',
        msi_main_icon       => 'share/html/logo.png',
        msi_license_rtf     => '<dist_sharedir>\msi\files\License-short.rtf',
        msi_dialog_bmp      => '<dist_sharedir>\msi\files\StrawberryDialog.bmp',

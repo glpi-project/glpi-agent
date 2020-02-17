@@ -22,7 +22,7 @@
 <?define Manufacturer      = "[%app_publisher%]" ?>       <!-- e.g. "strawberryperl.com project" -->
 <?define URLAbout          = "[%url_about%]" ?>           <!-- e.g. "http://strawberryperl.com/" -->
 <?define URLHelp           = "[%url_help%]" ?>            <!-- e.g. "http://strawberryperl.com/support.html" -->
-<?define RootDir           = "[%msi_root_dir%]" ?>        <!-- e.g. "Strawberry" new in MSI-v2 -->
+<?define RootDir           = "[%agent_rootdir%]" ?>       <!-- e.g. "Strawberry" new in MSI-v2 -->
 
 <?define FileMainIcon      = "[%msi_main_icon%]" ?>   <!-- e.g. "<dist_sharedir>\msi\files\strawberry.ico" -->
 <?define FileLicenseRtf    = "[%msi_license_rtf%]" ?> <!-- e.g. "<dist_sharedir>\msi\files\License-short.rtf" -->
