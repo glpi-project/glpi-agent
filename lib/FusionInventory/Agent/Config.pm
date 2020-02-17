@@ -72,6 +72,12 @@ sub new {
     bless $self, $class;
     $self->_loadDefaults();
 
+    # Reset confdir to be absolute confdir if found to be relative. This avoid
+    # wrong path usage for http server plugin in the case perl current path is changing.
+    # This can be the case while running agent as daemon into an administrator console under win32
+    $self->{_confdir} = abs_path(File::Spec->rel2abs($self->{_confdir}))
+        if $self->{_confdir} =~ m|^\.+/|;
+
     $self->_loadFromBackend($params{options}->{'conf-file'}, $params{options}->{config});
 
     $self->_loadUserParams($params{options});
@@ -144,7 +150,7 @@ sub _loadDefaults {
     # Set absolute confdir from default if replaced by Makefile otherwise search
     # from current path, mostly useful while running from source
     $self->{_confdir} = abs_path(File::Spec->rel2abs(
-        $self->{_confdir} || first { -d $_ } qw{ ./etc  ../etc }
+        $self->{_confdir} || first { -d $_ } qw{ ./etc  ../etc ../../etc }
     ));
 }
 
