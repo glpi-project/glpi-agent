@@ -43,6 +43,11 @@ if ($version =~ /-dev$/ && $ENV{GITHUB_SHA}) {
     $version .= ($github_ref || $ENV{GITHUB_SHA});
 }
 
+if ($ENV{GITHUB_REF} && $ENV{GITHUB_REF} =~ m|refs/tags/(.+)$|) {
+    my $tag = $1;
+    $version = $tag =~ /^$major\.$minor/ ? $tag : "$major.$minor-$tag";
+}
+
 my $app = Perl::Dist::GLPI::Agent->new(
     _perl_version   => PERL_VERSION,
     _revision       => PACKAGE_REVISION,
@@ -127,7 +132,7 @@ sub run {
     $t->process($version, $vars, $dest) || die $t->error();
 
     # Update default conf to include conf.d folder
-    open CONF, ">>", "etc/agent.cfg"
+    open CONF, ">>", catfile($self->global->{image_dir}, 'etc/agent.cfg')
         or die "Can't open default conf: $!\n";
     print CONF "include 'conf.d/'\n";
     close(CONF);
