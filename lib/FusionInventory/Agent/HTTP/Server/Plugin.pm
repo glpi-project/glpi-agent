@@ -30,9 +30,10 @@ sub new {
     # Check _confdir imported from FusionInventory::Agent::Config
     unless ($self->{_confdir} && -d $self->{_confdir}) {
         # Set absolute confdir from default if replaced by Makefile otherwise search
-        # from current path, mostly useful while running from source
+        # from current path, mostly useful while running from source but also
+        # with windows portable release
         $self->{_confdir} = abs_path(File::Spec->rel2abs(
-            $self->{_confdir} || first { -d $_ } qw{ ./etc  ../etc }
+            $self->{_confdir} || first { -d $_ } qw{ ./etc  ../etc ../../etc }
         ));
     }
 
