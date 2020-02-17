@@ -36,7 +36,8 @@ sub new {
         }
     }
 
-    my $debug = $params{verbosity} || $config->{debug} || 0 ;
+    my $debug = defined($params{verbosity}) ? $params{verbosity} :
+        $config->{debug} || 0 ;
 
     my $self = {
         verbosity => $debug == 2 ? LOG_DEBUG2 :
