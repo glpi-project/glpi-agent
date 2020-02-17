@@ -438,7 +438,7 @@ sub init {
         LocalAddr => $self->{ip},
         LocalPort => $self->{port},
         ReuseAddr => 1,
-        ReusePort => 1,
+        ReusePort => $OSNAME ne 'MSWin32',
         Timeout   => 1,
         Blocking  => 0
     );
@@ -484,7 +484,7 @@ sub init {
                             LocalAddr => $self->{ip},
                             LocalPort => $port,
                             ReuseAddr => 1,
-                            ReusePort => 1,
+                            ReusePort => $OSNAME ne 'MSWin32',
                             Timeout   => 1,
                             Blocking  => 0
                     );
@@ -522,7 +522,7 @@ sub init {
                         LocalAddr => $self->{ip},
                         LocalPort => $port,
                         ReuseAddr => 1,
-                        ReusePort => 1,
+                        ReusePort => $OSNAME ne 'MSWin32',
                         Timeout   => 1,
                         Blocking  => 0
                 );
