@@ -1,0 +1,99 @@
+name: GLPI Agent Packaging (test release)
+
+on:
+  push:
+    tags:
+    - '1.[0-9]+-test[0-9]+'
+
+jobs:
+
+  windows-packaging:
+    name: Windows Packaging, Test Release
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Update environment
+      run: |
+        echo '::add-path::C:\Strawberry\perl\bin'
+        echo '::add-path::C:\Strawberry\perl\site\bin'
+        echo '::add-path::C:\Strawberry\c\bin'
+      shell: bash
+    - name: Check environment
+      run: |
+        echo "PATH=%PATH%"
+        perl --version
+        perl -V
+      shell: cmd
+    - name: Install Module::Install
+      run: cpan -T Module::Install
+      shell: cmd
+    - name: Install deps
+      run: |
+        cpanm --notest --verbose --installdeps .
+      shell: cmd
+    - name: Install other modules
+      run: |
+        cpanm --notest --verbose Compress::Zlib Parse::EDID Archive::Extract Win32::Unicode::File
+      shell: cmd
+    - name: Prepare Makefile
+      run: perl Makefile.PL
+      shell: cmd
+    - name: Run gmake
+      run: gmake
+      shell: cmd
+    - name: Install Perl::Dist::Strawberry
+      run: |
+        cpanm --notest --verbose Perl::Dist::Strawberry
+      shell: cmd
+    - name: Build package
+      run: |
+        perl contrib\windows\glpi-agent-packaging.pl
+      shell: cmd
+    - name: List generated files
+      run: |
+        dir C:\Strawberry-perl-for-GLPI-Agent_build\output
+      shell: cmd
+    - name: Upload Output artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: Output
+        path: C:\Strawberry-perl-for-GLPI-Agent_build\output
+    - name: Extract tag
+      id: extract_tag
+      run: |
+        echo '::set-output name=tag::${GITHUB_REF#/refs/tags/}'
+      shell: bash
+    - name: Create Test Release
+      id: create_test_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: GLPI Agent Test release ${{ steps.extract_tag.outputs.tag }}
+        body: |
+          Test release ${{ steps.extract_tag.outputs.tag }}
+        draft: false
+        prerelease: true
+    - name: Upload 64bits Archive Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_test_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\glpi-agent-${{ steps.extract_tag.outputs.tag }}-64bits.zip
+        asset_name: glpi-agent-${{ steps.extract_tag.outputs.tag }}-64bits.zip
+        asset_content_type: application/zip
+    - name: Upload 32bits Archive Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_test_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\glpi-agent-${{ steps.extract_tag.outputs.tag }}-32bits.zip
+        asset_name: glpi-agent-${{ steps.extract_tag.outputs.tag }}-32bits.zip
+        asset_content_type: application/zip
