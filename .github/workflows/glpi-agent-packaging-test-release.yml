@@ -63,7 +63,7 @@ jobs:
     - name: Extract tag
       id: extract_tag
       run: |
-        echo '::set-output name=tag::${GITHUB_REF#/refs/tags/}'
+        echo "::set-output name=tag::${GITHUB_REF#/refs/tags/}"
       shell: bash
     - name: Create Test Release
       id: create_test_release
