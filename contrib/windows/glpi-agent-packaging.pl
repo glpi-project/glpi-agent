@@ -68,7 +68,6 @@ $app->parse_options(
     -wixbin_dir     => $wixbin_dir,
     -notest_modules,
     -nointeractive,
-    @ARGV
 );
 
 print "Building 64 bits packages...\n";
