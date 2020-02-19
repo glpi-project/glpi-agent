@@ -63,8 +63,15 @@ jobs:
     - name: Extract tag
       id: extract_tag
       run: |
-        echo "::set-output name=tag::${GITHUB_REF#/refs/tags/}"
+        TAG="${GITHUB_REF#*refs/tags/}"
+        echo "::set-output name=tag::$TAG"
+        echo "::set-output name=version::${TAG%-test*}"
+        echo "::set-output name=testrev::${TAG#*-test}"
       shell: bash
+    - name: List generated files
+      run: |
+        dir C:\Strawberry-perl-for-GLPI-Agent_build\output
+      shell: cmd
     - name: Create Test Release
       id: create_test_release
       uses: actions/create-release@v1
@@ -72,9 +79,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: ${{ github.ref }}
-        release_name: GLPI Agent Test release ${{ steps.extract_tag.outputs.tag }}
+        release_name: GLPI Agent ${{ steps.extract_tag.outputs.version }} Test release ${{ steps.extract_tag.outputs.testrev }}
         body: |
-          Test release ${{ steps.extract_tag.outputs.tag }}
+          Test release v${{ steps.extract_tag.outputs.tag }}
         draft: false
         prerelease: true
     - name: Upload 64bits Archive Asset
