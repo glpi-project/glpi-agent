@@ -76,8 +76,10 @@ $app->global->{arch} = 64;
 $app->do_job()
     or exit(1);
 
-print "Skipping 32 bits packages for now\n";
-exit(0);
+unless (grep { /^--all$/ } @ARGV) {
+    print "Skipping 32 bits packages for now\n";
+    exit(0);
+}
 
 print "Building 32 bits packages...\n";
 $app->global->{arch} = 32;
@@ -149,7 +151,7 @@ sub build_job_pre {
 
     my $provider = $self->global->{_provider};
     my $version = $self->global->{agent_version};
-    my $arch = $self->global->{arch}."bit";
+    my $arch = $self->global->{arch} eq "64" ? "x64" : "x86" ;
 
     # Fix output basename
     $self->global->{output_basename} = "$provider-Agent-$version-$arch" ;
