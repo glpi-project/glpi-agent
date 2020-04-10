@@ -6,7 +6,7 @@ use warnings;
 use Win32::TieRegistry qw( KEY_READ );
 
 use constant {
-    PERL_VERSION        => "5.30.1",
+    PERL_VERSION        => "5.30.2",
     PACKAGE_REVISION    => "1", #BEWARE: always start with 1
     PROVIDED_BY         => "Teclib Edition",
 };
@@ -185,10 +185,14 @@ sub __gcctoolchain {
 }
 
 sub __gcclib {
-    my ($self, $date, $lib) = @_;
+    my ($self, $quarter, $lib, $date) = @_;
     my $arch = $self->global->{arch};
-    return '<package_url>/kmx/'.$arch.'_libs/gcc83-'.$date.'/'.$arch.'bit_'.$lib.
-        '-bin_'.($date eq '2020Q1' ? '20200207' : '20190522').'.zip';
+    unless ($date) {
+        my %date = qw( 2019Q2 20190522 2020Q1 20200207 );
+        $date = $date{$quarter};
+    }
+    return '<package_url>/kmx/'.$arch.'_libs/gcc83-'.$quarter.'/'.$arch.'bit_'.$lib.
+        '-bin_'.$date.'.zip';
 }
 
 sub __perl_source_url {
@@ -258,7 +262,7 @@ sub __job_steps {
             'db'            => $self->__gcclib('2019Q2','db-6.2.38'),
             'expat'         => $self->__gcclib('2019Q2','expat-2.2.6'),
             'fontconfig'    => $self->__gcclib('2019Q2','fontconfig-2.13.1'),
-            'freeglut'      => $self->__gcclib('2019Q2','freeglut-3.0.0'),
+            'freeglut'      => $self->__gcclib('2020Q1','freeglut-2.8.1', '20200209'),
             'freetype'      => $self->__gcclib('2019Q2','freetype-2.10.0'),
             'gdbm'          => $self->__gcclib('2019Q2','gdbm-1.18'),
             'giflib'        => $self->__gcclib('2019Q2','giflib-5.1.9'),
@@ -383,7 +387,7 @@ sub __job_steps {
             qw/ Net::NBName Thread::Queue Thread::Semaphore /,
             qw/ Net::SNMP Net::SNMP::Security::USM Net::SNMP::Transport::IPv4::TCP
                 Net::SNMP::Transport::IPv6::TCP Net::SNMP::Transport::IPv6::UDP /,
-            qw/ Net::IP /,
+            qw/ Net::IP Archive::Zip /,
             # For Wake-On-LAN task
             #qw/ Net::Write::Layer2 /,
         ],
