@@ -6,22 +6,20 @@
            Language='1033'  Codepage="1252"  Manufacturer="$(var.Manufacturer)"
            Name="$(var.ProductName)" Version="$(var.CurrentVersion)">
 
-    <Package Id='*' Description='GLPI Agent for Win32 operating systems.'
-             Languages='1033' SummaryCodepage="1252" Platform="$(var.Platform)" Comments="$(var.PkgComments)"
+    <Package Id='*' Description="$(var.ProductName) version [%agent_version%]"
+             Languages='1033' SummaryCodepage="1252" Comments="$(var.PkgComments)"
              InstallerVersion='200' Compressed='yes' InstallPrivileges='elevated' InstallScope="perMachine" />
 
-    <Media Id='1' Cabinet='Perl.cab' CompressionLevel='high' EmbedCab='yes' />
+    <Media Id='1' Cabinet='GLPIAgent.cab' CompressionLevel='high' EmbedCab='yes' />
 
+    <Property Id="LicenseAccepted" Value="1" />
     <Property Id="ARPCOMMENTS" Value="$(var.ProductName) version [%agent_version%]" />
     <Property Id="ARPCONTACT" Value="$(var.Manufacturer)" />
     <Property Id="ARPURLINFOABOUT" Value="$(var.URLAbout)" />
     <Property Id="ARPHELPLINK" Value="$(var.URLHelp)" />
     <Property Id="ARPPRODUCTICON" Value="i_main_ico" />
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
-    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
-    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Read README file." />
-    <Property Id="WIXUI_EXITDIALOGOPTIONALTEXT" Value="Before you start using $(var.ProductName), read the Release Notes and the README file. These are both available from the start menu under &quot;$(var.ProductName)&quot;." />
-    <Property Id="WixShellExecTarget" Value="[#f_readme_txt]" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALTEXT" Value="Before you start using $(var.ProductName), read the online Release Notes." />
 
     <Property Id="UPGRADEDIR">
       <RegistrySearch Id="InstallDir" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[OLDERVERSIONBEINGUPGRADED]" Name="InstallLocation" Type="raw" />
@@ -37,39 +35,22 @@
     <Upgrade Id="$(var.UpgradeCode)">
       <UpgradeVersion Property="NEWERVERSIONDETECTED"      Minimum="$(var.CurrentVersion)" IncludeMinimum='no' OnlyDetect="yes" />
       <UpgradeVersion Property="OLDERVERSIONBEINGUPGRADED" Minimum="$(var.MinCanUpgradeVer)" IncludeMinimum='yes' Maximum="$(var.CurrentVersion)" IncludeMaximum='no' />
-      <UpgradeVersion Property="UPG_NOT_POSSIBLE"     Minimum='0.0.0' IncludeMinimum='yes' Maximum="$(var.MinCanUpgradeVer)" IncludeMaximum='no' OnlyDetect="yes" />
+      <UpgradeVersion Property="UPG_NOT_POSSIBLE"          Minimum='0.0.0' IncludeMinimum='yes' Maximum="$(var.MinCanUpgradeVer)" IncludeMaximum='no' OnlyDetect="yes" />
     </Upgrade>
     <!-- http://stackoverflow.com/questions/320921/how-to-add-a-wix-custom-action-that-happens-only-on-uninstall-via-msi -->
 
-    <Binary Id='B_HelperCA' SourceFile="$(var.FileHelperDLL)" />
     <CustomAction Id='CA_PreventDowngrading'  Error='A newer version of $(var.ProductName) is already installed.' />
     <CustomAction Id='CA_UninstallOldVersion' Error='Already installed version of $(var.ProductName) cannot be upgraded; it has to be uninstalled first.' />
 
     <CustomAction Id="CA_GetARPInstallLoc" Property ="INSTALLDIR"         Value="[UPGRADEDIR]"    Execute="immediate"/>
     <CustomAction Id="CA_SetARPInstallLoc" Property ="ARPINSTALLLOCATION" Value="[INSTALLDIR]"    Execute="immediate"/>
-    <CustomAction Id="CA_SetFileList"      Property ="CA_Relocate"        Value="MSI;[INSTALLDIR];[#f_relocation_txt]" />
-    <CustomAction Id="CA_SetLocation_Perl" Property ="P_Perl_Location"    Value="[#f_perl_bin_perl_exe]" Execute="immediate"/>
-    <CustomAction Id='CA_ClearSiteFolder'  BinaryKey='B_HelperCA' DllEntry='ClearSiteFolder'  />
-    <CustomAction Id='CA_ClearFolders'     BinaryKey='B_HelperCA' DllEntry='ClearFoldersFast' />
-    <CustomAction Id='CA_CheckDirName'     BinaryKey='B_HelperCA' DllEntry='CheckDirName'     />
-    <CustomAction Id="CA_Relocate"         BinaryKey="B_HelperCA" DllEntry="RelocateMSI"      Impersonate="no"  Execute="deferred" /> <!-- elevated -->
-    <CustomAction Id="CA_SpecialRefresh"   BinaryKey="B_HelperCA" DllEntry="SpecialRefresh"   Impersonate="yes" Execute="deferred" />
-    <CustomAction Id="LaunchReadmeFile"    BinaryKey="WixCA"      DllEntry="WixShellExec"     Impersonate="yes"                    />
-    
-    <SetDirectory Id="WINDOWSVOLUME" Value="[WindowsVolume]" />
 
     <InstallExecuteSequence>
       <!-- InstallExecuteSequence is used to define Custom Actions that fire after the UI is finished and the install is starting to execute -->
-      <RemoveExistingProducts                 After ='InstallInitialize' /> <!-- Windows Installer sets the UPGRADINGPRODUCTCODE Property when it runs this action -->
+      <RemoveExistingProducts                 After ='InstallFinalize' /> <!-- Windows Installer sets the UPGRADINGPRODUCTCODE Property when it runs this action -->
       <Custom Action='CA_PreventDowngrading'  After ='FindRelatedProducts'>NEWERVERSIONDETECTED</Custom>
       <Custom Action='CA_UninstallOldVersion' After ='FindRelatedProducts'>UPG_NOT_POSSIBLE</Custom>
-      <Custom Action='CA_ClearSiteFolder'     Before='InstallInitialize'>(Installed AND (NOT UPGRADINGPRODUCTCODE)) OR (Installed AND UPGRADINGPRODUCTCODE AND UPG_NOT_POSSIBLE)</Custom> <!-- remove perl/site folder -->
-      <Custom Action='CA_ClearFolders'        Before='InstallInitialize'>REMOVE="ALL"</Custom> <!-- remove cpan/cpanplus/ppm folders -->
       <Custom Action="CA_SetARPInstallLoc"    Before="RegisterProduct" />
-      <Custom Action="CA_SetLocation_Perl"    After ="CostFinalize"/>
-      <Custom Action="CA_SetFileList"         After ="InstallFiles"/>
-      <Custom Action="CA_Relocate"            After ="CA_SetFileList">NOT Installed</Custom>
-      <Custom Action="CA_SpecialRefresh"      After ="PublishProduct" /> <!-- or maybe After="WriteEnvironmentStrings" -->
     </InstallExecuteSequence>
 
     <InstallUISequence>
@@ -78,11 +59,6 @@
       <Custom Action='CA_UninstallOldVersion' After ='FindRelatedProducts'>UPG_NOT_POSSIBLE</Custom>
       <Custom Action="CA_GetARPInstallLoc"    Before="CostInitialize">OLDERVERSIONBEINGUPGRADED AND UPGRADEDIR</Custom>
     </InstallUISequence>
-
-    <UI>
-        <ProgressText Action="CA_ClearSiteFolder">Preparing the site folder for cleaning... (please wait a while)</ProgressText>
-        <ProgressText Action="CA_Relocate">Relocating ...</ProgressText>
-    </UI>
 
     <Condition Message="Cannot install on Windows 9x or ME systems.">VersionNT</Condition>
     <Condition Message="Cannot install on Windows NT 4.0 or Windows 2000 systems.">VersionNT &gt; 500</Condition>
@@ -122,18 +98,18 @@
         <Publish Dialog="D_MyInstallDirDlg"     Control="Next"   Event="SetTargetPath" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
         <Publish Dialog="D_MyInstallDirDlg"     Control="Next"   Event="DoAction" Value="WixUIValidatePath" Order="2">NOT WIXUI_DONTVALIDATEPATH</Publish>
         <Publish Dialog="D_MyInstallDirDlg"     Control="Next"   Event="SpawnDialog" Value="InvalidDirDlg" Order="3"><![CDATA[NOT WIXUI_DONTVALIDATEPATH AND WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
-        <Publish Dialog="D_MyInstallDirDlg"     Control="Next"   Event="DoAction" Value="CA_CheckDirName" Order="4">NOT WIXUI_DONTVALIDATEPATH</Publish>
-        <Publish Dialog="D_MyInstallDirDlg"     Control="Next"   Event="SpawnDialog" Value="D_BadLocationDlg" Order="5"><![CDATA[NOT WIXUI_DONTVALIDATEPATH AND WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
-        <Publish Dialog="D_MyInstallDirDlg"     Control="Next"   Event="NewDialog" Value="VerifyReadyDlg" Order="6">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
+        <Publish Dialog="D_MyInstallDirDlg"     Control="Next"   Event="NewDialog" Value="CustomizeDlg" Order="4">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
         <Publish Dialog="D_MyInstallDirDlg"     Control="ChangeFolder" Property="_BrowseProperty" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
         <Publish Dialog="D_MyInstallDirDlg"     Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
+        <Publish Dialog="CustomizeDlg"          Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">Installed</Publish>
+        <Publish Dialog="CustomizeDlg"          Control="Back" Event="NewDialog" Value="D_MyInstallDirDlg" Order="2">NOT Installed</Publish>
+        <Publish Dialog="CustomizeDlg"          Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
         <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="D_MyInstallDirDlg" Order="1">NOT Installed</Publish>
         <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">Installed</Publish>
         <Publish Dialog="MaintenanceWelcomeDlg" Control="Next"   Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
         <Publish Dialog="MaintenanceTypeDlg"    Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
         <Publish Dialog="MaintenanceTypeDlg"    Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
         <Publish Dialog="MaintenanceTypeDlg"    Control="Back"   Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
-        <Publish Dialog="ExitDialog"            Control="Finish" Event="DoAction" Value="LaunchReadmeFile">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
 
         <Dialog Id="D_MyInstallDirDlg" Width="370" Height="270" Title="!(loc.InstallDirDlg_Title)">
           <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" />
@@ -150,41 +126,31 @@
           <Control Id="Folder" Type="PathEdit" X="20" Y="100" Width="320" Height="18" Property="WIXUI_INSTALLDIR" Indirect="yes" />
           <Control Id="ChangeFolder" Type="PushButton" X="20" Y="120" Width="56" Height="17" Text="!(loc.InstallDirDlgChange)" />
         </Dialog>
-
-        <Dialog Id="D_BadLocationDlg" Width="260" Height="85" Title="!(loc.InstallDirDlg_Title)" NoMinimize="yes">
-          <Control Id="Return" Type="PushButton" X="100" Y="57" Width="56" Height="17" Default="yes" Cancel="yes" Text="&amp;Return">
-            <Publish Event="EndDialog" Value="Return">1</Publish>
-          </Control>
-          <Control Id="Text" Type="Text" X="48" Y="15" Width="194" Height="30" TabSkip="no">
-            <Text>$(var.ProductName) cannot be installed in a directory with spaces or non-ASCII characters.</Text>
-          </Control>
-        </Dialog>
-
     </UI>
 
     <Directory Id="TARGETDIR" Name="SourceDir">
 
-      <Component Id="C_Environment" Guid="{44449F2A-33A2-34A5-BC3A-729ABFB1E490}" KeyPath="yes">
-<!-- generated ENV -->
-[%xml_env%]
-<!-- generated ENV - END -->
-        <Environment Id="E_Env_5" Name="PATH" Value="[INSTALLDIR]perl\bin"      Separator=";" Action="set" Part="last" System="yes" Permanent="no" />
-      </Component>
-
-      <Directory Id="WINDOWSVOLUME" >
+[%- IF bits==32 %]
+      <Directory Id="ProgramFilesFolder">
+[%- ELSE %]
+      <Directory Id="ProgramFiles64Folder">
+[%- END %]
         <Directory Id="INSTALLDIR" Name="$(var.RootDir)">
 <!-- generated directory tree -->
 [%xml_msi_dirtree%]
 <!-- generated directory tree - END -->
         </Directory> <!-- INSTALLDIR -->
-      </Directory>   <!-- WINDOWSVOLUME -->
+      </Directory>   <!-- ProgramFilesFolder -->
 
     </Directory>     <!-- TARGETDIR -->
-    
+
     <Feature Id="feat_MSI"  Title="MSI Files" Level="1" />  <!-- all members are included via Feature attribute -->
-    <Feature Id="F_MainApplication" Title="Main Application" Level="1">
-      <ComponentRef Id="C_Environment" />
-    </Feature>
+
+    <ServiceInstall Name="$(var.ProductName)" Start="auto" Account="NT AUTHORITY\LocalService"
+                    ErrorControl="normal" DisplayName="!(loc.ServiceDisplayName)" Description="!(loc.ServiceDescription)" Interactive="no"
+                    Type="ownProcess" Arguments="-I[INSTALLDIR]perl\agent [INSTALLDIR]perl\bin\glpi-win32-service">
+      <ServiceConfig DelayedAutoStart="yes" PreShutdownDelay="30000" />
+    </ServiceInstall>
 
   </Product>
 </Wix>

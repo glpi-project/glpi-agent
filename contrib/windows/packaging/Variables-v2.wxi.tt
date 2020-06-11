@@ -2,47 +2,36 @@
 
 <Include>
 [%- IF beta==0 %]
-<?define ProductName       = "[%agent_fullname%]" ?>   <!-- e.g. "Strawberry Perl" -->
-<?define UpgradeCode       = "[%msi_upgrade_code%]" ?> <!-- e.g. "{99999113-4E91-3FFC-B400-666BB4B84587}" -->
+<?define ProductName       = "[%agent_fullname%]" ?>   <!-- e.g. "GLPI Agent" -->
+<?define UpgradeCode       = "[%msi_upgrade_code%]" ?> <!-- e.g. "0DEF72A8-E5EE-4116-97DC-753718E19CD5" -->
 [%- ELSE %]
 <?define ProductName       = "[%agent_fullname%] BETA[%beta%]" ?>
 <?define UpgradeCode       = "[%msi_random_upgrade_code%]" ?> <!-- avoid using "real" upgrade code for beta release -->
 [%- END %]
-<?define ProductGUID       = "[%msi_product_guid%]" ?> <!-- e.g. "{444492A0-D47C-4290-BAF7-8113318CD031}" -->
-<?define MergeModuleGUID   = "[%msm_package_guid%]" ?> <!-- e.g. "{44444D7D-5EC7-3665-9F97-959C988CA754}" -->
-<?define MergeModuleID     = "[%msm_package_id%]" ?>   <!-- e.g. "44444D7D_5EC7_3665_9F97_959C988CA754" -->
+<?define ProductGUID       = "[%msi_product_guid%]" ?> <!-- e.g. "444492A0-D47C-4290-BAF7-8113318CD031" -->
 <?define Version4digit     = "[%agent_fullver%]" ?>    <!-- e.g. "1.0.0.1" -->
-<?define CurrentVersion    = "[%agent_msiver%]" ?>     <!-- e.g. "1.0.0001" -->
+<?define CurrentVersion    = "[%agent_msiver%]" ?>     <!-- e.g. "1.0.0" -->
 <?define MinCanUpgradeVer  = "[%agent_upgver%]" ?>     <!-- e.g. "1.0.0" -->
-[%- IF bits==32 %]
-<?define Platform          = "x86" ?>
-[%- ELSE %]
-<?define Platform          = "x64" ?>
-[%- END %]
-<?define Manufacturer      = "[%app_publisher%]" ?>       <!-- e.g. "strawberryperl.com project" -->
-<?define URLAbout          = "[%url_about%]" ?>           <!-- e.g. "http://strawberryperl.com/" -->
-<?define URLHelp           = "[%url_help%]" ?>            <!-- e.g. "http://strawberryperl.com/support.html" -->
-<?define RootDir           = "[%agent_rootdir%]" ?>       <!-- e.g. "Strawberry" new in MSI-v2 -->
+<?define Manufacturer      = "[%app_publisher%]" ?>       <!-- e.g. "GLPI Project" -->
+<?define URLAbout          = "[%url_about%]" ?>           <!-- e.g. "https://glpi-project.org/" -->
+<?define URLHelp           = "[%url_help%]" ?>            <!-- e.g. "https://glpi-project.org/discussions/" -->
+<?define RootDir           = "[%agent_rootdir%]" ?>       <!-- e.g. "GLPI-Agent" -->
 
-<?define FileMainIcon      = "[%msi_main_icon%]" ?>   <!-- e.g. "<dist_sharedir>\msi\files\strawberry.ico" -->
-<?define FileLicenseRtf    = "[%msi_license_rtf%]" ?> <!-- e.g. "<dist_sharedir>\msi\files\License-short.rtf" -->
-<?define FileDialogBmp     = "[%msi_dialog_bmp%]" ?>  <!-- e.g. "<dist_sharedir>\msi\files\StrawberryDialog.bmp" -->
-<?define FileBannerBmp     = "[%msi_banner_bmp%]" ?>  <!-- e.g. "<dist_sharedir>\msi\files\StrawberryBanner.bmp" -->
+<?define FileMainIcon      = "[%msi_main_icon%]" ?>
+<?define FileLicenseRtf    = "[%msi_license_rtf%]" ?>
+<?define FileDialogBmp     = "[%msi_dialog_bmp%]" ?>
+<?define FileBannerBmp     = "[%msi_banner_bmp%]" ?>
 
 [% IF msi_debug %]
   [%- IF 64 == bits -%]
-<?define FileHelperDLL     = "[%dist_sharedir%]\msi\CA-debug\x64\HelperCAv2.dll" ?>
 <?define PkgComments       = "64bit debug build" ?>
   [%- ELSE -%]
-<?define FileHelperDLL     = "[%dist_sharedir%]\msi\CA-debug\x86\HelperCAv2.dll" ?>
 <?define PkgComments       = "32bit debug build" ?>
   [%- END -%]
 [%- ELSE -%]
   [%- IF 64 == bits -%]
-<?define FileHelperDLL     = "[%dist_sharedir%]\msi\CA-release\x86\HelperCAv2.dll" ?>
 <?define PkgComments       = "64bit release build" ?>
   [%- ELSE -%]
-<?define FileHelperDLL     = "[%dist_sharedir%]\msi\CA-release\x86\HelperCAv2.dll" ?>
 <?define PkgComments       = "32bit release build" ?>
   [%- END -%]
 [% END %]

@@ -16,8 +16,9 @@ use FusionInventory::Agent::Version;
 
 # HACK: make "use Perl::Dist::GLPI::Agent::Step::Update" works as included plugin
 $INC{'Perl/Dist/GLPI/Agent/Step/Update.pm'} = __FILE__;
+$INC{'Perl/Dist/GLPI/Agent/Step/OutputMSI.pm'} = __FILE__;
 
-# Perl::Dist::Strawberry doesn't detect WiX 3.11 which is installed on windows githib images
+# Perl::Dist::Strawberry doesn't detect WiX 3.11 which is installed on windows github images
 # Algorithm imported from Perl::Dist::Strawberry::Step::OutputMSM_MSI::_detect_wix_dir
 my $wixbin_dir;
 for my $v (qw/3.0 3.5 3.6 3.11/) {
@@ -35,7 +36,8 @@ die "Can't find WiX installation root in regitry\n" unless $wixbin_dir;
 
 my $provider = $FusionInventory::Agent::Version::PROVIDER;
 my $version = $FusionInventory::Agent::Version::VERSION;
-my ($major,$minor) = $version =~ /^(\d+)\.(\d+)/;
+my ($major,$minor,$revision) = $version =~ /^(\d+)\.(\d+)\.?(\d+)?/;
+$revision = 0 unless defined($revision);
 
 if ($version =~ /-dev$/ && $ENV{GITHUB_SHA}) {
     my ($github_ref) = $ENV{GITHUB_SHA} =~ /^([0-9a-f]{8})/;
@@ -45,7 +47,11 @@ if ($version =~ /-dev$/ && $ENV{GITHUB_SHA}) {
 
 if ($ENV{GITHUB_REF} && $ENV{GITHUB_REF} =~ m|refs/tags/(.+)$|) {
     my $tag = $1;
-    $version = $tag =~ /^$major\.$minor/ ? $tag : "$major.$minor-$tag";
+    if ($revision) {
+        $version = $tag =~ /^$major\.$minor\.$revision/ ? $tag : "$major.$minor.$revision-$tag";
+    } else {
+        $version = $tag =~ /^$major\.$minor/ ? $tag : "$major.$minor-$tag";
+    }
 }
 
 my $app = Perl::Dist::GLPI::Agent->new(
@@ -54,11 +60,13 @@ my $app = Perl::Dist::GLPI::Agent->new(
     _provider       => $provider,
     _provided_by    => PROVIDED_BY,
     agent_version   => $version,
-    agent_fullver   => $major.'.'.$minor.'.0.'.PACKAGE_REVISION,
-    agent_msiver    => $major.'.'.$minor.'.'.sprintf('%04d',PACKAGE_REVISION),
-    agent_upgver    => '1.0.0', # First upgradable version
+    agent_fullver   => $major.'.'.$minor.'.'.$revision.'.'.PACKAGE_REVISION,
+    agent_msiver    => $major.'.'.$minor.'.'.$revision,
+    agent_upgver    => '0.0.1', # First upgradable version
     agent_fullname  => $provider.' Agent',
     agent_rootdir   => $provider.'-Agent',
+    service_name    => lc($provider).'-agent',
+    msi_sharedir    => 'contrib/windows/packaging',
 );
 
 $app->parse_options(
@@ -88,6 +96,172 @@ $app->do_job()
 print "All packages building processing passed\n";
 
 exit(0);
+
+package
+    Perl::Dist::GLPI::Agent::Step::OutputMSI;
+
+use parent 'Perl::Dist::Strawberry::OutputMSI';
+
+sub run {
+    my $self = shift;
+
+    my $bdir = catdir($self->global->{build_dir}, 'msi');
+
+    my $msi_guid = $self->{data_uuid}->create_str(); # get random GUID
+
+    # create WXS parts to be inserted into MSI_main.wxs.tt
+    my $xml_env = $self->_generate_wxml_for_environment();
+    my ($xml_start_menu, $xml_start_menu_icons) = $self->_generate_wxml_for_start_menu();
+    my ($xml_msi, $id_list_msi) = $self->_generate_wxml_for_directory($self->global->{image_dir});
+    #debug:
+    write_file("$bdir/debug.xml_msi.xml", $xml_msi);
+    write_file("$bdir/debug.xml_start_menu.xml", $xml_start_menu);
+    write_file("$bdir/debug.xml_start_menu_icons.xml", $xml_start_menu_icons);
+
+    # prepare MSI filenames
+    my $output_basename = $self->global->{output_basename} // 'perl-output';
+    my $msi_file = catfile($self->global->{output_dir}, "$output_basename.msi");
+    my $wixpdb_file = catfile($self->global->{output_dir}, "$output_basename.wixpdb");
+
+    # compute msi_version which has to be 3-numbers (otherwise major upgrade feature does not work)
+    my ($v1, $v2, $v3, $v4) = split /\./, $self->global->{app_version};
+    $v3 = $v3*1000 + $v4 if defined $v4; #turn 5.14.2.1 to 5.12.2001
+
+    # resolve values (only scalars) from config
+    for (keys %{$self->{config}}) {
+        if (defined $self->{config}->{$_} && !ref $self->{config}->{$_}) {
+            $self->{config}->{$_} = $self->boss->resolve_name($self->{config}->{$_});
+        }
+    }
+    my %vars = (
+        # global info taken from 'boss'
+        %{$self->global},
+        # OutputMSI config info
+        %{$self->{config}},
+        # the following items are computed
+        msi_product_guid => $msi_guid,
+        msi_random_upgrade_code => $self->{data_uuid}->create_str(), # get random GUID
+        msi_version      => sprintf("%d.%d.%d", $v1, $v2, $v3), # e.g. 5.12.2001
+        msi_upgr_version => sprintf("%d.%d.%d", $v1, $v2, 0),   # e.g. 5.12.0
+        # WXS data
+        xml_msi_dirtree     => $xml_msi,
+        xml_env             => $xml_env,
+        xml_startmenu       => $xml_start_menu,
+        xml_startmenu_icons => $xml_start_menu_icons,
+    );
+
+    # Use our MSI templates
+    my $f2 = catfile($self->global->{msi_sharedir}, 'MSI_main-v2.wxs.tt');
+    my $f3 = catfile($self->global->{msi_sharedir}, 'Variables-v2.wxi.tt');
+    my $f4 = catfile($self->global->{msi_sharedir}, 'MSI_strings.wxl.tt');
+    my $t = Template->new(ABSOLUTE=>1);
+    write_file(catfile($self->global->{debug_dir}, 'TTvars_OutputMSI_'.time.'.txt'), pp(\%vars)); #debug dump
+    $t->process($f2, \%vars, catfile($bdir, 'MSI_main-v2.wxs')) || die $t->error();
+    $t->process($f3, \%vars, catfile($bdir, 'Variables-v2.wxi')) || die $t->error();
+    $t->process($f4, \%vars, catfile($bdir, 'MSI_strings.wxl')) || die $t->error();
+
+    my $rv;
+    my $candle_exe = $self->{candle_exe};
+    my $light_exe = $self->{light_exe};
+
+    #XXX-FIXME -sice:ICE08|09|32|61 is a hack to handle:
+    #light.exe : error LGHT0217 : Error executing ICE action 'ICE32'. The most common cause of this kind of ICE failure is an incorrectly registered
+    #            scripting engine. See http://wix.sourceforge.net/faq.html#Error217 for details and how to solve this problem. The following string
+    #            format was not expected by the external UI message logger: "Při instalaci tohoto balíčku zjistil instalační program neočekávanou
+    #            chybu. Může to znamenat, že u tohoto balíčku nastaly potíže. Kód chyby je 2738. ".
+    #light.exe : error LGHT0217 : Error executing ICE action 'ICE08'. The most common cause of this kind of ICE failure is an incorrectly registered
+    #            scripting engine. See http://wix.sourceforge.net/faq.html#Error217 for details and how to solve this problem. The following string
+    #            format was not expected by the external UI message logger: "Při instalaci tohoto balíčku zjistil instalační program neočekávanou
+    #            chybu. Může to znamenat, že u tohoto balíčku nastaly potíže. Kód chyby je 2738. ".
+    #light.exe : error LGHT0217 : Error executing ICE action 'ICE61'. The most common cause of this kind of ICE failure is an incorrectly registered
+    #            scripting engine. See http://wix.sourceforge.net/faq.html#Error217 for details and how to solve this problem. The following string
+    #            format was not expected by the external UI message logger: "The installer has encountered an unexpected error installing this
+    #            package. This may indicate a problem with this package. The error code is 2738. ".
+
+    #-ext WixUIExtension -ext WixUtilExtension -v -sice:ICE32 -sice:ICE08
+    my $candle2_cmd = [$candle_exe, "$bdir\\MSI_main-v2.wxs", '-out', "$bdir\\MSI_main.wixobj", '-v'];
+    # Set arch option if necessary
+    push @{$candle2_cmd}, '-arch', 'x64' if $self->global->{arch} == 64;
+    #my $light2_cmd  = [$light_exe,  "$bdir\\MSI_main.wixobj", '-out', $msi_file, '-pdbout', "$bdir\\MSI_main.wixpdb", '-loc', "$bdir\\MSI_strings.wxl", qw/-ext WixUIExtension -ext WixUtilExtension/];
+    my $light2_cmd  = [$light_exe,  "$bdir\\MSI_main.wixobj", '-out', $msi_file, '-pdbout', "$bdir\\MSI_main.wixpdb", '-loc', "$bdir\\MSI_strings.wxl", qw/-ext WixUIExtension -ext WixUtilExtension -sice:ICE38 -sice:ICE43/];
+
+    # backup already existing <output_dir>/*.msi
+    $self->backup_file($msi_file);
+
+    $self->boss->message(2, "MSI: gonna run $candle2_cmd->[0]");
+    $rv = $self->execute_standard($candle2_cmd, catfile($self->global->{debug_dir}, "MSI_candle.log.txt"));
+    die "ERROR: MSI candle" unless(defined $rv && $rv == 0);
+
+    $self->boss->message(2, "MSI: gonna run $light2_cmd->[0]");
+    $rv = $self->execute_standard($light2_cmd, catfile($self->global->{debug_dir}, "MSI_light.log.txt"));
+    die "ERROR: MSI light" unless(defined $rv && $rv == 0);
+
+    #store results
+    $self->{data}->{output}->{msi} = $msi_file;
+    $self->{data}->{output}->{msi_sha1} = $self->sha1_file($msi_file); # will change after we sign MSI
+    $self->{data}->{output}->{msi_guid} = $msi_guid;
+
+}
+
+sub _tree2xml {
+    my ($self, $root, $mark, $not_root) = @_;
+
+    my ($component_id, $component_guid, $dir_id);
+    my $result = "";
+    my $ident = "    " . "  " x $root->{depth};
+
+    # dir-start
+    if ($not_root && $root->{mark} eq $mark) {
+        $dir_id = $self->_gen_dir_id($root->{short_name});
+        my $dir_basename = basename($root->{full_name});
+        my $dir_shortname = $self->_get_short_basename($root->{full_name});
+        $result .= $ident . qq[<Directory Id="$dir_id" Name="$dir_basename" ShortName="$dir_shortname">\n];
+    }
+
+    my @f = grep { $_->{mark} eq $mark } @{$root->{files}};
+    my @d = grep { $_->{mark} eq $mark } @{$root->{dirs}};
+    # TODO Set mark by real GLPI Agent features
+    my $feat = "Feature='feat_$mark'";
+
+    if (defined $dir_id) {
+        ($component_id, $component_guid) = $self->_gen_component_id($root->{short_name}."create");
+        # put KeyPath to the component as Directory does not have KeyPath attribute
+        # if a Component has KeyPath="yes", then the directory this component is installed to becomes a key path
+        # see: http://stackoverflow.com/questions/10358989/wix-using-keypath-on-components-directories-files-registry-etc-etc
+        $result .= $ident ."  ". qq[<Component Id="$component_id" Guid="{$component_guid}" KeyPath="yes" $feat>\n];
+        $result .= $ident ."  ". qq[    <CreateFolder />\n];
+        $result .= $ident ."  ". qq[    <RemoveFolder Id="rm.$dir_id" On="uninstall" />\n]; #XXX-TODO not sure about this
+        $result .= $ident ."  ". qq[</Component>\n];
+    }
+
+    if (scalar(@f) > 0) {
+        for my $f (@f) {
+            my $file_id = $self->_gen_file_id($f->{short_name});
+            my $file_basename = basename($f->{full_name});
+            my $file_shortname = $self->_get_short_basename($f->{full_name});
+            ($component_id, $component_guid) = $self->_gen_component_id($file_shortname."files");
+            # in 1file/component scenario set KeyPath on file, not on Component
+            # see: http://stackoverflow.com/questions/10358989/wix-using-keypath-on-components-directories-files-registry-etc-etc
+            $result .= $ident ."  ". qq[<Component Id="$component_id" Guid="{$component_guid}" $feat>\n];
+            $result .= $ident ."  ". qq[  <File Id="$file_id" Name="$file_basename" ShortName="$file_shortname" Source="$f->{full_name}" KeyPath="yes" />\n]; # XXX-TODO consider ReadOnly="yes"
+            # Add service definition on glpi-agent.exe
+            if ($f->{short_name} =~ /glpi-agent\.exe$/) {
+                my $servicename = $self->global->{service_name};
+                $result .= $ident ."  ". qq[  <ServiceInstall Name="$servicename" Start="auto"\n];
+                $result .= $ident ."  ". qq[                  ErrorControl="normal" DisplayName="!(loc.ServiceDisplayName)" Description="!(loc.ServiceDescription)" Interactive="no"\n];
+                $result .= $ident ."  ". qq[                  Type="ownProcess" Arguments='-I"[INSTALLDIR]perl\agent" "[INSTALLDIR]perl\bin\glpi-win32-service"'>\n];
+                $result .= $ident ."  ". qq[  </ServiceInstall>\n];
+                $result .= $ident ."  ". qq[  <ServiceControl Id="SetupService" Name="$servicename" Stop="both" Start="install" Remove="both" Wait="no" />\n];
+            }
+            $result .= $ident ."  ". qq[</Component>\n];
+        }
+    }
+
+    $result .= $self->_tree2xml($_, $mark, 1) for (@d);
+    $result .= $ident . qq[</Directory>\n] if $not_root && $root->{mark} eq $mark;
+
+    return $result;
+}
 
 package
     Perl::Dist::GLPI::Agent::Step::Update;
@@ -443,11 +617,6 @@ sub __job_steps {
          { do=>'copyfile', args=>[ 'contrib/windows/packaging/setup.pm', '<image_dir>/perl/lib' ] },
          { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/^\.packlist$/i ] },
          { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.pod$/i ] },
-         # Override installed MSI templates
-         { do=>'removefile', args=>[ '<dist_sharedir>/msi/MSI_main-v2.wxs.tt', '<dist_sharedir>/msi/Variables-v2.wxi.tt', '<dist_sharedir>/msi/MSI_strings.wxl.tt' ] },
-         { do=>'copyfile', args=>[ 'contrib/windows/packaging/MSI_main-v2.wxs.tt', '<dist_sharedir>/msi/MSI_main-v2.wxs.tt' ] },
-         { do=>'copyfile', args=>[ 'contrib/windows/packaging/Variables-v2.wxi.tt', '<dist_sharedir>/msi/Variables-v2.wxi.tt' ] },
-         { do=>'copyfile', args=>[ 'contrib/windows/packaging/MSI_strings.wxl.tt', '<dist_sharedir>/msi/MSI_strings.wxl.tt' ] },
        ],
     },
     ### NEXT STEP ###########################
@@ -460,7 +629,7 @@ sub __job_steps {
     },
     ### NEXT STEP ###########################
     {
-       plugin => 'Perl::Dist::Strawberry::Step::OutputMSI',
+       plugin => 'Perl::Dist::GLPI::Agent::Step::OutputMSI',
        exclude  => [
            #'dirname\subdir1\subdir2',
            #'dirname\file.pm',
@@ -470,11 +639,11 @@ sub __job_steps {
        app_publisher       => 'GLPI Project',
        url_about           => 'https://glpi-project.org/',
        url_help            => 'https://glpi-project.org/discussions/',
-       msi_root_dir        => 'Strawberry',
-       msi_main_icon       => 'share/html/logo.png',
-       msi_license_rtf     => '<dist_sharedir>\msi\files\License-short.rtf',
-       msi_dialog_bmp      => '<dist_sharedir>\msi\files\StrawberryDialog.bmp',
-       msi_banner_bmp      => '<dist_sharedir>\msi\files\StrawberryBanner.bmp',
+       msi_root_dir        => 'GLPI-Agent',
+       msi_main_icon       => 'contrib/windows/packaging/glpi-agent.ico',
+       msi_license_rtf     => 'contrib/windows/packaging/gpl-2.0.rtf',
+       msi_dialog_bmp      => 'contrib/windows/packaging/GLPI-Agent_Dialog.bmp',
+       msi_banner_bmp      => 'contrib/windows/packaging/GLPI-Agent_Banner.bmp',
        msi_debug           => 0,
     },
     ### NEXT STEP ###########################
