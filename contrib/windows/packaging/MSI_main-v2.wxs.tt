@@ -146,11 +146,5 @@
 
     <Feature Id="feat_MSI"  Title="MSI Files" Level="1" />  <!-- all members are included via Feature attribute -->
 
-    <ServiceInstall Name="$(var.ProductName)" Start="auto" Account="NT AUTHORITY\LocalService"
-                    ErrorControl="normal" DisplayName="!(loc.ServiceDisplayName)" Description="!(loc.ServiceDescription)" Interactive="no"
-                    Type="ownProcess" Arguments="-I[INSTALLDIR]perl\agent [INSTALLDIR]perl\bin\glpi-win32-service">
-      <ServiceConfig DelayedAutoStart="yes" PreShutdownDelay="30000" />
-    </ServiceInstall>
-
   </Product>
 </Wix>
