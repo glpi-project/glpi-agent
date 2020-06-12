@@ -255,7 +255,7 @@ sub _tree2xml {
                 my $servicename = $self->global->{service_name};
                 $result .= $ident ."  ". qq[  <ServiceInstall Name="$servicename" Start="auto"\n];
                 $result .= $ident ."  ". qq[                  ErrorControl="normal" DisplayName="!(loc.ServiceDisplayName)" Description="!(loc.ServiceDescription)" Interactive="no"\n];
-                $result .= $ident ."  ". qq[                  Type="ownProcess" Arguments='-I"[INSTALLDIR]perl\agent" "[INSTALLDIR]perl\bin\glpi-win32-service"'>\n];
+                $result .= $ident ."  ". qq[                  Type="ownProcess" Arguments='-I"[INSTALLDIR]perl\\agent" "[INSTALLDIR]perl\\bin\\glpi-win32-service"'>\n];
                 $result .= $ident ."  ". qq[  </ServiceInstall>\n];
                 $result .= $ident ."  ". qq[  <ServiceControl Id="SetupService" Name="$servicename" Stop="both" Start="install" Remove="both" Wait="no" />\n];
             }
