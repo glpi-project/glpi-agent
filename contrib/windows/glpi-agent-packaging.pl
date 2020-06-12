@@ -105,6 +105,7 @@ use parent 'Perl::Dist::Strawberry::Step::OutputMSI';
 use File::Slurp           qw(read_file write_file);
 use File::Spec::Functions qw(canonpath catdir catfile);
 use File::Basename;
+use Data::Dump            qw(pp);
 use Template;
 
 sub run {
