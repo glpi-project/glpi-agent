@@ -102,6 +102,11 @@ package
 
 use parent 'Perl::Dist::Strawberry::Step::OutputMSI';
 
+use File::Slurp           qw(read_file write_file);
+use File::Spec::Functions qw(canonpath catdir catfile);
+use File::Basename;
+use Template;
+
 sub run {
     my $self = shift;
 
