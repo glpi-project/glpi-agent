@@ -100,7 +100,7 @@ exit(0);
 package
     Perl::Dist::GLPI::Agent::Step::OutputMSI;
 
-use parent 'Perl::Dist::Strawberry::OutputMSI';
+use parent 'Perl::Dist::Strawberry::Step::OutputMSI';
 
 sub run {
     my $self = shift;
