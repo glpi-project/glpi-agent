@@ -21,5 +21,5 @@
   <String Id="PrepareDlgTitle">{\WixUI_Font_Bigger}Welcome to the Setup Wizard for&#13;&#10;[ProductName] [%agent_version%]</String>
 
   <String Id="ServiceDisplayName">[ProductName]</String>
-  <String Id="ServiceDescription">[ProductName] is an inventory agent. Its main purpose is to create system inventory on a regulary basis and report it to a GLPI server.</String>
+  <String Id="ServiceDescription">[ProductName] is an inventory agent. It is intended to upload system inventory toward a GLPI server on a regular basis.</String>
 </WixLocalization>
