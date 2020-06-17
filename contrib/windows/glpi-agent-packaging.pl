@@ -62,9 +62,9 @@ my $app = Perl::Dist::GLPI::Agent->new(
     agent_version   => $version,
     agent_fullver   => $major.'.'.$minor.'.'.$revision.'.'.PACKAGE_REVISION,
     agent_msiver    => $major.'.'.$minor.'.'.$revision,
-    agent_upgver    => '0.0.1', # First upgradable version
     agent_fullname  => $provider.' Agent',
     agent_rootdir   => $provider.'-Agent',
+    agent_regpath   => "Software\\$provider.-Agent",
     service_name    => lc($provider).'-agent',
     msi_sharedir    => 'contrib/windows/packaging',
 );
@@ -170,26 +170,11 @@ sub run {
     my $candle_exe = $self->{candle_exe};
     my $light_exe = $self->{light_exe};
 
-    #XXX-FIXME -sice:ICE08|09|32|61 is a hack to handle:
-    #light.exe : error LGHT0217 : Error executing ICE action 'ICE32'. The most common cause of this kind of ICE failure is an incorrectly registered
-    #            scripting engine. See http://wix.sourceforge.net/faq.html#Error217 for details and how to solve this problem. The following string
-    #            format was not expected by the external UI message logger: "Při instalaci tohoto balíčku zjistil instalační program neočekávanou
-    #            chybu. Může to znamenat, že u tohoto balíčku nastaly potíže. Kód chyby je 2738. ".
-    #light.exe : error LGHT0217 : Error executing ICE action 'ICE08'. The most common cause of this kind of ICE failure is an incorrectly registered
-    #            scripting engine. See http://wix.sourceforge.net/faq.html#Error217 for details and how to solve this problem. The following string
-    #            format was not expected by the external UI message logger: "Při instalaci tohoto balíčku zjistil instalační program neočekávanou
-    #            chybu. Může to znamenat, že u tohoto balíčku nastaly potíže. Kód chyby je 2738. ".
-    #light.exe : error LGHT0217 : Error executing ICE action 'ICE61'. The most common cause of this kind of ICE failure is an incorrectly registered
-    #            scripting engine. See http://wix.sourceforge.net/faq.html#Error217 for details and how to solve this problem. The following string
-    #            format was not expected by the external UI message logger: "The installer has encountered an unexpected error installing this
-    #            package. This may indicate a problem with this package. The error code is 2738. ".
-
-    #-ext WixUIExtension -ext WixUtilExtension -v -sice:ICE32 -sice:ICE08
-    my $candle2_cmd = [$candle_exe, "$bdir\\MSI_main-v2.wxs", '-out', "$bdir\\MSI_main.wixobj", '-v'];
+    my $candle2_cmd = [$candle_exe, "$bdir\\MSI_main-v2.wxs", '-out', "$bdir\\MSI_main.wixobj", '-v', '-ext', 'WixUIExtension'];
     # Set arch option if necessary
     push @{$candle2_cmd}, '-arch', 'x64' if $self->global->{arch} == 64;
-    #my $light2_cmd  = [$light_exe,  "$bdir\\MSI_main.wixobj", '-out', $msi_file, '-pdbout', "$bdir\\MSI_main.wixpdb", '-loc', "$bdir\\MSI_strings.wxl", qw/-ext WixUIExtension -ext WixUtilExtension/];
-    my $light2_cmd  = [$light_exe,  "$bdir\\MSI_main.wixobj", '-out', $msi_file, '-pdbout', "$bdir\\MSI_main.wixpdb", '-loc', "$bdir\\MSI_strings.wxl", qw/-ext WixUIExtension -ext WixUtilExtension -sice:ICE38 -sice:ICE43/];
+    my $light2_cmd  = [$light_exe,  "$bdir\\MSI_main.wixobj", '-out', $msi_file, '-pdbout', "$bdir\\MSI_main.wixpdb", '-loc', "$bdir\\MSI_strings.wxl",
+        qw/-ext WixUIExtension -ext WixUtilExtension -sice:ICE38 -sice:ICE43 -sice:ICE61/];
 
     # backup already existing <output_dir>/*.msi
     $self->backup_file($msi_file);
@@ -209,12 +194,48 @@ sub run {
 
 }
 
+sub _get_dir_feature {
+    my ($self, $dir_id) = @_;
+
+    if ($dir_id =~ /^d_netinv/) {
+        return "feat_NETINV";
+    } elsif ($dir_id =~ /^d_deploy/) {
+        return "feat_DEPLOY";
+    } elsif ($dir_id =~ /^d_collect/) {
+        return "feat_COLLECT";
+    } elsif ($dir_id =~ /^d_esx/) {
+        return "feat_ESX";
+    } elsif ($dir_id =~ /^d_wol/) {
+        return "feat_WOL";
+    }
+
+    return "feat_MSI";
+}
+
+sub _get_file_feature {
+    my ($self, $file) = @_;
+
+    if ($file =~ /^glpi-net.*|NetDiscovery\.pm|NetInventory\.pm|Hardware\.pm|SNMP\.pm$/) {
+        return "feat_NETINV";
+    } elsif ($file =~ /^Deploy\.pm$/) {
+        return "feat_DEPLOY";
+    } elsif ($file =~ /^Collect\.pm$/) {
+        return "feat_COLLECT";
+    } elsif ($file =~ /^glpi-esx.*|ESX\.pm$/) {
+        return "feat_ESX";
+    } elsif ($file =~ /^glpi-wakeonlan.*|WakeOnLan\.pm$/) {
+        return "feat_WOL";
+    }
+
+    # Don't return anything to keep the feature of parent folder
+}
+
 sub _tree2xml {
     my ($self, $root, $mark, $not_root) = @_;
 
     my ($component_id, $component_guid, $dir_id);
     my $result = "";
-    my $ident = "    " . "  " x $root->{depth};
+    my $ident = "      " . "  " x $root->{depth};
 
     # dir-start
     if ($not_root && $root->{mark} eq $mark) {
@@ -222,22 +243,44 @@ sub _tree2xml {
         my $dir_basename = basename($root->{full_name});
         my $dir_shortname = $self->_get_short_basename($root->{full_name});
         $result .= $ident . qq[<Directory Id="$dir_id" Name="$dir_basename" ShortName="$dir_shortname">\n];
+    } elsif (!defined($not_root)) {
+        $dir_id = "d_install";
     }
 
     my @f = grep { $_->{mark} eq $mark } @{$root->{files}};
     my @d = grep { $_->{mark} eq $mark } @{$root->{dirs}};
-    # TODO Set mark by real GLPI Agent features
-    my $feat = "Feature='feat_$mark'";
+    my $feat = "feat_$mark";
 
     if (defined $dir_id) {
         ($component_id, $component_guid) = $self->_gen_component_id($root->{short_name}."create");
         # put KeyPath to the component as Directory does not have KeyPath attribute
         # if a Component has KeyPath="yes", then the directory this component is installed to becomes a key path
         # see: http://stackoverflow.com/questions/10358989/wix-using-keypath-on-components-directories-files-registry-etc-etc
-        $result .= $ident ."  ". qq[<Component Id="$component_id" Guid="{$component_guid}" KeyPath="yes" $feat>\n];
+        $feat = $self->_get_dir_feature($dir_id);
+        $result .= $ident ."  ". qq[<Component Id="$component_id" Guid="{$component_guid}" KeyPath="yes" Feature="$feat">\n];
         $result .= $ident ."  ". qq[    <CreateFolder />\n];
-        $result .= $ident ."  ". qq[    <RemoveFolder Id="rm.$dir_id" On="uninstall" />\n]; #XXX-TODO not sure about this
+        if ($dir_id eq 'd_var') {
+            $result .= $ident ."  ". qq[    <util:RemoveFolderEx On="uninstall" Property="UNINSTALL_VAR" />\n];
+        } elsif ($dir_id eq 'd_etc') {
+            $result .= $ident ."  ". qq[    <util:RemoveFolderEx On="uninstall" Property="UNINSTALL_ETC" />\n];
+        } elsif ($dir_id eq 'd_log') {
+            $result .= $ident ."  ". qq[    <util:RemoveFolderEx On="uninstall" Property="UNINSTALL_LOG" />\n];
+        } else {
+            $result .= $ident ."  ". qq[    <RemoveFolder Id="rm.$dir_id" On="uninstall" />\n];
+        }
         $result .= $ident ."  ". qq[</Component>\n];
+        # Also add virtual folder properties under d_install
+        if ($dir_id eq 'd_install') {
+            foreach my $id (qw(_LOCALDIR)) {
+                $result .= $ident ."  ". qq[<Directory Id="$id">\n];
+                ($component_id, $component_guid) = $self->_gen_component_id(lc($id).".create");
+                $result .= $ident ."    ". qq[<Component Id="$component_id" Guid="{$component_guid}" KeyPath="yes" Feature="$feat">\n];
+                $result .= $ident ."    ". qq[    <CreateFolder />\n];
+                $result .= $ident ."    ". qq[    <RemoveFolder Id="rm."] .lc($id). qq[" On="uninstall" />\n];
+                $result .= $ident ."    ". qq[</Component>\n];
+                $result .= $ident ."  ". qq[</Directory>\n];
+            }
+        }
     }
 
     if (scalar(@f) > 0) {
@@ -246,18 +289,26 @@ sub _tree2xml {
             my $file_basename = basename($f->{full_name});
             my $file_shortname = $self->_get_short_basename($f->{full_name});
             ($component_id, $component_guid) = $self->_gen_component_id($file_shortname."files");
+            my $this_feat = $self->_get_file_feature($f->{short_name}) || $feat;
             # in 1file/component scenario set KeyPath on file, not on Component
             # see: http://stackoverflow.com/questions/10358989/wix-using-keypath-on-components-directories-files-registry-etc-etc
-            $result .= $ident ."  ". qq[<Component Id="$component_id" Guid="{$component_guid}" $feat>\n];
+            $result .= $ident ."  ". qq[<Component Id="$component_id" Guid="{$component_guid}" Feature="$this_feat">\n];
             $result .= $ident ."  ". qq[  <File Id="$file_id" Name="$file_basename" ShortName="$file_shortname" Source="$f->{full_name}" KeyPath="yes" />\n]; # XXX-TODO consider ReadOnly="yes"
             # Add service definition on glpi-agent.exe
             if ($f->{short_name} =~ /glpi-agent\.exe$/) {
                 my $servicename = $self->global->{service_name};
+                my $regpath = "Software\\".$self->global->{_provider}."-Agent";
                 $result .= $ident ."  ". qq[  <ServiceInstall Name="$servicename" Start="auto"\n];
                 $result .= $ident ."  ". qq[                  ErrorControl="normal" DisplayName="!(loc.ServiceDisplayName)" Description="!(loc.ServiceDescription)" Interactive="no"\n];
                 $result .= $ident ."  ". qq[                  Type="ownProcess" Arguments='-I"[INSTALLDIR]perl\\agent" "[INSTALLDIR]perl\\bin\\glpi-win32-service"'>\n];
                 $result .= $ident ."  ". qq[  </ServiceInstall>\n];
                 $result .= $ident ."  ". qq[  <ServiceControl Id="SetupService" Name="$servicename" Stop="both" Start="install" Remove="both" Wait="no" />\n];
+                $result .= $ident ."  ". qq[  <RegistryKey Root="HKLM" Key="$regpath">\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="debug" Type="string" Value="[DEBUG]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="local" Type="string" Value="[LOCAL]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="logfile" Type="string" Value="[LOGFILE]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="server" Type="string" Value="[SERVER]" />\n];
+                $result .= $ident ."  ". qq[  </RegistryKey>\n];
             }
             $result .= $ident ."  ". qq[</Component>\n];
         }
@@ -267,6 +318,36 @@ sub _tree2xml {
     $result .= $ident . qq[</Directory>\n] if $not_root && $root->{mark} eq $mark;
 
     return $result;
+}
+
+my %dir_id_match = qw(
+    perl            d_perl
+    perl\bin        d_perl_bin
+    var             d_var
+    log             d_log
+    etc             d_etc
+    perl\agent\fusioninventory\agent\task\netinventory  d_netinventory_task
+    perl\agent\fusioninventory\agent\task\netdiscovery  d_netinv_discovery_task
+    perl\agent\fusioninventory\agent\snmp               d_netinv_snmp
+    perl\agent\fusioninventory\agent\snmp\device        d_netinv_device
+    perl\agent\fusioninventory\agent\snmp\mibsupport    d_netinv_mibsupport
+    perl\agent\fusioninventory\agent\tools\hardware     d_netinv_hardware
+    perl\agent\fusioninventory\agent\task\deploy        d_deploy
+    perl\agent\fusioninventory\agent\task\deploy\actionprocessor        d_deploy_ap
+    perl\agent\fusioninventory\agent\task\deploy\actionprocessor\action d_deploy_action
+    perl\agent\fusioninventory\agent\task\deploy\checkprocessor         d_deploy_cp
+    perl\agent\fusioninventory\agent\task\deploy\datastore              d_deploy_ds
+    perl\agent\fusioninventory\agent\task\deploy\usercheck              d_deploy_uc
+    perl\agent\fusioninventory\agent\task\collect       d_collect
+    perl\agent\fusioninventory\agent\task\esx           d_esx_task
+    perl\agent\fusioninventory\agent\soap               d_esx_soap
+    perl\agent\fusioninventory\agent\soap\vmware        d_esx_vmware
+    perl\agent\fusioninventory\agent\task\wakeonlan     d_wol
+);
+
+sub _gen_dir_id {
+    my ($self, $dir) = @_;
+    return $dir_id_match{lc($dir)} // "d" . $self->{id_counter}++;
 }
 
 package
@@ -473,13 +554,13 @@ sub __job_steps {
     },
     ### NEXT STEP ###########################
     {
-       plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
-       commands => [
-         { do=>'removefile', args=>[ '<image_dir>/c/i686-w64-mingw32/lib/libglut.a', '<image_dir>/c/i686-w64-mingw32/lib/libglut32.a' ] }, #XXX-32bit only workaround
-         { do=>'movefile',   args=>[ '<image_dir>/c/lib/libdb-6.1.a', '<image_dir>/c/lib/libdb.a' ] }, #XXX ugly hack
-         { do=>'removefile', args=>[ '<image_dir>/c/bin/gccbug', '<image_dir>/c/bin/ld.gold.exe', '<image_dir>/c/bin/ld.bfd.exe' ] },
-         { do=>'removefile_recursive', args=>[ '<image_dir>/c', qr/.+\.la$/i ] }, # https://rt.cpan.org/Public/Bug/Display.html?id=127184
-       ],
+        plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
+        commands => [
+            { do=>'removefile', args=>[ '<image_dir>/c/i686-w64-mingw32/lib/libglut.a', '<image_dir>/c/i686-w64-mingw32/lib/libglut32.a' ] }, #XXX-32bit only workaround
+            { do=>'movefile',   args=>[ '<image_dir>/c/lib/libdb-6.1.a', '<image_dir>/c/lib/libdb.a' ] }, #XXX ugly hack
+            { do=>'removefile', args=>[ '<image_dir>/c/bin/gccbug', '<image_dir>/c/bin/ld.gold.exe', '<image_dir>/c/bin/ld.bfd.exe' ] },
+            { do=>'removefile_recursive', args=>[ '<image_dir>/c', qr/.+\.la$/i ] }, # https://rt.cpan.org/Public/Bug/Display.html?id=127184
+        ],
     },
     ### NEXT STEP ###########################
     {
@@ -505,10 +586,10 @@ sub __job_steps {
     {
         plugin => 'Perl::Dist::Strawberry::Step::UpgradeCpanModules',
         exceptions => [
-          # possible 'do' options: ignore_testfailure | skiptest | skip - e.g. 
-          #{ do=>'ignore_testfailure', distribution=>'ExtUtils-MakeMaker-6.72' },
-          #{ do=>'ignore_testfailure', distribution=>qr/^IPC-Cmd-/ },
-          { do=>'ignore_testfailure', distribution=>qr/^Net-Ping-/ }, # 2.72 fails
+            # possible 'do' options: ignore_testfailure | skiptest | skip - e.g. 
+            #{ do=>'ignore_testfailure', distribution=>'ExtUtils-MakeMaker-6.72' },
+            #{ do=>'ignore_testfailure', distribution=>qr/^IPC-Cmd-/ },
+            { do=>'ignore_testfailure', distribution=>qr/^Net-Ping-/ }, # 2.72 fails
         ]
     },
     ### NEXT STEP ###########################
@@ -579,51 +660,51 @@ sub __job_steps {
     },
     ### NEXT STEP ###########################
     {
-       plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
-       commands => [
-         # cleanup (remove unwanted files/dirs)
-         { do=>'removefile', args=>[ '<image_dir>/perl/vendor/lib/Crypt/._test.pl', '<image_dir>/perl/vendor/lib/DBD/testme.tmp.pl' ] },
-         { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/.+\.dll\.AA[A-Z]$/i ] },
-         # cleanup cpanm related files
-         { do=>'removedir', args=>[ '<image_dir>/perl/site/lib/MSWin32-x86-multi-thread-64int' ] },
-         { do=>'removedir', args=>[ '<image_dir>/perl/site/lib/MSWin32-x86-multi-thread' ] },
-         { do=>'removedir', args=>[ '<image_dir>/perl/site/lib/MSWin32-x64-multi-thread' ] },
-         # updates for glpi-agent
-         { do=>'createdir', args=>[ '<image_dir>/perl/agent' ] },
-         { do=>'createdir', args=>[ '<image_dir>/perl/newbin' ] },
-         { do=>'createdir', args=>[ '<image_dir>/var' ] },
-         $self->__movebin('libgcc_s_'.($self->is64bit?'seh':'dw2').'-1.dll'),
-         $self->__movebin('libstdc++-6.dll'),
-         $self->__movebin('libwinpthread-1.dll'),
-         $self->__movebin('perl.exe'),
-         $self->__movebin('perl'.$MAJOR.$MINOR.'.dll'),
-         { do=>'removedir', args=>[ '<image_dir>/perl/bin' ] },
-         { do=>'movedir', args=>[ '<image_dir>/perl/newbin', '<image_dir>/perl/bin' ] },
-         $self->__movedll('libbz2-1__.dll'),
-         $self->__movedll('libcrypto-1_1'.($self->is64bit?'-x64__':'').'.dll'),
-         $self->__movedll('libexpat-1__.dll'),
-         $self->__movedll('liblzma-5__.dll'),
-         $self->__movedll('libssl-1_1'.($self->is64bit?'-x64__':'').'.dll'),
-         $self->__movedll('zlib1__.dll'),
-         { do=>'copyfile', args=>[ 'contrib/windows/packaging/dmidecode.exe', '<image_dir>/perl/bin' ] },
-         { do=>'copyfile', args=>[ '<image_dir>/perl/bin/perl.exe', '<image_dir>/perl/bin/glpi-agent.exe' ] },
-         { do=>'removedir', args=>[ '<image_dir>/bin' ] },
-         { do=>'removedir', args=>[ '<image_dir>/c' ] },
-         { do=>'removedir', args=>[ '<image_dir>/'.($self->is64bit?'x86_64':'i686').'-w64-mingw32' ] },
-         { do=>'removedir', args=>[ '<image_dir>/include' ] },
-         { do=>'removedir', args=>[ '<image_dir>/lib' ] },
-         { do=>'removedir', args=>[ '<image_dir>/libexec' ] },
-         { do=>'removedir', args=>[ '<image_dir>/licenses' ] },
-         { do=>'removefile', args=>[ '<image_dir>/etc/gdbinit' ] },
-         { do=>'copydir', args=>[ 'lib/FusionInventory', '<image_dir>/perl/agent/FusionInventory' ] },
-         { do=>'copydir', args=>[ 'etc', '<image_dir>/etc' ] },
-         { do=>'createdir', args=>[ '<image_dir>/etc/conf.d' ] },
-         { do=>'copydir', args=>[ 'bin', '<image_dir>/perl/bin' ] },
-         { do=>'copydir', args=>[ 'share', '<image_dir>/share' ] },
-         { do=>'copyfile', args=>[ 'contrib/windows/packaging/setup.pm', '<image_dir>/perl/lib' ] },
-         { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/^\.packlist$/i ] },
-         { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.pod$/i ] },
-       ],
+        plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
+        commands => [
+            # cleanup (remove unwanted files/dirs)
+            { do=>'removefile', args=>[ '<image_dir>/perl/vendor/lib/Crypt/._test.pl', '<image_dir>/perl/vendor/lib/DBD/testme.tmp.pl' ] },
+            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/.+\.dll\.AA[A-Z]$/i ] },
+            # cleanup cpanm related files
+            { do=>'removedir', args=>[ '<image_dir>/perl/site/lib/MSWin32-x86-multi-thread-64int' ] },
+            { do=>'removedir', args=>[ '<image_dir>/perl/site/lib/MSWin32-x86-multi-thread' ] },
+            { do=>'removedir', args=>[ '<image_dir>/perl/site/lib/MSWin32-x64-multi-thread' ] },
+            # updates for glpi-agent
+            { do=>'createdir', args=>[ '<image_dir>/perl/agent' ] },
+            { do=>'createdir', args=>[ '<image_dir>/perl/newbin' ] },
+            { do=>'createdir', args=>[ '<image_dir>/var' ] },
+            $self->__movebin('libgcc_s_'.($self->is64bit?'seh':'dw2').'-1.dll'),
+            $self->__movebin('libstdc++-6.dll'),
+            $self->__movebin('libwinpthread-1.dll'),
+            $self->__movebin('perl.exe'),
+            $self->__movebin('perl'.$MAJOR.$MINOR.'.dll'),
+            { do=>'removedir', args=>[ '<image_dir>/perl/bin' ] },
+            { do=>'movedir', args=>[ '<image_dir>/perl/newbin', '<image_dir>/perl/bin' ] },
+            $self->__movedll('libbz2-1__.dll'),
+            $self->__movedll('libcrypto-1_1'.($self->is64bit?'-x64__':'').'.dll'),
+            $self->__movedll('libexpat-1__.dll'),
+            $self->__movedll('liblzma-5__.dll'),
+            $self->__movedll('libssl-1_1'.($self->is64bit?'-x64__':'').'.dll'),
+            $self->__movedll('zlib1__.dll'),
+            { do=>'copyfile', args=>[ 'contrib/windows/packaging/dmidecode.exe', '<image_dir>/perl/bin' ] },
+            { do=>'copyfile', args=>[ '<image_dir>/perl/bin/perl.exe', '<image_dir>/perl/bin/glpi-agent.exe' ] },
+            { do=>'removedir', args=>[ '<image_dir>/bin' ] },
+            { do=>'removedir', args=>[ '<image_dir>/c' ] },
+            { do=>'removedir', args=>[ '<image_dir>/'.($self->is64bit?'x86_64':'i686').'-w64-mingw32' ] },
+            { do=>'removedir', args=>[ '<image_dir>/include' ] },
+            { do=>'removedir', args=>[ '<image_dir>/lib' ] },
+            { do=>'removedir', args=>[ '<image_dir>/libexec' ] },
+            { do=>'removedir', args=>[ '<image_dir>/licenses' ] },
+            { do=>'removefile', args=>[ '<image_dir>/etc/gdbinit' ] },
+            { do=>'copydir', args=>[ 'lib/FusionInventory', '<image_dir>/perl/agent/FusionInventory' ] },
+            { do=>'copydir', args=>[ 'etc', '<image_dir>/etc' ] },
+            { do=>'createdir', args=>[ '<image_dir>/etc/conf.d' ] },
+            { do=>'copydir', args=>[ 'bin', '<image_dir>/perl/bin' ] },
+            { do=>'copydir', args=>[ 'share', '<image_dir>/share' ] },
+            { do=>'copyfile', args=>[ 'contrib/windows/packaging/setup.pm', '<image_dir>/perl/lib' ] },
+            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/^\.packlist$/i ] },
+            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.pod$/i ] },
+        ],
     },
     ### NEXT STEP ###########################
     {
@@ -631,26 +712,26 @@ sub __job_steps {
     },
     ### NEXT STEP ###########################
     {
-       plugin => 'Perl::Dist::Strawberry::Step::OutputZIP', # no options needed
+        plugin => 'Perl::Dist::Strawberry::Step::OutputZIP', # no options needed
     },
     ### NEXT STEP ###########################
     {
-       plugin => 'Perl::Dist::GLPI::Agent::Step::OutputMSI',
-       exclude  => [
-           #'dirname\subdir1\subdir2',
-           #'dirname\file.pm',
-       ],
-       #BEWARE: msi_upgrade_code is a fixed value for all same arch releases (for ever)
-       msi_upgrade_code    => $self->is64bit ? '0DEF72A8-E5EE-4116-97DC-753718E19CD5' : '7F25A9A4-BCAE-4C15-822D-EAFBD752CFEC', 
-       app_publisher       => 'GLPI Project',
-       url_about           => 'https://glpi-project.org/',
-       url_help            => 'https://glpi-project.org/discussions/',
-       msi_root_dir        => 'GLPI-Agent',
-       msi_main_icon       => 'contrib/windows/packaging/glpi-agent.ico',
-       msi_license_rtf     => 'contrib/windows/packaging/gpl-2.0.rtf',
-       msi_dialog_bmp      => 'contrib/windows/packaging/GLPI-Agent_Dialog.bmp',
-       msi_banner_bmp      => 'contrib/windows/packaging/GLPI-Agent_Banner.bmp',
-       msi_debug           => 0,
+        plugin => 'Perl::Dist::GLPI::Agent::Step::OutputMSI',
+        exclude  => [
+            #'dirname\subdir1\subdir2',
+            #'dirname\file.pm',
+        ],
+        #BEWARE: msi_upgrade_code is a fixed value for all same arch releases (for ever)
+        msi_upgrade_code    => $self->is64bit ? '0DEF72A8-E5EE-4116-97DC-753718E19CD5' : '7F25A9A4-BCAE-4C15-822D-EAFBD752CFEC', 
+        app_publisher       => 'GLPI Project',
+        url_about           => 'https://glpi-project.org/',
+        url_help            => 'https://glpi-project.org/discussions/',
+        msi_root_dir        => 'GLPI-Agent',
+        msi_main_icon       => 'contrib/windows/packaging/glpi-agent.ico',
+        msi_license_rtf     => 'contrib/windows/packaging/gpl-2.0.rtf',
+        msi_dialog_bmp      => 'contrib/windows/packaging/GLPI-Agent_Dialog.bmp',
+        msi_banner_bmp      => 'contrib/windows/packaging/GLPI-Agent_Banner.bmp',
+        msi_debug           => 0,
     },
     ### NEXT STEP ###########################
     {
@@ -660,7 +741,7 @@ sub __job_steps {
     },
     ### NEXT STEP ###########################
     {
-       plugin => 'Perl::Dist::Strawberry::Step::SetupPortablePerl', # no options needed
+        plugin => 'Perl::Dist::Strawberry::Step::SetupPortablePerl', # no options needed
     },
     ### NEXT STEP ###########################
     {
@@ -683,14 +764,14 @@ sub __job_steps {
     },
     ### NEXT STEP ###########################
     {
-       plugin => 'Perl::Dist::Strawberry::Step::OutputPortableZIP', # no options needed
+        plugin => 'Perl::Dist::Strawberry::Step::OutputPortableZIP', # no options needed
     },
     ### NEXT STEP ###########################
     {
-       plugin => 'Perl::Dist::Strawberry::Step::CreateReleaseNotes', # no options needed
+        plugin => 'Perl::Dist::Strawberry::Step::CreateReleaseNotes', # no options needed
     },
     ### NEXT STEP ###########################
     {
-       plugin => 'Perl::Dist::Strawberry::Step::OutputLogZIP', # no options needed
+        plugin => 'Perl::Dist::Strawberry::Step::OutputLogZIP', # no options needed
     };
 }

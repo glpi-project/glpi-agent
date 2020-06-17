@@ -20,6 +20,39 @@
   <String Id="PrepareDlg_Title">[ProductName] [%agent_version%] Setup</String>
   <String Id="PrepareDlgTitle">{\WixUI_Font_Bigger}Welcome to the Setup Wizard for&#13;&#10;[ProductName] [%agent_version%]</String>
 
+  <!-- custom text on features dialog -->
+  <String Id="ProductTitle">GLPI Agent</String>
+  <String Id="ProductDescription">GLPI Agent core including Inventory task</String>
+  <String Id="NetInventory">Netinventory and NetDiscovery support</String>
+  <String Id="NetInventoryDescription">All the necessary files to run network discovery and inventory tasks</String>
+  <String Id="Deploy">Deploy support</String>
+  <String Id="DeployDescription">All the necessary files to deploy packages</String>
+  <String Id="Collect">Collect support</String>
+  <String Id="CollectDescription">All the necessary files to collect datas</String>
+  <String Id="Esx">ESX remote inventory support</String>
+  <String Id="EsxDescription">All the necessary files to inventory ESX servers</String>
+  <String Id="Wol">Wake-On-Lan support</String>
+  <String Id="WolDescription">All the necessary files to wake up equipements in your network</String>
+
+  <!-- custom text for service registration -->
   <String Id="ServiceDisplayName">[ProductName]</String>
   <String Id="ServiceDescription">[ProductName] is an inventory agent. It is intended to upload system inventory toward a GLPI server on a regular basis.</String>
+
+  <!-- custom text for target setup dialog -->
+  <String Id="TargetSetupDlg_Title">[ProductName] [%agent_version%] Target Setup</String>
+  <String Id="TargetSetupDlg_TextTitle">{\WixUI_Font_Bigger}Choose Targets</String>
+  <String Id="TargetSetupDlg_Description">Choose where the result will be sent.</String>
+  <String Id="TargetSetupDlg_LocalMode">Local Target</String>
+  <String Id="TargetSetupDlg_LocalModeDescription">Local path or UNC path</String>
+  <String Id="TargetSetupDlg_ServerMode">Remote Targets</String>
+  <String Id="TargetSetupDlg_ServerModeDescription">You can set multiple URIs by separating them with commas</String>
+  <String Id="TargetSetupDlg_ServerModeExample">'https://server/glpi/plugins/fusioninventory/,http://server/ocsinventory/,...'</String>
+  <String Id="TargetSetupDlg_QuickInstall">Quick installation</String>
+  <String Id="TargetSetupDlg_QuickInstallToolTips">do not show the rest of windows options</String>
+
+  <!-- custom text for local target setup dialog -->
+  <String Id="BrowseLocalDlg_Title">[ProductName] [%agent_version%] Local Target Setup</String>
+  <String Id="BrowseLocalDlgPathLabel">&amp;Local target destination:</String>
+  <String Id="BrowseLocalDlgTitle">{\WixUI_Font_Title}Change Local Target destination folder</String>
+
 </WixLocalization>

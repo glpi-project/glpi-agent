@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?include Variables-v2.wxi ?>
 
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+  xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <Product Id="$(var.ProductGUID)" UpgradeCode="$(var.UpgradeCode)"
            Language='1033'  Codepage="1252"  Manufacturer="$(var.Manufacturer)"
            Name="$(var.ProductName)" Version="$(var.CurrentVersion)">
@@ -12,18 +13,44 @@
 
     <Media Id='1' Cabinet='GLPIAgent.cab' CompressionLevel='high' EmbedCab='yes' />
 
-    <Property Id="LicenseAccepted" Value="1" />
     <Property Id="ARPCOMMENTS" Value="$(var.ProductName) version [%agent_version%]" />
     <Property Id="ARPCONTACT" Value="$(var.Manufacturer)" />
     <Property Id="ARPURLINFOABOUT" Value="$(var.URLAbout)" />
     <Property Id="ARPHELPLINK" Value="$(var.URLHelp)" />
     <Property Id="ARPPRODUCTICON" Value="i_main_ico" />
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
-    <Property Id="WIXUI_EXITDIALOGOPTIONALTEXT" Value="Before you start using $(var.ProductName), read the online Release Notes." />
 
-    <Property Id="UPGRADEDIR">
-      <RegistrySearch Id="InstallDir" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[OLDERVERSIONBEINGUPGRADED]" Name="InstallLocation" Type="raw" />
+    <Property Id="UPGRADEDIR" Secure="yes">
+      <RegistrySearch Id="InstallDir" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="InstallLocation" Type="raw" />
     </Property>
+
+    <Property Id="SERVER" Secure="yes">
+      <RegistrySearch Id="Server" Root="HKLM" Key="[%agent_regpath%]" Name="server" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_SERVER"  Before="AppSearch" Value="[SERVER]" />
+    <SetProperty Id="SERVER"          After="AppSearch"  Value="[CMDLINE_SERVER]" />
+
+    <Property Id="LOCAL" Secure="yes">
+      <RegistrySearch Id="Local" Root="HKLM" Key="[%agent_regpath%]" Name="local" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_LOCAL"   Before="AppSearch" Value="[LOCAL]" />
+    <SetProperty Id="LOCAL"           After="AppSearch"  Value="[CMDLINE_LOCAL]" />
+
+    <Property Id="DEBUG" Value="0" Secure="yes">
+      <RegistrySearch Id="Debug" Root="HKLM" Key="[%agent_regpath%]" Name="debug" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_DEBUG"   Before="AppSearch" Value="[DEBUG]" />
+    <SetProperty Id="DEBUG"           After="AppSearch"  Value="[CMDLINE_DEBUG]" />
+
+    <Property Id="LOGFILE" Secure="yes">
+      <RegistrySearch Id="LogFile" Root="HKLM" Key="[%agent_regpath%]" Name="logfile" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_LOGFILE" Before="AppSearch" Value="[LOGFILE]" />
+    <SetProperty Id="LOGFILE"         After="AppSearch"  Value="[CMDLINE_LOGFILE]" />
+
+    <SetProperty Id="UNINSTALL_VAR" After="FindRelatedProducts" Value="[UPGRADE_DIR]var">UPGRADE_DIR AND NOT UPGRADINGPRODUCTCODE</SetProperty>
+    <SetProperty Id="UNINSTALL_ETC" After="FindRelatedProducts" Value="[UPGRADE_DIR]etc">UPGRADE_DIR AND NOT UPGRADINGPRODUCTCODE</SetProperty>
+    <SetProperty Id="UNINSTALL_LOG" After="FindRelatedProducts" Value="[UPGRADE_DIR]log">UPGRADE_DIR AND NOT UPGRADINGPRODUCTCODE</SetProperty>
 
     <Icon Id="i_main_ico" SourceFile="$(var.FileMainIcon)" />
 
@@ -32,49 +59,39 @@
     <WixVariable Id="WixUIBannerBmp"  Value="$(var.FileBannerBmp)" />
     <Binary Id="Bmp_MainBanner"  SourceFile="$(var.FileBannerBmp)" />
 
-    <Upgrade Id="$(var.UpgradeCode)">
-      <UpgradeVersion Property="NEWERVERSIONDETECTED"      Minimum="$(var.CurrentVersion)" IncludeMinimum='no' OnlyDetect="yes" />
-      <UpgradeVersion Property="OLDERVERSIONBEINGUPGRADED" Minimum="$(var.MinCanUpgradeVer)" IncludeMinimum='yes' Maximum="$(var.CurrentVersion)" IncludeMaximum='no' />
-      <UpgradeVersion Property="UPG_NOT_POSSIBLE"          Minimum='0.0.0' IncludeMinimum='yes' Maximum="$(var.MinCanUpgradeVer)" IncludeMaximum='no' OnlyDetect="yes" />
-    </Upgrade>
-    <!-- http://stackoverflow.com/questions/320921/how-to-add-a-wix-custom-action-that-happens-only-on-uninstall-via-msi -->
-
-    <CustomAction Id='CA_PreventDowngrading'  Error='A newer version of $(var.ProductName) is already installed.' />
-    <CustomAction Id='CA_UninstallOldVersion' Error='Already installed version of $(var.ProductName) cannot be upgraded; it has to be uninstalled first.' />
+    <MajorUpgrade AllowSameVersionUpgrades="yes" Schedule="afterInstallInitialize"
+      DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit." />
 
     <CustomAction Id="CA_GetARPInstallLoc" Property ="INSTALLDIR"         Value="[UPGRADEDIR]"    Execute="immediate"/>
     <CustomAction Id="CA_SetARPInstallLoc" Property ="ARPINSTALLLOCATION" Value="[INSTALLDIR]"    Execute="immediate"/>
 
+    <CustomAction Id="SetDefaultLogFile"   Property="LOGFILE" Value="[INSTALLDIR]log\glpi-agent.log" Execute="firstSequence" />
+
     <InstallExecuteSequence>
       <!-- InstallExecuteSequence is used to define Custom Actions that fire after the UI is finished and the install is starting to execute -->
-      <RemoveExistingProducts                 After ='InstallFinalize' /> <!-- Windows Installer sets the UPGRADINGPRODUCTCODE Property when it runs this action -->
-      <Custom Action='CA_PreventDowngrading'  After ='FindRelatedProducts'>NEWERVERSIONDETECTED</Custom>
-      <Custom Action='CA_UninstallOldVersion' After ='FindRelatedProducts'>UPG_NOT_POSSIBLE</Custom>
       <Custom Action="CA_SetARPInstallLoc"    Before="RegisterProduct" />
+      <Custom Action="SetDefaultLogFile"      After="FindRelatedProducts">NOT LOGFILE</Custom>
     </InstallExecuteSequence>
 
     <InstallUISequence>
       <!-- InstallUISequence is used to define a dialog or Custom Action that fires in the UI sequence of events during the install -->
-      <Custom Action='CA_PreventDowngrading'  After ='FindRelatedProducts'>NEWERVERSIONDETECTED</Custom>
-      <Custom Action='CA_UninstallOldVersion' After ='FindRelatedProducts'>UPG_NOT_POSSIBLE</Custom>
-      <Custom Action="CA_GetARPInstallLoc"    Before="CostInitialize">OLDERVERSIONBEINGUPGRADED AND UPGRADEDIR</Custom>
+      <Custom Action="CA_GetARPInstallLoc"    Before="CostInitialize">UPGRADINGPRODUCTCODE AND UPGRADEDIR</Custom>
     </InstallUISequence>
 
     <Condition Message="Cannot install on Windows 9x or ME systems.">VersionNT</Condition>
     <Condition Message="Cannot install on Windows NT 4.0 or Windows 2000 systems.">VersionNT &gt; 500</Condition>
 
-    <UIRef Id='WixUI_MyInstallDirDlg' />
+    <UIRef Id='WixUI_MyInstallDlg' />
     <UIRef Id='WixUI_ErrorProgressText' />
     <UIRef Id='WixUI_Common' />
 
-    <UI Id="WixUI_MyInstallDirDlg">
+    <UI Id="WixUI_MyInstallDlg">
         <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
         <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
         <TextStyle Id="WixUI_Font_Title"  FaceName="Tahoma" Size="9" Bold="yes" />
 
         <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
         <Property Id="WixUI_Mode"    Value="InstallDir" />
-        <Property Id="ARPNOMODIFY"   Value="1" />
 
         <DialogRef Id="BrowseDlg" />
         <DialogRef Id="DiskCostDlg" />
@@ -91,40 +108,122 @@
         <Publish Dialog="BrowseDlg"             Control="OK"     Event="DoAction" Value="WixUIValidatePath" Order="3">1</Publish>
         <Publish Dialog="BrowseDlg"             Control="OK"     Event="SpawnDialog" Value="InvalidDirDlg" Order="4"><![CDATA[WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
         <Publish Dialog="ExitDialog"            Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
-        <Publish Dialog="WelcomeDlg"            Control="Next"   Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
-        <Publish Dialog="LicenseAgreementDlg"   Control="Back"   Event="NewDialog" Value="WelcomeDlg">1</Publish>
-        <Publish Dialog="LicenseAgreementDlg"   Control="Next"   Event="NewDialog" Value="D_MyInstallDirDlg">LicenseAccepted = "1"</Publish>
-        <Publish Dialog="D_MyInstallDirDlg"     Control="Back"   Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
-        <Publish Dialog="D_MyInstallDirDlg"     Control="Next"   Event="SetTargetPath" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
-        <Publish Dialog="D_MyInstallDirDlg"     Control="Next"   Event="DoAction" Value="WixUIValidatePath" Order="2">NOT WIXUI_DONTVALIDATEPATH</Publish>
-        <Publish Dialog="D_MyInstallDirDlg"     Control="Next"   Event="SpawnDialog" Value="InvalidDirDlg" Order="3"><![CDATA[NOT WIXUI_DONTVALIDATEPATH AND WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
-        <Publish Dialog="D_MyInstallDirDlg"     Control="Next"   Event="NewDialog" Value="CustomizeDlg" Order="4">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
-        <Publish Dialog="D_MyInstallDirDlg"     Control="ChangeFolder" Property="_BrowseProperty" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
-        <Publish Dialog="D_MyInstallDirDlg"     Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
-        <Publish Dialog="CustomizeDlg"          Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">Installed</Publish>
-        <Publish Dialog="CustomizeDlg"          Control="Back" Event="NewDialog" Value="D_MyInstallDirDlg" Order="2">NOT Installed</Publish>
-        <Publish Dialog="CustomizeDlg"          Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
-        <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="D_MyInstallDirDlg" Order="1">NOT Installed</Publish>
-        <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">Installed</Publish>
+        <Publish Dialog="WelcomeDlg"            Control="Next"   Event="NewDialog" Value="LicenseDlg">1</Publish>
+
+        <Publish Dialog="LicenseDlg"            Control="Back"   Event="NewDialog" Value="WelcomeDlg">1</Publish>
+        <Publish Dialog="LicenseDlg"            Control="Next"   Event="NewDialog" Value="InstallDirDlg">1</Publish>
+
+        <Publish Dialog="InstallDirDlg"         Control="Back"   Event="NewDialog" Value="LicenseDlg">1</Publish>
+        <Publish Dialog="InstallDirDlg"         Control="Next"   Event="SetTargetPath" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
+        <Publish Dialog="InstallDirDlg"         Control="Next"   Event="DoAction" Value="WixUIValidatePath" Order="2">NOT WIXUI_DONTVALIDATEPATH</Publish>
+        <Publish Dialog="InstallDirDlg"         Control="Next"   Event="SpawnDialog" Value="InvalidDirDlg" Order="3"><![CDATA[NOT WIXUI_DONTVALIDATEPATH AND WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
+        <Publish Dialog="InstallDirDlg"         Control="Next"   Event="DoAction" Value="SetDefaultLogFile" Order="4">NOT LOGFILE</Publish>
+        <Publish Dialog="InstallDirDlg"         Control="Next"   Event="NewDialog" Value="SetupTypeDlg" Order="5">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
+        <Publish Dialog="InstallDirDlg"         Control="ChangeFolder" Property="_BrowseProperty" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
+        <Publish Dialog="InstallDirDlg"         Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
+
+        <Publish Dialog="SetupTypeDlg"          Control="Back"   Event="NewDialog" Value="InstallDirDlg">1</Publish>
+        <Publish Dialog="SetupTypeDlg"          Control="TypicalButton" Event="NewDialog" Value="D_TargetSetupDlg">1</Publish>
+        <Publish Dialog="SetupTypeDlg"          Control="CustomButton" Event="NewDialog" Value="CustomizeDlg">1</Publish>
+        <Publish Dialog="SetupTypeDlg"          Control="CompleteButton" Event="NewDialog" Value="D_TargetSetupDlg">1</Publish>
+
+        <Publish Dialog="CustomizeDlg"          Control="Back"   Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">Installed</Publish>
+        <Publish Dialog="CustomizeDlg"          Control="Back"   Event="NewDialog" Value="InstallDirDlg" Order="2">NOT Installed</Publish>
+        <Publish Dialog="CustomizeDlg"          Control="Next"   Event="NewDialog" Value="D_TargetSetupDlg">1</Publish>
+
+        <Publish Dialog="D_TargetSetupDlg"      Control="Back"   Event="NewDialog" Value="CustomizeDlg" Order="1">WixUI_InstallMode = "InstallCustom" OR WixUI_InstallMode = "Change"</Publish>
+        <Publish Dialog="D_TargetSetupDlg"      Control="Back"   Event="NewDialog" Value="SetupTypeDlg" Order="2">WixUI_InstallMode = "InstallTypical" OR WixUI_InstallMode = "InstallComplete"</Publish>
+        <Publish Dialog="D_TargetSetupDlg"      Control="Next"   Property="_LOCALDIR" Value="[LOCAL]" Order="1">1</Publish>
+        <Publish Dialog="D_TargetSetupDlg"      Control="Next"   Event="NewDialog" Value="VerifyReadyDlg" Order="2">1</Publish>
+        <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Property="_LOCALDIR" Value="[INSTALLDIR]" Order="2">NOT LOCAL</Publish>
+        <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Property="_LOCALDIR" Value="[LOCAL]" Order="3">LOCAL</Publish>
+        <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Event="SetTargetPath" Value="_LOCALDIR" Order="4">NOT WIXUI_DONTVALIDATEPATH</Publish>
+        <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Event="DoAction" Value="WixUIValidatePath" Order="5">NOT WIXUI_DONTVALIDATEPATH</Publish>
+        <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Property="_LOCALDIR" Value="[INSTALLDIR]" Order="6"><![CDATA[NOT WIXUI_DONTVALIDATEPATH AND WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
+        <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Event="SpawnDialog" Value="BrowseLocalDlg" Order="7">1</Publish>
+
+        <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"</Publish>
+        <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="D_TargetSetupDlg" Order="2">1</Publish>
+
         <Publish Dialog="MaintenanceWelcomeDlg" Control="Next"   Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
+        <Publish Dialog="MaintenanceTypeDlg"    Control="ChangeButton" Event="NewDialog" Value="CustomizeDlg">1</Publish>
         <Publish Dialog="MaintenanceTypeDlg"    Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
         <Publish Dialog="MaintenanceTypeDlg"    Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
         <Publish Dialog="MaintenanceTypeDlg"    Control="Back"   Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
 
-        <Dialog Id="D_MyInstallDirDlg" Width="370" Height="270" Title="!(loc.InstallDirDlg_Title)">
-          <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" />
-          <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
-          <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
+        <!-- Simplified version of LicenseAgreementDlg -->
+        <Dialog Id="LicenseDlg" Width="370" Height="270" Title="!(loc.LicenseAgreementDlg_Title)">
+            <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.LicenseAgreementDlgBannerBitmap)" />
+            <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+            <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+            <Control Id="Description" Type="Text" X="25" Y="23" Width="340" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.LicenseAgreementDlgDescription)" />
+            <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.LicenseAgreementDlgTitle)" />
+            <Control Id="Print" Type="PushButton" X="112" Y="243" Width="56" Height="17" Text="!(loc.WixUIPrint)">
+                <Publish Event="DoAction" Value="WixUIPrintEula">1</Publish>
+            </Control>
+            <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
+            <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)">
+                <Publish Event="SpawnWaitDialog" Value="WaitForCostingDlg">!(wix.WixUICostingPopupOptOut) OR CostingComplete = 1</Publish>
+            </Control>
+            <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
+                <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            </Control>
+            <Control Id="LicenseText" Type="ScrollableText" X="20" Y="60" Width="330" Height="140" Sunken="yes" TabSkip="no">
+                <Text SourceFile="!(wix.WixUILicenseRtf=$(var.FileLicenseRtf))" />
+            </Control>
+        </Dialog>
+
+        <!-- Dedicated target setup dialog -->
+        <Dialog Id="D_TargetSetupDlg" Width="370" Height="270" Title="!(loc.TargetSetupDlg_Title)">
+          <Control Type="Bitmap" Id="Banner" Width="370" Height="44" X="0" Y="0" Text="Bmp_MainBanner" TabSkip="no" />
+          <Control Type="Line" Id="BannerLine" Width="370" Height="0" X="0" Y="44" />
+          <Control Type="Line" Id="BottomLine" Width="370" Height="0" X="0" Y="234" />
+          <Control Type="Text" Id="Title" Width="200" Height="15" X="15" Y="6" Text="!(loc.TargetSetupDlg_TextTitle)" Transparent="yes" NoPrefix="yes" />
+          <Control Type="Text" Id="Description" Width="280" Height="15" X="25" Y="23" Text="!(loc.TargetSetupDlg_Description)" Transparent="yes" NoPrefix="yes" />
+          <Control Type="PushButton" Id="Next" Width="56" Height="17" X="236" Y="243" Default="yes" Text="!(loc.WixUINext)" />
+          <Control Type="PushButton" Id="Back" Width="56" Height="17" X="180" Y="243" Text="!(loc.WixUIBack)" />
+          <Control Type="PushButton" Id="Cancel" Width="56" Height="17" X="304" Y="243" Cancel="yes" Text="!(loc.WixUICancel)">
             <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
           </Control>
-          <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.InstallDirDlgDescription)" />
-          <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.InstallDirDlgTitle)" />
-          <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="Bmp_MainBanner" />
-          <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
-          <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
-          <Control Id="FolderLabel" Type="Text" X="20" Y="60" Width="290" Height="30" NoPrefix="yes" Text="!(loc.InstallDirDlgFolderLabel)" />
-          <Control Id="Folder" Type="PathEdit" X="20" Y="100" Width="320" Height="18" Property="WIXUI_INSTALLDIR" Indirect="yes" />
-          <Control Id="ChangeFolder" Type="PushButton" X="20" Y="120" Width="56" Height="17" Text="!(loc.InstallDirDlgChange)" />
+          <Control Type="GroupBox" Id="LocalModeGrp" Width="350" Height="65" X="10" Y="50" Text="!(loc.TargetSetupDlg_LocalMode)" />
+          <Control Type="Edit" Id="LocalTarget" Width="260" Height="16" X="20" Y="70" Property="LOCAL" />
+          <Control Type="Text" Id="LocalModeDescription" Width="140" Height="11" X="75" Y="94" Transparent="yes" NoPrefix="yes" Text="!(loc.TargetSetupDlg_LocalModeDescription)" />
+          <Control Type="PushButton" Id="ChangeLocal" Width="56" Height="17" X="290" Y="69" Text="!(loc.InstallDirDlgChange)" />
+          <Control Type="GroupBox" Id="ServerModeGrp" Width="350" Height="70" X="10" Y="130" Text="!(loc.TargetSetupDlg_ServerMode)" />
+          <Control Type="Edit" Id="ServerTarget" Width="330" Height="16" X="20" Y="150" Property="SERVER" />
+          <Control Type="Text" Id="ServerModeDescription" Width="330" Height="15" X="20" Y="168" Transparent="yes" NoPrefix="yes" Text="!(loc.TargetSetupDlg_ServerModeDescription)" />
+          <Control Type="Text" Id="ServerModeExample" Width="330" Height="15" X="20" Y="183" Text="!(loc.TargetSetupDlg_ServerModeExample)" Transparent="yes" NoPrefix="yes" />
+          <Control Type="CheckBox" Id="QuickInstallCB" Width="100" Height="15" X="236" Y="210" Text="!(loc.TargetSetupDlg_QuickInstall)" ToolTip="!(loc.TargetSetupDlg_QuickInstallToolTips)" CheckBoxValue="1" Property="QuickInstall" Disabled="yes" Integer="yes" />
+        </Dialog>
+
+        <!-- Adapted version of BrowseDlg to handle Local target -->
+        <Dialog Id="BrowseLocalDlg" Width="370" Height="270" Title="!(loc.BrowseLocalDlg_Title)">
+            <Control Id="LocalEditCtl" Type="PathEdit" X="25" Y="202" Width="320" Height="18" Property="_LOCALDIR" />
+            <Control Id="OK" Type="PushButton" X="240" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUIOK)">
+                <Publish Property="LOCAL" Value="[_LOCALDIR]">1</Publish>
+                <Publish Event="EndDialog" Value="Return">1</Publish>
+            </Control>
+            <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
+                <Publish Event="Reset" Value="0">1</Publish>
+                <Publish Event="EndDialog" Value="Return">1</Publish>
+            </Control>
+            <Control Id="ComboLabel" Type="Text" X="25" Y="58" Width="44" Height="10" TabSkip="no" Text="!(loc.BrowseDlgComboLabel)" />
+            <Control Id="DirectoryCombo" Type="DirectoryCombo" X="70" Y="55" Width="220" Height="80" Property="_LOCALDIR" Fixed="yes" Remote="yes">
+                <Subscribe Event="IgnoreChange" Attribute="IgnoreChange" />
+            </Control>
+            <Control Id="WixUI_Bmp_Up" Type="PushButton" X="298" Y="55" Width="19" Height="19" ToolTip="!(loc.BrowseDlgWixUI_Bmp_UpTooltip)" Icon="yes" FixedSize="yes" IconSize="16" Text="!(loc.BrowseDlgWixUI_Bmp_Up)">
+                <Publish Event="DirectoryListUp" Value="0">1</Publish>
+            </Control>
+            <Control Id="NewFolder" Type="PushButton" X="325" Y="55" Width="19" Height="19" ToolTip="!(loc.BrowseDlgNewFolderTooltip)" Icon="yes" FixedSize="yes" IconSize="16" Text="!(loc.BrowseDlgNewFolder)">
+                <Publish Event="DirectoryListNew" Value="0">1</Publish>
+            </Control>
+            <Control Id="DirectoryList" Type="DirectoryList" X="25" Y="83" Width="320" Height="98" Property="_LOCALDIR" Sunken="yes" TabSkip="no" />
+            <Control Id="PathLabel" Type="Text" X="25" Y="190" Width="320" Height="10" TabSkip="no" Text="!(loc.BrowseLocalDlgPathLabel)" />
+            <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.BrowseDlgBannerBitmap)" />
+            <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+            <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+            <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.BrowseDlgDescription)" />
+            <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.BrowseLocalDlgTitle)" />
         </Dialog>
     </UI>
 
@@ -144,7 +243,14 @@
 
     </Directory>     <!-- TARGETDIR -->
 
-    <Feature Id="feat_MSI"  Title="MSI Files" Level="1" />  <!-- all members are included via Feature attribute -->
+    <Feature Id="feat_MSI"  Title="!(loc.ProductTitle)" Description="!(loc.ProductDescription)" Level="1" Display="expand" Absent="disallow">
+      <Feature Id="feat_NETINV"  Title="!(loc.NetInventory)" Description="!(loc.NetInventoryDescription)" Level="1000" />
+      <Feature Id="feat_DEPLOY"  Title="!(loc.Deploy)" Description="!(loc.DeployDescription)" Level="3" />
+      <Feature Id="feat_COLLECT"  Title="!(loc.Collect)" Description="!(loc.CollectDescription)" Level="3" />
+      <Feature Id="feat_ESX"  Title="!(loc.Esx)" Description="!(loc.EsxDescription)" Level="1000" />
+      <!-- Level=0: WOL still not supported in this installer -->
+      <Feature Id="feat_WOL"  Title="!(loc.Wol)" Description="!(loc.WolDescription)" Level="0" />
+    </Feature>
 
   </Product>
 </Wix>
