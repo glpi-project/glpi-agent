@@ -128,7 +128,7 @@
         <Publish Dialog="SetupTypeDlg"          Control="CompleteButton" Event="NewDialog" Value="D_TargetSetupDlg">1</Publish>
 
         <Publish Dialog="CustomizeDlg"          Control="Back"   Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">Installed</Publish>
-        <Publish Dialog="CustomizeDlg"          Control="Back"   Event="NewDialog" Value="InstallDirDlg" Order="2">NOT Installed</Publish>
+        <Publish Dialog="CustomizeDlg"          Control="Back"   Event="NewDialog" Value="SetupTypeDlg" Order="2">NOT Installed</Publish>
         <Publish Dialog="CustomizeDlg"          Control="Next"   Event="NewDialog" Value="D_TargetSetupDlg">1</Publish>
 
         <Publish Dialog="D_TargetSetupDlg"      Control="Back"   Event="NewDialog" Value="CustomizeDlg" Order="1">WixUI_InstallMode = "InstallCustom" OR WixUI_InstallMode = "Change"</Publish>
