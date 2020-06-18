@@ -108,6 +108,54 @@ use File::Basename;
 use Data::Dump            qw(pp);
 use Template;
 
+use constant _dir_id_match => { qw(
+    perl            d_perl
+    perl\bin        d_perl_bin
+    var             d_var
+    log             d_log
+    etc             d_etc
+    perl\agent\fusioninventory\agent\task\netinventory  d_netinventory_task
+    perl\agent\fusioninventory\agent\task\netdiscovery  d_netinv_discovery_task
+    perl\agent\fusioninventory\agent\snmp               d_netinv_snmp
+    perl\agent\fusioninventory\agent\snmp\device        d_netinv_device
+    perl\agent\fusioninventory\agent\snmp\mibsupport    d_netinv_mibsupport
+    perl\agent\fusioninventory\agent\tools\hardware     d_netinv_hardware
+    perl\agent\fusioninventory\agent\task\deploy        d_deploy
+    perl\agent\fusioninventory\agent\task\deploy\actionprocessor        d_deploy_ap
+    perl\agent\fusioninventory\agent\task\deploy\actionprocessor\action d_deploy_action
+    perl\agent\fusioninventory\agent\task\deploy\checkprocessor         d_deploy_cp
+    perl\agent\fusioninventory\agent\task\deploy\datastore              d_deploy_ds
+    perl\agent\fusioninventory\agent\task\deploy\usercheck              d_deploy_uc
+    perl\agent\fusioninventory\agent\task\collect       d_collect
+    perl\agent\fusioninventory\agent\task\esx           d_esx_task
+    perl\agent\fusioninventory\agent\soap               d_esx_soap
+    perl\agent\fusioninventory\agent\soap\vmware        d_esx_vmware
+    perl\agent\fusioninventory\agent\task\wakeonlan     d_wol
+)};
+
+use constant _file_feature_match => { qw(
+    glpi-netdiscovery.bat                                   feat_NETINV
+    glpi-netinventory.bat                                   feat_NETINV
+    perl\bin\glpi-netdiscovery                              feat_NETINV
+    perl\bin\glpi-netinventory                              feat_NETINV
+    perl\agent\FusionInventory\Agent\Task\NetInventory.pm   feat_NETINV
+    perl\agent\FusionInventory\Agent\Task\NetDiscovery.pm   feat_NETINV
+    perl\agent\FusionInventory\Agent\Tools\Hardware.pm      feat_NETINV
+    perl\agent\FusionInventory\Agent\Tools\SNMP.pm          feat_NETINV
+    perl\agent\FusionInventory\Agent\SNMP.pm                feat_NETINV
+
+    perl\agent\FusionInventory\Agent\Task\Deploy.pm         feat_DEPLOY
+
+    perl\agent\FusionInventory\Agent\Task\Collect.pm        feat_COLLECT
+
+    glpi-esx.bat                                            feat_ESX
+    perl\bin\glpi-esx                                       feat_ESX
+    perl\agent\FusionInventory\Agent\Task\ESX.pm            feat_ESX
+
+    glpi-wakeonlan.bat                                      feat_WOL
+    perl\bin\glpi-wakeonlan                                 feat_WOL
+)};
+
 sub run {
     my $self = shift;
 
@@ -212,24 +260,6 @@ sub _get_dir_feature {
     return "feat_MSI";
 }
 
-sub _get_file_feature {
-    my ($self, $file) = @_;
-
-    if ($file =~ /^glpi-net.*|NetDiscovery\.pm|NetInventory\.pm|Hardware\.pm|SNMP\.pm$/) {
-        return "feat_NETINV";
-    } elsif ($file =~ /^Deploy\.pm$/) {
-        return "feat_DEPLOY";
-    } elsif ($file =~ /^Collect\.pm$/) {
-        return "feat_COLLECT";
-    } elsif ($file =~ /^glpi-esx.*|ESX\.pm$/) {
-        return "feat_ESX";
-    } elsif ($file =~ /^glpi-wakeonlan.*|WakeOnLan\.pm$/) {
-        return "feat_WOL";
-    }
-
-    # Don't return anything to keep the feature of parent folder
-}
-
 sub _tree2xml {
     my ($self, $root, $mark, $not_root) = @_;
 
@@ -275,8 +305,8 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[<Directory Id="$id">\n];
                 ($component_id, $component_guid) = $self->_gen_component_id(lc($id).".create");
                 $result .= $ident ."    ". qq[<Component Id="$component_id" Guid="{$component_guid}" KeyPath="yes" Feature="$feat">\n];
-                $result .= $ident ."    ". qq[    <CreateFolder />\n];
-                $result .= $ident ."    ". qq[    <RemoveFolder Id="rm.] .lc($id). qq[" On="uninstall" />\n];
+                $result .= $ident ."    ". qq[  <CreateFolder />\n];
+                $result .= $ident ."    ". qq[  <RemoveFolder Id="rm.] .lc($id). qq[" On="uninstall" />\n];
                 $result .= $ident ."    ". qq[</Component>\n];
                 $result .= $ident ."  ". qq[</Directory>\n];
             }
@@ -289,7 +319,8 @@ sub _tree2xml {
             my $file_basename = basename($f->{full_name});
             my $file_shortname = $self->_get_short_basename($f->{full_name});
             ($component_id, $component_guid) = $self->_gen_component_id($file_shortname."files");
-            my $this_feat = $self->_get_file_feature($f->{short_name}) || $feat;
+            # Get specific file feature or take the one from the parent folder or even the default one
+            my $this_feat = _file_feature_match->{$f->{short_name}} || $feat;
             # in 1file/component scenario set KeyPath on file, not on Component
             # see: http://stackoverflow.com/questions/10358989/wix-using-keypath-on-components-directories-files-registry-etc-etc
             $result .= $ident ."  ". qq[<Component Id="$component_id" Guid="{$component_guid}" Feature="$this_feat">\n];
@@ -320,34 +351,9 @@ sub _tree2xml {
     return $result;
 }
 
-my %dir_id_match = qw(
-    perl            d_perl
-    perl\bin        d_perl_bin
-    var             d_var
-    log             d_log
-    etc             d_etc
-    perl\agent\fusioninventory\agent\task\netinventory  d_netinventory_task
-    perl\agent\fusioninventory\agent\task\netdiscovery  d_netinv_discovery_task
-    perl\agent\fusioninventory\agent\snmp               d_netinv_snmp
-    perl\agent\fusioninventory\agent\snmp\device        d_netinv_device
-    perl\agent\fusioninventory\agent\snmp\mibsupport    d_netinv_mibsupport
-    perl\agent\fusioninventory\agent\tools\hardware     d_netinv_hardware
-    perl\agent\fusioninventory\agent\task\deploy        d_deploy
-    perl\agent\fusioninventory\agent\task\deploy\actionprocessor        d_deploy_ap
-    perl\agent\fusioninventory\agent\task\deploy\actionprocessor\action d_deploy_action
-    perl\agent\fusioninventory\agent\task\deploy\checkprocessor         d_deploy_cp
-    perl\agent\fusioninventory\agent\task\deploy\datastore              d_deploy_ds
-    perl\agent\fusioninventory\agent\task\deploy\usercheck              d_deploy_uc
-    perl\agent\fusioninventory\agent\task\collect       d_collect
-    perl\agent\fusioninventory\agent\task\esx           d_esx_task
-    perl\agent\fusioninventory\agent\soap               d_esx_soap
-    perl\agent\fusioninventory\agent\soap\vmware        d_esx_vmware
-    perl\agent\fusioninventory\agent\task\wakeonlan     d_wol
-);
-
 sub _gen_dir_id {
     my ($self, $dir) = @_;
-    return $dir_id_match{lc($dir)} // "d" . $self->{id_counter}++;
+    return _dir_id_match->{lc($dir)} // "d" . $self->{id_counter}++;
 }
 
 package
@@ -673,6 +679,7 @@ sub __job_steps {
             { do=>'createdir', args=>[ '<image_dir>/perl/agent' ] },
             { do=>'createdir', args=>[ '<image_dir>/perl/newbin' ] },
             { do=>'createdir', args=>[ '<image_dir>/var' ] },
+            { do=>'createdir', args=>[ '<image_dir>/log' ] },
             $self->__movebin('libgcc_s_'.($self->is64bit?'seh':'dw2').'-1.dll'),
             $self->__movebin('libstdc++-6.dll'),
             $self->__movebin('libwinpthread-1.dll'),
@@ -704,6 +711,8 @@ sub __job_steps {
             { do=>'copyfile', args=>[ 'contrib/windows/packaging/setup.pm', '<image_dir>/perl/lib' ] },
             { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/^\.packlist$/i ] },
             { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.pod$/i ] },
+            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.al$/i ] },
+            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.a$/i ] },
         ],
     },
     ### NEXT STEP ###########################
