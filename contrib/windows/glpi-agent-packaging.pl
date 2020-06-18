@@ -218,7 +218,7 @@ sub run {
     my $candle_exe = $self->{candle_exe};
     my $light_exe = $self->{light_exe};
 
-    my $candle2_cmd = [$candle_exe, "$bdir\\MSI_main-v2.wxs", '-out', "$bdir\\MSI_main.wixobj", '-v', '-ext', 'WixUIExtension'];
+    my $candle2_cmd = [$candle_exe, "$bdir\\MSI_main-v2.wxs", '-out', "$bdir\\MSI_main.wixobj", '-v', '-ext', 'WixUtilExtension'];
     # Set arch option if necessary
     push @{$candle2_cmd}, '-arch', 'x64' if $self->global->{arch} == 64;
     my $light2_cmd  = [$light_exe,  "$bdir\\MSI_main.wixobj", '-out', $msi_file, '-pdbout', "$bdir\\MSI_main.wixpdb", '-loc', "$bdir\\MSI_strings.wxl",
