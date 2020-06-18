@@ -19,6 +19,7 @@
     <Property Id="ARPHELPLINK" Value="$(var.URLHelp)" />
     <Property Id="ARPPRODUCTICON" Value="i_main_ico" />
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+    <Property Id="INSTALLLEVEL" Value="3" />
 
     <Property Id="UPGRADEDIR" Secure="yes">
       <RegistrySearch Id="InstallDir" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="InstallLocation" Type="raw" />
