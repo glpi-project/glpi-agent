@@ -276,7 +276,7 @@ sub _tree2xml {
                 ($component_id, $component_guid) = $self->_gen_component_id(lc($id).".create");
                 $result .= $ident ."    ". qq[<Component Id="$component_id" Guid="{$component_guid}" KeyPath="yes" Feature="$feat">\n];
                 $result .= $ident ."    ". qq[    <CreateFolder />\n];
-                $result .= $ident ."    ". qq[    <RemoveFolder Id="rm."] .lc($id). qq[" On="uninstall" />\n];
+                $result .= $ident ."    ". qq[    <RemoveFolder Id="rm.] .lc($id). qq[" On="uninstall" />\n];
                 $result .= $ident ."    ". qq[</Component>\n];
                 $result .= $ident ."  ". qq[</Directory>\n];
             }
