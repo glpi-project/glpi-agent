@@ -64,7 +64,7 @@ my $app = Perl::Dist::GLPI::Agent->new(
     agent_msiver    => $major.'.'.$minor.'.'.$revision,
     agent_fullname  => $provider.' Agent',
     agent_rootdir   => $provider.'-Agent',
-    agent_regpath   => "Software\\$provider.-Agent",
+    agent_regpath   => "Software\\$provider-Agent",
     service_name    => lc($provider).'-agent',
     msi_sharedir    => 'contrib/windows/packaging',
 );
