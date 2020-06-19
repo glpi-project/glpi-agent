@@ -8,13 +8,13 @@
 
   <!-- custom text on welcome dialog -->
 [%- IF msi_debug==0 && beta==0 %]
-  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] on your computer. Click Next to continue or Cancel to exit Setup.</String>
+  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] [%agent_version%] on your computer. Click Next to continue or Cancel to exit Setup.</String>
 [%- ELSIF msi_debug!=0 && beta==0 %]
-  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] on your computer. Click Next to continue or Cancel to exit Setup.&#13;&#10;&#13;&#10;BEWARE: this is MSI_DEBUG build!</String>
+  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] [%agent_version%] on your computer. Click Next to continue or Cancel to exit Setup.&#13;&#10;&#13;&#10;BEWARE: this is MSI_DEBUG build!</String>
 [%- ELSIF msi_debug==0 && beta!=0 %]
-  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] on your computer. Click Next to continue or Cancel to exit Setup.&#13;&#10;&#13;&#10;BEWARE: this is BETA[%beta%] build!</String>
+  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] [%agent_version%] on your computer. Click Next to continue or Cancel to exit Setup.&#13;&#10;&#13;&#10;BEWARE: this is BETA[%beta%] build!</String>
 [%- ELSIF msi_debug!=0 && beta!=0 %]
-  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] on your computer. Click Next to continue or Cancel to exit Setup.&#13;&#10;&#13;&#10;BEWARE: this is BETA[%beta%] build!&#13;&#10;&#13;&#10;BEWARE: this is MSI_DEBUG build!</String>
+  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] [%agent_version%] on your computer. Click Next to continue or Cancel to exit Setup.&#13;&#10;&#13;&#10;BEWARE: this is BETA[%beta%] build!&#13;&#10;&#13;&#10;BEWARE: this is MSI_DEBUG build!</String>
 [%- END %]
 
   <String Id="PrepareDlg_Title">[ProductName] [%agent_version%] Setup</String>
@@ -22,17 +22,17 @@
 
   <!-- custom text on features dialog -->
   <String Id="ProductTitle">GLPI Agent</String>
-  <String Id="ProductDescription">GLPI Agent core including Inventory task</String>
+  <String Id="ProductDescription">GLPI Agent core including Inventory task.</String>
   <String Id="NetInventory">Netinventory and NetDiscovery support</String>
-  <String Id="NetInventoryDescription">All the necessary files to run network discovery and inventory tasks</String>
+  <String Id="NetInventoryDescription">All the necessary files to run network discovery and inventory tasks.</String>
   <String Id="Deploy">Deploy support</String>
-  <String Id="DeployDescription">All the necessary files to deploy packages</String>
+  <String Id="DeployDescription">All the necessary files to deploy packages.</String>
   <String Id="Collect">Collect support</String>
-  <String Id="CollectDescription">All the necessary files to collect datas</String>
+  <String Id="CollectDescription">All the necessary files to collect datas.</String>
   <String Id="Esx">ESX remote inventory support</String>
-  <String Id="EsxDescription">All the necessary files to inventory ESX servers</String>
+  <String Id="EsxDescription">All the necessary files to inventory ESX servers.</String>
   <String Id="Wol">Wake-On-Lan support</String>
-  <String Id="WolDescription">All the necessary files to wake up equipements in your network</String>
+  <String Id="WolDescription">All the necessary files to wake up equipements in your network.</String>
 
   <!-- custom text for service registration -->
   <String Id="ServiceDisplayName">[ProductName]</String>
@@ -55,4 +55,33 @@
   <String Id="BrowseLocalDlgPathLabel">&amp;Local target destination:</String>
   <String Id="BrowseLocalDlgTitle">{\WixUI_Font_Title}Change Local Target destination folder</String>
 
+  <!-- custom title with version on all dialog titles -->
+  <String Id="BrowseDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="CancelDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="CustomizeDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="DiskCostDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="ErrorDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="ExitDialog_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="FatalError_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="FeaturesDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="FilesInUse_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="InstallDirDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="InvalidDirDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="MaintenanceTypeDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="MaintenanceWelcomeDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="MsiRMFilesInUse_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="OutOfDiskDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="OutOfRbDiskDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="ProgressDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="ResumeDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="SetupTypeDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="UserExit_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="VerifyReadyDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="WaitForCostingDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="LicenseAgreementDlg_Title">[ProductName] [%agent_version%] Setup</String>
+
+  <!-- some other custom dialog texts -->
+  <String Id="SetupTypeDlgTypicalText">Installs the most common program features, including Inventory, Deploy and Collect tasks support.</String>
+  <String Id="SetupTypeDlgCompleteText">All program features will be installed.</String>
+  <String Id="ProgressDlgTitleInstalling">{\WixUI_Font_Title}Installing [ProductName] [%agent_version%]</String>
 </WixLocalization>
