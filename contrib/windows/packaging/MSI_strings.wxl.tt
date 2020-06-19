@@ -55,6 +55,14 @@
   <String Id="BrowseLocalDlgPathLabel">&amp;Local target destination:</String>
   <String Id="BrowseLocalDlgTitle">{\WixUI_Font_Title}Change Local Target destination folder</String>
 
+  <!-- custom text for execution mode setup dialog -->
+  <String Id="ExecModeDlgTitle">[ProductName] [%agent_version%] Setup</String>
+  <String Id="ExecModeDlg_Title">{\WixUI_Font_Bigger}Choose an Execution Mode</String>
+  <String Id="ExecModeDlgDescription">Choose which way you want [ProductName] to be executed.</String>
+  <String Id="ExecModeDlgGroup">Execution Mode</String>
+  <String Id="ExecModeDlgService">As a Windows Service</String>
+  <String Id="ExecModeDlgManual">Manually</String>
+
   <!-- custom title with version on all dialog titles -->
   <String Id="BrowseDlg_Title">[ProductName] [%agent_version%] Setup</String>
   <String Id="CancelDlg_Title">[ProductName] [%agent_version%] Setup</String>
