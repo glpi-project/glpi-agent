@@ -49,9 +49,9 @@
     <SetProperty Id="CMDLINE_LOGFILE" Before="AppSearch" Value="[LOGFILE]" />
     <SetProperty Id="LOGFILE"         After="AppSearch"  Value="[CMDLINE_LOGFILE]" />
 
-    <SetProperty Id="UNINSTALL_VAR" After="FindRelatedProducts" Value="[UPGRADE_DIR]var">UPGRADE_DIR AND NOT UPGRADINGPRODUCTCODE</SetProperty>
-    <SetProperty Id="UNINSTALL_ETC" After="FindRelatedProducts" Value="[UPGRADE_DIR]etc">UPGRADE_DIR AND NOT UPGRADINGPRODUCTCODE</SetProperty>
-    <SetProperty Id="UNINSTALL_LOG" After="FindRelatedProducts" Value="[UPGRADE_DIR]log">UPGRADE_DIR AND NOT UPGRADINGPRODUCTCODE</SetProperty>
+    <SetProperty Id="UNINSTALL_VAR" After="FindRelatedProducts" Value="[UPGRADEDIR]var"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
+    <SetProperty Id="UNINSTALL_ETC" After="FindRelatedProducts" Value="[UPGRADEDIR]etc"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
+    <SetProperty Id="UNINSTALL_LOG" After="FindRelatedProducts" Value="[UPGRADEDIR]log"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
 
     <Icon Id="i_main_ico" SourceFile="$(var.FileMainIcon)" />
 
@@ -149,7 +149,9 @@
         <Publish Dialog="MaintenanceWelcomeDlg" Control="Next"   Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
         <Publish Dialog="MaintenanceTypeDlg"    Control="ChangeButton" Event="NewDialog" Value="CustomizeDlg">1</Publish>
         <Publish Dialog="MaintenanceTypeDlg"    Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
-        <Publish Dialog="MaintenanceTypeDlg"    Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+        <!-- By default, clicking on Remove, not set immediatly REMOVE to ALL -->
+        <Publish Dialog="MaintenanceTypeDlg"    Control="RemoveButton" Property="REMOVE" Value="ALL" Order="1">1</Publish>
+        <Publish Dialog="MaintenanceTypeDlg"    Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg" Order="2">1</Publish>
         <Publish Dialog="MaintenanceTypeDlg"    Control="Back"   Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
 
         <!-- Simplified version of LicenseAgreementDlg -->
