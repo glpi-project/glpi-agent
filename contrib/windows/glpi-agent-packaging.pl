@@ -340,6 +340,9 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[    <RegistryValue Name="logfile" Type="string" Value="[LOGFILE]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="server" Type="string" Value="[SERVER]" />\n];
                 $result .= $ident ."  ". qq[  </RegistryKey>\n];
+                $result .= $ident ."  ". qq[  <RegistryKey Root="HKLM" Key="Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\[ProductCode]">\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: ExecMode" Type="string" Value="[EXECMODE]" />\n];
+                $result .= $ident ."  ". qq[  </RegistryKey>\n];
             }
             $result .= $ident ."  ". qq[</Component>\n];
         }
