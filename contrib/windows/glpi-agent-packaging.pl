@@ -222,7 +222,7 @@ sub run {
     # Set arch option if necessary
     push @{$candle2_cmd}, '-arch', 'x64' if $self->global->{arch} == 64;
     my $light2_cmd  = [$light_exe,  "$bdir\\MSI_main.wixobj", '-out', $msi_file, '-pdbout', "$bdir\\MSI_main.wixpdb", '-loc', "$bdir\\MSI_strings.wxl",
-        qw/-ext WixUIExtension -ext WixUtilExtension -sice:ICE38 -sice:ICE43 -sice:ICE61/];
+        qw/-ext WixUIExtension -ext WixUtilExtension -sice:ICE61/];
 
     # backup already existing <output_dir>/*.msi
     $self->backup_file($msi_file);
