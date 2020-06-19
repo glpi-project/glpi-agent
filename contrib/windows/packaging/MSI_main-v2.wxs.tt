@@ -29,25 +29,25 @@
       <RegistrySearch Id="Server" Root="HKLM" Key="[%agent_regpath%]" Name="server" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_SERVER"  Before="AppSearch" Value="[SERVER]" />
-    <SetProperty Id="SERVER"          After="AppSearch"  Value="[CMDLINE_SERVER]" />
+    <SetProperty Id="SERVER"          After="AppSearch"  Value="[CMDLINE_SERVER]"><![CDATA[CMDLINE_SERVER<>""]]></SetProperty>
 
     <Property Id="LOCAL" Secure="yes">
       <RegistrySearch Id="Local" Root="HKLM" Key="[%agent_regpath%]" Name="local" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_LOCAL"   Before="AppSearch" Value="[LOCAL]" />
-    <SetProperty Id="LOCAL"           After="AppSearch"  Value="[CMDLINE_LOCAL]" />
+    <SetProperty Id="LOCAL"           After="AppSearch"  Value="[CMDLINE_LOCAL]"><![CDATA[CMDLINE_LOCAL<>""]]></SetProperty>
 
     <Property Id="DEBUG" Value="0" Secure="yes">
       <RegistrySearch Id="Debug" Root="HKLM" Key="[%agent_regpath%]" Name="debug" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_DEBUG"   Before="AppSearch" Value="[DEBUG]" />
-    <SetProperty Id="DEBUG"           After="AppSearch"  Value="[CMDLINE_DEBUG]" />
+    <SetProperty Id="DEBUG"           After="AppSearch"  Value="[CMDLINE_DEBUG]"><![CDATA[CMDLINE_DEBUG<>""]]></SetProperty>
 
     <Property Id="LOGFILE" Secure="yes">
       <RegistrySearch Id="LogFile" Root="HKLM" Key="[%agent_regpath%]" Name="logfile" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_LOGFILE" Before="AppSearch" Value="[LOGFILE]" />
-    <SetProperty Id="LOGFILE"         After="AppSearch"  Value="[CMDLINE_LOGFILE]" />
+    <SetProperty Id="LOGFILE"         After="AppSearch"  Value="[CMDLINE_LOGFILE]"><![CDATA[CMDLINE_LOGFILE<>""]]></SetProperty>
 
     <SetProperty Id="UNINSTALL_VAR" After="FindRelatedProducts" Value="[UPGRADEDIR]var"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
     <SetProperty Id="UNINSTALL_ETC" After="FindRelatedProducts" Value="[UPGRADEDIR]etc"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
