@@ -40,7 +40,7 @@
 
   <!-- custom text for target setup dialog -->
   <String Id="TargetSetupDlg_Title">[ProductName] [%agent_version%] Target Setup</String>
-  <String Id="TargetSetupDlg_TextTitle">{\WixUI_Font_Bigger}Choose Targets</String>
+  <String Id="TargetSetupDlg_TextTitle">{\WixUI_Font_Title}Choose Targets</String>
   <String Id="TargetSetupDlg_Description">Choose where the result will be sent.</String>
   <String Id="TargetSetupDlg_LocalMode">Local Target</String>
   <String Id="TargetSetupDlg_LocalModeDescription">Local path or UNC path</String>
@@ -57,7 +57,7 @@
 
   <!-- custom text for execution mode setup dialog -->
   <String Id="ExecModeDlgTitle">[ProductName] [%agent_version%] Setup</String>
-  <String Id="ExecModeDlg_Title">{\WixUI_Font_Bigger}Choose an Execution Mode</String>
+  <String Id="ExecModeDlg_Title">{\WixUI_Font_Title}Choose an Execution Mode</String>
   <String Id="ExecModeDlgDescription">Choose which way you want [ProductName] to be executed.</String>
   <String Id="ExecModeDlgGroup">Execution Mode</String>
   <String Id="ExecModeDlgService">As a Windows Service</String>
