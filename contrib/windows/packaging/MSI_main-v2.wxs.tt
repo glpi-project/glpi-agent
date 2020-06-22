@@ -25,7 +25,7 @@
       <RegistrySearch Id="InstallDir" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="InstallLocation" Type="raw" />
     </Property>
 
-    <Property Id="QUICKINSTALL" Value="1" />
+    <Property Id="QUICKINSTALL" Value="1" Secure="yes" />
 
     <Property Id="EXECMODE" Value="1" Secure="yes">
       <RegistrySearch Id="ExecMode" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="[ProductName]: ExecMode" Type="raw" />
@@ -57,9 +57,9 @@
     <SetProperty Id="CMDLINE_LOGFILE" Before="AppSearch" Value="[LOGFILE]" />
     <SetProperty Id="LOGFILE"         After="AppSearch"  Value="[CMDLINE_LOGFILE]"><![CDATA[CMDLINE_LOGFILE<>""]]></SetProperty>
 
-    <SetProperty Id="UNINSTALL_VAR" After="FindRelatedProducts" Value="[UPGRADEDIR]var"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
-    <SetProperty Id="UNINSTALL_ETC" After="FindRelatedProducts" Value="[UPGRADEDIR]etc"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
-    <SetProperty Id="UNINSTALL_LOG" After="FindRelatedProducts" Value="[UPGRADEDIR]log"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
+    <SetProperty Id="UNINSTALL_VAR" After="AppSearch" Value="[UPGRADEDIR]var"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
+    <SetProperty Id="UNINSTALL_ETC" After="AppSearch" Value="[UPGRADEDIR]etc"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
+    <SetProperty Id="UNINSTALL_LOG" After="AppSearch" Value="[UPGRADEDIR]log"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
 
     <Icon Id="i_main_ico" SourceFile="$(var.FileMainIcon)" />
 
@@ -146,7 +146,7 @@
         <Publish Dialog="D_TargetSetupDlg"      Control="Back"   Event="NewDialog" Value="SetupTypeDlg" Order="2">WixUI_InstallMode = "InstallTypical" OR WixUI_InstallMode = "InstallComplete"</Publish>
         <Publish Dialog="D_TargetSetupDlg"      Control="Next"   Property="_LOCALDIR" Value="[LOCAL]" Order="1">1</Publish>
         <Publish Dialog="D_TargetSetupDlg"      Control="Next"   Event="NewDialog" Value="VerifyReadyDlg" Order="2">QUICKINSTALL</Publish>
-        <Publish Dialog="D_TargetSetupDlg"      Control="Next"   Event="NewDialog" Value="ExecModeDlg" Order="3">1</Publish>
+        <Publish Dialog="D_TargetSetupDlg"      Control="Next"   Event="NewDialog" Value="ExecModeDlg" Order="3">NOT QUICKINSTALL</Publish>
         <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Property="_LOCALDIR" Value="[INSTALLDIR]" Order="2">NOT LOCAL</Publish>
         <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Property="_LOCALDIR" Value="[LOCAL]" Order="3">LOCAL</Publish>
         <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Event="SetTargetPath" Value="_LOCALDIR" Order="4">NOT WIXUI_DONTVALIDATEPATH</Publish>
@@ -158,7 +158,8 @@
         <Publish Dialog="ExecModeDlg"           Control="Next"   Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
 
         <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"</Publish>
-        <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="ExecModeDlg" Order="2">1</Publish>
+        <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="D_TargetSetupDlg" Order="2">QUICKINSTALL</Publish>
+        <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="ExecModeDlg" Order="3">NOT QUICKINSTALL</Publish>
 
         <Publish Dialog="MaintenanceWelcomeDlg" Control="Next"   Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
         <Publish Dialog="MaintenanceTypeDlg"    Control="ChangeButton" Event="NewDialog" Value="CustomizeDlg">1</Publish>
@@ -170,15 +171,15 @@
 
         <!-- Simplified version of LicenseAgreementDlg -->
         <Dialog Id="LicenseDlg" Width="370" Height="270" Title="!(loc.LicenseAgreementDlg_Title)">
-            <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.LicenseAgreementDlgBannerBitmap)" />
+            <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Text="Bmp_MainBanner" TabSkip="no" />
             <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
             <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
             <Control Id="Description" Type="Text" X="25" Y="23" Width="340" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.LicenseAgreementDlgDescription)" />
             <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.LicenseAgreementDlgTitle)" />
-            <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
             <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)">
                 <Publish Event="SpawnWaitDialog" Value="WaitForCostingDlg">!(wix.WixUICostingPopupOptOut) OR CostingComplete = 1</Publish>
             </Control>
+            <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
             <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
                 <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
             </Control>
@@ -189,25 +190,25 @@
 
         <!-- Dedicated target setup dialog -->
         <Dialog Id="D_TargetSetupDlg" Width="370" Height="270" Title="!(loc.TargetSetupDlg_Title)">
-          <Control Type="Bitmap" Id="Banner" Width="370" Height="44" X="0" Y="0" Text="Bmp_MainBanner" TabSkip="no" />
-          <Control Type="Line" Id="BannerLine" Width="370" Height="0" X="0" Y="44" />
-          <Control Type="Line" Id="BottomLine" Width="370" Height="0" X="0" Y="234" />
-          <Control Type="Text" Id="Title" Width="200" Height="15" X="15" Y="6" Text="!(loc.TargetSetupDlg_TextTitle)" Transparent="yes" NoPrefix="yes" />
-          <Control Type="Text" Id="Description" Width="280" Height="15" X="25" Y="23" Text="!(loc.TargetSetupDlg_Description)" Transparent="yes" NoPrefix="yes" />
-          <Control Type="PushButton" Id="Next" Width="56" Height="17" X="236" Y="243" Default="yes" Text="!(loc.WixUINext)" />
-          <Control Type="PushButton" Id="Back" Width="56" Height="17" X="180" Y="243" Text="!(loc.WixUIBack)" />
-          <Control Type="PushButton" Id="Cancel" Width="56" Height="17" X="304" Y="243" Cancel="yes" Text="!(loc.WixUICancel)">
+          <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Text="Bmp_MainBanner" TabSkip="no" />
+          <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+          <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+          <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Text="!(loc.TargetSetupDlg_TextTitle)" Transparent="yes" NoPrefix="yes" />
+          <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Text="!(loc.TargetSetupDlg_Description)" Transparent="yes" NoPrefix="yes" />
+          <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" />
+          <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
+          <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
             <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
           </Control>
-          <Control Type="GroupBox" Id="LocalModeGrp" Width="350" Height="65" X="10" Y="50" Text="!(loc.TargetSetupDlg_LocalMode)" />
-          <Control Type="Edit" Id="LocalTarget" Width="260" Height="16" X="20" Y="70" Property="LOCAL" />
-          <Control Type="Text" Id="LocalModeDescription" Width="140" Height="11" X="75" Y="94" Transparent="yes" NoPrefix="yes" Text="!(loc.TargetSetupDlg_LocalModeDescription)" />
-          <Control Type="PushButton" Id="ChangeLocal" Width="56" Height="17" X="290" Y="69" Text="!(loc.InstallDirDlgChange)" />
-          <Control Type="GroupBox" Id="ServerModeGrp" Width="350" Height="70" X="10" Y="130" Text="!(loc.TargetSetupDlg_ServerMode)" />
-          <Control Type="Edit" Id="ServerTarget" Width="330" Height="16" X="20" Y="150" Property="SERVER" />
-          <Control Type="Text" Id="ServerModeDescription" Width="330" Height="15" X="20" Y="168" Transparent="yes" NoPrefix="yes" Text="!(loc.TargetSetupDlg_ServerModeDescription)" />
-          <Control Type="Text" Id="ServerModeExample" Width="330" Height="15" X="20" Y="183" Text="!(loc.TargetSetupDlg_ServerModeExample)" Transparent="yes" NoPrefix="yes" />
-          <Control Type="CheckBox" Id="QuickInstallCB" Width="100" Height="15" X="236" Y="210" Text="!(loc.TargetSetupDlg_QuickInstall)" ToolTip="!(loc.TargetSetupDlg_QuickInstallToolTips)" CheckBoxValue="1" Property="QUICKINSTALL" Integer="yes" />
+          <Control Id="LocalModeGrp" Type="GroupBox" X="10" Y="50" Width="350" Height="65" Text="!(loc.TargetSetupDlg_LocalMode)" />
+          <Control Id="LocalTarget" Type="Edit" X="20" Y="70" Width="260" Height="16" Property="LOCAL" />
+          <Control Id="LocalModeDescription" Type="Text" X="75" Y="94" Width="140" Height="11" Transparent="yes" NoPrefix="yes" Text="!(loc.TargetSetupDlg_LocalModeDescription)" />
+          <Control Id="ChangeLocal" Type="PushButton" X="290" Y="69" Width="56" Height="17" Text="!(loc.InstallDirDlgChange)" />
+          <Control Id="ServerModeGrp" Type="GroupBox" X="10" Y="130" Width="350" Height="70" Text="!(loc.TargetSetupDlg_ServerMode)" />
+          <Control Id="ServerTarget" Type="Edit" X="20" Y="150" Width="330" Height="16" Property="SERVER" />
+          <Control Id="ServerModeDescription" Type="Text" X="20" Y="168" Width="330" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.TargetSetupDlg_ServerModeDescription)" />
+          <Control Id="ServerModeExample" Type="Text" X="20" Y="183" Width="330" Height="15" Text="!(loc.TargetSetupDlg_ServerModeExample)" Transparent="yes" NoPrefix="yes" />
+          <Control Id="QuickInstallCB" Type="CheckBox" X="236" Y="210" Width="100" Height="15" Text="!(loc.TargetSetupDlg_QuickInstall)" ToolTip="!(loc.TargetSetupDlg_QuickInstallToolTips)" CheckBoxValue="1" Property="QUICKINSTALL" Integer="yes" />
         </Dialog>
 
         <!-- Adapted version of BrowseDlg to handle Local target -->
@@ -233,7 +234,7 @@
             </Control>
             <Control Id="DirectoryList" Type="DirectoryList" X="25" Y="83" Width="320" Height="98" Property="_LOCALDIR" Sunken="yes" TabSkip="no" />
             <Control Id="PathLabel" Type="Text" X="25" Y="190" Width="320" Height="10" TabSkip="no" Text="!(loc.BrowseLocalDlgPathLabel)" />
-            <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.BrowseDlgBannerBitmap)" />
+            <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="Bmp_MainBanner" />
             <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
             <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
             <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.BrowseDlgDescription)" />
@@ -242,21 +243,21 @@
 
         <!-- Dedicated dialog to select execution mode, only service or manual for now -->
         <Dialog Id="ExecModeDlg" Width="370" Height="270" Title="!(loc.ExecModeDlgTitle)">
-          <Control Type="Bitmap" Id="Banner" Width="370" Height="44" X="0" Y="0" Text="Bmp_MainBanner" TabSkip="no" />
-          <Control Type="Line" Id="BannerLine" Width="370" Height="0" X="0" Y="44" />
-          <Control Type="Line" Id="BottomLine" Width="370" Height="0" X="0" Y="234" />
-          <Control Type="Text" Id="Title" Width="200" Height="15" X="15" Y="6" Text="!(loc.ExecModeDlg_Title)" Transparent="yes" NoPrefix="yes" />
-          <Control Type="Text" Id="Description" Width="280" Height="15" X="25" Y="23" Text="!(loc.ExecModeDlgDescription)" Transparent="yes" />
-          <Control Type="PushButton" Id="Next" Width="56" Height="17" X="236" Y="243" Default="yes" Text="!(loc.WixUINext)" />
-          <Control Type="PushButton" Id="Back" Width="56" Height="17" X="180" Y="243" Text="!(loc.WixUIBack)" />
-          <Control Type="PushButton" Id="Cancel" Width="56" Height="17" X="304" Y="243" Cancel="yes" Text="!(loc.WixUICancel)">
+          <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Text="Bmp_MainBanner" TabSkip="no" />
+          <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+          <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+          <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Text="!(loc.ExecModeDlg_Title)" Transparent="yes" NoPrefix="yes" />
+          <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Text="!(loc.ExecModeDlgDescription)" Transparent="yes" />
+          <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" />
+          <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
+          <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
             <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
           </Control>
-          <Control Type="GroupBox" Id="ExecModeGrp" Width="250" Height="90" X="60" Y="70" Text="!(loc.ExecModeDlgGroup)" />
-          <Control Type="RadioButtonGroup" Property="EXECMODE" Id="ExecModeChoice" Width="230" Height="50" X="70" Y="90">
+          <Control Id="ExecModeGrp" Type="GroupBox" X="60" Y="70" Width="250" Height="90" Text="!(loc.ExecModeDlgGroup)" />
+          <Control Id="ExecModeChoice" Type="RadioButtonGroup" Property="EXECMODE" X="70" Y="90" Width="230" Height="50">
             <RadioButtonGroup Property="EXECMODE">
-              <RadioButton Text="!(loc.ExecModeDlgService)" Height="17" Value="1" Width="200" X="10" Y="5" />
-              <RadioButton Text="!(loc.ExecModeDlgManual)" Height="17" Value="3" Width="200" X="10" Y="30" />
+              <RadioButton Text="!(loc.ExecModeDlgService)" X="10" Y="5" Width="200" Height="17" Value="1" />
+              <RadioButton Text="!(loc.ExecModeDlgManual)" X="10" Y="30" Width="200" Height="17" Value="3" />
             </RadioButtonGroup>
           </Control>
         </Dialog>
