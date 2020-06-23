@@ -154,6 +154,7 @@ use constant _file_feature_match => { qw(
 
     glpi-wakeonlan.bat                                      feat_WOL
     perl\bin\glpi-wakeonlan                                 feat_WOL
+    perl\agent\FusionInventory\Agent\Task\WakeOnLan.pm      feat_WOL
 )};
 
 sub run {
