@@ -134,6 +134,8 @@ use constant _dir_id_match => { qw(
 )};
 
 use constant _file_feature_match => { qw(
+    perl\bin\glpi-agent.exe                                 feat_AGENT
+
     glpi-netdiscovery.bat                                   feat_NETINV
     glpi-netinventory.bat                                   feat_NETINV
     perl\bin\glpi-netdiscovery                              feat_NETINV
@@ -326,8 +328,8 @@ sub _tree2xml {
             # see: http://stackoverflow.com/questions/10358989/wix-using-keypath-on-components-directories-files-registry-etc-etc
             $result .= $ident ."  ". qq[<Component Id="$component_id" Guid="{$component_guid}" Feature="$this_feat">\n];
             $result .= $ident ."  ". qq[  <File Id="$file_id" Name="$file_basename" ShortName="$file_shortname" Source="$f->{full_name}" KeyPath="yes" />\n]; # XXX-TODO consider ReadOnly="yes"
-            # Add service definition on glpi-agent.exe
-            if ($f->{short_name} =~ /glpi-agent\.exe$/) {
+            # Add service, registry and firewall definitions on feat_AGENT
+            if ($this_feat eq "feat_AGENT") {
                 my $servicename = $self->global->{service_name};
                 my $regpath = "Software\\".$self->global->{_provider}."-Agent";
                 $result .= $ident ."  ". qq[  <ServiceInstall Name="$servicename" Start="auto"\n];
@@ -340,9 +342,15 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[    <RegistryValue Name="local" Type="string" Value="[LOCAL]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="logfile" Type="string" Value="[LOGFILE]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="server" Type="string" Value="[SERVER]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="no-httpd" Type="string" Value="[NO_HTTPD]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="httpd-ip" Type="string" Value="[HTTPD_IP]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="httpd-port" Type="string" Value="[HTTPD_PORT]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="httpd-trusted" Type="string" Value="[HTTPD_TRUSTED]" />\n];
                 $result .= $ident ."  ". qq[  </RegistryKey>\n];
                 $result .= $ident ."  ". qq[  <RegistryKey Root="HKLM" Key="Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\[ProductCode]">\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: ExecMode" Type="string" Value="[EXECMODE]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: QuickInstall" Type="string" Value="[QUICKINSTALL]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: AddFirewallException" Type="string" Value="[ADD_FIREWALL_EXCEPTION]" />\n];
                 $result .= $ident ."  ". qq[  </RegistryKey>\n];
             }
             $result .= $ident ."  ". qq[</Component>\n];

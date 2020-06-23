@@ -63,6 +63,17 @@
   <String Id="ExecModeDlgService">As a Windows Service</String>
   <String Id="ExecModeDlgManual">Manually</String>
 
+  <!-- custom text for httpd options setup dialog -->
+  <String Id="HTTPServerSetupDlgTitle">[ProductName] [%agent_version%] Setup</String>
+  <String Id="HTTPServerSetupDlg_Title">{\WixUI_Font_Title}HTTP Server Options</String>
+  <String Id="HTTPServerSetupDlgDescription">Set embedded HTTP server options.</String>
+  <String Id="HTTPServerSetupDlgGroup">Embedded HTTP Server Options</String>
+  <String Id="HTTPServerSetupIP">IP</String>
+  <String Id="HTTPServerSetupPort">Port</String>
+  <String Id="HTTPServerSetupTrustedIPs">Trusted IPs</String>
+  <String Id="HTTPServerSetupAddFirewallException">Add exception on the Windows Firewall</String>
+  <String Id="HTTPServerSetupEnableServer">Enable embedded HTTP server</String>
+
   <!-- custom title with version on all dialog titles -->
   <String Id="BrowseDlg_Title">[ProductName] [%agent_version%] Setup</String>
   <String Id="CancelDlg_Title">[ProductName] [%agent_version%] Setup</String>

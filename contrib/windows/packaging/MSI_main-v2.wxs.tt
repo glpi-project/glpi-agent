@@ -21,17 +21,30 @@
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
     <Property Id="INSTALLLEVEL" Value="3" />
 
+    <!-- Properties used by a radio button needs to have a value otherwise an error is rised during MSI build -->
+    <Property Id="_EXECMODE_RADIO_BUTTON" Value="1" Secure="yes" />
+
     <Property Id="UPGRADEDIR" Secure="yes">
       <RegistrySearch Id="InstallDir" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="InstallLocation" Type="raw" />
     </Property>
 
-    <Property Id="QUICKINSTALL" Value="1" Secure="yes" />
+    <Property Id="QUICKINSTALL" Secure="yes">
+      <RegistrySearch Id="QuickInstall" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="[ProductName]: QuickInstall" Type="raw" />
+    </Property>
+    <SetProperty Id="CMDLINE_QUICKINSTALL" Before="AppSearch" Value="[QUICKINSTALL]" />
+    <SetProperty Id="QUICKINSTALL"         After="AppSearch"  Value="[CMDLINE_QUICKINSTALL]"><![CDATA[CMDLINE_QUICKINSTALL<>""]]></SetProperty>
 
-    <Property Id="EXECMODE" Value="1" Secure="yes">
+    <Property Id="EXECMODE" Secure="yes">
       <RegistrySearch Id="ExecMode" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="[ProductName]: ExecMode" Type="raw" />
     </Property>
-    <SetProperty Id="CMDLINE_EXECMODE"  Before="AppSearch" Value="[EXECMODE]" />
-    <SetProperty Id="EXECMODE"          After="AppSearch"  Value="[CMDLINE_EXECMODE]"><![CDATA[CMDLINE_EXECMODE<>""]]></SetProperty>
+    <SetProperty Id="CMDLINE_EXECMODE" Before="AppSearch" Value="[EXECMODE]" />
+    <SetProperty Id="EXECMODE"         After="AppSearch"  Value="[CMDLINE_EXECMODE]"><![CDATA[CMDLINE_EXECMODE<>""]]></SetProperty>
+
+    <Property Id="ADD_FIREWALL_EXCEPTION" Secure="yes">
+      <RegistrySearch Id="AddFirewallException" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="[ProductName]: AddFirewallException" Type="raw" />
+    </Property>
+    <SetProperty Id="CMDLINE_ADD_FIREWALL_EXCEPTION" Before="AppSearch" Value="[ADD_FIREWALL_EXCEPTION]" />
+    <SetProperty Id="ADD_FIREWALL_EXCEPTION"         After="AppSearch"  Value="[CMDLINE_ADD_FIREWALL_EXCEPTION]"><![CDATA[CMDLINE_ADD_FIREWALL_EXCEPTION<>""]]></SetProperty>
 
     <Property Id="SERVER" Secure="yes">
       <RegistrySearch Id="Server" Root="HKLM" Key="[%agent_regpath%]" Name="server" Type="raw"/>
@@ -45,7 +58,7 @@
     <SetProperty Id="CMDLINE_LOCAL"   Before="AppSearch" Value="[LOCAL]" />
     <SetProperty Id="LOCAL"           After="AppSearch"  Value="[CMDLINE_LOCAL]"><![CDATA[CMDLINE_LOCAL<>""]]></SetProperty>
 
-    <Property Id="DEBUG" Value="0" Secure="yes">
+    <Property Id="DEBUG" Secure="yes">
       <RegistrySearch Id="Debug" Root="HKLM" Key="[%agent_regpath%]" Name="debug" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_DEBUG"   Before="AppSearch" Value="[DEBUG]" />
@@ -56,6 +69,55 @@
     </Property>
     <SetProperty Id="CMDLINE_LOGFILE" Before="AppSearch" Value="[LOGFILE]" />
     <SetProperty Id="LOGFILE"         After="AppSearch"  Value="[CMDLINE_LOGFILE]"><![CDATA[CMDLINE_LOGFILE<>""]]></SetProperty>
+
+    <Property Id="NO_HTTPD" Secure="yes">
+      <RegistrySearch Id="NoHTTPd" Root="HKLM" Key="[%agent_regpath%]" Name="no-httpd" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_NO_HTTPD" Before="AppSearch" Value="[NO_HTTPD]" />
+    <SetProperty Id="NO_HTTPD"         After="AppSearch"  Value="[CMDLINE_NO_HTTPD]"><![CDATA[CMDLINE_NO_HTTPD<>""]]></SetProperty>
+
+    <Property Id="HTTPD_IP" Secure="yes">
+      <RegistrySearch Id="Httpd_IP" Root="HKLM" Key="[%agent_regpath%]" Name="httpd-ip" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_HTTPD_IP" Before="AppSearch" Value="[HTTPD_IP]" />
+    <SetProperty Id="HTTPD_IP"         After="AppSearch"  Value="[CMDLINE_HTTPD_IP]"><![CDATA[CMDLINE_HTTPD_IP<>""]]></SetProperty>
+
+    <Property Id="HTTPD_PORT" Secure="yes">
+      <RegistrySearch Id="Httpd_Port" Root="HKLM" Key="[%agent_regpath%]" Name="httpd-port" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_HTTPD_PORT" Before="AppSearch" Value="[HTTPD_PORT]" />
+    <SetProperty Id="HTTPD_PORT"         After="AppSearch"  Value="[CMDLINE_HTTPD_PORT]"><![CDATA[CMDLINE_HTTPD_PORT<>""]]></SetProperty>
+
+    <Property Id="HTTPD_TRUSTED" Secure="yes">
+      <RegistrySearch Id="Httpd_Trusted" Root="HKLM" Key="[%agent_regpath%]" Name="httpd-trusted" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_HTTPD_TRUSTED" Before="AppSearch" Value="[HTTPD_TRUSTED]" />
+    <SetProperty Id="HTTPD_TRUSTED"         After="AppSearch"  Value="[CMDLINE_HTTPD_TRUSTED]"><![CDATA[CMDLINE_HTTPD_TRUSTED<>""]]></SetProperty>
+
+    <!-- Configuration defaults after handling command line and registry checks -->
+    <SetProperty Id="DEBUG"         Action="DEBUG_Default"         After="AppSearch"  Value="0">NOT DEBUG</SetProperty>
+    <SetProperty Id="NO_HTTPD"      Action="NO_HTTPD_Default"      After="AppSearch"  Value="0">NOT NO_HTTPD</SetProperty>
+    <SetProperty Id="HTTPD_IP"      Action="HTTPD_IP_Default"      After="AppSearch"  Value="0.0.0.0">NOT HTTPD_IP</SetProperty>
+    <SetProperty Id="HTTPD_PORT"    Action="HTTPD_PORT_Default"    After="AppSearch"  Value="62354">NOT HTTPD_PORT</SetProperty>
+    <SetProperty Id="HTTPD_TRUSTED" Action="HTTPD_TRUSTED_Default" After="AppSearch"  Value="127.0.0.1/32">NOT HTTPD_TRUSTED</SetProperty>
+
+    <!-- Installer configuration defaults -->
+    <SetProperty Id="QUICKINSTALL"           Action="QUICKINSTALL_Default"           After="AppSearch" Value="1">NOT QUICKINSTALL</SetProperty>
+    <SetProperty Id="ADD_FIREWALL_EXCEPTION" Action="ADD_FIREWALL_EXCEPTION_Default" After="AppSearch" Value="1">NOT ADD_FIREWALL_EXCEPTION</SetProperty>
+    <SetProperty Id="EXECMODE"               Action="EXECMODE_Default"               After="AppSearch" Value="1">NOT EXECMODE</SetProperty>
+
+    <!-- Fix properties handled as a checkbox, they must be undefined to uncheck the CB -->
+    <SetProperty Id="QUICKINSTALL" Sequence="ui" Action="QUICKINSTALL_Unset" After="AppSearch" Value=""><![CDATA[QUICKINSTALL<>"1"]]></SetProperty>
+    <SetProperty Id="NO_HTTPD"     Sequence="ui" Action="NO_HTTPD_Unset"     After="AppSearch" Value=""><![CDATA[NOT NO_HTTPD OR NO_HTTPD<>"0"]]></SetProperty>
+    <SetProperty Id="ADD_FIREWALL_EXCEPTION" Sequence="ui" Action="ADD_FIREWALL_EXCEPTION_Unset" After="AppSearch" Value=""><![CDATA[ADD_FIREWALL_EXCEPTION<>"1"]]></SetProperty>
+    <SetProperty Id="_EXECMODE_RADIO_BUTTON" Sequence="ui" Action="ExecModeRadio_Service" After="AppSearch" Value="1"><![CDATA[NOT EXECMODE OR EXECMODE<>"3"]]></SetProperty>
+    <SetProperty Id="_EXECMODE_RADIO_BUTTON" Sequence="ui" Action="ExecModeRadio_Manual"  After="AppSearch" Value="3"><![CDATA[EXECMODE="3"]]></SetProperty>
+
+    <!-- Fix properties having to be written later in registry -->
+    <SetProperty Id="QUICKINSTALL" Sequence="ui" Action="QUICKINSTALL_UnsetForReg" Before="ExecuteAction" Value="0"><![CDATA[NOT QUICKINSTALL OR QUICKINSTALL<>"1"]]></SetProperty>
+    <SetProperty Id="NO_HTTPD"     Sequence="ui" Action="NO_HTTPD_SetForReg"       Before="ExecuteAction" Value="1"><![CDATA[NOT NO_HTTPD OR NO_HTTPD<>"0"]]></SetProperty>
+    <SetProperty Id="ADD_FIREWALL_EXCEPTION" Sequence="ui" Action="ADD_FIREWALL_EXCEPTION_UnsetForReg" Before="ExecuteAction" Value="0"><![CDATA[NOT ADD_FIREWALL_EXCEPTION OR ADD_FIREWALL_EXCEPTION<>"1"]]></SetProperty>
+    <SetProperty Id="EXECMODE"     Sequence="ui" Action="EXECMODE_Update"          Before="ExecuteAction" Value="[_EXECMODE_RADIO_BUTTON]" />
 
     <SetProperty Id="UNINSTALL_VAR" After="AppSearch" Value="[UPGRADEDIR]var"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
     <SetProperty Id="UNINSTALL_ETC" After="AppSearch" Value="[UPGRADEDIR]etc"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
@@ -71,8 +133,8 @@
     <MajorUpgrade AllowSameVersionUpgrades="yes" Schedule="afterInstallInitialize"
       DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit." />
 
-    <CustomAction Id="CA_GetARPInstallLoc" Property ="INSTALLDIR"         Value="[UPGRADEDIR]"    Execute="immediate"/>
-    <CustomAction Id="CA_SetARPInstallLoc" Property ="ARPINSTALLLOCATION" Value="[INSTALLDIR]"    Execute="immediate"/>
+    <CustomAction Id="CA_GetARPInstallLoc" Property="INSTALLDIR"         Value="[UPGRADEDIR]" Execute="immediate" />
+    <CustomAction Id="CA_SetARPInstallLoc" Property="ARPINSTALLLOCATION" Value="[INSTALLDIR]" Execute="immediate" />
 
     <CustomAction Id="SetDefaultLogFile"   Property="LOGFILE" Value="[INSTALLDIR]log\glpi-agent.log" Execute="firstSequence" />
 
@@ -87,6 +149,8 @@
     <InstallUISequence>
       <!-- InstallUISequence is used to define a dialog or Custom Action that fires in the UI sequence of events during the install -->
       <Custom Action="CA_GetARPInstallLoc"    Before="CostInitialize">UPGRADINGPRODUCTCODE AND UPGRADEDIR</Custom>
+      <!-- Better set ProgressDlg to be after MigrateFeatureStates so we can safely insert SetProperties before ExecuteAction -->
+      <Show Dialog="ProgressDlg"              After="MigrateFeatureStates" />
     </InstallUISequence>
 
     <Condition Message="Cannot install on Windows 9x or ME systems.">VersionNT</Condition>
@@ -155,13 +219,19 @@
         <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Event="SpawnDialog" Value="BrowseLocalDlg" Order="7">1</Publish>
 
         <Publish Dialog="ExecModeDlg"           Control="Back"   Event="NewDialog" Value="D_TargetSetupDlg" />
-        <Publish Dialog="ExecModeDlg"           Control="Next"   Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+        <Publish Dialog="ExecModeDlg"           Control="Next"   Event="NewDialog" Value="HTTPServerSetup">1</Publish>
+
+        <Publish Dialog="HTTPServerSetup"       Control="Back"   Event="NewDialog" Value="ExecModeDlg">1</Publish>
+        <Publish Dialog="HTTPServerSetup"       Control="Next"   Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
 
         <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"</Publish>
         <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="D_TargetSetupDlg" Order="2">QUICKINSTALL</Publish>
-        <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="ExecModeDlg" Order="3">NOT QUICKINSTALL</Publish>
+        <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="HTTPServerSetup" Order="3">NOT QUICKINSTALL</Publish>
 
         <Publish Dialog="MaintenanceWelcomeDlg" Control="Next"   Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
+        <!-- Reinstall feat_AGENT feature on Change case so service could be reinstalled and restarted, registry values saved and firewall exception setup -->
+        <Publish Dialog="MaintenanceTypeDlg"    Control="ChangeButton" Event="ReinstallMode" Value="am"><![CDATA[OutOfDiskSpace <> 1]]></Publish>
+        <Publish Dialog="MaintenanceTypeDlg"    Control="ChangeButton" Event="Reinstall" Value="feat_AGENT"><![CDATA[OutOfDiskSpace <> 1]]></Publish>
         <Publish Dialog="MaintenanceTypeDlg"    Control="ChangeButton" Event="NewDialog" Value="CustomizeDlg">1</Publish>
         <Publish Dialog="MaintenanceTypeDlg"    Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
         <!-- By default, clicking on Remove, not set immediatly REMOVE to ALL -->
@@ -208,7 +278,7 @@
           <Control Id="ServerTarget" Type="Edit" X="20" Y="150" Width="330" Height="16" Property="SERVER" />
           <Control Id="ServerModeDescription" Type="Text" X="20" Y="168" Width="330" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.TargetSetupDlg_ServerModeDescription)" />
           <Control Id="ServerModeExample" Type="Text" X="20" Y="183" Width="330" Height="15" Text="!(loc.TargetSetupDlg_ServerModeExample)" Transparent="yes" NoPrefix="yes" />
-          <Control Id="QuickInstallCB" Type="CheckBox" X="236" Y="210" Width="100" Height="15" Text="!(loc.TargetSetupDlg_QuickInstall)" ToolTip="!(loc.TargetSetupDlg_QuickInstallToolTips)" CheckBoxValue="1" Property="QUICKINSTALL" Integer="yes" />
+          <Control Id="QuickInstallCB" Type="CheckBox" X="236" Y="210" Width="100" Height="15" Text="!(loc.TargetSetupDlg_QuickInstall)" ToolTip="!(loc.TargetSetupDlg_QuickInstallToolTips)" CheckBoxValue="1" Property="QUICKINSTALL" />
         </Dialog>
 
         <!-- Adapted version of BrowseDlg to handle Local target -->
@@ -247,19 +317,44 @@
           <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
           <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
           <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Text="!(loc.ExecModeDlg_Title)" Transparent="yes" NoPrefix="yes" />
-          <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Text="!(loc.ExecModeDlgDescription)" Transparent="yes" />
+          <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Text="!(loc.ExecModeDlgDescription)" Transparent="yes" NoPrefix="yes" />
           <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" />
           <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
           <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
             <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
           </Control>
           <Control Id="ExecModeGrp" Type="GroupBox" X="60" Y="70" Width="250" Height="90" Text="!(loc.ExecModeDlgGroup)" />
-          <Control Id="ExecModeChoice" Type="RadioButtonGroup" Property="EXECMODE" X="70" Y="90" Width="230" Height="50">
-            <RadioButtonGroup Property="EXECMODE">
+          <Control Id="ExecModeChoice" Type="RadioButtonGroup" Property="_EXECMODE_RADIO_BUTTON" X="70" Y="90" Width="230" Height="50">
+            <RadioButtonGroup Property="_EXECMODE_RADIO_BUTTON">
               <RadioButton Text="!(loc.ExecModeDlgService)" X="10" Y="5" Width="200" Height="17" Value="1" />
               <RadioButton Text="!(loc.ExecModeDlgManual)" X="10" Y="30" Width="200" Height="17" Value="3" />
             </RadioButtonGroup>
           </Control>
+        </Dialog>
+
+        <!-- Dedicated dialog to setup included HTTP server options -->
+        <Dialog Id="HTTPServerSetupDlg" Width="370" Height="270" Title="!(loc.HTTPServerSetupDlgTitle)">
+          <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Text="Bmp_MainBanner" TabSkip="no" />
+          <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+          <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+          <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Text="!(loc.HTTPServerSetupDlg_Title)" Transparent="yes" NoPrefix="yes" />
+          <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Text="!(loc.HTTPServerSetupDlgDescription)" Transparent="yes" NoPrefix="yes" />
+          <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" />
+          <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
+          <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
+            <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+          </Control>
+          <Control Id="HTTPServerGrp" Type="GroupBox" X="15" Y="70" Width="340" Height="100" Text="!(loc.HTTPServerSetupDlgGroup)" />
+          <Control Id="HTTPServerIPDescription" Type="Text"  X="25" Y="88" Width="50" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.HTTPServerSetupIP)" />
+          <Control Id="HTTPServerIP" Type="Edit" X="25" Y="100" Width="90" Height="15" Property="HTTPD_IP" />
+          <Control Id="HTTPServerPortDescription" Type="Text" X="125" Y="88" Width="50" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.HTTPServerSetupPort)" />
+          <Control Id="HTTPServerPort" Type="Edit" X="125" Y="100" Width="50" Height="15" Property="HTTPD_PORT" />
+          <Control Id="AuthorizedIPsDescription" Type="Text" X="25" Y="130" Width="50" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.HTTPServerSetupTrustedIPs)" />
+          <Control Id="AuthorizedIPs" Type="Edit" X="25" Y="142" Width="320" Height="15" Property="HTTPD_TRUSTED" />
+          <Control Id="FirewallExceptionDescription" Type="Text" X="20" Y="190" Width="300" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.HTTPServerSetupAddFirewallException)" RightAligned="yes" />
+          <Control Id="FirewallExceptionCB" Type="CheckBox" X="322" Y="190" Width="10" Height="10" CheckBoxValue="1" Property="ADD_FIREWALL_EXCEPTION" />
+          <Control Id="HTTPServerEnableDescription" Type="Text" X="20" Y="210" Width="300" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.HTTPServerSetupEnableServer)" RightAligned="yes" />
+          <Control Id="HTTPServerEnableCB" Type="CheckBox" X="322" Y="210" Width="10" Height="10" CheckBoxValue="0" Property="NO_HTTPD" />
         </Dialog>
     </UI>
 
@@ -280,6 +375,8 @@
     </Directory>     <!-- TARGETDIR -->
 
     <Feature Id="feat_MSI"  Title="!(loc.ProductTitle)" Description="!(loc.ProductDescription)" Level="1" Display="expand" Absent="disallow">
+      <!-- feat_AGENT permits to use "Change" requests to entirely (re-)configure the agent -->
+      <Feature Id="feat_AGENT" Display="hidden"/>
       <Feature Id="feat_NETINV"  Title="!(loc.NetInventory)" Description="!(loc.NetInventoryDescription)" Level="1000" />
       <Feature Id="feat_DEPLOY"  Title="!(loc.Deploy)" Description="!(loc.DeployDescription)" Level="3" />
       <Feature Id="feat_COLLECT"  Title="!(loc.Collect)" Description="!(loc.CollectDescription)" Level="3" />
