@@ -84,23 +84,43 @@ jobs:
           Test release v${{ steps.extract_tag.outputs.tag }}
         draft: false
         prerelease: true
-    - name: Upload 64bits Archive Asset
+    - name: Upload x64 Archive Asset
       id: upload-x64-archive-asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_test_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_test_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
         asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\glpi-agent-${{ steps.extract_tag.outputs.tag }}-x64.zip
         asset_name: glpi-agent-${{ steps.extract_tag.outputs.tag }}-x64.zip
         asset_content_type: application/zip
-    - name: Upload 32bits Archive Asset
+    - name: Upload x64 MSI Installer Asset
+      id: upload-x64-msi-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_test_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\GLPI-Agent-${{ steps.extract_tag.outputs.tag }}-x64.msi
+        asset_name: GLPI-Agent-${{ steps.extract_tag.outputs.tag }}-x64.msi
+        asset_content_type: application/x-msi
+    - name: Upload x86 Archive Asset
       id: upload-x86-archive-asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_test_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_test_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
         asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\glpi-agent-${{ steps.extract_tag.outputs.tag }}-x86.zip
         asset_name: glpi-agent-${{ steps.extract_tag.outputs.tag }}-x86.zip
         asset_content_type: application/zip
+    - name: Upload x86 MSI Installer Asset
+      id: upload-x86-msi-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_test_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\GLPI-Agent-${{ steps.extract_tag.outputs.tag }}-x86.msi
+        asset_name: GLPI-Agent-${{ steps.extract_tag.outputs.tag }}-x86.msi
+        asset_content_type: application/x-msi
