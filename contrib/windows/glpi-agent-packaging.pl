@@ -605,9 +605,9 @@ sub __job_steps {
         perl_64bitint => 1, # ignored on 64bit, can be overridden by --perl_64bitint | --noperl_64bitint option
         buildoptextra => '-D__USE_MINGW_ANSI_STDIO',
         patch => { #DST paths are relative to the perl src root
-            '<dist_sharedir>/msi/files/perlexe.ico'             => 'win32/perlexe.ico',
+            'contrib/windows/packaging/agentexe.ico'                             => 'win32/agentexe.ico',
             '<dist_sharedir>/perl-'.$MAJOR.'.'.$MINOR.'/win32_config.gc.tt'      => 'win32/config.gc',
-            '<dist_sharedir>/perl-'.$MAJOR.'.'.$MINOR.'/perlexe.rc.tt'           => 'win32/perlexe.rc',
+            'contrib/windows/packaging/agentexe.rc.tt'                           => 'win32/perlexe.rc',
             '<dist_sharedir>/perl-'.$MAJOR.'.'.$MINOR.'/win32_config_H.gc'       => 'win32/config_H.gc', # enables gdbm/ndbm/odbm
         },
         license => { #SRC paths are relative to the perl src root
@@ -722,7 +722,7 @@ sub __job_steps {
             $self->__movedll('libssl-1_1'.($self->is64bit?'-x64__':'').'.dll'),
             $self->__movedll('zlib1__.dll'),
             { do=>'copyfile', args=>[ 'contrib/windows/packaging/dmidecode.exe', '<image_dir>/perl/bin' ] },
-            { do=>'copyfile', args=>[ '<image_dir>/perl/bin/perl.exe', '<image_dir>/perl/bin/glpi-agent.exe' ] },
+            { do=>'movefile', args=>[ '<image_dir>/perl/bin/perl.exe', '<image_dir>/perl/bin/glpi-agent.exe' ] },
             { do=>'removedir', args=>[ '<image_dir>/bin' ] },
             { do=>'removedir', args=>[ '<image_dir>/c' ] },
             { do=>'removedir', args=>[ '<image_dir>/'.($self->is64bit?'x86_64':'i686').'-w64-mingw32' ] },
