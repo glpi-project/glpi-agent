@@ -94,12 +94,32 @@
     <SetProperty Id="CMDLINE_HTTPD_TRUSTED" Before="AppSearch" Value="[HTTPD_TRUSTED]" />
     <SetProperty Id="HTTPD_TRUSTED"         After="AppSearch"  Value="[CMDLINE_HTTPD_TRUSTED]"><![CDATA[CMDLINE_HTTPD_TRUSTED<>""]]></SetProperty>
 
+    <Property Id="TAG" Secure="yes">
+      <RegistrySearch Id="Tag" Root="HKLM" Key="Software\GLPI-Agent" Name="tag" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_TAG" Before="AppSearch" Value="[TAG]" />
+    <SetProperty Id="TAG"         After="AppSearch"  Value="[CMDLINE_TAG]"><![CDATA[CMDLINE_TAG<>""]]></SetProperty>
+
+    <Property Id="SCAN_HOMEDIRS" Secure="yes">
+      <RegistrySearch Id="ScanHomedirs" Root="HKLM" Key="Software\GLPI-Agent" Name="scan-homedirs" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_SCAN_HOMEDIRS" Before="AppSearch" Value="[SCAN_HOMEDIRS]" />
+    <SetProperty Id="SCAN_HOMEDIRS"         After="AppSearch"  Value="[CMDLINE_SCAN_HOMEDIRS]"><![CDATA[CMDLINE_SCAN_HOMEDIRS<>""]]></SetProperty>
+
+    <Property Id="SCAN_PROFILES" Secure="yes">
+      <RegistrySearch Id="ScanProfiles" Root="HKLM" Key="Software\GLPI-Agent" Name="scan-profiles" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_SCAN_PROFILES" Before="AppSearch" Value="[SCAN_PROFILES]" />
+    <SetProperty Id="SCAN_PROFILES"         After="AppSearch"  Value="[CMDLINE_SCAN_PROFILES]"><![CDATA[CMDLINE_SCAN_PROFILES<>""]]></SetProperty>
+
     <!-- Configuration defaults after handling command line and registry checks -->
     <SetProperty Id="DEBUG"         Action="DEBUG_Default"         After="AppSearch"  Value="0">NOT DEBUG</SetProperty>
     <SetProperty Id="NO_HTTPD"      Action="NO_HTTPD_Default"      After="AppSearch"  Value="0">NOT NO_HTTPD</SetProperty>
     <SetProperty Id="HTTPD_IP"      Action="HTTPD_IP_Default"      After="AppSearch"  Value="0.0.0.0">NOT HTTPD_IP</SetProperty>
     <SetProperty Id="HTTPD_PORT"    Action="HTTPD_PORT_Default"    After="AppSearch"  Value="62354">NOT HTTPD_PORT</SetProperty>
     <SetProperty Id="HTTPD_TRUSTED" Action="HTTPD_TRUSTED_Default" After="AppSearch"  Value="127.0.0.1/32">NOT HTTPD_TRUSTED</SetProperty>
+    <SetProperty Id="SCAN_HOMEDIRS" Action="SCAN_HOMEDIRS_Default" After="AppSearch"  Value="0">NOT SCAN_HOMEDIRS</SetProperty>
+    <SetProperty Id="SCAN_PROFILES" Action="SCAN_PROFILES_Default" After="AppSearch"  Value="0">NOT SCAN_PROFILES</SetProperty>
 
     <!-- Installer configuration defaults -->
     <SetProperty Id="QUICKINSTALL"           Action="QUICKINSTALL_Default"           After="AppSearch" Value="1">NOT QUICKINSTALL</SetProperty>
@@ -112,12 +132,16 @@
     <SetProperty Id="ADD_FIREWALL_EXCEPTION" Sequence="ui" Action="ADD_FIREWALL_EXCEPTION_Unset" After="AppSearch" Value=""><![CDATA[ADD_FIREWALL_EXCEPTION<>"1"]]></SetProperty>
     <SetProperty Id="_EXECMODE_RADIO_BUTTON" Sequence="ui" Action="ExecModeRadio_Service" After="AppSearch" Value="1"><![CDATA[NOT EXECMODE OR EXECMODE<>"3"]]></SetProperty>
     <SetProperty Id="_EXECMODE_RADIO_BUTTON" Sequence="ui" Action="ExecModeRadio_Manual"  After="AppSearch" Value="3"><![CDATA[EXECMODE="3"]]></SetProperty>
+    <SetProperty Id="SCAN_HOMEDIRS" Sequence="ui" Action="SCAN_HOMEDIRS_Unset" After="AppSearch" Value=""><![CDATA[SCAN_HOMEDIRS<>"1"]]></SetProperty>
+    <SetProperty Id="SCAN_PROFILES" Sequence="ui" Action="SCAN_PROFILES_Unset" After="AppSearch" Value=""><![CDATA[SCAN_PROFILES<>"1"]]></SetProperty>
 
     <!-- Fix properties having to be written later in registry -->
     <SetProperty Id="QUICKINSTALL" Sequence="ui" Action="QUICKINSTALL_UnsetForReg" Before="ExecuteAction" Value="0"><![CDATA[NOT QUICKINSTALL OR QUICKINSTALL<>"1"]]></SetProperty>
     <SetProperty Id="NO_HTTPD"     Sequence="ui" Action="NO_HTTPD_SetForReg"       Before="ExecuteAction" Value="1"><![CDATA[NOT NO_HTTPD OR NO_HTTPD<>"0"]]></SetProperty>
     <SetProperty Id="ADD_FIREWALL_EXCEPTION" Sequence="ui" Action="ADD_FIREWALL_EXCEPTION_UnsetForReg" Before="ExecuteAction" Value="0"><![CDATA[NOT ADD_FIREWALL_EXCEPTION OR ADD_FIREWALL_EXCEPTION<>"1"]]></SetProperty>
     <SetProperty Id="EXECMODE"     Sequence="ui" Action="EXECMODE_Update"          Before="ExecuteAction" Value="[_EXECMODE_RADIO_BUTTON]" />
+    <SetProperty Id="SCAN_HOMEDIRS" Sequence="ui" Action="SCAN_HOMEDIRS_UnsetForReg" Before="ExecuteAction" Value="0"><![CDATA[NOT SCAN_HOMEDIRS OR SCAN_HOMEDIRS<>"1"]]></SetProperty>
+    <SetProperty Id="SCAN_PROFILES" Sequence="ui" Action="SCAN_PROFILES_UnsetForReg" Before="ExecuteAction" Value="0"><![CDATA[NOT SCAN_PROFILES OR SCAN_PROFILES<>"1"]]></SetProperty>
 
     <SetProperty Id="UNINSTALL_VAR" After="AppSearch" Value="[UPGRADEDIR]var"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
     <SetProperty Id="UNINSTALL_ETC" After="AppSearch" Value="[UPGRADEDIR]etc"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
@@ -229,11 +253,14 @@
       <Publish Dialog="ExecModeDlg"           Control="Next"   Event="NewDialog" Value="HTTPServerSetupDlg">1</Publish>
 
       <Publish Dialog="HTTPServerSetupDlg"    Control="Back"   Event="NewDialog" Value="ExecModeDlg">1</Publish>
-      <Publish Dialog="HTTPServerSetupDlg"    Control="Next"   Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+      <Publish Dialog="HTTPServerSetupDlg"    Control="Next"   Event="NewDialog" Value="MiscelaneousOptionsDlg">1</Publish>
+
+      <Publish Dialog="MiscelaneousOptionsDlg" Control="Back"   Event="NewDialog" Value="ExecModeDlg">1</Publish>
+      <Publish Dialog="MiscelaneousOptionsDlg" Control="Next"   Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
 
       <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"</Publish>
       <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="D_TargetSetupDlg" Order="2">QUICKINSTALL</Publish>
-      <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="HTTPServerSetupDlg" Order="3">NOT QUICKINSTALL</Publish>
+      <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="MiscelaneousOptionsDlg" Order="3">NOT QUICKINSTALL</Publish>
 
       <Publish Dialog="MaintenanceWelcomeDlg" Control="Next"   Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
       <!-- Reinstall feat_AGENT feature on Change case so service could be reinstalled and restarted, registry values saved and firewall exception setup -->
@@ -352,7 +379,7 @@
           <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
         </Control>
         <Control Id="HTTPServerGrp" Type="GroupBox" X="15" Y="70" Width="340" Height="100" Text="!(loc.HTTPServerSetupDlgGroup)" />
-        <Control Id="HTTPServerIPDescription" Type="Text"  X="25" Y="88" Width="50" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.HTTPServerSetupIP)" />
+        <Control Id="HTTPServerIPDescription" Type="Text" X="25" Y="88" Width="50" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.HTTPServerSetupIP)" />
         <Control Id="HTTPServerIP" Type="Edit" X="25" Y="100" Width="90" Height="15" Property="HTTPD_IP" />
         <Control Id="HTTPServerPortDescription" Type="Text" X="125" Y="88" Width="50" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.HTTPServerSetupPort)" />
         <Control Id="HTTPServerPort" Type="Edit" X="125" Y="100" Width="50" Height="15" Property="HTTPD_PORT" />
@@ -362,6 +389,25 @@
         <Control Id="FirewallExceptionCB" Type="CheckBox" X="322" Y="190" Width="10" Height="10" CheckBoxValue="1" Property="ADD_FIREWALL_EXCEPTION" />
         <Control Id="HTTPServerEnableDescription" Type="Text" X="20" Y="210" Width="300" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.HTTPServerSetupEnableServer)" RightAligned="yes" />
         <Control Id="HTTPServerEnableCB" Type="CheckBox" X="322" Y="210" Width="10" Height="10" CheckBoxValue="0" Property="NO_HTTPD" />
+      </Dialog>
+
+      <!-- Dedicated dialog to setup miscelaneous options -->
+      <Dialog Id="MiscelaneousOptionsDlg" Width="370" Height="270" Title="!(loc.MiscelaneousOptionsDlgTitle)">
+        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Text="Bmp_MainBanner" TabSkip="no" />
+        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+        <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Text="!(loc.MiscelaneousOptionsDlg_Title)" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Text="!(loc.MiscelaneousOptionsDlgDescription)" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" />
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
+          <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+        </Control>
+        <Control Id="MiscelaneousOptionsGrp" Type="GroupBox" X="50" Y="70" Width="270" Height="90" Text="!(loc.MiscelaneousOptionsGroup)" />
+        <Control Id="Tag" Type="Text" X="60" Y="88" Width="50" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.TagOption)" />
+        <Control Id="TagOption" Type="Edit" X="60" Y="100" Width="250" Height="16" Property="TAG" />
+        <Control Id="ScanHomedirsOption" Type="CheckBox" X="60" Y="120" Width="250" Height="10" CheckBoxValue="1" Property="SCAN_HOMEDIRS" Text="!(loc.ScanHomedirsOption)" />
+        <Control Id="ScanProfilesOption" Type="CheckBox" X="60" Y="135" Width="250" Height="10" CheckBoxValue="1" Property="SCAN_PROFILES" Text="!(loc.ScanProfilesOption)" />
       </Dialog>
     </UI>
 
