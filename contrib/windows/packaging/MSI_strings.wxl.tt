@@ -83,6 +83,22 @@
   <String Id="ScanHomedirsOption">Scan home directory for virtual machines</String>
   <String Id="ScanProfilesOption">Scan user profiles for software</String>
 
+  <!-- custom text for advanced options setup dialog -->
+  <String Id="AdvancedOptionsDlgTitle">[ProductName] 1.0 Setup</String>
+  <String Id="AdvancedOptionsDlg_Title">{\WixUI_Font_Title}Advanced Options</String>
+  <String Id="AdvancedOptionsDlgDescription">Set Advanced Options.</String>
+  <String Id="AdvancedAdvice">Please, do not change the following options whether you are not totally sure what you are doing and why.</String>
+  <String Id="TimeOptionsGrp">Time Options (in seconds)</String>
+  <String Id="TimeOut">Connection Time Out</String>
+  <String Id="DelayTime">Delay Before the First Target</String>
+  <String Id="BackendCollectTimeOut">Task Execution Time Out</String>
+  <String Id="OtherOptionsGrp">Other Options</String>
+  <String Id="P2POption">No P2P</String>
+  <String Id="NoTask">Omit These Tasks</String>
+  <String Id="NoTaskFormat">(list separated by commas)</String>
+  <String Id="NoCategory">Omit These Categories</String>
+  <String Id="NoCategoryFormat">(list separated by commas)</String>
+
   <!-- custom title with version on all dialog titles -->
   <String Id="BrowseDlg_Title">[ProductName] [%agent_version%] Setup</String>
   <String Id="CancelDlg_Title">[ProductName] [%agent_version%] Setup</String>

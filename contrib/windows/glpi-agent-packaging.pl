@@ -349,6 +349,12 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[    <RegistryValue Name="tag" Type="string" Value="[TAG]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="scan-homedirs" Type="string" Value="[SCAN_HOMEDIRS]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="scan-profiles" Type="string" Value="[SCAN_PROFILES]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="no-p2p" Type="string" Value="[NO_P2P]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="timeout" Type="string" Value="[TIMEOUT]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="delaytime" Type="string" Value="[DELAYTIME]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="backend-collect-timeout" Type="string" Value="[BACKEND_COLLECT_TIMEOUT]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="no-task" Type="string" Value="[NO_TASK]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="no-category" Type="string" Value="[NO_CATEGORY]" />\n];
                 $result .= $ident ."  ". qq[  </RegistryKey>\n];
                 $result .= $ident ."  ". qq[  <RegistryKey Root="HKLM" Key="Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\[ProductCode]">\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: ExecMode" Type="string" Value="[EXECMODE]" />\n];
