@@ -74,6 +74,15 @@
   <String Id="HTTPServerSetupAddFirewallException">Add exception on the Windows Firewall</String>
   <String Id="HTTPServerSetupEnableServer">Enable embedded HTTP server</String>
 
+  <!-- custom text for miscelaneous options setup dialog -->
+  <String Id="MiscelaneousOptionsDlgTitle">[ProductName] 1.0 Setup</String>
+  <String Id="MiscelaneousOptionsDlg_Title">{\WixUI_Font_Title}Miscelaneous Options</String>
+  <String Id="MiscelaneousOptionsDlgDescription">Set preferences about miscelaneous options.</String>
+  <String Id="MiscelaneousOptionsGroup">Miscelaneous Options</String>
+  <String Id="TagOption">Tag</String>
+  <String Id="ScanHomedirsOption">Scan home directory for virtual machines</String>
+  <String Id="ScanProfilesOption">Scan user profiles for software</String>
+
   <!-- custom title with version on all dialog titles -->
   <String Id="BrowseDlg_Title">[ProductName] [%agent_version%] Setup</String>
   <String Id="CancelDlg_Title">[ProductName] [%agent_version%] Setup</String>
