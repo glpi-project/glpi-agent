@@ -368,6 +368,13 @@ sub _gen_dir_id {
     return _dir_id_match->{lc($dir)} // "d" . $self->{id_counter}++;
 }
 
+sub _gen_file_id {
+  my ($self, $file) = @_;
+  my $r;
+  $r = "f_agent_exe"  if lc($file) eq 'perl\bin\glpi-agent.exe';
+  return  $r // "f" . $self->{id_counter}++;
+}
+
 package
     Perl::Dist::GLPI::Agent::Step::Update;
 

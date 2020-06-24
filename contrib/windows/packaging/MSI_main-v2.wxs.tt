@@ -138,6 +138,13 @@
 
     <CustomAction Id="SetDefaultLogFile"   Property="LOGFILE" Value="[INSTALLDIR]log\glpi-agent.log" Execute="firstSequence" />
 
+    <CustomAction Id="SetDeleteFirewallExceptionCmd" Property="DeleteFirewallException" Value='"netsh" advfirewall firewall delete rule name="!(loc.FirewallExceptionName)"' Execute="immediate" />
+    <CustomAction Id="DeleteFirewallException" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+    <CustomAction Id="SetAddFirewallExceptionInCmd" Property="AddFirewallExceptionIn" Value='"netsh" advfirewall firewall add rule name="!(loc.FirewallExceptionName)" program="[#f_agent_exe]" description="!(loc.FirewallExceptionDescription)" protocol=TCP dir=in localport=[HTTPD_PORT] action=allow' Execute="immediate" />
+    <CustomAction Id="AddFirewallExceptionIn" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+    <CustomAction Id="SetAddFirewallExceptionOutCmd" Property="AddFirewallExceptionOut" Value='"netsh" advfirewall firewall add rule name="!(loc.FirewallExceptionName)" program="[#f_agent_exe]" description="!(loc.OutgoingFirewallExceptionDescription)" dir=out action=allow' Execute="immediate" />
+    <CustomAction Id="AddFirewallExceptionOut" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
     <InstallExecuteSequence>
       <!-- InstallExecuteSequence is used to define Custom Actions that fire after the UI is finished and the install is starting to execute -->
       <Custom Action="CA_SetARPInstallLoc"    Before="RegisterProduct" />
@@ -218,15 +225,15 @@
       <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Property="_LOCALDIR" Value="[INSTALLDIR]" Order="6"><![CDATA[NOT WIXUI_DONTVALIDATEPATH AND WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
       <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Event="SpawnDialog" Value="BrowseLocalDlg" Order="7">1</Publish>
 
-      <Publish Dialog="ExecModeDlg"           Control="Back"   Event="NewDialog" Value="D_TargetSetupDlg" />
-      <Publish Dialog="ExecModeDlg"           Control="Next"   Event="NewDialog" Value="HTTPServerSetup">1</Publish>
+      <Publish Dialog="ExecModeDlg"           Control="Back"   Event="NewDialog" Value="D_TargetSetupDlg">1</Publish>
+      <Publish Dialog="ExecModeDlg"           Control="Next"   Event="NewDialog" Value="HTTPServerSetupDlg">1</Publish>
 
-      <Publish Dialog="HTTPServerSetup"       Control="Back"   Event="NewDialog" Value="ExecModeDlg">1</Publish>
-      <Publish Dialog="HTTPServerSetup"       Control="Next"   Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+      <Publish Dialog="HTTPServerSetupDlg"    Control="Back"   Event="NewDialog" Value="ExecModeDlg">1</Publish>
+      <Publish Dialog="HTTPServerSetupDlg"    Control="Next"   Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
 
       <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"</Publish>
       <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="D_TargetSetupDlg" Order="2">QUICKINSTALL</Publish>
-      <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="HTTPServerSetup" Order="3">NOT QUICKINSTALL</Publish>
+      <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="HTTPServerSetupDlg" Order="3">NOT QUICKINSTALL</Publish>
 
       <Publish Dialog="MaintenanceWelcomeDlg" Control="Next"   Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
       <!-- Reinstall feat_AGENT feature on Change case so service could be reinstalled and restarted, registry values saved and firewall exception setup -->

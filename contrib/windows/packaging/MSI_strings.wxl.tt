@@ -103,4 +103,9 @@
   <String Id="SetupTypeDlgTypicalText">Installs the most common program features, including Inventory, Deploy and Collect tasks support.</String>
   <String Id="SetupTypeDlgCompleteText">All program features will be installed.</String>
   <String Id="ProgressDlgTitleInstalling">{\WixUI_Font_Title}Installing [ProductName] [%agent_version%]</String>
+
+  <!-- texts related to firewall exceptions -->
+  <String Id="FirewallExceptionName">[ProductName]</String>
+  <String Id="FirewallExceptionDescription">[ProductName] embedded HTTP server incoming traffic</String>
+  <String Id="OutgoingFirewallExceptionDescription">[ProductName] outgoing traffic</String>
 </WixLocalization>
