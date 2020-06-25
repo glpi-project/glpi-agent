@@ -232,6 +232,8 @@
       <Custom Action="SetDefaultLogFile"      After="FindRelatedProducts">NOT LOGFILE</Custom>
       <InstallServices>EXECMODE=1</InstallServices>
       <StartServices>EXECMODE=1</StartServices>
+      <!-- Only support util:ServiceConfig when expecting to be installed as service -->
+      <Custom Action="SchedServiceConfig" After="InstallServices">EXECMODE=1 AND NOT REMOVE~="ALL"</Custom>
     </InstallExecuteSequence>
 
     <InstallUISequence>
