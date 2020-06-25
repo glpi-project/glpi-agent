@@ -237,10 +237,10 @@
       <!-- Schedule custom action to install/uninstall firewall exception rules -->
       <Custom Action="SetDeleteFirewallExceptionCmd" Before="DeleteFirewallException" />
       <Custom Action="DeleteFirewallException" Before="RemoveFiles" />
-      <Custom Action="SetAddFirewallExceptionInCmd" Before="AddFirewallExceptionIn">ADD_FIREWALL_EXCEPTION=1</Custom>
-      <Custom Action="AddFirewallExceptionIn" After="InstallFiles">ADD_FIREWALL_EXCEPTION=1</Custom>
-      <Custom Action="SetAddFirewallExceptionOutCmd" Before="AddFirewallExceptionOut">ADD_FIREWALL_EXCEPTION=1</Custom>
-      <Custom Action="AddFirewallExceptionOut" After="InstallFiles">ADD_FIREWALL_EXCEPTION=1</Custom>
+      <Custom Action="SetAddFirewallExceptionInCmd" Before="AddFirewallExceptionIn">ADD_FIREWALL_EXCEPTION=1 AND NOT REMOVE~="ALL"</Custom>
+      <Custom Action="AddFirewallExceptionIn" After="InstallFiles">ADD_FIREWALL_EXCEPTION=1 AND NOT REMOVE~="ALL"</Custom>
+      <Custom Action="SetAddFirewallExceptionOutCmd" Before="AddFirewallExceptionOut">ADD_FIREWALL_EXCEPTION=1 AND NOT REMOVE~="ALL"</Custom>
+      <Custom Action="AddFirewallExceptionOut" After="InstallFiles">ADD_FIREWALL_EXCEPTION=1 AND NOT REMOVE~="ALL"</Custom>
     </InstallExecuteSequence>
 
     <InstallUISequence>
