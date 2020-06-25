@@ -430,13 +430,12 @@
           <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
         </Control>
         <Control Id="ExecModeGrp" Type="GroupBox" X="60" Y="70" Width="250" Height="90" Text="!(loc.ExecModeDlgGroup)" />
-        <Control Id="ExecModeChoice" Type="RadioButtonGroup" Property="_EXECMODE_RADIO_BUTTON" X="70" Y="90" Width="230" Height="50">
-          <RadioButtonGroup Property="_EXECMODE_RADIO_BUTTON">
-            <RadioButton Text="!(loc.ExecModeDlgService)" X="10" Y="5" Width="200" Height="17" Value="1" />
-            <RadioButton Text="!(loc.ExecModeDlgManual)" X="10" Y="30" Width="200" Height="17" Value="3" />
-          </RadioButtonGroup>
-        </Control>
+        <Control Id="ExecModeChoice" Type="RadioButtonGroup" Property="_EXECMODE_RADIO_BUTTON" X="70" Y="90" Width="230" Height="50" />
       </Dialog>
+      <RadioButtonGroup Property="_EXECMODE_RADIO_BUTTON">
+        <RadioButton Text="!(loc.ExecModeDlgService)" X="10" Y="5" Width="200" Height="17" Value="1" />
+        <RadioButton Text="!(loc.ExecModeDlgManual)" X="10" Y="30" Width="200" Height="17" Value="3" />
+      </RadioButtonGroup>
 
       <!-- Dedicated dialog to setup included HTTP server options -->
       <Dialog Id="HTTPServerSetupDlg" Width="370" Height="270" Title="!(loc.HTTPServerSetupDlgTitle)">
