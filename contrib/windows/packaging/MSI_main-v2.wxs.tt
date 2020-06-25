@@ -298,10 +298,10 @@
       <Publish Dialog="HTTPServerSetupDlg"    Control="Back"   Event="NewDialog" Value="ExecModeDlg">1</Publish>
       <Publish Dialog="HTTPServerSetupDlg"    Control="Next"   Event="NewDialog" Value="MiscelaneousOptionsDlg">1</Publish>
 
-      <Publish Dialog="MiscelaneousOptionsDlg" Control="Back"   Event="NewDialog" Value="ExecModeDlg">1</Publish>
+      <Publish Dialog="MiscelaneousOptionsDlg" Control="Back"   Event="NewDialog" Value="HTTPServerSetupDlg">1</Publish>
       <Publish Dialog="MiscelaneousOptionsDlg" Control="Next"   Event="NewDialog" Value="AdvancedOptionsDlg">1</Publish>
 
-      <Publish Dialog="AdvancedOptionsDlg"    Control="Back"   Event="NewDialog" Value="ExecModeDlg">1</Publish>
+      <Publish Dialog="AdvancedOptionsDlg"    Control="Back"   Event="NewDialog" Value="MiscelaneousOptionsDlg">1</Publish>
       <Publish Dialog="AdvancedOptionsDlg"    Control="Next"   Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
 
       <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"</Publish>
