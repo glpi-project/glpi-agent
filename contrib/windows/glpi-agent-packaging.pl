@@ -347,7 +347,7 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[    <RegistryValue Name="no-httpd" Type="string" Value="[NO_HTTPD]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="httpd-ip" Type="string" Value="[HTTPD_IP]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="httpd-port" Type="string" Value="[HTTPD_PORT]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="httpd-trusted" Type="string" Value="[HTTPD_TRUSTED]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="httpd-trust" Type="string" Value="[HTTPD_TRUST]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="tag" Type="string" Value="[TAG]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="scan-homedirs" Type="string" Value="[SCAN_HOMEDIRS]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="scan-profiles" Type="string" Value="[SCAN_PROFILES]" />\n];

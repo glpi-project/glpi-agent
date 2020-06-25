@@ -100,11 +100,11 @@
     <SetProperty Id="CMDLINE_HTTPD_PORT" Before="AppSearch" Value="[HTTPD_PORT]" />
     <SetProperty Id="HTTPD_PORT"         After="AppSearch"  Value="[CMDLINE_HTTPD_PORT]"><![CDATA[CMDLINE_HTTPD_PORT<>""]]></SetProperty>
 
-    <Property Id="HTTPD_TRUSTED" Secure="yes">
-      <RegistrySearch Id="Httpd_Trusted" Root="HKLM" Key="[%agent_regpath%]" Name="httpd-trusted" Type="raw"/>
+    <Property Id="HTTPD_TRUST" Secure="yes">
+      <RegistrySearch Id="Httpd_Trust" Root="HKLM" Key="[%agent_regpath%]" Name="httpd-trust" Type="raw"/>
     </Property>
-    <SetProperty Id="CMDLINE_HTTPD_TRUSTED" Before="AppSearch" Value="[HTTPD_TRUSTED]" />
-    <SetProperty Id="HTTPD_TRUSTED"         After="AppSearch"  Value="[CMDLINE_HTTPD_TRUSTED]"><![CDATA[CMDLINE_HTTPD_TRUSTED<>""]]></SetProperty>
+    <SetProperty Id="CMDLINE_HTTPD_TRUST" Before="AppSearch" Value="[HTTPD_TRUST]" />
+    <SetProperty Id="HTTPD_TRUST"         After="AppSearch"  Value="[CMDLINE_HTTPD_TRUST]"><![CDATA[CMDLINE_HTTPD_TRUST<>""]]></SetProperty>
 
     <Property Id="TAG" Secure="yes">
       <RegistrySearch Id="Tag" Root="HKLM" Key="Software\GLPI-Agent" Name="tag" Type="raw"/>
@@ -455,7 +455,7 @@
         <Control Id="HTTPServerPortDescription" Type="Text" X="125" Y="88" Width="50" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.HTTPServerSetupPort)" />
         <Control Id="HTTPServerPort" Type="Edit" X="125" Y="100" Width="50" Height="15" Property="HTTPD_PORT" />
         <Control Id="AuthorizedIPsDescription" Type="Text" X="25" Y="130" Width="50" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.HTTPServerSetupTrustedIPs)" />
-        <Control Id="AuthorizedIPs" Type="Edit" X="25" Y="142" Width="320" Height="15" Property="HTTPD_TRUSTED" />
+        <Control Id="AuthorizedIPs" Type="Edit" X="25" Y="142" Width="320" Height="15" Property="HTTPD_TRUST" />
         <Control Id="FirewallExceptionDescription" Type="Text" X="20" Y="190" Width="300" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.HTTPServerSetupAddFirewallException)" RightAligned="yes" />
         <Control Id="FirewallExceptionCB" Type="CheckBox" X="322" Y="190" Width="10" Height="10" CheckBoxValue="1" Property="ADD_FIREWALL_EXCEPTION" />
         <Control Id="HTTPServerEnableDescription" Type="Text" X="20" Y="210" Width="300" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.HTTPServerSetupEnableServer)" RightAligned="yes" />
