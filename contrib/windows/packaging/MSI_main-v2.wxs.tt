@@ -64,11 +64,23 @@
     <SetProperty Id="CMDLINE_DEBUG"   Before="AppSearch" Value="[DEBUG]" />
     <SetProperty Id="DEBUG"           After="AppSearch"  Value="[CMDLINE_DEBUG]"><![CDATA[CMDLINE_DEBUG<>""]]></SetProperty>
 
+    <Property Id="LOGGER" Secure="yes">
+      <RegistrySearch Id="Logger" Root="HKLM" Key="[%agent_regpath%]" Name="logger" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_LOGGER" Before="AppSearch" Value="[LOGGER]" />
+    <SetProperty Id="LOGGER"         After="AppSearch"  Value="[CMDLINE_LOGGER]"><![CDATA[CMDLINE_LOGGER<>""]]></SetProperty>
+
     <Property Id="LOGFILE" Secure="yes">
       <RegistrySearch Id="LogFile" Root="HKLM" Key="[%agent_regpath%]" Name="logfile" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_LOGFILE" Before="AppSearch" Value="[LOGFILE]" />
     <SetProperty Id="LOGFILE"         After="AppSearch"  Value="[CMDLINE_LOGFILE]"><![CDATA[CMDLINE_LOGFILE<>""]]></SetProperty>
+
+    <Property Id="LOGFILE_MAXSIZE" Secure="yes">
+      <RegistrySearch Id="LogFileMaxSize" Root="HKLM" Key="[%agent_regpath%]" Name="logfile-maxsize" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_LOGFILE_MAXSIZE" Before="AppSearch" Value="[LOGFILE_MAXSIZE]" />
+    <SetProperty Id="LOGFILE_MAXSIZE"         After="AppSearch"  Value="[CMDLINE_LOGFILE_MAXSIZE]"><![CDATA[CMDLINE_LOGFILE_MAXSIZE<>""]]></SetProperty>
 
     <Property Id="NO_HTTPD" Secure="yes">
       <RegistrySearch Id="NoHTTPd" Root="HKLM" Key="[%agent_regpath%]" Name="no-httpd" Type="raw"/>
@@ -150,6 +162,8 @@
 
     <!-- Configuration defaults after handling command line and registry checks -->
     <SetProperty Id="DEBUG"         Action="DEBUG_Default"         After="AppSearch"  Value="0">NOT DEBUG</SetProperty>
+    <SetProperty Id="LOGGER"        Action="LOGGER_Default"        After="AppSearch"  Value="file">NOT LOGGER</SetProperty>
+    <SetProperty Id="LOGFILE_MAXSIZE" Action="LOGFILE_MAXSIZE_Default" After="AppSearch" Value="4">NOT LOGFILE_MAXSIZE</SetProperty>
     <SetProperty Id="NO_HTTPD"      Action="NO_HTTPD_Default"      After="AppSearch"  Value="0">NOT NO_HTTPD</SetProperty>
     <SetProperty Id="HTTPD_IP"      Action="HTTPD_IP_Default"      After="AppSearch"  Value="0.0.0.0">NOT HTTPD_IP</SetProperty>
     <SetProperty Id="HTTPD_PORT"    Action="HTTPD_PORT_Default"    After="AppSearch"  Value="62354">NOT HTTPD_PORT</SetProperty>
@@ -159,7 +173,7 @@
     <SetProperty Id="TIMEOUT"       Action="TIMEOUT_Default"       After="AppSearch"  Value="180">NOT TIMEOUT</SetProperty>
     <SetProperty Id="DELAYTIME"     Action="DELAYTIME_Default"     After="AppSearch"  Value="3600">NOT DELAYTIME</SetProperty>
     <SetProperty Id="NO_P2P"        Action="NO_P2P_Default"        After="AppSearch"  Value="0">NOT NO_P2P</SetProperty>
-    <SetProperty Id="BACKEND_COLLECT_TIMEOUT" Action="BACKEND_COLLECT_TIMEOUT_Default" After="AppSearch"  Value="180">NOT BACKEND_COLLECT_TIMEOUT</SetProperty>
+    <SetProperty Id="BACKEND_COLLECT_TIMEOUT" Action="BACKEND_COLLECT_TIMEOUT_Default" After="AppSearch" Value="180">NOT BACKEND_COLLECT_TIMEOUT</SetProperty>
 
     <!-- Installer configuration defaults -->
     <SetProperty Id="QUICKINSTALL"           Action="QUICKINSTALL_Default"           After="AppSearch" Value="1">NOT QUICKINSTALL</SetProperty>
@@ -302,11 +316,14 @@
       <Publish Dialog="MiscelaneousOptionsDlg" Control="Next"   Event="NewDialog" Value="AdvancedOptionsDlg">1</Publish>
 
       <Publish Dialog="AdvancedOptionsDlg"    Control="Back"   Event="NewDialog" Value="MiscelaneousOptionsDlg">1</Publish>
-      <Publish Dialog="AdvancedOptionsDlg"    Control="Next"   Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+      <Publish Dialog="AdvancedOptionsDlg"    Control="Next"   Event="NewDialog" Value="DebugOptionsDlg">1</Publish>
+
+      <Publish Dialog="DebugOptionsDlg"       Control="Back"   Event="NewDialog" Value="AdvancedOptionsDlg">1</Publish>
+      <Publish Dialog="DebugOptionsDlg"       Control="Next"   Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
 
       <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"</Publish>
       <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="D_TargetSetupDlg" Order="2">QUICKINSTALL</Publish>
-      <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="AdvancedOptionsDlg" Order="3">NOT QUICKINSTALL</Publish>
+      <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="DebugOptionsDlg" Order="3">NOT QUICKINSTALL</Publish>
 
       <Publish Dialog="MaintenanceWelcomeDlg" Control="Next"   Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
       <!-- Reinstall feat_AGENT feature on Change case so service could be reinstalled and restarted, registry values saved and firewall exception setup -->
@@ -485,6 +502,40 @@
         <Control Id="NoCategoryOption" Type="Edit" X="195" Y="175" Width="155" Height="16" Property="NO_CATEGORY" />
         <Control Id="NoCategoryFormat" Type="Text" X="200" Y="190" Width="145" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.NoCategoryFormat)" />
       </Dialog>
+
+      <!-- Dedicated dialog to setup debug options -->
+      <Dialog Id="DebugOptionsDlg" Width="370" Height="270" Title="!(loc.DebugOptionsDlgTitle)">
+        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Text="Bmp_MainBanner" TabSkip="no" />
+        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+        <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Text="!(loc.DebugOptionsDlg_Title)" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Text="!(loc.DebugOptionsDlgDescription)" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" />
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
+          <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+        </Control>
+        <Control Id="DebugOptionsDlgGrp" Type="GroupBox" X="50" Y="70" Width="270" Height="120" Text="!(loc.DebugOptionsGroup)" />
+        <Control Id="Debug" Type="Text" X="60" Y="88" Width="90" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.DebugOption)" />
+        <Control Id="DebugOption" Type="ComboBox" X="60" Y="100" Width="60" Height="16" Sorted="yes" ComboList="yes" Property="DEBUG" />
+        <Control Id="Logger" Type="Text" X="190" Y="88" Width="50" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.LoggerOption)" />
+        <Control Id="LoggerOption" Type="ComboBox" X="190" Y="100" Width="120" Height="16" Sorted="yes" ComboList="yes" Property="LOGGER" />
+        <Control Id="LogFile" Type="Text" X="60" Y="120" Width="50" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.LogFileOption)" />
+        <Control Id="LogFileOption" Type="Edit" X="60" Y="130" Width="250" Height="16" Property="LOGFILE" />
+        <Control Id="LogFileMaxSize" Type="Text" X="60" Y="150" Width="140" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.LogFileMaxSizeOption)" />
+        <Control Id="LogFileMaxSizeOption" Type="Edit" X="60" Y="160" Width="60" Height="16" Property="LOGFILE_MAXSIZE" />
+      </Dialog>
+
+      <ComboBox Property="DEBUG">
+        <ListItem Text="!(loc.Debug0)" Value="0" />
+        <ListItem Text="!(loc.Debug1)" Value="1" />
+        <ListItem Text="!(loc.Debug2)" Value="2" />
+      </ComboBox>
+
+      <ComboBox Property="LOGGER">
+        <ListItem Text="!(loc.FileLogger)" Value="file" />
+        <ListItem Text="!(loc.StderrLogger)" Value="stderr" />
+      </ComboBox>
     </UI>
 
     <Directory Id="TARGETDIR" Name="SourceDir">
