@@ -34,6 +34,12 @@
     <SetProperty Id="CMDLINE_QUICKINSTALL" Before="AppSearch" Value="[QUICKINSTALL]" />
     <SetProperty Id="QUICKINSTALL"         After="AppSearch"  Value="[CMDLINE_QUICKINSTALL]"><![CDATA[CMDLINE_QUICKINSTALL<>""]]></SetProperty>
 
+    <Property Id="RUNNOW" Secure="yes">
+      <RegistrySearch Id="RunNow" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="[ProductName]: RunNow" Type="raw" />
+    </Property>
+    <SetProperty Id="CMDLINE_RUNNOW" Before="AppSearch" Value="[RUNNOW]" />
+    <SetProperty Id="RUNNOW"         After="AppSearch"  Value="[CMDLINE_RUNNOW]"><![CDATA[CMDLINE_RUNNOW<>""]]></SetProperty>
+
     <Property Id="EXECMODE" Secure="yes">
       <RegistrySearch Id="ExecMode" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="[ProductName]: ExecMode" Type="raw" />
     </Property>
@@ -179,6 +185,7 @@
     <SetProperty Id="QUICKINSTALL"           Action="QUICKINSTALL_Default"           After="AppSearch" Value="1">NOT QUICKINSTALL</SetProperty>
     <SetProperty Id="ADD_FIREWALL_EXCEPTION" Action="ADD_FIREWALL_EXCEPTION_Default" After="AppSearch" Value="1">NOT ADD_FIREWALL_EXCEPTION</SetProperty>
     <SetProperty Id="EXECMODE"               Action="EXECMODE_Default"               After="AppSearch" Value="1">NOT EXECMODE</SetProperty>
+    <SetProperty Id="RUNNOW"                 Action="RUNNOW_Default"                 After="AppSearch" Value="0">NOT RUNNOW</SetProperty>
 
     <!-- Fix properties handled as a checkbox, they must be undefined to uncheck the CB -->
     <SetProperty Id="QUICKINSTALL" Sequence="ui" Action="QUICKINSTALL_Unset" After="AppSearch" Value=""><![CDATA[QUICKINSTALL<>"1"]]></SetProperty>
@@ -189,6 +196,7 @@
     <SetProperty Id="SCAN_HOMEDIRS" Sequence="ui" Action="SCAN_HOMEDIRS_Unset" After="AppSearch" Value=""><![CDATA[SCAN_HOMEDIRS<>"1"]]></SetProperty>
     <SetProperty Id="SCAN_PROFILES" Sequence="ui" Action="SCAN_PROFILES_Unset" After="AppSearch" Value=""><![CDATA[SCAN_PROFILES<>"1"]]></SetProperty>
     <SetProperty Id="NO_P2P"        Sequence="ui" Action="NO_P2P_Unset"        After="AppSearch" Value=""><![CDATA[NO_P2P<>"1"]]></SetProperty>
+    <SetProperty Id="RUNNOW"        Sequence="ui" Action="RUNNOW_Unset"        After="AppSearch" Value=""><![CDATA[RUNNOW<>"1"]]></SetProperty>
 
     <!-- Fix properties having to be written later in registry -->
     <SetProperty Id="QUICKINSTALL" Sequence="ui" Action="QUICKINSTALL_UnsetForReg" Before="ExecuteAction" Value="0"><![CDATA[NOT QUICKINSTALL OR QUICKINSTALL<>"1"]]></SetProperty>
@@ -198,6 +206,7 @@
     <SetProperty Id="SCAN_HOMEDIRS" Sequence="ui" Action="SCAN_HOMEDIRS_UnsetForReg" Before="ExecuteAction" Value="0"><![CDATA[NOT SCAN_HOMEDIRS OR SCAN_HOMEDIRS<>"1"]]></SetProperty>
     <SetProperty Id="SCAN_PROFILES" Sequence="ui" Action="SCAN_PROFILES_UnsetForReg" Before="ExecuteAction" Value="0"><![CDATA[NOT SCAN_PROFILES OR SCAN_PROFILES<>"1"]]></SetProperty>
     <SetProperty Id="NO_P2P"       Sequence="ui" Action="NO_P2P_SetForReg"         Before="ExecuteAction" Value="0"><![CDATA[NOT NO_P2P OR NO_P2P<>"1"]]></SetProperty>
+    <SetProperty Id="RUNNOW"       Sequence="ui" Action="RUNNOW_SetForReg"         Before="ExecuteAction" Value="0"><![CDATA[NOT RUNNOW OR RUNNOW<>"1"]]></SetProperty>
 
     <!-- After LaunchConditions means also after AppSearch and there is more sequence number free space there -->
     <SetProperty Id="UNINSTALL_VAR" After="LaunchConditions" Value="[UPGRADEDIR]var"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
@@ -226,6 +235,11 @@
     <CustomAction Id="SetAddFirewallExceptionOutCmd" Property="AddFirewallExceptionOut" Value='"netsh" advfirewall firewall add rule name="!(loc.FirewallExceptionName)" program="[#f_agent_exe]" description="!(loc.OutgoingFirewallExceptionDescription)" dir=out action=allow' Execute="immediate" />
     <CustomAction Id="AddFirewallExceptionOut" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
+    <CustomAction Id="SetForceRun" Property="ForceRun" Value='"[#f_glpiagent]" --set-forcerun' Execute="immediate" />
+    <CustomAction Id="ForceRun" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+    <CustomAction Id="SetRunNow" Property="RunNow" Value='"[#f_glpiagent]"' Execute="immediate" />
+    <CustomAction Id="RunNow" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
     <InstallExecuteSequence>
       <!-- InstallExecuteSequence is used to define Custom Actions that fire after the UI is finished and the install is starting to execute -->
       <Custom Action="CA_SetARPInstallLoc"    Before="RegisterProduct" />
@@ -234,6 +248,13 @@
       <StartServices>EXECMODE=1</StartServices>
       <!-- Only support util:ServiceConfig when expecting to be installed as service -->
       <Custom Action="SchedServiceConfig" After="InstallServices">EXECMODE=1 AND NOT REMOVE~="ALL"</Custom>
+
+      <!-- Schedule custom action to support runnow option -->
+      <Custom Action="SetForceRun" Before="ForceRun">RUNNOW=1 AND EXECMODE=1 AND NOT REMOVE~="ALL"</Custom>
+      <Custom Action="ForceRun" Before="StartServices">RUNNOW=1 AND EXECMODE=1 AND NOT REMOVE~="ALL"</Custom>
+      <Custom Action="SetRunNow" Before="RunNow">RUNNOW=1 AND EXECMODE=3 AND NOT REMOVE~="ALL"</Custom>
+      <Custom Action="RunNow" Before="InstallFinalize">RUNNOW=1 AND EXECMODE=3 AND NOT REMOVE~="ALL"</Custom>
+
       <!-- Schedule custom action to install/uninstall firewall exception rules -->
       <Custom Action="SetDeleteFirewallExceptionCmd" Before="DeleteFirewallException" />
       <Custom Action="DeleteFirewallException" Before="RemoveFiles" />
@@ -264,6 +285,8 @@
 
       <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
       <Property Id="WixUI_Mode"    Value="InstallDir" />
+
+      <ProgressText Action="RunNow">!(loc.RunningAgent)</ProgressText>
 
       <DialogRef Id="BrowseDlg" />
       <DialogRef Id="DiskCostDlg" />
@@ -431,6 +454,7 @@
         </Control>
         <Control Id="ExecModeGrp" Type="GroupBox" X="60" Y="70" Width="250" Height="90" Text="!(loc.ExecModeDlgGroup)" />
         <Control Id="ExecModeChoice" Type="RadioButtonGroup" Property="_EXECMODE_RADIO_BUTTON" X="70" Y="90" Width="230" Height="50" />
+        <Control Id="RunNow" Type="CheckBox" X="60" Y="190" Width="250" Height="10" Text="!(loc.RunNow)" CheckBoxValue="1" Property="RUNNOW" />
       </Dialog>
       <RadioButtonGroup Property="_EXECMODE_RADIO_BUTTON">
         <RadioButton Text="!(loc.ExecModeDlgService)" X="10" Y="5" Width="200" Height="17" Value="1" />

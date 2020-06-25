@@ -372,6 +372,7 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: ExecMode" Type="string" Value="[EXECMODE]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: QuickInstall" Type="string" Value="[QUICKINSTALL]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: AddFirewallException" Type="string" Value="[ADD_FIREWALL_EXCEPTION]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: RunNow" Type="string" Value="[RUNNOW]" />\n];
                 $result .= $ident ."  ". qq[  </RegistryKey>\n];
             }
             $result .= $ident ."  ". qq[</Component>\n];
@@ -393,6 +394,7 @@ sub _gen_file_id {
   my ($self, $file) = @_;
   my $r;
   $r = "f_agent_exe"  if lc($file) eq 'perl\bin\glpi-agent.exe';
+  $r = "f_glpiagent"  if lc($file) eq 'glpi-agent.bat';
   return  $r // "f" . $self->{id_counter}++;
 }
 

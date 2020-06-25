@@ -62,6 +62,7 @@
   <String Id="ExecModeDlgGroup">Execution Mode</String>
   <String Id="ExecModeDlgService">As a Windows Service</String>
   <String Id="ExecModeDlgManual">Manually</String>
+  <String Id="RunNow">Run inventory immediatly after installation</String>
 
   <!-- custom text for httpd options setup dialog -->
   <String Id="HTTPServerSetupDlgTitle">[ProductName] [%agent_version%] Setup</String>
@@ -128,6 +129,7 @@
   <String Id="SetupTypeDlgTypicalText">Installs the most common program features, including Inventory, Deploy and Collect tasks support.</String>
   <String Id="SetupTypeDlgCompleteText">All program features will be installed.</String>
   <String Id="ProgressDlgTitleInstalling">{\WixUI_Font_Title}Installing [ProductName] [%agent_version%]</String>
+  <String Id="RunningAgent">Running [ProductName], this may take a while...</String>
 
   <!-- texts related to firewall exceptions -->
   <String Id="FirewallExceptionName">[ProductName]</String>
