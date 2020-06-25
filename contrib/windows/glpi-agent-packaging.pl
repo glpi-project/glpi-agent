@@ -162,6 +162,16 @@ use constant _file_feature_match => { qw(
 sub run {
     my $self = shift;
 
+    my $bat = "contrib/windows/packaging/template.bat.tt";
+    my $t = Template->new(ABSOLUTE=>1);
+
+    # Re-install dedicated bat files not using config file
+    foreach my $f (qw(agent wmi)) {
+        my $dest = catfile($self->global->{image_dir}, 'glpi-'.$f.'.bat');
+        my $tag = { tag => $f, msi => 1 };
+        $t->process($bat, $tag, $dest) || die $t->error();
+    }
+
     my $bdir = catdir($self->global->{build_dir}, 'msi');
 
     my $msi_guid = $self->{data_uuid}->create_str(); # get random GUID
