@@ -56,7 +56,7 @@
   <String Id="BrowseLocalDlgTitle">{\WixUI_Font_Title}Change Local Target destination folder</String>
 
   <!-- custom text for server target SSL options setup dialog -->
-  <String Id="ServerSSLSetupDlgTitle">[ProductName] 1.0 Setup</String>
+  <String Id="ServerSSLSetupDlgTitle">[ProductName] [%agent_version%] Setup</String>
   <String Id="ServerSSLSetupDlg_Title">{\WixUI_Font_Title}Remote Targets SSL Options</String>
   <String Id="ServerSSLSetupDlgDescription">Set SSL options.</String>
   <String Id="ServerSSLSetupGroup">SSL Options</String>
@@ -65,7 +65,7 @@
   <String Id="NoSSLCheckDescription">Disable SSL check (for security reason, only use it for debugging)</String>
 
   <!-- custom text for server target Proxy options setup dialog -->
-  <String Id="ProxySetupDlgTitle">[ProductName] 1.0 Setup</String>
+  <String Id="ProxySetupDlgTitle">[ProductName] [%agent_version%] Setup</String>
   <String Id="ProxySetupDlg_Title">{\WixUI_Font_Title}Remote Targets Proxy Options</String>
   <String Id="ProxySetupDlgDescription">Set Proxy options.</String>
   <String Id="ProxySetupGroup">Proxy Options</String>
@@ -79,8 +79,22 @@
   <String Id="ExecModeDlgDescription">Choose which way you want [ProductName] to be executed.</String>
   <String Id="ExecModeDlgGroup">Execution Mode</String>
   <String Id="ExecModeDlgService">As a Windows Service</String>
+  <String Id="ExecModeDlgTaskScheduler">As a Windows Task</String>
   <String Id="ExecModeDlgManual">Manually</String>
   <String Id="RunNow">Run inventory immediatly after installation</String>
+
+  <!-- custom text for windows task mode setup dialog -->
+  <String Id="TaskModeDlgTitle">[ProductName] [%agent_version%] Setup</String>
+  <String Id="TaskModeDlg_Title">{\WixUI_Font_Title}Windows Task Options</String>
+  <String Id="TaskModeDlgDescription">Set Windows Task Options.</String>
+  <String Id="TaskModeGroup">Windows Task Options</String>
+  <String Id="IntervalUnit">Frequency</String>
+  <String Id="MinuteInterval">Minute Interval</String>
+  <String Id="HourlyInterval">Hour Interval</String>
+  <String Id="DailyInterval">Day Interval</String>
+  <String Id="Minute">Minute</String>
+  <String Id="Hourly">Hourly</String>
+  <String Id="Daily">Daily</String>
 
   <!-- custom text for httpd options setup dialog -->
   <String Id="HTTPServerSetupDlgTitle">[ProductName] [%agent_version%] Setup</String>
@@ -94,7 +108,7 @@
   <String Id="HTTPServerSetupEnableServer">Enable embedded HTTP server</String>
 
   <!-- custom text for miscelaneous options setup dialog -->
-  <String Id="MiscelaneousOptionsDlgTitle">[ProductName] 1.0 Setup</String>
+  <String Id="MiscelaneousOptionsDlgTitle">[ProductName] [%agent_version%] Setup</String>
   <String Id="MiscelaneousOptionsDlg_Title">{\WixUI_Font_Title}Miscelaneous Options</String>
   <String Id="MiscelaneousOptionsDlgDescription">Set preferences about miscelaneous options.</String>
   <String Id="MiscelaneousOptionsGroup">Miscelaneous Options</String>
@@ -103,7 +117,7 @@
   <String Id="ScanProfilesOption">Scan user profiles for software</String>
 
   <!-- custom text for advanced options setup dialog -->
-  <String Id="AdvancedOptionsDlgTitle">[ProductName] 1.0 Setup</String>
+  <String Id="AdvancedOptionsDlgTitle">[ProductName] [%agent_version%] Setup</String>
   <String Id="AdvancedOptionsDlg_Title">{\WixUI_Font_Title}Advanced Options</String>
   <String Id="AdvancedOptionsDlgDescription">Set Advanced Options.</String>
   <String Id="AdvancedAdvice">Please, do not change the following options whether you are not totally sure what you are doing and why.</String>
@@ -121,7 +135,7 @@
   <String Id="NoCategoryFormat">category list separated by commas</String>
 
   <!-- custom text for debug options setup dialog -->
-  <String Id="DebugOptionsDlgTitle">[ProductName] 1.0 Setup</String>
+  <String Id="DebugOptionsDlgTitle">[ProductName] [%agent_version%] Setup</String>
   <String Id="DebugOptionsDlg_Title">{\WixUI_Font_Title}Debug Options</String>
   <String Id="DebugOptionsDlgDescription">Set debug options.</String>
   <String Id="DebugOptionsGroup">Debug Options</String>

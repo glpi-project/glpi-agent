@@ -52,6 +52,30 @@
     <SetProperty Id="CMDLINE_ADD_FIREWALL_EXCEPTION" Before="AppSearch" Value="[ADD_FIREWALL_EXCEPTION]" />
     <SetProperty Id="ADD_FIREWALL_EXCEPTION"         After="AppSearch"  Value="[CMDLINE_ADD_FIREWALL_EXCEPTION]"><![CDATA[CMDLINE_ADD_FIREWALL_EXCEPTION<>""]]></SetProperty>
 
+    <Property Id="TASK_FREQUENCY" Secure="yes">
+      <RegistrySearch Id="TaskFrequency" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="[ProductName]: TaskFrequency" Type="raw" />
+    </Property>
+    <SetProperty Id="CMDLINE_TASK_FREQUENCY" Before="AppSearch" Value="[TASK_FREQUENCY]" />
+    <SetProperty Id="TASK_FREQUENCY"         After="AppSearch"  Value="[CMDLINE_TASK_FREQUENCY]"><![CDATA[CMDLINE_TASK_FREQUENCY<>""]]></SetProperty>
+
+    <Property Id="TASK_MINUTE_MODIFIER" Secure="yes">
+      <RegistrySearch Id="TaskMinuteModifier" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="[ProductName]: TaskMinuteModifier" Type="raw" />
+    </Property>
+    <SetProperty Id="CMDLINE_TASK_MINUTE_MODIFIER" Before="AppSearch" Value="[TASK_MINUTE_MODIFIER]" />
+    <SetProperty Id="TASK_MINUTE_MODIFIER"         After="AppSearch"  Value="[CMDLINE_TASK_MINUTE_MODIFIER]"><![CDATA[CMDLINE_TASK_MINUTE_MODIFIER<>""]]></SetProperty>
+
+    <Property Id="TASK_HOURLY_MODIFIER" Secure="yes">
+      <RegistrySearch Id="TaskHourlyModifier" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="[ProductName]: TaskHourlyModifier" Type="raw" />
+    </Property>
+    <SetProperty Id="CMDLINE_TASK_HOURLY_MODIFIER" Before="AppSearch" Value="[TASK_HOURLY_MODIFIER]" />
+    <SetProperty Id="TASK_HOURLY_MODIFIER"         After="AppSearch"  Value="[CMDLINE_TASK_HOURLY_MODIFIER]"><![CDATA[CMDLINE_TASK_HOURLY_MODIFIER<>""]]></SetProperty>
+
+    <Property Id="TASK_DAILY_MODIFIER" Secure="yes">
+      <RegistrySearch Id="TaskDailyModifier" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="[ProductName]: TaskDailyModifier" Type="raw" />
+    </Property>
+    <SetProperty Id="CMDLINE_TASK_DAILY_MODIFIER" Before="AppSearch" Value="[TASK_DAILY_MODIFIER]" />
+    <SetProperty Id="TASK_DAILY_MODIFIER"         After="AppSearch"  Value="[CMDLINE_TASK_DAILY_MODIFIER]"><![CDATA[CMDLINE_TASK_DAILY_MODIFIER<>""]]></SetProperty>
+
     <Property Id="SERVER" Secure="yes">
       <RegistrySearch Id="Server" Root="HKLM" Key="[%agent_regpath%]" Name="server" Type="raw"/>
     </Property>
@@ -243,6 +267,10 @@
     <SetProperty Id="ADD_FIREWALL_EXCEPTION" Action="ADD_FIREWALL_EXCEPTION_Default" After="AppSearch" Value="1">NOT ADD_FIREWALL_EXCEPTION</SetProperty>
     <SetProperty Id="EXECMODE"               Action="EXECMODE_Default"               After="AppSearch" Value="1">NOT EXECMODE</SetProperty>
     <SetProperty Id="RUNNOW"                 Action="RUNNOW_Default"                 After="AppSearch" Value="0">NOT RUNNOW</SetProperty>
+    <SetProperty Id="TASK_FREQUENCY"         Action="TASK_FREQUENCY_Default"         After="AppSearch" Value="hourly">NOT TASK_FREQUENCY</SetProperty>
+    <SetProperty Id="TASK_MINUTE_MODIFIER"   Action="TASK_MINUTE_MODIFIER_Default"   After="AppSearch" Value="15">NOT TASK_MINUTE_MODIFIER</SetProperty>
+    <SetProperty Id="TASK_HOURLY_MODIFIER"   Action="TASK_HOURLY_MODIFIER_Default"   After="AppSearch" Value="1">NOT TASK_HOURLY_MODIFIER</SetProperty>
+    <SetProperty Id="TASK_DAILY_MODIFIER"    Action="TASK_DAILY_MODIFIER_Default"    After="AppSearch" Value="1">NOT TASK_DAILY_MODIFIER</SetProperty>
 
     <!-- Fix properties handled as a checkbox, they must be undefined to uncheck the CB -->
     <SetProperty Id="QUICKINSTALL" Sequence="ui" Action="QUICKINSTALL_Unset" After="AppSearch" Value=""><![CDATA[QUICKINSTALL<>"1"]]></SetProperty>
@@ -267,6 +295,10 @@
     <SetProperty Id="RUNNOW"       Sequence="ui" Action="RUNNOW_SetForReg"         Before="ExecuteAction" Value="0"><![CDATA[NOT RUNNOW OR RUNNOW<>"1"]]></SetProperty>
     <SetProperty Id="HTML"         Sequence="ui" Action="HTML_SetForReg"           Before="ExecuteAction" Value="0"><![CDATA[NOT HTML OR HTML<>"1"]]></SetProperty>
     <SetProperty Id="NO_SSL_CHECK" Sequence="ui" Action="NO_SSL_CHECK_Update"      Before="ExecuteAction" Value="0"><![CDATA[NOT NO_SSL_CHECK OR NO_SSL_CHECK<>"1"]]></SetProperty>
+    <SetProperty Id="TASK_FREQUENCY"       Sequence="ui" Action="TASK_FREQUENCY_SetForReg"         After="AppSearch" Value="hourly"><![CDATA[NOT TASK_FREQUENCY OR (TASK_FREQUENCY<>"minute" AND TASK_FREQUENCY<>"hourly" AND TASK_FREQUENCY<>"daily")]]></SetProperty>
+    <SetProperty Id="TASK_MINUTE_MODIFIER" Sequence="ui" Action="TASK_MINUTE_MODIFIER_SetForReg"   After="AppSearch" Value="15"><![CDATA[NOT TASK_MINUTE_MODIFIER OR TASK_MINUTE_MODIFIER < 1 OR TASK_MINUTE_MODIFIER > 1439]]></SetProperty>
+    <SetProperty Id="TASK_HOURLY_MODIFIER" Sequence="ui" Action="TASK_HOURLY_MODIFIER_SetForReg"   After="AppSearch" Value="1"><![CDATA[NOT TASK_HOURLY_MODIFIER OR TASK_HOURLY_MODIFIER < 1 OR TASK_HOURLY_MODIFIER > 23]]></SetProperty>
+    <SetProperty Id="TASK_DAILY_MODIFIER"  Sequence="ui" Action="TASK_DAILY_MODIFIER_SetForReg"    After="AppSearch" Value="1"><![CDATA[NOT TASK_DAILY_MODIFIER OR TASK_DAILY_MODIFIER < 1 OR TASK_DAILY_MODIFIER > 365]]></SetProperty>
 
     <!-- After LaunchConditions means also after AppSearch and there is more sequence number free space there -->
     <SetProperty Id="UNINSTALL_VAR" After="LaunchConditions" Value="[UPGRADEDIR]var"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
@@ -413,8 +445,14 @@
 
       <Publish Dialog="ExecModeDlg"           Control="Back"   Event="NewDialog" Value="ProxySetupDlg" Order="1">SERVER</Publish>
       <Publish Dialog="ExecModeDlg"           Control="Back"   Event="NewDialog" Value="D_TargetSetupDlg" Order="2">NOT SERVER</Publish>
+      <Publish Dialog="ExecModeDlg"           Control="Next"   Event="NewDialog" Value="HTTPServerSetupDlg" Order="1"><![CDATA[_EXECMODE_RADIO_BUTTON<>"2"]]></Publish>
+      <Publish Dialog="ExecModeDlg"           Control="Next"   Event="NewDialog" Value="TaskModeDlg" Order="2">_EXECMODE_RADIO_BUTTON="2"</Publish>
 
-      <Publish Dialog="HTTPServerSetupDlg"    Control="Back"   Event="NewDialog" Value="ExecModeDlg">1</Publish>
+      <Publish Dialog="TaskModeDlg"           Control="Back"   Event="NewDialog" Value="ExecModeDlg">1</Publish>
+      <Publish Dialog="TaskModeDlg"           Control="Next"   Event="NewDialog" Value="HTTPServerSetupDlg">1</Publish>
+
+      <Publish Dialog="HTTPServerSetupDlg"    Control="Back"   Event="NewDialog" Value="ExecModeDlg" Order="1"><![CDATA[_EXECMODE_RADIO_BUTTON<>"2"]]></Publish>
+      <Publish Dialog="HTTPServerSetupDlg"    Control="Back"   Event="NewDialog" Value="TaskModeDlg" Order="2">_EXECMODE_RADIO_BUTTON="2"</Publish>
       <Publish Dialog="HTTPServerSetupDlg"    Control="Next"   Event="NewDialog" Value="MiscelaneousOptionsDlg">1</Publish>
 
       <Publish Dialog="MiscelaneousOptionsDlg" Control="Back"   Event="NewDialog" Value="HTTPServerSetupDlg">1</Publish>
@@ -572,9 +610,123 @@
         <Control Id="RunNow" Type="CheckBox" X="60" Y="190" Width="250" Height="10" Text="!(loc.RunNow)" CheckBoxValue="1" Property="RUNNOW" />
       </Dialog>
       <RadioButtonGroup Property="_EXECMODE_RADIO_BUTTON">
-        <RadioButton Text="!(loc.ExecModeDlgService)" X="10" Y="5" Width="200" Height="17" Value="1" />
-        <RadioButton Text="!(loc.ExecModeDlgManual)" X="10" Y="30" Width="200" Height="17" Value="3" />
+        <RadioButton Text="!(loc.ExecModeDlgService)" X="10" Y="0" Width="200" Height="17" Value="1" />
+        <RadioButton Text="!(loc.ExecModeDlgTaskScheduler)" X="10" Y="20" Width="200" Height="17" Value="2" />
+        <RadioButton Text="!(loc.ExecModeDlgManual)" X="10" Y="40" Width="200" Height="17" Value="3" />
       </RadioButtonGroup>
+
+      <!-- Dedicated dialog to setup windows task scheduling exec mode -->
+      <Dialog Id="TaskModeDlg" Width="370" Height="270" Title="!(loc.TaskModeDlgTitle)">
+        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Text="Bmp_MainBanner" TabSkip="no" />
+        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+        <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Text="!(loc.TaskModeDlg_Title)" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Text="!(loc.TaskModeDlgDescription)" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" />
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
+          <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+        </Control>
+        <Control Id="TaskModeGrp" Type="GroupBox" X="60" Y="70" Width="250" Height="90" Text="!(loc.TaskModeGroup)" />
+        <Control Id="IntervalUnit" Type="Text" X="90" Y="100" Width="80" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.IntervalUnit)" />
+        <Control Id="IntervalUnitList" Type="ComboBox" X="90" Y="115" Width="80" Height="16" Sorted="yes" ComboList="yes" Property="TASK_FREQUENCY" />
+        <Control Id="MinuteInterval" Type="Text" X="200" Y="100" Width="80" Height="10" Hidden="yes" Transparent="yes" NoPrefix="yes" Text="!(loc.MinuteInterval)">
+          <Condition Action="show">TASK_FREQUENCY = "minute"</Condition>
+          <Condition Action="hide"><![CDATA[TASK_FREQUENCY <> "minute"]]></Condition>
+        </Control>
+        <Control Id="MinuteIntervalList" Type="ComboBox" X="200" Y="115" Width="80" Height="16" Hidden="yes" Sorted="yes" ComboList="yes" Property="TASK_MINUTE_MODIFIER">
+          <Condition Action="show">TASK_FREQUENCY = "minute"</Condition>
+          <Condition Action="hide"><![CDATA[TASK_FREQUENCY <> "minute"]]></Condition>
+        </Control>
+        <Control Id="HourlyInterval" Type="Text" X="200" Y="100" Width="80" Height="10" Hidden="yes" Transparent="yes" NoPrefix="yes" Text="!(loc.HourlyInterval)">
+          <Condition Action="show">TASK_FREQUENCY = "hourly"</Condition>
+          <Condition Action="hide"><![CDATA[TASK_FREQUENCY <> "hourly"]]></Condition>
+        </Control>
+        <Control Id="HourlyIntervalList" Type="ComboBox" X="200" Y="115" Width="80" Height="16" Hidden="yes" Sorted="yes" ComboList="yes" Property="TASK_HOURLY_MODIFIER">
+          <Condition Action="show">TASK_FREQUENCY = "hourly"</Condition>
+          <Condition Action="hide"><![CDATA[TASK_FREQUENCY <> "hourly"]]></Condition>
+        </Control>
+        <Control Id="DailyInterval" Type="Text" X="200" Y="100" Width="80" Height="10" Hidden="yes" Transparent="yes" NoPrefix="yes" Text="!(loc.DailyInterval)">
+          <Condition Action="show">TASK_FREQUENCY = "daily"</Condition>
+          <Condition Action="hide"><![CDATA[TASK_FREQUENCY <> "daily"]]></Condition>
+        </Control>
+        <Control Id="DailyIntervalList" Type="ComboBox" X="200" Y="115" Width="80" Height="16" Hidden="yes" Sorted="yes" ComboList="yes" Property="TASK_DAILY_MODIFIER">
+          <Condition Action="show">TASK_FREQUENCY = "daily"</Condition>
+          <Condition Action="hide"><![CDATA[TASK_FREQUENCY <> "daily"]]></Condition>
+        </Control>
+      </Dialog>
+
+      <ComboBox Property="TASK_FREQUENCY">
+        <ListItem Text="!(loc.Minute)" Value="minute" />
+        <ListItem Text="!(loc.Hourly)" Value="hourly" />
+        <ListItem Text="!(loc.Daily)" Value="daily" />
+      </ComboBox>
+
+      <ComboBox Property="TASK_MINUTE_MODIFIER">
+        <ListItem Text="15" Value="15" />
+        <ListItem Text="30"  Value="30" />
+        <ListItem Text="45"  Value="45" />
+      </ComboBox>
+
+      <ComboBox Property="TASK_HOURLY_MODIFIER">
+        <ListItem Text="1" Value="1" />
+        <ListItem Text="2"  Value="2" />
+        <ListItem Text="3"  Value="3" />
+        <ListItem Text="4"  Value="4" />
+        <ListItem Text="5"  Value="5" />
+        <ListItem Text="6"  Value="6" />
+        <ListItem Text="7"  Value="7" />
+        <ListItem Text="8"  Value="8" />
+        <ListItem Text="9"  Value="9" />
+        <ListItem Text="10"  Value="10" />
+        <ListItem Text="11"  Value="11" />
+        <ListItem Text="12"  Value="12" />
+        <ListItem Text="13"  Value="13" />
+        <ListItem Text="14"  Value="14" />
+        <ListItem Text="15"  Value="15" />
+        <ListItem Text="16"  Value="16" />
+        <ListItem Text="17"  Value="17" />
+        <ListItem Text="18"  Value="18" />
+        <ListItem Text="19"  Value="19" />
+        <ListItem Text="20"  Value="20" />
+        <ListItem Text="21"  Value="21" />
+        <ListItem Text="22"  Value="22" />
+        <ListItem Text="23"  Value="23" />
+      </ComboBox>
+
+      <ComboBox Property="TASK_DAILY_MODIFIER">
+        <ListItem Text="1" Value="1" />
+        <ListItem Text="2"  Value="2" />
+        <ListItem Text="3"  Value="3" />
+        <ListItem Text="4"  Value="4" />
+        <ListItem Text="5"  Value="5" />
+        <ListItem Text="6"  Value="6" />
+        <ListItem Text="7"  Value="7" />
+        <ListItem Text="8"  Value="8" />
+        <ListItem Text="9"  Value="9" />
+        <ListItem Text="10"  Value="10" />
+        <ListItem Text="11"  Value="11" />
+        <ListItem Text="12"  Value="12" />
+        <ListItem Text="13"  Value="13" />
+        <ListItem Text="14"  Value="14" />
+        <ListItem Text="15"  Value="15" />
+        <ListItem Text="16"  Value="16" />
+        <ListItem Text="17"  Value="17" />
+        <ListItem Text="18"  Value="18" />
+        <ListItem Text="19"  Value="19" />
+        <ListItem Text="20"  Value="20" />
+        <ListItem Text="21"  Value="21" />
+        <ListItem Text="22"  Value="22" />
+        <ListItem Text="23"  Value="23" />
+        <ListItem Text="24"  Value="24" />
+        <ListItem Text="25"  Value="25" />
+        <ListItem Text="26"  Value="26" />
+        <ListItem Text="27"  Value="27" />
+        <ListItem Text="28"  Value="28" />
+        <ListItem Text="29"  Value="29" />
+        <ListItem Text="30"  Value="30" />
+        <ListItem Text="31"  Value="31" />
+      </ComboBox>
 
       <!-- Dedicated dialog to setup included HTTP server options -->
       <Dialog Id="HTTPServerSetupDlg" Width="370" Height="270" Title="!(loc.HTTPServerSetupDlgTitle)">
