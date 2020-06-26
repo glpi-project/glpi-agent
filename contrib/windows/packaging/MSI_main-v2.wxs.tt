@@ -304,6 +304,9 @@
       <!-- InstallExecuteSequence is used to define Custom Actions that fire after the UI is finished and the install is starting to execute -->
       <Custom Action="CA_SetARPInstallLoc"    Before="RegisterProduct" />
       <Custom Action="SetDefaultLogFile"      After="FindRelatedProducts">NOT LOGFILE</Custom>
+      <!-- We need to use higher sequence numbers for AppSearch and LaunchConditions to have enough sequence room to schedule all properties related custom actions -->
+      <AppSearch Sequence="100" />
+      <LaunchConditions Sequence="200" />
       <InstallServices>EXECMODE=1</InstallServices>
       <StartServices>EXECMODE=1</StartServices>
       <!-- Only support util:ServiceConfig when expecting to be installed as service -->
@@ -329,6 +332,9 @@
       <Custom Action="CA_GetARPInstallLoc"    Before="CostInitialize">UPGRADINGPRODUCTCODE AND UPGRADEDIR</Custom>
       <!-- Better set ProgressDlg to be after MigrateFeatureStates so we can safely insert SetProperties before ExecuteAction -->
       <Show Dialog="ProgressDlg"              After="MigrateFeatureStates" />
+      <!-- We need to use higher sequence numbers for AppSearch and LaunchConditions to have enough sequence room to schedule all properties related custom actions -->
+      <AppSearch Sequence="100" />
+      <LaunchConditions Sequence="200" />
     </InstallUISequence>
 
     <Condition Message="Cannot install on Windows 9x or ME systems.">VersionNT</Condition>
