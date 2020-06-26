@@ -276,7 +276,8 @@
     <SetProperty Id="QUICKINSTALL" Sequence="ui" Action="QUICKINSTALL_Unset" After="AppSearch" Value=""><![CDATA[QUICKINSTALL<>"1"]]></SetProperty>
     <SetProperty Id="NO_HTTPD"     Sequence="ui" Action="NO_HTTPD_Unset"     After="AppSearch" Value=""><![CDATA[NOT NO_HTTPD OR NO_HTTPD<>"0"]]></SetProperty>
     <SetProperty Id="ADD_FIREWALL_EXCEPTION" Sequence="ui" Action="ADD_FIREWALL_EXCEPTION_Unset" After="AppSearch" Value=""><![CDATA[ADD_FIREWALL_EXCEPTION<>"1"]]></SetProperty>
-    <SetProperty Id="_EXECMODE_RADIO_BUTTON" Sequence="ui" Action="ExecModeRadio_Service" After="AppSearch" Value="1"><![CDATA[NOT EXECMODE OR EXECMODE<>"3"]]></SetProperty>
+    <SetProperty Id="_EXECMODE_RADIO_BUTTON" Sequence="ui" Action="ExecModeRadio_Service" After="AppSearch" Value="1"><![CDATA[NOT EXECMODE OR (EXECMODE<>"1" AND EXECMODE<>"2" AND EXECMODE<>"3")]]></SetProperty>
+    <SetProperty Id="_EXECMODE_RADIO_BUTTON" Sequence="ui" Action="ExecModeRadio_Tasks"   After="AppSearch" Value="2"><![CDATA[EXECMODE="2"]]></SetProperty>
     <SetProperty Id="_EXECMODE_RADIO_BUTTON" Sequence="ui" Action="ExecModeRadio_Manual"  After="AppSearch" Value="3"><![CDATA[EXECMODE="3"]]></SetProperty>
     <SetProperty Id="SCAN_HOMEDIRS" Sequence="ui" Action="SCAN_HOMEDIRS_Unset" After="AppSearch" Value=""><![CDATA[SCAN_HOMEDIRS<>"1"]]></SetProperty>
     <SetProperty Id="SCAN_PROFILES" Sequence="ui" Action="SCAN_PROFILES_Unset" After="AppSearch" Value=""><![CDATA[SCAN_PROFILES<>"1"]]></SetProperty>
