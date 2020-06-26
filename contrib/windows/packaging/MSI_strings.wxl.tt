@@ -100,6 +100,21 @@
   <String Id="NoCategory">Omit These Categories</String>
   <String Id="NoCategoryFormat">(list separated by commas)</String>
 
+  <!-- custom text for debug options setup dialog -->
+  <String Id="DebugOptionsDlgTitle">[ProductName] 1.0 Setup</String>
+  <String Id="DebugOptionsDlg_Title">{\WixUI_Font_Title}Debug Options</String>
+  <String Id="DebugOptionsDlgDescription">Set debug options.</String>
+  <String Id="DebugOptionsGroup">Debug Options</String>
+  <String Id="DebugOption">Debug Level</String>
+  <String Id="Debug0">No debug</String>
+  <String Id="Debug1">Level 1</String>
+  <String Id="Debug2">Level 2</String>
+  <String Id="LoggerOption">Logger</String>
+  <String Id="FileLogger">File</String>
+  <String Id="StderrLogger">Standard error output (stderr)</String>
+  <String Id="LogFileOption">Log File</String>
+  <String Id="LogFileMaxSizeOption">Log File Max. Size (in MiB)</String>
+
   <!-- custom title with version on all dialog titles -->
   <String Id="BrowseDlg_Title">[ProductName] [%agent_version%] Setup</String>
   <String Id="CancelDlg_Title">[ProductName] [%agent_version%] Setup</String>
