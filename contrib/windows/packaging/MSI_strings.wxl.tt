@@ -113,10 +113,12 @@
   <String Id="BackendCollectTimeOut">Task Execution Time Out</String>
   <String Id="OtherOptionsGrp">Other Options</String>
   <String Id="P2POption">No P2P</String>
+  <String Id="Tasks">Scheduled tasks</String>
+  <String Id="TasksFormat">tasks list separated by commas</String>
   <String Id="NoTask">Omit These Tasks</String>
-  <String Id="NoTaskFormat">(list separated by commas)</String>
+  <String Id="NoTaskFormat">tasks list separated by commas</String>
   <String Id="NoCategory">Omit These Categories</String>
-  <String Id="NoCategoryFormat">(list separated by commas)</String>
+  <String Id="NoCategoryFormat">category list separated by commas</String>
 
   <!-- custom text for debug options setup dialog -->
   <String Id="DebugOptionsDlgTitle">[ProductName] 1.0 Setup</String>

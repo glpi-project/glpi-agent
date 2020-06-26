@@ -634,20 +634,20 @@
         </Control>
         <Control Id="Advice" Type="Text" X="15" Y="60" Width="340" Height="30" Transparent="yes" NoPrefix="yes" Text="!(loc.AdvancedAdvice)" />
         <Control Id="TimeOptionsGrp" Type="GroupBox" X="15" Y="85" Width="165" Height="130" Text="!(loc.TimeOptionsGrp)" />
-        <Control Id="TimeOut" Type="Text" X="25" Y="110" Width="145" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.TimeOut)" />
-        <Control Id="TimeOutOption" Type="Edit" X="25" Y="120" Width="50" Height="15" Property="TIMEOUT" />
+        <Control Id="TimeOut" Type="Text" X="25" Y="105" Width="145" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.TimeOut)" />
+        <Control Id="TimeOutOption" Type="Edit" X="25" Y="115" Width="50" Height="15" Property="TIMEOUT" />
         <Control Id="DelayTime" Type="Text" X="25" Y="140" Width="145" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.DelayTime)" />
         <Control Id="DelayTimeOption" Type="Edit" X="25" Y="150" Width="50" Height="15" Property="DELAYTIME" />
-        <Control Id="BackendCollectTimeOut" Type="Text" X="25" Y="170" Width="145" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.BackendCollectTimeOut)" />
-        <Control Id="BackendCollectTimeOutOption" Type="Edit" X="25" Y="180" Width="50" Height="15" Property="BACKEND_COLLECT_TIMEOUT" />
+        <Control Id="BackendCollectTimeOut" Type="Text" X="25" Y="175" Width="145" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.BackendCollectTimeOut)" />
+        <Control Id="BackendCollectTimeOutOption" Type="Edit" X="25" Y="185" Width="50" Height="15" Property="BACKEND_COLLECT_TIMEOUT" />
         <Control Id="OtherOptionsGrp" Type="GroupBox" X="190" Y="85" Width="165" Height="130" Text="!(loc.OtherOptionsGrp)" />
-        <Control Id="P2p" Type="CheckBox" X="200" Y="105" Width="145" Height="10" CheckBoxValue="1" Property="NO_P2P" Text="!(loc.P2POption)" />
-        <Control Id="NoTask" Type="Text" X="200" Y="125" Width="145" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.NoTask)" />
-        <Control Id="NoTaskOption" Type="Edit" X="195" Y="135" Width="155" Height="16" Property="NO_TASK" />
-        <Control Id="NoTaskFormat" Type="Text" X="200" Y="150" Width="145" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.NoTaskFormat)" />
-        <Control Id="NoCategory" Type="Text" X="200" Y="165" Width="130" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.NoCategory)" />
-        <Control Id="NoCategoryOption" Type="Edit" X="195" Y="175" Width="155" Height="16" Property="NO_CATEGORY" />
-        <Control Id="NoCategoryFormat" Type="Text" X="200" Y="190" Width="145" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.NoCategoryFormat)" />
+        <Control Id="P2p" Type="CheckBox" X="195" Y="105" Width="145" Height="10" CheckBoxValue="1" Property="NO_P2P" Text="!(loc.P2POption)" />
+        <Control Id="Tasks" Type="Text" X="195" Y="120" Width="145" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.Tasks)" />
+        <Control Id="TasksOption" Type="Edit" X="195" Y="130" Width="155" Height="16" Property="TASKS" ToolTip="!(loc.TasksFormat)" />
+        <Control Id="NoTask" Type="Text" X="195" Y="150" Width="145" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.NoTask)" />
+        <Control Id="NoTaskOption" Type="Edit" X="195" Y="160" Width="155" Height="16" Property="NO_TASK" ToolTip="!(loc.NoTaskFormat)" />
+        <Control Id="NoCategory" Type="Text" X="195" Y="180" Width="130" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.NoCategory)" />
+        <Control Id="NoCategoryOption" Type="Edit" X="195" Y="190" Width="155" Height="16" Property="NO_CATEGORY" ToolTip="!(loc.NoCategoryFormat)" />
       </Dialog>
 
       <!-- Dedicated dialog to setup debug options -->
