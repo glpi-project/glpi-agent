@@ -55,6 +55,15 @@
   <String Id="BrowseLocalDlgPathLabel">&amp;Local target destination:</String>
   <String Id="BrowseLocalDlgTitle">{\WixUI_Font_Title}Change Local Target destination folder</String>
 
+  <!-- custom text for server target SSL options setup dialog -->
+  <String Id="ServerSSLSetupDlgTitle">[ProductName] 1.0 Setup</String>
+  <String Id="ServerSSLSetupDlg_Title">{\WixUI_Font_Title}Remote Targets SSL Options</String>
+  <String Id="ServerSSLSetupDlgDescription">Set SSL options.</String>
+  <String Id="ServerSSLSetupGroup">SSL Options</String>
+  <String Id="CACertDirDescription">CA Certificates Directory</String>
+  <String Id="CACertFileDescription">CA Certificate File</String>
+  <String Id="NoSSLCheckDescription">Disable SSL check (for security reason, only use it for debugging)</String>
+
   <!-- custom text for execution mode setup dialog -->
   <String Id="ExecModeDlgTitle">[ProductName] [%agent_version%] Setup</String>
   <String Id="ExecModeDlg_Title">{\WixUI_Font_Title}Choose an Execution Mode</String>
