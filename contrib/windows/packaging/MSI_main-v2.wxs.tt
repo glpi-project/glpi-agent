@@ -244,6 +244,12 @@
     <SetProperty Id="CMDLINE_NO_SSL_CHECK" Before="AppSearch" Value="[NO_SSL_CHECK]" />
     <SetProperty Id="NO_SSL_CHECK"         After="AppSearch"  Value="[CMDLINE_NO_SSL_CHECK]"><![CDATA[CMDLINE_NO_SSL_CHECK<>""]]></SetProperty>
 
+    <Property Id="LAZY" Secure="yes">
+      <RegistrySearch Id="Lazy" Root="HKLM" Key="[%agent_regpath%]" Name="lazy" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_LAZY" Before="AppSearch" Value="[LAZY]" />
+    <SetProperty Id="LAZY"         After="AppSearch"  Value="[CMDLINE_LAZY]"><![CDATA[CMDLINE_LAZY<>""]]></SetProperty>
+
     <!-- Configuration defaults after handling command line and registry checks -->
     <SetProperty Id="DEBUG"         Action="DEBUG_Default"         After="AppSearch"  Value="0">NOT DEBUG</SetProperty>
     <SetProperty Id="LOGGER"        Action="LOGGER_Default"        After="AppSearch"  Value="file">NOT LOGGER</SetProperty>
@@ -258,6 +264,7 @@
     <SetProperty Id="DELAYTIME"     Action="DELAYTIME_Default"     After="AppSearch"  Value="3600">NOT DELAYTIME</SetProperty>
     <SetProperty Id="NO_P2P"        Action="NO_P2P_Default"        After="AppSearch"  Value="0">NOT NO_P2P</SetProperty>
     <SetProperty Id="HTML"          Action="HTML_Default"          After="AppSearch"  Value="0">NOT HTML</SetProperty>
+    <SetProperty Id="LAZY"          Action="LAZY_Default"          After="AppSearch"  Value="1">NOT LAZY</SetProperty>
     <SetProperty Id="NO_SSL_CHECK"  Action="NO_SSL_CHECK_Default"  After="AppSearch"  Value="0">NOT NO_SSL_CHECK</SetProperty>
     <SetProperty Id="CONF_RELOAD_INTERVAL" Action="CONF_RELOAD_INTERVAL_Default" After="AppSearch" Value="0">NOT CONF_RELOAD_INTERVAL</SetProperty>
     <SetProperty Id="BACKEND_COLLECT_TIMEOUT" Action="BACKEND_COLLECT_TIMEOUT_Default" After="AppSearch" Value="180">NOT BACKEND_COLLECT_TIMEOUT</SetProperty>
@@ -284,6 +291,7 @@
     <SetProperty Id="NO_P2P"        Sequence="ui" Action="NO_P2P_Unset"        After="AppSearch" Value=""><![CDATA[NO_P2P<>"1"]]></SetProperty>
     <SetProperty Id="RUNNOW"        Sequence="ui" Action="RUNNOW_Unset"        After="AppSearch" Value=""><![CDATA[RUNNOW<>"1"]]></SetProperty>
     <SetProperty Id="NO_SSL_CHECK"  Sequence="ui" Action="NO_SSL_CHECK_Unset"  After="AppSearch" Value=""><![CDATA[NO_SSL_CHECK<>"1"]]></SetProperty>
+    <SetProperty Id="LAZY"          Sequence="ui" Action="LAZY_Unset"          After="AppSearch" Value=""><![CDATA[LAZY<>"1"]]></SetProperty>
 
     <!-- Fix properties having to be written later in registry -->
     <SetProperty Id="QUICKINSTALL" Sequence="ui" Action="QUICKINSTALL_UnsetForReg" Before="ExecuteAction" Value="0"><![CDATA[NOT QUICKINSTALL OR QUICKINSTALL<>"1"]]></SetProperty>
@@ -295,6 +303,7 @@
     <SetProperty Id="NO_P2P"       Sequence="ui" Action="NO_P2P_SetForReg"         Before="ExecuteAction" Value="0"><![CDATA[NOT NO_P2P OR NO_P2P<>"1"]]></SetProperty>
     <SetProperty Id="RUNNOW"       Sequence="ui" Action="RUNNOW_SetForReg"         Before="ExecuteAction" Value="0"><![CDATA[NOT RUNNOW OR RUNNOW<>"1"]]></SetProperty>
     <SetProperty Id="HTML"         Sequence="ui" Action="HTML_SetForReg"           Before="ExecuteAction" Value="0"><![CDATA[NOT HTML OR HTML<>"1"]]></SetProperty>
+    <SetProperty Id="LAZY"         Sequence="ui" Action="LAZY_SetForReg"           Before="ExecuteAction" Value="0"><![CDATA[NOT LAZY OR LAZY<>"1"]]></SetProperty>
     <SetProperty Id="NO_SSL_CHECK" Sequence="ui" Action="NO_SSL_CHECK_Update"      Before="ExecuteAction" Value="0"><![CDATA[NOT NO_SSL_CHECK OR NO_SSL_CHECK<>"1"]]></SetProperty>
     <SetProperty Id="TASK_FREQUENCY"       Sequence="ui" Action="TASK_FREQUENCY_SetForReg"         After="AppSearch" Value="hourly"><![CDATA[NOT TASK_FREQUENCY OR (TASK_FREQUENCY<>"minute" AND TASK_FREQUENCY<>"hourly" AND TASK_FREQUENCY<>"daily")]]></SetProperty>
     <SetProperty Id="TASK_MINUTE_MODIFIER" Sequence="ui" Action="TASK_MINUTE_MODIFIER_SetForReg"   After="AppSearch" Value="15"><![CDATA[NOT TASK_MINUTE_MODIFIER OR TASK_MINUTE_MODIFIER < 1 OR TASK_MINUTE_MODIFIER > 1439]]></SetProperty>
@@ -372,11 +381,13 @@
       <Custom Action="SetTaskDaily" After="InstallServices">EXECMODE=2 AND TASK_FREQUENCY~="daily" AND NOT REMOVE~="ALL"</Custom>
       <Custom Action="TaskDaily" After="InstallServices">EXECMODE=2 AND TASK_FREQUENCY~="daily" AND NOT REMOVE~="ALL"</Custom>
 
-      <!-- Schedule custom action to support runnow option -->
-      <Custom Action="SetForceRun" Before="ForceRun">RUNNOW=1 AND EXECMODE=1 AND NOT REMOVE~="ALL"</Custom>
-      <Custom Action="ForceRun" Before="StartServices">RUNNOW=1 AND EXECMODE=1 AND NOT REMOVE~="ALL"</Custom>
-      <Custom Action="SetRunNow" Before="RunNow">RUNNOW=1 AND EXECMODE=3 AND NOT REMOVE~="ALL"</Custom>
-      <Custom Action="RunNow" Before="InstallFinalize">RUNNOW=1 AND EXECMODE=3 AND NOT REMOVE~="ALL"</Custom>
+      <!-- Schedule custom action to set forcerun, also by-passing lazy option for not service exec modes -->
+      <Custom Action="SetForceRun" Before="ForceRun">RUNNOW=1 AND NOT REMOVE~="ALL"</Custom>
+      <Custom Action="ForceRun" Before="StartServices">RUNNOW=1 AND NOT REMOVE~="ALL"</Custom>
+
+      <!-- Schedule custom action to support runnow option for not service exec modes -->
+      <Custom Action="SetRunNow" Before="RunNow">RUNNOW=1 AND NOT EXECMODE=1 AND NOT REMOVE~="ALL"</Custom>
+      <Custom Action="RunNow" Before="InstallFinalize">RUNNOW=1 AND NOT EXECMODE=1 AND NOT REMOVE~="ALL"</Custom>
 
       <!-- Schedule custom action to install/uninstall firewall exception rules -->
       <Custom Action="SetDeleteFirewallExceptionCmd" Before="DeleteFirewallException" />
@@ -636,6 +647,7 @@
         <Control Id="ExecModeGrp" Type="GroupBox" X="60" Y="70" Width="250" Height="90" Text="!(loc.ExecModeDlgGroup)" />
         <Control Id="ExecModeChoice" Type="RadioButtonGroup" Property="_EXECMODE_RADIO_BUTTON" X="70" Y="90" Width="230" Height="50" />
         <Control Id="RunNow" Type="CheckBox" X="60" Y="190" Width="250" Height="10" Text="!(loc.RunNow)" CheckBoxValue="1" Property="RUNNOW" />
+        <Control Id="Lazy" Type="CheckBox" X="60" Y="205" Width="250" Height="20" Text="!(loc.Lazy)" CheckBoxValue="1" Property="LAZY" />
       </Dialog>
       <RadioButtonGroup Property="_EXECMODE_RADIO_BUTTON">
         <RadioButton Text="!(loc.ExecModeDlgService)" X="10" Y="0" Width="200" Height="17" Value="1" />
@@ -691,7 +703,12 @@
       </ComboBox>
 
       <ComboBox Property="TASK_MINUTE_MODIFIER">
+        <ListItem Text="1" Value="1" />
+        <ListItem Text="2" Value="2" />
+        <ListItem Text="5" Value="5" />
+        <ListItem Text="10" Value="10" />
         <ListItem Text="15" Value="15" />
+        <ListItem Text="20" Value="20" />
         <ListItem Text="30"  Value="30" />
         <ListItem Text="45"  Value="45" />
       </ComboBox>

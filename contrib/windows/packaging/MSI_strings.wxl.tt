@@ -82,6 +82,7 @@
   <String Id="ExecModeDlgTaskScheduler">As a Windows Task</String>
   <String Id="ExecModeDlgManual">Manually</String>
   <String Id="RunNow">Run inventory immediatly after installation</String>
+  <String Id="Lazy">Do not contact server before we are expected to (lazy option)</String>
 
   <!-- custom text for windows task mode setup dialog -->
   <String Id="TaskModeDlgTitle">[ProductName] [%agent_version%] Setup</String>
