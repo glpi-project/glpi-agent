@@ -333,17 +333,44 @@
     <CustomAction Id="SetRunNow" Property="RunNow" Value='"[#f_glpiagent]"' Execute="immediate" />
     <CustomAction Id="RunNow" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
+    <CustomAction Id="SetEndTask" Property="EndTask" Value='"schtasks" /tn "[ProductName]" /end' Execute="immediate" />
+    <CustomAction Id="EndTask" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+    <CustomAction Id="SetDeleteTask" Property="DeleteTask" Value='"schtasks" /f /tn "[ProductName]" /delete' Execute="immediate" />
+    <CustomAction Id="DeleteTask" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+    <CustomAction Id="SetTaskMinute" Property="TaskMinute" Value='"schtasks" /f /tn "[ProductName]" /create /ru system /tr "[#f_glpiagent]" /sc minute /mo [TASK_MINUTE_MODIFIER]' Execute="immediate" />
+    <CustomAction Id="TaskMinute" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+    <CustomAction Id="SetTaskHourly" Property="TaskHourly" Value='"schtasks" /f /tn "[ProductName]" /create /ru system /tr "[#f_glpiagent]" /sc hourly /mo [TASK_HOURLY_MODIFIER]' Execute="immediate" />
+    <CustomAction Id="TaskHourly" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+    <CustomAction Id="SetTaskDaily" Property="TaskDaily" Value='"schtasks" /f /tn "[ProductName]" /create /ru system /tr "[#f_glpiagent]" /sc daily /mo [TASK_DAILY_MODIFIER]' Execute="immediate" />
+    <CustomAction Id="TaskDaily" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
     <InstallExecuteSequence>
       <!-- InstallExecuteSequence is used to define Custom Actions that fire after the UI is finished and the install is starting to execute -->
       <Custom Action="CA_SetARPInstallLoc"    Before="RegisterProduct" />
       <Custom Action="SetDefaultLogFile"      After="AppSearch">NOT LOGFILE</Custom>
+
       <!-- We need to use higher sequence numbers for AppSearch and LaunchConditions to have enough sequence room to schedule all properties related custom actions -->
       <AppSearch Sequence="100" />
       <LaunchConditions Sequence="200" />
+
+      <!-- Schedule custom action to always remove windows task if exists -->
+      <Custom Action="SetEndTask" Before="EndTask" />
+      <Custom Action="EndTask" Before="StopServices" />
+      <Custom Action="SetDeleteTask" Before="DeleteTask" />
+      <Custom Action="DeleteTask" Before="DeleteServices" />
+
       <InstallServices>EXECMODE=1</InstallServices>
       <StartServices>EXECMODE=1</StartServices>
       <!-- Only support util:ServiceConfig when expecting to be installed as service -->
       <Custom Action="SchedServiceConfig" After="InstallServices">EXECMODE=1 AND NOT REMOVE~="ALL"</Custom>
+
+      <!-- Schedule custom action to create windows task if necessary -->
+      <Custom Action="SetTaskMinute" After="InstallServices">EXECMODE=2 AND TASK_FREQUENCY~="minute" AND NOT REMOVE~="ALL"</Custom>
+      <Custom Action="TaskMinute" After="InstallServices">EXECMODE=2 AND TASK_FREQUENCY~="minute" AND NOT REMOVE~="ALL"</Custom>
+      <Custom Action="SetTaskHourly" After="InstallServices">EXECMODE=2 AND TASK_FREQUENCY~="hourly" AND NOT REMOVE~="ALL"</Custom>
+      <Custom Action="TaskHourly" After="InstallServices">EXECMODE=2 AND TASK_FREQUENCY~="hourly" AND NOT REMOVE~="ALL"</Custom>
+      <Custom Action="SetTaskDaily" After="InstallServices">EXECMODE=2 AND TASK_FREQUENCY~="daily" AND NOT REMOVE~="ALL"</Custom>
+      <Custom Action="TaskDaily" After="InstallServices">EXECMODE=2 AND TASK_FREQUENCY~="daily" AND NOT REMOVE~="ALL"</Custom>
 
       <!-- Schedule custom action to support runnow option -->
       <Custom Action="SetForceRun" Before="ForceRun">RUNNOW=1 AND EXECMODE=1 AND NOT REMOVE~="ALL"</Custom>
