@@ -367,6 +367,15 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[    <RegistryValue Name="backend-collect-timeout" Type="string" Value="[BACKEND_COLLECT_TIMEOUT]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="no-task" Type="string" Value="[NO_TASK]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="no-category" Type="string" Value="[NO_CATEGORY]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="html" Type="string" Value="[HTML]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="conf-reload-interval" Type="string" Value="[CONF_RELOAD_INTERVAL]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="no-ssl-check" Type="string" Value="[NO_SSL_CHECK]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="user" Type="string" Value="[USER]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="password" Type="string" Value="[PASSWORD]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="proxy" Type="string" Value="[PROXY]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="tasks" Type="string" Value="[TASKS]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="ca-cert-dir" Type="string" Value="[CA_CERT_DIR]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="ca-cert-file" Type="string" Value="[CA_CERT_FILE]" />\n];
                 $result .= $ident ."  ". qq[  </RegistryKey>\n];
                 $result .= $ident ."  ". qq[  <RegistryKey Root="HKLM" Key="Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\[ProductCode]">\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: ExecMode" Type="string" Value="[EXECMODE]" />\n];

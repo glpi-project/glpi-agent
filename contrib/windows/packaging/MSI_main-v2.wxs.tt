@@ -113,58 +113,112 @@
     <SetProperty Id="HTTPD_TRUST"         After="AppSearch"  Value="[CMDLINE_HTTPD_TRUST]"><![CDATA[CMDLINE_HTTPD_TRUST<>""]]></SetProperty>
 
     <Property Id="TAG" Secure="yes">
-      <RegistrySearch Id="Tag" Root="HKLM" Key="Software\GLPI-Agent" Name="tag" Type="raw"/>
+      <RegistrySearch Id="Tag" Root="HKLM" Key="[%agent_regpath%]" Name="tag" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_TAG" Before="AppSearch" Value="[TAG]" />
     <SetProperty Id="TAG"         After="AppSearch"  Value="[CMDLINE_TAG]"><![CDATA[CMDLINE_TAG<>""]]></SetProperty>
 
     <Property Id="SCAN_HOMEDIRS" Secure="yes">
-      <RegistrySearch Id="ScanHomedirs" Root="HKLM" Key="Software\GLPI-Agent" Name="scan-homedirs" Type="raw"/>
+      <RegistrySearch Id="ScanHomedirs" Root="HKLM" Key="[%agent_regpath%]" Name="scan-homedirs" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_SCAN_HOMEDIRS" Before="AppSearch" Value="[SCAN_HOMEDIRS]" />
     <SetProperty Id="SCAN_HOMEDIRS"         After="AppSearch"  Value="[CMDLINE_SCAN_HOMEDIRS]"><![CDATA[CMDLINE_SCAN_HOMEDIRS<>""]]></SetProperty>
 
     <Property Id="SCAN_PROFILES" Secure="yes">
-      <RegistrySearch Id="ScanProfiles" Root="HKLM" Key="Software\GLPI-Agent" Name="scan-profiles" Type="raw"/>
+      <RegistrySearch Id="ScanProfiles" Root="HKLM" Key="[%agent_regpath%]" Name="scan-profiles" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_SCAN_PROFILES" Before="AppSearch" Value="[SCAN_PROFILES]" />
     <SetProperty Id="SCAN_PROFILES"         After="AppSearch"  Value="[CMDLINE_SCAN_PROFILES]"><![CDATA[CMDLINE_SCAN_PROFILES<>""]]></SetProperty>
 
     <Property Id="TIMEOUT" Secure="yes">
-      <RegistrySearch Id="TimeOut" Root="HKLM" Key="Software\GLPI-Agent" Name="timeout" Type="raw"/>
+      <RegistrySearch Id="TimeOut" Root="HKLM" Key="[%agent_regpath%]" Name="timeout" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_TIMEOUT" Before="AppSearch" Value="[TIMEOUT]" />
     <SetProperty Id="TIMEOUT"         After="AppSearch"  Value="[CMDLINE_TIMEOUT]"><![CDATA[CMDLINE_TIMEOUT<>""]]></SetProperty>
 
     <Property Id="DELAYTIME" Secure="yes">
-      <RegistrySearch Id="DelayTime" Root="HKLM" Key="Software\GLPI-Agent" Name="delaytime" Type="raw"/>
+      <RegistrySearch Id="DelayTime" Root="HKLM" Key="[%agent_regpath%]" Name="delaytime" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_DELAYTIME" Before="AppSearch" Value="[DELAYTIME]" />
     <SetProperty Id="DELAYTIME"         After="AppSearch"  Value="[CMDLINE_DELAYTIME]"><![CDATA[CMDLINE_DELAYTIME<>""]]></SetProperty>
 
     <Property Id="BACKEND_COLLECT_TIMEOUT" Secure="yes">
-      <RegistrySearch Id="BackendCollectTimeout" Root="HKLM" Key="Software\GLPI-Agent" Name="backend-collect-timeout" Type="raw"/>
+      <RegistrySearch Id="BackendCollectTimeout" Root="HKLM" Key="[%agent_regpath%]" Name="backend-collect-timeout" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_BACKEND_COLLECT_TIMEOUT" Before="AppSearch" Value="[BACKEND_COLLECT_TIMEOUT]" />
     <SetProperty Id="BACKEND_COLLECT_TIMEOUT"         After="AppSearch"  Value="[CMDLINE_BACKEND_COLLECT_TIMEOUT]"><![CDATA[CMDLINE_BACKEND_COLLECT_TIMEOUT<>""]]></SetProperty>
 
     <Property Id="NO_P2P" Secure="yes">
-      <RegistrySearch Id="NoP2p" Root="HKLM" Key="Software\GLPI-Agent" Name="no-p2p" Type="raw"/>
+      <RegistrySearch Id="NoP2p" Root="HKLM" Key="[%agent_regpath%]" Name="no-p2p" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_NO_P2P" Before="AppSearch" Value="[NO_P2P]" />
     <SetProperty Id="NO_P2P"         After="AppSearch"  Value="[CMDLINE_NO_P2P]"><![CDATA[CMDLINE_NO_P2P<>""]]></SetProperty>
 
+    <Property Id="TASKS" Secure="yes">
+      <RegistrySearch Id="Tasks" Root="HKLM" Key="[%agent_regpath%]" Name="tasks" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_TASKS" Before="AppSearch" Value="[TASKS]" />
+    <SetProperty Id="TASKS"         After="AppSearch"  Value="[CMDLINE_TASKS]"><![CDATA[CMDLINE_TASKS<>""]]></SetProperty>
+
     <Property Id="NO_TASK" Secure="yes">
-      <RegistrySearch Id="NoTask" Root="HKLM" Key="Software\GLPI-Agent" Name="no-task" Type="raw"/>
+      <RegistrySearch Id="NoTask" Root="HKLM" Key="[%agent_regpath%]" Name="no-task" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_NO_TASK" Before="AppSearch" Value="[NO_TASK]" />
     <SetProperty Id="NO_TASK"         After="AppSearch"  Value="[CMDLINE_NO_TASK]"><![CDATA[CMDLINE_NO_TASK<>""]]></SetProperty>
 
     <Property Id="NO_CATEGORY" Secure="yes">
-      <RegistrySearch Id="NoCategory" Root="HKLM" Key="Software\GLPI-Agent" Name="no-category" Type="raw"/>
+      <RegistrySearch Id="NoCategory" Root="HKLM" Key="[%agent_regpath%]" Name="no-category" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_NO_CATEGORY" Before="AppSearch" Value="[NO_CATEGORY]" />
     <SetProperty Id="NO_CATEGORY"         After="AppSearch"  Value="[CMDLINE_NO_CATEGORY]"><![CDATA[CMDLINE_NO_CATEGORY<>""]]></SetProperty>
+
+    <Property Id="CA_CERT_DIR" Secure="yes">
+      <RegistrySearch Id="CACertDir" Root="HKLM" Key="[%agent_regpath%]" Name="ca-cert-dir" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_CA_CERT_DIR" Before="AppSearch" Value="[CA_CERT_DIR]" />
+    <SetProperty Id="CA_CERT_DIR"         After="AppSearch"  Value="[CMDLINE_CA_CERT_DIR]"><![CDATA[CMDLINE_CA_CERT_DIR<>""]]></SetProperty>
+
+    <Property Id="CA_CERT_FILE" Secure="yes">
+      <RegistrySearch Id="CACertFile" Root="HKLM" Key="[%agent_regpath%]" Name="ca-cert-file" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_CA_CERT_FILE" Before="AppSearch" Value="[CA_CERT_FILE]" />
+    <SetProperty Id="CA_CERT_FILE"         After="AppSearch"  Value="[CMDLINE_CA_CERT_FILE]"><![CDATA[CMDLINE_CA_CERT_FILE<>""]]></SetProperty>
+
+    <Property Id="PROXY" Secure="yes">
+      <RegistrySearch Id="Proxy" Root="HKLM" Key="[%agent_regpath%]" Name="proxy" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_PROXY" Before="AppSearch" Value="[PROXY]" />
+    <SetProperty Id="PROXY"         After="AppSearch"  Value="[CMDLINE_PROXY]"><![CDATA[CMDLINE_PROXY<>""]]></SetProperty>
+
+    <Property Id="PASSWORD" Secure="yes">
+      <RegistrySearch Id="Password" Root="HKLM" Key="[%agent_regpath%]" Name="password" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_PASSWORD" Before="AppSearch" Value="[PASSWORD]" />
+    <SetProperty Id="PASSWORD"         After="AppSearch"  Value="[CMDLINE_PASSWORD]"><![CDATA[CMDLINE_PASSWORD<>""]]></SetProperty>
+
+    <Property Id="USER" Secure="yes">
+      <RegistrySearch Id="User" Root="HKLM" Key="[%agent_regpath%]" Name="user" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_USER" Before="AppSearch" Value="[USER]" />
+    <SetProperty Id="USER"         After="AppSearch"  Value="[CMDLINE_USER]"><![CDATA[CMDLINE_USER<>""]]></SetProperty>
+
+    <Property Id="HTML" Secure="yes">
+      <RegistrySearch Id="Html" Root="HKLM" Key="[%agent_regpath%]" Name="html" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_HTML" Before="AppSearch" Value="[HTML]" />
+    <SetProperty Id="HTML"         After="AppSearch"  Value="[CMDLINE_HTML]"><![CDATA[CMDLINE_HTML<>""]]></SetProperty>
+
+    <Property Id="CONF_RELOAD_INTERVAL" Secure="yes">
+      <RegistrySearch Id="ConfReloadInterval" Root="HKLM" Key="[%agent_regpath%]" Name="conf-reload-interval" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_CONF_RELOAD_INTERVAL" Before="AppSearch" Value="[CONF_RELOAD_INTERVAL]" />
+    <SetProperty Id="CONF_RELOAD_INTERVAL"         After="AppSearch"  Value="[CMDLINE_CONF_RELOAD_INTERVAL]"><![CDATA[CMDLINE_CONF_RELOAD_INTERVAL<>""]]></SetProperty>
+
+    <Property Id="NO_SSL_CHECK" Secure="yes">
+      <RegistrySearch Id="NoSSLCheck" Root="HKLM" Key="[%agent_regpath%]" Name="no-ssl-check" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_NO_SSL_CHECK" Before="AppSearch" Value="[NO_SSL_CHECK]" />
+    <SetProperty Id="NO_SSL_CHECK"         After="AppSearch"  Value="[CMDLINE_NO_SSL_CHECK]"><![CDATA[CMDLINE_NO_SSL_CHECK<>""]]></SetProperty>
 
     <!-- Configuration defaults after handling command line and registry checks -->
     <SetProperty Id="DEBUG"         Action="DEBUG_Default"         After="AppSearch"  Value="0">NOT DEBUG</SetProperty>
@@ -179,6 +233,9 @@
     <SetProperty Id="TIMEOUT"       Action="TIMEOUT_Default"       After="AppSearch"  Value="180">NOT TIMEOUT</SetProperty>
     <SetProperty Id="DELAYTIME"     Action="DELAYTIME_Default"     After="AppSearch"  Value="3600">NOT DELAYTIME</SetProperty>
     <SetProperty Id="NO_P2P"        Action="NO_P2P_Default"        After="AppSearch"  Value="0">NOT NO_P2P</SetProperty>
+    <SetProperty Id="HTML"          Action="HTML_Default"          After="AppSearch"  Value="0">NOT HTML</SetProperty>
+    <SetProperty Id="NO_SSL_CHECK"  Action="NO_SSL_CHECK_Default"  After="AppSearch"  Value="0">NOT NO_SSL_CHECK</SetProperty>
+    <SetProperty Id="CONF_RELOAD_INTERVAL" Action="CONF_RELOAD_INTERVAL_Default" After="AppSearch" Value="0">NOT CONF_RELOAD_INTERVAL</SetProperty>
     <SetProperty Id="BACKEND_COLLECT_TIMEOUT" Action="BACKEND_COLLECT_TIMEOUT_Default" After="AppSearch" Value="180">NOT BACKEND_COLLECT_TIMEOUT</SetProperty>
 
     <!-- Installer configuration defaults -->
@@ -197,6 +254,7 @@
     <SetProperty Id="SCAN_PROFILES" Sequence="ui" Action="SCAN_PROFILES_Unset" After="AppSearch" Value=""><![CDATA[SCAN_PROFILES<>"1"]]></SetProperty>
     <SetProperty Id="NO_P2P"        Sequence="ui" Action="NO_P2P_Unset"        After="AppSearch" Value=""><![CDATA[NO_P2P<>"1"]]></SetProperty>
     <SetProperty Id="RUNNOW"        Sequence="ui" Action="RUNNOW_Unset"        After="AppSearch" Value=""><![CDATA[RUNNOW<>"1"]]></SetProperty>
+    <SetProperty Id="NO_SSL_CHECK"  Sequence="ui" Action="NO_SSL_CHECK_Unset"  After="AppSearch" Value=""><![CDATA[NO_SSL_CHECK<>"1"]]></SetProperty>
 
     <!-- Fix properties having to be written later in registry -->
     <SetProperty Id="QUICKINSTALL" Sequence="ui" Action="QUICKINSTALL_UnsetForReg" Before="ExecuteAction" Value="0"><![CDATA[NOT QUICKINSTALL OR QUICKINSTALL<>"1"]]></SetProperty>
@@ -207,6 +265,8 @@
     <SetProperty Id="SCAN_PROFILES" Sequence="ui" Action="SCAN_PROFILES_UnsetForReg" Before="ExecuteAction" Value="0"><![CDATA[NOT SCAN_PROFILES OR SCAN_PROFILES<>"1"]]></SetProperty>
     <SetProperty Id="NO_P2P"       Sequence="ui" Action="NO_P2P_SetForReg"         Before="ExecuteAction" Value="0"><![CDATA[NOT NO_P2P OR NO_P2P<>"1"]]></SetProperty>
     <SetProperty Id="RUNNOW"       Sequence="ui" Action="RUNNOW_SetForReg"         Before="ExecuteAction" Value="0"><![CDATA[NOT RUNNOW OR RUNNOW<>"1"]]></SetProperty>
+    <SetProperty Id="HTML"         Sequence="ui" Action="HTML_SetForReg"           Before="ExecuteAction" Value="0"><![CDATA[NOT HTML OR HTML<>"1"]]></SetProperty>
+    <SetProperty Id="NO_SSL_CHECK" Sequence="ui" Action="NO_SSL_CHECK_Update"      Before="ExecuteAction" Value="0"><![CDATA[NOT NO_SSL_CHECK OR NO_SSL_CHECK<>"1"]]></SetProperty>
 
     <!-- After LaunchConditions means also after AppSearch and there is more sequence number free space there -->
     <SetProperty Id="UNINSTALL_VAR" After="LaunchConditions" Value="[UPGRADEDIR]var"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
