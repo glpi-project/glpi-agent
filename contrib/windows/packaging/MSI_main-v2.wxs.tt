@@ -303,7 +303,7 @@
     <InstallExecuteSequence>
       <!-- InstallExecuteSequence is used to define Custom Actions that fire after the UI is finished and the install is starting to execute -->
       <Custom Action="CA_SetARPInstallLoc"    Before="RegisterProduct" />
-      <Custom Action="SetDefaultLogFile"      After="FindRelatedProducts">NOT LOGFILE</Custom>
+      <Custom Action="SetDefaultLogFile"      After="AppSearch">NOT LOGFILE</Custom>
       <!-- We need to use higher sequence numbers for AppSearch and LaunchConditions to have enough sequence room to schedule all properties related custom actions -->
       <AppSearch Sequence="100" />
       <LaunchConditions Sequence="200" />
