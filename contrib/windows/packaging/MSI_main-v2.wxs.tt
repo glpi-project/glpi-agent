@@ -406,9 +406,12 @@
       <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Event="SpawnDialog" Value="BrowseLocalDlg" Order="7">1</Publish>
 
       <Publish Dialog="ServerSSLSetupDlg"     Control="Back"   Event="NewDialog" Value="D_TargetSetupDlg">1</Publish>
-      <Publish Dialog="ServerSSLSetupDlg"     Control="Next"   Event="NewDialog" Value="ExecModeDlg">1</Publish>
+      <Publish Dialog="ServerSSLSetupDlg"     Control="Next"   Event="NewDialog" Value="ProxySetupDlg">1</Publish>
 
-      <Publish Dialog="ExecModeDlg"           Control="Back"   Event="NewDialog" Value="ServerSSLSetupDlg" Order="1">SERVER</Publish>
+      <Publish Dialog="ProxySetupDlg"         Control="Back"   Event="NewDialog" Value="ServerSSLSetupDlg">1</Publish>
+      <Publish Dialog="ProxySetupDlg"         Control="Next"   Event="NewDialog" Value="ExecModeDlg">1</Publish>
+
+      <Publish Dialog="ExecModeDlg"           Control="Back"   Event="NewDialog" Value="ProxySetupDlg" Order="1">SERVER</Publish>
       <Publish Dialog="ExecModeDlg"           Control="Back"   Event="NewDialog" Value="D_TargetSetupDlg" Order="2">NOT SERVER</Publish>
 
       <Publish Dialog="HTTPServerSetupDlg"    Control="Back"   Event="NewDialog" Value="ExecModeDlg">1</Publish>
@@ -529,6 +532,27 @@
         <Control Id="CACertFile" Type="Edit" X="25" Y="142" Width="320" Height="15" Property="CA_CERT_FILE" />
         <Control Id="NoSSLCheckDescription" Type="Text" X="20" Y="190" Width="300" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.NoSSLCheckDescription)" RightAligned="yes" />
         <Control Id="NoSSLCheckCB" Type="CheckBox" X="322" Y="190" Width="10" Height="10" CheckBoxValue="1" Property="NO_SSL_CHECK" />
+      </Dialog>
+
+      <!-- Dedicated dialog to setup server proxy options -->
+      <Dialog Id="ProxySetupDlg" Width="370" Height="270" Title="!(loc.ProxySetupDlgTitle)">
+        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Text="Bmp_MainBanner" TabSkip="no" />
+        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+        <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Text="!(loc.ProxySetupDlg_Title)" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Text="!(loc.ProxySetupDlgDescription)" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" />
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
+          <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+        </Control>
+        <Control Id="ProxySetupDlgGrp" Type="GroupBox" X="15" Y="70" Width="340" Height="140" Text="!(loc.ProxySetupGroup)" />
+        <Control Id="ProxyServerDescription" Type="Text" X="25" Y="88" Width="320" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.ProxyServerDescription)" />
+        <Control Id="ProxyServer" Type="Edit" X="25" Y="100" Width="320" Height="15" Property="PROXY" />
+        <Control Id="ProxyUserDescription" Type="Text" X="25" Y="130" Width="320" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.ProxyUserDescription)" />
+        <Control Id="ProxyUser" Type="Edit" X="25" Y="142" Width="320" Height="15" Property="USER" />
+        <Control Id="ProxyPasswordDescription" Type="Text" X="25" Y="172" Width="320" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.ProxyPasswordDescription)" />
+        <Control Id="ProxyPassword" Type="Edit" X="25" Y="184" Width="320" Height="15" Password="yes" Property="PASSWORD" />
       </Dialog>
 
       <!-- Dedicated dialog to select execution mode, only service or manual for now -->

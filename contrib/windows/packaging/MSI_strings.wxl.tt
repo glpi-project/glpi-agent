@@ -64,6 +64,15 @@
   <String Id="CACertFileDescription">CA Certificate File</String>
   <String Id="NoSSLCheckDescription">Disable SSL check (for security reason, only use it for debugging)</String>
 
+  <!-- custom text for server target Proxy options setup dialog -->
+  <String Id="ProxySetupDlgTitle">[ProductName] 1.0 Setup</String>
+  <String Id="ProxySetupDlg_Title">{\WixUI_Font_Title}Remote Targets Proxy Options</String>
+  <String Id="ProxySetupDlgDescription">Set Proxy options.</String>
+  <String Id="ProxySetupGroup">Proxy Options</String>
+  <String Id="ProxyServerDescription">Proxy server</String>
+  <String Id="ProxyUserDescription">Proxy server authentication user</String>
+  <String Id="ProxyPasswordDescription">Proxy server authentication password</String>
+
   <!-- custom text for execution mode setup dialog -->
   <String Id="ExecModeDlgTitle">[ProductName] [%agent_version%] Setup</String>
   <String Id="ExecModeDlg_Title">{\WixUI_Font_Title}Choose an Execution Mode</String>
