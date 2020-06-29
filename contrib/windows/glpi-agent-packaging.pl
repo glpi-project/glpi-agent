@@ -333,10 +333,11 @@ sub _tree2xml {
             ($component_id, $component_guid) = $self->_gen_component_id($file_shortname."files");
             # Get specific file feature or take the one from the parent folder or even the default one
             my $this_feat = _file_feature_match->{$f->{short_name}} || $feat;
+            my $vital = $this_feat eq "feat_AGENT" ? ' Vital="yes"' : "";
             # in 1file/component scenario set KeyPath on file, not on Component
             # see: http://stackoverflow.com/questions/10358989/wix-using-keypath-on-components-directories-files-registry-etc-etc
             $result .= $ident ."  ". qq[<Component Id="$component_id" Guid="{$component_guid}" Feature="$this_feat">\n];
-            $result .= $ident ."  ". qq[  <File Id="$file_id" Name="$file_basename" ShortName="$file_shortname" Source="$f->{full_name}" KeyPath="yes" />\n]; # XXX-TODO consider ReadOnly="yes"
+            $result .= $ident ."  ". qq[  <File Id="$file_id" Name="$file_basename" ShortName="$file_shortname" Source="$f->{full_name}" KeyPath="yes"$vital />\n];
             # Add service, registry and firewall definitions on feat_AGENT
             if ($this_feat eq "feat_AGENT") {
                 my $servicename = $self->global->{service_name};
@@ -344,8 +345,9 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[  <ServiceInstall Name="$servicename" Start="auto"\n];
                 $result .= $ident ."  ". qq[                  ErrorControl="normal" DisplayName="!(loc.ServiceDisplayName)" Description="!(loc.ServiceDescription)" Interactive="no"\n];
                 $result .= $ident ."  ". qq[                  Type="ownProcess" Arguments='-I"[INSTALLDIR]perl\\agent" "[INSTALLDIR]perl\\bin\\glpi-win32-service"'>\n];
+                $result .= $ident ."  ". qq[    <util:ServiceConfig FirstFailureActionType="restart" SecondFailureActionType="restart" ThirdFailureActionType="restart" RestartServiceDelayInSeconds="60" />\n];
                 $result .= $ident ."  ". qq[  </ServiceInstall>\n];
-                $result .= $ident ."  ". qq[  <ServiceControl Id="SetupService" Name="$servicename" Stop="both" Start="install" Remove="both" Wait="no" />\n];
+                $result .= $ident ."  ". qq[  <ServiceControl Id="SetupService" Name="$servicename" Start="install" Stop="both" Remove="both" Wait="yes" />\n];
                 $result .= $ident ."  ". qq[  <RegistryKey Root="HKLM" Key="$regpath">\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="debug" Type="string" Value="[DEBUG]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="local" Type="string" Value="[LOCAL]" />\n];
