@@ -7,6 +7,11 @@ core:
 
 Revision history for FusionInventory agent
 
+2.6 not release yet
+
+netdiscovery/netinventory:
+* Updated Ricoh printers support
+
 2.5.2 Mon, 16 Dec 2019
 
 core:
