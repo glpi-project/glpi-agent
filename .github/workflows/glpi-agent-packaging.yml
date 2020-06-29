@@ -1,6 +1,12 @@
 name: GLPI Agent Packaging
 
-on: [push]
+on:
+  push:
+    branches:
+    - feature/github-action-windows-packaging
+    - develop
+    tags-ignore:
+    - '**'
 
 jobs:
   windows-packaging:
