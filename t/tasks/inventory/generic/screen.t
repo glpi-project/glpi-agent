@@ -227,6 +227,34 @@ my %edid_tests = (
         ALTSERIAL    => 'TAHEE0014200',
         DESCRIPTION  => '32/2017'
     },
+    'lcd.acer-g227hql' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'G227HQL',
+        SERIAL       => 'T0LEE0145350147f2431',
+        ALTSERIAL    => 'T0LEE0142431',
+        DESCRIPTION  => '35/2015'
+    },
+    'lcd.acer-g236hl' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'Acer G236HL',
+        SERIAL       => 'LVB080013127cc394200',
+        ALTSERIAL    => 'LVB080014200',
+        DESCRIPTION  => '12/2013'
+    },
+    'lcd.acer-r221q' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'R221Q',
+        SERIAL       => 'T6KEE00160303ff52400',
+        ALTSERIAL    => 'T6KEE0012400',
+        DESCRIPTION  => '3/2016'
+    },
+    'lcd.acer-s273hl' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'S273HL',
+        SERIAL       => 'LQA0C015140000358001',
+        ALTSERIAL    => 'LQA0C0158001',
+        DESCRIPTION  => '40/2011'
+    },
     'lcd.acer-v193.2' => {
         MANUFACTURER => 'Acer Technologies',
         CAPTION      => 'Acer V193',

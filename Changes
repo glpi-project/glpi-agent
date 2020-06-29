@@ -12,6 +12,9 @@ Revision history for FusionInventory agent
 
 2.6 not release yet
 
+inventory:
+* Fix #771: added Acer monitor serial support for models (G227HQL, G236HL, R221Q, S273HL)
+
 netdiscovery/netinventory:
 * Updated Ricoh printers support
 * Updated Zebra printers support
