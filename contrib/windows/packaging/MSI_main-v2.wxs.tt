@@ -257,7 +257,7 @@
     <SetProperty Id="NO_HTTPD"      Action="NO_HTTPD_Default"      After="AppSearch"  Value="0">NOT NO_HTTPD</SetProperty>
     <SetProperty Id="HTTPD_IP"      Action="HTTPD_IP_Default"      After="AppSearch"  Value="0.0.0.0">NOT HTTPD_IP</SetProperty>
     <SetProperty Id="HTTPD_PORT"    Action="HTTPD_PORT_Default"    After="AppSearch"  Value="62354">NOT HTTPD_PORT</SetProperty>
-    <SetProperty Id="HTTPD_TRUSTED" Action="HTTPD_TRUSTED_Default" After="AppSearch"  Value="127.0.0.1/32">NOT HTTPD_TRUSTED</SetProperty>
+    <SetProperty Id="HTTPD_TRUST"   Action="HTTPD_TRUST_Default"   After="AppSearch"  Value="127.0.0.1/32">NOT HTTPD_TRUST</SetProperty>
     <SetProperty Id="SCAN_HOMEDIRS" Action="SCAN_HOMEDIRS_Default" After="AppSearch"  Value="0">NOT SCAN_HOMEDIRS</SetProperty>
     <SetProperty Id="SCAN_PROFILES" Action="SCAN_PROFILES_Default" After="AppSearch"  Value="0">NOT SCAN_PROFILES</SetProperty>
     <SetProperty Id="TIMEOUT"       Action="TIMEOUT_Default"       After="AppSearch"  Value="180">NOT TIMEOUT</SetProperty>
@@ -645,7 +645,7 @@
           <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
         </Control>
         <Control Id="ExecModeGrp" Type="GroupBox" X="60" Y="70" Width="250" Height="90" Text="!(loc.ExecModeDlgGroup)" />
-        <Control Id="ExecModeChoice" Type="RadioButtonGroup" Property="_EXECMODE_RADIO_BUTTON" X="70" Y="90" Width="230" Height="50" />
+        <Control Id="ExecModeChoice" Type="RadioButtonGroup" Property="_EXECMODE_RADIO_BUTTON" X="70" Y="90" Width="230" Height="70" />
         <Control Id="RunNow" Type="CheckBox" X="60" Y="190" Width="250" Height="10" Text="!(loc.RunNow)" CheckBoxValue="1" Property="RUNNOW" />
         <Control Id="Lazy" Type="CheckBox" X="60" Y="205" Width="250" Height="20" Text="!(loc.Lazy)" CheckBoxValue="1" Property="LAZY" />
       </Dialog>
