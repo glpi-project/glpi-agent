@@ -221,7 +221,6 @@ sub run {
     my $f2 = catfile($self->global->{msi_sharedir}, 'MSI_main-v2.wxs.tt');
     my $f3 = catfile($self->global->{msi_sharedir}, 'Variables-v2.wxi.tt');
     my $f4 = catfile($self->global->{msi_sharedir}, 'MSI_strings.wxl.tt');
-    my $t = Template->new(ABSOLUTE=>1);
     write_file(catfile($self->global->{debug_dir}, 'TTvars_OutputMSI_'.time.'.txt'), pp(\%vars)); #debug dump
     $t->process($f2, \%vars, catfile($bdir, 'MSI_main-v2.wxs')) || die $t->error();
     $t->process($f3, \%vars, catfile($bdir, 'Variables-v2.wxi')) || die $t->error();
