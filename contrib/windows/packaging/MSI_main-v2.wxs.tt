@@ -647,7 +647,10 @@
         <Control Id="ExecModeGrp" Type="GroupBox" X="60" Y="70" Width="250" Height="90" Text="!(loc.ExecModeDlgGroup)" />
         <Control Id="ExecModeChoice" Type="RadioButtonGroup" Property="_EXECMODE_RADIO_BUTTON" X="70" Y="90" Width="230" Height="70" />
         <Control Id="RunNow" Type="CheckBox" X="60" Y="190" Width="250" Height="10" Text="!(loc.RunNow)" CheckBoxValue="1" Property="RUNNOW" />
-        <Control Id="Lazy" Type="CheckBox" X="60" Y="205" Width="250" Height="20" Text="!(loc.Lazy)" CheckBoxValue="1" Property="LAZY" />
+        <Control Id="Lazy" Type="CheckBox" X="60" Y="205" Width="250" Height="20" Disabled="yes" Text="!(loc.Lazy)" CheckBoxValue="1" Property="LAZY">
+          <Condition Action="enable"><![CDATA[_EXECMODE_RADIO_BUTTON <> "1"]]></Condition>
+          <Condition Action="disable">_EXECMODE_RADIO_BUTTON = 1</Condition>
+        </Control>
       </Dialog>
       <RadioButtonGroup Property="_EXECMODE_RADIO_BUTTON">
         <RadioButton Text="!(loc.ExecModeDlgService)" X="10" Y="0" Width="200" Height="17" Value="1" />
