@@ -54,33 +54,41 @@ if ($ENV{GITHUB_REF} && $ENV{GITHUB_REF} =~ m|refs/tags/(.+)$|) {
     }
 }
 
-my $app = Perl::Dist::GLPI::Agent->new(
-    _perl_version   => PERL_VERSION,
-    _revision       => PACKAGE_REVISION,
-    _provider       => $provider,
-    _provided_by    => PROVIDED_BY,
-    agent_version   => $version,
-    agent_fullver   => $major.'.'.$minor.'.'.$revision.'.'.PACKAGE_REVISION,
-    agent_msiver    => $major.'.'.$minor.'.'.$revision,
-    agent_fullname  => $provider.' Agent',
-    agent_rootdir   => $provider.'-Agent',
-    agent_regpath   => "Software\\$provider-Agent",
-    service_name    => lc($provider).'-agent',
-    msi_sharedir    => 'contrib/windows/packaging',
-);
+sub build_app {
+    my $bits = shift;
 
-$app->parse_options(
-    -job            => "glpi-agent packaging",
-    -image_dir      => "C:\\Strawberry-perl-for-$provider-Agent",
-    -working_dir    => "C:\\Strawberry-perl-for-$provider-Agent_build",
-    -wixbin_dir     => $wixbin_dir,
-    -notest_modules,
-    -nointeractive,
-    -restorepoints,
-);
+    my $app = Perl::Dist::GLPI::Agent->new(
+        _perl_version   => PERL_VERSION,
+        _revision       => PACKAGE_REVISION,
+        _provider       => $provider,
+        _provided_by    => PROVIDED_BY,
+        agent_version   => $version,
+        agent_fullver   => $major.'.'.$minor.'.'.$revision.'.'.PACKAGE_REVISION,
+        agent_msiver    => $major.'.'.$minor.'.'.$revision,
+        agent_fullname  => $provider.' Agent',
+        agent_rootdir   => $provider.'-Agent',
+        agent_regpath   => "Software\\$provider-Agent",
+        service_name    => lc($provider).'-agent',
+        msi_sharedir    => 'contrib/windows/packaging',
+        bits            => $bits,
+        arch            => $bits == 32 ? "x86" : "x64",
+    );
+
+    $app->parse_options(
+        -job            => "glpi-agent packaging",
+        -image_dir      => "C:\\Strawberry-perl-for-$provider-Agent",
+        -working_dir    => "C:\\Strawberry-perl-for-$provider-Agent_build",
+        -wixbin_dir     => $wixbin_dir,
+        -notest_modules,
+        -nointeractive,
+        -restorepoints,
+    );
+
+    return $app;
+}
 
 print "Building 64 bits packages...\n";
-$app->global->{arch} = 64;
+my $app = build_app(64);
 $app->do_job()
     or exit(1);
 
@@ -90,7 +98,7 @@ unless (grep { /^--all$/ } @ARGV) {
 }
 
 print "Building 32 bits packages...\n";
-$app->global->{arch} = 32;
+$app = build_app(32);
 $app->do_job()
     or exit(1);
 
@@ -233,7 +241,7 @@ sub run {
 
     my $candle2_cmd = [$candle_exe, "$bdir\\MSI_main-v2.wxs", '-out', "$bdir\\MSI_main.wixobj", '-v', '-ext', 'WixUtilExtension'];
     # Set arch option if necessary
-    push @{$candle2_cmd}, '-arch', 'x64' if $self->global->{arch} == 64;
+    push @{$candle2_cmd}, '-arch', 'x64' if $self->global->{arch} eq 'x64';
     my $light2_cmd  = [$light_exe,  "$bdir\\MSI_main.wixobj", '-out', $msi_file, '-pdbout', "$bdir\\MSI_main.wixpdb", '-loc', "$bdir\\MSI_strings.wxl",
         qw/-ext WixUIExtension -ext WixUtilExtension -sice:ICE61/];
 
@@ -524,7 +532,7 @@ sub build_job_pre {
 
     my $provider = $self->global->{_provider};
     my $version = $self->global->{agent_version};
-    my $arch = $self->global->{arch} eq "64" ? "x64" : "x86" ;
+    my $arch = $self->global->{arch};
 
     # Fix output basename
     $self->global->{output_basename} = "$provider-Agent-$version-$arch" ;
@@ -543,29 +551,29 @@ sub load_jobfile {
 
 sub is64bit {
     my ($self) = @_;
-    return $self->global->{arch} == 64;
+    return $self->global->{bits} == 64;
 }
 
 sub __tools {
     my ($self, $tool) = @_;
-    my $arch = $self->global->{arch};
-    return '<package_url>/kmx/'.$arch.'_tools/'.$arch.'bit_'.$tool.'.zip';
+    my $bits = $self->global->{bits};
+    return '<package_url>/kmx/'.$bits.'_tools/'.$bits.'bit_'.$tool.'.zip';
 }
 
 sub __gcctoolchain {
     my ($self) = @_;
-    my $arch = $self->global->{arch};
-    return '<package_url>/kmx/'.$arch.'_gcctoolchain/mingw64-w'.$arch.'-gcc8.3.0_20190316.zip';
+    my $bits = $self->global->{bits};
+    return '<package_url>/kmx/'.$bits.'_gcctoolchain/mingw64-w'.$bits.'-gcc8.3.0_20190316.zip';
 }
 
 sub __gcclib {
     my ($self, $quarter, $lib, $date) = @_;
-    my $arch = $self->global->{arch};
+    my $bits = $self->global->{bits};
     unless ($date) {
         my %date = qw( 2019Q2 20190522 2020Q1 20200207 );
         $date = $date{$quarter};
     }
-    return '<package_url>/kmx/'.$arch.'_libs/gcc83-'.$quarter.'/'.$arch.'bit_'.$lib.
+    return '<package_url>/kmx/'.$bits.'_libs/gcc83-'.$quarter.'/'.$bits.'bit_'.$lib.
         '-bin_'.$date.'.zip';
 }
 
@@ -607,7 +615,6 @@ sub __job {
 # <image_dir>     is placeholder for c:\strawberry
     return {
         app_version     => $self->global->{_perl_version}.'.'.$self->global->{_revision}, #BEWARE: do not use '.0.0' in the last two version digits
-        bits            => $self->global->{arch},
         beta            => 0,
         app_fullname    => 'Strawberry Perl'.($self->is64bit?' (64-bit)':''),
         app_simplename  => 'strawberry-perl',
