@@ -76,6 +76,7 @@ $app->parse_options(
     -wixbin_dir     => $wixbin_dir,
     -notest_modules,
     -nointeractive,
+    -restorepoints,
 );
 
 print "Building 64 bits packages...\n";
@@ -468,6 +469,55 @@ package
 
 use parent qw(Perl::Dist::Strawberry);
 
+use File::Path qw(remove_tree);
+use File::Spec::Functions qw(canonpath);
+use File::Glob qw(:glob);
+use Time::HiRes qw(usleep);
+
+sub make_restorepoint {
+    my ($self, $text) = @_;
+
+    # Save a restorepoint only on the expected step
+    return $self->message(3, "skipping restorepoint '$text'\n")
+        unless $text =~ m{step:6/};
+
+    $self->SUPER::make_restorepoint($text);
+}
+
+sub create_dirs {
+    my $self = shift;
+
+    my $idir = $self->global->{image_dir};
+    remove_tree($idir) if -d $idir;
+
+    # We may have some issue with fs synchro, be ready to wait a little
+    my $timeout = time + 10;
+    while (-d $idir && time < $timeout) {
+        usleep(100000);
+    }
+
+    $self->SUPER::create_dirs();
+}
+
+sub ask_about_restorepoint {
+    my ($self, $image_dir, $bits) = @_;
+    my @points;
+    for my $pp (sort(bsd_glob($self->global->{restore_dir}."/*.pp"))) {
+        my $d = eval { do($pp) };
+        warn "SKIPPING/1 $pp\n" and next unless defined $d && ref($d) eq 'HASH';
+        warn "SKIPPING/2 $pp\n" and next unless defined $d->{build_job_steps};
+        warn "SKIPPING/3 $pp\n" and next unless defined $d->{restorepoint_info};
+        warn "SKIPPING/4 $pp\n" and next unless $d->{restorepoint_zip_image_dir} && -f $d->{restorepoint_zip_image_dir};
+        warn "SKIPPING/5 $pp\n" and next unless $d->{restorepoint_zip_debug_dir} && -f $d->{restorepoint_zip_debug_dir};
+        warn "SKIPPING/6 $pp\n" and next unless canonpath($d->{image_dir}) eq canonpath($image_dir);
+        warn "SKIPPING/7 $pp\n" and next unless $d->{bits} == $bits;
+        push @points, $d;
+    }
+    # Select the restore point at step 6
+    my ($restorepoint) = grep { $_->{build_job_steps}->[6]->{done} && ! $_->{build_job_steps}->[7]->{done} } @points;
+    return $restorepoint;
+}
+
 sub build_job_pre {
     my ($self) = @_;
     $self->SUPER::build_job_pre();
@@ -750,8 +800,6 @@ sub __job_steps {
             $self->__movedll('liblzma-5__.dll'),
             $self->__movedll('libssl-1_1'.($self->is64bit?'-x64__':'').'.dll'),
             $self->__movedll('zlib1__.dll'),
-            { do=>'copyfile', args=>[ 'contrib/windows/packaging/dmidecode.exe', '<image_dir>/perl/bin' ] },
-            { do=>'movefile', args=>[ '<image_dir>/perl/bin/perl.exe', '<image_dir>/perl/bin/glpi-agent.exe' ] },
             { do=>'removedir', args=>[ '<image_dir>/bin' ] },
             { do=>'removedir', args=>[ '<image_dir>/c' ] },
             { do=>'removedir', args=>[ '<image_dir>/'.($self->is64bit?'x86_64':'i686').'-w64-mingw32' ] },
@@ -760,16 +808,24 @@ sub __job_steps {
             { do=>'removedir', args=>[ '<image_dir>/libexec' ] },
             { do=>'removedir', args=>[ '<image_dir>/licenses' ] },
             { do=>'removefile', args=>[ '<image_dir>/etc/gdbinit' ] },
+            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/^\.packlist$/i ] },
+            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.pod$/i ] },
+            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.al$/i ] },
+            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.a$/i ] },
+        ],
+    },
+    ### NEXT STEP ###########################
+    {
+        plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
+        commands => [
+            { do=>'copyfile', args=>[ 'contrib/windows/packaging/dmidecode.exe', '<image_dir>/perl/bin' ] },
+            { do=>'movefile', args=>[ '<image_dir>/perl/bin/perl.exe', '<image_dir>/perl/bin/glpi-agent.exe' ] },
             { do=>'copydir', args=>[ 'lib/FusionInventory', '<image_dir>/perl/agent/FusionInventory' ] },
             { do=>'copydir', args=>[ 'etc', '<image_dir>/etc' ] },
             { do=>'createdir', args=>[ '<image_dir>/etc/conf.d' ] },
             { do=>'copydir', args=>[ 'bin', '<image_dir>/perl/bin' ] },
             { do=>'copydir', args=>[ 'share', '<image_dir>/share' ] },
             { do=>'copyfile', args=>[ 'contrib/windows/packaging/setup.pm', '<image_dir>/perl/lib' ] },
-            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/^\.packlist$/i ] },
-            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.pod$/i ] },
-            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.al$/i ] },
-            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.a$/i ] },
         ],
     },
     ### NEXT STEP ###########################
@@ -798,46 +854,5 @@ sub __job_steps {
         msi_dialog_bmp      => 'contrib/windows/packaging/GLPI-Agent_Dialog.bmp',
         msi_banner_bmp      => 'contrib/windows/packaging/GLPI-Agent_Banner.bmp',
         msi_debug           => 0,
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::Strawberry::Step::InstallModules',
-        # modules specific to portable edition
-        modules => [ 'Portable' ],
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::Strawberry::Step::SetupPortablePerl', # no options needed
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
-        commands => [ # files and dirs specific to portable edition
-            { do=>'removefile', args=>[ '<image_dir>/README.txt', '<image_dir>/perl2.reloc.txt', '<image_dir>/perl1.reloc.txt', '<image_dir>/relocation.txt',
-                                        '<image_dir>/update_env.pl.bat', '<image_dir>/relocation.pl.bat' ] },
-            { do=>'createdir',  args=>[ '<image_dir>/data' ] },
-            { do=>'apply_tt',   args=>[ '<dist_sharedir>/portable/portable.perl.tt',       '<image_dir>/portable.perl', {
-                gcchost => $self->is64bit ? 'x86_64-w64-mingw32' : 'i686-w64-mingw32',
-                gccver=>'8.3.0'} ]
-            },
-            { do=>'copyfile',   args=>[ '<dist_sharedir>/portable/portableshell.bat',      '<image_dir>/portableshell.bat' ] },
-            { do=>'apply_tt',   args=>[ '<dist_sharedir>/portable/README.portable.txt.tt', '<image_dir>/README.txt' ] },
-            # cleanup cpanm related files
-            { do=>'removedir', args=>[ '<image_dir>/perl/site/lib/MSWin32-x86-multi-thread-64int' ] },
-            { do=>'removedir', args=>[ '<image_dir>/perl/site/lib/MSWin32-x86-multi-thread' ] },
-            { do=>'removedir', args=>[ '<image_dir>/perl/site/lib/MSWin32-x64-multi-thread' ] },
-       ],
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::Strawberry::Step::OutputPortableZIP', # no options needed
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::Strawberry::Step::CreateReleaseNotes', # no options needed
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::Strawberry::Step::OutputLogZIP', # no options needed
     };
 }
