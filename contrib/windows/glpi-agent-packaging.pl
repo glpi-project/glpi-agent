@@ -615,6 +615,7 @@ sub __job {
 # <image_dir>     is placeholder for c:\strawberry
     return {
         app_version     => $self->global->{_perl_version}.'.'.$self->global->{_revision}, #BEWARE: do not use '.0.0' in the last two version digits
+        bits            => $self->global->{bits},
         beta            => 0,
         app_fullname    => 'Strawberry Perl'.($self->is64bit?' (64-bit)':''),
         app_simplename  => 'strawberry-perl',
