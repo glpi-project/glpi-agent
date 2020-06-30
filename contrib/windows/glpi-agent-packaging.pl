@@ -818,7 +818,10 @@ sub __job_steps {
     {
         plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
         commands => [
-            { do=>'copyfile', args=>[ 'contrib/windows/packaging/dmidecode.exe', '<image_dir>/perl/bin' ] },
+            { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/x86/dmidecode.exe', '<image_dir>/perl/bin' ] },
+            { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/x86/hdparm.exe', '<image_dir>/perl/bin' ] },
+            { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/'.($self->is64bit?'x64':'x86').'/7z.exe', '<image_dir>/perl/bin' ] },
+            { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/'.($self->is64bit?'x64':'x86').'/7z.dll', '<image_dir>/perl/bin' ] },
             { do=>'movefile', args=>[ '<image_dir>/perl/bin/perl.exe', '<image_dir>/perl/bin/glpi-agent.exe' ] },
             { do=>'copydir', args=>[ 'lib/FusionInventory', '<image_dir>/perl/agent/FusionInventory' ] },
             { do=>'copydir', args=>[ 'etc', '<image_dir>/etc' ] },
