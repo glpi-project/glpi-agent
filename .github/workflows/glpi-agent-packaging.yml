@@ -15,6 +15,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - name: Restore points cache
+      uses: actions/cache@v2
+      with:
+        path: C:\Strawberry-perl-for-GLPI-Agent_build\restore
+        key: windows-packaging-restore-points-${{ hashFiles('contrib\windows\glpi-agent-packaging.pl') }}
     - name: Update environment
       run: |
         echo '::add-path::C:\Strawberry\perl\bin'
