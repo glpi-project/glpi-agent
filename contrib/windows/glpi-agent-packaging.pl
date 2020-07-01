@@ -156,6 +156,8 @@ use constant _file_feature_match => { qw(
     perl\agent\FusionInventory\Agent\SNMP.pm                feat_NETINV
 
     perl\agent\FusionInventory\Agent\Task\Deploy.pm         feat_DEPLOY
+    perl\bin\7z.exe                                         feat_DEPLOY
+    perl\bin\7z.dll                                         feat_DEPLOY
 
     perl\agent\FusionInventory\Agent\Task\Collect.pm        feat_COLLECT
 
