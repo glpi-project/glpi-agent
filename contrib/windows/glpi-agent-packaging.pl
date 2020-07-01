@@ -824,7 +824,6 @@ sub __job_steps {
             { do=>'removefile', args=>[ '<image_dir>/etc/gdbinit' ] },
             { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/^\.packlist$/i ] },
             { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.pod$/i ] },
-            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.al$/i ] },
             { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.a$/i ] },
         ],
     },
