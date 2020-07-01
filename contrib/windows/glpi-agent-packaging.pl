@@ -497,13 +497,17 @@ sub make_restorepoint {
 sub create_dirs {
     my $self = shift;
 
-    my $idir = $self->global->{image_dir};
-    remove_tree($idir) if -d $idir;
+    # Make a first pass on removing expected dirs as this may fail for unknown reason
+    foreach my $global (qw(image_dir build_dir debug_dir env_dir)) {
+        my $dir = $self->global->{$global}
+            or next;
+        remove_tree($dir) if -d $dir;
 
-    # We may have some issue with fs synchro, be ready to wait a little
-    my $timeout = time + 10;
-    while (-d $idir && time < $timeout) {
-        usleep(100000);
+        # We may have some issue with fs synchro, be ready to wait a little
+        my $timeout = time + 10;
+        while (-d $dir && time < $timeout) {
+            usleep(100000);
+        }
     }
 
     $self->SUPER::create_dirs();
