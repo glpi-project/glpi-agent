@@ -14,9 +14,8 @@ use constant {
 use lib 'lib';
 use FusionInventory::Agent::Version;
 
-# HACK: make "use Perl::Dist::GLPI::Agent::Step::Update" works as included plugin
-$INC{'Perl/Dist/GLPI/Agent/Step/Update.pm'} = __FILE__;
-$INC{'Perl/Dist/GLPI/Agent/Step/OutputMSI.pm'} = __FILE__;
+# HACK: make "use Perl::Dist::GLPI::Agent::Step::XXX" works as included plugin
+map { $INC{'Perl/Dist/GLPI/Agent/Step/$_.pm'} = __FILE__ } qw(Update OutputMSI Test);
 
 # Perl::Dist::Strawberry doesn't detect WiX 3.11 which is installed on windows github images
 # Algorithm imported from Perl::Dist::Strawberry::Step::OutputMSM_MSI::_detect_wix_dir
@@ -72,6 +71,7 @@ sub build_app {
         msi_sharedir    => 'contrib/windows/packaging',
         bits            => $bits,
         arch            => $bits == 32 ? "x86" : "x64",
+        _restore_step   => 8,
     );
 
     $app->parse_options(
@@ -105,6 +105,45 @@ $app->do_job()
 print "All packages building processing passed\n";
 
 exit(0);
+
+package
+    Perl::Dist::GLPI::Agent::Step::Test;
+
+use parent 'Perl::Dist::Strawberry::Step';
+
+use File::Spec::Functions qw(catfile catdir);
+
+sub run {
+    my $self = shift;
+
+    # If modules are defined, just install the modules
+    if ($self->{config}->{modules}) {
+        my @list = map {
+            {
+                module => $_,
+                skiptest => 1,
+                install_to => 'site',
+            }
+        } @{$self->{config}->{modules}};
+        $self->install_modlist(@list) or die "FAILED to install test modules\n";
+        return;
+    }
+
+    # Without modules set, run the tests
+    my $perlbin = catfile($self->global->{image_dir}, 'perl/bin/perl.exe');
+
+    my $makefile_pl_cmd = [ $perlbin, "Makefile.PL"];
+    $self->boss->message(2, "Test: gonna run perl Makefile.PL");
+    my $rv = $self->execute_standard($makefile_pl_cmd, catfile($self->global->{debug_dir}, "Agent-Tests-Makefile.log.txt"));
+    die "ERROR: TEST, perl Makefile.PL\n" unless(defined $rv && $rv == 0);
+
+    my $make_test_cmd = [ "gmake", "test" ];
+    $self->boss->message(2, "Test: gonna run gmake test");
+    $rv = $self->execute_standard($make_test_cmd, catfile($self->global->{debug_dir}, "Agent-Tests-make-test.log.txt"));
+    die "ERROR: TEST, make test\n" unless(defined $rv && $rv == 0);
+}
+
+sub test {}
 
 package
     Perl::Dist::GLPI::Agent::Step::OutputMSI;
@@ -487,9 +526,11 @@ use Time::HiRes qw(usleep);
 sub make_restorepoint {
     my ($self, $text) = @_;
 
+    my $step = $self->global->{_restore_step};
+
     # Save a restorepoint only on the expected step
     return $self->message(3, "skipping restorepoint '$text'\n")
-        unless $text =~ m{step:6/};
+        unless $text =~ m{step:$step/};
 
     $self->SUPER::make_restorepoint($text);
 }
@@ -527,8 +568,9 @@ sub ask_about_restorepoint {
         warn "SKIPPING/7 $pp\n" and next unless $d->{bits} == $bits;
         push @points, $d;
     }
-    # Select the restore point at step 6
-    my ($restorepoint) = grep { $_->{build_job_steps}->[6]->{done} && ! $_->{build_job_steps}->[7]->{done} } @points;
+    # Select the restore point at expected step
+    my $step = $self->global->{_restore_step};
+    my ($restorepoint) = grep { $_->{build_job_steps}->[$step]->{done} && ! $_->{build_job_steps}->[$step+1]->{done} } @points;
     return $restorepoint;
 }
 
@@ -796,6 +838,46 @@ sub __job_steps {
             { do=>'removedir', args=>[ '<image_dir>/perl/site/lib/MSWin32-x86-multi-thread-64int' ] },
             { do=>'removedir', args=>[ '<image_dir>/perl/site/lib/MSWin32-x86-multi-thread' ] },
             { do=>'removedir', args=>[ '<image_dir>/perl/site/lib/MSWin32-x64-multi-thread' ] },
+            { do=>'removedir', args=>[ '<image_dir>/licenses' ] },
+            { do=>'removefile', args=>[ '<image_dir>/etc/gdbinit' ] },
+            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/^\.packlist$/i ] },
+            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.pod$/i ] },
+            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.a$/i ] },
+        ],
+    },
+    ### NEXT STEP ###########################
+    {
+        plugin => 'Perl::Dist::GLPI::Agent::Step::Test',
+        modules => [
+            qw(
+                HTTP::Proxy HTTP::Server::Simple::Authen IO::Capture::Stderr
+                Test::Compile Test::Deep Test::MockModule Test::MockObject
+                Test::NoWarnings
+            )
+        ],
+    },
+    ### NEXT STEP ###########################
+    {
+        plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
+        commands => [
+            { do=>'removedir', args=>[ '<image_dir>/bin' ] },
+            { do=>'removedir', args=>[ '<image_dir>/c' ] },
+            { do=>'removedir', args=>[ '<image_dir>/'.($self->is64bit?'x86_64':'i686').'-w64-mingw32' ] },
+            { do=>'removedir', args=>[ '<image_dir>/include' ] },
+            { do=>'removedir', args=>[ '<image_dir>/lib' ] },
+            { do=>'removedir', args=>[ '<image_dir>/libexec' ] },
+        ],
+    },
+    ### NEXT STEP ###########################
+    {
+        plugin => 'Perl::Dist::GLPI::Agent::Step::Test',
+    },
+    ### NEXT STEP ###########################
+    {
+        plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
+        commands => [
+            { do=>'removedir', args=>[ '<image_dir>/perl/site/lib' ] },
+            { do=>'createdir', args=>[ '<image_dir>/perl/site/lib' ] },
             # updates for glpi-agent
             { do=>'createdir', args=>[ '<image_dir>/perl/agent' ] },
             { do=>'createdir', args=>[ '<image_dir>/perl/newbin' ] },
@@ -814,23 +896,6 @@ sub __job_steps {
             $self->__movedll('liblzma-5__.dll'),
             $self->__movedll('libssl-1_1'.($self->is64bit?'-x64__':'').'.dll'),
             $self->__movedll('zlib1__.dll'),
-            { do=>'removedir', args=>[ '<image_dir>/bin' ] },
-            { do=>'removedir', args=>[ '<image_dir>/c' ] },
-            { do=>'removedir', args=>[ '<image_dir>/'.($self->is64bit?'x86_64':'i686').'-w64-mingw32' ] },
-            { do=>'removedir', args=>[ '<image_dir>/include' ] },
-            { do=>'removedir', args=>[ '<image_dir>/lib' ] },
-            { do=>'removedir', args=>[ '<image_dir>/libexec' ] },
-            { do=>'removedir', args=>[ '<image_dir>/licenses' ] },
-            { do=>'removefile', args=>[ '<image_dir>/etc/gdbinit' ] },
-            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/^\.packlist$/i ] },
-            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.pod$/i ] },
-            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.a$/i ] },
-        ],
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
-        commands => [
             { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/x86/dmidecode.exe', '<image_dir>/perl/bin' ] },
             { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/x86/hdparm.exe', '<image_dir>/perl/bin' ] },
             { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/'.($self->is64bit?'x64':'x86').'/7z.exe', '<image_dir>/perl/bin' ] },
