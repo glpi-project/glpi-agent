@@ -17,7 +17,7 @@ jobs:
     - name: Restore points cache
       uses: pat-s/always-upload-cache@v2.0.0
       with:
-        path: C:\Strawberry-perl-for-GLPI-Agent_build\restore
+        path: C:/Strawberry-perl-for-GLPI-Agent_build/restore
         key: windows-packaging-restore-points-${{ hashFiles('contrib\windows\packaging\PerlBuildJob.pm') }}
     - name: Update environment
       run: |
