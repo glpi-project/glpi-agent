@@ -97,7 +97,7 @@ while ( @ARGV ) {
     my $arg = shift @ARGV;
     if ($arg eq "--arch") {
         my $arch = shift @ARGV;
-        next unless $arch =~ /^x(86|64)$/
+        next unless $arch =~ /^x(86|64)$/;
         $do{$arch} = $arch eq "x86" ? 32 : 64 ;
     } elsif ($arg eq "--all") {
         %do = ( x86 => 1, x64 => 1);
