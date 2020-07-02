@@ -35,6 +35,12 @@ jobs:
         perl --version
         perl -V
       shell: cmd
+    - name: Install Module::Install
+      run: cpan -T Module::Install
+      shell: cmd
+    - name: Prepare Makefile
+      run: perl Makefile.PL
+      shell: cmd
     - name: Install Perl::Dist::Strawberry
       run: |
         cpanm --notest --verbose Perl::Dist::Strawberry

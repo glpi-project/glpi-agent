@@ -143,11 +143,6 @@ sub run {
     my $perlbin = catfile($self->global->{image_dir}, 'perl/bin/perl.exe');
     my $makebin = catfile($self->global->{image_dir}, 'perl/bin/gmake.exe');
 
-    my $cpan_cmd = [ $perlbin, "-MApp::Cpan", "-e", "'exit(App::Cpan->run(\@ARGV)||0);'", "-T", "Module::Install" ];
-    $self->boss->message(2, "Test: gonna run cpan -T Module::Install");
-    my $rv = $self->execute_standard($cpan_cmd, catfile($self->global->{debug_dir}, "Agent-Tests-Module-Install.log.txt"));
-    die "ERROR: TEST, cpan -T Module::Install\n" unless(defined $rv && $rv == 0);
-
     my $makefile_pl_cmd = [ $perlbin, "Makefile.PL"];
     $self->boss->message(2, "Test: gonna run perl Makefile.PL");
     $rv = $self->execute_standard($makefile_pl_cmd);
