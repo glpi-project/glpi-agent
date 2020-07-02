@@ -261,7 +261,7 @@ sub _bits {
 }
 
 sub _perl_source_url {
-    return 'http://cpan.metacpan.org/authors/id/S/SH/SHAY/perl-'.$PERL_VERSION.'.tar.gz';
+    return 'http://cpan.metacpan.org/authors/id/S/SH/SHAY/perl-'.PERL_VERSION.'.tar.gz';
 }
 
 sub _tools {
