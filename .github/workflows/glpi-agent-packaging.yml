@@ -12,6 +12,9 @@ jobs:
   windows-packaging:
 
     runs-on: windows-latest
+    strategy:
+      matrix:
+        arch: [ x64, x86 ]
 
     steps:
     - uses: actions/checkout@v1
@@ -38,7 +41,7 @@ jobs:
       shell: cmd
     - name: Build package
       run: |
-        perl contrib\windows\glpi-agent-packaging.pl --all
+        perl contrib\windows\glpi-agent-packaging.pl --arch ${{ matrix.arch }}
       shell: cmd
     - name: List generated files
       if: success() || failure()

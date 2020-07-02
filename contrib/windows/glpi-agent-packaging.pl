@@ -92,20 +92,25 @@ sub build_app {
     return $app;
 }
 
-print "Building 64 bits packages...\n";
-my $app = build_app(64);
-$app->do_job()
-    or exit(1);
-
-unless (grep { /^--all$/ } @ARGV) {
-    print "Skipping 32 bits packages for now\n";
-    exit(0);
+my %do = ();
+while ( @ARGV ) {
+    my $arg = shift @ARGV;
+    if ($arg eq "--arch") {
+        my $arch = shift @ARGV;
+        next unless $arch =~ /^x(86|64)$/
+        $do{$arch} = $arch eq "x86" ? 32 : 64 ;
+    } elsif ($arg eq "--all") {
+        %do = ( x86 => 1, x64 => 1);
+        last;
+    }
 }
 
-print "Building 32 bits packages...\n";
-$app = build_app(32);
-$app->do_job()
-    or exit(1);
+foreach my $bits (sort values(%do)) {
+    print "Building $bits bits packages...\n";
+    my $app = build_app($bits);
+    $app->do_job()
+        or exit(1);
+}
 
 print "All packages building processing passed\n";
 
