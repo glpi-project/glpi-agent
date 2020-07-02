@@ -4,12 +4,15 @@ use strict;
 use warnings;
 
 use Win32::TieRegistry qw( KEY_READ );
+use Cwd qw(abs_path);
 
 use constant {
-    PERL_VERSION        => "5.30.2",
     PACKAGE_REVISION    => "1", #BEWARE: always start with 1
     PROVIDED_BY         => "Teclib Edition",
 };
+
+use lib abs_path(File::Spec->rel2abs('../packaging', __FILE__));
+use PerlBuildJob;
 
 use lib 'lib';
 use FusionInventory::Agent::Version;
@@ -56,22 +59,23 @@ if ($ENV{GITHUB_REF} && $ENV{GITHUB_REF} =~ m|refs/tags/(.+)$|) {
 sub build_app {
     my $bits = shift;
 
+    my $package_rev = $ENV{PACKAGE_REVISION} || PACKAGE_REVISION;
+
     my $app = Perl::Dist::GLPI::Agent->new(
         _perl_version   => PERL_VERSION,
-        _revision       => PACKAGE_REVISION,
+        _revision       => $package_rev,
         _provider       => $provider,
         _provided_by    => PROVIDED_BY,
         agent_version   => $version,
-        agent_fullver   => $major.'.'.$minor.'.'.$revision.'.'.PACKAGE_REVISION,
+        agent_fullver   => $major.'.'.$minor.'.'.$revision.'.'.$package_rev,
         agent_msiver    => $major.'.'.$minor.'.'.$revision,
         agent_fullname  => $provider.' Agent',
         agent_rootdir   => $provider.'-Agent',
         agent_regpath   => "Software\\$provider-Agent",
         service_name    => lc($provider).'-agent',
         msi_sharedir    => 'contrib/windows/packaging',
-        bits            => $bits,
         arch            => $bits == 32 ? "x86" : "x64",
-        _restore_step   => 8,
+        _restore_step   => PERL_BUILD_STEPS,
     );
 
     $app->parse_options(
@@ -129,15 +133,16 @@ sub run {
         return;
     }
 
-    # Without modules set, run the tests
+    # Without defined modules, run the tests
     my $perlbin = catfile($self->global->{image_dir}, 'perl/bin/perl.exe');
+    my $makebin = catfile($self->global->{image_dir}, 'perl/bin/gmake.exe');
 
     my $makefile_pl_cmd = [ $perlbin, "Makefile.PL"];
     $self->boss->message(2, "Test: gonna run perl Makefile.PL");
     my $rv = $self->execute_standard($makefile_pl_cmd, catfile($self->global->{debug_dir}, "Agent-Tests-Makefile.log.txt"));
     die "ERROR: TEST, perl Makefile.PL\n" unless(defined $rv && $rv == 0);
 
-    my $make_test_cmd = [ "gmake", "test" ];
+    my $make_test_cmd = [ $makebin, "test" ];
     $self->boss->message(2, "Test: gonna run gmake test");
     $rv = $self->execute_standard($make_test_cmd, catfile($self->global->{debug_dir}, "Agent-Tests-make-test.log.txt"));
     die "ERROR: TEST, make test\n" unless(defined $rv && $rv == 0);
@@ -522,6 +527,7 @@ use File::Path qw(remove_tree);
 use File::Spec::Functions qw(canonpath);
 use File::Glob qw(:glob);
 use Time::HiRes qw(usleep);
+use PerlBuildJob;
 
 sub make_restorepoint {
     my ($self, $text) = @_;
@@ -594,312 +600,31 @@ sub build_job_post {
 sub load_jobfile {
     my ($self) = @_;
 
-    return $self->__job();
+    my $job = build_job($self->global->{arch}, $self->global->{_revision});
+    push @{$job->{build_job_steps}}, $self->_other_job_steps();
+
+    return $job;
 }
 
-sub is64bit {
+sub _other_job_steps {
     my ($self) = @_;
-    return $self->global->{bits} == 64;
-}
-
-sub __tools {
-    my ($self, $tool) = @_;
-    my $bits = $self->global->{bits};
-    return '<package_url>/kmx/'.$bits.'_tools/'.$bits.'bit_'.$tool.'.zip';
-}
-
-sub __gcctoolchain {
-    my ($self) = @_;
-    my $bits = $self->global->{bits};
-    return '<package_url>/kmx/'.$bits.'_gcctoolchain/mingw64-w'.$bits.'-gcc8.3.0_20190316.zip';
-}
-
-sub __gcclib {
-    my ($self, $quarter, $lib, $date) = @_;
-    my $bits = $self->global->{bits};
-    unless ($date) {
-        my %date = qw( 2019Q2 20190522 2020Q1 20200207 );
-        $date = $date{$quarter};
-    }
-    return '<package_url>/kmx/'.$bits.'_libs/gcc83-'.$quarter.'/'.$bits.'bit_'.$lib.
-        '-bin_'.$date.'.zip';
-}
-
-sub __perl_source_url {
-    my ($self) = @_;
-    return 'http://cpan.metacpan.org/authors/id/S/SH/SHAY/' .
-        'perl-'.$self->global->{_perl_version}.'.tar.gz';
-}
-
-sub __movedll {
-    my ($self, $dll) = @_;
-    return {
-        do      => 'movefile',
-        args    => [
-            '<image_dir>/c/bin/'.$dll,
-            '<image_dir>/perl/bin/'.$dll
-        ]
-    };
-}
-
-sub __movebin {
-    my ($self, $bin) = @_;
-    return {
-        do      => 'movefile',
-        args    => [
-            '<image_dir>/perl/bin/'.$bin,
-            '<image_dir>/perl/newbin/'.$bin
-        ]
-    };
-}
-
-sub __job {
-    my ($self) = @_;
-### job description for building GLPI Agent
-
-#Available '<..>' macros:
-# <package_url>   is placeholder for http://strawberryperl.com/package
-# <dist_sharedir> is placeholder for Perl::Dist::Strawberry's distribution sharedir
-# <image_dir>     is placeholder for c:\strawberry
-    return {
-        app_version     => $self->global->{_perl_version}.'.'.$self->global->{_revision}, #BEWARE: do not use '.0.0' in the last two version digits
-        bits            => $self->global->{bits},
-        beta            => 0,
-        app_fullname    => 'Strawberry Perl'.($self->is64bit?' (64-bit)':''),
-        app_simplename  => 'strawberry-perl',
-        maketool        => 'gmake', # 'dmake' or 'gmake'
-        build_job_steps => [ $self->__job_steps() ],
-    }
-}
-
-sub __job_steps {
-    my ($self) = @_;
-    my ($MAJOR, $MINOR) = $self->global->{_perl_version} =~ /^(\d+)\.(\d+)\./;
     return
     ### NEXT STEP ###########################
     {
-        plugin  => 'Perl::Dist::Strawberry::Step::BinaryToolsAndLibs',
-        install_packages => {
-            #tools
-            'dmake'         => $self->__tools('dmake-warn_20170512'),
-            'pexports'      => $self->__tools('pexports-0.47-bin_20170426'),
-            'patch'         => $self->__tools('patch-2.5.9-7-bin_20100110_UAC'),
-            #gcc, gmake, gdb & co.
-            'gcc-toolchain' => { url=>$self->__gcctoolchain(), install_to=>'c' },
-            'gcc-license'   => $self->__gcctoolchain(),
-            #libs
-            'bzip2'         => $self->__gcclib('2019Q2','bzip2-1.0.6'),
-            'db'            => $self->__gcclib('2019Q2','db-6.2.38'),
-            'expat'         => $self->__gcclib('2019Q2','expat-2.2.6'),
-            'fontconfig'    => $self->__gcclib('2019Q2','fontconfig-2.13.1'),
-            'freeglut'      => $self->__gcclib('2020Q1','freeglut-2.8.1', '20200209'),
-            'freetype'      => $self->__gcclib('2019Q2','freetype-2.10.0'),
-            'gdbm'          => $self->__gcclib('2019Q2','gdbm-1.18'),
-            'giflib'        => $self->__gcclib('2019Q2','giflib-5.1.9'),
-            'gmp'           => $self->__gcclib('2019Q2','gmp-6.1.2'),
-            'graphite2'     => $self->__gcclib('2019Q2','graphite2-1.3.13'),
-            'harfbuzz'      => $self->__gcclib('2019Q2','harfbuzz-2.3.1'),
-            'jpeg'          => $self->__gcclib('2019Q2','jpeg-9c'),
-            'libffi'        => $self->__gcclib('2020Q1','libffi-3.3'),
-            'libgd'         => $self->__gcclib('2019Q2','libgd-2.2.5'),
-            'liblibiconv'   => $self->__gcclib('2019Q2','libiconv-1.16'),
-            'libidn2'       => $self->__gcclib('2019Q2','libidn2-2.1.1'),
-            'liblibpng'     => $self->__gcclib('2019Q2','libpng-1.6.37'),
-            'liblibssh2'    => $self->__gcclib('2019Q2','libssh2-1.8.2'),
-            'libunistring'  => $self->__gcclib('2019Q2','libunistring-0.9.10'),
-            'liblibxml2'    => $self->__gcclib('2019Q2','libxml2-2.9.9'),
-            'liblibXpm'     => $self->__gcclib('2019Q2','libXpm-3.5.12'),
-            'liblibxslt'    => $self->__gcclib('2019Q2','libxslt-1.1.33'),
-            'mpc'           => $self->__gcclib('2019Q2','mpc-1.1.0'),
-            'mpfr'          => $self->__gcclib('2019Q2','mpfr-4.0.2'),
-            'openssl'       => $self->__gcclib('2020Q1','openssl-1.1.1d'),
-            'readline'      => $self->__gcclib('2019Q2','readline-8.0'),
-            't1lib'         => $self->__gcclib('2019Q2','t1lib-5.1.2'),
-            'termcap'       => $self->__gcclib('2019Q2','termcap-1.3.1'),
-            'tiff'          => $self->__gcclib('2019Q2','tiff-4.0.10'),
-            'xz'            => $self->__gcclib('2019Q2','xz-5.2.4'),
-            'zlib'          => $self->__gcclib('2019Q2','zlib-1.2.11'),
-        },
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
-        commands => [
-            { do=>'removefile', args=>[ '<image_dir>/c/i686-w64-mingw32/lib/libglut.a', '<image_dir>/c/i686-w64-mingw32/lib/libglut32.a' ] }, #XXX-32bit only workaround
-            { do=>'movefile',   args=>[ '<image_dir>/c/lib/libdb-6.1.a', '<image_dir>/c/lib/libdb.a' ] }, #XXX ugly hack
-            { do=>'removefile', args=>[ '<image_dir>/c/bin/gccbug', '<image_dir>/c/bin/ld.gold.exe', '<image_dir>/c/bin/ld.bfd.exe' ] },
-            { do=>'removefile_recursive', args=>[ '<image_dir>/c', qr/.+\.la$/i ] }, # https://rt.cpan.org/Public/Bug/Display.html?id=127184
-        ],
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin     => 'Perl::Dist::Strawberry::Step::InstallPerlCore',
-        url        => $self->__perl_source_url(),
-        cf_email   => 'strawberry-perl@project', #IMPORTANT: keep 'strawberry-perl' before @
-        perl_debug => 0,    # can be overridden by --perl_debug=N option
-        perl_64bitint => 1, # ignored on 64bit, can be overridden by --perl_64bitint | --noperl_64bitint option
-        buildoptextra => '-D__USE_MINGW_ANSI_STDIO',
-        patch => { #DST paths are relative to the perl src root
-            'contrib/windows/packaging/agentexe.ico'                             => 'win32/agentexe.ico',
-            '<dist_sharedir>/perl-'.$MAJOR.'.'.$MINOR.'/win32_config.gc.tt'      => 'win32/config.gc',
-            'contrib/windows/packaging/agentexe.rc.tt'                           => 'win32/perlexe.rc',
-            '<dist_sharedir>/perl-'.$MAJOR.'.'.$MINOR.'/win32_config_H.gc'       => 'win32/config_H.gc', # enables gdbm/ndbm/odbm
-        },
-        license => { #SRC paths are relative to the perl src root
-            'Readme'   => '<image_dir>/licenses/perl/Readme',
-            'Artistic' => '<image_dir>/licenses/perl/Artistic',
-            'Copying'  => '<image_dir>/licenses/perl/Copying',
-        },
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::Strawberry::Step::UpgradeCpanModules',
-        exceptions => [
-            # possible 'do' options: ignore_testfailure | skiptest | skip - e.g. 
-            #{ do=>'ignore_testfailure', distribution=>'ExtUtils-MakeMaker-6.72' },
-            #{ do=>'ignore_testfailure', distribution=>qr/^IPC-Cmd-/ },
-            { do=>'ignore_testfailure', distribution=>qr/^Net-Ping-/ }, # 2.72 fails
-        ]
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::Strawberry::Step::InstallModules',
-        modules => [
-            # IPC related
-            { module=>'IPC-Run', skiptest=>1 }, #XXX-TODO trouble with 'Terminating on signal SIGBREAK(21)' https://metacpan.org/release/IPC-Run
-
-            { module=>'LWP::UserAgent', skiptest=>1 }, # XXX-HACK: 6.08 is broken
-
-            #removed from core in 5.20
-            { module=>'Archive::Extract',  ignore_testfailure=>1 }, #XXX-TODO-5.28/64bit
-
-            # win32 related
-            qw/Win32API::Registry Win32::TieRegistry/,
-            { module=>'Win32::OLE',         ignore_testfailure=>1 }, #XXX-TODO: ! Testing Win32-OLE-0.1711 failed
-            { module=>'Win32::API',         ignore_testfailure=>1 }, #XXX-TODO: https://rt.cpan.org/Public/Bug/Display.html?id=107450
-            qw/ Win32-Daemon /,
-            qw/ Win32::Job /,
-            qw/ Sys::Syslog /,
-
-            # file related
-            { module=>'File::Copy::Recursive', ignore_testfailure=>1 }, #XXX-TODO-5.28
-            qw/ File-Which /,
-
-            # SSL & SSH & telnet
-            { module=>'Net-SSLeay', ignore_testfailure=>1 }, # openssl-1.1.1 related
-            'Mozilla::CA', # optional dependency of IO-Socket-SSL
-            { module=>'IO-Socket-SSL', skiptest=>1 },
-
-            # network
-            qw/ IO::Socket::IP IO::Socket::INET6 /,
-            qw/ HTTP-Server-Simple /,
-            { module=>'LWP::Protocol::https', skiptest=>1 },
-            { module=>'<package_url>/kmx/perl-modules-patched/Crypt-SSLeay-0.72_patched.tar.gz' }, #XXX-FIXME
-
-            # XML & co.
-            qw/ XML-Parser /,
-
-            # crypto
-            qw/ CryptX /,
-            qw/ Crypt::DES Crypt::Rijndael /,
-            qw/ Digest-MD5 Digest-SHA Digest-SHA1 Digest::HMAC /,
-
-            # date/time
-            qw/ DateTime Date::Format DateTime::TimeZone::Local::Win32 /,
-
-            # misc
-            { module=>'Unicode::UTF8', ignore_testfailure=>1 }, #XXX-TODO-5.28
-
-            # GLPI-Agent deps
-            qw/ File::Which Text::Template UNIVERSAL::require XML::TreePP XML::XPath /,
-            qw/ Memoize Time::HiRes Compress::Zlib Win32::Unicode::File /,
-            qw/ Parse::EDID JSON::PP YAML::Tiny Parallel::ForkManager URI::Escape /,
-            qw/ Net::NBName Thread::Queue Thread::Semaphore /,
-            qw/ Net::SNMP Net::SNMP::Security::USM Net::SNMP::Transport::IPv4::TCP
-                Net::SNMP::Transport::IPv6::TCP Net::SNMP::Transport::IPv6::UDP /,
-            qw/ Net::IP Archive::Zip /,
-            # For Wake-On-LAN task
-            #qw/ Net::Write::Layer2 /,
-        ],
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::Strawberry::Step::FixShebang',
-        shebang => '#!perl',
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
-        commands => [
-            # cleanup (remove unwanted files/dirs)
-            { do=>'removefile', args=>[ '<image_dir>/perl/vendor/lib/Crypt/._test.pl', '<image_dir>/perl/vendor/lib/DBD/testme.tmp.pl' ] },
-            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/.+\.dll\.AA[A-Z]$/i ] },
-            # cleanup cpanm related files
-            { do=>'removedir', args=>[ '<image_dir>/perl/site/lib/MSWin32-x86-multi-thread-64int' ] },
-            { do=>'removedir', args=>[ '<image_dir>/perl/site/lib/MSWin32-x86-multi-thread' ] },
-            { do=>'removedir', args=>[ '<image_dir>/perl/site/lib/MSWin32-x64-multi-thread' ] },
-            { do=>'removedir', args=>[ '<image_dir>/licenses' ] },
-            { do=>'removefile', args=>[ '<image_dir>/etc/gdbinit' ] },
-            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/^\.packlist$/i ] },
-            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.pod$/i ] },
-            { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.a$/i ] },
-        ],
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::GLPI::Agent::Step::Test',
-        modules => [
-            qw(
-                HTTP::Proxy HTTP::Server::Simple::Authen IO::Capture::Stderr
-                Test::Compile Test::Deep Test::MockModule Test::MockObject
-                Test::NoWarnings
-            )
-        ],
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
-        commands => [
-            { do=>'removedir', args=>[ '<image_dir>/bin' ] },
-            { do=>'removedir', args=>[ '<image_dir>/c' ] },
-            { do=>'removedir', args=>[ '<image_dir>/'.($self->is64bit?'x86_64':'i686').'-w64-mingw32' ] },
-            { do=>'removedir', args=>[ '<image_dir>/include' ] },
-            { do=>'removedir', args=>[ '<image_dir>/lib' ] },
-            { do=>'removedir', args=>[ '<image_dir>/libexec' ] },
-        ],
-    },
-    ### NEXT STEP ###########################
-    {
         plugin => 'Perl::Dist::GLPI::Agent::Step::Test',
     },
     ### NEXT STEP ###########################
     {
         plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
         commands => [
+            # Cleanup modules and files used for tests
             { do=>'removedir', args=>[ '<image_dir>/perl/site/lib' ] },
             { do=>'createdir', args=>[ '<image_dir>/perl/site/lib' ] },
+            { do=>'removefile', args=>[ '<image_dir>/perl/bin/gmake.exe' ] },
             # updates for glpi-agent
             { do=>'createdir', args=>[ '<image_dir>/perl/agent' ] },
-            { do=>'createdir', args=>[ '<image_dir>/perl/newbin' ] },
             { do=>'createdir', args=>[ '<image_dir>/var' ] },
             { do=>'createdir', args=>[ '<image_dir>/log' ] },
-            $self->__movebin('libgcc_s_'.($self->is64bit?'seh':'dw2').'-1.dll'),
-            $self->__movebin('libstdc++-6.dll'),
-            $self->__movebin('libwinpthread-1.dll'),
-            $self->__movebin('perl.exe'),
-            $self->__movebin('perl'.$MAJOR.$MINOR.'.dll'),
-            { do=>'removedir', args=>[ '<image_dir>/perl/bin' ] },
-            { do=>'movedir', args=>[ '<image_dir>/perl/newbin', '<image_dir>/perl/bin' ] },
-            $self->__movedll('libbz2-1__.dll'),
-            $self->__movedll('libcrypto-1_1'.($self->is64bit?'-x64__':'').'.dll'),
-            $self->__movedll('libexpat-1__.dll'),
-            $self->__movedll('liblzma-5__.dll'),
-            $self->__movedll('libssl-1_1'.($self->is64bit?'-x64__':'').'.dll'),
-            $self->__movedll('zlib1__.dll'),
-            { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/x86/dmidecode.exe', '<image_dir>/perl/bin' ] },
-            { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/x86/hdparm.exe', '<image_dir>/perl/bin' ] },
-            { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/'.($self->is64bit?'x64':'x86').'/7z.exe', '<image_dir>/perl/bin' ] },
-            { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/'.($self->is64bit?'x64':'x86').'/7z.dll', '<image_dir>/perl/bin' ] },
             { do=>'movefile', args=>[ '<image_dir>/perl/bin/perl.exe', '<image_dir>/perl/bin/glpi-agent.exe' ] },
             { do=>'copydir', args=>[ 'lib/FusionInventory', '<image_dir>/perl/agent/FusionInventory' ] },
             { do=>'copydir', args=>[ 'etc', '<image_dir>/etc' ] },
@@ -925,7 +650,7 @@ sub __job_steps {
             #'dirname\file.pm',
         ],
         #BEWARE: msi_upgrade_code is a fixed value for all same arch releases (for ever)
-        msi_upgrade_code    => $self->is64bit ? '0DEF72A8-E5EE-4116-97DC-753718E19CD5' : '7F25A9A4-BCAE-4C15-822D-EAFBD752CFEC', 
+        msi_upgrade_code    => $self->global->{arch} eq 'x64' ? '0DEF72A8-E5EE-4116-97DC-753718E19CD5' : '7F25A9A4-BCAE-4C15-822D-EAFBD752CFEC',
         app_publisher       => 'GLPI Project',
         url_about           => 'https://glpi-project.org/',
         url_help            => 'https://glpi-project.org/discussions/',
