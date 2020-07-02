@@ -41,15 +41,18 @@ jobs:
         perl contrib\windows\glpi-agent-packaging.pl --all
       shell: cmd
     - name: List generated files
+      if: success() || failure()
       run: |
         dir C:\Strawberry-perl-for-GLPI-Agent_build\output
       shell: cmd
     - name: Upload Output artifacts
+      if: success() || failure()
       uses: actions/upload-artifact@v1
       with:
         name: Output
         path: C:\Strawberry-perl-for-GLPI-Agent_build\output
     - name: Upload MSI-Build artifacts
+      if: success() || failure()
       uses: actions/upload-artifact@v1
       with:
         name: MSI-Build

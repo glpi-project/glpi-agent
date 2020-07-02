@@ -40,10 +40,12 @@ jobs:
         perl contrib\windows\glpi-agent-packaging.pl --all
       shell: cmd
     - name: List generated files
+      if: success() || failure()
       run: |
         dir C:\Strawberry-perl-for-GLPI-Agent_build\output
       shell: cmd
     - name: Upload Output artifacts
+      if: success() || failure()
       uses: actions/upload-artifact@v1
       with:
         name: Output
@@ -56,10 +58,6 @@ jobs:
         echo "::set-output name=version::${TAG%-test*}"
         echo "::set-output name=testrev::${TAG#*-test}"
       shell: bash
-    - name: List generated files
-      run: |
-        dir C:\Strawberry-perl-for-GLPI-Agent_build\output
-      shell: cmd
     - name: Create Test Release
       id: create_test_release
       uses: actions/create-release@v1
