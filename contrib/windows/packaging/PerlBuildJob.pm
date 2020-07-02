@@ -230,11 +230,11 @@ sub _build_steps {
                 { do=>'removedir', args=>[ '<image_dir>/perl/bin' ] },
                 { do=>'movedir', args=>[ '<image_dir>/perl/newbin', '<image_dir>/perl/bin' ] },
                 _movedll('libbz2-1__.dll'),
-                _movedll('libcrypto-1_1'.(_is64bit()?'-x64__':'').'.dll'),
                 _movedll('libexpat-1__.dll'),
                 _movedll('liblzma-5__.dll'),
-                _movedll('libssl-1_1'.(_is64bit()?'-x64__':'').'.dll'),
                 _movedll('zlib1__.dll'),
+                _movessldll('libcrypto-1_1'.(_is64bit()?'-x64__':'').'.dll'),
+                _movessldll('libssl-1_1'.(_is64bit()?'-x64__':'').'.dll'),
                 _movedll('gmake.exe'), # Needed for tests
                 { do=>'removedir', args=>[ '<image_dir>/bin' ] },
                 { do=>'removedir', args=>[ '<image_dir>/c' ] },
@@ -307,6 +307,17 @@ sub _movedll {
         args    => [
             '<image_dir>/c/bin/'.$dll,
             '<image_dir>/perl/bin/'.$dll
+        ]
+    };
+}
+
+sub _movessldll {
+    my ($dll) = @_;
+    return {
+        do      => 'movefile',
+        args    => [
+            '<image_dir>/c/bin/'.$dll,
+            '<image_dir>/perl/vendor/lib/auto/Net/SSLeay/'.$dll
         ]
     };
 }
