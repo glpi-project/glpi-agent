@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Win32::TieRegistry qw( KEY_READ );
+use File::Spec;
 use Cwd qw(abs_path);
 
 use constant {
