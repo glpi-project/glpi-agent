@@ -145,7 +145,7 @@ sub run {
 
     my $makefile_pl_cmd = [ $perlbin, "Makefile.PL"];
     $self->boss->message(2, "Test: gonna run perl Makefile.PL");
-    my $rv = $self->execute_standard($makefile_pl_cmd, catfile($self->global->{debug_dir}, "Agent-Tests-Makefile.log.txt"));
+    $rv = $self->execute_standard($makefile_pl_cmd, catfile($self->global->{debug_dir}, "Agent-Tests-Makefile.log.txt"));
     die "ERROR: TEST, perl Makefile.PL\n" unless(defined $rv && $rv == 0);
 
     my $make_test_cmd = [ $makebin, "test" ];
