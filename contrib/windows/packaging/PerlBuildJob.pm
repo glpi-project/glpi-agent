@@ -1,5 +1,5 @@
 package
-    PerlBuildJob
+    PerlBuildJob;
 
 use parent 'Exporter';
 
