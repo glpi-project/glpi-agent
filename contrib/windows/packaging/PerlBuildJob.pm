@@ -211,7 +211,6 @@ sub _build_steps {
             plugin => 'Perl::Dist::GLPI::Agent::Step::Test',
             modules => [
                 qw(
-                    Module::Install
                     HTTP::Proxy HTTP::Server::Simple::Authen IO::Capture::Stderr
                     Test::Compile Test::Deep Test::MockModule Test::MockObject
                     Test::NoWarnings
