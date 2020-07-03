@@ -253,6 +253,14 @@ my $deb_packages = [
         VERSION  => '3.1.12-1',
         FILESIZE => '225280',
         SYSTEM_CATEGORY => 'admin'
+    },
+    {
+        FROM     => 'deb',
+        NAME     => 'jcagent',
+        ARCH     => 'amd64',
+        VERSION  => '0.24.2',
+        FILESIZE => '0',
+        SYSTEM_CATEGORY => 'base'
     }
 ];
 

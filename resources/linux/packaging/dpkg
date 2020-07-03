@@ -14,3 +14,4 @@ aspell-en	all	6.0-0-6	548	text
 aspell-fr	all	0.50-3-7	636	text
 at	amd64	3.1.12-1	220	admin	install ok installed
 vlc-nox	amd64	2.2.2-5ubuntu0.16.04.4	9270	video	deinstall ok config-files
+jcagent	amd64	0.24.2		base	install ok installed

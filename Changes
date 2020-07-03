@@ -14,6 +14,7 @@ Revision history for FusionInventory agent
 
 inventory:
 * Fix #771: added Acer monitor serial support for models (G227HQL, G236HL, R221Q, S273HL)
+* Fix #787: fix debian package reporting when size is not defined
 
 netdiscovery/netinventory:
 * Updated Ricoh printers support

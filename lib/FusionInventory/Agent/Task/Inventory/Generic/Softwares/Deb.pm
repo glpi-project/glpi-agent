@@ -74,7 +74,7 @@ sub _getPackagesList {
             NAME        => $infos[0],
             ARCH        => $infos[1],
             VERSION     => $infos[2],
-            FILESIZE    => $infos[3]*1024,
+            FILESIZE    => $infos[3] =~ /^\d+$/ ? $infos[3]*1024 : 0,
             FROM        => 'deb',
             SYSTEM_CATEGORY => $infos[4]
         };
