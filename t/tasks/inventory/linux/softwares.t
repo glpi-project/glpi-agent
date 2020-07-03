@@ -397,6 +397,7 @@ my $snap_packages = [
         HELPLINK    => 'https://www.kde.org/support/',
         NAME        => 'kde-frameworks-5-core18',
         PUBLISHER   => 'KDE',
+        _REVISION   => '32',
         VERSION     => '5.61.0'
     },
     {
@@ -406,6 +407,7 @@ my $snap_packages = [
         HELPLINK    => 'https://bugs.kde.org/enter_bug.cgi?product=neon&component=Snaps',
         NAME        => 'kdenlive',
         PUBLISHER   => 'KDE',
+        _REVISION   => '22',
         VERSION     => '19.08.2'
     },
     {
@@ -415,6 +417,7 @@ my $snap_packages = [
         HELPLINK    => 'https://github.com/sisco311/scrcpy-snap/issues',
         NAME        => 'scrcpy',
         PUBLISHER   => 'sisco311',
+        _REVISION   => '174',
         VERSION     => 'v1.10'
     }
 ];

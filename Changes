@@ -5,6 +5,9 @@ Revision history for GLPI agent
 core:
 * make internal HTTP server more responsive
 
+inventory:
+* fix snap softwares inventory
+
 Revision history for FusionInventory agent
 
 2.6 not release yet
