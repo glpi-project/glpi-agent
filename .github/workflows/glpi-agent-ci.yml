@@ -12,6 +12,12 @@ jobs:
     - name: Install cpanminus
       run: |
         sudo apt -y install cpanminus libmodule-install-perl
+    - name: Dpkg test output
+      run: |
+        dpkg-query --show --showformat='${Package}\t${Architecture}\t${Version}\t${Installed-Size}\t${Section}\t${Status}\n'
+    - name: Snap list test output
+      run: |
+        snap list --color never
     - name: Check environment
       run: |
         perl --version
