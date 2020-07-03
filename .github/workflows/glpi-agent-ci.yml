@@ -21,6 +21,9 @@ jobs:
     - name: Snap info hub test output
       run: |
         snap info --color never --abs-time hub
+    - name: Snap YAML for hub test output
+      run: |
+        cat /snap/hub/43/meta/snap.yaml
     - name: Check environment
       run: |
         perl --version

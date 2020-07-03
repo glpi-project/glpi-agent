@@ -31,6 +31,7 @@ sub doInventory {
             logger  => $logger,
             snap    => $snap,
             command => 'snap info --color never --abs-time '.$snap->{NAME},
+            file    => '/snap/'.$snap->{NAME}.'/'.$snap->{REVISION}.'/meta/snap.yaml',
         );
         $inventory->addEntry(
             section => 'SOFTWARES',
@@ -55,11 +56,12 @@ sub _getPackagesList {
         next if $infos[0] eq 'Name' && $infos[1] eq 'Version';
 
         # Skip base and snapd
-        next if $infos[5] && $infos[5] =~ /^base|snapd$/;
+        next if $infos[5] && $infos[5] =~ /^base|core|snapd$/;
 
         my $snap = {
             NAME            => $infos[0],
             VERSION         => $infos[1],
+            REVISION        => $infos[2],
             FROM            => 'snap'
         };
 
@@ -81,6 +83,13 @@ sub _getPackagesList {
 
 sub _getPackagesInfo {
     my (%params) = @_;
+
+    # Always prefer to parse a YAML file
+    if ($params{file} && -e $params{file}) {
+        delete $params{command};
+    } else {
+        delete $params{file};
+    }
 
     my $snap = delete $params{snap};
     my $lines = getAllLines(%params)
