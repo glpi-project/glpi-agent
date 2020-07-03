@@ -227,7 +227,6 @@ sub _build_steps {
                 _movebin('libwinpthread-1.dll'),
                 _movebin('perl.exe'),
                 _movebin('perl'.$MAJOR.$MINOR.'.dll'),
-                _movebin('gmake.exe'), # Needed for tests
                 { do=>'removedir', args=>[ '<image_dir>/perl/bin' ] },
                 { do=>'movedir', args=>[ '<image_dir>/perl/newbin', '<image_dir>/perl/bin' ] },
                 _movedll('libbz2-1'),
@@ -236,6 +235,7 @@ sub _build_steps {
                 _movedll('zlib1'),
                 _movessldll('libcrypto-1_1'),
                 _movessldll('libssl-1_1'),
+                { do=>'movefile', args=>[ '<image_dir>/c/bin/gmake.exe', '<image_dir>/perl/bin/gmake.exe' ] }, # Needed for tests
                 { do=>'removedir', args=>[ '<image_dir>/bin' ] },
                 { do=>'removedir', args=>[ '<image_dir>/c' ] },
                 { do=>'removedir', args=>[ '<image_dir>/'.(_is64bit()?'x86_64':'i686').'-w64-mingw32' ] },
