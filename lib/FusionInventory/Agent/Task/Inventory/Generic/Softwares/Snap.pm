@@ -27,11 +27,12 @@ sub doInventory {
     return unless $packages;
 
     foreach my $snap (@{$packages}) {
+        my $rev = delete $snap->{REVISION};
         _getPackagesInfo(
             logger  => $logger,
             snap    => $snap,
             command => 'snap info --color never --abs-time '.$snap->{NAME},
-            file    => '/snap/'.$snap->{NAME}.'/'.$snap->{REVISION}.'/meta/snap.yaml',
+            file    => '/snap/'.$snap->{NAME}.'/'.$rev.'/meta/snap.yaml',
         );
         $inventory->addEntry(
             section => 'SOFTWARES',
@@ -62,6 +63,7 @@ sub _getPackagesList {
             NAME            => $infos[0],
             VERSION         => $infos[1],
             REVISION        => $infos[2],
+            PUBLISHER       => $infos[4],
             FROM            => 'snap'
         };
 
@@ -84,16 +86,15 @@ sub _getPackagesList {
 sub _getPackagesInfo {
     my (%params) = @_;
 
-    # Always prefer to parse a YAML file
-    if ($params{file} && -e $params{file}) {
-        delete $params{command};
-    } else {
-        delete $params{file};
-    }
-
     my $snap = delete $params{snap};
     my $lines = getAllLines(%params)
         or return;
+
+    my @output;
+    if ($params{file}) {
+        delete $params{file};
+        @output = getAllLines(%params);
+    }
 
     my $yaml  = YAML::Tiny->read_string($lines);
     my $infos = $yaml->[0]
@@ -101,13 +102,29 @@ sub _getPackagesInfo {
 
     return unless $infos->{name};
 
-    $snap->{PUBLISHER} = $infos->{publisher};
+    if (@output && !$infos->{publisher}) {
+        my ($publisher) = map { /^publisher: (.*)$/ } grep { /^publisher:/ } @output;
+        $infos->{publisher} = $publisher if $publisher;
+    }
+    $snap->{PUBLISHER} = $infos->{publisher}
+        if $infos->{publisher};
     # Cleanup publisher from 'starred' if verified
-    $snap->{PUBLISHER} =~ s/[*]$//;
+    $snap->{PUBLISHER} =~ s/[*]$// if $snap->{PUBLISHER};
+
     $snap->{COMMENTS}  = $infos->{summary};
-    $snap->{HELPLINK}  = $infos->{contact};
+
+    if (@output && !$infos->{contact}) {
+        my ($contact) = map { /^contact: (.*)$/ } grep { /^contact:/ } @output;
+        $infos->{contact} = $contact if $contact;
+    }
+    $snap->{HELPLINK} = $infos->{contact} if $infos->{contact};
 
     # Find installed size
+    if (@output && !$infos->{installed}) {
+        my ($installed) = map { /^installed: (.*)$/ } grep { /^installed:/ } @output;
+        $infos->{installed} = $installed if $installed;
+    }
+    return unless $infos->{installed};
     my ($size) = $infos->{installed} =~ /\(.*\)\s+(\d+\S+)/;
     $snap->{FILESIZE} = getCanonicalSize($size, 1024) * 1048576
         if $size;
