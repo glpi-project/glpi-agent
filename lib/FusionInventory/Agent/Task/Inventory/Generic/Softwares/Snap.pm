@@ -27,7 +27,7 @@ sub doInventory {
     return unless $packages;
 
     foreach my $snap (@{$packages}) {
-        my $rev = delete $snap->{REVISION};
+        my $rev = delete $snap->{_REVISION};
         _getPackagesInfo(
             logger  => $logger,
             snap    => $snap,
@@ -62,7 +62,7 @@ sub _getPackagesList {
         my $snap = {
             NAME            => $infos[0],
             VERSION         => $infos[1],
-            REVISION        => $infos[2],
+            _REVISION       => $infos[2],
             PUBLISHER       => $infos[4],
             FROM            => 'snap'
         };
@@ -91,7 +91,7 @@ sub _getPackagesInfo {
         or return;
 
     my @output;
-    if ($params{file}) {
+    if ($params{file} && $params{command}) {
         delete $params{file};
         @output = getAllLines(%params);
     }
