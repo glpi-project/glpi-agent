@@ -3490,9 +3490,38 @@ $offset = 3600 * 3;
 $convertedDate = FusionInventory::Agent::Tools::MacOS::_convertDateFromApplicationDataXml($dateStr, $offset);
 ok ($dateExpectedStr eq $convertedDate, $dateExpectedStr . ' eq ' . $convertedDate . ' ?');
 
+sub _cmpVersionNumbers {
+    my ($str1, $str2) = @_;
+
+    my @list1 = reverse split(/\./, $str1);
+    my @list2 = reverse split(/\./, $str2);
+
+    my $cmp = 0;
+    my $int1;
+    while (
+        $cmp == 0 && ($int1 = pop @list1)
+    ) {
+        $int1 = int($int1);
+        my $int2 = pop @list2;
+        if (defined $int2) {
+            $int2 = int($int2);
+            $cmp = $int1 <=> $int2;
+        } else {
+            $cmp = 1;
+        }
+    }
+    # if $cmp is still 0 and list2 still contains values,
+    # so $str2 is greater
+    if ($cmp == 0 && (@list2) > 0) {
+        $cmp = -1;
+    }
+
+    return $cmp;
+}
+
 for my $listVersionNumbers (@$versionNumbersComparisons) {
-    my $cmp0vs1 = FusionInventory::Agent::Tools::MacOS::cmpVersionNumbers($listVersionNumbers->[0], $listVersionNumbers->[1]);
-    my $cmp1vs0 = FusionInventory::Agent::Tools::MacOS::cmpVersionNumbers($listVersionNumbers->[1], $listVersionNumbers->[0]);
+    my $cmp0vs1 = _cmpVersionNumbers($listVersionNumbers->[0], $listVersionNumbers->[1]);
+    my $cmp1vs0 = _cmpVersionNumbers($listVersionNumbers->[1], $listVersionNumbers->[0]);
     ok (
         $cmp0vs1 == -1
         && $cmp1vs0 == 1
