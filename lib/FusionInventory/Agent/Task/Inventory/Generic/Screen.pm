@@ -172,7 +172,7 @@ sub _getScreensFromUnix {
         my @screens;
         my $wanted = sub {
             return unless $_ eq 'edid';
-            return unless -e $File::Find::name;
+            return unless has_file($File::Find::name);
             my $edid = getAllLines(file => $File::Find::name);
             push @screens, { edid => $edid } if $edid;
         };
