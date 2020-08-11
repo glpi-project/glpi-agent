@@ -64,16 +64,10 @@ sub _listServerRoles {
     my @server_roles;
 
     if (has_folder("$server_roles_dir")) {
-        opendir(DIR, $server_roles_dir); # or die $!;
-
         # List each file in the server-roles directory, each file name is a role
-        while (my $file = readdir(DIR)) {
-            # Use a regular expression to ignore files beginning with a period
-            next if ($file =~ m/^\./);
+        foreach my $file (Glob("$server_roles_dir/*")) {
             push @server_roles, $file;
         }
-        closedir(DIR);
-
     }
     return @server_roles;
 }
