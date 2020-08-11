@@ -13,7 +13,7 @@ use FusionInventory::Agent::Tools::Solaris;
 our $runAfter = ["FusionInventory::Agent::Task::Inventory::Generic"];
 
 sub isEnabled {
-    return $OSNAME eq 'solaris';
+    return OSNAME eq 'solaris';
 }
 
 sub doInventory {

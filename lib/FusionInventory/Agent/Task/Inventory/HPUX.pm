@@ -12,7 +12,7 @@ use FusionInventory::Agent::Tools;
 our $runAfter = ["FusionInventory::Agent::Task::Inventory::Generic"];
 
 sub isEnabled  {
-    return $OSNAME eq 'hpux';
+    return OSNAME eq 'hpux';
 }
 
 sub doInventory {

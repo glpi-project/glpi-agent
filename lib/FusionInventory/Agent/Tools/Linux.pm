@@ -39,8 +39,8 @@ sub getDevicesFromUdev {
     # We need to support dump params to permit full testing when root params is set
     my $root = $params{root} || "";
 
-    foreach my $file (glob "$root/dev/.udev/db/*") {
-        if ($params{dump} && -e $file) {
+    foreach my $file (Glob("$root/dev/.udev/db/*")) {
+        if ($params{dump} && has_file($file)) {
             my $base = basename($file);
             my $content = getAllLines(file => $file);
             $params{dump}->{dev}->{'.udev'}->{db}->{$base} = $content;
@@ -208,8 +208,8 @@ sub getDevicesFromProc {
     # compute list of devices
     my @names;
 
-    foreach my $file (glob "$root/sys/block/*") {
-        if ($dump && -d $file) {
+    foreach my $file (Glob("$root/sys/block/*")) {
+        if ($dump && has_folder($file)) {
             my $basename = basename($file);
             $dump->{sys}->{block}->{$basename} = {};
         }
@@ -219,8 +219,8 @@ sub getDevicesFromProc {
 
     # add any block device identified as device by the kernel like SSD disks or
     # removable disks (SD cards and others)
-    foreach my $file (glob "$root/sys/block/*/device") {
-        if ($dump && -d $file) {
+    foreach my $file (Glob("$root/sys/block/*/device")) {
+        if ($dump && has_folder($file)) {
             my $dirname = basename(dirname($file));
             $dump->{sys}->{block}->{$dirname}->{device} = {};
         }
@@ -228,14 +228,14 @@ sub getDevicesFromProc {
         push @names, $1;
     }
 
-    foreach my $file (glob "$root/sys/class/scsi_generic/*") {
+    foreach my $file (Glob("$root/sys/class/scsi_generic/*")) {
         # block devices should have been handled in the previous step
-        next if -d "$file/device/block/";
+        next if has_folder("$file/device/block/");
 
         my $basename = basename($file);
-        if ($dump && -d "$file/device/type") {
+        if ($dump && has_folder("$file/device/type")) {
             my $base = $dump->{sys}->{class}->{scsi_generic}->{$basename} = {};
-            if (-e "$file/device/type") {
+            if (has_file("$file/device/type")) {
                 my $content = getAllLines(file => "$file/device/type");
                 $base->{device}->{type} = $content;
             }
@@ -261,7 +261,7 @@ sub getDevicesFromProc {
 
     my $udisksctl = canRun('udisksctl');
     $dump->{udisksctl} = 1 if ($dump && $udisksctl);
-    $udisksctl = 1 if $root && -e "$root/udisksctl";
+    $udisksctl = 1 if $root && has_file("$root/udisksctl");
 
     # extract information
     my @devices;

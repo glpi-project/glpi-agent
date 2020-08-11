@@ -46,7 +46,7 @@ sub doInventory {
         return;
     }
 
-    if ($OSNAME eq 'MSWin32') {
+    if (OSNAME eq 'MSWin32') {
         $logger->info(
             "scanning of virtualbox virtual machines in user directories not supported under win32"
         );
@@ -54,13 +54,13 @@ sub doInventory {
     }
 
     my @users = ();
-    my $user_vbox_folder = $OSNAME eq 'darwin' ?
+    my $user_vbox_folder = OSNAME eq 'darwin' ?
         "Library/VirtualBox" : ".config/VirtualBox" ;
 
     # Prepare to lookup only for users using VirtualBox
-    while (my $user = getpwent()) {
+    while (my $user = getpwent()) { # TODO REMOTE
         push @users, $user->name()
-            if -d $user->dir() . "/$user_vbox_folder" ;
+            if has_folder($user->dir()."/$user_vbox_folder") ;
     }
 
     foreach my $user (@users) {

@@ -176,7 +176,7 @@ sub  _getVirtualMachines {
                 logger  => $params{logger}
             );
             $rootfs =~ s/.*:// if $rootfs =~ /:/;
-            if (-e "$rootfs/etc/machine-id" && -e "$rootfs/etc/hostname") {
+            if (has_file("$rootfs/etc/machine-id") && -e has_file("$rootfs/etc/hostname")) {
                 $machineid = getFirstLine(
                     file   => "$rootfs/etc/machine-id",
                     logger => $params{logger}

@@ -8,6 +8,9 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 use English qw(-no_match_vars);
 use Net::Domain qw(hostfqdn hostdomain);
 
+use FusionInventory::Agent::Tools;
+use FusionInventory::Agent::Tools::Hostname;
+
 sub isEnabled {
     return 1;
 }
@@ -22,11 +25,20 @@ sub doInventory {
 
     my $inventory = $params{inventory};
 
-    $inventory->setOperatingSystem({
+    my $remote = $inventory->getRemote();
+    if ($remote && $remote ne 'wmi') {
+        $inventory->setOperatingSystem({
+            KERNEL_NAME => OSNAME,
+            FQDN        => getRemoteFqdn(),
+            DNS_DOMAIN  => getRemoteHostdomain(),
+        });
+    } else {
+        $inventory->setOperatingSystem({
             KERNEL_NAME => $OSNAME,
             FQDN => hostfqdn(),
             DNS_DOMAIN => hostdomain()
-    });
+        });
+    }
 }
 
 1;

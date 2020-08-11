@@ -75,7 +75,7 @@ sub doInventory {
 
     my $inventory = $params{inventory};
 
-    my $distribution = first { -f $_->[0] } @distributions;
+    my $distribution = first { has_file($_->[0]) } @distributions;
     return unless $distribution;
 
     my $data = _getDistroData($distribution);

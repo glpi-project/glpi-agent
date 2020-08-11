@@ -42,7 +42,7 @@ sub _getDevices {
     my @devices = _getDevicesBase(%params);
 
     # complete with udev for missing bits, if available
-    if (-d "$root/dev/.udev/db/") {
+    if (has_folder("$root/dev/.udev/db/")) {
 
         my %udev_devices = map { $_->{NAME} => $_ }
             getDevicesFromUdev(%params);
@@ -154,7 +154,7 @@ sub _getDevicesBase {
     my $logger = $params{logger};
     $logger->debug("retrieving devices list:");
 
-    if (-d "$root/sys/block") {
+    if (has_folder("$root/sys/block")) {
         my @devices = getDevicesFromProc(%params);
         $logger->debug_result(
             action => 'reading /sys/block content',
@@ -168,7 +168,7 @@ sub _getDevicesBase {
         );
     }
 
-    if ((!$root && canRun("/usr/bin/lshal")) || ($root && -e "$root/lshal")) {
+    if ((!$root && canRun("/usr/bin/lshal")) || ($root && has_file("$root/lshal"))) {
         my @devices = getDevicesFromHal(%params);
         $logger->debug_result(
             action => 'running lshal command',

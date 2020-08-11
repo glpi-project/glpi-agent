@@ -116,7 +116,7 @@ sub doInventory {
             $inventory->setHardware({ NAME => $hostname });
         }
 
-    } elsif (($type eq 'lxc' || ($type ne 'Physical' && !$inventory->getHardware('UUID'))) && -e '/etc/machine-id') {
+    } elsif (($type eq 'lxc' || ($type ne 'Physical' && !$inventory->getHardware('UUID'))) && has_file('/etc/machine-id')) {
         # Set UUID from /etc/machine-id & /etc/hostname for container like lxc
         my $machineid = getFirstLine(
             file   => '/etc/machine-id',
@@ -161,7 +161,7 @@ sub _getType {
 
     # Docker
 
-    if (-f '/.dockerinit' || -f '/.dockerenv') {
+    if (has_file('/.dockerinit') || has_file('/.dockerenv')) {
         return 'Docker';
     }
 
@@ -175,7 +175,7 @@ sub _getType {
 
     # Xen PV host
     if (
-        -d '/proc/xen' ||
+        has_folder('/proc/xen') ||
         getFirstMatch(
             file    => '/sys/devices/system/clocksource/clocksource0/available_clocksource',
             pattern => qr/xen/
@@ -207,7 +207,7 @@ sub _getType {
 
     # loaded modules
 
-    if (-f '/proc/modules') {
+    if (has_file('/proc/modules')) {
         my $handle = getFileHandle(
             file => '/proc/modules',
             logger => $logger
@@ -229,9 +229,9 @@ sub _getType {
     my $handle;
     if (-r '/var/log/dmesg' && -s '/var/log/dmesg' > 40) {
         $handle = getFileHandle(file => '/var/log/dmesg', logger => $logger);
-    } elsif (-x '/bin/dmesg') {
+    } elsif (canRun('/bin/dmesg')) {
         $handle = getFileHandle(command => '/bin/dmesg', logger => $logger);
-    } elsif (-x '/sbin/dmesg') {
+    } elsif (canRun('/sbin/dmesg')) {
         # On OpenBSD, dmesg is in sbin
         # http://forge.fusioninventory.org/issues/402
         $handle = getFileHandle(command => '/sbin/dmesg', logger => $logger);
@@ -245,7 +245,7 @@ sub _getType {
 
     # scsi
 
-    if (-f '/proc/scsi/scsi') {
+    if (has_file('/proc/scsi/scsi')) {
         my $handle = getFileHandle(
             file => '/proc/scsi/scsi',
             logger => $logger
@@ -259,7 +259,10 @@ sub _getType {
 
     # systemd based container like lxc
 
-    my $init_env = slurp('/proc/1/environ');
+    my $init_env = getAllLines(
+        file => '/proc/1/environ',
+        logger => $logger
+    );
     if ($init_env) {
         $init_env =~ s/\0/\n/g;
         my $container_type = getFirstMatch(
@@ -270,7 +273,7 @@ sub _getType {
         return $container_type if $container_type;
     }
     # OpenVZ
-    if (-f '/proc/self/status') {
+    if (has_file('/proc/self/status')) {
         my @selfstatus = getAllLines(
             file => '/proc/self/status',
             logger => $logger

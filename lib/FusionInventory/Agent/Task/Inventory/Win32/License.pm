@@ -48,7 +48,7 @@ sub doInventory {
         _scanOfficeLicences($officeKey32) if $officeKey32;
     }
 
-    push @licenses, getAdobeLicensesWithoutSqlite($fileAdobe) if (-e $fileAdobe);
+    push @licenses, getAdobeLicensesWithoutSqlite($fileAdobe) if has_file($fileAdobe);
 
     _scanWmiSoftwareLicensingProducts();
 

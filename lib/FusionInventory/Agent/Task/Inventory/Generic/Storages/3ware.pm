@@ -53,7 +53,7 @@ sub doInventory {
                 # Finally, getting drives' values.
                 my $storage = _getStorage($card, $port);
 
-                if ($OSNAME eq 'Linux') {
+                if (OSNAME eq 'Linux') {
 
                     @devices = getDevicesFromUdev(logger => $logger) unless @devices;
 

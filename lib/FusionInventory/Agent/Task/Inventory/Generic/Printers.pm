@@ -16,10 +16,10 @@ sub isEnabled {
     my (%params) = @_;
 
     # we use system profiler on MacOS
-    return 0 if $OSNAME eq 'darwin';
+    return 0 if OSNAME eq 'darwin';
 
     # we use WMI on Windows
-    return 0 if $OSNAME eq 'MSWin32';
+    return 0 if OSNAME eq 'MSWin32';
 
     Net::CUPS->require();
     if ($EVAL_ERROR) {

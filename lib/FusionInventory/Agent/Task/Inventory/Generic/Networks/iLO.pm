@@ -13,7 +13,7 @@ use FusionInventory::Agent::Tools::Network;
 our $runMeIfTheseChecksFailed = ['FusionInventory::Agent::Task::Inventory::Generic::Ipmi::Lan'];
 
 sub isEnabled {
-    return $OSNAME eq 'MSWin32' ?
+    return OSNAME eq 'MSWin32' ?
         canRun("C:\\Program\ Files\\HP\\hponcfg\\hponcfg.exe") :
         canRun('hponcfg');
 }
@@ -68,7 +68,7 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $command = $OSNAME eq 'MSWin32' ?
+    my $command = OSNAME eq 'MSWin32' ?
         '"c:\Program Files\HP\hponcfg\hponcfg" /a /w output.txt >nul 2>&1 && type output.txt' :
         'hponcfg -aw -';
 

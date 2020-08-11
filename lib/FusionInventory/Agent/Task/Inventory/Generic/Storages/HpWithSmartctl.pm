@@ -16,7 +16,7 @@ sub isEnabled {
     return canRun('hpacucli')
         && canRun('smartctl')
         # TODO: find a generic solution
-        && glob "/sys/class/scsi_generic/sg*/device/vpd_pg80";
+        && Glob("/sys/class/scsi_generic/sg*/device/vpd_pg80");
 }
 
 sub doInventory {
@@ -74,7 +74,7 @@ sub _getData {
 sub _adpToDevice {
     my ($adp) = @_;
 
-    foreach my $file (glob "/sys/class/scsi_generic/sg*/device/vpd_pg80") {
+    foreach my $file (Glob("/sys/class/scsi_generic/sg*/device/vpd_pg80")) {
         my $serial = getFirstMatch(
             file    => $file,
             pattern => qr/(\w+)/

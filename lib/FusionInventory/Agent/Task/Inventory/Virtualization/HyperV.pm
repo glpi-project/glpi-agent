@@ -12,11 +12,11 @@ use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Virtualization;
 
 sub isEnabled {
-    return $OSNAME eq 'MSWin32';
+    return OSNAME eq 'MSWin32';
 }
 
 sub isEnabledForRemote {
-    return $OSNAME eq 'MSWin32';
+    return OSNAME eq 'MSWin32';
 }
 
 sub doInventory {

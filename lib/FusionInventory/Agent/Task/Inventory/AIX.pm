@@ -13,7 +13,7 @@ use FusionInventory::Agent::Tools::AIX;
 our $runAfter = ["FusionInventory::Agent::Task::Inventory::Generic"];
 
 sub isEnabled {
-    return $OSNAME eq 'aix';
+    return OSNAME eq 'aix';
 }
 
 sub doInventory {

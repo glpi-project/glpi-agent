@@ -7,13 +7,12 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
-use Sys::Hostname;
-
 use FusionInventory::Agent::Tools;
+use FusionInventory::Agent::Tools::Hostname;
 
 sub isEnabled {
     # We use WMI for Windows because of charset issue
-    return $OSNAME ne 'MSWin32';
+    return OSNAME ne 'MSWin32';
 }
 
 sub doInventory {
@@ -21,8 +20,8 @@ sub doInventory {
 
     my $inventory = $params{inventory};
 
-    my $hostname = hostname();
-    $hostname =~ s/\..*//; # keep just the hostname
+    # keep just the hostname
+    my $hostname = getHostname(short => 1);
 
     $inventory->setHardware({NAME => $hostname});
 }

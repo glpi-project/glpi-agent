@@ -53,7 +53,7 @@ sub plannedTasks {
 
     # Keep only inventory as local task
     if (@_) {
-        $self->{tasks} = [ grep { $_ =~ /^Inventory$/i } @_ ];
+        $self->{tasks} = [ grep { $_ =~ /^(Remote)?Inventory$/i } @_ ];
     }
 
     return @{$self->{tasks} || []};

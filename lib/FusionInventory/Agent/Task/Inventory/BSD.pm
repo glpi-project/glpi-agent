@@ -12,7 +12,7 @@ use FusionInventory::Agent::Tools;
 our $runAfter = ["FusionInventory::Agent::Task::Inventory::Generic"];
 
 sub isEnabled {
-    return $OSNAME =~ /freebsd|openbsd|netbsd|gnukfreebsd|gnuknetbsd|dragonfly/;
+    return OSNAME =~ /freebsd|openbsd|netbsd|gnukfreebsd|gnuknetbsd|dragonfly/;
 }
 
 sub doInventory {
@@ -33,7 +33,7 @@ sub doInventory {
         getFirstMatch(
             command => 'lsb_release -d',
             pattern => qr/Description:\s+(.+)/
-        ) : $OSNAME;
+        ) : OSNAME;
 
     $inventory->setHardware({
         OSNAME     => $name,
@@ -43,7 +43,7 @@ sub doInventory {
 
     $inventory->setOperatingSystem({
         NAME           => $name,
-        FULL_NAME      => $OSNAME,
+        FULL_NAME      => OSNAME,
         VERSION        => $kernelRelease,
         KERNEL_VERSION => $kernelRelease,
         BOOT_TIME      => getFormatedLocalTime($boottime)

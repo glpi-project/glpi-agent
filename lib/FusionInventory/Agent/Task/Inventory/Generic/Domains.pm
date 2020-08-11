@@ -10,7 +10,7 @@ use Sys::Hostname;
 use FusionInventory::Agent::Tools;
 
 sub isEnabled {
-    return -f "/etc/resolv.conf";
+    return has_file("/etc/resolv.conf");
 }
 
 sub doInventory {

@@ -14,7 +14,7 @@ use FusionInventory::Agent::Tools;
 our $runAfter = ["FusionInventory::Agent::Task::Inventory::Generic"];
 
 sub isEnabled {
-    return $OSNAME eq 'linux';
+    return OSNAME eq 'linux';
 }
 
 sub doInventory {
@@ -49,7 +49,7 @@ sub doInventory {
 sub _getRHNSystemId {
     my ($file) = @_;
 
-    return unless -f $file;
+    return unless has_file($file);
     my $tpp = XML::TreePP->new();
     my $h = $tpp->parsefile($file);
     eval {

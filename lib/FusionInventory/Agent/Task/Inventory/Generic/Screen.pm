@@ -168,7 +168,7 @@ sub _getScreensFromUnix {
     my $logger = $params{logger};
     $logger->debug("retrieving EDID data:");
 
-    if (-d '/sys/devices') {
+    if (has_folder('/sys/devices')) {
         my @screens;
         my $wanted = sub {
             return unless $_ eq 'edid';
@@ -289,8 +289,8 @@ sub _getScreens {
     my %screens = ();
 
     my @screens =
-        $OSNAME eq 'MSWin32' ?  _getScreensFromWindows(%params) :
-        $OSNAME eq 'darwin' ?   _getScreensFromMacOS(%params) :
+        OSNAME eq 'MSWin32' ?  _getScreensFromWindows(%params) :
+        OSNAME eq 'darwin' ?   _getScreensFromMacOS(%params) :
                                 _getScreensFromUnix(%params);
 
     foreach my $screen (@screens) {
