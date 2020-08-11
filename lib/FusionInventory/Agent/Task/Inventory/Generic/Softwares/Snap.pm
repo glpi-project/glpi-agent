@@ -5,8 +5,6 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
-use English qw(-no_match_vars);
-use File::stat;
 use YAML::Tiny;
 
 use FusionInventory::Agent::Tools;
@@ -72,7 +70,7 @@ sub _getPackagesList {
         my $folder = "/snap/".$snap->{NAME};
         # Don't check install date during unittest
         if (!$params{file} && has_folder($folder)) {
-            my $st = stat($folder);
+            my $st = FileStat($folder);
             my ($year, $month, $day) = (localtime($st->mtime))[5, 4, 3];
             $snap->{INSTALLDATE}  = sprintf(
                 "%02d/%02d/%04d", $day, $month + 1, $year + 1900
