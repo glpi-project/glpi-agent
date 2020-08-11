@@ -47,8 +47,10 @@ sub _getDrives {
 
     foreach my $drive (@drives) {
         $drive->{FILESYSTEM} = $params{type};
-        $drive->{CREATEDATE} =  _getVxFSctime($drive->{VOLUMN}, $params{logger})
-            if $params{type} eq 'vxfs';
+        if ($params{type} eq 'vxfs') {
+            my $date = _getVxFSctime($drive->{VOLUMN}, $params{logger});
+            $drive->{CREATEDATE} = $date if $date;
+        }
     }
 
     return @drives;
@@ -119,20 +121,22 @@ sub _getVxFSctime {
         $version == 7 ? 8208 :
                         undef;
 
-    if (!$offset) {
-      $logger->error("unable to compute offset from fstyp output ($device)");
-      return;
-    }
+    return $logger->error("unable to compute offset from fstyp output ($device)")
+        unless $offset;
 
     # read value
-    open (my $handle, "<:raw:bytes", $device)
-        or die "Can't open $device in raw mode: $ERRNO";
-    seek($handle, $offset, 0)
-        or die "Can't seek offset $offset on device $device: $ERRNO";
+    my $handle = getFileHandle( file => $device, mode => "<:raw:bytes" )
+        or return;
     my $raw;
-    read($handle, $raw, 4)
-        or die "Can't read 4 bytes on device $device: $ERRNO";
+    if (seek($handle, $offset, 0)) {
+        $logger->error("Can't read 4 bytes on device $device: $ERRNO")
+            unless (read($handle, $raw, 4));
+    } else {
+        $logger->error("Can't seek offset $offset on device $device: $ERRNO");
+    }
     close($handle);
+
+    return unless defined($raw);
 
     # Convert the 4-byte raw data to long integer and
     # return a string representation of this time stamp

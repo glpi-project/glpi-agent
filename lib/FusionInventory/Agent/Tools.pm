@@ -368,7 +368,8 @@ sub getFileHandle {
             last SWITCH;
         }
         if ($params{file}) {
-            if (!open $handle, '<', $params{file}) {
+            my $mode = $params{mode} // '<';
+            if (!open $handle, $mode, $params{file}) {
                 $params{logger}->error(
                     "Can't open file $params{file}: $ERRNO"
                 ) if $params{logger};
