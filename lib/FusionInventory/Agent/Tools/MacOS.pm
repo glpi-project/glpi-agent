@@ -249,35 +249,6 @@ sub _makeHashFromKeyValuesTextNodes {
     return $hash;
 }
 
-sub cmpVersionNumbers {
-    my ($str1, $str2) = @_;
-
-    my @list1 = reverse split(/\./, $str1);
-    my @list2 = reverse split(/\./, $str2);
-
-    my $cmp = 0;
-    my $int1;
-    while (
-        $cmp == 0 && ($int1 = pop @list1)
-    ) {
-        $int1 = int($int1);
-        my $int2 = pop @list2;
-        if (defined $int2) {
-            $int2 = int($int2);
-            $cmp = $int1 <=> $int2;
-        } else {
-            $cmp = 1;
-        }
-    }
-    # if $cmp is still 0 and list2 still contains values,
-    # so $str2 is greater
-    if ($cmp == 0 && (@list2) > 0) {
-        $cmp = -1;
-    }
-
-    return $cmp;
-}
-
 sub _convertDateFromApplicationDataXml {
     my ($dateStrFromDataXml, $localtimeOffset) = @_;
 
