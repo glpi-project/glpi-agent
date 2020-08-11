@@ -56,7 +56,7 @@ sub doInventory {
     # that if reliable timezone name extraction is wanted, DateTime::TimeZone MUST be used.
     if (
         ( DateTime::TimeZone->require() )
-        && ( $OSNAME eq 'MSWin32'
+        && ( OSNAME eq 'MSWin32'
             ? DateTime::TimeZone::Local::Win32->require()
             : DateTime::TimeZone::Local::Unix->require() )
       )
@@ -64,7 +64,7 @@ sub doInventory {
         $logger->debug("Using DateTime::TimeZone to get the timezone name");
         $tz_name = DateTime::TimeZone->new( name => 'local' )->name();
     }
-    elsif ( ( $OSNAME eq 'MSWin32' ) || ( canRun('tzutil') ) ) {
+    elsif ( ( OSNAME eq 'MSWin32' ) || ( canRun('tzutil') ) ) {
 
         $logger->debug("Using tzutil to get the timezone name");
 
@@ -79,7 +79,7 @@ sub doInventory {
         close $handle;
 
     }
-    elsif ( $OSNAME ne 'MSWin32' ) {
+    elsif ( OSNAME ne 'MSWin32' ) {
         $logger->debug("Using strftime to get the timezone name");
         $tz_name = strftime( "%Z", localtime() );
     }

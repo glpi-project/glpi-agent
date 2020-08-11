@@ -16,7 +16,7 @@ sub isEnabled {
 }
 
 sub getUuidFile {
-    return (($OSNAME eq 'MSWin32') ? 'C:\Program Files\Rudder\etc\uuid.hive' : '/opt/rudder/etc/uuid.hive');
+    return ((OSNAME eq 'MSWin32') ? 'C:\Program Files\Rudder\etc\uuid.hive' : '/opt/rudder/etc/uuid.hive');
 }
 
 sub doInventory {
@@ -36,7 +36,7 @@ sub doInventory {
         logger => $logger
     );
     # Get machine hostname
-    my $command = $OSNAME eq 'linux' ? 'hostname --fqdn' : 'hostname';
+    my $command = OSNAME eq 'linux' ? 'hostname --fqdn' : 'hostname';
     my $hostname = getFirstLine(
         logger => $logger, command => $command
     );
@@ -60,10 +60,10 @@ sub doInventory {
 }
 
 sub _listServerRoles {
-    my $server_roles_dir = ($OSNAME eq 'MSWin32') ? 'C:\Program Files\Rudder\etc\server-roles.d' : '/opt/rudder/etc/server-roles.d';
+    my $server_roles_dir = (OSNAME eq 'MSWin32') ? 'C:\Program Files\Rudder\etc\server-roles.d' : '/opt/rudder/etc/server-roles.d';
     my @server_roles;
 
-    if (-d "$server_roles_dir") {
+    if (has_folder("$server_roles_dir")) {
         opendir(DIR, $server_roles_dir); # or die $!;
 
         # List each file in the server-roles directory, each file name is a role
@@ -79,19 +79,15 @@ sub _listServerRoles {
 }
 
 sub _listAgentCapabilities {
-   my $capabilities_file = ($OSNAME eq 'MSWin32') ? 'C:\Program Files\Rudder\etc\agent-capabilities' : '/opt/rudder/etc/agent-capabilities';
+   my $capabilities_file = (OSNAME eq 'MSWin32') ? 'C:\Program Files\Rudder\etc\agent-capabilities' : '/opt/rudder/etc/agent-capabilities';
    my @capabilities;
 
     # List agent capabilities, one per line in the file
-    if (-f "$capabilities_file") {
-        if (open(my $fh, '<:encoding(UTF-8)', $capabilities_file)) {
-            while (my $row = <$fh>) {
-                chomp $row;
-                push @capabilities, $row;
-            }
-            close $fh;
-        }
+    foreach my $row (getAllLines($capabilities_file)) {
+        chomp $row;
+        push @capabilities, $row;
     }
+
     return @capabilities;
 }
 
@@ -109,7 +105,7 @@ sub _manageAgent {
     foreach my $candidate (keys(%agent_candidates)){
 
         # Verify if the candidate is installed and configured
-        next unless ( -e "${candidate}/policy_server.dat" );
+        next unless ( has_file("${candidate}/policy_server.dat") );
 
         # Get a list of useful file paths to key Rudder components
         my $agent_name           = "$agent_candidates{${candidate}}";
@@ -132,7 +128,7 @@ sub _manageAgent {
         # be found.
         my $serverUuid = getFirstLine (
             logger => $logger,
-            file => ( -e "$uuid_file" ) ? $uuid_file : "/var/rudder/tmp/uuid.txt"
+            file => ( has_file("$uuid_file") ) ? $uuid_file : "/var/rudder/tmp/uuid.txt"
         );
         chomp $serverUuid;
 

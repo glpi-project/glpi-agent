@@ -15,14 +15,14 @@ our $runMeIfTheseChecksFailed =
     ["FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Bios"];
 
 sub isEnabled {
-    return -d '/sys/class/dmi/id';
+    return has_folder('/sys/class/dmi/id');
 }
 
 sub _dmi_info {
     my ($info) = @_;
     my $class = '/sys/class/dmi/id/'.$info;
-    return if -d $class;
-    return unless -e $class;
+    return if has_folder($class);
+    return unless has_file($class);
     return getFirstLine(file => $class);
 }
 

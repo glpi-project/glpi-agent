@@ -90,17 +90,16 @@ sub _findDhcpLeaseFile {
     my @files;
 
     foreach my $directory (@directories) {
-        next unless -d $directory;
+        next unless has_folder($directory);
         foreach my $pattern (@patterns) {
 
-            push @files,
-                grep { -s $_ }
-                glob("$directory/$pattern");
+            push @files, Glob("$directory/$pattern", "-s");
         }
     }
 
     return unless @files;
 
+    # TODO Remote support of ctime()
     # sort by creation time
     @files =
         map { $_->[0] }
@@ -307,7 +306,7 @@ sub _getProcessesOther {
     my (%params) = (
         command =>
             'ps -A -o user,pid,pcpu,pmem,vsz,tty,etime' . ',' .
-            ($OSNAME eq 'solaris' ? 'comm' : 'command'),
+            (OSNAME() eq 'solaris' ? 'comm' : 'command'),
         @_
     );
 

@@ -10,7 +10,7 @@ use English qw(-no_match_vars);
 our $runAfter = ["FusionInventory::Agent::Task::Inventory::Generic"];
 
 sub isEnabled {
-    return $OSNAME eq 'darwin';
+    return OSNAME eq 'darwin';
 }
 
 sub doInventory {}

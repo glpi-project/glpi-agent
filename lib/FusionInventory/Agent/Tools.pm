@@ -52,13 +52,59 @@ our @EXPORT = qw(
     file2module
     module2file
     runFunction
-    slurp
+    setRemoteForTools
+    resetRemoteForTools
+    OSNAME
+    Glob
+    has_folder
+    has_file
 );
 
 # this trigger some errors under win32:
 # Anonymous function called in forbidden scalar context
 if ($OSNAME ne 'MSWin32') {
     memoize('canRun');
+}
+
+our $remote;
+
+sub setRemoteForTools {
+    my $r = shift;
+
+    $remote = $r;
+}
+
+sub resetRemoteForTools {
+    undef $remote;
+}
+
+sub OSNAME {
+    return $OSNAME unless $remote;
+    return $remote->OSName();
+}
+
+sub Glob {
+    if (!$remote) {
+        my ($glob, $test) = @_;
+        my @glob = glob($glob);
+        if ($test) {
+            return grep { -s $_ } @glob if $test eq "-s";
+        }
+        return @glob;
+    }
+    return $remote->remoteGlob(@_);
+}
+
+sub has_folder {
+    my $d = shift;
+    return -d $d unless $remote;
+    return $remote->remoteTestFolder($d);
+}
+
+sub has_file {
+    my $f = shift;
+    return -e $f unless $remote;
+    return $remote->remoteTestFile($f);
 }
 
 # Avoid List::Util dependency re-using 'any' sub as template
@@ -317,6 +363,10 @@ sub getFileHandle {
     my $handle;
 
     SWITCH: {
+        if ($remote && !$params{local} && ($params{file} || $params{command})) {
+            $handle = $remote->getRemoteFileHandle(%params);
+            last SWITCH;
+        }
         if ($params{file}) {
             if (!open $handle, '<', $params{file}) {
                 $params{logger}->error(
@@ -438,6 +488,8 @@ sub getLinesCount {
 
 sub canRun {
     my ($binary) = @_;
+
+    return $remote->remoteCanRun($binary) if $remote;
 
     return $binary =~ m{^/} ?
         -x $binary :            # full path
@@ -564,17 +616,6 @@ sub runFunction {
     }
 
     return $result;
-}
-
-sub slurp {
-    my($file) = @_;
-
-    my $handler;
-    return unless open $handler, '<', $file;
-    local $INPUT_RECORD_SEPARATOR; # Set input to "slurp" mode.
-    my $content = <$handler>;
-    close $handler;
-    return $content;
 }
 
 1;

@@ -12,7 +12,7 @@ use FusionInventory::Agent::Tools;
 sub isEnabled {
     my (%params) = @_;
 
-    if ($OSNAME eq 'MSWin32') {
+    if (OSNAME eq 'MSWin32') {
 
         FusionInventory::Agent::Tools::Win32->use();
 
@@ -23,8 +23,8 @@ sub isEnabled {
             logger => $params{logger}
         );
         return $key && (keys %$key);
-    } elsif ($OSNAME eq 'darwin') {
-        return canRun('defaults') && grep { -e $_ } map {
+    } elsif (OSNAME eq 'darwin') {
+        return canRun('defaults') && grep { has_file($_) } map {
             "/Library/Preferences/com.teamviewer.teamviewer$_.plist"
         } qw( .preferences 10 9 8 7 );
     }
@@ -35,7 +35,7 @@ sub isEnabled {
 sub isEnabledForRemote {
     my (%params) = @_;
 
-    if ($OSNAME eq 'MSWin32') {
+    if (OSNAME eq 'MSWin32') {
 
         FusionInventory::Agent::Tools::Win32->use();
 
@@ -76,7 +76,7 @@ sub doInventory {
 sub _getID {
     my (%params) = @_;
 
-    if ($OSNAME eq 'MSWin32') {
+    if (OSNAME eq 'MSWin32') {
 
         FusionInventory::Agent::Tools::Win32->use();
 
@@ -110,8 +110,8 @@ sub _getID {
         return hex2dec($clientid);
     }
 
-    if ($OSNAME eq 'darwin') {
-        my ( $plist_file ) = grep { -e $_ } map {
+    if (OSNAME eq 'darwin') {
+        my ( $plist_file ) = grep { has_file($_) } map {
             "/Library/Preferences/com.teamviewer.teamviewer$_.plist"
         } qw( .preferences 10 9 8 7 );
 

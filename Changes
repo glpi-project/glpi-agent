@@ -89,6 +89,9 @@ packaging:
 * MacOSX with prebuilt perl 5.34.0 including OpenSSL 3.0.0 support (x86_64,arm64)
 * Linux Snap package with prebuilt perl 5.34.0
 
+remoteinventory:
+* Introduce basic SSH remote inventory support
+
 Revision history for FusionInventory agent
 
 2.6 Thu, 26 Nov 2020

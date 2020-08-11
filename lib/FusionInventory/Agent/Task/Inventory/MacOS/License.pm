@@ -23,7 +23,7 @@ sub doInventory {
     my @found;
     # Adobe
     my $fileAdobe = '/Library/Application Support/Adobe/Adobe PCD/cache/cache.db';
-    if (-e $fileAdobe) {
+    if (has_file($fileAdobe)) {
         push @found, getAdobeLicenses(
             command => 'sqlite3 -separator " <> " "'.$fileAdobe.'" "SELECT * FROM domain_data"'
         );
@@ -32,10 +32,10 @@ sub doInventory {
     }
 
     # Transmit
-    my @transmitFiles = glob('"/System/Library/User Template/*.lproj/Library/Preferences/com.panic.Transmit.plist"');
+    my @transmitFiles = Glob('"/System/Library/User Template/*.lproj/Library/Preferences/com.panic.Transmit.plist"');
 
     if ($params{scan_homedirs}) {
-        push @transmitFiles, glob('/Users/*/Library/Preferences/com.panic.Transmit.plist');
+        push @transmitFiles, Glob('/Users/*/Library/Preferences/com.panic.Transmit.plist');
     } else {
         $logger->info(
             "'scan-homedirs' configuration parameters disabled, " .
@@ -53,7 +53,7 @@ sub doInventory {
     }
 
     # VMware
-    my @vmwareFiles = glob('"/Library/Application Support/VMware Fusion/license-*"');
+    my @vmwareFiles = Glob('"/Library/Application Support/VMware Fusion/license-*"');
     foreach my $vmwareFile (@vmwareFiles) {
         my %info;
         # e.g:

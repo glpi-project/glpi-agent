@@ -112,7 +112,7 @@ sub _store_sessions {
     foreach my $remoteid (keys(%{$sessions})) {
         $datas->{$remoteid} = $sessions->{$remoteid}->dump()
             unless $sessions->{$remoteid}->expired();
-    };
+    }
 
     my $storage = $self->getStorage();
     $storage->save( name => 'Sessions', data => $datas );

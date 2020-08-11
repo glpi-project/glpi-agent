@@ -12,7 +12,7 @@ use FusionInventory::Agent::Tools;
 use constant    category    => "hardware";
 
 sub isEnabled {
-    return -f "/etc/resolv.conf";
+    return has_file("/etc/resolv.conf");
 }
 
 sub doInventory {

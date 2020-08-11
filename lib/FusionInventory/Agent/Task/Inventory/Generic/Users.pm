@@ -15,7 +15,7 @@ use constant    category    => "user";
 
 sub isEnabled {
     # Not working under win32
-    return 0 if $OSNAME eq 'MSWin32';
+    return 0 if OSNAME eq 'MSWin32';
 
     return
         canRun('who')  ||

@@ -83,7 +83,7 @@ sub doInventory {
 sub _getRHNSystemId {
     my ($file) = @_;
 
-    return unless -f $file;
+    return unless has_file($file);
     return unless XML::TreePP->require();
     my $tpp = XML::TreePP->new();
     eval {
