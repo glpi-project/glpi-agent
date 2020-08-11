@@ -424,7 +424,7 @@ sub _initModulesList {
 
     # Select isEnabled function to test
     my $isEnabledFunction = "isEnabled" ;
-    $isEnabledFunction .= "ForRemote" if $self->getRemote();
+    $isEnabledFunction .= "ForRemote" if (($self->getRemote() // '') eq 'wmi');
 
     # first pass: compute all relevant modules
     foreach my $module (sort @modules) {

@@ -148,7 +148,7 @@ sub _getFilesystems {
 
             # Find real devicemapper block name
             unless ($devicemapper{$uuid}) {
-                foreach my $uuidfile (glob ("/sys/block/*/dm/uuid")) {
+                foreach my $uuidfile (Glob("/sys/block/*/dm/uuid")) {
                     next unless getFirstLine(file => $uuidfile) eq $uuid;
                     ($devicemapper{$uuid}) = $uuidfile =~ m|^(/sys/block/[^/]+)|;
                     last;
@@ -159,9 +159,9 @@ sub _getFilesystems {
             # Lookup for crypto devicemapper slaves
             my @names = grep { defined($_) && length($_) } map {
                 getFirstLine(file => $_)
-            } glob ("$devicemapper{$uuid}/slaves/*/dm/name");
+            } Glob("$devicemapper{$uuid}/slaves/*/dm/name");
 
-            # Finaly we may try on the device itself, see #825
+            # Finaly we may try on the device itself, see fusioninventory-agent issue #825
             push @names, $filesystem->{VOLUMN};
 
             foreach my $name (@names) {

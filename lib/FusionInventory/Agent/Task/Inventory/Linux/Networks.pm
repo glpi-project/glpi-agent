@@ -63,8 +63,8 @@ sub _getInterfaces {
         );
 
         # check if it is a physical interface
-        if (-d "/sys/class/net/$interface->{DESCRIPTION}/device" &&
-           !-d "/sys/devices/virtual/net/$interface->{DESCRIPTION}") {
+        if (has_folder("/sys/class/net/$interface->{DESCRIPTION}/device") &&
+           !has_folder("/sys/devices/virtual/net/$interface->{DESCRIPTION}")) {
             my $info = _getUevent($interface->{DESCRIPTION});
             $interface->{DRIVER}  = $info->{DRIVER}
                 if $info->{DRIVER};
@@ -77,14 +77,14 @@ sub _getInterfaces {
             $interface->{VIRTUALDEV} = 0;
 
             # check if it is a wifi interface, otherwise assume ethernet
-            if (-d "/sys/class/net/$interface->{DESCRIPTION}/wireless") {
+            if (has_folder("/sys/class/net/$interface->{DESCRIPTION}/wireless")) {
                 $interface->{TYPE} = 'wifi';
                 my $info = _parseIwconfig(name => $interface->{DESCRIPTION});
                 $interface->{WIFI_MODE}    = $info->{mode};
                 $interface->{WIFI_SSID}    = $info->{SSID};
                 $interface->{WIFI_BSSID}   = $info->{BSSID};
                 $interface->{WIFI_VERSION} = $info->{version};
-            } elsif (-f "/sys/class/net/$interface->{DESCRIPTION}/mode") {
+            } elsif (has_file("/sys/class/net/$interface->{DESCRIPTION}/mode")) {
                 $interface->{TYPE} = 'infiniband';
             } else {
                 $interface->{TYPE} = 'ethernet';
@@ -107,20 +107,20 @@ sub _getInterfaces {
                 $interface->{BASE} = $1;
              }
             # check if is is a bridge
-            if (-d "/sys/class/net/$interface->{DESCRIPTION}/brif") {
+            if (has_folder("/sys/class/net/$interface->{DESCRIPTION}/brif")) {
                 $interface->{SLAVES} = _getSlaves($interface->{DESCRIPTION});
                 $interface->{TYPE}   = 'bridge';
             }
 
             # check if it is a bonding master
-            if (-d "/sys/class/net/$interface->{DESCRIPTION}/bonding") {
+            if (has_folder("/sys/class/net/$interface->{DESCRIPTION}/bonding")) {
                 $interface->{SLAVES} = _getSlaves($interface->{DESCRIPTION});
                 $interface->{TYPE}   = 'aggregate';
             }
         }
 
         # check if it is a bonding slave
-        if (-d "/sys/class/net/$interface->{DESCRIPTION}/bonding_slave") {
+        if (has_folder("/sys/class/net/$interface->{DESCRIPTION}/bonding_slave")) {
             $interface->{MACADDR} = getFirstMatch(
                 command => "ethtool -P $interface->{DESCRIPTION}",
                 pattern => qr/^Permanent address: ($mac_address_pattern)$/,
@@ -207,7 +207,7 @@ sub _getSlaves {
 
     my @slaves =
         map { $_ =~ /\/lower_(\w+)$/ }
-        glob("/sys/class/net/$name/lower_*");
+        Glob("/sys/class/net/$name/lower_*");
 
     return join (",", @slaves);
 }

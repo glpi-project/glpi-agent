@@ -243,7 +243,7 @@ sub _setESETInfos {
         if $esetReg->{"/ProductName"};
 
     # Look at license file
-    if ($esetReg->{"/AppDataDir"} && -d $esetReg->{"/AppDataDir"}.'/License') {
+    if ($esetReg->{"/AppDataDir"} && has_folder($esetReg->{"/AppDataDir"}.'/License')) {
         my $license = $esetReg->{"/AppDataDir"}.'/License/license.lf';
         my @content = getAllLines( file => $license );
         my $string = join('', map { getSanitizedString($_) } @content);
@@ -328,11 +328,11 @@ sub _setFSecureInfos {
     return unless $fsecReg;
 
     my $path = $fsecReg->{"/DataPath"};
-    return unless $path && -d $path;
+    return unless $path && has_folder($path);
 
     # This is the full path for the expected json file
     $path .= "\\safe.S-1-5-18.local.cosmos";
-    return unless -f $path;
+    return unless has_file($path);
 
     my $infos = getAllLines(file => $path);
     return unless $infos;
@@ -378,13 +378,13 @@ sub _setBitdefenderInfos {
         [ 'Bitdefender Scan Server' ],
         sub { $_[0]->{"/Bitdefender Scan Server"} }
     );
-    if ($path && -d $path) {
+    if ($path && has_folder($path)) {
         my $handle = getDirectoryHandle( directory => $path );
         if ($handle) {
             my ($major,$minor) = (0,0);
             while (my $entry = readdir($handle)) {
                 next unless $entry =~ /Antivirus_(\d+)_(\d+)/;
-                next unless (-d "$path/$entry/Plugins" && -e "$path/$entry/Plugins/update.txt");
+                next unless (has_folder("$path/$entry/Plugins") && has_file("$path/$entry/Plugins/update.txt"));
                 next if ($1 < $major || ($1 == $major && $2 < $minor));
                 ($major,$minor) = ($1, $2);
                 my %update = map { /^([^:]+):\s*(.*)$/ }
@@ -439,15 +439,15 @@ sub _setNortonInfos {
     if ($nortonReg && $nortonReg->{DATADIR}) {
         $nortonReg->{DATADIR} =~ s|\\|/|g;
         unshift @datadirs, $nortonReg->{DATADIR}
-            if -d $nortonReg->{DATADIR};
+            if has_folder($nortonReg->{DATADIR});
     }
 
     # Extract BASE_VERSION from the first found valid definfo.dat file
     foreach my $datadir (@datadirs) {
-        my ($defdir) = grep { -d $datadir.'/'.$_ } qw(Definitions/SDSDefs Definitions/VirusDefs);
+        my ($defdir) = grep { has_folder($datadir.'/'.$_) } qw(Definitions/SDSDefs Definitions/VirusDefs);
         next unless $defdir;
         my $definfo = $datadir . '/' . $defdir . "/definfo.dat";
-        next unless -e $definfo;
+        next unless has_file($definfo);
         my ($curdefs) = grep { /^CurDefs=/ } getAllLines( file => $definfo );
         if ($curdefs && $curdefs =~ /^CurDefs=(.*)$/) {
             $antivirus->{BASE_VERSION} = $1;

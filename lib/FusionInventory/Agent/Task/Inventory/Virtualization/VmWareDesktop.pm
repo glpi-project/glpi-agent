@@ -47,7 +47,7 @@ sub _getMachines {
     my @machines;
     while (my $line = <$handle>) {
         chomp $line;
-        next unless -f $line;
+        next unless has_file($line);
 
         my %info = _getMachineInfo(file => $line, logger => $params{logger});
 

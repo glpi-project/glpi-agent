@@ -7,6 +7,7 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 
+use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Generic;
 
 use constant    category    => "video";
@@ -14,8 +15,8 @@ use constant    category    => "video";
 sub isEnabled {
     # both windows and linux have dedicated modules
     return
-        $OSNAME ne 'MSWin32' &&
-        $OSNAME ne 'linux';
+        OSNAME ne 'MSWin32' &&
+        OSNAME ne 'linux';
 }
 
 sub doInventory {

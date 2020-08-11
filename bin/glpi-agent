@@ -58,6 +58,7 @@ GetOptions(
     'httpd-trust=s',
     'list-categories',
     'listen',
+    'remote=s',
     'set-forcerun',
     'scan-homedirs',
     'scan-profiles',

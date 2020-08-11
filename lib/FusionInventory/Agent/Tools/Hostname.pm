@@ -10,7 +10,11 @@ use English qw(-no_match_vars);
 
 our @EXPORT = qw(
     getHostname
+    getRemoteFqdn
+    getRemoteHostdomain
 );
+
+use FusionInventory::Agent::Tools;
 
 BEGIN {
     if ($OSNAME eq 'MSWin32') {
@@ -38,6 +42,10 @@ sub getHostname {
 }
 
 sub _getHostnameUnix {
+
+    my $remote = $FusionInventory::Agent::Tools::remote;
+    return $remote->getRemoteHostname() if $remote;
+
     Sys::Hostname->require();
     return Sys::Hostname::hostname();
 }
@@ -55,6 +63,16 @@ sub _getHostnameWindows {
     my $hostname = substr(decode("UCS-2le", $buffer), 0, ord $n);
 
     return $hostname || $ENV{COMPUTERNAME};
+}
+
+sub getRemoteFqdn {
+    my $remote = $FusionInventory::Agent::Tools::remote;
+    return $remote->getRemoteFQDN() if $remote;
+}
+
+sub getRemoteHostdomain {
+    my $remote = $FusionInventory::Agent::Tools::remote;
+    return $remote->getRemoteHostDomain() if $remote;
 }
 
 1;

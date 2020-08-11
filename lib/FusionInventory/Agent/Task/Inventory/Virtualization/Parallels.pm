@@ -26,7 +26,7 @@ sub doInventory {
         return;
     }
 
-    foreach my $user ( glob("/Users/*") ) {
+    foreach my $user ( Glob("/Users/*") ) {
         $user =~ s/.*\///; # Just keep the login
         next if $user =~ /Shared/i;
         next if $user =~ /^\./i; # skip hidden directory

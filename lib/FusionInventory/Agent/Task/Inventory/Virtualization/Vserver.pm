@@ -39,7 +39,7 @@ sub _getMachines {
     }
     close $handle;
 
-    return unless -d $cfgDir;
+    return unless has_folder($cfgDir);
 
     $handle = getDirectoryHandle(directory => $cfgDir, logger => $params{logger});
     return unless $handle;

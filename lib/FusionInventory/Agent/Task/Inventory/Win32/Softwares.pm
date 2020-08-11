@@ -196,7 +196,7 @@ sub _dateFormat {
 sub _keyLastWriteDateString {
     my ($key) = @_;
 
-    return unless ($OSNAME eq 'MSWin32');
+    return unless OSNAME eq 'MSWin32';
 
     return unless (ref($key) eq "Win32::TieRegistry");
 
@@ -475,7 +475,7 @@ sub _getAppxPackages {
         $package->{$key} = decode('UTF-8', $value);
 
         # Read manifest
-        if ($key eq 'FOLDER' && $value && -d $value) {
+        if ($key eq 'FOLDER' && $value && has_folder($value)) {
             my $xml = $value . '/appxmanifest.xml';
             if (-f $xml) {
                 my $xpp = XML::XPath->new(filename => $xml)
