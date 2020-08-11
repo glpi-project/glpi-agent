@@ -5,7 +5,6 @@ use warnings;
 use parent 'Exporter';
 
 use English qw(-no_match_vars);
-use File::stat;
 use File::Which;
 use File::Basename qw(basename);
 use Memoize;
@@ -99,12 +98,11 @@ sub _findDhcpLeaseFile {
 
     return unless @files;
 
-    # TODO Remote support of ctime()
     # sort by creation time
     @files =
         map { $_->[0] }
         sort { $a->[1]->ctime() <=> $b->[1]->ctime() }
-        map { [ $_, stat($_) ] }
+        map { [ $_, FileStat($_) ] }
         @files;
 
     # take the last one
