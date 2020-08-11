@@ -114,7 +114,8 @@ sub sendContent {
         my $tpp = XML::TreePP->new();
         my $tree = $tpp->parse( $content );
         $useragent = $tree->{REQUEST}->{CONTENT}->{VERSIONCLIENT}
-            if (exists($tree->{REQUEST}->{CONTENT}->{VERSIONCLIENT}));
+            if $tree && $tree->{REQUEST} && $tree->{REQUEST}->{CONTENT} &&
+                $tree->{REQUEST}->{CONTENT}->{VERSIONCLIENT};
     }
 
     my $ua = LWP::UserAgent->new(

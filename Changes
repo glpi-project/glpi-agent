@@ -20,6 +20,9 @@ netdiscovery/netinventory:
 * Updated Ricoh printers support
 * Updated Zebra printers support
 
+injector:
+* Fix an issue with --xml-ua option triggering a perl fatal error on empty or wrong XML files
+
 2.5.2 Mon, 16 Dec 2019
 
 core:
