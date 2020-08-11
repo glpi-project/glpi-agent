@@ -19,7 +19,7 @@ sub deviceid {
 sub _ssh {
     my ($self, $command) = @_;
     return unless $command;
-    return "ssh ".$self->host()." $command";
+    return "ssh -nq ".$self->host()." LANG=C $command";
 }
 
 sub getRemoteFileHandle {
@@ -108,6 +108,16 @@ sub remoteTestFolder {
 sub remoteTestFile {
     my ($self, $file) = @_;
     return system($self->_ssh("test -e $file")) == 0;
+}
+
+# This API only need to return ctime & mtime
+sub remoteFileStat {
+    my ($self, $file) = @_;
+    my $stat = getFirstLine(command => "stat -t '$file'")
+        or return;
+    my ($name, $size, $bsize, $mode, $uid, $gid, $dev, $ino, $nlink, $major, $minor, $atime, $mtime, $stime, $ctime, $blocks) =
+        split(/\s+/, $stat);
+    return (undef, $ino, hex($mode), $nlink, $uid, $gid, undef, $size, $atime, $mtime, $ctime, $blocks);
 }
 
 1;

@@ -58,6 +58,7 @@ our @EXPORT = qw(
     Glob
     has_folder
     has_file
+    FileStat
 );
 
 # this trigger some errors under win32:
@@ -105,6 +106,13 @@ sub has_file {
     my $f = shift;
     return -e $f unless $remote;
     return $remote->remoteTestFile($f);
+}
+
+sub FileStat {
+    my $f = shift;
+    return stat($f) unless $remote;
+    # populate() is a File::stat hidden function
+    return File::stat::populate($remote->remoteFileStat($f));
 }
 
 # Avoid List::Util dependency re-using 'any' sub as template
