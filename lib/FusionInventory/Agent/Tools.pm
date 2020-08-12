@@ -91,6 +91,7 @@ sub Glob {
         my @glob = glob($glob);
         if ($test) {
             return grep { -s $_ } @glob if $test eq "-s";
+            return grep { -l $_ } @glob if $test eq "-h";
         }
         return @glob;
     }

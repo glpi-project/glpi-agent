@@ -379,7 +379,7 @@ sub _loadUSBDatabase {
 }
 
 sub _loadDatabase {
-    my $handle = getFileHandle(@_);
+    my $handle = getFileHandle(@_, local => 1);
     return unless $handle;
 
     my ($vendors, $classes);
@@ -419,7 +419,7 @@ sub _loadEDIDDatabase {
 
     my $file = _getIdsFile( %params, idsfile => "edid.ids" );
 
-    my $handle = getFileHandle( file => $file );
+    my $handle = getFileHandle( file => $file, local => 1 );
     return unless $handle;
 
     foreach my $line (<$handle>) {
