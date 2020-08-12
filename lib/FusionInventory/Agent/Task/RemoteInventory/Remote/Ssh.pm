@@ -19,7 +19,7 @@ sub deviceid {
 sub _ssh {
     my ($self, $command) = @_;
     return unless $command;
-    return "ssh -nq ".$self->host()." LANG=C $command";
+    return "ssh -q ".$self->host()." LANG=C $command";
 }
 
 sub getRemoteFileHandle {
@@ -35,7 +35,11 @@ sub getRemoteFileHandle {
     }
     return unless $command;
 
-    return getFileHandle( command => $self->_ssh($command), local => 1 );
+    return getFileHandle(
+        command => $self->_ssh($command),
+        logger  => $self->{logger},
+        local   => 1
+    );
 }
 
 sub remoteCanRun {
@@ -58,9 +62,9 @@ sub remoteGlob {
     $test = "-e" unless $test;
 
     # Create a safe tempfile
-    my $tempfile =  getFirstLine( command => $self->_ssh("mktemp .glpi-agent-XXXXXXXX") );
+    my $tempfile =  getFirstLine( command => "mktemp /tmp/.glpi-agent-XXXXXXXX" );
     # Otherwise we will create an unsafe one
-    $tempfile = sprintf(".glpi-agent-%08x", rand(1<<32)) unless $tempfile && $tempfile =~ /^\.glpi-agent-/;
+    $tempfile = sprintf(".glpi-agent-%08x", rand(1<<32)) unless $tempfile && $tempfile =~ m|^/tmp/\.glpi-agent-|;
 
     $self->{logger}->debug2("creating remote $tempfile script to handle portable glob");
 
@@ -118,6 +122,20 @@ sub remoteFileStat {
     my ($name, $size, $bsize, $mode, $uid, $gid, $dev, $ino, $nlink, $major, $minor, $atime, $mtime, $stime, $ctime, $blocks) =
         split(/\s+/, $stat);
     return (undef, $ino, hex($mode), $nlink, $uid, $gid, undef, $size, $atime, $mtime, $ctime, $blocks);
+}
+
+sub remoteReadLink {
+    my ($self, $link) = @_;
+    # command will be run remotely
+    return getFirstLine(command => "readlink '$link'");
+}
+
+sub remoteGetPwEnt {
+    my ($self) = @_;
+    unless ($self->{_users}) {
+        $self->{_users} = [ map { /^([^:]+):/ } getAllLines( file => '/etc/passwd' ) ];
+    }
+    return shift(@{$self->{_users}}) if $self->{_users};
 }
 
 1;
