@@ -55,6 +55,8 @@ sub run {
     my $remote = $remotes->next()
         or return;
 
+    my $start = time;
+
     $self->{deviceid} = $remote->deviceid();
 
     # Set now we are remote
@@ -65,6 +67,9 @@ sub run {
     $self->SUPER::run(%params);
 
     resetRemoteForTools();
+
+    my $timing = time - $start;
+    $self->{logger}->debug("Remote inventory run in $timing seconds");
 
     # Set expiration from target for the remote before storing remotes
     $self->{target}->resetNextRunDate();
