@@ -59,6 +59,7 @@ our @EXPORT = qw(
     has_folder
     has_file
     FileStat
+    ReadLink
 );
 
 # this trigger some errors under win32:
@@ -113,6 +114,18 @@ sub FileStat {
     return stat($f) unless $remote;
     # populate() is a File::stat hidden function
     return File::stat::populate($remote->remoteFileStat($f));
+}
+
+sub ReadLink {
+    my $f = shift;
+    return readlink($f) unless $remote;
+    return $remote->remoteReadLink($f);
+}
+
+sub GetPwEnt {
+    my $u = shift;
+    return getpwent() unless $remote;
+    return $remote->remoteGetPwEnt();
 }
 
 # Avoid List::Util dependency re-using 'any' sub as template

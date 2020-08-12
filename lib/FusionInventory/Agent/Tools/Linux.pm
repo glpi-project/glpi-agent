@@ -325,7 +325,7 @@ sub _getValueFromSysProc {
 
     ## no critic (ExplicitReturnUndef)
 
-    my $file = first { -f $root.$_ }
+    my $file = first { has_file($root.$_) }
         "/sys/block/$device/$key",
         "/sys/block/$device/device/$key",
         "/proc/ide/$device/$key",
@@ -400,12 +400,12 @@ sub _readLinkFromSysFs {
             $dump->{$sub} = {} unless $dump->{$sub};
             $dump = $dump->{$sub};
         }
-        $dump->{basename($path)} = [ link => readlink($path) ];
+        $dump->{basename($path)} = [ link => ReadLink($path) ];
     }
 
     while (@path) {
         push @sys, shift(@path);
-        my $link = readlink($root.'/sys/'.join('/', @sys));
+        my $link = ReadLink($root.'/sys/'.join('/', @sys));
         next unless $link;
         pop @sys;
         foreach my $sub (split('/',$link)) {
@@ -603,6 +603,9 @@ sub getInterfacesInfosFromIoctl {
     );
 
     return unless $params{interface};
+
+    # TODO implement for remote support
+    return if $FusionInventory::Agent::Tools::remote;
 
     my $logger = $params{logger};
 

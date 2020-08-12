@@ -58,7 +58,7 @@ sub doInventory {
         "Library/VirtualBox" : ".config/VirtualBox" ;
 
     # Prepare to lookup only for users using VirtualBox
-    while (my $user = getpwent()) { # TODO REMOTE
+    while (my $user = GetPwEnt()) {
         push @users, $user->name()
             if has_folder($user->dir()."/$user_vbox_folder") ;
     }

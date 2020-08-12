@@ -129,7 +129,7 @@ sub _getInterfaces {
         }
 
         if (defined($interface->{STATUS}) && $interface->{STATUS} eq 'Up') {
-            if (-r "/sys/class/net/$interface->{DESCRIPTION}/speed") {
+            if (has_file("/sys/class/net/$interface->{DESCRIPTION}/speed")) {
                 my $speed = getFirstLine(
                     file => "/sys/class/net/$interface->{DESCRIPTION}/speed"
                 );
@@ -142,7 +142,7 @@ sub _getInterfaces {
                     interface => $interface->{DESCRIPTION},
                     logger    => $logger
                 );
-                if ($infos->{SPEED}) {
+                if ($infos && $infos->{SPEED}) {
                     $logger->debug_result(
                         action => 'retrieving interface speed from syscall',
                         data   => $infos->{SPEED}
