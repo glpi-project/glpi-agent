@@ -256,7 +256,7 @@ sub getFilesystemsTypesFromMount {
 
 sub getProcesses {
     my $ps = which('ps');
-    return -l $ps && readlink($ps) eq 'busybox' ? _getProcessesBusybox(@_) :
+    return -l $ps && ReadLink($ps) eq 'busybox' ? _getProcessesBusybox(@_) :
                                                   _getProcessesOther(@_)   ;
 }
 
