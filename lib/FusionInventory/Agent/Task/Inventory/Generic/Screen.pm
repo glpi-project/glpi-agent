@@ -170,15 +170,33 @@ sub _getScreensFromUnix {
 
     if (has_folder('/sys/devices')) {
         my @screens;
-        my $wanted = sub {
-            return unless $_ eq 'edid';
-            return unless has_file($File::Find::name);
-            my $edid = getAllLines(file => $File::Find::name);
-            push @screens, { edid => $edid } if $edid;
-        };
 
-        no warnings 'File::Find';
-        File::Find::find($wanted, '/sys/devices');
+        if ($FusionInventory::Agent::Tools::remote) {
+            my @cards = Glob("/sys/devices/*/*/drm/* /sys/devices/*/*/*/drm/*");
+            # But we need to filter out links
+            my @ctrls = Glob("/sys/devices/*/*/drm/* /sys/devices/*/*/*/drm/*", "-h");
+            @cards = grep { my $card = $_; ! grep { $card eq $_ } @ctrls } @cards
+                if @cards && @ctrls;
+
+            foreach my $card (@cards) {
+                my @edid = Glob("$card/*/edid")
+                    or next;
+                foreach my $sysfile (@edid) {
+                    my $edid = getAllLines(file => $sysfile);
+                    push @screens, { edid => $edid } if $edid;
+                }
+            }
+        } else {
+            my $wanted = sub {
+                return unless $_ eq 'edid';
+                return unless has_file($File::Find::name);
+                my $edid = getAllLines(file => $File::Find::name);
+                push @screens, { edid => $edid } if $edid;
+            };
+
+            no warnings 'File::Find';
+            File::Find::find($wanted, '/sys/devices');
+        }
 
         $logger->debug_result(
             action => 'reading /sys/devices content',
