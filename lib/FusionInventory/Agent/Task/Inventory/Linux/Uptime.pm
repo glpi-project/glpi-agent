@@ -10,7 +10,7 @@ use English qw(-no_match_vars);
 use FusionInventory::Agent::Tools;
 
 sub isEnabled {
-    return -r '/proc/uptime';
+    return has_file('/proc/uptime');
 }
 
 sub doInventory {
