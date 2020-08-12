@@ -12,7 +12,7 @@ use FusionInventory::Agent::Tools;
 use constant    category    => "os";
 
 sub isEnabled {
-    return -r '/proc/uptime';
+    return has_file('/proc/uptime');
 }
 
 sub doInventory {
