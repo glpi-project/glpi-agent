@@ -51,7 +51,9 @@ sub _getRHNSystemId {
 
     return unless has_file($file);
     my $tpp = XML::TreePP->new();
-    my $h = $tpp->parsefile($file);
+    my $xml = getAllLines(file => $file)
+        or return;
+    my $h = $tpp->parse($xml);
     eval {
         foreach (@{$h->{params}{param}{value}{struct}{member}}) {
             next unless $_->{name} eq 'system_id';
