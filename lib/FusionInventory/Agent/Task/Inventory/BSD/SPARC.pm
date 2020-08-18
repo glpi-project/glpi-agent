@@ -12,6 +12,7 @@ use FusionInventory::Agent::Tools;
 use constant    other_categories => qw(cpu);
 
 sub isEnabled {
+    return Uname("-m") =~ /^sparc/ if $FusionInventory::Agent::Tools::remote;
     return $Config{archname} =~ /^sparc/;
 }
 

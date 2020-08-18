@@ -9,7 +9,7 @@ use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Linux;
 
 sub isEnabled {
-    return -r '/proc/cpuinfo';
+    return has_file('/proc/cpuinfo');
 }
 
 sub doInventory {

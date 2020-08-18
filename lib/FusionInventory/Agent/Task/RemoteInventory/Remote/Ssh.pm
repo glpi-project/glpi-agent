@@ -106,12 +106,17 @@ sub getRemoteHostDomain {
 
 sub remoteTestFolder {
     my ($self, $folder) = @_;
-    return system($self->_ssh("test -d $folder")) == 0;
+    return system($self->_ssh("test -d '$folder'")) == 0;
 }
 
 sub remoteTestFile {
     my ($self, $file) = @_;
-    return system($self->_ssh("test -e $file")) == 0;
+    return system($self->_ssh("test -e '$file'")) == 0;
+}
+
+sub remoteTestLink {
+    my ($self, $link) = @_;
+    return system($self->_ssh("test -h '$link'")) == 0;
 }
 
 # This API only need to return ctime & mtime

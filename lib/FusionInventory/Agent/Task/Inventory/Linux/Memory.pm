@@ -10,7 +10,7 @@ use FusionInventory::Agent::Tools;
 use constant    category    => "memory";
 
 sub isEnabled {
-    return -r '/proc/meminfo';
+    return has_file('/proc/meminfo');
 }
 
 sub doInventory {

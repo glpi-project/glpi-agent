@@ -136,8 +136,9 @@ sub _getInterfaces {
                 $interface->{SPEED} = $speed if $speed;
             }
             # On older kernels, we should try ethtool system call for speed
-            if (!$interface->{SPEED}) {
-                $logger->debug("looking for interface speed from syscall:");
+            # but don't try this method on virtual dev
+            if (!$interface->{SPEED} && !$interface->{VIRTUALDEV}) {
+                $logger->debug("looking for interface speed from syscall for $interface->{DESCRIPTION}:");
                 my $infos = getInterfacesInfosFromIoctl(
                     interface => $interface->{DESCRIPTION},
                     logger    => $logger

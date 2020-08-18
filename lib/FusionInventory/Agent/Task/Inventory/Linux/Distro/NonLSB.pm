@@ -67,7 +67,7 @@ our $runMeIfTheseChecksFailed =
     ["FusionInventory::Agent::Task::Inventory::Linux::Distro::OSRelease"];
 
 sub isEnabled {
-    return !(-r '/etc/os-release');
+    return !(has_file('/etc/os-release'));
 }
 
 sub doInventory {

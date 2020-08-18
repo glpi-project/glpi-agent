@@ -60,7 +60,7 @@ sub doInventory {
 
     if ($xorgPid) {
         my $link = "/proc/$xorgPid/fd/0";
-        if (-r $link) {
+        if (has_file($link)) {
             $xorgData = _parseXorgFd(file => $link);
             $logger->debug_result(
                  action => 'reading Xorg log file',

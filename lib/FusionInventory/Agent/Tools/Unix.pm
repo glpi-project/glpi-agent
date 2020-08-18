@@ -255,9 +255,9 @@ sub getFilesystemsTypesFromMount {
 }
 
 sub getProcesses {
-    my $ps = which('ps');
-    return -l $ps && ReadLink($ps) eq 'busybox' ? _getProcessesBusybox(@_) :
-                                                  _getProcessesOther(@_)   ;
+    my $ps = $FusionInventory::Agent::Tools::remote ? getFirstLine(command => "which ps") : which('ps');
+    return has_link($ps) && ReadLink($ps) eq 'busybox' ? _getProcessesBusybox(@_) :
+                                                         _getProcessesOther(@_)   ;
 }
 
 sub _getProcessesBusybox {

@@ -10,7 +10,7 @@ use English qw(-no_match_vars);
 use FusionInventory::Agent::Tools;
 
 sub isEnabled {
-    return -r getUuidFile();
+    return has_file(getUuidFile());
 }
 
 sub getUuidFile {

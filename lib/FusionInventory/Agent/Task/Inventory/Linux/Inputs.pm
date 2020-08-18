@@ -10,7 +10,7 @@ use FusionInventory::Agent::Tools;
 use constant    category    => "input";
 
 sub isEnabled {
-    return -r '/proc/bus/input/devices';
+    return has_file('/proc/bus/input/devices');
 }
 
 sub doInventory {
