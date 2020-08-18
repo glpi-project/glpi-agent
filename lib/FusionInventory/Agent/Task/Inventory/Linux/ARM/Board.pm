@@ -10,7 +10,7 @@ use FusionInventory::Agent::Tools;
 use constant    category    => "bios";
 
 sub isEnabled {
-    return -r '/proc/cpuinfo';
+    return has_file('/proc/cpuinfo');
 }
 
 sub doInventory {

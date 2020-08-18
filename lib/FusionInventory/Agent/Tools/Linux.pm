@@ -604,7 +604,7 @@ sub getInterfacesInfosFromIoctl {
 
     return unless $params{interface};
 
-    # TODO implement for remote support
+    # We don't support this feature on remote inventory
     return if $FusionInventory::Agent::Tools::remote;
 
     my $logger = $params{logger};

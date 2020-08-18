@@ -58,14 +58,19 @@ our @EXPORT = qw(
     Glob
     has_folder
     has_file
+    has_link
     FileStat
     ReadLink
+    Uname
 );
 
 # this trigger some errors under win32:
 # Anonymous function called in forbidden scalar context
 if ($OSNAME ne 'MSWin32') {
     memoize('canRun');
+    memoize('Uname');
+    memoize('has_file');
+    memoize('OSNAME');
 }
 
 our $remote;
@@ -83,6 +88,10 @@ sub resetRemoteForTools {
 sub OSNAME {
     return $OSNAME unless $remote;
     return $remote->OSName();
+}
+
+sub Uname {
+    return getFirstLine(command => "uname @_");
 }
 
 sub Glob {
@@ -108,6 +117,12 @@ sub has_file {
     my $f = shift;
     return -e $f unless $remote;
     return $remote->remoteTestFile($f);
+}
+
+sub has_link {
+    my $f = shift;
+    return -l $f unless $remote;
+    return $remote->remoteTestLink($f);
 }
 
 sub FileStat {

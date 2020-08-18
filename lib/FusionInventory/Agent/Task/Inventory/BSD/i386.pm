@@ -14,6 +14,7 @@ use constant    category    => "bios";
 use constant    other_categories => qw(cpu);
 
 sub isEnabled {
+    return Uname("-m") =~ /^(i\d86|x86_64|amd64)/ if $FusionInventory::Agent::Tools::remote;
     return $Config{archname} =~ /^(i\d86|x86_64)/;
 }
 
