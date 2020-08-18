@@ -271,7 +271,7 @@ sub _getType {
     # dmesg can be empty or near empty on some systems (notably on Debian 8)
 
     my $handle;
-    if (-r '/var/log/dmesg' && -s '/var/log/dmesg' > 40) {
+    if (has_file('/var/log/dmesg') && FileStat('/var/log/dmesg')->size > 40) {
         $handle = getFileHandle(file => '/var/log/dmesg', logger => $logger);
     } elsif (canRun('/bin/dmesg')) {
         $handle = getFileHandle(command => '/bin/dmesg', logger => $logger);

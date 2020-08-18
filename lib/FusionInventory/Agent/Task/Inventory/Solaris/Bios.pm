@@ -23,6 +23,9 @@ sub doInventory {
     my $logger    = $params{logger};
 
     my $arch = $Config{archname} =~ /^i86pc/ ? 'i386' : 'sparc';
+    $arch = Uname("-m") =~ /^i86pc/ ? 'i386' : 'sparc'
+        if $FusionInventory::Agent::Tools::remote;
+
 
     my $bios;
 

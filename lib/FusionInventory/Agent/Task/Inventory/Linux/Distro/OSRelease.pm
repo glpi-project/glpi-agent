@@ -8,7 +8,7 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 use FusionInventory::Agent::Tools;
 
 sub isEnabled {
-  return -r '/etc/os-release';
+  return has_file('/etc/os-release');
 }
 
 sub doInventory {
@@ -28,7 +28,7 @@ sub doInventory {
 
     # Handle Debian case where version is not complete like in Ubuntu
     # by checking /etc/debian_version
-    if (-r '/etc/debian_version') {
+    if (has_file('/etc/debian_version')) {
         my $debian_version = getFirstLine(file => '/etc/debian_version');
         $version = $debian_version
             if $debian_version && $debian_version =~ /^\d/;

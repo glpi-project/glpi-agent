@@ -12,7 +12,7 @@ use FusionInventory::Agent::Tools::Generic;
 use constant    category    => "cpu";
 
 sub isEnabled {
-    return -r '/proc/cpuinfo';
+    return has_file('/proc/cpuinfo');
 }
 
 sub doInventory {

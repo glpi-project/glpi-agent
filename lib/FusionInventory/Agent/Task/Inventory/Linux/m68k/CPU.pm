@@ -11,7 +11,7 @@ use FusionInventory::Agent::Tools::Linux;
 use constant    category    => "cpu";
 
 sub isEnabled {
-    return -r '/proc/cpuinfo';
+    return has_file('/proc/cpuinfo');
 }
 
 sub doInventory {
