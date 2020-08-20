@@ -70,6 +70,7 @@ sub host {
 sub deviceid {
     my ($self) = @_;
 
+    # TODO Generate a deviceid when convenient and possible
     return $self->{_deviceid} // '';
 }
 
@@ -99,6 +100,12 @@ sub dump {
         protocol    => $self->{_protocol},
         expiration  => $self->{_expiration},
     };
+}
+
+sub url {
+    my ($self) = @_;
+
+    return $self->{_url};
 }
 
 1;
