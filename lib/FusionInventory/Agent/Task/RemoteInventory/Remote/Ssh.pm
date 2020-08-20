@@ -13,7 +13,7 @@ use FusionInventory::Agent::Tools;
 sub deviceid {
     my ($self) = @_;
 
-    return $self->{_deviceid} = 'xps.root';
+    return $self->{_deviceid} // 'xps.root';
 }
 
 sub _ssh {

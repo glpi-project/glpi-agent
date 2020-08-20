@@ -1,0 +1,274 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use lib './lib';
+use setup;
+
+use UNIVERSAL::require;
+use English qw(-no_match_vars);
+
+use LWP::UserAgent;
+use Pod::Usage;
+use Getopt::Long;
+use File::Find;
+
+use FusionInventory::Agent::Logger;
+use FusionInventory::Agent::Storage;
+use FusionInventory::Agent::Task::RemoteInventory::Remote;
+
+our $VERSION = "1.0";
+
+Getopt::Long::Configure( "no_ignorecase" );
+Getopt::Long::Configure( "pass_through" );
+
+my $logger;
+
+my $options = {
+    useragent => "GLPI-Remote/$VERSION",
+};
+
+GetOptions(
+    $options,
+    'help|h',
+    'verbose|v',
+    'debug',
+    'inventory|i',
+    'port|p=s',
+    'timeout|t=i',
+    'threads|T=i',
+    'user|u=s',
+    'password|P=s',
+    'ssh',
+    'ssl',
+    'ca-cert-file=s',
+    'ssl-cert-file=s',
+    'no-ssl-check|S',
+    'no-check|C',
+    'no-header|H',
+) or pod2usage(-verbose => 0);
+
+pod2usage(-verbose => 0, -exitstatus => 0) if $options->{help};
+
+my ($cmd, @params) = @ARGV;
+if ($cmd) {
+    die "Var directory is missing\n" unless -d $setup{vardir};
+
+    if ($options->{debug}) {
+        warn "vardir: $setup{vardir}\n";
+        warn "params: @params\n";
+    }
+
+    my %cmds = (
+        list    => \&list,
+        help    => \&help,
+        add     => \&todo,
+        remove  => \&todo,
+        scan    => \&todo,
+    );
+
+    die "Unsupported '$cmd' command\n" unless exists($cmds{$cmd});
+
+    $logger = FusionInventory::Agent::Logger->new(config => $options);
+
+    &{$cmds{$cmd}}(@params);
+
+    exit(0);
+}
+
+exit(0);
+
+sub help {
+    my @params = @_;
+    pod2usage(-verbose => 0, -exitstatus => 0);
+}
+
+sub todo {
+    die "TODO: command '$cmd' still not supported\n";
+}
+
+sub list {
+    my ($sub) = @_;
+
+    my ($lenid, $lenurl) = (0, 0);
+    if ($sub) {
+        die "Unsupported '$sub' list subcommand\n" unless $sub eq "targets";
+        my @targets = get_targets();
+        my $lentype = 0;
+        map { my $l = length($_); $lentype = $l if $l > $lentype } map { $_->{type} } @targets;
+        map { my $l = length($_); $lenid   = $l if $l > $lenid   } map { $_->{id} } @targets;
+        map { my $l = length($_); $lenurl  = $l if $l > $lenurl  } map { $_->{url} // $_->{path} // '' } @targets;
+
+        foreach my $target (@targets) {
+            print sprintf(
+                "%".$lentype."s %-".$lenid."s %-".$lenurl."s %s %s\n",
+                $target->{type}, $target->{id}, $target->{url} || $target->{path} // '',
+                $target->{maxDelay}, scalar(localtime($target->{nextRunDate}//0))
+            );
+        }
+    } else {
+        my @remotes = get_remotes();
+        map { my $l = length($_); $lenid  = $l if $l > $lenid  } map { $_->deviceid } @remotes;
+        map { my $l = length($_); $lenurl = $l if $l > $lenurl } map { $_->url      } @remotes;
+
+        my $index = 1;
+        my $lenindex = length(scalar(@remotes));
+        foreach my $remote (@remotes) {
+            print sprintf(
+                "%".$lenindex."s %-".$lenid."s %-".$lenurl."s\n",
+                $index++, $remote->deviceid, $remote->url
+            );
+        }
+    }
+}
+
+sub get_ua {
+    my $useragent = LWP::UserAgent->new(
+        agent                 => $options->{useragent},
+        timeout               => $options->{timeout} || 180,
+        parse_head            => 0, # No need to parse HTML
+        keep_alive            => 1,
+    );
+
+    if ($options->{ssl}) {
+        $useragent->ssl_opts(SSL_ca_file => $options->{'ca-cert-file'} || $ENV{'CA_CERT_FILE'})
+            if $options->{'ca-cert-file'} || $ENV{'CA_CERT_FILE'};
+        $useragent->ssl_opts(SSL_cert_file => $options->{'ssl-cert-file'} || $ENV{'SSL_CERT_FILE'})
+            if $options->{'ssl-cert-file'} || $ENV{'SSL_CERT_FILE'};
+        $useragent->ssl_opts(verify_hostname => 0, SSL_verify_mode => 0)
+            if $options->{'no-ssl-check'};
+    }
+
+    return $useragent;
+}
+
+sub get_remotes {
+    my @remotes;
+
+    File::Find::find(
+        {
+            wanted => sub {
+                return unless $File::Find::name =~ m/\/remotes\.dump$/;
+                return if -d $File::Find::name;
+
+                my $storage = FusionInventory::Agent::Storage->new(
+                    directory   => $File::Find::dir,
+                    logger      => $logger,
+                );
+
+                # Load remotes from storage
+                my $remotes = $storage->restore( name => 'remotes' ) // {};
+                foreach my $id (keys(%{$remotes})) {
+                    my $dump = $remotes->{$id};
+                    next unless ref($dump) eq 'HASH';
+                    my $remote = FusionInventory::Agent::Task::RemoteInventory::Remote->new(
+                        dump    => $dump,
+                        logger  => $logger,
+                    );
+                    push @remotes, $remote;
+                }
+            },
+            no_chdir => 1
+        },
+        $setup{vardir}
+    );
+
+    return @remotes;
+}
+
+sub get_targets {
+    my @targets;
+
+    File::Find::find(
+        {
+            wanted => sub {
+                return unless $File::Find::name =~ m/\/target\.dump$/;
+                return if -d $File::Find::name;
+
+                my $storage = FusionInventory::Agent::Storage->new(
+                    directory   => $File::Find::dir,
+                    logger      => $logger,
+                );
+
+                # Check target from storage
+                my $target = $storage->restore( name => 'target' ) // {};
+
+                return unless $target->{type} && $target->{id};
+                push @targets, $target;
+            },
+            no_chdir => 1
+        },
+        $setup{vardir}
+    );
+
+    return @targets;
+}
+
+__END__
+
+=head1 NAME
+
+glpi-remote - A tool to scan, manage and initialize remote agents
+
+=head1 SYNOPSIS
+
+glpi-remote [options] [--server server|--local path] [command] [command options]
+
+  Options:
+    -h --help           this menu
+    -t --timeout <SECS> requests timeout in seconds (defaults to 5)
+    -p --port <LIST>    remote ports list to scan (defaults to '22,5985,5986')
+    --ssh               connect using SSH
+    --ssl               connect using SSL (winrm)
+    --no-ssl-check      do not check agent SSL certificate (winrm)
+    --ca-cert-file      CA certificates file (winrm)
+    --ssl-cert-file     Client certificate file (winrm)
+    -u --user           authentication user
+    -P --password       authentication password
+    -v --verbose        verbose mode
+    --debug             debug mode
+    -C --no-check       don't check given remote is alive
+    -i --inventory      don't register remotes, but run inventory on found remotes
+    -T --threads <NUM>  number of threads while scanning (defaults to 1)
+
+  Target definition options:
+    -s --server=URI                agent will send tasks result to that server
+    -l --local=PATH                agent will write tasks results locally
+  Remark:
+   - target option mandatory while adding remote
+   - when scanning and making inventory, uses -l option or each inventory will be
+     sent to standard output
+
+  Commands
+    list [targets]     list known remotes or targets
+    add [url]           add remote with given URL
+    remove [index|id]+  remove remote with given list index or given deviceid or
+                        current known one when alone or all remotes while using
+                        __ALL__ as id
+    scan [first] [last] scan given range for remote access
+
+  Supported environment variables:
+    USERNAME
+    PASSWORD
+    PORT
+    CA_CERT_FILE
+    SSL_CERT_FILE
+
+  Examples:
+    glpi-remote list
+    glpi-remote list targets
+    glpi-remote add ssh://admin:pass@192.168.43.237
+    glpi-remote add ssh://admin:pass@192.168.43.238 --no-check
+    glpi-remote add winrm://admin:pass@192.168.48.250
+    glpi-remote remove 1
+    glpi-remote scan 192.168.43.1 192.168.43.254
+    glpi-remote scan 10.0.0.1 10.0.10.254 --inventory -s https://login:pw@server/plugins/fusioninventory/
+    glpi-remote scan 10.0.0.1 10.0.10.254 --inventory -l /var/tmp/remotes
+    glpi-remote scan --inventory 
+    glpi-remote scan 192.168.48.99 | \
+         glpi-injector -url https://login:pw@server/plugins/fusioninventory/
+
+=head1 DESCRIPTION
+
+This tool is used to manage locally known agents used to make remote inventories.
