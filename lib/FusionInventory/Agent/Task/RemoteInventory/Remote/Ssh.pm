@@ -10,12 +10,6 @@ use parent 'FusionInventory::Agent::Task::RemoteInventory::Remote';
 
 use FusionInventory::Agent::Tools;
 
-sub deviceid {
-    my ($self) = @_;
-
-    return $self->{_deviceid} // 'xps.root';
-}
-
 sub _ssh {
     my ($self, $command) = @_;
     return unless $command;
