@@ -14,6 +14,7 @@ use Pod::Usage;
 use Getopt::Long;
 use File::Find;
 
+use FusionInventory::Agent::Config;
 use FusionInventory::Agent::Logger;
 use FusionInventory::Agent::Storage;
 use FusionInventory::Agent::Task::RemoteInventory::Remote;
@@ -35,6 +36,7 @@ GetOptions(
     'verbose|v',
     'debug',
     'inventory|i',
+    'target=s',
     'port|p=s',
     'timeout|t=i',
     'threads|T=i',
@@ -63,8 +65,8 @@ if ($cmd) {
     my %cmds = (
         list    => \&list,
         help    => \&help,
-        add     => \&todo,
-        remove  => \&todo,
+        add     => \&add,
+        remove  => \&remove,
         scan    => \&todo,
     );
 
@@ -78,6 +80,10 @@ if ($cmd) {
 }
 
 exit(0);
+
+my @indexed;
+my %deviceid;
+my %targets;
 
 sub help {
     my @params = @_;
@@ -95,31 +101,109 @@ sub list {
     if ($sub) {
         die "Unsupported '$sub' list subcommand\n" unless $sub eq "targets";
         my @targets = get_targets();
-        my $lentype = 0;
-        map { my $l = length($_); $lentype = $l if $l > $lentype } map { $_->{type} } @targets;
-        map { my $l = length($_); $lenid   = $l if $l > $lenid   } map { $_->{id} } @targets;
-        map { my $l = length($_); $lenurl  = $l if $l > $lenurl  } map { $_->{url} // $_->{path} // '' } @targets;
+        my ($lentype, $lentime) = (0, 0);
+        map { my $l = length($_); $lentype = $l if $l > $lentype } "type", map { $_->{type} } @targets;
+        map { my $l = length($_); $lenid   = $l if $l > $lenid   } "id", map { $_->{id} } @targets;
+        map { my $l = length($_); $lenurl  = $l if $l > $lenurl  } "url/path", map { $_->{url} // $_->{path} // '' } @targets;
+        map { my $l = length($_); $lentime = $l if $l > $lentime } "maxdelay", map { $_->{maxDelay} // 0 } @targets;
+
+        my $string = "%-".$lenid."s  %-".$lentype."s  %-".$lenurl."s  %-".$lentime."s  %s\n";
+        print sprintf( $string, "id", "type", "url/path", "maxdelay", "Next run date")
+            unless $options->{'no-header'};
 
         foreach my $target (@targets) {
-            print sprintf(
-                "%".$lentype."s %-".$lenid."s %-".$lenurl."s %s %s\n",
-                $target->{type}, $target->{id}, $target->{url} || $target->{path} // '',
+            print sprintf( $string,
+                $target->{id}, $target->{type}, $target->{url} || $target->{path} // '',
                 $target->{maxDelay}, scalar(localtime($target->{nextRunDate}//0))
             );
         }
     } else {
         my @remotes = get_remotes();
-        map { my $l = length($_); $lenid  = $l if $l > $lenid  } map { $_->deviceid } @remotes;
-        map { my $l = length($_); $lenurl = $l if $l > $lenurl } map { $_->url      } @remotes;
+        my $lentg = 0;
+        map { my $l = length($_); $lenid  = $l if $l > $lenid  } "deviceid", map { $_->deviceid } map { $_->{remote} } @remotes;
+        map { my $l = length($_); $lenurl = $l if $l > $lenurl } "url", map { $_->url } map { $_->{remote} } @remotes;
+        map { my $l = length($_); $lentg  = $l if $l > $lentg  } "target", map { $_->{id} } map { $_->{target} } @remotes;
+        my $lenindex = length(scalar(@remotes));
+        $lenindex = length("index") if length("index") > $lenindex;
+
+        my $string = "%".$lenindex."s  %-".$lenid."s  %-".$lenurl."s  %s  %s\n";
+        print sprintf( $string, "index", "deviceid", "url", "target", "Next run date")
+            unless $options->{'no-header'};
 
         my $index = 1;
-        my $lenindex = length(scalar(@remotes));
-        foreach my $remote (@remotes) {
-            print sprintf(
-                "%".$lenindex."s %-".$lenid."s %-".$lenurl."s\n",
-                $index++, $remote->deviceid, $remote->url
+        foreach my $current (@remotes) {
+            my $remote = $current->{remote};
+            print sprintf( $string,
+                $index++, $remote->deviceid, $remote->url,
+                $current->{target}->{id},
+                $remote->expiration ? scalar(localtime($remote->expiration)) : "on next agent run"
             );
         }
+    }
+}
+
+sub add {
+    my @urls = @_;
+
+    # Look at targets and collect target storages
+    my @targets = get_targets();
+    my @storages;
+    if ($options->{target}) {
+        my $target = $options->{target};
+        die "No such '$target' target available to handle remotes\n" unless $targets{$target};
+        push @storages, $targets{$target}->{storage} if $targets{$target}->{storage};
+    }
+    if ($options->{server} || $options->{local}) {
+        my $config = FusionInventory::Agent::Config->new(
+            options => $options,
+            vardir  => $setup{vardir},
+        );
+        my $targets = $config->getTargets();
+        push @storages, map { $_->getStorage() }
+            grep { $_->isType('local') || $_->isType('server') } @{$targets};
+    }
+    die "No target specified to store remotes\n" unless @storages;
+
+    # TODO check remote by default
+    # TODO handles --no-check option
+
+    foreach my $url (@urls) {
+        my $remote = FusionInventory::Agent::Task::RemoteInventory::Remote->new(
+            url     => $url,
+            logger  => $logger,
+        );
+        unless ($remote) {
+            warn "Can't create virtual remote agent with '$url'\n";
+            next;
+        }
+
+        my $id = $remote->deviceid();
+        foreach my $storage (@storages) {
+            my $remotes = $storage->restore( name => 'remotes' ) // {};
+            $remotes->{$id} = $remote->dump();
+            $storage->save( name => 'remotes', data => $remotes );
+        }
+    }
+}
+
+sub remove {
+    die "No index or deviceid provided to remove command\n" unless @_;
+    my @remotes = get_remotes();
+    foreach my $rm (@_) {
+        my $current;
+        if ($rm =~ /^\d+$/ && $rm-1 < @indexed) {
+            $current = $indexed[$rm-1];
+        } elsif ($deviceid{$rm}) {
+            $current = $deviceid{$rm};
+        } else {
+            warn "No such remote: $rm\n";
+            next;
+        }
+        my $storage = $current->{storage};
+        my $remotes = $storage->restore( name => 'remotes' ) // {};
+        my $id = $current->{remote}->deviceid();
+        delete $remotes->{$id};
+        $storage->save( name => 'remotes', data => $remotes );
     }
 }
 
@@ -146,33 +230,37 @@ sub get_ua {
 sub get_remotes {
     my @remotes;
 
-    File::Find::find(
-        {
-            wanted => sub {
-                return unless $File::Find::name =~ m/\/remotes\.dump$/;
-                return if -d $File::Find::name;
+    my @targets = get_targets();
 
-                my $storage = FusionInventory::Agent::Storage->new(
-                    directory   => $File::Find::dir,
-                    logger      => $logger,
-                );
+    foreach my $target (@targets) {
+        my $id = $target->{id};
+        my $current = $targets{$id}
+            or next;
 
-                # Load remotes from storage
-                my $remotes = $storage->restore( name => 'remotes' ) // {};
-                foreach my $id (keys(%{$remotes})) {
-                    my $dump = $remotes->{$id};
-                    next unless ref($dump) eq 'HASH';
-                    my $remote = FusionInventory::Agent::Task::RemoteInventory::Remote->new(
-                        dump    => $dump,
-                        logger  => $logger,
-                    );
-                    push @remotes, $remote;
-                }
-            },
-            no_chdir => 1
-        },
-        $setup{vardir}
-    );
+        my $storage = $current->{storage};
+
+        # Load remotes from storage
+        my $remotes = $storage->restore( name => 'remotes' ) // {};
+        foreach my $id (sort keys(%{$remotes})) {
+            my $dump = $remotes->{$id};
+            next unless ref($dump) eq 'HASH';
+            my $remote = FusionInventory::Agent::Task::RemoteInventory::Remote->new(
+                dump    => $dump,
+                logger  => $logger,
+            );
+            my $current = {
+                remote  => $remote,
+                storage => $storage,
+                target  => $target,
+            };
+            push @remotes, $current;
+
+            # Also index by deviceid when removing
+            if ($cmd =~ /^remove$/) {
+                $deviceid{$id} = $current unless $deviceid{$id};
+            }
+        }
+    }
 
     return @remotes;
 }
@@ -196,6 +284,16 @@ sub get_targets {
 
                 return unless $target->{type} && $target->{id};
                 push @targets, $target;
+
+                # Also keep storage refs when adding a remote to a local or server target
+                if ($cmd =~ /^add|list$/ && $target->{type} =~ /^local|server$/ ) {
+                    my $current = {
+                        target  => $target,
+                        storage => $storage,
+                    };
+                    my $id = $target->{id};
+                    $targets{$id} = $current unless $targets{$id};
+                }
             },
             no_chdir => 1
         },
@@ -209,7 +307,7 @@ __END__
 
 =head1 NAME
 
-glpi-remote - A tool to scan, manage and initialize remote agents
+glpi-remote - A tool to scan, manage and initialize virtual remote agents
 
 =head1 SYNOPSIS
 
@@ -228,13 +326,14 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
     -P --password       authentication password
     -v --verbose        verbose mode
     --debug             debug mode
-    -C --no-check       don't check given remote is alive
+    -C --no-check       don't check given remote is alive when adding
     -i --inventory      don't register remotes, but run inventory on found remotes
     -T --threads <NUM>  number of threads while scanning (defaults to 1)
 
   Target definition options:
-    -s --server=URI                agent will send tasks result to that server
-    -l --local=PATH                agent will write tasks results locally
+    -s --server=<URI>   agent will send tasks result to that server
+    -l --local=<PATH>   agent will write tasks results locally
+    --target=<TARGETID> use target identified by its id (see list targets command)
   Remark:
    - target option mandatory while adding remote
    - when scanning and making inventory, uses -l option or each inventory will be
@@ -260,7 +359,7 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
     glpi-remote list targets
     glpi-remote add ssh://admin:pass@192.168.43.237
     glpi-remote add ssh://admin:pass@192.168.43.238 --no-check
-    glpi-remote add winrm://admin:pass@192.168.48.250
+    glpi-remote add winrm://admin:pass@192.168.48.250 --no-check --target server0
     glpi-remote remove 1
     glpi-remote scan 192.168.43.1 192.168.43.254
     glpi-remote scan 10.0.0.1 10.0.10.254 --inventory -s https://login:pw@server/plugins/fusioninventory/
@@ -271,4 +370,4 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
 
 =head1 DESCRIPTION
 
-This tool is used to manage locally known agents used to make remote inventories.
+This tool is used to manage locally known virtual agents used to make remote inventories.

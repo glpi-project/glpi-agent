@@ -7,6 +7,9 @@ use English qw(-no_match_vars);
 use UNIVERSAL::require;
 
 use URI;
+use Socket qw(getaddrinfo getnameinfo);
+
+use FusionInventory::Agent::Tools::Network;
 
 my $supported_protocols = qr/^ssh$/;
 
@@ -70,7 +73,27 @@ sub host {
 sub deviceid {
     my ($self) = @_;
 
-    # TODO Generate a deviceid when convenient and possible
+    # TODO deviceid should be reset after the real hostname is known
+
+    # If not defined, use same algorithm than in Inventory module
+    unless ($self->{_deviceid}) {
+        # Try to resolve address is host given as an ip
+        my $hostname = $self->host();
+        if ($hostname =~ $ip_address_pattern) {
+            my $info = getaddrinfo($hostname);
+            if ($info && $info->{addr}) {
+                my ($err, $name) = getnameinfo($info->{addr});
+                $name =~ s/\..*$// if $name;
+                $hostname = $name if $name;
+            }
+        }
+
+        my ($year, $month , $day, $hour, $min, $sec) = (localtime(time))[5, 4, 3, 2, 1, 0];
+
+        $self->{_deviceid} = sprintf("$hostname-%02d-%02d-%02d-%02d-%02d-%02d",
+            $year + 1900, $month + 1, $day, $hour, $min, $sec);
+    }
+
     return $self->{_deviceid} // '';
 }
 
