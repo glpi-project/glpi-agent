@@ -299,6 +299,10 @@ sub _saveState {
     my $data ={
         maxDelay    => $self->{maxDelay},
         nextRunDate => $self->{nextRunDate},
+        type        => $self->getType(),
+        path        => $self->getType() eq 'local'  ? $self->getPath() : '',
+        url         => $self->getType() eq 'server' ? $self->getUrl()  : '',
+        id          => $self->{id},
     };
 
     $data->{_type} = $self->{_type} if defined($self->{_type});
