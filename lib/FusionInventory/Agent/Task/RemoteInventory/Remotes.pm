@@ -33,10 +33,17 @@ sub new {
         my $updated = 0;
         foreach my $url (split(/,/, $self->{_config}->{remote})) {
             next unless $url;
+
+            # Skip if url is still known for a remote
+            next if grep { $_->url() eq $url } values(%{$self->{_remotes}});
+
             my $remote = FusionInventory::Agent::Task::RemoteInventory::Remote->new(
                 url     => $url,
                 logger  => $params{logger},
             ) or next;
+
+            # Always check the remote so deviceid can also be defined on first access
+            next if $remote->checking_error();
 
             my $id = $remote->deviceid()
                 or next;
@@ -76,7 +83,9 @@ sub store {
         $remotes->{$id} = $dump;
     }
 
+    my $umask = umask 0007;
     $self->{_storage}->save( name => 'remotes', data => $remotes );
+    umask $umask;
 }
 
 1;

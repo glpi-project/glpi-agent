@@ -16,6 +16,38 @@ sub _ssh {
     return "ssh -q ".$self->host()." LANG=C $command";
 }
 
+sub init {
+    my ($self) = @_;
+
+    my $mode = $self->mode();
+    $self->resetmode() if ($mode && $mode !~ /^perl$/);
+}
+
+sub checked {
+    my ($self) = @_;
+
+    my $root = $self->getRemoteFirstLine(command => "id -u");
+
+    return "Can't run simple command on remote, check server is up and ssh access is setup"
+        unless defined($root) && length($root);
+
+    warn "You should execute remote inventory as super-user\n" unless $root eq "0";
+
+    return "Mode perl required but can't run perl"
+        if $self->mode('perl') && ! $self->remoteCanRun("perl");
+
+    my $deviceid = $self->getRemoteFirstLine(file => ".glpi-agent-deviceid");
+    if ($deviceid) {
+        $self->deviceid(deviceid => $deviceid);
+    } else {
+        $deviceid = $self->deviceid(hostname => $self->getRemoteHostname())
+            or return "Can't compute deviceid";
+        system($self->_ssh("sh -c \"'echo $deviceid >.glpi-agent-deviceid'\""));
+    }
+
+    return '';
+}
+
 sub getRemoteFileHandle {
     my ($self, %params) = @_;
 
@@ -56,7 +88,7 @@ sub remoteGlob {
     $test = "-e" unless $test;
 
     # Create a safe tempfile
-    my $tempfile =  getFirstLine( command => "mktemp /tmp/.glpi-agent-XXXXXXXX" );
+    my $tempfile =  $self->getRemoteFirstLine( command => "mktemp /tmp/.glpi-agent-XXXXXXXX" );
     # Otherwise we will create an unsafe one
     $tempfile = sprintf(".glpi-agent-%08x", rand(1<<32)) unless $tempfile && $tempfile =~ m|^/tmp/\.glpi-agent-|;
 
@@ -75,7 +107,7 @@ sub remoteGlob {
     print SCRIPT "for f in $glob; do test $test \"\$f\" && echo \"\$f\"; done\n";
     close(SCRIPT);
 
-    my @glob = getAllLines( command => "sh $tempfile" );
+    my @glob = $self->getRemoteAllLines( command => "sh $tempfile" );
 
     # Always remove remote tempfile
     system($self->_ssh("rm -f '$tempfile'")) if $tempfile;
@@ -84,18 +116,23 @@ sub remoteGlob {
 }
 
 sub getRemoteHostname {
+    my ($self) = @_;
     # command is run remotely
-    return getFirstLine(command => "hostname");
+    return $self->getRemoteFirstLine(command => "hostname");
 }
 
 sub getRemoteFQDN {
+    my ($self) = @_;
     # command is run remotely
-    return getFirstLine(command => "perl -e \"'use Net::Domain qw(hostfqdn); print hostfqdn()'\"");
+    return $self->getRemoteFirstLine(command => "perl -e \"'use Net::Domain qw(hostfqdn); print hostfqdn()'\"")
+        if $self->mode('perl');
 }
 
 sub getRemoteHostDomain {
+    my ($self) = @_;
     # command will be run remotely
-    return getFirstLine(command => "perl -e \"'use Net::Domain qw(hostdomain); print hostdomain()'\"");
+    return $self->getRemoteFirstLine(command => "perl -e \"'use Net::Domain qw(hostdomain); print hostdomain()'\"")
+        if $self->mode('perl');
 }
 
 sub remoteTestFolder {
@@ -116,7 +153,7 @@ sub remoteTestLink {
 # This API only need to return ctime & mtime
 sub remoteFileStat {
     my ($self, $file) = @_;
-    my $stat = getFirstLine(command => "stat -t '$file'")
+    my $stat = $self->getRemoteFirstLine(command => "stat -t '$file'")
         or return;
     my ($name, $size, $bsize, $mode, $uid, $gid, $dev, $ino, $nlink, $major, $minor, $atime, $mtime, $stime, $ctime, $blocks) =
         split(/\s+/, $stat);
@@ -126,7 +163,7 @@ sub remoteFileStat {
 sub remoteReadLink {
     my ($self, $link) = @_;
     # command will be run remotely
-    return getFirstLine(command => "readlink '$link'");
+    return $self->getRemoteFirstLine(command => "readlink '$link'");
 }
 
 sub remoteGetPwEnt {

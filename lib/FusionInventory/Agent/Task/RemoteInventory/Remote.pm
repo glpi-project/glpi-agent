@@ -56,6 +56,11 @@ sub new {
         $self->{_pass} = $pass if defined($pass);
     }
 
+    # Check for mode in url params
+    my $query = $url->query() // '';
+    my ($mode) = $query =~ /mode=(\w+)/;
+    $self->{_mode} = $mode if $mode;
+
     bless $self, $class;
     $self->init();
 
@@ -64,29 +69,49 @@ sub new {
 
 sub init {}
 
+sub checked {}
+
 sub host {
-    my ($self) = @_;
+    my ($self, $hostname) = @_;
+
+    $self->{_host} = $hostname if $hostname;
 
     return $self->{_host} // '';
 }
 
-sub deviceid {
-    my ($self) = @_;
+sub mode {
+    my ($self, $mode) = @_;
 
-    # TODO deviceid should be reset after the real hostname is known
+    return $self->{_mode} && $self->{_mode} eq $mode
+        if $mode;
+
+    return $self->{_mode} // '';
+}
+
+sub resetmode {
+    my ($self) = @_;
+    delete $self->{_mode};
+}
+
+sub deviceid {
+    my ($self, %params) = @_;
+
+    # Deviceid could be reset after the real hostname is known or if read from the host
+    $self->{_deviceid} = $params{deviceid} if $params{deviceid};
 
     # If not defined, use same algorithm than in Inventory module
     unless ($self->{_deviceid}) {
         # Try to resolve address is host given as an ip
-        my $hostname = $self->host();
+        my $hostname = $params{hostname} || $self->host();
         if ($hostname =~ $ip_address_pattern) {
             my $info = getaddrinfo($hostname);
             if ($info && $info->{addr}) {
                 my ($err, $name) = getnameinfo($info->{addr});
-                $name =~ s/\..*$// if $name;
                 $hostname = $name if $name;
             }
         }
+
+        $hostname =~ s/\..*$//;
 
         my ($year, $month , $day, $hour, $min, $sec) = (localtime(time))[5, 4, 3, 2, 1, 0];
 
@@ -117,18 +142,54 @@ sub dump {
     # deviceid is mandatory to store remotes
     return unless $self->{_deviceid};
 
-    return {
+    my $dump = {
         deviceid    => $self->{_deviceid},
         url         => $self->{_url},
         protocol    => $self->{_protocol},
         expiration  => $self->{_expiration},
     };
+
+    # Keep any specific variable
+    map { $dump->{$_} = $self->{$_} } @{$self->{_keep_in_dump}};
+
+    return $dump;
 }
 
 sub url {
     my ($self) = @_;
 
     return $self->{_url};
+}
+
+sub getRemoteFirstLine {
+    my ($self, %params) = @_;
+
+    my $handle = $self->getRemoteFileHandle(%params);
+    return unless $handle;
+
+    my $result = <$handle>;
+    close $handle;
+
+    chomp $result if defined $result;
+    return $result;
+}
+
+sub getRemoteAllLines {
+    my ($self, %params) = @_;
+
+    my $handle = $self->getRemoteFileHandle(%params);
+    return unless $handle;
+
+    if (wantarray) {
+        my @lines = map { chomp; $_ } <$handle>;
+        close $handle;
+        return @lines;
+    } else {
+        local $RS;
+        my $lines = <$handle>;
+        close $handle;
+        return $lines;
+    }
 }
 
 1;
