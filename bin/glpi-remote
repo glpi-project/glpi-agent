@@ -81,9 +81,9 @@ if ($cmd) {
 
 exit(0);
 
-my @indexed;
 my %deviceid;
 my %targets;
+my %storages;
 
 sub help {
     my @params = @_;
@@ -151,7 +151,11 @@ sub add {
     if ($options->{target}) {
         my $target = $options->{target};
         die "No such '$target' target available to handle remotes\n" unless $targets{$target};
-        push @storages, $targets{$target}->{storage} if $targets{$target}->{storage};
+        my $storage = $targets{$target}->{storage};
+        if ($storage) {
+            push @storages, $storage;
+            $storages{$storage} = $target;
+        }
     }
     if ($options->{server} || $options->{local}) {
         my $config = FusionInventory::Agent::Config->new(
@@ -159,14 +163,17 @@ sub add {
             vardir  => $setup{vardir},
         );
         my $targets = $config->getTargets();
-        push @storages, map { $_->getStorage() }
-            grep { $_->isType('local') || $_->isType('server') } @{$targets};
+        foreach my $target (@{$targets}) {
+            next unless $target->isType('local') || $target->isType('server');
+            my $storage = $target->getStorage();
+            next unless $storage;
+            push @storages, $storage;
+            $storages{$storage} = $target->{id};
+        }
     }
     die "No target specified to store remotes\n" unless @storages;
 
-    # TODO check remote by default
-    # TODO handles --no-check option
-
+    my $umask = umask 0007;
     foreach my $url (@urls) {
         my $remote = FusionInventory::Agent::Task::RemoteInventory::Remote->new(
             url     => $url,
@@ -177,13 +184,25 @@ sub add {
             next;
         }
 
+        my $checkerror;
+        $checkerror = $remote->checking_error() unless $options->{'no-check'};
+        if ($checkerror) {
+            warn "'$url' check failure: $checkerror\n";
+            next;
+        }
+
         my $id = $remote->deviceid();
         foreach my $storage (@storages) {
             my $remotes = $storage->restore( name => 'remotes' ) // {};
+            if ($remotes->{$id}) {
+                my $targetid = $storages{$storage} // '';
+                warn "Updating $id remote".($targetid ? " for $targetid" : "")."\n";
+            }
             $remotes->{$id} = $remote->dump();
             $storage->save( name => 'remotes', data => $remotes );
         }
     }
+    umask $umask;
 }
 
 sub remove {
@@ -191,8 +210,8 @@ sub remove {
     my @remotes = get_remotes();
     foreach my $rm (@_) {
         my $current;
-        if ($rm =~ /^\d+$/ && $rm-1 < @indexed) {
-            $current = $indexed[$rm-1];
+        if ($rm =~ /^\d+$/ && $rm <= @remotes) {
+            $current = $remotes[$rm-1];
         } elsif ($deviceid{$rm}) {
             $current = $deviceid{$rm};
         } else {
@@ -286,7 +305,7 @@ sub get_targets {
                 push @targets, $target;
 
                 # Also keep storage refs when adding a remote to a local or server target
-                if ($cmd =~ /^add|list$/ && $target->{type} =~ /^local|server$/ ) {
+                if ($target->{type} =~ /^local|server$/ ) {
                     my $current = {
                         target  => $target,
                         storage => $storage,
