@@ -42,6 +42,8 @@ GetOptions(
     'threads|T=i',
     'user|u=s',
     'password|P=s',
+    'credentials|c=s',
+    'add|A',
     'ssh',
     'ssl',
     'ca-cert-file=s',
@@ -147,6 +149,14 @@ sub add {
 
     # Look at targets and collect target storages
     my @targets = get_targets();
+
+    # Try to preselect server if no target option is specified
+    unless ($options->{target} || $options->{server} || $options->{local}) {
+        my @servers = grep { $_->{type} eq 'server' } @targets;
+        warn "Can't select a default server target\n" unless @servers == 1;
+        $options->{target} = $servers[0]->{id} if @servers == 1;
+    }
+
     my @storages;
     if ($options->{target}) {
         my $target = $options->{target};
@@ -171,7 +181,10 @@ sub add {
             $storages{$storage} = $target->{id};
         }
     }
-    die "No target specified to store remotes\n" unless @storages;
+    unless (@storages) {
+        my $targets = join(", ", sort keys(%targets));
+        die "No target specified to store remotes, choose one in $targets\n" ;
+    }
 
     my $umask = umask 0007;
     foreach my $url (@urls) {
@@ -343,11 +356,14 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
     --ssl-cert-file     Client certificate file (winrm)
     -u --user           authentication user
     -P --password       authentication password
+    -c --credentials    credentials list for scan
     -v --verbose        verbose mode
     --debug             debug mode
     -C --no-check       don't check given remote is alive when adding
     -i --inventory      don't register remotes, but run inventory on found remotes
     -T --threads <NUM>  number of threads while scanning (defaults to 1)
+    -A --add            add scanned remotes to target so they always be inventoried
+                        by RemoteInventory task
 
   Target definition options:
     -s --server=<URI>   agent will send tasks result to that server
@@ -355,6 +371,7 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
     --target=<TARGETID> use target identified by its id (see list targets command)
   Remark:
    - target option mandatory while adding remote
+     Remark: If only one server is setup in the agent it could be detected and used
    - when scanning and making inventory, uses -l option or each inventory will be
      sent to standard output
 
@@ -372,6 +389,7 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
     PORT
     CA_CERT_FILE
     SSL_CERT_FILE
+    CREDENTIALS
 
   Examples:
     glpi-remote list
