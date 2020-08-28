@@ -27,7 +27,8 @@ Getopt::Long::Configure( "pass_through" );
 my $logger;
 
 my $options = {
-    useragent => "GLPI-Remote/$VERSION",
+    useragent   => "GLPI-Remote/$VERSION",
+    timeout     => 10,
 };
 
 GetOptions(
@@ -191,6 +192,7 @@ sub add {
     foreach my $url (@urls) {
         my $remote = FusionInventory::Agent::Task::RemoteInventory::Remote->new(
             url     => $url,
+            config  => $options,
             logger  => $logger,
         );
         unless ($remote) {
@@ -263,26 +265,6 @@ sub delete {
     }
 }
 
-sub get_ua {
-    my $useragent = LWP::UserAgent->new(
-        agent                 => $options->{useragent},
-        timeout               => $options->{timeout} || 180,
-        parse_head            => 0, # No need to parse HTML
-        keep_alive            => 1,
-    );
-
-    if ($options->{ssl}) {
-        $useragent->ssl_opts(SSL_ca_file => $options->{'ca-cert-file'} || $ENV{'CA_CERT_FILE'})
-            if $options->{'ca-cert-file'} || $ENV{'CA_CERT_FILE'};
-        $useragent->ssl_opts(SSL_cert_file => $options->{'ssl-cert-file'} || $ENV{'SSL_CERT_FILE'})
-            if $options->{'ssl-cert-file'} || $ENV{'SSL_CERT_FILE'};
-        $useragent->ssl_opts(verify_hostname => 0, SSL_verify_mode => 0)
-            if $options->{'no-ssl-check'};
-    }
-
-    return $useragent;
-}
-
 sub get_remotes {
     my @remotes;
 
@@ -302,6 +284,7 @@ sub get_remotes {
             next unless ref($dump) eq 'HASH';
             my $remote = FusionInventory::Agent::Task::RemoteInventory::Remote->new(
                 dump    => $dump,
+                config  => $options,
                 logger  => $logger,
             );
             my $current = {
@@ -371,7 +354,7 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
 
   Options:
     -h --help           this menu
-    -t --timeout <SECS> requests timeout in seconds (defaults to 5)
+    -t --timeout <SECS> requests timeout in seconds (defaults to 10)
     -p --port <LIST>    remote ports list to scan (defaults to '22,5985,5986')
     --ssh               connect using SSH
     --ssl               connect using SSL (winrm)
