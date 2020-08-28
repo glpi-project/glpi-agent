@@ -23,7 +23,7 @@ sub init {
     $self->resetmode() if ($mode && $mode !~ /^perl$/);
 }
 
-sub checked {
+sub checking_error {
     my ($self) = @_;
 
     my $root = $self->getRemoteFirstLine(command => "id -u");

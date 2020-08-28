@@ -11,7 +11,7 @@ use Socket qw(getaddrinfo getnameinfo);
 
 use FusionInventory::Agent::Tools::Network;
 
-my $supported_protocols = qr/^ssh$/;
+my $supported_protocols = qr/^ssh|winrm$/;
 
 sub new {
     my ($class, %params) = @_;
@@ -47,6 +47,9 @@ sub new {
         return;
     }
 
+    # URI::winrm class is loaded with Remote::Winrm, so bless the URI object now
+    bless $url, "URI::winrm" if $scheme eq "winrm";
+
     $self->{_protocol} = $scheme;
     $self->{_host} = $url->host;
     my $userinfo = $url->userinfo;
@@ -56,10 +59,17 @@ sub new {
         $self->{_pass} = $pass if defined($pass);
     }
 
-    # Check for mode in url params
+    # Check for mode, name & deviceid in url params
     my $query = $url->query() // '';
-    my ($mode) = $query =~ /mode=(\w+)/;
+    my ($mode) = $query =~ /\bmode=(\w+)\b/;
     $self->{_mode} = $mode if $mode;
+    my ($hostname) = $query =~ /\b(?:host)?name=(\w+)\b/;
+    $self->{_host} = $hostname if $hostname;
+    unless ($self->{_deviceid}) {
+        # Ignore deviceid params when provided by dump
+        my ($deviceid) = $query =~ /\bdeviceid=(\w+)\b/;
+        $self->{_deviceid} = $deviceid if $deviceid;
+    }
 
     bless $self, $class;
     $self->init();
@@ -69,7 +79,7 @@ sub new {
 
 sub init {}
 
-sub checked {}
+sub checking_error {}
 
 sub host {
     my ($self, $hostname) = @_;
@@ -111,7 +121,7 @@ sub deviceid {
             }
         }
 
-        $hostname =~ s/\..*$//;
+        $hostname =~ s/\..*$// unless $hostname =~ $ip_address_pattern;
 
         my ($year, $month , $day, $hour, $min, $sec) = (localtime(time))[5, 4, 3, 2, 1, 0];
 
