@@ -47,6 +47,7 @@ my $default = {
     'scan-homedirs'           => undef,
     'scan-profiles'           => undef,
     'server'                  => undef,
+    'ssl-cert-file'           => undef,
     'tag'                     => undef,
     'tasks'                   => undef,
     'timeout'                 => 180,
@@ -347,6 +348,8 @@ sub _checkContent {
         File::Spec->rel2abs($self->{'ca-cert-file'}) if $self->{'ca-cert-file'};
     $self->{'ca-cert-dir'} =
         File::Spec->rel2abs($self->{'ca-cert-dir'}) if $self->{'ca-cert-dir'};
+    $self->{'ssl-cert-file'} =
+        File::Spec->rel2abs($self->{'ssl-cert-file'}) if $self->{'ssl-cert-file'};
     $self->{'logfile'} =
         File::Spec->rel2abs($self->{'logfile'}) if $self->{'logfile'};
     $self->{'vardir'} =

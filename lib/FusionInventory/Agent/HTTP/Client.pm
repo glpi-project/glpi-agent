@@ -32,7 +32,8 @@ sub new {
         no_ssl_check => $params{no_ssl_check},
         no_compress  => $params{no_compress},
         ca_cert_dir  => $params{ca_cert_dir},
-        ca_cert_file => $params{ca_cert_file}
+        ca_cert_file => $params{ca_cert_file},
+        ssl_cert_file => $params{ssl_cert_file},
     };
     bless $self, $class;
 
@@ -196,6 +197,8 @@ sub _setSSLOptions {
                 if $self->{ca_cert_file};
             $self->{ua}->ssl_opts(SSL_ca_path => $self->{ca_cert_dir})
                 if $self->{ca_cert_dir};
+            $self->{ua}->ssl_opts(SSL_cert_file => $self->{ssl_cert_file})
+                if $self->{ssl_cert_file};
         } else {
             # SSL_verifycn_scheme and SSL_verifycn_name are required
             die
@@ -209,6 +212,7 @@ sub _setSSLOptions {
             FusionInventory::Agent::HTTP::Protocol::https->use(
                 ca_cert_file => $self->{ca_cert_file},
                 ca_cert_dir  => $self->{ca_cert_dir},
+                ssl_cert_file => $self->{ssl_cert_file},
             );
 
             LWP::Protocol::implementor(

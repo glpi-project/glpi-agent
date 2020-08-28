@@ -12,6 +12,7 @@ core:
 * config: support vardir option to specify storage location for persitent datas
 * Fix: honor server expiration between runs by disabling initial delay which
   should only be related to the first run on a given platform
+* support ssl-cert-file option to use a client SSL certificat as SSL authentication
 
 inventory:
 * fix snap softwares inventory

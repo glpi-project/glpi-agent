@@ -48,6 +48,7 @@ GetOptions(
     'ssh',
     'ssl',
     'ca-cert-file=s',
+    'ca-cert-dir=s',
     'ssl-cert-file=s',
     'no-ssl-check|S',
     'no-check|C',
@@ -359,7 +360,8 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
     --ssh               connect using SSH
     --ssl               connect using SSL (winrm)
     --no-ssl-check      do not check agent SSL certificate (winrm)
-    --ca-cert-file      CA certificates file (winrm)
+    --ca-cert-dir <PATH> CA certificates directory
+    --ca-cert-file <FILE> CA certificates file (winrm)
     --ssl-cert-file     Client certificate file (winrm)
     -u --user           authentication user
     -P --password       authentication password
@@ -397,6 +399,7 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
     USERNAME
     PASSWORD
     PORT
+    CA_CERT_PATH
     CA_CERT_FILE
     SSL_CERT_FILE
     CREDENTIALS
