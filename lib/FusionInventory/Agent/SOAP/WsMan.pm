@@ -22,21 +22,43 @@ sub new {
 
     my $self = {
         _url    => $params{url},
+        _ua     => $params{ua},
+        _config => $params{config} // {},
     };
     bless $self, $class;
 
     $tpp = XML::TreePP->new() unless $tpp;
 
-    # create user agent
-    $self->{ua} = LWP::UserAgent->new(
-        requests_redirectable => ['POST', 'GET', 'HEAD'],
-        agent                 => $FusionInventory::Agent::AGENT_STRING,
-        timeout               => $params{timeout} || 180,
-        ssl_opts              => { verify_hostname => 0, SSL_verify_mode => 0 },
-        cookie_jar            => HTTP::Cookies->new(ignore_discard => 1),
-    );
-
     return $self;
+}
+
+sub _ua {
+    my ($self) = @_;
+
+    # create user agent only if timeout is defined
+    return unless $self->{_config}->{timeout};
+
+    unless ($self->{_ua}) {
+        $self->{_ua} = LWP::UserAgent->new(
+            requests_redirectable => ['POST', 'GET', 'HEAD'],
+            agent                 => $self->{_config}->{useragent} // $FusionInventory::Agent::AGENT_STRING,
+            timeout               => $self->{_config}->{timeout},
+            parse_head            => 0, # No need to parse HTML
+            keep_alive            => 1,
+            cookie_jar            => HTTP::Cookies->new(ignore_discard => 1),
+        );
+
+        if ($self->url() =~ /ĥttps:/) {
+            $self->{_ua}->ssl_opts(SSL_ca_file => $self->{_config}->{'ca-cert-file'} || $ENV{'CA_CERT_FILE'})
+                if $self->{_config}->{'ca-cert-file'} || $ENV{'CA_CERT_FILE'};
+            $self->{_ua}->ssl_opts(SSL_cert_file => $self->{_config}->{'ssl-cert-file'} || $ENV{'SSL_CERT_FILE'})
+                if $self->{_config}->{'ssl-cert-file'} || $ENV{'SSL_CERT_FILE'};
+            $self->{_ua}->ssl_opts(verify_hostname => 0, SSL_verify_mode => 0)
+                if $self->{_config}->{'no-ssl-check'};
+        }
+    }
+
+    return $self->{_ua};
 }
 
 sub _send {
@@ -50,7 +72,7 @@ sub _send {
 
     my $request = HTTP::Request->new( POST => $self->url(), $headers, $xml );
 
-    my $response = $self->{ua}->request($request);
+    my $response = $self->_ua()->request($request);
 
     $self->{_lastresponse} = $response;
 

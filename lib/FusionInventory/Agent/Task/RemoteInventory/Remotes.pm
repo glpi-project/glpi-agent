@@ -25,6 +25,7 @@ sub new {
         next unless ref($dump) eq 'HASH';
         $self->{_remotes}->{$id} = FusionInventory::Agent::Task::RemoteInventory::Remote->new(
             dump    => $dump,
+            config  => $self->{_config},
             logger  => $self->{logger},
         );
     }
@@ -39,6 +40,7 @@ sub new {
 
             my $remote = FusionInventory::Agent::Task::RemoteInventory::Remote->new(
                 url     => $url,
+                config  => $self->{_config},
                 logger  => $params{logger},
             ) or next;
 

@@ -28,7 +28,8 @@ sub init {
     $url->query_keywords([]);
 
     $self->{_winrm} = FusionInventory::Agent::SOAP::WsMan->new(
-        url => $url->as_string,
+        url     => $url->as_string,
+        config  => $self->config(),
     );
 }
 

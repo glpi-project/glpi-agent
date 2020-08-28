@@ -22,6 +22,7 @@ sub new {
         _expiration => $dump->{expiration} // 0,
         _deviceid   => $dump->{deviceid}   // '',
         _url        => $dump->{url}        // $params{url},
+        _config     => $params{config}     // {},
         logger      => $params{logger},
     };
 
@@ -130,6 +131,12 @@ sub deviceid {
     }
 
     return $self->{_deviceid} // '';
+}
+
+sub config {
+    my ($self) = @_;
+
+    return $self->{_config};
 }
 
 sub protocol {
