@@ -220,16 +220,17 @@ sub runTarget {
             if $EVAL_ERROR;
 
         $client = FusionInventory::Agent::HTTP::Client::GLPI->new(
-            logger       => $self->{logger},
-            timeout      => $self->{config}->{timeout},
-            user         => $self->{config}->{user},
-            password     => $self->{config}->{password},
-            proxy        => $self->{config}->{proxy},
-            ca_cert_file => $self->{config}->{'ca-cert-file'},
-            ca_cert_dir  => $self->{config}->{'ca-cert-dir'},
-            no_ssl_check => $self->{config}->{'no-ssl-check'},
-            no_compress  => $self->{config}->{'no-compression'},
-            agentid      => uuid_to_string($self->{agentid}),
+            logger          => $self->{logger},
+            timeout         => $self->{config}->{timeout},
+            user            => $self->{config}->{user},
+            password        => $self->{config}->{password},
+            proxy           => $self->{config}->{proxy},
+            ca_cert_file    => $self->{config}->{'ca-cert-file'},
+            ca_cert_dir     => $self->{config}->{'ca-cert-dir'},
+            no_ssl_check    => $self->{config}->{'no-ssl-check'},
+            no_compress     => $self->{config}->{'no-compression'},
+            ssl_cert_file   => $self->{config}->{'ssl-cert-file'},
+            agentid         => uuid_to_string($self->{agentid}),
         );
 
         return $self->{logger}->error("Can't load GLPI Protocol CONTACT library")
@@ -279,16 +280,17 @@ sub runTarget {
         return unless FusionInventory::Agent::HTTP::Client::OCS->require();
 
         $client = FusionInventory::Agent::HTTP::Client::OCS->new(
-            logger       => $self->{logger},
-            timeout      => $self->{config}->{timeout},
-            user         => $self->{config}->{user},
-            password     => $self->{config}->{password},
-            proxy        => $self->{config}->{proxy},
-            ca_cert_file => $self->{config}->{'ca-cert-file'},
-            ca_cert_dir  => $self->{config}->{'ca-cert-dir'},
-            no_ssl_check => $self->{config}->{'no-ssl-check'},
-            no_compress  => $self->{config}->{'no-compression'},
-            agentid      => uuid_to_string($self->{agentid}),
+            logger          => $self->{logger},
+            timeout         => $self->{config}->{timeout},
+            user            => $self->{config}->{user},
+            password        => $self->{config}->{password},
+            proxy           => $self->{config}->{proxy},
+            ca_cert_file    => $self->{config}->{'ca-cert-file'},
+            ca_cert_dir     => $self->{config}->{'ca-cert-dir'},
+            no_ssl_check    => $self->{config}->{'no-ssl-check'},
+            no_compress     => $self->{config}->{'no-compression'},
+            ssl_cert_file   => $self->{config}->{'ssl-cert-file'},
+            agentid         => uuid_to_string($self->{agentid}),
         );
 
         return unless FusionInventory::Agent::XML::Query::Prolog->require();
@@ -441,6 +443,7 @@ sub runTaskReal {
         ca_cert_dir  => $self->{config}->{'ca-cert-dir'},
         no_ssl_check => $self->{config}->{'no-ssl-check'},
         no_compress  => $self->{config}->{'no-compression'},
+        ssl_cert_file   => $self->{config}->{'ssl-cert-file'},
     );
 
     # Try to cache data provided by the task if the next run can require it

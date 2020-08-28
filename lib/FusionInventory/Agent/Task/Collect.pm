@@ -164,6 +164,7 @@ sub run {
         ca_cert_file => $params{ca_cert_file},
         ca_cert_dir  => $params{ca_cert_dir},
         no_ssl_check => $params{no_ssl_check},
+        ssl_cert_file => $params{ssl_cert_file},
         debug        => $self->{debug}
     );
 

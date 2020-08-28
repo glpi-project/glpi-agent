@@ -14,6 +14,8 @@ sub import {
         if $params{ca_cert_file};
     IO::Socket::SSL::set_ctx_defaults(ca_path => $params{ca_cert_dir})
         if $params{ca_cert_dir};
+    IO::Socket::SSL::set_ctx_defaults(ssl_cert_file => $params{ssl_cert_file})
+        if $params{ssl_cert_file};
 }
 
 sub _extra_sock_opts {

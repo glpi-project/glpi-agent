@@ -51,6 +51,8 @@ sub _ua {
         if ($self->url() =~ /ĥttps:/) {
             $self->{_ua}->ssl_opts(SSL_ca_file => $self->{_config}->{'ca-cert-file'} || $ENV{'CA_CERT_FILE'})
                 if $self->{_config}->{'ca-cert-file'} || $ENV{'CA_CERT_FILE'};
+            $self->{_ua}->ssl_opts(SSL_ca_path => $self->{_config}->{'ca-cert-dir'} || $ENV{'CA_CERT_PATH'})
+                if $self->{_config}->{'ca-cert-dir'} || $ENV{'CA_CERT_PATH'};
             $self->{_ua}->ssl_opts(SSL_cert_file => $self->{_config}->{'ssl-cert-file'} || $ENV{'SSL_CERT_FILE'})
                 if $self->{_config}->{'ssl-cert-file'} || $ENV{'SSL_CERT_FILE'};
             $self->{_ua}->ssl_opts(verify_hostname => 0, SSL_verify_mode => 0)

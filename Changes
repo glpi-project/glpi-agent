@@ -17,6 +17,7 @@ core:
 * Send httpd-port minimal configuration in CONTACT request
 * win32: restart ourself when convenient while running as a service and we detect
   too much memory consumption
+* support ssl-cert-file option to use a client SSL certificat as SSL authentication
 
 inventory:
 * Feature: support json file with additional-content option when json is used as inventory format

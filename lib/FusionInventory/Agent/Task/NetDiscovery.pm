@@ -152,6 +152,7 @@ sub run {
         ca_cert_dir  => $params{ca_cert_dir},
         no_ssl_check => $params{no_ssl_check},
         no_compress  => $params{no_compress},
+        ssl_cert_file => $params{ssl_cert_file},
     } if !$self->{client};
 
     # check discovery methods available

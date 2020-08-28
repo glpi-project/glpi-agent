@@ -295,15 +295,16 @@ sub submit {
             unless FusionInventory::Agent::HTTP::Client::GLPI->require();
 
         my $client = FusionInventory::Agent::HTTP::Client::GLPI->new(
-            logger       => $self->{logger},
-            user         => $config->{user},
-            password     => $config->{password},
-            proxy        => $config->{proxy},
-            ca_cert_file => $config->{'ca-cert-file'},
-            ca_cert_dir  => $config->{'ca-cert-dir'},
-            no_ssl_check => $config->{'no-ssl-check'},
-            no_compress  => $config->{'no-compression'},
-            agentid      => $self->{agentid},
+            logger          => $self->{logger},
+            user            => $config->{user},
+            password        => $config->{password},
+            proxy           => $config->{proxy},
+            ca_cert_file    => $config->{'ca-cert-file'},
+            ca_cert_dir     => $config->{'ca-cert-dir'},
+            no_ssl_check    => $config->{'no-ssl-check'},
+            no_compress     => $config->{'no-compression'},
+            ssl_cert_file   => $config->{'ssl-cert-file'},
+            agentid         => $self->{agentid},
         );
 
         return $self->{logger}->error("Can't load GLPI Protocol Inventory library")
@@ -338,15 +339,16 @@ sub submit {
             unless FusionInventory::Agent::HTTP::Client::OCS->require();
 
         my $client = FusionInventory::Agent::HTTP::Client::OCS->new(
-            logger       => $self->{logger},
-            user         => $config->{user},
-            password     => $config->{password},
-            proxy        => $config->{proxy},
-            ca_cert_file => $config->{'ca-cert-file'},
-            ca_cert_dir  => $config->{'ca-cert-dir'},
-            no_ssl_check => $config->{'no-ssl-check'},
-            no_compress  => $config->{'no-compression'},
-            agentid      => $self->{agentid},
+            logger          => $self->{logger},
+            user            => $config->{user},
+            password        => $config->{password},
+            proxy           => $config->{proxy},
+            ca_cert_file    => $config->{'ca-cert-file'},
+            ca_cert_dir     => $config->{'ca-cert-dir'},
+            no_ssl_check    => $config->{'no-ssl-check'},
+            no_compress     => $config->{'no-compression'},
+            ssl_cert_file   => $config->{'ssl-cert-file'},
+            agentid         => $self->{agentid},
         );
 
         return $self->{logger}->error("Can't load Inventory XML Query API")

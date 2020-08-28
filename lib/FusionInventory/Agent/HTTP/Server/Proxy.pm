@@ -705,6 +705,7 @@ sub _handle_proxy_request {
             ca_cert_dir  => $serverconfig->{'ca-cert-dir'},
             no_ssl_check => $serverconfig->{'no-ssl-check'},
             no_compress  => $serverconfig->{'no-compress'},
+            ssl_cert_file => $serverconfig->{'ssl-cert-file'},
         );
 
         my $message = FusionInventory::Agent::HTTP::Server::Proxy::Message->new(
