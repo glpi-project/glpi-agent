@@ -68,7 +68,8 @@ if ($cmd) {
         list    => \&list,
         help    => \&help,
         add     => \&add,
-        remove  => \&remove,
+        del     => \&delete,
+        delete  => \&delete,
         scan    => \&todo,
     );
 
@@ -128,7 +129,7 @@ sub list {
         my $lenindex = length(scalar(@remotes));
         $lenindex = length("index") if length("index") > $lenindex;
 
-        my $string = "%".$lenindex."s  %-".$lenid."s  %-".$lenurl."s  %s  %s\n";
+        my $string = "%".$lenindex."s  %-".$lenid."s  %-".$lenurl."s  %-".$lentg."s  %s\n";
         print sprintf( $string, "index", "deviceid", "url", "target", "Next run date")
             unless $options->{'no-header'};
 
@@ -207,35 +208,58 @@ sub add {
         my $id = $remote->deviceid();
         foreach my $storage (@storages) {
             my $remotes = $storage->restore( name => 'remotes' ) // {};
+            my $match;
             if ($remotes->{$id}) {
                 my $targetid = $storages{$storage} // '';
                 warn "Updating $id remote".($targetid ? " for $targetid" : "")."\n";
+                $match = $id;
+            } elsif ($remote->protocol() eq 'winrm') {
+                foreach my $otherid (sort keys(%{$remotes})) {
+                    my $other = FusionInventory::Agent::Task::RemoteInventory::Remote->new(
+                        url     => $remotes->{$otherid}->{url},
+                    );
+                    next unless $other->protocol() eq 'winrm';
+                    next unless $other->winrm_url() eq $remote->winrm_url();
+                    $match = $otherid;
+                    warn "Updating $match remote for $storages{$storage}\n";
+                    last;
+                }
             }
-            $remotes->{$id} = $remote->dump();
+            $remote->deviceid(deviceid => $match) if $match;
+            $remotes->{$match||$id} = $remote->dump();
             $storage->save( name => 'remotes', data => $remotes );
+            if ($match) {
+                print "Updated $match remote agent for $storages{$storage}\n";
+            } else {
+                print "Added $id remote agent to $storages{$storage}\n";
+            }
         }
     }
     umask $umask;
 }
 
-sub remove {
-    die "No index or deviceid provided to remove command\n" unless @_;
+sub delete {
+    die "No index or deviceid provided to delete command\n" unless @_;
     my @remotes = get_remotes();
     foreach my $rm (@_) {
         my $current;
         if ($rm =~ /^\d+$/ && $rm <= @remotes) {
-            $current = $remotes[$rm-1];
+            $current = [ $remotes[$rm-1] ];
         } elsif ($deviceid{$rm}) {
             $current = $deviceid{$rm};
         } else {
             warn "No such remote: $rm\n";
             next;
         }
-        my $storage = $current->{storage};
-        my $remotes = $storage->restore( name => 'remotes' ) // {};
-        my $id = $current->{remote}->deviceid();
-        delete $remotes->{$id};
-        $storage->save( name => 'remotes', data => $remotes );
+        foreach my $list (@{$current}) {
+            my $storage = $list->{storage};
+            my $remotes = $storage->restore( name => 'remotes' ) // {};
+            my $id = $list->{remote}->deviceid();
+            my $deleted = delete $remotes->{$id}
+                or warn "No such deviceid found: $id\n";
+            $storage->save( name => 'remotes', data => $remotes );
+            print "$id remote agent deleted from $list->{target}->{id}\n" if $deleted;
+        }
     }
 }
 
@@ -287,9 +311,9 @@ sub get_remotes {
             };
             push @remotes, $current;
 
-            # Also index by deviceid when removing
-            if ($cmd =~ /^remove$/) {
-                $deviceid{$id} = $current unless $deviceid{$id};
+            # Also index by deviceid when deleting
+            if ($cmd =~ /^del(?:ete)?$/) {
+                push @{$deviceid{$id}}, $current;
             }
         }
     }
@@ -370,18 +394,21 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
     -l --local=<PATH>   agent will write tasks results locally
     --target=<TARGETID> use target identified by its id (see list targets command)
   Remark:
-   - target option mandatory while adding remote
-     Remark: If only one server is setup in the agent it could be detected and used
-   - when scanning and making inventory, uses -l option or each inventory will be
-     sent to standard output
+   - target option is generaly mandatory while adding remote or scanning for remotes
+   - if one server and only one is still setup in the agent it will be selected as
+     default target
+   - when scanning and making inventory, uses any target option or each inventory
+     will be sent to standard output
 
   Commands
-    list [targets]     list known remotes or targets
-    add [url]           add remote with given URL
-    remove [index|id]+  remove remote with given list index or given deviceid or
+    list [targets]      list known remotes or targets
+    add <url>+          add remote with given URL list
+    del[ete] <index|deviceid>+
+                        delete remote with given list index or given deviceid or
                         current known one when alone or all remotes while using
                         __ALL__ as id
-    scan [first] [last] scan given range for remote access
+    scan <first> [last] scan given ip range for remote access or just <first> and
+                        register it/them as remote agent
 
   Supported environment variables:
     USERNAME
@@ -397,7 +424,7 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
     glpi-remote add ssh://admin:pass@192.168.43.237
     glpi-remote add ssh://admin:pass@192.168.43.238 --no-check
     glpi-remote add winrm://admin:pass@192.168.48.250 --no-check --target server0
-    glpi-remote remove 1
+    glpi-remote delete 1
     glpi-remote scan 192.168.43.1 192.168.43.254
     glpi-remote scan 10.0.0.1 10.0.10.254 --inventory -s https://login:pw@server/plugins/fusioninventory/
     glpi-remote scan 10.0.0.1 10.0.10.254 --inventory -l /var/tmp/remotes

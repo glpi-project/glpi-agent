@@ -3,24 +3,17 @@ package FusionInventory::Agent::SOAP::WsMan::Header;
 use strict;
 use warnings;
 
+use FusionInventory::Agent::SOAP::WsMan::Node;
+
 package
     Header;
 
-sub new {
-    my ($class, @headers) = @_;
-
-    my $self = {
-        _header => [ @headers ],
-    };
-
-    bless $self, $class;
-    return $self;
-}
+use parent 'Node';
 
 sub get {
     my ($self) = @_;
 
-    return "s:Header" => { map { $_->get() } @{$self->{_header}} };
+    return "s:Header" => $self->SUPER::get();
 }
 
 1;

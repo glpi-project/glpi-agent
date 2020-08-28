@@ -20,7 +20,9 @@ sub new {
 }
 
 sub get {
-    my ($self) = @_;
+    my ($self, $key) = @_;
+
+    return $self->{_attribute}->{$key} if $key;
 
     my @attributes;
 
