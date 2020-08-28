@@ -140,7 +140,7 @@ use parent 'URI::http';
 
 sub default_port {
     my ($self) = @_;
-    my $modessl = $self->query() && $self->query() =~ /mode=ssl/i;
+    my $modessl = $self->query() && $self->query() =~ /\bmode=ssl\b/i;
     return $modessl ? 5986 : 5985;
 }
 
