@@ -44,6 +44,21 @@ sub checking_error {
     return "Winrm not supported on WsMan backend"
         unless $vendor =~ /microsoft/i;
 
+    my $deviceid = $self->getRemoteRegistryValue(path => 'HKEY_LOCAL_MACHINE/Software/GLPI-Agent/Remote/deviceid');
+    if ($deviceid) {
+        $self->deviceid(deviceid => $deviceid);
+    } else {
+        my $hostname = $self->getRemoteHostname()
+            or return "Can't retrieve remote hostname";
+        $deviceid = $self->deviceid(hostname => $hostname)
+            or return "Can't compute deviceid getting remote hostname";
+        $self->getRemoteStoreDeviceid(
+            path        => 'HKEY_LOCAL_MACHINE/Software/GLPI-Agent/Remote/deviceid',
+            deviceid    => $deviceid,
+        )
+            or return "Can't store deviceid on remote";
+    }
+
     return '';
 }
 
@@ -73,6 +88,7 @@ sub getRemoteHostname {
     my ($self) = @_;
 
     # TODO not implemented
+    return '';
 }
 
 sub getRemoteFQDN {
@@ -128,6 +144,20 @@ sub winrm_url {
     my ($self) = @_;
 
     return $self->{_winrm}->url() if $self->{_winrm};
+}
+
+sub getRemoteStoreDeviceid {
+    my ($self, %params) = @_;
+
+    # TODO not implemented
+    return 0;
+}
+
+sub getRemoteRegistryValue {
+    my ($self, %params) = @_;
+
+    # TODO not implemented
+    return '';
 }
 
 package

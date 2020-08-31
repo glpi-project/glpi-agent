@@ -40,9 +40,12 @@ sub checking_error {
     if ($deviceid) {
         $self->deviceid(deviceid => $deviceid);
     } else {
-        $deviceid = $self->deviceid(hostname => $self->getRemoteHostname())
-            or return "Can't compute deviceid";
-        system($self->_ssh("sh -c \"'echo $deviceid >.glpi-agent-deviceid'\""));
+        my $hostname = $self->getRemoteHostname()
+            or return "Can't retrieve remote hostname";
+        $deviceid = $self->deviceid(hostname => $hostname)
+            or return "Can't compute deviceid getting remote hostname";
+        system($self->_ssh("sh -c \"'echo $deviceid >.glpi-agent-deviceid'\""))
+            or return "Can't store deviceid on remote";
     }
 
     return '';
