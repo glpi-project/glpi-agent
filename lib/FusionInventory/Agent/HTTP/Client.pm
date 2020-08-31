@@ -23,6 +23,9 @@ sub new {
     die "non-existing certificate directory $params{ca_cert_dir}"
         if $params{ca_cert_dir} && ! -d $params{ca_cert_dir};
 
+    die "non-existing client certificate file $params{ssl_cert_file}"
+        if $params{ssl_cert_file} && ! -f $params{ssl_cert_file};
+
     my $self = {
         logger       => $params{logger} ||
                           FusionInventory::Agent::Logger->new(),
