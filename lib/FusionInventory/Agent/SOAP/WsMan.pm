@@ -16,6 +16,7 @@ use FusionInventory::Agent::SOAP::WsMan::Header;
 use FusionInventory::Agent::SOAP::WsMan::Identify;
 
 my $tpp;
+my $wsman_debug = $ENV{WSMAN_DEBUG} ? 1 : 0;
 
 sub new {
     my ($class, %params) = @_;
@@ -74,9 +75,13 @@ sub _send {
 
     my $request = HTTP::Request->new( POST => $self->url(), $headers, $xml );
 
+    print STDERR "===>\n", $request->as_string, "===>\n" if $wsman_debug;
+
     my $response = $self->_ua()->request($request);
 
     $self->{_lastresponse} = $response;
+
+    print STDERR "<====\n", $response->as_string, "<====\n" if $wsman_debug;
 
     if ( $response->is_success ) {
         my $tree = $tpp->parse($response->content);
