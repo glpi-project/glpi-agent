@@ -3,7 +3,10 @@ package FusionInventory::Agent::SOAP::WsMan;
 use strict;
 use warnings;
 
+use parent 'FusionInventory::Agent::HTTP::Client';
+
 use English qw(-no_match_vars);
+use URI;
 use XML::TreePP;
 use LWP::UserAgent;
 use HTTP::Cookies;
@@ -21,11 +24,20 @@ my $wsman_debug = $ENV{WSMAN_DEBUG} ? 1 : 0;
 sub new {
     my ($class, %params) = @_;
 
-    my $self = {
-        _url    => $params{url},
-        _ua     => $params{ua},
-        _config => $params{config} // {},
-    };
+    my $config = $params{config} // {};
+
+    my $self = $class->SUPER::new(
+        timeout         => $config->{timeout},
+        no_ssl_check    => $config->{no_ssl_check},
+        ca_cert_dir     => $config->{ca_cert_dir}   || $ENV{'CA_CERT_PATH'},
+        ca_cert_file    => $config->{ca_cert_file}  || $ENV{'CA_CERT_FILE'},
+        ssl_cert_file   => $config->{ssl_cert_file} || $ENV{'SSL_CERT_FILE'},
+        %params,
+    );
+
+    $self->{_url} = $params{url};
+    $self->{_winrm} = $params{winrm} // 0;
+
     bless $self, $class;
 
     $tpp = XML::TreePP->new() unless $tpp;
@@ -33,51 +45,20 @@ sub new {
     return $self;
 }
 
-sub _ua {
-    my ($self) = @_;
-
-    # create user agent only if timeout is defined
-    return unless $self->{_config}->{timeout};
-
-    unless ($self->{_ua}) {
-        $self->{_ua} = LWP::UserAgent->new(
-            requests_redirectable => ['POST', 'GET', 'HEAD'],
-            agent                 => $self->{_config}->{useragent} // $FusionInventory::Agent::AGENT_STRING,
-            timeout               => $self->{_config}->{timeout},
-            parse_head            => 0, # No need to parse HTML
-            keep_alive            => 1,
-            cookie_jar            => HTTP::Cookies->new(ignore_discard => 1),
-        );
-
-        if ($self->url() =~ /ĥttps:/) {
-            $self->{_ua}->ssl_opts(SSL_ca_file => $self->{_config}->{'ca-cert-file'} || $ENV{'CA_CERT_FILE'})
-                if $self->{_config}->{'ca-cert-file'} || $ENV{'CA_CERT_FILE'};
-            $self->{_ua}->ssl_opts(SSL_ca_path => $self->{_config}->{'ca-cert-dir'} || $ENV{'CA_CERT_PATH'})
-                if $self->{_config}->{'ca-cert-dir'} || $ENV{'CA_CERT_PATH'};
-            $self->{_ua}->ssl_opts(SSL_cert_file => $self->{_config}->{'ssl-cert-file'} || $ENV{'SSL_CERT_FILE'})
-                if $self->{_config}->{'ssl-cert-file'} || $ENV{'SSL_CERT_FILE'};
-            $self->{_ua}->ssl_opts(verify_hostname => 0, SSL_verify_mode => 0)
-                if $self->{_config}->{'no-ssl-check'};
-        }
-    }
-
-    return $self->{_ua};
-}
-
 sub _send {
-    my ( $self, $xml, %headers ) = @_;
+    my ( $self, $xml, $header ) = @_;
 
     my $headers = HTTP::Headers->new(
         'Content-Type'      => 'application/soap+xml; charset=utf-8',
         'Content-length'    => length($xml // ''),
-        %headers,
+        %{$header},
     );
 
     my $request = HTTP::Request->new( POST => $self->url(), $headers, $xml );
 
     print STDERR "===>\n", $request->as_string, "===>\n" if $wsman_debug;
 
-    my $response = $self->_ua()->request($request);
+    my $response = $self->request($request);
 
     $self->{_lastresponse} = $response;
 
@@ -86,7 +67,17 @@ sub _send {
     if ( $response->is_success ) {
         my $tree = $tpp->parse($response->content);
         return $tree;
-    } else {
+    } elsif ($response->header('Content-Type') && $response->header('Content-Type') =~ m{application/soap\+xml}) {
+        my $tree = $tpp->parse($response->content);
+        my $envelope = Envelope->new($tree);
+        if ($envelope->header->action eq "http://schemas.xmlsoap.org/ws/2004/08/addressing/fault") {
+            my $text = $envelope->body->fault->reason->text;
+            $self->lasterror($text || $response->status_line);
+            return;
+        }
+    }
+
+    unless ( $response->is_success ) {
         my $status = $response->status_line;
         $self->lasterror($status);
         return;
@@ -105,7 +96,7 @@ sub identify {
 
     my $response = $self->_send(
         $tpp->write($request->get()),
-        WSMANIDENTIFY => 'unauthenticated',
+        $self->{_winrm} ? { WSMANIDENTIFY => 'unauthenticated' } : {},
     );
 
     return unless $response;

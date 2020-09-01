@@ -1,4 +1,4 @@
-package FusionInventory::Agent::SOAP::WsMan::Body;
+package FusionInventory::Agent::SOAP::WsMan::Code;
 
 use strict;
 use warnings;
@@ -6,7 +6,7 @@ use warnings;
 use FusionInventory::Agent::SOAP::WsMan::Node;
 
 package
-    Body;
+    Code;
 
 use parent 'Node';
 
@@ -21,22 +21,13 @@ sub get {
         return $self->SUPER::get($object);
     }
 
-    return "s:Body" => $self->SUPER::get();
+    return "s:Code" => $self->SUPER::get();
 }
 
 sub support {
     return {
-        Identify    => "wsmid:IdentifyResponse",
-        Fault       => "s:Fault",
+        Value   => "s:Value",
     };
-}
-
-sub fault {
-    my ($self) = @_;
-
-    my ($fault) = $self->get('Fault');
-
-    return $fault // Fault->new();
 }
 
 1;
