@@ -11,30 +11,34 @@ use FusionInventory::Agent::Task::RemoteInventory::Remotes;
 sub isEnabled {
     my ($self, $response) = @_;
 
+    # Always disable task unless target is server or local
+    unless ($self->{target}->isType('server') || $self->{target}->isType('local')) {
+        $self->{logger}->debug("Remote inventory task execution disabled");
+        return 0;
+    }
+
     my $remotes = FusionInventory::Agent::Task::RemoteInventory::Remotes->new(
         config  => $self->{config},
         storage => $self->{target}->getStorage(),
         logger  => $self->{logger},
     );
 
-    my $remote = $remotes->next()
-        or return;
+    while ($remotes->next()) {
+        my $error = $remote->checking_error();
+        if ($error) {
+            my $deviceid = $remote->deviceid
+                or next;
+            $self->{logger}->debug("Skipping remote inventory task execution for $deviceid: $error");
+            $remote->expiration($self->{target}->getNextRunDate());
+            $remotes->store();
+            next;
+        }
+        last;
+    }
 
-    setRemoteForTools($remote);
-
-    my $uname = getFirstLine(command => 'uname -a');
-
-    resetRemoteForTools();
-
-    $self->{logger}->debug("Remote inventory task execution disabled on uname test") unless $uname;
-
-    return 0 unless $uname;
-
-    # always enabled for local target
-    return 1 if $self->{target}->isType('local');
-
-    if ($self->{target}->isType('server') && $self->{config}->{remote}) {
+    if ($remotes->count()) {
         $self->{logger}->debug("Remote inventory task execution enabled");
+        return 1;
     }
 
     $self->{logger}->debug("Remote inventory task execution disabled");
@@ -51,9 +55,20 @@ sub run {
         logger  => $self->{logger},
     );
 
-    # Handle only one remote at a time
-    my $remote = $remotes->next()
-        or return;
+    # Handle only one reachable remote at a time
+    my $remote;
+    while ($remote = $remotes->next()) {
+        my $error = $remote->checking_error();
+        last unless $error
+        my $deviceid = $remote->deviceid
+            or next;
+        $self->{logger}->debug("Skipping remote inventory task execution for $deviceid: $error");
+        # We want to retry in a hour
+        $self->{target}->setNextRunDateFromNow(3600);
+        $remote->expiration($self->{target}->getNextRunDate());
+        $remotes->store();
+    }
+    return unless $remote
 
     my $start = time;
 

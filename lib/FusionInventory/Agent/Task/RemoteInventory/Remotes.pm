@@ -61,6 +61,11 @@ sub new {
     return $self;
 }
 
+sub count {
+    my ($self) = @_;
+    return scalar(keys(%{$self->{_remotes}}));
+}
+
 sub next {
     my ($self) = @_;
 
