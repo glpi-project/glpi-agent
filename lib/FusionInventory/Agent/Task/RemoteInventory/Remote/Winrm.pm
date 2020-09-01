@@ -26,10 +26,14 @@ sub init {
     $url->path( "/wsman/" ) unless $url->path && $url->path ne '/';
     # Remove query in the case it contains mode=ssl
     $url->query_keywords([]);
+    # Reset user/pass from URL as they are passed for UA as params
+    $url->userinfo(undef);
 
     $self->{_winrm} = FusionInventory::Agent::SOAP::WsMan->new(
-        url     => $url->as_string,
-        config  => $self->config(),
+        url         => $url->canonical->as_string,
+        user        => $self->{_user} || $ENV{USERNAME},
+        password    => $self->{_pass} || $ENV{PASSWORD},
+        winrm       => 0,
     );
 }
 

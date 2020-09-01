@@ -58,4 +58,12 @@ sub body {
     return $body // Body->new();
 }
 
+sub header {
+    my ($self) = @_;
+
+    my ($header) = $self->get('Header');
+
+    return $header // Header->new();
+}
+
 1;

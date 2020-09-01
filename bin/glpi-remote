@@ -43,6 +43,7 @@ GetOptions(
     'threads|T=i',
     'user|u=s',
     'password|P=s',
+    'show-passwords|X',
     'credentials|c=s',
     'add|A',
     'ssh',
@@ -59,12 +60,11 @@ pod2usage(-verbose => 0, -exitstatus => 0) if $options->{help};
 
 my ($cmd, @params) = @ARGV;
 if ($cmd) {
-    die "Var directory is missing\n" unless -d $setup{vardir};
-
     if ($options->{debug}) {
-        warn "vardir: $setup{vardir}\n";
-        warn "params: @params\n";
+        warn "Current vardir: $setup{vardir}\n";
     }
+
+    die "Var directory is missing\n" unless -d $setup{vardir};
 
     my %cmds = (
         list    => \&list,
@@ -139,7 +139,7 @@ sub list {
         foreach my $current (@remotes) {
             my $remote = $current->{remote};
             print sprintf( $string,
-                $index++, $remote->deviceid, $remote->url,
+                $index++, $remote->deviceid, $remote->safe_url,
                 $current->{target}->{id},
                 $remote->expiration ? scalar(localtime($remote->expiration)) : "on next agent run"
             );
@@ -196,15 +196,16 @@ sub add {
             config  => $options,
             logger  => $logger,
         );
+        my $safe_url = $remote->safe_url();
         unless ($remote) {
-            warn "Can't create virtual remote agent with '$url'\n";
+            warn "Can't create virtual remote agent with '$safe_url'\n";
             next;
         }
 
         my $checkerror;
         $checkerror = $remote->checking_error() unless $options->{'no-check'};
         if ($checkerror) {
-            warn "'$url' check failure: $checkerror\n";
+            warn "'$safe_url' check failure: $checkerror\n";
             next;
         }
 
@@ -365,6 +366,7 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
     --ssl-cert-file     Client certificate file (winrm)
     -u --user           authentication user
     -P --password       authentication password
+    -X --show-passwords (list command) show password as they are masked by default
     -c --credentials    credentials list for scan
     -v --verbose        verbose mode
     --debug             debug mode
