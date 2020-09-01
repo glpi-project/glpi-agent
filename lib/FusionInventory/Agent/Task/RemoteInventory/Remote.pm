@@ -178,6 +178,18 @@ sub url {
     return $self->{_url};
 }
 
+sub safe_url {
+    my ($self) = @_;
+
+    return $self->{_url} if $self->config && $self->config->{'show-passwords'};
+
+    my $url = URI->new($self->{_url});
+    return $self->{_url} unless $url->userinfo;
+    my ($user, $pass) = split(/:/, $url->userinfo);
+    $url->userinfo("$user:****");
+    return $url->as_string;
+}
+
 sub getRemoteFirstLine {
     my ($self, %params) = @_;
 

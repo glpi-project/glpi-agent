@@ -11,6 +11,14 @@ package
     Node;
 
 use FusionInventory::Agent::SOAP::WsMan::Attribute;
+use FusionInventory::Agent::SOAP::WsMan::Body;
+use FusionInventory::Agent::SOAP::WsMan::Header;
+use FusionInventory::Agent::SOAP::WsMan::Fault;
+use FusionInventory::Agent::SOAP::WsMan::Reason;
+use FusionInventory::Agent::SOAP::WsMan::Code;
+use FusionInventory::Agent::SOAP::WsMan::Identify;
+use FusionInventory::Agent::SOAP::WsMan::Text;
+use FusionInventory::Agent::SOAP::WsMan::Value;
 
 sub new {
     my ($class, @nodes) = @_;

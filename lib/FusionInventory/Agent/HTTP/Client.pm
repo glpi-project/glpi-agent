@@ -109,29 +109,59 @@ sub request {
                     "authentication required, submitting credentials"
                 );
                 # compute authentication parameters
-                my $header = $result->header('www-authenticate');
-                my ($realm) = $header =~ /^Basic realm="(.*)"/;
+                my @headers = split(/\s*,\s*/, $result->header('www-authenticate'));
+                # Parse headers for supported scheme
+                my %authenticate;
+                foreach my $header (@headers) {
+                    if ($header =~ /^Basic realm="(.*)"/) {
+                        $authenticate{basic} = $1;
+                    } elsif ($header eq 'Negotiate') {
+                        $authenticate{negotiate} = '';
+                    }
+                }
+                my @authen;
+                push @authen, 'basic' if $authenticate{basic};
+                if (exists($authenticate{negotiate})) {
+                    # To use negotiate, we just need to set realm to '' so we will use LWP::Authen::Ntlm,
+                    # but only try it first if the user contains a "\" char
+                    if ($self->{user} =~ m/[\\]/) {
+                        unshift @authen, 'negotiate';
+                    } else {
+                        push @authen, 'negotiate';
+                    }
+                }
                 my $host = $url->host();
                 my $port = $url->port() ||
                    ($scheme eq 'https' ? 443 : 80);
-                $self->{ua}->credentials(
-                    "$host:$port",
-                    $realm,
-                    $self->{user},
-                    $self->{password}
-                );
-                # replay request
-                eval {
-                    if ($OSNAME eq 'MSWin32' && $scheme eq 'https') {
-                        alarm $self->{ua}->{timeout};
-                    }
-                    $result = $self->{ua}->request($request, $file);
-                    alarm 0;
-                };
+                foreach my $authen (@authen) {
+                    $logger->debug(
+                        $log_prefix .
+                        "authentication required, trying $authen with $self->{user} user" .
+                        ( $authenticate{$authen} ? " ($authenticate{$authen})" : "" )
+                    );
+                    $self->{ua}->credentials(
+                        "$host:$port",
+                        $authenticate{$authen},
+                        $self->{user},
+                        $self->{password},
+                    );
+                    # replay request
+                    eval {
+                        if ($OSNAME eq 'MSWin32' && $scheme eq 'https') {
+                            alarm $self->{ua}->{timeout};
+                        }
+                        $result = $self->{ua}->request($request, $file);
+                        alarm 0;
+                    };
+                    last if $result->is_success();
+                    $logger->debug("$log_prefix$authen authentication failed");
+                }
                 if (!$result->is_success()) {
                     $logger->error(
                         $log_prefix .
-                        "authentication required, wrong credentials"
+                        ($result->code() == 401 ?
+                            "authentication required, wrong credentials" :
+                            "authentication required, error status: " . $result->status_line())
                     );
                 }
             } else {
@@ -230,6 +260,12 @@ sub _setSSLOptions {
 
     $self->{ssl_set} = 1;
 }
+
+# Bind Ntlm to Negotiate authentication to be used by LWP::UserAgent
+package
+    LWP::Authen::Negotiate;
+
+use parent 'LWP::Authen::Ntlm';
 
 1;
 __END__
