@@ -115,21 +115,10 @@ sub request {
                 foreach my $header (@headers) {
                     if ($header =~ /^Basic realm="(.*)"/) {
                         $authenticate{basic} = $1;
-                    } elsif ($header eq 'Negotiate') {
-                        $authenticate{negotiate} = '';
                     }
                 }
                 my @authen;
                 push @authen, 'basic' if $authenticate{basic};
-                if (exists($authenticate{negotiate})) {
-                    # To use negotiate, we just need to set realm to '' so we will use LWP::Authen::Ntlm,
-                    # but only try it first if the user contains a "\" char
-                    if ($self->{user} =~ m/[\\]/) {
-                        unshift @authen, 'negotiate';
-                    } else {
-                        push @authen, 'negotiate';
-                    }
-                }
                 my $host = $url->host();
                 my $port = $url->port() ||
                    ($scheme eq 'https' ? 443 : 80);
@@ -260,12 +249,6 @@ sub _setSSLOptions {
 
     $self->{ssl_set} = 1;
 }
-
-# Bind Ntlm to Negotiate authentication to be used by LWP::UserAgent
-package
-    LWP::Authen::Negotiate;
-
-use parent 'LWP::Authen::Ntlm';
 
 1;
 __END__
