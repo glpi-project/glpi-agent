@@ -10,24 +10,19 @@ package
 
 use parent 'Node';
 
-sub get {
-    my ($self, $object) = @_;
+use constant    xmlns   => 's';
 
-    if ($object) {
-        my $supported = $self->support;
-
-        return unless $supported->{$object};
-
-        return $self->SUPER::get($object);
-    }
-
-    return "s:Body" => $self->SUPER::get();
-}
+use FusionInventory::Agent::SOAP::WsMan::IdentifyResponse;
+use FusionInventory::Agent::SOAP::WsMan::Fault;
+use FusionInventory::Agent::SOAP::WsMan::EnumerateResponse;
+use FusionInventory::Agent::SOAP::WsMan::PullResponse;
 
 sub support {
     return {
-        Identify    => "wsmid:IdentifyResponse",
-        Fault       => "s:Fault",
+        IdentifyResponse    => "wsmid:IdentifyResponse",
+        Fault               => "s:Fault",
+        EnumerateResponse   => "n:EnumerateResponse",
+        PullResponse        => "n:PullResponse",
     };
 }
 
@@ -37,6 +32,14 @@ sub fault {
     my ($fault) = $self->get('Fault');
 
     return $fault // Fault->new();
+}
+
+sub enumeration {
+    my ($self, $ispull) = @_;
+
+    my ($enum) = $self->get($ispull ? 'PullResponse' : 'EnumerateResponse');
+
+    return $enum // EnumerateResponse->new();
 }
 
 1;

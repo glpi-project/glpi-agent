@@ -10,19 +10,7 @@ package
 
 use parent 'Node';
 
-sub get {
-    my ($self, $object) = @_;
-
-    if ($object) {
-        my $supported = $self->support;
-
-        return unless $supported->{$object};
-
-        return $self->SUPER::get($object);
-    }
-
-    return "s:Fault" => $self->SUPER::get();
-}
+use constant    xmlns   => 's';
 
 sub support {
     return {
