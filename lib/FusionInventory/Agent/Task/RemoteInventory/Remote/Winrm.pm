@@ -30,10 +30,11 @@ sub init {
     $url->userinfo(undef);
 
     $self->{_winrm} = FusionInventory::Agent::SOAP::WsMan->new(
+        logger      => $self->{logger},
         url         => $url->canonical->as_string,
         user        => $self->{_user} || $ENV{USERNAME},
         password    => $self->{_pass} || $ENV{PASSWORD},
-        winrm       => 0,
+        winrm       => 1,
     );
 }
 
@@ -56,6 +57,7 @@ sub checking_error {
             or return "Can't retrieve remote hostname";
         $deviceid = $self->deviceid(hostname => $hostname)
             or return "Can't compute deviceid getting remote hostname";
+        $self->{logger}->debug2("Registering $deviceid as remote deviceid");
         $self->getRemoteStoreDeviceid(
             path        => 'HKEY_LOCAL_MACHINE/Software/GLPI-Agent/Remote/deviceid',
             deviceid    => $deviceid,
@@ -91,8 +93,24 @@ sub remoteGlob {
 sub getRemoteHostname {
     my ($self) = @_;
 
-    # TODO not implemented
-    return '';
+    my $res_url = "http://schemas.microsoft.com/wbem/wsman/1/wmi/root/cimv2/Win32_ComputerSystem";
+    my @cs = $self->{_winrm}->enumerate($res_url);
+    unless (@cs == 1) {
+        $self->{logger}->error("Winrm: Failed to request Win32_ComputerSystem: ".$self->{_winrm}->lasterror);
+        return;
+    }
+
+    my $computersystem = shift @cs;
+    unless (ref($computersystem) eq 'HASH') {
+        $self->{logger}->error("Winrm: Malformed response on Win32_ComputerSystem request");
+        return;
+    }
+
+    my $hostname = $computersystem->{DNSHostName} || $computersystem->{Name};
+    $self->{logger}->error("Winrm: Failed to get remote hostname from Win32_ComputerSystem")
+        unless $hostname;
+
+    return $hostname;
 }
 
 sub getRemoteFQDN {
@@ -154,7 +172,7 @@ sub getRemoteStoreDeviceid {
     my ($self, %params) = @_;
 
     # TODO not implemented
-    return 0;
+    return 1;
 }
 
 sub getRemoteRegistryValue {

@@ -10,6 +10,9 @@ BEGIN {
 package
     Node;
 
+use constant    xmlns   => "";
+use constant    xsd     => "";
+
 use FusionInventory::Agent::SOAP::WsMan::Attribute;
 use FusionInventory::Agent::SOAP::WsMan::Body;
 use FusionInventory::Agent::SOAP::WsMan::Header;
@@ -19,6 +22,16 @@ use FusionInventory::Agent::SOAP::WsMan::Code;
 use FusionInventory::Agent::SOAP::WsMan::Identify;
 use FusionInventory::Agent::SOAP::WsMan::Text;
 use FusionInventory::Agent::SOAP::WsMan::Value;
+
+my $autoload = join('|', qw(
+    Body        Header      To          ResourceURI ReplyTo     Address
+    MessageID   Action      Locale      DataLocale  SessionId   OperationID
+    SequenceId  SelectorSet Selector    Items       EndOfSequence
+    Identify    MaxEnvelopeSize         OperationTimeout
+    Enumerate   EnumerateResponse       EnumerationContext      PullResponse
+));
+
+my $autoload_re = qr/^$autoload$/;
 
 sub new {
     my ($class, @nodes) = @_;
@@ -35,7 +48,7 @@ sub new {
         my $ref = ref($node);
         if ($ref eq 'Attribute') {
             push @{$self->{_attributes}}, $node;
-        } elsif ($ref =~ /^Body|Header$/) {
+        } elsif ($ref =~ $autoload_re) {
             push @{$self->{_nodes}}, $node;
         } else {
             push @{$self->{_raw}}, $node;
@@ -58,13 +71,38 @@ sub new {
                 }
             }
         }
+    } elsif ($self->{_raw} && @{$self->{_raw}} == 1) {
+        my $raw = delete $self->{_raw};
+        $self->{_hash}->{'#text'} = shift @{$raw};
     }
 
     bless $self, $class;
     return $self;
 }
 
+sub namespace {
+    my ($self) = @_;
+
+    return "xmlns:".$self->xmlns() => $self->xsd();
+}
+
+sub set_namespace {
+    my ($self) = @_;
+
+    return if grep { /^xmlns:/ } map { keys(%{$_}) } @{$self->{_attributes}};
+
+    $self->push( Attribute->new($self->namespace) );
+}
+
+sub reset_namespace {
+    my ($self, @attributes) = @_;
+
+    $self->{_attributes} = \@attributes;
+}
+
 sub support {}
+
+sub values {}
 
 sub get {
     my ($self, $leaf) = @_;
@@ -72,22 +110,67 @@ sub get {
     if ($leaf) {
         return $self->{_hash}->{$leaf}
             if ($self->{_hash} && exists($self->{_hash}->{$leaf}));
+        my $values = $self->values;
+        if ($values && grep { $leaf eq $_ } @{$values}) {
+            my $value = $self->xmlns.":".$leaf;
+            return $self->{_hash}->{$value};
+        }
+        my $supported = $self->support;
+        return unless $supported && $supported->{$leaf};
         my ($leafnode) = grep { ref($_) eq $leaf } @{$self->{_nodes}};
         return $leafnode;
     }
 
-    my @nodes = map { $_->get() } @{$self->{_attributes}};
-    push @nodes, map { $_->get() } @{$self->{_nodes}};
+    my @nodes;
+    foreach my $node (@{$self->{_attributes}}, @{$self->{_nodes}}) {
+        my $insert = $node->get();
+        if (ref($insert) eq 'HASH') {
+            push @nodes, %{$insert};
+        } elsif (ref($insert) eq 'ARRAY') {
+            push @nodes, @{$insert};
+        }
+    }
 
-    push @nodes, @{$self->{_hash}} if $self->{_has_hash};
+    push @nodes, %{$self->{_hash}} if $self->{_hash};
 
-    return { @nodes };
+    return { $self->xmlns.":".ref($self) => { @nodes } };
+}
+
+sub delete {
+    my ($self, $leaf) = @_;
+
+    return unless $leaf && $self->{_hash} && exists($self->{_hash}->{$leaf});
+
+    return delete $self->{_hash}->{$leaf};
 }
 
 sub nodes {
-    my ($self) = @_;
+    my ($self, $filter) = @_;
+
+    return grep { ref($_) eq $filter } @{$self->{_nodes}}
+        if $filter;
 
     return @{$self->{_nodes}};
+}
+
+sub keys {
+    my ($self) = @_;
+
+    return keys(%{$self->{_hash}});
+}
+
+sub push {
+    my ($self, @nodes) = @_;
+
+    return unless @nodes;
+
+    foreach my $node (@nodes) {
+        if (ref($node) eq 'Attribute') {
+            push @{$self->{_attributes}}, $node;
+        } else {
+            push @{$self->{_nodes}}, $node;
+        }
+    }
 }
 
 sub attributes {
@@ -96,6 +179,23 @@ sub attributes {
     return map { $_->get($key) } @{$self->{_attributes}} if $key;
 
     return @{$self->{_attributes}};
+}
+
+sub string {
+    my ($self, $string) = @_;
+
+    return $self->{_hash}->{'#text'} = $string
+        if $string;
+
+    return $self->get('#text') // '';
+}
+
+sub reset {
+    my ($self, @nodes) = @_;
+
+    $self->{_nodes} = [];
+
+    $self->push(@nodes);
 }
 
 1;

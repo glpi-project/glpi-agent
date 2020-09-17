@@ -10,18 +10,24 @@ package
 
 use parent 'Node';
 
-sub get {
-    my ($self) = @_;
+use constant    xmlns   => 's';
 
-    return "s:Header" => $self->SUPER::get();
+use FusionInventory::Agent::SOAP::WsMan::Action;
+use FusionInventory::Agent::SOAP::WsMan::RelatesTo;
+use FusionInventory::Agent::SOAP::WsMan::OperationID;
+
+sub support {
+    return {
+        Action      => "a:Action",
+        RelatesTo   => "a:RelatesTo",
+        OperationID => "p:OperationID",
+    };
 }
 
 sub action {
     my ($self, $header) = @_;
 
-    return '' unless $self->{_hash};
-
-    return $self->{_hash}->{'a:Action'} // '';
+    return $self->get('Action') // '';
 }
 
 1;
