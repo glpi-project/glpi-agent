@@ -10,19 +10,9 @@ package
 
 use parent 'Node';
 
-sub get {
-    my ($self, $object) = @_;
+use constant    xmlns   => 's';
 
-    if ($object) {
-        my $supported = $self->support;
-
-        return unless $supported->{$object};
-
-        return $self->SUPER::get($object);
-    }
-
-    return "s:Reason" => $self->SUPER::get();
-}
+use FusionInventory::Agent::SOAP::WsMan::Text;
 
 sub support {
     return {

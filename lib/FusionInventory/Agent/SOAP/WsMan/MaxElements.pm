@@ -1,0 +1,29 @@
+package FusionInventory::Agent::SOAP::WsMan::MaxElements;
+
+use strict;
+use warnings;
+
+use FusionInventory::Agent::SOAP::WsMan::Node;
+
+package
+    MaxElements;
+
+use parent 'Node';
+
+sub new {
+    my ($class, $max, $for_pull) = @_;
+
+    my $self = $class->SUPER::new('#text' => $max || 32000);
+
+    $self->{_for_pull} = $for_pull;
+
+    bless $self, $class;
+    return $self;
+}
+
+sub xmlns {
+    my ($self) = @_;
+    return $self->{_for_pull} ? 'n' : 'w';
+}
+
+1;

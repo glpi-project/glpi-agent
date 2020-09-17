@@ -9,11 +9,7 @@ package
 sub new {
     my ($class, %params) = @_;
 
-    my $self = {
-        _attribute  => {
-            %params,
-        }
-    };
+    my $self = \%params;
 
     bless $self, $class;
     return $self;
@@ -22,15 +18,20 @@ sub new {
 sub get {
     my ($self, $key) = @_;
 
-    return $self->{_attribute}->{$key} if $key;
+    return $self->{$key} if $key;
 
     my @attributes;
-
-    foreach my $name (sort keys(%{$self->{_attribute}})) {
-        push @attributes, "-$name", $self->{_attribute}->{$name};
+    foreach my $key (keys(%{$self})) {
+        push @attributes, "-$key", $self->{$key};
     }
 
-    return @attributes;
+    return \@attributes;
+}
+
+sub must_understand {
+    my ($class, $bool) = @_;
+
+    return $class->new("s:mustUnderstand" => $bool // "true");
 }
 
 1;
