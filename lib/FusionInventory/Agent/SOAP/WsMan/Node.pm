@@ -22,13 +22,19 @@ use FusionInventory::Agent::SOAP::WsMan::Code;
 use FusionInventory::Agent::SOAP::WsMan::Identify;
 use FusionInventory::Agent::SOAP::WsMan::Text;
 use FusionInventory::Agent::SOAP::WsMan::Value;
+use FusionInventory::Agent::SOAP::WsMan::Option;
+use FusionInventory::Agent::SOAP::WsMan::Shell;
+use FusionInventory::Agent::SOAP::WsMan::ReferenceParameters;
 
 my $autoload = join('|', qw(
     Body        Header      To          ResourceURI ReplyTo     Address
     MessageID   Action      Locale      DataLocale  SessionId   OperationID
     SequenceId  SelectorSet Selector    Items       EndOfSequence
-    Identify    MaxEnvelopeSize         OperationTimeout
+    Identify    MaxEnvelopeSize         OperationTimeout        SelectorSet
     Enumerate   EnumerateResponse       EnumerationContext      PullResponse
+    Shell       Option      InputStreams            Code        OutputStreams
+    CommandLine Command     CommandId   CommandResponse         CommandState
+    Receive     Signal      DesiredStream           ReceivedResponse
 ));
 
 my $autoload_re = qr/^$autoload$/;
@@ -121,19 +127,47 @@ sub get {
         return $leafnode;
     }
 
-    my @nodes;
+    my %nodes;
     foreach my $node (@{$self->{_attributes}}, @{$self->{_nodes}}) {
         my $insert = $node->get();
         if (ref($insert) eq 'HASH') {
-            push @nodes, %{$insert};
+            foreach my $key (keys(%{$insert})) {
+                if ($nodes{$key}) {
+                    $nodes{$key} = [ $nodes{$key} ]
+                        unless ref($nodes{$key}) eq 'ARRAY';
+                    push @{$nodes{$key}}, $insert->{$key};
+                } else {
+                    $nodes{$key} = $insert->{$key};
+                }
+            }
         } elsif (ref($insert) eq 'ARRAY') {
-            push @nodes, @{$insert};
+            while (@{$insert}) {
+                my $key = shift @{$insert};
+                my $value = shift @{$insert};
+                if ($nodes{$key}) {
+                    $nodes{$key} = [ $nodes{$key} ]
+                        unless ref($nodes{$key}) eq 'ARRAY';
+                    push @{$nodes{$key}}, $value;
+                } else {
+                    $nodes{$key} = $value;
+                }
+            }
         }
     }
 
-    push @nodes, %{$self->{_hash}} if $self->{_hash};
+    if ($self->{_hash}) {
+        foreach my $key (keys(%{$self->{_hash}})) {
+            if ($nodes{$key}) {
+                $nodes{$key} = [ $nodes{$key} ]
+                    unless ref($nodes{$key}) eq 'ARRAY';
+                push @{$nodes{$key}}, $self->{_hash}->{$key};
+            } else {
+                $nodes{$key} = $self->{_hash}->{$key};
+            }
+        }
+    }
 
-    return { $self->xmlns.":".ref($self) => { @nodes } };
+    return { $self->xmlns.":".ref($self) => \%nodes };
 }
 
 sub delete {

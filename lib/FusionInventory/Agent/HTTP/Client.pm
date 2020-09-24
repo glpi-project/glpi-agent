@@ -59,7 +59,7 @@ sub new {
 }
 
 sub request {
-    my ($self, $request, $file, $no_proxy_host, $timeout) = @_;
+    my ($self, $request, $file, $no_proxy_host, $timeout, %skiperror) = @_;
 
     my $logger = $self->{logger};
 
@@ -175,7 +175,7 @@ sub request {
                 $log_prefix .
                 ($proxyreq ? "proxy" : "communication") .
                 " error: " . $result->status_line()
-            );
+            ) unless $skiperror{$result->code()};
         }
     }
 

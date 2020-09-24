@@ -49,7 +49,7 @@ sub checking_error {
     return "Winrm not supported on WsMan backend"
         unless $vendor =~ /microsoft/i;
 
-    my $deviceid = $self->getRemoteRegistryValue(path => 'HKEY_LOCAL_MACHINE/Software/GLPI-Agent/Remote/deviceid');
+    my $deviceid = $self->getRemoteRegistryValue(path => 'HKLM/Software/GLPI-Agent/Remote/deviceid');
     if ($deviceid) {
         $self->deviceid(deviceid => $deviceid);
     } else {
@@ -58,8 +58,8 @@ sub checking_error {
         $deviceid = $self->deviceid(hostname => $hostname)
             or return "Can't compute deviceid getting remote hostname";
         $self->{logger}->debug2("Registering $deviceid as remote deviceid");
-        $self->getRemoteStoreDeviceid(
-            path        => 'HKEY_LOCAL_MACHINE/Software/GLPI-Agent/Remote/deviceid',
+        $self->remoteStoreDeviceid(
+            path        => 'HKLM/Software/GLPI-Agent/Remote/deviceid',
             deviceid    => $deviceid,
         )
             or return "Can't store deviceid on remote";
@@ -71,13 +71,31 @@ sub checking_error {
 sub getRemoteFileHandle {
     my ($self, %params) = @_;
 
-    # TODO not implemented
+    my ($handle, $shell);
+
+    # Still run command via WinRM and return an in-memory scalar handle
+    if ($params{command}) {
+        $shell = $self->{_winrm}->shell($params{command});
+    } elsif ($params{file}) {
+        $params{file} =~ s|/|\\|g;
+        $shell = $self->{_winrm}->shell("type \"$params{file}\"");
+    }
+
+    # open directive needs a scalar ref to create an in-memory scalar handle
+    defined($shell) and open $handle, "<", $shell->{stdout};
+
+    return $handle;
 }
 
 sub remoteCanRun {
     my ($self, $binary) = @_;
 
-    # TODO not implemented
+    # Still return when looking for command with unix standard path
+    return 0 if $binary =~ m{^'(?:/usr)/(s?bin|Library)/};
+
+    my $where = $self->{_winrm}->shell("where /q \"$binary\"");
+
+    return ($where && $where->{exitcode} == 0) ? 1 : 0;
 }
 
 sub OSName {
@@ -87,11 +105,19 @@ sub OSName {
 sub remoteGlob {
     my ($self, $glob, $test) = @_;
 
-    # TODO not implemented
+    my $dirglob = $self->{_winrm}->shell("dir /b \"$glob\"");
+
+    return unless $dirglob && $dirglob->{exitcode} == 0 && $dirglob->{stdout};
+
+    my $stdout = ${$dirglob->{stdout}} or return;
+
+    return grep { length($_) } split(qr|\r\n|m, $stdout);
 }
 
-sub getRemoteHostname {
+sub _getComputerSystem {
     my ($self) = @_;
+
+    return $self->{_cs} if $self->{_cs};
 
     my $res_url = "http://schemas.microsoft.com/wbem/wsman/1/wmi/root/cimv2/Win32_ComputerSystem";
     my @cs = $self->{_winrm}->enumerate($res_url);
@@ -100,11 +126,14 @@ sub getRemoteHostname {
         return;
     }
 
-    my $computersystem = shift @cs;
-    unless (ref($computersystem) eq 'HASH') {
-        $self->{logger}->error("Winrm: Malformed response on Win32_ComputerSystem request");
-        return;
-    }
+    return $self->{_cs} = shift @cs;
+}
+
+sub getRemoteHostname {
+    my ($self) = @_;
+
+    my $computersystem = $self->_getComputerSystem()
+        or return;
 
     my $hostname = $computersystem->{DNSHostName} || $computersystem->{Name};
     $self->{logger}->error("Winrm: Failed to get remote hostname from Win32_ComputerSystem")
@@ -116,50 +145,81 @@ sub getRemoteHostname {
 sub getRemoteFQDN {
     my ($self) = @_;
 
-    # TODO not implemented
+    my $computersystem = $self->_getComputerSystem()
+        or return;
+
+    my $fqdn = $computersystem->{DNSHostName} || $computersystem->{Name};
+    $self->{logger}->error("Winrm: Failed to get remote hostname from Win32_ComputerSystem")
+        unless $fqdn;
+    $fqdn .= "." . $computersystem->{Domain} if $computersystem->{Domain};
+
+    return $fqdn;
 }
 
 sub getRemoteHostDomain {
     my ($self) = @_;
 
-    # TODO not implemented
+    my $computersystem = $self->_getComputerSystem()
+        or return;
+
+    my $hostdomain = $computersystem->{Domain};
+    $self->{logger}->error("Winrm: Failed to get remote domain from Win32_ComputerSystem")
+        unless $hostdomain;
+
+    return $hostdomain;
 }
 
 sub remoteTestFolder {
     my ($self, $folder) = @_;
 
-    # TODO not implemented
+    $folder =~ s|/|\\|g;
+    $folder =~ s|\\*$||;
+
+    my $exist = $self->{_winrm}->shell("if exist \"$folder\\\" echo yes");
+
+    my $ret = $exist->{stdout} && ${$exist->{stdout}} || "no";
+
+    return $ret =~ /^yes/ ? 1 : 0 ;
 }
 
 sub remoteTestFile {
     my ($self, $file) = @_;
 
-    # TODO not implemented
+    $file =~ s|/|\\|g;
+
+    my $exist = $self->{_winrm}->shell("if exist \"$file\" echo yes");
+
+    my $ret = $exist->{stdout} && ${$exist->{stdout}} || "no";
+
+    return $ret =~ /^yes/ ? 1 : 0 ;
 }
 
 sub remoteTestLink {
     my ($self, $link) = @_;
 
-    # TODO not implemented
+    # Link not supported and not used for MSWin32 inventory
+
+    return 0;
 }
 
-# This API only need to return ctime & mtime
 sub remoteFileStat {
     my ($self, $file) = @_;
 
-    # TODO not implemented
+    # FileStat not supported as not used for MSWin32 inventory
 }
 
 sub remoteReadLink {
     my ($self, $link) = @_;
 
-    # TODO not implemented
+    # Link not supported as not used for MSWin32 inventory
+
+    return $link;
 }
 
 sub remoteGetPwEnt {
     my ($self) = @_;
 
-    # TODO not implemented
+    # GetPwEnt not supported as not used for MSWin32 inventory
 }
 
 sub winrm_url {
@@ -168,18 +228,76 @@ sub winrm_url {
     return $self->{_winrm}->url() if $self->{_winrm};
 }
 
-sub getRemoteStoreDeviceid {
+sub remoteStoreDeviceid {
     my ($self, %params) = @_;
 
-    # TODO not implemented
+    $params{path} =~ s|/|\\|g;
+
+    my ($path, $value) = $params{path} =~ /^(.*)\\([^\\]+)$/;
+
+    my $regexec = $self->{_winrm}->shell("reg add $path /t REG_SZ /f /v $value /d $params{deviceid}");
+
+    return unless $regexec && $regexec->{exitcode} == 0;
+
     return 1;
 }
 
 sub getRemoteRegistryValue {
     my ($self, %params) = @_;
 
-    # TODO not implemented
-    return '';
+    $params{path} =~ s|/|\\|g;
+
+    my ($path, $value) = $params{path} =~ /^(.*)\\([^\\]+)$/;
+
+    my $regexec = $self->{_winrm}->shell("reg query $path /e /f $value");
+
+    return unless $regexec && $regexec->{exitcode} == 0 && $regexec->{stdout};
+
+    my $match;
+    foreach my $line (split(qr|\r\n|m, ${$regexec->{stdout}})) {
+        last if ($match) = $line =~ /^\s*$value\s+\w+\s+(.*)$/;
+    }
+
+    return $match;
+}
+
+sub getWMIObjects {
+    my ($self, %params) = @_;
+
+    if ($params{query}) {
+        $self->{logger}->debug2("TODO: NOT SUPPORTED '$params{query}' query");
+        return;
+    }
+
+    my $res_url = _resource_url($params{moniker}, $params{class})
+        or return;
+    my @objects = $self->{_winrm}->enumerate($res_url);
+
+    # Try altmoniker when present
+    if (!@objects && $params{altmoniker}) {
+        $res_url = _resource_url($params{altmoniker}, $params{class})
+            or return;
+        @objects = $self->{_winrm}->enumerate($res_url);
+    }
+
+    return @objects;
+}
+
+sub _resource_url {
+    my ($moniker, $class) = @_;
+
+    my $path = "cimv2";
+
+    if ($moniker) {
+        $moniker =~ s/\\/\//g;
+        ($path) = $moniker =~ m|root/(.*)$|;
+        return unless $path;
+        $path =~ s/\/*$//;
+    }
+
+    my $resource = lc("$path/$class");
+
+    return "http://schemas.microsoft.com/wbem/wsman/1/wmi/root/$resource";
 }
 
 package

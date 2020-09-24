@@ -16,6 +16,22 @@ use UNIVERSAL::require();
 use constant KEY_WOW64_64 => 0x100;
 use constant KEY_WOW64_32 => 0x200;
 
+################################################################################
+#### Needed to support this module under other platforms than MSWin32 ##########
+#### Needed to support WinRM RemoteInventory task ##############################
+################################################################################
+BEGIN {
+    use English qw(-no_match_vars);
+    if ($OSNAME ne 'MSWin32') {
+        $INC{'Win32/Job.pm'} = "-";
+        $INC{'Win32/TieRegistry.pm'} = "-";
+        *{KEY_READ} = *{Win32::TieRegistry::KEY_READ} = sub { 0x20019 };
+    }
+}
+
+our $Registry;
+################################################################################
+
 use Cwd;
 use Encode;
 use English qw(-no_match_vars);
@@ -94,6 +110,10 @@ sub encodeFromRegistry {
 }
 
 sub getWMIObjects {
+
+    my $remote = $FusionInventory::Agent::Tools::remote;
+    return $remote->getWMIObjects(@_) if $remote;
+
     my $win32_ole_dependent_api = {
         array => 1,
         funct => '_getWMIObjects',
@@ -384,6 +404,8 @@ sub getRegistryKey {
 
 sub _getRegistryRoot {
     my (%params) = @_;
+
+    return unless $Registry;
 
     ## no critic (ProhibitBitwise)
     my $rootKey = is64bit() ?

@@ -16,6 +16,10 @@ use FusionInventory::Agent::SOAP::WsMan::IdentifyResponse;
 use FusionInventory::Agent::SOAP::WsMan::Fault;
 use FusionInventory::Agent::SOAP::WsMan::EnumerateResponse;
 use FusionInventory::Agent::SOAP::WsMan::PullResponse;
+use FusionInventory::Agent::SOAP::WsMan::Shell;
+use FusionInventory::Agent::SOAP::WsMan::ResourceCreated;
+use FusionInventory::Agent::SOAP::WsMan::CommandResponse;
+use FusionInventory::Agent::SOAP::WsMan::ReceiveResponse;
 
 sub support {
     return {
@@ -23,6 +27,10 @@ sub support {
         Fault               => "s:Fault",
         EnumerateResponse   => "n:EnumerateResponse",
         PullResponse        => "n:PullResponse",
+        Shell               => "rsp:Shell",
+        ReceiveResponse     => "rsp:ReceiveResponse",
+        ResourceCreated     => "x:ResourceCreated",
+        CommandResponse     => "rsp:CommandResponse",
     };
 }
 

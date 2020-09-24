@@ -5,6 +5,18 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
+################################################################################
+#### Needed to support this module under other platforms than MSWin32 ##########
+#### Needed to support WinRM RemoteInventory task ##############################
+################################################################################
+BEGIN {
+    use English qw(-no_match_vars);
+    if ($OSNAME ne 'MSWin32') {
+        $INC{'Win32.pm'} = "-";
+    }
+}
+################################################################################
+
 use English qw(-no_match_vars);
 use Win32;
 
@@ -46,9 +58,9 @@ sub doInventory {
 sub _getCPUs {
     my (%params) = @_;
 
-    my $remotewmi = $params{inventory}->getRemote();
+    my $remote = $params{inventory}->getRemote();
 
-    my @dmidecodeInfos = $remotewmi || Win32::GetOSName() eq 'Win2003' ?
+    my @dmidecodeInfos = $remote || Win32::GetOSName() eq 'Win2003' ?
         () : getCpusFromDmidecode();
 
     # the CPU description in WMI is false, we use the registry instead
@@ -104,7 +116,7 @@ sub _getCPUs {
         };
 
         # Some information are missing on Win2000
-        if (!$cpu->{NAME} && !$remotewmi) {
+        if (!$cpu->{NAME} && !$remote && $ENV{PROCESSOR_IDENTIFIER}) {
             $cpu->{NAME} = $ENV{PROCESSOR_IDENTIFIER};
             if ($cpu->{NAME} =~ s/,\s(\S+)$//) {
                 $cpu->{MANUFACTURER} = $1;

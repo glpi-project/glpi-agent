@@ -1,4 +1,4 @@
-package FusionInventory::Agent::SOAP::WsMan::Selector;
+package FusionInventory::Agent::SOAP::WsMan::CommandId;
 
 use strict;
 use warnings;
@@ -6,10 +6,10 @@ use warnings;
 use FusionInventory::Agent::SOAP::WsMan::Node;
 
 package
-    Selector;
+    CommandId;
 
 use parent 'Node';
 
-use constant    xmlns   => 'w';
+use constant    xmlns   => 'rsp';
 
 1;
