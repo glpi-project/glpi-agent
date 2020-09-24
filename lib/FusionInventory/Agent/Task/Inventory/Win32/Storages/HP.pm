@@ -47,7 +47,7 @@ sub _getHpacuacliFromWinRegistry {
 
     return unless $uninstallString =~ /(.*\\)hpuninst\.exe/;
     my $hpacuacliPath = $1 . 'bin\\hpacucli.exe';
-    return unless -f $hpacuacliPath;
+    return unless has_file($hpacuacliPath);
 
     return $hpacuacliPath;
 }

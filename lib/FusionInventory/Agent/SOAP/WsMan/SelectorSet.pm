@@ -12,4 +12,10 @@ use parent 'Node';
 
 use constant    xmlns   => 'w';
 
+sub support {
+    return {
+        Selector    => "w:Selector",
+    };
+}
+
 1;

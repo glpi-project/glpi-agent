@@ -1,0 +1,22 @@
+package FusionInventory::Agent::SOAP::WsMan::ReferenceParameters;
+
+use strict;
+use warnings;
+
+use FusionInventory::Agent::SOAP::WsMan::Node;
+
+package
+    ReferenceParameters;
+
+use parent 'Node';
+
+use constant xmlns  => 'a';
+
+sub support {
+    return {
+        ResourceURI => "w:ResourceURI",
+        SelectorSet => "w:SelectorSet",
+    };
+}
+
+1;

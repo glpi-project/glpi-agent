@@ -23,7 +23,7 @@ sub isEnabled {
         logger  => $self->{logger},
     );
 
-    while ($remotes->next()) {
+    while (my $remote = $remotes->next()) {
         my $error = $remote->checking_error();
         if ($error) {
             my $deviceid = $remote->deviceid
@@ -59,7 +59,7 @@ sub run {
     my $remote;
     while ($remote = $remotes->next()) {
         my $error = $remote->checking_error();
-        last unless $error
+        last unless $error;
         my $deviceid = $remote->deviceid
             or next;
         $self->{logger}->debug("Skipping remote inventory task execution for $deviceid: $error");
@@ -68,7 +68,7 @@ sub run {
         $remote->expiration($self->{target}->getNextRunDate());
         $remotes->store();
     }
-    return unless $remote
+    return unless $remote;
 
     my $start = time;
 

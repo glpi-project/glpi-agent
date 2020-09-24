@@ -12,16 +12,30 @@ use parent 'Node';
 
 use constant    xmlns   => 'a';
 
+use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::SOAP::WsMan::Attribute;
 
 my %actions = (
+    command             => "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Command",
+    commandresponse     => "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/CommandResponse",
+    create              => "http://schemas.xmlsoap.org/ws/2004/09/transfer/Create",
+    createresponse      => "http://schemas.xmlsoap.org/ws/2004/09/transfer/CreateResponse",
+    delete              => "http://schemas.xmlsoap.org/ws/2004/09/transfer/Delete",
+    deleteresponse      => "http://schemas.xmlsoap.org/ws/2004/09/transfer/DeleteResponse",
+    receive             => "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Receive",
+    receiveresponse     => "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/ReceiveResponse",
+    signal              => "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Signal",
+    signalresponse      => "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/SignalResponse",
     get                 => "http://schemas.xmlsoap.org/ws/2004/09/transfer/Get",
     enumerate           => "http://schemas.xmlsoap.org/ws/2004/09/enumeration/Enumerate",
     enumerateresponse   => "http://schemas.xmlsoap.org/ws/2004/09/enumeration/EnumerateResponse",
     pull                => "http://schemas.xmlsoap.org/ws/2004/09/enumeration/Pull",
     pullresponse        => "http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse",
     end                 => "http://schemas.microsoft.com/wbem/wsman/1/wsman/End",
-    fault               => "http://schemas.dmtf.org/wbem/wsman/1/wsman/fault",
+    fault               => [
+        "http://schemas.dmtf.org/wbem/wsman/1/wsman/fault",
+        "http://schemas.xmlsoap.org/ws/2004/08/addressing/fault",
+    ],
 );
 
 sub new {
@@ -49,10 +63,15 @@ sub set {
 }
 
 sub is {
-    my ($self, $url) = @_;
+    my ($self, $action) = @_;
 
-    return unless $actions{$url};
-    return $self->string eq $actions{$url};
+    return unless $actions{$action};
+
+    my $string = $self->string;
+    return first { $string eq $_ } @{$actions{$action}}
+        if ref($actions{$action}) eq 'ARRAY';
+
+    return $string eq $actions{$action};
 }
 
 sub what {
