@@ -30,6 +30,10 @@ use FusionInventory::Agent::SOAP::WsMan::SelectorSet;
 use FusionInventory::Agent::SOAP::WsMan::Selector;
 use FusionInventory::Agent::SOAP::WsMan::Enumerate;
 use FusionInventory::Agent::SOAP::WsMan::Pull;
+use FusionInventory::Agent::SOAP::WsMan::OptionSet;
+use FusionInventory::Agent::SOAP::WsMan::Shell;
+use FusionInventory::Agent::SOAP::WsMan::Signal;
+use FusionInventory::Agent::SOAP::WsMan::Receive;
 
 my $tpp;
 my $wsman_debug = $ENV{WSMAN_DEBUG} ? 1 : 0;
@@ -67,7 +71,7 @@ sub new {
 sub abort {
     my ( $self, $message ) = @_;
     $self->lasterror($message);
-    $self->{logger}->error($message) if $self->{logger};
+    $self->{logger}->debug($message) if $self->{logger};
     return;
 }
 
@@ -98,7 +102,8 @@ sub _send {
 
     print STDERR "===>\n", $request->as_string, "===>\n" if $wsman_debug;
 
-    my $response = $self->request($request);
+    # Get response ignoring logging of error 500 as we would like to analyse it by ourself
+    my $response = $self->request($request, undef, undef, undef, 500 => 1);
 
     $self->{_lastresponse} = $response;
 
@@ -108,6 +113,7 @@ sub _send {
         my $tree = $tpp->parse($response->content);
         return $tree;
     } elsif ($response->header('Content-Type') && $response->header('Content-Type') =~ m{application/soap\+xml}) {
+        # In case of failure (error 500) we can analyse the reason and log it
         my $tree = $tpp->parse($response->content);
         my $envelope = Envelope->new($tree);
         if ($envelope->header->action->is("fault")) {
@@ -152,48 +158,6 @@ sub identify {
     return $identify;
 }
 
-sub resource {
-    my ($self, $url) = @_;
-
-    my $messageid = MessageID->new();
-    my $sid = SessionId->new();
-    my $operationid = OperationID->new();
-
-    my $request = Envelope->new(
-        namespace   => "s,a,w,p",
-        Header->new(
-            To->new( $self->url ),
-            ResourceURI->new( $url ),
-            ReplyTo->anonymous,
-            Action->new("get"),
-            $messageid,
-            MaxEnvelopeSize->new(512000),
-            Locale->new("en-US"),
-            DataLocale->new("en-US"),
-            $sid,
-            $operationid,
-            SequenceId->new(),
-            OperationTimeout->new(60),
-            SelectorSet->new(
-                Selector->new()
-            ),
-        ),
-        Body->new(),
-    );
-
-    my $response = $self->_send($request);
-
-    return unless $response;
-
-    my $envelope = Envelope->new($response);
-
-    my $body = $envelope->body;
-    unless (ref($body) eq 'Body') {
-        $self->lasterror("Malformed resource response, no 'body' node found");
-        return;
-    }
-}
-
 sub enumerate {
     my ($self, $url) = @_;
 
@@ -204,6 +168,8 @@ sub enumerate {
     my $operationid = OperationID->new();
     my $body = Body->new(Enumerate->new());
     my $action = Action->new("enumerate");
+
+    $self->debug2("Requesting enumerate URL: $url");
 
     my $request = Envelope->new(
         namespace   => "s,a,n,w,p,b",
@@ -246,7 +212,7 @@ sub enumerate {
         }
         my $ispull = $respaction->is('pullresponse');
         unless ($ispull || $respaction->is('enumerateresponse')) {
-            $self->lasterror("Not an enumerate response but ".$action->what);
+            $self->lasterror("Not an enumerate response but ".$respaction->what);
             last;
         }
 
@@ -264,7 +230,7 @@ sub enumerate {
 
         my $respbody = $envelope->body;
         unless (ref($respbody) eq 'Body') {
-            $self->lasterror("Malformed enumerate response, no 'body' node found");
+            $self->lasterror("Malformed enumerate response, no 'Body' node found");
             last;
         }
 
@@ -290,7 +256,397 @@ sub enumerate {
     }
 
     # Send End to remote
+    $self->end($operationid);
+
+    return @items;
+}
+
+sub shell {
+    my ($self, $command) = @_;
+
+    return unless $command;
+
+    $self->debug2("Requesting '$command' run to ".$self->url);
+
+    my @items;
+
+    my $messageid = MessageID->new();
+    my $sid = SessionId->new();
+    my $operationid = OperationID->new();
+    my $shell = Shell->new();
+    my $action = Action->new("create");
+    my $resource = ResourceURI->new("http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd");
+
+    # WinRS option set
+    my $optionset = OptionSet->new(
+        Option->new( WINRS_NOPROFILE    => "TRUE" ),
+        Option->new( WINRS_CODEPAGE     => "437" ),
+    );
+
+    # Create a remote shell
+    my $request = Envelope->new(
+        namespace   => "s,a,w,p",
+        Header->new(
+            To->new( $self->url ),
+            $resource,
+            ReplyTo->anonymous,
+            $action,
+            $messageid,
+            MaxEnvelopeSize->new(512000),
+            Locale->new("en-US"),
+            DataLocale->new("en-US"),
+            $sid,
+            $operationid,
+            SequenceId->new(),
+            OperationTimeout->new(60),
+            $optionset,
+        ),
+        Body->new($shell),
+    );
+
+    my $response = $self->_send($request)
+        or return;
+
+    my $envelope = Envelope->new($response)
+        or return;
+
+    my $header = $envelope->header;
+    return $self->abort("Malformed create response, no 'Header' node found")
+        unless ref($header) eq 'Header';
+
+    my $respaction = $header->action;
+    return $self->abort("Malformed create response, no 'Action' found in Header")
+        unless ref($respaction) eq 'Action';
+    return $self->abort("Not a create response but ".$respaction->what)
+        unless $respaction->is('createresponse');
+
+    my $related = $header->get('RelatesTo');
+    return $self->abort("Got message not related to our shell create request")
+        if (!$related || $related->string() ne $messageid->string());
+
+    my $thisopid = $header->get('OperationID');
+    return $self->abort("Got message not related to our shell create operation")
+        if (!$thisopid || $thisopid->string() ne $operationid->string());
+
+    my $respbody = $envelope->body;
+    return $self->abort("Malformed create response, no 'Body' node found")
+        unless ref($respbody) eq 'Body';
+
+    my $created = $respbody->get('ResourceCreated');
+    return $self->abort("Malformed create response, no 'ResourceCreated' node found")
+        unless ref($created) eq 'ResourceCreated';
+
+    my $reference = $created->get('ReferenceParameters');
+    return $self->abort("Malformed create response, no 'ReferenceParameters' returned")
+        unless ref($reference) eq 'ReferenceParameters';
+
+    my $selectorset = $reference->get('SelectorSet');
+    return $self->abort("Malformed create response, no 'SelectorSet' returned")
+        unless ref($selectorset) eq 'SelectorSet';
+
+    # Setup command shell
+    $messageid = MessageID->new();
+    $operationid = OperationID->new();
+    $action = Action->new("command");
+    $optionset = OptionSet->new(
+        Option->new( WINRS_CONSOLEMODE_STDIN => "TRUE" ),
+    );
     $request = Envelope->new(
+        namespace   => "s,a,w,p",
+        Header->new(
+            To->new( $self->url ),
+            $resource,
+            ReplyTo->anonymous,
+            $action,
+            $messageid,
+            MaxEnvelopeSize->new(512000),
+            Locale->new("en-US"),
+            DataLocale->new("en-US"),
+            $sid,
+            $operationid,
+            SequenceId->new(),
+            $selectorset,
+            OperationTimeout->new(60),
+            $optionset,
+        ),
+        Body->new(
+            $shell->commandline($command),
+        ),
+    );
+    $response = $self->_send($request);
+    return $self->abort("No command response")
+        unless $response;
+
+    $envelope = Envelope->new($response);
+    return $self->abort("Malformed command response, no 'Envelope' node found")
+        unless $envelope;
+
+    $header = $envelope->header;
+    return $self->abort("Malformed command response, no 'Header' node found")
+        unless ref($header) eq 'Header';
+
+    $respaction = $header->action;
+    return $self->abort("Malformed command response, no 'Action' found in Header")
+        unless ref($respaction) eq 'Action';
+    return $self->abort("Not a command response but ".$respaction->what)
+        unless $respaction->is('commandresponse');
+
+    $related = $header->get('RelatesTo');
+    return $self->abort("Got message not related to our shell command request")
+        if (!$related || $related->string() ne $messageid->string());
+
+    $thisopid = $header->get('OperationID');
+    return $self->abort("Got message not related to our shell command operation")
+        if (!$thisopid || $thisopid->string() ne $operationid->string());
+
+    $respbody = $envelope->body;
+    return $self->abort("Malformed command response, no 'Body' node found")
+        unless ref($respbody) eq 'Body';
+
+    my $respcmd = $respbody->get('CommandResponse');
+    return $self->abort("Malformed command response, no 'CommandResponse' node found")
+        unless ref($respcmd) eq 'CommandResponse';
+
+    my $commandid = $respcmd->get('CommandId');
+    return $self->abort("Malformed command response, no 'CommandId' returned")
+        unless ref($commandid) eq 'CommandId';
+
+    my $cid = $commandid->string();
+    return $self->abort("Malformed command response, no CommandId value found")
+        unless $cid;
+
+    # Read stream from remote shell
+    my $buffer = $self->receive($sid, $resource, $selectorset, $cid);
+    my $exitcode = delete $self->{_exitcode} // 255;
+
+    # Send terminate signal to shell
+    $self->signal($sid, $resource, $selectorset, $cid, 'terminate');
+
+    # Finally delete the shell resource
+    $operationid = $self->delete($sid, $resource, $selectorset)
+        or $self->error("Resource deletion failure");
+
+    # Send End to remote
+    $self->end($operationid) if $operationid;
+
+    return {
+        stdout      => \$buffer,
+        exitcode    => $exitcode,
+    };
+}
+
+sub receive {
+    my ($self, $sid, $resource, $selectorset, $cid) = @_;
+
+    my $stdout;
+
+    while (1) {
+        my $messageid = MessageID->new();
+        my $operationid = OperationID->new();
+
+        # Send Delete to remote
+        my $request = Envelope->new(
+            namespace   => "s,a,w,p",
+            Header->new(
+                To->new( $self->url ),
+                $resource,
+                ReplyTo->anonymous,
+                Action->new("receive"),
+                $messageid,
+                MaxEnvelopeSize->new(512000),
+                Locale->new("en-US"),
+                DataLocale->new("en-US"),
+                $sid,
+                $operationid,
+                SequenceId->new(),
+                OperationTimeout->new(60),
+                $selectorset,
+            ),
+            Body->new( Receive->new($cid) ),
+        );
+
+        my $response = $self->_send($request)
+            or last;
+
+        my $envelope = Envelope->new($response)
+            or last;
+
+        my $header = $envelope->header;
+        $self->abort("Malformed receive response, no 'Header' node found") and last
+            unless ref($header) eq 'Header';
+
+        my $action = $header->action;
+        $self->abort("Malformed receive response, no 'Action' found in Header") and last
+            unless ref($action) eq 'Action';
+        $self->abort("Not a receive response but ".$action->what) and last
+            unless $action->is('receiveresponse');
+
+        my $related = $header->get('RelatesTo');
+        $self->abort("Got message not related to receive request") and last
+            if (!$related || $related->string() ne $messageid->string());
+
+        my $thisopid = $header->get('OperationID');
+        $self->abort("Got message not related to receive operation") and last
+            if (!$thisopid || $thisopid->string() ne $operationid->string());
+
+        my $body = $envelope->body;
+        $self->lasterror("Malformed receive response, no 'Body' node found") and last
+            unless (ref($body) eq 'Body');
+
+        my $received = $body->get('ReceiveResponse');
+        $self->lasterror("Malformed receive response, no 'ReceiveResponse' node found") and last
+            unless (ref($received) eq 'ReceiveResponse');
+
+        my $cmdstate = $received->get('CommandState');
+        $self->lasterror("Malformed receive response, no 'CommandState' node found") and last
+            unless (ref($cmdstate) eq 'CommandState');
+
+        my $streams = $received->get('Stream');
+        $self->lasterror("Malformed receive response, no 'Stream' node found") and last
+            unless (ref($streams) eq 'Stream');
+
+        # Handles Streams
+        my $stderr = $streams->stderr($cid);
+        $stdout .= $streams->stdout($cid);
+
+        if (defined($stderr) && length($stderr)) {
+            foreach my $line (split(/\n/m, $stderr)) {
+                chomp $line;
+                $self->debug2("Command stderr: $line");
+            }
+        }
+
+        my $exitcode = $cmdstate->exitcode();
+        if (defined($exitcode)) {
+            $self->debug2("Command exited with code: $exitcode");
+            $self->debug2("Command stdout seems truncated") unless $streams->stdout_is_full($cid);
+            $self->debug2("Command stderr seems truncated") unless $streams->stderr_is_full($cid);
+            $self->{_exitcode} = $exitcode;
+        }
+
+        last if $cmdstate->done($cid);
+    }
+
+    return $stdout;
+}
+
+sub signal {
+    my ($self, $sid, $resource, $selectorset, $cid, $signal) = @_;
+
+    my $messageid = MessageID->new();
+    my $operationid = OperationID->new();
+
+    # Send Delete to remote
+    my $request = Envelope->new(
+        namespace   => "s,a,w,p",
+        Header->new(
+            To->new( $self->url ),
+            $resource,
+            ReplyTo->anonymous,
+            Action->new("signal"),
+            $messageid,
+            MaxEnvelopeSize->new(512000),
+            Locale->new("en-US"),
+            DataLocale->new("en-US"),
+            $sid,
+            $operationid,
+            SequenceId->new(),
+            OperationTimeout->new(60),
+            $selectorset,
+        ),
+        Body->new(
+            Signal->new(
+                Attribute->new( "xmlns:".Shell->xmlns => Shell->xsd ),
+                Attribute->new( CommandId => $cid ),
+                Code->signal($signal),
+            ),
+        ),
+    );
+
+    my $response = $self->_send($request)
+        or return;
+
+    my $envelope = Envelope->new($response)
+        or return;
+
+    my $header = $envelope->header;
+    return $self->abort("Malformed signal response, no 'Header' node found")
+        unless ref($header) eq 'Header';
+
+    my $respaction = $header->action;
+    return $self->abort("Malformed signal response, no 'Action' found in Header")
+        unless ref($respaction) eq 'Action';
+    return $self->abort("Not a signal response but ".$respaction->what)
+        unless $respaction->is('signalresponse');
+
+    my $related = $header->get('RelatesTo');
+    return $self->abort("Got message not related to signal request")
+        if (!$related || $related->string() ne $messageid->string());
+
+    my $thisopid = $header->get('OperationID');
+    return $self->abort("Got message not related to signal operation")
+        if (!$thisopid || $thisopid->string() ne $operationid->string());
+}
+
+sub delete {
+    my ($self, $sid, $resource, $selectorset) = @_;
+
+    my $messageid = MessageID->new();
+    my $operationid = OperationID->new();
+
+    # Send Delete to remote
+    my $request = Envelope->new(
+        namespace   => "s,a,w,p",
+        Header->new(
+            To->new( $self->url ),
+            $resource,
+            ReplyTo->anonymous,
+            Action->new("delete"),
+            $messageid,
+            MaxEnvelopeSize->new(512000),
+            Locale->new("en-US"),
+            DataLocale->new("en-US"),
+            $sid,
+            $operationid,
+            SequenceId->new(),
+            OperationTimeout->new(60),
+            $selectorset,
+        ),
+        Body->new(),
+    );
+
+    my $response = $self->_send($request)
+        or return;
+
+    my $envelope = Envelope->new($response)
+        or return;
+
+    my $header = $envelope->header;
+    return $self->abort("Malformed delete response, no 'Header' node found")
+        unless ref($header) eq 'Header';
+
+    my $respaction = $header->action;
+    return $self->abort("Malformed delete response, no 'Action' found in Header")
+        unless ref($respaction) eq 'Action';
+    return $self->abort("Not a delete response but ".$respaction->what)
+        unless $respaction->is('deleteresponse');
+
+    my $related = $header->get('RelatesTo');
+    return $self->abort("Got message not related to delete request")
+        if (!$related || $related->string() ne $messageid->string());
+
+    my $thisopid = $header->get('OperationID');
+    return $self->abort("Got message not related to delete operation")
+        if (!$thisopid || $thisopid->string() ne $operationid->string());
+
+    return $operationid;
+}
+
+sub end {
+    my ($self, $operationid) = @_;
+
+    # Send End to remote
+    my $request = Envelope->new(
         namespace   => "s,a,w,p",
         Header->new(
             To->anonymous,
@@ -301,9 +657,7 @@ sub enumerate {
         ),
         Body->new(),
     );
-    $response = $self->_send($request);
-
-    return @items;
+    $self->_send($request);
 }
 
 sub lasterror {
