@@ -38,7 +38,8 @@ sub getSnmpHostname {
     my $device = $self->device
         or return;
 
-    my $hostname = getCanonicalString($self->get(hostname));
+    my $hostname = getCanonicalString($self->get(hostname))
+        or return;
 
     # Don't override if found hostname is manufacturer+model
     return if $hostname eq 'RICOH '.$device->{MODEL};
