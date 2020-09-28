@@ -23,8 +23,10 @@ inventory:
 * Fix #787: fix debian package reporting when size is not defined
 
 netdiscovery/netinventory:
-* Updated Ricoh printers support
-* Updated Zebra printers support
+* Updated Ricoh printers support with better hostname detection
+* Updated Zebra printers support with better hostname detection
+* Introduced Siemens industrial modules support
+* Introduced Multitech industrial modules support
 
 injector:
 * Fix an issue with --xml-ua option triggering a perl fatal error on empty or wrong XML files

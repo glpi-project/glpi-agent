@@ -121,6 +121,12 @@ sub getType {
     #return 'NETWORKING' if $self->get(sectionOID . '.X.G') eq 'XYZ';
 }
 
+sub getSnmpHostname {
+    #my ($self) = @_;
+
+    #return $self->get(sectionOID . '.X.H');
+}
+
 sub getManufacturer {
     #my ($self) = @_;
 

@@ -341,6 +341,9 @@ sub _getDevice {
         delete $device->{$key} if $device->{$key} eq '';
     }
 
+    # Name may have to be fixed (as example, Kyocera & Ricoh printers are concerned)
+    $device->setSnmpHostname();
+
     # Find and set Mac address
     $device->setMacAddress();
 

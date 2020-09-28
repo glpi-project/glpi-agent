@@ -32,18 +32,15 @@ sub getModel {
     return $self->get(prtGeneralPrinterName);
 }
 
-sub run {
+sub getSnmpHostname {
     my ($self) = @_;
 
-    my $device = $self->device
-        or return;
-
-    my $name = getCanonicalString($self->get(hostname))
-        or return;
+    my $hostname = getCanonicalString($self->get(hostname));
 
     # Don't override if found hostname is manufacturer+model
-    $device->{INFO}->{NAME} = $name
-        unless $name eq 'RICOH '.$device->{MODEL};
+    return if $hostname eq 'RICOH '.$device->{MODEL};
+
+    return $hostname;
 }
 
 1;

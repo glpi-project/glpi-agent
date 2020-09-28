@@ -24,8 +24,6 @@ sub new {
     my $sysobjectid = $params{sysobjectid};
     my $sysorid     = $device->walk(sysORID);
 
-    return unless $sysorid || $sysobjectid;
-
     my $self = {
         _SUPPORT    => {},
         logger      => $logger
@@ -65,6 +63,14 @@ sub new {
                         $self->{_SUPPORT}->{$module} = $module->new( device => $device );
                         next;
                     }
+                } elsif ($mib_support->{privateoid}) {
+                    my $mibname = $mib_support->{name}
+                        or next;
+                    my $private = $device->get($mib_support->{privateoid})
+                        or next;
+                    $logger->debug("PrivateOID match: $mibname mib support enabled") if $logger;
+                    $self->{_SUPPORT}->{$module} = $module->new( device => $device );
+                    next;
                 }
                 my $miboid = $mib_support->{oid}
                     or next;

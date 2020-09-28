@@ -474,6 +474,16 @@ sub setBaseInfos {
     }
 }
 
+sub setSnmpHostname {
+    my ($self) = @_;
+
+    # Permit mib support to reset snmphostname
+    if ($self->{MIBSUPPORT}) {
+        my $name = $self->{MIBSUPPORT}->getMethod('getSnmpHostname');
+        $self->{SNMPHOSTNAME} = $name if $name;
+    }
+}
+
 sub setInventoryBaseInfos {
     my ($self) = @_;
     $self->_set_from_oid_list($inventory_only_base_variables, $self->{INFO});
