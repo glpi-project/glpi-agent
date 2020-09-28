@@ -12,6 +12,12 @@ Revision history for FusionInventory agent
 
 2.6 not release yet
 
+core:
+* as explain in Version.pm comments, actual versioning is problematic for CPAN versions,
+  so any future version will probably be defined as only major.minor but evantually
+  as major.minor_rev if a package revision is necessary. This policy could be revised
+  after any major upgrade.
+
 inventory:
 * Fix #771: added Acer monitor serial support for models (G227HQL, G236HL, R221Q, S273HL)
 * Fix #787: fix debian package reporting when size is not defined
