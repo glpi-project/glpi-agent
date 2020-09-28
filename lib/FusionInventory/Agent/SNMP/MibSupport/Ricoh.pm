@@ -35,6 +35,9 @@ sub getModel {
 sub getSnmpHostname {
     my ($self) = @_;
 
+    my $device = $self->device
+        or return;
+
     my $hostname = getCanonicalString($self->get(hostname));
 
     # Don't override if found hostname is manufacturer+model

@@ -40,7 +40,10 @@ sub getSnmpHostname {
     my $serial = $self->getSerial()
         or return;
 
-    return $self->{MODEL}.'_'.$serial;
+    my $device = $self->device
+        or return;
+
+    return $device->{MODEL}.'_'.$serial;
 }
 
 sub getModel {

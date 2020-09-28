@@ -88,7 +88,7 @@ sub getSnmpHostname {
     return $name if $name;
 
     my $serial = $self->getSerial()
-        or return:
+        or return;
 
     return $serial;
 }
