@@ -339,7 +339,7 @@ sub _getValueFromSysProc {
     my $value = getFirstLine(file => $root.$file, logger => $logger);
 
     return undef unless defined $value;
-    $value =~ s/^\W*([\w\s]+)\W*$/$1/;
+    $value = $1 if $value =~ /([[:print:]]*[[:alnum:]]+)/;
 
     return trimWhitespace($value);
 }
