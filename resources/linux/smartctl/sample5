@@ -1,0 +1,21 @@
+smartctl 7.0 2018-12-30 r4883 [x86_64-linux-4.14.83-0.1-default] (SUSE RPM)
+Copyright (C) 2002-18, Bruce Allen, Christian Franke, www.smartmontools.org
+
+=== START OF INFORMATION SECTION ===
+Model Family:     Micron 5100 Pro / 5200 SSDs
+Device Model:     MTFDDAK480TDC
+Serial Number:    202028413FA9
+LU WWN Device Id: 5 00a075 128413fa9
+Add. Product Id:  DELL(tm)
+Firmware Version: D1DF003
+User Capacity:    480,103,981,056 bytes [480 GB]
+Sector Sizes:     512 bytes logical, 4096 bytes physical
+Rotation Rate:    Solid State Device
+Form Factor:      2.5 inches
+Device is:        In smartctl database [for details use: -P show]
+ATA Version is:   ACS-3 T13/2161-D revision 5
+SATA Version is:  SATA 3.2, 6.0 Gb/s (current: 6.0 Gb/s)
+Local Time is:    Wed Sep 30 08:30:21 2020 UTC
+SMART support is: Available - device has SMART capability.
+SMART support is: Enabled
+

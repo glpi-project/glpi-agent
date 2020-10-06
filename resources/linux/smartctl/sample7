@@ -1,0 +1,25 @@
+smartctl 7.0 2018-12-30 r4883 [x86_64-linux-4.19.126-0.1-default] (SUSE RPM)
+Copyright (C) 2002-18, Bruce Allen, Christian Franke, www.smartmontools.org
+
+=== START OF INFORMATION SECTION ===
+Vendor:               HGST
+Product:              HUH721212AL5200
+Revision:             NS07
+Compliance:           SPC-4
+User Capacity:        11,756,399,230,976 bytes [11.7 TB]
+Logical block size:   512 bytes
+Physical block size:  4096 bytes
+Formatted with type 2 protection
+8 bytes of protection information per logical block
+LU is fully provisioned
+Rotation Rate:        7200 rpm
+Form Factor:          3.5 inches
+Logical Unit id:      0x5000cca2940e56b8
+Serial number:        D5G7WG8L
+Device type:          disk
+Transport protocol:   SAS (SPL-3)
+Local Time is:        Wed Sep 30 08:34:39 2020 UTC
+SMART support is:     Available - device has SMART capability.
+SMART support is:     Enabled
+Temperature Warning:  Disabled or Not Supported
+

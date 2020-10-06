@@ -385,54 +385,72 @@ sub _readLinkFromSysFs {
 sub getInfoFromSmartctl {
     my (%params) = @_;
 
-    my $handle = getFileHandle(
+    my @lines = getAllLines(
         %params,
-        command => $params{device} ? "smartctl -i $params{device}" : undef,
+        command => $params{device} ?
+            "smartctl -i $params{device} " . ($params{extra} // "") : undef,
     );
-    return unless $handle;
+    return unless @lines;
 
     my $info = {
         TYPE        => 'disk',
         DESCRIPTION => 'SATA',
     };
 
-    while (my $line = <$handle>) {
-        if ($line =~ /^Vendor: +(\S+)/i) {
-            $info->{MANUFACTURER} = getCanonicalManufacturer($1);
-            next;
+    my $attrs = {
+        MANUFACTURER => {
+            src  => ['vendor', 'model family', 'add. product id', 'device model', 'product'],
+            func => \&getCanonicalManufacturer,
+            args => undef
+        },
+        MODEL => {
+            src => ['product', 'device model', 'model family']
+        },
+        FIRMWARE => {
+            src => ['revision', 'firmware version']
+        },
+        DISKSIZE => {
+            src  => ['user capacity'],
+            func => \&getCanonicalSize,
+            args => [1024]
+        },
+        DESCRIPTION => {
+            src => ['transport protocol']
+        },
+        TYPE => {
+            src => ['device type']
+        },
+        SERIALNUMBER => {
+            src => ['serial number']
         }
+    };
 
-        if ($line =~ /^Product: +(\S+)/i) {
-            $info->{MODEL} = $1;
-            next;
-        }
+    my $regexp = {
+        __default       => qr/^(\w+)/,
+        __smartctl      => qr/^([^:]+?)\s*:\s*(.+)\s*$/,
+        'user capacity' => qr/([\d\.\,\s]+(?:\w+)?)/,
+        'device model'  => qr/([\w\s]+)/,
+    };
 
-        if ($line =~ /^Revision: +(\S+)/i) {
-            $info->{FIRMWARE} = $1;
-            next;
-        }
+    my %smartctl;
 
-        if ($line =~ /^User Capacity: +(\S.+\S)/i) {
-            $info->{DISKSIZE} = getCanonicalSize($1, 1024);
-            next;
-        }
+    for my $line (@lines) {
+        next unless $line =~ $regexp->{__smartctl};
+        $smartctl{lc $1} = $2;
+    }
 
-        if ($line =~ /^Transport protocol: +(\S+)/i) {
-            $info->{DESCRIPTION} = $1;
-            next;
-        }
+    while (my ($attr, $val) = each %$attrs) {
+        for my $s (@{$val->{src}}) {
+            next unless defined $smartctl{$s};
 
-        if ($line =~ /^Device type: +(\S+)/i) {
-            $info->{TYPE} = $1;
-            next;
-        }
+            my ($data) = ($smartctl{$s} =~ ($regexp->{$s} // $regexp->{__default}));
 
-        if ($line =~ /^Serial number: +(\S+)/i) {
-            $info->{SERIALNUMBER} = $1;
-            next;
+            $info->{$attr} = exists $val->{func} ?
+                &{$val->{func}}($data, @{$val->{args}}) : $data;
+
+            last;
         }
     }
-    close $handle;
 
     return $info;
 }

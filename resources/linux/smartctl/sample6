@@ -1,0 +1,21 @@
+smartctl 7.0 2018-12-30 r4883 [x86_64-linux-4.14.83-0.1-default] (SUSE RPM)
+Copyright (C) 2002-18, Bruce Allen, Christian Franke, www.smartmontools.org
+
+=== START OF INFORMATION SECTION ===
+Vendor:               HP
+Product:              EG0600FBDSR
+Revision:             HPD2
+Compliance:           SPC-3
+User Capacity:        600,127,266,816 bytes [600 GB]
+Logical block size:   512 bytes
+Rotation Rate:        10025 rpm
+Form Factor:          2.5 inches
+Logical Unit id:      0x5000039308183dd4
+Serial number:        EA01PB107H5K1103
+Device type:          disk
+Transport protocol:   SAS (SPL-3)
+Local Time is:        Wed Sep 30 08:31:22 2020 UTC
+SMART support is:     Available - device has SMART capability.
+SMART support is:     Enabled
+Temperature Warning:  Enabled
+

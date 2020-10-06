@@ -573,6 +573,9 @@ my %smartctl_tests = (
         DESCRIPTION  => 'SATA',
         SERIALNUMBER => 'DFW1W11002SE002B3117',
         DISKSIZE     => 122104,
+        MANUFACTURER => 'Samsung',
+        FIRMWARE     => 'VBM24D1Q',
+        MODEL        => 'SAMSUNG SSD PM800 TM 128GB',
     },
     sample2 => {
         TYPE         => 'disk',
@@ -586,6 +589,33 @@ my %smartctl_tests = (
     sample4 => {
         TYPE         => 'enclosure',
         DESCRIPTION  => 'SATA',
+    },
+    sample5 => {
+        DESCRIPTION  => 'SATA',
+        TYPE         => 'disk',
+        DISKSIZE     => 457862,
+        MANUFACTURER => 'Micron',
+        FIRMWARE     => 'D1DF003',
+        MODEL        => 'MTFDDAK480TDC',
+        SERIALNUMBER => '202028413FA9'
+    },
+    sample6 => {
+        MANUFACTURER => 'Hewlett-Packard',
+        DESCRIPTION  => 'SAS',
+        SERIALNUMBER => 'EA01PB107H5K1103',
+        MODEL        => 'EG0600FBDSR',
+        DISKSIZE     => 572325,
+        FIRMWARE     => 'HPD2',
+        TYPE         => 'disk'
+    },
+    sample7 => {
+        TYPE         => 'disk',
+        DISKSIZE     => 11211776,
+        MODEL        => 'HUH721212AL5200',
+        SERIALNUMBER => 'D5G7WG8L',
+        DESCRIPTION  => 'SAS',
+        FIRMWARE     => 'NS07',
+        MANUFACTURER => 'Hitachi'
     },
 );
 

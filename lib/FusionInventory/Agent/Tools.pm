@@ -213,7 +213,13 @@ sub getCanonicalSize {
     return undef unless $size =~ /^([,.\d]+) (\S+)$/x;
     my $value = $1;
     my $unit = lc($2);
-    $value =~ s/,/\./;
+
+    # check if the number has groups separated by commas or spaces
+    if ($value =~ /^(0|[1-9](\d*|\d{0,2}([, ]\d{3})+))(\.\d+)?$/) {
+        $value =~ s/,| //g;
+    } else {
+        $value =~ s/,/\./;
+    }
 
     return
         $unit eq 'tb'    ? $value * $base * $base        :
