@@ -256,6 +256,9 @@ sub getDevicesFromProc {
     my %seen;
     @names = grep { !$seen{$_}++ } @names;
 
+    # filter multipath
+    @names = _filterMultipath(names => \@names) if canRun('multipath');
+
     my $udisksctl = canRun('udisksctl');
     $dump->{udisksctl} = 1 if ($dump && $udisksctl);
     $udisksctl = 1 if $root && -e "$root/udisksctl";
@@ -342,6 +345,37 @@ sub _getValueFromSysProc {
     $value = $1 if $value =~ /([[:print:]]*[[:alnum:]]+)/;
 
     return trimWhitespace($value);
+}
+
+sub _filterMultipath {
+    my (%params) = (
+        command => 'multipath -l',
+        @_
+    );
+
+    my %hnames = map {$_ => 1} @{$params{names}};
+
+    # parse multipath
+    my (@groups, @group);
+    foreach my $line (getAllLines(%params)) {
+        if ($line =~ /^\w+ \(\w+\) dm-\d+ \w+/) {
+            push @groups, [@group] if scalar @group;
+            @group = ();
+        } elsif ($line =~ / (sd[a-z]+) /) {
+            push @group, $1;
+        }
+    }
+    push @groups, [@group] if scalar @group;
+
+    # filter
+    foreach my $group (@groups) {
+        # delete all but first element from each group
+        for (my $i = 1; $i < scalar @$group; $i++) {
+            delete $hnames{ @$group[$i] } ;
+        }
+    }
+
+    return keys %hnames;
 }
 
 sub _readLinkFromSysFs {

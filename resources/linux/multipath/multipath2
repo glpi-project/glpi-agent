@@ -1,0 +1,345 @@
+t2d6 (35000039ffac0e056) dm-65 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:6:0   sdi  8:128   active undef running
+  `- 11:0:6:0  sdbz 68:208  active undef running
+t4d7 (350014ee20ac975fc) dm-11 ATA,WDC WD20EZRX-00D
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:54:0  sdbc 67:96   active undef running
+  `- 11:0:32:0 sdcy 70:96   active undef running
+t3d6 (35000039ffac11a6f) dm-43 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:31:0  sdag 66:0    active undef running
+  `- 11:0:56:0 sddv 71:208  active undef running
+t2d13 (35000c500a42988e3) dm-41 ATA,ST2000DM006-2DM1
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:13:0  sdp  8:240   active undef running
+  `- 11:0:13:0 sdcg 69:64   active undef running
+t4d22 (35000039ffac09205) dm-28 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:69:0  sdbr 68:80   active undef running
+  `- 11:0:47:0 sddn 71:80   active undef running
+t3d10 (35000039ffac11a5d) dm-22 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:35:0  sdak 66:64   active undef running
+  `- 11:0:60:0 sddz 128:16  active undef running
+t2d5 (35000039ff3c84d39) dm-59 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:5:0   sdh  8:112   active undef running
+  `- 11:0:5:0  sdby 68:192  active undef running
+t4d6 (35000c500b206c239) dm-12 ATA,ST2000DM006-2DM1
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:53:0  sdbb 67:80   active undef running
+  `- 11:0:31:0 sdcx 70:80   active undef running
+t3d5 (35000039ffac0e8d3) dm-47 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:30:0  sdaf 65:240  active undef running
+  `- 11:0:55:0 sddu 71:192  active undef running
+t4d19 (35000039ffac09281) dm-10 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:66:0  sdbo 68:32   active undef running
+  `- 11:0:44:0 sddk 71:32   active undef running
+t2d12 (35000039ffac11089) dm-52 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:12:0  sdo  8:224   active undef running
+  `- 11:0:12:0 sdcf 69:48   active undef running
+t4d21 (35000039ffac09291) dm-14 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:68:0  sdbq 68:64   active undef running
+  `- 11:0:46:0 sddm 71:64   active undef running
+t2d4 (35000039ffac0ff9a) dm-67 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:4:0   sdg  8:96    active undef running
+  `- 11:0:4:0  sdbx 68:176  active undef running
+t4d5 (35000039ffac113af) dm-31 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:52:0  sdba 67:64   active undef running
+  `- 11:0:30:0 sdcw 70:64   active undef running
+t3d4 (35000039ffac11a86) dm-49 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:29:0  sdae 65:224  active undef running
+  `- 11:0:54:0 sddt 71:176  active undef running
+t4d18 (35000039ff3f5815d) dm-5 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:65:0  sdbn 68:16   active undef running
+  `- 11:0:43:0 sddj 71:16   active undef running
+t2d11 (350014ee20ac99992) dm-34 ATA,WDC WD20EZRX-00D
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:11:0  sdn  8:208   active undef running
+  `- 11:0:11:0 sdce 69:32   active undef running
+t4d20 (35000039ffac0ff6e) dm-17 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:67:0  sdbp 68:48   active undef running
+  `- 11:0:45:0 sddl 71:48   active undef running
+t2d3 (35000039ffac0fe37) dm-66 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:3:0   sdf  8:80    active undef running
+  `- 11:0:3:0  sdbw 68:160  active undef running
+t4d4 (35000039ffac0ff65) dm-20 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:51:0  sdaz 67:48   active undef running
+  `- 11:0:29:0 sdcv 70:48   active undef running
+t3d3 (35000039ffac0fcb6) dm-44 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:28:0  sdad 65:208  active undef running
+  `- 11:0:53:0 sdds 71:160  active undef running
+t4d17 (35000039ffac099e1) dm-13 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:64:0  sdbm 68:0    active undef running
+  `- 11:0:42:0 sddi 71:0    active undef running
+t2d10 (350014ee2604ea1f6) dm-29 ATA,WDC WD20EZRX-00D
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:10:0  sdm  8:192   active undef running
+  `- 11:0:10:0 sdcd 69:16   active undef running
+t2d2 (35000039ffac12643) dm-63 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:2:0   sde  8:64    active undef running
+  `- 11:0:2:0  sdbv 68:144  active undef running
+t4d3 (35000039ffac10184) dm-26 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:50:0  sday 67:32   active undef running
+  `- 11:0:28:0 sdcu 70:32   active undef running
+t3d19 (35000039ff3f61917) dm-40 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:44:0  sdat 66:208  active undef running
+  `- 11:0:69:0 sdei 128:160 active undef running
+t3d2 (35000039ffac0af48) dm-39 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:27:0  sdac 65:192  active undef running
+  `- 11:0:52:0 sddr 71:144  active undef running
+t4d16 (35000039ffac09154) dm-9 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:63:0  sdbl 67:240  active undef running
+  `- 11:0:41:0 sddh 70:240  active undef running
+t2d1 (35000039ffac0ff8b) dm-62 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:1:0   sdd  8:48    active undef running
+  `- 11:0:1:0  sdbu 68:128  active undef running
+t4d2 (35000039ffac0fe45) dm-16 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:49:0  sdax 67:16   active undef running
+  `- 11:0:27:0 sdct 70:16   active undef running
+t3d18 (35000039ffac11660) dm-70 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:43:0  sdas 66:192  active undef running
+  `- 11:0:68:0 sdeh 128:144 active undef running
+t3d1 (35000cca223e191c3) dm-35 ATA,Hitachi HUA72302
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:26:0  sdab 65:176  active undef running
+  `- 11:0:51:0 sddq 71:128  active undef running
+t4d15 (35000039ffac09164) dm-19 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:62:0  sdbk 67:224  active undef running
+  `- 11:0:40:0 sddg 70:224  active undef running
+t2d23 (35000039ffac0ba74) dm-64 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:23:0  sdz  65:144  active undef running
+  `- 11:0:23:0 sdcq 69:224  active undef running
+t3d20 (35000039ff3f61eca) dm-42 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:45:0  sdau 66:224  active undef running
+  `- 11:0:70:0 sdej 128:176 active undef running
+t2d0 (35000039ff3c85675) dm-48 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:0:0   sdc  8:32    active undef running
+  `- 11:0:0:0  sdbt 68:112  active undef running
+t4d1 (35000039ffac092a5) dm-8 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:48:0  sdaw 67:0    active undef running
+  `- 11:0:26:0 sdcs 70:0    active undef running
+t3d17 (35000039ffac0a8d8) dm-30 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:42:0  sdar 66:176  active undef running
+  `- 11:0:67:0 sdeg 128:128 active undef running
+t3d0 (35000039ff3f52976) dm-25 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:25:0  sdaa 65:160  active undef running
+  `- 11:0:50:0 sddp 71:112  active undef running
+t4d14 (35000039ffac0fe10) dm-7 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:61:0  sdbj 67:208  active undef running
+  `- 11:0:39:0 sddf 70:208  active undef running
+t2d22 (35000039ffac0ff5d) dm-54 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:22:0  sdy  65:128  active undef running
+  `- 11:0:22:0 sdcp 69:208  active undef running
+t4d0 (35000039ff3c85f9c) dm-4 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:47:0  sdav 66:240  active undef running
+  `- 11:0:25:0 sdcr 69:240  active undef running
+t2d19 (35000039ffac0ff38) dm-57 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:19:0  sdv  65:80   active undef running
+  `- 11:0:19:0 sdcm 69:160  active undef running
+t3d16 (35000039ffac0fc40) dm-37 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:41:0  sdaq 66:160  active undef running
+  `- 11:0:66:0 sdef 128:112 active undef running
+t4d13 (35000039ffac12612) dm-15 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:60:0  sdbi 67:192  active undef running
+  `- 11:0:38:0 sdde 70:192  active undef running
+t2d21 (35000039ffac0ff1c) dm-61 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:21:0  sdx  65:112  active undef running
+  `- 11:0:21:0 sdco 69:192  active undef running
+t2d18 (35000039ffac1061d) dm-58 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:18:0  sdu  65:64   active undef running
+  `- 11:0:18:0 sdcl 69:144  active undef running
+t3d15 (35000039ffac0a02b) dm-38 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:40:0  sdap 66:144  active undef running
+  `- 11:0:65:0 sdee 128:96  active undef running
+t4d12 (35000039ffac12636) dm-2 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:59:0  sdbh 67:176  active undef running
+  `- 11:0:37:0 sddd 70:176  active undef running
+t2d20 (35000039ffac0fe1b) dm-56 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:20:0  sdw  65:96   active undef running
+  `- 11:0:20:0 sdcn 69:176  active undef running
+t2d17 (35000039ffac103c9) dm-60 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:17:0  sdt  65:48   active undef running
+  `- 11:0:17:0 sdck 69:128  active undef running
+t3d14 (35000039ffac11a6b) dm-32 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:39:0  sdao 66:128  active undef running
+  `- 11:0:64:0 sded 128:80  active undef running
+t4d11 (35000039ff3f5f61f) dm-6 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:58:0  sdbg 67:160  active undef running
+  `- 11:0:36:0 sddc 70:160  active undef running
+t2d9 (35000039ffac0fe4e) dm-50 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:9:0   sdl  8:176   active undef running
+  `- 11:0:9:0  sdcc 69:0    active undef running
+t3d9 (35000039ffac101f4) dm-36 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:34:0  sdaj 66:48   active undef running
+  `- 11:0:59:0 sddy 128:0   active undef running
+t2d16 (35000039ffac0fed0) dm-51 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:16:0  sds  65:32   active undef running
+  `- 11:0:16:0 sdcj 69:112  active undef running
+t3d13 (350014ee2601c094f) dm-21 ATA,WDC WD20EZRX-00D
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:38:0  sdan 66:112  active undef running
+  `- 11:0:63:0 sdec 128:64  active undef running
+t4d10 (35000039ffac092b1) dm-3 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:57:0  sdbf 67:144  active undef running
+  `- 11:0:35:0 sddb 70:144  active undef running
+t2d8 (35000039ffac0fe95) dm-68 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:8:0   sdk  8:160   active undef running
+  `- 11:0:8:0  sdcb 68:240  active undef running
+t4d9 (35000039ffac100ea) dm-33 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:56:0  sdbe 67:128  active undef running
+  `- 11:0:34:0 sdda 70:128  active undef running
+t3d8 (35000039ffac0e103) dm-46 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:33:0  sdai 66:32   active undef running
+  `- 11:0:58:0 sddx 71:240  active undef running
+t2d15 (35000039ffac0fe3a) dm-53 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:15:0  sdr  65:16   active undef running
+  `- 11:0:15:0 sdci 69:96   active undef running
+t3d12 (35000039ff3d560a0) dm-18 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:37:0  sdam 66:96   active undef running
+  `- 11:0:62:0 sdeb 128:48  active undef running
+t2d7 (35000039ffac0fdfa) dm-69 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:7:0   sdj  8:144   active undef running
+  `- 11:0:7:0  sdca 68:224  active undef running
+t4d8 (35000039ffac0fe27) dm-27 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:55:0  sdbd 67:112  active undef running
+  `- 11:0:33:0 sdcz 70:112  active undef running
+t3d7 (35000039ff3f5fd92) dm-45 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:32:0  sdah 66:16   active undef running
+  `- 11:0:57:0 sddw 71:224  active undef running
+t2d14 (35000039ffac0fe0e) dm-55 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:14:0  sdq  65:0    active undef running
+  `- 11:0:14:0 sdch 69:80   active undef running
+t3d11 (35000039ff3f4e793) dm-24 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:36:0  sdal 66:80   active undef running
+  `- 11:0:61:0 sdea 128:32  active undef running
+t4d23 (35000039ffac0d580) dm-23 ATA,TOSHIBA DT01ACA2
+size=1.8T features='1 no_partitions' hwhandler='0' wp=rw
+`-+- policy='queue-length 0' prio=0 status=active
+  |- 6:0:70:0  sdbs 68:96   active undef running
+  `- 11:0:48:0 sddo 71:96   active undef running
