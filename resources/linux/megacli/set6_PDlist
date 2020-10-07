@@ -1,0 +1,675 @@
+                                     
+Adapter #0
+
+Enclosure Device ID: 32
+Slot Number: 0
+Drive's position: DiskGroup: 2, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 0
+WWN: 5000C500589A3324
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 1.819 TB [0xe8e088b0 Sectors]
+Non Coerced Size: 1.818 TB [0xe8d088b0 Sectors]
+Coerced Size: 1.818 TB [0xe8d00000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: GS0D
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000c500589a3325
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: SEAGATE ST2000NM0023    GS0DZ1X2BTVZ            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 6.0Gb/s 
+Link Speed: 6.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :29C (84.20 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 1
+Drive's position: DiskGroup: 2, Span: 0, Arm: 1
+Enclosure position: 1
+Device Id: 1
+WWN: 5000C500589A31D8
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 1.819 TB [0xe8e088b0 Sectors]
+Non Coerced Size: 1.818 TB [0xe8d088b0 Sectors]
+Coerced Size: 1.818 TB [0xe8d00000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: GS0D
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000c500589a31d9
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: SEAGATE ST2000NM0023    GS0DZ1X2BSXN            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 6.0Gb/s 
+Link Speed: 6.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :30C (86.00 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 2
+Drive's position: DiskGroup: 2, Span: 1, Arm: 0
+Enclosure position: 1
+Device Id: 2
+WWN: 5000C5005899B428
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 1.819 TB [0xe8e088b0 Sectors]
+Non Coerced Size: 1.818 TB [0xe8d088b0 Sectors]
+Coerced Size: 1.818 TB [0xe8d00000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: GS0D
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000c5005899b429
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: SEAGATE ST2000NM0023    GS0DZ1X29V1C            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 6.0Gb/s 
+Link Speed: 6.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :30C (86.00 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 3
+Drive's position: DiskGroup: 2, Span: 1, Arm: 1
+Enclosure position: 1
+Device Id: 3
+WWN: 5000C500589A2928
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 1.819 TB [0xe8e088b0 Sectors]
+Non Coerced Size: 1.818 TB [0xe8d088b0 Sectors]
+Coerced Size: 1.818 TB [0xe8d00000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: GS0D
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000c500589a2929
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: SEAGATE ST2000NM0023    GS0DZ1X2BT51            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 6.0Gb/s 
+Link Speed: 6.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :28C (82.40 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 4
+Drive's position: DiskGroup: 2, Span: 2, Arm: 0
+Enclosure position: 1
+Device Id: 4
+WWN: 5000C500589A3A4C
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 1.819 TB [0xe8e088b0 Sectors]
+Non Coerced Size: 1.818 TB [0xe8d088b0 Sectors]
+Coerced Size: 1.818 TB [0xe8d00000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: GS0D
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000c500589a3a4d
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: SEAGATE ST2000NM0023    GS0DZ1X2BSRQ            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 6.0Gb/s 
+Link Speed: 6.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :29C (84.20 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 5
+Drive's position: DiskGroup: 2, Span: 2, Arm: 1
+Enclosure position: 1
+Device Id: 5
+WWN: 5000C500589A2520
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 1.819 TB [0xe8e088b0 Sectors]
+Non Coerced Size: 1.818 TB [0xe8d088b0 Sectors]
+Coerced Size: 1.818 TB [0xe8d00000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: GS0D
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000c500589a2521
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: SEAGATE ST2000NM0023    GS0DZ1X2BTA0            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 6.0Gb/s 
+Link Speed: 6.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :29C (84.20 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 6
+Drive's position: DiskGroup: 2, Span: 3, Arm: 0
+Enclosure position: 1
+Device Id: 6
+WWN: 5000C500589A23B8
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 1.819 TB [0xe8e088b0 Sectors]
+Non Coerced Size: 1.818 TB [0xe8d088b0 Sectors]
+Coerced Size: 1.818 TB [0xe8d00000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: GS0D
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000c500589a23b9
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: SEAGATE ST2000NM0023    GS0DZ1X2BT6W            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 6.0Gb/s 
+Link Speed: 6.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :28C (82.40 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 7
+Drive's position: DiskGroup: 2, Span: 3, Arm: 1
+Enclosure position: 1
+Device Id: 7
+WWN: 5000C500589A2CCC
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 1.819 TB [0xe8e088b0 Sectors]
+Non Coerced Size: 1.818 TB [0xe8d088b0 Sectors]
+Coerced Size: 1.818 TB [0xe8d00000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: GS0D
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000c500589a2ccd
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: SEAGATE ST2000NM0023    GS0DZ1X2BTDA            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 6.0Gb/s 
+Link Speed: 6.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :29C (84.20 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 8
+Drive's position: DiskGroup: 2, Span: 4, Arm: 0
+Enclosure position: 1
+Device Id: 8
+WWN: 5000C500589A23D8
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 1.819 TB [0xe8e088b0 Sectors]
+Non Coerced Size: 1.818 TB [0xe8d088b0 Sectors]
+Coerced Size: 1.818 TB [0xe8d00000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: GS0D
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000c500589a23d9
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: SEAGATE ST2000NM0023    GS0DZ1X2BTGA            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 6.0Gb/s 
+Link Speed: 6.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :28C (82.40 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 9
+Drive's position: DiskGroup: 2, Span: 4, Arm: 1
+Enclosure position: 1
+Device Id: 9
+WWN: 5000C500589A1F24
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 1.819 TB [0xe8e088b0 Sectors]
+Non Coerced Size: 1.818 TB [0xe8d088b0 Sectors]
+Coerced Size: 1.818 TB [0xe8d00000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: GS0D
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000c500589a1f25
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: SEAGATE ST2000NM0023    GS0DZ1X2BTA3            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 6.0Gb/s 
+Link Speed: 6.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :29C (84.20 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 10
+Enclosure position: 1
+Device Id: 10
+WWN: 5000C50058999E64
+Sequence Number: 1
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 1.819 TB [0xe8e088b0 Sectors]
+Non Coerced Size: 1.818 TB [0xe8d088b0 Sectors]
+Coerced Size: 1.818 TB [0xe8d00000 Sectors]
+Sector Size:  0
+Firmware state: Unconfigured(good), Spun Up
+Device Firmware Level: GS0D
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000c50058999e65
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: SEAGATE ST2000NM0023    GS0DZ1X2C3QQ            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 6.0Gb/s 
+Link Speed: 6.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :27C (80.60 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 11
+Drive's position: DiskGroup: 1, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 11
+WWN: 55cd2e404b93e5e1
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SATA
+
+Raw Size: 223.570 GB [0x1bf244b0 Sectors]
+Non Coerced Size: 223.070 GB [0x1be244b0 Sectors]
+Coerced Size: 223.0 GB [0x1be00000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: DC32
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x500056b36789abe7
+Connected Port Number: 0(path0) 
+Inquiry Data: CVDA406302Z92403GN  INTEL SSDSC2BW240A4                     DC32    
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 6.0Gb/s 
+Link Speed: 6.0Gb/s 
+Media Type: Solid State Device
+Drive:  Not Certified
+Drive Temperature :24C (75.20 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  No
+PI: No PI
+Drive's NCQ setting : N/A
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 12
+Drive's position: DiskGroup: 0, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 12
+WWN: 5000CCA059492DA7
+Sequence Number: 12
+Media Error Count: 12
+Other Error Count: 31
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 558.911 GB [0x45dd2fb0 Sectors]
+Non Coerced Size: 558.411 GB [0x45cd2fb0 Sectors]
+Coerced Size: 558.375 GB [0x45cc0000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: A703
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000cca059492da5
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: HGST    HUC156060CSS200 A7030XH97LXP            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: Unknown 
+Link Speed: 6.0Gb/s 
+Media Type: Hard Disk Device
+Drive:  Not Certified
+Drive Temperature :54C (129.20 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 32
+Slot Number: 13
+Drive's position: DiskGroup: 0, Span: 0, Arm: 1
+Enclosure position: 1
+Device Id: 13
+WWN: 500003951828912D
+Sequence Number: 12
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 558.911 GB [0x45dd2fb0 Sectors]
+Non Coerced Size: 558.411 GB [0x45cd2fb0 Sectors]
+Coerced Size: 558.375 GB [0x45cc0000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: DE09
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x500003951828912e
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: TOSHIBA AL13SEB600      DE09X3N0A00TFRD4        
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 6.0Gb/s 
+Link Speed: 6.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :48C (118.40 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+
+Exit Code: 0x00

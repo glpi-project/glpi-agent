@@ -1,0 +1,285 @@
+                                     
+
+Adapter 0 -- Virtual Drive Information:
+Virtual Drive: 0 (Target Id: 0)
+Name                :NonRAID Disk 0
+RAID Level          : Primary-0, Secondary-0, RAID Level Qualifier-0
+Size                : 10.692 TB
+Sector Size         : 512
+Parity Size         : 0
+State               : Optimal
+Strip Size          : 256 KB
+Number Of Drives    : 1
+Span Depth          : 1
+Default Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Disk's Default
+Encryption Type     : None
+Bad Blocks Exist: No
+Is VD Cached: No
+
+
+Virtual Drive: 1 (Target Id: 1)
+Name                :NonRAID Disk 1
+RAID Level          : Primary-0, Secondary-0, RAID Level Qualifier-0
+Size                : 10.692 TB
+Sector Size         : 512
+Parity Size         : 0
+State               : Optimal
+Strip Size          : 256 KB
+Number Of Drives    : 1
+Span Depth          : 1
+Default Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Disk's Default
+Encryption Type     : None
+Bad Blocks Exist: No
+Is VD Cached: No
+
+
+Virtual Drive: 2 (Target Id: 2)
+Name                :NonRAID Disk 2
+RAID Level          : Primary-0, Secondary-0, RAID Level Qualifier-0
+Size                : 10.692 TB
+Sector Size         : 512
+Parity Size         : 0
+State               : Optimal
+Strip Size          : 256 KB
+Number Of Drives    : 1
+Span Depth          : 1
+Default Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Disk's Default
+Encryption Type     : None
+Bad Blocks Exist: No
+Is VD Cached: No
+
+
+Virtual Drive: 3 (Target Id: 3)
+Name                :NonRAID Disk 3
+RAID Level          : Primary-0, Secondary-0, RAID Level Qualifier-0
+Size                : 10.692 TB
+Sector Size         : 512
+Parity Size         : 0
+State               : Optimal
+Strip Size          : 256 KB
+Number Of Drives    : 1
+Span Depth          : 1
+Default Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Disk's Default
+Encryption Type     : None
+Bad Blocks Exist: No
+Is VD Cached: No
+
+
+Virtual Drive: 4 (Target Id: 4)
+Name                :NonRAID Disk 4
+RAID Level          : Primary-0, Secondary-0, RAID Level Qualifier-0
+Size                : 10.692 TB
+Sector Size         : 512
+Parity Size         : 0
+State               : Optimal
+Strip Size          : 256 KB
+Number Of Drives    : 1
+Span Depth          : 1
+Default Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Disk's Default
+Encryption Type     : None
+Bad Blocks Exist: No
+Is VD Cached: No
+
+
+Virtual Drive: 5 (Target Id: 5)
+Name                :NonRAID Disk 5
+RAID Level          : Primary-0, Secondary-0, RAID Level Qualifier-0
+Size                : 10.692 TB
+Sector Size         : 512
+Parity Size         : 0
+State               : Optimal
+Strip Size          : 256 KB
+Number Of Drives    : 1
+Span Depth          : 1
+Default Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Disk's Default
+Encryption Type     : None
+Bad Blocks Exist: No
+Is VD Cached: No
+
+
+Virtual Drive: 6 (Target Id: 6)
+Name                :NonRAID Disk 6
+RAID Level          : Primary-0, Secondary-0, RAID Level Qualifier-0
+Size                : 10.692 TB
+Sector Size         : 512
+Parity Size         : 0
+State               : Optimal
+Strip Size          : 256 KB
+Number Of Drives    : 1
+Span Depth          : 1
+Default Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Disk's Default
+Encryption Type     : None
+Bad Blocks Exist: No
+Is VD Cached: No
+
+
+Virtual Drive: 7 (Target Id: 7)
+Name                :NonRAID Disk 7
+RAID Level          : Primary-0, Secondary-0, RAID Level Qualifier-0
+Size                : 10.692 TB
+Sector Size         : 512
+Parity Size         : 0
+State               : Optimal
+Strip Size          : 256 KB
+Number Of Drives    : 1
+Span Depth          : 1
+Default Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Disk's Default
+Encryption Type     : None
+Bad Blocks Exist: No
+Is VD Cached: No
+
+
+Virtual Drive: 8 (Target Id: 8)
+Name                :NonRAID Disk 8
+RAID Level          : Primary-0, Secondary-0, RAID Level Qualifier-0
+Size                : 10.692 TB
+Sector Size         : 512
+Parity Size         : 0
+State               : Optimal
+Strip Size          : 256 KB
+Number Of Drives    : 1
+Span Depth          : 1
+Default Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Disk's Default
+Encryption Type     : None
+Bad Blocks Exist: No
+Is VD Cached: No
+
+
+Virtual Drive: 9 (Target Id: 9)
+Name                :NonRAID Disk 9
+RAID Level          : Primary-0, Secondary-0, RAID Level Qualifier-0
+Size                : 10.692 TB
+Sector Size         : 512
+Parity Size         : 0
+State               : Optimal
+Strip Size          : 256 KB
+Number Of Drives    : 1
+Span Depth          : 1
+Default Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Disk's Default
+Encryption Type     : None
+Bad Blocks Exist: No
+Is VD Cached: No
+
+
+Virtual Drive: 10 (Target Id: 10)
+Name                :NonRAID Disk 10
+RAID Level          : Primary-0, Secondary-0, RAID Level Qualifier-0
+Size                : 10.692 TB
+Sector Size         : 512
+Parity Size         : 0
+State               : Optimal
+Strip Size          : 256 KB
+Number Of Drives    : 1
+Span Depth          : 1
+Default Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Disk's Default
+Encryption Type     : None
+Bad Blocks Exist: No
+Is VD Cached: No
+
+
+Virtual Drive: 11 (Target Id: 11)
+Name                :NonRAID Disk 11
+RAID Level          : Primary-0, Secondary-0, RAID Level Qualifier-0
+Size                : 10.692 TB
+Sector Size         : 512
+Parity Size         : 0
+State               : Optimal
+Strip Size          : 256 KB
+Number Of Drives    : 1
+Span Depth          : 1
+Default Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Disk's Default
+Encryption Type     : None
+Bad Blocks Exist: No
+Is VD Cached: No
+
+
+Virtual Drive: 12 (Target Id: 12)
+Name                :NonRAID Disk 12
+RAID Level          : Primary-0, Secondary-0, RAID Level Qualifier-0
+Size                : 447.130 GB
+Sector Size         : 512
+Parity Size         : 0
+State               : Optimal
+Strip Size          : 256 KB
+Number Of Drives    : 1
+Span Depth          : 1
+Default Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Disk's Default
+Encryption Type     : None
+Bad Blocks Exist: No
+Is VD Cached: No
+
+
+Virtual Drive: 13 (Target Id: 13)
+Name                :NonRAID Disk 13
+RAID Level          : Primary-0, Secondary-0, RAID Level Qualifier-0
+Size                : 447.130 GB
+Sector Size         : 512
+Parity Size         : 0
+State               : Optimal
+Strip Size          : 256 KB
+Number Of Drives    : 1
+Span Depth          : 1
+Default Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Disk's Default
+Encryption Type     : None
+Bad Blocks Exist: No
+Is VD Cached: No
+
+
+
+Exit Code: 0x00

@@ -1,0 +1,671 @@
+                                     
+Adapter #0
+
+Enclosure Device ID: 64
+Slot Number: 0
+Drive's position: DiskGroup: 0, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 0
+WWN: 5000CCA2940E56BB
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 10.692 TB [0x558a00000 Sectors]
+Non Coerced Size: 10.691 TB [0x558900000 Sectors]
+Coerced Size: 10.691 TB [0x558900000 Sectors]
+Sector Size:  512
+Firmware state: Online, Spun Up
+Device Firmware Level: NS07
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000cca2940e56b9
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: HGST    HUH721212AL5200 NS07D5G7WG8L            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 12.0Gb/s 
+Link Speed: 12.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :28C (82.40 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  Yes 
+PI: PI with type 2
+Port-0 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 64
+Slot Number: 1
+Drive's position: DiskGroup: 1, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 1
+WWN: 5000CCA2940F1B93
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 10.692 TB [0x558a00000 Sectors]
+Non Coerced Size: 10.691 TB [0x558900000 Sectors]
+Coerced Size: 10.691 TB [0x558900000 Sectors]
+Sector Size:  512
+Firmware state: Online, Spun Up
+Device Firmware Level: NS07
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000cca2940f1b91
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: HGST    HUH721212AL5200 NS07D5G89KNL            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 12.0Gb/s 
+Link Speed: 12.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :27C (80.60 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  Yes 
+PI: PI with type 2
+Port-0 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 64
+Slot Number: 2
+Drive's position: DiskGroup: 2, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 2
+WWN: 5000CCA2940F9E73
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 10.692 TB [0x558a00000 Sectors]
+Non Coerced Size: 10.691 TB [0x558900000 Sectors]
+Coerced Size: 10.691 TB [0x558900000 Sectors]
+Sector Size:  512
+Firmware state: Online, Spun Up
+Device Firmware Level: NS07
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000cca2940f9e71
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: HGST    HUH721212AL5200 NS07D5G8L8VL            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 12.0Gb/s 
+Link Speed: 12.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :27C (80.60 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  Yes 
+PI: PI with type 2
+Port-0 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 64
+Slot Number: 3
+Drive's position: DiskGroup: 3, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 3
+WWN: 5000CCA2940F67BF
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 10.692 TB [0x558a00000 Sectors]
+Non Coerced Size: 10.691 TB [0x558900000 Sectors]
+Coerced Size: 10.691 TB [0x558900000 Sectors]
+Sector Size:  512
+Firmware state: Online, Spun Up
+Device Firmware Level: NS07
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000cca2940f67bd
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: HGST    HUH721212AL5200 NS07D5G8GMXL            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 12.0Gb/s 
+Link Speed: 12.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :27C (80.60 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  Yes 
+PI: PI with type 2
+Port-0 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 64
+Slot Number: 4
+Drive's position: DiskGroup: 4, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 4
+WWN: 5000CCA2940F236F
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 10.692 TB [0x558a00000 Sectors]
+Non Coerced Size: 10.691 TB [0x558900000 Sectors]
+Coerced Size: 10.691 TB [0x558900000 Sectors]
+Sector Size:  512
+Firmware state: Online, Spun Up
+Device Firmware Level: NS07
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000cca2940f236d
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: HGST    HUH721212AL5200 NS07D5G8A2WL            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 12.0Gb/s 
+Link Speed: 12.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :26C (78.80 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  Yes 
+PI: PI with type 2
+Port-0 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 64
+Slot Number: 5
+Drive's position: DiskGroup: 5, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 5
+WWN: 5000CCA2940F6ADF
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 10.692 TB [0x558a00000 Sectors]
+Non Coerced Size: 10.691 TB [0x558900000 Sectors]
+Coerced Size: 10.691 TB [0x558900000 Sectors]
+Sector Size:  512
+Firmware state: Online, Spun Up
+Device Firmware Level: NS07
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000cca2940f6add
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: HGST    HUH721212AL5200 NS07D5G8GVBL            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 12.0Gb/s 
+Link Speed: 12.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :26C (78.80 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  Yes 
+PI: PI with type 2
+Port-0 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 64
+Slot Number: 6
+Drive's position: DiskGroup: 6, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 6
+WWN: 5000CCA2940F38BF
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 10.692 TB [0x558a00000 Sectors]
+Non Coerced Size: 10.691 TB [0x558900000 Sectors]
+Coerced Size: 10.691 TB [0x558900000 Sectors]
+Sector Size:  512
+Firmware state: Online, Spun Up
+Device Firmware Level: NS07
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000cca2940f38bd
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: HGST    HUH721212AL5200 NS07D5G8BHWL            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 12.0Gb/s 
+Link Speed: 12.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :27C (80.60 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  Yes 
+PI: PI with type 2
+Port-0 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 64
+Slot Number: 7
+Drive's position: DiskGroup: 7, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 7
+WWN: 5000CCA2940F4E83
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 10.692 TB [0x558a00000 Sectors]
+Non Coerced Size: 10.691 TB [0x558900000 Sectors]
+Coerced Size: 10.691 TB [0x558900000 Sectors]
+Sector Size:  512
+Firmware state: Online, Spun Up
+Device Firmware Level: NS07
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000cca2940f4e81
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: HGST    HUH721212AL5200 NS07D5G8DYUL            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 12.0Gb/s 
+Link Speed: 12.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :27C (80.60 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  Yes 
+PI: PI with type 2
+Port-0 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 64
+Slot Number: 8
+Drive's position: DiskGroup: 8, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 8
+WWN: 5000CCA2940F8A23
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 10.692 TB [0x558a00000 Sectors]
+Non Coerced Size: 10.691 TB [0x558900000 Sectors]
+Coerced Size: 10.691 TB [0x558900000 Sectors]
+Sector Size:  512
+Firmware state: Online, Spun Up
+Device Firmware Level: NS07
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000cca2940f8a21
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: HGST    HUH721212AL5200 NS07D5G8JXXL            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 12.0Gb/s 
+Link Speed: 12.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :26C (78.80 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  Yes 
+PI: PI with type 2
+Port-0 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 64
+Slot Number: 9
+Drive's position: DiskGroup: 9, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 9
+WWN: 5000CCA2940F92D7
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 10.692 TB [0x558a00000 Sectors]
+Non Coerced Size: 10.691 TB [0x558900000 Sectors]
+Coerced Size: 10.691 TB [0x558900000 Sectors]
+Sector Size:  512
+Firmware state: Online, Spun Up
+Device Firmware Level: NS07
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000cca2940f92d5
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: HGST    HUH721212AL5200 NS07D5G8KHWL            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 12.0Gb/s 
+Link Speed: 12.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :28C (82.40 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  Yes 
+PI: PI with type 2
+Port-0 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 64
+Slot Number: 10
+Drive's position: DiskGroup: 10, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 10
+WWN: 5000CCA2940F8C8F
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 10.692 TB [0x558a00000 Sectors]
+Non Coerced Size: 10.691 TB [0x558900000 Sectors]
+Coerced Size: 10.691 TB [0x558900000 Sectors]
+Sector Size:  512
+Firmware state: Online, Spun Up
+Device Firmware Level: NS07
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000cca2940f8c8d
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: HGST    HUH721212AL5200 NS07D5G8K2XL            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 12.0Gb/s 
+Link Speed: 12.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :28C (82.40 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  Yes 
+PI: PI with type 2
+Port-0 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 64
+Slot Number: 11
+Drive's position: DiskGroup: 11, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 11
+WWN: 5000CCA2940F88DB
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 10.692 TB [0x558a00000 Sectors]
+Non Coerced Size: 10.691 TB [0x558900000 Sectors]
+Coerced Size: 10.691 TB [0x558900000 Sectors]
+Sector Size:  512
+Firmware state: Online, Spun Up
+Device Firmware Level: NS07
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000cca2940f88d9
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: HGST    HUH721212AL5200 NS07D5G8JV8L            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 12.0Gb/s 
+Link Speed: 12.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :28C (82.40 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  Yes 
+PI: PI with type 2
+Port-0 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: 12.0Gb/s 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 64
+Slot Number: 12
+Drive's position: DiskGroup: 12, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 12
+WWN: 55cd2e4151c19791
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SATA
+
+Raw Size: 447.130 GB [0x37e436b0 Sectors]
+Non Coerced Size: 446.630 GB [0x37d436b0 Sectors]
+Coerced Size: 446.625 GB [0x37d40000 Sectors]
+Sector Size:  512
+Firmware state: Online, Spun Up
+Device Firmware Level: DL65
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x500056b3ae3358cc
+Connected Port Number: 0(path0) 
+Inquiry Data: BTYG95130FL3480BGN  SSDSC2KG480G8R                          XCV1DL65
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 6.0Gb/s 
+Link Speed: 6.0Gb/s 
+Media Type: Solid State Device
+Drive Temperature :34C (93.20 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  No
+PI: No PI
+Drive's NCQ setting : Enabled
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 64
+Slot Number: 13
+Drive's position: DiskGroup: 13, Span: 0, Arm: 0
+Enclosure position: 1
+Device Id: 13
+WWN: 55cd2e4151c1b272
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SATA
+
+Raw Size: 447.130 GB [0x37e436b0 Sectors]
+Non Coerced Size: 446.630 GB [0x37d436b0 Sectors]
+Coerced Size: 446.625 GB [0x37d40000 Sectors]
+Sector Size:  512
+Firmware state: Online, Spun Up
+Device Firmware Level: DL65
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x500056b3ae3358cd
+Connected Port Number: 0(path0) 
+Inquiry Data: BTYG95130JEY480BGN  SSDSC2KG480G8R                          XCV1DL65
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 6.0Gb/s 
+Link Speed: 6.0Gb/s 
+Media Type: Solid State Device
+Drive Temperature :34C (93.20 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  No
+PI: No PI
+Drive's NCQ setting : Enabled
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+
+Exit Code: 0x00

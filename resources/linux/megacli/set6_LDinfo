@@ -1,0 +1,82 @@
+                                     
+
+Adapter 0 -- Virtual Drive Information:
+Virtual Drive: 0 (Target Id: 0)
+Name                :Virtual Disk 0
+RAID Level          : Primary-1, Secondary-0, RAID Level Qualifier-0
+Size                : 558.375 GB
+Sector Size         : 512
+Mirror Data         : 558.375 GB
+State               : Optimal
+Strip Size          : 64 KB
+Number Of Drives    : 2
+Span Depth          : 1
+Default Cache Policy: WriteBack, ReadAdaptive, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteBack, ReadAdaptive, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Disk's Default
+Encryption Type     : None
+Default Power Savings Policy: Controller Defined
+Current Power Savings Policy: None
+Can spin up in 1 minute: Yes
+LD has drives that support T10 power conditions: Yes
+LD's IO profile supports MAX power savings with cached writes: No
+Bad Blocks Exist: No
+Is VD Cached: Yes
+Cache Cade Type : Read Only
+
+
+Virtual Drive: 1 (Target Id: 1)
+Name                :Virtual Disk 1
+RAID Level          : Primary-0, Secondary-0, RAID Level Qualifier-0
+Size                : 223.0 GB
+Sector Size         : 512
+Parity Size         : 0
+State               : Optimal
+Strip Size          : 64 KB
+Number Of Drives    : 1
+Span Depth          : 1
+Default Cache Policy: WriteBack, ReadAdaptive, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteBack, ReadAdaptive, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Enabled
+Encryption Type     : None
+Default Power Savings Policy: Controller Defined
+Current Power Savings Policy: None
+Can spin up in 1 minute: No
+LD has drives that support T10 power conditions: No
+LD's IO profile supports MAX power savings with cached writes: No
+Bad Blocks Exist: No
+Is VD Cached: No
+
+
+Virtual Drive: 2 (Target Id: 2)
+Name                :Virtual Disk 2
+RAID Level          : Primary-1, Secondary-0, RAID Level Qualifier-0
+Size                : 8.984 TB
+Sector Size         : 512
+Mirror Data         : 8.984 TB
+State               : Optimal
+Strip Size          : 64 KB
+Number Of Drives per span:2
+Span Depth          : 5
+Default Cache Policy: WriteBack, ReadAdaptive, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteBack, ReadAdaptive, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Disk's Default
+Encryption Type     : None
+Default Power Savings Policy: Controller Defined
+Current Power Savings Policy: None
+Can spin up in 1 minute: Yes
+LD has drives that support T10 power conditions: Yes
+LD's IO profile supports MAX power savings with cached writes: No
+Bad Blocks Exist: No
+Is VD Cached: Yes
+Cache Cade Type : Read Only
+
+
+
+Exit Code: 0x00
