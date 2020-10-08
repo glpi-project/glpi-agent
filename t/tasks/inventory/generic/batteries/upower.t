@@ -22,14 +22,14 @@ my %testUpowerEnumerate = (
 my %testUpowerInfos = (
     'infos_1.txt' => {
         NAME         => 'G71C000G7210',
-        CAPACITY     => '39,264 Wh',
+        CAPACITY     => '51,504 Wh',
         VOLTAGE      => '14,8 V',
         CHEMISTRY    => 'lithium-ion',
         SERIAL       => 0,
     },
     'infos_2.txt' => {
         NAME         => 'DELL JHXPY53',
-        CAPACITY     => '53,4052 Wh',
+        CAPACITY     => '57,532 Wh',
         VOLTAGE      => '8,541 V',
         CHEMISTRY    => 'lithium-polymer',
         SERIAL       => 3682,
@@ -37,7 +37,7 @@ my %testUpowerInfos = (
     },
     'infos_3.txt' => {
         NAME         => 'G750-59',
-        CAPACITY     => '74,496 Wh',
+        CAPACITY     => '89,208 Wh',
         VOLTAGE      => '15,12 V',
         CHEMISTRY    => 'lithium-ion',
         MANUFACTURER => 'ASUSTeK',
@@ -53,7 +53,7 @@ my %testUpowerMerged = (
         merged => [
             {
                 NAME         => 'G71C000G7210',
-                CAPACITY     => '39,264 Wh',
+                CAPACITY     => '51,504 Wh',
                 VOLTAGE      => '14,8 V',
                 CHEMISTRY    => 'lithium-ion',
                 SERIAL       => 0,
@@ -77,7 +77,7 @@ my %testUpowerMerged = (
         merged => [
             {
                 NAME         => 'DELL JHXPY53',
-                CAPACITY     => '53,4052 Wh',
+                CAPACITY     => '57,532 Wh',
                 VOLTAGE      => '8,541 V',
                 CHEMISTRY    => 'lithium-polymer',
                 SERIAL       => 3682,

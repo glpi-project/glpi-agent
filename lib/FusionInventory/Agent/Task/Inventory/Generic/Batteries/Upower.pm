@@ -114,7 +114,7 @@ sub _getBatteryFromUpower {
     $battery->{VOLTAGE} = $voltage
         if $voltage;
 
-    my $capacity = getCanonicalCapacity($data->{'energy-full'}, $voltage);
+    my $capacity = getCanonicalCapacity($data->{'energy-full-design'}, $voltage);
     $battery->{CAPACITY} = $capacity
         if $capacity;
 
