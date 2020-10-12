@@ -50,14 +50,12 @@ sub getCanonicalVoltage {
 
     return unless $value;
 
-    # We expect to return voltage in mV
-    if ($value =~ /^(\d+) mV$/i) {
-        return int($1);
-    } elsif ($value =~ /^(\d+) V$/i) {
-        return int($1) * 1000;
-    }
+    my ($voltage, $unit) = $value =~ /^([,.\d]+) \s* (m?V)$/xi
+        or return;
 
-    return $value;
+    $voltage =~ s/,/./;
+
+    return lc($unit) eq 'mv' ? int($voltage) : int($voltage * 1000) ;
 }
 
 sub getCanonicalCapacity {
@@ -65,20 +63,25 @@ sub getCanonicalCapacity {
 
     return unless $value;
 
+    my ($capacity, $unit) = $value =~ /^([,.\d]+) \s* (m?[WA]?h)$/xi
+        or return;
+
+    $capacity =~ s/,/./;
+
     # We expect to return capacity in mWh, $voltage is expected to be in mV
-    if ($value =~ /^(\d+) mWh$/i) {
-        return int($1);
-    } elsif ($value =~ /^(\d+) Wh$/i) {
-        return int($1) * 1000;
-    } elsif ($value =~ /^(\d+) mAh$/i) {
+    if ($unit =~ /^mWh$/i) {
+        return int($capacity);
+    } elsif ($unit =~ /^Wh$/i) {
+        return int($capacity * 1000);
+    } elsif ($unit =~ /^mAh$/i) {
         return unless $voltage;
-        return int($1 * $voltage / 1000);
-    } elsif ($value =~ /^(\d+) Ah$/i) {
+        return int($capacity * $voltage / 1000);
+    } elsif ($unit =~ /^Ah$/i) {
         return unless $voltage;
-        return int($1) * $voltage;
+        return int($capacity * $voltage);
     }
 
-    return $value;
+    return undef;
 }
 
 # Also implement a batteries class, but split name on new line to not export it in CPAN
@@ -245,7 +248,7 @@ Returns the list of supported/expected battery fields
 
 =head2 getCanonicalVoltage($value)
 
-Returns the list of supported/expected battery fields
+Returns the canonical voltage in mV
 
 =head2 getCanonicalCapacity($value,$voltage)
 

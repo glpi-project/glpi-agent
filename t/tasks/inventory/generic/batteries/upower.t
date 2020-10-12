@@ -22,23 +22,23 @@ my %testUpowerEnumerate = (
 my %testUpowerInfos = (
     'infos_1.txt' => {
         NAME         => 'G71C000G7210',
-        CAPACITY     => '51,504 Wh',
-        VOLTAGE      => '14,8 V',
+        CAPACITY     => '51504',
+        VOLTAGE      => '14800',
         CHEMISTRY    => 'lithium-ion',
         SERIAL       => 0,
     },
     'infos_2.txt' => {
         NAME         => 'DELL JHXPY53',
-        CAPACITY     => '57,532 Wh',
-        VOLTAGE      => '8,541 V',
+        CAPACITY     => '57532',
+        VOLTAGE      => '8541',
         CHEMISTRY    => 'lithium-polymer',
         SERIAL       => 3682,
         MANUFACTURER => 'SMP',
     },
     'infos_3.txt' => {
         NAME         => 'G750-59',
-        CAPACITY     => '89,208 Wh',
-        VOLTAGE      => '15,12 V',
+        CAPACITY     => '89208',
+        VOLTAGE      => '15120',
         CHEMISTRY    => 'lithium-ion',
         MANUFACTURER => 'ASUSTeK',
         SERIAL       => 0,
@@ -53,8 +53,8 @@ my %testUpowerMerged = (
         merged => [
             {
                 NAME         => 'G71C000G7210',
-                CAPACITY     => '51,504 Wh',
-                VOLTAGE      => '14,8 V',
+                CAPACITY     => '51504',
+                VOLTAGE      => '14800',
                 CHEMISTRY    => 'lithium-ion',
                 SERIAL       => 0,
             }
@@ -77,8 +77,8 @@ my %testUpowerMerged = (
         merged => [
             {
                 NAME         => 'DELL JHXPY53',
-                CAPACITY     => '57,532 Wh',
-                VOLTAGE      => '8,541 V',
+                CAPACITY     => '57532',
+                VOLTAGE      => '8541',
                 CHEMISTRY    => 'lithium-polymer',
                 SERIAL       => 3682,
                 MANUFACTURER => 'SMP',
