@@ -8798,23 +8798,23 @@ my %lspci_tests = (
 
 my %hdparm_tests = (
     linux1 => {
-        firmware  => 'CXM13D1Q',
-        model     => 'SAMSUNG SSD PM830 mSATA 256GB',
-        serial    => 'S0XPNYAD412339',
-        size      => '256060',
-        transport => 'SATA',
-        wwn       => '5002538043584d30'
+        FIRMWARE     => 'CXM13D1Q',
+        MODEL        => 'SAMSUNG SSD PM830 mSATA 256GB',
+        SERIALNUMBER => 'S0XPNYAD412339',
+        DISKSIZE     => '256060',
+        DESCRIPTION  => 'SATA',
+        WWN          => '5002538043584d30'
     },
     linux2 => {
-        serial    => '',
-        size      => '77309',
+        SERIALNUMBER => '',
+        DISKSIZE     => '77309',
     },
     linux3 => {
-        firmware  => 'GKAOAC5A',
-        model     => 'HITACHI HUA7210SASUN1.0T 0812G2959E',
-        serial    => 'GTE000PAJ2959E',
-        size      => '1000204',
-        wwn       => '5000cca216dd3a2d'
+        FIRMWARE     => 'GKAOAC5A',
+        MODEL        => 'HITACHI HUA7210SASUN1.0T 0812G2959E',
+        SERIALNUMBER => 'GTE000PAJ2959E',
+        DISKSIZE     => '1000204',
+        WWN          => '5000cca216dd3a2d'
     }
 );
 

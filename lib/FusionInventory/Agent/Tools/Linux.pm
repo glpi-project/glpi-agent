@@ -279,6 +279,10 @@ sub getDevicesFromProc {
                     'removable' : 'disk'
         };
 
+        # WWN
+        my $wwn = _getValueFromSysProc($logger, $name, 'wwid', $root, $dump);
+        $device->{WWN} = $wwn if $wwn && $wwn =~ s/^naa\./wwn-/;
+
         # Support PCI or other bus case as description
         foreach my $subsystem ("device/subsystem","device/device/subsystem") {
             my $link = _readLinkFromSysFs("/sys/block/$name/$subsystem", $root, $dump);

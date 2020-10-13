@@ -191,12 +191,12 @@ sub getHdparmInfo {
 
     my $info;
     while (my $line = <$handle>) {
-        $info->{model}     = $1 if $line =~ /Model Number:\s+(\w.+\w)/;
-        $info->{firmware}  = $1 if $line =~ /Firmware Revision:\s+(\w+)/;
-        $info->{serial}    = $1 if $line =~ /Serial Number:\s+(\w*)/;
-        $info->{size}      = $1 if $line =~ /1000:\s+(\d*)\sMBytes/;
-        $info->{transport} = $1 if $line =~ /Transport:.+(SCSI|SATA|USB)/;
-        $info->{wwn}       = $1 if $line =~ /WWN Device Identifier:\s+(\w+)/;
+        $info->{DESCRIPTION}  = $1 if $line =~ /Transport:.+(SCSI|SATA|USB)/;
+        $info->{DISKSIZE}     = $1 if $line =~ /1000:\s+(\d*)\sMBytes/;
+        $info->{FIRMWARE}     = $1 if $line =~ /Firmware Revision:\s+(\w+)/;
+        $info->{MODEL}        = $1 if $line =~ /Model Number:\s+(\w.+\w)/;
+        $info->{SERIALNUMBER} = $1 if $line =~ /Serial Number:\s+(\w*)/;
+        $info->{WWN}          = $1 if $line =~ /WWN Device Identifier:\s+(\w+)/;
     }
     close $handle;
 

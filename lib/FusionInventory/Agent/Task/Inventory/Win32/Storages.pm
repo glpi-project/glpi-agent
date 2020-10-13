@@ -35,10 +35,9 @@ sub doInventory {
                 device => "/dev/hd" . chr(ord('a') + $1),
                 logger => $logger
             );
-            $storage->{MODEL}    = $info->{model}    if $info->{model};
-            $storage->{FIRMWARE} = $info->{firmware} if $info->{firmware};
-            $storage->{SERIAL}   = $info->{serial}   if $info->{serial};
-            $storage->{DISKSIZE} = $info->{size}     if $info->{size};
+            for my $k (qw(MODEL FIRMWARE SERIALNUMBER DISKSIZE)) {
+                $storage->{$k} = $info->{$k} if defined $info->{$k};
+            }
         }
 
         $inventory->addEntry(
