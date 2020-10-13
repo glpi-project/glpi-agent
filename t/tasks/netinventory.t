@@ -508,15 +508,19 @@ $client_module->mock('send', sub {
             or die "\nUnexpected $query sent message:\n$sent\n";
 
         # Dirty hack: the test was working as messages was ordered thanks to not
-        # working multi-threading algorithm. So try to compare message while they
-        # have the same length
-        my $max = @{$response};
-        my @others = ();
-        while ($max-- && length($sent) != length($message)) {
-            push @others, $message;
-            $message = shift @{$response};
+        # working multi-threading algorithm. So try to compare messages while they
+        # have the same length but we need to handle the case where many responses has
+        # the same length and in that case, we better try to find it in the list
+        my @matchs = grep { length($sent) == length($_) } @{$response};
+        if (@matchs) {
+            my $max = @{$response};
+            my @others = ();
+            while ($max-- && @matchs>1 ? $sent ne $message : length($sent) != length($message)) {
+                push @others, $message;
+                $message = shift @{$response};
+            }
+            unshift @{$response}, @others if @others;
         }
-        unshift @{$response}, @others if @others;
 
         # When received in another thread than test thread, keep %params to be
         # re-used for the same call later from the test thread
