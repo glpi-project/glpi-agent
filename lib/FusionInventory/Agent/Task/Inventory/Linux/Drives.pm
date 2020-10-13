@@ -157,10 +157,15 @@ sub _getFilesystems {
             next unless $devicemapper{$uuid};
 
             # Lookup for crypto devicemapper slaves
-            foreach my $slavefile (glob ("$devicemapper{$uuid}/slaves/*/dm/name")) {
-                my $name = getFirstLine(file => $slavefile)
-                    or next;
-                # Check cryptsetup status for the found slave
+            my @names = grep { defined($_) && length($_) } map {
+                getFirstLine(file => $_)
+            } glob ("$devicemapper{$uuid}/slaves/*/dm/name");
+
+            # Finaly we may try on the device itself, see #825
+            push @names, $filesystem->{VOLUMN};
+
+            foreach my $name (@names) {
+                # Check cryptsetup status for the found slave/device
                 unless ($cryptsetup{$name}) {
                     my $handle = getFileHandle( command => "cryptsetup status $name" )
                         or next;
