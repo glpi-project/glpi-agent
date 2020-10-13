@@ -102,6 +102,21 @@ sub _getBatteryFromSysClass {
             if $capacity;
     }
 
+    # Real ernergy is provided in µWh
+    my $realCapacity = getFirstLine(file => "$params{psu}/energy_full");
+    $battery->{REAL_CAPACITY} = int($realCapacity/1000)
+        if $realCapacity;
+
+
+    # Real charge is provided in µAh
+    unless ($realCapacity) {
+        my $realCharge = getFirstLine(file => "$params{psu}/charge_full");
+        $realCharge = getCanonicalCapacity(int($realCharge/1000)." mAh", $battery->{VOLTAGE})
+            if $realCharge && $battery->{VOLTAGE};
+        $battery->{REAL_CAPACITY} = $realCharge
+            if $realCharge;
+    }
+
     return $battery;
 }
 

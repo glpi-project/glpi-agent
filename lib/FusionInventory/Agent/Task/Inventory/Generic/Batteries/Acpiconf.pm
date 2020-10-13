@@ -96,6 +96,10 @@ sub _getBatteryFromAcpiconf {
     $battery->{CAPACITY} = $capacity
         if $capacity;
 
+    my $realCapacity = getCanonicalCapacity($data->{'Last full capacity'}, $voltage);
+    $battery->{REAL_CAPACITY} = $realCapacity
+        if $realCapacity;
+
     return $battery;
 }
 
