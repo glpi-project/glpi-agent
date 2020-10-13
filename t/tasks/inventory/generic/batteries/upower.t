@@ -21,27 +21,30 @@ my %testUpowerEnumerate = (
 
 my %testUpowerInfos = (
     'infos_1.txt' => {
-        NAME         => 'G71C000G7210',
-        CAPACITY     => '51504',
-        VOLTAGE      => '14800',
-        CHEMISTRY    => 'lithium-ion',
-        SERIAL       => 0,
+        NAME            => 'G71C000G7210',
+        CAPACITY        => '51504',
+        VOLTAGE         => '14800',
+        CHEMISTRY       => 'lithium-ion',
+        SERIAL          => 0,
+        REAL_CAPACITY   => '39264',
     },
     'infos_2.txt' => {
-        NAME         => 'DELL JHXPY53',
-        CAPACITY     => '57532',
-        VOLTAGE      => '8541',
-        CHEMISTRY    => 'lithium-polymer',
-        SERIAL       => 3682,
-        MANUFACTURER => 'SMP',
+        NAME            => 'DELL JHXPY53',
+        CAPACITY        => '57532',
+        VOLTAGE         => '8541',
+        CHEMISTRY       => 'lithium-polymer',
+        SERIAL          => 3682,
+        MANUFACTURER    => 'SMP',
+        REAL_CAPACITY   => '53405',
     },
     'infos_3.txt' => {
-        NAME         => 'G750-59',
-        CAPACITY     => '89208',
-        VOLTAGE      => '15120',
-        CHEMISTRY    => 'lithium-ion',
-        MANUFACTURER => 'ASUSTeK',
-        SERIAL       => 0,
+        NAME            => 'G750-59',
+        CAPACITY        => '89208',
+        VOLTAGE         => '15120',
+        CHEMISTRY       => 'lithium-ion',
+        MANUFACTURER    => 'ASUSTeK',
+        SERIAL          => 0,
+        REAL_CAPACITY   => '74496',
     },
 );
 
@@ -52,11 +55,12 @@ my %testUpowerMerged = (
         step1 => [],
         merged => [
             {
-                NAME         => 'G71C000G7210',
-                CAPACITY     => '51504',
-                VOLTAGE      => '14800',
-                CHEMISTRY    => 'lithium-ion',
-                SERIAL       => 0,
+                NAME            => 'G71C000G7210',
+                CAPACITY        => '51504',
+                VOLTAGE         => '14800',
+                CHEMISTRY       => 'lithium-ion',
+                SERIAL          => 0,
+                REAL_CAPACITY   => '39264'
             }
         ],
     },
@@ -76,13 +80,14 @@ my %testUpowerMerged = (
         ],
         merged => [
             {
-                NAME         => 'DELL JHXPY53',
-                CAPACITY     => '57532',
-                VOLTAGE      => '8541',
-                CHEMISTRY    => 'lithium-polymer',
-                SERIAL       => 3682,
-                MANUFACTURER => 'SMP',
-                DATE         => '10/11/2015',
+                NAME            => 'DELL JHXPY53',
+                CAPACITY        => '57532',
+                VOLTAGE         => '8541',
+                CHEMISTRY       => 'lithium-polymer',
+                SERIAL          => 3682,
+                MANUFACTURER    => 'SMP',
+                DATE            => '10/11/2015',
+                REAL_CAPACITY   => '53405'
             }
         ],
     },
