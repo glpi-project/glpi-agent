@@ -484,6 +484,25 @@ my %tests = (
             CHASSIS_TYPE  => 'Notebook',
             UUID          => '725BA801-507B-11CB-95E6-C66052AAC597'
         }
+    },
+    'surface-go-2' => {
+        bios => {
+            BMANUFACTURER => 'Microsoft Corporation',
+            MSN           => '002460202151',
+            BDATE         => '02/07/2020',
+            SMODEL        => 'Surface Go 2',
+            SMANUFACTURER => 'Microsoft Corporation',
+            SKUNUMBER     => 'Surface_Go_2_1926',
+            MMANUFACTURER => 'Microsoft Corporation',
+            BVERSION      => '1.0.05',
+            MMODEL        => 'Surface Go 2',
+            SSN           => '48368130c2f8',
+            ASSETTAG      => undef
+        },
+        hardware => {
+            CHASSIS_TYPE  => 'Laptop',
+            UUID          => '0e985de7-da00-4662-a18c-a957308c3ad7'
+        }
     }
 );
 
