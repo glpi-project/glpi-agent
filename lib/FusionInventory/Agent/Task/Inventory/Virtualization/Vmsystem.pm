@@ -125,7 +125,7 @@ sub _getType {
 
     if ($bios->{SMANUFACTURER}) {
         return 'QEMU'    if $bios->{SMANUFACTURER} =~ /QEMU/;
-        return 'Hyper-V' if $bios->{SMANUFACTURER} =~ /Microsoft/;
+        return 'Hyper-V' if $bios->{SMANUFACTURER} =~ /Microsoft/ && $bios->{SMODEL} && $bios->{SMODEL} =~ /Virtual/;
         return 'VMware'  if $bios->{SMANUFACTURER} =~ /VMware/;
     }
     if ($bios->{BMANUFACTURER}) {
