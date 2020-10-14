@@ -110,6 +110,24 @@ sub _getMemories {
                 $memory->{CAPACITY} = getCanonicalSize($1, 1024);
             }
 
+            if ($info->{'Part Number'}
+                    &&
+                $info->{'Part Number'} !~ /
+                    DIMM            |
+                    NOT\s*AVAILABLE |
+                    None            |
+                    Not\s*Specified |
+                    O\.E\.M\.       |
+                    Part\s*Num      |
+                    Ser\s*Num       |
+                    Unknown
+                /xi
+            ) {
+                $memory->{MODEL} = trimWhitespace(
+                    getSanitizedString( hex2char($info->{'Part Number'}) )
+                );
+            }
+
             push @$memories, $memory;
         }
     } elsif ($infos->{6}) {

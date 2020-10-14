@@ -120,36 +120,37 @@ sub getCanonicalManufacturer {
         HygonGenuine => 'Hygon'
     );
 
+    my %regexp = (
+        "Apple"           => qr/^APPLE/i,
+        "Hewlett-Packard" => qr/^(hp|HP|(?i)hewlett[ -]packard)/,
+        "Hitachi"         => qr/^(HD|IC|HU|HGST)/,
+        "Seagate"         => qr/^(ST|(?i)seagate)/,
+        "Sony"            => qr/^OPTIARC/i,
+        "Western Digital" => qr/^(WDC|(?i)western)/,
+    );
+
     if (exists $manufacturers{$manufacturer}) {
         $manufacturer = $manufacturers{$manufacturer};
     } elsif ($manufacturer =~ /(
-        maxtor     |
-        sony       |
-        compaq     |
-        ibm        |
-        toshiba    |
-        fujitsu    |
         \blg\b     |
-        samsung    |
-        nec        |
-        transcend  |
-        matshita   |
+        compaq     |
+        fujitsu    |
         hitachi    |
-        pioneer
+        ibm        |
+        intel      |
+        matshita   |
+        maxtor     |
+        \bnec\b    |
+        pioneer    |
+        samsung    |
+        sony       |
+        toshiba    |
+        transcend
     )/xi) {
         $manufacturer = ucfirst(lc($1));
-    } elsif ($manufacturer =~ /^(hp|HP|(?i)hewlett[ -]packard)/) {
-        $manufacturer = "Hewlett-Packard";
-    } elsif ($manufacturer =~ /^(WDC|(?i)western)/) {
-        $manufacturer = "Western Digital";
-    } elsif ($manufacturer =~ /^(ST|(?i)seagate)/) {
-        $manufacturer = "Seagate";
-    } elsif ($manufacturer =~ /^(HD|IC|HU|HGST)/) {
-        $manufacturer = "Hitachi";
-    } elsif ($manufacturer =~ /^APPLE/i) {
-        $manufacturer = "Apple";
-    } elsif ($manufacturer =~ /^OPTIARC/i) {
-        $manufacturer = "Sony";
+    } else {
+        my $match = first { $manufacturer =~ $regexp{$_} } keys %regexp;
+        $manufacturer = $match if $match;
     }
 
     return $manufacturer;

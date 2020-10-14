@@ -58,7 +58,7 @@ my %fields = (
                              VG_UUID/ ],
     MEMORIES         => [ qw/CAPACITY CAPTION FORMFACTOR REMOVABLE PURPOSE
                              SPEED SERIALNUMBER TYPE DESCRIPTION NUMSLOTS
-                             MEMORYCORRECTION MANUFACTURER/ ],
+                             MEMORYCORRECTION MANUFACTURER MODEL/ ],
     MODEMS           => [ qw/DESCRIPTION NAME TYPE MODEL/ ],
     MONITORS         => [ qw/BASE64 CAPTION DESCRIPTION MANUFACTURER SERIAL
                              UUENCODE NAME TYPE ALTSERIAL PORT/ ],
