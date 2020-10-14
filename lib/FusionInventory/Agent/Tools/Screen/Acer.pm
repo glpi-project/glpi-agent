@@ -5,8 +5,33 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Tools::Screen';
 
-# Well-known eisa_id for which wee need to revert serial and altserial
-my $eisa_id_match = qr/(0018|0020|0024|00a3|00A8|00d2|00db|00f7|02d4|032e|0330|0337|03de|0468|0503|0618|0783|7883|ad49|adaf)$/ ;
+# Well-known eisa_id for which we need to revert serial and altserial
+my $eisa_id_match_str = join('|', qw(
+        0018
+        0020
+        0024
+        00a3
+        00A8
+        00d2
+        00db
+        00f7
+        02d4
+        0319
+        032e
+        0330
+        0337
+        03de
+        0468
+        0503
+        0512
+        057d
+        0618
+        0783
+        7883
+        ad49
+        adaf
+    ));
+my $eisa_id_match = qr/($eisa_id_match_str)$/ ;
 
 sub serial {
     my ($self) = @_;

@@ -304,6 +304,27 @@ my %edid_tests = (
         ALTSERIAL    => 'LFV0C0034030',
         DESCRIPTION  => '11/2009'
     },
+    'lcd.acer-h226hql' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'Acer H226HQL',
+        SERIAL       => 'LX2EE0023497a1aa4200',
+        ALTSERIAL    => 'LX2EE0024200',
+        DESCRIPTION  => '49/2013'
+    },
+    'lcd.acer-k222hql' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'K222HQL',
+        SERIAL       => 'T5XEE017725050102456',
+        ALTSERIAL    => 'T5XEE0172456',
+        DESCRIPTION  => '25/2017'
+    },
+    'lcd.acer-sa220q' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'SA220Q',
+        SERIAL       => 'T90EE00273901d732410',
+        ALTSERIAL    => 'T90EE0022410',
+        DESCRIPTION  => '39/2017'
+    },
     'lcd.b-101750' => {
         MANUFACTURER => 'Rogen Tech Distribution Inc',
         CAPTION      => 'B_101750',
