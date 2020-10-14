@@ -1,0 +1,25 @@
+
+Smart Array P410 in Slot 1                (sn: PACCRID10331H80)
+
+
+   SEP (Vendor ID PMCSIERA, Model  SRC 8x6G) 250 (WWID: 5001438009D8E60F)
+
+
+Smart Array P410i in Slot 0 (Embedded)    (sn: 50014380095E2C50)
+
+   array A (SAS, Unused Space: 0  MB)
+
+
+      logicaldrive 1 (2.2 TB, RAID 1+0, OK)
+
+      physicaldrive 1I:1:1 (port 1I:box 1:bay 1, SAS, 600 GB, OK)
+      physicaldrive 1I:1:2 (port 1I:box 1:bay 2, SAS, 600 GB, OK)
+      physicaldrive 1I:1:3 (port 1I:box 1:bay 3, SAS, 600 GB, OK)
+      physicaldrive 1I:1:4 (port 1I:box 1:bay 4, SAS, 600 GB, OK)
+      physicaldrive 2I:1:5 (port 2I:box 1:bay 5, SAS, 600 GB, OK)
+      physicaldrive 2I:1:6 (port 2I:box 1:bay 6, SAS, 600 GB, OK)
+      physicaldrive 2I:1:7 (port 2I:box 1:bay 7, SAS, 600 GB, OK)
+      physicaldrive 2I:1:8 (port 2I:box 1:bay 8, SAS, 600 GB, OK)
+
+   SEP (Vendor ID PMCSIERA, Model  SRC 8x6G) 250 (WWID: 50014380095E2C5F)
+
