@@ -1,0 +1,66 @@
+FRU Device Description : Builtin FRU Device (ID 0)
+ Board Mfg Date        : Sat Jun 21 02:57:00 2014
+ Board Mfg             : DELL
+ Board Product         : PowerEdge R720                
+ Board Serial          : CN7016346K000G
+ Board Part Number     : 0X3D66A07
+ Product Manufacturer  : DELL
+ Product Name          : PowerEdge R720xd
+ Product Version       : 01
+ Product Serial        : 7PPDY12
+
+FRU Device Description : iDRAC7          
+ Board Mfg Date        : Sat Jun 21 02:57:00 2014
+ Board Mfg             : DELL
+ Board Product         : PowerEdge R720                
+ Board Serial          : CN7016346K000G
+ Board Part Number     : 0X3D66A07
+ Product Manufacturer  : DELL
+ Product Name          : PowerEdge R720xd
+ Product Version       : 01
+ Product Serial        : 7PPDY12
+
+FRU Device Description : PS1 (ID 1)
+ Board Mfg Date        : Thu Jun 19 06:25:00 2014
+ Board Mfg             : DELL
+ Board Product         : PWR SPLY,750WP,RDNT,DELTA     
+ Board Serial          : CN1797246N1D4J
+ Board Part Number     : 09PXCVA00
+
+FRU Device Description : PS2 (ID 2)
+ Board Mfg Date        : Thu Jun 19 06:21:00 2014
+ Board Mfg             : DELL
+ Board Product         : PWR SPLY,750WP,RDNT,DELTA     
+ Board Serial          : CN1797246N1D04
+ Board Part Number     : 09PXCVA00
+
+FRU Device Description : BP0 (ID 12)
+ Board Mfg Date        : Sat May 17 15:16:00 2014
+ Board Mfg             : DELL
+ Board Product         : DRIVE BACKPLANE               
+ Board Serial          : CN7543547100IK
+ Board Part Number     : 00JDG3A00
+
+FRU Device Description : BP1 (ID 13)
+ Board Mfg Date        : Tue Jul  1 21:00:00 2014
+ Board Mfg             : DELL
+ Board Product         : DRIVE BACKPLANE               
+ Board Serial          : CN7792146F02MU
+ Board Part Number     : 0PGXHPA02
+
+FRU Device Description : NDC (ID 4)
+ Board Mfg Date        : Fri Jun  6 01:11:00 2014
+ Board Mfg             : DELL
+ Board Product         : BRCM GbE 4P 5720-t rNDC       
+ Board Serial          : CN7543545U06YB
+ Board Part Number     : 0FM487A03
+
+FRU Device Description : PERC1 (ID 10)
+ Board Mfg Date        : Mon Jan  1 00:00:00 1996
+ Board Mfg             : DELL
+ Board Product         : Dell Storage Cntlr. H710P-Mini
+ Board Serial          : CN7792147F03B1
+ Board Part Number     : 0TY8F9A03
+
+FRU Device Description : OEM fru (ID 17)
+

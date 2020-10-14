@@ -1,0 +1,1738 @@
+# dmidecode 3.0
+Getting SMBIOS data from sysfs.
+SMBIOS 2.8 present.
+180 structures occupying 6090 bytes.
+Table at 0xBFBDB000.
+
+Handle 0x0000, DMI type 0, 24 bytes
+BIOS Information
+	Vendor: HP
+	Version: P71
+	Release Date: 07/01/2015
+	Address: 0xF0000
+	Runtime Size: 64 kB
+	ROM Size: 8192 kB
+	Characteristics:
+		PCI is supported
+		PNP is supported
+		BIOS is upgradeable
+		BIOS shadowing is allowed
+		ESCD support is available
+		Boot from CD is supported
+		Selectable boot is supported
+		EDD is supported
+		5.25"/360 kB floppy services are supported (int 13h)
+		5.25"/1.2 MB floppy services are supported (int 13h)
+		3.5"/720 kB floppy services are supported (int 13h)
+		Print screen service is supported (int 5h)
+		8042 keyboard services are supported (int 9h)
+		Serial services are supported (int 14h)
+		Printer services are supported (int 17h)
+		CGA/mono video services are supported (int 10h)
+		ACPI is supported
+		USB legacy is supported
+		BIOS boot specification is supported
+		Function key-initiated network boot is supported
+		Targeted content distribution is supported
+	Firmware Revision: 2.55
+
+Handle 0x0100, DMI type 1, 27 bytes
+System Information
+	Manufacturer: HP
+	Product Name: ProLiant DL360p Gen8
+	Version: Not Specified
+	Serial Number: USE2236835      
+	UUID: 30343536-3138-5355-4532-323336383335
+	Wake-up Type: Power Switch
+	SKU Number: 654081-B21      
+	Family: ProLiant
+
+Handle 0x0300, DMI type 3, 21 bytes
+Chassis Information
+	Manufacturer: HP
+	Type: Rack Mount Chassis
+	Lock: Not Present
+	Version: Not Specified
+	Serial Number: USE2236835      
+	Asset Tag:                                 
+	Boot-up State: Safe
+	Power Supply State: Safe
+	Thermal State: Safe
+	Security Status: Unknown
+	OEM Information: 0x00000000
+	Height: 1 U
+	Number Of Power Cords: 2
+	Contained Elements: 0
+
+Handle 0x0400, DMI type 4, 42 bytes
+Processor Information
+	Socket Designation: Proc 1
+	Type: Central Processor
+	Family: Xeon
+	Manufacturer: Intel
+	ID: D7 06 02 00 FF FB EB BF
+	Signature: Type 0, Family 6, Model 45, Stepping 7
+	Flags:
+		FPU (Floating-point unit on-chip)
+		VME (Virtual mode extension)
+		DE (Debugging extension)
+		PSE (Page size extension)
+		TSC (Time stamp counter)
+		MSR (Model specific registers)
+		PAE (Physical address extension)
+		MCE (Machine check exception)
+		CX8 (CMPXCHG8 instruction supported)
+		APIC (On-chip APIC hardware supported)
+		SEP (Fast system call)
+		MTRR (Memory type range registers)
+		PGE (Page global enable)
+		MCA (Machine check architecture)
+		CMOV (Conditional move instruction supported)
+		PAT (Page attribute table)
+		PSE-36 (36-bit page size extension)
+		CLFSH (CLFLUSH instruction supported)
+		DS (Debug store)
+		ACPI (ACPI supported)
+		MMX (MMX technology supported)
+		FXSR (FXSAVE and FXSTOR instructions supported)
+		SSE (Streaming SIMD extensions)
+		SSE2 (Streaming SIMD extensions 2)
+		SS (Self-snoop)
+		HTT (Multi-threading)
+		TM (Thermal monitor supported)
+		PBE (Pending break enabled)
+	Version:  Intel(R) Xeon(R) CPU E5-2640 0 @ 2.50GHz       
+	Voltage: 1.4 V
+	External Clock: 100 MHz
+	Max Speed: 4800 MHz
+	Current Speed: 2500 MHz
+	Status: Populated, Enabled
+	Upgrade: Socket LGA2011
+	L1 Cache Handle: 0x0710
+	L2 Cache Handle: 0x0720
+	L3 Cache Handle: 0x0730
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: Not Specified
+	Core Count: 6
+	Core Enabled: 6
+	Thread Count: 12
+	Characteristics:
+		64-bit capable
+
+Handle 0x0401, DMI type 4, 42 bytes
+Processor Information
+	Socket Designation: Proc 2
+	Type: Central Processor
+	Family: Xeon
+	Manufacturer: Intel
+	ID: D7 06 02 00 FF FB EB BF
+	Signature: Type 0, Family 6, Model 45, Stepping 7
+	Flags:
+		FPU (Floating-point unit on-chip)
+		VME (Virtual mode extension)
+		DE (Debugging extension)
+		PSE (Page size extension)
+		TSC (Time stamp counter)
+		MSR (Model specific registers)
+		PAE (Physical address extension)
+		MCE (Machine check exception)
+		CX8 (CMPXCHG8 instruction supported)
+		APIC (On-chip APIC hardware supported)
+		SEP (Fast system call)
+		MTRR (Memory type range registers)
+		PGE (Page global enable)
+		MCA (Machine check architecture)
+		CMOV (Conditional move instruction supported)
+		PAT (Page attribute table)
+		PSE-36 (36-bit page size extension)
+		CLFSH (CLFLUSH instruction supported)
+		DS (Debug store)
+		ACPI (ACPI supported)
+		MMX (MMX technology supported)
+		FXSR (FXSAVE and FXSTOR instructions supported)
+		SSE (Streaming SIMD extensions)
+		SSE2 (Streaming SIMD extensions 2)
+		SS (Self-snoop)
+		HTT (Multi-threading)
+		TM (Thermal monitor supported)
+		PBE (Pending break enabled)
+	Version:  Intel(R) Xeon(R) CPU E5-2640 0 @ 2.50GHz       
+	Voltage: 1.4 V
+	External Clock: 100 MHz
+	Max Speed: 4800 MHz
+	Current Speed: 2500 MHz
+	Status: Populated, Idle
+	Upgrade: Socket LGA2011
+	L1 Cache Handle: 0x0716
+	L2 Cache Handle: 0x0726
+	L3 Cache Handle: 0x0736
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: Not Specified
+	Core Count: 6
+	Core Enabled: 6
+	Thread Count: 12
+	Characteristics:
+		64-bit capable
+
+Handle 0x0710, DMI type 7, 19 bytes
+Cache Information
+	Socket Designation: Processor 1 Internal L1 Cache
+	Configuration: Enabled, Not Socketed, Level 1
+	Operational Mode: Write Back
+	Location: Internal
+	Installed Size: 192 kB
+	Maximum Size: 384 kB
+	Supported SRAM Types:
+		Burst
+	Installed SRAM Type: Burst
+	Speed: Unknown
+	Error Correction Type: Single-bit ECC
+	System Type: Data
+	Associativity: 8-way Set-associative
+
+Handle 0x0716, DMI type 7, 19 bytes
+Cache Information
+	Socket Designation: Processor 2 Internal L1 Cache
+	Configuration: Enabled, Not Socketed, Level 1
+	Operational Mode: Write Back
+	Location: Internal
+	Installed Size: 192 kB
+	Maximum Size: 384 kB
+	Supported SRAM Types:
+		Burst
+	Installed SRAM Type: Burst
+	Speed: Unknown
+	Error Correction Type: Single-bit ECC
+	System Type: Data
+	Associativity: 8-way Set-associative
+
+Handle 0x0720, DMI type 7, 19 bytes
+Cache Information
+	Socket Designation: Processor 1 Internal L2 Cache
+	Configuration: Enabled, Not Socketed, Level 2
+	Operational Mode: Write Back
+	Location: Internal
+	Installed Size: 1536 kB
+	Maximum Size: 3072 kB
+	Supported SRAM Types:
+		Burst
+	Installed SRAM Type: Burst
+	Speed: Unknown
+	Error Correction Type: Single-bit ECC
+	System Type: Unknown
+	Associativity: 8-way Set-associative
+
+Handle 0x0726, DMI type 7, 19 bytes
+Cache Information
+	Socket Designation: Processor 2 Internal L2 Cache
+	Configuration: Enabled, Not Socketed, Level 2
+	Operational Mode: Write Back
+	Location: Internal
+	Installed Size: 1536 kB
+	Maximum Size: 3072 kB
+	Supported SRAM Types:
+		Burst
+	Installed SRAM Type: Burst
+	Speed: Unknown
+	Error Correction Type: Single-bit ECC
+	System Type: Unknown
+	Associativity: 8-way Set-associative
+
+Handle 0x0730, DMI type 7, 19 bytes
+Cache Information
+	Socket Designation: Processor 1 Internal L3 Cache
+	Configuration: Enabled, Not Socketed, Level 3
+	Operational Mode: Write Back
+	Location: Internal
+	Installed Size: 15360 kB
+	Maximum Size: 30720 kB
+	Supported SRAM Types:
+		Burst
+	Installed SRAM Type: Burst
+	Speed: Unknown
+	Error Correction Type: Single-bit ECC
+	System Type: Unknown
+	Associativity: 20-way Set-associative
+
+Handle 0x0736, DMI type 7, 19 bytes
+Cache Information
+	Socket Designation: Processor 2 Internal L3 Cache
+	Configuration: Enabled, Not Socketed, Level 3
+	Operational Mode: Write Back
+	Location: Internal
+	Installed Size: 15360 kB
+	Maximum Size: 30720 kB
+	Supported SRAM Types:
+		Burst
+	Installed SRAM Type: Burst
+	Speed: Unknown
+	Error Correction Type: Single-bit ECC
+	System Type: Unknown
+	Associativity: 20-way Set-associative
+
+Handle 0x0801, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J801
+	Internal Connector Type: Access Bus (USB)
+	External Reference Designator: USB Port 1
+	External Connector Type: Access Bus (USB)
+	Port Type: USB
+
+Handle 0x0802, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J801
+	Internal Connector Type: Access Bus (USB)
+	External Reference Designator: USB Port 2
+	External Connector Type: Access Bus (USB)
+	Port Type: USB
+
+Handle 0x0803, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J801
+	Internal Connector Type: Access Bus (USB)
+	External Reference Designator: USB Port 3
+	External Connector Type: Access Bus (USB)
+	Port Type: USB
+
+Handle 0x0804, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J801
+	Internal Connector Type: Access Bus (USB)
+	External Reference Designator: USB Port 4
+	External Connector Type: Access Bus (USB)
+	Port Type: USB
+
+Handle 0x0805, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J33
+	Internal Connector Type: Access Bus (USB)
+	External Reference Designator: USB Port 5
+	External Connector Type: Access Bus (USB)
+	Port Type: USB
+
+Handle 0x0806, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J904
+	Internal Connector Type: Access Bus (USB)
+	External Reference Designator: USB Port 6
+	External Connector Type: Access Bus (USB)
+	Port Type: USB
+
+Handle 0x0807, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J904
+	Internal Connector Type: Access Bus (USB)
+	External Reference Designator: USB Port 7
+	External Connector Type: Access Bus (USB)
+	Port Type: USB
+
+Handle 0x0808, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J36
+	Internal Connector Type: None
+	External Reference Designator: Video Port
+	External Connector Type: DB-15 female
+	Port Type: Video Port
+
+Handle 0x0809, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J87
+	Internal Connector Type: None
+	External Reference Designator: COM Port
+	External Connector Type: DB-9 male
+	Port Type: Serial Port 16550A Compatible
+
+Handle 0x080A, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J39
+	Internal Connector Type: None
+	External Reference Designator: ILO NIC port
+	External Connector Type: RJ-45
+	Port Type: Network Port
+
+Handle 0x080B, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J904
+	Internal Connector Type: None
+	External Reference Designator: Front Video Port
+	External Connector Type: Proprietary
+	Port Type: Video Port
+
+Handle 0x0901, DMI type 9, 17 bytes
+System Slot Information
+	Designation: PCI-E Slot 1
+	Type: x8 PCI Express 3 x8
+	Current Usage: Available
+	Length: Short
+	ID: 1
+	Characteristics:
+		3.3 V is provided
+		PME signal is supported
+	Bus Address: 0000:04:00.0
+
+Handle 0x0902, DMI type 9, 17 bytes
+System Slot Information
+	Designation: PCI-E Slot 2
+	Type: x16 PCI Express 3 x16
+	Current Usage: Available
+	Length: Long
+	ID: 2
+	Characteristics:
+		3.3 V is provided
+		PME signal is supported
+	Bus Address: 0000:07:00.0
+
+Handle 0x0B00, DMI type 11, 5 bytes
+OEM Strings
+	String 1: PSF:                                                                 
+	String 2: Product ID: 654081-B21      
+
+Handle 0x1000, DMI type 16, 23 bytes
+Physical Memory Array
+	Location: System Board Or Motherboard
+	Use: System Memory
+	Error Correction Type: Single-bit ECC
+	Maximum Capacity: 384 GB
+	Error Information Handle: Not Provided
+	Number Of Devices: 12
+
+Handle 0x1001, DMI type 16, 23 bytes
+Physical Memory Array
+	Location: System Board Or Motherboard
+	Use: System Memory
+	Error Correction Type: Single-bit ECC
+	Maximum Capacity: 384 GB
+	Error Information Handle: Not Provided
+	Number Of Devices: 12
+
+Handle 0x1100, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1000
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 8192 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: PROC  1 DIMM  1 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous Registered (Buffered)
+	Speed: 1333 MHz
+	Manufacturer: HP     
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: 647650-071          
+	Rank: 2
+	Configured Clock Speed: 1333 MHz
+	Minimum Voltage: 1.35 V
+	Maximum Voltage: 1.5 V
+	Configured Voltage: 1.35 V
+
+Handle 0x1101, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1000
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: 1
+	Locator: PROC  1 DIMM  2 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: UNKNOWN
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: NOT AVAILABLE       
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+	Minimum Voltage: Unknown
+	Maximum Voltage: Unknown
+	Configured Voltage: Unknown
+
+Handle 0x1102, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1000
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: 2
+	Locator: PROC  1 DIMM  3 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: UNKNOWN
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: NOT AVAILABLE       
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+	Minimum Voltage: Unknown
+	Maximum Voltage: Unknown
+	Configured Voltage: Unknown
+
+Handle 0x1103, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1000
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 8192 MB
+	Form Factor: DIMM
+	Set: 3
+	Locator: PROC  1 DIMM  4 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous Registered (Buffered)
+	Speed: 1333 MHz
+	Manufacturer: HP     
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: 647650-071          
+	Rank: 2
+	Configured Clock Speed: 1333 MHz
+	Minimum Voltage: 1.35 V
+	Maximum Voltage: 1.5 V
+	Configured Voltage: 1.35 V
+
+Handle 0x1104, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1000
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: 4
+	Locator: PROC  1 DIMM  5 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: UNKNOWN
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: NOT AVAILABLE       
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+	Minimum Voltage: Unknown
+	Maximum Voltage: Unknown
+	Configured Voltage: Unknown
+
+Handle 0x1105, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1000
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: 5
+	Locator: PROC  1 DIMM  6 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: UNKNOWN
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: NOT AVAILABLE       
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+	Minimum Voltage: Unknown
+	Maximum Voltage: Unknown
+	Configured Voltage: Unknown
+
+Handle 0x1106, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1000
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: 6
+	Locator: PROC  1 DIMM  7 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: UNKNOWN
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: NOT AVAILABLE       
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+	Minimum Voltage: Unknown
+	Maximum Voltage: Unknown
+	Configured Voltage: Unknown
+
+Handle 0x1107, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1000
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: 7
+	Locator: PROC  1 DIMM  8 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: UNKNOWN
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: NOT AVAILABLE       
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+	Minimum Voltage: Unknown
+	Maximum Voltage: Unknown
+	Configured Voltage: Unknown
+
+Handle 0x1108, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1000
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 8192 MB
+	Form Factor: DIMM
+	Set: 8
+	Locator: PROC  1 DIMM  9 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous Registered (Buffered)
+	Speed: 1333 MHz
+	Manufacturer: HP     
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: 647650-071          
+	Rank: 2
+	Configured Clock Speed: 1333 MHz
+	Minimum Voltage: 1.35 V
+	Maximum Voltage: 1.5 V
+	Configured Voltage: 1.35 V
+
+Handle 0x1109, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1000
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: 9
+	Locator: PROC  1 DIMM 10 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: UNKNOWN
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: NOT AVAILABLE       
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+	Minimum Voltage: Unknown
+	Maximum Voltage: Unknown
+	Configured Voltage: Unknown
+
+Handle 0x110A, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1000
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: 10
+	Locator: PROC  1 DIMM 11 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: UNKNOWN
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: NOT AVAILABLE       
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+	Minimum Voltage: Unknown
+	Maximum Voltage: Unknown
+	Configured Voltage: Unknown
+
+Handle 0x110B, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1000
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 8192 MB
+	Form Factor: DIMM
+	Set: 11
+	Locator: PROC  1 DIMM 12 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous Registered (Buffered)
+	Speed: 1333 MHz
+	Manufacturer: HP     
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: 647650-071          
+	Rank: 2
+	Configured Clock Speed: 1333 MHz
+	Minimum Voltage: 1.35 V
+	Maximum Voltage: 1.5 V
+	Configured Voltage: 1.35 V
+
+Handle 0x110C, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1001
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 8192 MB
+	Form Factor: DIMM
+	Set: 12
+	Locator: PROC  2 DIMM  1 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous Registered (Buffered)
+	Speed: 1333 MHz
+	Manufacturer: HP     
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: 647650-071          
+	Rank: 2
+	Configured Clock Speed: 1333 MHz
+	Minimum Voltage: 1.35 V
+	Maximum Voltage: 1.5 V
+	Configured Voltage: 1.35 V
+
+Handle 0x110D, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1001
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: 13
+	Locator: PROC  2 DIMM  2 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: UNKNOWN
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: NOT AVAILABLE       
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+	Minimum Voltage: Unknown
+	Maximum Voltage: Unknown
+	Configured Voltage: Unknown
+
+Handle 0x110E, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1001
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: 14
+	Locator: PROC  2 DIMM  3 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: UNKNOWN
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: NOT AVAILABLE       
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+	Minimum Voltage: Unknown
+	Maximum Voltage: Unknown
+	Configured Voltage: Unknown
+
+Handle 0x110F, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1001
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 8192 MB
+	Form Factor: DIMM
+	Set: 15
+	Locator: PROC  2 DIMM  4 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous Registered (Buffered)
+	Speed: 1333 MHz
+	Manufacturer: HP     
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: 647650-071          
+	Rank: 2
+	Configured Clock Speed: 1333 MHz
+	Minimum Voltage: 1.35 V
+	Maximum Voltage: 1.5 V
+	Configured Voltage: 1.35 V
+
+Handle 0x1110, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1001
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: 16
+	Locator: PROC  2 DIMM  5 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: UNKNOWN
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: NOT AVAILABLE       
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+	Minimum Voltage: Unknown
+	Maximum Voltage: Unknown
+	Configured Voltage: Unknown
+
+Handle 0x1111, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1001
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: 17
+	Locator: PROC  2 DIMM  6 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: UNKNOWN
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: NOT AVAILABLE       
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+	Minimum Voltage: Unknown
+	Maximum Voltage: Unknown
+	Configured Voltage: Unknown
+
+Handle 0x1112, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1001
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: 18
+	Locator: PROC  2 DIMM  7 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: UNKNOWN
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: NOT AVAILABLE       
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+	Minimum Voltage: Unknown
+	Maximum Voltage: Unknown
+	Configured Voltage: Unknown
+
+Handle 0x1113, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1001
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: 19
+	Locator: PROC  2 DIMM  8 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: UNKNOWN
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: NOT AVAILABLE       
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+	Minimum Voltage: Unknown
+	Maximum Voltage: Unknown
+	Configured Voltage: Unknown
+
+Handle 0x1114, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1001
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 8192 MB
+	Form Factor: DIMM
+	Set: 20
+	Locator: PROC  2 DIMM  9 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous Registered (Buffered)
+	Speed: 1333 MHz
+	Manufacturer: HP     
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: 647650-071          
+	Rank: 2
+	Configured Clock Speed: 1333 MHz
+	Minimum Voltage: 1.35 V
+	Maximum Voltage: 1.5 V
+	Configured Voltage: 1.35 V
+
+Handle 0x1115, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1001
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: 21
+	Locator: PROC  2 DIMM 10 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: UNKNOWN
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: NOT AVAILABLE       
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+	Minimum Voltage: Unknown
+	Maximum Voltage: Unknown
+	Configured Voltage: Unknown
+
+Handle 0x1116, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1001
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: 22
+	Locator: PROC  2 DIMM 11 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: UNKNOWN
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: NOT AVAILABLE       
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+	Minimum Voltage: Unknown
+	Maximum Voltage: Unknown
+	Configured Voltage: Unknown
+
+Handle 0x1117, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x1001
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 8192 MB
+	Form Factor: DIMM
+	Set: 23
+	Locator: PROC  2 DIMM 12 
+	Bank Locator: Not Specified
+	Type: DDR3
+	Type Detail: Synchronous Registered (Buffered)
+	Speed: 1333 MHz
+	Manufacturer: HP     
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: 647650-071          
+	Rank: 2
+	Configured Clock Speed: 1333 MHz
+	Minimum Voltage: 1.35 V
+	Maximum Voltage: 1.5 V
+	Configured Voltage: 1.35 V
+
+Handle 0x1300, DMI type 19, 31 bytes
+Memory Array Mapped Address
+	Starting Address: 0x00000000000
+	Ending Address: 0x000BFFFFFFF
+	Range Size: 3 GB
+	Physical Array Handle: 0x1000
+	Partition Width: 1
+
+Handle 0x1301, DMI type 19, 31 bytes
+Memory Array Mapped Address
+	Starting Address: 0x00100000000
+	Ending Address: 0x0103FFFFFFF
+	Range Size: 61 GB
+	Physical Array Handle: 0x1000
+	Partition Width: 1
+
+Handle 0x2000, DMI type 32, 11 bytes
+System Boot Information
+	Status: No errors detected
+
+Handle 0x2600, DMI type 38, 18 bytes
+IPMI Device Information
+	Interface Type: KCS (Keyboard Control Style)
+	Specification Version: 2.0
+	I2C Slave Address: 0x10
+	NV Storage Device: Not Present
+	Base Address: 0x0000000000000CA2 (I/O)
+	Register Spacing: Successive Byte Boundaries
+
+Handle 0x2700, DMI type 39, 22 bytes
+System Power Supply
+	Power Unit Group: 1
+	Location: Not Specified
+	Name: Power Supply 1
+	Manufacturer: HP
+	Serial Number: 5ANLF0CHL2J3Q4  
+	Asset Tag: Not Specified
+	Model Part Number: 503296-B21                      
+	Revision: Not Specified
+	Max Power Capacity: 460 W
+	Status: Present, Unknown
+	Type: Unknown
+	Input Voltage Range Switching: Unknown
+	Plugged: Yes
+	Hot Replaceable: Yes
+
+Handle 0x2701, DMI type 39, 22 bytes
+System Power Supply
+	Power Unit Group: 1
+	Location: Not Specified
+	Name: Power Supply 2
+	Manufacturer: HP
+	Serial Number: 5ANLF0CHL2J3PZ  
+	Asset Tag: Not Specified
+	Model Part Number: 503296-B21                      
+	Revision: Not Specified
+	Max Power Capacity: 460 W
+	Status: Present, Unknown
+	Type: Unknown
+	Input Voltage Range Switching: Unknown
+	Plugged: Yes
+	Hot Replaceable: Yes
+
+Handle 0x2901, DMI type 41, 11 bytes
+Onboard Device
+	Reference Designation: NIC Port 1
+	Type: Ethernet
+	Status: Enabled
+	Type Instance: 1
+	Bus Address: 0000:03:00.0
+
+Handle 0x2902, DMI type 41, 11 bytes
+Onboard Device
+	Reference Designation: NIC Port 2
+	Type: Ethernet
+	Status: Enabled
+	Type Instance: 2
+	Bus Address: 0000:03:00.1
+
+Handle 0x2903, DMI type 41, 11 bytes
+Onboard Device
+	Reference Designation: NIC Port 3
+	Type: Ethernet
+	Status: Enabled
+	Type Instance: 3
+	Bus Address: 0000:03:00.2
+
+Handle 0x2904, DMI type 41, 11 bytes
+Onboard Device
+	Reference Designation: NIC Port 4
+	Type: Ethernet
+	Status: Enabled
+	Type Instance: 4
+	Bus Address: 0000:03:00.3
+
+Handle 0x2941, DMI type 41, 11 bytes
+Onboard Device
+	Reference Designation: Storage Controller
+	Type: SAS Controller
+	Status: Enabled
+	Type Instance: 1
+	Bus Address: 0000:02:00.0
+
+Handle 0xC101, DMI type 193, 9 bytes
+OEM-specific Type
+	Header and Data:
+		C1 09 01 C1 01 01 02 03 04
+	Strings:
+		12/20/2013
+		08/30/2011
+		        
+		          
+
+Handle 0xC200, DMI type 194, 5 bytes
+OEM-specific Type
+	Header and Data:
+		C2 05 00 C2 11
+
+Handle 0xC300, DMI type 195, 7 bytes
+OEM-specific Type
+	Header and Data:
+		C3 07 00 C3 01 B6 00
+	Strings:
+		$0E1107BC
+
+Handle 0xC400, DMI type 196, 6 bytes
+OEM-specific Type
+	Header and Data:
+		C4 06 00 C4 00 00
+
+Handle 0xC500, DMI type 197, 12 bytes
+OEM-specific Type
+	Header and Data:
+		C5 0C 00 C5 00 04 00 01 FF 01 5F 00
+
+Handle 0xC501, DMI type 197, 12 bytes
+OEM-specific Type
+	Header and Data:
+		C5 0C 01 C5 01 04 20 00 FF 02 5F 00
+
+Handle 0xCA00, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 00 CA 00 11 FF 01 01
+
+Handle 0xCA01, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 01 CA 01 11 FF 02 01
+
+Handle 0xCA02, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 02 CA 02 11 FF 03 01
+
+Handle 0xCA03, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 03 CA 03 11 FF 04 01
+
+Handle 0xCA04, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 04 CA 04 11 FF 05 01
+
+Handle 0xCA05, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 05 CA 05 11 FF 06 01
+
+Handle 0xCA06, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 06 CA 06 11 FF 07 01
+
+Handle 0xCA07, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 07 CA 07 11 FF 08 01
+
+Handle 0xCA08, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 08 CA 08 11 FF 09 01
+
+Handle 0xCA09, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 09 CA 09 11 FF 0A 01
+
+Handle 0xCA0A, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 0A CA 0A 11 FF 0B 01
+
+Handle 0xCA0B, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 0B CA 0B 11 FF 0C 01
+
+Handle 0xCA0C, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 0C CA 0C 11 FF 01 02
+
+Handle 0xCA0D, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 0D CA 0D 11 FF 02 02
+
+Handle 0xCA0E, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 0E CA 0E 11 FF 03 02
+
+Handle 0xCA0F, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 0F CA 0F 11 FF 04 02
+
+Handle 0xCA10, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 10 CA 10 11 FF 05 02
+
+Handle 0xCA11, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 11 CA 11 11 FF 06 02
+
+Handle 0xCA12, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 12 CA 12 11 FF 07 02
+
+Handle 0xCA13, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 13 CA 13 11 FF 08 02
+
+Handle 0xCA14, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 14 CA 14 11 FF 09 02
+
+Handle 0xCA15, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 15 CA 15 11 FF 0A 02
+
+Handle 0xCA16, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 16 CA 16 11 FF 0B 02
+
+Handle 0xCA17, DMI type 202, 9 bytes
+OEM-specific Type
+	Header and Data:
+		CA 09 17 CA 17 11 FF 0C 02
+
+Handle 0xD100, DMI type 209, 36 bytes
+HP BIOS PXE NIC PCI and MAC Information
+	NIC 1: PCI device 03:00.0, MAC address 2C:76:8A:54:FB:D8
+	NIC 2: PCI device 03:00.1, MAC address 2C:76:8A:54:FB:D9
+	NIC 3: PCI device 03:00.2, MAC address 2C:76:8A:54:FB:DA
+	NIC 4: PCI device 03:00.3, MAC address 2C:76:8A:54:FB:DB
+
+Handle 0xD300, DMI type 211, 7 bytes
+OEM-specific Type
+	Header and Data:
+		D3 07 00 D3 00 04 46
+
+Handle 0xD306, DMI type 211, 7 bytes
+OEM-specific Type
+	Header and Data:
+		D3 07 06 D3 01 04 46
+
+Handle 0xC600, DMI type 198, 11 bytes
+OEM-specific Type
+	Header and Data:
+		C6 0B 00 C6 01 00 00 00 00 00 01
+
+Handle 0xC700, DMI type 199, 100 bytes
+OEM-specific Type
+	Header and Data:
+		C7 64 00 C7 0C 02 00 80 11 20 03 05 D2 06 02 00
+		04 03 00 80 11 20 20 04 D3 06 02 00 13 05 00 00
+		11 20 13 10 D5 06 02 00 19 06 00 00 12 20 22 05
+		D6 06 02 00 10 07 00 00 13 20 17 06 D7 06 02 00
+		0D 02 00 00 13 20 21 03 E2 06 03 00 08 03 00 00
+		13 20 21 03 E3 06 03 00 28 04 00 00 14 20 29 05
+		E4 06 03 00
+
+Handle 0xC900, DMI type 201, 11 bytes
+OEM-specific Type
+	Header and Data:
+		C9 0B 00 C9 F0 01 00 00 40 0C 01
+
+Handle 0xD700, DMI type 215, 6 bytes
+OEM-specific Type
+	Header and Data:
+		D7 06 00 D7 00 05
+
+Handle 0xD800, DMI type 216, 23 bytes
+OEM-specific Type
+	Header and Data:
+		D8 17 00 D8 01 00 01 02 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00
+	Strings:
+		System ROM
+		07/01/2015
+
+Handle 0xD801, DMI type 216, 23 bytes
+OEM-specific Type
+	Header and Data:
+		D8 17 01 D8 02 00 01 02 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00
+	Strings:
+		Redundant System ROM
+		12/20/2013
+
+Handle 0xD802, DMI type 216, 23 bytes
+OEM-specific Type
+	Header and Data:
+		D8 17 02 D8 03 00 01 02 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00
+	Strings:
+		System ROM Bootblock
+		08/30/2011
+
+Handle 0xD803, DMI type 216, 23 bytes
+OEM-specific Type
+	Header and Data:
+		D8 17 03 D8 04 00 01 02 02 33 00 00 00 00 00 00
+		00 00 00 00 00 0C 00
+	Strings:
+		Power Management Controller Firmware
+		3.3
+
+Handle 0xD804, DMI type 216, 23 bytes
+OEM-specific Type
+	Header and Data:
+		D8 17 04 D8 05 00 01 02 02 27 00 00 00 00 00 00
+		00 00 00 00 00 0C 00
+	Strings:
+		Power Management Controller Firmware Bootloader
+		2.7
+
+Handle 0xD805, DMI type 216, 23 bytes
+OEM-specific Type
+	Header and Data:
+		D8 17 05 D8 08 00 01 00 01 28 28 00 00 00 00 00
+		00 00 00 00 00 00 00
+	Strings:
+		System Programmable Logic Device
+
+Handle 0xD806, DMI type 216, 23 bytes
+OEM-specific Type
+	Header and Data:
+		D8 17 06 D8 08 00 01 00 01 0C 0C 00 00 00 00 00
+		00 00 00 00 00 00 00
+	Strings:
+		SAS Programmable Logic Device
+
+Handle 0xD807, DMI type 216, 23 bytes
+OEM-specific Type
+	Header and Data:
+		D8 17 07 D8 09 00 01 00 03 02 00 01 00 05 00 2B
+		00 04 00 00 00 00 00
+	Strings:
+		Server Platform Services (SPS) Firmware
+
+Handle 0xDB00, DMI type 219, 32 bytes
+HP ProLiant Information
+	Power Features: 0x00000bdf
+	Omega Features: 0x0000000f
+	Misc. Features: 0x00000807
+		iCRU: Yes
+		UEFI: No
+
+Handle 0xDF00, DMI type 223, 7 bytes
+OEM-specific Type
+	Header and Data:
+		DF 07 00 DF 66 46 70
+
+Handle 0xE000, DMI type 224, 5 bytes
+OEM-specific Type
+	Header and Data:
+		E0 05 00 E0 00
+
+Handle 0xE200, DMI type 226, 21 bytes
+OEM-specific Type
+	Header and Data:
+		E2 15 00 E2 36 35 34 30 38 31 55 53 45 32 32 33
+		36 38 33 35 01
+	Strings:
+		USE2236835      
+
+Handle 0xE300, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 00 E3 00 04 00 11 0A A0 01 00
+
+Handle 0xE301, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 01 E3 00 04 01 11 0A A2 01 00
+
+Handle 0xE302, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 02 E3 00 04 02 11 0A A4 01 00
+
+Handle 0xE303, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 03 E3 00 04 03 11 0A A8 01 00
+
+Handle 0xE304, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 04 E3 00 04 04 11 0A AA 01 00
+
+Handle 0xE305, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 05 E3 00 04 05 11 0A AC 01 00
+
+Handle 0xE306, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 06 E3 00 04 06 11 09 AC 01 01
+
+Handle 0xE307, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 07 E3 00 04 07 11 09 AA 01 01
+
+Handle 0xE308, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 08 E3 00 04 08 11 09 A8 01 01
+
+Handle 0xE309, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 09 E3 00 04 09 11 09 A4 01 01
+
+Handle 0xE30A, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 0A E3 00 04 0A 11 09 A2 01 01
+
+Handle 0xE30B, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 0B E3 00 04 0B 11 09 A0 01 01
+
+Handle 0xE30C, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 0C E3 01 04 0C 11 0C A0 01 02
+
+Handle 0xE30D, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 0D E3 01 04 0D 11 0C A2 01 02
+
+Handle 0xE30E, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 0E E3 01 04 0E 11 0C A4 01 02
+
+Handle 0xE30F, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 0F E3 01 04 0F 11 0C A8 01 02
+
+Handle 0xE310, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 10 E3 01 04 10 11 0C AA 01 02
+
+Handle 0xE311, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 11 E3 01 04 11 11 0C AC 01 02
+
+Handle 0xE312, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 12 E3 01 04 12 11 0B AC 01 03
+
+Handle 0xE313, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 13 E3 01 04 13 11 0B AA 01 03
+
+Handle 0xE314, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 14 E3 01 04 14 11 0B A8 01 03
+
+Handle 0xE315, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 15 E3 01 04 15 11 0B A4 01 03
+
+Handle 0xE316, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 16 E3 01 04 16 11 0B A2 01 03
+
+Handle 0xE317, DMI type 227, 12 bytes
+OEM-specific Type
+	Header and Data:
+		E3 0C 17 E3 01 04 17 11 0B A0 01 03
+
+Handle 0xE400, DMI type 228, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E4 0E 00 E4 00 00 00 00 00 00 00 FF 00 00
+
+Handle 0xE401, DMI type 228, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E4 0E 01 E4 01 00 00 00 00 00 00 FF 00 00
+
+Handle 0xE402, DMI type 228, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E4 0E 02 E4 02 00 00 00 00 00 00 FF 00 00
+
+Handle 0xE403, DMI type 228, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E4 0E 03 E4 03 00 00 00 00 00 00 FF 00 00
+
+Handle 0xE404, DMI type 228, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E4 0E 04 E4 04 00 00 00 00 00 00 FF 00 00
+
+Handle 0xE405, DMI type 228, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E4 0E 05 E4 05 00 00 00 00 00 00 FF 00 00
+
+Handle 0xE406, DMI type 228, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E4 0E 06 E4 06 00 00 00 00 00 00 FF 01 00
+
+Handle 0xE407, DMI type 228, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E4 0E 07 E4 07 00 00 00 00 00 00 FF 00 00
+
+Handle 0xE408, DMI type 228, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E4 0E 08 E4 08 06 00 00 00 00 00 FF 00 00
+
+Handle 0xE409, DMI type 228, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E4 0E 09 E4 09 08 30 01 78 80 01 08 00 00
+
+Handle 0xE40A, DMI type 228, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E4 0E 0A E4 0A 08 30 01 78 90 01 08 00 00
+
+Handle 0xE40B, DMI type 228, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E4 0E 0B E4 0B 08 31 01 78 80 01 08 00 00
+
+Handle 0xE40C, DMI type 228, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E4 0E 0C E4 0C 08 31 01 78 90 01 08 00 00
+
+Handle 0xE40D, DMI type 228, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E4 0E 0D E4 0D 01 3E FF 01 00 00 07 00 00
+
+Handle 0xE40E, DMI type 228, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E4 0E 0E E4 0E 01 3E FF 02 00 00 07 00 00
+
+Handle 0xE40F, DMI type 228, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E4 0E 0F E4 0F 01 3E FF 03 00 00 07 00 00
+
+Handle 0xE410, DMI type 228, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E4 0E 10 E4 10 01 3E FF 04 00 00 07 04 00
+
+Handle 0xE500, DMI type 229, 100 bytes
+OEM-specific Type
+	Header and Data:
+		E5 64 00 E5 24 44 46 43 00 50 FD BD 00 00 00 00
+		00 08 00 00 24 43 52 50 00 50 F8 BD 00 00 00 00
+		00 00 05 00 24 48 44 44 00 30 F8 BD 00 00 00 00
+		00 20 00 00 24 4F 43 53 00 F0 F7 BD 00 00 00 00
+		00 40 00 00 24 4F 43 42 00 F0 F6 BD 00 00 00 00
+		00 00 01 00 24 53 41 45 00 E0 F6 BD 00 00 00 00
+		00 10 00 00
+
+Handle 0xE600, DMI type 230, 11 bytes
+OEM-specific Type
+	Header and Data:
+		E6 0B 00 E6 00 27 01 02 02 03 A4
+	Strings:
+		EMRSN           
+		15      
+
+Handle 0xE601, DMI type 230, 11 bytes
+OEM-specific Type
+	Header and Data:
+		E6 0B 01 E6 01 27 01 02 02 03 A8
+	Strings:
+		EMRSN           
+		15      
+
+Handle 0xE800, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 00 E8 00 11 05 00 00 00 46 05 46 05
+
+Handle 0xE801, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 01 E8 01 11 00 00 00 00 00 00 00 00
+
+Handle 0xE802, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 02 E8 02 11 00 00 00 00 00 00 00 00
+
+Handle 0xE803, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 03 E8 03 11 05 00 00 00 46 05 46 05
+
+Handle 0xE804, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 04 E8 04 11 00 00 00 00 00 00 00 00
+
+Handle 0xE805, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 05 E8 05 11 00 00 00 00 00 00 00 00
+
+Handle 0xE806, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 06 E8 06 11 00 00 00 00 00 00 00 00
+
+Handle 0xE807, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 07 E8 07 11 00 00 00 00 00 00 00 00
+
+Handle 0xE808, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 08 E8 08 11 05 00 00 00 46 05 46 05
+
+Handle 0xE809, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 09 E8 09 11 00 00 00 00 00 00 00 00
+
+Handle 0xE80A, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 0A E8 0A 11 00 00 00 00 00 00 00 00
+
+Handle 0xE80B, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 0B E8 0B 11 05 00 00 00 46 05 46 05
+
+Handle 0xE80C, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 0C E8 0C 11 05 00 00 00 46 05 46 05
+
+Handle 0xE80D, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 0D E8 0D 11 00 00 00 00 00 00 00 00
+
+Handle 0xE80E, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 0E E8 0E 11 00 00 00 00 00 00 00 00
+
+Handle 0xE80F, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 0F E8 0F 11 05 00 00 00 46 05 46 05
+
+Handle 0xE810, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 10 E8 10 11 00 00 00 00 00 00 00 00
+
+Handle 0xE811, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 11 E8 11 11 00 00 00 00 00 00 00 00
+
+Handle 0xE812, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 12 E8 12 11 00 00 00 00 00 00 00 00
+
+Handle 0xE813, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 13 E8 13 11 00 00 00 00 00 00 00 00
+
+Handle 0xE814, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 14 E8 14 11 05 00 00 00 46 05 46 05
+
+Handle 0xE815, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 15 E8 15 11 00 00 00 00 00 00 00 00
+
+Handle 0xE816, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 16 E8 16 11 00 00 00 00 00 00 00 00
+
+Handle 0xE817, DMI type 232, 14 bytes
+OEM-specific Type
+	Header and Data:
+		E8 0E 17 E8 17 11 05 00 00 00 46 05 46 05
+
+Handle 0x7F00, DMI type 127, 4 bytes
+End Of Table
+

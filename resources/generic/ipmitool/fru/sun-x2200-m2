@@ -1,0 +1,178 @@
+FRU Device Description : Builtin FRU Device (ID 0)
+ Device not present (Invalid data field in request)
+
+FRU Device Description : Mainboard (ID 1)
+ Chassis Type          : Rack Mount Chassis
+ Chassis Part Number   : 21S39SV0009
+ Chassis Serial        : QTFCKS717058B
+ Board Mfg Date        : Thu Jun  7 03:13:00 2007
+ Board Product         : S39
+ Board Serial          : 2029QTF0723MT0459
+ Board Part Number     : 26S39MA0001
+ Product Manufacturer  : Sun Microsystems
+ Product Name          : Sun Fire X2200 M2
+ Product Part Number   : 3777724-7
+ Product Serial        : 0732QBT057
+
+FRU Device Description : Broad om NIC0 (ID 16)
+ Product Manufacturer  : Broadcom
+ Product Name          : DUAL PORT GIGABIT NIC
+ Product Part Number   : 5715C
+ Product Serial        : 00:1B:24:5D:60:01
+ Product Extra         : 02
+ Product Extra         : 00:1B:24:5D:60:01
+ Product Extra         : 00:1B:24:5D:60:02
+
+FRU Device Description : NVidia NIC1 (ID 17)
+ Product Manufacturer  : NVidia
+ Product Name          : DUAL PORT GIGABIT NIC
+ Product Part Number   : MCP55
+ Product Serial        : 00:1B:24:5D:60:03
+ Product Extra         : 02
+ Product Extra         : 00:1B:24:5D:60:03
+ Product Extra         : 00:1B:24:5D:60:04
+
+FRU Device Description : CPU0 DIMM0 SPD (ID 18)
+ Memory Type           : DDR2 SDRAM
+ Memory Size           : 2048 MB
+ Voltage Intf          : SSTL 1.8V
+ Error Detect/Cor      : Unknown (0x06)
+ Manufacturer          : SK Hynix
+ Part Number           : HYMP525P72CP4-Y5  
+ Serial Number         : 04008093
+
+FRU Device Description : CPU0 DIMM1 SPD (ID 19)
+ Memory Type           : DDR2 SDRAM
+ Memory Size           : 2048 MB
+ Voltage Intf          : SSTL 1.8V
+ Error Detect/Cor      : Unknown (0x06)
+ Manufacturer          : SK Hynix
+ Part Number           : HYMP525P72CP4-Y5  
+ Serial Number         : 04004090
+
+FRU Device Description : CPU0 DIMM2 SPD (ID 20)
+ Memory Type           : DDR2 SDRAM
+ Memory Size           : 2048 MB
+ Voltage Intf          : SSTL 1.8V
+ Error Detect/Cor      : Unknown (0x06)
+ Manufacturer          : SK Hynix
+ Part Number           : HYMP525P72CP4-Y5  
+ Serial Number         : 00003097
+
+FRU Device Description : CPU0 DIMM3 SPD (ID 21)
+ Memory Type           : DDR2 SDRAM
+ Memory Size           : 2048 MB
+ Voltage Intf          : SSTL 1.8V
+ Error Detect/Cor      : Unknown (0x06)
+ Manufacturer          : SK Hynix
+ Part Number           : HYMP525P72CP4-Y5  
+ Serial Number         : 00002120
+
+FRU Device Description : CPU0 DIMM4 SPD (ID 22)
+ Memory Type           : DDR2 SDRAM
+ Memory Size           : 2048 MB
+ Voltage Intf          : SSTL 1.8V
+ Error Detect/Cor      : Unknown (0x06)
+ Manufacturer          : SK Hynix
+ Part Number           : HYMP525P72CP4-Y5  
+ Serial Number         : 00002124
+
+FRU Device Description : CPU0 DIMM5 SPD (ID 23)
+ Memory Type           : DDR2 SDRAM
+ Memory Size           : 2048 MB
+ Voltage Intf          : SSTL 1.8V
+ Error Detect/Cor      : Unknown (0x06)
+ Manufacturer          : SK Hynix
+ Part Number           : HYMP525P72CP4-Y5  
+ Serial Number         : 04008121
+
+FRU Device Description : CPU0 DIMM6 SPD (ID 24)
+ Memory Type           : DDR2 SDRAM
+ Memory Size           : 2048 MB
+ Voltage Intf          : SSTL 1.8V
+ Error Detect/Cor      : Unknown (0x06)
+ Manufacturer          : SK Hynix
+ Part Number           : HYMP525P72CP4-Y5  
+ Serial Number         : 00005086
+
+FRU Device Description : CPU0 DIMM7 SPD (ID 25)
+ Memory Type           : DDR2 SDRAM
+ Memory Size           : 2048 MB
+ Voltage Intf          : SSTL 1.8V
+ Error Detect/Cor      : Unknown (0x06)
+ Manufacturer          : SK Hynix
+ Part Number           : HYMP525P72CP4-Y5  
+ Serial Number         : 00005005
+
+FRU Device Description : CPU1 DIMM0 SPD (ID 26)
+ Memory Type           : DDR2 SDRAM
+ Memory Size           : 2048 MB
+ Voltage Intf          : SSTL 1.8V
+ Error Detect/Cor      : Unknown (0x06)
+ Manufacturer          : SK Hynix
+ Part Number           : HYMP525P72CP4-Y5  
+ Serial Number         : 04004004
+
+FRU Device Description : CPU1 DIMM1 SPD (ID 27)
+ Memory Type           : DDR2 SDRAM
+ Memory Size           : 2048 MB
+ Voltage Intf          : SSTL 1.8V
+ Error Detect/Cor      : Unknown (0x06)
+ Manufacturer          : SK Hynix
+ Part Number           : HYMP525P72CP4-Y5  
+ Serial Number         : 04004122
+
+FRU Device Description : CPU1 DIMM2 SPD (ID 28)
+ Memory Type           : DDR2 SDRAM
+ Memory Size           : 2048 MB
+ Voltage Intf          : SSTL 1.8V
+ Error Detect/Cor      : Unknown (0x06)
+ Manufacturer          : SK Hynix
+ Part Number           : HYMP525P72CP4-Y5  
+ Serial Number         : 00007090
+
+FRU Device Description : CPU1 DIMM3 SPD (ID 29)
+ Memory Type           : DDR2 SDRAM
+ Memory Size           : 2048 MB
+ Voltage Intf          : SSTL 1.8V
+ Error Detect/Cor      : Unknown (0x06)
+ Manufacturer          : SK Hynix
+ Part Number           : HYMP525P72CP4-Y5  
+ Serial Number         : 00002009
+
+FRU Device Description : CPU1 DIMM4 SPD (ID 30)
+ Memory Type           : DDR2 SDRAM
+ Memory Size           : 2048 MB
+ Voltage Intf          : SSTL 1.8V
+ Error Detect/Cor      : Unknown (0x06)
+ Manufacturer          : SK Hynix
+ Part Number           : HYMP525P72CP4-Y5  
+ Serial Number         : 00006009
+
+FRU Device Description : CPU1 DIMM5 SPD (ID 31)
+ Memory Type           : DDR2 SDRAM
+ Memory Size           : 2048 MB
+ Voltage Intf          : SSTL 1.8V
+ Error Detect/Cor      : Unknown (0x06)
+ Manufacturer          : SK Hynix
+ Part Number           : HYMP525P72CP4-Y5  
+ Serial Number         : 00007010
+
+FRU Device Description : CPU1 DIMM6 SPD (ID 32)
+ Memory Type           : DDR2 SDRAM
+ Memory Size           : 2048 MB
+ Voltage Intf          : SSTL 1.8V
+ Error Detect/Cor      : Unknown (0x06)
+ Manufacturer          : SK Hynix
+ Part Number           : HYMP525P72CP4-Y5  
+ Serial Number         : 00001067
+
+FRU Device Description : CPU1 DIMM7 SPD (ID 33)
+ Memory Type           : DDR2 SDRAM
+ Memory Size           : 2048 MB
+ Voltage Intf          : SSTL 1.8V
+ Error Detect/Cor      : Unknown (0x06)
+ Manufacturer          : SK Hynix
+ Part Number           : HYMP525P72CP4-Y5  
+ Serial Number         : 04008004
+

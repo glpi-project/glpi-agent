@@ -1,0 +1,150 @@
+FRU Device Description : Builtin FRU Device (ID 0)
+ Chassis Type          : Rack Mount Chassis
+ Chassis Serial        : CZJ1280RQ2      
+ Board Mfg Date        : Mon Jan  1 00:00:00 1996
+ Board Mfg             : HP
+ Board Product         : ProLiant DL360 G7
+ Board Serial          : CZJ1280RQ2      
+ Board Part Number     : 579237-B21      
+ Product Manufacturer  : HP
+ Product Name          : ProLiant DL360 G7
+ Product Part Number   : 579237-B21      
+ Product Serial        : CZJ1280RQ2      
+ Product Asset Tag     :                                 
+
+FRU Device Description : CPU 1 DIMM 2 (ID 113)
+ Memory Type           : DDR3 SDRAM
+ SDRAM Capacity        : 2048 MB
+ Memory Banks          : 3 (8 Banks)
+ Primary Bus Width     : 64 bits
+ SDRAM Device Width    : 4 bits
+ Number of Ranks       : 2
+ Memory size           : 8192 MB
+ 1.5 V Nominal Op      : Yes
+ 1.35 V Nominal Op     : Yes
+ 1.2X V Nominal Op     : Yes
+ Error Detect/Cor      : 8 bits
+ Manufacturer          : Nanya Technology
+ Manufacture Date      : year 11 week 21
+ Serial Number         : e9372e64
+ Part Number           : NT8GC72B4NB1NK-CG 
+
+FRU Device Description : CPU 1 DIMM 3 (ID 114)
+ Memory Type           : DDR3 SDRAM
+ SDRAM Capacity        : 2048 MB
+ Memory Banks          : 3 (8 Banks)
+ Primary Bus Width     : 64 bits
+ SDRAM Device Width    : 4 bits
+ Number of Ranks       : 2
+ Memory size           : 8192 MB
+ 1.5 V Nominal Op      : Yes
+ 1.35 V Nominal Op     : Yes
+ 1.2X V Nominal Op     : Yes
+ Error Detect/Cor      : 8 bits
+ Manufacturer          : Nanya Technology
+ Manufacture Date      : year 11 week 21
+ Serial Number         : 284a2e65
+ Part Number           : NT8GC72B4NB1NK-CG 
+
+FRU Device Description : CPU 1 DIMM 6 (ID 117)
+ Memory Type           : DDR3 SDRAM
+ SDRAM Capacity        : 2048 MB
+ Memory Banks          : 3 (8 Banks)
+ Primary Bus Width     : 64 bits
+ SDRAM Device Width    : 4 bits
+ Number of Ranks       : 2
+ Memory size           : 8192 MB
+ 1.5 V Nominal Op      : Yes
+ 1.35 V Nominal Op     : Yes
+ 1.2X V Nominal Op     : Yes
+ Error Detect/Cor      : 8 bits
+ Manufacturer          : Nanya Technology
+ Manufacture Date      : year 11 week 21
+ Serial Number         : 6a4a2e61
+ Part Number           : NT8GC72B4NB1NK-CG 
+
+FRU Device Description : CPU 1 DIMM 9 (ID 120)
+ Memory Type           : DDR3 SDRAM
+ SDRAM Capacity        : 2048 MB
+ Memory Banks          : 3 (8 Banks)
+ Primary Bus Width     : 64 bits
+ SDRAM Device Width    : 4 bits
+ Number of Ranks       : 2
+ Memory size           : 8192 MB
+ 1.5 V Nominal Op      : Yes
+ 1.35 V Nominal Op     : Yes
+ 1.2X V Nominal Op     : Yes
+ Error Detect/Cor      : 8 bits
+ Manufacturer          : Nanya Technology
+ Manufacture Date      : year 11 week 21
+ Serial Number         : cb372e64
+ Part Number           : NT8GC72B4NB1NK-CG 
+
+FRU Device Description : CPU 2 DIMM 2 (ID 122)
+ Memory Type           : DDR3 SDRAM
+ SDRAM Capacity        : 2048 MB
+ Memory Banks          : 3 (8 Banks)
+ Primary Bus Width     : 64 bits
+ SDRAM Device Width    : 4 bits
+ Number of Ranks       : 2
+ Memory size           : 8192 MB
+ 1.5 V Nominal Op      : Yes
+ 1.35 V Nominal Op     : Yes
+ 1.2X V Nominal Op     : Yes
+ Error Detect/Cor      : 8 bits
+ Manufacturer          : Nanya Technology
+ Manufacture Date      : year 11 week 21
+ Serial Number         : 77512e69
+ Part Number           : NT8GC72B4NB1NK-CG 
+
+FRU Device Description : CPU 2 DIMM 3 (ID 123)
+ Memory Type           : DDR3 SDRAM
+ SDRAM Capacity        : 2048 MB
+ Memory Banks          : 3 (8 Banks)
+ Primary Bus Width     : 64 bits
+ SDRAM Device Width    : 4 bits
+ Number of Ranks       : 2
+ Memory size           : 8192 MB
+ 1.5 V Nominal Op      : Yes
+ 1.35 V Nominal Op     : Yes
+ 1.2X V Nominal Op     : Yes
+ Error Detect/Cor      : 8 bits
+ Manufacturer          : Nanya Technology
+ Manufacture Date      : year 11 week 21
+ Serial Number         : 253e2e63
+ Part Number           : NT8GC72B4NB1NK-CG 
+
+FRU Device Description : CPU 2 DIMM 6 (ID 126)
+ Memory Type           : DDR3 SDRAM
+ SDRAM Capacity        : 2048 MB
+ Memory Banks          : 3 (8 Banks)
+ Primary Bus Width     : 64 bits
+ SDRAM Device Width    : 4 bits
+ Number of Ranks       : 2
+ Memory size           : 8192 MB
+ 1.5 V Nominal Op      : Yes
+ 1.35 V Nominal Op     : Yes
+ 1.2X V Nominal Op     : Yes
+ Error Detect/Cor      : 8 bits
+ Manufacturer          : Nanya Technology
+ Manufacture Date      : year 11 week 21
+ Serial Number         : 5b462e69
+ Part Number           : NT8GC72B4NB1NK-CG 
+
+FRU Device Description : CPU 2 DIMM 9 (ID 129)
+ Memory Type           : DDR3 SDRAM
+ SDRAM Capacity        : 2048 MB
+ Memory Banks          : 3 (8 Banks)
+ Primary Bus Width     : 64 bits
+ SDRAM Device Width    : 4 bits
+ Number of Ranks       : 2
+ Memory size           : 8192 MB
+ 1.5 V Nominal Op      : Yes
+ 1.35 V Nominal Op     : Yes
+ 1.2X V Nominal Op     : Yes
+ Error Detect/Cor      : 8 bits
+ Manufacturer          : Nanya Technology
+ Manufacture Date      : year 11 week 21
+ Serial Number         : c54a2e66
+ Part Number           : NT8GC72B4NB1NK-CG 
+

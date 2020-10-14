@@ -1,0 +1,193 @@
+FRU Device Description : Builtin FRU Device (ID 0)
+ Chassis Type          : Rack Mount Chassis
+ Chassis Serial        : USE2236835      
+ Board Mfg Date        : Fri Jul 30 00:00:00 2004
+ Board Mfg             : HP
+ Board Product         : ProLiant DL360p Gen8
+ Board Serial          : USE2236835      
+ Board Part Number     : 654081-B21      
+ Product Manufacturer  : HP
+ Product Name          : ProLiant DL360p Gen8
+ Product Part Number   : 654081-B21      
+ Product Serial        : USE2236835      
+
+FRU Device Description : BMC CONTROLLER (ID 238)
+ Product Manufacturer  : HPE
+ Product Name          : BMC CONTROLLER
+ Product Part Number   : iLO 4
+
+FRU Device Description : MB BIOS (ID 239)
+ Product Manufacturer  : HPE
+ Product Name          : SYSTEM BIOS
+ Product Part Number   : P71
+ Product Version       : 07/01/2015
+
+FRU Device Description : CPU 1 (ID 16)
+ Product Manufacturer  : Intel
+ Product Name          :  Intel(R) Xeon(R) CPU E5-2640 0 @ 2.50GHz       
+
+FRU Device Description : CPU 2 (ID 17)
+ Product Manufacturer  : Intel
+ Product Name          :  Intel(R) Xeon(R) CPU E5-2640 0 @ 2.50GHz       
+
+FRU Device Description : CPU 1 DIMM 1 (ID 110)
+ Memory Type           : DDR3 SDRAM
+ SDRAM Capacity        : 2048 MB
+ Memory Banks          : 3 (8 Banks)
+ Primary Bus Width     : 64 bits
+ SDRAM Device Width    : 4 bits
+ Number of Ranks       : 2
+ Memory size           : 8192 MB
+ 1.5 V Nominal Op      : Yes
+ 1.35 V Nominal Op     : No
+ 1.2X V Nominal Op     : Yes
+ Error Detect/Cor      : 8 bits
+ Manufacturer          : Hewlett-Packard
+ Manufacture Date      : year 11 week 52
+ Serial Number         : e08f54c1
+ Part Number           : 647650-071        
+
+FRU Device Description : CPU 1 DIMM 4 (ID 111)
+ Memory Type           : DDR3 SDRAM
+ SDRAM Capacity        : 2048 MB
+ Memory Banks          : 3 (8 Banks)
+ Primary Bus Width     : 64 bits
+ SDRAM Device Width    : 4 bits
+ Number of Ranks       : 2
+ Memory size           : 8192 MB
+ 1.5 V Nominal Op      : Yes
+ 1.35 V Nominal Op     : No
+ 1.2X V Nominal Op     : Yes
+ Error Detect/Cor      : 8 bits
+ Manufacturer          : Hewlett-Packard
+ Manufacture Date      : year 11 week 52
+ Serial Number         : e08f54b3
+ Part Number           : 647650-071        
+
+FRU Device Description : CPU 1 DIMM 9 (ID 112)
+ Memory Type           : DDR3 SDRAM
+ SDRAM Capacity        : 2048 MB
+ Memory Banks          : 3 (8 Banks)
+ Primary Bus Width     : 64 bits
+ SDRAM Device Width    : 4 bits
+ Number of Ranks       : 2
+ Memory size           : 8192 MB
+ 1.5 V Nominal Op      : Yes
+ 1.35 V Nominal Op     : No
+ 1.2X V Nominal Op     : Yes
+ Error Detect/Cor      : 8 bits
+ Manufacturer          : Hewlett-Packard
+ Manufacture Date      : year 12 week 10
+ Serial Number         : db7b94dd
+ Part Number           : 647650-071        
+
+FRU Device Description : CPU 1 DIMM 12 (ID 113)
+ Memory Type           : DDR3 SDRAM
+ SDRAM Capacity        : 2048 MB
+ Memory Banks          : 3 (8 Banks)
+ Primary Bus Width     : 64 bits
+ SDRAM Device Width    : 4 bits
+ Number of Ranks       : 2
+ Memory size           : 8192 MB
+ 1.5 V Nominal Op      : Yes
+ 1.35 V Nominal Op     : No
+ 1.2X V Nominal Op     : Yes
+ Error Detect/Cor      : 8 bits
+ Manufacturer          : Hewlett-Packard
+ Manufacture Date      : year 12 week 10
+ Serial Number         : db7b94cf
+ Part Number           : 647650-071        
+
+FRU Device Description : CPU 2 DIMM 1 (ID 114)
+ Memory Type           : DDR3 SDRAM
+ SDRAM Capacity        : 2048 MB
+ Memory Banks          : 3 (8 Banks)
+ Primary Bus Width     : 64 bits
+ SDRAM Device Width    : 4 bits
+ Number of Ranks       : 2
+ Memory size           : 8192 MB
+ 1.5 V Nominal Op      : Yes
+ 1.35 V Nominal Op     : No
+ 1.2X V Nominal Op     : Yes
+ Error Detect/Cor      : 8 bits
+ Manufacturer          : Hewlett-Packard
+ Manufacture Date      : year 12 week 10
+ Serial Number         : db7b9459
+ Part Number           : 647650-071        
+
+FRU Device Description : CPU 2 DIMM 4 (ID 115)
+ Memory Type           : DDR3 SDRAM
+ SDRAM Capacity        : 2048 MB
+ Memory Banks          : 3 (8 Banks)
+ Primary Bus Width     : 64 bits
+ SDRAM Device Width    : 4 bits
+ Number of Ranks       : 2
+ Memory size           : 8192 MB
+ 1.5 V Nominal Op      : Yes
+ 1.35 V Nominal Op     : No
+ 1.2X V Nominal Op     : Yes
+ Error Detect/Cor      : 8 bits
+ Manufacturer          : Hewlett-Packard
+ Manufacture Date      : year 12 week 10
+ Serial Number         : db7b94ac
+ Part Number           : 647650-071        
+
+FRU Device Description : CPU 2 DIMM 9 (ID 116)
+ Memory Type           : DDR3 SDRAM
+ SDRAM Capacity        : 2048 MB
+ Memory Banks          : 3 (8 Banks)
+ Primary Bus Width     : 64 bits
+ SDRAM Device Width    : 4 bits
+ Number of Ranks       : 2
+ Memory size           : 8192 MB
+ 1.5 V Nominal Op      : Yes
+ 1.35 V Nominal Op     : No
+ 1.2X V Nominal Op     : Yes
+ Error Detect/Cor      : 8 bits
+ Manufacturer          : Hewlett-Packard
+ Manufacture Date      : year 12 week 10
+ Serial Number         : db7b94a3
+ Part Number           : 647650-071        
+
+FRU Device Description : CPU 2 DIMM 12 (ID 117)
+ Memory Type           : DDR3 SDRAM
+ SDRAM Capacity        : 2048 MB
+ Memory Banks          : 3 (8 Banks)
+ Primary Bus Width     : 64 bits
+ SDRAM Device Width    : 4 bits
+ Number of Ranks       : 2
+ Memory size           : 8192 MB
+ 1.5 V Nominal Op      : Yes
+ 1.35 V Nominal Op     : No
+ 1.2X V Nominal Op     : Yes
+ Error Detect/Cor      : 8 bits
+ Manufacturer          : Hewlett-Packard
+ Manufacture Date      : year 12 week 10
+ Serial Number         : db7b949f
+ Part Number           : 647650-071        
+
+FRU Device Description : Ethernet Adptr (ID 2)
+ Board Mfg Date        : Sun Apr 15 01:40:00 2012
+ Board Mfg             : HP
+ Board Product         : HP Ethernet 1Gb 4-port 331FLR Adapter
+ Board Serial          : CN82150W2G
+ Board Part Number     : 634025-001
+ Board Extra           : d23041
+ Board Extra           : d5629133b001
+ Product Manufacturer  : HP
+ Product Name          : HP Ethernet 1Gb 4-port 331FLR Adapter
+ Product Part Number   : 629135-B21
+ Product Version       : 00
+ Product Serial        : CN82150W2G
+
+FRU Device Description : SAS Ctlr (ID 3)
+ Product Name          : Smart Array P420i Controller
+ Product Version       : B
+ Product Serial        : 001438020C8EF10
+
+FRU Device Description : Mezz Slot 1 (ID 4)
+ Device not present (Parameter out of range)
+
+FRU Device Description : Mezz Slot 2 (ID 5)
+ Device not present (Parameter out of range)
+

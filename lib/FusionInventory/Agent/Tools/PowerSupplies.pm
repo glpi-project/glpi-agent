@@ -10,7 +10,6 @@ use FusionInventory::Agent::Tools;
 
 our @EXPORT = qw(
     powersupplyFields
-    getIpmiFru
 );
 
 my @fields = ();
@@ -26,48 +25,6 @@ sub powersupplyFields {
     return @fields;
 }
 
-sub getIpmiFru {
-    my (%params) = (
-        command => 'ipmitool fru print',
-        @_
-    );
-
-    my $handle = getFileHandle(%params);
-    return unless $handle;
-    my ($fru, $block, $descr);
-
-    while (my $line = <$handle>) {
-        chomp $line;
-
-        if ($line =~ /^FRU Device Description : (.*)(?: \(ID (\d+)\))?/) {
-            # start of block
-
-            # push previous block in list
-            if ($block) {
-                $fru->{$descr} = $block;
-                undef $block;
-            }
-
-            $descr = $1;
-
-            next;
-        }
-
-        next unless defined $descr;
-        next unless $line =~ /^\s+([^:]+\w)\s+:\s(.+)$/;
-
-        $block->{$1} = trimWhitespace($2);
-    }
-
-    close $handle;
-
-    # push last block in list if still defined
-    if ($block) {
-        $fru->{$descr} = $block;
-    }
-
-    return $fru;
-}
 
 # Also implement a powersupplies class, but split name on new line to not export it in CPAN
 ## no critic (ProhibitMultiplePackages)
@@ -215,10 +172,6 @@ FusionInventory::Agent::Tools::PowerSupplies
 This module provides functions to manage powersupplies information
 
 =head1 FUNCTIONS
-
-=head2 getIpmiFru()
-
-Returns list of FRU entries
 
 =head2 powersupplyFields()
 

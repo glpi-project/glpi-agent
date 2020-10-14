@@ -1,0 +1,47 @@
+FRU Device Description : Builtin FRU Device (ID 0)
+ Board Mfg Date        : Thu Dec 28 03:40:00 2017
+ Board Mfg             : DELL
+ Board Product         : PowerEdge R630                
+ Board Serial          : CNIVC007CQ1846
+ Board Part Number     : 02C2CPA07
+ Product Manufacturer  : DELL
+ Product Name          : PowerEdge R630
+ Product Version       : 01
+ Product Serial        : 2WF88P2
+
+FRU Device Description : PS1 (ID 1)
+ Board Mfg Date        : Sun Jan 14 11:55:00 2018
+ Board Mfg             : DELL
+ Board Product         : PWR SPLY,495W,RDNT,DELTA      
+ Board Serial          : CNDED0081G03X8
+ Board Part Number     : 0GRTNKA02
+
+FRU Device Description : PS2 (ID 2)
+ Device not present (Timeout)
+
+FRU Device Description : BP0 (ID 12)
+ Device not present (Timeout)
+
+FRU Device Description : BP1 (ID 13)
+ Board Mfg Date        : Sun Dec 17 04:38:00 2017
+ Board Mfg             : DELL
+ Board Product         : DRIVE BACKPLANE               
+ Board Serial          : CNIVC007CD4368
+ Board Part Number     : 0MG81CA02
+
+FRU Device Description : NDC (ID 4)
+ Board Mfg Date        : Fri Jun 20 06:45:00 2014
+ Board Mfg             : DELL
+ Board Product         : BRCM 10G/GbE 2+2P 57800-t rNDC
+ Board Serial          : CN7543546H00HB
+ Board Part Number     : 0G8RPDA00
+
+FRU Device Description : PERC1 (ID 10)
+ Board Mfg Date        : Wed Oct  5 14:00:00 2016
+ Board Mfg             : DELL
+ Board Product         : Dell Storage Cntlr. H330 Mini-
+ Board Serial          : CN7792169T02BB
+ Board Part Number     : 0GDJ3JA03
+
+FRU Device Description : OEM fru (ID 17)
+

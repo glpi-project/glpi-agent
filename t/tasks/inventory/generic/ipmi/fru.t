@@ -11,20 +11,20 @@ use Test::NoWarnings;
 
 use FusionInventory::Test::Inventory;
 use FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Psu;
-use FusionInventory::Agent::Task::Inventory::Generic::Ipmi::Fru;
+use FusionInventory::Agent::Task::Inventory::Generic::Ipmi::Fru::Psu;
 
 my %tests = (
     '1' => {
         dmidecode   => [],
         fru         => [
             {
-                PARTNUM        => '05NF18A01',
+                PARTNUM        => '05NF18',
                 SERIALNUMBER   => 'CN1797238QA8B4',
                 MANUFACTURER   => 'DELL',
                 NAME           => 'PWR SPLY,750WP,RDNT,DELTA',
             },
             {
-                PARTNUM        => '05NF18A01',
+                PARTNUM        => '05NF18',
                 SERIALNUMBER   => 'CN1797238QA8EI',
                 MANUFACTURER   => 'DELL',
                 NAME           => 'PWR SPLY,750WP,RDNT,DELTA',
@@ -45,13 +45,13 @@ my %tests = (
             {
                 PARTNUM        => 'H66158-007',
                 SERIALNUMBER   => 'CNS2221A4SG7Q0942',
-                MANUFACTURER   => 'SAMSUNG ELECTRO-MECHANICS CO.,LTD',
+                MANUFACTURER   => 'Samsung',
                 NAME           => 'PSSF222201A',
             },
             {
                 PARTNUM        => 'H66158-007',
                 SERIALNUMBER   => 'CNS2221A4SG7Q0944',
-                MANUFACTURER   => 'SAMSUNG ELECTRO-MECHANICS CO.,LTD',
+                MANUFACTURER   => 'Samsung',
                 NAME           => 'PSSF222201A',
             },
         ],
@@ -81,7 +81,7 @@ foreach my $index (keys %tests) {
 
     my $fru = "resources/generic/powersupplies/fru_$index.txt";
     lives_ok {
-        FusionInventory::Agent::Task::Inventory::Generic::Ipmi::Fru::doInventory(
+        FusionInventory::Agent::Task::Inventory::Generic::Ipmi::Fru::Psu::doInventory(
             inventory   => $inventory,
             file        => $fru
         );
