@@ -15,6 +15,7 @@ use constant    linux       => enterprises . '.8072.3.2.10' ;
 use constant    ucddavis    => enterprises . '.2021' ;
 use constant    checkpoint  => enterprises . '.2620' ;
 use constant    synology    => enterprises . '.6574' ;
+use constant    ubnt        => enterprises . '.41112' ;
 
 use constant    ucdExperimental => ucddavis . '.13' ;
 
@@ -44,6 +45,11 @@ use constant    snmpEngineID    => snmpEngine . '.1.0';
 # HOST-RESOURCES-MIB
 use constant    hrStorageEntry  => iso . '.25.2.3.1.3';
 use constant    hrSWRunName     => iso . '.25.4.2.1.2';
+
+# UBNT-UniFi-MIB
+use constant    ubntUniFi               => ubnt . '.1.6' ;
+use constant    unifiApSystemModel      => ubntUniFi . '.3.3.0' ;
+use constant    unifiApSystemVersion    => ubntUniFi . '.3.6.0' ;
 
 our $mibSupport = [
     {
@@ -103,6 +109,16 @@ sub getType {
         $device->{_Appliance} = {
             MODEL           => 'Sophos UTM',
             MANUFACTURER    => 'Sophos'
+        };
+        return 'NETWORKING';
+    }
+
+    # UniFi AP detection
+    my $unifiModel = $self->get(unifiApSystemModel);
+    if ($unifiModel) {
+        $device->{_Appliance} = {
+            MODEL           => $unifiModel,
+            MANUFACTURER    => 'Ubiquiti'
         };
         return 'NETWORKING';
     }
@@ -189,6 +205,14 @@ sub run {
             DESCRIPTION     => "$manufacturer SVN version",
             TYPE            => "system",
             VERSION         => getCanonicalString($self->get(svnVersion)),
+            MANUFACTURER    => $manufacturer
+        };
+    } elsif ($manufacturer eq 'Ubiquiti') {
+        $firmware = {
+            NAME            => $self->getModel(),
+            DESCRIPTION     => "Unifi AP System version",
+            TYPE            => "system",
+            VERSION         => getCanonicalString($self->get(unifiApSystemVersion)),
             MANUFACTURER    => $manufacturer
         };
     }
