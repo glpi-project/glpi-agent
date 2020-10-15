@@ -48,7 +48,7 @@ sub run {
 
     $device->addFirmware({
         NAME            => 'HP-HttpMg-Version',
-        DESCRIPTION     => "HP Web Managementn Software version",
+        DESCRIPTION     => "HP Web Management Software version",
         TYPE            => "system",
         VERSION         => getCanonicalString($hpHttpMgVersion),
         MANUFACTURER    => "HP"
