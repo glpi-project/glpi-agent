@@ -12,7 +12,11 @@ use FusionInventory::Agent::Task::Inventory::Virtualization::Qemu;
 my @tests = (
     {
         CMD     => "qemu -hda /dev/hda -m 256 foobar",
-        _result => { name => '/dev/hda', 'mem' => 256 }
+        _result => {
+            name    => '/dev/hda',
+            vmtype  => 'qemu',
+            mem     => 256
+        }
     },
     {
         CMD =>
@@ -21,6 +25,7 @@ my @tests = (
             'serial' => 'myserial',
             'mem'    => 512,
             'uuid'   => 'BB123450-C977-11DF-1234-B01234557082',
+            'vmtype' => 'kvm',
             'name'   => 'xppro'
         }
     },
@@ -30,6 +35,7 @@ my @tests = (
         _result => {
             'name' => 'foobar',
             'mem'  => 256,
+            vmtype => 'qemu',
             'uuid' => 'BB123450-C977-11DF-1234-B01234557082'
         }
     },
@@ -39,7 +45,18 @@ my @tests = (
         _result => {
             'name' => 'Win2008x64',
             'mem'  => 1024,
+            vmtype => 'kvm',
             'uuid' => 'a61349d9-c2b8-4d6c-9539-e1c7af2136c5'
+        }
+    },
+    {
+        CMD =>
+"qemu-system-x86_64 -enable-kvm -name DEV -m 4096 -uuid 6df8f2f4-34dc-44da-bff8-b52fc993a7d2",
+        _result => {
+            name   => 'DEV',
+            mem    => 4096,
+            vmtype => 'kvm',
+            uuid   => '6df8f2f4-34dc-44da-bff8-b52fc993a7d2'
         }
     },
 );
