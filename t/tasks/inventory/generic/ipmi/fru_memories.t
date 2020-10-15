@@ -24,6 +24,7 @@ my %tests = (
             'NUMSLOTS'         => 1,
             'SERIALNUMBER'     => '425BB5D0',
             'SPEED'            => '2400',
+            'MODEL'            => 'HMA451R7AFR8N-UH',
             'TYPE'             => 'DDR4'
         },
         {
@@ -35,6 +36,7 @@ my %tests = (
             'NUMSLOTS'         => 2,
             'SERIALNUMBER'     => '425BB5BC',
             'SPEED'            => '2400',
+            'MODEL'            => 'HMA451R7AFR8N-UH',
             'TYPE'             => 'DDR4'
         },
         {
@@ -46,6 +48,7 @@ my %tests = (
             'NUMSLOTS'         => 3,
             'SERIALNUMBER'     => '425BB618',
             'SPEED'            => '2400',
+            'MODEL'            => 'HMA451R7AFR8N-UH',
             'TYPE'             => 'DDR4'
         },
         {
@@ -57,6 +60,7 @@ my %tests = (
             'NUMSLOTS'         => 4,
             'SERIALNUMBER'     => '425BB619',
             'SPEED'            => '2400',
+            'MODEL'            => 'HMA451R7AFR8N-UH',
             'TYPE'             => 'DDR4'
         },
         {
@@ -68,6 +72,7 @@ my %tests = (
             'NUMSLOTS'         => 5,
             'SERIALNUMBER'     => '425BB644',
             'SPEED'            => '2400',
+            'MODEL'            => 'HMA451R7AFR8N-UH',
             'TYPE'             => 'DDR4'
         },
         {
@@ -79,6 +84,7 @@ my %tests = (
             'NUMSLOTS'         => 6,
             'SERIALNUMBER'     => '425BB643',
             'SPEED'            => '2400',
+            'MODEL'            => 'HMA451R7AFR8N-UH',
             'TYPE'             => 'DDR4'
         },
         {
@@ -90,6 +96,7 @@ my %tests = (
             'NUMSLOTS'         => 7,
             'SERIALNUMBER'     => '425BB561',
             'SPEED'            => '2400',
+            'MODEL'            => 'HMA451R7AFR8N-UH',
             'TYPE'             => 'DDR4'
         },
         {
@@ -101,6 +108,7 @@ my %tests = (
             'NUMSLOTS'         => 8,
             'SERIALNUMBER'     => '425BB566',
             'SPEED'            => '2400',
+            'MODEL'            => 'HMA451R7AFR8N-UH',
             'TYPE'             => 'DDR4'
         },
         {
@@ -132,6 +140,7 @@ my %tests = (
             'NUMSLOTS'         => 13,
             'SERIALNUMBER'     => '425BB5CF',
             'SPEED'            => '2400',
+            'MODEL'            => 'HMA451R7AFR8N-UH',
             'TYPE'             => 'DDR4'
         },
         {
@@ -143,6 +152,7 @@ my %tests = (
             'NUMSLOTS'         => 14,
             'SERIALNUMBER'     => '425BB5CE',
             'SPEED'            => '2400',
+            'MODEL'            => 'HMA451R7AFR8N-UH',
             'TYPE'             => 'DDR4'
         },
         {
@@ -154,6 +164,7 @@ my %tests = (
             'NUMSLOTS'         => 15,
             'SERIALNUMBER'     => '425BB5CD',
             'SPEED'            => '2400',
+            'MODEL'            => 'HMA451R7AFR8N-UH',
             'TYPE'             => 'DDR4'
         },
         {
@@ -165,6 +176,7 @@ my %tests = (
             'NUMSLOTS'         => 16,
             'SERIALNUMBER'     => '425BB5CC',
             'SPEED'            => '2400',
+            'MODEL'            => 'HMA451R7AFR8N-UH',
             'TYPE'             => 'DDR4'
         },
         {
@@ -176,6 +188,7 @@ my %tests = (
             'NUMSLOTS'         => 17,
             'SERIALNUMBER'     => '425BB64A',
             'SPEED'            => '2400',
+            'MODEL'            => 'HMA451R7AFR8N-UH',
             'TYPE'             => 'DDR4'
         },
         {
@@ -187,6 +200,7 @@ my %tests = (
             'NUMSLOTS'         => 18,
             'SERIALNUMBER'     => '425BB649',
             'SPEED'            => '2400',
+            'MODEL'            => 'HMA451R7AFR8N-UH',
             'TYPE'             => 'DDR4'
         },
         {
@@ -198,6 +212,7 @@ my %tests = (
             'NUMSLOTS'         => 19,
             'SERIALNUMBER'     => '425BB669',
             'SPEED'            => '2400',
+            'MODEL'            => 'HMA451R7AFR8N-UH',
             'TYPE'             => 'DDR4'
         },
         {
@@ -209,6 +224,7 @@ my %tests = (
             'NUMSLOTS'         => 20,
             'SERIALNUMBER'     => '425BB5AE',
             'SPEED'            => '2400',
+            'MODEL'            => 'HMA451R7AFR8N-UH',
             'TYPE'             => 'DDR4'
         },
         {
@@ -242,6 +258,7 @@ my %tests = (
             'NUMSLOTS'         => 1,
             'SERIALNUMBER'     => '3780385B',
             'SPEED'            => '2933',
+            'MODEL'            => 'M393A4K40CB2-CVF',
             'TYPE'             => 'DDR4'
         },
         {
@@ -253,6 +270,7 @@ my %tests = (
             'NUMSLOTS'         => 2,
             'SERIALNUMBER'     => '3780485D',
             'SPEED'            => '2933',
+            'MODEL'            => 'M393A4K40CB2-CVF',
             'TYPE'             => 'DDR4'
         },
         {
@@ -269,6 +287,7 @@ my %tests = (
             'NUMSLOTS'         => 4,
             'SERIALNUMBER'     => '37803837',
             'SPEED'            => '2933',
+            'MODEL'            => 'M393A4K40CB2-CVF',
             'TYPE'             => 'DDR4'
         },
         {
@@ -280,6 +299,7 @@ my %tests = (
             'NUMSLOTS'         => 5,
             'SERIALNUMBER'     => '378037F8',
             'SPEED'            => '2933',
+            'MODEL'            => 'M393A4K40CB2-CVF',
             'TYPE'             => 'DDR4'
         },
         {
@@ -326,6 +346,7 @@ my %tests = (
             'NUMSLOTS'         => 13,
             'SERIALNUMBER'     => '378037F2',
             'SPEED'            => '2933',
+            'MODEL'            => 'M393A4K40CB2-CVF',
             'TYPE'             => 'DDR4'
         },
         {
@@ -337,6 +358,7 @@ my %tests = (
             'NUMSLOTS'         => 14,
             'SERIALNUMBER'     => '3780063C',
             'SPEED'            => '2933',
+            'MODEL'            => 'M393A4K40CB2-CVF',
             'TYPE'             => 'DDR4'
         },
         {
@@ -353,6 +375,7 @@ my %tests = (
             'NUMSLOTS'         => 16,
             'SERIALNUMBER'     => '37804A39',
             'SPEED'            => '2933',
+            'MODEL'            => 'M393A4K40CB2-CVF',
             'TYPE'             => 'DDR4'
         },
         {
@@ -364,6 +387,7 @@ my %tests = (
             'NUMSLOTS'         => 17,
             'SERIALNUMBER'     => '37800533',
             'SPEED'            => '2933',
+            'MODEL'            => 'M393A4K40CB2-CVF',
             'TYPE'             => 'DDR4'
         },
         {
@@ -412,6 +436,7 @@ my %tests = (
             'NUMSLOTS'         => 1,
             'SERIALNUMBER'     => '16B8328C',
             'SPEED'            => '1866',
+            'MODEL'            => 'M393B1G73QH0-CMA',
             'TYPE'             => 'DDR3'
         },
         {
@@ -423,6 +448,7 @@ my %tests = (
             'NUMSLOTS'         => 2,
             'SERIALNUMBER'     => '16B8325E',
             'SPEED'            => '1866',
+            'MODEL'            => 'M393B1G73QH0-CMA',
             'TYPE'             => 'DDR3'
         },
         {
@@ -434,6 +460,7 @@ my %tests = (
             'NUMSLOTS'         => 3,
             'SERIALNUMBER'     => '16B83620',
             'SPEED'            => '1866',
+            'MODEL'            => 'M393B1G73QH0-CMA',
             'TYPE'             => 'DDR3'
         },
         {
@@ -445,6 +472,7 @@ my %tests = (
             'NUMSLOTS'         => 4,
             'SERIALNUMBER'     => '16B835C8',
             'SPEED'            => '1866',
+            'MODEL'            => 'M393B1G73QH0-CMA',
             'TYPE'             => 'DDR3'
         },
         {
@@ -512,6 +540,7 @@ my %tests = (
             'NUMSLOTS'         => 13,
             'SERIALNUMBER'     => '16B86AC8',
             'SPEED'            => '1866',
+            'MODEL'            => 'M393B1G73QH0-CMA',
             'TYPE'             => 'DDR3'
         },
         {
@@ -523,6 +552,7 @@ my %tests = (
             'NUMSLOTS'         => 14,
             'SERIALNUMBER'     => '16B833DA',
             'SPEED'            => '1866',
+            'MODEL'            => 'M393B1G73QH0-CMA',
             'TYPE'             => 'DDR3'
         },
         {
@@ -534,6 +564,7 @@ my %tests = (
             'NUMSLOTS'         => 15,
             'SERIALNUMBER'     => '16B8328D',
             'SPEED'            => '1866',
+            'MODEL'            => 'M393B1G73QH0-CMA',
             'TYPE'             => 'DDR3'
         },
         {
@@ -545,6 +576,7 @@ my %tests = (
             'NUMSLOTS'         => 16,
             'SERIALNUMBER'     => '16B83B0E',
             'SPEED'            => '1866',
+            'MODEL'            => 'M393B1G73QH0-CMA',
             'TYPE'             => 'DDR3'
         },
         {
