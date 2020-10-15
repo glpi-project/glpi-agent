@@ -49,7 +49,7 @@ sub doInventory {
             $psu->{$key} = $info->{$fields{$key}};
         }
 
-        # Filter out PSU is nothing interesting is found
+        # Filter out PSU if nothing interesting is found
         next unless $psu;
         next unless ($psu->{'NAME'} || $psu->{'SERIALNUMBER'} || $psu->{'PARTNUM'});
 

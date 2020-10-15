@@ -34,7 +34,7 @@ my %tests = (
         {
             ID           => 'A7 06 02 00 FF FB EB BF',
             NAME         => 'Intel(R) Core(TM) i5-2300 CPU @ 2.80GHz',
-            SERIAL       => 'ToBeFilledByO.E.M.',
+            SERIAL       => undef,
             MANUFACTURER => 'Intel',
             DESCRIPTION  => 'x86 Family 6 Model 42 Stepping 7',
             STEPPING     => '7',

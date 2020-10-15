@@ -114,13 +114,8 @@ sub _getMemories {
                     &&
                 $info->{'Part Number'} !~ /
                     DIMM            |
-                    NOT\s*AVAILABLE |
-                    None            |
-                    Not\s*Specified |
-                    O\.E\.M\.       |
                     Part\s*Num      |
-                    Ser\s*Num       |
-                    Unknown
+                    Ser\s*Num
                 /xi
             ) {
                 $memory->{MODEL} = trimWhitespace(

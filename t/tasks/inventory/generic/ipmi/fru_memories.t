@@ -988,7 +988,6 @@ my %tests = (
         {
             'CAPTION'          => 'PROC 1 DIMM 2',
             'DESCRIPTION'      => 'DIMM',
-            'MANUFACTURER'     => 'UNKNOWN',
             'MEMORYCORRECTION' => 'Single-bit ECC',
             'NUMSLOTS'         => 2,
             'TYPE'             => 'DDR3'
@@ -996,7 +995,6 @@ my %tests = (
         {
             'CAPTION'          => 'PROC 1 DIMM 3',
             'DESCRIPTION'      => 'DIMM',
-            'MANUFACTURER'     => 'UNKNOWN',
             'MEMORYCORRECTION' => 'Single-bit ECC',
             'NUMSLOTS'         => 3,
             'TYPE'             => 'DDR3'
@@ -1016,7 +1014,6 @@ my %tests = (
         {
             'CAPTION'          => 'PROC 1 DIMM 5',
             'DESCRIPTION'      => 'DIMM',
-            'MANUFACTURER'     => 'UNKNOWN',
             'MEMORYCORRECTION' => 'Single-bit ECC',
             'NUMSLOTS'         => 5,
             'TYPE'             => 'DDR3'
@@ -1024,7 +1021,6 @@ my %tests = (
         {
             'CAPTION'          => 'PROC 1 DIMM 6',
             'DESCRIPTION'      => 'DIMM',
-            'MANUFACTURER'     => 'UNKNOWN',
             'MEMORYCORRECTION' => 'Single-bit ECC',
             'NUMSLOTS'         => 6,
             'TYPE'             => 'DDR3'
@@ -1032,7 +1028,6 @@ my %tests = (
         {
             'CAPTION'          => 'PROC 1 DIMM 7',
             'DESCRIPTION'      => 'DIMM',
-            'MANUFACTURER'     => 'UNKNOWN',
             'MEMORYCORRECTION' => 'Single-bit ECC',
             'NUMSLOTS'         => 7,
             'TYPE'             => 'DDR3'
@@ -1040,7 +1035,6 @@ my %tests = (
         {
             'CAPTION'          => 'PROC 1 DIMM 8',
             'DESCRIPTION'      => 'DIMM',
-            'MANUFACTURER'     => 'UNKNOWN',
             'MEMORYCORRECTION' => 'Single-bit ECC',
             'NUMSLOTS'         => 8,
             'TYPE'             => 'DDR3'
@@ -1060,7 +1054,6 @@ my %tests = (
         {
             'CAPTION'          => 'PROC 1 DIMM 10',
             'DESCRIPTION'      => 'DIMM',
-            'MANUFACTURER'     => 'UNKNOWN',
             'MEMORYCORRECTION' => 'Single-bit ECC',
             'NUMSLOTS'         => 10,
             'TYPE'             => 'DDR3'
@@ -1068,7 +1061,6 @@ my %tests = (
         {
             'CAPTION'          => 'PROC 1 DIMM 11',
             'DESCRIPTION'      => 'DIMM',
-            'MANUFACTURER'     => 'UNKNOWN',
             'MEMORYCORRECTION' => 'Single-bit ECC',
             'NUMSLOTS'         => 11,
             'TYPE'             => 'DDR3'
@@ -1100,7 +1092,6 @@ my %tests = (
         {
             'CAPTION'          => 'PROC 2 DIMM 2',
             'DESCRIPTION'      => 'DIMM',
-            'MANUFACTURER'     => 'UNKNOWN',
             'MEMORYCORRECTION' => 'Single-bit ECC',
             'NUMSLOTS'         => 14,
             'TYPE'             => 'DDR3'
@@ -1108,7 +1099,6 @@ my %tests = (
         {
             'CAPTION'          => 'PROC 2 DIMM 3',
             'DESCRIPTION'      => 'DIMM',
-            'MANUFACTURER'     => 'UNKNOWN',
             'MEMORYCORRECTION' => 'Single-bit ECC',
             'NUMSLOTS'         => 15,
             'TYPE'             => 'DDR3'
@@ -1128,7 +1118,6 @@ my %tests = (
         {
             'CAPTION'          => 'PROC 2 DIMM 5',
             'DESCRIPTION'      => 'DIMM',
-            'MANUFACTURER'     => 'UNKNOWN',
             'MEMORYCORRECTION' => 'Single-bit ECC',
             'NUMSLOTS'         => 17,
             'TYPE'             => 'DDR3'
@@ -1136,7 +1125,6 @@ my %tests = (
         {
             'CAPTION'          => 'PROC 2 DIMM 6',
             'DESCRIPTION'      => 'DIMM',
-            'MANUFACTURER'     => 'UNKNOWN',
             'MEMORYCORRECTION' => 'Single-bit ECC',
             'NUMSLOTS'         => 18,
             'TYPE'             => 'DDR3'
@@ -1144,7 +1132,6 @@ my %tests = (
         {
             'CAPTION'          => 'PROC 2 DIMM 7',
             'DESCRIPTION'      => 'DIMM',
-            'MANUFACTURER'     => 'UNKNOWN',
             'MEMORYCORRECTION' => 'Single-bit ECC',
             'NUMSLOTS'         => 19,
             'TYPE'             => 'DDR3'
@@ -1152,7 +1139,6 @@ my %tests = (
         {
             'CAPTION'          => 'PROC 2 DIMM 8',
             'DESCRIPTION'      => 'DIMM',
-            'MANUFACTURER'     => 'UNKNOWN',
             'MEMORYCORRECTION' => 'Single-bit ECC',
             'NUMSLOTS'         => 20,
             'TYPE'             => 'DDR3'
@@ -1172,7 +1158,6 @@ my %tests = (
         {
             'CAPTION'          => 'PROC 2 DIMM 10',
             'DESCRIPTION'      => 'DIMM',
-            'MANUFACTURER'     => 'UNKNOWN',
             'MEMORYCORRECTION' => 'Single-bit ECC',
             'NUMSLOTS'         => 22,
             'TYPE'             => 'DDR3'
@@ -1180,7 +1165,6 @@ my %tests = (
         {
             'CAPTION'          => 'PROC 2 DIMM 11',
             'DESCRIPTION'      => 'DIMM',
-            'MANUFACTURER'     => 'UNKNOWN',
             'MEMORYCORRECTION' => 'Single-bit ECC',
             'NUMSLOTS'         => 23,
             'TYPE'             => 'DDR3'

@@ -64,15 +64,9 @@ my %dmidecode_tests = (
         ],
         17 => [
             {
-                 'Part Number' => 'None',
-                 'Serial Number' => 'None',
-                 'Type Detail' => 'None',
-                 'Set' => 'None',
                  'Size' => '512 MB',
-                 'Manufacturer' => 'None',
                  'Bank Locator' => 'Bank0/1',
                  'Array Handle' => '0x0013',
-                 'Asset Tag' => 'None',
                  'Locator' => 'A0',
                  'Error Information Handle' => 'Not Provided',
                  'Form Factor' => 'DIMM'
@@ -96,19 +90,16 @@ my %dmidecode_tests = (
         8 => [
             {
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'PRIMARY IDE',
                 'Internal Connector Type' => 'On Board IDE'
             },
             {
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'SECONDARY IDE',
                 'Internal Connector Type' => 'On Board IDE'
             },
             {
                 'Port Type' => '8251 FIFO Compatible',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'FDD',
                 'Internal Connector Type' => 'On Board Floppy'
             },
@@ -146,7 +137,6 @@ my %dmidecode_tests = (
                 'External Reference Designator' => 'USB0',
                 'Port Type' => 'USB',
                 'External Connector Type' => 'Other',
-                'Internal Connector Type' => 'None'
             }
         ],
         1 => [
@@ -166,7 +156,6 @@ my %dmidecode_tests = (
                 'L2 Cache Handle' => '0x0007',
                 'Type' => 'Central Processor',
                 'Version' => 'VIA C7',
-                'Upgrade' => 'None',
                 'L1 Cache Handle' => '0x0006',
                 'Voltage' => '1.1 V',
                 'Manufacturer' => 'VIA',
@@ -185,7 +174,6 @@ my %dmidecode_tests = (
         16 => [
             {
                  'Number Of Devices' => '1',
-                 'Error Correction Type' => 'None',
                  'Error Information Handle' => 'Not Provided',
                  'Location' => 'System Board Or Motherboard',
                  'Maximum Capacity' => '512 MB',
@@ -200,9 +188,7 @@ my %dmidecode_tests = (
         ],
         5 => [
             {
-                'Error Detecting Method' => 'None',
                 'Maximum Memory Module Size' => '1024 MB',
-                'Enabled Error Correcting Capabilities' => 'None',
                 'Associated Memory Slots' => '1',
                 'Current Interleave' => 'Four-way Interleave',
                 'Memory Module Voltage' => '2.9 V',
@@ -287,7 +273,6 @@ my %dmidecode_tests = (
                 'Part Number' => 'HMT125S6BFR8C-H9',
                 'Serial Number' => '1A1541FC',
                 'Type Detail' => 'Synchronous',
-                'Set' => 'None',
                 'Speed' => '1067 MHz',
                 'Size' => '2048 MB',
                 'Manufacturer' => 'Hynix',
@@ -303,7 +288,6 @@ my %dmidecode_tests = (
                 'Part Number' => 'HMT125S6BFR8C-H9',
                 'Serial Number' => '1A554239',
                 'Type Detail' => 'Synchronous',
-                'Set' => 'None',
                 'Speed' => '1067 MHz',
                 'Size' => '2048 MB',
                 'Manufacturer' => 'Hynix',
@@ -380,7 +364,6 @@ my %dmidecode_tests = (
         16 => [
             {
                 'Number Of Devices' => '2',
-                'Error Correction Type' => 'None',
                 'Error Information Handle' => 'No Error',
                 'Location' => 'System Board Or Motherboard',
                 'Maximum Capacity' => '8 GB',
@@ -391,12 +374,10 @@ my %dmidecode_tests = (
             {
                 'Height' => 'Unspecified',
                 'Power Supply State' => 'Safe',
-                'Serial Number' => 'None',
                 'Thermal State' => 'Safe',
                 'Contained Elements' => '0',
                 'Type' => 'Notebook',
                 'Number Of Power Cords' => '1',
-                'Security Status' => 'None',
                 'Manufacturer' => 'Hewlett-Packard',
                 'Boot-up State' => 'Safe',
                 'OEM Information' => '0x00000113'
@@ -515,13 +496,11 @@ my %dmidecode_tests = (
                 'Supported Log Type Descriptors' => '3',
                 'Descriptor 1' => 'POST memory resize',
                 'Descriptor 3' => 'Log area reset/cleared',
-                'Data Format 1' => 'None',
                 'Area Length' => '0 bytes',
                 'Header Start Offset' => '0x0000',
                 'Header Format' => 'OEM-specific',
                 'Change Token' => '0x12345678',
                 'Data Format 2' => 'POST results bitmap',
-                'Data Format 3' => 'None',
                 'Descriptor 2' => 'POST error'
             }
         ],
@@ -593,7 +572,6 @@ my %dmidecode_tests = (
         ],
         7 => [
             {
-                'Error Correction Type' => 'None',
                 'Installed Size' => '8 KB',
                 'Operational Mode' => 'Write Back',
                 'Configuration' => 'Enabled, Not Socketed, Level 1',
@@ -603,7 +581,6 @@ my %dmidecode_tests = (
                 'Maximum Size' => '8 KB'
             },
             {
-                'Error Correction Type' => 'None',
                 'Installed Size' => '2048 KB',
                 'Operational Mode' => 'Varies With Memory Address',
                 'Configuration' => 'Enabled, Not Socketed, Level 2',
@@ -621,7 +598,6 @@ my %dmidecode_tests = (
                  'Data Width' => '64 bits',
                  'Array Handle' => '0x1000',
                  'Type Detail' => 'Synchronous',
-                 'Set' => 'None',
                  'Total Width' => '64 bits',
                  'Type' => 'DDR',
                  'Speed' => '533 MHz (1.9 ns)',
@@ -636,7 +612,6 @@ my %dmidecode_tests = (
                  'Data Width' => '64 bits',
                  'Array Handle' => '0x1000',
                  'Type Detail' => 'Synchronous',
-                 'Set' => 'None',
                  'Total Width' => '64 bits',
                  'Type' => 'DDR',
                  'Speed' => '533 MHz (1.9 ns)',
@@ -691,7 +666,6 @@ my %dmidecode_tests = (
         16 => [
             {
                  'Number Of Devices' => '2',
-                 'Error Correction Type' => 'None',
                  'Error Information Handle' => 'Not Provided',
                  'Location' => 'System Board Or Motherboard',
                  'Maximum Capacity' => '4 GB',
@@ -726,7 +700,6 @@ my %dmidecode_tests = (
             {
                 'Type' => 'Portable',
                 'Power Supply State' => 'Safe',
-                'Security Status' => 'None',
                 'Serial Number' => 'D8XD62J',
                 'Thermal State' => 'Safe',
                 'Boot-up State' => 'Safe',
@@ -779,43 +752,36 @@ my %dmidecode_tests = (
                 'Port Type' => 'Parallel Port PS/2',
                 'External Connector Type' => 'DB-25 female',
                 'Internal Reference Designator' => 'PARALLEL',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'Serial Port 16550A Compatible',
                 'External Connector Type' => 'DB-9 male',
                 'Internal Reference Designator' => 'SERIAL1',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'USB',
                 'External Connector Type' => 'Access Bus (USB)',
                 'Internal Reference Designator' => 'USB',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'Video Port',
                 'External Connector Type' => 'DB-15 female',
                 'Internal Reference Designator' => 'MONITOR',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'Other',
                 'External Connector Type' => 'Infrared',
                 'Internal Reference Designator' => 'IrDA',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'Modem Port',
                 'External Connector Type' => 'RJ-11',
                 'Internal Reference Designator' => 'Modem',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'Network Port',
                 'External Connector Type' => 'RJ-45',
                 'Internal Reference Designator' => 'Ethernet',
-                'Internal Connector Type' => 'None'
             }
         ],
         4 => [
@@ -830,7 +796,6 @@ my %dmidecode_tests = (
                 'L2 Cache Handle' => '0x0701',
                 'Type' => 'Central Processor',
                 'Signature' => 'Type 0, Family 6, Model 13, Stepping 8',
-                'Upgrade' => 'None',
                 'L1 Cache Handle' => '0x0700',
                 'Voltage' => '3.3 V',
                 'Manufacturer' => 'Intel',
@@ -1042,19 +1007,16 @@ my %dmidecode_tests = (
         8 => [
             {
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'PRIMARY IDE',
                 'Internal Connector Type' => 'On Board IDE'
             },
             {
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'SECONDARY IDE',
                 'Internal Connector Type' => 'On Board IDE'
             },
             {
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'FLOPPY',
                 'Internal Connector Type' => 'On Board Floppy'
             },
@@ -1380,7 +1342,7 @@ my %dmidecode_tests = (
             {
                 'Length' => 'Long',
                 'Designation' => 'SLOT2',
-                'Current Usage' => 'Available'
+                'Current Usage' => 'Available',
             },
             {
                 'Length' => 'Long',
@@ -1445,59 +1407,48 @@ my %dmidecode_tests = (
         8 => [
             {
                 'Port Type' => 'SCSI Wide',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'SCSI',
                 'Internal Connector Type' => '68 Pin Dual Inline'
             },
             {
                 'Port Type' => 'Video Port',
                 'External Connector Type' => 'DB-15 female',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'USB',
                 'External Connector Type' => 'Access Bus (USB)',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'USB',
                 'External Connector Type' => 'Access Bus (USB)',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'USB',
                 'External Connector Type' => 'Access Bus (USB)',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'USB',
                 'External Connector Type' => 'Access Bus (USB)',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'Parallel Port PS/2',
                 'External Connector Type' => 'DB-25 female',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'Network Port',
                 'External Connector Type' => 'RJ-45',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'Serial Port 16550A Compatible',
                 'External Connector Type' => 'DB-9 male',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'Keyboard Port',
                 'External Connector Type' => 'PS/2',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'Mouse Port',
                 'External Connector Type' => 'PS/2',
-                'Internal Connector Type' => 'None'
             }
         ],
         4 => [
@@ -1521,7 +1472,6 @@ my %dmidecode_tests = (
             {
                 ID             => '00 00 00 00 00 00 00 00',
                 'Socket Designation' => 'PROC_2',
-                'Flags' => 'None',
                 'Status' => 'Unpopulated',
                 'Max Speed' => '3600 MHz',
                 'Family' => 'Xeon',
@@ -1563,7 +1513,6 @@ my %dmidecode_tests = (
             },
             {
                 'Installed Size' => 'Not Installed',
-                'Type' => 'UNKNOWN',
                 'Enabled Size' => 'Not Installed',
                 'Socket' => 'DIMM2'
             }
@@ -1646,67 +1595,56 @@ my %dmidecode_tests = (
             {
                 'Port Type' => 'Serial Port 16650A Compatible',
                 'External Connector Type' => 'DB-9 pin male',
-                'Internal Connector Type' => 'None',
                 'External Designator' => 'SERIAL1'
             },
             {
                 'Port Type' => 'Serial Port 16650A Compatible',
                 'External Connector Type' => 'DB-9 pin male',
-                'Internal Connector Type' => 'None',
                 'External Designator' => 'SERIAL2'
             },
             {
                 'Port Type' => 'Parallel Port ECP/EPP',
                 'External Connector Type' => 'DB-25 pin female',
-                'Internal Connector Type' => 'None',
                 'External Designator' => 'PRINTER'
             },
             {
                 'Port Type' => 'Keyboard Port',
                 'External Connector Type' => 'PS/2',
-                'Internal Connector Type' => 'None',
                 'External Designator' => 'KEYBOARD'
             },
             {
                 'Port Type' => 'Mouse Port',
                 'External Connector Type' => 'PS/2',
-                'Internal Connector Type' => 'None',
                 'External Designator' => 'MOUSE'
             },
             {
                 'Port Type' => 'USB',
                 'External Connector Type' => 'Access Bus (USB)',
-                'Internal Connector Type' => 'None',
                 'External Designator' => 'USB1'
             },
             {
                 'Port Type' => 'USB',
                 'External Connector Type' => 'Access Bus (USB)',
-                'Internal Connector Type' => 'None',
                 'External Designator' => 'USB2'
             },
             {
                 'Port Type' => 'Other',
                 'Internal Designator' => 'IDE1',
-                'External Connector Type' => 'None',
                 'Internal Connector Type' => 'On Board IDE'
             },
             {
                 'Port Type' => 'Other',
                 'Internal Designator' => 'IDE2',
-                'External Connector Type' => 'None',
                 'Internal Connector Type' => 'On Board IDE'
             },
             {
                 'Port Type' => 'Other',
                 'Internal Designator' => 'FDD',
-                'External Connector Type' => 'None',
                 'Internal Connector Type' => 'On Board Floppy'
             },
             {
                 'Port Type' => 'SCSI II',
                 'Internal Designator' => 'SCSI1',
-                'External Connector Type' => 'None',
                 'Internal Connector Type' => 'SSA SCSI'
             }
         ],
@@ -1754,7 +1692,6 @@ my %dmidecode_tests = (
                 'Thermal State' => 'Safe',
                 'Asset Tag' => '12345678901234567890123456789012',
                 'Type' => 'Tower',
-                'Security Status' => 'None',
                 'Manufacturer' => 'IBM',
                 'Boot-up State' => 'Safe',
                 'OEM Information' => '0x00001234'
@@ -1967,14 +1904,12 @@ my %dmidecode_tests = (
                 'Port Type' => 'Keyboard Port',
                 'External Connector Type' => 'Circular DIN-8 male',
                 'Internal Reference Designator' => 'J1A1',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'PS/2 Mouse',
                 'Port Type' => 'Keyboard Port',
                 'External Connector Type' => 'Circular DIN-8 male',
                 'Internal Reference Designator' => 'J1A1',
-                'Internal Connector Type' => 'None'
             }
         ],
         1 => [
@@ -2141,7 +2076,6 @@ my %dmidecode_tests = (
                  'Bank Locator' => 'Bank0',
                  'Data Width' => '256 bits',
                  'Array Handle' => '0x0028',
-                 'Type Detail' => 'None',
                  'Set' => '1',
                  'Total Width' => '257 bits',
                  'Type' => 'DDR',
@@ -2154,7 +2088,6 @@ my %dmidecode_tests = (
                  'Bank Locator' => 'Bank1',
                  'Data Width' => '256 bits',
                  'Array Handle' => '0x0028',
-                 'Type Detail' => 'None',
                  'Set' => '1',
                  'Total Width' => '257 bits',
                  'Type' => 'DDR',
@@ -2167,7 +2100,6 @@ my %dmidecode_tests = (
                  'Bank Locator' => 'Bank2',
                  'Data Width' => '256 bits',
                  'Array Handle' => '0x0028',
-                 'Type Detail' => 'None',
                  'Set' => '2',
                  'Total Width' => '257 bits',
                  'Type' => 'DDR',
@@ -2180,7 +2112,6 @@ my %dmidecode_tests = (
                  'Bank Locator' => 'Bank3',
                  'Data Width' => '256 bits',
                  'Array Handle' => '0x0028',
-                 'Type Detail' => 'None',
                  'Set' => '2',
                  'Total Width' => '257 bits',
                  'Type' => 'DDR',
@@ -2385,19 +2316,16 @@ my %dmidecode_tests = (
         8 => [
             {
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'IDE1',
                 'Internal Connector Type' => 'On Board IDE'
             },
             {
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'IDE2',
                 'Internal Connector Type' => 'On Board IDE'
             },
             {
                 'Port Type' => '8251 FIFO Compatible',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'FDD',
                 'Internal Connector Type' => 'On Board Floppy'
             },
@@ -2435,37 +2363,28 @@ my %dmidecode_tests = (
                 'External Reference Designator' => 'JUSB1',
                 'Port Type' => 'USB',
                 'External Connector Type' => 'Other',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'JUSB2',
                 'Port Type' => 'USB',
                 'External Connector Type' => 'Other',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'AUD1',
                 'Port Type' => 'Audio Port',
-                'External Connector Type' => 'None',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'JLAN1',
                 'Port Type' => 'Network Port',
                 'External Connector Type' => 'RJ-45',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'SCSI1',
                 'Port Type' => 'SCSI Wide',
-                'External Connector Type' => 'None',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'SCSI2',
                 'Port Type' => 'SCSI Wide',
-                'External Connector Type' => 'None',
-                'Internal Connector Type' => 'None'
             }
         ],
         4 => [
@@ -2965,69 +2884,56 @@ my %dmidecode_tests = (
             {
                 'Port Type' => 'Video Port',
                 'External Connector Type' => 'DB-15 female',
-                'Internal Connector Type' => 'None'
             },
             {
-                'Internal Connector Type' => 'None',
                 'Port Type' => 'Video Port',
                 'External Connector Type' => 'DB-15 female'
             },
             {
                 'External Connector Type' => 'Access Bus (USB)',
                 'Port Type' => 'USB',
-                'Internal Connector Type' => 'None'
             },
             {
-                'Internal Connector Type' => 'None',
                 'External Connector Type' => 'Access Bus (USB)',
                 'Port Type' => 'USB'
             },
             {
                 'External Connector Type' => 'Access Bus (USB)',
                 'Port Type' => 'USB',
-                'Internal Connector Type' => 'None'
             },
             {
-                'Internal Connector Type' => 'None',
                 'Port Type' => 'USB',
                 'External Connector Type' => 'Access Bus (USB)'
             },
             {
                 'Port Type' => 'USB',
                 'Internal Reference Designator' => 'INT_USB',
-                'External Connector Type' => 'None',
                 'Internal Connector Type' => 'Access Bus (USB)'
             },
             {
                 'Internal Connector Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Port Type' => 'USB',
                 'Internal Reference Designator' => 'INT_SD'
             },
             {
                 'External Connector Type' => 'RJ-45',
                 'Port Type' => 'Network Port',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Connector Type' => 'RJ-45',
                 'Port Type' => 'Network Port',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Connector Type' => 'RJ-45',
                 'Port Type' => 'Network Port',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Connector Type' => 'RJ-45',
                 'Port Type' => 'Network Port',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Connector Type' => 'DB-9 male',
                 'Port Type' => 'Serial Port 16550A Compatible',
-                'Internal Connector Type' => 'None'
             }
         ],
         19 => [
@@ -3370,7 +3276,6 @@ my %dmidecode_tests = (
                 'Serial Number' => '330DC586',
                 'Total Width' => '72 bits',
                 'Type Detail' => 'Synchronous',
-                'Set' => 'None',
                 'Error Information Handle' => 'Not Provided',
                 'Manufacturer' => 'Samsung'
             },
@@ -3386,7 +3291,6 @@ my %dmidecode_tests = (
                 'Speed' => '2133 MHz',
                 'Array Handle' => '0x0035',
                 'Part Number' => 'M386A4G40DM0-CPB',
-                'Set' => 'None',
                 'Error Information Handle' => 'Not Provided',
                 'Manufacturer' => 'Samsung',
                 'Locator' => 'D10',
@@ -3401,7 +3305,6 @@ my %dmidecode_tests = (
                 'Type Detail' => 'Synchronous',
                 'Part Number' => 'NO DIMM',
                 'Array Handle' => '0x0035',
-                'Set' => 'None',
                 'Size' => 'No Module Installed',
                 'Type' => 'DDR4',
                 'Error Information Handle' => 'Not Provided',
@@ -3414,7 +3317,6 @@ my %dmidecode_tests = (
                 'Locator' => 'D8',
                 'Type Detail' => 'Synchronous',
                 'Total Width' => '72 bits',
-                'Set' => 'None',
                 'Manufacturer' => 'Samsung',
                 'Error Information Handle' => 'Not Provided',
                 'Form Factor' => 'DIMM',
@@ -3430,7 +3332,6 @@ my %dmidecode_tests = (
                 'Type' => 'DDR4'
             },
             {
-                'Set' => 'None',
                 'Error Information Handle' => 'Not Provided',
                 'Manufacturer' => 'Samsung',
                 'Locator' => 'D7',
@@ -3451,7 +3352,6 @@ my %dmidecode_tests = (
             },
             {
                 'Size' => 'No Module Installed',
-                'Set' => 'None',
                 'Manufacturer' => 'NO DIMM',
                 'Asset Tag' => 'NO DIMM',
                 'Bank Locator' => '/SYS/MB/P0',
@@ -3476,7 +3376,6 @@ my %dmidecode_tests = (
                 'Speed' => '2133 MHz',
                 'Part Number' => 'M386A4G40DM0-CPB',
                 'Array Handle' => '0x0041',
-                'Set' => 'None',
                 'Error Information Handle' => 'Not Provided',
                 'Manufacturer' => 'Samsung',
                 'Locator' => 'D0',
@@ -3487,7 +3386,6 @@ my %dmidecode_tests = (
             {
                 'Error Information Handle' => 'Not Provided',
                 'Manufacturer' => 'Samsung',
-                'Set' => 'None',
                 'Type Detail' => 'Synchronous',
                 'Total Width' => '72 bits',
                 'Locator' => 'D1',
@@ -3511,7 +3409,6 @@ my %dmidecode_tests = (
                 'Type Detail' => 'Synchronous',
                 'Part Number' => 'NO DIMM',
                 'Array Handle' => '0x0041',
-                'Set' => 'None',
                 'Size' => 'No Module Installed',
                 'Type' => 'DDR4',
                 'Error Information Handle' => 'Not Provided',
@@ -3522,7 +3419,6 @@ my %dmidecode_tests = (
             {
                 'Manufacturer' => 'Samsung',
                 'Error Information Handle' => 'Not Provided',
-                'Set' => 'None',
                 'Type Detail' => 'Synchronous',
                 'Total Width' => '72 bits',
                 'Serial Number' => '330DC588',
@@ -3557,7 +3453,6 @@ my %dmidecode_tests = (
                 'Serial Number' => '32A3A50E',
                 'Error Information Handle' => 'Not Provided',
                 'Manufacturer' => 'Samsung',
-                'Set' => 'None'
             },
             {
                 'Locator' => 'D5',
@@ -3566,7 +3461,6 @@ my %dmidecode_tests = (
                 'Type Detail' => 'Synchronous',
                 'Array Handle' => '0x0041',
                 'Part Number' => 'NO DIMM',
-                'Set' => 'None',
                 'Size' => 'No Module Installed',
                 'Error Information Handle' => 'Not Provided',
                 'Type' => 'DDR4',
@@ -3579,7 +3473,6 @@ my %dmidecode_tests = (
                 'Locator' => 'D11',
                 'Total Width' => '72 bits',
                 'Type Detail' => 'Synchronous',
-                'Set' => 'None',
                 'Manufacturer' => 'Samsung',
                 'Error Information Handle' => 'Not Provided',
                 'Form Factor' => 'DIMM',
@@ -3601,7 +3494,6 @@ my %dmidecode_tests = (
                 'Serial Number' => '32A3A4CE',
                 'Error Information Handle' => 'Not Provided',
                 'Manufacturer' => 'Samsung',
-                'Set' => 'None',
                 'Speed' => '2133 MHz',
                 'Array Handle' => '0x004D',
                 'Part Number' => 'M386A4G40DM0-CPB',
@@ -3621,7 +3513,6 @@ my %dmidecode_tests = (
                 'Error Information Handle' => 'Not Provided',
                 'Type' => 'DDR4',
                 'Size' => 'No Module Installed',
-                'Set' => 'None',
                 'Part Number' => 'NO DIMM',
                 'Array Handle' => '0x004D',
                 'Type Detail' => 'Synchronous',
@@ -3647,7 +3538,6 @@ my %dmidecode_tests = (
                 'Serial Number' => '330DCB4F',
                 'Error Information Handle' => 'Not Provided',
                 'Manufacturer' => 'Samsung',
-                'Set' => 'None'
             },
             {
                 'Speed' => '2133 MHz',
@@ -3667,7 +3557,6 @@ my %dmidecode_tests = (
                 'Serial Number' => '32A3A4FC',
                 'Error Information Handle' => 'Not Provided',
                 'Manufacturer' => 'Samsung',
-                'Set' => 'None'
             },
             {
                 'Error Information Handle' => 'Not Provided',
@@ -3675,7 +3564,6 @@ my %dmidecode_tests = (
                 'Bank Locator' => '/SYS/MB/P1',
                 'Manufacturer' => 'NO DIMM',
                 'Asset Tag' => 'NO DIMM',
-                'Set' => 'None',
                 'Size' => 'No Module Installed',
                 'Type Detail' => 'Synchronous',
                 'Array Handle' => '0x004D',
@@ -3689,7 +3577,6 @@ my %dmidecode_tests = (
                 'Locator' => 'D0',
                 'Type Detail' => 'Synchronous',
                 'Total Width' => '72 bits',
-                'Set' => 'None',
                 'Manufacturer' => 'Samsung',
                 'Error Information Handle' => 'Not Provided',
                 'Form Factor' => 'DIMM',
@@ -3716,7 +3603,6 @@ my %dmidecode_tests = (
                 'Part Number' => 'M386A4G40DM0-CPB',
                 'Array Handle' => '0x0059',
                 'Speed' => '2133 MHz',
-                'Set' => 'None',
                 'Manufacturer' => 'Samsung',
                 'Error Information Handle' => 'Not Provided',
                 'Serial Number' => '32A3A4CC',
@@ -3737,14 +3623,12 @@ my %dmidecode_tests = (
                 'Error Information Handle' => 'Not Provided',
                 'Type' => 'DDR4',
                 'Size' => 'No Module Installed',
-                'Set' => 'None'
             },
             {
                 'Serial Number' => '330DC52C',
                 'Locator' => 'D3',
                 'Total Width' => '72 bits',
                 'Type Detail' => 'Synchronous',
-                'Set' => 'None',
                 'Manufacturer' => 'Samsung',
                 'Error Information Handle' => 'Not Provided',
                 'Form Factor' => 'DIMM',
@@ -3775,7 +3659,6 @@ my %dmidecode_tests = (
                 'Serial Number' => '32A3A50D',
                 'Total Width' => '72 bits',
                 'Type Detail' => 'Synchronous',
-                'Set' => 'None',
                 'Error Information Handle' => 'Not Provided',
                 'Manufacturer' => 'Samsung'
             },
@@ -3786,7 +3669,6 @@ my %dmidecode_tests = (
                 'Error Information Handle' => 'Not Provided',
                 'Type' => 'DDR4',
                 'Size' => 'No Module Installed',
-                'Set' => 'None',
                 'Array Handle' => '0x0059',
                 'Part Number' => 'NO DIMM',
                 'Type Detail' => 'Synchronous',
@@ -3798,14 +3680,12 @@ my %dmidecode_tests = (
         8 => [
             {
                 'External Reference Designator' => 'USB Internal Connector - Bottom',
-                'Internal Connector Type' => 'None',
                 'Port Type' => 'USB',
                 'Internal Reference Designator' => 'J2803',
                 'External Connector Type' => 'Access Bus (USB)'
             },
             {
                 'External Reference Designator' => 'USB Internal Connector - Top',
-                'Internal Connector Type' => 'None',
                 'Port Type' => 'USB',
                 'Internal Reference Designator' => 'J2803',
                 'External Connector Type' => 'Access Bus (USB)'
@@ -3815,46 +3695,37 @@ my %dmidecode_tests = (
                 'External Connector Type' => 'DB-15 female',
                 'External Reference Designator' => 'VGA Connector',
                 'Port Type' => 'Video Port',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Internal Reference Designator' => 'J2801',
                 'External Connector Type' => 'Access Bus (USB)',
                 'External Reference Designator' => 'USB Rear Connector - Left',
-                'Internal Connector Type' => 'None',
                 'Port Type' => 'USB'
             },
             {
                 'External Connector Type' => 'Access Bus (USB)',
                 'Internal Reference Designator' => 'J2802',
-                'Internal Connector Type' => 'None',
                 'Port Type' => 'USB',
                 'External Reference Designator' => 'USB Rear Connector - Right'
             },
             {
                 'External Reference Designator' => 'USB Front Connector - Left',
                 'Port Type' => 'USB',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'External Connector Type' => 'Access Bus (USB)'
             },
             {
-                'Internal Connector Type' => 'None',
                 'Port Type' => 'USB',
                 'External Reference Designator' => 'USB Front Connector - Right',
                 'External Connector Type' => 'Access Bus (USB)',
-                'Internal Reference Designator' => 'None'
             },
             {
                 'Internal Reference Designator' => 'J2903',
                 'External Connector Type' => 'RJ-45',
                 'External Reference Designator' => 'SER MGT',
                 'Port Type' => 'Serial Port 16550 Compatible',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'NET MGT',
-                'Internal Connector Type' => 'None',
                 'Port Type' => 'Network Port',
                 'Internal Reference Designator' => 'J2902',
                 'External Connector Type' => 'RJ-45'
@@ -3863,7 +3734,6 @@ my %dmidecode_tests = (
                 'External Connector Type' => 'RJ-45',
                 'Internal Reference Designator' => 'J3502',
                 'Port Type' => 'Network Port',
-                'Internal Connector Type' => 'None',
                 'External Reference Designator' => 'NET 0'
             },
             {
@@ -3871,12 +3741,10 @@ my %dmidecode_tests = (
                 'External Connector Type' => 'RJ-45',
                 'External Reference Designator' => 'NET 1',
                 'Port Type' => 'Network Port',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'NET 2',
                 'Port Type' => 'Network Port',
-                'Internal Connector Type' => 'None',
                 'Internal Reference Designator' => 'J3802',
                 'External Connector Type' => 'RJ-45'
             },
@@ -3884,13 +3752,11 @@ my %dmidecode_tests = (
                 'Internal Reference Designator' => 'J3801',
                 'External Connector Type' => 'RJ-45',
                 'External Reference Designator' => 'NET 3',
-                'Internal Connector Type' => 'None',
                 'Port Type' => 'Network Port'
             },
             {
                 'External Reference Designator' => 'DVD',
                 'Port Type' => 'SATA',
-                'Internal Connector Type' => 'None',
                 'Internal Reference Designator' => 'J2003',
                 'External Connector Type' => 'SAS/SATA Plug Receptacle'
             }
@@ -4056,7 +3922,6 @@ my %dmidecode_tests = (
         ],
         3 => [
             {
-                'Security Status' => 'None',
                 'Power Supply State' => 'Safe',
                 'Type' => 'Main Server Chassis',
                 'Thermal State' => 'Safe',
@@ -4336,7 +4201,6 @@ my %dmidecode_tests = (
         16 => [
             {
                  'Number Of Devices' => '2',
-                 'Error Correction Type' => 'None',
                  'Error Information Handle' => 'Not Provided',
                  'Location' => 'System Board Or Motherboard',
                  'Maximum Capacity' => '1 GB',
@@ -4371,7 +4235,6 @@ my %dmidecode_tests = (
                 'Asset Tag' => '0000000000',
                 'Type' => 'Notebook',
                 'Version' => 'Version 1.0',
-                'Security Status' => 'None',
                 'OEM Information' => '0x00000000',
                 'Manufacturer' => 'TOSHIBA',
                 'Boot-up State' => 'Safe'
@@ -4448,80 +4311,67 @@ my %dmidecode_tests = (
                 'External Reference Designator' => 'PARALLEL PORT',
                 'Port Type' => 'Parallel Port ECP',
                 'External Connector Type' => 'DB-25 female',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'EXTERNAL MONITOR PORT',
                 'Port Type' => 'Other',
                 'External Connector Type' => 'DB-15 female',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'BUILT-IN MODEM PORT',
                 'Port Type' => 'Modem Port',
                 'External Connector Type' => 'RJ-11',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'BUILT-IN LAN PORT',
                 'Port Type' => 'Network Port',
                 'External Connector Type' => 'RJ-45',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'INFRARED PORT',
                 'Port Type' => 'Other',
                 'External Connector Type' => 'Infrared',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'USB PORT',
                 'Port Type' => 'USB',
                 'External Connector Type' => 'Access Bus (USB)',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'USB PORT',
                 'Port Type' => 'USB',
                 'External Connector Type' => 'Access Bus (USB)',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'USB PORT',
                 'Port Type' => 'USB',
                 'External Connector Type' => 'Access Bus (USB)',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'HEADPHONE JACK',
                 'Port Type' => 'Other',
                 'External Connector Type' => 'Mini Jack (headphones)',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => '1394 PORT',
                 'Port Type' => 'Firewire (IEEE P1394)',
                 'External Connector Type' => 'IEEE 1394',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'MICROPHONE JACK',
                 'Port Type' => 'Other',
                 'External Connector Type' => 'Other',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'VIDEO-OUT JACK',
                 'Port Type' => 'Other',
                 'External Connector Type' => 'Other',
-                'Internal Connector Type' => 'None'
             }
         ],
         4 => [
             {
                 ID             => '24 0F 00 00 00 00 00 00',
                 'Socket Designation' => 'uFC-PGA Socket',
-                'Flags' => 'None',
                 'Status' => 'Populated, Enabled',
                 'Max Speed' => '1700 MHz',
                 'External Clock' => '100 MHz',
@@ -4570,7 +4420,6 @@ my %dmidecode_tests = (
         ],
         5 => [
             {
-                'Error Detecting Method' => 'None',
                 'Maximum Total Memory Size' => '1024 MB',
                 'Supported Interleave' => 'Other',
                 'Maximum Memory Module Size' => '512 MB',
@@ -4595,834 +4444,514 @@ my %dmidecode_tests = (
         ],
         '17' => [
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => '1024 MB',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M0',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M1',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M2',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M3',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M4',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M5',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M6',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M7',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M8',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M9',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M10',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M11',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M12',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M13',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M14',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M15',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M16',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M17',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M18',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M19',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M20',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M21',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M22',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M23',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M24',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M25',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M26',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M27',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M28',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M29',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M30',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M31',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M32',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M33',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M34',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M35',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M36',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M37',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M38',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M39',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M40',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M41',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M42',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M43',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M44',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M45',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M46',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M47',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M48',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M49',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M50',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M51',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M52',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M53',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M54',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M55',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M56',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M57',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M58',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M59',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M60',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M61',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M62',
                 'Error Information Handle' => '0x0018',
             },
             {
-                'Part Number' => 'None',
-                'Serial Number' => 'None',
-                'Set' => 'None',
                 'Type' => 'Other',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Microsoft',
-                'Bank Locator' => 'None',
                 'Array Handle' => '0x0019',
-                'Asset Tag' => 'None',
                 'Locator' => 'M63',
                 'Error Information Handle' => '0x0018',
             }
@@ -5468,7 +4997,6 @@ my %dmidecode_tests = (
         '16' => [
             {
                 'Number Of Devices' => '64',
-                'Error Correction Type' => 'None',
                 'Error Information Handle' => '0x0018',
                 'Maximum Capacity' => '2048 GB',
                 'Use' => 'System Memory'
@@ -5492,13 +5020,6 @@ my %dmidecode_tests = (
                 'OEM Information' => '0x00000000',
                 'Manufacturer' => 'Microsoft Corporation',
                 'Boot-up State' => 'Safe'
-            }
-        ],
-        '12' => [
-            {
-                'Option 2' => 'To Be Filled By O.E.M.',
-                'Option 3' => 'To Be Filled By O.E.M.',
-                'Option 1' => 'To Be Filled By O.E.M.'
             }
         ],
         '20' => [
@@ -5571,11 +5092,8 @@ my %dmidecode_tests = (
         '4' => [
             {
                 'ID' => '7A 06 01 00 FF FB 8B 1F',
-                'Socket Designation' => 'None',
-                'Part Number' => 'None',
                 'Status' => 'Populated, Enabled',
                 'Max Speed' => '3733 MHz',
-                'Serial Number' => 'None',
                 'Family' => 'Xeon',
                 'Current Speed' => '2500 MHz',
                 'L2 Cache Handle' => 'Not Provided',
@@ -5584,121 +5102,70 @@ my %dmidecode_tests = (
                 'L1 Cache Handle' => 'Not Provided',
                 'Manufacturer' => 'GenuineIntel',
                 'External Clock' => '266 MHz',
-                'Asset Tag' => 'None',
                 'Version' => 'Intel Xeon',
-                'Upgrade' => 'None',
                 'Voltage' => '1.2 V',
                 'L3 Cache Handle' => 'Not Provided'
             },
             {
                 'ID' => '00 00 00 00 00 00 00 00',
-                'Socket Designation' => 'None',
-                'Part Number' => 'None',
                 'Status' => 'Unpopulated',
-                'Serial Number' => 'None',
                 'L2 Cache Handle' => 'Not Provided',
                 'Type' => 'Central Processor',
                 'L1 Cache Handle' => 'Not Provided',
-                'Manufacturer' => 'None',
-                'Asset Tag' => 'None',
-                'Version' => 'None',
-                'Upgrade' => 'None',
                 'Voltage' => '2.9 V',
                 'L3 Cache Handle' => 'Not Provided'
             },
             {
                 'ID' => '00 00 00 00 00 00 00 00',
-                'Socket Designation' => 'None',
-                'Part Number' => 'None',
                 'Status' => 'Unpopulated',
-                'Serial Number' => 'None',
                 'L2 Cache Handle' => 'Not Provided',
                 'Type' => 'Central Processor',
                 'L1 Cache Handle' => 'Not Provided',
-                'Manufacturer' => 'None',
-                'Asset Tag' => 'None',
-                'Version' => 'None',
-                'Upgrade' => 'None',
                 'Voltage' => '2.9 V',
                 'L3 Cache Handle' => 'Not Provided'
                 },
             {
                 'ID' => '00 00 00 00 00 00 00 00',
-                'Socket Designation' => 'None',
-                'Part Number' => 'None',
                 'Status' => 'Unpopulated',
-                'Serial Number' => 'None',
                 'L2 Cache Handle' => 'Not Provided',
                 'Type' => 'Central Processor',
                 'L1 Cache Handle' => 'Not Provided',
-                'Manufacturer' => 'None',
-                'Asset Tag' => 'None',
-                'Version' => 'None',
-                'Upgrade' => 'None',
                 'Voltage' => '2.9 V',
                 'L3 Cache Handle' => 'Not Provided'
             },
             {
                 'ID' => '00 00 00 00 00 00 00 00',
-                'Socket Designation' => 'None',
-                'Part Number' => 'None',
                 'Status' => 'Unpopulated',
-                'Serial Number' => 'None',
                 'L2 Cache Handle' => 'Not Provided',
                 'Type' => 'Central Processor',
                 'L1 Cache Handle' => 'Not Provided',
-                'Manufacturer' => 'None',
-                'Asset Tag' => 'None',
-                'Version' => 'None',
-                'Upgrade' => 'None',
                 'Voltage' => '2.9 V',
                 'L3 Cache Handle' => 'Not Provided'
             },
             {
                 'ID' => '00 00 00 00 00 00 00 00',
-                'Socket Designation' => 'None',
-                'Part Number' => 'None',
                 'Status' => 'Unpopulated',
-                'Serial Number' => 'None',
                 'L2 Cache Handle' => 'Not Provided',
                 'Type' => 'Central Processor',
                 'L1 Cache Handle' => 'Not Provided',
-                'Manufacturer' => 'None',
-                'Asset Tag' => 'None',
-                'Version' => 'None',
-                'Upgrade' => 'None',
                 'Voltage' => '2.9 V',
                 'L3 Cache Handle' => 'Not Provided'
             },
             {
                 'ID' => '00 00 00 00 00 00 00 00',
-                'Socket Designation' => 'None',
-                'Part Number' => 'None',
                 'Status' => 'Unpopulated',
-                'Serial Number' => 'None',
                 'L2 Cache Handle' => 'Not Provided',
                 'Type' => 'Central Processor',
                 'L1 Cache Handle' => 'Not Provided',
-                'Manufacturer' => 'None',
-                'Asset Tag' => 'None',
-                'Version' => 'None',
-                'Upgrade' => 'None',
                 'Voltage' => '2.9 V',
                 'L3 Cache Handle' => 'Not Provided'
             },
             {
                 'ID' => '00 00 00 00 00 00 00 00',
-                'Socket Designation' => 'None',
-                'Part Number' => 'None',
                 'Status' => 'Unpopulated',
-                'Serial Number' => 'None',
                 'L2 Cache Handle' => 'Not Provided',
                 'Type' => 'Central Processor',
                 'L1 Cache Handle' => 'Not Provided',
-                'Manufacturer' => 'None',
-                'Asset Tag' => 'None',
-                'Version' => 'None',
-                'Upgrade' => 'None',
                 'Voltage' => '2.9 V',
                 'L3 Cache Handle' => 'Not Provided'
             }
@@ -5707,7 +5174,6 @@ my %dmidecode_tests = (
             {
                 'Type' => 'Video',
                 'Status' => 'Enabled',
-                'Description' => 'To Be filled by O.E.M.'
             }
         ],
         '19' => [
@@ -5742,7 +5208,6 @@ my %dmidecode_tests = (
         ],
         '7' => [
             {
-                'Error Correction Type' => 'None',
                 'Installed Size' => '128 kB',
                 'Operational Mode' => 'Write Back',
                 'Configuration' => 'Enabled, Not Socketed, Level 1',
@@ -5752,7 +5217,6 @@ my %dmidecode_tests = (
                 'Maximum Size' => '128 kB'
             },
             {
-                'Error Correction Type' => 'None',
                 'Installed Size' => '6144 kB',
                 'Operational Mode' => 'Varies With Memory Address',
                 'Configuration' => 'Enabled, Not Socketed, Level 2',
@@ -5771,7 +5235,6 @@ my %dmidecode_tests = (
                 'Data Width' => '64 bits',
                 'Array Handle' => '0x1000',
                 'Type Detail' => 'Synchronous',
-                'Set' => 'None',
                 'Asset Tag' => '200840',
                 'Total Width' => '64 bits',
                 'Type' => 'DDR2',
@@ -5788,7 +5251,6 @@ my %dmidecode_tests = (
                 'Data Width' => '64 bits',
                 'Array Handle' => '0x1000',
                 'Type Detail' => 'Synchronous',
-                'Set' => 'None',
                 'Asset Tag' => '200840',
                 'Total Width' => '64 bits',
                 'Type' => 'DDR2',
@@ -5846,7 +5308,6 @@ my %dmidecode_tests = (
         '16' => [
             {
                 'Number Of Devices' => '2',
-                'Error Correction Type' => 'None',
                 'Error Information Handle' => 'Not Provided',
                 'Location' => 'System Board Or Motherboard',
                 'Maximum Capacity' => '8 GB',
@@ -5883,7 +5344,6 @@ my %dmidecode_tests = (
             {
                 'Type' => 'Portable',
                 'Power Supply State' => 'Safe',
-                'Security Status' => 'None',
                 'Serial Number' => 'HLG964J',
                 'Thermal State' => 'Safe',
                 'Boot-up State' => 'Safe',
@@ -5926,43 +5386,36 @@ my %dmidecode_tests = (
                 'Port Type' => 'Parallel Port PS/2',
                 'External Connector Type' => 'DB-25 female',
                 'Internal Reference Designator' => 'PARALLEL',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'Serial Port 16550A Compatible',
                 'External Connector Type' => 'DB-9 male',
                 'Internal Reference Designator' => 'SERIAL1',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'USB',
                 'External Connector Type' => 'Access Bus (USB)',
                 'Internal Reference Designator' => 'USB',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'Video Port',
                 'External Connector Type' => 'DB-15 female',
                 'Internal Reference Designator' => 'MONITOR',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'Firewire (IEEE P1394)',
                 'External Connector Type' => 'IEEE 1394',
                 'Internal Reference Designator' => 'FireWire',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'Modem Port',
                 'External Connector Type' => 'RJ-11',
                 'Internal Reference Designator' => 'Modem',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'Network Port',
                 'External Connector Type' => 'RJ-45',
                 'Internal Reference Designator' => 'Ethernet',
-                'Internal Connector Type' => 'None'
             }
         ],
         '4' => [
@@ -5981,7 +5434,6 @@ my %dmidecode_tests = (
                 'Manufacturer' => 'Intel',
                 'Core Enabled' => '2',
                 'External Clock' => '266 MHz',
-                'Upgrade' => 'None',
                 'Core Count' => '2',
                 'Voltage' => '3.3 V',
                 'L3 Cache Handle' => 'Not Provided'
@@ -6014,79 +5466,66 @@ my %dmidecode_tests = (
             {
                 'Threshold Handle' => '0x0035',
                 'Management Device Handle' => '0x0034',
-                'Description' => 'To Be Filled By O.E.M.',
                 'Component Handle' => '0x0034'
             },
             {
                 'Threshold Handle' => '0x0038',
                 'Management Device Handle' => '0x0034',
-                'Description' => 'To Be Filled By O.E.M.',
                 'Component Handle' => '0x0037'
             },
             {
                 'Threshold Handle' => '0x003B',
                 'Management Device Handle' => '0x0034',
-                'Description' => 'To Be Filled By O.E.M.',
                 'Component Handle' => '0x003A'
             },
             {
                 'Threshold Handle' => '0x003E',
                 'Management Device Handle' => '0x0034',
-                'Description' => 'To Be Filled By O.E.M.',
                 'Component Handle' => '0x003D'
             },
             {
                 'Threshold Handle' => '0x003E',
                 'Management Device Handle' => '0x0034',
-                'Description' => 'To Be Filled By O.E.M.',
                 'Component Handle' => '0x0040'
             },
             {
                 'Threshold Handle' => '0x0046',
                 'Management Device Handle' => '0x0045',
-                'Description' => 'To Be Filled By O.E.M.',
                 'Component Handle' => '0x0045'
             },
             {
                 'Threshold Handle' => '0x0049',
                 'Management Device Handle' => '0x0045',
-                'Description' => 'To Be Filled By O.E.M.',
                 'Component Handle' => '0x0048'
             },
             {
                 'Threshold Handle' => '0x004C',
                 'Management Device Handle' => '0x0045',
-                'Description' => 'To Be Filled By O.E.M.',
                 'Component Handle' => '0x004B'
             },
             {
                 'Threshold Handle' => '0x004F',
                 'Management Device Handle' => '0x0045',
-                'Description' => 'To Be Filled By O.E.M.',
                 'Component Handle' => '0x004E'
             },
             {
                 'Threshold Handle' => '0x0052',
                 'Management Device Handle' => '0x0045',
-                'Description' => 'To Be Filled By O.E.M.',
                 'Component Handle' => '0x0051'
             },
             {
                 'Threshold Handle' => '0x0055',
                 'Management Device Handle' => '0x0045',
-                'Description' => 'To Be Filled By O.E.M.',
                 'Component Handle' => '0x0054'
             },
             {
                 'Threshold Handle' => '0x0055',
                 'Management Device Handle' => '0x0045',
-                'Description' => 'To Be Filled By O.E.M.',
                 'Component Handle' => '0x0057'
             },
             {
                 'Threshold Handle' => '0x0055',
                 'Management Device Handle' => '0x0045',
-                'Description' => 'To Be Filled By O.E.M.',
                 'Component Handle' => '0x005A'
             }
         ],
@@ -6095,14 +5534,8 @@ my %dmidecode_tests = (
             'Status' => 'No errors detected'
             }
         ],
-        '11' => [
-            {
-            'String 1' => 'To Be Filled By O.E.M.'
-            }
-        ],
         '7' => [
             {
-                'Error Correction Type' => 'None',
                 'Installed Size' => '256 kB',
                 'Operational Mode' => 'Write Back',
                 'Socket Designation' => 'L1-Cache',
@@ -6114,7 +5547,6 @@ my %dmidecode_tests = (
                 'Maximum Size' => '256 kB'
             },
             {
-                'Error Correction Type' => 'None',
                 'Installed Size' => '1024 kB',
                 'Operational Mode' => 'Varies With Memory Address',
                 'Socket Designation' => 'L2-Cache',
@@ -6126,7 +5558,6 @@ my %dmidecode_tests = (
                 'Maximum Size' => '1024 kB'
             },
             {
-                'Error Correction Type' => 'None',
                 'Installed Size' => '6144 kB',
                 'Socket Designation' => 'L3-Cache',
                 'Configuration' => 'Disabled, Not Socketed, Level 3',
@@ -6156,7 +5587,6 @@ my %dmidecode_tests = (
                 'Part Number' => 'Array1_PartNumber0',
                 'Serial Number' => 'SerNum0',
                 'Type Detail' => 'Synchronous',
-                'Set' => 'None',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Manufacturer0',
                 'Bank Locator' => 'BANK0',
@@ -6172,7 +5602,6 @@ my %dmidecode_tests = (
                 'Part Number' => 'F3-12800CL9-2GBXL',
                 'Serial Number' => '0000000',
                 'Type Detail' => 'Synchronous',
-                'Set' => 'None',
                 'Speed' => '1600 MHz',
                 'Size' => '2048 MB',
                 'Manufacturer' => 'Undefined',
@@ -6190,7 +5619,6 @@ my %dmidecode_tests = (
                 'Part Number' => 'Array1_PartNumber2',
                 'Serial Number' => 'SerNum2',
                 'Type Detail' => 'Synchronous',
-                'Set' => 'None',
                 'Size' => 'No Module Installed',
                 'Manufacturer' => 'Manufacturer2',
                 'Bank Locator' => 'BANK2',
@@ -6206,7 +5634,6 @@ my %dmidecode_tests = (
                 'Part Number' => 'F3-12800CL9-2GBXL',
                 'Serial Number' => '0000000',
                 'Type Detail' => 'Synchronous',
-                'Set' => 'None',
                 'Speed' => '1600 MHz',
                 'Size' => '2048 MB',
                 'Manufacturer' => 'Undefined',
@@ -6226,22 +5653,18 @@ my %dmidecode_tests = (
                 'Product Name' => 'P8P67',
                 'Chassis Handle' => '0x0003',
                 'Serial Number' => 'MT7013K30709271',
-                'Asset Tag' => 'To be filled by O.E.M.',
                 'Version' => 'Rev 1.xx',
                 'Type' => 'Motherboard',
                 'Manufacturer' => 'ASUSTeK Computer INC.',
-                'Location In Chassis' => 'To be filled by O.E.M.',
                 'Contained Object Handles' => '0'
             }
         ],
         '1' => [
             {
                 'Product Name' => 'System Product Name',
-                'Family' => 'To be filled by O.E.M.',
                 'Serial Number' => 'System Serial Number',
                 'Version' => 'System Version',
                 'Wake-up Type' => 'Power Switch',
-                'SKU Number' => 'To be filled by O.E.M.',
                 'Manufacturer' => 'System manufacturer',
                 'UUID' => '1E00E6E0-008C-4400-9AAD-F46D04972D3E'
             }
@@ -6283,7 +5706,6 @@ my %dmidecode_tests = (
         '16' => [
             {
                 'Number Of Devices' => '4',
-                'Error Correction Type' => 'None',
                 'Error Information Handle' => 'No Error',
                 'Location' => 'System Board Or Motherboard',
                 'Maximum Capacity' => '32 GB',
@@ -6333,33 +5755,19 @@ my %dmidecode_tests = (
         '39' => [
             {
                 'Input Voltage Probe Handle' => '0x0035',
-                'Revision' => 'To Be Filled By O.E.M.',
-                'Serial Number' => 'To Be Filled By O.E.M.',
                 'Hot Replaceable' => 'No',
-                'Asset Tag' => 'To Be Filled By O.E.M.',
                 'Input Current Probe Handle' => '0x0041',
-                'Model Part Number' => 'To Be Filled By O.E.M.',
                 'Cooling Device Handle' => '0x003B',
                 'Plugged' => 'Yes',
                 'Power Unit Group' => '1',
-                'Location' => 'To Be Filled By O.E.M.',
-                'Manufacturer' => 'To Be Filled By O.E.M.',
-                'Name' => 'To Be Filled By O.E.M.',
             },
             {
                 'Input Voltage Probe Handle' => '0x0035',
-                'Revision' => 'To Be Filled By O.E.M.',
-                'Serial Number' => 'To Be Filled By O.E.M.',
                 'Hot Replaceable' => 'No',
-                'Asset Tag' => 'To Be Filled By O.E.M.',
                 'Input Current Probe Handle' => '0x0041',
-                'Model Part Number' => 'To Be Filled By O.E.M.',
                 'Cooling Device Handle' => '0x003B',
                 'Plugged' => 'Yes',
                 'Power Unit Group' => '1',
-                'Location' => 'To Be Filled By O.E.M.',
-                'Manufacturer' => 'To Be Filled By O.E.M.',
-                'Name' => 'To Be Filled By O.E.M.',
             }
         ],
         '28' => [
@@ -6469,7 +5877,6 @@ my %dmidecode_tests = (
                 'Type' => 'Desktop',
                 'Version' => 'Chassis Version',
                 'Number Of Power Cords' => '1',
-                'Security Status' => 'None',
                 'OEM Information' => '0x00000000',
                 'Manufacturer' => 'Chassis Manufacture',
                 'Boot-up State' => 'Safe'
@@ -6532,11 +5939,6 @@ my %dmidecode_tests = (
                 'Status' => 'Enabled'
             }
         ],
-        '12' => [
-            {
-                'Option 1' => 'To Be Filled By O.E.M.'
-            }
-        ],
         '20' => [
             {
                 'Memory Array Mapped Address Handle' => '0x0026',
@@ -6561,129 +5963,108 @@ my %dmidecode_tests = (
                 'Port Type' => 'Keyboard Port',
                 'External Connector Type' => 'PS/2',
                 'Internal Reference Designator' => 'PS/2 Keyboard',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'USB9_10',
                 'Port Type' => 'USB',
                 'External Connector Type' => 'Access Bus (USB)',
                 'Internal Reference Designator' => 'USB9_10',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'USB11_12',
                 'Port Type' => 'USB',
                 'External Connector Type' => 'Access Bus (USB)',
                 'Internal Reference Designator' => 'USB11_12',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'GbE LAN',
                 'Port Type' => 'Network Port',
                 'External Connector Type' => 'RJ-45',
                 'Internal Reference Designator' => 'GbE LAN',
-                'Internal Connector Type' => 'None'
             },
             {
                 'External Reference Designator' => 'AUDIO',
                 'Port Type' => 'Audio Port',
                 'External Connector Type' => 'Other',
                 'Internal Reference Designator' => 'AUDIO',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'SATA',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'SATA1',
                 'Internal Connector Type' => 'SAS/SATA Plug Receptacle'
             },
             {
                 'Port Type' => 'SATA',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'SATA2',
                 'Internal Connector Type' => 'SAS/SATA Plug Receptacle'
             },
             {
                 'Port Type' => 'SATA',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'SATA3',
                 'Internal Connector Type' => 'SAS/SATA Plug Receptacle'
             },
             {
                 'Port Type' => 'SATA',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'SATA4',
                 'Internal Connector Type' => 'SAS/SATA Plug Receptacle'
             },
             {
                 'Port Type' => 'SATA',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'SATA5',
                 'Internal Connector Type' => 'SAS/SATA Plug Receptacle'
             },
             {
                 'Port Type' => 'SATA',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'SATA6',
                 'Internal Connector Type' => 'SAS/SATA Plug Receptacle'
             },
             {
                 'Port Type' => 'USB',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'USB1_2',
                 'Internal Connector Type' => 'Access Bus (USB)'
             },
             {
                 'Port Type' => 'USB',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'USB3_4',
                 'Internal Connector Type' => 'Access Bus (USB)'
             },
             {
                 'Port Type' => 'USB',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'USB5_6',
                 'Internal Connector Type' => 'Access Bus (USB)'
             },
             {
                 'Port Type' => 'USB',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'USB7_8',
                 'Internal Connector Type' => 'Access Bus (USB)'
             },
             {
                 'Port Type' => 'Audio Port',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'AAFP',
                 'Internal Connector Type' => 'Mini Jack (headphones)'
             },
             {
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'CPU_FAN',
                 'Internal Connector Type' => 'Other'
             },
             {
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'CHA_FAN1',
                 'Internal Connector Type' => 'Other'
             },
             {
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'PWR_FAN',
                 'Internal Connector Type' => 'Other'
             },
             {
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'PATA_IDE',
                 'Internal Connector Type' => 'On Board IDE'
             },
             {
                 'Port Type' => 'SATA',
-                'External Connector Type' => 'None',
                 'Internal Reference Designator' => 'F_ESATA',
                 'Internal Connector Type' => 'SAS/SATA Plug Receptacle'
             }
@@ -6692,10 +6073,8 @@ my %dmidecode_tests = (
             {
                 'ID' => 'A7 06 02 00 FF FB EB BF',
                 'Socket Designation' => 'LGA1155',
-                'Part Number' => 'To Be Filled By O.E.M.',
                 'Status' => 'Populated, Enabled',
                 'Max Speed' => '3800 MHz',
-                'Serial Number' => 'To Be Filled By O.E.M.',
                 'Family' => 'Core 2 Duo',
                 'Current Speed' => '2800 MHz',
                 'L2 Cache Handle' => '0x0006',
@@ -6705,7 +6084,6 @@ my %dmidecode_tests = (
                 'Manufacturer' => 'Intel',
                 'Core Enabled' => '1',
                 'External Clock' => '100 MHz',
-                'Asset Tag' => 'To Be Filled By O.E.M.',
                 'Version' => 'Intel(R) Core(TM) i5-2300 CPU @ 2.80GHz',
                 'Core Count' => '4',
                 'Upgrade' => 'Other',
@@ -6781,7 +6159,6 @@ my %dmidecode_tests = (
         ],
         '16' => [
             {
-                'Error Correction Type' => 'None',
                 'Maximum Capacity' => '8 GB',
                 'Error Information Handle' => 'Not Provided',
                 'Use' => 'System Memory',
@@ -6805,8 +6182,6 @@ my %dmidecode_tests = (
         ],
         '1' => [
             {
-                'Family' => 'To Be Filled By O.E.M.',
-                'SKU Number' => 'To Be Filled By O.E.M.',
                 'Version' => 'System Version',
                 'Wake-up Type' => 'Power Switch',
                 'Manufacturer' => 'System manufacturer',
@@ -6857,13 +6232,10 @@ my %dmidecode_tests = (
                 'Type' => 'Central Processor',
                 'External Clock' => '200 MHz',
                 'L2 Cache Handle' => '0x0006',
-                'Asset Tag' => 'To Be Filled By O.E.M.',
                 'Current Speed' => '2900 MHz',
                 'L3 Cache Handle' => '0x0007',
                 'L1 Cache Handle' => '0x0005',
-                'Serial Number' => 'To Be Filled By O.E.M.',
                 'Signature' => 'Family 16, Model 6, Stepping 2',
-                'Part Number' => 'To Be Filled By O.E.M.',
                 'Core Enabled' => '2',
                 'Voltage' => '1.5 V',
                 'Version' => 'AMD Athlon(tm) II X2 245 Processor',
@@ -6907,7 +6279,6 @@ my %dmidecode_tests = (
             {
                 'Speed' => '667 MHz',
                 'Serial Number' => 'SerNum0',
-                'Set' => 'None',
                 'Total Width' => '64 bits',
                 'Part Number' => 'PartNum0',
                 'Bank Locator' => 'BANK0',
@@ -6935,7 +6306,6 @@ my %dmidecode_tests = (
                 'Type Detail' => 'Synchronous',
                 'Bank Locator' => 'BANK1',
                 'Part Number' => 'PartNum1',
-                'Set' => 'None',
                 'Total Width' => '64 bits',
                 'Speed' => '667 MHz',
                 'Serial Number' => 'SerNum1'
@@ -6954,7 +6324,6 @@ my %dmidecode_tests = (
                 'Manufacturer' => 'Manufacturer2',
                 'Speed' => '667 MHz',
                 'Serial Number' => 'SerNum2',
-                'Set' => 'None',
                 'Total Width' => '64 bits',
                 'Part Number' => 'PartNum2'
             },
@@ -6966,7 +6335,6 @@ my %dmidecode_tests = (
                 'Manufacturer' => 'Manufacturer3',
                 'Speed' => '667 MHz',
                 'Serial Number' => 'SerNum3',
-                'Set' => 'None',
                 'Total Width' => '64 bits',
                 'Part Number' => 'PartNum3',
                 'Locator' => 'DIMM3',
@@ -6982,9 +6350,7 @@ my %dmidecode_tests = (
                 'Product Name' => 'M3A78-CM',
                 'Serial Number' => 'MF7097G05100710',
                 'Type' => 'Motherboard',
-                'Asset Tag' => 'To Be Filled By O.E.M.',
                 'Version' => 'Rev X.0x',
-                'Location In Chassis' => 'To Be Filled By O.E.M.',
                 'Manufacturer' => 'ASUSTeK Computer INC.',
                 'Chassis Handle' => '0x0003',
                 'Contained Object Handles' => '0'
@@ -6993,13 +6359,11 @@ my %dmidecode_tests = (
         '8' => [
             {
                 'Internal Reference Designator' => 'PS/2 KeyBoard',
-                'Internal Connector Type' => 'None',
                 'External Reference Designator' => 'Keyboard',
                 'External Connector Type' => 'PS/2',
                 'Port Type' => 'Keyboard Port'
             },
             {
-                'Internal Connector Type' => 'None',
                 'Internal Reference Designator' => 'USB1',
                 'Port Type' => 'USB',
                 'External Connector Type' => 'Access Bus (USB)',
@@ -7007,27 +6371,23 @@ my %dmidecode_tests = (
             },
             {
                 'Internal Reference Designator' => 'USB2',
-                'Internal Connector Type' => 'None',
                 'External Connector Type' => 'Access Bus (USB)',
                 'External Reference Designator' => 'USB2',
                 'Port Type' => 'USB'
             },
             {
-                'Internal Connector Type' => 'None',
                 'Internal Reference Designator' => 'USB3',
                 'Port Type' => 'USB',
                 'External Reference Designator' => 'USB3',
                 'External Connector Type' => 'Access Bus (USB)'
             },
             {
-                'Internal Connector Type' => 'None',
                 'Internal Reference Designator' => 'USB4',
                 'Port Type' => 'USB',
                 'External Reference Designator' => 'USB4',
                 'External Connector Type' => 'Access Bus (USB)'
             },
             {
-                'Internal Connector Type' => 'None',
                 'Internal Reference Designator' => 'USB5',
                 'Port Type' => 'USB',
                 'External Reference Designator' => 'USB5',
@@ -7037,7 +6397,6 @@ my %dmidecode_tests = (
                 'Port Type' => 'USB',
                 'External Connector Type' => 'Access Bus (USB)',
                 'External Reference Designator' => 'USB6',
-                'Internal Connector Type' => 'None',
                 'Internal Reference Designator' => 'USB6'
             },
             {
@@ -7045,52 +6404,44 @@ my %dmidecode_tests = (
                 'External Connector Type' => 'DB-25 male',
                 'Port Type' => 'Parallel Port ECP/EPP',
                 'Internal Reference Designator' => 'LPT 1',
-                'Internal Connector Type' => 'None'
             },
             {
                 'Port Type' => 'Serial Port 16550A Compatible',
                 'External Reference Designator' => 'COM 1',
                 'External Connector Type' => 'DB-9 male',
-                'Internal Connector Type' => 'None',
                 'Internal Reference Designator' => 'COM 1'
             },
             {
                 'Port Type' => 'Network Port',
                 'External Reference Designator' => 'LAN',
                 'External Connector Type' => 'RJ-45',
-                'Internal Connector Type' => 'None',
                 'Internal Reference Designator' => 'LAN'
             },
             {
                 'Internal Reference Designator' => 'Audio_Line_In',
-                'Internal Connector Type' => 'None',
                 'External Connector Type' => 'Mini Jack (headphones)',
                 'External Reference Designator' => 'Audio_Line_In',
                 'Port Type' => 'Audio Port'
             },
             {
                 'Internal Reference Designator' => 'Audio_Line_Out',
-                'Internal Connector Type' => 'None',
                 'External Connector Type' => 'Mini Jack (headphones)',
                 'External Reference Designator' => 'Audio_Line_Out',
                 'Port Type' => 'Audio Port'
             },
             {
-                'Internal Connector Type' => 'None',
                 'Internal Reference Designator' => 'Audio_Mic_In',
                 'Port Type' => 'Audio Port',
                 'External Connector Type' => 'Mini Jack (headphones)',
                 'External Reference Designator' => 'Audio_Mic_In'
             },
             {
-                'Internal Connector Type' => 'None',
                 'Internal Reference Designator' => 'Audio_Center/Sub',
                 'Port Type' => 'Audio Port',
                 'External Connector Type' => 'Mini Jack (headphones)',
                 'External Reference Designator' => 'Audio_Center/Sub'
             },
             {
-                'Internal Connector Type' => 'None',
                 'Internal Reference Designator' => 'Audio_Rear',
                 'Port Type' => 'Audio Port',
                 'External Reference Designator' => 'Audio_Rear',
@@ -7098,13 +6449,11 @@ my %dmidecode_tests = (
             },
             {
                 'Internal Reference Designator' => 'Audio_Side',
-                'Internal Connector Type' => 'None',
                 'External Connector Type' => 'Mini Jack (headphones)',
                 'External Reference Designator' => 'Audio_Side',
                 'Port Type' => 'Audio Port'
             },
             {
-                'Internal Connector Type' => 'None',
                 'Internal Reference Designator' => 'Display_Port',
                 'Port Type' => 'Other',
                 'External Connector Type' => 'Other',
@@ -7112,31 +6461,26 @@ my %dmidecode_tests = (
             },
             {
                 'Internal Reference Designator' => 'DVI',
-                'Internal Connector Type' => 'None',
                 'External Connector Type' => 'Other',
                 'External Reference Designator' => 'DVI port',
                 'Port Type' => 'Other'
             },
             {
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Internal Connector Type' => 'On Board IDE',
                 'Internal Reference Designator' => 'PRI IDE'
             },
             {
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Internal Connector Type' => 'Other',
                 'Internal Reference Designator' => 'SB_SATA1'
             },
             {
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Internal Connector Type' => 'Other',
                 'Internal Reference Designator' => 'SB_SATA2'
             },
             {
-                'External Connector Type' => 'None',
                 'Port Type' => 'Other',
                 'Internal Reference Designator' => 'SB_SATA3',
                 'Internal Connector Type' => 'Other'
@@ -7145,40 +6489,33 @@ my %dmidecode_tests = (
                 'Internal Connector Type' => 'Other',
                 'Internal Reference Designator' => 'SB_SATA4',
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None'
             },
             {
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Internal Connector Type' => 'Other',
                 'Internal Reference Designator' => 'SB_SATA5'
             },
             {
                 'Internal Reference Designator' => 'SB_SATA6',
                 'Internal Connector Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Port Type' => 'Other'
             },
             {
                 'Internal Reference Designator' => 'CPU FAN',
                 'Internal Connector Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Port Type' => 'Other'
             },
             {
                 'Internal Connector Type' => 'Other',
                 'Internal Reference Designator' => 'PWR FAN',
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None'
             },
             {
                 'Internal Connector Type' => 'Other',
                 'Internal Reference Designator' => 'CHA FAN',
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None'
             },
             {
-                'External Connector Type' => 'None',
                 'Port Type' => 'USB',
                 'Internal Reference Designator' => 'USB7',
                 'Internal Connector Type' => 'Access Bus (USB)'
@@ -7187,28 +6524,23 @@ my %dmidecode_tests = (
                 'Internal Connector Type' => 'Access Bus (USB)',
                 'Internal Reference Designator' => 'USB8',
                 'Port Type' => 'USB',
-                'External Connector Type' => 'None'
             },
             {
                 'Internal Connector Type' => 'Access Bus (USB)',
                 'Internal Reference Designator' => 'USB9',
                 'Port Type' => 'USB',
-                'External Connector Type' => 'None'
             },
             {
                 'Internal Reference Designator' => 'USB10',
                 'Internal Connector Type' => 'Access Bus (USB)',
-                'External Connector Type' => 'None',
                 'Port Type' => 'USB'
             },
             {
-                'External Connector Type' => 'None',
                 'Port Type' => 'USB',
                 'Internal Reference Designator' => 'USB11',
                 'Internal Connector Type' => 'Access Bus (USB)'
             },
             {
-                'External Connector Type' => 'None',
                 'Port Type' => 'USB',
                 'Internal Reference Designator' => 'USB12',
                 'Internal Connector Type' => 'Access Bus (USB)'
@@ -7216,12 +6548,10 @@ my %dmidecode_tests = (
             {
                 'Internal Reference Designator' => 'PANEL',
                 'Internal Connector Type' => '9 Pin Dual Inline (pin 10 cut)',
-                'External Connector Type' => 'None',
                 'Port Type' => 'Other'
             },
             {
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Internal Connector Type' => 'Other',
                 'Internal Reference Designator' => 'SPDIF OUT'
             },
@@ -7229,17 +6559,14 @@ my %dmidecode_tests = (
                 'Internal Connector Type' => 'Other',
                 'Internal Reference Designator' => 'AAFP',
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None'
             },
             {
                 'Internal Reference Designator' => 'CD',
                 'Internal Connector Type' => 'On Board Sound Input From CD-ROM',
-                'External Connector Type' => 'None',
                 'Port Type' => 'Audio Port'
             },
             {
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None',
                 'Internal Connector Type' => 'Other',
                 'Internal Reference Designator' => 'TPM'
             },
@@ -7247,7 +6574,6 @@ my %dmidecode_tests = (
                 'Internal Connector Type' => 'Other',
                 'Internal Reference Designator' => 'Speaker',
                 'Port Type' => 'Other',
-                'External Connector Type' => 'None'
             }
         ],
         '0' => [
@@ -7264,22 +6590,18 @@ my %dmidecode_tests = (
         '10' => [
             {
                 'Type' => 'Other',
-                'Description' => 'To Be Filled By O.E.M.',
                 'Status' => 'Enabled'
             },
             {
                 'Status' => 'Enabled',
                 'Type' => 'Ethernet',
-                'Description' => 'To Be Filled By O.E.M.'
             },
             {
                 'Status' => 'Enabled',
                 'Type' => 'Sound',
-                'Description' => 'To Be Filled By O.E.M.'
             },
             {
                 'Type' => 'Other',
-                'Description' => 'To Be Filled By O.E.M.',
                 'Status' => 'Enabled'
             }
         ],
@@ -7316,14 +6638,6 @@ my %dmidecode_tests = (
                 'Installable Languages' => '1'
             }
         ],
-        '11' => [
-            {
-                'String 3' => 'To Be Filled By O.E.M.',
-                'String 1' => 'To Be Filled By O.E.M.',
-                'String 4' => 'To Be Filled By O.E.M.',
-                'String 2' => 'To Be Filled By O.E.M.'
-            }
-        ],
         '3' => [
             {
                 'Type' => 'Desktop',
@@ -7331,7 +6645,6 @@ my %dmidecode_tests = (
                 'Thermal State' => 'Safe',
                 'Asset Tag' => 'Asset-1234567890',
                 'Number Of Power Cords' => '1',
-                'Security Status' => 'None',
                 'Version' => 'Chassis Version',
                 'OEM Information' => '0x00000001',
                 'Contained Elements' => '0',
@@ -7412,7 +6725,6 @@ my %dmidecode_tests = (
         ],
         '16' => [
             {
-                'Error Correction Type' => 'None',
                 'Error Information Handle' => 'Not Provided',
                 'Location' => 'System Board Or Motherboard',
                 'Maximum Capacity' => '16 GB',
@@ -7432,7 +6744,6 @@ my %dmidecode_tests = (
                 'Manufacturer' => 'Samsung',
                 'Part Number' => 'M471B5273CH0-CH9',
                 'Serial Number' => 'B52A5D9F',
-                'Set' => 'None',
                 'Size' => '4096 MB',
                 'Speed' => '1333 MHz',
                 'Total Width' => '64 bits',
@@ -7446,9 +6757,7 @@ my %dmidecode_tests = (
                 'Error Information Handle' => 'Not Provided',
                 'Form Factor' => 'DIMM',
                 'Locator' => 'ChannelA-DIMM1',
-                'Set' => 'None',
                 'Size' => 'No Module Installed',
-                'Type Detail' => 'None'
             },
             {
                 'Array Handle' => '0x0005',
@@ -7461,7 +6770,6 @@ my %dmidecode_tests = (
                 'Manufacturer' => 'Samsung',
                 'Part Number' => 'M471B5273DH0-CH9',
                 'Serial Number' => '947C2F3B',
-                'Set' => 'None',
                 'Size' => '4096 MB',
                 'Speed' => '1333 MHz',
                 'Total Width' => '64 bits',
@@ -7475,9 +6783,7 @@ my %dmidecode_tests = (
                 'Error Information Handle' => 'Not Provided',
                 'Form Factor' => 'DIMM',
                 'Locator' => 'ChannelB-DIMM1',
-                'Set' => 'None',
                 'Size' => 'No Module Installed',
-                'Type Detail' => 'None'
             }
         ],
         '18' => [
@@ -7496,14 +6802,11 @@ my %dmidecode_tests = (
         ],
         '2' => [
             {
-                'Asset Tag' => 'Not Available',
                 'Chassis Handle' => '0x0000',
                 'Contained Object Handles' => '0',
-                'Location In Chassis' => 'Not Available',
                 'Manufacturer' => 'LENOVO',
                 'Product Name' => '1298A8G',
                 'Serial Number' => '1ZJJC21G0N6',
-                'Version' => 'Not Available'
             }
         ],
         '20' => [
@@ -7569,7 +6872,6 @@ my %dmidecode_tests = (
                 'OEM Information' => '0x00000000',
                 'Serial Number' => 'LR9NKZ7',
                 'Type' => 'Notebook',
-                'Version' => 'Not Available'
             }
         ],
         '32' => [
@@ -7661,146 +6963,104 @@ my %dmidecode_tests = (
             {
                 'External Connector Type' => 'PS/2',
                 'External Reference Designator' => 'Keyboard',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'Keyboard Port'
             },
             {
                 'External Connector Type' => 'PS/2',
                 'External Reference Designator' => 'Mouse',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'Mouse Port'
             },
             {
-                'External Connector Type' => 'None',
                 'External Reference Designator' => 'COM 1',
                 'Internal Connector Type' => 'Other',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'Serial Port 16550A Compatible'
             },
             {
                 'External Connector Type' => 'Access Bus (USB)',
                 'External Reference Designator' => 'USB2.0 - 1#',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'USB'
             },
             {
                 'External Connector Type' => 'Access Bus (USB)',
                 'External Reference Designator' => 'USB2.0 - 2#',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'USB'
             },
             {
                 'External Connector Type' => 'Access Bus (USB)',
                 'External Reference Designator' => 'USB2.0 - 3#',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'USB'
             },
             {
                 'External Connector Type' => 'Access Bus (USB)',
                 'External Reference Designator' => 'USB2.0 - 4#',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'USB'
             },
             {
                 'External Connector Type' => 'Access Bus (USB)',
                 'External Reference Designator' => 'USB2.0 - 5#',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'USB'
             },
             {
                 'External Connector Type' => 'Access Bus (USB)',
                 'External Reference Designator' => 'USB2.0 - 6#',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'USB'
             },
             {
                 'External Connector Type' => 'Access Bus (USB)',
                 'External Reference Designator' => 'USB2.0 - 7#',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'USB'
             },
             {
                 'External Connector Type' => 'Access Bus (USB)',
                 'External Reference Designator' => 'USB2.0 - 8#',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'USB'
             },
             {
                 'External Connector Type' => 'Access Bus (USB)',
                 'External Reference Designator' => 'USB2.0 - 9#',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'USB'
             },
             {
                 'External Connector Type' => 'Access Bus (USB)',
                 'External Reference Designator' => 'USB2.0 - 10#',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'USB'
             },
             {
                 'External Connector Type' => 'Access Bus (USB)',
                 'External Reference Designator' => 'USB2.0 - 11#',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'USB'
             },
             {
                 'External Connector Type' => 'Access Bus (USB)',
                 'External Reference Designator' => 'USB2.0 - 12#',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'USB'
             },
             {
                 'External Connector Type' => 'Access Bus (USB)',
                 'External Reference Designator' => 'USB2.0 - 13#',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'USB'
             },
             {
                 'External Connector Type' => 'Access Bus (USB)',
                 'External Reference Designator' => 'USB2.0 - 14#',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'USB'
             },
             {
                 'External Connector Type' => 'RJ-45',
                 'External Reference Designator' => 'Ethernet',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'Network Port'
             },
             {
-                'External Connector Type' => 'None',
-                'External Reference Designator' => 'None',
                 'Internal Connector Type' => 'SAS/SATA Plug Receptacle',
                 'Internal Reference Designator' => 'SATA Port 1 J8J1',
                 'Port Type' => 'SATA'
             },
             {
-                'External Connector Type' => 'None',
-                'External Reference Designator' => 'None',
                 'Internal Connector Type' => 'SAS/SATA Plug Receptacle',
                 'Internal Reference Designator' => 'SATA Port 2 J7G1',
                 'Port Type' => 'SATA'
             },
             {
-                'External Connector Type' => 'None',
-                'External Reference Designator' => 'None',
                 'Internal Connector Type' => 'SAS/SATA Plug Receptacle',
                 'Internal Reference Designator' => 'SATA Port 3(ODD) J9E7',
                 'Port Type' => 'SATA'
@@ -7808,22 +7068,16 @@ my %dmidecode_tests = (
             {
                 'External Connector Type' => 'SAS/SATA Plug Receptacle',
                 'External Reference Designator' => 'eSATA Port 1 J6J1',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'SATA'
             },
             {
                 'External Connector Type' => 'SAS/SATA Plug Receptacle',
                 'External Reference Designator' => 'eSATA Port 2 J7J1',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'SATA'
             },
             {
                 'External Connector Type' => 'SAS/SATA Plug Receptacle',
                 'External Reference Designator' => 'SATA Port 6(Docking)',
-                'Internal Connector Type' => 'None',
-                'Internal Reference Designator' => 'None',
                 'Port Type' => 'SATA'
             }
         ],
@@ -8194,7 +7448,7 @@ my %cpu_tests = (
             EXTERNAL_CLOCK => '333',
             SPEED          => '3000',
             THREAD         => '2',
-            SERIAL         => 'To Be Filled By O.E.M.',
+            SERIAL         => undef,
             MANUFACTURER   => 'Intel',
             STEPPING       => '10',
             FAMILYNUMBER   => '6',
@@ -8297,7 +7551,7 @@ my %cpu_tests = (
             EXTERNAL_CLOCK => '266',
             SPEED          => '2500',
             THREAD         => undef,
-            SERIAL         => 'None',
+            SERIAL         => undef,
             MANUFACTURER   => 'GenuineIntel',
             STEPPING       => '10',
             FAMILYNUMBER   => '6',
@@ -8329,7 +7583,7 @@ my %cpu_tests = (
             EXTERNAL_CLOCK => '100',
             SPEED          => '2800',
             THREAD         => undef,
-            SERIAL         => 'To Be Filled By O.E.M.',
+            SERIAL         => undef,
             STEPPING       => '7',
             FAMILYNUMBER   => '6',
             MODEL          => '42',
@@ -8346,7 +7600,7 @@ my %cpu_tests = (
             EXTERNAL_CLOCK => '200',
             SPEED          => '2900',
             THREAD         => undef,
-            SERIAL         => 'To Be Filled By O.E.M.',
+            SERIAL         => undef,
             STEPPING       => '2',
             FAMILYNUMBER   => '15',
             MODEL          => '6',

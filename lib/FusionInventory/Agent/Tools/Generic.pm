@@ -68,14 +68,19 @@ sub getDmidecodeInfos {
 
         next unless $line =~ /^\s+ ([^:]+) : \s (.*\S)/x;
 
-        next if
-            $2 eq 'N/A'                        ||
-            $2 eq 'Not Specified'              ||
-            $2 eq 'Not Present'                ||
-            $2 eq 'Unknown'                    ||
-            $2 eq '<BAD INDEX>'                ||
-            $2 eq '<OUT OF SPEC>'              ||
-            $2 eq '<OUT OF SPEC><OUT OF SPEC>' ;
+        next if $2 =~ m{
+            ^(?:
+                N/A                                |
+                None                               |
+                Unknown                            |
+                Not \s* Specified                  |
+                Not \s* Present                    |
+                Not \s* Available                  |
+                <BAD \s* INDEX>                    |
+                (?:<OUT \s* OF \s* SPEC>){1,2}     |
+                \s* To \s* Be \s* Filled \s* By \s* O\.E\.M\.
+            )$
+        }xi ;
 
         $block->{$1} = trimWhitespace($2);
     }
@@ -86,8 +91,9 @@ sub getDmidecodeInfos {
         push(@{$info->{$type}}, $block);
     }
 
-    # do not return anything if dmidecode output is obviously truncated
-    return if keys %$info < 2;
+    # do not return anything if dmidecode output is obviously truncated, but that's
+    # okay during tests
+    return if keys %$info < 2 && !$params{file};
 
     return $info;
 }
