@@ -572,7 +572,7 @@ my %smartctl_tests = (
         TYPE         => 'disk',
         DESCRIPTION  => 'SATA',
         SERIALNUMBER => 'DFW1W11002SE002B3117',
-        DISKSIZE     => 122104,
+        DISKSIZE     => 128035,
         MANUFACTURER => 'Samsung',
         FIRMWARE     => 'VBM24D1Q',
         MODEL        => 'SAMSUNG SSD PM800 TM 128GB',
@@ -593,7 +593,7 @@ my %smartctl_tests = (
     sample5 => {
         DESCRIPTION  => 'SATA',
         TYPE         => 'disk',
-        DISKSIZE     => 457862,
+        DISKSIZE     => 480103,
         MANUFACTURER => 'Micron',
         FIRMWARE     => 'D1DF003',
         MODEL        => 'MTFDDAK480TDC',
@@ -604,18 +604,27 @@ my %smartctl_tests = (
         DESCRIPTION  => 'SAS',
         SERIALNUMBER => 'EA01PB107H5K1103',
         MODEL        => 'EG0600FBDSR',
-        DISKSIZE     => 572325,
+        DISKSIZE     => 600127,
         FIRMWARE     => 'HPD2',
         TYPE         => 'disk'
     },
     sample7 => {
         TYPE         => 'disk',
-        DISKSIZE     => 11211776,
+        DISKSIZE     => 11756399,
         MODEL        => 'HUH721212AL5200',
         SERIALNUMBER => 'D5G7WG8L',
         DESCRIPTION  => 'SAS',
         FIRMWARE     => 'NS07',
         MANUFACTURER => 'Hitachi'
+    },
+    sample8 => {
+        TYPE         => 'disk',
+        DISKSIZE     => 480103,
+        MODEL        => 'OCZ-VECTOR150',
+        SERIALNUMBER => 'A21WN061452000199',
+        DESCRIPTION  => 'SATA',
+        FIRMWARE     => '1.2',
+        MANUFACTURER => 'Indilinx'
     },
 );
 

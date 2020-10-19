@@ -1,0 +1,19 @@
+smartctl 7.0 2018-12-30 r4883 [x86_64-linux-4.14.75-0.2-default] (SUSE RPM)
+Copyright (C) 2002-18, Bruce Allen, Christian Franke, www.smartmontools.org
+
+=== START OF INFORMATION SECTION ===
+Model Family:     Indilinx Barefoot 3 based SSDs
+Device Model:     OCZ-VECTOR150
+Serial Number:    A21WN061452000199
+LU WWN Device Id: 5 e83a97 10002cb71
+Firmware Version: 1.2
+User Capacity:    480,103,981,056 bytes [480 GB]
+Sector Size:      512 bytes logical/physical
+Rotation Rate:    Solid State Device
+Device is:        In smartctl database [for details use: -P show]
+ATA Version is:   ATA8-ACS (minor revision not indicated)
+SATA Version is:  SATA 3.1, 6.0 Gb/s (current: 3.0 Gb/s)
+Local Time is:    Sun Oct 18 04:01:56 2020 UTC
+SMART support is: Available - device has SMART capability.
+SMART support is: Enabled
+
