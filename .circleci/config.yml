@@ -8,7 +8,7 @@ general:
 jobs:
   build:
     macos:
-      xcode: "9.0"
+      xcode: "12.1.0"
 
     steps:
      - checkout
