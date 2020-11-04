@@ -160,6 +160,9 @@ sub getManufacturer {
 sub getSerial {
     my ($self) = @_;
 
+    my $device = $self->device
+        or return;
+
     my $manufacturer = $self->getManufacturer()
         or return;
 
@@ -176,6 +179,9 @@ sub getSerial {
             $snmpEngineID =~ s/^0x//;
             $serial = $snmpEngineID;
         }
+    } elsif ($manufacturer eq 'Ubiquiti' && $device->{MAC}) {
+        $serial = $device->{MAC};
+        $serial =~ s/://g;
     }
 
     return $serial;
