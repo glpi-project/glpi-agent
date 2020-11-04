@@ -37,16 +37,7 @@ sub doInventory {
 sub _getDevices {
     my (%params) = @_;
 
-    my $root   = $params{root};
-
-    my %sources = (
-        'DESCRIPTION'  => [ \&_getHdparmInfo, \&getInfoFromSmartctl ],
-        'DISKSIZE'     => [ \&_getHdparmInfo, \&getInfoFromSmartctl ],
-        'FIRMWARE'     => [ \&_getHdparmInfo, \&getInfoFromSmartctl ],
-        'MANUFACTURER' => [ \&getInfoFromSmartctl ],
-        'MODEL'        => [ \&_getHdparmInfo, \&getInfoFromSmartctl ],
-        'WWN'          => [ \&_getHdparmInfo ],
-    );
+    my $root = $params{root};
 
     my @devices = _getDevicesBase(%params);
 
@@ -68,16 +59,25 @@ sub _getDevices {
         }
     }
 
-    # get missing fields using functions defined in %sources
+    # By default, we will get other info from smartctl and then from hdparm
+    my $default_subs = [ \&getInfoFromSmartctl, \&_getHdparmInfo ];
     for my $device (@devices) {
-        # the hash keys are function references from %sources
         my %info;
 
-        for my $field (keys %sources) {
-            next if defined $device->{$field}
-                && !($field eq 'MANUFACTURER' && $device->{$field} eq 'ATA');
+        for my $field (qw(DESCRIPTION DISKSIZE FIRMWARE INTERFACE MANUFACTURER MODEL WWN)) {
+            my $subs = $default_subs;
 
-            for my $sub (@{$sources{$field}}) {
+            if ($field eq 'MANUFACTURER') {
+                # Try to update manufacturer if set to ATA
+                next if defined $device->{$field} && $device->{$field} ne 'ATA';
+                $subs = [ \&getInfoFromSmartctl ];
+            } elsif ($field eq 'MODEL') {
+                # proceed in any case to overwrite MODEL with whatever returned from subs
+            } elsif (defined $device->{$field}) {
+                next;
+            }
+
+            for my $sub (@$subs) {
                 # get info once for each device
                 $info{$sub} = &$sub(device => '/dev/' . $device->{NAME}, %params) unless $info{$sub};
 

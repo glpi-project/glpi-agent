@@ -1,0 +1,86 @@
+
+/dev/sdb:
+
+ATA device, with non-removable media
+	Model Number:       gnhta llcotaoinlAolacitnor naego evfrol
+	Serial Number:      llcotaoi natlb esie 
+	Firmware Revision:  zre-oel
+	Media Serial Num:   LIPETA2H.. .-- -IFELAPHT>n 
+  itlt=eT<TI
+	Media Manufacturer: EL
+>  p erif=xD<RICE
+	Transport:          0x6e72; Revision: 0x6c65
+Standards:
+	Used: unknown (minor revision code 0x2065) 
+	Supported: 14 13 11 10 6 5 
+	Likely used: 14
+Configuration:
+	Logical		max	current
+	cylinders	29728	0
+	heads		25964	0
+	sectors/track	30054	0
+	--
+	LBA    user addressable sectors: 1953656691
+	Logical  Sector size:                   512 bytes
+	Physical Sector size:                262144 bytes
+	device size with M = 1024*1024:      953933 MBytes
+	device size with M = 1000*1000:     1000272 MBytes (1000 GB)
+	cache/buffer size  = unknown
+	Nominal Media Rotation Rate: 12590
+Capabilities:
+	LBA, IORDY(can be disabled)
+	Standby timer values: spec'd by Standard, with device specific minimum
+	R/W multiple sector transfer: Max = 119	Current = ?
+	Recommended acoustic management value: 102, current value: 99
+	DMA: *mdma0 *mdma2 *mdma5 (?)
+	PIO: unknown
+Commands/features:
+	Enabled	Supported:
+	    	SMART feature set
+	    	Power Management feature set
+	   *	Write cache
+	   *	Look-ahead
+	   *	SERVICE interrupt
+	    	DEVICE_RESET command
+	   *	WRITE_BUFFER command
+	   *	READ_BUFFER command
+	   *	NOP cmd
+	   *	Power-Up In Standby feature set
+	    	SET_MAX security extension
+	    	Automatic Acoustic Management feature set
+	   *	FLUSH_CACHE_EXT
+	   *	SMART error logging
+	    	SMART self-test
+	   *	Media serial number
+	    	Media Card Pass Through Command feature set
+	   *	General Purpose Logging feature set
+	   *	WRITE_{DMA|MULTIPLE}_FUA_EXT
+	    	URG for READ_STREAM[_DMA]_EXT
+	    	Command Completion Time Limit (CCTL)
+	   *	IDLE_IMMEDIATE with UNLOAD
+	   *	unknown 76[0]
+	   *	unknown 76[5]
+	   *	unknown 76[6]
+	   *	Phy event counters
+	   *	NCQ priority information
+	   *	unknown 76[13]
+	   *	unknown 76[14]
+	    	Non-Zero buffer offsets in DMA Setup FIS
+	   *	DMA Setup Auto-Activate optimization
+	    	Device-initiated interface power management
+	   *	Asynchronous notification (eg. media change)
+	   *	Software settings preservation
+	   *	unknown 78[13]
+	   *	READ BUFFER DMA command
+	   *	Long physical sector diagnostics
+	   *	Data Set Management TRIM supported (limit 26222 blocks)
+		Removable Media Status Notification feature set supported
+Security: 
+	Master password revision code = 28527
+		supported
+	not	enabled
+	not	locked
+		frozen
+	not	expired: security count
+		supported: enhanced erase
+Integrity word not set (found 0x5254, expected 0xe3a5)

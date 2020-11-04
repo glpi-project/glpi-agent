@@ -107,7 +107,7 @@ my %fields = (
 
 my %checks = (
     STORAGES => {
-        INTERFACE => qr/^(SCSI|HDC|IDE|USB|1394|Serial-ATA|SAS)$/
+        INTERFACE => qr/^(SCSI|HDC|IDE|USB|1394|Serial-ATA|SAS|SATA)$/
     },
     VIRTUALMACHINES => {
         STATUS => qr/^(running|blocked|idle|paused|shutdown|crashed|dying|off)$/

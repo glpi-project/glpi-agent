@@ -585,6 +585,7 @@ my %smartctl_tests = (
         TYPE         => 'disk',
         DESCRIPTION  => 'SAS',
         SERIALNUMBER => '3LM0L0FJ00009733Y46W',
+        INTERFACE    => 'SAS',
     },
     sample4 => {
         TYPE         => 'enclosure',
@@ -597,7 +598,9 @@ my %smartctl_tests = (
         MANUFACTURER => 'Micron',
         FIRMWARE     => 'D1DF003',
         MODEL        => 'MTFDDAK480TDC',
-        SERIALNUMBER => '202028413FA9'
+        SERIALNUMBER => '202028413FA9',
+        INTERFACE    => 'SATA',
+        WWN          => '500a075128413fa9',
     },
     sample6 => {
         MANUFACTURER => 'Hewlett-Packard',
@@ -606,7 +609,8 @@ my %smartctl_tests = (
         MODEL        => 'EG0600FBDSR',
         DISKSIZE     => 600127,
         FIRMWARE     => 'HPD2',
-        TYPE         => 'disk'
+        TYPE         => 'disk',
+        INTERFACE    => 'SAS',
     },
     sample7 => {
         TYPE         => 'disk',
@@ -615,7 +619,8 @@ my %smartctl_tests = (
         SERIALNUMBER => 'D5G7WG8L',
         DESCRIPTION  => 'SAS',
         FIRMWARE     => 'NS07',
-        MANUFACTURER => 'Hitachi'
+        MANUFACTURER => 'Hitachi',
+        INTERFACE    => 'SAS',
     },
     sample8 => {
         TYPE         => 'disk',
@@ -624,7 +629,17 @@ my %smartctl_tests = (
         SERIALNUMBER => 'A21WN061452000199',
         DESCRIPTION  => 'SATA',
         FIRMWARE     => '1.2',
-        MANUFACTURER => 'Indilinx'
+        MANUFACTURER => 'Indilinx',
+        INTERFACE    => 'SATA',
+        WWN          => '5e83a9710002cb71',
+    },
+    sample9 => {
+        TYPE         => 'CD',
+        DISKSIZE     => 7757100351738,
+        MODEL        => 'DVD',
+        FIRMWARE     => '1HE3',
+        DESCRIPTION  => 'SATA',
+        MANUFACTURER => 'Hewlett-Packard'
     },
 );
 

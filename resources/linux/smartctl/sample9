@@ -1,0 +1,14 @@
+smartctl 7.0 2018-12-30 r4883 [x86_64-linux-4.13.6-0.1-default] (SUSE RPM)
+Copyright (C) 2002-18, Bruce Allen, Christian Franke, www.smartmontools.org
+
+=== START OF INFORMATION SECTION ===
+Vendor:               hp
+Product:              DVD A  DS8A5LH
+Revision:             1HE3
+Compliance:           SPC-3
+User Capacity:        7,757,100,351,738,617,888 bytes [7757 PB]
+Logical block size:   1752178720 bytes
+Device type:          CD/DVD
+Local Time is:        Sun Oct 18 23:47:59 2020 UTC
+NO MEDIUM present in device
+A mandatory SMART command failed: exiting. To continue, add one or more '-T permissive' options.

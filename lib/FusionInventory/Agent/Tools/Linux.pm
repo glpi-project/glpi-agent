@@ -436,6 +436,19 @@ sub getInfoFromSmartctl {
     };
 
     my $attrs = {
+        DESCRIPTION => {
+            src => ['transport protocol']
+        },
+        DISKSIZE => {
+            src  => ['user capacity'],
+            func => \&getCanonicalSize,
+        },
+        FIRMWARE => {
+            src => ['revision', 'firmware version']
+        },
+        INTERFACE => {
+            src => ['transport protocol', 'sata version is']
+        },
         MANUFACTURER => {
             src  => ['vendor', 'model family', 'add. product id', 'device model', 'product'],
             func => \&getCanonicalManufacturer,
@@ -443,21 +456,16 @@ sub getInfoFromSmartctl {
         MODEL => {
             src => ['product', 'device model', 'model family']
         },
-        FIRMWARE => {
-            src => ['revision', 'firmware version']
-        },
-        DISKSIZE => {
-            src  => ['user capacity'],
-            func => \&getCanonicalSize,
-        },
-        DESCRIPTION => {
-            src => ['transport protocol']
+        SERIALNUMBER => {
+            src => ['serial number']
         },
         TYPE => {
             src => ['device type']
         },
-        SERIALNUMBER => {
-            src => ['serial number']
+        WWN => {
+            src  => ['lu wwn device id'],
+            # remove whitespaces
+            func => sub { shift =~ s/\s+//gr },
         }
     };
 
@@ -467,6 +475,7 @@ sub getInfoFromSmartctl {
         'user capacity'    => qr/([\d\.\,\s]+(?:\w+)?)/,
         'device model'     => qr/([\w\s\-]+)/,
         'firmware version' => qr/(\S+)/,
+        'lu wwn device id' => qr/((?:0x)?[[:xdigit:]\h]+)/,
     };
 
     my %smartctl;

@@ -8057,19 +8057,18 @@ my %hdparm_tests = (
         SERIALNUMBER => 'S0XPNYAD412339',
         DISKSIZE     => '256060',
         DESCRIPTION  => 'SATA',
+        INTERFACE    => 'SATA',
         WWN          => '5002538043584d30'
     },
-    linux2 => {
-        SERIALNUMBER => '',
-        DISKSIZE     => '77309',
-    },
+    linux2 => {},
     linux3 => {
         FIRMWARE     => 'GKAOAC5A',
         MODEL        => 'HITACHI HUA7210SASUN1.0T 0812G2959E',
         SERIALNUMBER => 'GTE000PAJ2959E',
         DISKSIZE     => '1000204',
         WWN          => '5000cca216dd3a2d'
-    }
+    },
+    linux4 => {},
 );
 
 my %edid_vendor_tests = (
