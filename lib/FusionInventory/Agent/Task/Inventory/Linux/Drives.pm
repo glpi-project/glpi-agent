@@ -35,8 +35,8 @@ sub _getFilesystems {
 
     # get filesystems list
     my @filesystems =
-        # exclude virtual file systems
-        grep { $_->{FILESYSTEM} !~ /^(tmpfs|devtmpfs|usbfs|proc|devpts|devshm|udev)$/ }
+        # exclude virtual file systems and overlay fs defined by docker
+        grep { $_->{FILESYSTEM} !~ /^(tmpfs|devtmpfs|usbfs|proc|devpts|devshm|udev)$/ && $_->{VOLUMN} !~ /^overlay$/ }
         # get all file systems
         getFilesystemsFromDf(logger => $logger, command => 'df -P -T -k');
 
