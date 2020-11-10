@@ -21,12 +21,30 @@ core:
 inventory:
 * Fix #771: added Acer monitor serial support for models (G227HQL, G236HL, R221Q, S273HL)
 * Fix #787: fix debian package reporting when size is not defined
+* Battery capacity support provides now canonical values
+* Battery capacity support permits to compute battery capacity usage, thanks to Thierry Bugier
+* Fix #819: Surface Go 2 was recongized has Hyper-V
+* Fix #825: Enhanced disk encryption detection under linux
+* Fix #829: added other Acer monitor serial support (H226HQL, K222HQL, SA220Q)
+* Enhanced Qemu KVM virtualization detection, thanks to Rico29
+* Dmidecode output parsing cleanup
+* Fix #804: Filter out virtual overlay FS while using docker
+* thanks to Vadim Pisarev:
+ * Storages can now use smartctl command
+ * Enhanced HP Storage inventory with smartctl
+ * Memory inventory includes partnumber as MODEL
+ * Controller inventory includes SERIAL and MODEL
+ * Enhanced memory and controllers inventory via IPMI
+ * Better storage support
 
 netdiscovery/netinventory:
 * Updated Ricoh printers support with better hostname detection
 * Updated Zebra printers support with better hostname detection
 * Introduced Siemens industrial modules support
 * Introduced Multitech industrial modules support
+* Fix #823, #856: Add Ubiquiti UniFi AP linux appliance support
+* Fix #772: Enhanced some HP switchs support
+* Introduced Hwg support, thanks to Bertrand Keller
 
 injector:
 * Fix an issue with --xml-ua option triggering a perl fatal error on empty or wrong XML files
