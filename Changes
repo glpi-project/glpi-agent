@@ -29,6 +29,7 @@ inventory:
 * Enhanced Qemu KVM virtualization detection, thanks to Rico29
 * Dmidecode output parsing cleanup
 * Fix #804: Filter out virtual overlay FS while using docker
+* Fix #540: Added powersupplies support on MacOS
 * thanks to Vadim Pisarev:
  * Storages can now use smartctl command
  * Enhanced HP Storage inventory with smartctl
