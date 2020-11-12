@@ -68,6 +68,7 @@ sub new {
 
     my $self = {
         '_confdir' => undef, # SYSCONFDIR replaced here from Makefile
+        '_options' => $params{options} // {},
     };
     bless $self, $class;
     $self->_loadDefaults();
@@ -84,17 +85,23 @@ sub new {
 
     $self->{vardir} = $params{vardir};
 
+    # To also keep vardir during reload
+    $self->{_options}->{vardir} = $params{vardir};
+
     $self->_checkContent();
 
     return $self;
 }
 
-sub reloadFromInputAndBackend {
+sub reload {
     my ($self) = @_;
 
     $self->_loadDefaults;
 
     $self->_loadFromBackend($self->{'conf-file'}, $self->{config});
+
+    # Reload script options and vardir
+    $self->_loadUserParams($self->{_options});
 
     $self->_checkContent();
 

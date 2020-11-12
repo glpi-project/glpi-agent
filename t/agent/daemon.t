@@ -263,6 +263,9 @@ my $options = {
 
 $agent->init(options => $options);
 
+# But emulate this is a real conf by removing options backup
+delete $agent->{config}->{_options};
+
 # after init call, the member 'config' is defined and well blessed
 ok (UNIVERSAL::isa($agent->{config}, 'FusionInventory::Agent::Config'));
 ok (defined($agent->{config}->{'conf-file'}));

@@ -110,7 +110,7 @@ foreach my $test (keys %include) {
         }
     );
     # Reload cfg to validate loadedConfs has been reset between loads
-    $cfg->reloadFromInputAndBackend();
+    $cfg->reload();
 
     foreach my $k (qw/ tag timeout /) {
         is($cfg->{$k}, $include{$test}->{$k}, $test." ".$k);
@@ -123,12 +123,12 @@ my $c = FusionInventory::Agent::Config->new(options => {
 ok (ref($c->{'no-task'}) eq 'ARRAY');
 ok (scalar(@{$c->{'no-task'}}) == 2);
 
-$c->reloadFromInputAndBackend();
+$c->reload();
 ok (ref($c->{'no-task'}) eq 'ARRAY');
 ok (scalar(@{$c->{'no-task'}}) == 2);
 
 $c->{'conf-file'} = "resources/config/sample2";
-$c->reloadFromInputAndBackend();
+$c->reload();
 my %cNoCategory = map {$_ => 1} @{$c->{'no-category'}};
 ok (defined($cNoCategory{'printer'}));
 ok (scalar(@{$c->{'no-category'}}) == 1, 'structure size is ' . scalar(@{$c->{'no-category'}}));
