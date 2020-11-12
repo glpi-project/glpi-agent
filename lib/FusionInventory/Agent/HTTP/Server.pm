@@ -632,6 +632,8 @@ sub handleRequests {
         $self->_handle_plugins($client, $request, $clientIp, $self->{listeners}->{$port}->{plugins}, MaxKeepAlive);
     }
 
+    return unless $self->{listener}; # in case of config reload()
+
     return $got_connection if $self->{_poller} && ! $self->{_poller}->poll(0);
 
     my ($client, $socket) = $self->{listener}->accept();
