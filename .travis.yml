@@ -1,6 +1,8 @@
 sudo: false
 language: perl
 perl:
+  - "5.32"
+  - "5.32-shrplib"
   - "5.30"
   - "5.28"
   - "5.26"
@@ -16,13 +18,19 @@ perl:
 #  - "5.12"
 #  - "5.10"
 #  - "5.8"
+before_install:
+  - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
+  - source ~/travis-perl-helpers/init
+  - build-perl
+  - perl -V
+  - build-dist
+  - cd $BUILD_DIR             # $BUILD_DIR is set by the build-dist command
 notifications:
   recipients:
     - fusioninventory-commit@lists.alioth.debian.org
   email:
     on_success: change
     on_failure: always
-  webhooks: https://hooks.aethonan.pro/travisci/-1001137546384/
 # whitelist
 branches:
   only:
