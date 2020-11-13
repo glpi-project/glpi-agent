@@ -1,0 +1,77 @@
+Power:
+
+    Battery Information:
+
+      Model Information:
+          Serial Number: HD2J77
+          Manufacturer: SMP
+          Device Name: bq20z451
+          Pack Lot Code: 0
+          PCB Lot Code: 0
+          Firmware Version: 901
+          Hardware Revision: 1
+          Cell Revision: 3922
+      Charge Information:
+          Charge Remaining (mAh): 3798
+          Fully Charged: No
+          Charging: Yes
+          Full Charge Capacity (mAh): 4069
+      Health Information:
+          Cycle Count: 125
+          Condition: Normal
+      Battery Installed: Yes
+      Amperage (mA): 1227
+      Voltage (mV): 12997
+
+    System Power Settings:
+
+      AC Power:
+          System Sleep Timer (Minutes): 1
+          Disk Sleep Timer (Minutes): 10
+          Display Sleep Timer (Minutes): 10
+          Wake on AC Change: No
+          Wake on Clamshell Open: Yes
+          Wake on LAN: Yes
+          AutoPowerOff Delay: 28800
+          AutoPowerOff Enabled: 1
+          Current Power Source: Yes
+          DarkWakeBackgroundTasks: 1
+          Display Sleep Uses Dim: Yes
+          GPUSwitch: 2
+          Hibernate Mode: 3
+          PrioritizeNetworkReachabilityOverSleep: 0
+          Standby Delay: 10800
+          Standby Enabled: 1
+          TCPKeepAlivePref: 1
+      Battery Power:
+          System Sleep Timer (Minutes): 1
+          Disk Sleep Timer (Minutes): 10
+          Display Sleep Timer (Minutes): 2
+          Wake on AC Change: No
+          Wake on Clamshell Open: Yes
+          AutoPowerOff Delay: 28800
+          AutoPowerOff Enabled: 1
+          DarkWakeBackgroundTasks: 0
+          Display Sleep Uses Dim: Yes
+          GPUSwitch: 2
+          Hibernate Mode: 3
+          Reduce Brightness: Yes
+          Standby Delay: 10800
+          Standby Enabled: 1
+          TCPKeepAlivePref: 1
+
+    Hardware Configuration:
+
+      UPS Installed: No
+
+    AC Charger Information:
+
+      Connected: Yes
+      ID: 0x1655
+      Wattage (W): 60
+      Serial Number: HD2J66XBVX2K
+      Name: 61W USB-C Power Adapter
+      Manufacturer: Apple Inc.
+      Hardware Version: 1,0
+      Firmware Version: 1090013
+      Charging: No
