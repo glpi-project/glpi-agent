@@ -48,7 +48,7 @@ sub doInventory {
     delete $fields->{'MODEL'};
 
     foreach my $descr (sort @fru_keys) {
-        push @fru, parseFru($fru->{$descr}, [keys %$fields]);
+        push @fru, parseFru($fru->{$descr}, $fields);
     }
     $psulist->merge(@fru);
 

@@ -18,7 +18,7 @@ my %tests = (
         {
             PARTNUM        => '511777-001',
             SERIALNUMBER   => '5ANLE0BLLZ225W',
-            MANUFACTURER   => 'HP',
+            MANUFACTURER   => 'Hewlett-Packard',
             POWER_MAX      => '0.460 W',
             HOTREPLACEABLE => 'No',
             LOCATION       => 'Bottom PS Bay',
@@ -42,7 +42,7 @@ my %tests = (
     'psu/Dell_DL380p_Gen8_2' => [
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'HP',
+            MANUFACTURER    => 'Hewlett-Packard',
             NAME            => 'Power Supply 1',
             PARTNUM         => '503296-B21',
             PLUGGED         => 'Yes',
@@ -52,7 +52,7 @@ my %tests = (
         },
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'HP',
+            MANUFACTURER    => 'Hewlett-Packard',
             NAME            => 'Power Supply 2',
             PARTNUM         => '503296-B21',
             PLUGGED         => 'Yes',
@@ -64,9 +64,9 @@ my %tests = (
     'psu/Dell_DSS_1500' => [
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'DELL',
+            MANUFACTURER    => 'Dell',
             NAME            => 'PWR SPLY,550W,RDNT,DELTA',
-            PARTNUM         => '0X185VA00',
+            PARTNUM         => '0X185V',
             PLUGGED         => 'Yes',
             POWER_MAX       => '550 W',
             SERIALNUMBER    => 'CN1797263T13QD',
@@ -74,9 +74,9 @@ my %tests = (
         },
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'DELL',
+            MANUFACTURER    => 'Dell',
             NAME            => 'PWR SPLY,550W,RDNT,DELTA',
-            PARTNUM         => '0X185VA00',
+            PARTNUM         => '0X185V',
             PLUGGED         => 'Yes',
             POWER_MAX       => '550 W',
             SERIALNUMBER    => 'CN1797263T13QE',
@@ -89,9 +89,9 @@ my %tests = (
     'psu/Dell_PowerEdge_R330' => [
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'DELL',
+            MANUFACTURER    => 'Dell',
             NAME            => 'PWR SPLY,350W,RDNT,LTON',
-            PARTNUM         => '09WR03A00',
+            PARTNUM         => '09WR03',
             PLUGGED         => 'Yes',
             POWER_MAX       => '350 W',
             SERIALNUMBER    => 'CN7161561F0D94',
@@ -99,9 +99,9 @@ my %tests = (
         },
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'DELL',
+            MANUFACTURER    => 'Dell',
             NAME            => 'PWR SPLY,350W,RDNT,LTON',
-            PARTNUM         => '09WR03A00',
+            PARTNUM         => '09WR03',
             PLUGGED         => 'Yes',
             POWER_MAX       => '350 W',
             SERIALNUMBER    => 'CN7161561F0C36',
@@ -111,9 +111,9 @@ my %tests = (
     'psu/Dell_PowerEdge_R330_2' => [
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'DELL',
+            MANUFACTURER    => 'Dell',
             NAME            => 'PWR SPLY,350W,RDNT,LTON',
-            PARTNUM         => '09WR03A00',
+            PARTNUM         => '09WR03',
             PLUGGED         => 'Yes',
             POWER_MAX       => '350 W',
             SERIALNUMBER    => 'CN7161561F0D94',
@@ -121,9 +121,9 @@ my %tests = (
         },
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'DELL',
+            MANUFACTURER    => 'Dell',
             NAME            => 'PWR SPLY,350W,RDNT,LTON',
-            PARTNUM         => '09WR03A00',
+            PARTNUM         => '09WR03',
             PLUGGED         => 'Yes',
             POWER_MAX       => '350 W',
             SERIALNUMBER    => 'CN7161561F0C36',
@@ -133,9 +133,9 @@ my %tests = (
     'psu/Dell_R630' => [
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'DELL',
+            MANUFACTURER    => 'Dell',
             NAME            => 'PWR SPLY,750W,RDNT,EMSN',
-            PARTNUM         => '00XW8WA02',
+            PARTNUM         => '00XW8W',
             PLUGGED         => 'Yes',
             POWER_MAX       => '750 W',
             SERIALNUMBER    => 'PH1629862600EB',
@@ -143,9 +143,9 @@ my %tests = (
         },
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'DELL',
+            MANUFACTURER    => 'Dell',
             NAME            => 'PWR SPLY,750W,RDNT,EMSN',
-            PARTNUM         => '00XW8WA02',
+            PARTNUM         => '00XW8W',
             PLUGGED         => 'Yes',
             POWER_MAX       => '750 W',
             SERIALNUMBER    => 'PH16298624018E',
@@ -165,7 +165,7 @@ my %tests = (
     'psu/HP_1' => [
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'HP',
+            MANUFACTURER    => 'Hewlett-Packard',
             NAME            => 'Power Supply 1',
             PARTNUM         => '503296-B21',
             PLUGGED         => 'Yes',
@@ -175,7 +175,7 @@ my %tests = (
         },
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'HP',
+            MANUFACTURER    => 'Hewlett-Packard',
             NAME            => 'Power Supply 2',
             PARTNUM         => '503296-B21',
             PLUGGED         => 'Yes',
@@ -187,7 +187,7 @@ my %tests = (
     'psu/HP_Proliant_Microserver_Gen_8' => [
         {
             HOTREPLACEABLE  => 'No',
-            MANUFACTURER    => 'HP',
+            MANUFACTURER    => 'Hewlett-Packard',
             NAME            => 'Power Supply 1',
             PLUGGED         => 'Yes',
             STATUS          => 'Present, Unknown'
@@ -208,7 +208,7 @@ my %tests = (
     'psu/ProLiant_DL360p_Gen8_2' => [
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'HP',
+            MANUFACTURER    => 'Hewlett-Packard',
             NAME            => 'Power Supply 1',
             PARTNUM         => '656362-B21',
             PLUGGED         => 'Yes',
@@ -218,7 +218,7 @@ my %tests = (
         },
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'HP',
+            MANUFACTURER    => 'Hewlett-Packard',
             NAME            => 'Power Supply 2',
             PARTNUM         => '656362-B21',
             PLUGGED         => 'Yes',
@@ -230,7 +230,7 @@ my %tests = (
     'psu/ProLiant_DL380_Gen10' => [
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'HPE',
+            MANUFACTURER    => 'Hewlett-Packard',
             NAME            => 'Power Supply 1',
             PARTNUM         => '865414-B21',
             PLUGGED         => 'Yes',
@@ -240,7 +240,7 @@ my %tests = (
         },
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'HPE',
+            MANUFACTURER    => 'Hewlett-Packard',
             NAME            => 'Power Supply 2',
             PARTNUM         => '865414-B21',
             PLUGGED         => 'Yes',
@@ -252,7 +252,7 @@ my %tests = (
     'psu/ProLiant_DL380_Gen9' => [
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'HP',
+            MANUFACTURER    => 'Hewlett-Packard',
             NAME            => 'Power Supply 1',
             PARTNUM         => '720479-B21',
             PLUGGED         => 'Yes',
@@ -262,7 +262,7 @@ my %tests = (
         },
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'HP',
+            MANUFACTURER    => 'Hewlett-Packard',
             NAME            => 'Power Supply 2',
             PARTNUM         => '720479-B21',
             PLUGGED         => 'Yes',
@@ -275,7 +275,7 @@ my %tests = (
     'psu/ProLiant_DL380p_Gen8' => [
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'HP',
+            MANUFACTURER    => 'Hewlett-Packard',
             NAME            => 'Power Supply 1',
             PARTNUM         => '656362-B21',
             PLUGGED         => 'Yes',
@@ -285,7 +285,7 @@ my %tests = (
         },
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'HP',
+            MANUFACTURER    => 'Hewlett-Packard',
             NAME            => 'Power Supply 2',
             PARTNUM         => '656362-B21',
             PLUGGED         => 'Yes',
@@ -297,7 +297,7 @@ my %tests = (
     'psu/ProLiant_DL560_Gen8' => [
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'HP',
+            MANUFACTURER    => 'Hewlett-Packard',
             NAME            => 'Power Supply 1',
             PARTNUM         => '656364-B21',
             PLUGGED         => 'Yes',
@@ -307,7 +307,7 @@ my %tests = (
         },
         {
             HOTREPLACEABLE  => 'Yes',
-            MANUFACTURER    => 'HP',
+            MANUFACTURER    => 'Hewlett-Packard',
             NAME            => 'Power Supply 2',
             PARTNUM         => '656364-B21',
             PLUGGED         => 'Yes',
@@ -320,7 +320,7 @@ my %tests = (
         {
             HOTREPLACEABLE  => 'No',
             LOCATION        => 'PSU1',
-            MANUFACTURER    => 'SUPERMICRO',
+            MANUFACTURER    => 'Supermicro',
             NAME            => 'PWS-406P-1R',
             PARTNUM         => 'PWS-406P-1R',
             PLUGGED         => 'Yes',
@@ -331,7 +331,7 @@ my %tests = (
         {
             HOTREPLACEABLE  => 'No',
             LOCATION        => 'PSU2',
-            MANUFACTURER    => 'SUPERMICRO',
+            MANUFACTURER    => 'Supermicro',
             NAME            => 'PWS-406P-1R',
             PARTNUM         => 'PWS-406P-1R',
             PLUGGED         => 'Yes',
@@ -344,7 +344,7 @@ my %tests = (
         {
             HOTREPLACEABLE  => 'No',
             LOCATION        => 'PSU1',
-            MANUFACTURER    => 'SUPERMICRO',
+            MANUFACTURER    => 'Supermicro',
             NAME            => 'PWS-407P-1R',
             PARTNUM         => 'PWS-407P-1R',
             PLUGGED         => 'Yes',
@@ -355,7 +355,7 @@ my %tests = (
         {
             HOTREPLACEABLE  => 'No',
             LOCATION        => 'PSU2',
-            MANUFACTURER    => 'SUPERMICRO',
+            MANUFACTURER    => 'Supermicro',
             NAME            => 'PWS-407P-1R',
             PARTNUM         => 'PWS-407P-1R',
             PLUGGED         => 'Yes',
@@ -367,7 +367,7 @@ my %tests = (
     'psu/Supermicro_3' => [
         {
             HOTREPLACEABLE  => 'No',
-            MANUFACTURER    => 'SUPERMICRO',
+            MANUFACTURER    => 'Supermicro',
             NAME            => 'PWS-703P-1R',
             PARTNUM         => 'PWS-703P-1R',
             PLUGGED         => 'Yes',
@@ -383,7 +383,7 @@ my %tests = (
         {
             HOTREPLACEABLE  => 'Yes',
             LOCATION        => 'PSU1',
-            MANUFACTURER    => 'SUPERMICRO',
+            MANUFACTURER    => 'Supermicro',
             NAME            => 'PWS-2K04A-1R',
             PARTNUM         => 'PWS-2K04A-1R',
             PLUGGED         => 'Yes',
@@ -394,7 +394,7 @@ my %tests = (
         {
             HOTREPLACEABLE  => 'Yes',
             LOCATION        => 'PSU2',
-            MANUFACTURER    => 'SUPERMICRO',
+            MANUFACTURER    => 'Supermicro',
             NAME            => 'PWS-2K04A-1R',
             PARTNUM         => 'PWS-2K04A-1R',
             PLUGGED         => 'Yes',
@@ -407,7 +407,7 @@ my %tests = (
         {
             HOTREPLACEABLE  => 'Yes',
             LOCATION        => 'PSU1',
-            MANUFACTURER    => 'SUPERMICRO',
+            MANUFACTURER    => 'Supermicro',
             NAME            => 'PWS-2K04A-1R',
             PARTNUM         => 'PWS-2K04A-1R',
             PLUGGED         => 'Yes',
@@ -418,7 +418,7 @@ my %tests = (
         {
             HOTREPLACEABLE  => 'Yes',
             LOCATION        => 'PSU2',
-            MANUFACTURER    => 'SUPERMICRO',
+            MANUFACTURER    => 'Supermicro',
             NAME            => 'PWS-2K04A-1R',
             PARTNUM         => 'PWS-2K04A-1R',
             PLUGGED         => 'Yes',
@@ -434,7 +434,7 @@ my %tests = (
         {
             HOTREPLACEABLE  => 'No',
             LOCATION        => 'PSU1',
-            MANUFACTURER    => 'SUPERMICRO',
+            MANUFACTURER    => 'Supermicro',
             NAME            => 'PWS-751P-1R',
             PARTNUM         => 'PWS-751P-1R',
             PLUGGED         => 'Yes',
@@ -445,7 +445,7 @@ my %tests = (
         {
             HOTREPLACEABLE  => 'No',
             LOCATION        => 'PSU2',
-            MANUFACTURER    => 'SUPERMICRO',
+            MANUFACTURER    => 'Supermicro',
             NAME            => 'PWS-751P-1R',
             PARTNUM         => 'PWS-751P-1R',
             PLUGGED         => 'Yes',

@@ -34,9 +34,9 @@ sub doInventory {
     my @fru_keys = grep { $_ =~ $CONTROLLERS } keys %$fru
         or return;
 
-    my @fields = keys %{$inventory->getFields()->{CONTROLLERS}};
+    my $fields = $inventory->getFields()->{CONTROLLERS};
     for my $descr (@fru_keys) {
-        my $ctrl = parseFru($fru->{$descr}, \@fields);
+        my $ctrl = parseFru($fru->{$descr}, $fields);
         next unless keys %$ctrl;
 
         $ctrl->{TYPE} = $1 if $descr =~ /^([\w\s]+[[:alpha:]])/;

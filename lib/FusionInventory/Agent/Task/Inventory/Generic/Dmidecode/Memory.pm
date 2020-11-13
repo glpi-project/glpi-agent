@@ -7,6 +7,7 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Generic;
+use FusionInventory::Agent::Tools::PartNumber;
 
 # Run after virtualization to decide if found component is virtual
 our $runAfterIfEnabled = [ qw(
@@ -121,6 +122,18 @@ sub _getMemories {
                 $memory->{MODEL} = trimWhitespace(
                     getSanitizedString( hex2char($info->{'Part Number'}) )
                 );
+                my $partnumber_factory = FusionInventory::Agent::Tools::PartNumber->new(@_);
+                my $partnumber = $partnumber_factory->match(
+                    partnumber  => $memory->{MODEL},
+                    category    => "memory",
+                );
+                if ($partnumber) {
+                    $memory->{MANUFACTURER} = $partnumber->manufacturer;
+                    $memory->{SPEED} = $partnumber->speed
+                        if !$memory->{SPEED} && $partnumber->speed;
+                    $memory->{TYPE} = $partnumber->type
+                        if !$memory->{TYPE} && $partnumber->type;
+                }
             }
 
             push @$memories, $memory;

@@ -7,6 +7,7 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::IpmiFru;
+use FusionInventory::Agent::Tools::PartNumber;
 
 our $runAfterIfEnabled = [qw(
     FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Memory
@@ -32,7 +33,7 @@ sub doInventory {
         or return;
 
     my $memories = $inventory->getSection('MEMORIES') || [];
-    my @fields = keys %{$inventory->getFields()->{'MEMORIES'}};
+    my $fields = $inventory->getFields()->{'MEMORIES'};
 
     for my $fru_key (@fru_keys) {
         my ($cpu, $dimm) = $fru_key =~ /^CPU\s*(\d+)[\s_]+DIMM\s*(\d+)/
@@ -44,9 +45,9 @@ sub doInventory {
 
         next unless scalar @mems == 1;
 
-        my $parsed_fru = parseFru($fru->{$fru_key}, \@fields);
+        my $parsed_fru = parseFru($fru->{$fru_key}, $fields);
 
-        for my $field (@fields) {
+        for my $field (keys(%{$fields})) {
             next unless defined $parsed_fru->{$field} &&
                 (!defined $mems[0]->{$field}
                     || $mems[0]->{$field} =~ /
@@ -61,6 +62,22 @@ sub doInventory {
                     /xi);
 
             $mems[0]->{$field} = $parsed_fru->{$field};
+            if ($field eq 'MODEL') {
+                my $partnumber_factory = FusionInventory::Agent::Tools::PartNumber->new(
+                    logger  => $logger
+                );
+                my $partnumber = $partnumber_factory->match(
+                    partnumber  => $mems[0]->{$field},
+                    category    => "memory",
+                );
+                if ($partnumber) {
+                    $mems[0]->{MANUFACTURER} = $partnumber->manufacturer;
+                    $mems[0]->{SPEED} = $partnumber->speed
+                        if !$mems[0]->{SPEED} && $partnumber->speed;
+                    $mems[0]->{TYPE} = $partnumber->type
+                        if !$mems[0]->{TYPE} && $partnumber->type;
+                }
+            }
         }
     }
 }

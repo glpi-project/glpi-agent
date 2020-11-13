@@ -8,6 +8,7 @@ use parent 'Exporter';
 
 use FusionInventory::Agent::Inventory;
 use FusionInventory::Agent::Tools;
+use FusionInventory::Agent::Tools::PartNumber;
 
 our @EXPORT = qw(
     getIpmiFru
@@ -104,7 +105,7 @@ sub getIpmiFru {
 sub parseFru {
     my ($fru, $fields, $device) = (@_, {});
 
-    for my $attr (@$fields) {
+    for my $attr (keys(%{$fields})) {
         my $val = $MAPPING{$attr} or next;
 
         for my $src (@{$val->{src}}) {
@@ -117,24 +118,28 @@ sub parseFru {
         }
     }
 
-    _postprocess($device, $fields);
+    # Fix manufacturer
+    $device->{MANUFACTURER} = getCanonicalManufacturer($device->{MANUFACTURER})
+        if $device->{MANUFACTURER};
 
-    return $device;
-}
-
-sub _postprocess {
-    my ($device, $fields) = @_;
-
-    # Dell: remove revision suffix from the p/n
-    if (defined $device->{MANUFACTURER} && $device->{MANUFACTURER} =~ /dell/i) {
-        for my $k ('MODEL', 'PARTNUM') {
-            next unless defined $device->{$k}
-                && $device->{$k} =~ /^([0-9A-Z]{6})([A-B]\d{2})$/;
-
-            $device->{$k}  = $1;
-            $device->{REV} = $2 if any { $_ eq 'REV' } @$fields;
+    # Validate PartNumber, as example, this fixes Dell PartNumbers
+    my $partnum = $device->{PARTNUM} // $device->{MODEL};
+    if ($partnum) {
+        my $partnumber_factory = FusionInventory::Agent::Tools::PartNumber->new();
+        my $partnumber = $partnumber_factory->match(
+            partnumber      => $partnum,
+            manufacturer    => $device->{MANUFACTURER},
+            category        => "controller",
+        );
+        if (defined($partnumber)) {
+            $device->{PARTNUM} = $partnumber->get if $fields->{PARTNUM};
+            $device->{MODEL}   = $partnumber->get if $fields->{MODEL};
+            $device->{REV}     = $partnumber->revision
+                if $fields->{REV} && defined($partnumber->revision);
         }
     }
+
+    return $device;
 }
 
 1;

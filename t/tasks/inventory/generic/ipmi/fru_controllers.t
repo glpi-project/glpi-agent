@@ -17,7 +17,7 @@ use FusionInventory::Agent::Task::Inventory::Generic::Ipmi::Fru::Controllers;
 my %tests = (
     'dell-r630' => [
         {
-            'MANUFACTURER' => 'DELL',
+            'MANUFACTURER' => 'Dell',
             'MODEL'        => '0GDJ3J',
             'NAME'         => 'Dell Storage Cntlr. H330 Mini-',
             'REV'          => 'A03',
@@ -25,7 +25,7 @@ my %tests = (
             'TYPE'         => 'PERC'
         },
         {
-            'MANUFACTURER' => 'DELL',
+            'MANUFACTURER' => 'Dell',
             'MODEL'        => '0MG81C',
             'NAME'         => 'DRIVE BACKPLANE',
             'REV'          => 'A02',
@@ -33,7 +33,7 @@ my %tests = (
             'TYPE'         => 'BP',
         },
         {
-            'MANUFACTURER' => 'DELL',
+            'MANUFACTURER' => 'Dell',
             'MODEL'        => '0G8RPD',
             'NAME'         => 'BRCM 10G/GbE 2+2P 57800-t rNDC',
             'REV'          => 'A00',
@@ -43,7 +43,7 @@ my %tests = (
     ],
     'dell-r640' => [
         {
-            'MANUFACTURER' => 'DELL',
+            'MANUFACTURER' => 'Dell',
             'MODEL'        => '0PGJ4P',
             'NAME'         => 'DRIVE BACKPLANE',
             'REV'          => 'A00',
@@ -51,7 +51,7 @@ my %tests = (
             'TYPE'         => 'BP',
         },
         {
-            'MANUFACTURER' => 'DELL',
+            'MANUFACTURER' => 'Dell',
             'MODEL'        => '00878M',
             'NAME'         => 'Dell Storage Cntlr. H740P - Mini',
             'REV'          => 'A03',
@@ -59,7 +59,7 @@ my %tests = (
             'TYPE'         => 'PERC',
         },
         {
-            'MANUFACTURER' => 'DELL',
+            'MANUFACTURER' => 'Dell',
             'MODEL'        => '01224N',
             'NAME'         => 'BRCM 2P 1G BT + 2P 10G BT rNDC',
             'REV'          => 'A06',
@@ -69,7 +69,7 @@ my %tests = (
     ],
     'dell-r720' => [
         {
-            'MANUFACTURER' => 'DELL',
+            'MANUFACTURER' => 'Dell',
             'MODEL'        => '00JDG3',
             'NAME'         => 'DRIVE BACKPLANE',
             'REV'          => 'A00',
@@ -77,7 +77,7 @@ my %tests = (
             'TYPE'         => 'BP',
         },
         {
-            'MANUFACTURER' => 'DELL',
+            'MANUFACTURER' => 'Dell',
             'MODEL'        => '0TY8F9',
             'NAME'         => 'Dell Storage Cntlr. H710P-Mini',
             'REV'          => 'A03',
@@ -85,7 +85,7 @@ my %tests = (
             'TYPE'         => 'PERC',
         },
         {
-            'MANUFACTURER' => 'DELL',
+            'MANUFACTURER' => 'Dell',
             'MODEL'        => '0PGXHP',
             'NAME'         => 'DRIVE BACKPLANE',
             'REV'          => 'A02',
@@ -93,7 +93,7 @@ my %tests = (
             'TYPE'         => 'BP',
         },
         {
-            'MANUFACTURER' => 'DELL',
+            'MANUFACTURER' => 'Dell',
             'MODEL'        => '0FM487',
             'NAME'         => 'BRCM GbE 4P 5720-t rNDC',
             'REV'          => 'A03',
