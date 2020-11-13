@@ -32,6 +32,10 @@ inventory:
 * Dmidecode output parsing cleanup
 * Fix #804: Filter out virtual overlay FS while using docker
 * Fix #540: Added powersupplies support on MacOS
+* Better canonical manufacturer reporting
+* Added PartNumber API to enhanced inventory memory and controllers support:
+ * Elpida, Hynix, Micron & Samsung memory partnumbers
+ * Dell controller partnumbers
 * thanks to Vadim Pisarev:
  * Storages can now use smartctl command
  * Enhanced HP Storage inventory with smartctl
@@ -39,6 +43,7 @@ inventory:
  * Controller inventory includes SERIAL and MODEL
  * Enhanced memory and controllers inventory via IPMI
  * Better storage support
+ * Micron memories PartNumber support
 
 netdiscovery/netinventory:
 * Updated Ricoh printers support with better hostname detection
