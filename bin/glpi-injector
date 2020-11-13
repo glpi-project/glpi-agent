@@ -45,10 +45,10 @@ if ($options->{stdin}) {
 } else {
     pod2usage();
 }
-if (scalar @failedFiles > 0) {
-    my $message = 'These elements were not sent:' . "\n";
-    $message .= join "\n", @failedFiles;
-    die($message . "\n");
+if (@failedFiles) {
+    warn "These elements were not sent:\n";
+    map { warn "$_\n" } @failedFiles;
+    exit(1);
 }
 
 exit(0);
@@ -70,7 +70,7 @@ sub loadfile {
 
     my $success = sendContent($content);
     if ($success && $options->{remove}) {
-        unlink $file or warn "Can't remove $file: $ERRNO\n"
+        unlink $file or warn "Can't remove $file: $ERRNO\n";
     }
 
     push @failedFiles, $file unless $success;
@@ -84,7 +84,7 @@ sub loaddirectory {
 
     opendir (my $handle, $directory)
         or die "can't open directory $directory: $ERRNO\n";
-    foreach my $file (readdir($handle)) {
+    foreach my $file (sort readdir($handle)) {
         next if $file =~ /^..?$/ ;
         if (-d "$directory/$file") {
             loaddirectory("$directory/$file") if ($options->{recursive});
@@ -146,12 +146,23 @@ sub sendContent {
     $request->content($options->{"no-compression"} ? $content : compress($content));
     my $res = $ua->request($request);
 
+    my $error;
+    eval {
+        $content = $res->content;
+        $content = uncompress($content) if $res->header('Content-type') =~ /x-compress-zlib/;
+        my $tpp = XML::TreePP->new();
+        my $tree = $tpp->parse($content);
+        $error = $tree->{REPLY}->{ERROR}
+            if ref($tree->{REPLY}) eq 'HASH' && exists($tree->{REPLY}->{ERROR});
+    };
+
     if ($options->{verbose}) {
-        print $res->is_success() ?
-            "OK" : "ERROR: " . $res->status_line(), "$info\n";
+        print $error           ? "ERROR: $error" :
+            $res->is_success() ? "OK"            :
+                                 "ERROR: ".$res->status_line(), "$info\n";
     }
 
-    return $res->is_success();
+    return $res->is_success() && ! $error ;
 }
 
 __END__
