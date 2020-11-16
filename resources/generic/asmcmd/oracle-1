@@ -1,0 +1,3 @@
+State    Type    Rebal  Sector  Logical_Sector  Block       AU  Total_MB  Free_MB  Req_mir_free_MB  Usable_file_MB  Offline_disks  Voting_files  Name
+MOUNTED  EXTERN  N         512             512   4096  1048576   2047997   562844                0          562844              0             N  DATA/
+MOUNTED  EXTERN  N         512             512   4096  1048576     52223    16535                0           16535              0             Y  OCRVOTE/

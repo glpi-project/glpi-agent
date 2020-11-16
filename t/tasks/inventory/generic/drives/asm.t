@@ -44,7 +44,25 @@ my %lsdg_tests = (
                 'TYPE'  => 'HIGH'
             }
         ]
-    ]
+    ],
+    'oracle-1' => [
+        [
+            {
+                'FREE'  => 562844,
+                'NAME'  => 'DATA',
+                'STATE' => 'MOUNTED',
+                'TOTAL' => 2047997,
+                'TYPE'  => 'EXTERN'
+            },
+            {
+                'FREE'  => 16535,
+                'NAME'  => 'OCRVOTE',
+                'STATE' => 'MOUNTED',
+                'TOTAL' => 52223,
+                'TYPE'  => 'EXTERN'
+            }
+        ]
+    ],
 );
 
 plan tests => (scalar keys %lsdg_tests) + 1;
