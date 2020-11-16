@@ -32,6 +32,7 @@ my $server;
 lives_ok {
     $server = FusionInventory::Agent::HTTP::Server->new(
         agent     => FusionInventory::Test::Agent->new(),
+        ip        => '127.0.0.1',
         logger    => $logger,
         htmldir   => 'share/html'
     );
@@ -56,6 +57,7 @@ if (my $pid = fork()) {
 lives_ok {
     $server = FusionInventory::Agent::HTTP::Server->new(
         agent     => FusionInventory::Test::Agent->new(),
+        ip        => '127.0.0.1',
         logger    => $logger,
         htmldir   => 'share/html',
         trust     => [ '127.0.0.1', '192.168.0.0/24' ]
@@ -75,6 +77,7 @@ ok (
 lives_ok {
     $server = FusionInventory::Agent::HTTP::Server->new(
         agent     => FusionInventory::Test::Agent->new(),
+        ip        => '127.0.0.1',
         logger    => $logger,
         htmldir   => 'share/html',
         trust     => [ '127.0.0.1', 'localhost', 'th1sIsNowh3re' ]
@@ -97,6 +100,7 @@ my $port = FusionInventory::Agent::Tools::first { test_port($_) } 8080 .. 8180;
 lives_ok {
     $server = FusionInventory::Agent::HTTP::Server->new(
         agent     => FusionInventory::Test::Agent->new(),
+        ip        => '127.0.0.1',
         logger    => $logger,
         port      => $port,
         htmldir   => 'share/html',
