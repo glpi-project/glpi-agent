@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use English qw(-no_match_vars);
 use Test::Deep;
 use Test::More;
 use Test::NoWarnings;
@@ -60,11 +61,12 @@ foreach my $file (keys(%result_lxc_info)) {
 
 foreach my $name (keys(%container_tests)) {
     my $file = "resources/virtualization/lxc/$name";
+    $file =~ s|/|\\|g if $OSNAME eq "MSWin32";
     my $config = FusionInventory::Agent::Task::Inventory::Virtualization::Lxc::_getVirtualMachine(
         name          => $name,
         version       => $container_tests{$name}->{version},
-        test_cmdstate => "cat $file",
-        test_cmdinfo  => "cat $file",
+        test_cmdstate => $OSNAME eq "MSWin32" ? "type $file" : "cat $file",
+        test_cmdinfo  => $OSNAME eq "MSWin32" ? "type $file" : "cat $file",
         config        => $file,
     );
     cmp_deeply($config, $container_tests{$name}->{result}, "checking $name lxc container");
