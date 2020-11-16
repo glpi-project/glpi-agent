@@ -1,0 +1,21 @@
+
+[1m TeamViewer                          [0m 15.11.6  (RPM) 
+
+[1m TeamViewer ID:                      [0m  999 **MASKED**
+
+[1m teamviewerd status                  [0m * teamviewerd.service - TeamViewer remote control daemon
+     Loaded: loaded (/etc/systemd/system/teamviewerd.service; enabled; vendor preset: disabled)
+     Active: active (running) since Wed 2020-11-11 15:03:02 CET; 4 days ago
+   Main PID: 1098829 (teamviewerd)
+      Tasks: 13 (limit: 4654)
+     Memory: 3.5M
+     CGroup: /system.slice/teamviewerd.service
+             `-1098829 /opt/teamviewer/tv_bin/teamviewerd -d
+
+Nov 11 15:03:02 nanobox systemd[1]: Starting TeamViewer remote control daemon...
+Nov 11 15:03:02 nanobox systemd[1]: teamviewerd.service: Can't open PID file /run/teamviewerd.pid (yet?) after start: Operation not permitted
+Nov 11 15:03:02 nanobox systemd[1]: Started TeamViewer remote control daemon.
+Nov 11 15:03:57 nanobox systemd[1]: /etc/systemd/system/teamviewerd.service:9: PIDFile= references a path below legacy directory /var/run/, updating /var/run/teamviewerd.pid → /run/teamviewerd.pid; please update the unit file accordingly.
+Nov 11 15:04:51 nanobox systemd[1]: /etc/systemd/system/teamviewerd.service:9: PIDFile= references a path below legacy directory /var/run/, updating /var/run/teamviewerd.pid → /run/teamviewerd.pid; please update the unit file accordingly.
+Nov 11 15:08:17 nanobox systemd[1]: /etc/systemd/system/teamviewerd.service:9: PIDFile= references a path below legacy directory /var/run/, updating /var/run/teamviewerd.pid → /run/teamviewerd.pid; please update the unit file accordingly. 
+
