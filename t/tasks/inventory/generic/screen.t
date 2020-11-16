@@ -367,6 +367,24 @@ my %edid_tests = (
         SERIAL       => '00000000',
         DESCRIPTION  => '0/2005',
     },
+    'lcd.dell-U2410' => {
+        MANUFACTURER => 'Dell Inc.',
+        CAPTION      => 'DELL U2410',
+        SERIAL       => 'F525M1AGAP6L',
+        DESCRIPTION  => '42/2011'
+    },
+    'lcd.dell-U2413' => {
+        MANUFACTURER => 'Dell Inc.',
+        CAPTION      => 'DELL U2413',
+        SERIAL       => '84K96386ACRL',
+        DESCRIPTION  => '32/2013'
+    },
+    'lcd.dell-U2415' => {
+        MANUFACTURER => 'Dell Inc.',
+        CAPTION      => 'DELL U2415',
+        SERIAL       => '7MT019AI34EU',
+        DESCRIPTION  => '42/2019'
+    },
     'lcd.eizo-l997' => {
         MANUFACTURER => 'Eizo Nanao Corporation',
         CAPTION      => 'L997',
