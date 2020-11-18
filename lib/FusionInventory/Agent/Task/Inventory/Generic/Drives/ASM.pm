@@ -11,6 +11,7 @@ use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Unix;
 
 sub isEnabled {
+    return 0 if $OSNAME eq 'MSWin32';
     return grep { $_->{CMD} =~ /^asm_pmon/ } getProcesses();
 }
 
