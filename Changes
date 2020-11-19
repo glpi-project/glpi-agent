@@ -54,6 +54,9 @@ netdiscovery/netinventory:
 * Fix #772: Enhanced some HP switchs support
 * Introduced Hwg support, thanks to Bertrand Keller
 
+ESX:
+* verify a user and password are provided before attemting to connect to ESX server
+
 injector:
 * Fix an issue with --xml-ua option triggering a perl fatal error on empty or wrong XML files
 

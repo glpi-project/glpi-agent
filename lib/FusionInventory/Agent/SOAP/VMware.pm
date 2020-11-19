@@ -102,6 +102,17 @@ sub _parseAnswer {
 sub connect {
     my ( $self, $user, $password ) = @_;
 
+    unless ($user) {
+        $self->{lastError} = "No user".($self->{lastError} ? "" : " and password").
+            " provided for ESX connection";
+        return;
+    }
+
+    unless ($password) {
+        $self->{lastError} = "No password provided for ESX connection";
+        return;
+    }
+
     my $req = '<?xml version="1.0" encoding="UTF-8"?>
    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
