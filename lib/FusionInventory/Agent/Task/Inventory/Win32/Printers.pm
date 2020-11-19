@@ -73,10 +73,9 @@ sub doInventory {
         my $resolution;
 
         if ($object->{HorizontalResolution}) {
-            $resolution =
-                $object->{HorizontalResolution} .
-                "x"                             .
-                $object->{VerticalResolution};
+            $resolution = $object->{HorizontalResolution};
+            $resolution .= "x" . $object->{VerticalResolution}
+                if $object->{VerticalResolution};
         }
 
         $object->{Serial} = _getUSBPrinterSerial($object->{PortName})
@@ -93,7 +92,7 @@ sub doInventory {
                 RESOLUTION     => $resolution,
                 NETWORK        => $object->{Network},
                 SHARED         => $object->{Shared},
-                STATUS         => $status[$object->{PrinterStatus}],
+                STATUS         => $status[$object->{PrinterStatus} // 0],
                 ERRSTATUS      => $errStatus,
                 SERVERNAME     => $object->{ServerName},
                 SHARENAME      => $object->{ShareName},

@@ -112,7 +112,7 @@ sub _getMemories {
         / ]
     )) {
         # Ignore ROM storages (BIOS ROM)
-        my $type = $memoryTypeVal[$object->{MemoryType}];
+        my $type = $memoryTypeVal[$object->{MemoryType} // 0];
         next if $type && $type eq 'ROM';
         next if $type && $type eq 'Flash';
 
@@ -124,10 +124,10 @@ sub _getMemories {
             CAPACITY     => $capacity,
             CAPTION      => $object->{Caption},
             DESCRIPTION  => $object->{Description},
-            FORMFACTOR   => $formFactorVal[$object->{FormFactor}],
+            FORMFACTOR   => $formFactorVal[$object->{FormFactor} // 0],
             REMOVABLE    => $object->{Removable} ? 1 : 0,
             SPEED        => getCanonicalSpeed($object->{Speed}),
-            TYPE         => $memoryTypeVal[$object->{MemoryType}],
+            TYPE         => $memoryTypeVal[$object->{MemoryType} // 0],
             NUMSLOTS     => $cpt++,
             SERIALNUMBER => $object->{SerialNumber}
         }
@@ -139,15 +139,15 @@ sub _getMemories {
             MemoryDevices SerialNumber MemoryErrorCorrection
         / ]
     )) {
-
-        my $memory = $memories[$object->{MemoryDevices} - 1];
+        my $memory = defined($object->{MemoryDevices}) ?
+            $memories[$object->{MemoryDevices} - 1] : $memories[0];
         if (!$memory->{SERIALNUMBER}) {
             $memory->{SERIALNUMBER} = $object->{SerialNumber};
         }
 
         if ($object->{MemoryErrorCorrection}) {
             $memory->{MEMORYCORRECTION} =
-                $memoryErrorProtection[$object->{MemoryErrorCorrection}];
+                $memoryErrorProtection[$object->{MemoryErrorCorrection} // 0];
             if ($memory->{MEMORYCORRECTION} && $object->{MemoryErrorCorrection}>3) {
                 $memory->{DESCRIPTION} .= " (".$memory->{MEMORYCORRECTION}.")";
             }

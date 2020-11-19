@@ -30,7 +30,7 @@ sub doInventory {
     my $hdparm = $inventory->getRemote() ? 0 : canRun('hdparm');
 
     foreach my $storage (_getDrives(class => 'Win32_DiskDrive')) {
-        if ($hdparm && $storage->{NAME} =~ /(\d+)$/) {
+        if ($hdparm && defined($storage->{NAME}) && $storage->{NAME} =~ /(\d+)$/) {
             my $info = getHdparmInfo(
                 device => "/dev/hd" . chr(ord('a') + $1),
                 logger => $logger

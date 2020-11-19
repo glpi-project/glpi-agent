@@ -54,6 +54,7 @@ sub _getDrives {
         class      => 'Win32_OperatingSystem',
         properties => [ qw/SystemDrive/ ]
     )) {
+        next unless $object->{SystemDrive};
         $systemDrive = lc($object->{SystemDrive});
     }
 
