@@ -33,6 +33,7 @@ inventory:
 * Dmidecode output parsing cleanup
 * Fix #804: Filter out virtual overlay FS while using docker
 * Fix #540: Added powersupplies support on MacOS
+* Fix #797: Fix ASM storage inventory
 * Better canonical manufacturer reporting
 * Added PartNumber API to enhanced inventory memory and controllers support:
  * Elpida, Hynix, Micron & Samsung memory partnumbers
