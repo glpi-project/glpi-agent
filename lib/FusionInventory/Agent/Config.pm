@@ -229,7 +229,7 @@ sub loadFromFile {
     }
 
     while (my $line = <$handle>) {
-        if ($line =~ /^\s*([\w-]+)\s*=\s*(.+)$/) {
+        if ($line =~ /^\s*([\w-]+)\s*=\s*(.*)$/) {
             my $key = $1;
             my $val = $2;
 

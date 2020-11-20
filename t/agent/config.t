@@ -39,6 +39,24 @@ my %config = (
         'httpd-trust' => [],
         'tasks'       => ['inventory', 'deploy', 'inventory'],
         'conf-reload-interval' => 60
+    },
+    include7 => {
+        'tag'         => "include7",
+        'logfile'     => "/tmp/logfile.txt",
+        'timeout'     => 16,
+        'no-task'     => [],
+        'no-category' => [],
+        'httpd-trust' => [],
+        'conf-reload-interval' => 0
+    },
+    include8 => {
+        'tag'     => "include8",
+        'logfile' => "",
+        'timeout' => 16,
+        'no-task'     => [],
+        'no-category' => [],
+        'httpd-trust' => [],
+        'conf-reload-interval' => 0
     }
 );
 
@@ -69,14 +87,14 @@ my %include = (
     }
 );
 
-plan tests => (scalar keys %config) * 4 + (scalar keys %include) * 2 + 16 + 18;
+plan tests => (scalar keys %config) * 4 + (scalar keys %include) * 2 + 40;
 
 foreach my $test (keys %config) {
     my $c = FusionInventory::Agent::Config->new(options => {
         'conf-file' => "resources/config/$test"
     });
 
-    foreach my $k (qw/ no-task no-category httpd-trust conf-reload-interval /) {
+    foreach my $k (qw/ no-task no-category httpd-trust conf-reload-interval logfile /) {
         cmp_deeply($c->{$k}, $config{$test}->{$k}, $test." ".$k);
     }
 

@@ -19,6 +19,7 @@ core:
   after any major upgrade.
 * Fix configuration reloading to keep set script options
 * Avoid a not critical perl error while reloading HTTP server
+* Fix #820: Fix config reading to permit completly empty settings
 
 inventory:
 * Fix #771: added Acer monitor serial support for models (G227HQL, G236HL, R221Q, S273HL)

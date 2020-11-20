@@ -1,0 +1,4 @@
+logfile = /tmp/logfile.txt
+tag = include7
+
+include conf.d/timeout
