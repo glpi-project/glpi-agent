@@ -42,7 +42,7 @@ my %config = (
     },
     include7 => {
         'tag'         => "include7",
-        'logfile'     => "/tmp/logfile.txt",
+        'logfile'     => $OSNAME eq 'MSWin32' ? "C:\\tmp\\logfile.txt" : "/tmp/logfile.txt",
         'timeout'     => 16,
         'no-task'     => [],
         'no-category' => [],
