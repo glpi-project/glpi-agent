@@ -189,7 +189,7 @@ glpi-agent [options] [--server server|--local path]
     --lazy                         do not contact the target before
                                    next scheduled time
     --set-forcerun                 set persistent state 'forcerun' option so a run
-                                   will be started immediatly during a start or init
+                                   will be started immediately during a start or init
 
   Task selection options:
     --list-tasks                   list available tasks and exit
