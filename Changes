@@ -10,7 +10,7 @@ inventory:
 
 Revision history for FusionInventory agent
 
-2.6 not release yet
+2.6 Tue, 24 Nov 2020
 
 core:
 * as explain in Version.pm comments, actual versioning is problematic for CPAN versions,
@@ -22,6 +22,7 @@ core:
 * Fix #820: Fix config reading to permit completly empty settings
 
 inventory:
+* Bump Inventory task version to 1.10
 * Fix #771: added Acer monitor serial support for models (G227HQL, G236HL, R221Q, S273HL)
 * Fix #787: fix debian package reporting when size is not defined
 * Battery capacity support provides now canonical values
@@ -46,8 +47,12 @@ inventory:
  * Enhanced memory and controllers inventory via IPMI
  * Better storage support
  * Micron memories PartNumber support
+* Updated pci.ids to 2020.11.14 version
+* Updated usb.ids to 2020.08.26 version
 
 netdiscovery/netinventory:
+* Bump NetDiscovery task version to 4.2
+* Bump NetInventory task version to 4.2
 * Updated Ricoh printers support with better hostname detection
 * Updated Zebra printers support with better hostname detection
 * Introduced Siemens industrial modules support
@@ -56,12 +61,15 @@ netdiscovery/netinventory:
 * Fix #772: Enhanced some HP switchs support
 * Introduced Hwg support, thanks to Bertrand Keller
 * Fix #830: Retrieve rigth model for Oki printers
+* Updated sysobject.ids (tagged fia-2.6 tag on github repository)
 
 ESX:
+* Bump ESX task version to 2.6
 * verify a user and password are provided before attemting to connect to ESX server
 
 injector:
 * Fix an issue with --xml-ua option triggering a perl fatal error on empty or wrong XML files
+* Fix typo in man page
 
 2.5.2 Mon, 16 Dec 2019
 
