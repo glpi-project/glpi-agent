@@ -179,7 +179,7 @@ glpi-injector [options] [--file <file>|--directory <directory>|--stdin|--userage
     -h --help      this menu
     -d --directory load every .ocs files from a directory
     -R --recursive recursively load .ocs files from <directory>
-    -f --file      load a speficic file
+    -f --file      load a specific file
     -u --url       server URL
     -r --remove    remove succesfuly injected files
     -v --verbose   verbose mode
