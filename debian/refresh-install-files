@@ -40,6 +40,11 @@ sub wanted {
 };
 
 print AGENT "etc/agent.cfg /usr/share/fusioninventory/etc\n";
+print AGENT "etc/inventory-server-plugin.cfg /usr/share/fusioninventory/etc\n";
+print AGENT "etc/ssl-server-plugin.cfg /usr/share/fusioninventory/etc\n";
+print AGENT "etc/server-test-plugin.cfg /usr/share/fusioninventory/etc\n";
+print AGENT "etc/proxy-server-plugin.cfg /usr/share/fusioninventory/etc\n";
+print AGENT "etc/proxy2-server-plugin.cfg /usr/share/fusioninventory/etc\n";
 print AGENT "usr/share/fusioninventory/edid.ids\n";
 print AGENT "usr/share/fusioninventory/sysobject.ids\n";
 print AGENT "usr/share/fusioninventory/html\n";

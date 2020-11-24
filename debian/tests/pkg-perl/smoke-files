@@ -1,0 +1,3 @@
+t/
+# FusionInventory::Agent unittests need resources/ folder
+resources/

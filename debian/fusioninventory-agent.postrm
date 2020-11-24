@@ -6,19 +6,38 @@ set -e
 case "$1" in
   purge)
     for ext in '~' '%' .bak .ucf-new .ucf-old .ucf-dist;  do
-      rm -f /etc/fusioninventory/agent.cfg$ext
+        for conf in agent inventory-server-plugin ssl-server-plugin server-test-plugin \
+            proxy-server-plugin proxy2-server-plugin
+        do
+            rm -f /etc/fusioninventory/$conf.cfg$ext
+        done
     done
 
+    # Cleanup var dir
+    rm -rf /var/lib/fusioninventory-agent
+
     # remove the configuration file itself
-    rm -f /etc/fusioninventory/agent.cfg
+    for conf in agent inventory-server-plugin ssl-server-plugin server-test-plugin \
+        proxy-server-plugin proxy2-server-plugin
+    do
+        rm -f /etc/fusioninventory/$conf.cfg
+    done
     [ -d /etc/fusioninventory ] && rmdir --ignore-fail-on-non-empty /etc/fusioninventory
 
     # and finally clear it out from the ucf database
     if which ucf >/dev/null; then
-        ucf --purge /etc/fusioninventory/agent.cfg
+        for conf in agent inventory-server-plugin ssl-server-plugin server-test-plugin \
+            proxy-server-plugin proxy2-server-plugin
+        do
+            ucf --purge /etc/fusioninventory/$conf.conf
+        done
     fi
     if which ucfr >/dev/null; then
-        ucfr --purge fusioninventory-agent /etc/fusioninventory/agent.cfg
+        for conf in agent inventory-server-plugin ssl-server-plugin server-test-plugin \
+            proxy-server-plugin proxy2-server-plugin
+        do
+            ucfr --purge fusioninventory-agent /etc/fusioninventory/$conf.cfg
+        done
     fi
 
     ;;

@@ -1,0 +1,2 @@
+# FusionInventory::Agent is not installed system-wide, PERL5LIB should be set
+PERL5LIB=/usr/share/fusioninventory/lib

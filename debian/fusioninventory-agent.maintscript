@@ -1,0 +1,9 @@
+
+# Remove obsoleted files in 2.4-1
+rm_conffile /etc/default/fusioninventory-agent     1:2.4-1 fusioninventory-agent
+rm_conffile /etc/cron.daily/fusioninventory-agent  1:2.4-1 fusioninventory-agent
+rm_conffile /etc/init.d/fusioninventory-agent      1:2.4-1 fusioninventory-agent
+rm_conffile /etc/logrotate.d/fusioninventory-agent 1:2.4-1 fusioninventory-agent
+
+# Remove obsoleted files in 2.5.1-1
+rm_conffile /etc/cron.weekly/fusioninventory-agent 1:2.5.1-1 fusioninventory-agent

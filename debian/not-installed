@@ -1,0 +1,12 @@
+
+# Diverted from /usr/share/fusioninventory/etc during postinst
+/etc/fusioninventory/agent.cfg
+/etc/fusioninventory/inventory-server-plugin.cfg
+/etc/fusioninventory/server-test-plugin.cfg
+/etc/fusioninventory/ssl-server-plugin.cfg
+/etc/fusioninventory/proxy-server-plugin.cfg
+/etc/fusioninventory/proxy2-server-plugin.cfg
+
+# Files provided by hwdata package
+/usr/share/fusioninventory/pci.ids
+/usr/share/fusioninventory/usb.ids

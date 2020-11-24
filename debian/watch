@@ -1,2 +1,2 @@
-version=3
-http://search.cpan.org/dist/FusionInventory-Agent/ .*/FusionInventory-Agent-([[:digit:]].*)\.tar\.gz
+version=4
+https://metacpan.org/release/FusionInventory-Agent   .*/FusionInventory-Agent-v?@ANY_VERSION@@ARCHIVE_EXT@$

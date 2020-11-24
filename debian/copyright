@@ -1,4 +1,4 @@
-Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Contact: FusionInventory Team
 Source: https://metacpan.org/release/FusionInventory-Agent
 Upstream-Name: FusionInventory-Agent
@@ -6,35 +6,53 @@ Upstream-Name: FusionInventory-Agent
 Files: *
 Copyright:
            Copyright 2006-2010 OCS Inventory contributors
-           Copyright 2010-2018 FusionInventory Team
-           Copyright 2011-2018 Teclib' ( http://www.teclib-edition.com )
+           Copyright 2010-2019 FusionInventory Team
+           Copyright 2011-2019 Teclib' ( https://www.teclib-edition.com )
 License: GPL-2+
+
+Files: inc/Module/*
+Copyright: 2002-2012, Adam Kennedy <adamk@cpan.org>
+           2002-2012, Audrey Tang <autrijus@autrijus.org>
+           2002-2012, Brian Ingerson <ingy@cpan.org>
+License: Artistic or GPL-1+
 
 Files: debian/*
 Copyright:
            2012-2015, Gonéri Le Bouder <goneri@debian.org>
-           2016-2018, Teclib' ( http://www.teclib-edition.com )
+           2016-2019, Teclib' ( https://www.teclib-edition.com )
+License: GPL-2+
+
+Files: share/pci.ids
+Copyright:
+           Copyright Martin Mares and Albert Pool
+License: GPL-2+
+
+Files: resources/virtualization/virtuozzo/sample2-ctid-conf
+Copyright:
+           Copyright (C) 2000-2006 SWsoft
 License: GPL-2+
 
 License: GPL-2+
- This program is free software; you can redistribute it
- and/or modify it under the terms of the GNU General Public
- License as published by the Free Software Foundation; either
- version 2 of the License, or (at your option) any later
- version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; version 2 dated June, 1991, or (at
+ your option) any later version.
  .
- This program is distributed in the hope that it will be
- useful, but WITHOUT ANY WARRANTY; without even the implied
- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the GNU General Public License for more
- details.
- .
- You should have received a copy of the GNU General Public
- License along with this package; if not, write to the Free
- Software Foundation, Inc., 51 Franklin St, Fifth Floor,
- Boston, MA  02110-1301 USA
- .
- On Debian systems, the full text of the GNU General Public
- License version 2 can be found in the file
- `/usr/share/common-licenses/GPL-2'.
+ On Debian systems, the complete text of version 2 of the GNU General
+ Public License can be found in '/usr/share/common-licenses/GPL-2'.
 
+License: Artistic
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the Artistic License, which comes with Perl.
+ .
+ On Debian systems, the complete text of the Artistic License can be
+ found in `/usr/share/common-licenses/Artistic'.
+
+License: GPL-1+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 1, or (at your option)
+ any later version.
+ .
+ On Debian systems, the complete text of version 1 of the GNU General
+ Public License can be found in `/usr/share/common-licenses/GPL-1'.

@@ -1,0 +1,2 @@
+# Skip as FusionInventory::Agent is not installed system-wide
+use.t

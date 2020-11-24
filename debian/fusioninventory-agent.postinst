@@ -7,8 +7,12 @@ case "$1" in
   configure)
     [ -d "/etc/fusioninventory" ] || mkdir "/etc/fusioninventory"
     [ -d "/etc/fusioninventory/conf.d" ] || mkdir "/etc/fusioninventory/conf.d"
-    ucf /usr/share/fusioninventory/etc/agent.cfg /etc/fusioninventory/agent.cfg
-    ucfr fusioninventory-agent /etc/fusioninventory/agent.cfg
+    for conf in agent inventory-server-plugin ssl-server-plugin server-test-plugin \
+        proxy-server-plugin proxy2-server-plugin
+    do
+        ucf /usr/share/fusioninventory/etc/$conf.cfg /etc/fusioninventory/$conf.cfg
+        ucfr fusioninventory-agent /etc/fusioninventory/$conf.cfg
+    done
     ;;
 esac
 

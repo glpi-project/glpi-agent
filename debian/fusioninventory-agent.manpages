@@ -2,4 +2,4 @@ debian/tmp/usr/share/man/man1/fusioninventory-inventory.1p
 debian/tmp/usr/share/man/man1/fusioninventory-injector.1p
 debian/tmp/usr/share/man/man1/fusioninventory-wakeonlan.1p
 debian/tmp/usr/share/man/man1/fusioninventory-agent.1p
-
+debian/tmp/usr/share/man/man1/fusioninventory-remoteinventory.1p

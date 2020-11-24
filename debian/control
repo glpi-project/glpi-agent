@@ -1,49 +1,51 @@
 Source: fusioninventory-agent
 Section: net
-Priority: extra
+Testsuite: autopkgtest-pkg-perl
+Priority: optional
 Maintainer: Debian Perl Group <pkg-perl-maintainers@lists.alioth.debian.org>
 Uploaders: Guillaume Bougard <gbougard@teclib.com>
-Build-Depends:
- debhelper (>= 9),
- dh-systemd,
- libclone-perl,
- libdigest-sha-perl,
- libfile-copy-recursive-perl,
- libfile-which-perl,
- libhttp-cookies-perl,
- libhttp-daemon-perl,
- libhttp-proxy-perl,
- libhttp-server-simple-perl,
- libhttp-server-simple-authen-perl,
- libio-capture-perl,
- libipc-run-perl,
- libjson-pp-perl,
+Build-Depends: debhelper-compat (= 13)
+Build-Depends-Indep:
+ libclone-perl <!nocheck>,
+ libdigest-sha-perl <!nocheck>,
+ libfile-copy-recursive-perl <!nocheck>,
+ libfile-which-perl <!nocheck>,
+ libhttp-cookies-perl <!nocheck>,
+ libhttp-daemon-perl <!nocheck>,
+ libhttp-proxy-perl <!nocheck>,
+ libhttp-server-simple-perl <!nocheck>,
+ libhttp-server-simple-authen-perl <!nocheck>,
+ libio-capture-perl <!nocheck>,
+ libipc-run-perl <!nocheck>,
+ libjson-pp-perl <!nocheck>,
  libmodule-install-perl,
- libnet-ip-perl,
- libnet-snmp-perl,
- libio-socket-ssl-perl,
- libparse-edid-perl,
- libproc-daemon-perl,
- libparallel-forkmanager-perl,
- libtest-compile-perl,
- libtest-deep-perl,
- libtest-nowarnings-perl,
- libtest-exception-perl,
- libtest-mockmodule-perl,
- libtest-mockobject-perl,
- libtext-template-perl,
- libsocket-getaddrinfo-perl,
- libuniversal-require-perl,
- liburi-perl,
- libwww-perl,
- libxml-treepp-perl (>= 0.26),
- libyaml-perl,
+ libnet-ip-perl <!nocheck>,
+ libnet-snmp-perl <!nocheck>,
+ libio-socket-ssl-perl <!nocheck>,
+ libparse-edid-perl <!nocheck>,
+ libproc-daemon-perl <!nocheck>,
+ libparallel-forkmanager-perl <!nocheck>,
+ libtest-compile-perl <!nocheck>,
+ libtest-deep-perl <!nocheck>,
+ libtest-nowarnings-perl <!nocheck>,
+ libtest-exception-perl <!nocheck>,
+ libtest-mockmodule-perl <!nocheck>,
+ libtest-mockobject-perl <!nocheck>,
+ libtext-template-perl <!nocheck>,
+ libsocket-getaddrinfo-perl <!nocheck>,
+ libuniversal-require-perl <!nocheck>,
+ liburi-perl <!nocheck>,
+ libwww-perl <!nocheck>,
+ libxml-treepp-perl <!nocheck>,
+ libxml-xpath-perl <!nocheck>,
+ libyaml-perl <!nocheck>,
  perl,
  ucf
-Standards-Version: 3.9.8
+Standards-Version: 4.5.0
+Vcs-Git: https://salsa.debian.org/perl-team/modules/packages/fusioninventory-agent.git
 Homepage: http://fusioninventory.org/
-Vcs-Git: https://github.com/fusioninventory/fusioninventory-agent.git
-Vcs-Browser: https://github.com/fusioninventory/fusioninventory-agent
+Vcs-Browser: https://salsa.debian.org/perl-team/modules/packages/fusioninventory-agent
+Rules-Requires-Root: binary-targets
 
 Package: fusioninventory-agent
 Architecture: all
@@ -51,8 +53,7 @@ Depends:
  ${misc:Depends},
  ${perl:Depends},
  ucf,
- perl,
- lsb-base (>= 3.0-6),
+ lsb-base,
  libnet-cups-perl,
  libnet-ip-perl,
  libwww-perl,
@@ -60,22 +61,18 @@ Depends:
  libproc-daemon-perl,
  libuniversal-require-perl,
  libfile-which-perl,
- libxml-treepp-perl (>= 0.26),
+ libxml-treepp-perl,
+ libxml-xpath-perl,
  libyaml-perl,
  libtext-template-perl,
  libjson-pp-perl,
  hwdata,
  libhttp-daemon-perl,
+ libyaml-tiny-perl,
  libsocket-getaddrinfo-perl
 Suggests: smartmontools, read-edid
-Recommends: libio-socket-ssl-perl, dmidecode, hdparm
-Breaks:
- libfusioninventory-agent-task-esx-perl (<< 1:2.3.0-1),
- libfusioninventory-agent-task-deploy-perl (<< 1:2.3.0-1),
- libfusioninventory-agent-task-network-perl (<< 1:2.3.0-1),
- libfusioninventory-agent-task-netinventory-perl (<< 1:2.3.0-1),
- libfusioninventory-agent-task-netdiscovery-perl (<< 1:2.3.0-1),
-Description: Hardware and software inventory tool (client)
+Recommends: libio-socket-ssl-perl, dmidecode, hdparm, fdisk | util-linux (<< 2.29.2-3~), net-tools
+Description: hardware and software inventory tool (client)
  FusionInventory Agent is an application designed to help a network
  or system administrator to keep track of the hardware and software
  configurations of devices.
@@ -97,11 +94,7 @@ Depends:
  fusioninventory-agent (>= ${binary:Version}),
  libhttp-cookies-perl,
  libjson-pp-perl
-Breaks:
- libfusioninventory-agent-task-esx-perl (<< 1:2.3.0-1),
-Replaces:
- libfusioninventory-agent-task-esx-perl (<< 1:2.3.0-1),
-Description: ESX and ESXi inventory
+Description: ESX and ESXi inventory for FusionInventory Agent
  Do remote inventory of your ESX, ESXi, vCenter server using the SOAP interface.
  You can import the generated .ocs files in:
   - GLPI with FusionInventory for GLPI
@@ -120,14 +113,10 @@ Depends:
  libfile-copy-recursive-perl,
  libdigest-sha-perl,
  libparallel-forkmanager-perl
-Breaks:
- libfusioninventory-agent-task-deploy-perl (<< 1:2.3.0-1),
-Replaces:
- libfusioninventory-agent-task-deploy-perl (<< 1:2.3.0-1),
-Description: Software deployment support for FusionInventory
+Description: software deployment support for FusionInventory
  With this module, FusionInventory can accept software deployment
  request from an GLPI server with the FusionInventory plugin.
- This module uses SSL certificat to authentificate the server.
+ This module uses SSL certificate to authentificate the server.
  .
  If the P2P option is turned on, the agent will looks for peer in its
  network to reduce the bandwidth usage with the primary server.
@@ -137,9 +126,11 @@ Architecture: all
 Depends:
  ${misc:Depends},
  fusioninventory-agent (>= ${binary:Version}),
-Description: Collect support for FusionInventory
+Breaks: fusioninventory-agent (<< 1:2.4.1-1)
+Replaces: fusioninventory-agent (<< 1:2.4.1-1)
+Description: collect task support for FusionInventory
  With this module, FusionInventory can collect desired datas, essentially
- files under linux.
+ files under Linux.
  .
  The plugin depends on FusionInventory for GLPI on server side.
 
@@ -150,74 +141,14 @@ Depends:
  ${perl:Depends},
  fusioninventory-agent (>= ${binary:Version}),
  libcrypt-des-perl,
+ libdigest-hmac-perl,
  libnet-ip-perl,
  libnet-snmp-perl,
  libnet-nbname-perl
-Breaks:
- libfusioninventory-agent-task-netdiscovery-perl (<< 1:2.3.0-1),
- libfusioninventory-agent-task-snmpquery-perl (<< 1:2.3.0-1),
- libfusioninventory-agent-task-network-perl (<< 1:2.3.0-1),
-Replaces:
- libfusioninventory-agent-task-netdiscovery-perl (<< 1:2.3.0-1),
- libfusioninventory-agent-task-snmpquery-perl (<< 1:2.3.0-1),
- libfusioninventory-agent-task-network-perl (<< 1:2.3.0-1),
-Description: Network device discovery for FusionInventory Agent
+Description: network device discovery for FusionInventory Agent
  This module scans your networks to quickly identify its hosts with SNMP,
  Echo Ping, TimeStamp ping, arp table lookup and NetBIOS request:
   - networking devices discovery within an IP range
   - identify unknown MAC addresses
  .
  The plugin depends on FusionInventory for GLPI on server side.
-
-# Dummy packages
-Package: libfusioninventory-agent-task-esx-perl
-Architecture: all
-Section: oldlibs
-Priority: extra
-Depends:
- ${misc:Depends},
- fusioninventory-agent-task-esx
-Description: transitional dummy package
- This package is a dummy transitional package. It can be safely removed.
-
-Package: libfusioninventory-agent-task-deploy-perl
-Architecture: all
-Section: oldlibs
-Priority: extra
-Depends:
- ${misc:Depends},
- fusioninventory-agent-task-deploy
-Description: transitional dummy package
- This package is a dummy transitional package. It can be safely removed.
-
-Package: libfusioninventory-agent-task-network-perl
-Architecture: all
-Section: oldlibs
-Priority: extra
-Depends:
- ${misc:Depends},
- fusioninventory-agent-task-network
-Description: transitional dummy package
- This package is a dummy transitional package. It can be safely removed.
-
-Package: libfusioninventory-agent-task-netinventory-perl
-Architecture: all
-Section: oldlibs
-Priority: extra
-Depends:
- ${misc:Depends},
- fusioninventory-agent-task-network
-Description: transitional dummy package
- This package is a dummy transitional package. It can be safely removed.
-
-Package: libfusioninventory-agent-task-snmpquery-perl
-Architecture: all
-Section: oldlibs
-Priority: extra
-Depends:
- ${misc:Depends},
- fusioninventory-agent-task-network
-Description: transitional dummy package
- This package is a dummy transitional package. It can be safely removed.
-
-

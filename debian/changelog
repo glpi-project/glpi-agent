@@ -1,55 +1,141 @@
-fusioninventory-agent (1:2.4-2) unstable; urgency=low
+fusioninventory-agent (1:2.6-1) UNRELEASED; urgency=medium
 
-  * Rebased sources on 2.4.1-dev / 00bb19f26 upstream github commit
+  * New upstream version 2.6
 
- -- Guillaume Bougard <gbougard@teclib.com>  Thu, 26 Jan 2018 15:05:16 +0100
+ -- Guillaume Bougard <gbougard@teclib.com>  Tue, 24 Nov 2020 17:59:32 +0100
+
+fusioninventory-agent (1:2.5.2-2) UNRELEASED; urgency=medium
+
+  * Update standards version to 4.5.0, no changes needed.
+
+ -- Debian Janitor <janitor@jelmer.uk>  Mon, 27 Apr 2020 09:13:10 +0000
+
+fusioninventory-agent (1:2.5.2-1) unstable; urgency=medium
+
+  * New upstream version 2.5.2
+  * Fix d/not-installed
+  * Bump Standards-Version to 4.4.1
+  * Fix d/copyright
+  * Updated d/control Buiddeps
+  * Update d/watch to version 4
+  * Fix lintian pedantic warning in d/control
+  * Add patch to fix a spelling error
+  * Add libyaml-tiny-perl dependency to d/control
+  * Add patch to remove CAP_SYS_PTRACE capability on the service
+
+ -- Guillaume Bougard <gbougard@teclib.com>  Tue, 17 Dec 2019 16:09:15 +0100
+
+fusioninventory-agent (1:2.5.1-1) unstable; urgency=low
+
+  * New upstream version 2.5.1
+  * Add libxml-xpath-perl dependency for http server Proxy plugin
+  * Install default fusioninventory-agent httpd server new plugin configurations
+  * Add NEWS entry for the new agent httpd server plugin system
+  * Add d/not-installed including diverted new configuration files
+  * Add fusioninventory-agent-task-network dependency to support
+    SNMPv3 authentication
+  * Update years of upstream copyright
+  * Add d/upstream/metadata
+  * Bump Standards-Version to 4.4.0
+  * Update debhelper-compat version support to 12 in d/control
+  * Use DEB_FIA_COMMENTS variable in d/rules to permit COMMENTS overriding
+  * Set "Source time" in COMMENTS in a prettier UTC time
+  * Update default_config patch to also use stderr as logger
+  * Add TestSuite field:
+    - add d/tests/pkg-perl/SKIP to skip use.t
+    - add d/tests/pkg-perl/smoke-env to set PERL5LIB with dedicated lib folder
+    - add d/tests/pkg-perl/smoke-files to include resources/ for tests
+    - add d/tests/pkg-perl/smoke-tests to set tests to run as during build
+  * Add fusioninventory-remoteinventory man page
+  * Removed transitional packages
+  * Fix dependencies for buster
+  * Fix URLs in d/copyright
+  * Removed unused crontab
+
+ -- Guillaume Bougard <gbougard@teclib.com>  Tue, 02 Jul 2019 16:08:58 +0200
+
+fusioninventory-agent (1:2.4.2-1) unstable; urgency=low
+
+  [ Laurent Baillet ]
+  * fix lintian file-contains-trailing-whitespace warning
+
+  [ Guillaume Bougard ]
+  * New upstream version 2.4.2
+  * Removed obsolete patches as merged upstream
+  * Fixed 2 patches to follow upstream updates
+  * Bump Standards-Version to 4.2.1
+
+  [ gregor herrmann ]
+  * Update years of upstream copyright.
+
+ -- Guillaume Bougard <gbougard@teclib.com>  Mon, 08 Oct 2018 10:46:53 +0200
+
+fusioninventory-agent (1:2.4.1-3) unstable; urgency=medium
+
+  * Bump Standards-Version to 4.2.0
+  * Add missing conf.d confdir owning (closes: #905525)
+  * Cleanup /var/lib/fusioninventory-agent while purging
+
+ -- Guillaume Bougard <gbougard@teclib.com>  Tue, 07 Aug 2018 13:56:09 +0200
+
+fusioninventory-agent (1:2.4.1-2) unstable; urgency=low
+
+  * Bump Standards-Version to 4.1.5
+  * Add fdisk support to Recommends (closes: #872210)
+  * Add net-tools to Recommends as some discovery can be done by arp and
+    netstat commands
+  * Add a patch to avoid and error in netdiscovery task if Net::Ping is too old
+
+ -- Guillaume Bougard <gbougard@teclib.com>  Fri, 06 Jul 2018 08:58:24 +0200
+
+fusioninventory-agent (1:2.4.1-1) unstable; urgency=low
+
+  * New upstream version 2.4.1
+  * Removed obsolete patches as merged upstream
+  * Add upstream patch to fix perl error while --lazy option from script
+  * Get rid of no more needed nmap suggest in fusioninventory-agent-task-network
+  * Split Collect task into new fusioninventory-agent-task-collect package
+  * Set Breaks & Replaces fields to fusioninventory-agent-task-collect package
+    in d/control
+  * Add README.Cron to d/fusioninventory-agent.docs
+
+ -- Guillaume Bougard <gbougard@teclib.com>  Wed, 04 Jul 2018 14:07:26 +0200
 
 fusioninventory-agent (1:2.4-1) unstable; urgency=low
 
-  * New upstream release
-  * Updated debian support:
-    - Fix default configuration to make system logging the default with LOG_DAEMON
-      facility
-    - Fix default configuration to activate new "include" directive: users should
-      now create a .cfg file in /etc/fusioninventory/conf.d to tune agent
-      configuration to their needs, at least server option.
-    - Prox::PID::File dependency removed
-    - Removed mo more needed cron tasks
-
- -- Guillaume Bougard <gbougard@teclib.com>  Thu, 26 Jan 2018 09:53:26 +0100
-
-fusioninventory-agent (1:2.3.21-2) unstable; urgency=low
-
-  * Fixed debian support
-
- -- Guillaume Bougard <gbougard@teclib.com>  Fri, 04 Aug 2017 11:26:55 +0200
-
-fusioninventory-agent (1:2.3.21-1) unstable; urgency=low
-
-  * New upstream release
-
- -- Guillaume Bougard <gbougard@teclib.com>  Thu, 03 Aug 2017 10:54:25 +0200
-
-fusioninventory-agent (1:2.3.18-1) unstable; urgency=low
-
   * New upstream release (closes: #816754)
-  * Add Guillaume Bougard to Uploaders
+  * Rebased sources on 2.4.1-dev / 00bb19f26 upstream github commit
+  * Take over for the Debian Perl Group on maintainer's request
+    (https://lists.debian.org/debian-perl/2017/01/msg00000.html)
+  * Updated debian support:
+    - Update default mode to daemon handled by fixed systemd script
+    - Fix default configuration to make system logging the default with
+      LOG_DAEMON facility
+    - Fix default configuration to activate new "include" directive: users
+      should now create a .cfg file in /etc/fusioninventory/conf.d to tune agent
+      configuration to their needs, at least server option.
+    - Proc::PID::File dependency removed
+    - Removed no more needed cron tasks
+    - Include weekly crontab entry to update pci.ids & usb.ids files
+  * Bump Standards-Version to 4.1.4
+  * Update debhelper version support to 10 in d/compat & d/control
+  * Set priority to 'optional' in d/control
+  * Fix some spelling
+  * Updated descriptions
+  * Add e2fsprogs in Recommends (closes: #887276)
+  * Use '3.0 (quilt)' format
   * Fix some build dependencies that are now useless
   * Update some dependencies
-  * Fix some lintian erros and warnings
-  * Update default mode to daemon handled by fixed systemd script (closes: 
-  * Include weekly crontab entry to update pci.ids & usb.ids files
-  * Still fixed in 2.3.15-1:
-    - fusioninventory-agent runs spuriously update /etc/blkid.tab
-      (closes: #756622)
+  * debian/control: Added: Vcs-Git field (source stanza). Removed: Vcs-
+    Svn field (source stanza). Changed: Maintainer set to Debian Perl
+    Group <pkg-perl-maintainers@lists.alioth.debian.org> (was: Gonéri Le
+    Bouder <goneri@debian.org>)
+  * Uploaders set to Guillaume Bougard <gbougard@teclib.com>
+  * debian/watch: use metacpan-based URL.
+  * debian/{postinst,postrm,preinst}: handles no more needed conf and crons with
+    dpkg-maintscript-helper rm_conffile
 
- -- Guillaume Bougard <gbougard@teclib.com>  Wed, 28 Dec 2016 18:54:17 +0100
-
-fusioninventory-agent (1:2.3.16-2) unstable; urgency=low
-
-  * Drop some build dependencies that are now useless
-
- -- Gonéri Le Bouder <goneri@debian.org>  Sun, 21 Jun 2015 23:03:14 +0200
+ -- Guillaume Bougard <gbougard@teclib.com>  Fri, 29 Jun 2018 19:25:12 +0200
 
 fusioninventory-agent (1:2.3.16-1) unstable; urgency=low
 
@@ -163,7 +249,7 @@ fusioninventory-agent (1:2.3.2-1) unstable; urgency=low
 
 fusioninventory-agent (1:2.3.0-2) unstable; urgency=low
 
-  * Avoid a FTBFS on mips, cherry-pick commit 
+  * Avoid a FTBFS on mips, cherry-pick commit
     ab7a555bc05e2b3560d165b13931d3e2dd2b6a0e from upstream
   * fix some spelling issues in debian/control
 
@@ -236,7 +322,7 @@ fusioninventory-agent (2.2.3-1) unstable; urgency=low
 
 fusioninventory-agent (2.2.2-1) unstable; urgency=low
 
-  * New upstream release 
+  * New upstream release
 
  -- Gonéri Le Bouder <goneri@rulezlan.org>  Wed, 30 May 2012 18:01:10 +0200
 
@@ -254,7 +340,7 @@ fusioninventory-agent (2.2.0-1) unstable; urgency=low
   * Bump Standards-Version
   * new build-dep: libtest-mockmodule-perl
   * use pciutils pci.ids file
-    add pciutils-pciids.diff 
+    add pciutils-pciids.diff
   * disable t/inventory/generic/lspci/controllers.t
     http://forge.fusioninventory.org/issues/1548
 
@@ -463,6 +549,6 @@ fusioninventory-agent (2.0.3-1) unstable; urgency=low
 
 fusioninventory-agent (2.0-1) unstable; urgency=low
 
-  * Initial release (Closes: #570768) 
+  * Initial release (Closes: #570768)
 
  -- Gonéri Le Bouder <goneri@rulezlan.org>  Sat, 20 Mar 2010 23:34:03 +0100

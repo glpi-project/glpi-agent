@@ -1,31 +1,23 @@
 #!/usr/bin/make -f
 
+include /usr/share/dpkg/pkg-info.mk
+
 # Skip all tests but the only really important for Debian & linux
 TEST_FILES = t/01compile.t t/agent/tools/linux.t \
 	$(shell echo t/tasks/inventory/linux/*.t t/tasks/inventory/linux/*/*.t)
 
+# By default, set COMMENTS with converted source timestamp in UTC
+DEB_FIA_COMMENTS ?= Built by Debian,Source time: $(shell date -u +'%F %R' -d @$(SOURCE_DATE_EPOCH))
+
 %:
-	dh $@ --with systemd
+	dh $@
 
 override_dh_auto_configure:
-	perl Makefile.PL -- PREFIX=/usr SYSCONFDIR=/etc/fusioninventory LOCALSTATEDIR=/var/lib/fusioninventory-agent
+	dh_auto_configure -- PREFIX=/usr SYSCONFDIR=/etc/fusioninventory LOCALSTATEDIR=/var/lib/fusioninventory-agent VERSION=$(DEB_VERSION_UPSTREAM_REVISION) COMMENTS="$(DEB_FIA_COMMENTS)"
 
 override_dh_auto_test:
 	dh_auto_test -- TEST_FILES="$(TEST_FILES)"
 
 override_dh_auto_build:
-	debian/fix-sources.sh
 	dh_auto_build
 	perl debian/refresh-install-files
-	sed -i -e "s|logger = .*|logger = syslog|"               etc/agent.cfg
-	sed -i -e "s|logfacility = .*|logfacility = LOG_DAEMON|" etc/agent.cfg
-	sed -i -e 's|#include "conf\.d/"|include "conf\.d/"|'    etc/agent.cfg
-
-override_dh_auto_clean:
-	[ ! -d var ] || rm -r var
-	[ ! -d blib ] || rm -r blib
-	[ ! -f Makefile ] || rm Makefile
-	[ ! -f MYMETA.yml ] || rm MYMETA.yml
-	[ ! -f MYMETA.json ] || rm MYMETA.json
-	[ ! -f pm_to_blib ] || rm pm_to_blib
-	dh_clean

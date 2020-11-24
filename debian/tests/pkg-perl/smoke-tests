@@ -1,0 +1,3 @@
+t/agent/tools/linux.t
+t/tasks/inventory/linux/*.t
+t/tasks/inventory/linux/*/*.t

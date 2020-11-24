@@ -1,0 +1,66 @@
+fusioninventory-agent (1:2.5.1-1) unstable; urgency=low
+
+  FusionInventory agent httpd server now supports plugins.
+  Available plugins are:
+   - Inventory: authorizes to remotely and securely request an inventory when enabled
+   - SSL: use it to enable SSL support for any other plugin, even on default port
+   - Proxy: use it to simulate a GLPI+FusionInventory server and push inventories
+     toward another target
+   - SecondaryProxy: use it to enable a secondary proxy with a different configuration
+     like SSL support
+   - Test: just a sample plugin
+  All agent httpd server plugins are disabled by default and can be enabled using
+  any of the associated configuration available in /etc/fusioninventory: to enable
+  a plugin, just copy the associated default conf renaming it with .local extension
+  in place of .cfg and set "disabled" option to "no". Don't miss any other mandatory
+  option.
+  Configuration parameters are described in configurations.
+
+  A new script fusioninventory-remoteinventory is also installed and can be used
+  to request an inventory from an agent with httpd server Inventory plugin enabled.
+
+ -- Guillaume Bougard <gbougard@teclib.com>  Sat, 13 Apr 2019 14:20:58 +0200
+
+fusioninventory-agent (1:2.4.1-1) unstable; urgency=low
+
+  Nmap is no more used by FusionInventory NetDiscovery task, you can safely
+  remove it from your system if you don't need nmap command.
+
+  Collect task has been split into a dedicated package. If you need this
+  FusionInventory task, you must install fusioninventory-agent-task-collect
+  package.
+
+ -- Guillaume Bougard <gbougard@teclib.com>  Wed, 04 Jul 2018 14:07:26 +0200
+
+fusioninventory-agent (1:2.4-1) unstable; urgency=low
+
+  "include" directive support has been to configuration file. You should
+  now create a dedicated .cfg file in the /etc/fusioininventory/conf.d
+  folder where you can override needed configuration values, like server,
+  tag, etc.
+
+  /etc/default/fusioninventory-agent file has been removed.
+
+  As such, it is no more read in systemd service environment to override
+  daemon parameters. If you want to customize the daemon, the best
+  way is to use the "systemctl edit" command to create an override unit.
+
+  The daemon renames itself as "fusioniventory-agent (TAG)" in ps view,
+  and replacing TAG by the tag configuration parameter value.
+  It will also show what task it is actually running and will show most
+  of the time "waiting".
+
+  Systemd becomes mandatory to run fusioninventory-agent on debian systems.
+  As such, init script has been removed.
+  fusioninventory-agent.service is automatically enabled, but service
+  won't start unless you still have a valid service configuration.
+  You need to at least have a 'server=' or 'local=' parameter with a valid
+  value setup in /etc/fusioninventory/agent.cfg before being able to start
+  the service.
+  As root, you can just start/stop the service with:
+    systemctl start fusioninventory-agent.service
+    systemctl stop fusioninventory-agent.service
+
+  cron mode has been deprecated.
+
+ -- Guillaume Bougard <gbougard@teclib.com>  Fri, 29 Jun 2018 19:25:12 +0200
