@@ -17,6 +17,7 @@ After=network.target
 [Service]
 ExecStart=/usr/bin/fusioninventory-agent --daemon --no-fork $OPTIONS
 ExecReload=/bin/kill -HUP $MAINPID
+CapabilityBoundingSet=~CAP_SYS_PTRACE
 
 [Install]
 WantedBy=multi-user.target
