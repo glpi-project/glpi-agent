@@ -55,6 +55,7 @@ netdiscovery/netinventory:
 * Fix #823, #856: Add Ubiquiti UniFi AP linux appliance support
 * Fix #772: Enhanced some HP switchs support
 * Introduced Hwg support, thanks to Bertrand Keller
+* Fix #830: Retrieve rigth model for Oki printers
 
 ESX:
 * verify a user and password are provided before attemting to connect to ESX server

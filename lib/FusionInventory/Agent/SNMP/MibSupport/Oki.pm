@@ -9,6 +9,7 @@ use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::SNMP;
 
 use constant oki    => '.1.3.6.1.4.1.2001';
+use constant model  => oki . '.1.1.1.1.11.1.10.25.0';
 use constant serial => oki . '.1.1.1.1.11.1.10.45.0';
 
 our $mibSupport = [
@@ -22,6 +23,12 @@ sub getSerial {
     my ($self) = @_;
 
     return $self->get(serial);
+}
+
+sub getModel {
+    my ($self) = @_;
+
+    return getCanonicalString($self->get(model));
 }
 
 1;
