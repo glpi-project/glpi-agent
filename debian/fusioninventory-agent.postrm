@@ -29,7 +29,7 @@ case "$1" in
         for conf in agent inventory-server-plugin ssl-server-plugin server-test-plugin \
             proxy-server-plugin proxy2-server-plugin
         do
-            ucf --purge /etc/fusioninventory/$conf.conf
+            ucf --purge /etc/fusioninventory/$conf.cfg
         done
     fi
     if which ucfr >/dev/null; then
