@@ -70,18 +70,18 @@ sub getCanonicalCapacity {
 
     # We expect to return capacity in mWh, $voltage is expected to be in mV
     if ($unit =~ /^mWh$/i) {
-        return int($capacity);
+        $capacity = int($capacity);
     } elsif ($unit =~ /^Wh$/i) {
-        return int($capacity * 1000);
+        $capacity = int($capacity * 1000);
     } elsif ($unit =~ /^mAh$/i) {
         return unless $voltage;
-        return int($capacity * $voltage / 1000);
+        $capacity = int($capacity * $voltage / 1000);
     } elsif ($unit =~ /^Ah$/i) {
         return unless $voltage;
-        return int($capacity * $voltage);
+        $capacity = int($capacity * $voltage);
     }
 
-    return undef;
+    return $capacity;
 }
 
 # Also implement a batteries class, but split name on new line to not export it in CPAN
