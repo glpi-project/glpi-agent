@@ -68,7 +68,8 @@ sub _getPackagesList {
         };
 
         my $folder = "/snap/".$snap->{NAME};
-        if (-d $folder) {
+        # Don't check install date during unittest
+        if (!$params{file} && -d $folder) {
             my $st = stat($folder);
             my ($year, $month, $day) = (localtime($st->mtime))[5, 4, 3];
             $snap->{INSTALLDATE}  = sprintf(
