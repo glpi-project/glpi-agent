@@ -1,0 +1,120 @@
+$SYSTEM = {
+  'hdparm' => 'hdparm v9.54
+',
+  'hdparm-nvme0n1' => '
+/dev/nvme0n1:
+',
+  'smartctl-nvme0n1' => 'smartctl 6.6 2016-05-31 r4324 [x86_64-linux-4.15.0-121-generic] (local build)
+Copyright (C) 2002-16, Bruce Allen, Christian Franke, www.smartmontools.org
+
+=== START OF INFORMATION SECTION ===
+Model Number:                       PM951 NVMe SAMSUNG 256GB
+Serial Number:                      S29NNXAH146772
+Firmware Version:                   BXV77D0Q
+PCI Vendor/Subsystem ID:            0x144d
+IEEE OUI Identifier:                0x002538
+Controller ID:                      1
+Number of Namespaces:               1
+Namespace 1 Size/Capacity:          256,060,514,304 [256 GB]
+Namespace 1 Utilization:            237,923,311,616 [237 GB]
+Namespace 1 Formatted LBA Size:     512
+Local Time is:                      Wed Nov 25 14:41:29 2020 CET
+
+',
+  'sys' => {
+    'block' => {
+      'loop0' => {},
+      'loop1' => {},
+      'loop10' => {},
+      'loop11' => {},
+      'loop12' => {},
+      'loop13' => {},
+      'loop14' => {},
+      'loop15' => {},
+      'loop2' => {},
+      'loop3' => {},
+      'loop4' => {},
+      'loop5' => {},
+      'loop6' => {},
+      'loop7' => {},
+      'loop8' => {},
+      'loop9' => {},
+      'nvme0n1' => {
+        'device' => {
+          'device' => {
+            'subsystem' => [
+              'link',
+              '../../../../bus/pci'
+            ]
+          },
+          'firmware_rev' => 'BXV77D0Q
+',
+          'model' => 'PM951 NVMe SAMSUNG 256GB                
+',
+          'serial' => '      S29NNXAH146772
+',
+          'subsystem' => [
+            'link',
+            '../../../../../../class/nvme'
+          ]
+        },
+        'removable' => '0
+',
+        'size' => '500118192
+',
+        'wwid' => 'eui.0025384161b4bf61
+'
+      }
+    }
+  },
+  'udisksctl' => 1,
+  'udisksctl-nvme0n1' => '/org/freedesktop/UDisks2/block_devices/nvme0n1:
+  org.freedesktop.UDisks2.Block:
+    Configuration:              []
+    CryptoBackingDevice:        \'/\'
+    Device:                     /dev/nvme0n1
+    DeviceNumber:               66304
+    Drive:                      \'/org/freedesktop/UDisks2/drives/PM951_NVMe_SAMSUNG_256GB_S29NNXAH146772\'
+    HintAuto:                   false
+    HintIconName:               
+    HintIgnore:                 false
+    HintName:                   
+    HintPartitionable:          true
+    HintSymbolicIconName:       
+    HintSystem:                 true
+    Id:                         by-id-nvme-PM951_NVMe_SAMSUNG_256GB__S29NNXAH146772
+    IdLabel:                    
+    IdType:                     
+    IdUUID:                     
+    IdUsage:                    
+    IdVersion:                  
+    MDRaid:                     \'/\'
+    MDRaidMember:               \'/\'
+    PreferredDevice:            /dev/nvme0n1
+    ReadOnly:                   false
+    Size:                       256060514304
+    Symlinks:                   /dev/disk/by-id/nvme-PM951_NVMe_SAMSUNG_256GB__S29NNXAH146772
+                                /dev/disk/by-id/nvme-eui.0025384161b4bf61
+                                /dev/disk/by-path/pci-0000:3c:00.0-nvme-1
+    UserspaceMountOptions:      
+  org.freedesktop.UDisks2.PartitionTable:
+    Partitions:         [\'/org/freedesktop/UDisks2/block_devices/nvme0n1p4\', \'/org/freedesktop/UDisks2/block_devices/nvme0n1p3\', \'/org/freedesktop/UDisks2/block_devices/nvme0n1p2\', \'/org/freedesktop/UDisks2/block_devices/nvme0n1p1\']
+    Type:               gpt
+'
+};
+$STORAGE = [
+  {
+    'DESCRIPTION' => 'PCI',
+    'DISKSIZE' => 256060,
+    'FIRMWARE' => 'BXV77D0Q',
+    'MANUFACTURER' => 'Samsung',
+    'MODEL' => 'PM951 NVMe SAMSUNG 256GB',
+    'NAME' => 'nvme0n1',
+    'SERIALNUMBER' => 'S29NNXAH146772',
+    'TYPE' => 'disk'
+  }
+];
+
+# Dump date: Wed Nov 25 14:41:30 2020
+# Dump system: Linux xps 4.15.0-121-generic #123-Ubuntu SMP Mon Oct 5 16:16:40 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+# Dumped by: root

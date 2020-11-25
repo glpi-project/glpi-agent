@@ -1,0 +1,85 @@
+$SYSTEM = {
+  'hdparm' => 'hdparm v9.58
+',
+  'hdparm-vda' => '
+/dev/vda:
+',
+  'smartctl-vda' => 'smartctl 7.1 2019-12-30 r5022 [x86_64-linux-5.9.9-100.fc32.x86_64] (local build)
+Copyright (C) 2002-19, Bruce Allen, Christian Franke, www.smartmontools.org
+
+/dev/vda: Unable to detect device type
+Please specify device type with the -d option.
+
+Use smartctl -h to get a usage summary
+
+',
+  'sys' => {
+    'block' => {
+      'dm-0' => {},
+      'dm-1' => {},
+      'vda' => {
+        'device' => {
+          'subsystem' => [
+            'link',
+            '../../../../bus/virtio'
+          ],
+          'vendor' => '0x1af4
+'
+        },
+        'removable' => '0
+',
+        'serial' => '083795e2-5c8f-4b8c-8',
+        'size' => '104857600
+'
+      }
+    }
+  },
+  'udisksctl' => 1,
+  'udisksctl-vda' => '/org/freedesktop/UDisks2/block_devices/vda:
+  org.freedesktop.UDisks2.Block:
+    Configuration:              []
+    CryptoBackingDevice:        \'/\'
+    Device:                     /dev/vda
+    DeviceNumber:               64512
+    Drive:                      \'/org/freedesktop/UDisks2/drives/VirtIO_Disk_083795e2_5c8f_4b8c_8\'
+    HintAuto:                   false
+    HintIconName:               
+    HintIgnore:                 false
+    HintName:                   
+    HintPartitionable:          true
+    HintSymbolicIconName:       
+    HintSystem:                 true
+    Id:                         by-id-virtio-083795e2-5c8f-4b8c-8
+    IdLabel:                    
+    IdType:                     
+    IdUUID:                     
+    IdUsage:                    
+    IdVersion:                  
+    MDRaid:                     \'/\'
+    MDRaidMember:               \'/\'
+    PreferredDevice:            /dev/vda
+    ReadOnly:                   false
+    Size:                       53687091200
+    Symlinks:                   /dev/disk/by-id/virtio-083795e2-5c8f-4b8c-8
+                                /dev/disk/by-path/pci-0000:00:08.0
+                                /dev/disk/by-path/virtio-pci-0000:00:08.0
+    UserspaceMountOptions:      
+  org.freedesktop.UDisks2.PartitionTable:
+    Partitions:         [\'/org/freedesktop/UDisks2/block_devices/vda2\', \'/org/freedesktop/UDisks2/block_devices/vda3\', \'/org/freedesktop/UDisks2/block_devices/vda1\']
+    Type:               gpt
+'
+};
+$STORAGE = [
+  {
+    'DESCRIPTION' => 'Virtual',
+    'DISKSIZE' => 53687,
+    'MANUFACTURER' => 'Red Hat, Inc.',
+    'NAME' => 'vda',
+    'SERIALNUMBER' => '083795e2-5c8f-4b8c-8',
+    'TYPE' => 'disk'
+  }
+];
+
+# Dump date: Wed Nov 25 12:09:57 2020
+# Dump system: Linux dev 5.9.9-100.fc32.x86_64 #1 SMP Thu Nov 19 15:57:55 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+# Dumped by: root
