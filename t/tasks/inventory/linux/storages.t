@@ -57,8 +57,9 @@ if ($dump && $dump eq "--dump") {
 
     $Data::Dumper::Sortkeys = 1;
     $Data::Dumper::Indent   = 1;
+    my $sorted = [ sort { $a->{NAME} cmp $b->{NAME} } @{$inventory->{content}->{STORAGES}} ];
     my $dumper = Data::Dumper->new(
-        [$system_datas, $inventory->{content}->{STORAGES}],
+        [$system_datas, $sorted],
         [qw(SYSTEM STORAGE)]
     );
     open DUMP, ">", $dump_file
@@ -103,8 +104,9 @@ foreach my $dump_file (@dump_filenames) {
         logger      => $logger,
         test_path   => $root
     );
+    my $sorted = [ sort { $a->{NAME} cmp $b->{NAME} } @{$inventory->{content}->{STORAGES}} ];
     cmp_deeply(
-        $inventory->{content}->{STORAGES},
+        $sorted,
         $STORAGE,
         "storage: $dump_file"
     );
@@ -126,7 +128,7 @@ sub _build_root {
         } else {
             open FILE, ">", $root."/".$key
                 or die "Can't write to $root/$key: $!\n";
-            print FILE $fs->{$key};
+            print FILE $fs->{$key} if defined($fs->{$key});
             close(FILE);
         }
     }
