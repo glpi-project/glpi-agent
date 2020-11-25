@@ -47,8 +47,8 @@ my %tests = (
             PRODUCTID    => '0024',
         },
         {
-            NAME         => 'ASUS Bluetooth',
-            CAPTION      => 'ASUS Bluetooth',
+            NAME         => 'Bluetooth Adapter',
+            CAPTION      => 'Bluetooth Adapter',
             MANUFACTURER => 'ASUSTek Computer, Inc.',
             VENDORID     => '0B05',
             PRODUCTID    => '179C',
