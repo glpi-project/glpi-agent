@@ -423,11 +423,20 @@ sub _readLinkFromSysFs {
 sub getInfoFromSmartctl {
     my (%params) = @_;
 
+    # We need to support dump params to permit full testing when root params is set
+    $params{file} = "$params{root}/smartctl-".basename($params{device})
+        if $params{root};
+
     my @lines = getAllLines(
         %params,
         command => $params{device} ?
             "smartctl -i $params{device} " . ($params{extra} // "") : undef,
     );
+
+    # We need to support dump params to permit full testing when root params is set
+    $params{dump}->{"smartctl-".basename($params{device})} = @lines ? join("\n", @lines)."\n" : ""
+        if $params{dump};
+
     return unless @lines;
 
     my $info = {
