@@ -36,6 +36,7 @@ inventory:
 * Fix #540: Added powersupplies support on MacOS
 * Fix #797: Fix ASM storage inventory
 * Better canonical manufacturer reporting
+* Fix Snap software inventory support with long summary on a package
 * Added PartNumber API to enhanced inventory memory and controllers support:
  * Elpida, Hynix, Micron & Samsung memory partnumbers
  * Dell controller partnumbers

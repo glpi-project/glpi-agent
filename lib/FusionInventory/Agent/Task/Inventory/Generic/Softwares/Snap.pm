@@ -5,6 +5,7 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
+use English qw(-no_match_vars);
 use File::stat;
 use YAML::Tiny;
 
@@ -77,7 +78,7 @@ sub _getPackagesList {
             );
         }
 
-        push @packages, $snap,
+        push @packages, $snap;
     }
     close $handle;
 
@@ -86,6 +87,9 @@ sub _getPackagesList {
 
 sub _getPackagesInfo {
     my (%params) = @_;
+
+    # snap info command may wrongly output some long infos
+    local $ENV{COLUMNS} = 100;
 
     my $snap = delete $params{snap};
     my $lines = getAllLines(%params)
@@ -97,11 +101,18 @@ sub _getPackagesInfo {
         @output = getAllLines(%params);
     }
 
-    my $yaml  = YAML::Tiny->read_string($lines);
-    my $infos = $yaml->[0]
-        or return;
+    my ($yaml, $infos);
+    eval {
+        $yaml  = YAML::Tiny->read_string($lines);
+        $infos = $yaml->[0];
+    };
 
-    return unless $infos->{name};
+    if ($EVAL_ERROR && $params{logger}) {
+        $params{logger}->warning("Wrong $snap->{NAME} snap info output: $EVAL_ERROR");
+        $params{logger}->info("Please report snap info output:\n$lines");
+    }
+
+    return unless $infos && $infos->{name};
 
     if (@output && !$infos->{publisher}) {
         my ($publisher) = map { /^publisher: (.*)$/ } grep { /^publisher:/ } @output;
