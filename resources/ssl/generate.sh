@@ -20,7 +20,7 @@ openssl genrsa -passout pass: -out key/ca.pem 2048            2>&1 | log
 echo
 
 echo "Generating CA cert..."                                    | addlog
-openssl req -config cnf/ca.cnf -new -sha256 -x509 -days 3650 \
+openssl req -config cnf/ca.cnf -new -x509 -days 3650 \
 	-key key/ca.pem -out crt/ca.pem                           2>&1 | log
 echo
 
