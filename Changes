@@ -10,7 +10,7 @@ inventory:
 
 Revision history for FusionInventory agent
 
-2.6 Tue, 24 Nov 2020
+2.6 Tue, 26 Nov 2020
 
 core:
 * as explain in Version.pm comments, actual versioning is problematic for CPAN versions,
