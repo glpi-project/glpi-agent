@@ -27,7 +27,7 @@ inventory:
 * Fix #787: fix debian package reporting when size is not defined
 * Battery capacity support provides now canonical values
 * Battery capacity support permits to compute battery capacity usage, thanks to Thierry Bugier
-* Fix #819: Surface Go 2 was recongized has Hyper-V
+* Fix #819: Surface Go 2 was recongized as Hyper-V
 * Fix #825: Enhanced disk encryption detection under linux
 * Fix #829: added other Acer monitor serial support (H226HQL, K222HQL, SA220Q)
 * Enhanced Qemu KVM virtualization detection, thanks to Rico29
@@ -70,6 +70,7 @@ ESX:
 
 injector:
 * Fix an issue with --xml-ua option triggering a perl fatal error on empty or wrong XML files
+* Fix #855: detect error returned by server
 * Fix typo in man page
 
 2.5.2 Mon, 16 Dec 2019
