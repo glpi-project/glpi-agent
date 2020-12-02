@@ -4,6 +4,7 @@ Revision history for GLPI agent
 
 core:
 * make internal HTTP server more responsive
+* Fix #643, #863: Force XML UTF-8 encoding when communicating with server
 
 inventory:
 * fix snap softwares inventory
