@@ -1,13 +1,14 @@
 Description: Update default configuration
  Set agent logger default to system logging and stderr
  Enable 'include conf.d' directive
-Author: Guillaume Bougard <gbougard@teclib.com>
 Forwarded: not-needed
-Last-Update: 2019-03-06
+Author: Guillaume Bougard <gbougard@teclib.com>
+Reviewed-by: gregor herrmann <gregoa@debian.org>
+Last-Update: 2020-11-27
 
---- fusioninventory-agent-2.4.orig/etc/agent.cfg
-+++ fusioninventory-agent-2.4/etc/agent.cfg
-@@ -95,13 +95,13 @@ httpd-trust =
+--- a/etc/agent.cfg
++++ b/etc/agent.cfg
+@@ -97,13 +97,13 @@ httpd-trust =
  #
  
  # Logger backend, either Stderr, File or Syslog (Stderr)
@@ -23,7 +24,7 @@ Last-Update: 2019-03-06
  # Use color in the console
  color = 0
  
-@@ -131,5 +131,5 @@ debug = 0
+@@ -133,5 +133,5 @@ debug = 0
  #   4. Package maintainers are encouraged to use this feature to avoid conflict
  #      during upgrades after configuration update
  #

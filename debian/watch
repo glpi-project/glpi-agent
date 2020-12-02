@@ -1,2 +1,2 @@
 version=4
-https://metacpan.org/release/FusionInventory-Agent   .*/FusionInventory-Agent-v?@ANY_VERSION@@ARCHIVE_EXT@$
+https://metacpan.org/release/FusionInventory-Agent   .*/FusionInventory-Agent[-_]v?@ANY_VERSION@@ARCHIVE_EXT@$

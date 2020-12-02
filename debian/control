@@ -41,7 +41,7 @@ Build-Depends-Indep:
  libyaml-perl <!nocheck>,
  perl,
  ucf
-Standards-Version: 4.5.0
+Standards-Version: 4.5.1
 Vcs-Git: https://salsa.debian.org/perl-team/modules/packages/fusioninventory-agent.git
 Homepage: http://fusioninventory.org/
 Vcs-Browser: https://salsa.debian.org/perl-team/modules/packages/fusioninventory-agent
@@ -66,7 +66,10 @@ Depends:
  libyaml-perl,
  libtext-template-perl,
  libjson-pp-perl,
- hwdata,
+ pciutils,
+ pci.ids,
+ usbutils,
+ usb.ids,
  libhttp-daemon-perl,
  libyaml-tiny-perl,
  libsocket-getaddrinfo-perl
