@@ -8,10 +8,17 @@ use Test::Deep;
 use Test::More;
 use Storable;
 use UNIVERSAL;
+use Cwd qw(abs_path);
 
 use FusionInventory::Agent::Config;
 use lib 't/lib';
 use FusionInventory::Test::Utils;
+
+my $include7_logfile = "/tmp/logfile.txt";
+if ($OSNAME eq 'MSWin32') {
+    my ($letter) = abs_path() =~ /^(.*):/;
+    $include7_logfile = "$letter:\\tmp\\logfile.txt"
+}
 
 my %config = (
     sample1 => {
@@ -42,7 +49,7 @@ my %config = (
     },
     include7 => {
         'tag'         => "include7",
-        'logfile'     => $OSNAME eq 'MSWin32' ? "C:\\tmp\\logfile.txt" : "/tmp/logfile.txt",
+        'logfile'     => $include7_logfile,
         'timeout'     => 16,
         'no-task'     => [],
         'no-category' => [],
