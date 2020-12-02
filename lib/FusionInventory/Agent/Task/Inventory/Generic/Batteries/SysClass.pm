@@ -71,8 +71,6 @@ sub _getBatteriesFromSysClass {
 sub _getBatteryFromSysClass {
     my (%params) = @_;
 
-    my $data = {};
-
     my $battery = {
         NAME            => getFirstLine(file => "$params{psu}/model_name"),
         CHEMISTRY       => getFirstLine(file => "$params{psu}/technology"),
