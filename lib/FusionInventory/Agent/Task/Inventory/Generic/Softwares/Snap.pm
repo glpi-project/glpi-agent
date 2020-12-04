@@ -5,6 +5,7 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
+use English qw(-no_match_vars);
 use YAML::Tiny;
 
 use FusionInventory::Agent::Tools;
