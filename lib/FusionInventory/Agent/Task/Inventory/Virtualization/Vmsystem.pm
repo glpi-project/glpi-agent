@@ -99,6 +99,20 @@ sub doInventory {
         $inventory->setHardware({ UUID => $containerid || '' });
         $inventory->setBios({ SSN  => '' });
 
+    } elsif ($type eq "WSL") {
+        my $uuidfile = "/etc/inventory-uuid";
+        my $uuid = getFirstLine( file => $uuidfile );
+        $uuid = getFirstLine( command => "sysctl -n kernel.random.boot_id" )
+            unless $uuid;
+        # Write first boot_id found in uuidfile
+        unless (-e $uuidfile) {
+            if (open UUID, ">", $uuidfile) {
+                print UUID "$uuis\n";
+                close(UUID);
+            }
+        }
+        $inventory->setHardware({ UUID => $uuid }) if $uuid;
+
     } elsif (($type eq 'lxc' || ($type ne 'Physical' && !$inventory->getHardware('UUID'))) && -e '/etc/machine-id') {
         # Set UUID from /etc/machine-id & /etc/hostname for container like lxc
         my $machineid = getFirstLine(
@@ -263,6 +277,12 @@ sub _getType {
             $result = "Virtuozzo" if $key eq 'envID' && $value > 0;
         }
     }
+
+    # WSL
+    if (getFirstMatch(file => '/proc/mounts', pattern => qr/^rootfs\s+\/\s+(wslfs)/)) {
+        $result = "WSL";
+    }
+
     return $result if $result;
 
     return 'Physical';
