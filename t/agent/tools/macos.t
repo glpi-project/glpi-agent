@@ -3527,7 +3527,7 @@ for my $listVersionNumbers (@$versionNumbersComparisons) {
         && $cmp1vs0 == 1
     );
 }
-ok (FusionInventory::Agent::Tools::MacOS::cmpVersionNumbers('5.34.54', '5.34.54') == 0);
+ok (_cmpVersionNumbers('5.34.54', '5.34.54') == 0);
 
 SKIP : {
     skip 'MacOS specific test', 1 unless $OSNAME eq 'darwin';
