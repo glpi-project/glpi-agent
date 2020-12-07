@@ -107,7 +107,7 @@ sub doInventory {
         # Write first boot_id found in uuidfile
         unless (-e $uuidfile) {
             if (open UUID, ">", $uuidfile) {
-                print UUID "$uuis\n";
+                print UUID "$uuid\n";
                 close(UUID);
             }
         }
