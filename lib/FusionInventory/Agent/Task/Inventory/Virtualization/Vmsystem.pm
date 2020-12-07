@@ -100,18 +100,15 @@ sub doInventory {
         $inventory->setBios({ SSN  => '' });
 
     } elsif ($type eq "WSL") {
-        my $uuidfile = "/etc/inventory-uuid";
-        my $uuid = getFirstLine( file => $uuidfile );
+        # Get inventory information from the filesystem if they have been set by host (see WSL.pm)
+        my $uuid = getFirstLine( file => "/etc/inventory-uuid" );
         $uuid = getFirstLine( command => "sysctl -n kernel.random.boot_id" )
             unless $uuid;
-        # Write first boot_id found in uuidfile
-        unless (-e $uuidfile) {
-            if (open UUID, ">", $uuidfile) {
-                print UUID "$uuid\n";
-                close(UUID);
-            }
-        }
         $inventory->setHardware({ UUID => $uuid }) if $uuid;
+        my $hostname = getFirstLine( file => "/etc/inventory-hostname" );
+        $inventory->setHardware({ NAME => $hostname }) if $hostname;
+        my $serial = getFirstLine( file => "/etc/inventory-serialnumber" );
+        $inventory->setBios({ SSN => $serial }) if $serial;
 
     } elsif (($type eq 'lxc' || ($type ne 'Physical' && !$inventory->getHardware('UUID'))) && -e '/etc/machine-id') {
         # Set UUID from /etc/machine-id & /etc/hostname for container like lxc
