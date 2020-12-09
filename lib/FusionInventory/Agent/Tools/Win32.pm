@@ -52,6 +52,7 @@ our @EXPORT = qw(
     FreeAgentMem
     getWMIService
     getFormatedWMIDateTime
+    loadUserHive
 );
 
 my $_is64bits = undef;
@@ -405,6 +406,22 @@ sub _getRegistryKey {
     my $key = $rootKey->Open($params{keyName});
 
     return $key;
+}
+
+sub loadUserHive {
+    my (%params) = @_;
+
+    return unless $params{sid} && $params{file} && -e $params{file};
+
+    return if $_loadedhive && $_loadedhive->{$params{sid}};
+
+    my $rootKey = _getRegistryRoot(root => 'HKEY_USERS')
+        or return;
+
+    # Don't load if still found
+    return if $rootKey->Open($params{sid});
+
+    return $rootKey->Load( $params{file}, $params{sid}, { Access => KEY_READ } );
 }
 
 sub _getRegistryDynamic {

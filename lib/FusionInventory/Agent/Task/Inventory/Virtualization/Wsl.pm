@@ -9,6 +9,7 @@ use English qw(-no_match_vars);
 
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Win32;
+use FusionInventory::Agent::Tools::Win32::Users;
 use FusionInventory::Agent::Tools::Virtualization;
 
 our $runAfter = [ qw(
@@ -35,88 +36,40 @@ sub doInventory {
     }
 }
 
-sub  _getUpdatedWsl {
-    my (%params) = @_;
-
-    my $wsl = {
-        NAME        => $params{hostname},
-        VMTYPE      => "WSL",
-        SUBSYSTEM   => "WSL",
-        VCPU        => $params{vcpu},
-        MEMORY      => $params{memory},
-        UUID        => $params{uuid},
-    };
-
-    my $handle = getFileHandle(
-        command => "runas /user:$params{user} \"wsl -l -v\"",
-        %params
-    );
-    return $wsl unless $handle;
-
-    my @machines;
-    my $header;
-
-    foreach my $line (<$handle>) {
-        # wsl command output seems to be UTF-16 but we can't decode it as expected
-        # so we just need to clean it up
-        $line = getSanitizedString($line)
-            or next;
-        next unless length($line);
-
-        my ($select, $name, $state, $version) = $line =~ /^(.)\s+(\w+)\s+(\w+)\s+(\w+)/
-            or next;
-
-        # Handle header
-        unless ($header) {
-            last unless $name && $name eq 'NAME';
-            $header++;
-            next;
-        }
-
-        next unless $name eq $params{name};
-
-        $wsl->{STATUS} = $state eq 'Running' ? STATUS_RUNNING :
-                         $state eq 'Stopped' ? STATUS_OFF     :
-                                               STATUS_OFF     ;
-        last;
-    }
-    close $handle;
-
-    return $wsl;
-}
-
 sub  _getUsersWslInstances {
     my (%params) = @_;
 
     my @machines;
 
-    # Prepare vcpu & memory from still inventoried CPUS & HARDWARE
+    # Prepare vcpu, memory and a serial from still inventoried CPUS, HARDWARE & BIOS
+    # TODO this is wrong for vcpu & memory as they can be set in a config file
     my $cpus = $params{inventory}->getSection('CPUS');
     my $vcpu = 0;
-    map { $vcpu += $_->{THREAD} // $_->{CORE} // 0 } @{$cpus};
+    map { $vcpu += ($_->{THREAD} // 1) * ($_->{CORE} // 1) } @{$cpus};
     my $memory = $params{inventory}->getField('HARDWARE', 'MEMORY');
-    my $serial = $params{inventory}->getField('BIOS', 'SSN')
-        || $params{inventory}->getField('BIOS', 'MSN');
+    my $serial = $params{inventory}->getField('BIOS', 'SSN') // '';
+    my $other  = $params{inventory}->getField('BIOS', 'MSN') // '';
+    $serial .= "/$other" if $other;
 
     my $query =
         "SELECT * FROM Win32_UserAccount " .
         "WHERE LocalAccount='True' AND Disabled='False' and Lockout='False'";
 
-    foreach my $object (getWMIObjects(
-        moniker    => 'winmgmts:\\\\.\\root\\CIMV2',
-        query      => $query,
-        properties => [ qw/Name SID FullName Domain/ ])
-    ) {
-        my $user = $object->{FullName} || $object->{Name}
-            or next;
-        my $sid = $object->{SID}
-            or next;
-        my $domain = $object->{Domain}
+    # Search users account for WSL instance
+    foreach my $user (getSystemUsers()) {
+
+        my $profile = getUserProfile($user->{SID})
             or next;
 
-        my $lxsspath = "HKEY_USERS/$sid/SOFTWARE/Microsoft/Windows/CurrentVersion/Lxss/";
-        my $lxsskey = getRegistryKey( path => $lxsspath )
-            or next;
+        my $lxsskey = getRegistryKey(path => "HKEY_USERS/$user->{SID}/SOFTWARE/Microsoft/Windows/CurrentVersion/Lxss/");
+        unless ($lxsskey) {
+            my $ntuserdat = $profile->{PATH}."/NTUSER.DAT";
+            $lxsskey = loadUserHive( sid => $user->{SID}, file => $ntuserdat )
+                or next;
+            map { $lxsskey = $lxsskey->{"$_/"} || {} } qw(SOFTWARE Microsoft Windows CurrentVersion Lxss);
+        }
+        next unless $lxsskey;
+
         foreach my $sub (keys(%{$lxsskey})) {
             # We will use install GUID as WSL instance UUID
             my ($uuid) = $sub =~ /^{(........-....-....-....-............)}\/$/
@@ -125,31 +78,33 @@ sub  _getUsersWslInstances {
                 or next;
             my $distro = $lxsskey->{$sub}->{'/DistributionName'}
                 or next;
-            my $hostname = $user."'s ".$distro;
+            my $hostname = "$distro on $user->{NAME} account";
+            my $version = $lxsskey->{$sub}->{'/Version'} // '';
 
-            my $wsl = _getUpdatedWsl(
-                hostname    => $hostname,
-                name        => $distro,
-                vcpu        => $vcpu,
-                memory      => $memory,
-                user        => "$domain\\$object->{Name}",
-                uuid        => $uuid,
-                %params
-            );
+            my $wsl = {
+                NAME        => $hostname,
+                VMTYPE      => "WSL$version",
+                SUBSYSTEM   => "WSL",
+                VCPU        => $vcpu,
+                MEMORY      => $memory,
+                UUID        => $uuid,
+            };
 
-            # Set computed UUID, hostname && S/N in instance FS in the case the agent
-            # will also be run from the distribution
-            if (open UUID, ">", $basepath."/rootfs/etc/inventory-uuid") {
-                print UUID "$uuid\n";
-                close(UUID);
-            }
-            if (open HOSTNAME, ">", $basepath."/rootfs/etc/inventory-hostname") {
-                print HOSTNAME "$hostname\n";
-                close(HOSTNAME);
-            }
-            if ($serial && open SERIAL, ">", $basepath."/rootfs/etc/inventory-serialnumber") {
-                print SERIAL "$serial\n";
-                close(SERIAL);
+            # Set computed UUID, hostname && S/N in WSL1 instance FS to support
+            # agent run from the distribution
+            if (-d $basepath."/rootfs/etc") {
+                if (open UUID, ">", $basepath."/rootfs/etc/inventory-uuid") {
+                    print UUID "$uuid\n";
+                    close(UUID);
+                }
+                if (open HOSTNAME, ">", $basepath."/rootfs/etc/inventory-hostname") {
+                    print HOSTNAME "$hostname\n";
+                    close(HOSTNAME);
+                }
+                if ($serial && open SERIAL, ">", $basepath."/rootfs/etc/inventory-serialnumber") {
+                    print SERIAL "$serial\n";
+                    close(SERIAL);
+                }
             }
 
             push @machines, $wsl;
