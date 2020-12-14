@@ -413,8 +413,6 @@ sub loadUserHive {
 
     return unless $params{sid} && $params{file} && -e $params{file};
 
-    return if $_loadedhive && $_loadedhive->{$params{sid}};
-
     my $rootKey = _getRegistryRoot(root => 'HKEY_USERS')
         or return;
 
