@@ -51,39 +51,35 @@ sub  _getUsersWslInstances {
     my $other  = $params{inventory}->getField('BIOS', 'MSN') // '';
     $serial .= "/$other" if $other;
 
-    my $query =
-        "SELECT * FROM Win32_UserAccount " .
-        "WHERE LocalAccount='True' AND Disabled='False' and Lockout='False'";
-
     # Search users account for WSL instance
     foreach my $user (getSystemUsers()) {
 
         my $profile = getUserProfile($user->{SID})
             or next;
 
-        my $lxsskey = getRegistryKey(path => "HKEY_USERS/$user->{SID}/SOFTWARE/Microsoft/Windows/CurrentVersion/Lxss/");
-        unless ($lxsskey) {
+        my ($lxsskey, $userhive);
+        unless ($profile->{LOADED}) {
             my $ntuserdat = $profile->{PATH}."/NTUSER.DAT";
-            $lxsskey = loadUserHive( sid => $user->{SID}, file => $ntuserdat )
-                or next;
-            map { $lxsskey = $lxsskey->{"$_/"} || {} } qw(SOFTWARE Microsoft Windows CurrentVersion Lxss);
+            # This call involves we use cleanupPrivileges before leaving
+            $userhive = loadUserHive( sid => $user->{SID}, file => $ntuserdat );
         }
-        next unless $lxsskey;
+        $lxsskey = getRegistryKey(path => "HKEY_USERS/$user->{SID}/SOFTWARE/Microsoft/Windows/CurrentVersion/Lxss/")
+            or next;
 
         foreach my $sub (keys(%{$lxsskey})) {
             # We will use install GUID as WSL instance UUID
             my ($uuid) = $sub =~ /^{(........-....-....-....-............)}\/$/
                 or next;
+            $uuid = uc($uuid);
             my $basepath = $lxsskey->{$sub}->{'/BasePath'}
                 or next;
             my $distro = $lxsskey->{$sub}->{'/DistributionName'}
                 or next;
             my $hostname = "$distro on $user->{NAME} account";
-            my $version = $lxsskey->{$sub}->{'/Version'} // '';
 
             my $wsl = {
                 NAME        => $hostname,
-                VMTYPE      => "WSL$version",
+                VMTYPE      => "WSL",
                 SUBSYSTEM   => "WSL",
                 VCPU        => $vcpu,
                 MEMORY      => $memory,
@@ -109,7 +105,13 @@ sub  _getUsersWslInstances {
 
             push @machines, $wsl;
         }
+
+        # Free memory before leaving the block to avoid a Win32API error while
+        # userhive is automatically unloaded
+        undef $lxsskey if $userhive;
     }
+
+    cleanupPrivileges();
 
     return @machines;
 }

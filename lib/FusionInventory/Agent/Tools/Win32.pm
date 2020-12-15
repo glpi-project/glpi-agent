@@ -53,6 +53,7 @@ our @EXPORT = qw(
     getWMIService
     getFormatedWMIDateTime
     loadUserHive
+    cleanupPrivileges
 );
 
 my $_is64bits = undef;
@@ -419,7 +420,16 @@ sub loadUserHive {
     # Don't load if still found
     return if $rootKey->Open($params{sid});
 
+    # Get required privilege
+    Win32API::Registry::AllowPriv(Win32API::Registry::SE_RESTORE_NAME, 1)
+        or return;
+
     return $rootKey->Load( $params{file}, $params{sid}, { Access => KEY_READ } );
+}
+
+sub cleanupPrivileges {
+    # Unset required privilege for Users hive loading
+    Win32API::Registry::AllowPriv(Win32API::Registry::SE_RESTORE_NAME, 0);
 }
 
 sub _getRegistryDynamic {
