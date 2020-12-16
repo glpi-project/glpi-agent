@@ -96,17 +96,18 @@ sub  _getUsersWslInstances {
             # Set computed UUID, hostname && S/N in WSL1 instance FS to support
             # agent run from the distribution
             if (-d $basepath."/rootfs/etc") {
-                if (open UUID, ">", $basepath."/rootfs/etc/inventory-uuid") {
-                    print UUID "$uuid\n";
-                    close(UUID);
+                my $handle;
+                if (open $handle, ">", $basepath."/rootfs/etc/inventory-uuid") {
+                    print $handle "$uuid\n";
+                    close($handle);
                 }
-                if (open HOSTNAME, ">", $basepath."/rootfs/etc/inventory-hostname") {
-                    print HOSTNAME "$hostname\n";
-                    close(HOSTNAME);
+                if (open $handle, ">", $basepath."/rootfs/etc/inventory-hostname") {
+                    print $handle "$hostname\n";
+                    close($handle);
                 }
-                if ($serial && open SERIAL, ">", $basepath."/rootfs/etc/inventory-serialnumber") {
-                    print SERIAL "$serial\n";
-                    close(SERIAL);
+                if ($serial && open $handle, ">", $basepath."/rootfs/etc/inventory-serialnumber") {
+                    print $handle "$serial\n";
+                    close($handle);
                 }
                 $version = "1";
             }
