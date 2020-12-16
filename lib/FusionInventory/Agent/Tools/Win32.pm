@@ -421,7 +421,7 @@ sub loadUserHive {
     return if $rootKey->Open($params{sid});
 
     # Get required privilege
-    Win32API::Registry::AllowPriv(Win32API::Registry::SE_RESTORE_NAME, 1)
+    Win32API::Registry::AllowPriv(Win32API::Registry::SE_RESTORE_NAME(), 1)
         or return;
 
     return $rootKey->Load( $params{file}, $params{sid}, { Access => KEY_READ } );
@@ -429,7 +429,7 @@ sub loadUserHive {
 
 sub cleanupPrivileges {
     # Unset required privilege for Users hive loading
-    Win32API::Registry::AllowPriv(Win32API::Registry::SE_RESTORE_NAME, 0);
+    Win32API::Registry::AllowPriv(Win32API::Registry::SE_RESTORE_NAME(), 0);
 }
 
 sub _getRegistryDynamic {
