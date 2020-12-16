@@ -13,7 +13,8 @@ sub import {
     no strict 'refs';
 
     *{"$callpkg\::Registry"} = \$Registry;
-    *{"$callpkg\::KEY_READ"} = sub {};
+    *{"$callpkg\::KEY_READ"} = sub {}
+        unless ref(\&{"$callpkg\::KEY_READ"}) eq "CODE";
     *{"$callpkg\::REG_SZ"}    = sub { REG_SZ };
     *{"$callpkg\::REG_DWORD"} = sub { REG_DWORD };
 }
