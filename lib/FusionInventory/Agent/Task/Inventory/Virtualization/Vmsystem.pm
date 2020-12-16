@@ -276,7 +276,9 @@ sub _getType {
     }
 
     # WSL
-    if (getFirstMatch(file => '/proc/mounts', pattern => qr/^rootfs\s+\/\s+(wslfs)/)) {
+    if (getFirstMatch(command => 'lscpu', pattern => qr/^Hypervisor vendor:\s+(Windows Subsystem for Linux|Microsoft)/)) {
+        $result = "WSL";
+    } elsif (getFirstMatch(file => '/proc/mounts', pattern => qr/^rootfs\s+\/\s+(wslfs)/)) {
         $result = "WSL";
     }
 
