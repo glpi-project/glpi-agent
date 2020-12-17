@@ -12,10 +12,12 @@ use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Generic;
 
 sub isEnabled {
+    my (%params) = @_;
 
     # don't run dmidecode on Win2003
     # http://forge.fusioninventory.org/issues/379
     if (OSNAME eq 'MSWin32') {
+        return 0 if $params{remote};
         Win32->require();
         return if Win32::GetOSName() eq 'Win2003';
     }
