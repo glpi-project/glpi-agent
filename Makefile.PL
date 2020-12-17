@@ -69,6 +69,7 @@ test_requires 'JSON::PP'                     => '0';
 test_requires 'Net::SNMP'                    => '0';
 test_requires 'LWP::Protocol::https'         => '0';
 test_requires 'Parallel::ForkManager'        => '0';
+test_requires 'Data::UUID'                   => '0';
 test_requires 'Test::Compile'                => '0';
 test_requires 'Test::Deep'                   => '0';
 test_requires 'Test::Exception'              => '0';
@@ -81,6 +82,9 @@ test_requires 'Test::MockObject'             => '0';
 recommends 'DateTime'                        => '0';
 recommends 'Net::CUPS'                       => 0.60 if $OSNAME ne 'MSWin32';
 recommends 'Parse::EDID'                     => '0';
+
+# Remote Inventory
+recommends 'Data::UUID'                      => '0';
 
 # Deploy
 recommends 'Archive::Extract'             => '0';
