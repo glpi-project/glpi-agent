@@ -99,16 +99,17 @@ sub remoteGlob {
 
     # Ignore 'Broken Pipe' warnings on Solaris
     local $SIG{PIPE} = 'IGNORE' if $OSNAME eq 'solaris';
+    my $handle;
     my $command = $self->_ssh("'cat >$tempfile'");
-    my $cmdpid  = open(SCRIPT, '|-', $command);
+    my $cmdpid  = open($handle, '|-', $command);
     if (!$cmdpid) {
         $self->{logger}->error("Can't run command $command: $ERRNO");
         return;
     }
     # Kill command if a timeout was set
     $SIG{ALRM} = sub { kill 'KILL', $cmdpid ; die "alarm\n"; } if $SIG{ALRM};
-    print SCRIPT "for f in $glob; do test $test \"\$f\" && echo \"\$f\"; done\n";
-    close(SCRIPT);
+    print $handle "for f in $glob; do test $test \"\$f\" && echo \"\$f\"; done\n";
+    close($handle);
 
     my @glob = $self->getRemoteAllLines( command => "sh $tempfile" );
 
