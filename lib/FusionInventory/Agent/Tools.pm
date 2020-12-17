@@ -139,7 +139,6 @@ sub ReadLink {
 }
 
 sub GetPwEnt {
-    my $u = shift;
     return getpwent() unless $remote;
     return $remote->remoteGetPwEnt();
 }
