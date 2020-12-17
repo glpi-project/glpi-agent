@@ -10,6 +10,7 @@ BEGIN {
     $INC{'EnumerateResponse.pm'} = __FILE__;
 }
 
+## no critic (ProhibitMultiplePackages)
 package
     EnumerateResponse;
 

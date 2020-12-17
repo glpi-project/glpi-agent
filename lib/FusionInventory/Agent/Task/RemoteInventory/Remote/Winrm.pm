@@ -288,6 +288,7 @@ sub _resource_url {
     return "http://schemas.microsoft.com/wbem/wsman/1/wmi/root/$resource";
 }
 
+## no critic (ProhibitMultiplePackages)
 package
     URI::winrm;
 

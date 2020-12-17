@@ -5,13 +5,11 @@ use warnings;
 
 use FusionInventory::Agent::SOAP::WsMan::Node;
 
+## no critic (ProhibitMultiplePackages)
 package
     SessionId;
 
 use parent 'Node';
-
-use English qw(-no_match_vars);
-use UNIVERSAL::require;
 
 use Data::UUID;
 
