@@ -196,15 +196,13 @@ sub add {
             config  => $options,
             logger  => $logger,
         );
-        my $safe_url = $remote->safe_url();
-        unless ($remote) {
-            warn "Can't create virtual remote agent with '$safe_url'\n";
-            next;
-        }
+        $remote->supported()
+            or next;
 
         my $checkerror;
         $checkerror = $remote->checking_error() unless $options->{'no-check'};
         if ($checkerror) {
+            my $safe_url = $remote->safe_url();
             warn "'$safe_url' check failure: $checkerror\n";
             next;
         }
@@ -289,6 +287,8 @@ sub get_remotes {
                 config  => $options,
                 logger  => $logger,
             );
+            $remote->supported()
+                or next;
             my $current = {
                 remote  => $remote,
                 storage => $storage,

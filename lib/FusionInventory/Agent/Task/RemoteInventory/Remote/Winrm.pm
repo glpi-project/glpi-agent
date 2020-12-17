@@ -13,6 +13,8 @@ use URI;
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::SOAP::WsMan;
 
+use constant    supported => 1;
+
 sub init {
     my ($self) = @_;
 
