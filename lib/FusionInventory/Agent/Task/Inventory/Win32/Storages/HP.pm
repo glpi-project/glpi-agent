@@ -5,9 +5,7 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
-use English qw(-no_match_vars);
-use UNIVERSAL::require;
-
+use FusionInventory::Agent::Tools::Win32;
 use FusionInventory::Agent::Tools::Storages::HP;
 
 sub isEnabled {
@@ -26,20 +24,9 @@ sub doInventory {
 
 sub _getHpacuacliFromWinRegistry {
 
-    my $Registry;
-    Win32::TieRegistry->require();
-    Win32::TieRegistry->import(
-        Delimiter   => '/',
-        ArrayValues => 0,
-        TiedRef     => \$Registry,
+    my $uninstallValues = getRegistryKey(
+        path => "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/HP ACUCLI"
     );
-
-    my $machKey = $Registry->Open('LMachine', {
-        Access => Win32::TieRegistry::KEY_READ(),
-    }) or die "Can't open HKEY_LOCAL_MACHINE key: $EXTENDED_OS_ERROR";
-
-    my $uninstallValues =
-        $machKey->{'SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/HP ACUCLI'};
     return unless $uninstallValues;
 
     my $uninstallString = $uninstallValues->{'/UninstallString'};
