@@ -5,12 +5,12 @@ use warnings;
 
 use FusionInventory::Agent::SOAP::WsMan::Node;
 
+## no critic (ProhibitMultiplePackages)
 package
     Pull;
 
 use parent 'Node';
 
-use FusionInventory::Agent::SOAP::WsMan::OptimizeEnumeration;
 use FusionInventory::Agent::SOAP::WsMan::MaxElements;
 
 use constant    xmlns   => 'n';

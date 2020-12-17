@@ -3,8 +3,9 @@ package FusionInventory::Agent::SOAP::WsMan::PullResponse;
 use strict;
 use warnings;
 
-use FusionInventory::Agent::SOAP::WsMan::Node;
+use FusionInventory::Agent::SOAP::WsMan::EnumerateResponse;
 
+## no critic (ProhibitMultiplePackages)
 package
     PullResponse;
 
