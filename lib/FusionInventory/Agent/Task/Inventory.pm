@@ -485,6 +485,7 @@ sub _initModulesList {
                 registry      => $self->{registry},
                 scan_homedirs => $config->{'scan-homedirs'},
                 scan_profiles => $config->{'scan-profiles'},
+                remote        => $self->getRemote(),
             }
         );
         if (!$enabled) {
