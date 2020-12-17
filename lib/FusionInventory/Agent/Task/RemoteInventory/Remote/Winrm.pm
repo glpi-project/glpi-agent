@@ -103,7 +103,7 @@ sub OSName {
 }
 
 sub remoteGlob {
-    my ($self, $glob, $test) = @_;
+    my ($self, $glob) = @_;
 
     my $dirglob = $self->{_winrm}->shell("dir /b \"$glob\"");
 
@@ -195,30 +195,18 @@ sub remoteTestFile {
 }
 
 sub remoteTestLink {
-    my ($self, $link) = @_;
-
-    # Link not supported and not used for MSWin32 inventory
-
-    return 0;
+    # TestLink not supported and not used for MSWin32 inventory
 }
 
 sub remoteFileStat {
-    my ($self, $file) = @_;
-
     # FileStat not supported as not used for MSWin32 inventory
 }
 
 sub remoteReadLink {
-    my ($self, $link) = @_;
-
-    # Link not supported as not used for MSWin32 inventory
-
-    return $link;
+    # ReadLink not supported as not used for MSWin32 inventory
 }
 
 sub remoteGetPwEnt {
-    my ($self) = @_;
-
     # GetPwEnt not supported as not used for MSWin32 inventory
 }
 
