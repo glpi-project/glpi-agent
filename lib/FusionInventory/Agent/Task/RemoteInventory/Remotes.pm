@@ -23,11 +23,13 @@ sub new {
     foreach my $id (keys(%{$remotes})) {
         my $dump = $remotes->{$id};
         next unless ref($dump) eq 'HASH';
-        $self->{_remotes}->{$id} = FusionInventory::Agent::Task::RemoteInventory::Remote->new(
+        my $remote = FusionInventory::Agent::Task::RemoteInventory::Remote->new(
             dump    => $dump,
             config  => $self->{_config},
             logger  => $self->{logger},
         );
+        $self->{_remotes}->{$id} = $remote
+            if $remote->supported();
     }
 
     if ($self->{_config}->{remote}) {
@@ -42,7 +44,9 @@ sub new {
                 url     => $url,
                 config  => $self->{_config},
                 logger  => $params{logger},
-            ) or next;
+            );
+            $remote->supported()
+                or next;
 
             # Always check the remote so deviceid can also be defined on first access
             next if $remote->checking_error();

@@ -13,6 +13,8 @@ use FusionInventory::Agent::Tools::Network;
 
 my $supported_protocols = qr/^ssh|winrm$/;
 
+use constant    supported => 0;
+
 sub new {
     my ($class, %params) = @_;
 
@@ -26,6 +28,8 @@ sub new {
         logger      => $params{logger},
     };
 
+    bless $self, $class;
+
     my $url = URI->new($self->{_url});
     my $scheme = $url->scheme();
     if (!$scheme) {
@@ -36,7 +40,7 @@ sub new {
         $self->{_url} = $url->as_string;
     } elsif ($scheme !~ $supported_protocols) {
         $self->{logger}->error("Skipping '$self->{_url}' remote with unsupported '$scheme' protocol");
-        return;
+        return $self;
     }
 
     my $subclass = ucfirst($scheme);
@@ -45,7 +49,7 @@ sub new {
     if ($EVAL_ERROR) {
         $self->{logger}->debug("Failed to load $class module: $EVAL_ERROR");
         $self->{logger}->error("Skipping '$self->{_url}' remote: class loading failure");
-        return;
+        return $self;
     }
 
     # URI::winrm class is loaded with Remote::Winrm, so bless the URI object now

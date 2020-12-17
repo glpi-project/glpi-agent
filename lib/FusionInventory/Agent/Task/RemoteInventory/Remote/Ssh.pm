@@ -10,6 +10,8 @@ use parent 'FusionInventory::Agent::Task::RemoteInventory::Remote';
 
 use FusionInventory::Agent::Tools;
 
+use constant    supported => 1;
+
 sub _ssh {
     my ($self, $command) = @_;
     return unless $command;
