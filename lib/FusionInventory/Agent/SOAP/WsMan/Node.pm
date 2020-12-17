@@ -7,24 +7,17 @@ BEGIN {
     $INC{'Node.pm'} = __FILE__;
 }
 
+## no critic (ProhibitMultiplePackages)
 package
     Node;
 
 use constant    xmlns   => "";
 use constant    xsd     => "";
 
-use FusionInventory::Agent::SOAP::WsMan::Attribute;
-use FusionInventory::Agent::SOAP::WsMan::Body;
-use FusionInventory::Agent::SOAP::WsMan::Header;
-use FusionInventory::Agent::SOAP::WsMan::Fault;
-use FusionInventory::Agent::SOAP::WsMan::Reason;
-use FusionInventory::Agent::SOAP::WsMan::Code;
-use FusionInventory::Agent::SOAP::WsMan::Identify;
-use FusionInventory::Agent::SOAP::WsMan::Text;
-use FusionInventory::Agent::SOAP::WsMan::Value;
-use FusionInventory::Agent::SOAP::WsMan::Option;
-use FusionInventory::Agent::SOAP::WsMan::Shell;
-use FusionInventory::Agent::SOAP::WsMan::ReferenceParameters;
+use English qw(-no_match_vars);
+use UNIVERSAL::require;
+
+use FusionInventory::Agent::Tools;
 
 my $autoload = join('|', qw(
     Body        Header      To          ResourceURI ReplyTo     Address
@@ -72,6 +65,14 @@ sub new {
                 foreach my $support (keys(%{$supported})) {
                     next unless $supported->{$support} eq $key;
                     my $node = delete $self->{_hash}->{$key};
+                    # Load class if still not loaded
+                    unless ($INC{"$support.pm"}) {
+                        my $module = "FusionInventory::Agent::SOAP::WsMan::$support";
+                        $module->require();
+                        warn "Failure while loading $support: $EVAL_ERROR\n"
+                            if $EVAL_ERROR;
+                        $INC{"$support.pm"} = $INC{module2file($module)};
+                    }
                     push @{$self->{_nodes}}, $support->new( ref($node) eq 'HASH' ? %{$node} : $node );
                     last;
                 }

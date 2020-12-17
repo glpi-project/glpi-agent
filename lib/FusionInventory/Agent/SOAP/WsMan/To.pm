@@ -5,6 +5,7 @@ use warnings;
 
 use FusionInventory::Agent::SOAP::WsMan::Node;
 
+## no critic (ProhibitMultiplePackages)
 package
     To;
 
@@ -12,8 +13,6 @@ use parent 'Node';
 
 use constant    xmlns   => 'a';
 use constant    xsd     => "http://schemas.xmlsoap.org/ws/2004/08/addressing";
-
-use FusionInventory::Agent::SOAP::WsMan::Address;
 
 sub new {
     my ($class, $url) = @_;

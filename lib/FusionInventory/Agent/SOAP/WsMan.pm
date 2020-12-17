@@ -16,7 +16,6 @@ use FusionInventory::Agent::SOAP::WsMan::Identify;
 use FusionInventory::Agent::SOAP::WsMan::ResourceURI;
 use FusionInventory::Agent::SOAP::WsMan::To;
 use FusionInventory::Agent::SOAP::WsMan::ReplyTo;
-use FusionInventory::Agent::SOAP::WsMan::Address;
 use FusionInventory::Agent::SOAP::WsMan::Action;
 use FusionInventory::Agent::SOAP::WsMan::MessageID;
 use FusionInventory::Agent::SOAP::WsMan::MaxEnvelopeSize;
@@ -26,14 +25,14 @@ use FusionInventory::Agent::SOAP::WsMan::SessionId;
 use FusionInventory::Agent::SOAP::WsMan::OperationID;
 use FusionInventory::Agent::SOAP::WsMan::SequenceId;
 use FusionInventory::Agent::SOAP::WsMan::OperationTimeout;
-use FusionInventory::Agent::SOAP::WsMan::SelectorSet;
-use FusionInventory::Agent::SOAP::WsMan::Selector;
 use FusionInventory::Agent::SOAP::WsMan::Enumerate;
 use FusionInventory::Agent::SOAP::WsMan::Pull;
+use FusionInventory::Agent::SOAP::WsMan::Option;
 use FusionInventory::Agent::SOAP::WsMan::OptionSet;
 use FusionInventory::Agent::SOAP::WsMan::Shell;
 use FusionInventory::Agent::SOAP::WsMan::Signal;
 use FusionInventory::Agent::SOAP::WsMan::Receive;
+use FusionInventory::Agent::SOAP::WsMan::Code;
 
 my $tpp;
 my $wsman_debug = $ENV{WSMAN_DEBUG} ? 1 : 0;
@@ -267,8 +266,6 @@ sub shell {
     return unless $command;
 
     $self->debug2("Requesting '$command' run to ".$self->url);
-
-    my @items;
 
     my $messageid = MessageID->new();
     my $sid = SessionId->new();

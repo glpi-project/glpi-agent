@@ -3,6 +3,7 @@ package FusionInventory::Agent::SOAP::WsMan::Attribute;
 use strict;
 use warnings;
 
+## no critic (ProhibitMultiplePackages)
 package
     Attribute;
 

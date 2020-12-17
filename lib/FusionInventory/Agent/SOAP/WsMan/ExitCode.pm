@@ -5,12 +5,11 @@ use warnings;
 
 use FusionInventory::Agent::SOAP::WsMan::Node;
 
+## no critic (ProhibitMultiplePackages)
 package
     ExitCode;
 
 use parent 'Node';
-
-use FusionInventory::Agent::SOAP::WsMan::Stream;
 
 use constant    xmlns   => 'rsp';
 
