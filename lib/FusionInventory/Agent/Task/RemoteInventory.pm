@@ -9,7 +9,7 @@ use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Task::RemoteInventory::Remotes;
 
 sub isEnabled {
-    my ($self, $response) = @_;
+    my ($self) = @_;
 
     # Always disable task unless target is server or local
     unless ($self->{target}->isType('server') || $self->{target}->isType('local')) {

@@ -185,7 +185,7 @@ sub safe_url {
 
     my $url = URI->new($self->{_url});
     return $self->{_url} unless $url->userinfo;
-    my ($user, $pass) = split(/:/, $url->userinfo);
+    my ($user) = split(/:/, $url->userinfo);
     $url->userinfo("$user:****");
     return $url->as_string;
 }
