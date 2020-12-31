@@ -1,0 +1,9 @@
+# .DS_Store files!
+.DS_Store
+
+# our build directory
+build/
+
+munkipkg
+build-info.plist
+*.tar

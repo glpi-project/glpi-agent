@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Script output can be found in /var/log/install.log
+PKG="$1"
+DEST="$2"
+INSTALL_PATH="${DEST%/}/Applications/GLPI-Agent.app"
+
+# Stop service and unload plist file if present
+if [ -e /Library/LaunchDaemons/org.glpi-project.glpi-agent.plist ]; then
+    echo "Stopping service"
+    sudo launchctl stop org.glpi-project.glpi-agent
+    sudo launchctl unload /Library/LaunchDaemons/org.glpi-project.glpi-agent.plist
+fi
+
+# Still wait until process has been stopped
+read PID XXX <<<`ps -ec -o pid,command | grep glpi-agent`
+if [ "$PID" !=  "" ]; then
+    let TIMEOUT=300
+    while sudo kill -0 $PID 2>/dev/null
+    do
+        sleep .1
+        (( --TIMEOUT )) || break
+    done
+    if [ "$TIMEOUT" == "0" ]; then
+        echo "killing process: $PID"
+        sudo kill $PID
+    fi
+fi
+
+exit 0

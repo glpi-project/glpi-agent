@@ -1,0 +1,79 @@
+#!/bin/bash
+
+# Script output can be found in /var/log/install.log
+
+PKG="$1"
+DEST="$2"
+INSTALL_PATH="${DEST%/}/Applications/GLPI-Agent.app"
+
+echo "OS version: $(uname -r)"
+echo "Copying uninstall script to $INSTALL_PATH"
+sudo cp -af "uninstaller.sh" "License.txt" "$INSTALL_PATH/"
+sudo chmod 700 "$INSTALL_PATH/uninstaller.sh"
+# Only copy cacert.pem if not exists or existing is older
+if [ ! -e "$INSTALL_PATH/etc/cacert.pem" -o "$INSTALL_PATH/etc/cacert.pem" -ot "cacert.pem" ]; then
+    sudo cp -af "cacert.pem" "$INSTALL_PATH/etc/"
+fi
+sudo rm -f /usr/local/bin/dmidecode
+[ -d /usr/local/bin ] || mkdir -p /usr/local/bin
+sudo cp -f dmidecode /usr/local/bin/dmidecode
+sudo chmod 755 /usr/local/bin/dmidecode
+
+sudo chown -R root:wheel "$INSTALL_PATH"
+sudo chmod -R 755 "$INSTALL_PATH"
+
+# Fix installed script with INSTALL_PATH
+if [ "$DEST" != "/" ]; then
+    for SCRIPT in agent/setup.pm agent/FusionInventory/Agent/Config.pm \
+        uninstaller.sh bin/glpi-agent bin/glpi-esx \
+        bin/glpi-injector bin/glpi-inventory \
+        bin/glpi-netdiscovery bin/glpi-netinventory \
+        bin/glpi-remoteinventory bin/glpi-wakeonlan
+    do
+        sudo sed -i -e "s|/Applications/GLPI-Agent.app|$INSTALL_PATH|" \
+            "$INSTALL_PATH/$SCRIPT"
+    done
+fi
+
+echo "Only Tiger or newer OS supported, using LaunchDaemons plists"
+TMPPLIST="$(touch org.glpi-project.glpi-agent.plist && echo org.glpi-project.glpi-agent.plist || mktemp -t org.glpi-project.glpi-agent)"
+TPATH="/Library/LaunchDaemons"
+cat >"$TMPPLIST" <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>org.glpi-project.glpi-agent</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>$INSTALL_PATH/bin/glpi-agent</string>
+		<string>--daemon</string>
+		<string>--no-fork</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>UserName</key>
+	<string>root</string>
+</dict>
+</plist>
+PLIST
+if [ -s "$TMPPLIST" ]; then
+    sudo rm -f $TPATH/org.glpi-project.glpi-agent.plist
+    sudo cp -f "$TMPPLIST" $TPATH/org.glpi-project.glpi-agent.plist
+    sudo chown root:wheel $TPATH/org.glpi-project.glpi-agent.plist
+    sudo chmod 644 $TPATH/org.glpi-project.glpi-agent.plist
+    rm -f "$TMPPLIST"
+
+    echo 'Loading Service'
+    sudo launchctl load $TPATH/org.glpi-project.glpi-agent.plist
+
+    echo 'Starting Service'
+    sudo launchctl start org.glpi-project.glpi-agent
+else
+    echo "Failed to create service"
+fi
+
+sudo chflags -R hidden "$INSTALL_PATH/"
+echo 'done'
+exit 0
