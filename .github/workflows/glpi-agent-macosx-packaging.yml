@@ -11,7 +11,7 @@ on:
 jobs:
   macosx-packaging:
 
-    runs-on: macosx-latest
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v1
