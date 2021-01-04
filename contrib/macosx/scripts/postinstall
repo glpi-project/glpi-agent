@@ -8,6 +8,7 @@ INSTALL_PATH="${DEST%/}/Applications/GLPI-Agent.app"
 
 echo "OS version: $(uname -r)"
 echo "Copying uninstall script to $INSTALL_PATH"
+sudo cp -af "uninstaller.sh" "$INSTALL_PATH/"
 sudo chmod 700 "$INSTALL_PATH/uninstaller.sh"
 # Only copy cacert.pem if not exists or existing is older
 if [ ! -e "$INSTALL_PATH/etc/cacert.pem" -o "$INSTALL_PATH/etc/cacert.pem" -ot "cacert.pem" ]; then
