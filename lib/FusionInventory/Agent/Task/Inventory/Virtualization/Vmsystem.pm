@@ -100,15 +100,25 @@ sub doInventory {
         $inventory->setBios({ SSN  => '' });
 
     } elsif ($type eq "WSL") {
-        # Get inventory information from the filesystem if they have been set by host (see WSL.pm)
-        my $uuid = getFirstLine( file => "/etc/inventory-uuid" );
-        $uuid = getFirstLine( command => "sysctl -n kernel.random.boot_id" )
-            unless $uuid;
-        $inventory->setHardware({ UUID => $uuid }) if $uuid;
-        my $hostname = getFirstLine( file => "/etc/inventory-hostname" );
-        $inventory->setHardware({ NAME => $hostname }) if $hostname;
-        my $serial = getFirstLine( file => "/etc/inventory-serialnumber" );
-        $inventory->setBios({ SSN => $serial }) if $serial;
+        my ($user, $sid) = getFirstMatch(
+            command => "whoami.exe /nh /user /fo csv",
+            pattern => qr|^"(.*)","(.*)"|,
+            logger  => $params{logger}
+        );
+        if (defined($user) && defined($sid)) {
+            $user =~ s/^.*\\//;
+            my $distro = $ENV{"WSL_DISTRO_NAME"} // '';
+            if (UUID::Tiny->require()) {
+                # Same UUID computing than in WSL.pm
+                my $uuid = uc(UUID::Tiny::create_uuid_as_string(
+                    UUID::Tiny::UUID_V5(),
+                    $sid."/".$distro
+                ));
+                $inventory->setHardware({ UUID => $uuid }) if $uuid;
+            }
+            my $hostname = "$distro on $user account";
+            $inventory->setHardware({ NAME => $hostname });
+        }
 
     } elsif (($type eq 'lxc' || ($type ne 'Physical' && !$inventory->getHardware('UUID'))) && -e '/etc/machine-id') {
         # Set UUID from /etc/machine-id & /etc/hostname for container like lxc
@@ -276,7 +286,9 @@ sub _getType {
     }
 
     # WSL
-    if (getFirstMatch(command => 'lscpu', pattern => qr/^Hypervisor vendor:\s+(Windows Subsystem for Linux|Microsoft)/)) {
+    if (-e '/proc/sys/fs/binfmt_misc/WSLInterop') {
+        $result = "WSL";
+    } elsif (getFirstMatch(command => 'lscpu', pattern => qr/^Hypervisor vendor:\s+(Windows Subsystem for Linux|Microsoft)/)) {
         $result = "WSL";
     } elsif (getFirstMatch(file => '/proc/mounts', pattern => qr/^rootfs\s+\/\s+(wslfs)/)) {
         $result = "WSL";

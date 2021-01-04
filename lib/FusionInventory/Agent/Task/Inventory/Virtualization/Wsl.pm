@@ -83,34 +83,23 @@ sub  _getUsersWslInstances {
 
         foreach my $sub (keys(%{$lxsskey})) {
             # We will use install GUID as WSL instance UUID
-            my ($uuid) = $sub =~ /^{(........-....-....-....-............)}\/$/
-                or next;
-            $uuid = uc($uuid);
+            next unless $sub =~ /^{(........-....-....-....-............)}\/$/;
             my $basepath = $lxsskey->{$sub}->{'/BasePath'}
                 or next;
             my $distro = $lxsskey->{$sub}->{'/DistributionName'}
                 or next;
             my $hostname = "$distro on $user->{NAME} account";
 
-            my $version = "2";
-            # Set computed UUID, hostname && S/N in WSL1 instance FS to support
-            # agent run from the distribution
-            if (-d $basepath."/rootfs/etc") {
-                my $handle;
-                if (open $handle, ">", $basepath."/rootfs/etc/inventory-uuid") {
-                    print $handle "$uuid\n";
-                    close($handle);
-                }
-                if (open $handle, ">", $basepath."/rootfs/etc/inventory-hostname") {
-                    print $handle "$hostname\n";
-                    close($handle);
-                }
-                if ($serial && open $handle, ">", $basepath."/rootfs/etc/inventory-serialnumber") {
-                    print $handle "$serial\n";
-                    close($handle);
-                }
-                $version = "1";
+            # Create an UUID based on user SID and distro name
+            my $uuid;
+            if (UUID::Tiny->require()) {
+                $uuid = uc(UUID::Tiny::create_uuid_as_string(
+                    UUID::Tiny::UUID_V5(),
+                    $user->{SID}."/".$distro
+                ));
             }
+
+            my $version = -d $basepath."/rootfs/etc" ? "1" : "2";
 
             my $maxmemory = $memory;
             my $maxvcpu = $vcpu;
