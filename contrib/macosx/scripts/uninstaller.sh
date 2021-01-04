@@ -39,3 +39,6 @@ done <<-FILES
     /usr/local/bin/dmidecode
     /Library/LaunchDaemons/org.glpi-project.glpi-agent.plist
 FILES
+
+# Unregister package
+pkgutil --forget org.glpi-project.glpi-agent $INSTALLPATH
