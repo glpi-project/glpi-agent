@@ -122,7 +122,7 @@ cat >build-info.plist <<-BUILD_INFO
 	<plist version="1.0">
 	<dict>
 		<key>distribution_style</key>
-		<true/>
+		<false/>
 		<key>identifier</key>
 		<string>org.glpi-project.glpi-agent</string>
 		<key>install_location</key>
@@ -143,13 +143,60 @@ cat >build-info.plist <<-BUILD_INFO
 	</plist>
 BUILD_INFO
 
+cat >product-requirements.plist <<-REQUIREMENTS
+	<?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+	<plist version="1.0">
+	<dict>
+	    <key>os</key>
+	    <array>
+	        <string>10.10</string>
+	    </array>
+	    <key>arch</key>
+	    <array>
+	        <string>x86_64</string>
+	    </array>
+	</dict>
+	</plist>
+REQUIREMENTS
+
 echo "Build package"
 ./munkipkg .
 
-if [ -e "build/GLPI-Agent-$VERSION.pkg" ]; then
-    rm -f "build/GLPI-Agent-$VERSION.dmg"
+PKG="GLPI-Agent-$VERSION.pkg"
+DMG="GLPI-Agent-$VERSION.dmg"
+
+echo "Prepare distribution installer..."
+cat >Distribution.xml <<-CUSTOM
+	<?xml version="1.0" encoding="utf-8" standalone="no"?>
+	<installer-gui-script minSpecVersion="2">
+	    <title>GLPI-Agent $VERSION</title>
+	    <pkg-ref id="org.glpi-project.glpi-agent" version="$VERSION" onConclusion="none">$PKG</pkg-ref>
+	    <license file="License.txt" mime-type="text/plain" />
+	    <background file="background.png" uti="public.png" alignment="bottomleft"/>
+	    <background-darkAqua file="background.png" uti="public.png" alignment="bottomleft"/>
+	    <domains enable_anywhere="false" enable_currentUserHome="false" enable_localSystem="true"/>
+	    <options customize="never" require-scripts="false" hostArchitectures="x86_64"/>
+	    <choices-outline>
+	        <line choice="default">
+	            <line choice="org.glpi-project.glpi-agent"/>
+	        </line>
+	    </choices-outline>
+	    <choice id="default"/>
+	    <choice id="org.glpi-project.glpi-agent" visible="false">
+	        <pkg-ref id="org.glpi-project.glpi-agent"/>
+	    </choice>
+	    <os-version min="10.10" />
+	</installer-gui-script>
+CUSTOM
+productbuild --product product-requirements.plist --distribution Distribution.xml \
+    --package-path "build" --resources "Resources" "build/Dist-$PKG"
+mv -vf "build/Dist-$PKG" "build/$PKG"
+
+if [ -e "build/$PKG" ]; then
+    rm -f "build/$DMG"
     echo "Create DMG"
-    hdiutil create -fs "HFS+" -srcfolder "build/GLPI-Agent-$VERSION.pkg" "build/GLPI-Agent-$VERSION.dmg"
+    hdiutil create -fs "HFS+" -srcfolder "build/$PKG" "build/$DMG"
 fi
 
 ls -l build/*

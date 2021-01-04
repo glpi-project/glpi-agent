@@ -4,6 +4,10 @@
 # our build directory
 build/
 
+payload/
+
 munkipkg
 build-info.plist
+product-requirements.plist
+Distribution.xml
 *.tar
