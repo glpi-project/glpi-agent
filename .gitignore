@@ -20,3 +20,4 @@ SIGNATURE
 debian/*.install
 etc/*.local
 etc/*.pem
+.DS_Store

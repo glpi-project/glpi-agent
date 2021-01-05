@@ -43,3 +43,8 @@ var/
 
 ^tools*
 ^debian/
+
+^contrib/macosx/payload
+^contrib/macosx/*.tar
+^contrib/macosx/munkipkg
+^contrib/macosx/build
