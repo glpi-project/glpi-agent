@@ -52,6 +52,8 @@ our @EXPORT = qw(
     FreeAgentMem
     getWMIService
     getFormatedWMIDateTime
+    loadUserHive
+    cleanupPrivileges
 );
 
 my $_is64bits = undef;
@@ -405,6 +407,29 @@ sub _getRegistryKey {
     my $key = $rootKey->Open($params{keyName});
 
     return $key;
+}
+
+sub loadUserHive {
+    my (%params) = @_;
+
+    return unless $params{sid} && $params{file} && -e $params{file};
+
+    my $rootKey = _getRegistryRoot(root => 'HKEY_USERS')
+        or return;
+
+    # Don't load if still found
+    return if $rootKey->Open($params{sid});
+
+    # Get required privilege
+    Win32API::Registry::AllowPriv(Win32API::Registry::SE_RESTORE_NAME(), 1)
+        or return;
+
+    return $rootKey->Load( $params{file}, $params{sid}, { Access => KEY_READ } );
+}
+
+sub cleanupPrivileges {
+    # Unset required privilege for Users hive loading
+    Win32API::Registry::AllowPriv(Win32API::Registry::SE_RESTORE_NAME(), 0);
 }
 
 sub _getRegistryDynamic {
