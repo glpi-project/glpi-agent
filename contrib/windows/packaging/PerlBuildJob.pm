@@ -178,7 +178,7 @@ sub _build_steps {
                 qw/ Net::NBName Thread::Queue Thread::Semaphore /,
                 qw/ Net::SNMP Net::SNMP::Security::USM Net::SNMP::Transport::IPv4::TCP
                     Net::SNMP::Transport::IPv6::TCP Net::SNMP::Transport::IPv6::UDP /,
-                qw/ Net::IP Archive::Zip /,
+                qw/ Net::IP Archive::Zip UUID::Tiny /,
                 # For Wake-On-LAN task
                 #qw/ Net::Write::Layer2 /,
             ],
