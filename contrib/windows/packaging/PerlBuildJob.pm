@@ -4,7 +4,7 @@ package
 use parent 'Exporter';
 
 use constant {
-    PERL_VERSION       => "5.30.2",
+    PERL_VERSION       => "5.32.0",
     PERL_BUILD_STEPS   => 8,
 };
 
@@ -73,7 +73,7 @@ sub _build_steps {
                 'liblibxslt'    => _gcclib('2019Q2','libxslt-1.1.33'),
                 'mpc'           => _gcclib('2019Q2','mpc-1.1.0'),
                 'mpfr'          => _gcclib('2019Q2','mpfr-4.0.2'),
-                'openssl'       => _gcclib('2020Q1','openssl-1.1.1d'),
+                'openssl'       => _gcclib('2020Q3','openssl-1.1.1g'),
                 'readline'      => _gcclib('2019Q2','readline-8.0'),
                 't1lib'         => _gcclib('2019Q2','t1lib-5.1.2'),
                 'termcap'       => _gcclib('2019Q2','termcap-1.3.1'),
@@ -105,6 +105,7 @@ sub _build_steps {
                 '<dist_sharedir>/perl-'.$MAJOR.'.'.$MINOR.'/win32_config.gc.tt'      => 'win32/config.gc',
                 'contrib/windows/packaging/agentexe.rc.tt'                           => 'win32/perlexe.rc',
                 '<dist_sharedir>/perl-'.$MAJOR.'.'.$MINOR.'/win32_config_H.gc'       => 'win32/config_H.gc', # enables gdbm/ndbm/odbm
+                '<dist_sharedir>/perl-'.$MAJOR.'.'.$MINOR.'/win32_FindExt.pm'        => 'win32/FindExt.pm',
             },
             license => { #SRC paths are relative to the perl src root
                 'Readme'   => '<image_dir>/licenses/perl/Readme',
@@ -283,7 +284,7 @@ sub _gcclib {
     my ($quarter, $lib, $date) = @_;
     my $bits = _bits();
     unless ($date) {
-        my %date = qw( 2019Q2 20190522 2020Q1 20200207 );
+        my %date = qw( 2019Q2 20190522 2020Q1 20200207 2020Q3 20200712 );
         $date = $date{$quarter};
     }
     return '<package_url>/kmx/'.$bits.'_libs/gcc83-'.$quarter.'/'.$bits.'bit_'.$lib.'-bin_'.$date.'.zip';
