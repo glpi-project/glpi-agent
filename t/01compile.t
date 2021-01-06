@@ -35,6 +35,7 @@ sub filter {
         return 0 if $_ =~ m{FusionInventory/Agent/Daemon/Win32.pm};
         return 0 if $_ =~ m{FusionInventory/Agent/Task/Inventory/Win32};
         return 0 if $_ =~ m{FusionInventory/Agent/Tools/Win32/WTS.pm};
+        return 0 if $_ =~ m{FusionInventory/Agent/Tools/Win32/Users.pm};
         return 0 if $_ =~ m{FusionInventory/Agent/Task/Deploy/UserCheck/WTS.pm};
     }
 
