@@ -121,7 +121,7 @@ sub getCpusFromDmidecode {
             SERIAL       => $info->{'Serial Number'},
             ID           => $info->{ID},
             CORE         => $info->{'Core Enabled'} || $info->{'Core Count'},
-            THREAD       => $info->{'Thread Count'},
+            THREAD       => int($info->{'Thread Count'} / ($info->{'Core Enabled'} || $info->{'Core Count'} || 1)),
             FAMILYNAME   => $info->{'Family'},
             MANUFACTURER => $manufacturer
         };

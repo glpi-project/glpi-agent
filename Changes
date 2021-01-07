@@ -8,6 +8,7 @@ core:
 
 inventory:
 * fix snap softwares inventory
+* fix cpu thread count by core reported by dmidecode method
 
 Revision history for FusionInventory agent
 
