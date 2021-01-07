@@ -32,7 +32,7 @@ FusionInventory::Agent::Task::Inventory::Win32::CPU->require();
 my %tests = (
     '7' => [
         {
-            ID           => 'A7 06 02 00 FF FB EB BF',
+            ID           => 'BFEBFBFF000206A7',
             NAME         => 'Intel(R) Core(TM) i5-2300 CPU @ 2.80GHz',
             SERIAL       => undef,
             MANUFACTURER => 'Intel',
@@ -104,7 +104,7 @@ my %tests = (
     ],
     'xp' => [
         {
-            ID           => '76 06 01 00 FF FB EB BF',
+            ID           => 'BFEBFBFF00010676',
             NAME         => 'Intel(R) Core(TM)2 Duo CPU T9400 @ 2.53GHz',
             SERIAL       => undef,
             MANUFACTURER => 'Intel',
@@ -113,7 +113,7 @@ my %tests = (
             FAMILYNUMBER => '6',
             MODEL        => '23',
             SPEED        => '2534',
-            THREAD       => '2',
+            THREAD       => '1',
             CORE         => '2'
         }
     ],

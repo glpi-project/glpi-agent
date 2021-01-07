@@ -21,6 +21,7 @@ our @EXPORT = qw(
     getUSBDeviceVendor
     getUSBDeviceClass
     getEDIDVendor
+    isInvalidBiosValue
 );
 
 my $PCIVendors;
@@ -68,19 +69,7 @@ sub getDmidecodeInfos {
 
         next unless $line =~ /^\s+ ([^:]+) : \s (.*\S)/x;
 
-        next if $2 =~ m{
-            ^(?:
-                N/A                                |
-                None                               |
-                Unknown                            |
-                Not \s* Specified                  |
-                Not \s* Present                    |
-                Not \s* Available                  |
-                <BAD \s* INDEX>                    |
-                (?:<OUT \s* OF \s* SPEC>){1,2}     |
-                \s* To \s* Be \s* Filled \s* By \s* O\.E\.M\.
-            )$
-        }xi ;
+        next if isInvalidBiosValue($2);
 
         $block->{$1} = trimWhitespace($2);
     }
@@ -96,6 +85,26 @@ sub getDmidecodeInfos {
     return if keys %$info < 2 && !$params{file};
 
     return $info;
+}
+
+sub isInvalidBiosValue {
+    return shift =~ m{
+        ^(?:
+            N/A                                |
+            None                               |
+            Unknown                            |
+            Not \s* Specified                  |
+            Not \s* Present                    |
+            Not \s* Available                  |
+            Default string                     |
+            System Product Name                |
+            System manufacturer                |
+            System Serial Number               |
+            <BAD \s* INDEX>                    |
+            (?:<OUT \s* OF \s* SPEC>){1,2}     |
+            \s* To \s* Be \s* Filled \s* By \s* O\.E\.M\.
+        )$
+    }xi ;
 }
 
 sub getCpusFromDmidecode {
@@ -117,14 +126,20 @@ sub getCpusFromDmidecode {
             ($manufacturer && $manufacturer eq '000000000000') &&
             ($version      && $version eq '00000000000000000000000000000000');
 
+        my $corecount = $info->{'Core Enabled'} || $info->{'Core Count'};
+
         my $cpu = {
             SERIAL       => $info->{'Serial Number'},
             ID           => $info->{ID},
-            CORE         => $info->{'Core Enabled'} || $info->{'Core Count'},
-            THREAD       => int($info->{'Thread Count'} / ($info->{'Core Enabled'} || $info->{'Core Count'} || 1)),
+            CORE         => $corecount,
             FAMILYNAME   => $info->{'Family'},
             MANUFACTURER => $manufacturer
         };
+
+        if ($info->{'Thread Count'} && $corecount) {
+            $cpu->{THREAD} = int($info->{'Thread Count'} / $corecount);
+        }
+
         $cpu->{NAME} =
             ($cpu->{MANUFACTURER} =~ /Intel/ ? $info->{'Family'} : undef) ||
             $info->{'Version'}                                     ||
@@ -144,11 +159,11 @@ sub getCpusFromDmidecode {
             # Re-assemble ID bytes in reversed order as done in WMI
             $cpu->{ID} = "";
             while (@id) {
-                my $l = pop(@id)
-                    or next;
-                my $h = pop(@id)
-                    or next;
-                $cpu->{ID} .= $h.$l;
+                my $L = pop(@id);
+                next unless defined($L);
+                my $H = pop(@id);
+                next unless defined($H);
+                $cpu->{ID} .= "$H$L";
                 pop @id;
             }
         }

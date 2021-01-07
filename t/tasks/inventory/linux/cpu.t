@@ -44,7 +44,7 @@ my %i386 = (
             SPEED          => '2400',
             EXTERNAL_CLOCK => 5860,
             FAMILYNAME     => 'Xeon',
-            ID             => 'C2 06 02 00 FF FB EB BF',
+            ID             => 'BFEBFBFF000206C2',
         },
         {
             NAME           => 'Intel(R) Xeon(R) CPU E5620 @ 2.40GHz',
@@ -58,7 +58,7 @@ my %i386 = (
             FAMILYNUMBER   => '6',
             EXTERNAL_CLOCK => 5860,
             FAMILYNAME     => 'Xeon',
-            ID             => 'C2 06 02 00 FF FB EB BF',
+            ID             => 'BFEBFBFF000206C2',
         }
     ],
     # Physical server with 4/18 cores enabled in BIOS depending on Oracle license
@@ -70,7 +70,7 @@ my %i386 = (
             EXTERNAL_CLOCK  => '100',
             FAMILYNAME      => 'Xeon',
             FAMILYNUMBER    => '6',
-            ID              => 'F2 06 03 00 FF FB EB BF',
+            ID              => 'BFEBFBFF000306F2',
             MANUFACTURER    => 'Intel',
             MODEL           => '63',
             NAME            => 'Intel(R) Xeon(R) CPU E5-2699 v3 @ 2.30GHz',
@@ -85,7 +85,7 @@ my %i386 = (
             EXTERNAL_CLOCK  => '100',
             FAMILYNAME      => 'Xeon',
             FAMILYNUMBER    => '6',
-            ID              => 'F2 06 03 00 FF FB EB BF',
+            ID              => 'BFEBFBFF000306F2',
             MANUFACTURER    => 'Intel',
             MODEL           => '63',
             NAME            => 'Intel(R) Xeon(R) CPU E5-2699 v3 @ 2.30GHz',
@@ -105,7 +105,7 @@ my %i386 = (
             CORE           => '1',
             STEPPING       => '7',
             FAMILYNUMBER   => '6',
-            ID             => 'A4 06 01 00 FF FB AB 0F',
+            ID             => '0FABFBFF000106A4',
         },
         {
             NAME           => 'Intel(R) Xeon(R) CPU E7520 @ 1.87GHz',
@@ -117,7 +117,7 @@ my %i386 = (
             CORE           => '1',
             STEPPING       => '7',
             FAMILYNUMBER   => '6',
-            ID             => 'A4 06 00 00 FF FB AB 0F',
+            ID             => '0FABFBFF000006A4',
         }
     ],
     'rhel-6.3-esx-1vcpu' => [
@@ -131,7 +131,7 @@ my %i386 = (
             CORE           => '1',
             STEPPING       => '7',
             FAMILYNUMBER   => '6',
-            ID             => 'A7 06 02 00 FF FB AB 0F',
+            ID             => '0FABFBFF000206A7',
         }
     ],
     'linux-686-samsung-nc10-1' => [

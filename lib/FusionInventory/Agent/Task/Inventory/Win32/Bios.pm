@@ -8,6 +8,7 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 use English qw(-no_match_vars);
 
 use FusionInventory::Agent::Tools::Win32;
+use FusionInventory::Agent::Tools::Generic;
 
 # Only run this module if dmidecode has not been found
 our $runMeIfTheseChecksFailed =
@@ -98,6 +99,7 @@ sub doInventory {
 
     foreach (keys %$bios) {
         $bios->{$_} =~ s/\s+$// if $bios->{$_};
+        delete $bios->{$_} if isInvalidBiosValue($bios->{$_});
     }
 
     $inventory->setBios($bios);

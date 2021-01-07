@@ -7137,11 +7137,10 @@ my %dmidecode_tests = (
 my %cpu_tests = (
     'freebsd-6.2' => [
         {
-            ID             => 'A9 06 00 00 FF BB C9 A7',
+            ID             => 'A7C9BBFF000006A9',
             NAME           => 'VIA C7',
             EXTERNAL_CLOCK => '100',
             SPEED          => '2000',
-            THREAD         => undef,
             SERIAL         => undef,
             MANUFACTURER   => 'VIA',
             STEPPING       => '9',
@@ -7153,11 +7152,11 @@ my %cpu_tests = (
     ],
     'freebsd-8.1' => [
         {
-            ID             => '52 06 02 00 FF FB EB BF',
+            ID             => 'BFEBFBFF00020652',
             NAME           => 'Core 2 Duo',
             EXTERNAL_CLOCK => '1066',
             SPEED          => '2270',
-            THREAD         => '4',
+            THREAD         => '2',
             SERIAL         => undef,
             MANUFACTURER   => 'Intel(R) Corporation',
             STEPPING       => '2',
@@ -7169,11 +7168,11 @@ my %cpu_tests = (
     ],
     'hp-dl180' => [
         {
-            ID             => 'A5 06 01 00 FF FB EB BF',
+            ID             => 'BFEBFBFF000106A5',
             NAME           => 'Xeon',
             EXTERNAL_CLOCK => '532',
             SPEED          => '2000',
-            THREAD         => '4',
+            THREAD         => '1',
             SERIAL         => undef,
             MANUFACTURER   => 'Intel',
             STEPPING       => '5',
@@ -7187,7 +7186,6 @@ my %cpu_tests = (
         {
             ID             => undef,
             NAME           => 'Pentium 4',
-            THREAD         => undef,
             SERIAL         => undef,
             MANUFACTURER   => 'Intel',
             FAMILYNAME     => undef,
@@ -7196,11 +7194,10 @@ my %cpu_tests = (
     ],
     'rhel-3.4' => [
         {
-            ID             => '41 0F 00 00 FF FB EB BF',
+            ID             => 'BFEBFBFF00000F41',
             NAME           => 'Xeon MP',
             EXTERNAL_CLOCK => '200',
             SPEED          => '2800',
-            THREAD         => undef,
             SERIAL         => undef,
             MANUFACTURER   => 'Intel Corporation',
             STEPPING       => '1',
@@ -7210,11 +7207,10 @@ my %cpu_tests = (
             CORE           => undef
         },
         {
-            ID             => '41 0F 00 00 FF FB EB BF',
+            ID             => 'BFEBFBFF00000F41',
             NAME           => 'Xeon MP',
             EXTERNAL_CLOCK => '200',
             SPEED          => '2800',
-            THREAD         => undef,
             SERIAL         => undef,
             MANUFACTURER   => 'Intel Corporation',
             STEPPING       => '1',
@@ -7228,11 +7224,10 @@ my %cpu_tests = (
     ],
     'rhel-4.3' => [
         {
-            ID             => '29 0F 00 00 FF FB EB BF',
+            ID             => 'BFEBFBFF00000F29',
             NAME           => 'Xeon',
             EXTERNAL_CLOCK => '133',
             SPEED          => '2666',
-            THREAD         => undef,
             SERIAL         => undef,
             MANUFACTURER   => 'Intel',
             STEPPING       => '9',
@@ -7242,11 +7237,10 @@ my %cpu_tests = (
             CORE           => undef
         },
         {
-            ID             => '29 0F 00 00 FF FB EB BF',
+            ID             => 'BFEBFBFF00000F29',
             NAME           => 'Xeon',
             EXTERNAL_CLOCK => '133',
             SPEED          => '2666',
-            THREAD         => undef,
             SERIAL         => undef,
             MANUFACTURER   => 'Intel',
             STEPPING       => '9',
@@ -7258,11 +7252,10 @@ my %cpu_tests = (
     ],
     'rhel-4.6' => [
         {
-            ID             => '76 06 01 00 FF FB EB BF',
+            ID             => 'BFEBFBFF00010676',
             NAME           => 'Xeon',
             EXTERNAL_CLOCK => '1333',
             SPEED          => '2333',
-            THREAD         => undef,
             SERIAL         => undef,
             MANUFACTURER   => 'Intel',
             STEPPING       => '6',
@@ -7274,11 +7267,11 @@ my %cpu_tests = (
     ],
     'rhel-5.6' => [
         {
-            ID             => 'C2 06 02 00 FF FB EB BF',
+            ID             => 'BFEBFBFF000206C2',
             NAME           => 'Xeon',
             EXTERNAL_CLOCK => '5860',
             SPEED          => '2400',
-            THREAD         => '8',
+            THREAD         => '2',
             SERIAL         => undef,
             MANUFACTURER   => 'Intel',
             STEPPING       => '2',
@@ -7288,11 +7281,11 @@ my %cpu_tests = (
             CORE           => '4',
         },
         {
-            ID             => 'C2 06 02 00 FF FB EB BF',
+            ID             => 'BFEBFBFF000206C2',
             NAME           => 'Xeon',
             EXTERNAL_CLOCK => '5860',
             SPEED          => '2400',
-            THREAD         => '8',
+            THREAD         => '2',
             SERIAL         => undef,
             MANUFACTURER   => 'Intel',
             STEPPING       => '2',
@@ -7304,10 +7297,9 @@ my %cpu_tests = (
     ],
     'rhel-6.3-esx-1vcpu' => [
         {
-            ID             => 'A7 06 02 00 FF FB AB 0F',
+            ID             => '0FABFBFF000206A7',
             NAME           => 'Intel(R) Core(TM) i5-2500S CPU @ 2.70GHz',
             SPEED          => '2700',
-            THREAD         => undef,
             SERIAL         => undef,
             MANUFACTURER   => 'GenuineIntel',
             STEPPING       => '7',
@@ -7319,11 +7311,10 @@ my %cpu_tests = (
     ],
     'openbsd-3.7' => [
         {
-            ID             => '52 06 00 00 FF F9 83 01',
+            ID             => '0183F9FF00000652',
             NAME           => 'Pentium II',
             EXTERNAL_CLOCK => '100',
             SPEED          => '400',
-            THREAD         => undef,
             SERIAL         => undef,
             MANUFACTURER   => 'Intel',
             STEPPING       => '2',
@@ -7335,11 +7326,10 @@ my %cpu_tests = (
     ],
     'openbsd-3.8' => [
         {
-            ID             => '43 0F 00 00 FF FB EB BF',
+            ID             => 'BFEBFBFF00000F43',
             NAME           => 'Xeon',
             EXTERNAL_CLOCK => '800',
             SPEED          => '3000',
-            THREAD         => undef,
             SERIAL         => undef,
             MANUFACTURER   => 'Intel',
             STEPPING       => '3',
@@ -7351,11 +7341,10 @@ my %cpu_tests = (
     ],
     'openbsd-4.5' => [
         {
-            ID             => '29 0F 00 00 FF FB EB BF',
+            ID             => 'BFEBFBFF00000F29',
             NAME           => 'Pentium 4',
             EXTERNAL_CLOCK => '533',
             SPEED          => '2400',
-            THREAD         => undef,
             SERIAL         => undef,
             MANUFACTURER   => 'Intel',
             STEPPING       => '9',
@@ -7367,13 +7356,13 @@ my %cpu_tests = (
     ],
     'oracle-server-x5-2' => [
         {
-            THREAD          => '36',
+            THREAD          => '2',
             EXTERNAL_CLOCK  => '100',
             CORE            => '18',
             SPEED           => '2300',
             MODEL           => 63,
             MANUFACTURER    => 'Intel',
-            ID              => 'F2 06 03 00 FF FB EB BF',
+            ID              => 'BFEBFBFF000306F2',
             NAME            => 'Xeon',
             FAMILYNUMBER    => 6,
             STEPPING        => 2,
@@ -7383,13 +7372,13 @@ my %cpu_tests = (
         {
             MANUFACTURER    => 'Intel',
             MODEL           => 63,
-            ID              => 'F2 06 03 00 FF FB EB BF',
+            ID              => 'BFEBFBFF000306F2',
             STEPPING        => 2,
             FAMILYNUMBER    => 6,
             NAME            => 'Xeon',
             SERIAL          => undef,
             FAMILYNAME      => 'Xeon',
-            THREAD          => '36',
+            THREAD          => '2',
             CORE            => '18',
             EXTERNAL_CLOCK  => '100',
             SPEED           => '2300'
@@ -7397,11 +7386,10 @@ my %cpu_tests = (
     ],
     'S3000AHLX' => [
         {
-            ID             => 'F6 06 00 00 FF FB EB BF',
+            ID             => 'BFEBFBFF000006F6',
             NAME           => 'Intel(R) Core(TM)2 CPU 6600 @ 2.40GHz',
             EXTERNAL_CLOCK => '266',
             SPEED          => '2400',
-            THREAD         => undef,
             SERIAL         => undef,
             MANUFACTURER   => 'Intel(R) Corporation',
             STEPPING       => '6',
@@ -7413,11 +7401,11 @@ my %cpu_tests = (
     ],
     'S5000VSA' => [
         {
-            ID             => 'F6 06 00 00 FF FB EB BF',
+            ID             => 'BFEBFBFF000006F6',
             NAME           => 'Xeon',
             EXTERNAL_CLOCK => '1066',
             SPEED          => '1860',
-            THREAD         => '2',
+            THREAD         => '1',
             SERIAL         => undef,
             MANUFACTURER   => 'Intel(R) Corporation',
             STEPPING       => '6',
@@ -7427,11 +7415,11 @@ my %cpu_tests = (
             CORE           => '2'
         },
         {
-            ID             => 'F6 06 00 00 FF FB EB BF',
+            ID             => 'BFEBFBFF000006F6',
             NAME           => 'Xeon',
             EXTERNAL_CLOCK => '1066',
             SPEED          => '1860',
-            THREAD         => '2',
+            THREAD         => '1',
             SERIAL         => undef,
             MANUFACTURER   => 'Intel(R) Corporation',
             STEPPING       => '6',
@@ -7443,11 +7431,11 @@ my %cpu_tests = (
     ],
     'linux-1' => [
         {
-            ID             => '7A 06 01 00 FF FB EB BF',
+            ID             => 'BFEBFBFF0001067A',
             NAME           => 'Core 2 Duo',
             EXTERNAL_CLOCK => '333',
             SPEED          => '3000',
-            THREAD         => '2',
+            THREAD         => '1',
             SERIAL         => undef,
             MANUFACTURER   => 'Intel',
             STEPPING       => '10',
@@ -7459,11 +7447,10 @@ my %cpu_tests = (
     ],
     'linux-2.6' => [
         {
-            ID             => 'D8 06 00 00 FF FB E9 AF',
+            ID             => 'AFE9FBFF000006D8',
             NAME           => 'Pentium M',
             EXTERNAL_CLOCK => '133',
             SPEED          => '1733',
-            THREAD         => undef,
             SERIAL         => undef,
             MANUFACTURER   => 'Intel',
             STEPPING       => '8',
@@ -7475,10 +7462,9 @@ my %cpu_tests = (
     ],
     'vmware' => [
         {
-            ID             => '12 0F 04 00 FF FB 8B 07',
+            ID             => '078BFBFF00040F12',
             NAME           => undef,
             SPEED          => '2133',
-            THREAD         => undef,
             SERIAL         => undef,
             MANUFACTURER   => 'AuthenticAMD',
             STEPPING       => '2',
@@ -7488,11 +7474,10 @@ my %cpu_tests = (
             CORE           => undef
         },
         {
-            ID             => '12 0F 00 00 FF FB 8B 07',
+            ID             => '078BFBFF00000F12',
             NAME           => undef,
             FAMILYNAME     => undef,
             SPEED          => '2133',
-            THREAD         => undef,
             SERIAL         => undef,
             MANUFACTURER   => 'GenuineIntel',
             STEPPING       => '2',
@@ -7504,10 +7489,9 @@ my %cpu_tests = (
     ],
     'vmware-esx' => [
         {
-            ID             => '42 0F 10 00 FF FB 8B 07',
+            ID             => '078BFBFF00100F42',
             NAME           => undef,
             SPEED          => '2300',
-            THREAD         => undef,
             SERIAL         => undef,
             MANUFACTURER   => 'AuthenticAMD',
             STEPPING       => '2',
@@ -7521,7 +7505,6 @@ my %cpu_tests = (
         {
             ID             => undef,
             NAME           => 'Pentium III processor',
-            THREAD         => undef,
             SERIAL         => undef,
             MANUFACTURER   => 'GenuineIntel',
             FAMILYNAME     => undef,
@@ -7530,11 +7513,10 @@ my %cpu_tests = (
     ],
     'windows' => [
         {
-            ID             => '24 0F 00 00 00 00 00 00',
+            ID             => '0000000000000F24',
             NAME           => 'Pentium 4',
             EXTERNAL_CLOCK => '100',
             SPEED          => '1700',
-            THREAD         => undef,
             SERIAL         => undef,
             MANUFACTURER   => 'Intel Corporation',
             STEPPING       => '4',
@@ -7546,11 +7528,10 @@ my %cpu_tests = (
     ],
     'windows-hyperV' => [
         {
-            ID             => '7A 06 01 00 FF FB 8B 1F',
+            ID             => '1F8BFBFF0001067A',
             NAME           => 'Xeon',
             EXTERNAL_CLOCK => '266',
             SPEED          => '2500',
-            THREAD         => undef,
             SERIAL         => undef,
             MANUFACTURER   => 'GenuineIntel',
             STEPPING       => '10',
@@ -7562,11 +7543,11 @@ my %cpu_tests = (
     ],
     'windows-xp' => [
         {
-            ID             => '76 06 01 00 FF FB EB BF',
+            ID             => 'BFEBFBFF00010676',
             NAME           => 'Core 2 Duo',
             EXTERNAL_CLOCK => '266',
             SPEED          => '2534',
-            THREAD         => '2',
+            THREAD         => '1',
             SERIAL         => undef,
             MANUFACTURER   => 'Intel',
             STEPPING       => '6',
@@ -7578,11 +7559,10 @@ my %cpu_tests = (
     ],
     'windows-7' => [
         {
-            ID             => 'A7 06 02 00 FF FB EB BF',
+            ID             => 'BFEBFBFF000206A7',
             NAME           => 'Core 2 Duo',
             EXTERNAL_CLOCK => '100',
             SPEED          => '2800',
-            THREAD         => undef,
             SERIAL         => undef,
             STEPPING       => '7',
             FAMILYNUMBER   => '6',
@@ -7595,11 +7575,10 @@ my %cpu_tests = (
     ],
     'windows-7.2' => [
         {
-            ID             => '62 0F 10 00 FF FB 8B 17',
+            ID             => '178BFBFF00100F62',
             NAME           => 'AMD Athlon(tm) II X2 245 Processor',
             EXTERNAL_CLOCK => '200',
             SPEED          => '2900',
-            THREAD         => undef,
             SERIAL         => undef,
             STEPPING       => '2',
             FAMILYNUMBER   => '15',
@@ -7615,14 +7594,14 @@ my %cpu_tests = (
             EXTERNAL_CLOCK  => '100',
             FAMILYNAME      => 'Core i5',
             FAMILYNUMBER    => '6',
-            ID              => 'A7 06 02 00 FF FB EB BF',
+            ID              => 'BFEBFBFF000206A7',
             MANUFACTURER    => 'Intel(R) Corporation',
             MODEL           => '42',
             NAME            => 'Core i5',
             SERIAL          => 'Not Supported by CPU',
             SPEED           => '2500',
             STEPPING        => '7',
-            THREAD          => '4'
+            THREAD          => '2'
         }
     ]
 );
