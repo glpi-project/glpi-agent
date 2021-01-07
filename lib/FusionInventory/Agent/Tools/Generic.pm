@@ -140,6 +140,17 @@ sub getCpusFromDmidecode {
             # family number is composed of 3 hexadecimal number
             $cpu->{FAMILYNUMBER} = hex $id[9] . $id[10] . $id[4];
             $cpu->{MODEL} = hex $id[7] . $id[0];
+
+            # Re-assemble ID bytes in reversed order as done in WMI
+            $cpu->{ID} = "";
+            while (@id) {
+                my $l = pop(@id)
+                    or next;
+                my $h = pop(@id)
+                    or next;
+                $cpu->{ID} .= $h.$l;
+                pop @id;
+            }
         }
 
         if ($info->{Version}) {
