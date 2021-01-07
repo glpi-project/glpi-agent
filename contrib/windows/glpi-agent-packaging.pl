@@ -184,7 +184,7 @@ use constant _dir_id_match => { qw(
     perl            d_perl
     perl\bin        d_perl_bin
     var             d_var
-    log             d_log
+    logs            d_logs
     etc             d_etc
     perl\agent\fusioninventory\agent\task\netinventory  d_netinventory_task
     perl\agent\fusioninventory\agent\task\netdiscovery  d_netinv_discovery_task
@@ -379,7 +379,7 @@ sub _tree2xml {
             $result .= $ident ."  ". qq[    <util:RemoveFolderEx On="uninstall" Property="UNINSTALL_VAR" />\n];
         } elsif ($dir_id eq 'd_etc') {
             $result .= $ident ."  ". qq[    <util:RemoveFolderEx On="uninstall" Property="UNINSTALL_ETC" />\n];
-        } elsif ($dir_id eq 'd_log') {
+        } elsif ($dir_id eq 'd_logs') {
             $result .= $ident ."  ". qq[    <util:RemoveFolderEx On="uninstall" Property="UNINSTALL_LOG" />\n];
         } else {
             $result .= $ident ."  ". qq[    <RemoveFolder Id="rm.$dir_id" On="uninstall" />\n];
@@ -643,7 +643,7 @@ sub _other_job_steps {
             # updates for glpi-agent
             { do=>'createdir', args=>[ '<image_dir>/perl/agent' ] },
             { do=>'createdir', args=>[ '<image_dir>/var' ] },
-            { do=>'createdir', args=>[ '<image_dir>/log' ] },
+            { do=>'createdir', args=>[ '<image_dir>/logs' ] },
             { do=>'movefile', args=>[ '<image_dir>/perl/bin/perl.exe', '<image_dir>/perl/bin/glpi-agent.exe' ] },
             { do=>'copydir', args=>[ 'lib/FusionInventory', '<image_dir>/perl/agent/FusionInventory' ] },
             { do=>'copydir', args=>[ 'etc', '<image_dir>/etc' ] },

@@ -101,11 +101,10 @@ sub _build_steps {
             perl_64bitint => 1, # ignored on 64bit, can be overridden by --perl_64bitint | --noperl_64bitint option
             buildoptextra => '-D__USE_MINGW_ANSI_STDIO',
             patch => { #DST paths are relative to the perl src root
-                'contrib/windows/packaging/agentexe.ico'                             => 'win32/agentexe.ico',
-                '<dist_sharedir>/perl-'.$MAJOR.'.'.$MINOR.'/win32_config.gc.tt'      => 'win32/config.gc',
-                'contrib/windows/packaging/agentexe.rc.tt'                           => 'win32/perlexe.rc',
-                '<dist_sharedir>/perl-'.$MAJOR.'.'.$MINOR.'/win32_config_H.gc'       => 'win32/config_H.gc', # enables gdbm/ndbm/odbm
-                '<dist_sharedir>/perl-'.$MAJOR.'.'.$MINOR.'/win32_FindExt.pm'        => 'win32/FindExt.pm',
+                'contrib/windows/packaging/agentexe.ico'        => 'win32/agentexe.ico',
+                'contrib/windows/packaging/win32_config.gc.tt'  => 'win32/config.gc',
+                'contrib/windows/packaging/agentexe.rc.tt'      => 'win32/perlexe.rc',
+                'contrib/windows/packaging/win32_config_H.gc'   => 'win32/config_H.gc',
             },
             license => { #SRC paths are relative to the perl src root
                 'Readme'   => '<image_dir>/licenses/perl/Readme',

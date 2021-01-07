@@ -328,7 +328,7 @@
     <CustomAction Id="CA_GetARPInstallLoc" Property="INSTALLDIR"         Value="[UPGRADEDIR]" Execute="immediate" />
     <CustomAction Id="CA_SetARPInstallLoc" Property="ARPINSTALLLOCATION" Value="[INSTALLDIR]" Execute="immediate" />
 
-    <CustomAction Id="SetDefaultLogFile"   Property="LOGFILE" Value="[INSTALLDIR]log\glpi-agent.log" Execute="firstSequence" />
+    <CustomAction Id="SetDefaultLogFile"   Property="LOGFILE" Value="[INSTALLDIR]logs\glpi-agent.log" Execute="firstSequence" />
 
     <CustomAction Id="SetDeleteFirewallExceptionCmd" Property="DeleteFirewallException" Value='"netsh" advfirewall firewall delete rule name="!(loc.FirewallExceptionName)"' Execute="immediate" />
     <CustomAction Id="DeleteFirewallException" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
