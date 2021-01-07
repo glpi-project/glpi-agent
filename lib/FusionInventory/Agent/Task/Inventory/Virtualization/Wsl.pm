@@ -14,7 +14,6 @@ use FusionInventory::Agent::Tools::Virtualization;
 our $runAfter = [ qw(
     FusionInventory::Agent::Task::Inventory::Win32::OS
     FusionInventory::Agent::Task::Inventory::Win32::CPU
-    FusionInventory::Agent::Task::Inventory::Win32::Bios
 )];
 
 sub isEnabled {
@@ -49,9 +48,6 @@ sub  _getUsersWslInstances {
     my $vcpu = 0;
     map { $vcpu += $_->{CORE} // 1 } @{$cpus};
     my $memory = $params{inventory}->getField('HARDWARE', 'MEMORY');
-    my $serial = $params{inventory}->getField('BIOS', 'SSN') // '';
-    my $other  = $params{inventory}->getField('BIOS', 'MSN') // '';
-    $serial .= "/$other" if $other;
 
     # Get system build revision to handle default max memory with WSL2
     my $kernel_version = $params{inventory}->getField('OPERATINGSYSTEM', 'KERNEL_VERSION') // '';
