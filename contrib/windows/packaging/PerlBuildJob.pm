@@ -125,37 +125,27 @@ sub _build_steps {
         },
         ### NEXT STEP 4 Install needed modules with agent dependencies #########
         {
-            plugin => 'Perl::Dist::Strawberry::Step::InstallModules',
+            plugin => 'Perl::Dist::GLPI::Agent::Step::InstallModules',
             modules => [
                 # IPC related
-                { module=>'IPC-Run', skiptest=>1 }, #XXX-TODO trouble with 'Terminating on signal SIGBREAK(21)' https://metacpan.org/release/IPC-Run
-
-                { module=>'LWP::UserAgent', skiptest=>1 }, # XXX-HACK: 6.08 is broken
-
-                #removed from core in 5.20
-                { module=>'Archive::Extract',  ignore_testfailure=>1 }, #XXX-TODO-5.28/64bit
+                qw/ IPC-Run /,
 
                 # win32 related
-                qw/Win32API::Registry Win32::TieRegistry/,
-                { module=>'Win32::OLE',         ignore_testfailure=>1 }, #XXX-TODO: ! Testing Win32-OLE-0.1711 failed
-                { module=>'Win32::API',         ignore_testfailure=>1 }, #XXX-TODO: https://rt.cpan.org/Public/Bug/Display.html?id=107450
-                qw/ Win32-Daemon /,
-                qw/ Win32::Job /,
-                qw/ Sys::Syslog /,
+                qw/ Win32::API Win32API::Registry Win32::TieRegistry Win32::OLE
+                    Win32-Daemon Win32::Job Sys::Syslog /,
+
+                # compression
+                qw/ Archive::Extract /,
 
                 # file related
-                { module=>'File::Copy::Recursive', ignore_testfailure=>1 }, #XXX-TODO-5.28
-                qw/ File-Which /,
+                qw/ File::Copy::Recursive File-Which /,
 
-                # SSL & SSH & telnet
-                { module=>'Net-SSLeay', ignore_testfailure=>1 }, # openssl-1.1.1 related
-                'Mozilla::CA', # optional dependency of IO-Socket-SSL
-                { module=>'IO-Socket-SSL', skiptest=>1 },
+                # SSL
+                qw/ Net-SSLeay Mozilla::CA IO-Socket-SSL /,
 
                 # network
                 qw/ IO::Socket::IP IO::Socket::INET6 /,
-                qw/ HTTP-Server-Simple /,
-                { module=>'LWP::Protocol::https', skiptest=>1 },
+                qw/ HTTP-Server-Simple LWP::Protocol::https LWP::UserAgent /,
                 { module=>'<package_url>/kmx/perl-modules-patched/Crypt-SSLeay-0.72_patched.tar.gz' }, #XXX-FIXME
 
                 # XML & co.
@@ -167,19 +157,16 @@ sub _build_steps {
                 qw/ Digest-MD5 Digest-SHA Digest-SHA1 Digest::HMAC /,
 
                 # date/time
-                qw/ DateTime Date::Format DateTime::TimeZone::Local::Win32 /,
-
-                # misc
-                { module=>'Unicode::UTF8', ignore_testfailure=>1 }, #XXX-TODO-5.28
+                qw/ DateTime DateTime::TimeZone::Local::Win32 /,
 
                 # GLPI-Agent deps
-                qw/ File::Which Text::Template UNIVERSAL::require XML::TreePP XML::XPath /,
-                qw/ Memoize Time::HiRes Compress::Zlib Win32::Unicode::File /,
-                qw/ Parse::EDID JSON::PP YAML::Tiny Parallel::ForkManager URI::Escape /,
-                qw/ Net::NBName Thread::Queue Thread::Semaphore /,
-                qw/ Net::SNMP Net::SNMP::Security::USM Net::SNMP::Transport::IPv4::TCP
-                    Net::SNMP::Transport::IPv6::TCP Net::SNMP::Transport::IPv6::UDP /,
-                qw/ Net::IP Archive::Zip UUID::Tiny /,
+                qw/ File::Which Text::Template UNIVERSAL::require UNIVERSAL::isa
+                    XML::TreePP XML::XPath Memoize Time::HiRes Compress::Zlib
+                    Parse::EDID JSON::PP YAML::Tiny Parallel::ForkManager
+                    URI::Escape Net::NBName Thread::Queue Thread::Semaphore
+                    Net::SNMP Net::SNMP::Security::USM Net::SNMP::Transport::IPv4::TCP
+                    Net::SNMP::Transport::IPv6::TCP Net::SNMP::Transport::IPv6::UDP
+                    Net::IP Archive::Zip UUID::Tiny Win32::Unicode::File Data::UUID /,
                 # For Wake-On-LAN task
                 #qw/ Net::Write::Layer2 /,
             ],
@@ -320,7 +307,7 @@ sub _movessldll {
         do      => 'movefile',
         args    => [
             '<image_dir>/c/bin/'.$file,
-            '<image_dir>/perl/vendor/lib/auto/Net/SSLeay/'.$file
+            '<image_dir>/perl/bin/'.$file
         ]
     };
 }

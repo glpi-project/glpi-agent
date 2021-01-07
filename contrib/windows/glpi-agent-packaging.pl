@@ -19,7 +19,7 @@ use lib 'lib';
 use FusionInventory::Agent::Version;
 
 # HACK: make "use Perl::Dist::GLPI::Agent::Step::XXX" works as included plugin
-map { $INC{"Perl/Dist/GLPI/Agent/Step/$_.pm"} = __FILE__ } qw(Update OutputMSI Test);
+map { $INC{"Perl/Dist/GLPI/Agent/Step/$_.pm"} = __FILE__ } qw(Update OutputMSI Test InstallModules);
 
 # Perl::Dist::Strawberry doesn't detect WiX 3.11 which is installed on windows github images
 # Algorithm imported from Perl::Dist::Strawberry::Step::OutputMSM_MSI::_detect_wix_dir
@@ -146,15 +146,28 @@ sub run {
     my $makefile_pl_cmd = [ $perlbin, "Makefile.PL"];
     $self->boss->message(2, "Test: gonna run perl Makefile.PL");
     my $rv = $self->execute_standard($makefile_pl_cmd);
-    die "ERROR: TEST, perl Makefile.PL\n" unless(defined $rv && $rv == 0);
+    die "ERROR: TEST, perl Makefile.PL\n" unless (defined $rv && $rv == 0);
 
     my $make_test_cmd = [ $makebin, "test" ];
     $self->boss->message(2, "Test: gonna run gmake test");
     $rv = $self->execute_standard($make_test_cmd);
-    die "ERROR: TEST, make test\n" unless(defined $rv && $rv == 0);
+    die "ERROR: TEST, make test\n" unless (defined $rv && $rv == 0);
 }
 
 sub test {}
+
+package
+    Perl::Dist::GLPI::Agent::Step::InstallModules;
+
+use parent 'Perl::Dist::Strawberry::Step::InstallModules';
+
+sub _install_module {
+    my ($self, %args) = @_;
+    my ($distlist, $rv) = $self->SUPER::_install_module(%args);
+    # Fail ASAP on module installation failure
+    die "ERROR: INSTALL MODULE failed\n" unless (defined $rv && $rv == 0);
+    return ($distlist, $rv);
+}
 
 package
     Perl::Dist::GLPI::Agent::Step::OutputMSI;
