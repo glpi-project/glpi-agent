@@ -82,7 +82,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: ${{ github.ref }}
-        release_name: GLPI Agent v${{ steps.extract_tag.outputs.version }}${{ steps.extract_tag.outputs.revision != '' && join([' rev', steps.extract_tag.outputs.revision]) || '' }}
+        release_name: GLPI Agent v${{ steps.extract_tag.outputs.version }}${{ steps.extract_tag.outputs.revision != '' && join(' rev', steps.extract_tag.outputs.revision) || '' }}
         body: |
           GLPI-Agent v${{ steps.extract_tag.outputs.tag }}
         draft: ${{ steps.extract_tag.outputs.revision == '' }}      # Don't publish releases immediatly so we can edit the description
