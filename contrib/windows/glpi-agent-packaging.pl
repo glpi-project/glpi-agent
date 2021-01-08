@@ -6,6 +6,7 @@ use warnings;
 use Win32::TieRegistry qw( KEY_READ );
 use File::Spec;
 use Cwd qw(abs_path);
+use File::Spec::Functions qw(catfile);
 
 use constant {
     PACKAGE_REVISION    => "1", #BEWARE: always start with 1
@@ -108,8 +109,9 @@ while ( @ARGV ) {
 foreach my $bits (sort values(%do)) {
     print "Building $bits bits packages...\n";
     my $app = build_app($bits);
-    $app->do_job()
-        or exit(1);
+    $app->do_job();
+    # global_dump_FINAL.txt must exist in debug_dir if all steps have been passed
+    exit(1) unless -e catfile($app->global->{debug_dir}, 'global_dump_FINAL.txt');
 }
 
 print "All packages building processing passed\n";
