@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Restore points cache
-      uses: pat-s/always-upload-cache@v2
+      uses: pat-s/always-upload-cache@v2.1.3
       with:
         path: C:/Strawberry-perl-for-GLPI-Agent_build/restore
         key: windows-packaging-restore-points-${{ matrix.arch }}-${{ hashFiles('contrib\windows\packaging\PerlBuildJob.pm') }}
