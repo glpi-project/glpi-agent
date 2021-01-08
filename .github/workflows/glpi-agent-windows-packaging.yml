@@ -57,17 +57,17 @@ jobs:
       run: |
         dir C:\Strawberry-perl-for-GLPI-Agent_build\output
       shell: cmd
-    - name: Upload Output artifacts
+    - name: Upload Files artifacts from output folder
       if: success() || failure()
       uses: actions/upload-artifact@v1
       with:
-        name: Output
+        name: Files
         path: C:\Strawberry-perl-for-GLPI-Agent_build\output
-    - name: Upload MSI-Build artifacts
-      if: success() || failure()
+    - name: Upload debug MSI-Build artifacts
+      if: !always() #success() || failure() # Only enable when debugging is required
       uses: actions/upload-artifact@v1
       with:
-        name: MSI-Build
+        name: MSI-Build-Debug
         path: C:\Strawberry-perl-for-GLPI-Agent_build\build\msi
     - name: Extract tag
       id: extract_tag
