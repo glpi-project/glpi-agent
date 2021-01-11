@@ -5,7 +5,6 @@ on: [push]
 jobs:
   linux-ubuntu-test:
 
-    if: startsWith(github.ref, 'skip')
     runs-on: ubuntu-latest
 
     steps:
@@ -36,7 +35,6 @@ jobs:
 
   windows-test:
 
-    if: startsWith(github.ref, 'skip')
     runs-on: windows-latest
 
     steps:
@@ -76,7 +74,6 @@ jobs:
 
   macos-test:
 
-    if: startsWith(github.ref, 'skip')
     runs-on: macos-latest
 
     steps:

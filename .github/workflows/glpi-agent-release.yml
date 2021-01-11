@@ -55,7 +55,6 @@ jobs:
       matrix:
         arch: [ x64, x86 ]
 
-    if: startsWith(github.ref, 'skip')
     needs: create_release
 
     steps:
