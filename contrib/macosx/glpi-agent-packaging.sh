@@ -59,7 +59,15 @@ rm -rf build MANIFEST MANIFEST.bak *.tar.gz
 [ -e Makefile ] && make clean
 $PERLBIN Makefile.PL
 
-read Version equals VERSION <<<$( egrep "^VERSION = " Makefile | head -1 )
+if [ -n "$GITHUB_REF" -a -z "${GITHUB_REF%refs/tags/*}" ]; then
+    VERSION="${GITHUB_REF#refs/tags/}"
+else
+    read Version equals VERSION <<<$( egrep "^VERSION = " Makefile | head -1 )
+fi
+
+if [ -z "${VERSION#*-dev}" -a -n "$GITHUB_SHA" ]; then
+    VERSION="${VERSION%-dev}-git${GITHUB_SHA:0:8}"
+fi
 
 COMMENTS="GLPI Agent v$VERSION,Built by Teclib on $HOSTNAME: $(LANG=C date)"
 
@@ -67,7 +75,7 @@ echo "Preparing sources..."
 $PERLBIN Makefile.PL PREFIX="$BUILD_PREFIX" DATADIR="$BUILD_PREFIX/share" \
     SYSCONFDIR="$BUILD_PREFIX/etc" LOCALSTATEDIR="$BUILD_PREFIX/var" \
     INSTALLSITELIB="$BUILD_PREFIX/agent" PERLPREFIX="$BUILD_PREFIX/bin" \
-    COMMENTS="$COMMENTS"
+    COMMENTS="$COMMENTS" VERSION="$VERSION"
 
 # Fix shebang
 rm -rf inc/ExtUtils
