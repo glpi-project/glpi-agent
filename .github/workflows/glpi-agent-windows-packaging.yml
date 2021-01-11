@@ -10,6 +10,9 @@ jobs:
       matrix:
         arch: [ x64, x86 ]
 
+    if: always()
+    needs: create_release
+
     steps:
     - uses: actions/checkout@v1
     - name: Create folder for cached datas
@@ -69,69 +72,25 @@ jobs:
       with:
         name: MSI-Build-Debug
         path: C:\Strawberry-perl-for-GLPI-Agent_build\build\msi
-    - name: Extract tag
-      id: extract_tag
-      if: startsWith(github.ref, 'refs/tags/')
-      run: |
-        TAG="${GITHUB_REF#*refs/tags/}"
-        echo "::set-output name=tag::$TAG"
-        echo "::set-output name=version::${TAG%%-*}"
-        echo "::set-output name=revision::${TAG#*-}"
-      shell: bash
-    - name: Create Tagged Release
-      id: create_tagged_release
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: GLPI Agent v${{ steps.extract_tag.outputs.version }}${{ steps.extract_tag.outputs.revision != '' && join(' rev', steps.extract_tag.outputs.revision) || '' }}
-        body: |
-          GLPI-Agent v${{ steps.extract_tag.outputs.tag }}
-        draft: ${{ steps.extract_tag.outputs.revision == '' }}      # Don't publish releases immediatly so we can edit the description
-        prerelease: ${{ steps.extract_tag.outputs.revision != '' }} # Mark as prerelease if we publish immediatly when reveision is set on tag
-    - name: Upload x64 Archive Asset
-      id: upload-x64-archive-asset
-      if: startsWith(github.ref, 'refs/tags/')
+    - name: Upload Portable Archive Asset
+      id: upload-portable-archive-asset
+      if: startsWith(github.ref, 'refs/tags/1.')
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_tagged_release.outputs.upload_url }} # This pulls from the create_tagged_release step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\glpi-agent-${{ steps.extract_tag.outputs.tag }}-x64.zip
-        asset_name: glpi-agent-${{ steps.extract_tag.outputs.tag }}-x64.zip
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\glpi-agent-${{ needs.create_release.outputs.tag }}-${{ matrix.arch }}.zip
+        asset_name: glpi-agent-${{ needs.create_release.outputs.tag }}-${{ matrix.arch }}.zip
         asset_content_type: application/zip
-    - name: Upload x64 MSI Installer Asset
-      id: upload-x64-msi-asset
-      if: startsWith(github.ref, 'refs/tags/')
+    - name: Upload MSI Installer Asset
+      id: upload-msi-asset
+      if: startsWith(github.ref, 'refs/tags/1.')
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_tagged_release.outputs.upload_url }} # This pulls from the create_tagged_release step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\GLPI-Agent-${{ steps.extract_tag.outputs.tag }}-x64.msi
-        asset_name: GLPI-Agent-${{ steps.extract_tag.outputs.tag }}-x64.msi
-        asset_content_type: application/x-msi
-    - name: Upload x86 Archive Asset
-      id: upload-x86-archive-asset
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_tagged_release.outputs.upload_url }} # This pulls from the create_tagged_release step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\glpi-agent-${{ steps.extract_tag.outputs.tag }}-x86.zip
-        asset_name: glpi-agent-${{ steps.extract_tag.outputs.tag }}-x86.zip
-        asset_content_type: application/zip
-    - name: Upload x86 MSI Installer Asset
-      id: upload-x86-msi-asset
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_tagged_release.outputs.upload_url }} # This pulls from the create_tagged_release step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\GLPI-Agent-${{ steps.extract_tag.outputs.tag }}-x86.msi
-        asset_name: GLPI-Agent-${{ steps.extract_tag.outputs.tag }}-x86.msi
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\GLPI-Agent-${{ needs.create_release.outputs.tag }}-${{ matrix.arch }}.msi
+        asset_name: GLPI-Agent-${{ needs.create_release.outputs.tag }}-${{ matrix.arch }}.msi
         asset_content_type: application/x-msi

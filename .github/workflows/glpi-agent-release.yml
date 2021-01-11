@@ -1,0 +1,39 @@
+name: GLPI Agent Release
+
+on:
+  push:
+    tags:
+      - '1.*'
+
+jobs:
+  create_release:
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      tag: ${{ steps.extract_tag.outputs.tag }}
+      upload_url: ${{ steps.create_tagged_release.outputs.upload_url }}
+
+    steps:
+    - name: Extract tag
+      id: extract_tag
+      if: startsWith(github.ref, 'refs/tags/1.')
+      run: |
+        TAG="${GITHUB_REF#*refs/tags/}"
+        echo "::set-output name=tag::$TAG"
+        echo "::set-output name=version::${TAG%%-*}"
+        echo "::set-output name=revision::${TAG#*-}"
+      shell: bash
+    - name: Create Tagged Release
+      id: create_tagged_release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: GLPI Agent v${{ steps.extract_tag.outputs.version }}${{ steps.extract_tag.outputs.revision != '' && join(' rev', steps.extract_tag.outputs.revision) || '' }}
+        body: |
+          GLPI-Agent v${{ steps.extract_tag.outputs.tag }}
+        draft: ${{ steps.extract_tag.outputs.revision == '' }}      # Don't publish releases immediatly so we can edit the description
+        prerelease: ${{ steps.extract_tag.outputs.revision != '' }} # Mark as prerelease if we publish immediatly when revision is set on tag
