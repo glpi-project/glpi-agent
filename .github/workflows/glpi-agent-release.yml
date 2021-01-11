@@ -20,7 +20,21 @@ jobs:
         TAG="${GITHUB_REF#*refs/tags/}"
         echo "::set-output name=tag::$TAG"
         echo "::set-output name=version::${TAG%%-*}"
-        echo "::set-output name=revision::${TAG#*-}"
+        case "${TAG#*-}" in
+            test*)
+                echo "::set-output name=revname:: Test release ${TAG#*-test}"
+                ;;
+            beta*)
+                echo "::set-output name=revname:: Beta release ${TAG#*-beta}"
+                ;;
+            *)
+                if [ -z "${TAG#*-}" ]; then
+                    echo "::set-output name=revname::"
+                else
+                    echo "::set-output name=revname:: rev ${TAG#*-}"
+                fi
+                ;;
+        esac
       shell: bash
     - name: Create Tagged Release
       id: create_tagged_release
@@ -29,11 +43,11 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: ${{ github.ref }}
-        release_name: GLPI Agent v${{ steps.extract_tag.outputs.version }}${{ steps.extract_tag.outputs.revision != '' && join(' rev', steps.extract_tag.outputs.revision) || '' }}
+        release_name: GLPI Agent ${{ steps.extract_tag.outputs.version }}${{ steps.extract_tag.outputs.revname }}
         body: |
           GLPI-Agent v${{ steps.extract_tag.outputs.tag }}
-        draft: ${{ steps.extract_tag.outputs.revision == '' }}      # Don't publish releases immediatly so we can edit the description
-        prerelease: ${{ steps.extract_tag.outputs.revision != '' }} # Mark as prerelease if we publish immediatly when revision is set on tag
+        draft: ${{ steps.extract_tag.outputs.revname == '' }}      # Don't publish releases immediatly so we can edit the description
+        prerelease: ${{ steps.extract_tag.outputs.revname != '' }} # Mark as prerelease if we publish immediatly when a revision is set on tag
 
   windows-packaging:
 
@@ -42,7 +56,7 @@ jobs:
       matrix:
         arch: [ x64, x86 ]
 
-    if: always()
+    if: startsWith(github.ref, 'skip')
     needs: create_release
 
     steps:
