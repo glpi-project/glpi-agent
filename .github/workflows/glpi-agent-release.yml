@@ -1,14 +1,13 @@
 name: GLPI Agent Release
 
-on:
-  push:
-    tags:
-      - '1.*'
+on: push
 
 jobs:
   create_release:
 
     runs-on: ubuntu-latest
+
+    if: startsWith(github.ref, 'refs/tags/1.')
 
     outputs:
       tag: ${{ steps.extract_tag.outputs.tag }}
@@ -17,7 +16,6 @@ jobs:
     steps:
     - name: Extract tag
       id: extract_tag
-      if: startsWith(github.ref, 'refs/tags/1.')
       run: |
         TAG="${GITHUB_REF#*refs/tags/}"
         echo "::set-output name=tag::$TAG"
@@ -26,7 +24,6 @@ jobs:
       shell: bash
     - name: Create Tagged Release
       id: create_tagged_release
-      if: startsWith(github.ref, 'refs/tags/')
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
@@ -37,3 +34,95 @@ jobs:
           GLPI-Agent v${{ steps.extract_tag.outputs.tag }}
         draft: ${{ steps.extract_tag.outputs.revision == '' }}      # Don't publish releases immediatly so we can edit the description
         prerelease: ${{ steps.extract_tag.outputs.revision != '' }} # Mark as prerelease if we publish immediatly when revision is set on tag
+
+  windows-packaging:
+
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        arch: [ x64, x86 ]
+
+    if: always()
+    needs: create_release
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Create folder for cached datas
+      run: |
+        mkdir C:\Strawberry-perl-for-GLPI-Agent_build\restore
+      shell: cmd
+    - name: Restore points cache
+      uses: pat-s/always-upload-cache@v2.1.3
+      with:
+        path: C:/Strawberry-perl-for-GLPI-Agent_build/restore
+        key: windows-packaging-restore-points-${{ matrix.arch }}-${{ hashFiles('contrib\windows\packaging\PerlBuildJob.pm') }}
+    - name: List files in cached path
+      if: success() || failure()
+      run: |
+        dir C:\Strawberry-perl-for-GLPI-Agent_build\restore
+      shell: cmd
+    - name: Update environment
+      run: |
+        echo 'C:\Strawberry\perl\bin'      >> $GITHUB_PATH
+        echo 'C:\Strawberry\perl\site\bin' >> $GITHUB_PATH
+        echo 'C:\Strawberry\c\bin'         >> $GITHUB_PATH
+      shell: bash
+    - name: Show environment
+      run: |
+        echo "PATH=%PATH%"
+        perl --version
+        perl -V
+      shell: cmd
+    - name: Install Module::Install
+      run: cpan -T Module::Install
+      shell: cmd
+    - name: Prepare Makefile
+      run: perl Makefile.PL
+      shell: cmd
+    - name: Install Perl::Dist::Strawberry
+      run: |
+        cpanm --notest --verbose Perl::Dist::Strawberry
+      shell: cmd
+    - name: Build package
+      run: |
+        perl contrib\windows\glpi-agent-packaging.pl --arch ${{ matrix.arch }}
+      shell: cmd
+    - name: List generated files
+      if: success() || failure()
+      run: |
+        dir C:\Strawberry-perl-for-GLPI-Agent_build\output
+      shell: cmd
+    - name: Upload Files artifacts from output folder
+      if: success() || failure()
+      uses: actions/upload-artifact@v1
+      with:
+        name: Files
+        path: C:\Strawberry-perl-for-GLPI-Agent_build\output
+    - name: Upload debug MSI-Build artifacts
+      if: failure() #success() || failure() # Only enable on failure or when debugging is required
+      uses: actions/upload-artifact@v1
+      with:
+        name: MSI-Build-Debug
+        path: C:\Strawberry-perl-for-GLPI-Agent_build\build\msi
+    - name: Upload Portable Archive Asset
+      id: upload-portable-archive-asset
+      if: startsWith(github.ref, 'refs/tags/1.')
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\glpi-agent-${{ needs.create_release.outputs.tag }}-${{ matrix.arch }}.zip
+        asset_name: glpi-agent-${{ needs.create_release.outputs.tag }}-${{ matrix.arch }}.zip
+        asset_content_type: application/zip
+    - name: Upload MSI Installer Asset
+      id: upload-msi-asset
+      if: startsWith(github.ref, 'refs/tags/1.')
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\GLPI-Agent-${{ needs.create_release.outputs.tag }}-${{ matrix.arch }}.msi
+        asset_name: GLPI-Agent-${{ needs.create_release.outputs.tag }}-${{ matrix.arch }}.msi
+        asset_content_type: application/x-msi
