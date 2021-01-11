@@ -21,6 +21,9 @@ jobs:
         echo "::set-output name=tag::$TAG"
         echo "::set-output name=version::${TAG%%-*}"
         case "${TAG#*-}" in
+            $TAG)
+                echo "::set-output name=revname::"
+                ;;
             test*)
                 echo "::set-output name=revname:: Test release ${TAG#*-test}"
                 ;;
@@ -28,11 +31,7 @@ jobs:
                 echo "::set-output name=revname:: Beta release ${TAG#*-beta}"
                 ;;
             *)
-                if [ -z "${TAG#*-}" ]; then
-                    echo "::set-output name=revname::"
-                else
-                    echo "::set-output name=revname:: rev ${TAG#*-}"
-                fi
+                echo "::set-output name=revname:: rev ${TAG#*-}"
                 ;;
         esac
       shell: bash
