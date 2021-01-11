@@ -55,6 +55,7 @@ jobs:
       matrix:
         arch: [ x64, x86 ]
 
+    if: always()
     needs: create_release
 
     steps:
