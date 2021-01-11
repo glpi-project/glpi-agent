@@ -145,13 +145,11 @@ sub _build_steps {
                 # network
                 qw/ IO::Socket::IP IO::Socket::INET6 /,
                 qw/ HTTP-Server-Simple LWP::Protocol::https LWP::UserAgent /,
-                { module=>'<package_url>/kmx/perl-modules-patched/Crypt-SSLeay-0.72_patched.tar.gz' }, #XXX-FIXME
 
                 # XML & co.
                 qw/ XML-Parser /,
 
                 # crypto
-                qw/ CryptX /,
                 qw/ Crypt::DES Crypt::Rijndael /,
                 qw/ Digest-MD5 Digest-SHA Digest-SHA1 Digest::HMAC /,
 
@@ -216,12 +214,11 @@ sub _build_steps {
                 _movebin('perl'.$MAJOR.$MINOR.'.dll'),
                 { do=>'removedir', args=>[ '<image_dir>/perl/bin' ] },
                 { do=>'movedir', args=>[ '<image_dir>/perl/newbin', '<image_dir>/perl/bin' ] },
-                _movedll('libbz2-1'),
-                _movedll('libexpat-1'),
-                _movedll('liblzma-5'),
-                _movedll('zlib1'),
-                _movessldll('libcrypto-1_1'),
-                _movessldll('libssl-1_1'),
+                # Move DLLs required by modules next to their calling *.xs.dll
+                _movedllto('libexpat-1', 'XML/Parser/Expat'),
+                _movedllto('libcrypto-1_1', 'Net/SSLeay'),
+                _movedllto('libssl-1_1', 'Net/SSLeay'),
+                _movedllto('zlib1', 'Net/SSLeay'),
                 { do=>'movefile', args=>[ '<image_dir>/c/bin/gmake.exe', '<image_dir>/perl/bin/gmake.exe' ] }, # Needed for tests
                 { do=>'removedir', args=>[ '<image_dir>/bin' ] },
                 { do=>'removedir', args=>[ '<image_dir>/c' ] },
@@ -287,26 +284,14 @@ sub _movebin {
     };
 }
 
-sub _movedll {
-    my ($dll) = @_;
+sub _movedllto {
+    my ($dll, $to) = @_;
     my $file = $dll.(_is64bit()?'__':'_').'.dll';
     return {
         do      => 'movefile',
         args    => [
             '<image_dir>/c/bin/'.$file,
-            '<image_dir>/perl/bin/'.$file
-        ]
-    };
-}
-
-sub _movessldll {
-    my ($dll) = @_;
-    my $file = $dll.(_is64bit()?'-x64__':'_').'.dll';
-    return {
-        do      => 'movefile',
-        args    => [
-            '<image_dir>/c/bin/'.$file,
-            '<image_dir>/perl/bin/'.$file
+            '<image_dir>/perl/vendor/lib/auto/'.$to.'/'.$file
         ]
     };
 }
