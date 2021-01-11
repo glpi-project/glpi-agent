@@ -139,3 +139,57 @@ jobs:
         asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\GLPI-Agent-${{ needs.create_release.outputs.tag }}-${{ matrix.arch }}.msi
         asset_name: GLPI-Agent-${{ needs.create_release.outputs.tag }}-${{ matrix.arch }}.msi
         asset_content_type: application/x-msi
+
+  macosx-packaging:
+
+    runs-on: macos-latest
+
+    if: always()
+    needs: create_release
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Restore points cache
+      uses: pat-s/always-upload-cache@v2.1.3
+      with:
+        path: |
+          - contrib/macosx/macosx-intel.tar
+          - contrib/macosx/munkipkg
+        key: macosx-packaging-restore-points-${{ hashFiles('contrib/macosx/glpi-agent-packaging.sh') }}
+    - name: Build package
+      run: |
+        ./contrib/macosx/glpi-agent-packaging.sh
+      shell: bash
+    - name: List generated files
+      if: success() || failure()
+      run: |
+        ls contrib/macosx/build
+      shell: bash
+    - name: Upload PKG-Build artifacts
+      if: success() || failure()
+      uses: actions/upload-artifact@v1
+      with:
+        name: MacOSX-PKG-Build
+        path: contrib/macosx/build
+    - name: Upload MacOSX PKG installer
+      id: upload-macosx-pkg-asset
+      if: startsWith(github.ref, 'refs/tags/1.')
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: contrib/macosx/build/GLPI-Agent-${{ needs.create_release.outputs.tag }}.pkg
+        asset_name: GLPI-Agent-${{ needs.create_release.outputs.tag }}.pkg
+        asset_content_type: application/octet-stream
+    - name: Upload MacOSX DMG installer image
+      id: upload-macosx-dmg-asset
+      if: startsWith(github.ref, 'refs/tags/1.')
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: contrib/macosx/build/GLPI-Agent-${{ needs.create_release.outputs.tag }}.dmg
+        asset_name: GLPI-Agent-${{ needs.create_release.outputs.tag }}.dmg
+        asset_content_type: application/octet-stream
