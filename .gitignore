@@ -21,3 +21,4 @@ debian/*.install
 etc/*.local
 etc/*.pem
 .DS_Store
+release-description.md

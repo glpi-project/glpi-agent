@@ -1,0 +1,199 @@
+name: GLPI Agent Packaging
+
+on: push
+
+jobs:
+  create-release:
+
+    runs-on: ubuntu-latest
+
+    if: startsWith(github.ref, 'refs/tags/1.')
+
+    outputs:
+      tag: ${{ steps.extract-tag.outputs.tag }}
+      upload_url: ${{ steps.create-tagged-release.outputs.upload_url }}
+
+    steps:
+    - name: Extract tag
+      id: extract-tag
+      run: |
+        TAG="${GITHUB_REF#*refs/tags/}"
+        echo "::set-output name=tag::$TAG"
+        echo "::set-output name=version::${TAG%%-*}"
+        case "${TAG#*-}" in
+            $TAG)
+                echo "::set-output name=revname::"
+                ;;
+            test*)
+                echo "::set-output name=revname:: Test release ${TAG#*-test}"
+                ;;
+            beta*)
+                echo "::set-output name=revname:: Beta release ${TAG#*-beta}"
+                ;;
+            *)
+                echo "::set-output name=revname:: rev ${TAG#*-}"
+                ;;
+        esac
+      shell: bash
+    - name: Generate release description
+      id: github-release-body
+      run: |
+        tools/github-release-description.sh
+      shell: bash
+    - name: Create Tagged Release
+      id: create-tagged-release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: GLPI Agent ${{ steps.extract-tag.outputs.version }}${{ steps.extract-tag.outputs.revname }}
+        body_path: release-description.md
+        draft: ${{ steps.extract-tag.outputs.revname == '' }}      # Don't publish releases immediatly so we can edit the description
+        prerelease: ${{ steps.extract-tag.outputs.revname != '' }} # Mark as prerelease if we publish immediatly when a revision is set on tag
+
+  windows-packaging:
+
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        arch: [ x64, x86 ]
+
+    if: always()
+    needs: create-release
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Create folder for cached datas
+      run: |
+        mkdir C:\Strawberry-perl-for-GLPI-Agent_build\restore
+      shell: cmd
+    - name: Restore points cache
+      uses: pat-s/always-upload-cache@v2.1.3
+      with:
+        path: C:/Strawberry-perl-for-GLPI-Agent_build/restore
+        key: windows-packaging-restore-points-${{ matrix.arch }}-${{ hashFiles('contrib\windows\packaging\PerlBuildJob.pm') }}
+    - name: List files in cached path
+      if: success() || failure()
+      run: |
+        dir C:\Strawberry-perl-for-GLPI-Agent_build\restore
+      shell: cmd
+    - name: Update environment
+      run: |
+        echo 'C:\Strawberry\perl\bin'      >> $GITHUB_PATH
+        echo 'C:\Strawberry\perl\site\bin' >> $GITHUB_PATH
+        echo 'C:\Strawberry\c\bin'         >> $GITHUB_PATH
+      shell: bash
+    - name: Show environment
+      run: |
+        echo "PATH=%PATH%"
+        perl --version
+        perl -V
+      shell: cmd
+    - name: Install Module::Install
+      run: cpan -T Module::Install
+      shell: cmd
+    - name: Prepare Makefile
+      run: perl Makefile.PL
+      shell: cmd
+    - name: Install Perl::Dist::Strawberry
+      run: |
+        cpanm --notest --verbose Perl::Dist::Strawberry
+      shell: cmd
+    - name: Build package
+      run: |
+        perl contrib\windows\glpi-agent-packaging.pl --arch ${{ matrix.arch }}
+      shell: cmd
+    - name: List generated files
+      if: success() || failure()
+      run: |
+        dir C:\Strawberry-perl-for-GLPI-Agent_build\output
+      shell: cmd
+    - name: Upload windows built artifacts
+      if: success() || failure()
+      uses: actions/upload-artifact@v1
+      with:
+        name: Windows-Build
+        path: C:\Strawberry-perl-for-GLPI-Agent_build\output
+    - name: Upload debug MSI-Build artifacts
+      if: failure() #success() || failure() # Only enable on failure or when debugging is required
+      uses: actions/upload-artifact@v1
+      with:
+        name: MSI-Build-Debug
+        path: C:\Strawberry-perl-for-GLPI-Agent_build\build\msi
+    - name: Upload Portable Archive Asset
+      id: upload-portable-archive-asset
+      if: startsWith(github.ref, 'refs/tags/1.')
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\glpi-agent-${{ needs.create-release.outputs.tag }}-${{ matrix.arch }}.zip
+        asset_name: glpi-agent-${{ needs.create-release.outputs.tag }}-${{ matrix.arch }}.zip
+        asset_content_type: application/zip
+    - name: Upload MSI Installer Asset
+      id: upload-msi-asset
+      if: startsWith(github.ref, 'refs/tags/1.')
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\GLPI-Agent-${{ needs.create-release.outputs.tag }}-${{ matrix.arch }}.msi
+        asset_name: GLPI-Agent-${{ needs.create-release.outputs.tag }}-${{ matrix.arch }}.msi
+        asset_content_type: application/x-msi
+
+  macosx-packaging:
+
+    runs-on: macos-latest
+
+    if: always()
+    needs: create-release
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Restore points cache
+      uses: pat-s/always-upload-cache@v2.1.3
+      with:
+        path: |
+          - contrib/macosx/macosx-intel.tar
+          - contrib/macosx/munkipkg
+        key: macosx-packaging-restore-points-${{ hashFiles('contrib/macosx/glpi-agent-packaging.sh') }}
+    - name: Build package
+      run: |
+        ./contrib/macosx/glpi-agent-packaging.sh
+      shell: bash
+    - name: List generated files
+      if: success() || failure()
+      run: |
+        ls contrib/macosx/build
+      shell: bash
+    - name: Upload MacOSX built artifacts
+      if: success() || failure()
+      uses: actions/upload-artifact@v1
+      with:
+        name: MacOSX-Build
+        path: contrib/macosx/build
+    - name: Upload MacOSX PKG installer
+      id: upload-macosx-pkg-asset
+      if: startsWith(github.ref, 'refs/tags/1.')
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: contrib/macosx/build/GLPI-Agent-${{ needs.create-release.outputs.tag }}.pkg
+        asset_name: GLPI-Agent-${{ needs.create-release.outputs.tag }}.pkg
+        asset_content_type: application/octet-stream
+    - name: Upload MacOSX DMG installer image
+      id: upload-macosx-dmg-asset
+      if: startsWith(github.ref, 'refs/tags/1.')
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: contrib/macosx/build/GLPI-Agent-${{ needs.create-release.outputs.tag }}.dmg
+        asset_name: GLPI-Agent-${{ needs.create-release.outputs.tag }}.dmg
+        asset_content_type: application/octet-stream

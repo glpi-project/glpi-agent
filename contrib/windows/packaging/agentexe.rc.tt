@@ -1,0 +1,49 @@
+PERLEXE	    ICON    agentexe.ico
+
+#define CREATEPROCESS_MANIFEST_RESOURCE_ID 1
+#define RT_MANIFEST 24
+
+#ifdef INCLUDE_MANIFEST
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "perlexe.manifest"
+#endif
+
+#include <Windows.h>
+
+#ifndef DEBUG
+#define RCFLAG    0
+#else
+#define RCFLAG    VER_DEBUG
+#endif
+
+#define RCVERSION       [%app_rc_version%]
+#define RCVERSION_STR   "[%app_version%]\0"
+
+VS_VERSION_INFO VERSIONINFO
+    FILEVERSION        RCVERSION
+    PRODUCTVERSION     RCVERSION
+    FILEFLAGS          RCFLAG
+    FILEFLAGSMASK      VS_FFI_FILEFLAGSMASK
+    FILEOS             VOS__WINDOWS32
+    FILETYPE           VFT_APP
+    FILESUBTYPE        VFT2_UNKNOWN
+BEGIN
+BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName",        "teclib-edition.com\0"
+            VALUE "FileDescription",    "Perl interpreter for GLPI Agent\0"
+            VALUE "FileVersion",        RCVERSION_STR
+            VALUE "InternalName",       "glpi-agent.exe\0"
+            VALUE "LegalCopyright",     "Copyright 1987-2020 Larry Wall, binaries by http://strawberryperl.com\0"
+            VALUE "OriginalFilename",   "perl.exe\0"
+            VALUE "ProductName",        "[%app_fullname%]\0"
+            VALUE "ProductVersion",     RCVERSION_STR
+        END
+    END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 0x04E4        /* English 0x409 + Windows ANSI codepage 0x04E4 */
+    END
+END

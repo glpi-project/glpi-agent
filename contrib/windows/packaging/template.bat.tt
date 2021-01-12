@@ -1,0 +1,9 @@
+@echo off
+for %%p in (".") do pushd "%%~fsp"
+cd /d "%~dp0"
+[% IF ! msi AND (tag == 'agent' OR tag == 'wmi') %]
+perl\bin\glpi-agent.exe perl\bin\glpi-[%tag%] --conf-file=etc/agent.cfg %*
+[% ELSE %]
+perl\bin\glpi-agent.exe perl\bin\glpi-[%tag%] %*
+[% END %]
+popd
