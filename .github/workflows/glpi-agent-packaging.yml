@@ -1,21 +1,21 @@
-name: GLPI Agent Release
+name: GLPI Agent Packaging
 
 on: push
 
 jobs:
-  create_release:
+  create-release:
 
     runs-on: ubuntu-latest
 
     if: startsWith(github.ref, 'refs/tags/1.')
 
     outputs:
-      tag: ${{ steps.extract_tag.outputs.tag }}
-      upload_url: ${{ steps.create_tagged_release.outputs.upload_url }}
+      tag: ${{ steps.extract-tag.outputs.tag }}
+      upload_url: ${{ steps.create-tagged-release.outputs.upload_url }}
 
     steps:
     - name: Extract tag
-      id: extract_tag
+      id: extract-tag
       run: |
         TAG="${GITHUB_REF#*refs/tags/}"
         echo "::set-output name=tag::$TAG"
@@ -35,18 +35,22 @@ jobs:
                 ;;
         esac
       shell: bash
+    - name: Generate release description
+      id: github-release-body
+      run: |
+        tools/github-release-description.sh
+      shell: bash
     - name: Create Tagged Release
-      id: create_tagged_release
+      id: create-tagged-release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: ${{ github.ref }}
-        release_name: GLPI Agent ${{ steps.extract_tag.outputs.version }}${{ steps.extract_tag.outputs.revname }}
-        body: |
-          GLPI-Agent v${{ steps.extract_tag.outputs.tag }}
-        draft: ${{ steps.extract_tag.outputs.revname == '' }}      # Don't publish releases immediatly so we can edit the description
-        prerelease: ${{ steps.extract_tag.outputs.revname != '' }} # Mark as prerelease if we publish immediatly when a revision is set on tag
+        release_name: GLPI Agent ${{ steps.extract-tag.outputs.version }}${{ steps.extract-tag.outputs.revname }}
+        body_path: release-description.md
+        draft: ${{ steps.extract-tag.outputs.revname == '' }}      # Don't publish releases immediatly so we can edit the description
+        prerelease: ${{ steps.extract-tag.outputs.revname != '' }} # Mark as prerelease if we publish immediatly when a revision is set on tag
 
   windows-packaging:
 
@@ -56,7 +60,7 @@ jobs:
         arch: [ x64, x86 ]
 
     if: always()
-    needs: create_release
+    needs: create-release
 
     steps:
     - uses: actions/checkout@v1
@@ -124,9 +128,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ needs.create_release.outputs.upload_url }}
-        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\glpi-agent-${{ needs.create_release.outputs.tag }}-${{ matrix.arch }}.zip
-        asset_name: glpi-agent-${{ needs.create_release.outputs.tag }}-${{ matrix.arch }}.zip
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\glpi-agent-${{ needs.create-release.outputs.tag }}-${{ matrix.arch }}.zip
+        asset_name: glpi-agent-${{ needs.create-release.outputs.tag }}-${{ matrix.arch }}.zip
         asset_content_type: application/zip
     - name: Upload MSI Installer Asset
       id: upload-msi-asset
@@ -135,9 +139,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ needs.create_release.outputs.upload_url }}
-        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\GLPI-Agent-${{ needs.create_release.outputs.tag }}-${{ matrix.arch }}.msi
-        asset_name: GLPI-Agent-${{ needs.create_release.outputs.tag }}-${{ matrix.arch }}.msi
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\GLPI-Agent-${{ needs.create-release.outputs.tag }}-${{ matrix.arch }}.msi
+        asset_name: GLPI-Agent-${{ needs.create-release.outputs.tag }}-${{ matrix.arch }}.msi
         asset_content_type: application/x-msi
 
   macosx-packaging:
@@ -145,7 +149,7 @@ jobs:
     runs-on: macos-latest
 
     if: always()
-    needs: create_release
+    needs: create-release
 
     steps:
     - uses: actions/checkout@v1
@@ -178,9 +182,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ needs.create_release.outputs.upload_url }}
-        asset_path: contrib/macosx/build/GLPI-Agent-${{ needs.create_release.outputs.tag }}.pkg
-        asset_name: GLPI-Agent-${{ needs.create_release.outputs.tag }}.pkg
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: contrib/macosx/build/GLPI-Agent-${{ needs.create-release.outputs.tag }}.pkg
+        asset_name: GLPI-Agent-${{ needs.create-release.outputs.tag }}.pkg
         asset_content_type: application/octet-stream
     - name: Upload MacOSX DMG installer image
       id: upload-macosx-dmg-asset
@@ -189,7 +193,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ needs.create_release.outputs.upload_url }}
-        asset_path: contrib/macosx/build/GLPI-Agent-${{ needs.create_release.outputs.tag }}.dmg
-        asset_name: GLPI-Agent-${{ needs.create_release.outputs.tag }}.dmg
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: contrib/macosx/build/GLPI-Agent-${{ needs.create-release.outputs.tag }}.dmg
+        asset_name: GLPI-Agent-${{ needs.create-release.outputs.tag }}.dmg
         asset_content_type: application/octet-stream
