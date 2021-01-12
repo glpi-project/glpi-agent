@@ -109,11 +109,11 @@ jobs:
       run: |
         dir C:\Strawberry-perl-for-GLPI-Agent_build\output
       shell: cmd
-    - name: Upload Files artifacts from output folder
+    - name: Upload windows built artifacts
       if: success() || failure()
       uses: actions/upload-artifact@v1
       with:
-        name: Files
+        name: Windows-Build
         path: C:\Strawberry-perl-for-GLPI-Agent_build\output
     - name: Upload debug MSI-Build artifacts
       if: failure() #success() || failure() # Only enable on failure or when debugging is required
@@ -169,11 +169,11 @@ jobs:
       run: |
         ls contrib/macosx/build
       shell: bash
-    - name: Upload PKG-Build artifacts
+    - name: Upload MacOSX built artifacts
       if: success() || failure()
       uses: actions/upload-artifact@v1
       with:
-        name: MacOSX-PKG-Build
+        name: MacOSX-Build
         path: contrib/macosx/build
     - name: Upload MacOSX PKG installer
       id: upload-macosx-pkg-asset
