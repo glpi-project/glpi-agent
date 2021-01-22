@@ -1,10 +1,18 @@
 name: glpi-agent
 base: core20
 version: '1.0-dev'
-summary: GLPI Agent can run system inventory and other tasks on the behalf of a GLPI server
+summary: GLPI Agent runs inventory and other tasks on the behalf of a GLPI server
 description: |
-  GLPI-Agent is an agent intended to run automatic inventory task (and possibly
-  others) on the behalf of its configured GLPI server.
+  **GLPI Agent** is an agent intended to run automatic inventory task (and possibly others)
+  on the behalf of its configured GLPI server (https://glpi-project.org/).
+  
+  It starts as a daemon but does nothing by default. You must set its server
+  configuration before expecting an inventory can be submitted to your
+  GLPI server. The following command should be used for that purpose:
+  
+  ```
+  sudo snap set glpi-agent server=http://your-glpi-server/inventory
+  ```
 icon: share/html/logo.png
 license: GPL-2.0
 
