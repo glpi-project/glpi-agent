@@ -85,7 +85,7 @@ parts:
       export PATH=$SNAPCRAFT_PART_INSTALL/usr/share/glpi-agent/bin:$PATH
       
       # Best install required modules with cpanm
-      GET https://raw.githubusercontent.com/miyagawa/cpanminus/master/cpanm >cpanm
+      curl -o cpanm https://raw.githubusercontent.com/miyagawa/cpanminus/master/cpanm
       chmod +x cpanm
       while read modules
       do
@@ -103,6 +103,7 @@ parts:
       #Net::PCAP Net::Write::Layer2
       MODULES
     build-packages:
+     - curl
      - libssl-dev
      - libcups2-dev
      - libcupsfilters-dev
