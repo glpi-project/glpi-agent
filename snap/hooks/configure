@@ -1,0 +1,78 @@
+#!/bin/sh
+
+if [ -z "$SNAP_DATA" -o ! -d "$SNAP_DATA" ]; then
+    echo "No SNAP_DATA environment" >&2
+    exit 1
+fi
+
+_get () {
+    snapctl get $1
+}
+
+_get_from_conf () {
+    read conf equals value x < "$SNAP_DATA/$1.cfg"
+    eval echo $value
+}
+
+_set () {
+    snapctl set $1="$2"
+    echo "$1 = $2" > "$SNAP_DATA/$1.cfg"
+}
+
+unset RESTART
+
+while read conf equals default x
+do
+    [ -z "${conf%%#*}" ] && continue
+    current=$(_get $conf)
+    if [ ! -e "$SNAP_DATA/$1.cfg" ]; then
+        if [ -z "$current" ]; then
+            _set $conf $default
+            continue
+        fi
+        previous=""
+    else
+        previous=$(_get_from_conf $conf)
+    fi
+    if [ "$current" != "$previous" ]; then
+        _set $conf $current
+        RESTART="yes"
+    fi
+done <<DEFAULT_CONF
+
+debug = 0
+server =
+tag =
+local =
+
+scan-homedirs = 0
+scan-profiles = 0
+backend-collect-timeout = 180
+no-p2p = 0
+proxy =
+user =
+password =
+ca-cert-file =
+no-ssl-check = 0
+timeout = 180
+
+no-httpd = 0
+httpd-ip =
+httpd-port = 62354
+httpd-trust = 127.0.0.1
+
+logger = stderr
+logfile =
+logfile-maxsize =
+logfacility = LOG_DAEMON
+
+DEFAULT_CONF
+
+if [ -n "$RESTART" ]; then
+    set x$(snapctl services glpi-agent.daemon | tail -1)x
+    if [ "$3" == "active" ]; then
+        snapctl restart glpi-agent.daemon
+    fi
+fi
+
+exit 0

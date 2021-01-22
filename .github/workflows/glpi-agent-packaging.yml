@@ -14,6 +14,7 @@ jobs:
       upload_url: ${{ steps.create-tagged-release.outputs.upload_url }}
 
     steps:
+    - uses: actions/checkout@v2
     - name: Extract tag
       id: extract-tag
       run: |
@@ -63,7 +64,7 @@ jobs:
     needs: create-release
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Create folder for cached datas
       run: |
         mkdir C:\Strawberry-perl-for-GLPI-Agent_build\restore
@@ -111,13 +112,13 @@ jobs:
       shell: cmd
     - name: Upload windows built artifacts
       if: success() || failure()
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: Windows-Build
         path: C:\Strawberry-perl-for-GLPI-Agent_build\output
     - name: Upload debug MSI-Build artifacts
       if: failure() #success() || failure() # Only enable on failure or when debugging is required
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: MSI-Build-Debug
         path: C:\Strawberry-perl-for-GLPI-Agent_build\build\msi
@@ -152,7 +153,7 @@ jobs:
     needs: create-release
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Restore points cache
       uses: pat-s/always-upload-cache@v2.1.3
       with:
@@ -171,7 +172,7 @@ jobs:
       shell: bash
     - name: Upload MacOSX built artifacts
       if: success() || failure()
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: MacOSX-Build
         path: contrib/macosx/build
@@ -196,4 +197,34 @@ jobs:
         upload_url: ${{ needs.create-release.outputs.upload_url }}
         asset_path: contrib/macosx/build/GLPI-Agent-${{ needs.create-release.outputs.tag }}.dmg
         asset_name: GLPI-Agent-${{ needs.create-release.outputs.tag }}.dmg
+        asset_content_type: application/octet-stream
+
+  linux-snap-packaging:
+
+    runs-on: ubuntu-latest
+
+    if: always()
+    needs: create-release
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: snapcore/action-build@v1
+      id: snapcraft
+      env:
+        TERM: ${{ env.TERM }}:${{ github.ref }}
+    - name: Upload Snap built artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Snap-Build
+        path: ${{ steps.snapcraft.outputs.snap }}
+    - name: Upload Snap Package
+      id: upload-linux-snap-asset
+      if: startsWith(github.ref, 'refs/tags/1.')
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: ${{ steps.snapcraft.outputs.snap }}
+        asset_name: ${{ steps.snapcraft.outputs.snap }}
         asset_content_type: application/octet-stream

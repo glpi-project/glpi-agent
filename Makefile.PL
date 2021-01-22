@@ -184,6 +184,7 @@ sub constants {
         SYSCONFDIR           => '$(PREFIX)/etc/glpi-agent',
         DATADIR              => '$(PREFIX)/share/glpi-agent',
         LOCALSTATEDIR        => '$(PREFIX)/var/glpi-agent',
+        SNAPDIR              => '',
     );
 
     # allow variables defined on command line to override defaults
@@ -255,7 +256,7 @@ config_install : pure_install
 	  fi; \
 	done
 	$(ABSPERLRUN) -pi \
-	    -e "s|=> undef, # SYSCONFDIR.*|=> '$(SYSCONFDIR)',|;" \
+	    -e "s|=> undef, # SYSCONFDIR.*|=> '$(SNAPDIR)$(SYSCONFDIR)',|;" \
 	        $(DESTDIR)$(INSTALLSITELIB)/FusionInventory/Agent/Config.pm
 
 data_install : pure_install
@@ -266,8 +267,8 @@ setup_install : pure_install
 	$(ABSPERLRUN) -pi \
 	    -e 'undef $$_ if m/^use (File::Spec|Cwd)/;' \
 	    -e 'if (m/# Compute/) { print "1;\n"; last; };' \
-	    -e 's|datadir => .*|datadir => "$(DATADIR)",|;' \
-	    -e 's|libdir  => .*|libdir  => "$(INSTALLSITELIB)",|;' \
+	    -e 's|datadir => .*|datadir => "$(SNAPDIR)$(DATADIR)",|;' \
+	    -e 's|libdir  => .*|libdir  => "$(SNAPDIR)$(INSTALLSITELIB)",|;' \
 	    -e 's|vardir  => .*|vardir  => "$(LOCALSTATEDIR)",|' \
 	        $(DESTDIR)$(INSTALLSITELIB)/setup.pm
 
