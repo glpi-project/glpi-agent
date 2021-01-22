@@ -8,8 +8,10 @@ description: |
 icon: share/html/logo.png
 license: GPL-2.0
 
-grade: stable
+grade: devel
 confinement: classic
+
+adopt-info: glpi-agent
 
 apps:
   glpi-agent:
@@ -111,6 +113,24 @@ parts:
     after: [perl]
     plugin: make
     source: .
+    override-pull: |
+      snapcraftctl pull
+      if [ -n "$GITHUB_REF" -a -z "${GITHUB_REF%refs/tags/*}" ]; then
+        VERSION="${GITHUB_REF#*refs/tags/}"
+      elif [ -d .git ]; then
+        VERSION="${SNAPCRAFT_PROJECT_VERSION%-dev}-git$(git rev-parse --short HEAD)"
+      else
+        VERSION="$SNAPCRAFT_PROJECT_VERSION"
+      fi
+      snapcraftctl set-version "$VERSION"
+      case "$VERSION" in
+        *-dev|*-git*|*-beta*|*-test*)
+          snapcraftctl set-grade "devel"
+          ;;
+        *)
+          snapcraftctl set-grade "release"
+          ;;
+      esac
     override-build: |
       export PATH=$SNAPCRAFT_STAGE/usr/share/glpi-agent/bin:$PATH
       perl Makefile.PL PREFIX=/usr SYSCONFDIR=/etc/glpi-agent \
