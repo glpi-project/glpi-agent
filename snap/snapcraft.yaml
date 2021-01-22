@@ -164,6 +164,8 @@ parts:
       rm -rf $(find usr/share/glpi-agent/lib -name .meta)
       usr/share/glpi-agent/bin/perl -e 'for (@ARGV) { unlink $_ unless (/\/(glpi-.*|lspci|lsusb|hdparm|dmidecode|perl)$/); }' \
         usr/bin/* usr/sbin/* usr/share/glpi-agent/bin/*
+    build-packages:
+     - git
     stage-packages:
      - pciutils
      - usbutils
