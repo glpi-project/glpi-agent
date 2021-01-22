@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Install cpanminus
       run: |
         sudo apt -y install cpanminus libmodule-install-perl
@@ -38,7 +38,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Update environment
       run: |
         echo 'C:\Strawberry\perl\bin'      >> $GITHUB_PATH
@@ -77,7 +77,7 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Update environment
       run: |
         PERL_VERSION=$(perl -MConfig -e 'print $Config{version}')
