@@ -24,4 +24,9 @@ Arch | Package
 x86_64 PKG | [GLPI-Agent-$TAG.pkg](../../releases/download/$TAG/GLPI-Agent-$TAG.pkg)
 x86_64 DMG | [GLPI-Agent-$TAG.dmg](../../releases/download/$TAG/GLPI-Agent-$TAG.dmg)
 
+## Linux
+Packaging | Arch | Package
+---|---|:---
+snap | amd64 | [glpi-agent_${TAG}_amd64.snap](../../releases/download/$TAG/glpi-agent_${TAG}_amd64.snap)
+
 DESCRIPTION
