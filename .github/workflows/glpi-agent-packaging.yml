@@ -111,13 +111,13 @@ jobs:
       shell: cmd
     - name: Upload windows built artifacts
       if: success() || failure()
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: Windows-Build
         path: C:\Strawberry-perl-for-GLPI-Agent_build\output
     - name: Upload debug MSI-Build artifacts
       if: failure() #success() || failure() # Only enable on failure or when debugging is required
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: MSI-Build-Debug
         path: C:\Strawberry-perl-for-GLPI-Agent_build\build\msi
@@ -171,7 +171,7 @@ jobs:
       shell: bash
     - name: Upload MacOSX built artifacts
       if: success() || failure()
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: MacOSX-Build
         path: contrib/macosx/build
