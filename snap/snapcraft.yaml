@@ -1,0 +1,143 @@
+name: glpi-agent
+base: core20
+version: '1.0-dev'
+summary: GLPI Agent can run system inventory and other tasks on the behalf of a GLPI server
+description: |
+  GLPI-Agent is an agent intended to run automatic inventory task (and possibly
+  others) on the behalf of its configured GLPI server.
+icon: share/html/logo.png
+license: GPL-2.0
+
+grade: stable
+confinement: classic
+
+apps:
+  glpi-agent:
+    command: usr/bin/glpi-agent
+    environment:
+      LANG: C
+      PATH: $SNAP/sbin:$SNAP/usr/sbin:$SNAP/usr/bin:$PATH
+  inventory:
+    command: usr/bin/glpi-inventory
+    environment:
+      LANG: C
+      PATH: $SNAP/sbin:$SNAP/usr/sbin:$SNAP/usr/bin:$PATH
+  injector:
+    command: usr/bin/glpi-injector
+    environment:
+      LANG: C
+      PATH: $SNAP/sbin:$SNAP/usr/sbin:$SNAP/usr/bin:$PATH
+  netdiscovery:
+    command: usr/bin/glpi-netdiscovery
+    environment:
+      LANG: C
+      PATH: $SNAP/sbin:$SNAP/usr/sbin:$SNAP/usr/bin:$PATH
+  netinventory:
+    command: usr/bin/glpi-netinventory
+    environment:
+      LANG: C
+      PATH: $SNAP/sbin:$SNAP/usr/sbin:$SNAP/usr/bin:$PATH
+  remoteinventory:
+    command: usr/bin/glpi-remoteinventory
+    environment:
+      LANG: C
+      PATH: $SNAP/sbin:$SNAP/usr/sbin:$SNAP/usr/bin:$PATH
+  wakeonlan:
+    command: usr/bin/glpi-wakeonlan
+    environment:
+      LANG: C
+      PATH: $SNAP/sbin:$SNAP/usr/sbin:$SNAP/usr/bin:$PATH
+  daemon:
+    command: usr/bin/glpi-agent --listen --no-fork --daemon
+    daemon: simple
+    restart-condition: on-success
+    stop-timeout: 10s
+    environment:
+      LANG: C
+      PATH: $SNAP/sbin:$SNAP/usr/sbin:$SNAP/usr/bin:$PATH
+
+parts:
+  perl:
+    plugin: make
+    source: https://www.cpan.org/src/5.0/perl-5.32.0.tar.gz
+    # checksum from https://www.cpan.org/src/5.0/perl-5.32.0.tar.gz.sha256.txt
+    source-checksum: sha256/efeb1ce1f10824190ad1cadbcccf6fdb8a5d37007d0100d2d9ae5f2b5900c0b4
+    override-build: |
+      rm -f config.sh Policy.sh
+      # Prepare a relocatable perl build
+      ./Configure -de -Dprefix=/usr/share/glpi-agent -Duserelocatableinc   \
+        -Dman1dir=none -Dman3dir=none -Dusethreads -DNDEBUG -UDEBUGGING    \
+        -Dusemultiplicity -Duse64bitint -Duse64bitall                      \
+        -Aeval:privlib=.../../lib -Aeval:scriptdir=.../../bin              \
+        -Aeval:vendorprefix=.../.. -Aeval:vendorlib=.../../lib
+      make -j24
+      make install.perl DESTDIR="$SNAPCRAFT_PART_INSTALL"
+      export PATH=$SNAPCRAFT_PART_INSTALL/usr/share/glpi-agent/bin:$PATH
+      
+      # Best install required modules with cpanm
+      GET https://raw.githubusercontent.com/miyagawa/cpanminus/master/cpanm >cpanm
+      chmod +x cpanm
+      while read modules
+      do
+        [ -z "${modules%%#*}" ] && continue
+        ./cpanm --notest -v --no-man-pages $modules
+      done <<-MODULES
+      Module::Install Sub::Identify DateTime Params::Validate UNIVERSAL::require
+      IO::Socket::SSL LWP::UserAgent LWP::Protocol::https HTML::Parser URI::Escape
+      Time::HiRes HTTP::Daemon Proc::Daemon Parallel::ForkManager
+      Compress::Zlib Archive::Extract File::Copy::Recursive File::Which
+      Net::IP Net::Ping Net::SNMP Net::NBName Net::CUPS
+      Thread::Queue Parse::EDID JSON::PP
+      Text::Template XML::TreePP XML::XPath Memoize
+      YAML::Tiny UUID::Tiny Data::UUID Digest::SHA
+      #Net::PCAP Net::Write::Layer2
+      MODULES
+    build-packages:
+     - libssl-dev
+     - libcups2-dev
+     - libcupsfilters-dev
+     - libcupsimage2-dev
+     - libexpat1-dev
+    stage-packages:
+     - libcupsimage2
+     - libcupsfilters1
+     - libcups2
+     - libssl1.1
+     - libexpat1
+     - libavahi-client3
+     - libavahi-common3
+
+  glpi-agent:
+    after: [perl]
+    plugin: make
+    source: .
+    override-build: |
+      export PATH=$SNAPCRAFT_STAGE/usr/share/glpi-agent/bin:$PATH
+      perl Makefile.PL PREFIX=/usr SYSCONFDIR=/etc/glpi-agent \
+        LOCALSTATEDIR=/var/snap/glpi-agent/common VERSION="$SNAPCRAFT_PROJECT_VERSION" \
+        COMMENTS="Built for snap on $(date -u +'%F %R')"
+      make
+      make install DESTDIR=$SNAPCRAFT_PART_INSTALL SNAPDIR=/snap/glpi-agent/current
+      mkdir -p $SNAPCRAFT_PART_INSTALL/etc/glpi-agent
+      cp -a etc/*.cfg $SNAPCRAFT_PART_INSTALL/etc/glpi-agent
+      # We will use SNAP_DATA folder to support configuration with snap command
+      echo "include /var/snap/glpi-agent/current" >>$SNAPCRAFT_PART_INSTALL/etc/glpi-agent/agent.cfg
+      # Script should start with built perl
+      sed -ri -e 's/#!/#!\/snap\/glpi-agent\/current/' $SNAPCRAFT_PART_INSTALL/usr/bin/glpi-*
+    override-prime: |
+      snapcraftctl prime
+      for d in bug doc doc-base lintian man perl-openssl-defaults
+      do
+        rm -rf usr/share/$d
+      done
+      find -name '*.pod' -delete
+      find -name '.packlist' -delete
+      rm -rf $(find usr/share/glpi-agent/lib -name .meta)
+      usr/share/glpi-agent/bin/perl -e 'for (@ARGV) { unlink $_ unless (/\/(glpi-.*|lspci|lsusb|hdparm|dmidecode|perl)$/); }' \
+        usr/bin/* usr/sbin/* usr/share/glpi-agent/bin/*
+    stage-packages:
+     - pciutils
+     - usbutils
+     - dmidecode
+     - hdparm
+
