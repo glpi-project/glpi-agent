@@ -197,3 +197,31 @@ jobs:
         asset_path: contrib/macosx/build/GLPI-Agent-${{ needs.create-release.outputs.tag }}.dmg
         asset_name: GLPI-Agent-${{ needs.create-release.outputs.tag }}.dmg
         asset_content_type: application/octet-stream
+
+  linux-snap-packaging:
+
+    runs-on: ubuntu-latest
+
+    if: always()
+    needs: create-release
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: snapcore/action-build@v1
+      id: snapcraft
+    - name: Upload Snap built artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Snap-Build
+        path: ${{ steps.snapcraft.outputs.snap }}
+    - name: Upload Snap Package
+      id: upload-linux-snap-asset
+      if: startsWith(github.ref, 'refs/tags/1.')
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: ${{ steps.snapcraft.outputs.snap }}
+        asset_name: ${{ steps.snapcraft.outputs.snap }}
+        asset_content_type: application/octet-stream
