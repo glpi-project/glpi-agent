@@ -120,6 +120,9 @@ parts:
     after: [perl]
     plugin: make
     source: .
+    build-environment:
+     - GITHUB_REF: "${TERM#*:}"
+     - TERM: "${TERM%:*}"
     override-build: |
       export PATH=$SNAPCRAFT_STAGE/usr/share/glpi-agent/bin:$PATH
       VERSION=$( perl -Ilib -MFusionInventory::Agent::Version -e 'print $FusionInventory::Agent::Version::VERSION,"\n"' )
