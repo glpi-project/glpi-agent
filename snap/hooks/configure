@@ -69,11 +69,8 @@ logfacility = LOG_DAEMON
 DEFAULT_CONF
 
 if [ -n "$RESTART" ]; then
-    while read Service Startup Current Notes
-    do
-        continue
-    done <<$(snapctl services glpi-agent.daemon)
-    if [ "$Current" == "active" ]; then
+    set x$(snapctl services glpi-agent.daemon | tail -1)x
+    if [ "$3" == "active" ]; then
         snapctl restart glpi-agent.daemon
     fi
 fi
