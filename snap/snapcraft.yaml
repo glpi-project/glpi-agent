@@ -1,6 +1,5 @@
 name: glpi-agent
 base: core20
-version: '1.0-dev'
 summary: GLPI Agent runs inventory and other tasks on the behalf of a GLPI server
 description: |
   **GLPI Agent** is an agent intended to run automatic inventory task (and possibly others)
@@ -16,7 +15,6 @@ description: |
 icon: share/html/logo.png
 license: GPL-2.0
 
-grade: devel
 confinement: classic
 
 adopt-info: glpi-agent
@@ -122,14 +120,14 @@ parts:
     after: [perl]
     plugin: make
     source: .
-    override-pull: |
-      snapcraftctl pull
+    override-build: |
+      export PATH=$SNAPCRAFT_STAGE/usr/share/glpi-agent/bin:$PATH
+      VERSION=$( perl -Ilib -MFusionInventory::Agent::Version -e 'print $FusionInventory::Agent::Version::VERSION,"\n"' )
       if [ -n "$GITHUB_REF" -a -z "${GITHUB_REF%refs/tags/*}" ]; then
         VERSION="${GITHUB_REF#*refs/tags/}"
       elif [ -d .git ]; then
-        VERSION="${SNAPCRAFT_PROJECT_VERSION%-dev}-git$(git rev-parse --short HEAD)"
-      else
-        VERSION="$SNAPCRAFT_PROJECT_VERSION"
+        VERSION="${VERSION%-dev}-git$(git rev-parse --short HEAD)"
+        echo git_ref
       fi
       snapcraftctl set-version "$VERSION"
       case "$VERSION" in
@@ -140,10 +138,8 @@ parts:
           snapcraftctl set-grade "release"
           ;;
       esac
-    override-build: |
-      export PATH=$SNAPCRAFT_STAGE/usr/share/glpi-agent/bin:$PATH
       perl Makefile.PL PREFIX=/usr SYSCONFDIR=/etc/glpi-agent \
-        LOCALSTATEDIR=/var/snap/glpi-agent/common VERSION="$SNAPCRAFT_PROJECT_VERSION" \
+        LOCALSTATEDIR=/var/snap/glpi-agent/common VERSION="$VERSION" \
         COMMENTS="Built for snap on $(date -u +'%F %R')"
       make
       make install DESTDIR=$SNAPCRAFT_PART_INSTALL SNAPDIR=/snap/glpi-agent/current
