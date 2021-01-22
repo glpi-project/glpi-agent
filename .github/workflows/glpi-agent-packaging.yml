@@ -14,6 +14,7 @@ jobs:
       upload_url: ${{ steps.create-tagged-release.outputs.upload_url }}
 
     steps:
+    - uses: actions/checkout@v2
     - name: Extract tag
       id: extract-tag
       run: |
