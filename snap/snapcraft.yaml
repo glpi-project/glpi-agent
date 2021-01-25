@@ -17,6 +17,13 @@ confinement: classic
 
 adopt-info: glpi-agent
 
+architectures:
+ - build-on: amd64
+ - build-on: arm64
+ - build-on: armhf
+ - build-on: s390x
+ - build-on: ppc64el
+
 apps:
   glpi-agent:
     command: usr/bin/glpi-agent
@@ -70,10 +77,16 @@ parts:
     source-checksum: sha256/efeb1ce1f10824190ad1cadbcccf6fdb8a5d37007d0100d2d9ae5f2b5900c0b4
     override-build: |
       rm -f config.sh Policy.sh
+      unset ARCHOPT
+      case "$(dpkg --print-architecture)" in
+        amd64|arm64|ppc64le|s390x)
+          ARCHOPT="-Duse64bitall"
+          ;;
+      esac
       # Prepare a relocatable perl build
       ./Configure -de -Dprefix=/usr/share/glpi-agent -Duserelocatableinc   \
         -Dman1dir=none -Dman3dir=none -Dusethreads -DNDEBUG -UDEBUGGING    \
-        -Dusemultiplicity -Duse64bitint -Duse64bitall                      \
+        -Dusemultiplicity -Duse64bitint $ARCHOPT                           \
         -Aeval:privlib=.../../lib -Aeval:scriptdir=.../../bin              \
         -Aeval:vendorprefix=.../.. -Aeval:vendorlib=.../../lib
       make -j24
@@ -166,6 +179,7 @@ parts:
     stage-packages:
      - pciutils
      - usbutils
-     - dmidecode
      - hdparm
+     - try:
+      - dmidecode
 
