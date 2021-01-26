@@ -92,7 +92,7 @@ sub _getPackagesInfo {
     local $ENV{COLUMNS} = 100;
 
     my $snap = delete $params{snap};
-    my $lines = getAllLines(%params)
+    my $lines = join("\n",grep { /^(name|publisher|contact|summary|installed):/ } getAllLines(%params))
         or return;
 
     my @output;
