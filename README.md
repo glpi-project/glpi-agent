@@ -127,7 +127,7 @@ Copyright 2006-2010 [OCS Inventory contributors](https://www.ocsinventory-ng.org
 
 Copyright 2010-2019 [FusionInventory Team](http://fusioninventory.org)
 
-Copyright 2011-2019 [Teclib Editions](http://www.teclib-edition.com/)
+Copyright 2011-2021 [Teclib Editions](http://www.teclib-edition.com/)
 
 ## License
 
