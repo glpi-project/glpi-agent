@@ -1,14 +1,28 @@
 #! /bin/bash
 
+# PERL: https://www.perl.org/get.html
+# SSL:  https://www.openssl.org/source/
+# ZLIB: https://www.zlib.net/
+: ${PERL_VERSION:=5.32.1}
+: ${OPENSSL_VERSION:=1.1.1i}
+: ${ZLIB_VERSION:=1.2.11}
+
+: ${BUILDER_NAME="Guillaume Bougard (teclib)"}
+: ${BUILDER_MAIL="gbougard_at_teclib.com"}
+
 set -e
 
+export LC_ALL=C LANG=C
+export MACOSX_DEPLOYMENT_TARGET=10.10
+
 # Check platform we are running on
-case "$(uname -sm)" in
-    *|Darwin*x86_64)
-        echo "GLPI-Agent MacOSX Packaging..."
+ARCH=$(uname -m)
+case "$(uname -s) $ARCH" in
+    Darwin*x86_64)
+        echo "GLPI-Agent MacOSX Packaging for $ARCH..."
         ;;
     Darwin*)
-        echo "This script only support x86_64 arch" >&2
+        echo "$ARCH support is missing, please report an issue" >&2
         exit 2
         ;;
     *)
@@ -36,29 +50,198 @@ if [ ! -e munkipkg ]; then
 fi
 
 # Needed folder
+while [ -n "$1" ]
+do
+    case "$1" in
+        clean)
+            rm -rf build
+            ;;
+    esac
+    shift
+done
 [ -d build ] || mkdir build
 [ -d payload ] || mkdir payload
 
-# Get same perl as for fusioninventory-agent
-if [ ! -e macosx-intel.tar ]; then
-    echo "Downloading macosx prebuilt perl..."
-    curl -so macosx-intel.tar http://prebuilt.fusioninventory.org/perl/macosx-intel.tar
-    if [ ! -e macosx-intel.tar ]; then
-        echo "Failed to download macosx prebuilt perl" >&2
-        exit 4
-    fi
-fi
-rm -rf "payload${BUILD_PREFIX%%/*}"
-mkdir -p "payload$BUILD_PREFIX"
-tar xf macosx-intel.tar -C "payload$BUILD_PREFIX"
-PERLBIN="`pwd`/payload$BUILD_PREFIX/bin/perl"
+# Perl build configuration
+[ -e ~/.curlrc ] && egrep -q '^insecure' ~/.curlrc || echo insecure >>~/.curlrc
+OPENSSL_CONFIG_OPTS="zlib --with-zlib-include='$ROOT/build/zlib' --with-zlib-lib='$ROOT/build/zlib/zlib.a'"
+CPANM_OPTS="--build-args=\"OTHERLDFLAGS='-Wl,-search_paths_first'\""
 
-# Prepare dist package
+build_static_zlib () {
+    cd "$ROOT"
+    echo ======== Build zlib $ZLIB_VERSION
+    ARCHIVE="zlib-$ZLIB_VERSION.tar.gz"
+    ZLIB_URL="http://www.zlib.net/$ARCHIVE"
+    [ -e "$ARCHIVE" ] || curl -so "$ARCHIVE" "$ZLIB_URL"
+    [ -d "zlib-$ZLIB_VERSION" ] || tar xzf "$ARCHIVE"
+    [ -d "$ROOT/build/zlib" ] || mkdir -p "$ROOT/build/zlib"
+    cd "$ROOT/build/zlib"
+    [ -e Makefile ] || CFLAGS="-mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET" ../../zlib-$ZLIB_VERSION/configure --static \
+        --libdir="$PWD" --includedir="$PWD"
+    make libz.a
+}
+
+build_perl () {
+    cd "$ROOT"
+    echo ======== Build perl $PERL_VERSION
+    PERL_ARCHIVE="perl-$PERL_VERSION.tar.gz"
+    PERL_URL="https://www.cpan.org/src/5.0/$PERL_ARCHIVE"
+    [ -e "$PERL_ARCHIVE" ] || curl -so "$PERL_ARCHIVE" "$PERL_URL"
+
+    # Eventually verify archive
+    if type shasum >/dev/null 2>&1; then
+        [ -e "$PERL_ARCHIVE.sha1" ] || curl -so "$PERL_ARCHIVE.sha1.txt" "$PERL_URL.sha1.txt"
+        read SHA1 x <<<$( shasum $PERL_ARCHIVE )
+        if [ "$SHA1" == "$(cat $PERL_ARCHIVE.sha1.txt)" ]; then
+            echo "Perl $PERL_VERSION ready for building..."
+        else
+            echo "Can't build perl $PERL_VERSION, source archive sha1 digest mismatch"
+            exit 1
+        fi
+    fi
+
+    PATCHPERL_URL="https://raw.githubusercontent.com/gugod/patchperl-packing/master/patchperl"
+    [ -e patchperl ] || curl -so patchperl  "$PATCHPERL_URL"
+    cd build
+    [ -d "perl-$PERL_VERSION" ] || tar xzf "../$PERL_ARCHIVE"
+    cd "perl-$PERL_VERSION"
+    if [ ! -e patchperl ]; then
+        cp -a ../../patchperl .
+        chmod +x patchperl
+        chmod -R +w .
+        ./patchperl
+    fi
+    if [ ! -e Makefile ]; then
+        rm -f config.sh Policy.sh
+        ./Configure -de -Dprefix=$BUILD_PREFIX -Duserelocatableinc -DNDEBUG    \
+            -Dman1dir=none -Dman3dir=none -Dusethreads -UDEBUGGING             \
+            -Dusemultiplicity -Duse64bitint -Duse64bitall                      \
+            -Aeval:privlib=.../../lib -Aeval:scriptdir=.../../bin              \
+            -Aeval:vendorprefix=.../.. -Aeval:vendorlib=.../../agent           \
+            -Dcf_by="$BUILDER_NAME" -Dcf_email="$BUILDER_MAIL" -Dperladmin="$BUILDER_MAIL"
+    fi
+    make -j4
+    make install.perl DESTDIR="$ROOT/build"
+}
+
+# 1. Zlib is needed at least later to build openssl
+build_static_zlib
+
+# 2. build perl
+build_perl
+
+cd "$ROOT"
+
+# 3. Include new perl in script PATH
+echo "Using perl $PERL_VERSION..."
+export PATH="$ROOT/build$BUILD_PREFIX/bin:$PATH"
+
+echo ========
+perl --version
+echo ========
+
+# 4. Download and Build OpenSSL
+if [ ! -d "build/openssl-$OPENSSL_VERSION" ]; then
+    echo ======== Build openssl $OPENSSL_VERSION
+    ARCHIVE="openssl-$OPENSSL_VERSION.tar.gz"
+    OPENSSL_URL="https://www.openssl.org/source/$ARCHIVE"
+    [ -e "$ARCHIVE" ] || curl -so "$ARCHIVE" "$OPENSSL_URL"
+
+    # Eventually verify archive
+    if type shasum >/dev/null 2>&1; then
+        [ -e "$ARCHIVE.sha1" ] || curl -so "$ARCHIVE.sha1" "$OPENSSL_URL.sha1"
+        read SHA1 x <<<$( shasum $ARCHIVE )
+        if [ "$SHA1" == "$(cat $ARCHIVE.sha1)" ]; then
+            echo "OpenSSL $OPENSSL_VERSION ready for building..."
+        else
+            echo "Can't build OpenSSL $OPENSSL_VERSION, source archive sha1 digest mismatch"
+            exit 1
+        fi
+    fi
+
+    # Uncompress OpenSSL
+    if [ ! -d "openssl-$OPENSSL_VERSION" ]; then
+        rm -rf "openssl-$OPENSSL_VERSION"
+        tar xzf $ARCHIVE
+    fi
+
+    [ -e "$ROOT/zlib-$ZLIB_VERSION/zlib.h" ] \
+        && cp -f "$ROOT/zlib-$ZLIB_VERSION/zlib.h" "$ROOT/zlib-$ZLIB_VERSION/zconf.h" "$ROOT/openssl-$OPENSSL_VERSION/include"
+
+    # Build OpenSSL under dedicated folder. This is only possible starting with OpenSSL v1.1.0
+    [ -d build/openssl ] || mkdir -p build/openssl
+    cd build/openssl
+
+    CFLAGS="-mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET" ../../openssl-$OPENSSL_VERSION/config no-autoerrinit no-shared \
+        --prefix="/openssl" $OPENSSL_CONFIG_OPTS
+    make
+
+    # Only install static lib from build folder
+    make install_sw DESTDIR="$ROOT/build/openssl-$OPENSSL_VERSION"
+
+    # Copy libz.a if previously built to lately be included in Net::SSLeay building
+    [ -e "$ROOT/build/zlib/libz.a" ] && \
+        cp -f "$ROOT/build/zlib/libz.a" "$ROOT/build/openssl-$OPENSSL_VERSION/openssl/lib"
+    [ -e "$ROOT/zlib-$ZLIB_VERSION/zlib.h" ] \
+        && cp -f "$ROOT/zlib-$ZLIB_VERSION/zlib.h" "$ROOT/zlib-$ZLIB_VERSION/zconf.h" "$ROOT/build/openssl-$OPENSSL_VERSION/openssl/include"
+fi
+
+export OPENSSL_PREFIX="$ROOT/build/openssl-$OPENSSL_VERSION/openssl"
+
+# 5. Install cpanm
+cd "$ROOT"
+echo "Install cpanminus"
+if [ ! -e "build$BUILD_PREFIX/bin/cpanm" ]; then
+    CPANM_URL="https://raw.githubusercontent.com/miyagawa/cpanminus/master/cpanm"
+    curl -so build$BUILD_PREFIX/bin/cpanm "$CPANM_URL"
+    chmod +x build$BUILD_PREFIX/bin/cpanm
+fi
+
+# 6. Still install modules needing compilation
+while read modules
+do
+    [ -z "${modules%%#*}" ] && continue
+    echo ======== Install $modules
+    cpanm --notest -v --no-man-pages $CPANM_OPTS $modules
+done <<MODULES
+Module::Install
+Sub::Identify Params::Validate HTML::Parser Compress::Zlib Digest::SHA
+Net::SSLeay
+MODULES
+
+# Try the library
+echo ======== SSL check
+perl -e 'use Net::SSLeay; print Net::SSLeay::SSLeay_version(0)," (", sprintf("0x%x",Net::SSLeay::SSLeay()),") installed with perl $^V\n";'
+echo ========
+
+# Prepare glpi-agent sources
 cd ../..
 rm -rf build MANIFEST MANIFEST.bak *.tar.gz
 [ -e Makefile ] && make clean
-$PERLBIN Makefile.PL
+perl Makefile.PL
 
+# Install required agent modules
+cpanm --notest -v --installdeps --no-man-pages $CPANM_OPTS .
+
+echo '===== Installing more perl module deps ====='
+cpanm --notest -v --no-man-pages  $CPANM_OPTS LWP::Protocol::https             \
+    HTTP::Daemon Proc::Daemon Archive::Extract File::Copy::Recursive JSON::PP  \
+    URI::Escape Net::Ping Parallel::ForkManager Net::SNMP Net::NBName DateTime \
+    Thread::Queue Parse::EDID YAML::Tiny UUID::Tiny Data::UUID
+# Crypt::DES Crypt::Rijndael are commented as Crypt::DES fails to build on MacOSX
+# Net::Write::Layer2 depends on Net::PCAP but it fails on MacOSX
+
+rm -rf "$ROOT/payload${BUILD_PREFIX%%/*}"
+mkdir -p "$ROOT/payload$BUILD_PREFIX"
+
+echo ======== Clean installation
+rsync -a --exclude=.packlist --exclude='*.pod' --exclude=.meta --delete --force \
+    "$ROOT/build$BUILD_PREFIX/lib/" "$ROOT/payload$BUILD_PREFIX/lib/"
+rm -rf "$ROOT/payload$BUILD_PREFIX/lib/pods"
+mkdir "$ROOT/payload$BUILD_PREFIX/bin"
+cp -a "$ROOT/build$BUILD_PREFIX/bin/perl" "$ROOT/payload$BUILD_PREFIX/bin/perl"
+
+# Finalize sources
 if [ -n "$GITHUB_REF" -a -z "${GITHUB_REF%refs/tags/*}" ]; then
     VERSION="${GITHUB_REF#refs/tags/}"
 else
@@ -69,11 +252,11 @@ if [ -z "${VERSION#*-dev}" -a -n "$GITHUB_SHA" ]; then
     VERSION="${VERSION%-dev}-git${GITHUB_SHA:0:8}"
 fi
 
-COMMENTS="GLPI Agent v$VERSION,Built by Teclib on $HOSTNAME: $(LANG=C date)"
+COMMENTS="Built by Teclib on $HOSTNAME: $(LANG=C date)"
 
 echo "Preparing sources..."
-$PERLBIN Makefile.PL PREFIX="$BUILD_PREFIX" DATADIR="$BUILD_PREFIX/share" \
-    SYSCONFDIR="$BUILD_PREFIX/etc" LOCALSTATEDIR="$BUILD_PREFIX/var" \
+perl Makefile.PL PREFIX="$BUILD_PREFIX" DATADIR="$BUILD_PREFIX/share"   \
+    SYSCONFDIR="$BUILD_PREFIX/etc" LOCALSTATEDIR="$BUILD_PREFIX/var"    \
     INSTALLSITELIB="$BUILD_PREFIX/agent" PERLPREFIX="$BUILD_PREFIX/bin" \
     COMMENTS="$COMMENTS" VERSION="$VERSION"
 
@@ -136,7 +319,7 @@ cat >build-info.plist <<-BUILD_INFO
 		<key>install_location</key>
 		<string>/</string>
 		<key>name</key>
-		<string>GLPI-Agent-$VERSION.pkg</string>
+		<string>GLPI-Agent-${VERSION}_$ARCH.pkg</string>
 		<key>ownership</key>
 		<string>recommended</string>
 		<key>postinstall_action</key>
@@ -162,7 +345,7 @@ cat >product-requirements.plist <<-REQUIREMENTS
 	    </array>
 	    <key>arch</key>
 	    <array>
-	        <string>x86_64</string>
+	        <string>$ARCH</string>
 	    </array>
 	</dict>
 	</plist>
@@ -171,8 +354,8 @@ REQUIREMENTS
 echo "Build package"
 ./munkipkg .
 
-PKG="GLPI-Agent-$VERSION.pkg"
-DMG="GLPI-Agent-$VERSION.dmg"
+PKG="GLPI-Agent-${VERSION}_$ARCH.pkg"
+DMG="GLPI-Agent-${VERSION}_$ARCH.dmg"
 
 echo "Prepare distribution installer..."
 cat >Distribution.xml <<-CUSTOM
@@ -184,7 +367,7 @@ cat >Distribution.xml <<-CUSTOM
 	    <background file="background.png" uti="public.png" alignment="bottomleft"/>
 	    <background-darkAqua file="background.png" uti="public.png" alignment="bottomleft"/>
 	    <domains enable_anywhere="false" enable_currentUserHome="false" enable_localSystem="true"/>
-	    <options customize="never" require-scripts="false" hostArchitectures="x86_64"/>
+	    <options customize="never" require-scripts="false" hostArchitectures="$ARCH"/>
 	    <choices-outline>
 	        <line choice="default">
 	            <line choice="org.glpi-project.glpi-agent"/>
@@ -207,4 +390,4 @@ if [ -e "build/$PKG" ]; then
     hdiutil create -fs "HFS+" -srcfolder "build/$PKG" "build/$DMG"
 fi
 
-ls -l build/*
+ls -l build/*.pkg build/*.dmg
