@@ -73,7 +73,7 @@ sub _build_steps {
                 'liblibxslt'    => _gcclib('2019Q2','libxslt-1.1.33'),
                 'mpc'           => _gcclib('2019Q2','mpc-1.1.0'),
                 'mpfr'          => _gcclib('2019Q2','mpfr-4.0.2'),
-                'openssl'       => _gcclib('2021Q4','openssl-1.1.1i'),
+                'openssl'       => _gcclib('2021Q1','openssl-1.1.1i'),
                 'readline'      => _gcclib('2019Q2','readline-8.0'),
                 't1lib'         => _gcclib('2019Q2','t1lib-5.1.2'),
                 'termcap'       => _gcclib('2019Q2','termcap-1.3.1'),
