@@ -18,11 +18,11 @@ Arch | Windows installer | Windows portable archive
 64 bits | [GLPI-Agent-$TAG-x64.msi](../../releases/download/$TAG/GLPI-Agent-$TAG-x64.msi) | [glpi-agent-$TAG-x64.zip](../../releases/download/$TAG/glpi-agent-$TAG-x64.zip)
 32 bits | [GLPI-Agent-$TAG-x86.msi](../../releases/download/$TAG/GLPI-Agent-$TAG-x86.msi) | [glpi-agent-$TAG-x86.zip](../../releases/download/$TAG/glpi-agent-$TAG-x86.zip)
 
-## MacOSX x86_64
+## MacOSX
 Arch | Package
 ---|:---
-x86_64 PKG | [GLPI-Agent-$TAG.pkg](../../releases/download/$TAG/GLPI-Agent-$TAG.pkg)
-x86_64 DMG | [GLPI-Agent-$TAG.dmg](../../releases/download/$TAG/GLPI-Agent-$TAG.dmg)
+x86_64 | PKG: [GLPI-Agent-${TAG}_x86_64.pkg](../../releases/download/$TAG/GLPI-Agent-${TAG}_x86_64.pkg)
+x86_64 | DMG: [GLPI-Agent-${TAG}_x86_64.dmg](../../releases/download/$TAG/GLPI-Agent-${TAG}_x86_64.dmg)
 
 ## Linux
 Packaging | Arch | Package
