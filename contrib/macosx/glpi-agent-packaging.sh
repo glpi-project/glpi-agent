@@ -66,6 +66,7 @@ done
 [ -e ~/.curlrc ] && egrep -q '^insecure' ~/.curlrc || echo insecure >>~/.curlrc
 OPENSSL_CONFIG_OPTS="zlib --with-zlib-include='$ROOT/build/zlib' --with-zlib-lib='$ROOT/build/zlib/zlib.a'"
 CPANM_OPTS="--build-args=\"OTHERLDFLAGS='-Wl,-search_paths_first'\""
+SHASUM="$( which shasum 2>/dev/null )"
 
 build_static_zlib () {
     cd "$ROOT"
@@ -89,9 +90,9 @@ build_perl () {
     [ -e "$PERL_ARCHIVE" ] || curl -so "$PERL_ARCHIVE" "$PERL_URL"
 
     # Eventually verify archive
-    if type shasum >/dev/null 2>&1; then
+    if [ -n "$SHASUM" ]; then
         [ -e "$PERL_ARCHIVE.sha1" ] || curl -so "$PERL_ARCHIVE.sha1.txt" "$PERL_URL.sha1.txt"
-        read SHA1 x <<<$( shasum $PERL_ARCHIVE )
+        read SHA1 x <<<$( $SHASUM $PERL_ARCHIVE )
         if [ "$SHA1" == "$(cat $PERL_ARCHIVE.sha1.txt)" ]; then
             echo "Perl $PERL_VERSION ready for building..."
         else
@@ -148,9 +149,9 @@ if [ ! -d "build/openssl-$OPENSSL_VERSION" ]; then
     [ -e "$ARCHIVE" ] || curl -so "$ARCHIVE" "$OPENSSL_URL"
 
     # Eventually verify archive
-    if type shasum >/dev/null 2>&1; then
+    if [ -n "$SHASUM" ; then
         [ -e "$ARCHIVE.sha1" ] || curl -so "$ARCHIVE.sha1" "$OPENSSL_URL.sha1"
-        read SHA1 x <<<$( shasum $ARCHIVE )
+        read SHA1 x <<<$( $SHASUM $ARCHIVE )
         if [ "$SHA1" == "$(cat $ARCHIVE.sha1)" ]; then
             echo "OpenSSL $OPENSSL_VERSION ready for building..."
         else
