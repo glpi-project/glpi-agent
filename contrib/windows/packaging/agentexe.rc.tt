@@ -35,7 +35,7 @@ BLOCK "StringFileInfo"
             VALUE "FileDescription",    "Perl interpreter for GLPI Agent\0"
             VALUE "FileVersion",        RCVERSION_STR
             VALUE "InternalName",       "glpi-agent.exe\0"
-            VALUE "LegalCopyright",     "Copyright 1987-2020 Larry Wall, binaries by http://strawberryperl.com\0"
+            VALUE "LegalCopyright",     "Copyright 1987-2021 Larry Wall, binaries by https://strawberryperl.com\0"
             VALUE "OriginalFilename",   "perl.exe\0"
             VALUE "ProductName",        "[%app_fullname%]\0"
             VALUE "ProductVersion",     RCVERSION_STR

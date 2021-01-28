@@ -4,7 +4,7 @@ package
 use parent 'Exporter';
 
 use constant {
-    PERL_VERSION       => "5.32.0",
+    PERL_VERSION       => "5.32.1",
     PERL_BUILD_STEPS   => 8,
 };
 
@@ -17,7 +17,7 @@ sub build_job {
 ### job description for building GLPI Agent
 
 #Available '<..>' macros:
-# <package_url>   is placeholder for http://strawberryperl.com/package
+# <package_url>   is placeholder for https://strawberryperl.com/package
 # <dist_sharedir> is placeholder for Perl::Dist::Strawberry's distribution sharedir
 # <image_dir>     is placeholder for C:\Strawberry-perl-for-GLPI-Agent
 
@@ -73,7 +73,7 @@ sub _build_steps {
                 'liblibxslt'    => _gcclib('2019Q2','libxslt-1.1.33'),
                 'mpc'           => _gcclib('2019Q2','mpc-1.1.0'),
                 'mpfr'          => _gcclib('2019Q2','mpfr-4.0.2'),
-                'openssl'       => _gcclib('2020Q3','openssl-1.1.1g'),
+                'openssl'       => _gcclib('2020Q3','openssl-1.1.1i'),
                 'readline'      => _gcclib('2019Q2','readline-8.0'),
                 't1lib'         => _gcclib('2019Q2','t1lib-5.1.2'),
                 'termcap'       => _gcclib('2019Q2','termcap-1.3.1'),
@@ -244,7 +244,7 @@ sub _bits {
 }
 
 sub _perl_source_url {
-    return 'http://cpan.metacpan.org/authors/id/X/XS/XSAWYERX/perl-'.PERL_VERSION.'.tar.gz';
+    return 'http://cpan.metacpan.org/authors/id/S/SH/SHAY/perl-'.PERL_VERSION.'.tar.gz';
 }
 
 sub _tools {
@@ -267,7 +267,7 @@ sub _gcclib {
     my ($quarter, $lib, $date) = @_;
     my $bits = _bits();
     unless ($date) {
-        my %date = qw( 2019Q2 20190522 2020Q1 20200207 2020Q3 20200712 );
+        my %date = qw( 2019Q2 20190522 2020Q1 20200207 2020Q3 20200712 2021Q1 20210124);
         $date = $date{$quarter};
     }
     return '<package_url>/kmx/'.$bits.'_libs/gcc83-'.$quarter.'/'.$bits.'bit_'.$lib.'-bin_'.$date.'.zip';
