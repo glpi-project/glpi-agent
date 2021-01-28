@@ -137,7 +137,7 @@ sub _build_steps {
                 qw/ Archive::Extract /,
 
                 # file related
-                qw/ File::Copy::Recursive File-Which /,
+                qw/ File::Copy::Recursive File::Which /,
 
                 # SSL
                 qw/ Net-SSLeay Mozilla::CA IO-Socket-SSL /,
@@ -146,24 +146,21 @@ sub _build_steps {
                 qw/ IO::Socket::IP IO::Socket::INET6 /,
                 qw/ HTTP-Server-Simple LWP::Protocol::https LWP::UserAgent /,
 
-                # XML & co.
-                qw/ XML-Parser /,
-
                 # crypto
                 qw/ Crypt::DES Crypt::Rijndael /,
-                qw/ Digest-MD5 Digest-SHA Digest-SHA1 Digest::HMAC /,
+                qw/ Digest-MD5 Digest-SHA /,
 
                 # date/time
                 qw/ DateTime DateTime::TimeZone::Local::Win32 /,
 
                 # GLPI-Agent deps
-                qw/ File::Which Text::Template UNIVERSAL::require UNIVERSAL::isa
+                qw/ Text::Template UNIVERSAL::require UNIVERSAL::isa
                     XML::TreePP XML::XPath Memoize Time::HiRes Compress::Zlib
                     Parse::EDID JSON::PP YAML::Tiny Parallel::ForkManager
                     URI::Escape Net::NBName Thread::Queue Thread::Semaphore
                     Net::SNMP Net::SNMP::Security::USM Net::SNMP::Transport::IPv4::TCP
                     Net::SNMP::Transport::IPv6::TCP Net::SNMP::Transport::IPv6::UDP
-                    Net::IP Archive::Zip UUID::Tiny Win32::Unicode::File Data::UUID /,
+                    Net::IP UUID::Tiny Win32::Unicode::File Data::UUID /,
                 # For Wake-On-LAN task
                 #qw/ Net::Write::Layer2 /,
             ],
