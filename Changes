@@ -10,6 +10,7 @@ inventory:
 * fix snap softwares inventory
 * fix cpu thread count by core reported by dmidecode method
 * win32: Support WSL virtualization inventory
+* Add support for AnyDesk remote management inventory
 
 Revision history for FusionInventory agent
 
