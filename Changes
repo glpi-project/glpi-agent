@@ -12,6 +12,9 @@ inventory:
 * win32: Support WSL virtualization inventory
 * Add support for AnyDesk remote management inventory
 
+netdiscovery/netinventory:
+* Add support for SonicWall devices
+
 Revision history for FusionInventory agent
 
 2.6 Thu, 26 Nov 2020
