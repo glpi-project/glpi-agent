@@ -121,7 +121,7 @@ sub _handle {
     my $method = $request->method();
     $logger->debug($log_prefix . "$method request $path from client $clientIp");
 
-    my $keepalive = $request->header('connection') =~ /keep-alive/i;
+    my $keepalive = ($request->header('connection') // '') =~ /keep-alive/i;
     my $status = 400;
     my $error_400 = $log_prefix . "invalid request type: $method";
 
