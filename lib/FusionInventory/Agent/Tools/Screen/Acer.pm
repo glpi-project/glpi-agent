@@ -8,8 +8,10 @@ use parent 'FusionInventory::Agent::Tools::Screen';
 # Well-known eisa_id for which we need to revert serial and altserial
 my $eisa_id_match_str = join('|', qw(
         0018
+        0019
         0020
         0024
+        004b
         00a3
         00A8
         00d2
@@ -24,11 +26,14 @@ my $eisa_id_match_str = join('|', qw(
         0468
         0503
         0512
+        0523
+        056b
         057d
         0618
         0783
         7883
         ad49
+        ad51
         adaf
     ));
 my $eisa_id_match = qr/($eisa_id_match_str)$/ ;
