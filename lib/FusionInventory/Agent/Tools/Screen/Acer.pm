@@ -13,7 +13,7 @@ my $eisa_id_match_str = join('|', qw(
         0024
         004b
         00a3
-        00A8
+        00a8
         00d2
         00db
         00f7
@@ -36,7 +36,7 @@ my $eisa_id_match_str = join('|', qw(
         ad51
         adaf
     ));
-my $eisa_id_match = qr/($eisa_id_match_str)$/ ;
+my $eisa_id_match = qr/($eisa_id_match_str)$/i ;
 
 sub serial {
     my ($self) = @_;
