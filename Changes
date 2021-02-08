@@ -11,9 +11,15 @@ inventory:
 * fix cpu thread count by core reported by dmidecode method
 * win32: Support WSL virtualization inventory
 * Add support for AnyDesk remote management inventory
+* Added Acer monitor serial support (K272HL, ET221Q, AL1716, V193W, V173AB)
 
 netdiscovery/netinventory:
 * Add support for SonicWall devices
+
+packaging:
+* Windows MSI installer based on StrawBerry Perl 5.32.1
+* MacOSX with prebuilt perl 5.32.1 including OpenSSL 1.1.1i support
+* Linux Snap package with prebuilt perl 5.32.1
 
 Revision history for FusionInventory agent
 
