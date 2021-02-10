@@ -14,7 +14,7 @@ include 'Module::AutoInstall';
 abstract 'Glpi unified Agent for UNIX, Linux, Windows and MacOSX';
 license 'gpl';
 repository 'https://github.com/glpi-project/glpi-agent';
-version_from 'lib/FusionInventory/Agent/Version.pm';
+version '1.0-dev';
 perl_version '5.008';
 authors 'Teclib Editions';
 
@@ -161,7 +161,7 @@ our %variables;
 
 # force a perl-independant prefix for everything
 sub constants {
-    my ($self) = @_;
+    my $self = shift;
 
     # for some reason, initialising variables from the global scope doesn't work
     %variables = (
@@ -226,7 +226,7 @@ sub constants {
 }
 
 sub install {
-    my ($self) = @_;
+    my $self = shift;
     my $install = $self->SUPER::install(@_);
 
     # add dependency on data and configuration installation targets, and remove
@@ -285,7 +285,7 @@ EOF
 
 # ensure binaries get modified to use configured directories (on Unix only)
 sub installbin {
-    my ($self) = @_;
+    my $self = shift;
     my $installbin = $self->SUPER::installbin(@_);
 
     return $installbin if $OSNAME eq 'MSWin32';
@@ -299,4 +299,3 @@ FINALIZE = $(ABSPERLRUN) -pi \
 EOF
     return $installbin;
 }
-
