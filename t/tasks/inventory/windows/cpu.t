@@ -144,6 +144,34 @@ my %tests = (
             THREAD       => '2',
             CORE         => '2'
         }
+    ],
+    '2008-with-2-different-cpus' => [
+        {
+            ID           => 'A5 06 01 00 FF FB EB BF',
+            NAME         => 'Intel(R) Xeon(R) CPU E5506 @ 2.13GHz',
+            SERIAL       => undef,
+            MANUFACTURER => 'Intel',
+            DESCRIPTION  => 'Intel64 Family 6 Model 26 Stepping 5',
+            STEPPING     => '5',
+            FAMILYNUMBER => '6',
+            MODEL        => '26',
+            SPEED        => '2000',
+            THREAD       => '4',
+            CORE         => '4'
+        },
+        {
+            ID           => 'A5 06 01 00 FF FB EB BF',
+            NAME         => 'Intel(R) Xeon(R) CPU E5504 @ 2.00GHz',
+            SERIAL       => undef,
+            MANUFACTURER => 'Intel',
+            DESCRIPTION  => 'Intel64 Family 6 Model 26 Stepping 5',
+            STEPPING     => '5',
+            FAMILYNUMBER => '6',
+            MODEL        => '26',
+            SPEED        => '2130',
+            THREAD       => '4',
+            CORE         => '4'
+        }
     ]
 );
 
