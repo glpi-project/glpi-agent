@@ -62,6 +62,7 @@ sub _getCPUs {
     );
 
     my $cpuId = 0;
+    my $logicalId = 0;
     my @cpus;
 
     foreach my $object (getWMIObjects(
@@ -73,7 +74,7 @@ sub _getCPUs {
     )) {
 
         my $dmidecodeInfo = $dmidecodeInfos[$cpuId];
-        my $registryInfo  = $registryInfos->{"$cpuId/"};
+        my $registryInfo  = $registryInfos->{"$logicalId/"};
 
         # Compute WMI threads for this CPU if not available in dmidecode, this is the case on win2003r2 with 932370 hotfix applied (see #2894)
         my $wmi_threads   = !$dmidecodeInfo->{THREAD} && $object->{NumberOfCores} ? $object->{NumberOfLogicalProcessors}/$object->{NumberOfCores} : undef;
@@ -121,6 +122,7 @@ sub _getCPUs {
         push @cpus, $cpu;
 
         $cpuId++;
+        $logicalId = $logicalId + ($object->{NumberOfLogicalProcessors} // 1);
     }
 
     return @cpus;
