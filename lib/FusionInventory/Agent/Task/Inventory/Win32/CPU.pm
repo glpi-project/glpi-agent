@@ -65,6 +65,9 @@ sub _getCPUs {
     my $logicalId = 0;
     my @cpus;
 
+    # Be aware, a bug on OS side may have reversed the order of processors infos regarding
+    # dmi table order, see https://github.com/fusioninventory/fusioninventory-agent/issues/898
+    # so we use dmidecode infos in priority even if it is not totally accurate
     foreach my $object (getWMIObjects(
         class      => 'Win32_Processor',
         properties => [ qw/
@@ -80,19 +83,25 @@ sub _getCPUs {
         my $wmi_threads   = !$dmidecodeInfo->{THREAD} && $object->{NumberOfCores} ? $object->{NumberOfLogicalProcessors}/$object->{NumberOfCores} : undef;
 
         # Split CPUID from its value inside registry
-        my @splitted_identifier = split(/ |\n/, $registryInfo->{'/Identifier'} || $object->{Manufacturer});
+        my @splitted_identifier = split(/ |\n/, $registryInfo->{'/Identifier'} || $object->{Description});
+
+        my $name = $dmidecodeInfo->{NAME};
+        unless ($name) {
+            $name = trimWhitespace($registryInfo->{'/ProcessorNameString'} || $object->{Name});
+            $name =~ s/\((R|TM)\)//gi if $name;
+        }
 
         my $cpu = {
             CORE         => $dmidecodeInfo->{CORE} || $object->{NumberOfCores},
             THREAD       => $dmidecodeInfo->{THREAD} || $wmi_threads,
-            DESCRIPTION  => $registryInfo->{'/Identifier'} || $object->{Description},
-            NAME         => trimWhitespace($registryInfo->{'/ProcessorNameString'} || $object->{Name}),
-            MANUFACTURER => getCanonicalManufacturer($registryInfo->{'/VendorIdentifier'} || $object->{Manufacturer}),
+            DESCRIPTION  => $dmidecodeInfo->{DESCRIPTION} || $registryInfo->{'/Identifier'} || $object->{Description},
+            NAME         => $name,
+            MANUFACTURER => $dmidecodeInfo->{MANUFACTURER} || getCanonicalManufacturer($registryInfo->{'/VendorIdentifier'} || $object->{Manufacturer}),
             SERIAL       => $dmidecodeInfo->{SERIAL} || $object->{SerialNumber},
             SPEED        => $dmidecodeInfo->{SPEED} || $object->{MaxClockSpeed},
-            FAMILYNUMBER => $splitted_identifier[2],
-            MODEL        => $splitted_identifier[4],
-            STEPPING     => $splitted_identifier[6],
+            FAMILYNUMBER => $dmidecodeInfo->{FAMILYNUMBER} || $splitted_identifier[2],
+            MODEL        => $dmidecodeInfo->{MODEL} || $splitted_identifier[4],
+            STEPPING     => $dmidecodeInfo->{STEPPING} || $splitted_identifier[6],
             ID           => $dmidecodeInfo->{ID} || $object->{ProcessorId}
         };
 

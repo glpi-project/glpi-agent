@@ -13,6 +13,7 @@ inventory:
 * Add support for AnyDesk remote management inventory
 * Added Acer monitor serial support (K272HL, ET221Q, AL1716, V193W, V173AB)
 * win32: Fix cpu analysis to support inventory of different cpus
+* win32: Refactor cpu analysis to make dmidecode safer to use under win32
 
 netdiscovery/netinventory:
 * Add support for SonicWall devices
