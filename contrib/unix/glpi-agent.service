@@ -10,12 +10,12 @@
 # Environment="OPTIONS=--no-category=software"
 
 [Unit]
-Description=FusionInventory agent
-Documentation=man:fusioninventory-agent
+Description=GLPI agent
+Documentation=man:glpi-agent
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/fusioninventory-agent --daemon --no-fork $OPTIONS
+ExecStart=/usr/bin/glpi-agent --daemon --no-fork $OPTIONS
 ExecReload=/bin/kill -HUP $MAINPID
 CapabilityBoundingSet=~CAP_SYS_PTRACE
 

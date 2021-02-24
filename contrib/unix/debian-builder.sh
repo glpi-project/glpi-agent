@@ -37,15 +37,15 @@ perl Makefile.PL
 make manifest
 
 DEBIAN_VERSION=$( dpkg-parsechangelog -S Version | cut -d':' -f2 )
-make dist DISTVNAME="FusionInventory-Agent-$DEBIAN_VERSION"
+make dist DISTVNAME="GLPI-Agent-$DEBIAN_VERSION"
 
 # Extract version from Makefile
 VERSION=$( egrep '^VERSION = ' Makefile | cut -d'=' -f2 | tr -d ' ' )
 ORIG_VERSION="${DEBIAN_VERSION%-*}"
 
 # Move package to the expected place
-rm -f ../fusioninventory-agent_$VERSION*
-mv -vf FusionInventory-Agent-$DEBIAN_VERSION.tar.gz ../fusioninventory-agent_$ORIG_VERSION.orig.tar.gz
+rm -f ../glpi-agent_$VERSION*
+mv -vf GLPI-Agent-$DEBIAN_VERSION.tar.gz ../glpi-agent_$ORIG_VERSION.orig.tar.gz
 
 # Set a builderid
 PBUILDER_BASE_SHA1=$( sha1sum /var/cache/pbuilder/base.tgz 2>/dev/null )
@@ -66,8 +66,8 @@ dh_clean
 
 # Fix modified files
 echo "Reverting files to cleanup sources"
-tar xvf ../fusioninventory-agent_$ORIG_VERSION.orig.tar.gz \
+tar xvf ../glpi-agent_$ORIG_VERSION.orig.tar.gz \
 	--strip-components=1 \
-	FusionInventory-Agent-$DEBIAN_VERSION/lib/setup.pm \
-	FusionInventory-Agent-$DEBIAN_VERSION/lib/FusionInventory/Agent/Version.pm \
-	FusionInventory-Agent-$DEBIAN_VERSION/etc/agent.cfg
+	GLPI-Agent-$DEBIAN_VERSION/lib/setup.pm \
+	GLPI-Agent-$DEBIAN_VERSION/lib/FusionInventory/Agent/Version.pm \
+	GLPI-Agent-$DEBIAN_VERSION/etc/agent.cfg

@@ -1,35 +1,35 @@
 #!/bin/sh
 #
 # chkconfig: - 88 12
-# description:  FusionInventory Agent
-# processname: fusioninventory-agent
-# config: /etc/sysconfig/fusioninventory-agent.pid
-# pidfile: /var/run/fusioninventory-agent.pid
+# description:  GLPI Agent
+# processname: glpi-agent
+# config: /etc/sysconfig/glpi-agent
+# pidfile: /var/run/glpi-agent.pid
 ### BEGIN INIT INFO
-# Provides: fusioninventory-agent
+# Provides: glpi-agent
 # Required-Start: $remote_fs $network $named $syslog
 # Required-Stop: $remote_fs $network $named $syslog
 # Default-Start: 3 5
 # Default-Stop: 0 1 6
-# Short-Description: FusionInventory agent
-# Description: FusionInventory agent
+# Short-Description: GLPI agent
+# Description: GLPI agent
 ### END INIT INFO
 
 # source function library
 . /etc/rc.d/init.d/functions
 
-desc="FusionInventory Agent"
-prog=fusioninventory-agent
+desc="GLPI Agent"
+prog=glpi-agent
 lockfile=/var/lock/subsys/$prog
 pidfile=/var/run/$prog.pid
 
-if [ -r /etc/sysconfig/fusioninventory-agent ]; then
-    . /etc/sysconfig/fusioninventory-agent
+if [ -r /etc/sysconfig/glpi-agent ]; then
+    . /etc/sysconfig/glpi-agent
 fi
 
 start() {
     echo -n "Starting $prog: "
-    daemon fusioninventory-agent --daemon $OPTIONS --pidfile $pidfile 2>/dev/null
+    daemon glpi-agent --daemon $OPTIONS --pidfile $pidfile 2>/dev/null
     RETVAL=$?
     echo
     [ $RETVAL -eq 0 ] && touch $lockfile

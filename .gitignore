@@ -3,13 +3,12 @@ MANIFEST
 MANIFEST.bak
 META.yml
 Makefile
+Makefile.old
 run-postinst
 FusionInventory-Agent*
 blib
 pm_to_blib
 *~
-fusioninventory-esx
-lib/FusionInventory/VMware
 *.swp
 *.swo
 MYMETA.json

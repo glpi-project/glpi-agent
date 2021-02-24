@@ -7,7 +7,7 @@ use UNIVERSAL::require;
 
 my $distfile = shift @ARGV;
 
-die "Argument must be an existing fusioninventory-agent archive release file\n"
+die "Argument must be an existing glpi-agent archive release file\n"
     unless ($distfile && -e $distfile);
 
 unless ($distfile) {

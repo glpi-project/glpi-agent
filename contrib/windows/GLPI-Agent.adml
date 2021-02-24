@@ -1,80 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <policyDefinitionResources xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" revision="1.3" schemaVersion="1.0" xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
-  <displayName>FusionInventory Agent GPO configuration</displayName>
-  <description>FusionInventory Agent GPO configuration</description>
+  <displayName>GLPI Agent GPO configuration</displayName>
+  <description>GLPI Agent GPO configuration</description>
   <resources>
     <stringTable>
-      <string id="FusionInventory_ROOT">FusionInventory Agent</string>
-      <string id="FusionInventory_CONFIGURE32on64">Configure the 32-bit agent on 64 bit computers</string>
-      <string id="FusionInventory_CONFIGURE">Configure the agent</string>
-      <string id="FusionInventory_CONFIGURE_EXPLAIN">Specify the paramaters for The FusionInventory Agent.</string>
+      <string id="GLPI_ROOT">GLPI Agent</string>
+      <string id="GLPI_CONFIGURE32on64">Configure the 32-bit agent on 64 bit computers</string>
+      <string id="GLPI_CONFIGURE">Configure the agent</string>
+      <string id="GLPI_CONFIGURE_EXPLAIN">Specify the paramaters for GLPI Agent.</string>
 	  <string id="Off">Off</string>
 	  <string id="Normal">Normal</string>
 	  <string id="Full">Full</string>
     </stringTable>
     <presentationTable>
-      <presentation id="FusionInventory_CONFIGURE">
-        <textBox refId="FusionInventory_Server">
+      <presentation id="GLPI_CONFIGURE">
+        <textBox refId="GLPI_Server">
           <label>Server</label>
           <defaultValue></defaultValue>
         </textBox>
-        <textBox refId="FusionInventory_Proxy">
+        <textBox refId="GLPI_Proxy">
           <label>Proxy server</label>
           <defaultValue></defaultValue>
         </textBox>
-        <textBox refId="FusionInventory_User">
+        <textBox refId="GLPI_User">
           <label>Proxy User</label>
           <defaultValue></defaultValue>
         </textBox>
-        <textBox refId="FusionInventory_Password">
+        <textBox refId="GLPI_Password">
           <label>Proxy Password</label>
           <defaultValue></defaultValue>
         </textBox>
-        <textBox refId="FusionInventory_Tag">
+        <textBox refId="GLPI_Tag">
           <label>Tag</label>
           <defaultValue></defaultValue>
         </textBox>
-        <textBox refId="FusionInventory_ca-cert-dir">
+        <textBox refId="GLPI_ca-cert-dir">
           <label>CA-cert-dir</label>
           <defaultValue></defaultValue>
         </textBox>
-        <textBox refId="FusionInventory_ca-cert-file">
+        <textBox refId="GLPI_ca-cert-file">
           <label>CA-cert-file</label>
           <defaultValue></defaultValue>
         </textBox>
-        <textBox refId="FusionInventory_httpd-ip">
+        <textBox refId="GLPI_httpd-ip">
           <label>httpd-ip</label>
           <defaultValue>0.0.0.0</defaultValue>
         </textBox>
-        <textBox refId="FusionInventory_httpd-port">
+        <textBox refId="GLPI_httpd-port">
           <label>httpd-port</label>
           <defaultValue>62354</defaultValue>
         </textBox>
-        <textBox refId="FusionInventory_httpd-trust">
+        <textBox refId="GLPI_httpd-trust">
           <label>httpd-trust</label>
           <defaultValue>127.0.0.1/32</defaultValue>
         </textBox>
-        <textBox refId="FusionInventory_no-category">
+        <textBox refId="GLPI_no-category">
           <label>no-category</label>
           <defaultValue></defaultValue>
         </textBox>
-		<textBox refId="FusionInventory_no-task">
+        <textBox refId="GLPI_no-task">
           <label>no-task</label>
           <defaultValue></defaultValue>
         </textBox>
-        <textBox refId="FusionInventory_tasks">
+        <textBox refId="GLPI_tasks">
           <label>tasks</label>
           <defaultValue></defaultValue>
         </textBox>
         <decimalTextBox refId="DXT_9F1637AA_9DC6_4642_B986_E17709212459" defaultValue="3600">Delaytime</decimalTextBox>
         <decimalTextBox refId="DXT_FCAD5C50_5A36_4390_9342_97F88FFC3D7E" defaultValue="180">Timeout</decimalTextBox>
         <decimalTextBox refId="DXT_75779EA7_02CB_4AA9_B112_4AE05C925472" defaultValue="180">backend-collect-timeout</decimalTextBox>
-		<dropdownList refId="DXT_9F1637AA_9DC6_4642_B986_E17774925725" noSort="true" defaultItem ="0">Debug Level</dropdownList>
-        <checkBox refId="FusionInventory_no-ssl-check" defaultChecked="false" >no-ssl-check</checkBox>
-        <checkBox refId="FusionInventory_no-p2p" defaultChecked="false" >no-p2p</checkBox>
-        <checkBox refId="FusionInventory_scan-homedirs" defaultChecked="true">scan-homedirs</checkBox>
-		<checkBox refId="FusionInventory_scan-profiles" defaultChecked="true">scan-profiles</checkBox>
-        <checkBox refId="FusionInventory_no-httpd">no-httpd</checkBox>
+        <dropdownList refId="DXT_9F1637AA_9DC6_4642_B986_E17774925725" noSort="true" defaultItem ="0">Debug Level</dropdownList>
+        <checkBox refId="GLPI_no-ssl-check" defaultChecked="false" >no-ssl-check</checkBox>
+        <checkBox refId="GLPI_no-p2p" defaultChecked="false" >no-p2p</checkBox>
+        <checkBox refId="GLPI_scan-homedirs" defaultChecked="true">scan-homedirs</checkBox>
+        <checkBox refId="GLPI_scan-profiles" defaultChecked="true">scan-profiles</checkBox>
+        <checkBox refId="GLPI_no-httpd">no-httpd</checkBox>
       </presentation>
     </presentationTable>
   </resources>

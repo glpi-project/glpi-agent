@@ -1,34 +1,23 @@
 
-# FusionInventory Agent Contribs
+# GLPI Agent Contribs
 
 ## Included contribs
 
- * [Yum-plugin](contrib/yum-plugin) by @remicollet, see [INSTALL](contrib/yum-plugin/INSTALL)
  * [Unix](contrib/unix):
-   * legacy Debian and Redhat init scripts
+   * legacy Redhat init scripts
    * systemd sample service file
    * install-deb.sh by @J-C-P, script to simplify installation on debian/ubuntu, see [README](contrib/unix/install-deb-README.md)
  * [Windows](contrib/windows):
-   * [fusioninventory-agent-deployment.vbs](contrib/windows/fusioninventory-agent-deployment.vbs):
-     FusionInventory Agent deployment helper script
-   * ADML & ADMX templates to help setup FusionInventory Agent through GPO
+   * [glpi-agent-deployment.vbs](contrib/windows/glpi-agent-deployment.vbs):
+     GLPI Agent deployment helper script
+   * ADML & ADMX templates to help setup GLPI Agent through GPO
  * [netdisco_2_glpi.sh](contrib/netdisco/netdisco_2_glpi.sh) by Stoatwblr
    This script makes fusioninventory-compatible xml from netdisco data.
    Stoatwblr says even if it is ugly and slow, it works ;-)
 
-## Other contribs
-
- * [fusioninventory-agent-deployment.vbs](contrib/windows/fusioninventory-agent-deployment.vbs) with server location support  
-   See [Add server location to allow server move](https://github.com/EChaffraix/fusioninventory-agent/commit/16507d0a5da09e019d5baa6264b97edf3efb3164) or #220  
-   [Download](https://github.com/EChaffraix/ws/fusioninventory-agent/raw/2.3.x/contrib/windows/fusioninventory-agent-deployment.vbs), thanks to @EChaffraix
-
- * [fusioninventory-agent-deployment.vbs](contrib/windows/fusioninventory-agent-deployment.vbs) with Telegram notification support  
-   See [Implement notification in Telegram when agent was installed](https://github.com/fusioninventory/fusioninventory-agent/pull/256/commits/86c9f85516e89394523ef5641911974cfc684326) or #256  
-   [Download](https://github.com/fusioninventory/fusioninventory-agent/raw/86c9f85516e89394523ef5641911974cfc684326/contrib/windows/fusioninventory-agent-deployment.vbs), thanks to @wanderleihuttel
-
 ## Submit your contribs
 
- * Clone [FusionInventory-Agent github repository](https://github.com/fusioninventory/fusioninventory-agent)
+ * Clone [GLPI-Agent github repository](https://github.com/glpi-project/glpi-agent)
  * Create a dedicated branch to develop and test your contrib
- * On your 2.3.x branch, update this CONTRIB.md file to reference properly your contrib
+ * On your develop branch, update this CONTRIB.md file to reference properly your contrib
  * Make a PR so we only include your new contrib reference

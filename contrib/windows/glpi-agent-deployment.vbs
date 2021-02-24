@@ -1,14 +1,13 @@
 '
 '  ------------------------------------------------------------------------
-'  fusioninventory-agent-deployment.vbs
+'  glpi-agent-deployment.vbs
 '  Copyright (C) 2010-2017 by the FusionInventory Development Team.
-'
-'  http://www.fusioninventory.org/ http://forge.fusioninventory.org/
+'  Copyright (C) 2021 by the Teclib SAS
 '  ------------------------------------------------------------------------
 '
 '  LICENSE
 '
-'  This file is part of FusionInventory project.
+'  This file is part of GLPI Agent project.
 '
 '  This file is free software; you can redistribute it and/or modify it
 '  under the terms of the GNU General Public License as published by the
@@ -28,19 +27,19 @@
 '
 '  ------------------------------------------------------------------------
 '
-'  @package   FusionInventory Agent
-'  @file      .\contrib\windows\fusioninventory-agent-deployment.vbs
+'  @package   GLPI Agent
+'  @file      .\contrib\windows\glpi-agent-deployment.vbs
 '  @author(s) Benjamin Accary <meldrone@orange.fr>
 '             Christophe Pujol <chpujol@gmail.com>
 '             Marc Caissial <marc.caissial@zenitique.fr>
 '             Tomas Abad <tabadgp@gmail.com>
 '             Guillaume Bougard <gbougard@teclib.com>
 '  @copyright Copyright (c) 2010-2017 FusionInventory Team
+'             Copyright (c) 2021 Teclib SAS
 '  @license   GNU GPL version 2 or (at your option) any later version
 '             http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html
-'  @link      http://www.fusioninventory.org/
-'  @link      http://forge.fusioninventory.org/projects/fusioninventory-agent
-'  @since     2012
+'  @link      http://www.glpi-project.org/
+'  @since     2021
 '
 '  ------------------------------------------------------------------------
 '
@@ -48,7 +47,7 @@
 '
 '
 ' Purpose:
-'     FusionInventory Agent Unatended Deployment.
+'     GLPI Agent Unatended Deployment.
 '
 '
 
@@ -65,7 +64,7 @@ Dim Setup, SetupArchitecture, SetupLocation, SetupOptions, SetupVersion
 ' SetupVersion
 '    Setup version with the pattern <major>.<minor>.<release>[-<package>]
 '
-SetupVersion = "2.4"
+SetupVersion = "1.0"
 
 ' SetupLocation
 '    Depending on your needs or your environment, you can use either a HTTP or
@@ -84,8 +83,7 @@ SetupVersion = "2.4"
 '       from programs accessed from that UNC.
 '
 ' Location for Release Candidates
-' SetupLocation = "https://github.com/TECLIB/fusioninventory-agent-windows-installer/releases/download/" & SetupVersion
-SetupLocation = "https://github.com/fusioninventory/fusioninventory-agent/releases/download/" & SetupVersion
+SetupLocation = "https://github.com/glpi-project/glpi-agent/releases/download/" & SetupVersion
 
 
 ' SetupArchitecture
@@ -102,12 +100,12 @@ SetupArchitecture = "Auto"
 '    You should use simple quotes (') to set between quotation marks those values
 '    that require it; double quotes (") doesn't work with UNCs.
 '
-SetupOptions = "/acceptlicense /runnow /server='http://glpi.yourcompany.com/glpi/plugins/fusioninventory/' /S"
+SetupOptions = "RUNNOW=1 SERVER='http://glpi.yourcompany.com/glpi/fusioninventory/' SILENT=1"
 
 ' Setup
 '    The installer file name. You should not have to modify this variable ever.
 '
-Setup = "fusioninventory-agent_windows-" & SetupArchitecture & "_" & SetupVersion & ".exe"
+Setup = "GLPI-Agent-" & SetupVersion & "-" & SetupArchitecture & ".msi"
 
 ' Force
 '    Force the installation even whether Setup is previously installed.
@@ -194,82 +192,52 @@ Function IsInstallationNeeded(strSetupVersion, strSetupArchitecture, strSystemAr
    ' Compare the current version, whether it exists, with strSetupVersion
    If strSystemArchitecture = "x86" Then
       ' The system architecture is 32-bit
-      ' Check if the subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory Agent' exists
-      '    This subkey is now deprecated
+      ' Check if the subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\GLPI-Agent' exists
       On error resume next
-      strCurrentSetupVersion = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory Agent\DisplayVersion")
+      strCurrentSetupVersion = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\GLPI-Agent\DisplayVersion")
       If Err.Number = 0 Then
-      ' The subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory Agent' exists
+      ' The subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\GLPI-Agent' exists
          If strCurrentSetupVersion <> strSetupVersion Then
             ShowMessage("Installation needed: " & strCurrentSetupVersion & " -> " & strSetupVersion)
             IsInstallationNeeded = True
          End If
          Exit Function
       Else
-         ' The subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory Agent' doesn't exist
+      ' The subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\GLPI-Agent' doesn't exist
          Err.Clear
-         ' Check if the subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory-Agent' exists
-         On error resume next
-         strCurrentSetupVersion = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory-Agent\DisplayVersion")
-         If Err.Number = 0 Then
-         ' The subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory-Agent' exists
-            If strCurrentSetupVersion <> strSetupVersion Then
-               ShowMessage("Installation needed: " & strCurrentSetupVersion & " -> " & strSetupVersion)
-               IsInstallationNeeded = True
-            End If
-            Exit Function
-         Else
-            ' The subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory-Agent' doesn't exist
-            Err.Clear
-            ShowMessage("Installation needed: " & strSetupVersion)
-            IsInstallationNeeded = True
-         End If
+         ShowMessage("Installation needed: " & strSetupVersion)
+         IsInstallationNeeded = True
       End If
    Else
       ' The system architecture is 64-bit
-      ' Check if the subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory Agent' exists
-      '    This subkey is now deprecated
+      ' Check if the subkey 'SOFTWARE\Microsoft\Wow6432Node\Windows\CurrentVersion\Uninstall\GLPI-Agent' exists
       On error resume next
-      strCurrentSetupVersion = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory Agent\DisplayVersion")
+      strCurrentSetupVersion = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\GLPI-Agent\DisplayVersion")
       If Err.Number = 0 Then
-      ' The subkey 'SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory Agent' exists
+      ' The subkey 'SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\GLPI-Agent' exists
          If strCurrentSetupVersion <> strSetupVersion Then
             ShowMessage("Installation needed: " & strCurrentSetupVersion & " -> " & strSetupVersion)
             IsInstallationNeeded = True
          End If
          Exit Function
       Else
-         ' The subkey 'SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory Agent' doesn't exist
+         ' The subkey 'SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\GLPI-Agent' doesn't exist
          Err.Clear
-         ' Check if the subkey 'SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory-Agent' exists
+         ' Check if the subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\GLPI-Agent' exists
          On error resume next
-         strCurrentSetupVersion = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory-Agent\DisplayVersion")
+         strCurrentSetupVersion = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\GLPI-Agent\DisplayVersion")
          If Err.Number = 0 Then
-         ' The subkey 'SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory-Agent' exists
+         ' The subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\GLPI-Agent' exists
             If strCurrentSetupVersion <> strSetupVersion Then
                ShowMessage("Installation needed: " & strCurrentSetupVersion & " -> " & strSetupVersion)
                IsInstallationNeeded = True
             End If
             Exit Function
          Else
-            ' The subkey 'SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory-Agent' doesn't exist
+            ' The subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\GLPI-Agent' doesn't exist
             Err.Clear
-            ' Check if the subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory-Agent' exists
-            On error resume next
-            strCurrentSetupVersion = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory-Agent\DisplayVersion")
-            If Err.Number = 0 Then
-            ' The subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory-Agent' exists
-               If strCurrentSetupVersion <> strSetupVersion Then
-                  ShowMessage("Installation needed: " & strCurrentSetupVersion & " -> " & strSetupVersion)
-                  IsInstallationNeeded = True
-               End If
-               Exit Function
-            Else
-               ' The subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory-Agent' doesn't exist
-               Err.Clear
-               ShowMessage("Installation needed: " & strSetupVersion)
-               IsInstallationNeeded = True
-            End If
+            ShowMessage("Installation needed: " & strSetupVersion)
+            IsInstallationNeeded = True
          End If
       End If
    End If
