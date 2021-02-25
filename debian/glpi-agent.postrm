@@ -9,34 +9,34 @@ case "$1" in
         for conf in agent inventory-server-plugin ssl-server-plugin server-test-plugin \
             proxy-server-plugin proxy2-server-plugin
         do
-            rm -f /etc/fusioninventory/$conf.cfg$ext
+            rm -f /etc/glpi-agent/$conf.cfg$ext
         done
     done
 
     # Cleanup var dir
-    rm -rf /var/lib/fusioninventory-agent
+    rm -rf /var/lib/glpi-agent
 
     # remove the configuration file itself
     for conf in agent inventory-server-plugin ssl-server-plugin server-test-plugin \
         proxy-server-plugin proxy2-server-plugin
     do
-        rm -f /etc/fusioninventory/$conf.cfg
+        rm -f /etc/glpi-agent/$conf.cfg
     done
-    [ -d /etc/fusioninventory ] && rmdir --ignore-fail-on-non-empty /etc/fusioninventory
+    [ -d /etc/glpi-agent ] && rmdir --ignore-fail-on-non-empty /etc/glpi-agent
 
     # and finally clear it out from the ucf database
     if which ucf >/dev/null; then
         for conf in agent inventory-server-plugin ssl-server-plugin server-test-plugin \
             proxy-server-plugin proxy2-server-plugin
         do
-            ucf --purge /etc/fusioninventory/$conf.cfg
+            ucf --purge /etc/glpi-agent/$conf.cfg
         done
     fi
     if which ucfr >/dev/null; then
         for conf in agent inventory-server-plugin ssl-server-plugin server-test-plugin \
             proxy-server-plugin proxy2-server-plugin
         do
-            ucfr --purge fusioninventory-agent /etc/fusioninventory/$conf.cfg
+            ucfr --purge glpi-agent /etc/glpi-agent/$conf.cfg
         done
     fi
 

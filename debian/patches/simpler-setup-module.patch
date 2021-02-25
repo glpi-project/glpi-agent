@@ -5,8 +5,8 @@ Author: Guillaume Bougard <gbougard@teclib.com>
 Forwarded: not-needed
 Last-Update: 2018-10-08
 
---- fusioninventory-agent-2.4.orig/lib/setup.pm
-+++ fusioninventory-agent-2.4/lib/setup.pm
+--- a/lib/setup.pm
++++ b/lib/setup.pm
 @@ -5,9 +5,6 @@ use strict;
  use warnings;
  use parent qw(Exporter);

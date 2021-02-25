@@ -7,13 +7,13 @@ TEST_FILES = t/01compile.t t/agent/tools/linux.t \
 	$(shell echo t/tasks/inventory/linux/*.t t/tasks/inventory/linux/*/*.t)
 
 # By default, set COMMENTS with converted source timestamp in UTC
-DEB_FIA_COMMENTS ?= Built by Debian,Source time: $(shell date -u +'%F %R' -d @$(SOURCE_DATE_EPOCH))
+DEB_AGENT_COMMENTS ?= Built by Debian,Source time: $(shell date -u +'%F %R' -d @$(SOURCE_DATE_EPOCH))
 
 %:
 	dh $@
 
 override_dh_auto_configure:
-	dh_auto_configure -- PREFIX=/usr SYSCONFDIR=/etc/fusioninventory LOCALSTATEDIR=/var/lib/fusioninventory-agent VERSION=$(DEB_VERSION_UPSTREAM_REVISION) COMMENTS="$(DEB_FIA_COMMENTS)"
+	dh_auto_configure -- PREFIX=/usr SYSCONFDIR=/etc/glpi-agent LOCALSTATEDIR=/var/lib/glpi-agent VERSION=$(DEB_VERSION_UPSTREAM_REVISION) COMMENTS="$(DEB_AGENT_COMMENTS)"
 
 override_dh_auto_test:
 	dh_auto_test -- TEST_FILES="$(TEST_FILES)"

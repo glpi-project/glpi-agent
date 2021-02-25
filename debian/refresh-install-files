@@ -5,29 +5,23 @@ use warnings;
 
 use File::Find;
 
-open AGENT, ">debian/fusioninventory-agent.install";
-open AGENT_TASK_DEPLOY, ">debian/fusioninventory-agent-task-deploy.install";
-open AGENT_TASK_NETWORK, ">debian/fusioninventory-agent-task-network.install";
-open AGENT_TASK_ESX, ">debian/fusioninventory-agent-task-esx.install";
-open AGENT_TASK_COLLECT, ">debian/fusioninventory-agent-task-collect.install";
+open AGENT, ">debian/glpi-agent.install";
+open AGENT_TASK_DEPLOY, ">debian/glpi-agent-task-deploy.install";
+open AGENT_TASK_NETWORK, ">debian/glpi-agent-task-network.install";
+open AGENT_TASK_ESX, ">debian/glpi-agent-task-esx.install";
+open AGENT_TASK_COLLECT, ">debian/glpi-agent-task-collect.install";
 
 find({ wanted => \&wanted, no_chdir=>1}, 'blib');
 sub wanted {
     my $t = $File::Find::name;
     return unless -f $t;
-    $t =~ s,blib/,usr/share/fusioninventory/,;
-    $t =~ s,usr/share/fusioninventory/script/,usr/bin/,;
+    $t =~ s,blib/,usr/share/glpi-agent/,;
+    $t =~ s,usr/share/glpi-agent/script/,usr/bin/,;
     if (/\/man1\//) {
         # dh_installmans
-    } elsif ($t =~ /fusioninventory-net/ || $t =~ /FusionInventory\/Agent\/SNMP/) {
+    } elsif ($t =~ /glpi-net/ || $t =~ /FusionInventory\/Agent\/(SNMP|Tools\/Hardware|Task\/Net)/) {
         print AGENT_TASK_NETWORK "$t\n";
-    } elsif ($t =~ /FusionInventory\/Agent\/Tools\/Hardware/) {
-        print AGENT_TASK_NETWORK "$t\n";
-    } elsif ($t =~ /FusionInventory\/Agent\/Task\/Net/) {
-        print AGENT_TASK_NETWORK "$t\n";
-    } elsif ($t =~ /fusioninventory-esx/) {
-        print AGENT_TASK_ESX "$t\n";
-    } elsif ($t =~ /FusionInventory\/Agent\/Task\/ESX/) {
+    } elsif ($t =~ /glpi-esx/ || $t =~ /FusionInventory\/Agent\/Task\/ESX/) {
         print AGENT_TASK_ESX "$t\n";
     } elsif ($t =~ /FusionInventory\/Agent\/Task\/Deploy/) {
         print AGENT_TASK_DEPLOY "$t\n";
@@ -39,13 +33,13 @@ sub wanted {
     }
 };
 
-print AGENT "etc/agent.cfg /usr/share/fusioninventory/etc\n";
-print AGENT "etc/inventory-server-plugin.cfg /usr/share/fusioninventory/etc\n";
-print AGENT "etc/ssl-server-plugin.cfg /usr/share/fusioninventory/etc\n";
-print AGENT "etc/server-test-plugin.cfg /usr/share/fusioninventory/etc\n";
-print AGENT "etc/proxy-server-plugin.cfg /usr/share/fusioninventory/etc\n";
-print AGENT "etc/proxy2-server-plugin.cfg /usr/share/fusioninventory/etc\n";
-print AGENT "usr/share/fusioninventory/edid.ids\n";
-print AGENT "usr/share/fusioninventory/sysobject.ids\n";
-print AGENT "usr/share/fusioninventory/html\n";
-print AGENT "contrib/unix/fusioninventory-agent.service lib/systemd/system\n";
+print AGENT "etc/agent.cfg /usr/share/glpi-agent/etc\n";
+print AGENT "etc/inventory-server-plugin.cfg /usr/share/glpi-agent/etc\n";
+print AGENT "etc/ssl-server-plugin.cfg /usr/share/glpi-agent/etc\n";
+print AGENT "etc/server-test-plugin.cfg /usr/share/glpi-agent/etc\n";
+print AGENT "etc/proxy-server-plugin.cfg /usr/share/glpi-agent/etc\n";
+print AGENT "etc/proxy2-server-plugin.cfg /usr/share/glpi-agent/etc\n";
+print AGENT "usr/share/glpi-agent/edid.ids\n";
+print AGENT "usr/share/glpi-agent/sysobject.ids\n";
+print AGENT "usr/share/glpi-agent/html\n";
+print AGENT "contrib/unix/glpi-agent.service lib/systemd/system\n";

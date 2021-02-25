@@ -1,3 +1,9 @@
+glpi-agent (1:1.0-1) unstable; urgency=medium
+
+  * Adapted fusioninventory-agent packaging to glpi-agent
+
+ -- Guillaume Bougard <gbougard@teclib.com>  Wed, 24 Feb 2021 16:30:48 +0100
+
 fusioninventory-agent (1:2.6-2) unstable; urgency=medium
 
   * d/watch fix regexp for uscsan

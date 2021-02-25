@@ -1,13 +1,13 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Contact: FusionInventory Team
-Source: https://metacpan.org/release/FusionInventory-Agent
-Upstream-Name: FusionInventory-Agent
+Upstream-Contact: GLPI-Project Team
+Source: https://glpi-project.org/
+Upstream-Name: GLPI-Agent
 
 Files: *
 Copyright:
            Copyright 2006-2010 OCS Inventory contributors
            Copyright 2010-2019 FusionInventory Team
-           Copyright 2011-2019 Teclib' ( https://www.teclib-edition.com )
+           Copyright 2011-2021 Teclib SAS
 License: GPL-2+
 
 Files: inc/Module/*
@@ -19,7 +19,7 @@ License: Artistic or GPL-1+
 Files: debian/*
 Copyright:
            2012-2015, Gonéri Le Bouder <goneri@debian.org>
-           2016-2019, Teclib' ( https://www.teclib-edition.com )
+           2016-2021, Teclib SAS
 License: GPL-2+
 
 Files: share/pci.ids

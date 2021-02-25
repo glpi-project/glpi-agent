@@ -8,14 +8,14 @@ Last-Update: 2020-11-27
 
 --- a/etc/agent.cfg
 +++ b/etc/agent.cfg
-@@ -97,13 +97,13 @@ httpd-trust =
+@@ -99,13 +99,13 @@ httpd-trust =
  #
  
  # Logger backend, either Stderr, File or Syslog (Stderr)
 -logger = stderr
 +logger = syslog,stderr
  # log file
- #logfile = /var/log/fusioninventory.log
+ #logfile = /var/log/glpi-agent.log
  # maximum log file size, in MB
  #logfile-maxsize = 0
  # Syslog facility
@@ -24,7 +24,7 @@ Last-Update: 2020-11-27
  # Use color in the console
  color = 0
  
-@@ -133,5 +133,5 @@ debug = 0
+@@ -135,5 +135,5 @@ debug = 0
  #   4. Package maintainers are encouraged to use this feature to avoid conflict
  #      during upgrades after configuration update
  #
