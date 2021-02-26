@@ -263,7 +263,9 @@ jobs:
           libwww-perl libxml-treepp-perl libxml-xpath-perl libyaml-perl
       shell: bash
     - name: Build debian packages
+      id: debbuild
       run: |
+        echo "::set-output name=debpath:: $(dirname $PWD)"
         # DH_COMPAT is needed on current ubuntu-latest, it could be removed after switching to Ubuntu 20.04
         export DH_COMPAT=11
         dpkg-buildpackage -d -b --no-sign
@@ -278,9 +280,9 @@ jobs:
       with:
         name: Built-Deb
         path: |
-          ../*.deb
-          ../*.buildinfo
-          ../*.changes
+          ${{ steps.debbuild.outputs.debpath }}/*.deb
+          ${{ steps.debbuild.outputs.debpath }}/*.buildinfo
+          ${{ steps.debbuild.outputs.debpath }}/*.changes
     - name: Upload Deb Packages
       id: upload-linux-deb-asset
       if: startsWith(github.ref, 'refs/tags/1.')
