@@ -256,6 +256,8 @@ jobs:
       shell: bash
     - name: Build debian packages
       run: |
+        # DH_COMPAT is needed on current ubuntu-latest, it could be removed after switching to Ubuntu 20.04
+        export DH_COMPAT=11
         dpkg-buildpackage -d -b --no-sign
       shell: bash
     - name: Run lintian
