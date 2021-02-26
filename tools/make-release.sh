@@ -137,6 +137,18 @@ sed -ri -e "s/.* not released yet/$VERSION $RELEASE_DATE/" Changes
 # Update version in Makefile.PL
 sed -ri -e "s/^version '.*';$/version '$VERSION';/" Makefile.PL
 
+# Update debian changelog with new entry log using current git user
+export DEBFULLNAME=$(git config --get user.name)
+export DEBEMAIL=$(git config --get user.email)
+if [ -n "$DEBFULLNAME" -a -n "$DEBEMAIL" ]; then
+    CURRENT=$(dpkg-parsechangelog -S version)
+    EPOCH=${CURRENT%%:*}
+    dch -b -D unstable --newversion "$EPOCH:$VERSION-1" "New upstream release $VERSION"
+else
+    echo "No github user or email set, aborting" >&2
+    exit 1
+fi
+
 if [ "$GIT" == "no" ]; then
     exit 0
 fi

@@ -25,8 +25,17 @@ x86_64 | PKG: [GLPI-Agent-${TAG}_x86_64.pkg](../../releases/download/$TAG/GLPI-A
 x86_64 | DMG: [GLPI-Agent-${TAG}_x86_64.dmg](../../releases/download/$TAG/GLPI-Agent-${TAG}_x86_64.dmg)
 
 ## Linux
-Packaging | Arch | Package
----|---|:---
-snap | amd64 | [glpi-agent_${TAG}_amd64.snap](../../releases/download/$TAG/glpi-agent_${TAG}_amd64.snap)
+
+### Snap package for amd64
+[glpi-agent_${TAG}_amd64.snap](../../releases/download/$TAG/glpi-agent_${TAG}_amd64.snap)
+
+### Debian/Ubuntu packages
+Related agent task |Package
+---|:---
+Inventory| [glpi-agent_${TAG}-1_all.deb](../../releases/download/$TAG/glpi-agent_${TAG}-1_all.deb)
+NetInventory | [glpi-agent-task-network_${TAG}-1_all.deb](../../releases/download/$TAG/glpi-agent-task-network_${TAG}-1_all.deb)
+ESX | [glpi-agent-task-esx_${TAG}-1_all.deb](../../releases/download/$TAG/glpi-agent-task-esx_${TAG}-1_all.deb)
+Collect | [glpi-agent-task-collect_${TAG}-1_all.deb](../../releases/download/$TAG/glpi-agent-task-collect_${TAG}-1_all.deb)
+Deploy | [glpi-agent-task-deploy_${TAG}-1_all.deb](../../releases/download/$TAG/glpi-agent-task-deploy_${TAG}-1_all.deb)
 
 DESCRIPTION
