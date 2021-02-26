@@ -278,9 +278,9 @@ jobs:
       with:
         name: Built-Deb
         path: |
-          - ../*.deb
-          - ../*.buildinfo
-          - ../*.changes
+          ../*.deb
+          ../*.buildinfo
+          ../*.changes
     - name: Upload Deb Packages
       id: upload-linux-deb-asset
       if: startsWith(github.ref, 'refs/tags/1.')
