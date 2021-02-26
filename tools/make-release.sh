@@ -25,6 +25,7 @@ Options:
     -h --help           Show the help
     --no-merge --devel  Don't merge the created release branch
     --no-git            Don't use git command to create commits, tag and merge
+    --debrev N          Set debian package revision to N (defaults=1)
 HELP
             ;;
         --no-merge|--devel)
@@ -32,6 +33,10 @@ HELP
             ;;
         --no-git)
             GIT="no"
+            ;;
+        --debrev)
+            shift
+            DEBREV="-$1"
             ;;
         -*)
             echo "Ignored option '$1'" >&2
@@ -143,7 +148,10 @@ export DEBEMAIL=$(git config --get user.email)
 if [ -n "$DEBFULLNAME" -a -n "$DEBEMAIL" ]; then
     CURRENT=$(dpkg-parsechangelog -S version)
     EPOCH=${CURRENT%%:*}
-    dch -b -D unstable --newversion "$EPOCH:$VERSION-1" "New upstream release $VERSION"
+    if [ "${VERSION#*-}" == "$VERSION" -a -z "$DEBREV" ]; then
+        DEBREV="-1"
+    fi
+    dch -b -D unstable --newversion "$EPOCH:$VERSION$DEBREV" "New upstream release $VERSION"
 else
     echo "No github user or email set, aborting" >&2
     exit 1
