@@ -248,18 +248,19 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install build dependencies packages
       run: |
-        sudo apt -y install dpkg-dev debhelper libmodule-install-perl
-        sudo apt -y install libfile-copy-recursive-perl libhttp-proxy-perl
-        sudo apt -y install libhttp-server-simple-authen-perl libio-capture-perl
-        sudo apt -y install libnet-snmp-perl libtest-compile-perl libtest-deep-perl
-        sudo apt -y install libtest-nowarnings-perl libtest-mockmodule-perl libtest-mockobject-perl
-      shell: bash
-    - name: Install packages for unittests
-      run: |
-        sudo apt -y install libnet-cups-perl libnet-ip-perl libwww-perl libparse-edid-perl
-        sudo apt -y install libproc-daemon-perl libuniversal-require-perl libfile-which-perl
-        sudo apt -y install libxml-treepp-perl libxml-xpath-perl libyaml-perl libtext-template-perl
-        sudo apt -y install libjson-pp-perl  libhttp-daemon-perl libyaml-tiny-perl libsocket-getaddrinfo-perl
+        sudo apt -y install dpkg-dev debhelper libmodule-install-perl      \
+          libclone-perl libdigest-sha-perl libfile-copy-recursive-perl     \
+          libfile-which-perl libhttp-cookies-perl libhttp-daemon-perl      \
+          libhttp-proxy-perl libhttp-server-simple-perl                    \
+          libhttp-server-simple-authen-perl libio-capture-perl             \
+          libipc-run-perl libjson-pp-perl libnet-ip-perl                   \
+          libnet-snmp-perl libio-socket-ssl-perl libparse-edid-perl        \
+          libproc-daemon-perl libparallel-forkmanager-perl                 \
+          libtest-compile-perl libtest-deep-perl libtest-nowarnings-perl   \
+          libtest-mockmodule-perl libtest-mockobject-perl                  \
+          libtext-template-perl libsocket-getaddrinfo-perl                 \
+          libuniversal-require-perl liburi-perl libwww-perl                \
+          libxml-treepp-perl libxml-xpath-perl libyaml-perl
       shell: bash
     - name: Build debian packages
       run: |
