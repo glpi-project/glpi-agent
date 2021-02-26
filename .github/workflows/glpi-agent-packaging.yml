@@ -257,10 +257,10 @@ jobs:
           libnet-snmp-perl libio-socket-ssl-perl libparse-edid-perl        \
           libproc-daemon-perl libparallel-forkmanager-perl                 \
           libtest-compile-perl libtest-deep-perl libtest-nowarnings-perl   \
-          libtest-mockmodule-perl libtest-mockobject-perl                  \
-          libtext-template-perl libsocket-getaddrinfo-perl                 \
-          libuniversal-require-perl liburi-perl libwww-perl                \
-          libxml-treepp-perl libxml-xpath-perl libyaml-perl
+          libtest-exception-perl libtest-mockmodule-perl                   \
+          libtest-mockobject-perl libtext-template-perl                    \
+          libsocket-getaddrinfo-perl libuniversal-require-perl liburi-perl \
+          libwww-perl libxml-treepp-perl libxml-xpath-perl libyaml-perl
       shell: bash
     - name: Build debian packages
       run: |
