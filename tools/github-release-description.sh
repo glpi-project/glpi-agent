@@ -9,6 +9,10 @@ if [ -z "$TAG" -o "$TAG" == "$GITHUB_REF" ]; then
     exit 1
 fi
 
+if [ "${TAG#*-}" == "$TAG" ]; then
+    DEBREV="-1"
+fi
+
 cat >release-description.md <<DESCRIPTION
 Here you can download GLPI-Agent v$TAG packages.
 
@@ -25,8 +29,17 @@ x86_64 | PKG: [GLPI-Agent-${TAG}_x86_64.pkg](../../releases/download/$TAG/GLPI-A
 x86_64 | DMG: [GLPI-Agent-${TAG}_x86_64.dmg](../../releases/download/$TAG/GLPI-Agent-${TAG}_x86_64.dmg)
 
 ## Linux
-Packaging | Arch | Package
----|---|:---
-snap | amd64 | [glpi-agent_${TAG}_amd64.snap](../../releases/download/$TAG/glpi-agent_${TAG}_amd64.snap)
+
+### Snap package for amd64
+[glpi-agent_${TAG}_amd64.snap](../../releases/download/$TAG/glpi-agent_${TAG}_amd64.snap)
+
+### Debian/Ubuntu packages
+Related agent task |Package
+---|:---
+Inventory| [glpi-agent_${TAG}${DEBREV}_all.deb](../../releases/download/$TAG/glpi-agent_${TAG}${DEBREV}_all.deb)
+NetInventory | [glpi-agent-task-network_${TAG}${DEBREV}_all.deb](../../releases/download/$TAG/glpi-agent-task-network_${TAG}${DEBREV}_all.deb)
+ESX | [glpi-agent-task-esx_${TAG}${DEBREV}_all.deb](../../releases/download/$TAG/glpi-agent-task-esx_${TAG}${DEBREV}_all.deb)
+Collect | [glpi-agent-task-collect_${TAG}${DEBREV}_all.deb](../../releases/download/$TAG/glpi-agent-task-collect_${TAG}${DEBREV}_all.deb)
+Deploy | [glpi-agent-task-deploy_${TAG}${DEBREV}_all.deb](../../releases/download/$TAG/glpi-agent-task-deploy_${TAG}${DEBREV}_all.deb)
 
 DESCRIPTION

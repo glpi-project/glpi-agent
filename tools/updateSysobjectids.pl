@@ -37,5 +37,5 @@ my $newdigest = $sha->hexdigest;
 exit(0) if $digest eq $newdigest;
 
 my $Changes = Changelog->new( file => "Changes" );
-$Changes->add( "netdiscovery/netinventory" => "* Updated sysobject.ids" );
+$Changes->add( "netdiscovery/netinventory" => "Updated sysobject.ids" );
 $Changes->write();

@@ -2,7 +2,7 @@ Source: glpi-agent
 Section: net
 Testsuite: autopkgtest-pkg-perl
 Priority: optional
-Maintainer: Debian Perl Group <pkg-perl-maintainers@lists.alioth.debian.org>
+Maintainer: Guillaume Bougard <gbougard@teclib.com>
 Uploaders: Guillaume Bougard <gbougard@teclib.com>
 Build-Depends: debhelper-compat (= 13)
 Build-Depends-Indep:

@@ -236,3 +236,63 @@ jobs:
         asset_path: ${{ steps.snapcraft.outputs.snap }}
         asset_name: ${{ steps.snapcraft.outputs.snap }}
         asset_content_type: application/octet-stream
+
+  linux-debian-packaging:
+
+    runs-on: ubuntu-latest
+
+    if: always()
+    needs: create-release
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install build dependencies packages
+      run: |
+        sudo apt -y install dpkg-dev debhelper libmodule-install-perl      \
+          libclone-perl libdigest-sha-perl libfile-copy-recursive-perl     \
+          libfile-which-perl libhttp-cookies-perl libhttp-daemon-perl      \
+          libhttp-proxy-perl libhttp-server-simple-perl                    \
+          libhttp-server-simple-authen-perl libio-capture-perl             \
+          libipc-run-perl libjson-pp-perl libnet-ip-perl                   \
+          libnet-snmp-perl libio-socket-ssl-perl libparse-edid-perl        \
+          libproc-daemon-perl libparallel-forkmanager-perl                 \
+          libtest-compile-perl libtest-deep-perl libtest-nowarnings-perl   \
+          libtest-exception-perl libtest-mockmodule-perl                   \
+          libtest-mockobject-perl libtext-template-perl                    \
+          libsocket-getaddrinfo-perl libuniversal-require-perl liburi-perl \
+          libwww-perl libxml-treepp-perl libxml-xpath-perl libyaml-perl
+      shell: bash
+    - name: Build debian packages
+      id: debbuild
+      run: |
+        echo "::set-output name=debpath:: $(dirname $PWD)"
+        # DH_COMPAT is needed on current ubuntu-latest, it could be removed after switching to Ubuntu 20.04
+        export DH_COMPAT=11
+        dpkg-buildpackage -d -b --no-sign
+      shell: bash
+    - name: Run lintian
+      run: |
+        sudo apt -y install lintian
+        lintian --profile debian --show-overrides -L ">=pedantic"
+      shell: bash
+    - name: Upload built deb artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Built-Deb
+        path: |
+          ${{ steps.debbuild.outputs.debpath }}/*.deb
+          ${{ steps.debbuild.outputs.debpath }}/*.buildinfo
+          ${{ steps.debbuild.outputs.debpath }}/*.changes
+    - name: Upload Deb Packages
+      id: upload-linux-deb-asset
+      if: startsWith(github.ref, 'refs/tags/1.')
+      run: |
+        A_OPTS=""
+        for deb in ../*.deb
+        do
+          A_OPTS="$A_OPTS -a $deb"
+        done
+        hub release edit -m "" $A_OPTS ${{ needs.create-release.outputs.tag }}
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
