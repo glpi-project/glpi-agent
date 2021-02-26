@@ -270,6 +270,7 @@ jobs:
       shell: bash
     - name: Run lintian
       run: |
+        sudo apt -y install lintian
         lintian --profile debian --show-overrides -L ">=pedantic"
       shell: bash
     - name: Upload built deb artifacts
