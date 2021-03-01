@@ -59,6 +59,20 @@ The current status is {$status}<br />
     }
 }
 
+<br />{
+    if (@sessions) {
+        my $style = "text-align: left; font-size: 8px;";
+        $OUT .= "<div class='sessions'>\n";
+        $OUT .= "Current HTTP client sessions:\n";
+        $OUT .= "<ul>\n";
+        foreach my $session (@sessions) {
+           $OUT .= "    <li class='sessions'>$session</li>\n";
+        }
+        $OUT .= "</ul>\n</div>\n";
+    } else {
+        '';
+    }
+}
 </div>
 </body>
 </html>

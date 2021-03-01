@@ -1,0 +1,50 @@
+# This file is not read but should reference any string that could be translated
+
+MibSupport Configuration:
+Infos:
+SysobjectID:
+MibSupport:
+
+# Alias
+Alias:
+Aliases:
+OID:
+Here is the list of known aliases:
+Alias must be uniq, begin by a letter or digit and only contain letters, digits or eventually tirets, dots and underscores:
+Aliases are used to fully resolve symbolic OID to plain numeric OID:
+Agent still supports following aliases:
+Add new alias:
+Edit &laquo;&nbsp;%s&nbsp;&raquo; alias:
+Add new alias:
+OID can begin by a letter, a digit or a dot and only contain letters, digits, tirets and dots:
+
+# Rules
+Rules:
+Rule name:
+Rule type:
+Value:
+Value type:
+Add new rule:
+Rule name must be uniq, begin by a letter or digit and only contain letters, digits or eventually tirets, dots and underscores:
+Edit &laquo;&nbsp;%s&nbsp;&raquo; rule:
+
+# SysObjectID
+OID to match:
+Ruleset:
+Add new sysObjectID match:
+Add sysObjectID match:
+Edit &laquo;&nbsp;%s&nbsp;&raquo; sysObjectID match:
+Name must be uniq, begin by a letter or digit and only contain letters, digits or eventually tirets, dots and underscores:
+Associated rules:
+Add rule:
+Remove rule:
+
+# MIB Support
+MIB Support name:
+MIB OID:
+Add new MIB support:
+Add MIB support match:
+Edit &laquo;&nbsp;%s&nbsp;&raquo; MIB support match:
+
+# Ruleset
+Update MIBSupport ruleset:

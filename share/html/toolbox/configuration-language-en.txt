@@ -1,0 +1,80 @@
+# This file is not read but should reference any string that could be translated
+
+ToolBox plugin Configuration:
+
+Credentials YAML file:
+IP Ranges YAML file:
+Navigation:
+Default page:
+Navigation bar:
+Show Credentials in navigation bar:
+Show Inventory in navigation bar:
+Show IP Ranges in navigation bar:
+Show Results in navigation bar:
+Show Raw YAML navigation:
+Network task:
+Base folder to save XML:
+Network task threads number options:
+Network task SNMP timeout options:
+Defaut columns for results list view:
+ToolBox User Interface:
+Number of row to display options:
+Header background color:
+Language:
+Supported languages:
+Logo:
+Toolbox plugin configuration:
+Configuration update authorized:
+YAML configuration file (default YAML file):
+YAML edition:
+Raw YAML edition authorization:
+Inventories:
+List of tags:
+Exported archive format:
+Custom fields YAML file:
+Show MibSupport in navigation bar:
+Disable MibSupport in agent:
+MibSupport YAML file:
+Session timeout:
+Other fields to show in dedicated section:
+
+Backup YAML:
+
+default from CSS:
+[default]:
+
+// Tips
+Defaults to first page of the options list:
+Defaults to first language of the supported languages:
+threads number options separated by pipes,:
+first value used as default threads:
+(default=1|5|10|20|40):
+SNMP timeout options separated by pipes,:
+first value used as default timeout:
+(default=1|10|30|60):
+Base folder may be relative to the agent folder:
+Numbers separated by pipes,:
+first value used as default,:
+0=no limit:
+(default=30|0|5|10|20|40|50|100|500):
+Ordered columns list separated by pipes:
+(default=name|mac|ip|serial|source|type):
+list of languages separated by pipes:
+first language is used as default:
+(default=en|fr):
+Tags separated by commas:
+You can use it to separate inventory files by site:
+Defaults to 86400 seconds (1 day):
+List of fields to show in 'Other fields' section with a field definition by line:
+A line definition should be in the following format:
+NAME;TEXT;NODE;FILTER:
+NAME is the simple reference string you may need set in default columns to list configuration:
+TEXT is the text to show as field name in the sections:
+NODE is a list of node names separated by commas which should:
+be the path to the XML node in inventory XML file:
+FILTER can be set to select a node when the NODE match on a node list:
+In that case, FILTER could be a test like KEY=VALUE where KEY is another value name of the nodes:
+and VALUE the expected value and it is interpreted as a perl regex:
+NODE can match on any kind of XML:
+NODE path is expect to be under the first 'REQUEST' node:
+As examples, 'DEVICEID' and 'CONTENT,VERSIONCLIENT' are valid paths:

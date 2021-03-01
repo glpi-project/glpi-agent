@@ -19,6 +19,11 @@ SIGNATURE
 debian/*.install
 etc/*.local
 etc/*.pem
+etc/*.yaml
+etc/*.yml
+etc/backup
+*.xml
+*-noedit.txt
 .DS_Store
 release-description.md
 *.snap

@@ -1,0 +1,66 @@
+# This file is not read but should reference any string that could be translated
+
+ERROR:
+
+New IP range:
+No ip range provided name:
+An entry still exists with that name:
+Start ip is mandatory:
+Wrong start ip format:
+End ip is mandatory:
+Wrong end ip format:
+Can't create entry without name:
+IP range credential adding:
+Invalid credential:
+Not existing credential:
+No credential selected:
+Deleting IP range:
+No credentials:
+IP range credential removing:
+IP range update:
+
+No IP range selected:
+No such IP range:
+A network scan is still running for an IP on that range:
+A network scan is still running for that IP range:
+No such credentials:
+Missing version on credentials:
+Missing username on credentials:
+A local inventory is still running:
+Unsupported IP range:
+
+New credential:
+SNMP version is mandatory:
+Wrong SNMP version:
+Community is mandatory with version:
+Username is mandatory with SNMP v3:
+Credential update:
+
+Deleting results:
+No result selected:
+Can't remove file:
+
+Can't prepare archive:
+
+New MIBSupport alias:
+Update MIBSupport alias:
+Wrong alias format:
+No OID provided:
+Can't match to a full numeric OID:
+Can't update entry without alias name:
+Deleting MIBSupport entries:
+No entry selected:
+New MIBSupport rule:
+Wrong rule name format:
+Rule type is missing:
+No value provided:
+Update MIBSupport rule:
+Update MIBSupport ruleset:
+No rule selected:
+Not existing rule:
+New MIBSupport sysobjectid:
+Update MIBSupport sysobjectid:
+New MIBSupport match:
+Update MIBSupport match:
+Update ruleset:
+Remove ruleset:

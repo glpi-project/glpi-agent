@@ -48,6 +48,8 @@ sub new {
         my $supported_mibs;
         {
             no strict 'refs'; ## no critic (ProhibitNoStrict)
+            # Call module initialization
+            $module->configure(logger => $logger);
             $supported_mibs = ${$module . "::mibSupport"};
         }
 
@@ -60,7 +62,10 @@ sub new {
                         or next;
                     if ($sysobjectid =~ $mib_support->{sysobjectid}) {
                         $logger->debug("sysobjectID match: $mibname mib support enabled") if $logger;
-                        $self->{_SUPPORT}->{$module} = $module->new( device => $device );
+                        $self->{_SUPPORT}->{$module} = $module->new(
+                            device      => $device,
+                            mibsupport  => $mibname,
+                        );
                         next;
                     }
                 } elsif ($mib_support->{privateoid}) {
@@ -90,7 +95,10 @@ sub new {
             or next;
         my $module = $supported->{module};
         $logger->debug2("sysorid: $mibname mib support enabled") if $logger;
-        $self->{_SUPPORT}->{$module} = $module->new( device => $device );
+        $self->{_SUPPORT}->{$module} = $module->new(
+            device      => $device,
+            mibsupport  => $mibname,
+        );
     }
 
     bless $self, $class;

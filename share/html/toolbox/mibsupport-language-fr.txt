@@ -1,0 +1,47 @@
+# Traductions en français par Teclib Edition
+
+MibSupport Configuration: Configuration du support MIB
+
+
+MibSupport: Support MIB
+
+# Alias
+
+Aliases: Alias
+
+Here is the list of known aliases: Voici la liste des alias connus
+Alias must be uniq, begin by a letter or digit and only contain letters, digits or eventually tirets, dots and underscores: L'alias doit être unique, commencer par une lettre ou un chiffre et ne contenir que des lettres ou chiffres, ou éventuellement des tirets, points ou caractère de soulignement
+Aliases are used to fully resolve symbolic OID to plain numeric OID: Les alias sont utilisés pour résoudre complètement un OID symbolique en OID numérique
+Agent still supports following aliases: L'agent supporte déjà les alias suivants
+Add new alias: Ajouter un alias
+Edit &laquo;&nbsp;%s&nbsp;&raquo; alias: Éditer l'alias &laquo;&nbsp;%s&nbsp;&raquo;
+Add new alias: Ajouter un alias
+OID can begin by a letter, a digit or a dot and only contain letters, digits, tirets and dots: Un OID peut débuter par une lettre, un chiffre ou un pointet ne doit contenir que des lettres, chiffres, tirets et points
+
+# Rules
+Rules: Règles
+Rule name: Nom de règle
+Rule type: Type de règle
+Value: Valeur
+Value type: Type de valeur
+Add new rule: Ajouter une nouvelle règle
+Rule name must be uniq, begin by a letter or digit and only contain letters, digits or eventually tirets, dots and underscores: Le nom de règle doit être unique, commencer par une lettre ou un chiffre et ne contenir que des lettres ou chiffres, ou éventuellement des tirets, points ou caractère de soulignement
+Edit &laquo;&nbsp;%s&nbsp;&raquo; rule: Éditer la règle &laquo;&nbsp;%s&nbsp;&raquo;
+
+# SysObjectID
+OID to match: OID à rechercher
+Ruleset: Jeu de règles
+Add new sysObjectID match: Ajouter une nouvelle correspondance de sysObjectID
+Add sysObjectID match: Ajouter une correspondance de sysObjectID
+Edit &laquo;&nbsp;%s&nbsp;&raquo; sysObjectID match: Éditer la correspondance de sysObjectID &laquo;&nbsp;%s&nbsp;&raquo;
+Name must be uniq, begin by a letter or digit and only contain letters, digits or eventually tirets, dots and underscores: Le nom doit être unique, commencer par une lettre ou un chiffre et ne contenir que des lettres ou chiffres, ou éventuellement des tirets, points ou caractère de soulignement
+Associated rules: Règles associées
+Add rule: Ajouter la règle
+Remove rule: Supprimer la règle
+
+# MIB Support
+MIB Support name: Nom de support MIB
+MIB OID: OID de MIB
+Add new MIB support: Ajouter un nouveau support de MIB
+Add MIB support match: Ajouter le support de MIB
+Edit &laquo;&nbsp;%s&nbsp;&raquo; MIB support match: Éditer le support de MIB &laquo;&nbsp;%s&nbsp;&raquo;

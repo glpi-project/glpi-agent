@@ -1,0 +1,66 @@
+# Traductions en français par Teclib Edition
+
+ERROR: ERREUR
+
+New IP range: Nouvelle plage IP
+No ip range provided name: Pas de nom de plage ip fourni
+An entry still exists with that name: Une entrée existe déjà avec ce nom
+Start ip is mandatory: L'ip de début est mandataire
+Wrong start ip format: Mauvais format pour l'ip de début
+End ip is mandatory: L'ip de fin est mandataire
+Wrong end ip format: Mauvais format pour l'ip de fin
+Can't create entry without name: Impossible de créer une entrée sans nom
+IP range credential adding: Ajoût d'identifiant pour une plage IP
+Invalid credential: Identifiant invalide
+Not existing credential: Identifiant inexistant
+No credential selected: Pas d'identifiant sélectionné
+Deleting IP range: Suppression de plage IP
+No credentials: Aucun identifiants
+IP range credential removing: Suppression d'identifiant sur une plage IP
+IP range update: Mise à jour de plage IP
+
+No IP range selected: Pas de plage IP sélectionnée
+No such IP range: Pas de telle plage IP connue
+A network scan is still running for an IP on that range: Un scan réseau est déjà en cours pour une ip de la plage
+A network scan is still running for that IP range: Un scan réseau tourne déjà pour cette plage IP
+No such credentials: Pas de tels identifiants
+Missing version on credentials: La version manque sur les identifiants
+Missing username on credentials: Le nom d'utilisateur manque sur les identifiants
+A local inventory is still running: Un inventaire local est déjà en cours
+Unsupported IP range: Plage IP non supportée
+
+New credential: Nouvel identifiant
+SNMP version is mandatory: La version SNMP est obligatoire
+Wrong SNMP version: Mauvaise version SNMP
+Community is mandatory with version: La communauté est obligatoire avec cette version
+Username is mandatory with SNMP v3: Le nom est obligatoire avec SNMP v3
+Credential update: Mise à jour de l'identifiant
+
+Deleting results: Suppression de résultats
+No result selected: Pas de résultat sélectionné
+Can't remove file: Impossible de supprimer le fichier
+
+Can't prepare archive: Impossible de préparer l'archive
+
+New MIBSupport alias: Nouvel alias pour MIBSupport
+Update MIBSupport alias: Mise à jour d'alias pour MIBSupport
+Wrong alias format: Mauvais format d'alias
+No OID provided: Pas d'OID fourni
+Can't match to a full numeric OID: Impossible de résoudre l'OID en OID numérique
+Can't update entry without alias name: Impossible de mettre à jour sans nom d'alias
+Deleting MIBSupport entries: Suppression d'entrées pour MIBSupport
+No entry selected: Aucune entrée sélectionnée
+New MIBSupport rule: Nouvelle règle pour MIBSupport
+Wrong rule name format: Mauvais format de nom de règle
+Rule type is missing: Le type de règle est manquant
+No value provided: Aucune valeur fournie
+Update MIBSupport rule: Mise à jour de règle de MIBSupport
+Update MIBSupport ruleset: Mise à jour de jeu de règles
+No rule selected: Pas de règle sélectionnée
+Not existing rule: Règle inexistante
+New MIBSupport sysobjectid: Nouvelle correspondance de sysobjectid
+Update MIBSupport sysobjectid: Mise à jour de correspondance de sysobjectid
+New MIBSupport match: Nouvelle correspondance de support MIB
+Update MIBSupport match: Mise à jour de correspondance de support MIB
+Update ruleset: Mise à jour du jeu de règle
+Remove ruleset: Suppression du jeu de règle

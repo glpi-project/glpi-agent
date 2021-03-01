@@ -1,0 +1,37 @@
+# Traductions en français par Teclib Edition
+
+Create a new inventory task: Créer une nouvelle tâche d'inventaire
+Local inventory: Inventaire local
+Run local inventory for this computer: Lancer un inventaire local sur cet ordinateur
+Network scan: Scan réseau
+Choose IP range: Sélectionner la plage IP
+
+Threads: Nombre de processus
+SNMP Timeout: Délai max de non réponse SNMP
+Run network scan: Lancer un scan réseau
+Inventory tag: Tag d'inventaire
+Use a tag: Utiliser un tag
+None: Aucun
+New tag: Nouveau tag
+New tag will be automatically selected: Le nouveau tag sera automatiquement sélectionné
+Add new tag: Ajouter un nouveau tag
+
+
+Inventory tasks: Tâches d'inventaire
+Created inventories: Inventaires créés
+Should match devices with SNMP support count: Devrait correspondre au nombre d'équipements avec support SNMP
+Show &laquo;&nbsp;%s&nbsp;&raquo; task log: Montrer le journal de la tâche &laquo;&nbsp;%s&nbsp;&raquo;
+Scanned IPs: IPs scannées
+Devices with SNMP support: &Eacute;quipements avec support SNMP
+IPs without SNMP response: IPs sans réponse SNMP
+IPs without PING response: IPs sans réponse au PING
+Scanned IPs for this IP range: Nombre d'IPs scannées sur cette plage IP
+IPs for which we found a device supporting SNMP with provided credentials: IPs trouvées avec un équipement supportant les identifiants SNMP fournis
+These IPs are responding to ping or are found in ARP table: Ces IPs répondent au ping ou sont trouvées dans la table ARP
+But we didn't find any device supporting SNMP with provided credentials: Mais aucun équipement supportant les identifiants SNMP fournis n'a été trouvé
+IPs not responding to ping and not seen in ARP table: IPs ne répondant pas au ping et non trouvées dans la table ARP
+Verbosity: Verbosité
+Completed: Terminée
+Aborted: Interrompue
+%s network scan: Scan réseau de %s
+Freeze log output: Geler la mise à jour du journal

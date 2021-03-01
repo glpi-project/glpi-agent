@@ -1,0 +1,22 @@
+
+#page li {
+  font-size: 14px;
+}
+
+p.infos {
+  font-size: 10px;
+}
+
+p.home {
+  font-size: 14px;
+}
+
+#ruleset li {
+  line-height: 1.5em;
+  list-style: none;
+  margin-left: 5px;
+}
+
+#ruleset ul {
+  padding: 0;
+}

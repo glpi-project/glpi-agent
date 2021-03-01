@@ -1,0 +1,23 @@
+
+p.config-section {
+  font: 16px Arial, Helvetica;
+  background-color: #e6e6e6;
+  padding: 5px 0 5px 10px;
+  margin-bottom: 0.2em;
+  width: 99%;
+}
+
+p.notfirst-section {
+  margin-top: 0.5em;
+}
+
+label.config-param {
+  font: 16px Arial, Helvetica;
+  display: inline-block;
+  margin: 0 0 0.2em 1em;
+  width: 50%;
+}
+
+.config-inputs {
+  text-align: center;
+}

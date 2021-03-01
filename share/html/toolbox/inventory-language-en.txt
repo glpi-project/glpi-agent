@@ -1,0 +1,37 @@
+# This file is not read but should reference any string that could be translated
+
+Create a new inventory task:
+Local inventory:
+Run local inventory for this computer:
+Network scan:
+Choose IP range:
+Options:
+Threads:
+SNMP Timeout:
+Run network scan:
+Inventory tag:
+Use a tag:
+None:
+New tag:
+New tag will be automatically selected:
+Add new tag:
+tag:
+
+Inventory tasks:
+Created inventories:
+Should match devices with SNMP support count:
+Show &laquo;&nbsp;%s&nbsp;&raquo; task log:
+Scanned IPs:
+Devices with SNMP support:
+IPs without SNMP response:
+IPs without PING response:
+Scanned IPs for this IP range:
+IPs for which we found a device supporting SNMP with provided credentials:
+These IPs are responding to ping or are found in ARP table:
+But we didn't find any device supporting SNMP with provided credentials:
+IPs not responding to ping and not seen in ARP table:
+Verbosity:
+Completed:
+Aborted:
+%s network scan:
+Freeze log output:

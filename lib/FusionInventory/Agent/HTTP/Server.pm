@@ -216,6 +216,8 @@ sub _handle_plugins {
             $match = 1;
             last unless ($plugin->supported_method($method));
             $status = $plugin->handle($client, $request, $clientIp);
+            $self->{_timer_event} = time+10
+                if ($self->{_timer_event} > time+10);
             last if $status;
         }
     }
@@ -279,13 +281,31 @@ sub _handle_root {
             grep { ! $_->disabled() }
                 @httpd_plugins;
 
+    my @sessions = ();
+    if ($logger && $logger->debug_level() > 1) {
+        FusionInventory::Agent::Target::Listener->require();
+        if ($EVAL_ERROR) {
+            $self->{logger}->debug($log_prefix . "Failed to load Listener target module: $EVAL_ERROR");
+        } else {
+            my $listener = FusionInventory::Agent::Target::Listener->new(
+                logger     => $self->{logger},
+                basevardir => $self->{agent}->{config}->{vardir},
+            );
+            my $sessions = $listener->sessions();
+            foreach my $sid (sort { $a cmp $b } keys(%{$sessions})) {
+                push @sessions, $sessions->{$sid}->info();
+            }
+        }
+    }
+
     my $hash = {
         version        => $FusionInventory::Agent::Version::VERSION,
         trust          => $self->_isTrusted($clientIp),
         status         => $self->{agent}->getStatus(),
         httpd_plugins  => \@listening_plugins,
         server_targets => \@server_targets,
-        local_targets  => \@local_targets
+        local_targets  => \@local_targets,
+        sessions       => \@sessions,
     };
 
     my $response = HTTP::Response->new(
@@ -606,6 +626,12 @@ sub handleRequests {
 
     return unless $self->{listener}; # init() call failed
 
+    # Handle any timer event on plugins and set next time expected to handle events
+    unless ($self->{_timer_event} && $self->{_timer_event} > time) {
+        my ($timeout) = sort grep { $_ } map { $_->timer_event() } @{$self->{_plugins}};
+        $self->{_timer_event} = ($timeout && $timeout > time) ? $timeout : time + 60;
+    }
+
     # First try to handle plugin requests on dedicated ports
     my $got_connection = 0;
     foreach my $port (keys(%{$self->{listeners}})) {
@@ -654,6 +680,9 @@ sub handleRequests {
     my $clientIp = inet_ntop($family, $iaddr);
     my $request = $client->get_request();
     $self->_handle($client, $request, $clientIp, MaxKeepAlive);
+
+    $self->{_timer_event} = time+10
+        if ($self->{_timer_event} > time+10);
 
     return $got_connection;
 }

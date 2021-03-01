@@ -1,0 +1,38 @@
+# This file is not read but should reference any string that could be translated
+
+Home:
+GLPI Agent:
+ToolBox Plugin:
+Inventory:
+Results:
+Raw YAML:
+Raw YAML edition:
+Configuration:
+IP range:
+IP Ranges:
+Credentials:
+
+Edit:
+Update:
+Delete:
+Allow renaming:
+Revert selection:
+
+yes:
+no:
+
+From:
+to:
+of:
+
+Display (number of items):
+no limit:
+empty list:
+
+Add:
+Name:
+Description:
+Cancel:
+
+Reset:
+Reverse selection:

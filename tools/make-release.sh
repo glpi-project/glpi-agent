@@ -126,14 +126,22 @@ VERSION
 
 # 4. Update tasks version if required
 perl -Itools -MChangelog -e '
+    my @tasks = qw(
+        Inventory NetDiscovery NetInventory Collect ESX Deploy WakeOnLan Maintenance
+    );
+    my @plugins = qw(
+        ToolBox
+    );
     my $count = 0;
-    $Changes = Changelog->new( file => "Changes" );
-    for $task (@ARGV) {
+    my $Changes = Changelog->new( file => "Changes" );
+    foreach my $task (@tasks) {
         $count += $Changes->task_version_update($task);
     }
+    foreach my $plugin (@plugins) {
+        $count += $Changes->httpd_plugin_version_update($plugin);
+    }
     $Changes->write() if $count;
-    ' \
-    Inventory NetDiscovery NetInventory Collect ESX Deploy WakeOnLan Maintenance
+'
 
 # 5. Update changelog version and release date
 RELEASE_DATE=$(LANG=C date +"%a, %d %b %Y")

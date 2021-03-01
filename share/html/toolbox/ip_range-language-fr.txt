@@ -1,0 +1,15 @@
+# Traductions en français par Teclib Edition
+
+IP range name: Nom de plage IP
+First ip: Première ip
+Last ip: Dernière ip
+
+Add new IP range: Ajouter une nouvelle plage IP
+Edit &laquo;&nbsp;%s&nbsp;&raquo; ip range: Editer la plage IP &laquo;&nbsp;%s&nbsp;&raquo;
+IP range start: Début de plage IP
+IP range end: Fin de plage IP
+Associated credentials: Identifiants associés
+Add credential: Ajouter l'identifiant
+Remove credential: Supprimer l'identifiant
+Return to IP ranges: Retourner aux plages IP
+Associated credentials: Identifiants associés

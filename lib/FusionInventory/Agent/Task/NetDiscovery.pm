@@ -135,6 +135,9 @@ sub _discovery_thread {
 sub run {
     my ($self, %params) = @_;
 
+    my $abort = 0;
+    $SIG{TERM} = sub { $abort = 1; };
+
     # Prepare client configuration in needed to send message to server
     $self->{_client_params} = {
         logger       => $self->{logger},
@@ -338,6 +341,19 @@ sub run {
                 foreach my $tid (keys(%running_threads)) {
                     $running_threads{$tid}->detach()
                         if $running_threads{$tid}->is_running();
+                    delete $running_threads{$tid};
+                }
+                last;
+            }
+
+            if ($abort) {
+                $self->{logger}->warning("Aborting netdiscovery task on TERM signal");
+                # detach all our running worker
+                foreach my $tid (keys(%running_threads)) {
+                    if ($running_threads{$tid}->is_running()) {
+                        $running_threads{$tid}->detach();
+                        $jobs->enqueue({ leave => 1 });
+                    }
                     delete $running_threads{$tid};
                 }
                 last;
@@ -583,7 +599,7 @@ sub _scanAddressBySNMP {
 
         # no result means either no host, no response, or invalid credentials
         $self->{logger}->debug(
-            sprintf "- scanning %s%s with SNMP%s, credentials %d: %s",
+            sprintf "- scanning %s%s with SNMP%s, credentials %s: %s",
             $params->{ip},
             $try->{port}   ? ':'.$try->{port}   : '',
             $try->{domain} ? ' '.$try->{domain} : '',

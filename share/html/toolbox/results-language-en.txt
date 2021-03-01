@@ -1,0 +1,62 @@
+# This file is not read but should reference any string that could be translated
+
+Field name: 
+
+Device name or IP:
+SerialNumber:
+OS Name:
+Location:
+Manufacturer:
+Model:
+Type:
+UUID:
+Source:
+IP:
+IPs:
+MAC:
+Contact:
+SNMP Credential:
+IP Range:
+
+Networking:
+Networking scan datas:
+
+IPs seen by Network Scan:
+Network Scan Inventory count:
+Local Inventory count:
+Number of devices seen by network scan compared to all known IPs:
+A seen device is identified by its IPs and tag:
+A local inventory can be included as seen if its IP has been scanned by a network scan task:
+Number of Network Inventory other all scanned IPs:
+Number of local inventory other all scanned IPs:
+
+NETWORKING: Networking
+PRINTER: Printer
+STORAGE: Storage
+COMPUTER: Computer
+
+Local: Local inventory
+NetDiscovery: Netscan discovery
+NetInventory: Netscan inventory
+Edition: Edited inventory
+
+Other fields:
+Custom fields YAML file:
+Custom fields:
+
+Download results:
+Download full scan datas:
+Filter results by tag:
+Go to next device after deletion:
+Results will be filtered by tag if set:
+No filtering by tag will be applied:
+Scan again:
+Scan this device:
+See %s task:
+
+Select fields for propagation:
+Save the selection:
+Apply selected fields:
+Fields selected for propagation:
+Fields can't be propagated on this device type:
+Stop fields propagation:

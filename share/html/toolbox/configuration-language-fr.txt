@@ -1,0 +1,80 @@
+# Traductions en français par Teclib Edition
+
+ToolBox plugin Configuration: Configuration du plugin ToolBox
+
+Credentials YAML file: Fichier YAML des identifiants
+IP Ranges YAML file: Fichier YAML des plages IP
+
+Default page: Page d'accueil
+Navigation bar: Barre de navigation
+Show Credentials in navigation bar: Afficher la navigation vers les identifiants
+Show Inventory in navigation bar: Afficher la navigation vers l'inventaire
+Show IP Ranges in navigation bar: Afficher la navigation vers les plages IP
+Show Results in navigation bar: Afficher la navigation vers les résultats
+Show Raw YAML navigation: Afficher la navigation vers le YAML brute
+Network task: Tâche réseau
+Base folder to save XML: Dossier de base pour sauver les fichiers XML
+Network task threads number options: Options du nombre de threads pour le scan réseau
+Network task SNMP timeout options: Options du délai SNMP maximum pour le scan réseau
+Defaut columns for results list view: Colonnes par défaut pour la liste des résultats
+ToolBox User Interface: Interface utilisateur du plugin ToolBox
+Number of row to display options: Options pour le nombre de ligne à afficher
+Header background color: Couleur de fond de la bannière
+Language: Langage
+Supported languages: Langages supportés
+
+Toolbox plugin configuration: Configuration du plugin ToolBox
+Configuration update authorized: Autoriser la mise à jour de la configuration
+YAML configuration file (default YAML file):  Fichier YAML de configuration (fichier YAML par défaut)
+YAML edition: Édition du YAML
+Raw YAML edition authorization: Autoriser l'édition du YAML
+Inventories: Inventaires
+List of tags: Liste des tags
+Exported archive format: Format des archives exportées
+Custom fields YAML file: Fichier YAML des champs customisés
+Show MibSupport in navigation bar: Afficher la navigation vers la configuration du support de MIB
+Disable MibSupport in agent: Désactiver le support de MIB dans l'agent
+MibSupport YAML file: Fichier YAML pour le support de MIB
+Session timeout: Délai d'expiration de la session
+Other fields to show in dedicated section: Autres champs à afficher dans une section dédiée
+
+Backup YAML: Sauvegarde du YAML
+
+default from CSS: Par défaut depuis le CSS
+[default]: [par défaut]
+
+// Tips
+Defaults to first page of the options list: La valeur par défaut est la première de la liste des options
+Defaults to first language of the supported languages: La valeur par défaut est le premier langage de la liste
+threads number options separated by pipes,: options du nombre de threads séparées par un caractère trait vertical
+first value used as default threads: la première valeur est utilisée comme nombre de threads par défaut
+(default=1|5|10|20|40): (par défaut = 1|5|10|20|40)
+SNMP timeout options separated by pipes,: options du délai max SNMP séparées par un caractère trait vertical
+first value used as default timeout: la première valeur est utilisée comme délai max par défaut
+(default=1|10|30|60): (par défaut = 1|10|30|60)
+Base folder may be relative to the agent folder: Le dossier de base peut être relatif au dossier de l'agent
+Numbers separated by pipes,: nombres séparés par un caractère trait vertical,
+first value used as default,: la première valeur est utilisée par défaut,
+0=no limit: 0 = pas de limite
+(default=30|0|5|10|20|40|50|100|500): (par défaut = 30|0|5|10|20|40|50|100|500)
+Ordered columns list separated by pipes: liste des colonnes séparées par un caractère trait vertical
+(default=name|mac|ip|serial|source|type): (par défaut = name|mac|ip|serial|source|type)
+list of languages separated by pipes: liste de langages séparés par un caractère trait vertical
+first language is used as default: le premier langage est utilisé par défaut
+(default=en|fr): (par défaut = en|fr)
+Tags separated by commas: Liste de tags séparés par des virgules
+You can use it to separate inventory files by site: Vous pouvez l'utiliser pour séparer les fichiers d'inventaire par site
+Defaults to 86400 seconds (1 day): Par défaut, 86400 secondes (1 jour)
+List of fields to show in 'Other fields' section with a field definition by line:Liste de champs à montrer dans une section 'Autres champs' avec la définition d'un champ par ligne
+A line definition should be in the following format: Une ligne de définition doit être au format suivant
+NAME;TEXT;NODE;FILTER: NOM;TEXTE;NOEUD;FILTRE
+NAME is the simple reference string you may need set in default columns to list configuration: NOM est simplement une chaîne de référence pouvant être utilisée dans la définition des colonnes à afficher par défaut
+TEXT is the text to show as field name in the section: TEXTE est le texte à montrer comme nom de champ dans la section
+NODE is a list of node names separated by commas which should: NOEUD est une liste de noms de noeud séparés par des virgules et
+be the path to the XML node in inventory XML file: qui doit représenter le chemin du noeud XML dans le fichier d'inventaire XML
+FILTER can be set to select a node when the NODE match on a node list: FILTRE peut être défini pour sélectionner un noeud quand le chemin donné correspond à une liste de noeuds
+In that case, FILTER could be a test like KEY=VALUE where KEY is another value name of the nodes: Dans ce cas, FILTRE peut être un test du type CLE=VALEUR où CLE représente une autre valeur des noeuds
+and VALUE the expected value and it is interpreted as a perl regex: et VALEUR la valeur attendue et celle-ci est interprété comme une expression régulière perl
+NODE can match on any kind of XML: NOEUD peut correspondre quelque soit le type de fichier XML
+NODE path is expect to be under the first 'REQUEST' node: Le chemin NOEUD est attendu pour se trouver sous le premier noeud 'REQUEST'
+As examples, 'DEVICEID' and 'CONTENT,VERSIONCLIENT' are valid paths: Par exemple, 'DEVICEID' et 'CONTENT,VERSIONCLIENT' sont des chemins valides

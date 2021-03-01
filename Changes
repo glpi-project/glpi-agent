@@ -6,6 +6,7 @@ core:
 * make internal HTTP server more responsive
 * Fix #643, #863: Force XML UTF-8 encoding when communicating with server
 * config: conf.d folder include is enabled by default
+* HTTP daemon: added ToolBox dedicated web interface to add agent management features
 
 inventory:
 * fix snap softwares inventory
@@ -18,6 +19,18 @@ inventory:
 
 netdiscovery/netinventory:
 * Add support for SonicWall devices
+* Enhanced MibSupport to support Configuration plugin managed via ToolBox
+
+toolbox:
+* Support run of local inventory task
+* Support run of NetDiscovery and NetInventory tasks
+* Support management of dedicated credentials and IP ranges
+* Support management of MibSupport Configuration plugin
+* Support management of CustomFields configuration
+* Support basic management of inventory, netdiscovery and netinventory results
+  with CustomFields support
+* Support creating done inventory archives with download
+* Support ToolBox configuration
 
 packaging:
 * Windows MSI installer based on StrawBerry Perl 5.32.1

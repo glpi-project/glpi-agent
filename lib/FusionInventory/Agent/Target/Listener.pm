@@ -7,17 +7,27 @@ use parent 'FusionInventory::Agent::Target';
 
 use FusionInventory::Agent::HTTP::Session;
 
+use constant STORE_SESSION_TIMEOUT => 10;
+
+# Only one listener needed by agent instance
+my $listener;
+
 sub new {
     my ($class, %params) = @_;
 
-    my $self = $class->SUPER::new(%params);
+    return $listener if $listener;
 
-    $self->_init(
+    $listener = $class->SUPER::new(%params);
+
+    $listener->_init(
         id     => 'listener',
         vardir => $params{basevardir} . '/__LISTENER__',
     );
 
-    return $self;
+    # Timeout after which we want the session store to be written on disk
+    $listener->{_storing_session_timer} = time + STORE_SESSION_TIMEOUT;
+
+    return $listener;
 }
 
 sub getName {
@@ -49,39 +59,51 @@ sub session {
 
     my $sessions = $self->{sessions} || $self->_restore_sessions();
 
+    my $session;
+
     my $remoteid = $params{remoteid};
 
-    if ($sessions->{$remoteid}) {
-        return $sessions->{$remoteid}
-            unless $sessions->{$remoteid}->expired();
+    $self->{_touched_sessions} ++;
+
+    if ($remoteid && $sessions->{$remoteid}) {
+        $session = $sessions->{$remoteid};
+        return $session unless $session->expired();
         delete $sessions->{$remoteid};
+        delete $params{remoteid};
     }
 
-    my $session = FusionInventory::Agent::HTTP::Session->new(
+    $session = FusionInventory::Agent::HTTP::Session->new(
         logger  => $self->{logger},
         timeout => $params{timeout},
+        sid     => $params{remoteid},
     );
 
     $sessions->{$remoteid} = $session;
-
-    $self->_store_sessions();
 
     return $session;
 }
 
 sub clean_session {
-    my ($self, $remoteid) = @_;
+    my ($self, $session) = @_;
+
+    return unless $session;
+
+    my $sid = $session->sid()
+        or return;
 
     my $sessions = $self->{sessions} || $self->_restore_sessions();
 
-    if ($sessions && $sessions->{$remoteid}) {
-       delete $sessions->{$remoteid};
-       $self->_store_sessions();
+    if ($sessions && $sessions->{$sid}) {
+        delete $sessions->{$sid};
+        $self->{_touched_sessions} ++;
     }
 }
 
 sub _store_sessions {
     my ($self) = @_;
+
+    return unless $self->{_touched_sessions} &&
+        $self->{_storing_session_timer} && time >= $self->{_storing_session_timer};
 
     my $sessions = $self->{sessions} || $self->_restore_sessions();
 
@@ -94,6 +116,9 @@ sub _store_sessions {
 
     my $storage = $self->getStorage();
     $storage->save( name => 'Sessions', data => $datas );
+
+    $self->{_storing_session_timer} = time + STORE_SESSION_TIMEOUT;
+    $self->{_touched_sessions} = 0;
 }
 
 sub _restore_sessions {
@@ -108,17 +133,52 @@ sub _restore_sessions {
 
     foreach my $remoteid (keys(%{$datas})) {
         my $data = $datas->{$remoteid};
-        next unless ref($data) eq 'HASH';
+        next unless $remoteid && ref($data) eq 'HASH';
+        my %datas = map { $_ => $data->{$_} } grep { /^_/ } keys(%{$data});
         $sessions->{$remoteid} = FusionInventory::Agent::HTTP::Session->new(
             logger => $self->{logger},
             timer  => $data->{timer},
             nonce  => $data->{nonce},
+            sid    => $remoteid,
+            infos  => $data->{infos},
+            %datas,
         );
         delete $sessions->{$remoteid}
             if $sessions->{$remoteid}->expired();
     }
 
     return $self->{sessions} = $sessions;
+}
+
+sub keep_sessions {
+    my ($self) = @_;
+
+    my $sessions = $self->{sessions} || $self->_restore_sessions();
+
+    foreach my $session (values(%{$sessions})) {
+        next unless $session->expired();
+        $self->clean_session($session);
+    }
+
+    $self->_store_sessions();
+
+    return $self->{_storing_session_timer};
+}
+
+sub sessions {
+    my ($self) = @_;
+
+    my $sessions = $self->{sessions} || $self->_restore_sessions();
+
+    return unless keys(%{$sessions});
+
+    return $sessions;
+}
+
+sub END {
+    # Make sure to store touched sessions
+    $listener->{_storing_session_timer} = STORE_SESSION_TIMEOUT;
+    $listener->_store_sessions();
 }
 
 1;
@@ -177,6 +237,6 @@ the session timeout to use in seconds (default: 600)
 
 =back
 
-=head2 clean_session($remoteid)
+=head2 clean_session($session)
 
 Remove a no more used session from the stored sessions.

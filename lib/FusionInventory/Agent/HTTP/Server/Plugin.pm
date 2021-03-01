@@ -146,6 +146,8 @@ sub urlMatch {}
 
 sub handle {}
 
+sub timer_event {}
+
 sub rate_limited {
     my ($self, $clientIp) = @_;
 
@@ -225,6 +227,12 @@ Returns true if the passed path match the plugin expected URL pattern.
 =head2 $plugin->handle($client, $request, $clientIp)
 
 Handles the matching incoming request.
+
+=head2 $plugin->timer_event()
+
+Can be defined to support events triggered on timeout. Should return the next
+expected timer timeout (in seconds to be compared to time function returned value)
+for this plugin.
 
 =head2 $plugin->priority()
 

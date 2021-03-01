@@ -120,6 +120,8 @@ sub handle {
         return 403;
     }
 
+    $self->debug("Session sid for $remoteid: ".$session->sid());
+
     if ($self->{request} eq 'session') {
 
         my $nonce = $session->nonce();
@@ -150,7 +152,7 @@ sub handle {
     );
 
     # Still cleanup the session
-    $target->clean_session($remoteid);
+    $target->clean_session($session);
 
     unless ($authorization) {
         $self->info("unauthorized remote inventory request for $remoteid");
@@ -225,6 +227,11 @@ sub handle {
     $self->info("Inventory returned to $remoteid");
 
     return 200;
+}
+
+sub timer_event {
+    my ($self) = @_;
+    return $self->{target}->keep_sessions();
 }
 
 1;

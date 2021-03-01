@@ -1,0 +1,114 @@
+
+#edit-header {
+  display: flex;
+  padding: 5px 2em 5px 2em;
+  background-color: #e6e6e6;
+  align-items: stretch;
+  margin-bottom: 5px;
+}
+
+#edit-header p.return {
+  font: bold 16px Arial, Helvetica;
+  width: 10em;
+  flex: 1;
+  margin-top: 0.3em;
+}
+
+#edit-header p.name {
+  font: bold 16px Arial, Helvetica;
+  text-align: center;
+  flex-grow: 1;
+  flex: 2;
+  margin-top: 0.3em;
+}
+
+td.headers {
+  font: bold 16px Arial, Helvetica;
+  text-align: center;
+  padding: 0.5em 1em 0.5em 1em;
+  background-color: #f5f5f5;
+}
+
+td.checkbox {
+  padding-top: 5px;
+}
+
+td.fields {
+  font: bold 16px Arial, Helvetica;
+  width: 20%;
+  padding-top: 5px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+td.values {
+  font: 16px Arial, Helvetica;
+  border-bottom: 1px solid #eee;
+  width: 35%;
+  text-align: left;
+}
+
+p.section {
+  background-color: #e2e1de;
+  color: #000;
+  text-align: center;
+  font: bold 16px Arial, Helvetica;
+  width: 100%;
+  margin: 20px 0 5px 0;
+  padding: 5px 0 5px 0;
+}
+
+textarea.custom-result {
+  padding: 2px;
+  font-size: 14px;
+  border-radius: 2px;
+  width: 90%;
+  height: 3em;
+  box-sizing: border-box;
+}
+
+.fields-frame {
+  width: 70%;
+  left: 15%;
+}
+
+.fields-propagation {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+p.fields-propagation {
+  font: 20px Arial, Helvetica;
+  padding-bottom: 0.5em;
+}
+
+.selected-fields {
+  flex-grow: 1;
+}
+
+.big-nav {
+  width: 68px;
+  height: 68px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.big-arrow {
+  font-size: 40px;
+}
+
+.other-options {
+  display: flex;
+}
+
+.other-option {
+  font: 14px Arial, Helvetica;
+  margin-top: 0.2em;
+  margin-left: 0.2em;
+}
+
+.see-link {
+  font: 12px Arial, Helvetica;
+  margin-top: 0.2em;
+}

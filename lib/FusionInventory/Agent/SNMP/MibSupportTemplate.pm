@@ -37,7 +37,8 @@ sub new {
     return unless $params{device};
 
     my $self = {
-        _device => $params{device}
+        _device     => $params{device},
+        _mibsupport => $params{mibsupport},
     };
 
     bless $self, $class;
@@ -49,6 +50,12 @@ sub device {
     my ($self) = @_;
 
     return $self->{_device};
+}
+
+sub support {
+    my ($self) = @_;
+
+    return $self->{_mibsupport};
 }
 
 sub get {
@@ -153,6 +160,10 @@ sub run {
     #    MANUFACTURER    => 'XXX'
     #};
     #$device->addFirmware($other_firmware);
+}
+
+sub configure {
+    # Use this API for module initialization
 }
 
 1;

@@ -22,3 +22,8 @@ a:hover {
   background-origin: content-box;
   background-clip: padding-box;
 }
+
+.sessions {
+  font-size: 12px;
+  text-align: left;
+}

@@ -1,0 +1,62 @@
+# Traductions en français par Teclib Edition
+
+Field name: Nom de champ
+
+Device name or IP: Nom ou IP
+SerialNumber: Numéro de série
+OS Name: Système d'exploitation
+Location: Localisation
+Manufacturer: Fabriquant
+Model: Modèle
+
+
+
+
+
+MAC: Adresse MAC
+
+SNMP Credential: Identifiant SNMP
+IP Range: Plage IP
+
+Networking: Configuration réseau
+Networking scan datas: Données de scan réseau
+
+IPs seen by Network Scan: IPs vues par le scan réseau
+Network Scan Inventory count: Nombre d'inventaires réseau
+Local Inventory count: Nombre d'inventaires local
+Number of devices seen by network scan other all results: Nombre d'équipements vus par le scan réseau sur l'ensemble des résultats
+A seen device is identified by its IPs and tag: Un équipement vu est identifié par son IP et son tag
+A local inventory can be included as seen if its IP has been scanned by a network scan task: Un inventaire local peut être inclus comme vu si son IP a été scannée par une tâche de scan réseau
+Number of Network Inventory other all scanned IPs: Nombre d'inventaires réseau sur le nombre d'IPs scannées
+Number of local inventory other all scanned IPs: Nombre d'inventaires local sur le nombre d'IPs scannées
+
+NETWORKING: Équipement réseau
+PRINTER: Imprimante
+STORAGE: Stockage
+COMPUTER: Ordinateur
+
+Local: Inventaire local
+NetDiscovery: Découverte réseau
+NetInventory: Inventaire réseau
+Edition: Inventaire édité
+
+Other fields: Autres champs
+Custom fields YAML file: Fichier YAML des champs personnalisés
+Custom fields: Champs personnalisés
+
+Download results: Télécharger les résultats
+Download full scan datas: Télécharger les données complètes de scan
+Filter results by tag: Filtrer les résultats par tag
+Go to next device after deletion: Aller à l'équipement suivant à la suppression
+Results will be filtered by tag if set: Les résultats seront filtrés sur le tag si un tag est sélectionné
+No filtering by tag will be applied: Aucun filtrage par tag ne sera appliqué
+Scan again: Scanner à nouveau
+Scan this device: Scanner cet équipement
+See %s task: Voir la tâche %s
+
+Select fields for propagation: Sélectionner les champs à propager
+Save the selection: Sauver la sélection
+Apply selected fields: Appliquer les champs sélectionnés
+Fields selected for propagation: Champs sélectionnés pour la propagation
+Fields can't be propagated on this device type: Les champs ne peuvent être propagés sur ce type d'équipement
+Stop fields propagation: Arrêter la propagation de champs

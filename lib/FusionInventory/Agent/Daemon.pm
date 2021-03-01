@@ -10,9 +10,12 @@ use POSIX ":sys_wait_h"; # WNOHANG
 use Time::HiRes qw(usleep);
 
 # By convention, we just use 5 chars string as possible internal IPC messages.
-# As of this writing, only IPC_LEAVE from children is supported and is only
-# really useful while debugging.
+# IPC_LEAVE from children is supported and is only really useful while debugging.
+# IPC_EVENT can be used to handle events recognized in parent
+# IPC_ABORT can be used to abort a forked process
 use constant IPC_LEAVE  => 'LEAVE';
+use constant IPC_EVENT  => 'EVENT';
+use constant IPC_ABORT  => 'ABORT';
 
 use parent 'FusionInventory::Agent';
 
@@ -300,6 +303,20 @@ sub createDaemon {
     $self->{_fork} = {} unless $self->{_fork};
 }
 
+sub register_events_cb {
+    my ($self, $object) = @_;
+    return unless defined($object);
+    push @{$self->{_events_cb}}, $object;
+}
+
+sub _trigger_event {
+    my ($self, $event) = @_;
+    return unless defined($event) && defined($self->{_events_cb});
+    foreach my $object (@{$self->{_events_cb}}) {
+        last if $object->events_cb($event);
+    }
+}
+
 sub handleChildren {
     my ($self) = @_;
 
@@ -317,6 +334,15 @@ sub handleChildren {
             if ($child->{in}->sysread($msg, 5)) {
                 if ($msg eq IPC_LEAVE) {
                     $self->child_exit($pid);
+                } elsif ($msg eq IPC_EVENT) {
+                    my $len;
+                    $len = unpack("S", $len)
+                        if $child->{in}->sysread($len, 2);
+                    if ($len) {
+                        my $event;
+                        $self->_trigger_event($event)
+                            if $child->{in}->sysread($event, $len);
+                    }
                 }
             }
             $count++;
@@ -408,7 +434,10 @@ sub fork {
 
     if ($pid) {
         # In parent
-        $self->{_fork}->{$pid} = { name => $name };
+        $self->{_fork}->{$pid} = {
+            name    => $name,
+            id      => $params{id} || $pid,
+        };
         if ($child_ipc && $parent_ipc) {
             # Try to setup an optimized internal IPC based on IO::Pipe objects
             $child_ipc->reader();
@@ -471,6 +500,43 @@ sub forked {
         keys(%{$self->{_fork}});
 
     return scalar(@forked);
+}
+
+sub forked_process_event {
+    my ($self, $event) = @_;
+
+    return unless $self->forked() && defined($event);
+
+    return unless length($event);
+    if (length($event) > 65535) {
+        $self->{logger}->error("Skipping too long forked process event");
+        return;
+    }
+
+    $self->{_ipc_out}->syswrite(IPC_EVENT);
+    $self->{_ipc_out}->syswrite(pack("S", length($event)));
+    $self->{_ipc_out}->syswrite($event);
+    FusionInventory::Agent::Tools::Win32::setPoller($self->{_ipc_pollin})
+        if $OSNAME eq 'MSWin32';
+}
+
+sub abort_child {
+    my ($self, $id) = @_;
+
+    return unless $self->{_fork} && defined($id);
+
+    foreach my $pid (keys(%{$self->{_fork}})) {
+        my $forked = $self->{_fork}->{$pid};
+        next unless $forked->{id} && $forked->{id} eq $id;
+        $self->{logger}->debug("aborting $pid child");
+        $forked->{out}->syswrite(IPC_ABORT);
+        FusionInventory::Agent::Tools::Win32::setPoller($forked->{pollin})
+            if $OSNAME eq 'MSWin32';
+        kill 'TERM', $pid;
+        return;
+    }
+
+    $self->{logger}->debug("Can't abort $id: no such child");
 }
 
 sub fork_exit {

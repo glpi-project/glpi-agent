@@ -1,0 +1,37 @@
+# Traductions en français par Teclib Edition
+
+Home: Accueil
+GLPI Agent: Agent GLPI
+ToolBox Plugin: Plugin ToolBox
+Inventory: Inventaire
+Results: Résultats
+Raw YAML: YAML brut
+Raw YAML edition: Édition du YAML brut
+
+IP Ranges: Plages IP
+IP range: Plage IP
+Credentials: Identifiants
+
+Edit: Éditer
+Update: Mettre à jour
+Delete: Supprimer
+Allow renaming: Autoriser le renommage
+Revert selection: Inverser la sélection
+
+yes: oui
+no: non
+
+From: De
+to: à
+of: sur
+
+Display (number of items): Affichage (nombre de lignes)
+no limit: pas de limite
+empty list: liste vide
+
+Add: Ajouter
+Name: Nom
+Cancel: Annuler
+
+Reset: Vider
+Reverse selection: Inverser la sélection

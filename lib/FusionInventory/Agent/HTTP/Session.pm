@@ -17,10 +17,40 @@ sub new {
                         FusionInventory::Agent::Logger->new(),
         timer   => $params{timer} || [ time, $params{timeout} || 600 ],
         nonce   => $params{nonce} || '',
+        _sid    => $params{sid} || '',
+        _info   => $params{infos} || '',
     };
     bless $self, $class;
 
+    # Generate a random sid when not provided
+    $self->{_sid} = join("-", map { unpack("h4", pack("I", int(rand(65536)))) } 1..4)
+        unless $self->{_sid};
+
+    # Include private params as datas
+    foreach my $data (keys(%params)) {
+        next unless $data =~ /^_(\w+)$/;
+        $self->{datas}->{$1} = $params{$data};
+    }
+
     return $self;
+}
+
+sub info {
+    my $self = shift;
+
+    $self->{_info} = join(" ; ", @_) if @_;
+
+    my @infos = ($self->{_sid});
+    push @infos, $self->{_info} if $self->{_info};
+    my $expiration = localtime($self->{timer}[0] + $self->{timer}[1]);
+    push @infos, "expiration on $expiration";
+
+    return join(" ; ", @infos);
+}
+
+sub sid {
+    my ($self) = @_;
+    return $self->{_sid} || '';
 }
 
 sub expired {
@@ -77,11 +107,75 @@ sub dump {
 
     $dump->{nonce} = $self->{nonce} if $self->{nonce};
     $dump->{timer} = $self->{timer} if $self->{timer};
+    $dump->{infos} = $self->{_info} if $self->{_info};
+    if ($self->{datas}) {
+        foreach my $data (keys(%{$self->{datas}})) {
+            $dump->{"_$data"} = $self->{datas}->{$data};
+        }
+    }
 
     return $dump;
 }
 
+sub set {
+    my ($self, $data, $value) = @_;
+
+    # Update session time
+    $self->{timer}->[0] = time;
+
+    return unless $data;
+
+    $self->{datas}->{$data} = defined($value) ? $value : "";
+}
+
+sub get {
+    my ($self, $data) = @_;
+
+    # Update session time
+    $self->{timer}->[0] = time;
+
+    return unless $data && $self->{datas};
+
+    return $self->{datas}->{$data};
+}
+
+sub delete {
+    my ($self, $data) = @_;
+
+    # Update session time
+    $self->{timer}->[0] = time;
+
+    return unless $data && $self->{datas};
+
+    delete $self->{datas}->{$data};
+}
+
+sub keep {
+    my ($self, $data, $value) = @_;
+
+    return unless $data;
+
+    $self->{_keep}->{$data} = defined($value) ? $value : "";
+}
+
+sub kept {
+    my ($self, $data) = @_;
+
+    return unless $data && $self->{_keep};
+
+    return $self->{_keep}->{$data};
+}
+
+sub forget {
+    my ($self, $data) = @_;
+
+    return unless $data && $self->{_keep};
+
+    delete $self->{_keep}->{$data};
+}
+
 1;
+
 __END__
 
 =head1 NAME
@@ -135,3 +229,37 @@ Return session nonce creating one if not available.
 =head2 dump()
 
 Return session hash to be stored for session persistence.
+
+=head2 info(@infos)
+
+First store @infos in session datas.
+
+Then returns them in an info string including sid and expiration time.
+
+=head2 sid()
+
+Return session sid.
+
+=head2 set($data, $value)
+
+Store $value in session datas as $data data.
+
+=head2 get($data)
+
+Return $data data as it is stored in session datas.
+
+=head2 delete($data)
+
+Delete $data data from stored session datas.
+
+=head2 keep($data, $value)
+
+Keep $value as $data value in memory so it won't be exported by dump() call.
+
+=head2 kept($data)
+
+Return $data data kept in memory.
+
+=head2 forget($data)
+
+Forget $data data kept in memory.

@@ -89,4 +89,23 @@ sub task_version_update {
     return 1;
 }
 
+sub httpd_plugin_version_update {
+    my ($self, $plugin) = @_;
+    my @bumps = grep { /Bump $plugin plugin version to/ } @{$self->{_last_lines}};
+    my ($previous) = @bumps ? $bumps[0] =~ /Bump $plugin plugin version to (.*)$/ : "";
+    my $latest;
+
+    eval 'require FusionInventory::Agent::HTTP::Server::'.$plugin;
+    eval '$latest = $FusionInventory::Agent::HTTP::Server::'.$plugin.'::VERSION';
+
+    return 0 unless $latest;
+    return 0 if $previous && $latest eq $previous;
+
+    my $section = lc($plugin);
+
+    $self->add($section => "Bump $plugin plugin version to $latest");
+
+    return 1;
+}
+
 1;
