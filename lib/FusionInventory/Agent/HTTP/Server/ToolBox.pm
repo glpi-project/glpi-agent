@@ -72,7 +72,7 @@ sub init {
     # running from different places, very important for local inventory support
     my $hostname = getHostname() || 'unknown';
     my $agent = $self->{server}->{agent};
-    if ($agent->{deviceid} !~ /^$hostname-/) {
+    if ($agent && $agent->{deviceid} && $agent->{deviceid} !~ /^$hostname-/) {
         $agent->{vardir} .= "/$hostname";
         delete $agent->{storage};
         delete $agent->{deviceid};
@@ -115,8 +115,8 @@ sub init {
         }
 
         # Try to register events callback
-        if ($page->register_events_cb()) {
-            $self->{server}->{agent}->register_events_cb($page);
+        if ($page->register_events_cb() && ref($agent) =~ /Daemon/) {
+            $agent->register_events_cb($page);
         }
 
         # Keep Results page object so we can update Results as soon as possible before it is requested
@@ -150,7 +150,7 @@ sub init {
     # Always uses a dedicated Listener target for this plugin
     $self->{target} = FusionInventory::Agent::Target::Listener->new(
         logger     => $self->{logger},
-        basevardir => $self->{server}->{agent}->{config}->{vardir},
+        basevardir => $agent->{config}->{vardir},
     );
 
     # We use a dedicated YAML for some plugin configuration that can be changed online

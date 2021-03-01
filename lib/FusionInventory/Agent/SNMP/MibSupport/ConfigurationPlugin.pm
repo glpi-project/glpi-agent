@@ -14,6 +14,7 @@ use FusionInventory::Agent::Config;
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::SNMP;
 use FusionInventory::Agent::Logger;
+use FusionInventory::Agent::HTTP::Server::ToolBox;
 
 our $mibSupport = [];
 
