@@ -160,7 +160,7 @@ sub _build_steps {
                     URI::Escape Net::NBName Thread::Queue Thread::Semaphore
                     Net::SNMP Net::SNMP::Security::USM Net::SNMP::Transport::IPv4::TCP
                     Net::SNMP::Transport::IPv6::TCP Net::SNMP::Transport::IPv6::UDP
-                    Net::IP UUID::Tiny Win32::Unicode::File Data::UUID /,
+                    Net::IP UUID::Tiny Win32::Unicode::File Data::UUID Archive::Zip /,
                 # For Wake-On-LAN task
                 #qw/ Net::Write::Layer2 /,
             ],
