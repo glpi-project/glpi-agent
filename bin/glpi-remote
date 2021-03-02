@@ -84,6 +84,8 @@ if ($cmd) {
     exit(0);
 }
 
+pod2usage(-verbose => 0, -exitstatus => 0);
+
 exit(0);
 
 my %deviceid;
