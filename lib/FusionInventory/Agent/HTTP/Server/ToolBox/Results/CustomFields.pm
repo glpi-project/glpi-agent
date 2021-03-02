@@ -47,7 +47,7 @@ sub fields {
 }
 
 sub analyze {
-    my ($self, $name, $tree, $file) = @_;
+    my ($self, $name, $tree) = @_;
 
     return unless $name && $tree;
 

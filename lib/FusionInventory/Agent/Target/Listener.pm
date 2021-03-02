@@ -177,8 +177,10 @@ sub sessions {
 
 sub END {
     # Make sure to store touched sessions
-    $listener->{_storing_session_timer} = STORE_SESSION_TIMEOUT;
-    $listener->_store_sessions();
+    if ($listener) {
+        $listener->{_storing_session_timer} = STORE_SESSION_TIMEOUT;
+        $listener->_store_sessions();
+    }
 }
 
 1;

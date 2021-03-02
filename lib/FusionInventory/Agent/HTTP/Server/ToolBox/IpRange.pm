@@ -221,7 +221,7 @@ sub _submit_add {
 }
 
 sub _submit_rename {
-    my ($self, $form, $ip_range) = @_;
+    my ($self, $form) = @_;
 
     return unless $form;
 

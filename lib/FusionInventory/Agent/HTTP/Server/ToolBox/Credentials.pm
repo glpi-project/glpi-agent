@@ -138,7 +138,7 @@ sub _submit_add {
 }
 
 sub _submit_add_v1_v2c {
-    my ($self, $form, $credentials) = @_;
+    my ($self, $form) = @_;
 
     return unless $form;
 
@@ -149,7 +149,7 @@ sub _submit_add_v1_v2c {
 }
 
 sub _submit_add_v3 {
-    my ($self, $form, $credentials) = @_;
+    my ($self, $form) = @_;
 
     return unless $form;
 
@@ -160,7 +160,7 @@ sub _submit_add_v3 {
 }
 
 sub _submit_rename {
-    my ($self, $form, $credentials) = @_;
+    my ($self, $form) = @_;
 
     return unless $form;
 

@@ -232,7 +232,6 @@ sub netscan {
     # Compute credentials
     my @credentials = ();
     my $credentials = $self->yaml('credentials') || {};
-    my ($lastid) = sort { $b <=> $a } map { $_->{id} || 0 } values(%{$credentials});
     foreach my $credential (@{$ip_range->{credentials} || []}) {
         my $cred = $credentials->{$credential}
             or return $self->errors("No such credentials: $credential");
@@ -453,8 +452,6 @@ sub _analyse_event {
 
     my $task = $self->{tasks}->{$taskid}
         or return;
-
-    my $lastcount = $task->{count} || 0;
 
     if ($event =~ /^\[debug\] scanning block (.*)$/) {
         my $block = Net::IP->new($1);
