@@ -1027,7 +1027,7 @@ sub submit_form {
 
 sub _fix_default_page_options {
     my ($self, $config_specs) = @_;
-    
+
     my %enabled = ();
 
     foreach my $list (@{$config_specs}) {

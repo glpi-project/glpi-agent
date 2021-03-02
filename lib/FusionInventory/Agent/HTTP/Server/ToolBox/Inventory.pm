@@ -602,7 +602,7 @@ sub ajax {
     my $agent = $self->{toolbox}->{server}->{agent};
     if ($task->{done} || !$agent->forked(name => $task->{procname})) {
         $headers{'X-Inventory-Status'} = 'done';
-    } 
+    }
     if ($query{'what'} && $query{'what'} eq 'full') {
         $headers{'X-Inventory-Output'} = 'full';
         $task->{index} = 0;

@@ -331,7 +331,7 @@ sub _submit_addcredential {
 
         foreach my $name (@selected) {
             next unless $ip_range->{$name};
-            my %creds = $ip_range->{$name}->{credentials} ? 
+            my %creds = $ip_range->{$name}->{credentials} ?
                 map { $_ => 1 } @{$ip_range->{$name}->{credentials}} : ();
             $creds{$credential}++;
             $ip_range->{$name}->{credentials} = [ sort { $a cmp $b } keys(%creds) ];
