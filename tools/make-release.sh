@@ -153,6 +153,8 @@ sed -ri -e "s/^version '.*';$/version '$VERSION';/" Makefile.PL
 # Update debian changelog with new entry log using current git user
 export DEBFULLNAME=$(git config --get user.name)
 export DEBEMAIL=$(git config --get user.email)
+: ${DEBFULLNAME:=$(git log --pretty=format:"%an" -n 1)}
+: ${DEBEMAIL:=$(git log --pretty=format:"%ae" -n 1)}
 if [ -n "$DEBFULLNAME" -a -n "$DEBEMAIL" ]; then
     CURRENT=$(dpkg-parsechangelog -S version)
     EPOCH=${CURRENT%%:*}
