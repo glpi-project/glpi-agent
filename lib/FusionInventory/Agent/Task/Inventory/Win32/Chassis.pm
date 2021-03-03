@@ -64,7 +64,11 @@ sub _getChassis {
         class      => 'Win32_SystemEnclosure',
         properties => [ qw/ChassisTypes/ ]
     )) {
-        $chassis = $chassisType[$object->{ChassisTypes}->[0]];
+        if (ref($object->{ChassisTypes}) eq 'ARRAY') {
+            $chassis = $chassisType[$object->{ChassisTypes}->[0]];
+        } elsif (!ref($object->{ChassisTypes}) && $object->{ChassisTypes} =~ /^\d+$/) {
+            $chassis = $chassisType[int($object->{ChassisTypes})];
+        }
     }
 
     return $chassis;
