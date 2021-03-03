@@ -67,7 +67,7 @@ if [ "$GIT" != "no" ]; then
 
     echo
     echo ----
-    if [ "$BRANCH" == "develop" ] && ! git checkout -b release/$VERSION; then
+    if [ "$BRANCH" = "develop" ] && ! git checkout -b release/$VERSION; then
         echo "Can't create dedicated release branch" >&2
         exit 3
     fi
@@ -151,14 +151,14 @@ sed -ri -e "s/.* not released yet/$VERSION $RELEASE_DATE/" Changes
 sed -ri -e "s/^version '.*';$/version '$VERSION';/" Makefile.PL
 
 # Update debian changelog with new entry log using current git user
-export DEBFULLNAME=$(git config --get user.name)
-export DEBEMAIL=$(git config --get user.email)
+export DEBFULLNAME="$(git config --get user.name)"
+export DEBEMAIL="$(git config --get user.email)"
 : ${DEBFULLNAME:=$(git log --pretty=format:"%an" -n 1)}
 : ${DEBEMAIL:=$(git log --pretty=format:"%ae" -n 1)}
 if [ -n "$DEBFULLNAME" -a -n "$DEBEMAIL" ]; then
     CURRENT=$(dpkg-parsechangelog -S version)
     EPOCH=${CURRENT%%:*}
-    if [ "${VERSION#*-}" == "$VERSION" -a -z "$DEBREV" ]; then
+    if [ "${VERSION%-*}" != "$VERSION" -a -z "$DEBREV" ]; then
         DEBREV="-1"
     fi
     dch -b -D unstable --newversion "$EPOCH:$VERSION$DEBREV" "New upstream release $VERSION"
@@ -167,14 +167,14 @@ else
     exit 1
 fi
 
-if [ "$GIT" == "no" ]; then
+if [ "$GIT" = "no" ]; then
     exit 0
 fi
 
 # 6. Make release commit
 git commit -a -m "feat: GLPI Agent $VERSION release"
 
-if [ "$MERGE" == "no" ]; then
+if [ "$MERGE" = "no" ]; then
     echo
     echo ----
     echo "Skipping tagging to $VERSION"
