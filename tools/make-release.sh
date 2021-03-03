@@ -158,7 +158,7 @@ export DEBEMAIL="$(git config --get user.email)"
 if [ -n "$DEBFULLNAME" -a -n "$DEBEMAIL" ]; then
     CURRENT=$(dpkg-parsechangelog -S version)
     EPOCH=${CURRENT%%:*}
-    if [ "${VERSION%-*}" != "$VERSION" -a -z "$DEBREV" ]; then
+    if [ "${VERSION%-*}" = "$VERSION" -a -z "$DEBREV" ]; then
         DEBREV="-1"
     fi
     dch -b -D unstable --newversion "$EPOCH:$VERSION$DEBREV" "New upstream release $VERSION"
