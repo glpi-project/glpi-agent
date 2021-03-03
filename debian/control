@@ -69,6 +69,7 @@ Depends:
  libtext-template-perl,
  libjson-perl,
  libjson-pp-perl,
+ libossp-uuid-perl,
  pciutils,
  usbutils,
  libhttp-daemon-perl,
