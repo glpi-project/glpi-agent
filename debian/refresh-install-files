@@ -39,6 +39,7 @@ print AGENT "etc/ssl-server-plugin.cfg /usr/share/glpi-agent/etc\n";
 print AGENT "etc/server-test-plugin.cfg /usr/share/glpi-agent/etc\n";
 print AGENT "etc/proxy-server-plugin.cfg /usr/share/glpi-agent/etc\n";
 print AGENT "etc/proxy2-server-plugin.cfg /usr/share/glpi-agent/etc\n";
+print AGENT "etc/toolbox-plugin.cfg /usr/share/glpi-agent/etc\n";
 print AGENT "usr/share/glpi-agent/edid.ids\n";
 print AGENT "usr/share/glpi-agent/sysobject.ids\n";
 print AGENT "usr/share/glpi-agent/html\n";

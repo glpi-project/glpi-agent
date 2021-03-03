@@ -6,6 +6,7 @@ etc/glpi-agent/server-test-plugin.cfg
 etc/glpi-agent/ssl-server-plugin.cfg
 etc/glpi-agent/proxy-server-plugin.cfg
 etc/glpi-agent/proxy2-server-plugin.cfg
+etc/glpi-agent/toolbox-plugin.cfg
 
 # Files provided by pci.ids & usb.ids packages
 usr/share/glpi-agent/pci.ids

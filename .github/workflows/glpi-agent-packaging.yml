@@ -278,7 +278,7 @@ jobs:
     - name: Upload built deb artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: Built-Deb
+        name: Debian-Build
         path: |
           ${{ steps.debbuild.outputs.debpath }}/*.deb
           ${{ steps.debbuild.outputs.debpath }}/*.buildinfo
