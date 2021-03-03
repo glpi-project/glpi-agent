@@ -266,6 +266,11 @@ jobs:
       id: debbuild
       run: |
         echo "::set-output name=debpath:: $(dirname $PWD)"
+        # make -gitXXXXXXXX release when not tagged
+        if [ -z "${{ needs.create-release.outputs.tag }}" -a -n "$GITHUB_SHA" ]; then
+            VERSION=$(perl -Ilib -MFusionInventory::Agent::Version -e 'print $FusionInventory::Agent::Version::VERSION')
+            tools/make-release.sh --no-git ${VERSION%-dev}-git${GITHUB_SHA:0:8}
+        fi
         # DH_COMPAT is needed on current ubuntu-latest, it could be removed after switching to Ubuntu 20.04
         export DH_COMPAT=11
         dpkg-buildpackage -d -b --no-sign
