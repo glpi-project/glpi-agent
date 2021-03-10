@@ -83,8 +83,8 @@ sub doInventory {
                 if ($defender) {
                     $antivirus->{VERSION} = $defender->{AMProductVersion}
                         if $defender->{AMProductVersion};
-                    $antivirus->{ENABLED} = $defender->{AntivirusEnabled}
-                        if (defined($defender->{AntivirusEnabled}));
+                    $antivirus->{ENABLED} = 1
+                        if defined($defender->{AntivirusEnabled}) && $defender->{AntivirusEnabled} =~ /^1|true$/;
                     $antivirus->{BASE_VERSION} = $defender->{AntivirusSignatureVersion}
                         if $defender->{AntivirusSignatureVersion};
                 }
