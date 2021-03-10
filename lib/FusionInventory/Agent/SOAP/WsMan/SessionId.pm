@@ -18,16 +18,16 @@ use constant    xmlns   => 'p';
 use FusionInventory::Agent::SOAP::WsMan::Attribute;
 
 sub new {
-    my ($class, %params) = @_;
+    my ($class, $sessionid) = @_;
 
-    return $class->SUPER::new(%params) if %params;
+    return $class->SUPER::new($sessionid) if $sessionid;
 
     my $uuid_gen = Data::UUID->new();
     my $uuid = $uuid_gen->create_str();
 
     my $self = $class->SUPER::new(
         Attribute->must_understand("false"),
-        '#text' => "uuid:$uuid",
+        "uuid:$uuid",
     );
 
     $self->{_uuid} = $uuid;
@@ -39,7 +39,13 @@ sub new {
 sub uuid {
     my ($self) = @_;
 
+    my ($uuid) = $self->string =~ /^uuid:(.*)$/;
+
+    return unless $self->{_uuid} || $uuid;
+
     return $self->{_uuid} if $self->{_uuid};
+
+    return $self->{_uuid} = $uuid;
 }
 
 1;

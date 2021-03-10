@@ -47,7 +47,7 @@ sub checking_error {
     return "Winrm identify request failure: ".$self->{_winrm}->lasterror()
         unless $identify;
 
-    my $vendor = $identify->get("ProductVendor");
+    my $vendor = $identify->ProductVendor;
     return "Winrm not supported on WsMan backend"
         unless $vendor =~ /microsoft/i;
 

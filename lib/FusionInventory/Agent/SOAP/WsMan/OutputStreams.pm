@@ -14,9 +14,9 @@ use parent 'Node';
 use constant    xmlns   => 'rsp';
 
 sub new {
-    my ($class, $url) = @_;
+    my ($class) = @_;
 
-    my $self = $class->SUPER::new('#text' => "stdout stderr");
+    my $self = $class->SUPER::new("stdout stderr");
 
     bless $self, $class;
 

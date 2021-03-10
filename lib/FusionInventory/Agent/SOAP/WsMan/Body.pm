@@ -13,14 +13,8 @@ use parent 'Node';
 
 use constant    xmlns   => 's';
 
-use FusionInventory::Agent::SOAP::WsMan::IdentifyResponse;
 use FusionInventory::Agent::SOAP::WsMan::Fault;
 use FusionInventory::Agent::SOAP::WsMan::EnumerateResponse;
-use FusionInventory::Agent::SOAP::WsMan::PullResponse;
-use FusionInventory::Agent::SOAP::WsMan::Shell;
-use FusionInventory::Agent::SOAP::WsMan::ResourceCreated;
-use FusionInventory::Agent::SOAP::WsMan::CommandResponse;
-use FusionInventory::Agent::SOAP::WsMan::ReceiveResponse;
 
 sub support {
     return {

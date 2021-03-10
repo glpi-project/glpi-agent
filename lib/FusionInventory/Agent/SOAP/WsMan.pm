@@ -11,6 +11,7 @@ use HTTP::Headers;
 
 use FusionInventory::Agent::SOAP::WsMan::Envelope;
 use FusionInventory::Agent::SOAP::WsMan::Attribute;
+use FusionInventory::Agent::SOAP::WsMan::Namespace;
 use FusionInventory::Agent::SOAP::WsMan::Header;
 use FusionInventory::Agent::SOAP::WsMan::Identify;
 use FusionInventory::Agent::SOAP::WsMan::ResourceURI;
@@ -131,7 +132,7 @@ sub identify {
     my ($self) = @_;
 
     my $request = Envelope->new(
-        namespace   =>"s,wsmid",
+        Namespace->new(qw(s wsmid)),
         Header->new(),
         Body->new( Identify->new() ),
     );
@@ -152,7 +153,7 @@ sub identify {
     return $self->abort("Malformed identify response, not valid")
         unless $identify->isvalid();
 
-    $self->debug2("Identify response: ".$identify->get("ProductVendor")." - ".$identify->get("ProductVersion"));
+    $self->debug2("Identify response: ".$identify->ProductVendor." - ".$identify->ProductVersion);
 
     return $identify;
 }
@@ -171,7 +172,7 @@ sub enumerate {
     $self->debug2("Requesting enumerate URL: $url");
 
     my $request = Envelope->new(
-        namespace   => "s,a,n,w,p,b",
+        Namespace->new(qw(s a n w p b)),
         Header->new(
             To->new( $self->url ),
             ResourceURI->new( $url ),
@@ -222,7 +223,7 @@ sub enumerate {
         }
 
         my $thisopid = $header->get('OperationID');
-        if (!$thisopid || $thisopid->string() ne $operationid->string()) {
+        unless ($thisopid && $thisopid->equals($operationid)) {
             $self->lasterror("Got message not related to our operation");
             last;
         }
@@ -251,7 +252,7 @@ sub enumerate {
         # Reset Body to make Pull request with provided EnumerationContext
         $body->reset(
             Pull->new( $enum->context )
-        )
+        );
     }
 
     # Send End to remote
@@ -282,7 +283,7 @@ sub shell {
 
     # Create a remote shell
     my $request = Envelope->new(
-        namespace   => "s,a,w,p",
+        Namespace->new(qw(s a w p)),
         Header->new(
             To->new( $self->url ),
             $resource,
@@ -323,7 +324,7 @@ sub shell {
 
     my $thisopid = $header->get('OperationID');
     return $self->abort("Got message not related to our shell create operation")
-        if (!$thisopid || $thisopid->string() ne $operationid->string());
+        unless ($thisopid && $thisopid->equals($operationid));
 
     my $respbody = $envelope->body;
     return $self->abort("Malformed create response, no 'Body' node found")
@@ -349,7 +350,7 @@ sub shell {
         Option->new( WINRS_CONSOLEMODE_STDIN => "TRUE" ),
     );
     $request = Envelope->new(
-        namespace   => "s,a,w,p",
+        Namespace->new(qw(s a w p)),
         Header->new(
             To->new( $self->url ),
             $resource,
@@ -394,7 +395,7 @@ sub shell {
 
     $thisopid = $header->get('OperationID');
     return $self->abort("Got message not related to our shell command operation")
-        if (!$thisopid || $thisopid->string() ne $operationid->string());
+        unless ($thisopid && $thisopid->equals($operationid));
 
     $respbody = $envelope->body;
     return $self->abort("Malformed command response, no 'Body' node found")
@@ -443,7 +444,7 @@ sub receive {
 
         # Send Delete to remote
         my $request = Envelope->new(
-            namespace   => "s,a,w,p",
+            Namespace->new(qw(s a w p)),
             Header->new(
                 To->new( $self->url ),
                 $resource,
@@ -484,7 +485,7 @@ sub receive {
 
         my $thisopid = $header->get('OperationID');
         $self->abort("Got message not related to receive operation") and last
-            if (!$thisopid || $thisopid->string() ne $operationid->string());
+            unless ($thisopid && $thisopid->equals($operationid));
 
         my $body = $envelope->body;
         $self->lasterror("Malformed receive response, no 'Body' node found") and last
@@ -535,7 +536,7 @@ sub signal {
 
     # Send Delete to remote
     my $request = Envelope->new(
-        namespace   => "s,a,w,p",
+        Namespace->new(qw(s a w p)),
         Header->new(
             To->new( $self->url ),
             $resource,
@@ -582,7 +583,7 @@ sub signal {
 
     my $thisopid = $header->get('OperationID');
     return $self->abort("Got message not related to signal operation")
-        if (!$thisopid || $thisopid->string() ne $operationid->string());
+        unless ($thisopid && $thisopid->equals($operationid));
 }
 
 sub delete {
@@ -593,7 +594,7 @@ sub delete {
 
     # Send Delete to remote
     my $request = Envelope->new(
-        namespace   => "s,a,w,p",
+        Namespace->new(qw(s a w p)),
         Header->new(
             To->new( $self->url ),
             $resource,
@@ -634,7 +635,7 @@ sub delete {
 
     my $thisopid = $header->get('OperationID');
     return $self->abort("Got message not related to delete operation")
-        if (!$thisopid || $thisopid->string() ne $operationid->string());
+        unless ($thisopid && $thisopid->equals($operationid));
 
     return $operationid;
 }
@@ -644,7 +645,7 @@ sub end {
 
     # Send End to remote
     my $request = Envelope->new(
-        namespace   => "s,a,w,p",
+        Namespace->new(qw(s a w p)),
         Header->new(
             To->anonymous,
             ResourceURI->new( "http://schemas.microsoft.com/wbem/wsman/1/wsman/FullDuplex" ),

@@ -30,12 +30,13 @@ sub support {
 sub new {
     my ($class, @params) = @_;
 
-    push @params, Attribute->new("xmlns:".$class->xmlns => xsd),
+    my $self = $class->SUPER::new(@params);
+
+    $self->push(
+        Attribute->new("xmlns:".$class->xmlns => xsd),
         InputStreams->new(),
         OutputStreams->new()
-        unless @params;
-
-    my $self = $class->SUPER::new(@params);
+    ) unless @params;
 
     bless $self, $class;
 

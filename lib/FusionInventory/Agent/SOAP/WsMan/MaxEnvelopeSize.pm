@@ -18,12 +18,10 @@ use FusionInventory::Agent::SOAP::WsMan::Attribute;
 sub new {
     my ($class, $size) = @_;
 
-    my @nodes = (
+    my $self = $class->SUPER::new(
         Attribute->must_understand(),
-        '#text' => $size,
+        $size,
     );
-
-    my $self = $class->SUPER::new(@nodes);
 
     bless $self, $class;
     return $self;

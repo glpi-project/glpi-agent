@@ -44,12 +44,10 @@ sub new {
 
     my $url = $actions{$action} // $action;
 
-    my @nodes = (
+    my $self = $class->SUPER::new(
         Attribute->must_understand(),
-        '#text' => $url,
+        $url
     );
-
-    my $self = $class->SUPER::new(@nodes);
 
     bless $self, $class;
     return $self;

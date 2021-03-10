@@ -14,7 +14,7 @@ use parent 'Node';
 sub new {
     my ($class, $max, $for_pull) = @_;
 
-    my $self = $class->SUPER::new('#text' => $max || 32000);
+    my $self = $class->SUPER::new($max || 32000);
 
     $self->{_for_pull} = $for_pull;
 

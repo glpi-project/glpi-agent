@@ -11,8 +11,6 @@ package
 
 use parent 'Node';
 
-use FusionInventory::Agent::SOAP::WsMan::CommandId;
-
 use constant    xmlns   => 'rsp';
 
 sub support {

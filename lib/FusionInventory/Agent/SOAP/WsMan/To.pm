@@ -14,15 +14,6 @@ use parent 'Node';
 use constant    xmlns   => 'a';
 use constant    xsd     => "http://schemas.xmlsoap.org/ws/2004/08/addressing";
 
-sub new {
-    my ($class, $url) = @_;
-
-    my $self = $class->SUPER::new('#text' => $url);
-
-    bless $self, $class;
-    return $self;
-}
-
 sub anonymous {
     my ($class) = @_;
 

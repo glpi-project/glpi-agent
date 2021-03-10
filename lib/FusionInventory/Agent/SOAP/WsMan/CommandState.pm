@@ -25,13 +25,14 @@ sub done {
     my ($self, $cid) = @_;
 
     if ($cid) {
-        my $thiscid = first { $_->get("CommandId") } $self->attributes();
-        return 0 unless $thiscid && $thiscid->get("CommandId") eq $cid;
+        my $thiscid = $self->attribute("CommandId");
+        return 0 unless $thiscid && $thiscid eq $cid;
     }
 
     my $done_url = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/CommandState/Done";
-    my $state = first { $_->get("State") } $self->attributes();
-    return $state && $state->get("State") eq $done_url ? 1 : 0 ;
+    my $state = $self->attribute("State");
+
+    return $state && $state eq $done_url ? 1 : 0 ;
 }
 
 sub exitcode {

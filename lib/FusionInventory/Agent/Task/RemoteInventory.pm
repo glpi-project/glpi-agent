@@ -23,20 +23,22 @@ sub isEnabled {
         logger  => $self->{logger},
     );
 
-    while (my $remote = $remotes->next()) {
+    my $errors = 0;
+    foreach my $remote ($remotes->getall()) {
         my $error = $remote->checking_error();
-        if ($error) {
-            my $deviceid = $remote->deviceid
-                or next;
-            $self->{logger}->debug("Skipping remote inventory task execution for $deviceid: $error");
-            $remote->expiration($self->{target}->getNextRunDate());
-            $remotes->store();
-            next;
-        }
-        last;
+        last unless $error;
+        my $deviceid = $remote->deviceid
+            or next;
+        $self->{logger}->debug("Skipping remote inventory task execution for $deviceid: $error");
+        # We want to retry in a hour
+        $self->{target}->setNextRunDateFromNow(3600);
+        $remote->expiration($self->{target}->getNextRunDate());
+        $remotes->store();
+        $errors++;
     }
 
-    if ($remotes->count()) {
+    my $count = $remotes->count();
+    if ($count && $errors < $count) {
         $self->{logger}->debug("Remote inventory task execution enabled");
         return 1;
     }

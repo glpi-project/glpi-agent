@@ -22,9 +22,21 @@ sub values {
 sub isvalid {
     my ($self) = @_;
 
-    my ($xsd) = $self->attributes("xmlns:".xmlns);
+    my ($xsd) = $self->attribute("xmlns:".xmlns);
 
     return $xsd eq Identify->xsd;
+}
+
+sub ProductVendor {
+    my ($self) = @_;
+
+    return $self->get('ProductVendor')->string;
+}
+
+sub ProductVersion {
+    my ($self) = @_;
+
+    return $self->get('ProductVersion')->string;
 }
 
 1;
