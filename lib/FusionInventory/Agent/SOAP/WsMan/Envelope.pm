@@ -42,28 +42,8 @@ sub new {
 
     my ($first) = @nodes;
 
-    if ($first && ref($first) ne 'HASH' && $first ne 'namespace') {
-        unshift @nodes, 'namespace', 's';
-        $first = 'namespace';
-    }
-
-    if ($first && $first eq 'namespace') {
-        my @attributes = ( "xmlns:s" => $ns{s} );
-        shift @nodes;
-        my $namespace = shift @nodes;
-        if ($namespace) {
-            my @ns = split(/,/, $namespace);
-            foreach my $ns (@ns) {
-                next if $ns eq "s";
-                next unless $ns{$ns};
-                push @attributes, "xmlns:$ns" => $ns{$ns};
-            }
-        }
-        unshift @nodes, Attribute->new(@attributes);
-    }
-
     if (ref($first) eq 'HASH' && $first->{'s:Envelope'}) {
-        @nodes = %{$first->{'s:Envelope'}};
+        @nodes = ($first->{'s:Envelope'});
     }
 
     $self = $class->SUPER::new(@nodes);

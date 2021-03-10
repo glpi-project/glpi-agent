@@ -13,8 +13,6 @@ use parent 'Node';
 
 use constant    xmlns   => 's';
 
-use FusionInventory::Agent::SOAP::WsMan::Text;
-
 sub support {
     return {
         Text    => "s:Text",

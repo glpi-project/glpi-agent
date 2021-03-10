@@ -16,14 +16,14 @@ use Data::UUID;
 use constant    xmlns   => 'a';
 
 sub new {
-    my ($class, %params) = @_;
+    my ($class, $messageid) = @_;
 
-    return $class->SUPER::new(%params) if %params;
+    return $class->SUPER::new($messageid) if $messageid;
 
     my $uuid_gen = Data::UUID->new();
     my $uuid = $uuid_gen->create_str();
 
-    my $self = $class->SUPER::new('#text' => "uuid:$uuid");
+    my $self = $class->SUPER::new("uuid:$uuid");
 
     $self->{_uuid} = $uuid;
 
@@ -34,7 +34,13 @@ sub new {
 sub uuid {
     my ($self) = @_;
 
+    my ($uuid) = $self->string =~ /^uuid:(.*)$/;
+
+    return unless $self->{_uuid} || $uuid;
+
     return $self->{_uuid} if $self->{_uuid};
+
+    return $self->{_uuid} = $uuid;
 }
 
 sub reset_uuid {

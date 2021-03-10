@@ -18,12 +18,10 @@ use FusionInventory::Agent::SOAP::WsMan::Attribute;
 sub new {
     my ($class, $locale) = @_;
 
-    my @nodes = (
+    my $self = $class->SUPER::new(
         Attribute->must_understand("false"),
         Attribute->new( "xml:lang" => $locale),
     );
-
-    my $self = $class->SUPER::new(@nodes);
 
     bless $self, $class;
     return $self;

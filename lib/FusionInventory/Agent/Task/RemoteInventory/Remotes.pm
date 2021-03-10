@@ -38,7 +38,7 @@ sub new {
             next unless $url;
 
             # Skip if url is still known for a remote
-            next if grep { $_->url() eq $url } values(%{$self->{_remotes}});
+            next if grep { $_->url() eq $url } $self->getall();
 
             my $remote = FusionInventory::Agent::Task::RemoteInventory::Remote->new(
                 url     => $url,
@@ -70,10 +70,16 @@ sub count {
     return scalar(keys(%{$self->{_remotes}}));
 }
 
+sub getall {
+    my ($self) = @_;
+
+    return values %{$self->{_remotes}};
+}
+
 sub next {
     my ($self) = @_;
 
-    my @remotes = values %{$self->{_remotes}}
+    my @remotes = $self->getall()
         or return;
 
     my ($remote) = sort { $a->expiration() <=> $b->expiration() } @remotes;

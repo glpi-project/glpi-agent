@@ -18,7 +18,6 @@ use parent 'Node';
 
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::SOAP::WsMan::EnumerationContext;
-use FusionInventory::Agent::SOAP::WsMan::Items;
 use FusionInventory::Agent::SOAP::WsMan::EndOfSequence;
 
 use constant    xmlns   => 'n';
@@ -48,10 +47,8 @@ sub items {
 
     my @items;
     foreach my $items ($self->nodes("Items")) {
-        foreach my $key ($items->keys()) {
-            my $item = $items->get($key)
-                or next;
-            push @items, _normalize(ref($item) eq 'ARRAY' ? @{$item} : $item);
+        foreach my $item ($items->nodes()) {
+            push @items, _dump($item);
         }
     }
 
@@ -64,21 +61,27 @@ sub end_of_sequence {
     return first { ref($_) eq "EndOfSequence" } $self->nodes();
 }
 
-sub _normalize {
-    my @normalized = ();
+sub _dump {
+    my @dump = ();
 
-    foreach my $hash (@_) {
-        my $normalized = {};
-        foreach my $key (keys(%{$hash})) {
-            next unless $key =~ /^p:(.*)$/;
-            my $value = $hash->{$key};
-            $value = $value->{'-xsi:nil'} if ref($value) eq 'HASH' && $value->{'-xsi:nil'};
-            $normalized->{$1} = $value;
+    foreach my $object (@_) {
+        my $dump = {};
+        foreach my $node ($object->nodes()) {
+            my $key = ref($node);
+            my $nil = $node->attribute('xsi:nil');
+            if ($nil && $nil eq 'true') {
+                $dump->{$key} = undef;
+            } elsif ($node->attribute('xsi:type')) {
+                push @dump, _dump($node);
+                undef $dump;
+            } else {
+                $dump->{$key} = $node->string;
+            }
         }
-        push @normalized, $normalized;
+        push @dump, $dump if $dump;
     }
 
-    return @normalized;
+    return @dump;
 }
 
 sub context {

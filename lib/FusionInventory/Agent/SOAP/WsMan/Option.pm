@@ -20,7 +20,7 @@ sub new {
 
     my $self = $class->SUPER::new(
         Attribute->new("Name" => $name),
-        '#text' => $text,
+        $text,
     );
 
     bless $self, $class;
