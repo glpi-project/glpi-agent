@@ -56,10 +56,10 @@ sub doInventory {
 
     my $arch = is64bit() ? '64-bit' : '32-bit';
 
-    my $swap = $operatingSystem->{TotalSwapSpaceSize} ?
+    my $swap = $operatingSystem->{TotalSwapSpaceSize} && $operatingSystem->{TotalSwapSpaceSize} =~ /^\d+$/ ?
         int($operatingSystem->{TotalSwapSpaceSize} / (1024 * 1024)) : undef;
 
-    my $memory = $computerSystem->{TotalPhysicalMemory} ?
+    my $memory = $computerSystem->{TotalPhysicalMemory} && $computerSystem->{TotalPhysicalMemory} =~ /^\d+$/  ?
         int($computerSystem->{TotalPhysicalMemory} / (1024 * 1024)) : undef;
 
     my $uuid = ($computerSystemProduct->{UUID} && $computerSystemProduct->{UUID} !~ /^[0-]+$/) ?
