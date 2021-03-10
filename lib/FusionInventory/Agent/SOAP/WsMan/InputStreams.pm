@@ -16,7 +16,7 @@ use constant    xmlns   => 'rsp';
 sub new {
     my ($class) = @_;
 
-    my $self = $class->SUPER::new('#text' => "stdin");
+    my $self = $class->SUPER::new("stdin");
 
     bless $self, $class;
 

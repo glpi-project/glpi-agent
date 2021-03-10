@@ -20,7 +20,7 @@ sub new {
 
     my $self = $class->SUPER::new(
         Attribute->must_understand("false"),
-        '#text' => 1,
+        1,
     );
 
     $self->{_index} = 1;
