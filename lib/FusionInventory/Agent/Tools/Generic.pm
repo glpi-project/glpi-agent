@@ -88,7 +88,9 @@ sub getDmidecodeInfos {
 }
 
 sub isInvalidBiosValue {
-    return shift =~ m{
+    my ($value) = @_;
+    return unless defined($value);
+    return $value =~ m{
         ^(?:
             N/A                                |
             None                               |
@@ -96,10 +98,15 @@ sub isInvalidBiosValue {
             Not \s* Specified                  |
             Not \s* Present                    |
             Not \s* Available                  |
-            Default string                     |
-            System Product Name                |
-            System manufacturer                |
-            System Serial Number               |
+            Default \s* string                 |
+            System \s* Product \s* Name        |
+            System \s* manufacturer            |
+            System \s* Serial \s* Number       |
+            System \s* Version                 |
+            Chassis \s* Serial \s* Number      |
+            Chassis \s* manufacturer?          |
+            Chassis \s* Version                |
+            No \s* Asset \s* Tag               |
             <BAD \s* INDEX>                    |
             (?:<OUT \s* OF \s* SPEC>){1,2}     |
             \s* To \s* Be \s* Filled \s* By \s* O\.E\.M\.
