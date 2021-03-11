@@ -69,13 +69,14 @@ sub _dump {
         foreach my $node ($object->nodes()) {
             my $key = ref($node);
             my $nil = $node->attribute('xsi:nil');
+            my @nodes = $node->nodes();
             if ($nil && $nil eq 'true') {
                 $dump->{$key} = undef;
             } elsif ($node->attribute('xsi:type')) {
                 push @dump, _dump($node);
                 undef $dump;
             } else {
-                $dump->{$key} = $node->string;
+                $dump->{$key} = @nodes > 1 ? [ map { $_->string } @nodes ] : $node->string;
             }
         }
         push @dump, $dump if $dump;
