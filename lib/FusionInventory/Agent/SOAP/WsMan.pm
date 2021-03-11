@@ -117,6 +117,8 @@ sub _send {
         my $tree = $tpp->parse($response->content);
         my $envelope = Envelope->new($tree);
         if ($envelope->header->action->is("fault")) {
+            my $code = $envelope->body->fault->errorCode;
+            return $self->abort("WMI resource not available") if $code && $code eq '2150858752';
             my $text = $envelope->body->fault->reason->text;
             return $self->abort($text || $response->status_line);
         }

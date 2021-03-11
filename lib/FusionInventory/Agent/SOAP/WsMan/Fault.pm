@@ -28,4 +28,12 @@ sub reason {
     return $reason // Reason->new();
 }
 
+sub errorCode {
+    my ($self) = @_;
+
+    my $details = $self->get('Detail')->get('MSFT_WmiError_Type')->get('error_Code')->string;
+
+    return $details // 0;
+}
+
 1;
