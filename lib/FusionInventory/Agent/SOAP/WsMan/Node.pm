@@ -173,7 +173,7 @@ sub delete {
 sub nodes {
     my ($self, $filter) = @_;
 
-    return [] unless defined($self->{_nodes});
+    return unless defined($self->{_nodes});
 
     return grep { ref($_) eq $filter } @{$self->{_nodes}}
         if $filter;

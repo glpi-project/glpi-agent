@@ -726,15 +726,23 @@ sub getInterfaces {
             DNSDomain   => $object->{DNSDomain}
         };
 
-        if ($object->{DefaultIPGateway}) {
-            $configuration->{IPGATEWAY} = $object->{DefaultIPGateway}->[0];
+        if (my $gw = $object->{DefaultIPGateway}) {
+            if (ref($gw) eq 'ARRAY') {
+                $configuration->{IPGATEWAY} = $gw->[0];
+            } elsif (!ref($gw)) {
+                $configuration->{IPGATEWAY} = $gw;
+            }
         }
 
-        if ($object->{DNSServerSearchOrder}) {
-            $configuration->{dns} = $object->{DNSServerSearchOrder}->[0];
+        if (my $dns = $object->{DNSServerSearchOrder}) {
+            if (ref($dns) eq 'ARRAY') {
+                $configuration->{dns} = $dns->[0];
+            } elsif (!ref($dns)) {
+                $configuration->{dns} = $dns;
+            }
         }
 
-        if ($object->{IPAddress}) {
+        if ($object->{IPAddress} && ref($object->{IPAddress}) eq 'ARRAY') {
             foreach my $address (@{$object->{IPAddress}}) {
                 my $prefix = shift @{$object->{IPSubnet}};
                 push @{$configuration->{addresses}}, [ $address, $prefix ];
