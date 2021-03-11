@@ -85,7 +85,7 @@ sub _load_class {
             $INC{"$class.pm"} = $INC{module2file($module)};
         } else {
             # If a class is not known just create one with Node as template
-            no strict 'refs';
+            no strict 'refs'; ## no critic (ProhibitNoStrict)
             push @{"$class\::ISA"}, 'Node';
             $INC{"$class.pm"} = $INC{'Node.pm'};
         }
