@@ -221,6 +221,12 @@ sub string {
     return $self->{_text} = $string
         if $string;
 
+    my @nodes = $self->nodes();
+    if (!defined($self->{_text}) && scalar(@nodes) == 1) {
+        my ($substring) = $self->nodes();
+        return $substring->string();
+    }
+
     return $self->{_text} // '';
 }
 

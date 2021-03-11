@@ -1272,6 +1272,8 @@ sub getWMIService {
 sub getFormatedWMIDateTime {
     my ($datetime) = @_;
 
+    return $datetime if $datetime && $datetime =~ m|^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$|;
+
     return unless $datetime &&
         $datetime =~ /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})\.\d{6}.(\d{3})$/;
 
