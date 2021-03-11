@@ -190,7 +190,11 @@ sub doInventory {
 
         my $type;
         if ($object->{ConnectorType}) {
-            $type = join(', ', map { $portType[$_] } @{$object->{ConnectorType}});
+            if (ref($object->{ConnectorType}) eq 'ARRAY') {
+                $type = join(', ', map { $portType[$_] } @{$object->{ConnectorType}});
+            } elsif ($object->{ConnectorType} =~ /^\d+$/) {
+                $type = $portType[int($object->{ConnectorType})];
+            }
         }
         if (!$type) {
             $type = $object->{InternalReferenceDesignator};
