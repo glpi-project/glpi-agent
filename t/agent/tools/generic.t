@@ -5661,11 +5661,7 @@ my %dmidecode_tests = (
         ],
         '1' => [
             {
-                'Product Name' => 'System Product Name',
-                'Serial Number' => 'System Serial Number',
-                'Version' => 'System Version',
                 'Wake-up Type' => 'Power Switch',
-                'Manufacturer' => 'System manufacturer',
                 'UUID' => '1E00E6E0-008C-4400-9AAD-F46D04972D3E'
             }
         ],
@@ -5870,15 +5866,12 @@ my %dmidecode_tests = (
             {
                 'Height' => 'Unspecified',
                 'Power Supply State' => 'Safe',
-                'Serial Number' => 'Chassis Serial Number',
                 'Thermal State' => 'Safe',
                 'Contained Elements' => '0',
                 'Asset Tag' => 'Asset-1234567890',
                 'Type' => 'Desktop',
-                'Version' => 'Chassis Version',
                 'Number Of Power Cords' => '1',
                 'OEM Information' => '0x00000000',
-                'Manufacturer' => 'Chassis Manufacture',
                 'Boot-up State' => 'Safe'
             }
         ],
@@ -6182,11 +6175,7 @@ my %dmidecode_tests = (
         ],
         '1' => [
             {
-                'Version' => 'System Version',
                 'Wake-up Type' => 'Power Switch',
-                'Manufacturer' => 'System manufacturer',
-                'Product Name' => 'System Product Name',
-                'Serial Number' => 'System Serial Number',
                 'UUID' => '0002869A-8EFE-D511-868C-002618C9DFD4'
             }
         ],
@@ -6641,15 +6630,12 @@ my %dmidecode_tests = (
         '3' => [
             {
                 'Type' => 'Desktop',
-                'Serial Number' => 'Chassis Serial Number',
                 'Thermal State' => 'Safe',
                 'Asset Tag' => 'Asset-1234567890',
                 'Number Of Power Cords' => '1',
-                'Version' => 'Chassis Version',
                 'OEM Information' => '0x00000001',
                 'Contained Elements' => '0',
                 'Power Supply State' => 'Safe',
-                'Manufacturer' => 'Chassis Manufacture',
                 'Boot-up State' => 'Safe',
                 'Height' => 'Unspecified'
             }
