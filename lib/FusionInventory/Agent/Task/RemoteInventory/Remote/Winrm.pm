@@ -93,7 +93,13 @@ sub remoteCanRun {
     my ($self, $binary) = @_;
 
     # Still return when looking for command with unix standard path
-    return 0 if $binary =~ m{^'(?:/usr)/(s?bin|Library)/};
+    return 0 if $binary =~ m{^(/usr)?/(s?bin|Library)/};
+
+    # Support where argument synatx with a path set
+    if ($binary =~ m|(.*)[\\/]([^\\/]+)$|) {
+        $binary = "$1:$2";
+        $binary =~ s|/|\\|g;
+    }
 
     my $where = $self->{_winrm}->shell("where /q \"$binary\"");
 
