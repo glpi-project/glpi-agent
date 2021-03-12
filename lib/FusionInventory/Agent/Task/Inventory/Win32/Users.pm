@@ -84,7 +84,7 @@ sub _getLocalUsers {
 
     my $query =
         "SELECT * FROM Win32_UserAccount " .
-        "WHERE LocalAccount='True' AND Disabled='False' and Lockout='False'";
+        "WHERE LocalAccount='True' AND Disabled='False' AND Lockout='False'";
 
     my @users;
 
