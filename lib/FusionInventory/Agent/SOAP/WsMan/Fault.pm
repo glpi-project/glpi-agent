@@ -31,9 +31,17 @@ sub reason {
 sub errorCode {
     my ($self) = @_;
 
-    my $details = $self->get('Detail')->get('MSFT_WmiError_Type')->get('error_Code')->string;
+    my $code;
 
-    return $details // 0;
+    my $detail = $self->get('Detail');
+
+    my $wmierror = $detail->get('MSFT_WmiError_Type');
+    $code = $wmierror->get('error_Code')->string if $wmierror;
+
+    my $wsmanerror = $detail->get('WSManFault') unless $code;
+    $code = $wsmanerror->attribute('Code') if $wsmanerror;
+
+    return $code // 0;
 }
 
 1;

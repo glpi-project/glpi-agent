@@ -34,6 +34,9 @@ use FusionInventory::Agent::SOAP::WsMan::Shell;
 use FusionInventory::Agent::SOAP::WsMan::Signal;
 use FusionInventory::Agent::SOAP::WsMan::Receive;
 use FusionInventory::Agent::SOAP::WsMan::Code;
+use FusionInventory::Agent::SOAP::WsMan::Filter;
+use FusionInventory::Agent::SOAP::WsMan::OptimizeEnumeration;
+use FusionInventory::Agent::SOAP::WsMan::MaxElements;
 
 my $tpp;
 my $wsman_debug = $ENV{WSMAN_DEBUG} ? 1 : 0;
@@ -119,6 +122,8 @@ sub _send {
         if ($envelope->header->action->is("fault")) {
             my $code = $envelope->body->fault->errorCode;
             return $self->abort("WMI resource not available") if $code && $code eq '2150858752';
+            $self->debug2("Raw client xml request: ".$xml);
+            $self->debug2("Raw server xml answer: ".$response->content);
             my $text = $envelope->body->fault->reason->text;
             return $self->abort($text || $response->status_line);
         }
@@ -161,17 +166,27 @@ sub identify {
 }
 
 sub enumerate {
-    my ($self, $url) = @_;
+    my ($self, $url, $query) = @_;
 
     my @items;
 
     my $messageid = MessageID->new();
     my $sid = SessionId->new();
     my $operationid = OperationID->new();
-    my $body = Body->new(Enumerate->new());
+    my $body = Body->new( $query ?
+        Enumerate->new(
+            OptimizeEnumeration->new(),
+            MaxElements->new(32000),
+            Filter->new($query),
+        )
+        :
+        Enumerate->new()
+    );
     my $action = Action->new("enumerate");
 
-    $self->debug2("Requesting enumerate URL: $url");
+    $self->debug2($query ?
+        "Requesting enumerate: $query" : "Requesting enumerate URL: $url"
+    );
 
     my $request = Envelope->new(
         Namespace->new(qw(s a n w p b)),
