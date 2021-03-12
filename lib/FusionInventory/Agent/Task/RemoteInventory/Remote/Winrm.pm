@@ -260,20 +260,20 @@ sub getRemoteRegistryValue {
 sub getWMIObjects {
     my ($self, %params) = @_;
 
-    if ($params{query}) {
+    if ($params{query} && $params{method}) {
         $self->{logger}->debug2("TODO: NOT SUPPORTED '$params{query}' query");
         return;
     }
 
-    my $res_url = _resource_url($params{moniker}, $params{class})
+    my $res_url = _resource_url($params{moniker}, $params{query} ? '*' : $params{class})
         or return;
-    my @objects = $self->{_winrm}->enumerate($res_url);
+    my @objects = $self->{_winrm}->enumerate($res_url, $params{query});
 
     # Try altmoniker when present
     if (!@objects && $params{altmoniker}) {
-        $res_url = _resource_url($params{altmoniker}, $params{class})
+        $res_url = _resource_url($params{altmoniker}, $params{query} ? '*' : $params{class})
             or return;
-        @objects = $self->{_winrm}->enumerate($res_url);
+        @objects = $self->{_winrm}->enumerate($res_url, $params{query});
     }
 
     return @objects;
