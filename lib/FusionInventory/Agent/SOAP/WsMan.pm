@@ -37,6 +37,7 @@ use FusionInventory::Agent::SOAP::WsMan::Code;
 use FusionInventory::Agent::SOAP::WsMan::Filter;
 use FusionInventory::Agent::SOAP::WsMan::OptimizeEnumeration;
 use FusionInventory::Agent::SOAP::WsMan::MaxElements;
+use FusionInventory::Agent::SOAP::WsMan::SelectorSet;
 
 my $tpp;
 my $wsman_debug = $ENV{WSMAN_DEBUG} ? 1 : 0;
@@ -166,30 +167,48 @@ sub identify {
 }
 
 sub enumerate {
-    my ($self, $url, $query) = @_;
+    my ($self, %params) = @_;
 
     my @items;
+    my $class = $params{query} ? '*' : $params{class};
+    my $url = $self->resource_url($class, $params{moniker});
 
     my $messageid = MessageID->new();
     my $sid = SessionId->new();
     my $operationid = OperationID->new();
-    my $body = Body->new( $query ?
-        Enumerate->new(
-            OptimizeEnumeration->new(),
-            MaxElements->new(32000),
-            Filter->new($query),
-        )
-        :
-        Enumerate->new()
-    );
-    my $action = Action->new("enumerate");
+    my $body;
+    if ($params{query}) {
+        $body = Body->new(
+            Enumerate->new(
+                OptimizeEnumeration->new(),
+                MaxElements->new(32000),
+                Filter->new($params{query}),
+            )
+        );
+    } elsif ($params{action}) {
+        my $method = Node->new(
+            Namespace->new(method => $url),
+            {
+                __nodeclass__   => [
+                    "$params{action}_INPUT",
+                    "method",
+                ]
+            },
+        );
+        $body = Body->new($method);
+    } else {
+        $body = Body->new(
+            Enumerate->new()
+        );
+    }
+    my $action = Action->new($params{action} ? $url."/".$params{action} : "enumerate");
 
-    $self->debug2($query ?
-        "Requesting enumerate: $query" : "Requesting enumerate URL: $url"
+    $self->debug2($params{query} ?
+        "Requesting enumerate: $params{query}" : "Requesting enumerate URL: $url"
     );
 
     my $request = Envelope->new(
-        Namespace->new(qw(s a n w p b)),
+        Namespace->new($params{selectorset} ? qw(s a w p) : qw(s a n w p b)),
         Header->new(
             To->new( $self->url ),
             ResourceURI->new( $url ),
@@ -203,6 +222,7 @@ sub enumerate {
             $operationid,
             SequenceId->new(),
             OperationTimeout->new(60),
+            $params{selectorset},
         ),
         $body,
     );
@@ -228,7 +248,9 @@ sub enumerate {
             last;
         }
         my $ispull = $respaction->is('pullresponse');
-        unless ($ispull || $respaction->is('enumerateresponse')) {
+        # check method action is valid
+        my $validaction = $params{action} && $respaction->what eq $url."/$params{action}Response";
+        unless ($ispull || $respaction->is('enumerateresponse') || $validaction) {
             $self->lasterror("Not an enumerate response but ".$respaction->what);
             last;
         }
@@ -251,8 +273,44 @@ sub enumerate {
             last;
         }
 
+        # Handle method on enumarated object
+        if ($params{action} && $params{params}) {
+            my $output = $params{action} . '_OUTPUT';
+            my $result = {};
+            my $node = $respbody->get($output);
+            foreach my $key (@{$params{params}}) {
+                my $value = $node->get($key)->string;
+                if ($params{binds} && $params{binds}->{$key}) {
+                    $key = $params{binds}->{$key};
+                }
+                $result->{$key} = $value;
+            }
+            return $result;
+        }
+
         my $enum = $respbody->enumeration($ispull);
-        push @items, $enum->items;
+        my @enumitems = $enum->items;
+        if ($params{method}) {
+            foreach my $item (@enumitems) {
+                next unless ref($item) eq 'HASH';
+                my $class = $item->{CreationClassName}
+                    or next;
+                my $selectorvalue = $item->{$params{selector}};
+                next unless defined($selectorvalue);
+                my $selectorset = SelectorSet->new([ "$params{selector}=$selectorvalue" ]);
+                my $result = $self->enumerate(
+                    class       => $class,
+                    moniker     => $params{moniker},
+                    action      => $params{method},
+                    selectorset => $selectorset,
+                    params      => $params{params},
+                    binds       => $params{binds},
+                );
+                push @items, $result;
+            }
+        } else {
+            push @items, @enumitems;
+        }
 
         last if $enum->end_of_sequence;
 
@@ -687,6 +745,22 @@ sub url {
     my ($self) = @_;
 
     return $self->{_url};
+}
+
+sub resource_url {
+    my ($self, $class, $moniker) = @_;
+
+    my $path = "cimv2";
+
+    if ($moniker) {
+        $moniker =~ s/\\/\//g;
+        ($path) = $moniker =~ m|root/(.*)$|i;
+        return $self->abort("Wrong moniker for request: $moniker")
+            unless $path;
+        $path =~ s/\/*$//;
+    }
+
+    return "http://schemas.microsoft.com/wbem/wsman/1/wmi/root/".lc("$path/$class");
 }
 
 1;
