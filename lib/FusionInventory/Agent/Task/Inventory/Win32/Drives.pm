@@ -162,7 +162,7 @@ sub _getDrives {
         $id = $object->{DriveLetter} unless exists($seen{$id});
 
         if (!exists($seen{$id})) {
-            $logger->Error("Unknown $id encryptable drive") if $logger;
+            $logger->error("Unknown $id encryptable drive") if $logger;
             next;
         }
 
