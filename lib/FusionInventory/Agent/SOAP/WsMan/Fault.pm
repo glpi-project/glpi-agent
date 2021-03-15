@@ -38,7 +38,8 @@ sub errorCode {
     my $wmierror = $detail->get('MSFT_WmiError_Type');
     $code = $wmierror->get('error_Code')->string if $wmierror;
 
-    my $wsmanerror = $detail->get('WSManFault') unless $code;
+    my $wsmanerror;
+    $wsmanerror = $detail->get('WSManFault') unless $code;
     $code = $wsmanerror->attribute('Code') if $wsmanerror;
 
     return $code // 0;
