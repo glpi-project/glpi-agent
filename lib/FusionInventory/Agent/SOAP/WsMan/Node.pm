@@ -35,7 +35,7 @@ sub new {
             push @{$self->{_attributes}}, $node;
         } elsif ($ref eq 'Namespace') {
             push @{$self->{_attributes}}, $node->attributes;
-        } elsif (!$ref) {# || $ref eq 'ARRAY') {
+        } elsif (!$ref) {
             if (ref($self->{_text})) {
                 push @{$self->{_text}}, $ref ? @{$node} : $node;
             } elsif (defined($self->{_text})) {
@@ -56,6 +56,8 @@ sub new {
                 } elsif ($key eq '#text') {
                     $self->{_text} = $node->{$key} if defined($node->{$key});
                     $self->{_text} = $1 if $self->{_text} && $self->{_text} =~ /^#textuuid:(.*)$/;
+                } elsif ($key eq '__nodeclass__') {
+                    $class = _load_class(@{$node->{$key}});
                 } else {
                     my $support = first { $supported->{$_} eq $key } keys(%{$supported});
                     ($support) = $key =~ /^(?:\w+:)?(\w+)$/ unless $support;
@@ -74,7 +76,7 @@ sub new {
 }
 
 sub _load_class {
-    my ($class) = @_;
+    my ($class, $namespace) = @_;
 
     unless ($INC{"$class.pm"}) {
         if (-e "$wsman_classes_path/$class.pm") {
@@ -86,6 +88,9 @@ sub _load_class {
         } else {
             # If a class is not known just create one with Node as template
             no strict 'refs'; ## no critic (ProhibitNoStrict)
+            if ($namespace) {
+                *{"${class}::xmlns"} = sub () { "$namespace" };
+            }
             push @{"$class\::ISA"}, 'Node';
             $INC{"$class.pm"} = $INC{'Node.pm'};
         }
