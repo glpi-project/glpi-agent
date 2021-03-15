@@ -127,8 +127,7 @@ sub _getComputerSystem {
 
     return $self->{_cs} if $self->{_cs};
 
-    my $res_url = "http://schemas.microsoft.com/wbem/wsman/1/wmi/root/cimv2/Win32_ComputerSystem";
-    my @cs = $self->{_winrm}->enumerate($res_url);
+    my @cs = $self->{_winrm}->enumerate(class => "Win32_ComputerSystem");
     unless (@cs == 1) {
         $self->{logger}->error("Winrm: Failed to request Win32_ComputerSystem: ".$self->{_winrm}->lasterror);
         return;
@@ -260,40 +259,17 @@ sub getRemoteRegistryValue {
 sub getWMIObjects {
     my ($self, %params) = @_;
 
-    if ($params{query} && $params{method}) {
-        $self->{logger}->debug2("TODO: NOT SUPPORTED '$params{query}' query");
-        return;
-    }
+    my $altmoniker = delete $params{altmoniker};
 
-    my $res_url = _resource_url($params{moniker}, $params{query} ? '*' : $params{class})
-        or return;
-    my @objects = $self->{_winrm}->enumerate($res_url, $params{query});
+    my @objects = $self->{_winrm}->enumerate(%params);
 
     # Try altmoniker when present
-    if (!@objects && $params{altmoniker}) {
-        $res_url = _resource_url($params{altmoniker}, $params{query} ? '*' : $params{class})
-            or return;
-        @objects = $self->{_winrm}->enumerate($res_url, $params{query});
+    if (!@objects && $altmoniker) {
+        $params{moniker} = $altmoniker;
+        @objects = $self->{_winrm}->enumerate(%params);
     }
 
     return @objects;
-}
-
-sub _resource_url {
-    my ($moniker, $class) = @_;
-
-    my $path = "cimv2";
-
-    if ($moniker) {
-        $moniker =~ s/\\/\//g;
-        ($path) = $moniker =~ m|root/(.*)$|;
-        return unless $path;
-        $path =~ s/\/*$//;
-    }
-
-    my $resource = lc("$path/$class");
-
-    return "http://schemas.microsoft.com/wbem/wsman/1/wmi/root/$resource";
 }
 
 ## no critic (ProhibitMultiplePackages)

@@ -143,12 +143,13 @@ sub _getLoggedUsers {
         moniker    => 'winmgmts:\\\\.\\root\\CIMV2',
         query      => $query,
         method     => 'GetOwner',
-        params     => [ 'name', 'domain' ],
+        params     => [ 'User', 'Domain' ],
         name       => [ 'string', '' ],
         domain     => [ 'string', '' ],
+        selector   => 'Handle', # For winrm support
         binds      => {
-            name    => 'LOGIN',
-            domain  => 'DOMAIN'
+            User    => 'LOGIN',
+            Domain  => 'DOMAIN'
         })
     ) {
         next if $seen->{$user->{LOGIN}}++;

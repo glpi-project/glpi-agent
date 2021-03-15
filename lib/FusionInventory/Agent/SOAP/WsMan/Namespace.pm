@@ -30,9 +30,13 @@ sub new {
 
     my %attributes;
 
-    foreach my $ns (@namespaces) {
-        next unless $ns{$ns};
-        $attributes{"xmlns:$ns"} = $ns{$ns};
+    while (@namespaces) {
+        my $ns = shift @namespaces;
+        if ($ns{$ns}) {
+            $attributes{"xmlns:$ns"} = $ns{$ns};
+        } else {
+            $attributes{"xmlns:$ns"} = shift @namespaces;
+        }
     }
 
     $self = $class->SUPER::new(Attribute->new(%attributes));
