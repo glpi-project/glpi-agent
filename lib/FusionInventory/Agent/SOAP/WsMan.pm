@@ -185,23 +185,12 @@ sub enumerate {
                 Filter->new($params{query}),
             )
         );
-    } elsif ($params{action}) {
-        my $method = Node->new(
-            Namespace->new(method => $url),
-            {
-                __nodeclass__   => [
-                    "$params{action}_INPUT",
-                    "method",
-                ]
-            },
-        );
-        $body = Body->new($method);
     } else {
         $body = Body->new(
             Enumerate->new()
         );
     }
-    my $action = Action->new($params{action} ? $url."/".$params{action} : "enumerate");
+    my $action = Action->new("enumerate");
 
     $self->debug2($params{query} ?
         "Requesting enumerate: $params{query}" : "Requesting enumerate URL: $url"
@@ -249,8 +238,7 @@ sub enumerate {
         }
         my $ispull = $respaction->is('pullresponse');
         # check method action is valid
-        my $validaction = $params{action} && $respaction->what eq $url."/$params{action}Response";
-        unless ($ispull || $respaction->is('enumerateresponse') || $validaction) {
+        unless ($ispull || $respaction->is('enumerateresponse')) {
             $self->lasterror("Not an enumerate response but ".$respaction->what);
             last;
         }
@@ -273,21 +261,6 @@ sub enumerate {
             last;
         }
 
-        # Handle method on enumarated object
-        if ($params{action} && $params{params}) {
-            my $output = $params{action} . '_OUTPUT';
-            my $result = {};
-            my $node = $respbody->get($output);
-            foreach my $key (@{$params{params}}) {
-                my $value = $node->get($key)->string;
-                if ($params{binds} && $params{binds}->{$key}) {
-                    $key = $params{binds}->{$key};
-                }
-                $result->{$key} = $value;
-            }
-            return $result;
-        }
-
         my $enum = $respbody->enumeration($ispull);
         my @enumitems = $enum->items;
         if ($params{method}) {
@@ -297,12 +270,11 @@ sub enumerate {
                     or next;
                 my $selectorvalue = $item->{$params{selector}};
                 next unless defined($selectorvalue);
-                my $selectorset = SelectorSet->new([ "$params{selector}=$selectorvalue" ]);
-                my $result = $self->enumerate(
+                my $result = $self->runmethod(
                     class       => $class,
                     moniker     => $params{moniker},
-                    action      => $params{method},
-                    selectorset => $selectorset,
+                    method      => $params{method},
+                    selectorset => "$params{selector}=$selectorvalue",
                     params      => $params{params},
                     binds       => $params{binds},
                 );
@@ -334,6 +306,97 @@ sub enumerate {
     $self->end($operationid);
 
     return @items;
+}
+
+sub runmethod {
+    my ($self, %params) = @_;
+
+    return $self->abort("Not method to set as action")
+        unless $params{method};
+
+    my @items;
+    my $url = $self->resource_url($params{class}, $params{moniker});
+
+    my $messageid = MessageID->new();
+    my $sid = SessionId->new();
+    my $operationid = OperationID->new();
+    my $selectorset;
+    $selectorset = SelectorSet->new([ $params{selectorset} ])
+        if $params{selectorset};
+    my $method = Node->new(
+        Namespace->new(method => $url),
+        {
+            __nodeclass__   => [
+                "$params{method}_INPUT",
+                "method",
+            ]
+        },
+    );
+    my $body = Body->new($method);
+    my $action = Action->new($url."/".$params{method});
+
+    $self->debug2("Requesting $params{method} action on resource: $url");
+
+    my $request = Envelope->new(
+        Namespace->new(qw(s a w p)),
+        Header->new(
+            To->new( $self->url ),
+            ResourceURI->new( $url ),
+            ReplyTo->anonymous,
+            $action,
+            $messageid,
+            MaxEnvelopeSize->new(512000),
+            Locale->new("en-US"),
+            DataLocale->new("en-US"),
+            $sid,
+            $operationid,
+            SequenceId->new(),
+            OperationTimeout->new(60),
+            $selectorset,
+        ),
+        $body,
+    );
+
+    my $response = $self->_send($request)
+        or return;
+
+    my $envelope = Envelope->new($response)
+        or return;
+
+    my $header = $envelope->header;
+    return $self->abort("Malformed run method response, no 'Header' node found")
+        unless ref($header) eq 'Header';
+
+    my $respaction = $header->action;
+    return $self->abort("Malformed run method response, no 'Action' found in Header")
+        unless ref($respaction) eq 'Action';
+    return $self->abort("Not a run method response but ".$respaction->what)
+        unless $respaction->what eq $url."/$params{method}Response";
+
+    my $related = $header->get('RelatesTo');
+    return $self->abort("Got message not related to our run method request")
+        if (!$related || $related->string() ne $messageid->string());
+
+    my $thisopid = $header->get('OperationID');
+    return $self->abort("Got message not related to our run method operation")
+        unless ($thisopid && $thisopid->equals($operationid));
+
+    my $respbody = $envelope->body;
+    return $self->abort("Malformed run method response, no 'Body' node found")
+        unless ref($respbody) eq 'Body';
+
+    # Return method result as a hash
+    my $result;
+    my $node = $respbody->get($params{method}.'_OUTPUT');
+    foreach my $key (@{$params{params}}) {
+        my $value = $node->get($key)->string;
+        if ($params{binds} && $params{binds}->{$key}) {
+            $key = $params{binds}->{$key};
+        }
+        $result->{$key} = $value;
+    }
+
+    return $result;
 }
 
 sub shell {
