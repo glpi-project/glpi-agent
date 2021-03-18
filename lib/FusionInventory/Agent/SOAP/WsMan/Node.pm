@@ -29,14 +29,17 @@ sub new {
     # List of class names supported by this node
     my $supported = $class->support() // {};
 
-    foreach my $node (@nodes) {
+    while (@nodes) {
+        my $node = shift @nodes;
         my $ref = ref($node);
         if ($ref eq 'Attribute') {
             push @{$self->{_attributes}}, $node;
         } elsif ($ref eq 'Namespace') {
             push @{$self->{_attributes}}, $node->attributes;
-        } elsif (!$ref) {
-            if (ref($self->{_text})) {
+        } elsif (!$ref && defined($node)) {
+            if ($node eq '__nodeclass__' && @nodes) {
+                $class = _load_class(shift @nodes, get_namespace($self));
+            } elsif (ref($self->{_text})) {
                 push @{$self->{_text}}, $ref ? @{$node} : $node;
             } elsif (defined($self->{_text})) {
                 $self->{_text} = [ $self->{_text}, $ref ? @{$node} : $node ];
@@ -56,8 +59,6 @@ sub new {
                 } elsif ($key eq '#text') {
                     $self->{_text} = $node->{$key} if defined($node->{$key});
                     $self->{_text} = $1 if $self->{_text} && $self->{_text} =~ /^#textuuid:(.*)$/;
-                } elsif ($key eq '__nodeclass__') {
-                    $class = _load_class(@{$node->{$key}});
                 } else {
                     my $support = first { $supported->{$_} eq $key } keys(%{$supported});
                     ($support) = $key =~ /^(?:\w+:)?(\w+)$/ unless $support;
@@ -105,6 +106,15 @@ sub namespace {
     return "xmlns:".$self->xmlns() => $self->xsd();
 }
 
+sub get_namespace {
+    my ($self) = @_;
+
+    my $name = first { /^xmlns:./ } map { keys(%{$_}) } @{$self->{_attributes}}
+        or return;
+
+    return $name =~ /^xmlns:(\w+)$/;
+}
+
 sub set_namespace {
     my ($self) = @_;
 
@@ -115,6 +125,8 @@ sub set_namespace {
 
 sub reset_namespace {
     my ($self, @attributes) = @_;
+
+    return delete $self->{_attributes} unless @attributes;
 
     $self->{_attributes} = \@attributes;
 }
