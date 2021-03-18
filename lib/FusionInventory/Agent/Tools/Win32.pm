@@ -714,13 +714,13 @@ sub getInterfaces {
     my @configurations;
 
     foreach my $object (getWMIObjects(
-            class      => 'Win32_NetworkAdapterConfiguration',
-            properties => [ qw/
-                Index InterfaceIndex Description IPEnabled DHCPServer MACAddress MTU
-                DefaultIPGateway DNSServerSearchOrder IPAddress IPSubnet
-                DNSDomain
-                /
-            ]
+        class      => 'Win32_NetworkAdapterConfiguration',
+        properties => [ qw/
+            Index InterfaceIndex Description IPEnabled DHCPServer MACAddress MTU
+            DefaultIPGateway DNSServerSearchOrder IPAddress IPSubnet
+            DNSDomain
+            /
+        ]
     )) {
 
         my $configuration = {
