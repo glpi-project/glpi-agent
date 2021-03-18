@@ -49,8 +49,16 @@ sub doInventory {
     );
 
     my $key =
-        decodeMicrosoftKey(getRegistryValue(path => 'HKEY_LOCAL_MACHINE/Software/Microsoft/Windows NT/CurrentVersion/DigitalProductId')) ||
-        decodeMicrosoftKey(getRegistryValue(path => 'HKEY_LOCAL_MACHINE/Software/Microsoft/Windows NT/CurrentVersion/DigitalProductId4'));
+        decodeMicrosoftKey(
+            getRegistryValue(
+                path    => 'HKEY_LOCAL_MACHINE/Software/Microsoft/Windows NT/CurrentVersion/DigitalProductId',
+                method  => "GetBinaryValue", # method for winrm remote inventory
+            )) ||
+        decodeMicrosoftKey(
+            getRegistryValue(
+                path => 'HKEY_LOCAL_MACHINE/Software/Microsoft/Windows NT/CurrentVersion/DigitalProductId4',
+                method  => "GetBinaryValue", # method for winrm remote inventory
+            ));
 
     my $description =
         encodeFromRegistry(getRegistryValue(path => 'HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Services/lanmanserver/Parameters/srvcomment'));
