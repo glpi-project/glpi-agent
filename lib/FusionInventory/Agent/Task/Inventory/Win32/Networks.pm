@@ -22,12 +22,19 @@ sub isEnabledForRemote {
 sub doInventory {
     my (%params) = @_;
 
+    my @interfaces = getInterfaces()
+        or return;
+
     my $inventory = $params{inventory};
     my (@gateways, @dns, @ips);
 
-    my $keys;
+    my $keys = getRegistryKey(
+        path   => "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Control/Network/{4D36E972-E325-11CE-BFC1-08002BE10318}",
+        # Important for remote inventory optimization
+        required    => [ qw/PnpInstanceID MediaSubType/ ],
+    );
 
-    foreach my $interface (getInterfaces()) {
+    foreach my $interface (@interfaces) {
         push @gateways, $interface->{IPGATEWAY}
             if $interface->{IPGATEWAY};
         push @dns, $interface->{dns}
@@ -41,15 +48,8 @@ sub doInventory {
         delete $interface->{DNSDomain};
         delete $interface->{GUID};
 
-        # Don't reload registry keys between interfaces checks
-        $keys = getRegistryKey(
-            path   => "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Control/Network/{4D36E972-E325-11CE-BFC1-08002BE10318}",
-            wmiopts => { # Only used for remote WMI optimization
-                values  => [ qw/PnpInstanceID MediaSubType/ ]
-            }
-        ) unless $keys;
-
-        $interface->{TYPE} = _getMediaType($interface->{PNPDEVICEID}, $keys);
+        my $type = _getMediaType($interface->{PNPDEVICEID}, $keys);
+        $interface->{TYPE} = $type if defined($type);
 
         $inventory->addEntry(
             section => 'NETWORKS',

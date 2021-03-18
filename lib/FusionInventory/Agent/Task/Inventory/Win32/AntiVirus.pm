@@ -172,7 +172,7 @@ sub _setMcAfeeInfos {
     my ($antivirus) = @_;
 
     my %properties = (
-        'BASE_VERSION'     => [ 'AVDatVersion',         'AVDatVersionMinor'    ],
+        BASE_VERSION    => [ qw(AVDatVersion    AVDatVersionMinor) ],
     );
 
     my $regvalues = [ map { @{$_} } values(%properties) ];
@@ -195,7 +195,7 @@ sub _setKasperskyInfos {
 
     my $regvalues = [ qw(LastSuccessfulUpdate LicKeyType LicDaysTillExpiration) ];
 
-    my $kasperskyReg = _getSoftwareRegistryKeys('KasperskyLab\protected', $regvalues)
+    my $kasperskyReg = _getSoftwareRegistryKeys('KasperskyLab/protected', $regvalues)
         or return;
 
     my $found = first {
@@ -227,7 +227,7 @@ sub _setESETInfos {
     my ($antivirus) = @_;
 
     my $esetReg = _getSoftwareRegistryKeys(
-        'ESET\ESET Security\CurrentVersion\Info',
+        'ESET/ESET Security/CurrentVersion/Info',
         [ qw(ProductVersion ScannerVersion ProductName AppDataDir) ]
     );
     return unless $esetReg;
@@ -297,7 +297,7 @@ sub _setMSEssentialsInfos {
     my ($antivirus) = @_;
 
     my $mseReg = _getSoftwareRegistryKeys(
-        'Microsoft\Microsoft Antimalware\Signature Updates',
+        'Microsoft/Microsoft Antimalware/Signature Updates',
         [ 'AVSignatureVersion' ]
     );
     return unless $mseReg;
@@ -310,7 +310,7 @@ sub _setFSecureInfos {
     my ($antivirus) = @_;
 
     my $fsecReg = _getSoftwareRegistryKeys(
-        'F-Secure\Ultralight\Updates\aquarius',
+        'F-Secure/Ultralight/Updates/aquarius',
         [ qw(file_set_visible_version) ]
     );
     return unless $fsecReg;
@@ -322,7 +322,7 @@ sub _setFSecureInfos {
 
     # Try to find license "expiry_date" from a specific json file
     $fsecReg = _getSoftwareRegistryKeys(
-        'F-Secure\CCF\DLLHoster\100\Plugins\CosmosService',
+        'F-Secure/CCF/DLLHoster/100/Plugins/CosmosService',
         [ qw(DataPath) ]
     );
     return unless $fsecReg;
@@ -362,7 +362,7 @@ sub _setBitdefenderInfos {
     my ($antivirus) = @_;
 
     my $bitdefenderReg = _getSoftwareRegistryKeys(
-        'BitDefender\About',
+        'BitDefender/About',
         [ qw(ProductName ProductVersion) ]
     );
 
@@ -396,7 +396,7 @@ sub _setBitdefenderInfos {
     }
 
     my $surveydata = _getSoftwareRegistryKeys(
-        'BitDefender\Install',
+        'BitDefender/Install',
         [ 'SurveyDataInfo' ],
         sub { $_[0]->{"/SurveyDataInfo"} }
     );
@@ -418,7 +418,7 @@ sub _setNortonInfos {
 
     # ref: https://support.symantec.com/en_US/article.TECH251363.html
     my $nortonReg = _getSoftwareRegistryKeys(
-        'Norton\{0C55C096-0F1D-4F28-AAA2-85EF591126E7}',
+        'Norton/{0C55C096-0F1D-4F28-AAA2-85EF591126E7}',
         [ qw(PRODUCTVERSION) ]
     );
     if ($nortonReg && $nortonReg->{PRODUCTVERSION}) {
@@ -433,7 +433,7 @@ sub _setNortonInfos {
     );
 
     $nortonReg = _getSoftwareRegistryKeys(
-        'Norton\{0C55C096-0F1D-4F28-AAA2-85EF591126E7}\Common Client\PathExpansionMap',
+        'Norton/{0C55C096-0F1D-4F28-AAA2-85EF591126E7}/Common Client/PathExpansionMap',
         [ qw(DATADIR) ]
     );
     if ($nortonReg && $nortonReg->{DATADIR}) {
@@ -465,7 +465,9 @@ sub _getSoftwareRegistryKeys {
             path => 'HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/'.$base,
             wmiopts => { # Only used for remote WMI optimization
                 values  => $values
-            }
+            },
+            # Important for remote inventory optimization
+            required    => $values,
         );
         if ($reg) {
             if ($callback) {
@@ -481,7 +483,9 @@ sub _getSoftwareRegistryKeys {
         path => 'HKEY_LOCAL_MACHINE/SOFTWARE/'.$base,
         wmiopts => { # Only used for remote WMI optimization
             values  => $values
-        }
+        },
+        # Important for remote inventory optimization
+        required    => $values,
     );
     return ($callback && $reg) ? &{$callback}($reg) : $reg;
 }

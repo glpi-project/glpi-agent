@@ -14,25 +14,22 @@ sub isEnabled {
 
 sub doInventory {
     my (%params) = @_;
-    my $logger   = $params{logger};
+
+    my $hpacucli_path = _getHpacuacliFromWinRegistry()
+        or return;
 
     HpInventory(
-        path => _getHpacuacliFromWinRegistry($logger),
+        path    => $hpacucli_path,
         %params
     );
 }
 
 sub _getHpacuacliFromWinRegistry {
 
-    my $uninstallValues = getRegistryKey(
-        path => "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/HP ACUCLI"
+    my $uninstallString = getRegistryValue(
+        path => "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/HP ACUCLI/UninstallString",
     );
-    return unless $uninstallValues;
-
-    my $uninstallString = $uninstallValues->{'/UninstallString'};
-    return unless $uninstallString;
-
-    return unless $uninstallString =~ /(.*\\)hpuninst\.exe/;
+    return unless $uninstallString && $uninstallString =~ /(.*\\)hpuninst\.exe/;
     my $hpacuacliPath = $1 . 'bin\\hpacucli.exe';
     return unless has_file($hpacuacliPath);
 

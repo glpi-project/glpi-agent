@@ -113,14 +113,18 @@ sub _getUSBPrinterSerial {
         path   => "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Enum/USBPRINT",
         wmiopts => { # Only used for remote WMI optimization
             values  => [ qw/PortName ContainerID/ ]
-        }
+        },
+        # Important for remote inventory optimization
+        required    => [ qw/PortName ContainerID/ ],
     );
 
     my $usb_key = getRegistryKey(
         path   => "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Enum/USB",
         wmiopts => { # Only used for remote WMI optimization
             values  => [ qw/ParentIdPrefix ContainerID/ ]
-        }
+        },
+        # Important for remote inventory optimization
+        required    => [ qw/ParentIdPrefix ContainerID/ ],
     );
 
     # the ContainerID variable seems more reliable, but is not always available

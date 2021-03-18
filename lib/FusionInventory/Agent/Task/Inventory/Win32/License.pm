@@ -34,8 +34,18 @@ sub doInventory {
 
     my @licenses;
 
+    # Important for remote inventory optimization
+    my $required_for_office = [ qw/
+        DigitalProductID ProductCode ProductName ProductNameBrand ProductID
+        SPLevel OEM ConvertToEdition ProductNameNonQualified ProductNameVersion
+        TrialType
+        /
+    ];
+
     my $officeKey = getRegistryKey(
-        path => "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Office"
+        path        => "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Office",
+        # Important for remote inventory optimization
+        required    => $required_for_office,
     );
     _scanOfficeLicences($officeKey) if $officeKey;
 
@@ -43,7 +53,9 @@ sub doInventory {
     if (is64bit()) {
         $fileAdobe = 'C:\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db';
         my $officeKey32 = getRegistryKey(
-            path => "HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/Microsoft/Office"
+            path        => "HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/Microsoft/Office",
+            # Important for remote inventory optimization
+            required    => $required_for_office,
         );
         _scanOfficeLicences($officeKey32) if $officeKey32;
     }

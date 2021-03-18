@@ -68,7 +68,9 @@ sub _getCPUs {
         path   => "HKEY_LOCAL_MACHINE/Hardware/Description/System/CentralProcessor",
         wmiopts => { # Only used for remote WMI optimization
             values  => [ qw/Identifier ProcessorNameString VendorIdentifier/ ]
-        }
+        },
+        # Important for remote inventory optimization
+        required    => [ qw/Identifier ProcessorNameString VendorIdentifier/ ],
     );
 
     my $cpuId = 0;
