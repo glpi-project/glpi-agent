@@ -20,6 +20,9 @@ sub isEnabled {
             path => is64bit() ?
                 "HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/TeamViewer" :
                 "HKEY_LOCAL_MACHINE/SOFTWARE/TeamViewer",
+            # Important for remote inventory optimization
+            required    => [ qw/ClientID/ ],
+            maxdepth    => 1,
             logger => $params{logger}
         );
         return $key && (keys %$key);
@@ -96,7 +99,9 @@ sub _getID {
                     "HKEY_LOCAL_MACHINE/SOFTWARE/TeamViewer",
                 wmiopts => { # Only used for remote WMI optimization
                     values  => [ qw/ClientID/ ]
-                }
+                },
+                # Important for remote inventory optimization
+                required    => [ qw/ClientID/ ],
             );
 
             # Look for subkey beginning with Version
