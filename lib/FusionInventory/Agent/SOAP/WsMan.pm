@@ -38,6 +38,7 @@ use FusionInventory::Agent::SOAP::WsMan::Filter;
 use FusionInventory::Agent::SOAP::WsMan::OptimizeEnumeration;
 use FusionInventory::Agent::SOAP::WsMan::MaxElements;
 use FusionInventory::Agent::SOAP::WsMan::SelectorSet;
+use FusionInventory::Agent::SOAP::WsMan::Selector;
 
 my $tpp;
 my $wsman_debug = $ENV{WSMAN_DEBUG} ? 1 : 0;
@@ -211,7 +212,6 @@ sub enumerate {
             $operationid,
             SequenceId->new(),
             OperationTimeout->new(60),
-            $params{selectorset},
         ),
         $body,
     );
@@ -274,7 +274,7 @@ sub enumerate {
                     class       => $class,
                     moniker     => $params{moniker},
                     method      => $params{method},
-                    selectorset => "$params{selector}=$selectorvalue",
+                    selectorset => [ "$params{selector}=$selectorvalue" ],
                     params      => $params{params},
                     binds       => $params{binds},
                 );
@@ -308,6 +308,14 @@ sub enumerate {
     return @items;
 }
 
+my %HIVEREF = (
+    HKEY_CLASSES_ROOT   => 0x80000000,
+    HKEY_CURRENT_USER   => 0x80000001,
+    HKEY_LOCAL_MACHINE  => 0x80000002,
+    HKEY_USERS          => 0x80000003,
+    HKEY_CURRENT_CONFIG => 0x80000005
+);
+
 sub runmethod {
     my ($self, %params) = @_;
 
@@ -320,22 +328,62 @@ sub runmethod {
     my $messageid = MessageID->new();
     my $sid = SessionId->new();
     my $operationid = OperationID->new();
-    my $selectorset;
-    $selectorset = SelectorSet->new([ $params{selectorset} ])
-        if $params{selectorset};
+    my $ns = "rm";
+
+    my @selectorset;
+    push @selectorset, SelectorSet->new(
+        map { Selector->new($_) } @{$params{selectorset}}
+    ) if $params{selectorset};
+
+    my @valueset;
+    my $what;
+    if ($params{path}) {
+        my ($hKey, $keypath, $keyvalue);
+        if ($params{method} =~ /^Enum/) {
+            ($hKey, $keypath) = $params{path} =~ m{^(HKEY_[^/]+)/(.*)$};
+            $what = $params{method} =~ /^EnumValues/ ? "key values" : "key subkeys";
+        } else {
+            ($hKey, $keypath, $keyvalue) = $params{path} =~ m{^(HKEY_[^/]+)/(.*)/([^/]+)$};
+            $what = "value";
+        }
+        return $self->abort("Unsupported $params{path} registry path")
+            unless $hKey && $keypath;
+
+        $keypath =~ s|/|\\|g;
+
+        my $hdefkey = $HIVEREF{uc($hKey)}
+            or return $self->abort("Unsupported registry hive in $params{path} registry path");
+
+        # Prepare ValueSet and reset namespace as will be set in $method parent node
+        push @valueset, Node->new(
+            Namespace->new($ns => $url),
+            __nodeclass__   => "hDefKey",
+            $hdefkey,
+        ), Node->new(
+            Namespace->new($ns => $url),
+            __nodeclass__   => "sSubKeyName",
+            $keypath,
+        );
+        push @valueset, Node->new(
+            Namespace->new($ns => $url),
+            __nodeclass__   => "sValueName",
+            $keyvalue,
+        ) if defined($keyvalue);
+        map { $_->reset_namespace() } @valueset;
+    }
+
     my $method = Node->new(
-        Namespace->new(method => $url),
-        {
-            __nodeclass__   => [
-                "$params{method}_INPUT",
-                "method",
-            ]
-        },
+        Namespace->new($ns => $url),
+        __nodeclass__   => "$params{method}_INPUT",
+        @valueset,
     );
     my $body = Body->new($method);
     my $action = Action->new($url."/".$params{method});
 
-    $self->debug2("Requesting $params{method} action on resource: $url");
+    $self->debug2($what ?
+        "Looking for $params{path} registry $what via winrm" :
+        "Requesting $params{method} action on resource: $url"
+    ) unless $params{nodebug};
 
     my $request = Envelope->new(
         Namespace->new(qw(s a w p)),
@@ -352,7 +400,7 @@ sub runmethod {
             $operationid,
             SequenceId->new(),
             OperationTimeout->new(60),
-            $selectorset,
+            @selectorset,
         ),
         $body,
     );
@@ -389,12 +437,25 @@ sub runmethod {
     my $result;
     my $node = $respbody->get($params{method}.'_OUTPUT');
     foreach my $key (@{$params{params}}) {
-        my $value = $node->get($key)->string;
+        my $value;
+        my @nodes;
+        my $keynode = $node->get($key);
+        @nodes = $keynode->nodes() if $keynode;
+        if (@nodes && $key eq 'uValue') {
+            $value = join('', map { chr($_->string()) } @nodes);
+        } elsif (@nodes && $key =~ /^sNames|Types$/) {
+            $value = [ map { $_->string() } @nodes ];
+        } elsif ($keynode) {
+            $value = $key =~ /^sNames|Types$/ ? [ $keynode->string ] : $keynode->string;
+        }
         if ($params{binds} && $params{binds}->{$key}) {
             $key = $params{binds}->{$key};
         }
         $result->{$key} = $value;
     }
+
+    # Send End to remote
+    $self->end($operationid);
 
     return $result;
 }

@@ -250,6 +250,9 @@ sub getRegistryValue {
         return;
     }
 
+    my $remote = $FusionInventory::Agent::Tools::remote;
+    return $remote->getRemoteRegistryValue(%params) if $remote;
+
     my ($root, $keyName, $valueName);
     if ($params{path} =~ m{^(HKEY_\w+.*)/([^/]+)/([^/]+)} ) {
         $root      = $1;
@@ -380,6 +383,9 @@ sub getRegistryKey {
             if $logger;
         return;
     }
+
+    my $remote = $FusionInventory::Agent::Tools::remote;
+    return $remote->getRemoteRegistryKey(%params) if $remote;
 
     # Shortcut call in remote wmi case
     if (_remoteWmi()) {
