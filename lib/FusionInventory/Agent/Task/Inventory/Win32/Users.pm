@@ -166,7 +166,8 @@ sub _getLastUser {
     } (
         'SOFTWARE/Microsoft/Windows/CurrentVersion/Authentication/LogonUI/LastLoggedOnSAMUser',
         'SOFTWARE/Microsoft/Windows/CurrentVersion/Authentication/LogonUI/LastLoggedOnUser',
-        'SOFTWARE/Microsoft/Windows NT/CurrentVersion/Winlogon/DefaultUserName'
+        'SOFTWARE/Microsoft/Windows NT/CurrentVersion/Winlogon/DefaultUserName',
+        'SOFTWARE/Microsoft/Windows NT/CurrentVersion/Winlogon/LastUsedUsername'
     );
 
     # LastLoggedOnSAMUser becomes the mandatory value to detect last logged on user
@@ -180,8 +181,6 @@ sub _getLastUser {
             };
     }
 
-    # Backward compatibility, to be removed for 3.0
-    $user =~ s,.*\\,,;
     return $user;
 }
 
