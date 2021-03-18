@@ -152,6 +152,7 @@ sub _getScreensFromWindows {
             logger => $params{logger}
         ) // getRegistryValue(
             path => "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Enum/$screen->{id}/Device Parameters/EDID",
+            method => "GetBinaryValue", # method for winrm remote inventory
             logger => $params{logger}
         );
         $screen->{edid} =~ s/^\s+$// if $screen->{edid};
