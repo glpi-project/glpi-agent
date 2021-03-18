@@ -51,7 +51,9 @@ sub checking_error {
     return "Winrm not supported on WsMan backend"
         unless $vendor =~ /microsoft/i;
 
-    my $deviceid = $self->getRemoteRegistryValue(path => 'HKLM/Software/GLPI-Agent/Remote/deviceid');
+    my $deviceid = $self->getRemoteRegistryValue(
+        path => 'HKEY_LOCAL_MACHINE/Software/GLPI-Agent/Remote/deviceid',
+    );
     if ($deviceid) {
         $self->deviceid(deviceid => $deviceid);
     } else {
@@ -237,23 +239,128 @@ sub remoteStoreDeviceid {
     return 1;
 }
 
+my %REGMETHODVALUENAME = qw(
+    GetStringValue          sValue
+    GetExpandedStringValue  sValue
+    GetMultiStringValue     sValue
+    GetBinaryValue          uValue
+    GetDWORDValue           uValue
+    GetQWORDValue           uValue
+);
+
+my %METHODBYTYPE = qw(
+    1   GetStringValue
+    2   GetExpandedStringValue
+    3   GetBinaryValue
+    4   GetDWORDValue
+    7   GetMultiStringValue
+    11  GetQWORDValue
+);
+
 sub getRemoteRegistryValue {
     my ($self, %params) = @_;
 
-    $params{path} =~ s|/|\\|g;
+    my $method = $params{method} // "GetStringValue";
+    my $valuename = $REGMETHODVALUENAME{$method}
+        or return;
 
-    my ($path, $value) = $params{path} =~ /^(.*)\\([^\\]+)$/;
+    my $result = $self->{_winrm}->runmethod(
+        class   => "StdRegProv",
+        moniker => "root/default",
+        method  => $method,
+        path    => $params{path},
+        params  => [ $valuename, "ReturnValue" ],
+        binds   => {
+            ReturnValue => "exitcode",
+            $valuename  => "value",
+        },
+        # Don't pollute debug2 too much
+        nodebug => $params{nodebug} // 0,
+    );
 
-    my $regexec = $self->{_winrm}->shell("reg query $path /e /f $value");
+    return unless $result && delete $result->{exitcode} == 0 && defined($result->{value});
 
-    return unless $regexec && $regexec->{exitcode} == 0 && $regexec->{stdout};
+    return $result->{value};
+}
 
-    my $match;
-    foreach my $line (split(qr|\r\n|m, ${$regexec->{stdout}})) {
-        last if ($match) = $line =~ /^\s*$value\s+\w+\s+(.*)$/;
+sub getRemoteRegistryKey {
+    my ($self, %params) = @_;
+
+    my $hash;
+
+    # Keep a safe maxdepth for recursive calls if not defined
+    $params{maxdepth} = 10 unless defined($params{maxdepth});
+
+    # First we enumerate registry key values
+    my $values = $self->{_winrm}->runmethod(
+        class   => "StdRegProv",
+        moniker => "root/default",
+        method  => "EnumValues",
+        path    => $params{path},
+        params  => [ "sNames", "Types", "ReturnValue" ],
+        binds   => {
+            ReturnValue => "exitcode",
+            sNames      => "values",
+            Types       => "types",
+        },
+        # Don't pollute debug2 too much
+        nodebug => $params{nodebug} // 1,
+    );
+
+    if ($values && $values->{exitcode} == 0 && $values->{values}) {
+        my $keys  = $values->{values};
+        my $types = $values->{types};
+        $types = [] unless ref($types) eq 'ARRAY';
+
+        if ($keys && ref($keys) eq 'ARRAY') {
+            foreach my $key (@{$keys}) {
+                my $type = shift @{$types};
+                # We don't care about default and unsupported value types
+                next unless length($key) && $type && $METHODBYTYPE{$type};
+                # Use required values to optimize registry key tree reading
+                next unless !$params{required} || first { $key eq $_ } @{$params{required}};
+                $hash->{"/$key"} = $self->getRemoteRegistryValue(
+                    %params,
+                    path    => "$params{path}/$key",
+                    method  => $METHODBYTYPE{$type},
+                    # Don't pollute debug2 too much
+                    nodebug => $params{nodebug} // 1,
+                );
+            }
+        }
     }
 
-    return $match;
+    # Handle maxdepth optimization
+    return $hash unless $params{maxdepth}-- > 0;
+
+    # Then we recursively scan other keys
+    my $subkeys = $self->{_winrm}->runmethod(
+        class   => "StdRegProv",
+        moniker => "root/default",
+        method  => "EnumKey",
+        path    => $params{path},
+        params  => [ "sNames", "ReturnValue" ],
+        binds   => {
+            ReturnValue => "exitcode",
+            sNames      => "keys",
+        },
+        # Don't pollute debug2 too much
+        nodebug => $params{nodebug} // 0,
+    );
+
+    if ($subkeys && $subkeys->{exitcode} == 0 && $subkeys->{keys} && ref($subkeys->{keys}) eq 'ARRAY') {
+        foreach my $key (@{$subkeys->{keys}}) {
+            # We can be asked to skip keys for remote inventory optimization
+            $hash->{"$key/"} = $self->getRemoteRegistryKey(
+                %params,
+                path    => $params{path}."/$key",
+                # Don't pollute debug2 too much
+                nodebug => $params{nodebug} // 1,
+            );
+        }
+    }
+
+    return $hash;
 }
 
 sub getWMIObjects {

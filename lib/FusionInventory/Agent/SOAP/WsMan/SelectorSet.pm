@@ -21,16 +21,4 @@ sub support {
     };
 }
 
-sub new {
-    my ($class, @where) = @_;
-
-    my @conditions = @where && ref($where[0]) eq 'ARRAY' ?
-        map { Selector->new($_) } @{$where[0]} : @where;
-
-    my $self = $class->SUPER::new(@conditions);
-
-    bless $self, $class;
-    return $self;
-}
-
 1;
