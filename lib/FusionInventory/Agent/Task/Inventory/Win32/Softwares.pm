@@ -149,7 +149,9 @@ sub _getUsersFromRegistry {
         path => 'HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows NT/CurrentVersion/ProfileList',
         wmiopts => { # Only used for remote WMI optimization
             values  => [ qw/ProfileImagePath Sid/ ],
-        }
+        },
+        # Important for remote inventory optimization
+        required    => [ qw/ProfileImagePath Sid/ ],
     );
 
     next unless $profileList;
@@ -219,6 +221,13 @@ sub _getSoftwaresList {
                 MajorVersion NoRemove SystemComponent
                 / ]
         },
+        # Important for remote inventory optimization
+        required    => [ qw/
+            DisplayName Comments HelpLink ReleaseType DisplayVersion
+            Publisher URLInfoAbout UninstallString InstallDate MinorVersion
+            MajorVersion NoRemove SystemComponent
+            /
+        ],
         %params
     );
 
@@ -265,7 +274,8 @@ sub _getSoftwaresList {
 
         # Set install date to last registry key update time
         if (!defined($software->{INSTALLDATE})) {
-            $software->{INSTALLDATE} = _dateFormat(_keyLastWriteDateString($data));
+            my $installdate = _dateFormat(_keyLastWriteDateString($data));
+            $software->{INSTALLDATE} = $installdate if $installdate;
         }
 
         #----- SQL Server -----
@@ -348,15 +358,16 @@ sub _processMSIE {
     my $name = $params{is64bit} ?
         "Internet Explorer (64bit)" : "Internet Explorer";
 
-    # Will use key last write date as INSTALLDATE
+    my $path = is64bit() && !$params{is64bit} ?
+        "HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/Microsoft/Internet Explorer" :
+        "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Internet Explorer";
+
+    # Will use key last write date as INSTALLDATE, but it only works when run locally
     my $installedkey = getRegistryKey(
-        path   => is64bit() && !$params{is64bit} ?
-            "HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/Microsoft/Internet Explorer" :
-            "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Internet Explorer",
-        wmiopts => { # Only used for remote WMI optimization
-            values  => [ qw/svcVersion Version/ ],
-            subkeys => 0
-        }
+        path        => $path,
+        # Important for remote inventory optimization
+        required    => [ qw/svcVersion Version/ ],
+        maxdepth    => 0,
     );
 
     my $version = $installedkey->{"/svcVersion"} || $installedkey->{"/Version"};
@@ -374,7 +385,6 @@ sub _processMSIE {
             INSTALLDATE => _dateFormat(_keyLastWriteDateString($installedkey))
         }
     );
-
 }
 
 # List of SQL Instances
@@ -412,7 +422,9 @@ sub _getSqlInstancesVersions {
     my $sqlinstanceValue = $params{VALUE};
 
     my $sqlinstanceVersions = getRegistryKey(
-        path => "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Microsoft SQL Server/" . $sqlinstanceValue . "/Setup"
+        path => "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Microsoft SQL Server/" . $sqlinstanceValue . "/Setup",
+        # Important for remote inventory optimization
+        required    => [ qw/Version Edition/ ],
     );
     return unless ($sqlinstanceVersions && $sqlinstanceVersions->{'/Version'});
 
