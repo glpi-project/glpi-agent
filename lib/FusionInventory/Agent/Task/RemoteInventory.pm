@@ -13,7 +13,7 @@ sub isEnabled {
 
     # Always disable task unless target is server or local
     unless ($self->{target}->isType('server') || $self->{target}->isType('local')) {
-        $self->{logger}->debug("Remote inventory task execution disabled");
+        $self->{logger}->debug("Remote inventory task execution disabled: no supported target");
         return 0;
     }
 
@@ -43,7 +43,8 @@ sub isEnabled {
         return 1;
     }
 
-    $self->{logger}->debug("Remote inventory task execution disabled");
+    $self->{logger}->debug("Remote inventory task execution disabled: ".(!$count ?
+        "no remote set" : "all $count remotes are failing"));
 
     return 0;
 }
