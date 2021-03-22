@@ -338,7 +338,6 @@ sub runmethod {
     return $self->abort("Not method to set as action")
         unless $params{method};
 
-    my @items;
     my $url = $self->resource_url($params{class}, $params{moniker});
 
     my $messageid = MessageID->new();
