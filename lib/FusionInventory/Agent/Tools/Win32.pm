@@ -443,7 +443,10 @@ sub _getRegistryKey {
 sub loadUserHive {
     my (%params) = @_;
 
-    return unless $params{sid} && $params{file} && -e $params{file};
+    return unless $params{sid} && $params{file} && has_file($params{file});
+
+    my $remote = $FusionInventory::Agent::Tools::remote;
+    return $remote->loadRemoteUserHive(%params) if $remote;
 
     my $rootKey = _getRegistryRoot(root => 'HKEY_USERS')
         or return;
@@ -459,6 +462,11 @@ sub loadUserHive {
 }
 
 sub cleanupPrivileges {
+
+    # When doing remote inventories, we better need to unload loaded hives
+    my $remote = $FusionInventory::Agent::Tools::remote;
+    return $remote->unloadRemoteLoadedUserHives() if $remote;
+
     # Unset required privilege for Users hive loading
     Win32API::Registry::AllowPriv(Win32API::Registry::SE_RESTORE_NAME(), 0);
 }

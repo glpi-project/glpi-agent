@@ -379,6 +379,41 @@ sub getWMIObjects {
     return @objects;
 }
 
+sub loadRemoteUserHive {
+    my ($self, %params) = @_;
+
+    # First test if we really need to load the hive
+    my $userhive = 'HKEY_USERS/'.$params{sid};
+    my $registry = $self->getRemoteRegistryKey(
+        path        => $userhive,
+        maxdepth    => 1,
+    );
+    return if $registry && keys(%{$registry});
+
+    # Launch reg command to load the hive for the user
+    $userhive =~ s|/|\\|g;
+    $self->{logger}->debug("Loading $userhive registry");
+    my $regload = $self->{_winrm}->shell("reg load $userhive \"$params{file}\"");
+    unless ($regload && $regload->{exitcode} == 0) {
+        $self->{logger}->debug("Failed to load $userhive registry");
+        return;
+    }
+
+    push @{$self->{_loadedhives}}, $userhive;
+}
+
+sub unloadRemoteLoadedUserHives {
+    my ($self) = @_;
+
+    return unless $self->{_loadedhives};
+
+    foreach my $userhive (@{$self->{_loadedhives}}) {
+        my $unload = $self->{_winrm}->shell("reg unload $userhive");
+        $self->{logger}->debug("Failed to unload $userhive registry")
+            unless $unload && $unload->{exitcode} == 0;
+    }
+}
+
 ## no critic (ProhibitMultiplePackages)
 package
     URI::winrm;
