@@ -278,8 +278,10 @@ sub enumerate {
                     params      => $params{params},
                     binds       => $params{binds},
                 );
-                push @items, $result;
+                push @items, $params{properties} ? _extract($result, $params{properties}) : $result;
             }
+        } elsif ($params{properties}) {
+            push @items, map { _extract($_, $params{properties}) } @enumitems;
         } else {
             push @items, @enumitems;
         }
@@ -306,6 +308,20 @@ sub enumerate {
     $self->end($operationid);
 
     return @items;
+}
+
+sub _extract {
+    my ($item, $properties) = @_;
+
+    return $item unless ref($item) eq 'HASH' && ref($properties) eq 'ARRAY';
+
+    my $hash = {};
+
+    foreach my $property (@{$properties}) {
+        $hash->{$property} = $item->{$property};
+    }
+
+    return $hash;
 }
 
 my %HIVEREF = (

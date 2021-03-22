@@ -286,7 +286,7 @@ sub getRemoteRegistryValue {
 sub getRemoteRegistryKey {
     my ($self, %params) = @_;
 
-    my $hash;
+    my $hash = {};
 
     # Keep a safe maxdepth for recursive calls if not defined
     $params{maxdepth} = 10 unless defined($params{maxdepth});
