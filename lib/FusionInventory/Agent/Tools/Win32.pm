@@ -106,6 +106,9 @@ sub encodeFromRegistry {
 
     return $string if Encode::is_utf8($string);
 
+    # Don't re-encode while using winrm
+    return $string if $FusionInventory::Agent::Tools::remote;
+
     return decode(getLocalCodepage(), $string);
 }
 
@@ -725,7 +728,7 @@ sub getInterfaces {
 
         my $configuration = {
             DESCRIPTION => $object->{Description},
-            STATUS      => $object->{IPEnabled} ? "Up" : "Down",
+            STATUS      => $object->{IPEnabled} =~ /^1|true$/i ? "Up" : "Down",
             IPDHCP      => $object->{DHCPServer},
             MACADDR     => $object->{MACAddress},
             MTU         => $object->{MTU},
