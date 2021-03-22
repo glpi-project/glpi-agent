@@ -14,12 +14,13 @@ sub isEnabled {
 
     FusionInventory::Agent::Tools::Win32->use();
 
-    my $key = first { getRegistryKey(
+    my $key;
+    first { $key = getRegistryKey(
             path        => $_,
             # Important for remote inventory optimization
             required    => [ 'ID (read only)' ],
             maxdepth    => 1,
-        )
+        ) && $key && keys(%{$key})
     } qw(
         HKEY_LOCAL_MACHINE/SYSTEM/LiteManager
         HKEY_LOCAL_MACHINE/SOFTWARE/LiteManager
@@ -65,8 +66,9 @@ sub doInventory {
 sub _getID {
     my (%params) = @_;
 
-    return first {
-        _findID(
+    my $id;
+    first {
+        $id = _findID(
             path => $_,
             %params
         )
@@ -74,6 +76,8 @@ sub _getID {
         HKEY_LOCAL_MACHINE/SYSTEM/LiteManager
         HKEY_LOCAL_MACHINE/SOFTWARE/LiteManager
     );
+
+    return $id;
 }
 
 sub _findID {
