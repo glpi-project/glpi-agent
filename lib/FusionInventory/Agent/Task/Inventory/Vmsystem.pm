@@ -210,7 +210,7 @@ sub _getType {
     }
 
     # Solaris zones
-    if (canRun('/usr/sbin/zoneadm')) {
+    if (OSNAME eq 'solaris' && canRun('/usr/sbin/zoneadm')) {
         if (FusionInventory::Agent::Tools::Solaris->require()) {
             my $zone = FusionInventory::Agent::Tools::Solaris::getZone();
             return 'SolarisZone' if $zone ne 'global';
@@ -303,18 +303,20 @@ sub _getType {
 
     # systemd based container like lxc
 
-    my $init_env = getAllLines(
-        file => '/proc/1/environ',
-        logger => $logger
-    );
-    if ($init_env) {
-        $init_env =~ s/\0/\n/g;
-        my $container_type = getFirstMatch(
-            string  => $init_env,
-            pattern => qr/^container=(\S+)/,
-            logger  => $logger
+    if (has_file('/proc/1/environ')) {
+        my $init_env = getAllLines(
+            file => '/proc/1/environ',
+            logger => $logger
         );
-        return $container_type if $container_type;
+        if ($init_env) {
+            $init_env =~ s/\0/\n/g;
+            my $container_type = getFirstMatch(
+                string  => $init_env,
+                pattern => qr/^container=(\S+)/,
+                logger  => $logger
+            );
+            return $container_type if $container_type;
+        }
     }
     # OpenVZ
     if (has_file('/proc/self/status')) {
@@ -329,11 +331,11 @@ sub _getType {
     }
 
     # WSL
-    if (-e '/proc/sys/fs/binfmt_misc/WSLInterop') {
+    if (has_file('/proc/sys/fs/binfmt_misc/WSLInterop')) {
         $result = "WSL";
-    } elsif (getFirstMatch(command => 'lscpu', pattern => qr/^Hypervisor vendor:\s+(Windows Subsystem for Linux|Microsoft)/)) {
+    } elsif (canRun('lscpu') && getFirstMatch(command => 'lscpu', pattern => qr/^Hypervisor vendor:\s+(Windows Subsystem for Linux|Microsoft)/)) {
         $result = "WSL";
-    } elsif (getFirstMatch(file => '/proc/mounts', pattern => qr/^rootfs\s+\/\s+(wslfs)/)) {
+    } elsif (has_file('/proc/mounts') && getFirstMatch(file => '/proc/mounts', pattern => qr/^rootfs\s+\/\s+(wslfs)/)) {
         $result = "WSL";
     }
 
