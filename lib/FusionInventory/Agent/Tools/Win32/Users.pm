@@ -62,7 +62,7 @@ sub getUserProfile {
     $profile->{LocalPath} =~ s{\\}{/}g;
 
     return {
-        LOADED => $profile->{Loaded},
+        LOADED => $profile->{Loaded} =~ /^1|true$/ ? 1 : 0,
         PATH   => $profile->{LocalPath},
     };
 }

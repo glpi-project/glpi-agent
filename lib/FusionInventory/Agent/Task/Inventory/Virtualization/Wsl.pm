@@ -18,7 +18,7 @@ our $runAfter = [ qw(
 )];
 
 sub isEnabled {
-    return $OSNAME eq "MSWin32" && canRun('wsl');
+    return OSNAME eq "MSWin32" && canRun('wsl');
 }
 
 sub doInventory {
@@ -66,12 +66,16 @@ sub  _getUsersWslInstances {
             # This call involves we use cleanupPrivileges before leaving
             $userhive = FusionInventory::Agent::Tools::Win32::loadUserHive( sid => $user->{SID}, file => $ntuserdat );
         }
-        $lxsskey = FusionInventory::Agent::Tools::Win32::getRegistryKey(path => "HKEY_USERS/$user->{SID}/SOFTWARE/Microsoft/Windows/CurrentVersion/Lxss/")
+        $lxsskey = FusionInventory::Agent::Tools::Win32::getRegistryKey(
+            path        => "HKEY_USERS/$user->{SID}/SOFTWARE/Microsoft/Windows/CurrentVersion/Lxss/",
+            # Important for remote inventory optimization
+            required    => [ qw/BasePath DistributionName/ ],
+        )
             or next;
 
         # Support WSL2 memory/vcpu configuration
         my ($usermem, $uservcpu);
-        if (-e $profile->{PATH}."/.wslconfig") {
+        if (has_file($profile->{PATH}."/.wslconfig")) {
             ($usermem, $uservcpu) = _parseWslConfig(
                 file    => $profile->{PATH}."/.wslconfig",
                 %params
@@ -90,7 +94,7 @@ sub  _getUsersWslInstances {
             # Create an UUID based on user SID and distro name
             my $uuid = uc(create_uuid_from_name($user->{SID}."/".$distro));
 
-            my $version = -d $basepath."/rootfs/etc" ? "1" : "2";
+            my $version = has_folder($basepath."/rootfs/etc") ? "1" : "2";
 
             my $maxmemory = $memory;
             my $maxvcpu = $vcpu;

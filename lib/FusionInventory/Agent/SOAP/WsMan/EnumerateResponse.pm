@@ -62,25 +62,28 @@ sub end_of_sequence {
 }
 
 sub _dump {
+    my ($object) = @_;
+
     my @dump = ();
 
-    foreach my $object (@_) {
-        my $dump = {};
-        foreach my $node ($object->nodes()) {
-            my $key = ref($node);
-            my $nil = $node->attribute('xsi:nil');
-            my @nodes = $node->nodes();
-            if ($nil && $nil eq 'true') {
-                $dump->{$key} = undef;
-            } elsif ($node->attribute('xsi:type')) {
-                push @dump, _dump($node);
-                undef $dump;
-            } else {
-                $dump->{$key} = @nodes > 1 ? [ map { $_->string } @nodes ] : $node->string;
-            }
+    my $dump = {};
+
+    foreach my $node ($object->nodes()) {
+        my $key = ref($node);
+        my $nil = $node->attribute('xsi:nil');
+        my @nodes = $node->nodes();
+        if ($nil && $nil eq 'true') {
+            $dump->{$key} = undef;
+        } elsif ($node->attribute('xsi:type')) {
+            push @dump, _dump($node);
+            undef $dump;
+        } elsif (ref($node) && $node->dump_as_string()) {
+            $dump->{$key} = $node->string;
+        } else {
+            $dump->{$key} = @nodes > 1 ? [ map { $_->string } @nodes ] : $node->string;
         }
-        push @dump, $dump if $dump;
     }
+    push @dump, $dump if $dump;
 
     return @dump;
 }

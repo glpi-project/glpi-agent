@@ -14,6 +14,8 @@ package
 use constant    xmlns   => "";
 use constant    xsd     => "";
 
+use constant    dump_as_string => 0;
+
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 
