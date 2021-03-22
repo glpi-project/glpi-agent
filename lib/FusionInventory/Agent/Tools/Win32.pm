@@ -15,6 +15,7 @@ use UNIVERSAL::require();
 
 use constant KEY_WOW64_64 => 0x100;
 use constant KEY_WOW64_32 => 0x200;
+use constant KEY_READ     => 0x20019;
 
 ################################################################################
 #### Needed to support this module under other platforms than MSWin32 ##########
@@ -25,7 +26,6 @@ BEGIN {
     if ($OSNAME ne 'MSWin32') {
         $INC{'Win32/Job.pm'} = "-";
         $INC{'Win32/TieRegistry.pm'} = "-";
-        *{KEY_READ} = *{Win32::TieRegistry::KEY_READ} = sub { 0x20019 };
     }
 }
 
@@ -41,7 +41,6 @@ use Win32::Job;
 use Win32::TieRegistry (
     Delimiter   => '/',
     ArrayValues => 0,
-    qw/KEY_READ/
 );
 
 use FusionInventory::Agent::Tools;
