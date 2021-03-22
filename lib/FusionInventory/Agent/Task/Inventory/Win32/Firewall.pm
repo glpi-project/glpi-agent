@@ -39,30 +39,25 @@ sub doInventory {
 sub _getFirewallProfiles {
     my (%params) = @_;
 
-    my $key = $params{key} || getRegistryKey(
-        path => "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/services/SharedAccess/Parameters/FirewallPolicy",
-        wmiopts => { # Only used for remote WMI optimization
-            values  => [ qw/EnableFirewall/ ]
-        }
+    my $path = "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Services/SharedAccess/Parameters/FirewallPolicy";
+
+    my %subKeys = qw(
+        domain      DomainProfile
+        public      PublicProfile
+        standard    StandardProfile
     );
 
-    return unless $key;
+    my $profiles;
 
-    my $subKeys = {
-        domain   => 'DomainProfile',
-        public   => 'PublicProfile',
-        standard => 'StandardProfile'
-    };
-    my $profiles = {};
-    for my $profile (keys %$subKeys) {
-        next unless $key->{$subKeys->{$profile} . '/'};
-        next unless defined $key->{$subKeys->{$profile} . '/'}->{'/EnableFirewall'};
-        my $enabled = hex2dec($key->{ $subKeys->{$profile} . '/'}->{'/EnableFirewall'});
+    foreach my $profile (keys(%subKeys)) {
+        my $enabled = hex2dec(getRegistryValue(
+            path    => "$path/$subKeys{$profile}/EnableFirewall",
+            # Needed for remote inventory
+            method  => "GetDWORDValue",
+        ));
         $profiles->{$profile} = {
-            STATUS => $enabled
-                ? STATUS_ON
-                : STATUS_OFF,
-            PROFILE => $subKeys->{$profile}
+            STATUS  => $enabled ? STATUS_ON : STATUS_OFF,
+            PROFILE => $subKeys{$profile}
         };
     }
 
@@ -79,7 +74,9 @@ sub _makeProfileAndConnectionsAssociation {
         path => 'HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows NT/CurrentVersion/NetworkList/Profiles',
         wmiopts => { # Only used for remote WMI optimization
             values  => [ qw/ProfileName Category/ ]
-        }
+        },
+        # Important for remote inventory optimization
+        required    => [ qw/ProfileName Category/ ],
     );
 
     return unless $profilesKey;
@@ -88,7 +85,9 @@ sub _makeProfileAndConnectionsAssociation {
         path => 'HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows NT/CurrentVersion/NetworkList/Signatures',
         wmiopts => { # Only used for remote WMI optimization
             values  => [ qw/ProfileGuid FirstNetwork/ ]
-        }
+        },
+        # Important for remote inventory optimization
+        required    => [ qw/ProfileGuid FirstNetwork/ ],
     );
 
     return unless $signaturesKey;
@@ -97,7 +96,9 @@ sub _makeProfileAndConnectionsAssociation {
         path => 'HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/services/Tcpip/Parameters/DNSRegisteredAdapters',
         wmiopts => { # Only used for remote WMI optimization
             values  => [ qw/PrimaryDomainName/ ]
-        }
+        },
+        # Important for remote inventory optimization
+        required    => [ qw/PrimaryDomainName/ ],
     );
 
     return unless $DNSRegisteredAdapters;
