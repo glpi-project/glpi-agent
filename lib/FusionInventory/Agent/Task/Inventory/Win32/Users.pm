@@ -144,8 +144,8 @@ sub _getLoggedUsers {
         query      => $query,
         method     => 'GetOwner',
         params     => [ 'User', 'Domain' ],
-        name       => [ 'string', '' ],
-        domain     => [ 'string', '' ],
+        User       => [ 'string', '' ],
+        Domain     => [ 'string', '' ],
         selector   => 'Handle', # For winrm support
         binds      => {
             User    => 'LOGIN',
