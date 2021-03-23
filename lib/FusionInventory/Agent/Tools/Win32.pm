@@ -65,7 +65,6 @@ our @EXPORT = qw(
     getCurrentService
     getAgentMemorySize
     FreeAgentMem
-    getWMIService
     getFormatedWMIDateTime
     loadUserHive
     cleanupPrivileges
