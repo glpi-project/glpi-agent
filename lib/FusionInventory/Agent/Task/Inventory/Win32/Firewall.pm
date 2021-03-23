@@ -19,10 +19,6 @@ sub isEnabled {
     return 1;
 }
 
-sub isEnabledForRemote {
-    return 1;
-}
-
 sub doInventory {
     my (%params) = @_;
 
@@ -72,9 +68,6 @@ sub _makeProfileAndConnectionsAssociation {
 
     my $profilesKey = $params{profilesKey} || getRegistryKey(
         path => 'HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows NT/CurrentVersion/NetworkList/Profiles',
-        wmiopts => { # Only used for remote WMI optimization
-            values  => [ qw/ProfileName Category/ ]
-        },
         # Important for remote inventory optimization
         required    => [ qw/ProfileName Category/ ],
     );
@@ -83,9 +76,6 @@ sub _makeProfileAndConnectionsAssociation {
 
     my $signaturesKey = $params{signaturesKey} || getRegistryKey(
         path => 'HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows NT/CurrentVersion/NetworkList/Signatures',
-        wmiopts => { # Only used for remote WMI optimization
-            values  => [ qw/ProfileGuid FirstNetwork/ ]
-        },
         # Important for remote inventory optimization
         required    => [ qw/ProfileGuid FirstNetwork/ ],
     );
@@ -94,9 +84,6 @@ sub _makeProfileAndConnectionsAssociation {
 
     my $DNSRegisteredAdapters = getRegistryKey(
         path => 'HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/services/Tcpip/Parameters/DNSRegisteredAdapters',
-        wmiopts => { # Only used for remote WMI optimization
-            values  => [ qw/PrimaryDomainName/ ]
-        },
         # Important for remote inventory optimization
         required    => [ qw/PrimaryDomainName/ ],
     );

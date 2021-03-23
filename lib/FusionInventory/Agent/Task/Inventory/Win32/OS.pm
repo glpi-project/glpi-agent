@@ -18,15 +18,10 @@ sub isEnabled {
     return 1;
 }
 
-sub isEnabledForRemote {
-    return 1;
-}
-
 sub doInventory {
     my (%params) = @_;
 
     my $inventory = $params{inventory};
-    my $remotewmi = $inventory->getRemote();
 
     my ($operatingSystem) = getWMIObjects(
         class      => 'Win32_OperatingSystem',
@@ -47,12 +42,12 @@ sub doInventory {
     my $boottime = getFormatedWMIDateTime($operatingSystem->{LastBootUpTime});
 
     my $installDate = getFormatedWMIDateTime($operatingSystem->{InstallDate});
-    $installDate = _getInstallDate() unless ($installDate || $remotewmi);
+    $installDate = _getInstallDate() unless $installDate;
 
     # Finally get the name through native Win32::API if local inventory and as
     # WMI DB is sometimes broken
     my $hostname = $computerSystem->{DNSHostName} || $computerSystem->{Name};
-    $hostname = getHostname(short => 1) unless ($hostname || $remotewmi);
+    $hostname = getHostname(short => 1) unless $hostname;
 
     my $os = {
         NAME           => "Windows",
@@ -79,11 +74,7 @@ sub doInventory {
         $os->{VERSION} = $releaseid;
     }
 
-    # We want to always reset FQDN on remote wmi inventory as it was set to local
-    # agent fqdn in Generic module
-    $os->{FQDN} = $hostname if ($remotewmi);
     if ($computerSystem->{Domain}) {
-        $os->{FQDN} .= '.'.$computerSystem->{Domain} if ($remotewmi);
         $os->{DNS_DOMAIN} = $computerSystem->{Domain};
     }
 

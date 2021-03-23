@@ -15,10 +15,6 @@ sub isEnabled {
     return OSNAME eq 'MSWin32';
 }
 
-sub isEnabledForRemote {
-    return OSNAME eq 'MSWin32';
-}
-
 sub doInventory {
 
 }
