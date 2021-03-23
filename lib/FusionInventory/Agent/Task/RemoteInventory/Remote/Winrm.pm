@@ -160,7 +160,6 @@ sub getRemoteFQDN {
     my $fqdn = $computersystem->{DNSHostName} || $computersystem->{Name};
     $self->{logger}->error("Winrm: Failed to get remote hostname from Win32_ComputerSystem")
         unless $fqdn;
-    $fqdn .= "." . $computersystem->{Domain} if $computersystem->{Domain};
 
     return $fqdn;
 }
