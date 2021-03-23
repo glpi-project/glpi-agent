@@ -45,10 +45,6 @@ sub isEnabled {
     return 1;
 }
 
-sub isEnabledForRemote {
-    return 1;
-}
-
 sub doInventory {
     my (%params) = @_;
 
@@ -111,18 +107,12 @@ sub _getUSBPrinterSerial {
     # and find some way to correlate entries
     my $usbprint_key = getRegistryKey(
         path   => "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Enum/USBPRINT",
-        wmiopts => { # Only used for remote WMI optimization
-            values  => [ qw/PortName ContainerID/ ]
-        },
         # Important for remote inventory optimization
         required    => [ qw/PortName ContainerID/ ],
     );
 
     my $usb_key = getRegistryKey(
         path   => "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Enum/USB",
-        wmiopts => { # Only used for remote WMI optimization
-            values  => [ qw/ParentIdPrefix ContainerID/ ]
-        },
         # Important for remote inventory optimization
         required    => [ qw/ParentIdPrefix ContainerID/ ],
     );

@@ -28,18 +28,6 @@ sub isEnabled {
     return $key && keys(%{$key});
 }
 
-sub isEnabledForRemote {
-    return 0 unless $OSNAME eq 'MSWin32';
-
-    FusionInventory::Agent::Tools::Win32->use();
-
-    my $key = first { getRegistryKey( path => $_ ) } qw(
-        HKEY_LOCAL_MACHINE/SYSTEM/LiteManager
-        HKEY_LOCAL_MACHINE/SOFTWARE/LiteManager
-    );
-    return $key && keys(%{$key});
-}
-
 sub doInventory {
     my (%params) = @_;
 
@@ -87,9 +75,6 @@ sub _findID {
 
     my $key = getRegistryKey(
         %params,
-        wmiopts => { # Only used for remote WMI optimization
-            values  => [ 'ID (read only)' ]
-        },
         # Important for remote inventory optimization
         required    => [ 'ID (read only)' ],
     );

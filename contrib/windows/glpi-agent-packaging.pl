@@ -242,7 +242,7 @@ sub run {
     my $t = Template->new(ABSOLUTE=>1);
 
     # Re-install dedicated bat files not using config file
-    foreach my $f (qw(agent wmi)) {
+    foreach my $f (qw(agent)) {
         my $dest = catfile($self->global->{image_dir}, 'glpi-'.$f.'.bat');
         my $tag = { tag => $f, msi => 1 };
         $t->process($bat, $tag, $dest) || die $t->error();
@@ -509,7 +509,7 @@ sub run {
     $self->boss->message(2, "gonna update installation");
 
     # Install dedicated bat files
-    foreach my $f (qw(agent esx injector inventory netdiscovery netinventory wakeonlan wmi)) {
+    foreach my $f (qw(agent esx injector inventory netdiscovery netinventory wakeonlan)) {
         my $dest = catfile($self->global->{image_dir}, 'glpi-'.$f.'.bat');
         my $tag = { tag => $f };
         $t->process($bat, $tag, $dest) || die $t->error();
