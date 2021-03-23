@@ -64,7 +64,6 @@ our @EXPORT = qw(
     FileTimeToSystemTime
     getAgentMemorySize
     FreeAgentMem
-    getWMIService
     getFormatedWMIDateTime
     loadUserHive
     cleanupPrivileges
