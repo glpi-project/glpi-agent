@@ -21,7 +21,7 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $hdparm = $inventory->getRemote() ? 0 : canRun('hdparm');
+    my $hdparm = canRun('hdparm');
 
     foreach my $storage (_getDrives(class => 'Win32_DiskDrive')) {
         if ($hdparm && defined($storage->{NAME}) && $storage->{NAME} =~ /(\d+)$/) {
