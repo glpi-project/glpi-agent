@@ -21,11 +21,6 @@ sub isEnabled {
     return -r _anydesk_config() ? 1 : 0;
 }
 
-sub isEnabledForRemote {
-    # Testing if a file is existing is not supported for WMI remote inventory
-    return 0;
-}
-
 sub doInventory {
     my (%params) = @_;
 

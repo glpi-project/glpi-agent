@@ -16,10 +16,6 @@ sub isEnabled {
     return 1;
 }
 
-sub isEnabledForRemote {
-    return 1;
-}
-
 sub doInventory {
     my (%params) = @_;
 
@@ -463,9 +459,6 @@ sub _getSoftwareRegistryKeys {
     if (is64bit()) {
         $reg = getRegistryKey(
             path => 'HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/'.$base,
-            wmiopts => { # Only used for remote WMI optimization
-                values  => $values
-            },
             # Important for remote inventory optimization
             required    => $values,
         );
@@ -481,9 +474,6 @@ sub _getSoftwareRegistryKeys {
 
     $reg = getRegistryKey(
         path => 'HKEY_LOCAL_MACHINE/SOFTWARE/'.$base,
-        wmiopts => { # Only used for remote WMI optimization
-            values  => $values
-        },
         # Important for remote inventory optimization
         required    => $values,
     );

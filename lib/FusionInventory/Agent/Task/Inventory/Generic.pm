@@ -15,18 +15,13 @@ sub isEnabled {
     return 1;
 }
 
-# Must be enabled to support few Generic sub-modules
-sub isEnabledForRemote {
-    return 1;
-}
-
 sub doInventory {
     my (%params) = @_;
 
     my $inventory = $params{inventory};
 
     my $remote = $inventory->getRemote();
-    if ($remote && $remote ne 'wmi') {
+    if ($remote) {
         $inventory->setOperatingSystem({
             KERNEL_NAME => OSNAME,
             FQDN        => getRemoteFqdn(),

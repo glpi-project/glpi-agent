@@ -35,25 +35,6 @@ sub isEnabled {
     return canRun('teamviewer');
 }
 
-sub isEnabledForRemote {
-    my (%params) = @_;
-
-    if (OSNAME eq 'MSWin32') {
-
-        FusionInventory::Agent::Tools::Win32->use();
-
-        my $key = getRegistryKey(
-            path => is64bit() ?
-                "HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/TeamViewer" :
-                "HKEY_LOCAL_MACHINE/SOFTWARE/TeamViewer",
-            logger => $params{logger}
-        );
-        return $key && (keys %$key);
-    }
-
-    return 0;
-}
-
 sub doInventory {
     my (%params) = @_;
 
@@ -87,9 +68,6 @@ sub _getID {
             path   => is64bit() ?
                 "HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/TeamViewer/ClientID" :
                 "HKEY_LOCAL_MACHINE/Software/TeamViewer/ClientID",
-                wmiopts => { # Only used for remote WMI optimization
-                    values  => [ qw/ClientID/ ]
-                }
         );
 
         unless ($clientid) {
@@ -97,9 +75,6 @@ sub _getID {
                 path => is64bit() ?
                     "HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/TeamViewer" :
                     "HKEY_LOCAL_MACHINE/SOFTWARE/TeamViewer",
-                wmiopts => { # Only used for remote WMI optimization
-                    values  => [ qw/ClientID/ ]
-                },
                 # Important for remote inventory optimization
                 required    => [ qw/ClientID/ ],
             );

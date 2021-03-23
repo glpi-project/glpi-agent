@@ -26,16 +26,11 @@ sub isEnabled {
     return 1;
 }
 
-sub isEnabledForRemote {
-    return 1;
-}
-
 sub doInventory {
     my (%params) = @_;
 
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
-    my $remotewmi = $inventory->getRemote();
 
     my $is64bit = is64bit();
 
@@ -91,9 +86,9 @@ sub doInventory {
         _addSoftware(inventory => $inventory, entry => $hotfix);
     }
 
-    # Lookup for UWP/Windows Store packages (not supported by WMI task)
+    # Lookup for UWP/Windows Store packages
     my ($osversion) = $inventory->getHardware('OSVERSION') =~ /^(\d+\.\d+)/;
-    if (!$remotewmi && $osversion && $osversion > 6.1) {
+    if ($osversion && $osversion > 6.1) {
         my $packages = _getAppxPackages( logger => $logger ) || [];
         foreach my $package (@{$packages}) {
             _addSoftware(inventory => $inventory, entry => $package);
@@ -143,9 +138,6 @@ sub _getUsersFromRegistry {
 
     my $profileList = getRegistryKey(
         path => 'HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows NT/CurrentVersion/ProfileList',
-        wmiopts => { # Only used for remote WMI optimization
-            values  => [ qw/ProfileImagePath Sid/ ],
-        },
         # Important for remote inventory optimization
         required    => [ qw/ProfileImagePath Sid/ ],
     );
@@ -210,13 +202,6 @@ sub _getSoftwaresList {
 
     my $softwares = getRegistryKey(
         path    => "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall",
-        wmiopts => { # Only used for remote WMI optimization
-            values  => [ qw/
-                DisplayName Comments HelpLink ReleaseType DisplayVersion
-                Publisher URLInfoAbout UninstallString InstallDate MinorVersion
-                MajorVersion NoRemove SystemComponent
-                / ]
-        },
         # Important for remote inventory optimization
         required    => [ qw/
             DisplayName Comments HelpLink ReleaseType DisplayVersion

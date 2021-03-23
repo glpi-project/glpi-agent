@@ -30,10 +30,6 @@ sub isEnabled {
     return 1;
 }
 
-sub isEnabledForRemote {
-    return 1;
-}
-
 sub doInventory {
     my (%params) = @_;
 
@@ -66,9 +62,6 @@ sub _getCPUs {
     # the CPU description in WMI is false, we use the registry instead
     my $registryInfos = getRegistryKey(
         path   => "HKEY_LOCAL_MACHINE/Hardware/Description/System/CentralProcessor",
-        wmiopts => { # Only used for remote WMI optimization
-            values  => [ qw/Identifier ProcessorNameString VendorIdentifier/ ]
-        },
         # Important for remote inventory optimization
         required    => [ qw/Identifier ProcessorNameString VendorIdentifier/ ],
     );

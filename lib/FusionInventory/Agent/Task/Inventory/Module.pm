@@ -13,10 +13,6 @@ sub isEnabled {
     return 0;
 }
 
-sub isEnabledForRemote {
-    return 0;
-}
-
 sub doInventory {
 }
 
@@ -71,17 +67,6 @@ Provided parameters:
     scan_profiles: scan-profiles configuration parameter
 
 Returns true is the module should be used for local inventory.
-
-=head2 isEnabledForInventory (%params)
-
-Provided parameters:
-    datadir    : resources folder
-    logger     : agent logger
-    registry   : registry option passed by server
-    scan_homedirs: scan-homedirs configuration parameter
-    scan_profiles: scan-profiles configuration parameter
-
-Returns true is the module should be used for remote inventory (firstly WMI inventory).
 
 =head2 doInventory (%params)
 

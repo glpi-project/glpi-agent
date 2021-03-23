@@ -26,12 +26,6 @@ sub isEnabled {
     return $params{registry} && @{$params{registry}};
 }
 
-sub isEnabledForRemote {
-    my (%params) = @_;
-
-    return $params{registry} && @{$params{registry}};
-}
-
 sub _getRegistryData {
     my (%params) = @_;
 

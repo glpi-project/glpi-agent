@@ -104,7 +104,6 @@ recommends 'Net::Write::Layer2' => '0';
 
 install_script 'bin/glpi-agent';
 install_script 'bin/glpi-win32-service' if $OSNAME eq 'MSWin32';
-install_script 'bin/glpi-wmi' if $OSNAME eq 'MSWin32';
 install_script 'bin/glpi-injector';
 install_script 'bin/glpi-inventory';
 install_script 'bin/glpi-wakeonlan';

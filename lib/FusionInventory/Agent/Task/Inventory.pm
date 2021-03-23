@@ -67,7 +67,7 @@ sub run {
     $self->{logger}->info("New inventory from ".$inventory->getDeviceId()." for $self->{target}->{id}".
         ( (defined($tag) && length($tag)) ? " (tag=$tag)" : "" ));
 
-    # Set inventory as remote if running remote inventory like from wmi task
+    # Set inventory as remote if running remote inventory
     $inventory->setRemote($self->getRemote()) if $self->getRemote();
 
     if (not $ENV{PATH}) {
@@ -289,7 +289,6 @@ sub _initModulesList {
 
     # Select isEnabled function to test
     my $isEnabledFunction = "isEnabled" ;
-    $isEnabledFunction .= "ForRemote" if (($self->getRemote() // '') eq 'wmi');
 
     # first pass: compute all relevant modules
     foreach my $module (sort @modules) {
