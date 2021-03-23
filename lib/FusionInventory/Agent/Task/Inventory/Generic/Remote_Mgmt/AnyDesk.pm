@@ -13,12 +13,12 @@ use English qw(-no_match_vars);
 use FusionInventory::Agent::Tools;
 
 sub _anydesk_config {
-    return 'C:\ProgramData\AnyDesk\system.conf' if $OSNAME eq 'MSWin32';
+    return 'C:\ProgramData\AnyDesk\system.conf' if OSNAME eq 'MSWin32';
     return '/etc/anydesk/system.conf';
 }
 
 sub isEnabled {
-    return -r _anydesk_config() ? 1 : 0;
+    return has_file(_anydesk_config()) ? 1 : 0;
 }
 
 sub doInventory {
