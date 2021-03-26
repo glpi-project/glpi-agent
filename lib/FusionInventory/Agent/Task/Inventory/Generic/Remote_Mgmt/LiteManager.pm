@@ -15,7 +15,8 @@ sub isEnabled {
     FusionInventory::Agent::Tools::Win32->use();
 
     my $key;
-    first { $key = getRegistryKey(
+    first {
+        $key = FusionInventory::Agent::Tools::Win32::getRegistryKey(
             path        => $_,
             # Important for remote inventory optimization
             required    => [ 'ID (read only)' ],
@@ -73,7 +74,7 @@ sub _findID {
 
     FusionInventory::Agent::Tools::Win32->use();
 
-    my $key = getRegistryKey(
+    my $key = FusionInventory::Agent::Tools::Win32::getRegistryKey(
         %params,
         # Important for remote inventory optimization
         required    => [ 'ID (read only)' ],
