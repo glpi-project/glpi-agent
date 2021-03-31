@@ -12,6 +12,8 @@ use threads::shared;
 use Thread::Semaphore;
 
 use UNIVERSAL::require();
+use MIME::Base64;
+use Encode;
 
 use constant KEY_WOW64_64 => 0x100;
 use constant KEY_WOW64_32 => 0x200;
@@ -61,6 +63,7 @@ our @EXPORT = qw(
     getWMIObjects
     getLocalCodepage
     runCommand
+    runPowerShell
     FileTimeToSystemTime
     getCurrentService
     getAgentMemorySize
@@ -528,6 +531,20 @@ sub runCommand {
     }
 
     return ($exitcode, $buff);
+}
+
+sub runPowerShell {
+    my (%params) = @_;
+
+    my $script = delete $params{script}
+        or return;
+
+    my $encodedScript = encode_base64(encode("UTF16-LE", $script), "");
+
+    return getAllLines(
+        command => "powershell -NonInteractive -ExecutionPolicy Unrestricted -encodedCommand $encodedScript",
+        %params
+    );
 }
 
 sub getInterfaces {

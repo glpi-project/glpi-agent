@@ -79,7 +79,7 @@ sub getRemoteFileHandle {
 
     # Still run command via WinRM and return an in-memory scalar handle
     if ($params{command}) {
-        $shell = $self->{_winrm}->shell($params{command});
+        $shell = $self->{_winrm}->shell($params{command}." 2>nul");
     } elsif ($params{file}) {
         $params{file} =~ s|/|\\|g;
         $shell = $self->{_winrm}->shell("type \"$params{file}\"");

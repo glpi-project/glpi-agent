@@ -414,9 +414,15 @@ sub getFileHandle {
             last SWITCH;
         }
         if ($params{command}) {
+            # limit log command size if too large like for powershell commands
+            my $logcommand = $params{command};
+            while (length($logcommand)>120 && $logcommand =~ /\w\s+\w/) {
+                ($logcommand) = $logcommand =~ /^(.*\w)\s+\w+/;
+                $logcommand .= " ...";
+            }
             # FIXME: 'Bad file descriptor' error message on Windows
-            $params{logger}->debug2("executing $params{command}")
-                if $params{logger};
+            $params{logger}->debug2("executing $logcommand")
+                if $params{logger} && $params{logger}->debug_level();
             # Turn off localised output for commands
             local $ENV{LC_ALL} = 'C';
             local $ENV{LANG} = 'C';
@@ -426,7 +432,7 @@ sub getFileHandle {
             my $cmdpid  = open($handle, '-|', $command);
             if (!$cmdpid) {
                 $params{logger}->error(
-                    "Can't run command $params{command}: $ERRNO"
+                    "Can't run command $logcommand: $ERRNO"
                 ) if $params{logger};
                 return;
             }
