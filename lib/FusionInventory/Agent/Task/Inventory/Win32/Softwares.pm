@@ -5,16 +5,11 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
-use English qw(-no_match_vars);
 use File::Basename;
-use File::Temp;
-use UNIVERSAL::require;
-use Encode qw(decode);
 
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Win32;
 use FusionInventory::Agent::Tools::Win32::Constants;
-use FusionInventory::Agent::Tools::Win32::LoadIndirectString;
 
 use constant    category    => "software";
 
@@ -419,140 +414,68 @@ sub _getSqlInstancesVersions {
     return $sqlinstanceVersions->{'/Edition'};
 }
 
+my $appxscript = '';
+# Compress appx powershell script as much as possible as we are limited to ~ 8000 characters
+foreach my $line (<DATA>) {
+    $line =~ s/^\s+//;
+    next if length($line) == 0 || $line =~ /^#/;
+    $appxscript .= $line;
+}
+
 sub _getAppxPackages {
     my (%params) = @_;
 
     return unless canRun('powershell');
 
-    XML::XPath->require();
-
-    # Don't validate XML against DTD, parsing may fail if a proxy is active
-    $XML::XPath::ParseParamEnt = 0;
-
-    my $logger    = $params{logger};
-
-    my @lines;
-    {
-        # Temp file will be deleted out of this scope
-        my $fh = File::Temp->new(
-            TEMPLATE    => 'get-appxpackage-XXXXXX',
-            SUFFIX      => '.ps1'
-        );
-        print $fh <DATA>;
-        close($fh);
-        my $file = $fh->filename;
-
-        return unless ($file && -f $file);
-
-        @lines = getAllLines(
-            command => "powershell -NonInteractive -ExecutionPolicy ByPass -File $file",
-            %params
-        );
-    }
-
-    my ($list, $package);
-    my %manifest_mapping = qw(
-        DisplayName             DISPLAYNAME
-        Description             COMMENTS
-        PublisherDisplayName    PUBLISHERDISPLAYNAME
+    my $logger = $params{logger};
+    my @lines  = runPowerShell(
+        script  => $appxscript,
+        logger  => $logger
     );
 
+    my $list = [];
+    my $package = {
+        FROM    => 'uwp'
+    };
+
     foreach my $line (@lines) {
-        chomp($line);
 
         # Add package on empty line
-        if (!$line && $package && $package->{NAME}) {
+        if (!$line && $package->{NAME}) {
             push @{$list}, $package;
-            undef $package;
+            $package = { FROM => 'uwp' };
             next;
         }
 
         my ($key, $value) = $line =~ /^([A-Z_]+):\s*(.*)\s*$/;
-        next unless ($key && defined($value));
-        $package->{$key} = decode('UTF-8', $value);
+        next unless $key && defined($value) && length($value);
 
-        # Read manifest
-        if ($key eq 'FOLDER' && $value && has_folder($value)) {
-            my $xml = $value . '/appxmanifest.xml';
-            if (-f $xml) {
-                my $xpp = XML::XPath->new(filename => $xml)
-                    or next;
-                foreach my $property (keys(%manifest_mapping)) {
-                    my $key = $manifest_mapping{$property};
-                    my $value = $xpp->getNodeText("/Package/Properties/$property")
-                        or next;
-                    $package->{$key} = $value->value;
-                }
-            }
+        # Cleanup
+        if ($key eq 'NAME') {
+            $value = _canonicalPackageName($value);
+        } elsif ($key eq 'INSTALLDATE') {
+            my ($date) = $value =~ m|^([0-9/]+)|;
+            my $installdate = _dateFormat($date);
+            $value = $installdate if $installdate;
         }
+
+        $package->{$key} = $value;
     }
 
     # Add last package if still not added
-    push @{$list}, $package if ($package && $package->{NAME});
+    push @{$list}, $package if $package->{NAME};
+
+    $logger->debug2("Found ".scalar(@{$list})." uwp packages") if $logger;
 
     # Extract publishers
     my $publishers = _parsePackagePublishers($list);
 
-    # Cleanup list and fix localized strings
+    # Fix publisher if necessary
     foreach my $package (@{$list}) {
-        my $name  = $package->{NAME};
-        my $pubid = delete $package->{PUBLISHERID};
+        my $pubid = delete $package->{PUBID}
+            or next;
         $package->{PUBLISHER} = $publishers->{$pubid}
-            if ($pubid && $publishers->{$pubid});
-
-        if (!$package->{PUBLISHER} && $name =~ /^Microsoft/i) {
-            $package->{PUBLISHER} = "Microsoft Corp.";
-        } elsif (!$package->{PUBLISHER}) {
-            $logger->debug2("no publisher found for $name package") if $logger;
-        }
-
-        my $pkgname = delete $package->{PACKAGE};
-
-        my $installdate = delete $package->{INSTALLDATE};
-        if ($installdate) {
-            my ($date) = $installdate =~ m|^([0-9/]+)|;
-            $installdate = _dateFormat($date);
-            $package->{INSTALLDATE} = $installdate if $installdate;
-        }
-
-        my $dn = delete $package->{DISPLAYNAME};
-        if ($dn && $dn =~ /^ms-resource:/) {
-            my $res = SHLoadIndirectString(_canonicalResourceURI(
-                $pkgname, $package->{FOLDER}, $dn
-            ));
-            $logger->debug2("$name package name " . ($res ?
-                    "resolved to '$res'" : "can't be resolved from '$dn'"))
-                if $logger;
-            $dn = $res;
-        }
-        if (!$dn) {
-            $dn = _canonicalPackageName($package->{NAME});
-        }
-        if ($dn) {
-            # Replace "right single quotation mark" by "simple quote" to avoid "Wide character in print" error
-            $dn =~ s/\x{2019}/'/g;
-
-            $package->{NAME} = $dn;
-        }
-
-        my $comments = delete $package->{COMMENTS};
-        if ($comments && $comments =~ /^ms-resource:/) {
-            my $res = SHLoadIndirectString(_canonicalResourceURI(
-                $pkgname, $package->{FOLDER}, $comments
-            ));
-            $logger->debug2("$name package comments " . ($res ?
-                    "resolved to '$res'" : "can't be resolved from '$comments'"))
-                if $logger;
-            $comments = $res;
-        }
-        if ($comments) {
-            # Replace "right single quotation mark" by "simple quote" to avoid "Wide character in print" error
-            $comments =~ s/\x{2019}/'/g;
-
-            $package->{COMMENTS} = $comments;
-        }
-
-        $package->{FROM} = 'uwp';
+            if $publishers->{$pubid};
     }
 
     return $list;
@@ -561,29 +484,10 @@ sub _getAppxPackages {
 sub _canonicalPackageName {
     my ($name) = @_;
     # Fix up name for well-know cases if the case display name is missing
-    if ($name =~ /^Microsoft\.NET\./i) {
-        $name =~ s/\./ /g;
-        $name =~ s/Microsoft NET/Microsoft .Net/;
-    } elsif ($name =~ /^(Microsoft|windows)\./i) {
-        $name =~ s/\./ /g;
+    if ($name =~ /^(Microsoft|windows)\./i) {
+        $name =~ s/([^0-9])\./$1 /g;
     }
     return $name;
-}
-
-sub _canonicalResourceURI {
-    my ($package, $folder, $resource) = @_;
-    my $file = $folder.'\resources.pri';
-    my $base = -f $file ? $file : $package;
-    my ($prefix, $respath) = $resource =~ /^(ms-resource:)(.*)$/
-        or return;
-    if ($respath =~ m|^//|) {
-        # Keep resource as is
-    } elsif ($respath =~ m|^/|) {
-        $resource = $prefix.'//'.$respath;
-    } else {
-        $resource = $prefix.'///'.($respath =~ /resources/i ? '':'resources/').$respath;
-    }
-    return '@{'.$base.'?'.$resource.'}';
 }
 
 sub _parsePackagePublishers {
@@ -593,33 +497,13 @@ sub _parsePackagePublishers {
         tf1gferkr813w       AutoDesk
     );
 
-    my @localized_publisher_packages = ();
-
     foreach my $package (@{$list}) {
-        my $publisher = delete $package->{PUBLISHERDISPLAYNAME};
-        my $pubid     = $package->{PUBLISHERID}
+        my $publisher = $package->{PUBLISHER}
             or next;
-        next unless $publisher;
-        next if ($publishers{$pubid} && $publishers{$pubid} !~ /^ms-resource:/);
-        if ($publisher =~ /^ms-resource:/) {
-            push @localized_publisher_packages, $package;
-        }
+        my $pubid     = $package->{PUBID}
+            or next;
+        next if $publishers{$pubid};
         $publishers{$pubid} = $publisher;
-    }
-
-    # Fix publishers with ms-resource:
-    foreach my $package (@localized_publisher_packages) {
-        my $pubid = $package->{PUBLISHERID}
-            or next;
-        next if ($publishers{$pubid} && $publishers{$pubid} !~ /^ms-resource:/);
-        my $string = SHLoadIndirectString(_canonicalResourceURI(
-            $package->{PACKAGE}, $package->{FOLDER}, $publishers{$pubid}
-        ));
-        if ($string) {
-            $publishers{$pubid} = $string;
-        } else {
-            delete $publishers{$pubid};
-        }
     }
 
     return \%publishers;
@@ -631,44 +515,111 @@ __DATA__
 # Script PowerShell
 [Windows.Management.Deployment.PackageManager,Windows.Management.Deployment,ContentType=WindowsRuntime] >$null
 
-$packages = New-Object Windows.Management.Deployment.PackageManager
+# $CSharpSHLoadIndirectString code from https://github.com/skycommand/AdminScripts/blob/master/AppX/Inventory%20AppX%20Packages.ps1
+$CSharpSHLoadIndirectString = @'
+using System;
+using System.Text;
+using System.Runtime.InteropServices;
 
-foreach ( $package in $packages.FindPackages() )
+public class IndirectStrings
 {
-    # Check install state for each user and break if an installation is found
-    $state = "Installed"
-    foreach ( $user in $packages.FindUsers($package.Id.FullName) )
+    [DllImport("shlwapi.dll", BestFitMapping = false, CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = false, ThrowOnUnmappableChar = true)]
+    internal static extern int SHLoadIndirectString(string pszSource, StringBuilder pszOutBuf, uint cchOutBuf, IntPtr ppvReserved);
+
+    public static string GetIndirectString(string indirectString)
     {
-        $state = $user.InstallState
-        if ($user.InstallState -Like "Installed") {
-            break
-            $p = $packages.FindPackageForUser($user.UserSecurityId, $package.Id.FullName)
-            if ($p.InstalledLocation.DateCreated -NotLike "") {
-                $installedDate = $p.InstalledLocation.DateCreated
-                break
-            }
+        StringBuilder lptStr = new StringBuilder(1024);
+        int returnValue = SHLoadIndirectString(indirectString, lptStr, (uint)lptStr.Capacity, IntPtr.Zero);
+
+        return returnValue == 0 ? lptStr.ToString() : "";
+    }
+}
+'@
+
+# Add the IndirectStrings type to PowerShell
+Add-Type -TypeDefinition $CSharpSHLoadIndirectString -Language CSharp
+
+function canonicalResourceURI {
+    param (
+        $pkg,
+        $res,
+        $rec = 10
+    )
+
+    # Just a security for recursive call
+    if (--$rec -eq 0) { Return "" }
+
+    if ($res -match '^@') {
+        $res = [IndirectStrings]::GetIndirectString($res)
+        $res = canonicalResourceURI $pkg $res $rec
+    } elseif ($res -match '^ms-resource:(?<Path>.*)$') {
+        $path = $Matches.Path
+        if ($path -match '^//') {
+            $res = $path
+        } elseif ($path -match '^/') {
+            $res = "//$res"
+        } elseif ($path -match 'resources') {
+            $res = "///$path"
+        } else {
+            $res = "///resources/$path"
         }
+        $res = "?ms-resource:$res"
+        $res = canonicalResourceURI $pkg "@{$pkg$res}" $rec
     }
-    if ($state -NotLike "Installed") { continue }
+    Return $res
+}
 
-    # Use installeddate if found otherwise use installation folder creation date
-    $installedDate = ""
-    if ($package.InstalledDate -NotLike "") {
-        $installedDate = $package.InstalledDate
-    } elseif ($package.InstalledLocation.DateCreated -NotLike "") {
-        $installedDate = $package.InstalledLocation.DateCreated
+function out {
+    param ($n, $v)
+    if ($v -NotLike "") {
+        Write-Host "${n}: $v"
+    }
+}
+
+$pkgs = New-Object Windows.Management.Deployment.PackageManager
+
+foreach ($pkg in $pkgs.FindPackages()) {
+    $id = $pkg.Id
+    $fname = $id.FullName
+
+    # Skip package not really installed
+    $user = $pkgs.FindUsers($fname) | Where-Object { $_.InstallState -eq "Installed" } | Select-Object -First 1
+    if (!$user) { continue }
+
+    $iloc = $pkg.InstalledLocation
+
+    # Use installeddate if available or the installation folder creation date
+    $date = $pkg.InstalledDate
+    if ($date -Like "") {
+        $date = $iloc.DateCreated
     }
 
-    Write-host "NAME: $($package.Id.Name)"
-    Write-host "PACKAGE: $($package.Id.FullName)"
-    Write-host "ARCH: $($package.Id.Architecture.ToString().ToLowerInvariant())"
-    Write-host "VERSION: $($package.Id.Version.Major).$($package.Id.Version.Minor).$($package.Id.Version.Build).$($package.Id.Version.Revision)"
-    Write-host "FOLDER: $($package.InstalledLocation.Path)"
-    if ($installedDate -NotLike "") {
-        Write-host "INSTALLDATE: $($installedDate)"
+    $manifest = Get-AppxPackageManifest -Package $fname -User $user.UserSecurityId
+
+    $prop = $manifest.Package.Properties
+
+    $name = canonicalResourceURI $fname $prop.DisplayName
+    if ($name -Like "") {
+        $name = $id.Name
     }
-    Write-host "PUBLISHER: $($package.Id.Publisher)"
-    Write-host "PUBLISHERID: $($package.Id.PublisherId)"
-    Write-host "SYSTEM_CATEGORY: $($package.SignatureKind.ToString().ToLowerInvariant())"
+
+    $pub = canonicalResourceURI $fname $prop.PublisherDisplayName
+    if ($pub -Like "") {
+        $pub = $id.Publisher
+    }
+
+    $comments = canonicalResourceURI $fname $prop.Description
+
+    $v = $id.Version
+    # Output is indeed compressed while preparing $appxscript during perl module startup
+    out "NAME" $name
+    out "PUBLISHER" $pub
+    out "PUBID" $id.PublisherId
+    out "COMMENTS" $comments
+    out "ARCH" $id.Architecture.ToString().ToLowerInvariant()
+    out "VERSION" "$($v.Major).$($v.Minor).$($v.Build).$($v.Revision)"
+    out "FOLDER" $iloc.Path
+    out "INSTALLDATE" $date
+    out "SYSTEM_CATEGORY" $pkg.SignatureKind.ToString().ToLowerInvariant()
     Write-Host
 }

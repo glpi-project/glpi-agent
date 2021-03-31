@@ -82,7 +82,10 @@ sub abort {
 
 sub debug {
     my ( $self, $message ) = @_;
-    $self->{logger}->debug($message) if $self->{logger};
+    if ($self->{logger}) {
+        return $self->{logger}->debug_level() unless defined($message);
+        $self->{logger}->debug($message);
+    }
 }
 
 sub debug2 {
@@ -480,7 +483,15 @@ sub shell {
 
     return unless $command;
 
-    $self->debug2("Requesting '$command' run to ".$self->url);
+    # limit log command size if too large like for powershell commands
+    if ($self->debug()) {
+        my $logcommand = $command;
+        while (length($logcommand)>120 && $logcommand =~ /\w\s+\w/) {
+            ($logcommand) = $logcommand =~ /^(.*\w)\s+\w+/;
+            $logcommand .= " ...";
+        }
+        $self->debug2("Requesting '$logcommand' run to ".$self->url);
+    }
 
     my $messageid = MessageID->new();
     my $sid = SessionId->new();
