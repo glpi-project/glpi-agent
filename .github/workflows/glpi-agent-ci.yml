@@ -80,8 +80,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: Update environment
       run: |
-        PERL_VERSION=$(perl -MConfig -e 'print $Config{version}')
-        echo "/usr/local/Cellar/perl/$PERL_VERSION/bin" >> $GITHUB_PATH
+        PERL_PREFIX=$(perl -MConfig -e 'print $Config{prefix}')
+        echo "$PERL_PREFIX/bin" >> $GITHUB_PATH
     - name: Check environment
       run: |
         echo "PATH=$PATH"
