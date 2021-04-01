@@ -409,7 +409,7 @@ sub _checkContent {
     }
 }
 
-sub isParamArrayAndFilled {
+sub hasFilledParam {
     my ($self, $paramName) = @_;
 
     return unless defined($self->{$paramName});

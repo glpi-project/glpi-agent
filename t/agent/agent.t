@@ -14,22 +14,22 @@ use FusionInventory::Agent;
 use FusionInventory::Agent::Config;
 use FusionInventory::Agent::Logger;
 
-plan tests => 30;
+plan tests => 22;
 
 my $libdir = tempdir(CLEANUP => $ENV{TEST_DEBUG} ? 0 : 1);
 push @INC, $libdir;
 my $agent = FusionInventory::Agent->new(libdir => $libdir);
 
-my %tasks;
+# No agentid set by default
+ok(!exists($agent->{agentid}));
 
 create_file("$libdir/FusionInventory/Agent/Task/Task1", "Version.pm", <<'EOF');
 package FusionInventory::Agent::Task::Task1::Version;
 use constant VERSION => 42;
 1;
 EOF
-%tasks = $agent->getAvailableTasks();
 cmp_deeply (
-    \%tasks,
+    $agent->getAvailableTasks(),
     { 'Task1' => 42 },
     "single task"
 );
@@ -39,9 +39,8 @@ package FusionInventory::Agent::Task::Task2::Version;
 use constant VERSION => 42;
 1;
 EOF
-%tasks = $agent->getAvailableTasks();
 cmp_deeply (
-    \%tasks,
+    $agent->getAvailableTasks(),
     {
         'Task1' => 42,
         'Task2' => 42
@@ -55,9 +54,8 @@ use Does::Not::Exists;
 use constant VERSION => 42;
 1;
 EOF
-%tasks = $agent->getAvailableTasks();
-cmp_deeply(
-    \%tasks,
+cmp_deeply (
+    $agent->getAvailableTasks(),
     {
         'Task1' => 42,
         'Task2' => 42
@@ -70,9 +68,8 @@ package FusionInventory::Agent::Task::Task5::Version;
 use constant VERSION => 42;
 1;
 EOF
-%tasks = $agent->getAvailableTasks();
 cmp_deeply (
-    \%tasks,
+    $agent->getAvailableTasks(),
     {
         'Task1' => 42,
         'Task2' => 42,
@@ -81,6 +78,7 @@ cmp_deeply (
     "multiple tasks"
 );
 
+# Setup agent
 $agent->{config} = FusionInventory::Agent::Config->new(
     options => {
         config  => 'none',
@@ -89,20 +87,23 @@ $agent->{config} = FusionInventory::Agent::Config->new(
     }
 );
 $agent->{config}->{'no-task'} = ['Task5'];
-$agent->{config}->{'tasks'} = ['Task1', 'Task5', 'Task1', 'Task5', 'Task5', 'Task2', 'Task1'];
-my %availableTasks = $agent->getAvailableTasks(disabledTasks => $agent->{config}->{'no-task'});
+$agent->{config}->{'tasks'} = [ qw(Task1 Task5 Task1 Task5 Task5 Task2 Task1)];
+my $availableTasks = $agent->getAvailableTasks();
 $agent->{logger} = FusionInventory::Agent::Logger->new(config => $agent->{config});
-my @availableTasks = keys %availableTasks;
-my @plan = $agent->computeTaskExecutionPlan(\@availableTasks);
-my $expectedPlan = [
-    'Task1',
-    'Task1',
-    'Task2',
-    'Task1'
-];
+my @plan = $agent->computeTaskExecutionPlan($availableTasks);
 cmp_deeply(
     \@plan,
-    $expectedPlan
+    [ qw(Task1 Task1 Task2 Task1) ],
+    "simply filtered execution plan A"
+);
+
+$agent->{config}->{'no-task'} = ['Task5'];
+$agent->{config}->{'tasks'} = [ qw(Task1 Task5 Task1 Task5 ...)];
+@plan = $agent->computeTaskExecutionPlan($availableTasks);
+cmp_deeply(
+    \@plan,
+    [ qw(Task1 Task1 Task2) ],
+    "simply filtered execution plan A"
 );
 
 sub create_file {
@@ -116,131 +117,65 @@ sub create_file {
     close $fh;
 }
 
-my $list1 = [
-    'elem1',
-    'elem2',
-    'elem3',
-    'elem4'
-];
-my $list2 = [
-    'elem5',
-    'elem2',
-    'elem1',
-    'elem5',
-    'elem2',
-    'elem6',
-    'elem1'
-];
-my $wanted = [
-    'elem1',
-    'elem2',
-    'elem3',
-    'elem4'
-];
-my @list3 = FusionInventory::Agent::_appendElementsNotAlreadyInList($list1, $list2);
-my $i = 0;
-while ($i < 4) {
-    ok( $list3[$i] eq $wanted->[$i]);
-    $i++;
-}
-my @otherElements = @list3[4..$#list3];
-ok( scalar( @otherElements) == 2);
-my %otherElements = map { $_ => 1 } @list3[4..$#list3];
-ok (defined( $otherElements{'elem5'}));
-ok (defined( $otherElements{'elem6'}));
-
-my @tasks = (
-    'task1',
-    'task2',
-    'taskwithoutanumber',
-    'task345'
-);
-my @tasksInConf = (
-    'task1',
-    'task2',
-    'task1',
-    'task3',
-    'task3'
-);
-my @tasksExecutionPlan = FusionInventory::Agent::_makeExecutionPlan(\@tasksInConf, \@tasks);
-my @expectedExecutionPlan = (
-    'task1',
-    'task2',
-    'task1'
-);
-cmp_deeply(
-    \@tasksExecutionPlan,
-    \@expectedExecutionPlan
-);
-my $ok = 0;
-$i = 0;
-while ($i < scalar(@expectedExecutionPlan)) {
-    $ok = ( defined( $tasksExecutionPlan[$i] ) && ( $expectedExecutionPlan[$i] eq $tasksExecutionPlan[$i] ) );
-    if (! $ok) {
-        last;
+sub checktasksplan {
+    my ($taskconf, $length, $expected, $comment) = @_;
+    my @taskinconf = split(/,+/, $taskconf);
+    my @tasksExecutionPlan = FusionInventory::Agent::_makeExecutionPlan(\@taskinconf, $availableTasks);
+    ok(@tasksExecutionPlan == $length, "$comment, plan length: ".@tasksExecutionPlan);
+    if (ref($expected) eq 'ARRAY') {
+        cmp_deeply(
+            \@tasksExecutionPlan,
+            $expected,
+            $comment
+        );
+    } else {
+        foreach my $range (sort keys(%{$expected})) {
+            my $part;
+            eval '$part = [ @tasksExecutionPlan['.$range.'] ];';
+            if ($range =~ /^0\.\./) {
+                cmp_deeply(
+                    $part,
+                    $expected->{$range},
+                    "$comment, $range part"
+                );
+            } else {
+                cmp_deeply(
+                    [ sort @{$part} ],
+                    [ sort @{$expected->{$range}} ],
+                    "$comment, $range part"
+                );
+            }
+        }
     }
-    $i++;
 }
-ok ($ok);
 
-@tasksInConf = (
-    'task1',
-    'task2',
-    'task1',
-    'task3',
-    'task3',
-    'task3',
-    'task5',
-    'task1',
-    'task2',
-    'task2'
-);
-@tasksExecutionPlan = FusionInventory::Agent::_makeExecutionPlan(\@tasksInConf, \@tasks);
-@expectedExecutionPlan = (
-    'task1',
-    'task2',
-    'task1',
-    'task1',
-    'task2',
-    'task2'
-);
-cmp_deeply(
-    \@tasksExecutionPlan,
-    \@expectedExecutionPlan
+# Define new available tasks
+$availableTasks->{TaskX} = "X.0";
+$availableTasks->{Task345} = "345.0";
+
+# Remember Task5 is disabled and Task3 is invalid
+checktasksplan(
+    "task1,task2,task1,task3,task3",
+    3,
+    [ qw(Task1 Task2 Task1) ],
+    "filtered execution plan B"
 );
 
-@tasksInConf = (
-    'task1',
-    'task2',
-    'task1',
-    'task3',
-    'task3',
-    'task3',
-    'task5',
-    'task1',
-    'task2',
-    'task2',
-    '...'
+checktasksplan(
+    "task1,task2,task1,task3,Task3,task3,task5,Task1,task2,task2",
+    6,
+    [ qw(Task1 Task2 Task1 Task1 Task2 Task2) ],
+    "filtered execution plan C"
 );
-@tasksExecutionPlan = FusionInventory::Agent::_makeExecutionPlan(\@tasksInConf, \@tasks);
-# the first part of execution plan, the ordered part
-my @expectedExecutionPlanOrderedPart = (
-    'task1',
-    'task2',
-    'task1',
-    'task1',
-    'task2',
-    'task2',
-);
-$i = 0;
-while ( $i < 6) {
-    ok( $tasksExecutionPlan[$i] eq $expectedExecutionPlanOrderedPart[$i]);
-    $i++;
-}
-ok (scalar(@tasksExecutionPlan) == 8);
-ok (
-    ($tasksExecutionPlan[6] eq 'taskwithoutanumber' && $tasksExecutionPlan[7] eq 'task345')
-    || ($tasksExecutionPlan[7] eq 'taskwithoutanumber' && $tasksExecutionPlan[6] eq 'task345')
+
+checktasksplan(
+    "task1,tasK2,task1,Task3,task3,task3,task5,Task1,task2,Task2,...",
+    8,
+    {
+        '0..5'  => [ qw(Task1 Task2 Task1 Task1 Task2 Task2) ],
+        '6..7'  => [ qw(Task345 TaskX) ],
+    },
+    "filtered execution plan D, with dots"
 );
 
 $agent->{datadir} = './share';
@@ -258,7 +193,7 @@ my $options = {
 };
 $agent->init(options => $options);
 # after init call, the member 'config' is defined and well blessed
-ok (UNIVERSAL::isa($agent->{config}, 'FusionInventory::Agent::Config'));
+ok (ref($agent->{config}) eq 'FusionInventory::Agent::Config');
 ok (defined($agent->{config}->{'conf-file'}));
 ok (defined($agent->{config}->{'no-task'}));
 ok (scalar(@{$agent->{config}->{'no-task'}}) == 2);
@@ -268,35 +203,9 @@ ok (
 );
 ok (scalar(@{$agent->{config}->{'server'}}) == 0);
 
-
-@tasks = (
-    'Task1',
-    'Task2',
-    'Taskwithoutanumber',
-    'Task345'
-);
-@tasksInConf = (
-    'task1',
-    'task2',
-    'task1',
-    'task3',
-    'task3',
-    'task3',
-    'task5',
-    'task1',
-    'task2',
-    'task2'
-);
-@tasksExecutionPlan = FusionInventory::Agent::_makeExecutionPlan(\@tasksInConf, \@tasks);
-@expectedExecutionPlan = (
-    'Task1',
-    'Task2',
-    'Task1',
-    'Task1',
-    'Task2',
-    'Task2'
-);
-cmp_deeply(
-    \@tasksExecutionPlan,
-    \@expectedExecutionPlan
+checktasksplan(
+    "task1,task2,task1,task3,Task3,task3,task5,Task1,task2,task2",
+    6,
+    [ qw(Task1 Task2 Task1 Task1 Task2 Task2) ],
+    "filtered execution plan still good"
 );

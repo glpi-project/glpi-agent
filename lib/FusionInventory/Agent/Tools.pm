@@ -821,7 +821,3 @@ Run a function whose name is computed at runtime and return its result.
 =head2 slurp($file)
 
 Return the content of a given file.
-
-=head2 isParamArrayAndFilled($hash, $paramName)
-
-Return if $hash has a key $paramName which value is a ARRAY ref not empty.

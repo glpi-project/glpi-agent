@@ -111,26 +111,27 @@ my $agent = $options->{daemon} ?
     FusionInventory::Agent->new(%setup);
 
 if ($options->{'list-tasks'}) {
-    my %tasks = $agent->getAvailableTasks();
-    print "Available tasks : \n";
-    foreach my $task (keys %tasks) {
-        print "$task (v$tasks{$task})\n";
-    }
-
     $options->{logger} = "Stderr";
     $agent->init(options => $options);
+
+    my $tasks = $agent->getAvailableTasks();
+    print "\nAvailable tasks : \n";
+    foreach my $task (keys(%{$tasks})) {
+        print "- $task (v$tasks->{$task})\n";
+    }
+
     foreach my $target ($agent->getTargets()) {
-        print "\n", $target->getType(), " target: ", $target->getName(), "\n";
+        print "\ntarget $target->{id}: ", $target->getType();
+        print " ", $target->getName() if $target->isType('local') || $target->isType('server');
+        print "\n";
         my @planned = $target->plannedTasks();
         if (@planned) {
-            print "Planned tasks:\n";
-            foreach my $task (@planned) {
-                print " - $task (v$tasks{$task})\n";
-            }
+            print "Planned tasks: ",join(",",@planned),"\n";
         } else {
-            print "No planned task\n";
+            print "No planned task for $target->{id}\n";
         }
     }
+    print "\n";
 
     exit 0;
 }

@@ -7,7 +7,8 @@ use English qw(-no_match_vars);
 use UNIVERSAL::require;
 use File::Glob;
 use IO::Handle;
-use Storable 'dclone';
+
+use constant CONTINUE_WORD  => "...";
 
 use FusionInventory::Agent::Version;
 use FusionInventory::Agent::Config;
@@ -23,7 +24,6 @@ my $PROVIDER = $FusionInventory::Agent::Version::PROVIDER;
 our $COMMENTS = $FusionInventory::Agent::Version::COMMENTS || [];
 our $VERSION_STRING = _versionString($VERSION);
 our $AGENT_STRING = "$PROVIDER-Agent_v$VERSION";
-our $CONTINUE_WORD = "...";
 
 sub _versionString {
     my ($VERSION) = @_;
@@ -82,7 +82,8 @@ sub init {
         vardir      => $self->{vardir}
     );
 
-    if (!$self->getTargets()) {
+    # Still handle --list-tasks case
+    if (!$self->getTargets() && (!$params{options} || !$params{options}->{"list-tasks"})) {
         $logger->error("No target defined, aborting");
         exit 1;
     }
@@ -92,19 +93,18 @@ sub init {
     $FusionInventory::Agent::Task::Inventory::Provider::PROGRAM = "$PROGRAM_NAME";
 
     # compute list of allowed tasks
-    my %available = $self->getAvailableTasks(disabledTasks => $config->{'no-task'});
-    my @tasks = keys %available;
-    my @plannedTasks = $self->computeTaskExecutionPlan(\@tasks);
-
-    my %available_lc = map { (lc $_) => $_ } keys %available;
-    if (!@tasks) {
+    my $available = $self->getAvailableTasks();
+    my @tasks = keys(%{$available});
+    unless (@tasks) {
         $logger->error("No tasks available, aborting");
         exit 1;
     }
 
+    my @plannedTasks = $self->computeTaskExecutionPlan($available);
+
     $logger->debug("Available tasks:");
-    foreach my $task (keys %available) {
-        $logger->debug("- $task: $available{$task}");
+    foreach my $task (sort @tasks) {
+        $logger->debug("- $task: $available->{$task}");
     }
 
     foreach my $target ($self->getTargets()) {
@@ -121,18 +121,14 @@ sub init {
         my @planned = $target->plannedTasks(@plannedTasks);
 
         if (@planned) {
-            $logger->debug("Planned tasks for $target->{id}:");
-            foreach my $task (@planned) {
-                my $task_lc = lc $task;
-                $logger->debug("- $task: " . $available{$available_lc{$task_lc}});
-            }
+            $logger->debug("Planned tasks for $target->{id}: ".join(",",@planned));
         } else {
-            $logger->debug("No planned task");
+            $logger->debug("No planned task for $target->{id}");
         }
     }
 
     $logger->info("Options 'no-task' and 'tasks' are both used. Be careful that 'no-task' always excludes tasks.")
-        if ($self->{config}->isParamArrayAndFilled('no-task') && $self->{config}->isParamArrayAndFilled('tasks'));
+        if $config->hasFilledParam('no-task') && $config->hasFilledParam('tasks');
 
     # install signal handler to handle graceful exit
     $SIG{INT}  = sub { $self->terminate(); exit 0; };
@@ -330,12 +326,12 @@ sub getTargets {
 }
 
 sub getAvailableTasks {
-    my ($self, %params) = @_;
+    my ($self) = @_;
 
     my $logger = $self->{logger};
 
     my %tasks;
-    my %disabled  = map { lc($_) => 1 } @{$params{disabledTasks}};
+    my %disabled  = map { lc($_) => 1 } @{$self->{config}->{'no-task'} // []};
 
     # tasks may be located only in agent libdir
     my $directory = $self->{libdir};
@@ -372,7 +368,7 @@ sub getAvailableTasks {
             if $logger;
     }
 
-    return %tasks;
+    return \%tasks;
 }
 
 sub _handlePersistentState {
@@ -433,72 +429,45 @@ sub setForceRun {
     );
 }
 
-sub _appendElementsNotAlreadyInList {
-    my ($list, $elements, $logger) = @_;
-
-    if (! UNIVERSAL::isa($list, 'ARRAY')) {
-        $logger->error('_appendElementsNotAlreadyInList(): first argument is not an ARRAY ref') if defined $logger;
-        return $list;
-    }
-    if (UNIVERSAL::isa($elements, 'HASH')) {
-        @$elements = keys %$elements;
-    } elsif (! UNIVERSAL::isa($elements, 'ARRAY')) {
-        $logger->error('_appendElementsNotAlreadyInList(): second argument is neither an ARRAY ref nor a HASH ref') if defined $logger;
-        return $list;
-    }
-
-    my %list = map { $_ => $_ } @$list;
-    # we want to add elements only once, so we ensure that there are no duplicates
-    my %elements = map { $_ => 1 } @$elements;
-    @$elements = keys %elements;
-
-    # union of list AND elements which are NOT in list
-    my @newList = (@$list, grep( !defined($list{$_}), @$elements));
-
-    return @newList;
-}
-
 sub computeTaskExecutionPlan {
-    my ($self, $availableTasksNames) = @_;
+    my ($self, $availableTasks) = @_;
 
-    if (! defined($self->{config}) || !(UNIVERSAL::isa($self->{config}, 'FusionInventory::Agent::Config'))) {
-        $self->{logger}->error( "no config found in agent. Can't compute tasks execution plan" ) if (defined $self->{logger});
+    my $config = $self->{config};
+    unless (defined($config) && ref($config) eq 'FusionInventory::Agent::Config') {
+        $self->{logger}->error( "no config found in agent. Can't compute tasks execution plan" )
+            if $self->{logger};
         return;
     }
 
-    my @executionPlan = ();
-    if ($self->{config}->isParamArrayAndFilled('tasks')) {
-        $self->{logger}->debug2('isParamArrayAndFilled(\'tasks\') : true') if (defined $self->{logger});
-        @executionPlan = _makeExecutionPlan($self->{config}->{'tasks'}, $availableTasksNames, $self->{logger});
+    my @executionPlan;
+    if ($config->hasFilledParam('tasks')) {
+        $self->{logger}->debug2("Preparing execution plan") if defined($self->{logger});
+        @executionPlan = _makeExecutionPlan($config->{'tasks'}, $availableTasks);
     } else {
-        $self->{logger}->debug2('isParamArrayAndFilled(\'tasks\') : false') if (defined $self->{logger});
-        @executionPlan = @$availableTasksNames;
+        @executionPlan = keys(%{$availableTasks});
     }
 
     return @executionPlan;
 }
 
 sub _makeExecutionPlan {
-    my ($sortedTasks, $availableTasksNames, $logger) = @_;
+    my ($sortedTasks, $availableTasks) = @_;
 
-    my $sortedTasksCloned = dclone $sortedTasks;
-    my @executionPlan = ();
-    my %available = map { (lc $_) => $_ } @$availableTasksNames;
+    my %tasks = map { lc($_) => $_ } keys(%{$availableTasks});
 
-    my $task = shift @$sortedTasksCloned;
-    while (defined $task) {
-        if ($task eq $CONTINUE_WORD) {
+    my @executionPlan;
+    foreach my $task (@{$sortedTasks}) {
+        next unless $task;
+        if ($task eq CONTINUE_WORD) {
+            my %used  = map { $_ => 1 } @executionPlan;
+            my @tasks = grep { ! $used{$_} } keys(%{$availableTasks});
+            # we append all other available tasks
+            push @executionPlan, @tasks if @tasks;
             last;
         }
-        $task = lc $task;
-        if ( defined($available{$task})) {
-            push @executionPlan, $available{$task};
-        }
-        $task = shift @$sortedTasksCloned;
-    }
-    if ( defined($task) && $task eq $CONTINUE_WORD) {
-        # we append all other available tasks
-        @executionPlan = _appendElementsNotAlreadyInList(\@executionPlan, $availableTasksNames, $logger);
+        $task = lc($task);
+        push @executionPlan, $tasks{$task}
+            if exists($tasks{$task});
     }
 
     return @executionPlan;

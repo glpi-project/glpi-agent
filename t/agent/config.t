@@ -106,25 +106,25 @@ foreach my $test (keys %config) {
     }
 
     if ($test eq 'sample1') {
-        ok ($c->isParamArrayAndFilled('no-task'));
-        ok (! $c->isParamArrayAndFilled('no-category'));
-        ok (! $c->isParamArrayAndFilled('httpd-trust'));
-        ok ($c->isParamArrayAndFilled('tasks'));
+        ok ($c->hasFilledParam('no-task'));
+        ok (! $c->hasFilledParam('no-category'));
+        ok (! $c->hasFilledParam('httpd-trust'));
+        ok ($c->hasFilledParam('tasks'));
     } elsif ($test eq 'sample2') {
-        ok (! $c->isParamArrayAndFilled('no-task'));
-        ok ($c->isParamArrayAndFilled('no-category'));
-        ok ($c->isParamArrayAndFilled('httpd-trust'));
-        ok (! $c->isParamArrayAndFilled('tasks'));
+        ok (! $c->hasFilledParam('no-task'));
+        ok ($c->hasFilledParam('no-category'));
+        ok ($c->hasFilledParam('httpd-trust'));
+        ok (! $c->hasFilledParam('tasks'));
     } elsif ($test eq 'sample3') {
-        ok (! $c->isParamArrayAndFilled('no-task'));
-        ok (! $c->isParamArrayAndFilled('no-category'));
-        ok (! $c->isParamArrayAndFilled('httpd-trust'));
-        ok (! $c->isParamArrayAndFilled('tasks'));
+        ok (! $c->hasFilledParam('no-task'));
+        ok (! $c->hasFilledParam('no-category'));
+        ok (! $c->hasFilledParam('httpd-trust'));
+        ok (! $c->hasFilledParam('tasks'));
     } elsif ($test eq 'sample4') {
-        ok ($c->isParamArrayAndFilled('no-task'));
-        ok (! $c->isParamArrayAndFilled('no-category'));
-        ok (! $c->isParamArrayAndFilled('httpd-trust'));
-        ok ($c->isParamArrayAndFilled('tasks'));
+        ok ($c->hasFilledParam('no-task'));
+        ok (! $c->hasFilledParam('no-category'));
+        ok (! $c->hasFilledParam('httpd-trust'));
+        ok ($c->hasFilledParam('tasks'));
     }
 }
 
