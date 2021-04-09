@@ -535,8 +535,8 @@ sub _printInventory {
         if ($params{format} eq 'json') {
             my $message = GLPI::Agent::Protocol::Inventory->new(
                 logger      => $self->{logger},
-                deviceid    => $inventory->getDeviceId(),
-                message     => $inventory->getContent(),
+                deviceid    => $self->{inventory}->getDeviceId(),
+                message     => $self->{inventory}->getContent(),
             );
             print {$params{handle}} $message->print;
 
