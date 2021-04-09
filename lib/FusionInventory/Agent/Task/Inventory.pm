@@ -533,17 +533,21 @@ sub _printInventory {
         }
 
         if ($params{format} eq 'json') {
-            my $message = GLPI::Agent::Protocol::Inventory->new(
+            die "Can't load GLPI Protocol Inventory library: $EVAL_ERROR\n"
+                unless GLPI::Agent::Protocol::Inventory->require();
+            my $inventory = GLPI::Agent::Protocol::Inventory->new(
                 logger      => $self->{logger},
                 deviceid    => $self->{inventory}->getDeviceId(),
-                message     => $self->{inventory}->getContent(),
+                message     => {
+                    content => $self->{inventory}->getContent(),
+                }
             );
-            print {$params{handle}} $message->print;
+            print {$params{handle}} $inventory->print;
 
             last SWITCH;
         }
 
-        die "unknown format $params{format}";
+        die "unknown format $params{format}\n";
     }
 }
 

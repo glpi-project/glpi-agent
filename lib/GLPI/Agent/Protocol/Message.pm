@@ -28,8 +28,22 @@ sub new {
         }
     }
 
-
     return $self;
+}
+
+sub _convert {
+    my ($hash) = @_;
+
+    return unless ref($hash) eq 'HASH';
+
+    foreach my $key (keys(%{$hash})) {
+        my $value = $hash->{$key};
+        map { _convert($_) } ref($value) eq 'ARRAY' ? @{$value} : $value;
+        next if lc($key) eq $key;
+        $hash->{lc($key)} = delete $hash->{$key};
+    }
+
+    return $hash;
 }
 
 sub getContent {
@@ -37,7 +51,7 @@ sub getContent {
 
     return $self->{_message} unless ref($self->{_message});
 
-    return encode_json($self->{_message});
+    return encode_json(_convert($self->{_message}));
 }
 
 sub print {
@@ -45,7 +59,7 @@ sub print {
 
     return $self->{_message} unless ref($self->{_message});
 
-    return JSON->new->utf8->pretty($self->{_message});
+    return JSON->new->utf8->pretty->encode(_convert($self->{_message}));
 }
 
 sub set {
