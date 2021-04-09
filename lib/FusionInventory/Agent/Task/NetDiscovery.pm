@@ -28,14 +28,18 @@ use FusionInventory::Agent::Task::NetDiscovery::Job;
 our $VERSION = FusionInventory::Agent::Task::NetDiscovery::Version::VERSION;
 
 sub isEnabled {
-    my ($self, $response) = @_;
+    my ($self, $contact) = @_;
 
-    if (!$self->{target}->isType('server')) {
+    if ($self->{target}->isGlpiServer()) {
+        # TODO Support NetDiscovery task via GLPI Agent Protocol
+        $self->{logger}->debug("NetDiscovery task not supported by GLPI server");
+        return;
+    } elsif (!$self->{target}->isType('server')) {
         $self->{logger}->debug("NetDiscovery task not compatible with local target");
         return;
     }
 
-    my @options = $response->getOptionsInfoByName('NETDISCOVERY');
+    my @options = $contact->getOptionsInfoByName('NETDISCOVERY');
     if (!@options) {
         $self->{logger}->debug("NetDiscovery task execution not requested");
         return;

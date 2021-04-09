@@ -36,6 +36,8 @@ requires 'YAML::Tiny'         => '0';
 requires 'Memoize'            => '0';
 requires 'Time::HiRes'        => '0';
 requires 'Digest::SHA'        => '0';
+requires 'JSON'               => '0';
+requires 'UUID::Tiny'         => '0';
 
 if ($OSNAME eq 'MSWin32') {
     requires 'Win32::OLE'         => '0';

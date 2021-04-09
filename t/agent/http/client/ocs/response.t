@@ -104,7 +104,7 @@ subtest "uncompressed content" => sub {
             url     => "http://127.0.0.1:$port/uncompressed",
         ),
         $logger,
-        "[http client] unexpected content, starting with $html_content",
+        "[http client] unexpected content, starting with: $html_content",
     );
 };
 
@@ -115,7 +115,7 @@ subtest "unexpected content" => sub {
             url     => "http://127.0.0.1:$port/unexpected",
         ),
         $logger,
-        "[http client] unexpected content, starting with $html_content",
+        "[http client] unexpected content, starting with: $html_content",
     );
 };
 

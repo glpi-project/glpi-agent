@@ -16,14 +16,17 @@ use FusionInventory::Agent::Task::WakeOnLan::Version;
 our $VERSION = FusionInventory::Agent::Task::WakeOnLan::Version::VERSION;
 
 sub isEnabled {
-    my ($self, $response) = @_;
+    my ($self, $contact) = @_;
 
     if (!$self->{target}->isType('server')) {
         $self->{logger}->debug("WakeOnLan task not compatible with local target");
         return;
     }
 
-    my @options = $response->getOptionsInfoByName('WAKEONLAN');
+    # TODO Support WakeOnLan task via GLPI Agent Protocol
+    return if ref($contact) eq "GLPI::Agent::Protocol::Contact";
+
+    my @options = $contact->getOptionsInfoByName('WAKEONLAN');
     if (!@options) {
         $self->{logger}->debug("WakeOnLan task execution not requested");
         return;

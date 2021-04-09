@@ -73,7 +73,21 @@ sub getName {
 sub getType {
     my ($self) = @_;
 
-    return 'server';
+    return $self->{_type} // 'server';
+}
+
+sub isGlpiServer {
+    my ($self, $bool) = @_;
+
+    if (defined($bool)) {
+        if ($bool =~ /^1|true|yes$/i) {
+            $self->{_type} = "glpi";
+        } else {
+            delete $self->{_type};
+        }
+    }
+
+    return defined($self->{_type}) && $self->{_type} =~ /^glpi/ ? 1 : 0;
 }
 
 sub plannedTasks {

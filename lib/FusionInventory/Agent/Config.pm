@@ -24,6 +24,7 @@ my $default = {
     'delaytime'               => 3600,
     'force'                   => undef,
     'html'                    => undef,
+    'json'                    => undef,
     'lazy'                    => undef,
     'local'                   => undef,
     'logger'                  => 'Stderr',
@@ -395,6 +396,7 @@ sub getTargets {
                     basevardir => $params{vardir},
                     path       => $path,
                     html       => $self->{html},
+                    json       => $self->{json},
                 );
         }
     }

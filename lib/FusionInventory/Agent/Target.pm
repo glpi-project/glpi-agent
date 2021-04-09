@@ -154,6 +154,10 @@ sub isType {
     return "$type" eq "$testtype";
 }
 
+sub isGlpiServer {
+    return 0;
+}
+
 # compute a run date, as current date and a random delay
 # between maxDelay / 2 and maxDelay
 sub _computeNextRunDate {
@@ -186,17 +190,22 @@ sub _loadState {
 
     $self->{maxDelay}    = $data->{maxDelay}    if $data->{maxDelay};
     $self->{nextRunDate} = $data->{nextRunDate} if $data->{nextRunDate};
+    $self->{_type}       = $data->{_type}       if $data->{_type};
 }
 
 sub _saveState {
     my ($self) = @_;
 
+    my $data ={
+        maxDelay    => $self->{maxDelay},
+        nextRunDate => $self->{nextRunDate},
+    };
+
+    $data->{_type} = $self->{_type} if defined($self->{_type});
+
     $self->{storage}->save(
         name => 'target',
-        data => {
-            maxDelay    => $self->{maxDelay},
-            nextRunDate => $self->{nextRunDate},
-        }
+        data => $data,
     );
 }
 

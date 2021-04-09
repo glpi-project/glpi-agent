@@ -20,22 +20,27 @@ use FusionInventory::Agent::Task::Inventory::Module;
 our $VERSION = FusionInventory::Agent::Task::Inventory::Version::VERSION;
 
 sub isEnabled {
-    my ($self, $response) = @_;
+    my ($self, $contact) = @_;
 
     # always enabled for local target
     return 1 if $self->{target}->isType('local');
 
-    my $content = $response->getContent();
-    if (!$content || !$content->{RESPONSE} || $content->{RESPONSE} ne 'SEND') {
-        if ($self->{config}->{force}) {
-            $self->{logger}->debug("Inventory task execution not requested, but execution forced");
-        } else {
-            $self->{logger}->debug("Inventory task execution not requested");
-            return;
+    if ($self->{target}->isGlpiServer()) {
+        # If we are here, this still means the task has not been disabled in GLPI server
+        return 1;
+    } else {
+        my $content = $contact->getContent();
+        if (!$content || !$content->{RESPONSE} || $content->{RESPONSE} ne 'SEND') {
+            if ($self->{config}->{force}) {
+                $self->{logger}->debug("Inventory task execution not requested, but execution forced");
+            } else {
+                $self->{logger}->debug("Inventory task execution not requested");
+                return;
+            }
         }
-    }
 
-    $self->{registry} = [ $response->getOptionsInfoByName('REGISTRY') ];
+        $self->{registry} = [ $contact->getOptionsInfoByName('REGISTRY') ];
+    }
     return 1;
 }
 
@@ -74,26 +79,26 @@ sub run {
         );
     }
 
-    my %disabled = map { $_ => 1 } @{$self->{config}->{'no-category'}};
+    $self->{inventory} = $inventory;
+    $self->{disabled}  = {
+        map { $_ => 1 } @{$self->{config}->{'no-category'}}
+    };
 
-    $self->_initModulesList(\%disabled);
-    $self->_feedInventory($inventory, \%disabled);
+    $self->_initModulesList();
+    $self->_feedInventory();
 
     # Tell perl modules hash can now be cleaned from memory
     delete $self->{modules};
 
-    return unless $self->_validateInventory($inventory);
-    $self->_submitInventory( %params, inventory => $inventory );
-    return 1;
+    return $self->submit();
 }
 
-# Method to override if inventory needs to be validate
-sub _validateInventory { 1 }
+sub submit {
+    my ($self) = @_;
 
-sub _submitInventory {
-    my ($self, %params) = @_;
-
-    my $inventory = $params{inventory};
+    my $logger    = $self->{logger};
+    my $config    = $self->{config};
+    my $inventory = $self->{inventory};
 
     if ($self->{target}->isType('local')) {
         my $path   = $self->{target}->getPath();
@@ -110,6 +115,8 @@ sub _submitInventory {
                 $file =
                     $path . "/" . $inventory->getDeviceId() .
                     ($format eq 'xml' ? '.xml' : '.html');
+                $file = $path . "/" . $self->{agentid} . ".json"
+                    if $format eq 'json';
                 last SWITCH;
             }
 
@@ -120,7 +127,8 @@ sub _submitInventory {
             if (Win32::Unicode::File->require()) {
                 $handle = Win32::Unicode::File->new('w', $file);
             } else {
-                open($handle, '>', $file);
+                open($handle, '>', $file)
+                    or die "Can't write to $file: $ERRNO\n";
             }
             $self->{logger}->error("Can't write to $file: $ERRNO")
                 unless $handle;
@@ -129,7 +137,6 @@ sub _submitInventory {
         binmode $handle, ':encoding(UTF-8)';
 
         $self->_printInventory(
-            inventory => $inventory,
             handle    => $handle,
             format    => $format
         );
@@ -139,6 +146,44 @@ sub _submitInventory {
             close $handle;
         }
 
+    } elsif ($self->{target}->isGlpiServer()) {
+
+        return $self->{logger}->error("Can't load GLPI client API")
+            unless FusionInventory::Agent::HTTP::Client::GLPI->require();
+
+        my $client = FusionInventory::Agent::HTTP::Client::GLPI->new(
+            logger       => $self->{logger},
+            user         => $config->{user},
+            password     => $config->{password},
+            proxy        => $config->{proxy},
+            ca_cert_file => $config->{'ca-cert-file'},
+            ca_cert_dir  => $config->{'ca-cert-dir'},
+            no_ssl_check => $config->{'no-ssl-check'},
+            no_compress  => $config->{'no-compression'},
+            agentid      => $self->{agentid},
+        );
+
+        return $self->{logger}->error("Can't load GLPI Protocol Inventory library")
+            unless GLPI::Agent::Protocol::Inventory->require();
+
+        my $message = GLPI::Agent::Protocol::Inventory->new(
+            logger      => $self->{logger},
+            deviceid    => $inventory->getDeviceId(),
+            message     => $inventory->getContent(),
+        );
+
+        my $response = $client->send(
+            url     => $self->{target}->getUrl(),
+            message => $message
+        );
+
+        # TODO Support proxy answer telling to retrieve status later
+
+        return unless $response;
+        $inventory->saveLastState();
+
+        return $response;
+
     } elsif ($self->{target}->isType('server')) {
 
         return $self->{logger}->error("Can't load OCS client API")
@@ -146,13 +191,14 @@ sub _submitInventory {
 
         my $client = FusionInventory::Agent::HTTP::Client::OCS->new(
             logger       => $self->{logger},
-            user         => $params{user},
-            password     => $params{password},
-            proxy        => $params{proxy},
-            ca_cert_file => $params{ca_cert_file},
-            ca_cert_dir  => $params{ca_cert_dir},
-            no_ssl_check => $params{no_ssl_check},
-            no_compress  => $params{no_compress},
+            user         => $config->{user},
+            password     => $config->{password},
+            proxy        => $config->{proxy},
+            ca_cert_file => $config->{'ca-cert-file'},
+            ca_cert_dir  => $config->{'ca-cert-dir'},
+            no_ssl_check => $config->{'no-ssl-check'},
+            no_compress  => $config->{'no-compression'},
+            agentid      => $self->{agentid},
         );
 
         return $self->{logger}->error("Can't load Inventory XML Query API")
@@ -221,7 +267,7 @@ sub getCategories {
 }
 
 sub _initModulesList {
-    my ($self, $disabled) = @_;
+    my ($self) = @_;
 
     my $logger = $self->{logger};
     my $config = $self->{config};
@@ -288,8 +334,8 @@ sub _initModulesList {
                 datadir       => $self->{datadir},
                 logger        => $self->{logger},
                 registry      => $self->{registry},
-                scan_homedirs => $self->{config}->{'scan-homedirs'},
-                scan_profiles => $self->{config}->{'scan-profiles'},
+                scan_homedirs => $config->{'scan-homedirs'},
+                scan_profiles => $config->{'scan-profiles'},
             }
         );
         if (!$enabled) {
@@ -341,7 +387,7 @@ sub _initModulesList {
 }
 
 sub _runModule {
-    my ($self, $module, $inventory, $disabled) = @_;
+    my ($self, $module) = @_;
 
     my $logger = $self->{logger};
 
@@ -367,7 +413,7 @@ sub _runModule {
         die "circular dependency between $module and $other_module"
             if $self->{modules}->{$other_module}->{used};
 
-        $self->_runModule($other_module, $inventory, $disabled);
+        $self->_runModule($other_module);
     }
 
     $logger->debug("Running $module");
@@ -379,8 +425,8 @@ sub _runModule {
         timeout  => $self->{config}->{'backend-collect-timeout'},
         params => {
             datadir       => $self->{datadir},
-            inventory     => $inventory,
-            no_category   => $disabled,
+            inventory     => $self->{inventory},
+            no_category   => $self->{disabled},
             logger        => $self->{logger},
             registry      => $self->{registry},
             scan_homedirs => $self->{config}->{'scan-homedirs'},
@@ -392,7 +438,7 @@ sub _runModule {
 }
 
 sub _feedInventory {
-    my ($self, $inventory, $disabled) = @_;
+    my ($self) = @_;
 
     my $begin = time();
     my @modules =
@@ -400,12 +446,11 @@ sub _feedInventory {
         keys %{$self->{modules}};
 
     foreach my $module (sort @modules) {
-        $self->_runModule($module, $inventory, $disabled);
+        $self->_runModule($module);
     }
 
-    if ($self->{config}->{'additional-content'} && -f $self->{config}->{'additional-content'}) {
-        $self->_injectContent($self->{config}->{'additional-content'}, $inventory)
-    }
+    # Inject additional content if required
+    $self->_injectContent();
 
     # Execution time
     my $versionprovider = $inventory->getSection("VERSIONPROVIDER");
@@ -416,7 +461,10 @@ sub _feedInventory {
 }
 
 sub _injectContent {
-    my ($self, $file, $inventory) = @_;
+    my ($self) = @_;
+
+    my $file = $self->{config}->{'additional-content'}
+        or return;
 
     return unless -f $file;
 
@@ -441,7 +489,7 @@ sub _injectContent {
         return;
     }
 
-    $inventory->mergeContent($content);
+    $self->{inventory}->mergeContent($content);
 }
 
 sub _printInventory {
@@ -457,8 +505,8 @@ sub _printInventory {
             );
             print {$params{handle}} $tpp->write({
                 REQUEST => {
-                    CONTENT  => $params{inventory}->getContent(),
-                    DEVICEID => $params{inventory}->getDeviceId(),
+                    CONTENT  => $self->{inventory}->getContent(),
+                    DEVICEID => $self->{inventory}->getDeviceId(),
                     QUERY    => "INVENTORY",
                 }
             });
@@ -474,12 +522,23 @@ sub _printInventory {
 
              my $hash = {
                 version  => $FusionInventory::Agent::Version::VERSION,
-                deviceid => $params{inventory}->getDeviceId(),
-                data     => $params{inventory}->getContent(),
-                fields   => $params{inventory}->getFields()
+                deviceid => $self->{inventory}->getDeviceId(),
+                data     => $self->{inventory}->getContent(),
+                fields   => $self->{inventory}->getFields()
             };
 
             print {$params{handle}} $template->fill_in(HASH => $hash);
+
+            last SWITCH;
+        }
+
+        if ($params{format} eq 'json') {
+            my $message = GLPI::Agent::Protocol::Inventory->new(
+                logger      => $self->{logger},
+                deviceid    => $inventory->getDeviceId(),
+                message     => $inventory->getContent(),
+            );
+            print {$params{handle}} $message->print;
 
             last SWITCH;
         }

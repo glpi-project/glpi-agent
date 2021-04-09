@@ -33,6 +33,7 @@ GetOptions(
     'force|f',
     'help|h',
     'html',
+    'json',
     'lazy',
     'list-tasks',
     'setup',
@@ -220,6 +221,7 @@ glpi-agent [options] [--server server|--local path]
     --scan-homedirs                scan user home directories (false)
     --scan-profiles                scan user profiles (false)
     --html                         save the inventory as HTML (false)
+    --json                         save the inventory as JSON (false)
     -f --force                     always send data to server (false)
     --backend-collect-timeout=TIME timeout for inventory modules
                                      execution (30)
@@ -480,9 +482,9 @@ Allow the agent to scan home directories for virtual machines.
 
 Allow the agent to scan user profiles for software.
 
-=item B<--html>
+=item B<--html|--json>
 
-Save the inventory as HTML.
+Save the inventory as HTML or JSON.
 
 This is only used for local inventories.
 
