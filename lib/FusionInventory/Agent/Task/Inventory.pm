@@ -96,7 +96,6 @@ sub run {
 sub submit {
     my ($self) = @_;
 
-    my $logger    = $self->{logger};
     my $config    = $self->{config};
     my $inventory = $self->{inventory};
 

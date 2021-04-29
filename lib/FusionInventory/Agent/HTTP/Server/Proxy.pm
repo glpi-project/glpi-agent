@@ -554,7 +554,6 @@ sub _handle_proxy_request {
         }
 
         # Only report timing on good requests
-        my $status = $answer->get("status") // "";
         if ($answer->status ne "error") {
             if ($answer->status eq "ok") {
                 $answer->success;
