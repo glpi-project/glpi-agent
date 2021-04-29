@@ -8,6 +8,7 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 use UNIVERSAL::require;
 
 use FusionInventory::Agent::Tools;
+use FusionInventory::Agent::Tools::UUID;
 use FusionInventory::Agent::Tools::Virtualization;
 
 my @vmware_patterns = (
@@ -108,14 +109,9 @@ sub doInventory {
         if (defined($user) && defined($sid)) {
             $user =~ s/^.*\\//;
             my $distro = $ENV{"WSL_DISTRO_NAME"} // '';
-            if (UUID::Tiny->require()) {
-                # Same UUID computing than in WSL.pm
-                my $uuid = uc(UUID::Tiny::create_uuid_as_string(
-                    UUID::Tiny::UUID_V5(),
-                    $sid."/".$distro
-                ));
-                $inventory->setHardware({ UUID => $uuid }) if $uuid;
-            }
+            # Same UUID computing than in WSL.pm
+            my $uuid = uc(create_uuid_from_name($sid."/".$distro));
+            $inventory->setHardware({ UUID => $uuid }) if $uuid;
             my $hostname = "$distro on $user account";
             $inventory->setHardware({ NAME => $hostname });
         }

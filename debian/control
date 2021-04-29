@@ -70,7 +70,7 @@ Depends:
  usbutils,
  libhttp-daemon-perl,
  libyaml-tiny-perl,
- libuuid-tiny-perl,
+ libossp-uuid-perl,
  libsocket-getaddrinfo-perl
 Suggests: smartmontools, read-edid
 Recommends: libio-socket-ssl-perl, dmidecode, hdparm, fdisk | util-linux (<< 2.29.2-3~), net-tools

@@ -109,7 +109,7 @@ parts:
       Net::IP Net::Ping Net::SNMP Net::NBName Net::CUPS
       Thread::Queue Parse::EDID JSON::PP
       Text::Template XML::TreePP XML::XPath Memoize
-      YAML::Tiny UUID::Tiny Data::UUID Digest::SHA
+      YAML::Tiny Data::UUID Digest::SHA
       #Net::PCAP Net::Write::Layer2
       MODULES
     build-packages:
