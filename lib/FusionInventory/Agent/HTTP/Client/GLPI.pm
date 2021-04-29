@@ -9,10 +9,10 @@ use HTTP::Request;
 use UNIVERSAL::require;
 use URI;
 use Encode;
-use UUID::Tiny qw(:std);
 
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Logger;
+use FusionInventory::Agent::Tools::UUID;
 
 use GLPI::Agent::Protocol::Message;
 
@@ -90,23 +90,31 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
         )
         : $params{message};
 
-    my $request_content = $message->getContent();
-    $logger->debug2(_log_prefix . "sending message:\n $request_content");
+    my $request;
+    if ($message) {
+        my $request_content = $message->getContent();
+        $logger->debug2(_log_prefix . "sending message:\n$request_content");
 
-    $request_content = $self->_compress(encode('UTF-8', $request_content));
-    unless ($request_content) {
-        $logger->error(_log_prefix . 'inflating problem');
-        return;
+        $request_content = $self->_compress(encode('UTF-8', $request_content));
+        unless ($request_content) {
+            $logger->error(_log_prefix . 'inflating problem');
+            return;
+        }
+        $request = HTTP::Request->new(POST => $url);
+        $request->content($request_content);
+    } else {
+        $request = HTTP::Request->new(GET => $url);
+        $request->header( "GLPI-Request-ID" => $params{requestid} ) if $params{requestid};
+        # Initialze a new message to be updated by the answer
+        $message = GLPI::Agent::Protocol::Message->new(
+            logger  => $logger,
+        );
     }
-
-    # TODO Support GET request for proxy status updates
-
-    my $request = HTTP::Request->new(POST => $url);
-    $request->content($request_content);
 
     my $response = $self->request($request);
 
     $requestid = $response->header("GLPI-Request-ID");
+    undef $requestid unless defined($requestid) && $requestid =~ /^[0-9A-F]{8}$/;
 
     # no need to log anything specific here, it has already been done
     # in parent class
@@ -141,6 +149,9 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
         $logger->error(_log_prefix . "not a valid answer");
         return;
     }
+
+    # Set requestid message to be re-use on update request when proxy answer request is pending
+    $message->id($requestid) if $requestid;
 
     return $message;
 }

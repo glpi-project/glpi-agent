@@ -9,9 +9,9 @@ use HTTP::Request;
 use UNIVERSAL::require;
 use URI;
 use Encode;
-use UUID::Tiny qw(:std);
 
 use FusionInventory::Agent::Tools;
+use FusionInventory::Agent::Tools::UUID;
 use FusionInventory::Agent::XML::Response;
 
 my $log_prefix = "[http client] ";
@@ -69,7 +69,7 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
     my $logger  = $self->{logger};
 
     my $request_content = $message->getContent();
-    $logger->debug2($log_prefix . "sending message:\n $request_content");
+    $logger->debug2($log_prefix . "sending message:\n$request_content");
 
     $request_content = $self->_compress(encode('UTF-8', $request_content));
     if (!$request_content) {
@@ -108,7 +108,7 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
             content => $uncompressed_response_content
         );
     };
-    if ($EVAL_ERROR) {
+    if ($EVAL_ERROR && $uncompressed_response_content =~ /^\{.*\}$/s) {
         # When the GLPI Agent first contact a GLPI server with the legacy OCS protocol
         # it can receive directly a CONTACT JSON answer
         GLPI::Agent::Protocol::Contact->require();
@@ -158,6 +158,9 @@ sub _uncompress {
     } elsif ($data =~ /(<html><\/html>|)[^<]*(<.*>)\s*$/s) {
         $self->{logger}->debug2("format: Plaintext");
         return $2;
+    } elsif ($data =~ /^\s*(\{.*\})\s*$/s) {
+        $self->{logger}->debug2("format: JSON");
+        return $1;
     } else {
         $self->{logger}->debug2("format: Unknown");
         return;

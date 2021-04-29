@@ -12,20 +12,27 @@ use File::Temp;
 use base "FusionInventory::Agent::HTTP::Server::Plugin";
 
 use FusionInventory::Agent::Tools;
+use FusionInventory::Agent::Tools::UUID;
 use FusionInventory::Agent::HTTP::Client::OCS;
+use FusionInventory::Agent::HTTP::Client::GLPI;
 
-our $VERSION = "1.1";
+use GLPI::Agent::Protocol::Message;
+use GLPI::Agent::Protocol::Answer;
+
+our $VERSION = "2.0";
 
 sub urlMatch {
     my ($self, $path) = @_;
-    # By default, re_path_match => qr{^/proxy/(version|fusioninventory)/?$}
+    # By default, re_path_match => qr{^/proxy/(version|glpi)/?$}
     return 0 unless $path =~ $self->{re_path_match};
     $self->{request} = $1;
     return 1;
 }
 
+my $requestid;
 sub log_prefix {
-    return "[proxy server plugin] ";
+    return defined($requestid) && length($requestid) ?
+        "[proxy server plugin] $requestid: " : "[proxy server plugin] " ;
 }
 
 sub config_file {
@@ -41,6 +48,9 @@ sub defaults {
         local_store         => '',
         prolog_freq         => 24,
         max_proxy_threads   => 10,
+        max_pass_through    => 5,
+        glpi_protocol       => "yes",
+        no_category         => "",
         # Supported by class FusionInventory::Agent::HTTP::Server::Plugin
         maxrate             => 30,
         maxrate_period      => 3600,
@@ -71,16 +81,92 @@ sub init {
     my $url_path = $self->config('url_path');
     $self->debug("Using $url_path as base url matching")
         if ($url_path ne $defaults->{url_path});
-    $self->{re_path_match} = qr{^$url_path/(apiversion|fusioninventory)/?$};
+    $self->{re_path_match} = qr{^$url_path/(apiversion|glpi)/?$};
 
     # Normalize only_local_store
     $self->{only_local_store} = $self->config('only_local_store') !~ /^0|no$/i ? 1 : 0;
+
+    # Handles request status
+    $self->{status} = {};
+
+    # Register events callback to support communication with our forked processes
+    if (ref($self->{server}->{agent}) =~ /Daemon/) {
+        $self->{server}->{agent}->register_events_cb($self);
+    }
+}
+
+sub events_cb {
+    my ($self, $event) = @_;
+
+    unless (defined($event)) {
+        # On no event, just check reqid timeouts
+        return unless defined($self->{reqtimeout});
+        my $count = scalar(@{$self->{reqtimeout}});
+        while ($count--) {
+            my $answer = $self->{reqtimeout}->[0];
+            last unless time > $answer->{timeout};
+            delete $self->{answer}->{$answer->{id}};
+            if ($count) {
+                shift @{$self->{reqtimeout}};
+            } else {
+                delete $self->{reqtimeout};
+            }
+        }
+        return;
+    }
+
+    my ($reqid, $dump) = $event =~ /^PROXYREQ,([^,]*),(.*)$/ms
+        or return 0;
+
+    if ($dump =~ /^\{/) {
+        my $answer = GLPI::Agent::Protocol::Answer->new(
+            message => $dump,
+        );
+        $self->{answer}->{$reqid} = $answer;
+        # Add a timeout so the request memory could be freed even if the client won't ask for
+        push @{$self->{reqtimeout}}, {
+            timeout => time + 3600,
+            id      => $reqid,
+        };
+    } elsif ($dump =~ /^\d+$/) {
+        # Handle last 30 proxyreq timing to optimize expiration returned to proxy clients
+        my $timing = int($dump);
+        if ($self->{_proxyreq_expiration} && $self->{_proxyreq_expiration} < $timing) {
+            $self->{_proxyreq_expiration} = $timing;
+        }
+        push @{$self->{_proxyreq_timing}}, $timing;
+        if (@{$self->{_proxyreq_timing}} > 30) {
+            my $oldtiming = shift @{$self->{_proxyreq_timing}};
+            # Found the higher timing
+            if ($oldtiming == $self->{_proxyreq_expiration} && $oldtiming != $timing) {
+                my $max = 0;
+                map { $max = $_ if $_ > $max } @{$self->{_proxyreq_timing}};
+                $self->{_proxyreq_expiration} = $max;
+            }
+        }
+    } elsif ($dump eq "DELETE") {
+        delete $self->{answer}->{$reqid};
+        my @reqtimeouts = grep { $_->{id} ne $reqid } @{$self->{reqtimeout}};
+        if (@reqtimeouts) {
+            $self->{reqtimeout} = \@reqtimeouts;
+        } else {
+            delete $self->{reqtimeout};
+        }
+    }
+
+    # Return true as we handled the event
+    return 1;
 }
 
 sub handle {
     my ($self, $client, $request, $clientIp) = @_;
 
-    my $agent  = $self->{server}->{agent};
+    my $agent = $self->{server}->{agent};
+
+    # Set requestid from header if it matches the spec
+    $requestid = $request->header('GLPI-Request-ID');
+    undef $requestid unless defined($requestid) && $requestid =~ /^[0-9A-F]{8}$/;
+    $self->{requestid} = $requestid;
 
     # rate limit by ip to avoid abuse
     if ($self->rate_limited($clientIp)) {
@@ -101,7 +187,9 @@ sub handle {
         return 200;
     }
 
-    my $retcode = $self->_handle_proxy_request($client, $request, $clientIp);
+    $self->{client} = $client;
+
+    my $retcode = $self->_handle_proxy_request($request, $clientIp);
 
     # In the case we run in a fork, just close the socket and quit
     if ($agent->forked()) {
@@ -110,13 +198,39 @@ sub handle {
         $agent->fork_exit(logger => $self, name => $self->name());
     }
 
+    delete $self->{client};
+
+    return $retcode;
+}
+
+sub _send {
+    my ($self, $answer) = @_;
+
+    return unless $self->{client} && defined($answer);
+
+    my $retcode = $answer->http_code;
+
+    my $response = HTTP::Response->new(
+        $retcode,
+        $answer->http_status,
+        HTTP::Headers->new( 'Content-Type' => $answer->contentType ),
+        $answer->getContent(),
+    );
+
+    $response->header( 'GLPI-Request-ID' => $self->{requestid} ) if $self->{requestid};
+
+    $self->{client}->send_response($response);
+
     return $retcode;
 }
 
 sub _handle_proxy_request {
-    my ($self, $client, $request, $clientIp) = @_;
+    my ($self, $request, $clientIp) = @_;
 
-    return unless $client && $request && $clientIp;
+    my $client = $self->{client}
+        or return;
+
+    return unless $request && $clientIp;
 
     my $remoteid = $clientIp;
 
@@ -137,25 +251,78 @@ sub _handle_proxy_request {
     }
 
     my $content_type = $request->header('Content-type');
+    $self->debug2("$content_type type request from $remoteid") if $content_type;
+
+    my $proxyid = $request->header('GLPI-Proxy-ID') // "";
+    if ($proxyid) {
+        # Check pass-through limit
+        my @proxies= split(/,/, $proxyid);
+        if (@proxies >= $self->config('max_pass_through')) {
+            $self->info("Max pass-through reached for request from $clientIp");
+            return $self->_send(
+                GLPI::Agent::Protocol::Answer->new(
+                    httpcode    => 403,
+                    httpstatus  => "LIMITED-PROXY",
+                    status      => "error",
+                    info        => "max-proxy-pass-through-reached",
+                )
+            );
+        } elsif (grep { $agent->{agentid} eq $_ } @proxies) {
+            $self->error("Proxy loop detected for request from $clientIp");
+            return $self->_send(
+                GLPI::Agent::Protocol::Answer->new(
+                    httpcode    => 404,
+                    httpstatus  => "PROXY-LOOP-DETECTED",
+                    status      => "error",
+                    info        => "proxy-loop-detected",
+                )
+            );
+        }
+    }
 
     my ($url, $params) = split(/[?]/, $request->uri());
 
-    if ($params && $params =~ /action=getConfig/) {
-        $self->debug("$params request from $clientIp, sending nothing to do");
-        my $response = HTTP::Response->new(
-            200,
-            'OK',
-            HTTP::Headers->new( 'Content-Type' => 'application/json' ),
-            '{}'
-        );
+    my $agentid = $request->header('GLPI-Agent-ID') // "";
+    $remoteid = "$agentid\@$clientIp" if $agentid;
 
-        $client->send_response($response);
+    # Handle GET requests with parameters in URL or GLPI-Request-ID as header
 
-        return 200;
+    if ($self->{requestid} && $self->{answer}->{$self->{requestid}} && $request->method() eq "GET") {
+        $self->debug("Asked for $self->{requestid} request status from $remoteid");
+        my $answer = $self->{answer}->{$self->{requestid}};
+        if ($answer && $answer->agentid eq $agentid) {
+
+            # Remove answer when it is the finally expected one
+            unless ($answer->http_code() == 202) {
+                delete $self->{answer}->{$self->{requestid}};
+                $agent->forked_process_event("PROXYREQ,$self->{requestid},DELETE");
+                $self->debug("Forgetting $self->{requestid} request status as last one expected from $remoteid");
+            }
+
+            return $self->_send($answer);
+        } else {
+            $self->info("Unknown $self->{requestid} request status for $remoteid");
+            $client->send_error(404, 'Unknown status');
+            return 404;
+        }
     } elsif ($params) {
-        $self->info("Unsupported $params request from $clientIp");
-        $client->send_error(403, 'Unsupported request');
-        return 403;
+        if ($params =~ /action=getConfig/) {
+            $self->debug("$params request from $clientIp, sending nothing to do");
+            my $response = HTTP::Response->new(
+                200,
+                'OK',
+                HTTP::Headers->new( 'Content-Type' => 'application/json' ),
+                '{}'
+            );
+
+            $client->send_response($response);
+
+            return 200;
+        } else {
+            $self->info("Unsupported $params request from $clientIp");
+            $client->send_error(403, 'Unsupported request');
+            return 403;
+        }
     }
 
     unless ($content_type) {
@@ -165,6 +332,19 @@ sub _handle_proxy_request {
     }
 
     my $content = $request->content();
+    unless (defined($content)) {
+        $self->info("No Content found in $self->{request} request from $clientIp");
+        $client->send_error(403, 'No content');
+        return 403;
+    }
+
+    my @servers = ();
+    my $serverconfig = $agent->{config};
+    unless ($serverconfig) {
+        $client->send_error(500, 'Server configuration missing');
+        $self->info("Server configuration is missing");
+        return 500;
+    }
 
     # Uncompress if needed
     if ($content_type =~ m|^application/x-compress(-zlib)?$|i && $content =~ /(\x78\x9C.*)/s) {
@@ -191,13 +371,213 @@ sub _handle_proxy_request {
         local $INPUT_RECORD_SEPARATOR; # Set input to "slurp" mode.
         $content = <$out>;
         close($out);
-    } elsif ($content_type !~ m|^application/xml$|i) {
+    }
+
+    # Fix content-type if it has been uncompressed
+    if ($content_type =~ m|^application/x-compress|) {
+        $content_type = "application/json" if $content =~ /^{/;
+        $content_type = "application/xml" if $content =~ /^<\?xml/;
+    }
+
+    # GLPI protocol based on JSON involves the usage of dedicated HTTP headers
+    # GLPI-Agent-ID is mandatory in that case
+    if ($self->config('glpi_protocol') && $agentid && is_uuid_string($agentid)) {
+
+        @servers = grep { $_->isGlpiServer() } $agent->getTargets()
+            unless $self->config('only_local_store');
+
+        my $message;
+        if ($content_type !~ m|^application/json$|i) {
+            # Only not json request expected here is a contact request
+            my $xml;
+            eval {
+                my $tpp = XML::TreePP->new();
+                $xml = $tpp->parse($content);
+                die "Not a legacy CONTACT request\n"
+                    unless $xml->{REQUEST}->{QUERY} eq "CONTACT";
+                die "No deviceid in CONTACT request\n"
+                    unless $xml->{REQUEST}->{DEVICEID};
+            };
+            if ($xml) {
+                $self->debug("Got legacy PROLOG request from $remoteid");
+                # By default, tell agent to request contact asap with new protocol
+                my $answer = GLPI::Agent::Protocol::Answer->new(
+                    httpcode    => 202,
+                    httpstatus  => "ACCEPTED",
+                    status      => "pending",
+                    agentid     => $agentid,
+                    proxyids    => $proxyid,
+                    expiration  => 0,
+                );
+                # But emulate a server answer when needed
+                if ($self->config('only_local_store') || !@servers) {
+                    $self->debug("Answering as a GLPI server would do to $remoteid");
+                    $answer->success();
+                    my $inventory = {};
+                    $inventory->{"no-category"} = $self->config("no_category") if $self->config("no_category");
+                    $answer->merge(
+                        message => "contact on only storing proxy agent",
+                        tasks   => {
+                            inventory   => $inventory
+                        },
+                        disabled    => [
+                            qw( netdiscovery netinventory esx collect deploy wakeonlan )
+                        ],
+                        expiration  => $self->config("prolog_freq"),
+                    );
+                } else {
+                    $self->debug("Answering to tell client to immediatly use GLPI protocol");
+                }
+                return $self->_send($answer);
+            }
+        } else {
+            eval {
+                $message = GLPI::Agent::Protocol::Message->new(
+                    logger  => $self->{logger},
+                    message => $content,
+                );
+            };
+        }
+        if ($EVAL_ERROR) {
+            $self->debug("Not supported message: $EVAL_ERROR");
+            $client->send_error(403, "Unsupported Content");
+            return 403;
+        }
+
+        my $action = $message->action;
+        $self->debug("$action proxy request from $clientIp, agentid is $agentid");
+
+        my $local_store = $self->config('local_store');
+        if ($local_store && ! -d $local_store) {
+            $client->send_error(500, 'Local store missing');
+            $self->error("No local store to store $remoteid inventory");
+            return 500;
+        }
+
+        if ($local_store && $action ne "contact") {
+            my $file = $local_store;
+            $file =~ s|/*$||;
+            $file .= "/$agentid.data";
+            $self->debug("Saving datas from $remoteid in $file");
+            my $DATA;
+            unless (open($DATA, '>', $file)) {
+                $client->send_error(500, "Failed to store datas");
+                $self->error("Can't store datas from $remoteid");
+                return 500;
+            }
+            print $DATA $content;
+            close($DATA);
+            unless (-s $file == length($content)) {
+                $client->send_error(500, "Storing failure");
+                $self->error("Failed to store datas from $remoteid");
+                return 500;
+            }
+        }
+
+        if ($self->config('only_local_store') || !@servers) {
+            my $answer = GLPI::Agent::Protocol::Answer->new(
+                status      => "ok",
+            );
+            if ($action eq "contact") {
+                my $inventory = {};
+                $inventory->{"no-category"} = $self->config("no_category") if $self->config("no_category");
+                $answer->merge(
+                    message => "contact on only storing proxy agent",
+                    tasks   => {
+                        inventory   => $inventory
+                    },
+                    disabled    => [
+                        qw( netdiscovery netinventory esx collect deploy wakeonlan )
+                    ],
+                    expiration  => $self->config("prolog_freq"),
+                );
+            }
+            return $self->_send($answer);
+        }
+
+        my $timer = time;
+
+        # Find a free requestid
+        while (!defined($self->{requestid}) || $self->{request}->{$self->{requestid}}) {
+            $self->{requestid} = join('', map { sprintf("%02X", int(rand(256))) } 1..4);
+        }
+        $requestid = $self->{requestid};
+
+        # From here we must tell client the request has been accepted and then
+        # try to send inventory to servers
+        my $expiration = $self->{_proxyreq_expiration} // 10;
+        my $answer = GLPI::Agent::Protocol::Answer->new(
+            httpcode    => 202,
+            httpstatus  => "ACCEPTED",
+            status      => "pending",
+            agentid     => $agentid,
+            proxyids    => $proxyid,
+            expiration  => $expiration."s",
+        );
+        $agent->forked_process_event("PROXYREQ,$requestid,".$answer->dump());
+
+        # Notify client with pending status
+        $self->_send($answer);
+
+        # Update proxyid with our agentid to permit proxy loop detection
+        $proxyid .= "," if $proxyid;
+        $proxyid .= $agent->{agentid};
+
+        # Prepare a client to foward request
+        my $proxyclient = FusionInventory::Agent::HTTP::Client::GLPI->new(
+            logger       => $self->{logger},
+            timeout      => $serverconfig->{timeout},
+            user         => $serverconfig->{user},
+            password     => $serverconfig->{password},
+            proxy        => $serverconfig->{proxy},
+            ca_cert_file => $serverconfig->{'ca-cert-file'},
+            ca_cert_dir  => $serverconfig->{'ca-cert-dir'},
+            no_ssl_check => $serverconfig->{'no-ssl-check'},
+            no_compress  => $serverconfig->{'no-compression'},
+            agentid      => $agentid,
+            proxyid      => $proxyid,
+        );
+
+        foreach my $target (@servers) {
+            $self->debug("Submitting inventory from $remoteid to ".$target->getName());
+            my $sent = $proxyclient->send(
+                url     => $target->getUrl(),
+                message => $message
+            );
+            unless ($sent) {
+                $answer->error("Not sent to ".$target->getName());
+                $self->error("Can't submit $remoteid inventory to ".$target->getName()." server");
+                last;
+            }
+            $answer->set($sent->get);
+            $self->info("$remoteid inventory submitted to ".$target->getName());
+        }
+
+        # Only report timing on good requests
+        my $status = $answer->get("status") // "";
+        if ($answer->status ne "error") {
+            if ($answer->status eq "ok") {
+                $answer->success;
+                $agent->forked_process_event("PROXYREQ,$requestid,".(int(time-$timer)+1));
+            } elsif ($answer->status eq "pending") {
+                # Case server is another proxy returning a pending status
+                $agent->forked_process_event("PROXYREQ,$requestid,".(int(time-$timer)+$answer->expiration));
+            }
+        }
+        $agent->forked_process_event("PROXYREQ,$requestid,".$answer->dump());
+
+        return $answer->http_code;
+    }
+
+    # Fallback here to legacy passive proxy mode, only for XML inventory submission
+
+    if ($content_type !~ m|^application/xml$|i) {
         $client->send_error(403, 'Unsupported Content-type');
         $self->info("Unsupported '$content_type' Content-type header provided in $self->{request} request from $clientIp");
         return 403;
     }
 
-    unless ($content) {
+    unless (defined($content) && length($content)) {
         $self->info("No Content found in $self->{request} request from $clientIp");
         $client->send_error(403, 'No content');
         return 403;
@@ -268,15 +648,6 @@ sub _handle_proxy_request {
     }
 
     $self->debug("proxy request for $remoteid");
-
-    my @servers = ();
-    my $serverconfig = $agent->{config};
-
-    unless ($serverconfig) {
-        $client->send_error(500, 'Server configuration missing');
-        $self->info("Server configuration is missing");
-        return 500;
-    }
 
     my $response = HTTP::Response->new(
         200,
@@ -389,7 +760,7 @@ The following default requests are accepted:
 
 =over
 
-=item /proxy/fusioninventory
+=item /proxy/glpi
 
 =item /proxy/apiversion
 

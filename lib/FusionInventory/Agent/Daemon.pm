@@ -367,6 +367,11 @@ sub sleep {
         $self->{_shorter_delay} = time + 60;
     }
 
+    # Trigger an empty event to permit sanity checks
+    # Used by proxy mode to free stored requestid when client doesn't come back
+    map { $_->events_cb() } @{$self->{_events_cb}}
+        if defined($self->{_events_cb});
+
     eval {
         local $SIG{PIPE} = 'IGNORE';
         # Check for http interface messages, default timeout is 1 second

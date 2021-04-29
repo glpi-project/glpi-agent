@@ -5,7 +5,6 @@ use warnings;
 
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
-use UUID::Tiny qw(:std);
 use File::Glob;
 use IO::Handle;
 
@@ -19,6 +18,7 @@ use FusionInventory::Agent::Target::Local;
 use FusionInventory::Agent::Target::Server;
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Hostname;
+use FusionInventory::Agent::Tools::UUID;
 
 our $VERSION = $FusionInventory::Agent::Version::VERSION;
 my $PROVIDER = $FusionInventory::Agent::Version::PROVIDER;
@@ -239,10 +239,11 @@ sub runTarget {
         my $contact = GLPI::Agent::Protocol::Contact->new(
             logger              => $self->{logger},
             deviceid            => $self->{deviceid},
-            tag                 => $self->{config}->{tag},
             "installed-tasks"   => $self->{installed_tasks},
             "enabled-tasks"     => [ sort keys(%enabled) ],
         );
+        $contact->merge(tag => $self->{config}->{tag})
+            if defined($self->{config}->{tag}) && length($self->{config}->{tag});
 
         $self->{logger}->info("sending contact request to $target->{id}");
         $response = $client->send(
@@ -352,6 +353,15 @@ sub runTarget {
                     } @plannedTasks;
                 }
             }
+        }
+
+        my $tasks = $response->get("tasks");
+        # Handle no-category set by server on inventory task
+        if ($tasks && $tasks->{inventory} && $tasks->{inventory}->{"no-category"}) {
+            my $no_category = $tasks->{inventory}->{"no-category"};
+            $self->{logger}->debug("set no-category configuration to: $no_category")
+                if !$self->{config}->{"no-category"} || $self->{config}->{"no-category"} ne $no_category;
+            $self->{config}->{"no-category"} = [ split(/,/, $no_category) ];
         }
     }
 

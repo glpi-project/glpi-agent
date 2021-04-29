@@ -51,15 +51,7 @@ sub getContent {
 
     return $self->{_message} unless ref($self->{_message});
 
-    return encode_json(_convert($self->{_message}));
-}
-
-sub print {
-    my ($self) = @_;
-
-    return $self->{_message} unless ref($self->{_message});
-
-    return JSON->new->utf8->pretty->encode(_convert($self->{_message}));
+    return JSON->new->indent->space_after->encode(_convert($self->{_message}));
 }
 
 sub set {
@@ -67,15 +59,25 @@ sub set {
 
     return unless defined($message);
 
-    return $self->{_message} = decode_json($message);
+    return $self->{_message} = ref($message) eq 'HASH' ? $message : decode_json($message);
 }
 
 sub get {
     my ($self, $what) = @_;
 
-    return $self->{_message}->{$what} if defined($what) && defined($self->{_message});
+    return unless defined($self->{_message});
+
+    return $self->{_message}->{$what} if defined($what);
 
     return $self->{_message};
+}
+
+sub merge {
+    my ($self, %params) = @_;
+
+    foreach my $key (keys(%params)) {
+        $self->{_message}->{$key} = $params{$key};
+    }
 }
 
 sub delete {
@@ -104,19 +106,25 @@ sub expiration {
 sub action {
     my ($self) = @_;
 
-    return $self->get('action');
+    return $self->get('action') // "inventory";
 }
 
 sub status {
     my ($self) = @_;
 
-    return $self->get('status');
+    return $self->get('status') // "";
 }
 
 sub is_valid_message {
     my ($self) = @_;
 
     return defined($self->get) && $self->status ? 1 : 0;
+}
+
+sub id {
+    my ($self, $id) = @_;
+    $self->{_id} = $id if defined($id);
+    return $self->{_id};
 }
 
 1;

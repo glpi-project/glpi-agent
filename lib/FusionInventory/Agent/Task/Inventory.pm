@@ -134,7 +134,8 @@ sub submit {
                 unless $handle;
         }
 
-        binmode $handle, ':encoding(UTF-8)';
+        binmode $handle, ':encoding(UTF-8)'
+            unless $format eq "json";
 
         $self->_printInventory(
             handle    => $handle,
@@ -176,10 +177,16 @@ sub submit {
             url     => $self->{target}->getUrl(),
             message => $message
         );
-
-        # TODO Support proxy answer telling to retrieve status later
-
         return unless $response;
+
+        while ($response->status eq "pending") {
+            sleep $response->expiration;
+            $response = $client->send(
+                url         => $self->{target}->getUrl(),
+                requestid   => $response->id(),
+            );
+        }
+
         $inventory->saveLastState();
 
         return $response;
@@ -542,7 +549,7 @@ sub _printInventory {
                     content => $self->{inventory}->getContent(),
                 }
             );
-            print {$params{handle}} $inventory->print;
+            print {$params{handle}} $inventory->getContent();
 
             last SWITCH;
         }
