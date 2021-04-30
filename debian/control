@@ -39,6 +39,7 @@ Build-Depends-Indep:
  libxml-treepp-perl <!nocheck>,
  libxml-xpath-perl <!nocheck>,
  libyaml-perl <!nocheck>,
+ libossp-uuid-perl <!nocheck>,
  perl,
  ucf
 Standards-Version: 4.5.1

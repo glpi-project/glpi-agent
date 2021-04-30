@@ -331,7 +331,7 @@ jobs:
           libtest-mockobject-perl libtext-template-perl                    \
           libsocket-getaddrinfo-perl libuniversal-require-perl liburi-perl \
           libwww-perl libxml-treepp-perl libxml-xpath-perl libyaml-perl    \
-          devscripts
+          libossp-uuid-perl devscripts
       shell: bash
     - name: Build debian packages
       id: debbuild
