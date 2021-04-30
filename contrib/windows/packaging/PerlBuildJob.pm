@@ -156,7 +156,7 @@ sub _build_steps {
                 # GLPI-Agent deps
                 qw/ Text::Template UNIVERSAL::require UNIVERSAL::isa
                     XML::TreePP XML::XPath Memoize Time::HiRes Compress::Zlib
-                    Parse::EDID JSON::PP YAML::Tiny Parallel::ForkManager
+                    Parse::EDID JSON JSON::PP YAML::Tiny Parallel::ForkManager
                     URI::Escape Net::NBName Thread::Queue Thread::Semaphore
                     Net::SNMP Net::SNMP::Security::USM Net::SNMP::Transport::IPv4::TCP
                     Net::SNMP::Transport::IPv6::TCP Net::SNMP::Transport::IPv6::UDP
