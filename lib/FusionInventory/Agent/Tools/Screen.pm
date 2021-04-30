@@ -45,6 +45,7 @@ sub new {
 # Overload if screen manufacturer is a well-know case
 my %EDID_MANUFACTURER_TO_SUBCLASS = (
     ACR => 'Acer',
+    ENC => 'Eizo',
     GSM => 'Goldstar',
     PHL => 'Philips',
     SAM => 'Samsung'

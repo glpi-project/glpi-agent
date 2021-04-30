@@ -566,6 +566,12 @@ my %edid_tests = (
         SERIAL       => '74701944',
         DESCRIPTION  => '47/2007'
     },
+    'EV2785' => {
+        MANUFACTURER => 'Eizo Nanao Corporation',
+        CAPTION      => 'EV2785',
+        SERIAL       => "68056070",
+        DESCRIPTION  => '28/2020'
+    },
 );
 
 plan tests => (scalar keys %edid_tests) + 1;
