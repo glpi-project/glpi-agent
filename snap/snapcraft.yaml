@@ -128,9 +128,7 @@ parts:
      - libavahi-client3
      - libavahi-common3
     stage:
-      - etc/ld.so.conf.d
       - lib
-      - lib64
       - usr/lib
       - usr/share/glpi-agent/bin/perl
       - usr/share/glpi-agent/lib
@@ -194,7 +192,6 @@ parts:
       - -lib/hdparm
       - -lib/systemd
       - -lib/udev
-      - lib64
       - usr/lib
       - -usr/lib/perl5
       - -usr/lib/pm-utils
