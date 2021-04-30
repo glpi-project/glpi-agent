@@ -10,7 +10,7 @@ sub new {
 
     my $self = $class->SUPER::new(
         %params,
-        supported_params    => [ qw(deviceid action) ],
+        supported_params    => [ qw(deviceid action content itemtype) ],
         action              => "inventory",
     );
 

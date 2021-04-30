@@ -169,7 +169,8 @@ sub submit {
         my $message = GLPI::Agent::Protocol::Inventory->new(
             logger      => $self->{logger},
             deviceid    => $inventory->getDeviceId(),
-            message     => $inventory->getContent(),
+            content     => $inventory->getContent(),
+            itemtype    => "Computer",
         );
 
         my $response = $client->send(
@@ -544,9 +545,8 @@ sub _printInventory {
             my $inventory = GLPI::Agent::Protocol::Inventory->new(
                 logger      => $self->{logger},
                 deviceid    => $self->{inventory}->getDeviceId(),
-                message     => {
-                    content => $self->{inventory}->getContent(),
-                }
+                content     => $self->{inventory}->getContent(),
+                itemtype    => "Computer",
             );
             print {$params{handle}} $inventory->getContent();
 
