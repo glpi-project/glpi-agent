@@ -63,8 +63,6 @@ GetOptions(
     'user|u=s',
     'version',
     'wait|w=s',
-    # deprecated options
-    'stdout',
     # Platform specific option
     'no-win32-ole-workaround'
 ) or pod2usage(-verbose => 0);

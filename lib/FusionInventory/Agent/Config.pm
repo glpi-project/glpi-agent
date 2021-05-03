@@ -50,15 +50,6 @@ my $default = {
     'timeout'                 => 180,
     'user'                    => undef,
     'vardir'                  => undef,
-    # deprecated options
-    'stdout'                  => undef,
-};
-
-my $deprecated = {
-    'stdout' => {
-        message => 'use --local - option instead',
-        new     => { 'local' => '-' }
-    },
 };
 
 my $confReloadIntervalMinValue = 60;
@@ -309,47 +300,6 @@ sub _loadUserParams {
 
 sub _checkContent {
     my ($self) = @_;
-
-    # check for deprecated options
-    foreach my $old (keys %$deprecated) {
-        next unless defined $self->{$old};
-
-        next if $old =~ /^no-/ and !$self->{$old};
-
-        my $handler = $deprecated->{$old};
-
-        # notify user of deprecation
-        warn "Config: the '$old' option is deprecated, $handler->{message}\n";
-
-        # transfer the value to the new option, if possible
-        if ($handler->{new}) {
-            if (ref $handler->{new} eq 'HASH') {
-                # old boolean option replaced by new non-boolean options
-                foreach my $key (keys %{$handler->{new}}) {
-                    my $value = $handler->{new}->{$key};
-                    if ($value =~ /^\+(\S+)/) {
-                        # multiple values: add it to exiting one
-                        $self->{$key} = $self->{$key} ?
-                            $self->{$key} . ',' . $1 : $1;
-                    } else {
-                        # unique value: replace exiting value
-                        $self->{$key} = $value;
-                    }
-                }
-            } elsif (ref $handler->{new} eq 'ARRAY') {
-                # old boolean option replaced by new boolean options
-                foreach my $new (@{$handler->{new}}) {
-                    $self->{$new} = $self->{$old};
-                }
-            } else {
-                # old non-boolean option replaced by new option
-                $self->{$handler->{new}} = $self->{$old};
-            }
-        }
-
-        # avoid cluttering configuration
-        delete $self->{$old};
-    }
 
     # a logfile options implies a file logger backend
     if ($self->{logfile}) {

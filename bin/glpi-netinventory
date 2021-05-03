@@ -34,7 +34,6 @@ my $options = {
 
 GetOptions(
     $options,
-    'model=s',
     'type=s',
     'host=s@',
     'file=s@',
@@ -64,8 +63,6 @@ pod2usage(-verbose => 0, -exitval => 0) if $options->{help};
 pod2usage(
     -message => "no host nor file given, aborting\n", -verbose => 0
 ) unless $options->{host} or $options->{file};
-
-warn "deprecated option model, ignoring\n" if $options->{model};
 
 # Split host, port and protocol options on comma
 foreach my $opt (qw(host port protocol)) {

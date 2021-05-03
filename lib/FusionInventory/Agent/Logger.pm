@@ -36,8 +36,7 @@ sub new {
         }
     }
 
-    my $debug = defined($params{verbosity}) ? $params{verbosity} :
-        $config->{debug} || 0 ;
+    my $debug = $config->{debug} || 0 ;
 
     my $self = {
         verbosity => $debug == 2 ? LOG_DEBUG2 :
@@ -47,7 +46,7 @@ sub new {
     bless $self, $class;
 
     my %backends;
-    my $backends = $params{backends} || $config->{logger} || $params{logger};
+    my $backends = $config->{logger} || $params{logger};
     foreach (
         $backends ? @{$backends} : 'Stderr'
     ) {
@@ -185,14 +184,6 @@ hash:
 =item I<config>
 
 the agent configuration object, to pass debug level and backends parameters
-
-=item I<backends> (deprecated)
-
-a list of backends to use (default: Stderr)
-
-=item I<verbosity> (deprecated)
-
-the verbosity level (default: LOG_INFO)
 
 =back
 

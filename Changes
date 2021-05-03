@@ -7,6 +7,7 @@ core:
 * Fix #643, #863: Force XML UTF-8 encoding when communicating with server
 * config: conf.d folder include is enabled by default
 * HTTP daemon: added ToolBox dedicated web interface to add agent management features
+* Removed support of deprecated options
 
 inventory:
 * fix snap softwares inventory
