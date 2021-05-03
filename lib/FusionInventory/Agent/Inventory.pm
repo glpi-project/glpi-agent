@@ -293,13 +293,6 @@ sub addEntry {
         $entry->{$field} = $value;
     }
 
-    # avoid duplicate entries
-    if ($params{noDuplicated}) {
-        my $md5 = md5_base64(Dumper($entry));
-        return if $self->{seen}->{$section}->{$md5};
-        $self->{seen}->{$section}->{$md5} = 1;
-    }
-
     if ($section eq 'STORAGES') {
         $entry->{SERIALNUMBER} = $entry->{SERIAL} if !$entry->{SERIALNUMBER}
     }
@@ -545,10 +538,6 @@ the entry section (mandatory)
 =item I<entry>
 
 the entry (mandatory)
-
-=item I<noDuplicated>
-
-ignore entry if already present
 
 =back
 
