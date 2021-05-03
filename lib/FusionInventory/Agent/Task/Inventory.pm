@@ -367,7 +367,6 @@ sub _feedInventory {
     # Execution time
     $inventory->setHardware({ETIME => time() - $begin});
 
-    $inventory->computeLegacyValues();
     $inventory->computeChecksum();
 }
 

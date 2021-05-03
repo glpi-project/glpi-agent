@@ -44,17 +44,6 @@ sub fields {
         tag     => "HARDWARE",
     },
     {
-        name    => "ips",
-        section => "network",
-        type    => "readonly",
-        from    => "IPADDR",
-        text    => "IPs",
-        column  => 9,
-        editcol => 0,
-        index   => 2,
-        tag     => "HARDWARE",
-    },
-    {
         name    => "uuid",
         section => "default",
         type    => "readonly",

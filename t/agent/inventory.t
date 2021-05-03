@@ -13,7 +13,7 @@ use FusionInventory::Agent;
 use FusionInventory::Agent::Logger;
 use FusionInventory::Agent::Inventory;
 
-plan tests => 26;
+plan tests => 23;
 
 my $logger = FusionInventory::Agent::Logger->new(
     logger => [ 'Test' ],
@@ -187,26 +187,6 @@ cmp_deeply(
     'CPU added'
 );
 
-$inventory->computeLegacyValues();
-
-is(
-    $inventory->{content}->{HARDWARE}->{PROCESSORN},
-    1,
-    'global CPU number'
-);
-
-is(
-    $inventory->{content}->{HARDWARE}->{PROCESSORS},
-    1456,
-    'global CPU speed'
-);
-
-is(
-    $inventory->{content}->{HARDWARE}->{PROCESSORT},
-    'void CPU',
-    'global CPU type',
-);
-
 $inventory->computeChecksum();
 
 is(
@@ -295,7 +275,7 @@ $inventory->mergeContent(
             }
         ],
         HARDWARE => {
-            PROCESSORT => 'fake'
+            OSCOMMENTS => 'fake'
         },
         OPERATINGSYSTEM => {
             FULL_NAME => 'fake fullname',
@@ -338,7 +318,7 @@ cmp_deeply(
 );
 
 is(
-    $inventory->{content}->{HARDWARE}->{PROCESSORT},
+    $inventory->{content}->{HARDWARE}->{OSCOMMENTS},
     'fake',
     'hash section merge'
 );

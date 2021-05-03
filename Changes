@@ -18,6 +18,7 @@ inventory:
 * win32: Fix cpu analysis to support inventory of different cpus
 * win32: Refactor cpu analysis to make dmidecode safer to use under win32
 * Enhanced EV2785 Eizo monitors support
+* Removed support of no more used legacy values
 
 netdiscovery/netinventory:
 * Add support for SonicWall devices
