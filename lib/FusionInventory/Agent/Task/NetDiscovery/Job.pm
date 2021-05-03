@@ -69,6 +69,9 @@ sub getValidCredentials {
         push @credentials, $credential;
     }
 
+    $self->{logger}->warning("No valid SNMP credential defined for this scan")
+        unless @credentials;
+
     return \@credentials;
 }
 

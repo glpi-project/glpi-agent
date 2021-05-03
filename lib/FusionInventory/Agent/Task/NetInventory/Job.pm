@@ -48,6 +48,14 @@ sub devices {
 sub credentials {
     my ($self) = @_;
 
+    unless (defined($self->{_credentials})) {
+        $self->{logger}->warning("No SNMP credential defined for this job");
+        return {};
+    }
+
+    $self->{logger}->warning("No SNMP credential provided for this job")
+        unless @{$self->{_credentials}};
+
     # index credentials by their ID
     return { map { $_->{ID} => $_ } @{$self->{_credentials}} };
 }

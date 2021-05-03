@@ -21,6 +21,7 @@ inventory:
 netdiscovery/netinventory:
 * Add support for SonicWall devices
 * Enhanced MibSupport to support Configuration plugin managed via ToolBox
+* Log a warning when no credential is provided with a discovery or inventory job
 
 toolbox:
 * Support run of local inventory task
