@@ -4,8 +4,7 @@ use strict;
 use warnings;
 
 use Config;
-use Data::Dumper;
-use Digest::MD5 qw(md5_base64);
+use Digest::SHA;
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 use XML::TreePP;
@@ -13,9 +12,6 @@ use XML::TreePP;
 use FusionInventory::Agent::Logger;
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Version;
-
-# Always sort keys in Dumper while computing checksum on HASH
-$Data::Dumper::Sortkeys = 1;
 
 my %fields = (
     BIOS             => [ qw/SMODEL SMANUFACTURER SSN BDATE BVERSION
@@ -384,32 +380,40 @@ sub setTag {
 
 }
 
+my @checked_sections = sort qw(
+    HARDWARE    BIOS        MEMORIES    SLOTS       REGISTRY    CONTROLLERS
+    MONITORS    PORTS       STORAGES    DRIVES      INPUTS      MODEMS
+    NETWORKS    PRINTERS    SOUNDS      SOFTWARES   VIDEOS      CPUS
+    ANTIVIRUS   BATTERIES   FIREWALL    OPERATINGSYSTEM         LICENSEINFOS
+    VIRTUALMACHINES
+);
+
+sub _checksum {
+    my ($ref, $sha, $len) = @_;
+
+    unless (defined($sha)) {
+        $sha = Digest::SHA->new(256);
+        $len = 0;
+    }
+
+    if (ref($ref) eq 'HASH') {
+        foreach my $key (sort keys(%{$ref})) {
+            ($sha, $len) = _checksum($ref->{$key}, $sha, $len);
+        }
+    } elsif (ref($ref) eq 'ARRAY') {
+        map { ($sha, $len) = _checksum($_, $sha, $len) } @{$ref};
+    } elsif (defined($ref)) {
+        $len += length($ref);
+        $sha->add($ref);
+    }
+
+    return $sha, $len;
+}
+
 sub computeChecksum {
     my ($self) = @_;
 
     my $logger = $self->{logger};
-
-    # to apply to $checksum with an OR
-    my %mask = (
-        HARDWARE      => 1,
-        BIOS          => 2,
-        MEMORIES      => 4,
-        SLOTS         => 8,
-        REGISTRY      => 16,
-        CONTROLLERS   => 32,
-        MONITORS      => 64,
-        PORTS         => 128,
-        STORAGES      => 256,
-        DRIVES        => 512,
-        INPUT         => 1024,
-        MODEMS        => 2048,
-        NETWORKS      => 4096,
-        PRINTERS      => 8192,
-        SOUNDS        => 16384,
-        VIDEOS        => 32768,
-        SOFTWARES     => 65536,
-    );
-    # TODO CPUS is not in the list
 
     if ($self->{last_state_file}) {
         if (-f $self->{last_state_file}) {
@@ -428,27 +432,35 @@ sub computeChecksum {
         }
     }
 
-    my $checksum = 0;
-    foreach my $section (keys %mask) {
-        my $hash =
-            md5_base64(Dumper($self->{content}->{$section}));
+    my $current_state = {};
+    foreach my $section (@checked_sections) {
+        my ($sha, $len) = _checksum($self->{content}->{$section});
+        unless ($len) {
+            $logger->debug("Section $section has disappeared since last inventory")
+                if defined($self->{last_state_content}->{$section});
+            next;
+        }
+        my $digest = $sha->hexdigest;
+        my $state  = $self->{last_state_content}->{$section} // {
+            -digest => '',
+            -len    => 0,
+        };
+        $current_state->{$section} = $state;
 
         # check if the section did change since the last run
-        next if
-            $self->{last_state_content}->{$section} &&
-            $self->{last_state_content}->{$section} eq $hash;
+        next if ref($state) eq 'HASH' &&
+            defined($state->{-len}) && $state->{-len} == $len &&
+            defined($state->{-digest}) && $state->{-digest} eq $digest;
 
         $logger->debug("Section $section has changed since last inventory");
 
-        # add the mask of the current section to the checksum
-        $checksum |= $mask{$section}; ## no critic (ProhibitBitwise)
-
         # store the new value.
-        $self->{last_state_content}->{$section} = $hash;
+        $current_state->{$section} = {
+            -digest => $digest,
+            -len    => $len,
+        };
     }
-
-
-    $self->setHardware({CHECKSUM => $checksum});
+    $self->{last_state_content} = $current_state;
 }
 
 sub saveLastState {
