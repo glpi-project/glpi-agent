@@ -125,7 +125,8 @@ sub _getDevices {
     }
 
     # Sort devices by name to keep list ordered and consistent over time
-    return sort { $a->{NAME} cmp $b->{NAME} } @devices;
+    @devices = sort { $a->{NAME} cmp $b->{NAME} } @devices;
+    return @devices;
 }
 
 # get serial & firmware numbers from hdparm, if available
