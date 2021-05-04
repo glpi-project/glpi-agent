@@ -29,15 +29,14 @@ sub doInventory {
     # Use a 1 second timeout instead of default 5 seconds as this is still
     # large enough for loopback ssh pubkey scan.
     $command .= ' -T 1 127.0.0.1';
-    my $ssh_key = getFirstMatch(
+    my @ssh_keys = sort map { /^\S+\s(ssh.*)/ && $1 } grep { /^[^#]\S+\sssh/ } getAllLines(
         command => $command,
-        pattern => qr/^[^#]\S+\s(ssh.*)/,
         @_,
     );
 
     $inventory->setOperatingSystem({
-        SSH_KEY => $ssh_key
-    }) if $ssh_key;
+        SSH_KEY => $ssh_keys[0]
+    }) if @ssh_keys;
 }
 
 1;
