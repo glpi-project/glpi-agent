@@ -148,7 +148,7 @@ sub _build_steps {
 
                 # crypto
                 qw/ Crypt::DES Crypt::Rijndael /,
-                qw/ Digest-MD5 Digest-SHA /,
+                qw/ Digest-SHA /,
 
                 # date/time
                 qw/ DateTime DateTime::TimeZone::Local::Win32 /,

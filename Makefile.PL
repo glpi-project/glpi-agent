@@ -35,6 +35,7 @@ requires 'XML::XPath'         => '0';
 requires 'YAML::Tiny'         => '0';
 requires 'Memoize'            => '0';
 requires 'Time::HiRes'        => '0';
+requires 'Digest::SHA'        => '0';
 
 if ($OSNAME eq 'MSWin32') {
     requires 'Win32::OLE'         => '0';
@@ -81,7 +82,6 @@ recommends 'Parse::EDID'                     => '0';
 
 # Deploy
 recommends 'Archive::Extract'             => '0';
-recommends 'Digest::SHA'                  => '0';
 recommends 'File::Copy::Recursive'        => '0';
 recommends 'JSON::PP'                     => '0';
 recommends 'Net::Ping'                    => '0';
