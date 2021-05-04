@@ -18,7 +18,7 @@ my %fields = (
                              BMANUFACTURER MMANUFACTURER MSN MMODEL ASSETTAG
                              ENCLOSURESERIAL BIOSSERIAL
                              TYPE SKUNUMBER/ ],
-    HARDWARE         => [ qw/OSVERSION OSCOMMENTS CHECKSUM NAME SWAP ETIME TYPE
+    HARDWARE         => [ qw/OSVERSION OSCOMMENTS CHECKSUM NAME SWAP TYPE
                              OSNAME WORKGROUP DESCRIPTION MEMORY UUID DNS
                              LASTLOGGEDUSER DATELASTLOGGEDUSER
                              DEFAULTGATEWAY VMSYSTEM WINOWNER WINPRODID
@@ -97,7 +97,7 @@ my %fields = (
     VOLUME_GROUPS    => [ qw/VG_NAME PV_COUNT LV_COUNT ATTR SIZE FREE VG_UUID
                              VG_EXTENT_SIZE/ ],
     VERSIONPROVIDER  => [ qw/NAME VERSION COMMENTS PERL_EXE PERL_VERSION PERL_ARGS
-                             PROGRAM PERL_CONFIG PERL_INC PERL_MODULE/ ]
+                             PROGRAM PERL_CONFIG PERL_INC PERL_MODULE ETIME/ ]
 );
 
 my %checks = (
