@@ -397,8 +397,8 @@ sub _checksum {
     }
 
     if (ref($ref) eq 'HASH') {
-        foreach $key (sort keys(%{$ref})) {
-            ($sha, $len) = _checksum($key, $ref->{$key}, $sha, $len);
+        foreach my $subkey (sort keys(%{$ref})) {
+            ($sha, $len) = _checksum($subkey, $ref->{$subkey}, $sha, $len);
         }
     } elsif (ref($ref) eq 'ARRAY') {
         map { ($sha, $len) = _checksum($key, $_, $sha, $len) } @{$ref};
