@@ -31,7 +31,7 @@ sub _getUptime {
     );
     return unless $uptime;
 
-    return getFormatedLocalTime(int(time - $uptime));
+    return getFormatedLocalTime(time - $uptime);
 }
 
 1;

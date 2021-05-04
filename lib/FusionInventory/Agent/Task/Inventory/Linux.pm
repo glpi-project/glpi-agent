@@ -29,7 +29,7 @@ sub doInventory {
     my $hostid = getFirstLine(command => 'hostid');
 
     my $boottime =
-        time - getFirstMatch(file => '/proc/uptime', pattern => qr/^(\d+)/);
+        time - getFirstMatch(file => '/proc/uptime', pattern => qr/^(\S+)/);
 
     $inventory->setHardware({
         OSVERSION  => $kernelRelease,
