@@ -13,7 +13,7 @@ use FusionInventory::Agent;
 use FusionInventory::Agent::Logger;
 use FusionInventory::Agent::Inventory;
 
-plan tests => 23;
+plan tests => 20;
 
 my $logger = FusionInventory::Agent::Logger->new(
     logger => [ 'Test' ],
@@ -39,13 +39,6 @@ cmp_deeply(
         VERSIONCLIENT => $FusionInventory::Agent::AGENT_STRING
     },
     'initial state'
-);
-
-$inventory->computeChecksum();
-is(
-    $inventory->{content}->{HARDWARE}->{CHECKSUM},
-    131071,
-    'initial state checksum'
 );
 
 throws_ok {
@@ -187,14 +180,6 @@ cmp_deeply(
     'CPU added'
 );
 
-$inventory->computeChecksum();
-
-is(
-    $inventory->{content}->{HARDWARE}->{CHECKSUM},
-    1,
-    'checksum after CPU addition'
-);
-
 $inventory->addEntry(
     section => 'DRIVES',
     entry   => {
@@ -220,14 +205,6 @@ cmp_deeply(
         }
     ],
     'drive addition'
-);
-
-$inventory->computeChecksum();
-
-is(
-    $inventory->{content}->{HARDWARE}->{CHECKSUM},
-    513,
-    'checksum after drive addition'
 );
 
 $inventory->addEntry(
