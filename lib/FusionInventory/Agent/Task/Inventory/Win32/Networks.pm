@@ -62,7 +62,6 @@ sub doInventory {
     $inventory->setHardware({
         DEFAULTGATEWAY => join('/', uniq @gateways),
         DNS            => join('/', uniq @dns),
-        IPADDR         => join('/', uniq @ips),
     });
 
 }

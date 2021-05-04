@@ -85,8 +85,6 @@ sub createInventory {
         $inventory->addEntry(section => 'NETWORKS', entry => $network);
     }
 
-    $inventory->setHardware( { IPADDR => join '/', ( keys %ipaddr ) } );
-
     # TODO
     #    foreach (@{$host->[0]{config}{fileSystemVolume}{mountInfo}}) {
     #
