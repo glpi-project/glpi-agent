@@ -389,7 +389,7 @@ my @checked_sections = sort qw(
 );
 
 sub _checksum {
-    my ($ref, $sha, $len) = @_;
+    my ($key, $ref, $sha, $len) = @_;
 
     unless (defined($sha)) {
         $sha = Digest::SHA->new(256);
@@ -397,14 +397,16 @@ sub _checksum {
     }
 
     if (ref($ref) eq 'HASH') {
-        foreach my $key (sort keys(%{$ref})) {
-            ($sha, $len) = _checksum($ref->{$key}, $sha, $len);
+        foreach $key (sort keys(%{$ref})) {
+            ($sha, $len) = _checksum($key, $ref->{$key}, $sha, $len);
         }
     } elsif (ref($ref) eq 'ARRAY') {
-        map { ($sha, $len) = _checksum($_, $sha, $len) } @{$ref};
+        map { ($sha, $len) = _checksum($key, $_, $sha, $len) } @{$ref};
     } elsif (defined($ref)) {
-        $len += length($ref);
-        $sha->add($ref);
+        my $string = "$key:$ref.";
+        my $strlen = length($string);
+        $len += $strlen;
+        $sha->add_bits($string, $strlen*8);
     }
 
     return $sha, $len;
@@ -434,7 +436,7 @@ sub computeChecksum {
 
     my $current_state = {};
     foreach my $section (@checked_sections) {
-        my ($sha, $len) = _checksum($self->{content}->{$section});
+        my ($sha, $len) = _checksum($section, $self->{content}->{$section});
         unless ($len) {
             $logger->debug("Section $section has disappeared since last inventory")
                 if defined($self->{last_state_content}->{$section});
