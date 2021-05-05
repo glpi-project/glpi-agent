@@ -81,6 +81,16 @@ sub _getMemories {
         push @memories, $memory;
     }
 
+    # Apple M1 support
+    if (!@memories && $parent_node->{Memory} && $parent_node->{Type}) {
+        push @memories, {
+            NUMSLOTS    => 0,
+            DESCRIPTION => "Integrated memory",
+            TYPE        => $parent_node->{Type},
+            CAPACITY    => getCanonicalSize($parent_node->{Memory}, 1024)
+        };
+    }
+
     return @memories;
 }
 

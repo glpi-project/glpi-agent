@@ -222,7 +222,15 @@ my %memories_tests = (
             CAPACITY     => 1024,
             CAPTION      => 'Status: OK'
         }
-    ]
+    ],
+    '11.0-apple-M1' => [
+        {
+            NUMSLOTS     => 0,
+            TYPE         => 'LPDDR4',
+            CAPACITY     => '16384',
+            DESCRIPTION  => 'Integrated memory',
+        },
+    ],
 );
 
 my %memory_tests = (
@@ -230,6 +238,7 @@ my %memory_tests = (
     '10.5-powerpc' => 2048,
     '10.6-macmini' => 4096,
     '10.6-intel'   => 2048,
+    '11.0-apple-M1' => 16384,
 );
 
 plan tests =>

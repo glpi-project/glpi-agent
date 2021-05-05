@@ -62,7 +62,7 @@ sub _getCpus {
                 $sysprofile_info->{'Number Of CPUs'}       ||
                 1;
     my $speed = $sysprofile_info->{'Processor Speed'} ||
-                $sysprofile_info->{'CPU Speed'};
+                $sysprofile_info->{'CPU Speed'}       || "";
 
     my $stepping = $sysctl_info->{'machdep.cpu.stepping'};
     my $family   = $sysctl_info->{'machdep.cpu.family'};
@@ -86,6 +86,7 @@ sub _getCpus {
     my $manufacturer =
         $type =~ /Intel/i ? "Intel" :
         $type =~ /AMD/i   ? "AMD"   :
+        $type =~ /Apple/i ? "Apple" :
                             undef   ;
 
     my @cpus;
@@ -94,11 +95,13 @@ sub _getCpus {
         MANUFACTURER => $manufacturer,
         NAME         => trimWhitespace($type),
         THREAD       => $threads,
-        FAMILYNUMBER => $family,
-        MODEL        => $model,
-        STEPPING     => $stepping,
-        SPEED        => $speed
     };
+
+    # Intel/Amd
+    $cpu->{FAMILYNUMBER} = $family   if defined($family);
+    $cpu->{MODEL}        = $model    if defined($model);
+    $cpu->{STEPPING}     = $stepping if defined($stepping);
+    $cpu->{SPEED}        = $speed    if $speed;
 
     for (my $i=0; $i < $procs; $i++) {
         push @cpus, $cpu;

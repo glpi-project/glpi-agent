@@ -24,8 +24,16 @@ my %tests = (
             STEPPING     => '10',
             SPEED        => '2260'
         },
-    ]
-    );
+    ],
+    '11.0-apple-M1' => [
+        {
+            CORE         => '8',
+            MANUFACTURER => 'Apple',
+            NAME         => 'Apple M1',
+            THREAD       => 8,
+        },
+    ],
+);
 
 plan tests => (2 * scalar keys %tests) + 1;
 

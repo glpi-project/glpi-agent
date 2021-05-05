@@ -19,6 +19,7 @@ inventory:
 * win32: Refactor cpu analysis to make dmidecode safer to use under win32
 * Enhanced EV2785 Eizo monitors support
 * Removed support of no more used legacy values
+* macosx: Add Apple M1 support
 
 netdiscovery/netinventory:
 * Add support for SonicWall devices
