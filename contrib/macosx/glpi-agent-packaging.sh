@@ -15,6 +15,10 @@ set -e
 export LC_ALL=C LANG=C
 export MACOSX_DEPLOYMENT_TARGET=10.10
 
+ROOT="${0%/*}"
+cd "$ROOT"
+ROOT="`pwd`"
+
 while [ -n "$1" ]
 do
     case "$1" in
@@ -49,10 +53,6 @@ case "$(uname -s) $ARCH" in
         ;;
 esac
 
-ROOT="${0%/*}"
-cd "$ROOT"
-ROOT="`pwd`"
-
 BUILD_PREFIX="/Applications/GLPI-Agent.app"
 
 # We uses munkipkg script to simplify the process
@@ -77,6 +77,8 @@ OPENSSL_CONFIG_OPTS="zlib --with-zlib-include='$ROOT/build/zlib' --with-zlib-lib
 CPANM_OPTS="--build-args=\"OTHERLDFLAGS='-Wl,-search_paths_first'\""
 SHASUM="$( which shasum 2>/dev/null )"
 
+export CFLAGS="-arch $ARCH -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET"
+
 build_static_zlib () {
     cd "$ROOT"
     echo ======== Build zlib $ZLIB_VERSION
@@ -86,7 +88,7 @@ build_static_zlib () {
     [ -d "zlib-$ZLIB_VERSION" ] || tar xzf "$ARCHIVE"
     [ -d "$ROOT/build/zlib" ] || mkdir -p "$ROOT/build/zlib"
     cd "$ROOT/build/zlib"
-    [ -e Makefile ] || CFLAGS="-arch=$ARCH -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET" ../../zlib-$ZLIB_VERSION/configure --static \
+    [ -e Makefile ] || ../../zlib-$ZLIB_VERSION/configure --static \
         --libdir="$PWD" --includedir="$PWD"
     make libz.a
 }
@@ -158,7 +160,7 @@ if [ ! -d "build/openssl-$OPENSSL_VERSION" ]; then
     [ -e "$ARCHIVE" ] || curl -so "$ARCHIVE" "$OPENSSL_URL"
 
     # Eventually verify archive
-    if [ -n "$SHASUM" ; then
+    if [ -n "$SHASUM" ]; then
         [ -e "$ARCHIVE.sha1" ] || curl -so "$ARCHIVE.sha1" "$OPENSSL_URL.sha1"
         read SHA1 x <<<$( $SHASUM $ARCHIVE )
         if [ "$SHA1" == "$(cat $ARCHIVE.sha1)" ]; then
@@ -182,7 +184,8 @@ if [ ! -d "build/openssl-$OPENSSL_VERSION" ]; then
     [ -d build/openssl ] || mkdir -p build/openssl
     cd build/openssl
 
-    CFLAGS="-arch=$ARCH -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET" ../../openssl-$OPENSSL_VERSION/config no-autoerrinit no-shared \
+    export CNF_CFLAGS="-arch $ARCH"
+    ../../openssl-$OPENSSL_VERSION/config no-autoerrinit no-shared \
         --prefix="/openssl" $OPENSSL_CONFIG_OPTS
     make
 
