@@ -15,11 +15,29 @@ set -e
 export LC_ALL=C LANG=C
 export MACOSX_DEPLOYMENT_TARGET=10.10
 
+while [ -n "$1" ]
+do
+    case "$1" in
+        clean)
+            rm -rf build
+            ;;
+        --arch)
+            shift
+            export ARCH="$1"
+            ;;
+    esac
+    shift
+done
+
 # Check platform we are running on
-ARCH=$(uname -m)
+: ${ARCH:=$(uname -m)}
 case "$(uname -s) $ARCH" in
     Darwin*x86_64)
         echo "GLPI-Agent MacOSX Packaging for $ARCH..."
+        ;;
+    Darwin*arm64)
+        echo "GLPI-Agent MacOSX Packaging for $ARCH..."
+        export MACOSX_DEPLOYMENT_TARGET=11.0
         ;;
     Darwin*)
         echo "$ARCH support is missing, please report an issue" >&2
@@ -50,15 +68,6 @@ if [ ! -e munkipkg ]; then
 fi
 
 # Needed folder
-while [ -n "$1" ]
-do
-    case "$1" in
-        clean)
-            rm -rf build
-            ;;
-    esac
-    shift
-done
 [ -d build ] || mkdir build
 [ -d payload ] || mkdir payload
 
@@ -77,7 +86,7 @@ build_static_zlib () {
     [ -d "zlib-$ZLIB_VERSION" ] || tar xzf "$ARCHIVE"
     [ -d "$ROOT/build/zlib" ] || mkdir -p "$ROOT/build/zlib"
     cd "$ROOT/build/zlib"
-    [ -e Makefile ] || CFLAGS="-mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET" ../../zlib-$ZLIB_VERSION/configure --static \
+    [ -e Makefile ] || CFLAGS="-arch=$ARCH -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET" ../../zlib-$ZLIB_VERSION/configure --static \
         --libdir="$PWD" --includedir="$PWD"
     make libz.a
 }
@@ -116,7 +125,7 @@ build_perl () {
         rm -f config.sh Policy.sh
         ./Configure -de -Dprefix=$BUILD_PREFIX -Duserelocatableinc -DNDEBUG    \
             -Dman1dir=none -Dman3dir=none -Dusethreads -UDEBUGGING             \
-            -Dusemultiplicity -Duse64bitint -Duse64bitall                      \
+            -Dusemultiplicity -Duse64bitint -Duse64bitall -Darch=$ARCH         \
             -Aeval:privlib=.../../lib -Aeval:scriptdir=.../../bin              \
             -Aeval:vendorprefix=.../.. -Aeval:vendorlib=.../../agent           \
             -Dcf_by="$BUILDER_NAME" -Dcf_email="$BUILDER_MAIL" -Dperladmin="$BUILDER_MAIL"
@@ -173,7 +182,7 @@ if [ ! -d "build/openssl-$OPENSSL_VERSION" ]; then
     [ -d build/openssl ] || mkdir -p build/openssl
     cd build/openssl
 
-    CFLAGS="-mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET" ../../openssl-$OPENSSL_VERSION/config no-autoerrinit no-shared \
+    CFLAGS="-arch=$ARCH -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET" ../../openssl-$OPENSSL_VERSION/config no-autoerrinit no-shared \
         --prefix="/openssl" $OPENSSL_CONFIG_OPTS
     make
 

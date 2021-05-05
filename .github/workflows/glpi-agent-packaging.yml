@@ -148,6 +148,9 @@ jobs:
   macosx-packaging:
 
     runs-on: macos-latest
+    strategy:
+      matrix:
+        arch: [ x86_64, arm64 ]
 
     if: always()
     needs: create-release
@@ -169,7 +172,7 @@ jobs:
         key: macosx-packaging-restore-points-${{ hashFiles('contrib/macosx/glpi-agent-packaging.sh') }}
     - name: Build package
       run: |
-        ./contrib/macosx/glpi-agent-packaging.sh
+        ./contrib/macosx/glpi-agent-packaging.sh --arch ${{ matrix.arch }}
       shell: bash
     - name: List generated files
       if: success() || failure()
