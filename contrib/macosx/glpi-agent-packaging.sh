@@ -4,7 +4,7 @@
 # SSL:  https://www.openssl.org/source/
 # ZLIB: https://www.zlib.net/
 : ${PERL_VERSION:=5.32.1}
-: ${OPENSSL_VERSION:=1.1.1i}
+: ${OPENSSL_VERSION:=1.1.1k}
 : ${ZLIB_VERSION:=1.2.11}
 
 : ${BUILDER_NAME="Guillaume Bougard (teclib)"}
