@@ -1,0 +1,221 @@
+Hardware:
+
+    Hardware Overview:
+
+      Model Name: MacBook Air
+      Model Identifier: MacBookAir10,1
+      Chip: Apple M1
+      Total Number of Cores: 8 (4 performance and 4 efficiency)
+      Memory: 16 GB
+      System Firmware Version: 6723.81.1
+      Serial Number (system): E9O1Q6W5FAKE
+      Hardware UUID: 2B05150B-FA33-45BD-90F0-3369BF908E3E
+      Provisioning UDID: DEADBEAF-DEADBEAFDEADBEAF
+      Activation Lock Status: Disabled
+
+Memory:
+
+      Memory: 16 GB
+      Type: LPDDR4
+
+Power:
+
+    Battery Information:
+
+      Model Information:
+          Device Name: bq20z451
+          Pack Lot Code: 0
+          PCB Lot Code: 0
+          Firmware Version: 1002
+          Hardware Revision: 1
+          Cell Revision: 2735
+      Charge Information:
+          The battery’s charge is below the critical level.: No
+          Fully Charged: Yes
+          Charging: No
+          State of Charge (%): 100
+      Health Information:
+          Cycle Count: 1
+          Condition: Normal
+          Maximum Capacity: 100 %
+
+    System Power Settings:
+
+      AC Power:
+          System Sleep Timer (Minutes): 1
+          Disk Sleep Timer (Minutes): 0
+          Display Sleep Timer (Minutes): 0
+          Sleep on Power Button: Yes
+          Wake on LAN: Yes
+          Current Power Source: Yes
+          PrioritizeNetworkReachabilityOverSleep: 0
+      Battery Power:
+          System Sleep Timer (Minutes): 1
+          Disk Sleep Timer (Minutes): 10
+          Display Sleep Timer (Minutes): 2
+          Sleep on Power Button: Yes
+          Reduce Brightness: Yes
+
+    Hardware Configuration:
+
+      UPS Installed: No
+
+    AC Charger Information:
+
+      Connected: Yes
+      ID: 0x0000
+      Wattage (W): 100
+      Family: 0xe000400a
+      Charging: No
+
+Software:
+
+    System Software Overview:
+
+      System Version: macOS 11.2.3 (20D91)
+      Kernel Version: Darwin 20.3.0
+      Boot Volume: Macintosh HD
+      Boot Mode: Normal
+      Computer Name: MacBook Air de test
+      User Name: System Administrator (root)
+      Secure Virtual Memory: Enabled
+      System Integrity Protection: Enabled
+      Time since boot: 1 day 23:56
+
+Audio:
+
+    Devices:
+
+        Headphone:
+
+          Input Channels: 2
+          Manufacturer: Generic
+          Current SampleRate: 48000
+          Transport: USB
+          Input Source: Default
+
+        Headphone:
+
+          Manufacturer: Generic
+          Output Channels: 2
+          Current SampleRate: 48000
+          Transport: USB
+          Output Source: Default
+
+        IOUSBHostInterface:
+
+          Input Channels: 2
+          Manufacturer: Generic
+          Current SampleRate: 48000
+          Transport: USB
+          Input Source: Default
+
+        Headsets:
+
+          Manufacturer: Generic
+          Output Channels: 2
+          Current SampleRate: 48000
+          Transport: USB
+          Output Source: Default
+
+        Microphone MacBook Air:
+
+          Default Input Device: Yes
+          Input Channels: 1
+          Manufacturer: Apple Inc.
+          Current SampleRate: 48000
+          Transport: Built-in
+          Input Source: Microphone MacBook Air
+
+        Haut-parleurs MacBook Air:
+
+          Default Output Device: Yes
+          Default System Output Device: Yes
+          Manufacturer: Apple Inc.
+          Output Channels: 2
+          Current SampleRate: 48000
+          Transport: Built-in
+          Output Source: Haut-parleurs MacBook Air
+
+Graphics/Displays:
+
+    Apple M1:
+
+      Chipset Model: Apple M1
+      Type: GPU
+      Bus: Built-In
+      Total Number of Cores: 8
+      Vendor: Apple (0x106b)
+      Metal Family: Supported, Metal GPUFamily Apple 7
+      Displays:
+        Color LCD:
+          Display Type: Built-In Retina LCD
+          Resolution: 2560 x 1600 Retina
+          Main Display: Yes
+          Mirror: Off
+          Online: Yes
+          Automatically Adjust Brightness: No
+          Connection Type: Internal
+
+Printers:
+
+      Status: The printers list is empty. To add printers, choose Apple menu > System Preferences…, click Printers & Scanners, and then click Add (+).
+      CUPS Version: 2.3.4 (cups-494.1)
+
+Storage:
+
+    Data:
+
+      Free: 463,12 GB (463 117 873 152 bytes)
+      Capacity: 494,38 GB (494 384 795 648 bytes)
+      Mount Point: /System/Volumes/Data
+      File System: APFS
+      Writable: Yes
+      Ignore Ownership: No
+      BSD Name: disk3s5
+      Volume UUID: A75C2C66-4F9F-44D3-9A7F-B67789E974AB
+      Physical Drive:
+          Device Name: APPLE SSD AP0512Q
+          Media Name: AppleAPFSMedia
+          Medium Type: SSD
+          Protocol: Apple Fabric
+          Internal: Yes
+          Partition Map Type: Unknown
+          S.M.A.R.T. Status: Verified
+
+    Macintosh HD:
+
+      Free: 463,12 GB (463 117 873 152 bytes)
+      Capacity: 494,38 GB (494 384 795 648 bytes)
+      Mount Point: /
+      File System: APFS
+      Writable: No
+      Ignore Ownership: No
+      BSD Name: disk3s1s1
+      Volume UUID: 6C13AE2C-BFF3-459C-91B3-E4C4AD9BBBC3
+      Physical Drive:
+          Device Name: APPLE SSD AP0512Q
+          Media Name: AppleAPFSMedia
+          Medium Type: SSD
+          Protocol: Apple Fabric
+          Internal: Yes
+          Partition Map Type: Unknown
+          S.M.A.R.T. Status: Verified
+
+    AnyDesk:
+
+      Free: 5,4 MB (5 406 720 bytes)
+      Capacity: 27,8 MB (27 774 976 bytes)
+      Mount Point: /Volumes/AnyDesk
+      File System: HFS+
+      Writable: No
+      Ignore Ownership: Yes
+      BSD Name: disk4s1
+      Volume UUID: 0F95AD57-288A-4E1A-978D-435EBDDFF361
+      Physical Drive:
+          Device Name: Disk Image
+          Media Name: Apple format comprimé en lecture seule UDIF (zlib) Media
+          Protocol: Disk Image
+          Internal: No
+          Partition Map Type: GPT (GUID Partition Table)
+
