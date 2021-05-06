@@ -90,7 +90,7 @@ CPANM_OPTS="--build-args=\"OTHERLDFLAGS='-Wl,-search_paths_first'\""
 SHASUM="$( which shasum 2>/dev/null )"
 
 SYSROOT="$(xcrun --sdk macosx --show-sdk-path)"
-MYCFLAGS="-arch $ARCH -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET -isysroot $SYSROOT -isystem $SYSROOT"
+SDKFLAGS="-arch $ARCH -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET -isysroot $SYSROOT -isystem $SYSROOT"
 
 unset LOCAL_ARCH
 if [ "$ARCH" != "$(uname -m)" ]; then
@@ -106,7 +106,7 @@ build_static_zlib () {
     [ -d "zlib-$ZLIB_VERSION" ] || tar xzf "$ARCHIVE"
     [ -d "$ROOT/build/zlib" ] || mkdir -p "$ROOT/build/zlib"
     cd "$ROOT/build/zlib"
-    [ -e Makefile ] || CFLAGS="$MYCFLAGS" \
+    [ -e Makefile ] || CFLAGS="$SDKFLAGS" \
         ../../zlib-$ZLIB_VERSION/configure --static --libdir="$PWD" --includedir="$PWD"
     make libz.a
 }
@@ -148,7 +148,7 @@ build_perl () {
             -Dusemultiplicity -Duse64bitint -Duse64bitall -Darch=$ARCH         \
             -Aeval:privlib=.../../lib -Aeval:scriptdir=.../../bin              \
             -Aeval:vendorprefix=.../.. -Aeval:vendorlib=.../../agent           \
-            -Accflags="$MYCFLAGS"                                              \
+            -Accflags="$SDKFLAGS" -Aldflags="$SDKFLAGS"                        \
             -Dcf_by="$BUILDER_NAME" -Dcf_email="$BUILDER_MAIL" -Dperladmin="$BUILDER_MAIL"
     fi
     make -j4
@@ -203,7 +203,7 @@ if [ ! -d "build/openssl-$OPENSSL_VERSION" ]; then
     [ -d build/openssl ] || mkdir -p build/openssl
     cd build/openssl
 
-    CFLAGS="$MYCFLAGS" \
+    CFLAGS="$SDKFLAGS" \
     ../../openssl-$OPENSSL_VERSION/Configure $OPENSSL_CONFIG no-autoerrinit no-shared \
         --prefix="/openssl" $OPENSSL_CONFIG_OPTS
     make
