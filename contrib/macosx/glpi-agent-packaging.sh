@@ -24,9 +24,9 @@ do
         clean)
             rm -rf build
             ;;
-        --arch)
+        --arch|-a)
             shift
-            export ARCH="$1"
+            ARCH="$1"
             ;;
         --help|-h)
             cat <<HELP
@@ -204,7 +204,7 @@ if [ ! -d "build/openssl-$OPENSSL_VERSION" ]; then
     cd build/openssl
 
     CFLAGS="$MYCFLAGS" \
-    ../../openssl-$OPENSSL_VERSION/config $OPENSSL_CONFIG no-autoerrinit no-shared \
+    ../../openssl-$OPENSSL_VERSION/Configure $OPENSSL_CONFIG no-autoerrinit no-shared \
         --prefix="/openssl" $OPENSSL_CONFIG_OPTS
     make
 
