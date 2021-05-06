@@ -13,7 +13,6 @@
 set -e
 
 export LC_ALL=C LANG=C
-export MACOSX_DEPLOYMENT_TARGET=10.10
 
 ROOT="${0%/*}"
 cd "$ROOT"
@@ -29,6 +28,14 @@ do
             shift
             export ARCH="$1"
             ;;
+        --help|-h)
+            cat <<HELP
+$0 [-a|--arch] [x86_64|arm64] [-h|--help] [clean]
+    -a --arch       Specify target arch: x86_64 or arm64
+    -h --help       This help
+    clean           Clean build environment
+HELP
+            ;;
     esac
     shift
 done
@@ -38,10 +45,13 @@ done
 case "$(uname -s) $ARCH" in
     Darwin*x86_64)
         echo "GLPI-Agent MacOSX Packaging for $ARCH..."
+        : ${MACOSX_DEPLOYMENT_TARGET:=10.10}
+        OPENSSL_CONFIG="darwin64-x86_64-cc"
         ;;
     Darwin*arm64)
         echo "GLPI-Agent MacOSX Packaging for $ARCH..."
-        export MACOSX_DEPLOYMENT_TARGET=11.0
+        : ${MACOSX_DEPLOYMENT_TARGET:=11.0}
+        OPENSSL_CONFIG="darwin64-arm64-cc"
         ;;
     Darwin*)
         echo "$ARCH support is missing, please report an issue" >&2
@@ -52,6 +62,8 @@ case "$(uname -s) $ARCH" in
         exit 1
         ;;
 esac
+
+export MACOSX_DEPLOYMENT_TARGET
 
 BUILD_PREFIX="/Applications/GLPI-Agent.app"
 
@@ -77,7 +89,13 @@ OPENSSL_CONFIG_OPTS="zlib --with-zlib-include='$ROOT/build/zlib' --with-zlib-lib
 CPANM_OPTS="--build-args=\"OTHERLDFLAGS='-Wl,-search_paths_first'\""
 SHASUM="$( which shasum 2>/dev/null )"
 
-export CFLAGS="-arch $ARCH -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET"
+SYSROOT="$(xcrun --sdk macosx --show-sdk-path)"
+MYCFLAGS="-arch $ARCH -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET -isysroot $SYSROOT -isystem $SYSROOT"
+
+unset LOCAL_ARCH
+if [ "$ARCH" != "$(uname -m)" ]; then
+    LOCAL_ARCH="$(uname -m)"
+fi
 
 build_static_zlib () {
     cd "$ROOT"
@@ -88,8 +106,8 @@ build_static_zlib () {
     [ -d "zlib-$ZLIB_VERSION" ] || tar xzf "$ARCHIVE"
     [ -d "$ROOT/build/zlib" ] || mkdir -p "$ROOT/build/zlib"
     cd "$ROOT/build/zlib"
-    [ -e Makefile ] || ../../zlib-$ZLIB_VERSION/configure --static \
-        --libdir="$PWD" --includedir="$PWD"
+    [ -e Makefile ] || CFLAGS="$MYCFLAGS" \
+        ../../zlib-$ZLIB_VERSION/configure --static --libdir="$PWD" --includedir="$PWD"
     make libz.a
 }
 
@@ -130,6 +148,7 @@ build_perl () {
             -Dusemultiplicity -Duse64bitint -Duse64bitall -Darch=$ARCH         \
             -Aeval:privlib=.../../lib -Aeval:scriptdir=.../../bin              \
             -Aeval:vendorprefix=.../.. -Aeval:vendorlib=.../../agent           \
+            -Accflags="$MYCFLAGS"                                              \
             -Dcf_by="$BUILDER_NAME" -Dcf_email="$BUILDER_MAIL" -Dperladmin="$BUILDER_MAIL"
     fi
     make -j4
@@ -184,8 +203,8 @@ if [ ! -d "build/openssl-$OPENSSL_VERSION" ]; then
     [ -d build/openssl ] || mkdir -p build/openssl
     cd build/openssl
 
-    export CNF_CFLAGS="-arch $ARCH"
-    ../../openssl-$OPENSSL_VERSION/config no-autoerrinit no-shared \
+    CFLAGS="$MYCFLAGS" \
+    ../../openssl-$OPENSSL_VERSION/config $OPENSSL_CONFIG no-autoerrinit no-shared \
         --prefix="/openssl" $OPENSSL_CONFIG_OPTS
     make
 
@@ -200,6 +219,17 @@ if [ ! -d "build/openssl-$OPENSSL_VERSION" ]; then
 fi
 
 export OPENSSL_PREFIX="$ROOT/build/openssl-$OPENSSL_VERSION/openssl"
+
+# openssl binary is only used to output its version while Net::SSLeay is checking for it
+# but it will fail if it is built for a different ARCH, so just replace it with what is
+# expected by Net::SSLeay
+if [ -n "$LOCAL_ARCH" ]; then
+    cat >$OPENSSL_PREFIX/bin/openssl <<-OPENSSL
+    #!/bin/sh
+    echo OpenSSL $OPENSSL_VERSION
+OPENSSL
+    chmod +x $OPENSSL_PREFIX/bin/openssl
+fi
 
 # 5. Install cpanm
 cd "$ROOT"
@@ -222,10 +252,12 @@ Sub::Identify Params::Validate HTML::Parser Compress::Zlib Digest::SHA
 Net::SSLeay
 MODULES
 
-# Try the library
-echo ======== SSL check
-perl -e 'use Net::SSLeay; print Net::SSLeay::SSLeay_version(0)," (", sprintf("0x%x",Net::SSLeay::SSLeay()),") installed with perl $^V\n";'
-echo ========
+# Try the library only for local arch builds
+if [ -z "$LOCAL_ARCH" ]; then
+    echo ======== SSL check
+    perl -e 'use Net::SSLeay; print Net::SSLeay::SSLeay_version(0)," (", sprintf("0x%x",Net::SSLeay::SSLeay()),") installed with perl $^V\n";'
+    echo ========
+fi
 
 # Prepare glpi-agent sources
 cd ../..
