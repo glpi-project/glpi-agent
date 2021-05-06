@@ -148,7 +148,7 @@ build_perl () {
             -Dusemultiplicity -Duse64bitint -Duse64bitall -Darch=$ARCH         \
             -Aeval:privlib=.../../lib -Aeval:scriptdir=.../../bin              \
             -Aeval:vendorprefix=.../.. -Aeval:vendorlib=.../../agent           \
-            -Accflags="$SDKFLAGS" -Aldflags="$SDKFLAGS"                        \
+            -Accflags="$SDKFLAGS" -Aldflags="$SDKFLAGS" -Alddlflags="$SDKFLAGS" \
             -Dcf_by="$BUILDER_NAME" -Dcf_email="$BUILDER_MAIL" -Dperladmin="$BUILDER_MAIL"
     fi
     make -j4
