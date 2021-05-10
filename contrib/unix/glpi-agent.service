@@ -12,7 +12,7 @@
 [Unit]
 Description=GLPI agent
 Documentation=man:glpi-agent
-After=network.target
+After=syslog.target network.target
 
 [Service]
 ExecStart=/usr/bin/glpi-agent --daemon --no-fork $OPTIONS
