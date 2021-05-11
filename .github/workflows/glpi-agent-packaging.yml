@@ -305,3 +305,46 @@ jobs:
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  linux-rpm-packaging:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dist: [ fc33, fc34, el7, el8 ]
+
+    if: always()
+    needs: create-release
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install build dependencies packages
+      run: |
+        sudo apt -y install rpmbuild
+      shell: bash
+    - name: Build rpm packages
+      id: rpmbuild
+      run: |
+        contrib/unix/glpi-agent-rpm-build.sh --dist ${{ matrix.dist }}
+      shell: bash
+    - name: Upload built rpm artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: RPM-Build
+        path: |
+          ${{ steps.debbuild.rpmbuild.rpmdir }}/*/*.rpm
+          ${{ steps.debbuild.rpmbuild.srpmdir }}/*.rpm
+    - name: Upload RPM Packages
+      id: upload-linux-deb-asset
+      if: startsWith(github.ref, 'refs/tags/1.')
+      run: |
+        A_OPTS=""
+        RPMDIR=`rpm --eval "%{_rpmdir}"`
+        for rpm in $RPMDIR/*/*.rpm
+        do
+          A_OPTS="$A_OPTS -a $rpm"
+        done
+        hub release edit -m "" $A_OPTS ${{ needs.create-release.outputs.tag }}
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
