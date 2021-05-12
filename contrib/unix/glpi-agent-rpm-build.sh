@@ -36,12 +36,12 @@ if [ ! -e lib -a ! -e tools/make-release.sh ]; then
 fi
 
 VER=${GITHUB_REF#refs/tags/}
-if [ -z "$VER" ]; then
+if [ -n "${GITHUB_REF%refs/tags/*}" -o -z "$VER" ]; then
     VER=$(perl -Ilib -MFusionInventory::Agent::Version -e '$v = $FusionInventory::Agent::Version::VERSION; $v =~ s/-.*//; print $v')
 fi
 if [ -z "$REV" ]; then
     REV=$([ -n "$GITHUB_SHA" ] && echo $GITHUB_SHA| cut -c 1-8 || git log --pretty=format:%h -n 1)
-    [ -n "$REV" ] && REV="git$REV"
+    [ -n "$REV" ] && REV="git$REV" || REV=1
 fi
 
 [ -z "$DIST" ] && unset DISTRO || DISTRO=".$DIST"
