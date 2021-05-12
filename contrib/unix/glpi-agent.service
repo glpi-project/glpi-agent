@@ -9,6 +9,10 @@
 # [Service]
 # Environment="OPTIONS=--no-category=software"
 
+# But it is advised to create a dedicated ".cfg" file under /etc/glpi-agent/conf.d
+# and reload the service with "systemctl reload glpi-agent.service".
+# Config files under /etc/glpi-agent/conf.d won't be erased/disabled during upgrades.
+
 [Unit]
 Description=GLPI agent
 Documentation=man:glpi-agent
