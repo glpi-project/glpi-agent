@@ -1,0 +1,36 @@
+#!/bin/bash
+NAME=glpi-agent
+LOG=/var/log/$NAME/$NAME.log
+
+exec >>$LOG 2>&1
+
+[ -f   /etc/sysconfig/$NAME ] || exit 0
+source /etc/sysconfig/$NAME
+export PATH
+
+i=0
+while [ $i -lt ${#AGENTMODE[*]} ]
+do
+    if [ ${AGENTMODE[$i]:-none} == cron ]; then
+        OPTS=
+        if [ ! -z "${AGENTPAUSE[$i]}" ]; then
+            OPTS="--wait ${AGENTPAUSE[$i]}"
+        fi
+
+        if [ ! -z "${AGENTTAG[$i]}" ]; then
+                OPTS="$OPTS --tag=${AGENTTAG[$i]}"
+        fi
+
+        if [ "z${AGENTSERVER[$i]}" = 'zlocal' ]; then
+                # Local inventory
+                OPTS="$OPTS --local=/var/lib/$NAME"
+        elif [ ! -z "${AGENTSERVER[$i]}" ]; then
+                # Remote inventory
+                OPTS="$OPTS --lazy --server=${AGENTSERVER[$i]}"
+        fi
+        echo "[$(date '+%c')] Running $NAME $OPTS"
+        /usr/bin/$NAME $OPTIONS --logfile=$LOG $OPTS
+    fi
+    ((i++))
+done
+echo "[$(date '+%c')] End of cron job ($PATH)"
