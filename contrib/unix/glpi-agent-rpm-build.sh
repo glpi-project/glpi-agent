@@ -40,7 +40,7 @@ if [ -z "$VER" ]; then
     VER=$(perl -Ilib -MFusionInventory::Agent::Version -e '$v = $FusionInventory::Agent::Version::VERSION; $v =~ s/-.*//; print $v')
 fi
 if [ -z "$REV" ]; then
-    REV=$([ -n "$GITHUB_SHA" ] && echo ${GITHUB_SHA:0:8} || git log --pretty=format:%h -n 1)
+    REV=$([ -n "$GITHUB_SHA" ] && echo $GITHUB_SHA| cut -c 1-8 || git log --pretty=format:%h -n 1)
     [ -n "$REV" ] && REV="git$REV"
 fi
 
