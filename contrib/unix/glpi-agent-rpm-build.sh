@@ -56,8 +56,9 @@ perl Makefile.PL
 make dist DISTVNAME=glpi-agent-$VER-$REV$DISTRO
 
 SRCDIR=`rpm --eval "%{_sourcedir}"`
+[ -d "$SRCDIR" ] || mkdir -p "$SRCDIR"
 rm -f $SRCDIR/*.tar.gz
-cp glpi-agent-$VER-$REV$DISTRO.tar.gz $SRCDIR
+cp glpi-agent-$VER-$REV$DISTRO.tar.gz "$SRCDIR"
 
 # Prepare rpmbuild options
 BUILD_OPTS="-D 'rev $REV'"
