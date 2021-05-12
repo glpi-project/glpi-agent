@@ -71,13 +71,18 @@ echo "Running 'rpmbuild -ba $BUILD_OPTS $OTHER_OPTS contrib/unix/glpi-agent.spec
 eval "rpmbuild -ba $BUILD_OPTS $OTHER_OPTS contrib/unix/glpi-agent.spec"
 
 # Output rpms path for GH Actions uploads
-RPMDIR=`rpm --eval "%{_rpmdir}"`
-SRPMDIR=`rpm --eval "%{_srcrpmdir}"`
-echo "::set-output name=rpmdir:: $RPMDIR"
-echo "::set-output name=srpmdir:: $SRPMDIR"
+RPMDIR=$(rpm --eval "%{_rpmdir}")
+SRPMDIR=$(rpm --eval "%{_srcrpmdir}")
+echo "RPMDIR: $RPMDIR"
+if [ -n "$GITHUB_REF" ]; then
+    echo "::set-output name=rpmdir:: $RPMDIR"
+    echo "::set-output name=srcdir:: $SRCDIR"
+    echo "::set-output name=srpmdir:: $SRPMDIR"
+fi
 for rpm in $(eval "rpmspec -q $BUILD_OPTS contrib/unix/glpi-agent.spec")
 do
     BASE=${rpm%-$VER-$REV*}
     ARCH=${rpm##*.}
-    echo "::set-output name=$BASE-rpm:: $RPMDIR/$ARCH/$rpm.rpm"
+    echo "$BASE-rpm: $(ls -l $RPMDIR/$ARCH/$rpm.rpm)"
+    [ -n "$GITHUB_REF" ] && echo "::set-output name=$BASE-rpm:: $RPMDIR/$ARCH/$rpm.rpm"
 done

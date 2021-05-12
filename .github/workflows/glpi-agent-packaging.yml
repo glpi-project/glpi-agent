@@ -330,9 +330,9 @@ jobs:
       with:
         name: RPM-Build
         path: |
-          ${{ steps.debbuild.rpmbuild.rpmdir }}/*/*.rpm
-          ${{ steps.debbuild.rpmbuild.srpmdir }}/*.rpm
-          glpi-agent-*.tar.gz
+          ${{ steps.rpmbuild.outputs.rpmdir }}/*/*.rpm
+          ${{ steps.rpmbuild.outputs.srpmdir }}/*.rpm
+          ${{ steps.rpmbuild.outputs.srcdir }}/glpi-agent-*.tar.gz
     - name: Upload RPM Packages
       id: upload-linux-deb-asset
       if: startsWith(github.ref, 'refs/tags/1.')
