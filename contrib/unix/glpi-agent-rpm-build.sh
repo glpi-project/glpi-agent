@@ -53,6 +53,8 @@ echo "Checking if a dedicated dist script exists..."
 [ -n "$DIST" -a -x contrib/unix/rpmbuild.$DIST.sh ] && source contrib/unix/rpmbuild.$DIST.sh
 
 perl Makefile.PL
+rm -f MANIFEST
+make manifest
 make dist DISTVNAME=glpi-agent-$VER-$REV$DISTRO
 
 SRCDIR=`rpm --eval "%{_sourcedir}"`
