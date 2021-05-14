@@ -161,15 +161,15 @@ jobs:
       uses: pat-s/always-upload-cache@v2.1.3
       with:
         path: |
-          - contrib/macosx/*.gz
-          - contrib/macosx/*.sha1
-          - contrib/macosx/*.sha1.txt
-          - contrib/macosx/munkipkg
-          - contrib/macosx/build/perl*
-          - contrib/macosx/build/openssl*
-          - contrib/macosx/build/zlib*
-          - contrib/macosx/build/Applications
-        key: macosx-packaging-restore-points-${{ hashFiles('contrib/macosx/glpi-agent-packaging.sh') }}
+          contrib/macosx/*.gz
+          contrib/macosx/*.sha1
+          contrib/macosx/*.sha1.txt
+          contrib/macosx/munkipkg
+          contrib/macosx/build/perl*
+          contrib/macosx/build/openssl*
+          contrib/macosx/build/zlib*
+          contrib/macosx/build/Applications
+        key: macosx-packaging-restore-points-${{ matrix.arch }}-${{ hashFiles('contrib/macosx/glpi-agent-packaging.sh') }}
     - name: Build package
       run: |
         ./contrib/macosx/glpi-agent-packaging.sh --arch ${{ matrix.arch }}
