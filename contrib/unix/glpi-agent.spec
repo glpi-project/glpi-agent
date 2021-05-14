@@ -1,4 +1,4 @@
-## Disabling debug package 
+## Disabling debug package
 %global debug_package %{nil}
 
 Name:        glpi-agent
@@ -283,15 +283,15 @@ install -m 644 -D  contrib/unix/%{name}.service %{buildroot}%{_unitdir}/%{name}.
 %{_datadir}/%{name}/lib/FusionInventory/Agent/XML/
 
 %preun
-if [ $1 -eq 0 ] ; then 
+if [ $1 -eq 0 ] ; then
     # Package removal, not upgrade
-    systemctl --no-reload disable --now %{name}.service &>/dev/null || : 
+    systemctl --no-reload disable --now %{name}.service &>/dev/null || :
 fi
 
 %postun
-if [ $1 -ge 1 ] ; then 
+if [ $1 -ge 1 ] ; then
     # Package upgrade, not uninstall
-    systemctl try-restart %{name}.service &>/dev/null || : 
+    systemctl try-restart %{name}.service &>/dev/null || :
 fi
 
 %files task-esx
@@ -337,7 +337,7 @@ fi
 - Remove dmidecode, perl(Net::CUPS) & perl(Parse::EDID) dependencies as they are
   indeed only recommended
 - Replace auto-generated systemd scriptlets with raw scriplets and don't even try
-  to enable the service on install as this is useless without a serer defined in conf
+  to enable the service on install as this is useless without a server defined in conf
 
 * Thu Sep 17 2020 Johan Cwiklinski <jcwiklinski AT teclib DOT com>
 - Package of GLPI Agent, based on FusionInventory Agent officials specfile
