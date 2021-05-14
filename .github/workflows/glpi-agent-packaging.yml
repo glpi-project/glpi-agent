@@ -325,6 +325,19 @@ jobs:
       run: |
         contrib/unix/glpi-agent-rpm-build.sh --nodeps
       shell: bash
+    - name: Test rpm local install & uninstall
+      run: |
+        rpm -ivh --nodeps ${{ steps.rpmbuild.outputs.glpi-agent }} \
+            ${{ steps.rpmbuild.outputs.glpi-agent-task-network }} \
+            ${{ steps.rpmbuild.outputs.glpi-agent-task-collect }} \
+            ${{ steps.rpmbuild.outputs.glpi-agent-task-deploy }} \
+            ${{ steps.rpmbuild.outputs.glpi-agent-task-wakeonlan }} \
+            ${{ steps.rpmbuild.outputs.glpi-agent-task-esx }} \
+            ${{ steps.rpmbuild.outputs.glpi-agent-cron }}
+        rpm -e glpi-agent glpi-agent-task-network glpi-agent-task-collect \
+            glpi-agent-task-deploy glpi-agent-task-wakeonlan \
+            glpi-agent-task-esx glpi-agent-cron
+      shell: bash
     - name: Upload built rpm artifacts
       uses: actions/upload-artifact@v2
       with:
