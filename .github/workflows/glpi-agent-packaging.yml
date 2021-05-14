@@ -327,14 +327,14 @@ jobs:
       shell: bash
     - name: Test rpm local install & uninstall
       run: |
-        rpm -ivh --nodeps ${{ steps.rpmbuild.outputs.glpi-agent-rpm }} \
+        sudo rpm -ivh --nodeps ${{ steps.rpmbuild.outputs.glpi-agent-rpm }} \
             ${{ steps.rpmbuild.outputs.glpi-agent-task-network-rpm }} \
             ${{ steps.rpmbuild.outputs.glpi-agent-task-collect-rpm }} \
             ${{ steps.rpmbuild.outputs.glpi-agent-task-deploy-rpm }} \
             ${{ steps.rpmbuild.outputs.glpi-agent-task-wakeonlan-rpm }} \
             ${{ steps.rpmbuild.outputs.glpi-agent-task-esx-rpm }} \
             ${{ steps.rpmbuild.outputs.glpi-agent-cron-rpm }}
-        rpm -e glpi-agent glpi-agent-task-network glpi-agent-task-collect \
+        sudo rpm -e glpi-agent glpi-agent-task-network glpi-agent-task-collect \
             glpi-agent-task-deploy glpi-agent-task-wakeonlan \
             glpi-agent-task-esx glpi-agent-cron
       shell: bash
