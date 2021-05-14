@@ -11,6 +11,7 @@ fi
 
 if [ "${TAG#*-}" == "$TAG" ]; then
     DEBREV="-1"
+    RPMREV="-1"
 fi
 
 cat >release-description.md <<DESCRIPTION
@@ -50,4 +51,15 @@ ESX | [glpi-agent-task-esx_${TAG}${DEBREV}_all.deb](../../releases/download/$TAG
 Collect | [glpi-agent-task-collect_${TAG}${DEBREV}_all.deb](../../releases/download/$TAG/glpi-agent-task-collect_${TAG}${DEBREV}_all.deb)
 Deploy | [glpi-agent-task-deploy_${TAG}${DEBREV}_all.deb](../../releases/download/$TAG/glpi-agent-task-deploy_${TAG}${DEBREV}_all.deb)
 
+### RPM packages
+RPM packages are arch independents and installation may require some repository setups.
+Task |Packages
+---|:---
+Inventory| [glpi-agent-${TAG}${RPMREV}.noarch.rpm](../../releases/download/$TAG/glpi-agent-${TAG}${RPMREV}.noarch.rpm)
+NetInventory | [glpi-agent-task-network-${TAG}${RPMREV}.noarch.rpm](../../releases/download/$TAG/glpi-agent-task-network-${TAG}${RPMREV}.noarch.rpm)
+ESX | [glpi-agent-task-esx-${TAG}${RPMREV}.noarch.rpm](../../releases/download/$TAG/glpi-agent-task-esx-${TAG}${RPMREV}.noarch.rpm)
+Collect | [glpi-agent-task-collect-${TAG}${RPMREV}.noarch.rpm](../../releases/download/$TAG/glpi-agent-task-collect-${TAG}${RPMREV}.noarch.rpm)
+Deploy | [glpi-agent-task-deploy-${TAG}${RPMREV}.noarch.rpm](../../releases/download/$TAG/glpi-agent-task-deploy-${TAG}${RPMREV}.noarch.rpm)
+WakeOnLan | [glpi-agent-task-wakeonlan-${TAG}${RPMREV}.noarch.rpm](../../releases/download/$TAG/glpi-agent-task-wakeonlan-${TAG}${RPMREV}.noarch.rpm)
+Cron | [glpi-agent-cron-${TAG}${RPMREV}.noarch.rpm](../../releases/download/$TAG/glpi-agent-cron-${TAG}${RPMREV}.noarch.rpm)
 DESCRIPTION

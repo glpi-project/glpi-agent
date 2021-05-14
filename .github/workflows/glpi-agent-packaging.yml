@@ -305,3 +305,58 @@ jobs:
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  linux-rpm-packaging:
+
+    runs-on: ubuntu-latest
+
+    if: always()
+    needs: create-release
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install build dependencies packages
+      run: |
+        sudo apt -y install rpm devscripts \
+            libfile-which-perl libuniversal-require-perl libmodule-install-perl
+      shell: bash
+    - name: Build rpm packages
+      id: rpmbuild
+      run: |
+        contrib/unix/glpi-agent-rpm-build.sh --nodeps
+      shell: bash
+    - name: Test rpm local install & uninstall
+      run: |
+        sudo rpm -ivh --nodeps ${{ steps.rpmbuild.outputs.glpi-agent-rpm }} \
+            ${{ steps.rpmbuild.outputs.glpi-agent-task-network-rpm }} \
+            ${{ steps.rpmbuild.outputs.glpi-agent-task-collect-rpm }} \
+            ${{ steps.rpmbuild.outputs.glpi-agent-task-deploy-rpm }} \
+            ${{ steps.rpmbuild.outputs.glpi-agent-task-wakeonlan-rpm }} \
+            ${{ steps.rpmbuild.outputs.glpi-agent-task-esx-rpm }} \
+            ${{ steps.rpmbuild.outputs.glpi-agent-cron-rpm }}
+        sudo rpm -e glpi-agent glpi-agent-task-network glpi-agent-task-collect \
+            glpi-agent-task-deploy glpi-agent-task-wakeonlan \
+            glpi-agent-task-esx glpi-agent-cron
+      shell: bash
+    - name: Upload built rpm artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: RPM-Build
+        path: |
+          ${{ steps.rpmbuild.outputs.rpmdir }}/*/*.rpm
+          ${{ steps.rpmbuild.outputs.srpmdir }}/*.rpm
+          ${{ steps.rpmbuild.outputs.srcdir }}/glpi-agent-*.tar.gz
+    - name: Upload RPM Packages
+      id: upload-linux-deb-asset
+      if: startsWith(github.ref, 'refs/tags/1.')
+      run: |
+        A_OPTS=""
+        RPMDIR=`rpm --eval "%{_rpmdir}"`
+        for rpm in $RPMDIR/*/*.rpm
+        do
+          A_OPTS="$A_OPTS -a $rpm"
+        done
+        hub release edit -m "" $A_OPTS ${{ needs.create-release.outputs.tag }}
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
