@@ -38,6 +38,7 @@ GetOptions(
     'setup',
     'local|l=s',
     'logger=s',
+    'logfacility=s',
     'logfile=s',
     'logfile-maxsize=i',
     'no-category=s',
