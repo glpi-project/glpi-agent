@@ -628,7 +628,8 @@ sub handleRequests {
 
     # Handle any timer event on plugins and set next time expected to handle events
     unless ($self->{_timer_event} && $self->{_timer_event} > time) {
-        my ($timeout) = sort grep { $_ } map { $_->timer_event() } @{$self->{_plugins}};
+        my @enabled_plugins = grep { ! $_->disabled() } @{$self->{_plugins}};
+        my ($timeout) = sort grep { $_ } map { $_->timer_event() } @enabled_plugins;
         $self->{_timer_event} = ($timeout && $timeout > time) ? $timeout : time + 60;
     }
 

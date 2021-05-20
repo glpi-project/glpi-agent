@@ -231,7 +231,7 @@ sub handle {
 
 sub timer_event {
     my ($self) = @_;
-    return $self->{target}->keep_sessions();
+    return $self->{target} && $self->{target}->keep_sessions();
 }
 
 1;
