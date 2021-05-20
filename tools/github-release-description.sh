@@ -39,6 +39,9 @@ arm64 | DMG: [GLPI-Agent-${TAG}_arm64.dmg](../../releases/download/$TAG/GLPI-Age
 
 ## Linux
 
+### Linux installer
+[glpi-agent-${TAG}-linux-installer.pl](../../releases/download/$TAG/glpi-agent-${TAG}-linux-installer.pl)
+
 ### Snap package for amd64
 [glpi-agent_${TAG}_amd64.snap](../../releases/download/$TAG/glpi-agent_${TAG}_amd64.snap)
 
