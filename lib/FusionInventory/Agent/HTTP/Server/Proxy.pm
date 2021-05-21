@@ -23,7 +23,7 @@ our $VERSION = "2.0";
 
 sub urlMatch {
     my ($self, $path) = @_;
-    # By default, re_path_match => qr{^/proxy/(version|glpi)/?$}
+    # By default, re_path_match => qr{^/proxy/(apiversion|glpi)/?$}
     return 0 unless $path =~ $self->{re_path_match};
     $self->{request} = $1;
     return 1;
@@ -287,7 +287,7 @@ sub _handle_proxy_request {
 
     # Handle GET requests with parameters in URL or GLPI-Request-ID as header
 
-    if ($self->{requestid} && $self->{answer}->{$self->{requestid}} && $request->method() eq "GET") {
+    if ($self->{requestid} && $request->method() eq "GET") {
         $self->debug("Asked for $self->{requestid} request status from $remoteid");
         my $answer = $self->{answer}->{$self->{requestid}};
         if ($answer && $answer->agentid eq $agentid) {
@@ -332,7 +332,7 @@ sub _handle_proxy_request {
     }
 
     my $content = $request->content();
-    unless (defined($content)) {
+    unless (defined($content) && length($content)) {
         $self->info("No Content found in $self->{request} request from $clientIp");
         $client->send_error(403, 'No content');
         return 403;
