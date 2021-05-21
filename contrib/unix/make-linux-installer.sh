@@ -177,7 +177,7 @@ use constant DISTRO  => "$DISTRO";
 INSTALLER_VERSION_MODULE
 
 # Add libs
-for lib in Getopt LinuxDistro RpmDistro Archive
+for lib in Getopt LinuxDistro RpmDistro DebDistro SnapInstall Archive
 do
     egrep -v "^1;$" ../installer/$lib.pm >>glpi-agent-linux-installer.pl
 done
