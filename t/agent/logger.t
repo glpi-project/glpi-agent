@@ -271,27 +271,27 @@ ok(
     'debug message presence'
 );
 
-is(
+like(
     getFileOutput($logfile, sub { $logger->debug('message'); }),
-    '[' . localtime() . '][debug] message',
+    qr/^\[... ... .. ..:..:.. ....\]\[debug\] message/,
     'debug message formating'
 );
 
-is(
+like(
     getFileOutput($logfile, sub { $logger->info('message'); }),
-    '[' . localtime() . '][info] message',
+    qr/^\[... ... .. ..:..:.. ....\]\[info\] message/,
     'info message formating'
 );
 
-is(
+like(
     getFileOutput($logfile, sub { $logger->warning('message'); }),
-    '[' . localtime() . '][warning] message',
+    qr/^\[... ... .. ..:..:.. ....\]\[warning\] message/,
     'warning message formating'
 );
 
-is(
+like(
     getFileOutput($logfile, sub { $logger->error('message'); }),
-    '[' . localtime() . '][error] message',
+    qr/^\[... ... .. ..:..:.. ....\]\[error\] message/,
     'error message formating'
 );
 
