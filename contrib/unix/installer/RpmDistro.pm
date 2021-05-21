@@ -12,7 +12,7 @@ BEGIN {
 
 use InstallerVersion;
 
-my %Packages = (
+my %RpmPackages = (
     "glpi-agent"                => qr/^inventory$/i,
     "glpi-agent-task-network"   => qr/^netdiscovery|netinventory|network$/i,
     "glpi-agent-task-collect"   => qr/^collect$/i,
@@ -22,7 +22,7 @@ my %Packages = (
     "glpi-agent-cron"           => 0,
 );
 
-my %Types = (
+my %RpmInstallTypes = (
     all     => [ qw(
         glpi-agent
         glpi-agent-task-network
@@ -42,7 +42,7 @@ sub init {
     my ($self) = @_;
 
     # Store installation status for each supported package
-    foreach my $rpm (keys(%Packages)) {
+    foreach my $rpm (keys(%RpmPackages)) {
         my $version = qx(rpm -q --queryformat '%{VERSION}-%{RELEASE}' $rpm);
         next if $?;
         $self->{_packages}->{$rpm} = $version;
@@ -64,11 +64,11 @@ sub install {
 
     my $type = $self->{_type} // "typical";
     my %pkgs = qw( glpi-agent 1 );
-    if ($Types{$type}) {
-        map { $pkgs{$_} = 1 } @{$Types{$type}};
+    if ($RpmInstallTypes{$type}) {
+        map { $pkgs{$_} = 1 } @{$RpmInstallTypes{$type}};
     } else {
         foreach my $task (split(/,/, $type)) {
-            my ($pkg) = grep { $Packages{$_} && $task =~ $Packages{$_} } keys(%Packages);
+            my ($pkg) = grep { $RpmPackages{$_} && $task =~ $RpmPackages{$_} } keys(%RpmPackages);
             $pkgs{$pkg} = 1 if $pkg;
         }
     }

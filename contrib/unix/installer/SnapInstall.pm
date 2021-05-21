@@ -34,9 +34,9 @@ sub install {
     # Check installed packages
     if ($self->{_snap}) {
         if ($self->{_snap}->{version} eq InstallerVersion::VERSION()) {
-            $self->verbose("glpip-agent still installed and up-to-date");
+            $self->verbose("glpi-agent still installed and up-to-date");
         } else {
-            $self->verbose("$pkg will be upgraded");
+            $self->verbose("glpi-agent will be upgraded");
             delete $self->{_snap};
         }
     }

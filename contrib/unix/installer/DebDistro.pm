@@ -12,7 +12,7 @@ BEGIN {
 
 use InstallerVersion;
 
-my %Packages = (
+my %DebPackages = (
     "glpi-agent"                => qr/^inventory$/i,
     "glpi-agent-task-network"   => qr/^netdiscovery|netinventory|network$/i,
     "glpi-agent-task-collect"   => qr/^collect$/i,
@@ -21,7 +21,7 @@ my %Packages = (
     #"glpi-agent-task-wakeonlan" => qr/^wakeonlan|wol$/i,
 );
 
-my %Types = (
+my %DebInstallTypes = (
     all     => [ qw(
         glpi-agent
         glpi-agent-task-network
@@ -40,8 +40,8 @@ sub init {
     my ($self) = @_;
 
     # Store installation status for each supported package
-    foreach my $deb (keys(%Packages)) {
-        my $version = qx(dpkg-query --show --showformat='\${Version}' $deb);
+    foreach my $deb (keys(%DebPackages)) {
+        my $version = qx(dpkg-query --show --showformat='\${Version}' $deb 2>/dev/null);
         next if $?;
         $version =~ s/^\d+://;
         $self->{_packages}->{$deb} = $version;
@@ -63,11 +63,11 @@ sub install {
 
     my $type = $self->{_type} // "typical";
     my %pkgs = qw( glpi-agent 1 );
-    if ($Types{$type}) {
-        map { $pkgs{$_} = 1 } @{$Types{$type}};
+    if ($DebInstallTypes{$type}) {
+        map { $pkgs{$_} = 1 } @{$DebInstallTypes{$type}};
     } else {
         foreach my $task (split(/,/, $type)) {
-            my ($pkg) = grep { $Packages{$_} && $task =~ $Packages{$_} } keys(%Packages);
+            my ($pkg) = grep { $DebPackages{$_} && $task =~ $DebPackages{$_} } keys(%DebPackages);
             $pkgs{$pkg} = 1 if $pkg;
         }
     }
