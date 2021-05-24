@@ -395,6 +395,9 @@ jobs:
         fi
         contrib/unix/make-linux-installer.sh --version $VERSION --rpm *.rpm \
             --deb *.deb --snap *.snap
+        ls -l
+        sha1sum *.rpm *.deb *.snap *.pl
+        sha256sum *.rpm *.deb *.snap *.pl
       shell: bash
     - name: Upload built installer artifacts
       uses: actions/upload-artifact@v2

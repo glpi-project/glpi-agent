@@ -46,11 +46,28 @@ sub init {
         $version =~ s/^\d+://;
         $self->{_packages}->{$deb} = $version;
     }
+
+    # Try to figure out installation type from installed packages
+    if ($self->{_packages} && !$self->{_type}) {
+        my $installed = join(",", sort keys(%{$self->{_packages}}));
+        foreach my $type (keys(%DebInstallTypes)) {
+            my $install_type = join(",", sort @{$DebInstallTypes{$type}});
+            if ($installed eq $install_type) {
+                $self->{_type} = $type;
+                last;
+            }
+        }
+        $self->verbose("Guessed installation type: $self->{_type}");
+    }
+
+    # Call parent init to figure out some defaults
+    $self->SUPER::init();
 }
 
 sub _extract_deb {
     my ($self, $deb) = @_;
     my $pkg = $deb."_".InstallerVersion::VERSION()."_all.deb";
+    $self->verbose("Extracting $pkg ...");
     $self->{_archive}->extract("pkg/deb/$pkg")
         or die "Failed to extract $pkg: $!\n";
     return $pkg;
@@ -74,6 +91,9 @@ sub install {
 
     # Check installed packages
     if ($self->{_packages}) {
+        # Auto-select still installed packages
+        map { $pkgs{$_} = 1 } keys(%{$self->{_packages}});
+
         foreach my $pkg (keys(%pkgs)) {
             if ($self->{_packages}->{$pkg}) {
                 if ($self->{_packages}->{$pkg} eq InstallerVersion::VERSION()) {
@@ -121,7 +141,7 @@ sub uninstall {
         @debs == 1 ? "Uninstalling glpi-agent package..." :
             "Uninstalling ".scalar(@debs)." glpi-agent related packages..."
     );
-    my $err = $self->run("apt purge @debs");
+    my $err = $self->run("apt -y purge @debs");
     die "Failed to uninstall glpi-agent\n" if $err;
 
     map { delete $self->{_packages}->{$_} } @debs;

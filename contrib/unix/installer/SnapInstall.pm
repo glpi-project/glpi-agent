@@ -44,6 +44,7 @@ sub install {
     if (!$self->{_snap}) {
         my ($snap) = grep { m|^pkg/snap/.*\.snap$| } $self->{_archive}->files()
             or die "No snap included in archive\n";
+        $self->verbose("Extracting $snap ...");
         $snap = $self->{_archive}->extract($snap);
         my $err = $self->run("snap install --classic --dangerous $snap");
         die "Failed to install glpi-agent snap package\n" if $err;

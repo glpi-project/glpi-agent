@@ -220,8 +220,15 @@ ARCHIVE_DEF
     done
 fi
 
-# install script
-cp -a glpi-agent-linux-installer.pl $HERE/glpi-agent-$VERSION-$DISTRO-installer.pl
-chmod +x $HERE/glpi-agent-$VERSION-$DISTRO-installer.pl
+if ! perl -c glpi-agent-linux-installer.pl 2>/dev/null; then
+    echo "Failed to build installer:"
+    perl -c glpi-agent-linux-installer.pl
+    exit 1
+fi
 
-#~ rm -rf pkg config glpi-agent-linux-installer.pl
+# install script
+chmod +x glpi-agent-linux-installer.pl
+cp -a glpi-agent-linux-installer.pl $HERE/glpi-agent-$VERSION-$DISTRO-installer.pl
+
+cd ..
+rm -rf build

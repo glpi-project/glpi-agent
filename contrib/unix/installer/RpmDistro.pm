@@ -47,11 +47,28 @@ sub init {
         next if $?;
         $self->{_packages}->{$rpm} = $version;
     }
+
+    # Try to figure out installation type from installed packages
+    if ($self->{_packages} && !$self->{_type}) {
+        my $installed = join(",", sort keys(%{$self->{_packages}}));
+        foreach my $type (keys(%RpmInstallTypes)) {
+            my $install_type = join(",", sort @{$RpmInstallTypes{$type}});
+            if ($installed eq $install_type) {
+                $self->{_type} = $type;
+                last;
+            }
+        }
+        $self->verbose("Guessed installation type: $self->{_type}");
+    }
+
+    # Call parent init to figure out some defaults
+    $self->SUPER::init();
 }
 
 sub _extract_rpm {
     my ($self, $rpm) = @_;
     my $pkg = "$rpm-".InstallerVersion::VERSION().".noarch.rpm";
+    $self->verbose("Extracting $pkg ...");
     $self->{_archive}->extract("pkg/rpm/$pkg")
         or die "Failed to extract $pkg: $!\n";
     return $pkg;
@@ -76,6 +93,9 @@ sub install {
 
     # Check installed packages
     if ($self->{_packages}) {
+        # Auto-select still installed packages
+        map { $pkgs{$_} = 1 } keys(%{$self->{_packages}});
+
         foreach my $pkg (keys(%pkgs)) {
             if ($self->{_packages}->{$pkg}) {
                 if ($self->{_packages}->{$pkg} eq InstallerVersion::VERSION()) {

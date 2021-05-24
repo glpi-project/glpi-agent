@@ -8,7 +8,6 @@ BEGIN {
     $INC{"Archive.pm"} = __FILE__;
 }
 
-use Fcntl qw(SEEK_CUR);
 use IO::Handle;
 
 my @files;
@@ -47,6 +46,15 @@ sub files {
     return @{$self->{_files}};
 }
 
+sub list {
+    my ($self) = @_;
+    foreach my $file (@files) {
+        my ($name, $length) = @{$file};
+        print sprintf("%-60s    %8d bytes\n", $name, $length);
+    }
+    exit(0);
+}
+
 sub content {
     my ($self, $file) = @_;
     return $self->{_datas}->{$file} if $self->{_datas};
@@ -65,6 +73,8 @@ sub extract {
         ($name) = $file =~ m|/([^/]+)$|
             or die "Can't extract name from $file\n";
     }
+
+    unlink $name if -e $name;
 
     open my $out, ">:raw", $name
         or die "Can't open $name for writing: $!\n";

@@ -25,10 +25,13 @@ if ($options->{help}) {
     exit 0;
 }
 
+my $version = InstallerVersion::VERSION();
 if ($options->{version}) {
-    print "GLPI-Agent installer for ", InstallerVersion::DISTRO(), " v", InstallerVersion::VERSION(), "\n";
+    print "GLPI-Agent installer for ", InstallerVersion::DISTRO(), " v$version\n";
     exit 0;
 }
+
+Archive->new()->list() if $options->{list};
 
 my $uninstall = delete $options->{uninstall};
 my $install   = delete $options->{install};
@@ -43,15 +46,27 @@ die "--reinstall and --uninstall options are mutually exclusive\n" if $reinstall
 
 my $distro = LinuxDistro->new($options);
 
-$distro->uninstall($clean) if $uninstall || $reinstall;
+my $installed = $distro->installed;
+my $bypass = $extract && $extract ne "keep" ? 1 : 0;
+if ($installed && !$uninstall && !$reinstall && !$bypass && $version =~ /-git\w+$/ && $version ne $installed) {
+    # Force reinstallation for development version if still installed
+    $distro->verbose("Forcing reinstallation of $version over $installed...");
+    $reinstall = 1
+}
 
-$distro->clean() if $clean;
+$distro->uninstall($clean) if !$bypass && ($uninstall || $reinstall);
+
+$distro->clean() if !$bypass && $clean;
 
 unless ($uninstall) {
     my $archive = Archive->new();
     $distro->extract($archive, $extract);
-    $distro->info("Installing glpi-agent v".InstallerVersion::VERSION()."...");
+    $distro->info("Installing glpi-agent v$version...");
     $distro->install() if $install || $reinstall;
+}
+
+END {
+    $distro->clean_packages() if $distro;
 }
 
 exit(0);

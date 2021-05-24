@@ -21,6 +21,7 @@ my @options = (
     'force',
     'help|h',
     'install',
+    'list',
     'local|l=s',
     'logger=s',
     'logfacility=s',
@@ -160,6 +161,7 @@ glpi-agent-linux-installer [options]
     --clean                        clean everything when uninstalling or before
                                    installing (false)
     --reinstall                    uninstall and then reinstall the agent (false)
+    --list                         list embedded packages
     --extract=WHAT                 don't install but extract packages (nothing)
                                      - "nothing": still install but don't keep extracted packages
                                      - "keep": still install but keep extracted packages

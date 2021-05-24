@@ -77,7 +77,7 @@ sub new {
         _cron       => delete $options->{cron}    // 0,
         _runnow     => delete $options->{runnow}  // 0,
         _dont_ask   => delete $options->{"no-question"} // 0,
-        _type       => delete $options->{type}    // "typical",
+        _type       => delete $options->{type},
         _options    => $options,
         _cleanpkg   => 1,
     };
@@ -123,6 +123,14 @@ sub new {
 }
 
 sub init {
+    my ($self) = @_;
+    $self->{_type} = "typical" unless defined($self->{_type});
+}
+
+sub installed {
+    my ($self) = @_;
+    my ($installed) = $self->{_packages} ? values %{$self->{_packages}} : ();
+    return $installed;
 }
 
 sub info {
@@ -247,8 +255,8 @@ sub configure {
     # Check if a configuration exists in archive
     my @configs = grep { m{^config/[^/]+\.(cfg|crt|pem)$} } $self->{_archive}->files();
 
-    # Ask configuration when necessary
-    if (!$self->{_silent} && !$self->{_dont_ask}) {
+    # Ask configuration unless in silent mode, request or server or local is given as option
+    if (!$self->{_silent} && !$self->{_dont_ask} && !($self->{_options}->{server} || $self->{_options}->{local})) {
         my (@cfg) = grep { m/\.cfg$/ } @configs;
         if (@cfg) {
             # Check if configuration provides server or local
@@ -371,7 +379,7 @@ sub install {
             system( $self->{_bin} .($self->verbose ? "" : " >/dev/null 2>&1"));
         }
     }
-    $self->clean_packages() if $self->{_cleanpkg};
+    $self->clean_packages();
 }
 
 sub clean {
@@ -423,9 +431,10 @@ sub install_cron {
 
 sub clean_packages {
     my ($self) = @_;
-    if (ref($self->{_installed}) eq 'ARRAY') {
+    if ($self->{_cleanpkg} && ref($self->{_installed}) eq 'ARRAY') {
         $self->verbose("Cleaning extracted packages");
         unlink @{$self->{_installed}};
+        delete $self->{_installed};
     }
 }
 
