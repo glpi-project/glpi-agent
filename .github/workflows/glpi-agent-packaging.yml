@@ -395,6 +395,8 @@ jobs:
         fi
         contrib/unix/make-linux-installer.sh --version $VERSION --rpm *.rpm \
             --deb *.deb --snap *.snap
+        mv glpi-agent-$VERSION-linux-installer.pl glpi-agent-$VERSION-with-snap-linux-installer.pl
+        contrib/unix/make-linux-installer.sh --version $VERSION --rpm *.rpm --deb *.deb
         ls -l
         sha1sum *.rpm *.deb *.snap *.pl
         sha256sum *.rpm *.deb *.snap *.pl
@@ -405,11 +407,16 @@ jobs:
         name: Linux-Installer-Build
         path: |
           glpi-agent-*-linux-installer.pl
-    - name: Upload Installer
-      id: upload-linux-installer-asset
+    - name: Upload linux installers
+      id: upload-linux-installer-assets
       if: startsWith(github.ref, 'refs/tags/1.')
       run: |
-        hub release edit -m "" -a glpi-agent-*-linux-installer.pl ${{ needs.create-release.outputs.tag }}
+        A_OPTS=""
+        for installer in glpi-agent-*-linux-installer.pl
+        do
+          A_OPTS="$A_OPTS -a $installer"
+        done
+        hub release edit -m "" $A_OPTS ${{ needs.create-release.outputs.tag }}
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
