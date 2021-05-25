@@ -85,7 +85,7 @@ sub new {
 
     my $distro = delete $options->{distro};
     my $force  = delete $options->{force};
-    my $snap   = delete $options->{force} // 0;
+    my $snap   = delete $options->{snap} // 0;
 
     my ($name, $version, $release);
     ($name, $version, $release, $class) = _getDistro();
