@@ -66,11 +66,11 @@ sub init {
 
 sub _extract_deb {
     my ($self, $deb) = @_;
-    my $pkg = $ENV{PWD}."/".$deb."_".InstallerVersion::VERSION()."_all.deb";
+    my $pkg = $deb."_".InstallerVersion::VERSION()."_all.deb";
     $self->verbose("Extracting $pkg ...");
     $self->{_archive}->extract("pkg/deb/$pkg")
         or die "Failed to extract $pkg: $!\n";
-    return $pkg;
+    return $ENV{PWD}."/".$pkg;
 }
 
 sub install {
@@ -125,7 +125,7 @@ sub install {
         }
 
         my @debs = sort values(%pkgs);
-        my $command = "apt -y install @debs";
+        my $command = "apt -y install @debs 2>/dev/null";
         my $err = $self->run($command);
         die "Failed to install glpi-agent\n" if $err;
         $self->{_installed} = \@debs;
@@ -149,7 +149,7 @@ sub uninstall {
         @debs == 1 ? "Uninstalling glpi-agent package..." :
             "Uninstalling ".scalar(@debs)." glpi-agent related packages..."
     );
-    my $err = $self->run("apt -y purge --autoremove @debs");
+    my $err = $self->run("apt -y purge --autoremove @debs 2>/dev/null");
     die "Failed to uninstall glpi-agent\n" if $err;
 
     map { delete $self->{_packages}->{$_} } @debs;
