@@ -66,7 +66,7 @@ sub init {
 
 sub _extract_deb {
     my ($self, $deb) = @_;
-    my $pkg = $deb."_".InstallerVersion::VERSION()."_all.deb";
+    my $pkg = $ENV{PWD}."/".$deb."_".InstallerVersion::VERSION()."_all.deb";
     $self->verbose("Extracting $pkg ...");
     $self->{_archive}->extract("pkg/deb/$pkg")
         or die "Failed to extract $pkg: $!\n";
@@ -106,6 +106,9 @@ sub install {
         }
     }
 
+    # Don't install skipped packages
+    map { delete $pkgs{$_} } keys(%{$self->{_skip}});
+
     my @pkgs = sort keys(%pkgs);
     if (@pkgs) {
         # The archive may have been prepared for a specific distro with expected deps
@@ -114,6 +117,11 @@ sub install {
 
         foreach my $pkg (@pkgs) {
             $pkgs{$pkg} = $self->_extract_deb($pkg);
+        }
+
+        if (!$self->{_skip}->{dmidecode} && qx{uname -m 2>/dev/null} =~ /^(i.86|x86_64)$/ && ! -x "dmidecode") {
+            $self->verbose("Trying to also install dmidecode ...");
+            $pkgs{dmidecode} = "dmidecode";
         }
 
         my @debs = sort values(%pkgs);
@@ -141,7 +149,7 @@ sub uninstall {
         @debs == 1 ? "Uninstalling glpi-agent package..." :
             "Uninstalling ".scalar(@debs)." glpi-agent related packages..."
     );
-    my $err = $self->run("apt -y purge @debs");
+    my $err = $self->run("apt -y purge --autoremove @debs");
     die "Failed to uninstall glpi-agent\n" if $err;
 
     map { delete $self->{_packages}->{$_} } @debs;

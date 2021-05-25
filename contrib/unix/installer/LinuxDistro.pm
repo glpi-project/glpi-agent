@@ -80,6 +80,7 @@ sub new {
         _type       => delete $options->{type},
         _options    => $options,
         _cleanpkg   => 1,
+        _skip       => {},
     };
 
     my $distro = delete $options->{distro};
@@ -115,6 +116,12 @@ sub new {
     } elsif ($self->{_cron}) {
         $self->info("Disabling cron as --service option is used");
         $self->{_cron} = 0;
+    }
+
+    # Handle package skipping option
+    my $skip = delete $options->{skip};
+    if ($skip) {
+        map { $self->{_skip}->{$_} } split(/,+/, $skip);
     }
 
     $self->init();

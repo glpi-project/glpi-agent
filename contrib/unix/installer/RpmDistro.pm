@@ -108,6 +108,9 @@ sub install {
         }
     }
 
+    # Don't install skipped packages
+    map { delete $pkgs{$_} } keys(%{$self->{_skip}});
+
     my @pkgs = sort keys(%pkgs);
     if (@pkgs) {
         # The archive may have been prepared for a specific distro with expected deps
@@ -116,6 +119,11 @@ sub install {
 
         foreach my $pkg (@pkgs) {
             $pkgs{$pkg} = $self->_extract_rpm($pkg);
+        }
+
+        if (!$self->{_skip}->{dmidecode} && qx{uname -m 2>/dev/null} =~ /^(i.86|x86_64)$/ && ! -x "dmidecode") {
+            $self->verbose("Trying to also install dmidecode ...");
+            $pkgs{dmidecode} = "dmidecode";
         }
 
         my @rpms = sort values(%pkgs);

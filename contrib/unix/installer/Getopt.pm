@@ -41,6 +41,7 @@ my @options = (
     'server|s=s',
     'service=i',
     'silent|S',
+    'skip=s',
     'snap',
     'tag|t=s',
     'tasks=s',
@@ -182,6 +183,7 @@ glpi-agent-linux-installer [options]
     --force                        try to force installation
     --distro                       force distro name when --force option is used
     --snap                         install snap package instead of using system packaging
+    --skip=PKG_LIST                don't try to install listed packages
     -h --help                      print this help
 HELP
 }
