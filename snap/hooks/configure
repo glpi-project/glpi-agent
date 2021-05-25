@@ -16,7 +16,11 @@ _get_from_conf () {
 
 _set () {
     snapctl set $1="$2"
-    echo "$1 = $2" > "$SNAP_DATA/$1.cfg"
+    if [ -z "$2" ]; then
+        rm -f "$SNAP_DATA/$1.cfg"
+    else
+        echo "$1 = $2" > "$SNAP_DATA/$1.cfg"
+    fi
 }
 
 unset RESTART
@@ -27,14 +31,16 @@ do
     current=$(_get $conf)
     if [ ! -e "$SNAP_DATA/$1.cfg" ]; then
         if [ -z "$current" ]; then
-            _set $conf $default
             continue
         fi
-        previous=""
+        previous="$default"
     else
         previous=$(_get_from_conf $conf)
     fi
-    if [ "$current" != "$previous" ]; then
+    if [ "$current" = "$default" ]; then
+        _set $conf
+        RESTART="yes"
+    elif [ "$current" != "$previous" ]; then
         _set $conf $current
         RESTART="yes"
     fi

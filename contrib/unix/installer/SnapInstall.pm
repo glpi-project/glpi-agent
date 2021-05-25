@@ -21,7 +21,7 @@ sub init {
     $self->{_bin} = "/snap/bin/glpi-agent";
 
     # Store installation status of the current snap
-    my ($version) = qx(snap info glpi-agent) =~ /^installed:\s+(\S+)\s/m;
+    my ($version) = qx{snap info glpi-agent 2>/dev/null} =~ /^installed:\s+(\S+)\s/m;
     return if $?;
     $self->{_snap}->{version} = $version;
 }
@@ -33,7 +33,7 @@ sub install {
 
     # Check installed packages
     if ($self->{_snap}) {
-        if ($self->{_snap}->{version} eq InstallerVersion::VERSION()) {
+        if (InstallerVersion::VERSION() =~ /^$self->{_snap}->{version}/ ) {
             $self->verbose("glpi-agent still installed and up-to-date");
         } else {
             $self->verbose("glpi-agent will be upgraded");
@@ -44,8 +44,9 @@ sub install {
     if (!$self->{_snap}) {
         my ($snap) = grep { m|^pkg/snap/.*\.snap$| } $self->{_archive}->files()
             or die "No snap included in archive\n";
+        $snap =~ s|^pkg/snap/||;
         $self->verbose("Extracting $snap ...");
-        $snap = $self->{_archive}->extract($snap);
+        die "Failed to extract $snap\n" unless $self->{_archive}->extract("pkg/snap/$snap");
         my $err = $self->run("snap install --classic --dangerous $snap");
         die "Failed to install glpi-agent snap package\n" if $err;
         $self->{_installed} = [ $snap ];
@@ -73,7 +74,7 @@ sub uninstall {
     $self->info("Uninstalling glpi-agent snap...");
     my $command = "snap remove glpi-agent";
     $command .= " --purge" if $purge;
-    my $err = $self->run();
+    my $err = $self->run($command);
     die "Failed to uninstall glpi-agent snap\n" if $err;
 
     # Remove cron file if found
