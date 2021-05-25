@@ -50,6 +50,7 @@ Linux installer for redhat/centos/debian/ubuntu, including snap install support 
 [glpi-agent_${TAG}_amd64.snap](../../releases/download/$TAG/glpi-agent_${TAG}_amd64.snap)
 
 ### Debian/Ubuntu packages
+Better use [glpi-agent-${TAG}-linux-installer.pl](../../releases/download/$TAG/glpi-agent-${TAG}-linux-installer.pl) when possible.
 Related agent task |Package
 ---|:---
 Inventory| [glpi-agent_${TAG}${DEBREV}_all.deb](../../releases/download/$TAG/glpi-agent_${TAG}${DEBREV}_all.deb)
@@ -59,7 +60,7 @@ Collect | [glpi-agent-task-collect_${TAG}${DEBREV}_all.deb](../../releases/downl
 Deploy | [glpi-agent-task-deploy_${TAG}${DEBREV}_all.deb](../../releases/download/$TAG/glpi-agent-task-deploy_${TAG}${DEBREV}_all.deb)
 
 ### RPM packages
-RPM packages are arch independents and installation may require some repository setups.
+RPM packages are arch independents and installation may require some repository setups, better use [glpi-agent-${TAG}-linux-installer.pl](../../releases/download/$TAG/glpi-agent-${TAG}-linux-installer.pl) when possible.
 Task |Packages
 ---|:---
 Inventory| [glpi-agent-${TAG}${RPMREV}.noarch.rpm](../../releases/download/$TAG/glpi-agent-${TAG}${RPMREV}.noarch.rpm)
