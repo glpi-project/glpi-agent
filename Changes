@@ -20,6 +20,7 @@ inventory:
 * Enhanced EV2785 Eizo monitors support
 * Removed support of no more used legacy values
 * macosx: Add Apple M1 support
+* win32: Fix OS Version on win10 20H1 and 21H1
 
 netdiscovery/netinventory:
 * Add support for SonicWall devices
