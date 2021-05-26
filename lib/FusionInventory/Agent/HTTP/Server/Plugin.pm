@@ -256,6 +256,9 @@ configuration load. The plugin should carefully check loaded values when used.
 
 Initializes a plugin, by default, this loads a configuration file if defined and found.
 
+A calling plugin child should always test if it is disabled before continuing some
+other initializations.
+
 =head2 $plugin->config($name, $value)
 
 Set named configuration value to $value if defined.

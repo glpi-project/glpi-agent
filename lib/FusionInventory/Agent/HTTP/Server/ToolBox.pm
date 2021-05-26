@@ -64,6 +64,9 @@ sub init {
 
     $self->SUPER::init(@_);
 
+    # Don't do more initialization if disabled
+    return if $self->disabled();
+
     $self->{request} = 'home';
     $self->{_pages}  = {};
     $self->{_ajax}   = {};
