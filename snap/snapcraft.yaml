@@ -170,6 +170,8 @@ parts:
       cp -a etc/*.cfg $SNAPCRAFT_PART_INSTALL/etc/glpi-agent
       # We will use SNAP_DATA folder to support configuration with snap command
       echo "include /var/snap/glpi-agent/current" >>$SNAPCRAFT_PART_INSTALL/etc/glpi-agent/agent.cfg
+      # HTTP plugins configuration files should include .local file from /var/snap/glpi-agent/current
+      sed -ri -e 's/^include "/include "\/snap\/glpi-agent\/current/' $SNAPCRAFT_PART_INSTALL/etc/glpi-agent/*-plugin.cfg
       # Script should start with built perl
       sed -ri -e 's/#!/#!\/snap\/glpi-agent\/current/' $SNAPCRAFT_PART_INSTALL/usr/bin/glpi-*
     build-packages:
