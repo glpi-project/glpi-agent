@@ -1,57 +1,96 @@
 name: GLPI Agent Packaging
 
-on: push
+on:
+  push:
+  pull_request:
+    branches:
+      - develop
+  schedule:
+    - cron: '20 5 * * *' # run at 5 AM UTC
 
 jobs:
-  create-release:
+  setup-release:
 
     runs-on: ubuntu-latest
 
-    if: startsWith(github.ref, 'refs/tags/1.')
-
     outputs:
-      tag: ${{ steps.extract-tag.outputs.tag }}
+      version: ${{ steps.set-version.outputs.version }}
       upload_url: ${{ steps.create-tagged-release.outputs.upload_url }}
+      create-release: ${{ steps.set-version.outputs.create-release }}
+      tag_name: ${{ steps.set-version.outputs.tag_name }}
 
     steps:
     - uses: actions/checkout@v2
-    - name: Extract tag
-      id: extract-tag
+    - name: Set version
+      id: set-version
       run: |
-        TAG="${GITHUB_REF#*refs/tags/}"
-        echo "::set-output name=tag::$TAG"
-        echo "::set-output name=version::${TAG%%-*}"
-        case "${TAG#*-}" in
-            $TAG)
-                echo "::set-output name=revname::"
+        if [ -z "${GITHUB_REF#*refs/tags/*}" ]; then
+            VERSION="${GITHUB_REF#*refs/tags/}"
+            echo "::set-output name=create-release::true"
+            echo "::set-output name=tag_name::$VERSION"
+        else
+            VERSION=$(perl -Ilib -MFusionInventory::Agent::Version -e 'print $FusionInventory::Agent::Version::VERSION')
+            VERSION=${VERSION%-dev}-git${GITHUB_SHA:0:8}
+            if [ "${{ github.event_name }}" = "schedule" ]; then
+                # Check if we had any commit during the last 24 hours
+                if [ -z "$( git rev-list -n 1 --after="24 hours" ${{ github.sha }} )" ]; then
+                    echo "::set-output name=create-release::false"
+                else
+                    echo "::set-output name=create-release::true"
+                    echo "::set-output name=tag_name::nighly-release"
+                    # We also need to delete previous nightly release if the tag exists
+                    if [ -n "$(git tag --list nighly-release)" ]; then
+                        gh release delete nightly-release -y
+                        gh api /repos/glpi-project/glpi-agent/git/refs/tags/nighly-release --method DELETE
+                    fi
+                fi
+            else
+                echo "::set-output name=create-release::false"
+            fi
+        fi
+        echo "::set-output name=version::$VERSION"
+        case "${VERSION#*-}" in
+            $VERSION)
+                echo "::set-output name=revname:: v$VERSION"
+                # Don't publish releases immediatly so we can edit the description
+                echo "::set-output name=draft::true"
+                echo "::set-output name=prerelease::false"
                 ;;
             test*)
-                echo "::set-output name=revname:: Test release ${TAG#*-test}"
+                echo "::set-output name=revname:: v${VERSION%-test*} Test release ${VERSION#*-test}"
+                echo "::set-output name=draft::false"
+                echo "::set-output name=prerelease::true"
                 ;;
             beta*)
-                echo "::set-output name=revname:: Beta release ${TAG#*-beta}"
+                echo "::set-output name=revname:: v${VERSION%-beta*} Beta release ${VERSION#*-beta}"
+                echo "::set-output name=draft::false"
+                echo "::set-output name=prerelease::true"
                 ;;
             *)
-                echo "::set-output name=revname:: rev ${TAG#*-}"
+                echo "::set-output name=revname:: v$VERSION Development release"
+                echo "::set-output name=draft::false"
+                echo "::set-output name=prerelease::true"
                 ;;
         esac
       shell: bash
     - name: Generate release description
       id: github-release-body
+      if: ${{ steps.set-version.outputs.create-release }}
       run: |
-        tools/github-release-description.sh
+        tools/github-release-description.sh --version ${{ steps.set-version.outputs.version }}
       shell: bash
     - name: Create Tagged Release
       id: create-tagged-release
       uses: actions/create-release@v1
+      if: ${{ steps.set-version.outputs.create-release }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: ${{ github.ref }}
-        release_name: GLPI Agent ${{ steps.extract-tag.outputs.version }}${{ steps.extract-tag.outputs.revname }}
+        tag_name: ${{ steps.set-version.outputs.tag_name }}
+        release_name: GLPI Agent ${{ steps.set-version.outputs.revname }}
         body_path: release-description.md
-        draft: ${{ steps.extract-tag.outputs.revname == '' }}      # Don't publish releases immediatly so we can edit the description
-        prerelease: ${{ steps.extract-tag.outputs.revname != '' }} # Mark as prerelease if we publish immediatly when a revision is set on tag
+        draft: ${{ steps.set-version.outputs.draft }}
+        prerelease: ${{ steps.set-version.outputs.prerelease }}
 
   windows-packaging:
 
@@ -60,8 +99,7 @@ jobs:
       matrix:
         arch: [ x64, x86 ]
 
-    if: always()
-    needs: create-release
+    needs: setup-release
 
     steps:
     - uses: actions/checkout@v2
@@ -124,25 +162,25 @@ jobs:
         path: C:\Strawberry-perl-for-GLPI-Agent_build\build\msi
     - name: Upload Portable Archive Asset
       id: upload-portable-archive-asset
-      if: startsWith(github.ref, 'refs/tags/1.')
+      if: ${{ needs.setup-release.outputs.create-release }}
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\glpi-agent-${{ needs.create-release.outputs.tag }}-${{ matrix.arch }}.zip
-        asset_name: glpi-agent-${{ needs.create-release.outputs.tag }}-${{ matrix.arch }}.zip
+        upload_url: ${{ needs.setup-release.outputs.upload_url }}
+        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\glpi-agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.zip
+        asset_name: glpi-agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.zip
         asset_content_type: application/zip
     - name: Upload MSI Installer Asset
       id: upload-msi-asset
-      if: startsWith(github.ref, 'refs/tags/1.')
+      if: ${{ needs.setup-release.outputs.create-release }}
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\GLPI-Agent-${{ needs.create-release.outputs.tag }}-${{ matrix.arch }}.msi
-        asset_name: GLPI-Agent-${{ needs.create-release.outputs.tag }}-${{ matrix.arch }}.msi
+        upload_url: ${{ needs.setup-release.outputs.upload_url }}
+        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\GLPI-Agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.msi
+        asset_name: GLPI-Agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.msi
         asset_content_type: application/x-msi
 
   macosx-packaging:
@@ -152,8 +190,7 @@ jobs:
       matrix:
         arch: [ x86_64, arm64 ]
 
-    if: always()
-    needs: create-release
+    needs: setup-release
 
     steps:
     - uses: actions/checkout@v2
@@ -189,40 +226,39 @@ jobs:
           contrib/macosx/build/*.dmg
     - name: Upload MacOSX PKG installer
       id: upload-macosx-pkg-asset
-      if: startsWith(github.ref, 'refs/tags/1.')
+      if: ${{ needs.setup-release.outputs.create-release }}
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: contrib/macosx/build/GLPI-Agent-${{ needs.create-release.outputs.tag }}.pkg
-        asset_name: GLPI-Agent-${{ needs.create-release.outputs.tag }}.pkg
+        upload_url: ${{ needs.setup-release.outputs.upload_url }}
+        asset_path: contrib/macosx/build/GLPI-Agent-${{ needs.setup-release.outputs.version }}.pkg
+        asset_name: GLPI-Agent-${{ needs.setup-release.outputs.version }}.pkg
         asset_content_type: application/octet-stream
     - name: Upload MacOSX DMG installer image
       id: upload-macosx-dmg-asset
-      if: startsWith(github.ref, 'refs/tags/1.')
+      if: ${{ needs.setup-release.outputs.create-release }}
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: contrib/macosx/build/GLPI-Agent-${{ needs.create-release.outputs.tag }}.dmg
-        asset_name: GLPI-Agent-${{ needs.create-release.outputs.tag }}.dmg
+        upload_url: ${{ needs.setup-release.outputs.upload_url }}
+        asset_path: contrib/macosx/build/GLPI-Agent-${{ needs.setup-release.outputs.version }}.dmg
+        asset_name: GLPI-Agent-${{ needs.setup-release.outputs.version }}.dmg
         asset_content_type: application/octet-stream
 
   linux-snap-packaging:
 
     runs-on: ubuntu-latest
 
-    if: always()
-    needs: create-release
+    needs: setup-release
 
     steps:
     - uses: actions/checkout@v2
     - uses: snapcore/action-build@v1
       id: snapcraft
       env:
-        TERM: ${{ env.TERM }}:${{ github.ref }}
+        TERM: ${{ env.TERM }}:${{ needs.setup-release.outputs.version }}
     - name: Upload Snap built artifacts
       uses: actions/upload-artifact@v2
       with:
@@ -230,12 +266,12 @@ jobs:
         path: ${{ steps.snapcraft.outputs.snap }}
     - name: Upload Snap Package
       id: upload-linux-snap-asset
-      if: startsWith(github.ref, 'refs/tags/1.')
+      if: ${{ needs.setup-release.outputs.create-release }}
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        upload_url: ${{ needs.setup-release.outputs.upload_url }}
         asset_path: ${{ steps.snapcraft.outputs.snap }}
         asset_name: ${{ steps.snapcraft.outputs.snap }}
         asset_content_type: application/octet-stream
@@ -244,8 +280,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    if: always()
-    needs: create-release
+    needs: setup-release
 
     steps:
     - uses: actions/checkout@v2
@@ -271,14 +306,15 @@ jobs:
       run: |
         echo "::set-output name=debpath:: $(dirname $PWD)"
         # make -gitXXXXXXXX release when not tagged
-        if [ -z "${{ needs.create-release.outputs.tag }}" -a -n "$GITHUB_SHA" ]; then
-            VERSION=$(perl -Ilib -MFusionInventory::Agent::Version -e 'print $FusionInventory::Agent::Version::VERSION')
-            tools/make-release.sh --no-git ${VERSION%-dev}-git${GITHUB_SHA:0:8}
+        if [ -z "${VERSION#*-*}" ]; then
+            tools/make-release.sh --no-git $VERSION
         fi
         # DH_COMPAT is needed on current ubuntu-latest, it could be removed after switching to Ubuntu 20.04
         export DH_COMPAT=11
         dpkg-buildpackage -d -b --no-sign
       shell: bash
+      env:
+        VERSION: ${{ needs.setup-release.outputs.version }}
     - name: Run lintian
       run: |
         sudo apt -y install lintian
@@ -294,14 +330,9 @@ jobs:
           ${{ steps.debbuild.outputs.debpath }}/*.changes
     - name: Upload Deb Packages
       id: upload-linux-deb-asset
-      if: startsWith(github.ref, 'refs/tags/1.')
+      if: ${{ needs.setup-release.outputs.create-release }}
       run: |
-        A_OPTS=""
-        for deb in ../*.deb
-        do
-          A_OPTS="$A_OPTS -a $deb"
-        done
-        hub release edit -m "" $A_OPTS ${{ needs.create-release.outputs.tag }}
+        gh release upload ${{ needs.setup-release.outputs.tag_name }} ../*.deb
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -310,8 +341,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    if: always()
-    needs: create-release
+    needs: setup-release
 
     steps:
     - uses: actions/checkout@v2
@@ -353,15 +383,10 @@ jobs:
           ${{ steps.rpmbuild.outputs.srcdir }}/glpi-agent-*.tar.gz
     - name: Upload RPM Packages
       id: upload-linux-rpm-asset
-      if: startsWith(github.ref, 'refs/tags/1.')
+      if: ${{ needs.setup-release.outputs.create-release }}
       run: |
-        A_OPTS=""
         RPMDIR=`rpm --eval "%{_rpmdir}"`
-        for rpm in $RPMDIR/*/*.rpm
-        do
-          A_OPTS="$A_OPTS -a $rpm"
-        done
-        hub release edit -m "" $A_OPTS ${{ needs.create-release.outputs.tag }}
+        gh release upload ${{ needs.setup-release.outputs.tag_name }} $RPMDIR/*/*.rpm
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -370,8 +395,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    if: always()
-    needs: [ create-release, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging ]
+    needs: [ setup-release, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging ]
 
     steps:
     - uses: actions/checkout@v2
@@ -387,12 +411,6 @@ jobs:
     - name: Build installer
       id: installer-build
       run: |
-        if [ -z "${{ needs.create-release.outputs.tag }}" -a -n "$GITHUB_SHA" ]; then
-            VERSION=$(perl -Ilib -MFusionInventory::Agent::Version -e 'print $FusionInventory::Agent::Version::VERSION')
-            VERSION=${VERSION%-dev}-git${GITHUB_SHA:0:8}
-        else
-            VERSION=${{ needs.create-release.outputs.tag }}
-        fi
         contrib/unix/make-linux-installer.sh --version $VERSION --rpm *.rpm \
             --deb *.deb --snap *.snap
         mv glpi-agent-$VERSION-linux-installer.pl glpi-agent-$VERSION-with-snap-linux-installer.pl
@@ -401,6 +419,8 @@ jobs:
         sha1sum *.rpm *.deb *.snap *.pl
         sha256sum *.rpm *.deb *.snap *.pl
       shell: bash
+      env:
+        VERSION: ${{ needs.setup-release.outputs.version }}
     - name: Upload built installer artifacts
       uses: actions/upload-artifact@v2
       with:
@@ -409,14 +429,9 @@ jobs:
           glpi-agent-*-linux-installer.pl
     - name: Upload linux installers
       id: upload-linux-installer-assets
-      if: startsWith(github.ref, 'refs/tags/1.')
+      if: ${{ needs.setup-release.outputs.create-release }}
       run: |
-        A_OPTS=""
-        for installer in glpi-agent-*-linux-installer.pl
-        do
-          A_OPTS="$A_OPTS -a $installer"
-        done
-        hub release edit -m "" $A_OPTS ${{ needs.create-release.outputs.tag }}
+        gh release upload ${{ needs.setup-release.outputs.tag_name }} glpi-agent-*-linux-installer.pl
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

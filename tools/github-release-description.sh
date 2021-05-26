@@ -4,6 +4,17 @@ set -e
 
 TAG="${GITHUB_REF#*refs/tags/}"
 
+while [ -n "$1" ]
+do
+    case "$1" in
+        --version|-v)
+            shift
+            TAG="$1"
+            ;;
+    esac
+    shift
+done
+
 if [ -z "$TAG" -o "$TAG" == "$GITHUB_REF" ]; then
     echo "GITHUB_REF is not referecing a tag" >&2
     exit 1

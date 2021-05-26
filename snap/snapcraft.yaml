@@ -142,15 +142,15 @@ parts:
     plugin: make
     source: .
     build-environment:
-     - GITHUB_REF: "${TERM#*:}"
+     - VERSION: "${TERM#*:}"
      - TERM: "${TERM%:*}"
     override-build: |
       export PATH=$SNAPCRAFT_STAGE/usr/share/glpi-agent/bin:$PATH
-      VERSION=$( perl -Ilib -MFusionInventory::Agent::Version -e 'print $FusionInventory::Agent::Version::VERSION,"\n"' )
-      if [ -n "$GITHUB_REF" -a -z "${GITHUB_REF%refs/tags/*}" ]; then
-        VERSION="${GITHUB_REF#*refs/tags/}"
-      elif [ -d .git ]; then
-        VERSION="${VERSION%-dev}-git$(git rev-parse --short HEAD)"
+      if [ -z "$VERSION" ]; then
+        VERSION=$( perl -Ilib -MFusionInventory::Agent::Version -e 'print $FusionInventory::Agent::Version::VERSION,"\n"' )
+        if [ -d .git ]; then
+          VERSION="${VERSION%-dev}-git$(git rev-parse --short HEAD)"
+        fi
       fi
       snapcraftctl set-version "$VERSION"
       case "$VERSION" in
