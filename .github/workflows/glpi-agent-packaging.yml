@@ -18,6 +18,7 @@ jobs:
       upload_url: ${{ steps.create-tagged-release.outputs.upload_url }}
       create-release: ${{ steps.set-version.outputs.create-release }}
       tag_name: ${{ steps.set-version.outputs.tag_name }}
+      build: ${{ steps.set-version.outputs.build }}
 
     steps:
     - uses: actions/checkout@v2
@@ -26,7 +27,9 @@ jobs:
       run: |
         if [ -z "${GITHUB_REF#*refs/tags/*}" ]; then
             VERSION="${GITHUB_REF#*refs/tags/}"
-            echo "::set-output name=create-release::true"
+            echo "New release on $VERSION $tag"
+            echo "::set-output name=create-release::yes"
+            echo "::set-output name=build::yes"
             echo "::set-output name=tag_name::$VERSION"
         else
             VERSION=$(perl -Ilib -MFusionInventory::Agent::Version -e 'print $FusionInventory::Agent::Version::VERSION')
@@ -34,9 +37,13 @@ jobs:
             if [ "${{ github.event_name }}" = "schedule" ]; then
                 # Check if we had any commit during the last 24 hours
                 if [ -z "$( git rev-list -n 1 --after="24 hours" ${{ github.sha }} )" ]; then
-                    echo "::set-output name=create-release::false"
+                    echo "No nightly release needed"
+                    echo "::set-output name=create-release::no"
+                    echo "::set-output name=build::no"
                 else
-                    echo "::set-output name=create-release::true"
+                    echo "New nightly release with $VERSION version"
+                    echo "::set-output name=create-release::yes"
+                    echo "::set-output name=build::yes"
                     echo "::set-output name=tag_name::nighly-release"
                     # We also need to delete previous nightly release if the tag exists
                     if [ -n "$(git tag --list nighly-release)" ]; then
@@ -45,7 +52,9 @@ jobs:
                     fi
                 fi
             else
-                echo "::set-output name=create-release::false"
+                echo "Just building $VERSION version"
+                echo "::set-output name=create-release::no"
+                echo "::set-output name=build::yes"
             fi
         fi
         echo "::set-output name=version::$VERSION"
@@ -75,14 +84,14 @@ jobs:
       shell: bash
     - name: Generate release description
       id: github-release-body
-      if: ${{ steps.set-version.outputs.create-release }}
+      if: ${{ steps.set-version.outputs.create-release == 'yes' }}
       run: |
         tools/github-release-description.sh --version ${{ steps.set-version.outputs.version }}
       shell: bash
     - name: Create Tagged Release
       id: create-tagged-release
       uses: actions/create-release@v1
-      if: ${{ steps.set-version.outputs.create-release }}
+      if: ${{ steps.set-version.outputs.create-release == 'yes' }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
@@ -99,6 +108,7 @@ jobs:
       matrix:
         arch: [ x64, x86 ]
 
+    if: ${{ needs.setup-release.outputs.build == 'yes' }}
     needs: setup-release
 
     steps:
@@ -162,7 +172,7 @@ jobs:
         path: C:\Strawberry-perl-for-GLPI-Agent_build\build\msi
     - name: Upload Portable Archive Asset
       id: upload-portable-archive-asset
-      if: ${{ needs.setup-release.outputs.create-release }}
+      if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -173,7 +183,7 @@ jobs:
         asset_content_type: application/zip
     - name: Upload MSI Installer Asset
       id: upload-msi-asset
-      if: ${{ needs.setup-release.outputs.create-release }}
+      if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -190,6 +200,7 @@ jobs:
       matrix:
         arch: [ x86_64, arm64 ]
 
+    if: ${{ needs.setup-release.outputs.build == 'yes' }}
     needs: setup-release
 
     steps:
@@ -226,7 +237,7 @@ jobs:
           contrib/macosx/build/*.dmg
     - name: Upload MacOSX PKG installer
       id: upload-macosx-pkg-asset
-      if: ${{ needs.setup-release.outputs.create-release }}
+      if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -237,7 +248,7 @@ jobs:
         asset_content_type: application/octet-stream
     - name: Upload MacOSX DMG installer image
       id: upload-macosx-dmg-asset
-      if: ${{ needs.setup-release.outputs.create-release }}
+      if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -251,6 +262,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    if: ${{ needs.setup-release.outputs.build == 'yes' }}
     needs: setup-release
 
     steps:
@@ -266,7 +278,7 @@ jobs:
         path: ${{ steps.snapcraft.outputs.snap }}
     - name: Upload Snap Package
       id: upload-linux-snap-asset
-      if: ${{ needs.setup-release.outputs.create-release }}
+      if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -280,6 +292,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    if: ${{ needs.setup-release.outputs.build == 'yes' }}
     needs: setup-release
 
     steps:
@@ -330,7 +343,7 @@ jobs:
           ${{ steps.debbuild.outputs.debpath }}/*.changes
     - name: Upload Deb Packages
       id: upload-linux-deb-asset
-      if: ${{ needs.setup-release.outputs.create-release }}
+      if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
       run: |
         gh release upload ${{ needs.setup-release.outputs.tag_name }} ../*.deb
       shell: bash
@@ -341,6 +354,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    if: ${{ needs.setup-release.outputs.build == 'yes' }}
     needs: setup-release
 
     steps:
@@ -383,7 +397,7 @@ jobs:
           ${{ steps.rpmbuild.outputs.srcdir }}/glpi-agent-*.tar.gz
     - name: Upload RPM Packages
       id: upload-linux-rpm-asset
-      if: ${{ needs.setup-release.outputs.create-release }}
+      if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
       run: |
         RPMDIR=`rpm --eval "%{_rpmdir}"`
         gh release upload ${{ needs.setup-release.outputs.tag_name }} $RPMDIR/*/*.rpm
@@ -395,6 +409,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    if: ${{ needs.setup-release.outputs.build == 'yes' }}
     needs: [ setup-release, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging ]
 
     steps:
@@ -429,7 +444,7 @@ jobs:
           glpi-agent-*-linux-installer.pl
     - name: Upload linux installers
       id: upload-linux-installer-assets
-      if: ${{ needs.setup-release.outputs.create-release }}
+      if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
       run: |
         gh release upload ${{ needs.setup-release.outputs.tag_name }} glpi-agent-*-linux-installer.pl
       shell: bash
