@@ -177,7 +177,7 @@ sub install_cron {
     $ret = $self->run("/usr/bin/systemctl stop glpi-agent" . ($self->verbose ? "" : " 2>/dev/null"));
     return $self->info("Failed to stop glpi-agent service") if $ret;
 
-    $self->verbose("Installin glpi-agent hourly cron file...");
+    $self->verbose("Installing glpi-agent hourly cron file...");
     open my $cron, ">", "/etc/cron.hourly/glpi-agent"
         or die "Can't create hourly crontab for glpi-agent: $!\n";
     print $cron q{
@@ -198,8 +198,9 @@ echo "[$(date '+%c')] Running $NAME $OPTIONS"
 echo "[$(date '+%c')] End of cron job ($PATH)"
 };
     close($cron);
+    chmod 0755, "/etc/cron.hourly/glpi-agent";
     if (! -e "/etc/default/glpi-agent") {
-        $self->verbose("Installin glpi-agent system default config...");
+        $self->verbose("Installing glpi-agent system default config...");
         open my $default, ">", "/etc/default/glpi-agent"
             or die "Can't create system default config for glpi-agent: $!\n";
         print $default q{

@@ -64,16 +64,7 @@ foreach my $opt (@options) {
 
 sub GetOptions {
 
-    # Installer default options
-    my $options = {
-        uninstall   => 0,
-        reinstall   => 0,
-        service     => 1,
-        cron        => 0,
-        clean       => 0,
-        silent      => 0,
-        verbose     => 0,
-    };
+    my $options = {};
 
     my ($plus, $string, $int, $long);
 
