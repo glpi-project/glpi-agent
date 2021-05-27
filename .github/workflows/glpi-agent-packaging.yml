@@ -240,8 +240,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.setup-release.outputs.upload_url }}
-        asset_path: contrib/macosx/build/GLPI-Agent-${{ needs.setup-release.outputs.version }}.pkg
-        asset_name: GLPI-Agent-${{ needs.setup-release.outputs.version }}.pkg
+        asset_path: contrib/macosx/build/GLPI-Agent-${{ needs.setup-release.outputs.version }}_${{ matrix.arch }}.pkg
+        asset_name: GLPI-Agent-${{ needs.setup-release.outputs.version }}_${{ matrix.arch }}.pkg
         asset_content_type: application/octet-stream
     - name: Upload MacOSX DMG installer image
       id: upload-macosx-dmg-asset
@@ -251,8 +251,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.setup-release.outputs.upload_url }}
-        asset_path: contrib/macosx/build/GLPI-Agent-${{ needs.setup-release.outputs.version }}.dmg
-        asset_name: GLPI-Agent-${{ needs.setup-release.outputs.version }}.dmg
+        asset_path: contrib/macosx/build/GLPI-Agent-${{ needs.setup-release.outputs.version }}_${{ matrix.arch }}.dmg
+        asset_name: GLPI-Agent-${{ needs.setup-release.outputs.version }}_${{ matrix.arch }}.dmg
         asset_content_type: application/octet-stream
 
   linux-snap-packaging:
