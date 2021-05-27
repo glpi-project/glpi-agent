@@ -6,7 +6,7 @@ on:
     branches:
       - develop
   schedule:
-    - cron: '20 5 * * *' # run at 5 AM UTC
+    - cron: '40 10 * * *'
 
 jobs:
   setup-release:
@@ -19,6 +19,7 @@ jobs:
       create-release: ${{ steps.set-version.outputs.create-release }}
       tag_name: ${{ steps.set-version.outputs.tag_name }}
       build: ${{ steps.set-version.outputs.build }}
+      releaseid: ${{ steps.create-tagged-release.outputs.id }}
 
     steps:
     - uses: actions/checkout@v2
@@ -62,22 +63,18 @@ jobs:
             $VERSION)
                 echo "::set-output name=revname:: v$VERSION"
                 # Don't publish releases immediatly so we can edit the description
-                echo "::set-output name=draft::true"
                 echo "::set-output name=prerelease::false"
                 ;;
             test*)
                 echo "::set-output name=revname:: v${VERSION%-test*} Test release ${VERSION#*-test}"
-                echo "::set-output name=draft::false"
                 echo "::set-output name=prerelease::true"
                 ;;
             beta*)
                 echo "::set-output name=revname:: v${VERSION%-beta*} Beta release ${VERSION#*-beta}"
-                echo "::set-output name=draft::false"
                 echo "::set-output name=prerelease::true"
                 ;;
             *)
                 echo "::set-output name=revname:: v$VERSION Development release"
-                echo "::set-output name=draft::false"
                 echo "::set-output name=prerelease::true"
                 ;;
         esac
@@ -98,7 +95,7 @@ jobs:
         tag_name: ${{ steps.set-version.outputs.tag_name }}
         release_name: GLPI Agent ${{ steps.set-version.outputs.revname }}
         body_path: release-description.md
-        draft: ${{ steps.set-version.outputs.draft }}
+        draft: true
         prerelease: ${{ steps.set-version.outputs.prerelease }}
 
   windows-packaging:
@@ -447,6 +444,23 @@ jobs:
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
       run: |
         gh release upload ${{ needs.setup-release.outputs.tag_name }} glpi-agent-*-linux-installer.pl
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-release:
+
+    runs-on: ubuntu-latest
+
+    if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
+    needs: [ setup-release, windows-packaging, macosx-packaging, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging ]
+
+    steps:
+    - name: Publish release
+      id: publish-release
+      run: |
+        gh api /repos/glpi-project/glpi-agent/releases/${{ needs.setup-release.outputs.releaseid }} \
+            --method PATCH --field draft=true
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
