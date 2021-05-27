@@ -6,7 +6,7 @@ on:
     branches:
       - develop
   schedule:
-    - cron: '40 10 * * *'
+    - cron: '40 15 * * *'
 
 jobs:
   setup-release:
@@ -47,6 +47,7 @@ jobs:
                     echo "::set-output name=build::yes"
                     echo "::set-output name=tag_name::nightly-release"
                     # We also need to delete previous nightly release if the tag exists
+                    git fetch --tags
                     if [ -n "$(git tag --list nightly-release)" ]; then
                         gh release delete nightly-release -y
                         gh api /repos/glpi-project/glpi-agent/git/refs/tags/nightly-release --method DELETE
@@ -61,20 +62,19 @@ jobs:
         echo "::set-output name=version::$VERSION"
         case "${VERSION#*-}" in
             $VERSION)
-                echo "::set-output name=revname:: v$VERSION"
-                # Don't publish releases immediatly so we can edit the description
+                echo "::set-output name=revname::v$VERSION"
                 echo "::set-output name=prerelease::false"
                 ;;
             test*)
-                echo "::set-output name=revname:: v${VERSION%-test*} Test release ${VERSION#*-test}"
+                echo "::set-output name=revname::v${VERSION%-test*} Test release ${VERSION#*-test}"
                 echo "::set-output name=prerelease::true"
                 ;;
             beta*)
-                echo "::set-output name=revname:: v${VERSION%-beta*} Beta release ${VERSION#*-beta}"
+                echo "::set-output name=revname::v${VERSION%-beta*} Beta release ${VERSION#*-beta}"
                 echo "::set-output name=prerelease::true"
                 ;;
             *)
-                echo "::set-output name=revname:: v$VERSION Development release"
+                echo "::set-output name=revname::v$VERSION Development release"
                 echo "::set-output name=prerelease::true"
                 ;;
         esac
@@ -460,7 +460,7 @@ jobs:
       id: publish-release
       run: |
         gh api /repos/glpi-project/glpi-agent/releases/${{ needs.setup-release.outputs.releaseid }} \
-            --method PATCH --field draft=true
+            --method PATCH --field draft=false --jq '.draft'
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
