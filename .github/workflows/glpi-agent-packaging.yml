@@ -453,7 +453,7 @@ jobs:
     runs-on: ubuntu-latest
 
     if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
-    needs: [ setup-release, windows-packaging, macosx-packaging, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging ]
+    needs: [ setup-release, windows-packaging, macosx-packaging, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging, linux-installer ]
 
     steps:
     - name: Publish release
