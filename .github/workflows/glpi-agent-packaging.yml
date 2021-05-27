@@ -316,7 +316,7 @@ jobs:
       run: |
         echo "::set-output name=debpath:: $(dirname $PWD)"
         # make -gitXXXXXXXX release when not tagged
-        if [ -z "${VERSION#*-*}" ]; then
+        if [ -z "${VERSION##*-*}" ]; then
             tools/make-release.sh --no-git $VERSION
         fi
         # DH_COMPAT is needed on current ubuntu-latest, it could be removed after switching to Ubuntu 20.04
