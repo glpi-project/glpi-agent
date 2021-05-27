@@ -44,11 +44,11 @@ jobs:
                     echo "New nightly release with $VERSION version"
                     echo "::set-output name=create-release::yes"
                     echo "::set-output name=build::yes"
-                    echo "::set-output name=tag_name::nighly-release"
+                    echo "::set-output name=tag_name::nightly-release"
                     # We also need to delete previous nightly release if the tag exists
-                    if [ -n "$(git tag --list nighly-release)" ]; then
+                    if [ -n "$(git tag --list nightly-release)" ]; then
                         gh release delete nightly-release -y
-                        gh api /repos/glpi-project/glpi-agent/git/refs/tags/nighly-release --method DELETE
+                        gh api /repos/glpi-project/glpi-agent/git/refs/tags/nightly-release --method DELETE
                     fi
                 fi
             else
@@ -86,7 +86,7 @@ jobs:
       id: github-release-body
       if: ${{ steps.set-version.outputs.create-release == 'yes' }}
       run: |
-        tools/github-release-description.sh --version ${{ steps.set-version.outputs.version }}
+        tools/github-release-description.sh --version ${{ steps.set-version.outputs.version }} --tag ${{ steps.set-version.outputs.tag_name }}
       shell: bash
     - name: Create Tagged Release
       id: create-tagged-release
