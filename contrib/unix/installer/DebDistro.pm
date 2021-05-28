@@ -184,10 +184,10 @@ sub install_cron {
 
     $self->info("glpi-agent will be run every hour via cron");
     $self->verbose("Disabling glpi-agent service...");
-    my $ret = $self->run("/usr/bin/systemctl disable glpi-agent" . ($self->verbose ? "" : " 2>/dev/null"));
+    my $ret = $self->run("systemctl disable glpi-agent" . ($self->verbose ? "" : " 2>/dev/null"));
     return $self->info("Failed to disable glpi-agent service") if $ret;
     $self->verbose("Stopping glpi-agent service if running...");
-    $ret = $self->run("/usr/bin/systemctl stop glpi-agent" . ($self->verbose ? "" : " 2>/dev/null"));
+    $ret = $self->run("systemctl stop glpi-agent" . ($self->verbose ? "" : " 2>/dev/null"));
     return $self->info("Failed to stop glpi-agent service") if $ret;
 
     $self->verbose("Installing glpi-agent hourly cron file...");

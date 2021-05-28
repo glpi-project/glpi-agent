@@ -300,6 +300,8 @@ sub configure {
 
     foreach my $config (@configs) {
         my ($cfg) = $config =~ m{^confs/([^/]+\.(cfg|crt|pem))$};
+        die "Can't install $cfg configuration without $folder folder\n"
+            unless -d $folder;
         $self->info("Installing $cfg config in $folder");
         unlink "$folder/$cfg";
         $self->{_archive}->extract($config, "$folder/$cfg");
@@ -375,7 +377,7 @@ sub install {
         # If requested, still run inventory now
         if ($self->{_runnow}) {
             $self->info("Asking service to run inventory now as requested...");
-            system("/usr/bin/systemctl -s SIGUSR1 kill glpi-agent" . ($self->verbose ? "" : " >/dev/null 2>&1"));
+            system("systemctl -s SIGUSR1 kill glpi-agent" . ($self->verbose ? "" : " >/dev/null 2>&1"));
         }
     } elsif ($self->{_cron}) {
         $self->install_cron();
@@ -419,15 +421,15 @@ sub install_service {
     $self->info("Enabling glpi-agent service...");
 
     # Always stop the service if necessary to be sure configuration is applied
-    my $isactivecmd = "/usr/bin/systemctl is-active glpi-agent" . ($self->verbose ? "" : " 2>/dev/null");
-    system("/usr/bin/systemctl stop glpi-agent" . ($self->verbose ? "" : " >/dev/null 2>&1"))
+    my $isactivecmd = "systemctl is-active glpi-agent" . ($self->verbose ? "" : " 2>/dev/null");
+    system("systemctl stop glpi-agent" . ($self->verbose ? "" : " >/dev/null 2>&1"))
         if qx{$isactivecmd} eq "active";
 
-    my $ret = $self->run("/usr/bin/systemctl enable glpi-agent" . ($self->verbose ? "" : " 2>/dev/null"));
+    my $ret = $self->run("systemctl enable glpi-agent" . ($self->verbose ? "" : " 2>/dev/null"));
     return $self->info("Failed to enable glpi-agent service") if $ret;
 
     $self->verbose("Starting glpi-agent service...");
-    $ret = $self->run("/usr/bin/systemctl reload-or-restart glpi-agent" . ($self->verbose ? "" : " 2>/dev/null"));
+    $ret = $self->run("systemctl reload-or-restart glpi-agent" . ($self->verbose ? "" : " 2>/dev/null"));
     $self->info("Failed to start glpi-agent service") if $ret;
 }
 
