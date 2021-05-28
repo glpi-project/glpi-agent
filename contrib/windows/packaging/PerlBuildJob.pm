@@ -143,7 +143,7 @@ sub _build_steps {
                 qw/ Net-SSLeay Mozilla::CA IO-Socket-SSL /,
 
                 # network
-                qw/ IO::Socket::IP IO::Socket::INET6 /,
+                qw/ IO::Socket::IP IO::Socket::INET6 HTTP::Daemon /,
                 qw/ HTTP-Server-Simple LWP::Protocol::https LWP::UserAgent /,
 
                 # crypto
