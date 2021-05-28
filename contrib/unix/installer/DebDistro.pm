@@ -70,7 +70,9 @@ sub _extract_deb {
     $self->verbose("Extracting $pkg ...");
     $self->{_archive}->extract("pkg/deb/$pkg")
         or die "Failed to extract $pkg: $!\n";
-    return $ENV{PWD}."/".$pkg;
+    my $pwd = $ENV{PWD} || qx/pwd/;
+    chomp($pwd);
+    return "$pwd/$pkg";
 }
 
 sub install {
@@ -119,9 +121,20 @@ sub install {
             $pkgs{$pkg} = $self->_extract_deb($pkg);
         }
 
-        if (!$self->{_skip}->{dmidecode} && qx{uname -m 2>/dev/null} =~ /^(i.86|x86_64)$/ && ! -x "dmidecode") {
+        if (!$self->{_skip}->{dmidecode} && qx{uname -m 2>/dev/null} =~ /^(i.86|x86_64)$/ && ! qx{which dmidecode 2>/dev/null}) {
             $self->verbose("Trying to also install dmidecode ...");
             $pkgs{dmidecode} = "dmidecode";
+        }
+
+        # Be sure to have pci.ids & usb.ids on recent distro as its dependencies were removed
+        # from packaging to support older distros
+        if (!-e "/usr/share/misc/pci.ids" && qx{dpkg-query --show --showformat='\${Package}' pciutils 2>/dev/null}) {
+            $self->verbose("Trying to also install pci.ids ...");
+            $pkgs{"pci.ids"} = "pci.ids";
+        }
+        if (!-e "/usr/share/misc/usb.ids" && qx{dpkg-query --show --showformat='\${Package}' usbutils 2>/dev/null}) {
+            $self->verbose("Trying to also install usb.ids ...");
+            $pkgs{"usb.ids"} = "usb.ids";
         }
 
         my @debs = sort values(%pkgs);

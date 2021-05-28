@@ -8,6 +8,6 @@ etc/glpi-agent/proxy-server-plugin.cfg
 etc/glpi-agent/proxy2-server-plugin.cfg
 etc/glpi-agent/toolbox-plugin.cfg
 
-# Files provided by pci.ids & usb.ids packages
+# Files provided by pciutils & usbutils or pci.ids & usb.ids packages
 usr/share/glpi-agent/pci.ids
 usr/share/glpi-agent/usb.ids

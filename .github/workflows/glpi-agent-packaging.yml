@@ -35,7 +35,7 @@ jobs:
         else
             VERSION=$(perl -Ilib -MFusionInventory::Agent::Version -e 'print $FusionInventory::Agent::Version::VERSION')
             VERSION=${VERSION%-dev}-git${GITHUB_SHA:0:8}
-            if [ "${{ github.event_name }}" = "schedule" ]; then
+            if [ "${{ github.event_name }}" = "schedule" -o "$PUBLISH_DEV_AS_NIGHTLY" = "yes" ]; then
                 # Check if we had any commit during the last 24 hours
                 if [ -z "$( git rev-list -n 1 --after="24 hours" ${{ github.sha }} )" ]; then
                     echo "No nightly release needed"
@@ -79,6 +79,9 @@ jobs:
                 ;;
         esac
       shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PUBLISH_DEV_AS_NIGHTLY: yes
     - name: Generate release description
       id: github-release-body
       if: ${{ steps.set-version.outputs.create-release == 'yes' }}

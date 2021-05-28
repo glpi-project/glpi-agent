@@ -121,7 +121,7 @@ sub install {
             $pkgs{$pkg} = $self->_extract_rpm($pkg);
         }
 
-        if (!$self->{_skip}->{dmidecode} && qx{uname -m 2>/dev/null} =~ /^(i.86|x86_64)$/ && ! -x "dmidecode") {
+        if (!$self->{_skip}->{dmidecode} && qx{uname -m 2>/dev/null} =~ /^(i.86|x86_64)$/ && ! qx{which dmidecode 2>/dev/null}) {
             $self->verbose("Trying to also install dmidecode ...");
             $pkgs{dmidecode} = "dmidecode";
         }
