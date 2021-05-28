@@ -50,8 +50,7 @@ jobs:
                     # We also need to delete previous nightly release if the tag exists
                     git fetch --tags
                     if [ -n "$(git tag --list nightly-release)" ]; then
-                        gh release delete nightly-release -y
-                        gh api /repos/glpi-project/glpi-agent/git/refs/tags/nightly-release --method DELETE
+                        gh api /repos/{owner}/{repo}/git/refs/tags/nightly-release --method DELETE
                     fi
                 fi
             else
@@ -463,8 +462,25 @@ jobs:
     - name: Publish release
       id: publish-release
       run: |
-        gh api /repos/glpi-project/glpi-agent/releases/${{ needs.setup-release.outputs.releaseid }} \
+        gh api /repos/{owner}/{repo}/releases/${{ needs.setup-release.outputs.releaseid }} \
             --method PATCH --field draft=false --jq '{id: .id, name: .name, tag_name: .tag_name, target_commitish: .target_commitish, draft: .draft, prerelease: .prerelease, body: .body}'
+        # Only keep the last 5 nightly releases as draft releases
+        let COUNT=5
+        gh api /repos/{owner}/{repo}/releases --jq '.[].id' | \
+        while read id
+        do
+            set x $(gh api /repos/{owner}/{repo}/releases/$id --jq '.draft,.tag_name,.name')
+            shift
+            [ "$1" != "true" -o "$2" != "nightly-release" ] && continue
+            shift
+            shift
+            if (( COUNT-- > 0 )); then
+                echo "Keeping $* nightly-release draft"
+            else
+                echo "Removing $* nightly-release draft"
+                gh api /repos/{owner}/{repo}/releases/$id --method DELETE
+            fi
+        done
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
