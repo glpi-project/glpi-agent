@@ -1,13 +1,21 @@
 name: GLPI Agent Packaging
 
+# Set publish_development_build to "yes" to publish development builds as pre-release
+# Set number_of_development_build_to_keep to the number of development build to keep
+# Set number_of_nightly_build_to_keep to the number of nightly release to keep
+# Set number_of_nightly_build_to_keep to 0 to not publish nightly builds
+env:
+  publish_development_build: yes
+  number_of_development_build_to_keep: 3
+  number_of_nightly_build_to_keep: 5
+
 on:
   push:
   pull_request:
     branches:
       - develop
-# No need to enable schedule event when PUBLISH_DEV_AS_NIGHTLY is set to yes
-# schedule:
-#   - cron: '20 3 * * *'
+  schedule:
+    - cron: '20 3 * * *'
 
 jobs:
   setup-release:
@@ -36,22 +44,24 @@ jobs:
         else
             VERSION=$(perl -Ilib -MFusionInventory::Agent::Version -e 'print $FusionInventory::Agent::Version::VERSION')
             VERSION=${VERSION%-dev}-git${GITHUB_SHA:0:8}
-            if [ "${{ github.event_name }}" = "schedule" -o "$PUBLISH_DEV_AS_NIGHTLY" = "yes" ]; then
-                # Check if we had any commit during the last 24 hours
-                if [ -z "$( git rev-list -n 1 --after="24 hours" ${{ github.sha }} )" ]; then
+            if [ "${{ github.event_name }}" = "schedule" -o "${{ env.publish_development_build }}" = "yes" ]; then
+                if [ "${{ github.event_name }}" = "schedule" ]; then
+                    TYPE=nightly
+                else
+                    TYPE=development
+                fi
+                SKIP_NIGHTLY="${{ env.number_of_nightly_build_to_keep }} $TYPE"
+                # For nightly, we also check if we had any commit during the last 24 hours
+                if [ "$SKIP_NIGHTLY" = "0 nightly" -o -z "$( git rev-list -n 1 --after="24 hours" ${{ github.sha }} )" ]; then
                     echo "No nightly release needed"
                     echo "::set-output name=create-release::no"
                     echo "::set-output name=build::no"
                 else
-                    echo "New nightly release with $VERSION version"
+                    TS=$(date +%F-%H-%M-%S)
+                    echo "New $TYPE release as $VERSION version"
                     echo "::set-output name=create-release::yes"
                     echo "::set-output name=build::yes"
-                    echo "::set-output name=tag_name::nightly-release"
-                    # We also need to delete previous nightly release if the tag exists
-                    git fetch --tags
-                    if [ -n "$(git tag --list nightly-release)" ]; then
-                        gh api /repos/{owner}/{repo}/git/refs/tags/nightly-release --method DELETE
-                    fi
+                    echo "::set-output name=tag_name::$TYPE-release-$TS"
                 fi
             else
                 echo "Just building $VERSION version"
@@ -79,9 +89,6 @@ jobs:
                 ;;
         esac
       shell: bash
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PUBLISH_DEV_AS_NIGHTLY: yes
     - name: Generate release description
       id: github-release-body
       if: ${{ steps.set-version.outputs.create-release == 'yes' }}
@@ -465,21 +472,39 @@ jobs:
       run: |
         gh api /repos/{owner}/{repo}/releases/${{ needs.setup-release.outputs.releaseid }} \
             --method PATCH --field draft=false --jq '{id: .id, name: .name, tag_name: .tag_name, target_commitish: .target_commitish, draft: .draft, prerelease: .prerelease, body: .body}'
-        # Only keep the last 5 nightly releases as draft releases
-        let COUNT=5
+        # Only keep a given number of development or nightly releases
+        case "${{ needs.setup-release.outputs.tag_name }}" in
+            development-release-*)
+                let COUNT=${{ env.number_of_development_build_to_keep }}
+                TYPE=development
+                ;;
+            nightly-release-*)
+                let COUNT=${{ env.number_of_nightly_build_to_keep }}
+                TYPE=nightly
+                ;;
+            *)
+                let COUNT=0
+                ;;
+        esac
         gh api /repos/{owner}/{repo}/releases --jq '.[].id' | \
         while read id
         do
             set x $(gh api /repos/{owner}/{repo}/releases/$id --jq '.draft,.tag_name,.name')
             shift
-            [ "$1" != "true" -o "$2" != "nightly-release" ] && continue
+            DRAFT="$1"
             shift
+            TAG="$1"
+            [ -n "$TAG" -a -z "${TAG%$TYPE-release*}" ] || continue
             shift
             if (( COUNT-- > 0 )); then
-                echo "Keeping $* nightly-release draft"
+                echo "Keeping $* $TYPE release ($TAG)"
             else
-                echo "Removing $* nightly-release draft"
+                echo "Removing $* $TYPE release ($TAG)"
                 gh api /repos/{owner}/{repo}/releases/$id --method DELETE
+                if [ "$DRAFT" != "true" ]; then
+                    echo "Removing $TAG tag"
+                    gh api /repos/{owner}/{repo}/git/refs/tags/$TAG --method DELETE
+                fi
             fi
         done
       shell: bash
