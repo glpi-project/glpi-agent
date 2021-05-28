@@ -459,6 +459,7 @@ jobs:
     needs: [ setup-release, windows-packaging, macosx-packaging, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging, linux-installer ]
 
     steps:
+    - uses: actions/checkout@v2
     - name: Publish release
       id: publish-release
       run: |
