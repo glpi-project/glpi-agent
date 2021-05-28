@@ -5,8 +5,9 @@ on:
   pull_request:
     branches:
       - develop
-  schedule:
-    - cron: '40 15 * * *'
+# No need to enable schedule event when PUBLISH_DEV_AS_NIGHTLY is set to yes
+# schedule:
+#   - cron: '20 3 * * *'
 
 jobs:
   setup-release:
@@ -463,7 +464,7 @@ jobs:
       id: publish-release
       run: |
         gh api /repos/glpi-project/glpi-agent/releases/${{ needs.setup-release.outputs.releaseid }} \
-            --method PATCH --field draft=false --jq '.draft'
+            --method PATCH --field draft=false --jq '{id: .id, name: .name, tag_name: .tag_name, target_commitish: .target_commitish, draft: .draft, prerelease: .prerelease, body: .body}'
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
