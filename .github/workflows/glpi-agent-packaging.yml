@@ -558,6 +558,7 @@ jobs:
     - name: Publish nightly
       id: publish-nightly
       run: |
+        set -x
         # Only keep a given number of nightly releases
         case "${{ needs.setup-release.outputs.tag_name }}" in
             development-release-*)
