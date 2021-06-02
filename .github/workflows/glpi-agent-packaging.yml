@@ -515,7 +515,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    if: ${{ needs.setup-release.outputs.create-release == 'no' # && startsWith(needs.setup-release.outputs.tag_name, 'nightly') }}
+    if: ${{ needs.setup-release.outputs.create-release == 'no' }} # && startsWith(needs.setup-release.outputs.tag_name, 'nightly') }}
     needs: [ setup-release, windows-packaging, macosx-packaging, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging, linux-installer ]
 
     steps:
@@ -561,11 +561,9 @@ jobs:
         case "${{ needs.setup-release.outputs.tag_name }}" in
             development-release-*)
                 let COUNT=${{ env.number_of_development_build_to_keep }}
-                TYPE=development
                 ;;
             nightly-release-*)
                 let COUNT=${{ env.number_of_nightly_build_to_keep }}
-                TYPE=nightly
                 ;;
             *)
                 let COUNT=0
@@ -576,9 +574,9 @@ jobs:
         do
             TAG="${ref#refs/tag/}"
             case "$TAG" in
-                glpi-agent-$TYPE*)
+                glpi-agent-*)
                     if (( COUNT-- > 0 )); then
-                        echo "Keeping glpi-agent $TYPE build ($TAG)"
+                        echo "Keeping glpi-agent build ($TAG)"
                         continue
                     fi
                     ;;
@@ -589,7 +587,7 @@ jobs:
             set x $(gh api /repos/{owner}/{repo}/git/$ref --jq '.object.sha')
             shift
             SHA="$1"
-            echo "Removing glpi-agent $TYPE build ($TAG)"
+            echo "Removing glpi-agent build ($TAG)"
             # First delete tag here and remotely
             gh api /repos/{owner}/{repo}/git/refs/tags/$TAG --method DELETE
             git tag -d $TAG
