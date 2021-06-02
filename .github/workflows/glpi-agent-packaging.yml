@@ -5,9 +5,9 @@ name: GLPI Agent Packaging
 # Set number_of_nightly_build_to_keep to the number of nightly release to keep
 # Set number_of_nightly_build_to_keep to 0 to not publish nightly builds
 env:
-  publish_development_build: yes
+  publish_development_build: no
   number_of_development_build_to_keep: 3
-  number_of_nightly_build_to_keep: 5
+  number_of_nightly_build_to_keep: 3
 
 on:
   push:
@@ -59,7 +59,7 @@ jobs:
                 else
                     TS=$(date +%F-%H-%M-%S)
                     echo "New $TYPE release as $VERSION version"
-                    echo "::set-output name=create-release::yes"
+                    echo "::set-output name=create-release::${{ env.publish_development_build }}"
                     echo "::set-output name=build::yes"
                     echo "::set-output name=tag_name::$TYPE-release-$TS"
                 fi
@@ -507,6 +507,118 @@ jobs:
                 fi
             fi
         done
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-nightly:
+
+    runs-on: ubuntu-latest
+
+    if: ${{ needs.setup-release.outputs.create-release == 'no' # && startsWith(needs.setup-release.outputs.tag_name, 'nightly') }}
+    needs: [ setup-release, windows-packaging, macosx-packaging, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging, linux-installer ]
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        repository: ${{ github.repository_owner }}/glpi-project.github.io
+        fetch-depth: 0
+    - uses: actions/download-artifact@v2
+      with:
+        name: Linux-Installer-Build
+        path: glpi-agent
+    - uses: actions/download-artifact@v2
+      with:
+        name: RPM-Build
+        path: glpi-agent
+    - uses: actions/download-artifact@v2
+      with:
+        name: Debian-Build
+        path: glpi-agent
+    - uses: actions/download-artifact@v2
+      with:
+        name: Snap-Build
+        path: glpi-agent
+    - uses: actions/download-artifact@v2
+      with:
+        name: MacOSX-Build
+        path: glpi-agent
+    - uses: actions/download-artifact@v2
+      with:
+        name: Windows-Build
+        path: glpi-agent
+    - name: Cleanup nightly
+      run: |
+        # Clean up Debian-Build
+        rm -f glpi-agent/*.buildinfo glpi-agent/*.changes
+        # Clean up Windows-Build
+        rm -f glpi-agent/*_debug_dir.zip
+      shell: bash
+    - name: Publish nightly
+      id: publish-nightly
+      run: |
+        # Only keep a given number of nightly releases
+        case "${{ needs.setup-release.outputs.tag_name }}" in
+            development-release-*)
+                let COUNT=${{ env.number_of_development_build_to_keep }}
+                TYPE=development
+                ;;
+            nightly-release-*)
+                let COUNT=${{ env.number_of_nightly_build_to_keep }}
+                TYPE=nightly
+                ;;
+            *)
+                let COUNT=0
+                ;;
+        esac
+        gh api /repos/{owner}/{repo}/git/refs/tags --jq '.[].ref' | \
+        while read ref
+        do
+            TAG="${ref#refs/tag/}"
+            case "$TAG" in
+                glpi-agent-$TYPE*)
+                    if (( COUNT-- > 0 )); then
+                        echo "Keeping glpi-agent $TYPE build ($TAG)"
+                        continue
+                    fi
+                    ;;
+                *)
+                    continue
+                    ;;
+            esac
+            set x $(gh api /repos/{owner}/{repo}/git/$ref --jq '.object.sha')
+            shift
+            SHA="$1"
+            echo "Removing glpi-agent $TYPE build ($TAG)"
+            # First delete tag here and remotely
+            gh api /repos/{owner}/{repo}/git/refs/tags/$TAG --method DELETE
+            git tag -d $TAG
+            # Rebase repository and mark old commit to be dropped
+            git rebase --root -x false || true
+            grep -v 'exec false' .git/rebase-merge/git-rebase-todo | \
+            sed -e "s/pick $SHA/drop $SHA/" >.git/rebase-merge/git-rebase-todo.fixed
+            mv -vf .git/rebase-merge/git-rebase-todo{.fixed,}
+            git rebase --continue
+        done
+        # Prepare commit
+        git add glpi-agent/*
+        git commit -a -m "Add GLPI-Agent ${{ needs.setup-release.outputs.version }} build"
+        git tag glpi-agent-${{ needs.setup-release.outputs.tag_name }}
+        # Now generate glpi-agent data file
+        for file in $( ls -t glpi-agent/* )
+        do
+            if [ "$file" != "index.html" ]; then
+                DATE=$( date -u +"%F %H:%M:%S UTC" -r "$file" )
+                SIZE=$( stat -c %s "$file" )
+                echo "- name: ${file#glpi-agent/}"
+                echo "  size: $SIZE"
+                echo "  date: $DATE"
+            fi
+        done >_data/glpi-agent.yml
+        git commit -a -m "glpi-agent index datas update"
+        # Force commit
+        git push --force
+        git push --tags
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
