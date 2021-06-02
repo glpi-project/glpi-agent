@@ -553,6 +553,7 @@ jobs:
         rm -f glpi-agent/*.buildinfo glpi-agent/*.changes
         # Clean up Windows-Build
         rm -f glpi-agent/*_debug_dir.zip
+        ls -lt glpi-agent
       shell: bash
     - name: Publish nightly
       id: publish-nightly
@@ -569,10 +570,10 @@ jobs:
                 let COUNT=0
                 ;;
         esac
-        gh api /repos/{owner}/{repo}/git/refs/tags --jq '.[].ref' | \
-        while read ref
+        git fetch --tags
+        git tag -l | \
+        while read TAG
         do
-            TAG="${ref#refs/tag/}"
             case "$TAG" in
                 glpi-agent-*)
                     if (( COUNT-- > 0 )); then
@@ -598,6 +599,7 @@ jobs:
             mv -vf .git/rebase-merge/git-rebase-todo{.fixed,}
             git rebase --continue
         done
+        ls -lt glpi-agent
         # Prepare commit
         git add glpi-agent/*
         git commit -a -m "Add GLPI-Agent ${{ needs.setup-release.outputs.version }} build"
