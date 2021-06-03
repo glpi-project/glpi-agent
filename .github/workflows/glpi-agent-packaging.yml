@@ -620,7 +620,8 @@ jobs:
                 SIZE=$( stat -c %s "$file" )
                 echo "- name: $FILE"
                 echo "  size: $SIZE"
-                echo "  date: $DATE"
+                set x $(git log -n1 --pretty=%ci -- $file)
+                echo "  date: $2 $3 UTC"
                 case "$FILE" in
                     *.rpm)
                         echo "  type: rpm"
