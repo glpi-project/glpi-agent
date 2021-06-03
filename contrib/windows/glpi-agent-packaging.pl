@@ -672,7 +672,7 @@ sub _other_job_steps {
         ],
         #BEWARE: msi_upgrade_code is a fixed value for all same arch releases (for ever)
         msi_upgrade_code    => $self->global->{arch} eq 'x64' ? '0DEF72A8-E5EE-4116-97DC-753718E19CD5' : '7F25A9A4-BCAE-4C15-822D-EAFBD752CFEC',
-        app_publisher       => 'GLPI Project',
+        app_publisher       => "Teclib'",
         url_about           => 'https://glpi-project.org/',
         url_help            => 'https://glpi-project.org/discussions/',
         msi_root_dir        => 'GLPI-Agent',
