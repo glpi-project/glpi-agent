@@ -515,7 +515,8 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    if: ${{ needs.setup-release.outputs.create-release == 'no' }} # && startsWith(needs.setup-release.outputs.tag_name, 'nightly') }}
+    if: ${{ needs.setup-release.outputs.create-release == 'no' }}
+    #if: ${{ needs.setup-release.outputs.create-release == 'no' && startsWith(needs.setup-release.outputs.tag_name, 'nightly') }}
     needs: [ setup-release, windows-packaging, macosx-packaging, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging, linux-installer ]
 
     steps:
@@ -560,7 +561,9 @@ jobs:
       run: |
         set -x
         # Only keep a given number of nightly releases
-        case "${{ needs.setup-release.outputs.tag_name }}" in
+        TAGNAME="${{ needs.setup-release.outputs.tag_name }}"
+        [ -z "$TAGNAME" ] && TAGNAME="development-release-$(date +%F-%H-%M-%S)"
+        case "$TAGNAME" in
             development-release-*)
                 let COUNT=${{ env.number_of_development_build_to_keep }}
                 ;;
@@ -568,7 +571,7 @@ jobs:
                 let COUNT=${{ env.number_of_nightly_build_to_keep }}
                 ;;
             *)
-                let COUNT=0
+                let COUNT=1
                 ;;
         esac
         git config --local user.email "$(git log --format='%ae' HEAD^!)"
@@ -606,9 +609,7 @@ jobs:
         # Prepare commit
         git add glpi-agent/*
         git commit -m "Add GLPI-Agent ${{ needs.setup-release.outputs.version }} build"
-        TAG="${{ needs.setup-release.outputs.tag_name }}"
-        [ -z "$TAG" ] && TAG="dev-$(date +%F-%H-%M-%S)"
-        git tag glpi-agent-$TAG
+        git tag glpi-agent-$TAGNAME
         # Now generate glpi-agent data file
         for file in $( ls -t glpi-agent/* )
         do
