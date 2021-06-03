@@ -13,17 +13,25 @@ use FusionInventory::Agent::Tools;
 
 my $ua = LWP::UserAgent->new();
 
-my $response = $ua->mirror(
-    "http://pciids.sourceforge.net/pci.ids",
-    "share/pci.ids"
-);
+my $response;
+
+foreach my $url (qw(
+    https://raw.githubusercontent.com/pciutils/pciids/master/pci.ids
+    https://pci-ids.ucw.cz/v2.2/pci.ids
+)) {
+    $response = $ua->mirror(
+        $url,
+        "share/pci.ids"
+    );
+    last if $response->is_success();
+}
 
 if ($response->status_line =~ /Not Modified/) {
     print "share/pci.ids is still up-to-date\n";
     exit(0);
 }
 
-die unless $response->is_success();
+die "pci.ids not found in mirrors\n" unless $response->is_success();
 
 my $version = getFirstMatch(
     file    => "share/pci.ids",
