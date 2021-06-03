@@ -571,6 +571,8 @@ jobs:
                 let COUNT=0
                 ;;
         esac
+        git config --local user.email "$(git log --format='%ae' HEAD^!)"
+        git config --local user.name "$(git log --format='%an' HEAD^!)"
         git fetch --tags
         git tag -l | \
         while read TAG
@@ -603,8 +605,10 @@ jobs:
         ls -lt glpi-agent
         # Prepare commit
         git add glpi-agent/*
-        git commit -a -m "Add GLPI-Agent ${{ needs.setup-release.outputs.version }} build"
-        git tag glpi-agent-${{ needs.setup-release.outputs.tag_name }}
+        git commit -m "Add GLPI-Agent ${{ needs.setup-release.outputs.version }} build"
+        TAG="${{ needs.setup-release.outputs.tag_name }}"
+        [ -z "$TAG" ] && TAG="dev-$(date +%F-%H-%M-%S)"
+        git tag glpi-agent-$TAG
         # Now generate glpi-agent data file
         for file in $( ls -t glpi-agent/* )
         do
@@ -616,7 +620,8 @@ jobs:
                 echo "  date: $DATE"
             fi
         done >_data/glpi-agent.yml
-        git commit -a -m "glpi-agent index datas update"
+        git add _data/glpi-agent.yml
+        git commit -m "glpi-agent index datas update"
         # Force commit
         git push --force
         git push --tags
