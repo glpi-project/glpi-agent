@@ -560,7 +560,6 @@ jobs:
     - name: Publish nightly
       id: publish-nightly
       run: |
-        set -x
         # Only keep a given number of nightly releases
         TAGNAME="${{ needs.setup-release.outputs.tag_name }}"
         [ -z "$TAGNAME" ] && TAGNAME="development-release-$(date +%F-%H-%M-%S)"
@@ -583,7 +582,7 @@ jobs:
         do
             case "$TAG" in
                 glpi-agent-*)
-                    if (( COUNT-- > 0 )); then
+                    if (( --COUNT > 0 )); then
                         echo "Keeping glpi-agent build ($TAG)"
                         continue
                     fi
