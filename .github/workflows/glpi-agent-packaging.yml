@@ -650,4 +650,4 @@ jobs:
         git push --tags
       shell: bash
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PUBLISHING_TOKEN }}
