@@ -100,7 +100,7 @@ SetupArchitecture = "Auto"
 '    You should use simple quotes (') to set between quotation marks those values
 '    that require it; double quotes (") doesn't work with UNCs.
 '
-SetupOptions = "RUNNOW=1 SERVER='http://glpi.yourcompany.com/glpi/fusioninventory/' SILENT=1"
+SetupOptions = "/quiet RUNNOW=1 SERVER='http://glpi.yourcompany.com/glpi/fusioninventory/'"
 
 ' Setup
 '    The installer file name. You should not have to modify this variable ever.
