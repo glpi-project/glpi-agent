@@ -614,12 +614,33 @@ jobs:
         # Now generate glpi-agent data file
         for file in $( ls -t glpi-agent/* )
         do
-            if [ "$file" != "index.html" ]; then
+            FILE="${file#glpi-agent/}"
+            if [ "$FILE" != "index.html" ]; then
                 DATE=$( date -u +"%F %H:%M:%S UTC" -r "$file" )
                 SIZE=$( stat -c %s "$file" )
-                echo "- name: ${file#glpi-agent/}"
+                echo "- name: $FILE"
                 echo "  size: $SIZE"
                 echo "  date: $DATE"
+                case "$FILE" in
+                    *.rpm)
+                        echo "  type: rpm"
+                        ;;
+                    *.deb)
+                        echo "  type: deb"
+                        ;;
+                    *.pkg|*.dmg)
+                        echo "  type: macosx"
+                        ;;
+                    *.zip|*.msi)
+                        echo "  type: win32"
+                        ;;
+                    *.pl|*.snap)
+                        echo "  type: linux"
+                        ;;
+                    *)
+                        echo "  type: n/a"
+                        ;;
+                esac
             fi
         done >_data/glpi-agent.yml
         git add _data/glpi-agent.yml
