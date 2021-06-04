@@ -577,9 +577,13 @@ jobs:
         git config --local user.email "$(git log --format='%ae' HEAD^!)"
         git config --local user.name "$(git log --format='%an' HEAD^!)"
         git fetch --tags
-        git tag -l | \
-        while read TAG
+        echo "Current known tags:"
+        git tag -l
+        # Get ordered tags with more recent first
+        git log --tags --pretty "%D" | \
+        while read tagkey TAG
         do
+            [ -z "$tagkey" ] && continue
             case "$TAG" in
                 glpi-agent-*)
                     if (( --COUNT > 0 )); then
@@ -591,26 +595,31 @@ jobs:
                     continue
                     ;;
             esac
-            set x $(gh api /repos/{owner}/{repo}/git/$ref --jq '.object.sha')
+            set x $(gh api /repos/{owner}/{repo}/git/refs/tags/$TAG --jq '.object.sha')
             shift
             SHA="$1"
-            echo "Removing glpi-agent build ($TAG)"
+            echo "Removing glpi-agent build ($TAG) on $SHA commit"
+            [ -z "$SHA" ] && exit 1
             # First delete tag here and remotely
             gh api /repos/{owner}/{repo}/git/refs/tags/$TAG --method DELETE
             git tag -d $TAG
             # Rebase repository and mark old commit to be dropped
+            git status
             git rebase --root -x false || true
             grep -v 'exec false' .git/rebase-merge/git-rebase-todo | \
             sed -e "s/pick $SHA/drop $SHA/" >.git/rebase-merge/git-rebase-todo.fixed
-            mv -vf .git/rebase-merge/git-rebase-todo{.fixed,}
+            mv -vf .git/rebase-merge/git-rebase-todo.fixed .git/rebase-merge/git-rebase-todo
             git rebase --continue
         done
+        echo "Repository status"
+        git status
         ls -lt glpi-agent
         # Prepare commit
+        echo "Adding GLPI-Agent ${{ needs.setup-release.outputs.version }} build"
         git add glpi-agent/*
         git commit -m "Add GLPI-Agent ${{ needs.setup-release.outputs.version }} build"
         git tag glpi-agent-$TAGNAME
-        # Now generate glpi-agent data file
+        echo "Generating glpi-agent data file..."
         for file in $( ls -t glpi-agent/* )
         do
             FILE="${file#glpi-agent/}"
@@ -648,6 +657,7 @@ jobs:
         # Force commit
         git push --force
         git push --tags
+        git status
       shell: bash
       env:
         GH_TOKEN: ${{ secrets.GH_PUBLISHING_TOKEN }}
