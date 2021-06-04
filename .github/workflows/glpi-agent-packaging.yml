@@ -575,7 +575,7 @@ jobs:
                 ;;
         esac
         # Get script to prepare page
-        curl -o github-release-description.sh https://github.com/glpi-project/glpi-agent/raw/develop/tools/github-release-description.sh
+        curl -L -s -o github-release-description.sh https://github.com/glpi-project/glpi-agent/raw/develop/tools/github-release-description.sh
         chmod +x github-release-description.sh
         echo "---"                                  > index.md.new
         echo "layout: default"                      >>index.md.new
