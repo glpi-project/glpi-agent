@@ -595,7 +595,8 @@ jobs:
                         DEB=$( git diff-tree --no-commit-id --name-only -r $TAG | egrep 'glpi-agent_.*_all.deb' )
                         V=${DEB#*glpi-agent_}
                         VERSION=${V%_all.deb}
-                        ./github-nightly-description.sh --version $VERSION >>index.md.new
+                        set x $(git log -n1 --pretty=%ci -- glpi-agent/glpi-agent_${VERSION}_all.deb)
+                        ./github-nightly-description.sh --version $VERSION --date "$2 $3 UTC" >>index.md.new
                         continue
                     fi
                     ;;
@@ -628,39 +629,6 @@ jobs:
         git commit -m "Add GLPI-Agent ${{ needs.setup-release.outputs.version }} build"
         git tag glpi-agent-$TAGNAME
         echo "Using new glpi-agent index page"
-        for file in $( ls -t glpi-agent/* )
-        do
-            FILE="${file#glpi-agent/}"
-            if [ "$FILE" != "index.html" ]; then
-                DATE=$( date -u +"%F %H:%M:%S UTC" -r "$file" )
-                SIZE=$( stat -c %s "$file" )
-                echo "- name: $FILE"
-                echo "  size: $SIZE"
-                set x $(git log -n1 --pretty=%ci -- $file)
-                echo "  date: $2 $3 UTC"
-                case "$FILE" in
-                    *.rpm)
-                        echo "  type: rpm"
-                        ;;
-                    *.deb)
-                        echo "  type: deb"
-                        ;;
-                    *.pkg|*.dmg)
-                        echo "  type: macosx"
-                        ;;
-                    *.zip|*.msi)
-                        echo "  type: win32"
-                        ;;
-                    *.pl|*.snap)
-                        echo "  type: linux"
-                        ;;
-                    *)
-                        echo "  type: n/a"
-                        ;;
-                esac
-            fi
-        done >_data/glpi-agent.yml
-        git add _data/glpi-agent.yml
         mv -vf index.md.new glpi-agent/index.md
         git add glpi-agent/index.md
         git commit -m "glpi-agent index update"
