@@ -27,7 +27,7 @@ if [ -z "$VERSION" ]; then
     exit 1
 fi
 
-if  -z "$DATE" ]; then
+if [ -z "$DATE" ]; then
     DATE="$( date -u +'%F %H:%M:%S UTC' )"
 fi
 
