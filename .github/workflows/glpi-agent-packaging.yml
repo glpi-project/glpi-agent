@@ -577,7 +577,6 @@ jobs:
         git config --local user.email "$(git log --format='%ae' HEAD^!)"
         git config --local user.name "$(git log --format='%an' HEAD^!)"
         git fetch --tags
-        echo $GITHUB_TOKEN | gh auth login --with-token
         git tag -l | \
         while read TAG
         do
@@ -651,4 +650,4 @@ jobs:
         git push --tags
       shell: bash
       env:
-        GITHUB_TOKEN: ${{ secrets.GH_PUBLISHING_TOKEN }}
+        GH_TOKEN: ${{ secrets.GH_PUBLISHING_TOKEN }}
