@@ -577,10 +577,10 @@ jobs:
         git config --local user.email "$(git log --format='%ae' HEAD^!)"
         git config --local user.name "$(git log --format='%an' HEAD^!)"
         git fetch --tags
-        echo "Current known tags:"
+        echo "Current tags on repository:"
         git tag -l
         # Get ordered tags with more recent first
-        git log --tags --pretty "%D" | \
+        git log --tags --pretty="%D" | \
         while read tagkey TAG
         do
             [ -z "$tagkey" ] && continue
