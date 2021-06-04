@@ -575,14 +575,9 @@ jobs:
                 ;;
         esac
         # Get script to prepare page
-        curl -L -s -o github-release-description.sh https://github.com/glpi-project/glpi-agent/raw/develop/tools/github-release-description.sh
-        chmod +x github-release-description.sh
-        echo "---"                                  > index.md.new
-        echo "layout: default"                      >>index.md.new
-        echo "title: GLPI-Agent Nightly Builds"     >>index.md.new
-        echo "---"                                  >>index.md.new
-        export REPO="$BASEURL" GITHUB_REF="refs/tags/${{ needs.setup-release.outputs.version }}"
-        ./github-release-description.sh     >>index.md.new
+        curl -L -s -o github-nightly-description.sh https://github.com/glpi-project/glpi-agent/raw/develop/tools/github-nightly-description.sh
+        chmod +x github-nightly-description.sh
+        ./github-nightly-description.sh --header --version ${{ needs.setup-release.outputs.version }} >index.md.new
         git config --local user.email "$(git log --format='%ae' HEAD^!)"
         git config --local user.name "$(git log --format='%an' HEAD^!)"
         git fetch --tags
@@ -600,9 +595,7 @@ jobs:
                         DEB=$( git diff-tree --no-commit-id --name-only -r $TAG | egrep 'glpi-agent_.*_all.deb' )
                         V=${DEV#*glpi-agent_}
                         VERSION=${V%_all.deb}
-                        export GITHUB_REF="refs/tags/$VERSION"
-                        echo -n "# "                        >>index.md.new
-                        ./github-release-description.sh     >>index.md.new
+                        ./github-nightly-description.sh --version $VERSION >>index.md.new
                         continue
                     fi
                     ;;
