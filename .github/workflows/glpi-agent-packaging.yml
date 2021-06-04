@@ -593,7 +593,7 @@ jobs:
                     if (( --COUNT > 0 )); then
                         echo "Keeping glpi-agent build ($TAG)"
                         DEB=$( git diff-tree --no-commit-id --name-only -r $TAG | egrep 'glpi-agent_.*_all.deb' )
-                        V=${DEV#*glpi-agent_}
+                        V=${DEB#*glpi-agent_}
                         VERSION=${V%_all.deb}
                         ./github-nightly-description.sh --version $VERSION >>index.md.new
                         continue
