@@ -574,6 +574,15 @@ jobs:
                 let COUNT=1
                 ;;
         esac
+        # Get script to prepare page
+        curl -o github-release-description.sh https://github.com/glpi-project/glpi-agent/raw/develop/tools/github-release-description.sh
+        chmod +x github-release-description.sh
+        echo "---"                                  > index.md.new
+        echo "layout: default"                      >>index.md.new
+        echo "title: GLPI-Agent Nightly Builds"     >>index.md.new
+        echo "---"                                  >>index.md.new
+        export REPO="$BASEURL" GITHUB_REF="refs/tags/${{ needs.setup-release.outputs.version }}"
+        ./github-release-description.sh     >>index.md.new
         git config --local user.email "$(git log --format='%ae' HEAD^!)"
         git config --local user.name "$(git log --format='%an' HEAD^!)"
         git fetch --tags
@@ -588,6 +597,12 @@ jobs:
                 glpi-agent-*)
                     if (( --COUNT > 0 )); then
                         echo "Keeping glpi-agent build ($TAG)"
+                        DEB=$( git diff-tree --no-commit-id --name-only -r $TAG | egrep 'glpi-agent_.*_all.deb' )
+                        V=${DEV#*glpi-agent_}
+                        VERSION=${V%_all.deb}
+                        export GITHUB_REF="refs/tags/$VERSION"
+                        echo -n "# "                        >>index.md.new
+                        ./github-release-description.sh     >>index.md.new
                         continue
                     fi
                     ;;
@@ -619,7 +634,7 @@ jobs:
         git add glpi-agent/*
         git commit -m "Add GLPI-Agent ${{ needs.setup-release.outputs.version }} build"
         git tag glpi-agent-$TAGNAME
-        echo "Generating glpi-agent data file..."
+        echo "Using new glpi-agent index page"
         for file in $( ls -t glpi-agent/* )
         do
             FILE="${file#glpi-agent/}"
@@ -653,7 +668,9 @@ jobs:
             fi
         done >_data/glpi-agent.yml
         git add _data/glpi-agent.yml
-        git commit -m "glpi-agent index datas update"
+        mv -vf index.md.new glpi-agent/index.md
+        git add glpi-agent/index.md
+        git commit -m "glpi-agent index update"
         # Force commit
         git push --force
         git push --tags
@@ -661,3 +678,4 @@ jobs:
       shell: bash
       env:
         GH_TOKEN: ${{ secrets.GH_PUBLISHING_TOKEN }}
+        BASEURL: https://glpi-project.github.io/glpi-agent
