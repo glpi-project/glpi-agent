@@ -15,7 +15,7 @@ on:
     branches:
       - develop
   schedule:
-    - cron: '20 3 * * *'
+    - cron: '10 1 * * *'
 
 jobs:
   setup-release:
