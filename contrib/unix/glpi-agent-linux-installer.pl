@@ -19,6 +19,9 @@ BEGIN {
 die "This installer can only be run on linux systems, not on $^O\n"
     unless $^O eq "linux";
 
+die "This installer can only be run as root\n"
+    unless qx/id -u/ eq "0";
+
 my $options = Getopt::GetOptions() or die Getopt::Help();
 if ($options->{help}) {
     print Getopt::Help();
