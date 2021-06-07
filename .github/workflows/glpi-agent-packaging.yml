@@ -47,6 +47,12 @@ jobs:
             if [ "${{ github.event_name }}" = "schedule" -o "${{ env.publish_development_build }}" = "yes" ]; then
                 if [ "${{ github.event_name }}" = "schedule" ]; then
                     TYPE=nightly
+                    if gh api /repos/{owner}/glpi-project.github.io/git/refs/tags/glpi-agent-development-$VERSION --silent 2>/dev/null; then
+                        echo "GLPI-Agent v$VERSION still published as development build"
+                        echo "::set-output name=create-release::no"
+                        echo "::set-output name=build::no"
+                        exit 0
+                    fi
                 else
                     TYPE=development
                 fi
@@ -57,11 +63,10 @@ jobs:
                     echo "::set-output name=create-release::no"
                     echo "::set-output name=build::no"
                 else
-                    TS=$(date +%F-%H-%M-%S)
                     echo "New $TYPE release as $VERSION version"
                     echo "::set-output name=create-release::${{ env.publish_development_build }}"
                     echo "::set-output name=build::yes"
-                    echo "::set-output name=tag_name::$TYPE-release-$TS"
+                    echo "::set-output name=tag_name::$TYPE-$VERSION"
                 fi
             else
                 echo "Just building $VERSION version"
@@ -515,8 +520,8 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    if: ${{ needs.setup-release.outputs.create-release == 'no' }}
-    #if: ${{ needs.setup-release.outputs.create-release == 'no' && startsWith(needs.setup-release.outputs.tag_name, 'nightly') }}
+    if: ${{ needs.setup-release.outputs.create-release == 'no' && needs.setup-release.outputs.build == 'yes' }}
+    #if: ${{ needs.setup-release.outputs.create-release == 'no' && needs.setup-release.outputs.build == 'yes' && startsWith(needs.setup-release.outputs.tag_name, 'nightly') }}
     needs: [ setup-release, windows-packaging, macosx-packaging, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging, linux-installer ]
 
     steps:
@@ -562,12 +567,12 @@ jobs:
       run: |
         # Only keep a given number of nightly releases
         TAGNAME="${{ needs.setup-release.outputs.tag_name }}"
-        [ -z "$TAGNAME" ] && TAGNAME="development-release-$(date +%F-%H-%M-%S)"
+        [ -z "$TAGNAME" ] && TAGNAME="development-${{ needs.setup-release.outputs.version }}"
         case "$TAGNAME" in
-            development-release-*)
+            development-*)
                 let COUNT=${{ env.number_of_development_build_to_keep }}
                 ;;
-            nightly-release-*)
+            nightly-*)
                 let COUNT=${{ env.number_of_nightly_build_to_keep }}
                 ;;
             *)
@@ -609,9 +614,6 @@ jobs:
             SHA="$1"
             echo "Removing glpi-agent build ($TAG) on $SHA commit"
             [ -z "$SHA" ] && exit 1
-            # First delete tag here and remotely
-            gh api /repos/{owner}/{repo}/git/refs/tags/$TAG --method DELETE
-            git tag -d $TAG
             # Rebase repository and mark old commit to be dropped
             git status
             git rebase --root -x false || true
@@ -619,6 +621,9 @@ jobs:
             sed -e "s/pick $SHA/drop $SHA/" >.git/rebase-merge/git-rebase-todo.fixed
             mv -vf .git/rebase-merge/git-rebase-todo.fixed .git/rebase-merge/git-rebase-todo
             git rebase --continue
+            # Finally delete tag here and remotely
+            gh api /repos/{owner}/{repo}/git/refs/tags/$TAG --method DELETE
+            git tag -d $TAG
         done
         echo "Repository status"
         git status
