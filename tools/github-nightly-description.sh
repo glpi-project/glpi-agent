@@ -73,13 +73,15 @@ arm64 | DMG: [GLPI-Agent-${VERSION}_arm64.dmg](GLPI-Agent-${VERSION}_arm64.dmg)
 
 ### Linux installer
 
-Linux installer for redhat/centos/debian/ubuntu (~2Mb):
+Linux installer for redhat/centos/debian/ubuntu|Size
+---|---
+[glpi-agent-${VERSION}-linux-installer.pl](glpi-agent-${VERSION}-linux-installer.pl)|~2Mb
 
-[glpi-agent-${VERSION}-linux-installer.pl](glpi-agent-${VERSION}-linux-installer.pl)
+<p/>
 
-Linux installer for redhat/centos/debian/ubuntu, including snap install support (~20Mb):
-
-[glpi-agent-${VERSION}-with-snap-linux-installer.pl](glpi-agent-${VERSION}-with-snap-linux-installer.pl)
+Linux installer for redhat/centos/debian/ubuntu, including snap install support|Size
+---|---
+[glpi-agent-${VERSION}-with-snap-linux-installer.pl](glpi-agent-${VERSION}-with-snap-linux-installer.pl)|~20Mb
 
 ### Snap package for amd64
 
@@ -111,6 +113,7 @@ Deploy | [glpi-agent-task-deploy-${VERSION}.noarch.rpm](glpi-agent-task-deploy-$
 WakeOnLan | [glpi-agent-task-wakeonlan-${VERSION}.noarch.rpm](glpi-agent-task-wakeonlan-${VERSION}.noarch.rpm)
 Cron | [glpi-agent-cron-${VERSION}.noarch.rpm](glpi-agent-cron-${VERSION}.noarch.rpm)
 
+<p><a href='#content'>Back to top</a></p>
 ---
 
 DESCRIPTION

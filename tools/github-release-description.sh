@@ -58,11 +58,13 @@ arm64 | DMG: [GLPI-Agent-${VERSION}_arm64.dmg]($REPO/releases/download/$TAG/GLPI
 ## Linux
 
 ### Linux installer
-Linux installer for redhat/centos/debian/ubuntu (~2Mb):
-[glpi-agent-${VERSION}-linux-installer.pl]($REPO/releases/download/$TAG/glpi-agent-${VERSION}-linux-installer.pl)
+Linux installer for redhat/centos/debian/ubuntu|Size
+---|---
+[glpi-agent-${VERSION}-linux-installer.pl]($REPO/releases/download/$TAG/glpi-agent-${VERSION}-linux-installer.pl)|~2Mb
 
-Linux installer for redhat/centos/debian/ubuntu, including snap install support (~20Mb):
-[glpi-agent-${VERSION}-with-snap-linux-installer.pl]($REPO/releases/download/$TAG/glpi-agent-${VERSION}-with-snap-linux-installer.pl)
+Linux installer for redhat/centos/debian/ubuntu with also snap install support|Size
+---|---
+[glpi-agent-${VERSION}-with-snap-linux-installer.pl]($REPO/releases/download/$TAG/glpi-agent-${VERSION}-with-snap-linux-installer.pl)|~20Mb
 
 ### Snap package for amd64
 [glpi-agent_${VERSION}_amd64.snap]($REPO/releases/download/$TAG/glpi-agent_${VERSION}_amd64.snap)
