@@ -72,6 +72,7 @@ jobs:
                 echo "Just building $VERSION version"
                 echo "::set-output name=create-release::no"
                 echo "::set-output name=build::yes"
+                echo "::set-output name=tag_name::development-$VERSION"
             fi
         fi
         echo "::set-output name=version::$VERSION"
@@ -522,8 +523,8 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    if: ${{ needs.setup-release.outputs.create-release == 'no' && needs.setup-release.outputs.build == 'yes' }}
-    #if: ${{ needs.setup-release.outputs.create-release == 'no' && needs.setup-release.outputs.build == 'yes' && startsWith(needs.setup-release.outputs.tag_name, 'nightly') }}
+    #if: ${{ needs.setup-release.outputs.create-release == 'no' && needs.setup-release.outputs.build == 'yes' }}
+    if: ${{ needs.setup-release.outputs.create-release == 'no' && needs.setup-release.outputs.build == 'yes' && startsWith(needs.setup-release.outputs.tag_name, 'nightly') }}
     needs: [ setup-release, windows-packaging, macosx-packaging, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging, linux-installer ]
 
     steps:
