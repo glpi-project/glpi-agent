@@ -210,10 +210,14 @@ jobs:
 
   macosx-packaging:
 
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        arch: [ x86_64, arm64 ]
+        include:
+          - os: macos-10.15
+            arch: x86_64
+          - os: macos-11
+            arch: arm64
 
     if: ${{ needs.setup-release.outputs.build == 'yes' }}
     needs: setup-release
@@ -232,7 +236,7 @@ jobs:
           contrib/macosx/build/openssl*
           contrib/macosx/build/zlib*
           contrib/macosx/build/Applications
-        key: macosx-packaging-restore-points-${{ matrix.arch }}-${{ hashFiles('contrib/macosx/glpi-agent-packaging.sh') }}
+        key: macosx-packaging-restore-points-${{ matrix.os }}-${{ matrix.arch }}-${{ hashFiles('contrib/macosx/glpi-agent-packaging.sh') }}
     - name: Build package
       run: |
         ./contrib/macosx/glpi-agent-packaging.sh --arch ${{ matrix.arch }}
