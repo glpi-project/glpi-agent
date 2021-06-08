@@ -40,8 +40,8 @@ toolbox:
 
 packaging:
 * Windows MSI installer based on StrawBerry Perl 5.32.1
-* MacOSX with prebuilt perl 5.32.1 including OpenSSL 1.1.1k support (x86_64,arm64)
-* Linux Snap package with prebuilt perl 5.32.1
+* MacOSX with prebuilt perl 5.34.0 including OpenSSL 1.1.1k support (x86_64,arm64)
+* Linux Snap package with prebuilt perl 5.34.0
 
 Revision history for FusionInventory agent
 
