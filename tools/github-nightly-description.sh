@@ -46,14 +46,14 @@ cat <<DESCRIPTION
 
 Built on $DATE
 
-## Windows
+## Windows <a href="#windows-${VERSION//./-}">#</a> {#windows-${VERSION//./-}}
 
 Arch | Windows installer | Windows portable archive
 ---|:---|:---
 64 bits | [GLPI-Agent-$VERSION-x64.msi](GLPI-Agent-$VERSION-x64.msi) | [glpi-agent-$VERSION-x64.zip](glpi-agent-$VERSION-x64.zip)
 32 bits | [GLPI-Agent-$VERSION-x86.msi](GLPI-Agent-$VERSION-x86.msi) | [glpi-agent-$VERSION-x86.zip](glpi-agent-$VERSION-x86.zip)
 
-## MacOSX
+## MacOSX <a href="#macosx-${VERSION//./-}">#</a> {#macosx-${VERSION//./-}}
 
 ### MacOSX - Intel
 
@@ -69,7 +69,7 @@ Arch | Package
 arm64 | PKG: [GLPI-Agent-${VERSION}_arm64.pkg](GLPI-Agent-${VERSION}_arm64.pkg)
 arm64 | DMG: [GLPI-Agent-${VERSION}_arm64.dmg](GLPI-Agent-${VERSION}_arm64.dmg)
 
-## Linux
+## Linux <a href="#linux-${VERSION//./-}">#</a> {#linux-${VERSION//./-}}
 
 ### Linux installer
 
