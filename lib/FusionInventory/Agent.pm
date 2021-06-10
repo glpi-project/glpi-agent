@@ -165,11 +165,17 @@ sub run {
     while ($self->getTargets() && @targets) {
         my $target = shift @targets;
         if ($self->{config}->{lazy} && $time < $target->getNextRunDate()) {
-            $self->{logger}->info(
-                "$target->{id} is not ready yet, next server contact " .
-                "planned for " . localtime($target->getNextRunDate())
-            );
-            next;
+            if ($self->{config}->{force}) {
+                $self->{logger}->info(
+                    "$target->{id} is not ready yet, but run is forced"
+                );
+            } else {
+                $self->{logger}->info(
+                    "$target->{id} is not ready yet, next server contact " .
+                    "planned for " . localtime($target->getNextRunDate())
+                );
+                next;
+            }
         }
 
         eval {
