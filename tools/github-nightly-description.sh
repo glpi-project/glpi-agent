@@ -50,8 +50,8 @@ Built on $DATE
 
 Arch | Windows installer | Windows portable archive
 ---|:---|:---
-64 bits | [GLPI-Agent-$VERSION-x64.msi](GLPI-Agent-$VERSION-x64.msi) | [glpi-agent-$VERSION-x64.zip](glpi-agent-$VERSION-x64.zip)
-32 bits | [GLPI-Agent-$VERSION-x86.msi](GLPI-Agent-$VERSION-x86.msi) | [glpi-agent-$VERSION-x86.zip](glpi-agent-$VERSION-x86.zip)
+64 bits | [GLPI-Agent-$VERSION-x64.msi](GLPI-Agent-$VERSION-x64.msi) | [GLPI-Agent-$VERSION-x64.zip](GLPI-Agent-$VERSION-x64.zip)
+32 bits | [GLPI-Agent-$VERSION-x86.msi](GLPI-Agent-$VERSION-x86.msi) | [GLPI-Agent-$VERSION-x86.zip](GLPI-Agent-$VERSION-x86.zip)
 
 ## MacOSX <a href="#macosx-${VERSION//./-}">#</a> {#macosx-${VERSION//./-}}
 
