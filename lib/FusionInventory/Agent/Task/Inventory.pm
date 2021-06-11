@@ -460,11 +460,11 @@ sub _feedInventory {
     $self->_injectContent();
 
     # Execution time
-    my $versionprovider = $inventory->getSection("VERSIONPROVIDER");
+    my $versionprovider = $self->{inventory}->getSection("VERSIONPROVIDER");
     $versionprovider->[0]->{ETIME} = time() - $begin
         if $versionprovider && @{$versionprovider};
 
-    $inventory->computeChecksum();
+    $self->{inventory}->computeChecksum();
 }
 
 sub _injectContent {
