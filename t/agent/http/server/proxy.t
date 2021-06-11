@@ -9,22 +9,29 @@ use HTTP::Request;
 use HTTP::Daemon;
 use Test::More;
 use Test::Exception;
-#~ use Test::MockModule;
+use Test::MockModule;
 use Test::MockObject::Extends;
 
 use FusionInventory::Agent;
+use FusionInventory::Agent::Config;
 use FusionInventory::Agent::Logger;
-#~ use FusionInventory::Agent::HTTP::Client;
 use FusionInventory::Agent::HTTP::Server;
 use FusionInventory::Agent::HTTP::Server::Proxy;
 
-use Data::Dumper;
-
-plan tests => 23;
+plan tests => 24;
 
 my $logger = FusionInventory::Agent::Logger->new(
     logger => [ 'Test' ]
 );
+
+# Override include directive to local dedicated config and avoid loading local one if exists
+my $config_module = Test::MockModule->new('FusionInventory::Agent::Config');
+$config_module->mock('_includeDirective', sub {
+    my ($self) = @_;
+    $self->_loadUserParams({
+        disabled    => "no",
+    });
+});
 
 my $agent = Test::MockObject::Extends->new(FusionInventory::Agent->new());
 my $server = {
@@ -45,7 +52,7 @@ lives_ok {
     $proxy->init();
 } "proxy initialization";
 
-#~ print STDERR Dumper($proxy);
+ok( !$proxy->disabled(), "proxy is enabled" );
 
 ### URL Matching
 ok( $proxy->urlMatch("/proxy/apiversion"), "match API version API url" );
