@@ -165,7 +165,7 @@ sub _getAntivirusUninstall {
             my ($registry) = @_;
             return first {
                 $_->{"/DisplayName"} && $_->{"/DisplayName"} =~ $match;
-            } values(%{$registry});
+            } grep { ref($_) } values(%{$registry});
         }
     );
 }
