@@ -213,8 +213,8 @@ sub _build_steps {
                 { do=>'movedir', args=>[ '<image_dir>/perl/newbin', '<image_dir>/perl/bin' ] },
                 # Move DLLs required by modules next to their calling *.xs.dll
                 _movedllto('libexpat-1', 'XML/Parser/Expat'),
-                _movedllto('libcrypto-1_1', 'Net/SSLeay'),
-                _movedllto('libssl-1_1', 'Net/SSLeay'),
+                _movedllto('libcrypto-1_1'.(_is64bit()?'-x64':''), 'Net/SSLeay'),
+                _movedllto('libssl-1_1'.(_is64bit()?'-x64':''), 'Net/SSLeay'),
                 _movedllto('zlib1', 'Net/SSLeay'),
                 { do=>'movefile', args=>[ '<image_dir>/c/bin/gmake.exe', '<image_dir>/perl/bin/gmake.exe' ] }, # Needed for tests
                 { do=>'removedir', args=>[ '<image_dir>/bin' ] },
