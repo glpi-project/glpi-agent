@@ -229,6 +229,9 @@ install -m 644 -D  contrib/unix/%{name}.service %{buildroot}%{_unitdir}/%{name}.
 %dir %{_datadir}/%{name}/lib/FusionInventory
 %dir %{_datadir}/%{name}/lib/FusionInventory/Agent
 %dir %{_datadir}/%{name}/lib/FusionInventory/Agent/Task
+%dir %{_datadir}/%{name}/lib/GLPI
+%dir %{_datadir}/%{name}/lib/GLPI/Agent
+%dir %{_datadir}/%{name}/lib/GLPI/Agent/Protocol
 
 %{_datadir}/%{name}/*.ids
 %{_datadir}/%{name}/html/*.tpl
@@ -276,11 +279,13 @@ install -m 644 -D  contrib/unix/%{name}.service %{buildroot}%{_unitdir}/%{name}.
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Solaris.pm
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Standards*
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Storages/
+%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/UUID.pm
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Unix.pm
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Virtualization.pm
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Win32*
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Version.pm
 %{_datadir}/%{name}/lib/FusionInventory/Agent/XML/
+%{_datadir}/%{name}/lib/GLPI/Agent/Protocol/
 
 %preun
 if [ $1 -eq 0 ] ; then
@@ -332,6 +337,9 @@ fi
 
 
 %changelog
+* Fri Jun 11 2021 Guillaume Bougard <gbougard AT teclib DOT com>
+- Update to support new GLPI Agent protocol
+
 * Mon May 10 2021 Guillaume Bougard <gbougard AT teclib DOT com>
 - Updates to make official and generic GLPI Agent rpm packages
 - Remove dmidecode, perl(Net::CUPS) & perl(Parse::EDID) dependencies as they are
