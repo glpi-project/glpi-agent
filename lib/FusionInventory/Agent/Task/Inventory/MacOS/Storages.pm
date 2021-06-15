@@ -5,8 +5,6 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
-use Scalar::Util qw/looks_like_number/;
-
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::MacOS;
 
