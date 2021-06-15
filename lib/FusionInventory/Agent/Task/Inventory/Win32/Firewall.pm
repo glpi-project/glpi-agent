@@ -11,17 +11,15 @@ use FusionInventory::Agent::Tools::Constants;
 
 use Storable 'dclone';
 
+use constant    category    => "firewall";
+
 my @mappingFirewallProfiles = qw/public standard domain/;
 
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{firewall};
     return 1;
 }
 
 sub isEnabledForRemote {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{firewall};
     return 1;
 }
 

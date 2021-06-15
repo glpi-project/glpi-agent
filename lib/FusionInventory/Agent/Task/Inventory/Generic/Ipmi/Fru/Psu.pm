@@ -9,14 +9,14 @@ use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::IpmiFru;
 use FusionInventory::Agent::Tools::PowerSupplies;
 
+use constant    category    => "psu";
+
 # Run after virtualization to decide if found component is virtual
 our $runAfterIfEnabled = [ qw(
     FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Psu
 )];
 
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{psu};
     return 1;
 }
 

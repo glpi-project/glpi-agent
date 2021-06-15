@@ -11,17 +11,15 @@ use FusionInventory::Agent::Tools::License;
 use FusionInventory::Agent::Tools::Win32;
 use FusionInventory::Agent::Tools;
 
+use constant    category    => "licenseinfo";
+
 my $seenProducts;
 
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{licenseinfo};
     return 1;
 }
 
 sub isEnabledForRemote {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{licenseinfo};
     return 1;
 }
 

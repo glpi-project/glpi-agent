@@ -7,9 +7,9 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
 use FusionInventory::Agent::Tools;
 
+use constant    category    => "controller";
+
 sub isEnabled {
-    my (%params) = @_;
-    return if $params{no_category}->{controller};
     return canRun('ioscan');
 }
 

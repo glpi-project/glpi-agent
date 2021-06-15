@@ -9,9 +9,9 @@ use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::HPUX;
 use English qw(-no_match_vars);
 
+use constant    category    => "memory";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{memory};
     return 1;
 }
 

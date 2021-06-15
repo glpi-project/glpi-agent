@@ -8,6 +8,8 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Generic;
 
+use constant    category    => "slot";
+
 my %status = (
     'Unknown'   => undef,
     'In Use'    => 'used',
@@ -15,8 +17,6 @@ my %status = (
 );
 
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{slot};
     return 1;
 }
 

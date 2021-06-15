@@ -13,15 +13,13 @@ use File::Find;
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Screen;
 
+use constant    category    => "monitor";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{monitor};
     return 1;
 }
 
 sub isEnabledForRemote {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{monitor};
     return 1;
 }
 

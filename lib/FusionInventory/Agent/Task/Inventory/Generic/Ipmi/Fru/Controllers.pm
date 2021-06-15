@@ -8,6 +8,8 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::IpmiFru;
 
+use constant    category    => "controller";
+
 my $CONTROLLERS = qr/^(?:
     BP             |
     PERC           |
@@ -17,8 +19,6 @@ my $CONTROLLERS = qr/^(?:
 )\d*\s+/x;
 
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{controller};
     return 1;
 }
 

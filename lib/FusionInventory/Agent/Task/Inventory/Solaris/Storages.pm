@@ -7,9 +7,9 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
 use FusionInventory::Agent::Tools;
 
+use constant    category    => "storage";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{storage};
     return canRun('iostat');
 }
 

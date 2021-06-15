@@ -5,9 +5,9 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
+use constant    category    => "firewall";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{firewall};
     return 1;
 }
 

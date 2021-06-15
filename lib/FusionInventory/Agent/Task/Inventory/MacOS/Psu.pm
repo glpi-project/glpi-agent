@@ -9,13 +9,13 @@ use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::MacOS;
 use FusionInventory::Agent::Tools::PowerSupplies;
 
+use constant    category    => "psu";
+
 our $runAfterIfEnabled = [ qw(
     FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Psu
 )];
 
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{psu};
     return canRun('/usr/sbin/system_profiler');
 }
 

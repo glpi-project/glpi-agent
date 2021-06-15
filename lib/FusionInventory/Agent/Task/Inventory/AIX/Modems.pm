@@ -8,9 +8,9 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::AIX;
 
+use constant    category    => "modem";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{modem};
     return canRun('lsdev');
 }
 

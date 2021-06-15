@@ -16,20 +16,18 @@ use FusionInventory::Agent::Tools::Win32;
 use FusionInventory::Agent::Tools::Win32::Constants;
 use FusionInventory::Agent::Tools::Win32::LoadIndirectString;
 
+use constant    category    => "software";
+
 our $runAfter = ["FusionInventory::Agent::Task::Inventory::Win32::OS"];
 
 my $seen = {};
 
 sub isEnabled {
-    my (%params) = @_;
-
-    return !$params{no_category}->{software};
+    return 1;
 }
 
 sub isEnabledForRemote {
-    my (%params) = @_;
-
-    return !$params{no_category}->{software};
+    return 1;
 }
 
 sub doInventory {

@@ -10,9 +10,9 @@ use POSIX qw(strftime);
 
 use FusionInventory::Agent::Tools;
 
+use constant    category    => "drive";
+
 sub isEnabled  {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{drive};
     return
         canRun('fstyp') &&
         canRun('bdf');

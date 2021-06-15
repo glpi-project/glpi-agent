@@ -5,9 +5,9 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
+use constant    category    => "battery";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{battery};
     return 1;
 }
 

@@ -7,15 +7,13 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
 use FusionInventory::Agent::Tools::Win32;
 
+use constant    category    => "modem";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{modem};
     return 1;
 }
 
 sub isEnabledForRemote {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{modem};
     return 1;
 }
 

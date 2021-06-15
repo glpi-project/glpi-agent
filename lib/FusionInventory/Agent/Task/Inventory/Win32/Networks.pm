@@ -9,15 +9,13 @@ use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Network;
 use FusionInventory::Agent::Tools::Win32;
 
+use constant    category    => "network";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{network};
     return 1;
 }
 
 sub isEnabledForRemote {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{network};
     return 1;
 }
 

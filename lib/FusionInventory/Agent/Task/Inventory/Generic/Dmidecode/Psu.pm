@@ -9,9 +9,9 @@ use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Generic;
 use FusionInventory::Agent::Tools::PartNumber;
 
+use constant    category    => "psu";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{psu};
     return 1;
 }
 

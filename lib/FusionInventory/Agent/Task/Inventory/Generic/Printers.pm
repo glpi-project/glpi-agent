@@ -10,10 +10,10 @@ use UNIVERSAL::require;
 
 use FusionInventory::Agent::Tools;
 
+use constant    category    => "printer";
+
 sub isEnabled {
     my (%params) = @_;
-
-    return 0 if $params{no_category}->{printer};
 
     # we use system profiler on MacOS
     return 0 if $OSNAME eq 'darwin';

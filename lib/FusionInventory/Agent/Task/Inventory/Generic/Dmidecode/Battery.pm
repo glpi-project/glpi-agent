@@ -9,9 +9,9 @@ use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Generic;
 use FusionInventory::Agent::Tools::Batteries;
 
+use constant    category    => "battery";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{battery};
     return 1;
 }
 

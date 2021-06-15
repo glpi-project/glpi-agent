@@ -7,20 +7,18 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
 use FusionInventory::Agent::Tools::Win32;
 
+use constant    category    => "slot";
+
 my %status = (
     3 => 'free',
     4 => 'used'
 );
 
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{slot};
     return 1;
 }
 
 sub isEnabledForRemote {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{slot};
     return 1;
 }
 

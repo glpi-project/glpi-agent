@@ -7,6 +7,8 @@ our $runAfter                 = [];
 our $runAfterIfEnabled        = [];
 our $runMeIfTheseChecksFailed = [];
 
+use constant    category    => "";
+
 sub isEnabled {
     return 0;
 }

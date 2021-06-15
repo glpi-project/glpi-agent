@@ -7,15 +7,13 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
 use FusionInventory::Agent::Tools::Win32;
 
+use constant    category    => "video";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{video};
     return 1;
 }
 
 sub isEnabledForRemote {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{video};
     return 1;
 }
 

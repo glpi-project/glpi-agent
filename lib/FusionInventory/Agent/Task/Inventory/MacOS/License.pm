@@ -8,9 +8,9 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::License;
 
+use constant    category    => "licenseinfo";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{licenseinfo};
     return 1;
 }
 

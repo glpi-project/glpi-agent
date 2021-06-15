@@ -228,6 +228,17 @@ sub _initModulesList {
             next;
         }
 
+        # Check module category and disabled it if category found in 'no_category' param
+        if (defined(*{$module."::category"})) {
+            no strict 'refs'; ## no critic (ProhibitNoStrict)
+            my $category = &{$module."::category"}();
+            if ($category && $disabled->{$category}) {
+                $logger->debug2("module $module disabled: '$category' category disabled");
+                $self->{modules}->{$module}->{enabled} = 0;
+                next;
+            }
+        }
+
         # Simulate tested function inheritance as we test a module, not a class
         unless (defined(*{$module."::".$isEnabledFunction})) {
             no strict 'refs'; ## no critic (ProhibitNoStrict)
@@ -241,7 +252,6 @@ sub _initModulesList {
             logger => $logger,
             timeout  => $config->{'backend-collect-timeout'},
             params => {
-                no_category   => $disabled,
                 datadir       => $self->{datadir},
                 logger        => $self->{logger},
                 registry      => $self->{registry},

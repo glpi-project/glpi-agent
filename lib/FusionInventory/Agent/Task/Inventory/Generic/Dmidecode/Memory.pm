@@ -9,6 +9,8 @@ use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Generic;
 use FusionInventory::Agent::Tools::PartNumber;
 
+use constant    category    => "memory";
+
 # Run after virtualization to decide if found component is virtual
 our $runAfterIfEnabled = [ qw(
     FusionInventory::Agent::Task::Inventory::Virtualization::Vmsystem
@@ -18,8 +20,6 @@ our $runAfterIfEnabled = [ qw(
 )];
 
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{memory};
     return 1;
 }
 

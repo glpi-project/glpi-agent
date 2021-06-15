@@ -7,16 +7,14 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
 use FusionInventory::Agent::Tools::Win32;
 
-sub isEnabled {
-    my (%params) = @_;
+use constant    category    => "environment";
 
-    return !$params{no_category}->{environment};
+sub isEnabled {
+    return 1;
 }
 
 sub isEnabledForRemote {
-    my (%params) = @_;
-
-    return !$params{no_category}->{environment};
+    return 1;
 }
 
 sub doInventory {

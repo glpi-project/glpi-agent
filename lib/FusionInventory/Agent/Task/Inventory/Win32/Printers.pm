@@ -9,6 +9,8 @@ use English qw(-no_match_vars);
 
 use FusionInventory::Agent::Tools::Win32;
 
+use constant    category    => "printer";
+
 my @status = (
     'Unknown', # 0 is not defined
     'Other',
@@ -40,15 +42,11 @@ my @errStatus = (
 );
 
 sub isEnabled {
-    my (%params) = @_;
-
-    return !$params{no_category}->{printer};
+    return 1;
 }
 
 sub isEnabledForRemote {
-    my (%params) = @_;
-
-    return !$params{no_category}->{printer};
+    return 1;
 }
 
 sub doInventory {

@@ -7,11 +7,10 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
 use FusionInventory::Agent::Tools;
 
-sub isEnabled {
-    my (%params) = @_;
+use constant    category    => "software";
 
+sub isEnabled {
     return
-        !$params{no_category}->{software} &&
         canRun('lslpp');
 }
 

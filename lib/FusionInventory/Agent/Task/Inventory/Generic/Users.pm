@@ -9,10 +9,10 @@ use English qw(-no_match_vars);
 
 use FusionInventory::Agent::Tools;
 
+use constant    category    => "user";
+
 sub isEnabled {
     my (%params) = @_;
-
-    return if $params{no_category}->{user};
 
     # Not working under win32
     return 0 if $OSNAME eq 'MSWin32';

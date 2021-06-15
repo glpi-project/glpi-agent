@@ -8,6 +8,8 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 # Had never been tested.
 use FusionInventory::Agent::Tools::Win32;
 
+use constant    category    => "port";
+
 # cf http://msdn.microsoft.com/en-us/library/aa394486%28VS.85%29.aspx
 my @portType = (
     'Unknown',
@@ -138,14 +140,10 @@ my @portType = (
 );
 
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{port};
     return 1;
 }
 
 sub isEnabledForRemote {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{port};
     return 1;
 }
 

@@ -9,9 +9,9 @@ use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Unix;
 use FusionInventory::Agent::Tools::Network;
 
+use constant    category    => "network";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{network};
     return canRun('lscfg');
 }
 

@@ -8,6 +8,8 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Win32;
 
+use constant    category    => "memory";
+
 our $runMeIfTheseChecksFailed =
     ["FusionInventory::Agent::Task::Inventory::Generic::Dmidecode"];
 
@@ -75,14 +77,10 @@ my @memoryErrorProtection = (
 );
 
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{memory};
     return 1;
 }
 
 sub isEnabledForRemote {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{memory};
     return 1;
 }
 

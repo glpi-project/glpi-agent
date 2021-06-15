@@ -9,9 +9,9 @@ use XML::TreePP;
 
 use FusionInventory::Agent::Tools;
 
+use constant    category    => "storage";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{storage};
     return canRun('sysctl');
 }
 

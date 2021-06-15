@@ -10,9 +10,9 @@ use Scalar::Util qw/looks_like_number/;
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::MacOS;
 
+use constant    category    => "storage";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{storage};
     return 1;
 }
 

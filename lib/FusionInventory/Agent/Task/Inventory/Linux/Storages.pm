@@ -14,11 +14,11 @@ use FusionInventory::Agent::Tools::Generic;
 use FusionInventory::Agent::Tools::Linux;
 use FusionInventory::Agent::Tools::Unix;
 
+use constant    category    => "storage";
+
 memoize('_correctHdparmAvailable');
 
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{storage};
     return 1;
 }
 

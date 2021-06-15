@@ -9,9 +9,9 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 
+use constant    category    => "lvm";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{lvm};
     return canRun('lspv');
 }
 

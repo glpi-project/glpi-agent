@@ -8,9 +8,9 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Constants;
 
+use constant    category    => "firewall";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{firewall};
     return canRun('defaults') && canRun('launchctl');
 }
 

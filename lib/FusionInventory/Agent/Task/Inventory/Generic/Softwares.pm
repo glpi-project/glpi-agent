@@ -5,10 +5,10 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
-sub isEnabled {
-    my (%params) = @_;
+use constant    category    => "software";
 
-    return !$params{no_category}->{software};
+sub isEnabled {
+    return 1;
 }
 
 sub doInventory {}

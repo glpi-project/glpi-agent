@@ -5,14 +5,16 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
+use constant    category    => "remote_mgmt";
+
 sub isEnabled {
     my (%params) = @_;
-    return !($params{no_category}->{remote_mgmt});
+    return 1;
 }
 
 sub isEnabledForRemote {
     my (%params) = @_;
-    return !($params{no_category}->{remote_mgmt});
+    return 1;
 }
 
 sub doInventory {

@@ -10,12 +10,13 @@ use English qw(-no_match_vars);
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Unix;
 
+use constant    category    => "process";
+
 sub isEnabled {
     my (%params) = @_;
 
     return
         $OSNAME ne 'MSWin32' &&
-        !$params{no_category}->{process} &&
         canRun('ps');
 }
 

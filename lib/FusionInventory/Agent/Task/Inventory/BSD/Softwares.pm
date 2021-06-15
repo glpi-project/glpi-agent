@@ -7,11 +7,9 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
 use FusionInventory::Agent::Tools;
 
+use constant    category    => "software";
+
 sub isEnabled {
-    my (%params) = @_;
-
-    return if $params{no_category}->{software};
-
     return canRun('pkg_info') || canRun('pkg');
 }
 

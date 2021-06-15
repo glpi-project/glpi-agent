@@ -9,13 +9,13 @@ use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::IpmiFru;
 use FusionInventory::Agent::Tools::PartNumber;
 
+use constant    category    => "memory";
+
 our $runAfterIfEnabled = [qw(
     FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Memory
 )];
 
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{memory};
     return 1;
 }
 

@@ -8,6 +8,8 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 # Had never been tested.
 use FusionInventory::Agent::Tools::Win32;
 
+use constant    category    => "input";
+
 my %mouseInterface = (
     1 =>  'Other',
     2 => 'Unknown',
@@ -23,14 +25,10 @@ my %mouseInterface = (
 );
 
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{input};
     return 1;
 }
 
 sub isEnabledForRemote {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{input};
     return 1;
 }
 

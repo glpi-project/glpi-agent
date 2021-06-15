@@ -9,9 +9,9 @@ use English qw(-no_match_vars);
 
 use FusionInventory::Agent::Tools;
 
+use constant    category    => "lvm";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{lvm};
     return canRun('lvs');
 }
 

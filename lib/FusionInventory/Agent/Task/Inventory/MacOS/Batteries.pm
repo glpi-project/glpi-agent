@@ -8,11 +8,10 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::MacOS;
 
-sub isEnabled {
-    my (%params) = @_;
+use constant    category    => "battery";
 
+sub isEnabled {
     return
-        !$params{no_category}->{batteries} &&
         canRun('/usr/sbin/system_profiler');
 }
 

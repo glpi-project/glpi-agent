@@ -10,15 +10,13 @@ use English qw(-no_match_vars);
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Win32;
 
+use constant    category    => "user";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{user};
     return 1;
 }
 
 sub isEnabledForRemote {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{user};
     return 1;
 }
 

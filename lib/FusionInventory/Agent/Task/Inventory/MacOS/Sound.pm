@@ -8,9 +8,9 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::MacOS;
 
+use constant    category    => "sound";
+
 sub isEnabled {
-    my (%params) = @_;
-    return 0 if $params{no_category}->{sound};
     return canRun('/usr/sbin/system_profiler');
 }
 
