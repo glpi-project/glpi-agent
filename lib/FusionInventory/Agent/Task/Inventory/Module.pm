@@ -64,7 +64,6 @@ Example: see FusionInventory::Agent::Task::Inventory::Win32::Bios module
 =head2 isEnabled (%params)
 
 Provided parameters:
-    no_category: ref to hash indexed from no_category parameter
     datadir    : resources folder
     logger     : agent logger
     registry   : registry option passed by server
@@ -76,7 +75,6 @@ Returns true is the module should be used for local inventory.
 =head2 isEnabledForInventory (%params)
 
 Provided parameters:
-    no_category: ref to hash indexed from no_category parameter
     datadir    : resources folder
     logger     : agent logger
     registry   : registry option passed by server
