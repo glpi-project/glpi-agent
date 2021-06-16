@@ -196,11 +196,6 @@ sub getCategories {
     my %categories = ();
 
     foreach my $module (sort @modules) {
-        # compute parent module:
-        my @components = split('::', $module);
-        my $parent = @components > 5 ?
-            join('::', @components[0 .. $#components -1]) : '';
-
         # Just skip Version package as not an inventory package module
         # Also skip Module as not a real module but the base class for any module
         next if $module =~ /FusionInventory::Agent::Task::Inventory::(Version|Module)$/;
