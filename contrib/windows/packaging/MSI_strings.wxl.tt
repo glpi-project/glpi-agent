@@ -82,7 +82,7 @@
   <String Id="ExecModeDlgTaskScheduler">As a Windows Task</String>
   <String Id="ExecModeDlgManual">Manually</String>
   <String Id="RunNow">Run inventory immediatly after installation</String>
-  <String Id="Lazy">Respect the frequency of inventories spécified by the server (recommanded)</String>
+  <String Id="Lazy">Respect the frequency of inventories specified by the server (recommended)</String>
   <String Id="LazyToolTip">Lazy option</String>
 
   <!-- custom text for windows task mode setup dialog -->
