@@ -22,6 +22,7 @@ inventory:
 * Removed support of no more used legacy values
 * macosx: Add Apple M1 support
 * win32: Fix OS Version on win10 20H1 and 21H1
+* Added --list-categories option to glpi-agent script
 
 netdiscovery/netinventory:
 * Add support for SonicWall devices

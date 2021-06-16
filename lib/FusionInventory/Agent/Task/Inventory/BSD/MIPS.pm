@@ -9,6 +9,8 @@ use Config;
 
 use FusionInventory::Agent::Tools;
 
+use constant    other_categories => qw(cpu);
+
 sub isEnabled {
     return $Config{archname} =~ /^mips/;
 }

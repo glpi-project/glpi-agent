@@ -187,6 +187,44 @@ sub _submitInventory {
 
 }
 
+sub getCategories {
+    my ($self) = @_;
+
+    my @modules = $self->getModules('Inventory');
+    die "no inventory module found\n" if !@modules;
+
+    my %categories = ();
+
+    foreach my $module (sort @modules) {
+        # compute parent module:
+        my @components = split('::', $module);
+        my $parent = @components > 5 ?
+            join('::', @components[0 .. $#components -1]) : '';
+
+        # Just skip Version package as not an inventory package module
+        # Also skip Module as not a real module but the base class for any module
+        next if $module =~ /FusionInventory::Agent::Task::Inventory::(Version|Module)$/;
+
+        $module->require();
+        next if $EVAL_ERROR;
+
+        # Check module category
+        if (defined(*{$module."::category"})) {
+            no strict 'refs'; ## no critic (ProhibitNoStrict)
+            my $category = &{$module."::category"}();
+            $categories{$category} = 1;
+        }
+
+        # Check module other_categories listing used category in doInventory()
+        if (defined(*{$module."::other_categories"})) {
+            no strict 'refs'; ## no critic (ProhibitNoStrict)
+            map { $categories{$_} = 1 } &{$module."::other_categories"}();
+        }
+    }
+
+    return keys(%categories);
+}
+
 sub _initModulesList {
     my ($self, $disabled) = @_;
 

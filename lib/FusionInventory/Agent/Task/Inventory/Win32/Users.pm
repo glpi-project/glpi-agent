@@ -10,6 +10,8 @@ use English qw(-no_match_vars);
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Win32;
 
+use constant    other_categories
+                            => qw(local_user local_group);
 use constant    category    => "user";
 
 sub isEnabled {

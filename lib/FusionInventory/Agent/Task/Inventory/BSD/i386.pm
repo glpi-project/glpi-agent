@@ -10,6 +10,8 @@ use Config;
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Generic;
 
+use constant    other_categories => qw(cpu);
+
 sub isEnabled {
     return $Config{archname} =~ /^(i\d86|x86_64)/;
 }

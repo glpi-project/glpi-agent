@@ -53,6 +53,7 @@ GetOptions(
     'httpd-ip=s',
     'httpd-port=s',
     'httpd-trust=s',
+    'list-categories',
     'listen',
     'set-forcerun',
     'scan-homedirs',
@@ -135,6 +136,23 @@ if ($options->{'list-tasks'}) {
     exit 0;
 }
 
+if ($options->{"list-categories"}) {
+    FusionInventory::Agent::Task::Inventory->require();
+    die $EVAL_ERROR if $EVAL_ERROR;
+    my $inventory = FusionInventory::Agent::Task::Inventory->new(
+        config       => $agent->{config},
+        datadir      => $agent->{datadir},
+        logger       => $agent->{logger},
+        target       => "none",
+        deviceid     => $agent->{deviceid},
+    );
+    print "Supported categories:\n";
+    foreach my $category (sort $inventory->getCategories()) {
+        print " - $category\n";
+    }
+    exit 0;
+}
+
 if ($options->{wait}) {
     my $time = int rand($options->{wait});
     sleep $time;
@@ -198,6 +216,7 @@ glpi-agent [options] [--server server|--local path]
 
   Inventory task specific options:
     --no-category=CATEGORY         do not list given category items
+    --list-categories              list supported categories
     --scan-homedirs                scan user home directories (false)
     --scan-profiles                scan user profiles (false)
     --html                         save the inventory as HTML (false)
@@ -405,7 +424,7 @@ categories are:
 
 =item * input
 
-=item * license
+=item * licenseinfo
 
 =item * local_group
 
@@ -421,9 +440,15 @@ categories are:
 
 =item * network
 
+=item * port
+
 =item * printer
 
 =item * process
+
+=item * psu
+
+=item * remote_mgmt
 
 =item * slot
 
@@ -442,6 +467,10 @@ categories are:
 =item * virtualmachine
 
 =back
+
+=item B<--list-categories>
+
+List all supported categories by scanning all available inventory modules
 
 =item B<--scan-homedirs>
 
