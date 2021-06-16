@@ -11,7 +11,6 @@ use FusionInventory::Agent::Tools;
 our $runMeIfTheseChecksFailed = ["FusionInventory::Agent::Task::Inventory::Generic::Firewall::Ufw"];
 
 sub isEnabled {
-    my (%params) = @_;
     return
         canRun('systemctl');
 }

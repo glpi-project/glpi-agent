@@ -14,7 +14,6 @@ our $runAfterIfEnabled = [ qw(
 )];
 
 sub isEnabled {
-    my (%params) = @_;
     return canRun('upower');
 }
 

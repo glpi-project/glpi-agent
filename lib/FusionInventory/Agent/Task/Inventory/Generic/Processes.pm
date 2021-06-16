@@ -13,8 +13,6 @@ use FusionInventory::Agent::Tools::Unix;
 use constant    category    => "process";
 
 sub isEnabled {
-    my (%params) = @_;
-
     return
         $OSNAME ne 'MSWin32' &&
         canRun('ps');

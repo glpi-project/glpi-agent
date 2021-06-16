@@ -12,8 +12,6 @@ use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Virtualization;
 
 sub isEnabled {
-    my (%params) = @_;
-
     return unless canRun('VBoxManage');
 
     my ($major, $minor) = getFirstMatch(

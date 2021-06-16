@@ -12,8 +12,6 @@ use FusionInventory::Agent::Tools;
 use constant    category    => "environment";
 
 sub isEnabled {
-    my (%params) = @_;
-
     return
         # We use WMI for Windows because of charset issue
         $OSNAME ne 'MSWin32'

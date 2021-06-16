@@ -9,7 +9,6 @@ use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Linux;
 
 sub isEnabled {
-    my (%params) = @_;
     return -r '/proc/cpuinfo';
 }
 

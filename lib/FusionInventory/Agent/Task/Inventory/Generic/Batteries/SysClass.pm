@@ -16,7 +16,6 @@ our $runAfterIfEnabled = [ qw(
 )];
 
 sub isEnabled {
-    my (%params) = @_;
     return glob "/sys/class/power_supply/*/capacity";
 }
 

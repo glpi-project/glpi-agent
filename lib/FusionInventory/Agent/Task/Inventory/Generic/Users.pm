@@ -14,8 +14,6 @@ use constant    other_categories
 use constant    category    => "user";
 
 sub isEnabled {
-    my (%params) = @_;
-
     # Not working under win32
     return 0 if $OSNAME eq 'MSWin32';
 

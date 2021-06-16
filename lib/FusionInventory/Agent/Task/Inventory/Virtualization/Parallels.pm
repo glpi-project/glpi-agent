@@ -9,8 +9,6 @@ use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Virtualization;
 
 sub isEnabled {
-    my (%params) = @_;
-
     return canRun('prlctl');
 }
 

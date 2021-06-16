@@ -10,8 +10,6 @@ use English qw(-no_match_vars);
 use FusionInventory::Agent::Tools;
 
 sub isEnabled {
-    my (%params) = @_;
-
     return 0 unless $OSNAME eq 'MSWin32';
 
     FusionInventory::Agent::Tools::Win32->use();
@@ -24,8 +22,6 @@ sub isEnabled {
 }
 
 sub isEnabledForRemote {
-    my (%params) = @_;
-
     return 0 unless $OSNAME eq 'MSWin32';
 
     FusionInventory::Agent::Tools::Win32->use();

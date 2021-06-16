@@ -9,7 +9,6 @@ use FusionInventory::Agent::Tools::Constants;
 use FusionInventory::Agent::Tools;
 
 sub isEnabled {
-    my (%params) = @_;
     return
         # Ubuntu
         canRun('ufw');
