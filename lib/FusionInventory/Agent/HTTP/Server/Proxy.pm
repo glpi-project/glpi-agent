@@ -170,8 +170,7 @@ sub handle {
 
     # rate limit by ip to avoid abuse
     if ($self->rate_limited($clientIp)) {
-        $client->send_error(429); # Too Many Requests
-        return 429;
+        return $self->proxy_error(429, 'Too Many Requests');
     }
 
     if ($self->{request} eq 'apiversion') {
@@ -243,8 +242,7 @@ sub _handle_proxy_request {
         my $current_requests = $agent->forked(name => $self->name());
 
         if ($current_requests >= $self->config('max_proxy_threads')) {
-            $client->send_error(429); # Too Many Requests
-            return 429;
+            return $self->proxy_error(429, 'Too Many Requests');
         }
 
         return 1 if $agent->fork(name => $self->name(), description => $self->name()." request");
@@ -302,8 +300,7 @@ sub _handle_proxy_request {
             return $self->_send($answer);
         } else {
             $self->info("Unknown $self->{requestid} request status for $remoteid");
-            $client->send_error(404, 'Unknown status');
-            return 404;
+            return $self->proxy_error(404, 'Unknown status');
         }
     } elsif ($params) {
         if ($params =~ /action=getConfig/) {
@@ -320,30 +317,26 @@ sub _handle_proxy_request {
             return 200;
         } else {
             $self->info("Unsupported $params request from $clientIp");
-            $client->send_error(403, 'Unsupported request');
-            return 403;
+            return $self->proxy_error(403, 'Unsupported request');
         }
     }
 
     unless ($content_type) {
         $self->info("No mandatory Content-type header provided in $self->{request} request from $clientIp");
-        $client->send_error(403, 'Content-type not set');
-        return 403;
+        return $self->proxy_error(403, 'Content-type not set');
     }
 
     my $content = $request->content();
     unless (defined($content) && length($content)) {
         $self->info("No Content found in $self->{request} request from $clientIp");
-        $client->send_error(403, 'No content');
-        return 403;
+        return $self->proxy_error(403, 'No content');
     }
 
     my @servers = ();
     my $serverconfig = $agent->{config};
     unless ($serverconfig) {
-        $client->send_error(500, 'Server configuration missing');
         $self->info("Server configuration is missing");
-        return 500;
+        return $self->proxy_error(500, 'Server configuration missing');
     }
 
     # Uncompress if needed
@@ -363,9 +356,8 @@ sub _handle_proxy_request {
         };
 
         unless ($out) {
-            $client->send_error(403, 'Unsupported $content_type Content-type');
             $self->info("Can't uncompress $content_type Content-type in $self->{request} request from $clientIp");
-            return 403;
+            return $self->proxy_error(403, "Unsupported $content_type Content-type");
         }
 
         local $INPUT_RECORD_SEPARATOR; # Set input to "slurp" mode.
@@ -440,8 +432,7 @@ sub _handle_proxy_request {
         }
         if ($EVAL_ERROR) {
             $self->debug("Not supported message: $EVAL_ERROR");
-            $client->send_error(403, "Unsupported Content");
-            return 403;
+            return $self->proxy_error(403, "Unsupported Content");
         }
 
         my $action = $message->action;
@@ -449,9 +440,11 @@ sub _handle_proxy_request {
 
         my $local_store = $self->config('local_store');
         if ($local_store && ! -d $local_store) {
-            $client->send_error(500, 'Local store missing');
             $self->error("No local store to store $remoteid inventory");
-            return 500;
+            return $self->proxy_error(500, 'Proxy local store missing');
+        } elsif (!$local_store && $self->config('only_local_store') && $action ne "contact") {
+            $self->error("No local store set to store $remoteid inventory");
+            return $self->proxy_error(500, 'Proxy local store not set');
         }
 
         if ($local_store && $action ne "contact") {
@@ -461,16 +454,14 @@ sub _handle_proxy_request {
             $self->debug("Saving datas from $remoteid in $file");
             my $DATA;
             unless (open($DATA, '>', $file)) {
-                $client->send_error(500, "Failed to store datas");
                 $self->error("Can't store datas from $remoteid");
-                return 500;
+                return $self->proxy_error(500, "Proxy failed to store datas");
             }
             print $DATA $content;
             close($DATA);
             unless (-s $file == length($content)) {
-                $client->send_error(500, "Storing failure");
                 $self->error("Failed to store datas from $remoteid");
-                return 500;
+                return $self->proxy_error(500, "Proxy storing failure");
             }
         }
 
@@ -571,15 +562,13 @@ sub _handle_proxy_request {
     # Fallback here to legacy passive proxy mode, only for XML inventory submission
 
     if ($content_type !~ m|^application/xml$|i) {
-        $client->send_error(403, 'Unsupported Content-type');
         $self->info("Unsupported '$content_type' Content-type header provided in $self->{request} request from $clientIp");
-        return 403;
+        return $self->proxy_error(403, 'Unsupported Content-type');
     }
 
     unless (defined($content) && length($content)) {
         $self->info("No Content found in $self->{request} request from $clientIp");
-        $client->send_error(403, 'No content');
-        return 403;
+        return $self->proxy_error(403, 'No content');
     }
 
     my $deviceid;
@@ -601,16 +590,14 @@ sub _handle_proxy_request {
                 $self->debug("Not supported XML looking like: $sample")
                     if $sample;
             }
-            $client->send_error(403, 'Unsupported query');
-            return 403;
+            return $self->proxy_error(403, 'Unsupported query');
         }
 
         $deviceid = $parser->getNodeText("/REQUEST/DEVICEID");
 
         unless ($deviceid) {
             $self->info("Not supported $query query from $remoteid");
-            $client->send_error(403, "$query query without deviceid");
-            return 403;
+            return $self->proxy_error(403, "$query query without deviceid");
         }
 
         $remoteid = $deviceid . '@' . $clientIp;
@@ -640,10 +627,9 @@ sub _handle_proxy_request {
             return 200;
         }
     } else {
-        $client->send_error(403, 'Unsupported content');
         $self->info("Unsupported content in $self->{request} request from $clientIp");
         $self->debug("Content from $clientIp was starting with '".(substr($content,0,40))."'");
-        return 403;
+        return $self->proxy_error(403, 'Unsupported content');
     }
 
     $self->debug("proxy request for $remoteid");
@@ -669,16 +655,14 @@ sub _handle_proxy_request {
         $self->debug("Saving inventory in $xmlfile");
         my $XML;
         if (!open($XML, '>', $xmlfile)) {
-            $client->send_error(500, 'Cannot store content');
             $self->error("Can't store content from $clientIp $self->{request} request");
-            return 500;
+            return $self->proxy_error(500, 'Proxy cannot store content');
         }
         print $XML $content;
         close($XML);
         if (-s $xmlfile != length($content)) {
-            $client->send_error(500, 'Content store failure');
             $self->error("Can't store content from $clientIp $self->{request} request");
-            return 500;
+            return $self->proxy_error(500, 'Proxy content store failure');
         }
         if ($self->config('only_local_store')) {
             $client->send_response($response);
@@ -720,6 +704,18 @@ sub _handle_proxy_request {
     $client->send_response($response);
 
     return $response->code();
+}
+
+sub proxy_error {
+    my ($self, $rc, $error) = @_;
+
+    return $rc unless $self->{client};
+
+    my $response = HTTP::Response->new($rc, $error);
+
+    $self->{client}->send_response($response);
+
+    return $rc;
 }
 
 ## no critic (ProhibitMultiplePackages)
