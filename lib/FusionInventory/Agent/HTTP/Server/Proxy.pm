@@ -489,7 +489,7 @@ sub _handle_proxy_request {
         my $timer = time;
 
         # Find a free requestid
-        while (!defined($self->{requestid}) || $self->{request}->{$self->{requestid}}) {
+        while (!defined($self->{requestid}) || ($self->{answer} && $self->{answer}->{$self->{requestid}})) {
             $self->{requestid} = join('', map { sprintf("%02X", int(rand(256))) } 1..4);
         }
         $requestid = $self->{requestid};
