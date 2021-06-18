@@ -711,7 +711,8 @@ sub proxy_error {
 
     return $rc unless $self->{client};
 
-    my $response = HTTP::Response->new($rc, $error);
+    my $header = HTTP::Headers->new('Content-Type' => 'text/plain; charset=utf-8');
+    my $response = HTTP::Response->new($rc, $error, $header, $error);
 
     $self->{client}->send_response($response);
 
