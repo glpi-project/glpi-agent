@@ -213,13 +213,14 @@ sub runTarget {
     # the prolog/contact dialog must be done once for all tasks,
     # but only for server targets
     my $response;
+    my $client;
     my @plannedTasks = $target->plannedTasks();
     if ($target->isGlpiServer()) {
         FusionInventory::Agent::HTTP::Client::GLPI->require();
         return $self->{logger}->error("GLPI Protocol library can't be loaded")
             if $EVAL_ERROR;
 
-        my $client = FusionInventory::Agent::HTTP::Client::GLPI->new(
+        $client = FusionInventory::Agent::HTTP::Client::GLPI->new(
             logger       => $self->{logger},
             timeout      => $self->{config}->{timeout},
             user         => $self->{config}->{user},
@@ -268,7 +269,7 @@ sub runTarget {
 
         return unless FusionInventory::Agent::HTTP::Client::OCS->require();
 
-        my $client = FusionInventory::Agent::HTTP::Client::OCS->new(
+        $client = FusionInventory::Agent::HTTP::Client::OCS->new(
             logger       => $self->{logger},
             timeout      => $self->{config}->{timeout},
             user         => $self->{config}->{user},
@@ -314,16 +315,38 @@ sub runTarget {
     if ($target->isGlpiServer()) {
         # Handle contact answer including expiration and/or errors
         my $expiration = $response->expiration;
-        $target->setMaxDelay($expiration);
         my $message = $response->get('message');
         my $status  = $response->status;
+
+        my $timeout = time + $self->{config}->{"backend-collect-timeout"};
+        while ($status eq 'pending') {
+            if (time + $expiration > $timeout) {
+                $self->{logger}->info("contact failure due to a pending server status");
+                last;
+            }
+            sleep($expiration);
+            $response = $client->send(
+                url         => $target->getUrl(),
+                requestid   => $response->id,
+            );
+            unless ($response) {
+                $status  = "error";
+                last;
+            }
+            $expiration = $response->expiration;
+            $message    = $response->get('message');
+            $status     = $response->status;
+        }
+
+        $target->setMaxDelay($expiration);
+
         if ($status eq 'error') {
             $self->{logger}->error(
                 "server error: ".($message // "Server returned an error status")
             );
             return 0;
         } elsif ($status eq 'pending') {
-            $self->{logger}->debug("delaying contact for $expiration seconds".
+            $self->{logger}->debug("pending contact timeout".
                 ($message ? ": $message" : "")
             );
             return 0;

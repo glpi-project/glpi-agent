@@ -62,6 +62,12 @@ sub _init {
 
 }
 
+sub id {
+    my ($self) = @_;
+
+    return $self->{id};
+}
+
 sub getStorage {
     my ($self) = @_;
 

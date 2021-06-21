@@ -530,18 +530,25 @@ sub _handle_proxy_request {
         );
 
         foreach my $target (@servers) {
-            $self->debug("Submitting inventory from $remoteid to ".$target->getName());
+            $self->debug("Submitting $action from $remoteid to ".$target->getName());
             my $sent = $proxyclient->send(
                 url     => $target->getUrl(),
                 message => $message
             );
             unless ($sent) {
-                $answer->error("Not sent to ".$target->getName());
-                $self->error("Can't submit $remoteid inventory to ".$target->getName()." server");
+                $answer->error($target->id." forward failure");
+                $answer->expiration($self->config("prolog_freq"));
+                $self->error("Can't submit $remoteid $action to ".$target->getName()." server");
                 last;
             }
+            # Update our prolog_freq from the server one
+            if ($action eq "contact") {
+                $expiration = $answer->expiration();
+                $self->debug("Setting prolog_freq to $expiration");
+                $self->config("prolog_freq", $expiration);
+            }
             $answer->set($sent->get);
-            $self->info("$remoteid inventory submitted to ".$target->getName());
+            $self->info("$remoteid $action submitted to ".$target->getName());
         }
 
         # Only report timing on good requests

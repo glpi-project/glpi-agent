@@ -40,8 +40,9 @@ sub error {
     $self->{_message}->{message} = $error;
     delete $self->{_messages}->{expiration};
 
-    $self->{_http_code}   = 500;
-    $self->{_http_status} = "PROXY-FAILURE";
+    # Returning an error message is still a good HTTP message
+    $self->{_http_code}   = 200;
+    $self->{_http_status} = "OK";
 }
 
 sub contentType {
@@ -71,8 +72,8 @@ sub proxyid {
 sub dump {
     my ($self) = @_;
 
-    my %dump = map { $_ => $self->{_message}->{$_} } keys(%{$self->{_message}->{$_}});
-    map { $dump{$_} => $self->{$_} } qw(_http_code _http_status _agentid _proxyids);
+    my %dump = map { $_ => $self->{_message}->{$_} } keys(%{$self->{_message}});
+    map { $dump{$_} = $self->{$_} } qw(_http_code _http_status _agentid _proxyids);
 
     return encode_json(\%dump);
 }

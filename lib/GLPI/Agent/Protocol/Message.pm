@@ -89,7 +89,12 @@ sub delete {
 }
 
 sub expiration {
-    my ($self) = @_;
+    my ($self, $expiration) = @_;
+
+    if (defined($expiration)) {
+        return 0 unless $self->{_message} && $expiration =~ /^\d+[dshm]?$/;
+        return $self->{_message}->{expiration} = $expiration;
+    }
 
     return 0 unless defined($self->{_message}) && defined($self->{_message}->{expiration});
 
