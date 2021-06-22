@@ -173,6 +173,9 @@ sub submit {
             itemtype    => "Computer",
         );
 
+        # Normalize some strings to expected type (integer)
+        $message->normalize();
+
         my $response = $client->send(
             url     => $self->{target}->getUrl(),
             message => $message
@@ -548,6 +551,10 @@ sub _printInventory {
                 content     => $self->{inventory}->getContent(),
                 itemtype    => "Computer",
             );
+
+            # Normalize some strings to expected type (integer)
+            $inventory->normalize();
+
             print {$params{handle}} $inventory->getContent();
 
             last SWITCH;
