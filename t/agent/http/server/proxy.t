@@ -69,9 +69,8 @@ my $ip = '127.0.0.1';
 my $request = HTTP::Request->new(GET => "/proxy/apiversion");
 $proxy->urlMatch($request->uri);
 my $client = Test::MockObject::Extends->new(HTTP::Daemon::ClientConn->new());
-my ($response, $error);
+my $response;
 $client->mock(send_response => sub { shift; $response = shift; });
-$client->mock(send_error    => sub { shift; $response = shift; $error = shift; });
 lives_ok {
     $proxy->handle($client, $request, $ip);
 } "handle GET apiversion";
@@ -114,8 +113,8 @@ _request( "GLPI-Proxy-ID" => "1,2,$agentid,4" );
 is( $response->status_line, "404 PROXY-LOOP-DETECTED", "proxy loop error (2)" );
 
 sub check_error {
-    is( $response, $_[0], "Expected $_[0] response" );
-    is( $error, $_[1], "Expected $_[1] error message in response");
+    is( $response->code, $_[0], "Expected $_[0] response" );
+    is( $response->content, $_[1], "Expected $_[1] error message in response");
 }
 
 ## GLPI-Request-ID errors
