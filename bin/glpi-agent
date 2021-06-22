@@ -64,6 +64,7 @@ GetOptions(
     'tasks=s',
     'timeout=i',
     'user|u=s',
+    'vardir=s',
     'version',
     'wait|w=s',
     # Platform specific option
@@ -79,8 +80,13 @@ if ($options->{version}) {
 }
 
 if ($options->{setup}) {
-    foreach my $key (keys %setup) {
-        print "$key: $setup{$key}\n";
+    my $agent = FusionInventory::Agent->new(%setup);
+    $options->{debug} = 0;
+    $agent->init(options => $options);
+    $setup{vardir} = $agent->{vardir};
+    my ($length) = sort { $b <=> $a } map { length($_) } keys %setup;
+    foreach my $key (sort keys %setup) {
+        print sprintf("%-${length}s: %s\n", $key, $setup{$key});
     }
     exit 0;
 }
@@ -105,6 +111,9 @@ if ($options->{daemon}) {
         exit 1;
     }
 }
+
+die "given '$options->{vardir}' vardir folder doesn't exist\n"
+    if $options->{vardir} && ! -d $options->{vardir};
 
 my $agent = $options->{daemon} ?
     FusionInventory::Agent::Daemon->new(%setup)
@@ -274,6 +283,9 @@ glpi-agent [options] [--server server|--local path]
     --debug                        debug mode (false)
     --setup                        print the agent setup directories
                                      and exit
+    --vardir=PATH                  use specified path as storage folder for agent
+                                     persistent datas
+
     --version                      print the version and exit
     --no-win32-ole-workaround      [win32 only] disable win32 work-around
                                      used to better handle Win32::OLE apis.

@@ -62,6 +62,10 @@ sub init {
     );
     $self->{config} = $config;
 
+    # Reset vardir if found in configuration
+    $self->{vardir} = $self->{config}->{vardir}
+        if $self->{config}->{vardir} && -d $self->{config}->{vardir};
+
     my $logger = FusionInventory::Agent::Logger->new(config => $config);
     $self->{logger} = $logger;
 
