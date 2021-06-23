@@ -131,7 +131,7 @@ sub events_cb {
     } elsif ($dump =~ /^\d+$/) {
         # Handle last 30 proxyreq timing to optimize expiration returned to proxy clients
         my $timing = int($dump);
-        if ($self->{_proxyreq_expiration} && $self->{_proxyreq_expiration} < $timing) {
+        if (!$self->{_proxyreq_expiration} || $self->{_proxyreq_expiration} < $timing) {
             $self->{_proxyreq_expiration} = $timing;
         }
         push @{$self->{_proxyreq_timing}}, $timing;
