@@ -5,64 +5,85 @@ use warnings;
 
 use parent 'GLPI::Agent::Protocol::Message';
 
+use constant date_qr            => qr/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
+use constant datetime_qr        => qr/^[0-9]{4}-[0-9]{2}-[0-9]{2}[ |T][0-9]{2}:[0-9]{2}:[0-9]{2}(Z|[+|-][0-9]{2}:[0-9]{2}:[0-9]{2})?$/;
+use constant dateordatetime_qr  => qr/^[0-9]{4}-[0-9]{2}-[0-9]{2}([ |T][0-9]{2}:[0-9]{2}:[0-9]{2}(Z|[+|-][0-9]{2}:[0-9]{2}:[0-9]{2})?)?$/;
+
 # List of value to normalize as integer before providing content for export
 my %normalize = (
+    ACCESSLOG        => {
+        datetime        => [ qw/LOGDATE/ ],
+    },
     ANTIVIRUS        => {
-        boolean => [ qw/ENABLED UPTODATE/ ],
+        boolean         => [ qw/ENABLED UPTODATE/ ],
+        date            => [ qw/EXPIRATION/ ],
     },
     BATTERIES        => {
-        integer => [ qw/CAPACITY REAL_CAPACITY VOLTAGE/ ],
+        date            => [ qw/DATE/ ],
+        integer         => [ qw/CAPACITY REAL_CAPACITY VOLTAGE/ ],
+    },
+    BIOS             => {
+        dateordatetime  => [ qw/BDATE/ ],
     },
     CPUS             => {
-        integer => [ qw/CORE CORECOUNT EXTERNAL_CLOCK SPEED STEPPING THREAD/ ],
+        integer         => [ qw/CORE CORECOUNT EXTERNAL_CLOCK SPEED STEPPING THREAD/ ],
     },
     DRIVES           => {
-        boolean => [ qw/SYSTEMDRIVE/ ],
-        integer => [ qw/FREE TOTAL/ ],
+        boolean         => [ qw/SYSTEMDRIVE/ ],
+        integer         => [ qw/FREE TOTAL/ ],
     },
     HARDWARE         => {
-        integer => [ qw/MEMORY SWAP/ ],
+        integer         => [ qw/MEMORY SWAP/ ],
     },
     PHYSICAL_VOLUMES => {
-        integer => [ qw/FREE PE_SIZE PV_PE_COUNT SIZE/ ],
+        integer         => [ qw/FREE PE_SIZE PV_PE_COUNT SIZE/ ],
     },
     VOLUME_GROUPS    => {
-        integer => [ qw/FREE LV_COUNT PV_COUNT SIZE/ ],
+        integer         => [ qw/FREE LV_COUNT PV_COUNT SIZE/ ],
     },
     LOGICAL_VOLUMES  => {
-        integer => [ qw/SEG_COUNT SIZE/ ],
+        integer         => [ qw/SEG_COUNT SIZE/ ],
     },
     MEMORIES         => {
-        integer => [ qw/CAPACITY NUMSLOTS/ ],
+        integer         => [ qw/CAPACITY NUMSLOTS/ ],
     },
     MONITORS         => {
-        integer => [ qw/PORT/ ],
+        integer         => [ qw/PORT/ ],
     },
     NETWORKS         => {
-        boolean => [ qw/MANAGEMENT VIRTUALDEV/ ],
-        integer => [ qw/MTU/ ],
+        boolean         => [ qw/MANAGEMENT VIRTUALDEV/ ],
+        integer         => [ qw/MTU/ ],
+        lowercase       => [ qw/STATUS/ ],
+    },
+    OPERATINGSYSTEM  => {
+        datetime        => [ qw/BOOT_TIME INSTALL_DATE/ ],
     },
     PRINTERS         => {
-        boolean => [ qw/NETWORK SHARED/ ],
+        boolean         => [ qw/NETWORK SHARED/ ],
     },
     PROCESSES        => {
-        integer => [ qw/PID VIRTUALMEMORY/ ],
+        datetime        => [ qw/STARTED/ ],
+        integer         => [ qw/PID VIRTUALMEMORY/ ],
     },
     SOFTWARES        => {
-        boolean => [ qw/NO_REMOVE/ ],
-        integer => [ qw/FILESIZE/ ],
+        boolean         => [ qw/NO_REMOVE/ ],
+        dateordatetime  => [ qw/INSTALLDATE/ ],
+        integer         => [ qw/FILESIZE/ ],
     },
     STORAGES         => {
-        integer => [ qw/DISKSIZE/ ],
+        integer         => [ qw/DISKSIZE/ ],
+        uppercase       => [ qw/INTERFACE/ ],
     },
     VIDEOS           => {
-        integer => [ qw/MEMORY/ ],
+        integer         => [ qw/MEMORY/ ],
     },
     VIRTUALMACHINES  => {
-        integer => [ qw/MEMORY VCPU/ ],
+        integer         => [ qw/MEMORY VCPU/ ],
+        lowercase       => [ qw/STATUS VMTYPE/ ],
     },
     LICENSEINFOS     => {
-        boolean => [ qw/TRIAL/ ],
+        boolean         => [ qw/TRIAL/ ],
+        datetime        => [ qw/ACTIVATION_DATE/ ],
     },
     POWERSUPPLIES    => {
         boolean => [ qw/HOTREPLACEABLE PLUGGED/ ],
@@ -101,35 +122,83 @@ sub normalize {
         foreach my $norm (keys(%{$normalize{$entrykey}})) {
             foreach my $value (@{$normalize{$entrykey}->{$norm}}) {
                 if ($ref eq 'ARRAY') {
-                    map {
-                        if (defined($_->{$value})) {
-                            if ($norm eq "integer" && $_->{$value} =~ /^\d+$/) {
-                                # Make sure to use value as integer
-                                $_->{$value} += 0;
-                            } elsif ($norm eq "boolean") {
-                                $_->{$value} = $_->{$value} ? JSON::true : JSON::false ;
-                            } else {
-                            $self->{logger}->debug("inventory format: Removing $entrykey $value value as not of '$norm' type but '$_->{$value}'")
-                                if $self->{logger};
-                                delete $_->{$value};
-                            }
-                        }
-                    } @{$entry};
-                } elsif (defined($entry->{$value})) {
-                    if ($norm eq "integer" && $entry->{$value} =~ /^\d+$/) {
-                        # Make sure to use value as integer
-                        $entry->{$value} += 0;
-                    } elsif ($norm eq "boolean") {
-                        $entry->{$value} = $entry->{$value} ? JSON::true : JSON::false ;
-                    } else {
-                        $self->{logger}->debug("inventory format: Removing $entrykey $value value as as not of '$norm' type but '$_->{$value}'")
-                            if $self->{logger};
-                        delete $entry->{$value};
-                    }
+                    map { $self->_norm($norm, $_, $value, $entrykey) } @{$entry};
+                } else {
+                    $self->_norm($norm, $entry, $value, $entrykey);
                 }
             }
         }
     }
+}
+
+sub _norm {
+    my ($self, $norm, $entry, $value, $entrykey) = @_;
+
+    return unless defined($entry->{$value});
+
+    if ($norm eq "integer" && $entry->{$value} =~ /^\d+$/) {
+        # Make sure to use value as integer
+        $entry->{$value} += 0;
+    } elsif ($norm eq "boolean") {
+        $entry->{$value} = $entry->{$value} ? JSON::true : JSON::false ;
+    } elsif ($norm eq "lowercase") {
+        $entry->{$value} = lc($entry->{$value});
+    } elsif ($norm eq "uppercase") {
+        $entry->{$value} = uc($entry->{$value});
+    } elsif ($norm eq "date" && $entry->{$value} !~ date_qr) {
+        my $date = _canonicalDate($entry->{$value});
+        if (defined($date)) {
+            $entry->{$value} = $date;
+        } else {
+            $self->{logger}->debug("inventory format: Removing $entrykey $value value as as not of $norm type: '$entry->{$value}'")
+                if $self->{logger};
+            delete $entry->{$value};
+        }
+    } elsif ($norm eq "datetime" && $entry->{$value} !~ datetime_qr) {
+        my $datetime = _canonicalDatetime($entry->{$value});
+        if (defined($datetime)) {
+            $entry->{$value} = $datetime;
+        } else {
+            $self->{logger}->debug("inventory format: Removing $entrykey $value value as as not of $norm type: '$entry->{$value}'")
+                if $self->{logger};
+            delete $entry->{$value};
+        }
+    } elsif ($norm eq "dateordatetime" && $entry->{$value} !~ dateordatetime_qr) {
+        my $dateordatetime = _canonicalDateordatetime($entry->{$value});
+        if (defined($dateordatetime)) {
+            $entry->{$value} = $dateordatetime;
+        } else {
+            $self->{logger}->debug("inventory format: Removing $entrykey $value value as as not of $norm type: '$entry->{$value}'")
+                if $self->{logger};
+            delete $entry->{$value};
+        }
+    } elsif ($norm =~ /^integer$/) {
+        $self->{logger}->debug("inventory format: Removing $entrykey $value value as as not of $norm type: '$entry->{$value}'")
+            if $self->{logger};
+        delete $entry->{$value};
+    }
+}
+
+sub _canonicalDate {
+    my ($date) = @_;
+    return unless defined($date);
+    return "$3-$2-$1" if $date =~ /^(\d{2})\/(\d{2})\/(\d{4})/;
+}
+
+sub _canonicalDatetime {
+    my ($datetime) = @_;
+    return unless defined($datetime);
+    return "$3-$2-$1 00:00:00" if $datetime =~ /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    $datetime .= ":00" if $datetime =~ /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/;
+    return $datetime;
+}
+
+sub _canonicalDateordatetime {
+    my ($date) = @_;
+    return unless defined($date);
+    my $dateordatetime;
+    $dateordatetime = "$3-$2-$1" if $date =~ /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    return $dateordatetime;
 }
 
 1;
@@ -162,3 +231,7 @@ the logger object to use
 the message to encode
 
 =back
+
+=head2 normalize()
+
+Parse content to normalize the inventory and prepare it for the expected json format.
