@@ -84,7 +84,7 @@ sub doInventory {
         $provider->{PERL_MODULE} = [ @modules ];
     }
 
-    $inventory->addEntry(
+    $inventory->setEntry(
         section => 'VERSIONPROVIDER',
         entry   => $provider
     );

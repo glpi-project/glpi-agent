@@ -464,8 +464,8 @@ sub _feedInventory {
 
     # Execution time
     my $versionprovider = $self->{inventory}->getSection("VERSIONPROVIDER");
-    $versionprovider->[0]->{ETIME} = time() - $begin
-        if $versionprovider && @{$versionprovider};
+    $versionprovider->{ETIME} = time() - $begin
+        if $versionprovider;
 
     $self->{inventory}->computeChecksum();
 }

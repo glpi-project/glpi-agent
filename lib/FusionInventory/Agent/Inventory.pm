@@ -296,6 +296,14 @@ sub addEntry {
     push @{$self->{content}{$section}}, $entry;
 }
 
+sub setEntry {
+    my ($self, %params) = @_;
+    $self->addEntry(%params);
+    my $section = $params{section};
+    my $entry = shift @{$self->{content}->{$section}};
+    $self->{content}->{$section} = $entry;
+}
+
 sub getHardware {
     my ($self, $field) = @_;
     return $self->getField('HARDWARE', $field);
