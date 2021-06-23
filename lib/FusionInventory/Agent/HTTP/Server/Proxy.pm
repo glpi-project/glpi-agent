@@ -538,7 +538,7 @@ sub _handle_proxy_request {
             unless ($sent) {
                 $answer->error($target->id." forward failure");
                 $answer->expiration($self->config("prolog_freq"));
-                $self->error("Can't submit $remoteid $action to ".$target->getName()." server");
+                $self->error("Failed to submit $remoteid $action to ".$target->getName()." server");
                 last;
             }
             # Update our prolog_freq from the server one
@@ -701,7 +701,7 @@ sub _handle_proxy_request {
             );
             unless ($sent) {
                 $response = HTTP::Response->new(500, 'Inventory not sent to server');
-                $self->error("Can't submit $remoteid inventory to ".$target->getName()." server");
+                $self->error("Failed to submit $remoteid inventory to ".$target->getName()." server");
                 last;
             }
             $self->info("Inventory from $remoteid submitted to ".$target->getName());
