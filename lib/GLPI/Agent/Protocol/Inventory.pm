@@ -7,23 +7,70 @@ use parent 'GLPI::Agent::Protocol::Message';
 
 # List of value to normalize as integer before providing content for export
 my %normalize = (
-    BATTERIES        => [ qw/CAPACITY REAL_CAPACITY VOLTAGE/ ],
-    CPUS             => [ qw/CORE CORECOUNT EXTERNAL_CLOCK SPEED STEPPING THREAD/ ],
-    DRIVES           => [ qw/FREE TOTAL/ ],
-    HARDWARE         => [ qw/MEMORY SWAP/ ],
-    PHYSICAL_VOLUMES => [ qw/FREE PE_SIZE PV_PE_COUNT SIZE/ ],
-    VOLUME_GROUPS    => [ qw/FREE LV_COUNT PV_COUNT SIZE/ ],
-    LOGICAL_VOLUMES  => [ qw/SEG_COUNT SIZE/ ],
-    MEMORIES         => [ qw/CAPACITY NUMSLOTS/ ],
-    MONITORS         => [ qw/PORT/ ],
-    NETWORKS         => [ qw/MTU/ ],
-    PROCESSES        => [ qw/PID VIRTUALMEMORY/ ],
-    SOFTWARES        => [ qw/FILESIZE/ ],
-    STORAGES         => [ qw/DISKSIZE/ ],
-    VIDEOS           => [ qw/MEMORY/ ],
-    VIRTUALMACHINES  => [ qw/MEMORY VCPU/ ],
-    POWERSUPPLIES    => [ qw/POWER_MAX/ ],
-    VERSIONPROVIDER  => [ qw/ETIME/ ],
+    ANTIVIRUS        => {
+        boolean => [ qw/ENABLED UPTODATE/ ],
+    },
+    BATTERIES        => {
+        integer => [ qw/CAPACITY REAL_CAPACITY VOLTAGE/ ],
+    },
+    CPUS             => {
+        integer => [ qw/CORE CORECOUNT EXTERNAL_CLOCK SPEED STEPPING THREAD/ ],
+    },
+    DRIVES           => {
+        boolean => [ qw/SYSTEMDRIVE/ ],
+        integer => [ qw/FREE TOTAL/ ],
+    },
+    HARDWARE         => {
+        integer => [ qw/MEMORY SWAP/ ],
+    },
+    PHYSICAL_VOLUMES => {
+        integer => [ qw/FREE PE_SIZE PV_PE_COUNT SIZE/ ],
+    },
+    VOLUME_GROUPS    => {
+        integer => [ qw/FREE LV_COUNT PV_COUNT SIZE/ ],
+    },
+    LOGICAL_VOLUMES  => {
+        integer => [ qw/SEG_COUNT SIZE/ ],
+    },
+    MEMORIES         => {
+        integer => [ qw/CAPACITY NUMSLOTS/ ],
+    },
+    MONITORS         => {
+        integer => [ qw/PORT/ ],
+    },
+    NETWORKS         => {
+        boolean => [ qw/MANAGEMENT VIRTUALDEV/ ],
+        integer => [ qw/MTU/ ],
+    },
+    PRINTERS         => {
+        boolean => [ qw/NETWORK SHARED/ ],
+    },
+    PROCESSES        => {
+        integer => [ qw/PID VIRTUALMEMORY/ ],
+    },
+    SOFTWARES        => {
+        boolean => [ qw/NO_REMOVE/ ],
+        integer => [ qw/FILESIZE/ ],
+    },
+    STORAGES         => {
+        integer => [ qw/DISKSIZE/ ],
+    },
+    VIDEOS           => {
+        integer => [ qw/MEMORY/ ],
+    },
+    VIRTUALMACHINES  => {
+        integer => [ qw/MEMORY VCPU/ ],
+    },
+    LICENSEINFOS     => {
+        boolean => [ qw/TRIAL/ ],
+    },
+    POWERSUPPLIES    => {
+        boolean => [ qw/HOTREPLACEABLE PLUGGED/ ],
+        integer => [ qw/POWER_MAX/ ],
+    },
+    VERSIONPROVIDER  => {
+        integer => [ qw/ETIME/ ],
+    },
 );
 
 sub new {
@@ -46,33 +93,39 @@ sub normalize {
     my $content = $self->get("content")
         or return;
 
-    # Normalize some integers as string to integers to follow JSON specs
+    # Normalize some integers and booleans set as string to follow JSON specs
     foreach my $entrykey (keys(%normalize)) {
         my $entry = $content->{$entrykey};
         my $ref = ref($entry)
             or next;
-        foreach my $value (@{$normalize{$entrykey}}) {
-            if ($ref eq 'ARRAY') {
-                map {
-                    if (defined($_->{$value})) {
-                        if ($_->{$value} =~ /^\d+$/) {
-                            # Make sure to use value as integer
-                            $_->{$value} += 0;
-                        } else {
-                        $self->{logger}->debug("inventory format: Removing $entrykey $value value as not an integer but '$_->{$value}'")
-                            if $self->{logger};
-                            delete $_->{$value};
+        foreach my $norm (keys(%{$normalize{$entrykey}})) {
+            foreach my $value (@{$normalize{$entrykey}->{$norm}}) {
+                if ($ref eq 'ARRAY') {
+                    map {
+                        if (defined($_->{$value})) {
+                            if ($norm eq "integer" && $_->{$value} =~ /^\d+$/) {
+                                # Make sure to use value as integer
+                                $_->{$value} += 0;
+                            } elsif ($norm eq "boolean") {
+                                $_->{$value} = $_->{$value} ? JSON::true : JSON::false ;
+                            } else {
+                            $self->{logger}->debug("inventory format: Removing $entrykey $value value as not of '$norm' type but '$_->{$value}'")
+                                if $self->{logger};
+                                delete $_->{$value};
+                            }
                         }
+                    } @{$entry};
+                } elsif (defined($entry->{$value})) {
+                    if ($norm eq "integer" && $entry->{$value} =~ /^\d+$/) {
+                        # Make sure to use value as integer
+                        $entry->{$value} += 0;
+                    } elsif ($norm eq "boolean") {
+                        $entry->{$value} = $entry->{$value} ? JSON::true : JSON::false ;
+                    } else {
+                        $self->{logger}->debug("inventory format: Removing $entrykey $value value as as not of '$norm' type but '$_->{$value}'")
+                            if $self->{logger};
+                        delete $entry->{$value};
                     }
-                } @{$entry};
-            } elsif (defined($entry->{$value})) {
-                if ($entry->{$value} =~ /^\d+$/) {
-                    # Make sure to use value as integer
-                    $entry->{$value} += 0;
-                } else {
-                    $self->{logger}->debug("inventory format: Removing $entrykey $value value as not an integer but '$entry->{$value}'")
-                        if $self->{logger};
-                    delete $entry->{$value};
                 }
             }
         }
