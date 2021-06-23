@@ -51,7 +51,7 @@ sub getContent {
 
     return $self->{_message} unless ref($self->{_message});
 
-    return JSON->new->indent->space_after->encode(_convert($self->{_message}));
+    return JSON->new->canonical->indent->space_after->encode(_convert($self->{_message}));
 }
 
 sub set {
