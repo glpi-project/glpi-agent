@@ -261,8 +261,12 @@ subtest "only only_local_store with inventory saved" => sub {
 <REPLY></REPLY>
 ), "Supported xml INVENTORY query stored");
 };
-chmod 400, $local_store;
-_request();
-subtest "only only_local_store but can't store" => sub {
-    check_error(500, "Proxy cannot store content");
-};
+SKIP: {
+    skip ('chmod not working as expected on Win32', 1)
+        if ($OSNAME eq 'MSWin32');
+    chmod 400, $local_store;
+    _request();
+    subtest "only only_local_store but can't store" => sub {
+        check_error(500, "Proxy cannot store content");
+    };
+}
