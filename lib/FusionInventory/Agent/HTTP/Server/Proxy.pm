@@ -586,7 +586,15 @@ sub _handle_proxy_request {
         # Don't validate XML against DTD, parsing may fail if a proxy is active
         $XML::XPath::ParseParamEnt = 0;
 
-        my $query = $parser->getNodeText("/REQUEST/QUERY");
+        my $query;
+        eval {
+            $query = $parser->getNodeText("/REQUEST/QUERY");
+        };
+        if ($EVAL_ERROR) {
+            $self->info("Unsupported content in $self->{request} request from $clientIp");
+            $self->debug("Content from $clientIp was starting with '".(substr($content,0,40))."'");
+            return $self->proxy_error(403, 'Unsupported xml content');
+        }
 
         unless ($query && $query =~ /^PROLOG|INVENTORY$/) {
             $self->info("Not supported ".($query||"unknown")." query from $remoteid");
@@ -649,8 +657,10 @@ sub _handle_proxy_request {
     );
 
     if ($self->config('only_local_store')) {
-        $response = HTTP::Response->new(500, 'No local storage for inventory')
-            unless ($self->config('local_store') && -d $self->config('local_store'));
+        unless ($self->config('local_store') && -d $self->config('local_store')) {
+            $self->error("Can't store content from $clientIp $self->{request} request without storage folder");
+            return $self->proxy_error(500, 'No local storage for inventory');
+        }
     } else {
         @servers = grep { $_->isType('server') } $agent->getTargets();
     }

@@ -11,6 +11,8 @@ use Test::More;
 use Test::Exception;
 use Test::MockModule;
 use Test::MockObject::Extends;
+use Compress::Zlib;
+use File::Temp;
 
 use FusionInventory::Agent;
 use FusionInventory::Agent::Config;
@@ -18,7 +20,7 @@ use FusionInventory::Agent::Logger;
 use FusionInventory::Agent::HTTP::Server;
 use FusionInventory::Agent::HTTP::Server::Proxy;
 
-plan tests => 24;
+plan tests => 37;
 
 my $logger = FusionInventory::Agent::Logger->new(
     logger => [ 'Test' ]
@@ -113,8 +115,8 @@ _request( "GLPI-Proxy-ID" => "1,2,$agentid,4" );
 is( $response->status_line, "404 PROXY-LOOP-DETECTED", "proxy loop error (2)" );
 
 sub check_error {
-    is( $response->code, $_[0], "Expected $_[0] response" );
-    is( $response->content, $_[1], "Expected $_[1] error message in response");
+    is( $response->code, $_[0], "Expected ".($_[2]//$_[0])." response" );
+    is( $response->content, $_[1], "Expected ".($_[2]//$_[1])." error message in response");
 }
 
 ## GLPI-Request-ID errors
@@ -154,4 +156,113 @@ $agent->{config} = $serverconfig;
 _request();
 subtest "Unsupported Content-type" => sub {
     check_error(403, "Unsupported Content-type");
+};
+
+# Compressed content
+_request(
+    content         => compress("."),
+    "Content-Type"  => "application/x-compress-zlib",
+);
+subtest "Unsupported uncompressed Content-type" => sub {
+    check_error(403, "Unsupported Content-type");
+};
+
+# Compressed content-type but not compressed
+_request(
+    content         => ".",
+);
+subtest "Unsupported compressed Content-type with bad content" => sub {
+    check_error(403, "Unsupported Content-type");
+};
+
+# json content-type only supported for new protocol
+_request(
+    content         => compress("{}"),
+);
+subtest "Unsupported Content-type with compressed json on legacy protocol" => sub {
+    check_error(403, "Unsupported Content-type");
+};
+
+# json content-type only supported for new protocol with glpi-agent-id header, but not valid
+_request(
+    content         => compress("{xxx}"),
+    "GLPI-Agent-ID" => $agentid
+);
+subtest "Unsupported compressed json content with new protocol" => sub {
+    check_error(403, "Unsupported Content");
+};
+
+# xml failure
+_request(
+    content         => "<>",
+    "Content-Type"  => "application/xml",
+    "GLPI-Agent-ID" => "",
+);
+subtest "Unsupported xml content" => sub {
+    check_error(403, "Unsupported content");
+};
+
+_request(
+    content         => "<?xml",
+);
+subtest "Unsupported xml content" => sub {
+    check_error(403, "Unsupported xml content");
+};
+
+_request(
+    content         => "<?xml version='1.0' encoding='UTF-8' ?><REQUEST><QUERY>TEST</QUERY></REQUEST>",
+);
+subtest "Unsupported xml query" => sub {
+    check_error(403, "Unsupported query");
+};
+
+_request(
+    content         => "<?xml version='1.0' encoding='UTF-8' ?><REQUEST><QUERY>PROLOG</QUERY></REQUEST>",
+);
+subtest "Unsupported xml PROLOG query" => sub {
+    check_error(403, "PROLOG query without deviceid");
+};
+
+_request(
+    content         => "<?xml version='1.0' encoding='UTF-8' ?><REQUEST><QUERY>PROLOG</QUERY><DEVICEID>foo</DEVICEID></REQUEST>",
+);
+subtest "Supported xml PROLOG query" => sub {
+    check_error(200, qq(<?xml version="1.0" encoding="UTF-8" ?>
+<REPLY>
+  <PROLOG_FREQ>24</PROLOG_FREQ>
+  <RESPONSE>SEND</RESPONSE>
+</REPLY>
+), "Supported xml PROLOG query");
+};
+
+_request(
+    content         => "<?xml version='1.0' encoding='UTF-8' ?><REQUEST><QUERY>INVENTORY</QUERY><DEVICEID>foo</DEVICEID></REQUEST>",
+);
+subtest "Supported xml INVENTORY query" => sub {
+    check_error(200, qq(<?xml version='1.0' encoding='UTF-8'?>
+<REPLY></REPLY>
+), "Supported xml INVENTORY query");
+};
+
+# Wrong configuration
+$proxy->config("only_local_store", "yes");
+_request(
+    content         => "<?xml version='1.0' encoding='UTF-8' ?><REQUEST><QUERY>INVENTORY</QUERY><DEVICEID>foo</DEVICEID></REQUEST>",
+);
+subtest "only only_local_store but without folder" => sub {
+    check_error(500, "No local storage for inventory");
+};
+
+my $local_store = File::Temp->newdir();
+$proxy->config("local_store", $local_store);
+_request();
+subtest "only only_local_store with inventory saved" => sub {
+    check_error(200, qq(<?xml version='1.0' encoding='UTF-8'?>
+<REPLY></REPLY>
+), "Supported xml INVENTORY query stored");
+};
+chmod 400, $local_store;
+_request();
+subtest "only only_local_store but can't store" => sub {
+    check_error(500, "Proxy cannot store content");
 };
