@@ -91,7 +91,7 @@ sub setNextRunDateFromNow {
     $self->_saveState();
 
     # Remove initialDelay to support case we are still forced to run at start
-    $self->{initialDelay} = undef;
+    delete $self->{initialDelay};
 }
 
 sub resetNextRunDate {
@@ -172,7 +172,7 @@ sub _computeNextRunDate {
     my $ret;
     if ($self->{initialDelay}) {
         $ret = time + ($self->{initialDelay} / 2) + int rand($self->{initialDelay} / 2);
-        $self->{initialDelay} = undef;
+        delete $self->{initialDelay};
     } else {
         # By default, reduce randomly the delay by 0 to 3600 seconds (1 hour max)
         my $max_random_delay_reduc = 3600;
@@ -197,6 +197,9 @@ sub _loadState {
     $self->{maxDelay}    = $data->{maxDelay}    if $data->{maxDelay};
     $self->{nextRunDate} = $data->{nextRunDate} if $data->{nextRunDate};
     $self->{_type}       = $data->{_type}       if $data->{_type};
+
+    # Disable initialDelay if next run date has still been set in a previous run
+    delete $self->{initialDelay} if $data->{nextRunDate};
 }
 
 sub _saveState {
