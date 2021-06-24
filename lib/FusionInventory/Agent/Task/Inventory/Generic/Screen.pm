@@ -146,7 +146,11 @@ sub _getScreensFromWindows {
 
     foreach my $screen (@screens) {
         next unless $screen->{id};
+        # Support overrided EDID block, see https://docs.microsoft.com/en-us/windows-hardware/drivers/display/overriding-monitor-edids
         $screen->{edid} = getRegistryValue(
+            path => "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Enum/$screen->{id}/Device Parameters/EDID_OVERRIDE",
+            logger => $params{logger}
+        ) // getRegistryValue(
             path => "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Enum/$screen->{id}/Device Parameters/EDID",
             logger => $params{logger}
         );
