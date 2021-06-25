@@ -129,6 +129,28 @@ sub normalize {
             }
         }
     }
+
+    # Parse content and remove any not defined value
+    _recursive_not_defined_cleanup($content);
+}
+
+sub _recursive_not_defined_cleanup {
+    my ($entry) = @_;
+
+    my $ref = ref($entry)
+        or return;
+
+    if ($ref eq 'HASH') {
+        foreach my $key (keys(%{$entry})) {
+            if (defined($entry->{$key})) {
+                _recursive_not_defined_cleanup($entry->{$key});
+            } else {
+                delete $entry->{$key};
+            }
+        }
+    } elsif ($ref eq 'ARRAY') {
+        map { _recursive_not_defined_cleanup($_) } @{$entry};
+    }
 }
 
 sub _norm {
@@ -183,22 +205,23 @@ sub _canonicalDate {
     my ($date) = @_;
     return unless defined($date);
     return "$3-$2-$1" if $date =~ /^(\d{2})\/(\d{2})\/(\d{4})/;
+    return $1 if $date =~ /^(\d{4}-\d{2}-\d{2})/;
+    return;
 }
 
 sub _canonicalDatetime {
     my ($datetime) = @_;
     return unless defined($datetime);
     return "$3-$2-$1 00:00:00" if $datetime =~ /^(\d{2})\/(\d{2})\/(\d{4})$/;
-    $datetime .= ":00" if $datetime =~ /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/;
-    return $datetime;
+    return "$datetime:00" if $datetime =~ /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/;
+    return;
 }
 
 sub _canonicalDateordatetime {
     my ($date) = @_;
     return unless defined($date);
-    my $dateordatetime;
-    $dateordatetime = "$3-$2-$1" if $date =~ /^(\d{2})\/(\d{2})\/(\d{4})$/;
-    return $dateordatetime;
+    return "$3-$2-$1" if $date =~ /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    return;
 }
 
 1;
