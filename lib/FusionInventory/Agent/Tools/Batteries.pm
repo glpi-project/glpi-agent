@@ -41,8 +41,8 @@ sub sanitizeBatterySerial {
     $serial = '0x'.$serial
         if ($serial =~ /^[0-9a-fA-F]+$/ && ($serial =~ /[a-fA-F]/ || $serial =~ /^0/));
 
-    # Convert as decimal
-    return hex2dec($serial);
+    # Convert as decimal string
+    return sprintf("%d", hex2dec($serial));
 }
 
 sub getCanonicalVoltage {
