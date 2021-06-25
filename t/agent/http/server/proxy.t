@@ -13,14 +13,16 @@ use Test::MockModule;
 use Test::MockObject::Extends;
 use Compress::Zlib;
 use File::Temp;
+use JSON;
 
 use FusionInventory::Agent;
 use FusionInventory::Agent::Config;
 use FusionInventory::Agent::Logger;
 use FusionInventory::Agent::HTTP::Server;
 use FusionInventory::Agent::HTTP::Server::Proxy;
+use FusionInventory::Agent::XML::Response;
 
-plan tests => 37;
+plan tests => 40;
 
 my $logger = FusionInventory::Agent::Logger->new(
     logger => [ 'Test' ]
@@ -116,7 +118,19 @@ is( $response->status_line, "404 PROXY-LOOP-DETECTED", "proxy loop error (2)" );
 
 sub check_error {
     is( $response->code, $_[0], "Expected ".($_[2]//$_[0])." response" );
-    is( $response->content, $_[1], "Expected ".($_[2]//$_[1])." error message in response");
+    if ($_[3] && $_[3] eq 'xml') {
+        my $resp = FusionInventory::Agent::XML::Response->new(
+            content => $response->content
+        );
+        my $hash = { REPLY => $resp->getContent() };
+        is_deeply($hash, $_[1], "Expected ".($_[2]//$_[1])." error message in response");
+    } elsif ($_[3] && $_[3] eq 'json') {
+        my $json = JSON->new;
+        my $hash = $json->decode($response->content);
+        is_deeply($hash, $_[1], "Expected ".($_[2]//$_[1])." error message in response");
+    } else {
+        is( $response->content, $_[1], "Expected ".($_[2]//$_[1])." error message in response");
+    }
 }
 
 ## GLPI-Request-ID errors
@@ -227,21 +241,14 @@ _request(
     content         => "<?xml version='1.0' encoding='UTF-8' ?><REQUEST><QUERY>PROLOG</QUERY><DEVICEID>foo</DEVICEID></REQUEST>",
 );
 subtest "Supported xml PROLOG query" => sub {
-    check_error(200, qq(<?xml version="1.0" encoding="UTF-8" ?>
-<REPLY>
-  <PROLOG_FREQ>24</PROLOG_FREQ>
-  <RESPONSE>SEND</RESPONSE>
-</REPLY>
-), "Supported xml PROLOG query");
+    check_error(200, { REPLY => { PROLOG_FREQ => "24", RESPONSE => "SEND" } }, "Supported xml PROLOG query", "xml");
 };
 
 _request(
     content         => "<?xml version='1.0' encoding='UTF-8' ?><REQUEST><QUERY>INVENTORY</QUERY><DEVICEID>foo</DEVICEID></REQUEST>",
 );
 subtest "Supported xml INVENTORY query" => sub {
-    check_error(200, qq(<?xml version='1.0' encoding='UTF-8'?>
-<REPLY></REPLY>
-), "Supported xml INVENTORY query");
+    check_error(200, { REPLY => "" }, "Supported xml INVENTORY query", "xml");
 };
 
 # Wrong configuration
@@ -257,9 +264,7 @@ my $local_store = File::Temp->newdir();
 $proxy->config("local_store", $local_store);
 _request();
 subtest "only only_local_store with inventory saved" => sub {
-    check_error(200, qq(<?xml version='1.0' encoding='UTF-8'?>
-<REPLY></REPLY>
-), "Supported xml INVENTORY query stored");
+    check_error(200, { REPLY => "" }, "Supported xml INVENTORY query stored", "xml");
 };
 SKIP: {
     skip ('chmod not working as expected on Win32', 1)
@@ -270,3 +275,36 @@ SKIP: {
         check_error(500, "Proxy cannot store content");
     };
 }
+
+#
+# From here we are testing GLPI Agent protocol
+#
+_request(
+    content         => "<?xml version='1.0' encoding='UTF-8' ?><REQUEST><QUERY>TEST</QUERY></REQUEST>",
+    "GLPI-Agent-ID" => $agentid
+);
+subtest "Unsupported xml content with new protocol" => sub {
+    check_error(403, "Not a legacy CONTACT");
+};
+
+_request(
+    content         => "<?xml version='1.0' encoding='UTF-8' ?><REQUEST><QUERY>PROLOG</QUERY></REQUEST>",
+);
+subtest "Unsupported xml content with new protocol" => sub {
+    check_error(403, "No deviceid in CONTACT");
+};
+
+_request(
+    content         => "<?xml version='1.0' encoding='UTF-8' ?><REQUEST><QUERY>PROLOG</QUERY><DEVICEID>foo</DEVICEID></REQUEST>",
+);
+subtest "Supported xml PROLOG query" => sub {
+    check_error(200, {
+        disabled    => [ qw(netdiscovery netinventory esx collect deploy wakeonlan) ],
+        expiration  => 24,
+        message     => "contact on only storing proxy agent",
+        status      => "ok",
+        tasks       => {
+            inventory   => {}
+        }
+    }, "Supported xml PROLOG query with JSON answer", "json");
+};

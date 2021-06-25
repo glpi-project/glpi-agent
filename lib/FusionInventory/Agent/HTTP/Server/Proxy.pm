@@ -385,11 +385,19 @@ sub _handle_proxy_request {
             eval {
                 my $tpp = XML::TreePP->new();
                 $xml = $tpp->parse($content);
-                die "Not a legacy CONTACT request\n"
-                    unless $xml->{REQUEST}->{QUERY} eq "CONTACT";
-                die "No deviceid in CONTACT request\n"
-                    unless $xml->{REQUEST}->{DEVICEID};
             };
+            if ($EVAL_ERROR) {
+                $self->debug("Not supported message: $EVAL_ERROR");
+                return $self->proxy_error(403, "Unsupported Content");
+            }
+            unless ($xml && $xml->{REQUEST} && $xml->{REQUEST}->{QUERY} && $xml->{REQUEST}->{QUERY} eq "PROLOG") {
+                $self->debug("Not supported message: Not a legacy CONTACT");
+                return $self->proxy_error(403, "Not a legacy CONTACT");
+            }
+            unless ($xml->{REQUEST}->{DEVICEID}) {
+                $self->debug("Not supported message: No deviceid in CONTACT");
+                return $self->proxy_error(403, "No deviceid in CONTACT");
+            }
             if ($xml) {
                 $self->debug("Got legacy PROLOG request from $remoteid");
                 # By default, tell agent to request contact asap with new protocol
