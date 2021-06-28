@@ -398,46 +398,45 @@ sub _handle_proxy_request {
                 $self->debug("Not supported message: No deviceid in CONTACT");
                 return $self->proxy_error(403, "No deviceid in CONTACT");
             }
-            if ($xml) {
-                $self->debug("Got legacy PROLOG request from $remoteid");
-                # By default, tell agent to request contact asap with new protocol
-                my $answer = GLPI::Agent::Protocol::Answer->new(
-                    httpcode    => 202,
-                    httpstatus  => "ACCEPTED",
-                    status      => "pending",
-                    agentid     => $agentid,
-                    proxyids    => $proxyid,
-                    expiration  => 0,
+            $self->debug("Got legacy PROLOG request from $remoteid");
+            # By default, tell agent to request contact asap with new protocol
+            my $answer = GLPI::Agent::Protocol::Answer->new(
+                httpcode    => 202,
+                httpstatus  => "ACCEPTED",
+                status      => "pending",
+                agentid     => $agentid,
+                proxyids    => $proxyid,
+                expiration  => 0,
+            );
+            # But emulate a server answer when needed
+            if ($self->config('only_local_store') || !@servers) {
+                $self->debug("Answering as a GLPI server would do to $remoteid");
+                $answer->success();
+                my $inventory = {};
+                $inventory->{"no-category"} = $self->config("no_category") if $self->config("no_category");
+                $answer->merge(
+                    message => "contact on only storing proxy agent",
+                    tasks   => {
+                        inventory   => $inventory
+                    },
+                    disabled    => [
+                        qw( netdiscovery netinventory esx collect deploy wakeonlan )
+                    ],
+                    expiration  => $self->config("prolog_freq"),
                 );
-                # But emulate a server answer when needed
-                if ($self->config('only_local_store') || !@servers) {
-                    $self->debug("Answering as a GLPI server would do to $remoteid");
-                    $answer->success();
-                    my $inventory = {};
-                    $inventory->{"no-category"} = $self->config("no_category") if $self->config("no_category");
-                    $answer->merge(
-                        message => "contact on only storing proxy agent",
-                        tasks   => {
-                            inventory   => $inventory
-                        },
-                        disabled    => [
-                            qw( netdiscovery netinventory esx collect deploy wakeonlan )
-                        ],
-                        expiration  => $self->config("prolog_freq"),
-                    );
-                } else {
-                    $self->debug("Answering to tell client to immediatly use GLPI protocol");
-                }
-                return $self->_send($answer);
+            } else {
+                $self->debug("Answering to tell client to immediatly use GLPI protocol");
             }
-        } else {
-            eval {
-                $message = GLPI::Agent::Protocol::Message->new(
-                    logger  => $self->{logger},
-                    message => $content,
-                );
-            };
+            return $self->_send($answer);
         }
+
+        # Try to handle any JSON as GLPI agent protocol message
+        eval {
+            $message = GLPI::Agent::Protocol::Message->new(
+                logger  => $self->{logger},
+                message => $content,
+            );
+        };
         if ($EVAL_ERROR) {
             $self->debug("Not supported message: $EVAL_ERROR");
             return $self->proxy_error(403, "Unsupported Content");
