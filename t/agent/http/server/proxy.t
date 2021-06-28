@@ -21,8 +21,9 @@ use FusionInventory::Agent::Logger;
 use FusionInventory::Agent::HTTP::Server;
 use FusionInventory::Agent::HTTP::Server::Proxy;
 use FusionInventory::Agent::XML::Response;
+use FusionInventory::Agent::Target::Server;
 
-plan tests => 40;
+plan tests => 46;
 
 my $logger = FusionInventory::Agent::Logger->new(
     logger => [ 'Test' ]
@@ -55,6 +56,9 @@ lives_ok {
 lives_ok {
     $proxy->init();
 } "proxy initialization";
+
+# We don't test maxrate
+$proxy->config("maxrate", 0);
 
 ok( !$proxy->disabled(), "proxy is enabled" );
 
@@ -203,7 +207,7 @@ _request(
     "GLPI-Agent-ID" => $agentid
 );
 subtest "Unsupported compressed json content with new protocol" => sub {
-    check_error(403, "Unsupported Content");
+    check_error(403, "Unsupported JSON Content");
 };
 
 # xml failure
@@ -274,6 +278,7 @@ SKIP: {
     subtest "only only_local_store but can't store" => sub {
         check_error(500, "Proxy cannot store content");
     };
+    chmod 755, $local_store;
 }
 
 #
@@ -308,3 +313,67 @@ subtest "Supported xml PROLOG query" => sub {
         }
     }, "Supported xml PROLOG query with JSON answer", "json");
 };
+
+# Same request but with a server set
+$proxy->config("only_local_store", 0);
+my $glpi = FusionInventory::Agent::Target::Server->new(
+    url         => 'http://glpi-project.test/glpi',
+    basevardir  => 'var',
+);
+$glpi->isGlpiServer(1);
+$agent->{targets} = [ $glpi ];
+_request();
+subtest "Supported xml PROLOG query with GLPI server" => sub {
+    check_error(202, {
+        expiration  => '0',
+        status      => "pending",
+    }, "Supported xml PROLOG query with JSON answer", "json");
+};
+
+$proxy->config("local_store", $local_store."XXX");
+_request(
+    content         => compress('{ "action": "contact" }'),
+    "Content-Type"  => "application/x-compress-zlib",
+    "GLPI-Agent-ID" => $agentid
+);
+subtest "JSON message but not existing store" => sub {
+    check_error(500, 'Proxy local store missing');
+};
+
+$proxy->config("local_store", $local_store."XXX");
+_request(
+    content         => '{ "action": "contact" }',
+    "Content-Type"  => "application/json",
+    "GLPI-Agent-ID" => $agentid
+);
+subtest "JSON message but not existing store" => sub {
+    check_error(500, 'Proxy local store missing');
+};
+
+$proxy->config("local_store", "");
+$proxy->config("only_local_store", 1);
+_request(
+    content         => '{ "action": "inventory" }',
+    "Content-Type"  => "application/json",
+    "GLPI-Agent-ID" => $agentid
+);
+subtest "JSON inventory but not existing store" => sub {
+    check_error(500, 'Proxy local store not set');
+};
+
+$proxy->config("local_store", $local_store);
+_request();
+subtest "JSON inventory action stored" => sub {
+    check_error(200, { status => "ok" }, "JSON inventory action stored", "json");
+};
+
+SKIP: {
+    skip ('chmod not working as expected on Win32', 1)
+        if ($OSNAME eq 'MSWin32');
+    chmod 400, $local_store;
+    _request();
+    subtest "only only_local_store but can't store" => sub {
+        check_error(500, "Proxy failed to store datas");
+    };
+    chmod 755, $local_store;
+}

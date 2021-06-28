@@ -439,7 +439,7 @@ sub _handle_proxy_request {
         };
         if ($EVAL_ERROR) {
             $self->debug("Not supported message: $EVAL_ERROR");
-            return $self->proxy_error(403, "Unsupported Content");
+            return $self->proxy_error(403, "Unsupported JSON Content");
         }
 
         my $action = $message->action;
