@@ -20,10 +20,13 @@ use FusionInventory::Agent::Config;
 use FusionInventory::Agent::Logger;
 use FusionInventory::Agent::HTTP::Server;
 use FusionInventory::Agent::HTTP::Server::Proxy;
+use FusionInventory::Agent::HTTP::Client::GLPI;
+use FusionInventory::Agent::HTTP::Client::OCS;
 use FusionInventory::Agent::XML::Response;
 use FusionInventory::Agent::Target::Server;
+use GLPI::Agent::Protocol::Answer;
 
-plan tests => 46;
+plan tests => 55;
 
 my $logger = FusionInventory::Agent::Logger->new(
     logger => [ 'Test' ]
@@ -43,8 +46,31 @@ my $server = {
     agent   => $agent,
 };
 # Prohibit agent forking api by mocking its fork related methods
+my @events;
 $agent->mock( fork   => sub { 0 } );
 $agent->mock( forked => sub { 0 } );
+$agent->mock( forked_process_event => sub { shift; push @events, shift; } );
+
+# Mock GLPI client
+my $client_module = Test::MockModule->new('FusionInventory::Agent::HTTP::Client::GLPI');
+$client_module->mock('send', sub {
+    my ($self, %params) = @_;
+    my ($test) = $params{url} =~ m/\?test=(.*)$/;
+    return if $test && $test eq "noserver";
+    return GLPI::Agent::Protocol::Answer->new(
+        status      => "ok",
+        expiration  => "24",
+    );
+});
+
+my $ocs_client_module = Test::MockModule->new('FusionInventory::Agent::HTTP::Client::OCS');
+$ocs_client_module->mock('send', sub {
+    my ($self, %params) = @_;
+    my ($test) = $params{url} =~ m/\?test=(.*)$/;
+    return FusionInventory::Agent::XML::Response->new(
+        content => "<REPLY></REPLY>",
+    ) if $test && $test eq "sent";;
+});
 
 my $proxy;
 lives_ok {
@@ -256,7 +282,7 @@ subtest "Supported xml INVENTORY query" => sub {
 };
 
 # Wrong configuration
-$proxy->config("only_local_store", "yes");
+$proxy->config("only_local_store", 1);
 _request(
     content         => "<?xml version='1.0' encoding='UTF-8' ?><REQUEST><QUERY>INVENTORY</QUERY><DEVICEID>foo</DEVICEID></REQUEST>",
 );
@@ -281,9 +307,29 @@ SKIP: {
     chmod 755, $local_store;
 }
 
+my $glpi = FusionInventory::Agent::Target::Server->new(
+    url         => 'http://glpi-project.test/glpi',
+    basevardir  => 'var',
+);
+$glpi->isGlpiServer(0);
+$agent->{targets} = [ $glpi ];
+$proxy->config("only_local_store", 0);
+_request();
+subtest "failing to pass inventory to server" => sub {
+    check_error(500, "Inventory not sent to server0");
+};
+
+$glpi->{url} = "http://glpi-project.test/glpi?test=sent";
+_request();
+subtest "send inventory to server" => sub {
+    check_error(200, { REPLY => "" }, "Inventory sent to server0", "xml");
+};
+
 #
 # From here we are testing GLPI Agent protocol
 #
+$agent->{targets} = [];
+$proxy->config("only_local_store", 1);
 _request(
     content         => "<?xml version='1.0' encoding='UTF-8' ?><REQUEST><QUERY>TEST</QUERY></REQUEST>",
     "GLPI-Agent-ID" => $agentid
@@ -316,10 +362,7 @@ subtest "Supported xml PROLOG query" => sub {
 
 # Same request but with a server set
 $proxy->config("only_local_store", 0);
-my $glpi = FusionInventory::Agent::Target::Server->new(
-    url         => 'http://glpi-project.test/glpi',
-    basevardir  => 'var',
-);
+$glpi->{url} = "http://glpi-project.test/glpi";
 $glpi->isGlpiServer(1);
 $agent->{targets} = [ $glpi ];
 _request();
@@ -377,3 +420,21 @@ SKIP: {
     };
     chmod 755, $local_store;
 }
+
+$proxy->config("only_local_store", 0);
+$glpi->{url} = "http://glpi-project.test/glpi?test=noserver";
+_request();
+subtest "JSON inventory pending request but ko" => sub {
+    check_error(202, { status => "pending", expiration => "10s" }, "JSON inventory action stored", "json");
+};
+like(shift @events, qr/^PROXYREQ,[0-9A-F]{8},.*"status":"pending"/, "Pending inventory event");
+like(shift @events, qr/^PROXYREQ,[0-9A-F]{8},.*"message":"server0 forward failure"/, "Pending inventory event not sent");
+
+$glpi->{url} = "http://glpi-project.test/glpi?test=sent";
+_request();
+subtest "JSON inventory pending request and ok" => sub {
+    check_error(202, { status => "pending", expiration => "10s" }, "JSON inventory action stored", "json");
+};
+like(shift @events, qr/^PROXYREQ,[0-9A-F]{8},.*"status":"pending"/, "Pending inventory event");
+like(shift @events, qr/^PROXYREQ,[0-9A-F]{8},\d+$/, "Pending inventory timing event");
+like(shift @events, qr/^PROXYREQ,[0-9A-F]{8},.*"status":"ok"/, "Pending inventory event sent");

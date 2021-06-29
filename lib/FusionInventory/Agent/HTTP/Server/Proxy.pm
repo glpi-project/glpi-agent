@@ -717,9 +717,8 @@ sub _handle_proxy_request {
                 message => $message
             );
             unless ($sent) {
-                $response = HTTP::Response->new(500, 'Inventory not sent to server');
                 $self->error("Failed to submit $remoteid inventory to ".$target->getName()." server");
-                last;
+                return $self->proxy_error(500, 'Inventory not sent to '.$target->id());
             }
             $self->info("Inventory from $remoteid submitted to ".$target->getName());
         }
