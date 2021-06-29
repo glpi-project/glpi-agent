@@ -321,7 +321,7 @@ sub _initModulesList {
         if (defined(*{$module."::category"})) {
             no strict 'refs'; ## no critic (ProhibitNoStrict)
             my $category = &{$module."::category"}();
-            if ($category && $disabled->{$category}) {
+            if ($category && $self->{disabled}->{$category}) {
                 $logger->debug2("module $module disabled: '$category' category disabled");
                 $self->{modules}->{$module}->{enabled} = 0;
                 next;
