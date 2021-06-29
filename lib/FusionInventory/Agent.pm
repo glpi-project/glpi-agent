@@ -18,6 +18,7 @@ use FusionInventory::Agent::Target::Local;
 use FusionInventory::Agent::Target::Server;
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Hostname;
+use FusionInventory::Agent::Tools::UUID;
 
 our $VERSION = $FusionInventory::Agent::Version::VERSION;
 my $PROVIDER = $FusionInventory::Agent::Version::PROVIDER;
@@ -61,6 +62,10 @@ sub init {
     );
     $self->{config} = $config;
 
+    # Reset vardir if found in configuration
+    $self->{vardir} = $self->{config}->{vardir}
+        if $self->{config}->{vardir} && -d $self->{config}->{vardir};
+
     my $logger = FusionInventory::Agent::Logger->new(config => $config);
     $self->{logger} = $logger;
 
@@ -94,11 +99,14 @@ sub init {
 
     # compute list of allowed tasks
     my $available = $self->getAvailableTasks();
-    my @tasks = keys(%{$available});
+    my @tasks = sort keys(%{$available});
     unless (@tasks) {
         $logger->error("No tasks available, aborting");
         exit 1;
     }
+
+    # Keep available tasks as installed tasks for GLPI Agent protocol CONTACT
+    $self->{installed_tasks} = [ map { lc($_) } @tasks ];
 
     my @plannedTasks = $self->computeTaskExecutionPlan($available);
 
@@ -111,7 +119,7 @@ sub init {
     }
 
     $logger->debug("Available tasks:");
-    foreach my $task (sort @tasks) {
+    foreach my $task (@tasks) {
         $logger->debug("- $task: $available->{$task}");
     }
 
@@ -206,14 +214,17 @@ sub runTarget {
         $self->{logger}->info("target $target->{id}: " . $target->getType() . " " . $target->getName());
     }
 
-    # the prolog dialog must be done once for all tasks,
+    # the prolog/contact dialog must be done once for all tasks,
     # but only for server targets
     my $response;
-    if ($target->isType('server')) {
+    my $client;
+    my @plannedTasks = $target->plannedTasks();
+    if ($target->isGlpiServer()) {
+        FusionInventory::Agent::HTTP::Client::GLPI->require();
+        return $self->{logger}->error("GLPI Protocol library can't be loaded")
+            if $EVAL_ERROR;
 
-        return unless FusionInventory::Agent::HTTP::Client::OCS->require();
-
-        my $client = FusionInventory::Agent::HTTP::Client::OCS->new(
+        $client = FusionInventory::Agent::HTTP::Client::GLPI->new(
             logger       => $self->{logger},
             timeout      => $self->{config}->{timeout},
             user         => $self->{config}->{user},
@@ -223,6 +234,56 @@ sub runTarget {
             ca_cert_dir  => $self->{config}->{'ca-cert-dir'},
             no_ssl_check => $self->{config}->{'no-ssl-check'},
             no_compress  => $self->{config}->{'no-compression'},
+            agentid      => uuid_to_string($self->{agentid}),
+        );
+
+        return $self->{logger}->error("Can't load GLPI Protocol CONTACT library")
+            unless GLPI::Agent::Protocol::Contact->require();
+
+        my %enabled = map { lc($_) => 1 } @plannedTasks;
+        my $contact = GLPI::Agent::Protocol::Contact->new(
+            logger              => $self->{logger},
+            deviceid            => $self->{deviceid},
+            "installed-tasks"   => $self->{installed_tasks},
+            "enabled-tasks"     => [ sort keys(%enabled) ],
+        );
+        $contact->merge(tag => $self->{config}->{tag})
+            if defined($self->{config}->{tag}) && length($self->{config}->{tag});
+
+        $self->{logger}->info("sending contact request to $target->{id}");
+        $response = $client->send(
+            url     => $target->getUrl(),
+            message => $contact,
+        );
+        unless ($response) {
+            $self->{logger}->error("No answer from server at ".$target->getUrl());
+            # Return true on net error
+            return 1;
+        }
+
+        # Check we got a GLPI CONTACT answer
+        if (ref($response) ne 'GLPI::Agent::Protocol::Contact') {
+            $self->{logger}->info("$target->{id} is not understanding GLPI Agent protocol");
+            $target->isGlpiServer('false');
+            # return true to soon fallback on PROLOG request
+            return 1;
+        }
+
+    } elsif ($target->isType('server')) {
+
+        return unless FusionInventory::Agent::HTTP::Client::OCS->require();
+
+        $client = FusionInventory::Agent::HTTP::Client::OCS->new(
+            logger       => $self->{logger},
+            timeout      => $self->{config}->{timeout},
+            user         => $self->{config}->{user},
+            password     => $self->{config}->{password},
+            proxy        => $self->{config}->{proxy},
+            ca_cert_file => $self->{config}->{'ca-cert-file'},
+            ca_cert_dir  => $self->{config}->{'ca-cert-dir'},
+            no_ssl_check => $self->{config}->{'no-ssl-check'},
+            no_compress  => $self->{config}->{'no-compression'},
+            agentid      => uuid_to_string($self->{agentid}),
         );
 
         return unless FusionInventory::Agent::XML::Query::Prolog->require();
@@ -242,14 +303,96 @@ sub runTarget {
             return 1;
         }
 
-        # update target
-        my $content = $response->getContent();
-        if (defined($content->{PROLOG_FREQ})) {
-            $target->setMaxDelay($content->{PROLOG_FREQ} * 3600);
+        # Check if we got a GLPI server answer
+        if (ref($response) eq 'GLPI::Agent::Protocol::Contact') {
+            $self->{logger}->info("$target->{id} answer shows it supports GLPI Agent protocol");
+            $target->isGlpiServer('true');
+        } else {
+            # update target
+            my $content = $response->getContent();
+            if (defined($content->{PROLOG_FREQ})) {
+                $target->setMaxDelay($content->{PROLOG_FREQ} * 3600);
+            }
         }
     }
 
-    foreach my $name ($target->plannedTasks()) {
+    if ($target->isGlpiServer()) {
+        # Handle contact answer including expiration and/or errors
+        my $expiration = $response->expiration;
+        my $message = $response->get('message');
+        my $status  = $response->status;
+
+        my $timeout = time + $self->{config}->{"backend-collect-timeout"};
+        while ($status eq 'pending') {
+            if (time + $expiration > $timeout) {
+                $self->{logger}->info("contact failure due to a pending server status");
+                last;
+            }
+            sleep($expiration);
+            $response = $client->send(
+                url         => $target->getUrl(),
+                requestid   => $response->id,
+            );
+            unless ($response) {
+                $status  = "error";
+                last;
+            }
+            $expiration = $response->expiration;
+            $message    = $response->get('message');
+            $status     = $response->status;
+        }
+
+        $target->setMaxDelay($expiration);
+
+        if ($status eq 'error') {
+            $self->{logger}->error(
+                "server error: ".($message // "Server returned an error status")
+            );
+            return 0;
+        } elsif ($status eq 'pending') {
+            $self->{logger}->debug("pending contact timeout".
+                ($message ? ": $message" : "")
+            );
+            return 0;
+        } elsif ($status ne 'ok') {
+            $self->{logger}->debug("unexpected server status: $status".
+                ($message ? " ($message)" : "")
+            );
+            return 0;
+        } elsif ($message) {
+            $self->{logger}->debug("server message: $message");
+        }
+
+        # Don't plan tasks disabled by server
+        my $disabled = $response->get('disabled');
+        if ($disabled) {
+            if (ref($disabled) eq 'ARRAY' && @{$disabled}) {
+                my %disabled = map { lc($_) => 1 } @{$disabled};
+                # Never disable inventory if force option is used
+                delete $disabled{inventory} if $self->{config}->{force};
+                @plannedTasks = grep { ! exists($disabled{lc($_)}) } @plannedTasks;
+            } elsif (!ref($disabled)) {
+                $disabled = lc($disabled);
+                # Only disable inventory if force option is not set
+                if ($disabled ne "inventory" || !$self->{config}->{force}) {
+                    @plannedTasks = grep {
+                        lc($_) ne $disabled
+                    } @plannedTasks;
+                }
+            }
+        }
+
+        my $tasks = $response->get("tasks");
+        # Handle no-category set by server on inventory task
+        if ($tasks && $tasks->{inventory} && $tasks->{inventory}->{"no-category"}) {
+            my $no_category = $tasks->{inventory}->{"no-category"};
+            $self->{logger}->debug("set no-category configuration to: $no_category")
+                if !$self->{config}->{"no-category"} || $self->{config}->{"no-category"} ne $no_category;
+            $self->{config}->{"no-category"} = [ split(/,/, $no_category) ];
+        }
+    }
+
+    foreach my $name (@plannedTasks) {
         eval {
             $self->runTask($target, $name, $response);
         };
@@ -292,14 +435,18 @@ sub runTaskReal {
         logger       => $self->{logger},
         target       => $target,
         deviceid     => $self->{deviceid},
+        agentid      => uuid_to_string($self->{agentid}),
     );
 
     return if !$task->isEnabled($response);
 
+    # Get timeout in case we receive a pending from a proxy or a glpi server
+    my $timeout = time + $self->{config}->{"backend-collect-timeout"};
+
     $self->{logger}->info("running task $name");
     $self->{current_task} = $task;
 
-    $task->run(
+    my $answer = $task->run(
         user         => $self->{config}->{user},
         password     => $self->{config}->{password},
         proxy        => $self->{config}->{proxy},
@@ -308,6 +455,21 @@ sub runTaskReal {
         no_ssl_check => $self->{config}->{'no-ssl-check'},
         no_compress  => $self->{config}->{'no-compression'},
     );
+
+    if ($answer && $target->isGlpiServer() && ref($answer) =~ /^GLPI::Agent::Protocol/) {
+        # Handle pending state
+        while ($answer->status eq 'pending') {
+            my $expiration = $answer->expiration;
+            if (time + $expiration > $timeout) {
+                $self->{logger}->info("$name task result not submitted due to a pending server status");
+                last;
+            }
+            $self->{logger}->debug("$name task submission delayed to $expiration seconds");
+            sleep($expiration);
+            $answer = $task->submit();
+        }
+    }
+
     delete $self->{current_task};
 }
 
@@ -413,6 +575,15 @@ sub _handlePersistentState {
     }
 
     $self->{deviceid} = $data->{deviceid};
+
+    # Support agentid
+    if (!$self->{agentid} && !$data->{agentid}) {
+        $data->{agentid} = create_uuid();
+    } elsif (!$data->{deviceid}) {
+        $data->{agentid} = $self->{agentid};
+    }
+
+    $self->{agentid} = $data->{agentid};
 
     # Handle the option to force a run during start/init/reinit if "forcerun" has
     # been set in storage datas

@@ -1,0 +1,40 @@
+package FusionInventory::Agent::Tools::UUID;
+
+use strict;
+use warnings;
+
+use parent 'Exporter';
+
+use Data::UUID;
+
+our @EXPORT = qw(
+    create_uuid
+    is_uuid_string
+    uuid_to_string
+);
+
+# Imported from UUID::Tiny
+my $IS_UUID_STRING = qr/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/is;
+
+sub create_uuid {
+    my $uuid = Data::UUID->new();
+    return $uuid->create();
+}
+
+sub create_uuid_from_name {
+    my ($name) = @_;
+    my $uuid = Data::UUID->new();
+    return $uuid->create_from_name_str(NameSpace_DNS, $name);
+}
+
+sub uuid_to_string {
+    my $uuid = Data::UUID->new();
+    return lc($uuid->to_string(@_));
+}
+
+sub is_uuid_string {
+    my ($uuid) = @_;
+    return $uuid =~ $IS_UUID_STRING;
+}
+
+1;

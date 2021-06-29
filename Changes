@@ -9,6 +9,9 @@ core:
 * HTTP daemon: added ToolBox dedicated web interface to add agent management features
 * Removed support of deprecated options
 * Fix: honor --force script option when lazy option is also enabled
+* config: support vardir option to specify storage location for persitent datas
+* Fix: honor server expiration between runs by disabling initial delay which
+  should only be related to the first run on a given platform
 
 inventory:
 * fix snap softwares inventory

@@ -9,6 +9,7 @@ use English qw(-no_match_vars);
 use UNIVERSAL::require;
 
 use FusionInventory::Agent::Tools;
+use FusionInventory::Agent::Tools::UUID;
 use FusionInventory::Agent::Tools::Virtualization;
 
 our $runAfter = [ qw(
@@ -87,13 +88,7 @@ sub  _getUsersWslInstances {
             my $hostname = "$distro on $user->{NAME} account";
 
             # Create an UUID based on user SID and distro name
-            my $uuid;
-            if (UUID::Tiny->require()) {
-                $uuid = uc(UUID::Tiny::create_uuid_as_string(
-                    UUID::Tiny::UUID_V5(),
-                    $user->{SID}."/".$distro
-                ));
-            }
+            my $uuid = uc(create_uuid_from_name($user->{SID}."/".$distro));
 
             my $version = -d $basepath."/rootfs/etc" ? "1" : "2";
 

@@ -11,6 +11,7 @@ use URI;
 use Encode;
 
 use FusionInventory::Agent::Tools;
+use FusionInventory::Agent::Tools::UUID;
 use FusionInventory::Agent::XML::Response;
 
 my $log_prefix = "[http client] ";
@@ -48,6 +49,14 @@ sub new {
         );
     }
 
+    # GLPI Agent will advertize it supports GLPI protocol by sending its agentid
+    # via GLPI-Agent-ID HTTP header. Legacy plugins will simply ignore it.
+    $self->{ua}->default_header(
+        'GLPI-Agent-ID' => is_uuid_string($params{agentid}) ?
+            $params{agentid} : uuid_to_string($params{agentid})
+    )
+        if defined($params{agentid});
+
     return $self;
 }
 
@@ -60,7 +69,7 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
     my $logger  = $self->{logger};
 
     my $request_content = $message->getContent();
-    $logger->debug2($log_prefix . "sending message:\n $request_content");
+    $logger->debug2($log_prefix . "sending message:\n$request_content");
 
     $request_content = $self->_compress(encode('UTF-8', $request_content));
     if (!$request_content) {
@@ -86,12 +95,12 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
     my $uncompressed_response_content = $self->_uncompress($response_content);
     if (!$uncompressed_response_content) {
         $logger->error(
-            $log_prefix . "uncompressed content, starting with: ".substr($response_content, 0, 500)
+            $log_prefix . "can't uncompress content starting with: ".substr($response_content, 0, 500)
         );
         return;
     }
 
-    $logger->debug2($log_prefix . "receiving message:\n $uncompressed_response_content");
+    $logger->debug2($log_prefix . "receiving message:\n$uncompressed_response_content");
 
     my $result;
     eval {
@@ -99,10 +108,28 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
             content => $uncompressed_response_content
         );
     };
-    if ($EVAL_ERROR) {
-        my @lines = split(/\n/, $uncompressed_response_content);
+    if ($EVAL_ERROR && $uncompressed_response_content =~ /^\{.*\}$/s) {
+        # When the GLPI Agent first contact a GLPI server with the legacy OCS protocol
+        # it can receive directly a CONTACT JSON answer
+        GLPI::Agent::Protocol::Contact->require();
+        if ($EVAL_ERROR) {
+            $logger->error("GLPI CONTACT Protocol not supported");
+        } else {
+            my $contact;
+            eval {
+                $contact = GLPI::Agent::Protocol::Contact->new(
+                    logger  => $logger,
+                    message => $uncompressed_response_content,
+                );
+            };
+            return $contact if defined($contact) && $contact->is_valid_message;
+            $logger->debug("Not a GLPI CONTACT message");
+        }
+    }
+    unless (defined($result)) {
+        my @lines = split(/\n/, substr($uncompressed_response_content,0,120));
         $logger->error(
-            $log_prefix . "unexpected content, starting with $lines[0]"
+            $log_prefix . "unexpected content, starting with: $lines[0]"
         );
         return;
     }
@@ -131,6 +158,9 @@ sub _uncompress {
     } elsif ($data =~ /(<html><\/html>|)[^<]*(<.*>)\s*$/s) {
         $self->{logger}->debug2("format: Plaintext");
         return $2;
+    } elsif ($data =~ /^\s*(\{.*\})\s*$/s) {
+        $self->{logger}->debug2("format: JSON");
+        return $1;
     } else {
         $self->{logger}->debug2("format: Unknown");
         return;

@@ -21,7 +21,11 @@ our $VERSION = FusionInventory::Agent::Task::Deploy::Version::VERSION;
 sub isEnabled {
     my ($self) = @_;
 
-    if (!$self->{target}->isType('server')) {
+    if ($self->{target}->isGlpiServer()) {
+        # TODO Support Deploy task via GLPI Agent Protocol
+        $self->{logger}->debug("Deploy task not supported by GLPI server");
+        return;
+    } elsif (!$self->{target}->isType('server')) {
         $self->{logger}->debug("Deploy task not compatible with local target");
         return;
     }

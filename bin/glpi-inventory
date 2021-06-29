@@ -27,6 +27,7 @@ GetOptions(
     'additional-content=s',
     'backend-collect-timeout=s',
     'html',
+    'json',
     'no-category=s',
     'scan-homedirs',
     'scan-profiles',
@@ -56,6 +57,7 @@ my $inventory = FusionInventory::Agent::Task::Inventory->new(
     target => FusionInventory::Agent::Target::Local->new(
         path       => '-',
         html       => $options->{html},
+        json       => $options->{json},
         basevardir => File::Temp->newdir(CLEANUP => 1),
     ),
     logger  => FusionInventory::Agent::Logger->new(config => $config),
@@ -79,6 +81,7 @@ glpi-inventory [options]
     --scan-homedirs                scan use home directories (false)
     --scan-profiles                scan user profiles (false)
     --html                         save the inventory as HTML (false)
+    --json                         save the inventory as JSON (false)
     --no-category=CATEGORY         do not list given category items
     -t --tag=TAG                   mark the machine with given tag
     --backend-collect-timeout=TIME timeout for inventory modules

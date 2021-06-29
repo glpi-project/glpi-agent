@@ -118,7 +118,7 @@ sub _parseVBoxManage {
         } elsif ($line =~ m/^UUID:\s+(.+)/) {
             $machine->{UUID} = $1;
         } elsif ($line =~ m/^Memory size:\s+(.+)/ ) {
-            $machine->{MEMORY} = $1;
+            $machine->{MEMORY} = getCanonicalSize($1);
         } elsif ($line =~ m/^State:\s+(.+) \(/) {
             $machine->{STATUS} = $status_list{$1};
         } elsif ($line =~ m/^Index:\s+(\d+)$/) {

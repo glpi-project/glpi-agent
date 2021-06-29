@@ -24,6 +24,7 @@ my $default = {
     'delaytime'               => 3600,
     'force'                   => undef,
     'html'                    => undef,
+    'json'                    => undef,
     'lazy'                    => undef,
     'local'                   => undef,
     'logger'                  => 'Stderr',
@@ -74,10 +75,14 @@ sub new {
 
     $self->_loadUserParams($params{options});
 
-    $self->{vardir} = $params{vardir};
+    if ($params{options}->{vardir} && -d $params{options}->{vardir}) {
+        $self->{vardir} = $params{options}->{vardir};
+    } elsif ($self->{vardir} && ! -d $self->{vardir}) {
+        $self->{vardir} = $params{vardir};
+    }
 
     # To also keep vardir during reload
-    $self->{_options}->{vardir} = $params{vardir};
+    $self->{_options}->{vardir} = $self->{vardir};
 
     $self->_checkContent();
 
@@ -395,6 +400,7 @@ sub getTargets {
                     basevardir => $params{vardir},
                     path       => $path,
                     html       => $self->{html},
+                    json       => $self->{json},
                 );
         }
     }

@@ -18,7 +18,11 @@ our $VERSION = FusionInventory::Agent::Task::ESX::Version::VERSION;
 sub isEnabled {
     my ($self) = @_;
 
-    if (!$self->{target}->isType('server')) {
+    if ($self->{target}->isGlpiServer()) {
+        # TODO Support ESX task via GLPI Agent Protocol
+        $self->{logger}->debug("ESX task not supported by GLPI server");
+        return;
+    } elsif (!$self->{target}->isType('server')) {
         $self->{logger}->debug("ESX task not compatible with local target");
         return;
     }

@@ -21,6 +21,7 @@ sub new {
         datadir      => $params{datadir},
         target       => $params{target},
         deviceid     => $params{deviceid},
+        agentid      => $params{agentid},
     };
     bless $self, $class;
 

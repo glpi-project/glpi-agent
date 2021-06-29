@@ -17,6 +17,7 @@ Build-Depends-Indep:
  libhttp-server-simple-authen-perl <!nocheck>,
  libio-capture-perl <!nocheck>,
  libipc-run-perl <!nocheck>,
+ libjson-perl <!nocheck>,
  libjson-pp-perl <!nocheck>,
  libmodule-install-perl,
  libnet-ip-perl <!nocheck>,
@@ -39,6 +40,7 @@ Build-Depends-Indep:
  libxml-treepp-perl <!nocheck>,
  libxml-xpath-perl <!nocheck>,
  libyaml-perl <!nocheck>,
+ libossp-uuid-perl <!nocheck>,
  perl,
  ucf
 Standards-Version: 4.5.1
@@ -65,12 +67,13 @@ Depends:
  libxml-xpath-perl,
  libyaml-perl,
  libtext-template-perl,
+ libjson-perl,
  libjson-pp-perl,
  pciutils,
  usbutils,
  libhttp-daemon-perl,
  libyaml-tiny-perl,
- libuuid-tiny-perl,
+ libossp-uuid-perl,
  libsocket-getaddrinfo-perl
 Suggests: smartmontools, read-edid
 Recommends: libio-socket-ssl-perl, dmidecode, hdparm, fdisk | util-linux (<< 2.29.2-3~), net-tools

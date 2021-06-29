@@ -323,7 +323,7 @@ jobs:
           libfile-which-perl libhttp-cookies-perl libhttp-daemon-perl      \
           libhttp-proxy-perl libhttp-server-simple-perl                    \
           libhttp-server-simple-authen-perl libio-capture-perl             \
-          libipc-run-perl libjson-pp-perl libnet-ip-perl                   \
+          libipc-run-perl libjson-perl libjson-pp-perl libnet-ip-perl      \
           libnet-snmp-perl libio-socket-ssl-perl libparse-edid-perl        \
           libproc-daemon-perl libparallel-forkmanager-perl                 \
           libtest-compile-perl libtest-deep-perl libtest-nowarnings-perl   \
@@ -331,7 +331,7 @@ jobs:
           libtest-mockobject-perl libtext-template-perl                    \
           libsocket-getaddrinfo-perl libuniversal-require-perl liburi-perl \
           libwww-perl libxml-treepp-perl libxml-xpath-perl libyaml-perl    \
-          devscripts
+          libossp-uuid-perl devscripts
       shell: bash
     - name: Build debian packages
       id: debbuild
