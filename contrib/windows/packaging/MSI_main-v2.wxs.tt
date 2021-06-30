@@ -250,6 +250,12 @@
     <SetProperty Id="CMDLINE_LAZY" Before="AppSearch" Value="[LAZY]" />
     <SetProperty Id="LAZY"         After="AppSearch"  Value="[CMDLINE_LAZY]"><![CDATA[CMDLINE_LAZY<>""]]></SetProperty>
 
+    <Property Id="VARDIR" Secure="yes">
+      <RegistrySearch Id="VarDir" Root="HKLM" Key="[%agent_regpath%]" Name="vardir" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_VARDIR" Before="AppSearch" Value="[VARDIR]" />
+    <SetProperty Id="VARDIR"         After="AppSearch"  Value="[CMDLINE_VARDIR]"><![CDATA[CMDLINE_VARDIR<>""]]></SetProperty>
+
     <!-- Configuration defaults after handling command line and registry checks -->
     <SetProperty Id="DEBUG"         Action="DEBUG_Default"         After="AppSearch"  Value="0">NOT DEBUG</SetProperty>
     <SetProperty Id="LOGGER"        Action="LOGGER_Default"        After="AppSearch"  Value="file">NOT LOGGER</SetProperty>
@@ -329,6 +335,7 @@
     <CustomAction Id="CA_SetARPInstallLoc" Property="ARPINSTALLLOCATION" Value="[INSTALLDIR]" Execute="immediate" />
 
     <CustomAction Id="SetDefaultLogFile"   Property="LOGFILE" Value="[INSTALLDIR]logs\glpi-agent.log" Execute="firstSequence" />
+    <CustomAction Id="SetDefaultVarDir"    Property="VARDIR"  Value="[INSTALLDIR]var" Execute="firstSequence" />
 
     <CustomAction Id="SetDeleteFirewallExceptionCmd" Property="DeleteFirewallException" Value='"netsh" advfirewall firewall delete rule name="!(loc.FirewallExceptionName)"' Execute="immediate" />
     <CustomAction Id="DeleteFirewallException" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
@@ -357,6 +364,7 @@
       <!-- InstallExecuteSequence is used to define Custom Actions that fire after the UI is finished and the install is starting to execute -->
       <Custom Action="CA_SetARPInstallLoc"    Before="RegisterProduct" />
       <Custom Action="SetDefaultLogFile"      After="AppSearch">NOT LOGFILE</Custom>
+      <Custom Action="SetDefaultVarDir"       After="AppSearch">NOT VARDIR</Custom>
 
       <!-- We need to use higher sequence numbers for AppSearch and LaunchConditions to have enough sequence room to schedule all properties related custom actions -->
       <AppSearch Sequence="100" />
@@ -450,7 +458,8 @@
       <Publish Dialog="InstallDirDlg"         Control="Next"   Event="DoAction" Value="WixUIValidatePath" Order="2">NOT WIXUI_DONTVALIDATEPATH</Publish>
       <Publish Dialog="InstallDirDlg"         Control="Next"   Event="SpawnDialog" Value="InvalidDirDlg" Order="3"><![CDATA[NOT WIXUI_DONTVALIDATEPATH AND WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
       <Publish Dialog="InstallDirDlg"         Control="Next"   Event="DoAction" Value="SetDefaultLogFile" Order="4">NOT LOGFILE</Publish>
-      <Publish Dialog="InstallDirDlg"         Control="Next"   Event="NewDialog" Value="SetupTypeDlg" Order="5">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
+      <Publish Dialog="InstallDirDlg"         Control="Next"   Event="DoAction" Value="SetDefaultVarDir" Order="5">NOT VARDIR</Publish>
+      <Publish Dialog="InstallDirDlg"         Control="Next"   Event="NewDialog" Value="SetupTypeDlg" Order="6">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
       <Publish Dialog="InstallDirDlg"         Control="ChangeFolder" Property="_BrowseProperty" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
       <Publish Dialog="InstallDirDlg"         Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
 
