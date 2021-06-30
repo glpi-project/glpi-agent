@@ -218,10 +218,12 @@ install -m 644 -D  contrib/unix/%{name}.service %{buildroot}%{_unitdir}/%{name}.
 %{_bindir}/glpi-agent
 %{_bindir}/glpi-injector
 %{_bindir}/glpi-inventory
+%{_bindir}/glpi-remote
 %{_bindir}/glpi-remoteinventory
 %{_mandir}/man1/glpi-agent*
 %{_mandir}/man1/glpi-injector*
 %{_mandir}/man1/glpi-*inventory.1*
+%{_mandir}/man1/glpi-remote.1*
 
 %dir %{_localstatedir}/lib/%{name}
 %dir %{_datadir}/%{name}
@@ -253,10 +255,12 @@ install -m 644 -D  contrib/unix/%{name}.service %{buildroot}%{_unitdir}/%{name}.
 %{_datadir}/%{name}/lib/FusionInventory/Agent/HTTP/Server/Test.pm
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Inventory.pm
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Logger*
+%{_datadir}/%{name}/lib/FusionInventory/Agent/SOAP/WsMan*
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Storage.pm
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Target*
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Task.pm
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Task/Inventory*
+%{_datadir}/%{name}/lib/FusionInventory/Agent/Task/RemoteInventory*
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Tools.pm
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/AIX.pm
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/BSD.pm
