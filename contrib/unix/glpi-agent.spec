@@ -231,7 +231,6 @@ install -m 644 -D  contrib/unix/%{name}.service %{buildroot}%{_unitdir}/%{name}.
 %dir %{_datadir}/%{name}/lib/FusionInventory/Agent/Task
 %dir %{_datadir}/%{name}/lib/GLPI
 %dir %{_datadir}/%{name}/lib/GLPI/Agent
-%dir %{_datadir}/%{name}/lib/GLPI/Agent/Protocol
 
 %{_datadir}/%{name}/*.ids
 %{_datadir}/%{name}/html/*.tpl
