@@ -21,7 +21,7 @@ sub wanted {
         # dh_installmans
     } elsif ($t =~ /glpi-net/ || $t =~ /FusionInventory\/Agent\/(SNMP|Tools\/Hardware|Task\/Net)/) {
         print AGENT_TASK_NETWORK "$t\n";
-    } elsif ($t =~ /glpi-esx/ || $t =~ /FusionInventory\/Agent\/Task\/ESX/) {
+    } elsif ($t =~ /glpi-esx/ || $t =~ /FusionInventory\/Agent\/(Task\/ESX|SOAP\/VMware)/) {
         print AGENT_TASK_ESX "$t\n";
     } elsif ($t =~ /FusionInventory\/Agent\/Task\/Deploy/) {
         print AGENT_TASK_DEPLOY "$t\n";
