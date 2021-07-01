@@ -70,8 +70,8 @@ sub _getDatabaseService {
             my $size = _runSql("SELECT sum(data_length+index_length) FROM
                 information_schema.TABLES WHERE table_schema = '$db'");
             if ($size =~ /^\d+$/) {
-                $size = int($size);
                 $dbs_size += $size;
+                $size = getCanonicalSize("$size bytes", 1024);
             } else {
                 undef $size;
             }
@@ -93,7 +93,7 @@ sub _getDatabaseService {
             );
         }
 
-        $dbs->size($dbs_size);
+        $dbs->size(getCanonicalSize("$dbs_size bytes", 1024));
 
         push @dbs, $dbs;
     }
@@ -106,7 +106,13 @@ sub _runSql {
 
     my $options = "";
     my $command = "mysql $options -q -sN -e \"$sql\"";
-    return getAllLines(command => $command);
+    if (wantarray) {
+        return map { chomp; $_ } getAllLines(command => $command);
+    } else {
+        my $result  = getAllLines(command => $command);
+        chomp($result);
+        return $result;
+    }
 }
 
 1;
