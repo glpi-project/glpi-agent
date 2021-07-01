@@ -77,7 +77,7 @@ sub new {
 
     if ($params{options}->{vardir} && -d $params{options}->{vardir}) {
         $self->{vardir} = $params{options}->{vardir};
-    } elsif ($self->{vardir} && ! -d $self->{vardir}) {
+    } elsif (!$self->{vardir} || ($self->{vardir} && ! -d $self->{vardir})) {
         $self->{vardir} = $params{vardir};
     }
 
