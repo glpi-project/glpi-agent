@@ -29,6 +29,16 @@ my %normalize = (
         integer         => [ qw/CORE CORECOUNT EXTERNAL_CLOCK SPEED STEPPING THREAD/ ],
         string          => [ qw/MODEL FAMILYNUMBER/ ],
     },
+    DATABASES_SERVICES => {
+        integer         => [ qw/PORT SIZE/ ],
+        boolean         => [ qw/IS_ACTIVE IS_ONBACKUP/ ],
+        datetime        => [ qw/LAST_BOOT_DATE LAST_BACKUP_DATE/ ],
+    },
+    "DATABASES_SERVICES/DATABASES" => {
+        integer         => [ qw/SIZE/ ],
+        boolean         => [ qw/IS_ACTIVE IS_ONBACKUP/ ],
+        datetime        => [ qw/CREATION_DATE UPDATE_DATE LAST_BACKUP_DATE/ ],
+    },
     DRIVES           => {
         boolean         => [ qw/SYSTEMDRIVE/ ],
         integer         => [ qw/FREE TOTAL/ ],
@@ -125,6 +135,10 @@ sub normalize {
     # Normalize some integers and booleans set as string to follow JSON specs
     foreach my $entrykey (keys(%normalize)) {
         my $entry = $content->{$entrykey};
+        if (!defined($entry) && $entrykey =~ /^(\w+)\/(\w+)$/) {
+            $entry = $content->{$1}->{$2}
+                if defined($content->{$1}) && ref($content->{$1}) eq 'HASH';
+        }
         my $ref = ref($entry)
             or next;
         foreach my $norm (keys(%{$normalize{$entrykey}})) {
@@ -197,7 +211,7 @@ sub _norm {
         if (defined($date)) {
             $entry->{$value} = $date;
         } else {
-            $self->{logger}->debug("inventory format: Removing $entrykey $value value as as not of $norm type: '$entry->{$value}'")
+            $self->{logger}->debug("inventory format: Removing $entrykey $value value as not of $norm type: '$entry->{$value}'")
                 if $self->{logger};
             delete $entry->{$value};
         }
@@ -206,7 +220,7 @@ sub _norm {
         if (defined($datetime)) {
             $entry->{$value} = $datetime;
         } else {
-            $self->{logger}->debug("inventory format: Removing $entrykey $value value as as not of $norm type: '$entry->{$value}'")
+            $self->{logger}->debug("inventory format: Removing $entrykey $value value as not of $norm type: '$entry->{$value}'")
                 if $self->{logger};
             delete $entry->{$value};
         }
@@ -215,12 +229,12 @@ sub _norm {
         if (defined($dateordatetime)) {
             $entry->{$value} = $dateordatetime;
         } else {
-            $self->{logger}->debug("inventory format: Removing $entrykey $value value as as not of $norm type: '$entry->{$value}'")
+            $self->{logger}->debug("inventory format: Removing $entrykey $value value as not of $norm type: '$entry->{$value}'")
                 if $self->{logger};
             delete $entry->{$value};
         }
     } elsif ($norm =~ /^integer$/) {
-        $self->{logger}->debug("inventory format: Removing $entrykey $value value as as not of $norm type: '$entry->{$value}'")
+        $self->{logger}->debug("inventory format: Removing $entrykey $value value as not of $norm type: '$entry->{$value}'")
             if $self->{logger};
         delete $entry->{$value};
     }
