@@ -134,19 +134,24 @@ sub normalize {
 
     # Normalize some integers and booleans set as string to follow JSON specs
     foreach my $entrykey (keys(%normalize)) {
-        my $entry = $content->{$entrykey};
-        if (!defined($entry) && $entrykey =~ /^(\w+)\/(\w+)$/) {
-            $entry = $content->{$1}->{$2}
-                if defined($content->{$1}) && ref($content->{$1}) eq 'HASH';
+        my @entries = ($content->{$entrykey});
+        if (!defined($entries[0]) && $entrykey =~ /^(\w+)\/(\w+)$/ && defined($content->{$1})) {
+            if (ref($content->{$1}) eq 'ARRAY') {
+                @entries = map { $_->{$2} } @{$content->{$1}};
+            } else {
+                @entries = ($content->{$1}->{$2});
+            }
         }
-        my $ref = ref($entry)
-            or next;
-        foreach my $norm (keys(%{$normalize{$entrykey}})) {
-            foreach my $value (@{$normalize{$entrykey}->{$norm}}) {
-                if ($ref eq 'ARRAY') {
-                    map { $self->_norm($norm, $_, $value, $entrykey) } @{$entry};
-                } else {
-                    $self->_norm($norm, $entry, $value, $entrykey);
+        foreach my $entry (@entries) {
+            my $ref = ref($entry)
+                or next;
+            foreach my $norm (keys(%{$normalize{$entrykey}})) {
+                foreach my $value (@{$normalize{$entrykey}->{$norm}}) {
+                    if ($ref eq 'ARRAY') {
+                        map { $self->_norm($norm, $_, $value, $entrykey) } @{$entry};
+                    } else {
+                        $self->_norm($norm, $entry, $value, $entrykey);
+                    }
                 }
             }
         }
