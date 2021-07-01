@@ -10,7 +10,7 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 use POSIX qw(strftime);
 
 use FusionInventory::Agent::Tools;
-use GLPI::Agent::Inventory::Database;
+use GLPI::Agent::Inventory::DatabaseService;
 
 sub isEnabled {
     return canRun('mysql');
@@ -21,20 +21,22 @@ sub doInventory {
 
     my $inventory = $params{inventory};
 
-    foreach my $database (_getDatabases(%params)) {
+    my $dbservices = _getDatabaseService(%params);
+
+    foreach my $dbs (@{$dbservices}) {
         $inventory->addEntry(
-            section => 'DATABASES',
-            entry   => $database->entry(),
+            section => 'DATABASES_SERVICES',
+            entry   => $dbs->entry(),
         );
     }
 }
 
 my $credential;
 
-sub _getDatabases {
+sub _getDatabaseService {
     my (%params) = @_;
 
-    my @databases = ();
+    my @dbs = ();
 
     my @credentials = (
         {},
@@ -42,30 +44,34 @@ sub _getDatabases {
 
     foreach $credential (@credentials) {
         my ($name, $manufacturer) = qw(MySQL Oracle);
-        my $version = _runSql("SHOW VARIABLES LIKE 'version'");
+        my $version = _runSql("SHOW VARIABLES LIKE 'version'")
+            or next;
         $version =~ s/^version\s*//;
         if ($version =~ /mariadb/i) {
             ($name, $manufacturer) = qw(MariaDB MariaDB);
             $version =~ s/-mariadb//i;
         }
 
-        my $database = GLPI::Agent::Inventory::Database->new(
+        my $dbs_size = 0;
+        my ($uptime) = _runSql("SHOW GLOBAL STATUS LIKE 'Uptime'") =~ /^Uptime\s(\d+)$/i;
+        my $lastboot = strftime("%F %T", localtime(time - $uptime));
+
+        my $dbs = GLPI::Agent::Inventory::DatabaseService->new(
             type            => "mysql",
             name            => $name,
             version         => $version,
             manufacturer    => $manufacturer,
+            port            => $credential->{port} // "3306",
+            is_active       => 1,
+            last_boot_date  => $lastboot,
         );
 
-        my ($uptime) = _runSql("SHOW GLOBAL STATUS LIKE 'Uptime'") =~ /^Uptime\s(\d+)$/i;
-        my $lastboot = strftime("%F %T", localtime(time - $uptime));
         foreach my $db (_runSql("SHOW DATABASES")) {
-            # Don't reference mysql dedicated databases
-            next if $db =~ /^information_schema|mysql|performance_schema$/;
-
             my $size = _runSql("SELECT sum(data_length+index_length) FROM
                 information_schema.TABLES WHERE table_schema = '$db'");
             if ($size =~ /^\d+$/) {
                 $size = int($size);
+                $dbs_size += $size;
             } else {
                 undef $size;
             }
@@ -73,25 +79,26 @@ sub _getDatabases {
             # Find creation date
             my $created = _runSql("SELECT MIN(create_time) FROM
                 information_schema.TABLES WHERE table_schema = '$db'");
-            $database->wasCreated($created);
 
             # Find update date
             my $updated = _runSql("SELECT MAX(update_time) FROM
                 information_schema.TABLES WHERE table_schema = '$db'");
-            $database->wasUpdated($updated);
 
-            $database->addInstance(
+            $dbs->addDatabase(
                 name            => $db,
-                port            => $credential->{port} // "3306",
                 size            => $size,
                 is_active       => 1,
-                last_boot_date  => $lastboot,
+                creation_date   => $created,
+                update_date     => $updated,
             );
         }
-        push @databases, $database;
+
+        $dbs->size($dbs_size);
+
+        push @dbs, $dbs;
     }
 
-    return @databases;
+    return \@dbs;
 }
 
 sub _runSql {
