@@ -5,6 +5,9 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
+use UNIVERSAL::require;
+use English qw(-no_match_vars);
+
 use constant    category    => "database";
 
 sub isEnabled {
@@ -12,5 +15,43 @@ sub isEnabled {
 }
 
 sub doInventory {}
+
+sub _credentials {
+    my ($hashref, $usage) = @_;
+
+    my @credentials = ();
+    my $params = delete $hashref->{params};
+
+    if ($params) {
+        foreach my $param (@{$params}) {
+            next unless $param->{params_url} && $param->{params_id} && $params->{glpi_client};
+            next unless $param->{category} && $param->{category} eq "database";
+            next unless $param->{use} && grep { $_ eq "mysql" } @{$param->{use}};
+            GLPI::Agent::Protocol::GetParams->require();
+            if ($EVAL_ERROR) {
+                $hashref->{logger}->error("Can't request credentials on $param->{params_url}")
+                    if $hashref->{logger};
+                last;
+            }
+            my $getparams = GLPI::Agent::Protocol::GetParams->new(
+                deviceid    => $hashref->{inventory}->getDeviceId(),
+                params_id   => $param->{params_id},
+                use         => $usage,
+            );
+            my $answer = $hashref->{glpi_client}->send( message => $getparams );
+            if ($answer) {
+                my $credentials = $answer->get('credentials');
+                push @credentials, @{$credentials} if @{$credentials};
+            } else {
+                $hashref->{logger}->error("Got no credentials with $param->{params_id} credentials id")
+                    if $hashref->{logger};
+            }
+        }
+    }
+
+    push @credentials, {} unless @credentials;
+
+    return \@credentials;
+}
 
 1;

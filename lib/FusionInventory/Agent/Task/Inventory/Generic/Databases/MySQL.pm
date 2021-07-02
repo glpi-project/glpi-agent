@@ -5,7 +5,7 @@ use English qw(-no_match_vars);
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'FusionInventory::Agent::Task::Inventory::Generic::Databases';
 
 use POSIX qw(strftime);
 
@@ -21,6 +21,9 @@ sub doInventory {
 
     my $inventory = $params{inventory};
 
+    # Try to retrieve credentials
+    $params{credentials} = FusionInventory::Agent::Task::Inventory::Generic::Databases::_credentials(\%params, "mysql");
+
     my $dbservices = _getDatabaseService(%params);
 
     foreach my $dbs (@{$dbservices}) {
@@ -34,13 +37,12 @@ sub doInventory {
 sub _getDatabaseService {
     my (%params) = @_;
 
+    return [] unless $params{credentials};
+
     my @dbs = ();
 
-    my @credentials = (
-        {},
-    );
-
-    foreach my $credential (@credentials) {
+    $params{index} = 0;
+    foreach my $credential (@{$params{credentials}}) {
         my ($name, $manufacturer) = qw(MySQL Oracle);
         my $version = _runSql(
             sql     => "SHOW VARIABLES LIKE 'version'",
@@ -109,6 +111,9 @@ sub _getDatabaseService {
         $dbs->size(getCanonicalSize("$dbs_size bytes", 1024));
 
         push @dbs, $dbs;
+
+        # Loop on next credential
+        $params{index}++;
     }
 
     return \@dbs;
@@ -120,8 +125,15 @@ sub _runSql {
     my $sql = delete $params{sql}
         or return;
 
+    my $credential = $params{credentials}->[$params{index}]
+        or return;
+
     my $options = "";
-    # TODO: update $options to use credentials
+    if ($credential->{type} && $credential->{type} eq "login_password") {
+        $options .= " --port=$credential->{port}" if $credential->{port};
+        $options .= " --user=$credential->{login}" if $credential->{login};
+        $options .= " --password=$credential->{password}" if $credential->{password};
+    }
     my $command = "mysql $options -q -sN -e \"$sql\"";
 
     # Only to support unittests

@@ -86,13 +86,20 @@ my %db_tests = (
     ],
 );
 
+my %credentials = (
+    # Set related credentials values when needed like port for a given test
+);
+
 plan tests => (2 * scalar keys %db_tests) + 1;
 
 my $inventory = FusionInventory::Test::Inventory->new();
 
 foreach my $test (keys %db_tests) {
     my $file  = "resources/generic/databases/$test";
-    my $dbs   = FusionInventory::Agent::Task::Inventory::Generic::Databases::MySQL::_getDatabaseService(file => $file);
+    my $dbs   = FusionInventory::Agent::Task::Inventory::Generic::Databases::MySQL::_getDatabaseService(
+        file        => $file,
+        credentials => $credentials{$test} // [{}],
+    );
     my $entries = [ map { $_->entry() } @$dbs ];
     print STDERR "\n$test: ", Dumper($entries) unless defined($db_tests{$test});
     cmp_deeply($entries, $db_tests{$test}, "$test: parsing");
