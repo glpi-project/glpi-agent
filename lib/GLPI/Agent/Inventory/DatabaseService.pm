@@ -1,5 +1,8 @@
 package GLPI::Agent::Inventory::DatabaseService;
 
+use strict;
+use warnings;
+
 sub new {
     my ($class, %params) = @_;
 
