@@ -26,6 +26,40 @@ sub isEnabled {
     return 1 if $self->{target}->isType('local');
 
     if ($self->{target}->isGlpiServer()) {
+        # Store any inventory params
+        my $tasks = $contact->get("tasks");
+        if (ref($tasks) eq 'ARRAY') {
+            my @params = ();
+            foreach my $task (@{$tasks}) {
+                next unless $task->{params} && $task->{task} && $task->{task} eq "inventory";
+                push @params, @{$task->{params}};
+            }
+            if (@params) {
+                # Add a GLPI client to each param with params_url defined
+                if (grep { $_->{params_url} } @params) {
+                    FusionInventory::Agent::HTTP::Client::GLPI->require();
+                    if ($EVAL_ERROR) {
+                        $self->{logger}->error("Can't load GLPI client API");
+                    } else {
+                        my $config = $self->{config};
+                        my $client = FusionInventory::Agent::HTTP::Client::GLPI->new(
+                            logger       => $self->{logger},
+                            user         => $config->{user},
+                            password     => $config->{password},
+                            proxy        => $config->{proxy},
+                            ca_cert_file => $config->{'ca-cert-file'},
+                            ca_cert_dir  => $config->{'ca-cert-dir'},
+                            no_ssl_check => $config->{'no-ssl-check'},
+                            no_compress  => $config->{'no-compression'},
+                            agentid      => $self->{agentid},
+                        );
+                        map { $_->{glpi_client} = $client } @params;
+                    }
+                }
+                $self->{params} = \@params ;
+            }
+        }
+
         # If we are here, this still means the task has not been disabled in GLPI server
         return 1;
     } else {
@@ -500,6 +534,7 @@ sub _runModule {
             no_category   => $self->{disabled},
             logger        => $self->{logger},
             registry      => $self->{registry},
+            params        => $self->{params},
             scan_homedirs => $self->{config}->{'scan-homedirs'},
             scan_profiles => $self->{config}->{'scan-profiles'},
         }
