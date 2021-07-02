@@ -31,8 +31,6 @@ sub doInventory {
     }
 }
 
-my $credential;
-
 sub _getDatabaseService {
     my (%params) = @_;
 
@@ -42,7 +40,7 @@ sub _getDatabaseService {
         {},
     );
 
-    foreach $credential (@credentials) {
+    foreach my $credential (@credentials) {
         my ($name, $manufacturer) = qw(MySQL Oracle);
         my $version = _runSql(
             sql     => "SHOW VARIABLES LIKE 'version'",
