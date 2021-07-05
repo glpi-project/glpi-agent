@@ -199,6 +199,8 @@ sub run {
 sub terminate {
     my ($self) = @_;
 
+    $self->{_terminate} = 1;
+
     # Forget our targets
     $self->{targets} = [];
 
@@ -400,7 +402,7 @@ sub runTarget {
         $self->setStatus($target->paused() ? 'paused' : 'waiting');
 
         # Leave earlier while requested
-        last unless $self->getTargets();
+        last if $self->{_terminate};
         last if $target->paused();
     }
 

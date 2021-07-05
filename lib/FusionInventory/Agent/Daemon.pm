@@ -105,7 +105,7 @@ sub run {
 
         if ($target->paused()) {
             # Leave immediately if we passed in terminate method
-            last unless $self->getTargets();
+            last unless $self->{_terminate};
 
         } elsif ($time >= $target->getNextRunDate()) {
 
@@ -128,7 +128,7 @@ sub run {
             }
 
             # Leave immediately if we passed in terminate method
-            last unless $self->getTargets();
+            last unless $self->{_terminate};
 
             # Call service optimization after each target run
             $self->RunningServiceOptimization();
@@ -177,7 +177,7 @@ sub runTask {
             $self->sleep();
 
             # Leave earlier while requested
-            last unless $self->getTargets();
+            last if $self->{_terminate};
         }
         delete $self->{current_runtask};
 
