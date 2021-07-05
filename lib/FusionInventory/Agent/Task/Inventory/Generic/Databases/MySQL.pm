@@ -21,9 +21,6 @@ sub doInventory {
 
     my $inventory = $params{inventory};
 
-    # Try to retrieve credentials
-    $params{credentials} = FusionInventory::Agent::Task::Inventory::Generic::Databases::_credentials(\%params, "mysql");
-
     my $dbservices = _getDatabaseService(%params);
 
     foreach my $dbs (@{$dbservices}) {
@@ -37,12 +34,20 @@ sub doInventory {
 sub _getDatabaseService {
     my (%params) = @_;
 
-    return [] unless $params{credentials};
+    # Try to retrieve credentials
+    my $credentials = FusionInventory::Agent::Task::Inventory::Generic::Databases::_credentials(\%params, "mysql");
+
+    return [] unless $credentials && ref($credentials) eq 'ARRAY';
 
     my @dbs = ();
 
-    $params{index} = 0;
-    foreach my $credential (@{$params{credentials}}) {
+    foreach my $credential (@{$credentials}) {
+        # Be sure to forget previous credential option between loops
+        delete $params{extra};
+        my $extra_file = _mysqlOptionsFile($credential);
+        $params{extra} = " --defaults-extra-file=".$extra_file->filename
+            if $extra_file;
+
         my ($name, $manufacturer) = qw(MySQL Oracle);
         my $version = _runSql(
             sql     => "SHOW VARIABLES LIKE 'version'",
@@ -111,9 +116,6 @@ sub _getDatabaseService {
         $dbs->size(getCanonicalSize("$dbs_size bytes", 1024));
 
         push @dbs, $dbs;
-
-        # Loop on next credential
-        $params{index}++;
     }
 
     return \@dbs;
@@ -125,16 +127,9 @@ sub _runSql {
     my $sql = delete $params{sql}
         or return;
 
-    my $credential = $params{credentials}->[$params{index}]
-        or return;
-
-    my $options = "";
-    if ($credential->{type} && $credential->{type} eq "login_password") {
-        $options .= " --port=$credential->{port}" if $credential->{port};
-        $options .= " --user=$credential->{login}" if $credential->{login};
-        $options .= " --password=$credential->{password}" if $credential->{password};
-    }
-    my $command = "mysql $options -q -sN -e \"$sql\"";
+    my $command = "mysql";
+    $command .= $params{extra} if defined($params{extra});
+    $command .= " -q -sN -e \"$sql\"";
 
     # Only to support unittests
     if ($params{file}) {
@@ -147,8 +142,7 @@ sub _runSql {
             system("$command >$params{file}");
         }
     } else {
-        my $options = "";
-        $params{command} = "mysql $options -q -sN -e \"$sql\""
+        $params{command} = $command;
     }
 
     if (wantarray) {
@@ -158,6 +152,31 @@ sub _runSql {
         chomp($result);
         return $result;
     }
+}
+
+sub _mysqlOptionsFile {
+    my ($credential) = @_;
+
+    return unless $credential->{type};
+
+    my $fh;
+    if ($credential->{type} eq "login_password") {
+        File::Temp->require();
+
+        $fh = File::Temp->new(
+            TEMPLATE    => 'my-XXXXXX',
+            SUFFIX      => '.cnf',
+        );
+        print $fh "[client]\n";
+        print $fh "port = $credential->{port}\n" if $credential->{port};
+        print $fh "user = $credential->{login}\n" if $credential->{login};
+        print $fh "socket = $credential->{socket}\n" if $credential->{socket};
+        print $fh "password = $credential->{password}\n" if $credential->{password};
+        close($fh);
+    }
+
+    # Temp file must be deleted out of caller scope
+    return $fh;
 }
 
 1;
