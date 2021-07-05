@@ -18,7 +18,8 @@ core:
 
 inventory:
 * Feature: support partial inventory
-* Category support has been refactorer to permit partial inventory
+* Feature: support database inventory (MySQL, MSSQL)
+* Category support has been refactored to permit partial inventory
 * fix snap softwares inventory
 * fix cpu thread count by core reported by dmidecode method
 * win32: Support WSL virtualization inventory
