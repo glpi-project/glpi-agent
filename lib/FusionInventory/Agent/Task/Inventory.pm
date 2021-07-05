@@ -36,24 +36,27 @@ sub isEnabled {
             }
             if (@params) {
                 # Add a GLPI client to each param with params_url defined
-                if (grep { $_->{params_url} } @params) {
+                if (first { $_->{params_url} } @params) {
                     FusionInventory::Agent::HTTP::Client::GLPI->require();
                     if ($EVAL_ERROR) {
                         $self->{logger}->error("Can't load GLPI client API");
                     } else {
                         my $config = $self->{config};
-                        my $client = FusionInventory::Agent::HTTP::Client::GLPI->new(
-                            logger       => $self->{logger},
-                            user         => $config->{user},
-                            password     => $config->{password},
-                            proxy        => $config->{proxy},
-                            ca_cert_file => $config->{'ca-cert-file'},
-                            ca_cert_dir  => $config->{'ca-cert-dir'},
-                            no_ssl_check => $config->{'no-ssl-check'},
-                            no_compress  => $config->{'no-compression'},
-                            agentid      => $self->{agentid},
-                        );
-                        map { $_->{glpi_client} = $client } @params;
+                        foreach my $param (@params) {
+                            next unless $_->{params_url};
+                            my $client = FusionInventory::Agent::HTTP::Client::GLPI->new(
+                                logger       => $self->{logger},
+                                user         => $config->{user},
+                                password     => $config->{password},
+                                proxy        => $config->{proxy},
+                                ca_cert_file => $config->{'ca-cert-file'},
+                                ca_cert_dir  => $config->{'ca-cert-dir'},
+                                no_ssl_check => $config->{'no-ssl-check'},
+                                no_compress  => $config->{'no-compression'},
+                                agentid      => $self->{agentid},
+                            );
+                            $param->{glpi_client} = $client;
+                        }
                     }
                 }
                 $self->{params} = \@params ;
