@@ -24,12 +24,14 @@ sub _credentials {
 
     if ($params) {
         foreach my $param (@{$params}) {
-            next unless $param->{params_url} && $param->{params_id} && $params->{glpi_client};
+            my $url = delete $param->{params_url}
+                or next;
+            next unless $param->{params_id} && $params->{glpi_client};
             next unless $param->{category} && $param->{category} eq "database";
             next unless $param->{use} && grep { $_ eq "mysql" } @{$param->{use}};
             GLPI::Agent::Protocol::GetParams->require();
             if ($EVAL_ERROR) {
-                $hashref->{logger}->error("Can't request credentials on $param->{params_url}")
+                $hashref->{logger}->error("Can't request credentials on $url")
                     if $hashref->{logger};
                 last;
             }
@@ -38,7 +40,10 @@ sub _credentials {
                 params_id   => $param->{params_id},
                 use         => $usage,
             );
-            my $answer = $hashref->{glpi_client}->send( message => $getparams );
+            my $answer = $hashref->{glpi_client}->send(
+                send    => $url,
+                message => $getparams
+            );
             if ($answer) {
                 my $credentials = $answer->get('credentials');
                 push @credentials, @{$credentials} if @{$credentials};
