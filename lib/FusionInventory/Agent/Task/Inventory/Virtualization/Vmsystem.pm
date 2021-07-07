@@ -69,7 +69,7 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $type = _getType($inventory->getSection('BIOS'), $logger);
+    my $type = _getType($inventory, $logger);
 
     # for consistency with HVM domU
     if ($type eq 'Xen' && !$inventory->getBios('SMANUFACTURER')) {
@@ -87,7 +87,8 @@ sub doInventory {
             file => '/proc/self/status',
             pattern => qr/^envID:\s*(\d+)/
         ) || '';
-        $inventory->setHardware({ UUID => $hostID . '-' . $guestID });
+        $inventory->setHardware({ UUID => $hostID . '-' . $guestID })
+            if length($hostID) && length($guestID);
 
     } elsif ($type eq 'Docker') {
         # In docker, dmidecode can be run and so UUID & SSN must be overided
@@ -138,25 +139,29 @@ sub doInventory {
 }
 
 sub _getType {
-    my ($bios, $logger) = @_;
+    my ($inventory, $logger) = @_;
 
-    if ($bios->{SMANUFACTURER}) {
-        return 'QEMU'    if $bios->{SMANUFACTURER} =~ /QEMU/;
-        return 'Hyper-V' if $bios->{SMANUFACTURER} =~ /Microsoft/ && $bios->{SMODEL} && $bios->{SMODEL} =~ /Virtual/;
-        return 'VMware'  if $bios->{SMANUFACTURER} =~ /VMware/;
+    my $SMANUFACTURER = $inventory->getBios('SMANUFACTURER');
+    my $SMODEL        = $inventory->getBios('SMODEL');
+    if ($SMANUFACTURER) {
+        return 'QEMU'    if $SMANUFACTURER =~ /QEMU/;
+        return 'Hyper-V' if $SMANUFACTURER =~ /Microsoft/ && $SMODEL && $SMODEL =~ /Virtual/;
+        return 'VMware'  if $SMANUFACTURER =~ /VMware/;
     }
-    if ($bios->{BMANUFACTURER}) {
-        return 'QEMU'       if $bios->{BMANUFACTURER} =~ /(QEMU|Bochs)/;
-        return 'VirtualBox' if $bios->{BMANUFACTURER} =~ /(VirtualBox|innotek)/;
-        return 'Xen'        if $bios->{BMANUFACTURER} =~ /^Xen/;
+    my $BMANUFACTURER = $inventory->getBios('BMANUFACTURER');
+    if ($BMANUFACTURER) {
+        return 'QEMU'       if $BMANUFACTURER =~ /(QEMU|Bochs)/;
+        return 'VirtualBox' if $BMANUFACTURER =~ /(VirtualBox|innotek)/;
+        return 'Xen'        if $BMANUFACTURER =~ /^Xen/;
     }
-    if ($bios->{SMODEL}) {
-        return 'VMware'          if $bios->{SMODEL} =~ /VMware/;
-        return 'Virtual Machine' if $bios->{SMODEL} =~ /Virtual Machine/;
-        return 'QEMU'            if $bios->{SMODEL} =~ /KVM/;
+    if ($SMODEL) {
+        return 'VMware'          if $SMODEL =~ /VMware/;
+        return 'Virtual Machine' if $SMODEL =~ /Virtual Machine/;
+        return 'QEMU'            if $SMODEL =~ /KVM/;
     }
-    if ($bios->{BVERSION}) {
-        return 'VirtualBox'  if $bios->{BVERSION} =~ /VirtualBox/;
+    my $BVERSION = $inventory->getBios('BVERSION');
+    if ($BVERSION) {
+        return 'VirtualBox'  if $BVERSION =~ /VirtualBox/;
     }
 
     # Docker
@@ -166,8 +171,8 @@ sub _getType {
     }
 
     # Solaris zones
-    if (FusionInventory::Agent::Tools::Solaris->require()) {
-        if (canRun('/usr/sbin/zoneadm')) {
+    if (canRun('/usr/sbin/zoneadm')) {
+        if (FusionInventory::Agent::Tools::Solaris->require()) {
             my $zone = FusionInventory::Agent::Tools::Solaris::getZone();
             return 'SolarisZone' if $zone ne 'global';
         }
