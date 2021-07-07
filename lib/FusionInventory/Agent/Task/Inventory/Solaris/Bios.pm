@@ -34,7 +34,7 @@ sub doInventory {
         }
 
         if ($arch eq "i386") {
-            my $infos = _parseSmbios(logger => $logger);
+            my $infos = getSmbios(logger => $logger);
 
             my $biosInfos = $infos->{SMB_TYPE_BIOS};
             $bios->{BMANUFACTURER} = $biosInfos->{'Vendor'};
@@ -106,32 +106,6 @@ sub _parseShowRev {
     while (my $line = <$handle>) {
         next unless $line =~ /^ ([^:]+) : \s+ (\S+)/x;
         $infos->{$1} = $2;
-    }
-    close $handle;
-
-    return $infos;
-}
-
-sub _parseSmbios {
-    my (%params) = (
-        command => '/usr/sbin/smbios',
-        @_
-    );
-
-    my $handle = getFileHandle(%params);
-    return unless $handle;
-
-    my ($infos, $current);
-    while (my $line = <$handle>) {
-        if ($line =~ /^ \d+ \s+ \d+ \s+ (\S+)/x) {
-            $current = $1;
-            next;
-        }
-
-        if ($line =~ /^ \s* ([^:]+) : \s* (.+) $/x) {
-            $infos->{$current}->{$1} = $2;
-            next;
-        }
     }
     close $handle;
 

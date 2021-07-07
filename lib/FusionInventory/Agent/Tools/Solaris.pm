@@ -14,11 +14,13 @@ our @EXPORT = qw(
     getPrtconfInfos
     getPrtdiagInfos
     getReleaseInfo
+    getSmbios
 );
 
 memoize('getZone');
 memoize('getPrtdiagInfos');
 memoize('getReleaseInfo');
+memoize('getSmbios');
 
 sub getZone {
     return canRun('zonename') ?
@@ -384,6 +386,32 @@ sub getReleaseInfo {
         date       => $date,
         id         => $id
     };
+}
+
+sub getSmbios {
+    my (%params) = (
+        command => '/usr/sbin/smbios',
+        @_
+    );
+
+    my $handle = getFileHandle(%params);
+    return unless $handle;
+
+    my ($infos, $current);
+    while (my $line = <$handle>) {
+        if ($line =~ /^ \d+ \s+ \d+ \s+ (\S+)/x) {
+            $current = $1;
+            next;
+        }
+
+        if ($line =~ /^ \s* ([^:]+) : \s* (.+) $/x) {
+            $infos->{$current}->{$1} = $2;
+            next;
+        }
+    }
+    close $handle;
+
+    return $infos;
 }
 
 1;
