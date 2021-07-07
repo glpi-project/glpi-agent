@@ -7,6 +7,8 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
 use FusionInventory::Agent::Tools;
 
+use constant    category    => "bios";
+
 sub isEnabled {
     return 1;
 }

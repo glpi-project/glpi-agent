@@ -9,6 +9,8 @@ use Sys::Hostname;
 
 use FusionInventory::Agent::Tools;
 
+use constant    category    => "hardware";
+
 sub isEnabled {
     return -f "/etc/resolv.conf";
 }

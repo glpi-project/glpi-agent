@@ -13,6 +13,8 @@ use Time::Local;
 
 use FusionInventory::Agent::Tools;
 
+use constant    category    => "os";
+
 sub isEnabled {
 
     # No specific dependencies necessary

@@ -13,6 +13,8 @@ use FusionInventory::Agent::Version;
 use FusionInventory::Agent::Logger;
 use FusionInventory::Agent::Tools;
 
+use constant    category    => "provider";
+
 # Agent should set this shared variable with early $PROGRAM_NAME content
 our $PROGRAM;
 

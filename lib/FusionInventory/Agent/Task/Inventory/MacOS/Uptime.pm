@@ -8,28 +8,28 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::MacOS;
 
+use constant    category    => "hardware";
+
 sub isEnabled {
-    return getFirstLine(command => 'sysctl -n kern.boottime');
+    return 1;
 }
 
 sub doInventory {
     my (%params) = @_;
 
     my $inventory = $params{inventory};
+    my $logger    = $params{logger};
 
-    my $arch = getFirstLine(command => 'uname -m');
-    my $uptime = _getUptime(command => 'sysctl -n kern.boottime');
+    my $arch = getFirstLine(
+        logger  => $logger,
+        command => 'uname -m'
+    );
+    my $boottime = getBootTime(logger => $logger)
+        or return;
+    my $uptime = time - $boottime;
     $inventory->setHardware({
         DESCRIPTION => "$arch/$uptime"
     });
-}
-
-sub _getUptime {
-    my $boottime = return FusionInventory::Agent::Tools::MacOS::getBootTime(@_);
-    return unless $boottime;
-
-    my $uptime = time() - $boottime;
-    return getFormatedGMTTime($uptime);
 }
 
 1;

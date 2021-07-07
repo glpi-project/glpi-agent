@@ -7,6 +7,8 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
 use FusionInventory::Agent::Tools;
 
+use constant    category    => "hardware";
+
 sub isEnabled {
     return canRun('sysctl');
 }
@@ -33,8 +35,7 @@ sub _getUptime {
         undef;
     return unless $boottime;
 
-    my $uptime = $boottime - time();
-    return getFormatedGMTTime($uptime);
+    return time - $boottime;
 }
 
 1;

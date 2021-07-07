@@ -10,6 +10,7 @@ use Config;
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Generic;
 
+use constant    category    => "bios";
 use constant    other_categories => qw(cpu);
 
 sub isEnabled {

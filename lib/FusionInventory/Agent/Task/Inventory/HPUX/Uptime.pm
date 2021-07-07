@@ -7,6 +7,8 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
 use FusionInventory::Agent::Tools;
 
+use constant    category    => "hardware";
+
 sub isEnabled {
     return
         canRun('uptime') &&
@@ -36,7 +38,7 @@ sub _getUptime {
     $uptime += $hours * 3600;
     $uptime += $minutes * 60;
 
-    return getFormatedGMTTime($uptime);
+    return $uptime;
 }
 
 1;

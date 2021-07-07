@@ -21,8 +21,9 @@ sub doInventory {
     my $logger    = $params{logger};
 
     foreach my $cpu (_getCPUsFromProc(
-        logger => $logger, file => '/proc/cpuinfo')
-    ) {
+        logger  => $logger,
+        file    => '/proc/cpuinfo'
+    )) {
         $inventory->addEntry(
             section => 'CPUS',
             entry   => $cpu

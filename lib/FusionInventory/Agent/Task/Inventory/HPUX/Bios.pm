@@ -8,6 +8,8 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::HPUX;
 
+use constant    category    => "bios";
+
 sub isEnabled {
     return canRun('model');
 }
@@ -20,14 +22,14 @@ sub doInventory {
 
     my $model = getFirstLine(command => 'model');
 
-    my ($version, $serial, $uuid);
+    my ($version, $serial);
     if (canRun('/usr/contrib/bin/machinfo')) {
         my $info = getInfoFromMachinfo(logger => $logger);
         $version = $info->{'Firmware info'}->{'firmware revision'};
         $serial  = $info->{'Platform info'}->{'machine serial number'};
-        $uuid    = uc($info->{'Platform info'}->{'machine id number'});
     } else {
         my $handle = getFileHandle(
+            logger  => $logger,
             command => "echo 'sc product cpu;il' | /usr/sbin/cstm",
             logger  => $logger
         );
@@ -39,6 +41,7 @@ sub doInventory {
         close $handle;
 
         $serial = getFirstMatch(
+            logger  => $logger,
             command => "echo 'sc product system;il' | /usr/sbin/cstm",
             pattern => qr/^System Serial Number:\s+: (\S+)/
         );
@@ -50,9 +53,6 @@ sub doInventory {
         SMANUFACTURER => "HP",
         SMODEL        => $model,
         SSN           => $serial,
-    });
-    $inventory->setHardware({
-        UUID => $uuid
     });
 }
 

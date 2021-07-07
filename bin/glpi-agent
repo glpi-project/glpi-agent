@@ -426,7 +426,11 @@ categories are:
 
 =over 4
 
+=item * accesslog
+
 =item * battery
+
+=item * bios
 
 =item * controller
 
@@ -435,6 +439,8 @@ categories are:
 =item * drive
 
 =item * environment
+
+=item * hardware
 
 =item * input
 
@@ -454,15 +460,23 @@ categories are:
 
 =item * network
 
+=item * os
+
 =item * port
 
 =item * printer
 
 =item * process
 
+=item * provider
+
 =item * psu
 
+=item * registry
+
 =item * remote_mgmt
+
+=item * rudder
 
 =item * slot
 

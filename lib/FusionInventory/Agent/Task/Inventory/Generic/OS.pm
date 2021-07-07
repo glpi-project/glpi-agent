@@ -1,16 +1,17 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Arch;
+package FusionInventory::Agent::Task::Inventory::Generic::OS;
 
 use strict;
 use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
+use English qw(-no_match_vars);
+use Net::Domain qw(hostfqdn hostdomain);
 
 use constant    category    => "os";
 
 sub isEnabled {
-    return canRun('arch');
+    return 1;
 }
 
 sub doInventory {
@@ -18,12 +19,11 @@ sub doInventory {
 
     my $inventory = $params{inventory};
 
-    my $arch = getFirstLine( command => 'arch' );
-
     $inventory->setOperatingSystem({
-        ARCH     => $arch
+        KERNEL_NAME => $OSNAME,
+        FQDN        => hostfqdn(),
+        DNS_DOMAIN  => hostdomain(),
     });
-
 }
 
 1;

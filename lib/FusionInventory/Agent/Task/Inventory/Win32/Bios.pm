@@ -10,6 +10,8 @@ use English qw(-no_match_vars);
 use FusionInventory::Agent::Tools::Win32;
 use FusionInventory::Agent::Tools::Generic;
 
+use constant    category    => "bios";
+
 # Only run this module if dmidecode has not been found
 our $runMeIfTheseChecksFailed =
     ["FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Bios"];
@@ -103,39 +105,6 @@ sub doInventory {
     }
 
     $inventory->setBios($bios);
-
-    SWITCH: {
-        if (
-            ($bios->{VERSION} && $bios->{VERSION} eq 'VirtualBox') ||
-            ($bios->{MMODEL}  && $bios->{MMODEL} eq 'VirtualBox')
-           ) {
-            $inventory->setHardware ({
-                VMSYSTEM => 'VirtualBox'
-            });
-            last SWITCH;
-        }
-
-        if (
-            ($bios->{BIOSSERIAL} && $bios->{BIOSSERIAL} =~ /VMware/i) ||
-            ($bios->{SMODEL}     && $bios->{SMODEL} eq 'VirtualBox')
-           ) {
-            $inventory->setHardware ({
-                VMSYSTEM => 'VMware'
-            });
-            last SWITCH;
-        }
-
-        if (
-            ($bios->{SMANUFACTURER} && $bios->{SMANUFACTURER} eq 'Xen') ||
-            ($bios->{BMANUFACTURER} && $bios->{BMANUFACTURER} eq 'Xen')
-           ) {
-            $inventory->setHardware ({
-                VMSYSTEM => 'Xen'
-            });
-            last SWITCH;
-        }
-    }
-
 }
 
 1;

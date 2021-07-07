@@ -13,7 +13,7 @@ use constant    category    => "memory";
 
 # Run after virtualization to decide if found component is virtual
 our $runAfterIfEnabled = [ qw(
-    FusionInventory::Agent::Task::Inventory::Virtualization::Vmsystem
+    FusionInventory::Agent::Task::Inventory::Vmsystem
     FusionInventory::Agent::Task::Inventory::Win32::OS
     FusionInventory::Agent::Task::Inventory::Linux::Memory
     FusionInventory::Agent::Task::Inventory::BSD::Memory

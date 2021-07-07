@@ -5,56 +5,14 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
-use English qw(-no_match_vars);
-
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Generic;
+
+use constant    category    => "bios";
 
 # Only run this module if dmidecode has not been found
 our $runMeIfTheseChecksFailed =
     ["FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Bios"];
-
-# Follow dmidecode dmi_chassis_type() API:
-# See https://github.com/mirror/dmidecode/blob/master/dmidecode.c#L545
-my $chassis_types = [
-    "",
-    "Other",
-    "Unknown",
-    "Desktop",
-    "Low Profile Desktop",
-    "Pizza Box",
-    "Mini Tower",
-    "Tower",
-    "Portable",
-    "Laptop",
-    "Notebook",
-    "Hand Held",
-    "Docking Station",
-    "All in One",
-    "Sub Notebook",
-    "Space-Saving",
-    "Lunch Box",
-    "Main Server Chassis",
-    "Expansion Chassis",
-    "Sub Chassis",
-    "Bus Expansion Chassis",
-    "Peripheral Chassis",
-    "RAID Chassis",
-    "Rack Mount Chassis",
-    "Sealed-case PC",
-    "Multi-system",
-    "CompactPCI",
-    "AdvancedTCA",
-    "Blade",
-    "Blade Enclosing",
-    "Tablet",
-    "Convertible",
-    "Detachable",
-    "IoT Gateway",
-    "Embedded PC",
-    "Mini PC",
-    "Stick PC",
-];
 
 sub isEnabled {
     return -d '/sys/class/dmi/id';
@@ -73,8 +31,7 @@ sub doInventory {
 
     my $inventory = $params{inventory};
 
-    my $bios     = {};
-    my $hardware = {};
+    my $bios = {};
 
     my %bios_map = qw(
         BMANUFACTURER   bios_vendor
@@ -113,15 +70,7 @@ sub doInventory {
         $bios->{SSN} = $uuid;
     }
 
-    $hardware->{UUID} = $uuid if $uuid;
-
-    my $chassis_type = _dmi_info('chassis_type');
-    if ($chassis_type && $chassis_types->[$chassis_type]) {
-        $hardware->{CHASSIS_TYPE} = $chassis_types->[$chassis_type];
-    }
-
     $inventory->setBios($bios);
-    $inventory->setHardware($hardware);
 }
 
 1;

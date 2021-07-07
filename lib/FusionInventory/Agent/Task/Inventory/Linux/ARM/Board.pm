@@ -6,7 +6,8 @@ use warnings;
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
 use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Linux;
+
+use constant    category    => "bios";
 
 sub isEnabled {
     return -r '/proc/cpuinfo';

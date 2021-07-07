@@ -11,6 +11,8 @@ use Sys::Hostname;
 
 use FusionInventory::Agent::Tools;
 
+use constant    category    => "hardware";
+
 sub isEnabled {
     # We use WMI for Windows because of charset issue
     return $OSNAME ne 'MSWin32';

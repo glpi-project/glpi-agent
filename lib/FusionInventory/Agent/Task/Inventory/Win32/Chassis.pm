@@ -7,6 +7,8 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
 use FusionInventory::Agent::Tools::Win32;
 
+use constant    category    => "hardware";
+
 my @chassisType = (
     'Unknown',
     'Other',

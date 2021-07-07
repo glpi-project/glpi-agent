@@ -5,9 +5,9 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
-use English qw(-no_match_vars);
-
 use FusionInventory::Agent::Tools;
+
+use constant    category    => "os";
 
 sub isEnabled {
     return -r '/proc/uptime';
@@ -17,16 +17,21 @@ sub doInventory {
     my (%params) = @_;
 
     my $inventory = $params{inventory};
+    my $logger    = $params{logger};
 
-    my $uptime = _getUptime(file => '/proc/uptime');
+    my $boottime = _getBootTime(
+        logger  => $logger,
+        file    => '/proc/uptime',
+    )
+        or return;
     $inventory->setOperatingSystem({
-        BOOT_TIME => $uptime
+        BOOT_TIME => $boottime
     });
 }
 
-sub _getUptime {
+sub _getBootTime {
     my $uptime = getFirstMatch(
-        pattern => qr/^(\S+)/,
+        pattern => qr/^([0-9.]+)/,
         @_
     );
     return unless $uptime;

@@ -10,6 +10,7 @@ use English qw(-no_match_vars);
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Win32;
 
+use constant    category    => "registry";
 
 my @hives = qw/
     HKEY_CLASSES_ROOT

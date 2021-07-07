@@ -7,6 +7,8 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
 use FusionInventory::Agent::Tools;
 
+use constant    category    => "os";
+
 sub isEnabled {
     return canRun('ssh-keyscan');
 }

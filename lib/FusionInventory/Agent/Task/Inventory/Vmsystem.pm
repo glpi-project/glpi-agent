@@ -13,16 +13,27 @@ use FusionInventory::Agent::Tools::Virtualization;
 
 # We keep this module out of category as it is also mandatory for partial inventory
 
-# Be sure to run after any module which can set BIOS or HARDWARE
-our $runAfter = [ qw(
-    FusionInventory::Agent::Task::Inventory::AIX
-    FusionInventory::Agent::Task::Inventory::BSD
-    FusionInventory::Agent::Task::Inventory::Generic
-    FusionInventory::Agent::Task::Inventory::HPUX
-    FusionInventory::Agent::Task::Inventory::Linux
-    FusionInventory::Agent::Task::Inventory::MacOS
-    FusionInventory::Agent::Task::Inventory::Solaris
-    FusionInventory::Agent::Task::Inventory::Win32
+# Be sure to run after any module which can set BIOS or HARDWARE (only setting UUID)
+our $runAfterIfEnabled = [ qw(
+    FusionInventory::Agent::Task::Inventory::AIX::Bios
+    FusionInventory::Agent::Task::Inventory::BSD::Alpha
+    FusionInventory::Agent::Task::Inventory::BSD::i386
+    FusionInventory::Agent::Task::Inventory::BSD::MIPS
+    FusionInventory::Agent::Task::Inventory::BSD::SPARC
+    FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Bios
+    FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Hardware
+    FusionInventory::Agent::Task::Inventory::HPUX::Bios
+    FusionInventory::Agent::Task::Inventory::HPUX::Hardware
+    FusionInventory::Agent::Task::Inventory::Linux::Bios
+    FusionInventory::Agent::Task::Inventory::Linux::PowerPC::Bios
+    FusionInventory::Agent::Task::Inventory::Linux::Hardware
+    FusionInventory::Agent::Task::Inventory::Linux::ARM::Board
+    FusionInventory::Agent::Task::Inventory::MacOS::Bios
+    FusionInventory::Agent::Task::Inventory::MacOS::Hardware
+    FusionInventory::Agent::Task::Inventory::Solaris::Bios
+    FusionInventory::Agent::Task::Inventory::Solaris::Hardware
+    FusionInventory::Agent::Task::Inventory::Win32::Bios
+    FusionInventory::Agent::Task::Inventory::Win32::Hardware
 )];
 
 my @vmware_patterns = (
@@ -161,6 +172,7 @@ sub _getType {
         return 'QEMU'    if $SMANUFACTURER =~ /QEMU/;
         return 'Hyper-V' if $SMANUFACTURER =~ /Microsoft/ && $SMODEL && $SMODEL =~ /Virtual/;
         return 'VMware'  if $SMANUFACTURER =~ /VMware/;
+        return 'Xen'     if $SMANUFACTURER =~ /^Xen/;
     }
     my $BMANUFACTURER = $inventory->getBios('BMANUFACTURER');
     if ($BMANUFACTURER) {
@@ -176,6 +188,19 @@ sub _getType {
     my $BVERSION = $inventory->getBios('BVERSION');
     if ($BVERSION) {
         return 'VirtualBox'  if $BVERSION =~ /VirtualBox/;
+    }
+    my $MMODEL = $inventory->getBios('MMODEL');
+    if ($MMODEL) {
+        return 'VirtualBox'  if $MMODEL =~ /VirtualBox/;
+    }
+    my $VERSION = $inventory->getBios('VERSION');
+    if ($VERSION) {
+        return 'VirtualBox'  if $VERSION =~ /VirtualBox/;
+    }
+    # Can only be set by win32
+    my $BIOSSERIAL = $inventory->getBios('BIOSSERIAL');
+    if ($BIOSSERIAL) {
+        return 'VMware'      if $BIOSSERIAL =~ /VMware/i;
     }
 
     # Docker

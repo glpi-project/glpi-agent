@@ -8,6 +8,8 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Network;
 
+use constant    category    => "network";
+
 #TODO driver pcislot virtualdev
 
 sub isEnabled {

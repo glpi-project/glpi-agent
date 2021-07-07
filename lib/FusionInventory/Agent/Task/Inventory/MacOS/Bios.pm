@@ -8,6 +8,8 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::MacOS;
 
+use constant    category    => "bios";
+
 sub isEnabled {
     return canRun('/usr/sbin/system_profiler');
 }
@@ -40,10 +42,6 @@ sub doInventory {
                          $info->{'Serial Number (system)'} ||
                          $device->{'IOPlatformSerialNumber'},
         BVERSION      => $info->{'Boot ROM Version'},
-    });
-
-    $inventory->setHardware({
-        UUID => $info->{'Hardware UUID'} || $device->{'IOPlatformUUID'}
     });
 }
 

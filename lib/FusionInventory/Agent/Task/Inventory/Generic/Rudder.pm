@@ -9,6 +9,8 @@ use English qw(-no_match_vars);
 
 use FusionInventory::Agent::Tools;
 
+use constant    category    => "rudder";
+
 sub isEnabled {
     return -r getUuidFile();
 }

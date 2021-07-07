@@ -7,6 +7,7 @@ use Test::Deep;
 use Test::More;
 use Test::NoWarnings;
 
+use FusionInventory::Agent::Tools::Solaris;
 use FusionInventory::Agent::Task::Inventory::Solaris::Bios;
 
 my %showrev_tests = (
@@ -139,6 +140,6 @@ foreach my $test (keys %showrev_tests) {
 
 foreach my $test (keys %smbios_tests) {
     my $file   = "resources/solaris/smbios/$test";
-    my $result = FusionInventory::Agent::Task::Inventory::Solaris::Bios::_parseSmbios(file => $file);
+    my $result = FusionInventory::Agent::Tools::Solaris::getSmbios(file => $file);
     cmp_deeply($result, $smbios_tests{$test}, "smbios parsing: $test");
 }

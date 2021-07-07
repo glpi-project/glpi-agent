@@ -9,7 +9,7 @@ use Test::NoWarnings;
 use FusionInventory::Agent::Task::Inventory::HPUX::Uptime;
 
 my %tests = (
-    sample1 => '00-04-02 23:35:00'
+    sample1 => '10625700'
 );
 
 plan tests => (scalar keys %tests) + 1;

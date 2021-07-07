@@ -8,6 +8,8 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Generic;
 
+use constant    category    => "bios";
+
 sub isEnabled {
     return 1;
 }
@@ -18,13 +20,12 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my ($bios, $hardware) = _getBiosHardware(logger => $logger);
+    my $bios = _getBios(logger => $logger);
 
-    $inventory->setBios($bios) if $bios;
-    $inventory->setHardware($hardware) if $hardware;
+    $inventory->setBios($bios);
 }
 
-sub _getBiosHardware {
+sub _getBios {
     my $infos = getDmidecodeInfos(@_);
 
     my $bios_info    = $infos->{0}->[0];
@@ -68,12 +69,8 @@ sub _getBiosHardware {
         $bios->{MSN} eq "0") {
         $bios->{SSN} = $system_info->{'UUID'}
     }
-    my $hardware = {
-        UUID => $system_info->{'UUID'},
-        CHASSIS_TYPE  => $chassis_info->{'Type'}
-    };
 
-    return $bios, $hardware;
+    return $bios;
 }
 
 1;
