@@ -141,7 +141,7 @@ The glpi-injector script is based on fusioninventory-injector script:
 * author: Pascal Danek
 * copyright: 2005 Pascal Danek
 
-FusionInventory::Agent::Task::Inventory::Input::Virtualization::Vmsystem
+FusionInventory::Agent::Task::Inventory::Vmsystem
 contains code from imvirt:
 
 * url: <http://micky.ibh.net/~liske/imvirt.html>
