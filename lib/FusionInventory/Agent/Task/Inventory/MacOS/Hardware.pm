@@ -43,8 +43,9 @@ sub doInventory {
         logger  => $logger,
         type    => 'SPHardwareDataType',
     );
-    my $hwoverview = $infos->{'Hardware'}->{'Hardware Overview'}
-        if $infos->{'Hardware'};
+    my $hwoverview;
+    $hwoverview = $hwinfos->{'Hardware'}->{'Hardware Overview'}
+        if $hwinfos->{'Hardware'};
     if ($hwoverview && $hwoverview->{'Hardware UUID'}) {
         $hardware->{UUID} = $hwoverview->{'Hardware UUID'};
     } else {
