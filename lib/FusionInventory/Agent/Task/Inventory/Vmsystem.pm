@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::Inventory::Virtualization::Vmsystem;
+package FusionInventory::Agent::Task::Inventory::Vmsystem;
 
 use strict;
 use warnings;
@@ -10,6 +10,20 @@ use UNIVERSAL::require;
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::UUID;
 use FusionInventory::Agent::Tools::Virtualization;
+
+# We keep this module out of category as it is also mandatory for partial inventory
+
+# Be sure to run after any module which can set BIOS or HARDWARE
+our $runAfter = [ qw(
+    FusionInventory::Agent::Task::Inventory::AIX
+    FusionInventory::Agent::Task::Inventory::BSD
+    FusionInventory::Agent::Task::Inventory::Generic
+    FusionInventory::Agent::Task::Inventory::HPUX
+    FusionInventory::Agent::Task::Inventory::Linux
+    FusionInventory::Agent::Task::Inventory::MacOS
+    FusionInventory::Agent::Task::Inventory::Solaris
+    FusionInventory::Agent::Task::Inventory::Win32
+)];
 
 my @vmware_patterns = (
     'Hypervisor detected: VMware',
