@@ -28,6 +28,7 @@ sub new {
         maxDelay     => $params{maxDelay} || 3600,
         errMaxDelay  => $errMaxDelay,
         initialDelay => $params{delaytime},
+        _events      => [],
     };
     bless $self, $class;
 
@@ -109,6 +110,52 @@ sub getNextRunDate {
     $self->_loadState() if $self->_needToReloadState();
 
     return $self->{nextRunDate};
+}
+
+sub addEvent {
+    my ($self, $event) = @_;
+
+    my $logger = $self->{logger};
+
+    # Check for supported events
+    my $partial = delete $event->{partial};
+    if ($partial && $partial =~ /^yes|1$/i && defined($event->{category})) {
+        unless ($event->{category}) {
+            $logger->debug("[target $self->{id}] Not supported partial inventory request without selected category");
+            return 0;
+        }
+        # Partial inventory request on given categories
+        $event->{partial}  = 1;
+        $event->{task}     = "inventory";
+        my $delay = delete $event->{delay} // 0;
+        $event->{rundate}  = time + $delay;
+        $logger->debug("[target $self->{id}] Partial inventory request on categories: $event->{category}");
+        $logger->debug("[target $self->{id}] Partial inventory scheduled in $delay seconds") if $delay;
+    } else {
+        $logger->debug("[target $self->{id}] Not supported event request: ".join("-",keys(%{$event})));
+        return 0;
+    }
+
+    if (@{$self->{_events}}>20) {
+        $logger->debug("[target $self->{id}] Event requests overflow, skipping new event");
+        return 0;
+    }
+
+    if ($self->{_events} && !@{$self->{_events}}) {
+        push @{$self->{_events}}, $event;
+    } else {
+        $self->{_events} = [
+            sort { $a->{datetime} <=> $b->{datetime} } @{$self->{_events}}, $event
+        ];
+    }
+
+    return $event;
+}
+
+sub getEvent {
+    my ($self) = @_;
+    return unless @{$self->{_events}} && time >= $self->{_events}->[0]->{rundate};
+    return shift @{$self->{_events}};
 }
 
 sub paused {

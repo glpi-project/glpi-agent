@@ -46,6 +46,7 @@ sub new {
         libdir  => $params{libdir},
         vardir  => $params{vardir},
         targets => [],
+        _cache  => {},
     };
     bless $self, $class;
 
@@ -435,12 +436,14 @@ sub runTaskReal {
         config       => $self->{config},
         datadir      => $self->{datadir},
         logger       => $self->{logger},
+        event        => $self->{event},
         target       => $target,
         deviceid     => $self->{deviceid},
         agentid      => uuid_to_string($self->{agentid}),
+        cached_data  => $self->{_cache}->{$name},
     );
 
-    return if !$task->isEnabled($response);
+    return if $response && !$task->isEnabled($response);
 
     # Get timeout in case we receive a pending from a proxy or a glpi server
     my $timeout = time + $self->{config}->{"backend-collect-timeout"};
@@ -457,6 +460,15 @@ sub runTaskReal {
         no_ssl_check => $self->{config}->{'no-ssl-check'},
         no_compress  => $self->{config}->{'no-compression'},
     );
+
+    # Try to cache data provided by the task if the next run can require it
+    if ($task->keepcache() && ref($self) =~ /Daemon/) {
+        my $cachedata = $task->cachedata();
+        if (defined($cachedata) && GLPI::Agent::Protocol::Message->require()) {
+            my $data = GLPI::Agent::Protocol::Message->new(message => $cachedata);
+            $self->forked_process_event("AGENTCACHE,$name,".$data->getRawContent());
+        }
+    }
 
     if ($answer && $target->isGlpiServer() && ref($answer) =~ /^GLPI::Agent::Protocol/) {
         # Handle pending state

@@ -48,6 +48,7 @@ GetOptions(
     'no-compression|C',
     'no-task=s',
     'no-p2p',
+    'partial=s',
     'password|p=s',
     'pidfile:s',
     'proxy|P=s',
@@ -173,6 +174,17 @@ if ($options->{'set-forcerun'}) {
     exit 0;
 }
 
+# partial option implies json one
+if ($options->{partial}) {
+    die "--partial option not compatible with --daemon\n"
+        if $options->{daemon};
+    $agent->{event} = {
+        task        => "inventory",
+        partial     => 1,
+        category    => $options->{partial},
+    };
+}
+
 eval {
     $agent->init(options => $options);
 
@@ -235,6 +247,8 @@ glpi-agent [options] [--server server|--local path]
     --backend-collect-timeout=TIME timeout for inventory modules
                                      execution (30)
     --additional-content=FILE      additional inventory content file
+    --partial=CATEGORY             make a partial inventory of given category
+                                     items, this option implies --json
 
   Package deployment task specific options:
     --no-p2p                       do not use peer to peer to download

@@ -29,6 +29,7 @@ GetOptions(
     'html',
     'json',
     'no-category=s',
+    'partial=s',
     'scan-homedirs',
     'scan-profiles',
     'tag|t=s',
@@ -49,6 +50,15 @@ if ($options->{version}) {
 }
 pod2usage(-verbose => 0, -exitval => 0) if $options->{help};
 
+my $event;
+if ($options->{partial}) {
+    $event = {
+        task        => "inventory",
+        partial     => 1,
+        category    => $options->{partial},
+    };
+}
+
 my $config = FusionInventory::Agent::Config->new(
     options => $options,
 );
@@ -62,6 +72,7 @@ my $inventory = FusionInventory::Agent::Task::Inventory->new(
     ),
     logger  => FusionInventory::Agent::Logger->new(config => $config),
     datadir => $setup{datadir},
+    event   => $event,
     config  => $config
 );
 
@@ -83,6 +94,8 @@ glpi-inventory [options]
     --html                         save the inventory as HTML (false)
     --json                         save the inventory as JSON (false)
     --no-category=CATEGORY         do not list given category items
+    --partial=CATEGORY             make a partial inventory of given category
+                                     items, this option implies --json
     -t --tag=TAG                   mark the machine with given tag
     --backend-collect-timeout=TIME timeout for inventory modules
                                      execution (30)

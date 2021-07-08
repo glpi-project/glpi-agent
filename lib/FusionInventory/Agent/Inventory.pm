@@ -318,8 +318,8 @@ sub setHardware {
             next
         }
 
-        # Do not overwrite existing value with undef
-        next unless $args->{$field};
+        # Do not overwrite existing value with undef or empty
+        next unless defined($args->{$field}) && length($args->{$field});
 
         $self->{content}->{HARDWARE}->{$field} =
             getSanitizedString($args->{$field});

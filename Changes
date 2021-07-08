@@ -12,8 +12,11 @@ core:
 * config: support vardir option to specify storage location for persitent datas
 * Fix: honor server expiration between runs by disabling initial delay which
   should only be related to the first run on a given platform
+* Support target event scheduling
 
 inventory:
+* Feature: support partial inventory
+* Category support has been refactorer to permit partial inventory
 * fix snap softwares inventory
 * fix cpu thread count by core reported by dmidecode method
 * win32: Support WSL virtualization inventory

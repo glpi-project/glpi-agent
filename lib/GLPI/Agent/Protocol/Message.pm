@@ -46,6 +46,14 @@ sub _convert {
     return $hash;
 }
 
+sub getRawContent {
+    my ($self) = @_;
+
+    return $self->{_message} unless ref($self->{_message});
+
+    return JSON->new->encode($self->{_message});
+}
+
 sub getContent {
     my ($self) = @_;
 
@@ -166,7 +174,11 @@ the message to encode
 
 =head2 getContent
 
-Get decoded JSON content as a hash.
+Get message as pretty encoded JSON
+
+=head2 getRawContent
+
+Get message as JSON string
 
 =head2 set($message)
 

@@ -152,9 +152,9 @@ sub _handle {
         }
 
         # now request
-        if ($path =~ m{^/now(?:/(\S*))?$}) {
+        if ($path =~ m{^/now(?:/\S*)?$}) {
             last SWITCH if $method ne 'GET';
-            $status = $self->_handle_now($client, $request, $clientIp, $1);
+            $status = $self->_handle_now($client, $request, $clientIp);
             last SWITCH;
         }
 
@@ -370,31 +370,43 @@ sub _handle_now {
 
     my $logger = $self->{logger};
 
-    my ($code, $message, $trace);
+    my ($code, $message) = qw( 200 OK );
+    my $trace;
 
-    BLOCK: {
-        foreach my $target ($self->{agent}->getTargets()) {
-            next unless $target->isType('server');
-            my $url       = $target->getUrl();
-            my $addresses = $self->{trust}->{$url};
-            next unless isPartOf($clientIp, $addresses, $logger);
-            $target->setNextRunDateFromNow();
-            $code    = 200;
-            $message = "OK";
-            $trace   = "rescheduling next contact for target $url right now";
-            last BLOCK;
-        }
+    my @targets;
+    foreach my $target ($self->{agent}->getTargets()) {
+        next unless $target->isType('server');
+        my $url       = $target->getUrl();
+        my $addresses = $self->{trust}->{$url};
+        next unless isPartOf($clientIp, $addresses, $logger);
+        $trace = "rescheduling next contact for target $url right now";
+        push @targets, $target;
+        last;
+    }
 
-        if ($self->_isTrusted($clientIp)) {
-            foreach my $target ($self->{agent}->getTargets()) {
+    if (!@targets && $self->_isTrusted($clientIp)) {
+        push @targets, $self->{agent}->getTargets();
+        $trace = "rescheduling next contact for all targets right now";
+    }
+
+    if (@targets) {
+        my $query = $request->uri()->query();
+        foreach my $target (@targets) {
+            if ($query) {
+                my %event = map { /^([^=]+)=(.*)$/ } grep { /[^=]=/ } split('&', $query);
+                if ($target->addEvent(\%event)) {
+                    $message = "partial inventory triggering event on ".$target->id();
+                    $trace   = $message;
+                } else {
+                    $code    = 403;
+                    $message = "Access denied";
+                    $trace   = "unsupported target event: $query";
+                }
+            } else {
                 $target->setNextRunDateFromNow();
             }
-            $code    = 200;
-            $message = "OK";
-            $trace   = "rescheduling next contact for all targets right now";
-            last BLOCK;
         }
-
+    } else {
         $code    = 403;
         $message = "Access denied";
         $trace   = "invalid request (untrusted address)";

@@ -19,9 +19,12 @@ sub new {
                         FusionInventory::Agent::Logger->new(),
         config       => $params{config},
         datadir      => $params{datadir},
+        event        => $params{event},
         target       => $params{target},
         deviceid     => $params{deviceid},
         agentid      => $params{agentid},
+        _cached      => $params{cached_data},
+        _keepcache   => defined($params{cached_data}) ? 1 : 0,
     };
     bless $self, $class;
 
@@ -70,6 +73,22 @@ sub setRemote {
     $self->{_remote} = $task || '';
 
     return $self->{_remote};
+}
+
+sub cachedata {
+    my ($self, $data) = @_;
+
+    $self->{_cached} = $data if defined($data);
+
+    return $self->{_cached} if defined($self->{_cached});
+}
+
+sub keepcache {
+    my ($self, $bool) = @_;
+
+    $self->{_keepcache} = $bool if defined($bool);
+
+    return $self->{_keepcache};
 }
 
 1;

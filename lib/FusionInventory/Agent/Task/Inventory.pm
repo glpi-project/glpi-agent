@@ -64,7 +64,9 @@ sub run {
         tag      => $tag
     );
 
-    $self->{logger}->info("New inventory from ".$inventory->getDeviceId()." for $self->{target}->{id}".
+    my $partial = $self->{event} && $self->{event}->{partial} ? " partial" : "";
+    $self->{logger}->info("New$partial inventory from ".$inventory->getDeviceId().
+        " for $self->{target}->{id}".
         ( (defined($tag) && length($tag)) ? " (tag=$tag)" : "" ));
 
     # Set inventory as remote if running remote inventory like from wmi task
@@ -84,6 +86,9 @@ sub run {
         map { $_ => 1 } @{$self->{config}->{'no-category'}}
     };
 
+    # Support inventory event
+    $self->setupEvent() if $self->{event};
+
     $self->_initModulesList();
     $self->_feedInventory();
 
@@ -93,15 +98,76 @@ sub run {
     return $self->submit();
 }
 
+sub setupEvent {
+    my ($self) = @_;
+
+    if ($self->{target}->isType('server') && !$self->{target}->isGlpiServer()) {
+        $self->{logger}->debug("Inventory events on server target only supported with GLPI server");
+        return;
+    }
+
+    unless ($self->{event}->{partial}) {
+        $self->{logger}->debug("Only support partial inventory events for Inventory task");
+        return;
+    }
+
+    # Setup partial inventory
+    $self->{partial} = 1;
+
+    # Support event with category defined
+    if ($self->{event}->{category}) {
+        my %keep = map { lc($_) => 1 } grep { length($_) } split(',', $self->{event}->{category});
+        my $cached = $self->cachedata();
+        if ($cached) {
+            $self->{inventory}->mergeContent($cached);
+            $self->keepcache(0);
+        } else {
+            # If no data has been cached from previous partial inventory run, we
+            # also need to get hardware and bios category to keep them in cache
+            $keep{hardware} = 1;
+            $keep{bios} = 1;
+            $self->keepcache(1);
+        }
+        foreach my $category ($self->getCategories()) {
+            $self->{disabled}->{$category} = 1 unless $keep{$category};
+        }
+    }
+}
+
+my %partial_cache = (
+    BIOS        => {
+        map { $_ => 1 } qw(
+            SMODEL SMANUFACTURER SSN ASSETTAG SKUNUMBER TYPE
+            MMODEL MMANUFACTURER MSN ENCLOSURESERIAL BIOSSERIAL
+        )
+    },
+    HARDWARE    => { map { $_ => 1 } qw(NAME UUID VMSYSTEM) },
+);
+
 sub submit {
     my ($self) = @_;
 
     my $config    = $self->{config};
     my $inventory = $self->{inventory};
 
+    # Keep cleaned and cached data for next partial inventory
+    if ($self->{partial} && $self->keepcache() && !$self->cachedata()) {
+        my $content = $inventory->getContent();
+        my $keep = {};
+        foreach my $key (keys(%partial_cache)) {
+            next unless $content->{$key};
+            $keep->{$key} = {};
+            foreach my $subkey (keys(%{$partial_cache{$key}})) {
+                next unless defined($content->{$key}->{$subkey});
+                $keep->{$key}->{$subkey} = $content->{$key}->{$subkey};
+            }
+        }
+        $self->cachedata($keep);
+    }
+
     if ($self->{target}->isType('local')) {
         my $path   = $self->{target}->getPath();
-        my $format = $self->{target}->{format};
+        my $format = $self->{partial} ? "json" : $self->{target}->{format};
         my ($file, $handle);
 
         SWITCH: {
@@ -170,6 +236,7 @@ sub submit {
             logger      => $self->{logger},
             deviceid    => $inventory->getDeviceId(),
             content     => $inventory->getContent(),
+            partial     => $self->{partial},
             itemtype    => "Computer",
         );
 
@@ -467,7 +534,8 @@ sub _feedInventory {
     $versionprovider->{ETIME} = time() - $begin
         if $versionprovider;
 
-    $self->{inventory}->computeChecksum();
+    # Don't compute checksum on partial inventory
+    $self->{inventory}->computeChecksum() unless $self->{partial};
 }
 
 sub _injectContent {
@@ -549,6 +617,7 @@ sub _printInventory {
                 logger      => $self->{logger},
                 deviceid    => $self->{inventory}->getDeviceId(),
                 content     => $self->{inventory}->getContent(),
+                partial     => $self->{partial},
                 itemtype    => "Computer",
             );
 

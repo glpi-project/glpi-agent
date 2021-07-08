@@ -99,9 +99,11 @@ sub new {
 
     my $self = $class->SUPER::new(
         %params,
-        supported_params    => [ qw(deviceid action content itemtype) ],
+        supported_params    => [ qw(deviceid action content itemtype partial) ],
         action              => "inventory",
     );
+
+    delete $self->{partial} unless $params{partial};
 
     bless $self, $class;
 
@@ -132,6 +134,9 @@ sub normalize {
 
     # Parse content and remove any not defined value
     _recursive_not_defined_cleanup($content);
+
+    # Normalize main PARTIAL status
+    $self->_norm('boolean', $self->get, "partial", "main");
 }
 
 sub _recursive_not_defined_cleanup {

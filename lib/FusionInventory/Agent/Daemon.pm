@@ -35,6 +35,9 @@ sub init {
 
     $self->createDaemon();
 
+    # Register ourself as an event handler
+    $self->register_events_cb($self);
+
     # create HTTP interface if required
     $self->loadHttpInterface();
 
@@ -107,6 +110,25 @@ sub run {
             # Leave immediately if we passed in terminate method
             last if $self->{_terminate};
 
+        } elsif (my $event = $target->getEvent()) {
+
+            my $net_error = 0;
+            eval {
+                $net_error = $self->runTargetEvent($target, $event);
+            };
+            $logger->error($EVAL_ERROR) if ($EVAL_ERROR && $logger);
+            if ($net_error) {
+                # Prefer to retry event later on net error
+                $event->{delay} = 60;
+                $target->addEvent($event);
+            }
+
+            # Leave immediately if we passed in terminate method
+            last if $self->{_terminate};
+
+            # Call service optimization after each target run
+            $self->RunningServiceOptimization();
+
         } elsif ($time >= $target->getNextRunDate()) {
 
             my $net_error = 0;
@@ -161,13 +183,31 @@ sub _reloadConfIfNeeded {
     $self->reinit() if ($reload > 0);
 }
 
+sub runTargetEvent {
+    my ($self, $target, $event) = @_;
+
+    $self->{logger}->debug("target $target->{id} event: " . $target->getType() . " " . $target->getName());
+
+    $self->{event} = $event;
+
+    eval {
+        $self->runTask($target, ucfirst($event->{task}));
+    };
+    $self->{logger}->error($EVAL_ERROR) if $EVAL_ERROR;
+    $self->setStatus($target->paused() ? 'paused' : 'waiting');
+
+    delete $self->{event};
+
+    return 0;
+}
+
 sub runTask {
     my ($self, $target, $name, $response) = @_;
 
     $self->setStatus("running task $name");
 
     # server mode: run each task in a child process
-    if (my $pid = fork()) {
+    if (my $pid = $self->fork()) {
 
         # parent
         $self->{current_runtask} = $pid;
@@ -197,7 +237,7 @@ sub runTask {
 
         $self->runTaskReal($target, $name, $response);
 
-        exit(0);
+        $self->fork_exit(0);
     }
 }
 
@@ -314,6 +354,20 @@ sub _trigger_event {
     return unless defined($event) && defined($self->{_events_cb});
     foreach my $object (@{$self->{_events_cb}}) {
         last if $object->events_cb($event);
+    }
+}
+
+sub events_cb {
+    my ($self, $event) = @_;
+
+    return unless defined($event);
+
+    my ($task, $dump) = $event =~ /^AGENTCACHE,([^,]*),(.*)$/ms
+        or return 0;
+
+    if ($dump =~ /^\{/ && GLPI::Agent::Protocol::Message->require()) {
+        my $data = GLPI::Agent::Protocol::Message->new(message => $dump);
+        $self->{_cache}->{$task} = $data->get;
     }
 }
 
