@@ -649,6 +649,7 @@ sub _other_job_steps {
             { do=>'createdir', args=>[ '<image_dir>/logs' ] },
             { do=>'movefile', args=>[ '<image_dir>/perl/bin/perl.exe', '<image_dir>/perl/bin/glpi-agent.exe' ] },
             { do=>'copydir', args=>[ 'lib/FusionInventory', '<image_dir>/perl/agent/FusionInventory' ] },
+            { do=>'copydir', args=>[ 'lib/GLPI', '<image_dir>/perl/agent/GLPI' ] },
             { do=>'copydir', args=>[ 'etc', '<image_dir>/etc' ] },
             { do=>'createdir', args=>[ '<image_dir>/etc/conf.d' ] },
             { do=>'copydir', args=>[ 'bin', '<image_dir>/perl/bin' ] },
