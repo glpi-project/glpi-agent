@@ -9,6 +9,7 @@ use Data::UUID;
 
 our @EXPORT = qw(
     create_uuid
+    create_uuid_from_name
     is_uuid_string
     uuid_to_string
 );
