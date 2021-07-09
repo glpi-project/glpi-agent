@@ -93,6 +93,11 @@ sub isGlpiServer {
 sub plannedTasks {
     my $self = shift @_;
 
+    # Server can trigger any task
+    if (@_) {
+        $self->{tasks} = [ @_ ];
+    }
+
     return @{$self->{tasks} || []};
 }
 

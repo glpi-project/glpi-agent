@@ -59,8 +59,8 @@ ok (
     ($agent->{config}->{'no-task'}->[0] eq 'snmpquery' && $agent->{config}->{'no-task'}->[1] eq 'wakeonlan')
         || ($agent->{config}->{'no-task'}->[1] eq 'snmpquery' && $agent->{config}->{'no-task'}->[0] eq 'wakeonlan')
 );
-# Targets are Server target + associated Scheduler target
-ok (scalar($agent->getTargets()) == 2);
+# Targets are Server target
+ok (scalar($agent->getTargets()) == 1);
 
 SKIP: {
     skip ('test for Windows only and with config in registry', 4)

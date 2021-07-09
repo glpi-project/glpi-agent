@@ -409,7 +409,7 @@ sub getTargets {
         FusionInventory::Agent::Target::Server->require();
         FusionInventory::Agent::Target::Server->reset();
         foreach my $url (@{$self->{server}}) {
-            my $server = FusionInventory::Agent::Target::Server->new(
+            push @targets, FusionInventory::Agent::Target::Server->new(
                 logger     => $params{logger},
                 delaytime  => $self->{delaytime},
                 basevardir => $params{vardir},
