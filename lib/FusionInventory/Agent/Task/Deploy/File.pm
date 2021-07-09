@@ -91,7 +91,7 @@ sub cleanup_private {
     }
 
     # This may leave an empty folder tree, but it will be cleaned by
-    # Maintenance task when convenient
+    # Maintenance event when convenient
 }
 
 sub resetPartFilePaths {
@@ -115,7 +115,7 @@ sub resetPartFilePaths {
     }
 
     # This may leave an empty folder tree, but it will be cleaned by
-    # Maintenance task when convenient
+    # Maintenance event when convenient
 }
 
 sub getPartFilePath {

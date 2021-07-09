@@ -127,7 +127,7 @@ VERSION
 # 4. Update tasks version if required
 perl -Itools -MChangelog -e '
     my @tasks = qw(
-        Inventory NetDiscovery NetInventory Collect ESX Deploy WakeOnLan Maintenance
+        Inventory NetDiscovery NetInventory Collect ESX Deploy WakeOnLan
     );
     my @plugins = qw(
         ToolBox

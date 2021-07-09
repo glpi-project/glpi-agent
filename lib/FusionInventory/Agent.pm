@@ -111,14 +111,6 @@ sub init {
 
     my @plannedTasks = $self->computeTaskExecutionPlan($available);
 
-    # Clean up schedulers from targets if Deploy not found in @plannedTasks as
-    # schedulers are only enabled for Maintenance task which itself is only required for Deploy task
-    unless (grep { /^Deploy$/ } @plannedTasks) {
-        $self->{targets} = [
-            grep { ! $_->isType('scheduler') } $self->getTargets()
-        ];
-    }
-
     $logger->debug("Available tasks:");
     foreach my $task (@tasks) {
         $logger->debug("- $task: $available->{$task}");
