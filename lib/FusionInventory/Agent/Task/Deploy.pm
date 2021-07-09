@@ -7,6 +7,8 @@ use strict;
 use warnings;
 use parent 'FusionInventory::Agent::Task';
 
+use UNIVERSAL::require;
+
 use FusionInventory::Agent::HTTP::Client::Fusion;
 use FusionInventory::Agent::Storage;
 use FusionInventory::Agent::Task::Deploy::ActionProcessor;
@@ -397,6 +399,26 @@ sub run {
     $ENV{LC_ALL} = 'C'; # Turn off localised output for commands
     $ENV{LANG} = 'C'; # Turn off localised output for commands
 
+    my $event = $self->event;
+    if ($event) {
+        if ($event->{maintenance} && FusionInventory::Agent::Task::Deploy::Maintenance->require()) {
+            $self->{logger}->debug("Deploy task maintenance event for ".$self->{target}->id(). " target");
+            my $maintenance = FusionInventory::Agent::Task::Deploy::Maintenance->new(
+                target  => $self->{target},
+                config  => $self->{config},
+                logger  => $self->{logger},
+            );
+            if ($maintenance->doMaintenance()) {
+                $event->{delay} = 120;
+            } else {
+                # Don't restart event if datastore has been fully cleaned up
+                undef $event;
+            }
+            $self->resetEvent($event);
+        }
+        return;
+    }
+
     $self->{client} = FusionInventory::Agent::HTTP::Client::Fusion->new(
         logger       => $self->{logger},
         user         => $params{user},
@@ -442,7 +464,21 @@ sub run {
         return;
     }
 
+    # Always plan a maintenance event when a job has been run
+    $self->resetEvent($self->newEvent());
+
     return 1;
+}
+
+sub newEvent {
+    my ($self) = @_;
+
+    return {
+        task        => "deploy",
+        maintenance => "yes",
+        target      => $self->{target}->id(),
+        delay       => 120,
+    };
 }
 
 1;

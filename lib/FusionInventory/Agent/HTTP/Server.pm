@@ -392,8 +392,8 @@ sub _handle_now {
         if ($query) {
             my %event = map { /^([^=]+)=(.*)$/ } grep { /[^=]=/ } split('&', $query);
             foreach my $target (@targets) {
-                if ($target->addEvent(\%event)) {
-                    $logger->debug($log_prefix."partial inventory triggering event on ".$target->id());
+                if (my $event = $target->addEvent(\%event)) {
+                    $logger->debug($log_prefix."$event->{name} triggering event on ".$target->id());
                 } else {
                     $logger->debug($log_prefix."unsupported target event: $query");
                 }

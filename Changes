@@ -37,6 +37,9 @@ netdiscovery/netinventory:
 * Enhanced MibSupport to support Configuration plugin managed via ToolBox
 * Log a warning when no credential is provided with a discovery or inventory job
 
+deploy:
+* Deploy maintenance task is now handled by core target event scheduling
+
 toolbox:
 * Support run of local inventory task
 * Support run of NetDiscovery and NetInventory tasks

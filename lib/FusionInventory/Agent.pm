@@ -435,12 +435,19 @@ sub runTaskReal {
         cached_data  => $self->{_cache}->{$name},
     );
 
+    # Handle init event and return
+    if ($self->{event} && $self->{event}->{init}) {
+        my $event = $task->newEvent();
+        $target->addEvent($event) if $event;
+        return;
+    }
+
     return if $response && !$task->isEnabled($response);
 
     # Get timeout in case we receive a pending from a proxy or a glpi server
     my $timeout = time + $self->{config}->{"backend-collect-timeout"};
 
-    $self->{logger}->info("running task $name");
+    $self->{logger}->info("running task $name".($self->{event} ? " $self->{event}->{name} event" : ""));
     $self->{current_task} = $task;
 
     my $answer = $task->run(
@@ -460,6 +467,13 @@ sub runTaskReal {
             my $data = GLPI::Agent::Protocol::Message->new(message => $cachedata);
             $self->forked_process_event("AGENTCACHE,$name,".$data->getRawContent());
         }
+    }
+
+    # Try to handle task new event
+    my $event = $task->event();
+    if ($event && ref($self) =~ /Daemon/ && GLPI::Agent::Protocol::Message->require()) {
+        my $message = GLPI::Agent::Protocol::Message->new(message => $event);
+        $self->forked_process_event("TASKEVENT,$name,".$message->getRawContent());
     }
 
     if ($answer && $target->isGlpiServer() && ref($answer) =~ /^GLPI::Agent::Protocol/) {

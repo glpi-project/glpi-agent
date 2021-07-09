@@ -43,6 +43,9 @@ sub init {
 
     $self->ApplyServiceOptimizations();
 
+    # Trigger init event on each tasks for each target
+    map { $_->triggerTaskInitEvents() } $self->getTargets();
+
     # install signal handler to handle reload signal
     $SIG{HUP} = sub { $self->reinit(); };
     $SIG{USR1} = sub { $self->runNow(); }
@@ -186,15 +189,22 @@ sub _reloadConfIfNeeded {
 sub runTargetEvent {
     my ($self, $target, $event) = @_;
 
-    $self->{logger}->debug("target $target->{id} event: " . $target->getType() . " " . $target->getName());
+    $self->{logger}->debug("target $target->{id}: ".($event->{name}//"unknown")." event for $event->{task} task");
 
     $self->{event} = $event;
 
-    eval {
-        $self->runTask($target, ucfirst($event->{task}));
-    };
-    $self->{logger}->error($EVAL_ERROR) if $EVAL_ERROR;
-    $self->setStatus($target->paused() ? 'paused' : 'waiting');
+    if ($event && $event->{init}) {
+        eval {
+            # We don't need to fork for init event
+            $self->runTaskReal($target, ucfirst($event->{task}));
+        };
+    } else {
+        eval {
+            $self->runTask($target, ucfirst($event->{task}));
+        };
+        $self->{logger}->error($EVAL_ERROR) if $EVAL_ERROR;
+        $self->setStatus($target->paused() ? 'paused' : 'waiting');
+    }
 
     delete $self->{event};
 
@@ -362,12 +372,18 @@ sub events_cb {
 
     return unless defined($event);
 
-    my ($task, $dump) = $event =~ /^AGENTCACHE,([^,]*),(.*)$/ms
+    my ($type, $task, $dump) = $event =~ /^(AGENTCACHE|TASKEVENT),([^,]*),(.*)$/ms
         or return 0;
 
-    if ($dump =~ /^\{/ && GLPI::Agent::Protocol::Message->require()) {
+    if ($type eq 'AGENTCACHE' && $dump =~ /^\{/ && GLPI::Agent::Protocol::Message->require()) {
         my $data = GLPI::Agent::Protocol::Message->new(message => $dump);
         $self->{_cache}->{$task} = $data->get;
+    } elsif ($type eq 'TASKEVENT' && $dump =~ /^\{/ && GLPI::Agent::Protocol::Message->require()) {
+        my $message = GLPI::Agent::Protocol::Message->new(message => $dump);
+        my $event = $message->get;
+        my $targetid = $event->{target};
+        my @targets = grep { !$targetid || $_->id() eq $targetid } $self->getTargets();
+        map { $_->addEvent($event) } @targets;
     }
 }
 

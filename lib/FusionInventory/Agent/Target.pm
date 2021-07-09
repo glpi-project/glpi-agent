@@ -29,6 +29,7 @@ sub new {
         errMaxDelay  => $errMaxDelay,
         initialDelay => $params{delaytime},
         _events      => [],
+        _next_event  => {},
     };
     bless $self, $class;
 
@@ -112,6 +113,21 @@ sub getNextRunDate {
     return $self->{nextRunDate};
 }
 
+sub triggerTaskInitEvents {
+    my ($self) = @_;
+
+    return unless $self->{tasks} && @{$self->{tasks}};
+
+    foreach my $task (@{$self->{tasks}}) {
+        push @{$self->{_events}}, {
+            name    => "init",
+            task    => $task,
+            init    => "yes",
+            delay   => 10,
+        };
+    }
+}
+
 sub addEvent {
     my ($self, $event) = @_;
 
@@ -125,12 +141,19 @@ sub addEvent {
             return 0;
         }
         # Partial inventory request on given categories
-        $event->{partial}  = 1;
-        $event->{task}     = "inventory";
-        my $delay = delete $event->{delay} // 0;
-        $event->{rundate}  = time + $delay;
-        $logger->debug("[target $self->{id}] Partial inventory request on categories: $event->{category}");
-        $logger->debug("[target $self->{id}] Partial inventory scheduled in $delay seconds") if $delay;
+        $event->{partial} = 1;
+        $event->{task}    = "inventory";
+        $event->{name}    = "partial inventory";
+        $logger->debug("[target $self->{id}] Partial inventory event on category: $event->{category}");
+        # Remove any existing partial inventory event
+        $self->{_events} = [ grep { ! $_->{partial} } @{$self->{_events}} ]
+            if $self->{_events} && @{$self->{_events}};
+    } elsif ($event->{maintenance} && $event->{maintenance} =~ /^yes|1$/i && $event->{task} =~ /^Deploy$/i) {
+        $event->{name} = "maintenance";
+        $logger->debug("[target $self->{id}] New maintenance event on $event->{task} task");
+        # Remove any existing maintenance event
+        $self->{_events} = [ grep { ! $_->{maintenance} } @{$self->{_events}} ]
+            if $self->{_events} && @{$self->{_events}};
     } else {
         $logger->debug("[target $self->{id}] Not supported event request: ".join("-",keys(%{$event})));
         return 0;
@@ -139,7 +162,19 @@ sub addEvent {
     if (@{$self->{_events}}>20) {
         $logger->debug("[target $self->{id}] Event requests overflow, skipping new event");
         return 0;
+    } elsif ($self->{_next_event}) {
+        my $nexttime = $self->{_next_event}->{$event->{name}};
+        if ($nexttime && time < $nexttime) {
+            $logger->debug("[target $self->{id}] Skipping too early new $event->{name} event");
+            return 0;
+        }
+        # Do not accept the same event in less than 15 seconds
+        $self->{_next_event}->{$event->{name}} = time + 15;
     }
+
+    my $delay = delete $event->{delay} // 0;
+    $event->{rundate} = time + $delay;
+    $logger->debug2("[target $self->{id}] Event scheduled in $delay seconds") if $delay;
 
     if ($self->{_events} && !@{$self->{_events}}) {
         push @{$self->{_events}}, $event;

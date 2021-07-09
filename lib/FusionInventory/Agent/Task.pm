@@ -91,6 +91,26 @@ sub keepcache {
     return $self->{_keepcache};
 }
 
+sub event {
+    my ($self, $event) = @_;
+
+    $self->{event} = $event if defined($event);
+
+    return $self->{event} if defined($self->{event});
+}
+
+sub resetEvent {
+    my ($self, $event) = @_;
+
+    if (defined($event)) {
+        $self->{event} = $event;
+    } else {
+        return delete $self->{event};
+    }
+}
+
+sub newEvent {}
+
 1;
 __END__
 

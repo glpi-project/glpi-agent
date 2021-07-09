@@ -64,8 +64,9 @@ sub run {
         tag      => $tag
     );
 
-    my $partial = $self->{event} && $self->{event}->{partial} ? " partial" : "";
-    $self->{logger}->info("New$partial inventory from ".$inventory->getDeviceId().
+    my $event = $self->event;
+    my $name = $event && $event->{name} ? $event->{name} : "inventory";
+    $self->{logger}->info("New $name from ".$inventory->getDeviceId().
         " for $self->{target}->{id}".
         ( (defined($tag) && length($tag)) ? " (tag=$tag)" : "" ));
 
@@ -87,7 +88,7 @@ sub run {
     };
 
     # Support inventory event
-    if ($self->{event} && !$self->setupEvent()) {
+    if ($event && !$self->setupEvent()) {
         $self->{logger}->error("Unsupported Inventory task event on ".$self->{target}->id());
         return;
     }
@@ -104,19 +105,20 @@ sub run {
 sub setupEvent {
     my ($self) = @_;
 
+    my $event = $self->resetEvent();
     if ($self->{target}->isType('server') && !$self->{target}->isGlpiServer()) {
         $self->{logger}->debug($self->{target}->id().": server target for inventory events need to be a GLPI server");
         return;
     }
 
-    unless ($self->{event}->{partial}) {
+    unless ($event->{partial}) {
         $self->{logger}->debug("Only support partial inventory events for Inventory task");
         return;
     }
 
     # Support event with category defined
-    if ($self->{event}->{category}) {
-        my %keep = map { lc($_) => 1 } grep { length($_) } split(',', $self->{event}->{category});
+    if ($event->{category}) {
+        my %keep = map { lc($_) => 1 } grep { length($_) } split(',', $event->{category});
         my @categories = $self->getCategories();
         my $valid = 0;
         foreach my $category (keys(%keep)) {
