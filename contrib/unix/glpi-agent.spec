@@ -257,7 +257,6 @@ install -m 644 -D  contrib/unix/%{name}.service %{buildroot}%{_unitdir}/%{name}.
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Target*
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Task.pm
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Task/Inventory*
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Task/Maintenance*
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Tools.pm
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/AIX.pm
 %{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/BSD.pm
