@@ -312,6 +312,8 @@ sub ApplyServiceOptimizations {
 sub RunningServiceOptimization {
     my ($self) = @_;
 
+    return if $self->{_optimization_rundate} && time < $self->{_optimization_rundate};
+
     # win32 platform needs optimization
     if ($self->{logger} && $self->{logger}->debug_level()) {
         my ($WorkingSetSize, $PageFileUsage) = getAgentMemorySize();
@@ -328,6 +330,9 @@ sub RunningServiceOptimization {
         $self->{logger}->info("$PROVIDER Agent memory usage: WSS=$WorkingSetSize PFU=$PageFileUsage")
             unless $WorkingSetSize < 0;
     }
+
+    # Avoid to run service optimization too often
+    $self->{_optimization_rundate} = time + 60;
 }
 
 sub terminate {
