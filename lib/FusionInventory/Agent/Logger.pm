@@ -61,7 +61,7 @@ sub new {
         }
         $backends{$backend} = 1;
 
-        $self->debug("Logger backend $backend initialised");
+        $self->debug("Logger backend $backend initialized");
         push
             @{$self->{backends}},
             $package->new(%{$config});
