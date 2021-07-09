@@ -87,7 +87,10 @@ sub run {
     };
 
     # Support inventory event
-    $self->setupEvent() if $self->{event};
+    if ($self->{event} && !$self->setupEvent()) {
+        $self->{logger}->error("Unsupported Inventory task event on ".$self->{target}->id());
+        return;
+    }
 
     $self->_initModulesList();
     $self->_feedInventory();
@@ -102,7 +105,7 @@ sub setupEvent {
     my ($self) = @_;
 
     if ($self->{target}->isType('server') && !$self->{target}->isGlpiServer()) {
-        $self->{logger}->debug("Inventory events on server target only supported with GLPI server");
+        $self->{logger}->debug($self->{target}->id().": server target for inventory events need to be a GLPI server");
         return;
     }
 
@@ -111,12 +114,22 @@ sub setupEvent {
         return;
     }
 
-    # Setup partial inventory
-    $self->{partial} = 1;
-
     # Support event with category defined
     if ($self->{event}->{category}) {
         my %keep = map { lc($_) => 1 } grep { length($_) } split(',', $self->{event}->{category});
+        my @categories = $self->getCategories();
+        my $valid = 0;
+        foreach my $category (keys(%keep)) {
+            if (any { $_ eq $category } @categories) {
+                $valid = 1;
+            } else {
+                $self->{logger}->debug("Unknown category on partial inventory event: $category");
+            }
+        }
+        unless ($valid) {
+            $self->{logger}->debug("Invalid partial inventory event with no supported category");
+            return;
+        }
         my $cached = $self->cachedata();
         if ($cached) {
             $self->{inventory}->mergeContent($cached);
@@ -128,10 +141,16 @@ sub setupEvent {
             $keep{bios} = 1;
             $self->keepcache(1);
         }
-        foreach my $category ($self->getCategories()) {
+        foreach my $category (@categories) {
             $self->{disabled}->{$category} = 1 unless $keep{$category};
         }
+    } else {
+        $self->{logger}->debug("No category property on partial inventory event");
+        return;
     }
+
+    # Setup partial inventory
+    return $self->{partial} = 1;
 }
 
 my %partial_cache = (

@@ -384,27 +384,23 @@ sub _handle_now {
         last;
     }
 
-    if (!@targets && $self->_isTrusted($clientIp)) {
-        push @targets, $self->{agent}->getTargets();
-        $trace = "rescheduling next contact for all targets right now";
-    }
+    push @targets, $self->{agent}->getTargets()
+        if !@targets && $self->_isTrusted($clientIp);
 
     if (@targets) {
         my $query = $request->uri()->query();
-        foreach my $target (@targets) {
-            if ($query) {
-                my %event = map { /^([^=]+)=(.*)$/ } grep { /[^=]=/ } split('&', $query);
+        if ($query) {
+            my %event = map { /^([^=]+)=(.*)$/ } grep { /[^=]=/ } split('&', $query);
+            foreach my $target (@targets) {
                 if ($target->addEvent(\%event)) {
-                    $message = "partial inventory triggering event on ".$target->id();
-                    $trace   = $message;
+                    $logger->debug($log_prefix."partial inventory triggering event on ".$target->id());
                 } else {
-                    $code    = 403;
-                    $message = "Access denied";
-                    $trace   = "unsupported target event: $query";
+                    $logger->debug($log_prefix."unsupported target event: $query");
                 }
-            } else {
-                $target->setNextRunDateFromNow();
             }
+        } else {
+            map { $_->setNextRunDateFromNow() } @targets;
+            $trace = "rescheduling next contact for all targets right now";
         }
     } else {
         $code    = 403;
@@ -428,7 +424,7 @@ sub _handle_now {
     );
 
     $client->send_response($response);
-    $logger->debug($log_prefix . $trace);
+    $logger->debug($log_prefix . $trace) if $trace;
     return $code;
 }
 
