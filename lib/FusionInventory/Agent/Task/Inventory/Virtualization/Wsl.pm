@@ -12,8 +12,8 @@ use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::UUID;
 use FusionInventory::Agent::Tools::Virtualization;
 
-our $runAfter = [ qw(
-    FusionInventory::Agent::Task::Inventory::Win32::OS
+our $runAfterIfEnabled = [ qw(
+    FusionInventory::Agent::Task::Inventory::Win32::Hardware
     FusionInventory::Agent::Task::Inventory::Win32::CPU
 )];
 
@@ -48,10 +48,10 @@ sub  _getUsersWslInstances {
     my $cpus = $params{inventory}->getSection('CPUS') // [{}];
     my $vcpu = 0;
     map { $vcpu += $_->{CORE} // 1 } @{$cpus};
-    my $memory = $params{inventory}->getField('HARDWARE', 'MEMORY');
+    my $memory = $params{inventory}->getHardware('MEMORY');
 
     # Get system build revision to handle default max memory with WSL2
-    my $kernel_version = $params{inventory}->getField('OPERATINGSYSTEM', 'KERNEL_VERSION') // '';
+    my $kernel_version = $params{inventory}->getHardware('OSVERSION') // '';
     my ($build) = $kernel_version =~ /^\d+\.\d+\.(\d+)/;
 
     # Search users account for WSL instance

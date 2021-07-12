@@ -18,7 +18,7 @@ use FusionInventory::Agent::Tools::Win32::LoadIndirectString;
 
 use constant    category    => "software";
 
-our $runAfter = ["FusionInventory::Agent::Task::Inventory::Win32::OS"];
+our $runAfter = ["FusionInventory::Agent::Task::Inventory::Win32::Hardware"];
 
 my $seen = {};
 
