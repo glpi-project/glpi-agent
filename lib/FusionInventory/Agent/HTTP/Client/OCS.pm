@@ -118,7 +118,6 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
             my $contact;
             eval {
                 $contact = GLPI::Agent::Protocol::Contact->new(
-                    logger  => $logger,
                     message => $uncompressed_response_content,
                 );
             };

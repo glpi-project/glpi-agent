@@ -11,9 +11,10 @@ sub new {
     my ($class, %params) = @_;
 
     my $self = {
-        logger      => $params{logger} // FusionInventory::Agent::Logger->new(),
         _message    => $params{message} // {},
     };
+
+    $self->{logger} = $params{logger} if $params{logger};
 
     bless $self, $class;
 
@@ -164,7 +165,7 @@ hash:
 
 =item I<logger>
 
-the logger object to use
+the optional logger object to use
 
 =item I<message>
 

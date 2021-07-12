@@ -86,7 +86,6 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
     my $message = ref($params{message}) eq 'HASH' ?
         GLPI::Agent::Protocol::Message->new(
             message => $params{message},
-            logger  => $logger,
         )
         : $params{message};
 
@@ -106,9 +105,7 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
         $request = HTTP::Request->new(GET => $url);
         $request->header( "GLPI-Request-ID" => $params{requestid} ) if $params{requestid};
         # Initialze a new message to be updated by the answer
-        $message = GLPI::Agent::Protocol::Message->new(
-            logger  => $logger,
-        );
+        $message = GLPI::Agent::Protocol::Message->new();
     }
 
     my $response = $self->request($request);

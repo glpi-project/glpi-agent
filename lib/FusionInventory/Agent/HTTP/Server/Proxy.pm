@@ -433,7 +433,6 @@ sub _handle_proxy_request {
         # Try to handle any JSON as GLPI agent protocol message
         eval {
             $message = GLPI::Agent::Protocol::Message->new(
-                logger  => $self->{logger},
                 message => $content,
             );
         };

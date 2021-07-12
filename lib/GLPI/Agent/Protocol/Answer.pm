@@ -107,10 +107,6 @@ hash:
 
 =over
 
-=item I<logger>
-
-the logger object to use
-
 =item I<message>
 
 the message to encode
