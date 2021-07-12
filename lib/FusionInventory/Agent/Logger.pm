@@ -61,12 +61,11 @@ sub new {
         }
         $backends{$backend} = 1;
 
-        push
-            @{$self->{backends}},
-            $package->new(%{$config});
+        my $logger = $package->new(%{$config});
+        push @{$self->{backends}}, $logger;
 
         # Only debug backend initialization was passed the first time
-        $self->debug("Logger backend $backend initialized") if $first_pass;
+        $self->debug("Logger backend $backend initialized") if $first_pass && !$logger->test;
     }
 
     # Only log agent version string during the first object creation

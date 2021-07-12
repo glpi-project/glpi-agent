@@ -7,6 +7,8 @@ use parent 'FusionInventory::Agent::Logger::Backend';
 
 use English qw(-no_match_vars);
 
+use constant    test => 1;
+
 sub new {
     my ($class, $params) = @_;
 

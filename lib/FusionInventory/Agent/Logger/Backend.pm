@@ -3,6 +3,8 @@ package FusionInventory::Agent::Logger::Backend;
 use strict;
 use warnings;
 
+use constant    test => 0;
+
 sub reload {
 }
 
