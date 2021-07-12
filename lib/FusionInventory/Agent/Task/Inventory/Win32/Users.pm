@@ -116,6 +116,9 @@ sub _getLocalGroups {
         query      => $query,
         properties => [ qw/Name SID/ ])
     ) {
+        # Replace "right single quotation mark" by "simple quote" to avoid "Wide character in print" error
+        $object->{Name} =~ s/\x{2019}/'/g;
+
         my $group = {
             NAME => $object->{Name},
             ID   => $object->{SID},
