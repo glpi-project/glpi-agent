@@ -399,19 +399,23 @@ sub run {
     $ENV{LC_ALL} = 'C'; # Turn off localised output for commands
     $ENV{LANG} = 'C'; # Turn off localised output for commands
 
+    my $logger = $self->{logger};
+
     my $event = $self->event;
     if ($event) {
         if ($event->{maintenance} && FusionInventory::Agent::Task::Deploy::Maintenance->require()) {
-            $self->{logger}->debug("Deploy task maintenance event for ".$self->{target}->id(). " target");
+            $logger->debug("Deploy task $event->{name} event for ".$self->{target}->id(). " target");
             my $maintenance = FusionInventory::Agent::Task::Deploy::Maintenance->new(
                 target  => $self->{target},
                 config  => $self->{config},
                 logger  => $self->{logger},
             );
             if ($maintenance->doMaintenance()) {
-                $event->{delay} = 120;
+                $event = $self->newEvent();
+                $logger->debug("Planning another $event->{name} event for ".$self->{target}->id(). " target in $event->{delay}s");
             } else {
                 # Don't restart event if datastore has been fully cleaned up
+                $logger->debug("No need to plan another $event->{name} event for ".$self->{target}->id(). " target");
                 undef $event;
             }
             $self->resetEvent($event);
@@ -420,7 +424,7 @@ sub run {
     }
 
     $self->{client} = FusionInventory::Agent::HTTP::Client::Fusion->new(
-        logger       => $self->{logger},
+        logger       => $logger,
         user         => $params{user},
         password     => $params{password},
         proxy        => $params{proxy},
@@ -441,15 +445,15 @@ sub run {
     );
 
     if (!$globalRemoteConfig->{schedule}) {
-        $self->{logger}->info("No job schedule returned from server at $url");
+        $logger->info("No job schedule returned from server at $url");
         return;
     }
     if (ref( $globalRemoteConfig->{schedule} ) ne 'ARRAY') {
-        $self->{logger}->info("Malformed schedule from server at $url");
+        $logger->info("Malformed schedule from server at $url");
         return;
     }
     if ( !@{$globalRemoteConfig->{schedule}} ) {
-        $self->{logger}->info("No Deploy job enabled or Deploy support disabled server side.");
+        $logger->info("No Deploy job enabled or Deploy support disabled server side.");
         return;
     }
 
@@ -460,7 +464,7 @@ sub run {
     }
 
     if ( !$run_jobs ) {
-        $self->{logger}->info("No Deploy job found in server jobs list.");
+        $logger->info("No Deploy job found in server jobs list.");
         return;
     }
 
@@ -474,6 +478,7 @@ sub newEvent {
     my ($self) = @_;
 
     return {
+        name        => "storage maintenance",
         task        => "deploy",
         maintenance => "yes",
         target      => $self->{target}->id(),

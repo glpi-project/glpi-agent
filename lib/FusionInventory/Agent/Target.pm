@@ -148,12 +148,21 @@ sub addEvent {
         # Remove any existing partial inventory event
         $self->{_events} = [ grep { ! $_->{partial} } @{$self->{_events}} ]
             if $self->{_events} && @{$self->{_events}};
-    } elsif ($event->{maintenance} && $event->{maintenance} =~ /^yes|1$/i && $event->{task} =~ /^Deploy$/i) {
-        $event->{name} = "maintenance";
-        $logger->debug("[target $self->{id}] New maintenance event on $event->{task} task");
-        # Remove any existing maintenance event
-        $self->{_events} = [ grep { ! $_->{maintenance} } @{$self->{_events}} ]
-            if $self->{_events} && @{$self->{_events}};
+    } elsif ($event->{maintenance} && $event->{maintenance} =~ /^yes|1$/i) {
+        my $debug = "[target $self->{id}] New $event->{name} event on $event->{task} task";
+        my $count = 0;
+        $count = @{$self->{_events}} if $self->{_events};
+        if ($count) {
+            # Remove any existing maintenance event for the same target
+            $self->{_events} = [
+                grep {
+                    ! $_->{maintenance} || $_->{task} ne $event->{task} || $_->{target} ne $event->{target}
+                } @{$self->{_events}}
+            ];
+            $debug = "[target $self->{id}] Replacing $event->{name} event on $event->{task} task"
+                if @{$self->{_events}} < $count;
+        }
+        $logger->debug($debug);
     } else {
         $logger->debug("[target $self->{id}] Not supported event request: ".join("-",keys(%{$event})));
         return 0;
