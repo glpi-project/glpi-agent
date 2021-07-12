@@ -447,7 +447,7 @@ sub runTaskReal {
     # Get timeout in case we receive a pending from a proxy or a glpi server
     my $timeout = time + $self->{config}->{"backend-collect-timeout"};
 
-    $self->{logger}->info("running task $name".($self->{event} ? " $self->{event}->{name} event" : ""));
+    $self->{logger}->info("running task $name".($self->{event} ? ": $self->{event}->{name} event" : ""));
     $self->{current_task} = $task;
 
     my $answer = $task->run(

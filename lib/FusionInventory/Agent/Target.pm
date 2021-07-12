@@ -123,7 +123,7 @@ sub triggerTaskInitEvents {
             name    => "init",
             task    => $task,
             init    => "yes",
-            delay   => 10,
+            rundate => time+10,
         };
     }
 }
@@ -180,7 +180,7 @@ sub addEvent {
         push @{$self->{_events}}, $event;
     } else {
         $self->{_events} = [
-            sort { $a->{datetime} <=> $b->{datetime} } @{$self->{_events}}, $event
+            sort { $a->{rundate} <=> $b->{rundate} } @{$self->{_events}}, $event
         ];
     }
 
