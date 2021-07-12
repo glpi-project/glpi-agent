@@ -76,6 +76,8 @@ my $inventory = FusionInventory::Agent::Task::Inventory->new(
     config  => $config
 );
 
+$inventory->{nochecksum} = 1;
+
 $inventory->run();
 
 __END__
