@@ -480,7 +480,7 @@ sub _getAppxPackages {
                     my $key = $manifest_mapping{$property};
                     my $value = $xpp->getNodeText("/Package/Properties/$property")
                         or next;
-                    $package->{$key} = $value;
+                    $package->{$key} = $value->value;
                 }
             }
         }
@@ -527,7 +527,12 @@ sub _getAppxPackages {
         if (!$dn) {
             $dn = _canonicalPackageName($package->{NAME});
         }
-        $package->{NAME} = $dn if $dn;
+        if ($dn) {
+            # Replace "right single quotation mark" by "simple quote" to avoid "Wide character in print" error
+            $dn =~ s/\x{2019}/'/g;
+
+            $package->{NAME} = $dn;
+        }
 
         my $comments = delete $package->{COMMENTS};
         if ($comments && $comments =~ /^ms-resource:/) {
@@ -539,7 +544,12 @@ sub _getAppxPackages {
                 if $logger;
             $comments = $res;
         }
-        $package->{COMMENTS} = $comments if $comments;
+        if ($comments) {
+            # Replace "right single quotation mark" by "simple quote" to avoid "Wide character in print" error
+            $comments =~ s/\x{2019}/'/g;
+
+            $package->{COMMENTS} = $comments;
+        }
 
         $package->{FROM} = 'uwp';
     }
