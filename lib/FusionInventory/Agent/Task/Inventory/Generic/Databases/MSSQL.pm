@@ -142,7 +142,12 @@ sub _runSql {
     }
 
     if (wantarray) {
-        return map { chomp; s/\r$//; $_ } getAllLines(%params);
+        return map {
+            my $line = $_;
+            chomp($line);
+            $line =~ s/\r$//;
+            $line
+        } getAllLines(%params);
     } else {
         my $result = getFirstLine(%params);
         chomp($result);
