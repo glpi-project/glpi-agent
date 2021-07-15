@@ -133,7 +133,7 @@ sub _runSql {
         $sql =~ s/[^-_0-9A-Za-z]//g;
         $sql =~ s/[-][-]+/-/g;
         $params{file} .= "-" . lc($sql);
-        unless (-e $params{file}) {
+        unless ($params{istest}) {
             print STDERR "Generating $params{file} for new MSSQL test case...\n";
             system("$command >$params{file}");
         }
@@ -150,8 +150,10 @@ sub _runSql {
         } getAllLines(%params);
     } else {
         my $result = getFirstLine(%params);
-        chomp($result);
-        $result =~ s/\r$//;
+        if (defined($result)) {
+            chomp($result);
+            $result =~ s/\r$//;
+        }
         return $result;
     }
 }

@@ -30,6 +30,7 @@ $Data::Dumper::Pad       = "    ";
 # a still not use test case name
 
 my %db_tests = (
+    'nodb'            => [],
     'mariadb-10.4.19' => [
       {
         DATABASES => [
@@ -99,6 +100,7 @@ foreach my $test (keys %db_tests) {
     my $dbs   = FusionInventory::Agent::Task::Inventory::Generic::Databases::MySQL::_getDatabaseService(
         file        => $file,
         credentials => $credentials{$test} // [{}],
+        istest      => $db_tests{$test}) ? 1 : 0,
     );
     my $entries = [ map { $_->entry() } @$dbs ];
     print STDERR "\n$test: ", Dumper($entries) unless defined($db_tests{$test});
