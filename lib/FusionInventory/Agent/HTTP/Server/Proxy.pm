@@ -539,6 +539,7 @@ sub _handle_proxy_request {
             $self->debug("Submitting $action from $remoteid to ".$target->getName());
             my $sent = $proxyclient->send(
                 url     => $target->getUrl(),
+                pending => "pass",
                 message => $message
             );
             unless ($sent) {

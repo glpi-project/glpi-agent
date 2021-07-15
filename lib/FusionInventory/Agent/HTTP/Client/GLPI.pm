@@ -150,6 +150,21 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
     # Set requestid message to be re-use on update request when proxy answer request is pending
     $message->id($requestid) if $requestid;
 
+    # Handle pending case recursively with 12 retries max, but don't if handled in caller
+    if ($message->status eq 'pending' && (!$params{pending} || $params{pending} ne "pass")) {
+        my $retry = $params{retry} // 0;
+        if ($retry>12) {
+            $logger->error(_log_prefix . "got too much pending status");
+            return;
+        }
+        sleep $message->expiration;
+        $logger->debug2(_log_prefix . "retry request after pending status");
+        return $self->send(
+            retry   => $retry+1,
+            %params
+        );
+    }
+
     return $message;
 }
 

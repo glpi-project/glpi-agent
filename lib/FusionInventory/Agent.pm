@@ -313,40 +313,12 @@ sub runTarget {
 
     if ($target->isGlpiServer()) {
         # Handle contact answer including expiration and/or errors
-        my $expiration = $response->expiration;
         my $message = $response->get('message');
         my $status  = $response->status;
-
-        my $timeout = time + $self->{config}->{"backend-collect-timeout"};
-        while ($status eq 'pending') {
-            if (time + $expiration > $timeout) {
-                $self->{logger}->info("contact failure due to a pending server status");
-                last;
-            }
-            sleep($expiration);
-            $response = $client->send(
-                url         => $target->getUrl(),
-                requestid   => $response->id,
-            );
-            unless ($response) {
-                $status  = "error";
-                last;
-            }
-            $expiration = $response->expiration;
-            $message    = $response->get('message');
-            $status     = $response->status;
-        }
-
-        $target->setMaxDelay($expiration);
 
         if ($status eq 'error') {
             $self->{logger}->error(
                 "server error: ".($message // "Server returned an error status")
-            );
-            return 0;
-        } elsif ($status eq 'pending') {
-            $self->{logger}->debug("pending contact timeout".
-                ($message ? ": $message" : "")
             );
             return 0;
         } elsif ($status ne 'ok') {
@@ -357,6 +329,8 @@ sub runTarget {
         } elsif ($message) {
             $self->{logger}->debug("server message: $message");
         }
+
+        $target->setMaxDelay($response->expiration) if $response->expiration;
 
         # Don't plan tasks disabled by server
         my $disabled = $response->get('disabled');
@@ -444,13 +418,10 @@ sub runTaskReal {
 
     return if $response && !$task->isEnabled($response);
 
-    # Get timeout in case we receive a pending from a proxy or a glpi server
-    my $timeout = time + $self->{config}->{"backend-collect-timeout"};
-
     $self->{logger}->info("running task $name".($self->{event} ? ": $self->{event}->{name} event" : ""));
     $self->{current_task} = $task;
 
-    my $answer = $task->run(
+    $task->run(
         user         => $self->{config}->{user},
         password     => $self->{config}->{password},
         proxy        => $self->{config}->{proxy},
@@ -474,20 +445,6 @@ sub runTaskReal {
     if ($event && ref($self) =~ /Daemon/ && GLPI::Agent::Protocol::Message->require()) {
         my $message = GLPI::Agent::Protocol::Message->new(message => $event);
         $self->forked_process_event("TASKEVENT,$name,".$message->getRawContent());
-    }
-
-    if ($answer && $target->isGlpiServer() && ref($answer) =~ /^GLPI::Agent::Protocol/) {
-        # Handle pending state
-        while ($answer->status eq 'pending') {
-            my $expiration = $answer->expiration;
-            if (time + $expiration > $timeout) {
-                $self->{logger}->info("$name task result not submitted due to a pending server status");
-                last;
-            }
-            $self->{logger}->debug("$name task submission delayed to $expiration seconds");
-            sleep($expiration);
-            $answer = $task->submit();
-        }
     }
 
     delete $self->{current_task};

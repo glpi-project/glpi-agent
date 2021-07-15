@@ -270,14 +270,6 @@ sub submit {
         );
         return unless $response;
 
-        while ($response->status eq "pending") {
-            sleep $response->expiration;
-            $response = $client->send(
-                url         => $self->{target}->getUrl(),
-                requestid   => $response->id(),
-            );
-        }
-
         $inventory->saveLastState();
 
         return $response;
