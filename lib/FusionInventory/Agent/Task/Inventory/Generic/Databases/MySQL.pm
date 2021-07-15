@@ -137,7 +137,7 @@ sub _runSql {
         $sql =~ s/[^-_0-9A-Za-z]//g;
         $sql =~ s/[-][-]+/-/g;
         $params{file} .= "-" . lc($sql);
-        unless (-e $params{file}) {
+        unless ($params{istest}) {
             print STDERR "Generating $params{file} for new MySQL test case...\n";
             system("$command >$params{file}");
         }
@@ -149,7 +149,7 @@ sub _runSql {
         return map { chomp; $_ } getAllLines(%params);
     } else {
         my $result  = getAllLines(%params);
-        chomp($result);
+        chomp($result) if defined($result);
         return $result;
     }
 }
