@@ -42,6 +42,7 @@ netdiscovery/netinventory:
 * Add support for SonicWall devices
 * Enhanced MibSupport to support Configuration plugin managed via ToolBox
 * Log a warning when no credential is provided with a discovery or inventory job
+* Add support for Ruckus devices
 * Add support for Dell Wyse ThinClient devices
 * Add support for Voltaire devices
 * Support "authpassword" and "privpassword" in credentials option as replacement
