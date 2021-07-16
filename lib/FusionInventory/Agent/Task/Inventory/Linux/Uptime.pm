@@ -5,6 +5,8 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
+use Time::HiRes qw(time);
+
 use FusionInventory::Agent::Tools;
 
 use constant    category    => "os";
@@ -30,13 +32,14 @@ sub doInventory {
 }
 
 sub _getBootTime {
+    my $time = time;
     my $uptime = getFirstMatch(
         pattern => qr/^([0-9.]+)/,
         @_
     );
     return unless $uptime;
 
-    return getFormatedLocalTime(time - $uptime);
+    return getFormatedLocalTime($time - $uptime);
 }
 
 1;
