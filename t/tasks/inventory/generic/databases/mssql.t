@@ -77,10 +77,57 @@ my %db_tests = (
         VERSION => "15.0.2080.9"
       }
     ],
+    'sql-server-2017-on-linux' => [
+      {
+        DATABASES => [
+          {
+            CREATION_DATE => "2003-04-08 09:13:36",
+            IS_ACTIVE => 1,
+            NAME => "master",
+            SIZE => 7,
+            UPDATE_DATE => "2021-07-15 14:44:50"
+          },
+          {
+            CREATION_DATE => "2021-07-16 08:56:37",
+            IS_ACTIVE => 1,
+            NAME => "tempdb",
+            SIZE => 16,
+            UPDATE_DATE => "2021-07-16 09:15:02"
+          },
+          {
+            CREATION_DATE => "2003-04-08 09:13:36",
+            IS_ACTIVE => 1,
+            NAME => "model",
+            SIZE => 16,
+            UPDATE_DATE => "2021-07-15 14:44:50"
+          },
+          {
+            CREATION_DATE => "2021-06-25 16:01:11",
+            IS_ACTIVE => 1,
+            NAME => "msdb",
+            SIZE => 21,
+            UPDATE_DATE => "2021-07-15 14:44:55"
+          }
+        ],
+        MANUFACTURER => "Microsoft",
+        NAME => "SQL Server 2017",
+        SIZE => 60,
+        TYPE => "mssql",
+        VERSION => "14.0.3401.7"
+      }
+    ],
 );
 
 my %credentials = (
-    # Set related credentials values when needed like port for a given test
+    # Set related credentials values when needed like port for a given test or
+    # to generate the test case but don't forget to mask any sensible data after
+    'sql-server-2017-on-linux' => [
+        {
+            login       => "SA",
+            password    => "********",
+            type        => "login_password",
+        },
+    ],
 );
 
 plan tests => (2 * scalar keys %db_tests) + 1;

@@ -88,7 +88,8 @@ my %db_tests = (
 );
 
 my %credentials = (
-    # Set related credentials values when needed like port for a given test
+    # Set related credentials values when needed like port for a given test or
+    # to generate the test case but don't forget to mask any sensible data after
 );
 
 plan tests => (2 * scalar keys %db_tests) + 1;

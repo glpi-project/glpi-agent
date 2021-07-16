@@ -21,6 +21,9 @@ sub doInventory {
 
     my $inventory = $params{inventory};
 
+    # Try to retrieve credentials updating params
+    FusionInventory::Agent::Task::Inventory::Generic::Databases::_credentials(\%params, "mysql");
+
     my $dbservices = _getDatabaseService(%params);
 
     foreach my $dbs (@{$dbservices}) {
@@ -35,8 +38,7 @@ sub _getDatabaseService {
     my (%params) = @_;
 
     # Try to retrieve credentials
-    my $credentials = FusionInventory::Agent::Task::Inventory::Generic::Databases::_credentials(\%params, "mysql");
-
+    my $credentials = delete $params{credentials};
     return [] unless $credentials && ref($credentials) eq 'ARRAY';
 
     my @dbs = ();
@@ -138,7 +140,7 @@ sub _runSql {
         $sql =~ s/[-][-]+/-/g;
         $params{file} .= "-" . lc($sql);
         unless ($params{istest}) {
-            print STDERR "Generating $params{file} for new MySQL test case...\n";
+            print STDERR "\nGenerating $params{file} for new MySQL test case...\n";
             system("$command >$params{file}");
         }
     } else {
