@@ -119,6 +119,9 @@ sub run {
         );
     }
 
+    # Set credentials if set
+    $inventory->credentials($self->{credentials}) if $self->{credentials};
+
     $self->{inventory} = $inventory;
     $self->{disabled}  = {
         map { $_ => 1 } @{$self->{config}->{'no-category'}}

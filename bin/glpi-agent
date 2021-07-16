@@ -26,6 +26,7 @@ GetOptions(
     'conf-reload-interval=i',
     'config=s',
     'color',
+    'credentials=s@',
     'daemon|d',
     'no-fork',
     'debug+',
@@ -186,6 +187,12 @@ if ($options->{partial}) {
     };
 }
 
+if ($options->{credentials}) {
+    die "--credentials option not compatible with --daemon\n"
+        if $options->{daemon};
+    $agent->{credentials} = $options->{credentials};
+}
+
 eval {
     $agent->init(options => $options);
 
@@ -250,6 +257,7 @@ glpi-agent [options] [--server server|--local path]
     --additional-content=FILE      additional inventory content file
     --partial=CATEGORY             make a partial inventory of given category
                                      items, this option implies --json
+    --credentials                  set credentials to support database inventory
 
   Package deployment task specific options:
     --no-p2p                       do not use peer to peer to download
@@ -516,6 +524,13 @@ categories are:
 =item B<--list-categories>
 
 List all supported categories by scanning all available inventory modules
+
+=item B<--credentials>=I<CREDENTIALS>
+
+Setup credentials for database inventory
+
+CREDENTIALS should be a list of "key:value" separated by commas like in:
+For example: --credentials="type:login_password,login:root,password:********"
 
 =item B<--scan-homedirs>
 

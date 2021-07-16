@@ -20,6 +20,7 @@ sub new {
         config       => $params{config},
         datadir      => $params{datadir},
         event        => $params{event},
+        credentials  => $params{credentials},
         target       => $params{target},
         deviceid     => $params{deviceid},
         agentid      => $params{agentid},
