@@ -11,13 +11,17 @@ use FusionInventory::Agent::Tools;
 use GLPI::Agent::Inventory::DatabaseService;
 
 sub isEnabled {
-    return canRun('sqlcmd');
+    return canRun('sqlcmd') ||
+        canRun('/opt/mssql-tools/bin/sqlcmd');
 }
 
 sub doInventory {
     my (%params) = @_;
 
     my $inventory = $params{inventory};
+
+    # Try to retrieve credentials updating params
+    FusionInventory::Agent::Task::Inventory::Generic::Databases::_credentials(\%params, "mssql");
 
     my $dbservices = _getDatabaseService(%params);
 
@@ -32,12 +36,14 @@ sub doInventory {
 sub _getDatabaseService {
     my (%params) = @_;
 
-    # Try to retrieve credentials
-    my $credentials = FusionInventory::Agent::Task::Inventory::Generic::Databases::_credentials(\%params, "mssql");
-
+    my $credentials = delete $params{credentials};
     return [] unless $credentials && ref($credentials) eq 'ARRAY';
 
     my @dbs = ();
+
+    # Support sqlcmd on linux with standard full path for command from mssql-tools package
+    $params{sqlcmd} = '/opt/mssql-tools/bin/sqlcmd'
+        unless canRun('sqlcmd');
 
     foreach my $credential (@{$credentials}) {
         $params{options} = _mssqlOptions($credential) // "";
@@ -123,7 +129,7 @@ sub _runSql {
     my $sql = delete $params{sql}
         or return;
 
-    my $command = "sqlcmd";
+    my $command = $params{sqlcmd} // "sqlcmd";
     $command .= $params{options} if defined($params{options});
     $command .= " -X1 -l 30 -t 30 -K ReadOnly -r1 -W -h -1 -s \";\" -Q \"$sql\"";
 
@@ -134,7 +140,7 @@ sub _runSql {
         $sql =~ s/[-][-]+/-/g;
         $params{file} .= "-" . lc($sql);
         unless ($params{istest}) {
-            print STDERR "Generating $params{file} for new MSSQL test case...\n";
+            print STDERR "\nGenerating $params{file} for new MSSQL test case...\n";
             system("$command >$params{file}");
         }
     } else {
