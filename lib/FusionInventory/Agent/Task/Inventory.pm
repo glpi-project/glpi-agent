@@ -165,7 +165,7 @@ sub submit {
     if ($self->{partial} && $self->keepcache() && !$self->cachedata()) {
         my $content = $inventory->getContent();
         my $keep = {
-            map { $key => $content->{$key} } grep { $content->{$key} } qw(BIOS HARDWARE)
+            map { $_ => $content->{$_} } grep { $content->{$_} } qw(BIOS HARDWARE)
         };
         $self->cachedata($keep);
     }
