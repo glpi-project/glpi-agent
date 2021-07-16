@@ -7,11 +7,12 @@ use Config;
 use Digest::SHA;
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
-use XML::TreePP;
 
 use FusionInventory::Agent::Logger;
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Version;
+
+use GLPI::Agent::Protocol::Message;
 
 my %fields = (
     BIOS             => [ qw/SMODEL SMANUFACTURER SSN BDATE BVERSION
@@ -141,7 +142,7 @@ sub new {
     bless $self, $class;
 
     $self->setTag($params{tag});
-    $self->{last_state_file} = $params{statedir} . '/last_state'
+    $self->{last_state_file} = $params{statedir} . '/last_state.json'
         if $params{statedir};
 
     return $self;
@@ -425,11 +426,12 @@ sub computeChecksum {
 
     my $logger = $self->{logger};
 
-    if ($self->{last_state_file}) {
+    my $last_state;
+    if ($self->{last_state_file} && !$self->{last_state_content}) {
         if (-f $self->{last_state_file}) {
             eval {
-                $self->{last_state_content} = XML::TreePP->new()->parsefile(
-                    $self->{last_state_file}
+                $last_state = GLPI::Agent::Protocol::Message->new(
+                    file    => $self->{last_state_file},
                 );
             };
             if (ref($self->{last_state_content}) ne 'HASH') {
@@ -440,60 +442,65 @@ sub computeChecksum {
                 "last state file '$self->{last_state_file}' doesn't exist"
             );
         }
+    } else {
+        $last_state = $self->{last_state_content};
     }
+    $last_state = GLPI::Agent::Protocol::Message->new() unless $last_state;
 
-    my $current_state = {};
+    my $save_state = 0;
     foreach my $section (@checked_sections) {
         my ($sha, $len) = _checksum($section, $self->{content}->{$section});
+        my $state = $last_state->get($section);
         unless ($len) {
-            $logger->debug("Section $section has disappeared since last inventory")
-                if defined($self->{last_state_content}->{$section});
+            if (defined($state)) {
+                $logger->debug("Section $section has disappeared since last inventory");
+                $last_state->delete($section);
+                $save_state++;
+            }
             next;
         }
         my $digest = $sha->hexdigest;
-        my $state  = $self->{last_state_content}->{$section} // {
-            -digest => '',
-            -len    => 0,
-        };
-        $current_state->{$section} = $state;
 
         # check if the section did change since the last run
         next if ref($state) eq 'HASH' &&
-            defined($state->{-len}) && $state->{-len} == $len &&
-            defined($state->{-digest}) && $state->{-digest} eq $digest;
+            defined($state->{len}) && $state->{len} == $len &&
+            defined($state->{digest}) && $state->{digest} eq $digest;
 
         $logger->debug("Section $section has changed since last inventory");
 
         # store the new value.
-        $current_state->{$section} = {
-            -digest => $digest,
-            -len    => $len,
-        };
+        $last_state->merge(
+            $section    => {
+                digest => $digest,
+                len    => $len,
+            }
+        );
+        $save_state++;
     }
-    $self->{last_state_content} = $current_state;
+
+    $self->{last_state_content} = $last_state;
+
+    $self->_saveLastState() if $save_state;
 }
 
-sub saveLastState {
+sub _saveLastState {
     my ($self) = @_;
+
+    return unless $self->{last_state_content};
 
     my $logger = $self->{logger};
 
-    if (!defined($self->{last_state_content})) {
-        $self->computeChecksum();
-    }
     if ($self->{last_state_file}) {
-        eval {
-            XML::TreePP->new()->writefile(
-                $self->{last_state_file}, $self->{last_state_content}
-            );
+        my $fh;
+        if (open($fh, ">", $self->{last_state_file})) {
+            print $fh $self->{last_state_content}->getRawContent();
+            close($fh);
+        } else {
+            $logger->debug("can't create last state file, last state not saved: $!");
         }
     } else {
-        $logger->debug(
-            "last state file is not defined, last state not saved"
-        );
+        $logger->debug("last state file is not defined, last state not saved");
     }
-
-    my $tpp = XML::TreePP->new();
 }
 
 1;
@@ -595,11 +602,6 @@ What is that for? :)
 
 Compute the inventory checksum. This information is used by the server to
 know which parts of the inventory have changed since the last one.
-
-=head2 saveLastState()
-
-At the end of the process IF the inventory was saved
-correctly, the last_state is saved.
 
 =head2 getRemote()
 

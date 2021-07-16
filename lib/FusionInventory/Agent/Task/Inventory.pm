@@ -254,8 +254,6 @@ sub submit {
         );
         return unless $response;
 
-        $inventory->saveLastState();
-
         return $response;
 
     } elsif ($self->{target}->isType('server')) {
@@ -289,7 +287,6 @@ sub submit {
         );
 
         return unless $response;
-        $inventory->saveLastState();
 
     } elsif ($self->{target}->isType('listener')) {
 

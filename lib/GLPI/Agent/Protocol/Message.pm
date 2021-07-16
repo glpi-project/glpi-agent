@@ -21,6 +21,16 @@ sub new {
     # Parse message if not given as a ref
     $self->set($params{message}) unless ref($params{message});
 
+    # Parse message from file is requested
+    if ($params{file} && -e $params{file}) {
+        my $fh;
+        if (open($fh, "<", $params{file})) {
+            my $content = <$fh>;
+            close($fh);
+            $self->set($content) if defined($content) && length($content);
+        }
+    }
+
     # Load supported params if not a server response
     unless ($self->get('status') || !$params{supported_params}) {
         my $message = $self->get;
