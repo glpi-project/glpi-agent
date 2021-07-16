@@ -179,6 +179,7 @@ if ($options->{partial}) {
     die "--partial option not compatible with --daemon\n"
         if $options->{daemon};
     $agent->{event} = {
+        name        => "partial inventory",
         task        => "inventory",
         partial     => 1,
         category    => $options->{partial},
