@@ -506,6 +506,30 @@ sub _saveLastState {
     }
 }
 
+sub credentials {
+    my ($self, $credentials) = @_;
+
+    return $self->{_credentials}
+        unless ref($credentials) eq "ARRAY";
+
+    foreach my $definition (@{$credentials}) {
+        my $hash = {};
+        foreach my $string (split(",", $definition)) {
+            my ($key, $value) = split(":", $string);
+            unless ($key && defined($value)) {
+                $self->{logger}->debug("Invalid credential value: $string");
+                next;
+            }
+            $hash->{lc($key)} = $value;
+        }
+        unless (keys(%{$hash})) {
+            $self->{logger}->debug("Invalid credential definition: $definition");
+            next;
+        }
+        push @{$self->{_credentials}}, $hash;
+    }
+}
+
 1;
 __END__
 

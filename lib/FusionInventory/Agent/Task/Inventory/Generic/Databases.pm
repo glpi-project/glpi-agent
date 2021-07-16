@@ -19,7 +19,8 @@ sub doInventory {}
 sub _credentials {
     my ($hashref, $usage) = @_;
 
-    my @credentials = ();
+    # Always at least try empty credentials
+    my @credentials = ({});
     my $params = delete $hashref->{params};
 
     if ($params) {
@@ -54,9 +55,13 @@ sub _credentials {
         }
     }
 
-    push @credentials, {} unless @credentials;
+    if ($hashref->{inventory}) {
+        my $credentials = $hashref->{inventory}->credentials();
+        push @credentials, @{$credentials}
+            if ref($credentials) eq "ARRAY";
+    }
 
-    return \@credentials;
+    $hashref->{credentials} = \@credentials;
 }
 
 1;

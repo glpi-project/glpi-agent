@@ -412,6 +412,7 @@ sub runTaskReal {
         datadir      => $self->{datadir},
         logger       => $self->{logger},
         event        => $self->{event},
+        credentials  => $self->{credentials},
         target       => $target,
         deviceid     => $self->{deviceid},
         agentid      => uuid_to_string($self->{agentid}),
