@@ -155,34 +155,18 @@ sub setupEvent {
     return $self->{partial} = 1;
 }
 
-my %partial_cache = (
-    BIOS        => {
-        map { $_ => 1 } qw(
-            SMODEL SMANUFACTURER SSN ASSETTAG SKUNUMBER TYPE
-            MMODEL MMANUFACTURER MSN ENCLOSURESERIAL BIOSSERIAL
-        )
-    },
-    HARDWARE    => { map { $_ => 1 } qw(NAME UUID VMSYSTEM) },
-);
-
 sub submit {
     my ($self) = @_;
 
     my $config    = $self->{config};
     my $inventory = $self->{inventory};
 
-    # Keep cleaned and cached data for next partial inventory
+    # Keep cached data for next partial inventory
     if ($self->{partial} && $self->keepcache() && !$self->cachedata()) {
         my $content = $inventory->getContent();
-        my $keep = {};
-        foreach my $key (keys(%partial_cache)) {
-            next unless $content->{$key};
-            $keep->{$key} = {};
-            foreach my $subkey (keys(%{$partial_cache{$key}})) {
-                next unless defined($content->{$key}->{$subkey});
-                $keep->{$key}->{$subkey} = $content->{$key}->{$subkey};
-            }
-        }
+        my $keep = {
+            map { $key => $content->{$key} } grep { $content->{$key} } qw(BIOS HARDWARE)
+        };
         $self->cachedata($keep);
     }
 
