@@ -65,6 +65,8 @@ sub createInventory {
 
     $inventory->setHardware( $host->getHardwareInfo() );
 
+    $inventory->setOperatingSystem( $host->getOperatingSystemInfo() );
+
     foreach my $cpu ($host->getCPUs()) {
         $inventory->addEntry(section => 'CPUS', entry => $cpu);
     }

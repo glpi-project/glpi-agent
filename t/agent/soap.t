@@ -50,6 +50,20 @@ my %tests = (
           'DNS' => '10.0.5.105'
           }
         ],
+        'getOperatingSystemInfo' => [
+            {
+                NAME       => "VMware ESX",
+                VERSION    => "4.1.0",
+                FULL_NAME  => "VMware ESX 4.1.0 build-260247",
+                FQDN       => "esx-test.teclib.local",
+                DNS_DOMAIN => "teclib.local",
+                BOOT_TIME  => "2011-01-25 14:11:07",
+                TIMEZONE   => {
+                    NAME   => "Europe/Berlin",
+                    OFFSET => "+0100",
+                },
+            }
+        ],
         'getCPUs' => [
           {
             'NAME' => 'Dual-Core AMD Opteron(tm) Processor 2218',
@@ -447,6 +461,7 @@ my @methods = qw/
     getHostname
     getBiosInfo
     getHardwareInfo
+    getOperatingSystemInfo
     getCPUs
     getControllers
     getNetworks

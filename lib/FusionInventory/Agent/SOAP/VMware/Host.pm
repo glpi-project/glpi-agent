@@ -114,6 +114,40 @@ sub getHardwareInfo {
     };
 }
 
+sub getOperatingSystemInfo {
+    my ($self) = @_;
+
+    my $host = $self->{hash}->[0];
+
+    my $dnsConfig  = $host->{config}->{network}->{dnsConfig};
+    my $product    = $host->{summary}->{config}->{product};
+
+    my ($bootdate, $boottime) =
+        $host->{summary}->{runtime}->{bootTime} =~ /^([0-9-]+)T([0-9:]+)\./;
+    $boottime = "$bootdate $boottime" if $bootdate && $boottime;
+
+    my $os = {
+        NAME       => $product->{name},
+        VERSION    => $product->{version},
+        FULL_NAME  => $product->{fullName},
+        FQDN       => $host->{name},
+        DNS_DOMAIN => $dnsConfig->{domainName},
+        BOOT_TIME  => $boottime,
+    };
+
+    my $dtinfo = $host->{config}->{dateTimeInfo};
+    if ($dtinfo && $dtinfo->{timeZone}) {
+        my $offset = $dtinfo->{timeZone}->{gmtOffset};
+        if (defined($offset)) {
+            $os->{TIMEZONE}->{NAME} = $dtinfo->{timeZone}->{name};
+            $offset /= 3600;
+            $os->{TIMEZONE}->{OFFSET} = sprintf("%s%04d", $offset < 0 ? "-" : "+", abs($offset)*100);
+        }
+    }
+
+    return $os;
+}
+
 sub getCPUs {
     my ($self) = @_;
 
