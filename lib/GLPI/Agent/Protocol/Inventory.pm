@@ -137,6 +137,15 @@ sub normalize {
 
     # Normalize main PARTIAL status
     $self->_norm('boolean', $self->get, "partial", "main");
+
+    # Handle tag as a root property
+    if ($content->{ACCOUNTINFO}) {
+        my $infos = delete $content->{ACCOUNTINFO};
+        if (ref($infos) eq 'ARRAY') {
+            my ($tag) = map { $_->{KEYVALUE} } grep { $_->{KEYNAME} eq "TAG" } @{$infos};
+            $self->merge(tag => $tag) if defined($tag) && length($tag);
+        }
+    }
 }
 
 sub _recursive_not_defined_cleanup {
