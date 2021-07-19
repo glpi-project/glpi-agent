@@ -270,6 +270,23 @@ sub _transform {
             $_->{MAC} = delete $_->{MACADDR}
         } grep { exists($_->{MACADDR}) } @{$networks};
     }
+
+    # Cleanup GLPI unsupported values
+    my $licenseinfos = $content->{LICENSEINFOS};
+    if (ref($licenseinfos) eq 'ARRAY') {
+        map { delete $_->{OEM} } grep { exists($_->{OEM}) } @{$licenseinfos};
+    }
+
+    my $videos = $content->{VIDEOS};
+    if (ref($videos) eq 'ARRAY') {
+        map { delete $_->{PCIID} } grep { exists($_->{PCIID}) } @{$videos};
+    }
+
+    my $hardware = $content->{HARDWARE};
+    map { delete $hardware->{_} } qw(OSNAME OSVERSION);
+
+    delete $content->{RUDDER};
+    delete $content->{REGISTRY};
 }
 
 1;

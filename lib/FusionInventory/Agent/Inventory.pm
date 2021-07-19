@@ -18,8 +18,8 @@ my %fields = (
     BIOS             => [ qw/SMODEL SMANUFACTURER SSN BDATE BVERSION
                              BMANUFACTURER MMANUFACTURER MSN MMODEL ASSETTAG
                              ENCLOSURESERIAL BIOSSERIAL
-                             TYPE SKUNUMBER/ ],
-    HARDWARE         => [ qw/OSVERSION OSCOMMENTS CHECKSUM NAME SWAP TYPE
+                             SKUNUMBER/ ],
+    HARDWARE         => [ qw/OSVERSION OSCOMMENTS NAME SWAP TYPE
                              OSNAME WORKGROUP DESCRIPTION MEMORY UUID DNS
                              LASTLOGGEDUSER DATELASTLOGGEDUSER
                              DEFAULTGATEWAY VMSYSTEM WINOWNER WINPRODID
