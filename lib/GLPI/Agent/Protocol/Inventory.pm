@@ -146,6 +146,9 @@ sub normalize {
             $self->merge(tag => $tag) if defined($tag) && length($tag);
         }
     }
+
+    # Transform content to inventory_format
+    $self->_transform();
 }
 
 sub _recursive_not_defined_cleanup {
@@ -236,6 +239,37 @@ sub _canonicalDateordatetime {
     return unless defined($date);
     return "$3-$2-$1" if $date =~ /^(\d{2})\/(\d{2})\/(\d{4})$/;
     return;
+}
+
+sub _transform {
+    my ($self) = @_;
+
+    my $content = $self->get("content")
+        or return;
+
+    # Member property of local_groups has been renamed to members
+    my $groups = $content->{LOCAL_GROUPS};
+    if (ref($groups) eq 'ARRAY') {
+        map {
+            $_->{MEMBERS} = delete $_->{MEMBER}
+        } grep { exists($_->{MEMBER}) } @{$groups};
+    }
+
+    # Installdate property of softwares has been renamed to install_date
+    my $softwares = $content->{SOFTWARES};
+    if (ref($softwares) eq 'ARRAY') {
+        map {
+            $_->{INSTALL_DATE} = delete $_->{INSTALLDATE}
+        } grep { exists($_->{INSTALLDATE}) } @{$softwares};
+    }
+
+    # Macaddr property of networks has been renamed to mac
+    my $networks = $content->{NETWORKS};
+    if (ref($networks) eq 'ARRAY') {
+        map {
+            $_->{MAC} = delete $_->{MACADDR}
+        } grep { exists($_->{MACADDR}) } @{$networks};
+    }
 }
 
 1;
