@@ -20,14 +20,8 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $kernelVersion = getFirstLine(
-        logger  => $logger,
-        command => 'uname -v'
-    );
-
     my $hardware = {
         NAME       => "Mac OS X",
-        OSCOMMENTS => $kernelVersion,
     };
 
     my $infos = getSystemProfilerInfos(
@@ -37,7 +31,6 @@ sub doInventory {
     my $SystemVersion = $infos->{'Software'}->{'System Software Overview'}->{'System Version'};
     if ($SystemVersion =~ /^(.*?)\s+(\d+.*)/) {
         $hardware->{NAME}      = $1;
-        $hardware->{OSVERSION} = $2;
     }
 
     my $hwinfos = getSystemProfilerInfos(

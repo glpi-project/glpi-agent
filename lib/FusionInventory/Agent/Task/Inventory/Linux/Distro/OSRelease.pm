@@ -26,10 +26,6 @@ sub doInventory {
     }
     close $handle;
 
-    $inventory->setHardware({
-        OSNAME => $description,
-    });
-
     # Handle Debian case where version is not complete like in Ubuntu
     # by checking /etc/debian_version
     if (-r '/etc/debian_version') {

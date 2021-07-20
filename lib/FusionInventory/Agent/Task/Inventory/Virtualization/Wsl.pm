@@ -51,7 +51,11 @@ sub  _getUsersWslInstances {
     my $memory = $params{inventory}->getHardware('MEMORY');
 
     # Get system build revision to handle default max memory with WSL2
-    my $kernel_version = $params{inventory}->getHardware('OSVERSION') // '';
+    my ($operatingSystem) = getWMIObjects(
+        class      => 'Win32_OperatingSystem',
+        properties => [ qw/Version/ ]
+    );
+    my $kernel_version = $operatingSystem->{Version} // '';
     my ($build) = $kernel_version =~ /^\d+\.\d+\.(\d+)/;
 
     # Search users account for WSL instance

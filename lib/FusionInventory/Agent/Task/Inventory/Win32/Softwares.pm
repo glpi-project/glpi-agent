@@ -18,8 +18,6 @@ use FusionInventory::Agent::Tools::Win32::LoadIndirectString;
 
 use constant    category    => "software";
 
-our $runAfter = ["FusionInventory::Agent::Task::Inventory::Win32::Hardware"];
-
 my $seen = {};
 
 sub isEnabled {
@@ -92,11 +90,17 @@ sub doInventory {
     }
 
     # Lookup for UWP/Windows Store packages (not supported by WMI task)
-    my ($osversion) = $inventory->getHardware('OSVERSION') =~ /^(\d+\.\d+)/;
-    if (!$remotewmi && $osversion && $osversion > 6.1) {
-        my $packages = _getAppxPackages( logger => $logger ) || [];
-        foreach my $package (@{$packages}) {
-            _addSoftware(inventory => $inventory, entry => $package);
+    my ($operatingSystem) = getWMIObjects(
+        class      => 'Win32_OperatingSystem',
+        properties => [ qw/Version/ ]
+    );
+    if ($operatingSystem->{Version}) {
+        my ($osversion) = $operatingSystem->{Version} =~ /^(\d+\.\d+)/;
+        if (!$remotewmi && $osversion && $osversion > 6.1) {
+            my $packages = _getAppxPackages( logger => $logger ) || [];
+            foreach my $package (@{$packages}) {
+                _addSoftware(inventory => $inventory, entry => $package);
+            }
         }
     }
 

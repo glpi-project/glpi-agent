@@ -99,7 +99,6 @@ sub getHardwareInfo {
     my $dnsConfig  = $self->{hash}[0]{config}{network}{dnsConfig};
     my $hardware   = $self->{hash}[0]{hardware};
     my $summary    = $self->{hash}[0]{summary};
-    my $product    = $summary->{config}->{product};
     my $systemInfo = $hardware->{systemInfo};
 
     return {
@@ -108,9 +107,6 @@ sub getHardwareInfo {
         WORKGROUP  => $dnsConfig->{domainName},
         MEMORY     => int($hardware->{memorySize} / (1024 * 1024)),
         UUID       => $summary->{hardware}->{uuid} || $systemInfo->{uuid},
-        OSVERSION  => $product->{version},
-        OSNAME     => $product->{name},
-        OSCOMMENTS => $product->{fullName}
     };
 }
 

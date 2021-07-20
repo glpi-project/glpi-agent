@@ -80,10 +80,6 @@ sub doInventory {
 
     my $data = _getDistroData($distribution);
 
-    $inventory->setHardware({
-        OSNAME => $data->{FULL_NAME}
-    });
-
     $inventory->setOperatingSystem($data);
 }
 

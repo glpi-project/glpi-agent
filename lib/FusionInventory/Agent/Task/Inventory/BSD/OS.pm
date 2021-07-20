@@ -26,6 +26,10 @@ sub doInventory {
         logger  => $logger,
         command => 'uname -r'
     );
+    my $kernelVersion = getFirstLine(
+        logger  => $logger,
+        command => 'uname -v'
+    );
 
     my $boottime = getFirstMatch(
         logger  => $logger,
@@ -44,7 +48,7 @@ sub doInventory {
         NAME           => $name,
         FULL_NAME      => $OSNAME,
         VERSION        => $kernelRelease,
-        KERNEL_VERSION => $kernelRelease,
+        KERNEL_VERSION => $kernelVersion,
         BOOT_TIME      => getFormatedLocalTime($boottime)
     });
 }

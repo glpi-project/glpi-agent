@@ -63,21 +63,8 @@ sub doInventory {
     my (%params) = @_;
 
     my $inventory = $params{inventory};
-    my $logger    = $params{logger};
 
-    my $kernelVersion = getFirstLine(
-        logger  => $logger,
-        command => 'uname -v'
-    );
-    my $kernelRelease = getFirstLine(
-        logger  => $logger,
-        command => 'uname -r'
-    );
-
-    my $hardware = {
-        OSVERSION  => $kernelRelease,
-        OSCOMMENTS => $kernelVersion,
-    };
+    my $hardware = {};
 
     my $systemId = _getRHNSystemId('/etc/sysconfig/rhn/systemid');
     $hardware->{WINPRODID} = $systemId if $systemId;
@@ -89,7 +76,7 @@ sub doInventory {
     $hardware->{CHASSIS_TYPE} = $chassis_types->[$chassis_type]
         if $chassis_type && $chassis_types->[$chassis_type];
 
-    $inventory->setHardware($hardware);
+    $inventory->setHardware($hardware) if keys(%{$hardware});
 }
 
 # Get RedHat Network SystemId

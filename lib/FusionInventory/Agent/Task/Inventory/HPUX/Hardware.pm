@@ -21,32 +21,14 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    # Operating system informations
-    my $kernelVersion = getFirstLine(
-        logger => $logger,
-        command => 'uname -v'
-    );
-    my $kernelRelease = getFirstLine(
-        logger => $logger,
-        command => 'uname -r'
-    );
-    my $OSLicense     = getFirstLine(
-        logger => $logger,
-        command => 'uname -l'
-    );
-
-    my $hardware = {
-        OSNAME     => 'HP-UX',
-        OSVERSION  => $kernelVersion . ' ' . $OSLicense,
-        OSCOMMENTS => $kernelRelease,
-    };
+    my $hardware = {};
 
     if (canRun('/usr/contrib/bin/machinfo')) {
         my $info = getInfoFromMachinfo(logger => $logger);
         $hardware->{UUID} = uc($info->{'Platform info'}->{'machine id number'});
     }
 
-    $inventory->setHardware($hardware);
+    $inventory->setHardware($hardware) if keys(%{$hardware});
 }
 
 1;

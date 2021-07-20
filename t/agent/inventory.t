@@ -252,7 +252,7 @@ $inventory->mergeContent(
             }
         ],
         HARDWARE => {
-            OSCOMMENTS => 'fake'
+            UUID => 'd0077ac7-e1e0-49b0-b4a3-475e6e6d417c'
         },
         OPERATINGSYSTEM => {
             FULL_NAME => 'fake fullname',
@@ -295,8 +295,8 @@ cmp_deeply(
 );
 
 is(
-    $inventory->{content}->{HARDWARE}->{OSCOMMENTS},
-    'fake',
+    $inventory->{content}->{HARDWARE}->{UUID},
+    'd0077ac7-e1e0-49b0-b4a3-475e6e6d417c',
     'hash section merge'
 );
 

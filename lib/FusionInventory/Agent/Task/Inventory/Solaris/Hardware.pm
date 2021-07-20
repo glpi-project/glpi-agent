@@ -22,8 +22,6 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    # Operating system informations
-    my $info          = getReleaseInfo();
     my $kernelArch    = getFirstLine(
         logger  => $logger,
         command => 'arch -k'
@@ -43,9 +41,6 @@ sub doInventory {
     my $description   = "$platform($kernelArch)/$proct HostID=$hostid";
 
     my $hardware = {
-        OSNAME      => "Solaris",
-        OSVERSION   => $info->{version},
-        OSCOMMENTS  => $info->{subversion},
         DESCRIPTION => $description
     };
 

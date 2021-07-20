@@ -40,12 +40,9 @@ my %tests = (
         ],
         'getHardwareInfo' => [
             {
-          'OSCOMMENTS' => 'VMware ESX 4.1.0 build-260247',
           'NAME' => 'esx-test',
-          'OSVERSION' => '4.1.0',
           'WORKGROUP' => 'teclib.local',
           'MEMORY' => 8190,
-          'OSNAME' => 'VMware ESX',
           'UUID' => 'b5bfd78a-fa79-0010-adfe-001b24f07258',
           'DNS' => '10.0.5.105'
           }

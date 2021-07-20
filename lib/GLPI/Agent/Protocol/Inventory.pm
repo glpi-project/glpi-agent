@@ -282,9 +282,6 @@ sub _transform {
         map { delete $_->{PCIID} } grep { exists($_->{PCIID}) } @{$videos};
     }
 
-    my $hardware = $content->{HARDWARE};
-    map { delete $hardware->{_} } qw(OSNAME OSVERSION);
-
     delete $content->{RUDDER};
     delete $content->{REGISTRY};
 }

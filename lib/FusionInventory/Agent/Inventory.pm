@@ -19,8 +19,7 @@ my %fields = (
                              BMANUFACTURER MMANUFACTURER MSN MMODEL ASSETTAG
                              ENCLOSURESERIAL BIOSSERIAL
                              SKUNUMBER/ ],
-    HARDWARE         => [ qw/OSVERSION OSCOMMENTS NAME SWAP TYPE
-                             OSNAME WORKGROUP DESCRIPTION MEMORY UUID DNS
+    HARDWARE         => [ qw/NAME SWAP TYPE WORKGROUP DESCRIPTION MEMORY UUID DNS
                              LASTLOGGEDUSER DATELASTLOGGEDUSER
                              DEFAULTGATEWAY VMSYSTEM WINOWNER WINPRODID
                              WINPRODKEY WINCOMPANY WINLANG CHASSIS_TYPE

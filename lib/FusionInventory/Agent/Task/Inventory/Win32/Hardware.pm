@@ -32,8 +32,7 @@ sub doInventory {
     my ($operatingSystem) = getWMIObjects(
         class      => 'Win32_OperatingSystem',
         properties => [ qw/
-            OSLanguage Caption Version SerialNumber Organization RegisteredUser
-            CSDVersion TotalSwapSpaceSize
+            OSLanguage SerialNumber Organization RegisteredUser TotalSwapSpaceSize
         / ]
     );
 
@@ -76,13 +75,10 @@ sub doInventory {
         UUID        => $uuid,
         WINPRODKEY  => $key,
         WINLANG     => $operatingSystem->{OSLanguage},
-        OSNAME      => $operatingSystem->{Caption},
-        OSVERSION   => $operatingSystem->{Version},
         WINPRODID   => $operatingSystem->{SerialNumber},
         WINCOMPANY  => $operatingSystem->{Organization},
         WINOWNER    => $operatingSystem->{RegisteredUser} ||
                        $computerSystem->{PrimaryOwnerName},
-        OSCOMMENTS  => $operatingSystem->{CSDVersion},
         SWAP        => $swap,
         MEMORY      => $memory,
         WORKGROUP   => $computerSystem->{Domain} ||
