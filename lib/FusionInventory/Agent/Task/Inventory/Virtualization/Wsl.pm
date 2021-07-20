@@ -11,7 +11,6 @@ use UNIVERSAL::require;
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::UUID;
 use FusionInventory::Agent::Tools::Virtualization;
-use FusionInventory::Agent::Tools::Win32;
 
 our $runAfterIfEnabled = [ qw(
     FusionInventory::Agent::Task::Inventory::Win32::Hardware
@@ -52,7 +51,7 @@ sub  _getUsersWslInstances {
     my $memory = $params{inventory}->getHardware('MEMORY');
 
     # Get system build revision to handle default max memory with WSL2
-    my ($operatingSystem) = getWMIObjects(
+    my ($operatingSystem) = FusionInventory::Agent::Tools::Win32::getWMIObjects(
         class      => 'Win32_OperatingSystem',
         properties => [ qw/Version/ ]
     );
