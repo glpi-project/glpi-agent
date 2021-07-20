@@ -179,32 +179,23 @@ sub getControllers {
 
     my @controllers;
 
-    foreach ( @{ $self->{hash}[0]{hardware}{pciDevice} } ) {
+    foreach my $device ( @{ $self->{hash}[0]{hardware}{pciDevice} } ) {
 
-        my $pciid = sprintf( "%x:%x", $_->{vendorId}, $_->{deviceId} );
-        my $pcisubsystemid =
-          sprintf( "%x:%x", $_->{subVendorId}, $_->{subDeviceId} );
-        my $pciclass = sprintf( "%x", $_->{classId} );
+        my $controller = {
+            NAME           => $device->{deviceName},
+            MANUFACTURER   => $device->{vendorName},
+            PCICLASS       => substr(sprintf("%04x", $device->{classId}), -4),
+            VENDORID       => substr(sprintf("%04x", $device->{vendorId}), -4),
+            PRODUCTID      => substr(sprintf("%04x", $device->{deviceId}), -4),
+            PCISLOT        => $device->{id},
+        };
 
-        $pcisubsystemid = '' if $pcisubsystemid =~ /^[0:]+$/;
-
-        # Workaround: sometime the pciid are odd negative number.
-        # e.g: 111d:ffff8018, ffff8086:244e, ffff8086:ffffa02c
-        foreach ( $pciid, $pcisubsystemid, $pciclass ) {
-            s/(\w+:)/000$1:/;
-            s/:(\w+)/:000$1/;
-            s/.*(\w{4}:).*(\w{4}).*/$1$2/g;
+        if ($device->{subVendorId} || $device->{subDeviceId}) {
+            $controller->{PCISUBSYSTEMID} = substr(sprintf("%04x", $device->{subVendorId}), -4).
+                ":".substr(sprintf("%04x", $device->{subDeviceId}), -4);
         }
-        push @controllers,
-          {
-            NAME           => $_->{deviceName},
-            MANUFACTURER   => $_->{vendorName},
-            PCICLASS       => $pciclass,
-            PCIID          => $pciid,
-            PCISUBSYSTEMID => $pcisubsystemid,
-            PCISLOT        => $_->{id},
-          };
 
+        push @controllers, $controller;
     }
 
     return @controllers;

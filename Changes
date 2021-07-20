@@ -42,6 +42,7 @@ deploy:
 
 esx:
 * Support OPERATINGSYSTEM node
+* Fix CONTROLLERS inventory
 
 toolbox:
 * Support run of local inventory task
