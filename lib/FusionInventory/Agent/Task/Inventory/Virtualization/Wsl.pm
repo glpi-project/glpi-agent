@@ -11,6 +11,7 @@ use UNIVERSAL::require;
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::UUID;
 use FusionInventory::Agent::Tools::Virtualization;
+use FusionInventory::Agent::Tools::Win32;
 
 our $runAfterIfEnabled = [ qw(
     FusionInventory::Agent::Task::Inventory::Win32::Hardware
