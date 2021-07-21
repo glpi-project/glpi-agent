@@ -26,7 +26,8 @@ sub doInventory {
     $inventory->addEntry(
         section => 'FIREWALL',
         entry   => {
-            STATUS => $firewallStatus
+            DESCRIPTION => "ufw",
+            STATUS      => $firewallStatus
         }
     );
 
