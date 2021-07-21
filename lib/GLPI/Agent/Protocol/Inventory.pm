@@ -263,6 +263,20 @@ sub _transform {
         } grep { exists($_->{INSTALLDATE}) } @{$softwares};
     }
 
+    # Serialnumber property of storages has been renamed to serial
+    my $storages = $content->{STORAGES};
+    if (ref($storages) eq 'ARRAY') {
+        map {
+            $_->{SERIAL} = delete $_->{SERIALNUMBER}
+        } grep { exists($_->{SERIALNUMBER}) } @{$storages};
+    }
+
+    # Firewall has been renamed to firewalls
+    my $firewalls = delete $content->{FIREWALL};
+    if (ref($firewalls) eq 'ARRAY') {
+        $content->{FIREWALLS} = $firewalls;
+    }
+
     # Macaddr property of networks has been renamed to mac
     my $networks = $content->{NETWORKS};
     if (ref($networks) eq 'ARRAY') {
