@@ -10,6 +10,8 @@ use Getopt::Long;
 use LWP::UserAgent;
 use Pod::Usage;
 use XML::TreePP;
+use JSON;
+use Data::UUID;
 
 my $options = {
     useragent => 'GLPI-Injector'
@@ -28,13 +30,17 @@ GetOptions(
     'useragent=s',
     'remove|r',
     'verbose|v',
+    'debug',
     'stdin',
     'xml-ua|x',
+    'json-ua',
     'no-compression|C',
 );
 
 $OUTPUT_AUTOFLUSH = 1;
 pod2usage(-verbose => 0, -exitstatus => 0) if $options->{help};
+
+$options->{verbose} = 1 if $options->{debug};
 
 if ($options->{stdin}) {
     loadstdin();
@@ -68,12 +74,25 @@ sub loadfile {
     my $content = <$handle>;
     close $handle or die "Can't close file $file: $ERRNO\n";
 
-    my $success = sendContent($content);
+    my $agentid;
+    my ($uuid_match) = $file =~ m{([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})\.(?:json|data)$}i;
+    if ($uuid_match) {
+        $agentid = $uuid_match;
+    } elsif ($file =~ /\.(?:json|data)$/i) {
+        $agentid = newagentid();
+    }
+
+    my $success = sendContent($content, $agentid);
     if ($success && $options->{remove}) {
         unlink $file or warn "Can't remove $file: $ERRNO\n";
     }
 
     push @failedFiles, $file unless $success;
+}
+
+sub newagentid {
+    my $uuid = Data::UUID->new();
+    return lc($uuid->to_string($uuid->create()));
 }
 
 sub loaddirectory {
@@ -89,7 +108,7 @@ sub loaddirectory {
         if (-d "$directory/$file") {
             loaddirectory("$directory/$file") if ($options->{recursive});
         } else {
-            loadfile("$directory/$file") if $file =~ /\.(?:ocs|xml)$/;
+            loadfile("$directory/$file") if $file =~ /\.(?:data|json|ocs|xml)$/;
         }
     }
     closedir $handle;
@@ -104,18 +123,29 @@ sub loadstdin {
 
 sub sendContent {
     my $content = shift;
+    my $agentid = shift;
     my $useragent = $options->{useragent};
 
     if (uncompress($content)) {
         $content = uncompress($content);
     }
 
-    if ($options->{"xml-ua"}) {
-        my $tpp = XML::TreePP->new();
-        my $tree = $tpp->parse( $content );
-        $useragent = $tree->{REQUEST}->{CONTENT}->{VERSIONCLIENT}
-            if $tree && $tree->{REQUEST} && $tree->{REQUEST}->{CONTENT} &&
-                $tree->{REQUEST}->{CONTENT}->{VERSIONCLIENT};
+    if ($content =~ /^<\?xml/) {
+        undef $agentid;
+        if ($options->{"xml-ua"}) {
+            my $tpp = XML::TreePP->new();
+            my $tree = $tpp->parse( $content );
+            $useragent = $tree->{REQUEST}->{CONTENT}->{VERSIONCLIENT}
+                if $tree && $tree->{REQUEST} && $tree->{REQUEST}->{CONTENT} &&
+                    $tree->{REQUEST}->{CONTENT}->{VERSIONCLIENT};
+        }
+    } elsif ($agentid || $content =~ /^{/) {
+        $agentid = newagentid() unless $agentid;
+        if ($options->{"xml-ua"} || $options->{"json-ua"}) {
+            my $json = decode_json($content);
+            $useragent = $json->{content}->{versionclient}
+                if $json && $json->{content} && $json->{content}->{versionclient};
+        }
     }
 
     my $ua = LWP::UserAgent->new(
@@ -141,8 +171,22 @@ sub sendContent {
 
     $request->header(
         'Pragma' => 'no-cache',
-        'Content-type', $options->{"no-compression"} ? 'Application/xml' : 'Application/x-compress'
+        'Content-type', $options->{"no-compression"} ?
+            $agentid ? 'Application/json' : 'Application/xml'
+                                          : 'Application/x-compress-zlib'
     );
+
+    if ($agentid) {
+        $request->header('GLPI-Agent-ID' => $agentid);
+    }
+
+    if ($options->{debug}) {
+        my $requestid = join('', map { sprintf("%02X", int(rand(256))) } 1..4);
+        print "[$requestid] ";
+        $request->header('GLPI-Request-ID' => $requestid);
+        print "[agentid:$agentid] " if $agentid;
+    }
+
     $request->content($options->{"no-compression"} ? $content : compress($content));
     my $res = $ua->request($request);
 
@@ -161,6 +205,8 @@ sub sendContent {
             $res->is_success() ? "OK"            :
                                  "ERROR: ".$res->status_line(), "$info\n";
     }
+
+    print "DEBUG: $content\n" if $options->{debug};
 
     return $res->is_success() && ! $error ;
 }
@@ -183,9 +229,11 @@ glpi-injector [options] [--file <file>|--directory <directory>|--stdin|--userage
     -u --url       server URL
     -r --remove    remove succesfuly injected files
     -v --verbose   verbose mode
+    --debug        debug mode to output server answer
     --stdin        read data from STDIN
     --useragent    set used HTTP User-Agent for POST
     -x --xml-ua    use Client version found in XML as User-Agent for POST
+    -x --json-ua   use Client version found in JSON as User-Agent for POST
     --no-ssl-check do not check server SSL certificate
     -C --no-compression don't compress sent XML inventories
 
