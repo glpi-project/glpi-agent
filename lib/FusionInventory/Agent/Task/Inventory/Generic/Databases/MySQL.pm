@@ -37,7 +37,6 @@ sub doInventory {
 sub _getDatabaseService {
     my (%params) = @_;
 
-    # Try to retrieve credentials
     my $credentials = delete $params{credentials};
     return [] unless $credentials && ref($credentials) eq 'ARRAY';
 
@@ -170,6 +169,7 @@ sub _mysqlOptionsFile {
             SUFFIX      => '.cnf',
         );
         print $fh "[client]\n";
+        print $fh "host = $credential->{host}\n" if $credential->{host};
         print $fh "port = $credential->{port}\n" if $credential->{port};
         print $fh "user = $credential->{login}\n" if $credential->{login};
         print $fh "socket = $credential->{socket}\n" if $credential->{socket};
