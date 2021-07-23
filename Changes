@@ -18,7 +18,7 @@ core:
 
 inventory:
 * Feature: support partial inventory
-* Feature: support database inventory (MySQL, MSSQL)
+* Feature: support database inventory (MySQL, MSSQL, PostgreSQL)
 * Category support has been refactored to permit partial inventory
 * fix snap softwares inventory
 * fix cpu thread count by core reported by dmidecode method
