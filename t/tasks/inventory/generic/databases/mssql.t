@@ -73,6 +73,8 @@ my %db_tests = (
         MANUFACTURER => "Microsoft",
         NAME => "SQL Server 2019",
         SIZE => 443,
+        PORT => 1433,
+        LAST_BOOT_DATE => "2021-07-12 20:35:57",
         TYPE => "mssql",
         VERSION => "15.0.2080.9"
       }
@@ -112,6 +114,8 @@ my %db_tests = (
         MANUFACTURER => "Microsoft",
         NAME => "SQL Server 2017",
         SIZE => 60,
+        PORT => 1433,
+        LAST_BOOT_DATE => "2021-07-16 08:56:37",
         TYPE => "mssql",
         VERSION => "14.0.3401.7"
       }

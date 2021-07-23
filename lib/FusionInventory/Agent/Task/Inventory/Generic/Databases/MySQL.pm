@@ -66,7 +66,7 @@ sub _getDatabaseService {
                 sql => "SHOW GLOBAL STATUS LIKE 'Uptime'",
                 %params
         ) =~ /^Uptime\s(\d+)$/i;
-        my $lastboot = strftime("%F %T", localtime(time - $uptime));
+        my $lastboot = strftime("%F %T", localtime(_gettime() - $uptime));
 
         my $dbs = GLPI::Agent::Inventory::DatabaseService->new(
             type            => "mysql",
@@ -120,6 +120,11 @@ sub _getDatabaseService {
     }
 
     return \@dbs;
+}
+
+# Put time in a mockable function for unittest
+sub _gettime {
+    time;
 }
 
 sub _runSql {
