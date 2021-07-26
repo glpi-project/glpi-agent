@@ -62,11 +62,14 @@ sub _getDatabaseService {
         }
 
         my $dbs_size = 0;
-        my ($uptime) = _runSql(
-                sql => "SHOW GLOBAL STATUS LIKE 'Uptime'",
-                %params
-        ) =~ /^Uptime\s(\d+)$/i;
-        my $lastboot = strftime("%F %T", localtime(_gettime() - $uptime));
+        my $lastboot = _date(_runSql(
+            sql => "SELECT DATE_SUB(now(), INTERVAL variable_value SECOND) from information_schema.global_status where variable_name='Uptime'",
+            %params
+        ));
+        $lastboot = _date(_runSql(
+            sql => "SELECT DATE_SUB(now(), INTERVAL variable_value SECOND) from performance_schema.global_status where variable_name='Uptime'",
+            %params
+        )) unless $lastboot;
 
         my $dbs = GLPI::Agent::Inventory::DatabaseService->new(
             type            => "mysql",
@@ -94,16 +97,16 @@ sub _getDatabaseService {
             }
 
             # Find creation date
-            my $created = _runSql(
+            my $created = _date(_runSql(
                 sql => "SELECT MIN(create_time) FROM information_schema.TABLES WHERE table_schema = '$db'",
                 %params
-            );
+            ));
 
             # Find update date
-            my $updated = _runSql(
+            my $updated = _date(_runSql(
                 sql => "SELECT MAX(update_time) FROM information_schema.TABLES WHERE table_schema = '$db'",
                 %params
-            );
+            ));
 
             $dbs->addDatabase(
                 name            => $db,
@@ -122,9 +125,11 @@ sub _getDatabaseService {
     return \@dbs;
 }
 
-# Put time in a mockable function for unittest
-sub _gettime {
-    time;
+sub _date {
+    my ($date) = @_
+        or return;
+    $date =~ /^(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})/;
+    return $1;
 }
 
 sub _runSql {

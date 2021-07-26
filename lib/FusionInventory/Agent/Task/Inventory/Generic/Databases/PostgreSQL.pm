@@ -75,8 +75,8 @@ sub _getDatabaseService {
 
         my $dbs_size = 0;
         my $lastboot = _date(_runSql(
-                sql => "SELECT pg_postmaster_start_time()",
-                %params
+            sql => "SELECT pg_postmaster_start_time()",
+            %params
         ));
 
         my $dbs = GLPI::Agent::Inventory::DatabaseService->new(
@@ -140,7 +140,7 @@ sub _getDatabaseService {
 sub _date {
     my ($date) = @_
         or return;
-    $date =~ /^(\d+-\d+-\d+\s+\d+:\d+:\d+)/;
+    $date =~ /^(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})/;
     return $1;
 }
 
