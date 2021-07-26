@@ -1,0 +1,5 @@
+[
+  { name: 'admin', sizeOnDisk: Long("40960"), empty: false },
+  { name: 'config', sizeOnDisk: Long("114688"), empty: false },
+  { name: 'local', sizeOnDisk: Long("40960"), empty: false }
+]
