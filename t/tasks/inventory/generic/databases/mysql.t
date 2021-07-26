@@ -83,7 +83,7 @@ my %db_tests = (
         NAME => "MariaDB",
         SIZE => 55,
         PORT => 3306,
-        LAST_BOOT_DATE => "2021-06-30 19:36:08",
+        LAST_BOOT_DATE => "2021-07-01 09:55:47",
         TYPE => "mysql",
         VERSION => "10.4.19"
       }
@@ -100,8 +100,12 @@ plan tests => (2 * scalar keys %db_tests) + 1;
 my $inventory = FusionInventory::Test::Inventory->new();
 
 my $module = Test::MockModule->new('FusionInventory::Agent::Task::Inventory::Generic::Databases::MySQL');
-# Mock _gettime to test last_boot_date
-$module->mock("_gettime", sub { 1625082021 });
+# Mock _gettime to test last_boot_date relatively to 2021-07-01 12:00:00 GMT
+my $basedate = 1625140800;
+my @time = localtime($basedate);
+my @gmtime = gmtime($basedate);
+$basedate -= ($time[2]-$gmtime[2])*3600+($time[7]-$gmtime[7])*86400;
+$module->mock("_gettime", sub { $basedate });
 
 foreach my $test (keys %db_tests) {
     my $file  = "resources/generic/databases/$test";
