@@ -7,8 +7,6 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Generic::Databases';
 
-use POSIX qw(strftime);
-
 use FusionInventory::Agent::Tools;
 use GLPI::Agent::Inventory::DatabaseService;
 
