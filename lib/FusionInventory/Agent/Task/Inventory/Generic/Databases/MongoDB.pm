@@ -62,7 +62,7 @@ sub _getDatabaseService {
             %params
         );
         my $lastboot;
-        $lastboot = strftime("%F %T", gmtime(int($lastbootmilli/1000)))
+        $lastboot = strftime("%Y-%m-%d %H:%M:%S", gmtime(int($lastbootmilli/1000)))
             if $lastbootmilli;
 
         my $dbs = GLPI::Agent::Inventory::DatabaseService->new(
