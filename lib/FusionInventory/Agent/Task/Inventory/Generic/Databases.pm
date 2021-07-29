@@ -19,8 +19,7 @@ sub doInventory {}
 sub _credentials {
     my ($hashref, $usage) = @_;
 
-    # Always at least try empty credentials
-    my @credentials = ({});
+    my @credentials = ();
     my $params = delete $hashref->{params};
 
     if ($params) {
@@ -60,6 +59,9 @@ sub _credentials {
         push @credentials, @{$credentials}
             if ref($credentials) eq "ARRAY";
     }
+
+    # When no credential is provided, leave module tries its default database access
+    push @credentials, {} unless @credentials;
 
     $hashref->{credentials} = \@credentials;
 }
