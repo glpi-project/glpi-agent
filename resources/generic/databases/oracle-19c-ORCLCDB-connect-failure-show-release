@@ -1,0 +1,5 @@
+ERROR:
+ORA-12504: TNS:listener was not given the SERVICE_NAME in CONNECT_DATA
+
+
+release 0

@@ -80,6 +80,7 @@ my %db_tests = (
         ],
         MANUFACTURER => "MariaDB",
         NAME => "MariaDB",
+        IS_ACTIVE => 1,
         SIZE => 55,
         PORT => 3306,
         LAST_BOOT_DATE => "2021-07-26 10:34:13",

@@ -46,14 +46,6 @@ sub doInventory {
     # Try to retrieve credentials updating params
     FusionInventory::Agent::Task::Inventory::Generic::Databases::_credentials(\%params, "oracle");
 
-    # Setup sqlplus needed environment
-    unless (canRun("sqlplus")) {
-        $ENV{ORACLE_HOME} = _oracleHome();
-        $ENV{PATH} .= ":".$ENV{ORACLE_HOME}.(canRun($ENV{ORACLE_HOME}."/bin/sqlplus")?"/bin":"");
-        $ENV{LD_LIBRARY_PATH} = join(":", map { $ENV{ORACLE_HOME}."/$_" } qw(. lib network/lib));
-    }
-    return unless canRun("sqlplus");
-
     my $dbservices = _getDatabaseService(
         logger      => $params{logger},
         credentials => $params{credentials},
@@ -73,6 +65,21 @@ sub _getDatabaseService {
     my $credentials = delete $params{credentials};
     return [] unless $credentials && ref($credentials) eq 'ARRAY';
 
+    # Setup sqlplus needed environment
+    {
+        my $sqlplus = "sqlplus";
+        unless (canRun($sqlplus)) {
+            $ENV{ORACLE_HOME} = _oracleHome();
+            my ($sqlplus_path) = first { canRun($_."/$sqlplus") } map { $ENV{ORACLE_HOME} . $_ } "", "/bin";
+            if ($sqlplus_path) {
+                $ENV{PATH} .= ":$sqlplus_path";
+                $ENV{LD_LIBRARY_PATH} = join(":", map { $ENV{ORACLE_HOME}.$_ } "", "/lib", "/network/lib");
+                $sqlplus = "$sqlplus_path/$sqlplus";
+            }
+        }
+        return unless canRun($sqlplus);
+    }
+
     # Get group gid of installation group
     my $group = getFirstMatch(
         file    => '/etc/oraInst.loc',
@@ -85,20 +92,43 @@ sub _getDatabaseService {
     foreach my $credential (@{$credentials}) {
         $params{connect} = _oracleConnect($credential) // "";
 
-        next unless _runSql(
+        my @test = _runSql(
             sql     => "SHOW release",
             %params
         );
+        if (first { /^(ERROR|Usage):/ } @test) {
+            my ($error) = first { /^(ORA|SP2)-/ } @test;
+            $params{logger}->debug("Oracle CONNECT error: $error") if $error && $params{logger};
+            next;
+        }
 
-        foreach my $instance (_runSql(
+        my @instances = _runSql(
             sql => "SELECT instance_name, database_status, version_full, "._datefield("startup_time")." FROM v\$instance",
             %params
-        )) {
+        );
+        if (first { /^(ERROR(?: at line 1)?|Usage):/ } @instances) {
+            my ($error) = first { /^(ORA|SP2)-/ } @instances;
+            $params{logger}->debug("Oracle instance SELECT error: $error") if $error && $params{logger};
+            next;
+        }
+
+        foreach my $instance (@instances) {
             my ($instance_name, $state, $fullversion, $starttime) = split(',', $instance)
                 or next;
             next unless $fullversion;
 
             my $dbs_size = 0;
+
+            my @database = _runSql(
+                sql => "SELECT name, "._datefield("created")." FROM v\$database",
+                %params
+            );
+            if (first { /^(ERROR(?: at line 1)?|Usage):/ } @database) {
+                my ($error) = first { /^(ORA|SP2)-/ } @database;
+                $params{logger}->debug("Oracle database SELECT error: $error") if $error && $params{logger};
+                @database = ();
+                $state = "ERROR";
+            }
 
             my $dbs = GLPI::Agent::Inventory::DatabaseService->new(
                 type            => "oracle",
@@ -110,10 +140,7 @@ sub _getDatabaseService {
                 last_boot_date  => $starttime,
             );
 
-            foreach my $db (_runSql(
-                sql => "SELECT name, "._datefield("created")." FROM v\$database",
-                %params
-            )) {
+            foreach my $db (@database) {
                 my ($db_name, $created) = split(',', $db)
                     or next;
 
@@ -121,7 +148,7 @@ sub _getDatabaseService {
                     sql => "select sum(bytes)/1024/1024 from dba_data_files",
                     %params
                 );
-                $dbs_size += $size if $size;
+                $dbs_size += $size if $size && $size =~/^\d+$/;
 
                 # Find update date
                 my $updated = _runSql(
@@ -178,7 +205,7 @@ sub _runSql {
         "QUIT";
 
     unless ($params{connect}) {
-        $command = sprintf("su oracle -c '%s'", $command);
+        $command = sprintf("su - oracle -c '%s'", $command);
         # Make temp file readable by oracle
         if ($params{gid}) {
             chown -1, $params{gid}, $sqlfile;
@@ -194,7 +221,7 @@ sub _runSql {
 
     # Only to support unittests
     if ($params{file}) {
-        $sql =~ s/\s+/-/g;
+        $sql =~ s/[ ()\$]+/-/g;
         $sql =~ s/[^-_0-9A-Za-z]//g;
         $sql =~ s/[-][-]+/-/g;
         $params{file} .= "-" . lc($sql);
@@ -233,11 +260,17 @@ sub _oracleConnect {
 
         my ($login, $as) = $credential->{login} =~ /^(.*)(?:\s+AS\s+(.*))?$/i;
 
+        $as = "SYSDBA" if !$as && $login =~ /^SYS$/i;
+
         $options  = "CONNECT $login";
         $options .= "/".$credential->{password} if $credential->{password};
-        $options .= "\@$credential->{host}" if $credential->{host};
-        $options .= ":$credential->{port}" if $credential->{host} && $credential->{port};
-        $options .= "AS $as" if $as;
+        if ($credential->{socket} && $credential->{socket} =~ /^connect:(.*)$/) {
+            $options .= "\@$1";
+        } else {
+            $options .= "\@$credential->{host}" if $credential->{host};
+            $options .= ":$credential->{port}" if $credential->{host} && $credential->{port};
+        }
+        $options .= " AS $as" if $as;
     }
 
     return $options;

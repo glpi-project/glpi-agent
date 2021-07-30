@@ -52,6 +52,7 @@ my %db_tests = (
         ],
         LAST_BOOT_DATE => "2021-07-26 09:42:13",
         MANUFACTURER => "MongoDB",
+        IS_ACTIVE => 1,
         NAME => "MongoDB",
         PORT => 27017,
         SIZE => 0,

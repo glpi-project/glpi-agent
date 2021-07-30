@@ -12,7 +12,7 @@ use Test::More;
 use Test::NoWarnings;
 
 use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::Generic::Databases::PostgreSQL;
+use FusionInventory::Agent::Task::Inventory::Generic::Databases::Oracle;
 
 $Data::Dumper::Indent    = 1;
 $Data::Dumper::Terse     = 1;
@@ -31,39 +31,26 @@ $Data::Dumper::Pad       = "    ";
 
 my %db_tests = (
     'nodb'            => [],
-    'postgresql-f33' => [
+    'oracle-19c-ORCLCDB-connect-failure' => [],
+    'oracle-19c-ORCLCDB' => [
       {
         DATABASES => [
           {
-            CREATION_DATE => "2021-07-23 15:06:52",
+            CREATION_DATE => "2021-07-27 06:35:22",
             IS_ACTIVE => 1,
-            NAME => "template1",
-            SIZE => 8,
-            UPDATE_DATE => "2021-07-23 19:11:05"
-          },
-          {
-            CREATION_DATE => "2021-07-23 15:06:52",
-            IS_ACTIVE => 1,
-            NAME => "template0",
-            SIZE => 8,
-            UPDATE_DATE => "2021-07-23 19:10:45"
-          },
-          {
-            CREATION_DATE => "2021-07-23 15:06:52",
-            IS_ACTIVE => 1,
-            NAME => "postgres",
-            SIZE => 8,
-            UPDATE_DATE => "2021-07-23 19:10:25"
+            NAME => "ORCLCDB",
+            SIZE => 1815,
+            UPDATE_DATE => "2021-07-30 09:32:54"
           }
         ],
-        LAST_BOOT_DATE => "2021-07-23 19:10:05",
-        MANUFACTURER => "PostgreSQL",
+        LAST_BOOT_DATE => "2021-07-30 05:21:15",
+        MANUFACTURER => "Oracle",
         IS_ACTIVE => 1,
-        NAME => "PostgreSQL",
-        PORT => 5432,
-        SIZE => 24,
-        TYPE => "postgresql",
-        VERSION => "12.7"
+        NAME => "ORCLCDB",
+        PORT => 1521,
+        SIZE => 1815,
+        TYPE => "oracle",
+        VERSION => "19.3.0.0.0"
       }
     ],
 );
@@ -71,11 +58,19 @@ my %db_tests = (
 my %credentials = (
     # Set related credentials values when needed like port for a given test or
     # to generate the test case but don't forget to mask any sensible data after
-    'postgresql-f33' => [
+    'oracle-19c-ORCLCDB-connect-failure' => [
         {
-            login       => "postgres",
-            password    => "********",
-            host        => "127.0.0.1",
+            login       => "SYS",
+            password    => "******",
+            host        => "192.168.5.2",
+            type        => "login_password",
+        },
+    ],
+    'oracle-19c-ORCLCDB' => [
+        {
+            login       => "SYS",
+            password    => "******",
+            socket      => "connect:192.168.5.2/ORCLCDB",
             type        => "login_password",
         },
     ],
@@ -87,7 +82,7 @@ my $inventory = FusionInventory::Test::Inventory->new();
 
 foreach my $test (keys %db_tests) {
     my $file  = "resources/generic/databases/$test";
-    my $dbs   = FusionInventory::Agent::Task::Inventory::Generic::Databases::PostgreSQL::_getDatabaseService(
+    my $dbs   = FusionInventory::Agent::Task::Inventory::Generic::Databases::Oracle::_getDatabaseService(
         file        => $file,
         credentials => $credentials{$test} // [{}],
         istest      => defined($db_tests{$test}) ? 1 : 0,

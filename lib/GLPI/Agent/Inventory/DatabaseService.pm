@@ -14,7 +14,7 @@ sub new {
         _port               => $params{port},
         _path               => undef,
         _size               => undef,
-        _is_active          => undef,
+        _is_active          => $params{is_active},
         _is_onbackup        => undef,
         _last_boot_date     => $params{last_boot_date},
         _last_backup_date   => undef,
