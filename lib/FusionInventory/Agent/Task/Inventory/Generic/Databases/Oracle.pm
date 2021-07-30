@@ -20,6 +20,8 @@ sub isEnabled {
 }
 
 sub _oracleHome {
+    return $ENV{ORACLE_HOME} if $ENV{ORACLE_HOME} && -d $ENV{ORACLE_HOME};
+
     my $inventory_loc = getFirstMatch(
         file    => '/etc/oraInst.loc',
         pattern => qr/^inventory_loc=(.*)$/
@@ -65,11 +67,15 @@ sub _getDatabaseService {
     my $credentials = delete $params{credentials};
     return [] unless $credentials && ref($credentials) eq 'ARRAY';
 
-    # Setup sqlplus needed environment
-    {
+    # Setup sqlplus needed environment but not during test
+    unless ($params{file}) {
         my $sqlplus = "sqlplus";
         unless (canRun($sqlplus)) {
             $ENV{ORACLE_HOME} = _oracleHome();
+            unless ($ENV{ORACLE_HOME} && -d $ENV{ORACLE_HOME}) {
+                $params{logger}->debug("Can't find ORACLE_HOME") if $params{logger};
+                return;
+            }
             my ($sqlplus_path) = first { canRun($_."/$sqlplus") } map { $ENV{ORACLE_HOME} . $_ } "", "/bin";
             if ($sqlplus_path) {
                 $ENV{PATH} .= ":$sqlplus_path";
