@@ -44,6 +44,7 @@ sub _getDatabaseService {
     delete $ENV{PGPASSFILE};
 
     foreach my $credential (@{$credentials}) {
+        FusionInventory::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
         my $passfile = _psqlPgpassFile($credential);
         $ENV{PGPASSFILE} = $passfile->filename if $passfile;
 

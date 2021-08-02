@@ -28,7 +28,7 @@ sub _credentials {
                 or next;
             next unless $param->{params_id} && $params->{glpi_client};
             next unless $param->{category} && $param->{category} eq "database";
-            next unless $param->{use} && grep { $_ eq "mysql" } @{$param->{use}};
+            next unless $param->{use} && grep { $_ eq $usage } @{$param->{use}};
             GLPI::Agent::Protocol::GetParams->require();
             if ($EVAL_ERROR) {
                 $hashref->{logger}->error("Can't request credentials on $url")
@@ -56,14 +56,33 @@ sub _credentials {
 
     if ($hashref->{inventory}) {
         my $credentials = $hashref->{inventory}->credentials();
-        push @credentials, @{$credentials}
-            if ref($credentials) eq "ARRAY";
+        if (ref($credentials) eq "ARRAY") {
+            push @credentials, grep {
+                (!defined($_->{category}) || $_->{category} eq "database")
+                &&
+                (!defined($_->{use}) || $_->{use} =~ /\b$usage\b/i)
+            } @{$credentials};
+        }
     }
 
     # When no credential is provided, leave module tries its default database access
     push @credentials, {} unless @credentials;
 
     $hashref->{credentials} = \@credentials;
+}
+
+sub trying_credentials {
+    my ($logger, $credential) = @_;
+
+    return unless $logger && $credential;
+
+    if ($credential->{type}) {
+        my $debugid = defined($credential->{params_id}) && length($credential->{params_id}) ?
+            " id $credential->{params_id}" : "";
+        $logger->debug2("Trying $credential->{type} credential type$debugid");
+    } else {
+        $logger->debug2("Trying default credential");
+    }
 }
 
 1;

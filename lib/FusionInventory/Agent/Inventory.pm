@@ -512,6 +512,7 @@ sub credentials {
     return $self->{_credentials}
         unless ref($credentials) eq "ARRAY";
 
+    my $index = 0;
     foreach my $definition (@{$credentials}) {
         my $hash = {};
         my $string = $definition;
@@ -546,6 +547,10 @@ sub credentials {
             $self->{logger}->debug("Invalid credential definition: $definition");
             next;
         }
+        unless (exists($hash->{params_id})) {
+            $hash->{params_id} = $index;
+        }
+        $index++;
         push @{$self->{_credentials}}, $hash;
     }
 }

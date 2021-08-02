@@ -530,7 +530,7 @@ List all supported categories by scanning all available inventory modules
 Setup credentials for database inventory
 
 CREDENTIALS should be a list of "key:value" separated by commas like in:
-For example: --credentials="type:login_password,login:root,password:********"
+For example: --credentials="type:login_password,login:root,password:********,use:postgresql,params_id:0"
 
 =item B<--scan-homedirs>
 

@@ -41,6 +41,7 @@ sub _getDatabaseService {
     my @dbs = ();
 
     foreach my $credential (@{$credentials}) {
+        FusionInventory::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
         # Be sure to forget previous credential option between loops
         delete $params{extra};
         my $extra_file = _mysqlOptionsFile($credential);

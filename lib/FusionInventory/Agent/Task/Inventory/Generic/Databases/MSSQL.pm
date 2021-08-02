@@ -46,6 +46,7 @@ sub _getDatabaseService {
         unless canRun('sqlcmd');
 
     foreach my $credential (@{$credentials}) {
+        FusionInventory::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
         $params{options} = _mssqlOptions($credential) // "";
 
         my $productversion = _runSql(

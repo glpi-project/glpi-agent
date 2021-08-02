@@ -45,6 +45,7 @@ sub _getDatabaseService {
     $params{mongosh} = canRun('mongosh') ? 1 : 0;
 
     foreach my $credential (@{$credentials}) {
+        FusionInventory::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
         my $rcfile = _mongoRcFile($credential);
         $params{rcfile} = $rcfile->filename if $rcfile;
 
