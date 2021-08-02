@@ -27,6 +27,7 @@ my %normalize = (
     },
     CPUS             => {
         integer         => [ qw/CORE CORECOUNT EXTERNAL_CLOCK SPEED STEPPING THREAD/ ],
+        string          => [ qw/MODEL FAMILYNUMBER/ ],
     },
     DRIVES           => {
         boolean         => [ qw/SYSTEMDRIVE/ ],
@@ -54,6 +55,7 @@ my %normalize = (
         boolean         => [ qw/MANAGEMENT VIRTUALDEV/ ],
         integer         => [ qw/MTU/ ],
         lowercase       => [ qw/STATUS/ ],
+        string          => [ qw/SPEED/ ],
     },
     OPERATINGSYSTEM  => {
         datetime        => [ qw/BOOT_TIME INSTALL_DATE/ ],
@@ -65,10 +67,14 @@ my %normalize = (
         datetime        => [ qw/STARTED/ ],
         integer         => [ qw/PID VIRTUALMEMORY/ ],
     },
+    REMOTE_MGNT      => {
+        string          => [ qw/ID/ ],
+    },
     SOFTWARES        => {
         boolean         => [ qw/NO_REMOVE/ ],
         dateordatetime  => [ qw/INSTALLDATE/ ],
         integer         => [ qw/FILESIZE/ ],
+        string          => [ qw/VERSION_MAJOR VERSION_MINOR/ ],
     },
     STORAGES         => {
         integer         => [ qw/DISKSIZE/ ],
@@ -178,6 +184,8 @@ sub _norm {
     if ($norm eq "integer" && $entry->{$value} =~ /^\d+$/) {
         # Make sure to use value as integer
         $entry->{$value} += 0;
+    } elsif ($norm eq "string") {
+        $entry->{$value} .= "" ;
     } elsif ($norm eq "boolean") {
         $entry->{$value} = $entry->{$value} ? JSON::true : JSON::false ;
     } elsif ($norm eq "lowercase") {
