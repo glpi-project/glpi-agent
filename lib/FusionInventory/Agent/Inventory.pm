@@ -514,13 +514,33 @@ sub credentials {
 
     foreach my $definition (@{$credentials}) {
         my $hash = {};
-        foreach my $string (split(",", $definition)) {
-            my ($key, $value) = split(":", $string);
-            unless ($key && defined($value)) {
-                $self->{logger}->debug("Invalid credential value: $string");
-                next;
+        my $string = $definition;
+        my ($key,$value);
+        while ($string) {
+            ($key, $string) = $string =~ /^(\w+):(.*)$/;
+            next unless $key;
+            if (defined($string) && length($string)) {
+                if ($string =~ /^(['"])/) {
+                    my $quote = $1;
+                    my $replace = ',' x ord($quote);
+                    $string =~ s/\\$quote/\\$replace/g;
+                    ($value, $string) = $string =~ /^[$quote]([^$quote]+)[$quote](.*)$/;
+                    $value  =~ s/\\$replace/$quote/g;
+                    $string =~ s/\\$replace/\\$quote/g;
+                } else {
+                    ($value, $string) = $string =~ /^([^,]+)(.*)$/;
+                }
+                $hash->{$key} = $value;
+                undef $value;
+                if (length($string)) {
+                    # Invalidate credential if not on a comma
+                    unless ($string =~ /^,+/) {
+                        $hash = {};
+                        last;
+                    }
+                    $string =~ s/^,+//;
+                }
             }
-            $hash->{lc($key)} = $value;
         }
         unless (keys(%{$hash})) {
             $self->{logger}->debug("Invalid credential definition: $definition");
