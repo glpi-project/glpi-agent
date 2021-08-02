@@ -175,7 +175,10 @@ sub _mssqlOptions {
         $options .= ",$credential->{port}" if $credential->{host} && $credential->{port};
         $options .= " -U $credential->{login}" if $credential->{login};
         $options .= " -S $credential->{socket}" if ! $credential->{host} && $credential->{socket};
-        $options .= " -P $credential->{password}" if $credential->{password};
+        if ($credential->{password}) {
+            $credential->{password} =~ s/"/\\"/g;
+            $options .= ' -P "'.$credential->{password}.'"' ;
+        }
     }
 
     return $options;

@@ -170,7 +170,7 @@ sub _mongoRcFile {
         File::Temp->require();
 
         $fh = File::Temp->new(
-            TEMPLATE    => '.mongorc-XXXXXX',
+            TEMPLATE    => 'mongorc-XXXXXX',
             SUFFIX      => '.js',
         );
         my $conn = $credential->{host} // "localhost";
@@ -179,6 +179,7 @@ sub _mongoRcFile {
         $conn = $credential->{socket} ? '"'.$credential->{socket}.'"' : "";
         print $fh "db = connect($conn);\n";
         if ($credential->{login} && $credential->{password}) {
+            $credential->{password} =~ s/'/\\'/g;
             print $fh "db.auth({\n";
             print $fh "    user: '$credential->{login}',\n";
             print $fh "    pwd: '$credential->{password}',\n";
