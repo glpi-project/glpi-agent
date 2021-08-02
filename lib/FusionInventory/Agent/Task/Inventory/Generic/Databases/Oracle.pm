@@ -68,9 +68,11 @@ sub _getDatabaseService {
     return [] unless $credentials && ref($credentials) eq 'ARRAY';
 
     # Setup sqlplus needed environment but not during test
-    unless ($params{file}) {
+    my %reset_ENV;
+    unless ($params{istest}) {
         my $sqlplus = "sqlplus";
         unless (canRun($sqlplus)) {
+            $reset_ENV{ORACLE_HOME} = $ENV{ORACLE_HOME};
             $ENV{ORACLE_HOME} = _oracleHome();
             unless ($ENV{ORACLE_HOME} && -d $ENV{ORACLE_HOME}) {
                 $params{logger}->debug("Can't find ORACLE_HOME") if $params{logger};
@@ -78,6 +80,8 @@ sub _getDatabaseService {
             }
             my ($sqlplus_path) = first { canRun($_."/$sqlplus") } map { $ENV{ORACLE_HOME} . $_ } "", "/bin";
             if ($sqlplus_path) {
+                $reset_ENV{PATH} = $ENV{PATH};
+                $reset_ENV{LD_LIBRARY_PATH} = $ENV{LD_LIBRARY_PATH};
                 $ENV{PATH} .= ":$sqlplus_path";
                 $ENV{LD_LIBRARY_PATH} = join(":", map { $ENV{ORACLE_HOME}.$_ } "", "/lib", "/network/lib");
                 $sqlplus = "$sqlplus_path/$sqlplus";
@@ -96,6 +100,7 @@ sub _getDatabaseService {
     my @dbs = ();
 
     foreach my $credential (@{$credentials}) {
+        FusionInventory::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
         $params{connect} = _oracleConnect($credential) // "";
 
         my @test = _runSql(
@@ -177,6 +182,15 @@ sub _getDatabaseService {
         }
     }
 
+    # Reset set environment
+    foreach my $env (keys(%reset_ENV)) {
+        if ($reset_ENV{$env}) {
+            $ENV{$env} = $reset_ENV{$env};
+        } else {
+            delete $ENV{$env};
+        }
+    }
+
     return \@dbs;
 }
 
@@ -194,36 +208,41 @@ sub _runSql {
     my $command .= "sqlplus -S -L -F";
     $command .= $params{connect} ? " /nolog" : " / AS SYSDBA";
 
-    my $exec = File::Temp->new(
-        DIR         => $params{connect} ? '' : '/tmp/',
-        TEMPLATE    => 'oracle-XXXXXX',
-        SUFFIX      => '.sql',
-    );
-    my $sqlfile = $exec->filename();
-    $command .= ' @'.$sqlfile;
+    # Don't try to create the temporary sql file during unittest
+    my $exec;
+    unless ($params{istest}) {
+        # Temp file will be deleted while leaving the function
+        $exec = File::Temp->new(
+            DIR         => $params{connect} ? '' : '/tmp/',
+            TEMPLATE    => 'oracle-XXXXXX',
+            SUFFIX      => '.sql',
+        );
+        my $sqlfile = $exec->filename();
+        $command .= ' @'.$sqlfile;
 
-    my @lines = ();
-    push @lines, $params{connect} if $params{connect};
-    push @lines,
-        "SET HEADING OFF",
-        "SET MARKUP CSV ON QUOTE OFF",
-        $sql.";",
-        "QUIT";
+        my @lines = ();
+        push @lines, $params{connect} if $params{connect};
+        push @lines,
+            "SET HEADING OFF",
+            "SET MARKUP CSV ON QUOTE OFF",
+            $sql.";",
+            "QUIT";
 
-    unless ($params{connect}) {
-        $command = sprintf("su - oracle -c '%s'", $command);
-        # Make temp file readable by oracle
-        if ($params{gid}) {
-            chown -1, $params{gid}, $sqlfile;
-            chmod 0640, $sqlfile;
-        } else {
-            chmod 0644, $sqlfile;
+        unless ($params{connect}) {
+            $command = sprintf("su - oracle -c '%s'", $command);
+            # Make temp file readable by oracle
+            if ($params{gid}) {
+                chown -1, $params{gid}, $sqlfile;
+                chmod 0640, $sqlfile;
+            } else {
+                chmod 0644, $sqlfile;
+            }
         }
-    }
 
-    # Write temp SQL file
-    print $exec map { "$_\n" } @lines;
-    close($exec);
+        # Write temp SQL file
+        print $exec map { "$_\n" } @lines;
+        close($exec);
+    }
 
     # Only to support unittests
     if ($params{file}) {
