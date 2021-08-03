@@ -97,6 +97,12 @@ Mandatory Perl modules for P2P Support:
 * Net::Ping
 * Parallel::ForkManager
 
+## Development release
+
+* as nightly for last 'develop' branch commits: <http://nightly.glpi-project.org/glpi-agent>
+* as artifact for other branches in ["GLPI Agent Packaging" workflows](https://github.com/glpi-project/glpi-agent/actions/workflows/glpi-agent-packaging.yml?query=is%3Asuccess+event%3Apush+-branch%3Adevelop)
+  and you need to be logged with a github account to see them.
+
 ## Related contribs
 
 See [CONTRIB](CONTRIB.md) to find references to FusionInventory Agent related scritps/files
