@@ -353,11 +353,12 @@ sub runTarget {
 
         my $tasks = $response->get("tasks");
         # Handle no-category set by server on inventory task
-        if ($tasks && $tasks->{inventory} && $tasks->{inventory}->{"no-category"}) {
-            my $no_category = $tasks->{inventory}->{"no-category"};
-            $self->{logger}->debug("set no-category configuration to: $no_category")
-                if !$self->{config}->{"no-category"} || $self->{config}->{"no-category"} ne $no_category;
-            $self->{config}->{"no-category"} = [ split(/,/, $no_category) ];
+        if (ref($tasks) eq "HASH" && ref($tasks->{inventory}) eq 'HASH' && $tasks->{inventory}->{"no-category"}) {
+            my $no_category = [ sort split(/,+/, $tasks->{inventory}->{"no-category"}) ];
+            unless (@{$self->{config}->{"no-category"}} && join(",", sort @{$self->{config}->{"no-category"}}) eq join(",", @{$no_category})) {
+                $self->{logger}->debug("set no-category configuration to: ".$tasks->{inventory}->{"no-category"});
+                $self->{config}->{"no-category"} = $no_category;
+            }
         }
     }
 

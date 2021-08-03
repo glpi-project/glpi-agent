@@ -335,7 +335,7 @@ sub _checkContent {
         # Check if defined AND SCALAR
         # to avoid split a ARRAY ref or HASH ref...
         if ($self->{$option} && ref($self->{$option}) eq '') {
-            $self->{$option} = [split(/,/, $self->{$option})];
+            $self->{$option} = [split(/,+/, $self->{$option})];
         } else {
             $self->{$option} = [];
         }
