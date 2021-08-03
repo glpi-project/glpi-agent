@@ -24,7 +24,7 @@ sub _credentials {
 
     if ($params) {
         foreach my $param (@{$params}) {
-            my $url = delete $param->{params_url}
+            my $url = $param->{_glpi_url}
                 or next;
             next unless $param->{params_id} && $params->{glpi_client};
             next unless $param->{category} && $param->{category} eq "database";
@@ -40,7 +40,7 @@ sub _credentials {
                 params_id   => $param->{params_id},
                 use         => $usage,
             );
-            my $answer = $hashref->{glpi_client}->send(
+            my $answer = $param->{_glpi_client}->send(
                 send    => $url,
                 message => $getparams
             );

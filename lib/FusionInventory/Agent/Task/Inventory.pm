@@ -28,38 +28,34 @@ sub isEnabled {
     if ($self->{target}->isGlpiServer()) {
         # Store any inventory params
         my $tasks = $contact->get("tasks");
-        if (ref($tasks) eq 'ARRAY') {
-            my @params = ();
-            foreach my $task (@{$tasks}) {
-                next unless $task->{params} && $task->{task} && $task->{task} eq "inventory";
-                push @params, @{$task->{params}};
-            }
-            if (@params) {
-                # Add a GLPI client to each param with params_url defined
-                if (first { $_->{params_url} } @params) {
-                    FusionInventory::Agent::HTTP::Client::GLPI->require();
-                    if ($EVAL_ERROR) {
-                        $self->{logger}->error("Can't load GLPI client API");
-                    } else {
-                        my $config = $self->{config};
-                        foreach my $param (@params) {
-                            next unless $_->{params_url};
-                            my $client = FusionInventory::Agent::HTTP::Client::GLPI->new(
-                                logger       => $self->{logger},
-                                user         => $config->{user},
-                                password     => $config->{password},
-                                proxy        => $config->{proxy},
-                                ca_cert_file => $config->{'ca-cert-file'},
-                                ca_cert_dir  => $config->{'ca-cert-dir'},
-                                no_ssl_check => $config->{'no-ssl-check'},
-                                no_compress  => $config->{'no-compression'},
-                                agentid      => $self->{agentid},
-                            );
-                            $param->{glpi_client} = $client;
-                        }
+        if (ref($tasks) eq 'HASH' && ref($tasks->{inventory}) eq 'HASH' && ref($tasks->{inventory}->{params}) eq 'ARRAY') {
+            if (@{$tasks->{inventory}->{params}}) {
+                # Add a GLPI client to each param with a category and a use property
+                # and if related category is not disabled
+                FusionInventory::Agent::HTTP::Client::GLPI->require();
+                if ($EVAL_ERROR) {
+                    $self->{logger}->error("Can't load GLPI client API to handle get_params");
+                } else {
+                    my $config = $self->{config};
+                    foreach my $param (@{$tasks->{inventory}->{params}}) {
+                        next unless $_->{category} && $_->{use};
+                        next if grep { $_ eq $_->{category} } @{$config->{'no-category'}};
+                        my $client = FusionInventory::Agent::HTTP::Client::GLPI->new(
+                            logger       => $self->{logger},
+                            user         => $config->{user},
+                            password     => $config->{password},
+                            proxy        => $config->{proxy},
+                            ca_cert_file => $config->{'ca-cert-file'},
+                            ca_cert_dir  => $config->{'ca-cert-dir'},
+                            no_ssl_check => $config->{'no-ssl-check'},
+                            no_compress  => $config->{'no-compression'},
+                            agentid      => $self->{agentid},
+                        );
+                        $param->{_glpi_client} = $client;
+                        $param->{_glpi_url}    = $self->{target}->getUrl();
                     }
                 }
-                $self->{params} = \@params ;
+                $self->{params} = $tasks->{inventory}->{params} ;
             }
         }
 
