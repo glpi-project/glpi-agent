@@ -1,0 +1,191 @@
+# dmidecode 3.3-gitd64af977
+SMBIOS 3.1 present.
+15 structures occupying 1082 bytes.
+Table at 0x00760D48.
+
+
+Handle 0x0000, DMI type 0, 26 bytes
+BIOS Information
+        Vendor: Microsoft Corporation
+        Version: Hyper-V UEFI Release v4.0
+        Release Date: 12/17/2019
+        ROM Size: 64 kB
+        Characteristics:
+                BIOS characteristics not supported
+                ACPI is supported
+                Targeted content distribution is supported
+                UEFI is supported
+                System is a virtual machine
+        BIOS Revision: 4.0
+
+Handle 0x0001, DMI type 1, 27 bytes
+System Information
+        Manufacturer: Microsoft Corporation
+        Product Name: Virtual Machine
+        Version: Hyper-V UEFI Release v4.0
+        Serial Number: 3135-4298-3414-7021-8716-7514-85
+        UUID: f78a0579-5bf5-4de9-a5c7-b5ad2023449b
+        Wake-up Type: Power Switch
+        SKU Number: None
+        Family: Virtual Machine
+
+Handle 0x0002, DMI type 3, 24 bytes
+Chassis Information
+        Manufacturer: Microsoft Corporation
+        Type: Desktop
+        Lock: Not Present
+        Version: Hyper-V UEFI Release v4.0
+        Serial Number: 3135-4298-3414-7021-8716-7514-85
+        Asset Tag: 3135-4298-3414-7021-8716-7514-85
+        Boot-up State: Safe
+        Power Supply State: Safe
+        Thermal State: Safe
+        Security Status: Unknown
+        OEM Information: 0x00000000
+        Height: Unspecified
+        Number Of Power Cords: Unspecified
+        Contained Elements: 0
+        SKU Number: Virtual Machine
+
+Handle 0x0003, DMI type 2, 17 bytes
+Base Board Information
+        Manufacturer: Microsoft Corporation
+        Product Name: Virtual Machine
+        Version: Hyper-V UEFI Release v4.0
+        Serial Number: 3135-4298-3414-7021-8716-7514-85
+        Asset Tag: None
+        Features:
+                Board is a hosting board
+        Location In Chassis: Virtual Machine
+        Chassis Handle: 0x0002
+        Type: Motherboard
+        Contained Object Handles: 0
+
+Handle 0x0004, DMI type 4, 48 bytes
+Processor Information
+        Socket Designation: None
+        Type: Central Processor
+        Family: Unknown
+        Manufacturer: None
+        ID: 00 00 00 00 00 00 00 00
+        Version: None
+        Voltage: Unknown
+        External Clock: Unknown
+        Max Speed: 4000 MHz
+        Current Speed: Unknown
+        Status: Populated, Enabled
+        Upgrade: None
+        L1 Cache Handle: Not Provided
+        L2 Cache Handle: Not Provided
+        L3 Cache Handle: Not Provided
+        Serial Number: None
+        Asset Tag: None
+        Part Number: None
+        Core Count: 1
+        Core Enabled: 1
+        Thread Count: 1
+        Characteristics: None
+
+Handle 0x0005, DMI type 11, 5 bytes
+OEM Strings
+        String 1: [MS_VM_CERT/SHA1/9b80ca0d5dd061ec9da4e494f4c3fd1196270c22]
+        String 2: 00000000000000000000000000000000
+        String 3: To be filled by OEM
+
+Handle 0x0006, DMI type 16, 23 bytes
+Physical Memory Array
+        Location: System Board Or Motherboard
+        Use: System Memory
+        Error Correction Type: None
+        Maximum Capacity: 0 bytes
+        Error Information Handle: Not Provided
+        Number Of Devices: 2
+
+Handle 0x0007, DMI type 17, 40 bytes
+Memory Device
+        Array Handle: 0x0006
+        Error Information Handle: Not Provided
+        Total Width: Unknown
+        Data Width: Unknown
+        Size: 3968 MB
+        Form Factor: Unknown
+        Set: None
+        Locator: M0001
+        Bank Locator: None
+        Type: Unknown
+        Type Detail: Unknown
+        Speed: Unknown
+        Manufacturer: Microsoft Corporation
+        Serial Number: None
+        Asset Tag: None
+        Part Number: None
+        Rank: Unknown
+        Configured Memory Speed: Unknown
+        Minimum Voltage: Unknown
+        Maximum Voltage: Unknown
+        Configured Voltage: Unknown
+
+Handle 0x0008, DMI type 19, 31 bytes
+Memory Array Mapped Address
+        Starting Address: 0x00000000000
+        Ending Address: 0x000F80003FF
+        Range Size: 3968 MB
+        Physical Array Handle: 0x0006
+        Partition Width: 0
+
+Handle 0x0009, DMI type 20, 35 bytes
+Memory Device Mapped Address
+        Starting Address: 0x00000000000
+        Ending Address: 0x000F80003FF
+        Range Size: 3968 MB
+        Physical Device Handle: 0x0007
+        Memory Array Mapped Address Handle: 0x0008
+        Partition Row Position: Unknown
+
+Handle 0x000A, DMI type 17, 40 bytes
+Memory Device
+        Array Handle: 0x0006
+        Error Information Handle: Not Provided
+        Total Width: Unknown
+        Data Width: Unknown
+        Size: 128 MB
+        Form Factor: Unknown
+        Set: None
+        Locator: M0002
+        Bank Locator: None
+        Type: Unknown
+        Type Detail: Unknown
+        Speed: Unknown
+        Manufacturer: Microsoft Corporation
+        Serial Number: None
+        Asset Tag: None
+        Part Number: None
+        Rank: Unknown
+        Configured Memory Speed: Unknown
+        Minimum Voltage: Unknown
+        Maximum Voltage: Unknown
+        Configured Voltage: Unknown
+
+Handle 0x000B, DMI type 19, 31 bytes
+Memory Array Mapped Address
+        Starting Address: 0x00100000000
+        Ending Address: 0x001080003FF
+        Range Size: 131073 kB
+        Physical Array Handle: 0x0006
+        Partition Width: 0
+
+Handle 0x000C, DMI type 20, 35 bytes
+Memory Device Mapped Address
+        Starting Address: 0x00100000000
+        Ending Address: 0x001080003FF
+        Range Size: 131073 kB
+        Physical Device Handle: 0x000A
+        Memory Array Mapped Address Handle: 0x000B
+        Partition Row Position: Unknown
+
+Handle 0x000D, DMI type 32, 11 bytes
+System Boot Information
+        Status: No errors detected
+
+Handle 0xFEFF, DMI type 127, 4 bytes
+End Of Table

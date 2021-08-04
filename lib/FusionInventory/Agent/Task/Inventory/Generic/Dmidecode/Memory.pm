@@ -64,7 +64,18 @@ sub doInventory {
 sub _getMemories {
     my $infos = getDmidecodeInfos(@_);
 
-    my ($memories, $slot);
+    my ($memories, $slot, %defaults);
+
+    my $bios_infos   = $infos->{0}->[0];
+    my $bios_vendor  = $bios_infos->{Vendor} // "";
+    my $bios_version = $bios_infos->{Version}      // "";
+
+    if ($bios_vendor =~ /^Microsoft/i && $bios_version =~ /^Hyper-V/i) {
+        %defaults = (
+            Description  => "Hyper-V Memory",
+            Manufacturer => $bios_vendor,
+        );
+    }
 
     if ($infos->{17}) {
 
@@ -98,13 +109,13 @@ sub _getMemories {
 
             my $memory = {
                 NUMSLOTS         => $slot,
-                DESCRIPTION      => $info->{'Form Factor'},
+                DESCRIPTION      => $info->{'Form Factor'} // $defaults{Description},
                 CAPTION          => $info->{'Locator'},
                 SPEED            => getCanonicalSpeed($info->{'Speed'}),
                 TYPE             => $info->{'Type'},
                 SERIALNUMBER     => $info->{'Serial Number'},
                 MEMORYCORRECTION => $infos->{16}[0]{'Error Correction Type'},
-                MANUFACTURER     => $manufacturer
+                MANUFACTURER     => $manufacturer // $defaults{Manufacturer}
             };
 
             if ($info->{'Size'} && $info->{'Size'} =~ /^(\d+ \s .B)$/x) {

@@ -98,6 +98,10 @@ my %tests = (
         CHASSIS_TYPE  => 'Desktop',
         UUID          => '3445DEE7-45D0-1244-95DD-34FAA067C1BE33E',
     },
+    'windows-hyperV-2019' => {
+        CHASSIS_TYPE  => 'Desktop',
+        UUID          => 'f78a0579-5bf5-4de9-a5c7-b5ad2023449b',
+    },
     'dell-fx160' => {
         CHASSIS_TYPE  => 'Desktop',
         UUID          => '44454C4C-3800-1033-8054-C3C04F35344A'

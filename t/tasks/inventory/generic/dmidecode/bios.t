@@ -296,6 +296,19 @@ my %tests = (
             MMODEL        => 'Virtual Machine',
             BVERSION      => '090004'
     },
+    'windows-hyperV-2019' => {
+            MMANUFACTURER => 'Microsoft Corporation',
+            SSN           => '3135-4298-3414-7021-8716-7514-85',
+            SKUNUMBER     => undef,
+            ASSETTAG      => '3135-4298-3414-7021-8716-7514-85',
+            BMANUFACTURER => 'Microsoft Corporation',
+            MSN           => '3135-4298-3414-7021-8716-7514-85',
+            SMODEL        => 'Virtual Machine',
+            SMANUFACTURER => 'Microsoft Corporation',
+            BDATE         => '12/17/2019',
+            MMODEL        => 'Virtual Machine',
+            BVERSION      => 'Hyper-V UEFI Release v4.0'
+    },
     'dell-fx160' => {
             BMANUFACTURER => 'Dell Inc.',
             MSN           => '..CN701638BM00EW.',

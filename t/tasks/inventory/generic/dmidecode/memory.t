@@ -2066,6 +2066,30 @@ my %tests = (
             MEMORYCORRECTION => undef
         }
     ],
+    'windows-hyperV-2019' => [
+        {
+            NUMSLOTS         => 1,
+            SERIALNUMBER     => undef,
+            DESCRIPTION      => 'Hyper-V Memory',
+            TYPE             => undef,
+            SPEED            => undef,
+            CAPACITY         => '3968',
+            CAPTION          => 'M0001',
+            MANUFACTURER     => 'Microsoft Corporation',
+            MEMORYCORRECTION => undef
+        },
+        {
+            NUMSLOTS         => 2,
+            SERIALNUMBER     => undef,
+            DESCRIPTION      => 'Hyper-V Memory',
+            TYPE             => undef,
+            SPEED            => undef,
+            CAPACITY         => '128',
+            CAPTION          => 'M0002',
+            MANUFACTURER     => 'Microsoft Corporation',
+            MEMORYCORRECTION => undef
+        }
+    ],
     'dell-r620' => [
         {
             'MANUFACTURER'     => 'Hynix',

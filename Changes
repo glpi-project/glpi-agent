@@ -31,6 +31,7 @@ inventory:
 * win32: Fix OS Version on win10 20H1 and 21H1
 * Added --list-categories option to glpi-agent script
 * win32: support overrided EDID blocks for monitor inventory
+* win32: fix memory components under HyperV 2019
 
 netdiscovery/netinventory:
 * Add support for SonicWall devices
