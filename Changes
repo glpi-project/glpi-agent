@@ -13,7 +13,7 @@ core:
 * Fix: honor server expiration between runs by disabling initial delay which
   should only be related to the first run on a given platform
 * Support target event scheduling
-* get rid of Scheduler target and Maintenace task
+* get rid of Scheduler target and Maintenance task
 
 inventory:
 * Feature: support partial inventory
