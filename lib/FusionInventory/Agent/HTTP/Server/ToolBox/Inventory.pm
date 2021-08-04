@@ -251,9 +251,9 @@ sub netscan {
         } elsif ($cred->{snmpversion} eq 'v3') {
             $CRED->{USERNAME} = $cred->{username}
                 or return $self->errors("Missing username on credentials: ".($cred->{name}||$credential));
-            $CRED->{AUTHPASSPHRASE} = $cred->{authpassword} || '';
+            $CRED->{AUTHPASSWORD} = $cred->{authpassword} || '';
             $CRED->{AUTHPROTOCOL} = $cred->{authprotocol} || '';
-            $CRED->{PRIVPASSPHRASE} = $cred->{privpassword} || '';
+            $CRED->{PRIVPASSWORD} = $cred->{privpassword} || '';
             $CRED->{PRIVPROTOCOL} = $cred->{privprotocol} || '';
         }
         push @credentials, $CRED;

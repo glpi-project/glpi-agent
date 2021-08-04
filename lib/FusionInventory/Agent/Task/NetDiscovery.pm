@@ -626,6 +626,7 @@ sub _scanAddressBySNMPReal {
 
     my $snmp;
     eval {
+        # AUTHPASSPHRASE & PRIVPASSPHRASE are deprecated but still used by FusionInventory for GLPI plugin
         $snmp = FusionInventory::Agent::SNMP::Live->new(
             version      => $params{credential}->{VERSION},
             hostname     => $params{ip},
@@ -634,9 +635,9 @@ sub _scanAddressBySNMPReal {
             timeout      => $params{timeout} || 1,
             community    => $params{credential}->{COMMUNITY},
             username     => $params{credential}->{USERNAME},
-            authpassword => $params{credential}->{AUTHPASSPHRASE},
+            authpassword => $params{credential}->{AUTHPASSPHRASE} // $params{credential}->{AUTHPASSWORD},
             authprotocol => $params{credential}->{AUTHPROTOCOL},
-            privpassword => $params{credential}->{PRIVPASSPHRASE},
+            privpassword => $params{credential}->{PRIVPASSPHRASE} // $params{credential}->{PRIVPASSWORD},
             privprotocol => $params{credential}->{PRIVPROTOCOL},
         );
     };

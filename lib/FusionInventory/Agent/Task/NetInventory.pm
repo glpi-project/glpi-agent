@@ -402,6 +402,7 @@ sub _queryDevice {
     } else {
         eval {
             FusionInventory::Agent::SNMP::Live->require();
+            # AUTHPASSPHRASE & PRIVPASSPHRASE are deprecated but still used by FusionInventory for GLPI plugin
             $snmp = FusionInventory::Agent::SNMP::Live->new(
                 version      => $credentials->{VERSION},
                 hostname     => $device->{IP},
@@ -410,9 +411,9 @@ sub _queryDevice {
                 timeout      => $params->{timeout} || 15,
                 community    => $credentials->{COMMUNITY},
                 username     => $credentials->{USERNAME},
-                authpassword => $credentials->{AUTHPASSPHRASE},
+                authpassword => $credentials->{AUTHPASSPHRASE} // $credentials->{AUTHPASSWORD},
                 authprotocol => $credentials->{AUTHPROTOCOL},
-                privpassword => $credentials->{PRIVPASSPHRASE},
+                privpassword => $credentials->{PRIVPASSPHRASE} // $credentials->{PRIVPASSWORD},
                 privprotocol => $credentials->{PRIVPROTOCOL},
             );
         };
