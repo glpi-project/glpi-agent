@@ -33,6 +33,9 @@ sub is_valid_message {
 
     return 0 unless defined($self->get);
 
+    my $status = $self->get("status") // "ok";
+    return 1 if $status eq "error";
+
     # Message from server CAN contain:
     #  - a simple 'credentials' array
     return 1 if ref($self->get("credentials")) eq 'ARRAY';

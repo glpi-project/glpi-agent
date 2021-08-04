@@ -21,18 +21,19 @@ sub _credentials {
 
     my @credentials = ();
     my $params = delete $hashref->{params};
+    my $logger = $hashref->{logger};
 
     if ($params) {
         foreach my $param (@{$params}) {
             my $url = $param->{_glpi_url}
                 or next;
-            next unless $param->{params_id} && $params->{glpi_client};
+            next unless $param->{params_id} && $param->{_glpi_client};
             next unless $param->{category} && $param->{category} eq "database";
             next unless $param->{use} && grep { $_ eq $usage } @{$param->{use}};
             GLPI::Agent::Protocol::GetParams->require();
             if ($EVAL_ERROR) {
-                $hashref->{logger}->error("Can't request credentials on $url")
-                    if $hashref->{logger};
+                $logger->error("Can't request credentials on $url")
+                    if $logger;
                 last;
             }
             my $getparams = GLPI::Agent::Protocol::GetParams->new(
@@ -41,15 +42,30 @@ sub _credentials {
                 use         => $usage,
             );
             my $answer = $param->{_glpi_client}->send(
-                send    => $url,
+                url     => $url,
                 message => $getparams
             );
             if ($answer) {
+                my $status = $answer->get('status');
                 my $credentials = $answer->get('credentials');
-                push @credentials, @{$credentials} if @{$credentials};
+                if ($status eq 'ok' && $credentials) {
+                    if (@{$credentials}) {
+                        push @credentials, @{$credentials};
+                    } else {
+                        $logger->debug("No credential returned for credentials id ".$param->{params_id})
+                            if $logger;
+                    }
+                } elsif ($status eq 'error') {
+                    my $message = $answer->get('message') // 'no error given';
+                    $logger->debug("Credential request error: $message")
+                        if $logger;
+                } else {
+                    $logger->error("Unsupported credentials request answer")
+                        if $logger;
+                }
             } else {
-                $hashref->{logger}->error("Got no credentials with $param->{params_id} credentials id")
-                    if $hashref->{logger};
+                $logger->error("Got no credentials with credentials id ".$param->{params_id})
+                    if $logger;
             }
         }
     }

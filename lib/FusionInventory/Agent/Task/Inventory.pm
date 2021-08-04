@@ -38,7 +38,7 @@ sub isEnabled {
                 } else {
                     my $config = $self->{config};
                     foreach my $param (@{$tasks->{inventory}->{params}}) {
-                        next unless $_->{category} && $_->{use};
+                        next unless $param->{category} && $param->{use};
                         next if grep { $_ eq $_->{category} } @{$config->{'no-category'}};
                         my $client = FusionInventory::Agent::HTTP::Client::GLPI->new(
                             logger       => $self->{logger},
