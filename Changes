@@ -38,6 +38,7 @@ netdiscovery/netinventory:
 * Enhanced MibSupport to support Configuration plugin managed via ToolBox
 * Log a warning when no credential is provided with a discovery or inventory job
 * Add support for Dell Wyse ThinClient devices
+* Add support for Voltaire devices
 * Support "authpassword" and "privpassword" in credentials option as replacement
   for "authpassphrase" and "privpassphrase"
 
