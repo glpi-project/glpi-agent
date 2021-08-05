@@ -219,8 +219,8 @@ sub send {
                 devices     => [{
                     ID           => 0,
                     IP           => $ip,
-                    PORT         => $options->{port},
-                    PROTOCOL     => $options->{protocol},
+                    PORT         => $options->{port}     ? $device->{AUTHPORT}     : '',
+                    PROTOCOL     => $options->{protocol} ? $device->{AUTHPROTOCOL} : '',
                     AUTHSNMP_ID  => $device->{AUTHSNMP}
                 }],
                 credentials => \@{main::credentials},

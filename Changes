@@ -41,6 +41,7 @@ netdiscovery/netinventory:
 * Add support for Voltaire devices
 * Support "authpassword" and "privpassword" in credentials option as replacement
   for "authpassphrase" and "privpassphrase"
+* Fix glpi-netdiscovery --inventory option when --port or --protocol option is used
 
 deploy:
 * Deploy maintenance task is now handled by core target event scheduling

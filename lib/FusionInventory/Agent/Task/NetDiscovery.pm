@@ -613,7 +613,9 @@ sub _scanAddressBySNMP {
         );
 
         if (ref $device eq 'HASH') {
-            $device->{AUTHSNMP} = $credential->{ID};
+            $device->{AUTHSNMP}     = $credential->{ID};
+            $device->{AUTHPORT}     = $try->{port};
+            $device->{AUTHPROTOCOL} = $try->{domain};
             return %{$device};
         }
     }
