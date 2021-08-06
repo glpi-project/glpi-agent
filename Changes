@@ -14,6 +14,7 @@ core:
   should only be related to the first run on a given platform
 * Support target event scheduling
 * get rid of Scheduler target and Maintenance task
+* Send httpd-port minimal configuration in CONTACT request
 
 inventory:
 * Feature: support partial inventory

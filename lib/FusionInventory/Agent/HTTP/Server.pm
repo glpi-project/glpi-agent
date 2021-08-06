@@ -580,6 +580,28 @@ sub init {
     return 1;
 }
 
+sub plugins_list {
+    my ($self) = @_;
+
+    my @plugins = @{$self->{_plugins}};
+    map {
+        push @plugins, @{$self->{listeners}->{$_}->{plugins}};
+        # Add SSL plugin if it was enabled on a dedicated port
+        push @plugins, $self->{listeners}->{$_}->{ssl} if $self->{listeners}->{$_}->{ssl};
+    } grep {
+        $self->{listeners}->{$_}->{plugins}
+    } keys(%{$self->{listeners}}) if $self->{listeners};
+
+    return {
+        map {
+            my $plugin = $_;
+            lc($plugin->name()) => $plugin->disabled ? "disabled" : {
+                map { $_ => $plugin->config($_) } keys(%{$plugin->defaults()})
+            }
+        } @plugins
+    };
+}
+
 sub needToRestart {
     my ($self, %params) = @_;
 

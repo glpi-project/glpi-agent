@@ -235,12 +235,20 @@ sub runTarget {
         return $self->{logger}->error("Can't load GLPI Protocol CONTACT library")
             unless GLPI::Agent::Protocol::Contact->require();
 
+        my %httpd_conf;
+        # Add httpd-port & httpd-plugins status in contact request if possible
+        if ($self->{server}) {
+            $httpd_conf{"httpd-plugins"} = $self->{server}->plugins_list();
+            $httpd_conf{"httpd-port"} = $self->{server}->{port};
+        }
+
         my %enabled = map { lc($_) => 1 } @plannedTasks;
         my $contact = GLPI::Agent::Protocol::Contact->new(
             logger              => $self->{logger},
             deviceid            => $self->{deviceid},
             "installed-tasks"   => $self->{installed_tasks},
             "enabled-tasks"     => [ sort keys(%enabled) ],
+            %httpd_conf
         );
         $contact->merge(tag => $self->{config}->{tag})
             if defined($self->{config}->{tag}) && length($self->{config}->{tag});
