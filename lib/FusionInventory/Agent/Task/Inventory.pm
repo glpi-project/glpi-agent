@@ -187,6 +187,21 @@ sub setupEvent {
         return;
     }
 
+    # Setup params if params_id & use are also set in event
+    if ($event->{params_id}) {
+        my @ids = map { trimWhitespace($_) } split(/,+/, $event->{params_id});
+        foreach my $params_id (@ids) {
+            my $params = {
+                category    => $event->{category},
+                params_id   => $params_id,
+            };
+            my $use_key = "use[$params_id]";
+            $params->{use} = [ map { trimWhitespace($_) } split(/,+/, $event->{$use_key}) ]
+                if $event->{$use_key};
+            push @{$self->{params}}, $params;
+        }
+    }
+
     # Setup partial inventory
     return $self->{partial} = 1;
 }
