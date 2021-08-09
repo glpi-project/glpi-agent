@@ -35,25 +35,7 @@ sub isEnabled {
                 FusionInventory::Agent::HTTP::Client::GLPI->require();
                 if ($EVAL_ERROR) {
                     $self->{logger}->error("Can't load GLPI client API to handle get_params");
-                } else {
-                    my $config = $self->{config};
-                    foreach my $param (@{$tasks->{inventory}->{params}}) {
-                        next unless $param->{category} && $param->{use};
-                        next if grep { $_ eq $_->{category} } @{$config->{'no-category'}};
-                        my $client = FusionInventory::Agent::HTTP::Client::GLPI->new(
-                            logger       => $self->{logger},
-                            user         => $config->{user},
-                            password     => $config->{password},
-                            proxy        => $config->{proxy},
-                            ca_cert_file => $config->{'ca-cert-file'},
-                            ca_cert_dir  => $config->{'ca-cert-dir'},
-                            no_ssl_check => $config->{'no-ssl-check'},
-                            no_compress  => $config->{'no-compression'},
-                            agentid      => $self->{agentid},
-                        );
-                        $param->{_glpi_client} = $client;
-                        $param->{_glpi_url}    = $self->{target}->getUrl();
-                    }
+                    return 0;
                 }
                 $self->{params} = $tasks->{inventory}->{params} ;
             }
@@ -125,7 +107,7 @@ sub run {
 
     # Support inventory event
     if ($event && !$self->setupEvent()) {
-        $self->{logger}->error("Unsupported Inventory task event on ".$self->{target}->id());
+        $self->{logger}->info("Skipping Inventory task event on ".$self->{target}->id());
         return;
     }
 
@@ -154,7 +136,11 @@ sub setupEvent {
 
     # Support event with category defined
     if ($event->{category}) {
-        my %keep = map { lc($_) => 1 } grep { length($_) } split(',', $event->{category});
+        my %keep = map { lc($_) => 1 } grep { ! $self->{disabled}->{$_} } split(/,+/, $event->{category});
+        unless (keys(%keep)) {
+            $self->{logger}->debug("Nothing to inventory on partial inventory event");
+            return;
+        }
         my @categories = $self->getCategories();
         my $valid = 0;
         foreach my $category (keys(%keep)) {
@@ -195,9 +181,26 @@ sub setupEvent {
                 category    => $event->{category},
                 params_id   => $params_id,
             };
-            my $use_key = "use[$params_id]";
-            $params->{use} = [ map { trimWhitespace($_) } split(/,+/, $event->{$use_key}) ]
-                if $event->{$use_key};
+            my $use = delete $event->{"use[$params_id]"};
+            $params->{use} = [ map { trimWhitespace($_) } split(/,+/, $use) ] if $use;
+
+            # Setup GLPI server client for get_params requests
+            if ($params->{use}) {
+                my $config = $self->{config};
+                $params->{_glpi_client} = FusionInventory::Agent::HTTP::Client::GLPI->new(
+                    logger       => $self->{logger},
+                    user         => $config->{user},
+                    password     => $config->{password},
+                    proxy        => $config->{proxy},
+                    ca_cert_file => $config->{'ca-cert-file'},
+                    ca_cert_dir  => $config->{'ca-cert-dir'},
+                    no_ssl_check => $config->{'no-ssl-check'},
+                    no_compress  => $config->{'no-compression'},
+                    agentid      => $self->{agentid},
+                );
+                $params->{_glpi_url} = $self->{target}->getUrl();
+            }
+
             push @{$self->{params}}, $params;
         }
     }

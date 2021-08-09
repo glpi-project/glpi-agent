@@ -13,6 +13,7 @@ use Text::Template;
 use File::Glob;
 use URI;
 use Socket qw(IN6ADDR_ANY inet_ntop);
+use URI::Escape;
 
 use FusionInventory::Agent::Version;
 use FusionInventory::Agent::Logger;
@@ -388,7 +389,7 @@ sub _handle_now {
         if !@targets && $self->_isTrusted($clientIp);
 
     if (@targets) {
-        my $query = $request->uri()->query();
+        my $query = uri_unescape($request->uri()->query());
         if ($query) {
             my %event = map { /^([^=]+)=(.*)$/ } grep { /[^=]=/ } split('&', $query);
             foreach my $target (@targets) {

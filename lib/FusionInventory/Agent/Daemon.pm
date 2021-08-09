@@ -23,6 +23,7 @@ use FusionInventory::Agent::Logger;
 use FusionInventory::Agent::Version;
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Generic;
+use GLPI::Agent::Protocol::Contact;
 
 my $PROVIDER = $FusionInventory::Agent::Version::PROVIDER;
 
@@ -199,8 +200,12 @@ sub runTargetEvent {
             $self->runTaskReal($target, ucfirst($event->{task}));
         };
     } else {
+        # Simulate CONTACT server response
+        my $contact = GLPI::Agent::Protocol::Contact->new(
+            tasks => { $event->{task} => { params => [$event] }}
+        );
         eval {
-            $self->runTask($target, ucfirst($event->{task}));
+            $self->runTask($target, ucfirst($event->{task}), $contact);
         };
         $self->{logger}->error($EVAL_ERROR) if $EVAL_ERROR;
         $self->setStatus($target->paused() ? 'paused' : 'waiting');

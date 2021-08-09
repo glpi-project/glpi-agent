@@ -11,7 +11,7 @@ sub new {
     my ($class, %params) = @_;
 
     my $self = $class->SUPER::new(
-        supported_params    => [ qw(deviceid installed-tasks enabled-tasks httpd-plugins httpd-port tag) ],
+        supported_params    => [ qw(deviceid installed-tasks enabled-tasks httpd-plugins httpd-port tag tasks) ],
         %params
     );
 
