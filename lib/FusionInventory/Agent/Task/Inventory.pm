@@ -32,12 +32,62 @@ sub isEnabled {
             if (@{$tasks->{inventory}->{params}}) {
                 # Add a GLPI client to each param with a category and a use property
                 # and if related category is not disabled
-                FusionInventory::Agent::HTTP::Client::GLPI->require();
-                if ($EVAL_ERROR) {
-                    $self->{logger}->error("Can't load GLPI client API to handle get_params");
-                    return 0;
+                my %disabled = map { $_ => 1 } @{$self->{config}->{'no-category'}};
+                my @params;
+                my $cant_load_glpi_client = 0;
+                foreach my $param (@{$tasks->{inventory}->{params}}) {
+                    my @validated;
+                    if (!$param->{category} || $disabled{$param->{category}}) {
+                    } elsif ($param->{params_id}) {
+                        # Here we must handle the case of remotely triggered events
+                        my @categories = map { trimWhitespace($_) } split(/,+/, $param->{category});
+                        foreach my $category (@categories) {
+                            my @ids = map { trimWhitespace($_) } split(/,+/, $param->{params_id});
+                            foreach my $params_id (@ids) {
+                                my $this_param = {
+                                    use         => $param->{use},
+                                    category    => $category,
+                                    params_id   => $params_id,
+                                };
+                                my $use = $param->{"use[$params_id]"};
+                                $this_param->{use} = [ map { trimWhitespace($_) } split(/,+/, $use) ] if $use;
+
+                                # Setup GLPI server client for get_params requests
+                                if ($this_param->{use}) {
+                                    FusionInventory::Agent::HTTP::Client::GLPI->require();
+                                    if ($EVAL_ERROR) {
+                                        $self->{logger}->error("Can't load GLPI client API to handle get_params")
+                                            unless $cant_load_glpi_client++;
+                                    } else {
+                                        my $config = $self->{config};
+                                        $this_param->{_glpi_client} = FusionInventory::Agent::HTTP::Client::GLPI->new(
+                                            logger       => $self->{logger},
+                                            user         => $config->{user},
+                                            password     => $config->{password},
+                                            proxy        => $config->{proxy},
+                                            ca_cert_file => $config->{'ca-cert-file'},
+                                            ca_cert_dir  => $config->{'ca-cert-dir'},
+                                            no_ssl_check => $config->{'no-ssl-check'},
+                                            no_compress  => $config->{'no-compression'},
+                                            agentid      => $self->{agentid},
+                                        );
+                                        $this_param->{_glpi_url} = $self->{target}->getUrl();
+                                        push @validated, $this_param;
+                                    }
+                                }
+                            }
+                        }
+                    } elsif ($param->{use}) {
+                        push @validated, $param;
+                    }
+                    if (@validated) {
+                        push @params, @validated;
+                    } else {
+                        my $debug = join(",", map { "$_=".($param->{$_}//"") } keys(%{$param}));
+                        $self->{logger}->debug("Skipping invalid params: $debug")
+                    }
                 }
-                $self->{params} = $tasks->{inventory}->{params} ;
+                $self->{params} = \@params if @params;
             }
         }
 
@@ -171,38 +221,6 @@ sub setupEvent {
     } else {
         $self->{logger}->debug("No category property on partial inventory event");
         return;
-    }
-
-    # Setup params if params_id & use are also set in event
-    if ($event->{params_id}) {
-        my @ids = map { trimWhitespace($_) } split(/,+/, $event->{params_id});
-        foreach my $params_id (@ids) {
-            my $params = {
-                category    => $event->{category},
-                params_id   => $params_id,
-            };
-            my $use = delete $event->{"use[$params_id]"};
-            $params->{use} = [ map { trimWhitespace($_) } split(/,+/, $use) ] if $use;
-
-            # Setup GLPI server client for get_params requests
-            if ($params->{use}) {
-                my $config = $self->{config};
-                $params->{_glpi_client} = FusionInventory::Agent::HTTP::Client::GLPI->new(
-                    logger       => $self->{logger},
-                    user         => $config->{user},
-                    password     => $config->{password},
-                    proxy        => $config->{proxy},
-                    ca_cert_file => $config->{'ca-cert-file'},
-                    ca_cert_dir  => $config->{'ca-cert-dir'},
-                    no_ssl_check => $config->{'no-ssl-check'},
-                    no_compress  => $config->{'no-compression'},
-                    agentid      => $self->{agentid},
-                );
-                $params->{_glpi_url} = $self->{target}->getUrl();
-            }
-
-            push @{$self->{params}}, $params;
-        }
     }
 
     # Setup partial inventory
