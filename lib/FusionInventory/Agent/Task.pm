@@ -76,10 +76,19 @@ sub setRemote {
     return $self->{_remote};
 }
 
+sub _deepCopy {
+    my ($ref) = @_;
+    return { map { $_ => _deepCopy($ref->{$_}) } keys(%{$ref}) }
+        if ref($ref) eq 'HASH';
+    return [ map { _deepCopy($_) } @{$ref} ]
+        if ref($ref) eq 'ARRAY';
+    return $ref;
+}
+
 sub cachedata {
     my ($self, $data) = @_;
 
-    $self->{_cached} = $data if defined($data);
+    $self->{_cached} = _deepCopy($data) if defined($data);
 
     return $self->{_cached} if defined($self->{_cached});
 }
