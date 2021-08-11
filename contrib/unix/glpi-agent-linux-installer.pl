@@ -53,9 +53,9 @@ my $distro = LinuxDistro->new($options);
 my $installed = $distro->installed;
 my $bypass = $extract && $extract ne "keep" ? 1 : 0;
 if ($installed && !$uninstall && !$reinstall && !$bypass && $version =~ /-git\w+$/ && $version ne $installed) {
-    # Force reinstallation for development version if still installed
-    $distro->verbose("Forcing reinstallation of $version over $installed...");
-    $reinstall = 1
+    # Force installation for development version if still installed, needed for deb based distros
+    $distro->verbose("Forcing installation of $version over $installed...");
+    $distro->allowDowngrade();
 }
 
 $distro->uninstall($clean) if !$bypass && ($uninstall || $reinstall);

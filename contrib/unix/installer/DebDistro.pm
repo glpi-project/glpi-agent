@@ -138,7 +138,9 @@ sub install {
         }
 
         my @debs = sort values(%pkgs);
-        my $command = "apt -y install @debs 2>/dev/null";
+        my @options = ( "-y" );
+        push @options, "--allow-downgrades" if $self->downgradeAllowed();
+        my $command = "apt @options install @debs 2>/dev/null";
         my $err = $self->run($command);
         die "Failed to install glpi-agent\n" if $err;
         $self->{_installed} = \@debs;

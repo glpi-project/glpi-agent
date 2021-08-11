@@ -81,6 +81,7 @@ sub new {
         _options    => $options,
         _cleanpkg   => 1,
         _skip       => {},
+        _downgrade  => 0,
     };
 
     my $distro = delete $options->{distro};
@@ -94,6 +95,7 @@ sub new {
         $version = "unknown version" unless defined($version);
         $release = "unknown distro" unless defined($distro);
         ($class) = grep { $name =~ $classes{$_} } keys(%classes);
+        $self->allowDowngrade();
     }
     $self->{_name}    = $name;
     $self->{_version} = $version;
@@ -445,6 +447,16 @@ sub clean_packages {
         unlink @{$self->{_installed}};
         delete $self->{_installed};
     }
+}
+
+sub allowDowngrade {
+    my ($self) = @_;
+    $self->{_downgrade} = 1;
+}
+
+sub downgradeAllowed {
+    my ($self) = @_;
+    return $self->{_downgrade};
 }
 
 1;
