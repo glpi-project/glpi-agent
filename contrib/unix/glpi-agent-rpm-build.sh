@@ -2,6 +2,7 @@
 
 : ${UNITDIR:=/usr/lib/systemd/system}
 : ${OTHER_OPTS:=}
+: ${RPMBUILD:=rpmbuild}
 
 while [ -n "$1" ]
 do
@@ -9,6 +10,9 @@ do
         --dist)
             shift
             DIST="$1"
+            ;;
+        --md5)
+            RPMBUILD="rpmbuild-md5"
             ;;
         --rev)
             shift
@@ -67,8 +71,8 @@ BUILD_OPTS="-D 'rev $REV'"
 [ -n "$DISTRO" ]     && BUILD_OPTS="$BUILD_OPTS -D 'dist $DISTRO'"
 [ -n "$UNITDIR" ]    && BUILD_OPTS="$BUILD_OPTS -D '_unitdir $UNITDIR'"
 
-echo "Running 'rpmbuild -ba $BUILD_OPTS $OTHER_OPTS contrib/unix/glpi-agent.spec' ..."
-eval "rpmbuild -ba $BUILD_OPTS $OTHER_OPTS contrib/unix/glpi-agent.spec"
+echo "Running '$RPMBUILD -ba $BUILD_OPTS $OTHER_OPTS contrib/unix/glpi-agent.spec' ..."
+eval "$RPMBUILD -ba $BUILD_OPTS $OTHER_OPTS contrib/unix/glpi-agent.spec"
 
 # Output rpms path for GH Actions uploads
 RPMDIR=$(rpm --eval "%{_rpmdir}")
