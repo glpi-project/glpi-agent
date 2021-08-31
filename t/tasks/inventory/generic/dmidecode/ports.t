@@ -63,53 +63,53 @@ my %tests = (
             CAPTION     => 'PS/2'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'USB0',
+            DESCRIPTION => 'Other',
             TYPE        => 'USB',
-            CAPTION     => 'Other'
+            CAPTION     => 'USB0'
         }
     ],
     'freebsd-8.1' => undef,
     'linux-2.6' => [
          {
             NAME        => 'PARALLEL',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'DB-25 female',
             TYPE        => 'Parallel Port PS/2',
             CAPTION     => 'DB-25 female'
         },
         {
             NAME        => 'SERIAL1',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'DB-9 male',
             TYPE        => 'Serial Port 16550A Compatible',
             CAPTION     => 'DB-9 male'
         },
         {
             NAME        => 'USB',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
             CAPTION     => 'Access Bus (USB)'
         },
         {
             NAME        => 'MONITOR',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'DB-15 female',
             TYPE        => 'Video Port',
             CAPTION     => 'DB-15 female'
         },
         {
             NAME        => 'IrDA',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Infrared',
             TYPE        => 'Other',
             CAPTION     => 'Infrared'
         },
         {
             NAME        => 'Modem',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'RJ-11',
             TYPE        => 'Modem Port',
             CAPTION     => 'RJ-11'
         },
         {
             NAME        => 'Ethernet',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'RJ-45',
             TYPE        => 'Network Port',
             CAPTION     => 'RJ-45'
         }
@@ -191,128 +191,128 @@ my %tests = (
         },
         {
             NAME        => undef,
-            DESCRIPTION => undef,
+            DESCRIPTION => 'DB-15 female',
             TYPE        => 'Video Port',
             CAPTION     => 'DB-15 female'
         },
         {
             NAME        => undef,
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
             CAPTION     => 'Access Bus (USB)'
         },
         {
             NAME        => undef,
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
             CAPTION     => 'Access Bus (USB)'
         },
         {
             NAME        => undef,
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
             CAPTION     => 'Access Bus (USB)'
         },
         {
             NAME        => undef,
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
             CAPTION     => 'Access Bus (USB)'
         },
         {
             NAME        => undef,
-            DESCRIPTION => undef,
+            DESCRIPTION => 'DB-25 female',
             TYPE        => 'Parallel Port PS/2',
             CAPTION     => 'DB-25 female'
         },
         {
             NAME        => undef,
-            DESCRIPTION => undef,
+            DESCRIPTION => 'RJ-45',
             TYPE        => 'Network Port',
             CAPTION     => 'RJ-45'
         },
         {
             NAME        => undef,
-            DESCRIPTION => undef,
+            DESCRIPTION => 'DB-9 male',
             TYPE        => 'Serial Port 16550A Compatible',
             CAPTION     => 'DB-9 male'
         },
         {
             NAME        => undef,
-            DESCRIPTION => undef,
+            DESCRIPTION => 'PS/2',
             TYPE        => 'Keyboard Port',
             CAPTION     => 'PS/2'
         },
         {
             NAME        => undef,
-            DESCRIPTION => undef,
+            DESCRIPTION => 'PS/2',
             TYPE        => 'Mouse Port',
             CAPTION     => 'PS/2'
         }
     ],
     'rhel-2.1' => [
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'SERIAL1',
+            DESCRIPTION => 'SERIAL1',
             TYPE        => 'Serial Port 16650A Compatible',
             CAPTION     => 'DB-9 pin male'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'SERIAL2',
+            DESCRIPTION => 'SERIAL2',
             TYPE        => 'Serial Port 16650A Compatible',
             CAPTION     => 'DB-9 pin male'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'PRINTER',
+            DESCRIPTION => 'PRINTER',
             TYPE        => 'Parallel Port ECP/EPP',
             CAPTION     => 'DB-25 pin female'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'KEYBOARD',
+            DESCRIPTION => 'KEYBOARD',
             TYPE        => 'Keyboard Port',
             CAPTION     => 'PS/2'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'MOUSE',
+            DESCRIPTION => 'MOUSE',
             TYPE        => 'Mouse Port',
             CAPTION     => 'PS/2'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'USB1',
+            DESCRIPTION => 'USB1',
             TYPE        => 'USB',
             CAPTION     => 'Access Bus (USB)'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'USB2',
+            DESCRIPTION => 'USB2',
             TYPE        => 'USB',
             CAPTION     => 'Access Bus (USB)'
         },
         {
-            NAME        => undef,
+            NAME        => 'IDE1',
             DESCRIPTION => 'On Board IDE',
             TYPE        => 'Other',
             CAPTION     => undef
         },
         {
-            NAME        => undef,
+            NAME        => 'IDE2',
             DESCRIPTION => 'On Board IDE',
             TYPE        => 'Other',
             CAPTION     => undef
         },
         {
-            NAME        => undef,
+            NAME        => 'FDD',
             DESCRIPTION => 'On Board Floppy',
             TYPE        => 'Other',
             CAPTION     => undef
         },
         {
-            NAME        => undef,
+            NAME        => 'SCSI1',
             DESCRIPTION => 'SSA SCSI',
             TYPE        => 'SCSI II',
             CAPTION     => undef
@@ -323,31 +323,31 @@ my %tests = (
             NAME        => 'J2A1',
             DESCRIPTION => '9 Pin Dual Inline (pin 10 cut)',
             TYPE        => 'Serial Port 16550A Compatible',
-            CAPTION     => 'DB-9 male'
+            CAPTION     => 'COM 1'
         },
         {
             NAME        => 'J2A2',
             DESCRIPTION => '9 Pin Dual Inline (pin 10 cut)',
             TYPE        => 'Serial Port 16550A Compatible',
-            CAPTION     => 'DB-9 male'
+            CAPTION     => 'COM 2'
         },
         {
             NAME        => 'J3A1',
             DESCRIPTION => '25 Pin Dual Inline (pin 26 cut)',
             TYPE        => 'Parallel Port ECP/EPP',
-            CAPTION     => 'DB-25 female'
+            CAPTION     => 'Parallel'
         },
         {
             NAME        => 'J1A1',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Circular DIN-8 male',
             TYPE        => 'Keyboard Port',
-            CAPTION     => 'Circular DIN-8 male'
+            CAPTION     => 'Keyboard'
         },
         {
             NAME        => 'J1A1',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Circular DIN-8 male',
             TYPE        => 'Keyboard Port',
-            CAPTION     => 'Circular DIN-8 male'
+            CAPTION     => 'PS/2 Mouse'
         }
     ],
     'rhel-4.3' => [
@@ -400,40 +400,40 @@ my %tests = (
             CAPTION     => 'PS/2'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'JUSB1',
+            DESCRIPTION => 'Other',
             TYPE        => 'USB',
-            CAPTION     => 'Other'
+            CAPTION     => 'JUSB1'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'JUSB2',
+            DESCRIPTION => 'Other',
             TYPE        => 'USB',
-            CAPTION     => 'Other'
+            CAPTION     => 'JUSB2',
         },
         {
-            NAME        => undef,
+            NAME        => 'AUD1',
             DESCRIPTION => undef,
             TYPE        => 'Audio Port',
-            CAPTION     => undef
+            CAPTION     => 'AUD1'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'JLAN1',
+            DESCRIPTION => 'RJ-45',
             TYPE        => 'Network Port',
-            CAPTION     => 'RJ-45'
+            CAPTION     => 'JLAN1'
         },
         {
-            NAME        => undef,
+            NAME        => 'SCSI1',
             DESCRIPTION => undef,
             TYPE        => 'SCSI Wide',
-            CAPTION     => undef
+            CAPTION     => 'SCSI1'
         },
         {
-            NAME        => undef,
+            NAME        => 'SCSI2',
             DESCRIPTION => undef,
             TYPE        => 'SCSI Wide',
-            CAPTION     => undef
+            CAPTION     => 'SCSI2'
         }
     ],
     'rhel-4.6' => [
@@ -441,87 +441,87 @@ my %tests = (
             NAME        => 'J16',
             DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB Port 1'
         },
         {
             NAME        => 'J19',
             DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB Port 2'
         },
         {
             NAME        => 'J69',
             DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB Port 3'
         },
         {
             NAME        => 'J69',
             DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB Port 4'
         },
         {
             NAME        => 'J02',
             DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB Port 5'
         },
         {
             NAME        => 'J03',
             DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB Port 6'
         }
     ],
     'hp-dl180' => [
         {
             NAME        => 'J1',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'DB-15 female',
             TYPE        => 'Video Port',
-            CAPTION     => 'DB-15 female'
+            CAPTION     => 'VGA Port'
         },
         {
             NAME        => 'J2',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'DB-9 male',
             TYPE        => 'Serial Port 16550A Compatible',
-            CAPTION     => 'DB-9 male'
+            CAPTION     => 'COM Port'
         },
         {
             NAME        => 'J3',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'RJ-45',
             TYPE        => 'Network Port',
-            CAPTION     => 'RJ-45'
+            CAPTION     => 'NIC Port 1'
         },
         {
             NAME        => 'J3',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'RJ-45',
             TYPE        => 'Network Port',
-            CAPTION     => 'RJ-45'
+            CAPTION     => 'NIC Port 2'
         },
         {
             NAME        => 'J53',
             DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB Port 0'
         },
         {
             NAME        => 'J53',
             DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB Port 1'
         },
         {
             NAME        => 'J12',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB Port 2'
         },
         {
             NAME        => 'J12',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB Port 3'
         },
         {
             NAME        => 'J41 - SATA Port 1',
@@ -569,111 +569,111 @@ my %tests = (
     'linux-1' => [
         {
             NAME        => 'PS/2 Keyboard',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'PS/2',
             TYPE        => 'Keyboard Port',
-            CAPTION     => 'PS/2'
+            CAPTION     => 'PS/2 Keyboard'
         },
         {
             NAME        => 'USB12',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB12'
         },
         {
             NAME        => 'USB34',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB34'
         },
         {
             NAME        => 'USB56',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB56'
         },
         {
             NAME        => 'USB78',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB78'
         },
         {
             NAME        => 'USB910',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB910'
         },
         {
             NAME        => 'USB1112',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB1112'
         },
         {
             NAME        => 'GbE LAN',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'RJ-45',
             TYPE        => 'Network Port',
-            CAPTION     => 'RJ-45'
+            CAPTION     => 'GbE LAN'
         },
         {
             NAME        => 'COM 1',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'DB-9 male',
             TYPE        => 'Serial Port 16550A Compatible',
-            CAPTION     => 'DB-9 male'
+            CAPTION     => 'COM 1'
         },
         {
             NAME        => 'Audio Line Out1',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Mini Jack (headphones)',
             TYPE        => 'Audio Port',
-            CAPTION     => 'Mini Jack (headphones)'
+            CAPTION     => 'Audio Line Out1'
         },
         {
             NAME        => 'Audio Line Out2',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Mini Jack (headphones)',
             TYPE        => 'Audio Port',
-            CAPTION     => 'Mini Jack (headphones)'
+            CAPTION     => 'Audio Line Out2'
         },
         {
             NAME        => 'Audio Line Out3',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Mini Jack (headphones)',
             TYPE        => 'Audio Port',
-            CAPTION     => 'Mini Jack (headphones)'
+            CAPTION     => 'Audio Line Out3'
         },
         {
             NAME        => 'Audio Line Out4',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Mini Jack (headphones)',
             TYPE        => 'Audio Port',
-            CAPTION     => 'Mini Jack (headphones)'
+            CAPTION     => 'Audio Line Out4'
         },
         {
             NAME        => 'Audio Line Out5',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Mini Jack (headphones)',
             TYPE        => 'Audio Port',
-            CAPTION     => 'Mini Jack (headphones)'
+            CAPTION     => 'Audio Line Out5'
         },
         {
             NAME        => 'Audio Line Out6',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Mini Jack (headphones)',
             TYPE        => 'Audio Port',
-            CAPTION     => 'Mini Jack (headphones)'
+            CAPTION     => 'Audio Line Out6'
         },
         {
             NAME        => 'SPDIF_OUT',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'On Board Sound Input From CD-ROM',
             TYPE        => 'Audio Port',
-            CAPTION     => 'On Board Sound Input From CD-ROM'
+            CAPTION     => 'SPDIF_OUT'
         },
         {
             NAME        => 'IE1394_1',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'IEEE 1394',
             TYPE        => 'Firewire (IEEE P1394)',
-            CAPTION     => 'IEEE 1394'
+            CAPTION     => 'IE1394_1'
         },
         {
             NAME        => 'IE1394_2',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'IEEE 1394',
             TYPE        => 'Firewire (IEEE P1394)',
-            CAPTION     => 'IEEE 1394'
+            CAPTION     => 'IE1394_2'
         },
         {
             NAME        => 'SATA1',
@@ -770,54 +770,60 @@ my %tests = (
             DESCRIPTION => 'Other',
             TYPE        => 'Other',
             CAPTION     => undef
+        },
+        {
+            NAME        => 'JSD1',
+            DESCRIPTION => 'Other',
+            TYPE        => 'Other',
+            CAPTION     => 'Cardreader'
         }
     ],
     'openbsd-4.5' => [
         {
             NAME        => undef,
-            DESCRIPTION => undef,
+            DESCRIPTION => 'DB-25 female',
             TYPE        => 'Parallel Port PS/2',
             CAPTION     => 'DB-25 female'
         },
         {
             NAME        => undef,
-            DESCRIPTION => undef,
+            DESCRIPTION => 'DB-9 male',
             TYPE        => 'Serial Port 16550A Compatible',
             CAPTION     => 'DB-9 male'
         },
         {
             NAME        => undef,
-            DESCRIPTION => undef,
+            DESCRIPTION => 'PS/2',
             TYPE        => 'Keyboard Port',
             CAPTION     => 'PS/2'
         },
         {
             NAME        => undef,
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Mini DIN',
             TYPE        => 'Mouse Port',
             CAPTION     => 'Mini DIN'
         },
         {
             NAME        => undef,
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
             CAPTION     => 'Access Bus (USB)'
         },
         {
             NAME        => undef,
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
             CAPTION     => 'Access Bus (USB)'
         },
         {
             NAME        => undef,
-            DESCRIPTION => undef,
+            DESCRIPTION => 'RJ-45',
             TYPE        => 'Network Port',
             CAPTION     => 'RJ-45'
         },
         {
             NAME        => undef,
-            DESCRIPTION => undef,
+            DESCRIPTION => 'DB-15 female',
             TYPE        => 'Video Port',
             CAPTION     => 'DB-15 female'
         },
@@ -830,144 +836,144 @@ my %tests = (
     ],
     'oracle-server-x5-2' => [
         {
-            'CAPTION' => 'Access Bus (USB)',
-            'NAME' => 'J2803',
-            'TYPE' => 'USB',
-            'DESCRIPTION' => undef
+            NAME        => 'J2803',
+            DESCRIPTION => 'Access Bus (USB)',
+            TYPE        => 'USB',
+            CAPTION     => 'USB Internal Connector - Bottom'
         },
         {
-            'CAPTION' => 'Access Bus (USB)',
-            'NAME' => 'J2803',
-            'TYPE' => 'USB',
-            'DESCRIPTION' => undef
+            NAME        => 'J2803',
+            DESCRIPTION => 'Access Bus (USB)',
+            TYPE        => 'USB',
+            CAPTION     => 'USB Internal Connector - Top'
         },
         {
-            'CAPTION' => 'DB-15 female',
-            'NAME' => 'J2901',
-            'DESCRIPTION' => undef,
-            'TYPE' => 'Video Port'
+            NAME        => 'J2901',
+            DESCRIPTION => 'DB-15 female',
+            TYPE        => 'Video Port',
+            CAPTION     => 'VGA Connector'
         },
         {
-            'TYPE' => 'USB',
-            'DESCRIPTION' => undef,
-            'NAME' => 'J2801',
-            'CAPTION' => 'Access Bus (USB)'
+            NAME        => 'J2801',
+            DESCRIPTION => 'Access Bus (USB)',
+            TYPE        => 'USB',
+            CAPTION     => 'USB Rear Connector - Left'
         },
         {
-            'NAME' => 'J2802',
-            'DESCRIPTION' => undef,
-            'TYPE' => 'USB',
-            'CAPTION' => 'Access Bus (USB)'
+            NAME        => 'J2802',
+            DESCRIPTION => 'Access Bus (USB)',
+            TYPE        => 'USB',
+            CAPTION     => 'USB Rear Connector - Right'
         },
         {
-            'CAPTION' => 'Access Bus (USB)',
-            'NAME' => undef,
-            'DESCRIPTION' => undef,
-            'TYPE' => 'USB'
+            NAME        => 'USB Front Connector - Left',
+            DESCRIPTION => 'Access Bus (USB)',
+            TYPE        => 'USB',
+            CAPTION     => 'USB Front Connector - Left'
         },
         {
-            'NAME' => undef,
-            'DESCRIPTION' => undef,
-            'TYPE' => 'USB',
-            'CAPTION' => 'Access Bus (USB)'
+            NAME        => 'USB Front Connector - Right',
+            DESCRIPTION => 'Access Bus (USB)',
+            TYPE        => 'USB',
+            CAPTION     => 'USB Front Connector - Right'
         },
         {
-            'NAME' => 'J2903',
-            'DESCRIPTION' => undef,
-            'TYPE' => 'Serial Port 16550 Compatible',
-            'CAPTION' => 'RJ-45'
+            NAME        => 'J2903',
+            DESCRIPTION => 'RJ-45',
+            TYPE        => 'Serial Port 16550 Compatible',
+            CAPTION     => 'SER MGT'
         },
         {
-            'CAPTION' => 'RJ-45',
-            'NAME' => 'J2902',
-            'DESCRIPTION' => undef,
-            'TYPE' => 'Network Port'
+            NAME        => 'J2902',
+            DESCRIPTION => 'RJ-45',
+            TYPE        => 'Network Port',
+            CAPTION     => 'NET MGT'
         },
         {
-            'CAPTION' => 'RJ-45',
-            'NAME' => 'J3502',
-            'DESCRIPTION' => undef,
-            'TYPE' => 'Network Port'
+            NAME        => 'J3502',
+            DESCRIPTION => 'RJ-45',
+            TYPE        => 'Network Port',
+            CAPTION     => 'NET 0'
         },
         {
-            'TYPE' => 'Network Port',
-            'DESCRIPTION' => undef,
-            'NAME' => 'J3501',
-            'CAPTION' => 'RJ-45'
+            NAME        => 'J3501',
+            DESCRIPTION => 'RJ-45',
+            TYPE        => 'Network Port',
+            CAPTION     => 'NET 1'
         },
         {
-            'NAME' => 'J3802',
-            'TYPE' => 'Network Port',
-            'DESCRIPTION' => undef,
-            'CAPTION' => 'RJ-45'
+            NAME        => 'J3802',
+            DESCRIPTION => 'RJ-45',
+            TYPE        => 'Network Port',
+            CAPTION     => 'NET 2'
         },
         {
-            'DESCRIPTION' => undef,
-            'TYPE' => 'Network Port',
-            'NAME' => 'J3801',
-            'CAPTION' => 'RJ-45'
+            NAME        => 'J3801',
+            DESCRIPTION => 'RJ-45',
+            TYPE        => 'Network Port',
+            CAPTION     => 'NET 3'
         },
         {
-            'CAPTION' => 'SAS/SATA Plug Receptacle',
-            'TYPE' => 'SATA',
-            'DESCRIPTION' => undef,
-            'NAME' => 'J2003'
+            NAME        => 'J2003',
+            DESCRIPTION => 'SAS/SATA Plug Receptacle',
+            TYPE        => 'SATA',
+            CAPTION     => 'DVD'
         }
     ],
     'S3000AHLX' => [
         {
             NAME        => 'J9A1',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'PS/2',
             TYPE        => 'Keyboard Port',
-            CAPTION     => 'PS/2'
+            CAPTION     => 'PS2 Keyboard'
         },
         {
             NAME        => 'J9A1',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'PS/2',
             TYPE        => 'Mouse Port',
-            CAPTION     => 'PS/2'
+            CAPTION     => 'PS2 Mouse'
         },
         {
             NAME        => 'J8A1',
             DESCRIPTION => 'Other',
             TYPE        => 'Serial Port 16550A Compatible',
-            CAPTION     => undef
+            CAPTION     => 'Serial Port'
         },
         {
             NAME        => 'JA5A1',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB'
         },
         {
             NAME        => 'JA5A1',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB'
         },
         {
             NAME        => 'J1F2',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB'
         },
         {
             NAME        => 'J1F2',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB'
         },
         {
             NAME        => 'JA5A1',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'RJ-45',
             TYPE        => 'Network Port',
-            CAPTION     => 'RJ-45'
+            CAPTION     => 'RJ-45 Type'
         },
         {
             NAME        => 'JA6A1',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'RJ-45',
             TYPE        => 'Network Port',
-            CAPTION     => 'RJ-45'
+            CAPTION     => 'RJ-45 Type'
         },
         {
             NAME        => 'J3J3 - FLOPPY',
@@ -1020,22 +1026,22 @@ my %tests = (
     ],
     'S5000VSA' => [
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'PS/2 Keyboard',
+            DESCRIPTION => 'PS/2',
             TYPE        => 'Keyboard Port',
-            CAPTION     => 'PS/2'
+            CAPTION     => 'PS/2 Keyboard'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'PS/2 Mouse',
+            DESCRIPTION => 'PS/2',
             TYPE        => 'Mouse Port',
-            CAPTION     => 'PS/2'
+            CAPTION     => 'PS/2 Mouse'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'SERIAL A',
+            DESCRIPTION => 'DB-9 male',
             TYPE        => 'Serial Port 16550A Compatible',
-            CAPTION     => 'DB-9 male'
+            CAPTION     => 'SERIAL A'
         },
         {
             NAME        => 'J1B1 - SERIAL B (EMP)',
@@ -1044,34 +1050,34 @@ my %tests = (
             CAPTION     => undef
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'VGA',
+            DESCRIPTION => 'DB-15 female',
             TYPE        => 'Video Port',
-            CAPTION     => 'DB-15 female'
+            CAPTION     => 'VGA'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'USB',
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'USB',
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'USB',
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'USB',
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB'
         },
         {
             NAME        => 'J1J8 - 10 PIN (Pin 9 Cut) USB',
@@ -1092,16 +1098,16 @@ my %tests = (
             CAPTION     => undef
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'NIC 1',
+            DESCRIPTION => 'RJ-45',
             TYPE        => 'Network Port',
-            CAPTION     => 'RJ-45'
+            CAPTION     => 'NIC 1'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'NIC 2',
+            DESCRIPTION => 'RJ-45',
             TYPE        => 'Network Port',
-            CAPTION     => 'RJ-45'
+            CAPTION     => 'NIC 2'
         },
         {
             NAME        => 'J2K4 - IDE Connector',
@@ -1193,25 +1199,25 @@ my %tests = (
             NAME        => 'J19',
             DESCRIPTION => '9 Pin Dual Inline (pin 10 cut)',
             TYPE        => 'Serial Port 16550A Compatible',
-            CAPTION     => 'DB-9 male'
+            CAPTION     => 'COM 1'
         },
         {
             NAME        => 'J23',
             DESCRIPTION => '25 Pin Dual Inline (pin 26 cut)',
             TYPE        => 'Parallel Port ECP/EPP',
-            CAPTION     => 'DB-25 female'
+            CAPTION     => 'Parallel'
         },
         {
             NAME        => 'J11',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Circular DIN-8 male',
             TYPE        => 'Keyboard Port',
-            CAPTION     => 'Circular DIN-8 male'
+            CAPTION     => 'Keyboard'
         },
         {
             NAME        => 'J12',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Circular DIN-8 male',
             TYPE        => 'Keyboard Port',
-            CAPTION     => 'Circular DIN-8 male'
+            CAPTION     => 'PS/2 Mouse'
         }
     ],
     'vmware-esx' => [
@@ -1219,125 +1225,125 @@ my %tests = (
             NAME        => 'J19',
             DESCRIPTION => '9 Pin Dual Inline (pin 10 cut)',
             TYPE        => 'Serial Port 16550A Compatible',
-            CAPTION     => 'DB-9 male'
+            CAPTION     => 'COM 1'
         },
         {
             NAME        => 'J23',
             DESCRIPTION => '25 Pin Dual Inline (pin 26 cut)',
             TYPE        => 'Parallel Port ECP/EPP',
-            CAPTION     => 'DB-25 female'
+            CAPTION     => 'Parallel'
         },
         {
             NAME        => 'J11',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Circular DIN-8 male',
             TYPE        => 'Keyboard Port',
-            CAPTION     => 'Circular DIN-8 male'
+            CAPTION     => 'Keyboard'
         },
         {
             NAME        => 'J12',
-            DESCRIPTION => undef,
+            DESCRIPTION => 'Circular DIN-8 male',
             TYPE        => 'Keyboard Port',
-            CAPTION     => 'Circular DIN-8 male'
+            CAPTION     => 'PS/2 Mouse'
         }
     ],
     'vmware-esx-2.5' => [
         {
-            NAME        => undef,
+            NAME        => 'J19',
             DESCRIPTION => '9 Pin Dual Inline (pin 10 cut)',
             TYPE        => 'Serial Port 16650A Compatible',
             CAPTION     => 'DB-9 pin male'
         },
         {
-            NAME        => undef,
+            NAME        => 'J23',
             DESCRIPTION => '25 Pin Dual Inline (pin 26 cut)',
             TYPE        => 'Parallel Port ECP/EPP',
             CAPTION     => 'DB-25 pin female'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'J11',
+            DESCRIPTION => 'Keyboard',
             TYPE        => 'Keyboard Port',
             CAPTION     => 'Circular DIN-8 male'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'J12',
+            DESCRIPTION => 'PS/2 Mouse',
             TYPE        => 'Keyboard Port',
             CAPTION     => 'Circular DIN-8 male'
         }
     ],
     'windows' => [
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'PARALLEL PORT',
+            DESCRIPTION => 'DB-25 female',
             TYPE        => 'Parallel Port ECP',
-            CAPTION     => 'DB-25 female'
+            CAPTION     => 'PARALLEL PORT'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'EXTERNAL MONITOR PORT',
+            DESCRIPTION => 'DB-15 female',
             TYPE        => 'Other',
-            CAPTION     => 'DB-15 female'
+            CAPTION     => 'EXTERNAL MONITOR PORT'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'BUILT-IN MODEM PORT',
+            DESCRIPTION => 'RJ-11',
             TYPE        => 'Modem Port',
-            CAPTION     => 'RJ-11'
+            CAPTION     => 'BUILT-IN MODEM PORT'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'BUILT-IN LAN PORT',
+            DESCRIPTION => 'RJ-45',
             TYPE        => 'Network Port',
-            CAPTION     => 'RJ-45'
+            CAPTION     => 'BUILT-IN LAN PORT'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'INFRARED PORT',
+            DESCRIPTION => 'Infrared',
             TYPE        => 'Other',
-            CAPTION     => 'Infrared'
+            CAPTION     => 'INFRARED PORT'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'USB PORT',
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB PORT'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'USB PORT',
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB PORT'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'USB PORT',
+            DESCRIPTION => 'Access Bus (USB)',
             TYPE        => 'USB',
-            CAPTION     => 'Access Bus (USB)'
+            CAPTION     => 'USB PORT'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'HEADPHONE JACK',
+            DESCRIPTION => 'Mini Jack (headphones)',
             TYPE        => 'Other',
-            CAPTION     => 'Mini Jack (headphones)'
+            CAPTION     => 'HEADPHONE JACK'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => '1394 PORT',
+            DESCRIPTION => 'IEEE 1394',
             TYPE        => 'Firewire (IEEE P1394)',
-            CAPTION     => 'IEEE 1394'
+            CAPTION     => '1394 PORT'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'MICROPHONE JACK',
+            DESCRIPTION => 'Other',
             TYPE        => 'Other',
-            CAPTION     => 'Other'
+            CAPTION     => 'MICROPHONE JACK'
         },
         {
-            NAME        => undef,
-            DESCRIPTION => undef,
+            NAME        => 'VIDEO-OUT JACK',
+            DESCRIPTION => 'Other',
             TYPE        => 'Other',
-            CAPTION     => 'Other'
+            CAPTION     => 'VIDEO-OUT JACK'
         }
     ],
     'windows-hyperV' => [
@@ -1345,49 +1351,49 @@ my %tests = (
             NAME        => 'USB',
             DESCRIPTION => 'Centronics',
             TYPE        => 'USB',
-            CAPTION     => 'Centronics'
+            CAPTION     => 'USB1'
         },
         {
             NAME        => 'USB',
             DESCRIPTION => 'Centronics',
             TYPE        => 'USB',
-            CAPTION     => 'Centronics'
+            CAPTION     => 'USB2'
         },
         {
             NAME        => 'COM1',
             DESCRIPTION => 'DB-9 female',
             TYPE        => 'Serial Port 16550A Compatible',
-            CAPTION     => 'DB-9 female'
+            CAPTION     => 'COM1'
         },
         {
             NAME        => 'COM2',
             DESCRIPTION => 'DB-9 female',
             TYPE        => 'Serial Port 16550A Compatible',
-            CAPTION     => 'DB-9 female'
+            CAPTION     => 'COM2'
         },
         {
             NAME        => 'Printer',
             DESCRIPTION => 'DB-25 male',
             TYPE        => 'Parallel Port ECP/EPP',
-            CAPTION     => 'DB-25 male'
+            CAPTION     => 'Lpt1'
         },
         {
             NAME        => 'Video',
             DESCRIPTION => 'DB-15 male',
             TYPE        => 'Video Port',
-            CAPTION     => 'DB-15 female'
+            CAPTION     => 'Video'
         },
         {
             NAME        => 'Keyboard',
             DESCRIPTION => 'PS/2',
             TYPE        => 'Keyboard Port',
-            CAPTION     => 'PS/2'
+            CAPTION     => 'Keyboard'
         },
         {
             NAME        => 'Mouse',
             DESCRIPTION => 'PS/2',
             TYPE        => 'Mouse Port',
-            CAPTION     => 'PS/2'
+            CAPTION     => 'Mouse'
         }
     ]
 );

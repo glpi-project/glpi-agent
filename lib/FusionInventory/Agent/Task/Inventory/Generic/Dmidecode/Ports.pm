@@ -40,10 +40,10 @@ sub _getPorts {
     my $ports;
     foreach my $info (@{$infos->{8}}) {
         my $port = {
-            CAPTION     => $info->{'External Connector Type'},
-            DESCRIPTION => $info->{'Internal Connector Type'},
-            NAME        => $info->{'Internal Reference Designator'},
-            TYPE        => $info->{'Port Type'},
+            CAPTION     => $info->{'External Reference Designator'} // $info->{'External Connector Type'} // $info->{'External Designator'},
+            DESCRIPTION => $info->{'Internal Connector Type'} // $info->{'External Designator'} // $info->{'Internal Designator'} // $info->{'External Connector Type'},
+            NAME        => $info->{'Internal Reference Designator'} // $info->{'External Reference Designator'} // $info->{'Internal Designator'} // $info->{'External Designator'},
+            TYPE        => $info->{'Port Type'} // $info->{'External Connector Type'},
         };
 
         push @$ports, $port;

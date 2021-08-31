@@ -520,6 +520,14 @@ Port Connector Information
 	External Connector Type: None
 	Port Type: Other
 
+Handle 0x0006, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: JSD1
+	Internal Connector Type: None
+	External Reference Designator: Cardreader
+	External Connector Type: Other
+	Port Type: None
+
 Handle 0x002F, DMI type 9, 13 bytes
 System Slot Information
 	Designation: PCIEX16_1
