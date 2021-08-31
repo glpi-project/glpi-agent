@@ -5,13 +5,18 @@ use warnings;
 
 use parent 'GLPI::Agent::Protocol::Message';
 
+use FusionInventory::Agent::Tools;
+
 use constant date_qr            => qr/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
 use constant datetime_qr        => qr/^[0-9]{4}-[0-9]{2}-[0-9]{2}[ |T][0-9]{2}:[0-9]{2}:[0-9]{2}(Z|[+|-][0-9]{2}:[0-9]{2}:[0-9]{2})?$/;
 use constant dateordatetime_qr  => qr/^[0-9]{4}-[0-9]{2}-[0-9]{2}([ |T][0-9]{2}:[0-9]{2}:[0-9]{2}(Z|[+|-][0-9]{2}:[0-9]{2}:[0-9]{2})?)?$/;
 
-# List of value to normalize as integer before providing content for export
+# List of value to normalize with integer/string/boolean/date/datetime or
+# dateordatetime format before providing content for export
+# Other constraints are also checked like lowercase, uppercase or required.
 my %normalize = (
     ACCESSLOG        => {
+        required        => [ qw/LOGDATE/ ],
         datetime        => [ qw/LOGDATE/ ],
     },
     ANTIVIRUS        => {
@@ -30,11 +35,13 @@ my %normalize = (
         string          => [ qw/MODEL FAMILYNUMBER/ ],
     },
     DATABASES_SERVICES => {
+        required        => [ qw/NAME VERSION/ ],
         integer         => [ qw/PORT SIZE/ ],
         boolean         => [ qw/IS_ACTIVE IS_ONBACKUP/ ],
         datetime        => [ qw/LAST_BOOT_DATE LAST_BACKUP_DATE/ ],
     },
     "DATABASES_SERVICES/DATABASES" => {
+        required        => [ qw/NAME/ ],
         integer         => [ qw/SIZE/ ],
         boolean         => [ qw/IS_ACTIVE IS_ONBACKUP/ ],
         datetime        => [ qw/CREATION_DATE UPDATE_DATE LAST_BACKUP_DATE/ ],
@@ -43,16 +50,31 @@ my %normalize = (
         boolean         => [ qw/SYSTEMDRIVE/ ],
         integer         => [ qw/FREE TOTAL/ ],
     },
+    ENVS             => {
+        required        => [ qw/KEY VAL/ ],
+    },
+    FIREWALLS        => {
+        required        => [ qw/STATUS/ ],
+    },
     HARDWARE         => {
         integer         => [ qw/MEMORY SWAP/ ],
     },
+    LOCAL_GROUPS     => {
+        required        => [ qw/ID NAME/ ],
+    },
+    LOCAL_USERS      => {
+        required        => [ qw/ID/ ],
+    },
     PHYSICAL_VOLUMES => {
+        required        => [ qw/DEVICE FORMAT FREE PV_PE_COUNT PV_UUID SIZE/ ],
         integer         => [ qw/FREE PE_SIZE PV_PE_COUNT SIZE/ ],
     },
     VOLUME_GROUPS    => {
+        required        => [ qw/FREE LV_COUNT PV_COUNT SIZE VG_EXTENT_SIZE VG_NAME VG_UUID/ ],
         integer         => [ qw/FREE LV_COUNT PV_COUNT SIZE/ ],
     },
     LOGICAL_VOLUMES  => {
+        required        => [ qw/LV_NAME LV_UUID SIZE/ ],
         integer         => [ qw/SEG_COUNT SIZE/ ],
     },
     MEMORIES         => {
@@ -62,6 +84,7 @@ my %normalize = (
         integer         => [ qw/PORT/ ],
     },
     NETWORKS         => {
+        required        => [ qw/DESCRIPTION/ ],
         boolean         => [ qw/MANAGEMENT VIRTUALDEV/ ],
         integer         => [ qw/MTU/ ],
         lowercase       => [ qw/STATUS/ ],
@@ -70,17 +93,30 @@ my %normalize = (
     OPERATINGSYSTEM  => {
         datetime        => [ qw/BOOT_TIME INSTALL_DATE/ ],
     },
+    "OPERATINGSYSTEM/TIMEZONE"  => {
+        required    => [ qw/NAME OFFSET/ ],
+    },
+    PORTS            => {
+        required        => [ qw/TYPE/ ],
+    },
     PRINTERS         => {
+        required        => [ qw/NAME/ ],
         boolean         => [ qw/NETWORK SHARED/ ],
     },
     PROCESSES        => {
+        required        => [ qw/CMD PID USER/ ],
         datetime        => [ qw/STARTED/ ],
         integer         => [ qw/PID VIRTUALMEMORY/ ],
     },
     REMOTE_MGNT      => {
+        required        => [ qw/ID TYPE/ ],
         string          => [ qw/ID/ ],
     },
+    SLOTS            => {
+        required        => [ qw/DESCRIPTION NAME/ ],
+    },
     SOFTWARES        => {
+        required        => [ qw/NAME/ ],
         boolean         => [ qw/NO_REMOVE/ ],
         dateordatetime  => [ qw/INSTALLDATE/ ],
         integer         => [ qw/FILESIZE/ ],
@@ -94,6 +130,7 @@ my %normalize = (
         integer         => [ qw/MEMORY/ ],
     },
     VIRTUALMACHINES  => {
+        required        => [ qw/NAME VMTYPE/ ],
         integer         => [ qw/MEMORY VCPU/ ],
         lowercase       => [ qw/STATUS VMTYPE/ ],
     },
@@ -132,7 +169,7 @@ sub normalize {
     my $content = $self->get("content")
         or return;
 
-    # Normalize some integers and booleans set as string to follow JSON specs
+    # Normalize to follow JSON specs
     foreach my $entrykey (keys(%normalize)) {
         my @entries = ($content->{$entrykey});
         if (!defined($entries[0]) && $entrykey =~ /^(\w+)\/(\w+)$/ && defined($content->{$1})) {
@@ -145,12 +182,65 @@ sub normalize {
         foreach my $entry (@entries) {
             my $ref = ref($entry)
                 or next;
-            foreach my $norm (keys(%{$normalize{$entrykey}})) {
+            # Be sure to handle "required" after all other constraint to support
+            # the case another constraint removes a required one
+            my @normalize = grep { $_ ne "required" } keys(%{$normalize{$entrykey}});
+            foreach my $norm (@normalize) {
                 foreach my $value (@{$normalize{$entrykey}->{$norm}}) {
                     if ($ref eq 'ARRAY') {
                         map { $self->_norm($norm, $_, $value, $entrykey) } @{$entry};
                     } else {
                         $self->_norm($norm, $entry, $value, $entrykey);
+                    }
+                }
+            }
+            if ($normalize{$entrykey}->{required}) {
+                if ($ref eq 'ARRAY') {
+                    # Check validity of each entry
+                    if (any { my $e = $_; any { ! defined($e->{$_}) } @{$normalize{$entrykey}->{required}} } @{$entry}) {
+                        my ($entryref, $key) = ($content, $entrykey);
+                        if ($entrykey =~ /^(\w+)\/(\w+)$/) {
+                            if (ref($content->{$1}) eq 'ARRAY') {
+                                ($entryref) = grep { $_->{$2} == $entry } @{$content->{$1}};
+                                $key = $2;
+                            } else {
+                                ($entryref, $key) = ($content->{$1}, $2);
+                            }
+                        }
+                        my @entrycontent = ();
+                        foreach my $oldentry (@{$entryref->{$key}}) {
+                            my @missing = grep { ! defined($oldentry->{$_}) } @{$normalize{$entrykey}->{required}};
+                            if (@missing) {
+                                if ($self->{logger}) {
+                                    my $missing = join(", ", @missing)." value".(@missing>1 ? "s":"");
+                                    my $dump = join(",", map { $_.":".$oldentry->{$_} } sort keys(%{$oldentry}));
+                                    $self->{logger}->debug("inventory format: Removing $entrykey entry element with required missing $missing: $dump");
+                                }
+                                next;
+                            }
+                            push @entrycontent, $oldentry;
+                        }
+                        if (@entrycontent) {
+                            $entryref->{$key} = \@entrycontent;
+                        } else {
+                            delete $entryref->{$key};
+                            $self->{logger}->debug("inventory format: Removed all $entrykey entry elements")
+                                if $self->{logger};
+                        }
+                    }
+                } else {
+                    my @missing = grep { ! defined($entry->{$_}) } @{$normalize{$entrykey}->{required}};
+                    if (@missing) {
+                        if ($self->{logger}) {
+                            my $missing = join(", ", @missing)." value".(@missing>1 ? "s":"");
+                            my $dump = join(",", map { $_.":".$entry->{$_} } sort keys(%{$entry}));
+                            $self->{logger}->debug("inventory format: Removing $entrykey entry with required missing $missing: $dump");
+                        }
+                        if ($entrykey =~ /^(\w+)\/(\w+)$/) {
+                            delete $content->{$1}->{$2};
+                        } else {
+                            delete $content->{$entrykey};
+                        }
                     }
                 }
             }
