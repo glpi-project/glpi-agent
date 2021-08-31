@@ -49,9 +49,9 @@ sub  _getVirtualMachineState {
     $state->{VMID} = $info{pid};
 
     $state->{STATUS} =
-        $info{status} eq 'Running' ? STATUS_RUNNING :
-        $info{status} eq 'FROZEN'  ? STATUS_PAUSED  :
-        $info{status} eq 'Stopped' ? STATUS_OFF     :
+        $info{status} =~ /^Running$/i ? STATUS_RUNNING :
+        $info{status} =~ /^FROZEN$/i  ? STATUS_PAUSED  :
+        $info{status} =~ /^Stopped$/i ? STATUS_OFF     :
         $info{status};
 
     return $state;
