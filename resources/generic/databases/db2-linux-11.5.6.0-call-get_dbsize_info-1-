@@ -1,0 +1,22 @@
+
+   Database Connection Information
+
+ Database server        = DB2/LINUXX8664 11.5.6.0
+ SQL authorization ID   = DB2INST1
+ Local database alias   = TESTDB
+
+
+
+  Value of output parameters
+  --------------------------
+  Parameter Name  : SNAPSHOTTIMESTAMP
+  Parameter Value : 2021-09-03-14.20.57.316947
+
+  Parameter Name  : DATABASESIZE
+  Parameter Value : 124866560
+
+  Parameter Name  : DATABASECAPACITY
+  Parameter Value : 2680635392
+
+  Return Status = 0
+

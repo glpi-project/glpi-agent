@@ -1,0 +1,7 @@
+SQL0104N  An unexpected token "192.168.5.2:50000/testdb" was found following 
+"TO".  Expected tokens may include:  "<database-alias>".  SQLSTATE=42601
+
+SQL1092N  The requested command or operation failed because the user ID does 
+not have the authority to perform the requested command or operation.  User 
+ID: "ROOT".
+

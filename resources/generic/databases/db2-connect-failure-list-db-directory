@@ -1,0 +1,21 @@
+SQL0104N  An unexpected token "192.168.5.2:50000/testdb" was found following 
+"TO".  Expected tokens may include:  "<database-alias>".  SQLSTATE=42601
+
+
+ System Database Directory
+
+ Number of entries in the directory = 1
+
+Database 1 entry:
+
+ Database alias                       = TESTDB
+ Database name                        = TESTDB
+ Local database directory             = /database/data
+ Database release level               = 15.00
+ Comment                              =
+ Directory entry type                 = Indirect
+ Catalog database partition number    = 0
+ Alternate server hostname            =
+ Alternate server port number         =
+
+

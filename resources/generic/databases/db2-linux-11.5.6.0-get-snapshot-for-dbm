@@ -1,0 +1,87 @@
+
+            Database Manager Snapshot
+
+Node type                                      = Enterprise Server Edition with local and remote clients
+Instance name                                  = db2inst1
+Number of members in DB2 instance              = 1
+Database manager status                        = Active
+
+Product name                                   = DB2 v11.5.6.0
+Service level                                  = s2106111000 (DYN2106111000AMD64)
+
+Private Sort heap allocated                    = 0
+Private Sort heap high water mark              = 0
+Post threshold sorts                           = Not Collected
+Piped sorts requested                          = 56
+Piped sorts accepted                           = 56
+
+Start Database Manager timestamp               = 09/02/2021 07:00:05.761700
+Last reset timestamp                           =
+Snapshot timestamp                             = 09/03/2021 14:20:54.711367
+
+Remote connections to db manager               = 0
+Remote connections executing in db manager     = 0
+Local connections                              = 0
+Local connections executing in db manager      = 0
+Active local databases                         = 0
+
+High water mark for agents registered          = 19
+Agents registered                              = 5
+Idle agents                                    = 3
+
+Committed private Memory (Bytes)               = 24444928
+
+Switch list for member 0
+Buffer Pool Activity Information  (BUFFERPOOL) = OFF
+Lock Information                        (LOCK) = OFF
+Sorting Information                     (SORT) = OFF
+SQL Statement Information          (STATEMENT) = OFF
+Table Activity Information             (TABLE) = OFF
+Take Timestamp Information         (TIMESTAMP) = ON  09/02/2021 07:00:05.761700
+Unit of Work Information                 (UOW) = OFF
+
+Agents assigned from pool                      = 889
+Agents created from empty pool                 = 1041
+Agents stolen from another application         = 0
+High water mark for coordinating agents        = 19
+Hash joins after heap threshold exceeded       = 0
+OLAP functions after heap threshold exceeded   = 0
+
+Total number of gateway connections            = 0
+Current number of gateway connections          = 0
+Gateway connections waiting for host reply     = 0
+Gateway connections waiting for client request = 0
+Gateway connection pool agents stolen          = 0
+
+Node FCM information corresponds to            = 0
+Free FCM buffers                               = 128
+Total FCM buffers                              = 128
+Free FCM buffers low water mark                = 128
+Maximum number of FCM buffers                  = 8192
+Free FCM channels                              = 128
+Total FCM channels                             = 128
+Free FCM channels low water mark               = 127
+Maximum number of FCM channels                 = 8192
+
+
+Memory usage for database manager:
+
+  Node number                                  = 0
+    Memory Pool Type                           = Other Memory
+       Current size (bytes)                    = 48300032
+       High water mark (bytes)                 = 61210624
+       Configured size (bytes)                 = 333774848
+
+  Node number                                  = 0
+    Memory Pool Type                           = FCMBP Heap
+       Current size (bytes)                    = 4456448
+       High water mark (bytes)                 = 4456448
+       Configured size (bytes)                 = 4456448
+
+  Node number                                  = 0
+    Memory Pool Type                           = Database Monitor Heap
+       Current size (bytes)                    = 196608
+       High water mark (bytes)                 = 458752
+       Configured size (bytes)                 = 393216
+
+
