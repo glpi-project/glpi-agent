@@ -73,6 +73,7 @@ sub _getDatabaseService {
         my $sqlplus = "sqlplus";
         unless (canRun($sqlplus)) {
             $reset_ENV{ORACLE_HOME} = $ENV{ORACLE_HOME};
+            $reset_ENV{ORACLE_SID}  = $ENV{ORACLE_SID};
             $ENV{ORACLE_HOME} = _oracleHome();
             unless ($ENV{ORACLE_HOME} && -d $ENV{ORACLE_HOME}) {
                 $params{logger}->debug("Can't find ORACLE_HOME") if $params{logger};
@@ -103,30 +104,36 @@ sub _getDatabaseService {
         FusionInventory::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
         $params{connect} = _oracleConnect($credential) // "";
 
-        my @test = _runSql(
-            sql     => "SHOW release",
-            %params
-        );
-        if (first { /^(ERROR|Usage):/ } @test) {
-            my ($error) = first { /^(ORA|SP2)-/ } @test;
-            $params{logger}->debug("Oracle CONNECT error: $error") if $error && $params{logger};
-            next;
-        }
-
-        my @instances = _runSql(
-            sql => "SELECT instance_name, database_status, version_full, "._datefield("startup_time")." FROM v\$instance",
-            %params
-        );
-        if (first { /^(ERROR(?: at line 1)?|Usage):/ } @instances) {
-            my ($error) = first { /^(ORA|SP2)-/ } @instances;
-            $params{logger}->debug("Oracle instance SELECT error: $error") if $error && $params{logger};
-            next;
+        my %SID;
+        my @instances;
+        if ($params{connect}) {
+            @instances = _getInstances(%params);
+        } elsif (-e '/etc/oratab') {
+            my @lines = getAllLines(
+                file    => '/etc/oratab',
+                logger  => $params{logger}
+            );
+            foreach my $line (@lines) {
+                next unless $line =~ /^([^#*:][^:]*):([^:]+):/;
+                next unless -d $2;
+                my @inst = _getInstances(
+                    sid     => $1,
+                    %params
+                );
+                foreach my $name (map { /^([^,]+),/ } @inst) {
+                    $SID{$name} = $1;
+                }
+                push @instances, @inst;
+            }
         }
 
         foreach my $instance (@instances) {
             my ($instance_name, $state, $fullversion, $starttime) = split(',', $instance)
                 or next;
             next unless $fullversion;
+
+            # We will use SID if found in oratab
+            $params{sid} = $SID{$instance_name} if $SID{$instance_name};
 
             my $dbs_size = 0;
 
@@ -194,6 +201,32 @@ sub _getDatabaseService {
     return \@dbs;
 }
 
+sub _getInstances {
+    my (%params) = @_;
+
+    my @test = _runSql(
+        sql     => "SHOW release",
+        %params
+    );
+    if (first { /^(ERROR|Usage):/ } @test) {
+        my ($error) = first { /^(ORA|SP2)-/ } @test;
+        $params{logger}->debug("Oracle CONNECT error: $error") if $error && $params{logger};
+        return;
+    }
+
+    my @instances = _runSql(
+        sql => "SELECT instance_name, database_status, version_full, "._datefield("startup_time")." FROM v\$instance",
+        %params
+    );
+    if (first { /^(ERROR(?: at line 1)?|Usage):/ } @instances) {
+        my ($error) = first { /^(ORA|SP2)-/ } @instances;
+        $params{logger}->debug("Oracle instance SELECT error: $error") if $error && $params{logger};
+        return;
+    }
+
+    return @instances;
+}
+
 sub _datefield {
     my $field = shift;
     return "to_char($field,'YYYY-MM-DD HH24:MI:SS')";
@@ -205,7 +238,8 @@ sub _runSql {
     my $sql = delete $params{sql}
         or return;
 
-    my $command .= "sqlplus -S -L -F";
+    my $command = $params{sid} ? "ORACLE_SID=$params{sid} " : "";
+    $command .= "sqlplus -S -L -F";
     $command .= $params{connect} ? " /nolog" : " / AS SYSDBA";
 
     # Don't try to create the temporary sql file during unittest
