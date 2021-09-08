@@ -235,7 +235,7 @@ sub install_service {
     $self->system("chmod +x /etc/rc.d/init.d/glpi-agent");
     $self->system("chkconfig --add glpi-agent") unless qx{chkconfig --list glpi-agent 2>/dev/null};
     $self->verbose("Trying to start service ...");
-    $self->run("service restart glpi-agent");
+    $self->run("service glpi-agent restart");
 }
 
 sub install_cron {
