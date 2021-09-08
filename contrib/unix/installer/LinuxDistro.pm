@@ -460,4 +460,11 @@ sub downgradeAllowed {
     return $self->{_downgrade};
 }
 
+sub which {
+    my ($self, $cmd) = @_;
+    $cmd = qx{which $cmd 2>/dev/null};
+    chomp $cmd;
+    return $cmd;
+}
+
 1;

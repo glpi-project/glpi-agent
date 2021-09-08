@@ -16,7 +16,7 @@ sub init {
     my ($self) = @_;
 
     die "Can't install glpi-agent via snap without snap installed\n"
-        unless qx{which snap 2>/dev/null};
+        unless $self->which("snap");
 
     $self->{_bin} = "/snap/bin/glpi-agent";
 
