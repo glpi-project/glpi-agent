@@ -216,6 +216,28 @@ sub clean {
     unlink "/etc/sysconfig/glpi-agent" if -e "/etc/sysconfig/glpi-agent";
 }
 
+sub install_service {
+    my ($self) = @_;
+
+    return $self->SUPER::install_service() if $self->which("systemctl");
+
+    unless ($self->which("chkconfig") && $self->which("service") && -d "/etc/rc.d/init.d") {
+        return $self->info("Failed to enable glpi-agent service: unsupported distro");
+    }
+
+    $self->info("Enabling glpi-agent service using init file...");
+
+    $self->verbose("Extracting init file ...");
+    $self->{_archive}->extract("pkg/rpm/glpi-agent.init.redhat")
+        or die "Failed to extract glpi-agent.init.redhat: $!\n";
+    $self->verbose("Installing init file ...");
+    $self->system("mv -vf glpi-agent.init.redhat /etc/rc.d/init.d/glpi-agent");
+    $self->system("chmod +x /etc/rc.d/init.d/glpi-agent");
+    $self->system("chkconfig --add glpi-agent") unless qx{chkconfig --list glpi-agent 2>/dev/null};
+    $self->verbose("Trying to start service ...");
+    $self->run("service restart glpi-agent");
+}
+
 sub install_cron {
     my ($self) = @_;
     # glpi-agent-cron package should have been installed

@@ -380,7 +380,7 @@ sub install {
         # If requested, still run inventory now
         if ($self->{_runnow}) {
             $self->info("Asking service to run inventory now as requested...");
-            system("systemctl -s SIGUSR1 kill glpi-agent" . ($self->verbose ? "" : " >/dev/null 2>&1"));
+            $self->system("systemctl -s SIGUSR1 kill glpi-agent");
         }
     } elsif ($self->{_cron}) {
         $self->install_cron();
@@ -388,7 +388,7 @@ sub install {
         # If requested, still run inventory now
         if ($self->{_runnow}) {
             $self->info("Running inventory now as requested...");
-            system( $self->{_bin} .($self->verbose ? "" : " >/dev/null 2>&1"));
+            $self->system( $self->{_bin} );
         }
     }
     $self->clean_packages();
@@ -425,7 +425,7 @@ sub install_service {
 
     # Always stop the service if necessary to be sure configuration is applied
     my $isactivecmd = "systemctl is-active glpi-agent" . ($self->verbose ? "" : " 2>/dev/null");
-    system("systemctl stop glpi-agent" . ($self->verbose ? "" : " >/dev/null 2>&1"))
+    $self->system("systemctl stop glpi-agent")
         if qx{$isactivecmd} eq "active";
 
     my $ret = $self->run("systemctl enable glpi-agent" . ($self->verbose ? "" : " 2>/dev/null"));
@@ -465,6 +465,12 @@ sub which {
     $cmd = qx{which $cmd 2>/dev/null};
     chomp $cmd;
     return $cmd;
+}
+
+sub system {
+    my ($self, $cmd) = @_;
+    $self->verbose("Running: $command");
+    return system($cmd . ($self->verbose ? "" : " >/dev/null 2>&1"));
 }
 
 1;
