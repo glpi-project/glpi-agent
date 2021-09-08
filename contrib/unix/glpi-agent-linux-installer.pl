@@ -38,7 +38,7 @@ my $install   = delete $options->{install};
 my $clean     = delete $options->{clean};
 my $reinstall = delete $options->{reinstall};
 my $extract   = delete $options->{extract};
-$install = 1 unless (defined($install) || $uninstall || $reinstall);
+$install = 1 unless (defined($install) || $uninstall || $reinstall || $extract);
 
 die "--install and --uninstall options are mutually exclusive\n" if $install && $uninstall;
 die "--install and --reinstall options are mutually exclusive\n" if $install && $reinstall;
@@ -62,13 +62,15 @@ if ($installed && !$uninstall && !$reinstall && !$bypass && $version =~ /-git\w+
 
 $distro->uninstall($clean) if !$bypass && ($uninstall || $reinstall);
 
-$distro->clean() if !$bypass && $clean;
+$distro->clean() if !$bypass && $clean && ($install || $uninstall || $reinstall);
 
 unless ($uninstall) {
     my $archive = Archive->new();
     $distro->extract($archive, $extract);
-    $distro->info("Installing glpi-agent v$version...");
-    $distro->install() if $install || $reinstall;
+    if ($install || $reinstall) {
+        $distro->info("Installing glpi-agent v$version...");
+        $distro->install();
+    }
 }
 
 END {
