@@ -201,6 +201,8 @@ sub uninstall {
         return;
     }
 
+    $self->uninstall_service();
+
     $self->info(
         @rpms == 1 ? "Uninstalling glpi-agent package..." :
             "Uninstalling ".scalar(@rpms)." glpi-agent related packages..."
@@ -255,6 +257,25 @@ sub install_cron {
     $self->verbose("Enabling glpi-agent cron mode...");
     $ret = $self->run("sed -i -e s/=none/=cron/ /etc/sysconfig/glpi-agent");
     $self->info("Failed to update /etc/sysconfig/glpi-agent") if $ret;
+}
+
+sub uninstall_service {
+    my ($self) = @_;
+
+    return $self->SUPER::uninstall_service() if $self->which("systemctl");
+
+    unless ($self->which("chkconfig") && $self->which("service") && -d "/etc/rc.d/init.d") {
+        return $self->info("Failed to uninstall glpi-agent service: unsupported distro");
+    }
+
+    $self->info("Uninstalling glpi-agent service init script...");
+
+    $self->verbose("Trying to stop service ...");
+    $self->run("service glpi-agent stop");
+
+    $self->verbose("Uninstalling init file ...");
+    $self->system("chkconfig --del glpi-agent") if qx{chkconfig --list glpi-agent 2>/dev/null};
+    $self->system("rm -vf /etc/rc.d/init.d/glpi-agent");
 }
 
 1;

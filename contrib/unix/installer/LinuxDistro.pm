@@ -441,6 +441,18 @@ sub install_cron {
     die "Installing as cron is not supported on $self->{_release} linux distribution ($self->{_name}:$self->{_version})\n";
 }
 
+sub uninstall_service {
+    my ($self) = @_;
+    $self->info("Disabling glpi-agent service...");
+
+    my $isactivecmd = "systemctl is-active glpi-agent" . ($self->verbose ? "" : " 2>/dev/null");
+    $self->system("systemctl stop glpi-agent")
+        if qx{$isactivecmd} eq "active";
+
+    my $ret = $self->run("systemctl disable glpi-agent" . ($self->verbose ? "" : " 2>/dev/null"));
+    return $self->info("Failed to disable glpi-agent service") if $ret;
+}
+
 sub clean_packages {
     my ($self) = @_;
     if ($self->{_cleanpkg} && ref($self->{_installed}) eq 'ARRAY') {

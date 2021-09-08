@@ -160,6 +160,8 @@ sub uninstall {
     return $self->info("glpi-agent is not installed")
         unless @debs;
 
+    $self->uninstall_service();
+
     $self->info(
         @debs == 1 ? "Uninstalling glpi-agent package..." :
             "Uninstalling ".scalar(@debs)." glpi-agent related packages..."
