@@ -178,9 +178,10 @@ sub _getDistro {
 
     # Otherwise analyze first line of a given file, see @distributions
     my $distro;
-    foreach $distro ( @distributions ) {
-        last if -f $distro->[0];
-        undef $distro;
+    foreach my $d ( @distributions ) {
+        next unless -f $d->[0];
+        $distro = $d;
+        last;
     }
     return unless $distro;
 
