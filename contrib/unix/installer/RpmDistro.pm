@@ -131,7 +131,10 @@ sub install {
         my $command = $self->{_yum} ? "yum -y install @rpms" :
             $self->{_dnf} ? "dnf -y install @rpms" : "";
         die "Unsupported rpm based platform\n" unless $command;
-        my $err = $self->run($command);
+        my $err = $self->system($command);
+        if ($? >> 8 && $self->{_yum} && $self->downgradeAllowed()) {
+            $err = $self->run("yum -y downgrade @rpms");
+        }
         die "Failed to install glpi-agent\n" if $err;
         $self->{_installed} = \@rpms;
     } else {
