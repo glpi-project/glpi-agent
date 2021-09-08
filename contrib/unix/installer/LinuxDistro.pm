@@ -469,7 +469,7 @@ sub which {
 
 sub system {
     my ($self, $cmd) = @_;
-    $self->verbose("Running: $command");
+    $self->verbose("Running: $cmd");
     return system($cmd . ($self->verbose ? "" : " >/dev/null 2>&1"));
 }
 
