@@ -19,10 +19,6 @@ BEGIN {
 die "This installer can only be run on linux systems, not on $^O\n"
     unless $^O eq "linux";
 
-my $id = qx/id -u/;
-die "This installer can only be run as root\n"
-    unless $id =~ /^\d+$/ && $id == 0;
-
 my $options = Getopt::GetOptions() or die Getopt::Help();
 if ($options->{help}) {
     print Getopt::Help();
@@ -47,6 +43,12 @@ $install = 1 unless (defined($install) || $uninstall || $reinstall);
 die "--install and --uninstall options are mutually exclusive\n" if $install && $uninstall;
 die "--install and --reinstall options are mutually exclusive\n" if $install && $reinstall;
 die "--reinstall and --uninstall options are mutually exclusive\n" if $reinstall && $uninstall;
+
+if ($install || $uninstall || $reinstall) {
+    my $id = qx/id -u/;
+    die "This installer can only be run as root when installing or uninstalling\n"
+        unless $id =~ /^\d+$/ && $id == 0;
+}
 
 my $distro = LinuxDistro->new($options);
 
