@@ -164,7 +164,7 @@ glpi-agent-linux-installer [options]
     --runnow                       run agent tasks on installation (false)
     --type=INSTALL_TYPE            select type of installation (typical)
                                      - "typical" to only install inventory task
-                                     - "network" to install glpia-agent and network related tasks
+                                     - "network" to install glpi-agent and network related tasks
                                      - "all" to install all tasks
                                      - or tasks to install in a comma-separated list
     -v --verbose                   make verbose install (false)
