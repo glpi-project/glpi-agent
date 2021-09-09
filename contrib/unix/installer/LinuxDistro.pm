@@ -63,7 +63,7 @@ my @distributions = (
 # the found name matches the given regexp
 my %classes = (
     DebDistro   => qr/debian|ubuntu/i,
-    RpmDistro   => qr/redhat|centos|fedora/i,
+    RpmDistro   => qr/red\s?hat|centos|fedora/i,
 );
 
 sub new {
@@ -173,7 +173,8 @@ sub _getDistro {
 
         my ($class) = grep { $name =~ $classes{$_} } keys(%classes);
 
-        return $name, $version, $description, $class;
+        return $name, $version, $description, $class
+            if $class;
     }
 
     # Otherwise analyze first line of a given file, see @distributions
@@ -181,6 +182,7 @@ sub _getDistro {
     foreach my $d ( @distributions ) {
         next unless -f $d->[0];
         $distro = $d;
+        $self->verbose("Found distro: $distro");
         last;
     }
     return unless $distro;

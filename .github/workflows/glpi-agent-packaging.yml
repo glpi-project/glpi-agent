@@ -449,7 +449,9 @@ jobs:
             contrib/unix/glpi-agent.init.redhat \
             --deb *.deb --snap *.snap
         mv glpi-agent-$VERSION-linux-installer.pl glpi-agent-$VERSION-with-snap-linux-installer.pl
-        contrib/unix/make-linux-installer.sh --version $VERSION --rpm *.rpm --deb *.deb
+        contrib/unix/make-linux-installer.sh --version $VERSION --rpm *.rpm \
+            contrib/unix/glpi-agent.init.redhat \
+            --deb *.deb
         ls -l
         sha1sum *.rpm *.deb *.snap *.pl
         sha256sum *.rpm *.deb *.snap *.pl
