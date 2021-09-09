@@ -185,9 +185,11 @@ sub _prepareDistro {
         $self->verbose("EPEL $v repository still installed");
     } else {
         $self->info("Installing EPEL $v repository...");
-        my $epelcmd = "yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-$v.noarch.rpm";
-        my $ret = $self->run($epelcmd);
-        die "Can't install EPEL $v repository: $!\n" if $ret;
+        if ( $self->system("yum install epel-release") != 0 ) {
+            my $epelcmd = "yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-$v.noarch.rpm";
+            my $ret = $self->run($epelcmd);
+            die "Can't install EPEL $v repository: $!\n" if $ret;
+        }
     }
 }
 
