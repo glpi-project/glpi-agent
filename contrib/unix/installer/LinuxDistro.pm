@@ -89,7 +89,7 @@ sub new {
     my $snap   = delete $options->{snap} // 0;
 
     my ($name, $version, $release);
-    ($name, $version, $release, $class) = _getDistro();
+    ($name, $version, $release, $class) = $self->_getDistro();
     if ($force) {
         $name = $distro if defined($distro);
         $version = "unknown version" unless defined($version);
@@ -155,6 +155,7 @@ sub verbose {
 }
 
 sub _getDistro {
+    my $self = shift;
 
     my $handle;
 
