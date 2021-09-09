@@ -16,10 +16,19 @@ sub new {
         _size               => undef,
         _is_active          => $params{is_active},
         _is_onbackup        => undef,
-        _last_boot_date     => $params{last_boot_date},
+        _last_boot_date     => undef,
         _last_backup_date   => undef,
         _databases          => [],
     };
+
+    map {
+        my $lkey = "_".$_;
+        $self->{$lkey} = $params{$_}
+            if defined($params{$_}) && $params{$_} =~ /^(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})$/
+    } qw(
+        last_boot_date
+        last_backup_date
+    );
 
     bless $self, $class;
 

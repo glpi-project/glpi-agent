@@ -34,7 +34,6 @@ my %db_tests = (
     'db2-connect-failure' => [
       {
         IS_ACTIVE       => 1,
-        LAST_BOOT_DATE  => "",
         MANUFACTURER    => "IBM",
         NAME            => "db2inst1",
         PORT            => 50000,

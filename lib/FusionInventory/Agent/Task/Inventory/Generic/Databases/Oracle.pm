@@ -11,6 +11,7 @@ use XML::TreePP;
 use File::Temp;
 
 use FusionInventory::Agent::Tools;
+use FusionInventory::Agent::Tools::Unix;
 use GLPI::Agent::Inventory::DatabaseService;
 
 sub isEnabled {
@@ -102,13 +103,13 @@ sub _getDatabaseService {
 
     foreach my $credential (@{$credentials}) {
         FusionInventory::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
-        $params{connect} = _oracleConnect($credential) // "";
+        _oracleConnect(\%params, $credential);
 
         my %SID;
         my @instances;
-        if ($params{connect}) {
+        if ($params{remote} || ! -e '/etc/oratab') {
             @instances = _getInstances(%params);
-        } elsif (-e '/etc/oratab') {
+        } else {
             my @lines = getAllLines(
                 file    => '/etc/oratab',
                 logger  => $params{logger}
@@ -116,10 +117,12 @@ sub _getDatabaseService {
             foreach my $line (@lines) {
                 next unless $line =~ /^([^#*:][^:]*):([^:]+):/;
                 next unless -d $2;
+                $params{logger}->debug2("Checking $1 SID instance...") if $params{logger};
                 my @inst = _getInstances(
                     sid     => $1,
                     %params
                 );
+                next unless @inst;
                 foreach my $name (map { /^([^,]+),/ } @inst) {
                     $SID{$name} = $1;
                 }
@@ -130,7 +133,6 @@ sub _getDatabaseService {
         foreach my $instance (@instances) {
             my ($instance_name, $state, $fullversion, $starttime) = split(',', $instance)
                 or next;
-            next unless $fullversion;
 
             # We will use SID if found in oratab
             $params{sid} = $SID{$instance_name} if $SID{$instance_name};
@@ -161,6 +163,8 @@ sub _getDatabaseService {
             foreach my $db (@database) {
                 my ($db_name, $created) = split(',', $db)
                     or next;
+
+                $params{logger}->debug2("Checking $db_name database...") if $params{logger};
 
                 my ($size) = _runSql(
                     sql => "select sum(bytes)/1024/1024 from dba_data_files",
@@ -211,8 +215,14 @@ sub _getInstances {
     if (first { /^(ERROR|Usage):/ } @test) {
         my ($error) = first { /^(ORA|SP2)-/ } @test;
         $params{logger}->debug("Oracle CONNECT error: $error") if $error && $params{logger};
+        return $params{sid}.",FAILURE,0," if $params{sid};
         return;
     }
+    return unless @test || $params{sid};
+    return $params{sid}.",STOPPED,0," unless @test;
+    my ($release) = $test[0] =~ /release (\d+)/;
+    return $params{sid}.",STOPPED,0," if $params{sid} && ! $release;
+    return unless $release;
 
     my @instances = _runSql(
         sql => "SELECT instance_name, database_status, version_full, "._datefield("startup_time")." FROM v\$instance",
@@ -238,8 +248,11 @@ sub _runSql {
     my $sql = delete $params{sql}
         or return;
 
-    my $command = $params{sid} ? "ORACLE_SID=$params{sid} " : "";
-    $command .= "sqlplus -S -L -F";
+    $ENV{ORACLE_SID} = $params{sid} if $params{sid};
+
+    $params{logger}->debug2("Running sql command via sqlplus: $sql") if $params{logger};
+
+    my $command = "sqlplus -S -L -F";
     $command .= $params{connect} ? " /nolog" : " / AS SYSDBA";
 
     # Don't try to create the temporary sql file during unittest
@@ -263,7 +276,16 @@ sub _runSql {
             "QUIT";
 
         unless ($params{connect}) {
-            $command = sprintf("su - oracle -c '%s'", $command);
+            my $user = "oracle";
+            if ($params{sid}) {
+                # Get instance asm_pmon process
+                my ($asm_pmon) = grep { $_->{CMD} =~ /^asm_pmon_$params{sid}/ }
+                    getProcesses(logger => $params{logger});
+                $user = $asm_pmon->{USER} if $asm_pmon;
+                $command = "ORACLE_SID=$params{sid} $command";
+            }
+
+            $command = sprintf("su - $user -c '%s'", $command);
             # Make temp file readable by oracle
             if ($params{gid}) {
                 chown -1, $params{gid}, $sqlfile;
@@ -293,7 +315,7 @@ sub _runSql {
     }
 
     if (wantarray) {
-        return map {
+        return grep { $_ } map {
             my $line = $_;
             chomp($line);
             $line =~ s/\r$//;
@@ -310,29 +332,48 @@ sub _runSql {
 }
 
 sub _oracleConnect {
-    my ($credential) = @_;
+    my ($params, $credential) = @_;
+
+    delete $params->{connect};
 
     return unless $credential->{type};
 
-    my $options = "";
-    if ($credential->{type} eq "login_password" && $credential->{login}) {
+    if ($credential->{type} eq "login_password" && $credential->{login} && $credential->{password}) {
 
-        my ($login, $as) = $credential->{login} =~ /^(.*)(?:\s+AS\s+(.*))?$/i;
+        my ($login, $as) = $credential->{login} =~ /^(\S+)(?:\s+AS\s+(\S+))?$/i;
 
-        $as = "SYSDBA" if !$as && $login =~ /^SYS$/i;
+        $as = "SYSDBA" if !$as && $login =~ /^SYS/i;
 
-        $options  = "CONNECT $login";
-        $options .= "/".$credential->{password} if $credential->{password};
+        my $options = "CONNECT $login";
+        $options .= "/".$credential->{password};
+
+        $params->{remote} = 0;
         if ($credential->{socket} && $credential->{socket} =~ /^connect:(.*)$/) {
             $options .= "\@$1";
-        } else {
-            $options .= "\@$credential->{host}" if $credential->{host};
-            $options .= ":$credential->{port}" if $credential->{host} && $credential->{port};
+            $params->{remote} = 1;
+        } elsif ($credential->{host}) {
+            $options .= "\@$credential->{host}";
+            $options .= ":$credential->{port}" if $credential->{port};
+            $params->{remote} = 1;
         }
         $options .= " AS $as" if $as;
-    }
+        $params->{connect} = $options;
 
-    return $options;
+    } elsif (!$credential->{type}) {
+        $params->{logger}->debug("No type set on oracle credential") if $params->{logger};
+
+    } else {
+        my $credential = "type:".$credential->{type};
+        $credential .= ";login:".$credential->{login} if $credential->{login};
+        if ($credential->{socket}) {
+            $credential .= ";socket:".$credential->{socket};
+        } elsif ($credential->{host}) {
+            $credential .= ";host:".$credential->{host};
+            $credential .= ";port:".$credential->{port} if $credential->{port};
+        }
+        $params->{logger}->debug("Unsupported oracle credential: $credential")
+            if $params->{logger};
+    }
 }
 
 1;
