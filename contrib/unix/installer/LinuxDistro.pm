@@ -83,6 +83,7 @@ sub new {
         _skip       => {},
         _downgrade  => 0,
     };
+    bless $self, $class;
 
     my $distro = delete $options->{distro};
     my $force  = delete $options->{force};

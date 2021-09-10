@@ -156,7 +156,7 @@ sub _prepareDistro {
     my ($v) = $self->{_version} =~ /^(\d+)/;
 
     # Enable repo for RedHat or CentOS
-    if ($self->{_name} =~ /redhat/i) {
+    if ($self->{_name} =~ /red\s?hat/i) {
         # On RHEL 8, enable codeready-builder repo
         if ($v eq "8") {
             my $arch = qx(arch);
@@ -179,14 +179,15 @@ sub _prepareDistro {
         }
     }
 
-    # We always need RHEL
+    # We always need EPEL
     my $epel = qx(rpm -q --queryformat '%{VERSION}' epel-release);
     if ($? == 0 && $epel eq $v) {
         $self->verbose("EPEL $v repository still installed");
     } else {
         $self->info("Installing EPEL $v repository...");
-        if ( $self->system("yum install epel-release") != 0 ) {
-            my $epelcmd = "yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-$v.noarch.rpm";
+        my $cmd = $self->{_yum} ? "yum" : "dnf";
+        if ( $self->system("$cmd install epel-release") != 0 ) {
+            my $epelcmd = "$cmd install https://dl.fedoraproject.org/pub/epel/epel-release-latest-$v.noarch.rpm";
             my $ret = $self->run($epelcmd);
             die "Can't install EPEL $v repository: $!\n" if $ret;
         }
