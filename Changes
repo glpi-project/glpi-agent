@@ -17,6 +17,7 @@ core:
 * Send httpd-port minimal configuration in CONTACT request
 
 inventory:
+* Feature: support json file with additional-content option when json is used as inventory format
 * Feature: support partial inventory
 * Feature: support database inventory (MySQL, MSSQL, PostgreSQL, MongoDB, Oracle, DB2)
 * Category support has been refactored to permit partial inventory

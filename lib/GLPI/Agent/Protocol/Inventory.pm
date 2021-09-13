@@ -163,6 +163,19 @@ sub new {
     return $self;
 }
 
+sub mergeContent {
+    my ($self, %params) = @_;
+
+    return unless ref($params{content}) eq 'HASH';
+
+    my $content = $self->get("content")
+        or return;
+
+    foreach my $key (keys(%{$params{content}})) {
+        $content->{$key} = $params{content}->{$key};
+    }
+}
+
 sub normalize {
     my ($self) = @_;
 

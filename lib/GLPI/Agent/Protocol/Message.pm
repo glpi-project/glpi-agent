@@ -25,7 +25,7 @@ sub new {
     if ($params{file} && -e $params{file}) {
         my $fh;
         if (open($fh, "<", $params{file})) {
-            my $content = <$fh>;
+            my $content = join("", <$fh>);
             close($fh);
             $self->set($content) if defined($content) && length($content);
         }

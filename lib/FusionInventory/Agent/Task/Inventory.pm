@@ -317,6 +317,10 @@ sub submit {
             itemtype    => "Computer",
         );
 
+        # Support json file on additional-content with json output
+        $message->mergeContent(content => delete $self->{_json_merge})
+            if $self->{_json_merge};
+
         # Normalize some strings to expected type (integer)
         $message->normalize();
 
@@ -618,14 +622,22 @@ sub _injectContent {
     );
 
     my $content;
-    SWITCH: {
-        if ($file =~ /\.xml$/) {
-            eval {
-                my $tree = XML::TreePP->new()->parsefile($file);
-                $content = $tree->{REQUEST}->{CONTENT};
-            };
-            last SWITCH;
+    if ($file =~ /\.xml$/) {
+        eval {
+            my $tree = XML::TreePP->new()->parsefile($file);
+            $content = $tree->{REQUEST}->{CONTENT};
+        };
+    } elsif ($file =~ /\.json$/) {
+        GLPI::Agent::Protocol::Message->require();
+        my $json = GLPI::Agent::Protocol::Message->new(
+            message => {},
+            file    => $file,
+        );
+        if ($json) {
+            $self->{_json_merge} = $json->get('content');
+            return;
         }
+    } else {
         die "unknown file type $file";
     }
 
@@ -687,6 +699,10 @@ sub _printInventory {
                 partial     => $self->{partial},
                 itemtype    => "Computer",
             );
+
+            # Support json file on additional-content with json output
+            $inventory->mergeContent(content => delete $self->{_json_merge})
+                if $self->{_json_merge};
 
             # Normalize some strings to expected type (integer)
             $inventory->normalize();
