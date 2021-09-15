@@ -160,6 +160,7 @@ sub _prepareDistro {
         # On RHEL 8, enable codeready-builder repo
         if ($v eq "8") {
             my $arch = qx(arch);
+            chomp($arch);
             $self->verbose("Checking codeready-builder-for-rhel-8-$arch-rpms repository repository is enabled");
             my $ret = $self->run("subscription-manager repos --enable codeready-builder-for-rhel-8-$arch-rpms");
             die "Can't enable codeready-builder-for-rhel-8-$arch-rpms repository: $!\n" if $ret;
