@@ -12,7 +12,7 @@ use Net::IP;
 use Text::Template;
 use File::Glob;
 use URI;
-use Socket qw(IN6ADDR_ANY inet_ntop);
+use Socket;
 use URI::Escape;
 
 use FusionInventory::Agent::Version;
@@ -685,7 +685,14 @@ sub handleRequests {
         my $iaddr  = $family == AF_INET  ? unpack_sockaddr_in($socket)  :
                      $family == AF_INET6 ? unpack_sockaddr_in6($socket) :
                      INADDR_ANY;
-        my $clientIp = inet_ntop($family, $iaddr);
+        my $clientIp;
+        # Compatibility: Socket::inet_ntop() is only available since perl 5.12 introducing Socket v1.87
+        if ($Socket::VERSION >= 1.87) {
+            $clientIp = Socket::inet_ntop($family, $iaddr);
+        } else {
+            my (undef, $iaddr) = sockaddr_in($socket);
+            $clientIp = inet_ntoa($iaddr);
+        }
         my $request = $client->get_request();
         $self->_handle_plugins($client, $request, $clientIp, $self->{listeners}->{$port}->{plugins}, MaxKeepAlive);
     }
@@ -709,7 +716,14 @@ sub handleRequests {
     my $iaddr  = $family == AF_INET  ? unpack_sockaddr_in($socket)  :
                  $family == AF_INET6 ? unpack_sockaddr_in6($socket) :
                  INADDR_ANY;
-    my $clientIp = inet_ntop($family, $iaddr);
+    my $clientIp;
+    # Compatibility: Socket::inet_ntop() is only available since perl 5.12 introducing Socket v1.87
+    if ($Socket::VERSION >= 1.87) {
+        $clientIp = Socket::inet_ntop($family, $iaddr);
+    } else {
+        my (undef, $iaddr) = sockaddr_in($socket);
+        $clientIp = inet_ntoa($iaddr);
+    }
     my $request = $client->get_request();
     $self->_handle($client, $request, $clientIp, MaxKeepAlive);
 
