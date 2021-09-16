@@ -1,15 +1,18 @@
-# GLPI Perl Agent
+# GLPI Agent
+
+[![GLPI Agent CI](https://github.com/glpi-project/glpi-agent/actions/workflows/glpi-agent-ci.yml/badge.svg)](https://github.com/glpi-project/glpi-agent/actions/workflows/glpi-agent-ci.yml)
+[![GLPI Agent Packaging](https://github.com/glpi-project/glpi-agent/actions/workflows/glpi-agent-packaging.yml/badge.svg)](https://github.com/glpi-project/glpi-agent/actions/workflows/glpi-agent-packaging.yml)
 
 ## Summary
 
-The GLPI Perl agent is a generic management agent. It can perform a
+The GLPI Agent is a generic management agent. It can perform a
 certain number of tasks, according to its own execution plan, or on behalf of a
 GLPI server acting as a control point.
 
 ## Description
 
-This agent is a fork of FusionInventory agent with new features and
-protocols to communicate directly with a GLPI server.
+This agent is based on a fork of [FusionInventory agent](https://github.com/fusioninventory/fusioninventory-agent) and so works mainly like FusionInventory agent.
+It introduces new features and a new protocol to communicate directly with a GLPI server and its native inventory feature. Anyway it also keeps the compatibility with [FusionInventory for GLPI plugin](https://github.com/fusioninventory/fusioninventory-for-glpi).
 
 ## Documentation
 
