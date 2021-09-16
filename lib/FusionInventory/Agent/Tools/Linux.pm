@@ -474,7 +474,7 @@ sub getInfoFromSmartctl {
         WWN => {
             src  => ['lu wwn device id'],
             # remove whitespaces
-            func => sub { shift =~ s/\s+//gr },
+            func => sub { my $str = shift; $str =~ s/\s+//g; $str; },
         }
     };
 
