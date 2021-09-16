@@ -1,7 +1,9 @@
-# GLPI Agent
+# <img src="https://raw.githubusercontent.com/glpi-project/glpi-agent/develop/share/html/logo.png" alt="GLPI Agent" width="32" height="32" /> GLPI Agent
 
 [![GLPI Agent CI](https://github.com/glpi-project/glpi-agent/actions/workflows/glpi-agent-ci.yml/badge.svg)](https://github.com/glpi-project/glpi-agent/actions/workflows/glpi-agent-ci.yml)
 [![GLPI Agent Packaging](https://github.com/glpi-project/glpi-agent/actions/workflows/glpi-agent-packaging.yml/badge.svg)](https://github.com/glpi-project/glpi-agent/actions/workflows/glpi-agent-packaging.yml)
+[![Github All Releases](https://img.shields.io/github/downloads/glpi-project/glpi-agent/total.svg)](#download)
+[![Twitter Follow](https://img.shields.io/twitter/follow/GLPI_PROJECT.svg?style=social&label=Follow)](https://twitter.com/GLPI_PROJECT)
 
 ## Summary
 
@@ -13,6 +15,13 @@ GLPI server acting as a control point.
 
 This agent is based on a fork of [FusionInventory agent](https://github.com/fusioninventory/fusioninventory-agent) and so works mainly like FusionInventory agent.
 It introduces new features and a new protocol to communicate directly with a GLPI server and its native inventory feature. Anyway it also keeps the compatibility with [FusionInventory for GLPI plugin](https://github.com/fusioninventory/fusioninventory-for-glpi).
+
+## Download
+
+* Release: See [our github releases](https://github.com/glpi-project/glpi-agent/releases) for official win32, MacOSX & linux packages.
+* Development builds:
+    - nightly builds for last 'develop' branch commits: [GLPI-Agent nightly builds](http://nightly.glpi-project.org/glpi-agent)
+    - with a github account, you can also access artifacts for any other branches supporting ["GLPI Agent Packaging" workflow](https://github.com/glpi-project/glpi-agent/actions/workflows/glpi-agent-packaging.yml?query=is%3Asuccess+event%3Apush+-branch%3Adevelop)
 
 ## Documentation
 
@@ -108,12 +117,6 @@ Mandatory Perl modules for P2P Support:
 * Net::Ping
 * Parallel::ForkManager
 
-## Development release
-
-* as nightly for last 'develop' branch commits: <http://nightly.glpi-project.org/glpi-agent>
-* as artifact for other branches in ["GLPI Agent Packaging" workflows](https://github.com/glpi-project/glpi-agent/actions/workflows/glpi-agent-packaging.yml?query=is%3Asuccess+event%3Apush+-branch%3Adevelop)
-  and you need to be logged with a github account to see them.
-
 ## Related contribs
 
 See [CONTRIB](CONTRIB.md) to find references to FusionInventory Agent related scritps/files
@@ -124,11 +127,7 @@ Project websites:
 
 * main site: <https://glpi-project.org/>
 * forum: <https://forum.glpi-project.org/>
-* Github org: <http://github.com/glpi-project.org/glpi-agent>
-
-Project IRC channel:
-
-* #glpi on FreeNode IRC Network
+* github: <http://github.com/glpi-project/glpi-agent>
 
 Project Telegram channel:
 
@@ -147,6 +146,8 @@ Copyright 2010-2019 [FusionInventory Team](http://fusioninventory.org)
 Copyright 2011-2021 [Teclib Editions](http://www.teclib-edition.com/)
 
 ## License
+
+[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 
 This software is licensed under the terms of GPLv2+, see LICENSE file for
 details.
