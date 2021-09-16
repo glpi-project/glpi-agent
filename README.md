@@ -11,6 +11,14 @@ GLPI server acting as a control point.
 This agent is a fork of FusionInventory agent with new features and
 protocols to communicate directly with a GLPI server.
 
+## Documentation
+
+The GLPI Agent has its [dedicated documentation project](https://github.com/glpi-project/doc-agent) where any contribution will also be appreciated.
+
+The documentation itself is [readable online](https://glpi-agent.readthedocs.io/).
+
+[![Documentation Status](https://readthedocs.org/projects/glpi-agent/badge/?version=latest)](https://glpi-agent.readthedocs.io/en/latest/?badge=latest)
+
 ## Dependencies
 
 ### Core
