@@ -106,6 +106,7 @@ parts:
       IO::Socket::SSL LWP::UserAgent LWP::Protocol::https HTML::Parser URI::Escape
       Time::HiRes HTTP::Daemon Proc::Daemon Parallel::ForkManager
       Compress::Zlib Archive::Extract File::Copy::Recursive File::Which
+      Crypt::DES Crypt::Rijndael Digest::HMAC Digest::SHA1
       Net::IP Net::Ping Net::SNMP Net::NBName Net::CUPS
       Thread::Queue Parse::EDID JSON JSON::PP
       Text::Template XML::TreePP XML::XPath Memoize
