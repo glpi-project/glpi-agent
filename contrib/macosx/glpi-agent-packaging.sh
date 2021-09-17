@@ -4,7 +4,7 @@
 # SSL:  https://www.openssl.org/source/
 # ZLIB: https://www.zlib.net/
 : ${PERL_VERSION:=5.34.0}
-: ${OPENSSL_VERSION:=3.0.0}
+: ${OPENSSL_VERSION:=1.1.1l}
 : ${ZLIB_VERSION:=1.2.11}
 
 : ${BUILDER_NAME="Guillaume Bougard (teclib)"}
@@ -180,12 +180,13 @@ if [ ! -d "build/openssl-$OPENSSL_VERSION" ]; then
 
     # Eventually verify archive
     if [ -n "$SHASUM" ]; then
-        [ -e "$ARCHIVE.sha1" ] || curl -so "$ARCHIVE.sha1" "$OPENSSL_URL.sha1"
-        read SHA1 x <<<$( $SHASUM $ARCHIVE )
-        if [ "$SHA1" == "$(cat $ARCHIVE.sha1)" ]; then
+        [ -e "$ARCHIVE.sha256" ] || curl -so "$ARCHIVE.sha256" "$OPENSSL_URL.sha256"
+        read SHA256 x <<<$( $SHASUM -a 256 $ARCHIVE )
+        read EXPECTED x <<<$( cat $ARCHIVE.sha256 )
+        if [ "$SHA256" == "$EXPECTED" ]; then
             echo "OpenSSL $OPENSSL_VERSION ready for building..."
         else
-            echo "Can't build OpenSSL $OPENSSL_VERSION, source archive sha1 digest mismatch"
+            echo "Can't build OpenSSL $OPENSSL_VERSION, source archive sha256 digest mismatch"
             exit 1
         fi
     fi
