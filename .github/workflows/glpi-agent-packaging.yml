@@ -47,7 +47,12 @@ jobs:
             if [ "${{ github.event_name }}" = "schedule" -o "${{ env.publish_development_build }}" = "yes" ]; then
                 if [ "${{ github.event_name }}" = "schedule" ]; then
                     TYPE=nightly
-                    if gh api /repos/{owner}/glpi-project.github.io/git/refs/tags/glpi-agent-development-$VERSION --silent 2>/dev/null; then
+                    if [ -z "$PUBLISHING_TOKEN" ]; then
+                        echo "No PUBLISHING_TOKEN defined to publish GLPI-Agent nightly builds"
+                        echo "::set-output name=create-release::no"
+                        echo "::set-output name=build::no"
+                        exit 0
+                    elif gh api /repos/{owner}/glpi-project.github.io/git/refs/tags/glpi-agent-development-$VERSION --silent 2>/dev/null; then
                         echo "GLPI-Agent v$VERSION still published as development build"
                         echo "::set-output name=create-release::no"
                         echo "::set-output name=build::no"
@@ -97,6 +102,7 @@ jobs:
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PUBLISHING_TOKEN: ${{ secrets.PUBLISHING_TOKEN }}
     - name: Generate release description
       id: github-release-body
       if: ${{ steps.set-version.outputs.create-release == 'yes' }}
