@@ -233,12 +233,12 @@ glpi-remoteinventory [options] <host1> [<host2> ...]
 
   Options:
     -h --help      this menu
-    -d --directory load every .ocs files from a directory
+    -d --directory store xml files to the given directory
     -t --timeout   requests timeout and even inventory get timeout
     -b --baseurl   remote base url if not /inventory
     -p --port      remote port (62354 by default)
     -T --token     token as shared secret
-    -i --id        id for request to identify requests in agent log
+    -i --id        request id to identify requests in agent log
     -s --ssl       connect using SSL
     --no-ssl-check do not check agent SSL certificate
     --ca-cert-file CA certificates file
