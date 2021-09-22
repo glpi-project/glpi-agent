@@ -227,15 +227,6 @@ subtest "Unsupported Content-type with compressed json on legacy protocol" => su
     check_error(403, "Unsupported Content-type");
 };
 
-# json content-type only supported for new protocol with glpi-agent-id header, but not valid
-_request(
-    content         => compress("{xxx}"),
-    "GLPI-Agent-ID" => $agentid
-);
-subtest "Unsupported compressed json content with new protocol" => sub {
-    check_error(403, "Unsupported JSON Content");
-};
-
 # xml failure
 _request(
     content         => "<>",
@@ -371,6 +362,16 @@ subtest "Supported xml PROLOG query with GLPI server" => sub {
         expiration  => '0',
         status      => "pending",
     }, "Supported xml PROLOG query with JSON answer", "json");
+};
+
+# json content-type only supported for new protocol with glpi-agent-id header, but not valid
+_request(
+    content         => compress("{xxx}"),
+    "Content-Type"  => "application/x-compress-zlib",
+    "GLPI-Agent-ID" => $agentid
+);
+subtest "Unsupported compressed json content with new protocol" => sub {
+    check_error(403, "Unsupported JSON Content");
 };
 
 $proxy->config("local_store", $local_store."XXX");
