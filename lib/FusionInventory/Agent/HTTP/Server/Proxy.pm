@@ -19,7 +19,7 @@ use FusionInventory::Agent::HTTP::Client::GLPI;
 use GLPI::Agent::Protocol::Message;
 use GLPI::Agent::Protocol::Answer;
 
-our $VERSION = "2.0";
+our $VERSION = "2.1";
 
 sub urlMatch {
     my ($self, $path) = @_;
@@ -85,6 +85,7 @@ sub init {
 
     # Normalize only_local_store
     $self->{only_local_store} = $self->config('only_local_store') !~ /^0|no$/i ? 1 : 0;
+    $self->{glpi_protocol}    = $self->config('glpi_protocol')    !~ /^0|no$/i ? 1 : 0;
 
     # Handles request status
     $self->{status} = {};
@@ -371,12 +372,12 @@ sub _handle_proxy_request {
         $content_type = "application/xml" if $content =~ /^<\?xml/;
     }
 
+    @servers = grep { $_->isGlpiServer() } $agent->getTargets()
+        unless $self->config('only_local_store');
+
     # GLPI protocol based on JSON involves the usage of dedicated HTTP headers
     # GLPI-Agent-ID is mandatory in that case
-    if ($self->config('glpi_protocol') && $agentid && is_uuid_string($agentid)) {
-
-        @servers = grep { $_->isGlpiServer() } $agent->getTargets()
-            unless $self->config('only_local_store');
+    if ($self->config('glpi_protocol') && $agentid && is_uuid_string($agentid) && (@servers || $self->config('only_local_store'))) {
 
         my $message;
         if ($content_type !~ m|^application/json$|i) {
@@ -409,7 +410,7 @@ sub _handle_proxy_request {
                 expiration  => 0,
             );
             # But emulate a server answer when needed
-            if ($self->config('only_local_store') || !@servers) {
+            if ($self->config('only_local_store')) {
                 $self->debug("Answering as a GLPI server would do to $remoteid");
                 $answer->success();
                 my $inventory = {};
@@ -425,7 +426,7 @@ sub _handle_proxy_request {
                     expiration  => $self->config("prolog_freq"),
                 );
             } else {
-                $self->debug("Answering to tell client to immediatly use GLPI protocol");
+                $self->debug("Answering to $remoteid client to immediatly use GLPI protocol");
             }
             return $self->_send($answer);
         }

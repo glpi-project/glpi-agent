@@ -53,6 +53,11 @@ esx:
 * Support OPERATINGSYSTEM node
 * Fix CONTROLLERS inventory
 
+proxy-plugin:
+* Bump Proxy HTTP server plugin version to 2.1
+* Fix glpi_protocol option support
+* Fix legacy XML protocol fallback support
+
 toolbox:
 * Support run of local inventory task
 * Support run of NetDiscovery and NetInventory tasks
