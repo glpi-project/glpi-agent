@@ -43,7 +43,14 @@ sub new {
 sub init {
     my ($self) = @_;
 
-    $self->debug("Initializing ".$self->{name}." Server plugin...");
+    my $version;
+    {
+        no strict 'refs';  ## no critic
+        $version = ${ref($self).'::VERSION'};
+    }
+    $version = $FusionInventory::Agent::VERSION unless $version;
+
+    $self->debug("Initializing ".$self->{name}." v$version Server plugin...");
 
     # Load defaults
     my $defaults = $self->defaults();
