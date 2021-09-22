@@ -45,6 +45,10 @@ netdiscovery/netinventory:
 * Support "authpassword" and "privpassword" in credentials option as replacement
   for "authpassphrase" and "privpassphrase"
 * Fix glpi-netdiscovery --inventory option when --port or --protocol option is used
+* Fix NetDiscovery task not stopping when a lot of ip range are setup on a job
+* Optimization of NetDiscovery task start
+* Log task defined expiration timeout every 10 minutes
+* Send job exit message to server when aborting a job
 
 deploy:
 * Deploy maintenance task is now handled by core target event scheduling

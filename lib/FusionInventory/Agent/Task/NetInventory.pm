@@ -167,9 +167,13 @@ sub run {
             unless $skip_start_stop;
     }
 
-    # Define a job expiration: 15 minutes by device to scan is large enough
-    setExpirationTime( timeout => $devices_count * 900 );
+    # Define a job expiration: 15 minutes by device to scan should be enough, but not less than an hour
+    my $target_expiration = 900;
+    my $global_timeout = $devices_count * $target_expiration;
+    $global_timeout = 3600 if $global_timeout < 3600;
+    setExpirationTime( timeout => $global_timeout );
     my $expiration = getExpirationTime();
+    $self->_logExpirationHours($expiration);
 
     # no need more threads than devices to scan
     my $threads_count = $max_threads > $devices_count ? $devices_count : $max_threads;
@@ -269,6 +273,10 @@ sub run {
                 if ($devices_count < $threads_count) {
                     $jobs->enqueue({ leave => 1 });
                     $threads_count--;
+                } elsif ($devices_count>3600/$target_expiration) {
+                    # Only reduce expiration when still using all threads or and few devices are still to be scanned
+                    $expiration -= $target_expiration;
+                    $self->_logExpirationHours($expiration);
                 }
             }
 
@@ -312,6 +320,12 @@ sub run {
         $self->{logger}->error("$queued_count devices inventory are missing");
     }
 
+    # Send exit message if we quit during a job still being run
+    foreach my $pid (sort { $a <=> $b } keys(%queues)) {
+        $self->{logger}->error("job $pid aborted");
+        $self->_sendExitMessage($pid);
+    }
+
     # Cleanup joinable threads
     $_->join() foreach threads->list(threads::joinable);
     $self->{logger}->debug("All netinventory threads terminated")
@@ -319,6 +333,34 @@ sub run {
 
     # Reset expiration
     setExpirationTime();
+}
+
+sub _logExpirationHours {
+    my ($self, $expiration) = @_;
+
+    return if $self->{_remaining_next_log} && time < $self->{_remaining_next_log};
+
+    # Turn expiration integer as a float string to compute remaining as a float
+    my $remaining = ("$expiration.0" - time)/3600;
+
+    $self->{_remaining_next_log} = time + 600;
+
+    if ($remaining>2) {
+        $remaining = sprintf("%.1f hours", $remaining);
+    } elsif($remaining<1) {
+        my $minutes = int($remaining*60);
+        if ($minutes>=10) {
+            $remaining = "$minutes minutes";
+        } elsif ($minutes>1) {
+            $remaining = "few minutes";
+        } else {
+            $remaining = "soon";
+        }
+    } else {
+        $remaining = sprintf("%.1f hour", $remaining);
+    }
+
+    $self->{logger}->debug("Current run expiration timeout: $remaining");
 }
 
 sub _sendMessage {
@@ -359,6 +401,18 @@ sub _sendStopMessage {
     $self->_sendMessage({
         AGENT => {
             END => 1,
+        },
+        MODULEVERSION => $VERSION,
+        PROCESSNUMBER => $pid
+    });
+}
+
+sub _sendExitMessage {
+    my ($self, $pid) = @_;
+
+    $self->_sendMessage({
+        AGENT => {
+            EXIT => 1,
         },
         MODULEVERSION => $VERSION,
         PROCESSNUMBER => $pid

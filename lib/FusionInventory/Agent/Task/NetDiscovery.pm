@@ -208,52 +208,50 @@ sub run {
             in_queue            => 0,
             timeout             => $job->timeout(),
             snmp_credentials    => $job->getValidCredentials(),
+            ranges              => [],
+            size                => 0,
         };
 
-        my $size = 0;
-        my @list = ();
+        $self->{logger}->debug("initializing job $pid");
 
         # process each address block
         foreach my $range ($job->ranges()) {
             my $start = $range->{start};
             my $end   = $range->{end};
             my $block = Net::IP->new( "$start-$end" );
-            if (!$block || $block->{binip} !~ /1/) {
+            if (!$block || !$block->ip() || $block->{binip} !~ /1/) {
                 $self->{logger}->error(
                     "IPv4 range not supported by Net::IP: $start-$end"
                 );
                 next;
             }
 
-            $self->{logger}->debug("scanning block $start-$end");
+            unless ($block->size()) {
+                $self->{logger}->error("Skipping empty range: $start-$end");
+                next;
+            }
 
-            # send initial message to the server
-            $self->_sendStartMessage($pid);
+            $self->{logger}->debug("initializing block $start-$end");
 
-            do {
-                push @list, {
-                    ip              => $block->ip(),
-                    snmp_ports      => $range->{ports},
-                    snmp_domains    => $range->{domains},
-                    entity          => $range->{entity},
-                };
-            } while (++$block);
-
-            # Update ip addresses size for this job
-            $size += scalar(@list);
+            $queue->{size} += $block->size();
+            $range->{block} = $block;
+            push @{$queue->{ranges}}, $range;
         }
 
-        next unless $size;
+        unless ($queue->{size}) {
+            $self->{logger}->debug("no valid block found for job $pid");
+            $self->_sendStartMessage($pid);
+            $self->_sendBlockMessage($pid, 0);
+            $self->_sendStopMessage($pid);
+            $self->_sendStopMessage($pid);
+            next;
+        }
 
-        # Update queues
-        $queue->{list} = \@list;
+        # Keep job as queue
         $queues{$pid} = $queue;
 
         # Update total count
-        $max_count += $size;
-
-        # send block size to the server
-        $self->_sendBlockMessage($pid, $size);
+        $max_count += $queue->{size};
     }
 
     # Don't keep client until we created threads to avoid segfault if SSL is used
@@ -265,6 +263,7 @@ sub run {
     $target_expiration = 60 if ($target_expiration < 60);
     setExpirationTime( timeout => $max_count * $target_expiration );
     my $expiration = getExpirationTime();
+    $self->_logExpirationHours($expiration);
 
     # no need more threads than ips to scan
     my $threads_count = $max_threads > $max_count ? $max_count : $max_threads;
@@ -297,14 +296,31 @@ sub run {
         # Enqueue as ip as possible
         foreach my $pid (@pids) {
             my $queue = $queues{$pid};
-            next unless @{$queue->{list}};
+            next unless @{$queue->{ranges}};
             next if $queue->{in_queue} >= $queue->{max_in_queue};
-            my $address = shift @{$queue->{list}};
-            # Update address hash with common parameters
-            $address->{pid} = $pid;
-            $address->{timeout} = $queue->{timeout};
-            $address->{snmp_credentials} = $queue->{snmp_credentials};
-            $address->{jid} = sprintf($jid_pattern, ++$job_count);
+            my $range = $queue->{ranges}->[0];
+            my $block = $range->{block};
+            my $blockip = $block->ip();
+            # Still update block and handle range list
+            shift @{$queue->{ranges}} unless $range->{block} = $block + 1;
+            next unless $blockip;
+            my $address = {
+                ip                  => $blockip,
+                snmp_ports          => $range->{ports},
+                snmp_domains        => $range->{domains},
+                entity              => $range->{entity},
+                pid                 => $pid,
+                timeout             => $queue->{timeout},
+                snmp_credentials    => $queue->{snmp_credentials},
+                jid                 => sprintf($jid_pattern, ++$job_count),
+            };
+            # Don't forget to send initial start message to the server
+            unless ($queue->{started}) {
+                $queue->{started} = 1;
+                $self->_sendStartMessage($pid);
+                # Also send block size to the server
+                $self->_sendBlockMessage($pid, $queue->{size});
+            }
             $queue->{in_queue} ++;
             $jobs->enqueue($address);
             $queued_count++;
@@ -319,7 +335,7 @@ sub run {
                 my $queue = $queues{$pid};
                 $queue->{in_queue} --;
                 $queued_count--;
-                unless ($queue->{in_queue} || @{$queue->{list}}) {
+                unless ($queue->{in_queue} || @{$queue->{ranges}}) {
                     # send final message to the server before cleaning threads
                     $self->_sendStopMessage($pid);
 
@@ -328,11 +344,15 @@ sub run {
                     # send final message to the server
                     $self->_sendStopMessage($pid);
                 }
-                # Check if it's time to abort a thread
+                # Check if it's time to abort a thread or reduce expiration
                 $max_count--;
                 if ($max_count < $threads_count) {
                     $jobs->enqueue({ leave => 1 });
                     $threads_count--;
+                } else {
+                    # Only reduce expiration when still using all threads
+                    $expiration -= $target_expiration;
+                    $self->_logExpirationHours($expiration);
                 }
             }
 
@@ -389,6 +409,12 @@ sub run {
         $self->{logger}->error("$queued_count devices scan result missed");
     }
 
+    # Send exit message if we quit during a job still being run
+    foreach my $pid (sort { $a <=> $b } keys(%queues)) {
+        $self->{logger}->error("job $pid aborted");
+        $self->_sendExitMessage($pid);
+    }
+
     # Cleanup joinable threads
     $_->join() foreach threads->list(threads::joinable);
     $self->{logger}->debug("All netdiscovery threads terminated")
@@ -396,6 +422,34 @@ sub run {
 
     # Reset expiration
     setExpirationTime();
+}
+
+sub _logExpirationHours {
+    my ($self, $expiration) = @_;
+
+    return if $self->{_remaining_next_log} && time < $self->{_remaining_next_log};
+
+    # Turn expiration integer as a float string to compute remaining as a float
+    my $remaining = ("$expiration.0" - time)/3600;
+
+    $self->{_remaining_next_log} = time + 600;
+
+    if ($remaining>2) {
+        $remaining = sprintf("%.1f hours", $remaining);
+    } elsif($remaining<1) {
+        my $minutes = int($remaining*60);
+        if ($minutes>=10) {
+            $remaining = "$minutes minutes";
+        } elsif ($minutes>1) {
+            $remaining = "few minutes";
+        } else {
+            $remaining = "soon";
+        }
+    } else {
+        $remaining = sprintf("%.1f hour", $remaining);
+    }
+
+    $self->{logger}->debug("Current run expiration timeout: $remaining");
 }
 
 sub abort {
@@ -676,6 +730,18 @@ sub _sendStopMessage {
     $self->_sendMessage({
         AGENT => {
             END => 1,
+        },
+        MODULEVERSION => $VERSION,
+        PROCESSNUMBER => $pid
+    });
+}
+
+sub _sendExitMessage {
+    my ($self, $pid) = @_;
+
+    $self->_sendMessage({
+        AGENT => {
+            EXIT => 1,
         },
         MODULEVERSION => $VERSION,
         PROCESSNUMBER => $pid
