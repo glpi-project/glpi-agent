@@ -233,7 +233,7 @@ sub run {
 
             $self->{logger}->debug("initializing block $start-$end");
 
-            $queue->{size} += $block->size();
+            $queue->{size} += $block->size()->numify();
             $range->{block} = $block;
             push @{$queue->{ranges}}, $range;
         }
