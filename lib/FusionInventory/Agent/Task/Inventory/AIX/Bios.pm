@@ -45,10 +45,23 @@ sub doInventory {
         command => 'uname -L'
     );
     # LPAR partition can access the serial number of the host computer
+    $ssn = $vpd->{SE};
     if ($unameL && $unameL =~ /^(\d+)\s+\S+/) {
-        $ssn = "aixlpar-$vpd->{SE}-$1";
-    } else {
-        $ssn = $vpd->{SE};
+        my $name = $1;
+        my $lparname = getFirstMatch(
+            logger  => $logger,
+            command => "lparstat -i",
+            pattern => qr/Partition Name.*:\s+(.*)$/
+        );
+        # But an lpar can be migrated between hosts then we don't use to not have
+        # a SSN change during such migration. Anyway there's still a risk a given
+        # lparname is also used on another AIX system, administrators should avoid
+        # such usage as they won't be able to migrate the 2 LPARs on the same server
+        if ($lparname) {
+            $ssn = "aixlpar-$lparname";
+        } else {
+            $ssn = "aixlpar-$vpd->{SE}-$name";
+        }
     }
 
     $inventory->setBios({
