@@ -12,7 +12,8 @@ use YAML::Tiny;
 use FusionInventory::Agent::Tools;
 
 sub isEnabled {
-    return canRun('snap');
+    # Snap is not supported on AIX and the command has another usage
+    return $OSNAME ne 'aix' && canRun('snap');
 }
 
 sub doInventory {
