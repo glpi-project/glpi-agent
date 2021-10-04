@@ -23,6 +23,7 @@ body:
         - I know
         - I still have but want a public following to help the community
         - I'm a GLPI partner
+        - I would like to be contacted
         - Still not applicable
     validations:
       required: false
@@ -30,7 +31,7 @@ body:
     id: problem-related
     attributes:
       label: Is your feature request related to a problem?
-      Description: Please describe the problem if applicable.
+      description: Please describe the problem if applicable.
       placeholder: There's always a problem when GLPI agent [...]
     validations:
       required: false
@@ -38,7 +39,7 @@ body:
     id: expected
     attributes:
       label: Expected behavior
-      Description: A clear and concise description of what you want to happen.
+      description: A clear and concise description of what you want to happen.
       placeholder: I would like [...]
     validations:
       required: true
@@ -53,6 +54,6 @@ body:
     id: context
     attributes:
       label: Additional context
-      Description: Add any other context or screenshots about the feature request here.
+      description: Add any other context or screenshots about the feature request here.
     validations:
       required: false

@@ -31,6 +31,7 @@ body:
         - I know
         - I still have but want a public following to help the community
         - I'm a GLPI partner
+        - I would like to be contacted
         - Still not applicable
     validations:
       required: false
