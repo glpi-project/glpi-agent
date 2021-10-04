@@ -47,7 +47,7 @@
 '
 '
 ' Purpose:
-'     GLPI Agent Unatended Deployment.
+'     GLPI Agent Unattended Deployment.
 '
 '
 
@@ -65,6 +65,11 @@ Dim Setup, SetupArchitecture, SetupLocation, SetupOptions, SetupVersion
 '    Setup version with the pattern <major>.<minor>.<release>[-<package>]
 '
 SetupVersion = "1.0"
+
+' When using a nightly built version, uncomment the following SetupVersion definition line
+' replacing gitABCDEFGH with the most recent git revision found on the nightly builds site
+' and also uncomment the SetupLocation line with the nightly builds site url below
+'SetupVersion = "1.0-gitABCDEFGH"
 
 ' SetupLocation
 '    Depending on your needs or your environment, you can use either a HTTP or
@@ -84,6 +89,7 @@ SetupVersion = "1.0"
 '
 ' Location for Release Candidates
 SetupLocation = "https://github.com/glpi-project/glpi-agent/releases/download/" & SetupVersion
+'SetupLocation = "https://nightly.glpi-project.org/glpi-agent"
 
 
 ' SetupArchitecture
@@ -95,12 +101,13 @@ SetupLocation = "https://github.com/glpi-project/glpi-agent/releases/download/" 
 SetupArchitecture = "Auto"
 
 ' SetupOptions
-'    Consult the installer documentation to know its list of options.
+'    Consult the online installer documentation to know its list of options.
+'    See: https://glpi-agent.readthedocs.io/en/latest/installation/windows-command-line.html#command-line-parameters
 '
 '    You should use simple quotes (') to set between quotation marks those values
 '    that require it; double quotes (") doesn't work with UNCs.
 '
-SetupOptions = "/quiet RUNNOW=1 SERVER='http://glpi.yourcompany.com/glpi/fusioninventory/'"
+SetupOptions = "/quiet RUNNOW=1 SERVER='http://glpi.yourcompany.com/glpi/plugins/fusioninventory/'"
 
 ' Setup
 '    The installer file name. You should not have to modify this variable ever.
