@@ -13,7 +13,7 @@ body:
       description: I recognized I have checked the [online documentation](https://glpi-agent.readthedocs.io/en/latest/).
       options:
         - label: Yes, I do
-        - required: true
+          required: true
   - type: checkboxes
     id: solution-search
     attributes:
@@ -21,7 +21,7 @@ body:
       description: I looked for a solution on other sources like the [GLPI forum](https://forum.glpi-project.org/).
       options:
         - label: Yes, I do
-        - required: true
+          required: true
   - type: dropdown
     id: professional-support
     attributes:

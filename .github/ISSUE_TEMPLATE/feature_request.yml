@@ -13,7 +13,7 @@ body:
       description: I recognized I have checked the [online documentation](https://glpi-agent.readthedocs.io/en/latest/) and other sources for this feature.
       options:
         - label: Yes, I do
-        - required: true
+          required: true
   - type: dropdown
     id: professional-support
     attributes:

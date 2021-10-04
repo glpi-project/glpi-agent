@@ -10,11 +10,10 @@ body:
     id: documentation
     attributes:
       label: Bug reporting acknowledgment
-      description: |
-        I read the [bug reporting](https://glpi-agent.readthedocs.io/en/latest/bug-reporting.html) page in [online documentation](https://glpi-agent.readthedocs.io/en/latest/) before submitting.
+      description: I read the [bug reporting](https://glpi-agent.readthedocs.io/en/latest/bug-reporting.html) page in [online documentation](https://glpi-agent.readthedocs.io/en/latest/) before submitting.
       options:
         - label: Yes, I read it
-        - required: true
+          required: true
   - type: textarea
     id: description
     attributes:
@@ -51,7 +50,7 @@ body:
         - Linux
         - MacOSX
         - Other (See additional context below)
-        - Different OS (See additional context below)
+      multiple: true
     validations:
       required: true
   - type: dropdown
@@ -63,6 +62,7 @@ body:
         - 1.0
         - Nightly build (git version in additional context below)
         - Other (See additional context below)
+      multiple: true
     validations:
       required: true
   - type: dropdown
@@ -75,6 +75,7 @@ body:
         - Older (See additional context below)
         - development release (See additional context below)
         - Not applicable
+      multiple: true
     validations:
       required: true
   - type: dropdown
@@ -88,6 +89,7 @@ body:
         - Older (See additional context below)
         - development release (See additional context below)
         - Not applicable
+      multiple: true
     validations:
       required: false
   - type: textarea
