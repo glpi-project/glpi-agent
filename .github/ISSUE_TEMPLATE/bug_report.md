@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-Always check the [bug reporting](https://glpi-agent.readthedocs.io/en/latest/bug-reporting.html) page in [online documentation](https://glpi-agent.readthedocs.io/en/latest/) before submitting.
+I recognized I have checked the [bug reporting](https://glpi-agent.readthedocs.io/en/latest/bug-reporting.html) page in [online documentation](https://glpi-agent.readthedocs.io/en/latest/) before submitting.
 
 **Describe the bug**
 A clear and concise description of what the bug is.
