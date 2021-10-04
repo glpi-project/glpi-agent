@@ -26,7 +26,8 @@ body:
     id: reproduce
     attributes:
       label: To reproduce
-      description: Steps to reproduce the behavior:
+      description: |
+        Steps to reproduce the behavior:
       value: |
         1.
         2.
