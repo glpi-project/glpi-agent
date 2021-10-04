@@ -1,0 +1,65 @@
+name: Help wanted
+description: I need help to use GLPI agent
+title: ""
+labels: ["help wanted"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this support request!
+  - type: checkboxes
+    id: documentation
+    attributes:
+      label: Documentation
+      description: I recognized I have checked the [online documentation](https://glpi-agent.readthedocs.io/en/latest/).
+      options:
+        - label: Yes, I do
+        - required: true
+  - type: checkboxes
+    id: solution-search
+    attributes:
+      label: Solution search
+      description: I looked for a solution on other sources like the [GLPI forum](https://forum.glpi-project.org/).
+      options:
+        - label: Yes, I do
+        - required: true
+  - type: dropdown
+    id: professional-support
+    attributes:
+      label: Professional support
+      description: I know I can also request a [professional support](https://services.glpi-network.com/).
+      options:
+        - I know
+        - I still have but want a public following to help the community
+        - I'm a GLPI partner
+        - Still not applicable
+    validations:
+      required: false
+  - type: textarea
+    id: problem-related
+    attributes:
+      label: Is your help request related to a problem?
+      placeholder: Please describe the problem if applicable.
+    validations:
+      required: false
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: consideration
+    attributes:
+      label: Actions you've considered
+      placeholder: A clear and concise description of actions you've considered to solve your problem.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      placeholder: Add any other context about your request here.
+    validations:
+      required: false

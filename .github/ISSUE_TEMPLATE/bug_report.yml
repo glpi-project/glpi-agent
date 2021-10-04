@@ -1,0 +1,100 @@
+name: Bug Report
+description: File a bug report
+title: ""
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: checkboxes
+    id: documentation
+    attributes:
+      label: Bug reporting acknowledgment
+      description: I read the [bug reporting](https://glpi-agent.readthedocs.io/en/latest/bug-reporting.html) page in [online documentation](https://glpi-agent.readthedocs.io/en/latest/) before submitting.
+      options:
+        - label: Yes, I read it
+        - required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      placeholder: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: To reproduce
+      description: Steps to reproduce the behavior:
+      value: |
+        1.
+        2.
+        3.
+        ...
+      render: bash
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      description: On what operating system GLPI agent is experimenting this issue ?
+      options:
+        - Windows
+        - Linux
+        - MacOSX
+        - Other (See additional context below)
+        - Different OS (See additional context below)
+    validations:
+      required: true
+  - type: dropdown
+    id: version
+    attributes:
+      label: GLPI Agent version
+      description: What GLPI agent version is triggering this issue ?
+      options:
+        - 1.0
+        - Nightly build (git version in additional context below)
+        - Other (See additional context below)
+    validations:
+      required: true
+  - type: dropdown
+    id: glpi-version
+    attributes:
+      label: GLPI version
+      description: What is your GLPI version on server-side ?
+      options:
+        - 9.5.6
+        - Older (See additional context below)
+        - development release (See additional context below)
+        - Not applicable
+    validations:
+      required: true
+  - type: dropdown
+    id: fi4g-version
+    attributes:
+      label: FusionInventory for GLPI version
+      description: What is your FusionInventory for GLPI version plugin on server-side ?
+      options:
+        - 9.5+3.0
+        - 9.4+2.6
+        - Older (See additional context below)
+        - development release (See additional context below)
+        - Not applicable
+    validations:
+      required: false
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      placeholder: Add any other context about the problem here.
+    validations:
+      required: false

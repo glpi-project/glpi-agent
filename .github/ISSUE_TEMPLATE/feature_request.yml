@@ -1,0 +1,59 @@
+name: Feature request
+description: Suggest an idea for this project
+title: ""
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this feature request!
+  - type: checkboxes
+    id: documentation
+    attributes:
+      label: Documentation
+      description: I recognized I have checked the [online documentation](https://glpi-agent.readthedocs.io/en/latest/) and other sources for this feature.
+      options:
+        - label: Yes, I do
+        - required: true
+  - type: dropdown
+    id: professional-support
+    attributes:
+      label: Professional support
+      description: I know I can also request [professional service](https://services.glpi-network.com/) to develop such a feature.
+      options:
+        - I know
+        - I still have but want a public following to help the community
+        - I'm a GLPI partner
+        - Still not applicable
+    validations:
+      required: false
+  - type: textarea
+    id: problem-related
+    attributes:
+      label: Is your feature request related to a problem?
+      Description: Please describe the problem if applicable.
+      placeholder: There's always a problem when GLPI agent [...]
+    validations:
+      required: false
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      Description: A clear and concise description of what you want to happen.
+      placeholder: I would like [...]
+    validations:
+      required: true
+  - type: textarea
+    id: consideration
+    attributes:
+      label: Alternatives you've considered
+      placeholder: A clear and concise description of alternative or feature you've considered to answer your need.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      Description: Add any other context or screenshots about the feature request here.
+    validations:
+      required: false
