@@ -18,10 +18,10 @@ body:
     id: professional-support
     attributes:
       label: Professional support
-      description: I know I can also request [professional service](https://services.glpi-network.com/) to develop such a feature.
+      description: I know I can also request [professional services](https://services.glpi-network.com/) to develop such a feature.
       options:
-        - I know
-        - I still have but want a public following to help the community
+        - Yes, I know
+        - I still have but want a public following to inform the community
         - I'm a GLPI partner
         - I would like to be contacted
         - Still not applicable

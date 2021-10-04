@@ -28,7 +28,7 @@ body:
       label: Professional support
       description: I know I can also request a [professional support](https://services.glpi-network.com/).
       options:
-        - I know
+        - Yes, I know
         - I still have but want a public following to help the community
         - I'm a GLPI partner
         - I would like to be contacted

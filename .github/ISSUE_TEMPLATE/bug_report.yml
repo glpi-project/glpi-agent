@@ -14,6 +14,19 @@ body:
       options:
         - label: Yes, I read it
           required: true
+  - type: dropdown
+    id: professional-support
+    attributes:
+      label: Professional support
+      description: I know I can also request a [professional support](https://services.glpi-network.com/) to resolv the bug.
+      options:
+        - Yes, I know
+        - I still have but want a public following to keep the community aware
+        - I'm a GLPI partner
+        - I would like to be contacted
+        - Still not applicable
+    validations:
+      required: false
   - type: textarea
     id: description
     attributes:
