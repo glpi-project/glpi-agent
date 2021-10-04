@@ -1,6 +1,5 @@
 name: Help wanted
 description: I need help to use GLPI agent
-title: ""
 labels: ["help wanted"]
 body:
   - type: markdown
