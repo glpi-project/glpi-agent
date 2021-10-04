@@ -87,6 +87,8 @@ jobs:
         echo "PATH=$PATH"
         perl --version
         perl -V
+    - name: Install openssl via brew
+      run: brew install openssl
     - name: Install Module::Install
       run: cpan -T Module::Install
     - name: Install cpanminus
