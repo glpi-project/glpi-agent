@@ -48,6 +48,7 @@ our @EXPORT = qw(
     getLocalCodepage
     runCommand
     FileTimeToSystemTime
+    getCurrentService
     getAgentMemorySize
     FreeAgentMem
     getWMIService
@@ -780,7 +781,7 @@ sub FileTimeToSystemTime {
     return @times;
 }
 
-sub getAgentMemorySize {
+sub _getCurrentProcessId {
 
     # Load Win32::API as late as possible
     Win32::API->require() or return;
@@ -796,7 +797,7 @@ sub getAgentMemorySize {
         );
         $thread = $apiGetCurrentThread->Call();
     };
-    return -1 unless (defined($thread));
+    return unless (defined($thread));
 
     # Get system ProcessId for current thread
     my $thread_pid;
@@ -809,6 +810,32 @@ sub getAgentMemorySize {
         );
         $thread_pid = $apiGetProcessIdOfThread->Call($thread);
     };
+    return $thread_pid;
+}
+
+sub getCurrentService {
+
+    # Load Win32::API as late as possible
+    Win32::API->require() or return;
+
+    # Get current ProcessId
+    my $pid = _getCurrentProcessId();
+    return unless (defined($pid));
+
+    my ($current) = getWMIObjects(
+        query       => 'SELECT * FROM Win32_Service where ProcessId  = '.$pid,
+        properties  => [ qw/Name DisplayName/ ]
+    );
+    return $current;
+}
+
+sub getAgentMemorySize {
+
+    # Load Win32::API as late as possible
+    Win32::API->require() or return;
+
+    # Get current thread ProcessId
+    my $thread_pid = _getCurrentProcessId();
     return -1 unless (defined($thread_pid));
 
     # Get Process Handle

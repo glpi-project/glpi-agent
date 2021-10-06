@@ -212,6 +212,16 @@ sub AcceptedControls {
     Win32::Daemon::AcceptedControls($controls);
 }
 
+sub _retrieveServiceName {
+    my ($self) = @_;
+
+    my $service = getCurrentService();
+    if ($service) {
+        $self->name($service->{Name});
+        $self->displayname($service->{DisplayName});
+    }
+}
+
 sub _start_agent {
     my ($self) = @_;
 
@@ -222,6 +232,12 @@ sub _start_agent {
         $self->{agent_thread} = threads->create(sub {
             # First start a thread dedicated to Win32::OLE calls
             $self->{worker_thread} = FusionInventory::Agent::Tools::Win32::start_Win32_OLE_Worker();
+
+            # Set service name after the worker thread has been started
+            $self->_retrieveServiceName();
+
+            # We may want to permit the service to restart itself after one day
+            $self->{_service_safetime} = time + 86400;
 
             $self->init(options => { service => 1 });
 
@@ -277,6 +293,9 @@ sub Pause {
 
     $self->setStatus('paused');
 
+    # We don't want to permit the service to restart itself when paused
+    delete $self->{_service_safetime};
+
     $self->{logger}->info("$PROVIDER Agent paused") if $self->{logger};
 }
 
@@ -288,6 +307,9 @@ sub Continue {
     foreach my $target ($self->getTargets()) {
         $target->continue();
     }
+
+    # We may want to permit the service to restart itself after one day
+    $self->{_service_safetime} = time + 86400;
 
     $self->{logger}->info("$PROVIDER Agent resumed") if $self->{logger};
 }
@@ -325,10 +347,20 @@ sub RunningServiceOptimization {
     # Make working set memory available for the system
     FreeAgentMem();
 
-    if ($self->{logger}) {
-        my ($WorkingSetSize, $PageFileUsage) = getAgentMemorySize();
-        $self->{logger}->info("$PROVIDER Agent memory usage: WSS=$WorkingSetSize PFU=$PageFileUsage")
-            unless $WorkingSetSize < 0;
+    my ($WorkingSetSize, $PageFileUsage) = getAgentMemorySize();
+    if ($self->{logger} && $WorkingSetSize > 0) {
+        $self->{logger}->info("$PROVIDER Agent memory usage: WSS=$WorkingSetSize PFU=$PageFileUsage");
+    }
+
+    # Initialize a max PageFileUsage the first time we need to optimize
+    $self->{_MaxPageFileUsage} = 2*$PageFileUsage unless $self->{_MaxPageFileUsage};
+
+    # Check if it's time to restart ourself
+    if ($self->{_service_safetime} && $PageFileUsage > $self->{_MaxPageFileUsage} && time > $self->{_service_safetime}) {
+        $self->{_service_safetime} += 3600;
+        $self->{logger}->info("Restarting myself as ".$self->displayname()." service");
+        my $restart = 'start /b "" cmd /S /C "net stop '.$self->name().' && net start '.$self->name().'" >nul';
+        system($restart);
     }
 
     # Avoid to run service optimization too often
