@@ -101,6 +101,12 @@ sub new {
         );
     }
 
+    # Now sort modules by priority
+    my @supported = sort {
+        $a->priority() <=> $b->priority()
+    } grep { defined } values(%{$self->{_SUPPORT}});
+    $self->{_SUPPORT} = \@supported;
+
     bless $self, $class;
 
     return $self;
@@ -112,7 +118,7 @@ sub getMethod {
     return unless $method;
 
     my $value;
-    foreach my $mibsupport (values(%{$self->{_SUPPORT}})) {
+    foreach my $mibsupport (@{$self->{_SUPPORT}}) {
         next unless $mibsupport;
         $value = $mibsupport->$method();
         last if defined $value;
@@ -124,7 +130,7 @@ sub getMethod {
 sub run {
     my ($self, %params) = @_;
 
-    foreach my $mibsupport (values(%{$self->{_SUPPORT}})) {
+    foreach my $mibsupport (@{$self->{_SUPPORT}}) {
         next unless $mibsupport;
         $mibsupport->run();
     }

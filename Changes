@@ -51,6 +51,7 @@ netdiscovery/netinventory:
 * Optimization of NetDiscovery task start
 * Log task defined expiration timeout every 10 minutes
 * Send job exit message to server when aborting a job
+* Fix Brother printer recognized as HP printer
 
 deploy:
 * Deploy maintenance task is now handled by core target event scheduling

@@ -7,6 +7,10 @@ use warnings;
 
 #use FusionInventory::Agent::Tools::SNMP;
 
+# Default priority to permit to priorize a MibSupport module other another
+# A lower priority means use it before the other
+use constant    priority    => 10;
+
 # define here constants as defined in related mib
 use constant    enterprises     => '.1.3.6.1.4.1' ;
 #use constant   sectionOID      => enterprises . '.XYZ';
