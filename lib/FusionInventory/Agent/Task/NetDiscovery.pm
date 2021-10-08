@@ -314,6 +314,7 @@ sub run {
                 snmp_credentials    => $queue->{snmp_credentials},
                 jid                 => sprintf($jid_pattern, ++$job_count),
             };
+            $address->{walk} = $range->{walk} if $range->{walk};
             # Don't forget to send initial start message to the server
             unless ($queue->{started}) {
                 $queue->{started} = 1;
@@ -516,6 +517,7 @@ sub _scanAddressByArp {
     my ($self, $params) = @_;
 
     return unless $params->{ip};
+    return if $params->{walk};
 
     # We want to match the ip including non digit character around
     my $ip_match = '\b' . $params->{ip} . '\D';
@@ -558,6 +560,8 @@ sub _scanAddressByArp {
 sub _scanAddressByPing {
     my ($self, $params) = @_;
 
+    return if $params->{walk};
+
     my $type = 'echo';
     my $np = Net::Ping->new('icmp', 1);
 
@@ -587,6 +591,8 @@ sub _scanAddressByPing {
 
 sub _scanAddressByNetbios {
     my ($self, $params) = @_;
+
+    return if $params->{walk};
 
     my $nb = Net::NBName->new();
 
@@ -652,6 +658,7 @@ sub _scanAddressBySNMP {
             port       => $try->{port},
             domain     => $try->{domain},
             timeout    => $params->{timeout},
+            file       => $params->{walk},
             credential => $credential
         );
 
@@ -681,22 +688,33 @@ sub _scanAddressBySNMPReal {
     my ($self, %params) = @_;
 
     my $snmp;
-    eval {
-        # AUTHPASSPHRASE & PRIVPASSPHRASE are deprecated but still used by FusionInventory for GLPI plugin
-        $snmp = FusionInventory::Agent::SNMP::Live->new(
-            version      => $params{credential}->{VERSION},
-            hostname     => $params{ip},
-            port         => $params{port},
-            domain       => $params{domain},
-            timeout      => $params{timeout} || 1,
-            community    => $params{credential}->{COMMUNITY},
-            username     => $params{credential}->{USERNAME},
-            authpassword => $params{credential}->{AUTHPASSPHRASE} // $params{credential}->{AUTHPASSWORD},
-            authprotocol => $params{credential}->{AUTHPROTOCOL},
-            privpassword => $params{credential}->{PRIVPASSPHRASE} // $params{credential}->{PRIVPASSWORD},
-            privprotocol => $params{credential}->{PRIVPROTOCOL},
-        );
-    };
+    if ($params{file}) {
+        FusionInventory::Agent::SNMP::Mock->require();
+        eval {
+            $snmp = FusionInventory::Agent::SNMP::Mock->new(
+                ip   => $params{ip},
+                file => $params{file}
+            );
+        };
+        die "SNMP emulation error: $EVAL_ERROR" if $EVAL_ERROR;
+    } else {
+        eval {
+            # AUTHPASSPHRASE & PRIVPASSPHRASE are deprecated but still used by FusionInventory for GLPI plugin
+            $snmp = FusionInventory::Agent::SNMP::Live->new(
+                version      => $params{credential}->{VERSION},
+                hostname     => $params{ip},
+                port         => $params{port},
+                domain       => $params{domain},
+                timeout      => $params{timeout} || 1,
+                community    => $params{credential}->{COMMUNITY},
+                username     => $params{credential}->{USERNAME},
+                authpassword => $params{credential}->{AUTHPASSPHRASE} // $params{credential}->{AUTHPASSWORD},
+                authprotocol => $params{credential}->{AUTHPROTOCOL},
+                privpassword => $params{credential}->{PRIVPASSPHRASE} // $params{credential}->{PRIVPASSWORD},
+                privprotocol => $params{credential}->{PRIVPROTOCOL},
+            );
+        };
+    }
 
     # an exception here just means no device or wrong credentials
     return $EVAL_ERROR if $EVAL_ERROR;

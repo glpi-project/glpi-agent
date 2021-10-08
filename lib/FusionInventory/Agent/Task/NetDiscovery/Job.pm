@@ -15,6 +15,7 @@ sub new {
         _params         => $params{params},
         _credentials    => $params{credentials},
         _ranges         => $params{ranges},
+        _snmpwalk       => $params{file},
     };
     bless $self, $class;
 }
@@ -46,6 +47,7 @@ sub ranges {
             entity  => $range->{ENTITY},
             start   => $range->{IPSTART},
             end     => $range->{IPEND},
+            walk    => $self->{_snmpwalk},
         };
     }
 

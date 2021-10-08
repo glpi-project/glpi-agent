@@ -22,7 +22,8 @@ our $options = {
 
 GetOptions(
     $options,
-    'first=s',
+    'file=s',
+    'first|host=s',
     'last=s',
     'community=s@',
     'credentials=s@',
@@ -50,12 +51,15 @@ if ($options->{version}) {
 }
 pod2usage(-verbose => 0, -exitval => 0) if $options->{help};
 
+# Set a default ipadress if none is given while using file option
+$options->{first} = '1.1.1.1'
+    if $options->{file} && ! $options->{first};
+
 pod2usage(
-    -message => "no first address, aborting\n", -verbose => 0
+    -message => "\nno first or host address, aborting\n", -verbose => 0
 ) unless $options->{first};
-pod2usage(
-    -message => "no last address, aborting\n", -verbose => 0
-) unless $options->{last};
+$options->{last} = $options->{first}
+    if !$options->{last} || $options->{file};
 pod2usage(
     -message => "\nsave folder must exist, aborting\n", -verbose => 0
 ) if ($options->{save} && ! -d $options->{save});
@@ -105,6 +109,7 @@ $discovery->{jobs} = [
                 PROTOCOL => $options->{protocol},
             }
         ],
+        file => $options->{file},
         credentials => \@credentials
     )
 ];
@@ -298,6 +303,7 @@ glpi-netdiscovery - Standalone network discovery
 glpi-netdiscovery [options] --first <address> --last <address>
 
   Options:
+    --host <ADDRESS>       Host IP address to scan or IP range first address
     --first <ADDRESS>      IP range first address
     --last <ADDRESS>       IP range last address
     --port <PORT[,PORT2]>  SNMP port (161)
@@ -308,6 +314,7 @@ glpi-netdiscovery [options] --first <address> --last <address>
     --entity <ENTITY>      GLPI entity
     --threads <COUNT>      number of discovery threads (1)
     --control              output control messages
+    --file <FILE>          snmpwalk input file
     -i --inventory         chain with netinventory task for discovered devices
     -s --save <FOLDER>     base folder where to save discovery and inventory xmls
                             - netdiscovery xmls will go in <FOLDER>/netdiscovery
@@ -325,13 +332,15 @@ GLPI server.
 
 =over
 
-=item B<--first> I<ADDRESS>
+=item B<--first|--host> I<ADDRESS>
 
 Set the first IP address of the network range to scan.
 
 =item B<--last> I<ADDRESS>
 
 Set the last IP address of the network range to scan.
+
+If not set, it is set with the value of the --first or --host option.
 
 =item B<--port> I<PORT[,PORT2]>
 
@@ -344,6 +353,12 @@ Set it to 161,16100 to first try on default port and then on 16100.
 List of protocols to try, defaults to: udp/ipv4
 
 Possible values are: udp/ipv4,udp/ipv6,tcp/ipv4,tcp/ipv6
+
+=item B<--file> I<FILE>
+
+Run an offline discovery against snmpwalk output, stored in the given file.
+
+If no host or first ip is provided, ip is set to emulate 1.1.1.1 ip scan.
 
 =item B<--community> I<STRING>
 
@@ -397,3 +412,7 @@ Run a discovery against a network range, using multiple SNMP credentials:
     $> glpi-netdiscovery --first 192.168.0.1 --last 192.168.0.254 \
     --credentials version:2c,community:public \
     --credentials version:3,username:admin,authprotocol:sha,authpassword:s3cr3t
+
+Emulate discovery using a snmpwalk file:
+
+    $> glpi-netdiscovery --file device.walk

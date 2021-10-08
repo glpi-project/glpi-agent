@@ -53,6 +53,10 @@ netdiscovery/netinventory:
 * Log task defined expiration timeout every 10 minutes
 * Send job exit message to server when aborting a job
 * Fix Brother printer recognized as HP printer
+* Add options --host and --file to glpi-netdiscovery script to support generating
+  a discovery XML from a snmp walk
+* glpi-netdiscovery supports now to not set --last so it creates a one ip scan
+  with only the --first or --host ip address
 
 deploy:
 * Deploy maintenance task is now handled by core target event scheduling

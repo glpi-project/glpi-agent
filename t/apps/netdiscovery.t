@@ -19,7 +19,7 @@ if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
 
 FusionInventory::Agent::Task::NetDiscovery->use();
 
-plan tests => 12;
+plan tests => 9;
 
 my ($out, $err, $rc);
 
@@ -45,16 +45,7 @@ like(
 ok($rc == 2, 'no first address exit status');
 like(
     $err,
-    qr/no first address/,
-    'no target stderr'
-);
-is($out, '', 'no target stdout');
-
-($out, $err, $rc) = run_executable('glpi-netdiscovery', '--first 192.168.0.1');
-ok($rc == 2, 'no last address exit status');
-like(
-    $err,
-    qr/no last address/,
+    qr/no first or host address/,
     'no target stderr'
 );
 is($out, '', 'no target stdout');
