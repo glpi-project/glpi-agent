@@ -34,7 +34,7 @@ sub _getCPUs {
     my $handle = getFileHandle(@_);
     return unless $handle;
 
-    my $aixversion = getFirstLine(command => 'uname -v');
+    my $aixversion = Uname("-v");
 
     my @cpus;
     while (my $line = <$handle>) {
@@ -78,7 +78,7 @@ sub _getCPUs {
                     $infos[0] eq "PowerPC_601" or
                     $infos[0] eq "PowerPC_604"
                 ) {
-                    my $uname = getFirstLine(command => 'uname -m');
+                    my $uname = Uname("-m");
                     $cpu->{SPEED} =
                         $uname =~ /E1D|EAD|C1D|R04|C4D|R4D/ ?  12.2 :
                         $uname =~ /34M/                     ? 133   :

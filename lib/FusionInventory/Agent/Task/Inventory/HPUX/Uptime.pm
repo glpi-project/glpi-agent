@@ -20,7 +20,7 @@ sub doInventory {
 
     my $inventory = $params{inventory};
 
-    my $arch = getFirstLine(command => 'uname -m');
+    my $arch   = Uname("-m");
     my $uptime = _getUptime(command => 'uptime');
     $inventory->setHardware({
         DESCRIPTION => "$arch/$uptime"

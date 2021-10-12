@@ -30,7 +30,7 @@ sub doInventory {
             logger  => $logger
         );
     } else {
-        my $arch = getFirstLine(command => 'uname -m');
+        my $arch = Uname("-m");
 
         if ($arch =~ /ia64/ ) {
             # enable infolog

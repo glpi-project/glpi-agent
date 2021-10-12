@@ -22,10 +22,7 @@ sub doInventory {
 
     # Operating system informations
     my $info          = getReleaseInfo();
-    my $kernelVersion = getFirstLine(
-        logger  => $logger,
-        command => 'uname -v'
-    );
+    my $kernelVersion = Uname("-v");
     my $hostid        = getFirstLine(
         logger  => $logger,
         command => 'hostid'

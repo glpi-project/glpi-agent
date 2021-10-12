@@ -18,7 +18,7 @@ sub doInventory {
 
     my $inventory = $params{inventory};
 
-    my $arch = getFirstLine(command => 'uname -m');
+    my $arch   = Uname("-m");
     my $uptime = _getUptime(command => 'sysctl -n kern.boottime');
     $inventory->setHardware({
         DESCRIPTION => "$arch/$uptime"

@@ -20,14 +20,8 @@ sub doInventory {
     my $logger    = $params{logger};
 
     # basic operating system informations
-    my $kernelRelease = getFirstLine(
-        logger  => $logger,
-        command => 'uname -r'
-    );
-    my $kernelVersion = getFirstLine(
-        logger  => $logger,
-        command => 'uname -v'
-    );
+    my $kernelRelease = Uname("-r");
+    my $kernelVersion = Uname("-v");
 
     my $boottime = getFirstMatch(
         logger  => $logger,

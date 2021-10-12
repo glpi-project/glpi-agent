@@ -19,10 +19,7 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $kernelRelease = getFirstLine(
-        logger  => $logger,
-        command => 'uname -r'
-    );
+    my $kernelRelease = Uname("-r");
 
     my $hostid = getFirstLine(
         logger  => $logger,

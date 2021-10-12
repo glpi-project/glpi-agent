@@ -75,7 +75,7 @@ sub _getInterfaces {
     }
 
     my $zone = getZone();
-    my $OSLevel = getFirstLine(command => 'uname -r');
+    my $OSLevel = Uname("-r");
 
     if ($zone && $OSLevel && $OSLevel =~ /5.10/) {
         push @interfaces, _parseDladm(

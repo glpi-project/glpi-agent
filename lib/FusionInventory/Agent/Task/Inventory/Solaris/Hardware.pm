@@ -22,19 +22,13 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $kernelArch    = getFirstLine(
+    my $kernelArch = getFirstLine(
         logger  => $logger,
         command => 'arch -k'
     );
-    my $proct         = getFirstLine(
-        logger  => $logger,
-        command => 'uname -p'
-    );
-    my $platform      = getFirstLine(
-        logger  => $logger,
-        command => 'uname -i'
-    );
-    my $hostid        = getFirstLine(
+    my $proct      = Uname("-p");
+    my $platform   = Uname("-i");
+    my $hostid     = getFirstLine(
         logger  => $logger,
         command => 'hostid'
     );

@@ -20,10 +20,7 @@ sub doInventory {
     my $logger    = $params{logger};
 
     # Operating system informations
-    my $kernelName = getFirstLine(
-        logger  => $logger,
-        command => 'uname -s'
-    );
+    my $kernelName = Uname("-s");
 
     my $version = getFirstLine(
         logger  => $logger,

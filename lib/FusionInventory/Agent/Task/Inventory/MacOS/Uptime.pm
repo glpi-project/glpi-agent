@@ -20,10 +20,7 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $arch = getFirstLine(
-        logger  => $logger,
-        command => 'uname -m'
-    );
+    my $arch = Uname("-m");
     my $boottime = getBootTime(logger => $logger)
         or return;
     my $uptime = time - $boottime;
