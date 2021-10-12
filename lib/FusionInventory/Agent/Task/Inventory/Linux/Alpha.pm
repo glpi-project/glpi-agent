@@ -10,7 +10,9 @@ use Config;
 use FusionInventory::Agent::Tools;
 
 sub isEnabled {
-    return Uname("-m") =~ /^alpha/ if $FusionInventory::Agent::Tools::remote;
+    my (%params) = @_;
+
+    return Uname("-m") =~ /^alpha/ if $params{remote};
     return $Config{archname} =~ /^alpha/;
 };
 

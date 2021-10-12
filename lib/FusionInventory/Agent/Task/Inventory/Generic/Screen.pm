@@ -23,10 +23,13 @@ sub doInventory {
     my (%params) = @_;
 
     my $inventory = $params{inventory};
-    my $logger    = $params{logger};
-    my $datadir   = $params{datadir};
+    my %options = (
+        logger  => $params{logger},
+        datadir => $params{datadir},
+        remote  => $inventory->getRemote()
+    );
 
-    foreach my $screen (_getScreens(logger => $logger, datadir => $datadir)) {
+    foreach my $screen (_getScreens(%options)) {
         $inventory->addEntry(
             section => 'MONITORS',
             entry   => $screen
@@ -168,7 +171,7 @@ sub _getScreensFromUnix {
     if (has_folder('/sys/devices')) {
         my @screens;
 
-        if ($FusionInventory::Agent::Tools::remote) {
+        if ($params{remote}) {
             my @cards = Glob("/sys/devices/*/*/drm/* /sys/devices/*/*/*/drm/*");
             # But we need to filter out links
             my @ctrls = Glob("/sys/devices/*/*/drm/* /sys/devices/*/*/*/drm/*", "-h");
