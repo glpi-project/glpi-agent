@@ -24,7 +24,7 @@ sub doInventory {
     );
 
     foreach my $storage (@storages) {
-        if (-l "/dev/rdsk/$storage->{NAME}s2") {
+        if (has_link("/dev/rdsk/$storage->{NAME}s2")) {
             my $rdisk_path = getFirstLine(
                 command => "ls -l /dev/rdsk/$storage->{NAME}s2"
             );

@@ -5,8 +5,6 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
-use English qw(-no_match_vars);
-
 use FusionInventory::Agent::Tools;
 
 use constant    category    => "os";
@@ -42,11 +40,11 @@ sub doInventory {
             logger  => $logger,
             command => 'lsb_release -d',
             pattern => qr/Description:\s+(.+)/
-        ) : $OSNAME;
+        ) : OSNAME;
 
     $inventory->setOperatingSystem({
         NAME           => $name,
-        FULL_NAME      => $OSNAME,
+        FULL_NAME      => OSNAME,
         VERSION        => $kernelRelease,
         KERNEL_VERSION => $kernelVersion,
         BOOT_TIME      => getFormatedLocalTime($boottime)

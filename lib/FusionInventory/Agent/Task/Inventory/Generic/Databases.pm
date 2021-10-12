@@ -11,7 +11,10 @@ use English qw(-no_match_vars);
 use constant    category    => "database";
 
 sub isEnabled {
-    return 1;
+    my (%params) = @_;
+
+    # Database inventory can be done remotely by using appropriate credentials
+    return $params{remote} ? 0 : 1;
 }
 
 sub doInventory {}

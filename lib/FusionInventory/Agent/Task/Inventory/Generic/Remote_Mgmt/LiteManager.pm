@@ -5,12 +5,10 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
-use English qw(-no_match_vars);
-
 use FusionInventory::Agent::Tools;
 
 sub isEnabled {
-    return 0 unless $OSNAME eq 'MSWin32';
+    return 0 unless OSNAME eq 'MSWin32';
 
     FusionInventory::Agent::Tools::Win32->use();
 

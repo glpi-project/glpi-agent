@@ -5,7 +5,7 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
-use English qw(-no_match_vars);
+use FusionInventory::Agent::Tools;
 
 our $runAfter = ["FusionInventory::Agent::Task::Inventory::Generic"];
 
