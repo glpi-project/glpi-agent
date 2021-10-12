@@ -5,13 +5,11 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
-use English qw(-no_match_vars);
-
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Unix;
 
 sub isEnabled {
-    return 0 if $OSNAME eq 'MSWin32';
+    return 0 if OSNAME eq 'MSWin32';
     return grep { $_->{CMD} =~ /^asm_pmon/ } getProcesses();
 }
 
@@ -32,7 +30,7 @@ sub doInventory {
     # Then lookup GRID_HOME in user's environment
     my $root = $user eq 'root' ? 1 : 0;
     my $grid_home = $root ? $ENV{GRID_HOME} : getFirstLine(command => "su - $user -c 'echo \$GRID_HOME'");
-    if (!$grid_home && -e "/etc/oratab") {
+    if (!$grid_home && has_file("/etc/oratab")) {
         my @oratab = getAllLines(file => "/etc/oratab");
         my $asm_for_re = $asm;
         $asm_for_re =~ s/\+/\\+/;

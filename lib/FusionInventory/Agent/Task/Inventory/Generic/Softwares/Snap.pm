@@ -12,7 +12,7 @@ use FusionInventory::Agent::Tools;
 
 sub isEnabled {
     # Snap is not supported on AIX and the command has another usage
-    return $OSNAME ne 'aix' && canRun('snap');
+    return OSNAME ne 'aix' && canRun('snap');
 }
 
 sub doInventory {

@@ -6,8 +6,6 @@ use integer;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
-use English qw(-no_match_vars);
-
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Hostname;
 use FusionInventory::Agent::Tools::License;
@@ -19,15 +17,11 @@ sub isEnabled {
     return 1;
 }
 
-sub isEnabledForRemote {
-    return 1;
-}
-
 sub doInventory {
     my (%params) = @_;
 
     my $inventory = $params{inventory};
-    my $remotewmi = $inventory->getRemote();
+    my $remote    = $inventory->getRemote();
 
     my ($operatingSystem) = getWMIObjects(
         class      => 'Win32_OperatingSystem',
@@ -75,7 +69,7 @@ sub doInventory {
     # Finally get the name through native Win32::API if local inventory and as
     # WMI DB is sometimes broken
     my $hostname = $computerSystem->{DNSHostName} || $computerSystem->{Name};
-    $hostname = getHostname(short => 1) unless ($hostname || $remotewmi);
+    $hostname = getHostname(short => 1) unless ($hostname || $remote);
 
     $inventory->setHardware({
         NAME        => $hostname,

@@ -55,7 +55,7 @@ sub _getBatteriesFromSysClass {
             or next;
         my $present = getFirstLine(file => "$psu/present")
             or next;
-        next unless $type eq "Battery" && -e "$psu/capacity";
+        next unless $type eq "Battery" && has_file("$psu/capacity");
         my $battery = _getBatteryFromSysClass(
             psu     => $psu,
             %params

@@ -5,8 +5,6 @@ use warnings;
 
 use parent 'FusionInventory::Agent::Task::Inventory::Module';
 
-use English qw(-no_match_vars);
-
 use FusionInventory::Agent::Tools;
 use FusionInventory::Agent::Tools::Unix;
 
@@ -14,7 +12,7 @@ use constant    category    => "process";
 
 sub isEnabled {
     return
-        $OSNAME ne 'MSWin32' &&
+        OSNAME ne 'MSWin32' &&
         canRun('ps');
 }
 

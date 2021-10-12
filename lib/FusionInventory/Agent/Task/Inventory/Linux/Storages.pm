@@ -224,7 +224,7 @@ sub _correctHdparmAvailable {
     # We need to support dump params to permit full testing when root params is set
     if ($params{root}) {
         $params{file} = $params{root}."/hdparm";
-        return unless -e $params{file};
+        return unless has_file($params{file});
     }
 
     return unless canRun('hdparm') || $params{file};
@@ -268,7 +268,7 @@ sub _getDiskIdentifier {
     if ($params{root}) {
         my $devname = basename($params{device});
         $params{file} = $params{root}."/fdisk-$devname";
-        return unless -e $params{file};
+        return unless has_file($params{file});
     } elsif ($params{dump}) {
         my $devname = basename($params{device});
         $params{dump}->{"fdisk-$devname"} = getAllLines(%params);
@@ -289,7 +289,7 @@ sub _getPVUUID {
     if ($params{root}) {
         my $devname = basename($params{device});
         $params{file} = $params{root}."/lvm-$devname";
-        return unless -e $params{file};
+        return unless has_file($params{file});
     }
 
     return unless $params{device} && (canRun("lvm") || $params{file});

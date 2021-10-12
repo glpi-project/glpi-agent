@@ -65,7 +65,7 @@ sub doInventory {
                 }
             }
 
-            my $command = -x '/opt/SUNWsneep/bin/sneep' ?
+            my $command = canRun('/opt/SUNWsneep/bin/sneep') ?
                 '/opt/SUNWsneep/bin/sneep' : 'sneep';
 
             $bios->{SSN} = getFirstLine(
