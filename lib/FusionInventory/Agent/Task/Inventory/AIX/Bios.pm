@@ -40,10 +40,7 @@ sub doInventory {
 
     my $vpd = first { $_->{DS} eq 'System VPD' } @infos;
 
-    my $unameL = getFirstLine(
-        logger  => $logger,
-        command => 'uname -L'
-    );
+    my $unameL = Uname("-L");
     # LPAR partition can access the serial number of the host computer
     $ssn = $vpd->{SE};
     if ($unameL && $unameL =~ /^(\d+)\s+\S+/) {

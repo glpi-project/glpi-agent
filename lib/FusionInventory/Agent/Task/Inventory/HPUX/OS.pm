@@ -17,13 +17,9 @@ sub doInventory {
     my (%params) = @_;
 
     my $inventory = $params{inventory};
-    my $logger    = $params{logger};
 
     # Operating system informations
-    my $kernelRelease = getFirstLine(
-        logger  => $logger,
-        command => 'uname -r'
-    );
+    my $kernelRelease = Uname("-r");
 
     $inventory->setOperatingSystem({
         NAME           => 'HP-UX',

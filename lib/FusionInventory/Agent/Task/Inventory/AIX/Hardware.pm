@@ -19,12 +19,8 @@ sub doInventory {
     my (%params) = @_;
 
     my $inventory = $params{inventory};
-    my $logger    = $params{logger};
 
-    my $unameL = getFirstLine(
-        logger  => $logger,
-        command => 'uname -L'
-    );
+    my $unameL = Uname("-L");
     # LPAR partition can access the serial number of the host computer
     if ($unameL && $unameL =~ /^(\d+)\s+(\S+)/) {
         $inventory->setHardware({

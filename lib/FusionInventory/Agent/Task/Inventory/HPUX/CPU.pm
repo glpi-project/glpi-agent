@@ -98,7 +98,7 @@ sub doInventory {
         );
     }
 
-    my $serie = getFirstLine(command => 'uname -m');
+    my $serie = Uname("-m");
     if ( $CPUinfo->{TYPE} eq 'unknow' and $serie =~ /ia64/) {
         $CPUinfo->{TYPE} = "Itanium"
     }

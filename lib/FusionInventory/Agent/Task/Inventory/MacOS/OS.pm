@@ -20,14 +20,8 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $kernelRelease = getFirstLine(
-        logger  => $logger,
-        command => 'uname -r'
-    );
-    my $kernelArch    = getFirstLine(
-        logger  => $logger,
-        command => 'uname -m'
-    );
+    my $kernelRelease = Uname("-r");
+    my $kernelArch    = Uname("-m");
 
     my $boottime = getBootTime();
 
