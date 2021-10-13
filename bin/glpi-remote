@@ -12,6 +12,10 @@ use English qw(-no_match_vars);
 use LWP::UserAgent;
 use Pod::Usage;
 use Getopt::Long;
+use Digest::SHA;
+use XML::TreePP;
+use Time::HiRes qw(gettimeofday);
+use File::Which;
 use File::Find;
 
 use FusionInventory::Agent::Config;
@@ -34,6 +38,7 @@ my $options = {
 GetOptions(
     $options,
     'help|h',
+    'useragent|U=s',
     'verbose|v',
     'debug+',
     'inventory|i',
@@ -45,6 +50,11 @@ GetOptions(
     'password|P=s',
     'show-passwords|X',
     'credentials|c=s',
+    'baseurl|b=s',
+    'token|K=s',
+    'directory|d=s',
+    'id|I=s',
+    'no-compression',
     'add|A',
     'ssh',
     'ssl',
@@ -67,6 +77,7 @@ if ($cmd) {
     die "Var directory is missing\n" unless -d $setup{vardir};
 
     my %cmds = (
+        agent   => \&agent,
         list    => \&list,
         help    => \&help,
         add     => \&add,
@@ -346,6 +357,189 @@ sub get_targets {
     return @targets;
 }
 
+sub agent {
+    my @hosts = @_;
+
+    pod2usage(
+        -message => "\nGive a least one host to get inventory from as parameter\n",
+        -verbose => 0,
+        -exitstatus => 1
+    ) unless @hosts;
+
+    pod2usage(
+        -message => "\nNo token as shared secret defined\n",
+        -verbose => 0,
+        -exitstatus => 1
+    ) unless $options->{token};
+
+    pod2usage(
+        -message => "\nWhen asking inventory to more than one host, you must use the --directory parameter\n",
+        -verbose => 0,
+        -exitstatus => 1
+    ) if !$options->{directory} && @hosts>1;
+
+    pod2usage(
+        -message => "\nDirectory not found: $options->{directory}\n",
+        -verbose => 0,
+        -exitstatus => 1
+    ) if ($options->{directory} && ! -d $options->{directory});
+
+    my $ua = LWP::UserAgent->new(
+        agent                 => $options->{useragent},
+        timeout               => $options->{timeout} || 180,
+        parse_head            => 0, # No need to parse HTML
+        keep_alive            => 1,
+    );
+
+    if ($options->{ssl}) {
+        $ua->ssl_opts(SSL_ca_file => $options->{'ca-cert-file'})
+            if $options->{'ca-cert-file'};
+        $ua->ssl_opts(verify_hostname => 0, SSL_verify_mode => 0)
+            if $options->{ssl} && $options->{'no-ssl-check'};
+    }
+
+    $options->{verbose} = 1 if $options->{debug};
+
+    my $id = $options->{id} || _id();
+
+    warn "Using $id as request id\n"
+        if $options->{verbose};
+
+    foreach my $host (@hosts) {
+        my $url = ( $options->{ssl} ? "https://" : "http://" ). $host;
+        $url .= $options->{port} ? ":".$options->{port} : ":62354";
+        $url .= $options->{baseurl} ? $options->{baseurl} : "/inventory";
+
+        warn "$host: Trying $url\n"
+            if $options->{verbose};
+
+        my $req = HTTP::Request->new(GET => $url.'/session');
+        $req->header( 'X-Request-ID' => $id );
+        $req->protocol( 'HTTP/1.1' );
+
+        if ($options->{debug}) {
+            warn "--->\n";
+            warn "Request: ".$req->as_string();
+        }
+
+        my $session = $ua->request($req);
+
+        if ($options->{debug}) {
+            warn "<---\n";
+            warn "Response: ".$session->as_string();
+        }
+
+        if (!$session->is_success()) {
+            warn "$host: No session (".$session->status_line().")\n";
+            next;
+        }
+
+        my $nonce = $session->header('X-Auth-Nonce')
+            or die "No nonce\n";
+
+        my $sha = Digest::SHA->new(256);
+        $sha->add($nonce.'++'.$options->{token});
+
+        my $payload = $sha->b64digest;
+
+        # Update request to get inventory
+        $req->uri($url.'/get');
+        $req->header( 'X-Auth-Payload' => $payload );
+
+        # Set Accept header
+        my $accept = 'application/xml';
+        if (!$options->{'no-compression'}) {
+            $accept .= ', application/x-compress-zlib'
+                if Compress::Zlib->require();
+            my $zcat = scalar(which('zcat'));
+            $accept .= ', application/x-compress-gzip'
+                if -x $zcat;
+        }
+        $req->header('Accept' => $accept);
+
+        if ($options->{debug}) {
+            warn "--->\n";
+            warn "Request: ".$req->as_string();
+        }
+
+        my $xml = $ua->request($req);
+
+        if ($options->{debug}) {
+            warn "<---\n";
+            warn "Response: ".$xml->status_line()."\n".$xml->headers->as_string()."\n";
+        }
+
+        if (!$xml->is_success()) {
+            warn "$host: Inventory request: ".$xml->status_line()."\n";
+            next;
+        }
+
+        my $content = $xml->content();
+
+        # check compression mode
+        if ($xml->header('Content-Type') eq 'application/x-compress-zlib') {
+            # RFC 1950
+            warn "$host: Using Compress::Zlib for decompression\n"
+                if $options->{debug};
+            $content = Compress::Zlib::uncompress($content);
+        } elsif ($xml->header('Content-Type') eq 'application/x-compress-gzip') {
+            # RFC 1952
+            warn "$host: Using gzip for decompression\n"
+                if $options->{debug};
+
+            File::Temp->require();
+            my $fd = File::Temp->new();
+            print $fd $content;
+            close $fd;
+
+            my $OUT;
+            unless(open $OUT, '-|', 'zcat ' . $fd->filename()) {
+                warn "$host: Failed to uncompress response, skipping\n";
+                next;
+            }
+            local $INPUT_RECORD_SEPARATOR; # Set input to "slurp" mode.
+            $content = <$OUT>;
+            close($OUT);
+        }
+
+        my $deviceid;
+        eval {
+            my $tpp = XML::TreePP->new();
+            my $tree = $tpp->parse($content);
+            $deviceid = $tree->{REQUEST}->{DEVICEID};
+        };
+
+        unless ($deviceid) {
+            warn "$host: No deviceid found in returned inventory output, skipping\n";
+            next;
+        }
+
+        warn "$host: Got remote inventory from $deviceid\n"
+            if $options->{verbose};
+
+        if ($options->{directory}) {
+            my $filename = $options->{directory}."/$deviceid.xml";
+            open my $FILE, ">", $filename
+                or die "$host: Can't open $filename: $!\n";
+            print $FILE $content;
+            close($FILE);
+            warn "$host: Written inventory in $filename\n"
+                if $options->{verbose};
+        } else {
+            print $content;
+        }
+    }
+}
+
+# Compute a simple and as-possible safe id
+sub _id {
+    my $sha = Digest::SHA->new(1);
+    $sha->add(gettimeofday());
+    $sha->add(gettimeofday());
+    my $digest = $sha->hexdigest;
+    return substr($digest, 0, 8);
+}
+
 __END__
 
 =head1 NAME
@@ -377,6 +571,7 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
     -T --threads <NUM>  number of threads while scanning (defaults to 1)
     -A --add            add scanned remotes to target so they always be inventoried
                         by RemoteInventory task
+    -U --useragent      set used HTTP User-Agent for requests
 
   Target definition options:
     -s --server=<URI>   agent will send tasks result to that server
@@ -389,6 +584,16 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
    - when scanning and making inventory, uses any target option or each inventory
      will be sent to standard output
 
+  Remote GLPI agent having inventory server plugin enabled options:
+    -b --baseurl   remote base url if not /inventory
+    -K --token     token as shared secret
+    -I --id        request id to identify requests in agent log
+    -s --ssl       connect using SSL
+    --no-ssl-check do not check agent SSL certificate
+    --ca-cert-file CA certificates file
+    --no-compression
+                   ask to not compress sent XML inventories
+
   Commands
     list [targets]      list known remotes or targets
     add <url>+          add remote with given URL list
@@ -398,6 +603,8 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
                         __ALL__ as id
     scan <first> [last] scan given ip range for remote access or just <first> and
                         register it/them as remote agent
+    agent [hosts]       remotely claim an inventory to given remote hosts with a
+                        GLPI agent having inventory server plugin enabled
 
   Supported environment variables:
     USERNAME
@@ -416,11 +623,17 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
     glpi-remote add winrm://admin:pass@192.168.48.250 --no-check --target server0
     glpi-remote delete 1
     glpi-remote scan 192.168.43.1 192.168.43.254
-    glpi-remote scan 10.0.0.1 10.0.10.254 --inventory -s https://login:pw@server/plugins/fusioninventory/
+    glpi-remote scan 10.0.0.1 10.0.10.254 --inventory -s https://login:pw@server/front/inventory.php
     glpi-remote scan 10.0.0.1 10.0.10.254 --inventory -l /var/tmp/remotes
     glpi-remote scan --inventory
     glpi-remote scan 192.168.48.99 | \
-         glpi-injector -url https://login:pw@server/plugins/fusioninventory/
+         glpi-injector -url https://login:pw@server/front/inventory.php
+
+  Examples for agent command:
+    glpi-remote -T strong-shared-secret agent 192.168.43.236
+    glpi-remote -v -T strong-shared-secret agent 192.168.43.237 | \
+        glpi-injector -url https://login:pw@server/front/inventory.php
+    glpi-remote -T strong-shared-secret -d /var/remote agent 192.168.43.236 192.168.43.237
 
 =head1 DESCRIPTION
 
