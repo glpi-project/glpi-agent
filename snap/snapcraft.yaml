@@ -51,8 +51,8 @@ apps:
     environment:
       LANG: C
       PATH: $SNAP/sbin:$SNAP/usr/sbin:$SNAP/usr/bin:$PATH
-  remoteinventory:
-    command: usr/bin/glpi-remoteinventory
+  remote:
+    command: usr/bin/glpi-remote
     environment:
       LANG: C
       PATH: $SNAP/sbin:$SNAP/usr/sbin:$SNAP/usr/bin:$PATH

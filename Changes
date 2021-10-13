@@ -39,6 +39,11 @@ inventory:
 * win32: support overrided EDID blocks for monitor inventory
 * win32: fix memory components under HyperV 2019
 
+remote:
+* [linux/unix/macosx] SSH remote inventory support
+* [win32] WinRM remote inventory support
+* Merged glpi-remoteinventory script in glpi-remote
+
 netdiscovery/netinventory:
 * Add support for SonicWall devices
 * Enhanced MibSupport to support Configuration plugin managed via ToolBox
@@ -89,9 +94,6 @@ packaging:
 * Windows MSI installer based on StrawBerry Perl 5.32.1
 * MacOSX with prebuilt perl 5.34.0 including OpenSSL 3.0.0 support (x86_64,arm64)
 * Linux Snap package with prebuilt perl 5.34.0
-
-remoteinventory:
-* Introduce basic SSH remote inventory support
 
 Revision history for FusionInventory agent
 

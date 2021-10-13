@@ -219,10 +219,9 @@ install -m 644 -D  contrib/unix/%{name}.service %{buildroot}%{_unitdir}/%{name}.
 %{_bindir}/glpi-injector
 %{_bindir}/glpi-inventory
 %{_bindir}/glpi-remote
-%{_bindir}/glpi-remoteinventory
 %{_mandir}/man1/glpi-agent*
 %{_mandir}/man1/glpi-injector*
-%{_mandir}/man1/glpi-*inventory.1*
+%{_mandir}/man1/glpi-inventory.1*
 %{_mandir}/man1/glpi-remote.1*
 
 %dir %{_localstatedir}/lib/%{name}

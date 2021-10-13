@@ -28,7 +28,7 @@ if [ "$DEST" != "/" ]; then
         uninstaller.sh bin/glpi-agent bin/glpi-esx \
         bin/glpi-injector bin/glpi-inventory \
         bin/glpi-netdiscovery bin/glpi-netinventory \
-        bin/glpi-remoteinventory bin/glpi-wakeonlan
+        bin/glpi-remote bin/glpi-wakeonlan
     do
         sudo sed -i -e "s|/Applications/GLPI-Agent.app|$INSTALL_PATH|" \
             "$INSTALL_PATH/$SCRIPT"

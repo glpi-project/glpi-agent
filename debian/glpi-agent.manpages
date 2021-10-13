@@ -2,5 +2,4 @@ debian/tmp/usr/share/man/man1/glpi-inventory.1p
 debian/tmp/usr/share/man/man1/glpi-injector.1p
 debian/tmp/usr/share/man/man1/glpi-wakeonlan.1p
 debian/tmp/usr/share/man/man1/glpi-agent.1p
-debian/tmp/usr/share/man/man1/glpi-remoteinventory.1p
 debian/tmp/usr/share/man/man1/glpi-remote.1p

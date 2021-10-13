@@ -110,7 +110,6 @@ install_script 'bin/glpi-wakeonlan';
 install_script 'bin/glpi-netdiscovery';
 install_script 'bin/glpi-netinventory';
 install_script 'bin/glpi-esx';
-install_script 'bin/glpi-remoteinventory';
 install_script 'bin/glpi-remote';
 
 resources
