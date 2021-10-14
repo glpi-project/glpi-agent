@@ -122,7 +122,12 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
                 );
             };
             return $contact if defined($contact) && $contact->is_valid_message;
-            $logger->debug("Not a GLPI CONTACT message");
+            if ($contact->status eq 'pending') {
+                $logger->debug("Got GLPI CONTACT pending answer");
+                return $contact;
+            } else {
+                $logger->debug("Not a GLPI CONTACT message");
+            }
         }
     }
     unless (defined($result)) {

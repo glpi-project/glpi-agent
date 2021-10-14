@@ -550,8 +550,8 @@ sub _handle_proxy_request {
                 last;
             }
             # Update our prolog_freq from the server one
-            if ($action eq "contact") {
-                $expiration = $answer->expiration();
+            if ($action eq "contact" && $sent->status eq 'ok' && $sent->expiration()) {
+                $expiration = $sent->expiration();
                 $self->debug("Setting prolog_freq to $expiration");
                 $self->config("prolog_freq", $expiration);
             }
@@ -670,7 +670,7 @@ sub _handle_proxy_request {
             return $self->proxy_error(500, 'No local storage for inventory');
         }
     } else {
-        @servers = grep { $_->isType('server') } $agent->getTargets();
+        @servers = grep { $_->isType('server') || $_->isGlpiServer() } $agent->getTargets();
     }
 
     if ($self->config('local_store') && -d $self->config('local_store')) {

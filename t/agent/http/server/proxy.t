@@ -132,7 +132,7 @@ is( $proxy->{requestid}, undef, "request id is not set" );
 _request( "GLPI-Request-ID" => "1234ABCD" );
 is( $proxy->{requestid}, "1234ABCD", "request id is set" );
 _request( "GLPI-Request-ID" => "zz45TH7812xx" );
-is( $proxy->{requestid}, undef, "wrong request is is unset" );
+is( $proxy->{requestid}, undef, "wrong request id is unset" );
 
 ### GLPI-Proxy-ID errors
 _request(

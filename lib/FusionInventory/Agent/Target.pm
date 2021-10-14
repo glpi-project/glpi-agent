@@ -76,6 +76,16 @@ sub getStorage {
     return $self->{storage};
 }
 
+sub setNextRunOnExpiration {
+    my ($self, $expiration) = @_;
+
+    $self->{nextRunDate} = time + ($expiration // 0);
+    $self->_saveState();
+
+    # Be sure to skip next resetNextRunDate() call
+    $self->{_expiration} = $expiration;
+}
+
 sub setNextRunDateFromNow {
     my ($self, $nextRunDelay) = @_;
 
@@ -89,7 +99,7 @@ sub setNextRunDateFromNow {
         $nextRunDelay = $self->{errMaxDelay} if ($nextRunDelay > $self->{errMaxDelay});
         $self->{_nextrundelay} = $nextRunDelay;
     }
-    $self->{nextRunDate} = time + ($nextRunDelay || 0);
+    $self->{nextRunDate} = time + ($nextRunDelay // 0);
     $self->_saveState();
 
     # Remove initialDelay to support case we are still forced to run at start
@@ -98,6 +108,9 @@ sub setNextRunDateFromNow {
 
 sub resetNextRunDate {
     my ($self) = @_;
+
+    # Don't reset next run date if still set via setNextRunOnExpiration
+    return if delete $self->{_expiration};
 
     $self->{_nextrundelay} = 0;
     $self->{nextRunDate} = $self->_computeNextRunDate();

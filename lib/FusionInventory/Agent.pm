@@ -266,8 +266,8 @@ sub runTarget {
             return 1;
         }
 
-        # Check we got a GLPI CONTACT answer
-        if (ref($response) ne 'GLPI::Agent::Protocol::Contact') {
+        # Check we got a GLPI message answer
+        if (ref($response) !~ /^GLPI::Agent::Protocol::/) {
             $self->{logger}->info("$target->{id} is not understanding GLPI Agent protocol");
             $target->isGlpiServer('false');
             # return true to soon fallback on PROLOG request
@@ -309,9 +309,10 @@ sub runTarget {
         }
 
         # Check if we got a GLPI server answer
-        if (ref($response) eq 'GLPI::Agent::Protocol::Contact') {
+        if (ref($response) =~ /^GLPI::Agent::Protocol::/) {
             $self->{logger}->info("$target->{id} answer shows it supports GLPI Agent protocol");
             $target->isGlpiServer('true');
+            return $self->runTarget($target) unless $response->expiration;
         } else {
             # update target
             my $content = $response->getContent();
@@ -329,6 +330,13 @@ sub runTarget {
         if ($status eq 'error') {
             $self->{logger}->error(
                 "server error: ".($message // "Server returned an error status")
+            );
+            return 0;
+        } elsif ($status eq 'pending') {
+            my $expiration = $response->expiration();
+            $target->setNextRunOnExpiration($expiration);
+            $self->{logger}->info(
+                "server pending: ".($message // "can retry in ".$expiration."s")
             );
             return 0;
         } elsif ($status ne 'ok') {

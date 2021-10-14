@@ -89,83 +89,77 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
         )
         : $params{message};
 
-    my $request;
-    if ($message) {
-        my $request_content = $message->getContent();
-        $logger->debug2(_log_prefix . "sending message:\n$request_content");
+    my $request_content = $message->getContent();
+    $logger->debug2(_log_prefix . "sending message:\n$request_content");
 
-        $request_content = $self->_compress(encode('UTF-8', $request_content));
-        unless ($request_content) {
-            $logger->error(_log_prefix . 'inflating problem');
-            return;
-        }
-        $request = HTTP::Request->new(POST => $url);
-        $request->content($request_content);
-    } else {
-        $request = HTTP::Request->new(GET => $url);
-        $request->header( "GLPI-Request-ID" => $params{requestid} ) if $params{requestid};
+    $request_content = $self->_compress(encode('UTF-8', $request_content));
+    unless ($request_content) {
+        $logger->error(_log_prefix . 'inflating problem');
+        return;
+    }
+    my $request = HTTP::Request->new(POST => $url);
+    $request->content($request_content);
+
+    my $answer;
+    my $try = 1;
+    while (!defined($answer)) {
         # Initialze a new message to be updated by the answer
-        $message = GLPI::Agent::Protocol::Message->new();
-    }
+        $answer = GLPI::Agent::Protocol::Message->new();
+        my $response = $self->request($request);
 
-    my $response = $self->request($request);
+        $requestid = $response->header("GLPI-Request-ID");
+        undef $requestid unless defined($requestid) && $requestid =~ /^[0-9A-F]{8}$/;
 
-    $requestid = $response->header("GLPI-Request-ID");
-    undef $requestid unless defined($requestid) && $requestid =~ /^[0-9A-F]{8}$/;
+        # no need to log anything specific here, it has already been done in parent class
+        return if !$response->is_success();
 
-    # no need to log anything specific here, it has already been done
-    # in parent class
-    return if !$response->is_success();
-
-    my $content = $response->content();
-    unless (defined($content)) {
-        $logger->error(_log_prefix . "no answer content");
-        return;
-    }
-
-    my $type = $response->header("Content-type") // "";
-    my $uncompressed_response_content = $self->_uncompress($content, $type);
-    unless ($uncompressed_response_content) {
-        $logger->error(
-            _log_prefix . "uncompressed content, starting with: ".substr($content, 0, 120)
-        );
-        return;
-    }
-
-    $logger->debug2(_log_prefix . "receiving message:\n$uncompressed_response_content");
-
-    eval {
-        $message->set($uncompressed_response_content);
-    };
-    if ($EVAL_ERROR) {
-        my @lines = split(/\n/, substr($uncompressed_response_content, 0, 120));
-        $logger->error(_log_prefix . "unexpected content, starting with: $lines[0]");
-        return;
-    }
-    unless ($message->is_valid_message()) {
-        $logger->error(_log_prefix . "not a valid answer");
-        return;
-    }
-
-    # Set requestid message to be re-use on update request when proxy answer request is pending
-    $message->id($requestid) if $requestid;
-
-    # Handle pending case recursively with 12 retries max, but don't if handled in caller
-    if ($message->status eq 'pending' && (!$params{pending} || $params{pending} ne "pass")) {
-        my $retry = $params{retry} // 0;
-        if ($retry>12) {
-            $logger->error(_log_prefix . "got too much pending status");
+        my $content = $response->content();
+        unless (defined($content)) {
+            $logger->error(_log_prefix . "no answer content");
             return;
         }
-        sleep $message->expiration;
-        $logger->debug2(_log_prefix . "retry request after pending status");
-        return $self->send(
-            retry   => $retry+1,
-            %params
-        );
+
+        my $type = $response->header("Content-type") // "";
+        my $uncompressed_response_content = $self->_uncompress($content, $type);
+        unless ($uncompressed_response_content) {
+            $logger->error(
+                _log_prefix . "uncompressed content, starting with: ".substr($content, 0, 120)
+            );
+            return;
+        }
+
+        $logger->debug2(_log_prefix . "receiving message:\n$uncompressed_response_content");
+
+        eval {
+            $answer->set($uncompressed_response_content);
+        };
+        if ($EVAL_ERROR) {
+            my @lines = split(/\n/, substr($uncompressed_response_content, 0, 120));
+            $logger->error(_log_prefix . "unexpected content, starting with: $lines[0]");
+            return;
+        }
+        unless ($answer->is_valid_message()) {
+            $logger->error(_log_prefix . "not a valid answer");
+            return;
+        }
+
+        # Handle pending case with 12 retries max, but don't if handled in caller
+        if ($answer->status eq 'pending' && (!$params{pending} || $params{pending} ne "pass")) {
+            if (++$try>12) {
+                $logger->error(_log_prefix . "got too much pending status");
+                return;
+            }
+            sleep $answer->expiration;
+            $logger->debug2(_log_prefix . "retry request after pending status");
+            undef $answer;
+            # Next request should be a GET with expected RequestID and no content
+            $request->method("GET");
+            $request->content("");
+            $request->header( "GLPI-Request-ID" => $requestid ) if $requestid;
+        }
     }
 
-    return $message;
+    return $answer;
 }
 
 sub _compress {
