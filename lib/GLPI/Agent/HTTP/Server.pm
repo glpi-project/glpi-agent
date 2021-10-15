@@ -657,6 +657,9 @@ sub handleRequests {
 
     return unless $self->{listener}; # init() call failed
 
+    # Avoid an error as Socket::VERSION may contain underscore
+    my ($SocketVersion) = split('_',$Socket::VERSION);
+
     # Handle any timer event on plugins and set next time expected to handle events
     unless ($self->{_timer_event} && $self->{_timer_event} > time) {
         my @enabled_plugins = grep { ! $_->disabled() } @{$self->{_plugins}};
@@ -687,7 +690,7 @@ sub handleRequests {
                      INADDR_ANY;
         my $clientIp;
         # Compatibility: Socket::inet_ntop() is only available since perl 5.12 introducing Socket v1.87
-        if ($Socket::VERSION >= 1.87) {
+        if ($SocketVersion >= 1.87) {
             $clientIp = Socket::inet_ntop($family, $iaddr);
         } else {
             my (undef, $iaddr) = sockaddr_in($socket);
@@ -718,7 +721,7 @@ sub handleRequests {
                  INADDR_ANY;
     my $clientIp;
     # Compatibility: Socket::inet_ntop() is only available since perl 5.12 introducing Socket v1.87
-    if ($Socket::VERSION >= 1.87) {
+    if ($SocketVersion >= 1.87) {
         $clientIp = Socket::inet_ntop($family, $iaddr);
     } else {
         my (undef, $iaddr) = sockaddr_in($socket);
