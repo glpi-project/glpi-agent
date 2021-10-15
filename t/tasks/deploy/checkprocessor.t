@@ -1509,7 +1509,7 @@ foreach my $proc (keys %processors) {
     ok( $status eq $result, "$proc object status result ok");
 }
 
-my $regdump = loadRegistryDump("resources/win32/registry/fia-audit-test.reg");
+my $regdump = loadRegistryDump("resources/win32/registry/glpi-agent-audit-test.reg");
 
 $module->mock(
     '_getRegistryKey', sub {
