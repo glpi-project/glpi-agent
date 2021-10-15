@@ -1,15 +1,15 @@
-package FusionInventory::Agent::SOAP::WsMan::PartComponent;
+package GLPI::Agent::SOAP::WsMan::PartComponent;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::SOAP::WsMan::Node;
+use GLPI::Agent::SOAP::WsMan::Node;
 
 ## no critic (ProhibitMultiplePackages)
 package
     PartComponent;
 
-# Used while looking for Win32_SystemUsers from FusionInventory::Agent::Tools::Win32::Users::getSystemUsers()
+# Used while looking for Win32_SystemUsers from GLPI::Agent::Tools::Win32::Users::getSystemUsers()
 
 use parent 'Node';
 

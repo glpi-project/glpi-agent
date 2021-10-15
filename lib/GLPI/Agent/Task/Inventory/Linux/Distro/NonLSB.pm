@@ -1,13 +1,13 @@
-package FusionInventory::Agent::Task::Inventory::Linux::Distro::NonLSB;
+package GLPI::Agent::Task::Inventory::Linux::Distro::NonLSB;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 # This array contains four items for each distribution:
 # - release file
@@ -64,7 +64,7 @@ my @distributions = (
 );
 
 our $runMeIfTheseChecksFailed =
-    ["FusionInventory::Agent::Task::Inventory::Linux::Distro::OSRelease"];
+    ["GLPI::Agent::Task::Inventory::Linux::Distro::OSRelease"];
 
 sub isEnabled {
     return !(has_file('/etc/os-release'));

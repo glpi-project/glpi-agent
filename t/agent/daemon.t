@@ -10,14 +10,14 @@ use File::Temp qw(tempdir);
 use Test::Deep;
 use Test::More;
 
-use FusionInventory::Agent;
-use FusionInventory::Agent::Config;
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Daemon;
+use GLPI::Agent;
+use GLPI::Agent::Config;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Daemon;
 
 plan tests => 11;
 
-my $agent = FusionInventory::Agent::Daemon->new(
+my $agent = GLPI::Agent::Daemon->new(
     libdir  => './lib'
 );
 $agent->{datadir} = './share';
@@ -43,7 +43,7 @@ $agent->init(options => $options);
 delete $agent->{config}->{_options};
 
 # after init call, the member 'config' is defined and well blessed
-ok (ref($agent->{config}) eq 'FusionInventory::Agent::Config');
+ok (ref($agent->{config}) eq 'GLPI::Agent::Config');
 ok (defined($agent->{config}->{'conf-file'}));
 ok (scalar(@{$agent->{config}->{'no-task'}}) == 2);
 
@@ -69,7 +69,7 @@ SKIP: {
     my $testKey = 'tag';
     my $testValue = 'TEST_REGISTRY_VALUE';
     # change value in registry
-    my $settingsInRegistry = FusionInventory::Test::Utils::openWin32Registry();
+    my $settingsInRegistry = GLPI::Test::Utils::openWin32Registry();
     $settingsInRegistry->{$testKey} = $testValue;
 
     my $keyInitialValue = $agent->{config}->{$testKey};

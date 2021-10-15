@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Tools::PartNumber::Elpida;
+package GLPI::Agent::Tools::PartNumber::Elpida;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Tools::PartNumber';
+use parent 'GLPI::Agent::Tools::PartNumber';
 
 # Based on specs from Elpida Memory, Inc 2002-2012 - ECT-TS-2039 June 2012
 

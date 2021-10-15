@@ -1,12 +1,12 @@
-package FusionInventory::Agent::SNMP::MibSupport::Zebra;
+package GLPI::Agent::SNMP::MibSupport::Zebra;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::SNMP::MibSupportTemplate';
+use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::SNMP;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::SNMP;
 
 # See ESI-MIB
 
@@ -57,7 +57,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP::MibSupport::Zebra - Inventory module for Zebra Printers
+GLPI::Agent::SNMP::MibSupport::Zebra - Inventory module for Zebra Printers
 
 =head1 DESCRIPTION
 

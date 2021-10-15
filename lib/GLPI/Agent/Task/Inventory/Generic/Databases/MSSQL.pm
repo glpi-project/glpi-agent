@@ -1,13 +1,13 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Databases::MSSQL;
+package GLPI::Agent::Task::Inventory::Generic::Databases::MSSQL;
 
 use English qw(-no_match_vars);
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Generic::Databases';
+use parent 'GLPI::Agent::Task::Inventory::Generic::Databases';
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 use GLPI::Agent::Inventory::DatabaseService;
 
 sub isEnabled {
@@ -21,7 +21,7 @@ sub doInventory {
     my $inventory = $params{inventory};
 
     # Try to retrieve credentials updating params
-    FusionInventory::Agent::Task::Inventory::Generic::Databases::_credentials(\%params, "mssql");
+    GLPI::Agent::Task::Inventory::Generic::Databases::_credentials(\%params, "mssql");
 
     my $dbservices = _getDatabaseService(%params);
 
@@ -46,7 +46,7 @@ sub _getDatabaseService {
         unless canRun('sqlcmd');
 
     foreach my $credential (@{$credentials}) {
-        FusionInventory::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
+        GLPI::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
         $params{options} = _mssqlOptions($credential) // "";
 
         my $productversion = _runSql(

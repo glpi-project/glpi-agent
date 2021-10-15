@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::Deploy::Datastore::WorkDir;
+package GLPI::Agent::Task::Deploy::Datastore::WorkDir;
 
 use strict;
 use warnings;
@@ -7,7 +7,7 @@ use Compress::Zlib;
 use English qw(-no_match_vars);
 use File::Path qw(mkpath);
 use UNIVERSAL::require;
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 use Encode;
 
 sub new {
@@ -44,8 +44,8 @@ sub prepare {
         $file->{name_local} = $file->{name};
 
         if ($OSNAME eq 'MSWin32') {
-            FusionInventory::Agent::Tools::Win32->require;
-            my $localCodepage = FusionInventory::Agent::Tools::Win32::getLocalCodepage();
+            GLPI::Agent::Tools::Win32->require;
+            my $localCodepage = GLPI::Agent::Tools::Win32::getLocalCodepage();
             if (Encode::is_utf8($file->{name})) {
                 $file->{name_local} = encode($localCodepage, $file->{name});
             }

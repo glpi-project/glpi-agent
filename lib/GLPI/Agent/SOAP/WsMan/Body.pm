@@ -1,9 +1,9 @@
-package FusionInventory::Agent::SOAP::WsMan::Body;
+package GLPI::Agent::SOAP::WsMan::Body;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::SOAP::WsMan::Node;
+use GLPI::Agent::SOAP::WsMan::Node;
 
 ## no critic (ProhibitMultiplePackages)
 package
@@ -13,8 +13,8 @@ use parent 'Node';
 
 use constant    xmlns   => 's';
 
-use FusionInventory::Agent::SOAP::WsMan::Fault;
-use FusionInventory::Agent::SOAP::WsMan::EnumerateResponse;
+use GLPI::Agent::SOAP::WsMan::Fault;
+use GLPI::Agent::SOAP::WsMan::EnumerateResponse;
 
 sub support {
     return {

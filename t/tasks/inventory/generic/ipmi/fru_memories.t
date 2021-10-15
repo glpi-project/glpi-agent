@@ -9,9 +9,9 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Memory;
-use FusionInventory::Agent::Task::Inventory::Generic::Ipmi::Fru::Memory;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::Generic::Dmidecode::Memory;
+use GLPI::Agent::Task::Inventory::Generic::Ipmi::Fru::Memory;
 
 my %tests = (
     'dell-r630' => [
@@ -1383,9 +1383,9 @@ plan tests => 2 * (scalar keys %tests) + 1;
 foreach my $test (keys %tests) {
     my $dmidecode = "resources/generic/dmidecode/$test";
     my $fru = "resources/generic/ipmitool/fru/$test";
-    my $inventory = FusionInventory::Test::Inventory->new();
+    my $inventory = GLPI::Test::Inventory->new();
 
-    my $memories = FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Memory::_getMemories(file => $dmidecode);
+    my $memories = GLPI::Agent::Task::Inventory::Generic::Dmidecode::Memory::_getMemories(file => $dmidecode);
     foreach my $memory (@$memories) {
         $inventory->addEntry(
             section => 'MEMORIES',
@@ -1394,7 +1394,7 @@ foreach my $test (keys %tests) {
     }
 
     lives_ok {
-        FusionInventory::Agent::Task::Inventory::Generic::Ipmi::Fru::Memory::doInventory(
+        GLPI::Agent::Task::Inventory::Generic::Ipmi::Fru::Memory::doInventory(
             inventory => $inventory,
             file      => $fru
         );

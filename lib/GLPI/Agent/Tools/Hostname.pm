@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools::Hostname;
+package GLPI::Agent::Tools::Hostname;
 
 use strict;
 use warnings;
@@ -14,7 +14,7 @@ our @EXPORT = qw(
     getRemoteHostdomain
 );
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 BEGIN {
     if ($OSNAME eq 'MSWin32') {
@@ -43,7 +43,7 @@ sub getHostname {
 
 sub _getHostnameUnix {
 
-    my $remote = $FusionInventory::Agent::Tools::remote;
+    my $remote = $GLPI::Agent::Tools::remote;
     return $remote->getRemoteHostname() if $remote;
 
     Sys::Hostname->require();
@@ -66,12 +66,12 @@ sub _getHostnameWindows {
 }
 
 sub getRemoteFqdn {
-    my $remote = $FusionInventory::Agent::Tools::remote;
+    my $remote = $GLPI::Agent::Tools::remote;
     return $remote->getRemoteFQDN() if $remote;
 }
 
 sub getRemoteHostdomain {
-    my $remote = $FusionInventory::Agent::Tools::remote;
+    my $remote = $GLPI::Agent::Tools::remote;
     return $remote->getRemoteHostDomain() if $remote;
 }
 
@@ -80,7 +80,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Tools::Hostname - OS-independent hostname computing
+GLPI::Agent::Tools::Hostname - OS-independent hostname computing
 
 =head1 DESCRIPTION
 

@@ -12,9 +12,9 @@ use Test::MockModule;
 use Test::More;
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Inventory;
-use FusionInventory::Test::Utils;
-use FusionInventory::Agent::Tools::Virtualization;
+use GLPI::Agent::Inventory;
+use GLPI::Test::Utils;
+use GLPI::Agent::Tools::Virtualization;
 
 BEGIN {
     # use mock modules for non-available ones
@@ -29,7 +29,7 @@ if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
 
 Test::NoWarnings->use();
 
-FusionInventory::Agent::Task::Inventory::Virtualization::HyperV->require();
+GLPI::Agent::Task::Inventory::Virtualization::HyperV->require();
 
 my %tests = (
     'unknown' => [
@@ -76,12 +76,12 @@ my %tests = (
 
 plan tests => (2 * scalar keys %tests) + 1;
 
-my $inventory = FusionInventory::Agent::Inventory->new();
+my $inventory = GLPI::Agent::Inventory->new();
 
 # fake Tools::Win32, instead of Task::Inventory::Virtualization::HyperV, as
 # it is loaded at runtime
 my $module = Test::MockModule->new(
-    'FusionInventory::Agent::Tools::Win32'
+    'GLPI::Agent::Tools::Win32'
 );
 
 foreach my $test (keys %tests) {
@@ -90,7 +90,7 @@ foreach my $test (keys %tests) {
         mockGetWMIObjects($test)
     );
 
-    my @machines = FusionInventory::Agent::Task::Inventory::Virtualization::HyperV::_getVirtualMachines();
+    my @machines = GLPI::Agent::Task::Inventory::Virtualization::HyperV::_getVirtualMachines();
     cmp_deeply(
         \@machines,
         $tests{$test},

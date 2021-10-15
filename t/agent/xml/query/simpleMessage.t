@@ -8,26 +8,26 @@ use Test::Exception;
 use Test::More;
 use XML::TreePP;
 
-use FusionInventory::Agent::XML::Query;
+use GLPI::Agent::XML::Query;
 
 plan tests => 7;
 
 my $message;
 throws_ok {
-    $message = FusionInventory::Agent::XML::Query->new(
+    $message = GLPI::Agent::XML::Query->new(
         deviceid => 'foo',
     );
 } qr/^no query/, 'no query type';
 
 lives_ok {
-    $message = FusionInventory::Agent::XML::Query->new(
+    $message = GLPI::Agent::XML::Query->new(
         deviceid => 'foo',
         query    => 'TEST',
         foo      => 'foo',
     );
 } 'everything OK';
 
-isa_ok($message, 'FusionInventory::Agent::XML::Query');
+isa_ok($message, 'GLPI::Agent::XML::Query');
 
 my $tpp = XML::TreePP->new();
 
@@ -44,7 +44,7 @@ cmp_deeply(
 );
 
 lives_ok {
-    $message = FusionInventory::Agent::XML::Query->new(
+    $message = GLPI::Agent::XML::Query->new(
         deviceid => 'foo',
         query    => 'TEST',
         foo => 'foo',
@@ -61,7 +61,7 @@ lives_ok {
     );
 } 'everything OK';
 
-isa_ok($message, 'FusionInventory::Agent::XML::Query');
+isa_ok($message, 'GLPI::Agent::XML::Query');
 
 cmp_deeply(
     scalar $tpp->parse($message->getContent()),

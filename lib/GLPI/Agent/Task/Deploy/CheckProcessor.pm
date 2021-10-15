@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::Deploy::CheckProcessor;
+package GLPI::Agent::Task::Deploy::CheckProcessor;
 
 use strict;
 use warnings;

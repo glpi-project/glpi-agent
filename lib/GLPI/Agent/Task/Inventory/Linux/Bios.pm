@@ -1,18 +1,18 @@
-package FusionInventory::Agent::Task::Inventory::Linux::Bios;
+package GLPI::Agent::Task::Inventory::Linux::Bios;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Generic;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Generic;
 
 use constant    category    => "bios";
 
 # Only run this module if dmidecode has not been found
 our $runMeIfTheseChecksFailed =
-    ["FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Bios"];
+    ["GLPI::Agent::Task::Inventory::Generic::Dmidecode::Bios"];
 
 sub isEnabled {
     return has_folder('/sys/class/dmi/id');

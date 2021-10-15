@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Task::RemoteInventory::Remotes;
+package GLPI::Agent::Task::RemoteInventory::Remotes;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::Task::RemoteInventory::Remote;
+use GLPI::Agent::Task::RemoteInventory::Remote;
 
 sub new {
     my ($class, %params) = @_;
@@ -23,7 +23,7 @@ sub new {
     foreach my $id (keys(%{$remotes})) {
         my $dump = $remotes->{$id};
         next unless ref($dump) eq 'HASH';
-        my $remote = FusionInventory::Agent::Task::RemoteInventory::Remote->new(
+        my $remote = GLPI::Agent::Task::RemoteInventory::Remote->new(
             dump    => $dump,
             config  => $self->{_config},
             logger  => $self->{logger},
@@ -40,7 +40,7 @@ sub new {
             # Skip if url is still known for a remote
             next if grep { $_->url() eq $url } $self->getall();
 
-            my $remote = FusionInventory::Agent::Task::RemoteInventory::Remote->new(
+            my $remote = GLPI::Agent::Task::RemoteInventory::Remote->new(
                 url     => $url,
                 config  => $self->{_config},
                 logger  => $params{logger},

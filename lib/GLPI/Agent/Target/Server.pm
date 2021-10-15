@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Target::Server;
+package GLPI::Agent::Target::Server;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Target';
+use parent 'GLPI::Agent::Target';
 
 use English qw(-no_match_vars);
 use URI;
@@ -107,7 +107,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Target::Server - Server target
+GLPI::Agent::Target::Server - Server target
 
 =head1 DESCRIPTION
 
@@ -118,7 +118,7 @@ This is a target for sending execution result to a server.
 =head2 new(%params)
 
 The constructor. The following parameters are allowed, in addition to those
-from the base class C<FusionInventory::Agent::Target>, as keys of the %params
+from the base class C<GLPI::Agent::Target>, as keys of the %params
 hash:
 
 =over

@@ -1,12 +1,12 @@
-package FusionInventory::Agent::SNMP::MibSupport::Hwg;
+package GLPI::Agent::SNMP::MibSupport::Hwg;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::SNMP::MibSupportTemplate';
+use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::SNMP;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::SNMP;
 
 # See Hwg-MIB
 
@@ -58,7 +58,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP::MibSupport::Hwg - Inventory module for Hwg
+GLPI::Agent::SNMP::MibSupport::Hwg - Inventory module for Hwg
 
 =head1 DESCRIPTION
 

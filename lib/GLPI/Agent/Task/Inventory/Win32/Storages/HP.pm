@@ -1,12 +1,12 @@
-package FusionInventory::Agent::Task::Inventory::Win32::Storages::HP;
+package GLPI::Agent::Task::Inventory::Win32::Storages::HP;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools::Win32;
-use FusionInventory::Agent::Tools::Storages::HP;
+use GLPI::Agent::Tools::Win32;
+use GLPI::Agent::Tools::Storages::HP;
 
 sub isEnabled {
     return _getHpacuacliFromWinRegistry();

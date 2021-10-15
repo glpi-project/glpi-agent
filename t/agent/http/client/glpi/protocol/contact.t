@@ -10,9 +10,9 @@ use Test::Deep;
 use Test::Exception;
 use Test::More;
 
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Version;
-use FusionInventory::Agent::XML::Response;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Version;
+use GLPI::Agent::XML::Response;
 
 use GLPI::Agent::Protocol::Contact;
 
@@ -152,7 +152,7 @@ my %answers = (
 
 plan tests => 6 + 3*keys(%answers);
 
-my $logger = FusionInventory::Agent::Logger->new(
+my $logger = GLPI::Agent::Logger->new(
     logger => [ 'Test' ]
 );
 
@@ -189,8 +189,8 @@ lives_ok {
 } "Contact request: content must be a JSON";
 
 my $expected_content = {
-    name                => $FusionInventory::Agent::Version::PROVIDER . "-Agent",
-    version             => $FusionInventory::Agent::Version::VERSION,
+    name                => $GLPI::Agent::Version::PROVIDER . "-Agent",
+    version             => $GLPI::Agent::Version::VERSION,
     deviceid            => $deviceid,
     tag                 => $tag,
     action              => "contact",
@@ -201,8 +201,8 @@ my $expected_content = {
 cmp_deeply($decoded_content, $expected_content, "Contact request: content check");
 
 # CONTACT answers are used in:
-# 1. FusionInventory::Agent                     when contacting a GLPI server
-# 2. FusionInventory::Agent::HTTP::Client::OCS  when interpreting a GLPI server answer
+# 1. GLPI::Agent                     when contacting a GLPI server
+# 2. GLPI::Agent::HTTP::Client::OCS  when interpreting a GLPI server answer
 
 my $answer;
 foreach my $case (keys(%answers)) {
@@ -212,13 +212,13 @@ foreach my $case (keys(%answers)) {
     # Message must fail being a XML response
     if ($case !~ /^unexpected-xml/) {
         dies_ok {
-            $answer = FusionInventory::Agent::XML::Response->new(
+            $answer = GLPI::Agent::XML::Response->new(
                 content => $message,
             );
         } "CONTACT answer not an XML: $case";
     } else {
         lives_ok {
-            $answer = FusionInventory::Agent::XML::Response->new(
+            $answer = GLPI::Agent::XML::Response->new(
                 content => $message,
             );
         } "CONTACT answer is an XML: $case";

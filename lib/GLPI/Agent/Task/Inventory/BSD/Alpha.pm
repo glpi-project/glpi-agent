@@ -1,13 +1,13 @@
-package FusionInventory::Agent::Task::Inventory::BSD::Alpha;
+package GLPI::Agent::Task::Inventory::BSD::Alpha;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use Config;
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 use constant    category    => "bios";
 use constant    other_categories => qw(cpu);

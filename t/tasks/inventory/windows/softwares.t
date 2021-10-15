@@ -13,9 +13,9 @@ use Test::MockModule;
 use Test::More;
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Inventory;
-use FusionInventory::Test::Utils;
-use FusionInventory::Agent::Tools::Win32::Constants;
+use GLPI::Agent::Inventory;
+use GLPI::Test::Utils;
+use GLPI::Agent::Tools::Win32::Constants;
 
 BEGIN {
     # use mock modules for non-available ones
@@ -30,7 +30,7 @@ if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
 
 Test::NoWarnings->use();
 
-FusionInventory::Agent::Task::Inventory::Win32::Softwares->require();
+GLPI::Agent::Task::Inventory::Win32::Softwares->require();
 
 my %softwares_tests = (
     'mssql' => [
@@ -9381,10 +9381,10 @@ plan tests =>
     scalar (keys %hotfixes_tests)      +
     1;
 
-my $inventory = FusionInventory::Agent::Inventory->new();
+my $inventory = GLPI::Agent::Inventory->new();
 
 my $module = Test::MockModule->new(
-    'FusionInventory::Agent::Task::Inventory::Win32::Softwares'
+    'GLPI::Agent::Task::Inventory::Win32::Softwares'
 );
 $module->mock(
     'encodeFromRegistry',
@@ -9395,7 +9395,7 @@ $module->mock(
 );
 
 my $tools_module = Test::MockModule->new(
-    'FusionInventory::Agent::Tools::Win32'
+    'GLPI::Agent::Tools::Win32'
 );
 
 foreach my $test (keys %softwares_tests) {
@@ -9405,7 +9405,7 @@ foreach my $test (keys %softwares_tests) {
         mockGetRegistryKey($test)
     );
 
-    my $softwares = FusionInventory::Agent::Task::Inventory::Win32::Softwares::_getSoftwaresList();
+    my $softwares = GLPI::Agent::Task::Inventory::Win32::Softwares::_getSoftwaresList();
 
     cmp_deeply(
         [ sort { compare() } @$softwares ],
@@ -9424,7 +9424,7 @@ foreach my $test (keys %hotfixes_tests) {
         mockGetWMIObjects($test)
     );
 
-    my $hotfixes = FusionInventory::Agent::Task::Inventory::Win32::Softwares::_getHotfixesList(is64bit => 0);
+    my $hotfixes = GLPI::Agent::Task::Inventory::Win32::Softwares::_getHotfixesList(is64bit => 0);
     cmp_deeply(
         $hotfixes,
         $hotfixes_tests{$test},

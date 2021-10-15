@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::Deploy::ActionProcessor::Action::Delete;
+package GLPI::Agent::Task::Deploy::ActionProcessor::Action::Delete;
 
 use strict;
 use warnings;
@@ -19,8 +19,8 @@ sub do {
         my $loc_local = $loc;
 
         if ($OSNAME eq 'MSWin32') {
-            FusionInventory::Agent::Tools::Win32->require;
-            my $localCodepage = FusionInventory::Agent::Tools::Win32::getLocalCodepage();
+            GLPI::Agent::Tools::Win32->require;
+            my $localCodepage = GLPI::Agent::Tools::Win32::getLocalCodepage();
             if (Encode::is_utf8($loc)) {
                 $loc_local = encode($localCodepage, $loc);
             }

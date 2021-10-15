@@ -1,4 +1,4 @@
-package FusionInventory::Agent::HTTP::Server::Proxy;
+package GLPI::Agent::HTTP::Server::Proxy;
 
 use strict;
 use warnings;
@@ -9,12 +9,12 @@ use XML::XPath;
 use Compress::Zlib;
 use File::Temp;
 
-use base "FusionInventory::Agent::HTTP::Server::Plugin";
+use base "GLPI::Agent::HTTP::Server::Plugin";
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::UUID;
-use FusionInventory::Agent::HTTP::Client::OCS;
-use FusionInventory::Agent::HTTP::Client::GLPI;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::UUID;
+use GLPI::Agent::HTTP::Client::OCS;
+use GLPI::Agent::HTTP::Client::GLPI;
 
 use GLPI::Agent::Protocol::Message;
 use GLPI::Agent::Protocol::Answer;
@@ -51,7 +51,7 @@ sub defaults {
         max_pass_through    => 5,
         glpi_protocol       => "yes",
         no_category         => "",
-        # Supported by class FusionInventory::Agent::HTTP::Server::Plugin
+        # Supported by class GLPI::Agent::HTTP::Server::Plugin
         maxrate             => 30,
         maxrate_period      => 3600,
     };
@@ -234,7 +234,7 @@ sub _handle_proxy_request {
 
     my $remoteid = $clientIp;
 
-    # /proxy/fusioninventory request
+    # /proxy/glpi request
 
     # From here we should fork and return
     my $agent = $self->{server}->{agent};
@@ -522,7 +522,7 @@ sub _handle_proxy_request {
         $proxyid .= $agent->{agentid};
 
         # Prepare a client to foward request
-        my $proxyclient = FusionInventory::Agent::HTTP::Client::GLPI->new(
+        my $proxyclient = GLPI::Agent::HTTP::Client::GLPI->new(
             logger       => $self->{logger},
             timeout      => $serverconfig->{timeout},
             user         => $serverconfig->{user},
@@ -696,7 +696,7 @@ sub _handle_proxy_request {
     }
 
     if (@servers) {
-        my $proxyclient = FusionInventory::Agent::HTTP::Client::OCS->new(
+        my $proxyclient = GLPI::Agent::HTTP::Client::OCS->new(
             logger       => $self->{logger},
             user         => $serverconfig->{user},
             password     => $serverconfig->{password},
@@ -708,7 +708,7 @@ sub _handle_proxy_request {
             ssl_cert_file => $serverconfig->{'ssl-cert-file'},
         );
 
-        my $message = FusionInventory::Agent::HTTP::Server::Proxy::Message->new(
+        my $message = GLPI::Agent::HTTP::Server::Proxy::Message->new(
             content  => $content,
         );
 
@@ -746,7 +746,7 @@ sub proxy_error {
 
 ## no critic (ProhibitMultiplePackages)
 package
-    FusionInventory::Agent::HTTP::Server::Proxy::Message;
+    GLPI::Agent::HTTP::Server::Proxy::Message;
 
 sub new {
     my ($class, %params) = @_;
@@ -768,7 +768,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::HTTP::Server::Proxy - An embedded HTTP server plugin
+GLPI::Agent::HTTP::Server::Proxy - An embedded HTTP server plugin
 providing a proxy for agents not able to contact the server
 
 =head1 DESCRIPTION

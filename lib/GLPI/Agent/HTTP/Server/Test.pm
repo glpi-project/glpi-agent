@@ -1,9 +1,9 @@
-package FusionInventory::Agent::HTTP::Server::Test;
+package GLPI::Agent::HTTP::Server::Test;
 
 use strict;
 use warnings;
 
-use base "FusionInventory::Agent::HTTP::Server::Plugin";
+use base "GLPI::Agent::HTTP::Server::Plugin";
 
 sub urlMatch {
     my ($self, $path) = @_;
@@ -51,7 +51,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::HTTP::Server::Test - An embedded HTTP server plugin as
+GLPI::Agent::HTTP::Server::Test - An embedded HTTP server plugin as
 test and sample server plugin
 
 =head1 DESCRIPTION

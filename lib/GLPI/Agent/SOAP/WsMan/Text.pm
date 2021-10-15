@@ -1,9 +1,9 @@
-package FusionInventory::Agent::SOAP::WsMan::Text;
+package GLPI::Agent::SOAP::WsMan::Text;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::SOAP::WsMan::Node;
+use GLPI::Agent::SOAP::WsMan::Node;
 
 ## no critic (ProhibitMultiplePackages)
 package

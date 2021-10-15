@@ -25,10 +25,10 @@ all_vars_ok(
     ignore_vars => {
         '%params'   => 1,
         '$class'    => 1,
-        '$request'  => 1, # FusionInventory::Agent::HTTP::Server
-        '$clientIp' => 1, # FusionInventory::Agent::HTTP::Server
+        '$request'  => 1, # GLPI::Agent::HTTP::Server
+        '$clientIp' => 1, # GLPI::Agent::HTTP::Server
         '$num'      => 1, # Task::Inventory::Input::Solaris::Networks
-        '$i'        => 1, # FusionInventory::Agent::Tools::Solaris
-        '$type'     => 1, # FusionInventory::Agent::Tools::Hardware
+        '$i'        => 1, # GLPI::Agent::Tools::Solaris
+        '$type'     => 1, # GLPI::Agent::Tools::Hardware
     }
 );

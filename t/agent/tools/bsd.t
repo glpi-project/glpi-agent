@@ -6,7 +6,7 @@ use warnings;
 use Test::Deep;
 use Test::More;
 
-use FusionInventory::Agent::Tools::BSD;
+use GLPI::Agent::Tools::BSD;
 
 my %ifconfig_tests = (
     'freebsd-8.1' => [

@@ -1,16 +1,16 @@
-package FusionInventory::Agent::Task::Inventory::Linux::Storages::Adaptec;
+package GLPI::Agent::Task::Inventory::Linux::Storages::Adaptec;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Linux;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Linux;
 
-our $runMeIfTheseChecksFailed = ['FusionInventory::Agent::Task::Inventory::Linux::Storages'];
+our $runMeIfTheseChecksFailed = ['GLPI::Agent::Task::Inventory::Linux::Storages'];
 
 sub isEnabled {
     return has_file('/proc/scsi/scsi');

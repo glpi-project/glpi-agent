@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools::Expiration;
+package GLPI::Agent::Tools::Expiration;
 
 use strict;
 use warnings;
@@ -36,7 +36,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Expiration - Expiration functions
+GLPI::Agent::Expiration - Expiration functions
 
 =head1 DESCRIPTION
 

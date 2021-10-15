@@ -13,25 +13,25 @@ use Test::Exception;
 use UNIVERSAL::require;
 use Time::HiRes qw(usleep);
 
-use FusionInventory::Test::Agent;
-use FusionInventory::Agent::HTTP::Server;
-use FusionInventory::Agent::Logger;
-use FusionInventory::Test::Utils;
+use GLPI::Test::Agent;
+use GLPI::Agent::HTTP::Server;
+use GLPI::Agent::Logger;
+use GLPI::Test::Utils;
 
 plan skip_all => 'Not working on github action windows image'
     if $OSNAME eq 'MSWin32' && exists($ENV{GITHUB_ACTIONS});
 
 plan tests => 12;
 
-my $logger = FusionInventory::Agent::Logger->new(
+my $logger = GLPI::Agent::Logger->new(
     logger => [ 'Test' ]
 );
 
 my $server;
 
 lives_ok {
-    $server = FusionInventory::Agent::HTTP::Server->new(
-        agent     => FusionInventory::Test::Agent->new(),
+    $server = GLPI::Agent::HTTP::Server->new(
+        agent     => GLPI::Test::Agent->new(),
         ip        => '127.0.0.1',
         logger    => $logger,
         htmldir   => 'share/html'
@@ -55,8 +55,8 @@ if (my $pid = fork()) {
 }
 
 lives_ok {
-    $server = FusionInventory::Agent::HTTP::Server->new(
-        agent     => FusionInventory::Test::Agent->new(),
+    $server = GLPI::Agent::HTTP::Server->new(
+        agent     => GLPI::Test::Agent->new(),
         ip        => '127.0.0.1',
         logger    => $logger,
         htmldir   => 'share/html',
@@ -75,8 +75,8 @@ ok (
 );
 
 lives_ok {
-    $server = FusionInventory::Agent::HTTP::Server->new(
-        agent     => FusionInventory::Test::Agent->new(),
+    $server = GLPI::Agent::HTTP::Server->new(
+        agent     => GLPI::Test::Agent->new(),
         ip        => '127.0.0.1',
         logger    => $logger,
         htmldir   => 'share/html',
@@ -95,11 +95,11 @@ ok (
 );
 
 # find an available port
-my $port = FusionInventory::Agent::Tools::first { test_port($_) } 8080 .. 8180;
+my $port = GLPI::Agent::Tools::first { test_port($_) } 8080 .. 8180;
 
 lives_ok {
-    $server = FusionInventory::Agent::HTTP::Server->new(
-        agent     => FusionInventory::Test::Agent->new(),
+    $server = GLPI::Agent::HTTP::Server->new(
+        agent     => GLPI::Test::Agent->new(),
         ip        => '127.0.0.1',
         logger    => $logger,
         port      => $port,

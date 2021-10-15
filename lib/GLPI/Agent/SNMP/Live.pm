@@ -1,8 +1,8 @@
-package FusionInventory::Agent::SNMP::Live;
+package GLPI::Agent::SNMP::Live;
 
 use strict;
 use warnings;
-use parent 'FusionInventory::Agent::SNMP';
+use parent 'GLPI::Agent::SNMP';
 
 use Encode qw(encode);
 use English qw(-no_match_vars);
@@ -190,7 +190,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP::Live - Live SNMP client
+GLPI::Agent::SNMP::Live - Live SNMP client
 
 =head1 DESCRIPTION
 

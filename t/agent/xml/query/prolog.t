@@ -8,24 +8,24 @@ use Test::Exception;
 use Test::More;
 use XML::TreePP;
 
-use FusionInventory::Agent::XML::Query::Prolog;
+use GLPI::Agent::XML::Query::Prolog;
 
 plan tests => 4;
 
 my $message;
 
 throws_ok {
-    $message = FusionInventory::Agent::XML::Query::Prolog->new(
+    $message = GLPI::Agent::XML::Query::Prolog->new(
     );
 } qr/^no deviceid/, 'no device id';
 
 lives_ok {
-    $message = FusionInventory::Agent::XML::Query::Prolog->new(
+    $message = GLPI::Agent::XML::Query::Prolog->new(
         deviceid => 'foo',
     );
 } 'everything OK';
 
-isa_ok($message, 'FusionInventory::Agent::XML::Query::Prolog');
+isa_ok($message, 'GLPI::Agent::XML::Query::Prolog');
 
 my $tpp = XML::TreePP->new();
 

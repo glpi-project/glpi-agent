@@ -6,8 +6,8 @@ use warnings;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Agent::Task::Inventory::MacOS::Uptime;
-use FusionInventory::Agent::Tools::MacOS;
+use GLPI::Agent::Task::Inventory::MacOS::Uptime;
+use GLPI::Agent::Tools::MacOS;
 
 my %tests = (
     '1325070226' => '1325070226',
@@ -18,7 +18,7 @@ my %tests = (
 plan tests => (scalar keys %tests) * 2 + 1;
 
 foreach my $test (keys %tests) {
-    my $r = FusionInventory::Agent::Tools::MacOS::getBootTime(string => $test);
+    my $r = GLPI::Agent::Tools::MacOS::getBootTime(string => $test);
     ok($r);
     ok($r eq $tests{$test}, $r . ' eq ? ' . $tests{$test});
 }

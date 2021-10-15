@@ -6,7 +6,7 @@ use warnings;
 use Test::Deep;
 use Test::More;
 
-use FusionInventory::Agent::SNMP::Mock;
+use GLPI::Agent::SNMP::Mock;
 
 my %walks = (
     sample1 => {
@@ -63,7 +63,7 @@ foreach my $test (keys %walks) {
 plan tests => $testCpt;
 
 foreach my $walk (keys %walks) {
-    my $snmp = FusionInventory::Agent::SNMP::Mock->new(
+    my $snmp = GLPI::Agent::SNMP::Mock->new(
         file => "resources/walks/$walk.walk"
     );
 

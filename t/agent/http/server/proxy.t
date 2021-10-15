@@ -15,25 +15,25 @@ use Compress::Zlib;
 use File::Temp;
 use JSON;
 
-use FusionInventory::Agent;
-use FusionInventory::Agent::Config;
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::HTTP::Server;
-use FusionInventory::Agent::HTTP::Server::Proxy;
-use FusionInventory::Agent::HTTP::Client::GLPI;
-use FusionInventory::Agent::HTTP::Client::OCS;
-use FusionInventory::Agent::XML::Response;
-use FusionInventory::Agent::Target::Server;
+use GLPI::Agent;
+use GLPI::Agent::Config;
+use GLPI::Agent::Logger;
+use GLPI::Agent::HTTP::Server;
+use GLPI::Agent::HTTP::Server::Proxy;
+use GLPI::Agent::HTTP::Client::GLPI;
+use GLPI::Agent::HTTP::Client::OCS;
+use GLPI::Agent::XML::Response;
+use GLPI::Agent::Target::Server;
 use GLPI::Agent::Protocol::Answer;
 
 plan tests => 55;
 
-my $logger = FusionInventory::Agent::Logger->new(
+my $logger = GLPI::Agent::Logger->new(
     logger => [ 'Test' ]
 );
 
 # Override include directive to local dedicated config and avoid loading local one if exists
-my $config_module = Test::MockModule->new('FusionInventory::Agent::Config');
+my $config_module = Test::MockModule->new('GLPI::Agent::Config');
 $config_module->mock('_includeDirective', sub {
     my ($self) = @_;
     $self->_loadUserParams({
@@ -41,7 +41,7 @@ $config_module->mock('_includeDirective', sub {
     });
 });
 
-my $agent = Test::MockObject::Extends->new(FusionInventory::Agent->new());
+my $agent = Test::MockObject::Extends->new(GLPI::Agent->new());
 my $server = {
     agent   => $agent,
 };
@@ -52,7 +52,7 @@ $agent->mock( forked => sub { 0 } );
 $agent->mock( forked_process_event => sub { shift; push @events, shift; } );
 
 # Mock GLPI client
-my $client_module = Test::MockModule->new('FusionInventory::Agent::HTTP::Client::GLPI');
+my $client_module = Test::MockModule->new('GLPI::Agent::HTTP::Client::GLPI');
 $client_module->mock('send', sub {
     my ($self, %params) = @_;
     my ($test) = $params{url} =~ m/\?test=(.*)$/;
@@ -63,18 +63,18 @@ $client_module->mock('send', sub {
     );
 });
 
-my $ocs_client_module = Test::MockModule->new('FusionInventory::Agent::HTTP::Client::OCS');
+my $ocs_client_module = Test::MockModule->new('GLPI::Agent::HTTP::Client::OCS');
 $ocs_client_module->mock('send', sub {
     my ($self, %params) = @_;
     my ($test) = $params{url} =~ m/\?test=(.*)$/;
-    return FusionInventory::Agent::XML::Response->new(
+    return GLPI::Agent::XML::Response->new(
         content => "<REPLY></REPLY>",
     ) if $test && $test eq "sent";;
 });
 
 my $proxy;
 lives_ok {
-    $proxy = FusionInventory::Agent::HTTP::Server::Proxy->new(
+    $proxy = GLPI::Agent::HTTP::Server::Proxy->new(
         server  => $server,
     );
 } "proxy instanciation";
@@ -109,7 +109,7 @@ lives_ok {
     $proxy->handle($client, $request, $ip);
 } "handle GET apiversion";
 
-is( $response->content, $FusionInventory::Agent::HTTP::Server::Proxy::VERSION, "returned apiversion" );
+is( $response->content, $GLPI::Agent::HTTP::Server::Proxy::VERSION, "returned apiversion" );
 is( $response->status_line, "200 OK", "GET apiversion status" );
 
 sub _request {
@@ -149,7 +149,7 @@ is( $response->status_line, "404 PROXY-LOOP-DETECTED", "proxy loop error (2)" );
 sub check_error {
     is( $response->code, $_[0], "Expected ".($_[2]//$_[0])." response" );
     if ($_[3] && $_[3] eq 'xml') {
-        my $resp = FusionInventory::Agent::XML::Response->new(
+        my $resp = GLPI::Agent::XML::Response->new(
             content => $response->content
         );
         my $hash = { REPLY => $resp->getContent() };
@@ -298,7 +298,7 @@ SKIP: {
     chmod 755, $local_store;
 }
 
-my $glpi = FusionInventory::Agent::Target::Server->new(
+my $glpi = GLPI::Agent::Target::Server->new(
     url         => 'http://glpi-project.test/glpi',
     basevardir  => 'var',
 );

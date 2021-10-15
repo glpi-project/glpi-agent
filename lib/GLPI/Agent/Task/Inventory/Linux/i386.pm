@@ -1,13 +1,13 @@
-package FusionInventory::Agent::Task::Inventory::Linux::i386;
+package GLPI::Agent::Task::Inventory::Linux::i386;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use Config;
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 sub isEnabled {
     my (%params) = @_;

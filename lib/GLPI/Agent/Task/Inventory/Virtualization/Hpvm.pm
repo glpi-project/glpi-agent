@@ -1,14 +1,14 @@
-package FusionInventory::Agent::Task::Inventory::Virtualization::Hpvm;
+package GLPI::Agent::Task::Inventory::Virtualization::Hpvm;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use XML::TreePP;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Virtualization;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Virtualization;
 
 sub isEnabled {
     return canRun('hpvmstatus');

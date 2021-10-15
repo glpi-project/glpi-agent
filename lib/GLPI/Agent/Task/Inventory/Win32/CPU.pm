@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Task::Inventory::Win32::CPU;
+package GLPI::Agent::Task::Inventory::Win32::CPU;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 ################################################################################
 #### Needed to support this module under other platforms than MSWin32 ##########
@@ -20,9 +20,9 @@ BEGIN {
 use English qw(-no_match_vars);
 use Win32;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Win32;
-use FusionInventory::Agent::Tools::Generic;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Win32;
+use GLPI::Agent::Tools::Generic;
 
 use constant    category    => "cpu";
 

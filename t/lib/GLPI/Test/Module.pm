@@ -1,4 +1,4 @@
-package FusionInventory::Test::Module;
+package GLPI::Test::Module;
 
 use strict;
 use warnings;

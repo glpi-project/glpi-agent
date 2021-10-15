@@ -11,8 +11,8 @@ use Test::Exception;
 use Test::MockModule;
 use Test::More;
 
-use FusionInventory::Agent::Inventory;
-use FusionInventory::Test::Utils;
+use GLPI::Agent::Inventory;
+use GLPI::Test::Utils;
 
 BEGIN {
     # use mock modules for non-available ones
@@ -27,7 +27,7 @@ if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
 
 Test::NoWarnings->use();
 
-FusionInventory::Agent::Task::Inventory::Win32::CPU->require();
+GLPI::Agent::Task::Inventory::Win32::CPU->require();
 
 my %tests = (
     '7' => [
@@ -177,10 +177,10 @@ my %tests = (
 
 plan tests => (2 * scalar keys %tests) + 1;
 
-my $inventory = FusionInventory::Agent::Inventory->new();
+my $inventory = GLPI::Agent::Inventory->new();
 
 my $module = Test::MockModule->new(
-    'FusionInventory::Agent::Task::Inventory::Win32::CPU'
+    'GLPI::Agent::Task::Inventory::Win32::CPU'
 );
 
 my $win32 = Test::MockModule->new('Win32');
@@ -197,7 +197,7 @@ foreach my $test (keys %tests) {
             my $file = "resources/generic/dmidecode/windows-$test";
             return
                 -f $file ?
-                FusionInventory::Agent::Tools::Generic::getCpusFromDmidecode(
+                GLPI::Agent::Tools::Generic::getCpusFromDmidecode(
                     file => $file
                 ) : ();
         }
@@ -216,7 +216,7 @@ foreach my $test (keys %tests) {
     );
 
 
-    my @cpus = FusionInventory::Agent::Task::Inventory::Win32::CPU::_getCPUs(
+    my @cpus = GLPI::Agent::Task::Inventory::Win32::CPU::_getCPUs(
         inventory => $inventory
     );
     cmp_deeply(

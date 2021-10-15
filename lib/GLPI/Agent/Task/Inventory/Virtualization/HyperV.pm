@@ -1,15 +1,15 @@
-package FusionInventory::Agent::Task::Inventory::Virtualization::HyperV;
+package GLPI::Agent::Task::Inventory::Virtualization::HyperV;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Virtualization;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Virtualization;
 
 sub isEnabled {
     return OSNAME eq 'MSWin32';
@@ -29,13 +29,13 @@ sub doInventory {
 
 sub _getVirtualMachines {
 
-    FusionInventory::Agent::Tools::Win32->require();
+    GLPI::Agent::Tools::Win32->require();
 
     my @machines;
 
     # index memory, cpu and BIOS UUID information
     my %memory;
-    foreach my $object (FusionInventory::Agent::Tools::Win32::getWMIObjects(
+    foreach my $object (GLPI::Agent::Tools::Win32::getWMIObjects(
         moniker    => 'winmgmts://./root/virtualization/v2',
         altmoniker => 'winmgmts://./root/virtualization',
         class      => 'MSVM_MemorySettingData',
@@ -47,7 +47,7 @@ sub _getVirtualMachines {
     }
 
     my %vcpu;
-    foreach my $object (FusionInventory::Agent::Tools::Win32::getWMIObjects(
+    foreach my $object (GLPI::Agent::Tools::Win32::getWMIObjects(
         moniker    => 'winmgmts://./root/virtualization/v2',
         altmoniker => 'winmgmts://./root/virtualization',
         class      => 'MSVM_ProcessorSettingData',
@@ -59,7 +59,7 @@ sub _getVirtualMachines {
     }
 
     my %biosguid;
-    foreach my $object (FusionInventory::Agent::Tools::Win32::getWMIObjects(
+    foreach my $object (GLPI::Agent::Tools::Win32::getWMIObjects(
         moniker    => 'winmgmts://./root/virtualization/v2',
         altmoniker => 'winmgmts://./root/virtualization',
         class      => 'MSVM_VirtualSystemSettingData',
@@ -71,7 +71,7 @@ sub _getVirtualMachines {
         $biosguid{$1} =~ tr/{}//d;
     }
 
-    foreach my $object (FusionInventory::Agent::Tools::Win32::getWMIObjects(
+    foreach my $object (GLPI::Agent::Tools::Win32::getWMIObjects(
         moniker    => 'winmgmts://./root/virtualization/v2',
         altmoniker => 'winmgmts://./root/virtualization',
         class      => 'MSVM_ComputerSystem',

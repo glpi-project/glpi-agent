@@ -1,12 +1,12 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Firewall::Ufw;
+package GLPI::Agent::Task::Inventory::Generic::Firewall::Ufw;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools::Constants;
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools::Constants;
+use GLPI::Agent::Tools;
 
 sub isEnabled {
     return

@@ -1,14 +1,14 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Softwares::Snap;
+package GLPI::Agent::Task::Inventory::Generic::Softwares::Snap;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 use YAML::Tiny;
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 sub isEnabled {
     # Snap is not supported on AIX and the command has another usage

@@ -10,17 +10,17 @@ use Test::Exception;
 use Test::More;
 use Test::Deep qw(cmp_deeply);
 
-use FusionInventory::Agent::Logger;
+use GLPI::Agent::Logger;
 
 # check thread support availability
 if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
     plan skip_all => 'thread support required';
 }
 
-FusionInventory::Agent::Task::NetDiscovery->use();
+GLPI::Agent::Task::NetDiscovery->use();
 
 # Setup a target with a Test logger and debug
-my $logger = FusionInventory::Agent::Logger->new(
+my $logger = GLPI::Agent::Logger->new(
     logger  => [ 'Test' ],
     debug   => 1
 );
@@ -68,7 +68,7 @@ foreach my $arp_case (keys(%arp_test)) {
         arp    => "true",
         logger => $logger
     };
-    bless $self, "FusionInventory::Agent::Task::NetDiscovery";
+    bless $self, "GLPI::Agent::Task::NetDiscovery";
 
     my %device = $self->_scanAddressByArp({
         jid     => $arp_case,

@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::ESX::Version;
+package GLPI::Agent::Task::ESX::Version;
 
 use strict;
 use warnings;

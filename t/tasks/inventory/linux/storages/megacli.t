@@ -9,8 +9,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::Linux::Storages::Megacli;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::Linux::Storages::Megacli;
 
 my %pdlist_tests = (
     set1_PDlist => {
@@ -1215,29 +1215,29 @@ plan tests =>
 
 foreach my $test (keys %pdlist_tests) {
     my $file = "resources/linux/megacli/$test";
-    my $results = FusionInventory::Agent::Task::Inventory::Linux::Storages::Megacli::_getPDlist(file => $file);
+    my $results = GLPI::Agent::Task::Inventory::Linux::Storages::Megacli::_getPDlist(file => $file);
     cmp_deeply($results, $pdlist_tests{$test}, "$test: megacli -PDlist parsing");
 }
 
 foreach my $test (keys %summary_tests) {
     my $file = "resources/linux/megacli/$test";
-    my $results = FusionInventory::Agent::Task::Inventory::Linux::Storages::Megacli::_getSummary(file => $file);
+    my $results = GLPI::Agent::Task::Inventory::Linux::Storages::Megacli::_getSummary(file => $file);
     cmp_deeply($results, $summary_tests{$test}, "$test: megacli -ShowSummary parsing");
 }
 
 foreach my $test (keys %enclosure_tests) {
     my $file = "resources/linux/megacli/$test";
-    my $results = FusionInventory::Agent::Task::Inventory::Linux::Storages::Megacli::_getAdpEnclosure(file => $file);
+    my $results = GLPI::Agent::Task::Inventory::Linux::Storages::Megacli::_getAdpEnclosure(file => $file);
     cmp_deeply($results, $enclosure_tests{$test}, "$test: megacli -EncInfo parsing");
 }
 
 foreach my $test (keys %storage_tests) {
     my $file = "resources/linux/megacli/${test}_EncInfo";
-    my $adapter = FusionInventory::Agent::Task::Inventory::Linux::Storages::Megacli::_getAdpEnclosure(file => $file);
+    my $adapter = GLPI::Agent::Task::Inventory::Linux::Storages::Megacli::_getAdpEnclosure(file => $file);
     $file = "resources/linux/megacli/${test}_PDlist";
-    my $pdlist = FusionInventory::Agent::Task::Inventory::Linux::Storages::Megacli::_getPDlist(file => $file);
+    my $pdlist = GLPI::Agent::Task::Inventory::Linux::Storages::Megacli::_getPDlist(file => $file);
     $file = "resources/linux/megacli/${test}_ShowSummary";
-    my $summary = FusionInventory::Agent::Task::Inventory::Linux::Storages::Megacli::_getSummary(file => $file);
-    my $results = FusionInventory::Agent::Task::Inventory::Linux::Storages::Megacli::_getStorages($adapter,$pdlist,$summary);
+    my $summary = GLPI::Agent::Task::Inventory::Linux::Storages::Megacli::_getSummary(file => $file);
+    my $results = GLPI::Agent::Task::Inventory::Linux::Storages::Megacli::_getStorages($adapter,$pdlist,$summary);
     cmp_deeply($results, $storage_tests{$test}, "$test storage: storages analysis");
 }

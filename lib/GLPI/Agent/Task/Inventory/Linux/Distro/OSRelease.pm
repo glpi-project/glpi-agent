@@ -1,11 +1,11 @@
-package FusionInventory::Agent::Task::Inventory::Linux::Distro::OSRelease;
+package GLPI::Agent::Task::Inventory::Linux::Distro::OSRelease;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 sub isEnabled {
   return has_file('/etc/os-release');

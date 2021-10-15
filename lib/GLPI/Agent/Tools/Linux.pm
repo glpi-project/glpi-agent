@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools::Linux;
+package GLPI::Agent::Tools::Linux;
 
 use strict;
 use warnings;
@@ -14,9 +14,9 @@ use File::Basename qw(basename dirname);
 use Memoize;
 use Socket qw(PF_INET SOCK_DGRAM);
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Unix;
-use FusionInventory::Agent::Tools::Network;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Unix;
+use GLPI::Agent::Tools::Network;
 
 our @EXPORT = qw(
     getDevicesFromUdev
@@ -605,7 +605,7 @@ sub getInterfacesInfosFromIoctl {
     return unless $params{interface};
 
     # We don't support this feature on remote inventory
-    return if $FusionInventory::Agent::Tools::remote;
+    return if $GLPI::Agent::Tools::remote;
 
     my $logger = $params{logger};
 
@@ -723,7 +723,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Tools::Linux - Linux generic functions
+GLPI::Agent::Tools::Linux - Linux generic functions
 
 =head1 DESCRIPTION
 

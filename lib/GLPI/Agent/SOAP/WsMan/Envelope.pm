@@ -1,9 +1,9 @@
-package FusionInventory::Agent::SOAP::WsMan::Envelope;
+package GLPI::Agent::SOAP::WsMan::Envelope;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::SOAP::WsMan::Node;
+use GLPI::Agent::SOAP::WsMan::Node;
 
 ## no critic (ProhibitMultiplePackages)
 package
@@ -13,9 +13,9 @@ use parent 'Node';
 
 use constant    xmlns   => 's';
 
-use FusionInventory::Agent::SOAP::WsMan::Attribute;
-use FusionInventory::Agent::SOAP::WsMan::Header;
-use FusionInventory::Agent::SOAP::WsMan::Body;
+use GLPI::Agent::SOAP::WsMan::Attribute;
+use GLPI::Agent::SOAP::WsMan::Header;
+use GLPI::Agent::SOAP::WsMan::Body;
 
 my %ns = (
     s   => "http://www.w3.org/2003/05/soap-envelope",

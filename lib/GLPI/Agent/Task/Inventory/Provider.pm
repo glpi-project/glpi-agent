@@ -1,17 +1,17 @@
-package FusionInventory::Agent::Task::Inventory::Provider;
+package GLPI::Agent::Task::Inventory::Provider;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use Config;
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Version;
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Version;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Tools;
 
 use constant    category    => "provider";
 
@@ -29,14 +29,14 @@ sub doInventory {
     my $logger = $params{logger};
 
     my $provider = {
-        NAME            => $FusionInventory::Agent::Version::PROVIDER,
-        VERSION         => $FusionInventory::Agent::Version::VERSION,
+        NAME            => $GLPI::Agent::Version::PROVIDER,
+        VERSION         => $GLPI::Agent::Version::VERSION,
         PROGRAM         => $PROGRAM || "$PROGRAM_NAME",
         PERL_EXE        => "$EXECUTABLE_NAME",
         PERL_VERSION    => "$PERL_VERSION"
     };
 
-    my $COMMENTS = $FusionInventory::Agent::Version::COMMENTS || [];
+    my $COMMENTS = $GLPI::Agent::Version::COMMENTS || [];
     foreach my $comment (@{$COMMENTS}) {
         push @{$provider->{COMMENTS}}, $comment;
     }
@@ -53,8 +53,8 @@ sub doInventory {
         ];
         $provider->{PERL_INC} = join(":",@INC);
 
-        $provider->{PERL_ARGS} = "@{$FusionInventory::Agent::Tools::ARGV}"
-            if @{$FusionInventory::Agent::Tools::ARGV};
+        $provider->{PERL_ARGS} = "@{$GLPI::Agent::Tools::ARGV}"
+            if @{$GLPI::Agent::Tools::ARGV};
 
         my @modules = ();
         foreach my $module (qw(

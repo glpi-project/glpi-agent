@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Logger::Stderr;
+package GLPI::Agent::Logger::Stderr;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Logger::Backend';
+use parent 'GLPI::Agent::Logger::Backend';
 
 use English qw(-no_match_vars);
 
@@ -44,7 +44,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Logger::Stderr - A stderr backend for the logger
+GLPI::Agent::Logger::Stderr - A stderr backend for the logger
 
 =head1 DESCRIPTION
 

@@ -7,7 +7,7 @@ use Test::Deep;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Agent::Task::Inventory::AIX::Videos;
+use GLPI::Agent::Task::Inventory::AIX::Videos;
 
 my %tests = (
     'aix-4.3.1' => [],
@@ -31,6 +31,6 @@ plan tests => (scalar keys %tests) + 1;
 
 foreach my $test (keys %tests) {
     my $file = "resources/aix/lsdev/$test-adapter";
-    my @videos = FusionInventory::Agent::Task::Inventory::AIX::Videos::_getVideos(file => $file);
+    my @videos = GLPI::Agent::Task::Inventory::AIX::Videos::_getVideos(file => $file);
     cmp_deeply(\@videos, $tests{$test}, "videos: $test");
 }

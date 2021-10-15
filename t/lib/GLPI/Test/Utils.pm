@@ -1,4 +1,4 @@
-package FusionInventory::Test::Utils;
+package GLPI::Test::Utils;
 
 use strict;
 use warnings;
@@ -8,7 +8,7 @@ use English qw(-no_match_vars);
 use IPC::Run qw(run);
 use Socket;
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 our @EXPORT = qw(
     run_executable
@@ -237,7 +237,7 @@ sub openWin32Registry {
         TiedRef     => \$Registry
     );
 
-    my $agentKey = 'FusionInventory-Agent-unittest';
+    my $agentKey = 'GLPI-Agent-unittest';
     my $machKey = $Registry->{'LMachine'};
     my $settings  = $machKey->Open('SOFTWARE/' . $agentKey, { 'Delimiter' => '/' });
     if (! defined($settings)) {

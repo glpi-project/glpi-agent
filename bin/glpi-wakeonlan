@@ -10,10 +10,10 @@ use English qw(-no_match_vars);
 use Getopt::Long;
 use Pod::Usage;
 
-use FusionInventory::Agent::Task::WakeOnLan;
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Tools::Network;
-use FusionInventory::Agent::Version;
+use GLPI::Agent::Task::WakeOnLan;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Tools::Network;
+use GLPI::Agent::Version;
 
 my $options = {
     debug => 0,
@@ -29,11 +29,11 @@ GetOptions(
 ) or pod2usage(-verbose => 0);
 
 if ($options->{version}) {
-    my $PROVIDER = $FusionInventory::Agent::Version::PROVIDER;
+    my $PROVIDER = $GLPI::Agent::Version::PROVIDER;
     map { print $_."\n" }
-        "WakeOnLan task $FusionInventory::Agent::Task::WakeOnLan::VERSION",
-        "based on $PROVIDER Agent v$FusionInventory::Agent::Version::VERSION",
-        @{$FusionInventory::Agent::Version::COMMENTS}
+        "WakeOnLan task $GLPI::Agent::Task::WakeOnLan::VERSION",
+        "based on $PROVIDER Agent v$GLPI::Agent::Version::VERSION",
+        @{$GLPI::Agent::Version::COMMENTS}
         ;
     exit 0;
 }
@@ -45,9 +45,9 @@ pod2usage(
     -message => "invalid mac address given, aborting\n", -verbose => 0
 ) if $options->{mac} !~ /^$mac_address_pattern$/;
 
-my $task = FusionInventory::Agent::Task::WakeOnLan->new(
+my $task = GLPI::Agent::Task::WakeOnLan->new(
     target => {},
-    logger => FusionInventory::Agent::Logger->new(config => $options)
+    logger => GLPI::Agent::Logger->new(config => $options)
 );
 
 $task->{options} = {

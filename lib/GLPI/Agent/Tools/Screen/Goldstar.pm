@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Tools::Screen::Goldstar;
+package GLPI::Agent::Tools::Screen::Goldstar;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Tools::Screen';
+use parent 'GLPI::Agent::Tools::Screen';
 
 # Well-known eisa_id for which wee need to revert serial and altserial
 my $eisa_id_match = qr/4b21$/ ;

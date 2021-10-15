@@ -1,4 +1,4 @@
-package FusionInventory::Agent::SOAP::WsMan::Attribute;
+package GLPI::Agent::SOAP::WsMan::Attribute;
 
 use strict;
 use warnings;

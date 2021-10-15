@@ -8,7 +8,7 @@ use Test::Deep;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Agent::Task::Inventory::Linux::Networks;
+use GLPI::Agent::Task::Inventory::Linux::Networks;
 
 my %tests = (
     'sample1' => {
@@ -27,6 +27,6 @@ plan tests => (scalar keys %tests) + 1;
 
 foreach my $test (keys %tests) {
     my $file = "resources/linux/iwconfig/$test";
-    my $info = FusionInventory::Agent::Task::Inventory::Linux::Networks::_parseIwconfig(file => $file);
+    my $info = GLPI::Agent::Task::Inventory::Linux::Networks::_parseIwconfig(file => $file);
     cmp_deeply($info, $tests{$test}, $test);
 }

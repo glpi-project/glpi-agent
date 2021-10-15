@@ -119,7 +119,7 @@ Mandatory Perl modules for P2P Support:
 
 ## Related contribs
 
-See [CONTRIB](CONTRIB.md) to find references to FusionInventory Agent related scritps/files
+See [CONTRIB](CONTRIB.md) to find references to GLPI Agent related scritps/files
 
 ## Contacts
 
@@ -141,9 +141,9 @@ Please report any issues on project [github issue tracker](https://github.com/gl
 
 Copyright 2006-2010 [OCS Inventory contributors](https://www.ocsinventory-ng.org/)
 
-Copyright 2010-2019 [FusionInventory Team](http://fusioninventory.org)
+Copyright 2010-2019 [FusionInventory Team](https://fusioninventory.org)
 
-Copyright 2011-2021 [Teclib Editions](http://www.teclib-edition.com/)
+Copyright 2011-2021 [Teclib Editions](https://www.teclib-edition.com/)
 
 ## License
 
@@ -159,7 +159,7 @@ The glpi-injector script is based on fusioninventory-injector script:
 * author: Pascal Danek
 * copyright: 2005 Pascal Danek
 
-FusionInventory::Agent::Task::Inventory::Vmsystem
+GLPI::Agent::Task::Inventory::Vmsystem
 contains code from imvirt:
 
 * url: <http://micky.ibh.net/~liske/imvirt.html>

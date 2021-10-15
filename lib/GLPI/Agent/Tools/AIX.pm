@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools::AIX;
+package GLPI::Agent::Tools::AIX;
 
 use strict;
 use warnings;
@@ -6,7 +6,7 @@ use parent 'Exporter';
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 use Memoize;
 
 our @EXPORT = qw(
@@ -84,7 +84,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Tools::AIX - AIX generic functions
+GLPI::Agent::Tools::AIX - AIX generic functions
 
 =head1 DESCRIPTION
 

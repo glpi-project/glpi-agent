@@ -1,12 +1,12 @@
-package FusionInventory::Agent::Tools::Batteries;
+package GLPI::Agent::Tools::Batteries;
 
 use strict;
 use warnings;
 
 use parent 'Exporter';
 
-use FusionInventory::Agent::Inventory;
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Inventory;
+use GLPI::Agent::Tools;
 
 our @EXPORT = qw(
     batteryFields
@@ -21,7 +21,7 @@ sub batteryFields {
 
     unless  (@fields) {
         # Initialize Batteries expected fields from an Inventory object
-        my $inventory = FusionInventory::Agent::Inventory->new();
+        my $inventory = GLPI::Agent::Inventory->new();
         @fields = keys(%{$inventory->getFields()->{'BATTERIES'}});
     }
 
@@ -89,13 +89,13 @@ sub getCanonicalCapacity {
 package
     Inventory::Batteries;
 
-use FusionInventory::Agent::Logger;
+use GLPI::Agent::Logger;
 
 sub new {
     my ($class, %params) = @_;
 
     my $self = {
-        logger  => $params{logger} || FusionInventory::Agent::Logger->new(),
+        logger  => $params{logger} || GLPI::Agent::Logger->new(),
         list    => {},
     };
 
@@ -160,7 +160,7 @@ sub list {
 package
     Battery;
 
-use FusionInventory::Agent::Logger;
+use GLPI::Agent::Logger;
 
 sub new {
     my ($class, $battery) = @_;
@@ -169,7 +169,7 @@ sub new {
 
     return unless ref($battery) eq 'HASH';
 
-    $battery->{logger} = FusionInventory::Agent::Logger->new()
+    $battery->{logger} = GLPI::Agent::Logger->new()
         unless $battery->{logger};
 
     bless $battery, $class;
@@ -200,7 +200,7 @@ sub model {
 
 sub merge {
     my ($self, $battery) = @_;
-    foreach my $key (FusionInventory::Agent::Tools::Batteries::batteryFields()) {
+    foreach my $key (GLPI::Agent::Tools::Batteries::batteryFields()) {
         next unless $battery->{$key};
         # Don't replace value is they are the same, case insensitive check
         next if (defined($self->{$key}) && $battery->{$key} =~ /^$self->{$key}$/i);
@@ -217,7 +217,7 @@ sub dump {
 
     my $dump = {};
 
-    foreach my $key (FusionInventory::Agent::Tools::Batteries::batteryFields()) {
+    foreach my $key (GLPI::Agent::Tools::Batteries::batteryFields()) {
         next unless exists($self->{$key});
         $dump->{$key} = $self->{$key};
     }
@@ -230,7 +230,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Tools::Batteries
+GLPI::Agent::Tools::Batteries
 
 =head1 DESCRIPTION
 

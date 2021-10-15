@@ -11,7 +11,7 @@ use XML::TreePP;
 use UNIVERSAL::require;
 use Config;
 
-use FusionInventory::Test::Utils;
+use GLPI::Test::Utils;
 
 # check thread support availability
 if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
@@ -22,7 +22,7 @@ my @sampleWalkResult = (4, 6);
 
 plan tests => 12 + 3 * @sampleWalkResult;
 
-FusionInventory::Agent::Task::NetInventory->use();
+GLPI::Agent::Task::NetInventory->use();
 
 my ($out, $err, $rc);
 
@@ -40,7 +40,7 @@ ok($rc == 0, '--version exit status');
 is($err, '', '--version stderr');
 like(
     $out,
-    qr/$FusionInventory::Agent::Task::NetInventory::VERSION/,
+    qr/$GLPI::Agent::Task::NetInventory::VERSION/,
     '--version stdout'
 );
 
@@ -68,7 +68,7 @@ foreach my $walk (@sampleWalkResult) {
 
     my $result = XML::TreePP->new()->parsefile('resources/walks/sample'.$walk.'.result');
     $result->{'REQUEST'}{'CONTENT'}{'MODULEVERSION'} =
-        $FusionInventory::Agent::Task::NetInventory::VERSION;
+        $GLPI::Agent::Task::NetInventory::VERSION;
     $result->{'REQUEST'}{'DEVICEID'} = re('^\S+$');
 
     cmp_deeply($content, $result, "expected output sample$walk");

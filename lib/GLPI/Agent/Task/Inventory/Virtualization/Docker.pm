@@ -1,14 +1,14 @@
-package FusionInventory::Agent::Task::Inventory::Virtualization::Docker;
+package GLPI::Agent::Task::Inventory::Virtualization::Docker;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use JSON::PP;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Virtualization;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Virtualization;
 
 # wanted info fields for each container
 my @wantedInfos = qw/ID Image Ports Names/;

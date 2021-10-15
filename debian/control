@@ -106,7 +106,7 @@ Description: ESX and ESXi inventory for GLPI Agent
   - GLPI
   - ocsinventory
   - Uranos
- This module can also be controlled from GLPI using the FusionInventory for GLPI
+ This module can also be controlled from GLPI using a FusionInventory compatible
  plugin.
 
 Package: glpi-agent-task-deploy
@@ -121,7 +121,7 @@ Depends:
  libparallel-forkmanager-perl
 Description: software and file deployment support for GLPI
  With this module, GLPI can accept software deployment
- request from an GLPI server with the FusionInventory plugin.
+ request from an GLPI server with a FusionInventory compatible plugin.
  This module uses SSL certificate to authentificate the server.
  .
  If the P2P option is turned on, the agent will looks for peer in its
@@ -136,7 +136,7 @@ Description: collect task support for GLPI
  With this module, GLPI can collect desired datas, essentially
  files under Linux.
  .
- The plugin can depend on FusionInventory for GLPI on server side.
+ The plugin can depend on a FusionInventory compatible plugin on server side.
 
 Package: glpi-agent-task-network
 Architecture: all

@@ -1,4 +1,4 @@
-package FusionInventory::Agent::HTTP::Client;
+package GLPI::Agent::HTTP::Client;
 
 use strict;
 use warnings;
@@ -9,8 +9,8 @@ use HTTP::Status;
 use LWP::UserAgent;
 use UNIVERSAL::require;
 
-use FusionInventory::Agent;
-use FusionInventory::Agent::Logger;
+use GLPI::Agent;
+use GLPI::Agent::Logger;
 
 my $log_prefix = "[http client] ";
 
@@ -28,7 +28,7 @@ sub new {
 
     my $self = {
         logger       => $params{logger} ||
-                          FusionInventory::Agent::Logger->new(),
+                          GLPI::Agent::Logger->new(),
         user         => $params{user},
         password     => $params{password},
         ssl_set      => 0,
@@ -43,7 +43,7 @@ sub new {
     # create user agent
     $self->{ua} = LWP::UserAgent->new(
         requests_redirectable => ['POST', 'GET', 'HEAD'],
-        agent                 => $FusionInventory::Agent::AGENT_STRING,
+        agent                 => $GLPI::Agent::AGENT_STRING,
         timeout               => $params{timeout} || 180,
         parse_head            => 0, # No need to parse HTML
         keep_alive            => 1,
@@ -231,14 +231,14 @@ sub _setSSLOptions {
                 if $IO::Socket::SSL::VERSION < 1.14;
 
             # use a custom HTTPS handler to workaround default LWP5 behaviour
-            FusionInventory::Agent::HTTP::Protocol::https->use(
+            GLPI::Agent::HTTP::Protocol::https->use(
                 ca_cert_file => $self->{ca_cert_file},
                 ca_cert_dir  => $self->{ca_cert_dir},
                 ssl_cert_file => $self->{ssl_cert_file},
             );
 
             LWP::Protocol::implementor(
-                'https', 'FusionInventory::Agent::HTTP::Protocol::https'
+                'https', 'GLPI::Agent::HTTP::Protocol::https'
             );
 
             # abuse user agent internal to pass values to the handler, so
@@ -255,7 +255,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::HTTP::Client - An abstract HTTP client
+GLPI::Agent::HTTP::Client - An abstract HTTP client
 
 =head1 DESCRIPTION
 

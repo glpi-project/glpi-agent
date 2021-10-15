@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::NetDiscovery::Version;
+package GLPI::Agent::Task::NetDiscovery::Version;
 
 use strict;
 use warnings;

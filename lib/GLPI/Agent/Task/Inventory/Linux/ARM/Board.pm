@@ -1,11 +1,11 @@
-package FusionInventory::Agent::Task::Inventory::Linux::ARM::Board;
+package GLPI::Agent::Task::Inventory::Linux::ARM::Board;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 use constant    category    => "bios";
 
@@ -64,7 +64,7 @@ sub _getBoardFromProc {
 
     my $infos;
 
-    # Does the inverse of FusionInventory::Agent::Tools::Linux::getCPUsFromProc()
+    # Does the inverse of GLPI::Agent::Tools::Linux::getCPUsFromProc()
     while (my $line = <$handle>) {
         if ($line =~ /^([^:]+\S) \s* : \s (.+)/x) {
             $infos->{lc($1)} = trimWhitespace($2);

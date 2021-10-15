@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools::Hardware;
+package GLPI::Agent::Tools::Hardware;
 
 use strict;
 use warnings;
@@ -6,10 +6,10 @@ use parent 'Exporter';
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Network;
-use FusionInventory::Agent::Tools::SNMP;
-use FusionInventory::Agent::SNMP::Device;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Network;
+use GLPI::Agent::Tools::SNMP;
+use GLPI::Agent::SNMP::Device;
 
 our @EXPORT = qw(
     getDeviceInfo
@@ -258,7 +258,7 @@ sub _getDevice {
     my $datadir = $params{datadir};
     my $logger  = $params{logger};
 
-    my $device = FusionInventory::Agent::SNMP::Device->new(
+    my $device = GLPI::Agent::SNMP::Device->new(
         snmp   => $snmp,
         logger => $logger
     );
@@ -1683,7 +1683,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Tools::Hardware - Hardware-related functions
+GLPI::Agent::Tools::Hardware - Hardware-related functions
 
 =head1 DESCRIPTION
 

@@ -1,11 +1,11 @@
-package FusionInventory::Agent::Tools::Win32::Users;
+package GLPI::Agent::Tools::Win32::Users;
 
 use strict;
 use warnings;
 use parent 'Exporter';
 
 use Encode;
-use FusionInventory::Agent::Tools::Win32;
+use GLPI::Agent::Tools::Win32;
 
 our @EXPORT = qw(
     getSystemUsers  getUserProfile

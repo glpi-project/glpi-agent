@@ -1,12 +1,12 @@
-package FusionInventory::Agent::Task::Inventory::AIX::Storages;
+package GLPI::Agent::Task::Inventory::AIX::Storages;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::AIX;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::AIX;
 
 use constant    category    => "storage";
 

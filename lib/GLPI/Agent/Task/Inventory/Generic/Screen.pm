@@ -1,17 +1,17 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Screen;
+package GLPI::Agent::Task::Inventory::Generic::Screen;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 use MIME::Base64;
 use UNIVERSAL::require;
 
 use File::Find;
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Screen;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Screen;
 
 use constant    category    => "monitor";
 
@@ -56,7 +56,7 @@ sub _getEdidInfo {
             $edid->{year} && $edid->{serial_number});
     }
 
-    my $screen = FusionInventory::Agent::Tools::Screen->new( %params, edid => $edid );
+    my $screen = GLPI::Agent::Tools::Screen->new( %params, edid => $edid );
 
     my $info = {
         CAPTION      => $screen->caption || undef,
@@ -74,7 +74,7 @@ sub _getEdidInfo {
 sub _getScreensFromWindows {
     my (%params) = @_;
 
-    FusionInventory::Agent::Tools::Win32->use();
+    GLPI::Agent::Tools::Win32->use();
 
     my @screens;
 
@@ -268,16 +268,16 @@ sub _getScreensFromMacOS {
     $logger->debug("retrieving AppleBacklightDisplay and AppleDisplay datas:")
         if $logger;
 
-    FusionInventory::Agent::Tools::MacOS->require();
+    GLPI::Agent::Tools::MacOS->require();
 
     my @screens;
-    my @displays = FusionInventory::Agent::Tools::MacOS::getIODevices(
+    my @displays = GLPI::Agent::Tools::MacOS::getIODevices(
         class   => 'AppleBacklightDisplay',
         options => '-r -lw0 -d 1',
         logger  => $logger,
     );
 
-    push @displays, FusionInventory::Agent::Tools::MacOS::getIODevices(
+    push @displays, GLPI::Agent::Tools::MacOS::getIODevices(
         class   => 'AppleDisplay',
         options => '-r -lw0 -d 1',
         logger  => $logger,

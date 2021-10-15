@@ -1,9 +1,9 @@
-package FusionInventory::Agent::HTTP::Server::ToolBox;
+package GLPI::Agent::HTTP::Server::ToolBox;
 
 use strict;
 use warnings;
 
-use parent "FusionInventory::Agent::HTTP::Server::Plugin";
+use parent "GLPI::Agent::HTTP::Server::Plugin";
 
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
@@ -13,8 +13,8 @@ use HTML::Entities;
 use Encode qw(decode encode);
 use File::stat;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Hostname;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Hostname;
 
 our $VERSION = "1.0";
 
@@ -151,7 +151,7 @@ sub init {
     }
 
     # Always uses a dedicated Listener target for this plugin
-    $self->{target} = FusionInventory::Agent::Target::Listener->new(
+    $self->{target} = GLPI::Agent::Target::Listener->new(
         logger     => $self->{logger},
         basevardir => $agent->{config}->{vardir},
     );
@@ -1202,7 +1202,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::HTTP::Server::ToolBox - An embedded HTTP
+GLPI::Agent::HTTP::Server::ToolBox - An embedded HTTP
 server plugin to handle some tools
 
 =head1 DESCRIPTION

@@ -9,15 +9,15 @@ use Test::More;
 use UNIVERSAL::require;
 use Config;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Test::Utils;
+use GLPI::Agent::Tools;
+use GLPI::Test::Utils;
 
 # check thread support availability
 if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
     plan skip_all => 'thread support required';
 }
 
-FusionInventory::Agent::Task::NetDiscovery->use();
+GLPI::Agent::Task::NetDiscovery->use();
 
 plan tests => 9;
 
@@ -37,7 +37,7 @@ ok($rc == 0, '--version exit status');
 is($err, '', '--version stderr');
 like(
     $out,
-    qr/$FusionInventory::Agent::Task::NetDiscovery::VERSION/,
+    qr/$GLPI::Agent::Task::NetDiscovery::VERSION/,
     '--version stdout'
 );
 

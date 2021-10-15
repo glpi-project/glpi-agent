@@ -134,7 +134,7 @@ the database service manufacturer
 
 =head2 entry()
 
-Return the suitable entry to be inserted in FusionInventory::Agent::Inventory
+Return the suitable entry to be inserted in GLPI::Agent::Inventory
 object.
 
 =head2 addDatabase(%infos)

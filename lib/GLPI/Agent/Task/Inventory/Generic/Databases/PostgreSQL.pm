@@ -1,13 +1,13 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Databases::PostgreSQL;
+package GLPI::Agent::Task::Inventory::Generic::Databases::PostgreSQL;
 
 use English qw(-no_match_vars);
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Generic::Databases';
+use parent 'GLPI::Agent::Task::Inventory::Generic::Databases';
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 use GLPI::Agent::Inventory::DatabaseService;
 
 sub isEnabled {
@@ -20,7 +20,7 @@ sub doInventory {
     my $inventory = $params{inventory};
 
     # Try to retrieve credentials updating params
-    FusionInventory::Agent::Task::Inventory::Generic::Databases::_credentials(\%params, "postgresql");
+    GLPI::Agent::Task::Inventory::Generic::Databases::_credentials(\%params, "postgresql");
 
     my $dbservices = _getDatabaseService(%params);
 
@@ -44,7 +44,7 @@ sub _getDatabaseService {
     delete $ENV{PGPASSFILE};
 
     foreach my $credential (@{$credentials}) {
-        FusionInventory::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
+        GLPI::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
         my $passfile = _psqlPgpassFile($credential);
         $ENV{PGPASSFILE} = $passfile->filename if $passfile;
 

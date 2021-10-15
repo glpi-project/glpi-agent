@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Remote_Mgmt;
+package GLPI::Agent::Task::Inventory::Generic::Remote_Mgmt;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use constant    category    => "remote_mgmt";
 

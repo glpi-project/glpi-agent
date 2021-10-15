@@ -1,24 +1,24 @@
-package FusionInventory::Agent::Task::Deploy;
+package GLPI::Agent::Task::Deploy;
 
 # Full protocol documentation available here:
 #  http://fusioninventory.org/documentation/dev/spec/protocol/deploy.html
 
 use strict;
 use warnings;
-use parent 'FusionInventory::Agent::Task';
+use parent 'GLPI::Agent::Task';
 
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::HTTP::Client::Fusion;
-use FusionInventory::Agent::Storage;
-use FusionInventory::Agent::Task::Deploy::ActionProcessor;
-use FusionInventory::Agent::Task::Deploy::Datastore;
-use FusionInventory::Agent::Task::Deploy::File;
-use FusionInventory::Agent::Task::Deploy::Job;
+use GLPI::Agent::HTTP::Client::Fusion;
+use GLPI::Agent::Storage;
+use GLPI::Agent::Task::Deploy::ActionProcessor;
+use GLPI::Agent::Task::Deploy::Datastore;
+use GLPI::Agent::Task::Deploy::File;
+use GLPI::Agent::Task::Deploy::Job;
 
-use FusionInventory::Agent::Task::Deploy::Version;
+use GLPI::Agent::Task::Deploy::Version;
 
-our $VERSION = FusionInventory::Agent::Task::Deploy::Version::VERSION;
+our $VERSION = GLPI::Agent::Task::Deploy::Version::VERSION;
 
 sub isEnabled {
     my ($self) = @_;
@@ -94,7 +94,7 @@ sub processRemote {
     }
 
     my $folder = $self->{target}->getStorage()->getDirectory();
-    my $datastore = FusionInventory::Agent::Task::Deploy::Datastore->new(
+    my $datastore = GLPI::Agent::Task::Deploy::Datastore->new(
         config => $self->{config},
         path   => $folder.'/deploy',
         logger => $logger
@@ -125,7 +125,7 @@ sub processRemote {
     }
 
     foreach my $sha512 ( keys %{ $answer->{associatedFiles} } ) {
-        $files->{$sha512} = FusionInventory::Agent::Task::Deploy::File->new(
+        $files->{$sha512} = GLPI::Agent::Task::Deploy::File->new(
             client    => $self->{client},
             sha512    => $sha512,
             data      => $answer->{associatedFiles}{$sha512},
@@ -151,7 +151,7 @@ sub processRemote {
             }
         }
 
-        push @$jobList, FusionInventory::Agent::Task::Deploy::Job->new(
+        push @$jobList, GLPI::Agent::Task::Deploy::Job->new(
             remoteUrl       => $remoteUrl,
             client          => $self->{client},
             machineid       => $self->{deviceid},
@@ -299,7 +299,7 @@ sub processRemote {
 
         # PROCESSING
         my $actionProcessor =
-          FusionInventory::Agent::Task::Deploy::ActionProcessor->new(
+          GLPI::Agent::Task::Deploy::ActionProcessor->new(
             workdir => $workdir
         );
         my $actionnum = 0;
@@ -403,9 +403,9 @@ sub run {
 
     my $event = $self->event;
     if ($event) {
-        if ($event->{maintenance} && FusionInventory::Agent::Task::Deploy::Maintenance->require()) {
+        if ($event->{maintenance} && GLPI::Agent::Task::Deploy::Maintenance->require()) {
             $logger->debug("Deploy task $event->{name} event for ".$self->{target}->id(). " target");
-            my $maintenance = FusionInventory::Agent::Task::Deploy::Maintenance->new(
+            my $maintenance = GLPI::Agent::Task::Deploy::Maintenance->new(
                 target  => $self->{target},
                 config  => $self->{config},
                 logger  => $self->{logger},
@@ -423,7 +423,7 @@ sub run {
         return;
     }
 
-    $self->{client} = FusionInventory::Agent::HTTP::Client::Fusion->new(
+    $self->{client} = GLPI::Agent::HTTP::Client::Fusion->new(
         logger       => $logger,
         user         => $params{user},
         password     => $params{password},
@@ -493,12 +493,12 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Task::Deploy - Software deployment support for FusionInventory Agent
+GLPI::Agent::Task::Deploy - Software deployment support for GLPI Agent
 
 =head1 DESCRIPTION
 
-With this module, F<FusionInventory> can accept software deployment
-request from an GLPI server with the FusionInventory plugin.
+With this module, the agent can accept software deployment
+request from an GLPI server with a FusionInventory compatible plugin.
 
 This module uses SSL certificat to authentificat the server. You may have
 to point F<--ca-cert-file> or F<--ca-cert-dir> to your public certificat.

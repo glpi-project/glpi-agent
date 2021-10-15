@@ -1,14 +1,14 @@
 
-package FusionInventory::Agent::Tools::IpmiFru;
+package GLPI::Agent::Tools::IpmiFru;
 
 use strict;
 use warnings;
 
 use parent 'Exporter';
 
-use FusionInventory::Agent::Inventory;
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::PartNumber;
+use GLPI::Agent::Inventory;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::PartNumber;
 
 our @EXPORT = qw(
     getIpmiFru
@@ -125,7 +125,7 @@ sub parseFru {
     # Validate PartNumber, as example, this fixes Dell PartNumbers
     my $partnum = $device->{PARTNUM} // $device->{MODEL};
     if ($partnum) {
-        my $partnumber_factory = FusionInventory::Agent::Tools::PartNumber->new();
+        my $partnumber_factory = GLPI::Agent::Tools::PartNumber->new();
         my $partnumber = $partnumber_factory->match(
             partnumber      => $partnum,
             manufacturer    => $device->{MANUFACTURER},
@@ -147,7 +147,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Tools::ImpiFru
+GLPI::Agent::Tools::ImpiFru
 
 =head1 DESCRIPTION
 

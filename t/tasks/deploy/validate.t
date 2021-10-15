@@ -11,7 +11,7 @@ use UNIVERSAL::require;
 plan(skip_all => "Required File::Copy::Recursive module not installed")
     unless File::Copy::Recursive->require();
 
-FusionInventory::Agent::Task::Deploy->require();
+GLPI::Agent::Task::Deploy->require();
 
 my @tests = (
         {
@@ -56,7 +56,7 @@ plan tests => scalar @tests * 2;
 foreach my $test (@tests) {
     my $msg;
     my $struct = eval {decode_json($test->{json})};
-    my $ret = FusionInventory::Agent::Task::Deploy::_validateAnswer(
+    my $ret = GLPI::Agent::Task::Deploy::_validateAnswer(
         \$msg,
         $struct
     );

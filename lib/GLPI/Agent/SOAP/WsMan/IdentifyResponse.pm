@@ -1,9 +1,9 @@
-package FusionInventory::Agent::SOAP::WsMan::IdentifyResponse;
+package GLPI::Agent::SOAP::WsMan::IdentifyResponse;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::SOAP::WsMan::Node;
+use GLPI::Agent::SOAP::WsMan::Node;
 
 ## no critic (ProhibitMultiplePackages)
 package
@@ -13,7 +13,7 @@ use parent 'Node';
 
 use constant    xmlns   => 'wsmid';
 
-use FusionInventory::Agent::SOAP::WsMan::Identify;
+use GLPI::Agent::SOAP::WsMan::Identify;
 
 sub values {
     return [ qw(ProtocolVersion ProductVendor ProductVersion) ];

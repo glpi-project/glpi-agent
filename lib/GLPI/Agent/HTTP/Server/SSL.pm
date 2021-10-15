@@ -1,4 +1,4 @@
-package FusionInventory::Agent::HTTP::Server::SSL;
+package GLPI::Agent::HTTP::Server::SSL;
 
 use strict;
 use warnings;
@@ -6,9 +6,9 @@ use warnings;
 use English qw(-no_match_vars);
 use File::Spec;
 
-use base "FusionInventory::Agent::HTTP::Server::Plugin";
+use base "GLPI::Agent::HTTP::Server::Plugin";
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 our $VERSION = "1.0";
 
@@ -152,7 +152,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::HTTP::Server::SSL - An embedded HTTP server plugin
+GLPI::Agent::HTTP::Server::SSL - An embedded HTTP server plugin
 providing SSL support on configured port
 
 =head1 DESCRIPTION

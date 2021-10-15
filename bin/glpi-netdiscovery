@@ -10,10 +10,10 @@ use English qw(-no_match_vars);
 use Getopt::Long;
 use Pod::Usage;
 
-use FusionInventory::Agent::Task::NetDiscovery;
-use FusionInventory::Agent::Task::NetDiscovery::Job;
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Version;
+use GLPI::Agent::Task::NetDiscovery;
+use GLPI::Agent::Task::NetDiscovery::Job;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Version;
 
 our $options = {
     debug   => 0,
@@ -41,11 +41,11 @@ GetOptions(
 ) or pod2usage(-verbose => 0);
 
 if ($options->{version}) {
-    my $PROVIDER = $FusionInventory::Agent::Version::PROVIDER;
+    my $PROVIDER = $GLPI::Agent::Version::PROVIDER;
     map { print $_."\n" }
-        "NetDiscovery task $FusionInventory::Agent::Task::NetDiscovery::VERSION",
-        "based on $PROVIDER Agent v$FusionInventory::Agent::Version::VERSION",
-        @{$FusionInventory::Agent::Version::COMMENTS}
+        "NetDiscovery task $GLPI::Agent::Task::NetDiscovery::VERSION",
+        "based on $PROVIDER Agent v$GLPI::Agent::Version::VERSION",
+        @{$GLPI::Agent::Version::COMMENTS}
         ;
     exit 0;
 }
@@ -64,10 +64,10 @@ pod2usage(
     -message => "\nsave folder must exist, aborting\n", -verbose => 0
 ) if ($options->{save} && ! -d $options->{save});
 
-my $discovery = FusionInventory::Agent::Task::NetDiscovery->new(
+my $discovery = GLPI::Agent::Task::NetDiscovery->new(
     %setup,
-    target => FusionInventory::Agent::Task::NetInventory::Target->new(),
-    logger => FusionInventory::Agent::Logger->new(config => $options)
+    target => GLPI::Agent::Task::NetInventory::Target->new(),
+    logger => GLPI::Agent::Logger->new(config => $options)
 );
 
 my $credentials_id = 1;
@@ -93,7 +93,7 @@ if ($options->{community}) {
 }
 
 $discovery->{jobs} = [
-    FusionInventory::Agent::Task::NetDiscovery::Job->new(
+    GLPI::Agent::Task::NetDiscovery::Job->new(
         logger => $discovery->{logger},
         params => {
             PID               => 1,
@@ -116,7 +116,7 @@ $discovery->{jobs} = [
 if (defined($options->{entity})) {
     $discovery->{jobs}->[0]->{ranges}->[0]->{ENTITY} = $options->{entity};
 }
-$discovery->{client} = FusionInventory::Agent::Task::NetDiscovery::Client->new(
+$discovery->{client} = GLPI::Agent::Task::NetDiscovery::Client->new(
     logger => $discovery->{logger},
 );
 
@@ -135,23 +135,23 @@ $discovery->run(
 );
 
 ## no critic (ProhibitMultiplePackages)
-package FusionInventory::Agent::Task::NetDiscovery::Client;
+package GLPI::Agent::Task::NetDiscovery::Client;
 
 use threads;
 
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Task::NetInventory;
-use FusionInventory::Agent::Task::NetInventory::Job;
-use FusionInventory::Agent::Logger;
+use GLPI::Agent::Task::NetInventory;
+use GLPI::Agent::Task::NetInventory::Job;
+use GLPI::Agent::Logger;
 
 sub new {
     my ($class, %params) = @_;
 
     return bless {
         logger  => $params{logger} ||
-            FusionInventory::Agent::Logger->new(config => $main::options),
+            GLPI::Agent::Logger->new(config => $main::options),
     }, $class;
 }
 
@@ -206,16 +206,16 @@ sub send {
             return;
         }
 
-        my $inventory = FusionInventory::Agent::Task::NetInventory->new(
+        my $inventory = GLPI::Agent::Task::NetInventory->new(
             %main::setup,
-            target => FusionInventory::Agent::Task::NetInventory::Target->new(),
-            logger => FusionInventory::Agent::Logger->new(config => $options)
+            target => GLPI::Agent::Task::NetInventory::Target->new(),
+            logger => GLPI::Agent::Logger->new(config => $options)
         );
 
         # Multi-threading still set on NetDiscovery task and we are only
         # requesting one device scan
         $inventory->{jobs} = [
-            FusionInventory::Agent::Task::NetInventory::Job->new(
+            GLPI::Agent::Task::NetInventory::Job->new(
                 params => {
                     PID           => 1,
                     THREADS_QUERY => 1,
@@ -232,7 +232,7 @@ sub send {
             )
         ];
 
-        $inventory->{client} = FusionInventory::Agent::Task::NetInventory::Client->new(
+        $inventory->{client} = GLPI::Agent::Task::NetInventory::Client->new(
             logger  => $self->{logger},
             ip      => $ip
         );
@@ -256,7 +256,7 @@ sub _writeXml {
     }
 }
 
-package FusionInventory::Agent::Task::NetInventory::Target;
+package GLPI::Agent::Task::NetInventory::Target;
 
 sub new {
     my ($class, %params) = @_;
@@ -271,9 +271,9 @@ sub getUrl {
     return undef;
 }
 
-package FusionInventory::Agent::Task::NetInventory::Client;
+package GLPI::Agent::Task::NetInventory::Client;
 
-use parent -norequire, 'FusionInventory::Agent::Task::NetDiscovery::Client';
+use parent -norequire, 'GLPI::Agent::Task::NetDiscovery::Client';
 
 sub new {
     my ($class, %params) = @_;

@@ -46,7 +46,7 @@
   <String Id="TargetSetupDlg_LocalModeDescription">Local path or UNC path</String>
   <String Id="TargetSetupDlg_ServerMode">Remote Targets</String>
   <String Id="TargetSetupDlg_ServerModeDescription">You can set multiple URIs by separating them with commas</String>
-  <String Id="TargetSetupDlg_ServerModeExample">'https://server/glpi/plugins/fusioninventory/,http://server/ocsinventory/,...'</String>
+  <String Id="TargetSetupDlg_ServerModeExample">'https://server/glpi/front/inventory.php,...'</String>
   <String Id="TargetSetupDlg_QuickInstall">Quick installation</String>
   <String Id="TargetSetupDlg_QuickInstallToolTips">do not show the rest of windows options</String>
 

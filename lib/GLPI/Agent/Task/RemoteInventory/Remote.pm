@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::RemoteInventory::Remote;
+package GLPI::Agent::Task::RemoteInventory::Remote;
 
 use strict;
 use warnings;
@@ -9,7 +9,7 @@ use UNIVERSAL::require;
 use URI;
 use Socket qw(getaddrinfo getnameinfo);
 
-use FusionInventory::Agent::Tools::Network;
+use GLPI::Agent::Tools::Network;
 
 my $supported_protocols = qr/^ssh|winrm$/;
 

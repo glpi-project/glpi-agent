@@ -9,7 +9,7 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Agent::Tools::Storages::HP;
+use GLPI::Agent::Tools::Storages::HP;
 
 my %slots_tests = (
     sample1 => [ 2 ],
@@ -63,7 +63,7 @@ plan tests =>
 foreach my $test (keys %slots_tests) {
     my $file  = "resources/generic/hpacucli/$test-slots";
     cmp_deeply(
-        [ FusionInventory::Agent::Tools::Storages::HP::_getSlots(file => $file) ],
+        [ GLPI::Agent::Tools::Storages::HP::_getSlots(file => $file) ],
         $slots_tests{$test},
         "$test: slots extraction"
     );
@@ -72,7 +72,7 @@ foreach my $test (keys %slots_tests) {
 foreach my $test (keys %drives_tests) {
     my $file  = "resources/generic/hpacucli/$test-drives";
     cmp_deeply(
-        [ FusionInventory::Agent::Tools::Storages::HP::_getDrives(file => $file) ],
+        [ GLPI::Agent::Tools::Storages::HP::_getDrives(file => $file) ],
         $drives_tests{$test},
         "$test: drives extraction"
     );
@@ -80,7 +80,7 @@ foreach my $test (keys %drives_tests) {
 
 foreach my $test (keys %storage_tests) {
     my $file  = "resources/generic/hpacucli/$test-storage";
-    my $storage = FusionInventory::Agent::Tools::Storages::HP::_getStorage(file => $file);
+    my $storage = GLPI::Agent::Tools::Storages::HP::_getStorage(file => $file);
     cmp_deeply(
         $storage,
         $storage_tests{$test},

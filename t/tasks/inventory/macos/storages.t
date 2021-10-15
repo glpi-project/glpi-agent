@@ -10,9 +10,9 @@ use Test::More;
 use Test::NoWarnings;
 use English;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::MacOS::Storages;
-use FusionInventory::Agent::Tools 'getCanonicalSize';
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::MacOS::Storages;
+use GLPI::Agent::Tools 'getCanonicalSize';
 
 my %tests = (
     '10.4-powerpc' => [
@@ -384,11 +384,11 @@ plan tests => (2 * scalar (keys %tests))
         + scalar (keys %testsRecursiveParsing)
 ;
 
-my $inventory = FusionInventory::Test::Inventory->new();
+my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %tests) {
     my $file = "resources/macos/system_profiler/$test";
-    my @storages = FusionInventory::Agent::Task::Inventory::MacOS::Storages::_getStorages(file => $file);
+    my @storages = GLPI::Agent::Task::Inventory::MacOS::Storages::_getStorages(file => $file);
     cmp_deeply(
         [ sort { compare() } @storages ],
         [ sort { compare() } @{$tests{$test}} ],
@@ -413,7 +413,7 @@ SKIP: {
 
     foreach my $test (keys %testsSerialATA) {
         my $file = "resources/macos/system_profiler/$test";
-        my @storages = FusionInventory::Agent::Task::Inventory::MacOS::Storages::_getSerialATAStorages(file => $file);
+        my @storages = GLPI::Agent::Task::Inventory::MacOS::Storages::_getSerialATAStorages(file => $file);
         cmp_deeply(
             [ sort { compare() } @storages ],
             [ sort { compare() } @{$testsSerialATA{$test}} ],
@@ -423,7 +423,7 @@ SKIP: {
 
     foreach my $test (keys %testsDiscBurning) {
         my $file = "resources/macos/system_profiler/$test";
-        my @storages = FusionInventory::Agent::Task::Inventory::MacOS::Storages::_getDiscBurningStorages(file => $file);
+        my @storages = GLPI::Agent::Task::Inventory::MacOS::Storages::_getDiscBurningStorages(file => $file);
         cmp_deeply(
             [ sort { compare() } @storages ],
             [ sort { compare() } @{$testsDiscBurning{$test}} ],
@@ -433,7 +433,7 @@ SKIP: {
 
     foreach my $test (keys %testsCardReader) {
         my $file = "resources/macos/system_profiler/$test";
-        my @storages = FusionInventory::Agent::Task::Inventory::MacOS::Storages::_getCardReaderStorages(file => $file);
+        my @storages = GLPI::Agent::Task::Inventory::MacOS::Storages::_getCardReaderStorages(file => $file);
         cmp_deeply(
             [ sort { compare() } @storages ],
             [ sort { compare() } @{$testsCardReader{$test}} ],
@@ -443,7 +443,7 @@ SKIP: {
 
     foreach my $test (keys %testsUSBStorage) {
         my $file = "resources/macos/system_profiler/$test";
-        my @storages = FusionInventory::Agent::Task::Inventory::MacOS::Storages::_getUSBStorages(file => $file);
+        my @storages = GLPI::Agent::Task::Inventory::MacOS::Storages::_getUSBStorages(file => $file);
         cmp_deeply(
             [ sort { compare() } @storages ],
             [ sort { compare() } @{$testsUSBStorage{$test}} ],
@@ -453,7 +453,7 @@ SKIP: {
 
     foreach my $test (keys %testsFireWireStorage) {
         my $file = "resources/macos/system_profiler/$test";
-        my @storages = FusionInventory::Agent::Task::Inventory::MacOS::Storages::_getFireWireStorages(file => $file);
+        my @storages = GLPI::Agent::Task::Inventory::MacOS::Storages::_getFireWireStorages(file => $file);
         cmp_deeply(
             [ sort { compare() } @storages ],
             [ sort { compare() } @{$testsFireWireStorage{$test}} ],
@@ -469,10 +469,10 @@ SKIP: {
             "./key[text()='units']/following-sibling::array[1]/child::elem"
         ];
         my $hash = {};
-        FusionInventory::Agent::Tools::MacOS::_initXmlParser(
+        GLPI::Agent::Tools::MacOS::_initXmlParser(
             file => $file
         );
-        FusionInventory::Agent::Tools::MacOS::_recursiveParsing({}, $hash, undef, $xPathExpressions);
+        GLPI::Agent::Tools::MacOS::_recursiveParsing({}, $hash, undef, $xPathExpressions);
         cmp_deeply(
             $hash,
             $testsRecursiveParsing{$test},

@@ -1,13 +1,13 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Softwares::Gentoo;
+package GLPI::Agent::Task::Inventory::Generic::Softwares::Gentoo;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 sub isEnabled {
     return canRun('equery');

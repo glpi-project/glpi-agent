@@ -1,10 +1,10 @@
-package FusionInventory::Agent::Tools::SNMP;
+package GLPI::Agent::Tools::SNMP;
 
 use strict;
 use warnings;
 use base 'Exporter';
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 our @EXPORT = qw(
     getCanonicalSerialNumber
@@ -150,7 +150,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Tools::SNMP - SNMP Hardware-related functions
+GLPI::Agent::Tools::SNMP - SNMP Hardware-related functions
 
 =head1 DESCRIPTION
 

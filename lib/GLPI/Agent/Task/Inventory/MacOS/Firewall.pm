@@ -1,12 +1,12 @@
-package FusionInventory::Agent::Task::Inventory::MacOS::Firewall;
+package GLPI::Agent::Task::Inventory::MacOS::Firewall;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Constants;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Constants;
 
 use constant    category    => "firewall";
 

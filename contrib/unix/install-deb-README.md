@@ -10,7 +10,7 @@ Script to make the GLPI agent installation unattended on Debian and Ubuntu syste
 ## How to
 To install GLPI agent on Debian or Ubuntu, check the options (end of the line) and execute 
 ```
-wget -O - https://raw.github.com/glpi-project/glpi-agent/develop/contrib/unix/install-deb.sh | bash -s -- --version 1.0-1 --taskcollect true --tasknetwork true --tasknetwork true --taskesx true --agentconfig "server = https://myserver.mydomain.local/glpi/plugins/fusioninventory|no-ssl-check = 1|httpd-trust = 192.168.0.25"
+wget -O - https://raw.github.com/glpi-project/glpi-agent/develop/contrib/unix/install-deb.sh | bash -s -- --version 1.0-1 --taskcollect true --tasknetwork true --tasknetwork true --taskesx true --agentconfig "server = https://myserver.mydomain.local/glpi/f|no-ssl-check = 1|httpd-trust = 192.168.0.25"
 ```
 
 ## Tested on

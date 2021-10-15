@@ -6,9 +6,9 @@ use warnings;
 use Test::Deep;
 use Test::More;
 
-use FusionInventory::Agent::SNMP::Mock;
-use FusionInventory::Agent::Tools::Hardware;
-use FusionInventory::Agent::Tools::SNMP;
+use GLPI::Agent::SNMP::Mock;
+use GLPI::Agent::Tools::Hardware;
+use GLPI::Agent::Tools::SNMP;
 
 my @mac_tests = (
     [ '\TmGnn'            , '5c:54:6d:47:6e:6e' ],
@@ -222,13 +222,13 @@ plan tests =>
 
 foreach my $test (@mac_tests) {
     is(
-        FusionInventory::Agent::Tools::SNMP::getCanonicalMacAddress($test->[0]),
+        GLPI::Agent::Tools::SNMP::getCanonicalMacAddress($test->[0]),
         $test->[1],
         "$test->[0] normalisation"
     );
 }
 
-my $snmp1 = FusionInventory::Agent::SNMP::Mock->new(
+my $snmp1 = GLPI::Agent::SNMP::Mock->new(
     hash => {
         '.1.3.6.1.2.1.1.1.0'        => [ 'STRING', 'foo' ],
     }
@@ -241,7 +241,7 @@ cmp_deeply(
     'getDeviceInfo() with no sysobjectid'
 );
 
-my $snmp2 = FusionInventory::Agent::SNMP::Mock->new(
+my $snmp2 = GLPI::Agent::SNMP::Mock->new(
     hash => {
         '.1.3.6.1.2.1.1.1.0'        => [ 'STRING', 'foo' ],
         '.1.3.6.1.2.1.1.2.0'        => [ 'STRING', '.1.3.6.1.4.1.45.1' ],
@@ -268,7 +268,7 @@ cmp_deeply(
     'getDeviceInfo() with sysobjectid'
 );
 
-my $snmp3 = FusionInventory::Agent::SNMP::Mock->new(
+my $snmp3 = GLPI::Agent::SNMP::Mock->new(
     hash => {
         '.1.3.6.1.2.1.1.2.0'        => [ 'STRING', '.1.3.6.1.4.1.1663.1.1.1.1.24' ],
     }
@@ -285,9 +285,9 @@ cmp_deeply(
 );
 
 foreach my $test (@cdp_info_extraction_tests) {
-    my $snmp  = FusionInventory::Agent::SNMP::Mock->new(hash => $test->[0]);
+    my $snmp  = GLPI::Agent::SNMP::Mock->new(hash => $test->[0]);
 
-    my $cdp_info = FusionInventory::Agent::Tools::Hardware::_getCDPInfo(
+    my $cdp_info = GLPI::Agent::Tools::Hardware::_getCDPInfo(
         snmp  => $snmp,
     );
 
@@ -299,9 +299,9 @@ foreach my $test (@cdp_info_extraction_tests) {
 }
 
 foreach my $test (@mac_addresses_extraction_tests) {
-    my $snmp = FusionInventory::Agent::SNMP::Mock->new(hash => $test->[0]);
+    my $snmp = GLPI::Agent::SNMP::Mock->new(hash => $test->[0]);
 
-    my $mac_addresses = FusionInventory::Agent::Tools::Hardware::_getKnownMacAddresses(
+    my $mac_addresses = GLPI::Agent::Tools::Hardware::_getKnownMacAddresses(
         snmp           => $snmp,
         address2port   => '.1.3.6.1.2.1.17.4.3.1.2',
         port2interface => '.1.3.6.1.2.1.17.1.4.1.2',
@@ -315,9 +315,9 @@ foreach my $test (@mac_addresses_extraction_tests) {
 }
 
 foreach my $test (@mac_addresses_addition_tests) {
-    my $snmp  = FusionInventory::Agent::SNMP::Mock->new(hash => $test->[0]);
+    my $snmp  = GLPI::Agent::SNMP::Mock->new(hash => $test->[0]);
 
-    FusionInventory::Agent::Tools::Hardware::_setKnownMacAddresses(
+    GLPI::Agent::Tools::Hardware::_setKnownMacAddresses(
         snmp  => $snmp,
         ports => $test->[1],
     );
@@ -330,9 +330,9 @@ foreach my $test (@mac_addresses_addition_tests) {
 }
 
 foreach my $test (@trunk_ports_extraction_tests) {
-    my $snmp = FusionInventory::Agent::SNMP::Mock->new(hash => $test->[0]);
+    my $snmp = GLPI::Agent::SNMP::Mock->new(hash => $test->[0]);
 
-    my $trunk_ports = FusionInventory::Agent::Tools::Hardware::_getTrunkPorts(
+    my $trunk_ports = GLPI::Agent::Tools::Hardware::_getTrunkPorts(
         snmp  => $snmp,
     );
 
@@ -345,27 +345,27 @@ foreach my $test (@trunk_ports_extraction_tests) {
 
 my $oid = '0.1.2.3.4.5.6.7.8.9';
 is(
-    FusionInventory::Agent::Tools::Hardware::_getElement($oid, 0),
+    GLPI::Agent::Tools::Hardware::_getElement($oid, 0),
     0,
     'index 0'
 );
 is(
-    FusionInventory::Agent::Tools::Hardware::_getElement($oid, -1),
+    GLPI::Agent::Tools::Hardware::_getElement($oid, -1),
     9,
     'index -1'
 );
 is(
-    FusionInventory::Agent::Tools::Hardware::_getElement($oid, -2),
+    GLPI::Agent::Tools::Hardware::_getElement($oid, -2),
     8,
     'index -2'
 );
 cmp_deeply(
-    [ FusionInventory::Agent::Tools::Hardware::_getElements($oid, 0, 3) ],
+    [ GLPI::Agent::Tools::Hardware::_getElements($oid, 0, 3) ],
     [ qw/0 1 2 3/ ],
     'getElements with index 0 to 3'
 );
 cmp_deeply(
-    [ FusionInventory::Agent::Tools::Hardware::_getElements($oid, -4, -1) ],
+    [ GLPI::Agent::Tools::Hardware::_getElements($oid, -4, -1) ],
     [ qw/6 7 8 9/ ],
     'getElements with index -4 to -1'
 );

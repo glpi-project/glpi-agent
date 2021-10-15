@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::Inventory::Virtualization::VmWareDesktop;
+package GLPI::Agent::Task::Inventory::Virtualization::VmWareDesktop;
 #
 # initial version: Walid Nouh
 #
@@ -6,10 +6,10 @@ package FusionInventory::Agent::Task::Inventory::Virtualization::VmWareDesktop;
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Virtualization;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Virtualization;
 
 sub isEnabled {
     return

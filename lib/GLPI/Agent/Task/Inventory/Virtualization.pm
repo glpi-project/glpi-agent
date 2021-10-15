@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Task::Inventory::Virtualization;
+package GLPI::Agent::Task::Inventory::Virtualization;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use constant    category    => "virtualmachine";
 

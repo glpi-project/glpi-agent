@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Tools::Screen::Acer;
+package GLPI::Agent::Tools::Screen::Acer;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Tools::Screen';
+use parent 'GLPI::Agent::Tools::Screen';
 
 # Well-known eisa_id for which we need to revert serial and altserial
 my $eisa_id_match_str = join('|', qw(

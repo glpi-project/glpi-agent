@@ -1,15 +1,15 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Databases::MongoDB;
+package GLPI::Agent::Task::Inventory::Generic::Databases::MongoDB;
 
 use English qw(-no_match_vars);
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Generic::Databases';
+use parent 'GLPI::Agent::Task::Inventory::Generic::Databases';
 
 use POSIX qw(strftime);
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 use GLPI::Agent::Inventory::DatabaseService;
 
 sub isEnabled {
@@ -22,7 +22,7 @@ sub doInventory {
     my $inventory = $params{inventory};
 
     # Try to retrieve credentials updating params
-    FusionInventory::Agent::Task::Inventory::Generic::Databases::_credentials(\%params, "mongodb");
+    GLPI::Agent::Task::Inventory::Generic::Databases::_credentials(\%params, "mongodb");
 
     my $dbservices = _getDatabaseService(%params);
 
@@ -45,7 +45,7 @@ sub _getDatabaseService {
     $params{mongosh} = canRun('mongosh') ? 1 : 0;
 
     foreach my $credential (@{$credentials}) {
-        FusionInventory::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
+        GLPI::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
         my $rcfile = _mongoRcFile($credential);
         $params{rcfile} = $rcfile->filename if $rcfile;
 

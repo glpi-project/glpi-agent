@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools::Unix;
+package GLPI::Agent::Tools::Unix;
 
 use strict;
 use warnings;
@@ -10,8 +10,8 @@ use File::Basename qw(basename);
 use Memoize;
 use Time::Local;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Network;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Network;
 
 our @EXPORT = qw(
     getDeviceCapacity
@@ -255,7 +255,7 @@ sub getFilesystemsTypesFromMount {
 }
 
 sub getProcesses {
-    my $ps = $FusionInventory::Agent::Tools::remote ? getFirstLine(command => "which ps") : which('ps');
+    my $ps = $GLPI::Agent::Tools::remote ? getFirstLine(command => "which ps") : which('ps');
     return has_link($ps) && ReadLink($ps) eq 'busybox' ? _getProcessesBusybox(@_) :
                                                          _getProcessesOther(@_)   ;
 }
@@ -461,7 +461,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Tools::Unix - Unix-specific generic functions
+GLPI::Agent::Tools::Unix - Unix-specific generic functions
 
 =head1 DESCRIPTION
 

@@ -1,14 +1,14 @@
-package FusionInventory::Agent::Task::Inventory::Win32::Users;
+package GLPI::Agent::Task::Inventory::Win32::Users;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Win32;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Win32;
 
 use constant    other_categories
                             => qw(local_user local_group);

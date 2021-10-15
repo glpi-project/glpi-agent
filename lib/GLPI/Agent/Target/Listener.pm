@@ -1,11 +1,11 @@
-package FusionInventory::Agent::Target::Listener;
+package GLPI::Agent::Target::Listener;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Target';
+use parent 'GLPI::Agent::Target';
 
-use FusionInventory::Agent::HTTP::Session;
+use GLPI::Agent::HTTP::Session;
 
 use constant STORE_SESSION_TIMEOUT => 10;
 
@@ -72,7 +72,7 @@ sub session {
         delete $params{remoteid};
     }
 
-    $session = FusionInventory::Agent::HTTP::Session->new(
+    $session = GLPI::Agent::HTTP::Session->new(
         logger  => $self->{logger},
         timeout => $params{timeout},
         sid     => $params{remoteid},
@@ -135,7 +135,7 @@ sub _restore_sessions {
         my $data = $datas->{$remoteid};
         next unless $remoteid && ref($data) eq 'HASH';
         my %datas = map { $_ => $data->{$_} } grep { /^_/ } keys(%{$data});
-        $sessions->{$remoteid} = FusionInventory::Agent::HTTP::Session->new(
+        $sessions->{$remoteid} = GLPI::Agent::HTTP::Session->new(
             logger => $self->{logger},
             timer  => $data->{timer},
             nonce  => $data->{nonce},
@@ -189,7 +189,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Target::Listen - Listen target
+GLPI::Agent::Target::Listen - Listen target
 
 =head1 DESCRIPTION
 
@@ -200,7 +200,7 @@ This is a target to serve execution result on a listening port.
 =head2 new(%params)
 
 The constructor. The allowed parameters are the ones from the base class
-C<FusionInventory::Agent::Target>.
+C<GLPI::Agent::Target>.
 
 =head2 getName()
 
@@ -222,7 +222,7 @@ Set or retrieve an inventory XML to be used by an HTTP plugin
 
 =head2 session(%params)
 
-Create or retrieve a FusionInventory::Agent::HTTP::Session object keeping it
+Create or retrieve a GLPI::Agent::HTTP::Session object keeping it
 stored in a local storage.
 
 Supported parameters:

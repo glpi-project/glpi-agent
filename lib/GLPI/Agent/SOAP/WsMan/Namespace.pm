@@ -1,9 +1,9 @@
-package FusionInventory::Agent::SOAP::WsMan::Namespace;
+package GLPI::Agent::SOAP::WsMan::Namespace;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::SOAP::WsMan::Node;
+use GLPI::Agent::SOAP::WsMan::Node;
 
 ## no critic (ProhibitMultiplePackages)
 package
@@ -11,7 +11,7 @@ package
 
 use parent 'Node';
 
-use FusionInventory::Agent::SOAP::WsMan::Attribute;
+use GLPI::Agent::SOAP::WsMan::Attribute;
 
 my %ns = qw(
     s       http://www.w3.org/2003/05/soap-envelope

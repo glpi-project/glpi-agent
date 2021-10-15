@@ -8,8 +8,8 @@ use Test::Deep;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Agent::Task::Inventory::Virtualization::Lxc;
-use FusionInventory::Agent::Tools::Virtualization;
+use GLPI::Agent::Task::Inventory::Virtualization::Lxc;
+use GLPI::Agent::Tools::Virtualization;
 
 my %result_lxc_info = (
     'lxc-info_-n_name1' => STATUS_RUNNING,
@@ -53,7 +53,7 @@ my %container_tests = (
 plan tests => keys(%result_lxc_info) + keys(%container_tests) + 1;
 
 foreach my $file (keys(%result_lxc_info)) {
-    my $state = FusionInventory::Agent::Task::Inventory::Virtualization::Lxc::_getVirtualMachineState(
+    my $state = GLPI::Agent::Task::Inventory::Virtualization::Lxc::_getVirtualMachineState(
         file => "resources/virtualization/lxc/$file"
     );
     is($state, $result_lxc_info{$file}, "checking $file LXC state");
@@ -62,7 +62,7 @@ foreach my $file (keys(%result_lxc_info)) {
 foreach my $name (keys(%container_tests)) {
     my $file = "resources/virtualization/lxc/$name";
     $file =~ s|/|\\|g if $OSNAME eq "MSWin32";
-    my $config = FusionInventory::Agent::Task::Inventory::Virtualization::Lxc::_getVirtualMachine(
+    my $config = GLPI::Agent::Task::Inventory::Virtualization::Lxc::_getVirtualMachine(
         name          => $name,
         version       => $container_tests{$name}->{version},
         test_cmdstate => $OSNAME eq "MSWin32" ? "type $file" : "cat $file",

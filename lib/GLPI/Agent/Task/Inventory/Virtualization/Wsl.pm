@@ -1,20 +1,20 @@
-package FusionInventory::Agent::Task::Inventory::Virtualization::Wsl;
+package GLPI::Agent::Task::Inventory::Virtualization::Wsl;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::UUID;
-use FusionInventory::Agent::Tools::Virtualization;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::UUID;
+use GLPI::Agent::Tools::Virtualization;
 
 our $runAfterIfEnabled = [ qw(
-    FusionInventory::Agent::Task::Inventory::Win32::Hardware
-    FusionInventory::Agent::Task::Inventory::Win32::CPU
+    GLPI::Agent::Task::Inventory::Win32::Hardware
+    GLPI::Agent::Task::Inventory::Win32::CPU
 )];
 
 sub isEnabled {
@@ -41,8 +41,8 @@ sub  _getUsersWslInstances {
     my @machines;
 
     # Always load Win32 API as late as possible
-    FusionInventory::Agent::Tools::Win32->require();
-    FusionInventory::Agent::Tools::Win32::Users->require();
+    GLPI::Agent::Tools::Win32->require();
+    GLPI::Agent::Tools::Win32::Users->require();
 
     # Prepare vcpu, memory and a serial from still inventoried CPUS, HARDWARE & BIOS
     my $cpus = $params{inventory}->getSection('CPUS') // [{}];
@@ -51,7 +51,7 @@ sub  _getUsersWslInstances {
     my $memory = $params{inventory}->getHardware('MEMORY');
 
     # Get system build revision to handle default max memory with WSL2
-    my ($operatingSystem) = FusionInventory::Agent::Tools::Win32::getWMIObjects(
+    my ($operatingSystem) = GLPI::Agent::Tools::Win32::getWMIObjects(
         class      => 'Win32_OperatingSystem',
         properties => [ qw/Version/ ]
     );
@@ -59,18 +59,18 @@ sub  _getUsersWslInstances {
     my ($build) = $kernel_version =~ /^\d+\.\d+\.(\d+)/;
 
     # Search users account for WSL instance
-    foreach my $user (FusionInventory::Agent::Tools::Win32::Users::getSystemUsers()) {
+    foreach my $user (GLPI::Agent::Tools::Win32::Users::getSystemUsers()) {
 
-        my $profile = FusionInventory::Agent::Tools::Win32::Users::getUserProfile($user->{SID})
+        my $profile = GLPI::Agent::Tools::Win32::Users::getUserProfile($user->{SID})
             or next;
 
         my ($lxsskey, $userhive);
         unless ($profile->{LOADED}) {
             my $ntuserdat = $profile->{PATH}."/NTUSER.DAT";
             # This call involves we use cleanupPrivileges before leaving
-            $userhive = FusionInventory::Agent::Tools::Win32::loadUserHive( sid => $user->{SID}, file => $ntuserdat );
+            $userhive = GLPI::Agent::Tools::Win32::loadUserHive( sid => $user->{SID}, file => $ntuserdat );
         }
-        $lxsskey = FusionInventory::Agent::Tools::Win32::getRegistryKey(
+        $lxsskey = GLPI::Agent::Tools::Win32::getRegistryKey(
             path        => "HKEY_USERS/$user->{SID}/SOFTWARE/Microsoft/Windows/CurrentVersion/Lxss/",
             # Important for remote inventory optimization
             required    => [ qw/BasePath DistributionName/ ],
@@ -132,7 +132,7 @@ sub  _getUsersWslInstances {
         undef $lxsskey if $userhive;
     }
 
-    FusionInventory::Agent::Tools::Win32::cleanupPrivileges();
+    GLPI::Agent::Tools::Win32::cleanupPrivileges();
 
     return @machines;
 }

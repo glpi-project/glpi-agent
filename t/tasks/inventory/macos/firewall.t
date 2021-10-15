@@ -8,7 +8,7 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Agent::Task::Inventory::MacOS::Firewall;
+use GLPI::Agent::Task::Inventory::MacOS::Firewall;
 
 
 my $tests = [
@@ -48,7 +48,7 @@ plan tests => 1
 my $pathToFiles = 'resources/macos/firewall/';
 my $index = 0;
 for my $test (@$tests) {
-    my $pid = FusionInventory::Agent::Task::Inventory::MacOS::Firewall::_getFirewallServicePID(
+    my $pid = GLPI::Agent::Task::Inventory::MacOS::Firewall::_getFirewallServicePID(
         file => $pathToFiles . $test->{launchctl}->{file}
     );
     ok (
@@ -57,7 +57,7 @@ for my $test (@$tests) {
         'test '.$index.' : extracted pid'
     );
 
-    my $runningState = FusionInventory::Agent::Task::Inventory::MacOS::Firewall::_checkRunning(
+    my $runningState = GLPI::Agent::Task::Inventory::MacOS::Firewall::_checkRunning(
         file => $pathToFiles . $test->{procinfo}->{file},
         pid => $pid || undef
     );
@@ -67,7 +67,7 @@ for my $test (@$tests) {
         'test '.$index.' : extracted running state'
     );
 
-    my $firewallStatus = FusionInventory::Agent::Task::Inventory::MacOS::Firewall::_getFirewallStatus(
+    my $firewallStatus = GLPI::Agent::Task::Inventory::MacOS::Firewall::_getFirewallStatus(
         file => $pathToFiles . $test->{defaultsRead}->{file},
         pidFile => $pathToFiles . $test->{launchctl}->{file},
         runningFile => $pathToFiles . $test->{procinfo}->{file}

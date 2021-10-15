@@ -1,14 +1,14 @@
-package FusionInventory::Agent::Task::Inventory::Virtualization::Libvirt;
+package GLPI::Agent::Task::Inventory::Virtualization::Libvirt;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 use XML::TreePP;
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 sub isEnabled {
     return canRun('virsh');

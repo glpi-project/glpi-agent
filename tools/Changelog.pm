@@ -6,7 +6,7 @@ use warnings;
 
 use lib 'lib';
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 sub new {
     my ($class, %params) = @_;
@@ -76,8 +76,8 @@ sub task_version_update {
     my ($previous) = @bumps ? $bumps[0] =~ /Bump $task task version to (.*)$/ : "";
     my $latest;
 
-    eval 'require FusionInventory::Agent::Task::'.$task.'::Version';
-    eval '$latest = FusionInventory::Agent::Task::'.$task.'::Version::VERSION()';
+    eval 'require GLPI::Agent::Task::'.$task.'::Version';
+    eval '$latest = GLPI::Agent::Task::'.$task.'::Version::VERSION()';
 
     return 0 unless $latest;
     return 0 if $previous && $latest eq $previous;
@@ -95,8 +95,8 @@ sub httpd_plugin_version_update {
     my ($previous) = @bumps ? $bumps[0] =~ /Bump $plugin plugin version to (.*)$/ : "";
     my $latest;
 
-    eval 'require FusionInventory::Agent::HTTP::Server::'.$plugin;
-    eval '$latest = $FusionInventory::Agent::HTTP::Server::'.$plugin.'::VERSION';
+    eval 'require GLPI::Agent::HTTP::Server::'.$plugin;
+    eval '$latest = $GLPI::Agent::HTTP::Server::'.$plugin.'::VERSION';
 
     return 0 unless $latest;
     return 0 if $previous && $latest eq $previous;

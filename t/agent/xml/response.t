@@ -8,8 +8,8 @@ use Test::Deep qw(cmp_deeply);
 use Test::Exception;
 use Test::More;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::XML::Response;
+use GLPI::Agent::Tools;
+use GLPI::Agent::XML::Response;
 
 my %tests = (
     message1 => {
@@ -195,7 +195,7 @@ plan tests => 2 * (scalar keys %tests);
 foreach my $test (keys %tests) {
     my $file = "resources/xml/response/$test.xml";
     my $string = getAllLines(file => $file);
-    my $message = FusionInventory::Agent::XML::Response->new(
+    my $message = GLPI::Agent::XML::Response->new(
         content => $string
     );
 

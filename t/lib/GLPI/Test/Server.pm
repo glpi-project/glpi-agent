@@ -1,4 +1,4 @@
-package FusionInventory::Test::Server;
+package GLPI::Test::Server;
 
 use warnings;
 use strict;
@@ -7,7 +7,7 @@ use parent qw(HTTP::Server::Simple::CGI HTTP::Server::Simple::Authen);
 use English qw(-no_match_vars);
 use IO::Socket::SSL;
 
-use FusionInventory::Test::Auth;
+use GLPI::Test::Auth;
 
 my $dispatch_table = {};
 
@@ -71,7 +71,7 @@ sub run {
 
 sub authen_handler {
     my ($self) = @_;
-    return FusionInventory::Test::Auth->new(
+    return GLPI::Test::Auth->new(
         user     => $self->{user},
         password => $self->{password}
     );

@@ -1,17 +1,17 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Databases::Oracle;
+package GLPI::Agent::Task::Inventory::Generic::Databases::Oracle;
 
 use English qw(-no_match_vars);
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Generic::Databases';
+use parent 'GLPI::Agent::Task::Inventory::Generic::Databases';
 
 use XML::TreePP;
 use File::Temp;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Unix;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Unix;
 use GLPI::Agent::Inventory::DatabaseService;
 
 sub isEnabled {
@@ -47,7 +47,7 @@ sub doInventory {
     my $inventory = $params{inventory};
 
     # Try to retrieve credentials updating params
-    FusionInventory::Agent::Task::Inventory::Generic::Databases::_credentials(\%params, "oracle");
+    GLPI::Agent::Task::Inventory::Generic::Databases::_credentials(\%params, "oracle");
 
     my $dbservices = _getDatabaseService(
         logger      => $params{logger},
@@ -102,7 +102,7 @@ sub _getDatabaseService {
     my @dbs = ();
 
     foreach my $credential (@{$credentials}) {
-        FusionInventory::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
+        GLPI::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
         _oracleConnect(\%params, $credential);
 
         my %SID;

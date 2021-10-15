@@ -1,4 +1,4 @@
-package FusionInventory::Test::Proxy;
+package GLPI::Test::Proxy;
 
 use strict;
 use warnings;

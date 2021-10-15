@@ -1,16 +1,16 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Networks::iLO;
+package GLPI::Agent::Task::Inventory::Generic::Networks::iLO;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Network;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Network;
 
-our $runMeIfTheseChecksFailed = ['FusionInventory::Agent::Task::Inventory::Generic::Ipmi::Lan'];
+our $runMeIfTheseChecksFailed = ['GLPI::Agent::Task::Inventory::Generic::Ipmi::Lan'];
 
 sub isEnabled {
     return OSNAME eq 'MSWin32' ?

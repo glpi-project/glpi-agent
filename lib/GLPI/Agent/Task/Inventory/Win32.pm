@@ -1,15 +1,15 @@
-package FusionInventory::Agent::Task::Inventory::Win32;
+package GLPI::Agent::Task::Inventory::Win32;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
-our $runAfter = ["FusionInventory::Agent::Task::Inventory::Generic"];
+our $runAfter = ["GLPI::Agent::Task::Inventory::Generic"];
 
 sub isEnabled {
     return OSNAME eq 'MSWin32';

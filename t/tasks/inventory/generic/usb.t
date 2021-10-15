@@ -9,8 +9,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::Generic::USB;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::Generic::USB;
 
 my %lsusb_tests = (
     'dell-xt2' => [
@@ -175,17 +175,17 @@ plan tests =>
     (2 * scalar keys %usb_tests)   +
     1;
 
-my $inventory = FusionInventory::Test::Inventory->new();
+my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %lsusb_tests) {
     my $file = "resources/generic/lsusb/$test";
-    my @devices = FusionInventory::Agent::Task::Inventory::Generic::USB::_getDevicesFromLsusb(file => $file);
+    my @devices = GLPI::Agent::Task::Inventory::Generic::USB::_getDevicesFromLsusb(file => $file);
     cmp_deeply(\@devices, $lsusb_tests{$test}, "$test: lsusb parsing");
 }
 
 foreach my $test (keys %usb_tests) {
     my $file = "resources/generic/lsusb/$test";
-    my @devices = FusionInventory::Agent::Task::Inventory::Generic::USB::_getDevices(file => $file, datadir => './share');
+    my @devices = GLPI::Agent::Task::Inventory::Generic::USB::_getDevices(file => $file, datadir => './share');
     cmp_deeply(\@devices, $usb_tests{$test}, "$test: usb devices retrieval");
     lives_ok {
         $inventory->addEntry(section => 'USBDEVICES', entry => $_)

@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::Deploy::ActionProcessor::Action::Mkdir;
+package GLPI::Agent::Task::Deploy::ActionProcessor::Action::Mkdir;
 
 use strict;
 use warnings;
@@ -21,8 +21,8 @@ sub do {
         my $dir_local = $dir;
 
         if ($OSNAME eq 'MSWin32' && Encode::is_utf8($dir)) {
-            FusionInventory::Agent::Tools::Win32->require;
-            my $localCodepage = FusionInventory::Agent::Tools::Win32::getLocalCodepage();
+            GLPI::Agent::Tools::Win32->require;
+            my $localCodepage = GLPI::Agent::Tools::Win32::getLocalCodepage();
             $dir_local = encode($localCodepage, $dir);
         }
 

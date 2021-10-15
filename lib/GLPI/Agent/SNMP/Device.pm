@@ -1,13 +1,13 @@
-package FusionInventory::Agent::SNMP::Device;
+package GLPI::Agent::SNMP::Device;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::SNMP;
-use FusionInventory::Agent::Tools::Network;
-use FusionInventory::Agent::SNMP::MibSupport;
-use FusionInventory::Agent::SNMP::Device::Components;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::SNMP;
+use GLPI::Agent::Tools::Network;
+use GLPI::Agent::SNMP::MibSupport;
+use GLPI::Agent::SNMP::Device::Components;
 
 # Supported infos are specified here:
 # http://fusioninventory.org/documentation/dev/spec/protocol/netdiscovery.html
@@ -105,7 +105,7 @@ sub loadMibSupport {
 
     # list supported mibs regarding sysORID list as this list permits to
     # identify device supported MIBs
-    $self->{MIBSUPPORT} = FusionInventory::Agent::SNMP::MibSupport->new(
+    $self->{MIBSUPPORT} = GLPI::Agent::SNMP::MibSupport->new(
         sysobjectid  => $sysobjectid,
         device       => $self,
         logger       => $self->{logger}
@@ -563,7 +563,7 @@ sub setComponents {
     my ($self) = @_;
 
     # First try to get components from standard ENTITY-MIB support
-    my $components = FusionInventory::Agent::SNMP::Device::Components->new(
+    my $components = GLPI::Agent::SNMP::Device::Components->new(
         device => $self
     );
     if ($components) {
@@ -587,7 +587,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP::Device - FusionInventory agent SNMP device
+GLPI::Agent::SNMP::Device - GLPI agent SNMP device
 
 =head1 DESCRIPTION
 

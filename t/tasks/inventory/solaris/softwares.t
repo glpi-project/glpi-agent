@@ -9,8 +9,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::Solaris::Softwares;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::Solaris::Softwares;
 
 my %pkg_tests = (
     'sample' => [
@@ -66,11 +66,11 @@ my %pkginfo_tests = (
 
 plan tests => 2 * (scalar keys %pkg_tests) + 2 * (scalar keys %pkginfo_tests) + 1;
 
-my $inventory = FusionInventory::Test::Inventory->new();
+my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %pkg_tests) {
     my $file = "resources/solaris/pkg-info/$test";
-    my $softwares = FusionInventory::Agent::Task::Inventory::Solaris::Softwares::_parse_pkgs(file => $file, command => 'pkg info');
+    my $softwares = GLPI::Agent::Task::Inventory::Solaris::Softwares::_parse_pkgs(file => $file, command => 'pkg info');
     cmp_deeply($softwares, $pkg_tests{$test}, "$test: parsing");
     lives_ok {
         $inventory->addEntry(section => 'SOFTWARES', entry => $_)
@@ -80,7 +80,7 @@ foreach my $test (keys %pkg_tests) {
 
 foreach my $test (keys %pkginfo_tests) {
     my $file = "resources/solaris/pkg-info/$test";
-    my $softwares = FusionInventory::Agent::Task::Inventory::Solaris::Softwares::_parse_pkgs(file => $file, command => 'pkginfo -l');
+    my $softwares = GLPI::Agent::Task::Inventory::Solaris::Softwares::_parse_pkgs(file => $file, command => 'pkginfo -l');
     cmp_deeply($softwares, $pkginfo_tests{$test}, "$test: parsing");
     lives_ok {
         $inventory->addEntry(section => 'SOFTWARES', entry => $_)

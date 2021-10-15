@@ -11,11 +11,11 @@ use Getopt::Long;
 use Pod::Usage;
 use XML::TreePP;
 
-use FusionInventory::Agent::Task::NetInventory;
-use FusionInventory::Agent::Task::NetInventory::Job;
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Version;
+use GLPI::Agent::Task::NetInventory;
+use GLPI::Agent::Task::NetInventory::Job;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Version;
 
 my %types = (
     1 => 'COMPUTER',
@@ -50,11 +50,11 @@ GetOptions(
 ) or pod2usage(-verbose => 0);
 
 if ($options->{version}) {
-    my $PROVIDER = $FusionInventory::Agent::Version::PROVIDER;
+    my $PROVIDER = $GLPI::Agent::Version::PROVIDER;
     map { print $_."\n" }
-        "NetInventory task $FusionInventory::Agent::Task::NetInventory::VERSION",
-        "based on $PROVIDER Agent v$FusionInventory::Agent::Version::VERSION",
-        @{$FusionInventory::Agent::Version::COMMENTS}
+        "NetInventory task $GLPI::Agent::Task::NetInventory::VERSION",
+        "based on $PROVIDER Agent v$GLPI::Agent::Version::VERSION",
+        @{$GLPI::Agent::Version::COMMENTS}
         ;
     exit 0;
 }
@@ -127,14 +127,14 @@ if ($options->{community}) {
     $credentials->{COMMUNITY} = 'public';
 }
 
-my $inventory = FusionInventory::Agent::Task::NetInventory->new(
+my $inventory = GLPI::Agent::Task::NetInventory->new(
     %setup,
-    target => FusionInventory::Agent::Task::NetInventory::Target->new(),
-    logger => FusionInventory::Agent::Logger->new(config => $options)
+    target => GLPI::Agent::Task::NetInventory::Target->new(),
+    logger => GLPI::Agent::Logger->new(config => $options)
 );
 
 $inventory->{jobs} = [
-    FusionInventory::Agent::Task::NetInventory::Job->new(
+    GLPI::Agent::Task::NetInventory::Job->new(
         params => {
             PID           => 1,
             THREADS_QUERY => $options->{threads},
@@ -146,13 +146,13 @@ $inventory->{jobs} = [
 ];
 
 $inventory->{client} =
-    FusionInventory::Agent::Task::NetInventory::Client->new(
+    GLPI::Agent::Task::NetInventory::Client->new(
         control => $options->{control}
     );
 
 $inventory->run();
 
-package FusionInventory::Agent::Task::NetInventory::Client;
+package GLPI::Agent::Task::NetInventory::Client;
 
 sub new {
     my ($class, %params) = @_;
@@ -173,7 +173,7 @@ sub send {
 }
 
 ## no critic (ProhibitMultiplePackages)
-package FusionInventory::Agent::Task::NetInventory::Target;
+package GLPI::Agent::Task::NetInventory::Target;
 
 sub new {
     my ($class) = @_;

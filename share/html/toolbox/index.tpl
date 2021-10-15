@@ -43,10 +43,10 @@
   <!-- footer -->
 {
     Text::Template::fill_in_file($template_path."/footer.tpl", HASH => {
-        agent   => _($FusionInventory::Agent::Version::PROVIDER." Agent").
-            " v".$FusionInventory::Agent::Version::VERSION,
+        agent   => _($GLPI::Agent::Version::PROVIDER." Agent").
+            " v".$GLPI::Agent::Version::VERSION,
         url     => "https://github.com/glpi-project/glpi-agent",
         plugin  => _("ToolBox Plugin").
-            " v".$FusionInventory::Agent::HTTP::Server::ToolBox::VERSION,
+            " v".$GLPI::Agent::HTTP::Server::ToolBox::VERSION,
     })
 }

@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Logger;
+package GLPI::Agent::Logger;
 
 use strict;
 use warnings;
@@ -25,7 +25,7 @@ sub new {
 
     # Initialize or reset Logger configuration
     if ($params{config}) {
-        $config = ref($params{config}) eq 'FusionInventory::Agent::Config' ?
+        $config = ref($params{config}) eq 'GLPI::Agent::Config' ?
             $params{config}->logger() : $params{config} ;
     } elsif ($first_pass) {
         $config = \%params;
@@ -52,7 +52,7 @@ sub new {
     ) {
         my $backend = ucfirst($_);
         next if $backends{$backend};
-        my $package = "FusionInventory::Agent::Logger::$backend";
+        my $package = "GLPI::Agent::Logger::$backend";
         $package->require();
         if ($EVAL_ERROR) {
             print STDERR
@@ -69,7 +69,7 @@ sub new {
     }
 
     # Only log agent version string during the first object creation
-    $self->debug($FusionInventory::Agent::VERSION_STRING) if $first_pass;
+    $self->debug($GLPI::Agent::VERSION_STRING) if $first_pass;
 
     return $self;
 }
@@ -163,7 +163,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Logger - FusionInventory logger
+GLPI::Agent::Logger - GLPI logger
 
 =head1 DESCRIPTION
 

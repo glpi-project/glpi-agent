@@ -1,12 +1,12 @@
-package FusionInventory::Agent::Tools::PowerSupplies;
+package GLPI::Agent::Tools::PowerSupplies;
 
 use strict;
 use warnings;
 
 use parent 'Exporter';
 
-use FusionInventory::Agent::Inventory;
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Inventory;
+use GLPI::Agent::Tools;
 
 our @EXPORT = qw(
     powersupplyFields
@@ -18,7 +18,7 @@ sub powersupplyFields {
 
     unless  (@fields) {
         # Initialize PowerSupplies expected fields from an Inventory object
-        my $inventory = FusionInventory::Agent::Inventory->new();
+        my $inventory = GLPI::Agent::Inventory->new();
         @fields = keys(%{$inventory->getFields()->{'POWERSUPPLIES'}});
     }
 
@@ -31,13 +31,13 @@ sub powersupplyFields {
 package
     Inventory::PowerSupplies;
 
-use FusionInventory::Agent::Logger;
+use GLPI::Agent::Logger;
 
 sub new {
     my ($class, %params) = @_;
 
     my $self = {
-        logger  => $params{logger} || FusionInventory::Agent::Logger->new(),
+        logger  => $params{logger} || GLPI::Agent::Logger->new(),
         list    => {},
     };
 
@@ -101,7 +101,7 @@ sub list {
 package
     PowerSupply;
 
-use FusionInventory::Agent::Logger;
+use GLPI::Agent::Logger;
 
 sub new {
     my ($class, $powersupply) = @_;
@@ -110,7 +110,7 @@ sub new {
 
     return unless ref($powersupply) eq 'HASH';
 
-    $powersupply->{logger} = FusionInventory::Agent::Logger->new()
+    $powersupply->{logger} = GLPI::Agent::Logger->new()
         unless $powersupply->{logger};
 
     bless $powersupply, $class;
@@ -135,7 +135,7 @@ sub vendor {
 
 sub merge {
     my ($self, $powersupply) = @_;
-    foreach my $key (FusionInventory::Agent::Tools::PowerSupplies::powersupplyFields()) {
+    foreach my $key (GLPI::Agent::Tools::PowerSupplies::powersupplyFields()) {
         next unless $powersupply->{$key};
         # Don't replace value is they are the same, case insensitive check
         next if (defined($self->{$key}) && $powersupply->{$key} =~ /^$self->{$key}$/i);
@@ -152,7 +152,7 @@ sub dump {
 
     my $dump = {};
 
-    foreach my $key (FusionInventory::Agent::Tools::PowerSupplies::powersupplyFields()) {
+    foreach my $key (GLPI::Agent::Tools::PowerSupplies::powersupplyFields()) {
         next unless exists($self->{$key});
         $dump->{$key} = $self->{$key};
     }
@@ -165,7 +165,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Tools::PowerSupplies
+GLPI::Agent::Tools::PowerSupplies
 
 =head1 DESCRIPTION
 

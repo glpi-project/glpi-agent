@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task;
+package GLPI::Agent::Task;
 
 use strict;
 use warnings;
@@ -6,8 +6,8 @@ use warnings;
 use English qw(-no_match_vars);
 use File::Find;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Logger;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Logger;
 
 sub new {
     my ($class, %params) = @_;
@@ -16,7 +16,7 @@ sub new {
 
     my $self = {
         logger       => $params{logger} ||
-                        FusionInventory::Agent::Logger->new(),
+                        GLPI::Agent::Logger->new(),
         config       => $params{config},
         datadir      => $params{datadir},
         event        => $params{event},
@@ -126,7 +126,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Task - Base class for agent task
+GLPI::Agent::Task - Base class for agent task
 
 =head1 DESCRIPTION
 

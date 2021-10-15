@@ -12,31 +12,31 @@ use Test::More;
 use Test::MockModule;
 use Test::Deep qw(cmp_deeply);
 
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Target::Server;
-use FusionInventory::Agent::HTTP::Client::OCS;
-use FusionInventory::Agent::XML::Query::Prolog;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Target::Server;
+use GLPI::Agent::HTTP::Client::OCS;
+use GLPI::Agent::XML::Query::Prolog;
 
-use FusionInventory::Agent::Version;
-use FusionInventory::Agent::Task::NetInventory::Version;
+use GLPI::Agent::Version;
+use GLPI::Agent::Task::NetInventory::Version;
 
-our $VERSION = $FusionInventory::Agent::Version::VERSION;
-our $TASKVERSION = FusionInventory::Agent::Task::NetInventory::Version::VERSION;
+our $VERSION = $GLPI::Agent::Version::VERSION;
+our $TASKVERSION = GLPI::Agent::Task::NetInventory::Version::VERSION;
 
 # check thread support availability
 if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
     plan skip_all => 'thread support required';
 }
 
-FusionInventory::Agent::Task::NetInventory->use();
+GLPI::Agent::Task::NetInventory->use();
 
 # Setup a target with a Test logger and debug
-my $logger = FusionInventory::Agent::Logger->new(
+my $logger = GLPI::Agent::Logger->new(
     logger  => [ 'Test' ],
     debug   => 1
 );
 
-my $target = FusionInventory::Agent::Target::Server->new(
+my $target = GLPI::Agent::Target::Server->new(
     url    => 'http://localhost/glpi-any',
     logger => $logger,
     basevardir => tempdir(CLEANUP => 1)
@@ -488,7 +488,7 @@ plan tests => $plan_tests_count ;
 my $queue = Thread::Queue->new();
 my $tid = threads->tid();
 
-my $client_module = Test::MockModule->new('FusionInventory::Agent::HTTP::Client::OCS');
+my $client_module = Test::MockModule->new('GLPI::Agent::HTTP::Client::OCS');
 $client_module->mock('send', sub {
     my ($self, %params) = @_;
 
@@ -532,7 +532,7 @@ $client_module->mock('send', sub {
     }
 
     return $query eq 'PROLOG' ?
-        FusionInventory::Agent::XML::Response->new( content => $response ) :
+        GLPI::Agent::XML::Response->new( content => $response ) :
         $response;
 });
 
@@ -541,21 +541,21 @@ foreach my $case (keys(%responses)) {
     my $client;
 
     lives_ok {
-        $client = FusionInventory::Agent::HTTP::Client::OCS->new( logger  => $logger );
+        $client = GLPI::Agent::HTTP::Client::OCS->new( logger  => $logger );
     } "$case: HTTP Client object instanciation" ;
 
     my $response;
     lives_ok {
         $response = $client->send(
             url     => $target->getUrl(),
-            message => FusionInventory::Agent::XML::Query::Prolog->new( deviceid => $case )
+            message => GLPI::Agent::XML::Query::Prolog->new( deviceid => $case )
         );
     } "$case PROLOG response";
 
     my $task;
 
     lives_ok {
-        $task = FusionInventory::Agent::Task::NetInventory->new(
+        $task = GLPI::Agent::Task::NetInventory->new(
             target      => $target,
             logger      => $logger,
             config      => {},

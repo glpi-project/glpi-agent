@@ -7,7 +7,7 @@ use Test::Deep;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Agent::Task::Inventory::AIX::Sounds;
+use GLPI::Agent::Task::Inventory::AIX::Sounds;
 
 my %tests = (
     'aix-4.3.1' => [],
@@ -23,6 +23,6 @@ plan tests => (scalar keys %tests) + 1;
 
 foreach my $test (keys %tests) {
     my $file = "resources/aix/lsdev/$test-adapter";
-    my @sounds = FusionInventory::Agent::Task::Inventory::AIX::Sounds::_getSounds(file => $file);
+    my @sounds = GLPI::Agent::Task::Inventory::AIX::Sounds::_getSounds(file => $file);
     cmp_deeply(\@sounds, $tests{$test}, "sounds: $test");
 }

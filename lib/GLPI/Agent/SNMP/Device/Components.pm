@@ -1,10 +1,10 @@
-package FusionInventory::Agent::SNMP::Device::Components;
+package GLPI::Agent::SNMP::Device::Components;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::SNMP;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::SNMP;
 
 # See ENTITY-MIB
 use constant
@@ -216,7 +216,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP::Device::Components - FusionInventory agent SNMP device components
+GLPI::Agent::SNMP::Device::Components - GLPI agent SNMP device components
 
 =head1 DESCRIPTION
 

@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Config;
+package GLPI::Agent::Config;
 
 use strict;
 use warnings;
@@ -9,9 +9,9 @@ use Cwd qw(abs_path);
 use Getopt::Long;
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Version;
+use GLPI::Agent::Version;
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 my $default = {
     'additional-content'      => undef,
@@ -174,7 +174,7 @@ sub _loadFromRegistry {
         Access => Win32::TieRegistry::KEY_READ()
     }) or die "Config: Can't open HKEY_LOCAL_MACHINE key: $EXTENDED_OS_ERROR\n";
 
-    my $provider = $FusionInventory::Agent::Version::PROVIDER;
+    my $provider = $GLPI::Agent::Version::PROVIDER;
     my $settings = $machKey->{"SOFTWARE/$provider-Agent"};
 
     foreach my $rawKey (keys %$settings) {
@@ -394,11 +394,11 @@ sub getTargets {
 
     # create target list
     if ($self->{local}) {
-        FusionInventory::Agent::Target::Local->require();
-        FusionInventory::Agent::Target::Local->reset();
+        GLPI::Agent::Target::Local->require();
+        GLPI::Agent::Target::Local->reset();
         foreach my $path (@{$self->{local}}) {
             push @targets,
-                FusionInventory::Agent::Target::Local->new(
+                GLPI::Agent::Target::Local->new(
                     logger     => $params{logger},
                     delaytime  => $self->{delaytime},
                     basevardir => $params{vardir},
@@ -410,10 +410,10 @@ sub getTargets {
     }
 
     if ($self->{server}) {
-        FusionInventory::Agent::Target::Server->require();
-        FusionInventory::Agent::Target::Server->reset();
+        GLPI::Agent::Target::Server->require();
+        GLPI::Agent::Target::Server->reset();
         foreach my $url (@{$self->{server}}) {
-            push @targets, FusionInventory::Agent::Target::Server->new(
+            push @targets, GLPI::Agent::Target::Server->new(
                 logger     => $params{logger},
                 delaytime  => $self->{delaytime},
                 basevardir => $params{vardir},
@@ -426,12 +426,12 @@ sub getTargets {
     # Only add listener target if no other target has been defined and
     # httpd daemon is enabled. And anyway only one listener should be enabled
     if ($self->{listen} && !@targets && !$self->{'no-httpd'}) {
-        FusionInventory::Agent::Target::Listener->require();
+        GLPI::Agent::Target::Listener->require();
         if ($EVAL_ERROR) {
-            die "Config: Failure while loading FusionInventory::Agent::Target::Listener: $EVAL_ERROR\n";
+            die "Config: Failure while loading GLPI::Agent::Target::Listener: $EVAL_ERROR\n";
         }
         push @targets,
-            FusionInventory::Agent::Target::Listener->new(
+            GLPI::Agent::Target::Listener->new(
                 logger     => $params{logger},
                 delaytime  => $self->{delaytime},
                 basevardir => $params{vardir},
@@ -446,7 +446,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Config - Agent configuration
+GLPI::Agent::Config - Agent configuration
 
 =head1 DESCRIPTION
 

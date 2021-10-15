@@ -9,7 +9,7 @@ use File::Temp qw(tempdir);
 
 plan tests => 1;
 
-use FusionInventory::Agent::Task::Deploy::DiskFree;
+use GLPI::Agent::Task::Deploy::DiskFree;
 
 
 my $tmp = tempdir(CLEANUP => $ENV{TEST_DEBUG} ? 0 : 1);

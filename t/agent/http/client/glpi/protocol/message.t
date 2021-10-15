@@ -9,13 +9,13 @@ use Test::Deep;
 use Test::Exception;
 use Test::More;
 
-use FusionInventory::Agent::Logger;
+use GLPI::Agent::Logger;
 
 use GLPI::Agent::Protocol::Message;
 
 plan tests => 32;
 
-my $logger = FusionInventory::Agent::Logger->new(
+my $logger = GLPI::Agent::Logger->new(
     logger => [ 'Test' ]
 );
 

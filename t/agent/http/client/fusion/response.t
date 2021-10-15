@@ -10,16 +10,16 @@ use Test::Deep;
 use Test::Exception;
 use Test::More;
 
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::HTTP::Client::Fusion;
-use FusionInventory::Agent::XML::Query;
-use FusionInventory::Test::Server;
-use FusionInventory::Test::Utils;
+use GLPI::Agent::Logger;
+use GLPI::Agent::HTTP::Client::Fusion;
+use GLPI::Agent::XML::Query;
+use GLPI::Test::Server;
+use GLPI::Test::Utils;
 
 unsetProxyEnvVar();
 
 # find an available port
-my $port = FusionInventory::Agent::Tools::first { test_port($_) } 8080 .. 8180;
+my $port = GLPI::Agent::Tools::first { test_port($_) } 8080 .. 8180;
 
 if (!$port) {
     plan skip_all => 'no available port';
@@ -27,11 +27,11 @@ if (!$port) {
     plan tests => 6;
 }
 
-my $logger = FusionInventory::Agent::Logger->new(
+my $logger = GLPI::Agent::Logger->new(
     logger => [ 'Test' ]
 );
 
-my $message = FusionInventory::Agent::XML::Query->new(
+my $message = GLPI::Agent::XML::Query->new(
     deviceid => 'foo',
     query => 'foo',
     msg => {
@@ -40,14 +40,14 @@ my $message = FusionInventory::Agent::XML::Query->new(
     },
 );
 
-my $client = FusionInventory::Agent::HTTP::Client::Fusion->new(
+my $client = GLPI::Agent::HTTP::Client::Fusion->new(
     logger => $logger
 );
 
 # http connection tests
 my ($server, $response);
 
-$server = FusionInventory::Test::Server->new(
+$server = GLPI::Test::Server->new(
     port => $port,
 );
 my $header  = "HTTP/1.0 200 OK\r\n\r\n";

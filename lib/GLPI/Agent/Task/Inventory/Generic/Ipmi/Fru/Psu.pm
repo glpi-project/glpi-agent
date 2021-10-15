@@ -1,19 +1,19 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Ipmi::Fru::Psu;
+package GLPI::Agent::Task::Inventory::Generic::Ipmi::Fru::Psu;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::IpmiFru;
-use FusionInventory::Agent::Tools::PowerSupplies;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::IpmiFru;
+use GLPI::Agent::Tools::PowerSupplies;
 
 use constant    category    => "psu";
 
 # Run after virtualization to decide if found component is virtual
 our $runAfterIfEnabled = [ qw(
-    FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Psu
+    GLPI::Agent::Task::Inventory::Generic::Dmidecode::Psu
 )];
 
 sub isEnabled {

@@ -10,8 +10,8 @@ use English qw(-no_match_vars);
 use Test::More;
 use Test::MockModule;
 
-use FusionInventory::Test::Utils;
-use FusionInventory::Agent::Task::WakeOnLan;
+use GLPI::Test::Utils;
+use GLPI::Agent::Task::WakeOnLan;
 
 BEGIN {
     # use mock modules for non-available ones
@@ -40,7 +40,7 @@ foreach my $test (keys %interfaceid_tests) {
 plan tests => $plan + $plan_with_threads;
 
 foreach my $test (@payload_tests) {
-    my $payload = FusionInventory::Agent::Task::WakeOnLan->_getPayload($test);
+    my $payload = GLPI::Agent::Task::WakeOnLan->_getPayload($test);
     my ($header, $values) = unpack('H12H192', $payload);
     is($header, 'ffffffffffff', "payload header for $test");
     is($values, lc($test) x 16, "payload values for $test");
@@ -51,7 +51,7 @@ SKIP: {
         if (!$Config{usethreads} || $Config{usethreads} ne 'define');
 
     my $module = Test::MockModule->new(
-        'FusionInventory::Agent::Tools::Win32'
+        'GLPI::Agent::Tools::Win32'
     );
 
     foreach my $sample (keys %interfaceid_tests) {
@@ -62,7 +62,7 @@ SKIP: {
 
         foreach my $pnpid (keys %{$interfaceid_tests{$sample}}) {
             is(
-                FusionInventory::Agent::Task::WakeOnLan->_getWin32InterfaceId(
+                GLPI::Agent::Task::WakeOnLan->_getWin32InterfaceId(
                     $pnpid
                 ),
                 $interfaceid_tests{$sample}->{$pnpid},

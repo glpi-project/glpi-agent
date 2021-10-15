@@ -1,17 +1,17 @@
-package FusionInventory::Test::Inventory;
+package GLPI::Test::Inventory;
 
 use strict;
 use warnings;
-use parent qw(FusionInventory::Agent::Inventory);
+use parent qw(GLPI::Agent::Inventory);
 
-use FusionInventory::Agent::Config;
-use FusionInventory::Agent::Logger;
+use GLPI::Agent::Config;
+use GLPI::Agent::Logger;
 
 sub new {
     my ($class, %params) = @_;
 
-    my $logger = FusionInventory::Agent::Logger->new(
-        config => FusionInventory::Agent::Config->new(
+    my $logger = GLPI::Agent::Logger->new(
+        config => GLPI::Agent::Config->new(
             options => {
                 config => 'none',
                 debug  => 2,

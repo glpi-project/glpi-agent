@@ -7,7 +7,7 @@ use English qw(-no_match_vars);
 use IPC::Run qw(run);
 use Test::More;
 
-use FusionInventory::Agent::Task::Inventory;
+use GLPI::Agent::Task::Inventory;
 
 plan tests => 6;
 
@@ -27,7 +27,7 @@ ok($rc == 0, '--version exit status');
 is($err, '', '--version stderr');
 like(
     $out,
-    qr/$FusionInventory::Agent::Task::Inventory::VERSION/,
+    qr/$GLPI::Agent::Task::Inventory::VERSION/,
     '--version stdout'
 );
 

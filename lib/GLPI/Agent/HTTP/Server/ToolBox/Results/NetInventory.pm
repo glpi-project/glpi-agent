@@ -1,9 +1,9 @@
-package FusionInventory::Agent::HTTP::Server::ToolBox::Results::NetInventory;
+package GLPI::Agent::HTTP::Server::ToolBox::Results::NetInventory;
 
 use strict;
 use warnings;
 
-use parent "FusionInventory::Agent::HTTP::Server::ToolBox::Results::Fields";
+use parent "GLPI::Agent::HTTP::Server::ToolBox::Results::Fields";
 
 use Memoize;
 

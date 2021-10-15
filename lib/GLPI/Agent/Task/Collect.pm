@@ -1,8 +1,8 @@
-package FusionInventory::Agent::Task::Collect;
+package GLPI::Agent::Task::Collect;
 
 use strict;
 use warnings;
-use parent 'FusionInventory::Agent::Task';
+use parent 'GLPI::Agent::Task';
 
 use Digest::SHA;
 use English qw(-no_match_vars);
@@ -10,14 +10,14 @@ use File::Basename;
 use File::Find;
 use File::stat;
 
-use FusionInventory::Agent;
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::HTTP::Client::Fusion;
+use GLPI::Agent;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Tools;
+use GLPI::Agent::HTTP::Client::Fusion;
 
-use FusionInventory::Agent::Task::Collect::Version;
+use GLPI::Agent::Task::Collect::Version;
 
-our $VERSION = FusionInventory::Agent::Task::Collect::Version::VERSION;
+our $VERSION = GLPI::Agent::Task::Collect::Version::VERSION;
 
 my %functions = (
     getFromRegistry => \&_getFromRegistry,
@@ -156,7 +156,7 @@ sub _validateAnswer {
 sub run {
     my ($self, %params) = @_;
 
-    $self->{client} = FusionInventory::Agent::HTTP::Client::Fusion->new(
+    $self->{client} = GLPI::Agent::HTTP::Client::Fusion->new(
         logger       => $self->{logger},
         user         => $params{user},
         password     => $params{password},
@@ -311,7 +311,7 @@ sub _encodeRegistryValueForCollect {
     if (defined($type) && ($type == 3 || $type >= 8)) {
         $value = join(" ", map { sprintf "%02x", ord } split(//, $value));
     } else {
-        $value = FusionInventory::Agent::Tools::Win32::encodeFromRegistry($value);
+        $value = GLPI::Agent::Tools::Win32::encodeFromRegistry($value);
     }
 
     return $value;
@@ -320,11 +320,11 @@ sub _encodeRegistryValueForCollect {
 sub _getFromRegistry {
     my %params = @_;
 
-    return unless FusionInventory::Agent::Tools::Win32->require();
+    return unless GLPI::Agent::Tools::Win32->require();
 
     # Here we need to retrieve values with their type, getRegistryValue API
     # has been modify to support withtype flag as param
-    my $values = FusionInventory::Agent::Tools::Win32::getRegistryValue(
+    my $values = GLPI::Agent::Tools::Win32::getRegistryValue(
         path     => $params{path},
         withtype => 1
     );
@@ -465,7 +465,7 @@ sub _runCommand {
 sub _getFromWMI {
     my %params = @_;
 
-    return unless FusionInventory::Agent::Tools::Win32->require();
+    return unless GLPI::Agent::Tools::Win32->require();
 
     return unless $params{properties};
     return unless $params{class};
@@ -476,7 +476,7 @@ sub _getFromWMI {
 
     my @results;
 
-    my @objects = FusionInventory::Agent::Tools::Win32::getWMIObjects(%params);
+    my @objects = GLPI::Agent::Tools::Win32::getWMIObjects(%params);
     foreach my $object (@objects) {
         push @results, $object;
     }

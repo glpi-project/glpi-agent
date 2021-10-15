@@ -1,12 +1,12 @@
-package FusionInventory::Agent::SNMP::MibSupport::Brocade;
+package GLPI::Agent::SNMP::MibSupport::Brocade;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::SNMP::MibSupportTemplate';
+use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::SNMP;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::SNMP;
 
 use constant    brocade   => '.1.3.6.1.4.1.1991' ;
 use constant    serial  => brocade  .'.1.1.1.1.2.0' ;
@@ -38,7 +38,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP::MibSupport::Brocade - Inventory module for Brocade Switches
+GLPI::Agent::SNMP::MibSupport::Brocade - Inventory module for Brocade Switches
 
 =head1 DESCRIPTION
 

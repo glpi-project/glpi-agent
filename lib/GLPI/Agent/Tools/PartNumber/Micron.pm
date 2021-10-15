@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Tools::PartNumber::Micron;
+package GLPI::Agent::Tools::PartNumber::Micron;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Tools::PartNumber';
+use parent 'GLPI::Agent::Tools::PartNumber';
 
 # https://www.micron.com/products/dram-modules/rdimm/part-catalog
 

@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools::UUID;
+package GLPI::Agent::Tools::UUID;
 
 use strict;
 use warnings;

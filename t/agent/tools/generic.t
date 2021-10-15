@@ -6,7 +6,7 @@ use warnings;
 use Test::Deep;
 use Test::More;
 
-use FusionInventory::Agent::Tools::Generic;
+use GLPI::Agent::Tools::Generic;
 
 my %dmidecode_tests = (
     'freebsd-6.2' =>  {

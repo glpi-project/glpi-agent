@@ -9,8 +9,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Psu;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::Generic::Dmidecode::Psu;
 
 my %tests = (
     'dell-fx160' => undef,
@@ -469,10 +469,10 @@ plan tests => 2 *(scalar keys %tests) + 1;
 
 foreach my $test (keys %tests) {
     my $file = "resources/generic/dmidecode/$test";
-    my $inventory = FusionInventory::Test::Inventory->new();
+    my $inventory = GLPI::Test::Inventory->new();
 
     lives_ok {
-        FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Psu::doInventory(
+        GLPI::Agent::Task::Inventory::Generic::Dmidecode::Psu::doInventory(
             inventory   => $inventory,
             file        => $file
         );

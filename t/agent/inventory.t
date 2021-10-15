@@ -9,13 +9,13 @@ use Test::Deep;
 use Test::Exception;
 use Test::More;
 
-use FusionInventory::Agent;
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Inventory;
+use GLPI::Agent;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Inventory;
 
 plan tests => 20;
 
-my $logger = FusionInventory::Agent::Logger->new(
+my $logger = GLPI::Agent::Logger->new(
     logger => [ 'Test' ],
     debug  => 1
 );
@@ -23,12 +23,12 @@ my $logger = FusionInventory::Agent::Logger->new(
 my $inventory;
 
 lives_ok {
-    $inventory = FusionInventory::Agent::Inventory->new(
+    $inventory = GLPI::Agent::Inventory->new(
         logger => $logger
     );
 } 'everything OK';
 
-isa_ok($inventory, 'FusionInventory::Agent::Inventory');
+isa_ok($inventory, 'GLPI::Agent::Inventory');
 
 cmp_deeply(
     $inventory->{content},
@@ -36,7 +36,7 @@ cmp_deeply(
         HARDWARE => {
             VMSYSTEM => 'Physical'
         },
-        VERSIONCLIENT => $FusionInventory::Agent::AGENT_STRING
+        VERSIONCLIENT => $GLPI::Agent::AGENT_STRING
     },
     'initial state'
 );
@@ -158,7 +158,7 @@ $inventory->addEntry(
     entry   => {
         NAME         => 'void CPU',
         SPEED        => 1456,
-        MANUFACTURER => 'FusionInventory Developers',
+        MANUFACTURER => 'GLPI Developers',
         SERIAL       => 'AEZVRV',
         THREAD       => 3,
         CORE         => 1
@@ -170,7 +170,7 @@ cmp_deeply(
     [
         {
             CORE         => 1,
-            MANUFACTURER => 'FusionInventory Developers',
+            MANUFACTURER => 'GLPI Developers',
             NAME         => 'void CPU',
             SERIAL       => 'AEZVRV',
             SPEED        => 1456,

@@ -1,9 +1,9 @@
-package FusionInventory::Agent::SOAP::WsMan::CommandState;
+package GLPI::Agent::SOAP::WsMan::CommandState;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::SOAP::WsMan::Node;
+use GLPI::Agent::SOAP::WsMan::Node;
 
 ## no critic (ProhibitMultiplePackages)
 package
@@ -11,7 +11,7 @@ package
 
 use parent 'Node';
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 use constant    xmlns   => 'rsp';
 

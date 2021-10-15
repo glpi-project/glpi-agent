@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Logger::File;
+package GLPI::Agent::Logger::File;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Logger::Backend';
+use parent 'GLPI::Agent::Logger::Backend';
 
 use English qw(-no_match_vars);
 use Fcntl qw(:flock);
@@ -70,7 +70,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Logger::File - A file backend for the logger
+GLPI::Agent::Logger::File - A file backend for the logger
 
 =head1 DESCRIPTION
 

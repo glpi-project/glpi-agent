@@ -24,7 +24,7 @@ sudo chmod -R 755 "$INSTALL_PATH"
 
 # Fix installed script with INSTALL_PATH
 if [ "$DEST" != "/" ]; then
-    for SCRIPT in agent/setup.pm agent/FusionInventory/Agent/Config.pm \
+    for SCRIPT in agent/setup.pm agent/GLPI/Agent/Config.pm \
         uninstaller.sh bin/glpi-agent bin/glpi-esx \
         bin/glpi-injector bin/glpi-inventory \
         bin/glpi-netdiscovery bin/glpi-netinventory \

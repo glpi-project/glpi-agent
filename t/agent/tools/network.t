@@ -5,7 +5,7 @@ use warnings;
 
 use Test::More;
 
-use FusionInventory::Agent::Tools::Network;
+use GLPI::Agent::Tools::Network;
 
 my @network_ok_tests = qw(
     10.0.0.0/32

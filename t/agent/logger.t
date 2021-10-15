@@ -12,16 +12,16 @@ use Fcntl qw(:seek);
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Agent::Config;
-use FusionInventory::Agent::Logger;
+use GLPI::Agent::Config;
+use GLPI::Agent::Logger;
 
 plan tests => 29;
 
-my $logger = FusionInventory::Agent::Logger->new();
+my $logger = GLPI::Agent::Logger->new();
 
 isa_ok(
     $logger,
-    'FusionInventory::Agent::Logger',
+    'GLPI::Agent::Logger',
     'logger class'
 );
 
@@ -33,14 +33,14 @@ is(
 
 isa_ok(
     $logger->{backends}->[0],
-    'FusionInventory::Agent::Logger::Stderr',
+    'GLPI::Agent::Logger::Stderr',
     'default backend class'
 );
 
 if ($OSNAME eq 'MSWin32') {
 
-    $logger = FusionInventory::Agent::Logger->new(
-        config => FusionInventory::Agent::Config->new(
+    $logger = GLPI::Agent::Logger->new(
+        config => GLPI::Agent::Config->new(
             options => {
                 config  => 'none',
                 logger  => 'stderr,Test'
@@ -57,19 +57,19 @@ if ($OSNAME eq 'MSWin32') {
         plan tests => 2;
         isa_ok(
             $logger->{backends}->[0],
-            'FusionInventory::Agent::Logger::Stderr',
+            'GLPI::Agent::Logger::Stderr',
             'first backend class'
         );
 
         isa_ok(
             $logger->{backends}->[1],
-            'FusionInventory::Agent::Logger::Test',
+            'GLPI::Agent::Logger::Test',
             'third backend class'
         );
     };
 } else {
-    $logger = FusionInventory::Agent::Logger->new(
-        config => FusionInventory::Agent::Config->new(
+    $logger = GLPI::Agent::Logger->new(
+        config => GLPI::Agent::Config->new(
             options => {
                 config  => 'none',
                 logger  => 'Stderr,Syslog,Test'
@@ -87,19 +87,19 @@ if ($OSNAME eq 'MSWin32') {
         plan tests => 3;
         isa_ok(
             $logger->{backends}->[0],
-            'FusionInventory::Agent::Logger::Stderr',
+            'GLPI::Agent::Logger::Stderr',
             'first backend class'
         );
 
         isa_ok(
             $logger->{backends}->[1],
-            'FusionInventory::Agent::Logger::Syslog',
+            'GLPI::Agent::Logger::Syslog',
             'second backend class'
         );
 
         isa_ok(
             $logger->{backends}->[2],
-            'FusionInventory::Agent::Logger::Test',
+            'GLPI::Agent::Logger::Test',
             'third backend class'
         );
     };
@@ -107,8 +107,8 @@ if ($OSNAME eq 'MSWin32') {
 
 # stderr backend tests
 
-$logger = FusionInventory::Agent::Logger->new(
-    config => FusionInventory::Agent::Config->new(
+$logger = GLPI::Agent::Logger->new(
+    config => GLPI::Agent::Config->new(
         options => {
             config  => 'none',
             logger  => 'stderr'
@@ -127,7 +127,7 @@ ok(
 );
 
 # Test just updating debug level
-$logger = FusionInventory::Agent::Logger->new(
+$logger = GLPI::Agent::Logger->new(
     debug => 1
 );
 
@@ -165,8 +165,8 @@ is(
     'error message formating'
 );
 
-$logger = FusionInventory::Agent::Logger->new(
-    config => FusionInventory::Agent::Config->new(
+$logger = GLPI::Agent::Logger->new(
+    config => GLPI::Agent::Config->new(
         options => {
             config  => 'none',
             debug   => 2,
@@ -185,8 +185,8 @@ ok(
     'debug message presence'
 );
 
-$logger = FusionInventory::Agent::Logger->new(
-    config => FusionInventory::Agent::Config->new(
+$logger = GLPI::Agent::Logger->new(
+    config => GLPI::Agent::Config->new(
         options => {
             config  => 'none',
             debug   => 1,
@@ -221,7 +221,7 @@ is(
 );
 
 # Test just updating color config
-$logger = FusionInventory::Agent::Logger->new(
+$logger = GLPI::Agent::Logger->new(
     color => 0
 );
 
@@ -236,8 +236,8 @@ my $tmpdir = tempdir(CLEANUP => $ENV{TEST_DEBUG} ? 0 : 1);
 my $logfile;
 
 $logfile = "$tmpdir/test1";
-$logger = FusionInventory::Agent::Logger->new(
-    config => FusionInventory::Agent::Config->new(
+$logger = GLPI::Agent::Logger->new(
+    config => GLPI::Agent::Config->new(
         options => {
             config  => 'none',
             logger  => 'file',
@@ -254,8 +254,8 @@ ok(
 );
 
 $logfile = "$tmpdir/test2";
-$logger = FusionInventory::Agent::Logger->new(
-    config => FusionInventory::Agent::Config->new(
+$logger = GLPI::Agent::Logger->new(
+    config => GLPI::Agent::Config->new(
         options => {
             config  => 'none',
             debug   => 1,
@@ -296,8 +296,8 @@ like(
 );
 
 $logfile = "$tmpdir/test3";
-$logger = FusionInventory::Agent::Logger->new(
-    config => FusionInventory::Agent::Config->new(
+$logger = GLPI::Agent::Logger->new(
+    config => GLPI::Agent::Config->new(
         options => {
             config  => 'none',
             logger  => 'file',
@@ -312,8 +312,8 @@ ok(
 );
 
 $logfile = "$tmpdir/test4";
-$logger = FusionInventory::Agent::Logger->new(
-    config => FusionInventory::Agent::Config->new(
+$logger = GLPI::Agent::Logger->new(
+    config => GLPI::Agent::Config->new(
         options => {
             config  => 'none',
             logger  => 'file',

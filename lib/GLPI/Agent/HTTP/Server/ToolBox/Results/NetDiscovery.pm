@@ -1,13 +1,13 @@
-package FusionInventory::Agent::HTTP::Server::ToolBox::Results::NetDiscovery;
+package GLPI::Agent::HTTP::Server::ToolBox::Results::NetDiscovery;
 
 use strict;
 use warnings;
 
-use parent "FusionInventory::Agent::HTTP::Server::ToolBox::Results::Fields";
+use parent "GLPI::Agent::HTTP::Server::ToolBox::Results::Fields";
 
 use Memoize;
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 memoize('__sortable_by_ip');
 
@@ -217,7 +217,7 @@ sub analyze {
     $device->{source} = $self->name;
 
     # Defines dynamic fields that can't be edited
-    my @netinventory_fields = FusionInventory::Agent::HTTP::Server::ToolBox::Results::NetInventory->fields();
+    my @netinventory_fields = GLPI::Agent::HTTP::Server::ToolBox::Results::NetInventory->fields();
 
     $device->{_noedit} = { map { $_->{name} => 1 } $self->fields(), @netinventory_fields };
 
@@ -229,7 +229,7 @@ sub analyze {
     }
 
     # Don't include fields from local Inventory which are not in NetInventory
-    my @inventory = FusionInventory::Agent::HTTP::Server::ToolBox::Results::Inventory->fields();
+    my @inventory = GLPI::Agent::HTTP::Server::ToolBox::Results::Inventory->fields();
     foreach my $field (@inventory) {
         $device->{_noedit}->{$field->{name}} = 1
             unless exists($device->{_noedit}->{$field->{name}});

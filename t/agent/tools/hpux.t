@@ -6,7 +6,7 @@ use warnings;
 use Test::Deep;
 use Test::More;
 
-use FusionInventory::Agent::Tools::HPUX;
+use GLPI::Agent::Tools::HPUX;
 
 my %machinfo_tests = (
     'hpux_11.23.ia64' => {

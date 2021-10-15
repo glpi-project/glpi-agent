@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Storage;
+package GLPI::Agent::Storage;
 
 use strict;
 use warnings;
@@ -9,7 +9,7 @@ use File::Path qw(mkpath);
 use File::stat;
 use Storable;
 
-use FusionInventory::Agent::Logger;
+use GLPI::Agent::Logger;
 
 sub new {
     my ($class, %params) = @_;
@@ -31,7 +31,7 @@ sub new {
 
     my $self = {
         logger    => $params{logger} ||
-                     FusionInventory::Agent::Logger->new(),
+                     GLPI::Agent::Logger->new(),
         _mtime    => {},
         directory => $params{directory}
     };
@@ -130,11 +130,11 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Storage - A data serializer/deserializer
+GLPI::Agent::Storage - A data serializer/deserializer
 
 =head1 SYNOPSIS
 
-  my $storage = FusionInventory::Agent::Storage->new(
+  my $storage = GLPI::Agent::Storage->new(
       directory => '/tmp'
   );
   my $data = $storage->restore(

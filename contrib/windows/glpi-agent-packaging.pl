@@ -17,7 +17,7 @@ use lib abs_path(File::Spec->rel2abs('../packaging', __FILE__));
 use PerlBuildJob;
 
 use lib 'lib';
-use FusionInventory::Agent::Version;
+use GLPI::Agent::Version;
 
 # HACK: make "use Perl::Dist::GLPI::Agent::Step::XXX" works as included plugin
 map { $INC{"Perl/Dist/GLPI/Agent/Step/$_.pm"} = __FILE__ } qw(Update OutputMSI Test InstallModules);
@@ -38,8 +38,8 @@ for my $v (qw/3.0 3.5 3.6 3.11/) {
 
 die "Can't find WiX installation root in regitry\n" unless $wixbin_dir;
 
-my $provider = $FusionInventory::Agent::Version::PROVIDER;
-my $version = $FusionInventory::Agent::Version::VERSION;
+my $provider = $GLPI::Agent::Version::PROVIDER;
+my $version = $GLPI::Agent::Version::VERSION;
 my ($major,$minor,$revision) = $version =~ /^(\d+)\.(\d+)\.?(\d+)?/;
 $revision = 0 unless defined($revision);
 
@@ -188,23 +188,23 @@ use constant _dir_id_match => { qw(
     var             d_var
     logs            d_logs
     etc             d_etc
-    perl\agent\fusioninventory\agent\task\netinventory  d_netinventory_task
-    perl\agent\fusioninventory\agent\task\netdiscovery  d_netinv_discovery_task
-    perl\agent\fusioninventory\agent\snmp               d_netinv_snmp
-    perl\agent\fusioninventory\agent\snmp\device        d_netinv_device
-    perl\agent\fusioninventory\agent\snmp\mibsupport    d_netinv_mibsupport
-    perl\agent\fusioninventory\agent\tools\hardware     d_netinv_hardware
-    perl\agent\fusioninventory\agent\task\deploy        d_deploy
-    perl\agent\fusioninventory\agent\task\deploy\actionprocessor        d_deploy_ap
-    perl\agent\fusioninventory\agent\task\deploy\actionprocessor\action d_deploy_action
-    perl\agent\fusioninventory\agent\task\deploy\checkprocessor         d_deploy_cp
-    perl\agent\fusioninventory\agent\task\deploy\datastore              d_deploy_ds
-    perl\agent\fusioninventory\agent\task\deploy\usercheck              d_deploy_uc
-    perl\agent\fusioninventory\agent\task\collect       d_collect
-    perl\agent\fusioninventory\agent\task\esx           d_esx_task
-    perl\agent\fusioninventory\agent\soap               d_esx_soap
-    perl\agent\fusioninventory\agent\soap\vmware        d_esx_vmware
-    perl\agent\fusioninventory\agent\task\wakeonlan     d_wol
+    perl\agent\glpi\agent\task\netinventory  d_netinventory_task
+    perl\agent\glpi\agent\task\netdiscovery  d_netinv_discovery_task
+    perl\agent\glpi\agent\snmp               d_netinv_snmp
+    perl\agent\glpi\agent\snmp\device        d_netinv_device
+    perl\agent\glpi\agent\snmp\mibsupport    d_netinv_mibsupport
+    perl\agent\glpi\agent\tools\hardware     d_netinv_hardware
+    perl\agent\glpi\agent\task\deploy        d_deploy
+    perl\agent\glpi\agent\task\deploy\actionprocessor        d_deploy_ap
+    perl\agent\glpi\agent\task\deploy\actionprocessor\action d_deploy_action
+    perl\agent\glpi\agent\task\deploy\checkprocessor         d_deploy_cp
+    perl\agent\glpi\agent\task\deploy\datastore              d_deploy_ds
+    perl\agent\glpi\agent\task\deploy\usercheck              d_deploy_uc
+    perl\agent\glpi\agent\task\collect       d_collect
+    perl\agent\glpi\agent\task\esx           d_esx_task
+    perl\agent\glpi\agent\soap               d_esx_soap
+    perl\agent\glpi\agent\soap\vmware        d_esx_vmware
+    perl\agent\glpi\agent\task\wakeonlan     d_wol
 )};
 
 use constant _file_feature_match => { qw(
@@ -214,25 +214,25 @@ use constant _file_feature_match => { qw(
     glpi-netinventory.bat                                   feat_NETINV
     perl\bin\glpi-netdiscovery                              feat_NETINV
     perl\bin\glpi-netinventory                              feat_NETINV
-    perl\agent\FusionInventory\Agent\Task\NetInventory.pm   feat_NETINV
-    perl\agent\FusionInventory\Agent\Task\NetDiscovery.pm   feat_NETINV
-    perl\agent\FusionInventory\Agent\Tools\Hardware.pm      feat_NETINV
-    perl\agent\FusionInventory\Agent\Tools\SNMP.pm          feat_NETINV
-    perl\agent\FusionInventory\Agent\SNMP.pm                feat_NETINV
+    perl\agent\GLPI\Agent\Task\NetInventory.pm   feat_NETINV
+    perl\agent\GLPI\Agent\Task\NetDiscovery.pm   feat_NETINV
+    perl\agent\GLPI\Agent\Tools\Hardware.pm      feat_NETINV
+    perl\agent\GLPI\Agent\Tools\SNMP.pm          feat_NETINV
+    perl\agent\GLPI\Agent\SNMP.pm                feat_NETINV
 
-    perl\agent\FusionInventory\Agent\Task\Deploy.pm         feat_DEPLOY
+    perl\agent\GLPI\Agent\Task\Deploy.pm         feat_DEPLOY
     perl\bin\7z.exe                                         feat_DEPLOY
     perl\bin\7z.dll                                         feat_DEPLOY
 
-    perl\agent\FusionInventory\Agent\Task\Collect.pm        feat_COLLECT
+    perl\agent\GLPI\Agent\Task\Collect.pm        feat_COLLECT
 
     glpi-esx.bat                                            feat_ESX
     perl\bin\glpi-esx                                       feat_ESX
-    perl\agent\FusionInventory\Agent\Task\ESX.pm            feat_ESX
+    perl\agent\GLPI\Agent\Task\ESX.pm            feat_ESX
 
     glpi-wakeonlan.bat                                      feat_WOL
     perl\bin\glpi-wakeonlan                                 feat_WOL
-    perl\agent\FusionInventory\Agent\Task\WakeOnLan.pm      feat_WOL
+    perl\agent\GLPI\Agent\Task\WakeOnLan.pm      feat_WOL
 )};
 
 sub run {
@@ -530,7 +530,7 @@ sub run {
         comments => \@comments,
     };
 
-    my $dest = catfile($self->global->{image_dir}, 'perl/agent/FusionInventory/Agent/Version.pm');
+    my $dest = catfile($self->global->{image_dir}, 'perl/agent/GLPI/Agent/Version.pm');
     $t->process($version, $vars, $dest) || die $t->error();
 
     # Update default conf to include conf.d folder
@@ -648,7 +648,7 @@ sub _other_job_steps {
             { do=>'createdir', args=>[ '<image_dir>/var' ] },
             { do=>'createdir', args=>[ '<image_dir>/logs' ] },
             { do=>'movefile', args=>[ '<image_dir>/perl/bin/perl.exe', '<image_dir>/perl/bin/glpi-agent.exe' ] },
-            { do=>'copydir', args=>[ 'lib/FusionInventory', '<image_dir>/perl/agent/FusionInventory' ] },
+            { do=>'copydir', args=>[ 'lib/GLPI', '<image_dir>/perl/agent/GLPI' ] },
             { do=>'copydir', args=>[ 'lib/GLPI', '<image_dir>/perl/agent/GLPI' ] },
             { do=>'copydir', args=>[ 'etc', '<image_dir>/etc' ] },
             { do=>'createdir', args=>[ '<image_dir>/etc/conf.d' ] },

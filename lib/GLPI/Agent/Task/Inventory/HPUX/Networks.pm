@@ -1,13 +1,13 @@
-package FusionInventory::Agent::Task::Inventory::HPUX::Networks;
+package GLPI::Agent::Task::Inventory::HPUX::Networks;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Unix;
-use FusionInventory::Agent::Tools::Network;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Unix;
+use GLPI::Agent::Tools::Network;
 
 use constant    category    => "network";
 

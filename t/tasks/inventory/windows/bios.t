@@ -10,7 +10,7 @@ use Test::More;
 use Test::MockModule;
 use UNIVERSAL::require;
 
-use FusionInventory::Test::Utils;
+use GLPI::Test::Utils;
 
 BEGIN {
     # use mock modules for non-available ones
@@ -25,7 +25,7 @@ if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
 
 Test::NoWarnings->use();
 
-FusionInventory::Agent::Task::Inventory::Win32::Bios->require();
+GLPI::Agent::Task::Inventory::Win32::Bios->require();
 
 my %tests = (
     "20050927******.******+***" => "09/27/2005",
@@ -36,5 +36,5 @@ plan tests => (scalar keys %tests) + 1;
 foreach my $input (keys %tests) {
     my $result = $tests{$input};
 
-    ok(FusionInventory::Agent::Task::Inventory::Win32::Bios::_dateFromIntString($input) eq $result, "_dateFromIntString($input)");
+    ok(GLPI::Agent::Task::Inventory::Win32::Bios::_dateFromIntString($input) eq $result, "_dateFromIntString($input)");
 }

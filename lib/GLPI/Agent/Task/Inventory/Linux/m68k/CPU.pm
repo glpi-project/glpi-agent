@@ -1,12 +1,12 @@
-package FusionInventory::Agent::Task::Inventory::Linux::m68k::CPU;
+package GLPI::Agent::Task::Inventory::Linux::m68k::CPU;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Linux;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Linux;
 
 use constant    category    => "cpu";
 

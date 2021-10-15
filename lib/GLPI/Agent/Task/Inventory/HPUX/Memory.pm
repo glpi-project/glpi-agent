@@ -1,12 +1,12 @@
-package FusionInventory::Agent::Task::Inventory::HPUX::Memory;
+package GLPI::Agent::Task::Inventory::HPUX::Memory;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::HPUX;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::HPUX;
 use English qw(-no_match_vars);
 
 use constant    category    => "memory";

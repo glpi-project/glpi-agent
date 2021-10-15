@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools::Solaris;
+package GLPI::Agent::Tools::Solaris;
 
 use strict;
 use warnings;
@@ -6,7 +6,7 @@ use parent 'Exporter';
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 use Memoize;
 
 our @EXPORT = qw(
@@ -419,7 +419,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Tools::Solaris - Solaris generic functions
+GLPI::Agent::Tools::Solaris - Solaris generic functions
 
 =head1 DESCRIPTION
 

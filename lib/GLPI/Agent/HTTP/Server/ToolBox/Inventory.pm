@@ -1,4 +1,4 @@
-package FusionInventory::Agent::HTTP::Server::ToolBox::Inventory;
+package GLPI::Agent::HTTP::Server::ToolBox::Inventory;
 
 use strict;
 use warnings;
@@ -7,7 +7,7 @@ use threads;
 use threads 'exit' => 'threads_only';
 use threads::shared;
 
-use parent "FusionInventory::Agent::HTTP::Server::ToolBox";
+use parent "GLPI::Agent::HTTP::Server::ToolBox";
 
 use English qw(-no_match_vars);
 use Encode qw(encode);
@@ -15,9 +15,9 @@ use HTML::Entities;
 use Time::HiRes qw(gettimeofday usleep);
 use Net::IP;
 
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Target;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Target;
 
 use constant    inventory   => "inventory";
 
@@ -36,7 +36,7 @@ sub new {
 
     my $self = {
         logger  => $params{toolbox}->{logger} ||
-                    FusionInventory::Agent::Logger->new(),
+                    GLPI::Agent::Logger->new(),
         toolbox => $params{toolbox},
         name    => $name,
         tasks   => {},
@@ -148,7 +148,7 @@ sub event_logger {
 
     # We always set verbosity higher to debug2 so we can analyse any debug level
     # messages.
-    my $logger = FusionInventory::Agent::Logger->new( verbosity => 2 );
+    my $logger = GLPI::Agent::Logger->new( verbosity => 2 );
 
     # Hack logger to add ourself as backend so our addMessage callback is always
     # called on logging message in any thread
@@ -239,7 +239,7 @@ sub netscan {
             unless defined($cred->{snmpversion});
         my $CRED = {
             # brackets are here cosmetic for task logs and will be filtered in
-            # FusionInventory::Agent::HTTP::Server::ToolBox::Results::NetDiscovery
+            # GLPI::Agent::HTTP::Server::ToolBox::Results::NetDiscovery
             ID      => "[$credential]",
             VERSION =>
                 $cred->{snmpversion} eq 'v1'  ? '1'  :
@@ -278,8 +278,8 @@ sub netscan {
     } unless @credentials;
 
     # Create an NetDiscovery task
-    FusionInventory::Agent::Task::NetDiscovery->require();
-    my $netdisco = FusionInventory::Agent::Task::NetDiscovery->new(
+    GLPI::Agent::Task::NetDiscovery->require();
+    my $netdisco = GLPI::Agent::Task::NetDiscovery->new(
         config       => $agent->{config},
         datadir      => $agent->{datadir},
         logger       => $logger,
@@ -311,8 +311,8 @@ sub netscan {
     push @ranges, $RANGE;
 
     # Add job to task
-    FusionInventory::Agent::Task::NetDiscovery::Job->require();
-    push @{$netdisco->{jobs}}, FusionInventory::Agent::Task::NetDiscovery::Job->new(
+    GLPI::Agent::Task::NetDiscovery::Job->require();
+    push @{$netdisco->{jobs}}, GLPI::Agent::Task::NetDiscovery::Job->new(
         logger => $logger,
         params => {
             PID               => 1,
@@ -378,8 +378,8 @@ sub _submit_localinventory {
         "inventory" : $yaml_config->{networktask_save}."/inventory";
 
     # Create a local target and update it to run now
-    FusionInventory::Agent::Target::Local->require();
-    my $local = FusionInventory::Agent::Target::Local->new(
+    GLPI::Agent::Target::Local->require();
+    my $local = GLPI::Agent::Target::Local->new(
         logger     => $logger,
         delaytime  => 1,
         basevardir => $agent->{vardir},
@@ -390,8 +390,8 @@ sub _submit_localinventory {
     mkdir $path unless -d $path;
 
     # Create an Inventory task
-    FusionInventory::Agent::Task::Inventory->require();
-    my $inventory = FusionInventory::Agent::Task::Inventory->new(
+    GLPI::Agent::Task::Inventory->require();
+    my $inventory = GLPI::Agent::Task::Inventory->new(
         config       => $agent->{config},
         datadir      => $agent->{datadir},
         logger       => $logger,
@@ -701,8 +701,8 @@ use UNIVERSAL::require;
 use Encode qw(encode);
 use HTML::Entities;
 
-use FusionInventory::Agent::Task::NetInventory;
-use FusionInventory::Agent::Task::NetInventory::Job;
+use GLPI::Agent::Task::NetInventory;
+use GLPI::Agent::Task::NetInventory::Job;
 
 sub new {
     my ($class, %params) = @_;
@@ -777,7 +777,7 @@ sub send {
             return;
         }
 
-        my $inventory = FusionInventory::Agent::Task::NetInventory->new(
+        my $inventory = GLPI::Agent::Task::NetInventory->new(
             target => GLPI::Agent::Task::NetInventory::Target->new(),
             logger => $self->{logger}
         );
@@ -785,7 +785,7 @@ sub send {
         # Multi-threading still set on NetDiscovery task and we are only
         # requesting one device scan
         $inventory->{jobs} = [
-            FusionInventory::Agent::Task::NetInventory::Job->new(
+            GLPI::Agent::Task::NetInventory::Job->new(
                 params => {
                     PID           => 1,
                     THREADS_QUERY => 1,

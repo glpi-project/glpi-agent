@@ -1,9 +1,9 @@
-package FusionInventory::Agent::SOAP::WsMan::PullResponse;
+package GLPI::Agent::SOAP::WsMan::PullResponse;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::SOAP::WsMan::EnumerateResponse;
+use GLPI::Agent::SOAP::WsMan::EnumerateResponse;
 
 ## no critic (ProhibitMultiplePackages)
 package

@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Daemon;
+package GLPI::Agent::Daemon;
 
 use strict;
 use warnings;
@@ -17,15 +17,15 @@ use constant IPC_LEAVE  => 'LEAVE';
 use constant IPC_EVENT  => 'EVENT';
 use constant IPC_ABORT  => 'ABORT';
 
-use parent 'FusionInventory::Agent';
+use parent 'GLPI::Agent';
 
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Version;
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Generic;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Version;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Generic;
 use GLPI::Agent::Protocol::Contact;
 
-my $PROVIDER = $FusionInventory::Agent::Version::PROVIDER;
+my $PROVIDER = $GLPI::Agent::Version::PROVIDER;
 
 sub init {
     my ($self, %params) = @_;
@@ -500,8 +500,8 @@ sub fork {
                 $ipc_poller = IO::Poll->new();
             }
         } else {
-            FusionInventory::Agent::Tools::Win32->require();
-            $ipc_poller = FusionInventory::Agent::Tools::Win32::newPoller();
+            GLPI::Agent::Tools::Win32->require();
+            $ipc_poller = GLPI::Agent::Tools::Win32::newPoller();
         }
     }
 
@@ -533,7 +533,7 @@ sub fork {
                     } :
                     sub {
                         my ($poller) = @_;
-                        return FusionInventory::Agent::Tools::Win32::getPoller($poller);
+                        return GLPI::Agent::Tools::Win32::getPoller($poller);
                     };
             }
             $self->{_fork}->{$pid}->{in}  = $child_ipc;
@@ -596,7 +596,7 @@ sub forked_process_event {
     $self->{_ipc_out}->syswrite(IPC_EVENT);
     $self->{_ipc_out}->syswrite(pack("S", length($event)));
     $self->{_ipc_out}->syswrite($event);
-    FusionInventory::Agent::Tools::Win32::setPoller($self->{_ipc_pollin})
+    GLPI::Agent::Tools::Win32::setPoller($self->{_ipc_pollin})
         if $OSNAME eq 'MSWin32';
 }
 
@@ -610,7 +610,7 @@ sub abort_child {
         next unless $forked->{id} && $forked->{id} eq $id;
         $self->{logger}->debug("aborting $pid child");
         $forked->{out}->syswrite(IPC_ABORT);
-        FusionInventory::Agent::Tools::Win32::setPoller($forked->{pollin})
+        GLPI::Agent::Tools::Win32::setPoller($forked->{pollin})
             if $OSNAME eq 'MSWin32';
         kill 'TERM', $pid;
         return;
@@ -687,11 +687,11 @@ sub loadHttpInterface {
         delete $self->{server};
     }
 
-    FusionInventory::Agent::HTTP::Server->require();
+    GLPI::Agent::HTTP::Server->require();
     if ($EVAL_ERROR) {
         $logger->error("Failed to load HTTP server: $EVAL_ERROR");
     } else {
-        $self->{server} = FusionInventory::Agent::HTTP::Server->new(%server_config);
+        $self->{server} = GLPI::Agent::HTTP::Server->new(%server_config);
         $self->{server}->init();
     }
 }

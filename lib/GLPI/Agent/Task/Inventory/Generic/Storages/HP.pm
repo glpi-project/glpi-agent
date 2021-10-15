@@ -1,14 +1,14 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Storages::HP;
+package GLPI::Agent::Task::Inventory::Generic::Storages::HP;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Storages::HP;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Storages::HP;
 
-our $runMeIfTheseChecksFailed = ['FusionInventory::Agent::Task::Inventory::Generic::Storages::HpWithSmartctl'];
+our $runMeIfTheseChecksFailed = ['GLPI::Agent::Task::Inventory::Generic::Storages::HpWithSmartctl'];
 
 sub isEnabled {
     # MSWin32 has its Win32::Storages::HP dedicated module

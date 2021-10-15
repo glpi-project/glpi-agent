@@ -1,13 +1,13 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Psu;
+package GLPI::Agent::Task::Inventory::Generic::Dmidecode::Psu;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Generic;
-use FusionInventory::Agent::Tools::PartNumber;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Generic;
+use GLPI::Agent::Tools::PartNumber;
 
 use constant    category    => "psu";
 
@@ -56,7 +56,7 @@ sub doInventory {
 
         # Validate PartNumber, as example, this fixes Dell PartNumbers
         if ($psu->{'PARTNUM'} && $psu->{'MANUFACTURER'}) {
-            my $partnumber_factory = FusionInventory::Agent::Tools::PartNumber->new(
+            my $partnumber_factory = GLPI::Agent::Tools::PartNumber->new(
                 logger  => $params{logger},
             );
             my $partnumber = $partnumber_factory->match(

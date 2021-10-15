@@ -10,21 +10,21 @@ use File::Temp qw(tempdir);
 use Test::Deep;
 use Test::More;
 
-use FusionInventory::Agent;
-use FusionInventory::Agent::Config;
-use FusionInventory::Agent::Logger;
+use GLPI::Agent;
+use GLPI::Agent::Config;
+use GLPI::Agent::Logger;
 
 plan tests => 22;
 
 my $libdir = tempdir(CLEANUP => $ENV{TEST_DEBUG} ? 0 : 1);
 push @INC, $libdir;
-my $agent = FusionInventory::Agent->new(libdir => $libdir);
+my $agent = GLPI::Agent->new(libdir => $libdir);
 
 # No agentid set by default
 ok(!exists($agent->{agentid}));
 
-create_file("$libdir/FusionInventory/Agent/Task/Task1", "Version.pm", <<'EOF');
-package FusionInventory::Agent::Task::Task1::Version;
+create_file("$libdir/GLPI/Agent/Task/Task1", "Version.pm", <<'EOF');
+package GLPI::Agent::Task::Task1::Version;
 use constant VERSION => 42;
 1;
 EOF
@@ -34,8 +34,8 @@ cmp_deeply (
     "single task"
 );
 
-create_file("$libdir/FusionInventory/Agent/Task/Task2", "Version.pm", <<'EOF');
-package FusionInventory::Agent::Task::Task2::Version;
+create_file("$libdir/GLPI/Agent/Task/Task2", "Version.pm", <<'EOF');
+package GLPI::Agent::Task::Task2::Version;
 use constant VERSION => 42;
 1;
 EOF
@@ -48,8 +48,8 @@ cmp_deeply (
     "multiple tasks"
 );
 
-create_file("$libdir/FusionInventory/Agent/Task/Task3", "Version.pm", <<'EOF');
-package FusionInventory::Agent::Task::Task3::Version;
+create_file("$libdir/GLPI/Agent/Task/Task3", "Version.pm", <<'EOF');
+package GLPI::Agent::Task::Task3::Version;
 use Does::Not::Exists;
 use constant VERSION => 42;
 1;
@@ -63,8 +63,8 @@ cmp_deeply (
     "wrong syntax"
 );
 
-create_file("$libdir/FusionInventory/Agent/Task/Task5", "Version.pm", <<'EOF');
-package FusionInventory::Agent::Task::Task5::Version;
+create_file("$libdir/GLPI/Agent/Task/Task5", "Version.pm", <<'EOF');
+package GLPI::Agent::Task::Task5::Version;
 use constant VERSION => 42;
 1;
 EOF
@@ -79,7 +79,7 @@ cmp_deeply (
 );
 
 # Setup agent
-$agent->{config} = FusionInventory::Agent::Config->new(
+$agent->{config} = GLPI::Agent::Config->new(
     options => {
         config  => 'none',
         debug   => 1,
@@ -89,7 +89,7 @@ $agent->{config} = FusionInventory::Agent::Config->new(
 $agent->{config}->{'no-task'} = ['Task5'];
 $agent->{config}->{'tasks'} = [ qw(Task1 Task5 Task1 Task5 Task5 Task2 Task1)];
 my $availableTasks = $agent->getAvailableTasks();
-$agent->{logger} = FusionInventory::Agent::Logger->new(config => $agent->{config});
+$agent->{logger} = GLPI::Agent::Logger->new(config => $agent->{config});
 my @plan = $agent->computeTaskExecutionPlan($availableTasks);
 cmp_deeply(
     \@plan,
@@ -120,7 +120,7 @@ sub create_file {
 sub checktasksplan {
     my ($taskconf, $length, $expected, $comment) = @_;
     my @taskinconf = split(/,+/, $taskconf);
-    my @tasksExecutionPlan = FusionInventory::Agent::_makeExecutionPlan(\@taskinconf, $availableTasks);
+    my @tasksExecutionPlan = GLPI::Agent::_makeExecutionPlan(\@taskinconf, $availableTasks);
     ok(@tasksExecutionPlan == $length, "$comment, plan length: ".@tasksExecutionPlan);
     if (ref($expected) eq 'ARRAY') {
         cmp_deeply(
@@ -193,7 +193,7 @@ my $options = {
 };
 $agent->init(options => $options);
 # after init call, the member 'config' is defined and well blessed
-ok (ref($agent->{config}) eq 'FusionInventory::Agent::Config');
+ok (ref($agent->{config}) eq 'GLPI::Agent::Config');
 ok (defined($agent->{config}->{'conf-file'}));
 ok (defined($agent->{config}->{'no-task'}));
 ok (scalar(@{$agent->{config}->{'no-task'}}) == 2);

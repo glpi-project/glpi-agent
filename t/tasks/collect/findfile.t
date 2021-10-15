@@ -10,16 +10,16 @@ use Test::More;
 use Test::Deep qw(cmp_deeply);
 use Test::MockModule;
 
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Task::Collect;
-use FusionInventory::Agent::Target::Server;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Task::Collect;
+use GLPI::Agent::Target::Server;
 
 # Setup a target with a Fatal logger and no debug
-my $logger = FusionInventory::Agent::Logger->new(
+my $logger = GLPI::Agent::Logger->new(
     logger => [ 'Fatal' ]
 );
 
-my $target = FusionInventory::Agent::Target::Server->new(
+my $target = GLPI::Agent::Target::Server->new(
     url    => 'http://localhost/glpi-any',
     logger => $logger,
     basevardir => tempdir(CLEANUP => 1)
@@ -189,17 +189,17 @@ sub _send {
     die 'no expected test case';
 }
 
-my $module = Test::MockModule->new('FusionInventory::Agent::HTTP::Client::Fusion');
+my $module = Test::MockModule->new('GLPI::Agent::HTTP::Client::Fusion');
 $module->mock('send',\&_send);
 
 plan tests => 1 + scalar(keys(%tests)) + 2*scalar(grep { $_->{OK} eq 'yes' } values(%tests));
 
 my $task = undef ;
 lives_ok {
-    $task = FusionInventory::Agent::Task::Collect->new(
+    $task = GLPI::Agent::Task::Collect->new(
         target => $target,
         # Still use Collect logger with Fatal logger, but now using debug level
-        logger => FusionInventory::Agent::Logger->new( 'debug' => 1 ),
+        logger => GLPI::Agent::Logger->new( 'debug' => 1 ),
         config => {
             jobs => []
         }

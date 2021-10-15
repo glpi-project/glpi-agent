@@ -1,17 +1,17 @@
-package FusionInventory::Agent::Task::NetInventory::Job;
+package GLPI::Agent::Task::NetInventory::Job;
 
 use strict;
 use warnings;
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Logger;
+use GLPI::Agent::Logger;
 
 sub new {
     my ($class, %params) = @_;
 
     my $self = {
-        logger          => $params{logger} || FusionInventory::Agent::Logger->new(),
+        logger          => $params{logger} || GLPI::Agent::Logger->new(),
         _params         => $params{params},
         _credentials    => $params{credentials},
         _devices        => $params{devices},

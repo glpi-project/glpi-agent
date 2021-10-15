@@ -1,13 +1,13 @@
-package FusionInventory::Agent::Task::Inventory::BSD::Storages;
+package GLPI::Agent::Task::Inventory::BSD::Storages;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use XML::TreePP;
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 use constant    category    => "storage";
 

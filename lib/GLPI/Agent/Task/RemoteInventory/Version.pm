@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::RemoteInventory::Version;
+package GLPI::Agent::Task::RemoteInventory::Version;
 
 use strict;
 use warnings;

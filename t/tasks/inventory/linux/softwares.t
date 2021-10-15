@@ -14,13 +14,13 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::Generic::Softwares::RPM;
-use FusionInventory::Agent::Task::Inventory::Generic::Softwares::Deb;
-use FusionInventory::Agent::Task::Inventory::Generic::Softwares::Gentoo;
-use FusionInventory::Agent::Task::Inventory::Generic::Softwares::Nix;
-use FusionInventory::Agent::Task::Inventory::Generic::Softwares::Pacman;
-use FusionInventory::Agent::Task::Inventory::Generic::Softwares::Snap;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::Generic::Softwares::RPM;
+use GLPI::Agent::Task::Inventory::Generic::Softwares::Deb;
+use GLPI::Agent::Task::Inventory::Generic::Softwares::Gentoo;
+use GLPI::Agent::Task::Inventory::Generic::Softwares::Nix;
+use GLPI::Agent::Task::Inventory::Generic::Softwares::Pacman;
+use GLPI::Agent::Task::Inventory::Generic::Softwares::Snap;
 
 my $rpm_packages = [
     {
@@ -433,10 +433,10 @@ my $snap_packages = [
 
 plan tests => 12;
 
-my $inventory = FusionInventory::Test::Inventory->new();
+my $inventory = GLPI::Test::Inventory->new();
 
 my $packages;
-$packages = FusionInventory::Agent::Task::Inventory::Generic::Softwares::RPM::_getPackagesList(
+$packages = GLPI::Agent::Task::Inventory::Generic::Softwares::RPM::_getPackagesList(
     file => "resources/linux/packaging/rpm"
 );
 SKIP: {
@@ -451,7 +451,7 @@ lives_ok {
         foreach @$packages;
 } 'rpm: registering';
 
-$packages = FusionInventory::Agent::Task::Inventory::Generic::Softwares::Deb::_getPackagesList(
+$packages = GLPI::Agent::Task::Inventory::Generic::Softwares::Deb::_getPackagesList(
     file => "resources/linux/packaging/dpkg"
 );
 cmp_deeply($packages, $deb_packages, 'dpkg: parsing');
@@ -460,7 +460,7 @@ lives_ok {
         foreach @$packages;
 } 'dpkg: registering';
 
-$packages = FusionInventory::Agent::Task::Inventory::Generic::Softwares::Nix::_getPackagesList(
+$packages = GLPI::Agent::Task::Inventory::Generic::Softwares::Nix::_getPackagesList(
     file => "resources/linux/packaging/nix"
 );
 cmp_deeply($packages, $nix_packages, 'nix: parsing');
@@ -469,7 +469,7 @@ lives_ok {
         foreach @$packages;
 } 'nix: registering';
 
-$packages = FusionInventory::Agent::Task::Inventory::Generic::Softwares::Pacman::_getPackagesList(
+$packages = GLPI::Agent::Task::Inventory::Generic::Softwares::Pacman::_getPackagesList(
     file => "resources/linux/packaging/pacman"
 );
 cmp_deeply($packages, $pacman_packages, 'pacman: parsing');
@@ -479,24 +479,24 @@ lives_ok {
 } 'pacman: registering';
 
 ok(
-    !FusionInventory::Agent::Task::Inventory::Generic::Softwares::Gentoo::_equeryNeedsWildcard(
+    !GLPI::Agent::Task::Inventory::Generic::Softwares::Gentoo::_equeryNeedsWildcard(
         file => "resources/linux/equery/gentoo1"
     ),
     "old equery version"
 );
 
 ok(
-    FusionInventory::Agent::Task::Inventory::Generic::Softwares::Gentoo::_equeryNeedsWildcard(
+    GLPI::Agent::Task::Inventory::Generic::Softwares::Gentoo::_equeryNeedsWildcard(
         file => "resources/linux/equery/gentoo2"
     ),
     "new equery version"
 );
 
-$packages = FusionInventory::Agent::Task::Inventory::Generic::Softwares::Snap::_getPackagesList(
+$packages = GLPI::Agent::Task::Inventory::Generic::Softwares::Snap::_getPackagesList(
     file => "resources/linux/packaging/snap"
 );
 foreach my $snap (@{$packages}) {
-    FusionInventory::Agent::Task::Inventory::Generic::Softwares::Snap::_getPackagesInfo(
+    GLPI::Agent::Task::Inventory::Generic::Softwares::Snap::_getPackagesInfo(
         snap => $snap,
         file => "resources/linux/packaging/snap_".$snap->{NAME}
     );

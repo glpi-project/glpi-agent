@@ -9,8 +9,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::Solaris::Networks;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::Solaris::Networks;
 
 my %ifconfig_tests = (
     'solaris-10' => [
@@ -181,11 +181,11 @@ plan tests =>
     2 * (scalar keys %parsefcinfo_tests) +
     1;
 
-my $inventory = FusionInventory::Test::Inventory->new();
+my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %ifconfig_tests) {
     my $file = "resources/generic/ifconfig/$test";
-    my @interfaces = FusionInventory::Agent::Task::Inventory::Solaris::Networks::_parseIfconfig(file => $file);
+    my @interfaces = GLPI::Agent::Task::Inventory::Solaris::Networks::_parseIfconfig(file => $file);
     cmp_deeply(\@interfaces, $ifconfig_tests{$test}, "$test: parsing");
     lives_ok {
         $inventory->addEntry(section => 'NETWORKS', entry => $_)
@@ -196,7 +196,7 @@ foreach my $test (keys %ifconfig_tests) {
 foreach my $test (sort keys %kstat_tests) {
     my $file = "resources/solaris/kstat/$test";
     is(
-        FusionInventory::Agent::Task::Inventory::Solaris::Networks::_getInterfaceSpeed(file => $file),
+        GLPI::Agent::Task::Inventory::Solaris::Networks::_getInterfaceSpeed(file => $file),
         $kstat_tests{$test},
         "$test: parsing"
     );
@@ -204,7 +204,7 @@ foreach my $test (sort keys %kstat_tests) {
 
 foreach my $test (keys %parsefcinfo_tests) {
     my $file = "resources/solaris/fcinfo_hba-port/$test";
-    my @interfaces = FusionInventory::Agent::Task::Inventory::Solaris::Networks::_parsefcinfo(file => $file);
+    my @interfaces = GLPI::Agent::Task::Inventory::Solaris::Networks::_parsefcinfo(file => $file);
     cmp_deeply(\@interfaces, $parsefcinfo_tests{$test}, "$test fcinfo: parsing");
     lives_ok {
         $inventory->addEntry(section => 'NETWORKS', entry => $_)

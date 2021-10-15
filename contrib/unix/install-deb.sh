@@ -30,9 +30,8 @@ if [ ! -z ${help+x} ]; then
     echo "The --taskdeploy parameter is used to specify if the deploy task must be instaled. It is $true by default."
     echo "The --taskesx parameter is used to specify if the esx task must be instaled. It is $true by default."
     echo "The --agentconfig parameter is used to configure the agent. Use it to adapt the installation to your environment."
-    echo "   All parameters from http://fusioninventory.org/documentation/agent/man/agent.cfg.html are available."
     echo "   Parameters have to be separated by a pipe | in the form of"
-    echo "   server = myserver.mydomain.local/glpi/plugins/fusioninventory|httpd-trust = 192.168.0.25"
+    echo "   server = myserver.mydomain.local/glpi/front/inventory.php|httpd-trust = 192.168.0.25"
     echo "The --help parameter display this help. It superseeds all other parameter."
     exit 1
 fi
@@ -41,7 +40,7 @@ taskscollect=${taskcollect:-$true}
 tasksnetwork=${tasknetwork:-$true}
 tasksdeploy=${taskdeploy:-$true}
 tasksesx=${taskesx:-$true}
-agentconfig=${agentconfig:-"server = https://myserver.mydomain.com/glpi/plugins/fusioninventory/|no-ssl-check 1"}
+agentconfig=${agentconfig:-"server = https://myserver.mydomain.com/glpi/front/inventory.php|no-ssl-check 1"}
 
 # Test if wget is installed.
 type wget >/dev/null 2>&1 || { echo >&2 "I require wget but it's not installed.  Aborting."; exit 1; }

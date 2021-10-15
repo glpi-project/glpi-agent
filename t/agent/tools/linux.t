@@ -6,7 +6,7 @@ use warnings;
 use Test::Deep;
 use Test::More;
 
-use FusionInventory::Agent::Tools::Linux;
+use GLPI::Agent::Tools::Linux;
 
 my %udev_tests = (
     'ssd' => {
@@ -1048,7 +1048,7 @@ plan tests =>
 
 foreach my $test (keys %udev_tests) {
     my $file = "resources/linux/udev/$test";
-    my $result = FusionInventory::Agent::Tools::Linux::_parseUdevEntry(
+    my $result = GLPI::Agent::Tools::Linux::_parseUdevEntry(
         file => $file, device => 'sda'
     );
     cmp_deeply($result, $udev_tests{$test}, "$test udev parsing");

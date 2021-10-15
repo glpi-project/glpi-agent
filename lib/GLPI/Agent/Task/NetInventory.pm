@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Task::NetInventory;
+package GLPI::Agent::Task::NetInventory;
 
 use strict;
 use warnings;
 use threads;
-use parent 'FusionInventory::Agent::Task';
+use parent 'GLPI::Agent::Task';
 
 use Encode qw(encode);
 use English qw(-no_match_vars);
@@ -11,17 +11,17 @@ use Time::HiRes qw(usleep);
 use Thread::Queue v2.01;
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::XML::Query;
-use FusionInventory::Agent::Version;
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Hardware;
-use FusionInventory::Agent::Tools::Network;
-use FusionInventory::Agent::Tools::Expiration;
+use GLPI::Agent::XML::Query;
+use GLPI::Agent::Version;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Hardware;
+use GLPI::Agent::Tools::Network;
+use GLPI::Agent::Tools::Expiration;
 
-use FusionInventory::Agent::Task::NetInventory::Version;
-use FusionInventory::Agent::Task::NetInventory::Job;
+use GLPI::Agent::Task::NetInventory::Version;
+use GLPI::Agent::Task::NetInventory::Job;
 
-our $VERSION = FusionInventory::Agent::Task::NetInventory::Version::VERSION;
+our $VERSION = GLPI::Agent::Task::NetInventory::Version::VERSION;
 
 sub isEnabled {
     my ($self, $contact) = @_;
@@ -64,7 +64,7 @@ sub isEnabled {
 
         my $params = $option->{PARAM}->[0];
 
-        push @jobs, FusionInventory::Agent::Task::NetInventory::Job->new(
+        push @jobs, GLPI::Agent::Task::NetInventory::Job->new(
             logger      => $self->{logger},
             params      => $params,
             credentials => $option->{AUTHENTICATION},
@@ -367,14 +367,14 @@ sub _logExpirationHours {
 sub _sendMessage {
     my ($self, $content) = @_;
 
-    my $message = FusionInventory::Agent::XML::Query->new(
+    my $message = GLPI::Agent::XML::Query->new(
         deviceid => $self->{deviceid} || 'foo',
         query    => 'SNMPQUERY',
         content  => $content
     );
 
     # task-specific client, if needed
-    $self->{client} = FusionInventory::Agent::HTTP::Client::OCS->new(%{$self->{_client_params}})
+    $self->{client} = GLPI::Agent::HTTP::Client::OCS->new(%{$self->{_client_params}})
         if !$self->{client};
 
     $self->{client}->send(
@@ -389,7 +389,7 @@ sub _sendStartMessage {
     $self->_sendMessage({
         AGENT => {
             START        => 1,
-            AGENTVERSION => $FusionInventory::Agent::Version::VERSION,
+            AGENTVERSION => $GLPI::Agent::Version::VERSION,
         },
         MODULEVERSION => $VERSION,
         PROCESSNUMBER => $pid
@@ -446,9 +446,9 @@ sub _queryDevice {
 
     my $snmp;
     if ($device->{FILE}) {
-        FusionInventory::Agent::SNMP::Mock->require();
+        GLPI::Agent::SNMP::Mock->require();
         eval {
-            $snmp = FusionInventory::Agent::SNMP::Mock->new(
+            $snmp = GLPI::Agent::SNMP::Mock->new(
                 ip   => $device->{IP},
                 file => $device->{FILE}
             );
@@ -456,9 +456,9 @@ sub _queryDevice {
         die "SNMP emulation error: $EVAL_ERROR" if $EVAL_ERROR;
     } else {
         eval {
-            FusionInventory::Agent::SNMP::Live->require();
+            GLPI::Agent::SNMP::Live->require();
             # AUTHPASSPHRASE & PRIVPASSPHRASE are deprecated but still used by FusionInventory for GLPI plugin
-            $snmp = FusionInventory::Agent::SNMP::Live->new(
+            $snmp = GLPI::Agent::SNMP::Live->new(
                 version      => $credentials->{VERSION},
                 hostname     => $device->{IP},
                 port         => $device->{PORT},
@@ -496,7 +496,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Task::NetInventory - Remote inventory support for FusionInventory Agent
+GLPI::Agent::Task::NetInventory - Remote inventory support for GLPI Agent
 
 =head1 DESCRIPTION
 
@@ -519,9 +519,4 @@ relations between devices and router/switch ports
 
 =back
 
-This task requires a GLPI server with FusionInventory plugin.
-
-=head1 AUTHORS
-
-Copyright (C) 2009 David Durieux
-Copyright (C) 2010-2012 FusionInventory Team
+This task requires a GLPI server with a FusionInventory compatible plugin.

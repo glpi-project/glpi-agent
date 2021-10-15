@@ -1,17 +1,17 @@
-package FusionInventory::Agent::Task::Inventory::Linux::Hardware;
+package GLPI::Agent::Task::Inventory::Linux::Hardware;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 use constant    category    => "hardware";
 
-our $runAfterIfEnabled = ["FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Hardware"];
+our $runAfterIfEnabled = ["GLPI::Agent::Task::Inventory::Generic::Dmidecode::Hardware"];
 
 # Follow dmidecode dmi_chassis_type() API:
 # See https://github.com/mirror/dmidecode/blob/master/dmidecode.c#L593

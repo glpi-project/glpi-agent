@@ -1,11 +1,11 @@
-package FusionInventory::Agent::Task::Inventory::Generic::PCI;
+package GLPI::Agent::Task::Inventory::Generic::PCI;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 sub isEnabled {
     return canRun('lspci');

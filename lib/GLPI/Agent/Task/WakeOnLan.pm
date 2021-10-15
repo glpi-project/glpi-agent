@@ -1,19 +1,19 @@
-package FusionInventory::Agent::Task::WakeOnLan;
+package GLPI::Agent::Task::WakeOnLan;
 
 use strict;
 use warnings;
-use parent 'FusionInventory::Agent::Task';
+use parent 'GLPI::Agent::Task';
 
 use English qw(-no_match_vars);
 use Socket;
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Network;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Network;
 
-use FusionInventory::Agent::Task::WakeOnLan::Version;
+use GLPI::Agent::Task::WakeOnLan::Version;
 
-our $VERSION = FusionInventory::Agent::Task::WakeOnLan::Version::VERSION;
+our $VERSION = GLPI::Agent::Task::WakeOnLan::Version::VERSION;
 
 sub isEnabled {
     my ($self, $contact) = @_;
@@ -135,24 +135,24 @@ sub _getInterfaces {
 
     SWITCH: {
         if ($OSNAME eq 'linux') {
-            FusionInventory::Agent::Tools::Linux->require();
-            @interfaces = FusionInventory::Agent::Tools::Linux::getInterfacesFromIfconfig(
+            GLPI::Agent::Tools::Linux->require();
+            @interfaces = GLPI::Agent::Tools::Linux::getInterfacesFromIfconfig(
                 logger => $self->{logger}
             );
             last;
         }
 
         if ($OSNAME =~ /freebsd|openbsd|netbsd|gnukfreebsd|gnuknetbsd|dragonfly/) {
-            FusionInventory::Agent::Tools::BSD->require();
-            @interfaces = FusionInventory::Agent::Tools::BSD::getInterfacesFromIfconfig(
+            GLPI::Agent::Tools::BSD->require();
+            @interfaces = GLPI::Agent::Tools::BSD::getInterfacesFromIfconfig(
                 logger => $self->{logger}
             );
             last;
         }
 
         if ($OSNAME eq 'MSWin32') {
-            FusionInventory::Agent::Tools::Win32->require();
-            @interfaces = FusionInventory::Agent::Tools::Win32::getInterfaces(
+            GLPI::Agent::Tools::Win32->require();
+            @interfaces = GLPI::Agent::Tools::Win32::getInterfaces(
                 logger => $self->{logger}
             );
             # on Windows, we have to use internal device name instead of litteral name
@@ -185,9 +185,9 @@ sub _getPayload {
 sub _getWin32InterfaceId {
     my ($self, $pnpid) = @_;
 
-    FusionInventory::Agent::Tools::Win32->require();
+    GLPI::Agent::Tools::Win32->require();
 
-    my $key = FusionInventory::Agent::Tools::Win32::getRegistryKey(
+    my $key = GLPI::Agent::Tools::Win32::getRegistryKey(
         path => "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Control/Network",
     );
 
@@ -214,7 +214,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Task::WakeOnLan - Wake-on-lan task for FusionInventory
+GLPI::Agent::Task::WakeOnLan - Wake-on-lan task for GLPI
 
 =head1 DESCRIPTION
 

@@ -1,9 +1,9 @@
-package FusionInventory::Agent::SOAP::WsMan::OperationID;
+package GLPI::Agent::SOAP::WsMan::OperationID;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::SOAP::WsMan::Node;
+use GLPI::Agent::SOAP::WsMan::Node;
 
 ## no critic (ProhibitMultiplePackages)
 package
@@ -15,7 +15,7 @@ use Data::UUID;
 
 use constant    xmlns   => 'p';
 
-use FusionInventory::Agent::SOAP::WsMan::Attribute;
+use GLPI::Agent::SOAP::WsMan::Attribute;
 
 sub new {
     my ($class, $operationid) = @_;

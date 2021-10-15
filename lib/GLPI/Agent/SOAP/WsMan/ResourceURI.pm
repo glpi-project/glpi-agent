@@ -1,9 +1,9 @@
-package FusionInventory::Agent::SOAP::WsMan::ResourceURI;
+package GLPI::Agent::SOAP::WsMan::ResourceURI;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::SOAP::WsMan::Node;
+use GLPI::Agent::SOAP::WsMan::Node;
 
 ## no critic (ProhibitMultiplePackages)
 package
@@ -13,7 +13,7 @@ use parent 'Node';
 
 use constant    xmlns   => 'w';
 
-use FusionInventory::Agent::SOAP::WsMan::Attribute;
+use GLPI::Agent::SOAP::WsMan::Attribute;
 
 sub new {
     my ($class, $url) = @_;

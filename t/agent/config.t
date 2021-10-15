@@ -10,9 +10,9 @@ use Storable;
 use UNIVERSAL;
 use Cwd qw(abs_path);
 
-use FusionInventory::Agent::Config;
+use GLPI::Agent::Config;
 use lib 't/lib';
-use FusionInventory::Test::Utils;
+use GLPI::Test::Utils;
 
 my $include7_logfile = "/tmp/logfile.txt";
 if ($OSNAME eq 'MSWin32') {
@@ -97,7 +97,7 @@ my %include = (
 plan tests => (scalar keys %config) * 4 + (scalar keys %include) * 2 + 40;
 
 foreach my $test (keys %config) {
-    my $c = FusionInventory::Agent::Config->new(options => {
+    my $c = GLPI::Agent::Config->new(options => {
         'conf-file' => "resources/config/$test"
     });
 
@@ -129,7 +129,7 @@ foreach my $test (keys %config) {
 }
 
 foreach my $test (keys %include) {
-    my $cfg = FusionInventory::Agent::Config->new(
+    my $cfg = GLPI::Agent::Config->new(
         options => {
             'conf-file' => "resources/config/$test"
         }
@@ -142,7 +142,7 @@ foreach my $test (keys %include) {
     }
 }
 
-my $c = FusionInventory::Agent::Config->new(options => {
+my $c = GLPI::Agent::Config->new(options => {
         'conf-file' => "resources/config/sample1"
     });
 ok (ref($c->{'no-task'}) eq 'ARRAY');
@@ -167,12 +167,12 @@ ok (scalar(@{$c->{'httpd-trust'}}) == 4);
 
 SKIP: {
     skip ('test for Windows only', 7) if ($OSNAME ne 'MSWin32');
-    my $settings = FusionInventory::Test::Utils::openWin32Registry();
+    my $settings = GLPI::Test::Utils::openWin32Registry();
     ok (defined $settings);
     my $testValue = time;
     $settings->{'TEST_KEY'} = $testValue;
 
-    my $settingsRead = FusionInventory::Test::Utils::openWin32Registry();
+    my $settingsRead = GLPI::Test::Utils::openWin32Registry();
     ok (defined $settingsRead);
     ok (defined $settingsRead->{'TEST_KEY'});
     ok ($settingsRead->{'TEST_KEY'} eq $testValue);
@@ -185,7 +185,7 @@ SKIP: {
     ok (!(defined($settings->{'TEST_KEY'})));
 
     $settingsRead = undef;
-    $settingsRead = FusionInventory::Test::Utils::openWin32Registry();
+    $settingsRead = GLPI::Test::Utils::openWin32Registry();
     ok (defined $settingsRead);
     ok (!(defined $settingsRead->{'TEST_KEY'}));
 }

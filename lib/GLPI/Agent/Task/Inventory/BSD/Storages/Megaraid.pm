@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::Inventory::BSD::Storages::Megaraid;
+package GLPI::Agent::Task::Inventory::BSD::Storages::Megaraid;
 
 # Authors: Egor Shornikov <se@wbr.su>, Egor Morozov <akrus@flygroup.st>
 # License: GPLv2+
@@ -6,10 +6,10 @@ package FusionInventory::Agent::Task::Inventory::BSD::Storages::Megaraid;
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Task::Inventory::BSD::Storages;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Task::Inventory::BSD::Storages;
 
 sub isEnabled {
     return canRun('mfiutil');

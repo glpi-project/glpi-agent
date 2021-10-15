@@ -1,12 +1,12 @@
-package FusionInventory::Agent::SNMP::MibSupport::FreeBSD;
+package GLPI::Agent::SNMP::MibSupport::FreeBSD;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::SNMP::MibSupportTemplate';
+use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::SNMP;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::SNMP;
 
 # https://documentation.stormshield.eu/SNS/v3/fr/Content/User_Configuration_Manual_SNS_v3/SNMP_Agent/MIBS_and_traps_SNMP.htm
 use constant    freebsd             => '.1.3.6.1.4.1.8072.3.2.8';
@@ -81,7 +81,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP::MibSupport::FreeBSD - Inventory module for FreeBSD
+GLPI::Agent::SNMP::MibSupport::FreeBSD - Inventory module for FreeBSD
 
 =head1 DESCRIPTION
 

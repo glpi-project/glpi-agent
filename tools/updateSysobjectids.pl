@@ -10,7 +10,7 @@ use LWP::UserAgent;
 use Digest::SHA;
 
 use Changelog;
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 my $ua = LWP::UserAgent->new();
 
@@ -19,7 +19,7 @@ $sha->addfile("share/sysobject.ids");
 my $digest = $sha->hexdigest;
 
 my $response = $ua->mirror(
-    "https://raw.githubusercontent.com/fusioninventory/sysobject.ids/master/sysobject.ids",
+    "https://raw.githubusercontent.com/glpi-project/sysobject.ids/master/sysobject.ids",
     "share/sysobject.ids"
 );
 

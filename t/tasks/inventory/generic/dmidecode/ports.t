@@ -9,8 +9,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Ports;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::Generic::Dmidecode::Ports;
 
 my %tests = (
     'freebsd-6.2' => [
@@ -1400,11 +1400,11 @@ my %tests = (
 
 plan tests => (2 * scalar keys %tests) + 1;
 
-my $inventory = FusionInventory::Test::Inventory->new();
+my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %tests) {
     my $file = "resources/generic/dmidecode/$test";
-    my $ports = FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Ports::_getPorts(file => $file);
+    my $ports = GLPI::Agent::Task::Inventory::Generic::Dmidecode::Ports::_getPorts(file => $file);
     cmp_deeply($ports, $tests{$test}, "$test: parsing");
     lives_ok {
         $inventory->addEntry(section => 'PORTS', entry => $_)

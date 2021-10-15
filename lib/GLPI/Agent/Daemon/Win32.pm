@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Daemon::Win32;
+package GLPI::Agent::Daemon::Win32;
 
 use strict;
 use warnings;
@@ -15,14 +15,14 @@ use constant SERVICE_USLEEP_TIME => 200_000; # in microseconds
 use Win32;
 use Win32::Daemon;
 
-use FusionInventory::Agent::Version;
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Win32;
+use GLPI::Agent::Version;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Win32;
 
-use parent qw(FusionInventory::Agent::Daemon);
+use parent qw(GLPI::Agent::Daemon);
 
-my $PROVIDER = $FusionInventory::Agent::Version::PROVIDER;
+my $PROVIDER = $GLPI::Agent::Version::PROVIDER;
 
 sub SERVICE_NAME        { lc($PROVIDER) . "-agent"; }
 sub SERVICE_DISPLAYNAME { "$PROVIDER Agent"; }
@@ -231,7 +231,7 @@ sub _start_agent {
         # Start agent in a dedicated thread
         $self->{agent_thread} = threads->create(sub {
             # First start a thread dedicated to Win32::OLE calls
-            $self->{worker_thread} = FusionInventory::Agent::Tools::Win32::start_Win32_OLE_Worker();
+            $self->{worker_thread} = GLPI::Agent::Tools::Win32::start_Win32_OLE_Worker();
 
             # Set service name after the worker thread has been started
             $self->_retrieveServiceName();
@@ -318,7 +318,7 @@ sub ApplyServiceOptimizations {
     my ($self) = @_;
 
     # Setup worker Logger after service Logger
-    FusionInventory::Agent::Tools::Win32::setupWorkerLogger(config => $self->{config});
+    GLPI::Agent::Tools::Win32::setupWorkerLogger(config => $self->{config});
 
     $self->SUPER::ApplyServiceOptimizations();
 
