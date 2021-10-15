@@ -9,7 +9,8 @@ use GLPI::Agent::SOAP::WsMan::Node;
 package
     Signal;
 
-use parent 'Node';
+use parent
+    'Node';
 
 use constant    xmlns   => 'rsp';
 

@@ -9,7 +9,8 @@ use GLPI::Agent::SOAP::WsMan::Node;
 package
     OptionSet;
 
-use parent 'Node';
+use parent
+    'Node';
 
 use constant    xmlns   => 'w';
 use constant    xsins   => "http://www.w3.org/2001/XMLSchema-instance";

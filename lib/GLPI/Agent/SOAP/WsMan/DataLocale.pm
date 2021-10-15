@@ -9,7 +9,8 @@ use GLPI::Agent::SOAP::WsMan::Node;
 package
     DataLocale;
 
-use parent 'Node';
+use parent
+    'Node';
 
 use GLPI::Agent::SOAP::WsMan::Attribute;
 

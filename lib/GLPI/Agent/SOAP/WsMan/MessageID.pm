@@ -9,7 +9,8 @@ use GLPI::Agent::SOAP::WsMan::Node;
 package
     MessageID;
 
-use parent 'Node';
+use parent
+    'Node';
 
 use Data::UUID;
 

@@ -9,7 +9,8 @@ use GLPI::Agent::SOAP::WsMan::Node;
 package
     Code;
 
-use parent 'Node';
+use parent
+    'Node';
 
 sub support {
     return {

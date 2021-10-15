@@ -9,7 +9,8 @@ use GLPI::Agent::SOAP::WsMan::EnumerateResponse;
 package
     PullResponse;
 
-use parent 'EnumerateResponse';
+use parent
+    'EnumerateResponse';
 
 sub support {
     return {
