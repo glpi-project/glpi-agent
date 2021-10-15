@@ -1,10 +1,10 @@
-package FusionInventory::Agent::SNMP::Mock;
+package GLPI::Agent::SNMP::Mock;
 
 use strict;
 use warnings;
-use parent 'FusionInventory::Agent::SNMP';
+use parent 'GLPI::Agent::SNMP';
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 my %prefixes = (
     'iso'                               => '.1',
@@ -325,7 +325,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP::Mock - Mock SNMP client
+GLPI::Agent::SNMP::Mock - Mock SNMP client
 
 =head1 DESCRIPTION
 

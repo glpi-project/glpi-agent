@@ -1,9 +1,9 @@
-package FusionInventory::Agent::SOAP::WsMan::EnumerateResponse;
+package GLPI::Agent::SOAP::WsMan::EnumerateResponse;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::SOAP::WsMan::Node;
+use GLPI::Agent::SOAP::WsMan::Node;
 
 BEGIN {
     # Needed for PullResponse class
@@ -16,9 +16,9 @@ package
 
 use parent 'Node';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::SOAP::WsMan::EnumerationContext;
-use FusionInventory::Agent::SOAP::WsMan::EndOfSequence;
+use GLPI::Agent::Tools;
+use GLPI::Agent::SOAP::WsMan::EnumerationContext;
+use GLPI::Agent::SOAP::WsMan::EndOfSequence;
 
 use constant    xmlns   => 'n';
 

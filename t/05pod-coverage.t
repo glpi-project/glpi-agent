@@ -37,6 +37,6 @@ foreach my $module (@modules) {
 # namespace-based filter
 sub filter {
     # no need to document multiple task-specific modules
-    return 0 if $_ =~ m{FusionInventory::Agent::Task::\w+::};
+    return 0 if $_ =~ m{GLPI::Agent::Task::\w+::};
     return 1;
 }

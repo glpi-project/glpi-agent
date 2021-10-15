@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::RemoteInventory::Remote::Winrm;
+package GLPI::Agent::Task::RemoteInventory::Remote::Winrm;
 
 use strict;
 use warnings;
@@ -6,12 +6,12 @@ use warnings;
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 
-use parent 'FusionInventory::Agent::Task::RemoteInventory::Remote';
+use parent 'GLPI::Agent::Task::RemoteInventory::Remote';
 
 use URI;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::SOAP::WsMan;
+use GLPI::Agent::Tools;
+use GLPI::Agent::SOAP::WsMan;
 
 use constant    supported => 1;
 
@@ -31,7 +31,7 @@ sub init {
     # Reset user/pass from URL as they are passed for UA as params
     $url->userinfo(undef);
 
-    $self->{_winrm} = FusionInventory::Agent::SOAP::WsMan->new(
+    $self->{_winrm} = GLPI::Agent::SOAP::WsMan->new(
         logger      => $self->{logger},
         url         => $url->canonical->as_string,
         user        => $self->{_user} || $ENV{USERNAME},

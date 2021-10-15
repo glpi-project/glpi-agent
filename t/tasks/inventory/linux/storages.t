@@ -13,10 +13,10 @@ use Test::Deep;
 use Test::Exception;
 use Test::More;
 
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Config;
-use FusionInventory::Agent::Inventory;
-use FusionInventory::Agent::Task::Inventory::Linux::Storages;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Config;
+use GLPI::Agent::Inventory;
+use GLPI::Agent::Task::Inventory::Linux::Storages;
 
 # Tests need symlink function
 plan(skip_all => 'symlink function not implemented on win32')
@@ -35,8 +35,8 @@ if ($dump && $dump eq "--dump") {
         print STDERR "Dump file still exists, overwriting it: $dump_file\n";
     }
 
-    my $logger = FusionInventory::Agent::Logger->new(
-        config => FusionInventory::Agent::Config->new(
+    my $logger = GLPI::Agent::Logger->new(
+        config => GLPI::Agent::Config->new(
             options => {
                 config => 'none',
                 debug  => 2,
@@ -45,11 +45,11 @@ if ($dump && $dump eq "--dump") {
         )
     );
 
-    my $inventory = FusionInventory::Agent::Inventory->new(
+    my $inventory = GLPI::Agent::Inventory->new(
         logger  => $logger
     );
     my $system_datas = {};
-    FusionInventory::Agent::Task::Inventory::Linux::Storages::doInventory(
+    GLPI::Agent::Task::Inventory::Linux::Storages::doInventory(
         inventory   => $inventory,
         logger      => $logger,
         dump        => $system_datas
@@ -71,9 +71,9 @@ if ($dump && $dump eq "--dump") {
     close(DUMP);
 }
 
-my $inventory = FusionInventory::Agent::Inventory->new();
-my $logger = FusionInventory::Agent::Logger->new(
-    config => FusionInventory::Agent::Config->new(
+my $inventory = GLPI::Agent::Inventory->new();
+my $logger = GLPI::Agent::Logger->new(
+    config => GLPI::Agent::Config->new(
         options => {
             config => 'none',
             logger => 'Test'
@@ -99,7 +99,7 @@ foreach my $dump_file (@dump_filenames) {
     # Be sure to keep a clean inventory
     delete $inventory->{content};
 
-    FusionInventory::Agent::Task::Inventory::Linux::Storages::doInventory(
+    GLPI::Agent::Task::Inventory::Linux::Storages::doInventory(
         inventory   => $inventory,
         logger      => $logger,
         test_path   => $root

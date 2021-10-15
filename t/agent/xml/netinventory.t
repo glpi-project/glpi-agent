@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Test::More;
-use FusionInventory::Agent::XML::Query;
+use GLPI::Agent::XML::Query;
 
 # each item is an arrayref of three elements:
 # - input data structure
@@ -90,7 +90,7 @@ EOF
 plan tests => scalar @tests;
 
 foreach my $test (@tests) {
-    my $message = FusionInventory::Agent::XML::Query->new(
+    my $message = GLPI::Agent::XML::Query->new(
        deviceid => 'foobar',
        query    => 'SNMPQUERY',
        content  => $test->[0]

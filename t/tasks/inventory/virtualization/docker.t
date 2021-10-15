@@ -10,9 +10,9 @@ use Test::More;
 use Test::NoWarnings;
 use JSON::PP;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Tools::Virtualization;
-use FusionInventory::Agent::Task::Inventory::Virtualization::Docker;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Tools::Virtualization;
+use GLPI::Agent::Task::Inventory::Virtualization::Docker;
 
 plan tests => 2;
 
@@ -167,10 +167,10 @@ my $test = [
         }
 ];
 
-my @containers = FusionInventory::Agent::Task::Inventory::Virtualization::Docker::_getContainers(
+my @containers = GLPI::Agent::Task::Inventory::Virtualization::Docker::_getContainers(
     file => 'resources/containers/docker/docker_ps-a-with-template.sample'
 );
-my $jsonData = FusionInventory::Agent::Tools::getAllLines(
+my $jsonData = GLPI::Agent::Tools::getAllLines(
     file => 'resources/containers/docker/docker_inspect.json'
 );
 my $coder = JSON::PP->new;
@@ -183,7 +183,7 @@ for my $cont (@$containersFromJson) {
 }
 my @containersNew = ();
 for my $h (@containers) {
-        $h->{STATUS} = FusionInventory::Agent::Task::Inventory::Virtualization::Docker::_getStatus(
+        $h->{STATUS} = GLPI::Agent::Task::Inventory::Virtualization::Docker::_getStatus(
             string => $coder->encode($containers->{$h->{NAME}})
         );
         push @containersNew, $h;

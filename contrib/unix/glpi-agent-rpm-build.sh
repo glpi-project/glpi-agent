@@ -41,7 +41,7 @@ fi
 
 VER=${GITHUB_REF#refs/tags/}
 if [ -n "${GITHUB_REF%refs/tags/*}" -o -z "$VER" ]; then
-    VER=$(perl -Ilib -MFusionInventory::Agent::Version -e '$v = $FusionInventory::Agent::Version::VERSION; $v =~ s/-.*//; print $v')
+    VER=$(perl -Ilib -MGLPI::Agent::Version -e '$v = $GLPI::Agent::Version::VERSION; $v =~ s/-.*//; print $v')
 fi
 if [ -z "$REV" ]; then
     REV=$([ -n "$GITHUB_SHA" ] && echo $GITHUB_SHA| cut -c 1-8 || git log --pretty=format:%h -n 1)

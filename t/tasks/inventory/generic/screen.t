@@ -8,8 +8,8 @@ use Test::Deep qw(cmp_deeply);
 use Test::More;
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Task::Inventory::Generic::Screen;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Task::Inventory::Generic::Screen;
 
 plan(skip_all => 'Parse::EDID >= 1.0.4 required')
     unless Parse::EDID->require('1.0.4');
@@ -579,6 +579,6 @@ plan tests => (scalar keys %edid_tests) + 1;
 foreach my $test (sort keys %edid_tests) {
     my $file = "resources/generic/edid/$test";
     my $edid = getAllLines(file => $file);
-    my $info = FusionInventory::Agent::Task::Inventory::Generic::Screen::_getEdidInfo(edid => $edid, datadir => './share');
+    my $info = GLPI::Agent::Task::Inventory::Generic::Screen::_getEdidInfo(edid => $edid, datadir => './share');
     cmp_deeply($info, $edid_tests{$test}, $test);
 }

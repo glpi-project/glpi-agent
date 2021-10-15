@@ -1,12 +1,12 @@
-package FusionInventory::Agent::SNMP::MibSupport::UPS;
+package GLPI::Agent::SNMP::MibSupport::UPS;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::SNMP::MibSupportTemplate';
+use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::SNMP;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::SNMP;
 
 use constant    apc => '.1.3.6.1.4.1.318' ;
 use constant    riello => '.1.3.6.1.4.1.5491' ;
@@ -69,7 +69,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP::MibSupport::UPS - Inventory module for APC modules
+GLPI::Agent::SNMP::MibSupport::UPS - Inventory module for APC modules
 
 =head1 DESCRIPTION
 

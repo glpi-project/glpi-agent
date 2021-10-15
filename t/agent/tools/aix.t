@@ -6,7 +6,7 @@ use warnings;
 use Test::Deep;
 use Test::More;
 
-use FusionInventory::Agent::Tools::AIX;
+use GLPI::Agent::Tools::AIX;
 
 my %lsvpd_tests = (
     'aix-5.3a' => [

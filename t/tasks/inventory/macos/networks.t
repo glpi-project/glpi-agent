@@ -7,7 +7,7 @@ use Test::Deep;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Agent::Task::Inventory::MacOS::Networks;
+use GLPI::Agent::Task::Inventory::MacOS::Networks;
 
 my %tests = (
     'macosx-01' => [
@@ -111,12 +111,12 @@ foreach my $test (keys %tests) {
     my $netsetup_file = "resources/macos/ifconfig/$test-networksetup";
 
     my $netsetup;
-    $netsetup = FusionInventory::Agent::Task::Inventory::MacOS::Networks::_parseNetworkSetup(
+    $netsetup = GLPI::Agent::Task::Inventory::MacOS::Networks::_parseNetworkSetup(
         file => $netsetup_file
     );
     ok( $netsetup, "_parseNetworkSetup() for $test" );
 
-    my $nets = FusionInventory::Agent::Task::Inventory::MacOS::Networks::_getInterfaces(
+    my $nets = GLPI::Agent::Task::Inventory::MacOS::Networks::_getInterfaces(
         file        => $ifconfig_file,
         netsetup    => $netsetup
     );

@@ -7,7 +7,7 @@ BEGIN {
 
 use inc::Module::Install;
 use English qw(-no_match_vars);
-use lib::FusionInventory::Agent::Version;
+use lib::GLPI::Agent::Version;
 
 name 'Glpi-Perl-Agent';
 include 'Module::AutoInstall';
@@ -19,9 +19,9 @@ perl_version '5.008';
 authors 'Teclib Editions';
 
 provides
-    'FusionInventory::Agent' => {
-        file    => 'lib/FusionInventory/Agent.pm',
-        version => $FusionInventory::Agent::Version::VERSION
+    'GLPI::Agent' => {
+        file    => 'lib/GLPI/Agent.pm',
+        version => $GLPI::Agent::Version::VERSION
     };
 
 # mandatory dependencies
@@ -262,7 +262,7 @@ config_install : pure_install
 	done
 	$(ABSPERLRUN) -pi \
 	    -e "s|=> undef, # SYSCONFDIR.*|=> '$(SNAPDIR)$(SYSCONFDIR)',|;" \
-	        $(DESTDIR)$(INSTALLSITELIB)/FusionInventory/Agent/Config.pm
+	        $(DESTDIR)$(INSTALLSITELIB)/GLPI/Agent/Config.pm
 
 data_install : pure_install
 	$(MOD_INSTALL) "share" "$(DESTDIR)$(DATADIR)"
@@ -283,7 +283,7 @@ version_install : pure_install
 	    -e 'last if m|^__END__|;' \
 	    -e 's|^our \$$VERSION =.*|our \$$VERSION = "$(VERSION)";|;' \
 	    -e 's|^our \$$COMMENTS =.*|our \$$COMMENTS = [$(RAWCOMMENTS)];|;' \
-	        $(DESTDIR)$(INSTALLSITELIB)/FusionInventory/Agent/Version.pm
+	        $(DESTDIR)$(INSTALLSITELIB)/GLPI/Agent/Version.pm
 EOF
     return $install;
 }

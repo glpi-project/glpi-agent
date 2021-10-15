@@ -6,9 +6,9 @@ use Test::Deep;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Agent::Tools::Batteries;
-use FusionInventory::Agent::Task::Inventory::Generic::Batteries::Upower;
-use FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Battery;
+use GLPI::Agent::Tools::Batteries;
+use GLPI::Agent::Task::Inventory::Generic::Batteries::Upower;
+use GLPI::Agent::Task::Inventory::Generic::Dmidecode::Battery;
 
 my %testUpowerEnumerate = (
     'enumerate_1.txt' => [
@@ -100,7 +100,7 @@ plan tests =>
     1;
 
 foreach my $test (keys %testUpowerEnumerate) {
-    my @battNames = FusionInventory::Agent::Task::Inventory::Generic::Batteries::Upower::_getBatteriesNameFromUpower(
+    my @battNames = GLPI::Agent::Task::Inventory::Generic::Batteries::Upower::_getBatteriesNameFromUpower(
         file => 'resources/generic/batteries/upower/' . $test
     );
     cmp_deeply (
@@ -111,7 +111,7 @@ foreach my $test (keys %testUpowerEnumerate) {
 }
 
 foreach my $test (keys %testUpowerInfos) {
-    my $battery = FusionInventory::Agent::Task::Inventory::Generic::Batteries::Upower::_getBatteryFromUpower(
+    my $battery = GLPI::Agent::Task::Inventory::Generic::Batteries::Upower::_getBatteryFromUpower(
         file => 'resources/generic/batteries/upower/' . $test
     );
     cmp_deeply(
@@ -127,7 +127,7 @@ foreach my $test (keys %testUpowerMerged) {
 
     # Prepare batteries list like it should be after dmidecode passed
     map { $list->add($_) }
-        FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Battery::_getBatteries(
+        GLPI::Agent::Task::Inventory::Generic::Dmidecode::Battery::_getBatteries(
             file => 'resources/generic/batteries/upower/' . $dmidecode
         );
 
@@ -138,7 +138,7 @@ foreach my $test (keys %testUpowerMerged) {
     );
 
     foreach my $file (@{$testUpowerMerged{$test}->{upowerlist}}) {
-        my $battery = FusionInventory::Agent::Task::Inventory::Generic::Batteries::Upower::_getBatteryFromUpower(
+        my $battery = GLPI::Agent::Task::Inventory::Generic::Batteries::Upower::_getBatteryFromUpower(
             file => 'resources/generic/batteries/upower/' . $file
         );
         $list->merge($battery);

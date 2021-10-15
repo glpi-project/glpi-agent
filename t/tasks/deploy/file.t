@@ -12,8 +12,8 @@ use File::Path qw(mkpath);
 
 plan tests => 6;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Task::Deploy::File;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Task::Deploy::File;
 
 # Temp dir
 my $datastoredir = tempdir(CLEANUP => $ENV{TEST_DEBUG} ? 0 : 1);
@@ -27,14 +27,14 @@ $sha->addfile( "$filedir/toto", 'b' );
 my $sha512 = $sha->hexdigest();
 
 # Create File object
-my $file = FusionInventory::Agent::Task::Deploy::File->new(
+my $file = GLPI::Agent::Task::Deploy::File->new(
    datastore => { path => $datastoredir },
    sha512 => "void",
    data => {multiparts => [ $sha512 ]}
 );
 
 ################
-ok($file, "FusionInventory::Agent::Task::Deploy::File object created");
+ok($file, "GLPI::Agent::Task::Deploy::File object created");
 my $partFilePath = $file->getPartFilePath($sha512);
 ok($partFilePath, "getPartFilePath()");
 ok(! -f $partFilePath, "file does not exist yet");

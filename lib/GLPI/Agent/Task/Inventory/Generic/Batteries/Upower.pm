@@ -1,16 +1,16 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Batteries::Upower;
+package GLPI::Agent::Task::Inventory::Generic::Batteries::Upower;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Batteries;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Batteries;
 
 # Run after virtualization to decide if found component is virtual
 our $runAfterIfEnabled = [ qw(
-    FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Battery
+    GLPI::Agent::Task::Inventory::Generic::Dmidecode::Battery
 )];
 
 sub isEnabled {

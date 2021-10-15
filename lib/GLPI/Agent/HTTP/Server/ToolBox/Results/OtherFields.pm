@@ -1,9 +1,9 @@
-package FusionInventory::Agent::HTTP::Server::ToolBox::Results::OtherFields;
+package GLPI::Agent::HTTP::Server::ToolBox::Results::OtherFields;
 
 use strict;
 use warnings;
 
-use parent "FusionInventory::Agent::HTTP::Server::ToolBox::Results::Fields";
+use parent "GLPI::Agent::HTTP::Server::ToolBox::Results::Fields";
 
 use Encode qw(encode);
 use HTML::Entities;

@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::Deploy::File;
+package GLPI::Agent::Task::Deploy::File;
 
 use strict;
 use warnings;
@@ -145,11 +145,11 @@ sub download {
 
     my @peers;
     if ($self->{p2p}) {
-        FusionInventory::Agent::Task::Deploy::P2P->require();
+        GLPI::Agent::Task::Deploy::P2P->require();
         if ($EVAL_ERROR) {
             $self->{logger}->debug("can't enable P2P: $EVAL_ERROR")
         } else {
-            my $p2p = FusionInventory::Agent::Task::Deploy::P2P->new(
+            my $p2p = GLPI::Agent::Task::Deploy::P2P->new(
                 scan_timeout    => 1,
                 datastore       => $self->{datastore},
                 logger          => $self->{logger}

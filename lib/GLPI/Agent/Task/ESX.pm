@@ -1,19 +1,19 @@
-package FusionInventory::Agent::Task::ESX;
+package GLPI::Agent::Task::ESX;
 
 use strict;
 use warnings;
-use parent 'FusionInventory::Agent::Task';
+use parent 'GLPI::Agent::Task';
 
-use FusionInventory::Agent::Config;
-use FusionInventory::Agent::HTTP::Client::Fusion;
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Inventory;
-use FusionInventory::Agent::XML::Query::Inventory;
-use FusionInventory::Agent::SOAP::VMware;
+use GLPI::Agent::Config;
+use GLPI::Agent::HTTP::Client::Fusion;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Inventory;
+use GLPI::Agent::XML::Query::Inventory;
+use GLPI::Agent::SOAP::VMware;
 
-use FusionInventory::Agent::Task::ESX::Version;
+use GLPI::Agent::Task::ESX::Version;
 
-our $VERSION = FusionInventory::Agent::Task::ESX::Version::VERSION;
+our $VERSION = GLPI::Agent::Task::ESX::Version::VERSION;
 
 sub isEnabled {
     my ($self) = @_;
@@ -36,7 +36,7 @@ sub connect {
     my $url = 'https://' . $params{host} . '/sdk/vimService';
 
     my $vpbs =
-      FusionInventory::Agent::SOAP::VMware->new(url => $url, vcenter => 1 );
+      GLPI::Agent::SOAP::VMware->new(url => $url, vcenter => 1 );
     if ( !$vpbs->connect( $params{user}, $params{password} ) ) {
         $self->lastError($vpbs->{lastError});
         return;
@@ -54,7 +54,7 @@ sub createInventory {
 
     my $host = $vpbs->getHostFullInfo($id);
 
-    my $inventory = FusionInventory::Agent::Inventory->new(
+    my $inventory = GLPI::Agent::Inventory->new(
         logger => $self->{logger},
         tag    => $tag
     );
@@ -123,7 +123,7 @@ sub getHostIds {
 sub run {
     my ( $self, %params ) = @_;
 
-    $self->{client} = FusionInventory::Agent::HTTP::Client::Fusion->new(
+    $self->{client} = GLPI::Agent::HTTP::Client::Fusion->new(
         logger       => $self->{logger},
         user         => $params{user},
         password     => $params{password},
@@ -180,7 +180,7 @@ sub run {
     $self->{logger}->info(
         "Got " . int( @{ $jobs->{jobs} } ) . " VMware host(s) to inventory." );
 
-    my $ocsClient = FusionInventory::Agent::HTTP::Client::OCS->new(
+    my $ocsClient = GLPI::Agent::HTTP::Client::OCS->new(
         logger       => $self->{logger},
         user         => $params{user},
         password     => $params{password},
@@ -220,7 +220,7 @@ sub run {
                 $hostId, $self->{config}->{tag}
             );
 
-            my $message = FusionInventory::Agent::XML::Query::Inventory->new(
+            my $message = GLPI::Agent::XML::Query::Inventory->new(
                 deviceid => $self->{deviceid},
                 content  => $inventory->getContent()
             );
@@ -259,7 +259,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SOAP::VMware - Access to VMware hypervisor
+GLPI::Agent::SOAP::VMware - Access to VMware hypervisor
 
 =head1 DESCRIPTION
 
@@ -274,7 +274,7 @@ Connect the task to the VMware ESX, ESXi or vCenter.
 
 =head2 createInventory ( $self, $id, $tag )
 
-Returns an FusionInventory::Agent::Inventory object for a given
+Returns an GLPI::Agent::Inventory object for a given
 host id.
 
 =head2 getHostIds

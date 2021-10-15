@@ -1,4 +1,4 @@
-package FusionInventory::Agent::HTTP::Server::ToolBox::Results::Device;
+package GLPI::Agent::HTTP::Server::ToolBox::Results::Device;
 
 use strict;
 use warnings;

@@ -1,20 +1,20 @@
-package FusionInventory::Agent::SNMP::MibSupport::ConfigurationPlugin;
+package GLPI::Agent::SNMP::MibSupport::ConfigurationPlugin;
 
 use strict;
 use warnings;
 
 use parent qw(
-    FusionInventory::Agent::SNMP::MibSupportTemplate
+    GLPI::Agent::SNMP::MibSupportTemplate
 );
 
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Config;
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::SNMP;
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::HTTP::Server::ToolBox;
+use GLPI::Agent::Config;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::SNMP;
+use GLPI::Agent::Logger;
+use GLPI::Agent::HTTP::Server::ToolBox;
 
 our $mibSupport = [];
 
@@ -87,14 +87,14 @@ sub run {
 sub configure {
     my ($agent, %params) = @_;
 
-    $logger = $params{logger} || FusionInventory::Agent::Logger->new();
+    $logger = $params{logger} || GLPI::Agent::Logger->new();
 
-    $config = FusionInventory::Agent::Config->new();
+    $config = GLPI::Agent::Config->new();
 
     my $confdir = $config->confdir();
 
     # Load defaults and plugin configuration
-    my $defaults = FusionInventory::Agent::HTTP::Server::ToolBox::defaults();
+    my $defaults = GLPI::Agent::HTTP::Server::ToolBox::defaults();
     foreach my $param (keys(%{$defaults})) {
         $config->{$param} = $defaults->{$param};
     }
@@ -241,7 +241,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP::MibSupport::ConfigurationPlugin - Fully configurable
+GLPI::Agent::SNMP::MibSupport::ConfigurationPlugin - Fully configurable
 inventory module
 
 =head1 DESCRIPTION

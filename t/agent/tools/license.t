@@ -7,7 +7,7 @@ use Test::Deep;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Agent::Tools::License;
+use GLPI::Agent::Tools::License;
 
 my %adobe_tests = (
     'sample1' => [

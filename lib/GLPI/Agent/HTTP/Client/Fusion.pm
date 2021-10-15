@@ -1,8 +1,8 @@
-package FusionInventory::Agent::HTTP::Client::Fusion;
+package GLPI::Agent::HTTP::Client::Fusion;
 
 use strict;
 use warnings;
-use parent 'FusionInventory::Agent::HTTP::Client';
+use parent 'GLPI::Agent::HTTP::Client';
 
 use English qw(-no_match_vars);
 
@@ -136,7 +136,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::HTTP::Client::Fusion - An HTTP client using Fusion protocol
+GLPI::Agent::HTTP::Client::Fusion - An HTTP client using Fusion protocol
 
 =head1 DESCRIPTION
 

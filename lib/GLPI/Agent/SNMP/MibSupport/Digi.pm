@@ -1,9 +1,9 @@
-package FusionInventory::Agent::SNMP::MibSupport::Digi;
+package GLPI::Agent::SNMP::MibSupport::Digi;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::SNMP::MibSupportTemplate';
+use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 
 # Constants extracted from Digi Sarian-Monitor.mib
 use constant    sarianMonitor   => ".1.3.6.1.4.1.16378.10000" ;
@@ -67,7 +67,7 @@ sub run {
                 if ($mcc) {
                     $simcard->{OPERATOR_CODE} = "$mcc.$mnc" if $mnc;
                     $simcard->{COUNTRY} = getCountryMCC($mcc)
-                        if FusionInventory::Agent::Tools::Standards::MobileCountryCode->use();
+                        if GLPI::Agent::Tools::Standards::MobileCountryCode->use();
                 }
             }
 
@@ -111,7 +111,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP::MibSupport::Digi - Inventory module for Digi modems and associated sim cards & firmwares
+GLPI::Agent::SNMP::MibSupport::Digi - Inventory module for Digi modems and associated sim cards & firmwares
 
 =head1 DESCRIPTION
 

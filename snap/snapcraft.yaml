@@ -148,7 +148,7 @@ parts:
     override-build: |
       export PATH=$SNAPCRAFT_STAGE/usr/share/glpi-agent/bin:$PATH
       if [ -z "$VERSION" ]; then
-        VERSION=$( perl -Ilib -MFusionInventory::Agent::Version -e 'print $FusionInventory::Agent::Version::VERSION,"\n"' )
+        VERSION=$( perl -Ilib -MGLPI::Agent::Version -e 'print $GLPI::Agent::Version::VERSION,"\n"' )
         if [ -d .git ]; then
           VERSION="${VERSION%-dev}-git$(git rev-parse --short HEAD)"
         fi

@@ -1,12 +1,12 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Storages::HpWithSmartctl;
+package GLPI::Agent::Task::Inventory::Generic::Storages::HpWithSmartctl;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Linux;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Linux;
 
 # This speeds up hpacucli startup by skipping non-local (iSCSI, Fibre) storages.
 # See https://support.hpe.com/hpsc/doc/public/display?docId=emr_na-c03696601

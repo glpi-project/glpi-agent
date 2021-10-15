@@ -1,11 +1,11 @@
-package FusionInventory::Agent::SNMP::MibSupportTemplate;
+package GLPI::Agent::SNMP::MibSupportTemplate;
 
 use strict;
 use warnings;
 
-#use parent 'FusionInventory::Agent::SNMP::MibSupportTemplate';
+#use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 
-#use FusionInventory::Agent::Tools::SNMP;
+#use GLPI::Agent::Tools::SNMP;
 
 # Default priority to permit to priorize a MibSupport module other another
 # A lower priority means use it before the other
@@ -176,7 +176,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP::MibSupportTemplate - Parent/Template class for inventory module
+GLPI::Agent::SNMP::MibSupportTemplate - Parent/Template class for inventory module
 
 =head1 DESCRIPTION
 

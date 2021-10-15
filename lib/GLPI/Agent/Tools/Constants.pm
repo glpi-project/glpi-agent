@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools::Constants;
+package GLPI::Agent::Tools::Constants;
 
 use strict;
 use warnings;

@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools::Virtualization;
+package GLPI::Agent::Tools::Virtualization;
 
 use strict;
 use warnings;

@@ -1,9 +1,9 @@
-package FusionInventory::Agent::HTTP::Server::ToolBox::Results;
+package GLPI::Agent::HTTP::Server::ToolBox::Results;
 
 use strict;
 use warnings;
 
-use parent "FusionInventory::Agent::HTTP::Server::ToolBox";
+use parent "GLPI::Agent::HTTP::Server::ToolBox";
 
 use English qw(-no_match_vars);
 use Encode qw(encode);
@@ -11,10 +11,10 @@ use HTML::Entities;
 use File::stat;
 use XML::TreePP;
 
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Tools;
 
-use FusionInventory::Agent::HTTP::Server::ToolBox::Results::Device;
+use GLPI::Agent::HTTP::Server::ToolBox::Results::Device;
 
 use constant    results => "results";
 
@@ -33,7 +33,7 @@ sub new {
 
     my $self = {
         logger      => $params{toolbox}->{logger} ||
-                        FusionInventory::Agent::Logger->new(),
+                        GLPI::Agent::Logger->new(),
         toolbox     => $params{toolbox},
         name        => $name,
         _mtime      => {},
@@ -179,7 +179,7 @@ sub xml_analysis {
 
         my $device = $self->{_devices}->{$name};
         unless ($device) {
-            $device = FusionInventory::Agent::HTTP::Server::ToolBox::Results::Device->new(
+            $device = GLPI::Agent::HTTP::Server::ToolBox::Results::Device->new(
                 name    => $name,
             );
             $self->{_devices}->{$name} = $device;
@@ -547,10 +547,10 @@ sub _save_inventory {
         my $info = $xml->{REQUEST}->{CONTENT}->{DEVICE}->{INFO};
         $xml->{REQUEST}->{DEVICEID} = "toolbox";
         $xml->{REQUEST}->{CONTENT}->{MODULEVERSION} =
-            "ToolBox v".$FusionInventory::Agent::HTTP::Server::ToolBox::VERSION;
+            "ToolBox v".$GLPI::Agent::HTTP::Server::ToolBox::VERSION;
 
         my %from = ();
-        foreach my $field (FusionInventory::Agent::HTTP::Server::ToolBox::Results::NetInventory->fields()) {
+        foreach my $field (GLPI::Agent::HTTP::Server::ToolBox::Results::NetInventory->fields()) {
             $from{$field->{from}} = $field->{name}
                 if ($field->{from} && $field->{from} ne 'ips');
         }

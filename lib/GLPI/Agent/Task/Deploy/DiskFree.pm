@@ -1,11 +1,11 @@
-package FusionInventory::Agent::Task::Deploy::DiskFree;
+package GLPI::Agent::Task::Deploy::DiskFree;
 
 use strict;
 use warnings;
 use parent 'Exporter';
 
 use English qw(-no_match_vars);
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 use UNIVERSAL::require;
 
@@ -28,10 +28,10 @@ sub _getFreeSpaceWindows {
     my $logger = $params{logger};
 
 
-    FusionInventory::Agent::Tools::Win32->require();
+    GLPI::Agent::Tools::Win32->require();
     if ($EVAL_ERROR) {
         $logger->error(
-            "Failed to load FusionInventory::Agent::Tools::Win32: $EVAL_ERROR"
+            "Failed to load GLPI::Agent::Tools::Win32: $EVAL_ERROR"
         );
         return;
     }
@@ -44,7 +44,7 @@ sub _getFreeSpaceWindows {
     $letter = $1.':';
 
     my $freeSpace;
-    foreach my $object (FusionInventory::Agent::Tools::Win32::getWMIObjects(
+    foreach my $object (GLPI::Agent::Tools::Win32::getWMIObjects(
         moniker    => 'winmgmts:{impersonationLevel=impersonate,(security)}!//./',
         class      => 'Win32_LogicalDisk',
         properties => [ qw/Caption FreeSpace/ ]

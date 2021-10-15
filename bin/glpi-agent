@@ -10,7 +10,7 @@ use English qw(-no_match_vars);
 use Getopt::Long;
 use Pod::Usage;
 
-use FusionInventory::Agent;
+use GLPI::Agent;
 
 Getopt::Long::Configure( "no_ignorecase" );
 
@@ -77,13 +77,13 @@ GetOptions(
 pod2usage(-verbose => 0, -exitstatus => 0) if $options->{help};
 
 if ($options->{version}) {
-    map { print $_."\n" } $FusionInventory::Agent::VERSION_STRING,
-        @{$FusionInventory::Agent::COMMENTS};
+    map { print $_."\n" } $GLPI::Agent::VERSION_STRING,
+        @{$GLPI::Agent::COMMENTS};
     exit 0;
 }
 
 if ($options->{setup}) {
-    my $agent = FusionInventory::Agent->new(%setup);
+    my $agent = GLPI::Agent->new(%setup);
     $options->{debug} = 0;
     $agent->init(options => $options);
     $setup{vardir} = $agent->{vardir};
@@ -107,9 +107,9 @@ if ($options->{'conf-file'}) {
 }
 
 if ($options->{daemon}) {
-    FusionInventory::Agent::Daemon->require();
+    GLPI::Agent::Daemon->require();
     if ($EVAL_ERROR) {
-        print STDERR "Can't load FusionInventory::Agent::Daemon library:\n";
+        print STDERR "Can't load GLPI::Agent::Daemon library:\n";
         print STDERR $EVAL_ERROR;
         exit 1;
     }
@@ -119,9 +119,9 @@ die "given '$options->{vardir}' vardir folder doesn't exist\n"
     if $options->{vardir} && ! -d $options->{vardir};
 
 my $agent = $options->{daemon} ?
-    FusionInventory::Agent::Daemon->new(%setup)
+    GLPI::Agent::Daemon->new(%setup)
     :
-    FusionInventory::Agent->new(%setup);
+    GLPI::Agent->new(%setup);
 
 if ($options->{'list-tasks'}) {
     $options->{logger} = "Stderr";
@@ -150,9 +150,9 @@ if ($options->{'list-tasks'}) {
 }
 
 if ($options->{"list-categories"}) {
-    FusionInventory::Agent::Task::Inventory->require();
+    GLPI::Agent::Task::Inventory->require();
     die $EVAL_ERROR if $EVAL_ERROR;
-    my $inventory = FusionInventory::Agent::Task::Inventory->new(
+    my $inventory = GLPI::Agent::Task::Inventory->new(
         config       => $agent->{config},
         datadir      => $agent->{datadir},
         logger       => $agent->{logger},
@@ -199,9 +199,9 @@ eval {
 
     if ($OSNAME eq 'MSWin32' && ! $options->{'no-win32-ole-workaround'}) {
         # From here we may need to avoid crashes due to not thread-safe Win32::OLE
-        FusionInventory::Agent::Tools::Win32->require();
-        FusionInventory::Agent::Tools::Win32::start_Win32_OLE_Worker();
-        FusionInventory::Agent::Tools::Win32::setupWorkerLogger(config => $agent->{config});
+        GLPI::Agent::Tools::Win32->require();
+        GLPI::Agent::Tools::Win32::start_Win32_OLE_Worker();
+        GLPI::Agent::Tools::Win32::setupWorkerLogger(config => $agent->{config});
     }
 
     $agent->run();
@@ -321,8 +321,7 @@ glpi-agent [options] [--server server|--local path]
 The F<glpi-agent> agent is a generic multi-platform agent. It can
 perform a large array of management tasks, such as local inventory, software
 deployment or network discovery. It can be used either standalone, or in
-combination with a compatible server (OCS, GLPI, OTRS) acting as a centralized
-control point.
+combination with a compatible server acting as a centralized control point.
 
 =head1 OPTIONS
 
@@ -345,9 +344,9 @@ parameter is a hostname and rewrite it as:
 
     % --server=http://example/inventory
 
-In general, OCS Inventory server URL have this format:
+In general, GLPI server URL have this format:
 
-    http://example/ocsinventory
+    http://example/front/inventory.ph
 
 and FusionInventory for GLPI this one:
 

@@ -15,13 +15,13 @@
 # This module reports the MAC address and, if any, the IP
 # configuration of the BMC. This is reported as a standard NIC.
 #
-package FusionInventory::Agent::Task::Inventory::Generic::Ipmi::Lan;
+package GLPI::Agent::Task::Inventory::Generic::Ipmi::Lan;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Network;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Network;
 
 use constant    category    => "network";
 

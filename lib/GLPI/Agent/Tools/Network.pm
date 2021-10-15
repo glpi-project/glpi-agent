@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools::Network;
+package GLPI::Agent::Tools::Network;
 
 use strict;
 use warnings;
@@ -9,7 +9,7 @@ use Net::IP qw(:PROC);
 use Net::hostent;
 use Socket;
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 our @EXPORT = qw(
     $mac_address_pattern
@@ -289,7 +289,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Tools::Network - Network-related patterns and functions
+GLPI::Agent::Tools::Network - Network-related patterns and functions
 
 =head1 DESCRIPTION
 

@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::Inventory::Virtualization::Lxc;
+package GLPI::Agent::Task::Inventory::Virtualization::Lxc;
 
 # Authors: Egor Shornikov <se@wbr.su>, Egor Morozov <akrus@flygroup.st>
 # License: GPLv2+
@@ -6,12 +6,12 @@ package FusionInventory::Agent::Task::Inventory::Virtualization::Lxc;
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Linux;
-use FusionInventory::Agent::Tools::Network;
-use FusionInventory::Agent::Tools::Virtualization;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Linux;
+use GLPI::Agent::Tools::Network;
+use GLPI::Agent::Tools::Virtualization;
 
 sub isEnabled {
     return canRun('lxc-ls');

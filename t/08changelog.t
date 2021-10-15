@@ -6,7 +6,7 @@ use warnings;
 use Test::More;
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent;
+use GLPI::Agent;
 
 plan(skip_all => 'Author test, set $ENV{TEST_AUTHOR} to a true value to run')
     if !$ENV{TEST_AUTHOR};
@@ -24,6 +24,6 @@ my $line = <$handle>;
 close $handle;
 like(
     $line,
-    qr/$FusionInventory::Agent::VERSION \w{3}, \d{1,2} \w{3} \d{4}$/,
+    qr/$GLPI::Agent::VERSION \w{3}, \d{1,2} \w{3} \d{4}$/,
     'changelog entry matches expected format'
 );

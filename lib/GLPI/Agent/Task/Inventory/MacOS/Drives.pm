@@ -1,12 +1,12 @@
-package FusionInventory::Agent::Task::Inventory::MacOS::Drives;
+package GLPI::Agent::Task::Inventory::MacOS::Drives;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Unix;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Unix;
 
 use constant    category    => "drive";
 

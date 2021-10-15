@@ -1,13 +1,13 @@
-package FusionInventory::Agent::Task::Inventory::Linux::Networks::DockerMacvlan;
+package GLPI::Agent::Task::Inventory::Linux::Networks::DockerMacvlan;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use JSON::PP;
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Network;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Network;
 
 sub isEnabled {
     return canRun('docker');

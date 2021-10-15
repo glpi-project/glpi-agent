@@ -8,13 +8,13 @@ use English qw(-no_match_vars);
 use Test::Deep;
 use Test::More;
 
-use FusionInventory::Agent::Logger;
+use GLPI::Agent::Logger;
 
-use FusionInventory::Test::Server;
-use FusionInventory::Test::Utils;
+use GLPI::Test::Server;
+use GLPI::Test::Utils;
 
-plan(skip_all => "Can't load FusionInventory::Agent::Task::Deploy::P2P")
-    unless FusionInventory::Agent::Task::Deploy::P2P->require();
+plan(skip_all => "Can't load GLPI::Agent::Task::Deploy::P2P")
+    unless GLPI::Agent::Task::Deploy::P2P->require();
 
 my @tests = (
     {
@@ -115,11 +115,11 @@ my %find_tests = (
 
 plan tests => scalar @tests + keys(%find_tests);
 
-my $logger = FusionInventory::Agent::Logger->new(
+my $logger = GLPI::Agent::Logger->new(
     logger => [ 'Test' ]
 );
 
-my $p2p = FusionInventory::Agent::Task::Deploy::P2P->new(
+my $p2p = GLPI::Agent::Task::Deploy::P2P->new(
     logger => $logger
 );
 
@@ -133,9 +133,9 @@ SKIP: {
         unless Parallel::ForkManager->require();
 
     # find an available port on loopback
-    my $port = FusionInventory::Agent::Tools::first { test_port($_) } 62354 .. 62400;
+    my $port = GLPI::Agent::Tools::first { test_port($_) } 62354 .. 62400;
 
-    my $server = FusionInventory::Test::Server->new(
+    my $server = GLPI::Test::Server->new(
         port     => $port,
     );
     eval {
@@ -148,8 +148,8 @@ SKIP: {
     if ($OSNAME eq 'MSWin32') {
         # So from here we need to avoid crashes due to not thread-safe Win32::OLE
         # Enabling a dedicated worker thread
-        FusionInventory::Agent::Tools::Win32->require();
-        FusionInventory::Agent::Tools::Win32::start_Win32_OLE_Worker();
+        GLPI::Agent::Tools::Win32->require();
+        GLPI::Agent::Tools::Win32::start_Win32_OLE_Worker();
 
         $p2p->findPeers();
     }

@@ -10,8 +10,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::MacOS::Psu;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::MacOS::Psu;
 
 use English;
 
@@ -37,11 +37,11 @@ my %tests = (
 plan tests => 1
         + 2*scalar (keys %tests);
 
-my $inventory = FusionInventory::Test::Inventory->new();
+my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %tests) {
     my $filePath = "resources/macos/system_profiler/$test-SPPowerDataType";
-    my $charger = FusionInventory::Agent::Task::Inventory::MacOS::Psu::_getCharger(
+    my $charger = GLPI::Agent::Task::Inventory::MacOS::Psu::_getCharger(
         file => $filePath
     );
     cmp_deeply(

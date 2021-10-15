@@ -1,19 +1,19 @@
-package FusionInventory::Agent::Tools::Screen;
+package GLPI::Agent::Tools::Screen;
 
 use strict;
 use warnings;
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Tools::Generic;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Tools::Generic;
 
 sub new {
     my ($class, %params) = @_;
 
     my $self = {
         logger        => $params{logger} ||
-                         FusionInventory::Agent::Logger->new(),
+                         GLPI::Agent::Logger->new(),
         edid          => $params{edid},
     };
     bless $self, $class;
@@ -114,7 +114,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Screen - Base class for screen object
+GLPI::Agent::Screen - Base class for screen object
 
 =head1 DESCRIPTION
 

@@ -9,8 +9,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::MacOS::Memory;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::MacOS::Memory;
 
 my %memories_tests = (
     '10.4-powerpc' => [
@@ -246,11 +246,11 @@ plan tests =>
     (scalar keys %memory_tests)       +
     1;
 
-my $inventory = FusionInventory::Test::Inventory->new();
+my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %memories_tests) {
     my $file = "resources/macos/system_profiler/$test";
-    my @memories = FusionInventory::Agent::Task::Inventory::MacOS::Memory::_getMemories(file => $file);
+    my @memories = GLPI::Agent::Task::Inventory::MacOS::Memory::_getMemories(file => $file);
     cmp_deeply(\@memories, $memories_tests{$test}, "$test: parsing");
     lives_ok {
         $inventory->addEntry(section => 'MEMORIES', entry => $_)
@@ -260,6 +260,6 @@ foreach my $test (keys %memories_tests) {
 
 foreach my $test (keys %memory_tests) {
     my $file = "resources/macos/system_profiler/$test";
-    my $memory = FusionInventory::Agent::Task::Inventory::MacOS::Memory::_getMemory(file => $file);
+    my $memory = GLPI::Agent::Task::Inventory::MacOS::Memory::_getMemory(file => $file);
     is($memory, $memory_tests{$test}, $test);
 };

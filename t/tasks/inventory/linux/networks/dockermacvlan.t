@@ -9,8 +9,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::Linux::Networks::DockerMacvlan;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::Linux::Networks::DockerMacvlan;
 
 my %tests = (
     'docker-network-ls' => [
@@ -56,10 +56,10 @@ plan tests => (scalar keys %tests) + 1;
 
 my $test = 'docker-network-ls';
 my $file = "resources/linux/docker/$test";
-my @networks = FusionInventory::Agent::Task::Inventory::Linux::Networks::DockerMacvlan::_getMacvlanNetworks(file => $file);
+my @networks = GLPI::Agent::Task::Inventory::Linux::Networks::DockerMacvlan::_getMacvlanNetworks(file => $file);
 cmp_deeply(\@networks, $tests{$test}, $test);
 
 $test = 'docker-network-inspect';
 $file = "resources/linux/docker/$test";
-my @interfaces = FusionInventory::Agent::Task::Inventory::Linux::Networks::DockerMacvlan::_getInterfaces(file => $file, networkId => "");
+my @interfaces = GLPI::Agent::Task::Inventory::Linux::Networks::DockerMacvlan::_getInterfaces(file => $file, networkId => "");
 cmp_set(\@interfaces, $tests{$test}, $test);

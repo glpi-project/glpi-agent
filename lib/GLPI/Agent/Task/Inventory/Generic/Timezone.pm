@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Timezone;
+package GLPI::Agent::Task::Inventory::Generic::Timezone;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
@@ -11,7 +11,7 @@ use UNIVERSAL::require;
 use POSIX;
 use Time::Local;
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 use constant    category    => "os";
 

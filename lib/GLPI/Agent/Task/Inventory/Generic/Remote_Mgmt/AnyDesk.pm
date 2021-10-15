@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Remote_Mgmt::AnyDesk;
+package GLPI::Agent::Task::Inventory::Generic::Remote_Mgmt::AnyDesk;
 
 # Based on the work done by Ilya
 # See https://fusioninventory.userecho.com/en/communities/1/topics/87-support-for-anydesk-remote-desktop
@@ -6,11 +6,11 @@ package FusionInventory::Agent::Task::Inventory::Generic::Remote_Mgmt::AnyDesk;
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 sub _anydesk_config {
     return 'C:\ProgramData\AnyDesk\system.conf' if OSNAME eq 'MSWin32';

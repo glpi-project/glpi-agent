@@ -11,9 +11,9 @@ use Getopt::Long;
 use Pod::Usage;
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Task::ESX;
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Version;
+use GLPI::Agent::Task::ESX;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Version;
 
 my $options = {
 };
@@ -34,15 +34,15 @@ GetOptions(
 pod2usage(-verbose => 0, -exitstatus => 0) if $options->{help};
 
 if ($options->{version}) {
-    my $PROVIDER = $FusionInventory::Agent::Version::PROVIDER;
+    my $PROVIDER = $GLPI::Agent::Version::PROVIDER;
     map { print $_."\n" }
-        "glpi-esx $FusionInventory::Agent::Task::ESX::VERSION",
-        "based on $PROVIDER Agent v$FusionInventory::Agent::Version::VERSION",
-        @{$FusionInventory::Agent::Version::COMMENTS};
+        "glpi-esx $GLPI::Agent::Task::ESX::VERSION",
+        "based on $PROVIDER Agent v$GLPI::Agent::Version::VERSION",
+        @{$GLPI::Agent::Version::COMMENTS};
     exit 0;
 }
 
-my $esx = FusionInventory::Agent::Task::ESX->new(
+my $esx = GLPI::Agent::Task::ESX->new(
     target => {},
 );
 
@@ -134,14 +134,14 @@ sub inventory_from_dump {
     die "Can't load host full infos from $options->{dumpfile}\n"
         unless $host;
 
-    $esx->{vpbs} = FusionInventory::Agent::Task::ESX::Dump->new($host);
+    $esx->{vpbs} = GLPI::Agent::Task::ESX::Dump->new($host);
 
     write_inventory(undef, $file);
 
     exit 0;
 }
 
-package FusionInventory::Agent::Task::ESX::Dump;
+package GLPI::Agent::Task::ESX::Dump;
 
 sub new {
     my ($class, $fullinfo) = @_;
@@ -180,9 +180,9 @@ glpi-esx --host <host> --user <user> --password <password> --directory <director
     % glpi-esx --host myesx --user foo --password bar --directory /tmp
 
 
-You can import the .ocs file in your inventory server with the glpi-injector tool.
+You can import the .xml file in your inventory server with the glpi-injector tool.
 
-    %glpi-injector -v --file /tmp/*.ocs -u https://example/plugins/fusioninventory/
+    % glpi-injector -v --file /tmp/*.xml -u https://example/front/inventory.php
 
 =head1 DESCRIPTION
 

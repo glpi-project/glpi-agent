@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Tools::PartNumber::Hynix;
+package GLPI::Agent::Tools::PartNumber::Hynix;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Tools::PartNumber';
+use parent 'GLPI::Agent::Tools::PartNumber';
 
 # See https://www.skhynix.com/eng/support/technicalSupport.jsp
 

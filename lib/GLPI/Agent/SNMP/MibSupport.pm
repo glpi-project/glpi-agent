@@ -1,4 +1,4 @@
-package FusionInventory::Agent::SNMP::MibSupport;
+package GLPI::Agent::SNMP::MibSupport;
 
 use strict;
 use warnings;
@@ -10,8 +10,8 @@ use English qw(-no_match_vars);
 use File::Glob;
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Logger;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Logger;
 
 sub new {
     my ($class, %params) = @_;
@@ -20,7 +20,7 @@ sub new {
 
     return unless $device;
 
-    my $logger      = $params{logger} || $device->{logger} || FusionInventory::Agent::Logger->new();
+    my $logger      = $params{logger} || $device->{logger} || GLPI::Agent::Logger->new();
     my $sysobjectid = $params{sysobjectid};
     my $sysorid     = $device->walk(sysORID);
 
@@ -142,7 +142,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP::MibSupport - FusionInventory agent SNMP mib support
+GLPI::Agent::SNMP::MibSupport - GLPI agent SNMP mib support
 
 =head1 DESCRIPTION
 

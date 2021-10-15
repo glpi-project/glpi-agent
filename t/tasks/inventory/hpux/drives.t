@@ -9,8 +9,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::HPUX::Drives;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::HPUX::Drives;
 
 my %tests = (
     'hpux1-nfs' => [
@@ -159,11 +159,11 @@ my %tests = (
 
 plan tests => (2 * scalar keys %tests) + 1;
 
-my $inventory = FusionInventory::Test::Inventory->new();
+my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %tests) {
     my $file = "resources/hpux/bdf/$test";
-    my @drives = FusionInventory::Agent::Task::Inventory::HPUX::Drives::_parseBdf(file => $file);
+    my @drives = GLPI::Agent::Task::Inventory::HPUX::Drives::_parseBdf(file => $file);
     cmp_deeply(\@drives, $tests{$test}, "$test bdf parsing");
     lives_ok {
         $inventory->addEntry(section => 'DRIVES', entry => $_) foreach @drives;

@@ -1,4 +1,4 @@
-package FusionInventory::Agent::HTTP::Protocol::https;
+package GLPI::Agent::HTTP::Protocol::https;
 
 use strict;
 use warnings;
@@ -30,7 +30,7 @@ sub _extra_sock_opts {
 }
 
 ## no critic (ProhibitMultiplePackages)
-package FusionInventory::Agent::HTTP::Protocol::https::Socket;
+package GLPI::Agent::HTTP::Protocol::https::Socket;
 
 use parent qw(Net::HTTPS);
 use parent -norequire, qw(LWP::Protocol::http::SocketMethods);
@@ -40,7 +40,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::HTTP::Protocol::https - HTTPS protocol handler for LWP
+GLPI::Agent::HTTP::Protocol::https - HTTPS protocol handler for LWP
 
 =head1 DESCRIPTION
 

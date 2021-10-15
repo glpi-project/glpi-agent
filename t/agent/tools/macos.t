@@ -8,8 +8,8 @@ use Test::More;
 use English;
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Tools::MacOS;
-use FusionInventory::Agent::Task::Inventory::MacOS::Softwares;
+use GLPI::Agent::Tools::MacOS;
+use GLPI::Agent::Task::Inventory::MacOS::Softwares;
 
 my %system_profiler_tests = (
     '10.4-powerpc' => {
@@ -3403,9 +3403,9 @@ foreach my $test (@ioreg_tests) {
 
 my $type = 'SPApplicationsDataType';
 my $flatFile = 'resources/macos/system_profiler/10.8-system_profiler_SPApplicationsDataType.example.txt';
-my $softwaresFromFlatFile = FusionInventory::Agent::Tools::MacOS::_getSystemProfilerInfosText(file => $flatFile, type => $type);
+my $softwaresFromFlatFile = GLPI::Agent::Tools::MacOS::_getSystemProfilerInfosText(file => $flatFile, type => $type);
 my $xmlFile = 'resources/macos/system_profiler/10.8-system_profiler_SPApplicationsDataType_-xml.example.xml';
-my $softwaresFromXmlFile = FusionInventory::Agent::Tools::MacOS::_getSystemProfilerInfosXML(file => $xmlFile, type => $type, localTimeOffset => 7200);
+my $softwaresFromXmlFile = GLPI::Agent::Tools::MacOS::_getSystemProfilerInfosXML(file => $xmlFile, type => $type, localTimeOffset => 7200);
 
 XML::XPath->require();
 my $checkXmlXPath = $EVAL_ERROR ? 0 : 1;
@@ -3427,7 +3427,7 @@ SKIP : {
     # we format dates in the other hash as it's currently done
     for my $soft (keys %{$softwaresFromFlatFile->{"Applications"}}) {
         if (defined($softwaresFromFlatFile->{"Applications"}->{$soft}->{'Last Modified'})) {
-            my $formattedDate = FusionInventory::Agent::Task::Inventory::MacOS::Softwares::_formatDate($softwaresFromFlatFile->{"Applications"}->{$soft}->{'Last Modified'});
+            my $formattedDate = GLPI::Agent::Task::Inventory::MacOS::Softwares::_formatDate($softwaresFromFlatFile->{"Applications"}->{$soft}->{'Last Modified'});
             $softwaresFromFlatFile->{"Applications"}->{$soft}->{'Last Modified'} = $formattedDate;
         }
     }
@@ -3441,10 +3441,10 @@ SKIP : {
     ok ($softwaresFromFlatFileSize == $softwaresFromXmlFileSize,
         $softwaresFromFlatFileSize.' from flat file and '.$softwaresFromXmlFileSize.' from XML file');
 
-    FusionInventory::Agent::Tools::MacOS::_initXmlParser(
+    GLPI::Agent::Tools::MacOS::_initXmlParser(
         file => 'resources/macos/system_profiler/10.8-system_profiler_SPApplicationsDataType_-xml.example.xml'
     );
-    my $softs = FusionInventory::Agent::Tools::MacOS::_extractSoftwaresFromXml(
+    my $softs = GLPI::Agent::Tools::MacOS::_extractSoftwaresFromXml(
         localTimeOffset => 7200
     );
     ok ($softs);
@@ -3471,7 +3471,7 @@ my $expectedHash = {
         'Version'        => '4.0'
     }
 };
-my $hashMapped = FusionInventory::Agent::Tools::MacOS::_mapApplicationDataKeys($extractedHash);
+my $hashMapped = GLPI::Agent::Tools::MacOS::_mapApplicationDataKeys($extractedHash);
 cmp_deeply(
     $expectedHash,
     $hashMapped
@@ -3481,13 +3481,13 @@ cmp_deeply(
 my $dateStr = '2009-04-07T00:42:37Z';
 my $dateExpectedStr = '07/04/2009';
 my $offset = 7200;
-my $convertedDate = FusionInventory::Agent::Tools::MacOS::_convertDateFromApplicationDataXml($dateStr, $offset);
+my $convertedDate = GLPI::Agent::Tools::MacOS::_convertDateFromApplicationDataXml($dateStr, $offset);
 ok ($dateExpectedStr eq $convertedDate, $dateExpectedStr . ' eq ' . $convertedDate . ' ?');
 
 $dateStr = '2009-04-06T23:42:37Z';
 $dateExpectedStr = '07/04/2009';
 $offset = 3600 * 3;
-$convertedDate = FusionInventory::Agent::Tools::MacOS::_convertDateFromApplicationDataXml($dateStr, $offset);
+$convertedDate = GLPI::Agent::Tools::MacOS::_convertDateFromApplicationDataXml($dateStr, $offset);
 ok ($dateExpectedStr eq $convertedDate, $dateExpectedStr . ' eq ' . $convertedDate . ' ?');
 
 sub _cmpVersionNumbers {

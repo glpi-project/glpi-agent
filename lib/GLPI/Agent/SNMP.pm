@@ -1,4 +1,4 @@
-package FusionInventory::Agent::SNMP;
+package GLPI::Agent::SNMP;
 
 use strict;
 use warnings;
@@ -6,7 +6,7 @@ use warnings;
 use Encode qw(encode);
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 our $VERSION = '1.1';
 
@@ -30,7 +30,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP - Base class for SNMP client
+GLPI::Agent::SNMP - Base class for SNMP client
 
 =head1 DESCRIPTION
 

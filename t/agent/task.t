@@ -8,10 +8,10 @@ use File::Temp qw(tempdir);
 use Test::More;
 use Test::Exception;
 
-use FusionInventory::Agent::Target::Local;
-use FusionInventory::Agent::Task::Inventory;
-use FusionInventory::Agent::Task::Collect;
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Target::Local;
+use GLPI::Agent::Task::Inventory;
+use GLPI::Agent::Task::Collect;
+use GLPI::Agent::Tools;
 
 BEGIN {
     # use mock modules for non-available ones
@@ -22,13 +22,13 @@ plan tests => 8;
 
 my $task;
 throws_ok {
-    $task = FusionInventory::Agent::Task::Inventory->new();
+    $task = GLPI::Agent::Task::Inventory->new();
 } qr/^no target parameter/,
 'instanciation: no target';
 
 lives_ok {
-    $task = FusionInventory::Agent::Task::Inventory->new(
-        target => FusionInventory::Agent::Target::Local->new(
+    $task = GLPI::Agent::Task::Inventory->new(
+        target => GLPI::Agent::Target::Local->new(
             path => tempdir(),
             basevardir => tempdir()
         ),
@@ -38,20 +38,20 @@ lives_ok {
 my @modules = $task->getModules();
 ok(@modules != 0, 'modules list is not empty');
 ok(
-    (all { $_ =~ /^FusionInventory::Agent::Task::Inventory::/ } @modules),
+    (all { $_ =~ /^GLPI::Agent::Task::Inventory::/ } @modules),
     'modules list only contains inventory modules'
 );
 
 @modules = $task->getModules('Inventory');
 ok(@modules != 0, 'inventory modules list is not empty');
 ok(
-    (all { $_ =~ /^FusionInventory::Agent::Task::Inventory::/ } @modules),
+    (all { $_ =~ /^GLPI::Agent::Task::Inventory::/ } @modules),
     'inventory modules list only contains inventory modules'
 );
 
 @modules = $task->getModules('Collect');
 ok(@modules != 0, 'collect modules list is not empty');
 ok(
-    (all { $_ =~ /^FusionInventory::Agent::Task::Collect::/ } @modules),
+    (all { $_ =~ /^GLPI::Agent::Task::Collect::/ } @modules),
     'collect modules list only contains collect modules'
 );

@@ -1,16 +1,16 @@
-package FusionInventory::Agent::HTTP::Server::ToolBox::Credentials;
+package GLPI::Agent::HTTP::Server::ToolBox::Credentials;
 
 use strict;
 use warnings;
 
-use parent "FusionInventory::Agent::HTTP::Server::ToolBox";
+use parent "GLPI::Agent::HTTP::Server::ToolBox";
 
 use English qw(-no_match_vars);
 use Encode qw(encode);
 use HTML::Entities;
 
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Tools;
 
 use constant    credentials => "credentials";
 
@@ -29,7 +29,7 @@ sub new {
 
     my $self = {
         logger  => $params{toolbox}->{logger} ||
-                    FusionInventory::Agent::Logger->new(),
+                    GLPI::Agent::Logger->new(),
         toolbox => $params{toolbox},
         name    => $name,
     };

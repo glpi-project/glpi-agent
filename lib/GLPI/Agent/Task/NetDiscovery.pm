@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Task::NetDiscovery;
+package GLPI::Agent::Task::NetDiscovery;
 
 use strict;
 use warnings;
 use threads;
-use parent 'FusionInventory::Agent::Task';
+use parent 'GLPI::Agent::Task';
 
 use constant DEVICE_PER_MESSAGE => 4;
 
@@ -14,18 +14,18 @@ use Time::HiRes qw(usleep);
 use Thread::Queue v2.01;
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Version;
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Network;
-use FusionInventory::Agent::Tools::Hardware;
-use FusionInventory::Agent::Tools::Expiration;
-use FusionInventory::Agent::Tools::SNMP;
-use FusionInventory::Agent::XML::Query;
+use GLPI::Agent::Version;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Network;
+use GLPI::Agent::Tools::Hardware;
+use GLPI::Agent::Tools::Expiration;
+use GLPI::Agent::Tools::SNMP;
+use GLPI::Agent::XML::Query;
 
-use FusionInventory::Agent::Task::NetDiscovery::Version;
-use FusionInventory::Agent::Task::NetDiscovery::Job;
+use GLPI::Agent::Task::NetDiscovery::Version;
+use GLPI::Agent::Task::NetDiscovery::Job;
 
-our $VERSION = FusionInventory::Agent::Task::NetDiscovery::Version::VERSION;
+our $VERSION = GLPI::Agent::Task::NetDiscovery::Version::VERSION;
 
 sub isEnabled {
     my ($self, $contact) = @_;
@@ -84,7 +84,7 @@ sub isEnabled {
             next;
         }
 
-        push @jobs, FusionInventory::Agent::Task::NetDiscovery::Job->new(
+        push @jobs, GLPI::Agent::Task::NetDiscovery::Job->new(
             logger      => $self->{logger},
             params      => $params,
             credentials => $option->{AUTHENTICATION},
@@ -180,10 +180,10 @@ sub run {
         );
     }
 
-    FusionInventory::Agent::SNMP::Live->require();
+    GLPI::Agent::SNMP::Live->require();
     if ($EVAL_ERROR) {
         $self->{logger}->info(
-            "Can't load FusionInventory::Agent::SNMP::Live, snmp detection " .
+            "Can't load GLPI::Agent::SNMP::Live, snmp detection " .
             "can't be used"
         );
     }
@@ -464,14 +464,14 @@ sub abort {
 sub _sendMessage {
     my ($self, $content) = @_;
 
-    my $message = FusionInventory::Agent::XML::Query->new(
+    my $message = GLPI::Agent::XML::Query->new(
         deviceid => $self->{deviceid} || 'foo',
         query    => 'NETDISCOVERY',
         content  => $content
     );
 
     # task-specific client, if needed
-    $self->{client} = FusionInventory::Agent::HTTP::Client::OCS->new(%{$self->{_client_params}})
+    $self->{client} = GLPI::Agent::HTTP::Client::OCS->new(%{$self->{_client_params}})
         if !$self->{client};
 
     $self->{client}->send(
@@ -690,9 +690,9 @@ sub _scanAddressBySNMPReal {
 
     my $snmp;
     if ($params{file}) {
-        FusionInventory::Agent::SNMP::Mock->require();
+        GLPI::Agent::SNMP::Mock->require();
         eval {
-            $snmp = FusionInventory::Agent::SNMP::Mock->new(
+            $snmp = GLPI::Agent::SNMP::Mock->new(
                 ip   => $params{ip},
                 file => $params{file}
             );
@@ -701,7 +701,7 @@ sub _scanAddressBySNMPReal {
     } else {
         eval {
             # AUTHPASSPHRASE & PRIVPASSPHRASE are deprecated but still used by FusionInventory for GLPI plugin
-            $snmp = FusionInventory::Agent::SNMP::Live->new(
+            $snmp = GLPI::Agent::SNMP::Live->new(
                 version      => $params{credential}->{VERSION},
                 hostname     => $params{ip},
                 port         => $params{port},
@@ -736,7 +736,7 @@ sub _sendStartMessage {
     $self->_sendMessage({
         AGENT => {
             START        => 1,
-            AGENTVERSION => $FusionInventory::Agent::Version::VERSION,
+            AGENTVERSION => $GLPI::Agent::Version::VERSION,
         },
         MODULEVERSION => $VERSION,
         PROCESSNUMBER => $pid
@@ -794,7 +794,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Task::NetDiscovery - Net discovery support for FusionInventory Agent
+GLPI::Agent::Task::NetDiscovery - Net discovery support for GLPI Agent
 
 =head1 DESCRIPTION
 
@@ -812,9 +812,4 @@ devices identification, through SNMP
 
 =back
 
-This task requires a GLPI server with FusionInventory plugin.
-
-=head1 AUTHORS
-
-Copyright (C) 2009 David Durieux
-Copyright (C) 2010-2012 FusionInventory Team
+This task requires a GLPI server with a FusionInventory compatible plugin.

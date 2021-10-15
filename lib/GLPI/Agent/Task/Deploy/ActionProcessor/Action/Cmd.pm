@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::Deploy::ActionProcessor::Action::Cmd;
+package GLPI::Agent::Task::Deploy::ActionProcessor::Action::Cmd;
 
 use strict;
 use warnings;
@@ -66,9 +66,9 @@ sub _runOnUnix {
 sub _runOnWindows {
     my ($params, $logger) = @_;
 
-    FusionInventory::Agent::Tools::Win32->require;
+    GLPI::Agent::Tools::Win32->require;
 
-    my ($exitcode, $fd) = FusionInventory::Agent::Tools::Win32::runCommand(
+    my ($exitcode, $fd) = GLPI::Agent::Tools::Win32::runCommand(
         command => $params->{exec}
     );
 

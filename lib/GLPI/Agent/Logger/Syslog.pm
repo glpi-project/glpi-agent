@@ -1,13 +1,13 @@
-package FusionInventory::Agent::Logger::Syslog;
+package GLPI::Agent::Logger::Syslog;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Logger::Backend';
+use parent 'GLPI::Agent::Logger::Backend';
 
 use Sys::Syslog qw(:standard :macros);
 
-use FusionInventory::Agent::Version;
+use GLPI::Agent::Version;
 
 my %syslog_levels = (
     error   => LOG_ERR,
@@ -17,7 +17,7 @@ my %syslog_levels = (
     debug2  => LOG_DEBUG
 );
 
-my $syslog_name = lc($FusionInventory::Agent::Version::PROVIDER)."-agent";
+my $syslog_name = lc($GLPI::Agent::Version::PROVIDER)."-agent";
 
 sub new {
     my ($class, %params) = @_;
@@ -57,7 +57,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Logger::Syslog - A syslog backend for the logger
+GLPI::Agent::Logger::Syslog - A syslog backend for the logger
 
 =head1 DESCRIPTION
 

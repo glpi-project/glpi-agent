@@ -9,7 +9,7 @@ use File::Temp;
 use Test::Deep qw(cmp_deeply);
 use Test::More;
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 my @size_tests_nok = (
     'foo', undef
@@ -379,20 +379,20 @@ is(
 }
 
 my $result1 = runFunction(
-    module   => 'FusionInventory::Test::Module',
+    module   => 'GLPI::Test::Module',
     function => 'mirror',
     params   => 'foo'
 );
 ok(!defined $result1, 'indirect function execution, unloaded module');
 my $result2 = runFunction(
-    module   => 'FusionInventory::Test::Module',
+    module   => 'GLPI::Test::Module',
     function => 'mirror',
     params   => 'foo',
     load     => 1
 );
 is($result2, 'foo', 'indirect function execution, automatic module loading');
 runFunction(
-    module   => 'FusionInventory::Test::Module',
+    module   => 'GLPI::Test::Module',
     function => 'loop',
     params   => 'foo',
     timeout  => 1

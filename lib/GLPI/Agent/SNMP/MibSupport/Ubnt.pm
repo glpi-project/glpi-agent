@@ -1,12 +1,12 @@
-package FusionInventory::Agent::SNMP::MibSupport::Ubnt;
+package GLPI::Agent::SNMP::MibSupport::Ubnt;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::SNMP::MibSupportTemplate';
+use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::SNMP;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::SNMP;
 
 # See UBNT-MIB
 
@@ -41,7 +41,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP::MibSupport::Ubnt - Inventory module for Ubnt
+GLPI::Agent::SNMP::MibSupport::Ubnt - Inventory module for Ubnt
 
 =head1 DESCRIPTION
 

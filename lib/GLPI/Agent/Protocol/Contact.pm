@@ -5,7 +5,7 @@ use warnings;
 
 use parent 'GLPI::Agent::Protocol::Message';
 
-use FusionInventory::Agent::Version;
+use GLPI::Agent::Version;
 
 sub new {
     my ($class, %params) = @_;
@@ -21,8 +21,8 @@ sub new {
     unless ($self->get('status')) {
         my $message = $self->get;
         $message->{action}   = 'contact';
-        $message->{name}     = $FusionInventory::Agent::Version::PROVIDER . "-Agent";
-        $message->{version}  = $FusionInventory::Agent::Version::VERSION;
+        $message->{name}     = $GLPI::Agent::Version::PROVIDER . "-Agent";
+        $message->{version}  = $GLPI::Agent::Version::VERSION;
     }
 
     return $self;

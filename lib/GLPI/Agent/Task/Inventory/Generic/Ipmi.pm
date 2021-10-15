@@ -1,11 +1,11 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Ipmi;
+package GLPI::Agent::Task::Inventory::Generic::Ipmi;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 sub isEnabled {
     return unless canRun('ipmitool');

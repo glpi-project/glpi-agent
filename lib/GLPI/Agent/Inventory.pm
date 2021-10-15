@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Inventory;
+package GLPI::Agent::Inventory;
 
 use strict;
 use warnings;
@@ -8,9 +8,9 @@ use Digest::SHA;
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Version;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Version;
 
 use GLPI::Agent::Protocol::Message;
 
@@ -132,14 +132,14 @@ sub new {
 
     my $self = {
         deviceid       => $params{deviceid},
-        logger         => $params{logger} || FusionInventory::Agent::Logger->new(),
+        logger         => $params{logger} || GLPI::Agent::Logger->new(),
         fields         => \%fields,
         content        => {
             HARDWARE => {
                 VMSYSTEM => "Physical" # Default value
             },
-            VERSIONCLIENT => $FusionInventory::Agent::AGENT_STRING ||
-                $FusionInventory::Agent::Version::PROVIDER."-Inventory_v".$FusionInventory::Agent::Version::VERSION
+            VERSIONCLIENT => $GLPI::Agent::AGENT_STRING ||
+                $GLPI::Agent::Version::PROVIDER."-Inventory_v".$GLPI::Agent::Version::VERSION
         }
     };
     bless $self, $class;
@@ -177,15 +177,15 @@ sub getDeviceId {
         my $workgroup = $self->getHardware('WORKGROUP');
         $hostname .= "." . $workgroup if $workgroup;
     } else {
-        FusionInventory::Agent::Tools::Hostname->require();
+        GLPI::Agent::Tools::Hostname->require();
 
         eval {
-            $hostname = FusionInventory::Agent::Tools::Hostname::getHostname();
+            $hostname = GLPI::Agent::Tools::Hostname::getHostname();
         };
     }
 
     # Fake hostname if no default found
-    $hostname = 'device-by-' . lc($FusionInventory::Agent::Version::PROVIDER) . '-agent'
+    $hostname = 'device-by-' . lc($GLPI::Agent::Version::PROVIDER) . '-agent'
         unless $hostname;
 
     my ($year, $month , $day, $hour, $min, $sec) =
@@ -560,7 +560,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Inventory - Inventory data structure
+GLPI::Agent::Inventory - Inventory data structure
 
 =head1 DESCRIPTION
 

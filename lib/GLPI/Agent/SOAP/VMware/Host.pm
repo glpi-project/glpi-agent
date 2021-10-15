@@ -1,10 +1,10 @@
-package FusionInventory::Agent::SOAP::VMware::Host;
+package GLPI::Agent::SOAP::VMware::Host;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Virtualization;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Virtualization;
 
 sub new {
     my ($class, %params) = @_;
@@ -395,7 +395,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SOAP::VMware::Host - VMware Host abstraction layer
+GLPI::Agent::SOAP::VMware::Host - VMware Host abstraction layer
 
 =head1 DESCRIPTION
 

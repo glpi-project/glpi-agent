@@ -1,11 +1,11 @@
-package FusionInventory::Agent::HTTP::Session;
+package GLPI::Agent::HTTP::Session;
 
 use strict;
 use warnings;
 
 use Digest::SHA;
 
-use FusionInventory::Agent::Logger;
+use GLPI::Agent::Logger;
 
 my $log_prefix = "[http session] ";
 
@@ -14,7 +14,7 @@ sub new {
 
     my $self = {
         logger  => $params{logger} ||
-                        FusionInventory::Agent::Logger->new(),
+                        GLPI::Agent::Logger->new(),
         timer   => $params{timer} || [ time, $params{timeout} || 600 ],
         nonce   => $params{nonce} || '',
         _sid    => $params{sid} || '',
@@ -180,7 +180,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::HTTP::Session - An abstract HTTP session
+GLPI::Agent::HTTP::Session - An abstract HTTP session
 
 =head1 DESCRIPTION
 

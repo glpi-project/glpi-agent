@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools::PartNumber;
+package GLPI::Agent::Tools::PartNumber;
 
 use strict;
 use warnings;
@@ -6,8 +6,8 @@ use warnings;
 use File::Glob;
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Logger;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Logger;
 
 use constant category       => "";
 use constant manufacturer   => "";
@@ -20,7 +20,7 @@ my @subclasses;
 sub new {
     my ($class, %params) = @_;
 
-    my $logger = $params{logger} || FusionInventory::Agent::Logger->new();
+    my $logger = $params{logger} || GLPI::Agent::Logger->new();
 
     unless (@subclasses) {
         my %priority = ();
@@ -31,7 +31,7 @@ sub new {
             $file =~ s{\\}{/}g if $OSNAME eq 'MSWin32';
             my ($class) = $file =~ $subclass_path_re
                 or next;
-            my $module = "FusionInventory::Agent::Tools::PartNumber::" . $class;
+            my $module = "GLPI::Agent::Tools::PartNumber::" . $class;
             $module->require();
             if ($EVAL_ERROR) {
                 $logger->debug("Failed to load PartNumber::$class");
@@ -100,7 +100,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Tools::PartNumber - PartNumber class
+GLPI::Agent::Tools::PartNumber - PartNumber class
 
 =head1 DESCRIPTION
 

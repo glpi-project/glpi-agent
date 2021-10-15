@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::NetInventory::Version;
+package GLPI::Agent::Task::NetInventory::Version;
 
 use strict;
 use warnings;

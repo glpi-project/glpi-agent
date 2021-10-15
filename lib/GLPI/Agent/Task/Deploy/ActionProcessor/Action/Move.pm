@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::Deploy::ActionProcessor::Action::Move;
+package GLPI::Agent::Task::Deploy::ActionProcessor::Action::Move;
 
 use strict;
 use warnings;
@@ -22,8 +22,8 @@ sub do {
         my $to_local = $to;
 
         if ($OSNAME eq 'MSWin32') {
-            FusionInventory::Agent::Tools::Win32->require;
-            my $localCodepage = FusionInventory::Agent::Tools::Win32::getLocalCodepage();
+            GLPI::Agent::Tools::Win32->require;
+            my $localCodepage = GLPI::Agent::Tools::Win32::getLocalCodepage();
             if (Encode::is_utf8($from)) {
                 $from_local = encode($localCodepage, $from);
             }

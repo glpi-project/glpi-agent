@@ -12,8 +12,8 @@ use Test::Exception;
 use Test::MockObject::Extends;
 use Test::MockModule;
 
-use FusionInventory::Agent::SOAP::VMware;
-use FusionInventory::Agent::Tools::Virtualization;
+use GLPI::Agent::SOAP::VMware;
+use GLPI::Agent::Tools::Virtualization;
 
 my %tests = (
     'esx-4.1.0-1' => {
@@ -522,7 +522,7 @@ foreach my $test (keys %tests) {
     # ensure a calll to LWP::UserAgent->new() return our mock agent
     $module->mock(new => sub { return $mock; });
 
-    my $vpbs = FusionInventory::Agent::SOAP::VMware->new(
+    my $vpbs = GLPI::Agent::SOAP::VMware->new(
         user => 'foo',
     );
 

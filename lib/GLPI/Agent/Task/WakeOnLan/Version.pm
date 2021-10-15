@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::WakeOnLan::Version;
+package GLPI::Agent::Task::WakeOnLan::Version;
 
 use strict;
 use warnings;

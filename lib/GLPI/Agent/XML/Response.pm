@@ -1,4 +1,4 @@
-package FusionInventory::Agent::XML::Response;
+package GLPI::Agent::XML::Response;
 
 use strict;
 use warnings;
@@ -51,7 +51,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::XML::Response - Generic server message
+GLPI::Agent::XML::Response - Generic server message
 
 =head1 DESCRIPTION
 

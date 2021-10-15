@@ -1,12 +1,12 @@
-package FusionInventory::Agent::Task::Inventory::MacOS::Softwares;
+package GLPI::Agent::Task::Inventory::MacOS::Softwares;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::MacOS;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::MacOS;
 
 use constant    category    => "software";
 
@@ -41,8 +41,8 @@ sub _getSoftwaresList {
     if (!$params{format} || $params{format} eq 'text') {
         $datesAlreadyFormatted = 0;
     }
-    my $localTimeOffset = FusionInventory::Agent::Tools::MacOS::detectLocalTimeOffset();
-    $infos = FusionInventory::Agent::Tools::MacOS::getSystemProfilerInfos(
+    my $localTimeOffset = GLPI::Agent::Tools::MacOS::detectLocalTimeOffset();
+    $infos = GLPI::Agent::Tools::MacOS::getSystemProfilerInfos(
         %params,
         type            => 'SPApplicationsDataType',
         localTimeOffset => $localTimeOffset

@@ -7,7 +7,7 @@ use lib 't/lib';
 use English qw(-no_match_vars);
 use Test::More;
 
-use FusionInventory::Test::Utils;
+use GLPI::Test::Utils;
 
 plan tests => 3;
 

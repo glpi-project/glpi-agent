@@ -1,15 +1,15 @@
-package FusionInventory::Agent::Task::Inventory::Win32::License;
+package GLPI::Agent::Task::Inventory::Win32::License;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools::License;
-use FusionInventory::Agent::Tools::Win32;
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools::License;
+use GLPI::Agent::Tools::Win32;
+use GLPI::Agent::Tools;
 
 use constant    category    => "licenseinfo";
 

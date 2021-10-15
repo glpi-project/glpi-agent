@@ -1,17 +1,17 @@
-package FusionInventory::Agent::Tools::Storages::HP;
+package GLPI::Agent::Tools::Storages::HP;
 
 use strict;
 use warnings;
 
 use parent 'Exporter';
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 our @EXPORT = qw(
     HpInventory
 );
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 # This speeds up hpacucli startup by skipping non-local (iSCSI, Fibre) storages.
 # See https://support.hpe.com/hpsc/doc/public/display?docId=emr_na-c03696601

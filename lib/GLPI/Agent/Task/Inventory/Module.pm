@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::Inventory::Module;
+package GLPI::Agent::Task::Inventory::Module;
 
 use strict;
 use warnings;
@@ -22,7 +22,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Task::Inventory::Module - Inventory task module for FusionInventory
+GLPI::Agent::Task::Inventory::Module - Inventory task module for GLPI
 
 =head1 DESCRIPTION
 
@@ -37,7 +37,7 @@ Array ref of module string list.
 List of modules to always be run before this one. If any module of this list is
 disabled, the module won't be run: this is a hard dependency.
 
-Example: see FusionInventory::Agent::Task::Inventory::Linux module
+Example: see GLPI::Agent::Task::Inventory::Linux module
 
 =head2 $runAfterIfEnabled = []
 
@@ -45,7 +45,7 @@ Array ref of module string list.
 
 List of enabled modules to be run before this one: this is a soft dependency.
 
-Example: see FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Memory module
+Example: see GLPI::Agent::Task::Inventory::Generic::Dmidecode::Memory module
 
 =head2 $runMeIfTheseChecksFailed = []
 
@@ -53,7 +53,7 @@ Array ref of module string list.
 
 If a module in that list is enabled, this one will be disabled.
 
-Example: see FusionInventory::Agent::Task::Inventory::Win32::Bios module
+Example: see GLPI::Agent::Task::Inventory::Win32::Bios module
 
 =head1 FUNCTIONS
 

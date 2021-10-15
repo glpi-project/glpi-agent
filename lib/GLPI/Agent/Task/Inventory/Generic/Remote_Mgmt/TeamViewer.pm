@@ -1,20 +1,20 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Remote_Mgmt::TeamViewer;
+package GLPI::Agent::Task::Inventory::Generic::Remote_Mgmt::TeamViewer;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 sub isEnabled {
     my (%params) = @_;
 
     if (OSNAME eq 'MSWin32') {
 
-        FusionInventory::Agent::Tools::Win32->use();
+        GLPI::Agent::Tools::Win32->use();
 
         my $key = getRegistryKey(
             path => is64bit() ?
@@ -62,7 +62,7 @@ sub _getID {
 
     if (OSNAME eq 'MSWin32') {
 
-        FusionInventory::Agent::Tools::Win32->use();
+        GLPI::Agent::Tools::Win32->use();
 
         my $clientid = getRegistryValue(
             path   => is64bit() ?

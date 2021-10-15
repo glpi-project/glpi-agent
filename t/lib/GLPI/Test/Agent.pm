@@ -1,8 +1,8 @@
-package FusionInventory::Test::Agent;
+package GLPI::Test::Agent;
 
 use strict;
 use warnings;
-use parent qw(FusionInventory::Agent);
+use parent qw(GLPI::Agent);
 
 use File::Temp;
 

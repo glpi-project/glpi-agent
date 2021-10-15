@@ -9,11 +9,11 @@ use File::Temp;
 use Test::More;
 use XML::TreePP;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Test::Utils;
-use FusionInventory::Agent::Version;
+use GLPI::Agent::Tools;
+use GLPI::Test::Utils;
+use GLPI::Agent::Version;
 
-my $PROVIDER = $FusionInventory::Agent::Version::PROVIDER;
+my $PROVIDER = $GLPI::Agent::Version::PROVIDER;
 
 plan tests => 36;
 

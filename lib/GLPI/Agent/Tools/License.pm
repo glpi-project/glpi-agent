@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools::License;
+package GLPI::Agent::Tools::License;
 
 use strict;
 use warnings;
@@ -6,7 +6,7 @@ use parent 'Exporter';
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 our @EXPORT = qw(
     getAdobeLicenses
@@ -192,7 +192,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Tools::License - License-related functions
+GLPI::Agent::Tools::License - License-related functions
 
 =head1 DESCRIPTION
 

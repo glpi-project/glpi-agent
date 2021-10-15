@@ -11,8 +11,8 @@ use Test::MockModule;
 use Test::More;
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Inventory;
-use FusionInventory::Test::Utils;
+use GLPI::Agent::Inventory;
+use GLPI::Test::Utils;
 
 BEGIN {
     # use mock modules for non-available ones
@@ -27,7 +27,7 @@ if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
 
 Test::NoWarnings->use();
 
-FusionInventory::Agent::Task::Inventory::Win32::Storages->require();
+GLPI::Agent::Task::Inventory::Win32::Storages->require();
 
 my %tests = (
     'win7-sp1-x64' => [
@@ -305,10 +305,10 @@ my %tests = (
 
 plan tests => (2 * scalar keys %tests) + 1;
 
-my $inventory = FusionInventory::Agent::Inventory->new();
+my $inventory = GLPI::Agent::Inventory->new();
 
 my $module = Test::MockModule->new(
-    'FusionInventory::Agent::Task::Inventory::Win32::Storages'
+    'GLPI::Agent::Task::Inventory::Win32::Storages'
 );
 
 foreach my $test (sort keys %tests) {
@@ -317,7 +317,7 @@ foreach my $test (sort keys %tests) {
         mockGetWMIObjects($test)
     );
 
-    my @storages = FusionInventory::Agent::Task::Inventory::Win32::Storages::_getDrives(
+    my @storages = GLPI::Agent::Task::Inventory::Win32::Storages::_getDrives(
             class => 'Win32_DiskDrive'
     );
     cmp_deeply(

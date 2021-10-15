@@ -1,9 +1,9 @@
-package FusionInventory::Agent::SOAP::WsMan::Shell;
+package GLPI::Agent::SOAP::WsMan::Shell;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::SOAP::WsMan::Node;
+use GLPI::Agent::SOAP::WsMan::Node;
 
 ## no critic (ProhibitMultiplePackages)
 package
@@ -11,12 +11,12 @@ package
 
 use parent 'Node';
 
-use FusionInventory::Agent::SOAP::WsMan::Attribute;
-use FusionInventory::Agent::SOAP::WsMan::InputStreams;
-use FusionInventory::Agent::SOAP::WsMan::OutputStreams;
-use FusionInventory::Agent::SOAP::WsMan::CommandLine;
-use FusionInventory::Agent::SOAP::WsMan::Command;
-use FusionInventory::Agent::SOAP::WsMan::Arguments;
+use GLPI::Agent::SOAP::WsMan::Attribute;
+use GLPI::Agent::SOAP::WsMan::InputStreams;
+use GLPI::Agent::SOAP::WsMan::OutputStreams;
+use GLPI::Agent::SOAP::WsMan::CommandLine;
+use GLPI::Agent::SOAP::WsMan::Command;
+use GLPI::Agent::SOAP::WsMan::Arguments;
 
 use constant    xmlns   => 'rsp';
 use constant    xsd     => "http://schemas.microsoft.com/wbem/wsman/1/windows/shell";

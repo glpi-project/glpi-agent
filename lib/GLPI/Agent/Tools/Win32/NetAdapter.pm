@@ -1,11 +1,11 @@
-package FusionInventory::Agent::Tools::Win32::NetAdapter;
+package GLPI::Agent::Tools::Win32::NetAdapter;
 
 use warnings;
 use strict;
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools::Network;
+use GLPI::Agent::Tools::Network;
 
 sub new {
     my ($class, %params) = @_;

@@ -1,12 +1,12 @@
-package FusionInventory::Agent::SNMP::MibSupport::Siemens;
+package GLPI::Agent::SNMP::MibSupport::Siemens;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::SNMP::MibSupportTemplate';
+use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::SNMP;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::SNMP;
 
 use constant sysdescr       => '.1.3.6.1.2.1.1.1.0';
 
@@ -136,7 +136,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP::MibSupport::Siemens - Inventory module for Siemens
+GLPI::Agent::SNMP::MibSupport::Siemens - Inventory module for Siemens
 
 =head1 DESCRIPTION
 

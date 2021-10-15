@@ -9,8 +9,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Agent::Inventory;
-use FusionInventory::Agent::Task::Inventory::BSD::Softwares;
+use GLPI::Agent::Inventory;
+use GLPI::Agent::Task::Inventory::BSD::Softwares;
 
 my %pkg_info_tests = (
     'sample1' => [
@@ -356,11 +356,11 @@ my %pkg_info_tests = (
 
 plan tests => (2 * scalar keys %pkg_info_tests) + 1;
 
-my $inventory = FusionInventory::Agent::Inventory->new();
+my $inventory = GLPI::Agent::Inventory->new();
 
 foreach my $test (keys %pkg_info_tests) {
     my $file = "resources/bsd/pkg_info/$test";
-    my $softwares = FusionInventory::Agent::Task::Inventory::BSD::Softwares::_getPackagesList(file => $file);
+    my $softwares = GLPI::Agent::Task::Inventory::BSD::Softwares::_getPackagesList(file => $file);
     cmp_deeply($softwares, $pkg_info_tests{$test}, "$test: parsing");
     lives_ok {
         $inventory->addEntry(section => 'SOFTWARES', entry => $_)

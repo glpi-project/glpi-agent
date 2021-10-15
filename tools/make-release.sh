@@ -86,8 +86,8 @@ if [ "$GIT" != "no" ]; then
 fi
 
 # 3. Update sources version
-cat >lib/FusionInventory/Agent/Version.pm <<VERSION
-package FusionInventory::Agent::Version;
+cat >lib/GLPI/Agent/Version.pm <<VERSION
+package GLPI::Agent::Version;
 
 use strict;
 use warnings;
@@ -102,7 +102,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Version - GLPI Agent version
+GLPI::Agent::Version - GLPI Agent version
 
 =head1 DESCRIPTION
 

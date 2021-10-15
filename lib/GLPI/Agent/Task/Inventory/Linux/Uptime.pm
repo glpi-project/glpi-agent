@@ -1,13 +1,13 @@
-package FusionInventory::Agent::Task::Inventory::Linux::Uptime;
+package GLPI::Agent::Task::Inventory::Linux::Uptime;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use Time::HiRes qw(time);
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 use constant    category    => "os";
 

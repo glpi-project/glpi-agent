@@ -10,9 +10,9 @@ use Test::Exception;
 use Test::More;
 use JSON;
 
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Version;
-use FusionInventory::Agent::XML::Response;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Version;
+use GLPI::Agent::XML::Response;
 
 use GLPI::Agent::Protocol::Inventory;
 
@@ -295,7 +295,7 @@ my %inventories = (
 
 plan tests => 7 + 3*keys(%inventories);
 
-my $logger = FusionInventory::Agent::Logger->new(
+my $logger = GLPI::Agent::Logger->new(
     logger => [ 'Test' ]
 );
 

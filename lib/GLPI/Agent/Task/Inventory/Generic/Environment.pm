@@ -1,13 +1,13 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Environment;
+package GLPI::Agent::Task::Inventory::Generic::Environment;
 
 use English qw(-no_match_vars);
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 use constant    category    => "environment";
 

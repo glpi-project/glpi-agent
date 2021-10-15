@@ -1,11 +1,11 @@
-package FusionInventory::Agent::Task::Inventory::Linux::PowerPC::CPU;
+package GLPI::Agent::Task::Inventory::Linux::PowerPC::CPU;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools::Linux;
+use GLPI::Agent::Tools::Linux;
 
 use constant    category    => "cpu";
 

@@ -6,7 +6,7 @@ use warnings;
 use Test::Deep;
 use Test::More;
 
-use FusionInventory::Agent::Tools::Solaris;
+use GLPI::Agent::Tools::Solaris;
 
 my %prtconf_tests = (
     sparc1 => {

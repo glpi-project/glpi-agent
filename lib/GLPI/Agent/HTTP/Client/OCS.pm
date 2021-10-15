@@ -1,8 +1,8 @@
-package FusionInventory::Agent::HTTP::Client::OCS;
+package GLPI::Agent::HTTP::Client::OCS;
 
 use strict;
 use warnings;
-use parent 'FusionInventory::Agent::HTTP::Client';
+use parent 'GLPI::Agent::HTTP::Client';
 
 use English qw(-no_match_vars);
 use HTTP::Request;
@@ -10,9 +10,9 @@ use UNIVERSAL::require;
 use URI;
 use Encode;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::UUID;
-use FusionInventory::Agent::XML::Response;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::UUID;
+use GLPI::Agent::XML::Response;
 
 my $log_prefix = "[http client] ";
 
@@ -104,7 +104,7 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
 
     my $result;
     eval {
-        $result = FusionInventory::Agent::XML::Response->new(
+        $result = GLPI::Agent::XML::Response->new(
             content => $uncompressed_response_content
         );
     };
@@ -229,7 +229,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::HTTP::Client::OCS - An HTTP client using OCS protocol
+GLPI::Agent::HTTP::Client::OCS - An HTTP client using OCS protocol
 
 =head1 DESCRIPTION
 
@@ -240,7 +240,7 @@ using original OCS protocol (XML messages sent through POST requests).
 
 =head2 send(%params)
 
-Send an instance of C<FusionInventory::Agent::XML::Query> to the target (the
+Send an instance of C<GLPI::Agent::XML::Query> to the target (the
 server).
 
 The following parameters are allowed, as keys of the %params
@@ -258,4 +258,4 @@ the message to send (mandatory)
 
 =back
 
-This method returns an C<FusionInventory::Agent::XML::Response> instance.
+This method returns an C<GLPI::Agent::XML::Response> instance.

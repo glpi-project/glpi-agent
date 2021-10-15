@@ -18,10 +18,10 @@ use Time::HiRes qw(gettimeofday);
 use File::Which;
 use File::Find;
 
-use FusionInventory::Agent::Config;
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Storage;
-use FusionInventory::Agent::Task::RemoteInventory::Remote;
+use GLPI::Agent::Config;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Storage;
+use GLPI::Agent::Task::RemoteInventory::Remote;
 
 our $VERSION = "1.0";
 
@@ -88,7 +88,7 @@ if ($cmd) {
 
     die "Unsupported '$cmd' command\n" unless exists($cmds{$cmd});
 
-    $logger = FusionInventory::Agent::Logger->new(config => $options);
+    $logger = GLPI::Agent::Logger->new(config => $options);
 
     &{$cmds{$cmd}}(@params);
 
@@ -184,7 +184,7 @@ sub add {
         }
     }
     if ($options->{server} || $options->{local}) {
-        my $config = FusionInventory::Agent::Config->new(
+        my $config = GLPI::Agent::Config->new(
             options => $options,
             vardir  => $setup{vardir},
         );
@@ -204,7 +204,7 @@ sub add {
 
     my $umask = umask 0007;
     foreach my $url (@urls) {
-        my $remote = FusionInventory::Agent::Task::RemoteInventory::Remote->new(
+        my $remote = GLPI::Agent::Task::RemoteInventory::Remote->new(
             url     => $url,
             config  => $options,
             logger  => $logger,
@@ -230,7 +230,7 @@ sub add {
                 $match = $id;
             } elsif ($remote->protocol() eq 'winrm') {
                 foreach my $otherid (sort keys(%{$remotes})) {
-                    my $other = FusionInventory::Agent::Task::RemoteInventory::Remote->new(
+                    my $other = GLPI::Agent::Task::RemoteInventory::Remote->new(
                         url     => $remotes->{$otherid}->{url},
                     );
                     next unless $other->protocol() eq 'winrm';
@@ -295,7 +295,7 @@ sub get_remotes {
         foreach my $id (sort keys(%{$remotes})) {
             my $dump = $remotes->{$id};
             next unless ref($dump) eq 'HASH';
-            my $remote = FusionInventory::Agent::Task::RemoteInventory::Remote->new(
+            my $remote = GLPI::Agent::Task::RemoteInventory::Remote->new(
                 dump    => $dump,
                 config  => $options,
                 logger  => $logger,
@@ -328,7 +328,7 @@ sub get_targets {
                 return unless $File::Find::name =~ m/\/target\.dump$/;
                 return if -d $File::Find::name;
 
-                my $storage = FusionInventory::Agent::Storage->new(
+                my $storage = GLPI::Agent::Storage->new(
                     directory   => $File::Find::dir,
                     logger      => $logger,
                 );

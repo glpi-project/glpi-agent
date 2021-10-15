@@ -1,4 +1,4 @@
-package FusionInventory::Agent::SOAP::VMware;
+package GLPI::Agent::SOAP::VMware;
 
 use strict;
 use warnings;
@@ -8,8 +8,8 @@ use XML::TreePP;
 use LWP::UserAgent;
 use HTTP::Cookies;
 
-use FusionInventory::Agent;
-use FusionInventory::Agent::SOAP::VMware::Host;
+use GLPI::Agent;
+use GLPI::Agent::SOAP::VMware::Host;
 
 sub new {
     my ($class, %params) = @_;
@@ -23,7 +23,7 @@ sub new {
     # create user agent
     $self->{ua} = LWP::UserAgent->new(
         requests_redirectable => ['POST', 'GET', 'HEAD'],
-        agent                 => $FusionInventory::Agent::AGENT_STRING,
+        agent                 => $GLPI::Agent::AGENT_STRING,
         timeout               => $params{timeout} || 180,
         ssl_opts              => { verify_hostname => 0, SSL_verify_mode => 0 },
         cookie_jar            => HTTP::Cookies->new(ignore_discard => 1),
@@ -270,7 +270,7 @@ sub getHostFullInfo {
         push @$vms, $self->_getVirtualMachineById($id);
     }
 
-    my $host = FusionInventory::Agent::SOAP::VMware::Host->new(
+    my $host = GLPI::Agent::SOAP::VMware::Host->new(
         hash => $ref, vms => $vms
     );
     return $host;
@@ -309,7 +309,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SOAP::VMware - Access to VMware hypervisor
+GLPI::Agent::SOAP::VMware - Access to VMware hypervisor
 
 =head1 DESCRIPTION
 

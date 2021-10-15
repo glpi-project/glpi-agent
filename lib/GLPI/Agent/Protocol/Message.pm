@@ -5,7 +5,7 @@ use warnings;
 
 use JSON;
 
-use FusionInventory::Agent::Logger;
+use GLPI::Agent::Logger;
 
 sub new {
     my ($class, %params) = @_;

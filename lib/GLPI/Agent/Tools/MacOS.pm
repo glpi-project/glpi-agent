@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools::MacOS;
+package GLPI::Agent::Tools::MacOS;
 
 use strict;
 use warnings;
@@ -12,7 +12,7 @@ use XML::TreePP;
 use UNIVERSAL::require;
 use Storable 'dclone';
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 our @EXPORT = qw(
     getSystemProfilerInfos
@@ -484,7 +484,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Tools::MacOS - MacOS generic functions
+GLPI::Agent::Tools::MacOS - MacOS generic functions
 
 =head1 DESCRIPTION
 

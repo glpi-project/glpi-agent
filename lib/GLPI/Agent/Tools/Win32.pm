@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools::Win32;
+package GLPI::Agent::Tools::Win32;
 
 use strict;
 use warnings;
@@ -45,10 +45,10 @@ use Win32::TieRegistry (
     ArrayValues => 0,
 );
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Expiration;
-use FusionInventory::Agent::Tools::Win32::NetAdapter;
-use FusionInventory::Agent::Version;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Expiration;
+use GLPI::Agent::Tools::Win32::NetAdapter;
+use GLPI::Agent::Version;
 
 my $localCodepage;
 
@@ -106,14 +106,14 @@ sub encodeFromRegistry {
     return $string if Encode::is_utf8($string);
 
     # Don't re-encode while using winrm
-    return $string if $FusionInventory::Agent::Tools::remote;
+    return $string if $GLPI::Agent::Tools::remote;
 
     return decode(getLocalCodepage(), $string);
 }
 
 sub getWMIObjects {
 
-    my $remote = $FusionInventory::Agent::Tools::remote;
+    my $remote = $GLPI::Agent::Tools::remote;
     return $remote->getWMIObjects(@_) if $remote;
 
     my $win32_ole_dependent_api = {
@@ -131,10 +131,10 @@ sub _getWMIObjects {
         @_
     );
 
-    FusionInventory::Agent::Logger->require();
+    GLPI::Agent::Logger->require();
 
     my $logthat = "";
-    my $logger  = $params{logger} || FusionInventory::Agent::Logger->new();
+    my $logger  = $params{logger} || GLPI::Agent::Logger->new();
 
     my $expiration = getExpirationTime();
 
@@ -169,7 +169,7 @@ sub _getWMIObjects {
         }
 
         # Handle Win32::OLE object method, see _getLoggedUsers() method in
-        # FusionInventory::Agent::Task::Inventory::Win32::Users as example to
+        # GLPI::Agent::Task::Inventory::Win32::Users as example to
         # use or enhance this feature
         if ($params{method}) {
             my @invokes = ( $params{method} );
@@ -240,7 +240,7 @@ sub getRegistryValue {
         return;
     }
 
-    my $remote = $FusionInventory::Agent::Tools::remote;
+    my $remote = $GLPI::Agent::Tools::remote;
     return $remote->getRemoteRegistryValue(%params) if $remote;
 
     my ($root, $keyName, $valueName);
@@ -361,7 +361,7 @@ sub getRegistryKey {
         return;
     }
 
-    my $remote = $FusionInventory::Agent::Tools::remote;
+    my $remote = $GLPI::Agent::Tools::remote;
     return $remote->getRemoteRegistryKey(%params) if $remote;
 
     return _getRegistryKey(
@@ -406,7 +406,7 @@ sub loadUserHive {
 
     return unless $params{sid} && $params{file} && has_file($params{file});
 
-    my $remote = $FusionInventory::Agent::Tools::remote;
+    my $remote = $GLPI::Agent::Tools::remote;
     return $remote->loadRemoteUserHive(%params) if $remote;
 
     my $rootKey = _getRegistryRoot(root => 'HKEY_USERS')
@@ -425,7 +425,7 @@ sub loadUserHive {
 sub cleanupPrivileges {
 
     # When doing remote inventories, we better need to unload loaded hives
-    my $remote = $FusionInventory::Agent::Tools::remote;
+    my $remote = $GLPI::Agent::Tools::remote;
     return $remote->unloadRemoteLoadedUserHives() if $remote;
 
     # Unset required privilege for Users hive loading
@@ -497,7 +497,7 @@ sub runCommand {
     my $winCwd = Cwd::getcwd();
     $winCwd =~ s{/}{\\}g;
 
-    my $provider = lc($FusionInventory::Agent::Version::PROVIDER);
+    my $provider = lc($GLPI::Agent::Version::PROVIDER);
     my $template = $ENV{TEMP}."\\".$provider."XXXXXXXXXXX";
     my ($fh, $filename) = File::Temp::tempfile( $template, SUFFIX => '.bat');
     print $fh "cd \"".$winCwd."\"\r\n";
@@ -618,7 +618,7 @@ sub getInterfaces {
     my @interfaces;
 
     foreach my $wmiNetAdapter (@networkAdapter) {
-        my $netAdapter = FusionInventory::Agent::Tools::Win32::NetAdapter->new(
+        my $netAdapter = GLPI::Agent::Tools::Win32::NetAdapter->new(
             WMI             => $wmiNetAdapter,
             configurations  => \@configurations
         ) or next;
@@ -833,7 +833,7 @@ sub setupWorkerLogger {
     my (%params) = @_;
 
     # Just create a new Logger object in worker to update default module configuration
-    return defined(FusionInventory::Agent::Logger->new(%params))
+    return defined(GLPI::Agent::Logger->new(%params))
         unless (defined($worker));
 
     return _call_win32_ole_dependent_api({
@@ -870,7 +870,7 @@ sub _keepOleLastError {
         # Don't report not accurate and not failure error
         if ($error != 0x80004005) {
             $worker_lasterror = [ $error, $known_ole_errors{$error} ];
-            my $logger = FusionInventory::Agent::Logger->new();
+            my $logger = GLPI::Agent::Logger->new();
             $logger->debug("Win32::OLE ERROR: ".($known_ole_errors{$error}||$lasterror));
         }
     } else {
@@ -1062,7 +1062,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Tools::Win32 - Windows generic functions
+GLPI::Agent::Tools::Win32 - Windows generic functions
 
 =head1 DESCRIPTION
 

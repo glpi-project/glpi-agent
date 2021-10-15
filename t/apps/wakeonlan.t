@@ -7,8 +7,8 @@ use lib 't/lib';
 use English qw(-no_match_vars);
 use Test::More;
 
-use FusionInventory::Agent::Task::WakeOnLan;
-use FusionInventory::Test::Utils;
+use GLPI::Agent::Task::WakeOnLan;
+use GLPI::Test::Utils;
 
 plan tests => 6;
 
@@ -28,6 +28,6 @@ ok($rc == 0, '--version exit status');
 is($err, '', '--version stderr');
 like(
     $out,
-    qr/$FusionInventory::Agent::Task::WakeOnLan::VERSION/,
+    qr/$GLPI::Agent::Task::WakeOnLan::VERSION/,
     '--version stdout'
 );

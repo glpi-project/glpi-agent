@@ -1,22 +1,22 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Memory;
+package GLPI::Agent::Task::Inventory::Generic::Dmidecode::Memory;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Generic;
-use FusionInventory::Agent::Tools::PartNumber;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Generic;
+use GLPI::Agent::Tools::PartNumber;
 
 use constant    category    => "memory";
 
 # Run after virtualization to decide if found component is virtual
 our $runAfterIfEnabled = [ qw(
-    FusionInventory::Agent::Task::Inventory::Vmsystem
-    FusionInventory::Agent::Task::Inventory::Win32::Hardware
-    FusionInventory::Agent::Task::Inventory::Linux::Memory
-    FusionInventory::Agent::Task::Inventory::BSD::Memory
+    GLPI::Agent::Task::Inventory::Vmsystem
+    GLPI::Agent::Task::Inventory::Win32::Hardware
+    GLPI::Agent::Task::Inventory::Linux::Memory
+    GLPI::Agent::Task::Inventory::BSD::Memory
 )];
 
 sub isEnabled {
@@ -133,7 +133,7 @@ sub _getMemories {
                 $memory->{MODEL} = trimWhitespace(
                     getSanitizedString( hex2char($info->{'Part Number'}) )
                 );
-                my $partnumber_factory = FusionInventory::Agent::Tools::PartNumber->new(@_);
+                my $partnumber_factory = GLPI::Agent::Tools::PartNumber->new(@_);
                 my $partnumber = $partnumber_factory->match(
                     partnumber  => $memory->{MODEL},
                     category    => "memory",

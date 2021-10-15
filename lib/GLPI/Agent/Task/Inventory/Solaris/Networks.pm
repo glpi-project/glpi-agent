@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Task::Inventory::Solaris::Networks;
+package GLPI::Agent::Task::Inventory::Solaris::Networks;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 #ce5: flags=1000843<UP,BROADCAST,RUNNING,MULTICAST,IPv4> mtu 1500 index 3
 #        inet 55.37.101.171 netmask fffffc00 broadcast 55.37.103.255
@@ -16,10 +16,10 @@ use parent 'FusionInventory::Agent::Task::Inventory::Module';
 #IFC=/sbin/ifconfig
 #DLADM=/usr/sbin/dladm
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Solaris;
-use FusionInventory::Agent::Tools::Network;
-use FusionInventory::Agent::Tools::Unix;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Solaris;
+use GLPI::Agent::Tools::Network;
+use GLPI::Agent::Tools::Unix;
 
 use constant    category    => "network";
 

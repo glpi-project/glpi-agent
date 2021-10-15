@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Tools::Screen::Eizo;
+package GLPI::Agent::Tools::Screen::Eizo;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Tools::Screen';
+use parent 'GLPI::Agent::Tools::Screen';
 
 sub serial {
     my ($self) = @_;

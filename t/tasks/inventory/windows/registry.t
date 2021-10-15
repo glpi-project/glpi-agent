@@ -10,7 +10,7 @@ use Test::More;
 use Test::MockModule;
 use UNIVERSAL::require;
 
-use FusionInventory::Test::Utils;
+use GLPI::Test::Utils;
 
 BEGIN {
     # use mock modules for non-available ones
@@ -23,7 +23,7 @@ if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
     plan skip_all => 'thread support required';
 }
 
-FusionInventory::Agent::Task::Inventory::Win32::Registry->require();
+GLPI::Agent::Task::Inventory::Win32::Registry->require();
 
 if ($OSNAME ne 'MSWin32') {
     plan skip_all => 'Windows-specific test';
@@ -34,7 +34,7 @@ if ($OSNAME ne 'MSWin32') {
 
 my @data;
 
-@data = FusionInventory::Agent::Task::Inventory::Win32::Registry::_getRegistryData(
+@data = GLPI::Agent::Task::Inventory::Win32::Registry::_getRegistryData(
     registry => {
         NAME => 'REGISTRY',
         PARAM => {
@@ -49,7 +49,7 @@ ok(@data == 1, "unique entry");
 ok($data[0]->{entry}{REGVALUE}, "unique entry: REGVALUE");
 ok($data[0]->{entry}{NAME} eq 'CurrentVersion', "unique entry: NAME");
 
-@data = FusionInventory::Agent::Task::Inventory::Win32::Registry::_getRegistryData(
+@data = GLPI::Agent::Task::Inventory::Win32::Registry::_getRegistryData(
     registry => {
         NAME => 'REGISTRY',
         PARAM => [

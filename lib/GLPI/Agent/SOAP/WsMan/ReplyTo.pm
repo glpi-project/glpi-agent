@@ -1,9 +1,9 @@
-package FusionInventory::Agent::SOAP::WsMan::ReplyTo;
+package GLPI::Agent::SOAP::WsMan::ReplyTo;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::SOAP::WsMan::Node;
+use GLPI::Agent::SOAP::WsMan::Node;
 
 ## no critic (ProhibitMultiplePackages)
 package
@@ -13,7 +13,7 @@ use parent 'Node';
 
 use constant    xmlns   => 'a';
 
-use FusionInventory::Agent::SOAP::WsMan::Address;
+use GLPI::Agent::SOAP::WsMan::Address;
 
 sub anonymous {
     my ($class) = @_;

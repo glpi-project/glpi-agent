@@ -1,13 +1,13 @@
-package FusionInventory::Agent::Task::Inventory::Win32::Printers;
+package GLPI::Agent::Task::Inventory::Win32::Printers;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools::Win32;
+use GLPI::Agent::Tools::Win32;
 
 use constant    category    => "printer";
 

@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::Deploy::UserCheck::WTS;
+package GLPI::Agent::Task::Deploy::UserCheck::WTS;
 
 use strict;
 use warnings;
@@ -6,9 +6,9 @@ use warnings;
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Tools::Win32::WTS;
+use GLPI::Agent::Tools::Win32::WTS;
 
-use parent "FusionInventory::Agent::Task::Deploy::UserCheck";
+use parent "GLPI::Agent::Task::Deploy::UserCheck";
 
 my %supported_events = (
     &IDOK       => 'ok',

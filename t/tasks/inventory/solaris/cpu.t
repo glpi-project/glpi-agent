@@ -10,8 +10,8 @@ use Test::MockModule;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::Solaris::CPU;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::Solaris::CPU;
 
 my %vpcu_tests = (
     unstable9s  => [ _map(24, { speed => '1165', type => 'sparcv9' }) ],
@@ -241,22 +241,22 @@ plan tests =>
     (2 * scalar keys %cpu_tests) +
     1;
 
-my $inventory = FusionInventory::Test::Inventory->new();
+my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %vpcu_tests) {
     my $file = "resources/solaris/psrinfo/$test-psrinfo_v";
-    my @cpus = FusionInventory::Agent::Task::Inventory::Solaris::CPU::_getVirtualCPUs(file => $file);
+    my @cpus = GLPI::Agent::Task::Inventory::Solaris::CPU::_getVirtualCPUs(file => $file);
     cmp_deeply(\@cpus, $vpcu_tests{$test}, "virtual cpus: $test");
 }
 
 foreach my $test (keys %pcpu_tests) {
     my $file = "resources/solaris/psrinfo/$test-psrinfo_vp";
-    my @cpus = FusionInventory::Agent::Task::Inventory::Solaris::CPU::_getPhysicalCPUs(file => $file);
+    my @cpus = GLPI::Agent::Task::Inventory::Solaris::CPU::_getPhysicalCPUs(file => $file);
     cmp_deeply(\@cpus, $pcpu_tests{$test}, "physical cpus: $test");
 }
 
 my $module = Test::MockModule->new(
-    'FusionInventory::Agent::Task::Inventory::Solaris::CPU'
+    'GLPI::Agent::Task::Inventory::Solaris::CPU'
 );
 
 foreach my $test (keys %cpu_tests) {
@@ -280,7 +280,7 @@ foreach my $test (keys %cpu_tests) {
         }
     );
 
-    my @cpus = FusionInventory::Agent::Task::Inventory::Solaris::CPU::_getCPUs();
+    my @cpus = GLPI::Agent::Task::Inventory::Solaris::CPU::_getCPUs();
     cmp_deeply(\@cpus, $cpu_tests{$test}, "$test: cpus values");
     lives_ok {
         $inventory->addEntry(section => 'CPUS', entry => $_) foreach @cpus;

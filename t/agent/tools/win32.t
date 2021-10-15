@@ -10,8 +10,8 @@ use Test::Deep qw(cmp_deeply);
 use Test::MockModule;
 use Test::More;
 
-use FusionInventory::Test::Utils;
-use FusionInventory::Agent::Tools;
+use GLPI::Test::Utils;
+use GLPI::Agent::Tools;
 
 BEGIN {
     # use mock modules for non-available ones
@@ -464,11 +464,11 @@ plan tests =>
     (scalar keys %tests) + $win32_only_test_count +
     (scalar keys %regkey_tests) + (scalar keys %regval_tests);
 
-FusionInventory::Agent::Tools::Win32->require();
-FusionInventory::Agent::Tools::Win32->use('getInterfaces');
+GLPI::Agent::Tools::Win32->require();
+GLPI::Agent::Tools::Win32->use('getInterfaces');
 
 my $module = Test::MockModule->new(
-    'FusionInventory::Agent::Tools::Win32'
+    'GLPI::Agent::Tools::Win32'
 );
 
 foreach my $test (keys %tests) {
@@ -529,7 +529,7 @@ SKIP: {
         }
     );
 
-    FusionInventory::Agent::Tools::Win32->use('getRegistryKey');
+    GLPI::Agent::Tools::Win32->use('getRegistryKey');
     foreach my $test (keys %regkey_tests) {
 
         my $regkey = getRegistryKey( %{$regkey_tests{$test}} );
@@ -540,7 +540,7 @@ SKIP: {
         );
     }
 
-    FusionInventory::Agent::Tools::Win32->use('getRegistryValue');
+    GLPI::Agent::Tools::Win32->use('getRegistryValue');
     foreach my $test (keys %regval_tests) {
 
         my $regval = getRegistryValue( %{$regval_tests{$test}} );
@@ -556,7 +556,7 @@ SKIP: {
     skip 'Windows-specific test', $win32_only_test_count
         unless $OSNAME eq 'MSWin32';
 
-    FusionInventory::Agent::Tools::Win32->use('runCommand');
+    GLPI::Agent::Tools::Win32->use('runCommand');
 
     my ($code, $fd) = runCommand(command => "perl -V");
     ok($code eq 0, "perl -V returns 0");
@@ -576,12 +576,12 @@ SKIP: {
     ok(defined(<$fd>), "no_stderr=0: catch STDERR output");
 
     # From here we need to avoid crashes due to not thread-safe Win32::OLE
-    FusionInventory::Agent::Tools::Win32::start_Win32_OLE_Worker();
+    GLPI::Agent::Tools::Win32::start_Win32_OLE_Worker();
 
-    FusionInventory::Agent::Tools::Win32->use('is64bit');
+    GLPI::Agent::Tools::Win32->use('is64bit');
     ok(defined(is64bit()), "is64bit api call");
 
-    FusionInventory::Agent::Tools::Win32->use('getLocalCodepage');
+    GLPI::Agent::Tools::Win32->use('getLocalCodepage');
     ok(defined(getLocalCodepage()), "getLocalCodepage api call");
     ok(getLocalCodepage() =~ /^cp.+/, "local codepage check");
 

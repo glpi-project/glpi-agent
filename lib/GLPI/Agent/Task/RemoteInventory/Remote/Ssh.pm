@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::RemoteInventory::Remote::Ssh;
+package GLPI::Agent::Task::RemoteInventory::Remote::Ssh;
 
 use strict;
 use warnings;
@@ -6,9 +6,9 @@ use warnings;
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 
-use parent 'FusionInventory::Agent::Task::RemoteInventory::Remote';
+use parent 'GLPI::Agent::Task::RemoteInventory::Remote';
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 use constant    supported => 1;
 

@@ -18,6 +18,7 @@ core:
 * win32: restart ourself when convenient while running as a service and we detect
   too much memory consumption
 * support ssl-cert-file option to use a client SSL certificat as SSL authentication
+* FusionInventory modules are renamed to GLPI to avoid any namespace collision
 
 inventory:
 * Feature: support json file with additional-content option when json is used as inventory format

@@ -22,11 +22,11 @@ if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
     plan skip_all => 'thread support required';
 }
 
-use FusionInventory::Agent::Logger;
+use GLPI::Agent::Logger;
 
-use FusionInventory::Agent::Task::Deploy::CheckProcessor;
+use GLPI::Agent::Task::Deploy::CheckProcessor;
 
-use FusionInventory::Test::Utils;
+use GLPI::Test::Utils;
 
 # REG_SZ & REG_DWORD provided by even faked Win32::TieRegistry module
 Win32::TieRegistry->require();
@@ -43,7 +43,7 @@ sub base_object {
     $hash->{type}    = 'n/a' unless $hash->{type};
     $hash->{path}    = '~~ no path given ~~' unless $hash->{path};
 
-    my $class = "FusionInventory::Agent::Task::Deploy::CheckProcessor";
+    my $class = "GLPI::Agent::Task::Deploy::CheckProcessor";
     $class .= "::$subclass" if $subclass;
     bless $hash, $class;
 }
@@ -65,7 +65,7 @@ my $badreg = "HKEY_BAD_ROOT\\HARDWARE\\DESCRIPTION\\System\\Central___wrong_key_
 our $OSNAME;
 my $RealOSNAME = $OSNAME;
 
-my $logger = FusionInventory::Agent::Logger->new(
+my $logger = GLPI::Agent::Logger->new(
     logger => [ 'Test' ]
 );
 
@@ -1080,20 +1080,20 @@ my %win32_regs = (
     },
     'winkey-exists-4' => {
         type      => "winkeyExists",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent',
         __expect  => base_object("WinKeyExists", {
             type   => "winkeyExists",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent'
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent'
         }),
         __ctrl_cb => $checkcb{'winkey-exists'},
         __result  => 'ok'
     },
     'winkey-exists-5' => {
         type      => "winkeyExists",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug3',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug3',
         __expect  => base_object("WinKeyExists", {
             type   => "winkeyExists",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug3'
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug3'
         }),
         __ctrl_cb => $checkcb{'winkey-exists'},
         __result  => 'ko'
@@ -1108,20 +1108,20 @@ my %win32_regs = (
     },
     'winkey-missing-4' => {
         type      => "winkeyMissing",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent',
         __expect  => base_object("WinKeyMissing", {
             type   => "winkeyMissing",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent'
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent'
         }),
         __ctrl_cb => $checkcb{'winkey-missing'},
         __result  => 'ko'
     },
     'winkey-missing-5' => {
         type      => "winkeyMissing",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug3',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug3',
         __expect  => base_object("WinKeyMissing", {
             type   => "winkeyMissing",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug3'
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug3'
         }),
         __ctrl_cb => $checkcb{'winkey-missing'},
         __result  => 'ok'
@@ -1136,31 +1136,31 @@ my %win32_regs = (
     },
     'winkey-value-7' => {
         type      => "winkeyEquals",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent',
         __expect  => base_object("WinKeyEquals", {
             type   => "winkeyEquals",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent'
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent'
         }),
         __ctrl_cb => $checkcb{'winkey-value'},
         __result  => 'ko'
     },
     'winkey-value-8' => {
         type      => "winkeyEquals",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug3',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug3',
         __expect  => base_object("WinKeyEquals", {
             type   => "winkeyEquals",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug3'
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug3'
         }),
         __ctrl_cb => $checkcb{'winkey-value'},
         __result  => 'ko'
     },
     'winkey-value-9' => {
         type      => "winkeyEquals",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug',
         value     => undef,
         __expect  => base_object("WinKeyEquals", {
             type   => "winkeyEquals",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug',
             value  => undef,
         }),
         __ctrl_cb => $checkcb{'winkey-value'},
@@ -1168,11 +1168,11 @@ my %win32_regs = (
     },
     'winkey-value-10' => {
         type      => "winkeyEquals",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug',
         value     => "Bad value",
         __expect  => base_object("WinKeyEquals", {
             type   => "winkeyEquals",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug',
             value  => "Bad value",
         }),
         __ctrl_cb => $checkcb{'winkey-value'},
@@ -1180,11 +1180,11 @@ my %win32_regs = (
     },
     'winkey-value-11' => {
         type      => "winkeyEquals",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug',
         value     => "2",
         __expect  => base_object("WinKeyEquals", {
             type   => "winkeyEquals",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug',
             value  => "2",
         }),
         __ctrl_cb => $checkcb{'winkey-value'},
@@ -1193,11 +1193,11 @@ my %win32_regs = (
     # If path is a key path finishing by / or \, the test check for the default value
     'winkey-value-12' => {
         type      => "winkeyEquals",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug/',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug/',
         value     => "2",
         __expect  => base_object("WinKeyEquals", {
             type   => "winkeyEquals",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug/',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug/',
             value  => "2",
         }),
         __ctrl_cb => $checkcb{'winkey-value'},
@@ -1213,20 +1213,20 @@ my %win32_regs = (
     },
     'winvalue-exists-1' => {
         type      => "winvalueExists",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\notvalue',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\notvalue',
         __expect  => base_object("WinValueExists", {
             type   => "winvalueExists",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\notvalue',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\notvalue',
         }),
         __ctrl_cb => $checkcb{'winvalue-exists'},
         __result  => 'ko'
     },
     'winvalue-exists-2' => {
         type      => "winvalueExists",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent',
         __expect  => base_object("WinValueExists", {
             type   => "winvalueExists",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent',
         }),
         __ctrl_cb => $checkcb{'winvalue-exists'},
         __result  => 'ko'
@@ -1234,30 +1234,30 @@ my %win32_regs = (
     # If path is a key path finishing by / or \, the test check for the default value
     'winvalue-exists-3' => {
         type      => "winvalueExists",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent/',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent/',
         __expect  => base_object("WinValueExists", {
             type   => "winvalueExists",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent/',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent/',
         }),
         __ctrl_cb => $checkcb{'winvalue-exists'},
         __result  => 'ok'
     },
     'winvalue-exists-4' => {
         type      => "winvalueExists",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent/debug/',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent/debug/',
         __expect  => base_object("WinValueExists", {
             type   => "winvalueExists",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent/debug/',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent/debug/',
         }),
         __ctrl_cb => $checkcb{'winvalue-exists'},
         __result  => 'ko'
     },
     'winvalue-exists-5' => {
         type      => "winvalueExists",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent/debug',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent/debug',
         __expect  => base_object("WinValueExists", {
             type   => "winvalueExists",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent/debug',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent/debug',
         }),
         __ctrl_cb => $checkcb{'winvalue-exists'},
         __result  => 'ok'
@@ -1272,20 +1272,20 @@ my %win32_regs = (
     },
     'winvalue-missing-1' => {
         type      => "winvalueMissing",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\notvalue',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\notvalue',
         __expect  => base_object("WinValueMissing", {
             type   => "winvalueMissing",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\notvalue',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\notvalue',
         }),
         __ctrl_cb => $checkcb{'winvalue-missing'},
         __result  => 'ok'
     },
     'winvalue-missing-2' => {
         type      => "winvalueMissing",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent',
         __expect  => base_object("WinValueMissing", {
             type   => "winvalueMissing",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent',
         }),
         __ctrl_cb => $checkcb{'winvalue-missing'},
         __result  => 'ok'
@@ -1293,20 +1293,20 @@ my %win32_regs = (
     # If path is a key path finishing by / or \, the test check for the default value
     'winvalue-missing-3' => {
         type      => "winvalueMissing",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent/',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent/',
         __expect  => base_object("WinValueMissing", {
             type   => "winvalueMissing",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent/',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent/',
         }),
         __ctrl_cb => $checkcb{'winvalue-missing'},
         __result  => 'ko'
     },
     'winvalue-missing-4' => {
         type      => "winvalueMissing",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent/debug',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent/debug',
         __expect  => base_object("WinValueMissing", {
             type   => "winvalueMissing",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent/debug',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent/debug',
         }),
         __ctrl_cb => $checkcb{'winvalue-missing'},
         __result  => 'ko'
@@ -1314,10 +1314,10 @@ my %win32_regs = (
     # If path is a key path finishing by / or \, the test check for the default value
     'winvalue-missing-5' => {
         type      => "winvalueMissing",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent/debug/',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent/debug/',
         __expect  => base_object("WinValueMissing", {
             type   => "winvalueMissing",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent/debug/',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent/debug/',
         }),
         __ctrl_cb => $checkcb{'winvalue-missing'},
         __result  => 'ok'
@@ -1332,31 +1332,31 @@ my %win32_regs = (
     },
     'winvalue-type-1' => {
         type      => "winvalueType",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\notvalue',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\notvalue',
         __expect  => base_object("WinValueType", {
             type   => "winvalueType",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\notvalue',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\notvalue',
         }),
         __ctrl_cb => $checkcb{'winvalue-type'},
         __result  => 'ko'
     },
     'winvalue-type-2' => {
         type      => "winvalueType",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug',
         __expect  => base_object("WinValueType", {
             type   => "winvalueType",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug',
         }),
         __ctrl_cb => $checkcb{'winvalue-type'},
         __result  => 'ko'
     },
     'winvalue-type-3' => {
         type      => "winvalueType",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug',
         value     => "not-a-type",
         __expect  => base_object("WinValueType", {
             type   => "winvalueType",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug',
             value  => "not-a-type",
         }),
         __ctrl_cb => $checkcb{'winvalue-type'},
@@ -1364,11 +1364,11 @@ my %win32_regs = (
     },
     'winvalue-type-4' => {
         type      => "winvalueType",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug',
         value     => "string",
         __expect  => base_object("WinValueType", {
             type   => "winvalueType",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug',
             value  => "string",
         }),
         __ctrl_cb => $checkcb{'winvalue-type'},
@@ -1376,11 +1376,11 @@ my %win32_regs = (
     },
     'winvalue-type-5' => {
         type      => "winvalueType",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug',
         value     => "",
         __expect  => base_object("WinValueType", {
             type   => "winvalueType",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug',
             value  => "",
         }),
         __ctrl_cb => $checkcb{'winvalue-type'},
@@ -1388,11 +1388,11 @@ my %win32_regs = (
     },
     'winvalue-type-6' => {
         type      => "winvalueType",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug',
         value     => "REG_SZ",
         __expect  => base_object("WinValueType", {
             type   => "winvalueType",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug',
             value  => "REG_SZ",
         }),
         __ctrl_cb => $checkcb{'winvalue-type'},
@@ -1401,11 +1401,11 @@ my %win32_regs = (
     # If path is a key path finishing by / or \, the test check for the default value
     'winvalue-type-7' => {
         type      => "winvalueType",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug/',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug/',
         value     => "REG_SZ",
         __expect  => base_object("WinValueType", {
             type   => "winvalueType",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug/',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug/',
             value  => "REG_SZ",
         }),
         __ctrl_cb => $checkcb{'winvalue-type'},
@@ -1413,11 +1413,11 @@ my %win32_regs = (
     },
     'winvalue-type-8' => {
         type      => "winvalueType",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug4/',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug4/',
         value     => "REG_SZ",
         __expect  => base_object("WinValueType", {
             type   => "winvalueType",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug4/',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug4/',
             value  => "REG_SZ",
         }),
         __ctrl_cb => $checkcb{'winvalue-type'},
@@ -1425,11 +1425,11 @@ my %win32_regs = (
     },
     'winvalue-type-9' => {
         type      => "winvalueType",
-        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug2',
+        path      => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug2',
         value     => "REG_DWORD",
         __expect  => base_object("WinValueType", {
             type   => "winvalueType",
-            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\debug2',
+            path   => 'HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\debug2',
             value  => "REG_DWORD",
         }),
         __ctrl_cb => $checkcb{'winvalue-type'},
@@ -1459,7 +1459,7 @@ $win32_module->mock(
 );
 
 my $module = Test::MockModule->new(
-    'FusionInventory::Agent::Tools::Win32'
+    'GLPI::Agent::Tools::Win32'
 );
 
 my $regprocdump = loadRegistryDump("resources/win32/registry/xp-CentralProcessor.reg");
@@ -1473,7 +1473,7 @@ $module->mock(
 );
 
 my $diskFreeModule = Test::MockModule->new(
-    'FusionInventory::Agent::Task::Deploy::DiskFree'
+    'GLPI::Agent::Task::Deploy::DiskFree'
 );
 $diskFreeModule->mock(
     'getFreeSpace', sub {
@@ -1493,7 +1493,7 @@ foreach my $proc (keys %processors) {
     # Fake OSNAME when necessary
     $OSNAME = $proc =~ /^winkey/ ? "MSWin32" : $RealOSNAME;
 
-    FusionInventory::Agent::Task::Deploy::CheckProcessor->new(
+    GLPI::Agent::Task::Deploy::CheckProcessor->new(
         check  => $check,
         logger => $check->{__logger}
     );
@@ -1517,9 +1517,9 @@ $module->mock(
         if ( $params{root} && $params{root} =~ m|^HKEY_LOCAL_MACHINE| ) {
             return $regdump if ($params{keyName} eq 'SOFTWARE');
             return $regdump->{$params{keyName}.'/'}
-                if ($params{keyName} eq 'FusionInventory-Agent');
-            return $regdump->{'FusionInventory-Agent/'}->{$params{keyName}.'/'}
-                if ($params{keyName} ne '/' && $params{root} =~ 'FusionInventory-Agent$');
+                if ($params{keyName} eq 'GLPI-Agent');
+            return $regdump->{'GLPI-Agent/'}->{$params{keyName}.'/'}
+                if ($params{keyName} ne '/' && $params{root} =~ 'GLPI-Agent$');
         }
         return {};
     }
@@ -1537,7 +1537,7 @@ foreach my $proc (keys %win32_regs) {
     # Fake OSNAME when necessary
     $OSNAME = "MSWin32";
 
-    FusionInventory::Agent::Task::Deploy::CheckProcessor->new(
+    GLPI::Agent::Task::Deploy::CheckProcessor->new(
         check  => $check,
         logger => $check->{__logger}
     );

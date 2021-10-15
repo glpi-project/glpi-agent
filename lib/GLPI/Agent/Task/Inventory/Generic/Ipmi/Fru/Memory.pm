@@ -1,18 +1,18 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Ipmi::Fru::Memory;
+package GLPI::Agent::Task::Inventory::Generic::Ipmi::Fru::Memory;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::IpmiFru;
-use FusionInventory::Agent::Tools::PartNumber;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::IpmiFru;
+use GLPI::Agent::Tools::PartNumber;
 
 use constant    category    => "memory";
 
 our $runAfterIfEnabled = [qw(
-    FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Memory
+    GLPI::Agent::Task::Inventory::Generic::Dmidecode::Memory
 )];
 
 sub isEnabled {
@@ -63,7 +63,7 @@ sub doInventory {
 
             $mems[0]->{$field} = $parsed_fru->{$field};
             if ($field eq 'MODEL') {
-                my $partnumber_factory = FusionInventory::Agent::Tools::PartNumber->new(
+                my $partnumber_factory = GLPI::Agent::Tools::PartNumber->new(
                     logger  => $logger
                 );
                 my $partnumber = $partnumber_factory->match(
@@ -87,7 +87,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Task::Inventory::Generic::Ipmi::Fru::Memory - Processes DIMMs reported by `ipmitool fru`
+GLPI::Agent::Task::Inventory::Generic::Ipmi::Fru::Memory - Processes DIMMs reported by `ipmitool fru`
 
 =head1 DESCRIPTION
 

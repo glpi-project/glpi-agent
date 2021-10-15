@@ -1,11 +1,11 @@
-package FusionInventory::Agent::HTTP::Server::ToolBox::Results::ArchiveTarXz;
+package GLPI::Agent::HTTP::Server::ToolBox::Results::ArchiveTarXz;
 
 use strict;
 use warnings;
 
-use parent "FusionInventory::Agent::HTTP::Server::ToolBox::Results::Archive";
+use parent "GLPI::Agent::HTTP::Server::ToolBox::Results::Archive";
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 sub new {
     my ($class, %params) = @_;

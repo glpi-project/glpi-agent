@@ -1,12 +1,12 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Ipmi::Fru::Controllers;
+package GLPI::Agent::Task::Inventory::Generic::Ipmi::Fru::Controllers;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::IpmiFru;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::IpmiFru;
 
 use constant    category    => "controller";
 

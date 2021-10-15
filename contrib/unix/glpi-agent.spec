@@ -7,7 +7,7 @@ Group:       Applications/System
 License:     GPLv2+
 URL:         https://glpi-project.org/
 
-Version:     %(perl -Ilib -MFusionInventory::Agent::Version -e '$v = $FusionInventory::Agent::Version::VERSION; $v =~ s/-.*//; print $v')
+Version:     %(perl -Ilib -MGLPI::Agent::Version -e '$v = $GLPI::Agent::Version::VERSION; $v =~ s/-.*//; print $v')
 Release:     %{?rev}%{?dist}
 Source0:     %{name}-%{version}-%{release}.tar.gz
 
@@ -51,7 +51,7 @@ or system administrator to keep track of the hardware and software
 configurations of computers that are installed on the network.
 
 This agent can send information about the computer to a GLPI server with native
-inventory support or with the FusionInventory for GLPI plugin.
+inventory support or with a FusionInventory compatible GLPI plugin.
 
 You can add additional packages for optional tasks:
 
@@ -129,8 +129,7 @@ rm -rf ./inc
 rm -f MANIFEST
 
 # Remove files only used under win32
-rm -rf lib/FusionInventory/Agent/Task/WMI*
-rm -rf lib/FusionInventory/Agent/Daemon
+rm -rf lib/GLPI/Agent/Daemon
 
 sed \
     -e "s/logger = .*/logger = syslog/" \
@@ -156,7 +155,7 @@ OPTIONS="--debug "
 # - none (default on install) no activity
 # - cron (inventory only) use the cron.hourly
 AGENTMODE[0]=none
-# AGENT Inventory or FusionInventory server URI
+# FusionInventory Inventory or GLPI server URI
 # AGENTSERVER[0]=your.server.name
 # AGENTSERVER[0]=http://your.server.name/front/inventory.php
 # AGENTSERVER[0]=http://your.glpiserveur.name/glpi/plugins/fusioninventory/
@@ -227,9 +226,9 @@ install -m 644 -D  contrib/unix/%{name}.service %{buildroot}%{_unitdir}/%{name}.
 %dir %{_localstatedir}/lib/%{name}
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/lib
-%dir %{_datadir}/%{name}/lib/FusionInventory
-%dir %{_datadir}/%{name}/lib/FusionInventory/Agent
-%dir %{_datadir}/%{name}/lib/FusionInventory/Agent/Task
+%dir %{_datadir}/%{name}/lib/GLPI
+%dir %{_datadir}/%{name}/lib/GLPI/Agent
+%dir %{_datadir}/%{name}/lib/GLPI/Agent/Task
 %dir %{_datadir}/%{name}/lib/GLPI
 %dir %{_datadir}/%{name}/lib/GLPI/Agent
 
@@ -238,54 +237,54 @@ install -m 644 -D  contrib/unix/%{name}.service %{buildroot}%{_unitdir}/%{name}.
 %{_datadir}/%{name}/html/favicon.ico
 %{_datadir}/%{name}/html/logo.png
 %{_datadir}/%{name}/html/site.css
-%{_datadir}/%{name}/lib/FusionInventory/Agent.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Config.pm
+%{_datadir}/%{name}/lib/GLPI/Agent.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Config.pm
 %{_datadir}/%{name}/lib/setup.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Daemon.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/HTTP/Server.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/HTTP/Client*
-%{_datadir}/%{name}/lib/FusionInventory/Agent/HTTP/Protocol
-%{_datadir}/%{name}/lib/FusionInventory/Agent/HTTP/Session.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/HTTP/Server/Inventory.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/HTTP/Server/Plugin.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/HTTP/Server/Proxy.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/HTTP/Server/SecondaryProxy.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/HTTP/Server/SSL.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/HTTP/Server/Test.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Inventory.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Logger*
-%{_datadir}/%{name}/lib/FusionInventory/Agent/SOAP/WsMan*
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Storage.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Target*
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Task.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Task/Inventory*
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Task/RemoteInventory*
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/AIX.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/BSD.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Batteries.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Constants.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Expiration.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Generic.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/HPUX.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Hostname.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/IpmiFru.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/License.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Linux.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/MacOS.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Network.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/PartNumber*
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/PowerSupplies.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Screen*
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Solaris.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Standards*
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Storages/
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/UUID.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Unix.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Virtualization.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Win32*
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Version.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/XML/
+%{_datadir}/%{name}/lib/GLPI/Agent/Daemon.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/HTTP/Server.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/HTTP/Client*
+%{_datadir}/%{name}/lib/GLPI/Agent/HTTP/Protocol
+%{_datadir}/%{name}/lib/GLPI/Agent/HTTP/Session.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/HTTP/Server/Inventory.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/HTTP/Server/Plugin.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/HTTP/Server/Proxy.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/HTTP/Server/SecondaryProxy.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/HTTP/Server/SSL.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/HTTP/Server/Test.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Inventory.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Logger*
+%{_datadir}/%{name}/lib/GLPI/Agent/SOAP/WsMan*
+%{_datadir}/%{name}/lib/GLPI/Agent/Storage.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Target*
+%{_datadir}/%{name}/lib/GLPI/Agent/Task.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Task/Inventory*
+%{_datadir}/%{name}/lib/GLPI/Agent/Task/RemoteInventory*
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/AIX.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/BSD.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/Batteries.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/Constants.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/Expiration.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/Generic.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/HPUX.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/Hostname.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/IpmiFru.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/License.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/Linux.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/MacOS.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/Network.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/PartNumber*
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/PowerSupplies.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/Screen*
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/Solaris.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/Standards*
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/Storages/
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/UUID.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/Unix.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/Virtualization.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/Win32*
+%{_datadir}/%{name}/lib/GLPI/Agent/Version.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/XML/
 %{_datadir}/%{name}/lib/GLPI/Agent/Inventory/
 %{_datadir}/%{name}/lib/GLPI/Agent/Protocol/
 
@@ -304,8 +303,8 @@ fi
 %files task-esx
 %{_bindir}/glpi-esx
 %{_mandir}/man1/glpi-esx.1*
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Task/ESX*
-%{_datadir}/%{name}/lib/FusionInventory/Agent/SOAP/VMware*
+%{_datadir}/%{name}/lib/GLPI/Agent/Task/ESX*
+%{_datadir}/%{name}/lib/GLPI/Agent/SOAP/VMware*
 
 %files task-network
 %config(noreplace) %{_sysconfdir}/%{name}/toolbox-plugin.cfg
@@ -313,25 +312,25 @@ fi
 %{_bindir}/glpi-netinventory
 %{_mandir}/man1/glpi-netdiscovery.1*
 %{_mandir}/man1/glpi-netinventory.1*
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Task/NetDiscovery*
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Task/NetInventory*
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/SNMP.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/SNMP*
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Tools/Hardware*
-%{_datadir}/%{name}/lib/FusionInventory/Agent/HTTP/Server/ToolBox*
+%{_datadir}/%{name}/lib/GLPI/Agent/Task/NetDiscovery*
+%{_datadir}/%{name}/lib/GLPI/Agent/Task/NetInventory*
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/SNMP.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/SNMP*
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/Hardware*
+%{_datadir}/%{name}/lib/GLPI/Agent/HTTP/Server/ToolBox*
 %{_datadir}/%{name}/html/toolbox
 
 %files task-deploy
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Task/Deploy.pm
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Task/Deploy
+%{_datadir}/%{name}/lib/GLPI/Agent/Task/Deploy.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/Task/Deploy
 
 %files task-wakeonlan
 %{_bindir}/glpi-wakeonlan
 %{_mandir}/man1/glpi-wakeonlan.1*
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Task/WakeOnLan*
+%{_datadir}/%{name}/lib/GLPI/Agent/Task/WakeOnLan*
 
 %files task-collect
-%{_datadir}/%{name}/lib/FusionInventory/Agent/Task/Collect*
+%{_datadir}/%{name}/lib/GLPI/Agent/Task/Collect*
 
 %files cron
 %{_sysconfdir}/cron.hourly/%{name}
@@ -350,4 +349,4 @@ fi
   to enable the service on install as this is useless without a server defined in conf
 
 * Thu Sep 17 2020 Johan Cwiklinski <jcwiklinski AT teclib DOT com>
-- Package of GLPI Agent, based on FusionInventory Agent officials specfile
+- Package of GLPI Agent, based on GLPI Agent officials specfile

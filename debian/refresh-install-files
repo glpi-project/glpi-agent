@@ -19,13 +19,13 @@ sub wanted {
     $t =~ s,usr/share/glpi-agent/script/,usr/bin/,;
     if (/\/man1\//) {
         # dh_installmans
-    } elsif ($t =~ /glpi-net/ || $t =~ /FusionInventory\/Agent\/(SNMP|Tools\/Hardware|Task\/Net)/) {
+    } elsif ($t =~ /glpi-net/ || $t =~ /GLPI\/Agent\/(SNMP|Tools\/Hardware|Task\/Net)/) {
         print AGENT_TASK_NETWORK "$t\n";
-    } elsif ($t =~ /glpi-esx/ || $t =~ /FusionInventory\/Agent\/(Task\/ESX|SOAP\/VMware)/) {
+    } elsif ($t =~ /glpi-esx/ || $t =~ /GLPI\/Agent\/(Task\/ESX|SOAP\/VMware)/) {
         print AGENT_TASK_ESX "$t\n";
-    } elsif ($t =~ /FusionInventory\/Agent\/Task\/Deploy/) {
+    } elsif ($t =~ /GLPI\/Agent\/Task\/Deploy/) {
         print AGENT_TASK_DEPLOY "$t\n";
-    } elsif ($t =~ /FusionInventory\/Agent\/Task\/Collect/) {
+    } elsif ($t =~ /GLPI\/Agent\/Task\/Collect/) {
         print AGENT_TASK_COLLECT "$t\n";
     } elsif ($t !~ m,/.exists,) {
         # Skip .exists files

@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools::BSD;
+package GLPI::Agent::Tools::BSD;
 
 use strict;
 use warnings;
@@ -6,8 +6,8 @@ use parent 'Exporter';
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Network;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Network;
 
 our @EXPORT = qw(
     getInterfacesFromIfconfig
@@ -114,7 +114,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Tools::BSD - BSD generic functions
+GLPI::Agent::Tools::BSD - BSD generic functions
 
 =head1 DESCRIPTION
 

@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Databases;
+package GLPI::Agent::Task::Inventory::Generic::Databases;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use UNIVERSAL::require;
 use English qw(-no_match_vars);

@@ -8,11 +8,11 @@ use English qw(-no_match_vars);
 use Test::More;
 use Test::Exception;
 
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::HTTP::Client;
-use FusionInventory::Test::Proxy;
-use FusionInventory::Test::Server;
-use FusionInventory::Test::Utils;
+use GLPI::Agent::Logger;
+use GLPI::Agent::HTTP::Client;
+use GLPI::Test::Proxy;
+use GLPI::Test::Server;
+use GLPI::Test::Utils;
 
 use Net::HTTPS;
 
@@ -22,7 +22,7 @@ use Net::HTTPS;
 unsetProxyEnvVar();
 
 # find an available port
-my $port = FusionInventory::Agent::Tools::first { test_port($_) } 8080 .. 8180;
+my $port = GLPI::Agent::Tools::first { test_port($_) } 8080 .. 8180;
 
 if (!$port) {
     plan skip_all => 'no available port';
@@ -50,7 +50,7 @@ my $ok = sub {
     print "OK";
 };
 
-my $logger = FusionInventory::Agent::Logger->new(
+my $logger = GLPI::Agent::Logger->new(
     logger => [ 'Test' ]
 );
 
@@ -59,23 +59,23 @@ unless (-e "resources/ssl/crt/ca.pem") {
     qx(cd resources/ssl ; ./generate.sh );
 }
 
-my $proxy = FusionInventory::Test::Proxy->new();
+my $proxy = GLPI::Test::Proxy->new();
 $proxy->background();
 
 my $server;
 my $request;
 my $url = "https://127.0.0.1:$port/public";
-my $unsafe_client = FusionInventory::Agent::HTTP::Client->new(
+my $unsafe_client = GLPI::Agent::HTTP::Client->new(
     logger       => $logger,
     no_ssl_check => 1,
 );
 
-my $secure_client = FusionInventory::Agent::HTTP::Client->new(
+my $secure_client = GLPI::Agent::HTTP::Client->new(
     logger       => $logger,
     ca_cert_file => 'resources/ssl/crt/ca.pem',
 );
 
-my $secure_proxy_client = FusionInventory::Agent::HTTP::Client->new(
+my $secure_proxy_client = GLPI::Agent::HTTP::Client->new(
     logger => $logger,
     proxy  => $proxy->url(),
     ca_cert_file => 'resources/ssl/crt/ca.pem',
@@ -85,7 +85,7 @@ my $secure_proxy_client = FusionInventory::Agent::HTTP::Client->new(
 $SIG{__DIE__}  = sub { $server->stop(); };
 
 # trusted certificate, correct hostname
-$server = FusionInventory::Test::Server->new(
+$server = GLPI::Test::Server->new(
     port     => $port,
     ssl      => 1,
     crt      => 'resources/ssl/crt/good.pem',
@@ -116,7 +116,7 @@ $server->stop();
 $proxy->stop();
 
 # trusted certificate, alternate hostname
-$server = FusionInventory::Test::Server->new(
+$server = GLPI::Test::Server->new(
     port     => $port,
     ssl      => 1,
     crt      => 'resources/ssl/crt/alternate.pem',
@@ -136,7 +136,7 @@ ok(
 $server->stop();
 
 # trusted certificate, wrong hostname
-$server = FusionInventory::Test::Server->new(
+$server = GLPI::Test::Server->new(
     port     => $port,
     ssl      => 1,
     crt      => 'resources/ssl/crt/wrong.pem',
@@ -162,7 +162,7 @@ ok(
 $server->stop();
 
 # untrusted certificate, correct hostname
-$server = FusionInventory::Test::Server->new(
+$server = GLPI::Test::Server->new(
     port     => $port,
     ssl      => 1,
     crt      => 'resources/ssl/crt/bad.pem',

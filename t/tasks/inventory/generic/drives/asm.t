@@ -9,8 +9,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::Generic::Drives::ASM;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::Generic::Drives::ASM;
 
 my %lsdg_tests = (
     'grid-1' => [
@@ -67,10 +67,10 @@ my %lsdg_tests = (
 
 plan tests => (scalar keys %lsdg_tests) + 1;
 
-my $inventory = FusionInventory::Test::Inventory->new();
+my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %lsdg_tests) {
     my $file = "resources/generic/asmcmd/$test";
-    my @groups = FusionInventory::Agent::Task::Inventory::Generic::Drives::ASM::_getDisksGroups(file => $file);
+    my @groups = GLPI::Agent::Task::Inventory::Generic::Drives::ASM::_getDisksGroups(file => $file);
     cmp_deeply(\@groups, $lsdg_tests{$test}, "$test: lsdg parsing");
 }

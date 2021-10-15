@@ -1,4 +1,4 @@
-package FusionInventory::Agent::HTTP::Server::ToolBox::Results::Fields;
+package GLPI::Agent::HTTP::Server::ToolBox::Results::Fields;
 
 use strict;
 use warnings;
@@ -15,7 +15,7 @@ sub new {
 
     my $self = {
         logger  => $params{results}->{logger} ||
-                    FusionInventory::Agent::Logger->new(),
+                    GLPI::Agent::Logger->new(),
         results => $params{results},
         _name   => $name,
     };

@@ -5,7 +5,7 @@ use warnings;
 
 use parent 'GLPI::Agent::Protocol::Message';
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 use constant date_qr            => qr/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
 use constant datetime_qr        => qr/^[0-9]{4}-[0-9]{2}-[0-9]{2}[ |T][0-9]{2}:[0-9]{2}:[0-9]{2}(Z|[+|-][0-9]{2}:[0-9]{2}:[0-9]{2})?$/;

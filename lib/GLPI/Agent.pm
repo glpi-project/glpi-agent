@@ -1,4 +1,4 @@
-package FusionInventory::Agent;
+package GLPI::Agent;
 
 use strict;
 use warnings;
@@ -10,19 +10,19 @@ use IO::Handle;
 
 use constant CONTINUE_WORD  => "...";
 
-use FusionInventory::Agent::Version;
-use FusionInventory::Agent::Config;
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Storage;
-use FusionInventory::Agent::Target::Local;
-use FusionInventory::Agent::Target::Server;
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Hostname;
-use FusionInventory::Agent::Tools::UUID;
+use GLPI::Agent::Version;
+use GLPI::Agent::Config;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Storage;
+use GLPI::Agent::Target::Local;
+use GLPI::Agent::Target::Server;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Hostname;
+use GLPI::Agent::Tools::UUID;
 
-our $VERSION = $FusionInventory::Agent::Version::VERSION;
-my $PROVIDER = $FusionInventory::Agent::Version::PROVIDER;
-our $COMMENTS = $FusionInventory::Agent::Version::COMMENTS || [];
+our $VERSION = $GLPI::Agent::Version::VERSION;
+my $PROVIDER = $GLPI::Agent::Version::PROVIDER;
+our $COMMENTS = $GLPI::Agent::Version::COMMENTS || [];
 our $VERSION_STRING = _versionString($VERSION);
 our $AGENT_STRING = "$PROVIDER-Agent_v$VERSION";
 
@@ -57,7 +57,7 @@ sub init {
     my ($self, %params) = @_;
 
     # Skip create object if still defined (re-init case)
-    my $config = $self->{config} || FusionInventory::Agent::Config->new(
+    my $config = $self->{config} || GLPI::Agent::Config->new(
         options => $params{options},
         vardir  => $self->{vardir},
     );
@@ -67,7 +67,7 @@ sub init {
     $self->{vardir} = $self->{config}->{vardir}
         if $self->{config}->{vardir} && -d $self->{config}->{vardir};
 
-    my $logger = FusionInventory::Agent::Logger->new(config => $config);
+    my $logger = GLPI::Agent::Logger->new(config => $config);
     $self->{logger} = $logger;
 
     $logger->debug("Configuration directory: ".$config->confdir());
@@ -95,8 +95,8 @@ sub init {
     }
 
     # Keep program name for Provider inventory as it will be reset in setStatus()
-    FusionInventory::Agent::Task::Inventory::Provider->require();
-    $FusionInventory::Agent::Task::Inventory::Provider::PROGRAM = "$PROGRAM_NAME";
+    GLPI::Agent::Task::Inventory::Provider->require();
+    $GLPI::Agent::Task::Inventory::Provider::PROGRAM = "$PROGRAM_NAME";
 
     # compute list of allowed tasks
     my $available = $self->getAvailableTasks();
@@ -215,11 +215,11 @@ sub runTarget {
     my $client;
     my @plannedTasks = $target->plannedTasks();
     if ($target->isGlpiServer()) {
-        FusionInventory::Agent::HTTP::Client::GLPI->require();
+        GLPI::Agent::HTTP::Client::GLPI->require();
         return $self->{logger}->error("GLPI Protocol library can't be loaded")
             if $EVAL_ERROR;
 
-        $client = FusionInventory::Agent::HTTP::Client::GLPI->new(
+        $client = GLPI::Agent::HTTP::Client::GLPI->new(
             logger          => $self->{logger},
             timeout         => $self->{config}->{timeout},
             user            => $self->{config}->{user},
@@ -277,9 +277,9 @@ sub runTarget {
 
     } elsif ($target->isType('server')) {
 
-        return unless FusionInventory::Agent::HTTP::Client::OCS->require();
+        return unless GLPI::Agent::HTTP::Client::OCS->require();
 
-        $client = FusionInventory::Agent::HTTP::Client::OCS->new(
+        $client = GLPI::Agent::HTTP::Client::OCS->new(
             logger          => $self->{logger},
             timeout         => $self->{config}->{timeout},
             user            => $self->{config}->{user},
@@ -293,9 +293,9 @@ sub runTarget {
             agentid         => uuid_to_string($self->{agentid}),
         );
 
-        return unless FusionInventory::Agent::XML::Query::Prolog->require();
+        return unless GLPI::Agent::XML::Query::Prolog->require();
 
-        my $prolog = FusionInventory::Agent::XML::Query::Prolog->new(
+        my $prolog = GLPI::Agent::XML::Query::Prolog->new(
             deviceid => $self->{deviceid},
         );
 
@@ -411,7 +411,7 @@ sub runTask {
 sub runTaskReal {
     my ($self, $target, $name, $response) = @_;
 
-    my $class = "FusionInventory::Agent::Task::$name";
+    my $class = "GLPI::Agent::Task::$name";
 
     if (!$class->require()) {
         $self->{logger}->debug2("$name task module does not compile: $@")
@@ -512,7 +512,7 @@ sub getAvailableTasks {
     # tasks may be located only in agent libdir
     my $directory = $self->{libdir};
     $directory =~ s,\\,/,g;
-    my $subdirectory = "FusionInventory/Agent/Task";
+    my $subdirectory = "GLPI/Agent/Task";
     # look for all Version perl modules around here
     foreach my $file (File::Glob::bsd_glob("$directory/$subdirectory/*/Version.pm")) {
         next unless $file =~ m{($subdirectory/(\S+)/Version\.pm)$};
@@ -552,7 +552,7 @@ sub _handlePersistentState {
 
     # Only create storage at first call
     unless ($self->{storage}) {
-        $self->{storage} = FusionInventory::Agent::Storage->new(
+        $self->{storage} = GLPI::Agent::Storage->new(
             logger    => $self->{logger},
             directory => $self->{vardir}
         );
@@ -599,7 +599,7 @@ sub _handlePersistentState {
 sub setForceRun {
     my ($self, $forcerun) = @_;
 
-    my $storage = FusionInventory::Agent::Storage->new(
+    my $storage = GLPI::Agent::Storage->new(
         logger    => $self->{logger},
         directory => $self->{vardir}
     );
@@ -618,7 +618,7 @@ sub computeTaskExecutionPlan {
     my ($self, $availableTasks) = @_;
 
     my $config = $self->{config};
-    unless (defined($config) && ref($config) eq 'FusionInventory::Agent::Config') {
+    unless (defined($config) && ref($config) eq 'GLPI::Agent::Config') {
         $self->{logger}->error( "no config found in agent. Can't compute tasks execution plan" )
             if $self->{logger};
         return;
@@ -663,7 +663,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent - FusionInventory agent
+GLPI::Agent - GLPI agent
 
 =head1 DESCRIPTION
 

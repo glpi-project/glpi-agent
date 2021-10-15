@@ -1,13 +1,13 @@
-package FusionInventory::Agent::HTTP::Server::Plugin;
+package GLPI::Agent::HTTP::Server::Plugin;
 
 use strict;
 use warnings;
 
-use base "FusionInventory::Agent::Config";
+use base "GLPI::Agent::Config";
 
 use Cwd qw(abs_path);
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 sub new {
     my ($class, %params) = @_;
@@ -16,7 +16,7 @@ sub new {
 
     my $self = {
         logger  => $params{server}->{logger} ||
-                    FusionInventory::Agent::Logger->new(),
+                    GLPI::Agent::Logger->new(),
         server  => $params{server},
         name    => $name,
     };
@@ -27,7 +27,7 @@ sub new {
     $self->{_confdir} = $self->{server}->{agent}->{config}->{_confdir}
         if $self->{server};
 
-    # Check _confdir imported from FusionInventory::Agent::Config
+    # Check _confdir imported from GLPI::Agent::Config
     unless ($self->{_confdir} && -d $self->{_confdir}) {
         # Set absolute confdir from default if replaced by Makefile otherwise search
         # from current path, mostly useful while running from source but also
@@ -48,7 +48,7 @@ sub init {
         no strict 'refs';  ## no critic
         $version = ${ref($self).'::VERSION'};
     }
-    $version = $FusionInventory::Agent::VERSION unless $version;
+    $version = $GLPI::Agent::VERSION unless $version;
 
     $self->debug("Initializing ".$self->{name}." v$version Server plugin...");
 
@@ -202,11 +202,11 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::HTTP::Server::Plugin - A class template for embedded HTTP server plugins
+GLPI::Agent::HTTP::Server::Plugin - A class template for embedded HTTP server plugins
 
 =head1 DESCRIPTION
 
-This is a template class to base on FusionInventory::Agent::HTTP::Server plugins.
+This is a template class to base on GLPI::Agent::HTTP::Server plugins.
 
 Plugins purpose is to handle specific requests.
 

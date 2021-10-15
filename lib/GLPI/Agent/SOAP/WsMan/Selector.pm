@@ -1,9 +1,9 @@
-package FusionInventory::Agent::SOAP::WsMan::Selector;
+package GLPI::Agent::SOAP::WsMan::Selector;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::SOAP::WsMan::Node;
+use GLPI::Agent::SOAP::WsMan::Node;
 
 ## no critic (ProhibitMultiplePackages)
 package
@@ -11,7 +11,7 @@ package
 
 use parent 'Node';
 
-use FusionInventory::Agent::SOAP::WsMan::Selector;
+use GLPI::Agent::SOAP::WsMan::Selector;
 
 use constant    xmlns   => 'w';
 

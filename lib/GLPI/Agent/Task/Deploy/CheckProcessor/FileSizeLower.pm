@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Task::Deploy::CheckProcessor::FileSizeLower;
+package GLPI::Agent::Task::Deploy::CheckProcessor::FileSizeLower;
 
 use strict;
 use warnings;
 
-use parent "FusionInventory::Agent::Task::Deploy::CheckProcessor";
+use parent "GLPI::Agent::Task::Deploy::CheckProcessor";
 
 sub prepare {
 }

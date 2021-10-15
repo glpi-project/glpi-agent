@@ -1,12 +1,12 @@
-package FusionInventory::Agent::Task::Inventory::Generic::PCI::Sounds;
+package GLPI::Agent::Task::Inventory::Generic::PCI::Sounds;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Generic;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Generic;
 
 use constant    category    => "sound";
 

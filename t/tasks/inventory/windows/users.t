@@ -13,7 +13,7 @@ use Test::MockModule;
 use Test::More;
 use UNIVERSAL::require;
 
-use FusionInventory::Test::Utils;
+use GLPI::Test::Utils;
 
 BEGIN {
     # use mock modules for non-available ones
@@ -28,7 +28,7 @@ if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
 
 Test::NoWarnings->use();
 
-FusionInventory::Agent::Task::Inventory::Win32::Users->require();
+GLPI::Agent::Task::Inventory::Win32::Users->require();
 
 my %tests = (
     '7-AD' => {
@@ -44,7 +44,7 @@ my %tests = (
 plan tests => scalar (keys %tests) + 1;
 
 my $module = Test::MockModule->new(
-    'FusionInventory::Agent::Task::Inventory::Win32::Users'
+    'GLPI::Agent::Task::Inventory::Win32::Users'
 );
 
 $module->mock(
@@ -56,7 +56,7 @@ $module->mock(
 );
 
 my $tools_module = Test::MockModule->new(
-    'FusionInventory::Agent::Tools::Win32'
+    'GLPI::Agent::Tools::Win32'
 );
 
 # Variant of sub mockGetRegistryKey fo
@@ -86,7 +86,7 @@ foreach my $test (keys %tests) {
 
     #my $preloaded_hkey = loadRegistryDump("resources/win32/registry/$test.reg");
 #use Data::Dumper ; print STDERR "HKEY: ",Dumper($preloaded_hkey);
-    my $user = FusionInventory::Agent::Task::Inventory::Win32::Users::_getLastUser();
+    my $user = GLPI::Agent::Task::Inventory::Win32::Users::_getLastUser();
 
     cmp_deeply(
         $user,

@@ -1,4 +1,4 @@
-package FusionInventory::Test::Auth;
+package GLPI::Test::Auth;
 
 use strict;
 use parent 'Authen::Simple::Adapter';

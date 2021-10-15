@@ -9,7 +9,7 @@ use lib 'tools';
 use LWP::UserAgent;
 
 use Changelog;
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 my $ua = LWP::UserAgent->new();
 

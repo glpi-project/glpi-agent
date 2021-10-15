@@ -9,8 +9,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::AIX::Drives;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::AIX::Drives;
 
 my %types_tests = (
     'aix-4.3.1' => {
@@ -57,6 +57,6 @@ plan tests =>
 
 foreach my $test (keys %types_tests) {
     my $file = "resources/aix/lsfs/$test";
-    my $types = FusionInventory::Agent::Task::Inventory::AIX::Drives::_getFilesystemTypes(file => $file);
+    my $types = GLPI::Agent::Task::Inventory::AIX::Drives::_getFilesystemTypes(file => $file);
     cmp_deeply($types, $types_tests{$test}, "$test: lsfs parsing");
 }

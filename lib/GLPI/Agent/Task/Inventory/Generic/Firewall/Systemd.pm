@@ -1,14 +1,14 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Firewall::Systemd;
+package GLPI::Agent::Task::Inventory::Generic::Firewall::Systemd;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools::Constants;
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools::Constants;
+use GLPI::Agent::Tools;
 
-our $runMeIfTheseChecksFailed = ["FusionInventory::Agent::Task::Inventory::Generic::Firewall::Ufw"];
+our $runMeIfTheseChecksFailed = ["GLPI::Agent::Task::Inventory::Generic::Firewall::Ufw"];
 
 sub isEnabled {
     return

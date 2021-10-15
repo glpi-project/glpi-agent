@@ -7,7 +7,7 @@ use Test::Deep;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Agent::Task::Inventory::MacOS::Videos;
+use GLPI::Agent::Task::Inventory::MacOS::Videos;
 
 my %tests = (
     '10.6.5-dual-monitor' => [
@@ -64,7 +64,7 @@ plan tests => scalar(keys %tests) + 1;
 
 foreach my $test (keys %tests) {
     my $file = "resources/macos/system_profiler/$test";
-    my @videos = FusionInventory::Agent::Task::Inventory::MacOS::Videos::_getVideoCards(file => $file);
+    my @videos = GLPI::Agent::Task::Inventory::MacOS::Videos::_getVideoCards(file => $file);
     cmp_deeply(
         [ sort { compare_video() } @videos ],
         [ sort { compare_video() } @{$tests{$test}} ],

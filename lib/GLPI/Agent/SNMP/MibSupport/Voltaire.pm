@@ -1,12 +1,12 @@
-package FusionInventory::Agent::SNMP::MibSupport::Voltaire;
+package GLPI::Agent::SNMP::MibSupport::Voltaire;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::SNMP::MibSupportTemplate';
+use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::SNMP;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::SNMP;
 
 use constant    sysName     => '.1.3.6.1.2.1.1.5.0' ;
 use constant    enterprises => '.1.3.6.1.4.1' ;
@@ -59,7 +59,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP::MibSupport::Voltaire - Inventory module for Voltaire devices
+GLPI::Agent::SNMP::MibSupport::Voltaire - Inventory module for Voltaire devices
 
 =head1 DESCRIPTION
 

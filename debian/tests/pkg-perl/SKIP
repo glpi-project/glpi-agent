@@ -1,2 +1,2 @@
-# Skip as FusionInventory::Agent is not installed system-wide
+# Skip as GLPI::Agent is not installed system-wide
 use.t

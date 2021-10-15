@@ -9,8 +9,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::Solaris::Slots;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::Solaris::Slots;
 
 my %tests = (
     'sample1' => [
@@ -163,11 +163,11 @@ my %tests = (
 
 plan tests => (2 * scalar keys %tests) + 1;
 
-my $inventory = FusionInventory::Test::Inventory->new();
+my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %tests) {
     my $file = "resources/solaris/prtdiag/$test";
-    my @slots = FusionInventory::Agent::Task::Inventory::Solaris::Slots::_getSlots(file => $file);
+    my @slots = GLPI::Agent::Task::Inventory::Solaris::Slots::_getSlots(file => $file);
     cmp_deeply(\@slots, $tests{$test}, "$test: parsing");
     lives_ok {
         $inventory->addEntry(section => 'SLOTS', entry => $_) foreach @slots;

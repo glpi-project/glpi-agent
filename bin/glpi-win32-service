@@ -11,7 +11,7 @@ use File::Spec;
 use Getopt::Long;
 use Pod::Usage;
 
-use FusionInventory::Agent::Daemon::Win32;
+use GLPI::Agent::Daemon::Win32;
 
 # Load dedicated .rc file if present. Sample one, if renamed, permits
 # to log stdout and stderr for early debugging purpose
@@ -41,7 +41,7 @@ our %setup;
 
 my $ret = 0;
 
-my $service = FusionInventory::Agent::Daemon::Win32->new( %setup )
+my $service = GLPI::Agent::Daemon::Win32->new( %setup )
     or die "Can't create service object: $!";
 
 if ($options{register}) {

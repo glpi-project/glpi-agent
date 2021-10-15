@@ -7,8 +7,8 @@ use lib 't/lib';
 use English qw(-no_match_vars);
 use Test::More;
 
-use FusionInventory::Agent::Task::ESX;
-use FusionInventory::Test::Utils;
+use GLPI::Agent::Task::ESX;
+use GLPI::Test::Utils;
 
 plan tests => 7;
 
@@ -34,6 +34,6 @@ ok($rc == 0, '--version exit status');
 is($err, '', '--version stderr');
 like(
     $out,
-    qr{glpi-esx $FusionInventory::Agent::Task::ESX::VERSION},
+    qr{glpi-esx $GLPI::Agent::Task::ESX::VERSION},
     '--version stdout'
 );

@@ -9,8 +9,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::HPUX::CPU;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::HPUX::CPU;
 
 my %machinfo_tests = (
     'hpux_11.31_3xia64' => {
@@ -77,11 +77,11 @@ plan tests =>
     (2 * scalar keys %cprop_tests)    +
     1;
 
-my $inventory = FusionInventory::Test::Inventory->new();
+my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %machinfo_tests) {
     my $file = "resources/hpux/machinfo/$test";
-    my $cpus = FusionInventory::Agent::Task::Inventory::HPUX::CPU::_parseMachinInfo(file => $file);
+    my $cpus = GLPI::Agent::Task::Inventory::HPUX::CPU::_parseMachinInfo(file => $file);
     cmp_deeply($cpus, $machinfo_tests{$test}, "machinfo parsing: $test");
     delete $cpus->{CPUcount};
     lives_ok {
@@ -91,7 +91,7 @@ foreach my $test (keys %machinfo_tests) {
 
 foreach my $test (keys %cprop_tests) {
     my $file = "resources/hpux/cprop/$test-cpu";
-    my @cpus = FusionInventory::Agent::Task::Inventory::HPUX::CPU::_parseCprop(file => $file);
+    my @cpus = GLPI::Agent::Task::Inventory::HPUX::CPU::_parseCprop(file => $file);
     cmp_deeply(\@cpus, $cprop_tests{$test}, "cprop parsing: $test");
     lives_ok {
         $inventory->addEntry(section => 'CPUS', entry => $_) foreach @cpus;

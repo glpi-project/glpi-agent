@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools::Generic;
+package GLPI::Agent::Tools::Generic;
 
 use strict;
 use warnings;
@@ -9,7 +9,7 @@ use Memoize;
 use File::stat;
 use File::Basename qw(basename);
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 our @EXPORT = qw(
     getDmidecodeInfos
@@ -443,7 +443,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Tools::Generic - OS-independent generic functions
+GLPI::Agent::Tools::Generic - OS-independent generic functions
 
 =head1 DESCRIPTION
 

@@ -1,16 +1,16 @@
-package FusionInventory::Agent::Task::Inventory::Win32::OS;
+package GLPI::Agent::Task::Inventory::Win32::OS;
 
 use strict;
 use warnings;
 use integer;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Hostname;
-use FusionInventory::Agent::Tools::Win32;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Hostname;
+use GLPI::Agent::Tools::Win32;
 
 use constant    category    => "os";
 

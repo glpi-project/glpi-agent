@@ -9,8 +9,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::HPUX::Networks;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::HPUX::Networks;
 
 my %lanadmin_tests = (
     'hpux1-0' => {
@@ -994,35 +994,35 @@ plan tests =>
     (2 * scalar keys %lanscan_tests) +
     1;
 
-my $inventory = FusionInventory::Test::Inventory->new();
+my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %lanadmin_tests) {
     my $file = "resources/hpux/lanadmin/$test";
-    my $info = FusionInventory::Agent::Task::Inventory::HPUX::Networks::_getLanadminInfo(file => $file);
+    my $info = GLPI::Agent::Task::Inventory::HPUX::Networks::_getLanadminInfo(file => $file);
     cmp_deeply($info, $lanadmin_tests{$test}, "lanadmin parsing: $test");
 }
 
 foreach my $test (keys %ifconfig_tests) {
     my $file = "resources/generic/ifconfig/$test";
-    my $info = FusionInventory::Agent::Task::Inventory::HPUX::Networks::_getIfconfigInfo(file => $file);
+    my $info = GLPI::Agent::Task::Inventory::HPUX::Networks::_getIfconfigInfo(file => $file);
     cmp_deeply($info, $ifconfig_tests{$test}, "ifconfig parsing: $test");
 }
 
 foreach my $test (keys %nwmgr_tests) {
     my $file = "resources/hpux/nwmgr/$test";
-    my $info = FusionInventory::Agent::Task::Inventory::HPUX::Networks::_getNwmgrInfo(file => $file);
+    my $info = GLPI::Agent::Task::Inventory::HPUX::Networks::_getNwmgrInfo(file => $file);
     cmp_deeply($info, $nwmgr_tests{$test}, "nwmgr parsing: $test");
 }
 
 foreach my $test (keys %netstat_tests) {
     my $file = "resources/hpux/netstat/$test";
-    my %interfaces = FusionInventory::Agent::Task::Inventory::HPUX::Networks::_parseNetstatNrv(file => $file);
+    my %interfaces = GLPI::Agent::Task::Inventory::HPUX::Networks::_parseNetstatNrv(file => $file);
     cmp_deeply(\%interfaces, $netstat_tests{$test}, "netstat -nrv parsing: $test");
 }
 
 foreach my $test (keys %lanscan_tests) {
     my $file = "resources/hpux/lanscan/$test";
-    my @interfaces = FusionInventory::Agent::Task::Inventory::HPUX::Networks::_parseLanscan(file => $file);
+    my @interfaces = GLPI::Agent::Task::Inventory::HPUX::Networks::_parseLanscan(file => $file);
     cmp_deeply(\@interfaces, $lanscan_tests{$test}, "lanscan -iap parsing: $test");
     delete $_->{lan_id} foreach @interfaces;
     lives_ok {

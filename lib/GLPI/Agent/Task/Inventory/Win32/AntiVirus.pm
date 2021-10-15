@@ -1,14 +1,14 @@
-package FusionInventory::Agent::Task::Inventory::Win32::AntiVirus;
+package GLPI::Agent::Task::Inventory::Win32::AntiVirus;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Win32;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Win32;
 
 use constant    category    => "antivirus";
 

@@ -1,9 +1,9 @@
-package FusionInventory::Agent::XML::Query::Inventory;
+package GLPI::Agent::XML::Query::Inventory;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::XML::Query';
+use parent 'GLPI::Agent::XML::Query';
 
 sub new {
     my ($class, %params) = @_;
@@ -21,14 +21,14 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::XML::Query::Inventory - Inventory agent message
+GLPI::Agent::XML::Query::Inventory - Inventory agent message
 
 =head1 DESCRIPTION
 
 This is an inventory message sent by the agent to the server, using OCS
 Inventory XML format.
 
-The data strcture format is documented in L<FusionInventory::Agent::Inventory>.
+The data strcture format is documented in L<GLPI::Agent::Inventory>.
 
 
 =head1 METHODS
@@ -36,7 +36,7 @@ The data strcture format is documented in L<FusionInventory::Agent::Inventory>.
 =head2 new(%params)
 
 The constructor. The following parameters are allowed, in addition to those
-from the base class C<FusionInventory::Agent::XML::Query>, as keys of the
+from the base class C<GLPI::Agent::XML::Query>, as keys of the
 %params hash:
 
 =over

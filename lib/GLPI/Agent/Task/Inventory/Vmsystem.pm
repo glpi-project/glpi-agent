@@ -1,39 +1,39 @@
-package FusionInventory::Agent::Task::Inventory::Vmsystem;
+package GLPI::Agent::Task::Inventory::Vmsystem;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::UUID;
-use FusionInventory::Agent::Tools::Virtualization;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::UUID;
+use GLPI::Agent::Tools::Virtualization;
 
 # We keep this module out of category as it is also mandatory for partial inventory
 
 # Be sure to run after any module which can set BIOS or HARDWARE (only setting UUID)
 our $runAfterIfEnabled = [ qw(
-    FusionInventory::Agent::Task::Inventory::AIX::Bios
-    FusionInventory::Agent::Task::Inventory::BSD::Alpha
-    FusionInventory::Agent::Task::Inventory::BSD::i386
-    FusionInventory::Agent::Task::Inventory::BSD::MIPS
-    FusionInventory::Agent::Task::Inventory::BSD::SPARC
-    FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Bios
-    FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Hardware
-    FusionInventory::Agent::Task::Inventory::HPUX::Bios
-    FusionInventory::Agent::Task::Inventory::HPUX::Hardware
-    FusionInventory::Agent::Task::Inventory::Linux::Bios
-    FusionInventory::Agent::Task::Inventory::Linux::PowerPC::Bios
-    FusionInventory::Agent::Task::Inventory::Linux::Hardware
-    FusionInventory::Agent::Task::Inventory::Linux::ARM::Board
-    FusionInventory::Agent::Task::Inventory::MacOS::Bios
-    FusionInventory::Agent::Task::Inventory::MacOS::Hardware
-    FusionInventory::Agent::Task::Inventory::Solaris::Bios
-    FusionInventory::Agent::Task::Inventory::Solaris::Hardware
-    FusionInventory::Agent::Task::Inventory::Win32::Bios
-    FusionInventory::Agent::Task::Inventory::Win32::Hardware
+    GLPI::Agent::Task::Inventory::AIX::Bios
+    GLPI::Agent::Task::Inventory::BSD::Alpha
+    GLPI::Agent::Task::Inventory::BSD::i386
+    GLPI::Agent::Task::Inventory::BSD::MIPS
+    GLPI::Agent::Task::Inventory::BSD::SPARC
+    GLPI::Agent::Task::Inventory::Generic::Dmidecode::Bios
+    GLPI::Agent::Task::Inventory::Generic::Dmidecode::Hardware
+    GLPI::Agent::Task::Inventory::HPUX::Bios
+    GLPI::Agent::Task::Inventory::HPUX::Hardware
+    GLPI::Agent::Task::Inventory::Linux::Bios
+    GLPI::Agent::Task::Inventory::Linux::PowerPC::Bios
+    GLPI::Agent::Task::Inventory::Linux::Hardware
+    GLPI::Agent::Task::Inventory::Linux::ARM::Board
+    GLPI::Agent::Task::Inventory::MacOS::Bios
+    GLPI::Agent::Task::Inventory::MacOS::Hardware
+    GLPI::Agent::Task::Inventory::Solaris::Bios
+    GLPI::Agent::Task::Inventory::Solaris::Hardware
+    GLPI::Agent::Task::Inventory::Win32::Bios
+    GLPI::Agent::Task::Inventory::Win32::Hardware
 )];
 
 my @vmware_patterns = (
@@ -211,8 +211,8 @@ sub _getType {
 
     # Solaris zones
     if (OSNAME eq 'solaris' && canRun('/usr/sbin/zoneadm')) {
-        if (FusionInventory::Agent::Tools::Solaris->require()) {
-            my $zone = FusionInventory::Agent::Tools::Solaris::getZone();
+        if (GLPI::Agent::Tools::Solaris->require()) {
+            my $zone = GLPI::Agent::Tools::Solaris::getZone();
             return 'SolarisZone' if $zone ne 'global';
         }
     }

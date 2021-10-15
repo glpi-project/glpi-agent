@@ -1,13 +1,13 @@
-package FusionInventory::Agent::Task::Inventory::Linux::Storages::MegacliWithSmartctl;
+package GLPI::Agent::Task::Inventory::Linux::Storages::MegacliWithSmartctl;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use File::Basename qw(basename);
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Linux qw(getInfoFromSmartctl);
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Linux qw(getInfoFromSmartctl);
 
 use constant RE => qr/^([^:]+?)\s*:\s*(.*\S)/;
 
@@ -137,7 +137,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Task::Inventory::Linux::Storages::MegacliWithSmartctl - LSI Megaraid inventory
+GLPI::Agent::Task::Inventory::Linux::Storages::MegacliWithSmartctl - LSI Megaraid inventory
 
 =head1 DESCRIPTION
 

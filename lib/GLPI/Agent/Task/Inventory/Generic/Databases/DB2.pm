@@ -1,15 +1,15 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Databases::DB2;
+package GLPI::Agent::Task::Inventory::Generic::Databases::DB2;
 
 use English qw(-no_match_vars);
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Generic::Databases';
+use parent 'GLPI::Agent::Task::Inventory::Generic::Databases';
 
 use File::Temp;
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 use GLPI::Agent::Inventory::DatabaseService;
 
 sub isEnabled {
@@ -22,7 +22,7 @@ sub doInventory {
     my $inventory = $params{inventory};
 
     # Try to retrieve credentials updating params
-    FusionInventory::Agent::Task::Inventory::Generic::Databases::_credentials(\%params, "db2");
+    GLPI::Agent::Task::Inventory::Generic::Databases::_credentials(\%params, "db2");
 
     my $dbservices = _getDatabaseService(
         logger      => $params{logger},
@@ -66,7 +66,7 @@ sub _getDatabaseService {
 
     my %instuser;
     foreach my $credential (@{$credentials}) {
-        FusionInventory::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
+        GLPI::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
         $params{connect} = _db2Connect($credential) // "";
 
         # Search for instance users if required

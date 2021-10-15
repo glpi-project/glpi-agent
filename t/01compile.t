@@ -28,32 +28,32 @@ Test::Compile::all_pm_files_ok(@files);
 sub filter {
 
     if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
-        return 0 if $_ =~ m{FusionInventory/Agent/Task/NetInventory.pm};
-        return 0 if $_ =~ m{FusionInventory/Agent/Task/NetDiscovery.pm};
-        return 0 if $_ =~ m{FusionInventory/Agent/Tools/Win32.pm};
-        return 0 if $_ =~ m{FusionInventory/Agent/Daemon/Win32.pm};
-        return 0 if $_ =~ m{FusionInventory/Agent/Task/Inventory/Win32};
-        return 0 if $_ =~ m{FusionInventory/Agent/Tools/Win32/WTS.pm};
-        return 0 if $_ =~ m{FusionInventory/Agent/Tools/Win32/Users.pm};
-        return 0 if $_ =~ m{FusionInventory/Agent/Task/Deploy/UserCheck/WTS.pm};
+        return 0 if $_ =~ m{Agent/Task/NetInventory.pm};
+        return 0 if $_ =~ m{Agent/Task/NetDiscovery.pm};
+        return 0 if $_ =~ m{Agent/Tools/Win32.pm};
+        return 0 if $_ =~ m{Agent/Daemon/Win32.pm};
+        return 0 if $_ =~ m{Agent/Task/Inventory/Win32};
+        return 0 if $_ =~ m{Agent/Tools/Win32/WTS.pm};
+        return 0 if $_ =~ m{Agent/Tools/Win32/Users.pm};
+        return 0 if $_ =~ m{Agent/Task/Deploy/UserCheck/WTS.pm};
     }
 
-    return 0 if ($_ =~ m{FusionInventory/Agent/Daemon/Win32.pm} &&
+    return 0 if ($_ =~ m{Agent/Daemon/Win32.pm} &&
         !(Win32::Daemon->require()));
 
-    return 0 if ($_ =~ m{FusionInventory/Agent/Task/Deploy.pm} &&
+    return 0 if ($_ =~ m{Agent/Task/Deploy.pm} &&
         !(File::Copy::Recursive->require()));
 
-    return 0 if ($_ =~ m{FusionInventory/Agent/Task/Deploy/P2P.pm} &&
+    return 0 if ($_ =~ m{Agent/Task/Deploy/P2P.pm} &&
         !(Net::Ping->require() && Parallel::ForkManager->require()));
 
-    return 0 if ($_ =~ m{FusionInventory/Agent/Task/Deploy/ActionProcessor.pm} &&
+    return 0 if ($_ =~ m{Agent/Task/Deploy/ActionProcessor.pm} &&
         !(File::Copy::Recursive->require()));
 
-    return 0 if ($_ =~ m{FusionInventory/Agent/Task/Deploy/ActionProcessor/Action/Move.pm} &&
+    return 0 if ($_ =~ m{Agent/Task/Deploy/ActionProcessor/Action/Move.pm} &&
         !(File::Copy::Recursive->require()));
 
-    return 0 if ($_ =~ m{FusionInventory/Agent/Task/Deploy/ActionProcessor/Action/Copy.pm} &&
+    return 0 if ($_ =~ m{Agent/Task/Deploy/ActionProcessor/Action/Copy.pm} &&
         !(File::Copy::Recursive->require()));
 
     return 1;

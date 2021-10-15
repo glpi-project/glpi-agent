@@ -1,12 +1,12 @@
-package FusionInventory::Agent::SNMP::MibSupport::LinuxAppliance;
+package GLPI::Agent::SNMP::MibSupport::LinuxAppliance;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::SNMP::MibSupportTemplate';
+use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::SNMP;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::SNMP;
 
 use constant    iso         => '.1.3.6.1.2.1';
 use constant    enterprises => '.1.3.6.1.4.1' ;
@@ -231,7 +231,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP::MibSupport::LinuxAppliance - Inventory module for Linux Appliances
+GLPI::Agent::SNMP::MibSupport::LinuxAppliance - Inventory module for Linux Appliances
 
 =head1 DESCRIPTION
 

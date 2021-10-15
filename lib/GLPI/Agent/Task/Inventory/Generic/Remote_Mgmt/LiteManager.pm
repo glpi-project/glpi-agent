@@ -1,20 +1,20 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Remote_Mgmt::LiteManager;
+package GLPI::Agent::Task::Inventory::Generic::Remote_Mgmt::LiteManager;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 sub isEnabled {
     return 0 unless OSNAME eq 'MSWin32';
 
-    FusionInventory::Agent::Tools::Win32->use();
+    GLPI::Agent::Tools::Win32->use();
 
     my $key;
     first {
-        $key = FusionInventory::Agent::Tools::Win32::getRegistryKey(
+        $key = GLPI::Agent::Tools::Win32::getRegistryKey(
             path        => $_,
             # Important for remote inventory optimization
             required    => [ 'ID (read only)' ],
@@ -70,9 +70,9 @@ sub _getID {
 sub _findID {
     my (%params) = @_;
 
-    FusionInventory::Agent::Tools::Win32->use();
+    GLPI::Agent::Tools::Win32->use();
 
-    my $key = FusionInventory::Agent::Tools::Win32::getRegistryKey(
+    my $key = GLPI::Agent::Tools::Win32::getRegistryKey(
         %params,
         # Important for remote inventory optimization
         required    => [ 'ID (read only)' ],

@@ -9,7 +9,7 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Agent::Task::Inventory::Generic::Storages::HpWithSmartctl;
+use GLPI::Agent::Task::Inventory::Generic::Storages::HpWithSmartctl;
 
 my %tests = (
     '1-ctrl-all-show-config' => {
@@ -28,7 +28,7 @@ plan tests => (scalar keys %tests) + 1;
 
 foreach my $test (keys %tests) {
     my $file  = "resources/generic/hpacucli/$test";
-    my $result = FusionInventory::Agent::Task::Inventory::Generic::Storages::HpWithSmartctl::_getData(file => $file);
+    my $result = GLPI::Agent::Task::Inventory::Generic::Storages::HpWithSmartctl::_getData(file => $file);
 
     cmp_deeply(
         $result,

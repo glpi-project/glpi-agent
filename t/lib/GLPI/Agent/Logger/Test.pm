@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Logger::Test;
+package GLPI::Agent::Logger::Test;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Logger::Backend';
+use parent 'GLPI::Agent::Logger::Backend';
 
 use English qw(-no_match_vars);
 

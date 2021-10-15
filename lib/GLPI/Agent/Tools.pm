@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools;
+package GLPI::Agent::Tools;
 
 use strict;
 use warnings;
@@ -13,7 +13,7 @@ use File::Which;
 use Memoize;
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Tools::Expiration;
+use GLPI::Agent::Tools::Expiration;
 
 # Keep a copy of @ARGV, only for Provider inventory
 BEGIN {
@@ -666,7 +666,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Tools - OS-independent generic functions
+GLPI::Agent::Tools - OS-independent generic functions
 
 =head1 DESCRIPTION
 

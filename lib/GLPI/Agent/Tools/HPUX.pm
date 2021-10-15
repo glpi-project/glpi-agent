@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools::HPUX;
+package GLPI::Agent::Tools::HPUX;
 
 use strict;
 use warnings;
@@ -6,7 +6,7 @@ use parent 'Exporter';
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 use Memoize;
 
 our @EXPORT = qw(
@@ -84,7 +84,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Tools::HPUX - HPUX generic functions
+GLPI::Agent::Tools::HPUX - HPUX generic functions
 
 =head1 DESCRIPTION
 

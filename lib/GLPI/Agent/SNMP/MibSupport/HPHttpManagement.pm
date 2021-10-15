@@ -1,12 +1,12 @@
-package FusionInventory::Agent::SNMP::MibSupport::HPHttpManagement;
+package GLPI::Agent::SNMP::MibSupport::HPHttpManagement;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::SNMP::MibSupportTemplate';
+use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::SNMP;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::SNMP;
 
 # See HP-ICF-OID
 use constant    hpEtherSwitch   => '.1.3.6.1.4.1.11.2.3.7.11' ;
@@ -61,7 +61,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP::MibSupport::HPHttpManagement - Inventory module for HP switchs with HTTP management
+GLPI::Agent::SNMP::MibSupport::HPHttpManagement - Inventory module for HP switchs with HTTP management
 
 =head1 DESCRIPTION
 

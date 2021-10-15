@@ -1,12 +1,12 @@
-package FusionInventory::Agent::Target;
+package GLPI::Agent::Target;
 
 use strict;
 use warnings;
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Storage;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Storage;
 
 my $errMaxDelay = 0;
 
@@ -24,7 +24,7 @@ sub new {
 
     my $self = {
         logger       => $params{logger} ||
-                        FusionInventory::Agent::Logger->new(),
+                        GLPI::Agent::Logger->new(),
         maxDelay     => $params{maxDelay} || 3600,
         errMaxDelay  => $errMaxDelay,
         initialDelay => $params{delaytime},
@@ -44,7 +44,7 @@ sub _init {
     # target identity
     $self->{id} = $params{id};
 
-    $self->{storage} = FusionInventory::Agent::Storage->new(
+    $self->{storage} = GLPI::Agent::Storage->new(
         logger    => $self->{logger},
         directory => $params{vardir}
     );
@@ -342,7 +342,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Target - Abstract target
+GLPI::Agent::Target - Abstract target
 
 =head1 DESCRIPTION
 

@@ -1,12 +1,12 @@
-package FusionInventory::Agent::SNMP::MibSupport::Mikrotik;
+package GLPI::Agent::SNMP::MibSupport::Mikrotik;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::SNMP::MibSupportTemplate';
+use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::SNMP;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::SNMP;
 
 # See MIKROTIK-MIB
 use constant    mikrotikExperimentalModule  => '.1.3.6.1.4.1.14988.1' ;
@@ -55,7 +55,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::SNMP::MibSupport::Mikrotik - Inventory module for Mikrotik devices
+GLPI::Agent::SNMP::MibSupport::Mikrotik - Inventory module for Mikrotik devices
 
 =head1 DESCRIPTION
 

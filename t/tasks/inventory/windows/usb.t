@@ -12,8 +12,8 @@ use Test::MockModule;
 use Test::More;
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Inventory;
-use FusionInventory::Test::Utils;
+use GLPI::Agent::Inventory;
+use GLPI::Test::Utils;
 
 BEGIN {
     # use mock modules for non-available ones
@@ -28,7 +28,7 @@ if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
 
 Test::NoWarnings->use();
 
-FusionInventory::Agent::Task::Inventory::Win32::USB->require();
+GLPI::Agent::Task::Inventory::Win32::USB->require();
 
 my %tests = (
     7 => [
@@ -132,10 +132,10 @@ my %tests = (
 
 plan tests => (2 * scalar keys %tests) + 1;
 
-my $inventory = FusionInventory::Agent::Inventory->new();
+my $inventory = GLPI::Agent::Inventory->new();
 
 my $module = Test::MockModule->new(
-    'FusionInventory::Agent::Task::Inventory::Win32::USB'
+    'GLPI::Agent::Task::Inventory::Win32::USB'
 );
 
 foreach my $test (keys %tests) {
@@ -144,7 +144,7 @@ foreach my $test (keys %tests) {
         mockGetWMIObjects($test)
     );
 
-    my @devices = FusionInventory::Agent::Task::Inventory::Win32::USB::_getDevices(datadir => './share');
+    my @devices = GLPI::Agent::Task::Inventory::Win32::USB::_getDevices(datadir => './share');
     cmp_deeply(
         \@devices,
         $tests{$test},

@@ -11,8 +11,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::Generic::Databases::MySQL;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::Generic::Databases::MySQL;
 
 $Data::Dumper::Indent    = 1;
 $Data::Dumper::Terse     = 1;
@@ -97,11 +97,11 @@ my %credentials = (
 
 plan tests => (2 * scalar keys %db_tests) + 1;
 
-my $inventory = FusionInventory::Test::Inventory->new();
+my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %db_tests) {
     my $file  = "resources/generic/databases/$test";
-    my $dbs   = FusionInventory::Agent::Task::Inventory::Generic::Databases::MySQL::_getDatabaseService(
+    my $dbs   = GLPI::Agent::Task::Inventory::Generic::Databases::MySQL::_getDatabaseService(
         file        => $file,
         credentials => $credentials{$test} // [{}],
         istest      => $db_tests{$test} ? 1 : 0,

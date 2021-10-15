@@ -9,8 +9,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::HPUX::Memory;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::HPUX::Memory;
 
 my %cstm_tests = (
     'hpux' => []
@@ -262,11 +262,11 @@ plan tests =>
     (2 * scalar keys %cprop_tests)  +
     1;
 
-my $inventory = FusionInventory::Test::Inventory->new();
+my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %cstm_tests) {
     my $file = "resources/hpux/cstm/$test-mem";
-    my @memories = FusionInventory::Agent::Task::Inventory::HPUX::Memory::_parseCstm(file => $file);
+    my @memories = GLPI::Agent::Task::Inventory::HPUX::Memory::_parseCstm(file => $file);
     cmp_deeply(\@memories, $cstm_tests{$test}, "cstm parsing: $test");
     lives_ok {
         $inventory->addEntry(section => 'MEMORIES', entry => $_)
@@ -276,7 +276,7 @@ foreach my $test (keys %cstm_tests) {
 
 foreach my $test (keys %cstm64_tests) {
     my $file = "resources/hpux/cstm/$test-MEMORY";
-    my @memories = FusionInventory::Agent::Task::Inventory::HPUX::Memory::_parseCstm64(file => $file);
+    my @memories = GLPI::Agent::Task::Inventory::HPUX::Memory::_parseCstm64(file => $file);
     cmp_deeply(\@memories, $cstm64_tests{$test}, "cstm 64 parsing: $test");
     lives_ok {
         $inventory->addEntry(section => 'MEMORIES', entry => $_)
@@ -286,7 +286,7 @@ foreach my $test (keys %cstm64_tests) {
 
 foreach my $test (keys %cprop_tests) {
     my $file = "resources/hpux/cprop/$test-memory";
-    my @memories = FusionInventory::Agent::Task::Inventory::HPUX::Memory::_parseCprop(file => $file);
+    my @memories = GLPI::Agent::Task::Inventory::HPUX::Memory::_parseCprop(file => $file);
     cmp_deeply(\@memories, $cprop_tests{$test}, "cprop parsing: $test");
     lives_ok {
         $inventory->addEntry(section => 'MEMORIES', entry => $_)

@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::Deploy::CheckProcessor::FileSHA512Mismatch;
+package GLPI::Agent::Task::Deploy::CheckProcessor::FileSHA512Mismatch;
 
 use strict;
 use warnings;
@@ -7,7 +7,7 @@ use Digest::SHA;
 
 use English qw(-no_match_vars);
 
-use parent "FusionInventory::Agent::Task::Deploy::CheckProcessor";
+use parent "GLPI::Agent::Task::Deploy::CheckProcessor";
 
 # This processor could be used to skip file deployment as expected file is found
 # So we should only trigger a failure is we can compute sha512 and it is wrong

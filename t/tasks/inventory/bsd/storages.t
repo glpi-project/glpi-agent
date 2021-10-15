@@ -9,9 +9,9 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Agent::Inventory;
-use FusionInventory::Agent::Task::Inventory::BSD::Storages;
-use FusionInventory::Agent::Task::Inventory::BSD::Storages::Megaraid;
+use GLPI::Agent::Inventory;
+use GLPI::Agent::Task::Inventory::BSD::Storages;
+use GLPI::Agent::Task::Inventory::BSD::Storages::Megaraid;
 
 my %tests_mfiutil = (
     'mfiutil' => [
@@ -90,11 +90,11 @@ plan tests =>
     scalar (keys %$tests_sysctl) +
     1;
 
-my $inventory = FusionInventory::Agent::Inventory->new();
+my $inventory = GLPI::Agent::Inventory->new();
 
 foreach my $test (keys %tests_mfiutil) {
     my $file = "resources/bsd/storages/$test";
-    my @results = FusionInventory::Agent::Task::Inventory::BSD::Storages::Megaraid::_parseMfiutil(file => $file);
+    my @results = GLPI::Agent::Task::Inventory::BSD::Storages::Megaraid::_parseMfiutil(file => $file);
     cmp_deeply(\@results, $tests_mfiutil{$test}, "$test: parsing");
     lives_ok {
         $inventory->addEntry(section => 'STORAGES', entry => $_)
@@ -108,7 +108,7 @@ for my $test (keys %$tests_sysctl) {
         dmesgFile   => $pathToBSDFiles . $tests_sysctl->{$test}->{dmesgFile},
         file        => $pathToBSDFiles . $tests_sysctl->{$test}->{sysctlFile}
     );
-    my @results = sort { $a->{NAME} cmp $b->{NAME} } FusionInventory::Agent::Task::Inventory::BSD::Storages::_getStorages(%params);
+    my @results = sort { $a->{NAME} cmp $b->{NAME} } GLPI::Agent::Task::Inventory::BSD::Storages::_getStorages(%params);
     my @expected = sort { $a->{NAME} cmp $b->{NAME} } @{$tests_sysctl->{$test}->{content}};
     cmp_deeply(
         \@results,

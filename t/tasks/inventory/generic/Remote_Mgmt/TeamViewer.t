@@ -8,7 +8,7 @@ use English qw(-no_match_vars);
 use Test::Deep qw(cmp_deeply);
 use Test::More;
 
-use FusionInventory::Agent::Task::Inventory::Generic::Remote_Mgmt::TeamViewer;
+use GLPI::Agent::Task::Inventory::Generic::Remote_Mgmt::TeamViewer;
 
 plan(skip_all => 'test not supported on win32')
     if $OSNAME eq 'MSWin32';
@@ -26,6 +26,6 @@ plan tests => scalar(keys %teamviewer_tests) + 1;
 
 foreach my $test (sort keys %teamviewer_tests) {
     my $file = "resources/generic/teamviewer/teamviewer-$test";
-    my $teamViewerID = FusionInventory::Agent::Task::Inventory::Generic::Remote_Mgmt::TeamViewer::_getID(file => $file);
+    my $teamViewerID = GLPI::Agent::Task::Inventory::Generic::Remote_Mgmt::TeamViewer::_getID(file => $file);
     cmp_deeply($teamViewerID, $teamviewer_tests{$test}, "TeamViewer $test");
 }

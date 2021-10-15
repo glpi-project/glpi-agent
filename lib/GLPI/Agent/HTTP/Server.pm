@@ -1,4 +1,4 @@
-package FusionInventory::Agent::HTTP::Server;
+package GLPI::Agent::HTTP::Server;
 
 use strict;
 use warnings;
@@ -15,10 +15,10 @@ use URI;
 use Socket;
 use URI::Escape;
 
-use FusionInventory::Agent::Version;
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::Network;
+use GLPI::Agent::Version;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Network;
 
 # Limit maximum requests number handled in a keep-alive connection
 use constant MaxKeepAlive => 8;
@@ -30,7 +30,7 @@ sub new {
 
     my $self = {
         logger    => $params{logger} ||
-                     FusionInventory::Agent::Logger->new(),
+                     GLPI::Agent::Logger->new(),
         agent     => $params{agent},
         htmldir   => $params{htmldir},
         ip        => $params{ip},
@@ -284,11 +284,11 @@ sub _handle_root {
 
     my @sessions = ();
     if ($logger && $logger->debug_level() > 1) {
-        FusionInventory::Agent::Target::Listener->require();
+        GLPI::Agent::Target::Listener->require();
         if ($EVAL_ERROR) {
             $self->{logger}->debug($log_prefix . "Failed to load Listener target module: $EVAL_ERROR");
         } else {
-            my $listener = FusionInventory::Agent::Target::Listener->new(
+            my $listener = GLPI::Agent::Target::Listener->new(
                 logger     => $self->{logger},
                 basevardir => $self->{agent}->{config}->{vardir},
             );
@@ -300,7 +300,7 @@ sub _handle_root {
     }
 
     my $hash = {
-        version        => $FusionInventory::Agent::Version::VERSION,
+        version        => $GLPI::Agent::Version::VERSION,
         trust          => $self->_isTrusted($clientIp),
         status         => $self->{agent}->getStatus(),
         httpd_plugins  => \@listening_plugins,
@@ -738,7 +738,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::HTTP::Server - An embedded HTTP server
+GLPI::Agent::HTTP::Server - An embedded HTTP server
 
 =head1 DESCRIPTION
 

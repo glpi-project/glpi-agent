@@ -1,11 +1,11 @@
-package FusionInventory::Agent::Task::Inventory::Win32::Modems;
+package GLPI::Agent::Task::Inventory::Win32::Modems;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools::Win32;
+use GLPI::Agent::Tools::Win32;
 
 use constant    category    => "modem";
 

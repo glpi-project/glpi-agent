@@ -1,9 +1,9 @@
-package FusionInventory::Agent::SOAP::WsMan::Identify;
+package GLPI::Agent::SOAP::WsMan::Identify;
 
 use strict;
 use warnings;
 
-use FusionInventory::Agent::SOAP::WsMan::Node;
+use GLPI::Agent::SOAP::WsMan::Node;
 
 ## no critic (ProhibitMultiplePackages)
 package

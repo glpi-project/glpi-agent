@@ -1,12 +1,12 @@
-package FusionInventory::Agent::Task::Deploy::Job;
+package GLPI::Agent::Task::Deploy::Job;
 
 use strict;
 use warnings;
 
 use English qw(-no_match_vars);
 
-use FusionInventory::Agent::Task::Deploy::UserCheck;
-use FusionInventory::Agent::Task::Deploy::CheckProcessor;
+use GLPI::Agent::Task::Deploy::UserCheck;
+use GLPI::Agent::Task::Deploy::CheckProcessor;
 
 sub new {
     my ($class, %params) = @_;
@@ -95,7 +95,7 @@ sub skip_on_check_failure {
             my $type = $check->{type} || 'unsupported';
 
             # Bless check object as CheckProcessor
-            FusionInventory::Agent::Task::Deploy::CheckProcessor->new(
+            GLPI::Agent::Task::Deploy::CheckProcessor->new(
                 check  => $check,
                 logger => $logger,
             );
@@ -183,7 +183,7 @@ sub next_on_usercheck {
     }
 
     while ( @checks ) {
-        my $check = FusionInventory::Agent::Task::Deploy::UserCheck->new(
+        my $check = GLPI::Agent::Task::Deploy::UserCheck->new(
             check  => shift @checks,
             logger => $logger
         );

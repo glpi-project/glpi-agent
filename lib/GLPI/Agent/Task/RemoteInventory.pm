@@ -1,12 +1,12 @@
-package FusionInventory::Agent::Task::RemoteInventory;
+package GLPI::Agent::Task::RemoteInventory;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory';
+use parent 'GLPI::Agent::Task::Inventory';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Task::RemoteInventory::Remotes;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Task::RemoteInventory::Remotes;
 
 sub isEnabled {
     my ($self) = @_;
@@ -17,7 +17,7 @@ sub isEnabled {
         return 0;
     }
 
-    my $remotes = FusionInventory::Agent::Task::RemoteInventory::Remotes->new(
+    my $remotes = GLPI::Agent::Task::RemoteInventory::Remotes->new(
         config  => $self->{config},
         storage => $self->{target}->getStorage(),
         logger  => $self->{logger},
@@ -52,7 +52,7 @@ sub isEnabled {
 sub run {
     my ($self, %params) = @_;
 
-    my $remotes = FusionInventory::Agent::Task::RemoteInventory::Remotes->new(
+    my $remotes = GLPI::Agent::Task::RemoteInventory::Remotes->new(
         config  => $self->{config},
         storage => $self->{target}->getStorage(),
         logger  => $self->{logger},

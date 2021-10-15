@@ -7,7 +7,7 @@ use Test::Deep;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Bios;
+use GLPI::Agent::Task::Inventory::Generic::Dmidecode::Bios;
 
 my %tests = (
     'freebsd-6.2' => {
@@ -367,6 +367,6 @@ plan tests => keys(%tests) + 1;
 
 foreach my $test (keys %tests) {
     my $file = "resources/generic/dmidecode/$test";
-    my ($bios, $hardware) = FusionInventory::Agent::Task::Inventory::Generic::Dmidecode::Bios::_getBios(file => $file);
+    my ($bios, $hardware) = GLPI::Agent::Task::Inventory::Generic::Dmidecode::Bios::_getBios(file => $file);
     cmp_deeply($bios, $tests{$test}, "bios: $test");
 }

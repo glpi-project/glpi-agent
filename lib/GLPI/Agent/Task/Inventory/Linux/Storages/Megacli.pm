@@ -1,13 +1,13 @@
-package FusionInventory::Agent::Task::Inventory::Linux::Storages::Megacli;
+package GLPI::Agent::Task::Inventory::Linux::Storages::Megacli;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
-our $runMeIfTheseChecksFailed = ['FusionInventory::Agent::Task::Inventory::Linux::Storages::MegacliWithSmartctl'];
+our $runMeIfTheseChecksFailed = ['GLPI::Agent::Task::Inventory::Linux::Storages::MegacliWithSmartctl'];
 
 sub isEnabled {
     return canRun('megacli');

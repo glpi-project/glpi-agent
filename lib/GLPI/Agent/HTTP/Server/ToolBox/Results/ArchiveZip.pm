@@ -1,9 +1,9 @@
-package FusionInventory::Agent::HTTP::Server::ToolBox::Results::ArchiveZip;
+package GLPI::Agent::HTTP::Server::ToolBox::Results::ArchiveZip;
 
 use strict;
 use warnings;
 
-use parent "FusionInventory::Agent::HTTP::Server::ToolBox::Results::Archive";
+use parent "GLPI::Agent::HTTP::Server::ToolBox::Results::Archive";
 
 use UNIVERSAL::require;
 

@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::Deploy::P2P;
+package GLPI::Agent::Task::Deploy::P2P;
 
 use strict;
 use warnings;
@@ -10,15 +10,15 @@ use Parallel::ForkManager;
 
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Tools;
 
 sub new {
     my ($class, %params) = @_;
 
     my $self = {
         logger        => $params{logger} ||
-                         FusionInventory::Agent::Logger->new(),
+                         GLPI::Agent::Logger->new(),
         datastore     => $params{datastore},
         max_workers   => $params{max_workers}   || 10,
         cache_timeout => $params{cache_timeout} || 1200,
@@ -55,12 +55,12 @@ sub findPeers {
     my @interfaces;
 
     if ($OSNAME eq 'linux') {
-        FusionInventory::Agent::Tools::Linux->require();
-        @interfaces = FusionInventory::Agent::Tools::Linux::getInterfacesFromIfconfig();
+        GLPI::Agent::Tools::Linux->require();
+        @interfaces = GLPI::Agent::Tools::Linux::getInterfacesFromIfconfig();
 
     } elsif ($OSNAME eq 'MSWin32') {
-        FusionInventory::Agent::Tools::Win32->require();
-        @interfaces = FusionInventory::Agent::Tools::Win32::getInterfaces();
+        GLPI::Agent::Tools::Win32->require();
+        @interfaces = GLPI::Agent::Tools::Win32::getInterfaces();
     }
 
     if (!@interfaces) {

@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Task::Deploy::Datastore;
+package GLPI::Agent::Task::Deploy::Datastore;
 
 use strict;
 use warnings;
@@ -9,11 +9,11 @@ use File::Spec;
 use File::Path qw(mkpath rmtree);
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Storage;
-use FusionInventory::Agent::Task::Deploy::Datastore::WorkDir;
-use FusionInventory::Agent::Task::Deploy::DiskFree;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Storage;
+use GLPI::Agent::Task::Deploy::Datastore::WorkDir;
+use GLPI::Agent::Task::Deploy::DiskFree;
 
 sub new {
     my ($class, %params) = @_;
@@ -24,7 +24,7 @@ sub new {
         config => $params{config},
         path   => File::Spec->rel2abs($params{path}),
         logger => $params{logger} ||
-                  FusionInventory::Agent::Logger->new(),
+                  GLPI::Agent::Logger->new(),
     };
 
     if (!$self->{path}) {
@@ -79,7 +79,7 @@ sub createWorkDir {
     mkpath($path);
     return unless -d $path;
 
-    return FusionInventory::Agent::Task::Deploy::Datastore::WorkDir->new(
+    return GLPI::Agent::Task::Deploy::Datastore::WorkDir->new(
         path => $path,
         logger => $self->{logger}
     );
@@ -111,7 +111,7 @@ sub getP2PNet {
     my ($self) = @_;
 
     if (!$self->{p2pnetstorage}) {
-        $self->{p2pnetstorage} = FusionInventory::Agent::Storage->new(
+        $self->{p2pnetstorage} = GLPI::Agent::Storage->new(
             logger    => $self->{logger},
             directory => $self->{config}->{vardir}
         );

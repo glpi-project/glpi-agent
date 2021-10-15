@@ -1,9 +1,9 @@
-package FusionInventory::Agent::Task::Inventory::Generic::Storages;
+package GLPI::Agent::Task::Inventory::Generic::Storages;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use constant    category    => "storage";
 

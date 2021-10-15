@@ -9,8 +9,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::AIX::LVM;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::AIX::LVM;
 
 my %physical_volume_tests = (
     'aix-6.1-hdisk0' => {
@@ -191,11 +191,11 @@ plan tests =>
     (2 * scalar keys %volume_group_tests) +
     1;
 
-my $inventory = FusionInventory::Test::Inventory->new();
+my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %physical_volume_tests) {
     my $file = "resources/aix/lspv/$test";
-    my $device = FusionInventory::Agent::Task::Inventory::AIX::LVM::_getPhysicalVolume(file => $file, name => $test);
+    my $device = GLPI::Agent::Task::Inventory::AIX::LVM::_getPhysicalVolume(file => $file, name => $test);
     cmp_deeply($device, $physical_volume_tests{$test}, "$test: lspv parsing");
     lives_ok {
         $inventory->addEntry(section => 'PHYSICAL_VOLUMES', entry => $device);
@@ -204,7 +204,7 @@ foreach my $test (keys %physical_volume_tests) {
 
 foreach my $test (keys %logical_volume_tests) {
     my $file = "resources/aix/lslv/$test";
-    my $device = FusionInventory::Agent::Task::Inventory::AIX::LVM::_getLogicalVolume(file => $file, name => $test);
+    my $device = GLPI::Agent::Task::Inventory::AIX::LVM::_getLogicalVolume(file => $file, name => $test);
     cmp_deeply($device, $logical_volume_tests{$test}, "$test: lslv parsing");
     lives_ok {
         $inventory->addEntry(section => 'LOGICAL_VOLUMES', entry => $device);
@@ -213,7 +213,7 @@ foreach my $test (keys %logical_volume_tests) {
 
 foreach my $test (keys %volume_group_tests) {
     my $file = "resources/aix/lsvg/$test";
-    my $device = FusionInventory::Agent::Task::Inventory::AIX::LVM::_getVolumeGroup(file => $file, name => $test);
+    my $device = GLPI::Agent::Task::Inventory::AIX::LVM::_getVolumeGroup(file => $file, name => $test);
     cmp_deeply($device, $volume_group_tests{$test}, "$test: lsvg parsing");
     lives_ok {
         $inventory->addEntry(section => 'VOLUME_GROUPS', entry => $device);

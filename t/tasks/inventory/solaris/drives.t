@@ -9,8 +9,8 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Task::Inventory::Solaris::Drives;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Task::Inventory::Solaris::Drives;
 
 my %tests = (
     'zfs-samples' => [
@@ -69,8 +69,8 @@ my %tests = (
 plan tests => (scalar keys %tests) + 1;
 
 foreach my $test (keys %tests) {
-    my $inventory = FusionInventory::Test::Inventory->new();
-    FusionInventory::Agent::Task::Inventory::Solaris::Drives::doInventory(
+    my $inventory = GLPI::Test::Inventory->new();
+    GLPI::Agent::Task::Inventory::Solaris::Drives::doInventory(
         inventory   => $inventory,
         file        => "resources/solaris/df/$test",
         df_version  => $test,

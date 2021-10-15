@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Version;
+package GLPI::Agent::Version;
 
 use strict;
 use warnings;

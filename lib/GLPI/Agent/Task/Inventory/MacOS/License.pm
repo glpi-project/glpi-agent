@@ -1,12 +1,12 @@
-package FusionInventory::Agent::Task::Inventory::MacOS::License;
+package GLPI::Agent::Task::Inventory::MacOS::License;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task::Inventory::Module';
+use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Tools::License;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::License;
 
 use constant    category    => "licenseinfo";
 

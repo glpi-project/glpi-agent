@@ -1,4 +1,4 @@
-package FusionInventory::Agent::Tools::Standards::MobileCountryCode;
+package GLPI::Agent::Tools::Standards::MobileCountryCode;
 
 use strict;
 use warnings;

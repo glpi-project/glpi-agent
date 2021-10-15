@@ -1,23 +1,23 @@
-package FusionInventory::Agent::Task::Inventory;
+package GLPI::Agent::Task::Inventory;
 
 use strict;
 use warnings;
 
-use parent 'FusionInventory::Agent::Task';
+use parent 'GLPI::Agent::Task';
 
 use Config;
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Inventory;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Inventory;
 
-use FusionInventory::Agent::Task::Inventory::Version;
+use GLPI::Agent::Task::Inventory::Version;
 
 # Preload Module base class
-use FusionInventory::Agent::Task::Inventory::Module;
+use GLPI::Agent::Task::Inventory::Module;
 
-our $VERSION = FusionInventory::Agent::Task::Inventory::Version::VERSION;
+our $VERSION = GLPI::Agent::Task::Inventory::Version::VERSION;
 
 sub isEnabled {
     my ($self, $contact) = @_;
@@ -54,13 +54,13 @@ sub isEnabled {
 
                                 # Setup GLPI server client for get_params requests
                                 if ($this_param->{use}) {
-                                    FusionInventory::Agent::HTTP::Client::GLPI->require();
+                                    GLPI::Agent::HTTP::Client::GLPI->require();
                                     if ($EVAL_ERROR) {
                                         $self->{logger}->error("Can't load GLPI client API to handle get_params")
                                             unless $cant_load_glpi_client++;
                                     } else {
                                         my $config = $self->{config};
-                                        $this_param->{_glpi_client} = FusionInventory::Agent::HTTP::Client::GLPI->new(
+                                        $this_param->{_glpi_client} = GLPI::Agent::HTTP::Client::GLPI->new(
                                             logger       => $self->{logger},
                                             user         => $config->{user},
                                             password     => $config->{password},
@@ -122,7 +122,7 @@ sub run {
 
     my $tag = $self->{config}->{'tag'};
 
-    my $inventory = FusionInventory::Agent::Inventory->new(
+    my $inventory = GLPI::Agent::Inventory->new(
         statedir => $self->{target}->getStorage()->getDirectory(),
         deviceid => $self->{deviceid},
         logger   => $self->{logger},
@@ -292,9 +292,9 @@ sub submit {
     } elsif ($self->{target}->isGlpiServer()) {
 
         return $self->{logger}->error("Can't load GLPI client API")
-            unless FusionInventory::Agent::HTTP::Client::GLPI->require();
+            unless GLPI::Agent::HTTP::Client::GLPI->require();
 
-        my $client = FusionInventory::Agent::HTTP::Client::GLPI->new(
+        my $client = GLPI::Agent::HTTP::Client::GLPI->new(
             logger          => $self->{logger},
             user            => $config->{user},
             password        => $config->{password},
@@ -336,9 +336,9 @@ sub submit {
     } elsif ($self->{target}->isType('server')) {
 
         return $self->{logger}->error("Can't load OCS client API")
-            unless FusionInventory::Agent::HTTP::Client::OCS->require();
+            unless GLPI::Agent::HTTP::Client::OCS->require();
 
-        my $client = FusionInventory::Agent::HTTP::Client::OCS->new(
+        my $client = GLPI::Agent::HTTP::Client::OCS->new(
             logger          => $self->{logger},
             user            => $config->{user},
             password        => $config->{password},
@@ -352,9 +352,9 @@ sub submit {
         );
 
         return $self->{logger}->error("Can't load Inventory XML Query API")
-            unless FusionInventory::Agent::XML::Query::Inventory->require();
+            unless GLPI::Agent::XML::Query::Inventory->require();
 
-        my $message = FusionInventory::Agent::XML::Query::Inventory->new(
+        my $message = GLPI::Agent::XML::Query::Inventory->new(
             deviceid => $inventory->getDeviceId(),
             content  => $inventory->getContent()
         );
@@ -369,9 +369,9 @@ sub submit {
     } elsif ($self->{target}->isType('listener')) {
 
         return $self->{logger}->error("Can't load Inventory XML Query API")
-            unless FusionInventory::Agent::XML::Query::Inventory->require();
+            unless GLPI::Agent::XML::Query::Inventory->require();
 
-        my $query = FusionInventory::Agent::XML::Query::Inventory->new(
+        my $query = GLPI::Agent::XML::Query::Inventory->new(
             deviceid => $inventory->getDeviceId(),
             content  => $inventory->getContent()
         );
@@ -393,7 +393,7 @@ sub getCategories {
     foreach my $module (sort @modules) {
         # Just skip Version package as not an inventory package module
         # Also skip Module as not a real module but the base class for any module
-        next if $module =~ /FusionInventory::Agent::Task::Inventory::(Version|Module)$/;
+        next if $module =~ /GLPI::Agent::Task::Inventory::(Version|Module)$/;
 
         $module->require();
         next if $EVAL_ERROR;
@@ -436,7 +436,7 @@ sub _initModulesList {
 
         # Just skip Version package as not an inventory package module
         # Also skip Module as not a real module but the base class for any module
-        if ($module =~ /FusionInventory::Agent::Task::Inventory::(Version|Module)$/) {
+        if ($module =~ /GLPI::Agent::Task::Inventory::(Version|Module)$/) {
             $self->{modules}->{$module}->{enabled} = 0;
             next;
         }
@@ -470,7 +470,7 @@ sub _initModulesList {
         unless (defined(*{$module."::".$isEnabledFunction})) {
             no strict 'refs'; ## no critic (ProhibitNoStrict)
             *{$module."::".$isEnabledFunction} =
-                \&{"FusionInventory::Agent::Task::Inventory::Module::$isEnabledFunction"};
+                \&{"GLPI::Agent::Task::Inventory::Module::$isEnabledFunction"};
         }
 
         my $enabled = runFunction(
@@ -680,7 +680,7 @@ sub _printInventory {
             );
 
              my $hash = {
-                version  => $FusionInventory::Agent::Version::VERSION,
+                version  => $GLPI::Agent::Version::VERSION,
                 deviceid => $self->{inventory}->getDeviceId(),
                 data     => $self->{inventory}->getContent(),
                 fields   => $self->{inventory}->getFields()
@@ -723,7 +723,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::Task::Inventory - Inventory task for FusionInventory
+GLPI::Agent::Task::Inventory - Inventory task for GLPI
 
 =head1 DESCRIPTION
 

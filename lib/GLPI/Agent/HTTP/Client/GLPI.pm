@@ -1,8 +1,8 @@
-package FusionInventory::Agent::HTTP::Client::GLPI;
+package GLPI::Agent::HTTP::Client::GLPI;
 
 use strict;
 use warnings;
-use parent 'FusionInventory::Agent::HTTP::Client';
+use parent 'GLPI::Agent::HTTP::Client';
 
 use English qw(-no_match_vars);
 use HTTP::Request;
@@ -10,9 +10,9 @@ use UNIVERSAL::require;
 use URI;
 use Encode;
 
-use FusionInventory::Agent::Tools;
-use FusionInventory::Agent::Logger;
-use FusionInventory::Agent::Tools::UUID;
+use GLPI::Agent::Tools;
+use GLPI::Agent::Logger;
+use GLPI::Agent::Tools::UUID;
 
 use GLPI::Agent::Protocol::Message;
 
@@ -239,7 +239,7 @@ __END__
 
 =head1 NAME
 
-FusionInventory::Agent::HTTP::Client::GLPI - HTTP client supporting GLPI Agent protocol
+GLPI::Agent::HTTP::Client::GLPI - HTTP client supporting GLPI Agent protocol
 
 =head1 DESCRIPTION
 

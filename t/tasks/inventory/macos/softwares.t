@@ -9,9 +9,9 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
-use FusionInventory::Test::Inventory;
-use FusionInventory::Agent::Tools qw(getAllLines);
-use FusionInventory::Agent::Task::Inventory::MacOS::Softwares;
+use GLPI::Test::Inventory;
+use GLPI::Agent::Tools qw(getAllLines);
+use GLPI::Agent::Task::Inventory::MacOS::Softwares;
 
 use English;
 
@@ -3696,19 +3696,19 @@ plan tests => 2 * scalar (keys %tests)
     + 7;
 
 for my $dateStr (keys %$datesStr) {
-    my $formatted = FusionInventory::Agent::Task::Inventory::MacOS::Softwares::_formatDate($dateStr);
+    my $formatted = GLPI::Agent::Task::Inventory::MacOS::Softwares::_formatDate($dateStr);
     ok ($formatted eq $datesStr->{$dateStr}, "'" . $datesStr->{$dateStr} ."' expected but got '" . $formatted . "'");
 }
 
 my $NotADate = "this string should be a date...";
-my $nothingdone = FusionInventory::Agent::Task::Inventory::MacOS::Softwares::_formatDate($NotADate);
+my $nothingdone = GLPI::Agent::Task::Inventory::MacOS::Softwares::_formatDate($NotADate);
 ok ($nothingdone eq $NotADate);
 
-my $inventory = FusionInventory::Test::Inventory->new();
+my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %tests) {
     my $file = "resources/macos/system_profiler/$test.SPApplicationsDataType";
-    my $softwares = FusionInventory::Agent::Task::Inventory::MacOS::Softwares::_getSoftwaresList(file => $file, format => 'text');
+    my $softwares = GLPI::Agent::Task::Inventory::MacOS::Softwares::_getSoftwaresList(file => $file, format => 'text');
     cmp_deeply(
         [ sort { compare() } @{$softwares} ],
         [ sort { compare() } @{$tests{$test}} ],
@@ -3727,7 +3727,7 @@ sub compare {
 
 SKIP: {
     skip "Only if OS is darwin (Mac OS X) and command 'system_profiler' is available", 6
-        unless $OSNAME eq 'darwin' && FusionInventory::Agent::Task::Inventory::MacOS::Softwares::isEnabled();
+        unless $OSNAME eq 'darwin' && GLPI::Agent::Task::Inventory::MacOS::Softwares::isEnabled();
 
     my @hasSoftwareOutput = getAllLines(
         command => "/usr/sbin/system_profiler SPApplicationsDataType"
@@ -3736,23 +3736,23 @@ SKIP: {
     skip "No installed software seen on this system", 6
         if @hasSoftwareOutput == 0;
 
-    my $softs = FusionInventory::Agent::Tools::MacOS::_getSystemProfilerInfosXML(
+    my $softs = GLPI::Agent::Tools::MacOS::_getSystemProfilerInfosXML(
         type            => 'SPApplicationsDataType',
-        localTimeOffset => FusionInventory::Agent::Tools::MacOS::detectLocalTimeOffset(),
+        localTimeOffset => GLPI::Agent::Tools::MacOS::detectLocalTimeOffset(),
         format => 'xml'
     );
     ok ($softs);
     ok (scalar(keys %$softs) > 0);
 
-    my $infos = FusionInventory::Agent::Tools::MacOS::getSystemProfilerInfos(
+    my $infos = GLPI::Agent::Tools::MacOS::getSystemProfilerInfos(
         type            => 'SPApplicationsDataType',
-        localTimeOffset => FusionInventory::Agent::Tools::MacOS::detectLocalTimeOffset(),
+        localTimeOffset => GLPI::Agent::Tools::MacOS::detectLocalTimeOffset(),
         format => 'xml'
     );
     ok ($infos);
     ok (scalar(keys %$infos) > 0);
 
-    my $softwareHash = FusionInventory::Agent::Task::Inventory::MacOS::Softwares::_getSoftwaresList(
+    my $softwareHash = GLPI::Agent::Task::Inventory::MacOS::Softwares::_getSoftwaresList(
         format => 'xml',
     );
     ok (defined $softwareHash);

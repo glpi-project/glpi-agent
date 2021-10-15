@@ -1,4 +1,4 @@
-package FusionInventory::Agent::SOAP::WsMan::Node;
+package GLPI::Agent::SOAP::WsMan::Node;
 
 use strict;
 use warnings;
@@ -19,7 +19,7 @@ use constant    dump_as_string => 0;
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 
-use FusionInventory::Agent::Tools;
+use GLPI::Agent::Tools;
 
 my ($wsman_classes_path) = $INC{'Node.pm'} =~ m|(.*)/[^/]*\.pm$|;
 
@@ -83,7 +83,7 @@ sub _load_class {
 
     unless ($INC{"$class.pm"}) {
         if (-e "$wsman_classes_path/$class.pm") {
-            my $module = "FusionInventory::Agent::SOAP::WsMan::$class";
+            my $module = "GLPI::Agent::SOAP::WsMan::$class";
             $module->require();
             warn "Failure while loading $class: $EVAL_ERROR\n"
                 if $EVAL_ERROR;
