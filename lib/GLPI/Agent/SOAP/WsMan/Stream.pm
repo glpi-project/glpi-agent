@@ -9,7 +9,8 @@ use GLPI::Agent::SOAP::WsMan::Node;
 package
     Stream;
 
-use parent 'Node';
+use parent
+    'Node';
 
 use MIME::Base64;
 use Encode;

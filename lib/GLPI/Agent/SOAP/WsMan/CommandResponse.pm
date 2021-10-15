@@ -9,7 +9,8 @@ use GLPI::Agent::SOAP::WsMan::Node;
 package
     CommandResponse;
 
-use parent 'Node';
+use parent
+    'Node';
 
 use constant    xmlns   => 'rsp';
 

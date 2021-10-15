@@ -9,7 +9,8 @@ use GLPI::Agent::SOAP::WsMan::Node;
 package
     Identify;
 
-use parent 'Node';
+use parent
+    'Node';
 
 # Constants needed in parent class
 use constant    xmlns   => 'wsmid';

@@ -9,7 +9,8 @@ use GLPI::Agent::SOAP::WsMan::Node;
 package
     Selector;
 
-use parent 'Node';
+use parent
+    'Node';
 
 use GLPI::Agent::SOAP::WsMan::Selector;
 

@@ -9,7 +9,8 @@ use GLPI::Agent::SOAP::WsMan::Node;
 package
     MaxElements;
 
-use parent 'Node';
+use parent
+    'Node';
 
 sub new {
     my ($class, $max, $for_pull) = @_;

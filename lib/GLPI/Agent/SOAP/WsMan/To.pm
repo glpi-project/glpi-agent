@@ -9,7 +9,8 @@ use GLPI::Agent::SOAP::WsMan::Node;
 package
     To;
 
-use parent 'Node';
+use parent
+    'Node';
 
 use constant    xmlns   => 'a';
 use constant    xsd     => "http://schemas.xmlsoap.org/ws/2004/08/addressing";

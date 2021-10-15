@@ -11,7 +11,8 @@ package
 
 # Used while looking for Win32_SystemUsers from GLPI::Agent::Tools::Win32::Users::getSystemUsers()
 
-use parent 'Node';
+use parent
+    'Node';
 
 use constant    xmlns   => 'p';
 

@@ -14,7 +14,8 @@ BEGIN {
 package
     EnumerateResponse;
 
-use parent 'Node';
+use parent
+    'Node';
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::SOAP::WsMan::EnumerationContext;

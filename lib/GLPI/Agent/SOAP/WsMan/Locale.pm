@@ -9,7 +9,8 @@ use GLPI::Agent::SOAP::WsMan::Node;
 package
     Locale;
 
-use parent 'Node';
+use parent
+    'Node';
 
 use constant    xmlns   => 'w';
 
