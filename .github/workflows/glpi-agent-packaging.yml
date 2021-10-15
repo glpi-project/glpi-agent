@@ -42,7 +42,7 @@ jobs:
             echo "::set-output name=build::yes"
             echo "::set-output name=tag_name::$VERSION"
         else
-            VERSION=$(perl -Ilib -MFusionInventory::Agent::Version -e 'print $FusionInventory::Agent::Version::VERSION')
+            VERSION=$(perl -Ilib -MGLPI::Agent::Version -e 'print $GLPI::Agent::Version::VERSION')
             VERSION=${VERSION%-dev}-git${GITHUB_SHA:0:8}
             if [ "${{ github.event_name }}" = "schedule" -o "${{ env.publish_development_build }}" = "yes" ]; then
                 if [ "${{ github.event_name }}" = "schedule" ]; then
