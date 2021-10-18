@@ -18,22 +18,22 @@ my %tests = (
         {
             NAME      => 'xmpp-test3',
             STATUS    => STATUS_RUNNING,
-            VMTYPE    => 'jail',
+            VMTYPE    => 'bsdjail',
         },
         {
             NAME      => 'xmpp-test2',
             STATUS    => STATUS_RUNNING,
-            VMTYPE    => 'jail',
+            VMTYPE    => 'bsdjail',
         },
         {
             NAME      => 'xmpp-test1',
             STATUS    => STATUS_RUNNING,
-            VMTYPE    => 'jail',
+            VMTYPE    => 'bsdjail',
         },
         {
             NAME      => 'noname.local',
             STATUS    => STATUS_RUNNING,
-            VMTYPE    => 'jail',
+            VMTYPE    => 'bsdjail',
         },
     ]
 );

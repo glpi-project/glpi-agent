@@ -44,7 +44,7 @@ sub  _getVirtualMachines {
         }
 
         my $machine = {
-            VMTYPE    => 'jail',
+            VMTYPE    => 'bsdjail',
             NAME      => $info->{'host.hostname'},
             STATUS    => STATUS_RUNNING
         };

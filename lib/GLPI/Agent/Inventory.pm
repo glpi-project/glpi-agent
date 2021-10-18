@@ -105,20 +105,25 @@ my %fields = (
 );
 
 my %checks = (
+    BIOS => {
+        SECURE_BOOT => qr/^(enabled|disabled|unsupported)$/
+    },
     STORAGES => {
-        INTERFACE => qr/^(SCSI|HDC|IDE|USB|1394|Serial-ATA|SAS|SATA)$/
+        STATUS    => qr/^(up|down)$/,
+        INTERFACE => qr/^(SCSI|HDC|IDE|USB|1394|SATA|SAS|ATAPI)$/
     },
     VIRTUALMACHINES => {
+        VMTYPE => qr/^(physical|xen|virtualbox|virtual machine|vmware|qemu|solariszone|vserver|openvz|bsdjail|parallels|hyperv|aix_lpar|docker|libvirt|lxd|lxc|virtuozzo)$/,
         STATUS => qr/^(running|blocked|idle|paused|shutdown|crashed|dying|off)$/
     },
     SLOTS => {
         STATUS => qr/^(free|used)$/
     },
     NETWORKS => {
-        TYPE => qr/^(ethernet|wifi|infiniband|aggregate|alias|dialup|loopback|bridge|fibrechannel)$/
+        TYPE => qr/^(ethernet|wifi|infiniband|aggregate|alias|dialup|loopback|bridge|fibrechannel|bluetooth)$/
     },
     CPUS => {
-        ARCH => qr/^(MIPS|MIPS64|Alpha|SPARC|SPARC64|m68k|i386|x86_64|PowerPC|PowerPC64|ARM|AArch64)$/
+        ARCH => qr/^(mips|mips64|alpha|sparc|sparc64|m68k|i386|x86_64|powerpc|powerpc64|arm.*|aarch64)$/
     }
 );
 

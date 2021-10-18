@@ -16,7 +16,7 @@ use GLPI::Agent::Tools::Virtualization;
 my %tests = (
     sample1 => [
         {
-            VMTYPE    => 'Parallels',
+            VMTYPE    => 'parallels',
             NAME      => 'Ubuntu Linux',
             SUBSYSTEM => 'Parallels',
             STATUS    => STATUS_OFF,

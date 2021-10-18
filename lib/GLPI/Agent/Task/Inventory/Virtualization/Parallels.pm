@@ -94,7 +94,7 @@ sub _parsePrlctlA {
             UUID      => $uuid,
             STATUS    => $status,
             SUBSYSTEM => "Parallels",
-            VMTYPE    => "Parallels",
+            VMTYPE    => "parallels",
         };
     }
 
