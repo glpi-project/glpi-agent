@@ -519,7 +519,7 @@ sub _handle_proxy_request {
 
         # Update proxyid with our agentid to permit proxy loop detection
         $proxyid .= "," if $proxyid;
-        $proxyid .= $agent->{agentid};
+        $proxyid .= uuid_to_string($agent->{agentid});
 
         # Prepare a client to foward request
         my $proxyclient = GLPI::Agent::HTTP::Client::GLPI->new(
