@@ -16,7 +16,7 @@ use GLPI::Agent::Tools::Virtualization;
 my %tests = (
     sample1 => [
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'Fusion-UsineRefav',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -25,7 +25,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'Client-Leopard2',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -34,7 +34,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'Client-Snow64',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -43,7 +43,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'Client-Win2k',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -52,7 +52,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'OpenSuse',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -61,7 +61,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'OpenSolaris',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -70,7 +70,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'Mandriva',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -79,7 +79,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'openbsd47',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -88,7 +88,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'netbsd',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -99,7 +99,7 @@ my %tests = (
     ],
     sample2 => [
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'FreeBSD8 i386',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_RUNNING,
@@ -108,7 +108,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'Windows2000 (fusion agent)',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -117,7 +117,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'Centos',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -126,7 +126,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'windows 7 RU',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -135,7 +135,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'Windows XP',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_RUNNING,
@@ -144,7 +144,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'windowsxp01',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -153,7 +153,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'windowsxp02',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -162,7 +162,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'debian10023',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -171,7 +171,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'debian10024',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -180,7 +180,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'MacOSX 10.6',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -189,7 +189,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'windows xp RU',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -198,7 +198,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'Mandriva',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -207,7 +207,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'Macos',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -218,7 +218,7 @@ my %tests = (
     ],
     sample3 => [
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'Node 1 : Debian',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -227,7 +227,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'Node 2 : Debian',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -236,7 +236,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'Node 3 : CentOS',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -245,7 +245,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'Node 4 : CentOS',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -254,7 +254,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'FormationCFengine',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,
@@ -263,7 +263,7 @@ my %tests = (
             VCPU      => 1
         },
         {
-            VMTYPE    => 'virtualBox',
+            VMTYPE    => 'virtualbox',
             NAME      => 'Debian Maître - Squeeze',
             SUBSYSTEM => 'Oracle VM VirtualBox',
             STATUS    => STATUS_OFF,

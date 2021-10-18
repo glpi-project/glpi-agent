@@ -113,7 +113,7 @@ sub _parseVBoxManage {
                 NAME      => $1,
                 VCPU      => 1,
                 SUBSYSTEM => 'Oracle VM VirtualBox',
-                VMTYPE    => 'virtualBox'
+                VMTYPE    => 'virtualbox'
             };
         } elsif ($line =~ m/^UUID:\s+(.+)/) {
             $machine->{UUID} = $1;

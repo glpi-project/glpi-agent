@@ -19,7 +19,7 @@ my %tests = (
         ctid_template   => 'sample1-ctid-conf',
         expected        => [
             {
-                VMTYPE    => 'Virtuozzo',
+                VMTYPE    => 'virtuozzo',
                 NAME      => 'vz1.mydomain.com',
                 SUBSYSTEM => 'debian-8.0-x86_64-minimal',
                 STATUS    => STATUS_RUNNING,
@@ -28,7 +28,7 @@ my %tests = (
                 VCPU      => 0
             },
             {
-                VMTYPE    => 'Virtuozzo',
+                VMTYPE    => 'virtuozzo',
                 NAME      => 'vz2.mydomain.com',
                 SUBSYSTEM => 'debian-8.0-x86_64-minimal',
                 STATUS    => STATUS_RUNNING,
@@ -37,7 +37,7 @@ my %tests = (
                 VCPU      => 0
             },
             {
-                VMTYPE    => 'Virtuozzo',
+                VMTYPE    => 'virtuozzo',
                 NAME      => 'vz3.mydomain.com',
                 SUBSYSTEM => 'debian-8.0-x86_64-minimal',
                 STATUS    => STATUS_RUNNING,
@@ -47,7 +47,7 @@ my %tests = (
                 VCPU      => 0
             },
             {
-                VMTYPE    => 'Virtuozzo',
+                VMTYPE    => 'virtuozzo',
                 NAME      => 'vz4.mydomain.com',
                 SUBSYSTEM => 'debian-8.0-x86_64-minimal',
                 STATUS    => STATUS_OFF,
@@ -68,7 +68,7 @@ my %tests = (
                 SUBSYSTEM   => 'debian-6.0.2-amd64',
                 UUID        => 'fakeUUID-136',
                 VCPU        => 0,
-                VMTYPE      => 'Virtuozzo'
+                VMTYPE      => 'virtuozzo'
             },
             {
                 MAC         => '00:18:51:9a:87:03',
@@ -78,7 +78,7 @@ my %tests = (
                 SUBSYSTEM   => 'debian-4.0-i386-minimal',
                 UUID        => 'fakeUUID-8102',
                 VCPU        => 0,
-                VMTYPE      => 'Virtuozzo'
+                VMTYPE      => 'virtuozzo'
             },
             {
                 MAC         => '00:18:51:4a:b6:9d',
@@ -88,7 +88,7 @@ my %tests = (
                 SUBSYSTEM   => 'debian-4.0-i386-minimal',
                 UUID        => 'fakeUUID-21179',
                 VCPU        => 0,
-                VMTYPE      => 'Virtuozzo'
+                VMTYPE      => 'virtuozzo'
             },
             {
                 MAC         => '00:18:51:38:b2:0f/00:18:51:65:86:c3',
@@ -98,7 +98,7 @@ my %tests = (
                 SUBSYSTEM   => 'debian-7.8-x86_64',
                 UUID        => 'fakeUUID-208185',
                 VCPU        => 0,
-                VMTYPE      => 'Virtuozzo'
+                VMTYPE      => 'virtuozzo'
             },
             {
                 MAC         => '00:18:51:6f:c7:67',
@@ -108,7 +108,7 @@ my %tests = (
                 SUBSYSTEM   => 'debian-8.1-x86_64',
                 UUID        => 'fakeUUID-1951898610',
                 VCPU        => 0,
-                VMTYPE      => 'Virtuozzo'
+                VMTYPE      => 'virtuozzo'
             }
         ]
     }

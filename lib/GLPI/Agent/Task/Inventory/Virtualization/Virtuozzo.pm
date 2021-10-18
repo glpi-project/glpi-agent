@@ -114,7 +114,7 @@ sub _parseVzlist {
             MEMORY    => $memory,
             STATUS    => $status,
             SUBSYSTEM => $subsys,
-            VMTYPE    => "Virtuozzo",
+            VMTYPE    => "virtuozzo",
         };
 
         my $mac = _getMACs(
