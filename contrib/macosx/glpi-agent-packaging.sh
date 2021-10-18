@@ -338,6 +338,9 @@ echo "Installing to payload..."
 make install DESTDIR="$ROOT/payload"
 echo "Installed."
 
+# Don't keep .packlist file generated during installation
+rm -rf $ROOT/payload$BUILD_PREFIX/agent/auto
+
 cd "$ROOT"
 
 # Create conf.d and fix default conf
