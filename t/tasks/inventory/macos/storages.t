@@ -14,115 +14,12 @@ use GLPI::Test::Inventory;
 use GLPI::Agent::Task::Inventory::MacOS::Storages;
 use GLPI::Agent::Tools 'getCanonicalSize';
 
-my %tests = (
-    '10.4-powerpc' => [
-        {
-            NAME         => 'HL-DT-ST DVD-RW GWA-4165B',
-            FIRMWARE     => 'C006',
-            TYPE         => 'ATA',
-            SERIAL       => 'B6FD7234EC63',
-            DISKSIZE     => undef,
-            MANUFACTURER => 'HL-DT-ST DVD-RW GWA-4165B',
-            MODEL        => '',
-            DESCRIPTION  => 'CD-ROM Drive'
-        }
-    ],
-    '10.5-powerpc' => [
-        {
-            NAME         => 'HL-DT-ST DVD-RW GWA-4165B',
-            FIRMWARE     => 'C006',
-            TYPE         => 'ATA',
-            SERIAL       => 'B6FD7234EC63',
-            DISKSIZE     => undef,
-            MANUFACTURER => 'HL-DT-ST DVD-RW GWA-4165B',
-            MODEL        => '',
-            DESCRIPTION  => 'CD-ROM Drive'
-        },
-        {
-            NAME         => 'Flash Disk',
-            FIRMWARE     => undef,
-            TYPE         => 'USB',
-            SERIAL       => '110074973765',
-            DISKSIZE     => 1960000,
-            MANUFACTURER => 'Flash Disk',
-            MODEL        => undef,
-            DESCRIPTION  => 'Disk drive'
-        },
-        {
-            NAME         => 'DataTraveler 2.0',
-            FIRMWARE     => undef,
-            TYPE         => 'USB',
-            SERIAL       => '89980116200801151425097A',
-            DISKSIZE     => 3760000,
-            MANUFACTURER => 'DataTraveler 2.0',
-            MODEL        => undef,
-            DESCRIPTION  => 'Disk drive'
-        }
-    ],
-    '10.6-intel' => [
-        {
-            NAME         => 'MATSHITADVD-R   UJ-875',
-            FIRMWARE     => 'DB09',
-            TYPE         => 'ATA',
-            SERIAL       => '            fG424F9E',
-            DISKSIZE     => undef,
-            MANUFACTURER => 'Matshita',
-            MODEL        => 'DVD-R   UJ-875',
-            DESCRIPTION  => 'CD-ROM Drive'
-        },
-        {
-            NAME         => 'Flash Disk      ',
-            FIRMWARE     => undef,
-            TYPE         => 'USB',
-            SERIAL       => '110074973765',
-            DISKSIZE     => 2110000,
-            MANUFACTURER => 'Flash Disk      ',
-            MODEL        => undef,
-            DESCRIPTION  => 'Disk drive'
-        }
-    ],
-    '10.6.6-intel' => [
-        {
-            NAME         => 'MATSHITACD-RW  CW-8221',
-            FIRMWARE     => 'GA0J',
-            TYPE         => 'ATA',
-            SERIAL       => undef,
-            DISKSIZE     => undef,
-            MANUFACTURER => 'Matshita',
-            MODEL        => 'CD-RW  CW-8221',
-            DESCRIPTION  => 'CD-ROM Drive'
-        }
-    ],
-    'fiberchannel' => [
-        {
-            NAME         => 'SCSI Logical Unit @ 0',
-            FIRMWARE     => 'R001',
-            TYPE         => 'Fibre Channel',
-            SERIAL       => undef,
-            DISKSIZE     => 20010000,
-            MANUFACTURER => 'SCSI Logical Unit @ 0',
-            MODEL        => 'Production Backu',
-            DESCRIPTION  => 'Disk drive'
-        },
-        {
-            NAME         => 'SCSI Logical Unit @ 0',
-            FIRMWARE     => '1.0.',
-            TYPE         => 'Fibre Channel',
-            SERIAL       => undef,
-            DISKSIZE     => 20010000,
-            MANUFACTURER => 'SCSI Logical Unit @ 0',
-            MODEL        => 'UltraStorRS16FS',
-            DESCRIPTION  => 'Disk drive'
-        }
-    ]
-);
-
 my %testsSerialATA = (
     'SPSerialATADataType.xml' => [
         {
             NAME         => 'disk0',
             MANUFACTURER => 'Western Digital',
-            INTERFACE    => 'SERIAL-ATA',
+            INTERFACE    => 'SATA',
             SERIAL       => 'WD-WCARY1264478',
             MODEL        => 'WDC WD2500AAJS-40VWA1',
             FIRMWARE     => '58.01D02',
@@ -135,7 +32,7 @@ my %testsSerialATA = (
         {
             NAME         => 'disk0',
             MANUFACTURER => 'Apple',
-            INTERFACE    => 'SERIAL-ATA',
+            INTERFACE    => 'SATA',
             SERIAL       => '1435NL400611',
             MODEL        => 'SSD SD0128F',
             FIRMWARE     => 'A222821',
@@ -331,7 +228,7 @@ my %testsFireWireStorage = (
             DESCRIPTION  => 'Target Disk Mode SBP-LUN',
             DISKSIZE     => 305244.16,
             FIRMWARE     => '',
-            INTERFACE    => 'FireWire',
+            INTERFACE    => '1394',
             MANUFACTURER => 'AAPL',
             MODEL        => '',
             SERIAL       => '',
@@ -374,42 +271,21 @@ my %testsRecursiveParsing = (
     }
 );
 
-plan tests => (2 * scalar (keys %tests))
-        + 1
-        + scalar (keys %testsSerialATA)
-        + scalar (keys %testsDiscBurning)
-        + scalar (keys %testsCardReader)
-        + scalar (keys %testsUSBStorage)
-        + scalar (keys %testsFireWireStorage)
-        + scalar (keys %testsRecursiveParsing)
-;
-
-my $inventory = GLPI::Test::Inventory->new();
-
-foreach my $test (keys %tests) {
-    my $file = "resources/macos/system_profiler/$test";
-    my @storages = GLPI::Agent::Task::Inventory::MacOS::Storages::_getStorages(file => $file);
-    cmp_deeply(
-        [ sort { compare() } @storages ],
-        [ sort { compare() } @{$tests{$test}} ],
-        "$test: parsing"
-    );
-    lives_ok {
-        $inventory->addEntry(section => 'STORAGES', entry => $_)
-            foreach @storages;
-    } "$test: registering";
-}
-
-XML::XPath->require();
-my $checkXmlXPath = $EVAL_ERROR ? 0 : 1;
 my $nbTests = scalar (keys %testsSerialATA)
     + scalar (keys %testsDiscBurning)
     + scalar (keys %testsCardReader)
     + scalar (keys %testsUSBStorage)
     + scalar (keys %testsFireWireStorage)
     + scalar (keys %testsRecursiveParsing);
+
+plan tests => 2 * $nbTests;
+
+my $inventory = GLPI::Test::Inventory->new();
+
+XML::XPath->require();
+my $checkXmlXPath = $EVAL_ERROR ? 0 : 1;
 SKIP: {
-    skip "test only if module XML::XPath available", $nbTests unless $checkXmlXPath;
+    skip "test only if module XML::XPath available", 2*$nbTests unless $checkXmlXPath;
 
     foreach my $test (keys %testsSerialATA) {
         my $file = "resources/macos/system_profiler/$test";
@@ -419,6 +295,10 @@ SKIP: {
             [ sort { compare() } @{$testsSerialATA{$test}} ],
             "testsSerialATA $test: parsing"
         );
+        lives_ok {
+            $inventory->addEntry(section => 'STORAGES', entry => $_)
+                foreach @storages;
+        } "$test: registering";
     }
 
     foreach my $test (keys %testsDiscBurning) {
@@ -429,6 +309,10 @@ SKIP: {
             [ sort { compare() } @{$testsDiscBurning{$test}} ],
             "testsDiscBurning $test: parsing"
         );
+        lives_ok {
+            $inventory->addEntry(section => 'STORAGES', entry => $_)
+                foreach @storages;
+        } "$test: registering";
     }
 
     foreach my $test (keys %testsCardReader) {
@@ -439,6 +323,10 @@ SKIP: {
             [ sort { compare() } @{$testsCardReader{$test}} ],
             "testsDiscBurning $test: parsing"
         );
+        lives_ok {
+            $inventory->addEntry(section => 'STORAGES', entry => $_)
+                foreach @storages;
+        } "$test: registering";
     }
 
     foreach my $test (keys %testsUSBStorage) {
@@ -449,6 +337,10 @@ SKIP: {
             [ sort { compare() } @{$testsUSBStorage{$test}} ],
             "testsUSBStorage $test: parsing"
         );
+        lives_ok {
+            $inventory->addEntry(section => 'STORAGES', entry => $_)
+                foreach @storages;
+        } "$test: registering";
     }
 
     foreach my $test (keys %testsFireWireStorage) {
@@ -459,6 +351,10 @@ SKIP: {
             [ sort { compare() } @{$testsFireWireStorage{$test}} ],
             "testsFireWireStorage $test: parsing"
         );
+        lives_ok {
+            $inventory->addEntry(section => 'STORAGES', entry => $_)
+                foreach @storages;
+        } "$test: registering";
     }
 
     foreach my $test (keys %testsRecursiveParsing) {

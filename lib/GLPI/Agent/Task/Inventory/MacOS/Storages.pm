@@ -35,54 +35,6 @@ sub doInventory {
     }
 }
 
-sub _getStorages {
-    my (%params) = @_;
-
-    my $infos = getSystemProfilerInfos(
-        type   => 'SPStorageDataType',
-        logger => $params{logger},
-        file   => $params{file}
-    );
-
-    # system profiler data structure:
-    # bus
-    # └── controller
-    #     ├── device
-    #     │   ├── subdevice
-    #     │   │   └── key:value
-    #     │   └── key:value
-    #     └── key:value
-
-    my @storages;
-    my @busNames = ('ATA', 'SERIAL-ATA', 'USB', 'FireWire', 'Fibre Channel');
-    foreach my $busName (@busNames) {
-        my $bus = $infos->{$busName};
-        next unless $bus;
-        foreach my $controllerName (keys %{$bus}) {
-            my $controller = $bus->{$controllerName};
-            foreach my $deviceName (keys %{$controller}) {
-                my $device = $controller->{$deviceName};
-                next unless ref $device eq 'HASH';
-                if (_isStorage($device)) {
-                    push @storages,
-                        _getStorage($device, $deviceName, $busName);
-                } else {
-                    foreach my $subdeviceName (keys %{$device}) {
-                        my $subdevice = $device->{$subdeviceName};
-                        next unless ref $subdevice eq 'HASH';
-                        push @storages,
-                            _getStorage($subdevice, $subdeviceName, $busName)
-                            if _isStorage($subdevice);
-                    }
-                }
-
-            }
-        }
-    }
-
-    return @storages;
-}
-
 sub _getSerialATAStorages {
     my (%params) = @_;
 
@@ -98,7 +50,7 @@ sub _getSerialATAStorages {
         next if $hash->{_name} =~ /controller/i;
         my $storage = _extractStorage($hash);
         $storage->{TYPE} = 'Disk drive';
-        $storage->{INTERFACE} = 'SERIAL-ATA';
+        $storage->{INTERFACE} = 'SATA';
         push @storages, _sanitizedHash($storage);
     }
 
@@ -153,7 +105,7 @@ sub _extractDiscBurning {
     my $storage = {
         NAME         => $hash->{bsd_name} || $hash->{_name},
         MANUFACTURER => $hash->{manufacturer} ? getCanonicalManufacturer($hash->{manufacturer}) : getCanonicalManufacturer($hash->{_name}),
-        INTERFACE    => $hash->{interconnect},
+        INTERFACE    => $hash->{interconnect} eq 'SERIAL-ATA' ? "SATA" : "ATAPI",
         MODEL        => $hash->{_name},
         FIRMWARE     => $hash->{firmware}
     };
@@ -215,52 +167,6 @@ sub _extractSdCard {
         DESCRIPTION  => $hash->{_name},
         DISKSIZE     => _extractDiskSize($hash)
     };
-
-    return $storage;
-}
-
-sub _isStorage {
-    my ($device) = @_;
-
-    return
-        ($device->{'BSD Name'} && $device->{'BSD Name'} =~ /^disk\d+$/) ||
-        ($device->{'Protocol'} && $device->{'Socket Type'});
-}
-
-sub _getStorage {
-    my ($device, $device_name, $bus_name) = @_;
-
-    my $storage = {
-        NAME         => $device_name,
-        MANUFACTURER => getCanonicalManufacturer($device_name),
-        TYPE         => $bus_name eq 'FireWire' ? '1394' : $bus_name,
-        SERIAL       => $device->{'Serial Number'},
-        FIRMWARE     => $device->{'Revision'},
-        MODEL        => $device->{'Model'},
-        DISKSIZE     => $device->{'Capacity'}
-    };
-
-    if (!$device->{'Protocol'}) {
-        $storage->{DESCRIPTION} = 'Disk drive';
-    } elsif ($device->{'Protocol'} eq 'ATAPI' || $device->{'Drive Type'}) {
-        $storage->{DESCRIPTION} = 'CD-ROM Drive';
-    }
-
-    if ($storage->{DISKSIZE}) {
-        #e.g: Capacity: 320,07 GB (320 072 933 376 bytes)
-        $storage->{DISKSIZE} =~ s/\s*\(.*//;
-        $storage->{DISKSIZE} =~ s/,/./;
-
-        if ($storage->{DISKSIZE} =~ s/\s*TB//) {
-            $storage->{DISKSIZE} = int($storage->{DISKSIZE} * 1000 * 1000);
-        } elsif ($storage->{DISKSIZE} =~ s/\s+GB$//) {
-            $storage->{DISKSIZE} = int($storage->{DISKSIZE} * 1000 * 1000);
-        }
-    }
-
-    if ($storage->{MODEL}) {
-        $storage->{MODEL} =~ s/\s*$storage->{MANUFACTURER}\s*//i;
-    }
 
     return $storage;
 }
@@ -342,7 +248,7 @@ sub _getFireWireStorages {
     for my $hash (values %{$infos->{storages}}) {
         my $storage = _extractFireWireStorage($hash);
         $storage->{TYPE} = 'Disk drive';
-        $storage->{INTERFACE} = 'FireWire';
+        $storage->{INTERFACE} = '1394';
         push @storages, _sanitizedHash($storage);
     }
 
