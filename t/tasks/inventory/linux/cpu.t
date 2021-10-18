@@ -195,7 +195,7 @@ my %alpha = (
     'linux-alpha-1' => [
         {
             SERIAL => 'JA30502089',
-            ARCH   => 'Alpha',
+            ARCH   => 'alpha',
             SPEED  => '1250',
             NAME   => undef
         }
@@ -205,11 +205,11 @@ my %alpha = (
 my %sparc = (
     'linux-sparc-1' => [
         {
-            ARCH => 'SPARC',
+            ARCH => 'sparc',
             NAME => 'TI UltraSparc IIIi (Jalapeno)'
         },
         {
-            ARCH => 'SPARC',
+            ARCH => 'sparc',
             NAME => 'TI UltraSparc IIIi (Jalapeno)'
         }
     ]
@@ -218,37 +218,37 @@ my %sparc = (
 my %arm = (
     'linux-armel-1' => [
         {
-            ARCH  => 'ARM',
+            ARCH  => 'arm',
             NAME  => 'XScale-80219 rev 0 (v5l)'
         }
     ],
     'linux-armel-2' => [
         {
-            ARCH  => 'ARM',
+            ARCH  => 'arm',
             NAME  => 'Feroceon 88FR131 rev 1 (v5l)'
         }
     ],
     'linux-armel-3' => [
         {
-            ARCH  => 'ARM',
+            ARCH  => 'arm',
             NAME  => 'ARMv6-compatible processor rev 7 (v6l)'
         }
     ],
     'linux-raspberry-pi-3-model-b' => [
         {
-            ARCH  => 'ARM',
+            ARCH  => 'arm',
             NAME  => 'ARMv7 Processor rev 4 (v7l)'
         },
         {
-            ARCH  => 'ARM',
+            ARCH  => 'arm',
             NAME  => 'ARMv7 Processor rev 4 (v7l)'
         },
         {
-            ARCH  => 'ARM',
+            ARCH  => 'arm',
             NAME  => 'ARMv7 Processor rev 4 (v7l)'
         },
         {
-            ARCH  => 'ARM',
+            ARCH  => 'arm',
             NAME  => 'ARMv7 Processor rev 4 (v7l)'
         }
     ],
@@ -258,7 +258,7 @@ my %mips = (
     'linux-mips-1' => [
         {
             NAME => 'R4400SC V5.0 FPU V0.0',
-            ARCH => 'MIPS'
+            ARCH => 'mips'
         }
     ]
 );
@@ -266,7 +266,7 @@ my %mips = (
 my %ppc = (
     'linux-ppc-1' => [
         {
-            ARCH         => 'PowerPC',
+            ARCH         => 'powerpc',
             NAME         => '604r',
             MANUFACTURER => undef,
             SPEED        => undef
@@ -274,13 +274,13 @@ my %ppc = (
     ],
     'linux-ppc-2' => [
         {
-            ARCH         => 'PowerPC',
+            ARCH         => 'powerpc',
             NAME         => 'POWER4+ (gq)',
             MANUFACTURER => undef,
             SPEED        => '1452'
         },
         {
-            ARCH         => 'PowerPC',
+            ARCH         => 'powerpc',
             NAME         => 'POWER4+ (gq)',
             MANUFACTURER => undef,
             SPEED        => '1452'
@@ -288,13 +288,13 @@ my %ppc = (
     ],
     'linux-ppc-3' => [
         {
-            ARCH         => 'PowerPC',
+            ARCH         => 'powerpc',
             NAME         => 'PPC970FX, altivec supported',
             MANUFACTURER => undef,
             SPEED        => '2700'
         },
         {
-            ARCH         => 'PowerPC',
+            ARCH         => 'powerpc',
             NAME         => 'PPC970FX, altivec supported',
             MANUFACTURER => undef,
             SPEED        => '2700'
