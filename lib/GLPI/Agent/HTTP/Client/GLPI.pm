@@ -122,6 +122,10 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
         my $type = $response->header("Content-type") // "";
         my $uncompressed_response_content = $self->_uncompress($content, $type);
         unless ($uncompressed_response_content) {
+            unless (length($content)) {
+                $logger->error(_log_prefix . "Got empty answer");
+                return;
+            }
             $logger->error(
                 _log_prefix . "uncompressed content, starting with: ".substr($content, 0, 120)
             );
@@ -188,7 +192,7 @@ sub _uncompress {
         $self->{logger}->debug2("format: JSON");
         return $data;
     } else {
-        $self->{logger}->debug2("format: Unknown");
+        $self->{logger}->debug2("unsupported format: $type");
         return;
     }
 }
