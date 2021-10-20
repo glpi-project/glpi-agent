@@ -88,58 +88,60 @@ sub _getPackagesList {
 sub _getPackagesInfo {
     my (%params) = @_;
 
-    # snap info command may wrongly output some long infos
-    local $ENV{COLUMNS} = 100;
-
     my $snap = delete $params{snap};
-    my $lines = join("\n",grep { /^(name|publisher|contact|summary|installed):/ } getAllLines(%params))
-        or return;
+    _parseSnapYaml(
+        logger  => $params{logger},
+        snap    => $snap,
+        file    => delete $params{file}
+    );
 
-    my @output;
-    if ($params{file} && $params{command}) {
-        delete $params{file};
-        @output = getAllLines(%params);
+    if ($params{command}) {
+        # snap info command may wrongly output some long infos
+        local $ENV{COLUMNS} = 100;
+
+        _parseSnapYaml(
+            logger  => $params{logger},
+            snap    => $snap,
+            command => $params{command}
+        );
     }
 
-    my ($yaml, $infos);
-    eval {
-        $yaml  = YAML::Tiny->read_string($lines);
-        $infos = $yaml->[0];
-    };
+    return unless $snap && $snap->{NAME};
 
-    if ($EVAL_ERROR && $params{logger}) {
-        $params{logger}->warning("Wrong $snap->{NAME} snap info output: $EVAL_ERROR");
-        $params{logger}->info("Please report snap info output:\n$lines");
-    }
-
-    return unless $infos && $infos->{name};
-
-    if (@output && !$infos->{publisher}) {
-        my ($publisher) = map { /^publisher: (.*)$/ } grep { /^publisher:/ } @output;
-        $infos->{publisher} = $publisher if $publisher;
-    }
-    $snap->{PUBLISHER} = $infos->{publisher}
-        if $infos->{publisher};
     # Cleanup publisher from 'starred' if verified
     $snap->{PUBLISHER} =~ s/[*]$// if $snap->{PUBLISHER};
+    delete $snap->{PUBLISHER} if $snap->{PUBLISHER} =~ /^[-]+$/
+}
 
-    $snap->{COMMENTS}  = $infos->{summary};
+my %mapping = qw(
+    name        NAME
+    publisher   PUBLISHER
+    summary     COMMENTS
+    contact     HELPLINK
+);
+my $mapping_match = join("|", sort keys(%mapping));
+my $mapping_match_qr = qr/($mapping_match):\s+(.+)$/;
 
-    if (@output && !$infos->{contact}) {
-        my ($contact) = map { /^contact: (.*)$/ } grep { /^contact:/ } @output;
-        $infos->{contact} = $contact if $contact;
+sub _parseSnapYaml {
+    my (%params) = @_;
+
+    my $snap = delete $params{snap};
+    my $arch = 0;
+
+    foreach my $line (getAllLines(%params)) {
+        if ($arch) {
+            ($snap->{ARCH}) = $line =~ /^\s*-\s(.*)$/;
+            $arch = 0;
+        } elsif ($line =~ /^architectures:/) {
+            $arch = 1;
+        } elsif ($line =~ /^[\s-]/) {
+            next;
+        } elsif ($line =~ /^installed:\s+.*\(.*\)\s+(\d+\S+)/) {
+            $snap->{FILESIZE} = getCanonicalSize($1, 1024) * 1048576;
+        } elsif ($line =~ $mapping_match_qr) {
+            $snap->{$mapping{$1}} = $2;
+        }
     }
-    $snap->{HELPLINK} = $infos->{contact} if $infos->{contact};
-
-    # Find installed size
-    if (@output && !$infos->{installed}) {
-        my ($installed) = map { /^installed: (.*)$/ } grep { /^installed:/ } @output;
-        $infos->{installed} = $installed if $installed;
-    }
-    return unless $infos->{installed};
-    my ($size) = $infos->{installed} =~ /\(.*\)\s+(\d+\S+)/;
-    $snap->{FILESIZE} = getCanonicalSize($size, 1024) * 1048576
-        if $size;
 }
 
 1;
