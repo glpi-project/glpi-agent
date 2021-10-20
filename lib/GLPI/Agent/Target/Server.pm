@@ -46,13 +46,19 @@ sub _getCanonicalURL {
         # this is likely a bare hostname
         # as parsing relies on scheme, host and path have to be set explicitely
         $url->scheme('http');
-        $url->host($string);
-        $url->path('inventory');
+        # Eventually split on a slash to get host and path
+        if ($string =~ m{^([^/]+)[/](.*)$}) {
+            $url->host($1);
+            $url->path($2);
+        } else {
+            $url->host($string);
+            $url->path('front/inventory.php');
+        }
     } else {
         die "invalid protocol for URL: $string"
             if $scheme ne 'http' && $scheme ne 'https';
         # complete path if needed
-        $url->path('inventory') if !$url->path();
+        $url->path('front/inventory.php') if !$url->path();
     }
 
     return $url;

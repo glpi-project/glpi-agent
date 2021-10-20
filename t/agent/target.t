@@ -31,14 +31,14 @@ my $basevardir = tempdir(CLEANUP => $ENV{TEST_DEBUG} ? 0 : 1);
 
 lives_ok {
     $target = GLPI::Agent::Target::Server->new(
-        url        => 'http://my.domain.tld/inventory',
+        url        => 'http://my.domain.tld/front/inventory.php',
         basevardir => $basevardir
     );
 } 'instanciation: ok';
 
 my $storage_dir = $OSNAME eq 'MSWin32' ?
-    "$basevardir/http..__my.domain.tld_inventory" :
-    "$basevardir/http:__my.domain.tld_inventory" ;
+    "$basevardir/http..__my.domain.tld_front_inventory.php" :
+    "$basevardir/http:__my.domain.tld_front_inventory.php" ;
 ok(-d $storage_dir, "storage directory creation");
 is($target->{id}, 'server0', "identifier");
 
@@ -46,20 +46,20 @@ $target = GLPI::Agent::Target::Server->new(
     url        => 'http://my.domain.tld',
     basevardir => $basevardir
 );
-is($target->getUrl(), 'http://my.domain.tld/inventory', 'missing path');
+is($target->getUrl(), 'http://my.domain.tld/front/inventory.php', 'missing path');
 
 $target = GLPI::Agent::Target::Server->new(
     url        => 'my.domain.tld',
     basevardir => $basevardir
 );
-is($target->getUrl(), 'http://my.domain.tld/inventory', 'bare hostname');
+is($target->getUrl(), 'http://my.domain.tld/front/inventory.php', 'bare hostname');
 
 is($target->getMaxDelay(), 3600, 'default value');
 my $nextRunDate = $target->getNextRunDate();
 
 ok(-f "$storage_dir/target.dump", "state file existence");
 $target = GLPI::Agent::Target::Server->new(
-    url        => 'http://my.domain.tld/inventory',
+    url        => 'http://my.domain.tld/front/inventory.php',
     basevardir => $basevardir
 );
 is($target->getNextRunDate(), $nextRunDate, 'state persistence');
