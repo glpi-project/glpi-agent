@@ -9,9 +9,12 @@ description: |
   configuration before expecting an inventory can be submitted to your
   GLPI server. The following command should be used for that purpose:
   
-  sudo snap set glpi-agent server=http://your-glpi-server/inventory
+  sudo snap set glpi-agent server=http://your-glpi-server/front/inventory.php
 icon: share/html/logo.png
 license: GPL-2.0
+issues: https://github.com/glpi-project/glpi-agent/issues
+source-code: https://github.com/glpi-project/glpi-agent
+website: https://glpi-project.org/
 
 confinement: classic
 
