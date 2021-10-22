@@ -35,7 +35,7 @@ jobs:
     - name: Set version
       id: set-version
       run: |
-        if [ -z "${GITHUB_REF#*refs/tags/*}" ]; then
+        if [ -z "${GITHUB_REF##*refs/tags/*}" ]; then
             VERSION="${GITHUB_REF#*refs/tags/}"
             echo "New release on $VERSION $tag"
             echo "::set-output name=create-release::yes"
