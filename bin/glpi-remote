@@ -555,10 +555,10 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
     -t --timeout <SECS> requests timeout in seconds (defaults to 10)
     -p --port <LIST>    remote ports list to scan (defaults to '22,5985,5986')
     --ssh               connect using SSH
-    --ssl               connect using SSL (winrm)
-    --no-ssl-check      do not check agent SSL certificate (winrm)
+    --ssl               connect using SSL (winrm or with agent sub-command)
+    --no-ssl-check      do not check agent SSL certificate (winrm or agent sub-command)
     --ca-cert-dir <PATH> CA certificates directory
-    --ca-cert-file <FILE> CA certificates file (winrm)
+    --ca-cert-file <FILE> CA certificates file (winrm or for agent sub-command)
     --ssl-cert-file     Client certificate file (winrm)
     -u --user           authentication user
     -P --password       authentication password
@@ -577,34 +577,25 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
     -s --server=<URI>   agent will send tasks result to that server
     -l --local=<PATH>   agent will write tasks results locally
     --target=<TARGETID> use target identified by its id (see list targets command)
-  Remark:
-   - target option is generaly mandatory while adding remote or scanning for remotes
-   - if one server and only one is still setup in the agent it will be selected as
-     default target
-   - when scanning and making inventory, uses any target option or each inventory
-     will be sent to standard output
 
   Remote GLPI agent having inventory server plugin enabled options:
-    -b --baseurl   remote base url if not /inventory
-    -K --token     token as shared secret
-    -I --id        request id to identify requests in agent log
-    -s --ssl       connect using SSL
-    --no-ssl-check do not check agent SSL certificate
-    --ca-cert-file CA certificates file
-    --no-compression
-                   ask to not compress sent XML inventories
+    -b --baseurl <PATH> remote base url if not /inventory
+    -K --token <TOKEN>  token as shared secret
+    -I --id <ID>        request id to identify requests in agent log
+    --no-compression    ask to not compress sent XML inventories
 
-  Commands
+  Sub-commands
     list [targets]      list known remotes or targets
     add <url>+          add remote with given URL list
     del[ete] <index|deviceid>+
                         delete remote with given list index or given deviceid or
                         current known one when alone or all remotes while using
                         __ALL__ as id
-    scan <first> [last] scan given ip range for remote access or just <first> and
+    scan <first> [last] [TODO] scan given ip range for remote access or just <first> and
                         register it/them as remote agent
     agent [hosts]       remotely claim an inventory to given remote hosts with a
                         GLPI agent having inventory server plugin enabled
+                        (see https://glpi-agent.rtfd.io/inventory-server-plugin.html)
 
   Supported environment variables:
     USERNAME
@@ -623,18 +614,242 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
     glpi-remote add winrm://admin:pass@192.168.48.250 --no-check --target server0
     glpi-remote delete 1
     glpi-remote scan 192.168.43.1 192.168.43.254
-    glpi-remote scan 10.0.0.1 10.0.10.254 --inventory -s https://login:pw@server/front/inventory.php
+    glpi-remote scan 10.0.0.1 10.0.10.254 --inventory -s https://myglpi/front/inventory.php
     glpi-remote scan 10.0.0.1 10.0.10.254 --inventory -l /var/tmp/remotes
     glpi-remote scan --inventory
-    glpi-remote scan 192.168.48.99 | \
-         glpi-injector -url https://login:pw@server/front/inventory.php
+    glpi-remote scan 192.168.48.99 | glpi-injector -url https://myglpi/front/inventory.php
 
   Examples for agent command:
     glpi-remote -T strong-shared-secret agent 192.168.43.236
     glpi-remote -v -T strong-shared-secret agent 192.168.43.237 | \
-        glpi-injector -url https://login:pw@server/front/inventory.php
+        glpi-injector -url https://myglpi/front/inventory.php
     glpi-remote -T strong-shared-secret -d /var/remote agent 192.168.43.236 192.168.43.237
 
 =head1 DESCRIPTION
 
-This tool is used to manage locally known virtual agents used to make remote inventories.
+The F<glpi-remote> tool is used to manage virtual agents known locally by F<glpi-agent>.
+A virtual agent is used to make remote inventories and is essentially defined by
+a remote access. A remote access can be defined by ssh authorization for unix/linux
+platforms or WinRM authorizations for a WinRM enabled platform like win32.
+
+=head1 OPTIONS
+
+Most of the options are available in a I<short> form and a I<long> form.  For
+example, the two lines below are all equivalent:
+
+    % glpi-agent -s localhost
+    % glpi-agent --server localhost
+
+=head2 Target definition options
+
+=over
+
+=item B<-s>, B<--server>=I<URI>
+
+Send the results of tasks execution to given server.
+
+Multiple values can be specified, using comma as a separator.
+
+=item B<-l>, B<--local>=I<PATH>
+
+Write the results of tasks execution locally.
+
+=item B<--target>=I<TARGETID>
+
+Use the given TARGETID to look for the expected target for result submission.
+
+For example, B<server0> is the first server target setup in agent configuration.
+
+=back
+
+B<Remark:>
+
+=over
+
+=item *
+
+target option is generaly mandatory while adding remote or scanning for remotes
+
+=item *
+
+if one server and only one is still setup in the agent it will be selected as default target
+
+=item *
+
+when scanning and making inventory, uses any target option or each inventory will be sent to standard output
+
+=back
+
+=head2 General options
+
+=over
+
+=item B<-t>, B<--timeout>=I<SECS>
+
+Set the timeout for network requests (defaults to 10 seconds).
+
+=item B<-p>, B<--port>=I<LIST>
+
+Do not contact the target before next scheduled time.
+
+A list of ports used when making a scan and to discover remote computers. The defaults is to
+scan the standard ssh port and winrm ports: I<22,5985,5986>.
+
+=item B<--ssh>
+
+Use ssh protocol for connection.
+
+=item B<--ssl>
+
+Use SSL protocol for connecting with WinRM protocol or to a remote agent with inventory server
+plugin enabled.
+
+=item B<--ca-cert-dir>=I<DIRECTORY>
+
+CA certificates directory.
+
+=item B<--ca-cert-file>=I<FILE>
+
+CA certificates file.
+
+=item B<--ssl-cert-file>=I<FILE>
+
+SSL certificate file for authentication
+
+=item B<--no-ssl-check>
+
+Do not check server SSL certificate.
+
+=item B<-u> I<USER>, B<--user>=I<USER>
+
+Use I<USER> for remote authentication.
+
+=item B<-p>, B<--password>=I<PASSWORD>
+
+Use I<PASSWORD> for remote authentication.
+
+=item B<-X>, B<show-passwords>
+
+By default, B<list> sub-command won't show remotes passwords. This option asks to unmask
+them during remotes listing.
+
+=item B<-c>, B<--credentials>=I<LIST>
+
+List of credentials to try during a scan.
+
+=item B<-v>, B<--verbose>
+
+Enable verbose mode.
+
+=item B<--debug>
+
+Turn the debug mode on. You can use the parameter up to 2 times in a row
+to increase the verbosity (e.g: B<--debug --debug>).
+
+=item B<-C>, B<--no-check>
+
+Don't check remote is alive while adding it.
+
+=item B<-i>, B<--inventory>
+
+Don't register remotes as they are discovered but just run the inventory task on them.
+
+=item B<-T>, B<--threads>=I<NUM>
+
+Setup number of threads while doing a scan. By default, the agent only uses one thread.
+
+=item B<-A>, B<--add>
+
+Add discovered remotes to local remotes list.
+
+=item B<-U>, B<--useragent>=I<USER-AGENT>
+
+Define HTTP user agent for request (mostly if required for winrm).
+
+=back
+
+=head2 I<agent> sub-command options
+
+=over
+
+=item B<-b>, B<--baseurl>=I<PATH>
+
+Remote base url if the default I</inventory> has been changed in the remote plugin configuration.
+
+=item B<-K>, B<--token>=I<TOKEN>
+
+Shared secret required to request an inventory to the remote plugin.
+
+=item B<-I>, <--id>=I<ID>
+
+Request-ID to identify the request in the agent log.
+
+=item B<--no-compression>
+
+Ask to skip requested inventory compression.
+
+=back
+
+=head2 Sub-commands
+
+=over
+
+=item * B<list> [B<targets>]
+
+list known remotes or list targets
+
+=item * B<add> I<url>+
+
+add remote with given URL list
+
+=item * B<del[ete]> I<index|deviceid>+
+
+Delete remote with given:
+
+=over
+
+=item * list index
+
+=item * given deviceid
+
+=item * current and only one known when no index is given
+
+=item * all known remotes while using the B<__ALL__> magic word as index
+
+=back
+
+=item * B<scan> I<first> [I<last>]
+
+B<TODO:> I<This sub-command is still not implemented>.
+
+Scan given ip range for remote access or just I<first> and register it/them as remote agent
+
+=item * B<agent> [I<hosts>]
+
+Remotely claim an inventory to given remote hosts with a GLPI agent having inventory server plugin enabled.
+
+See online documentation for details: https://glpi-agent.rtfd.io/inventory-server-plugin.html
+
+=back
+
+=head2 Environment variables
+
+For security reasons, you can set few environment variables to store sensible datas.
+
+=over
+
+=item * B<USERNAME> to setup connection user
+
+=item * B<PASSWORD> to setup connection password
+
+=item * B<PORT> to setup connection port
+
+=item * B<CA_CERT_PATH>
+
+=item * B<CA_CERT_FILE> to setup the SSL CA certificate file
+
+=item * B<SSL_CERT_FILE> to setup the SSL client certificate file
+
+=item * B<CREDENTIALS> to setup a list of credentials
+
+=back

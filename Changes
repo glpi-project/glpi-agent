@@ -40,7 +40,7 @@ inventory:
 * win32: support overrided EDID blocks for monitor inventory
 * win32: fix memory components under HyperV 2019
 
-remote:
+remoteinventory:
 * [linux/unix/macosx] SSH remote inventory support
 * [win32] WinRM remote inventory support
 * Merged glpi-remoteinventory script in glpi-remote

@@ -342,11 +342,11 @@ Send the results of tasks execution to given server.
 If I<URI> doesn't start with http:// or https://, the agent assume the
 parameter is a hostname and rewrite it as:
 
-    % --server=http://example/inventory
+    % --server=http://example/front/inventory.php
 
 In general, GLPI server URL have this format:
 
-    http://example/front/inventory.ph
+    http://example/front/inventory.php
 
 and FusionInventory for GLPI this one:
 
