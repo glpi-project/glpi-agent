@@ -504,7 +504,7 @@ jobs:
                 TYPE=nightly
                 ;;
             *)
-                let COUNT=0
+                exit 0
                 ;;
         esac
         gh api /repos/{owner}/{repo}/releases --jq '.[].id' | \
