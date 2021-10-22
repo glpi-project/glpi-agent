@@ -44,8 +44,15 @@ if [ -n "${GITHUB_REF%refs/tags/*}" -o -z "$VER" ]; then
     VER=$(perl -Ilib -MGLPI::Agent::Version -e '$v = $GLPI::Agent::Version::VERSION; $v =~ s/-.*//; print $v')
 fi
 if [ -z "$REV" ]; then
-    REV=$([ -n "$GITHUB_SHA" ] && echo $GITHUB_SHA| cut -c 1-8 || git log --pretty=format:%h -n 1)
-    [ -n "$REV" ] && REV="git$REV" || REV=1
+    if [ -z "${VER%%*-*}" ]; then
+        REV="${VER#*-}"
+        VER="${VER%%-*}"
+    elif [ -n "$GITHUB_REF" ]; then
+        REV=1
+    else
+        REV=$([ -n "$GITHUB_SHA" ] && echo $GITHUB_SHA| cut -c 1-8 || git log --pretty=format:%h -n 1)
+        [ -n "$REV" ] && REV="git$REV" || REV=1
+    fi
 fi
 
 [ -z "$DIST" ] && unset DISTRO || DISTRO=".$DIST"
