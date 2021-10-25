@@ -129,6 +129,16 @@ Mandatory Perl modules:
 
 * Perl::Dist::Strawberry
 
+### MacOSX Packaging
+
+Tools:
+
+* [dmidecode](https://github.com/glpi-project/dmidecode/tree/macosx) modified to be built on macosx
+* [munkipkg](https://github.com/munki/munki-pkg)
+* Xcode
+* productbuild
+* hdiutil
+
 ### Public databases
 
 * Pci.ids
