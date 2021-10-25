@@ -117,6 +117,24 @@ Mandatory Perl modules for P2P Support:
 * Net::Ping
 * Parallel::ForkManager
 
+### MSI Packaging
+
+Tools:
+
+* [dmidecode](https://github.com/glpi-project/dmidecode) modified to be built with mingw32
+* hdparm
+* [7zip](https://www.7-zip.org/)
+
+Mandatory Perl modules:
+
+* Perl::Dist::Strawberry
+
+### Public databases
+
+* Pci.ids
+* Usb.ids
+* SysObject.ids: [sysobject.ids](https://github.com/glpi-project/sysobject.ids)
+
 ## Related contribs
 
 See [CONTRIB](CONTRIB.md) to find references to GLPI Agent related scritps/files
