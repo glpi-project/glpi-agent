@@ -39,6 +39,7 @@ inventory:
 * Added --list-categories option to glpi-agent script
 * win32: support overrided EDID blocks for monitor inventory
 * win32: fix memory components under HyperV 2019
+* win32: updated dmidecode to 3.3-update-1
 
 remoteinventory:
 * [linux/unix/macosx] SSH remote inventory support
