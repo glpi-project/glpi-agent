@@ -73,6 +73,7 @@ body:
       description: What GLPI agent version is triggering this issue ?
       options:
         - 1.0
+        - 1.0-beta1
         - Nightly build (git version in additional context below)
         - Other (See additional context below)
       multiple: true
