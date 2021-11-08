@@ -29,6 +29,8 @@ jobs:
       tag_name: ${{ steps.set-version.outputs.tag_name }}
       build: ${{ steps.set-version.outputs.build }}
       releaseid: ${{ steps.create-tagged-release.outputs.id }}
+      user-name: ${{ steps.set-version.outputs.user-name }}
+      user-email: ${{ steps.set-version.outputs.user-email }}
 
     steps:
     - uses: actions/checkout@v2
@@ -99,6 +101,9 @@ jobs:
                 echo "::set-output name=prerelease::true"
                 ;;
         esac
+        # Set user and mail for nightly release
+        echo "::set-output name=user-name::$(git log --format='%an' HEAD^!)"
+        echo "::set-output name=user-email::$(git log --format='%ae' HEAD^!)"
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -599,8 +604,8 @@ jobs:
         curl -L -s -o github-nightly-description.sh https://github.com/glpi-project/glpi-agent/raw/develop/tools/github-nightly-description.sh
         chmod +x github-nightly-description.sh
         ./github-nightly-description.sh --header --version ${{ needs.setup-release.outputs.version }} >index.md.new
-        git config --local user.email "$(git log --format='%ae' HEAD^!)"
-        git config --local user.name "$(git log --format='%an' HEAD^!)"
+        git config --local user.email "${{ needs.setup-release.outputs.user-email }}"
+        git config --local user.name "${{ needs.setup-release.outputs.user-name }}"
         egrep '^# ' glpi-agent/index.md | \
         while read dash agent version x
         do
