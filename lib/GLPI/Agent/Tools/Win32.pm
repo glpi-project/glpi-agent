@@ -541,7 +541,7 @@ sub runPowerShell {
 
     my $encodedScript = encode_base64(encode("UTF16-LE", $script), "");
 
-    return getAllLines(
+    return map { decode("UTF-8", $_) } getAllLines(
         command => "powershell -NonInteractive -ExecutionPolicy Unrestricted -encodedCommand $encodedScript",
         %params
     );

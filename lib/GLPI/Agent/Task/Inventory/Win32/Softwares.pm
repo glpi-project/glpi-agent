@@ -25,6 +25,9 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
+    # Change console default code page to UTF-8, needed for local UWP inventory
+    system("chcp 65001 >nul") unless $inventory->getRemote();
+
     my $is64bit = is64bit();
 
     my $softwares64 = _getSoftwaresList( is64bit => $is64bit ) || [];
