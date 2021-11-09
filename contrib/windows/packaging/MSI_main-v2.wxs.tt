@@ -232,6 +232,12 @@
     <SetProperty Id="CMDLINE_HTML" Before="AppSearch" Value="[HTML]" />
     <SetProperty Id="HTML"         After="AppSearch"  Value="[CMDLINE_HTML]"><![CDATA[CMDLINE_HTML<>""]]></SetProperty>
 
+    <Property Id="JSON" Secure="yes">
+      <RegistrySearch Id="Json" Root="HKLM" Key="[%agent_regpath%]" Name="json" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_JSON" Before="AppSearch" Value="[JSON]" />
+    <SetProperty Id="JSON"         After="AppSearch"  Value="[CMDLINE_JSON]"><![CDATA[CMDLINE_JSON<>""]]></SetProperty>
+
     <Property Id="CONF_RELOAD_INTERVAL" Secure="yes">
       <RegistrySearch Id="ConfReloadInterval" Root="HKLM" Key="[%agent_regpath%]" Name="conf-reload-interval" Type="raw"/>
     </Property>
@@ -270,6 +276,7 @@
     <SetProperty Id="DELAYTIME"     Action="DELAYTIME_Default"     After="AppSearch"  Value="3600">NOT DELAYTIME</SetProperty>
     <SetProperty Id="NO_P2P"        Action="NO_P2P_Default"        After="AppSearch"  Value="0">NOT NO_P2P</SetProperty>
     <SetProperty Id="HTML"          Action="HTML_Default"          After="AppSearch"  Value="0">NOT HTML</SetProperty>
+    <SetProperty Id="JSON"          Action="JSON_Default"          After="AppSearch"  Value="0">NOT JSON</SetProperty>
     <SetProperty Id="LAZY"          Action="LAZY_Default"          After="AppSearch"  Value="1">NOT LAZY</SetProperty>
     <SetProperty Id="NO_SSL_CHECK"  Action="NO_SSL_CHECK_Default"  After="AppSearch"  Value="0">NOT NO_SSL_CHECK</SetProperty>
     <SetProperty Id="CONF_RELOAD_INTERVAL" Action="CONF_RELOAD_INTERVAL_Default" After="AppSearch" Value="0">NOT CONF_RELOAD_INTERVAL</SetProperty>
@@ -309,6 +316,7 @@
     <SetProperty Id="NO_P2P"       Sequence="ui" Action="NO_P2P_SetForReg"         Before="ExecuteAction" Value="0"><![CDATA[NOT NO_P2P OR NO_P2P<>"1"]]></SetProperty>
     <SetProperty Id="RUNNOW"       Sequence="ui" Action="RUNNOW_SetForReg"         Before="ExecuteAction" Value="0"><![CDATA[NOT RUNNOW OR RUNNOW<>"1"]]></SetProperty>
     <SetProperty Id="HTML"         Sequence="ui" Action="HTML_SetForReg"           Before="ExecuteAction" Value="0"><![CDATA[NOT HTML OR HTML<>"1"]]></SetProperty>
+    <SetProperty Id="JSON"         Sequence="ui" Action="JSON_SetForReg"           Before="ExecuteAction" Value="0"><![CDATA[NOT JSON OR JSON<>"1"]]></SetProperty>
     <SetProperty Id="LAZY"         Sequence="ui" Action="LAZY_SetForReg"           Before="ExecuteAction" Value="0"><![CDATA[NOT LAZY OR LAZY<>"1"]]></SetProperty>
     <SetProperty Id="NO_SSL_CHECK" Sequence="ui" Action="NO_SSL_CHECK_Update"      Before="ExecuteAction" Value="0"><![CDATA[NOT NO_SSL_CHECK OR NO_SSL_CHECK<>"1"]]></SetProperty>
     <SetProperty Id="TASK_FREQUENCY"       Sequence="ui" Action="TASK_FREQUENCY_SetForReg"         After="AppSearch" Value="hourly"><![CDATA[NOT TASK_FREQUENCY OR (TASK_FREQUENCY<>"minute" AND TASK_FREQUENCY<>"hourly" AND TASK_FREQUENCY<>"daily")]]></SetProperty>
@@ -827,6 +835,7 @@
         <Control Id="TagOption" Type="Edit" X="60" Y="100" Width="250" Height="16" Property="TAG" />
         <Control Id="ScanHomedirsOption" Type="CheckBox" X="60" Y="120" Width="250" Height="10" CheckBoxValue="1" Property="SCAN_HOMEDIRS" Text="!(loc.ScanHomedirsOption)" />
         <Control Id="ScanProfilesOption" Type="CheckBox" X="60" Y="135" Width="250" Height="10" CheckBoxValue="1" Property="SCAN_PROFILES" Text="!(loc.ScanProfilesOption)" />
+        <Control Id="SaveAsJsonOption" Type="CheckBox" X="60" Y="150" Width="250" Height="10" CheckBoxValue="1" Property="JSON" Text="!(loc.SaveAsJsonOption)" />
       </Dialog>
 
       <!-- Dedicated dialog to setup advanced options -->

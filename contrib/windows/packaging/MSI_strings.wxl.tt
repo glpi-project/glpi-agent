@@ -117,6 +117,7 @@
   <String Id="TagOption">Tag</String>
   <String Id="ScanHomedirsOption">Scan home directory for virtual machines</String>
   <String Id="ScanProfilesOption">Scan user profiles for software</String>
+  <String Id="SaveAsJsonOption">Save local inventory using JSON format</String>
 
   <!-- custom text for advanced options setup dialog -->
   <String Id="AdvancedOptionsDlgTitle">[ProductName] [%agent_version%] Setup</String>
