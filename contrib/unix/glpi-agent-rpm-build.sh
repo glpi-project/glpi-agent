@@ -47,7 +47,7 @@ if [ -z "$REV" ]; then
     if [ -z "${VER%%*-*}" ]; then
         REV="${VER#*-}"
         VER="${VER%%-*}"
-    elif [ -n "$GITHUB_REF" ]; then
+    elif [ -z "${GITHUB_REF%refs/tags/*}" ]; then
         REV=1
     else
         REV=$([ -n "$GITHUB_SHA" ] && echo $GITHUB_SHA| cut -c 1-8 || git log --pretty=format:%h -n 1)
