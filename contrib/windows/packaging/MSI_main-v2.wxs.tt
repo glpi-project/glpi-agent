@@ -830,7 +830,7 @@
         <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
           <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
         </Control>
-        <Control Id="MiscelaneousOptionsGrp" Type="GroupBox" X="50" Y="70" Width="270" Height="90" Text="!(loc.MiscelaneousOptionsGroup)" />
+        <Control Id="MiscelaneousOptionsGrp" Type="GroupBox" X="50" Y="70" Width="270" Height="105" Text="!(loc.MiscelaneousOptionsGroup)" />
         <Control Id="Tag" Type="Text" X="60" Y="88" Width="50" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.TagOption)" />
         <Control Id="TagOption" Type="Edit" X="60" Y="100" Width="250" Height="16" Property="TAG" />
         <Control Id="ScanHomedirsOption" Type="CheckBox" X="60" Y="120" Width="250" Height="10" CheckBoxValue="1" Property="SCAN_HOMEDIRS" Text="!(loc.ScanHomedirsOption)" />
