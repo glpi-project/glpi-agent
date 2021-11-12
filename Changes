@@ -41,6 +41,7 @@ inventory:
 * win32: fix memory components under HyperV 2019
 * win32: updated dmidecode to 3.3-update-1
 * macosx: updated dmidecode to 3.3-macosx-update-1
+* win32: fix is64bit() caching with x86 version
 
 remoteinventory:
 * [linux/unix/macosx] SSH remote inventory support
