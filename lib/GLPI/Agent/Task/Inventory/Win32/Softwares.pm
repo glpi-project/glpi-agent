@@ -226,13 +226,13 @@ sub _getSoftwaresList {
         my $data = $softwares->{$rawGuid};
         next unless keys %$data > 1;
 
-        my $guid = $rawGuid;
+        my $guid = encodeFromRegistry($rawGuid);
         $guid =~ s/\/$//; # drop the tailing /
 
         my $software = {
             FROM             => "registry",
             NAME             => encodeFromRegistry($data->{'/DisplayName'}) ||
-                                encodeFromRegistry($guid), # folder name
+                                $guid, # folder name
             COMMENTS         => encodeFromRegistry($data->{'/Comments'}),
             HELPLINK         => encodeFromRegistry($data->{'/HelpLink'}),
             RELEASE_TYPE     => encodeFromRegistry($data->{'/ReleaseType'}),

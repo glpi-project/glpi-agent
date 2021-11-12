@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-#use utf8;
+use utf8;
 use lib 't/lib';
 
 use Encode;
@@ -12,10 +12,13 @@ use Test::Exception;
 use Test::MockModule;
 use Test::More;
 use UNIVERSAL::require;
+use XML::TreePP;
+use File::Temp qw(tempdir);
 
 use GLPI::Agent::Inventory;
 use GLPI::Test::Utils;
 use GLPI::Agent::Tools::Win32::Constants;
+use GLPI::Agent::Protocol::Inventory;
 
 BEGIN {
     # use mock modules for non-available ones
@@ -9278,7 +9281,53 @@ my %softwares_tests = (
             'VERSION_MAJOR' => undef,
             'VERSION_MINOR' => undef
         },
+    ],
+    '10_russian' => [
+        {
+            'URL_INFO_ABOUT' => undef,
+            'SYSTEM_CATEGORY' => 'application',
+            'VERSION' => '77.27',
+            'PUBLISHER' => undef,
+            'VERSION_MINOR' => undef,
+            'NAME' => "1C Предприятие 7.7",
+            'ARCH' => 'i586',
+            'RELEASE_TYPE' => undef,
+            'UNINSTALL_STRING' => 'C:\\Program Files (x86)\\1Cv77\\uninst.exe',
+            'COMMENTS' => undef,
+            'USERID' => undef,
+            'HELPLINK' => undef,
+            'FROM' => 'registry',
+            'USERNAME' => undef,
+            'NO_REMOVE' => undef,
+            'VERSION_MAJOR' => undef,
+            'INSTALLDATE' => undef,
+            'GUID' => "1C Предприятие 7.7.27"
+        },
+        {
+            'USERNAME' => undef,
+            'VERSION_MAJOR' => undef,
+            'NO_REMOVE' => undef,
+            'GUID' => '{50F91F80-D397-437C-B0C8-62128DE3B55E}',
+            'INSTALLDATE' => '24/07/2021',
+            'FROM' => 'registry',
+            'HELPLINK' => undef,
+            'COMMENTS' => "КриптоПро CSP",
+            'USERID' => undef,
+            'NAME' => "КриптоПро CSP",
+            'UNINSTALL_STRING' => undef,
+            'ARCH' => 'i586',
+            'RELEASE_TYPE' => undef,
+            'VERSION_MINOR' => undef,
+            'SYSTEM_CATEGORY' => 'application',
+            'VERSION' => '5.0.12000',
+            'PUBLISHER' => "Компания КриптоПро",
+            'URL_INFO_ABOUT' => 'http://www.cryptopro.ru'
+        }
     ]
+);
+
+my %encoding = qw(
+    10_russian      cp1251
 );
 
 my %hotfixes_tests = (
@@ -9377,20 +9426,21 @@ my %hotfixes_tests = (
 );
 
 plan tests =>
-    scalar (2 * keys %softwares_tests) +
+    scalar (4 * keys %softwares_tests) +
     scalar (keys %hotfixes_tests)      +
     1;
 
-my $inventory = GLPI::Agent::Inventory->new();
+my ($inventory, $encoding);
+my $folder = tempdir( "softwares-XXXXXXXX", CLEANUP => $ENV{TEST_DEBUG} ? 0 : 1, TMPDIR => 1);
+print STDERR "\nTest files written in $folder\n" if $ENV{TEST_DEBUG};
 
 my $module = Test::MockModule->new(
     'GLPI::Agent::Task::Inventory::Win32::Softwares'
 );
 $module->mock(
-    'encodeFromRegistry',
+    'getLocalCodePage',
     sub {
-        return undef unless $_[0];
-        return encode("UTF-8", decode('cp1252', $_[0]));
+        return $encoding // "cp1252";
     }
 );
 
@@ -9399,6 +9449,9 @@ my $tools_module = Test::MockModule->new(
 );
 
 foreach my $test (keys %softwares_tests) {
+
+    $encoding  = $encoding{$test};
+    $inventory = GLPI::Agent::Inventory->new();
 
     $tools_module->mock(
         '_getRegistryKey',
@@ -9416,6 +9469,44 @@ foreach my $test (keys %softwares_tests) {
         $inventory->addEntry(section => 'SOFTWARES', entry => $_)
             foreach @$softwares;
     } "$test: registering";
+
+    lives_ok {
+        # Reproduce the way a XML file is written in GLPI::Agent::Task::Inventory
+        my $handle;
+        open $handle, ">", "$folder/$test.xml";
+        binmode $handle, ':encoding(UTF-8)';
+        my $tpp = XML::TreePP->new(
+            indent          => 2,
+            utf8_flag       => 1,
+            output_encoding => 'UTF-8'
+        );
+        print $handle $tpp->write({
+            REQUEST => {
+                CONTENT  => $inventory->getContent(),
+                DEVICEID => $inventory->getDeviceId(),
+                QUERY    => "INVENTORY",
+            }
+        });
+        close($handle);
+    } "$test: write UTF-8 XML file";
+
+    lives_ok {
+        # Reproduce the way a JSON file is written in GLPI::Agent::Task::Inventory
+        my $handle;
+        open $handle, ">", "$folder/$test.json";
+        my $json = GLPI::Agent::Protocol::Inventory->new(
+            deviceid    => $inventory->getDeviceId(),
+            content     => $inventory->getContent(),
+            partial     => 1,
+            itemtype    => "Computer",
+        );
+        # Normalize some strings to expected type (integer)
+        $json->normalize();
+        print $handle $json->getContent();
+        close($handle);
+    } "$test: write JSON file";
+
+    undef $encoding;
 }
 
 foreach my $test (keys %hotfixes_tests) {
