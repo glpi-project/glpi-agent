@@ -25,9 +25,6 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    # Change console default code page to UTF-8, needed for local UWP inventory
-    system("chcp 65001 >nul") unless $inventory->getRemote();
-
     my $is64bit = is64bit();
 
     my $softwares64 = _getSoftwaresList( is64bit => $is64bit ) || [];
@@ -90,9 +87,11 @@ sub doInventory {
     if ($operatingSystem->{Version}) {
         my ($osversion) = $operatingSystem->{Version} =~ /^(\d+\.\d+)/;
         if ($osversion && $osversion > 6.1) {
-            my $packages = _getAppxPackages( logger => $logger ) || [];
-            foreach my $package (@{$packages}) {
-                _addSoftware(inventory => $inventory, entry => $package);
+            my $packages = _getAppxPackages(logger => $logger);
+            if ($packages) {
+                foreach my $package (@{$packages}) {
+                    _addSoftware(inventory => $inventory, entry => $package);
+                }
             }
         }
     }
@@ -417,12 +416,17 @@ sub _getSqlInstancesVersions {
     return $sqlinstanceVersions->{'/Edition'};
 }
 
-my $appxscript = '';
-# Compress appx powershell script as much as possible as we are limited to ~ 8000 characters
-foreach my $line (<DATA>) {
-    $line =~ s/^\s+//;
-    next if length($line) == 0 || $line =~ /^#/;
-    $appxscript .= $line;
+my $appxscript = _appxscript();
+sub _appxscript {
+    return $appxscript if $appxscript;
+    # Compress appx powershell script as much as possible as we are limited to ~ 8000 characters
+    my $script = '';
+    foreach my $line (<DATA>) {
+        $line =~ s/^\s+//;
+        next if length($line) == 0 || $line =~ /^#/;
+        $script .= $line;
+    }
+    return $script;
 }
 
 sub _getAppxPackages {
@@ -517,6 +521,10 @@ sub _parsePackagePublishers {
 __DATA__
 # Script PowerShell
 [Windows.Management.Deployment.PackageManager,Windows.Management.Deployment,ContentType=WindowsRuntime] >$null
+
+# Setup encoding to UTF-8
+$PreviousEncoding = [console]::OutputEncoding
+$OutputEncoding   = [console]::InputEncoding = [console]::OutputEncoding = New-Object System.Text.UTF8Encoding
 
 # $CSharpSHLoadIndirectString code from https://github.com/skycommand/AdminScripts/blob/master/AppX/Inventory%20AppX%20Packages.ps1
 $CSharpSHLoadIndirectString = @'
@@ -626,3 +634,6 @@ foreach ($pkg in $pkgs.FindPackages()) {
     out "SYSTEM_CATEGORY" $pkg.SignatureKind.ToString().ToLowerInvariant()
     Write-Host
 }
+
+# Restore encoding
+$OutputEncoding = [console]::InputEncoding = [console]::OutputEncoding = $PreviousEncoding
