@@ -437,6 +437,7 @@ sub _getAppxPackages {
     my $logger = $params{logger};
     my @lines  = runPowerShell(
         script  => $appxscript,
+        file    => $params{file}, # for tests
         logger  => $logger
     );
 

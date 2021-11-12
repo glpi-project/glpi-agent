@@ -8,3 +8,8 @@ wmi: wmi queries results
    wmic /OUTPUT:C:\networkAdapterConfigurations_7.wmi Path Win32_NetworkAdapterConfiguration Get /FORMAT:list
 
 registry: registry exports
+
+powershell: powershell scripts output
+- for UWP software inventory, run from GLPI Agent installation folder:
+   chcp 65001
+   perl\bin\glpi-agent.exe -Iperl\agent -MGLPI::Agent::Task::Inventory::Win32::Softwares -MGLPI::Agent::Tools::Win32 -e "binmode STDOUT, ':encoding(UTF-8)'; print map { \"$_\n\" } runPowerShell(script => &GLPI::Agent::Task::Inventory::Win32::Softwares::_appxscript())"

@@ -1,0 +1,75 @@
+NAME: Проводник
+PUBLISHER: Microsoft Corporation
+PUBID: cw5n1h2txyewy
+ARCH: neutral
+VERSION: 10.0.19041.423
+FOLDER: C:\Windows\SystemApps\Microsoft.Windows.FileExplorer_cw5n1h2txyewy
+INSTALLDATE: 11/08/2021 18:09:36 +03:00
+SYSTEM_CATEGORY: system
+
+NAME: Сопоставитель приложений
+PUBLISHER: Microsoft Corporation
+PUBID: cw5n1h2txyewy
+ARCH: neutral
+VERSION: 10.0.19041.423
+FOLDER: C:\Windows\SystemApps\Microsoft.Windows.AppResolverUX_cw5n1h2txyewy
+INSTALLDATE: 11/08/2021 18:09:36 +03:00
+SYSTEM_CATEGORY: system
+
+NAME: Диалоговое окно "Добавить рекомендованные папки"
+PUBLISHER: Microsoft Corporation
+PUBID: cw5n1h2txyewy
+ARCH: neutral
+VERSION: 10.0.19041.423
+FOLDER: C:\Windows\SystemApps\Microsoft.Windows.AddSuggestedFoldersToLibraryDialog_cw5n1h2txyewy
+INSTALLDATE: 11/08/2021 18:09:36 +03:00
+SYSTEM_CATEGORY: system
+
+NAME: Веб-средство просмотра классических приложений
+PUBLISHER: Корпорация Майкрософт
+PUBID: cw5n1h2txyewy
+COMMENTS: Веб-средство просмотра классических приложений
+ARCH: neutral
+VERSION: 10.0.19041.423
+FOLDER: C:\Windows\SystemApps\Microsoft.Win32WebViewHost_cw5n1h2txyewy
+INSTALLDATE: 11/08/2021 18:09:36 +03:00
+SYSTEM_CATEGORY: system
+
+NAME: Экранный диктор
+PUBLISHER: Майкрософт
+PUBID: 8wekyb3d8bbwe
+COMMENTS: Главная страница экранного диктора
+ARCH: neutral
+VERSION: 10.0.19041.423
+FOLDER: C:\Windows\SystemApps\microsoft.windows.narratorquickstart_8wekyb3d8bbwe
+INSTALLDATE: 11/08/2021 18:09:36 +03:00
+SYSTEM_CATEGORY: system
+
+NAME: Windows Shell Experience
+PUBLISHER: Корпорация Майкрософт
+PUBID: cw5n1h2txyewy
+ARCH: neutral
+VERSION: 10.0.19041.423
+FOLDER: C:\Windows\SystemApps\Microsoft.Windows.PeopleExperienceHost_cw5n1h2txyewy
+INSTALLDATE: 11/08/2021 18:09:36 +03:00
+SYSTEM_CATEGORY: system
+
+NAME: Безопасность Windows
+PUBLISHER: Microsoft Corporation
+PUBID: cw5n1h2txyewy
+COMMENTS: Безопасность Windows
+ARCH: neutral
+VERSION: 10.0.19041.423
+FOLDER: C:\Windows\SystemApps\Microsoft.Windows.SecHealthUI_cw5n1h2txyewy
+INSTALLDATE: 11/08/2021 18:09:36 +03:00
+SYSTEM_CATEGORY: system
+
+NAME: Take a Test
+PUBLISHER: Microsoft Corporation
+PUBID: cw5n1h2txyewy
+COMMENTS: Take a Test
+ARCH: neutral
+VERSION: 10.0.19041.423
+FOLDER: C:\Windows\SystemApps\Microsoft.Windows.SecureAssessmentBrowser_cw5n1h2txyewy
+INSTALLDATE: 11/08/2021 18:09:36 +03:00
+SYSTEM_CATEGORY: system

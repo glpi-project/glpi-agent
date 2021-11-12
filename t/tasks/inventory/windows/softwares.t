@@ -9322,6 +9322,90 @@ my %softwares_tests = (
             'VERSION' => '5.0.12000',
             'PUBLISHER' => "Компания КриптоПро",
             'URL_INFO_ABOUT' => 'http://www.cryptopro.ru'
+        },
+                  {
+            'FROM' => 'uwp',
+            'VERSION' => '10.0.19041.423',
+            'ARCH' => 'neutral',
+            'FOLDER' => 'C:\\Windows\\SystemApps\\Microsoft.Windows.FileExplorer_cw5n1h2txyewy',
+            'SYSTEM_CATEGORY' => 'system',
+            'NAME' => "Проводник",
+            'PUBLISHER' => 'Microsoft Corporation',
+            'INSTALLDATE' => '08/11/2021'
+        },
+        {
+            'NAME' => "Сопоставитель приложений",
+            'INSTALLDATE' => '08/11/2021',
+            'PUBLISHER' => 'Microsoft Corporation',
+            'SYSTEM_CATEGORY' => 'system',
+            'FOLDER' => 'C:\\Windows\\SystemApps\\Microsoft.Windows.AppResolverUX_cw5n1h2txyewy',
+            'VERSION' => '10.0.19041.423',
+            'FROM' => 'uwp',
+            'ARCH' => 'neutral'
+        },
+        {
+            'PUBLISHER' => 'Microsoft Corporation',
+            'INSTALLDATE' => '08/11/2021',
+            'NAME' => "Диалоговое окно \"Добавить рекомендованные папки\"",
+            'FOLDER' => 'C:\\Windows\\SystemApps\\Microsoft.Windows.AddSuggestedFoldersToLibraryDialog_cw5n1h2txyewy',
+            'SYSTEM_CATEGORY' => 'system',
+            'ARCH' => 'neutral',
+            'FROM' => 'uwp',
+            'VERSION' => '10.0.19041.423'
+        },
+        {
+            'VERSION' => '10.0.19041.423',
+            'FROM' => 'uwp',
+            'ARCH' => 'neutral',
+            'SYSTEM_CATEGORY' => 'system',
+            'FOLDER' => 'C:\\Windows\\SystemApps\\Microsoft.Win32WebViewHost_cw5n1h2txyewy',
+            'NAME' => "Веб-средство просмотра классических приложений",
+            'COMMENTS' => "Веб-средство просмотра классических приложений",
+            'INSTALLDATE' => '08/11/2021',
+            'PUBLISHER' => 'Microsoft Corporation'
+        },
+        {
+            'FOLDER' => 'C:\\Windows\\SystemApps\\microsoft.windows.narratorquickstart_8wekyb3d8bbwe',
+            'SYSTEM_CATEGORY' => 'system',
+            'FROM' => 'uwp',
+            'VERSION' => '10.0.19041.423',
+            'ARCH' => 'neutral',
+            'COMMENTS' => "Главная страница экранного диктора",
+            'NAME' => "Экранный диктор",
+            'PUBLISHER' => "Майкрософт",
+            'INSTALLDATE' => '08/11/2021'
+        },
+        {
+            'NAME' => 'Windows Shell Experience',
+            'INSTALLDATE' => '08/11/2021',
+            'PUBLISHER' => 'Microsoft Corporation',
+            'SYSTEM_CATEGORY' => 'system',
+            'FOLDER' => 'C:\\Windows\\SystemApps\\Microsoft.Windows.PeopleExperienceHost_cw5n1h2txyewy',
+            'VERSION' => '10.0.19041.423',
+            'FROM' => 'uwp',
+            'ARCH' => 'neutral'
+        },
+        {
+            'FROM' => 'uwp',
+            'VERSION' => '10.0.19041.423',
+            'ARCH' => 'neutral',
+            'FOLDER' => 'C:\\Windows\\SystemApps\\Microsoft.Windows.SecHealthUI_cw5n1h2txyewy',
+            'SYSTEM_CATEGORY' => 'system',
+            'COMMENTS' => "Безопасность Windows",
+            'NAME' => "Безопасность Windows",
+            'PUBLISHER' => 'Microsoft Corporation',
+            'INSTALLDATE' => '08/11/2021'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'system',
+            'FOLDER' => 'C:\\Windows\\SystemApps\\Microsoft.Windows.SecureAssessmentBrowser_cw5n1h2txyewy',
+            'ARCH' => 'neutral',
+            'VERSION' => '10.0.19041.423',
+            'FROM' => 'uwp',
+            'INSTALLDATE' => '08/11/2021',
+            'PUBLISHER' => 'Microsoft Corporation',
+            'NAME' => 'Take a Test',
+            'COMMENTS' => 'Take a Test'
         }
     ]
 );
@@ -9443,6 +9527,10 @@ $module->mock(
         return $encoding // "cp1252";
     }
 );
+$module->mock(
+    'canRun',
+    sub { $_[0] eq 'powershell' }
+);
 
 my $tools_module = Test::MockModule->new(
     'GLPI::Agent::Tools::Win32'
@@ -9460,8 +9548,16 @@ foreach my $test (keys %softwares_tests) {
 
     my $softwares = GLPI::Agent::Task::Inventory::Win32::Softwares::_getSoftwaresList();
 
+    my $file = "resources/win32/powershell/$test.txt";
+    if (-e $file) {
+        my $uwp = GLPI::Agent::Task::Inventory::Win32::Softwares::_getAppxPackages(
+            file    => $file
+        );
+        push @{$softwares}, @{$uwp} if $uwp;
+    }
+
     cmp_deeply(
-        [ sort { compare() } @$softwares ],
+        [ sort { compare() } @{$softwares} ],
         [ sort { compare() } @{$softwares_tests{$test}} ],
         "$test: parsing"
     );
