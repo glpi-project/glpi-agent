@@ -214,8 +214,8 @@ sub remoteReadLink {
     # ReadLink not supported as not used for MSWin32 inventory
 }
 
-sub remoteGetPwEnt {
-    # GetPwEnt not supported as not used for MSWin32 inventory
+sub remoteGetNextUser {
+    # GetNextUser not supported as not used for MSWin32 inventory
 }
 
 sub winrm_url {

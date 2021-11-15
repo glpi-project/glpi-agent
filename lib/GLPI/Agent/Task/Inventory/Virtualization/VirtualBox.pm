@@ -6,7 +6,6 @@ use warnings;
 use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
-use User::pwent;
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Virtualization;
@@ -58,9 +57,9 @@ sub doInventory {
         "Library/VirtualBox" : ".config/VirtualBox" ;
 
     # Prepare to lookup only for users using VirtualBox
-    while (my $user = GetPwEnt()) {
-        push @users, $user->name()
-            if has_folder($user->dir()."/$user_vbox_folder") ;
+    while (my $user = GetNextUser()) {
+        push @users, $user->{name}
+            if has_folder($user->{dir}."/$user_vbox_folder") ;
     }
 
     foreach my $user (@users) {

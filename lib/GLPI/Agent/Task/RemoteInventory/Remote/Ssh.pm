@@ -172,10 +172,18 @@ sub remoteReadLink {
     return $self->getRemoteFirstLine(command => "readlink '$link'");
 }
 
-sub remoteGetPwEnt {
+sub remoteGetNextUser {
     my ($self) = @_;
-    unless ($self->{_users}) {
-        $self->{_users} = [ map { /^([^:]+):/ } getAllLines( file => '/etc/passwd' ) ];
+    unless ($self->{_users} && @{$self->{_users}}) {
+        $self->{_users} = [
+            map {
+                my @entry = split(':', $_);
+                {
+                    name    => $entry[0],
+                    dir     => $entry[5]
+                }
+            } getAllLines( file => '/etc/passwd' )
+        ];
     }
     return shift(@{$self->{_users}}) if $self->{_users};
 }

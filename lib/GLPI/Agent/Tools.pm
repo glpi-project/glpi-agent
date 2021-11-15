@@ -61,6 +61,7 @@ our @EXPORT = qw(
     has_link
     FileStat
     ReadLink
+    GetNextUser
     Uname
 );
 
@@ -138,9 +139,14 @@ sub ReadLink {
     return $remote->remoteReadLink($f);
 }
 
-sub GetPwEnt {
-    return getpwent() unless $remote;
-    return $remote->remoteGetPwEnt();
+sub GetNextUser {
+    return $remote->remoteGetNextUser() if $remote;
+    my @entry = getpwent()
+        or return;
+    return {
+        name    => $entry[0],
+        dir     => $entry[7]
+    };
 }
 
 # Avoid List::Util dependency re-using 'any' sub as template
