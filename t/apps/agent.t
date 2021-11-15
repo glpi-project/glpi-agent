@@ -60,6 +60,10 @@ is($out, '', 'incompatible options stdout');
 
 my $base_options = "--debug --no-task ocsdeploy,wakeonlan,snmpquery,netdiscovery --config none";
 
+# Use a temporary vardir to not fail in development environment
+my $vardir = File::Temp->newdir(CLEANUP => 1);
+$base_options .= " --vardir $vardir";
+
 # first inventory
 ($out, $err, $rc) = run_executable(
     'glpi-agent',
