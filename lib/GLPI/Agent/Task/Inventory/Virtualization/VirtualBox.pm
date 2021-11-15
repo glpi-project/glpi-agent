@@ -27,11 +27,18 @@ sub doInventory {
     my $inventory    = $params{inventory};
     my $logger       = $params{logger};
 
-    my $command = "VBoxManage -nologo list --long vms";
+    my $vmscommand = "VBoxManage -nologo list vms";
 
-    foreach my $machine (_parseVBoxManage(
-        logger => $logger, command => $command
+    foreach my $vm (_parseVBoxManageVms(
+        logger  => $logger,
+        command => $vmscommand
     )) {
+        my $command = "VBoxManage -nologo showvminfo $vm";
+        my ($machine) = _parseVBoxManage(
+            logger  => $logger,
+            command => $command
+        );
+        next unless $machine;
         $inventory->addEntry(
             section => 'VIRTUALMACHINES', entry => $machine
         );
@@ -63,10 +70,17 @@ sub doInventory {
     }
 
     foreach my $user (@users) {
-        my $command = "su '$user' -c 'VBoxManage -nologo list --long vms'";
-        foreach my $machine (_parseVBoxManage(
-            logger => $logger, command => $command
+        my $vmscommand = "su '$user' -c 'VBoxManage -nologo list vms'";
+        foreach my $vm (_parseVBoxManageVms(
+            logger  => $logger,
+            command => $vmscommand
         )) {
+            my $command = "su '$user' -c 'VBoxManage -nologo showvminfo $vm'";
+            my ($machine) = _parseVBoxManage(
+                logger  => $logger,
+                command => $command
+            );
+            next unless $machine;
             $machine->{OWNER} = $user;
             $inventory->addEntry(
                 section => 'VIRTUALMACHINES', entry => $machine
@@ -75,10 +89,18 @@ sub doInventory {
     }
 }
 
-sub _parseVBoxManage {
-    my $handle = getFileHandle(@_);
+sub _parseVBoxManageVms {
+    my @vms;
+    foreach my $line (getAllLines(@_)) {
+        next unless $line =~ /^"[^"]+"\s+{([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})}$/;
+        push @vms, $1;
+    }
+    return @vms;
+}
 
-    return unless $handle;
+sub _parseVBoxManage {
+    my @lines = getAllLines(@_)
+        or return;
 
     my (@machines, $machine, $index);
 
@@ -97,9 +119,7 @@ sub _parseVBoxManage {
         'running'           => STATUS_RUNNING,
         'paused'            => STATUS_PAUSED
     );
-    while (my $line = <$handle>) {
-        chomp $line;
-
+    foreach my $line (@lines) {
         if ($line =~ m/^Name:\s+(.*)$/) {
             # this is a little tricky, because USB devices also have a 'name'
             # field, so let's use the 'index' field to disambiguate
@@ -124,7 +144,6 @@ sub _parseVBoxManage {
             $index = $1;
         }
     }
-    close $handle;
 
     # push last remaining machine
     push @machines, $machine if $machine;
