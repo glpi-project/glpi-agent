@@ -145,6 +145,7 @@ sub GetNextUser {
         or return;
     return {
         name    => $entry[0],
+        uid     => $entry[2],
         dir     => $entry[7]
     };
 }

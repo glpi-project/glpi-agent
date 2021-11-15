@@ -180,6 +180,7 @@ sub remoteGetNextUser {
                 my @entry = split(':', $_);
                 {
                     name    => $entry[0],
+                    uid     => $entry[2],
                     dir     => $entry[5]
                 }
             } getAllLines( file => '/etc/passwd' )

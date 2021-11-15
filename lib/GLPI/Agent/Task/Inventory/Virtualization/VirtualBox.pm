@@ -65,6 +65,7 @@ sub doInventory {
 
     # Prepare to lookup only for users using VirtualBox
     while (my $user = GetNextUser()) {
+        next if $user->{uid} == $REAL_USER_ID;
         push @users, $user->{name}
             if has_folder($user->{dir}."/$user_vbox_folder") ;
     }
