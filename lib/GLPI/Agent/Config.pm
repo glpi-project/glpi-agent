@@ -65,6 +65,11 @@ sub new {
         '_options' => $params{options} // {},
     };
     bless $self, $class;
+
+    # When not defined, set _confdir against conf-file option if related file exists
+    $self->{_confdir} = abs_path(File::Spec->rel2abs('..', $params{options}->{'conf-file'}))
+        if ! defined($self->{_confdir}) && $params{options}->{'conf-file'} && -e $params{options}->{'conf-file'};
+
     $self->_loadDefaults();
 
     # Reset confdir to be absolute confdir if found to be relative. This avoid
