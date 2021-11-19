@@ -250,7 +250,13 @@ sub run {
 
     my $bdir = catdir($self->global->{build_dir}, 'msi');
 
-    my $msi_guid = $self->{data_uuid}->create_str(); # get random GUID
+    # These GUIDs were randomly generated during GLPI-Agent 1.0-beta1 release
+    # As this is the MSI Product GUID, it should not be changed during release process
+    # They are also used in deployment vbs to check if the package should be installed
+    my $msi_guid = $self->global->{arch} eq 'x64' ?
+        'FA01074A-6BF8-1014-B0E8-F9F8208C43AB'
+        :
+        '2D867E73-6BF5-1014-BC86-AD002C3B00E0';
 
     # create WXS parts to be inserted into MSI_main.wxs.tt
     my $xml_env = $self->_generate_wxml_for_environment();
