@@ -35,6 +35,8 @@ fi
 cat >release-description.md <<DESCRIPTION
 Here you can download GLPI-Agent v$VERSION packages.
 
+Don't forget to follow our [installation documentation](https://glpi-agent.readthedocs.io/en/latest/installation/).
+
 ## Windows
 Arch | Windows installer | Windows portable archive
 ---|:---|:---
