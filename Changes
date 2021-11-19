@@ -99,6 +99,11 @@ packaging:
 * MacOSX with prebuilt perl 5.34.0 including OpenSSL 3.0.0 support (x86_64,arm64)
 * Linux Snap package with prebuilt perl 5.34.0
 
+tools:
+* tools/netsim.sh: Added script to simulate a network environment which can be used
+  to test netdiscovery and netinventory tasks.
+  It is based on snmpsim project to emulate snmp agents.
+
 Revision history for FusionInventory agent
 
 2.6 Thu, 26 Nov 2020
