@@ -564,7 +564,19 @@ sub _scanAddressByPing {
     return if $params->{walk};
 
     my $type = 'echo';
-    my $np = Net::Ping->new('icmp', 1);
+    my $np;
+    eval {
+        $np = Net::Ping->new('icmp', 1);
+    };
+
+    unless ($np) {
+        $self->{logger}->debug(
+            sprintf "- scanning %s with $type ping: %s",
+            $params->{ip},
+            'no result, ping not supported'
+        );
+        return ();
+    }
 
     my %device = ();
 
