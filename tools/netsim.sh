@@ -11,6 +11,7 @@
 : ${AGENTPORT:=62354}
 : ${SNMPPORT:=161}
 : ${COMMUNITY:=public}
+: ${ENCRYPT:=}
 
 # snmpsim seems to have been abandoned but inexio is maintaining it in a fork name thola-snmpsim
 : ${SNMPSIM:=thola-snmpsim}
@@ -172,6 +173,25 @@ function _load_environment {
         source "$NETSIMDIR/env"
         [ "$SYSTEM_AGENT" == "1" ] && let SYSTEM=1
     fi
+    if [ ! -e "$NETSIMDIR/encrypt/teclib.pubkey.pem" ];then
+        # Storing Teclib public to securely share walks in backup
+        cat >"$NETSIMDIR/encrypt/teclib.pubkey.pem" <<TECLIB_PUBLIC_KEY
+-----BEGIN PUBLIC KEY-----
+MIICIDANBgkqhkiG9w0BAQEFAAOCAg0AMIICCAKCAgEA2dtPb0cgk2FP2PjFTcu+
+OqlE3Y1JzG7cb/dLoC8b0CrOGn1+9FD9UJLUkkcaX8B79BlpNjzLWFPkvUxUvmFL
+Bq17IcYjvV1jp/rVjrnVjVDxB9GMRFA1HAuRdtl6tBcggOjjoj7763thg+53Xzv7
+kgUh3rfvN1cvmh5JV/63R4wueio8+TlAaE0GOLgeLJvG2t6T1Yl3g5Aofyaw2Ouz
+ODjjiBxfEkapipsUdB16nXUNjeK/zlHxpGNnZefRCCUe4la62k7iWKQwUWm4AqLD
+JfUcKfG30bvuVT3ogGj6/1vPqliuJOvKzqCpo5na9y/ucqBPmKPmlC4P7z97fJlb
+1vMR0WceAMRnOqW2Dq/kpMIY/OqlUE2Yl+oYZyi8VG1q/gY+O+V7unW03nZo2LoK
+sABeQQhsWnq0D13Ryc+bkrHTeV9RSaHeZhpdYGanwUK39ZgJF5RImWeXI6E+FBMA
+LuEz9Nqf+c1jo6+QabRIxoi6N5Js3z2UAAVTvK98tvhc279C3hteoNLAsWK0hTY8
+J4Hn5/YvTimnVG1R1BrI4VVCLeuwKIZkti8vGrjOx5WincuFwzrTaj3A6TVLyJkv
+Jf5HVjXuKg+u1b3ezyMJ9gj5v1DBQ9v2VkrLDInN6ygZeNhW4E87h5/9YRm996Mw
+ItSW7+3LlidVWXaT6Snj8aECAQM=
+-----END PUBLIC KEY-----
+TECLIB_PUBLIC_KEY
+    fi
 }
 
 function _setup_environment {
@@ -219,6 +239,7 @@ function _setup_environment {
             done
         fi
     fi
+    [ -d "$NETSIMDIR/encrypt" ] || mkdir -p "$NETSIMDIR/encrypt"
     stream "Netsim environment was setup under '$NETSIMDIR' folder"
 }
 
@@ -738,11 +759,45 @@ function _walk {
     fi
 }
 
+function _pub_encrypt {
+    if [ -z "$ENCRYPT" ]; then
+        stream "Archive content encryption not enabled, can't encrypt"
+    elif [ ! -e "encrypt/$ENCRYPT.privkey.pem" ]; then
+        stream "Archive content public key for '$ENCRYPT' authority is missing, can't encrypt"
+    else
+        openssl pkeyutl -encrypt -in "$1" -pubin -inkey "encrypt/$ENCRYPT.pubkey.pem" -out "$1.$ENCRYPT" 2>&1 | _stream_pipe;
+    fi
+}
+
+function _pub_decrypt {
+    _KEYNAME="${1##*.}"
+    if [ -z "$_KEYNAME" ]; then
+        stream "Archive content decryption not enabled, can't decrypt"
+    elif [ ! -e "$NETSIMDIR/encrypt/$_KEYNAME.privkey.pem" ]; then
+        stream "Archive content private key for '$_KEYNAME' authority is missing, can't decrypt"
+    else
+        openssl pkeyutl -decrypt -in "$1" -inkey "$NETSIMDIR/encrypt/$_KEYNAME.privkey.pem" -out "${1%.*}" 2>&1 | _stream_pipe;
+    fi
+}
+
+function _genkey {
+    rm -f "encrypt/key.bin" "encrypt/key.bin.$ENCRYPT"
+    if ! openssl rand -base64 32 > encrypt/key.bin; then
+        stream "Failed to create encryption key"
+        return 1
+    fi
+    _pub_encrypt encrypt/key.bin
+    if [ ! -e "encrypt/key.bin.$ENCRYPT" ]; then
+        stream "Failed to encrypt symetric encryption key for sharing"
+        return 1
+    fi
+}
+
 function _backup {
     NAME="${NETSIMDIR##*/}"
     stream "Preparing backup..."
     rm -f "$NAME.zip"
-    FILE="$PWD/$NAME.zip"
+    ARCHIVE="$PWD/$NAME.zip"
     (
         cd "$NETSIMDIR"
         case "$1" in
@@ -750,10 +805,57 @@ function _backup {
             templates)  FILES=templates ;;
             *)          FILES="device-* templates" ;;
         esac
-        if ! zip -qDr "$FILE" $FILES -x device-\*/cache/\*\* templates/sample{3,4}/\*\* 2>&1 | _stream_pipe ; then
+        unset _EXCLUDE
+        if [ "$ENCRYPT" ]; then
+            stream "Encryption is enabled using '$ENCRYPT' authority"
+            if ! _genkey "$ENCRYPT"; then
+                stream "Failed to create archive content encryption key, skipping backup"
+                return 1
+            fi
+            _EXCLUDE="encrypt/key.bin"
+            for folder in $FILES
+            do
+                case "$folder" in
+                    device-*)
+                        _FILE=$folder/*.snmprec
+                        ;;
+                    templates)
+                        _FILE=$folder/*/*.snmprec
+                        ;;
+                esac
+                for file in $_FILE
+                do
+                    # Skil well-known sample files
+                    case "$file" in
+                        templates/sample[34]/*)
+                            continue
+                            ;;
+                    esac
+                    if ! gzip -9cn $file >$file.gz; then
+                        stream "Failed to compress '$file', skipping"
+                        continue
+                    fi
+                    if ! openssl enc -aes-256-cbc -salt -pbkdf2 -in $file.gz -out $file.gz.$ENCRYPT -pass file:encrypt/key.bin; then
+                        stream "Failed to encrypt '$file.gz', skipping"
+                        rm -f $file.gz
+                        continue
+                    fi
+                    sha256sum $file >$file.sha256 2>&1 | _stream_pipe
+                    _pub_encrypt $file.sha256
+                    rm -f $file.gz $file.sha256
+                    _EXCLUDE="$_EXCLUDE $file"
+                done
+            done
+            FILES="$FILES encrypt/key.bin.$ENCRYPT"
+        fi
+        if ! zip -qDr "$ARCHIVE" $FILES -x device-\*/cache/\*\* templates/sample{3,4}/\*\* $_EXCLUDE 2>&1 | _stream_pipe ; then
             stream "Failed to create backup"
         else
-            stream "Backup file: $FILE"
+            stream "Backup file: $ARCHIVE"
+        fi
+        # Remove any encrypted file
+        if [ "$ENCRYPT" ]; then
+            rm -f encrypt/key.bin* device-*/*.$ENCRYPT templates/*/*.$ENCRYPT
         fi
     )
 }
@@ -771,7 +873,7 @@ function _restore {
                 stream "Restoring '$FILE' in current netsim environment"
                 (
                     cd "$NETSIMDIR"
-                    if ! unzip "$FILE" $PATTERN 2>&1 | _stream_pipe ; then
+                    if ! unzip -o "$FILE" $PATTERN 2>&1 | _stream_pipe ; then
                         stream "Failed to restore backup"
                     else
                         stream "Restored content from $FILE"
@@ -784,6 +886,101 @@ function _restore {
             fi
             shift
         done
+        # Decrypt any encrypted file
+        for keyfile in "$NETSIMDIR"/encrypt/key.bin.*
+        do
+            KEYNAME="${keyfile##$NETSIMDIR/encrypt/key.bin.}"
+            [ "$KEYNAME" == '*' ] && break
+            if [ -e "$NETSIMDIR/encrypt/$KEYNAME.pubkey.pem" ]; then
+                _pub_decrypt "$keyfile"
+                rm -f "$keyfile"
+                for file in "$NETSIMDIR"/*/*.gz.$KEYNAME "$NETSIMDIR"/*/*/*.gz.$KEYNAME
+                do
+                    [ -e "$file" ] || continue
+                    FILE="${file%.gz.$KEYNAME}"
+                    if ! openssl enc -aes-256-cbc -d -pbkdf2 -in "$file" -out "$FILE.gz" -pass file:"$NETSIMDIR/encrypt/key.bin"; then
+                        stream "Failed to decrypt '${file#$NETSIMDIR/}', skipping"
+                        rm -f "$file" "$FILE.sha256.$KEYNAME"
+                        continue
+                    fi
+                    rm -f "$file"
+                    if ! gunzip -f "$FILE.gz"; then
+                        stream "Failed to uncompress '${FILE#$NETSIMDIR/}', skipping"
+                        rm -f "$FILE.gz" "$FILE.sha256.$KEYNAME"
+                        continue
+                    fi
+                    _pub_decrypt "$FILE.sha256.$KEYNAME"
+                    rm -f "$FILE.sha256.$KEYNAME"
+                    if [ -e "$FILE.sha256" ]; then
+                        INTEGRITY=$( cd "$NETSIMDIR" ; cat "${FILE#$NETSIMDIR/}.sha256" | sha256sum -c >/dev/null 2>&1 || echo failed)
+                        rm -f "$FILE.sha256"
+                        if [ "$INTEGRITY" == "failed" ]; then
+                            stream "'${FILE#$NETSIMDIR/}' integrity check failure, removing"
+                            rm -f "$FILE"
+                            continue
+                        fi
+                    fi
+                    stream "Decrypted ${FILE#$NETSIMDIR/} with '$KEYNAME' authority"
+                done
+            else
+                stream "Can't decrypt files for '$KEYNAME' authority, removing"
+                rm -vf "$NETSIMDIR"/device-*/*.$KEYNAME "$NETSIMDIR"/templates/*/*.$KEYNAME | _stream_pipe
+            fi
+            # Finally remove symetric encryption key when finished
+            rm -f "$keyfile" "$NETSIMDIR/encrypt/key.bin"
+        done
+    fi
+}
+
+function _noencrypt {
+    if [ -z "$ENCRYPT" ]; then
+        stream "Archive content encryption still disabled"
+    else
+        stream "Disabling archive content encryption"
+        ENCRYPT=""
+    fi
+}
+
+function _encrypt {
+    if ! which openssl >/dev/null; then
+        stream "Openssl is required to manage archive encryption"
+    elif [ -n "$1" ]; then
+        BASEKEY="$1"
+        if [ -e "$NETSIMDIR/encrypt/$BASEKEY.pubkey.pem" ]; then
+            stream "Selecting '$BASEKEY' authority for archive content encryption"
+            ENCRYPT="$BASEKEY"
+            _encrypt
+        else
+            if [ ! -d "$NETSIMDIR/encrypt" ]; then
+                if ! mkdir -p "$NETSIMDIR/encrypt" ]; then
+                    stream "Failed to create '$NETSIMDIR/encrypt' folder, skipping encryption"
+                    return 1
+                fi
+            fi
+            stream "Generating '$BASEKEY' authority private key"
+            if ! openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:4096 -pkeyopt rsa_keygen_pubexp:3 -out "$NETSIMDIR/encrypt/$BASEKEY.privkey.pem"; then
+                stream "Failed to create private key, skipping encryption"
+                return 1
+            fi
+            stream "Generating '$BASEKEY' authority public key"
+            if ! openssl pkey -in "$NETSIMDIR/encrypt/$BASEKEY.privkey.pem" -out "$NETSIMDIR/encrypt/$BASEKEY.pubkey.pem" -pubout; then
+                stream "Failed to create private key, skipping encryption"
+                return 1
+            fi
+            _encrypt "$BASEKEY"
+        fi
+    elif [ -n "$ENCRYPT" ]; then
+        if [ -e "$NETSIMDIR/encrypt/$ENCRYPT.pubkey.pem" ]; then
+            stream "Current archive content encryption based on '$ENCRYPT' authority pubkey"
+            if [ -e "$NETSIMDIR/encrypt/$ENCRYPT.pubkey.pem" ]; then
+                openssl dgst -sha256 "$NETSIMDIR/encrypt/$ENCRYPT.pubkey.pem"
+            fi
+        else
+            # ENCRYPT may have been set via environment so we need to simply initialize it
+            _encrypt "$ENCRYPT"
+        fi
+    else
+        _encrypt local
     fi
 }
 
@@ -843,6 +1040,8 @@ do
         reset)       _reset ;;
         backup)      _backup $ARGS ;;
         restore)     _restore $ARGS ;;
+        encrypt)     _encrypt $ARGS ;;
+        noencrypt)   _noencrypt ;;
         cleanup)     _cleanup && break ;;
         quit)        (( STARTED )) && _stop ; break ;;
         help)        cat <<ONLINE_HELP
@@ -876,6 +1075,8 @@ Netsim supported sub-commands:
                    Set TYPE to "devices" or "templates" to limit the backup
  - restore ZIPs    Restore given zip archive in the current netsim environment
                    To restore templates only, use "templates" keyword before ZIP
+ - encrypt [NAME]  Setup archive content encryption or select encryption authority
+ - noencrypt       Disable archive content encryption
 ONLINE_HELP
                 ;;
         [ascii]*)    stream "Unsupported sub-command: $SUBCOMMAND $ARGS" ;;
@@ -892,6 +1093,7 @@ SERVER=$SERVER
 TAG=$TAG
 DEBUG=$DEBUG
 COMMUNITY=$COMMUNITY
+ENCRYPT=$ENCRYPT
 ENV
 
     # Leave here for one shot subcommands
