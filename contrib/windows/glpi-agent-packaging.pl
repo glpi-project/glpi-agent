@@ -70,7 +70,7 @@ sub build_app {
         _provided_by    => PROVIDED_BY,
         agent_version   => $version,
         agent_fullver   => $major.'.'.$minor.'.'.$revision.'.'.$package_rev,
-        agent_msiver    => $major.'.'.$minor.'.'.$revision,
+        agent_msiver    => $version,
         agent_fullname  => $provider.' Agent',
         agent_rootdir   => $provider.'-Agent',
         agent_regpath   => "Software\\$provider-Agent",
