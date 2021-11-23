@@ -473,7 +473,7 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: TaskHourlyModifier" Type="string" Value="[TASK_HOURLY_MODIFIER]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: TaskDailyModifier" Type="string" Value="[TASK_DAILY_MODIFIER]" />\n];
                 # Add registry entry dedicated to deployment vbs check
-                $result .= $ident ."  ". qq[    <RegistryValue Name="Version" Type="string" Value="$installversion" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="InstallerVersion" Type="string" Value="$installversion" />\n];
                 $result .= $ident ."  ". qq[  </RegistryKey>\n];
             }
             $result .= $ident ."  ". qq[</Component>\n];
