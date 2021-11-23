@@ -423,6 +423,7 @@ sub _tree2xml {
             # Add service, registry and firewall definitions on feat_AGENT
             if ($this_feat eq "feat_AGENT") {
                 my $servicename = $self->global->{service_name};
+                my $installversion = $self->global->{agent_version};
                 my $regpath = "Software\\".$self->global->{_provider}."-Agent";
                 $result .= $ident ."  ". qq[  <ServiceInstall Name="$servicename" Start="auto"\n];
                 $result .= $ident ."  ". qq[                  ErrorControl="normal" DisplayName="!(loc.ServiceDisplayName)" Description="!(loc.ServiceDescription)" Interactive="no"\n];
@@ -471,6 +472,8 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: TaskMinuteModifier" Type="string" Value="[TASK_MINUTE_MODIFIER]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: TaskHourlyModifier" Type="string" Value="[TASK_HOURLY_MODIFIER]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: TaskDailyModifier" Type="string" Value="[TASK_DAILY_MODIFIER]" />\n];
+                # Add registry entry dedicated to deployment vbs check
+                $result .= $ident ."  ". qq[    <RegistryValue Name="Version" Type="string" Value="$installversion" />\n];
                 $result .= $ident ."  ". qq[  </RegistryKey>\n];
             }
             $result .= $ident ."  ". qq[</Component>\n];
