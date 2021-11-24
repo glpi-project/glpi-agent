@@ -57,7 +57,7 @@ if ($ENV{GITHUB_REF} && $ENV{GITHUB_REF} =~ m|refs/tags/(.+)$|) {
         if ($tag =~ /^$major\.$minor\.$revision-(.*)$/) {
             $version = $tag;
             $versiontag = $1;
-        } else {
+        } elsif ($tag ne "$major.$minor.$revision") {
             $version = "$major.$minor.$revision-$tag";
             $versiontag = $tag;
         }
@@ -65,7 +65,7 @@ if ($ENV{GITHUB_REF} && $ENV{GITHUB_REF} =~ m|refs/tags/(.+)$|) {
         if ($tag =~ /^$major\.$minor-(.*)$/) {
             $version = $tag;
             $versiontag = $1;
-        } else {
+        } elsif ($tag ne "$major.$minor") {
             $version = "$major.$minor-$tag";
             $versiontag = $tag;
         }
@@ -85,7 +85,6 @@ sub build_app {
         _no_test        => $notest,
         agent_version   => $version,
         agent_fullver   => $major.'.'.$minor.'.'.$revision.'.'.$package_rev,
-        agent_msiver    => $major.'.'.$minor.'.'.$revision,
         agent_vernum    => $major.'.'.$minor.($revision ? '.'.$revision : ''),
         agent_vertag    => $versiontag // '',
         agent_fullname  => $provider.' Agent',
@@ -302,7 +301,6 @@ sub run {
         %{$self->{config}},
         # the following items are computed
         msi_product_guid => $msi_guid,
-        msi_random_upgrade_code => $self->{data_uuid}->create_str(), # get random GUID
         msi_version      => sprintf("%d.%d.%d", $v1, $v2, $v3), # e.g. 5.12.2001
         msi_upgr_version => sprintf("%d.%d.%d", $v1, $v2, 0),   # e.g. 5.12.0
         # WXS data
@@ -698,7 +696,7 @@ sub _other_job_steps {
             #'dirname\file.pm',
         ],
         #BEWARE: msi_upgrade_code is a fixed value for all same arch releases (for ever)
-        msi_upgrade_code    => $self->global->{arch} eq 'x64' ? '7004FC08-39EB-4467-8A0E-E8CF9C91873A' : '7968ABFD-377A-4706-9E54-9039A1B67C1E',
+        msi_upgrade_code    => $self->global->{arch} eq 'x64' ? '0DEF72A8-E5EE-4116-97DC-753718E19CD5' : '7F25A9A4-BCAE-4C15-822D-EAFBD752CFEC',
         app_publisher       => "Teclib'",
         url_about           => 'https://glpi-project.org/',
         url_help            => 'https://glpi-project.org/discussions/',

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <Include>
+  <?define AgentName         = "[%agent_fullname%]" ?>   <!-- e.g. "GLPI Agent" -->
 [%- IF ! agent_vertag %]
   <?define ProductName       = "[%agent_fullname%] [%agent_vernum%]" ?>   <!-- e.g. "GLPI Agent 1.0" -->
-  <?define UpgradeCode       = "[%msi_upgrade_code%]" ?> <!-- e.g. "0DEF72A8-E5EE-4116-97DC-753718E19CD5" -->
 [%- ELSE %]
   <?define ProductName       = "[%agent_fullname%] [%agent_vernum%] ([%agent_vertag%])" ?>   <!-- e.g. "GLPI Agent 1.0 (beta2)" -->
-  <?define UpgradeCode       = "[%msi_random_upgrade_code%]" ?> <!-- avoid using "real" upgrade code for tagged release -->
 [%- END %]
+  <?define UpgradeCode       = "[%msi_upgrade_code%]" ?> <!-- e.g. "0DEF72A8-E5EE-4116-97DC-753718E19CD5" -->
   <?define ProductGUID       = "[%msi_product_guid%]" ?> <!-- e.g. "444492A0-D47C-4290-BAF7-8113318CD031" -->
   <?define Version4digit     = "[%agent_fullver%]" ?>    <!-- e.g. "1.0.0.1" -->
-  <?define CurrentVersion    = "[%agent_msiver%]" ?>     <!-- e.g. "1.0.0" -->
+  <?define CurrentVersion    = "[%agent_vernum%]" ?>     <!-- e.g. "1.0" or "1.0.1"-->
   <?define Manufacturer      = "[%app_publisher%]" ?>       <!-- e.g. "Teclib'" -->
   <?define URLAbout          = "[%url_about%]" ?>           <!-- e.g. "https://glpi-project.org/" -->
   <?define URLHelp           = "[%url_help%]" ?>            <!-- e.g. "https://glpi-project.org/discussions/" -->

@@ -3,22 +3,22 @@
 <WixLocalization Culture="en-US" xmlns="http://schemas.microsoft.com/wix/2006/localization">
   <!-- see https://iirf.svn.codeplex.com/svn/v2.x/Setup/CustomText.wxl -->
 
-  <String Id="WelcomeDlg_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="WelcomeDlgTitle">{\WixUI_Font_Bigger}Welcome to the Setup Wizard for&#13;&#10;[ProductName] [%agent_version%]</String>
+  <String Id="WelcomeDlg_Title">[ProductName] Setup</String>
+  <String Id="WelcomeDlgTitle">{\WixUI_Font_Bigger}Welcome to the Setup Wizard for&#13;&#10;[ProductName]</String>
 
   <!-- custom text on welcome dialog -->
 [%- IF msi_debug==0 && ! agent_vertag %]
-  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] [%agent_version%] on your computer. Click Next to continue or Cancel to exit Setup.</String>
+  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] on your computer. Click Next to continue or Cancel to exit Setup.</String>
 [%- ELSIF msi_debug!=0 && ! agent_vertag %]
-  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] [%agent_version%] on your computer. Click Next to continue or Cancel to exit Setup.&#13;&#10;&#13;&#10;BEWARE: this is MSI_DEBUG build!</String>
+  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] on your computer. Click Next to continue or Cancel to exit Setup.&#13;&#10;&#13;&#10;BEWARE: this is MSI_DEBUG build!</String>
 [%- ELSIF msi_debug==0 && agent_vertag %]
-  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] [%agent_version%] on your computer. Click Next to continue or Cancel to exit Setup.&#13;&#10;&#13;&#10;BEWARE: this is [%agent_vertag%] build!</String>
+  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] on your computer. Click Next to continue or Cancel to exit Setup.&#13;&#10;&#13;&#10;BEWARE: this is [%agent_vertag%] build!</String>
 [%- ELSIF msi_debug!=0 && agent_vertag %]
-  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] [%agent_version%] on your computer. Click Next to continue or Cancel to exit Setup.&#13;&#10;&#13;&#10;BEWARE: this is [%agent_vertag%] build!&#13;&#10;&#13;&#10;BEWARE: this is MSI_DEBUG build!</String>
+  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] on your computer. Click Next to continue or Cancel to exit Setup.&#13;&#10;&#13;&#10;BEWARE: this is [%agent_vertag%] build!&#13;&#10;&#13;&#10;BEWARE: this is MSI_DEBUG build!</String>
 [%- END %]
 
-  <String Id="PrepareDlg_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="PrepareDlgTitle">{\WixUI_Font_Bigger}Welcome to the Setup Wizard for&#13;&#10;[ProductName] [%agent_version%]</String>
+  <String Id="PrepareDlg_Title">[ProductName] Setup</String>
+  <String Id="PrepareDlgTitle">{\WixUI_Font_Bigger}Welcome to the Setup Wizard for&#13;&#10;[ProductName]</String>
 
   <!-- custom text on features dialog -->
   <String Id="ProductTitle">GLPI Agent</String>
@@ -35,11 +35,11 @@
   <String Id="WolDescription">All the necessary files to wake up equipements in your network.</String>
 
   <!-- custom text for service registration -->
-  <String Id="ServiceDisplayName">[ProductName]</String>
-  <String Id="ServiceDescription">[ProductName] is an inventory agent. It is intended to upload system inventory toward a GLPI server on a regular basis.</String>
+  <String Id="ServiceDisplayName">[AgentName]</String>
+  <String Id="ServiceDescription">[AgentName] is an inventory agent. It is intended to upload system inventory toward a GLPI server on a regular basis.</String>
 
   <!-- custom text for target setup dialog -->
-  <String Id="TargetSetupDlg_Title">[ProductName] [%agent_version%] Target Setup</String>
+  <String Id="TargetSetupDlg_Title">[ProductName] Target Setup</String>
   <String Id="TargetSetupDlg_TextTitle">{\WixUI_Font_Title}Choose Targets</String>
   <String Id="TargetSetupDlg_Description">Choose where the result will be sent.</String>
   <String Id="TargetSetupDlg_LocalMode">Local Target</String>
@@ -51,12 +51,12 @@
   <String Id="TargetSetupDlg_QuickInstallToolTips">do not show the rest of windows options</String>
 
   <!-- custom text for local target setup dialog -->
-  <String Id="BrowseLocalDlg_Title">[ProductName] [%agent_version%] Local Target Setup</String>
+  <String Id="BrowseLocalDlg_Title">[ProductName] Local Target Setup</String>
   <String Id="BrowseLocalDlgPathLabel">&amp;Local target destination:</String>
   <String Id="BrowseLocalDlgTitle">{\WixUI_Font_Title}Change Local Target destination folder</String>
 
   <!-- custom text for server target SSL options setup dialog -->
-  <String Id="ServerSSLSetupDlgTitle">[ProductName] [%agent_version%] Setup</String>
+  <String Id="ServerSSLSetupDlgTitle">[ProductName] Setup</String>
   <String Id="ServerSSLSetupDlg_Title">{\WixUI_Font_Title}Remote Targets SSL Options</String>
   <String Id="ServerSSLSetupDlgDescription">Set SSL options.</String>
   <String Id="ServerSSLSetupGroup">SSL Options</String>
@@ -65,7 +65,7 @@
   <String Id="NoSSLCheckDescription">Disable SSL check (for security reason, only use it for debugging)</String>
 
   <!-- custom text for server target Proxy options setup dialog -->
-  <String Id="ProxySetupDlgTitle">[ProductName] [%agent_version%] Setup</String>
+  <String Id="ProxySetupDlgTitle">[ProductName] Setup</String>
   <String Id="ProxySetupDlg_Title">{\WixUI_Font_Title}Remote Targets Proxy Options</String>
   <String Id="ProxySetupDlgDescription">Set Proxy options.</String>
   <String Id="ProxySetupGroup">Proxy Options</String>
@@ -74,9 +74,9 @@
   <String Id="ProxyPasswordDescription">Proxy server authentication password</String>
 
   <!-- custom text for execution mode setup dialog -->
-  <String Id="ExecModeDlgTitle">[ProductName] [%agent_version%] Setup</String>
+  <String Id="ExecModeDlgTitle">[ProductName] Setup</String>
   <String Id="ExecModeDlg_Title">{\WixUI_Font_Title}Choose an Execution Mode</String>
-  <String Id="ExecModeDlgDescription">Choose which way you want [ProductName] to be executed.</String>
+  <String Id="ExecModeDlgDescription">Choose which way you want [AgentName] to be executed.</String>
   <String Id="ExecModeDlgGroup">Execution Mode</String>
   <String Id="ExecModeDlgService">As a Windows Service</String>
   <String Id="ExecModeDlgTaskScheduler">As a Windows Task</String>
@@ -86,7 +86,7 @@
   <String Id="LazyToolTip">Lazy option</String>
 
   <!-- custom text for windows task mode setup dialog -->
-  <String Id="TaskModeDlgTitle">[ProductName] [%agent_version%] Setup</String>
+  <String Id="TaskModeDlgTitle">[ProductName] Setup</String>
   <String Id="TaskModeDlg_Title">{\WixUI_Font_Title}Windows Task Options</String>
   <String Id="TaskModeDlgDescription">Set Windows Task Options.</String>
   <String Id="TaskModeGroup">Windows Task Options</String>
@@ -99,7 +99,7 @@
   <String Id="Daily">Daily</String>
 
   <!-- custom text for httpd options setup dialog -->
-  <String Id="HTTPServerSetupDlgTitle">[ProductName] [%agent_version%] Setup</String>
+  <String Id="HTTPServerSetupDlgTitle">[ProductName] Setup</String>
   <String Id="HTTPServerSetupDlg_Title">{\WixUI_Font_Title}HTTP Server Options</String>
   <String Id="HTTPServerSetupDlgDescription">Set embedded HTTP server options.</String>
   <String Id="HTTPServerSetupDlgGroup">Embedded HTTP Server Options</String>
@@ -110,7 +110,7 @@
   <String Id="HTTPServerSetupEnableServer">Enable embedded HTTP server</String>
 
   <!-- custom text for miscelaneous options setup dialog -->
-  <String Id="MiscelaneousOptionsDlgTitle">[ProductName] [%agent_version%] Setup</String>
+  <String Id="MiscelaneousOptionsDlgTitle">[ProductName] Setup</String>
   <String Id="MiscelaneousOptionsDlg_Title">{\WixUI_Font_Title}Miscelaneous Options</String>
   <String Id="MiscelaneousOptionsDlgDescription">Set preferences about miscelaneous options.</String>
   <String Id="MiscelaneousOptionsGroup">Miscelaneous Options</String>
@@ -120,7 +120,7 @@
   <String Id="SaveAsJsonOption">Save local inventory using JSON format</String>
 
   <!-- custom text for advanced options setup dialog -->
-  <String Id="AdvancedOptionsDlgTitle">[ProductName] [%agent_version%] Setup</String>
+  <String Id="AdvancedOptionsDlgTitle">[ProductName] Setup</String>
   <String Id="AdvancedOptionsDlg_Title">{\WixUI_Font_Title}Advanced Options</String>
   <String Id="AdvancedOptionsDlgDescription">Set Advanced Options.</String>
   <String Id="AdvancedAdvice">Please, do not change the following options whether you are not totally sure what you are doing and why.</String>
@@ -138,7 +138,7 @@
   <String Id="NoCategoryFormat">category list separated by commas</String>
 
   <!-- custom text for debug options setup dialog -->
-  <String Id="DebugOptionsDlgTitle">[ProductName] [%agent_version%] Setup</String>
+  <String Id="DebugOptionsDlgTitle">[ProductName] Setup</String>
   <String Id="DebugOptionsDlg_Title">{\WixUI_Font_Title}Debug Options</String>
   <String Id="DebugOptionsDlgDescription">Set debug options.</String>
   <String Id="DebugOptionsGroup">Debug Options</String>
@@ -153,38 +153,38 @@
   <String Id="LogFileMaxSizeOption">Log File Max. Size (in MiB)</String>
 
   <!-- custom title with version on all dialog titles -->
-  <String Id="BrowseDlg_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="CancelDlg_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="CustomizeDlg_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="DiskCostDlg_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="ErrorDlg_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="ExitDialog_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="FatalError_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="FeaturesDlg_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="FilesInUse_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="InstallDirDlg_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="InvalidDirDlg_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="MaintenanceTypeDlg_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="MaintenanceWelcomeDlg_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="MsiRMFilesInUse_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="OutOfDiskDlg_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="OutOfRbDiskDlg_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="ProgressDlg_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="ResumeDlg_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="SetupTypeDlg_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="UserExit_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="VerifyReadyDlg_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="WaitForCostingDlg_Title">[ProductName] [%agent_version%] Setup</String>
-  <String Id="LicenseAgreementDlg_Title">[ProductName] [%agent_version%] Setup</String>
+  <String Id="BrowseDlg_Title">[ProductName] Setup</String>
+  <String Id="CancelDlg_Title">[ProductName] Setup</String>
+  <String Id="CustomizeDlg_Title">[ProductName] Setup</String>
+  <String Id="DiskCostDlg_Title">[ProductName] Setup</String>
+  <String Id="ErrorDlg_Title">[ProductName] Setup</String>
+  <String Id="ExitDialog_Title">[ProductName] Setup</String>
+  <String Id="FatalError_Title">[ProductName] Setup</String>
+  <String Id="FeaturesDlg_Title">[ProductName] Setup</String>
+  <String Id="FilesInUse_Title">[ProductName] Setup</String>
+  <String Id="InstallDirDlg_Title">[ProductName] Setup</String>
+  <String Id="InvalidDirDlg_Title">[ProductName] Setup</String>
+  <String Id="MaintenanceTypeDlg_Title">[ProductName] Setup</String>
+  <String Id="MaintenanceWelcomeDlg_Title">[ProductName] Setup</String>
+  <String Id="MsiRMFilesInUse_Title">[ProductName] Setup</String>
+  <String Id="OutOfDiskDlg_Title">[ProductName] Setup</String>
+  <String Id="OutOfRbDiskDlg_Title">[ProductName] Setup</String>
+  <String Id="ProgressDlg_Title">[ProductName] Setup</String>
+  <String Id="ResumeDlg_Title">[ProductName] Setup</String>
+  <String Id="SetupTypeDlg_Title">[ProductName] Setup</String>
+  <String Id="UserExit_Title">[ProductName] Setup</String>
+  <String Id="VerifyReadyDlg_Title">[ProductName] Setup</String>
+  <String Id="WaitForCostingDlg_Title">[ProductName] Setup</String>
+  <String Id="LicenseAgreementDlg_Title">[ProductName] Setup</String>
 
   <!-- some other custom dialog texts -->
   <String Id="SetupTypeDlgTypicalText">Installs the most common program features, including Inventory, Deploy and Collect tasks support.</String>
   <String Id="SetupTypeDlgCompleteText">All program features will be installed.</String>
-  <String Id="ProgressDlgTitleInstalling">{\WixUI_Font_Title}Installing [ProductName] [%agent_version%]</String>
-  <String Id="RunningAgent">Running [ProductName], this may take a while...</String>
+  <String Id="ProgressDlgTitleInstalling">{\WixUI_Font_Title}Installing [ProductName]</String>
+  <String Id="RunningAgent">Running [AgentName], this may take a while...</String>
 
   <!-- texts related to firewall exceptions -->
-  <String Id="FirewallExceptionName">[ProductName]</String>
-  <String Id="FirewallExceptionDescription">[ProductName] embedded HTTP server incoming traffic</String>
-  <String Id="OutgoingFirewallExceptionDescription">[ProductName] outgoing traffic</String>
+  <String Id="FirewallExceptionName">[AgentName]</String>
+  <String Id="FirewallExceptionDescription">[AgentName] embedded HTTP server incoming traffic</String>
+  <String Id="OutgoingFirewallExceptionDescription">[AgentName] outgoing traffic</String>
 </WixLocalization>

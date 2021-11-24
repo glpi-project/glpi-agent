@@ -7,13 +7,13 @@
            Language='1033'  Codepage="1252"  Manufacturer="$(var.Manufacturer)"
            Name="$(var.ProductName)" Version="$(var.CurrentVersion)">
 
-    <Package Id='*' Description="$(var.ProductName) version [%agent_version%]"
+    <Package Id='*' Description="$(var.ProductName)"
              Languages='1033' SummaryCodepage="1252" Comments="$(var.PkgComments)"
              InstallerVersion='200' Compressed='yes' InstallPrivileges='elevated' InstallScope="perMachine" />
 
     <Media Id='1' Cabinet='GLPIAgent.cab' CompressionLevel='high' EmbedCab='yes' />
 
-    <Property Id="ARPCOMMENTS" Value="$(var.ProductName) version [%agent_version%]" />
+    <Property Id="ARPCOMMENTS" Value="$(var.ProductName)" />
     <Property Id="ARPCONTACT" Value="$(var.Manufacturer)" />
     <Property Id="ARPURLINFOABOUT" Value="$(var.URLAbout)" />
     <Property Id="ARPHELPLINK" Value="$(var.URLHelp)" />
@@ -336,8 +336,7 @@
     <WixVariable Id="WixUIBannerBmp"  Value="$(var.FileBannerBmp)" />
     <Binary Id="Bmp_MainBanner"  SourceFile="$(var.FileBannerBmp)" />
 
-    <MajorUpgrade AllowSameVersionUpgrades="yes" Schedule="afterInstallInitialize"
-      DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit." />
+    <MajorUpgrade AllowDowngrades="yes" Schedule="afterInstallInitialize" />
 
     <CustomAction Id="CA_GetARPInstallLoc" Property="INSTALLDIR"         Value="[UPGRADEDIR]" Execute="immediate" />
     <CustomAction Id="CA_SetARPInstallLoc" Property="ARPINSTALLLOCATION" Value="[INSTALLDIR]" Execute="immediate" />
@@ -357,15 +356,15 @@
     <CustomAction Id="SetRunNow" Property="RunNow" Value='"[#f_glpiagent]"' Execute="immediate" />
     <CustomAction Id="RunNow" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
-    <CustomAction Id="SetEndTask" Property="EndTask" Value='"schtasks" /tn "[ProductName]" /end' Execute="immediate" />
+    <CustomAction Id="SetEndTask" Property="EndTask" Value='"schtasks" /tn "[AgentName]" /end' Execute="immediate" />
     <CustomAction Id="EndTask" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
-    <CustomAction Id="SetDeleteTask" Property="DeleteTask" Value='"schtasks" /f /tn "[ProductName]" /delete' Execute="immediate" />
+    <CustomAction Id="SetDeleteTask" Property="DeleteTask" Value='"schtasks" /f /tn "[AgentName]" /delete' Execute="immediate" />
     <CustomAction Id="DeleteTask" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
-    <CustomAction Id="SetTaskMinute" Property="TaskMinute" Value='"schtasks" /f /tn "[ProductName]" /create /ru system /tr "[#f_glpiagent]" /sc minute /mo [TASK_MINUTE_MODIFIER]' Execute="immediate" />
+    <CustomAction Id="SetTaskMinute" Property="TaskMinute" Value='"schtasks" /f /tn "[AgentName]" /create /ru system /tr "[#f_glpiagent]" /sc minute /mo [TASK_MINUTE_MODIFIER]' Execute="immediate" />
     <CustomAction Id="TaskMinute" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
-    <CustomAction Id="SetTaskHourly" Property="TaskHourly" Value='"schtasks" /f /tn "[ProductName]" /create /ru system /tr "[#f_glpiagent]" /sc hourly /mo [TASK_HOURLY_MODIFIER]' Execute="immediate" />
+    <CustomAction Id="SetTaskHourly" Property="TaskHourly" Value='"schtasks" /f /tn "[AgentName]" /create /ru system /tr "[#f_glpiagent]" /sc hourly /mo [TASK_HOURLY_MODIFIER]' Execute="immediate" />
     <CustomAction Id="TaskHourly" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
-    <CustomAction Id="SetTaskDaily" Property="TaskDaily" Value='"schtasks" /f /tn "[ProductName]" /create /ru system /tr "[#f_glpiagent]" /sc daily /mo [TASK_DAILY_MODIFIER]' Execute="immediate" />
+    <CustomAction Id="SetTaskDaily" Property="TaskDaily" Value='"schtasks" /f /tn "[AgentName]" /create /ru system /tr "[#f_glpiagent]" /sc daily /mo [TASK_DAILY_MODIFIER]' Execute="immediate" />
     <CustomAction Id="TaskDaily" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
     <InstallExecuteSequence>
