@@ -53,7 +53,7 @@
 
 Option Explicit
 Dim Force, Verbose
-Dim Setup, SetupArchitecture, SetupLocation, SetupOptions, SetupVersion
+Dim Setup, SetupArchitecture, SetupLocation, SetupNightlyLocation, SetupOptions, SetupVersion
 
 '
 '
@@ -68,7 +68,7 @@ SetupVersion = "1.0"
 
 ' When using a nightly built version, uncomment the following SetupVersion definition line
 ' replacing gitABCDEFGH with the most recent git revision found on the nightly builds site
-' and also uncomment the SetupLocation line with the nightly builds site url below
+' In that case, SetupNightlyLocation will be selected as location in place of SetupLocation
 'SetupVersion = "1.0-gitABCDEFGH"
 
 ' SetupLocation
@@ -89,7 +89,9 @@ SetupVersion = "1.0"
 '
 ' Location for Release Candidates
 SetupLocation = "https://github.com/glpi-project/glpi-agent/releases/download/" & SetupVersion
-'SetupLocation = "https://nightly.glpi-project.org/glpi-agent"
+
+' Location for Nightly Builds
+SetupNightlyLocation = "https://nightly.glpi-project.org/glpi-agent"
 
 
 ' SetupArchitecture
@@ -190,6 +192,20 @@ Function isHttp(strng)
       isHttp = True
    Else
       isHttp = False
+   End If
+   Exit Function
+End Function
+
+Function isNightly(strng)
+   Dim regEx, matches
+   Set regEx = New RegExp
+   regEx.Global = true
+   regEx.IgnoreCase = True
+   regEx.Pattern = "-(git[0-9a-f]{8})$"
+   If regEx.Execute(strng).count > 0 Then
+      isNightly = True
+   Else
+      isNightly = False
    End If
    Exit Function
 End Function
@@ -370,6 +386,9 @@ If (strSystemArchitecture = "x86") And (SetupArchitecture = "x64") Then
 End If
 
 If IsSelectedForce() Or IsInstallationNeeded(SetupVersion, SetupArchitecture, strSystemArchitecture) Then
+   If isNightly(SetupVersion) Then
+      SetupLocation = SetupNightlyLocation
+   End If
    If isHttp(SetupLocation) Then
       ShowMessage("Downloading: " & SetupLocation & "/" & Setup)
       If SaveWebBinary(SetupLocation, Setup) Then
