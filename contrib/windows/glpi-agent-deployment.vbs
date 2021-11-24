@@ -339,7 +339,7 @@ End Function
 '
 '
 
-Dim nMinutesToAdvance, strCmd, strSystemArchitecture, strTempDir, WshShell
+Dim nMinutesToAdvance, strCmd, strSystemArchitecture, strTempDir, WshShell, strInstall, bInstall
 Set WshShell = WScript.CreateObject("WScript.shell")
 
 nMinutesToAdvance = 5
@@ -385,7 +385,17 @@ If (strSystemArchitecture = "x86") And (SetupArchitecture = "x64") Then
    WScript.Quit 3
 End If
 
-If IsSelectedForce() Or IsInstallationNeeded(SetupVersion, SetupArchitecture, strSystemArchitecture) Then
+bInstall = False
+strInstall = "/i"
+
+If IsSelectedForce() Then
+   strInstall = "/fa"
+   bInstall = True
+ElseIf IsInstallationNeeded(SetupVersion, SetupArchitecture, strSystemArchitecture) Then
+   bInstall = True
+End If
+
+If bInstall Then
    If isNightly(SetupVersion) Then
       SetupLocation = SetupNightlyLocation
    End If
@@ -394,8 +404,8 @@ If IsSelectedForce() Or IsInstallationNeeded(SetupVersion, SetupArchitecture, st
       If SaveWebBinary(SetupLocation, Setup) Then
          strCmd = WshShell.ExpandEnvironmentStrings("%ComSpec%")
          strTempDir = WshShell.ExpandEnvironmentStrings("%TEMP%")
-         ShowMessage("Running: """ & strTempDir & "\" & Setup & """ " & SetupOptions)
-         WshShell.Run """" & strTempDir & "\" & Setup & """ " & SetupOptions, 0, True
+         ShowMessage("Running: MsiExec.exe " & strInstall & " """ & strTempDir & "\" & Setup & """ " & SetupOptions)
+         WshShell.Run "MsiExec.exe " & strInstall & " """ & strTempDir & "\" & Setup & """ " & SetupOptions, 0, True
          ShowMessage("Scheduling: DEL /Q /F """ & strTempDir & "\" & Setup & """")
          WshShell.Run "AT.EXE " & AdvanceTime(nMinutesToAdvance) & " " & strCmd & " /C ""DEL /Q /F """"" & strTempDir & "\" & Setup & """""", 0, True
          ShowMessage("Deployment done!")
@@ -403,8 +413,8 @@ If IsSelectedForce() Or IsInstallationNeeded(SetupVersion, SetupArchitecture, st
          ShowMessage("Error downloading '" & SetupLocation & "\" & Setup & "'!")
       End If
    Else
-      ShowMessage("Running: """ & SetupLocation & "\" & Setup & """ " & SetupOptions)
-      WshShell.Run "CMD.EXE /C """ & SetupLocation & "\" & Setup & """ " & SetupOptions, 0, True
+      ShowMessage("Running: MsiExec.exe " & strInstall & " """ & SetupLocation & "\" & Setup & """ " & SetupOptions)
+      WshShell.Run "MsiExec.exe " & strInstall & " """ & SetupLocation & "\" & Setup & """ " & SetupOptions, 0, True
       ShowMessage("Deployment done!")
    End If
 Else
