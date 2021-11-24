@@ -40,21 +40,35 @@ die "Can't find WiX installation root in regitry\n" unless $wixbin_dir;
 
 my $provider = $GLPI::Agent::Version::PROVIDER;
 my $version = $GLPI::Agent::Version::VERSION;
+my ($versiontag) = $version =~ /^[0-9.]+-(.*)$/;
 my ($major,$minor,$revision) = $version =~ /^(\d+)\.(\d+)\.?(\d+)?/;
 $revision = 0 unless defined($revision);
 
 if ($version =~ /-dev$/ && $ENV{GITHUB_SHA}) {
     my ($github_ref) = $ENV{GITHUB_SHA} =~ /^([0-9a-f]{8})/;
     $version =~ s/-dev$/-git/;
-    $version .= ($github_ref || $ENV{GITHUB_SHA});
+    $version .= ($github_ref // $ENV{GITHUB_SHA});
+    $versiontag = "git".($github_ref // $ENV{GITHUB_SHA});
 }
 
 if ($ENV{GITHUB_REF} && $ENV{GITHUB_REF} =~ m|refs/tags/(.+)$|) {
     my $tag = $1;
     if ($revision) {
-        $version = $tag =~ /^$major\.$minor\.$revision/ ? $tag : "$major.$minor.$revision-$tag";
+        if ($tag =~ /^$major\.$minor\.$revision-(.*)$/) {
+            $version = $tag;
+            $versiontag = $1;
+        } else {
+            $version = "$major.$minor.$revision-$tag";
+            $versiontag = $tag;
+        }
     } else {
-        $version = $tag =~ /^$major\.$minor/ ? $tag : "$major.$minor-$tag";
+        if ($tag =~ /^$major\.$minor-(.*)$/) {
+            $version = $tag;
+            $versiontag = $1;
+        } else {
+            $version = "$major.$minor-$tag";
+            $versiontag = $tag;
+        }
     }
 }
 
@@ -71,6 +85,8 @@ sub build_app {
         agent_version   => $version,
         agent_fullver   => $major.'.'.$minor.'.'.$revision.'.'.$package_rev,
         agent_msiver    => $major.'.'.$minor.'.'.$revision,
+        agent_vernum    => $major.'.'.$minor.($revision ? '.'.$revision : ''),
+        agent_vertag    => $versiontag // '',
         agent_fullname  => $provider.' Agent',
         agent_rootdir   => $provider.'-Agent',
         agent_regpath   => "Software\\$provider-Agent",
@@ -250,13 +266,7 @@ sub run {
 
     my $bdir = catdir($self->global->{build_dir}, 'msi');
 
-    # These GUIDs were randomly generated during GLPI-Agent 1.0-beta1 release
-    # As this is the MSI Product GUID, it should not be changed during release process
-    # They are also used in deployment vbs to check if the package should be installed
-    my $msi_guid = $self->global->{arch} eq 'x64' ?
-        'FA01074A-6BF8-1014-B0E8-F9F8208C43AB'
-        :
-        '2D867E73-6BF5-1014-BC86-AD002C3B00E0';
+    my $msi_guid = $self->{data_uuid}->create_str(); # get random GUID
 
     # create WXS parts to be inserted into MSI_main.wxs.tt
     my $xml_env = $self->_generate_wxml_for_environment();
@@ -683,7 +693,7 @@ sub _other_job_steps {
             #'dirname\file.pm',
         ],
         #BEWARE: msi_upgrade_code is a fixed value for all same arch releases (for ever)
-        msi_upgrade_code    => $self->global->{arch} eq 'x64' ? '0DEF72A8-E5EE-4116-97DC-753718E19CD5' : '7F25A9A4-BCAE-4C15-822D-EAFBD752CFEC',
+        msi_upgrade_code    => $self->global->{arch} eq 'x64' ? '7004FC08-39EB-4467-8A0E-E8CF9C91873A' : '7968ABFD-377A-4706-9E54-9039A1B67C1E',
         app_publisher       => "Teclib'",
         url_about           => 'https://glpi-project.org/',
         url_help            => 'https://glpi-project.org/discussions/',

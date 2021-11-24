@@ -26,7 +26,6 @@ sub build_job {
     return {
         app_version     => PERL_VERSION.'.'.$rev, #BEWARE: do not use '.0.0' in the last two version digits
         bits            => $arch eq 'x64' ? 64 : 32,
-        beta            => 0,
         app_fullname    => 'Strawberry Perl'.($arch eq 'x64'?' (64-bit)':''),
         app_simplename  => 'strawberry-perl',
         maketool        => 'gmake', # 'dmake' or 'gmake'
