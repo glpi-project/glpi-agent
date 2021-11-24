@@ -73,7 +73,7 @@ if ($ENV{GITHUB_REF} && $ENV{GITHUB_REF} =~ m|refs/tags/(.+)$|) {
 }
 
 sub build_app {
-    my $bits = shift;
+    my ($bits, $notest) = @_;
 
     my $package_rev = $ENV{PACKAGE_REVISION} || PACKAGE_REVISION;
 
@@ -82,6 +82,7 @@ sub build_app {
         _revision       => $package_rev,
         _provider       => $provider,
         _provided_by    => PROVIDED_BY,
+        _no_test        => $notest,
         agent_version   => $version,
         agent_fullver   => $major.'.'.$minor.'.'.$revision.'.'.$package_rev,
         agent_msiver    => $major.'.'.$minor.'.'.$revision,
@@ -110,6 +111,7 @@ sub build_app {
 }
 
 my %do = ();
+my $notest = 0;
 while ( @ARGV ) {
     my $arg = shift @ARGV;
     if ($arg eq "--arch") {
@@ -117,14 +119,15 @@ while ( @ARGV ) {
         next unless $arch =~ /^x(86|64)$/;
         $do{$arch} = $arch eq "x86" ? 32 : 64 ;
     } elsif ($arg eq "--all") {
-        %do = ( x86 => 1, x64 => 1);
-        last;
+        %do = ( x86 => 32, x64 => 64);
+    } elsif ($arg eq "--no-test") {
+        $notest = 1;
     }
 }
 
 foreach my $bits (sort values(%do)) {
     print "Building $bits bits packages...\n";
-    my $app = build_app($bits);
+    my $app = build_app($bits, $notest);
     $app->do_job();
     # global_dump_FINAL.txt must exist in debug_dir if all steps have been passed
     exit(1) unless -e catfile($app->global->{debug_dir}, 'global_dump_FINAL.txt');
@@ -643,6 +646,12 @@ sub load_jobfile {
     my ($self) = @_;
 
     my $job = build_job($self->global->{arch}, $self->global->{_revision});
+    push @{$job->{build_job_steps}},
+        ### NEXT STEP ###########################
+        {
+            plugin => 'Perl::Dist::GLPI::Agent::Step::Test',
+        }
+        unless $self->global->{_no_test} ;
     push @{$job->{build_job_steps}}, $self->_other_job_steps();
 
     return $job;
@@ -651,10 +660,6 @@ sub load_jobfile {
 sub _other_job_steps {
     my ($self) = @_;
     return
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::GLPI::Agent::Step::Test',
-    },
     ### NEXT STEP ###########################
     {
         plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',

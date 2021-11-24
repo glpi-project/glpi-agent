@@ -7,14 +7,14 @@
   <String Id="WelcomeDlgTitle">{\WixUI_Font_Bigger}Welcome to the Setup Wizard for&#13;&#10;[ProductName] [%agent_version%]</String>
 
   <!-- custom text on welcome dialog -->
-[%- IF msi_debug==0 && beta==0 %]
+[%- IF msi_debug==0 && ! agent_vertag %]
   <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] [%agent_version%] on your computer. Click Next to continue or Cancel to exit Setup.</String>
-[%- ELSIF msi_debug!=0 && beta==0 %]
+[%- ELSIF msi_debug!=0 && ! agent_vertag %]
   <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] [%agent_version%] on your computer. Click Next to continue or Cancel to exit Setup.&#13;&#10;&#13;&#10;BEWARE: this is MSI_DEBUG build!</String>
-[%- ELSIF msi_debug==0 && beta!=0 %]
-  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] [%agent_version%] on your computer. Click Next to continue or Cancel to exit Setup.&#13;&#10;&#13;&#10;BEWARE: this is BETA[%beta%] build!</String>
-[%- ELSIF msi_debug!=0 && beta!=0 %]
-  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] [%agent_version%] on your computer. Click Next to continue or Cancel to exit Setup.&#13;&#10;&#13;&#10;BEWARE: this is BETA[%beta%] build!&#13;&#10;&#13;&#10;BEWARE: this is MSI_DEBUG build!</String>
+[%- ELSIF msi_debug==0 && agent_vertag %]
+  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] [%agent_version%] on your computer. Click Next to continue or Cancel to exit Setup.&#13;&#10;&#13;&#10;BEWARE: this is [%agent_vertag%] build!</String>
+[%- ELSIF msi_debug!=0 && agent_vertag %]
+  <String Id="WelcomeDlgDescription">The Setup Wizard will install [ProductName] [%agent_version%] on your computer. Click Next to continue or Cancel to exit Setup.&#13;&#10;&#13;&#10;BEWARE: this is [%agent_vertag%] build!&#13;&#10;&#13;&#10;BEWARE: this is MSI_DEBUG build!</String>
 [%- END %]
 
   <String Id="PrepareDlg_Title">[ProductName] [%agent_version%] Setup</String>
