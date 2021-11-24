@@ -463,17 +463,18 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[    <RegistryValue Name="ca-cert-file" Type="string" Value="[CA_CERT_FILE]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="vardir" Type="string" Value="[VARDIR]" />\n];
                 $result .= $ident ."  ". qq[  </RegistryKey>\n];
-                $result .= $ident ."  ". qq[  <RegistryKey Root="HKLM" Key="Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\[ProductCode]">\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: ExecMode" Type="string" Value="[EXECMODE]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: QuickInstall" Type="string" Value="[QUICKINSTALL]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: AddFirewallException" Type="string" Value="[ADD_FIREWALL_EXCEPTION]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: RunNow" Type="string" Value="[RUNNOW]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: TaskFrequency" Type="string" Value="[TASK_FREQUENCY]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: TaskMinuteModifier" Type="string" Value="[TASK_MINUTE_MODIFIER]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: TaskHourlyModifier" Type="string" Value="[TASK_HOURLY_MODIFIER]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="[ProductName]: TaskDailyModifier" Type="string" Value="[TASK_DAILY_MODIFIER]" />\n];
+                $result .= $ident ."  ". qq[  <RegistryKey Root="HKLM" Key="$regpath\\Installer">\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="InstallDir" Type="string" Value="[INSTALLDIR]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="ExecMode" Type="string" Value="[EXECMODE]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="QuickInstall" Type="string" Value="[QUICKINSTALL]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="AddFirewallException" Type="string" Value="[ADD_FIREWALL_EXCEPTION]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="RunNow" Type="string" Value="[RUNNOW]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="TaskFrequency" Type="string" Value="[TASK_FREQUENCY]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="TaskMinuteModifier" Type="string" Value="[TASK_MINUTE_MODIFIER]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="TaskHourlyModifier" Type="string" Value="[TASK_HOURLY_MODIFIER]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="TaskDailyModifier" Type="string" Value="[TASK_DAILY_MODIFIER]" />\n];
                 # Add registry entry dedicated to deployment vbs check
-                $result .= $ident ."  ". qq[    <RegistryValue Name="InstallerVersion" Type="string" Value="$installversion" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="Version" Type="string" Value="$installversion" />\n];
                 $result .= $ident ."  ". qq[  </RegistryKey>\n];
             }
             $result .= $ident ."  ". qq[</Component>\n];

@@ -199,49 +199,49 @@ Function IsInstallationNeeded(strSetupVersion, strSetupArchitecture, strSystemAr
    ' Compare the current version, whether it exists, with strSetupVersion
    If strSystemArchitecture = "x86" Then
       ' The system architecture is 32-bit
-      ' Check if the subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{2D867E73-6BF5-1014-BC86-AD002C3B00E0}' exists
+      ' Check if the subkey 'SOFTWARE\GLPI-Agent\Installer' exists
       On error resume next
-      strCurrentSetupVersion = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{2D867E73-6BF5-1014-BC86-AD002C3B00E0}\InstallerVersion")
+      strCurrentSetupVersion = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\Installer\Version")
       If Err.Number = 0 Then
-      ' The subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{2D867E73-6BF5-1014-BC86-AD002C3B00E0}' exists
+      ' The subkey 'SOFTWARE\GLPI-Agent\Installer' exists
          If strCurrentSetupVersion <> strSetupVersion Then
             ShowMessage("Installation needed: " & strCurrentSetupVersion & " -> " & strSetupVersion)
             IsInstallationNeeded = True
          End If
          Exit Function
       Else
-      ' The subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{2D867E73-6BF5-1014-BC86-AD002C3B00E0}' doesn't exist
+      ' The subkey 'SOFTWARE\GLPI-Agent\Installer' doesn't exist
          Err.Clear
          ShowMessage("Installation needed: " & strSetupVersion)
          IsInstallationNeeded = True
       End If
    Else
       ' The system architecture is 64-bit
-      ' Check if the subkey 'SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{2D867E73-6BF5-1014-BC86-AD002C3B00E0}' exists
+      ' Check if the subkey 'SOFTWARE\Wow6432Node\GLPI-Agent\Installer' exists
       On error resume next
-      strCurrentSetupVersion = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{2D867E73-6BF5-1014-BC86-AD002C3B00E0}\InstallerVersion")
+      strCurrentSetupVersion = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\GLPI-Agent\Installer\Version")
       If Err.Number = 0 Then
-      ' The subkey 'SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{2D867E73-6BF5-1014-BC86-AD002C3B00E0}' exists
+      ' The subkey 'SOFTWARE\Wow6432Node\GLPI-Agent\Installer' exists
          If strCurrentSetupVersion <> strSetupVersion Then
             ShowMessage("Installation needed: " & strCurrentSetupVersion & " -> " & strSetupVersion)
             IsInstallationNeeded = True
          End If
          Exit Function
       Else
-         ' The subkey 'SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{2D867E73-6BF5-1014-BC86-AD002C3B00E0}' doesn't exist
+         ' The subkey 'SOFTWARE\Wow6432Node\GLPI-Agent\Installer' doesn't exist
          Err.Clear
-         ' Check if the subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{FA01074A-6BF8-1014-B0E8-F9F8208C43AB}' exists
+         ' Check if the subkey 'SOFTWARE\GLPI-Agent\Installer' exists
          On error resume next
-         strCurrentSetupVersion = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{FA01074A-6BF8-1014-B0E8-F9F8208C43AB}\InstallerVersion")
+         strCurrentSetupVersion = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\GLPI-Agent\Installer\Version")
          If Err.Number = 0 Then
-         ' The subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{FA01074A-6BF8-1014-B0E8-F9F8208C43AB}' exists
+         ' The subkey 'SOFTWARE\GLPI-Agent\Installer' exists
             If strCurrentSetupVersion <> strSetupVersion Then
                ShowMessage("Installation needed: " & strCurrentSetupVersion & " -> " & strSetupVersion)
                IsInstallationNeeded = True
             End If
             Exit Function
          Else
-            ' The subkey 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{FA01074A-6BF8-1014-B0E8-F9F8208C43AB}' doesn't exist
+            ' The subkey 'SOFTWARE\GLPI-Agent\Installer' doesn't exist
             Err.Clear
             ShowMessage("Installation needed: " & strSetupVersion)
             IsInstallationNeeded = True

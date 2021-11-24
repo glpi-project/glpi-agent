@@ -25,53 +25,53 @@
     <Property Id="_EXECMODE_RADIO_BUTTON" Value="1" Secure="yes" />
 
     <Property Id="UPGRADEDIR" Secure="yes">
-      <RegistrySearch Id="InstallDir" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="InstallLocation" Type="raw" />
+      <RegistrySearch Id="InstallDir" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="InstallLocation" Type="raw" />
     </Property>
 
     <Property Id="QUICKINSTALL" Secure="yes">
-      <RegistrySearch Id="QuickInstall" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="[ProductName]: QuickInstall" Type="raw" />
+      <RegistrySearch Id="QuickInstall" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="QuickInstall" Type="raw" />
     </Property>
     <SetProperty Id="CMDLINE_QUICKINSTALL" Before="AppSearch" Value="[QUICKINSTALL]" />
     <SetProperty Id="QUICKINSTALL"         After="AppSearch"  Value="[CMDLINE_QUICKINSTALL]"><![CDATA[CMDLINE_QUICKINSTALL<>""]]></SetProperty>
 
     <Property Id="RUNNOW" Secure="yes">
-      <RegistrySearch Id="RunNow" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="[ProductName]: RunNow" Type="raw" />
+      <RegistrySearch Id="RunNow" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="RunNow" Type="raw" />
     </Property>
     <SetProperty Id="CMDLINE_RUNNOW" Before="AppSearch" Value="[RUNNOW]" />
     <SetProperty Id="RUNNOW"         After="AppSearch"  Value="[CMDLINE_RUNNOW]"><![CDATA[CMDLINE_RUNNOW<>""]]></SetProperty>
 
     <Property Id="EXECMODE" Secure="yes">
-      <RegistrySearch Id="ExecMode" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="[ProductName]: ExecMode" Type="raw" />
+      <RegistrySearch Id="ExecMode" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="ExecMode" Type="raw" />
     </Property>
     <SetProperty Id="CMDLINE_EXECMODE" Before="AppSearch" Value="[EXECMODE]" />
     <SetProperty Id="EXECMODE"         After="AppSearch"  Value="[CMDLINE_EXECMODE]"><![CDATA[CMDLINE_EXECMODE<>""]]></SetProperty>
 
     <Property Id="ADD_FIREWALL_EXCEPTION" Secure="yes">
-      <RegistrySearch Id="AddFirewallException" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="[ProductName]: AddFirewallException" Type="raw" />
+      <RegistrySearch Id="AddFirewallException" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="AddFirewallException" Type="raw" />
     </Property>
     <SetProperty Id="CMDLINE_ADD_FIREWALL_EXCEPTION" Before="AppSearch" Value="[ADD_FIREWALL_EXCEPTION]" />
     <SetProperty Id="ADD_FIREWALL_EXCEPTION"         After="AppSearch"  Value="[CMDLINE_ADD_FIREWALL_EXCEPTION]"><![CDATA[CMDLINE_ADD_FIREWALL_EXCEPTION<>""]]></SetProperty>
 
     <Property Id="TASK_FREQUENCY" Secure="yes">
-      <RegistrySearch Id="TaskFrequency" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="[ProductName]: TaskFrequency" Type="raw" />
+      <RegistrySearch Id="TaskFrequency" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="TaskFrequency" Type="raw" />
     </Property>
     <SetProperty Id="CMDLINE_TASK_FREQUENCY" Before="AppSearch" Value="[TASK_FREQUENCY]" />
     <SetProperty Id="TASK_FREQUENCY"         After="AppSearch"  Value="[CMDLINE_TASK_FREQUENCY]"><![CDATA[CMDLINE_TASK_FREQUENCY<>""]]></SetProperty>
 
     <Property Id="TASK_MINUTE_MODIFIER" Secure="yes">
-      <RegistrySearch Id="TaskMinuteModifier" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="[ProductName]: TaskMinuteModifier" Type="raw" />
+      <RegistrySearch Id="TaskMinuteModifier" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="TaskMinuteModifier" Type="raw" />
     </Property>
     <SetProperty Id="CMDLINE_TASK_MINUTE_MODIFIER" Before="AppSearch" Value="[TASK_MINUTE_MODIFIER]" />
     <SetProperty Id="TASK_MINUTE_MODIFIER"         After="AppSearch"  Value="[CMDLINE_TASK_MINUTE_MODIFIER]"><![CDATA[CMDLINE_TASK_MINUTE_MODIFIER<>""]]></SetProperty>
 
     <Property Id="TASK_HOURLY_MODIFIER" Secure="yes">
-      <RegistrySearch Id="TaskHourlyModifier" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="[ProductName]: TaskHourlyModifier" Type="raw" />
+      <RegistrySearch Id="TaskHourlyModifier" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="TaskHourlyModifier" Type="raw" />
     </Property>
     <SetProperty Id="CMDLINE_TASK_HOURLY_MODIFIER" Before="AppSearch" Value="[TASK_HOURLY_MODIFIER]" />
     <SetProperty Id="TASK_HOURLY_MODIFIER"         After="AppSearch"  Value="[CMDLINE_TASK_HOURLY_MODIFIER]"><![CDATA[CMDLINE_TASK_HOURLY_MODIFIER<>""]]></SetProperty>
 
     <Property Id="TASK_DAILY_MODIFIER" Secure="yes">
-      <RegistrySearch Id="TaskDailyModifier" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="[ProductName]: TaskDailyModifier" Type="raw" />
+      <RegistrySearch Id="TaskDailyModifier" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="TaskDailyModifier" Type="raw" />
     </Property>
     <SetProperty Id="CMDLINE_TASK_DAILY_MODIFIER" Before="AppSearch" Value="[TASK_DAILY_MODIFIER]" />
     <SetProperty Id="TASK_DAILY_MODIFIER"         After="AppSearch"  Value="[CMDLINE_TASK_DAILY_MODIFIER]"><![CDATA[CMDLINE_TASK_DAILY_MODIFIER<>""]]></SetProperty>
