@@ -139,19 +139,23 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Create folder for cached datas
+    - name: Create folders for cached datas
       run: |
         mkdir C:\Strawberry-perl-for-GLPI-Agent_build\restore
+        mkdir C:\Strawberry-perl-for-GLPI-Agent_build\tools
       shell: cmd
     - name: Restore points cache
       uses: pat-s/always-upload-cache@v2.1.3
       with:
-        path: C:/Strawberry-perl-for-GLPI-Agent_build/restore
+        path: |
+            C:/Strawberry-perl-for-GLPI-Agent_build/tools
+            C:/Strawberry-perl-for-GLPI-Agent_build/restore
         key: windows-packaging-restore-points-${{ matrix.arch }}-${{ hashFiles('contrib\windows\packaging\PerlBuildJob.pm') }}
-    - name: List files in cached path
+    - name: List files in cached paths
       if: success() || failure()
       run: |
         dir C:\Strawberry-perl-for-GLPI-Agent_build\restore
+        dir C:\Strawberry-perl-for-GLPI-Agent_build\tools
       shell: cmd
     - name: Update environment
       run: |
@@ -179,6 +183,15 @@ jobs:
       run: |
         perl contrib\windows\glpi-agent-packaging.pl --arch ${{ matrix.arch }}
       shell: cmd
+    - name: MSI Signing
+      run: |
+        perl tools\msi-signing.pl "C:\Strawberry-perl-for-GLPI-Agent_build" "GLPI-Agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.msi"
+      shell: cmd
+      env:
+        CST_USERNAME: ${{ secrets.CST_USERNAME }}
+        CST_PASSWORD: ${{ secrets.CST_PASSWORD }}
+        CST_SECRET: ${{ secrets.CST_SECRET }}
+        CST_CREDENTIALID: ${{ secrets.CST_CREDENTIALID }}
     - name: List generated files
       if: success() || failure()
       run: |
