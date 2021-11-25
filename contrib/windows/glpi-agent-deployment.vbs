@@ -52,7 +52,7 @@
 '
 
 Option Explicit
-Dim Force, Verbose
+Dim Repair, Verbose
 Dim Setup, SetupArchitecture, SetupLocation, SetupNightlyLocation, SetupOptions, SetupVersion
 
 '
@@ -116,10 +116,10 @@ SetupOptions = "/quiet RUNNOW=1 SERVER='http://glpi.yourcompany.com/front/invent
 '
 Setup = "GLPI-Agent-" & SetupVersion & "-" & SetupArchitecture & ".msi"
 
-' Force
-'    Force the installation even whether Setup is previously installed.
+' Repair
+'    Repair the installation when Setup is still installed.
 '
-Force = "No"
+Repair = "No"
 
 ' Verbose
 '    Enable or disable the information messages.
@@ -266,12 +266,12 @@ Function IsInstallationNeeded(strSetupVersion, strSetupArchitecture, strSystemAr
    End If
 End Function
 
-Function IsSelectedForce()
-   If LCase(Force) <> "no" Then
-      ShowMessage("Installation forced: " & SetupVersion)
-      IsSelectedForce = True
+Function IsSelectedRepair()
+   If LCase(Repair) <> "no" Then
+      ShowMessage("Installation repairing: " & SetupVersion)
+      IsSelectedRepair = True
    Else
-      IsSelectedForce = False
+      IsSelectedRepair = False
    End If
 End Function
 
@@ -339,7 +339,7 @@ End Function
 '
 '
 
-Dim nMinutesToAdvance, strCmd, strSystemArchitecture, strTempDir, WshShell, strInstall, bInstall
+Dim nMinutesToAdvance, strCmd, strSystemArchitecture, strTempDir, WshShell, strInstallOrRepair, bInstall
 Set WshShell = WScript.CreateObject("WScript.shell")
 
 nMinutesToAdvance = 5
@@ -386,12 +386,12 @@ If (strSystemArchitecture = "x86") And (SetupArchitecture = "x64") Then
 End If
 
 bInstall = False
-strInstall = "/i"
+strInstallOrRepair = "/i"
 
-If IsSelectedForce() Then
-   strInstall = "/fa"
+If IsInstallationNeeded(SetupVersion, SetupArchitecture, strSystemArchitecture) Then
    bInstall = True
-ElseIf IsInstallationNeeded(SetupVersion, SetupArchitecture, strSystemArchitecture) Then
+ElseIf IsSelectedRepair() Then
+   strInstallOrRepair = "/fa"
    bInstall = True
 End If
 
@@ -404,8 +404,8 @@ If bInstall Then
       If SaveWebBinary(SetupLocation, Setup) Then
          strCmd = WshShell.ExpandEnvironmentStrings("%ComSpec%")
          strTempDir = WshShell.ExpandEnvironmentStrings("%TEMP%")
-         ShowMessage("Running: MsiExec.exe " & strInstall & " """ & strTempDir & "\" & Setup & """ " & SetupOptions)
-         WshShell.Run "MsiExec.exe " & strInstall & " """ & strTempDir & "\" & Setup & """ " & SetupOptions, 0, True
+         ShowMessage("Running: MsiExec.exe " & strInstallOrRepair & " """ & strTempDir & "\" & Setup & """ " & SetupOptions)
+         WshShell.Run "MsiExec.exe " & strInstallOrRepair & " """ & strTempDir & "\" & Setup & """ " & SetupOptions, 0, True
          ShowMessage("Scheduling: DEL /Q /F """ & strTempDir & "\" & Setup & """")
          WshShell.Run "AT.EXE " & AdvanceTime(nMinutesToAdvance) & " " & strCmd & " /C ""DEL /Q /F """"" & strTempDir & "\" & Setup & """""", 0, True
          ShowMessage("Deployment done!")
@@ -413,8 +413,8 @@ If bInstall Then
          ShowMessage("Error downloading '" & SetupLocation & "\" & Setup & "'!")
       End If
    Else
-      ShowMessage("Running: MsiExec.exe " & strInstall & " """ & SetupLocation & "\" & Setup & """ " & SetupOptions)
-      WshShell.Run "MsiExec.exe " & strInstall & " """ & SetupLocation & "\" & Setup & """ " & SetupOptions, 0, True
+      ShowMessage("Running: MsiExec.exe " & strInstallOrRepair & " """ & SetupLocation & "\" & Setup & """ " & SetupOptions)
+      WshShell.Run "MsiExec.exe " & strInstallOrRepair & " """ & SetupLocation & "\" & Setup & """ " & SetupOptions, 0, True
       ShowMessage("Deployment done!")
    End If
 Else
