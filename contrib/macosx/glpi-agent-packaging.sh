@@ -14,6 +14,8 @@
 : ${INSTSINGID=}
 : ${KEYCHAIN=signing_temp}
 
+let SIGNED=0
+
 set -e
 
 export LC_ALL=C LANG=C
@@ -425,7 +427,6 @@ REQUIREMENTS
 # Code signing
 if [ -n "$APPSIGNID" ]; then
     echo "Signing code..."
-    let SIGNED=0
     while read file
     do
         codesign -s "$APPSIGNID" --keychain "$KEYCHAIN" --timestamp "$file" \
