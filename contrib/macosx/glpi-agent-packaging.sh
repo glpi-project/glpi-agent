@@ -12,7 +12,6 @@
 
 : ${APPSIGNID=}
 : ${INSTSINGID=}
-: ${KEYCHAIN=signing_temp}
 
 set -e
 
@@ -40,13 +39,9 @@ do
             shift
             INSTSIGNID="$1"
             ;;
-        --keychain|-k)
-            shift
-            KEYCHAIN="$1"
-            ;;
         --help|-h)
             cat <<HELP
-$0 [-a|--arch] [x86_64|arm64] [-s|--appsignid] [APPSIGNID] [-S|--instsignid] [INSTSIGNID] [-k|--keychain] [KEYCHAIN] [-h|--help] [clean]
+$0 [-a|--arch] [x86_64|arm64] [-s|--appsignid] [APPSIGNID] [-S|--instsignid] [INSTSIGNID] [-h|--help] [clean]
     -a --arch       Specify target arch: x86_64 or arm64
     -s --appsignid  Give Application key ID to use for application signing
     -S --instsignid Give Installer key ID to use for installer signing
@@ -360,6 +355,9 @@ echo "Installed."
 # Don't keep .packlist file generated during installation
 rm -rf $ROOT/payload$BUILD_PREFIX/agent/auto
 
+# Cleanup unused static library
+find $ROOT/payload$BUILD_PREFIX -name libperl.a -delete
+
 cd "$ROOT"
 
 # Create conf.d and fix default conf
@@ -398,27 +396,6 @@ cat >build-info.plist <<-BUILD_INFO
 		<true/>
 		<key>version</key>
 		<string>$VERSION</string>
-BUILD_INFO
-if [ -n "$APPSIGNID" ]; then
-	cat >>build-info.plist <<-BUILD_INFO
-		<key>signin_info</key>
-		<dict>
-		  <key>identify</key>
-		  <string>$APPSIGNID</string>
-BUILD_INFO
-if [ -n "$KEYCHAIN" ]; then
-	cat >>build-info.plist <<-BUILD_INFO
-		  <key>keychain</key>
-		  <string>$KEYCHAIN</string>
-BUILD_INFO
-fi
-	cat >>build-info.plist <<-BUILD_INFO
-		  <key>timestamp</key>
-		  <true/>
-		</dict>
-BUILD_INFO
-fi
-cat >>build-info.plist <<-BUILD_INFO
 	</dict>
 	</plist>
 BUILD_INFO
@@ -440,6 +417,18 @@ cat >product-requirements.plist <<-REQUIREMENTS
 	</plist>
 REQUIREMENTS
 
+# Code signing
+if [ -n "$APPSIGNID" ]; then
+    while read file
+    do
+        codesign -s "$APPSIGNID" --timestamp "payload" "$file"
+    done <<CODE_SIGNING
+payload/Applications/GLPI-Agent.app/bin/perl
+scripts/dmidecode
+$(find payload -name '*.bundle')
+CODE_SIGNING
+fi
+
 echo "Build package"
 ./munkipkg .
 
@@ -450,7 +439,7 @@ echo "Prepare distribution installer..."
 cat >Distribution.xml <<-CUSTOM
 	<?xml version="1.0" encoding="utf-8" standalone="no"?>
 	<installer-gui-script minSpecVersion="2">
-	    <title>GLPI-Agent $VERSION</title>
+	    <title>GLPI-Agent $VERSION ($ARCH)</title>
 	    <pkg-ref id="org.glpi-project.glpi-agent" version="$VERSION" onConclusion="none">$PKG</pkg-ref>
 	    <license file="License.txt" mime-type="text/plain" />
 	    <background file="background.png" uti="public.png" alignment="bottomleft"/>
@@ -482,7 +471,9 @@ mv -vf "build/Dist-$PKG" "build/$PKG"
 if [ -e "build/$PKG" ]; then
     rm -f "build/$DMG"
     echo "Create DMG"
-    hdiutil create -fs "HFS+" -srcfolder "build/$PKG" "build/$DMG"
+    hdiutil create -volname "GLPI-Agent $VERSION ($ARCH) installer" -fs "HFS+" -srcfolder "build/$PKG" "build/$DMG"
+    # Sign dmg file
+    [ -n "$APPSIGNID" ] && codesign -s "$APPSIGNID" --timestamp "build/$DMG"
 fi
 
 ls -l build/*.pkg build/*.dmg
