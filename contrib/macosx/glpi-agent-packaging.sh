@@ -12,6 +12,7 @@
 
 : ${APPSIGNID=}
 : ${INSTSINGID=}
+: ${KEYCHAIN=signing_temp}
 
 set -e
 
@@ -39,9 +40,13 @@ do
             shift
             INSTSIGNID="$1"
             ;;
+        --keychain|-k)
+            shift
+            KEYCHAIN="$1"
+            ;;
         --help|-h)
             cat <<HELP
-$0 [-a|--arch] [x86_64|arm64] [-s|--appsignid] [APPSIGNID] [-S|--instsignid] [INSTSIGNID] [-h|--help] [clean]
+$0 [-a|--arch] [x86_64|arm64] [-s|--appsignid] [APPSIGNID] [-S|--instsignid] [INSTSIGNID] [-k|--keychain] [KEYCHAIN] [-h|--help] [clean]
     -a --arch       Specify target arch: x86_64 or arm64
     -s --appsignid  Give Application key ID to use for application signing
     -S --instsignid Give Installer key ID to use for installer signing
@@ -419,14 +424,18 @@ REQUIREMENTS
 
 # Code signing
 if [ -n "$APPSIGNID" ]; then
+    echo "Signing code..."
+    let SIGNED=0
     while read file
     do
-        codesign -s "$APPSIGNID" --timestamp "payload" "$file"
+        codesign -s "$APPSIGNID" --keychain "$KEYCHAIN" --timestamp "$file" \
+            && let ++SIGNED
     done <<CODE_SIGNING
 payload/Applications/GLPI-Agent.app/bin/perl
 scripts/dmidecode
 $(find payload -name '*.bundle')
 CODE_SIGNING
+    echo "Signed files: $SIGNED"
 fi
 
 echo "Build package"
