@@ -278,18 +278,21 @@ jobs:
           contrib/macosx/build/Applications
         key: macosx-packaging-restore-points-${{ matrix.os }}-${{ matrix.arch }}-${{ hashFiles('contrib/macosx/glpi-agent-packaging.sh') }}
     - name: Import Application Signing Cert
+      id: application-signing-cert
       uses: apple-actions/import-codesign-certs@v1
       if: ${{ needs.setup-release.outputs.macosx-signing == 'yes' }}
       with:
         p12-file-base64: ${{ secrets.MACOSX_APPLICATION_P12 }}
         p12-password: ${{ secrets.MACOSX_P12_PASSWORD }}
     - name: Import Installer Signing Cert
+      id: installer-signing-cert
       uses: apple-actions/import-codesign-certs@v1
       if: ${{ needs.setup-release.outputs.macosx-signing == 'yes' }}
       with:
         p12-file-base64: ${{ secrets.MACOSX_INSTALLER_P12 }}
         p12-password: ${{ secrets.MACOSX_P12_PASSWORD }}
-        keychain: installer_signing_temp
+        create-keychain: false
+        keychain-password: ${{ steps.application-signing-cert.outputs.keychain-password }}
     - name: Build package
       run: |
         ./contrib/macosx/glpi-agent-packaging.sh --arch ${{ matrix.arch }}

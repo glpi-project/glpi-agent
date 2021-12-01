@@ -12,7 +12,6 @@
 
 : ${APPSIGNID=}
 : ${INSTSINGID=}
-: ${KEYCHAIN=signing_temp}
 
 let SIGNED=0
 
@@ -42,17 +41,12 @@ do
             shift
             INSTSIGNID="$1"
             ;;
-        --keychain|-k)
-            shift
-            KEYCHAIN="$1"
-            ;;
         --help|-h)
             cat <<HELP
-$0 [-a|--arch] [x86_64|arm64] [-s|--appsignid] [APPSIGNID] [-S|--instsignid] [INSTSIGNID] [-k|--keychain] [KEYCHAIN] [-h|--help] [clean]
+$0 [-a|--arch] [x86_64|arm64] [-s|--appsignid] [APPSIGNID] [-S|--instsignid] [INSTSIGNID] [-h|--help] [clean]
     -a --arch       Specify target arch: x86_64 or arm64
     -s --appsignid  Give Application key ID to use for application signing
     -S --instsignid Give Installer key ID to use for installer signing
-    -k --keychain   Give keychain file path for signing
     -h --help       This help
     clean           Clean build environment
 HELP
@@ -429,7 +423,7 @@ if [ -n "$APPSIGNID" ]; then
     echo "Signing code..."
     while read file
     do
-        codesign -s "$APPSIGNID" --keychain "$KEYCHAIN" --timestamp "$file" \
+        codesign -s "$APPSIGNID" --timestamp "$file" \
             && let ++SIGNED
     done <<CODE_SIGNING
 payload/Applications/GLPI-Agent.app/bin/perl
