@@ -289,6 +289,7 @@ jobs:
       with:
         p12-file-base64: ${{ secrets.MACOSX_INSTALLER_P12 }}
         p12-password: ${{ secrets.MACOSX_P12_PASSWORD }}
+        keychain: installer_signing_temp
     - name: Build package
       run: |
         ./contrib/macosx/glpi-agent-packaging.sh --arch ${{ matrix.arch }}
