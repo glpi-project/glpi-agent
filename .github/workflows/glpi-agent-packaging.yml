@@ -31,12 +31,24 @@ jobs:
       releaseid: ${{ steps.create-tagged-release.outputs.id }}
       user-name: ${{ steps.set-version.outputs.user-name }}
       user-email: ${{ steps.set-version.outputs.user-email }}
+      win32-signing: ${{ steps.set-version.outputs.win32-signing }}
+      macosx-signing: ${{ steps.set-version.outputs.macosx-signing }}
 
     steps:
     - uses: actions/checkout@v2
     - name: Set version
       id: set-version
       run: |
+        if [ -n "$CST_USERNAME" ]; then
+            echo "::set-output name=win32-signing::yes"
+        else
+            echo "::set-output name=win32-signing::no"
+        fi
+        if [ -n "$APPSIGNID" -a -n "$INSTSIGNID" ]; then
+            echo "::set-output name=macosx-signing::yes"
+        else
+            echo "::set-output name=macosx-signing::no"
+        fi
         if [ -z "${GITHUB_REF##*refs/tags/*}" ]; then
             VERSION="${GITHUB_REF#*refs/tags/}"
             echo "New release on $VERSION $tag"
@@ -108,6 +120,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         PUBLISHING_TOKEN: ${{ secrets.PUBLISHING_TOKEN }}
+        CST_USERNAME: ${{ secrets.CST_USERNAME }}
+        APPSIGNID: ${{ secrets.MACOSX_APPSIGNID }}
+        INSTSIGNID: ${{ secrets.MACOSX_INSTSIGNID }}
     - name: Generate release description
       id: github-release-body
       if: ${{ steps.set-version.outputs.create-release == 'yes' }}
@@ -184,7 +199,7 @@ jobs:
         perl contrib\windows\glpi-agent-packaging.pl --arch ${{ matrix.arch }}
       shell: cmd
     - name: MSI Signing
-      if: success() && ${{ secrets.CST_USERNAME }}
+      if: ${{ needs.setup-release.outputs.win32-signing == 'yes' }}
       run: |
         perl tools\msi-signing.pl "C:\Strawberry-perl-for-GLPI-Agent_build" "GLPI-Agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.msi"
       shell: cmd
@@ -264,13 +279,13 @@ jobs:
         key: macosx-packaging-restore-points-${{ matrix.os }}-${{ matrix.arch }}-${{ hashFiles('contrib/macosx/glpi-agent-packaging.sh') }}
     - name: Import Application Signing Cert
       uses: apple-actions/import-codesign-certs@v1
-      if: ${{ secrets.MACOSX_APPLICATION_P12 }}
+      if: ${{ needs.setup-release.outputs.macosx-signing == 'yes' }}
       with:
         p12-file-base64: ${{ secrets.MACOSX_APPLICATION_P12 }}
         p12-password: ${{ secrets.MACOSX_P12_PASSWORD }}
     - name: Import Installer Signing Cert
       uses: apple-actions/import-codesign-certs@v1
-      if: ${{ secrets.MACOSX_INSTALLER_P12 }}
+      if: ${{ needs.setup-release.outputs.macosx-signing == 'yes' }}
       with:
         p12-file-base64: ${{ secrets.MACOSX_INSTALLER_P12 }}
         p12-password: ${{ secrets.MACOSX_P12_PASSWORD }}
