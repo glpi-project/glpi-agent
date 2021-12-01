@@ -96,7 +96,9 @@ injector:
 
 packaging:
 * Windows MSI installer based on StrawBerry Perl 5.32.1
+* Windows MSI installer signing support
 * MacOSX with prebuilt perl 5.34.0 including OpenSSL 3.0.0 support (x86_64,arm64)
+* MacOSX installer signing support
 * Linux Snap package with prebuilt perl 5.34.0
 
 tools:

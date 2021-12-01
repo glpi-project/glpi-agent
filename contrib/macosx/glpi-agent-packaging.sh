@@ -10,6 +10,10 @@
 : ${BUILDER_NAME="Guillaume Bougard (teclib)"}
 : ${BUILDER_MAIL="gbougard_at_teclib.com"}
 
+: ${APPSIGNID=}
+: ${INSTSINGID=}
+: ${KEYCHAIN=signing_temp}
+
 set -e
 
 export LC_ALL=C LANG=C
@@ -28,10 +32,25 @@ do
             shift
             ARCH="$1"
             ;;
+        --appsignid|-s)
+            shift
+            APPSIGNID="$1"
+            ;;
+        --instsignid|-S)
+            shift
+            INSTSIGNID="$1"
+            ;;
+        --keychain|-k)
+            shift
+            KEYCHAIN="$1"
+            ;;
         --help|-h)
             cat <<HELP
-$0 [-a|--arch] [x86_64|arm64] [-h|--help] [clean]
+$0 [-a|--arch] [x86_64|arm64] [-s|--appsignid] [APPSIGNID] [-S|--instsignid] [INSTSIGNID] [-k|--keychain] [KEYCHAIN] [-h|--help] [clean]
     -a --arch       Specify target arch: x86_64 or arm64
+    -s --appsignid  Give Application key ID to use for application signing
+    -S --instsignid Give Installer key ID to use for installer signing
+    -k --keychain   Give keychain file path for signing
     -h --help       This help
     clean           Clean build environment
 HELP
@@ -379,6 +398,27 @@ cat >build-info.plist <<-BUILD_INFO
 		<true/>
 		<key>version</key>
 		<string>$VERSION</string>
+BUILD_INFO
+if [ -n "$APPSIGNID" ]; then
+	cat >>build-info.plist <<-BUILD_INFO
+		<key>signin_info</key>
+		<dict>
+		  <key>identify</key>
+		  <string>$APPSIGNID</string>
+BUILD_INFO
+if [ -n "$KEYCHAIN" ]; then
+	cat >>build-info.plist <<-BUILD_INFO
+		  <key>keychain</key>
+		  <string>$KEYCHAIN</string>
+BUILD_INFO
+fi
+	cat >>build-info.plist <<-BUILD_INFO
+		  <key>timestamp</key>
+		  <true/>
+		</dict>
+BUILD_INFO
+fi
+cat >>build-info.plist <<-BUILD_INFO
 	</dict>
 	</plist>
 BUILD_INFO
@@ -429,8 +469,14 @@ cat >Distribution.xml <<-CUSTOM
 	    <os-version min="10.10" />
 	</installer-gui-script>
 CUSTOM
-productbuild --product product-requirements.plist --distribution Distribution.xml \
-    --package-path "build" --resources "Resources" "build/Dist-$PKG"
+if [ -n "$INSTSIGNID" ]; then
+    productbuild --product product-requirements.plist --distribution Distribution.xml \
+        --package-path "build" --resources "Resources" "build/Dist-$PKG" \
+        --sign "$INSTSIGNID"
+else
+    productbuild --product product-requirements.plist --distribution Distribution.xml \
+        --package-path "build" --resources "Resources" "build/Dist-$PKG"
+fi
 mv -vf "build/Dist-$PKG" "build/$PKG"
 
 if [ -e "build/$PKG" ]; then

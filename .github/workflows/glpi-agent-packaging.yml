@@ -184,6 +184,7 @@ jobs:
         perl contrib\windows\glpi-agent-packaging.pl --arch ${{ matrix.arch }}
       shell: cmd
     - name: MSI Signing
+      if: success() && ${{ secrets.CST_USERNAME }}
       run: |
         perl tools\msi-signing.pl "C:\Strawberry-perl-for-GLPI-Agent_build" "GLPI-Agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.msi"
       shell: cmd
@@ -261,9 +262,24 @@ jobs:
           contrib/macosx/build/zlib*
           contrib/macosx/build/Applications
         key: macosx-packaging-restore-points-${{ matrix.os }}-${{ matrix.arch }}-${{ hashFiles('contrib/macosx/glpi-agent-packaging.sh') }}
+    - name: Import Application Signing Cert
+      uses: apple-actions/import-codesign-certs@v1
+      if: ${{ secrets.MACOSX_APPLICATION_P12 }}
+      with:
+        p12-file-base64: ${{ secrets.MACOSX_APPLICATION_P12 }}
+        p12-password: ${{ secrets.MACOSX_P12_PASSWORD }}
+    - name: Import Installer Signing Cert
+      uses: apple-actions/import-codesign-certs@v1
+      if: ${{ secrets.MACOSX_INSTALLER_P12 }}
+      with:
+        p12-file-base64: ${{ secrets.MACOSX_INSTALLER_P12 }}
+        p12-password: ${{ secrets.MACOSX_P12_PASSWORD }}
     - name: Build package
       run: |
         ./contrib/macosx/glpi-agent-packaging.sh --arch ${{ matrix.arch }}
+      env:
+        APPSIGNID: ${{ secrets.MACOSX_APPSIGNID }}
+        INSTSIGNID: ${{ secrets.MACOSX_INSTSIGNID }}
       shell: bash
     - name: List generated files
       if: success() || failure()
