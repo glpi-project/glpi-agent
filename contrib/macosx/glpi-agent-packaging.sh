@@ -423,7 +423,7 @@ if [ -n "$APPSIGNID" ]; then
     echo "Signing code..."
     while read file
     do
-        codesign -s "$APPSIGNID" --timestamp "$file" \
+        codesign --options runtime -s "$APPSIGNID" --timestamp "$file" \
             && let ++SIGNED
     done <<CODE_SIGNING
 payload/Applications/GLPI-Agent.app/bin/perl
@@ -472,12 +472,22 @@ else
 fi
 mv -vf "build/Dist-$PKG" "build/$PKG"
 
-if [ -e "build/$PKG" ]; then
-    rm -f "build/$DMG"
-    echo "Create DMG"
-    hdiutil create -volname "GLPI-Agent $VERSION ($ARCH) installer" -fs "HFS+" -srcfolder "build/$PKG" "build/$DMG"
-    # Sign dmg file
-    [ -n "$APPSIGNID" ] && codesign -s "$APPSIGNID" --timestamp "build/$DMG"
+# Signature check
+[ -n "$INSTSIGNID" ] && pkgutil --check-signature "build/$PKG"
+
+# Notarize installer package
+if [ -n "$NOTARIZE_USER" -a -n "$NOTARIZE_PASSWORD" ]; then
+    echo "Installer notarization..."
+    xcrun altool --notarize-app --primary-bundle-id "org.glpi-project.glpi-agent" \
+        --username "$NOTARIZE_USER" --password "$NOTARIZE_PASSWORD" \
+        -t osx --file "build/$PKG"
 fi
+
+rm -f "build/$DMG"
+echo "Create DMG"
+hdiutil create -volname "GLPI-Agent $VERSION ($ARCH) installer" -fs "HFS+" -srcfolder "build/$PKG" "build/$DMG"
+
+# Sign dmg file
+[ -n "$APPSIGNID" ] && codesign -s "$APPSIGNID" --timestamp "build/$DMG"
 
 ls -l build/*.pkg build/*.dmg

@@ -299,6 +299,8 @@ jobs:
       env:
         APPSIGNID: ${{ secrets.MACOSX_APPSIGNID }}
         INSTSIGNID: ${{ secrets.MACOSX_INSTSIGNID }}
+        NOTARIZE_USER: ${{ secrets.MACOSX_NOTARIZE_USER }}
+        NOTARIZE_PASSWORD: ${{ secrets.MACOSX_NOTARIZE_PASSWORD }}
       shell: bash
     - name: List generated files
       if: success() || failure()
