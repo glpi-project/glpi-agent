@@ -96,7 +96,13 @@ fi
 
 # Needed folder
 [ -d build ] || mkdir build
-[ -d payload ] || mkdir payload
+[ -d pkg/payload ] || mkdir -p pkg/payload
+
+cp -a Resources pkg/Resources
+cp -a scripts pkg/scripts
+
+# Don't keep dmidecode as not useful on arm64 platform
+[ "$ARCH" == "x86_64" ] || rm -f pkg/scripts/dmidecode
 
 # Perl build configuration
 [ -e ~/.curlrc ] && egrep -q '^insecure' ~/.curlrc || echo insecure >>~/.curlrc
@@ -292,15 +298,15 @@ cpanm --notest -v --no-man-pages  $CPANM_OPTS LWP::Protocol::https             \
 # Crypt::DES Crypt::Rijndael are commented as Crypt::DES fails to build on MacOSX
 # Net::Write::Layer2 depends on Net::PCAP but it fails on MacOSX
 
-rm -rf "$ROOT/payload${BUILD_PREFIX%%/*}"
-mkdir -p "$ROOT/payload$BUILD_PREFIX"
+rm -rf "$ROOT/pkg/payload${BUILD_PREFIX%%/*}"
+mkdir -p "$ROOT/pkg/payload$BUILD_PREFIX"
 
 echo ======== Clean installation
 rsync -a --exclude=.packlist --exclude='*.pod' --exclude=.meta --delete --force \
-    "$ROOT/build$BUILD_PREFIX/lib/" "$ROOT/payload$BUILD_PREFIX/lib/"
-rm -rf "$ROOT/payload$BUILD_PREFIX/lib/pods"
-mkdir "$ROOT/payload$BUILD_PREFIX/bin"
-cp -a "$ROOT/build$BUILD_PREFIX/bin/perl" "$ROOT/payload$BUILD_PREFIX/bin/perl"
+    "$ROOT/build$BUILD_PREFIX/lib/" "$ROOT/pkg/payload$BUILD_PREFIX/lib/"
+rm -rf "$ROOT/pkg/payload$BUILD_PREFIX/lib/pods"
+mkdir "$ROOT/pkg/payload$BUILD_PREFIX/bin"
+cp -a "$ROOT/build$BUILD_PREFIX/bin/perl" "$ROOT/pkg/payload$BUILD_PREFIX/bin/perl"
 
 # Finalize sources
 if [ -n "$GITHUB_REF" -a -z "${GITHUB_REF%refs/tags/*}" ]; then
@@ -350,20 +356,20 @@ make
 echo "Make done."
 
 echo "Installing to payload..."
-make install DESTDIR="$ROOT/payload"
+make install DESTDIR="$ROOT/pkg/payload"
 echo "Installed."
 
 # Don't keep .packlist file generated during installation
-rm -rf $ROOT/payload$BUILD_PREFIX/agent/auto
+rm -rf $ROOT/pkg/payload$BUILD_PREFIX/agent/auto
 
 # Cleanup unused static library
-find $ROOT/payload$BUILD_PREFIX -name libperl.a -delete
+find $ROOT/pkg/payload$BUILD_PREFIX -name libperl.a -delete
 
 cd "$ROOT"
 
 # Create conf.d and fix default conf
-[ -d "payload$BUILD_PREFIX/etc/conf.d" ] || mkdir -p "payload$BUILD_PREFIX/etc/conf.d"
-AGENT_CFG="payload$BUILD_PREFIX/etc/agent.cfg"
+[ -d "pkg/payload$BUILD_PREFIX/etc/conf.d" ] || mkdir -p "pkg/payload$BUILD_PREFIX/etc/conf.d"
+AGENT_CFG="pkg/payload$BUILD_PREFIX/etc/agent.cfg"
 sed -i .1.bak -Ee "s/^scan-homedirs *=.*/scan-homedirs = 1/" $AGENT_CFG
 sed -i .2.bak -Ee "s/^scan-profiles *=.*/scan-profiles = 1/" $AGENT_CFG
 sed -i .3.bak -Ee "s/^httpd-trust *=.*/httpd-trust = 127.0.0.1/" $AGENT_CFG
@@ -374,7 +380,7 @@ sed -i .7.bak -Ee "s/^#?include \"conf\.d\/\"/include \"conf.d\"/" $AGENT_CFG
 rm -f $AGENT_CFG*.bak
 
 echo "Create build-info.plist..."
-cat >build-info.plist <<-BUILD_INFO
+cat >pkg/build-info.plist <<-BUILD_INFO
 	<?xml version="1.0" encoding="UTF-8"?>
 	<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 	<plist version="1.0">
@@ -423,18 +429,19 @@ if [ -n "$APPSIGNID" ]; then
     echo "Signing code..."
     while read file
     do
+        [ -e "$file" ] || continue
         codesign --options runtime -s "$APPSIGNID" --timestamp "$file" \
             && let ++SIGNED
     done <<CODE_SIGNING
-payload/Applications/GLPI-Agent.app/bin/perl
-scripts/dmidecode
-$(find payload -name '*.bundle')
+pkg/payload/Applications/GLPI-Agent.app/bin/perl
+pkg/scripts/dmidecode
+$(find pkg/payload -name '*.bundle')
 CODE_SIGNING
     echo "Signed files: $SIGNED"
 fi
 
 echo "Build package"
-./munkipkg .
+./munkipkg pkg
 
 PKG="GLPI-Agent-${VERSION}_$ARCH.pkg"
 DMG="GLPI-Agent-${VERSION}_$ARCH.dmg"
@@ -464,13 +471,12 @@ cat >Distribution.xml <<-CUSTOM
 CUSTOM
 if [ -n "$INSTSIGNID" ]; then
     productbuild --product product-requirements.plist --distribution Distribution.xml \
-        --package-path "build" --resources "Resources" "build/Dist-$PKG" \
+        --package-path "pkg/build" --resources "Resources" "build/$PKG" \
         --sign "$INSTSIGNID"
 else
     productbuild --product product-requirements.plist --distribution Distribution.xml \
-        --package-path "build" --resources "Resources" "build/Dist-$PKG"
+        --package-path "pkg/build" --resources "Resources" "build/$PKG"
 fi
-mv -vf "build/Dist-$PKG" "build/$PKG"
 
 # Signature check
 [ -n "$INSTSIGNID" ] && pkgutil --check-signature "build/$PKG"

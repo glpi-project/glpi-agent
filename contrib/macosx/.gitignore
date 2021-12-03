@@ -4,7 +4,7 @@
 # our build directory
 build/
 
-payload/
+pkg/
 
 munkipkg
 build-info.plist

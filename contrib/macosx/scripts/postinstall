@@ -14,10 +14,14 @@ sudo chmod 700 "$INSTALL_PATH/uninstaller.sh"
 if [ ! -e "$INSTALL_PATH/etc/cacert.pem" -o "$INSTALL_PATH/etc/cacert.pem" -ot "cacert.pem" ]; then
     sudo cp -af "cacert.pem" "$INSTALL_PATH/etc/"
 fi
-sudo rm -f /usr/local/bin/dmidecode
-[ -d /usr/local/bin ] || mkdir -p /usr/local/bin
-sudo cp -f dmidecode /usr/local/bin/dmidecode
-sudo chmod 755 /usr/local/bin/dmidecode
+
+# dmidecode can be provided for intel platforms
+[-e /usr/local/bin/dmidecode ] && sudo rm -f /usr/local/bin/dmidecode
+if [ -e dmidecode ]; then
+    [ -d /usr/local/bin ] || mkdir -p /usr/local/bin
+    sudo cp -f dmidecode /usr/local/bin/dmidecode
+    sudo chmod 755 /usr/local/bin/dmidecode
+fi
 
 sudo chown -R root:wheel "$INSTALL_PATH"
 sudo chmod -R 755 "$INSTALL_PATH"
