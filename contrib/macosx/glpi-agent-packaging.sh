@@ -57,21 +57,18 @@ done
 
 # Check platform we are running on
 : ${ARCH:=$(uname -m)}
-PERL_HINTS_CCFLAGS="-fno-common -DPERL_DARWIN"
 case "$(uname -s) $ARCH" in
     Darwin*x86_64)
         echo "GLPI-Agent MacOSX Packaging for $ARCH..."
         : ${MACOSX_DEPLOYMENT_TARGET:=10.10}
         OPENSSL_CONFIG="darwin64-x86_64-cc"
-        # From perl darwin hints to deploy to pre-10.12, suppress Time::HiRes's detection of the system clock_gettime()
-        PERL_HINTS_CCFLAGS="$PERL_HINTS_CCFLAGS -Werror=partial-availability -D_DARWIN_FEATURE_CLOCK_GETTIME=0"
         ;;
     Darwin*arm64)
         echo "GLPI-Agent MacOSX Packaging for $ARCH..."
         : ${MACOSX_DEPLOYMENT_TARGET:=11.0}
         OPENSSL_CONFIG="darwin64-arm64-cc"
         # Try to disable annoying warning
-        PERL_HINTS_CCFLAGS="$PERL_HINTS_CCFLAGS -Wno-compound-token-split-by-macro"
+        EXTRA_PERL_CCFLAGS="-Wno-compound-token-split-by-macro -Wno-deprecated-declarations"
         ;;
     Darwin*)
         echo "$ARCH support is missing, please report an issue" >&2
@@ -121,6 +118,9 @@ SDKFLAGS="-arch $ARCH -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET -isysroot $
 unset LOCAL_ARCH
 if [ "$ARCH" != "$(uname -m)" ]; then
     LOCAL_ARCH="$(uname -m)"
+    SDK_TARGET="$ARCH-apple-macos${MACOSX_DEPLOYMENT_TARGET%.0}"
+    echo "LOCAL ARCH: $LOCAL_ARCH - TARGET: $SDK_TARGET"
+    SDKFLAGS="-target $SDK_TARGET $SDKFLAGS"
 fi
 
 build_static_zlib () {
@@ -174,9 +174,8 @@ build_perl () {
             -Dusemultiplicity -Duse64bitint -Duse64bitall -Darch=$ARCH         \
             -Aeval:privlib=.../../lib -Aeval:scriptdir=.../../bin              \
             -Aeval:vendorprefix=.../.. -Aeval:vendorlib=.../../agent           \
-            -Adefine:ccflags="$PERL_HINTS_CCFLAGS $SDKFLAGS"                   \
-            -Adefine:ldflags="$SDKFLAGS"                                       \
-            -Adefine:lddlflags="-bundle -undefined dynamic_lookup $SDKFLAGS"   \
+            -Accflags="$SDKFLAGS $EXTRA_PERL_CCFLAGS"                          \
+            -Aldflags="$SDKFLAGS" -Alddlflags="$SDKFLAGS"                      \
             -Dcf_by="$BUILDER_NAME" -Dcf_email="$BUILDER_MAIL" -Dperladmin="$BUILDER_MAIL"
     fi
     make -j4
@@ -232,7 +231,7 @@ if [ ! -d "build/openssl-$OPENSSL_VERSION" ]; then
     [ -d build/openssl ] || mkdir -p build/openssl
     cd build/openssl
 
-    CFLAGS="$SDKFLAGS" \
+    CFLAGS="$SDKFLAGS -Wno-deprecated-declarations" \
     ../../openssl-$OPENSSL_VERSION/Configure $OPENSSL_CONFIG no-autoerrinit no-shared \
         --prefix="/openssl" $OPENSSL_CONFIG_OPTS
     make

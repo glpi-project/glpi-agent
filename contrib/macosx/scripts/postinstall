@@ -59,6 +59,8 @@ cat >"$TMPPLIST" <<PLIST
 	<true/>
 	<key>UserName</key>
 	<string>root</string>
+	<key>ProcessType</key>
+	<string>Background</string>
 </dict>
 </plist>
 PLIST

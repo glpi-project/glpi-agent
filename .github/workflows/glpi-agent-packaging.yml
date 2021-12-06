@@ -319,7 +319,7 @@ jobs:
       if: success() || failure()
       uses: actions/upload-artifact@v2
       with:
-        name: MacOSX-Perl-Config
+        name: MacOSX-Perl-Config-${{ matrix.arch }}
         path: |
           contrib/macosx/build/perl-*/config.h
           contrib/macosx/build/perl-*/config.sh
