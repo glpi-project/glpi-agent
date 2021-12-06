@@ -315,6 +315,19 @@ jobs:
         path: |
           contrib/macosx/build/*.pkg
           contrib/macosx/build/*.dmg
+    - name: Upload MacOSX Perl building debug artifacts
+      if: success() || failure()
+      uses: actions/upload-artifact@v2
+      with:
+        name: MacOSX-Perl-Config
+        path: |
+          contrib/macosx/build/perl-*/config.h
+          contrib/macosx/build/perl-*/config.sh
+          contrib/macosx/build/perl-*/cflags
+          contrib/macosx/build/perl-*/myconfig
+          contrib/macosx/build/perl-*/Makefile
+          contrib/macosx/build/perl-*/Policy.sh
+          contrib/macosx/build/perl-*/hints/darwin.sh
     - name: Upload MacOSX PKG installer
       id: upload-macosx-pkg-asset
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}

@@ -57,16 +57,21 @@ done
 
 # Check platform we are running on
 : ${ARCH:=$(uname -m)}
+PERL_HINTS_CCFLAGS="-fno-common -DPERL_DARWIN"
 case "$(uname -s) $ARCH" in
     Darwin*x86_64)
         echo "GLPI-Agent MacOSX Packaging for $ARCH..."
         : ${MACOSX_DEPLOYMENT_TARGET:=10.10}
         OPENSSL_CONFIG="darwin64-x86_64-cc"
+        # From perl darwin hints to deploy to pre-10.12, suppress Time::HiRes's detection of the system clock_gettime()
+        PERL_HINTS_CCFLAGS="$PERL_HINTS_CCFLAGS -Werror=partial-availability -D_DARWIN_FEATURE_CLOCK_GETTIME=0"
         ;;
     Darwin*arm64)
         echo "GLPI-Agent MacOSX Packaging for $ARCH..."
         : ${MACOSX_DEPLOYMENT_TARGET:=11.0}
         OPENSSL_CONFIG="darwin64-arm64-cc"
+        # Try to disable annoying warning
+        PERL_HINTS_CCFLAGS="$PERL_HINTS_CCFLAGS -Wno-compound-token-split-by-macro"
         ;;
     Darwin*)
         echo "$ARCH support is missing, please report an issue" >&2
@@ -169,7 +174,9 @@ build_perl () {
             -Dusemultiplicity -Duse64bitint -Duse64bitall -Darch=$ARCH         \
             -Aeval:privlib=.../../lib -Aeval:scriptdir=.../../bin              \
             -Aeval:vendorprefix=.../.. -Aeval:vendorlib=.../../agent           \
-            -Accflags="$SDKFLAGS" -Aldflags="$SDKFLAGS" -Alddlflags="$SDKFLAGS" \
+            -Adefine:ccflags="$PERL_HINTS_CCFLAGS $SDKFLAGS"                   \
+            -Adefine:ldflags="$SDKFLAGS"                                       \
+            -Adefine:lddlflags="-bundle -undefined dynamic_lookup $SDKFLAGS"   \
             -Dcf_by="$BUILDER_NAME" -Dcf_email="$BUILDER_MAIL" -Dperladmin="$BUILDER_MAIL"
     fi
     make -j4
