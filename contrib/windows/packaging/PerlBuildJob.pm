@@ -4,7 +4,7 @@ package
 use parent 'Exporter';
 
 use constant {
-    PERL_VERSION       => "5.32.1",
+    PERL_VERSION       => "5.34.0",
     PERL_BUILD_STEPS   => 8,
 };
 
@@ -240,7 +240,7 @@ sub _bits {
 }
 
 sub _perl_source_url {
-    return 'http://cpan.metacpan.org/authors/id/S/SH/SHAY/perl-'.PERL_VERSION.'.tar.gz';
+    return 'https://www.cpan.org/src/5.0/perl-'.PERL_VERSION.'.tar.gz'
 }
 
 sub _tools {

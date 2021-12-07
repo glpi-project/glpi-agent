@@ -199,6 +199,10 @@ jobs:
       run: |
         cpanm --notest --verbose Perl::Dist::Strawberry
       shell: cmd
+    - name: Fix Perl::Dist::Strawberry for perl 5.34
+      run: |
+        perl -i -pe "s/makefile.mk/Makefile/" C:\Strawberry\perl\site\lib\Perl\Dist\Strawberry\Step\InstallPerlCore.pm
+      shell: cmd
     - name: Build package
       run: |
         perl contrib\windows\glpi-agent-packaging.pl --arch ${{ matrix.arch }}
