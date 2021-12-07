@@ -7,11 +7,12 @@
 : ${OPENSSL_VERSION:=3.0.0}
 : ${ZLIB_VERSION:=1.2.11}
 
-: ${BUILDER_NAME="Guillaume Bougard (teclib)"}
-: ${BUILDER_MAIL="gbougard_at_teclib.com"}
+: ${BUILDER_NAME:="Guillaume Bougard (teclib)"}
+: ${BUILDER_MAIL:="gbougard_at_teclib.com"}
 
-: ${APPSIGNID=}
-: ${INSTSINGID=}
+: ${APPSIGNID:=}
+: ${INSTSINGID:=}
+: ${NOTARIZE:=no}
 
 let SIGNED=0
 
@@ -41,9 +42,13 @@ do
             shift
             INSTSIGNID="$1"
             ;;
+        --notarize|-n)
+            shift
+            NOTARIZE="$1"
+            ;;
         --help|-h)
             cat <<HELP
-$0 [-a|--arch] [x86_64|arm64] [-s|--appsignid] [APPSIGNID] [-S|--instsignid] [INSTSIGNID] [-h|--help] [clean]
+$0 [-a|--arch] [x86_64|arm64] [-s|--appsignid] [APPSIGNID] [-S|--instsignid] [INSTSIGNID] [-n|--notarize] [yes|no] [-h|--help] [clean]
     -a --arch       Specify target arch: x86_64 or arm64
     -s --appsignid  Give Application key ID to use for application signing
     -S --instsignid Give Installer key ID to use for installer signing
@@ -447,7 +452,7 @@ fi
 	    </dict>
 BUILD_INFO
 fi
-if [ -n "$NOTARIZE_USER" -a -n "$NOTARIZE_PASSWORD" ]; then
+if [ -n "$NOTARIZE_USER" -a -n "$NOTARIZE_PASSWORD" -a "$NOTARIZE" == "yes" ]; then
     cat >>pkg/build-info.plist <<-BUILD_INFO
 	    <key>notarization_info</key>
 	    <dict>
@@ -532,13 +537,17 @@ mv -vf "pkg/build/$PKG" "build/$PKG"
 [ -n "$INSTSIGNID" ] && pkgutil --check-signature "build/$PKG"
 
 # Notarization check
-[ -n "$NOTARIZE_USER" -a -n "$NOTARIZE_PASSWORD" ] && xcrun stapler validate "build/$PKG"
+[ -n "$NOTARIZE_USER" -a -n "$NOTARIZE_PASSWORD" -a "$NOTARIZE" == "yes" ] && xcrun stapler validate "build/$PKG"
 
 rm -f "build/$DMG"
 echo "Create DMG"
 hdiutil create -volname "GLPI-Agent $VERSION ($ARCH) installer" -fs "HFS+" -srcfolder "build/$PKG" "build/$DMG"
 
 # Sign dmg file
-[ -n "$APPSIGNID" ] && codesign -s "$APPSIGNID" --timestamp "build/$DMG"
+if [ -n "$APPSIGNID" ]; then
+    echo "Signing DMG..."
+    codesign -s "$APPSIGNID" --timestamp "build/$DMG"
+    pkgutil --check-signature "build/$DMG"
+fi
 
 ls -l build/*.pkg build/*.dmg

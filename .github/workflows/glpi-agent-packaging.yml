@@ -33,6 +33,7 @@ jobs:
       user-email: ${{ steps.set-version.outputs.user-email }}
       win32-signing: ${{ steps.set-version.outputs.win32-signing }}
       macosx-signing: ${{ steps.set-version.outputs.macosx-signing }}
+      macosx-notarization: ${{ steps.set-version.outputs.macosx-notarization }}
 
     steps:
     - uses: actions/checkout@v2
@@ -46,6 +47,7 @@ jobs:
         fi
         if [ -n "$APPSIGNID" -a -n "$INSTSIGNID" ]; then
             echo "::set-output name=macosx-signing::yes"
+            NOTARIZE="yes"
         else
             echo "::set-output name=macosx-signing::no"
         fi
@@ -92,6 +94,7 @@ jobs:
                 echo "::set-output name=create-release::no"
                 echo "::set-output name=build::yes"
                 echo "::set-output name=tag_name::development-$VERSION"
+                NOTARIZE="no"
             fi
         fi
         echo "::set-output name=version::$VERSION"
@@ -113,6 +116,8 @@ jobs:
                 echo "::set-output name=prerelease::true"
                 ;;
         esac
+        # Check if MacOSX packaging notarization is required
+        echo "::set-output name=macosx-notarization::$NOTARIZE"
         # Set user and mail for nightly release
         echo "::set-output name=user-name::$(git log --format='%an' HEAD^!)"
         echo "::set-output name=user-email::$(git log --format='%ae' HEAD^!)"
@@ -295,7 +300,7 @@ jobs:
         keychain-password: ${{ steps.application-signing-cert.outputs.keychain-password }}
     - name: Build package
       run: |
-        ./contrib/macosx/glpi-agent-packaging.sh --arch ${{ matrix.arch }}
+        ./contrib/macosx/glpi-agent-packaging.sh --arch ${{ matrix.arch }} --notarize ${{ needs.setup-release.outputs.macosx-notarization }}
       env:
         APPSIGNID: ${{ secrets.MACOSX_APPSIGNID }}
         INSTSIGNID: ${{ secrets.MACOSX_INSTSIGNID }}
