@@ -428,12 +428,12 @@ cat >pkg/build-info.plist <<-BUILD_INFO
 	    <key>version</key>
 	    <string>$VERSION</string>
 BUILD_INFO
-if [ -n "$APPSIGNID" ]; then
+if [ -n "$INSTSIGNID" ]; then
     cat >>pkg/build-info.plist <<-BUILD_INFO
 	    <key>signing_info</key>
 	    <dict>
 	        <key>identity</key>
-	        <string>$APPSIGNID</string>
+	        <string>$INSTSIGNID</string>
 BUILD_INFO
 if [ -n "$KEYCHAIN" ]; then
     cat >>pkg/build-info.plist <<-BUILD_INFO
