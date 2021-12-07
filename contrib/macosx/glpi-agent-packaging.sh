@@ -547,7 +547,7 @@ hdiutil create -volname "GLPI-Agent $VERSION ($ARCH) installer" -fs "HFS+" -srcf
 if [ -n "$APPSIGNID" ]; then
     echo "Signing DMG..."
     codesign -s "$APPSIGNID" --timestamp "build/$DMG"
-    pkgutil --check-signature "build/$DMG"
+    #pkgutil --check-signature "build/$DMG"
 fi
 
 ls -l build/*.pkg build/*.dmg
