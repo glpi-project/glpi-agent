@@ -432,7 +432,7 @@ if [ -n "$APPSIGNID" ]; then
     cat >>pkg/build-info.plist <<-BUILD_INFO
 	    <key>signing_info</key>
 	    <dict>
-	        <key>identify</key>
+	        <key>identity</key>
 	        <string>$APPSIGNID</string>
 BUILD_INFO
 if [ -n "$KEYCHAIN" ]; then
