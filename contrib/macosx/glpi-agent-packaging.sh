@@ -430,7 +430,7 @@ cat >pkg/build-info.plist <<-BUILD_INFO
 BUILD_INFO
 if [ -n "$APPSIGNID" ]; then
     cat >>build-info.plist <<-BUILD_INFO
-	    <key>signin_info</key>
+	    <key>signing_info</key>
 	    <dict>
 	        <key>identify</key>
 	        <string>$APPSIGNID</string>
@@ -449,7 +449,7 @@ BUILD_INFO
 fi
 if [ -n "$NOTARIZE_USER" -a -n "$NOTARIZE_PASSWORD" ]; then
     cat >>build-info.plist <<-BUILD_INFO
-	    <key>notarize_info</key>
+	    <key>notarization_info</key>
 	    <dict>
 	        <key>username</key>
 	        <string>$NOTARIZE_USER</string>
