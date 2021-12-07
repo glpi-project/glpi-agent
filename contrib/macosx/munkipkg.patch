@@ -1,5 +1,5 @@
 --- munkipkg.orig	2021-12-07 12:07:12.526044706 +0100
-+++ munkipkg	2021-12-07 12:33:09.664815119 +0100
++++ munkipkg	2021-12-07 15:40:54.750806705 +0100
 @@ -63,6 +63,8 @@
  
  BUILD_INFO_FILE = "build-info"
@@ -9,7 +9,7 @@
  BOM_TEXT_FILE = "Bom.txt"
  
  STAPLE_TIMEOUT = 300
-@@ -648,6 +650,16 @@
+@@ -648,12 +650,25 @@
          build_info['project_dir'], REQUIREMENTS_PLIST)
      if os.path.exists(requirements_plist):
          cmd.extend(['--product', requirements_plist])
@@ -26,7 +26,17 @@
      # if build_info contains a product id use that for product id, otherwise
      # use package identifier
      product_id = build_info.get('product id', build_info['identifier'])
-@@ -770,6 +782,8 @@
+     cmd.extend(['--identifier', product_id, '--version', str(build_info['version'])])
+     # add the input and output package paths
+-    cmd.extend(['--package', pkginputname, distoutputname])
++    if os.path.exists(distribution_xml):
++        cmd.extend(['--package-path', build_info['build_dir'], distoutputname])
++    else:
++        cmd.extend(['--package', pkginputname, distoutputname])
+ 
+     retcode = subprocess.call(cmd)
+     if retcode:
+@@ -770,6 +785,8 @@
          build_info['notarization_info']['username'],
          '--output-format',
          'xml',
