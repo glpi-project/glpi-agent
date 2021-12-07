@@ -1,0 +1,37 @@
+--- munkipkg.orig	2021-12-07 12:07:12.526044706 +0100
++++ munkipkg	2021-12-07 12:33:09.664815119 +0100
+@@ -63,6 +63,8 @@
+ 
+ BUILD_INFO_FILE = "build-info"
+ REQUIREMENTS_PLIST = "product-requirements.plist"
++DISTRIBUTION_XML = "Distribution.xml"
++DISTRIBUTION_RESOURCES = "Resources"
+ BOM_TEXT_FILE = "Bom.txt"
+ 
+ STAPLE_TIMEOUT = 300
+@@ -648,6 +650,16 @@
+         build_info['project_dir'], REQUIREMENTS_PLIST)
+     if os.path.exists(requirements_plist):
+         cmd.extend(['--product', requirements_plist])
++    # if there is a PRE-INSTALL DISTRIBUTION XML, use it
++    distribution_xml = os.path.join(
++        build_info['project_dir'], DISTRIBUTION_XML)
++    if os.path.exists(distribution_xml):
++        cmd.extend(['--distribution', distribution_xml])
++    # if there is a PRE-INSTALL DISTRIBUTION RESOURCES, use it
++    resources = os.path.join(
++        build_info['project_dir'], DISTRIBUTION_RESOURCES)
++    if os.path.exists(resources):
++        cmd.extend(['--resources', resources])
+     # if build_info contains a product id use that for product id, otherwise
+     # use package identifier
+     product_id = build_info.get('product id', build_info['identifier'])
+@@ -770,6 +782,8 @@
+         build_info['notarization_info']['username'],
+         '--output-format',
+         'xml',
++        '-t',
++        'osx',
+     ]
+     add_authentication_options(cmd, build_info)
+ 

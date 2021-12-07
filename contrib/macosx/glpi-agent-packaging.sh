@@ -93,6 +93,8 @@ if [ ! -e munkipkg ]; then
         echo "Failed to download munkipkg script" >&2
         exit 3
     fi
+    # Use our patch to tune productbuild and notarization with other required parameters
+    [ -e munkipkg.patch ] && patch < munkipkg.patch
     chmod +x munkipkg
 fi
 
@@ -373,6 +375,22 @@ find $ROOT/pkg/payload$BUILD_PREFIX -name libperl.a -delete
 
 cd "$ROOT"
 
+# Cleanup fat-files from not targeted arch
+if [ "$ARCH" == "arm64" -a -n "$LOCAL_ARCH" ]; then
+    let COUNT=1
+    echo "===== Filtering $LOCAL_ARCH arch from binaries ====="
+    while read file
+    do
+        printf "%02d: " $((COUNT++))
+        ditto -arch $ARCH "$file" "$file.arm64"
+        mv -f "$file.arm64" "$file"
+        lipo -info "$file"
+    done <<CHECK_ARCH
+pkg/payload/Applications/GLPI-Agent.app/bin/perl
+$(find pkg/payload -name '*.bundle')
+CHECK_ARCH
+fi
+
 # Create conf.d and fix default conf
 [ -d "pkg/payload$BUILD_PREFIX/etc/conf.d" ] || mkdir -p "pkg/payload$BUILD_PREFIX/etc/conf.d"
 AGENT_CFG="pkg/payload$BUILD_PREFIX/etc/agent.cfg"
@@ -391,24 +409,56 @@ cat >pkg/build-info.plist <<-BUILD_INFO
 	<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 	<plist version="1.0">
 	<dict>
-		<key>distribution_style</key>
-		<false/>
-		<key>identifier</key>
-		<string>org.glpi-project.glpi-agent</string>
-		<key>install_location</key>
-		<string>/</string>
-		<key>name</key>
-		<string>GLPI-Agent-${VERSION}_$ARCH.pkg</string>
-		<key>ownership</key>
-		<string>recommended</string>
-		<key>postinstall_action</key>
-		<string>none</string>
-		<key>preserve_xattr</key>
-		<false/>
-		<key>suppress_bundle_relocation</key>
-		<true/>
-		<key>version</key>
-		<string>$VERSION</string>
+	    <key>distribution_style</key>
+	    <true/>
+	    <key>identifier</key>
+	    <string>org.glpi-project.glpi-agent</string>
+	    <key>install_location</key>
+	    <string>/</string>
+	    <key>name</key>
+	    <string>GLPI-Agent-${VERSION}_$ARCH.pkg</string>
+	    <key>ownership</key>
+	    <string>recommended</string>
+	    <key>postinstall_action</key>
+	    <string>none</string>
+	    <key>preserve_xattr</key>
+	    <false/>
+	    <key>suppress_bundle_relocation</key>
+	    <true/>
+	    <key>version</key>
+	    <string>$VERSION</string>
+BUILD_INFO
+if [ -n "$APPSIGNID" ]; then
+    cat >>build-info.plist <<-BUILD_INFO
+	    <key>signin_info</key>
+	    <dict>
+	        <key>identify</key>
+	        <string>$APPSIGNID</string>
+BUILD_INFO
+if [ -n "$KEYCHAIN" ]; then
+    cat >>build-info.plist <<-BUILD_INFO
+	        <key>keychain</key>
+	        <string>$KEYCHAIN</string>
+BUILD_INFO
+fi
+    cat >>build-info.plist <<-BUILD_INFO
+	        <key>timestamp</key>
+	        <true/>
+	    </dict>
+BUILD_INFO
+fi
+if [ -n "$NOTARIZE_USER" -a -n "$NOTARIZE_PASSWORD" ]; then
+    cat >>build-info.plist <<-BUILD_INFO
+	    <key>notarize_info</key>
+	    <dict>
+	        <key>username</key>
+	        <string>$NOTARIZE_USER</string>
+	        <key>password</key>
+	        <string>$NOTARIZE_PASSWORD</string>
+	    </dict>
+BUILD_INFO
+fi
+cat >>build-info.plist <<-BUILD_INFO
 	</dict>
 	</plist>
 BUILD_INFO
@@ -420,7 +470,7 @@ cat >product-requirements.plist <<-REQUIREMENTS
 	<dict>
 	    <key>os</key>
 	    <array>
-	        <string>10.10</string>
+	        <string>$MACOSX_DEPLOYMENT_TARGET</string>
 	    </array>
 	    <key>arch</key>
 	    <array>
@@ -446,9 +496,6 @@ CODE_SIGNING
     echo "Signed files: $SIGNED"
 fi
 
-echo "Build package"
-./munkipkg pkg
-
 PKG="GLPI-Agent-${VERSION}_$ARCH.pkg"
 DMG="GLPI-Agent-${VERSION}_$ARCH.dmg"
 
@@ -472,28 +519,20 @@ cat >Distribution.xml <<-CUSTOM
 	    <choice id="org.glpi-project.glpi-agent" visible="false">
 	        <pkg-ref id="org.glpi-project.glpi-agent"/>
 	    </choice>
-	    <os-version min="10.10" />
+	    <os-version min="$MACOSX_DEPLOYMENT_TARGET" />
 	</installer-gui-script>
 CUSTOM
-if [ -n "$INSTSIGNID" ]; then
-    productbuild --product product-requirements.plist --distribution Distribution.xml \
-        --package-path "pkg/build" --resources "Resources" "build/$PKG" \
-        --sign "$INSTSIGNID"
-else
-    productbuild --product product-requirements.plist --distribution Distribution.xml \
-        --package-path "pkg/build" --resources "Resources" "build/$PKG"
-fi
+
+echo "Build package"
+./munkipkg pkg
+
+mv -vf "pkg/build/$PKG" "build/$PKG"
 
 # Signature check
 [ -n "$INSTSIGNID" ] && pkgutil --check-signature "build/$PKG"
 
-# Notarize installer package
-if [ -n "$NOTARIZE_USER" -a -n "$NOTARIZE_PASSWORD" ]; then
-    echo "Installer notarization..."
-    xcrun altool --notarize-app --primary-bundle-id "org.glpi-project.glpi-agent" \
-        --username "$NOTARIZE_USER" --password "$NOTARIZE_PASSWORD" \
-        -t osx --file "build/$PKG"
-fi
+# Notarization check
+[ -n "$NOTARIZE_USER" -a -n "$NOTARIZE_PASSWORD" ] && xcrun stapler validate "build/$PKG"
 
 rm -f "build/$DMG"
 echo "Create DMG"
