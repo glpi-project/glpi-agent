@@ -429,26 +429,26 @@ cat >pkg/build-info.plist <<-BUILD_INFO
 	    <string>$VERSION</string>
 BUILD_INFO
 if [ -n "$APPSIGNID" ]; then
-    cat >>build-info.plist <<-BUILD_INFO
+    cat >>pkg/build-info.plist <<-BUILD_INFO
 	    <key>signing_info</key>
 	    <dict>
 	        <key>identify</key>
 	        <string>$APPSIGNID</string>
 BUILD_INFO
 if [ -n "$KEYCHAIN" ]; then
-    cat >>build-info.plist <<-BUILD_INFO
+    cat >>pkg/build-info.plist <<-BUILD_INFO
 	        <key>keychain</key>
 	        <string>$KEYCHAIN</string>
 BUILD_INFO
 fi
-    cat >>build-info.plist <<-BUILD_INFO
+    cat >>pkg/build-info.plist <<-BUILD_INFO
 	        <key>timestamp</key>
 	        <true/>
 	    </dict>
 BUILD_INFO
 fi
 if [ -n "$NOTARIZE_USER" -a -n "$NOTARIZE_PASSWORD" ]; then
-    cat >>build-info.plist <<-BUILD_INFO
+    cat >>pkg/build-info.plist <<-BUILD_INFO
 	    <key>notarization_info</key>
 	    <dict>
 	        <key>username</key>
@@ -458,12 +458,12 @@ if [ -n "$NOTARIZE_USER" -a -n "$NOTARIZE_PASSWORD" ]; then
 	    </dict>
 BUILD_INFO
 fi
-cat >>build-info.plist <<-BUILD_INFO
+cat >>pkg/build-info.plist <<-BUILD_INFO
 	</dict>
 	</plist>
 BUILD_INFO
 
-cat >product-requirements.plist <<-REQUIREMENTS
+cat >pkg/product-requirements.plist <<-REQUIREMENTS
 	<?xml version="1.0" encoding="UTF-8"?>
 	<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 	<plist version="1.0">
@@ -500,7 +500,7 @@ PKG="GLPI-Agent-${VERSION}_$ARCH.pkg"
 DMG="GLPI-Agent-${VERSION}_$ARCH.dmg"
 
 echo "Prepare distribution installer..."
-cat >Distribution.xml <<-CUSTOM
+cat >pkg/Distribution.xml <<-CUSTOM
 	<?xml version="1.0" encoding="utf-8" standalone="no"?>
 	<installer-gui-script minSpecVersion="2">
 	    <title>GLPI-Agent $VERSION ($ARCH)</title>
