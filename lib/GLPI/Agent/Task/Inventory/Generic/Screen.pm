@@ -187,15 +187,19 @@ sub _getScreensFromUnix {
                 }
             }
         } else {
-            my $wanted = sub {
-                return unless $_ eq 'edid';
-                return unless has_file($File::Find::name);
-                my $edid = getAllLines(file => $File::Find::name);
-                push @screens, { edid => $edid } if $edid;
-            };
-
             no warnings 'File::Find';
-            File::Find::find($wanted, '/sys/devices');
+            File::Find::find(
+                {
+                    no_chdir => 1,
+                    wanted   => sub {
+                        return unless $_ eq 'edid';
+                        return unless has_file($File::Find::name);
+                        my $edid = getAllLines(file => $File::Find::name);
+                        push @screens, { edid => $edid } if $edid;
+                    },
+                },
+                '/sys/devices'
+            );
         }
 
         $logger->debug_result(
