@@ -202,6 +202,8 @@ jobs:
     - name: Fix Perl::Dist::Strawberry for perl 5.34
       run: |
         perl -i -pe "s/makefile.mk/Makefile/" C:\Strawberry\perl\site\lib\Perl\Dist\Strawberry\Step\InstallPerlCore.pm
+        perl -i -pe "s/use Text::Diff;/use Text::Diff;use Text::Patch;/" \
+            C:\Strawberry\perl\site\lib\Perl\Dist\Strawberry\Step.pm
       shell: cmd
     - name: Build package
       run: |
@@ -401,6 +403,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install build dependencies packages
       run: |
+        sudo apt update
         sudo apt -y install dpkg-dev debhelper libmodule-install-perl      \
           libclone-perl libdigest-sha-perl libfile-copy-recursive-perl     \
           libfile-which-perl libhttp-cookies-perl libhttp-daemon-perl      \
@@ -463,6 +466,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install build dependencies packages
       run: |
+        sudo apt update
         sudo apt -y install rpm devscripts \
             libfile-which-perl libuniversal-require-perl libmodule-install-perl
       shell: bash
