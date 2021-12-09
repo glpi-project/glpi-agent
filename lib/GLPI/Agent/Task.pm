@@ -52,13 +52,18 @@ sub getModules {
     my $root = $file;
     $root =~ s/.pm$//;
     my @modules;
-    my $wanted = sub {
-        return unless -f $_;
-        return unless $File::Find::name =~ m{($root/\S+\.pm)$};
-        my $module = file2module($1);
-        push(@modules, $module);
-    };
-    File::Find::find($wanted, $rootdir);
+    File::Find::find(
+        {
+            wanted   => sub {
+                return unless -f $_;
+                return unless $File::Find::name =~ m{($root/\S+\.pm)$};
+                my $module = file2module($1);
+                push(@modules, $module);
+            },
+            no_chdir => 1,
+        },
+        $rootdir
+    );
     return @modules
 }
 
