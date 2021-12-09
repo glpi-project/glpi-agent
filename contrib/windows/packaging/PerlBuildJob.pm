@@ -105,7 +105,7 @@ sub _build_steps {
                 'contrib/windows/packaging/agentexe.rc.tt'      => 'win32/perlexe.rc',
                 'contrib/windows/packaging/win32_config_H.gc'   => 'win32/config_H.gc',
                 # Perl 5.34.0: Optimization patch win32/win32.c
-                'contrib/windows/packaging/win32_win32.c.patch' => 'perl-5.34.0/*',
+                'contrib/windows/packaging/win32_win32.c.patch' => 'win32/win32.c',
             },
             license => { #SRC paths are relative to the perl src root
                 'Readme'   => '<image_dir>/licenses/perl/Readme',
