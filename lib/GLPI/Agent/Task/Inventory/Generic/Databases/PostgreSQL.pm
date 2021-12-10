@@ -153,7 +153,7 @@ sub _runSql {
 
     my $options = delete $params{options};
     my $command = "psql".$options;
-    $command .= " --csv -nqtw -c \"$sql\"";
+    $command .= " -Anqtw -F, -c \"$sql\"";
     if (!$options) {
         my $sudo = delete $params{sudo};
         $command =~ s/"/\\"/g if $sudo && $sudo =~ /^su /;
