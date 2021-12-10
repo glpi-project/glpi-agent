@@ -47,7 +47,7 @@ sub _getDatabaseService {
 
     foreach my $credential (@{$credentials}) {
         GLPI::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
-        $params{options} = _mssqlOptions($credential) // "";
+        $params{options} = _mssqlOptions($credential) // "-l 5";
 
         my $productversion = _runSql(
             sql     => "SELECT SERVERPROPERTY('productversion')",
@@ -131,8 +131,8 @@ sub _runSql {
         or return;
 
     my $command = $params{sqlcmd} // "sqlcmd";
-    $command .= $params{options} if defined($params{options});
-    $command .= " -X1 -l 30 -t 30 -K ReadOnly -r1 -W -h -1 -s \";\" -Q \"$sql\"";
+    $command .= " ".$params{options} if defined($params{options});
+    $command .= " -X1 -t 30 -K ReadOnly -r1 -W -h -1 -s \";\" -Q \"$sql\"";
 
     # Only to support unittests
     if ($params{file}) {
@@ -170,10 +170,13 @@ sub _mssqlOptions {
 
     return unless $credential->{type};
 
-    my $options = "";
+    my $options = "-l 5";
     if ($credential->{type} eq "login_password") {
-        $options .= " -S $credential->{host}" if $credential->{host};
-        $options .= ",$credential->{port}" if $credential->{host} && $credential->{port};
+        if ($credential->{host}) {
+            $options  = "-l 30";
+            $options .= " -S $credential->{host}" ;
+            $options .= ",$credential->{port}" if $credential->{port};
+        }
         $options .= " -U $credential->{login}" if $credential->{login};
         $options .= " -S $credential->{socket}" if ! $credential->{host} && $credential->{socket};
         if ($credential->{password}) {
