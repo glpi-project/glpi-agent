@@ -162,7 +162,7 @@ parts:
           snapcraftctl set-grade "devel"
           ;;
         *)
-          snapcraftctl set-grade "release"
+          snapcraftctl set-grade "stable"
           ;;
       esac
       perl Makefile.PL PREFIX=/usr SYSCONFDIR=/etc/glpi-agent \
