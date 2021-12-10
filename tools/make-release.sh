@@ -119,7 +119,7 @@ The idea is to authorize the provider to put useful information needed while
 agent issue is reported.
 One very useful information should be first defined like in that example:
 
-our $COMMENTS = [
+our \$COMMENTS = [
     "Based on GLPI Agent $VERSION"
 ];
 VERSION
