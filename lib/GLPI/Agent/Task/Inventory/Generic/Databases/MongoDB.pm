@@ -7,6 +7,8 @@ use warnings;
 
 use parent 'GLPI::Agent::Task::Inventory::Generic::Databases';
 
+use JSON;
+use English qw(-no_match_vars);
 use POSIX qw(strftime);
 
 use GLPI::Agent::Tools;
@@ -76,13 +78,24 @@ sub _getDatabaseService {
             last_boot_date  => $lastboot,
         );
 
-        my @databases = _runSql(
+        my @databases;
+        my $databases = join('', _runSql(
             sql => "db.adminCommand( { listDatabases: 1 } ).databases",
+            stringify => $params{mongosh},
             %params
-        );
+        ));
+        eval {
+            @databases = grep { ref($_) eq 'HASH' } @{ decode_json($databases) };
+        };
+        if ($EVAL_ERROR) {
+            $params{logger}->error("Can't decode mongodb database list: $EVAL_ERROR")
+                if $params{logger};
+        }
 
         foreach my $dbinfo (@databases) {
-            my ($db, $size) = $dbinfo =~ /\{\s*name:\s*'([^']+)',\s*sizeOnDisk:\s*Long\("(\d+)"\)/
+            my $db = $dbinfo->{name}
+                or next;
+            my $size = $dbinfo->{sizeOnDisk}
                 or next;
 
             if ($size) {
@@ -135,6 +148,8 @@ sub _runSql {
     $command .= " --quiet";
     $command .= " --nodb" if $nodb;
     $command .= " --norc $rcfile" if $rcfile;
+    # Mongosh must be instructed to output JSON like mongo does before
+    $sql = "EJSON.stringify($sql)" if $params{stringify};
     $command .= " --eval \"$sql\"";
 
     # Only to support unittests
