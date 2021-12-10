@@ -41,4 +41,4 @@ done <<-FILES
 FILES
 
 # Unregister package
-pkgutil --forget org.glpi-project.glpi-agent $INSTALLPATH
+sudo pkgutil --forget org.glpi-project.glpi-agent $INSTALLPATH
