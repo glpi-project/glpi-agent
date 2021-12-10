@@ -170,7 +170,7 @@ jobs:
         path: |
             C:/Strawberry-perl-for-GLPI-Agent_build/tools
             C:/Strawberry-perl-for-GLPI-Agent_build/restore
-        key: windows-packaging-restore-points-${{ matrix.arch }}-${{ hashFiles('contrib\windows\glpi-agent-packaging.pl', 'contrib\windows\packaging\*') }}
+        key: windows-packaging-cache-${{ matrix.arch }}-${{ hashFiles('contrib\windows\glpi-agent-packaging.pl', 'contrib\windows\packaging\*') }}
     - name: List files in cached paths
       if: success() || failure()
       run: |
