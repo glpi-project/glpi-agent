@@ -44,30 +44,31 @@ my ($versiontag) = $version =~ /^[0-9.]+-(.*)$/;
 my ($major,$minor,$revision) = $version =~ /^(\d+)\.(\d+)\.?(\d+)?/;
 $revision = 0 unless defined($revision);
 
-if ($version =~ /-dev$/ && $ENV{GITHUB_SHA}) {
+if ($ENV{GITHUB_SHA}) {
     my ($github_ref) = $ENV{GITHUB_SHA} =~ /^([0-9a-f]{8})/;
-    $version =~ s/-dev$/-git/;
-    $version .= ($github_ref // $ENV{GITHUB_SHA});
+    $version =~ s/-.*$//;
+    $version .= "-git".($github_ref // $ENV{GITHUB_SHA});
     $versiontag = "git".($github_ref // $ENV{GITHUB_SHA});
 }
 
 if ($ENV{GITHUB_REF} && $ENV{GITHUB_REF} =~ m|refs/tags/(.+)$|) {
-    my $tag = $1;
+    my $github_tag = $1;
+    $versiontag = '';
     if ($revision) {
-        if ($tag =~ /^$major\.$minor\.$revision-(.*)$/) {
-            $version = $tag;
+        $version = $github_tag;
+        if ($github_tag =~ /^$major\.$minor\.$revision-(.*)$/) {
             $versiontag = $1;
-        } elsif ($tag ne "$major.$minor.$revision") {
-            $version = "$major.$minor.$revision-$tag";
-            $versiontag = $tag;
+        } elsif ($github_tag ne "$major.$minor.$revision") {
+            $version = "$major.$minor.$revision-$github_tag";
+            $versiontag = $github_tag;
         }
     } else {
-        if ($tag =~ /^$major\.$minor-(.*)$/) {
-            $version = $tag;
+        $version = $github_tag;
+        if ($github_tag =~ /^$major\.$minor-(.*)$/) {
             $versiontag = $1;
-        } elsif ($tag ne "$major.$minor") {
-            $version = "$major.$minor-$tag";
-            $versiontag = $tag;
+        } elsif ($github_tag ne "$major.$minor") {
+            $version = "$major.$minor-$github_tag";
+            $versiontag = $github_tag;
         }
     }
 }
