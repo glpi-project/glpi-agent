@@ -4,7 +4,7 @@
 
 PKG="$1"
 DEST="$2"
-INSTALL_PATH="${DEST%/}/Applications/GLPI-Agent.app"
+INSTALL_PATH="${DEST%/}/Applications/GLPI-Agent"
 
 echo "OS version: $(uname -r)"
 echo "Copying uninstall script to $INSTALL_PATH"
@@ -34,7 +34,7 @@ if [ "$DEST" != "/" ]; then
         bin/glpi-netdiscovery bin/glpi-netinventory \
         bin/glpi-remote bin/glpi-wakeonlan
     do
-        sudo sed -i -e "s|/Applications/GLPI-Agent.app|$INSTALL_PATH|" \
+        sudo sed -i -e "s|/Applications/GLPI-Agent|$INSTALL_PATH|" \
             "$INSTALL_PATH/$SCRIPT"
     done
 fi

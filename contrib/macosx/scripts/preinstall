@@ -3,7 +3,7 @@
 # Script output can be found in /var/log/install.log
 PKG="$1"
 DEST="$2"
-INSTALL_PATH="${DEST%/}/Applications/GLPI-Agent.app"
+INSTALL_PATH="${DEST%/}/Applications/GLPI-Agent"
 
 # Stop service and unload plist file if present
 if [ -e /Library/LaunchDaemons/org.glpi-project.glpi-agent.plist ]; then

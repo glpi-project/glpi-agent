@@ -87,7 +87,7 @@ esac
 
 export MACOSX_DEPLOYMENT_TARGET
 
-BUILD_PREFIX="/Applications/GLPI-Agent.app"
+BUILD_PREFIX="/Applications/GLPI-Agent"
 
 # We uses munkipkg script to simplify the process
 # Thanks to https://github.com/munki/munki-pkg project
@@ -391,7 +391,7 @@ if [ "$ARCH" == "arm64" -a -n "$LOCAL_ARCH" ]; then
         mv -f "$file.arm64" "$file"
         lipo -info "$file"
     done <<CHECK_ARCH
-pkg/payload/Applications/GLPI-Agent.app/bin/perl
+pkg/payload/Applications/GLPI-Agent/bin/perl
 $(find pkg/payload -name '*.bundle')
 CHECK_ARCH
 fi
@@ -494,7 +494,7 @@ if [ -n "$APPSIGNID" ]; then
         codesign --options runtime -s "$APPSIGNID" --timestamp "$file" \
             && let ++SIGNED
     done <<CODE_SIGNING
-pkg/payload/Applications/GLPI-Agent.app/bin/perl
+pkg/payload/Applications/GLPI-Agent/bin/perl
 pkg/scripts/dmidecode
 $(find pkg/payload -name '*.bundle')
 CODE_SIGNING
