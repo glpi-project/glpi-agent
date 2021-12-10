@@ -1,0 +1,17 @@
+[
+	{
+		"name" : "admin",
+		"sizeOnDisk" : 32768,
+		"empty" : false
+	},
+	{
+		"name" : "config",
+		"sizeOnDisk" : 12288,
+		"empty" : false
+	},
+	{
+		"name" : "local",
+		"sizeOnDisk" : 32768,
+		"empty" : false
+	}
+]

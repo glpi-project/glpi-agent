@@ -44,7 +44,8 @@ sub _getDatabaseService {
 
     my @dbs = ();
 
-    $params{mongosh} = canRun('mongosh') ? 1 : 0;
+    $params{mongosh} = canRun('mongosh') ? 1 : 0
+        unless defined($params{mongosh}); # Needed for tests
 
     foreach my $credential (@{$credentials}) {
         GLPI::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);

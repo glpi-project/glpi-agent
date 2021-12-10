@@ -60,6 +60,35 @@ my %db_tests = (
         VERSION => "5.0.1"
       }
     ],
+    'mongodb-3.6.3' => [
+      {
+        DATABASES => [
+          {
+            IS_ACTIVE => 1,
+            NAME => "admin",
+            SIZE => 0
+          },
+          {
+            IS_ACTIVE => 1,
+            NAME => "config",
+            SIZE => 0
+          },
+          {
+            IS_ACTIVE => 1,
+            NAME => "local",
+            SIZE => 0
+          }
+        ],
+        IS_ACTIVE => 1,
+        LAST_BOOT_DATE => "2021-12-10 13:14:35",
+        MANUFACTURER => "MongoDB",
+        NAME => "MongoDB",
+        PORT => 27017,
+        SIZE => 0,
+        TYPE => "mongodb",
+        VERSION => "3.6.3"
+      }
+    ],
 );
 
 my %credentials = (
@@ -73,10 +102,13 @@ my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %db_tests) {
     my $file  = "resources/generic/databases/$test";
+    my ($version) = $test =~ /^mongodb-(\d+)\./;
     my $dbs   = GLPI::Agent::Task::Inventory::Generic::Databases::MongoDB::_getDatabaseService(
         file        => $file,
         credentials => $credentials{$test} // [{}],
         istest      => $db_tests{$test} ? 1 : 0,
+        # Since mongodb 5.0, "mongosh" command replaces "mongo" one
+        mongosh     => $version && $version > 4 ? 1 : 0,
     );
     my $entries = [ map { $_->entry() } @$dbs ];
     print STDERR "\n$test: ", Dumper($entries) unless defined($db_tests{$test});
