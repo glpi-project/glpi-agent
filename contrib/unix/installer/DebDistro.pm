@@ -12,6 +12,11 @@ BEGIN {
 
 use InstallerVersion;
 
+my $DEBREVISION = "1";
+my $DEBVERSION = InstallerVersion::VERSION();
+# Add package a revision on official releases
+$DEBVERSION .= "-$DEBREVISION" unless $DEBVERSION =~ /-.+$/;
+
 my %DebPackages = (
     "glpi-agent"                => qr/^inventory$/i,
     "glpi-agent-task-network"   => qr/^netdiscovery|netinventory|network$/i,
@@ -66,7 +71,7 @@ sub init {
 
 sub _extract_deb {
     my ($self, $deb) = @_;
-    my $pkg = $deb."_".InstallerVersion::VERSION()."_all.deb";
+    my $pkg = $deb."_${DEBVERSION}_all.deb";
     $self->verbose("Extracting $pkg ...");
     $self->{_archive}->extract("pkg/deb/$pkg")
         or die "Failed to extract $pkg: $!\n";
@@ -78,7 +83,7 @@ sub _extract_deb {
 sub install {
     my ($self) = @_;
 
-    $self->verbose("Trying to install glpi-agent v".InstallerVersion::VERSION()." on $self->{_release} release ($self->{_name}:$self->{_version})...");
+    $self->verbose("Trying to install glpi-agent v$DEBVERSION on $self->{_release} release ($self->{_name}:$self->{_version})...");
 
     my $type = $self->{_type} // "typical";
     my %pkgs = qw( glpi-agent 1 );
@@ -98,7 +103,7 @@ sub install {
 
         foreach my $pkg (keys(%pkgs)) {
             if ($self->{_packages}->{$pkg}) {
-                if ($self->{_packages}->{$pkg} eq InstallerVersion::VERSION()) {
+                if ($self->{_packages}->{$pkg} eq $DEBVERSION) {
                     $self->verbose("$pkg still installed and up-to-date");
                     delete $pkgs{$pkg};
                 } else {

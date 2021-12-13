@@ -12,6 +12,11 @@ BEGIN {
 
 use InstallerVersion;
 
+my $RPMREVISION = "1";
+my $RPMVERSION = InstallerVersion::VERSION();
+# Add package a revision on official releases
+$RPMVERSION .= "-$RPMREVISION" unless $RPMVERSION =~ /-.+$/;
+
 my %RpmPackages = (
     "glpi-agent"                => qr/^inventory$/i,
     "glpi-agent-task-network"   => qr/^netdiscovery|netinventory|network$/i,
@@ -67,7 +72,7 @@ sub init {
 
 sub _extract_rpm {
     my ($self, $rpm) = @_;
-    my $pkg = "$rpm-".InstallerVersion::VERSION().".noarch.rpm";
+    my $pkg = "$rpm-$RPMVERSION.noarch.rpm";
     $self->verbose("Extracting $pkg ...");
     $self->{_archive}->extract("pkg/rpm/$pkg")
         or die "Failed to extract $pkg: $!\n";
@@ -77,7 +82,7 @@ sub _extract_rpm {
 sub install {
     my ($self) = @_;
 
-    $self->verbose("Trying to install glpi-agent v".InstallerVersion::VERSION()." on $self->{_release} release ($self->{_name}:$self->{_version})...");
+    $self->verbose("Trying to install glpi-agent v$RPMVERSION on $self->{_release} release ($self->{_name}:$self->{_version})...");
 
     my $type = $self->{_type} // "typical";
     my %pkgs = qw( glpi-agent 1 );
@@ -98,7 +103,7 @@ sub install {
 
         foreach my $pkg (keys(%pkgs)) {
             if ($self->{_packages}->{$pkg}) {
-                if ($self->{_packages}->{$pkg} eq InstallerVersion::VERSION()) {
+                if ($self->{_packages}->{$pkg} eq $RPMVERSION) {
                     $self->verbose("$pkg still installed and up-to-date");
                     delete $pkgs{$pkg};
                 } else {
