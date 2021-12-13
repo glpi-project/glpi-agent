@@ -269,15 +269,28 @@ sub configure {
     # Check if a configuration exists in archive
     my @configs = grep { m{^config/[^/]+\.(cfg|crt|pem)$} } $self->{_archive}->files();
 
+    # We should also check existing installed config to support transparent upgrades but
+    # only if no configuration option has been provided
+    my $installed_config = "$folder/00-install.cfg";
+    my $current_config;
+    if (-e $installed_config && ! keys(%{$self->{_options}})) {
+        push @configs, $installed_config;
+        my $fh;
+        open $fh, "<", $installed_config
+            or die "Can't read $installed_config: $!\n";
+        $current_config = <$fh>;
+        close($fh);
+    }
+
     # Ask configuration unless in silent mode, request or server or local is given as option
     if (!$self->{_silent} && !$self->{_dont_ask} && !($self->{_options}->{server} || $self->{_options}->{local})) {
         my (@cfg) = grep { m/\.cfg$/ } @configs;
         if (@cfg) {
             # Check if configuration provides server or local
             foreach my $cfg (@cfg) {
-                my $content = $self->{_archive}->content($cfg);
+                my $content = $cfg eq $installed_config ? $current_config : $self->{_archive}->content($cfg);
                 if ($content =~ /^(server|local)\s*=\s*\S/m) {
-                    $self->{_dontask} = 1;
+                    $self->{_dont_ask} = 1;
                     last;
                 }
             }
@@ -292,9 +305,9 @@ sub configure {
             unless -d $folder;
 
         my $fh;
-        open $fh, ">", "$folder/00-install.cfg"
-            or die "Can't create $folder/00-install.cfg: $!\n";
-        $self->verbose("Writing configuration in $folder/00-install.cfg");
+        open $fh, ">", $installed_config
+            or die "Can't create $installed_config: $!\n";
+        $self->verbose("Writing configuration in $installed_config");
         foreach my $option (sort keys(%{$self->{_options}})) {
             my $value = $self->{_options}->{$option} // "";
             $self->verbose("Adding: $option = $value");
@@ -306,6 +319,7 @@ sub configure {
     }
 
     foreach my $config (@configs) {
+        next if $config eq $installed_config;
         my ($cfg) = $config =~ m{^confs/([^/]+\.(cfg|crt|pem))$};
         die "Can't install $cfg configuration without $folder folder\n"
             unless -d $folder;
@@ -383,6 +397,8 @@ sub install {
         # If requested, ask service to run inventory now sending it USR1 signal
         # If requested, still run inventory now
         if ($self->{_runnow}) {
+            # Wait a little so the service won't misunderstand SIGUSR1 signal
+            sleep 1;
             $self->info("Asking service to run inventory now as requested...");
             $self->system("systemctl -s SIGUSR1 kill glpi-agent");
         }
