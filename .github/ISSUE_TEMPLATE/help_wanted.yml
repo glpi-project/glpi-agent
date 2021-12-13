@@ -6,22 +6,26 @@ body:
     attributes:
       value: |
         Thanks for taking the time to fill out this support request!
-  - type: checkboxes
+  - type: dropdown
     id: documentation
     attributes:
       label: Documentation
       description: I recognized I have checked the [online documentation](https://glpi-agent.readthedocs.io/en/latest/).
       options:
-        - label: Yes, I do
-          required: true
-  - type: checkboxes
+        - Yes, I read it
+        - Not applicable
+    validations:
+      required: true
+  - type: dropdown
     id: solution-search
     attributes:
       label: Solution search
       description: I looked for a solution on other sources like the [GLPI forum](https://forum.glpi-project.org/).
       options:
-        - label: Yes, I do
-          required: true
+        - Yes, I read it
+        - Not applicable
+    validations:
+      required: true
   - type: dropdown
     id: professional-support
     attributes:

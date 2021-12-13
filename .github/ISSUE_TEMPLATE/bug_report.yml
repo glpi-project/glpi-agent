@@ -6,14 +6,16 @@ body:
     attributes:
       value: |
         Thanks for taking the time to fill out this bug report!
-  - type: checkboxes
+  - type: dropdown
     id: documentation
     attributes:
       label: Bug reporting acknowledgment
       description: I read the [bug reporting](https://glpi-agent.readthedocs.io/en/latest/bug-reporting.html) page in [online documentation](https://glpi-agent.readthedocs.io/en/latest/) before submitting.
       options:
-        - label: Yes, I read it
-          required: true
+        - Yes, I read it
+        - Not applicable
+    validations:
+      required: true
   - type: dropdown
     id: professional-support
     attributes:

@@ -6,14 +6,16 @@ body:
     attributes:
       value: |
         Thanks for taking the time to fill out this feature request!
-  - type: checkboxes
+  - type: dropdown
     id: documentation
     attributes:
       label: Documentation
       description: I recognized I have checked the [online documentation](https://glpi-agent.readthedocs.io/en/latest/) and other sources for this feature.
       options:
-        - label: Yes, I do
-          required: true
+        - Yes, I read it
+        - Not applicable
+    validations:
+      required: true
   - type: dropdown
     id: professional-support
     attributes:
