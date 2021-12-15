@@ -5,6 +5,15 @@ Revision history for GLPI agent
 inventory:
 * Fix: Make deprecated XML format compatible with GLPI 10 XML to JSON converter
 
+collect:
+* we now support GLPI 10 server if glpi-inventory plugin is used on server-side
+
+deploy:
+* we now support GLPI 10 server if glpi-inventory plugin is used on server-side
+
+esx:
+* we now support GLPI 10 server if glpi-inventory plugin is used on server-side
+
 1.0 Fri, 10 Dec 2021
 
 core:

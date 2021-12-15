@@ -4,11 +4,13 @@ use strict;
 use warnings;
 use parent 'GLPI::Agent::Task';
 
+use UNIVERSAL::require;
+use English qw(-no_match_vars);
+
 use GLPI::Agent::Config;
 use GLPI::Agent::HTTP::Client::Fusion;
 use GLPI::Agent::Logger;
 use GLPI::Agent::Inventory;
-use GLPI::Agent::XML::Query::Inventory;
 use GLPI::Agent::SOAP::VMware;
 
 use GLPI::Agent::Task::ESX::Version;
@@ -18,11 +20,7 @@ our $VERSION = GLPI::Agent::Task::ESX::Version::VERSION;
 sub isEnabled {
     my ($self) = @_;
 
-    if ($self->{target}->isGlpiServer()) {
-        # TODO Support ESX task via GLPI Agent Protocol
-        $self->{logger}->debug("ESX task not supported by GLPI server");
-        return;
-    } elsif (!$self->{target}->isType('server')) {
+    unless ($self->{target}->isGlpiServer() || $self->{target}->isType('server')) {
         $self->{logger}->debug("ESX task not compatible with local target");
         return;
     }
@@ -180,17 +178,49 @@ sub run {
     $self->{logger}->info(
         "Got " . int( @{ $jobs->{jobs} } ) . " VMware host(s) to inventory." );
 
-    my $ocsClient = GLPI::Agent::HTTP::Client::OCS->new(
-        logger       => $self->{logger},
-        user         => $params{user},
-        password     => $params{password},
-        proxy        => $params{proxy},
-        ca_cert_file => $params{ca_cert_file},
-        ca_cert_dir  => $params{ca_cert_dir},
-        no_ssl_check => $params{no_ssl_check},
-        no_compress  => $params{no_compress},
-        ssl_cert_file => $params{ssl_cert_file},
-    );
+    my $serverclient;
+    if ($self->{target}->isGlpiServer()) {
+        GLPI::Agent::HTTP::Client::GLPI->require();
+        return $self->{logger}->error("GLPI Protocol library can't be loaded")
+            if $EVAL_ERROR;
+
+        $serverclient = GLPI::Agent::HTTP::Client::GLPI->new(
+            logger          => $self->{logger},
+            user            => $params{user},
+            password        => $params{password},
+            proxy           => $params{proxy},
+            ca_cert_file    => $params{ca_cert_file},
+            ca_cert_dir     => $params{ca_cert_dir},
+            no_ssl_check    => $params{no_ssl_check},
+            no_compress     => $params{no_compress},
+            ssl_cert_file   => $params{ssl_cert_file},
+            agentid         => uuid_to_string($self->{agentid}),
+        );
+
+        return $self->{logger}->error("Can't load GLPI Protocol Inventory library")
+            unless GLPI::Agent::Protocol::Inventory->require();
+    } else {
+        # Deprecated XML based protocol
+        GLPI::Agent::HTTP::Client::OCS->require();
+        return $self->{logger}->error("OCS Protocol library can't be loaded")
+            if $EVAL_ERROR;
+
+        $serverclient = GLPI::Agent::HTTP::Client::OCS->new(
+            logger        => $self->{logger},
+            user          => $params{user},
+            password      => $params{password},
+            proxy         => $params{proxy},
+            ca_cert_file  => $params{ca_cert_file},
+            ca_cert_dir   => $params{ca_cert_dir},
+            no_ssl_check  => $params{no_ssl_check},
+            no_compress   => $params{no_compress},
+            ssl_cert_file => $params{ssl_cert_file},
+        );
+
+        GLPI::Agent::XML::Query::Inventory->require();
+        return $self->{logger}->error("XML::Query::Inventory library can't be loaded")
+            if $EVAL_ERROR;
+    }
 
     foreach my $job ( @{ $jobs->{jobs} } ) {
 
@@ -220,12 +250,23 @@ sub run {
                 $hostId, $self->{config}->{tag}
             );
 
-            my $message = GLPI::Agent::XML::Query::Inventory->new(
-                deviceid => $self->{deviceid},
-                content  => $inventory->getContent()
-            );
+            my $message;
+            if ($self->{target}->isGlpiServer()) {
+                $message = GLPI::Agent::Protocol::Inventory->new(
+                    logger      => $self->{logger},
+                    deviceid    => $self->{deviceid},
+                    content     => $inventory->getContent(),
+                    itemtype    => "Computer",
+                );
+            } else {
+                # Deprecated XML based protocol
+                $message = GLPI::Agent::XML::Query::Inventory->new(
+                    deviceid => $self->{deviceid},
+                    content  => $inventory->getContent()
+                );
+            }
 
-            $ocsClient->send(
+            $serverclient->send(
                 url     => $self->{target}->getUrl(),
                 message => $message
             );
