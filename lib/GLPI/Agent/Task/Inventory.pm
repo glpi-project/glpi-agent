@@ -155,6 +155,11 @@ sub run {
         map { $_ => 1 } @{$self->{config}->{'no-category'}}
     };
 
+    # Always disable unsupported categories in deprecated XML format
+    map { $self->{disabled}->{$_} = 1 } qw(database)
+        if ($self->{target}->isType('local') && $self->{target}->{format} eq 'xml')
+            || ($self->{target}->isType('server') && !$self->{target}->isGlpiServer());
+
     # Support inventory event
     if ($event && !$self->setupEvent()) {
         $self->{logger}->info("Skipping Inventory task event on ".$self->{target}->id());
@@ -353,6 +358,9 @@ sub submit {
 
         return $self->{logger}->error("Can't load Inventory XML Query API")
             unless GLPI::Agent::XML::Query::Inventory->require();
+
+        # Fix inventory for deprecated XML format
+        $self->{inventory}->makeXmlCompat();
 
         my $message = GLPI::Agent::XML::Query::Inventory->new(
             deviceid => $inventory->getDeviceId(),
@@ -662,6 +670,10 @@ sub _printInventory {
                 utf8_flag       => 1,
                 output_encoding => 'UTF-8'
             );
+
+            # Fix inventory for deprecated XML format
+            $self->{inventory}->makeXmlCompat();
+
             print {$params{handle}} $tpp->write({
                 REQUEST => {
                     CONTENT  => $self->{inventory}->getContent(),

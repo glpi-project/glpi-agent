@@ -397,6 +397,15 @@ sub setTag {
 
 }
 
+sub makeXmlCompat {
+    my ($self) = @_;
+
+    # Keep compatibility for deprecated XML format, needed to pass GLPI 10 converter
+
+    return unless $self->{content}->{VERSIONPROVIDER} && defined($self->{content}->{VERSIONPROVIDER}->{ETIME});
+    $self->{content}->{HARDWARE}->{ETIME} = delete $self->{content}->{VERSIONPROVIDER}->{ETIME};
+}
+
 my @checked_sections = sort qw(
     HARDWARE    BIOS        MEMORIES    SLOTS       REGISTRY    CONTROLLERS
     MONITORS    PORTS       STORAGES    DRIVES      INPUTS      MODEMS
