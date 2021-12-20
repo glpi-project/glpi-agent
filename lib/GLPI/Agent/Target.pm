@@ -300,7 +300,9 @@ sub _loadState {
 
     $self->{maxDelay}    = $data->{maxDelay}    if $data->{maxDelay};
     $self->{nextRunDate} = $data->{nextRunDate} if $data->{nextRunDate};
-    $self->{_type}       = $data->{_type}       if $data->{_type};
+
+    # Update us as GLPI server is recognized as so before
+    $self->isGlpiServer(1) if $data->{is_glpi_server};
 
     # Disable initialDelay if next run date has still been set in a previous run
     delete $self->{initialDelay} if $data->{nextRunDate};
@@ -312,13 +314,10 @@ sub _saveState {
     my $data ={
         maxDelay    => $self->{maxDelay},
         nextRunDate => $self->{nextRunDate},
-        type        => $self->getType(),
-        path        => $self->getType() eq 'local'  ? $self->getPath() : '',
-        url         => $self->getType() eq 'server' ? $self->getUrl()  : '',
-        id          => $self->{id},
     };
 
-    $data->{_type} = $self->{_type} if defined($self->{_type});
+    # Add a flag if we are a GLPI server target
+    $data->{is_glpi_server} = 1 if $self->isGlpiServer();
 
     $self->{storage}->save(
         name => 'target',
