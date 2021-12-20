@@ -69,6 +69,7 @@ sub isEnabled {
                                             ca_cert_dir  => $config->{'ca-cert-dir'},
                                             no_ssl_check => $config->{'no-ssl-check'},
                                             no_compress  => $config->{'no-compression'},
+                                            ssl_cert_file => $config->{'ssl-cert-file'},
                                             agentid      => $self->{agentid},
                                         );
                                         $this_param->{_glpi_url} = $self->{target}->getUrl();
