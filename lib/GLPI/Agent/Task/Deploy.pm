@@ -23,8 +23,8 @@ our $VERSION = GLPI::Agent::Task::Deploy::Version::VERSION;
 sub isEnabled {
     my ($self) = @_;
 
-    unless ($self->{target}->isGlpiServer() || $self->{target}->isType('server')) {
-        $self->{logger}->debug("Deploy task not compatible with local target");
+    unless ($self->{target}->isType('server')) {
+        $self->{logger}->debug("Deploy task only compatible with server target");
         return;
     }
 

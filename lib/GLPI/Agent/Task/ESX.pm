@@ -20,8 +20,8 @@ our $VERSION = GLPI::Agent::Task::ESX::Version::VERSION;
 sub isEnabled {
     my ($self) = @_;
 
-    unless ($self->{target}->isGlpiServer() || $self->{target}->isType('server')) {
-        $self->{logger}->debug("ESX task not compatible with local target");
+    unless ($self->{target}->isType('server')) {
+        $self->{logger}->debug("ESX task only compatible with server target");
         return;
     }
 

@@ -61,8 +61,8 @@ my %json_validation = (
 sub isEnabled {
     my ($self) = @_;
 
-    unless ($self->{target}->isGlpiServer() || $self->{target}->isType('server')) {
-        $self->{logger}->debug("Collect task not compatible with local target");
+    unless ($self->{target}->isType('server')) {
+        $self->{logger}->debug("Collect task only compatible with server target");
         return;
     }
 
