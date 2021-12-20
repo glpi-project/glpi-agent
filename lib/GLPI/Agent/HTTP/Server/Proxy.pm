@@ -518,8 +518,10 @@ sub _handle_proxy_request {
         $self->_send($answer);
 
         # Update proxyid with our agentid to permit proxy loop detection
-        $proxyid .= "," if $proxyid;
-        $proxyid .= uuid_to_string($agent->{agentid});
+        if ($agent->{agentid}) {
+            $proxyid .= "," if $proxyid;
+            $proxyid .= uuid_to_string($agent->{agentid});
+        }
 
         # Prepare a client to foward request
         my $proxyclient = GLPI::Agent::HTTP::Client::GLPI->new(
@@ -531,6 +533,7 @@ sub _handle_proxy_request {
             ca_cert_file => $serverconfig->{'ca-cert-file'},
             ca_cert_dir  => $serverconfig->{'ca-cert-dir'},
             no_ssl_check => $serverconfig->{'no-ssl-check'},
+            ssl_cert_file => $serverconfig->{'ssl-cert-file'},
             no_compress  => $serverconfig->{'no-compression'},
             agentid      => $agentid,
             proxyid      => $proxyid,
@@ -670,7 +673,7 @@ sub _handle_proxy_request {
             return $self->proxy_error(500, 'No local storage for inventory');
         }
     } else {
-        @servers = grep { $_->isType('server') || $_->isGlpiServer() } $agent->getTargets();
+        @servers = grep { $_->isType('server') } $agent->getTargets();
     }
 
     if ($self->config('local_store') && -d $self->config('local_store')) {
