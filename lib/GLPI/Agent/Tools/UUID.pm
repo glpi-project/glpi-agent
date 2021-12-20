@@ -29,13 +29,15 @@ sub create_uuid_from_name {
 }
 
 sub uuid_to_string {
-    my $uuid = Data::UUID->new();
-    return lc($uuid->to_string(@_));
+    my ($uuid) = @_;
+    return '' unless defined($uuid);
+    my $uuidlib = Data::UUID->new();
+    return lc($uuidlib->to_string($uuid));
 }
 
 sub is_uuid_string {
     my ($uuid) = @_;
-    return $uuid =~ $IS_UUID_STRING;
+    return defined($uuid) && $uuid =~ $IS_UUID_STRING;
 }
 
 1;
