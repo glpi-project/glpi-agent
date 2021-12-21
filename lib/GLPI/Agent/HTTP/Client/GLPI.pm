@@ -187,7 +187,7 @@ sub _uncompress {
         return Compress::Zlib::uncompress($data);
     } elsif ($type =~ /^x-compress-gzip$/i) {
         $self->{logger}->debug2("format: Gzip");
-        return $self->_uncompressGzip($1);
+        return $self->_uncompressGzip($data);
     } elsif ($type =~ /^json$/i) {
         $self->{logger}->debug2("format: JSON");
         return $data;
