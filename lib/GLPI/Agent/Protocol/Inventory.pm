@@ -108,7 +108,7 @@ my %normalize = (
         datetime        => [ qw/STARTED/ ],
         integer         => [ qw/PID VIRTUALMEMORY/ ],
     },
-    REMOTE_MGNT      => {
+    REMOTE_MGMT      => {
         required        => [ qw/ID TYPE/ ],
         string          => [ qw/ID/ ],
     },
