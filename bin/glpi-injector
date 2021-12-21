@@ -199,8 +199,34 @@ sub sendContent {
         $error = $tree->{REPLY}->{ERROR}
             if ref($tree->{REPLY}) eq 'HASH' && exists($tree->{REPLY}->{ERROR});
     };
+    if ($EVAL_ERROR) {
+        if (!$content) {
+            $error = "Unexpected ".(defined($content) ? length($content) ? "'$content'" : "empty" : "undefined")." server response";
+        } elsif ($content =~ /^{/) {
+            eval {
+                my $json = decode_json($content);
+                if ($json->{status} eq "error") {
+                    $error = $json->{message} // "Server failed to import" .
+                        ($options->{debug} ? "" : ", use --debug option to debug");
+                } elsif ($json->{status} eq "pending") {
+                    # TODO Handle proxy
+                    print "proxy processing... ";
+                } elsif ($json->{status} ne "ok") {
+                    $error = $json->{message} // "Server failed to import" .
+                        ($options->{debug} ? "" : ", use --debug option to debug");
+                }
+            };
+            if ($EVAL_ERROR) {
+                $error = "Failed to parse GLPI JSON answer" .
+                    ($options->{debug} ? "" : ", use --debug option to debug");
+            }
+        } else {
+            $error = "Bad content as server response" .
+                ($options->{debug} ? "" : ", use --debug option to debug");
+        }
+    }
 
-    if ($options->{verbose}) {
+    if ($options->{verbose} || $error) {
         print $error           ? "ERROR: $error" :
             $res->is_success() ? "OK"            :
                                  "ERROR: ".$res->status_line(), "$info\n";

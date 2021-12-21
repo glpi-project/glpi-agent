@@ -110,12 +110,9 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
         $requestid = $response->header("GLPI-Request-ID");
         undef $requestid unless defined($requestid) && $requestid =~ /^[0-9A-F]{8}$/;
 
-        # no need to log anything specific here, it has already been done in parent class
-        return if !$response->is_success();
-
         my $content = $response->content();
         unless (defined($content)) {
-            $logger->error(_log_prefix . "no answer content");
+            $logger->error(_log_prefix . "no answer content") if $response->is_success();
             return;
         }
 
@@ -123,7 +120,7 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
         my $uncompressed_response_content = $self->_uncompress($content, $type);
         unless ($uncompressed_response_content) {
             unless (length($content)) {
-                $logger->error(_log_prefix . "Got empty answer");
+                $logger->error(_log_prefix . "Got empty answer") if $response->is_success();
                 return;
             }
             $logger->error(
@@ -144,6 +141,14 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
         }
         unless ($answer->is_valid_message()) {
             $logger->error(_log_prefix . "not a valid answer");
+            return;
+        }
+
+        # log server error message is set
+        if ($answer->status eq 'error' || !$response->is_success()) {
+            my $message = $answer->get('message');
+            $logger->error(_log_prefix . "server error: $message")
+                if $message;
             return;
         }
 
