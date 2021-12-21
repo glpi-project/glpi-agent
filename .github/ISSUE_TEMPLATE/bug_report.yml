@@ -88,6 +88,7 @@ body:
       description: What is your GLPI version on server-side ?
       options:
         - 9.5.6
+        - 10.0.0-beta
         - Older (See additional context below)
         - development release (See additional context below)
         - Not applicable
@@ -95,11 +96,12 @@ body:
     validations:
       required: true
   - type: dropdown
-    id: fi4g-version
+    id: plugin-version
     attributes:
-      label: FusionInventory for GLPI version
-      description: What is your FusionInventory for GLPI version plugin on server-side ?
+      label: GLPIInventory plugin or FusionInventory for GLPI plugin version
+      description: What is your GLPIInventory or FusionInventory for GLPI plugin version on server-side ?
       options:
+        - 10.0.0-rc2
         - 9.5+3.0
         - 9.4+2.6
         - Older (See additional context below)
