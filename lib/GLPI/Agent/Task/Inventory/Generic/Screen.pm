@@ -26,6 +26,7 @@ sub doInventory {
     my %options = (
         logger  => $params{logger},
         datadir => $params{datadir},
+        format  => $inventory->getFormat() // 'json',
         remote  => $inventory->getRemote()
     );
 
@@ -116,7 +117,7 @@ sub _getScreensFromWindows {
 
         # Skip setting monitor port as it is not used on server-side and this
         # does not respect json format
-        if ($params{inventory}->getFormat() ne 'json' && exists($object->{VideoOutputTechnology})) {
+        if ($params{format} ne 'json' && exists($object->{VideoOutputTechnology})) {
             my $port = $object->{VideoOutputTechnology};
             $screen->{PORT} = $ports{$port}
                 if (exists($ports{$port}));
