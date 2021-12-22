@@ -24,22 +24,43 @@ use GLPI::Agent::XML::Query;
 
 use GLPI::Agent::Task::NetDiscovery::Version;
 use GLPI::Agent::Task::NetDiscovery::Job;
+use GLPI::Agent::Protocol::Message;
+use GLPI::Agent::HTTP::Client::OCS;
 
 our $VERSION = GLPI::Agent::Task::NetDiscovery::Version::VERSION;
 
 sub isEnabled {
     my ($self, $contact) = @_;
 
-    if ($self->{target}->isGlpiServer()) {
-        # TODO Support NetDiscovery task via GLPI Agent Protocol
-        $self->{logger}->debug("NetDiscovery task not supported by GLPI server");
-        return;
-    } elsif (!$self->{target}->isType('server')) {
+    unless ($self->{target}->isType('server')) {
         $self->{logger}->debug("NetDiscovery task not compatible with local target");
         return;
     }
 
-    my @options = $contact->getOptionsInfoByName('NETDISCOVERY');
+    my @options;
+    if (ref($contact) =~ /^GLPI::Agent::Protocol/) {
+        my $tasks = $contact->get("tasks");
+        if ($tasks && ref($tasks->{netdiscovery}) eq 'ARRAY') {
+            foreach my $tasklist (@{$tasks->{netdiscovery}}) {
+                next unless ref($tasklist) eq 'HASH';
+                my @listoptions;
+                if (ref($tasklist->{options}) eq 'ARRAY') {
+                    @listoptions = grep { ref($_) eq 'HASH' } @{$tasklist->{options}};
+                }
+                if (@listoptions && $tasklist->{version}) {
+                    my $server = $tasklist->{server} // "glpi";
+                    my $version = $tasklist->{version};
+                    $self->{logger}->debug("NetDiscovery task requested by $server v$version");
+                    map { $_->{_server} = $server } @listoptions;
+                }
+                push @options, @listoptions if @listoptions;
+            }
+        }
+        $self->{glpimode} = 1;
+    } else {
+        # Legacy support of FusionInventory plugin
+        @options = $contact->getOptionsInfoByName('NETDISCOVERY');
+    }
     if (!@options) {
         $self->{logger}->debug("NetDiscovery task execution not requested");
         return;
@@ -47,26 +68,41 @@ sub isEnabled {
 
     my @jobs;
     foreach my $option (@options) {
-        if (!$option->{RANGEIP}) {
-            $self->{logger}->error("invalid job: no IP range defined");
-            next;
-        }
-
         my @ranges;
-        foreach my $range (@{$option->{RANGEIP}}) {
-            if (!$range->{IPSTART}) {
+        # RANGEIP is for legacy support of FusionInventory plugin
+        if ($option->{RANGEIP}) {
+            foreach my $range (@{$option->{RANGEIP}}) {
+                if (!$range->{IPSTART}) {
+                    $self->{logger}->error(
+                        "invalid range: no first address defined"
+                    );
+                    next;
+                }
+                if (!$range->{IPEND}) {
+                    $self->{logger}->error(
+                        "invalid range: no last address defined"
+                    );
+                    next;
+                }
+                push @ranges, $range;
+            }
+        } elsif ($option->{iprange}) {
+            if (!$option->{iprange}->{start}) {
                 $self->{logger}->error(
                     "invalid range: no first address defined"
                 );
                 next;
             }
-            if (!$range->{IPEND}) {
+            if (!$option->{iprange}->{end}) {
                 $self->{logger}->error(
                     "invalid range: no last address defined"
                 );
                 next;
             }
-            push @ranges, $range;
+            push @ranges, $option->{iprange};
+        } else {
+            $self->{logger}->error("invalid job: no IP range defined");
+            next;
         }
 
         if (!@ranges) {
@@ -74,21 +110,25 @@ sub isEnabled {
             next;
         }
 
-        my $params = $option->{PARAM}->[0];
+        # PARAM is for legacy support of FusionInventory plugin
+        my $params = $option->{PARAM} ? $option->{PARAM}->[0] : $option->{param};
         if (!$params) {
-            $self->{logger}->error("invalid job: no PARAM defined");
+            $self->{logger}->error("invalid job: no PARAM or param defined");
             next;
         }
-        if (!defined($params->{PID})) {
-            $self->{logger}->error("invalid job: no PID defined");
+        # PID is for legacy support of FusionInventory plugin
+        if (!defined($params->{PID}) && !defined($params->{pid})) {
+            $self->{logger}->error("invalid job: no PID or pid defined");
             next;
         }
 
+        # AUTHENTICATION is for legacy support of FusionInventory plugin
         push @jobs, GLPI::Agent::Task::NetDiscovery::Job->new(
             logger      => $self->{logger},
             params      => $params,
-            credentials => $option->{AUTHENTICATION},
+            credentials => $option->{AUTHENTICATION} // [],
             ranges      => \@ranges,
+            server      => $option->{_server} // '',
         );
     }
 
@@ -199,6 +239,35 @@ sub run {
     my $jobs = Thread::Queue->new();
     my $done = Thread::Queue->new();
 
+    # Support glpimode providing required resources to request credentials
+    my %glpimode;
+    if ($self->{glpimode}) {
+        GLPI::Agent::HTTP::Client::GLPI->require();
+        my $client;
+        if ($EVAL_ERROR) {
+            $self->{logger}->error("Can't load GLPI client API to handle SNMP credentials request");
+        } else {
+            my $config = $self->{config};
+            $client = GLPI::Agent::HTTP::Client::GLPI->new(
+                logger          => $self->{logger},
+                user            => $config->{user},
+                password        => $config->{password},
+                proxy           => $config->{proxy},
+                ca_cert_file    => $config->{'ca-cert-file'},
+                ca_cert_dir     => $config->{'ca-cert-dir'},
+                no_ssl_check    => $config->{'no-ssl-check'},
+                ssl_cert_file   => $config->{'ssl-cert-file'},
+                no_compress     => $config->{'no-compression'},
+                agentid         => $self->{agentid},
+            );
+        }
+        %glpimode = (
+            client      => $client,
+            deviceid    => $self->{deviceid},
+            url         => $self->{target}->getUrl(),
+        ) if $client;
+    }
+
     # Start jobs by preparing range queues and counting ips
     my $max_count = 0;
     foreach my $job (@{$self->{jobs}}) {
@@ -208,7 +277,8 @@ sub run {
             max_in_queue        => $job->max_threads(),
             in_queue            => 0,
             timeout             => $job->timeout(),
-            snmp_credentials    => $job->getValidCredentials(),
+            snmp_credentials    => $self->{glpimode} ?
+                $job->getCredentialsFromGLPI(%glpimode) : $job->getValidCredentials(),
             ranges              => [],
             size                => 0,
         };
@@ -472,7 +542,7 @@ sub _sendMessage {
 
     # task-specific client, if needed
     $self->{client} = GLPI::Agent::HTTP::Client::OCS->new(%{$self->{_client_params}})
-        if !$self->{client};
+        unless defined($self->{client});
 
     $self->{client}->send(
         url     => $self->{target}->getUrl(),
