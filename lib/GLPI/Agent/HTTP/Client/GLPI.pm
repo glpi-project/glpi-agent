@@ -113,8 +113,8 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
         undef $requestid unless defined($requestid) && $requestid =~ /^[0-9A-F]{8}$/;
 
         my $content = $response->content();
-        unless (defined($content)) {
-            $logger->error(_log_prefix . "no answer content") if $response->is_success();
+        unless (defined($content) && length($content)) {
+            $logger->error(_log_prefix . "answer without content") if $response->is_success();
             return;
         }
 
