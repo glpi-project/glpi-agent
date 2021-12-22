@@ -32,7 +32,7 @@ sub new {
     }
 
     # Load supported params if not a server response
-    unless ($self->get('status') || !$params{supported_params}) {
+    unless ($self->status() || !$params{supported_params}) {
         my $message = $self->get;
         foreach my $param (@{$params{supported_params}}) {
             $message->{$param} = $params{$param} if defined($params{$param});

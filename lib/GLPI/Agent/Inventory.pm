@@ -139,6 +139,7 @@ sub new {
         deviceid       => $params{deviceid},
         logger         => $params{logger} || GLPI::Agent::Logger->new(),
         fields         => \%fields,
+        _format        => '',
         content        => {
             HARDWARE => {
                 VMSYSTEM => "Physical" # Default value
@@ -170,6 +171,26 @@ sub setRemote {
     return $self->{_remote};
 }
 
+sub getFormat {
+    my ($self) = @_;
+
+    return $self->{_format};
+}
+
+sub setFormat {
+    my ($self, $format) = @_;
+
+    $self->{_format} = $format // 'json';
+}
+
+sub isPartial {
+    my ($self, $partial) = @_;
+
+    return $self->{_partial} unless defined($partial);
+
+    $self->{_partial} = $partial;
+}
+
 sub getDeviceId {
     my ($self) = @_;
 
@@ -177,9 +198,9 @@ sub getDeviceId {
 
     # compute an unique agent identifier based on current time and inventory
     # hostnale or provider name
-    my $hostname = $self->getHardware('NAME');
+    my $hostname = $self->{content}->{HARDWARE}->{NAME};
     if ($hostname) {
-        my $workgroup = $self->getHardware('WORKGROUP');
+        my $workgroup = $self->{content}->{HARDWARE}->{WORKGROUP};
         $hostname .= "." . $workgroup if $workgroup;
     } else {
         GLPI::Agent::Tools::Hostname->require();
@@ -209,6 +230,34 @@ sub getFields {
 sub getContent {
     my ($self) = @_;
 
+    if ($self->{_format} eq 'json') {
+        die "Can't load GLPI Protocol Inventory library\n"
+            unless GLPI::Agent::Protocol::Inventory->require();
+
+        my $content = GLPI::Agent::Protocol::Inventory->new(
+            logger      => $self->{logger},
+            deviceid    => $self->getDeviceId(),
+            content     => $self->{content},
+            partial     => $self->{_partial},
+            itemtype    => "Computer",
+        );
+
+        # Support json file on additional-content with json output
+        $content->mergeContent(content => delete $self->{_json_merge})
+            if $self->{_json_merge};
+
+        # Normalize content to follow inventory format specs from https://github.com/glpi-project/inventory_format
+        $content->normalize();
+
+        return $content;
+
+    } elsif ($self->{_format} eq 'xml') {
+        # Fix inventory for deprecated XML format
+        if ($self->{content}->{VERSIONPROVIDER} && defined($self->{content}->{VERSIONPROVIDER}->{ETIME})) {
+            $self->{content}->{HARDWARE}->{ETIME} = delete $self->{content}->{VERSIONPROVIDER}->{ETIME};
+        }
+    }
+
     return $self->{content};
 }
 
@@ -229,7 +278,12 @@ sub getField {
 sub mergeContent {
     my ($self, $content) = @_;
 
-    die "no content" unless $content;
+    die "no content to merge\n" unless $content;
+
+    if ($self->getFormat() eq 'json') {
+        $self->{_json_merge} = $content;
+        return;
+    }
 
     foreach my $section (keys %$content) {
         if (ref $content->{$section} eq 'ARRAY') {
@@ -395,15 +449,6 @@ sub setTag {
         KEYVALUE => $tag
     }];
 
-}
-
-sub makeXmlCompat {
-    my ($self) = @_;
-
-    # Keep compatibility for deprecated XML format, needed to pass GLPI 10 converter
-
-    return unless $self->{content}->{VERSIONPROVIDER} && defined($self->{content}->{VERSIONPROVIDER}->{ETIME});
-    $self->{content}->{HARDWARE}->{ETIME} = delete $self->{content}->{VERSIONPROVIDER}->{ETIME};
 }
 
 my @checked_sections = sort qw(

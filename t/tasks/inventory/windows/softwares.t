@@ -9568,6 +9568,7 @@ foreach my $test (keys %softwares_tests) {
 
     lives_ok {
         # Reproduce the way a XML file is written in GLPI::Agent::Task::Inventory
+        $inventory->setFormat('xml');
         my $handle;
         open $handle, ">", "$folder/$test.xml";
         binmode $handle, ':encoding(UTF-8)';
@@ -9588,16 +9589,10 @@ foreach my $test (keys %softwares_tests) {
 
     lives_ok {
         # Reproduce the way a JSON file is written in GLPI::Agent::Task::Inventory
+        $inventory->setFormat('json');
         my $handle;
         open $handle, ">", "$folder/$test.json";
-        my $json = GLPI::Agent::Protocol::Inventory->new(
-            deviceid    => $inventory->getDeviceId(),
-            content     => $inventory->getContent(),
-            partial     => 1,
-            itemtype    => "Computer",
-        );
-        # Normalize some strings to expected type (integer)
-        $json->normalize();
+        my $json = $inventory->getContent();
         print $handle $json->getContent();
         close($handle);
     } "$test: write JSON file";

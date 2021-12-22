@@ -80,9 +80,6 @@ my %normalize = (
     MEMORIES         => {
         integer         => [ qw/CAPACITY NUMSLOTS/ ],
     },
-    MONITORS         => {
-        integer         => [ qw/PORT/ ],
-    },
     NETWORKS         => {
         required        => [ qw/DESCRIPTION/ ],
         boolean         => [ qw/MANAGEMENT VIRTUALDEV/ ],

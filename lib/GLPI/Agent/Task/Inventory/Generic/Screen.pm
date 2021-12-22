@@ -114,7 +114,9 @@ sub _getScreensFromWindows {
             id => $object->{InstanceName}
         };
 
-        if (exists($object->{VideoOutputTechnology})) {
+        # Skip setting monitor port as it is not used on server-side and this
+        # does not respect json format
+        if ($params{inventory}->getFormat() ne 'json' && exists($object->{VideoOutputTechnology})) {
             my $port = $object->{VideoOutputTechnology};
             $screen->{PORT} = $ports{$port}
                 if (exists($ports{$port}));

@@ -107,6 +107,8 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
         $answer = GLPI::Agent::Protocol::Message->new();
         my $response = $self->request($request);
 
+        return unless $response->is_success() || $response->status_line() !~ /read timeout/;
+
         $requestid = $response->header("GLPI-Request-ID");
         undef $requestid unless defined($requestid) && $requestid =~ /^[0-9A-F]{8}$/;
 
@@ -117,26 +119,29 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
         }
 
         my $type = $response->header("Content-type") // "";
-        my $uncompressed_response_content = $self->_uncompress($content, $type);
-        unless ($uncompressed_response_content) {
-            unless (length($content)) {
-                $logger->error(_log_prefix . "Got empty answer") if $response->is_success();
+        if ($type =~ m{^application/x-}i) {
+            my $uncompressed_content = $self->_uncompress($content, $type);
+            unless ($uncompressed_content) {
+                unless (length($content)) {
+                    $logger->error(_log_prefix . "Got empty answer") if $response->is_success();
+                    return;
+                }
+                $logger->error(
+                    _log_prefix . "failed to uncompress content starting with: ".substr($content, 0, 256)
+                );
                 return;
             }
-            $logger->error(
-                _log_prefix . "uncompressed content, starting with: ".substr($content, 0, 120)
-            );
-            return;
+            $content = $uncompressed_content;
         }
 
-        $logger->debug2(_log_prefix . "receiving message:\n$uncompressed_response_content");
+        $logger->debug2(_log_prefix . "received message:\n$content");
 
         eval {
-            $answer->set($uncompressed_response_content);
+            $answer->set($content);
         };
         if ($EVAL_ERROR) {
-            my @lines = split(/\n/, substr($uncompressed_response_content, 0, 120));
-            $logger->error(_log_prefix . "unexpected content, starting with: $lines[0]");
+            my @lines = split(/\n/, substr($content, 0, 256));
+            $logger->error(_log_prefix . "unexpected content, starting with: $lines[0]".(@lines>1?"\n".$lines[1]:""));
             return;
         }
         unless ($answer->is_valid_message()) {

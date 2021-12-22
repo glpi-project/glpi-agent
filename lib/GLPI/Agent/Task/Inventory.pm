@@ -167,6 +167,16 @@ sub run {
         return;
     }
 
+    # Set inventory expected format before running inventory
+    my $format = 'json';
+    if ($self->{target}->isType('local')) {
+        $format = $self->{target}->{format} unless $self->{partial};
+    } elsif (!$self->{target}->isGlpiServer()) {
+        # This includes server other than glpi and listener target
+        $format = 'xml';
+    }
+    $inventory->setFormat($format);
+
     $self->_initModulesList();
     $self->_feedInventory();
 
@@ -250,7 +260,7 @@ sub submit {
 
     if ($self->{target}->isType('local')) {
         my $path   = $self->{target}->getPath();
-        my $format = $self->{partial} ? "json" : $self->{target}->{format};
+        my $format = $inventory->getFormat();
         my ($file, $handle);
 
         SWITCH: {
@@ -285,10 +295,7 @@ sub submit {
         binmode $handle, ':encoding(UTF-8)'
             unless $format eq "json";
 
-        $self->_printInventory(
-            handle    => $handle,
-            format    => $format
-        );
+        $self->_printInventory($handle);
 
         if ($file) {
             $self->{logger}->info("Inventory saved in $file");
@@ -313,27 +320,9 @@ sub submit {
             agentid         => $self->{agentid},
         );
 
-        return $self->{logger}->error("Can't load GLPI Protocol Inventory library")
-            unless GLPI::Agent::Protocol::Inventory->require();
-
-        my $message = GLPI::Agent::Protocol::Inventory->new(
-            logger      => $self->{logger},
-            deviceid    => $inventory->getDeviceId(),
-            content     => $inventory->getContent(),
-            partial     => $self->{partial},
-            itemtype    => "Computer",
-        );
-
-        # Support json file on additional-content with json output
-        $message->mergeContent(content => delete $self->{_json_merge})
-            if $self->{_json_merge};
-
-        # Normalize some strings to expected type (integer)
-        $message->normalize();
-
         my $response = $client->send(
             url     => $self->{target}->getUrl(),
-            message => $message
+            message => $inventory->getContent()
         );
         return unless $response;
 
@@ -359,9 +348,6 @@ sub submit {
 
         return $self->{logger}->error("Can't load Inventory XML Query API")
             unless GLPI::Agent::XML::Query::Inventory->require();
-
-        # Fix inventory for deprecated XML format
-        $self->{inventory}->makeXmlCompat();
 
         my $message = GLPI::Agent::XML::Query::Inventory->new(
             deviceid => $inventory->getDeviceId(),
@@ -433,9 +419,6 @@ sub _initModulesList {
     my @modules = $self->getModules('Inventory');
     die "no inventory module found\n" if !@modules;
 
-    # Select isEnabled function to test
-    my $isEnabledFunction = "isEnabled" ;
-
     # first pass: compute all relevant modules
     foreach my $module (sort @modules) {
         # compute parent module:
@@ -476,15 +459,15 @@ sub _initModulesList {
         }
 
         # Simulate tested function inheritance as we test a module, not a class
-        unless (defined(*{$module."::".$isEnabledFunction})) {
+        unless (defined(*{$module."::isEnabled"})) {
             no strict 'refs'; ## no critic (ProhibitNoStrict)
-            *{$module."::".$isEnabledFunction} =
-                \&{"GLPI::Agent::Task::Inventory::Module::$isEnabledFunction"};
+            *{$module."::isEnabled"} =
+                \&{"GLPI::Agent::Task::Inventory::Module::isEnabled"};
         }
 
         my $enabled = runFunction(
             module   => $module,
-            function => $isEnabledFunction,
+            function => "isEnabled",
             logger => $logger,
             timeout  => $config->{'backend-collect-timeout'},
             params => {
@@ -639,13 +622,16 @@ sub _injectContent {
             $content = $tree->{REQUEST}->{CONTENT};
         };
     } elsif ($file =~ /\.json$/) {
-        GLPI::Agent::Protocol::Message->require();
+        die "Can't load GLPI Protocol Message library\n"
+            unless GLPI::Agent::Protocol::Message->require();
         my $json = GLPI::Agent::Protocol::Message->new(
-            message => {},
-            file    => $file,
+            file => $file,
         );
-        if ($json) {
-            $self->{_json_merge} = $json->get('content');
+        $content = $json->get('content');
+        unless ($content) {
+            $self->{logger}->error(
+                "failing to import $file file content in the inventory"
+            );
             return;
         }
     } else {
@@ -661,10 +647,12 @@ sub _injectContent {
 }
 
 sub _printInventory {
-    my ($self, %params) = @_;
+    my ($self, $handle) = @_;
+
+    my $format = $self->{inventory}->getFormat();
 
     SWITCH: {
-        if ($params{format} eq 'xml') {
+        if ($format eq 'xml') {
 
             my $tpp = XML::TreePP->new(
                 indent          => 2,
@@ -672,10 +660,7 @@ sub _printInventory {
                 output_encoding => 'UTF-8'
             );
 
-            # Fix inventory for deprecated XML format
-            $self->{inventory}->makeXmlCompat();
-
-            print {$params{handle}} $tpp->write({
+            print $handle $tpp->write({
                 REQUEST => {
                     CONTENT  => $self->{inventory}->getContent(),
                     DEVICEID => $self->{inventory}->getDeviceId(),
@@ -686,7 +671,7 @@ sub _printInventory {
             last SWITCH;
         }
 
-        if ($params{format} eq 'html') {
+        if ($format eq 'html') {
             Text::Template->require();
             my $template = Text::Template->new(
                 TYPE => 'FILE', SOURCE => "$self->{datadir}/html/inventory.tpl"
@@ -699,35 +684,19 @@ sub _printInventory {
                 fields   => $self->{inventory}->getFields()
             };
 
-            print {$params{handle}} $template->fill_in(HASH => $hash);
+            print $handle $template->fill_in(HASH => $hash);
 
             last SWITCH;
         }
 
-        if ($params{format} eq 'json') {
-            die "Can't load GLPI Protocol Inventory library: $EVAL_ERROR\n"
-                unless GLPI::Agent::Protocol::Inventory->require();
-            my $inventory = GLPI::Agent::Protocol::Inventory->new(
-                logger      => $self->{logger},
-                deviceid    => $self->{inventory}->getDeviceId(),
-                content     => $self->{inventory}->getContent(),
-                partial     => $self->{partial},
-                itemtype    => "Computer",
-            );
-
-            # Support json file on additional-content with json output
-            $inventory->mergeContent(content => delete $self->{_json_merge})
-                if $self->{_json_merge};
-
-            # Normalize some strings to expected type (integer)
-            $inventory->normalize();
-
-            print {$params{handle}} $inventory->getContent();
+        if ($format eq 'json') {
+            my $json = $self->{inventory}->getContent();
+            print $handle $json->getContent();
 
             last SWITCH;
         }
 
-        die "unknown format $params{format}\n";
+        die "unknown format $format\n";
     }
 }
 
