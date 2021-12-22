@@ -154,8 +154,8 @@ sub _parseWslConfig {
         }
         next unless $wsl2;
         # Analyse wsl2 section lines
-        if ($line =~ /^memory\s*=\s*(\S+)/) {
-            $memory = getCanonicalSize($1.($1 =~ /b$/i ? '' : 'B'), 1024);
+        if (my ($size) = $line =~ /^memory\s*=\s*(\S+)/) {
+            $memory = getCanonicalSize($size.($size =~ /b$/i ? '' : 'B'), 1024);
         } elsif ($line =~ /^processors\s*=\s*(\d+)/) {
             $vcpu = $1;
         }
