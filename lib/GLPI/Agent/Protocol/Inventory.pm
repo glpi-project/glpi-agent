@@ -79,6 +79,7 @@ my %normalize = (
     },
     MEMORIES         => {
         integer         => [ qw/CAPACITY NUMSLOTS/ ],
+        string          => [ qw/REMOVABLE/ ],
     },
     NETWORKS         => {
         required        => [ qw/DESCRIPTION/ ],
