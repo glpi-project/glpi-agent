@@ -431,9 +431,8 @@ sub run {
         debug        => $self->{debug}
     );
 
-    my $url = $self->{target}->getUrl();
     my $globalRemoteConfig = $self->{client}->send(
-        url  => $url,
+        url  => $self->{target}->getUrl(),
         args => {
             action    => "getConfig",
             machineid => $self->{deviceid},
@@ -441,12 +440,17 @@ sub run {
         }
     );
 
+    my $id = $self->{target}->id();
+    if (!$globalRemoteConfig) {
+        $self->{logger}->info("Deploy task not supported by $id");
+        return;
+    }
     if (!$globalRemoteConfig->{schedule}) {
-        $logger->info("No job schedule returned from server at $url");
+        $logger->info("No job schedule returned by $id");
         return;
     }
     if (ref( $globalRemoteConfig->{schedule} ) ne 'ARRAY') {
-        $logger->info("Malformed schedule from server at $url");
+        $logger->info("Malformed schedule returned by $id");
         return;
     }
     if ( !@{$globalRemoteConfig->{schedule}} ) {

@@ -143,12 +143,17 @@ sub run {
         }
     );
 
+    my $id = $self->{target}->id();
+    if (!$globalRemoteConfig) {
+        $self->{logger}->info("ESX task not supported by $id");
+        return;
+    }
     if (!$globalRemoteConfig->{schedule}) {
-        $self->{logger}->info("No job schedule returned from server at ".$self->{target}->{url});
+        $self->{logger}->info("No job schedule returned by $id");
         return;
     }
     if (ref( $globalRemoteConfig->{schedule} ) ne 'ARRAY') {
-        $self->{logger}->info("Malformed schedule from server at ".$self->{target}->{url});
+        $self->{logger}->info("Malformed schedule from server by $id");
         return;
     }
     if ( !@{$globalRemoteConfig->{schedule}} ) {

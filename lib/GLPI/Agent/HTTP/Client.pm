@@ -171,10 +171,21 @@ sub request {
             # check we request through a proxy
             my $proxyreq = defined $result->request->{proxy};
 
+            my $message;
+            my $contentType = $result->header('content-type');
+            if ($contentType && $contentType eq 'application/json' && $result->header('content-length')) {
+                if (GLPI::Agent::Protocol::Message->require()) {
+                    my $content = GLPI::Agent::Protocol::Message->new(message => $result->content());
+                    if ($content->status eq 'error' && $content->get('message')) {
+                        $message = $content->get('message');
+                    }
+                }
+            }
+
             $logger->error(
                 $log_prefix .
                 ($proxyreq ? "proxy" : "communication") .
-                " error: " . $result->status_line()
+                " error: " . $result->status_line() . ($message ? ", $message" : "")
             ) unless $skiperror{$result->code()};
         }
     }
