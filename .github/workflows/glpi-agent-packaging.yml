@@ -40,8 +40,10 @@ jobs:
     - name: Set version
       id: set-version
       run: |
-        if [ -n "$CST_USERNAME" ]; then
-            echo "::set-output name=win32-signing::yes"
+        if [ -n "$CODESIGN_COMMAND" ]; then
+            echo "::set-output name=win32-signing::alt"
+        elif [ -n "$CST_USERNAME" ]; then
+            echo "::set-output name=win32-signing::cst"
         else
             echo "::set-output name=win32-signing::no"
         fi
@@ -125,6 +127,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         PUBLISHING_TOKEN: ${{ secrets.PUBLISHING_TOKEN }}
+        CODESIGN_COMMAND: ${{ secrets.CODESIGN_COMMAND }}
         CST_USERNAME: ${{ secrets.CST_USERNAME }}
         APPSIGNID: ${{ secrets.MACOSX_APPSIGNID }}
         INSTSIGNID: ${{ secrets.MACOSX_INSTSIGNID }}
@@ -211,8 +214,8 @@ jobs:
       run: |
         perl contrib\windows\glpi-agent-packaging.pl --arch ${{ matrix.arch }}
       shell: cmd
-    - name: MSI Signing
-      if: ${{ needs.setup-release.outputs.win32-signing == 'yes' }}
+    - name: MSI Signing (CST)
+      if: ${{ needs.setup-release.outputs.win32-signing == 'cst' }}
       run: |
         perl tools\msi-signing.pl "C:\Strawberry-perl-for-GLPI-Agent_build" "GLPI-Agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.msi"
       shell: cmd
@@ -221,6 +224,24 @@ jobs:
         CST_PASSWORD: ${{ secrets.CST_PASSWORD }}
         CST_SECRET: ${{ secrets.CST_SECRET }}
         CST_CREDENTIALID: ${{ secrets.CST_CREDENTIALID }}
+    - name: MSI Signing (ALT)
+      if: ${{ needs.setup-release.outputs.win32-signing == 'alt' }}
+      run: |
+        cd "C:\\Strawberry-perl-for-GLPI-Agent_build"
+        umask 0077
+        mkdir ~/.ssh
+        echo "$CODESIGN_KNOWNHOST"            > ~/.ssh/known_hosts
+        echo "$CODESIGN_PRIVATE"              > private.key
+        umask 0002
+        MSI="GLPI-Agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.msi"
+        cat "output\\$MSI" | $CODESIGN_COMMAND codesign "$MSI" > "$MSI"
+        rm -f private.key ~/.ssh/known_hosts "output\\$MSI"
+        mv -vf "$MSI" "output\\$MSI"
+      shell: bash
+      env:
+        CODESIGN_KNOWNHOST: ${{ secrets.CODESIGN_KNOWNHOST }}
+        CODESIGN_COMMAND: ${{ secrets.CODESIGN_COMMAND }}
+        CODESIGN_PRIVATE: ${{ secrets.CODESIGN_PRIVATE }}
     - name: List generated files
       if: success() || failure()
       run: |
