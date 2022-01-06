@@ -85,37 +85,63 @@ sub _getDatabaseService {
             stringify => $params{mongosh},
             %params
         ));
-        eval {
-            @databases = grep { ref($_) eq 'HASH' } @{ decode_json($databases) };
-        };
-        if ($EVAL_ERROR) {
-            $params{logger}->error("Can't decode mongodb database list: $EVAL_ERROR")
-                if $params{logger};
-        }
-
-        foreach my $dbinfo (@databases) {
-            my $db = $dbinfo->{name}
-                or next;
-            my $size = $dbinfo->{sizeOnDisk}
-                or next;
-
-            if ($size) {
-                $dbs_size += $size;
-                $size = getCanonicalSize("$size bytes", 1024);
-            } else {
-                undef $size;
+        if (!$databases) {
+            if ($params{logger}) {
+                my ($code, $codename);
+                my $listdatabases = join('', _runSql(
+                    sql => "db.adminCommand( { listDatabases: 1 } )",
+                    stringify => $params{mongosh},
+                    %params
+                ));
+                if ($listdatabases) {
+                    $params{logger}->debug2("database list command server answer: $listdatabases");
+                    eval {
+                        my $json = decode_json($listdatabases);
+                        $code = $json->{code};
+                        $codename = $json->{codeName};
+                    };
+                    if ($EVAL_ERROR || !$code) {
+                        $params{logger}->debug("Failed to analyse mongodb database list command answer");
+                    } else {
+                        $params{logger}->error("Failure on mongodb database list command: $codename (errcode=$code)");
+                    }
+                } else {
+                    $params{logger}->error("No answer to mongodb database list command");
+                }
+            }
+        } else {
+            eval {
+                @databases = grep { ref($_) eq 'HASH' } @{ decode_json($databases) };
+            };
+            if ($EVAL_ERROR) {
+                $params{logger}->error("Can't decode mongodb database list: $EVAL_ERROR")
+                    if $params{logger};
             }
 
-            my $status = _runSql(
-                sql => "db = new Mongo().getDB('$db');db.runCommand('ping').ok",
-                %params
-            );
+            foreach my $dbinfo (@databases) {
+                my $db = $dbinfo->{name}
+                    or next;
+                my $size = $dbinfo->{sizeOnDisk}
+                    or next;
 
-            $dbs->addDatabase(
-                name            => $db,
-                size            => $size,
-                is_active       => $status,
-            );
+                if ($size) {
+                    $dbs_size += $size;
+                    $size = getCanonicalSize("$size bytes", 1024);
+                } else {
+                    undef $size;
+                }
+
+                my $status = _runSql(
+                    sql => "db = new Mongo().getDB('$db');db.runCommand('ping').ok",
+                    %params
+                );
+
+                $dbs->addDatabase(
+                    name            => $db,
+                    size            => $size,
+                    is_active       => $status,
+                );
+            }
         }
 
         $dbs->size(getCanonicalSize("$dbs_size bytes", 1024));
