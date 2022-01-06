@@ -258,6 +258,7 @@ sub run {
 
             my $message;
             if ($self->{target}->isGlpiServer()) {
+                $inventory->setFormat('json');
                 $message = GLPI::Agent::Protocol::Inventory->new(
                     logger      => $self->{logger},
                     deviceid    => $self->{deviceid},
@@ -266,6 +267,7 @@ sub run {
                 );
             } else {
                 # Deprecated XML based protocol
+                $inventory->setFormat('xml');
                 $message = GLPI::Agent::XML::Query::Inventory->new(
                     deviceid => $self->{deviceid},
                     content  => $inventory->getContent()

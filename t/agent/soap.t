@@ -12,6 +12,7 @@ use Test::Exception;
 use Test::MockObject::Extends;
 use Test::MockModule;
 
+use GLPI::Agent::Inventory;
 use GLPI::Agent::SOAP::VMware;
 use GLPI::Agent::Tools::Virtualization;
 
@@ -463,7 +464,44 @@ my %tests = (
             'UUID' => '564d79a4-7ea6-3423-2980-0c882a78f698',
             'VCPU' => '1'
           }
-        ]
+        ],
+        'json' => '{
+   "action": "inventory",
+   "content": {
+      "bios": {
+         "assettag": " To Be Filled By O.E.M.",
+         "bdate": "2009-02-04T00:00:00Z",
+         "bversion": "S39_3B27",
+         "smanufacturer": "Sun Microsystems",
+         "smodel": "Sun Fire X2200 M2 with Dual Core Processor"
+      },
+      "hardware": {
+         "dns": "10.0.5.105",
+         "memory": 8190,
+         "name": "esx-test",
+         "uuid": "b5bfd78a-fa79-0010-adfe-001b24f07258",
+         "vmsystem": "Physical",
+         "workgroup": "teclib.local"
+      },
+      "operatingsystem": {
+         "boot_time": "2011-01-25 14:11:07",
+         "dns_domain": "teclib.local",
+         "fqdn": "esx-test.teclib.local",
+         "full_name": "VMware ESX 4.1.0 build-260247",
+         "name": "VMware ESX",
+         "timezone": {
+            "name": "Europe/Berlin",
+            "offset": "+0100"
+         },
+         "version": "4.1.0"
+      },
+      "versionclient": "GLPI-Agent_v1.1-dev"
+   },
+   "deviceid": "foo",
+   "itemtype": "Computer",
+   "tag": "test"
+}
+'
     },
 );
 my @methods = qw/
@@ -479,7 +517,7 @@ my @methods = qw/
     getVirtualMachines
 /;
 plan tests =>
-    (scalar keys %tests) * (scalar @methods + 3);
+    (scalar keys %tests) * (scalar @methods + 10);
 
 my $module = Test::MockModule->new('LWP::UserAgent');
 
@@ -544,4 +582,34 @@ foreach my $test (keys %tests) {
             "$test $method()"
         );
     }
+
+    my $inventory;
+    lives_ok {
+        $inventory = GLPI::Agent::Inventory->new(
+            deviceid => 'foo',
+            tag      => 'test'
+        );
+    } "$test: create inventory";
+
+    lives_ok {
+        $inventory->setRemote('esx');
+    } "$test: setRemote()";
+
+    lives_ok {
+        $inventory->setBios( $result->getBiosInfo() );
+    } "$test: setBios(getBiosInfo())";
+
+    lives_ok {
+        $inventory->setHardware( $result->getHardwareInfo() );
+    } "$test: setHardware(getHardwareInfo())";
+
+    lives_ok {
+        $inventory->setOperatingSystem( $result->getOperatingSystemInfo() );
+    } "$test: setOperatingSystem(getOperatingSystemInfo())";
+    $inventory->setFormat('json');
+    my $json;
+    lives_ok {
+        $json = $inventory->getContent();
+    } "$test: inventory get content";
+    is($json->getContent(), $tests{$test}->{'json'}, "$test: json format");
 }
