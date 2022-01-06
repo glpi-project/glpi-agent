@@ -251,10 +251,12 @@ sub submit {
 
     # Keep cached data for next partial inventory
     if ($self->{partial} && $self->keepcache() && !$self->cachedata()) {
-        my $content = $inventory->getContent();
-        my $keep = {
-            map { $_ => $content->{$_} } grep { $content->{$_} } qw(BIOS HARDWARE)
-        };
+        my $keep = {};
+        foreach my $section (qw(BIOS HARDWARE)) {
+            my $content = $inventory->getSection($section)
+                or next;
+            $keep->{$section} = $content;
+        }
         $self->cachedata($keep);
     }
 

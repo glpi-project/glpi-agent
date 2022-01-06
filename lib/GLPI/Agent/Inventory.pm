@@ -264,7 +264,7 @@ sub getContent {
 sub getSection {
     my ($self, $section) = @_;
     ## no critic (ExplicitReturnUndef)
-    my $content = $self->getContent() or return undef;
+    my $content = $self->{content} or return undef;
     return exists($content->{$section}) ? $content->{$section} : undef ;
 }
 
