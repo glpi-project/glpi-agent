@@ -12,6 +12,7 @@ use GLPI::Agent::HTTP::Client::Fusion;
 use GLPI::Agent::Logger;
 use GLPI::Agent::Inventory;
 use GLPI::Agent::SOAP::VMware;
+use GLPI::Agent::Tools::UUID;
 
 use GLPI::Agent::Task::ESX::Version;
 
