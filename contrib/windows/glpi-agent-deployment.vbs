@@ -110,6 +110,7 @@ SetupArchitecture = "Auto"
 '    that require it; double quotes (") doesn't work with UNCs.
 '
 SetupOptions = "/quiet RUNNOW=1 SERVER='http://glpi.yourcompany.com/front/inventory.php'"
+'SetupOptions = "/quiet RUNNOW=1 SERVER='http://glpi.yourcompany.com/plugins/fusioninventory'"
 
 ' Setup
 '    The installer file name. You should not have to modify this variable ever.
@@ -128,11 +129,65 @@ Repair = "No"
 '
 Verbose = "No"
 
+' UninstallFusionInventoryAgent
+'    Set to "Yes" to first uninstall FusionInventory Agent
+'    Also and unless SERVER or LOCAL are defined in SetupOptions, this script
+'    will try to get them from FusionInventory-Agent configuration found in registry
+'
+UninstallFusionInventoryAgent = "No"
+
 '
 '
 ' DO NOT EDIT BELOW
 '
 '
+
+Function hasOption(opt)
+   Dim regEx
+   Set regEx = New RegExp
+   regEx.Global = true
+   regEx.IgnoreCase = False
+   regEx.Pattern = "\b" & opt & "=.+\b"
+   hasOption = regEx.Test(SetupOptions)
+End Function
+
+Function uninstallFusionInventoryAgent()
+    Dim Uninstall, getValue
+
+    ' Try to get SERVER and LOCAL from FIA configuration in registry if needed
+    If not hasOption("SERVER") then
+        On error resume next
+        getValue = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\server")
+        If err.number = 0 And getValue <> "" then
+           SetupOptions = SetupOptions & " SERVER='" & getValue & "'"
+        End If
+    End If
+    If not hasOption("LOCAL") then
+        On error resume next
+        getValue = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\FusionInventory-Agent\local")
+        If err.number = 0 And getValue <> "" then
+           SetupOptions = SetupOptions & " LOCAL='" & getValue & "'"
+        End If
+    End If
+
+    ' Verify normal case
+    On error resume next
+    Uninstall = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory-Agent\UninstallString")
+    If err.number = 0 then
+        WshShell.Run "CMD.EXE /C net stop FusionInventory-Agent",0,True
+        WshShell.Run "CMD.EXE /C """ & Uninstall & """ /S /NOSPLASH",0,True
+        WshShell.Run "CMD.EXE /C rmdir ""%ProgramFiles%\FusionInventory-Agent"" /S /Q",0,True
+    End If
+
+    ' Verify FIA x86 is installed on x64 OS
+    On error resume next
+    Uninstall = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\FusionInventory-Agent\UninstallString")
+    If err.number = 0 then
+        WshShell.Run "CMD.EXE /C net stop FusionInventory-Agent",0,True
+        WshShell.Run "CMD.EXE /C """ & Uninstall & """ /S /NOSPLASH",0,True
+        WshShell.Run "CMD.EXE /C rmdir ""%ProgramFiles(x86)%\FusionInventory-Agent"" /S /Q",0,True
+    End If
+End Function
 
 Function AdvanceTime(nMinutes)
    Dim nMinimalMinutes, dtmTimeFuture
@@ -149,7 +204,7 @@ Function AdvanceTime(nMinutes)
 End Function
 
 Function baseName (strng)
-   Dim regEx, ret
+   Dim regEx
    Set regEx = New RegExp
    regEx.Global = true
    regEx.IgnoreCase = True
@@ -343,6 +398,10 @@ Dim nMinutesToAdvance, strCmd, strSystemArchitecture, strTempDir, WshShell, strI
 Set WshShell = WScript.CreateObject("WScript.shell")
 
 nMinutesToAdvance = 5
+
+If UninstallFusionInventoryAgent = "Yes" Then
+    uninstallFusionInventoryAgent()
+End If
 
 ' Get system architecture
 strSystemArchitecture = GetSystemArchitecture()
