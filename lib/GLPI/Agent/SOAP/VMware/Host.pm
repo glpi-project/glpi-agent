@@ -204,7 +204,7 @@ sub getControllers {
 sub _getNic {
     my ($ref, $isVirtual) = @_;
 
-    return {
+    my $nic = {
         DESCRIPTION => $ref->{device},
         DRIVER      => $ref->{driver},
         IPADDRESS   => $ref->{spec}{ip}{ipAddress},
@@ -215,7 +215,14 @@ sub _getNic {
         STATUS      => $ref->{spec}{ip}{ipAddress} ? 'Up' : 'Down',
         VIRTUALDEV  => $isVirtual,
         SPEED       => $ref->{spec}{linkSpeed}{speedMb},
-    }
+    };
+
+    # Clean up if not set
+    map {
+        delete $nic->{$_} unless $nic->{$_}
+    } qw/IPADDRESS IPMASK/;
+
+    return $nic;
 }
 
 sub getNetworks {
@@ -333,7 +340,7 @@ sub getDrives {
             TOTAL  => int( ( $_->{volume}{capacity} || 0 ) / ( 1000 * 1000 ) ),
             TYPE   => $_->{mountInfo}{path},
             VOLUMN => $volumn,
-            NAME   => $_->{volume}{name},
+            LABEL  => $_->{volume}{name},
             FILESYSTEM => lc( $_->{volume}{type} )
           };
     }

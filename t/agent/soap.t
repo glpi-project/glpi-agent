@@ -322,7 +322,6 @@ my %tests = (
             'IPADDRESS' => '10.0.2.189'
           },
           {
-            'IPMASK' => '',
             'VIRTUALDEV' => 0,
             'STATUS' => 'Down',
             'MACADDR' => '00:1b:24:f0:6a:45',
@@ -331,10 +330,8 @@ my %tests = (
             'DRIVER' => 'forcedeth',
             'MTU' => undef,
             'DESCRIPTION' => 'vmnic0',
-            'IPADDRESS' => ''
           },
           {
-            'IPMASK' => '',
             'VIRTUALDEV' => 0,
             'STATUS' => 'Down',
             'MACADDR' => '00:1b:24:f0:6a:46',
@@ -343,10 +340,8 @@ my %tests = (
             'DRIVER' => 'forcedeth',
             'MTU' => undef,
             'DESCRIPTION' => 'vmnic1',
-            'IPADDRESS' => ''
           },
           {
-            'IPMASK' => '',
             'VIRTUALDEV' => 0,
             'STATUS' => 'Down',
             'MACADDR' => '00:1b:24:f0:6a:43',
@@ -355,10 +350,8 @@ my %tests = (
             'DRIVER' => 'tg3',
             'MTU' => undef,
             'DESCRIPTION' => 'vmnic2',
-            'IPADDRESS' => ''
           },
           {
-            'IPMASK' => '',
             'VIRTUALDEV' => 0,
             'STATUS' => 'Down',
             'MACADDR' => '00:1b:24:f0:6a:44',
@@ -367,7 +360,6 @@ my %tests = (
             'DRIVER' => 'tg3',
             'MTU' => undef,
             'DESCRIPTION' => 'vmnic3',
-            'IPADDRESS' => ''
           },
           {
             'IPMASK' => '255.255.0.0',
@@ -408,7 +400,7 @@ my %tests = (
         'getDrives' => [
           {
             'VOLUMN' => undef,
-            'NAME' => 'datastore1',
+            'LABEL' => 'datastore1',
             'TOTAL' => 248571,
             'SERIAL' => '4d3ea5ac-45d89fb1-847e-001b24f06a45',
             'TYPE' => '/vmfs/volumes/4d3ea5ac-45d89fb1-847e-001b24f06a45',
@@ -416,7 +408,7 @@ my %tests = (
           },
           {
             'VOLUMN' => 'stockage1.teclib.local:/mnt/datastore/VmwareISO',
-            'NAME' => 'ISO-datastore',
+            'LABEL' => 'ISO-datastore',
             'TOTAL' => 53687,
             'SERIAL' => undef,
             'TYPE' => '/vmfs/volumes/6954b300-01710358',
@@ -464,44 +456,7 @@ my %tests = (
             'UUID' => '564d79a4-7ea6-3423-2980-0c882a78f698',
             'VCPU' => '1'
           }
-        ],
-        'json' => '{
-   "action": "inventory",
-   "content": {
-      "bios": {
-         "assettag": " To Be Filled By O.E.M.",
-         "bdate": "2009-02-04T00:00:00Z",
-         "bversion": "S39_3B27",
-         "smanufacturer": "Sun Microsystems",
-         "smodel": "Sun Fire X2200 M2 with Dual Core Processor"
-      },
-      "hardware": {
-         "dns": "10.0.5.105",
-         "memory": 8190,
-         "name": "esx-test",
-         "uuid": "b5bfd78a-fa79-0010-adfe-001b24f07258",
-         "vmsystem": "Physical",
-         "workgroup": "teclib.local"
-      },
-      "operatingsystem": {
-         "boot_time": "2011-01-25 14:11:07",
-         "dns_domain": "teclib.local",
-         "fqdn": "esx-test.teclib.local",
-         "full_name": "VMware ESX 4.1.0 build-260247",
-         "name": "VMware ESX",
-         "timezone": {
-            "name": "Europe/Berlin",
-            "offset": "+0100"
-         },
-         "version": "4.1.0"
-      },
-      "versionclient": "GLPI-Agent_v1.1-dev"
-   },
-   "deviceid": "foo",
-   "itemtype": "Computer",
-   "tag": "test"
-}
-'
+        ]
     },
 );
 my @methods = qw/
@@ -517,7 +472,7 @@ my @methods = qw/
     getVirtualMachines
 /;
 plan tests =>
-    (scalar keys %tests) * (scalar @methods + 10);
+    (scalar keys %tests) * (scalar @methods + 3);
 
 my $module = Test::MockModule->new('LWP::UserAgent');
 
@@ -582,34 +537,4 @@ foreach my $test (keys %tests) {
             "$test $method()"
         );
     }
-
-    my $inventory;
-    lives_ok {
-        $inventory = GLPI::Agent::Inventory->new(
-            deviceid => 'foo',
-            tag      => 'test'
-        );
-    } "$test: create inventory";
-
-    lives_ok {
-        $inventory->setRemote('esx');
-    } "$test: setRemote()";
-
-    lives_ok {
-        $inventory->setBios( $result->getBiosInfo() );
-    } "$test: setBios(getBiosInfo())";
-
-    lives_ok {
-        $inventory->setHardware( $result->getHardwareInfo() );
-    } "$test: setHardware(getHardwareInfo())";
-
-    lives_ok {
-        $inventory->setOperatingSystem( $result->getOperatingSystemInfo() );
-    } "$test: setOperatingSystem(getOperatingSystemInfo())";
-    $inventory->setFormat('json');
-    my $json;
-    lives_ok {
-        $json = $inventory->getContent();
-    } "$test: inventory get content";
-    is($json->getContent(), $tests{$test}->{'json'}, "$test: json format");
 }

@@ -1,0 +1,415 @@
+{
+   "action": "inventory",
+   "content": {
+      "bios": {
+         "assettag": " To Be Filled By O.E.M.",
+         "bdate": "2009-02-04T00:00:00Z",
+         "bversion": "S39_3B27",
+         "smanufacturer": "Sun Microsystems",
+         "smodel": "Sun Fire X2200 M2 with Dual Core Processor"
+      },
+      "controllers": [
+         {
+            "manufacturer": "nVidia Corporation",
+            "name": "MCP55 Memory Controller",
+            "pciclass": "0500",
+            "pcislot": "00:00.0",
+            "pcisubsystemid": "108e:534b",
+            "productid": "0369",
+            "vendorid": "10de"
+         },
+         {
+            "manufacturer": "nVidia Corporation",
+            "name": "MCP55 LPC Bridge",
+            "pciclass": "0601",
+            "pcislot": "00:01.0",
+            "pcisubsystemid": "108e:534b",
+            "productid": "0364",
+            "vendorid": "10de"
+         },
+         {
+            "manufacturer": "nVidia Corporation",
+            "name": "MCP55 SMBus",
+            "pciclass": "0c05",
+            "pcislot": "00:01.1",
+            "pcisubsystemid": "108e:534b",
+            "productid": "0368",
+            "vendorid": "10de"
+         },
+         {
+            "manufacturer": "nVidia Corporation",
+            "name": "MCP55 USB Controller",
+            "pciclass": "0c03",
+            "pcislot": "00:02.0",
+            "pcisubsystemid": "108e:534b",
+            "productid": "036c",
+            "vendorid": "10de"
+         },
+         {
+            "manufacturer": "nVidia Corporation",
+            "name": "MCP55 USB Controller",
+            "pciclass": "0c03",
+            "pcislot": "00:02.1",
+            "pcisubsystemid": "108e:534b",
+            "productid": "036d",
+            "vendorid": "10de"
+         },
+         {
+            "manufacturer": "nVidia Corporation",
+            "name": "NVidia NForce MCP55 IDE/PATA Controller",
+            "pciclass": "0101",
+            "pcislot": "00:04.0",
+            "pcisubsystemid": "108e:534b",
+            "productid": "036e",
+            "vendorid": "10de"
+         },
+         {
+            "manufacturer": "nVidia Corporation",
+            "name": "MCP55 SATA Controller",
+            "pciclass": "0101",
+            "pcislot": "00:05.0",
+            "pcisubsystemid": "108e:534b",
+            "productid": "037f",
+            "vendorid": "10de"
+         },
+         {
+            "manufacturer": "nVidia Corporation",
+            "name": "MCP55 PCI bridge",
+            "pciclass": "0604",
+            "pcislot": "00:06.0",
+            "productid": "0370",
+            "vendorid": "10de"
+         },
+         {
+            "manufacturer": "nVidia Corporation",
+            "name": "nVidia NForce Network Controller",
+            "pciclass": "0680",
+            "pcislot": "00:08.0",
+            "pcisubsystemid": "108e:534b",
+            "productid": "0373",
+            "vendorid": "10de"
+         },
+         {
+            "manufacturer": "nVidia Corporation",
+            "name": "nVidia NForce Network Controller",
+            "pciclass": "0680",
+            "pcislot": "00:09.0",
+            "pcisubsystemid": "108e:534b",
+            "productid": "0373",
+            "vendorid": "10de"
+         },
+         {
+            "manufacturer": "nVidia Corporation",
+            "name": "MCP55 PCI Express bridge",
+            "pciclass": "0604",
+            "pcislot": "00:0a.0",
+            "productid": "0376",
+            "vendorid": "10de"
+         },
+         {
+            "manufacturer": "nVidia Corporation",
+            "name": "MCP55 PCI Express bridge",
+            "pciclass": "0604",
+            "pcislot": "00:0b.0",
+            "productid": "0374",
+            "vendorid": "10de"
+         },
+         {
+            "manufacturer": "nVidia Corporation",
+            "name": "MCP55 PCI Express bridge",
+            "pciclass": "0604",
+            "pcislot": "00:0c.0",
+            "productid": "0374",
+            "vendorid": "10de"
+         },
+         {
+            "manufacturer": "nVidia Corporation",
+            "name": "MCP55 PCI Express bridge",
+            "pciclass": "0604",
+            "pcislot": "00:0d.0",
+            "productid": "0378",
+            "vendorid": "10de"
+         },
+         {
+            "manufacturer": "nVidia Corporation",
+            "name": "MCP55 PCI Express bridge",
+            "pciclass": "0604",
+            "pcislot": "00:0f.0",
+            "productid": "0377",
+            "vendorid": "10de"
+         },
+         {
+            "manufacturer": "Advanced Micro Devices [AMD]",
+            "name": "K8 [Athlon64/Opteron] HyperTransport Technology Configuration",
+            "pciclass": "0600",
+            "pcislot": "00:18.0",
+            "productid": "1100",
+            "vendorid": "1022"
+         },
+         {
+            "manufacturer": "Advanced Micro Devices [AMD]",
+            "name": "K8 [Athlon64/Opteron] Address Map",
+            "pciclass": "0600",
+            "pcislot": "00:18.1",
+            "productid": "1101",
+            "vendorid": "1022"
+         },
+         {
+            "manufacturer": "Advanced Micro Devices [AMD]",
+            "name": "K8 [Athlon64/Opteron] DRAM Controller",
+            "pciclass": "0600",
+            "pcislot": "00:18.2",
+            "productid": "1102",
+            "vendorid": "1022"
+         },
+         {
+            "manufacturer": "Advanced Micro Devices [AMD]",
+            "name": "K8 [Athlon64/Opteron] Miscellaneous Control",
+            "pciclass": "0600",
+            "pcislot": "00:18.3",
+            "productid": "1103",
+            "vendorid": "1022"
+         },
+         {
+            "manufacturer": "Advanced Micro Devices [AMD]",
+            "name": "K8 [Athlon64/Opteron] HyperTransport Technology Configuration",
+            "pciclass": "0600",
+            "pcislot": "00:19.0",
+            "productid": "1100",
+            "vendorid": "1022"
+         },
+         {
+            "manufacturer": "Advanced Micro Devices [AMD]",
+            "name": "K8 [Athlon64/Opteron] Address Map",
+            "pciclass": "0600",
+            "pcislot": "00:19.1",
+            "productid": "1101",
+            "vendorid": "1022"
+         },
+         {
+            "manufacturer": "Advanced Micro Devices [AMD]",
+            "name": "K8 [Athlon64/Opteron] DRAM Controller",
+            "pciclass": "0600",
+            "pcislot": "00:19.2",
+            "productid": "1102",
+            "vendorid": "1022"
+         },
+         {
+            "manufacturer": "Advanced Micro Devices [AMD]",
+            "name": "K8 [Athlon64/Opteron] Miscellaneous Control",
+            "pciclass": "0600",
+            "pcislot": "00:19.3",
+            "productid": "1103",
+            "vendorid": "1022"
+         },
+         {
+            "manufacturer": "ASPEED Technology, Inc.",
+            "name": "ASPEED Graphics Family",
+            "pciclass": "0300",
+            "pcislot": "01:05.0",
+            "pcisubsystemid": "108e:534b",
+            "productid": "2000",
+            "vendorid": "1a03"
+         },
+         {
+            "manufacturer": "Broadcom",
+            "name": "EPB PCI-Express to PCI-X Bridge",
+            "pciclass": "0604",
+            "pcislot": "05:00.0",
+            "productid": "0103",
+            "vendorid": "1166"
+         },
+         {
+            "manufacturer": "Broadcom Corporation",
+            "name": "Broadcom BCM5715 Gigabit Ethernet",
+            "pciclass": "0200",
+            "pcislot": "06:04.0",
+            "pcisubsystemid": "108e:534b",
+            "productid": "1678",
+            "vendorid": "14e4"
+         },
+         {
+            "manufacturer": "Broadcom Corporation",
+            "name": "Broadcom BCM5715 Gigabit Ethernet",
+            "pciclass": "0200",
+            "pcislot": "06:04.1",
+            "pcisubsystemid": "108e:534b",
+            "productid": "1678",
+            "vendorid": "14e4"
+         }
+      ],
+      "cpus": [
+         {
+            "core": 2,
+            "manufacturer": "AMD",
+            "name": "Dual-Core AMD Opteron(tm) Processor 2218",
+            "speed": 2613,
+            "thread": 1
+         },
+         {
+            "core": 2,
+            "manufacturer": "AMD",
+            "name": "Dual-Core AMD Opteron(tm) Processor 2218",
+            "speed": 2613,
+            "thread": 1
+         }
+      ],
+      "drives": [
+         {
+            "filesystem": "vmfs",
+            "label": "datastore1",
+            "serial": "4d3ea5ac-45d89fb1-847e-001b24f06a45",
+            "total": 248571,
+            "type": "/vmfs/volumes/4d3ea5ac-45d89fb1-847e-001b24f06a45"
+         },
+         {
+            "filesystem": "nfs",
+            "label": "ISO-datastore",
+            "total": 53687,
+            "type": "/vmfs/volumes/6954b300-01710358",
+            "volumn": "stockage1.teclib.local:/mnt/datastore/VmwareISO"
+         }
+      ],
+      "hardware": {
+         "dns": "10.0.5.105",
+         "memory": 8190,
+         "name": "esx-test",
+         "uuid": "b5bfd78a-fa79-0010-adfe-001b24f07258",
+         "vmsystem": "Physical",
+         "workgroup": "teclib.local"
+      },
+      "networks": [
+         {
+            "description": "vmk0",
+            "ipaddress": "10.0.2.189",
+            "ipmask": "255.255.0.0",
+            "mac": "00:50:56:75:f7:2e",
+            "mtu": 1500,
+            "status": "up",
+            "virtualdev": true
+         },
+         {
+            "description": "vmnic0",
+            "driver": "forcedeth",
+            "mac": "00:1b:24:f0:6a:45",
+            "pcislot": "00:08.0",
+            "speed": "0",
+            "status": "down",
+            "virtualdev": false
+         },
+         {
+            "description": "vmnic1",
+            "driver": "forcedeth",
+            "mac": "00:1b:24:f0:6a:46",
+            "pcislot": "00:09.0",
+            "speed": "0",
+            "status": "down",
+            "virtualdev": false
+         },
+         {
+            "description": "vmnic2",
+            "driver": "tg3",
+            "mac": "00:1b:24:f0:6a:43",
+            "pcislot": "06:04.0",
+            "speed": "100",
+            "status": "down",
+            "virtualdev": false
+         },
+         {
+            "description": "vmnic3",
+            "driver": "tg3",
+            "mac": "00:1b:24:f0:6a:44",
+            "pcislot": "06:04.1",
+            "speed": "0",
+            "status": "down",
+            "virtualdev": false
+         },
+         {
+            "description": "vswif0",
+            "ipaddress": "10.0.2.190",
+            "ipmask": "255.255.0.0",
+            "mac": "00:50:56:4e:eb:6f",
+            "status": "up",
+            "virtualdev": false
+         }
+      ],
+      "operatingsystem": {
+         "boot_time": "2011-01-25 14:11:07",
+         "dns_domain": "teclib.local",
+         "fqdn": "esx-test.teclib.local",
+         "full_name": "VMware ESX 4.1.0 build-260247",
+         "name": "VMware ESX",
+         "timezone": {
+            "name": "Europe/Berlin",
+            "offset": "+0100"
+         },
+         "version": "4.1.0"
+      },
+      "storages": [
+         {
+            "description": "Local TEAC CD-ROM (mpx.vmhba0:C0:T0:L0)",
+            "firmware": "1.AC",
+            "manufacturer": "TEAC",
+            "model": "DV-28E-V",
+            "name": "/vmfs/devices/cdrom/mpx.vmhba0:C0:T0:L0",
+            "type": "cdrom"
+         },
+         {
+            "description": "Local ATA Disk (t10.ATA_____ST3250310NS_________________________________________9SF1F0TH)",
+            "disksize": 238475,
+            "firmware": "SN06",
+            "manufacturer": "Seagate",
+            "model": "ST3250310NS",
+            "name": "/vmfs/devices/disks/t10.ATA_____ST3250310NS_________________________________________9SF1F0TH",
+            "serial": "3232323232323232323232325783704970488472",
+            "type": "disk"
+         }
+      ],
+      "versionclient": "GLPI-Agent_v1.1",
+      "virtualmachines": [
+         {
+            "comment": "",
+            "mac": "00:0c:29:06:42:d8",
+            "memory": 512,
+            "name": "ubuntu",
+            "status": "running",
+            "uuid": "564d9904-a176-a762-1b95-f75ddd0642d8",
+            "vcpu": 1,
+            "vmtype": "vmware"
+         },
+         {
+            "comment": "",
+            "mac": "00:0c:29:58:44:c8",
+            "memory": 256,
+            "name": "windows",
+            "status": "running",
+            "uuid": "564d0750-3ae1-d18d-1613-eb489b5844c8",
+            "vcpu": 1,
+            "vmtype": "vmware"
+         },
+         {
+            "comment": "",
+            "mac": "00:0c:29:5f:64:60",
+            "memory": 4096,
+            "name": "solaris",
+            "status": "running",
+            "uuid": "564df277-de0f-b401-0060-7d6a675f6460",
+            "vcpu": 2,
+            "vmtype": "vmware"
+         },
+         {
+            "comment": "",
+            "mac": "",
+            "memory": 512,
+            "name": "Nouvelle machine virtuelle",
+            "status": "off",
+            "uuid": "564d79a4-7ea6-3423-2980-0c882a78f698",
+            "vcpu": 1,
+            "vmtype": "vmware"
+         }
+      ]
+   },
+   "deviceid": "esx-test.teclib.local-2022-01-10-11-13-28",
+   "itemtype": "Computer",
+   "tag": "esx-4.1.0-1"
+}
