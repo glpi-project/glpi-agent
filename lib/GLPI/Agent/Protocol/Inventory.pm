@@ -5,6 +5,9 @@ use warnings;
 
 use parent 'GLPI::Agent::Protocol::Message';
 
+use DateTime;
+use English qw(-no_match_vars);
+
 use GLPI::Agent::Tools;
 
 use constant date_qr            => qr/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
@@ -331,7 +334,7 @@ sub _norm {
             delete $entry->{$value};
         }
     } elsif ($norm eq "dateordatetime" && $entry->{$value} !~ dateordatetime_qr) {
-        my $dateordatetime = _canonicalDateordatetime($entry->{$value});
+        my $dateordatetime = _canonicalDateordatetime($entry->{$value}, $value =~ /^BDATE$/ ? 1 : 0);
         if (defined($dateordatetime)) {
             $entry->{$value} = $dateordatetime;
         } else {
@@ -346,26 +349,65 @@ sub _norm {
     }
 }
 
+sub _ymd {
+    my ($date) = @_;
+
+    ## no critic (ExplicitReturnUndef)
+
+    return unless $date && $date =~ m{^(\d{4})-(\d{2})-(\d{2})$};
+
+    my $ymd;
+    eval {
+        my $dt = DateTime->new(
+            year    => $1,
+            month   => $2,
+            day     => $3,
+        );
+        $ymd = $dt->ymd;
+    };
+    if ($EVAL_ERROR) {
+        # Try inverting day and month in the case the date is malformed
+        eval {
+            my $dt = DateTime->new(
+                year    => $1,
+                month   => $3,
+                day     => $2,
+            );
+            $ymd = $dt->ymd;
+        };
+    }
+
+    return $ymd;
+}
+
 sub _canonicalDate {
     my ($date) = @_;
     return unless defined($date);
-    return "$3-$2-$1" if $date =~ /^(\d{2})\/(\d{2})\/(\d{4})/;
-    return $1 if $date =~ /^(\d{4}-\d{2}-\d{2})/;
+    return _ymd("$3-$2-$1") if $date =~ /^(\d{2})\/(\d{2})\/(\d{4})/;
+    return _ymd($1) if $date =~ /^(\d{4}-\d{2}-\d{2})/;
     return;
 }
 
 sub _canonicalDatetime {
     my ($datetime) = @_;
     return unless defined($datetime);
-    return "$3-$2-$1 00:00:00" if $datetime =~ /^(\d{2})\/(\d{2})\/(\d{4})$/;
-    return "$datetime:00" if $datetime =~ /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/;
+    if ($datetime =~ /^(\d{2})\/(\d{2})\/(\d{4})$/) {
+        my $ymd = _ymd("$3-$2-$1");
+        return "$ymd 00:00:00" if $ymd;
+    } elsif ($datetime =~ /^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2})$/) {
+        my $time = "$2:00";
+        my $ymd = _ymd($1);
+        return "$ymd $time" if $ymd;
+    }
     return;
 }
 
 sub _canonicalDateordatetime {
-    my ($date) = @_;
+    my ($date, $inverted_month_and_day) = @_;
     return unless defined($date);
-    return "$3-$2-$1" if $date =~ /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    if ($date =~ /^(\d{2})\/(\d{2})\/(\d{4})$/) {
+        return $inverted_month_and_day ? _ymd("$3-$1-$2") : _ymd("$3-$2-$1");
+    }
     return;
 }
 
