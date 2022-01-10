@@ -15,6 +15,7 @@ Requires: perl(LWP)
 Requires: perl(Net::SSLeay)
 Requires: perl(Proc::Daemon)
 Requires: perl(Socket::GetAddrInfo)
+Requires: perl(DateTime)
 #Recommended for inventory module
 #Requires: perl(Net::CUPS)
 #Requires: perl(Parse::EDID)

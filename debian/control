@@ -41,6 +41,7 @@ Build-Depends-Indep:
  libxml-xpath-perl <!nocheck>,
  libyaml-perl <!nocheck>,
  libossp-uuid-perl <!nocheck>,
+ libdatetime-perl <!nocheck>,
  perl,
  ucf
 Standards-Version: 4.5.1
@@ -69,12 +70,12 @@ Depends:
  libtext-template-perl,
  libjson-perl,
  libjson-pp-perl,
- libossp-uuid-perl,
  pciutils,
  usbutils,
  libhttp-daemon-perl,
  libyaml-tiny-perl,
  libossp-uuid-perl,
+ libdatetime-perl,
  libsocket-getaddrinfo-perl
 Suggests: smartmontools, read-edid
 Recommends: libio-socket-ssl-perl, dmidecode, hdparm, fdisk | util-linux (<< 2.29.2-3~), net-tools
