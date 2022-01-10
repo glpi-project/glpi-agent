@@ -522,7 +522,7 @@ plan tests =>
 my $module = Test::MockModule->new('LWP::UserAgent');
 
 foreach my $test (keys %tests) {
-    my $dir = "resources/$test";
+    my $dir = "resources/esx/$test";
 
     # create mock user agent
     my $ua   = LWP::UserAgent->new();
@@ -557,7 +557,7 @@ foreach my $test (keys %tests) {
         }
     );
 
-    # ensure a calll to LWP::UserAgent->new() return our mock agent
+    # ensure a call to LWP::UserAgent->new() return our mock agent
     $module->mock(new => sub { return $mock; });
 
     my $vpbs = GLPI::Agent::SOAP::VMware->new(
