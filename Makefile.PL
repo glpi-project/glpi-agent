@@ -38,6 +38,7 @@ requires 'Time::HiRes'        => '0';
 requires 'Digest::SHA'        => '0';
 requires 'JSON'               => '0';
 requires 'Data::UUID'         => '0';
+requires 'DateTime'           => '0';
 
 if ($OSNAME eq 'MSWin32') {
     requires 'Win32::OLE'         => '0';
@@ -79,7 +80,6 @@ test_requires 'Test::NoWarnings'             => '0';
 test_requires 'Test::MockObject'             => '0';
 
 # Inventory
-recommends 'DateTime'                        => '0';
 recommends 'Net::CUPS'                       => 0.60 if $OSNAME ne 'MSWin32';
 recommends 'Parse::EDID'                     => '0';
 
