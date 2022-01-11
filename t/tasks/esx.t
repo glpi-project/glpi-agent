@@ -30,7 +30,7 @@ my %tests = (
     },
 );
 
-plan tests => (scalar keys %tests) * 8;
+plan tests => (scalar keys %tests) * 7;
 
 # Setup a target with a Test logger and debug
 my $logger = GLPI::Agent::Logger->new(
@@ -144,14 +144,6 @@ foreach my $test (keys %tests) {
         $json = $content->getContent();
     } "$test: inventory get json";
 
-    my $message;
-    lives_ok {
-        $message = GLPI::Agent::Protocol::Message->new(
-            logger  => $logger,
-            message => $json
-        );
-    } "$test: json inventory readable";
-
     # We can update expected json by setting DUMP_JSON environment variable in the
     # case format has evolved
     if ($ENV{DUMP_JSON}) {
@@ -168,5 +160,5 @@ foreach my $test (keys %tests) {
         file    => "$resource.json"
     );
 
-    cmp_deeply($message->get, $expected->get, "$test: expected message");
+    cmp_deeply($content->get, $expected->get, "$test: expected message");
 }
