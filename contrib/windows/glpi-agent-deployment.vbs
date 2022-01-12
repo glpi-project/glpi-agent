@@ -53,7 +53,7 @@
 
 Option Explicit
 Dim Repair, Verbose
-Dim Setup, SetupArchitecture, SetupLocation, SetupNightlyLocation, SetupOptions, SetupVersion
+Dim Setup, SetupArchitecture, SetupLocation, SetupNightlyLocation, SetupOptions, SetupVersion, RunUninstallFusionInventoryAgent
 
 '
 '
@@ -129,12 +129,12 @@ Repair = "No"
 '
 Verbose = "No"
 
-' UninstallFusionInventoryAgent
+' RunUninstallFusionInventoryAgent
 '    Set to "Yes" to first uninstall FusionInventory Agent
 '    Also and unless SERVER or LOCAL are defined in SetupOptions, this script
 '    will try to get them from FusionInventory-Agent configuration found in registry
 '
-UninstallFusionInventoryAgent = "No"
+RunUninstallFusionInventoryAgent = "No"
 
 '
 '
@@ -399,7 +399,7 @@ Set WshShell = WScript.CreateObject("WScript.shell")
 
 nMinutesToAdvance = 5
 
-If UninstallFusionInventoryAgent = "Yes" Then
+If RunUninstallFusionInventoryAgent = "Yes" Then
     uninstallFusionInventoryAgent()
 End If
 
