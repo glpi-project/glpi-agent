@@ -67,10 +67,11 @@ sub doInventory {
 sub _check_solaris_valid_release{
 
     my $info = getReleaseInfo();
+    my ($version) = $info->{version} =~ /^(\d+)/;
     return
-        $info->{version} > 10
+        $version > 10
         ||
-        $info->{version} == 10 &&
+        $version == 10         &&
         $info->{subversion}    &&
         substr($info->{subversion}, 1) >= 4;
 }
