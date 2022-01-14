@@ -5,6 +5,7 @@ use warnings;
 
 use Test::Deep;
 use Test::More;
+use Test::NoWarnings;
 
 use GLPI::Agent::Tools::Solaris;
 
@@ -1475,9 +1476,16 @@ my %release_tests = (
         date       => '8/11',
         id         => 's10s_u10wos_17b',
      },
+    'openindiana-151' => {
+        fullname   => 'OpenIndiana Development oi_151.1.9 X86 (powered by illumos)',
+        version    => '151.1.9',
+        subversion => undef,
+        date       => undef,
+        id         => undef,
+    }
 );
 
-plan tests =>
+plan tests => 1 +
     scalar (keys %prtconf_tests) +
     scalar (keys %prtdiag_tests) +
     scalar (keys %release_tests);
