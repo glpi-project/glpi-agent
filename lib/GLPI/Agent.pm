@@ -214,6 +214,7 @@ sub runTarget {
     my $response;
     my $client;
     my @plannedTasks = $target->plannedTasks();
+    my $doProlog = 1;
     if ($target->isGlpiServer()) {
         GLPI::Agent::HTTP::Client::GLPI->require();
         return $self->{logger}->error("GLPI Protocol library can't be loaded")
@@ -275,56 +276,6 @@ sub runTarget {
             return 1;
         }
 
-    } elsif ($target->isType('server')) {
-
-        return unless GLPI::Agent::HTTP::Client::OCS->require();
-
-        $client = GLPI::Agent::HTTP::Client::OCS->new(
-            logger          => $self->{logger},
-            timeout         => $self->{config}->{timeout},
-            user            => $self->{config}->{user},
-            password        => $self->{config}->{password},
-            proxy           => $self->{config}->{proxy},
-            ca_cert_file    => $self->{config}->{'ca-cert-file'},
-            ca_cert_dir     => $self->{config}->{'ca-cert-dir'},
-            no_ssl_check    => $self->{config}->{'no-ssl-check'},
-            no_compress     => $self->{config}->{'no-compression'},
-            ssl_cert_file   => $self->{config}->{'ssl-cert-file'},
-            agentid         => uuid_to_string($self->{agentid}),
-        );
-
-        return unless GLPI::Agent::XML::Query::Prolog->require();
-
-        my $prolog = GLPI::Agent::XML::Query::Prolog->new(
-            deviceid => $self->{deviceid},
-        );
-
-        $self->{logger}->info("sending prolog request to $target->{id}");
-        $response = $client->send(
-            url     => $target->getUrl(),
-            message => $prolog
-        );
-        unless ($response) {
-            $self->{logger}->error("No answer from server at ".$target->getUrl());
-            # Return true on net error
-            return 1;
-        }
-
-        # Check if we got a GLPI server answer
-        if (ref($response) =~ /^GLPI::Agent::Protocol::/) {
-            $self->{logger}->info("$target->{id} answer shows it supports GLPI Agent protocol");
-            $target->isGlpiServer('true');
-            return $self->runTarget($target) unless $response->expiration;
-        } else {
-            # update target
-            my $content = $response->getContent();
-            if (defined($content->{PROLOG_FREQ})) {
-                $target->setMaxDelay($content->{PROLOG_FREQ} * 3600);
-            }
-        }
-    }
-
-    if ($target->isGlpiServer()) {
         # Handle contact answer including expiration and/or errors
         my $message = $response->get('message');
         my $status  = $response->status;
@@ -371,13 +322,89 @@ sub runTarget {
             }
         }
 
+        # By default, PROLOG request could be avoided when communicating with a GLPI server
+        $doProlog = 0;
         my $tasks = $response->get("tasks");
-        # Handle no-category set by server on inventory task
-        if (ref($tasks) eq "HASH" && ref($tasks->{inventory}) eq 'HASH' && $tasks->{inventory}->{"no-category"}) {
-            my $no_category = [ sort split(/,+/, $tasks->{inventory}->{"no-category"}) ];
-            unless (@{$self->{config}->{"no-category"}} && join(",", sort @{$self->{config}->{"no-category"}}) eq join(",", @{$no_category})) {
-                $self->{logger}->debug("set no-category configuration to: ".$tasks->{inventory}->{"no-category"});
-                $self->{config}->{"no-category"} = $no_category;
+        # Handle tasks informations returned by server in CONTACT answer
+        if (ref($tasks) eq "HASH") {
+            # Handle no-category set by server on inventory task
+            if (ref($tasks->{inventory}) eq 'HASH' && $tasks->{inventory}->{"no-category"}) {
+                my $no_category = [ sort split(/,+/, $tasks->{inventory}->{"no-category"}) ];
+                unless (@{$self->{config}->{"no-category"}} && join(",", sort @{$self->{config}->{"no-category"}}) eq join(",", @{$no_category})) {
+                    $self->{logger}->debug("set no-category configuration to: ".$tasks->{inventory}->{"no-category"});
+                    $self->{config}->{"no-category"} = $no_category;
+                }
+            }
+
+            # Check if we still need to also do a PROLOG request in the case
+            # GLPI server supports some tasks thanks to glpiinventory plugin
+            %enabled = map { lc($_) => 1 } @plannedTasks;
+            foreach my $task (keys(%{$tasks})) {
+                next unless $enabled{$task} && ref($tasks->{$task}) eq 'HASH';
+                if ($tasks->{$task}->{server} && $tasks->{$task}->{server} eq "glpiinventory") {
+                    $doProlog = 1;
+                    last;
+                }
+            }
+        }
+    }
+
+    if ($target->isType('server') && $doProlog) {
+
+        return unless GLPI::Agent::HTTP::Client::OCS->require();
+
+        my $agentid;
+        # We may have to simulate a legacy PROLOG call if we just need to get an XML answer as
+        # we still known the server is a GLPI one. This is the case when we need to support
+        # glpiinventory plugin and then we just need to keep agentid undefined
+        $agentid = uuid_to_string($self->{agentid})
+            unless $target->isGlpiServer();
+
+        $client = GLPI::Agent::HTTP::Client::OCS->new(
+            logger          => $self->{logger},
+            timeout         => $self->{config}->{timeout},
+            user            => $self->{config}->{user},
+            password        => $self->{config}->{password},
+            proxy           => $self->{config}->{proxy},
+            ca_cert_file    => $self->{config}->{'ca-cert-file'},
+            ca_cert_dir     => $self->{config}->{'ca-cert-dir'},
+            no_ssl_check    => $self->{config}->{'no-ssl-check'},
+            no_compress     => $self->{config}->{'no-compression'},
+            ssl_cert_file   => $self->{config}->{'ssl-cert-file'},
+            agentid         =>  $agentid,
+        );
+
+        return unless GLPI::Agent::XML::Query::Prolog->require();
+
+        my $prolog = GLPI::Agent::XML::Query::Prolog->new(
+            deviceid => $self->{deviceid},
+        );
+
+        $self->{logger}->info("sending prolog request to $target->{id}");
+        $response = $client->send(
+            url     => $target->getUrl(),
+            message => $prolog
+        );
+        unless ($response) {
+            $self->{logger}->error("No answer from server at ".$target->getUrl());
+            # Return true on net error
+            return 1;
+        }
+
+        # Check if we got a GLPI server answer
+        if (ref($response) =~ /^GLPI::Agent::Protocol::/) {
+            # Set and log server is a glpi one only if this is a new information
+            unless ($target->isGlpiServer()) {
+                $self->{logger}->info("$target->{id} answer shows it supports GLPI Agent protocol");
+                $target->isGlpiServer('true');
+                return $self->runTarget($target) unless $response->expiration;
+            }
+        } else {
+            # update target
+            my $content = $response->getContent();
+            # setMaxDelay has still been called after CONTACT request in target is a GLPI server
+            if (defined($content->{PROLOG_FREQ}) && !$target->isGlpiServer()) {
+                $target->setMaxDelay($content->{PROLOG_FREQ} * 3600);
             }
         }
     }
