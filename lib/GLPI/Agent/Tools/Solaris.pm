@@ -375,9 +375,13 @@ sub getReleaseInfo {
 
     my ($fullname)            =
         $first_line =~ /^ \s+ (.+)/x;
-    my ($version, $date, $id) =
-        $fullname =~ /Solaris \s ([\d.]+) \s (?: (\d+\/\d+) \s)? (\S+)/x;
-    my ($subversion) = $id =~ /_(u\d+)/;
+    my ($version, $date, $id, $subversion);
+    if ($fullname =~ /Solaris/) {
+        ($version, $date, $id) = $fullname =~ /Solaris \s ([\d.]+) \s (?: (\d+\/\d+) \s)? (\S+)/x;
+        ($subversion) = $id =~ /_(u\d+)/;
+    } elsif ($fullname =~ /OpenIndiana/) {
+        ($version) = $fullname =~ /oi_([\d.]+)/;
+    }
 
     return {
         fullname   => $fullname,
