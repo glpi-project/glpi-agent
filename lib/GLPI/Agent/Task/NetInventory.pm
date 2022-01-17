@@ -26,12 +26,14 @@ our $VERSION = GLPI::Agent::Task::NetInventory::Version::VERSION;
 sub isEnabled {
     my ($self, $contact) = @_;
 
-    if ($self->{target}->isGlpiServer()) {
-        # TODO Support NetInventory task via GLPI Agent Protocol
-        $self->{logger}->debug("NetInventory task not supported by GLPI server");
-        return;
-    } elsif (!$self->{target}->isType('server')) {
+    if (!$self->{target}->isType('server')) {
         $self->{logger}->debug("NetInventory task not compatible with local target");
+        return;
+    }
+
+    if (ref($contact) ne 'GLPI::Agent::XML::Response') {
+        # TODO Support NetInventory task via GLPI Agent Protocol
+        $self->{logger}->debug("NetInventory task not supported by server");
         return;
     }
 
