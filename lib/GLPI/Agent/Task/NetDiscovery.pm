@@ -30,12 +30,14 @@ our $VERSION = GLPI::Agent::Task::NetDiscovery::Version::VERSION;
 sub isEnabled {
     my ($self, $contact) = @_;
 
-    if ($self->{target}->isGlpiServer()) {
-        # TODO Support NetDiscovery task via GLPI Agent Protocol
-        $self->{logger}->debug("NetDiscovery task not supported by GLPI server");
-        return;
-    } elsif (!$self->{target}->isType('server')) {
+    if (!$self->{target}->isType('server')) {
         $self->{logger}->debug("NetDiscovery task not compatible with local target");
+        return;
+    }
+
+    if (ref($contact) ne 'GLPI::Agent::XML::Response') {
+        # TODO Support NetDiscovery task via GLPI Agent Protocol
+        $self->{logger}->debug("NetDiscovery task not supported by server");
         return;
     }
 
