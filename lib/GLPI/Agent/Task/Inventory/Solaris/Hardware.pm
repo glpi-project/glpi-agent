@@ -38,7 +38,8 @@ sub doInventory {
         DESCRIPTION => $description
     };
 
-    my $arch = $Config{archname} =~ /^i86pc/ ? 'i386' : 'sparc';
+    my $archname = $inventory->getRemote() ? Uname("-m") : $Config{archname};
+    my $arch = $archname =~ /^i86pc/ ? 'i386' : 'sparc';
     if (getZone() eq 'global') {
         if ($arch eq "i386") {
             my $infos = getSmbios(logger => $logger);

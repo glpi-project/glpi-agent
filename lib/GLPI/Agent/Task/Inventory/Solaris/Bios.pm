@@ -13,7 +13,7 @@ use GLPI::Agent::Tools::Solaris;
 use constant    category    => "bios";
 
 sub isEnabled {
-    return canRun('showrev');
+    return canRun('showrev') || canRun('/usr/sbin/smbios');
 }
 
 sub doInventory {
@@ -25,10 +25,11 @@ sub doInventory {
     my $archname = $inventory->getRemote() ? Uname("-m") : $Config{archname};
     my $arch = $archname =~ /^i86pc/ ? 'i386' : 'sparc';
 
-    my $bios;
-
-    my $infos = _parseShowRev(logger => $logger);
-    $bios->{SMANUFACTURER} = $infos->{'Hardware provider'};
+    my ($bios, $infos);
+    if (canRun('showrev')) {
+        $infos = _parseShowRev(logger => $logger);
+        $bios->{SMANUFACTURER} = $infos->{'Hardware provider'};
+    }
     if (getZone() eq 'global') {
         $bios->{SMODEL}        = $infos->{'Application architecture'};
 

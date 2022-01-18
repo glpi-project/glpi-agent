@@ -32,6 +32,7 @@ my %vpcu_tests = (
         _map(8, { speed => '1350', type => 'sparcv9' }) ,
     ],
     'sparc-t5'  => [ _map(64, { speed => '3600', type => 'sparcv9' }) ],
+    'oi-2021.10' => [ _map(2, { speed => '3823', type => 'i386' })    ],
 );
 
 my %pcpu_tests = (
@@ -77,6 +78,9 @@ my %pcpu_tests = (
     ],
     'sparc-t5' => [
         _map(1, { speed => '3600', type => 'SPARC-T5', count => 64 })
+    ],
+    'oi-2021.10' => [
+        _map(1, { speed => '3823', type => 'AMD Ryzen 9 3900X 12-Core', count => 2 })
     ],
 );
 
@@ -232,6 +236,17 @@ my %cpu_tests = (
                 THREAD       => 1
             }
         ),
+    ],
+    'oi-2021.10' => [
+        _map(1,
+            {
+                NAME         => 'AMD Ryzen 9 3900X',
+                MANUFACTURER => 'AMD',
+                SPEED        => 3823,
+                THREAD       => 1,
+                CORE         => 12
+            }
+        )
     ],
 );
 

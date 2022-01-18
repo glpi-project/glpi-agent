@@ -124,6 +124,51 @@ my %smbios_tests = (
             'UUID' => '4b713db6-6d40-11dd-b32c-000123456789',
             'Wake-Up Event' => '0x6 (power switch)'
         }
+    },
+    "oi-2021.10" => {
+        SMB_TYPE_BIOS => {
+            'Vendor' => 'innotek GmbH',
+            'Image Size' => '131072 bytes',
+            'Characteristics' => '0x48018090',
+            'Characteristics Extension Byte 2' => '0x0',
+            'Address Segment' => '0xe000',
+            'Version String' => 'VirtualBox',
+            'Characteristics Extension Byte 1' => '0x1',
+            'ROM Size' => '131072 bytes',
+            'Release Date' => '12/01/2006'
+        },
+        SMB_TYPE_BASEBOARD => {
+            'Flags' => '0x98',
+            'Board Type' => '0xa2',
+            'Chassis' => '142029272'
+        },
+        SMB_TYPE_SYSTEM => {
+            'UUID' => 'ea1635ad-bf51-864f-b673-704fa7655a01',
+            'Version' => '1.2',
+            'Product' => 'VirtualBox',
+            'Family' => 'Virtual Machine',
+            'Serial Number' => '0',
+            'Wake-Up Event' => '0x6 (power switch)',
+            'SKU Number' => ' ',
+            'Manufacturer' => 'innotek GmbH'
+        },
+        SMB_TYPE_OEM_LO => {
+            '0' => '80080800 2e583a00                    .....X:.        ',
+            'offset' => '0 1 2 3  4 5 6 7  8 9 a b  c d e f  0123456789abcdef'
+        },
+        SMB_TYPE_CHASSIS => {
+            'Chassis Type' => '0x1 (other)',
+            'Element Records' => '0',
+            'OEM Data' => '0x0',
+            'Power Supply State' => '0x3 (safe)',
+            'Power Cords' => '0',
+            'Thermal State' => '0x3 (safe)',
+            'Lock Present' => 'N',
+            'Chassis Height' => '0u',
+            'Manufacturer' => 'Oracle Corporation',
+            'Boot-Up State' => '0x3 (safe)',
+            'SKU Number' => '<unknown>'
+        }
     }
 );
 
