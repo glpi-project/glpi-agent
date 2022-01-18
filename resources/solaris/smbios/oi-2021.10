@@ -1,0 +1,72 @@
+ID    SIZE TYPE
+0     54   SMB_TYPE_BIOS (type 0) (BIOS information)
+
+  Vendor: innotek GmbH
+  Version String: VirtualBox
+  Release Date: 12/01/2006
+  Address Segment: 0xe000
+  ROM Size: 131072 bytes
+  Image Size: 131072 bytes
+  Characteristics: 0x48018090
+	SMB_BIOSFL_ISA (ISA is supported)
+	SMB_BIOSFL_PCI (PCI is supported)
+	SMB_BIOSFL_CDBOOT (Boot from CD is supported)
+	SMB_BIOSFL_SELBOOT (Selectable Boot supported)
+	SMB_BIOSFL_I9_KBD (int 0x9 8042 keyboard svcs)
+	SMB_BIOSFL_I10_CGA (int 0x10 CGA svcs)
+  Characteristics Extension Byte 1: 0x1
+	SMB_BIOSXB1_ACPI (ACPI is supported)
+  Characteristics Extension Byte 2: 0x0
+
+ID    SIZE TYPE
+1     72   SMB_TYPE_SYSTEM (type 1) (system information)
+
+  Manufacturer: innotek GmbH
+  Product: VirtualBox
+  Version: 1.2
+  Serial Number: 0
+
+  UUID: ea1635ad-bf51-864f-b673-704fa7655a01
+  Wake-Up Event: 0x6 (power switch)
+  SKU Number: 
+  Family: Virtual Machine
+
+ID    SIZE TYPE
+8     50   SMB_TYPE_BASEBOARD (type 2) (base board)
+
+  Chassis: 142029272
+  Flags: 0x98
+	SMB_BBFL_REPLACABLE (board is field-replacable)
+	SMB_BBFL_HOTSWAP (board is hot-swappable)
+	0x80
+  Board Type: 0xa2
+
+
+ID    SIZE TYPE
+3     31   SMB_TYPE_CHASSIS (type 3) (system enclosure or chassis)
+
+  Manufacturer: Oracle Corporation
+
+  OEM Data: 0x0
+  SKU Number: <unknown>
+  Lock Present: N
+  Chassis Type: 0x1 (other)
+  Boot-Up State: 0x3 (safe)
+  Power Supply State: 0x3 (safe)
+  Thermal State: 0x3 (safe)
+  Chassis Height: 0u
+  Power Cords: 0
+  Element Records: 0
+
+ID    SIZE TYPE
+2     36   SMB_TYPE_OEMSTR (type 11) (OEM string table)
+
+  vboxVer_6.1.30
+  vboxRev_148432
+
+ID    SIZE TYPE
+8     8    SMB_TYPE_OEM_LO (type 128) (start of OEM-specific type range)
+
+  offset:   0 1 2 3  4 5 6 7  8 9 a b  c d e f  0123456789abcdef
+       0:  80080800 2e583a00                    .....X:.        
+
