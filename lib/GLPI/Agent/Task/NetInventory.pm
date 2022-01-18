@@ -274,8 +274,8 @@ sub run {
                 if ($devices_count < $threads_count) {
                     $jobs->enqueue({ leave => 1 });
                     $threads_count--;
-                } elsif ($devices_count>3600/$target_expiration) {
-                    # Only reduce expiration when still using all threads or and few devices are still to be scanned
+                } elsif ($threads_count > 1 && $devices_count > 4) {
+                    # Only reduce expiration when still using all threads or few devices are still to be scanned
                     $expiration -= $target_expiration;
                     $self->_logExpirationHours($expiration);
                 }

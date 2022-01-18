@@ -5,6 +5,9 @@ Revision history for GLPI agent
 core:
 * Define DateTime perl library as a requirement
 
+netdiscovery/netinventory:
+* Fix: Fix expiration time support to avoid aborting on legit short run
+
 inventory:
 * Fix: Make deprecated XML format compatible with GLPI 10 XML to JSON converter
 

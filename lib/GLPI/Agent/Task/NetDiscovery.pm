@@ -201,6 +201,7 @@ sub run {
 
     # Start jobs by preparing range queues and counting ips
     my $max_count = 0;
+    my $minimum_expiration = time + 1;
     foreach my $job (@{$self->{jobs}}) {
         my $pid = $job->pid;
 
@@ -253,6 +254,9 @@ sub run {
 
         # Update total count
         $max_count += $queue->{size};
+
+        # Update minimum expiration
+        $minimum_expiration += $queue->{size} * $queue->{timeout};
     }
 
     # Don't keep client until we created threads to avoid segfault if SSL is used
@@ -264,6 +268,7 @@ sub run {
     $target_expiration = 60 if ($target_expiration < 60);
     setExpirationTime( timeout => $max_count * $target_expiration );
     my $expiration = getExpirationTime();
+    $expiration = $minimum_expiration if $expiration < $minimum_expiration;
     $self->_logExpirationHours($expiration);
 
     # no need more threads than ips to scan
@@ -351,9 +356,11 @@ sub run {
                 if ($max_count < $threads_count) {
                     $jobs->enqueue({ leave => 1 });
                     $threads_count--;
-                } else {
-                    # Only reduce expiration when still using all threads
-                    $expiration -= $target_expiration;
+                } elsif ($threads_count > 1) {
+                    # Only reduce expiration when still using some threads
+                    # Reduce expiration from target expiration but not queue timeout
+                    $expiration -= $target_expiration - $queue->{timeout};
+                    $expiration = $minimum_expiration if $expiration < $minimum_expiration;
                     $self->_logExpirationHours($expiration);
                 }
             }
