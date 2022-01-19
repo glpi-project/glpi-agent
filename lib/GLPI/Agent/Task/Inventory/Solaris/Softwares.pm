@@ -57,7 +57,9 @@ sub _parse_pkgs {
                 undef $software;
             } elsif ($line =~ /Name:\s+(.+)/) {
                 $software->{NAME} = $1;
-            } elsif ($line =~ /FMRI:\s+.+\@(.+)/) {
+            } elsif ($line =~ /Version:\s+(.+)/ ) {
+                $software->{VERSION} = $1;
+            } elsif ($line =~ /FMRI:\s+.+\@(.+)/ && !$software->{VERSION}) {
                 $software->{VERSION} = $1;
             } elsif ($line =~ /Publisher:\s+(.+)/) {
                 $software->{PUBLISHER} = $1;

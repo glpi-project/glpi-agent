@@ -1,0 +1,26 @@
+          Name: archiver/gnu-tar
+       Summary: gtar - GNU tar
+   Description: GNU tar - A utility used to store, backup, and transport files
+                (gtar) 1.23
+      Category: Development/GNU
+         State: Installed
+     Publisher: openindiana.org
+       Version: 1.23
+ Build Release: 5.11
+        Branch: 0.151.1.9
+Packaging Date: Fri Jan 17 20:17:05 2014
+          Size: 2.47 MB
+          FMRI: pkg://openindiana.org/archiver/gnu-tar@1.23,5.11-0.151.1.9:20140117T201645Z
+
+          Name: compress/gzip
+       Summary: The GNU Zip (gzip) compression utility
+   Description: The GNU Zip (gzip) compression utility 1.5
+      Category: Applications/System Utilities
+         State: Installed
+     Publisher: openindiana.org
+       Version: 1.5
+ Build Release: 5.11
+        Branch: 0.151.1.9
+Packaging Date: Fri Jan 17 20:17:05 2014
+          Size: 235.71 kB
+          FMRI: pkg://openindiana.org/compress/gzip@1.5,5.11-0.151.1.9:20140117T201705Z
