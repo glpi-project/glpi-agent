@@ -308,6 +308,9 @@ sub runTarget {
         if ($disabled) {
             if (ref($disabled) eq 'ARRAY' && @{$disabled}) {
                 my %disabled = map { lc($_) => 1 } @{$disabled};
+                # Never disable remoteinventory as this is a special case when
+                # remote is set locally on agent side, but keep the info for future usage
+                $self->{_disabled_remoteinventory} = delete $disabled{remoteinventory};
                 # Never disable inventory if force option is used
                 delete $disabled{inventory} if $self->{config}->{force};
                 @plannedTasks = grep { ! exists($disabled{lc($_)}) } @plannedTasks;
