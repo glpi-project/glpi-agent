@@ -1,0 +1,10 @@
+c3t0d0           Soft Errors: 0 Hard Errors: 0 Transport Errors: 0 
+Vendor: DELL Product: PERC H700 Revision: 2.10 Serial No: xxxxxxxxxxxxxx
+Size: 107,37GB <107374182400 bytes>
+Media Error: 0 Device Not Ready: 0 No Device: 0 Recoverable: 0 
+Illegal Request: 1 Predictive Failure Analysis: 0
+c3t1d0           Soft Errors: 0 Hard Errors: 0 Transport Errors: 0 
+Vendor: DELL Product: PERC H700 Revision: 2.10 Serial No: xxxxxxxxxxxxxx
+Size: 19891,07GB <19891067289600 bytes>
+Media Error: 0 Device Not Ready: 0 No Device: 0 Recoverable: 0 
+Illegal Request: 1 Predictive Failure Analysis: 0 

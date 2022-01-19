@@ -1753,6 +1753,26 @@ my %tests = (
             MODEL        => 'CD-ROM'
         }
     ],
+    'oi151' => [
+        {
+            MANUFACTURER => 'DELL',
+            DESCRIPTION  => 'S/N:xxxxxxxxxxxxxx FW:2.10',
+            NAME         => 'c3t0d0',
+            FIRMWARE     => '2.10',
+            DISKSIZE     => 107374,
+            SERIALNUMBER => 'xxxxxxxxxxxxxx',
+            MODEL        => 'PERC H700'
+        },
+        {
+            DISKSIZE     => 19891067,
+            NAME         => 'c3t1d0',
+            FIRMWARE     => '2.10',
+            MANUFACTURER => 'DELL',
+            DESCRIPTION  => 'S/N:xxxxxxxxxxxxxx FW:2.10',
+            SERIALNUMBER => 'xxxxxxxxxxxxxx',
+            MODEL        => 'PERC H700'
+        }
+    ],
 );
 
 plan tests => (2 * scalar keys %tests) + 1;

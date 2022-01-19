@@ -21,6 +21,7 @@ my %tests = (
     sample6 => [ _gen(8,  'NUMSLOTS', { TYPE => "DIMM", CAPACITY => '512'   }) ],
     sample7 => [ _gen(1,  'NUMSLOTS', { TYPE => "DIMM", CAPACITY => '2048'  }) ],
     sample8 => [ _gen(32, 'NUMSLOTS', { TYPE => "DIMM", CAPACITY => '2048'  }) ],
+    oi151   => [ _gen(8,  'NUMSLOTS', { TYPE => "Unknown", DESCRIPTION  => "DIMM" }) ],
 );
 
 plan tests => (2 * scalar keys %tests) + 1;
