@@ -1,0 +1,305 @@
+             Name: SUNWcs
+          Summary: Core Solaris
+      Description: core software for a specific instruction-set architecture
+         Category: System/Core
+            State: Installed
+        Publisher: openindiana.org
+          Version: 0.5.11
+           Branch: 2020.0.1.20752
+   Packaging Date: Sun Oct 31 01:31:02 2021
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 26.24 MB
+             FMRI: pkg://openindiana.org/SUNWcs@0.5.11-2020.0.1.20752:20211031T013102Z
+
+             Name: SUNWcsd
+          Summary: Core Solaris Devices
+      Description: core entries for /dev and /devices needed for the initial
+                   boot of Solaris
+         Category: System/Core
+            State: Installed
+        Publisher: openindiana.org
+          Version: 0.5.11
+           Branch: 2020.0.1.20752
+   Packaging Date: Sun Oct 31 01:31:21 2021
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 15.88 kB
+             FMRI: pkg://openindiana.org/SUNWcsd@0.5.11-2020.0.1.20752:20211031T013121Z
+
+             Name: compress/bzip2
+          Summary: high-quality block-sorting file compressor - utilities
+      Description: bzip2 is a freely available, patent free, high-quality data
+                   compressor.
+         Category: Applications/System Utilities
+            State: Installed
+        Publisher: openindiana.org
+          Version: 1.0.8
+           Branch: 2020.0.1.0
+   Packaging Date: Mon Mar 30 11:34:33 2020
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 397.31 kB
+             FMRI: pkg://openindiana.org/compress/bzip2@1.0.8-2020.0.1.0:20200330T113433Z
+      Project URL: https://sourceware.org/bzip2/
+       Source URL: https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz
+
+             Name: compress/gzip
+          Summary: GNU Zip (gzip)
+      Description: The GNU Zip (gzip) compression utility
+         Category: Applications/System Utilities
+            State: Installed
+        Publisher: openindiana.org
+          Version: 1.11
+           Branch: 2020.0.1.0
+   Packaging Date: Fri Sep  3 18:22:40 2021
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 345.44 kB
+             FMRI: pkg://openindiana.org/compress/gzip@1.11-2020.0.1.0:20210903T182240Z
+      Project URL: https://www.gnu.org/software/gzip/
+       Source URL: https://ftp.gnu.org/gnu/gzip/gzip-1.11.tar.xz
+
+             Name: compress/xz
+          Summary: 'XZ Utils - loss-less file compression application and
+                   library.'
+         Category: Applications/System Utilities
+            State: Installed
+        Publisher: openindiana.org
+          Version: 5.2.5
+           Branch: 2020.0.1.0
+   Packaging Date: Fri Sep 25 21:22:50 2020
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 1.55 MB
+             FMRI: pkg://openindiana.org/compress/xz@5.2.5-2020.0.1.0:20200925T212250Z
+      Project URL: https://tukaani.org/xz/
+       Source URL: https://tukaani.org/xz/xz-5.2.5.tar.gz
+
+             Name: compress/zstd
+          Summary: Zstandard, or zstd for short, is a fast lossless compression
+                   algorithm, targeting real-time compression scenarios
+         Category: Applications/System Utilities
+            State: Installed
+        Publisher: openindiana.org
+          Version: 1.5.0
+           Branch: 2020.0.1.0
+   Packaging Date: Tue May 18 15:36:18 2021
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 6.32 MB
+             FMRI: pkg://openindiana.org/compress/zstd@1.5.0-2020.0.1.0:20210518T153618Z
+      Project URL: https://facebook.github.io/zstd/
+       Source URL: https://github.com/facebook/zstd/releases/download/v1.5.0/zstd-1.5.0.tar.gz
+
+             Name: consolidation/install/install-incorporation
+          Summary: install consolidation incorporation
+      Description: This incorporation constrains packages from the install
+                   consolidation.
+            State: Installed
+        Publisher: openindiana.org
+          Version: 0.5.11
+           Branch: 2020.0.1.1053
+   Packaging Date: Tue Sep  7 21:06:38 2021
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 0.00 B
+             FMRI: pkg://openindiana.org/consolidation/install/install-incorporation@0.5.11-2020.0.1.1053:20210907T210638Z
+
+             Name: consolidation/nspg/nspg-incorporation
+          Summary: This incorporation constrains packages from the nspg
+                   consolidation.
+         Category: Meta Packages/Group Packages
+            State: Installed
+        Publisher: openindiana.org
+          Version: 0.5.11
+           Branch: 2014.1.0.0
+   Packaging Date: Mon Mar 30 15:17:48 2020
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 0.00 B
+             FMRI: pkg://openindiana.org/consolidation/nspg/nspg-incorporation@0.5.11-2014.1.0.0:20200330T151748Z
+
+             Name: consolidation/osnet/osnet-incorporation
+          Summary: OS/Net consolidation incorporation
+      Description: This incorporation constrains packages from the OS/Net
+                   consolidation.
+            State: Installed
+        Publisher: openindiana.org
+          Version: 0.5.11
+           Branch: 2020.0.1.20752
+   Packaging Date: Sun Oct 31 01:12:14 2021
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 0.00 B
+             FMRI: pkg://openindiana.org/consolidation/osnet/osnet-incorporation@0.5.11-2020.0.1.20752:20211031T011214Z
+
+             Name: consolidation/sunpro/sunpro-incorporation
+            State: Installed
+        Publisher: openindiana.org
+          Version: 0.5.11
+           Branch: 2020.0.1.20752
+   Packaging Date: Sun Oct 31 01:12:24 2021
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 0.00 B
+             FMRI: pkg://openindiana.org/consolidation/sunpro/sunpro-incorporation@0.5.11-2020.0.1.20752:20211031T011224Z
+
+             Name: consolidation/userland/userland-incorporation
+          Summary: userland consolidation incorporation
+                   (consolidation/userland/userland-incorporation)
+      Description: This incorporation constrains packages from the userland
+                   consolidation
+         Category: Meta Packages/Incorporations
+            State: Installed
+        Publisher: openindiana.org
+          Version: 0.5.11
+           Branch: 2020.0.1.14595
+   Packaging Date: Sun Oct 31 18:12:30 2021
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 0.00 B
+             FMRI: pkg://openindiana.org/consolidation/userland/userland-incorporation@0.5.11-2020.0.1.14595:20211031T181230Z
+
+             Name: crypto/ca-certificates
+          Summary: Common CA certificates
+         Category: System/Security
+            State: Installed
+        Publisher: openindiana.org
+          Version: 3.71
+           Branch: 2020.0.1.1
+   Packaging Date: Sat Oct 30 15:15:28 2021
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 212.89 kB
+             FMRI: pkg://openindiana.org/crypto/ca-certificates@3.71-2020.0.1.1:20211030T151528Z
+      Project URL: https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS
+       Source URL: https://ftp.mozilla.org/pub/security/nss/releases/NSS_3_71_RTM/src/nss-3.71.tar.gz
+
+             Name: data/iso-codes
+          Summary: ISO code lists and translations
+         Category: Desktop (GNOME)/Localizations
+            State: Installed
+        Publisher: openindiana.org
+          Version: 4.7.0
+           Branch: 2020.0.1.0
+   Packaging Date: Wed Sep 15 12:54:36 2021
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 18.56 MB
+             FMRI: pkg://openindiana.org/data/iso-codes@4.7.0-2020.0.1.0:20210915T125436Z
+      Project URL: https://salsa.debian.org/iso-codes-team/iso-codes
+       Source URL: https://salsa.debian.org/iso-codes-team/iso-codes/-/archive/iso-codes-4.7.0/iso-codes-4.7.0.tar.bz2
+
+               Name: database/berkeleydb-5
+            Summary: Oracle Berkeley DB
+        Description: Berkeley DB is a computer software library that provides a
+                     high-performance embedded database for key/value data.
+           Category: System/Databases
+              State: Installed
+          Publisher: openindiana.org
+            Version: 5.3.28
+             Branch: 2020.0.1.0
+     Packaging Date: Mon Mar 30 11:37:44 2020
+  Last Install Time: Sun Oct 31 20:36:45 2021
+               Size: 101.13 MB
+               FMRI: pkg://openindiana.org/database/berkeleydb-5@5.3.28-2020.0.1.0:20200330T113744Z
+        Project URL: http://www.oracle.com/technetwork/database/database-technologies/berkeleydb/overview/index.html
+         Source URL: http://download.oracle.com/berkeley-db/db-5.3.28.tar.gz
+Additional Keywords: bdb
+
+             Name: database/sqlite-3
+          Summary: in-process SQL database engine library
+         Category: Development/Databases
+            State: Installed
+        Publisher: openindiana.org
+          Version: 3.36.0
+           Branch: 2020.0.1.0
+   Packaging Date: Sat Jul  3 22:10:41 2021
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 6.22 MB
+             FMRI: pkg://openindiana.org/database/sqlite-3@3.36.0-2020.0.1.0:20210703T221041Z
+      Project URL: https://www.sqlite.org
+       Source URL: https://www.sqlite.org/2021/sqlite-src-3360000.zip
+
+             Name: developer/acpi
+          Summary: ACPI utilities
+      Description: ACPI utilities
+         Category: Development/System
+            State: Installed
+        Publisher: openindiana.org
+          Version: 0.5.11
+           Branch: 2020.0.1.20752
+   Packaging Date: Sun Oct 31 01:12:27 2021
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 1.60 MB
+             FMRI: pkg://openindiana.org/developer/acpi@0.5.11-2020.0.1.20752:20211031T011227Z
+
+             Name: developer/build/make
+          Summary: Parallel make(1) build tool
+      Description: Parallel make(1) build tool
+         Category: Development/Source Code Management
+            State: Installed
+        Publisher: openindiana.org
+          Version: 0.5.11
+           Branch: 2020.0.1.20752
+   Packaging Date: Sun Oct 31 01:12:42 2021
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 355.39 kB
+             FMRI: pkg://openindiana.org/developer/build/make@0.5.11-2020.0.1.20752:20211031T011242Z
+
+             Name: developer/debug/mdb
+          Summary: Modular Debugger
+      Description: Modular Debugger (MDB)
+         Category: Development/System
+            State: Installed
+        Publisher: openindiana.org
+          Version: 0.5.11
+           Branch: 2020.0.1.20752
+   Packaging Date: Sun Oct 31 01:12:51 2021
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 11.20 MB
+             FMRI: pkg://openindiana.org/developer/debug/mdb@0.5.11-2020.0.1.20752:20211031T011251Z
+
+             Name: developer/debug/mdb/module/module-ce
+          Summary: Sun GigaSwift Ethernet Adapter Driver adb Macros
+      Description: Sun GigaSwift Ethernet Adapter Driver adb Macros
+         Category: Drivers/Networking
+            State: Installed
+        Publisher: openindiana.org
+          Version: 0.5.11
+           Branch: 2013.0.0.0
+   Packaging Date: Tue Oct 27 06:15:12 2015
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 8.25 kB
+             FMRI: pkg://openindiana.org/developer/debug/mdb/module/module-ce@0.5.11-2013.0.0.0:20151027T061512Z
+
+             Name: developer/debug/mdb/module/module-fibre-channel
+          Summary: Fibre Channel adb macros and mdb modules
+      Description: Fibre Channel adb macros and mdb modules
+         Category: System/Hardware
+            State: Installed
+        Publisher: openindiana.org
+          Version: 0.5.11
+           Branch: 2020.0.1.20752
+   Packaging Date: Sun Oct 31 01:12:59 2021
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 286.87 kB
+             FMRI: pkg://openindiana.org/developer/debug/mdb/module/module-fibre-channel@0.5.11-2020.0.1.20752:20211031T011259Z
+
+             Name: system/man
+          Summary: Reference Manual Pages Tools
+      Description: utilities for display and formatting of reference manual
+                   pages
+         Category: System/Text Tools
+            State: Installed
+        Publisher: openindiana.org
+          Version: 0.5.11
+           Branch: 2020.0.1.20752
+   Packaging Date: Sun Oct 31 01:38:05 2021
+Last Install Time: Wed Jan 19 10:21:30 2022
+             Size: 702.41 kB
+             FMRI: pkg://openindiana.org/system/man@0.5.11-2020.0.1.20752:20211031T013805Z
+
+             Name: text/less
+          Summary: Pager program similar to more
+      Description: The package provides less, a file pager (a memory-efficient
+                   utility for displaying text one screenful at a time).
+         Category: Development/GNU
+            State: Installed
+        Publisher: openindiana.org
+          Version: 590
+           Branch: 2020.0.1.0
+   Packaging Date: Sun Sep 26 11:06:26 2021
+Last Install Time: Wed Jan 19 10:21:31 2022
+             Size: 415.69 kB
+             FMRI: pkg://openindiana.org/text/less@590-2020.0.1.0:20210926T110626Z
+      Project URL: https://www.greenwoodsoftware.com/less/
+       Source URL: https://www.greenwoodsoftware.com/less/less-590.tar.gz
