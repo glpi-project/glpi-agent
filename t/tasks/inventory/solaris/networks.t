@@ -247,6 +247,7 @@ foreach my $test (keys %ifconfig_tests) {
 foreach my $test (sort keys %dladm_tests) {
     foreach my $name (keys(%{$dladm_tests{$test}})) {
         my $file = "resources/solaris/dladm/$test-$name";
+        $file =~ s/:/_/g;
         is(
             GLPI::Agent::Task::Inventory::Solaris::Networks::_getInterfaceSpeedviaDladm(
                 file => $file,
