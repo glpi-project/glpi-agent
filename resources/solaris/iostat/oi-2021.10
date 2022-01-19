@@ -1,0 +1,10 @@
+c5t0d0           Soft Errors: 0 Hard Errors: 0 Transport Errors: 0 
+Vendor: ATA      Product: VBOX HARDDISK    Revision: 1.0  Serial No: VBe174c9f2-fe68 
+Size: 34.36GB <34359738368 bytes>
+Media Error: 0 Device Not Ready: 0 No Device: 0 Recoverable: 0 
+Illegal Request: 0 Predictive Failure Analysis: 0 
+c5t1d0           Soft Errors: 0 Hard Errors: 7 Transport Errors: 0 
+Vendor: VBOX     Product: CD-ROM           Revision: 1.0  Serial No:  
+Size: 0.00GB <0 bytes>
+Media Error: 0 Device Not Ready: 7 No Device: 0 Recoverable: 0 
+Illegal Request: 0 Predictive Failure Analysis: 0 
