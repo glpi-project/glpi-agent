@@ -380,7 +380,7 @@ sub getReleaseInfo {
         ($version, $date, $id) = $fullname =~ /Solaris \s ([\d.]+) \s (?: (\d+\/\d+) \s)? (\S+)/x;
         ($subversion) = $id =~ /_(u\d+)/;
     } elsif ($fullname =~ /OpenIndiana/) {
-        ($version) = $fullname =~ /oi_([\d.]+)/;
+        ($version) = $fullname =~ /([\d.]+)/;
     }
 
     return {
