@@ -1,0 +1,20 @@
+Filesystem           1024-blocks        Used   Available Capacity  Mounted on
+rpool/ROOT/openindiana    31997952     1655744    25726181     7%    /
+/devices                       0           0           0     0%    /devices
+/dev                           0           0           0     0%    /dev
+ctfs                           0           0           0     0%    /system/contract
+proc                           0           0           0     0%    /proc
+mnttab                         0           0           0     0%    /etc/mnttab
+swap                     4975964         628     4975336     1%    /etc/svc/volatile
+objfs                          0           0           0     0%    /system/object
+bootfs                         0           0           0     0%    /system/boot
+sharefs                        0           0           0     0%    /etc/dfs/sharetab
+/usr/lib/libc/libc_hwcap2.so.1    27381925     1655744    25726181     7%    /lib/libc.so.1
+fd                             0           0           0     0%    /dev/fd
+rpool/ROOT/openindiana/var    31997952      278890    25726181     2%    /var
+swap                     4975340           4     4975336     1%    /tmp
+swap                     4975388          52     4975336     1%    /var/run
+rpool/export            31997952          24    25726181     1%    /export
+rpool/export/home       31997952          24    25726181     1%    /export/home
+rpool/export/home/user    31997952          36    25726181     1%    /export/home/user
+rpool                   31997952          33    25726181     1%    /rpool

@@ -64,6 +64,71 @@ my %tests = (
             VOLUMN      => 'swap'
         }
     ],
+    'oi-2021.10' => [
+        {
+            FREE        => 25123,
+            TOTAL       => 31248,
+            VOLUMN      => 'rpool/ROOT/openindiana',
+            TYPE        => '/',
+            FILESYSTEM  => 'zfs'
+        },
+        {
+            TYPE        => '/etc/svc/volatile',
+            VOLUMN      => 'swap',
+            TOTAL       => 4859,
+            FILESYSTEM  => 'swap',
+            FREE        => 4858
+        },
+        {
+            TYPE        => '/var',
+            FREE        => 25123,
+            TOTAL       => 31248,
+            VOLUMN      => 'rpool/ROOT/openindiana/var',
+            FILESYSTEM  => 'zfs'
+        },
+        {
+            TYPE        => '/tmp',
+            VOLUMN      => 'swap',
+            FREE        => 4858,
+            FILESYSTEM  => 'swap',
+            TOTAL       => 4858
+        },
+        {
+            TYPE        => '/var/run',
+            TOTAL       => 4858,
+            FREE        => 4858,
+            FILESYSTEM  => 'swap',
+            VOLUMN      => 'swap'
+        },
+        {
+            TYPE        => '/export',
+            TOTAL       => 31248,
+            FREE        => 25123,
+            VOLUMN      => 'rpool/export',
+            FILESYSTEM  => 'zfs'
+        },
+        {
+            VOLUMN      => 'rpool/export/home',
+            TOTAL       => 31248,
+            FREE        => 25123,
+            TYPE        => '/export/home',
+            FILESYSTEM  => 'zfs'
+        },
+        {
+            TYPE        => '/export/home/user',
+            VOLUMN      => 'rpool/export/home/user',
+            TOTAL       => 31248,
+            FREE        => 25123,
+            FILESYSTEM  => 'zfs'
+        },
+        {
+            TOTAL       => 31248,
+            FREE        => 25123,
+            VOLUMN      => 'rpool',
+            TYPE        => '/rpool',
+            FILESYSTEM  => 'zfs'
+        }
+    ],
 );
 
 plan tests => (scalar keys %tests) + 1;
