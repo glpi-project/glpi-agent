@@ -11,6 +11,7 @@ netdiscovery/netinventory:
 inventory:
 * Fix: Make deprecated XML format compatible with GLPI 10 XML to JSON converter
 * solaris: Add IPv6 addressing inventory support
+* solaris: Add software install date and size inventory support
 
 collect:
 * we now support GLPI 10 server if glpi-inventory plugin is used on server-side
