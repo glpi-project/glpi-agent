@@ -83,7 +83,11 @@ sub remoteCanRun {
 }
 
 sub OSName {
-    return 'linux';
+    my ($self) = @_;
+    my $OS = lc($self->getRemoteFirstLine(command => "uname -s"));
+    return 'solaris' if $OS eq 'sunos';
+    return 'hpux' if $OS eq 'hp-ux';
+    return $OS;
 }
 
 sub remoteGlob {

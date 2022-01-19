@@ -13,6 +13,9 @@ inventory:
 * solaris: Add IPv6 addressing inventory support
 * solaris: Add software install date and size inventory support
 
+remoteinventory:
+* Fix #50: handle right remote OS name for ssh remote inventory
+
 collect:
 * we now support GLPI 10 server if glpi-inventory plugin is used on server-side
 
