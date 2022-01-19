@@ -1734,6 +1734,25 @@ my %tests = (
             MODEL        => 'CD/DVDW TS-L632D'
         },
     ],
+    'oi-2021.10' => [
+        {
+            MANUFACTURER => 'ATA',
+            DESCRIPTION  => 'S/N:VBe174c9f2-fe68 FW:1.0',
+            NAME         => 'c5t0d0',
+            FIRMWARE     => '1.0',
+            DISKSIZE     => 34359,
+            SERIALNUMBER => 'VBe174c9f2-fe68',
+            MODEL        => 'VBOX HARDDISK'
+        },
+        {
+            DISKSIZE     => 0,
+            NAME         => 'c5t1d0',
+            FIRMWARE     => '1.0',
+            MANUFACTURER => 'VBOX',
+            DESCRIPTION  => 'FW:1.0',
+            MODEL        => 'CD-ROM'
+        }
+    ],
 );
 
 plan tests => (2 * scalar keys %tests) + 1;
