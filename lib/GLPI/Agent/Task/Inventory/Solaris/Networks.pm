@@ -63,26 +63,40 @@ sub _getInterfaces {
         @_
     );
 
+    my $has_dladm = canRun('/usr/sbin/dladm');
+
     foreach my $interface (@interfaces) {
         $interface->{IPSUBNET} = getSubnetAddress(
             $interface->{IPADDRESS},
             $interface->{IPMASK}
         );
 
-        $interface->{SPEED} = _getInterfaceSpeed(
-            name => $interface->{DESCRIPTION}
-        );
+        my $name = $interface->{DESCRIPTION}
+            or next;
+
+        my $speed;
+        if ($has_dladm) {
+            $speed = _getInterfaceSpeedviaDladm(
+                logger => $params{logger},
+                name   => $name
+            );
+        } else {
+            $speed = _getInterfaceSpeed(
+                logger => $params{logger},
+                name   => $name
+            );
+        }
+        $interface->{SPEED} = $speed if $speed;
     }
 
-    my $zone = getZone();
-    my $OSLevel = Uname("-r");
-
-    if ($zone && $OSLevel && $OSLevel =~ /5.10/) {
+    if ($has_dladm) {
         push @interfaces, _parseDladm(
             command => '/usr/sbin/dladm show-aggr',
             logger  => $params{logger}
         );
+    }
 
+    if (canRun('/usr/sbin/fcinfo')) {
         push @interfaces, _parsefcinfo(
             command => '/usr/sbin/fcinfo hba-port',
             logger  => $params{logger}
@@ -90,6 +104,16 @@ sub _getInterfaces {
     }
 
     return @interfaces;
+}
+
+sub  _getInterfaceSpeedviaDladm {
+    my (%params) = @_;
+
+    return getFirstMatch(
+        command => "/usr/sbin/dladm show-phys $params{name}",
+        pattern => qr/^$params{name}\s+\S+\s+\S+\s+(\d+)\s+/,
+        %params
+    );
 }
 
 sub  _getInterfaceSpeed {
@@ -148,6 +172,9 @@ sub _parseIfconfig {
 
         if ($line =~ /inet ($ip_address_pattern)/) {
             $interface->{IPADDRESS} = $1;
+        } elsif ($line =~ /inet6 (\S+)\/(\d+)/) {
+            $interface->{IPADDRESS6} = $1;
+            $interface->{IPMASK6} = getNetworkMaskIPv6($2);
         }
         if ($line =~ /netmask ($hex_ip_address_pattern)/i) {
             $interface->{IPMASK} = hex2canonical($1);
