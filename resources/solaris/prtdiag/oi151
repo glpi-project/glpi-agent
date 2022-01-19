@@ -1,0 +1,37 @@
+System Configuration: Dell Inc. PowerEdge R510
+BIOS Configuration: Dell Inc. 1.8.2 08/23/2011
+BMC Configuration: IPMI 2.0 (KCS: Keyboard Controller Style)
+
+==== Processor Sockets ====================================
+
+Version                          Location Tag
+-------------------------------- --------------------------
+Intel(R) Xeon(R) CPU           E5620  @ 2.40GHz CPU1
+Intel(R) Xeon(R) CPU           E5620  @ 2.40GHz CPU2
+
+==== Memory Device Sockets ================================
+
+Type        Status Set Device Locator      Bank Locator
+----------- ------ --- ------------------- ----------------
+Unknown     in use 1   DIMM_A1             
+Unknown     in use 1   DIMM_A2             
+Unknown     in use 2   DIMM_A3             
+Unknown     in use 2   DIMM_A4             
+Unknown     in use 5   DIMM_B1             
+Unknown     in use 6   DIMM_B2             
+Unknown     in use 6   DIMM_B3             
+Unknown     in use 4   DIMM_B4             
+
+==== On-Board Devices =====================================
+Embedded Matrox G200 Video
+Embedded Broadcom 5716 NIC 1
+Embedded Broadcom 5716 NIC 2
+
+==== Upgradeable Slots ====================================
+
+ID  Status    Type             Description
+--- --------- ---------------- ----------------------------
+1   available Unknown          PCI1
+2   available Unknown          PCI2
+3   available Unknown          PCI3
+4   in use    Unknown          PCI4
