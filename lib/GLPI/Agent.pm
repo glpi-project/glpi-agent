@@ -334,8 +334,8 @@ sub runTarget {
                 # Keep task supporting announced by server
                 $target->setServerTaskSupport(
                     $task => {
-                        server  => $tasks->{$task}->{server}  // "glpi",
-                        version => $tasks->{$task}->{version} // "10.0.0-beta",
+                        server  => $tasks->{$task}->{server},
+                        version => $tasks->{$task}->{version},
                     }
                 );
 
