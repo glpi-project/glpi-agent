@@ -8,6 +8,8 @@ use parent 'GLPI::Agent::Target';
 use English qw(-no_match_vars);
 use URI;
 
+use GLPI::Agent::Tools;
+
 my $count = 0;
 
 sub new {
@@ -107,6 +109,23 @@ sub plannedTasks {
     return @{$self->{tasks} || []};
 }
 
+sub setServerTaskSupport {
+    my ($self, $task, $support) = @_;
+
+    return unless $task && ref($support) eq 'HASH';
+    return unless $support->{server} && $support->{version};
+
+    $self->{_tasks}->{$task} = $support;
+}
+
+sub doProlog {
+    my $self = shift @_;
+
+    return 0 unless $self->{_tasks};
+
+    return any { $self->{_tasks}->{$_}->{server} eq 'glpiinventory' } keys(%{$self->{_tasks}});
+}
+
 1;
 
 __END__
@@ -156,3 +175,15 @@ Return the target type
 Initializes target tasks with supported ones if a list of tasks is provided
 
 Return an array of planned tasks.
+
+=head2 setServerTaskSupport($task, $support)
+
+Store given task support where $support is a hash with at least "server" and "version" keys.
+
+Return $support or undef.
+
+=head2 doProlog()
+
+Check if any server supported task requires us to request a PROLOG to server.
+
+Return true or false.

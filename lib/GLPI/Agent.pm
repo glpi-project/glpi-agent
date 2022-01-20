@@ -214,7 +214,6 @@ sub runTarget {
     my $response;
     my $client;
     my @plannedTasks = $target->plannedTasks();
-    my $doProlog = 1;
     if ($target->isGlpiServer()) {
         GLPI::Agent::HTTP::Client::GLPI->require();
         return $self->{logger}->error("GLPI Protocol library can't be loaded")
@@ -325,34 +324,39 @@ sub runTarget {
             }
         }
 
-        # By default, PROLOG request could be avoided when communicating with a GLPI server
-        $doProlog = 0;
         my $tasks = $response->get("tasks");
         # Handle tasks informations returned by server in CONTACT answer
         if (ref($tasks) eq "HASH") {
-            # Handle no-category set by server on inventory task
-            if (ref($tasks->{inventory}) eq 'HASH' && $tasks->{inventory}->{"no-category"}) {
-                my $no_category = [ sort split(/,+/, $tasks->{inventory}->{"no-category"}) ];
-                unless (@{$self->{config}->{"no-category"}} && join(",", sort @{$self->{config}->{"no-category"}}) eq join(",", @{$no_category})) {
-                    $self->{logger}->debug("set no-category configuration to: ".$tasks->{inventory}->{"no-category"});
-                    $self->{config}->{"no-category"} = $no_category;
-                }
-            }
+            # Only keep task server support for planned tasks
+            foreach my $task (map { lc($_) } @plannedTasks) {
+                next unless ref($tasks->{$task}) eq 'HASH';
 
-            # Check if we still need to also do a PROLOG request in the case
-            # GLPI server supports some tasks thanks to glpiinventory plugin
-            %enabled = map { lc($_) => 1 } @plannedTasks;
-            foreach my $task (keys(%{$tasks})) {
-                next unless $enabled{$task} && ref($tasks->{$task}) eq 'HASH';
-                if ($tasks->{$task}->{server} && $tasks->{$task}->{server} eq "glpiinventory") {
-                    $doProlog = 1;
-                    last;
+                # Keep task supporting announced by server
+                $target->setServerTaskSupport(
+                    $task => {
+                        server  => $tasks->{$task}->{server}  // "glpi",
+                        version => $tasks->{$task}->{version} // "10.0.0-beta",
+                    }
+                );
+
+                # Handle inventory task configuration
+                if ($task eq "inventory") {
+                    # Handle no-category set by server on inventory task
+                    if ($tasks->{inventory}->{"no-category"}) {
+                        my $no_category = [ sort split(/,+/, $tasks->{inventory}->{"no-category"}) ];
+                        unless (@{$self->{config}->{"no-category"}} && join(",", sort @{$self->{config}->{"no-category"}}) eq join(",", @{$no_category})) {
+                            $self->{logger}->debug("set no-category configuration to: ".$tasks->{inventory}->{"no-category"});
+                            $self->{config}->{"no-category"} = $no_category;
+                        }
+                    }
                 }
             }
         }
     }
 
-    if ($target->isType('server') && $doProlog) {
+    # By default, PROLOG request could be avoided when communicating with a GLPI server
+    # But it still may be required if we detect server supports any task due to glpiinventory plugin
+    if ($target->isType('server') && $target->doProlog()) {
 
         return unless GLPI::Agent::HTTP::Client::OCS->require();
 
