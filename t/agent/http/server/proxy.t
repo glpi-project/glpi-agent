@@ -13,7 +13,7 @@ use Test::MockModule;
 use Test::MockObject::Extends;
 use Compress::Zlib;
 use File::Temp;
-use JSON;
+use Cpanel::JSON::XS;
 
 use GLPI::Agent;
 use GLPI::Agent::Config;
@@ -155,7 +155,7 @@ sub check_error {
         my $hash = { REPLY => $resp->getContent() };
         is_deeply($hash, $_[1], "Expected ".($_[2]//$_[1])." error message in response");
     } elsif ($_[3] && $_[3] eq 'json') {
-        my $json = JSON->new;
+        my $json = Cpanel::JSON::XS->new;
         my $hash = $json->decode($response->content);
         is_deeply($hash, $_[1], "Expected ".($_[2]//$_[1])." error message in response");
     } else {

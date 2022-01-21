@@ -5,7 +5,7 @@ use warnings;
 
 use parent 'GLPI::Agent::Protocol::Message';
 
-use JSON;
+use Cpanel::JSON::XS;
 
 sub new {
     my ($class, %params) = @_;

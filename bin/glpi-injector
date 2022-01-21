@@ -10,7 +10,7 @@ use Getopt::Long;
 use LWP::UserAgent;
 use Pod::Usage;
 use XML::TreePP;
-use JSON;
+use Cpanel::JSON::XS;
 use Data::UUID;
 
 my $options = {
