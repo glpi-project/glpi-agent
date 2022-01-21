@@ -82,7 +82,7 @@ my %normalize = (
     },
     MEMORIES         => {
         integer         => [ qw/CAPACITY NUMSLOTS/ ],
-        string          => [ qw/REMOVABLE/ ],
+        boolean         => [ qw/REMOVABLE/ ],
     },
     NETWORKS         => {
         required        => [ qw/DESCRIPTION/ ],
@@ -177,11 +177,48 @@ sub mergeContent {
     }
 }
 
+sub _setupStandardization {
+    my ($self, $version) = @_;
+
+    # Parse version setting default support to 10.0.0-beta
+    my ($major, $minor, $rev, $suffix) = (10, 0, 0, 'beta');
+    if ($version && $version =~ /^(\d+)\.(\d+)\.(\d+)(?:-(.*))$/) {
+        $major = int($1);
+        $minor = int($2);
+        $rev   = int($3);
+        $suffix = $4 if defined($4);
+    }
+
+    if ($suffix eq 'dev') {
+        $self->{logger}->debug2(
+            "inventory format: server is a development version\n" .
+            "Be sure to use latest GLPI Agent nightly build being aware your JSON inventory\n" .
+            "may be rejected by server, and in that case, you probably just have to update the\n" .
+            "server-side 'inventory.schema.json' file manually.\n" .
+            "If this is not sufficient, please, can you open an issue on glpi-agent github project ?"
+        );
+    } elsif ($suffix eq 'beta') {
+        $self->{logger}->debug2(
+            "inventory format: server is a beta version\n" .
+            "Be sure to use latest GLPI Agent nightly build.\n" .
+            "If the server rejects the inventory, please, report an issue on glpi-agent github project."
+        );
+        if ($major == 10 && !$minor && !$rev) {
+            # GLPI 10.0.0-beta supported specs
+            delete $normalize{MEMORIES}->{boolean};
+            $normalize{MEMORIES}->{string} = [ qw/REMOVABLE/ ];
+        }
+    }
+}
+
 sub normalize {
-    my ($self) = @_;
+    my ($self, $version) = @_;
 
     my $content = $self->get("content")
         or return;
+
+    # Fix %normalize structure againt server version
+    $self->_setupStandardization($version);
 
     # Normalize to follow JSON specs
     foreach my $entrykey (keys(%normalize)) {
