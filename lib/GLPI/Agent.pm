@@ -211,7 +211,7 @@ sub runTarget {
 
     # the prolog/contact dialog must be done once for all tasks,
     # but only for server targets
-    my $response;
+    my ($response, $contact_response);
     my $client;
     my @plannedTasks = $target->plannedTasks();
     if ($target->isGlpiServer()) {
@@ -352,6 +352,9 @@ sub runTarget {
                 }
             }
         }
+
+        # Keep contact response
+        $contact_response = $response;
     }
 
     # By default, PROLOG request could be avoided when communicating with a GLPI server
@@ -417,8 +420,15 @@ sub runTarget {
     }
 
     foreach my $name (@plannedTasks) {
+        my $server_response = $response;
+        if ($contact_response) {
+            # Be sure to use expected response for task
+            my $task_server = $target->getTaskServer($name) // 'glpi';
+            $server_response = $contact_response
+                if $task_server eq 'glpi';
+        }
         eval {
-            $self->runTask($target, $name, $response);
+            $self->runTask($target, $name, $server_response);
         };
         $self->{logger}->error($EVAL_ERROR) if $EVAL_ERROR;
         $self->setStatus($target->paused() ? 'paused' : 'waiting');
