@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use UNIVERSAL::require;
-use JSON;
+use Cpanel::JSON::XS;
 use Data::Dumper;
 
 use constant    inventory_schema => qw(
@@ -28,7 +28,7 @@ print "Inventory schema loaded\n---\n";
 
 my $err = 0;
 my $fh;
-my $parser = JSON->new;
+my $parser = Cpanel::JSON::XS->new;
 
 while (@ARGV) {
     my $file = shift @ARGV;

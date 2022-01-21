@@ -111,7 +111,7 @@ parts:
       Compress::Zlib Archive::Extract File::Copy::Recursive File::Which
       Crypt::DES Crypt::Rijndael Digest::HMAC Digest::SHA1
       Net::IP Net::Ping Net::SNMP Net::NBName Net::CUPS
-      Thread::Queue Parse::EDID JSON JSON::PP
+      Thread::Queue Parse::EDID Cpanel::JSON::XS JSON::PP
       Text::Template XML::TreePP XML::XPath Memoize
       YAML::Tiny Data::UUID Digest::SHA
       #Net::PCAP Net::Write::Layer2

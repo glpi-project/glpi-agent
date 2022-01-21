@@ -36,7 +36,7 @@ requires 'YAML::Tiny'         => '0';
 requires 'Memoize'            => '0';
 requires 'Time::HiRes'        => '0';
 requires 'Digest::SHA'        => '0';
-requires 'JSON'               => '0';
+requires 'Cpanel::JSON::XS'   => '0';
 requires 'Data::UUID'         => '0';
 requires 'DateTime'           => '0';
 

@@ -7,6 +7,7 @@ use parent 'GLPI::Agent::Protocol::Message';
 
 use DateTime;
 use English qw(-no_match_vars);
+use Cpanel::JSON::XS;
 
 use GLPI::Agent::Tools;
 
@@ -347,7 +348,7 @@ sub _norm {
     } elsif ($norm eq "string") {
         $entry->{$value} .= "" ;
     } elsif ($norm eq "boolean") {
-        $entry->{$value} = $entry->{$value} ? JSON::true : JSON::false ;
+        $entry->{$value} = $entry->{$value} ? Cpanel::JSON::XS::true : Cpanel::JSON::XS::false ;
     } elsif ($norm eq "lowercase") {
         $entry->{$value} = lc($entry->{$value});
     } elsif ($norm eq "uppercase") {

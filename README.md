@@ -45,6 +45,7 @@ Mandatory Perl modules:
 * Text::Template
 * UNIVERSAL::require
 * XML::TreePP
+* Cpanel::JSON::XS
 
 Optional Perl modules:
 

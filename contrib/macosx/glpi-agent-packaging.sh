@@ -307,7 +307,7 @@ echo '===== Installing more perl module deps ====='
 cpanm --notest -v --no-man-pages  $CPANM_OPTS LWP::Protocol::https             \
     HTTP::Daemon Proc::Daemon Archive::Extract File::Copy::Recursive JSON::PP  \
     URI::Escape Net::Ping Parallel::ForkManager Net::SNMP Net::NBName DateTime \
-    Thread::Queue Parse::EDID YAML::Tiny Data::UUID
+    Thread::Queue Parse::EDID YAML::Tiny Data::UUID Cpanel::JSON::XS
 # Crypt::DES Crypt::Rijndael are commented as Crypt::DES fails to build on MacOSX
 # Net::Write::Layer2 depends on Net::PCAP but it fails on MacOSX
 

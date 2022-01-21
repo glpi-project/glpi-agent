@@ -7,7 +7,7 @@ use warnings;
 
 use parent 'GLPI::Agent::Task::Inventory::Generic::Databases';
 
-use JSON;
+use Cpanel::JSON::XS;
 use English qw(-no_match_vars);
 use POSIX qw(strftime);
 
