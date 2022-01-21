@@ -115,15 +115,34 @@ sub setServerTaskSupport {
     return unless $task && ref($support) eq 'HASH';
     return unless $support->{server} && $support->{version};
 
-    $self->{_tasks}->{$task} = $support;
+    $self->{_server_task_support}->{lc($task)} = $support;
 }
 
 sub doProlog {
     my $self = shift @_;
 
-    return 0 unless $self->{_tasks};
+    my $task_support = $self->{_server_task_support}
+        or return 0;
 
-    return any { $self->{_tasks}->{$_}->{server} eq 'glpiinventory' } keys(%{$self->{_tasks}});
+    return any { $task_support->{$_}->{server} eq 'glpiinventory' } keys(%{$task_support});
+}
+
+sub getTaskServer {
+    my ($self, $task) = @_;
+
+    $task = lc($task);
+
+    return unless $task && $self->{_server_task_support}->{$task};
+    return $self->{_server_task_support}->{$task}->{server};
+}
+
+sub getTaskVersion {
+    my ($self, $task) = @_;
+
+    $task = lc($task);
+
+    return unless $task && $self->{_server_task_support}->{$task};
+    return $self->{_server_task_support}->{$task}->{version};
 }
 
 1;
@@ -187,3 +206,11 @@ Return $support or undef.
 Check if any server supported task requires us to request a PROLOG to server.
 
 Return true or false.
+
+=head2 getTaskServer($task)
+
+Return server name of supported task or undef.
+
+=head2 getTaskVersion($task)
+
+Return version of supported task or undef.

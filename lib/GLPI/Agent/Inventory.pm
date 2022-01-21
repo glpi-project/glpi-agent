@@ -228,7 +228,7 @@ sub getFields {
 }
 
 sub getContent {
-    my ($self) = @_;
+    my ($self, %params) = @_;
 
     if ($self->{_format} eq 'json') {
         die "Can't load GLPI Protocol Inventory library\n"
@@ -247,7 +247,7 @@ sub getContent {
             if $self->{_json_merge};
 
         # Normalize content to follow inventory format specs from https://github.com/glpi-project/inventory_format
-        $content->normalize();
+        $content->normalize($params{server_version});
 
         return $content;
 

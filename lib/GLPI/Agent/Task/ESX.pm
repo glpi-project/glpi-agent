@@ -259,7 +259,9 @@ sub run {
             my $message;
             if ($self->{target}->isGlpiServer()) {
                 $inventory->setFormat('json');
-                $message = $inventory->getContent();
+                $message = $inventory->getContent(
+                    server_version => $self->{target}->getTaskVersion('inventory')
+                );
             } else {
                 # Deprecated XML based protocol
                 $inventory->setFormat('xml');

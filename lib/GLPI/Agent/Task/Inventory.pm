@@ -324,7 +324,9 @@ sub submit {
 
         my $response = $client->send(
             url     => $self->{target}->getUrl(),
-            message => $inventory->getContent()
+            message => $inventory->getContent(
+                server_version => $self->{target}->getTaskVersion('inventory')
+            )
         );
         return unless $response;
 
