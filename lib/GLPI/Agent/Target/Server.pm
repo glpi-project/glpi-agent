@@ -121,8 +121,10 @@ sub setServerTaskSupport {
 sub doProlog {
     my $self = shift @_;
 
+    # Always do PROLOG if target is not supporting native inventory
+    # or doesn't report supported tasks as in 10.0.0-beta
     my $task_support = $self->{_server_task_support}
-        or return 0;
+        or return 1;
 
     return any { $task_support->{$_}->{server} eq 'glpiinventory' } keys(%{$task_support});
 }
