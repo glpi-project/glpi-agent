@@ -363,15 +363,15 @@ sub _oracleConnect {
         $params->{logger}->debug("No type set on oracle credential") if $params->{logger};
 
     } else {
-        my $credential = "type:".$credential->{type};
-        $credential .= ";login:".$credential->{login} if $credential->{login};
+        my $creds = "type:".$credential->{type};
+        $creds .= ";login:".$credential->{login} if $credential->{login};
         if ($credential->{socket}) {
-            $credential .= ";socket:".$credential->{socket};
+            $creds .= ";socket:".$credential->{socket};
         } elsif ($credential->{host}) {
-            $credential .= ";host:".$credential->{host};
-            $credential .= ";port:".$credential->{port} if $credential->{port};
+            $creds .= ";host:".$credential->{host};
+            $creds .= ";port:".$credential->{port} if $credential->{port};
         }
-        $params->{logger}->debug("Unsupported oracle credential: $credential")
+        $params->{logger}->debug("Unsupported oracle credential: $creds")
             if $params->{logger};
     }
 }
