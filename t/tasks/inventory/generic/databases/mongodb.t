@@ -12,6 +12,7 @@ use Test::More;
 use Test::NoWarnings;
 
 use GLPI::Test::Inventory;
+use GLPI::Agent::Logger;
 use GLPI::Agent::Task::Inventory::Generic::Databases::MongoDB;
 
 $Data::Dumper::Indent    = 1;
@@ -100,10 +101,20 @@ plan tests => (2 * scalar keys %db_tests) + 1;
 
 my $inventory = GLPI::Test::Inventory->new();
 
+my $logger = GLPI::Agent::Logger->new(
+    config => GLPI::Agent::Config->new(
+        options => {
+            config => 'none',
+            logger => 'Test'
+        }
+    )
+);
+
 foreach my $test (keys %db_tests) {
     my $file  = "resources/generic/databases/$test";
     my ($version) = $test =~ /^mongodb-(\d+)\./;
     my $dbs   = GLPI::Agent::Task::Inventory::Generic::Databases::MongoDB::_getDatabaseService(
+        logger      => $logger,
         file        => $file,
         credentials => $credentials{$test} // [{}],
         istest      => $db_tests{$test} ? 1 : 0,

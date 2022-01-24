@@ -52,6 +52,9 @@ sub _getDatabaseService {
         my $rcfile = _mongoRcFile($credential);
         $params{rcfile} = $rcfile->filename if $rcfile;
 
+        # Keep port as we need it to set --port option
+        $params{port} = $credential->{port} if $credential->{port};
+
         my ($name, $manufacturer) = qw(MongoDB MongoDB);
         my $version = _runSql(
             sql     => "db.version()",
@@ -59,6 +62,11 @@ sub _getDatabaseService {
             %params
         )
             or next;
+
+        if ($version =~ /W NETWORK.*reason: Connection refused/m) {
+            $params{logger}->error("Connection failure on "._connectUrl($credential));
+            next;
+        }
 
         my $dbs_size = 0;
         my $lastbootmilli = _runSql(
@@ -148,8 +156,9 @@ sub _getDatabaseService {
 
         push @dbs, $dbs;
 
-        # Always forget rcfile
+        # Always forget rcfile and port
         delete $params{rcfile};
+        delete $params{port};
     }
 
     return \@dbs;
@@ -172,6 +181,7 @@ sub _runSql {
     my $rcfile = delete $params{rcfile};
     my $command = "mongo";
     $command .= "sh" if $params{mongosh};
+    $command .= " --port $params{port}" if $params{port};
     $command .= " --quiet";
     $command .= " --nodb" if $nodb;
     $command .= " --norc $rcfile" if $rcfile;
@@ -203,6 +213,15 @@ sub _runSql {
     }
 }
 
+sub _connectUrl {
+    my ($credential) = @_;
+
+    my $conn = $credential->{host} // "localhost";
+    $conn .= ":".($credential->{port} // "27017");
+
+    return $conn;
+}
+
 sub _mongoRcFile {
     my ($credential) = @_;
 
@@ -216,16 +235,16 @@ sub _mongoRcFile {
             TEMPLATE    => 'mongorc-XXXXXX',
             SUFFIX      => '.js',
         );
-        my $conn = $credential->{host} // "localhost";
-        $conn .= ":".($credential->{port} // "27017");
-        print $fh "conn = new Mongo(\"$conn\");\n";
-        $conn = $credential->{socket} ? '"'.$credential->{socket}.'"' : "";
-        print $fh "db = connect($conn);\n";
+        my $conn = _connectUrl($credential);
+        print $fh 'conn = new Mongo("'.$conn.'");', "\n";
+        $conn = $credential->{socket} if $credential->{socket};
+        print $fh 'db = connect("'.$conn.'");', "\n";
         if ($credential->{login} && $credential->{password}) {
-            $credential->{password} =~ s/'/\\'/g;
+            my $password = $credential->{password};
+            $password =~ s/'/\\'/g;
             print $fh "db.auth({\n";
             print $fh "    user: '$credential->{login}',\n";
-            print $fh "    pwd: '$credential->{password}',\n";
+            print $fh "    pwd: '$password',\n";
             print $fh "});\n";
         }
         close($fh);
