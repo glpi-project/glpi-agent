@@ -153,7 +153,7 @@ sub _runSql {
 
     my $options = delete $params{options};
     my $command = "psql".$options;
-    $command .= " -Anqtw -F, -c \"$sql\"";
+    $command .= " -Anqtw -F, -c \"$sql\" connect_timeout=30";
     if (!$options) {
         my $sudo = delete $params{sudo};
         $command =~ s/"/\\"/g if $sudo && $sudo =~ /^su /;

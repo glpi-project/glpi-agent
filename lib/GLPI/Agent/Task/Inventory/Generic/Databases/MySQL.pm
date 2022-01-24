@@ -183,6 +183,7 @@ sub _mysqlOptionsFile {
         print $fh "user = $credential->{login}\n" if $credential->{login};
         print $fh "socket = $credential->{socket}\n" if $credential->{socket};
         print $fh "password = $credential->{password}\n" if $credential->{password};
+        print $fh "connect-timeout = 30\n";
         close($fh);
     }
 
