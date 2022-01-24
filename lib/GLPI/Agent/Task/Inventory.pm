@@ -156,11 +156,6 @@ sub run {
         map { $_ => 1 } @{$self->{config}->{'no-category'}}
     };
 
-    # Always disable unsupported categories in deprecated XML format
-    map { $self->{disabled}->{$_} = 1 } qw(database)
-        if ($self->{target}->isType('local') && $self->{target}->{format} eq 'xml')
-            || ($self->{target}->isType('server') && !$self->{target}->isGlpiServer());
-
     # Support inventory event
     if ($event && !$self->setupEvent()) {
         $self->{logger}->info("Skipping Inventory task event on ".$self->{target}->id());
@@ -176,6 +171,11 @@ sub run {
         $format = 'xml';
     }
     $inventory->setFormat($format);
+
+    # Always disable unsupported categories in deprecated XML format
+    map { $self->{disabled}->{$_} = 1 } qw(database)
+        if ($self->{target}->isType('local') && $format eq 'xml')
+            || ($self->{target}->isType('server') && !$self->{target}->isGlpiServer());
 
     $self->_initModulesList();
     $self->_feedInventory();
