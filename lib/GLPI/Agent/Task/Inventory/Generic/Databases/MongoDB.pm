@@ -67,7 +67,7 @@ sub _getDatabaseService {
         );
         my $lastboot;
         $lastboot = strftime("%Y-%m-%d %H:%M:%S", gmtime(int($lastbootmilli/1000)))
-            if $lastbootmilli;
+            if $lastbootmilli && $lastbootmilli =~ /^\d+$/;
 
         my $dbs = GLPI::Agent::Inventory::DatabaseService->new(
             type            => "mongodb",
