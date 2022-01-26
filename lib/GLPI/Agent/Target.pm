@@ -58,10 +58,11 @@ sub _init {
     $self->_saveState();
 
     $logger->debug(
-        "[target $self->{id}] Next server contact planned for " .
+        "[target $self->{id}] Next " .
+        ($self->isType("server") ? "server contact" : "tasks run") .
+        " planned for " .
         localtime($self->{nextRunDate})
     );
-
 }
 
 sub id {
