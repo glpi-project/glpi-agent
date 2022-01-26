@@ -122,7 +122,7 @@ sub _getDatabaseService {
                 @databases = grep { ref($_) eq 'HASH' } @{ decode_json($databases) };
             };
             if ($EVAL_ERROR) {
-                $params{logger}->error("Can't decode mongodb database list: $EVAL_ERROR")
+                $params{logger}->error("Can't decode mongodb database list: ".($databases =~ /^{/ ? $EVAL_ERROR : $databases))
                     if $params{logger};
             }
 
