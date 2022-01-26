@@ -130,8 +130,8 @@ sub run {
             # Leave immediately if we passed in terminate method
             last if $self->{_terminate};
 
-            # Call service optimization after each target run
-            $self->RunningServiceOptimization();
+            # We should run service optimization after all targets can be run
+            $self->{_run_optimization} = scalar($self->getTargets());
 
         } elsif ($time >= $target->getNextRunDate()) {
 
@@ -157,8 +157,14 @@ sub run {
             # Leave immediately if we passed in terminate method
             last if $self->{_terminate};
 
-            # Call service optimization after each target run
+            # We should run service optimization after all targets can be run
+            $self->{_run_optimization} = scalar($self->getTargets());
+        }
+
+        # Call service optimization after all target has been run
+        if (defined($self->{_run_optimization}) && $self->{_run_optimization}-- <= 1) {
             $self->RunningServiceOptimization();
+            delete $self->{_run_optimization};
         }
 
         # This eventually check for http messages, default timeout is 1 second
