@@ -60,9 +60,12 @@ sub _init {
     $logger->debug(
         "[target $self->{id}] Next " .
         ($self->isType("server") ? "server contact" : "tasks run") .
-        " planned for " .
-        localtime($self->{nextRunDate})
+        " planned " .
+        ($self->{nextRunDate} < time ? "now" : "for ".localtime($self->{nextRunDate}))
     );
+
+    # Disable initialDelay if next run date has still been set in a previous run to a later time
+    delete $self->{initialDelay} if $self->{initialDelay} && $self->{nextRunDate} && $self->{nextRunDate} > time;
 }
 
 sub id {
@@ -304,9 +307,6 @@ sub _loadState {
 
     # Update us as GLPI server is recognized as so before
     $self->isGlpiServer(1) if $data->{is_glpi_server};
-
-    # Disable initialDelay if next run date has still been set in a previous run
-    delete $self->{initialDelay} if $data->{nextRunDate};
 }
 
 sub _saveState {
