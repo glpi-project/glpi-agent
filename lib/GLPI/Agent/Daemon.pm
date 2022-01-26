@@ -89,14 +89,14 @@ sub run {
     if ($logger) {
         if ($config->{'no-fork'}) {
             $logger->debug2("Waiting in mainloop");
-            foreach my $target (@targets) {
-                my $date = $target->getFormatedNextRunDate();
-                my $type = $target->getType();
-                my $name = $target->getName();
-                $logger->debug2("$type target next run: $date - $name");
-            }
         } else {
             $logger->debug("Running in background mode");
+        }
+        foreach my $target (@targets) {
+            my $date = $target->getFormatedNextRunDate();
+            my $id   = $target->id();
+            my $name = $target->getName();
+            $logger->info("target $id: next run: $date - $name");
         }
     }
 
@@ -147,10 +147,11 @@ sub run {
                 $target->resetNextRunDate();
             }
 
-            if ($logger && $config->{'no-fork'}) {
+            if ($logger) {
                 my $date = $target->getFormatedNextRunDate();
-                my $type = $target->getType();
-                $logger->debug2("$type target scheduled: $date");
+                my $id   = $target->id();
+                my $name = $target->getName();
+                $logger->info("target $id: next run: $date - $name");
             }
 
             # Leave immediately if we passed in terminate method
