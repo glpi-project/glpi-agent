@@ -709,10 +709,13 @@ sub ApplyServiceOptimizations {
     # Preload all IDS databases to avoid reload them all the time during inventory
     my @planned = map { $_->plannedTasks() } $self->getTargets();
     if (grep { /^inventory$/i } @planned) {
-        my %datadir = ( datadir => $self->{datadir} );
-        getPCIDeviceVendor(%datadir);
-        getUSBDeviceVendor(%datadir);
-        getEDIDVendor(%datadir);
+        my %params = (
+            logger  => $self->{logger},
+            datadir => $self->{datadir}
+        );
+        getPCIDeviceVendor(%params);
+        getUSBDeviceVendor(%params);
+        getEDIDVendor(%params);
     }
 }
 

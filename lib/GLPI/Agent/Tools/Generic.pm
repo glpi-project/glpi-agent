@@ -366,13 +366,19 @@ sub _getIdsFile {
     # Sort by creation time
     my @sorted_files = sort { $files{$a} <=> $files{$b} } keys(%files);
 
+    unless (@sorted_files) {
+        $params{logger}->error("$params{idsfile} not found") if $params{logger};
+        return;
+    }
+
     return pop @sorted_files;
 }
 
 sub _loadPCIDatabase {
     my (%params) = @_;
 
-    my $file = _getIdsFile( %params, idsfile => "pci.ids" );
+    my $file = _getIdsFile( %params, idsfile => "pci.ids" )
+        or return;
 
     ($PCIVendors, $PCIClasses) = _loadDatabase( file => $file );
 }
@@ -380,7 +386,8 @@ sub _loadPCIDatabase {
 sub _loadUSBDatabase {
     my (%params) = @_;
 
-    my $file = _getIdsFile( %params, idsfile => "usb.ids" );
+    my $file = _getIdsFile( %params, idsfile => "usb.ids" )
+        or return;
 
     ($USBVendors, $USBClasses) = _loadDatabase( file => $file );
 }
@@ -424,7 +431,8 @@ sub _loadDatabase {
 sub _loadEDIDDatabase {
     my (%params) = @_;
 
-    my $file = _getIdsFile( %params, idsfile => "edid.ids" );
+    my $file = _getIdsFile( %params, idsfile => "edid.ids" )
+        or return;
 
     my $handle = getFileHandle( file => $file, local => 1 );
     return unless $handle;
