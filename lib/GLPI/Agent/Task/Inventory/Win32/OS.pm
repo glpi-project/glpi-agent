@@ -59,19 +59,19 @@ sub doInventory {
         SERVICE_PACK   => $operatingSystem->{CSDVersion}
     };
 
-    # Support ReleaseID as Operating system version for Windows 10
-    my $releaseid = getRegistryValue(
-        path => 'HKEY_LOCAL_MACHINE/Software/Microsoft/Windows NT/CurrentVersion/ReleaseId'
-    );
-
     # Support DisplayVersion as Operating system version from Windows 10 20H1
     my $displayversion = getRegistryValue(
         path => 'HKEY_LOCAL_MACHINE/Software/Microsoft/Windows NT/CurrentVersion/DisplayVersion'
     );
     if ($displayversion) {
         $os->{VERSION} = $displayversion;
-    } elsif ($releaseid) {
-        $os->{VERSION} = $releaseid;
+    } else {
+        # Support ReleaseID as Operating system version for Windows 10
+        my $releaseid = getRegistryValue(
+            path => 'HKEY_LOCAL_MACHINE/Software/Microsoft/Windows NT/CurrentVersion/ReleaseId'
+        );
+        $os->{VERSION} = $releaseid
+            if $releaseid;
     }
 
     if ($computerSystem->{Domain}) {
