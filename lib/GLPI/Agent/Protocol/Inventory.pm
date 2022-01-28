@@ -85,6 +85,9 @@ my %normalize = (
         integer         => [ qw/CAPACITY NUMSLOTS/ ],
         boolean         => [ qw/REMOVABLE/ ],
     },
+    MONITORS         => {
+        string          => [ qw/DESCRIPTION/ ],
+    },
     NETWORKS         => {
         required        => [ qw/DESCRIPTION/ ],
         boolean         => [ qw/MANAGEMENT VIRTUALDEV/ ],
