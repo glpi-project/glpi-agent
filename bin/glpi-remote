@@ -331,6 +331,7 @@ sub get_targets {
                 my $storage = GLPI::Agent::Storage->new(
                     directory   => $File::Find::dir,
                     logger      => $logger,
+                    read_only   => 1,
                 );
 
                 # Check target from storage
@@ -346,7 +347,15 @@ sub get_targets {
                         storage => $storage,
                     };
                     my $id = $target->{id};
-                    $targets{$id} = $current unless $targets{$id};
+                    # Update id number in the case the id is still used
+                    if ($targets{$id}) {
+                        my ($base, $num) = $id =~ /^(\w+)(\d+)$/;
+                        while ($targets{$id}) {
+                            $id = $base . (++$num);
+                        }
+                        $target->{id} = $id;
+                    }
+                    $targets{$id} = $current;
                 }
             },
             no_chdir => 1

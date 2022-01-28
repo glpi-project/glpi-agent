@@ -25,7 +25,7 @@ sub new {
         die "Can't create $params{directory}: $EVAL_ERROR" if $EVAL_ERROR;
     }
 
-    if (! -w $params{directory}) {
+    if (! -w $params{directory} && !$params{read_only}) {
         die "Can't write in $params{directory}";
     }
 
