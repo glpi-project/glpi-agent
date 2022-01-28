@@ -302,8 +302,9 @@ sub _loadState {
 
     my $data = $self->{storage}->restore(name => 'target');
 
-    $self->{maxDelay}    = $data->{maxDelay}    if $data->{maxDelay};
-    $self->{nextRunDate} = $data->{nextRunDate} if $data->{nextRunDate};
+    map { $self->{$_} = $data->{$_} } grep { defined($data->{$_}) } qw/
+        maxDelay nextRunDate id
+    /;
 
     # Update us as GLPI server is recognized as so before
     $self->isGlpiServer(1) if $data->{is_glpi_server};
@@ -315,10 +316,20 @@ sub _saveState {
     my $data ={
         maxDelay    => $self->{maxDelay},
         nextRunDate => $self->{nextRunDate},
+        type        => $self->getType(),                 # needed by glpi-remote
+        id          => $self->id(),                      # needed by glpi-remote
     };
 
-    # Add a flag if we are a GLPI server target
-    $data->{is_glpi_server} = 1 if $self->isGlpiServer();
+    if ($self->isType('server')) {
+        # Add a flag if we are a GLPI server target
+        $data->{is_glpi_server} = 1 if $self->isGlpiServer();
+        my $url = $self->getUrl();
+        if (ref($url) =~ /^URI/) {
+            $data->{url} = $url->as_string;              # needed by glpi-remote
+        }
+    } elsif ($self->isType('local')) {
+        $data->{path} = $self->getPath();                # needed by glpi-remote
+    }
 
     $self->{storage}->save(
         name => 'target',
