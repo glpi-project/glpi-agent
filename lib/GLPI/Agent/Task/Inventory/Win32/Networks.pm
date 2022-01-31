@@ -22,13 +22,14 @@ sub doInventory {
         or return;
 
     my $inventory = $params{inventory};
-    my (@gateways, @dns, @ips);
+    my (@gateways, @dns);
 
-    my $keys = getRegistryKey(
+    my $keys;
+    $keys = getRegistryKey(
         path   => "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Control/Network/{4D36E972-E325-11CE-BFC1-08002BE10318}",
         # Important for remote inventory optimization
         required    => [ qw/PnpInstanceID MediaSubType/ ],
-    );
+    ) if grep { $_->{PNPDEVICEID}} @interfaces;
 
     foreach my $interface (@interfaces) {
         push @gateways, $interface->{IPGATEWAY}
@@ -36,16 +37,15 @@ sub doInventory {
         push @dns, $interface->{dns}
             if $interface->{dns};
 
-        push @ips, $interface->{IPADDRESS}
-            if $interface->{IPADDRESS};
-
         # Cleanup not necessary values
         delete $interface->{dns};
         delete $interface->{DNSDomain};
         delete $interface->{GUID};
 
-        my $type = _getMediaType($interface->{PNPDEVICEID}, $keys);
-        $interface->{TYPE} = $type if defined($type);
+        if ($interface->{PNPDEVICEID}) {
+            my $type = _getMediaType($interface->{PNPDEVICEID}, $keys);
+            $interface->{TYPE} = $type if defined($type);
+        }
 
         $inventory->addEntry(
             section => 'NETWORKS',
