@@ -12,19 +12,16 @@ use English qw(-no_match_vars);
 use GLPI::Agent::Tools;
 
 sub _get_anydesk_config {
-    my @configs;
+    my @configs = ();
     if (OSNAME eq 'MSWin32') {
         if (has_folder('C:\ProgramData\AnyDesk')) {
             push @configs, Glob('C:\ProgramData\AnyDesk\ad_*\system.conf');
-            push @configs, 'C:\ProgramData\AnyDesk\system.conf'
-                unless @configs;
+            push @configs, 'C:\ProgramData\AnyDesk\system.conf';
         }
     } else {
-        @configs = qw{
-            /etc/anydesk/system.conf
-        };
+        push @configs, '/etc/anydesk/system.conf';
     }
-    return first { has_file($_) } @configs;
+    return grep { has_file($_) } @configs;
 }
 
 sub isEnabled {
@@ -37,24 +34,26 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $AnyDeskID = getFirstMatch(
-        file    => _get_anydesk_config(),
-        logger  => $logger,
-        pattern => qr/^ad.anynet.id=(\S+)/
-    );
-
-    if (defined($AnyDeskID)) {
-        $logger->debug('Found AnyDesk ID : ' . $AnyDeskID) if $logger;
-
-        $inventory->addEntry(
-            section => 'REMOTE_MGMT',
-            entry   => {
-                ID   => $AnyDeskID,
-                TYPE => 'anydesk'
-            }
+    foreach my $conf (_get_anydesk_config()) {
+        my $AnyDeskID = getFirstMatch(
+            file    => $conf,
+            logger  => $logger,
+            pattern => qr/^ad.anynet.id=(\S+)/
         );
-    } else {
-        $logger->debug('AnyDesk ID not found') if $logger;
+
+        if (defined($AnyDeskID)) {
+            $logger->debug('Found AnyDesk ID : ' . $AnyDeskID) if $logger;
+
+            $inventory->addEntry(
+                section => 'REMOTE_MGMT',
+                entry   => {
+                    ID   => $AnyDeskID,
+                    TYPE => 'anydesk'
+                }
+            );
+        } else {
+            $logger->debug('AnyDesk ID not found in '.$conf) if $logger;
+        }
     }
 }
 
