@@ -12,6 +12,7 @@ inventory:
 * Fix: Make deprecated XML format compatible with GLPI 10 XML to JSON converter
 * solaris: Add IPv6 addressing inventory support
 * solaris: Add software install date and size inventory support
+* Update MongoDB database inventory
 
 remoteinventory:
 * Fix #50: handle right remote OS name for ssh remote inventory

@@ -10,6 +10,7 @@ use parent 'GLPI::Agent::Task::Inventory::Generic::Databases';
 use Cpanel::JSON::XS;
 use English qw(-no_match_vars);
 use POSIX qw(strftime);
+use File::Temp;
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::Inventory::DatabaseService;
@@ -43,6 +44,7 @@ sub _getDatabaseService {
     return [] unless $credentials && ref($credentials) eq 'ARRAY';
 
     my @dbs = ();
+    my $logger = $params{logger};
 
     $params{mongosh} = canRun('mongosh') ? 1 : 0
         unless defined($params{mongosh}); # Needed for tests
@@ -56,26 +58,36 @@ sub _getDatabaseService {
         $params{port} = $credential->{port} if $credential->{port};
 
         my ($name, $manufacturer) = qw(MongoDB MongoDB);
-        my $version = _runSql(
+        my $version = _runJs(
             sql     => "db.version()",
-            nodb    => 1,
+            script  => "try { print(db.version()) } catch(e) { print('ERR('+e.codeName+'): <'+e.errmsg+'>') }",
             %params
         )
             or next;
 
-        if ($version =~ /W NETWORK.*reason: Connection refused/m) {
-            $params{logger}->error("Connection failure on "._connectUrl($credential));
+        if ($version !~ /^\d/) {
+            $logger->error("Connection failure on "._connectUrl($credential).", $version") if $logger;
             next;
         }
 
         my $dbs_size = 0;
-        my $lastbootmilli = _runSql(
-            sql => "ISODate().getTime()-db.serverStatus().uptimeMillis",
+        my $lastbootmilli = _runJs(
+            sql     => "ISODate().getTime()-db.serverStatus().uptimeMillis",
+            script  => "t = ISODate().getTime();" .
+                "try { s = db.serverStatus({ repl: 0,  metrics: 0, locks: 0 }) } " .
+                "catch(e) { s = e } " .
+                "if (s.ok) { print(t-s.uptimeMillis) } " .
+                "else { print('ERR:('+s.codeName+'): '+s.errmsg) }",
             %params
-        );
+        )
+            or next;
+
         my $lastboot;
-        $lastboot = strftime("%Y-%m-%d %H:%M:%S", gmtime(int($lastbootmilli/1000)))
-            if $lastbootmilli && $lastbootmilli =~ /^\d+$/;
+        if ($lastbootmilli !~ /^\d+$/) {
+            $logger->error("Failed to get last mongodb boot time, $lastbootmilli") if $logger;
+        } else {
+            $lastboot = strftime("%Y-%m-%d %H:%M:%S", gmtime(int($lastbootmilli/1000)));
+        }
 
         my $dbs = GLPI::Agent::Inventory::DatabaseService->new(
             type            => "mongodb",
@@ -88,42 +100,25 @@ sub _getDatabaseService {
         );
 
         my @databases;
-        my $databases = join('', _runSql(
-            sql => "db.adminCommand( { listDatabases: 1 } ).databases",
-            stringify => $params{mongosh},
+        my $databases = join('', _runJs(
+            sql     => "db.adminCommand( { listDatabases: 1 } ).databases",
+            script  => "try { l = db.adminCommand( { listDatabases: 1 } ) } " .
+                "catch(e) { l = e } " .
+                "if (l.ok) { print(".
+                ($params{mongosh} ? "EJSON.stringify" : "tojson") . "(l.databases)) } " .
+                "else { print('ERR('+l.codeName+'): '+l.errmsg) }",
             %params
-        ));
-        if (!$databases) {
-            if ($params{logger}) {
-                my ($code, $codename);
-                my $listdatabases = join('', _runSql(
-                    sql => "db.adminCommand( { listDatabases: 1 } )",
-                    stringify => $params{mongosh},
-                    %params
-                ));
-                if ($listdatabases) {
-                    $params{logger}->debug2("database list command server answer: $listdatabases");
-                    eval {
-                        my $json = decode_json($listdatabases);
-                        $code = $json->{code};
-                        $codename = $json->{codeName};
-                    };
-                    if ($EVAL_ERROR || !$code) {
-                        $params{logger}->debug("Failed to analyse mongodb database list command answer");
-                    } else {
-                        $params{logger}->error("Failure on mongodb database list command: $codename (errcode=$code)");
-                    }
-                } else {
-                    $params{logger}->error("No answer to mongodb database list command");
-                }
-            }
+        ))
+            or next;
+        if ($databases =~ /^ERR/) {
+            $logger->error("Failed to get database list, $databases") if $logger;
         } else {
             eval {
                 @databases = grep { ref($_) eq 'HASH' } @{ decode_json($databases) };
             };
             if ($EVAL_ERROR) {
-                $params{logger}->error("Can't decode mongodb database list: ".($databases =~ /^{/ ? $EVAL_ERROR : $databases))
-                    if $params{logger};
+                $logger->error("Can't decode database list: $databases".($databases =~ /^\[/ ? "\n".$EVAL_ERROR : ""))
+                    if $logger;
             }
 
             foreach my $dbinfo (@databases) {
@@ -139,10 +134,18 @@ sub _getDatabaseService {
                     undef $size;
                 }
 
-                my $status = _runSql(
-                    sql => "db = new Mongo().getDB('$db');db.runCommand('ping').ok",
+                my $ping = _runJs(
+                    sql     => "db.getSiblingDB('$db').runCommand({'ping': 1}).ok",
+                    script  => "try { print(db.getSiblingDB('$db').runCommand({'ping': 1}).ok) } " .
+                        "catch(e) { print('ERR('+e.codeName+'): '+e.errmsg) }",
                     %params
                 );
+                my $status = 0;
+                if (!defined($ping) || $ping !~ /^\d+$/) {
+                    $logger->error("Failed to get $db database status, ".($ping // "request failure")) if $logger;
+                } else {
+                    $status = $ping;
+                }
 
                 $dbs->addDatabase(
                     name            => $db,
@@ -171,23 +174,30 @@ sub _date {
     return $1;
 }
 
-sub _runSql {
+sub _runJs {
     my (%params) = @_;
 
     my $sql = delete $params{sql}
         or return;
+    my $script = delete $params{script}
+        or return;
 
-    my $nodb = delete $params{norc};
     my $rcfile = delete $params{rcfile};
     my $command = "mongo";
     $command .= "sh" if $params{mongosh};
-    $command .= " --port $params{port}" if $params{port};
     $command .= " --quiet";
-    $command .= " --nodb" if $nodb;
-    $command .= " --norc $rcfile" if $rcfile;
+    $command .= " --nodb --norc $rcfile" if $rcfile;
+
+    my $fh = File::Temp->new(
+        TEMPLATE    => 'mongocmd-XXXXXXXX',
+        SUFFIX      => '.js',
+    );
+
     # Mongosh must be instructed to output JSON like mongo does before
-    $sql = "EJSON.stringify($sql)" if $params{stringify};
-    $command .= " --eval \"$sql\"";
+    $params{logger}->debug("Requesting: $sql") if $params{logger};
+    print $fh $script;
+    close($fh);
+    $command .= " " . $fh->filename;
 
     # Only to support unittests
     if ($params{file}) {
@@ -204,9 +214,9 @@ sub _runSql {
     }
 
     if (wantarray) {
-        return map { chomp; $_ } getAllLines(%params);
+        return map { chomp; $_ } grep { $_ !~ /^(loading file|connecting to|MongoDB server version):/ } getAllLines(%params);
     } else {
-        my $result  = getFirstLine(%params);
+        my $result  = getLastLine(%params);
         return unless defined($result);
         chomp($result);
         return $result;
@@ -216,8 +226,13 @@ sub _runSql {
 sub _connectUrl {
     my ($credential) = @_;
 
+    return $credential->{socket} if $credential->{socket};
+
     my $conn = $credential->{host} // "localhost";
     $conn .= ":".($credential->{port} // "27017");
+
+    # Always default to connect on "admin" database
+    $conn .= "/admin";
 
     return $conn;
 }
@@ -229,24 +244,21 @@ sub _mongoRcFile {
 
     my $fh;
     if ($credential->{type} eq "login_password") {
-        File::Temp->require();
-
         $fh = File::Temp->new(
-            TEMPLATE    => 'mongorc-XXXXXX',
+            TEMPLATE    => 'mongorc-XXXXXXXX',
             SUFFIX      => '.js',
         );
         my $conn = _connectUrl($credential);
-        print $fh 'conn = new Mongo("'.$conn.'");', "\n";
-        $conn = $credential->{socket} if $credential->{socket};
-        print $fh 'db = connect("'.$conn.'");', "\n";
-        if ($credential->{login} && $credential->{password}) {
-            my $password = $credential->{password};
-            $password =~ s/'/\\'/g;
-            print $fh "db.auth({\n";
-            print $fh "    user: '$credential->{login}',\n";
-            print $fh "    pwd: '$password',\n";
-            print $fh "});\n";
+        if ($credential->{login}) {
+            $conn .= "','" . $credential->{login};
+            if ($credential->{password}) {
+                my $password = $credential->{password};
+                $password =~ s/'/\\'/g;
+                $conn .= "','" . $password;
+            }
         }
+        print $fh "try { db = connect('$conn') }\n";
+        print $fh "catch(e) { print('ERR('+e.codeName+'): '+e.errmsg); exit(1) }\n";
         close($fh);
     }
 
