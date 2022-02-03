@@ -16,14 +16,14 @@ sub isEnabled {
 
         GLPI::Agent::Tools::Win32->use();
 
-         #Depending on the installation the teamviewer key can be in two place in X64 OS
-        
-        my $key = getRegistryKey(                
-                path => "HKEY_LOCAL_MACHINE/SOFTWARE/TeamViewer",
-                # Important for remote inventory optimization
-                required    => [ qw/ClientID/ ],
-                maxdepth    => 1,
-                logger => $params{logger}                
+        #Depending on the installation the teamviewer key can be in two place in X64 OS
+
+        my $key = getRegistryKey(
+            path => "HKEY_LOCAL_MACHINE/SOFTWARE/TeamViewer",
+            # Important for remote inventory optimization
+            required    => [ qw/ClientID/ ],
+            maxdepth    => 1,
+            logger => $params{logger}
         );
         if(!$key){
             my $key = getRegistryKey(
@@ -34,7 +34,7 @@ sub isEnabled {
                 logger => $params{logger}
             );
         }
-        
+
         return $key && (keys %$key);
     } elsif (OSNAME eq 'darwin') {
         return canRun('defaults') && grep { has_file($_) } map {
@@ -74,20 +74,20 @@ sub _getID {
 
         GLPI::Agent::Tools::Win32->use();
 
-        my $clientid = getRegistryKey(                
-                path => "HKEY_LOCAL_MACHINE/SOFTWARE/TeamViewer",            
+        my $clientid = getRegistryKey(
+                path => "HKEY_LOCAL_MACHINE/SOFTWARE/TeamViewer",
         );
         if(!$clientid){
             my $key = getRegistryKey(
                 path => "HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/TeamViewer",
             );
-        }  
+        }
 
         unless ($clientid) {
-            my $teamviever_reg = getRegistryKey(                
-                path => "HKEY_LOCAL_MACHINE/SOFTWARE/TeamViewer",  
+            my $teamviever_reg = getRegistryKey(
+                path => "HKEY_LOCAL_MACHINE/SOFTWARE/TeamViewer",
                 # Important for remote inventory optimization
-                required    => [ qw/ClientID/ ],          
+                required    => [ qw/ClientID/ ],
             );
             if(!$teamviever_reg){
                 my $key = getRegistryKey(
@@ -95,7 +95,7 @@ sub _getID {
                     # Important for remote inventory optimization
                     required    => [ qw/ClientID/ ],
                 );
-            }  
+            }
 
             # Look for subkey beginning with Version
             foreach my $key (keys(%{$teamviever_reg})) {
