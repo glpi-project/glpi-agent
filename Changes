@@ -30,6 +30,8 @@ esx:
 packaging:
 * Fix #40: Windows MSI installer, agent feature must always be installed
 * Fix: Windows MSI Installer, fix logfile default on silent installation
+* Fix: Windows MSI Installer, always set right logfile and vardir path after changing
+  installation path in installer UI
 
 1.0 Fri, 10 Dec 2021
 
