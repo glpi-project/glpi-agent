@@ -29,6 +29,7 @@ esx:
 
 packaging:
 * Fix #40: Windows MSI installer, agent feature must always be installed
+* Fix: Windows MSI Installer, fix logfile default on silent installation
 
 1.0 Fri, 10 Dec 2021
 
