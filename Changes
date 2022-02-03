@@ -4,6 +4,7 @@ Revision history for GLPI agent
 
 core:
 * Define DateTime perl library as a requirement
+* Fix: Replace JSON requirement by Cpanel::JSON::XS as JSON is not thread-safe
 
 netdiscovery/netinventory:
 * Fix: Fix expiration time support to avoid aborting on legit short run
