@@ -27,6 +27,9 @@ deploy:
 esx:
 * we now support GLPI 10 server if glpi-inventory plugin is used on server-side
 
+packaging:
+* Fix #40: Windows MSI installer, agent feature must always be installed
+
 1.0 Fri, 10 Dec 2021
 
 core:
