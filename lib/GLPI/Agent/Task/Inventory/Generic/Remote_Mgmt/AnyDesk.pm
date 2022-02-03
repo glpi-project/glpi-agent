@@ -1,7 +1,6 @@
 package GLPI::Agent::Task::Inventory::Generic::Remote_Mgmt::AnyDesk;
 
-# Based on the work done by Ilya
-# See https://fusioninventory.userecho.com/en/communities/1/topics/87-support-for-anydesk-remote-desktop
+# Based on the work done by Ilya published on no more existing https://fusioninventory.userecho.com site
 
 use strict;
 use warnings;
@@ -12,13 +11,21 @@ use English qw(-no_match_vars);
 
 use GLPI::Agent::Tools;
 
-sub _anydesk_config {
-    return 'C:\ProgramData\AnyDesk\system.conf' if OSNAME eq 'MSWin32';
-    return '/etc/anydesk/system.conf';
+sub _get_anydesk_config {
+    my @configs = ();
+    if (OSNAME eq 'MSWin32') {
+        if (has_folder('C:\ProgramData\AnyDesk')) {
+            push @configs, Glob('C:\ProgramData\AnyDesk\ad_*\system.conf');
+            push @configs, 'C:\ProgramData\AnyDesk\system.conf';
+        }
+    } else {
+        push @configs, '/etc/anydesk/system.conf';
+    }
+    return grep { has_file($_) } @configs;
 }
 
 sub isEnabled {
-    return has_file(_anydesk_config()) ? 1 : 0;
+    return _get_anydesk_config() ? 1 : 0;
 }
 
 sub doInventory {
@@ -27,24 +34,26 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $AnyDeskID = getFirstMatch(
-        file    => _anydesk_config(),
-        logger  => $logger,
-        pattern => qr/^ad.anynet.id=(\S+)/
-    );
-
-    if (defined($AnyDeskID)) {
-        $logger->debug('Found AnyDesk ID : ' . $AnyDeskID) if $logger;
-
-        $inventory->addEntry(
-            section => 'REMOTE_MGMT',
-            entry   => {
-                ID   => $AnyDeskID,
-                TYPE => 'anydesk'
-            }
+    foreach my $conf (_get_anydesk_config()) {
+        my $AnyDeskID = getFirstMatch(
+            file    => $conf,
+            logger  => $logger,
+            pattern => qr/^ad.anynet.id=(\S+)/
         );
-    } else {
-        $logger->debug('AnyDesk ID not found') if $logger;
+
+        if (defined($AnyDeskID)) {
+            $logger->debug('Found AnyDesk ID : ' . $AnyDeskID) if $logger;
+
+            $inventory->addEntry(
+                section => 'REMOTE_MGMT',
+                entry   => {
+                    ID   => $AnyDeskID,
+                    TYPE => 'anydesk'
+                }
+            );
+        } else {
+            $logger->debug('AnyDesk ID not found in '.$conf) if $logger;
+        }
     }
 }
 
