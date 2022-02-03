@@ -13,6 +13,7 @@ inventory:
 * solaris: Add IPv6 addressing inventory support
 * solaris: Add software install date and size inventory support
 * Support customized AnyDesk client as remote management inventory
+* Update MongoDB database inventory
 
 remoteinventory:
 * Fix #50: handle right remote OS name for ssh remote inventory
