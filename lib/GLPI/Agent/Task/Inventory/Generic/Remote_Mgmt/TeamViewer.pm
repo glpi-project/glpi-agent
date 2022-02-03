@@ -37,9 +37,9 @@ sub isEnabled {
 
         return $key && (keys %$key);
     } elsif (OSNAME eq 'darwin') {
-        return canRun('defaults') && grep { has_file($_) } map {
-            "/Library/Preferences/com.teamviewer.teamviewer$_.plist"
-        } qw( .preferences 10 9 8 7 );
+        return canRun('defaults') && Glob(
+            "/Library/Preferences/com.teamviewer.teamviewer*.plist"
+        );
     }
 
     return canRun('teamviewer');
@@ -109,9 +109,9 @@ sub _getID {
     }
 
     if (OSNAME eq 'darwin') {
-        my ( $plist_file ) = grep { has_file($_) } map {
-            "/Library/Preferences/com.teamviewer.teamviewer$_.plist"
-        } qw( .preferences 10 9 8 7 );
+        my ( $plist_file ) = Glob(
+            "/Library/Preferences/com.teamviewer.teamviewer*.plist"
+        );
 
         return getFirstLine( command => "defaults read $plist_file ClientID" ) ;
     }
