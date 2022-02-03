@@ -16,7 +16,7 @@ sub isEnabled {
 
         GLPI::Agent::Tools::Win32->use();
 
-        #Depending on the installation the teamviewer key can be in two place in X64 OS
+        # Depending on the installation the teamviewer key can be in two place in X64 OS
 
         my $key = getRegistryKey(
             path => "HKEY_LOCAL_MACHINE/SOFTWARE/TeamViewer",
@@ -25,8 +25,8 @@ sub isEnabled {
             maxdepth    => 1,
             logger => $params{logger}
         );
-        if(!$key){
-            my $key = getRegistryKey(
+        if (!$key && is64bit()) {
+            $key = getRegistryKey(
                 path => "HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/TeamViewer",
                 # Important for remote inventory optimization
                 required    => [ qw/ClientID/ ],
@@ -74,12 +74,12 @@ sub _getID {
 
         GLPI::Agent::Tools::Win32->use();
 
-        my $clientid = getRegistryKey(
-                path => "HKEY_LOCAL_MACHINE/SOFTWARE/TeamViewer",
+        my $clientid = getRegistryKeyValue(
+            path => "HKEY_LOCAL_MACHINE/SOFTWARE/TeamViewer/ClientID",
         );
-        if(!$clientid){
-            my $key = getRegistryKey(
-                path => "HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/TeamViewer",
+        if (!$clientid && is64bit()) {
+            $clientid = getRegistryKeyValue(
+                path => "HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/TeamViewer/ClientID",
             );
         }
 
@@ -89,8 +89,8 @@ sub _getID {
                 # Important for remote inventory optimization
                 required    => [ qw/ClientID/ ],
             );
-            if(!$teamviever_reg){
-                my $key = getRegistryKey(
+            if(!$teamviever_reg && is64bit()){
+                $teamviever_reg = getRegistryKey(
                     path => "HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/TeamViewer",
                     # Important for remote inventory optimization
                     required    => [ qw/ClientID/ ],
