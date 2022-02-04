@@ -48,6 +48,17 @@ my %container_tests = (
             VCPU    => 3
         }
     },
+    '200-proxmox'  => {
+        version => 3.0,
+        result  => {
+            NAME    => 'glpi-10-rc1',
+            VMTYPE  => 'lxc',
+            STATUS  => STATUS_RUNNING,
+            MAC     => 'fa:ee:26:ef:6b:1c',
+            MEMORY  => 2147483648,
+            VCPU    => 2
+        }
+    },
 );
 
 plan tests => keys(%result_lxc_info) + keys(%container_tests) + 1;
@@ -63,7 +74,7 @@ foreach my $name (keys(%container_tests)) {
     my $file = "resources/virtualization/lxc/$name";
     $file =~ s|/|\\|g if $OSNAME eq "MSWin32";
     my $config = GLPI::Agent::Task::Inventory::Virtualization::Lxc::_getVirtualMachine(
-        name          => $name,
+        name          => $name =~ /(^.*)-proxmox$/ ? $1 : $name,
         version       => $container_tests{$name}->{version},
         test_cmdstate => $OSNAME eq "MSWin32" ? "type $file" : "cat $file",
         test_cmdinfo  => $OSNAME eq "MSWin32" ? "type $file" : "cat $file",

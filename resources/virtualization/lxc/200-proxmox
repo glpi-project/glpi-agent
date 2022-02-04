@@ -1,0 +1,8 @@
+# lxc-info -n 200 -s -c lxc.cgroup.memory.limit_in_bytes -c lxc.cgroup.cpuset.cpus -c lxc.net.0.hwaddr -c lxc.uts.name
+State:          RUNNING
+lxc.cgroup.memory.limit_in_bytes = 2147483648
+
+lxc.cgroup.cpuset.cpus = 0,2
+
+lxc.net.0.hwaddr = FA:EE:26:EF:6B:1C
+lxc.uts.name = glpi-10-rc1

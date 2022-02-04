@@ -66,12 +66,19 @@ sub  _getVirtualMachine {
         )
     };
 
+    # Proxmox environment sets name as number
+    my $proxmox = $name =~ /^\d+$/ ? 1 : 0;
+
     my $command = "lxc-info -n '$name' -c lxc.cgroup.memory.limit_in_bytes -c lxc.cgroup.cpuset.cpus";
     if ($params{version} < 2.1) {
         # Before 2.1, we need to find MAC as lxc.network.hwaddr in config
         $command .= "; grep lxc.network.hwaddr $params{config}";
+        # Look for lxc.utsname from config file in Proxmox environment
+        $command .= "; grep utsname $params{config}" if $proxmox;
     } else {
         $command .= " -c lxc.net.0.hwaddr";
+        # Look for lxc.uts.name in Proxmox environment
+        $command .= " -c lxc.uts.name" if $proxmox;
     }
 
     my $handle = getFileHandle(
@@ -94,6 +101,11 @@ sub  _getVirtualMachine {
 
         if ($key eq 'lxc.cgroup.memory.limit_in_bytes') {
             $container->{MEMORY} = $val;
+        }
+
+        # Update container name in Proxmox environment
+        if ($proxmox && ($key eq 'lxc.uts.name' || $key eq 'lxc.utsname')) {
+            $container->{NAME} = $val;
         }
 
         if ($key eq 'lxc.cgroup.cpuset.cpus') {
