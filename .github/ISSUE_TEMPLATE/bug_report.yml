@@ -74,8 +74,8 @@ body:
       label: GLPI Agent version
       description: What GLPI agent version is triggering this issue ?
       options:
+        - 1.1
         - 1.0
-        - 1.0-beta1
         - Nightly build (git version in additional context below)
         - Other (See additional context below)
       multiple: true
@@ -87,8 +87,9 @@ body:
       label: GLPI version
       description: What is your GLPI version on server-side ?
       options:
-        - 9.5.6
+        - 10.0.0-rc1
         - 10.0.0-beta
+        - 9.5.6
         - Older (See additional context below)
         - development release (See additional context below)
         - Not applicable
@@ -101,6 +102,7 @@ body:
       label: GLPIInventory plugin or FusionInventory for GLPI plugin version
       description: What is your GLPIInventory or FusionInventory for GLPI plugin version on server-side ?
       options:
+        - 10.0.0-rc4
         - 10.0.0-rc3
         - 9.5+3.0
         - 9.4+2.6
