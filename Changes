@@ -1,6 +1,6 @@
 Revision history for GLPI agent
 
-1.1 not released yet
+1.1 Fri, 04 Feb 2022
 
 core:
 * Define DateTime perl library as a requirement
@@ -8,6 +8,7 @@ core:
 
 netdiscovery/netinventory:
 * Fix: Fix expiration time support to avoid aborting on legit short run
+* Updated sysobject.ids
 
 inventory:
 * Fix: Make deprecated XML format compatible with GLPI 10 XML to JSON converter
@@ -15,18 +16,23 @@ inventory:
 * solaris: Add software install date and size inventory support
 * Support customized AnyDesk client as remote management inventory
 * Update MongoDB database inventory
+* Updated pci.ids to 2022.01.28 version
+* Updated usb.ids to 2021.12.24 version
 
 remoteinventory:
 * Fix #50: handle right remote OS name for ssh remote inventory
 
 collect:
 * we now support GLPI 10 server if glpi-inventory plugin is used on server-side
+* Bump Collect task version to 2.7
 
 deploy:
 * we now support GLPI 10 server if glpi-inventory plugin is used on server-side
+* Bump Deploy task version to 2.9
 
 esx:
 * we now support GLPI 10 server if glpi-inventory plugin is used on server-side
+* Bump ESX task version to 2.7
 
 packaging:
 * Fix #40: Windows MSI installer, agent feature must always be installed
