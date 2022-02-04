@@ -1,6 +1,6 @@
 Revision history for GLPI agent
 
-1.1 not released yet
+1.1 Fri, 04 Feb 2022
 
 core:
 * Define DateTime perl library as a requirement
@@ -24,12 +24,15 @@ remoteinventory:
 
 collect:
 * we now support GLPI 10 server if glpi-inventory plugin is used on server-side
+* Bump Collect task version to 2.7
 
 deploy:
 * we now support GLPI 10 server if glpi-inventory plugin is used on server-side
+* Bump Deploy task version to 2.9
 
 esx:
 * we now support GLPI 10 server if glpi-inventory plugin is used on server-side
+* Bump ESX task version to 2.7
 
 packaging:
 * Fix #40: Windows MSI installer, agent feature must always be installed
