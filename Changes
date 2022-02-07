@@ -2,6 +2,9 @@ Revision history for GLPI agent
 
 1.2 not yet released
 
+inventory:
+* Support customized AnyDesk client as remote management inventory on unix/linux
+
 1.1 Fri, 04 Feb 2022
 
 core:
@@ -27,7 +30,7 @@ inventory:
 * Fix: Make deprecated XML format compatible with GLPI 10 XML to JSON converter
 * solaris: Add IPv6 addressing inventory support
 * solaris: Add software install date and size inventory support
-* Support customized AnyDesk client as remote management inventory
+* Support customized AnyDesk client as remote management inventory on win32
 * Update MongoDB database inventory
 * Support Mysql & Porstgresql connection timeout on database inventory
 * JSON could be modified following server version expected format
