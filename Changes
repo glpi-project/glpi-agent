@@ -6,6 +6,9 @@ inventory:
 * Use uts.name for Proxmox lxc containers
 * Support customized AnyDesk client as remote management inventory on unix/linux
 
+collect:
+* Make collect task more verbose when debug is enabled
+
 1.1 Fri, 04 Feb 2022
 
 core:
