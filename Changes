@@ -3,6 +3,7 @@ Revision history for GLPI agent
 1.2 not yet released
 
 inventory:
+* Use uts.name for Proxmox lxc containers
 * Support customized AnyDesk client as remote management inventory on unix/linux
 
 1.1 Fri, 04 Feb 2022
