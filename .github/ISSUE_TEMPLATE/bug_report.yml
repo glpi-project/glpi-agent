@@ -102,8 +102,8 @@ body:
       label: GLPIInventory plugin or FusionInventory for GLPI plugin version
       description: What is your GLPIInventory or FusionInventory for GLPI plugin version on server-side ?
       options:
-        - 10.0.0-rc4
-        - 10.0.0-rc3
+        - 1.0.0-rc4
+        - 1.0.0-rc3
         - 9.5+3.0
         - 9.4+2.6
         - Older (See additional context below)
