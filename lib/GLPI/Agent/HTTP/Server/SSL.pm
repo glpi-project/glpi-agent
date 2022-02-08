@@ -10,7 +10,7 @@ use base "GLPI::Agent::HTTP::Server::Plugin";
 
 use GLPI::Agent::Tools;
 
-our $VERSION = "1.0";
+our $VERSION = "1.1";
 
 sub log_prefix {
     return "[ssl server plugin] ";
@@ -145,6 +145,13 @@ sub new {
     $plugin->debug("HTTPD started new SSL session");
 
     bless $client, $class;
+}
+
+sub close {
+    my ($self) = @_;
+
+    # Don't shutdown SSL on close to avoid issue with Proxy server plugin as it uses forking
+    $self->SUPER::close(SSL_no_shutdown => 1);
 }
 
 1;

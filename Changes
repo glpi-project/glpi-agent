@@ -12,6 +12,10 @@ inventory:
 collect:
 * Make collect task more verbose when debug is enabled
 
+ssl-server-plugin:
+* Fix: Support closing forked SSL connections without shutdown SSL to support Proxy server plugin
+* Bump version to 1.1
+
 1.1 Fri, 04 Feb 2022
 
 core:
