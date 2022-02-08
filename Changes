@@ -2,6 +2,9 @@ Revision history for GLPI agent
 
 1.2 not yet released
 
+core:
+* better error reporting on internal http client error
+
 inventory:
 * Use uts.name for Proxmox lxc containers
 * Support customized AnyDesk client as remote management inventory on unix/linux

@@ -182,10 +182,13 @@ sub request {
                 }
             }
 
+            # Add info if the error comes from the client itself
+            my $error_type = ($proxyreq ? "proxy" : "communication")." error";
+            my $warning = $result->header('client-warning') // '';
+            $error_type = lc($warning) if $warning;
+
             $logger->error(
-                $log_prefix .
-                ($proxyreq ? "proxy" : "communication") .
-                " error: " . $result->status_line() . ($message ? ", $message" : "")
+                $log_prefix . $error_type . ": " . $result->status_line() . ($message ? ", $message" : "")
             ) unless $skiperror{$result->code()};
         }
     }
