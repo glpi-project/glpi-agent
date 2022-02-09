@@ -426,13 +426,19 @@ See option I<--list-tasks> for the list of available tasks.
 
 Examples :
 
-* --tasks=inventory,deploy,inventory
-  First task executed is 'inventory', second task is 'deploy', third and last
-  task is 'inventory'.
+=over
 
-* --tasks=inventory,deploy,...
-  First executed task is 'inventory', second task is 'deploy' and then all
-  other available tasks are executed.
+=item * B<--tasks=inventory,deploy,inventory>
+
+First task executed is 'inventory', second task is 'deploy', third and last
+task is 'inventory'.
+
+=item * B< --tasks=inventory,deploy,...>
+
+First executed task is 'inventory', second task is 'deploy' and then all
+other available tasks are executed.
+
+=back
 
 =back
 
