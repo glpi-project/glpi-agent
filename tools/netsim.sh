@@ -174,6 +174,7 @@ function _load_environment {
         [ "$SYSTEM_AGENT" == "1" ] && let SYSTEM=1
     fi
     if [ ! -e "$NETSIMDIR/encrypt/teclib.pubkey.pem" ];then
+        [ -d "$NETSIMDIR/encrypt" ] || mkdir -p "$NETSIMDIR/encrypt"
         # Storing Teclib public to securely share walks in backup
         cat >"$NETSIMDIR/encrypt/teclib.pubkey.pem" <<TECLIB_PUBLIC_KEY
 -----BEGIN PUBLIC KEY-----
