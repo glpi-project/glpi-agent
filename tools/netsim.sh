@@ -762,7 +762,7 @@ function _walk {
 function _pub_encrypt {
     if [ -z "$ENCRYPT" ]; then
         stream "Archive content encryption not enabled, can't encrypt"
-    elif [ ! -e "encrypt/$ENCRYPT.privkey.pem" ]; then
+    elif [ ! -e "encrypt/$ENCRYPT.pubkey.pem" ]; then
         stream "Archive content public key for '$ENCRYPT' authority is missing, can't encrypt"
     else
         openssl pkeyutl -encrypt -in "$1" -pubin -inkey "encrypt/$ENCRYPT.pubkey.pem" -out "$1.$ENCRYPT" 2>&1 | _stream_pipe;
