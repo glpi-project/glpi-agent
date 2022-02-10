@@ -14,6 +14,7 @@ inventory:
 * Use uts.name for Proxmox lxc containers
 * Support customized AnyDesk client as remote management inventory on unix/linux
 * Backport of @xo4yecTb patch: NoLog option for megacli util fusioninventory/fusioninventory-agent#996
+* database: Oracle database inventory update
 * Fix teamviewer remote_mgmt inventory regression introduced in previous version
 * linux: Added flatpak softwares inventory support
 * database inventory: support default credential to inventory SQL Server 2012 Express

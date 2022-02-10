@@ -17,14 +17,19 @@ use GLPI::Agent::Inventory::DatabaseService;
 sub isEnabled {
     return 1 if canRun('sqlplus');
     my $oracle_home = _oracleHome();
-    return unless $oracle_home && (canRun($oracle_home.'/sqlplus') || canRun($oracle_home.'/bin/sqlplus'));
+    return unless $oracle_home && first {
+        canRun("$_/sqlplus") || canRun("$_/bin/sqlplus")
+    } @{$oracle_home};
 }
 
 sub _oracleHome {
-    return $ENV{ORACLE_HOME} if $ENV{ORACLE_HOME} && -d $ENV{ORACLE_HOME};
+    my (%params) = @_;
+
+    return $ENV{ORACLE_HOME} if $ENV{ORACLE_HOME} && -d $ENV{ORACLE_HOME}
+        && !$params{file}; # $params{file} is only set during tests
 
     my $inventory_loc = getFirstMatch(
-        file    => '/etc/oraInst.loc',
+        file    => $params{file} // '/etc/oraInst.loc',
         pattern => qr/^inventory_loc=(.*)$/
     )
         or return;
@@ -34,11 +39,17 @@ sub _oracleHome {
     my $inventory_xml = $inventory_loc . "/ContentsXML/inventory.xml";
     return unless -e $inventory_xml;
 
-    my $tpp = XML::TreePP->new();
+    my $tpp = XML::TreePP->new(
+        force_array   => [ qw/HOME/ ],
+    );
     my $tree = $tpp->parsefile($inventory_xml);
     return unless $tree && $tree->{INVENTORY} && $tree->{INVENTORY}->{HOME_LIST}
         && $tree->{INVENTORY}->{HOME_LIST}->{HOME};
-    return $tree->{INVENTORY}->{HOME_LIST}->{HOME}->{"-LOC"};
+    return [
+        map { $_->{"-LOC"} } grep {
+            ! $_->{"-REMOVED"}
+        } @{$tree->{INVENTORY}->{HOME_LIST}->{HOME}}
+    ];
 }
 
 sub doInventory {
@@ -75,7 +86,10 @@ sub _getDatabaseService {
         unless (canRun($sqlplus)) {
             $reset_ENV{ORACLE_HOME} = $ENV{ORACLE_HOME};
             $reset_ENV{ORACLE_SID}  = $ENV{ORACLE_SID};
-            $ENV{ORACLE_HOME} = _oracleHome();
+            my $oracle_home = _oracleHome();
+            $ENV{ORACLE_HOME} = first {
+                canRun("$_/sqlplus") || canRun("$_/bin/sqlplus")
+            } @{$oracle_home};
             unless ($ENV{ORACLE_HOME} && -d $ENV{ORACLE_HOME}) {
                 $params{logger}->debug("Can't find ORACLE_HOME") if $params{logger};
                 return;

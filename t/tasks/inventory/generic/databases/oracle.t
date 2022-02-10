@@ -76,9 +76,26 @@ my %credentials = (
     ],
 );
 
-plan tests => (2 * scalar keys %db_tests) + 1;
+my %oracle_home = (
+    'ora1910-ora195-aix' => [ qw{
+        /oracle/base/ora195
+        /oracle/base/ora1910
+    }],
+    'ora195' => [ qw{
+        /oracle/db/ora
+    }],
+);
+
+plan tests => (2 * scalar keys %db_tests) + (scalar keys %oracle_home) +1;
 
 my $inventory = GLPI::Test::Inventory->new();
+
+foreach my $test (keys %oracle_home) {
+    my $orahome = GLPI::Agent::Task::Inventory::Generic::Databases::Oracle::_oracleHome(
+        file => "resources/generic/databases/$test-oraInst.loc",
+    );
+    cmp_deeply($orahome, $oracle_home{$test}, "$test: _oracleHome() parsing");
+}
 
 foreach my $test (keys %db_tests) {
     my $file  = "resources/generic/databases/$test";
