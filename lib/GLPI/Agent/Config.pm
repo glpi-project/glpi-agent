@@ -190,6 +190,10 @@ sub _loadFromRegistry {
         $val =~ s/\s+$//;
         $val =~ s/^'(.*)'$/$1/;
         $val =~ s/^"(.*)"$/$1/;
+        
+        if ($val =~ m/^0x([0-9]+)$/) {
+            $val = hex($settings->{$rawKey});
+        }
 
         if (exists $default->{$key}) {
             $self->{$key} = $val;
