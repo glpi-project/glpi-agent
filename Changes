@@ -8,6 +8,7 @@ core:
 inventory:
 * Use uts.name for Proxmox lxc containers
 * Support customized AnyDesk client as remote management inventory on unix/linux
+* Backport of @xo4yecTb patch: NoLog option for megacli util fusioninventory/fusioninventory-agent#996
 
 collect:
 * Make collect task more verbose when debug is enabled

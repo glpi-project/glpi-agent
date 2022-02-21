@@ -60,7 +60,7 @@ sub doInventory {
 sub _getPDlist {
     my (%params) = @_;
 
-    $params{command} = defined $params{adp} ? "megacli -pdlist -a$params{adp}" : undef;
+    $params{command} = defined $params{adp} ? "megacli -pdlist -a$params{adp} -NoLog" : undef;
 
     my %pdlist;
     my $src = {};
@@ -87,7 +87,7 @@ sub _getPDlist {
 sub _getLDinfo {
     my (%params) = @_;
 
-    $params{command} = defined $params{adp} ? "megacli -ldinfo -lAll -a$params{adp}" : undef;
+    $params{command} = defined $params{adp} ? "megacli -ldinfo -lAll -a$params{adp} -NoLog" : undef;
 
     my %ldinfo;
     my $n = -1;
@@ -109,7 +109,7 @@ sub _getLDinfo {
 sub _getAdpPciInfo {
     my (%params) = @_;
 
-    $params{command} = defined $params{adp} ? "megacli -AdpGetPciInfo -a$params{adp}" : undef;
+    $params{command} = defined $params{adp} ? "megacli -AdpGetPciInfo -a$params{adp} -NoLog" : undef;
 
     my %adpinfo;
     foreach my $line (getAllLines(%params)) {

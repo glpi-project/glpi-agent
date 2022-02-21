@@ -118,7 +118,7 @@ sub _getStorages {
 sub _getAdpEnclosure {
     my (%params) = @_;
 
-    my $command = exists $params{adp} ? "megacli -EncInfo -a$params{adp}" : undef;
+    my $command = exists $params{adp} ? "megacli -EncInfo -a$params{adp} -NoLog" : undef;
 
     my $handle = getFileHandle(
         command => $command,
@@ -147,7 +147,7 @@ sub _getAdpEnclosure {
 sub _getSummary {
     my (%params) = @_;
 
-    my $command = exists $params{adp} ? "megacli -ShowSummary -a$params{adp}" : undef;
+    my $command = exists $params{adp} ? "megacli -ShowSummary -a$params{adp} -NoLog" : undef;
 
     my $handle = getFileHandle(
         command => $command,
@@ -198,7 +198,7 @@ sub _getSummary {
 sub _getPDlist {
     my (%params) = @_;
 
-    my $command = exists $params{adp} ? "megacli -PDlist -a$params{adp}" : undef;
+    my $command = exists $params{adp} ? "megacli -PDlist -a$params{adp} -NoLog" : undef;
 
     my $handle = getFileHandle(
         command => $command,
