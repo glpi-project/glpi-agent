@@ -1,11 +1,25 @@
 --- perl-5.34.0/win32/win32.c.orig	Thu Dec  9 15:44:01 2021
-+++ perl-5.34.0/win32/win32.c	Thu Dec  9 15:44:51 2021
-@@ -1602,7 +1602,7 @@
++++ perl-5.34.0/win32/win32.c	Fri Feb 18 18:34:02 2022
+@@ -1602,21 +1602,19 @@
  DllExport int
  win32_stat(const char *path, Stat_t *sbuf)
  {
 -    size_t	l = strlen(path);
-+    size_t l;
      dTHX;
      BOOL        expect_dir = FALSE;
      int result;
+     HANDLE handle;
+ 
+     path = PerlDir_mapA(path);
+-    l = strlen(path);
+ 
+     handle =
+         CreateFileA(path, FILE_READ_ATTRIBUTES,
+                     FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE,
+                     NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
+     if (handle != INVALID_HANDLE_VALUE) {
+-        result = win32_stat_low(handle, path, l, sbuf);
++        result = win32_stat_low(handle, path, strlen(path), sbuf);
+         CloseHandle(handle);
+     }
+     else {
