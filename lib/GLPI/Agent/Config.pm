@@ -185,11 +185,17 @@ sub _loadFromRegistry {
     foreach my $rawKey (keys %$settings) {
         next unless $rawKey =~ /^\/(\S+)/;
         my $key = lc($1);
-        my $val = $settings->{$rawKey};
-        # Remove the quotes
-        $val =~ s/\s+$//;
-        $val =~ s/^'(.*)'$/$1/;
-        $val =~ s/^"(.*)"$/$1/;
+        my ($val, $type) = $settings->GetValue($key);
+
+        if ($type == Win32::TieRegistry::REG_SZ()) {
+            $val =~ s/\s+$//;
+            $val =~ s/^'(.*)'$/$1/;
+            $val =~ s/^"(.*)"$/$1/;
+        }
+
+        if ($type == Win32::TieRegistry::REG_DWORD()) {
+            $val = hex($val);
+        }
 
         if (exists $default->{$key}) {
             $self->{$key} = $val;
