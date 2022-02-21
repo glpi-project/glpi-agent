@@ -28,64 +28,48 @@
         <text id="GLPI_no-category" key="SOFTWARE\GLPI-Agent" valueName="no-category" />
         <text id="GLPI_no-task" key="SOFTWARE\GLPI-Agent" valueName="no-task" />
         <text id="GLPI_tasks" key="SOFTWARE\GLPI-Agent" valueName="tasks" />
-        <decimal id="DXT_9F1637AA_9DC6_4642_B986_E17709212459" key="SOFTWARE\GLPI-Agent" valueName="delaytime" defaultValue="3600" required="true" />
-        <decimal id="DXT_FCAD5C50_5A36_4390_9342_97F88FFC3D7E" key="SOFTWARE\GLPI-Agent" valueName="timeout" defaultValue="180" required="true" />
-        <decimal id="DXT_75779EA7_02CB_4AA9_B112_4AE05C925472" key="SOFTWARE\GLPI-Agent" valueName="backend-collect-timeout" defaultValue="180"  required="true" />
-        <enum id="DXT_9F1637AA_9DC6_4642_B986_E17774925725" valueName="debug" required="true">
-          <item displayName="$(string.Off)">
-            <value>
-              <decimal value="0" />
-            </value>
-          </item>
-          <item displayName="$(string.Normal)">
-            <value>
-              <decimal value="1" />
-            </value>
-          </item>
-          <item displayName="$(string.Full)">
-            <value>
-              <decimal value="2" />
-            </value>
-          </item>
-        </enum>
+        <text id="GLPI_delaytime" key="SOFTWARE\GLPI-Agent" valueName="delaytime" required="true" />
+        <text id="GLPI_timeout" key="SOFTWARE\GLPI-Agent" valueName="timeout" required="true" />
+        <text id="GLPI_backend-collect-timeout" key="SOFTWARE\GLPI-Agent" valueName="backend-collect-timeout" required="true" />
+        <text id="GLPI_debug" key="SOFTWARE\GLPI-Agent" valueName="debug" required="true" />
         <boolean id="GLPI_no-ssl-check" key="SOFTWARE\GLPI-Agent" valueName="no-ssl-check">
           <trueValue>
-            <decimal value="1" />
+            <string>1</string>
           </trueValue>
           <falseValue>
-            <decimal value="0" />
+            <string>0</string>
           </falseValue>
         </boolean>
         <boolean id="GLPI_no-p2p" key="SOFTWARE\GLPI-Agent" valueName="no-p2p">
           <trueValue>
-            <decimal value="1" />
+            <string>1</string>
           </trueValue>
           <falseValue>
-            <decimal value="0" />
+            <string>0</string>
           </falseValue>
         </boolean>
         <boolean id="GLPI_scan-homedirs" key="SOFTWARE\GLPI-Agent" valueName="scan-homedirs">
           <trueValue>
-            <decimal value="1" />
+            <string>1</string>
           </trueValue>
           <falseValue>
-            <decimal value="0" />
+            <string>0</string>
           </falseValue>
         </boolean>
         <boolean id="GLPI_scan-profiles" key="SOFTWARE\GLPI-Agent" valueName="scan-profiles">
           <trueValue>
-            <decimal value="1" />
+            <string>1</string>
           </trueValue>
           <falseValue>
-            <decimal value="0" />
+            <string>0</string>
           </falseValue>
         </boolean>
         <boolean id="GLPI_no-httpd" key="SOFTWARE\GLPI-Agent" valueName="no-httpd">
           <trueValue>
-            <decimal value="1" />
+            <string>1</string>
           </trueValue>
           <falseValue>
-            <decimal value="0" />
+            <string>0</string>
           </falseValue>
         </boolean>
       </elements>
@@ -107,26 +91,10 @@
         <text id="GLPI_no-category" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="no-category" />
         <text id="GLPI_no-task" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="no-task" />
         <text id="GLPI_tasks" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="tasks" />
-        <decimal id="DXT_9F1637AA_9DC6_4642_B986_E17709212459" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="delaytime" defaultValue="3600" required="true" />
-        <decimal id="DXT_FCAD5C50_5A36_4390_9342_97F88FFC3D7E" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="timeout" defaultValue="180" required="true" />
-        <decimal id="DXT_75779EA7_02CB_4AA9_B112_4AE05C925472" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="backend-collect-timeout" defaultValue="180" required="true" />
-        <enum id="DXT_9F1637AA_9DC6_4642_B986_E17774925725" valueName="debug" required="true">
-          <item displayName="$(string.Off)">
-            <value>
-              <decimal value="0" />
-            </value>
-          </item>
-          <item displayName="$(string.Normal)">
-            <value>
-              <decimal value="1" />
-            </value>
-          </item>
-          <item displayName="$(string.Full)">
-            <value>
-              <decimal value="2" />
-            </value>
-          </item>
-        </enum>
+        <text id="GLPI_delaytime" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="delaytime" required="true" />
+        <text id="GLPI_timeout" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="timeout" required="true" />
+        <text id="GLPI_backend-collect-timeout" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="backend-collect-timeout" required="true" />
+        <text id="GLPI_debug" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="debug" required="true" />
         <boolean id="GLPI_no-ssl-check" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="no-ssl-check">
           <trueValue>
             <decimal value="1" />
@@ -137,34 +105,34 @@
         </boolean>
         <boolean id="GLPI_no-p2p" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="no-p2p">
           <trueValue>
-            <decimal value="1" />
+            <string>1</string>
           </trueValue>
           <falseValue>
-            <decimal value="0" />
+            <string>0</string>
           </falseValue>
         </boolean>
         <boolean id="GLPI_scan-homedirs" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="scan-homedirs">
           <trueValue>
-            <decimal value="1" />
+            <string>1</string>
           </trueValue>
           <falseValue>
-            <decimal value="0" />
+            <string>0</string>
           </falseValue>
         </boolean>
         <boolean id="GLPI_scan-profiles" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="scan-profiles">
           <trueValue>
-            <decimal value="1" />
+            <string>1</string>
           </trueValue>
           <falseValue>
-            <decimal value="0" />
+            <string>0</string>
           </falseValue>
         </boolean>
         <boolean id="GLPI_no-httpd" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="no-httpd">
           <trueValue>
-            <decimal value="1" />
+            <string>1</string>
           </trueValue>
           <falseValue>
-            <decimal value="0" />
+            <string>0</string>
           </falseValue>
         </boolean>
       </elements>

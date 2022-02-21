@@ -16,6 +16,9 @@ ssl-server-plugin:
 * Fix: Support closing forked SSL connections without shutdown SSL to support Proxy server plugin
 * Bump version to 1.1
 
+contrib:
+* Fix #73: Fix ADMX/ADML for agent configuration via GPO
+
 1.1 Fri, 04 Feb 2022
 
 core:

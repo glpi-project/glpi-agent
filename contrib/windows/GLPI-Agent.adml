@@ -8,9 +8,6 @@
       <string id="GLPI_CONFIGURE32on64">Configure the 32-bit agent on 64 bit computers</string>
       <string id="GLPI_CONFIGURE">Configure the agent</string>
       <string id="GLPI_CONFIGURE_EXPLAIN">Specify the paramaters for GLPI Agent.</string>
-	  <string id="Off">Off</string>
-	  <string id="Normal">Normal</string>
-	  <string id="Full">Full</string>
     </stringTable>
     <presentationTable>
       <presentation id="GLPI_CONFIGURE">
@@ -66,14 +63,28 @@
           <label>tasks</label>
           <defaultValue></defaultValue>
         </textBox>
-        <decimalTextBox refId="DXT_9F1637AA_9DC6_4642_B986_E17709212459" defaultValue="3600">Delaytime</decimalTextBox>
-        <decimalTextBox refId="DXT_FCAD5C50_5A36_4390_9342_97F88FFC3D7E" defaultValue="180">Timeout</decimalTextBox>
-        <decimalTextBox refId="DXT_75779EA7_02CB_4AA9_B112_4AE05C925472" defaultValue="180">backend-collect-timeout</decimalTextBox>
-        <dropdownList refId="DXT_9F1637AA_9DC6_4642_B986_E17774925725" noSort="true" defaultItem ="0">Debug Level</dropdownList>
+        <textBox refId="GLPI_delaytime">
+          <label>Delaytime</label>
+          <defaultValue>3600</defaultValue>
+        </textBox>
+        <textBox refId="GLPI_timeout">
+          <label>Timeout</label>
+          <defaultValue>180</defaultValue>
+        </textBox>
+        <textBox refId="GLPI_backend-collect-timeout">
+          <label>backend-collect-timeout</label>
+          <defaultValue>180</defaultValue>
+        </textBox>
+        <comboBox refId="GLPI_debug" noSort="true">
+          <label>Debug level</label>
+          <default>0</default>
+          <suggestion>1</suggestion>
+          <suggestion>2</suggestion>
+        </comboBox>
         <checkBox refId="GLPI_no-ssl-check" defaultChecked="false" >no-ssl-check</checkBox>
         <checkBox refId="GLPI_no-p2p" defaultChecked="false" >no-p2p</checkBox>
-        <checkBox refId="GLPI_scan-homedirs" defaultChecked="true">scan-homedirs</checkBox>
-        <checkBox refId="GLPI_scan-profiles" defaultChecked="true">scan-profiles</checkBox>
+        <checkBox refId="GLPI_scan-homedirs" defaultChecked="false">scan-homedirs</checkBox>
+        <checkBox refId="GLPI_scan-profiles" defaultChecked="false">scan-profiles</checkBox>
         <checkBox refId="GLPI_no-httpd">no-httpd</checkBox>
       </presentation>
     </presentationTable>
