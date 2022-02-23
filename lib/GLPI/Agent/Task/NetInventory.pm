@@ -425,11 +425,17 @@ sub _sendExitMessage {
 sub _sendResultMessage {
     my ($self, $result, $pid) = @_;
 
-    $self->_sendMessage({
+    my $content = {
         DEVICE        => $result,
         MODULEVERSION => $VERSION,
         PROCESSNUMBER => $pid || 0
-    });
+    };
+
+    # Keep STORAGES as CONTENT node like for Computers
+    $content->{STORAGES} = delete $result->{STORAGES}
+        if $result->{STORAGES};
+
+    $self->_sendMessage($content);
 }
 
 sub _queryDevice {
