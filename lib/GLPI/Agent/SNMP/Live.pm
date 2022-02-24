@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use parent 'GLPI::Agent::SNMP';
 
-use Encode qw(encode);
 use English qw(-no_match_vars);
 use Net::SNMP;
 use Net::SNMP qw/SNMP_PORT/;

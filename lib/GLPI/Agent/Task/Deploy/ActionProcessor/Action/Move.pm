@@ -5,6 +5,7 @@ use warnings;
 
 $File::Copy::Recursive::CPRFComp = 1;
 use English qw(-no_match_vars);
+use Encode;
 use File::Copy::Recursive;
 use File::Glob;
 use UNIVERSAL::require;

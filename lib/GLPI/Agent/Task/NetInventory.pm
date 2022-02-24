@@ -5,7 +5,6 @@ use warnings;
 use threads;
 use parent 'GLPI::Agent::Task';
 
-use Encode qw(encode);
 use English qw(-no_match_vars);
 use Time::HiRes qw(usleep);
 use Thread::Queue v2.01;

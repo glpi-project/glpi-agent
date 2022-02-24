@@ -3,6 +3,7 @@ package GLPI::Agent::Task::Deploy::ActionProcessor::Action::Delete;
 use strict;
 use warnings;
 
+use Encode;
 use File::Path;
 use UNIVERSAL::require;
 

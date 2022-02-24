@@ -35,7 +35,6 @@ our $Registry;
 ################################################################################
 
 use Cwd;
-use Encode;
 use English qw(-no_match_vars);
 use File::Temp qw(:seekable tempfile);
 use File::Basename qw(basename);

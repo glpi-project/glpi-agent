@@ -3,7 +3,6 @@ package GLPI::Agent::SNMP;
 use strict;
 use warnings;
 
-use Encode qw(encode);
 use English qw(-no_match_vars);
 
 use GLPI::Agent::Tools;

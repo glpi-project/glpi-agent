@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use parent 'Exporter';
 
-use Encode;
 use GLPI::Agent::Tools::Win32;
 
 our @EXPORT = qw(

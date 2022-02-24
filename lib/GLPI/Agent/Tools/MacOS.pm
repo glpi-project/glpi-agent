@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use parent 'Exporter';
 
+use Encode;
 use English qw(-no_match_vars);
 use Memoize;
 use POSIX 'strftime';
