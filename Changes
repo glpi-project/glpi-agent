@@ -14,6 +14,9 @@ netdiscovery/netinventory:
 * New feature: Support device storages with first use for Infortrend SAN inventory
   This feature requires GLPI 10 server-side and disks are integrated as components
 
+deploy:
+* fix: Fix UserInteraction messages encoding failure as perl 5.34 regression
+
 collect:
 * Make collect task more verbose when debug is enabled
 
