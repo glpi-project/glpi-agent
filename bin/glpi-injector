@@ -104,7 +104,7 @@ sub loaddirectory {
     opendir (my $handle, $directory)
         or die "can't open directory $directory: $ERRNO\n";
     foreach my $file (sort readdir($handle)) {
-        next if $file =~ /^..?$/ ;
+        next if $file =~ /^\.\.?$/ ;
         if (-d "$directory/$file") {
             loaddirectory("$directory/$file") if ($options->{recursive});
         } else {
