@@ -161,7 +161,7 @@ sub loadRegistryDump {
             next;
         }
 
-        if ($line =~ /^ " ([^"]+) " = dword:(\d+)/x) {
+        if ($line =~ /^ " ([^"]+) " = dword:([0-9a-f]+)/x) {
             my ($key, $value) = ($1, $2);
             $current_key->{'/' . $key} = "0x$value";
             next;

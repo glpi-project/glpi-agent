@@ -155,7 +155,7 @@ my %softwares_tests = (
             'USERNAME' => undef,
             'VERSION' => '2.12.2.2',
             'VERSION_MAJOR' => 2,
-            'VERSION_MINOR' => 0
+            'VERSION_MINOR' => 12
         },
         {
             'ARCH' => 'i586',
