@@ -9,6 +9,7 @@ inventory:
 * Use uts.name for Proxmox lxc containers
 * Support customized AnyDesk client as remote management inventory on unix/linux
 * Backport of @xo4yecTb patch: NoLog option for megacli util fusioninventory/fusioninventory-agent#996
+* Fix teamviewer remote_mgmt inventory regression introduced in previous version
 
 netdiscovery/netinventory:
 * New feature: Support device storages with first use for Infortrend SAN inventory
