@@ -230,7 +230,6 @@ sub run_executable {
 sub openWin32Registry {
 
     my $Registry;
-    my ($norecursion) = @_;
     Win32::TieRegistry->require();
     Win32::TieRegistry->import(
         Delimiter   => '/',
@@ -239,13 +238,17 @@ sub openWin32Registry {
 
     my $agentKey = 'GLPI-Agent-unittest';
     my $machKey = $Registry->{'LMachine'};
+    die "\nFailed to open HKEY_LOCAL_MACHINE hive, be sure to run this win32 test with Administrator privileges"
+        unless $machKey;
     my $settings  = $machKey->Open('SOFTWARE/' . $agentKey, { 'Delimiter' => '/' });
-    if (! defined($settings)) {
+    unless (defined($settings)) {
+        # Create test key
+        my $softKey = $machKey->Open('SOFTWARE', { 'Delimiter' => '/' });
+        $softKey->{$agentKey} = {};
+
+        $settings = $machKey->Open('SOFTWARE/' . $agentKey, { 'Delimiter' => '/' });
         die "\nFailed to create HKEY_LOCAL_MACHINE/SOFTWARE/$agentKey key, be sure to run this win32 test with Administrator privileges"
-            if $norecursion;
-        $settings = $machKey->Open('SOFTWARE', { 'Delimiter' => '/' });
-        $settings->{$agentKey} = {};
-        $settings = openWin32Registry('no-recursion');
+            if defined($settings);
     }
 
     return $settings;
