@@ -248,7 +248,7 @@ sub openWin32Registry {
 
         $settings = $machKey->Open('SOFTWARE/' . $agentKey, { 'Delimiter' => '/' });
         die "\nFailed to create HKEY_LOCAL_MACHINE/SOFTWARE/$agentKey key, be sure to run this win32 test with Administrator privileges"
-            if defined($settings);
+            unless defined($settings);
     }
 
     return $settings;
