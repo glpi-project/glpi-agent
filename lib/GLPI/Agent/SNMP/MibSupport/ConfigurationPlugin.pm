@@ -105,7 +105,7 @@ sub configure {
 
     my $yamlconfig = $confdir . "/" . $config->{yaml};
     if (! -e $yamlconfig) {
-        $logger->debug("$yamlconfig configuration not found");
+        $logger->debug2("$yamlconfig configuration not found");
         return;
     }
 
