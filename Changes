@@ -11,6 +11,10 @@ inventory:
 * Backport of @xo4yecTb patch: NoLog option for megacli util fusioninventory/fusioninventory-agent#996
 * Fix teamviewer remote_mgmt inventory regression introduced in previous version
 
+remoteinventory:
+* Fix: Support username for SSH access
+* Fix: Use BatchMode option for SSH access to not request password
+
 netdiscovery/netinventory:
 * New feature: Support device storages with first use for Infortrend SAN inventory
   This feature requires GLPI 10 server-side and disks are integrated as components

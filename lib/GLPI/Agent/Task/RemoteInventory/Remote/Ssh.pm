@@ -15,7 +15,9 @@ use constant    supported => 1;
 sub _ssh {
     my ($self, $command) = @_;
     return unless $command;
-    return "ssh -q ".$self->host()." LANG=C $command";
+    my $options = "-q -o BatchMode=yes";
+    $options .= " -l " . $self->{_user} if $self->{_user};
+    return "ssh $options ".$self->host()." LANG=C $command";
 }
 
 sub init {
