@@ -39,7 +39,7 @@ sub new {
     my $debug = $config->{debug} || 0 ;
 
     my $self = {
-        verbosity => $debug == 2 ? LOG_DEBUG2 :
+        verbosity => $debug >= 2 ? LOG_DEBUG2 :
                      $debug == 1 ? LOG_DEBUG  :
                                    LOG_INFO
     };
