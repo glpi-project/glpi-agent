@@ -14,6 +14,7 @@ use XML::TreePP;
 use GLPI::Agent::Task::NetInventory;
 use GLPI::Agent::Task::NetInventory::Job;
 use GLPI::Agent::Tools;
+use GLPI::Agent::Config;
 use GLPI::Agent::Logger;
 use GLPI::Agent::Version;
 
@@ -130,6 +131,7 @@ if ($options->{community}) {
 my $inventory = GLPI::Agent::Task::NetInventory->new(
     %setup,
     target => GLPI::Agent::Task::NetInventory::Target->new(),
+    config => GLPI::Agent::Config->new(options => $options),
     logger => GLPI::Agent::Logger->new(config => $options)
 );
 

@@ -257,6 +257,7 @@ sub _getDevice {
     my $snmp    = $params{snmp};
     my $datadir = $params{datadir};
     my $logger  = $params{logger};
+    my $config  = $params{config};
 
     my $device = GLPI::Agent::SNMP::Device->new(
         snmp   => $snmp,
@@ -311,7 +312,8 @@ sub _getDevice {
     # load supported mibs regarding sysORID list as this list permits to
     # identify device supported MIBs. But mib supported can also be tested
     # regarding sysobjectid in some case, so we pass it as argument
-    $device->loadMibSupport($sysobjectid);
+    # $config is required for ConfigurationPlugin MibSupport module
+    $device->loadMibSupport($sysobjectid, $config);
 
     # Set type from MibSupport
     $device->setType();

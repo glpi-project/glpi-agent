@@ -12,6 +12,7 @@ use Pod::Usage;
 
 use GLPI::Agent::Task::NetDiscovery;
 use GLPI::Agent::Task::NetDiscovery::Job;
+use GLPI::Agent::Config;
 use GLPI::Agent::Logger;
 use GLPI::Agent::Version;
 
@@ -67,6 +68,7 @@ pod2usage(
 my $discovery = GLPI::Agent::Task::NetDiscovery->new(
     %setup,
     target => GLPI::Agent::Task::NetInventory::Target->new(),
+    config => GLPI::Agent::Config->new(options => $options),
     logger => GLPI::Agent::Logger->new(config => $options)
 );
 

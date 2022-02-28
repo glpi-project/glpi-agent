@@ -102,14 +102,15 @@ sub walk {
 }
 
 sub loadMibSupport {
-    my ($self, $sysobjectid) = @_;
+    my ($self, $sysobjectid, $config) = @_;
 
     # list supported mibs regarding sysORID list as this list permits to
     # identify device supported MIBs
     $self->{MIBSUPPORT} = GLPI::Agent::SNMP::MibSupport->new(
-        sysobjectid  => $sysobjectid,
-        device       => $self,
-        logger       => $self->{logger}
+        sysobjectid => $sysobjectid,
+        device      => $self,
+        config      => $config, # Required for ConfigurationPlugin module
+        logger      => $self->{logger}
     );
 }
 

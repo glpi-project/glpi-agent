@@ -743,6 +743,7 @@ sub _scanAddressBySNMPReal {
 
     my $info = getDeviceInfo(
         snmp    => $snmp,
+        config  => $self->{config},
         datadir => $self->{datadir},
         logger  => $self->{logger},
     );

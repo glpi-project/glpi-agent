@@ -89,7 +89,7 @@ sub configure {
 
     $logger = $params{logger} || GLPI::Agent::Logger->new();
 
-    $config = GLPI::Agent::Config->new();
+    $config = $params{config} || GLPI::Agent::Config->new();
 
     my $confdir = $config->confdir();
 

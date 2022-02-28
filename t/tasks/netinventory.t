@@ -13,6 +13,7 @@ use Test::MockModule;
 use Test::Deep qw(cmp_deeply);
 
 use GLPI::Agent::Logger;
+use GLPI::Agent::Config;
 use GLPI::Agent::Target::Server;
 use GLPI::Agent::HTTP::Client::OCS;
 use GLPI::Agent::XML::Query::Prolog;
@@ -558,7 +559,7 @@ foreach my $case (keys(%responses)) {
         $task = GLPI::Agent::Task::NetInventory->new(
             target      => $target,
             logger      => $logger,
-            config      => {},
+            config      => GLPI::Agent::Config->new(),
             datadir     => tempdir(CLEANUP => 1),
             deviceid    => $case
         );

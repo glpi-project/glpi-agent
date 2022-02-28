@@ -483,12 +483,13 @@ sub _queryDevice {
     }
 
     my $result = getDeviceFullInfo(
-         id      => $device->{ID},
-         type    => $device->{TYPE},
-         snmp    => $snmp,
-         model   => $params->{model},
-         logger  => $self->{logger},
-         datadir => $self->{datadir}
+        id      => $device->{ID},
+        type    => $device->{TYPE},
+        snmp    => $snmp,
+        model   => $params->{model},
+        config  => $self->{config},
+        logger  => $self->{logger},
+        datadir => $self->{datadir}
     );
 
     # Inserted back device PID in result if set by server

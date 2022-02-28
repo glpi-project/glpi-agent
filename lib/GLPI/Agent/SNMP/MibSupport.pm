@@ -49,7 +49,10 @@ sub new {
         {
             no strict 'refs'; ## no critic (ProhibitNoStrict)
             # Call module initialization
-            $module->configure(logger => $logger);
+            $module->configure(
+                logger => $logger,
+                config => $params{config}, # required for ConfigurationPlugin
+            );
             $supported_mibs = ${$module . "::mibSupport"};
         }
 
