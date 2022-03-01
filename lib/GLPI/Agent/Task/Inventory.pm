@@ -8,6 +8,7 @@ use parent 'GLPI::Agent::Task';
 use Config;
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
+use XML::TreePP;
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::Inventory;
