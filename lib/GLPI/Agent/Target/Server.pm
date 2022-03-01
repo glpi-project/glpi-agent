@@ -134,7 +134,7 @@ sub getTaskServer {
 
     $task = lc($task);
 
-    return unless $task && $self->{_server_task_support}->{$task};
+    return unless $task && $self->{_server_task_support} && $self->{_server_task_support}->{$task};
     return $self->{_server_task_support}->{$task}->{server};
 }
 
@@ -143,8 +143,8 @@ sub getTaskVersion {
 
     $task = lc($task);
 
-    return unless $task && $self->{_server_task_support}->{$task};
-    return $self->{_server_task_support}->{$task}->{version};
+    return '' unless $task && $self->{_server_task_support} && $self->{_server_task_support}->{$task};
+    return $self->{_server_task_support}->{$task}->{version} // '';
 }
 
 1;
@@ -215,4 +215,4 @@ Return server name of supported task or undef.
 
 =head2 getTaskVersion($task)
 
-Return version of supported task or undef.
+Return version of supported task or an empty string.
