@@ -1,0 +1,14 @@
+            ID: org.gnome.Platform.Locale
+           Ref: runtime/org.gnome.Platform.Locale/x86_64/3.36
+          Arch: x86_64
+        Branch: 3.36
+        Origin: flathub
+    Collection: org.flathub.Stable
+  Installation: system
+     Installed: 30,9 MB
+
+        Commit: 177c2f6411116d7654a326205c32f5842b38afe16989d8229e39c90f2656d1dc
+        Parent: aad8345e3030bb7924a3d861263f086e62208df29c8daa61c4833bb475e0c9bc
+       Subject: Export org.gnome.Platform.Locale
+          Date: 2020-12-16 04:36:47 +0000
+Subdirectories: /fr

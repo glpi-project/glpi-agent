@@ -1,0 +1,20 @@
+
+VSCodium - VSCodium. Code editing. Redefined.
+
+          ID: com.vscodium.codium
+         Ref: app/com.vscodium.codium/x86_64/stable
+        Arch: x86_64
+      Branch: stable
+     Version: 1.52.1
+     License: MIT
+      Origin: flathub
+  Collection: org.flathub.Stable
+Installation: system
+   Installed: 252,0 MB
+     Runtime: org.freedesktop.Sdk/x86_64/20.08
+         Sdk: org.freedesktop.Sdk/x86_64/20.08
+
+      Commit: a60e2e1cf42c2483dce4ab3824c619f54e441975d1dd8cd34f25c86130cdac30
+      Parent: da3efcfab13aa43ee8ecb94b10820d4f37ee7c6014130444c4a531476bf83e13
+     Subject: Upgrade VSCodium to v1.52.1 (ce3c9aa7)
+        Date: 2020-12-20 18:56:49 +0000

@@ -1,0 +1,18 @@
+
+GNOME Application Platform version 3.38 - Shared libraries used by GNOME
+applications
+
+          ID: org.gnome.Platform
+         Ref: runtime/org.gnome.Platform/x86_64/3.38
+        Arch: x86_64
+      Branch: 3.38
+     License: GPL-2.0+
+      Origin: flathub
+  Collection: org.flathub.Stable
+Installation: user
+   Installed: 944,0 MB
+
+      Commit: 42f0534709bc634acaeea04372985231d6c414ae811029b9381643e2ba78caf6
+      Parent: 2d64ab24197d5dd64676cb489cc75dc9a408a0c140ff3cf7965e8074708145fa
+     Subject: Export org.gnome.Platform
+        Date: 2020-12-01 20:07:58 +0000

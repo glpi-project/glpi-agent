@@ -1,0 +1,18 @@
+
+Freedesktop SDK - Tools and headers for developing applications
+
+          ID: org.freedesktop.Sdk
+         Ref: runtime/org.freedesktop.Sdk/x86_64/20.08
+        Arch: x86_64
+      Branch: 20.08
+     Version: 20.08.3
+     License: GPL-2.0+
+      Origin: flathub
+  Collection: org.flathub.Stable
+Installation: system
+   Installed: 1,6 GB
+
+      Commit: 8b588071215bc6cd5b03195bfecdbeb104c9bc90c8781f492d303ee794d520b8
+      Parent: 73a11f3f767f81e5bb1a6a88afc0a5ac4a36818acdffa24d6b415c2c072d8d2a
+     Subject: Export org.freedesktop.Sdk
+        Date: 2020-12-30 18:11:19 +0000

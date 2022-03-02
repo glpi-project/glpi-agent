@@ -1,0 +1,12 @@
+com.vscodium.codium	stable	system	VSCodium
+org.freedesktop.Platform.GL.default	19.08	system	default
+org.freedesktop.Platform.GL.default	20.08	system	default
+org.freedesktop.Platform.GL.default	20.08	user	default
+org.freedesktop.Sdk	20.08	system	Freedesktop SDK
+org.freedesktop.Sdk.Locale	20.08	system	freedesktop development platform translations
+org.gaphor.Gaphor	stable	user	Gaphor
+org.gnome.Platform	3.36	system	GNOME Application Platform version 3.36
+org.gnome.Platform	3.38	user	GNOME Application Platform version 3.38
+org.gnome.Platform.Locale	3.36	system	gnome platform translations
+org.gnome.Platform.Locale	3.38	user	gnome platform translations
+com.obsproject.Studio	stable	user	OBS Studio

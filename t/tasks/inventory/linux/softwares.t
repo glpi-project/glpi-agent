@@ -21,6 +21,7 @@ use GLPI::Agent::Task::Inventory::Generic::Softwares::Gentoo;
 use GLPI::Agent::Task::Inventory::Generic::Softwares::Nix;
 use GLPI::Agent::Task::Inventory::Generic::Softwares::Pacman;
 use GLPI::Agent::Task::Inventory::Generic::Softwares::Snap;
+use GLPI::Agent::Task::Inventory::Generic::Softwares::Flatpak;
 
 my $rpm_packages = [
     {
@@ -431,7 +432,142 @@ my $snap_packages = [
     }
 ];
 
-plan tests => 12;
+my $flatpak_packages = [
+    {
+        COMMENTS        => 'AppID: com.vscodium.codium',
+        FILESIZE        => 264241152,
+        FROM            => 'flatpak',
+        NAME            => 'VSCodium',
+        PUBLISHER       => 'flathub',
+        VERSION         => '1.52.1',
+        INSTALLDATE     => '20/12/2020',
+        SYSTEM_CATEGORY => 'system',
+        ARCH            => 'x86_64'
+    },
+    {
+        COMMENTS        => 'AppID: org.freedesktop.Platform.GL.default',
+        FILESIZE        => 267386880,
+        FROM            => 'flatpak',
+        NAME            => 'default',
+        PUBLISHER       => 'flathub',
+        VERSION         => '19.08',
+        INSTALLDATE     => '10/07/2020',
+        SYSTEM_CATEGORY => 'system',
+        ARCH            => 'x86_64'
+    },
+    {
+        COMMENTS        => 'AppID: org.freedesktop.Platform.GL.default',
+        FILESIZE        => 278921216,
+        FROM            => 'flatpak',
+        NAME            => 'default',
+        PUBLISHER       => 'flathub',
+        VERSION         => '20.08',
+        INSTALLDATE     => '30/12/2020',
+        SYSTEM_CATEGORY => 'system',
+        ARCH            => 'x86_64'
+    },
+    {
+        COMMENTS        => 'AppID: org.freedesktop.Platform.GL.default',
+        FILESIZE        => 278921216,
+        FROM            => 'flatpak',
+        NAME            => 'default',
+        PUBLISHER       => 'flathub',
+        VERSION         => '20.08',
+        INSTALLDATE     => '30/12/2020',
+        SYSTEM_CATEGORY => 'user',
+        ARCH            => 'x86_64'
+    },
+    {
+        COMMENTS        => 'AppID: org.freedesktop.Sdk',
+        FILESIZE        => 1073741824,
+        FROM            => 'flatpak',
+        NAME            => 'Freedesktop SDK',
+        PUBLISHER       => 'flathub',
+        VERSION         => '20.08.3',
+        INSTALLDATE     => '30/12/2020',
+        SYSTEM_CATEGORY => 'system',
+        ARCH            => 'x86_64'
+    },
+    {
+        COMMENTS        => 'AppID: org.freedesktop.Sdk.Locale',
+        FILESIZE        => 33554432,
+        FROM            => 'flatpak',
+        NAME            => 'freedesktop development platform translations',
+        PUBLISHER       => 'flathub',
+        VERSION         => '20.08',
+        INSTALLDATE     => '30/12/2020',
+        SYSTEM_CATEGORY => 'system',
+        ARCH            => 'x86_64'
+    },
+    {
+        COMMENTS        => 'AppID: org.gaphor.Gaphor',
+        FILESIZE        => 4194304,
+        FROM            => 'flatpak',
+        NAME            => 'Gaphor',
+        PUBLISHER       => 'flathub',
+        VERSION         => '2.1.1',
+        INSTALLDATE     => '01/12/2020',
+        SYSTEM_CATEGORY => 'user',
+        ARCH            => 'x86_64'
+    },
+    {
+        COMMENTS        => 'AppID: org.gnome.Platform',
+        FILESIZE        => 984612864,
+        FROM            => 'flatpak',
+        NAME            => 'GNOME Application Platform version 3.36',
+        PUBLISHER       => 'flathub',
+        VERSION         => '3.36',
+        INSTALLDATE     => '16/12/2020',
+        SYSTEM_CATEGORY => 'system',
+        ARCH            => 'x86_64'
+    },
+    {
+        COMMENTS        => 'AppID: org.gnome.Platform',
+        FILESIZE        => 989855744,
+        FROM            => 'flatpak',
+        NAME            => 'GNOME Application Platform version 3.38',
+        PUBLISHER       => 'flathub',
+        VERSION         => '3.38',
+        INSTALLDATE     => '01/12/2020',
+        SYSTEM_CATEGORY => 'user',
+        ARCH            => 'x86_64'
+    },
+    {
+        COMMENTS        => 'AppID: org.gnome.Platform.Locale',
+        FILESIZE        => 31457280,
+        FROM            => 'flatpak',
+        NAME            => 'gnome platform translations',
+        PUBLISHER       => 'flathub',
+        VERSION         => '3.36',
+        INSTALLDATE     => '16/12/2020',
+        SYSTEM_CATEGORY => 'system',
+        ARCH            => 'x86_64'
+    },
+    {
+        COMMENTS        => 'AppID: org.gnome.Platform.Locale',
+        FILESIZE        => 32505856,
+        FROM            => 'flatpak',
+        NAME            => 'gnome platform translations',
+        PUBLISHER       => 'flathub',
+        VERSION         => '3.38',
+        INSTALLDATE     => '01/12/2020',
+        SYSTEM_CATEGORY => 'user',
+        ARCH            => 'x86_64'
+    },
+    {
+        COMMENTS        => 'AppID: com.obsproject.Studio',
+        FILESIZE        => 502267904,
+        FROM            => 'flatpak',
+        NAME            => 'OBS Studio',
+        PUBLISHER       => 'flathub',
+        VERSION         => '27.2.1',
+        INSTALLDATE     => '21/02/2022',
+        SYSTEM_CATEGORY => 'user',
+        ARCH            => 'x86_64'
+    },
+];
+
+plan tests => 12 + (scalar(@{$flatpak_packages}) + 1);
 
 my $inventory = GLPI::Test::Inventory->new();
 
@@ -502,3 +638,18 @@ foreach my $snap (@{$packages}) {
     );
 }
 cmp_deeply($packages, $snap_packages, 'snap: parsing');
+
+$packages = GLPI::Agent::Task::Inventory::Generic::Softwares::Flatpak::_getFlatpakList(
+    file => "resources/linux/packaging/flatpak"
+);
+foreach my $flatpak (@{$packages}) {
+    my $appid = $flatpak->{_APPID};
+    $flatpak = GLPI::Agent::Task::Inventory::Generic::Softwares::Flatpak::_getFlatpakInfo(
+        flatpak => $flatpak,
+        file    => "resources/linux/packaging/flatpak_".$appid."_".$flatpak->{_BRANCH}."_".$flatpak->{SYSTEM_CATEGORY}
+    );
+    lives_ok {
+        $inventory->addEntry(section => 'SOFTWARES', entry => $flatpak);
+    } "flatpak: registering $appid";
+}
+cmp_deeply($packages, $flatpak_packages, 'flatpak: parsing');

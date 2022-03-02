@@ -1,0 +1,14 @@
+            ID: org.freedesktop.Sdk.Locale
+           Ref: runtime/org.freedesktop.Sdk.Locale/x86_64/20.08
+          Arch: x86_64
+        Branch: 20.08
+        Origin: flathub
+    Collection: org.flathub.Stable
+  Installation: system
+     Installed: 32,0 MB
+
+        Commit: d50ad07ee1f87c111fc6d4fd121c8cdf086023170e218e5dc25f90884c729a4a
+        Parent: 5cc53d78b7d4608a35226f149606451c86ad6fc0f7841289596548f3b8e49cb2
+       Subject: Export org.freedesktop.Sdk.Locale
+          Date: 2020-12-30 18:13:55 +0000
+Subdirectories: /fr

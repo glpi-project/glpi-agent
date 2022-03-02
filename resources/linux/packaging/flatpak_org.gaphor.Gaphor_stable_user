@@ -1,0 +1,20 @@
+
+Gaphor - Simple modeling tool
+
+          ID: org.gaphor.Gaphor
+         Ref: app/org.gaphor.Gaphor/x86_64/stable
+        Arch: x86_64
+      Branch: stable
+     Version: 2.1.1
+     License: Apache-2.0
+      Origin: flathub
+  Collection: org.flathub.Stable
+Installation: user
+   Installed: 4,6 MB
+     Runtime: org.gnome.Platform/x86_64/3.38
+         Sdk: org.gnome.Sdk/x86_64/3.38
+
+      Commit: 12aed0e9d1aafbfb6eada955dcc8aa52d7cd36a10631edcef34ecac3c239bcb4
+      Parent: 928b7ade42c136e5eaa405ccfa26c17c0b3cb8aeec008340cb812a0687985786
+     Subject: Update to version 2.1.1 (69d7f782)
+        Date: 2020-12-01 02:19:21 +0000

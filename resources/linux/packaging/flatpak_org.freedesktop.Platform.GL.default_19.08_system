@@ -1,0 +1,13 @@
+          ID: org.freedesktop.Platform.GL.default
+         Ref: runtime/org.freedesktop.Platform.GL.default/x86_64/19.08
+        Arch: x86_64
+      Branch: 19.08
+      Origin: flathub
+  Collection: org.flathub.Stable
+Installation: system
+   Installed: 255,7 MB
+
+      Commit: f68c8e930d048d0490c605d992a82e11499c78cf374a67ef69fa15a4210b636b
+      Parent: 393b8b73a7ed008521355710280023e5bd7936d86d3abb19ff2a759b7b1c8da7
+     Subject: Export org.freedesktop.Platform.GL.default
+        Date: 2020-07-10 16:19:39 +0000
