@@ -122,16 +122,72 @@ my %db_tests = (
         VERSION => "14.0.3401.7"
       }
     ],
-);
+    'sql-server-2012-express' => [
+      {
+        DATABASES => [
+          {
+            CREATION_DATE => "2003-04-08 09:13:36",
+            IS_ACTIVE => 1,
+            NAME => "master",
+            SIZE => 6,
+            UPDATE_DATE => "2012-02-10 21:14:52"
+          },
+          {
+            CREATION_DATE => "2022-03-03 11:28:07",
+            IS_ACTIVE => 1,
+            NAME => "tempdb",
+            SIZE => 4,
+            UPDATE_DATE => "2022-03-03 11:28:07"
+          },
+          {
+            CREATION_DATE => "2003-04-08 09:13:36",
+            IS_ACTIVE => 1,
+            NAME => "model",
+            SIZE => 5,
+            UPDATE_DATE => "2012-02-10 20:16:02"
+          },
+          {
+            CREATION_DATE => "2012-02-10 21:02:17",
+            IS_ACTIVE => 1,
+            NAME => "msdb",
+            SIZE => 21,
+            UPDATE_DATE => "2022-03-03 11:28:02"
+          }
+        ],
+        IS_ACTIVE => 1,
+        LAST_BOOT_DATE => "2022-03-03 11:28:07",
+        MANUFACTURER => "Microsoft",
+        NAME => "SQL Server 2012",
+        PORT => 1433,
+        SIZE => 37,
+        TYPE => "mssql",
+        VERSION => "11.0.2100.60"
+      }
+    ]);
 
 my %credentials = (
     # Set related credentials values when needed like port for a given test or
     # to generate the test case but don't forget to mask any sensible data after
+
+    # Define a credential for sql-server-2019 to avoid a duplicate inventory during test
+    'sql-server-2019' => [
+        {
+            login       => "SA",
+            password    => "********",
+            type    => "login_password",
+        },
+    ],
     'sql-server-2017-on-linux' => [
         {
             login       => "SA",
             password    => "********",
             type        => "login_password",
+        },
+    ],
+    'sql-server-2012-express' => [
+        {
+            socket  => "localhost\\SQLExpress",
+            type    => "login_password",
         },
     ],
 );
