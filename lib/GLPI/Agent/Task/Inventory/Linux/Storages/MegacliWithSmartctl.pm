@@ -126,7 +126,7 @@ sub _adpInfoToBlock {
     my $pciid = sprintf "0000:%02s:%02s.%01s",
         $adpinfo->{'Bus Number'}, $adpinfo->{'Device Number'}, $adpinfo->{'Function Number'};
 
-    my @blocks = glob "/sys/bus/pci/devices/$pciid/host*/target*/*/block/*";
+    my @blocks = Glob("/sys/bus/pci/devices/$pciid/host*/target*/*/block/*");
 
     # return first block device name
     return basename(shift @blocks);

@@ -16,7 +16,7 @@ our $runAfterIfEnabled = [ qw(
 )];
 
 sub isEnabled {
-    return glob "/sys/class/power_supply/*/capacity";
+    return Glob("/sys/class/power_supply/*/capacity");
 }
 
 sub doInventory {
@@ -50,7 +50,7 @@ sub _getBatteriesFromSysClass {
     my (%params) = @_;
 
     my @batteries = ();
-    foreach my $psu (glob "/sys/class/power_supply/*") {
+    foreach my $psu (Glob("/sys/class/power_supply/*")) {
         my $type = getFirstLine(file => "$psu/type")
             or next;
         my $present = getFirstLine(file => "$psu/present")
