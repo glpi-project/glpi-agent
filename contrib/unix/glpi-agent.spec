@@ -13,6 +13,7 @@ Source0:     %{name}-%{version}-%{release}.tar.gz
 
 Requires: perl(LWP)
 Requires: perl(Net::SSLeay)
+Requires: perl(Net::SSH2)
 Requires: perl(Proc::Daemon)
 Requires: perl(Socket::GetAddrInfo)
 Requires: perl(DateTime)
@@ -337,6 +338,9 @@ fi
 
 
 %changelog
+* Fri Mar 4 2022 Guillaume Bougard <gbougard AT teclib DOT com>
+- Add Net::SSH2 dependency for remoteinventory support
+
 * Fri Jun 11 2021 Guillaume Bougard <gbougard AT teclib DOT com>
 - Update to support new GLPI Agent protocol
 

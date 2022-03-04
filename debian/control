@@ -59,6 +59,7 @@ Depends:
  lsb-base,
  libnet-cups-perl,
  libnet-ip-perl,
+ libnet-ssh2-perl,
  libwww-perl,
  libparse-edid-perl,
  libproc-daemon-perl,

@@ -12,6 +12,8 @@ use GLPI::Agent::Tools;
 
 use constant    supported => 1;
 
+my $ssh2;
+
 sub _ssh {
     my ($self, $command) = @_;
     return unless $command;
@@ -25,17 +27,118 @@ sub init {
 
     my $mode = $self->mode();
     $self->resetmode() if ($mode && $mode !~ /^perl$/);
+
+    Net::SSH2->require();
+    unless ($EVAL_ERROR) {
+        my $timeout = $self->config->{"backend-collect-timeout"} // 60;
+        $ssh2 = Net::SSH2->new(timeout => $timeout * 1000);
+        my $version = $ssh2->version;
+        $self->{logger}->debug2("Using libssh2 $version for ssh remote");
+    }
+}
+
+# APIs dedicated to Net::SSH2 support
+sub _connect {
+    my ($self) = @_;
+
+    return 0 unless $ssh2;
+    return 1 if defined($ssh2->sock);
+
+    my ($host, $port) = $self->host() =~ /^(.*):?(\d+)?$/;
+    $self->{logger}->debug2("Connecting to '$host' remote host...");
+    if (!$ssh2->connect($host, $port // 22)) {
+        my @error = $ssh2->error;
+        $self->{logger}->debug("Can't reach $host for ssh remoteinventory: @error");
+        return;
+    }
+
+    # Use Trust On First Use policy to verify remote host
+    $self->{logger}->debug2("Check remote host key...");
+    unless ($ssh2->check_hostkey(Net::SSH2::LIBSSH2_HOSTKEY_POLICY_TOFU())) {
+        my @error = $ssh2->error;
+        $self->{logger}->error("Can't trust $host for ssh remoteinventory: @error");
+        return;
+    }
+
+    # Support authentication by password
+    if ($self->{_pass}) {
+        $self->{logger}->debug2("Try authentication by password...");
+        unless ($ssh2->auth_password($self->{_user}, $self->{_pass})) {
+            my @error = $ssh2->error;
+            $self->{logger}->debug("Can't authenticate to $host with given password for ssh remoteinventory: @error");
+            $self->{logger}->debug2("Authenticated on $host remote with given password");
+        }
+        if ($ssh2->auth_ok) {
+            return 1;
+        }
+    }
+
+    # Find private keys in default user env
+    if (!$self->{_private_keys} || $self->{_private_keys_lastscan} < time-60) {
+        $self->{_private_keys} = {};
+        foreach my $file (glob($ENV{HOME}."/.ssh/*")) {
+            next unless getFirstMatch(
+                file    => $file,
+                pattern => /^-----BEGIN (.*) PRIVATE KEY-----$/,
+            );
+            my ($key) = $file =~ m{/([^/]+)$};
+            $self->{_private_keys}->{$key} = $file;
+        }
+        $self->{_private_keys_lastscan} = time;
+    }
+
+    # Support public key athentication
+    my $user = $self->{_user} // $ENV{USER};
+    foreach my $private (sort(keys(%{$self->{_private_keys}}))) {
+        $self->{logger}->debug2("Try authentication using $private key...");
+        my $file = $self->{_private_keys}->{$private};
+        my $pubkey;
+        $pubkey = $file.".pub" if -e $file.".pub";
+        next unless $ssh2->auth_publickey($user, $pubkey, $file, $self->{_pass});
+        if ($ssh2->auth_ok) {
+            $self->{logger}->debug2("Authenticated on $host remote with $private key");
+            return 1;
+        }
+    }
+
+    $self->{logger}->error("Can't authenticate on $host remote host");
+    return 0;
+}
+
+sub _ssh2_exec_status {
+    my ($self, $command) = @_;
+
+    # Support Net::SSH2 facilities to exec command
+    return unless $self->_connect();
+
+    my $ret;
+    my $chan = $ssh2->channel();
+    if ($chan && $chan->exec("LANG=C $command")) {
+        $ret = $chan->exit_status();
+        $chan->close;
+    } else {
+        $self->{logger}->debug2("Failed to start '$command' using ssh2 lib");
+    }
+
+    return $ret;
 }
 
 sub checking_error {
     my ($self) = @_;
+
+    if ($ssh2 && !defined($ssh2->sock) && !$self->_connect()) {
+        my @error = $ssh2->error;
+        undef $ssh2;
+        return $error[2];
+    }
 
     my $root = $self->getRemoteFirstLine(command => "id -u");
 
     return "Can't run simple command on remote, check server is up and ssh access is setup"
         unless defined($root) && length($root);
 
-    warn "You should execute remote inventory as super-user\n" unless $root eq "0";
+    $self->{logger}->warning("You should execute remote inventory as super-user on remote host")
+        unless $root eq "0";
 
     return "Mode perl required but can't run perl"
         if $self->mode('perl') && ! $self->remoteCanRun("perl");
@@ -48,7 +151,20 @@ sub checking_error {
             or return "Can't retrieve remote hostname";
         $deviceid = $self->deviceid(hostname => $hostname)
             or return "Can't compute deviceid getting remote hostname";
-        system($self->_ssh("sh -c \"'echo $deviceid >.glpi-agent-deviceid'\""))
+
+        my $command = "sh -c \"'echo $deviceid >.glpi-agent-deviceid'\"";
+
+        # Support Net::SSH2 facilities to exec command
+        my $ret = $self->_ssh2_exec_status($command);
+        if (defined($ret)) {
+            if ($ret) {
+                $self->{logger}->warning("Failed to store deviceid using ssh2");
+            } else {
+                return '';
+            }
+        }
+
+        system($self->_ssh($command))
             or return "Can't store deviceid on remote";
     }
 
@@ -60,13 +176,36 @@ sub getRemoteFileHandle {
 
     my $command;
     if ($params{file}) {
-        $command .= "cat '$params{file}'";
+        # Support Net::SSH2 facilities to read file with sftp protocol
+        if ($ssh2) {
+            # Reconnect if needed
+            $self->_connect();
+            my $sftp = $ssh2->sftp();
+            if ($sftp) {
+                my $fh = $sftp->open($params{file});
+                return $fh if $fh;
+            }
+        }
+        $command = "cat '$params{file}'";
     } elsif ($params{command}) {
-        $params{command} =~ s/\\/\\\\/g;
-        $params{command} =~ s/\$/\\\$/g;
-        $command .= $params{command};
+        $command = $params{command};
+    } else {
+        $self->{logger}->debug("Unsupported getRemoteFileHandle() call with ".join(",",keys(%params))." parameters");
+        return;
     }
-    return unless $command;
+
+    # Support Net::SSH2 facilities to exec command
+    if ($ssh2) {
+        # Reconnect if needed
+        $self->_connect();
+        my $chan = $ssh2->channel();
+        if ($chan) {
+            return $chan if $chan->exec("LANG=C $command");
+        }
+    }
+
+    $command =~ s/\\/\\\\/g;
+    $command =~ s/\$/\\\$/g;
 
     return getFileHandle(
         command => $self->_ssh($command),
@@ -79,9 +218,15 @@ sub remoteCanRun {
     my ($self, $binary) = @_;
 
     my $command = $binary =~ m{^/} ? "test -x '$binary'" : "which $binary >/dev/null";
-    $command .= $OSNAME eq 'MSWin32' ? " 2>nul" : " 2>/dev/null";
 
-    return system($self->_ssh($command)) == 0;
+    # Support Net::SSH2 facilities to exec command
+    my $ret = $self->_ssh2_exec_status($command);
+    return $ret == 0
+        if defined($ret);
+
+    my $stderr  = $OSNAME eq 'MSWin32' ? " 2>nul" : " 2>/dev/null";
+
+    return system($self->_ssh($command).$stderr) == 0;
 }
 
 sub OSName {
@@ -96,33 +241,15 @@ sub remoteGlob {
     my ($self, $glob, $test) = @_;
     return unless $glob;
 
-    $test = "-e" unless $test;
+    my @glob = $self->getRemoteAllLines(command => "ls -1 $glob");
 
-    # Create a safe tempfile
-    my $tempfile =  $self->getRemoteFirstLine( command => "mktemp /tmp/.glpi-agent-XXXXXXXX" );
-    # Otherwise we will create an unsafe one
-    $tempfile = sprintf(".glpi-agent-%08x", rand(1<<32)) unless $tempfile && $tempfile =~ m|^/tmp/\.glpi-agent-|;
-
-    $self->{logger}->debug2("creating remote $tempfile script to handle portable glob");
-
-    # Ignore 'Broken Pipe' warnings on Solaris
-    local $SIG{PIPE} = 'IGNORE' if $OSNAME eq 'solaris';
-    my $handle;
-    my $command = $self->_ssh("'cat >$tempfile'");
-    my $cmdpid  = open($handle, '|-', $command);
-    if (!$cmdpid) {
-        $self->{logger}->error("Can't run command $command: $ERRNO");
-        return;
+    if ($test) {
+        if ($test eq "-h") {
+            @glob = grep { $self->remoteTestLink($_) } @glob;
+        } elsif ($test eq "-d") {
+            @glob = grep { $self->remoteTestFolder($_) } @glob;
+        }
     }
-    # Kill command if a timeout was set
-    $SIG{ALRM} = sub { kill 'KILL', $cmdpid ; die "alarm\n"; } if $SIG{ALRM};
-    print $handle "for f in $glob; do test $test \"\$f\" && echo \"\$f\"; done\n";
-    close($handle);
-
-    my @glob = $self->getRemoteAllLines( command => "sh $tempfile" );
-
-    # Always remove remote tempfile
-    system($self->_ssh("rm -f '$tempfile'")) if $tempfile;
 
     return @glob;
 }
@@ -149,17 +276,41 @@ sub getRemoteHostDomain {
 
 sub remoteTestFolder {
     my ($self, $folder) = @_;
-    return system($self->_ssh("test -d '$folder'")) == 0;
+
+    my $command = "test -d '$folder'";
+
+    # Support Net::SSH2 facilities to exec command
+    my $ret = $self->_ssh2_exec_status($command);
+    return $ret == 0
+        if defined($ret);
+
+    return system($self->_ssh($command)) == 0;
 }
 
 sub remoteTestFile {
     my ($self, $file) = @_;
-    return system($self->_ssh("test -e '$file'")) == 0;
+
+    my $command = "test -e '$file'";
+
+    # Support Net::SSH2 facilities to exec command
+    my $ret = $self->_ssh2_exec_status($command);
+    return $ret == 0
+        if defined($ret);
+
+    return system($self->_ssh($command)) == 0;
 }
 
 sub remoteTestLink {
     my ($self, $link) = @_;
-    return system($self->_ssh("test -h '$link'")) == 0;
+
+    my $command = "test -h '$link'";
+
+    # Support Net::SSH2 facilities to exec command
+    my $ret = $self->_ssh2_exec_status($command);
+    return $ret == 0
+        if defined($ret);
+
+    return system($self->_ssh($command)) == 0;
 }
 
 # This API only need to return ctime & mtime

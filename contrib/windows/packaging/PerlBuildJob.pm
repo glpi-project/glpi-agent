@@ -155,7 +155,7 @@ sub _build_steps {
                 qw/ DateTime DateTime::TimeZone::Local::Win32 /,
 
                 # GLPI-Agent deps
-                qw/ Text::Template UNIVERSAL::require UNIVERSAL::isa
+                qw/ Text::Template UNIVERSAL::require UNIVERSAL::isa Net::SSH2
                     XML::TreePP XML::XPath Memoize Time::HiRes Compress::Zlib
                     Parse::EDID Cpanel::JSON::XS JSON::PP YAML::Tiny Parallel::ForkManager
                     URI::Escape Net::NBName Thread::Queue Thread::Semaphore
