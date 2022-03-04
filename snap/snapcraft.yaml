@@ -110,7 +110,7 @@ parts:
       Time::HiRes HTTP::Daemon Proc::Daemon Parallel::ForkManager
       Compress::Zlib Archive::Extract File::Copy::Recursive File::Which
       Crypt::DES Crypt::Rijndael Digest::HMAC Digest::SHA1
-      Net::IP Net::Ping Net::SNMP Net::NBName Net::CUPS
+      Net::IP Net::Ping Net::SNMP Net::NBName Net::CUPS Net::SSH2
       Thread::Queue Parse::EDID Cpanel::JSON::XS JSON::PP
       Text::Template XML::TreePP XML::XPath Memoize
       YAML::Tiny Data::UUID Digest::SHA
@@ -123,6 +123,7 @@ parts:
      - libcupsfilters-dev
      - libcupsimage2-dev
      - libexpat1-dev
+     - libssh2-dev
     stage-packages:
      - libcupsimage2
      - libcupsfilters1
@@ -131,6 +132,7 @@ parts:
      - libexpat1
      - libavahi-client3
      - libavahi-common3
+     - libssh2
     stage:
       - lib
       - usr/lib

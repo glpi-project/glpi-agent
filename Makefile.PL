@@ -84,7 +84,7 @@ recommends 'Net::CUPS'                       => 0.60 if $OSNAME ne 'MSWin32';
 recommends 'Parse::EDID'                     => '0';
 
 # Remote Inventory
-recommends 'Data::UUID'                      => '0';
+recommends 'Net::SSH2'                       => '0';
 
 # Deploy
 recommends 'Archive::Extract'             => '0';
