@@ -123,7 +123,7 @@ parts:
      - libcupsfilters-dev
      - libcupsimage2-dev
      - libexpat1-dev
-     - libssh2-dev
+     - libssh2-1-dev
     stage-packages:
      - libcupsimage2
      - libcupsfilters1
@@ -132,7 +132,7 @@ parts:
      - libexpat1
      - libavahi-client3
      - libavahi-common3
-     - libssh2
+     - libssh2-1
     stage:
       - lib
       - usr/lib
