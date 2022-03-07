@@ -182,12 +182,16 @@ sub getRemoteFileHandle {
             $self->_connect();
             my $sftp = $ssh2->sftp();
             if ($sftp) {
+                $self->{logger}->debug2("Trying to read '$params{file}' via sftp subsystem");
                 my $fh = $sftp->open($params{file});
                 return $fh if $fh;
                 my @error = $sftp->error;
                 if (@error && $error[0]) {
                     if ($error[0] == 2) { # SSH_FX_NO_SUCH_FILE
                         $self->{logger}->debug2("'$params{file}' file not found");
+                        return;
+                    } elsif ($error[0] == 3) { # SSH_FX_PERMISSION_DENIED
+                        $self->{logger}->debug2("Not authorized to read '$params{file}'");
                         return;
                     } else {
                         $self->{logger}->debug2("Unsupported SFTP error (@error)");
