@@ -113,7 +113,10 @@ sub _ssh2_exec_status {
 
     my $ret;
     my $chan = $ssh2->channel();
-    if ($chan && $chan->exec("LANG=C $command")) {
+    $chan->setenv(LANG => "C");
+    $chan->ext_data('ignore');
+    $self->{logger}->debug2("Testing '$command'");
+    if ($chan && $chan->exec($command)) {
         $ret = $chan->exit_status();
         $chan->close;
     } else {
@@ -152,7 +155,7 @@ sub checking_error {
         $deviceid = $self->deviceid(hostname => $hostname)
             or return "Can't compute deviceid getting remote hostname";
 
-        my $command = "sh -c \"'echo $deviceid >.glpi-agent-deviceid'\"";
+        my $command = "echo $deviceid >.glpi-agent-deviceid";
 
         # Support Net::SSH2 facilities to exec command
         my $ret = $self->_ssh2_exec_status($command);
@@ -164,7 +167,7 @@ sub checking_error {
             }
         }
 
-        system($self->_ssh($command))
+        system($self->_ssh("sh -c \"'$command'\""))
             or return "Can't store deviceid on remote";
     }
 
@@ -218,7 +221,12 @@ sub getRemoteFileHandle {
         $self->_connect();
         my $chan = $ssh2->channel();
         if ($chan) {
-            return $chan if $chan->exec("LANG=C $command");
+            $chan->setenv(LANG => "C");
+            $chan->ext_data('ignore');
+            $self->{logger}->debug2("Running '$command'");
+            if ($chan->exec($command)) {
+                return $chan;
+            }
         }
     }
 
