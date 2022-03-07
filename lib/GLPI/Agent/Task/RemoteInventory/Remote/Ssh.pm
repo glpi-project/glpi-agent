@@ -184,6 +184,20 @@ sub getRemoteFileHandle {
             if ($sftp) {
                 my $fh = $sftp->open($params{file});
                 return $fh if $fh;
+                my @error = $sftp->error;
+                if (@error && $error[0]) {
+                    if ($error[0] == 2) { # SSH_FX_NO_SUCH_FILE
+                        $self->{logger}->debug2("'$params{file}' file not found");
+                        return;
+                    } else {
+                        $self->{logger}->debug2("Unsupported SFTP error (@error)");
+                    }
+                }
+
+                # Also log libssh2 error
+                @error = $ssh2->error();
+                $self->{logger}->debug2("Failed to open file with SFTP: libssh2 err code is $error[1]");
+                $self->{logger}->debug("Failed to open file with SFTP: $error[2]");
             }
         }
         $command = "cat '$params{file}'";
