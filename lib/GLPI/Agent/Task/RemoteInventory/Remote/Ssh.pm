@@ -267,15 +267,9 @@ sub remoteGlob {
     my ($self, $glob, $test) = @_;
     return unless $glob;
 
-    my @glob = $self->getRemoteAllLines(command => "ls -1 $glob");
-
-    if ($test) {
-        if ($test eq "-h") {
-            @glob = grep { $self->remoteTestLink($_) } @glob;
-        } elsif ($test eq "-d") {
-            @glob = grep { $self->remoteTestFolder($_) } @glob;
-        }
-    }
+    my @glob = $self->getRemoteAllLines(
+        command => "sh -c 'for f in $glob; do if test ".($test // "-e")." \"\$f\"; then echo \$f; fi; done'"
+    );
 
     return @glob;
 }
