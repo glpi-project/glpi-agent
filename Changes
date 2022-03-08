@@ -16,6 +16,9 @@ inventory:
 remoteinventory:
 * Fix: Support username for SSH access
 * Fix: Use BatchMode option for SSH access to not request password
+* Fix: Use Net::SSH2 for user/password authentication
+* Upgrade packaging to request libssh2 & NetSSH2
+* Optimize SSH inventory by trying to use Net::SSH2 by default
 
 netdiscovery/netinventory:
 * New feature: Support device storages with first use for Infortrend SAN inventory

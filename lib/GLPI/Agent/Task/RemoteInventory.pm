@@ -84,6 +84,8 @@ sub run {
 
     $self->SUPER::run(%params);
 
+    $remote->disconnect();
+
     resetRemoteForTools();
 
     my $timing = time - $start;

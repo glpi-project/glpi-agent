@@ -12,8 +12,6 @@ use GLPI::Agent::Tools;
 
 use constant    supported => 1;
 
-my $ssh2;
-
 sub _ssh {
     my ($self, $command) = @_;
     return unless $command;
@@ -31,9 +29,19 @@ sub init {
     Net::SSH2->require();
     unless ($EVAL_ERROR) {
         my $timeout = $self->config->{"backend-collect-timeout"} // 60;
-        $ssh2 = Net::SSH2->new(timeout => $timeout * 1000);
-        my $version = $ssh2->version;
+        $self->{_ssh2} = Net::SSH2->new(timeout => $timeout * 1000);
+        my $version = $self->{_ssh2}->version;
         $self->{logger}->debug2("Using libssh2 $version for ssh remote");
+    }
+}
+
+sub disconnect {
+    my ($self) = @_;
+
+    if ($self->{_ssh2}) {
+        $self->{_ssh2}->disconnect() if $self->{_ssh2}->sock;
+        delete $self->{_ssh2};
+        $self->{logger}->debug2("Disconnected from '".$self->host()."' remote host...");
     }
 }
 
@@ -41,14 +49,16 @@ sub init {
 sub _connect {
     my ($self) = @_;
 
-    return 0 unless $ssh2;
+    my $ssh2 = $self->{_ssh2}
+        or return 0;
     return 1 if defined($ssh2->sock);
 
-    my ($host, $port) = $self->host() =~ /^(.*):?(\d+)?$/;
-    $self->{logger}->debug2("Connecting to '$host' remote host...");
+    my $remote = $self->host();
+    my ($host, $port) = $remote =~ /^(.*):?(\d+)?$/;
+    $self->{logger}->debug2("Connecting to '$remote' remote host...");
     if (!$ssh2->connect($host, $port // 22)) {
         my @error = $ssh2->error;
-        $self->{logger}->debug("Can't reach $host for ssh remoteinventory: @error");
+        $self->{logger}->debug("Can't reach $remote for ssh remoteinventory: @error");
         return;
     }
 
@@ -56,7 +66,7 @@ sub _connect {
     $self->{logger}->debug2("Check remote host key...");
     unless ($ssh2->check_hostkey(Net::SSH2::LIBSSH2_HOSTKEY_POLICY_TOFU())) {
         my @error = $ssh2->error;
-        $self->{logger}->error("Can't trust $host for ssh remoteinventory: @error");
+        $self->{logger}->error("Can't trust $remote for ssh remoteinventory: @error");
         return;
     }
 
@@ -65,8 +75,8 @@ sub _connect {
         $self->{logger}->debug2("Try authentication by password...");
         unless ($ssh2->auth_password($self->{_user}, $self->{_pass})) {
             my @error = $ssh2->error;
-            $self->{logger}->debug("Can't authenticate to $host with given password for ssh remoteinventory: @error");
-            $self->{logger}->debug2("Authenticated on $host remote with given password");
+            $self->{logger}->debug("Can't authenticate to $remote with given password for ssh remoteinventory: @error");
+            $self->{logger}->debug2("Authenticated on $remote remote with given password");
         }
         if ($ssh2->auth_ok) {
             return 1;
@@ -96,12 +106,12 @@ sub _connect {
         $pubkey = $file.".pub" if -e $file.".pub";
         next unless $ssh2->auth_publickey($user, $pubkey, $file, $self->{_pass});
         if ($ssh2->auth_ok) {
-            $self->{logger}->debug2("Authenticated on $host remote with $private key");
+            $self->{logger}->debug2("Authenticated on $remote remote with $private key");
             return 1;
         }
     }
 
-    $self->{logger}->error("Can't authenticate on $host remote host");
+    $self->{logger}->error("Can't authenticate on $remote remote host");
     return 0;
 }
 
@@ -112,7 +122,7 @@ sub _ssh2_exec_status {
     return unless $self->_connect();
 
     my $ret;
-    my $chan = $ssh2->channel();
+    my $chan = $self->{_ssh2}->channel();
     $chan->setenv(LANG => "C");
     $chan->ext_data('ignore');
     $self->{logger}->debug2("Testing \"$command\"...");
@@ -129,9 +139,9 @@ sub _ssh2_exec_status {
 sub checking_error {
     my ($self) = @_;
 
-    if ($ssh2 && !defined($ssh2->sock) && !$self->_connect()) {
-        my @error = $ssh2->error;
-        undef $ssh2;
+    if ($self->{_ssh2} && !defined($self->{_ssh2}->sock) && !$self->_connect()) {
+        my @error = $self->{_ssh2}->error;
+        delete $self->{_ssh2};
         return $error[2];
     }
 
@@ -180,10 +190,10 @@ sub getRemoteFileHandle {
     my $command;
     if ($params{file}) {
         # Support Net::SSH2 facilities to read file with sftp protocol
-        if ($ssh2) {
+        if ($self->{_ssh2}) {
             # Reconnect if needed
             $self->_connect();
-            my $sftp = $ssh2->sftp();
+            my $sftp = $self->{_ssh2}->sftp();
             if ($sftp) {
                 $self->{logger}->debug2("Trying to read '$params{file}' via sftp subsystem");
                 my $fh = $sftp->open($params{file});
@@ -202,7 +212,7 @@ sub getRemoteFileHandle {
                 }
 
                 # Also log libssh2 error
-                @error = $ssh2->error();
+                @error = $self->{_ssh2}->error();
                 $self->{logger}->debug2("Failed to open file with SFTP: libssh2 err code is $error[1]");
                 $self->{logger}->debug("Failed to open file with SFTP: $error[2]");
             }
@@ -216,10 +226,10 @@ sub getRemoteFileHandle {
     }
 
     # Support Net::SSH2 facilities to exec command
-    if ($ssh2) {
+    if ($self->{_ssh2}) {
         # Reconnect if needed
         $self->_connect();
-        my $chan = $ssh2->channel();
+        my $chan = $self->{_ssh2}->channel();
         if ($chan) {
             $chan->setenv(LANG => "C");
             $chan->ext_data('ignore');
@@ -250,7 +260,7 @@ sub remoteCanRun {
     return $ret == 0
         if defined($ret);
 
-    my $stderr  = $OSNAME eq 'MSWin32' ? " 2>nul" : " 2>/dev/null";
+    my $stderr = $OSNAME eq 'MSWin32' ? " 2>nul" : " 2>/dev/null";
 
     return system($self->_ssh($command).$stderr) == 0;
 }
@@ -277,7 +287,13 @@ sub remoteGlob {
 sub getRemoteHostname {
     my ($self) = @_;
     # command is run remotely
-    return $self->getRemoteFirstLine(command => "hostname");
+    my $hostname = $self->getRemoteFirstLine(command => "hostname");
+
+    # Fallback to get hostname from remote definition
+    ($hostname) = $self->host() =~ /^(.*):?(\d+)?$/
+        unless $hostname;
+
+    return $hostname;
 }
 
 sub getRemoteFQDN {

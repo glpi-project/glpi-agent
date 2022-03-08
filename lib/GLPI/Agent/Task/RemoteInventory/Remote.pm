@@ -86,6 +86,8 @@ sub init {}
 
 sub checking_error {}
 
+sub disconnect {}
+
 sub host {
     my ($self, $hostname) = @_;
 
