@@ -46,8 +46,6 @@ sub _parse_pkgs {
     my $handle = getFileHandle(%params);
     return unless $handle;
 
-    my %month = qw(Jan 1 Feb 2 Mar 3 Apr 4 May 5 Jun 6 Jul 7 Aug 8 Sep 9 Oct 10 Nov 11 Dec 12);
-
     my @softwares;
     my $software;
     if ($params{command} =~ /pkg info/) {
@@ -70,7 +68,7 @@ sub _parse_pkgs {
                     my $date;
                     eval {
                         $date = DateTime->new(
-                            month   => $month{$1},
+                            month   => month($1),
                             day     => $2,
                             year    => $3,
                         );
@@ -100,7 +98,7 @@ sub _parse_pkgs {
                     my $date;
                     eval {
                         $date = DateTime->new(
-                            month   => $month{$1},
+                            month   => month($1),
                             day     => $2,
                             year    => $3,
                         );

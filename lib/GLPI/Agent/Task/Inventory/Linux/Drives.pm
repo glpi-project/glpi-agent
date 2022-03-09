@@ -55,20 +55,6 @@ sub _getFilesystems {
         my $has_dumpe2fs   = canRun('dumpe2fs');
         my $has_xfs_db     = canRun('xfs_db');
         my $has_dosfslabel = canRun('dosfslabel');
-        my %months = (
-            Jan => 1,
-            Feb => 2,
-            Mar => 3,
-            Apr => 4,
-            May => 5,
-            Jun => 6,
-            Jul => 7,
-            Aug => 8,
-            Sep => 9,
-            Oct => 10,
-            Nov => 11,
-            Dec => 12,
-        );
 
         foreach my $filesystem (@filesystems) {
             if ($filesystem->{FILESYSTEM} =~ /^ext(2|3|4|4dev)/ && $has_dumpe2fs) {
@@ -81,7 +67,7 @@ sub _getFilesystems {
                     if ($line =~ /Filesystem UUID:\s+(\S+)/) {
                         $filesystem->{SERIAL} = $1;
                     } elsif ($line =~ /Filesystem created:\s+\w+\s+(\w+)\s+(\d+)\s+([\d:]+)\s+(\d{4})$/) {
-                        $filesystem->{CREATEDATE} = "$4/$months{$1}/$2 $3";
+                        $filesystem->{CREATEDATE} = sprintf("%s/%02d/%02d %s", $4, month($1), $2, $3);
                     } elsif ($line =~ /Filesystem volume name:\s*(\S.*)/) {
                         $filesystem->{LABEL} = $1 unless $1 eq '<none>';
                     }

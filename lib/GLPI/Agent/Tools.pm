@@ -63,6 +63,7 @@ our @EXPORT = qw(
     ReadLink
     GetNextUser
     Uname
+    month
 );
 
 # this trigger some errors under win32:
@@ -668,6 +669,27 @@ sub runFunction {
     return $result;
 }
 
+sub month {
+    my ($month) = @_;
+
+    my %months = (
+        jan => 1,
+        feb => 2,
+        mar => 3,
+        apr => 4,
+        may => 5,
+        jun => 6,
+        jul => 7,
+        aug => 8,
+        sep => 9,
+        oct => 10,
+        nov => 11,
+        dec => 12,
+    );
+
+    return $months{lc($month)};
+}
+
 1;
 __END__
 
@@ -912,3 +934,7 @@ Run a function whose name is computed at runtime and return its result.
 =head2 slurp($file)
 
 Return the content of a given file.
+
+=head2 month($month)
+
+Return the month number of the given short month name.

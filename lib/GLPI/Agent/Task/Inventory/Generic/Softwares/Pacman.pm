@@ -65,7 +65,7 @@ sub _getPackagesList {
         } elsif ($key eq 'Install Date' && $value) {
             my ($month, $day, $year) = $value =~ /^\w+\s+(\w+)\s+(\d+)\s+[\d:]+\s+(\d+)$/;
             next unless $month && $months{$month};
-            $package->{INSTALLDATE} = sprintf("%d/%02d/%d", $day, $months{$month}, $year);
+            $package->{INSTALLDATE} = sprintf("%02d/%02d/%d", $day, month($month), $year);
         } elsif ($key eq 'Installed Size' && $value) {
             if ($value =~ /^([\d.]+)\s+(\w+)$/) {
                 my $size =  $2 eq 'KiB' ? $1 * 1024 :
