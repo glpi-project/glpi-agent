@@ -48,7 +48,7 @@ sub doInventory {
             file   => "/var/log/install.log",
             logger => $logger
         );
-        $os->{INSTALL_DATE} = getFormatedLocalTime($installdate)
+        $os->{INSTALL_DATE} = $installdate
             if $installdate;
     }
 
@@ -72,6 +72,18 @@ sub _getInstallDate {
             }
         }
     }
+
+    return unless $date;
+
+    if (DateTime->require()) {
+        eval {
+            my $dt = DateTime->from_epoch( epoch => $date );
+            $date = $dt->datetime(' ');
+        }
+    } else {
+        $date = getFormatedLocalTime($date);
+    }
+
     return $date;
 }
 

@@ -10,10 +10,7 @@ use Test::NoWarnings;
 use GLPI::Agent::Task::Inventory::Linux::OS;
 
 my %rpmbasesysteminstalldate = (
-    'fedora-35' => {
-        time        => "1643183492",
-        installdate => "2022-01-26 08:51:32"
-    },
+    'fedora-35' => "2022-01-26 07:51:32",
 );
 
 my %debianinstalldate = (
@@ -21,16 +18,14 @@ my %debianinstalldate = (
 );
 
 plan tests =>
-    (2 * scalar keys %rpmbasesysteminstalldate) +
-    (scalar keys %debianinstalldate)            +
+    (scalar keys %rpmbasesysteminstalldate) +
+    (scalar keys %debianinstalldate)        +
     1;
 
 foreach my $test (keys %rpmbasesysteminstalldate) {
     my $file = "resources/linux/packaging/$test";
-    my $time = GLPI::Agent::Task::Inventory::Linux::OS::_rpmBasesystemInstallDate(file => $file);
-    my $installdate = GLPI::Agent::Task::Inventory::Linux::OS::getFormatedLocalTime($time);
-    is($time, $rpmbasesysteminstalldate{$test}->{time}, "$test time");
-    is($installdate, $rpmbasesysteminstalldate{$test}->{installdate}, "$test installdate");
+    my $installdate = GLPI::Agent::Task::Inventory::Linux::OS::_rpmBasesystemInstallDate(file => $file);
+    is($installdate, $rpmbasesysteminstalldate{$test}, "$test installdate");
 }
 
 foreach my $test (keys %debianinstalldate) {
