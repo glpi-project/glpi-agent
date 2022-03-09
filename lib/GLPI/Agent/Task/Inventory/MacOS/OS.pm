@@ -43,10 +43,10 @@ sub doInventory {
     }
 
     # Parse /var/log/install.log and use the last kern.boottime before install is finished as install date
-    if (has_file("/var/log/install.log")) {
+    if (has_file("/var/db/.AppleSetupDone")) {
         my $installdate = _getInstallDate(
-            file   => "/var/log/install.log",
-            logger => $logger
+            command => "stat -f \%m /var/db/.AppleSetupDone",
+            logger  => $logger
         );
         $os->{INSTALL_DATE} = $installdate
             if $installdate;
@@ -58,22 +58,8 @@ sub doInventory {
 sub _getInstallDate {
     my (%params) = @_;
 
-    my ($date, $ts);
-    foreach my $line (getAllLines(%params)) {
-        if ($line =~ /(\d+):(\d+):(\d+).*kern\.boottime: \{ sec = (\d+),/) {
-            $date = int($4);
-            $ts = $1 * 3600 + $2 * 60 + $3;
-        } elsif ($line =~ /(\d+):(\d+):(\d+).*------- Install Complete -------/) {
-            my $this_ts = $1 * 3600 + $2 * 60 + $3;
-            if ($this_ts > $ts) {
-                $date += $this_ts - $ts;
-            } else {
-                $date += 86400 - $ts + $this_ts;
-            }
-        }
-    }
-
-    return unless $date;
+    my $date = getFirstLine(%params)
+        or return;
 
     if (DateTime->require()) {
         eval {
