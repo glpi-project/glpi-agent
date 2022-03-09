@@ -2869,12 +2869,17 @@ my %mount_tests = (
     freebsd => [ qw/ufs/ ]
 );
 
+my %rootfsbirth = (
+    'old-fedora'    => "2013-12-22 22:47:33",
+);
+
 plan tests =>
     (scalar keys %df_tests)         +
     (scalar keys %busybox_ps_tests) +
     (scalar keys %other_ps_tests)   +
     (scalar keys %netstat_tests)    +
     (scalar keys %mount_tests)      +
+    (scalar keys %rootfsbirth)      +
     (scalar @dhcp_leases_test);
 
 foreach my $test (keys %df_tests) {
@@ -2914,4 +2919,10 @@ foreach my $test (keys %mount_tests) {
     my $file = "resources/generic/mount/$test";
     my @types = getFilesystemsTypesFromMount(file => $file);
     cmp_deeply(\@types, $mount_tests{$test}, $test);
+}
+
+foreach my $test (keys %rootfsbirth) {
+    my $file = "resources/generic/stat/$test";
+    my $installdate = GLPI::Agent::Tools::Unix::getRootFSBirth(file => $file);
+    is($installdate, $rootfsbirth{$test}, "$test installdate");
 }

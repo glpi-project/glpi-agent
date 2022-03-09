@@ -20,6 +20,7 @@ our @EXPORT = qw(
     getFilesystemsTypesFromMount
     getProcesses
     getRoutingTable
+    getRootFSBirth
 );
 
 memoize('getProcesses');
@@ -431,6 +432,18 @@ sub getRoutingTable {
     return $routes;
 }
 
+sub getRootFSBirth {
+    my (%params) = (
+        command => 'stat /',
+        @_
+    );
+
+    return getFirstMatch(
+        pattern => qr{^\s*Birth:\s+(\d+-\d+-\d+\s\d+:\d+:\d+)},
+        %params
+    );
+}
+
 1;
 __END__
 
@@ -520,3 +533,7 @@ Returns the routing table as an hashref, by parsing netstat command output.
 =item file the file to use, as an alternative to the command
 
 =back
+
+=head2 getRootFSBirth
+
+Returns the root filesystem birth date, by parsing stat / command output.

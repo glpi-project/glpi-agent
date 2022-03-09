@@ -1,0 +1,13 @@
+             Name: SUNWcs
+          Summary: Core Solaris
+      Description: core software for a specific instruction-set architecture
+         Category: System/Core
+            State: Installed
+        Publisher: openindiana.org
+          Version: 0.5.11
+           Branch: 2020.0.1.20752
+   Packaging Date: Sun Oct 31 01:31:02 2021
+Last Install Time: Sun Oct 31 20:36:45 2021
+             Size: 26.24 MB
+             FMRI: pkg://openindiana.org/SUNWcs@0.5.11-2020.0.1.20752:20211031T013102Z
+

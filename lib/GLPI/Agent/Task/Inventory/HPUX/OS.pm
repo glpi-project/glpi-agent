@@ -21,11 +21,17 @@ sub doInventory {
     # Operating system informations
     my $kernelRelease = Uname("-r");
 
-    $inventory->setOperatingSystem({
+    my $os = {
         NAME           => 'HP-UX',
         VERSION        => $kernelRelease,
         KERNEL_VERSION => $kernelRelease,
-    });
+    };
+
+    my $installdate = getRootFSBirth(%params);
+    $os->{INSTALL_DATE} = $installdate
+        if $installdate;
+
+    $inventory->setOperatingSystem($os);
 }
 
 1;
