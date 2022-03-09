@@ -50,53 +50,56 @@ sub _getFilesystems {
                 pattern => qr/\sUUID="(\S*)"\s/
             );
         }
-    } else {
-        # otherwise fallback to filesystem-dependant utilities
-        my $has_dumpe2fs   = canRun('dumpe2fs');
-        my $has_xfs_db     = canRun('xfs_db');
-        my $has_dosfslabel = canRun('dosfslabel');
+    }
 
-        foreach my $filesystem (@filesystems) {
-            if ($filesystem->{FILESYSTEM} =~ /^ext(2|3|4|4dev)/ && $has_dumpe2fs) {
-                my $handle = getFileHandle(
-                    logger => $logger,
-                    command => "dumpe2fs -h $filesystem->{VOLUMN}"
-                );
-                next unless $handle;
-                while (my $line = <$handle>) {
-                    if ($line =~ /Filesystem UUID:\s+(\S+)/) {
-                        $filesystem->{SERIAL} = $1;
-                    } elsif ($line =~ /Filesystem created:\s+\w+\s+(\w+)\s+(\d+)\s+([\d:]+)\s+(\d{4})$/) {
-                        $filesystem->{CREATEDATE} = sprintf("%s/%02d/%02d %s", $4, month($1), $2, $3);
-                    } elsif ($line =~ /Filesystem volume name:\s*(\S.*)/) {
-                        $filesystem->{LABEL} = $1 unless $1 eq '<none>';
-                    }
+    # Anyway attempt to get details with filesystem-dependant utilities
+    my $has_dumpe2fs   = canRun('dumpe2fs');
+    my $has_xfs_db     = canRun('xfs_db');
+    my $has_dosfslabel = canRun('dosfslabel');
+
+    foreach my $filesystem (@filesystems) {
+        if ($filesystem->{FILESYSTEM} =~ /^ext(2|3|4|4dev)/ && $has_dumpe2fs) {
+            my $handle = getFileHandle(
+                logger => $logger,
+                command => "dumpe2fs -h $filesystem->{VOLUMN}"
+            );
+            next unless $handle;
+            while (my $line = <$handle>) {
+                if ($line =~ /Filesystem UUID:\s+(\S+)/) {
+                    $filesystem->{SERIAL} = $1
+                        unless $filesystem->{SERIAL};
+                } elsif ($line =~ /Filesystem created:\s+\w+\s+(\w+)\s+(\d+)\s+([\d:]+)\s+(\d{4})$/) {
+                    $filesystem->{CREATEDATE} = sprintf("%s/%02d/%02d %s", $4, month($1), $2, $3);
+                } elsif ($line =~ /Filesystem volume name:\s*(\S.*)/) {
+                    $filesystem->{LABEL} = $1 unless $1 eq '<none>';
                 }
-                close $handle;
-                next;
             }
+            close $handle;
+            next;
+        }
 
-            if ($filesystem->{FILESYSTEM} eq 'xfs' && $has_xfs_db) {
+        if ($filesystem->{FILESYSTEM} eq 'xfs' && $has_xfs_db) {
+            unless ($filesystem->{SERIAL}) {
                 $filesystem->{SERIAL} = getFirstMatch(
                     logger  => $logger,
                     command => "xfs_db -r -c uuid $filesystem->{VOLUMN}",
                     pattern => qr/^UUID =\s+(\S+)/
                 );
-                $filesystem->{LABEL} = getFirstMatch(
-                    logger  => $logger,
-                    command => "xfs_db -r -c label $filesystem->{VOLUMN}",
-                    pattern => qr/^label =\s+"(\S+)"/
-                );
-                next;
             }
+            $filesystem->{LABEL} = getFirstMatch(
+                logger  => $logger,
+                command => "xfs_db -r -c label $filesystem->{VOLUMN}",
+                pattern => qr/^label =\s+"(\S+)"/
+            );
+            next;
+        }
 
-            if ($filesystem->{FILESYSTEM} eq 'vfat' && $has_dosfslabel) {
-                $filesystem->{LABEL} = getFirstLine(
-                    logger  => $logger,
-                    command => "dosfslabel $filesystem->{VOLUMN}"
-                );
-                next;
-            }
+        if ($filesystem->{FILESYSTEM} eq 'vfat' && $has_dosfslabel) {
+            $filesystem->{LABEL} = getFirstLine(
+                logger  => $logger,
+                command => "dosfslabel $filesystem->{VOLUMN}"
+            );
+            next;
         }
     }
 

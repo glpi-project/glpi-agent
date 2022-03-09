@@ -12,6 +12,7 @@ inventory:
 * Fix teamviewer remote_mgmt inventory regression introduced in previous version
 * linux: Added flatpak softwares inventory support
 * database inventory: support default credential to inventory SQL Server 2012 Express
+* linux: Update drive inventory to also try FS related tools to get more information
 
 remoteinventory:
 * Fix: Support username for SSH access
