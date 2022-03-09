@@ -358,31 +358,6 @@ sub _getProcessesOther {
     return @processes;
 }
 
-my %month = (
-    Jan => '01',
-    Feb => '02',
-    Mar => '03',
-    Apr => '04',
-    May => '05',
-    Jun => '06',
-    Jul => '07',
-    Aug => '08',
-    Sep => '09',
-    Oct => '10',
-    Nov => '11',
-    Dec => '12',
-);
-my %day = (
-    Mon => '01',
-    Tue => '02',
-    Wed => '03',
-    Thu => '04',
-    Fry => '05',
-    Sat => '06',
-    Sun => '07',
-);
-my $monthPattern = join ('|', keys %month);
-
 # Computes a consistent process starting time from the process etime value.
 sub _getProcessStartTime {
     my ($localtime, $elapsedtime_string) = @_;
