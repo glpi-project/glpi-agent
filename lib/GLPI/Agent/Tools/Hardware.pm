@@ -1482,7 +1482,7 @@ sub _getVlans {
                     my $isTagged   = $isUntagged eq '0' ? $bEgress[$port_index] : '0';
                     push @{$results->{$port_id}}, {
                         NUMBER  => $vlan_id,
-                        NAME    => $name,
+                        NAME    => $name // '',
                         TAGGED  => $isTagged
                     } if $isTagged || $isUntagged;
                 }
