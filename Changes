@@ -27,6 +27,7 @@ netdiscovery/netinventory:
   This feature requires GLPI 10 server-side and disks are integrated as components
 * Fix: don't rescan config on each thread but share parent config to avoid threading
   crash on win32
+* Enhance Qnap storage inventory
 
 deploy:
 * fix: Fix UserInteraction messages encoding failure as perl 5.34 regression
