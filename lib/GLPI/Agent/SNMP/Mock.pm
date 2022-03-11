@@ -226,6 +226,9 @@ sub _getValue {
     $oid = $nextoidpart;
 
     my $base = $self->{_walk}->{$root};
+
+    return $base unless $oid;
+
     foreach my $num (split(/\./, substr($oid,1))) {
         # No value if no subnode indexed
         # Also no value if requested subnode is not indexed
