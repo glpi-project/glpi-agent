@@ -45,7 +45,7 @@ sub _getOperatingSystemInstallDate {
     # Check for basesystem package installation date on rpm base systems
     if (canRun('rpm')) {
         my $time = _rpmBasesystemInstallDate(%params);
-        return getFormatedGMTTime($time) if $time;
+        return $time if $time;
     }
 
     # Check for dpkg based systems (debian, ubuntu) as base-files.list is generated
