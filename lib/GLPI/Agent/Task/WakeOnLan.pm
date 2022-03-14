@@ -24,7 +24,7 @@ sub isEnabled {
     }
 
     # TODO Support WakeOnLan task via GLPI Agent Protocol
-    return if ref($contact) eq "GLPI::Agent::Protocol::Message";
+    return if ref($contact) =~ /^GLPI::Agent::Protocol/;
 
     my @options = $contact->getOptionsInfoByName('WAKEONLAN');
     if (!@options) {
