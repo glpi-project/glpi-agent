@@ -44,7 +44,7 @@ sub isEnabled {
     }
 
     $self->{logger}->debug("Remote inventory task execution disabled: ".(!$count ?
-        "no remote set" : "all $count remotes are failing"));
+        "no remote to inventory" : "all $count remotes are failing"));
 
     return 0;
 }
