@@ -27,6 +27,7 @@ sub defaults {
         # SSL support
         ssl_cert_file       => undef,
         ssl_key_file        => undef,
+        ssl_cipher          => undef,
     };
 }
 
@@ -43,6 +44,8 @@ sub init {
         if $self->config('ssl_cert_file');
     $self->{'key_file'} = File::Spec->rel2abs($self->config('ssl_key_file'),$self->confdir())
         if $self->config('ssl_key_file');
+    $self->{'cipher'} = $self->config('ssl_cipher')
+        if $self->config('ssl_cipher');
 
     # Check certificate file is set
     unless ($self->{'cert_file'}) {
@@ -86,6 +89,7 @@ sub init {
 
     $self->debug2("Certificate file: $self->{'cert_file'}");
     $self->debug2("Key file:         $self->{'key_file'}");
+    $self->debug2("Cipher:           ".($self->{cipher}//"n/a"));
 
     # Activate SSL Debug if Stderr is in backends
     my $DEBUG_SSL = 0;
@@ -128,6 +132,7 @@ sub new {
     eval {
         # SSL upgrade client
         IO::Socket::SSL->start_SSL($client,
+            SSL_version     => $plugin->{cipher} // "",
             SSL_server      => 1,
             SSL_cert_file   => $plugin->{cert_file},
             SSL_key_file    => $plugin->{key_file},
@@ -184,6 +189,10 @@ This is a server plugin to enable SSL support on listening ports.
 =item ssl_key_file     No default
                        The path to SSL private key to use. It can be relative to
                        the current configuration folder.
+
+=item ssl_cipher       No default
+                       The cipher or SSL version to use or a list of cipher to
+                       disable. GLPI agent use the system default if not set.
 
 =back
 

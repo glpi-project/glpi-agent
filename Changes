@@ -37,6 +37,7 @@ collect:
 
 ssl-server-plugin:
 * Fix: Support closing forked SSL connections without shutdown SSL to support Proxy server plugin
+* Support "ssl_cipher" option to set SSL version to use or disable obsolete protocol version
 * Bump version to 1.1
 
 injector:
