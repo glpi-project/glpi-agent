@@ -13,13 +13,14 @@ Source0:     %{name}-%{version}-%{release}.tar.gz
 
 Requires: perl(LWP)
 Requires: perl(Net::SSLeay)
-Requires: perl(Net::SSH2)
 Requires: perl(Proc::Daemon)
 Requires: perl(Socket::GetAddrInfo)
 Requires: perl(DateTime)
 #Recommended for inventory module
-#Requires: perl(Net::CUPS)
-#Requires: perl(Parse::EDID)
+Recommends: perl(Net::CUPS)
+Recommends: perl(Parse::EDID)
+#Recommended for remoteinventory task
+Recommends: perl(Net::SSH2)
 
 BuildArch:   noarch
 
@@ -338,6 +339,10 @@ fi
 
 
 %changelog
+* Wed Mar 16 2022 Guillaume Bougard <gbougard AT teclib DOT com>
+- Set Net::SSH2 dependency as weak dependency
+- Add Net::CUPS & Parse::EDID as weak dependency
+
 * Fri Mar 4 2022 Guillaume Bougard <gbougard AT teclib DOT com>
 - Add Net::SSH2 dependency for remoteinventory support
 
