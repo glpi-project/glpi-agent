@@ -173,7 +173,7 @@ sub _prepareDistro {
             $self->{_yum} = 1;
             delete $self->{_dnf};
         }
-    } elsif ($self->{_name} =~ /centos/i) {
+    } elsif ($self->{_name} =~ /centos|rocky/i) {
         # On CentOS 8, we need PowerTools
         if ($v eq "8") {
             $self->verbose("Checking PowerTools repository is enabled");

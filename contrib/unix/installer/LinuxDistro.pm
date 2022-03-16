@@ -40,6 +40,9 @@ my @distributions = (
     # oracle-release contains something like "Oracle Linux Server release 6.3"
     [ '/etc/oracle-release',    'Oracle Linux Server',        'release ([\d.]+)', '%s',                     'RpmDistro' ],
 
+    # rocky-release contains something like "Rocky Linux release 8.5 (Green Obsidian)
+    [ '/etc/rocky-release',     'Rocky Linux',                'release ([\d.]+)', '%s',                     'RpmDistro' ],
+
     # centos-release contains something like "CentOS Linux release 6.0 (Final)
     [ '/etc/centos-release',    'CentOS',                     'release ([\d.]+)', '%s',                     'RpmDistro' ],
 
@@ -184,12 +187,13 @@ sub _getDistro {
     foreach my $d ( @distributions ) {
         next unless -f $d->[0];
         $distro = $d;
-        $self->verbose("Found distro: $distro");
         last;
     }
     return unless $distro;
 
     my ($file, $name, $regexp, $template, $class) = @{$distro};
+
+    $self->verbose("Found distro: $name");
 
     open $handle, $file;
     die "Can't open '$file': $!\n" unless defined($handle);
