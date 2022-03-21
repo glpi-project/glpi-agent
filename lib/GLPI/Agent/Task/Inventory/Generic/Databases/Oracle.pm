@@ -16,10 +16,10 @@ use GLPI::Agent::Inventory::DatabaseService;
 
 sub isEnabled {
     return 1 if canRun('sqlplus');
-    my $oracle_home = _oracleHome();
-    return unless $oracle_home && first {
-        canRun("$_/sqlplus") || canRun("$_/bin/sqlplus")
-    } @{$oracle_home};
+    my $oracle_home = _oracleHome()
+        or return;
+    return 1 if first { canRun($_."/sqlplus") || canRun($_.'/bin/sqlplus') } @{$oracle_home};
+    return 0;
 }
 
 sub _oracleHome {
@@ -73,50 +73,75 @@ sub doInventory {
     }
 }
 
+my %ORACLE_ENV;
+my %reset_ENV;
+
+sub _setEnv {
+    my ($sid, $home) = @_;
+
+    my $sqlplus_path = $ORACLE_ENV{$home}
+        or return;
+
+    # Setup environment for sqlplus
+    $ENV{ORACLE_SID}  = $sid;
+    $ENV{ORACLE_HOME} = $home;
+    $ENV{PATH}        = $reset_ENV{PATH}.":$sqlplus_path";
+    $ENV{LD_LIBRARY_PATH} = join(":", map { $home.$_ } "", "/lib", "/network/lib");
+}
+
+sub _resetEnv {
+    # Reset set environment
+    foreach my $env (keys(%reset_ENV)) {
+        if ($reset_ENV{$env}) {
+            $ENV{$env} = $reset_ENV{$env};
+        } else {
+            delete $ENV{$env};
+        }
+    }
+}
+
 sub _getDatabaseService {
     my (%params) = @_;
 
     my $credentials = delete $params{credentials};
     return [] unless $credentials && ref($credentials) eq 'ARRAY';
 
+    my $logger = $params{logger};
+
     # Setup sqlplus needed environment but not during test
-    my %reset_ENV;
     unless ($params{istest}) {
         my $sqlplus = "sqlplus";
         unless (canRun($sqlplus)) {
-            $reset_ENV{ORACLE_HOME} = $ENV{ORACLE_HOME};
-            $reset_ENV{ORACLE_SID}  = $ENV{ORACLE_SID};
+            map { $reset_ENV{$_} = $ENV{$_} } qw/ORACLE_HOME ORACLE_SID PATH LD_LIBRARY_PATH/;
             my $oracle_home = _oracleHome();
-            $ENV{ORACLE_HOME} = first {
-                canRun("$_/sqlplus") || canRun("$_/bin/sqlplus")
-            } @{$oracle_home};
-            unless ($ENV{ORACLE_HOME} && -d $ENV{ORACLE_HOME}) {
-                $params{logger}->debug("Can't find ORACLE_HOME") if $params{logger};
-                return;
-            }
-            my ($sqlplus_path) = first { canRun($_."/$sqlplus") } map { $ENV{ORACLE_HOME} . $_ } "", "/bin";
-            if ($sqlplus_path) {
-                $reset_ENV{PATH} = $ENV{PATH};
-                $reset_ENV{LD_LIBRARY_PATH} = $ENV{LD_LIBRARY_PATH};
-                $ENV{PATH} .= ":$sqlplus_path";
-                $ENV{LD_LIBRARY_PATH} = join(":", map { $ENV{ORACLE_HOME}.$_ } "", "/lib", "/network/lib");
-                $sqlplus = "$sqlplus_path/$sqlplus";
+            foreach my $home (@{$oracle_home}) {
+                next unless -d $home;
+                my ($sqlplus_path) = first { canRun($_."/sqlplus") } $home, $home."/bin";
+                unless ($sqlplus_path) {
+                    $logger->debug2("slqplus not find in '$home' ORACLE_HOME") if $logger;
+                    next;
+                }
+                $ORACLE_ENV{$home} = $sqlplus_path;
             }
         }
-        return unless canRun($sqlplus);
-    }
 
-    # Get group gid of installation group
-    my $group = getFirstMatch(
-        file    => '/etc/oraInst.loc',
-        pattern => qr/^inst_group=(.*)$/
-    );
-    $params{gid} = getgrnam($group) if $group;
+        unless (keys(%ORACLE_ENV)) {
+            $logger->debug("Can't find valid ORACLE_HOME") if $logger;
+            return;
+        }
+
+        # Get group gid of installation group
+        my $group = getFirstMatch(
+            file    => '/etc/oraInst.loc',
+            pattern => qr/^inst_group=(.*)$/
+        );
+        $params{gid} = getgrnam($group) if $group;
+    }
 
     my @dbs = ();
 
     foreach my $credential (@{$credentials}) {
-        GLPI::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
+        GLPI::Agent::Task::Inventory::Generic::Databases::trying_credentials($logger, $credential);
         _oracleConnect(\%params, $credential);
 
         my %SID;
@@ -126,19 +151,22 @@ sub _getDatabaseService {
         } else {
             my @lines = getAllLines(
                 file    => '/etc/oratab',
-                logger  => $params{logger}
+                logger  => $logger
             );
             foreach my $line (@lines) {
-                next unless $line =~ /^([^#*:][^:]*):([^:]+):/;
-                next unless -d $2;
-                $params{logger}->debug2("Checking $1 SID instance...") if $params{logger};
+                my ($sid, $home) = $line =~ /^([^#*:][^:]*):([^:]+):/;
+                next unless $sid && $home;
+                next unless -d $home;
+                _setEnv($sid, $home);
+                $logger->debug2("Checking $sid SID instance...") if $logger;
                 my @inst = _getInstances(
-                    sid     => $1,
+                    sid     => $sid,
                     %params
                 );
+                _resetEnv();
                 next unless @inst;
                 foreach my $name (map { /^([^,]+),/ } @inst) {
-                    $SID{$name} = $1;
+                    $SID{$name} = [ $sid, $home ];
                 }
                 push @instances, @inst;
             }
@@ -149,7 +177,10 @@ sub _getDatabaseService {
                 or next;
 
             # We will use SID if found in oratab
-            $params{sid} = $SID{$instance_name} if $SID{$instance_name};
+            if ($SID{$instance_name}) {
+                $params{sid} = $SID{$instance_name}->[0];
+                _setEnv(@{$SID{$instance_name}});
+            }
 
             my $dbs_size = 0;
 
@@ -159,7 +190,7 @@ sub _getDatabaseService {
             );
             if (first { /^(ERROR(?: at line 1)?|Usage):/ } @database) {
                 my ($error) = first { /^(ORA|SP2)-/ } @database;
-                $params{logger}->debug("Oracle database SELECT error: $error") if $error && $params{logger};
+                $logger->debug("Oracle database SELECT error: $error") if $error && $logger;
                 @database = ();
                 $state = "ERROR";
             }
@@ -178,7 +209,7 @@ sub _getDatabaseService {
                 my ($db_name, $created) = split(',', $db)
                     or next;
 
-                $params{logger}->debug2("Checking $db_name database...") if $params{logger};
+                $logger->debug2("Checking $db_name database...") if $logger;
 
                 my ($size) = _runSql(
                     sql => "select sum(bytes)/1024/1024 from dba_data_files",
@@ -204,15 +235,10 @@ sub _getDatabaseService {
             $dbs->size(int($dbs_size));
 
             push @dbs, $dbs;
-        }
-    }
 
-    # Reset set environment
-    foreach my $env (keys(%reset_ENV)) {
-        if ($reset_ENV{$env}) {
-            $ENV{$env} = $reset_ENV{$env};
-        } else {
-            delete $ENV{$env};
+            # Reset environment before trying next instance or leave
+            _resetEnv();
+            delete $params{sid};
         }
     }
 
