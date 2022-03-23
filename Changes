@@ -42,6 +42,7 @@ ssl-server-plugin:
 
 injector:
 * Fix shortly named directory are skipped
+* Use option bundling to fix -R option read as -r with wrong side-effect
 
 contrib:
 * Fix #73: Fix ADMX/ADML for agent configuration via GPO
