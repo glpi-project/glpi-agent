@@ -28,3 +28,4 @@ etc/backup
 release-description.md
 *.snap
 .pc
+build/
