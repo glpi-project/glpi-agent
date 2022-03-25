@@ -30,6 +30,9 @@ use constant    totalEnginePageCount => statusPrtEngine . '.5.0' ;
 use constant    totalColorPageCount  => statusPrtEngine . '.7.0' ;
 use constant    duplexPageCount      => statusPrtEngine . '.22.0' ;
 
+# HP LaserJet Pro MFP / Marvel ASIC
+use constant    hpLaserjetProMFP => '.1.3.6.1.4.1.26696.1' ;
+
 my %counters = (
     TOTAL   => totalEnginePageCount,
     COLOR   => totalColorPageCount,
@@ -48,8 +51,23 @@ our $mibSupport = [
     {
         name        => "hp-system",
         sysobjectid => getRegexpOidMatch(hpSystem)
+    },
+    {
+        name        => "hp-laserjet-pro-mfp",
+        sysobjectid => getRegexpOidMatch(hpLaserjetProMFP)
     }
 ];
+
+sub getManufacturer {
+    my ($self) = @_;
+
+    my $device = $self->device
+        or return;
+
+    return if $device->{MANUFACTURER};
+
+    return "Hewlett-Packard";
+}
 
 sub getFirmware {
     my ($self) = @_;
