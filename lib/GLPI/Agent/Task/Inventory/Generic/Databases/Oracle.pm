@@ -85,7 +85,7 @@ sub _setEnv {
     # Setup environment for sqlplus
     $ENV{ORACLE_SID}  = $sid;
     $ENV{ORACLE_HOME} = $home;
-    $ENV{PATH}        = $reset_ENV{PATH}.":$sqlplus_path";
+    $ENV{PATH}        = $sqlplus_path.":".$reset_ENV{PATH};
     $ENV{LD_LIBRARY_PATH} = join(":", map { $home.$_ } "", "/lib", "/network/lib");
 }
 
@@ -159,10 +159,7 @@ sub _getDatabaseService {
                 next unless -d $home;
                 _setEnv($sid, $home);
                 $logger->debug2("Checking $sid SID instance...") if $logger;
-                my @inst = _getInstances(
-                    sid     => $sid,
-                    %params
-                );
+                my @inst = _getInstances(%params);
                 _resetEnv();
                 next unless @inst;
                 foreach my $name (map { /^([^,]+),/ } @inst) {
@@ -177,10 +174,8 @@ sub _getDatabaseService {
                 or next;
 
             # We will use SID if found in oratab
-            if ($SID{$instance_name}) {
-                $params{sid} = $SID{$instance_name}->[0];
-                _setEnv(@{$SID{$instance_name}});
-            }
+            _setEnv(@{$SID{$instance_name}})
+                if $SID{$instance_name};
 
             my $dbs_size = 0;
 
@@ -238,7 +233,6 @@ sub _getDatabaseService {
 
             # Reset environment before trying next instance or leave
             _resetEnv();
-            delete $params{sid};
         }
     }
 
@@ -255,13 +249,13 @@ sub _getInstances {
     if (first { /^(ERROR|Usage):/ } @test) {
         my ($error) = first { /^(ORA|SP2)-/ } @test;
         $params{logger}->debug("Oracle CONNECT error: $error") if $error && $params{logger};
-        return $params{sid}.",FAILURE,0," if $params{sid};
+        return $ENV{ORACLE_SID}.",FAILURE,0," if $ENV{ORACLE_SID};
         return;
     }
-    return unless @test || $params{sid};
-    return $params{sid}.",STOPPED,0," unless @test;
+    return unless @test || $ENV{ORACLE_SID};
+    return $ENV{ORACLE_SID}.",STOPPED,0," unless @test;
     my ($release) = $test[0] =~ /release (\d+)/;
-    return $params{sid}.",STOPPED,0," if $params{sid} && ! $release;
+    return $ENV{ORACLE_SID}.",STOPPED,0," if $ENV{ORACLE_SID} && ! $release;
     return unless $release;
 
     my @instances = _runSql(
@@ -287,8 +281,6 @@ sub _runSql {
 
     my $sql = delete $params{sql}
         or return;
-
-    $ENV{ORACLE_SID} = $params{sid} if $params{sid};
 
     $params{logger}->debug2("Running sql command via sqlplus: $sql") if $params{logger};
 
@@ -317,15 +309,24 @@ sub _runSql {
 
         unless ($params{connect}) {
             my $user = "oracle";
-            if ($params{sid}) {
+            my $env = "";
+            if ($ENV{ORACLE_SID}) {
                 # Get instance asm_pmon process
-                my ($asm_pmon) = grep { $_->{CMD} =~ /^asm_pmon_$params{sid}/ }
+                my ($asm_pmon) = grep { $_->{CMD} =~ /^asm_pmon_$ENV{ORACLE_SID}/ }
                     getProcesses(logger => $params{logger});
                 $user = $asm_pmon->{USER} if $asm_pmon;
-                $command = "ORACLE_SID=$params{sid} $command";
+                $env = "ORACLE_SID=$ENV{ORACLE_SID}";
             }
-
-            $command = sprintf("su - $user -c '%s'", $command);
+            foreach my $key (qw(ORACLE_HOME PATH LD_LIBRARY_PATH)) {
+                next unless $ENV{$key};
+                $env .= " " if $env;
+                $env = "$key='$ENV{$key}'";
+            }
+            if ($env) {
+                $command = sprintf("su - $user -c '%s %s'", $env, $command);
+            } else {
+                $command = sprintf("su - $user -c '%s'", $command);
+            }
             # Make temp file readable by oracle
             if ($params{gid}) {
                 chown -1, $params{gid}, $sqlfile;
