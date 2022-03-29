@@ -588,6 +588,61 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  linux-appimage:
+
+    runs-on: ubuntu-latest
+
+    if: ${{ needs.setup-release.outputs.build == 'yes' }}
+    needs: [ setup-release, linux-debian-packaging ]
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/download-artifact@v2
+      with:
+        name: Debian-Build
+    - name: Prepare AppImage
+      id: prepare-appimage
+      run: |
+        contrib/unix/make-linux-appimage.sh --version $VERSION --prepare
+      shell: bash
+      env:
+        VERSION: ${{ needs.setup-release.outputs.version }}
+    - name: Build AppImage
+      uses: AppImageCrafters/build-appimage-action@master
+      env:
+        UPDATE_INFO: gh-releases-zsync|glpi-project|glpi-agent|latest|*x86_64.AppImage.zsync
+      with:
+        recipe: build/AppImageBuilder.yml
+    - name: Quick tests
+      run: |
+        echo ====
+        echo Installer version:
+        ./glpi-agent-$VERSION-x86_64.AppImage --version
+        echo ====
+        echo Embedded perl version:
+        ./glpi-agent-$VERSION-x86_64.AppImage --perl --version
+        echo ====
+        echo Embedded GLPI Agent version:
+        ./glpi-agent-$VERSION-x86_64.AppImage --script=glpi-agent --version
+        echo ====
+      env:
+        VERSION: ${{ needs.setup-release.outputs.version }}
+    - name: Upload built installer artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Linux-AppImage-Build
+        path: |
+          *.AppImage
+          *.AppImage.zsync
+    - name: Upload linux AppImage
+      id: upload-linux-appimage-assets
+      if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
+      run: |
+        gh release upload ${{ needs.setup-release.outputs.tag_name }} *.AppImage{,.zsync}
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   publish-release:
 
     runs-on: ubuntu-latest

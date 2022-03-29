@@ -1,0 +1,485 @@
+#! $APPDIR/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Getopt::Long;
+use Pod::Usage;
+
+use GLPI::Agent::Version;
+
+my $appdir = $ENV{APPDIR}
+    or die "No APPDIR in environment\n";
+
+my $argv0 = $ENV{ARGV0};
+if ($argv0 && $argv0 =~ m{([^/]+)$}) {
+    my $script = $1;
+
+    # Run script asap unless called as installer or uninstaller
+    if ($script !~ /install$/ && -x "$appdir/usr/bin/$script") {
+        exec { "$appdir/usr/bin/perl" } "perl", "$appdir/usr/bin/$script", @ARGV
+            or die "Failed to run '$script': $!\n";
+    }
+}
+
+if (grep { /^--perl$/ } @ARGV) {
+    exec { "$appdir/usr/bin/perl" } "perl", grep { $_ !~ /^--perl$/ } @ARGV
+        or die "Failed to run 'perl @ARGV': $!\n";
+}
+
+my ($script) = grep { /^--script/ } @ARGV;
+if ($script) {
+    my @args;
+    my $arg = shift @ARGV;
+    while (defined($arg)) {
+        if ($arg =~ /^--script(.*)$/) {
+            if ($1) {
+                die "Wrong --script option\n" unless $1 =~ /^=(.*)$/;
+                $script = $1;
+            } elsif ($ARGV[0] !~ /^-/) {
+                $script = shift @ARGV;
+            } else {
+                die "Not valid script option\n";
+            }
+            die "No such embedded '$script' script\n" unless "$appdir/usr/bin/$script";
+        } else {
+            push @args, $arg;
+        }
+        $arg = shift @ARGV;
+    }
+    exec { "$appdir/usr/bin/perl" } "perl", "$appdir/usr/bin/$script", @args
+        or die "Failed to run '$script': $!\n";
+}
+
+# Set bundling to support aggregated options. It also make single char options case sensitive.
+Getopt::Long::Configure("bundling");
+
+my $options = {};
+
+GetOptions(
+    $options,
+# Configuration options
+    'backend-collect-timeout=i',
+    'ca-cert-dir=s',
+    'ca-cert-file=s',
+    'color',
+    'conf-reload-interval=i',
+    'debug+',
+    'delaytime=i',
+    'force',
+    'html',
+    'json',
+    'lazy',
+    'listen',
+    'local|l=s',
+    'logger=s',
+    'logfacility=s',
+    'logfile=s',
+    'logfile-maxsize=i',
+    'no-category=s',
+    'no-httpd',
+    'no-ssl-check',
+    'no-compression|C',
+    'no-task=s',
+    'no-p2p',
+    'password=s',
+    'proxy=s',
+    'httpd-ip=s',
+    'httpd-port=s',
+    'httpd-trust=s',
+    'remote=s',
+    'scan-homedirs',
+    'scan-profiles',
+    'server|s=s',
+    'ssl-cert-file=s',
+    'tag|t=s',
+    'tasks=s',
+    'timeout=i',
+    'user=s',
+    'vardir=s',
+# Installer options
+    'help|h',
+    'runnow',
+    'clean',
+    'config=s',
+    'installpath|i=s',
+    'silent|S',
+    'install',
+    'reinstall',
+    'uninstall',
+    'service!',
+    'cron=s',
+    'script=s',
+    'version',
+) or pod2usage(-verbose => 0);
+
+pod2usage(-verbose => 0, -exitstatus => 0) if $options->{help};
+
+my $VERSION = $GLPI::Agent::Version::VERSION;
+
+if ($options->{version}) {
+    print "GLPI Agent AppImage installer v$VERSION\n";
+    exit 0;
+}
+
+my $id = qx/id -u/;
+die "GLPI Agent AppImage v$VERSION can only be run as root when installing or uninstalling\n"
+    unless defined($id) && $id eq '0';
+
+my $clean       = delete $options->{clean} // 0;
+my $silent      = delete $options->{silent} // 0;
+my $cron        = delete $options->{cron} // 0;
+die "GLPI Agent can't be installed as service and cron task at the same time\n"
+    if $cron && $options->{service};
+my $service     = delete $options->{service} // 1;
+my $runnow      = delete $options->{runnow} // 0;
+my $installpath = delete $options->{installpath} // "/usr/local/bin";
+die "Installation path must exist: $installpath folder doesn't exist\n"
+    unless $installpath && -d $installpath;
+my $configpath  = delete $options->{config} // '';
+die "Wrong configuration path: $configpath file doesn't exist\n"
+    if $configpath && ! -e $configpath;
+
+my $install   = delete $options->{install}   // $argv0 !~ /glpi-agent-uninstall$/;
+my $uninstall = delete $options->{uninstall} // $argv0 =~ /glpi-agent-uninstall$/;
+my $reinstall = delete $options->{reinstall} // 0;
+die "One of --install, --reinstall or --uninstall options is mandatory\n"
+    unless $install || $reinstall || $uninstall;
+
+$install = $uninstall = 1 if $reinstall;
+
+# On install we have to check mandatory option
+my $mandatory = !$install || $options->{server} || $options->{local};
+my $vardir = $options->{vardir};
+
+
+my %writeconf = %{$options};
+# Read installed configuration
+if (-d "/etc/glpi-agent/conf.d") {
+    my %config;
+    my @confs = glob("/etc/glpi-agent/conf.d/*.cfg");
+    unshift @confs, "/etc/glpi-agent/agent.cfg";
+    push @confs, $configpath if $configpath;
+    foreach my $conf (@confs) {
+        # Very basic conf reading
+        if (open my $fh, "<", $conf) {
+            while (<$fh>) {
+                chomp;
+                my ($key, $value) = $_ =~ /^([a-z]+)\s*=\s*(\S+.*)\s*$/
+                    or next;
+                $value = "" unless defined($value);
+                $config{$key} = $value;
+            }
+            close($fh);
+        }
+    }
+    # Cleanup writeconf from values still defined in configuration
+    unless ($clean) {
+        foreach my $key (keys(%config)) {
+            if (defined($writeconf{$key}) && $writeconf{$key} eq $config{$key}) {
+                delete $writeconf{$key};
+                info("$key still in configuration") if $options->{debug};
+            }
+        }
+    }
+    # Complete mandatory check in the case we are just re-installing with current conf (upgrade support)
+    $mandatory = $config{server} || $config{local}
+        unless $mandatory;
+    # Keep vardir if found in conf
+    $vardir = $config{vardir} unless defined($vardir);
+}
+
+die "One of --server or --local options is mandatory while installing\n"
+    unless $mandatory;
+
+sub info {
+    return if $silent;
+    map { print "$_\n" } @_;
+}
+
+my @scripts = qw/
+    glpi-agent glpi-esx glpi-injector glpi-inventory
+    glpi-netdiscovery glpi-netinventory glpi-remote
+    glpi-agent-uninstall
+/;
+
+$vardir = "/var/lib/glpi-agent" unless $vardir;
+
+if ($uninstall) {
+    if (-e "$vardir/.APPIMAGE" && !$installpath) {
+        if (open my $fh, "<", "$vardir/.APPIMAGE") {
+            my ($appimage) = <$fh>;
+            close($fh);
+            if ($appimage) {
+                chomp($appimage);
+                ($installpath) = $appimage =~ m{^(.*)/[^/]+$};
+            }
+            unlink "$vardir/.APPIMAGE" if $clean;
+        }
+    }
+    # Fallback to extract install path from uninstaller path
+    ($installpath) = $argv0 =~ m{([^/])$}
+        unless $installpath && -d $installpath;
+    die "Wrong installation path: $installpath folder doesn't exist\n"
+        unless $installpath && -d $installpath;
+
+    info("Uninstalling...");
+
+    foreach my $script (@scripts) {
+        next unless -e "$installpath/$script";
+        unlink "$installpath/$script"
+            or die "Can't remove dedicated $script script: $!\n";
+    }
+
+    if ($clean) {
+        info("Cleaning...");
+        if (-d "/etc/glpi-agent") {
+            info("Removing configurations in /etc/glpi-agent...");
+            system "rm -rf /etc/glpi-agent";
+        }
+        if (-d $vardir) {
+            info("Removing $vardir...");
+            system "rm -rf $vardir";
+        }
+        # On cleaning, also remove AppImage file unless re-installing
+        unless ($install) {
+            if ($argv0 =~ /glpi-uninstall$/ && $ENV{APPIMAGE}) {
+                exec "rm -f '$ENV{APPIMAGE}'"
+                    or die "Failed to remove $ENV{APPIMAGE}: $!\n";
+            } elsif (unlink "$appdir/glpi-agent.png") {
+                # Support clean uninstall on systems where the App was extarcted manually
+                system "rm -rf '$appdir'";
+            }
+        }
+    }
+}
+
+if ($install) {
+    info("Installing GLPI Agent v$VERSION...");
+
+    my $scripthook;
+
+    if ($ENV{APPIMAGE}) {
+        my ($filename) = $ENV{APPIMAGE} =~ m{([^/])$}
+            or die "Can't extract AppImage filename: $!\n";
+        $scripthook = "$installpath/$filename";
+        if ($scripthook ne $ENV{APPIMAGE}) {
+            info("Copying AppImage to $installpath...");
+            system "cp $ENV{APPIMAGE} $scripthook"
+                and die "Failed to copy AppImage file: $!\n";
+        }
+    # Support installation without FUSE
+    } elsif (-e "$appdir/AppRun") {
+        $scripthook = "$appdir/AppRun";
+    }
+
+    die "Failed to set script hook program\n"
+        unless $scripthook;
+
+    foreach my $script (@scripts) {
+        if (open my $fh, ">", "$installpath/$script") {
+            print $fh "#!/bin/sh\nexec '$scripthook' --script=$script \$*";
+            close($fh);
+        } else {
+            die "Failed to create dedicated '$script' script: $!\n";
+        }
+    }
+
+    info("Configuring...");
+    system "rm -rf /etc/glpi-agent" if $clean;
+    mkdir "/etc/glpi-agent" unless -d "/etc/glpi-agent";
+    mkdir "/etc/glpi-agent/conf.d" unless -d "/etc/glpi-agent/conf.d";
+    foreach my $conf (glob("$appdir/usr/share/glpi-agent/etc/*.cfg")) {
+        my ($name) = $conf =~ m{([^/])$};
+        system "cp -a '$conf' /etc/glpi-agent"
+            and die "Failed to copy $name configuration file: $!";
+    }
+    foreach my $conf (glob("$appdir/config/*.cfg")) {
+        my ($name) = $conf =~ m{([^/])$};
+        system "cp -a '$conf' /etc/glpi-agent/conf.d"
+            and die "Failed to copy $name configuration file: $!";
+    }
+    if ($configpath) {
+        system "cp -a '$configpath' /etc/glpi-agent/conf.d"
+            and die "Failed to copy $configpath file as configuration: $!";
+    }
+
+    if (keys(%writeconf)) {
+        my $index = -1;
+        my $conf;
+        while (++$index<100) {
+            $conf = sprintf("/etc/glpi-agent/conf.d/%02d-install.cfg", $index);
+            last unless -e $conf;
+        }
+        info("Writing configuration in $conf ...");
+        if (open my $fh, ">", $conf) {
+            foreach my $key (keys(%writeconf)) {
+                print $fh "$key = $writeconf{$key}\n";
+            }
+            close($fh);
+        } else {
+            die "Failed to write configuration: $!\n";
+        }
+    }
+
+    system "rm -rf $vardir" if $clean;
+    mkdir $vardir unless -d $vardir;
+
+    # Keep install dir in VARDIR
+    if (open my $fh, ">", "$vardir/.APPIMAGE") {
+        print $fh $installpath, "\n";
+        close($fh);
+    }
+
+    # Runnow support
+    if ($runnow) {
+        if ($service) {
+            system { "$appdir/usr/bin/perl" } "perl", "$appdir/usr/bin/glpi-agent", "--set-forcerun"
+                or die "Failed to run 'glpi-agent': $!\n";
+        } else {
+            system { "$appdir/usr/bin/perl" } "perl", "$appdir/usr/bin/glpi-agent", "--force"
+                or die "Failed to run 'glpi-agent': $!\n";
+        }
+    }
+
+    # Install service
+    if ($service) {
+        my $systemd = -x "/usr/bin/systemctl" && -d "/etc/systemd/system";
+        if ($systemd) {
+            if (qx{"/usr/bin/systemctl is-active glpi-agent 2>/dev/null"} eq "active") {
+                system "/usr/bin/systemctl stop glpi-agent".($silent ? " >/dev/null 2>&1" : "")
+                    and die "Can't stop glpi-agent service: $!\n";
+            }
+            system "cp -af '$appdir/lib/systemd/system/glpi-agent.service' /etc/systemd/system"
+                and die "Failed to copy glpi-agent.service as systemd service: $!";
+            system "/usr/bin/systemctl enable glpi-agent".($silent ? " >/dev/null 2>&1" : "")
+                and die "Failed to enable glpi-agent service: $!";
+            system "/usr/bin/systemctl reload-or-restart glpi-agent".($silent ? " >/dev/null 2>&1" : "")
+                and die "Failed to start glpi-agent service: $!";
+        } else {
+            if (-e "/etc/init.d/glpi-agent") {
+                system "/etc/init.d/glpi-agent stop".($silent ? " >/dev/null 2>&1" : "")
+                    and die "Can't stop glpi-agent service: $!\n";
+            }
+            system "cp -af '$appdir/etc/init.d/glpi-agent' /etc/init.d/glpi-agent"
+                and die "Failed to copy glpi-agent service script: $!";
+            system "/etc/init.d/glpi-agent start".($silent ? " >/dev/null 2>&1" : "")
+                and die "Failed to start glpi-agent service: $!";
+        }
+    } elsif ($cron) {
+        my $cronfile;
+        if ($cron eq "daily") {
+            $cronfile = "/etc/cron.daily/glpi-agent";
+        } elsif ($cron eq "hourly") {
+            $cronfile = "/etc/cron.hourly/glpi-agent";
+        } else {
+            die "--cron option can only be set to 'hourly' or 'daily'\n";
+        }
+        if (open my $fh, ">", $cronfile) {
+            print $fh map { "$_\n" } (
+                "#!/bin/sh",
+                "exec '$installpath/glpi-agent' >/var/log/glpi-agent.cron.log 2>&1"
+            );
+            close($fh);
+        }
+    }
+}
+
+__END__
+
+=head1 NAME
+
+glpi-agent-installer.AppImage - GLPI Agent AppImage installer for linux
+
+=head1 SYNOPSIS
+
+glpi-agent-linux-installer.AppImage [options]
+
+=head1 CONFIGURATION OPTIONS
+
+=head2 Target definition options (mandatory)
+
+    -s --server=URI                send tasks result to a server
+    -l --local=PATH                write tasks results locally
+
+=head2 Scheduling options
+
+    --delaytime=LIMIT              maximum delay before first target, in seconds (3600).
+    --lazy                         do not contact the target before next scheduled time
+
+=head2 Task selection options
+
+    --no-task=TASK[,TASK]...       do not run given task
+    --tasks=TASK1[,TASK]...[,...]  run given tasks in given order
+
+=head2 Inventory task specific options
+
+    --no-category=CATEGORY         do not list given category items
+    --scan-homedirs                scan user home directories (false)
+    --scan-profiles                scan user profiles (false)
+    --html                         save the inventory as HTML (false)
+    --json                         save the inventory as JSON (false)
+    --force                        always send data to server (false)
+    --backend-collect-timeout=TIME timeout for inventory modules execution (30)
+
+=head2 Remote inventory task specific options
+
+    --remote=REMOTE                setup remote for which request remote inventory
+
+=head2 Deploy task specific options
+
+    --no-p2p                       do not use peer to peer to download files (false)
+
+=head2 Network options
+
+    --proxy=PROXY                  proxy address
+    --user=USER                    user name for server authentication
+    --password=PASSWORD            password for server authentication
+    --ca-cert-dir=DIRECTORY        CA certificates directory
+    --ca-cert-file=FILE            CA certificate file
+    --ssl-cert-file=FILE           Client certificate file
+    --no-ssl-check                 do not check server SSL certificate (false)
+    -C --no-compression            do not compress communication with server (false)
+    --timeout=TIME                 connection timeout, in seconds (180)
+
+=head2 Web interface options
+
+    --no-httpd                     disable embedded web server (false)
+    --httpd-ip=IP                  network interface to listen to (all)
+    --httpd-port=PORT              network port to listen to (62354)
+    --httpd-trust=IP               trust requests (only from GLPI server by default)
+    --listen                       enable listener target if no local or
+                                   server target is defined
+
+=head2 Logging options
+
+    --logger=BACKEND               logger backend (stderr)
+    --logfile=FILE                 log file
+    --logfile-maxsize=SIZE         maximum size of the log file in MB (0)
+    --logfacility=FACILITY         syslog facility (LOG_USER)
+    --color                        use color in the console (false)
+    --debug                        debug mode (false)
+
+=head2 General options
+
+    --conf-reload-interval=TIME    number of seconds between two configuration reloadings
+    -t --tag=TAG                   add given tag to inventory results
+    --vardir=PATH                  use specified path as storage folder for agent persistent datas (/var/lib/glpi-agent)
+
+=head2 Installer options
+
+    --install                      install the agent (true)
+    -i --installpath=PATH          installation folder where to install AppImage and scripts links (/usr/local/bin)
+    --reinstall                    uninstall and then reinstall the agent (false)
+    --uninstall                    uninstall the agent (false)
+    --config=PATH                  configuration file to install in /etc/glpi-agent/conf.d
+    --clean                        clean everything when uninstalling or before installing (false)
+    --runnow                       run agent tasks after installation (false)
+    --service                      install agent as service (true)
+    --no-service                   don't install agent as service (false)
+    --cron=SCHED                   install agent as cron task (no). SCHED can be "daily" or "hourly".
+    --version                      print the installer version and exit
+    -S --silent                    make installer silent (false)
+    -h --help                      print this help
+    --script=SCRIPT                Run embedded script in place of installer
+    --perl                         Run embedded perl
