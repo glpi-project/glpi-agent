@@ -51,6 +51,9 @@ injector:
 contrib:
 * Fix #73: Fix ADMX/ADML for agent configuration via GPO
 
+packaging:
+* Add Linux AppImage installer support
+
 1.1 Fri, 04 Feb 2022
 
 core:
