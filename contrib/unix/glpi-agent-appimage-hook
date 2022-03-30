@@ -258,15 +258,30 @@ if ($install) {
     info("Installing GLPI Agent v$VERSION...");
 
     my $scripthook;
+    my $systemd;
+    if ($service) {
+        $systemd = -x "/usr/bin/systemctl" && -d "/etc/systemd/system";
+        if ($systemd) {
+            my $active = qx{/usr/bin/systemctl is-active glpi-agent 2>/dev/null};
+            chomp $active;
+            if ($active eq "active") {
+                system "/usr/bin/systemctl stop glpi-agent".($silent ? " >/dev/null 2>&1" : "")
+                    and die "Can't stop glpi-agent service\n";
+            }
+        } elsif (-e "/etc/init.d/glpi-agent") {
+            system "/etc/init.d/glpi-agent stop".($silent ? " >/dev/null 2>&1" : "")
+                and die "Can't stop glpi-agent service\n";
+        }
+    }
 
     if ($ENV{APPIMAGE}) {
-        my ($filename) = $ENV{APPIMAGE} =~ m{([^/])$}
+        my ($filename) = $ENV{APPIMAGE} =~ m{([^/]+)$}
             or die "Can't extract AppImage filename: $!\n";
         $scripthook = "$installpath/$filename";
         if ($scripthook ne $ENV{APPIMAGE}) {
             info("Copying AppImage to $installpath...");
             system "cp $ENV{APPIMAGE} $scripthook"
-                and die "Failed to copy AppImage file: $!\n";
+                and die "Failed to copy AppImage file\n";
         }
     # Support installation without FUSE
     } elsif (-e "$appdir/AppRun") {
@@ -278,8 +293,12 @@ if ($install) {
 
     foreach my $script (@scripts) {
         if (open my $fh, ">", "$installpath/$script") {
-            print $fh "#!/bin/sh\nexec '$scripthook' --script=$script \$*";
+            print $fh map { "$_\n" } (
+                "#!/bin/sh",
+                "exec '$scripthook' --script=$script \$*"
+            );
             close($fh);
+            chmod 0755, "$installpath/$script";
         } else {
             die "Failed to create dedicated '$script' script: $!\n";
         }
@@ -292,16 +311,16 @@ if ($install) {
     foreach my $conf (glob("$appdir/usr/share/glpi-agent/etc/*.cfg")) {
         my ($name) = $conf =~ m{([^/])$};
         system "cp -a '$conf' /etc/glpi-agent"
-            and die "Failed to copy $name configuration file: $!";
+            and die "Failed to copy $name configuration file\n";
     }
     foreach my $conf (glob("$appdir/config/*.cfg")) {
         my ($name) = $conf =~ m{([^/])$};
         system "cp -a '$conf' /etc/glpi-agent/conf.d"
-            and die "Failed to copy $name configuration file: $!";
+            and die "Failed to copy $name configuration file\n";
     }
     if ($configpath) {
         system "cp -a '$configpath' /etc/glpi-agent/conf.d"
-            and die "Failed to copy $configpath file as configuration: $!";
+            and die "Failed to copy $configpath file as configuration\n";
     }
 
     if (keys(%writeconf)) {
@@ -335,36 +354,49 @@ if ($install) {
     if ($runnow) {
         if ($service) {
             system { "$appdir/usr/bin/perl" } "perl", "$appdir/usr/bin/glpi-agent", "--set-forcerun"
-                or die "Failed to run 'glpi-agent': $!\n";
+                and die "Failed to force inventory on next glpi-agent start\n";
         } else {
             system { "$appdir/usr/bin/perl" } "perl", "$appdir/usr/bin/glpi-agent", "--force"
-                or die "Failed to run 'glpi-agent': $!\n";
+                and die "Failed to run glpi-agent\n";
         }
     }
 
     # Install service
     if ($service) {
-        my $systemd = -x "/usr/bin/systemctl" && -d "/etc/systemd/system";
         if ($systemd) {
-            if (qx{"/usr/bin/systemctl is-active glpi-agent 2>/dev/null"} eq "active") {
-                system "/usr/bin/systemctl stop glpi-agent".($silent ? " >/dev/null 2>&1" : "")
-                    and die "Can't stop glpi-agent service: $!\n";
+            # Copy glpi-agent.service fixing ExecStart
+            if (open my $fhr, "<", "$appdir/lib/systemd/system/glpi-agent.service") {
+                if (open my $fhw, ">", "/etc/systemd/system/glpi-agent.service") {
+                    while (<$fhr>) {
+                        s{^ExecStart=/usr/bin/glpi-agent}{ExecStart=$installpath/glpi-agent};
+                        print $fhw "$_";
+                    }
+                    close($fhw);
+                } else {
+                    die "Failed to write service file: $!\n";
+                }
+                close($fhr);
             }
-            system "cp -af '$appdir/lib/systemd/system/glpi-agent.service' /etc/systemd/system"
-                and die "Failed to copy glpi-agent.service as systemd service: $!";
             system "/usr/bin/systemctl enable glpi-agent".($silent ? " >/dev/null 2>&1" : "")
-                and die "Failed to enable glpi-agent service: $!";
+                and die "Failed to enable glpi-agent service\n";
             system "/usr/bin/systemctl reload-or-restart glpi-agent".($silent ? " >/dev/null 2>&1" : "")
-                and die "Failed to start glpi-agent service: $!";
+                and die "Failed to start glpi-agent service\n";
         } else {
-            if (-e "/etc/init.d/glpi-agent") {
-                system "/etc/init.d/glpi-agent stop".($silent ? " >/dev/null 2>&1" : "")
-                    and die "Can't stop glpi-agent service: $!\n";
+            # Copy /etc/init.d/glpi-agent fixing installpath
+            if (open my $fhr, "<", "$appdir/etc/init.d/glpi-agent") {
+                if (open my $fhw, ">", "/etc/init.d/glpi-agent") {
+                    while (<$fhr>) {
+                        s{^installpath=/usr/local/bin$}{installpath=$installpath};
+                        print $fhw "$_";
+                    }
+                    close($fhw);
+                } else {
+                    die "Failed to write init file: $!\n";
+                }
+                close($fhr);
             }
-            system "cp -af '$appdir/etc/init.d/glpi-agent' /etc/init.d/glpi-agent"
-                and die "Failed to copy glpi-agent service script: $!";
             system "/etc/init.d/glpi-agent start".($silent ? " >/dev/null 2>&1" : "")
-                and die "Failed to start glpi-agent service: $!";
+                and die "Failed to start glpi-agent service\n";
         }
     } elsif ($cron) {
         my $cronfile;
@@ -381,6 +413,9 @@ if ($install) {
                 "exec '$installpath/glpi-agent' >/var/log/glpi-agent.cron.log 2>&1"
             );
             close($fh);
+            chmod 0755, $cronfile;
+        } else {
+            die "Failed to write cron file: $!\n";
         }
     }
 }
