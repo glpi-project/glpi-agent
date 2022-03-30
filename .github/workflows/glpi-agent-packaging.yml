@@ -727,6 +727,7 @@ jobs:
       with:
         name: Snap-Build
         path: glpi-agent
+    - uses: actions/download-artifact@v2
       with:
         name: Linux-AppImage-Build
         path: glpi-agent
