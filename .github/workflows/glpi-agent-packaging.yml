@@ -727,6 +727,9 @@ jobs:
       with:
         name: Snap-Build
         path: glpi-agent
+      with:
+        name: Linux-AppImage-Build
+        path: glpi-agent
     - uses: actions/download-artifact@v2
       with:
         name: MacOSX-Build
