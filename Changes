@@ -30,6 +30,7 @@ netdiscovery/netinventory:
   crash on win32
 * Enhance Qnap storage inventory
 * Update HP LaserJet Pro MFP printer series support
+* Fix case of NULL char malformed CDP connection SYSNAME preventing XML import
 
 deploy:
 * fix: Fix UserInteraction messages encoding failure as perl 5.34 regression

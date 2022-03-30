@@ -1285,7 +1285,7 @@ sub _getCDPInfo {
                 }
             }
         } elsif (!$connection->{SYSNAME}) {
-            $connection->{SYSNAME} = $deviceId;
+            $connection->{SYSNAME} = getCanonicalString($deviceId);
         }
 
         if ($connection->{SYSNAME} &&
