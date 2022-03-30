@@ -124,7 +124,7 @@ if ($options->{version}) {
 
 my $id = qx/id -u/;
 die "GLPI Agent AppImage v$VERSION can only be run as root when installing or uninstalling\n"
-    unless defined($id) && $id eq '0';
+    unless defined($id) && int($id) == 0;
 
 my $clean       = delete $options->{clean} // 0;
 my $silent      = delete $options->{silent} // 0;
