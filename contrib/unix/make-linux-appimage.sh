@@ -157,6 +157,9 @@ case "$ARCH" in
         ;;
 esac
 
+# When running in GH Actions, LOCAL_SOURCE_FILE shoudl be set to used docker path
+: ${LOCAL_SOURCE_FILE:=$ROOT/build}
+
 # First insert installer version definitions
 cat >build/AppImageBuilder.yml <<APPIMAGEBUILDER_YAML
 version: 1
@@ -179,7 +182,7 @@ AppDir:
         key_url: '$DISTRO_KEY'
       - sourceline: 'deb [arch=$DISTRO_ARCH] $DISTRO_URL bionic-updates main restricted universe multiverse'
       - sourceline: 'deb [arch=$DISTRO_ARCH] $DISTRO_URL bionic-backports main restricted universe multiverse'
-      - sourceline: 'deb [trusted=yes] file:$ROOT/build local/'
+      - sourceline: 'deb [trusted=yes] file:$LOCAL_SOURCE_FILE local/'
 
     include:
       - perl
