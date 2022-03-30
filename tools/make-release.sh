@@ -124,6 +124,9 @@ our \$COMMENTS = [
 ];
 VERSION
 
+# Also update SetupVersion in VBS
+sed -ri -e "s/^SetupVersion = .*$/SetupVersion = \"$VERSION\"/" contrib/windows/glpi-agent-deployment.vbs
+
 # 4. Update tasks version if required
 perl -Itools -MChangelog -e '
     my @tasks = qw(
