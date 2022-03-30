@@ -14,6 +14,7 @@ inventory:
 * database inventory: support default credential to inventory SQL Server 2012 Express
 * linux: Update drive inventory to also try FS related tools to get more information
 * feat: Add OS installation date inventory support for unix/linux
+* Fix linux SLES 15 Service Pack detection, thanks to ncharles@gh
 
 remoteinventory:
 * Fix: Support username for SSH access
