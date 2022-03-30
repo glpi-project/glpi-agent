@@ -607,11 +607,11 @@ jobs:
       shell: bash
       env:
         VERSION: ${{ needs.setup-release.outputs.version }}
+        LOCAL_SOURCE_FILE: /github/workspace/build
     - name: Build AppImage
       uses: AppImageCrafters/build-appimage-action@master
       env:
         UPDATE_INFO: gh-releases-zsync|glpi-project|glpi-agent|latest|*x86_64.AppImage.zsync
-        LOCAL_SOURCE_FILE: /github/workspace/build
       with:
         recipe: build/AppImageBuilder.yml
     - name: Quick tests
