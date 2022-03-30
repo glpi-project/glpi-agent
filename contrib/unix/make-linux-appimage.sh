@@ -17,7 +17,7 @@ do
             VERSION="$1"
             ;;
         --clean)
-            rm -rf build
+            rm -rf build appimage-builder-cache
             ;;
         --prepare)
             PREPARE="yes"
@@ -130,8 +130,8 @@ do
 done
 
 # Create local debian repository for appimage-builder integration
-cd build/local
-dpkg-scanpackages glpi-agent >Packages
+cd build
+dpkg-scanpackages local >local/Packages
 
 cd "$ROOT"
 
@@ -182,7 +182,7 @@ AppDir:
         key_url: '$DISTRO_KEY'
       - sourceline: 'deb [arch=$DISTRO_ARCH] $DISTRO_URL bionic-updates main restricted universe multiverse'
       - sourceline: 'deb [arch=$DISTRO_ARCH] $DISTRO_URL bionic-backports main restricted universe multiverse'
-      - sourceline: 'deb [trusted=yes] file:$LOCAL_SOURCE_FILE local/'
+      - sourceline: 'deb [trusted=yes] copy:$LOCAL_SOURCE_FILE local/'
 
     include:
       - perl
