@@ -75,12 +75,13 @@ cp -avf contrib/unix/glpi-agent-appimage-hook build/AppDir
 cat >build/AppDir/etc/init.d/glpi-agent <<INITD_SCRIPT
 #!/bin/sh
 
+installpath=/usr/local/bin
 prog=glpi-agent
 pidfile=/var/run/glpi-agent.pid
 
 start() {
     echo -n "Starting \$prog: "
-    glpi-agent --daemon --pidfile \$pidfile 2>/dev/null
+    \$installpath/glpi-agent --daemon --pidfile \$pidfile 2>/dev/null
     echo
 }
 
@@ -193,7 +194,8 @@ AppDir:
       - glpi-agent-task-network
 
   after_bundle: |
-    find build/AppDir -type f -name '*.pod' -delete
+    find build/AppDir -type f -name '*.pod' -delete; \
+    sed -ri 's|/usr/share/glpi-agent|\$ENV{APPDIR}/usr/share/glpi-agent|' build/AppDir/usr/share/glpi-agent/lib/setup.pm build/AppDir/usr/bin/glpi-*
 
   files:
     exclude:
