@@ -290,7 +290,7 @@ if ($install) {
         unless $scripthook;
 
     foreach my $scriptfile (keys(%scripts)) {
-        if (open my $fh, ">", "$installpath/$script") {
+        if (open my $fh, ">", "$installpath/$scriptfile") {
             my $opt = $scriptfile eq "glpi-agent-uninstall" ? "" : " --script=".$scriptfile;
             print $fh map { "$_\n" } (
                 "#!/bin/sh",
