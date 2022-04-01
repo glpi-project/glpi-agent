@@ -11,10 +11,14 @@ use GLPI::Agent::Version;
 my $appdir = $ENV{APPDIR}
     or die "No APPDIR in environment\n";
 
-my $argv0 = $ENV{ARGV0};
-if ($argv0 && $argv0 =~ m{([^/]+)$}) {
-    my $script = $1;
+my %scripts = map { $_ => 1 } qw/
+    glpi-agent glpi-esx glpi-injector glpi-inventory
+    glpi-netdiscovery glpi-netinventory glpi-remote
+    glpi-agent-uninstall
+/;
 
+my $script = $ENV{GLPIAGENT_SCRIPT};
+if ($script && $scripts{$script}) {
     # Run script asap unless called as installer or uninstaller
     if ($script !~ /install$/ && -x "$appdir/usr/bin/$script") {
         exec { "$appdir/usr/bin/perl" } "perl", "$appdir/usr/bin/$script", @ARGV
@@ -27,28 +31,28 @@ if (grep { /^--perl$/ } @ARGV) {
         or die "Failed to run 'perl @ARGV': $!\n";
 }
 
-my ($script) = grep { /^--script/ } @ARGV;
-if ($script) {
+my ($scriptopt) = grep { /^--script/ } @ARGV;
+if ($scriptopt) {
     my @args;
     my $arg = shift @ARGV;
     while (defined($arg)) {
         if ($arg =~ /^--script(.*)$/) {
             if ($1) {
                 die "Wrong --script option\n" unless $1 =~ /^=(.*)$/;
-                $script = $1;
+                $scriptopt = $1;
             } elsif ($ARGV[0] !~ /^-/) {
-                $script = shift @ARGV;
+                $scriptopt = shift @ARGV;
             } else {
                 die "Not valid script option\n";
             }
-            die "No such embedded '$script' script\n" unless "$appdir/usr/bin/$script";
+            die "No such embedded '$scriptopt' script\n" unless "$appdir/usr/bin/$scriptopt";
         } else {
             push @args, $arg;
         }
         $arg = shift @ARGV;
     }
-    exec { "$appdir/usr/bin/perl" } "perl", "$appdir/usr/bin/$script", @args
-        or die "Failed to run '$script': $!\n";
+    exec { "$appdir/usr/bin/perl" } "perl", "$appdir/usr/bin/$scriptopt", @args
+        or die "Failed to run '$scriptopt': $!\n";
 }
 
 # Set bundling to support aggregated options. It also make single char options case sensitive.
@@ -140,8 +144,8 @@ my $configpath  = delete $options->{config} // '';
 die "Wrong configuration path: $configpath file doesn't exist\n"
     if $configpath && ! -e $configpath;
 
-my $install   = delete $options->{install}   // $argv0 !~ /glpi-agent-uninstall$/;
-my $uninstall = delete $options->{uninstall} // $argv0 =~ /glpi-agent-uninstall$/;
+my $install   = delete $options->{install}   // 0;
+my $uninstall = delete $options->{uninstall} // ($script && $script eq "glpi-agent-uninstall");
 my $reinstall = delete $options->{reinstall} // 0;
 die "One of --install, --reinstall or --uninstall options is mandatory\n"
     unless $install || $reinstall || $uninstall;
@@ -197,12 +201,6 @@ sub info {
     map { print "$_\n" } @_;
 }
 
-my @scripts = qw/
-    glpi-agent glpi-esx glpi-injector glpi-inventory
-    glpi-netdiscovery glpi-netinventory glpi-remote
-    glpi-agent-uninstall
-/;
-
 $vardir = "/var/lib/glpi-agent" unless $vardir;
 
 if ($uninstall) {
@@ -218,17 +216,17 @@ if ($uninstall) {
         }
     }
     # Fallback to extract install path from uninstaller path
-    ($installpath) = $argv0 =~ m{([^/])$}
-        unless $installpath && -d $installpath;
+    ($installpath) = $ENV{ARGV0} =~ m{([^/])$}
+        unless (($installpath && -d $installpath) || !$ENV{ARGV0});
     die "Wrong installation path: $installpath folder doesn't exist\n"
         unless $installpath && -d $installpath;
 
     info("Uninstalling...");
 
-    foreach my $script (@scripts) {
-        next unless -e "$installpath/$script";
-        unlink "$installpath/$script"
-            or die "Can't remove dedicated $script script: $!\n";
+    foreach my $scriptfile (keys(%scripts)) {
+        next unless -e "$installpath/$scriptfile";
+        unlink "$installpath/$scriptfile"
+            or die "Can't remove dedicated $scriptfile script: $!\n";
     }
 
     if ($clean) {
@@ -243,7 +241,7 @@ if ($uninstall) {
         }
         # On cleaning, also remove AppImage file unless re-installing
         unless ($install) {
-            if ($argv0 =~ /glpi-uninstall$/ && $ENV{APPIMAGE}) {
+            if ($script =~ /glpi-uninstall$/ && $ENV{APPIMAGE}) {
                 exec "rm -f '$ENV{APPIMAGE}'"
                     or die "Failed to remove $ENV{APPIMAGE}: $!\n";
             } elsif (unlink "$appdir/glpi-agent.png") {
@@ -291,16 +289,18 @@ if ($install) {
     die "Failed to set script hook program\n"
         unless $scripthook;
 
-    foreach my $script (@scripts) {
+    foreach my $scriptfile (keys(%scripts)) {
         if (open my $fh, ">", "$installpath/$script") {
+            my $opt = $scriptfile eq "glpi-agent-uninstall" ? "" : " --script=".$scriptfile;
             print $fh map { "$_\n" } (
                 "#!/bin/sh",
-                "exec '$scripthook' --script=$script \$*"
+                "export GLPIAGENT_SCRIPT=$scriptfile",
+                "exec '$scripthook'$opt \$*"
             );
             close($fh);
-            chmod 0755, "$installpath/$script";
+            chmod 0755, "$installpath/$scriptfile";
         } else {
-            die "Failed to create dedicated '$script' script: $!\n";
+            die "Failed to create dedicated '$scriptfile' script: $!\n";
         }
     }
 
