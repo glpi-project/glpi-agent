@@ -12,7 +12,15 @@ use GLPI::Agent::Tools;
 
 sub isEnabled {
     # Snap is not supported on AIX and the command has another usage
-    return OSNAME ne 'aix' && canRun('snap');
+    return 0 unless OSNAME ne 'aix' && canRun('snap');
+
+    # Try to check if snapd service is active. We only support systemd as snapd mostly runs with systemd support
+    if (canRun('systemcl') && canRun('pgrep') && getFirstLine(command => "pgrep -g 1 -x systemd")) {
+        my $status = getFirstLine(command => "systemctl is-active snapd");
+        return 0 if defined($status) && $status =~ /inactive/;
+    }
+
+    return 1;
 }
 
 sub doInventory {
@@ -20,6 +28,14 @@ sub doInventory {
 
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
+
+    # Don't try to contact snapd if said not available by "snap version"
+    my $snapd = getFirstMatch(
+        logger  => $logger,
+        command => 'snap version',
+        pattern => qr/^snapd\s+(\S+)$/,
+    );
+    return if $snapd && $snapd eq 'unavailable';
 
     my $packages = _getPackagesList(
         logger  => $logger,
