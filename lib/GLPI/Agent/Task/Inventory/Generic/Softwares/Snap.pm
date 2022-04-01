@@ -14,10 +14,14 @@ sub isEnabled {
     # Snap is not supported on AIX and the command has another usage
     return 0 unless OSNAME ne 'aix' && canRun('snap');
 
-    # Try to check if snapd service is active. We only support systemd as snapd mostly runs with systemd support
-    if (canRun('systemcl') && canRun('pgrep') && getFirstLine(command => "pgrep -g 1 -x systemd")) {
-        my $status = getFirstLine(command => "systemctl is-active snapd");
-        return 0 if defined($status) && $status =~ /inactive/;
+    # Try to check if snapd is active/running
+    if (canRun('pgrep')) {
+        if (canRun('systemcl') && getFirstLine(command => "pgrep -g 1 -x systemd")) {
+            my $status = getFirstLine(command => "systemctl is-active snapd");
+            return 0 if defined($status) && $status =~ /inactive/;
+        } elsif (!getFirstLine(command => "pgrep -x snapd")) {
+            return 0;
+        }
     }
 
     return 1;
