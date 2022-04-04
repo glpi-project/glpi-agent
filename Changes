@@ -16,7 +16,7 @@ inventory:
 * feat: Add OS installation date inventory support for unix/linux
 * Fix linux SLES 15 Service Pack detection, thanks to ncharles@gh
 * Avoid blocking until timeout for snap softwares inventory when snapd is unavailable
-* Add new Acer monitor model support: V226HQL
+* Add new Acer monitor model support: V226HQL, X193HQ
 
 remoteinventory:
 * Fix: Support username for SSH access

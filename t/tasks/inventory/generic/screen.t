@@ -279,8 +279,8 @@ my %edid_tests = (
     'lcd.acer-x193hq' => {
         MANUFACTURER => 'Acer Technologies',
         CAPTION      => 'X193HQ',
-        SERIAL       => 'LEK0D0998545',
-        ALTSERIAL    => 'LEK0D09994003c0c8545',
+        SERIAL       => 'LEK0D09994003c0c8545',
+        ALTSERIAL    => 'LEK0D0998545',
         DESCRIPTION  => '40/2009'
     },
     'lcd.acer-v246hl' => {
