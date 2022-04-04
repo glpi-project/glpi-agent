@@ -61,6 +61,7 @@ __DATA__
     0020
     0024    Acer V193
     004b    Acer V193W
+    004c    Acer V193
     00a3    V243H
     00a8
     00d2    B243H
