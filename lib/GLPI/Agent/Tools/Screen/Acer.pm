@@ -42,7 +42,8 @@ sub _altserial {
     my ($self) = @_;
 
     my $serial1 = $self->{edid}->{serial_number};
-    my $serial2 = $self->{edid}->{serial_number2}->[0];
+    my $serial2 = $self->{edid}->{serial_number2}->[0]
+        or return;
 
     # Split serial2
     my $part1 = substr($serial2, 0, 8);
@@ -58,16 +59,21 @@ __DATA__
 # List of model indexed by their hexdecimal model number in EDID block
     0018
     0019    V173
+    001a    V193W
     0020
     0024    Acer V193
+    0026    Acer V203W
+    0031    Acer V193
     004b    Acer V193W
-    004c    Acer V193
+    004c    V193
     0069    X193HQ
+    0070    V223HQ
     00a3    V243H
     00a8
     00d2    B243H
     00db    S273HL
     00f7    V193
+    0133    V193HQV
     02d4    Acer G236HL
     0319    Acer H226HQL
     032e    Acer V246HL
@@ -76,14 +82,29 @@ __DATA__
     0337    B226HQL
     03de    G227HQL
     0468    Acer KA240HQ
+    0480    V276HL
     0503    R221Q
     0512    K222HQL
     0523    K272HL
     056b    Acer ET221Q
     057d    SA220Q
     0618    Acer B196HQL
+    0771    B247Y
     0783
+    1228    ACER P1206P
+    1701    ACER P1203
+    1716    Acer P1283
+    2309    Acer X125H
+    2311    Acer H6517ABD
+    2608    Acer X128H
+    2708    Acer XGA PJ
+    5401    ACER P5260i
+    56ad    AL1717
     7883
+    ad46    AL1716
     ad49    Acer AL1916
     ad51    Acer AL1716
+    ad72    Acer AL1717
+    ad73    Acer AL1917
+    ad80    AL1916W
     adaf

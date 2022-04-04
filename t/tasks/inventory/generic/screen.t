@@ -17,12 +17,179 @@ plan(skip_all => 'Parse::EDID >= 1.0.4 required')
 Test::NoWarnings->use();
 
 my %edid_tests = (
+    'acer-al1716' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'AL1716',
+        SERIAL       => '0000b051',
+        DESCRIPTION  => '37/2006'
+    },
+    'acer-al1716.2' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'AL1716',
+        ALTSERIAL    => 'L460C1184049',
+        SERIAL       => 'L460C1187320c3844049',
+        DESCRIPTION  => '32/2007'
+    },
+    'acer-al1717' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'AL1717',
+        ALTSERIAL    => 'L56042344335',
+        SERIAL       => 'L56042347220137b4335',
+        DESCRIPTION  => '22/2007'
+    },
+    'acer-al1717.2' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'Acer AL1717',
+        ALTSERIAL    => 'L72080574223',
+        SERIAL       => 'L7208057706026854223',
+        DESCRIPTION  => '6/2007'
+    },
+    'acer-al1916w' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'AL1916W',
+        ALTSERIAL    => 'L800C0014020',
+        SERIAL       => 'L800C001717079874020',
+        DESCRIPTION  => '17/2007'
+    },
+    'acer-al1917' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'Acer AL1917',
+        ALTSERIAL    => 'L730851342HM',
+        SERIAL       => 'L73085138132779b42HM',
+        DESCRIPTION  => '13/2008'
+    },
+    'acer-b247y' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'B247Y',
+        ALTSERIAL    => 'TJYEE0068521',
+        SERIAL       => 'TJYEE0061171bcd58521',
+        DESCRIPTION  => '17/2021'
+    },
+    'acer-h6517abd' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'Acer H6517ABD',
+        ALTSERIAL    => 'JNB110015900',
+        SERIAL       => 'JNB11001000005f25900',
+        DESCRIPTION  => '11/2019'
+    },
+    'acer-p1203' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'ACER P1203',
+        ALTSERIAL    => 'K17010015901',
+        SERIAL       => 'K170100100000d0b5901',
+        DESCRIPTION  => '8/2011'
+    },
+    'acer-p1206p' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'ACER P1206P',
+        ALTSERIAL    => 'JCS010145901',
+        SERIAL       => 'JCS01014000004fe5901',
+        DESCRIPTION  => '15/2012'
+    },
+    'acer-p1283' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'Acer P1283',
+        ALTSERIAL    => 'JHG110015900',
+        SERIAL       => 'JHG11001000014305900',
+        DESCRIPTION  => '23/2015'
+    },
+    'acer-p5260i' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'ACER P5260i',
+        ALTSERIAL    => 'J54010095911',
+        SERIAL       => 'J5401009000001205911',
+        DESCRIPTION  => '32/2008'
+    },
+    'acer-v193' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'Acer V193',
+        ALTSERIAL    => 'LBZ080424212',
+        SERIAL       => 'LBZ08042841063a64212',
+        DESCRIPTION  => '41/2008'
+    },
+    'acer-v193.2' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'Acer V193',
+        ALTSERIAL    => 'LCC020014101',
+        SERIAL       => 'LCC0200182202e3c4101',
+        DESCRIPTION  => '22/2008'
+    },
+    'acer-v193.3' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'V193',
+        ALTSERIAL    => 'LDQ0C0144000',
+        SERIAL       => 'LDQ0C0148330a6184000',
+        DESCRIPTION  => '33/2008'
+    },
+    'acer-v193hqv' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'V193HQV',
+        ALTSERIAL    => 'LKR0D0068501',
+        SERIAL       => 'LKR0D0060320a5e28501',
+        DESCRIPTION  => '32/2010'
+    },
+    'acer-v193w' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'V193W',
+        ALTSERIAL    => 'LBP0C18340G0',
+        SERIAL       => 'LBP0C1830291075740G0',
+        DESCRIPTION  => '29/2010'
+    },
+    'acer-v203w' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'Acer V203W',
+        ALTSERIAL    => 'LC2080014200',
+        SERIAL       => 'LC2080018190c7da4200',
+        DESCRIPTION  => '19/2008'
+    },
+    'acer-v223hq' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'V223HQ',
+        ALTSERIAL    => 'LES0C0034000',
+        SERIAL       => 'LES0C00391408a254000',
+        DESCRIPTION  => '14/2009'
+    },
     'acer-v226hql' => {
         MANUFACTURER => 'Acer Technologies',
         CAPTION      => 'V226HQL',
         ALTSERIAL    => 'LY7EE016851C',
         SERIAL       => 'LY7EE016638103c5851C',
         DESCRIPTION  => '38/2016'
+    },
+    'acer-v226hql.2' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'V226HQL',
+        ALTSERIAL    => 'LY7EE013851C',
+        SERIAL       => 'LY7EE0137080f0a8851C',
+        DESCRIPTION  => '8/2017'
+    },
+    'acer-v276hl' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'V276HL',
+        ALTSERIAL    => 'T4JEE0058545',
+        SERIAL       => 'T4JEE0059220304e8545',
+        DESCRIPTION  => '22/2019'
+    },
+    'acer-x125h' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'Acer X125H',
+        ALTSERIAL    => 'JN9110015900',
+        SERIAL       => 'JN91100100000f435900',
+        DESCRIPTION  => '10/2017'
+    },
+    'acer-x128h' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'Acer X128H',
+        ALTSERIAL    => 'JQ8110015900',
+        SERIAL       => 'JQ811001000013265900',
+        DESCRIPTION  => '46/2017'
+    },
+    'acer-xga-pj' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'Acer XGA PJ',
+        ALTSERIAL    => 'JR81100Y5910',
+        SERIAL       => 'JR81100Y000014775910',
+        DESCRIPTION  => '10/2020'
     },
     'crt.13' => {
         MANUFACTURER => 'Litronic Inc',
@@ -585,7 +752,8 @@ plan tests => (scalar keys %edid_tests) + 1;
 
 foreach my $test (sort keys %edid_tests) {
     my $file = "resources/generic/edid/$test";
-    my $edid = getAllLines(file => $file);
+    my $edid = getAllLines(file => $file)
+        or die "Can't read $file: $!\n";
     my $info = GLPI::Agent::Task::Inventory::Generic::Screen::_getEdidInfo(edid => $edid, datadir => './share');
     cmp_deeply($info, $edid_tests{$test}, $test);
 }
