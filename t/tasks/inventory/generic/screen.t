@@ -17,6 +17,13 @@ plan(skip_all => 'Parse::EDID >= 1.0.4 required')
 Test::NoWarnings->use();
 
 my %edid_tests = (
+    'acer-v226hql' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'V226HQL',
+        ALTSERIAL    => 'LY7EE016851C',
+        SERIAL       => 'LY7EE016638103c5851C',
+        DESCRIPTION  => '38/2016'
+    },
     'crt.13' => {
         MANUFACTURER => 'Litronic Inc',
         CAPTION      => 'A1554NEL',
