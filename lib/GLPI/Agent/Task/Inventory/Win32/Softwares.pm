@@ -426,6 +426,7 @@ sub _appxscript {
         next if length($line) == 0 || $line =~ /^#/;
         $script .= $line;
     }
+    close(DATA);
     return $script;
 }
 
