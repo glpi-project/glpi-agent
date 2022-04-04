@@ -57,10 +57,10 @@ sub _altserial {
 
 __DATA__
 # List of model indexed by their hexdecimal model number in EDID block
-    0018
+    0018    B223W
     0019    V173
     001a    V193W
-    0020
+    0020    B223W
     0024    Acer V193
     0026    Acer V203W
     0031    Acer V193
@@ -69,18 +69,21 @@ __DATA__
     0069    X193HQ
     0070    V223HQ
     00a3    V243H
-    00a8
+    00a8    X233H
     00d2    B243H
     00db    S273HL
     00f7    V193
     0133    V193HQV
     02d4    Acer G236HL
     0319    Acer H226HQL
+    032d    Acer V226HQL
     032e    Acer V246HL
     0330    Acer B226HQL
     0335    V226HQL
     0337    B226HQL
     03de    G227HQL
+    0424    Acer V246HQL
+    042e    Acer K242HQL
     0468    Acer KA240HQ
     0480    V276HL
     0503    R221Q
@@ -88,9 +91,10 @@ __DATA__
     0523    K272HL
     056b    Acer ET221Q
     057d    SA220Q
+    057f    SA240Y
     0618    Acer B196HQL
     0771    B247Y
-    0783
+    0783    AL1923
     1228    ACER P1206P
     1701    ACER P1203
     1716    Acer P1283
@@ -107,4 +111,4 @@ __DATA__
     ad72    Acer AL1717
     ad73    Acer AL1917
     ad80    AL1916W
-    adaf
+    adaf    P243W

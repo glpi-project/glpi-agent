@@ -72,6 +72,13 @@ my %edid_tests = (
         SERIAL       => 'JNB11001000005f25900',
         DESCRIPTION  => '11/2019'
     },
+    'acer-k242hql' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'Acer K242HQL',
+        ALTSERIAL    => 'T2JEE0144223',
+        SERIAL       => 'T2JEE0140160e81f4223',
+        DESCRIPTION  => '16/2020'
+    },
     'acer-p1203' => {
         MANUFACTURER => 'Acer Technologies',
         CAPTION      => 'ACER P1203',
@@ -99,6 +106,13 @@ my %edid_tests = (
         ALTSERIAL    => 'J54010095911',
         SERIAL       => 'J5401009000001205911',
         DESCRIPTION  => '32/2008'
+    },
+    'acer-sa240y' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'SA240Y',
+        ALTSERIAL    => 'T92EE0062460',
+        SERIAL       => 'T92EE006034013032460',
+        DESCRIPTION  => '34/2020'
     },
     'acer-v193' => {
         MANUFACTURER => 'Acer Technologies',
