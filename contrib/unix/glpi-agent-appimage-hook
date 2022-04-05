@@ -5,6 +5,7 @@ use warnings;
 
 use Getopt::Long;
 use Pod::Usage;
+use File::Path qw(make_path remove_tree);
 
 use GLPI::Agent::Version;
 
@@ -111,6 +112,7 @@ GetOptions(
     'install',
     'reinstall',
     'uninstall',
+    'upgrade',
     'service!',
     'cron=s',
     'script=s',
@@ -137,9 +139,7 @@ die "GLPI Agent can't be installed as service and cron task at the same time\n"
     if $cron && $options->{service};
 my $service     = delete $options->{service} // 1;
 my $runnow      = delete $options->{runnow} // 0;
-my $installpath = delete $options->{installpath} // "/usr/local/bin";
-die "Installation path must exist: $installpath folder doesn't exist\n"
-    unless $installpath && -d $installpath;
+my $installpath = delete $options->{installpath};
 my $configpath  = delete $options->{config} // '';
 die "Wrong configuration path: $configpath file doesn't exist\n"
     if $configpath && ! -e $configpath;
@@ -147,15 +147,16 @@ die "Wrong configuration path: $configpath file doesn't exist\n"
 my $install   = delete $options->{install}   // 0;
 my $uninstall = delete $options->{uninstall} // ($script && $script eq "glpi-agent-uninstall");
 my $reinstall = delete $options->{reinstall} // 0;
-die "One of --install, --reinstall or --uninstall options is mandatory\n"
+my $upgrade   = delete $options->{upgrade}   // 0;
+die "One of --install, --upgrade, --reinstall or --uninstall options is mandatory\n"
     unless $install || $reinstall || $uninstall;
 
-$install = $uninstall = 1 if $reinstall;
+$install = $uninstall = 1 if $reinstall || $upgrade;
+$clean = 1 if $reinstall;
 
 # On install we have to check mandatory option
 my $mandatory = !$install || $options->{server} || $options->{local};
 my $vardir = $options->{vardir};
-
 
 my %writeconf = %{$options};
 # Read installed configuration
@@ -203,26 +204,44 @@ sub info {
 
 $vardir = "/var/lib/glpi-agent" unless $vardir;
 
-if ($uninstall) {
-    if (-e "$vardir/.APPIMAGE" && !$installpath) {
-        if (open my $fh, "<", "$vardir/.APPIMAGE") {
-            my ($appimage) = <$fh>;
-            close($fh);
-            if ($appimage) {
-                chomp($appimage);
-                ($installpath) = $appimage =~ m{^(.*)/[^/]+$};
-                unlink $appimage if -e $appimage && $appimage =~ /\.AppImage$/;
-            }
-            unlink "$vardir/.APPIMAGE" if $clean;
+my $appimage;
+if (-e "$vardir/.APPIMAGE" && !$installpath) {
+    if (open my $fh, "<", "$vardir/.APPIMAGE") {
+        ($appimage) = <$fh>;
+        close($fh);
+        if ($appimage) {
+            chomp($appimage);
+            ($installpath) = $appimage =~ m{^(.*)/[^/]+$};
         }
     }
-    # Fallback to extract install path from uninstaller path
-    ($installpath) = $ENV{ARGV0} =~ m{([^/])$}
-        unless (($installpath && -d $installpath) || !$ENV{ARGV0});
-    die "Wrong installation path: $installpath folder doesn't exist\n"
-        unless $installpath && -d $installpath;
+}
 
-    info("Uninstalling...");
+# Fallback to default
+$installpath = "/usr/local/bin" unless $installpath;
+
+unless (-d $installpath) {
+    die "Can't create installation path: $!\n"
+        unless make_path($installpath);
+}
+
+my $active;
+my $systemd = -x "/usr/bin/systemctl" && -d "/etc/systemd/system";
+if ($systemd) {
+    $active = qx{/usr/bin/systemctl is-active glpi-agent 2>/dev/null};
+    chomp $active;
+    if ($active eq "active") {
+        system "/usr/bin/systemctl stop glpi-agent".($silent ? " >/dev/null 2>&1" : "")
+            and die "Can't stop glpi-agent service\n";
+    } else {
+        undef $active;
+    }
+} elsif (-e "/etc/init.d/glpi-agent") {
+    system "/etc/init.d/glpi-agent stop".($silent ? " >/dev/null 2>&1" : "")
+        and die "Can't stop glpi-agent service\n";
+}
+
+if ($uninstall) {
+    info($upgrade ? "Upgrading..." : "Uninstalling...");
 
     foreach my $scriptfile (keys(%scripts)) {
         next unless -e "$installpath/$scriptfile";
@@ -230,49 +249,49 @@ if ($uninstall) {
             or die "Can't remove dedicated $scriptfile script: $!\n";
     }
 
+    if ($systemd) {
+        system "/usr/bin/systemctl disable glpi-agent".($silent ? " >/dev/null 2>&1" : "") if $active;
+        unlink "/etc/systemd/system/glpi-agent.service" if -e "/etc/systemd/system/glpi-agent.service";
+    } else {
+        unlink "/etc/init.d/glpi-agent" if -e "/etc/init.d/glpi-agent";
+    }
+
+    if ($cron) {
+        unlink "/etc/cron.daily/glpi-agent" if -e "/etc/cron.daily/glpi-agent";
+        unlink "/etc/cron.hourly/glpi-agent" if -e "/etc/cron.hourly/glpi-agent";
+    }
+
     if ($clean) {
         info("Cleaning...");
         if (-d "/etc/glpi-agent") {
             info("Removing configurations in /etc/glpi-agent...");
-            system "rm -rf /etc/glpi-agent";
+            remove_tree("/etc/glpi-agent");
         }
         if (-d $vardir) {
             info("Removing $vardir...");
-            system "rm -rf $vardir";
+            remove_tree($vardir);
         }
+        unlink "/var/log/glpi-agent.cron.log" if -e "/var/log/glpi-agent.cron.log";
         # On cleaning, also remove AppImage file unless re-installing
         unless ($install) {
-            if ($script =~ /glpi-uninstall$/ && $ENV{APPIMAGE}) {
-                exec "rm -f '$ENV{APPIMAGE}'"
-                    or die "Failed to remove $ENV{APPIMAGE}: $!\n";
-            } elsif (unlink "$appdir/glpi-agent.png") {
-                # Support clean uninstall on systems where the App was extarcted manually
-                system "rm -rf '$appdir'";
+            if ($script =~ /glpi-uninstall$/ && $ENV{APPIMAGE} && -e $ENV{APPIMAGE}) {
+                unlink $ENV{APPIMAGE};
+            } elsif (-e "$appdir/glpi-agent.png") {
+                # Support clean uninstall on systems where the App was extracted manually
+                remove_tree($appdir);
             }
         }
     }
+
+    unlink "$vardir/.APPIMAGE" if -e "$vardir/.APPIMAGE";
+    # Remove AppImage unless reinstalling
+    unlink $appimage if $appimage && -e $appimage && $appimage =~ /\.AppImage$/ && !$reinstall;
 }
 
 if ($install) {
     info("Installing GLPI Agent v$VERSION...");
 
     my $scripthook;
-    my $systemd;
-    if ($service) {
-        $systemd = -x "/usr/bin/systemctl" && -d "/etc/systemd/system";
-        if ($systemd) {
-            my $active = qx{/usr/bin/systemctl is-active glpi-agent 2>/dev/null};
-            chomp $active;
-            if ($active eq "active") {
-                system "/usr/bin/systemctl stop glpi-agent".($silent ? " >/dev/null 2>&1" : "")
-                    and die "Can't stop glpi-agent service\n";
-            }
-        } elsif (-e "/etc/init.d/glpi-agent") {
-            system "/etc/init.d/glpi-agent stop".($silent ? " >/dev/null 2>&1" : "")
-                and die "Can't stop glpi-agent service\n";
-        }
-    }
-
     if ($ENV{APPIMAGE}) {
         my ($filename) = $ENV{APPIMAGE} =~ m{([^/]+)$}
             or die "Can't extract AppImage filename: $!\n";
@@ -305,9 +324,8 @@ if ($install) {
     }
 
     info("Configuring...");
-    system "rm -rf /etc/glpi-agent" if $clean;
-    mkdir "/etc/glpi-agent" unless -d "/etc/glpi-agent";
-    mkdir "/etc/glpi-agent/conf.d" unless -d "/etc/glpi-agent/conf.d";
+    remove_tree("/etc/glpi-agent") if $clean;
+    make_path("/etc/glpi-agent/conf.d");
     foreach my $conf (glob("$appdir/usr/share/glpi-agent/etc/*.cfg")) {
         my ($name) = $conf =~ m{([^/])$};
         system "cp -a '$conf' /etc/glpi-agent"
@@ -341,8 +359,8 @@ if ($install) {
         }
     }
 
-    system "rm -rf $vardir" if $clean;
-    mkdir $vardir unless -d $vardir;
+    remove_tree($vardir) if $clean;
+    make_path($vardir);
 
     # Keep installed AppImage path in VARDIR
     if (open my $fh, ">", "$vardir/.APPIMAGE") {
@@ -436,7 +454,8 @@ glpi-agent-linux-installer.AppImage [options]
 
     --install                      install the agent (true)
     -i --installpath=PATH          installation folder where to install AppImage and scripts links (/usr/local/bin)
-    --reinstall                    uninstall and then reinstall the agent (false)
+    --upgrade                      upgrade the agent (false)
+    --reinstall                    cleanly uninstall and then reinstall the agent (false)
     --uninstall                    uninstall the agent (false)
     --config=PATH                  configuration file to install in /etc/glpi-agent/conf.d
     --clean                        clean everything when uninstalling or before installing (false)
