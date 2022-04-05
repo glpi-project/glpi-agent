@@ -117,7 +117,7 @@ GetOptions(
     'version',
 ) or pod2usage(-verbose => 0);
 
-pod2usage(-verbose => 0, -exitstatus => 0) if $options->{help};
+pod2usage(-verbose => 1, -exitstatus => 0) if $options->{help};
 
 my $VERSION = $GLPI::Agent::Version::VERSION;
 
@@ -429,9 +429,29 @@ glpi-agent-installer.AppImage - GLPI Agent AppImage installer for linux
 
 glpi-agent-linux-installer.AppImage [options]
 
-=head1 CONFIGURATION OPTIONS
+=head1 OPTIONS
 
-=head2 Target definition options (mandatory)
+=head2 Installer options
+
+    --install                      install the agent (true)
+    -i --installpath=PATH          installation folder where to install AppImage and scripts links (/usr/local/bin)
+    --reinstall                    uninstall and then reinstall the agent (false)
+    --uninstall                    uninstall the agent (false)
+    --config=PATH                  configuration file to install in /etc/glpi-agent/conf.d
+    --clean                        clean everything when uninstalling or before installing (false)
+    --runnow                       run agent tasks after installation (false)
+    --service                      install agent as service (true)
+    --no-service                   don't install agent as service (false)
+    --cron=SCHED                   install agent as cron task (no). SCHED can be "daily" or "hourly".
+    --version                      print the installer version and exit
+    -S --silent                    make installer silent (false)
+    -h --help                      print this help
+    --script=SCRIPT                Run embedded script in place of installer
+    --perl                         Run embedded perl
+
+=head2 Other options are only related to GLPI Agent configuration.
+
+=head2 Target definition options (at least one is mandatory)
 
     -s --server=URI                send tasks result to a server
     -l --local=PATH                write tasks results locally
@@ -499,21 +519,3 @@ glpi-agent-linux-installer.AppImage [options]
     --conf-reload-interval=TIME    number of seconds between two configuration reloadings
     -t --tag=TAG                   add given tag to inventory results
     --vardir=PATH                  use specified path as storage folder for agent persistent datas (/var/lib/glpi-agent)
-
-=head2 Installer options
-
-    --install                      install the agent (true)
-    -i --installpath=PATH          installation folder where to install AppImage and scripts links (/usr/local/bin)
-    --reinstall                    uninstall and then reinstall the agent (false)
-    --uninstall                    uninstall the agent (false)
-    --config=PATH                  configuration file to install in /etc/glpi-agent/conf.d
-    --clean                        clean everything when uninstalling or before installing (false)
-    --runnow                       run agent tasks after installation (false)
-    --service                      install agent as service (true)
-    --no-service                   don't install agent as service (false)
-    --cron=SCHED                   install agent as cron task (no). SCHED can be "daily" or "hourly".
-    --version                      print the installer version and exit
-    -S --silent                    make installer silent (false)
-    -h --help                      print this help
-    --script=SCRIPT                Run embedded script in place of installer
-    --perl                         Run embedded perl
