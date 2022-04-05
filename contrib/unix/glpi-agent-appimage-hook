@@ -211,6 +211,7 @@ if ($uninstall) {
             if ($appimage) {
                 chomp($appimage);
                 ($installpath) = $appimage =~ m{^(.*)/[^/]+$};
+                unlink $appimage if -e $appimage && $appimage =~ /\.AppImage$/;
             }
             unlink "$vardir/.APPIMAGE" if $clean;
         }
@@ -343,9 +344,9 @@ if ($install) {
     system "rm -rf $vardir" if $clean;
     mkdir $vardir unless -d $vardir;
 
-    # Keep install dir in VARDIR
+    # Keep installed AppImage path in VARDIR
     if (open my $fh, ">", "$vardir/.APPIMAGE") {
-        print $fh $installpath, "\n";
+        print $fh $scripthook, "\n";
         close($fh);
     }
 
