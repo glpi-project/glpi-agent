@@ -70,17 +70,21 @@ __DATA__
     0070    V223HQ
     00a3    V243H
     00a8    X233H
+    00c7    V203H
     00d2    B243H
     00db    S273HL
     00f7    V193
     0133    V193HQV
+    0239    Acer V193L
     02d4    Acer G236HL
     0319    Acer H226HQL
+    0320    V193L
     032d    Acer V226HQL
     032e    Acer V246HL
     0330    Acer B226HQL
     0335    V226HQL
     0337    B226HQL
+    0363    V196L
     03de    G227HQL
     0424    Acer V246HQL
     042e    Acer K242HQL

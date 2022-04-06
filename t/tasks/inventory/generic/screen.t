@@ -135,6 +135,27 @@ my %edid_tests = (
         SERIAL       => 'LDQ0C0148330a6184000',
         DESCRIPTION  => '33/2008'
     },
+    'acer-v193l' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'Acer V193L',
+        ALTSERIAL    => 'LS2EE0024211',
+        SERIAL       => 'LS2EE00224800a974211',
+        DESCRIPTION  => '48/2012'
+    },
+    'acer-v193l.2' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'V193L',
+        ALTSERIAL    => 'LX6EE0128501',
+        SERIAL       => 'LX6EE012303056828501',
+        DESCRIPTION  => '3/2013'
+    },
+    'acer-v196l' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'V196L',
+        ALTSERIAL    => 'LYQEE0028500',
+        SERIAL       => 'LYQEE0026120179b8500',
+        DESCRIPTION  => '12/2016'
+    },
     'acer-v193hqv' => {
         MANUFACTURER => 'Acer Technologies',
         CAPTION      => 'V193HQV',
@@ -148,6 +169,13 @@ my %edid_tests = (
         ALTSERIAL    => 'LBP0C18340G0',
         SERIAL       => 'LBP0C1830291075740G0',
         DESCRIPTION  => '29/2010'
+    },
+    'acer-v203h' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'V203H',
+        ALTSERIAL    => 'LGP0D0098500',
+        SERIAL       => 'LGP0D009927082198500',
+        DESCRIPTION  => '27/2009'
     },
     'acer-v203w' => {
         MANUFACTURER => 'Acer Technologies',
