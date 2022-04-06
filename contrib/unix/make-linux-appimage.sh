@@ -158,7 +158,7 @@ case "$ARCH" in
         ;;
 esac
 
-# When running in GH Actions, LOCAL_SOURCE_FILE shoudl be set to used docker path
+# When running in GH Actions, LOCAL_SOURCE_FILE should be set to used docker path
 : ${LOCAL_SOURCE_FILE:=$ROOT/build}
 
 # First insert installer version definitions
@@ -169,7 +169,7 @@ AppDir:
   path: build/AppDir
 
   app_info:
-    id: org.glpi-project.glpi-agent
+    id: org.glpi_project.glpi_agent
     name: glpi-agent
     icon: glpi-agent
     version: $VERSION
@@ -222,6 +222,36 @@ AppImage:
   arch: $ARCH
 
 APPIMAGEBUILDER_YAML
+
+mkdir -p build/AppDir/usr/share/metainfo
+# First insert installer version definitions
+cat >build/AppDir/usr/share/metainfo/org.glpi_project.glpi_agent.appdata.xml <<METAINFO
+<?xml version="1.0" encoding="UTF-8"?>
+<component>
+  <id>org.glpi_project.glpi_agent</id>
+  <name>glpi-agent</name>
+  <summary>glpi-agent is an application essentially designed to keep track of computer inventory submitting it to a GLPI server.</summary>
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-2.0-or-later</project_license>
+  <description>
+    <p>
+      glpi-agent is an application designed to help a network  or system administrator to keep track of the hardware and software configurations of devices.
+      This agent can collect information from:
+      <ol>
+        <li>local machine (Inventory)</li>
+        <li>network using SNMP</li>
+        <li>VMware ESX or vCenter server</li>
+        <li>remote computer</li>
+      </ol>
+    </p>
+  </description>
+  <launchable type="service">glpi-agent</launchable>
+  <icon type="local" width="144" height="144">/usr/share/icons/144x144/glpi-agent.png</icon>
+  <categories>
+    <category>System</category>
+  </categories>
+</component>
+METAINFO
 
 # Make icons and copy logo
 if [ ! -e "build/AppDir/usr/share/icons/144x144/glpi-agent.png" ]; then
