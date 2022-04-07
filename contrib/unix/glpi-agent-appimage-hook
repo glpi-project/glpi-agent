@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use Fcntl;
 use Getopt::Long;
 use Pod::Usage;
 use File::Path qw(make_path remove_tree);
@@ -11,6 +12,8 @@ use GLPI::Agent::Version;
 
 my $appdir = $ENV{APPDIR}
     or die "No APPDIR in environment\n";
+
+$appdir =~ s{/+$}{};
 
 my %scripts = map { $_ => 1 } qw/
     glpi-agent glpi-esx glpi-injector glpi-inventory
@@ -148,11 +151,12 @@ my $install   = delete $options->{install}   // 0;
 my $uninstall = delete $options->{uninstall} // ($script && $script eq "glpi-agent-uninstall");
 my $reinstall = delete $options->{reinstall} // 0;
 my $upgrade   = delete $options->{upgrade}   // 0;
-die "One of --install, --upgrade, --reinstall or --uninstall options is mandatory\n"
-    unless $install || $reinstall || $uninstall;
 
 $install = $uninstall = 1 if $reinstall || $upgrade;
 $clean = 1 if $reinstall;
+
+die "One of --install, --upgrade, --reinstall or --uninstall options is mandatory\n"
+    unless $install || $reinstall || $uninstall;
 
 # On install we have to check mandatory option
 my $mandatory = !$install || $options->{server} || $options->{local};
@@ -202,17 +206,40 @@ sub info {
     map { print "$_\n" } @_;
 }
 
+sub copy {
+    my ($from, $to, $mode) = @_;
+    if (-d $to) {
+        $to =~ s{/+$}{};
+        my ($name) = $from =~ m{([^/]+)$};
+        $to .= "/" . $name;
+    }
+    my ($fhr, $fhw, $buffer);
+    if (sysopen($fhr, $from, O_RDONLY)) {
+        my $size = -s $from;
+        if (sysopen($fhw, $to, O_CREAT|O_WRONLY|O_TRUNC, $mode // 0644)) {
+            if (sysread($fhr, $buffer, $size)) {
+                die "Can't write to $to: $!\n"
+                    unless syswrite($fhw, $buffer);
+            } else {
+                die "Can't read from $from: $!\n";
+            }
+            close($fhw);
+        } else {
+            die "Can't create $to: $!\n";
+        }
+        close($fhr);
+    } else {
+        die "Can't open $from for reading: $!\n";
+    }
+}
+
 $vardir = "/var/lib/glpi-agent" unless $vardir;
 
 my $appimage;
-if (-e "$vardir/.APPIMAGE" && !$installpath) {
-    if (open my $fh, "<", "$vardir/.APPIMAGE") {
-        ($appimage) = <$fh>;
+if (-e "$vardir/.INSTALLPATH" && !$installpath) {
+    if (open my $fh, "<", "$vardir/.INSTALLPATH") {
+        ($installpath) = <$fh>;
         close($fh);
-        if ($appimage) {
-            chomp($appimage);
-            ($installpath) = $appimage =~ m{^(.*)/[^/]+$};
-        }
     }
 }
 
@@ -284,7 +311,7 @@ if ($uninstall) {
         }
     }
 
-    unlink "$vardir/.APPIMAGE" if -e "$vardir/.APPIMAGE";
+    unlink "$vardir/.INSTALLPATH" if -e "$vardir/.INSTALLPATH";
     # Remove AppImage unless reinstalling
     unlink $appimage if $appimage && -e $appimage && $appimage =~ /\.AppImage$/ && !$reinstall;
 }
@@ -299,8 +326,7 @@ if ($install) {
         $scripthook = "$installpath/$filename";
         if ($scripthook ne $ENV{APPIMAGE}) {
             info("Copying AppImage to $installpath...");
-            system "cp $ENV{APPIMAGE} $scripthook"
-                and die "Failed to copy AppImage file\n";
+            copy($ENV{APPIMAGE}, $scripthook, 0755);
         }
     # Support installation without FUSE
     } elsif (-e "$appdir/AppRun") {
@@ -328,18 +354,12 @@ if ($install) {
     remove_tree("/etc/glpi-agent") if $clean;
     make_path("/etc/glpi-agent/conf.d");
     foreach my $conf (glob("$appdir/usr/share/glpi-agent/etc/*.cfg")) {
-        my ($name) = $conf =~ m{([^/])$};
-        system "cp -a '$conf' /etc/glpi-agent"
-            and die "Failed to copy $name configuration file\n";
+        copy($conf, "/etc/glpi-agent");
     }
-    foreach my $conf (glob("$appdir/config/*.cfg")) {
-        my ($name) = $conf =~ m{([^/])$};
-        system "cp -a '$conf' /etc/glpi-agent/conf.d"
-            and die "Failed to copy $name configuration file\n";
-    }
-    if ($configpath) {
-        system "cp -a '$configpath' /etc/glpi-agent/conf.d"
-            and die "Failed to copy $configpath file as configuration\n";
+    my @configs = glob("$appdir/config/*.cfg");
+    push @configs, $configpath if $configpath;
+    foreach my $conf (@configs) {
+        copy($conf, "/etc/glpi-agent/conf.d");
     }
 
     if (keys(%writeconf)) {
@@ -363,9 +383,9 @@ if ($install) {
     remove_tree($vardir) if $clean;
     make_path($vardir);
 
-    # Keep installed AppImage path in VARDIR
-    if (open my $fh, ">", "$vardir/.APPIMAGE") {
-        print $fh $scripthook, "\n";
+    # Keep installed install path in VARDIR
+    if (open my $fh, ">", "$vardir/.INSTALLPATH") {
+        print $fh $installpath, "\n";
         close($fh);
     }
 
