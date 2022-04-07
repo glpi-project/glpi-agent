@@ -252,8 +252,9 @@ if ($uninstall) {
     if ($systemd) {
         system "/usr/bin/systemctl disable glpi-agent".($silent ? " >/dev/null 2>&1" : "") if $active;
         unlink "/etc/systemd/system/glpi-agent.service" if -e "/etc/systemd/system/glpi-agent.service";
-    } else {
-        unlink "/etc/init.d/glpi-agent" if -e "/etc/init.d/glpi-agent";
+    } elsif (-e "/etc/init.d/glpi-agent") {
+        unlink "/etc/init.d/glpi-agent";
+        unlink glob "/etc/rc*.d/*glpi-agent";
     }
 
     if ($cron) {
@@ -399,7 +400,7 @@ if ($install) {
                 and die "Failed to enable glpi-agent service\n";
             system "/usr/bin/systemctl reload-or-restart glpi-agent".($silent ? " >/dev/null 2>&1" : "")
                 and die "Failed to start glpi-agent service\n";
-        } else {
+        } elsif (-d "/etc/init.d") {
             # Copy /etc/init.d/glpi-agent fixing installpath
             if (open my $fhr, "<", "$appdir/etc/init.d/glpi-agent") {
                 if (open my $fhw, ">", "/etc/init.d/glpi-agent") {
@@ -412,9 +413,16 @@ if ($install) {
                     die "Failed to write init file: $!\n";
                 }
                 close($fhr);
+                chmod 0755, "/etc/init.d/glpi-agent";
+                system "/etc/init.d/glpi-agent start".($silent ? " >/dev/null 2>&1" : "")
+                    and die "Failed to start glpi-agent service\n";
+                # Install rc links to start/stop service when convenient
+                foreach my $rc (0..6) {
+                    my $link = ($rc < 2 || $rc > 5) ? "K01glpi-agent" : "S99glpi-agent";
+                    symlink "../init.d/glpi-agent", "/etc/rc$rc.d/$link"
+                        or die "Can't create /etc/rc$rc.d/$link symbolic link: $!\n";
+                }
             }
-            system "/etc/init.d/glpi-agent start".($silent ? " >/dev/null 2>&1" : "")
-                and die "Failed to start glpi-agent service\n";
         }
     } elsif ($cron) {
         my $cronfile;
