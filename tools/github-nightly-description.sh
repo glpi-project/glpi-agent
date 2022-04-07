@@ -89,7 +89,7 @@ Linux installer for redhat/centos/debian/ubuntu, including snap install support|
 
 ### AppImage Linux installer for x86-64
 
-[glpi-agent_${VERSION}-x86_64.AppImage](glpi-agent_${VERSION}-x86_64.AppImage)
+[glpi-agent-${VERSION}-x86_64.AppImage](glpi-agent-${VERSION}-x86_64.AppImage)
 
 ### Debian/Ubuntu packages
 
