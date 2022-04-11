@@ -64,9 +64,15 @@ GetOptions(
     'no-ssl-check|S',
     'no-check|C',
     'no-header|H',
+    'vardir=s',
 ) or pod2usage(-verbose => 0);
 
 pod2usage(-verbose => 0, -exitstatus => 0) if $options->{help};
+
+if ($options->{vardir}) {
+    die "Wrong vardir option: $!\n" unless -d $options->{vardir};
+    $setup{vardir} = $options->{vardir};
+}
 
 my ($cmd, @params) = @ARGV;
 if ($cmd) {
@@ -581,6 +587,7 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
     -A --add            add scanned remotes to target so they always be inventoried
                         by RemoteInventory task
     -U --useragent      set used HTTP User-Agent for requests
+    --vardir <PATH>     use specified path as storage folder for agent persistent datas
 
   Target definition options:
     -s --server=<URI>   agent will send tasks result to that server
