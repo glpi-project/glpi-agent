@@ -356,9 +356,8 @@ sub _runSql {
     }
 
     if (wantarray) {
-        return grep { $_ } map {
+        return grep { defined($_) && length($_) } map {
             my $line = $_;
-            chomp($line);
             $line =~ s/\r$//;
             $line
         } getAllLines(%params);
