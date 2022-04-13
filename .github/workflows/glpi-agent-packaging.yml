@@ -639,7 +639,12 @@ jobs:
       id: upload-linux-appimage-assets
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
       run: |
-        gh release upload ${{ needs.setup-release.outputs.tag_name }} *.AppImage{,.zsync}
+        unset FILES
+        for file in *.AppImage{,.zsync}
+        do
+            [ -e "$file" ] && FILES="$FILES $file"
+        done
+        gh release upload ${{ needs.setup-release.outputs.tag_name }} $FILES
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
