@@ -172,7 +172,7 @@ AppDir:
     id: org.glpi_project.glpi_agent
     name: glpi-agent
     icon: glpi-agent
-    version: $VERSION
+    version: '$VERSION'
     exec: usr/bin/perl
     exec_args: "\$APPDIR/glpi-agent-appimage-hook \$@"
 
