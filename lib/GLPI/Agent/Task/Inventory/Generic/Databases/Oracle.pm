@@ -77,10 +77,18 @@ my %ORACLE_ENV;
 my %reset_ENV;
 
 sub _setEnv {
-    my ($sid, $home) = @_;
+    my (%params) = @_;
+
+    my $home = $params{home}
+        or return;
+    my $sid = $params{sid}
+        or return;
 
     my $sqlplus_path = $ORACLE_ENV{$home}
         or return;
+
+    $params{logger}->debug2("Setting up environment for $sid SID instance: ORACLE_HOME=$home, $sqlplus_path inserted in PATH")
+        if $params{logger};
 
     # Setup environment for sqlplus
     $ENV{ORACLE_SID}  = $sid;
@@ -110,13 +118,12 @@ sub _getDatabaseService {
 
     # Setup sqlplus needed environment but not during test
     unless ($params{istest}) {
-        my $sqlplus = "sqlplus";
-        unless (canRun($sqlplus)) {
+        my $oracle_home = _oracleHome();
+        if ($oracle_home && @{$oracle_home}) {
             map { $reset_ENV{$_} = $ENV{$_} } qw/ORACLE_HOME ORACLE_SID PATH LD_LIBRARY_PATH/;
-            my $oracle_home = _oracleHome();
             foreach my $home (@{$oracle_home}) {
                 next unless -d $home;
-                my ($sqlplus_path) = first { canRun($_."/sqlplus") } $home, $home."/bin";
+                my ($sqlplus_path) = first { ! -d "$_/sqlplus" && canRun("$_/sqlplus") } $home, $home."/bin";
                 unless ($sqlplus_path) {
                     $logger->debug2("slqplus not find in '$home' ORACLE_HOME") if $logger;
                     next;
@@ -125,7 +132,7 @@ sub _getDatabaseService {
             }
         }
 
-        unless (keys(%ORACLE_ENV)) {
+        unless (keys(%ORACLE_ENV) || canRun("sqlplus")) {
             $logger->debug("Can't find valid ORACLE_HOME") if $logger;
             return;
         }
@@ -157,13 +164,20 @@ sub _getDatabaseService {
                 my ($sid, $home) = $line =~ /^([^#*:][^:]*):([^:]+):/;
                 next unless $sid && $home;
                 next unless -d $home;
-                _setEnv($sid, $home);
+                _setEnv(
+                    sid     => $sid,
+                    home    => $home,
+                    logger  => $logger
+                );
                 $logger->debug2("Checking $sid SID instance...") if $logger;
                 my @inst = _getInstances(%params);
                 _resetEnv();
                 next unless @inst;
                 foreach my $name (map { /^([^,]+),/ } @inst) {
-                    $SID{$name} = [ $sid, $home ];
+                    $SID{$name} = {
+                        sid     => $sid,
+                        home    => $home
+                    };
                 }
                 push @instances, @inst;
             }
@@ -174,7 +188,10 @@ sub _getDatabaseService {
                 or next;
 
             # We will use SID if found in oratab
-            _setEnv(@{$SID{$instance_name}})
+            _setEnv(
+                %{$SID{$instance_name}},
+                logger  => $logger
+            )
                 if $SID{$instance_name};
 
             my $dbs_size = 0;
@@ -292,12 +309,11 @@ sub _runSql {
     unless ($params{istest}) {
         # Temp file will be deleted while leaving the function
         $exec = File::Temp->new(
-            DIR         => $params{connect} ? '' : '/tmp/',
             TEMPLATE    => 'oracle-XXXXXX',
             SUFFIX      => '.sql',
         );
         my $sqlfile = $exec->filename();
-        $command .= ' @'.$sqlfile;
+        $command .= ' @"'.$sqlfile.'"';
 
         my @lines = ();
         push @lines, $params{connect} if $params{connect};
