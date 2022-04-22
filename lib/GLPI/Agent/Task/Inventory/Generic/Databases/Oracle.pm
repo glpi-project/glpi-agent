@@ -87,13 +87,12 @@ sub _setEnv {
     my $sqlplus_path = $ORACLE_ENV{$home}
         or return;
 
-    $params{logger}->debug2("Setting up environment for $sid SID instance: ORACLE_HOME=$home, $sqlplus_path inserted in PATH")
+    $params{logger}->debug2("Setting up environment for $sid SID instance: ORACLE_HOME=$home $sqlplus_path/sqlplus")
         if $params{logger};
 
     # Setup environment for sqlplus
     $ENV{ORACLE_SID}  = $sid;
     $ENV{ORACLE_HOME} = $home;
-    $ENV{PATH}        = $sqlplus_path.":".$reset_ENV{PATH};
     $ENV{LD_LIBRARY_PATH} = join(":", map { $home.$_ } "", "/lib", "/network/lib");
 }
 
@@ -120,7 +119,7 @@ sub _getDatabaseService {
     unless ($params{istest}) {
         my $oracle_home = _oracleHome();
         if ($oracle_home && @{$oracle_home}) {
-            map { $reset_ENV{$_} = $ENV{$_} } qw/ORACLE_HOME ORACLE_SID PATH LD_LIBRARY_PATH/;
+            map { $reset_ENV{$_} = $ENV{$_} } qw/ORACLE_HOME ORACLE_SID LD_LIBRARY_PATH/;
             foreach my $home (@{$oracle_home}) {
                 next unless -d $home;
                 my ($sqlplus_path) = first { ! -d "$_/sqlplus" && canRun("$_/sqlplus") } $home, $home."/bin";
@@ -301,7 +300,10 @@ sub _runSql {
 
     $params{logger}->debug2("Running sql command via sqlplus: $sql") if $params{logger};
 
-    my $command = "sqlplus -S -L -F";
+    # Include sqlplus path if known
+    my $command = ($ENV{ORACLE_HOME} && $ORACLE_ENV{$ENV{ORACLE_HOME}}) ?
+        $ORACLE_ENV{$ENV{ORACLE_HOME}}."/" : "";
+    $command .= "sqlplus -S -L -F";
     $command .= $params{connect} ? " /nolog" : " / AS SYSDBA";
 
     # Don't try to create the temporary sql file during unittest
@@ -311,6 +313,7 @@ sub _runSql {
         $exec = File::Temp->new(
             TEMPLATE    => 'oracle-XXXXXX',
             SUFFIX      => '.sql',
+            TMPDIR      => 1,
         );
         my $sqlfile = $exec->filename();
         $command .= ' @"'.$sqlfile.'"';
@@ -333,10 +336,10 @@ sub _runSql {
                 $user = $asm_pmon->{USER} if $asm_pmon;
                 $env = "ORACLE_SID=$ENV{ORACLE_SID}";
             }
-            foreach my $key (qw(ORACLE_HOME PATH LD_LIBRARY_PATH)) {
+            foreach my $key (qw(ORACLE_HOME LD_LIBRARY_PATH)) {
                 next unless $ENV{$key};
                 $env .= " " if $env;
-                $env = "$key='$ENV{$key}'";
+                $env .= "$key='$ENV{$key}'";
             }
             if ($env) {
                 $command = sprintf("su - $user -c '%s %s'", $env, $command);
