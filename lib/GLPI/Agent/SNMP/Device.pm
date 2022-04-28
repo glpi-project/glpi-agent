@@ -278,6 +278,7 @@ sub setSerial {
             '.1.3.6.1.4.1.232.2.2.2.1.0',            # CPQSINFO-MIB
             '.1.3.6.1.4.1.232.11.2.10.3.0',          # CPQHOST-MIB
             '.1.3.6.1.4.1.14823.2.3.3.1.2.1.1.4.144.76.129.206.143.6', # ARUBA-MIB
+            '.1.3.6.1.4.1.89.2.12.0',                # DefencePro-MIB
         );
         foreach my $oid (@oids) {
             $serial = $self->get($oid);
