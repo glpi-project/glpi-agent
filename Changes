@@ -2,6 +2,9 @@ Revision history for GLPI agent
 
 1.3 not yet released
 
+inventory:
+* database: Oracle database inventory update
+
 packaging:
 * Update MacOSX to use perl 5.34.1, OpenSSL 3.0.2 and zlib 1.2.12
 
@@ -14,7 +17,6 @@ inventory:
 * Use uts.name for Proxmox lxc containers
 * Support customized AnyDesk client as remote management inventory on unix/linux
 * Backport of @xo4yecTb patch: NoLog option for megacli util fusioninventory/fusioninventory-agent#996
-* database: Oracle database inventory update
 * Fix teamviewer remote_mgmt inventory regression introduced in previous version
 * linux: Added flatpak softwares inventory support
 * database inventory: support default credential to inventory SQL Server 2012 Express
