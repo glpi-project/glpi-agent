@@ -2,6 +2,9 @@ Revision history for GLPI agent
 
 1.3 not yet released
 
+packaging:
+* Update MacOSX to use perl 5.34.1, OpenSSL 3.0.2 and zlib 1.2.12
+
 1.2 Wed, 13 Apr 2022
 
 core:

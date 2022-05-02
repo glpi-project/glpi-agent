@@ -3,9 +3,10 @@
 # PERL: https://www.perl.org/get.html
 # SSL:  https://www.openssl.org/source/
 # ZLIB: https://www.zlib.net/
-: ${PERL_VERSION:=5.34.0}
-: ${OPENSSL_VERSION:=3.0.0}
-: ${ZLIB_VERSION:=1.2.11}
+: ${PERL_VERSION:=5.34.1}
+: ${OPENSSL_VERSION:=3.0.2}
+: ${ZLIB_VERSION:=1.2.12}
+: ${ZLIB_SHA256:=91844808532e5ce316b3c010929493c0244f3d37593afd6de04f71821d5136d9}
 
 : ${BUILDER_NAME:="Guillaume Bougard (teclib)"}
 : ${BUILDER_MAIL:="gbougard_at_teclib.com"}
@@ -134,8 +135,15 @@ build_static_zlib () {
     cd "$ROOT"
     echo ======== Build zlib $ZLIB_VERSION
     ARCHIVE="zlib-$ZLIB_VERSION.tar.gz"
-    ZLIB_URL="http://www.zlib.net/$ARCHIVE"
+    ZLIB_URL="https://www.zlib.net/$ARCHIVE"
     [ -e "$ARCHIVE" ] || curl -so "$ARCHIVE" "$ZLIB_URL"
+    read SHA256 x <<<$( $SHASUM -a 256 $ARCHIVE )
+    if [ "$SHA256" == "$ZLIB_SHA256" ]; then
+        echo "Zlib $ZLIB_VERSION ready for building..."
+    else
+        echo "Can't build Zlib $ZLIB_VERSION, source archive sha256 digest mismatch"
+        exit 1
+    fi
     [ -d "zlib-$ZLIB_VERSION" ] || tar xzf "$ARCHIVE"
     [ -d "$ROOT/build/zlib" ] || mkdir -p "$ROOT/build/zlib"
     cd "$ROOT/build/zlib"
