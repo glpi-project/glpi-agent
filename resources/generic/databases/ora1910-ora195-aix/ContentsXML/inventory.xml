@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Copyright (c) 1999, 2021, Oracle and/or its affiliates.
+All rights reserved. -->
+<!-- Do not modify the contents of this file by hand. -->
+<INVENTORY>
+<VERSION_INFO>
+   <SAVED_WITH>12.2.0.7.0</SAVED_WITH>
+   <MINIMUM_VER>2.1.0.6.0</MINIMUM_VER>
+</VERSION_INFO>
+<HOME_LIST>
+<HOME NAME="OraDB195Home" LOC="/oracle/base/ora195" TYPE="O" IDX="6"/>
+<HOME NAME="OraDB1910Home" LOC="/oracle/base/ora1910" TYPE="O" IDX="7"/>
+<HOME NAME="OraDb11gHome" LOC="/oracle/base/ora112" TYPE="O" IDX="1" REMOVED="T"/>
+<HOME NAME="OraDB12Home" LOC="/oracle/base/ora122" TYPE="O" IDX="3" REMOVED="T"/>
+<HOME NAME="OraHome" LOC="/oracle/base/ora121" TYPE="O" IDX="2" REMOVED="T"/>
+<HOME NAME="OraDB184Home" LOC="/oracle/base/ora184" TYPE="O" IDX="4" REMOVED="T"/>
+<HOME NAME="OraDB190Home" LOC="/oracle/base/ora19" TYPE="O" IDX="5" REMOVED="T"/>
+</HOME_LIST>
+<COMPOSITEHOME_LIST>
+</COMPOSITEHOME_LIST>
+</INVENTORY>

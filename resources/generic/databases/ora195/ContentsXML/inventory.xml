@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Copyright (c) 1999, 2021, Oracle and/or its affiliates.
+All rights reserved. -->
+<!-- Do not modify the contents of this file by hand. -->
+<INVENTORY>
+<VERSION_INFO>
+   <SAVED_WITH>12.2.0.7.0</SAVED_WITH>
+   <MINIMUM_VER>2.1.0.6.0</MINIMUM_VER>
+</VERSION_INFO>
+<HOME_LIST>
+<HOME NAME="OraHome" LOC="/oracle/db/ora" TYPE="O" IDX="6"/>
+</HOME_LIST>
+<COMPOSITEHOME_LIST>
+</COMPOSITEHOME_LIST>
+</INVENTORY>
