@@ -8,10 +8,10 @@ use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::SNMP;
 
-use constant defencepro    => '.1.3.6.1.4.1.89';
-use constant model  => defencepro . '.2.14.0';
-use constant rndSerialNumber => defencepro . '.2.12.0';
-use constant rsWSDUserVersion => defencepro . '.35.1.34';
+use constant defencepro             => '.1.3.6.1.4.1.89';
+use constant model                  => defencepro . '.2.14.0';
+use constant rndSerialNumber        => defencepro . '.2.12.0';
+use constant rsWSDUserVersion       => defencepro . '.35.1.34';
 use constant rsWSDSysBaseMACAddress => defencepro . '.35.1.69.5.0';
 
 our $mibSupport = [
