@@ -30,7 +30,7 @@ sub getFirmware {
 sub getSerial {
     my ($self) = @_;
 
-    return $self->get(rndSerialNumber);
+    return getCanonicalString($self->get(rndSerialNumber));
 }
 
 sub getMacAddress {
