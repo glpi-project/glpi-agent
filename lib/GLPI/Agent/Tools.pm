@@ -434,6 +434,10 @@ sub getFileHandle {
             # Turn off localised output for commands
             local $ENV{LC_ALL} = 'C';
             local $ENV{LANG} = 'C';
+            # Delete LD_LIBRARY_PATH env when run from AppImage to always run system
+            # binaries with system libraries
+            delete $ENV{LD_LIBRARY_PATH}
+                if $ENV{LD_LIBRARY_PATH} && $ENV{APPRUN_STARTUP_APPIMAGE_UUID} && $ENV{APPDIR};
             # Ignore 'Broken Pipe' warnings on Solaris
             local $SIG{PIPE} = 'IGNORE' if $OSNAME eq 'solaris';
             my $command = sprintf($cmdtemplate, $params{command});

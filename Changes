@@ -2,11 +2,16 @@ Revision history for GLPI agent
 
 1.3 not yet released
 
+core:
+* fix: detect if agent is run via AppImage to cleanup LD_LIBRARY_PATH. This avoid
+  to use AppImage C library when binaries really depend on system libc.
+
 inventory:
 * database: Oracle database inventory update
 
 packaging:
 * Update MacOSX to use perl 5.34.1, OpenSSL 3.0.2 and zlib 1.2.12
+* fix: AppImage support on older linux like CentOS 7
 
 1.2 Wed, 13 Apr 2022
 
