@@ -21,6 +21,12 @@ our $mibSupport = [
     }
 ];
 
+sub getFirmware {
+    my ($self) = @_;
+
+    return $self->get(rsWSDUserVersion);
+}
+
 sub getSerial {
     my ($self) = @_;
 
