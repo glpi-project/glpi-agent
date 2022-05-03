@@ -30,7 +30,7 @@ sub getSerial {
 sub getMacAddress {
     my ($self) = @_;
 
-    return $self->get(rsWSDSysBaseMACAddress);
+    return getCanonicalMacAddress($self->get(rsWSDSysBaseMACAddress));
 }
 
 sub getModel {
