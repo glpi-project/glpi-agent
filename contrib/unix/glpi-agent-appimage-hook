@@ -131,7 +131,12 @@ if ($options->{version}) {
     exit 0;
 }
 
-my $id = qx/id -u/;
+my $id;
+{
+    delete local @ENV{qw/LD_LIBRARY_PATH LD_PRELOAD/};
+    $id = qx/id -u/;
+}
+chomp($id);
 die "GLPI Agent AppImage v$VERSION can only be run as root when installing or uninstalling\n"
     unless defined($id) && int($id) == 0;
 
@@ -193,7 +198,7 @@ if (-d "/etc/glpi-agent/conf.d") {
     }
     # Complete mandatory check in the case we are just re-installing with current conf (upgrade support)
     $mandatory = $config{server} || $config{local}
-        unless $mandatory;
+        unless $mandatory || $reinstall;
     # Keep vardir if found in conf
     $vardir = $config{vardir} unless defined($vardir);
 }
@@ -240,6 +245,7 @@ if (-e "$vardir/.INSTALLPATH" && !$installpath) {
     if (open my $fh, "<", "$vardir/.INSTALLPATH") {
         ($installpath) = <$fh>;
         close($fh);
+        chomp($installpath);
     }
 }
 
@@ -254,15 +260,19 @@ unless (-d $installpath) {
 my $active;
 my $systemd = -x "/usr/bin/systemctl" && -d "/etc/systemd/system";
 if ($systemd) {
+    delete local @ENV{qw/LD_LIBRARY_PATH LD_PRELOAD/};
     $active = qx{/usr/bin/systemctl is-active glpi-agent 2>/dev/null};
     chomp $active;
-    if ($active eq "active") {
+    if ($active && $active eq "active") {
+        info("Stopping glpi-agent service...") if $options->{debug};
         system "/usr/bin/systemctl stop glpi-agent".($silent ? " >/dev/null 2>&1" : "")
             and die "Can't stop glpi-agent service\n";
     } else {
         undef $active;
     }
 } elsif (-e "/etc/init.d/glpi-agent") {
+    delete local @ENV{qw/LD_LIBRARY_PATH LD_PRELOAD/};
+    info("Stopping glpi-agent service...") if $options->{debug};
     system "/etc/init.d/glpi-agent stop".($silent ? " >/dev/null 2>&1" : "")
         and die "Can't stop glpi-agent service\n";
 }
@@ -277,8 +287,12 @@ if ($uninstall) {
     }
 
     if ($systemd) {
+        delete local @ENV{qw/LD_LIBRARY_PATH LD_PRELOAD/};
         system "/usr/bin/systemctl disable glpi-agent".($silent ? " >/dev/null 2>&1" : "") if $active;
-        unlink "/etc/systemd/system/glpi-agent.service" if -e "/etc/systemd/system/glpi-agent.service";
+        if (-e "/etc/systemd/system/glpi-agent.service") {
+            unlink "/etc/systemd/system/glpi-agent.service";
+            system "/usr/bin/systemctl daemon-reload".($silent ? " >/dev/null 2>&1" : "");
+        }
     } elsif (-e "/etc/init.d/glpi-agent") {
         unlink "/etc/init.d/glpi-agent";
         unlink glob "/etc/rc*.d/*glpi-agent";
@@ -300,20 +314,19 @@ if ($uninstall) {
             remove_tree($vardir);
         }
         unlink "/var/log/glpi-agent.cron.log" if -e "/var/log/glpi-agent.cron.log";
-        # On cleaning, also remove AppImage file unless re-installing
-        unless ($install) {
-            if ($script =~ /glpi-uninstall$/ && $ENV{APPIMAGE} && -e $ENV{APPIMAGE}) {
-                unlink $ENV{APPIMAGE};
-            } elsif (-e "$appdir/glpi-agent.png") {
-                # Support clean uninstall on systems where the App was extracted manually
-                remove_tree($appdir);
-            }
+    }
+
+    # Also remove AppImage file unless re-installing
+    unless ($install) {
+        if ($script =~ /glpi-agent-uninstall$/ && $ENV{APPIMAGE} && -e $ENV{APPIMAGE}) {
+            unlink $ENV{APPIMAGE};
+        } elsif (-e "$appdir/glpi-agent.png") {
+            # Support clean uninstall on systems where the App was extracted manually
+            remove_tree($appdir);
         }
     }
 
     unlink "$vardir/.INSTALLPATH" if -e "$vardir/.INSTALLPATH";
-    # Remove AppImage unless reinstalling
-    unlink $appimage if $appimage && -e $appimage && $appimage =~ /\.AppImage$/ && !$reinstall;
 }
 
 if ($install) {
@@ -324,7 +337,9 @@ if ($install) {
         my ($filename) = $ENV{APPIMAGE} =~ m{([^/]+)$}
             or die "Can't extract AppImage filename: $!\n";
         $scripthook = "$installpath/$filename";
-        if ($scripthook ne $ENV{APPIMAGE}) {
+        # Only copy AppImage if not the same and still not present
+        delete local @ENV{qw/LD_LIBRARY_PATH LD_PRELOAD/};
+        if ($scripthook ne $ENV{APPIMAGE} && (! -e $scripthook || system("cmp -s $scripthook $ENV{APPIMAGE}"))) {
             info("Copying AppImage to $installpath...");
             copy($ENV{APPIMAGE}, $scripthook, 0755);
         }
@@ -402,7 +417,9 @@ if ($install) {
 
     # Install service
     if ($service) {
+        delete local @ENV{qw/LD_LIBRARY_PATH LD_PRELOAD/};
         if ($systemd) {
+            my $reloaddaemon = -e "/etc/systemd/system/glpi-agent.service";
             # Copy glpi-agent.service fixing ExecStart
             if (open my $fhr, "<", "$appdir/lib/systemd/system/glpi-agent.service") {
                 if (open my $fhw, ">", "/etc/systemd/system/glpi-agent.service") {
@@ -416,6 +433,8 @@ if ($install) {
                 }
                 close($fhr);
             }
+            system "/usr/bin/systemctl daemon-reload".($silent ? " >/dev/null 2>&1" : "")
+                if $reloaddaemon;
             system "/usr/bin/systemctl enable glpi-agent".($silent ? " >/dev/null 2>&1" : "")
                 and die "Failed to enable glpi-agent service\n";
             system "/usr/bin/systemctl reload-or-restart glpi-agent".($silent ? " >/dev/null 2>&1" : "")
