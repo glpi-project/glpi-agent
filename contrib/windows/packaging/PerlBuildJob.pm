@@ -4,7 +4,7 @@ package
 use parent 'Exporter';
 
 use constant {
-    PERL_VERSION       => "5.34.0",
+    PERL_VERSION       => "5.34.1",
     PERL_BUILD_STEPS   => 8,
 };
 

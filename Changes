@@ -14,6 +14,7 @@ netdiscovery/netinventory:
 * Enhanced DefensePro support, thanks to @sectoolsacc
 
 packaging:
+* Windows MSI installer based on StrawBerry Perl 5.34.1
 * Update MacOSX to use perl 5.34.1, OpenSSL 3.0.2 and zlib 1.2.12
 * fix: AppImage support on older linux like CentOS 7
 * fix: AppImage uninstall support on older linux like CentOS 7
