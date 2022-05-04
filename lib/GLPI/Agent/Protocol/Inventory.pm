@@ -86,7 +86,7 @@ my %normalize = (
         boolean         => [ qw/REMOVABLE/ ],
     },
     MONITORS         => {
-        string          => [ qw/DESCRIPTION/ ],
+        string          => [ qw/DESCRIPTION SERIAL ALTSERIAL/ ],
     },
     NETWORKS         => {
         required        => [ qw/DESCRIPTION/ ],

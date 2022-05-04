@@ -8,6 +8,7 @@ core:
 
 inventory:
 * database: Oracle database inventory update
+* fix #114: JSON validation error on numeric monitor serial
 
 netdiscovery/netinventory:
 * Enhanced DefensePro support, thanks to @sectoolsacc
