@@ -150,6 +150,7 @@ sub _build_steps {
                 # crypto
                 qw/ Crypt::DES Crypt::Rijndael /,
                 qw/ Digest-SHA /,
+                qw/ Digest-MD5 Digest-SHA1 Digest::HMAC /, # Required for SNMP v3 authentication
 
                 # date/time
                 qw/ DateTime DateTime::TimeZone::Local::Win32 /,
