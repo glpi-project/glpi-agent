@@ -3,8 +3,8 @@ Revision history for GLPI agent
 1.3 not yet released
 
 core:
-* fix: detect if agent is run via AppImage to cleanup LD_LIBRARY_PATH. This avoid
-  to use AppImage C library when binaries really depend on system libc.
+* fix: detect if agent is run via AppImage to cleanup LD_LIBRARY_PATH & LD_PRELOAD.
+  This avoid to use AppImage C library for binaries used during inventory.
 
 inventory:
 * database: Oracle database inventory update
