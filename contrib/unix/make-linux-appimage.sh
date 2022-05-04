@@ -213,6 +213,7 @@ AppDir:
 
   runtime:
     env:
+      LANG: C
       APPDIR_LIBRARY_PATH: \$APPDIR/lib/x86_64-linux-gnu:\$APPDIR/usr/lib/x86_64-linux-gnu
       PERL5LIB: \$APPDIR/usr/share/glpi-agent/lib:\$APPDIR/usr/lib/x86_64-linux-gnu/perl5/5.26:\$APPDIR/usr/share/perl5:\$APPDIR/usr/lib/x86_64-linux-gnu/perl/5.26:\$APPDIR/usr/share/perl/5.26:\$APPDIR/usr/lib/x86_64-linux-gnu/perl-base
 
