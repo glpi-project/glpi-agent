@@ -145,6 +145,18 @@ my $silent      = delete $options->{silent} // 0;
 my $cron        = delete $options->{cron} // 0;
 die "GLPI Agent can't be installed as service and cron task at the same time\n"
     if $cron && $options->{service};
+
+# Check if we are upgrading a cron based installation
+if (!$cron && $options->{upgrade} && !$options->{service}) {
+    if (-e "/etc/cron.daily/glpi-agent") {
+        $cron = "daily";
+        $options->{service} = 0;
+    } elsif (-e "/etc/cron.hourly/glpi-agent") {
+        $cron = "hourly";
+        $options->{service} = 0;
+    }
+}
+
 my $service     = delete $options->{service} // 1;
 my $runnow      = delete $options->{runnow} // 0;
 my $installpath = delete $options->{installpath};
