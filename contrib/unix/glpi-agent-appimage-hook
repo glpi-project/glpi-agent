@@ -260,6 +260,13 @@ if (-e "$vardir/.INSTALLPATH" && !$installpath) {
         chomp($installpath);
     }
 }
+if (-e "$vardir/.APPIMAGE") {
+    if (open my $fh, "<", "$vardir/.APPIMAGE") {
+        ($appimage) = <$fh>;
+        close($fh);
+        chomp($appimage);
+    }
+}
 
 # Fallback to default
 $installpath = "/usr/local/bin" unless $installpath;
@@ -326,11 +333,17 @@ if ($uninstall) {
         unlink "/var/log/glpi-agent.cron.log" if -e "/var/log/glpi-agent.cron.log";
     }
 
+    # We always need to remove current AppImage while upgrading with a newer AppImage
+    if ($appimage && $ENV{APPIMAGE} && $appimage ne $ENV{APPIMAGE}) {
+        unlink $appimage if -e $appimage;
+        unlink "$vardir/.APPIMAGE";
+    }
+
     # Also remove AppImage file unless re-installing
     unless ($install) {
-        if ($script =~ /glpi-agent-uninstall$/ && $ENV{APPIMAGE} && -e $ENV{APPIMAGE}) {
+        if ($script && $script =~ /glpi-agent-uninstall$/ && $ENV{APPIMAGE} && -e $ENV{APPIMAGE}) {
             unlink $ENV{APPIMAGE};
-        } elsif (-e "$appdir/glpi-agent.png") {
+        } elsif (!$ENV{APPIMAGE} && -e "$appdir/glpi-agent.png") {
             # Support clean uninstall on systems where the App was extracted manually
             remove_tree($appdir);
         }
@@ -352,6 +365,11 @@ if ($install) {
         if ($scripthook ne $ENV{APPIMAGE} && (! -e $scripthook || system("cmp -s $scripthook $ENV{APPIMAGE}"))) {
             info("Copying AppImage to $installpath...");
             copy($ENV{APPIMAGE}, $scripthook, 0755);
+        }
+        # Keep installed AppImage in VARDIR so it can ben removed on upgrade
+        if (open my $fh, ">", "$vardir/.APPIMAGE") {
+            print $fh $scripthook, "\n";
+            close($fh);
         }
     # Support installation without FUSE
     } elsif (-e "$appdir/AppRun") {
