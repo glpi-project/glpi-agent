@@ -298,10 +298,8 @@ if ($uninstall) {
         unlink glob "/etc/rc*.d/*glpi-agent";
     }
 
-    if ($cron) {
-        unlink "/etc/cron.daily/glpi-agent" if -e "/etc/cron.daily/glpi-agent";
-        unlink "/etc/cron.hourly/glpi-agent" if -e "/etc/cron.hourly/glpi-agent";
-    }
+    unlink "/etc/cron.daily/glpi-agent" if -e "/etc/cron.daily/glpi-agent";
+    unlink "/etc/cron.hourly/glpi-agent" if -e "/etc/cron.hourly/glpi-agent";
 
     if ($clean) {
         info("Cleaning...");
