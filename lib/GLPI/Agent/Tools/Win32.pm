@@ -14,6 +14,7 @@ use Thread::Semaphore;
 use UNIVERSAL::require();
 use MIME::Base64;
 use Encode;
+use File::Temp;
 
 use constant KEY_WOW64_64 => 0x100;
 use constant KEY_WOW64_32 => 0x200;
@@ -538,10 +539,24 @@ sub runPowerShell {
     my $script = delete $params{script}
         or return;
 
-    my $encodedScript = encode_base64(encode("UTF16-LE", $script), "");
+    my ($fh, $psOption);
+    if ($GLPI::Agent::Tools::remote) {
+        $psOption = "-encodedCommand " . encode_base64(encode("UTF16-LE", $script), "");
+    } else {
+        # Keeps File::Temp object in %params so temporary file is removed while leaving
+        $fh = File::Temp->new(
+            TEMPLATE    => 'get-appxpackage-XXXXXX',
+            SUFFIX      => '.ps1'
+        );
+        print $fh $script;
+        close( $fh);
+        my $file = $fh->filename;
+        return unless $file && -f $file;
+        $psOption = "-File $file";
+    }
 
     return map { decode("UTF-8", $_) } getAllLines(
-        command => "powershell -NonInteractive -ExecutionPolicy Unrestricted -encodedCommand $encodedScript",
+        command => "powershell -NonInteractive -ExecutionPolicy Unrestricted $psOption",
         %params
     );
 }

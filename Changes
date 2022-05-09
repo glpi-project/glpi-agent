@@ -9,6 +9,9 @@ core:
 inventory:
 * database: Oracle database inventory update
 * fix #114: JSON validation error on numeric monitor serial
+* fix #116: for win32 software inventory, better use temporary file to run uwp
+  powershell script on local computer. This prevents false positive alert from
+  few anti-virus when agent is run locally.
 
 netdiscovery/netinventory:
 * Enhanced DefensePro support, thanks to @sectoolsacc
