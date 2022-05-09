@@ -342,15 +342,15 @@ Send the results of tasks execution to given server.
 If I<URI> doesn't start with http:// or https://, the agent assume the
 parameter is a hostname and rewrite it as:
 
-    % --server=http://example/front/inventory.php
+    % --server=http://my-glpi-server/
 
 In general, GLPI server URL have this format:
 
-    http://example/front/inventory.php
+    http://my-glpi-server/
 
 and FusionInventory for GLPI this one:
 
-    http://example/glpi/plugins/fusioninventory
+    http://my-glpi-server/plugins/fusioninventory
 
 Multiple values can be specified, using comma as a separator.
 
