@@ -366,11 +366,6 @@ if ($install) {
             info("Copying AppImage to $installpath...");
             copy($ENV{APPIMAGE}, $scripthook, 0755);
         }
-        # Keep installed AppImage in VARDIR so it can ben removed on upgrade
-        if (open my $fh, ">", "$vardir/.APPIMAGE") {
-            print $fh $scripthook, "\n";
-            close($fh);
-        }
     # Support installation without FUSE
     } elsif (-e "$appdir/AppRun") {
         $scripthook = "$appdir/AppRun";
@@ -429,6 +424,12 @@ if ($install) {
     # Keep installed install path in VARDIR
     if (open my $fh, ">", "$vardir/.INSTALLPATH") {
         print $fh $installpath, "\n";
+        close($fh);
+    }
+
+    # Keep installed AppImage in VARDIR so it can ben removed on upgrade
+    if (open my $fh, ">", "$vardir/.APPIMAGE") {
+        print $fh $scripthook, "\n";
         close($fh);
     }
 
