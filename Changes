@@ -12,6 +12,7 @@ inventory:
 * fix #116: for win32 software inventory, better use temporary file to run uwp
   powershell script on local computer. This prevents false positive alert from
   few anti-virus when agent is run locally.
+* fix version for CentOS 7.x Operating System
 
 netdiscovery/netinventory:
 * Enhanced DefensePro support, thanks to @sectoolsacc
