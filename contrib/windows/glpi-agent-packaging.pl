@@ -169,7 +169,8 @@ sub run {
     my $rv = $self->execute_standard($makefile_pl_cmd);
     die "ERROR: TEST, perl Makefile.PL\n" unless (defined $rv && $rv == 0);
 
-    my $make_test_cmd = [ $makebin, "test" ];
+    # Only test files compilation
+    my $make_test_cmd = [ $makebin, "test", "TEST_FILES=t/01compile.t" ];
     $self->boss->message(2, "Test: gonna run gmake test");
     $rv = $self->execute_standard($make_test_cmd);
     die "ERROR: TEST, make test\n" unless (defined $rv && $rv == 0);
