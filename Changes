@@ -19,6 +19,7 @@ netdiscovery/netinventory:
 
 packaging:
 * Windows MSI installer based on StrawBerry Perl 5.34.1
+* fix #120: Fix windows service installation when PERL5LIB env is set
 * fix #103: Embed Digest::MD5, Digest::SHA1, Digest::HMAC on windows for SNMP v3 authentication
 * Update MacOSX to use perl 5.34.1, OpenSSL 3.0.2 and zlib 1.2.12
 * fix: AppImage support on older linux like CentOS 7
