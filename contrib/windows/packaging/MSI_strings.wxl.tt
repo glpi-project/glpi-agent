@@ -181,7 +181,7 @@
   <String Id="SetupTypeDlgTypicalText">Installs the most common program features, including Inventory, Deploy and Collect tasks support.</String>
   <String Id="SetupTypeDlgCompleteText">All program features will be installed.</String>
   <String Id="ProgressDlgTitleInstalling">{\WixUI_Font_Title}Installing [ProductName]</String>
-  <String Id="RunningAgent">Running [AgentName], this may take a while...</String>
+  <String Id="RunningAgent">Running GLPI Agent, this may take a while...</String>
 
   <!-- texts related to firewall exceptions -->
   <String Id="FirewallExceptionName">GLPI Agent</String>
