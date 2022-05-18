@@ -356,15 +356,15 @@
     <CustomAction Id="SetRunNow" Property="RunNow" Value='"[#f_glpiagent]"' Execute="immediate" />
     <CustomAction Id="RunNow" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
-    <CustomAction Id="SetEndTask" Property="EndTask" Value='"schtasks" /tn "[AgentName]" /end' Execute="immediate" />
+    <CustomAction Id="SetEndTask" Property="EndTask" Value='"schtasks" /tn "$(var.AgentName)" /end' Execute="immediate" />
     <CustomAction Id="EndTask" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
-    <CustomAction Id="SetDeleteTask" Property="DeleteTask" Value='"schtasks" /f /tn "[AgentName]" /delete' Execute="immediate" />
+    <CustomAction Id="SetDeleteTask" Property="DeleteTask" Value='"schtasks" /f /tn "$(var.AgentName)" /delete' Execute="immediate" />
     <CustomAction Id="DeleteTask" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
-    <CustomAction Id="SetTaskMinute" Property="TaskMinute" Value='"schtasks" /f /tn "[AgentName]" /create /ru system /tr "[#f_glpiagent]" /sc minute /mo [TASK_MINUTE_MODIFIER]' Execute="immediate" />
+    <CustomAction Id="SetTaskMinute" Property="TaskMinute" Value='"schtasks" /f /tn "$(var.AgentName)" /create /ru system /tr "[#f_glpiagent]" /sc minute /mo [TASK_MINUTE_MODIFIER]' Execute="immediate" />
     <CustomAction Id="TaskMinute" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
-    <CustomAction Id="SetTaskHourly" Property="TaskHourly" Value='"schtasks" /f /tn "[AgentName]" /create /ru system /tr "[#f_glpiagent]" /sc hourly /mo [TASK_HOURLY_MODIFIER]' Execute="immediate" />
+    <CustomAction Id="SetTaskHourly" Property="TaskHourly" Value='"schtasks" /f /tn "$(var.AgentName)" /create /ru system /tr "[#f_glpiagent]" /sc hourly /mo [TASK_HOURLY_MODIFIER]' Execute="immediate" />
     <CustomAction Id="TaskHourly" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
-    <CustomAction Id="SetTaskDaily" Property="TaskDaily" Value='"schtasks" /f /tn "[AgentName]" /create /ru system /tr "[#f_glpiagent]" /sc daily /mo [TASK_DAILY_MODIFIER]' Execute="immediate" />
+    <CustomAction Id="SetTaskDaily" Property="TaskDaily" Value='"schtasks" /f /tn "$(var.AgentName)" /create /ru system /tr "[#f_glpiagent]" /sc daily /mo [TASK_DAILY_MODIFIER]' Execute="immediate" />
     <CustomAction Id="TaskDaily" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
     <InstallExecuteSequence>
