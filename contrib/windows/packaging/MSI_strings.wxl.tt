@@ -184,7 +184,7 @@
   <String Id="RunningAgent">Running [AgentName], this may take a while...</String>
 
   <!-- texts related to firewall exceptions -->
-  <String Id="FirewallExceptionName">[AgentName]</String>
-  <String Id="FirewallExceptionDescription">[AgentName] embedded HTTP server incoming traffic</String>
-  <String Id="OutgoingFirewallExceptionDescription">[AgentName] outgoing traffic</String>
+  <String Id="FirewallExceptionName">GLPI Agent</String>
+  <String Id="FirewallExceptionDescription">GLPI Agent embedded HTTP server incoming traffic</String>
+  <String Id="OutgoingFirewallExceptionDescription">GLPI Agent outgoing traffic</String>
 </WixLocalization>
