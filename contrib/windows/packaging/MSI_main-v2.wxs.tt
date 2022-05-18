@@ -351,9 +351,9 @@
     <CustomAction Id="SetAddFirewallExceptionOutCmd" Property="AddFirewallExceptionOut" Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall add rule name=&quot;!(loc.FirewallExceptionName)&quot; program=&quot;[#f_agent_exe]&quot; description=&quot;!(loc.OutgoingFirewallExceptionDescription)&quot; dir=out action=allow" Execute="immediate" />
     <CustomAction Id="AddFirewallExceptionOut" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
-    <CustomAction Id="SetForceRun" Property="ForceRun" Value='"[#f_glpiagent]" --set-forcerun' Execute="immediate" />
+    <CustomAction Id="SetForceRun" Property="ForceRun" Value="&quot;[#f_glpiagent]&quot; --set-forcerun" Execute="immediate" />
     <CustomAction Id="ForceRun" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
-    <CustomAction Id="SetRunNow" Property="RunNow" Value='"[#f_glpiagent]"' Execute="immediate" />
+    <CustomAction Id="SetRunNow" Property="RunNow" Value="&quot;[#f_glpiagent]&quot; --force" Execute="immediate" />
     <CustomAction Id="RunNow" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
     <CustomAction Id="SetEndTask" Property="EndTask" Value='"schtasks" /tn "$(var.AgentName)" /end' Execute="immediate" />
