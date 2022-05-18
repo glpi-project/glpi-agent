@@ -344,11 +344,11 @@
     <CustomAction Id="SetDefaultLogFile"   Property="LOGFILE" Value="[INSTALLDIR]logs\glpi-agent.log" Execute="firstSequence" />
     <CustomAction Id="SetDefaultVarDir"    Property="VARDIR"  Value="[INSTALLDIR]var" Execute="firstSequence" />
 
-    <CustomAction Id="SetDeleteFirewallExceptionCmd" Property="DeleteFirewallException" Value='"netsh" advfirewall firewall delete rule name="!(loc.FirewallExceptionName)"' Execute="immediate" />
+    <CustomAction Id="SetDeleteFirewallExceptionCmd" Property="DeleteFirewallException" Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;!(loc.FirewallExceptionName)&quot;" Execute="immediate" />
     <CustomAction Id="DeleteFirewallException" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
-    <CustomAction Id="SetAddFirewallExceptionInCmd" Property="AddFirewallExceptionIn" Value='"netsh" advfirewall firewall add rule name="!(loc.FirewallExceptionName)" program="[#f_agent_exe]" description="!(loc.FirewallExceptionDescription)" protocol=TCP dir=in localport=[HTTPD_PORT] action=allow' Execute="immediate" />
+    <CustomAction Id="SetAddFirewallExceptionInCmd" Property="AddFirewallExceptionIn" Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall add rule name=&quot;!(loc.FirewallExceptionName)&quot; program=&quot;[#f_agent_exe]&quot; description=&quot;!(loc.FirewallExceptionDescription)&quot; protocol=TCP dir=in localport=[HTTPD_PORT] action=allow" Execute="immediate" />
     <CustomAction Id="AddFirewallExceptionIn" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
-    <CustomAction Id="SetAddFirewallExceptionOutCmd" Property="AddFirewallExceptionOut" Value='"netsh" advfirewall firewall add rule name="!(loc.FirewallExceptionName)" program="[#f_agent_exe]" description="!(loc.OutgoingFirewallExceptionDescription)" dir=out action=allow' Execute="immediate" />
+    <CustomAction Id="SetAddFirewallExceptionOutCmd" Property="AddFirewallExceptionOut" Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall add rule name=&quot;!(loc.FirewallExceptionName)&quot; program=&quot;[#f_agent_exe]&quot; description=&quot;!(loc.OutgoingFirewallExceptionDescription)&quot; dir=out action=allow" Execute="immediate" />
     <CustomAction Id="AddFirewallExceptionOut" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
     <CustomAction Id="SetForceRun" Property="ForceRun" Value='"[#f_glpiagent]" --set-forcerun' Execute="immediate" />
