@@ -630,15 +630,15 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
     glpi-remote add winrm://admin:pass@192.168.48.250 --no-check --target server0
     glpi-remote delete 1
     glpi-remote scan 192.168.43.1 192.168.43.254
-    glpi-remote scan 10.0.0.1 10.0.10.254 --inventory -s https://myglpi/front/inventory.php
+    glpi-remote scan 10.0.0.1 10.0.10.254 --inventory -s https://myglpi/
     glpi-remote scan 10.0.0.1 10.0.10.254 --inventory -l /var/tmp/remotes
     glpi-remote scan --inventory
-    glpi-remote scan 192.168.48.99 | glpi-injector -url https://myglpi/front/inventory.php
+    glpi-remote scan 192.168.48.99 | glpi-injector -url https://myglpi/
 
   Examples for agent command:
     glpi-remote -T strong-shared-secret agent 192.168.43.236
     glpi-remote -v -T strong-shared-secret agent 192.168.43.237 | \
-        glpi-injector -url https://myglpi/front/inventory.php
+        glpi-injector -url https://myglpi/
     glpi-remote -T strong-shared-secret -d /var/remote agent 192.168.43.236 192.168.43.237
 
 =head1 DESCRIPTION

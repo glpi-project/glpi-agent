@@ -182,7 +182,7 @@ glpi-esx --host <host> --user <user> --password <password> --directory <director
 
 You can import the .xml file in your inventory server with the glpi-injector tool.
 
-    % glpi-injector -v --file /tmp/*.xml -u https://example/front/inventory.php
+    % glpi-injector -v --file /tmp/*.xml -u https://example/
 
 =head1 DESCRIPTION
 
