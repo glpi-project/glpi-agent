@@ -32,7 +32,7 @@ CVS/
 \.swp
 
 
-^Glpi-Perl-Agent.*
+^GLPI-Agent.*
 /tarballs/
 ^setup.sh
 
