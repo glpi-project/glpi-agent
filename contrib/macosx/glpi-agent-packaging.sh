@@ -4,7 +4,7 @@
 # SSL:  https://www.openssl.org/source/
 # ZLIB: https://www.zlib.net/
 : ${PERL_VERSION:=5.34.1}
-: ${OPENSSL_VERSION:=3.0.2}
+: ${OPENSSL_VERSION:=3.0.3}
 : ${ZLIB_VERSION:=1.2.12}
 : ${ZLIB_SHA256:=91844808532e5ce316b3c010929493c0244f3d37593afd6de04f71821d5136d9}
 
