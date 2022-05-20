@@ -208,6 +208,12 @@
     <SetProperty Id="CMDLINE_CA_CERT_FILE" Before="AppSearch" Value="[CA_CERT_FILE]" />
     <SetProperty Id="CA_CERT_FILE"         After="AppSearch"  Value="[CMDLINE_CA_CERT_FILE]"><![CDATA[CMDLINE_CA_CERT_FILE<>""]]></SetProperty>
 
+    <Property Id="NO_COMPRESSION" Secure="yes">
+      <RegistrySearch Id="NoCompression" Root="HKLM" Key="[%agent_regpath%]" Name="no-compression" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_NO_COMPRESSION" Before="AppSearch" Value="[NO_COMPRESSION]" />
+    <SetProperty Id="NO_COMPRESSION"         After="AppSearch"  Value="[CMDLINE_NO_COMPRESSION]"><![CDATA[CMDLINE_NO_COMPRESSION<>""]]></SetProperty>
+
     <Property Id="PROXY" Secure="yes">
       <RegistrySearch Id="Proxy" Root="HKLM" Key="[%agent_regpath%]" Name="proxy" Type="raw"/>
     </Property>
@@ -274,6 +280,7 @@
     <SetProperty Id="SCAN_PROFILES" Action="SCAN_PROFILES_Default" After="AppSearch"  Value="0">NOT SCAN_PROFILES</SetProperty>
     <SetProperty Id="TIMEOUT"       Action="TIMEOUT_Default"       After="AppSearch"  Value="180">NOT TIMEOUT</SetProperty>
     <SetProperty Id="DELAYTIME"     Action="DELAYTIME_Default"     After="AppSearch"  Value="3600">NOT DELAYTIME</SetProperty>
+    <SetProperty Id="NO_COMPRESSION" Action="NO_COMPRESSION_Default" After="AppSearch" Value="0">NOT NO_COMPRESSION</SetProperty>
     <SetProperty Id="NO_P2P"        Action="NO_P2P_Default"        After="AppSearch"  Value="0">NOT NO_P2P</SetProperty>
     <SetProperty Id="HTML"          Action="HTML_Default"          After="AppSearch"  Value="0">NOT HTML</SetProperty>
     <SetProperty Id="JSON"          Action="JSON_Default"          After="AppSearch"  Value="0">NOT JSON</SetProperty>
