@@ -346,6 +346,7 @@
     <SetProperty Id="LAZY"         Sequence="ui" Action="LAZY_SetForReg"           Before="ExecuteAction" Value="0"><![CDATA[NOT LAZY OR LAZY<>"1"]]></SetProperty>
     <SetProperty Id="LISTEN"       Sequence="ui" Action="LISTEN_SetForReg"         Before="ExecuteAction" Value="0"><![CDATA[NOT LISTEN OR LISTEN<>"1"]]></SetProperty>
     <SetProperty Id="NO_SSL_CHECK" Sequence="ui" Action="NO_SSL_CHECK_Update"      Before="ExecuteAction" Value="0"><![CDATA[NOT NO_SSL_CHECK OR NO_SSL_CHECK<>"1"]]></SetProperty>
+    <SetProperty Id="NO_COMPRESSION" Sequence="ui" Action="NO_COMPRESSION_SetForReg" Before="ExecuteAction" Value="0"><![CDATA[NOT NO_COMPRESSION OR NO_COMPRESSION<>"1"]]></SetProperty>
     <SetProperty Id="TASK_FREQUENCY"       Sequence="ui" Action="TASK_FREQUENCY_SetForReg"         After="AppSearch" Value="hourly"><![CDATA[NOT TASK_FREQUENCY OR (TASK_FREQUENCY<>"minute" AND TASK_FREQUENCY<>"hourly" AND TASK_FREQUENCY<>"daily")]]></SetProperty>
     <SetProperty Id="TASK_MINUTE_MODIFIER" Sequence="ui" Action="TASK_MINUTE_MODIFIER_SetForReg"   After="AppSearch" Value="15"><![CDATA[NOT TASK_MINUTE_MODIFIER OR TASK_MINUTE_MODIFIER < 1 OR TASK_MINUTE_MODIFIER > 1439]]></SetProperty>
     <SetProperty Id="TASK_HOURLY_MODIFIER" Sequence="ui" Action="TASK_HOURLY_MODIFIER_SetForReg"   After="AppSearch" Value="1"><![CDATA[NOT TASK_HOURLY_MODIFIER OR TASK_HOURLY_MODIFIER < 1 OR TASK_HOURLY_MODIFIER > 23]]></SetProperty>
