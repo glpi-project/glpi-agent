@@ -25,6 +25,8 @@ packaging:
   This was preventing them from being deleted during upgrade and uninstall
 * Windows MSI: Use --force option while running now and using windows task scheduler configuration
 * fix #117: Fix error when using windows task scheduler
+* Windows MSI: Added support for few missing configuration parameters as MSI installer variable
+  This includes: NO_COMPRESSION, ADDITIONAL_CONTENT, JSON, LISTEN, REMOTE, SSL_CERT_FILE
 * Update MacOSX to use perl 5.34.1, OpenSSL 3.0.3 and zlib 1.2.12
 * fix #99: Wrong GLPI Agent lib folder name in MacOSX systems based on APFS
 * fix: AppImage support on older linux like CentOS 7
