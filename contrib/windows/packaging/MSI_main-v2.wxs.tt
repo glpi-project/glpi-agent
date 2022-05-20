@@ -244,6 +244,12 @@
     <SetProperty Id="CMDLINE_USER" Before="AppSearch" Value="[USER]" />
     <SetProperty Id="USER"         After="AppSearch"  Value="[CMDLINE_USER]"><![CDATA[CMDLINE_USER<>""]]></SetProperty>
 
+    <Property Id="REMOTE" Secure="yes">
+      <RegistrySearch Id="User" Root="HKLM" Key="[%agent_regpath%]" Name="remote" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_REMOTE" Before="AppSearch" Value="[REMOTE]" />
+    <SetProperty Id="REMOTE"         After="AppSearch"  Value="[CMDLINE_REMOTE]"><![CDATA[CMDLINE_REMOTE<>""]]></SetProperty>
+
     <Property Id="HTML" Secure="yes">
       <RegistrySearch Id="Html" Root="HKLM" Key="[%agent_regpath%]" Name="html" Type="raw"/>
     </Property>
