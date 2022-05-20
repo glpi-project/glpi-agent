@@ -88,6 +88,12 @@
     <SetProperty Id="CMDLINE_LOCAL"   Before="AppSearch" Value="[LOCAL]" />
     <SetProperty Id="LOCAL"           After="AppSearch"  Value="[CMDLINE_LOCAL]"><![CDATA[CMDLINE_LOCAL<>""]]></SetProperty>
 
+    <Property Id="ADDITIONAL_CONTENT" Secure="yes">
+      <RegistrySearch Id="AdditionalContent" Root="HKLM" Key="[%agent_regpath%]" Name="additional-content" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_ADDITIONAL_CONTENT"   Before="AppSearch" Value="[ADDITIONAL_CONTENT]" />
+    <SetProperty Id="ADDITIONAL_CONTENT"           After="AppSearch"  Value="[CMDLINE_ADDITIONAL_CONTENT]"><![CDATA[CMDLINE_ADDITIONAL_CONTENT<>""]]></SetProperty>
+
     <Property Id="DEBUG" Secure="yes">
       <RegistrySearch Id="Debug" Root="HKLM" Key="[%agent_regpath%]" Name="debug" Type="raw"/>
     </Property>

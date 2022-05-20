@@ -445,6 +445,7 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[  </ServiceInstall>\n];
                 $result .= $ident ."  ". qq[  <ServiceControl Id="SetupService" Name="$servicename" Start="install" Stop="both" Remove="both" Wait="yes" />\n];
                 $result .= $ident ."  ". qq[  <RegistryKey Root="HKLM" Key="$regpath">\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="additional-content" Type="string" Value="[ADDITIONAL_CONTENT]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="debug" Type="string" Value="[DEBUG]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="local" Type="string" Value="[LOCAL]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="logger" Type="string" Value="[LOGGER]" />\n];
