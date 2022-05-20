@@ -274,6 +274,12 @@
     <SetProperty Id="CMDLINE_LAZY" Before="AppSearch" Value="[LAZY]" />
     <SetProperty Id="LAZY"         After="AppSearch"  Value="[CMDLINE_LAZY]"><![CDATA[CMDLINE_LAZY<>""]]></SetProperty>
 
+    <Property Id="LISTEN" Secure="yes">
+      <RegistrySearch Id="Listen" Root="HKLM" Key="[%agent_regpath%]" Name="listen" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_LISTEN" Before="AppSearch" Value="[LISTEN]" />
+    <SetProperty Id="LISTEN"         After="AppSearch"  Value="[CMDLINE_LISTEN]"><![CDATA[CMDLINE_LISTEN<>""]]></SetProperty>
+
     <Property Id="VARDIR" Secure="yes">
       <RegistrySearch Id="VarDir" Root="HKLM" Key="[%agent_regpath%]" Name="vardir" Type="raw"/>
     </Property>
@@ -297,6 +303,7 @@
     <SetProperty Id="HTML"          Action="HTML_Default"          After="AppSearch"  Value="0">NOT HTML</SetProperty>
     <SetProperty Id="JSON"          Action="JSON_Default"          After="AppSearch"  Value="0">NOT JSON</SetProperty>
     <SetProperty Id="LAZY"          Action="LAZY_Default"          After="AppSearch"  Value="1">NOT LAZY</SetProperty>
+    <SetProperty Id="LISTEN"        Action="LISTEN_Default"        After="AppSearch"  Value="0">NOT LISTEN</SetProperty>
     <SetProperty Id="NO_SSL_CHECK"  Action="NO_SSL_CHECK_Default"  After="AppSearch"  Value="0">NOT NO_SSL_CHECK</SetProperty>
     <SetProperty Id="CONF_RELOAD_INTERVAL" Action="CONF_RELOAD_INTERVAL_Default" After="AppSearch" Value="0">NOT CONF_RELOAD_INTERVAL</SetProperty>
     <SetProperty Id="BACKEND_COLLECT_TIMEOUT" Action="BACKEND_COLLECT_TIMEOUT_Default" After="AppSearch" Value="180">NOT BACKEND_COLLECT_TIMEOUT</SetProperty>
@@ -338,6 +345,7 @@
     <SetProperty Id="HTML"         Sequence="ui" Action="HTML_SetForReg"           Before="ExecuteAction" Value="0"><![CDATA[NOT HTML OR HTML<>"1"]]></SetProperty>
     <SetProperty Id="JSON"         Sequence="ui" Action="JSON_SetForReg"           Before="ExecuteAction" Value="0"><![CDATA[NOT JSON OR JSON<>"1"]]></SetProperty>
     <SetProperty Id="LAZY"         Sequence="ui" Action="LAZY_SetForReg"           Before="ExecuteAction" Value="0"><![CDATA[NOT LAZY OR LAZY<>"1"]]></SetProperty>
+    <SetProperty Id="LISTEN"       Sequence="ui" Action="LISTEN_SetForReg"         Before="ExecuteAction" Value="0"><![CDATA[NOT LISTEN OR LISTEN<>"1"]]></SetProperty>
     <SetProperty Id="NO_SSL_CHECK" Sequence="ui" Action="NO_SSL_CHECK_Update"      Before="ExecuteAction" Value="0"><![CDATA[NOT NO_SSL_CHECK OR NO_SSL_CHECK<>"1"]]></SetProperty>
     <SetProperty Id="TASK_FREQUENCY"       Sequence="ui" Action="TASK_FREQUENCY_SetForReg"         After="AppSearch" Value="hourly"><![CDATA[NOT TASK_FREQUENCY OR (TASK_FREQUENCY<>"minute" AND TASK_FREQUENCY<>"hourly" AND TASK_FREQUENCY<>"daily")]]></SetProperty>
     <SetProperty Id="TASK_MINUTE_MODIFIER" Sequence="ui" Action="TASK_MINUTE_MODIFIER_SetForReg"   After="AppSearch" Value="15"><![CDATA[NOT TASK_MINUTE_MODIFIER OR TASK_MINUTE_MODIFIER < 1 OR TASK_MINUTE_MODIFIER > 1439]]></SetProperty>
