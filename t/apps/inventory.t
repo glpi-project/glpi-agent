@@ -9,7 +9,7 @@ use Test::More;
 
 use GLPI::Agent::Task::Inventory;
 
-plan tests => 6;
+plan tests => 8;
 
 my ($out, $err, $rc);
 
@@ -29,6 +29,14 @@ like(
     $out,
     qr/$GLPI::Agent::Task::Inventory::VERSION/,
     '--version stdout'
+);
+
+($out, $err, $rc) = run_inventory('--partial os');
+ok($rc == 0, 'simple os partial inventory exit status');
+like(
+    $out,
+    qr/\"partial\":\s+true/,
+    'partial inventory has json partial property'
 );
 
 sub run_inventory {
