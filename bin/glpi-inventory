@@ -57,6 +57,7 @@ if ($options->{partial}) {
         task        => "inventory",
         partial     => 1,
         category    => $options->{partial},
+        name        => "partial inventory",
     };
 }
 

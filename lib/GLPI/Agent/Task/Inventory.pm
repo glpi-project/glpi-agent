@@ -201,6 +201,9 @@ sub setupEvent {
         return;
     }
 
+    # Set inventory as partial one
+    $self->{inventory}->isPartial(1);
+
     # Support event with category defined
     if ($event->{category}) {
         my %keep = map { lc($_) => 1 } grep { ! $self->{disabled}->{$_} } split(/,+/, $event->{category});

@@ -238,7 +238,7 @@ sub getContent {
             logger      => $self->{logger},
             deviceid    => $self->getDeviceId(),
             content     => $self->{content},
-            partial     => $self->{_partial},
+            partial     => $self->isPartial(),
             itemtype    => "Computer",
         );
 
