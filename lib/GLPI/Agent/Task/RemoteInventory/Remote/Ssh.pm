@@ -140,7 +140,6 @@ sub checking_error {
     my ($self) = @_;
 
     if ($self->{_ssh2} && !defined($self->{_ssh2}->sock) && !$self->_connect()) {
-        my @error = $self->{_ssh2}->error;
         delete $self->{_ssh2};
     }
 
