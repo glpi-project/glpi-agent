@@ -15,6 +15,9 @@ inventory:
 * fix version for CentOS 7.x Operating System
 * fix partial property missing in json while partial inventory requested
 
+remoteinventory:
+* fallback on ssh command access when libssh2 fails to connect
+
 netdiscovery/netinventory:
 * Enhanced DefensePro support, thanks to @sectoolsacc
 

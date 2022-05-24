@@ -58,7 +58,7 @@ sub _connect {
     $self->{logger}->debug2("Connecting to '$remote' remote host...");
     if (!$ssh2->connect($host, $port // 22)) {
         my @error = $ssh2->error;
-        $self->{logger}->debug("Can't reach $remote for ssh remoteinventory: @error");
+        $self->{logger}->debug("Can't reach $remote for ssh remoteinventory via libss2: @error");
         return;
     }
 
@@ -142,7 +142,6 @@ sub checking_error {
     if ($self->{_ssh2} && !defined($self->{_ssh2}->sock) && !$self->_connect()) {
         my @error = $self->{_ssh2}->error;
         delete $self->{_ssh2};
-        return $error[2];
     }
 
     my $root = $self->getRemoteFirstLine(command => "id -u");
