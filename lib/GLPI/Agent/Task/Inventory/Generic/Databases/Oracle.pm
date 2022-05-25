@@ -303,7 +303,7 @@ sub _runSql {
     # Include sqlplus path if known
     my $command = ($ENV{ORACLE_HOME} && $ORACLE_ENV{$ENV{ORACLE_HOME}}) ?
         $ORACLE_ENV{$ENV{ORACLE_HOME}}."/" : "";
-    $command .= "sqlplus -S -L -F";
+    $command .= "sqlplus -S -L";
     $command .= $params{connect} ? " /nolog" : " / AS SYSDBA";
 
     # Don't try to create the temporary sql file during unittest
