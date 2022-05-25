@@ -124,7 +124,7 @@ sub _getDatabaseService {
                 next unless -d $home;
                 my ($sqlplus_path) = first { ! -d "$_/sqlplus" && canRun("$_/sqlplus") } $home, $home."/bin";
                 unless ($sqlplus_path) {
-                    $logger->debug2("slqplus not find in '$home' ORACLE_HOME") if $logger;
+                    $logger->debug2("sqlplus not find in '$home' ORACLE_HOME") if $logger;
                     next;
                 }
                 $ORACLE_ENV{$home} = $sqlplus_path;
