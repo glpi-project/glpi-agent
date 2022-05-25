@@ -342,9 +342,9 @@ sub _runSql {
                 $env .= "$key='$ENV{$key}'";
             }
             if ($env) {
-                $command = sprintf("su - $user -c '%s %s'", $env, $command);
+                $command = sprintf("su $user -c '%s %s'", $env, $command);
             } else {
-                $command = sprintf("su - $user -c '%s'", $command);
+                $command = sprintf("su $user -c '%s'", $command);
             }
             # Make temp file readable by oracle
             if ($params{gid}) {
