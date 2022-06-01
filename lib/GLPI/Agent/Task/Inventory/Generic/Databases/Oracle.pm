@@ -208,7 +208,8 @@ sub _getDatabaseService {
             my $dbs_size = 0;
 
             my @database = _runSql(
-                sql => "SELECT name, "._datefield("created")." FROM v\$database",
+                name => "select-name-from-database",
+                sql  => "SELECT name, "._datefield("created")." FROM v\$database",
                 %params
             );
             if (first { /^(ERROR(?: at line 1)?|Usage):/ } @database) {
@@ -235,13 +236,15 @@ sub _getDatabaseService {
                 $logger->debug2("Checking $db_name database...") if $logger;
 
                 my ($size) = _runSql(
-                    sql => "select sum(bytes)/1024/1024 from dba_data_files",
+                    name => "select-bytes-from-dba_data_files",
+                    sql  => "select sum(bytes)/1024/1024 from dba_data_files",
                     %params
                 );
                 $dbs_size += $size if $size && $size =~/^\d+$/;
 
                 # Find update date
                 my $updated = _runSql(
+                    name => "select-timestamp-from-dba_tab_modifications",
                     sql => "SELECT "._datefield("timestamp")." FROM dba_tab_modifications ORDER BY timestamp DESC FETCH NEXT 1 ROW ONLY",
                     %params
                 );
@@ -271,6 +274,7 @@ sub _getInstances {
     my (%params) = @_;
 
     my @test = _runSql(
+        name    => "show-release",
         sql     => "SHOW release",
         %params
     );
@@ -291,7 +295,8 @@ sub _getInstances {
     my $version_statement = $version[0] && int($version[0]) >= 18 ? "version_full" : "version";
 
     my @instances = _runSql(
-        sql => "SELECT instance_name, database_status, $version_statement, "._datefield("startup_time")." FROM v\$instance",
+        name => "select-instance_name-from-instances",
+        sql  => "SELECT instance_name, database_status, $version_statement, "._datefield("startup_time")." FROM v\$instance",
         %params
     );
     if (first { /^(ERROR(?: at line 1)?|Usage):/ } @instances) {
@@ -335,15 +340,14 @@ sub _runSql {
         $command .= ' @"'.$sqlfile.'"';
 
         # Update sql command to emulate csv output as "SET MARKUP CSV ON QUOTE OFF" is only supported since Oracle 12.2
-        my $sql_command = $sql;
-        $sql_command =~ s/, / ||','|| /g;
+        $sql =~ s/, / ||','|| /g;
 
         my @lines = ();
         push @lines, $params{connect} if $params{connect};
         push @lines,
             "SET HEADING OFF",
             "SET LINESIZE 4096 TRIMSPOOL ON PAGESIZE 0 FEEDBACK OFF FLUSH OFF",
-            $sql_command.";",
+            $sql.";",
             "QUIT";
 
         unless ($params{connect}) {
@@ -381,11 +385,10 @@ sub _runSql {
     }
 
     # Only to support unittests
-    if ($params{file}) {
-        $sql =~ s/[ ()\$]+/-/g;
-        $sql =~ s/[^-_0-9A-Za-z]//g;
-        $sql =~ s/[-][-]+/-/g;
-        $params{file} .= "-" . lc($sql);
+    if ($params{filebase}) {
+        $params{file} = delete $params{filebase};
+        $params{file} .= "-";
+        $params{file} .= delete $params{name};
         unless ($params{istest}) {
             print STDERR "\nGenerating $params{file} for new Oracle test case...\n";
             system("$command >$params{file}");

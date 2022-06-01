@@ -100,7 +100,7 @@ foreach my $test (keys %oracle_home) {
 foreach my $test (keys %db_tests) {
     my $file  = "resources/generic/databases/$test";
     my $dbs   = GLPI::Agent::Task::Inventory::Generic::Databases::Oracle::_getDatabaseService(
-        file        => $file,
+        filebase    => $file,
         credentials => $credentials{$test} // [{}],
         istest      => defined($db_tests{$test}) ? 1 : 0,
     );
