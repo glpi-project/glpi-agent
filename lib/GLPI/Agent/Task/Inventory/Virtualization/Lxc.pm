@@ -100,7 +100,8 @@ sub  _getVirtualMachine {
         }
 
         if ($key eq 'lxc.cgroup.memory.limit_in_bytes') {
-            $container->{MEMORY} = $val;
+            $val .= "b" if $val =~ /[KMGTP]$/i;
+            $container->{MEMORY} = getCanonicalSize($val, 1024);
         }
 
         # Update container name in Proxmox environment
