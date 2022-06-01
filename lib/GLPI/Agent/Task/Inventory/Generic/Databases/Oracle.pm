@@ -81,17 +81,21 @@ sub _setEnv {
 
     my $home = $params{home}
         or return;
-    my $sid = $params{sid}
-        or return;
 
     my $sqlplus_path = $ORACLE_ENV{$home}
         or return;
 
-    $params{logger}->debug2("Setting up environment for $sid SID instance: ORACLE_HOME=$home $sqlplus_path/sqlplus")
-        if $params{logger};
+    my $sid = $params{sid};
+    if ($params{logger}) {
+        if ($sid) {
+            $params{logger}->debug2("Setting up environment for $sid SID instance: ORACLE_HOME=$home $sqlplus_path/sqlplus");
+        } else {
+            $params{logger}->debug2("Setting up environment: ORACLE_HOME=$home $sqlplus_path/sqlplus");
+        }
+    }
 
     # Setup environment for sqlplus
-    $ENV{ORACLE_SID}  = $sid;
+    $ENV{ORACLE_SID}  = $sid if $sid;
     $ENV{ORACLE_HOME} = $home;
     $ENV{LD_LIBRARY_PATH} = join(":", map { $home.$_ } "", "/lib", "/network/lib");
 }
@@ -153,7 +157,15 @@ sub _getDatabaseService {
         my %SID;
         my @instances;
         if ($params{remote} || ! -e '/etc/oratab') {
+            # Use any sqlplus found environment
+            unless ($ENV{ORACLE_HOME} || !keys(%ORACLE_ENV)) {
+                _setEnv(
+                    home    => (keys(%ORACLE_ENV))[0],
+                    logger  => $logger
+                );
+            }
             @instances = _getInstances(%params);
+            _resetEnv();
         } else {
             my @lines = getAllLines(
                 file    => '/etc/oratab',
@@ -230,7 +242,7 @@ sub _getDatabaseService {
 
                 # Find update date
                 my $updated = _runSql(
-                    sql => "SELECT to_char(timestamp, 'YYYY-MM-DD HH24:MI:SS') FROM dba_tab_modifications ORDER BY timestamp DESC FETCH NEXT 1 ROW ONLY",
+                    sql => "SELECT "._datefield("timestamp")." FROM dba_tab_modifications ORDER BY timestamp DESC FETCH NEXT 1 ROW ONLY",
                     %params
                 );
 
@@ -274,8 +286,12 @@ sub _getInstances {
     return $ENV{ORACLE_SID}.",STOPPED,0," if $ENV{ORACLE_SID} && ! $release;
     return unless $release;
 
+    # version_full column is only available since Oracle 18c
+    my @version = $release =~ /(\d+)(\d{2})(\d{2})(\d{2})(\d{2})$/;
+    my $version_statement = $version[0] && int($version[0]) >= 18 ? "version_full" : "version";
+
     my @instances = _runSql(
-        sql => "SELECT instance_name, database_status, version_full, "._datefield("startup_time")." FROM v\$instance",
+        sql => "SELECT instance_name, database_status, $version_statement, "._datefield("startup_time")." FROM v\$instance",
         %params
     );
     if (first { /^(ERROR(?: at line 1)?|Usage):/ } @instances) {
@@ -318,12 +334,16 @@ sub _runSql {
         my $sqlfile = $exec->filename();
         $command .= ' @"'.$sqlfile.'"';
 
+        # Update sql command to emulate csv output as "SET MARKUP CSV ON QUOTE OFF" is only supported since Oracle 12.2
+        my $sql_command = $sql;
+        $sql_command =~ s/, / ||','|| /g;
+
         my @lines = ();
         push @lines, $params{connect} if $params{connect};
         push @lines,
             "SET HEADING OFF",
-            "SET MARKUP CSV ON QUOTE OFF",
-            $sql.";",
+            "SET LINESIZE 4096 TRIMSPOOL ON PAGESIZE 0 FEEDBACK OFF FLUSH OFF",
+            $sql_command.";",
             "QUIT";
 
         unless ($params{connect}) {
@@ -367,7 +387,7 @@ sub _runSql {
         $sql =~ s/[-][-]+/-/g;
         $params{file} .= "-" . lc($sql);
         unless ($params{istest}) {
-            print STDERR "\nGenerating $params{file} for new MSSQL test case...\n";
+            print STDERR "\nGenerating $params{file} for new Oracle test case...\n";
             system("$command >$params{file}");
         }
     } else {
