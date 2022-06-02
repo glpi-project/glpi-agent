@@ -23,7 +23,7 @@ netdiscovery/netinventory:
 * Enhanced DefensePro support, thanks to @sectoolsacc
 
 packaging:
-* Windows MSI installer based on StrawBerry Perl 5.34.1
+* Windows MSI installer based on StrawBerry Perl 5.36.0
 * fix #120: Fix windows service installation when PERL5LIB env is set
 * fix #103: Embed Digest::MD5, Digest::SHA1, Digest::HMAC on windows for SNMP v3 authentication
 * Windows MSI: Fix strings to name windows scheduler task and firewall exceptions
@@ -32,10 +32,11 @@ packaging:
 * fix #117: Fix error when using windows task scheduler
 * Windows MSI: Added support for few missing configuration parameters as MSI installer variable
   This includes: NO_COMPRESSION, ADDITIONAL_CONTENT, JSON, LISTEN, REMOTE, SSL_CERT_FILE
-* Update MacOSX to use perl 5.34.1, OpenSSL 3.0.3 and zlib 1.2.12
+* Update MacOSX to use perl 5.36.0, OpenSSL 3.0.3 and zlib 1.2.12
 * fix #99: Wrong GLPI Agent lib folder name in MacOSX systems based on APFS
 * fix: AppImage support on older linux like CentOS 7
 * fix: AppImage uninstall support on older linux like CentOS 7
+* Update snap packaging to use perl 5.36.0
 
 1.2 Wed, 13 Apr 2022
 

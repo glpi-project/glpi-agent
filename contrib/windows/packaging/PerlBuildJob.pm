@@ -4,7 +4,7 @@ package
 use parent 'Exporter';
 
 use constant {
-    PERL_VERSION       => "5.34.1",
+    PERL_VERSION       => "5.36.0",
     PERL_BUILD_STEPS   => 8,
 };
 
@@ -104,8 +104,6 @@ sub _build_steps {
                 'contrib/windows/packaging/win32_config.gc.tt'  => 'win32/config.gc',
                 'contrib/windows/packaging/agentexe.rc.tt'      => 'win32/perlexe.rc',
                 'contrib/windows/packaging/win32_config_H.gc'   => 'win32/config_H.gc',
-                # Perl 5.34.0: Optimization patch win32/win32.c
-                'contrib/windows/packaging/win32_win32.c.patch' => 'win32/win32.c',
             },
             license => { #SRC paths are relative to the perl src root
                 'Readme'   => '<image_dir>/licenses/perl/Readme',
