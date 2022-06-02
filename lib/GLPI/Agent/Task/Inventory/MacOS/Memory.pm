@@ -67,16 +67,17 @@ sub _getMemories {
             $description = pack 'H*', substr($description, 2);
             $description =~ s/\s*$//;
         }
+        $description = getSanitizedString($description);
 
         my $memory = {
             NUMSLOTS     => $slot,
-            DESCRIPTION  => $description,
             CAPTION      => "Status: $info->{'Status'}",
             TYPE         => $info->{'Type'},
             SERIALNUMBER => $info->{'Serial Number'},
             SPEED        => getCanonicalSpeed($info->{'Speed'}),
             CAPACITY     => getCanonicalSize($info->{'Size'}, 1024)
         };
+        $memory->{DESCRIPTION} = $description if $description;
 
         push @memories, $memory;
     }

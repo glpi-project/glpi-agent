@@ -17,7 +17,6 @@ my %memories_tests = (
         {
             NUMSLOTS     => '0',
             SERIALNUMBER => undef,
-            DESCRIPTION  => undef,
             SPEED        => undef,
             TYPE         => 'DDR2 SDRAM',
             CAPACITY     => 1024,
@@ -26,7 +25,6 @@ my %memories_tests = (
         {
             NUMSLOTS     => '1',
             SERIALNUMBER => undef,
-            DESCRIPTION  => undef,
             SPEED        => undef,
             TYPE         => 'DDR2 SDRAM',
             CAPACITY     => 1024,
@@ -35,7 +33,6 @@ my %memories_tests = (
         {
             NUMSLOTS     => '2',
             SERIALNUMBER => undef,
-            DESCRIPTION  => undef,
             SPEED        => undef,
             TYPE         => 'Empty',
             CAPACITY     => undef,
@@ -44,7 +41,6 @@ my %memories_tests = (
         {
             NUMSLOTS     => '3',
             SERIALNUMBER => undef,
-            DESCRIPTION  => undef,
             SPEED        => undef,
             TYPE         => 'Empty',
             CAPACITY     => undef,
@@ -53,7 +49,6 @@ my %memories_tests = (
         {
             NUMSLOTS     => '4',
             SERIALNUMBER => undef,
-            DESCRIPTION  => undef,
             SPEED        => undef,
             TYPE         => 'Empty',
             CAPACITY     => undef,
@@ -62,7 +57,6 @@ my %memories_tests = (
         {
             NUMSLOTS     => '5',
             SERIALNUMBER => undef,
-            DESCRIPTION  => undef,
             SPEED        => undef,
             TYPE         => 'Empty',
             CAPACITY     => undef,
@@ -71,7 +65,6 @@ my %memories_tests = (
         {
             NUMSLOTS     => '6',
             SERIALNUMBER => undef,
-            DESCRIPTION  => undef,
             SPEED        => undef,
             TYPE         => 'Empty',
             CAPACITY     => undef,
@@ -80,7 +73,6 @@ my %memories_tests = (
         {
             NUMSLOTS     => '7',
             SERIALNUMBER => undef,
-            DESCRIPTION  => undef,
             SPEED        => undef,
             TYPE         => 'Empty',
             CAPACITY     => undef,
@@ -167,7 +159,6 @@ my %memories_tests = (
         {
             NUMSLOTS     => 0,
             SERIALNUMBER => '0x00000000',
-            DESCRIPTION  => "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00",
             SPEED        => '1067',
             TYPE         => 'DDR3',
             CAPACITY     => '2048',
@@ -176,7 +167,6 @@ my %memories_tests = (
        {
             NUMSLOTS     => 0,
             SERIALNUMBER => '0x00000000',
-            DESCRIPTION  => "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00",
             SPEED        => '1067',
             TYPE         => 'DDR3',
             CAPACITY     => '2048',
