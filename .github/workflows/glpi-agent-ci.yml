@@ -1,6 +1,10 @@
 name: GLPI Agent CI
 
-on: [push]
+on:
+  push:
+  pull_request:
+    branches:
+      - develop
 
 jobs:
   linux-ubuntu-test:
