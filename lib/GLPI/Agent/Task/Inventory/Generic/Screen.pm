@@ -10,6 +10,7 @@ use MIME::Base64;
 use UNIVERSAL::require;
 
 use File::Find;
+use File::Basename;
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Screen;
 
@@ -195,7 +196,7 @@ sub _getScreensFromUnix {
                 {
                     no_chdir => 1,
                     wanted   => sub {
-                        return unless $_ eq 'edid';
+                        return unless basename($_) eq 'edid';
                         return unless has_file($File::Find::name);
                         my $edid = getAllLines(file => $File::Find::name);
                         push @screens, { edid => $edid } if $edid;
