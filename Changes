@@ -15,6 +15,7 @@ inventory:
 * fix version for CentOS 7.x Operating System
 * fix partial property missing in json while partial inventory requested
 * fix #132: Missing LXC container memory limit
+* PR #134: Fixed screen's edid fetch on linux, thanks to yweber-volta
 
 remoteinventory:
 * fallback on ssh command access when libssh2 fails to connect
