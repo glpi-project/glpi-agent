@@ -4,6 +4,9 @@ use strict;
 use warnings;
 use lib 't/lib';
 
+# Tests are encoded in utf8 in this file
+use utf8;
+
 use Test::Deep;
 use Test::Exception;
 use Test::More;
