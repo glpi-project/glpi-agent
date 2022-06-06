@@ -3,6 +3,9 @@
 use strict;
 use warnings;
 
+# Tests are encoded in utf8 in this file
+use utf8;
+
 use Test::Deep;
 use Test::More;
 use English;

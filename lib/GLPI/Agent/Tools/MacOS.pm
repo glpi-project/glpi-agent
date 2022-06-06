@@ -62,9 +62,11 @@ sub _getSystemProfilerInfosXML {
     my $xmlStr = getAllLines(command => $command, %params);
     return unless $xmlStr;
 
+    # Decode system_profiler output
+    $xmlStr = decode("UTF-8", $xmlStr);
+
     # As we don't want to use a module platform dependent, we use the XML::TreePP module
     # with an option to keep XML's elements order
-    #    my $xmlStr = join '', @xml;
     my $info = {};
     if ($params{type} eq 'SPApplicationsDataType') {
         $info->{Applications} = _extractSoftwaresFromXml(
@@ -241,9 +243,9 @@ sub _makeHashFromKeyValuesTextNodes {
     my @nl = $n->get_nodelist();
     for my $elem (@nl) {
         if ($elem->getName() eq KEY_ELEMENT_NAME) {
-            $currentKey = Encode::encode_utf8($elem->string_value());
+            $currentKey = $elem->string_value();
         } elsif ($currentKey && $elem->getName() ne ARRAY_ELEMENT_NAME) {
-            $hash->{$currentKey} = Encode::encode_utf8($elem->string_value());
+            $hash->{$currentKey} = $elem->string_value();
             $currentKey = undef;
         }
     }
@@ -357,6 +359,7 @@ sub _getSystemProfilerInfosText {
     );
     while (my $line = <$handle>) {
         chomp $line;
+        $line = decode("UTF-8", $line);
 
         next unless $line =~ /^(\s*)(\S[^:]*):(?: (.*\S))?/;
         my $level = defined $1 ? length($1) : 0;
