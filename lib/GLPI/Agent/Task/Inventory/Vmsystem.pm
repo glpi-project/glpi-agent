@@ -142,6 +142,36 @@ sub doInventory {
             $inventory->setHardware({ NAME => $hostname });
         }
 
+    } elsif ($type eq "systemd-nspawn") {
+        my $uuid;
+        if (-e "/run/host/container-uuid") {
+            $uuid = getAllLines(
+                file    => "/run/host/container-uuid",
+                logger  => $logger
+            );
+        } else {
+            my $init_env = getAllLines(
+                file    => '/proc/1/environ',
+                logger  => $logger
+            );
+            if ($init_env) {
+                $init_env =~ s/\0/\n/g;
+                $uuid = getFirstMatch(
+                    string  => $init_env,
+                    pattern => qr/^container_uuid=(\S+)/,
+                    logger  => $logger
+                );
+            }
+        }
+        $inventory->setHardware({ UUID => $uuid }) if $uuid;
+        if (-d "/run/host/incoming") {
+            my $name = getFirstMatch(
+                file    => "/proc/1/mountinfo",
+                pattern => qr{/systemd/nspawn/propagate/(\S+) /run/host/incoming},
+                logger  => $logger
+            );
+            $inventory->setHardware({ NAME => $name }) if $name;
+        }
     } elsif (($type eq 'lxc' || ($type ne 'Physical' && !$inventory->getHardware('UUID'))) && has_file('/etc/machine-id')) {
         # Set UUID from /etc/machine-id & /etc/hostname for container like lxc
         my $machineid = getFirstLine(
@@ -301,7 +331,7 @@ sub _getType {
         }
     }
 
-    # systemd based container like lxc
+    # systemd based container like lxc or systemd-nspawn
 
     if (has_file('/proc/1/environ')) {
         my $init_env = getAllLines(
