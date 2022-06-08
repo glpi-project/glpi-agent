@@ -206,7 +206,7 @@ sub _handle_plugins {
 
     my $path = $request->uri()->path();
     my $method = $request->method();
-    my $keepalive = $request->header('connection') =~ /keep-alive/i;
+    my $keepalive = ($request->header('connection') // '') =~ /keep-alive/i;
     $logger->debug($log_prefix . "$method request $path from client $clientIp via plugin");
     my $status = 400;
     my $match  = 0;
