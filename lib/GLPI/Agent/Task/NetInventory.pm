@@ -16,6 +16,7 @@ use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Hardware;
 use GLPI::Agent::Tools::Network;
 use GLPI::Agent::Tools::Expiration;
+use GLPI::Agent::HTTP::Client::OCS;
 
 use GLPI::Agent::Task::NetInventory::Version;
 use GLPI::Agent::Task::NetInventory::Job;

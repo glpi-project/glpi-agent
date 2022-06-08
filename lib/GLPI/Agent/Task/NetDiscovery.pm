@@ -21,6 +21,7 @@ use GLPI::Agent::Tools::Hardware;
 use GLPI::Agent::Tools::Expiration;
 use GLPI::Agent::Tools::SNMP;
 use GLPI::Agent::XML::Query;
+use GLPI::Agent::HTTP::Client::OCS;
 
 use GLPI::Agent::Task::NetDiscovery::Version;
 use GLPI::Agent::Task::NetDiscovery::Job;
