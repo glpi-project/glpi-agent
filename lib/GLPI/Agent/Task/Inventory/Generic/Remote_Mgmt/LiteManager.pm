@@ -18,7 +18,7 @@ sub isEnabled {
             path        => $_,
             # Important for remote inventory optimization
             required    => [ 'ID (read only)' ],
-            maxdepth    => 1,
+            maxdepth    => 3,
         ) && $key && keys(%{$key})
     } qw(
         HKEY_LOCAL_MACHINE/SYSTEM/LiteManager
@@ -76,6 +76,7 @@ sub _findID {
         %params,
         # Important for remote inventory optimization
         required    => [ 'ID (read only)' ],
+        maxdepth    => 3,
     );
 
     return unless $key && keys(%{$key});

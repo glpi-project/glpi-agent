@@ -19,6 +19,7 @@ inventory:
 
 remoteinventory:
 * fallback on ssh command access when libssh2 fails to connect
+* fix LiteManager remote management inventory
 
 netdiscovery/netinventory:
 * Enhanced DefensePro support, thanks to @sectoolsacc
