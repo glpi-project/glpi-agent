@@ -87,7 +87,7 @@ sub _findID {
         next unless $key->{$sub}->{"Server/"};
         next unless $key->{$sub}->{"Server/"}->{"Parameters/"};
         $parameters = $key->{$sub}->{"Server/"}->{"Parameters/"};
-        last;
+        last if $parameters->{"/ID (read only)"};
     }
 
     return unless $parameters;
