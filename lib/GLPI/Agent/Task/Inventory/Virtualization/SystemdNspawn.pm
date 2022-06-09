@@ -62,7 +62,7 @@ sub  _getVirtualMachines {
         command => "machinectl --no-pager --no-legend",
         logger  => $params{logger}
     )) {
-        my ($name, $class, $service) = $line =~ /^(\S+)\s+(\w+)\s+(\w+)/
+        my ($name, $class, $service) = $line =~ /^(\S+)\s+(\w+)\s+(\S+)/
             or next;
 
         my $container;
