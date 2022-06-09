@@ -31,30 +31,64 @@ sub doInventory {
 sub  _getVirtualMachines {
     my (%params) = @_;
 
+    # Try first to get registered containers so we also catch powered off containers
     my @nspawn = getAllLines(
         command => "systemctl --system --all -q --plain list-units systemd-nspawn@*",
         logger  => $params{logger}
-    ) or return;
+    );
+
+    my %machines;
+
+    if (@nspawn) {
+        foreach my $line (@nspawn) {
+            my ($name, $state) = $line =~ /^systemd-nspawn\@(\S+)\.service\s+\w+\s+\w+\s+(\w+)/
+                or next;
+
+            my $status = STATUS_OFF;
+            $status = STATUS_RUNNING if $state && $state eq "running";
+            $machines{$name} = {
+                NAME        => $name,
+                VMTYPE      => "systemd-nspawn",
+                VCPU        => 0,
+                STATUS      => $status,
+            };
+        }
+    }
 
     my @machines;
 
-    foreach my $line (@nspawn) {
-
-        my ($name, $state) = $line =~ /^systemd-nspawn\@(\S+)\.service\s+\w+\s+\w+\s+(\w+)/
+    # Parse machinectl to always report running containers, even if they are not registered
+    foreach my $line (getAllLines(
+        command => "machinectl --no-pager --no-legend",
+        logger  => $params{logger}
+    )) {
+        my ($name, $class, $service) = $line =~ /^(\S+)\s+(\w+)\s+(\w+)/
             or next;
 
-        my $status = STATUS_OFF;
-        $status = STATUS_RUNNING if $state && $state eq "running";
+        my $container;
+        if ($machines{$name}) {
+            $container = delete $machines{$name};
+            $container->{SUBSYSTEM} = $class;
+        } else {
+            $container = {
+                NAME        => $name,
+                VMTYPE      => $service,
+                SUBSYSTEM   => $class,
+                VCPU        => 0,
+                STATUS      => STATUS_RUNNING,
+            };
+        }
 
-        my $container = {
-            NAME        => $name,
-            VMTYPE      => "systemd-nspawn",
-            VCPU        => 0,
-            STATUS      => $status,
-        };
+        push @machines, $container
+    }
 
+    # Add powered off machines to list
+    push @machines, values(%machines);
+
+    foreach my $container (@machines) {
+        my $name = $container->{NAME};
         my $uuid;
-        if ($status eq STATUS_RUNNING) {
+        if ($container->{STATUS} eq STATUS_RUNNING) {
             $uuid = getFirstMatch(
                 command => "machinectl show -p Id $name",
                 pattern => qr/^Id=(\w+)$/,
@@ -93,8 +127,6 @@ sub  _getVirtualMachines {
         if (!$container->{VCPU}) {
             $container->{VCPU} = getCPUsFromProc(logger => $params{logger});
         }
-
-        push @machines, $container;
     }
 
     return @machines;
