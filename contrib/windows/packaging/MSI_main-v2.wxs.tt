@@ -385,6 +385,10 @@
     <CustomAction Id="SetAddFirewallExceptionOutCmd" Property="AddFirewallExceptionOut" Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall add rule name=&quot;!(loc.FirewallExceptionName)&quot; program=&quot;[#f_agent_exe]&quot; description=&quot;!(loc.OutgoingFirewallExceptionDescription)&quot; dir=out action=allow" Execute="immediate" />
     <CustomAction Id="AddFirewallExceptionOut" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
+    <!-- GLPI Agent 1.0 to 1.2 installers was creating wrongly named firewall rules, prepare CustomAction to clean up them -->
+    <CustomAction Id="SetDeleteWrongFirewallRuleInCmd"  Property="DeleteFirewallWrongIn"  Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;program=description= embedded HTTP server incoming traffic&quot;" Execute="immediate" />
+    <CustomAction Id="SetDeleteWrongFirewallRuleOutCmd" Property="DeleteFirewallWrongOut" Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;program=description= outgoing traffic&quot;" Execute="immediate" />
+
     <CustomAction Id="SetForceRun" Property="ForceRun" Value="&quot;[#f_glpiagent]&quot; --set-forcerun" Execute="immediate" />
     <CustomAction Id="ForceRun" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
     <CustomAction Id="SetRunNow" Property="RunNow" Value="&quot;[#f_glpiagent]&quot; --force" Execute="immediate" />
@@ -437,6 +441,12 @@
       <!-- Schedule custom action to support runnow option for not service exec modes -->
       <Custom Action="SetRunNow" Before="RunNow">RUNNOW=1 AND NOT EXECMODE=1 AND NOT REMOVE~="ALL"</Custom>
       <Custom Action="RunNow" Before="InstallFinalize">RUNNOW=1 AND NOT EXECMODE=1 AND NOT REMOVE~="ALL"</Custom>
+
+      <!-- GLPI Agent 1.0 to 1.2 installers was creating wrongly named firewall rules, be sure to clean up them on any new install -->
+      <Custom Action="SetDeleteWrongFirewallRuleInCmd" Before="DeleteFirewallWrongIn" />
+      <Custom Action="DeleteFirewallWrongIn" Before="InstallFiles" />
+      <Custom Action="SetDeleteWrongFirewallRuleOutCmd" Before="DeleteFirewallWrongOut" />
+      <Custom Action="DeleteFirewallWrongOut" Before="InstallFiles" />
 
       <!-- Schedule custom action to install/uninstall firewall exception rules -->
       <Custom Action="SetDeleteFirewallExceptionCmd" Before="DeleteFirewallException" />
