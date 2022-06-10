@@ -388,6 +388,7 @@
     <!-- GLPI Agent 1.0 to 1.2 installers was creating wrongly named firewall rules, prepare CustomAction to clean up them -->
     <CustomAction Id="SetDeleteWrongFirewallRuleInCmd"  Property="DeleteFirewallWrongIn"  Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;program=description= embedded HTTP server incoming traffic&quot;" Execute="immediate" />
     <CustomAction Id="SetDeleteWrongFirewallRuleOutCmd" Property="DeleteFirewallWrongOut" Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;program=description= outgoing traffic&quot;" Execute="immediate" />
+    <CustomAction Id="SetDeleteWrongFirewallRuleExeCmd" Property="DeleteFirewallWrongExe" Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;program=[#f_agent_exe]&quot;" Execute="immediate" />
 
     <CustomAction Id="SetForceRun" Property="ForceRun" Value="&quot;[#f_glpiagent]&quot; --set-forcerun" Execute="immediate" />
     <CustomAction Id="ForceRun" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
@@ -447,6 +448,8 @@
       <Custom Action="DeleteFirewallWrongIn" Before="InstallFiles" />
       <Custom Action="SetDeleteWrongFirewallRuleOutCmd" Before="DeleteFirewallWrongOut" />
       <Custom Action="DeleteFirewallWrongOut" Before="InstallFiles" />
+      <Custom Action="SetDeleteWrongFirewallRuleExeCmd" Before="DeleteFirewallWrongExe" />
+      <Custom Action="DeleteFirewallWrongExe" Before="InstallFiles" />
 
       <!-- Schedule custom action to install/uninstall firewall exception rules -->
       <Custom Action="SetDeleteFirewallExceptionCmd" Before="DeleteFirewallException" />
