@@ -16,6 +16,7 @@ inventory:
 * fix partial property missing in json while partial inventory requested
 * fix #132: Missing LXC container memory limit
 * PR #134: Fixed screen's edid fetch on linux, thanks to yweber-volta
+* fix additional-content option support for json format
 
 remoteinventory:
 * fallback on ssh command access when libssh2 fails to connect

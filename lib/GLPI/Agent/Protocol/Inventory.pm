@@ -173,12 +173,7 @@ sub mergeContent {
 
     return unless ref($params{content}) eq 'HASH';
 
-    my $content = $self->get("content")
-        or return;
-
-    foreach my $key (keys(%{$params{content}})) {
-        $content->{$key} = $params{content}->{$key};
-    }
+    $self->{_merge_content} = $params{content};
 }
 
 sub _setupStandardization {
@@ -319,6 +314,36 @@ sub normalize {
 
     # Transform content to inventory_format
     $self->_transform();
+}
+
+sub converted {
+    my ($self) = @_;
+
+    my $message = $self->SUPER::converted()
+        or return;
+
+    my $content = $message->{content}
+        or return $message;
+
+    # Merge content to support additional-content option
+    my $merge = $self->{_merge_content};
+    if ($merge) {
+        foreach my $key (keys(%{$merge})) {
+            if (! $content->{$key} || ref($merge->{$key}) ne 'HASH') {
+                $content->{$key} = $merge->{$key};
+            } else {
+                if (ref($content->{$key}) eq 'HASH') {
+                    foreach my $leaf (keys(%{$merge->{$key}})) {
+                        $content->{$key}->{$leaf} = $merge->{$key}->{$leaf};
+                    }
+                } elsif ($self->{logger}) {
+                    $self->{logger}->debug("content merge: skipping '$key' due to content type mismatch");
+                }
+            }
+        }
+    }
+
+    return $message;
 }
 
 sub _recursive_not_defined_cleanup {
