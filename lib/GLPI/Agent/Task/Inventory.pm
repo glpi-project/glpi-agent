@@ -60,18 +60,10 @@ sub isEnabled {
                                         $self->{logger}->error("Can't load GLPI client API to handle get_params")
                                             unless $cant_load_glpi_client++;
                                     } else {
-                                        my $config = $self->{config};
                                         $this_param->{_glpi_client} = GLPI::Agent::HTTP::Client::GLPI->new(
-                                            logger       => $self->{logger},
-                                            user         => $config->{user},
-                                            password     => $config->{password},
-                                            proxy        => $config->{proxy},
-                                            ca_cert_file => $config->{'ca-cert-file'},
-                                            ca_cert_dir  => $config->{'ca-cert-dir'},
-                                            no_ssl_check => $config->{'no-ssl-check'},
-                                            no_compress  => $config->{'no-compression'},
-                                            ssl_cert_file => $config->{'ssl-cert-file'},
-                                            agentid      => $self->{agentid},
+                                            logger  => $self->{logger},
+                                            config  => $self->{config},
+                                            agentid => $self->{agentid},
                                         );
                                         $this_param->{_glpi_url} = $self->{target}->getUrl();
                                         push @validated, $this_param;
@@ -112,7 +104,7 @@ sub isEnabled {
 }
 
 sub run {
-    my ($self, %params) = @_;
+    my ($self) = @_;
 
     if ( $REAL_USER_ID != 0 ) {
         $self->{logger}->warning(
@@ -250,7 +242,6 @@ sub setupEvent {
 sub submit {
     my ($self) = @_;
 
-    my $config    = $self->{config};
     my $inventory = $self->{inventory};
 
     # Keep cached data for next partial inventory
@@ -314,16 +305,9 @@ sub submit {
             unless GLPI::Agent::HTTP::Client::GLPI->require();
 
         my $client = GLPI::Agent::HTTP::Client::GLPI->new(
-            logger          => $self->{logger},
-            user            => $config->{user},
-            password        => $config->{password},
-            proxy           => $config->{proxy},
-            ca_cert_file    => $config->{'ca-cert-file'},
-            ca_cert_dir     => $config->{'ca-cert-dir'},
-            no_ssl_check    => $config->{'no-ssl-check'},
-            no_compress     => $config->{'no-compression'},
-            ssl_cert_file   => $config->{'ssl-cert-file'},
-            agentid         => $self->{agentid},
+            logger  => $self->{logger},
+            config  => $self->{config},
+            agentid => $self->{agentid},
         );
 
         my $response = $client->send(
@@ -342,16 +326,9 @@ sub submit {
             unless GLPI::Agent::HTTP::Client::OCS->require();
 
         my $client = GLPI::Agent::HTTP::Client::OCS->new(
-            logger          => $self->{logger},
-            user            => $config->{user},
-            password        => $config->{password},
-            proxy           => $config->{proxy},
-            ca_cert_file    => $config->{'ca-cert-file'},
-            ca_cert_dir     => $config->{'ca-cert-dir'},
-            no_ssl_check    => $config->{'no-ssl-check'},
-            no_compress     => $config->{'no-compression'},
-            ssl_cert_file   => $config->{'ssl-cert-file'},
-            agentid         => $self->{agentid},
+            logger  => $self->{logger},
+            config  => $self->{config},
+            agentid => $self->{agentid},
         );
 
         return $self->{logger}->error("Can't load Inventory XML Query API")

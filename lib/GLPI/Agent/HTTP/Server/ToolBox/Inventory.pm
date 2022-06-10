@@ -324,7 +324,8 @@ sub netscan {
     );
 
     $logger->info("Running $task->{name} task...");
-    $netdisco->run(target_expiration => $ip ? 300 : 60);
+    $netdisco->{target_expiration} = $ip ? 300 : 60;
+    $netdisco->run();
     my $chrono = sprintf("%0.3f", gettimeofday() - $starttime);
     $logger->info("$task->{name}: $ip_range_name $procname done");
     $logger->debug("Task run in $chrono seconds");

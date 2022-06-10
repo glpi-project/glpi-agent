@@ -16,14 +16,18 @@ my $client;
 
 throws_ok {
     $client = GLPI::Agent::HTTP::Client->new(
-        ca_cert_file => '/no/such/file',
+        config => {
+            'ca-cert-file' => '/no/such/file',
+        },
     );
 } qr/^non-existing certificate file/,
 'instanciation: invalid ca cert file';
 
 throws_ok {
     $client = GLPI::Agent::HTTP::Client->new(
-        ca_cert_dir => '/no/such/directory',
+        config => {
+            'ca-cert-dir' => '/no/such/directory',
+        },
     );
 } qr/^non-existing certificate directory/,
 'instanciation: invalid ca cert directory';

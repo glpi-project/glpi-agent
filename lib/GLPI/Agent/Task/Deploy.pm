@@ -389,7 +389,7 @@ sub processRemote {
 }
 
 sub run {
-    my ($self, %params) = @_;
+    my ($self) = @_;
 
     # Turn off localised output for commands
     $ENV{LC_ALL} = 'C'; # Turn off localised output for commands
@@ -420,15 +420,8 @@ sub run {
     }
 
     $self->{client} = GLPI::Agent::HTTP::Client::Fusion->new(
-        logger       => $logger,
-        user         => $params{user},
-        password     => $params{password},
-        proxy        => $params{proxy},
-        ca_cert_file => $params{ca_cert_file},
-        ca_cert_dir  => $params{ca_cert_dir},
-        no_ssl_check => $params{no_ssl_check},
-        ssl_cert_file => $params{ssl_cert_file},
-        debug        => $self->{debug}
+        logger  => $logger,
+        config  => $self->{config},
     );
 
     my $globalRemoteConfig = $self->{client}->send(
@@ -515,6 +508,6 @@ Returns true if the task is enabled.
 
 Process orders from a remote server.
 
-=head2 run ( $self, %params )
+=head2 run ( $self )
 
 Run the task.

@@ -5,6 +5,8 @@ Revision history for GLPI agent
 core:
 * fix: detect if agent is run via AppImage to cleanup LD_LIBRARY_PATH & LD_PRELOAD.
   This avoid to use AppImage C library for binaries used during inventory.
+* refacto: cleanup some api calls to re-used still provided config during object
+  creation. This reduces code revue while checking HTTP::Client supported features.
 
 inventory:
 * database: Oracle database inventory update

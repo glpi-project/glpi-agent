@@ -120,18 +120,11 @@ sub getHostIds {
 }
 
 sub run {
-    my ( $self, %params ) = @_;
+    my ($self) = @_;
 
     $self->{client} = GLPI::Agent::HTTP::Client::Fusion->new(
-        logger       => $self->{logger},
-        user         => $params{user},
-        password     => $params{password},
-        proxy        => $params{proxy},
-        ca_cert_file => $params{ca_cert_file},
-        ca_cert_dir  => $params{ca_cert_dir},
-        no_ssl_check => $params{no_ssl_check},
-        ssl_cert_file => $params{ssl_cert_file},
-        debug        => $self->{debug}
+        logger  => $self->{logger},
+        config  => $self->{config},
     );
     die unless $self->{client};
 
@@ -191,16 +184,9 @@ sub run {
             if $EVAL_ERROR;
 
         $serverclient = GLPI::Agent::HTTP::Client::GLPI->new(
-            logger          => $self->{logger},
-            user            => $params{user},
-            password        => $params{password},
-            proxy           => $params{proxy},
-            ca_cert_file    => $params{ca_cert_file},
-            ca_cert_dir     => $params{ca_cert_dir},
-            no_ssl_check    => $params{no_ssl_check},
-            no_compress     => $params{no_compress},
-            ssl_cert_file   => $params{ssl_cert_file},
-            agentid         => uuid_to_string($self->{agentid}),
+            logger  => $self->{logger},
+            config  => $self->{config},
+            agentid => uuid_to_string($self->{agentid}),
         );
 
         return $self->{logger}->error("Can't load GLPI Protocol Inventory library")
@@ -212,15 +198,8 @@ sub run {
             if $EVAL_ERROR;
 
         $serverclient = GLPI::Agent::HTTP::Client::OCS->new(
-            logger        => $self->{logger},
-            user          => $params{user},
-            password      => $params{password},
-            proxy         => $params{proxy},
-            ca_cert_file  => $params{ca_cert_file},
-            ca_cert_dir   => $params{ca_cert_dir},
-            no_ssl_check  => $params{no_ssl_check},
-            no_compress   => $params{no_compress},
-            ssl_cert_file => $params{ssl_cert_file},
+            logger  => $self->{logger},
+            config  => $self->{config},
         );
 
         GLPI::Agent::XML::Query::Inventory->require();

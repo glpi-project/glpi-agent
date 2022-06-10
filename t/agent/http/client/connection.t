@@ -100,8 +100,10 @@ subtest "no response" => sub {
 
 lives_ok {
     $client = GLPI::Agent::HTTP::Client->new(
-        user     => 'test',
-        password => 'test',
+        config   => {
+            user     => 'test',
+            password => 'test',
+        },
         logger   => $logger,
     );
 } 'instanciation:  http, auth, with credentials';
@@ -140,8 +142,10 @@ BAIL_OUT("can't launch the server: $EVAL_ERROR") if $EVAL_ERROR;
 
 lives_ok {
     $client = GLPI::Agent::HTTP::Client->new(
-        logger       => $logger,
-        no_ssl_check => 1,
+        logger  => $logger,
+        config  => {
+            'no-ssl-check'  => 1,
+        },
     );
 } 'instanciation: https, check disabled';
 
@@ -154,8 +158,10 @@ subtest "correct response" => sub {
 
 lives_ok {
     $client = GLPI::Agent::HTTP::Client->new(
-        logger       => $logger,
-        no_ssl_check => 1,
+        logger  => $logger,
+        config  => {
+            'no-ssl-check'  => 1,
+        },
     );
 } 'instanciation: https, check disabled, auth, no credentials';
 
@@ -170,10 +176,12 @@ subtest "no response" => sub {
 
 lives_ok {
     $client = GLPI::Agent::HTTP::Client->new(
-        user         => 'test',
-        password     => 'test',
-        logger       => $logger,
-        no_ssl_check => 1,
+        logger  => $logger,
+        config  => {
+            user            => 'test',
+            password        => 'test',
+            'no-ssl-check'  => 1,
+        },
     );
 } 'instanciation: https, check disabled, auth, credentials';
 
@@ -186,8 +194,10 @@ subtest "correct response" => sub {
 
 lives_ok {
     $client = GLPI::Agent::HTTP::Client->new(
-        logger       => $logger,
-        ca_cert_file => 'resources/ssl/crt/ca.pem',
+        logger  => $logger,
+        config  => {
+            'ca-cert-file'  => 'resources/ssl/crt/ca.pem',
+        },
     );
 } 'instanciation: https';
 
@@ -201,7 +211,9 @@ subtest "correct response" => sub {
 lives_ok {
     $client = GLPI::Agent::HTTP::Client->new(
         logger       => $logger,
-        ca_cert_file => 'resources/ssl/crt/ca.pem',
+        config  => {
+            'ca-cert-file'  => 'resources/ssl/crt/ca.pem',
+        },
     );
 } 'instanciation: https, auth, no credentials';
 
@@ -216,10 +228,12 @@ subtest "no response" => sub {
 
 lives_ok {
     $client = GLPI::Agent::HTTP::Client->new(
-        user         => 'test',
-        password     => 'test',
-        logger       => $logger,
-        ca_cert_file => 'resources/ssl/crt/ca.pem',
+        logger  => $logger,
+        config  => {
+            user            => 'test',
+            password        => 'test',
+            'ca-cert-file'  => 'resources/ssl/crt/ca.pem',
+        },
     );
 } 'instanciation: https, auth, credentials';
 
@@ -257,8 +271,10 @@ $proxy->background();
 
 lives_ok {
     $client = GLPI::Agent::HTTP::Client->new(
-        logger => $logger,
-        proxy  => $proxy->url()
+        logger  => $logger,
+        config  => {
+            proxy   => $proxy->url(),
+        },
     );
 } 'instanciation: http, proxy';
 
@@ -271,8 +287,10 @@ subtest "correct response" => sub {
 
 lives_ok {
     $client = GLPI::Agent::HTTP::Client->new(
-        logger => $logger,
-        proxy  => $proxy->url()
+        logger  => $logger,
+        config  => {
+            proxy   => $proxy->url(),
+        },
     );
 } 'instanciation: http, proxy, auth, no credentials';
 
@@ -287,10 +305,12 @@ subtest "no response" => sub {
 
 lives_ok {
     $client = GLPI::Agent::HTTP::Client->new(
-        user     => 'test',
-        password => 'test',
-        logger   => $logger,
-        proxy    => $proxy->url()
+        logger  => $logger,
+        config  => {
+            user        => 'test',
+            password    => 'test',
+            proxy       => $proxy->url(),
+        },
     );
 } 'instanciation: http, proxy, auth, credentials';
 
@@ -341,9 +361,12 @@ BAIL_OUT("can't launch the server: $EVAL_ERROR") if $EVAL_ERROR;
 
 lives_ok {
     $client = GLPI::Agent::HTTP::Client->new(
-        logger       => $logger,
-        no_ssl_check => 1,
-        proxy        => $proxy->url()
+        logger  => $logger,
+        config  => {
+            'no-ssl-check'  => 1,
+            proxy           => $proxy->url(),
+            #~ timeout         => 5,
+        },
     );
 } 'instanciation: https, proxy, check disabled';
 
@@ -356,9 +379,11 @@ subtest "correct response" => sub {
 
 lives_ok {
     $client = GLPI::Agent::HTTP::Client->new(
-        logger       => $logger,
-        no_ssl_check => 1,
-        proxy        => $proxy->url()
+        logger  => $logger,
+        config  => {
+            'no-ssl-check'  => 1,
+            proxy           => $proxy->url(),
+        },
     );
 } 'instanciation: https, check disabled, proxy, auth, no credentials';
 
@@ -373,11 +398,13 @@ subtest "no response" => sub {
 
 lives_ok {
     $client = GLPI::Agent::HTTP::Client->new(
-        user         => 'test',
-        password     => 'test',
-        logger       => $logger,
-        no_ssl_check => 1,
-        proxy        => $proxy->url()
+        logger  => $logger,
+        config  => {
+            user            => 'test',
+            password        => 'test',
+            'no-ssl-check'  => 1,
+            proxy           => $proxy->url(),
+        },
     );
 } 'instanciation: https, check disabled, proxy, auth, credentials';
 
@@ -390,9 +417,11 @@ subtest "correct response" => sub {
 
 lives_ok {
     $client = GLPI::Agent::HTTP::Client->new(
-        logger       => $logger,
-        ca_cert_file => 'resources/ssl/crt/ca.pem',
-        proxy        => $proxy->url(),
+        logger  => $logger,
+        config  => {
+            'ca-cert-file'  => 'resources/ssl/crt/ca.pem',
+            proxy           => $proxy->url(),
+        },
     );
 } 'instanciation: https, proxy';
 
@@ -405,9 +434,11 @@ subtest "correct response" => sub {
 
 lives_ok {
     $client = GLPI::Agent::HTTP::Client->new(
-        logger       => $logger,
-        ca_cert_file => 'resources/ssl/crt/ca.pem',
-        proxy        => $proxy->url()
+        logger  => $logger,
+        config  => {
+            'ca-cert-file'  => 'resources/ssl/crt/ca.pem',
+            proxy           => $proxy->url(),
+        },
     );
 } 'instanciation: https, proxy, auth, no credentials';
 
@@ -422,11 +453,13 @@ subtest "no response" => sub {
 
 lives_ok {
     $client = GLPI::Agent::HTTP::Client->new(
-        user         => 'test',
-        password     => 'test',
-        logger       => $logger,
-        ca_cert_file => 'resources/ssl/crt/ca.pem',
-        proxy        => $proxy->url()
+        logger  => $logger,
+        config  => {
+            user            => 'test',
+            password        => 'test',
+            'ca-cert-file'  => 'resources/ssl/crt/ca.pem',
+            proxy           => $proxy->url(),
+        },
     );
 } 'instanciation: https, proxy, auth, credentials';
 

@@ -66,19 +66,25 @@ my $server;
 my $request;
 my $url = "https://127.0.0.1:$port/public";
 my $unsafe_client = GLPI::Agent::HTTP::Client->new(
-    logger       => $logger,
-    no_ssl_check => 1,
+    logger  => $logger,
+    config  => {
+        'no-ssl-check' => 1,
+    },
 );
 
 my $secure_client = GLPI::Agent::HTTP::Client->new(
-    logger       => $logger,
-    ca_cert_file => 'resources/ssl/crt/ca.pem',
+    logger  => $logger,
+    config  => {
+        'ca-cert-file' => 'resources/ssl/crt/ca.pem',
+    },
 );
 
 my $secure_proxy_client = GLPI::Agent::HTTP::Client->new(
     logger => $logger,
-    proxy  => $proxy->url(),
-    ca_cert_file => 'resources/ssl/crt/ca.pem',
+    config => {
+        proxy           => $proxy->url(),
+        'ca-cert-file'  => 'resources/ssl/crt/ca.pem',
+    },
 );
 
 # ensure the server get stopped even if an exception is thrown

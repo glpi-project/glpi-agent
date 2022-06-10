@@ -150,18 +150,11 @@ sub _validateAnswer {
 }
 
 sub run {
-    my ($self, %params) = @_;
+    my ($self) = @_;
 
     $self->{client} = GLPI::Agent::HTTP::Client::Fusion->new(
-        logger       => $self->{logger},
-        user         => $params{user},
-        password     => $params{password},
-        proxy        => $params{proxy},
-        ca_cert_file => $params{ca_cert_file},
-        ca_cert_dir  => $params{ca_cert_dir},
-        no_ssl_check => $params{no_ssl_check},
-        ssl_cert_file => $params{ssl_cert_file},
-        debug        => $self->{debug}
+        logger  => $self->{logger},
+        config  => $self->{config},
     );
 
     my $globalRemoteConfig = $self->{client}->send(

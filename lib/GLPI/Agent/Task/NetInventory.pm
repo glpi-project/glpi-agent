@@ -137,19 +137,6 @@ sub _inventory_thread {
 sub run {
     my ($self, %params) = @_;
 
-    # Prepare client configuration in needed to send message to server
-    $self->{_client_params} = {
-        logger       => $self->{logger},
-        user         => $params{user},
-        password     => $params{password},
-        proxy        => $params{proxy},
-        ca_cert_file => $params{ca_cert_file},
-        ca_cert_dir  => $params{ca_cert_dir},
-        no_ssl_check => $params{no_ssl_check},
-        no_compress  => $params{no_compress},
-        ssl_cert_file => $params{ssl_cert_file},
-    } if !$self->{client};
-
     # Extract greatest max_threads from jobs
     my ($max_threads) = sort { $b <=> $a } map { int($_->max_threads()) }
         @{$self->{jobs}};
@@ -376,8 +363,12 @@ sub _sendMessage {
     );
 
     # task-specific client, if needed
-    $self->{client} = GLPI::Agent::HTTP::Client::OCS->new(%{$self->{_client_params}})
-        if !$self->{client};
+    unless ($self->{client}) {
+        $self->{client} = GLPI::Agent::HTTP::Client::OCS->new(
+            logger  => $self->{logger},
+            config  => $self->{config},
+        );
+    }
 
     $self->{client}->send(
         url     => $self->{target}->getUrl(),

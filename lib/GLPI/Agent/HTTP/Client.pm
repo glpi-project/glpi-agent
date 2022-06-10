@@ -17,26 +17,30 @@ my $log_prefix = "[http client] ";
 sub new {
     my ($class, %params) = @_;
 
-    die "non-existing certificate file $params{ca_cert_file}"
-        if $params{ca_cert_file} && ! -f $params{ca_cert_file};
+    my $config = $params{config} // {};
 
-    die "non-existing certificate directory $params{ca_cert_dir}"
-        if $params{ca_cert_dir} && ! -d $params{ca_cert_dir};
+    my $ca_cert_file = $params{ca_cert_file} || $config->{'ca-cert-file'};
+    die "non-existing certificate file $ca_cert_file"
+        if $ca_cert_file && ! -f $ca_cert_file;
 
-    die "non-existing client certificate file $params{ssl_cert_file}"
-        if $params{ssl_cert_file} && ! -f $params{ssl_cert_file};
+    my $ca_cert_dir = $params{ca_cert_dir} || $config->{'ca-cert-dir'};
+    die "non-existing certificate directory $ca_cert_dir"
+        if $ca_cert_dir && ! -d $ca_cert_dir;
+
+    my $ssl_cert_file = $params{ssl_cert_file} || $config->{'ssl-cert-file'};
+    die "non-existing client certificate file $ssl_cert_file"
+        if $ssl_cert_file && ! -f $ssl_cert_file;
 
     my $self = {
-        logger       => $params{logger} ||
-                          GLPI::Agent::Logger->new(),
-        user         => $params{user},
-        password     => $params{password},
-        ssl_set      => 0,
-        no_ssl_check => $params{no_ssl_check},
-        no_compress  => $params{no_compress},
-        ca_cert_dir  => $params{ca_cert_dir},
-        ca_cert_file => $params{ca_cert_file},
-        ssl_cert_file => $params{ssl_cert_file},
+        logger          => $params{logger} || GLPI::Agent::Logger->new(),
+        user            => $params{user}     || $config->{'user'},
+        password        => $params{password} || $config->{'password'},
+        ssl_set         => 0,
+        no_ssl_check    => $params{no_ssl_check} || $config->{'no-ssl-check'},
+        no_compress     => $params{no_compress}  || $config->{'no-compression'},
+        ca_cert_dir     => $ca_cert_dir,
+        ca_cert_file    => $ca_cert_file,
+        ssl_cert_file   => $ssl_cert_file,
     };
     bless $self, $class;
 
@@ -44,13 +48,14 @@ sub new {
     $self->{ua} = LWP::UserAgent->new(
         requests_redirectable => ['POST', 'GET', 'HEAD'],
         agent                 => $GLPI::Agent::AGENT_STRING,
-        timeout               => $params{timeout} || 180,
+        timeout               => $params{timeout} || $config->{'timeout'} || 180,
         parse_head            => 0, # No need to parse HTML
         keep_alive            => 1,
     );
 
-    if ($params{proxy}) {
-        $self->{ua}->proxy(['http', 'https'], $params{proxy});
+    my $proxy = $params{proxy} || $config->{'proxy'};
+    if ($proxy) {
+        $self->{ua}->proxy(['http', 'https'], $proxy);
     }  else {
         $self->{ua}->env_proxy();
     }

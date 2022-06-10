@@ -33,12 +33,11 @@ my $plan = 16;
 plan tests => $plan;
 
 # Redefine send API for testing to simulate server answer without really sending
-# user & password params can be used to define the current test and simulate the expected answer
+# 'user' task config is used to define the current test and simulate the expected answer
 sub _send {
     my ($self, %params) = @_;
-    my $test = $self->{user} || '' ;
-    my $remtest = $self->{password} || '' ;
-    die 'communication error' if ($test eq 'nocomm');
+    my ($test, $remtest) = $self->{user} =~ /^([^:]+):?([^:]+)?$/;
+    die 'communication error' if !$test || $test eq 'nocomm';
     die 'no arg to send' unless exists($params{args});
 
     my %response = (
@@ -121,58 +120,75 @@ lives_ok {
 } "Collect object instanciation" ;
 is( $target->getUrl(), 'http://localhost/glpi-any' );
 
+# We will directly update client config before run() to configure test to run
+my $test_config = $task->{config};
+
 throws_ok {
-    $task->run( user => 'nocomm' );
+    $test_config->{user} = 'nocomm';
+    $task->run();
 } qr/communication error/, "Normal error if target is unavailable" ;
 
 throws_ok {
-    $task->run( user => 'emptyresponse' );
+    $test_config->{user} = 'emptyresponse';
+    $task->run();
 } qr/No job schedule returned/, "Info returned on empty response" ;
 
 throws_ok {
-    $task->run( user => 'malformedschedule' );
+    $test_config->{user} = 'malformedschedule';
+    $task->run();
 } qr/Malformed schedule/, "Info returned on malformed schedule" ;
 
 throws_ok {
-    $task->run( user => 'emptyschedule' );
+    $test_config->{user} = 'emptyschedule';
+    $task->run();
 } qr/No Collect job enabled/, "Info returned on empty schedule" ;
 
 throws_ok {
-    $task->run( user => 'badschedule' );
+    $test_config->{user} = 'badschedule';
+    $task->run();
 } qr/No Collect job found/, "Info returned with bad job schedule" ;
 
 lives_ok {
-    $task->run( user => 'normalschedule' );
+    $test_config->{user} = 'normalschedule';
+    $task->run();
 } "Normal schedule" ;
 
 throws_ok {
-    $task->run( user => 'normalschedulewithremoteurl', password => 'nojob' );
+    $test_config->{user}     = 'normalschedulewithremoteurl:nojob';
+    $task->run();
 } qr/Nothing to do/, "No job scheduled" ;
 
 throws_ok {
-    $task->run( user => 'normalschedulewithremoteurl', password => 'badjson-1' );
+    $test_config->{user}     = 'normalschedulewithremoteurl:badjson-1';
+    $task->run();
 } qr/Bad JSON.*Bad answer/, "Badly formatted job - case 1" ;
 
 throws_ok {
-    $task->run( user => 'normalschedulewithremoteurl', password => 'badjson-2' );
+    $test_config->{user}     = 'normalschedulewithremoteurl:badjson-2';
+    $task->run();
 } qr/Bad JSON.*Missing jobs/, "Badly formatted job - case 2" ;
 
 throws_ok {
-    $task->run( user => 'normalschedulewithremoteurl', password => 'badjson-3' );
+    $test_config->{user}     = 'normalschedulewithremoteurl:badjson-3';
+    $task->run();
 } qr/Bad JSON.*Missing jobs/, "Badly formatted job - case 3" ;
 
 throws_ok {
-    $task->run( user => 'normalschedulewithremoteurl', password => 'badjson-4' );
+    $test_config->{user}     = 'normalschedulewithremoteurl:badjson-4';
+    $task->run();
 } qr/Bad JSON.*Missing key/, "Badly formatted job - case 4" ;
 
 throws_ok {
-    $task->run( user => 'normalschedulewithremoteurl', password => 'badjson-5' );
+    $test_config->{user}     = 'normalschedulewithremoteurl:badjson-5';
+    $task->run();
 } qr/Bad JSON.*Missing key/, "Badly formatted job - case 5" ;
 
 throws_ok {
-    $task->run( user => 'normalschedulewithremoteurl', password => 'badjson-6' );
+    $test_config->{user}     = 'normalschedulewithremoteurl:badjson-6';
+    $task->run();
 } qr/Bad JSON.*not supported 'function' key/, "Badly formatted job - case 6" ;
 
 throws_ok {
-    $task->run( user => 'normalschedulewithremoteurl', password => 'unexpected-nojob' );
+    $test_config->{user}     = 'normalschedulewithremoteurl:unexpected-nojob';
+    $task->run();
 } qr/no jobs provided/, "No job included in jobs key" ;

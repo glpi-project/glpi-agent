@@ -140,23 +140,13 @@ sub _discovery_thread {
 }
 
 sub run {
-    my ($self, %params) = @_;
+    my ($self) = @_;
 
     my $abort = 0;
     $SIG{TERM} = sub { $abort = 1; };
 
-    # Prepare client configuration in needed to send message to server
-    $self->{_client_params} = {
-        logger       => $self->{logger},
-        user         => $params{user},
-        password     => $params{password},
-        proxy        => $params{proxy},
-        ca_cert_file => $params{ca_cert_file},
-        ca_cert_dir  => $params{ca_cert_dir},
-        no_ssl_check => $params{no_ssl_check},
-        no_compress  => $params{no_compress},
-        ssl_cert_file => $params{ssl_cert_file},
-    } if !$self->{client};
+    # Keep a flag if client has still been set in a caller script
+    my $keep_client = defined($self->{client});
 
     # check discovery methods available
     if (canRun('arp')) {
@@ -263,11 +253,13 @@ sub run {
     }
 
     # Don't keep client until we created threads to avoid segfault if SSL is used
-    # we older openssl libs, but only if it is still not set by a script
-    delete $self->{client} if $self->{_client_params};
+    # with older openssl libs, but only if it is still not set by a script
+    delete $self->{client} unless $keep_client;
 
     # Define a realistic block scan expiration : at least one minute by address
-    my $target_expiration = $params{target_expiration} || 60;
+
+    # Can be set from GLPI::Agent::HTTP::Server::ToolBox::Inventory
+    my $target_expiration = $self->{target_expiration} || 60;
     $target_expiration = 60 if ($target_expiration < 60);
     setExpirationTime( timeout => $max_count * $target_expiration );
     my $expiration = getExpirationTime();
@@ -481,8 +473,12 @@ sub _sendMessage {
     );
 
     # task-specific client, if needed
-    $self->{client} = GLPI::Agent::HTTP::Client::OCS->new(%{$self->{_client_params}})
-        if !$self->{client};
+    unless ($self->{client}) {
+        $self->{client} = GLPI::Agent::HTTP::Client::OCS->new(
+            logger  => $self->{logger},
+            config  => $self->{config},
+        );
+    }
 
     $self->{client}->send(
         url     => $self->{target}->getUrl(),

@@ -160,7 +160,7 @@ my %tests = (
 );
 
 # Redefine send API for testing to simulate server answer without really sending
-# user & password params can be used to define the current test and simulate the expected answer
+# 'user' task config is used to define the current test and simulate the expected answer
 sub _send {
     my ($self, %params) = @_;
     my $test = $self->{user} || '' ;
@@ -209,14 +209,16 @@ lives_ok {
 foreach my $test (sort keys %tests) {
     if ($tests{$test}->{OK} eq 'yes') {
         lives_ok {
-            $task->run( user => $test );
+            $task->{config}->{user} = $test;
+            $task->run();
         } "Test $test: ".$tests{$test}->{description} ;
         cmp_deeply( $tests{$test}->{setAnswer}, $tests{$test}->{results}, "$test results")
             || diag explain $tests{$test}->{setAnswer};
         is( scalar(@{$tests{$test}->{setAnswer}}), $tests{$test}->{count}, "$test results count");
     } else {
         throws_ok {
-            $task->run( user => $test );
+            $task->{config}->{user} = $test;
+            $task->run();
         } $tests{$test}->{expected},
             "Test $test: ".$tests{$test}->{description} ;
     }

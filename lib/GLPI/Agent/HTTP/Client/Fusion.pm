@@ -19,13 +19,6 @@ sub new {
 
     my $self = $class->SUPER::new(%params);
 
-# Stack the messages sent in order to be able to check the
-# correctness of the behavior with the test-suite
-    if ($params{debug}) {
-        $self->{debug} = 1;
-        $self->{msgStack} = []
-    }
-
     $self->{_cookies} = HTTP::Cookies->new ;
 
     return $self;
@@ -46,8 +39,6 @@ sub _prepareVal {
 
 sub send { ## no critic (ProhibitBuiltinHomonyms)
     my ($self, %params) = @_;
-
-    push @{$self->{msgStack}}, $params{args} if $self->{debug};
 
     my $url = ref $params{url} eq 'URI' ?
         $params{url} : URI->new($params{url});

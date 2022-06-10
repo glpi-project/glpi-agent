@@ -525,18 +525,10 @@ sub _handle_proxy_request {
 
         # Prepare a client to foward request
         my $proxyclient = GLPI::Agent::HTTP::Client::GLPI->new(
-            logger       => $self->{logger},
-            timeout      => $serverconfig->{timeout},
-            user         => $serverconfig->{user},
-            password     => $serverconfig->{password},
-            proxy        => $serverconfig->{proxy},
-            ca_cert_file => $serverconfig->{'ca-cert-file'},
-            ca_cert_dir  => $serverconfig->{'ca-cert-dir'},
-            no_ssl_check => $serverconfig->{'no-ssl-check'},
-            ssl_cert_file => $serverconfig->{'ssl-cert-file'},
-            no_compress  => $serverconfig->{'no-compression'},
-            agentid      => $agentid,
-            proxyid      => $proxyid,
+            logger  => $self->{logger},
+            config  => $serverconfig,
+            agentid => $agentid,
+            proxyid => $proxyid,
         );
 
         foreach my $target (@servers) {
@@ -700,15 +692,8 @@ sub _handle_proxy_request {
 
     if (@servers) {
         my $proxyclient = GLPI::Agent::HTTP::Client::OCS->new(
-            logger       => $self->{logger},
-            user         => $serverconfig->{user},
-            password     => $serverconfig->{password},
-            proxy        => $serverconfig->{proxy},
-            ca_cert_file => $serverconfig->{'ca-cert-file'},
-            ca_cert_dir  => $serverconfig->{'ca-cert-dir'},
-            no_ssl_check => $serverconfig->{'no-ssl-check'},
-            no_compress  => $serverconfig->{'no-compress'},
-            ssl_cert_file => $serverconfig->{'ssl-cert-file'},
+            logger  => $self->{logger},
+            config  => $serverconfig,
         );
 
         my $message = GLPI::Agent::HTTP::Server::Proxy::Message->new(
