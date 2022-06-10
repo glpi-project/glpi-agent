@@ -208,7 +208,7 @@ sub setupEvent {
     if ($event->{category}) {
         my %keep = map { lc($_) => 1 } grep { ! $self->{disabled}->{$_} } split(/,+/, $event->{category});
         unless (keys(%keep)) {
-            $self->{logger}->debug("Nothing to inventory on partial inventory event");
+            $self->{logger}->info("Nothing to inventory on partial inventory event");
             return;
         }
         my @categories = $self->getCategories();
@@ -217,11 +217,11 @@ sub setupEvent {
             if (any { $_ eq $category } @categories) {
                 $valid = 1;
             } else {
-                $self->{logger}->debug("Unknown category on partial inventory event: $category");
+                $self->{logger}->error("Unknown category on partial inventory event: $category");
             }
         }
         unless ($valid) {
-            $self->{logger}->debug("Invalid partial inventory event with no supported category");
+            $self->{logger}->error("Invalid partial inventory event with no supported category");
             return;
         }
         my $cached = $self->cachedata();
@@ -239,7 +239,7 @@ sub setupEvent {
             $self->{disabled}->{$category} = 1 unless $keep{$category};
         }
     } else {
-        $self->{logger}->debug("No category property on partial inventory event");
+        $self->{logger}->error("No category property on partial inventory event");
         return;
     }
 
