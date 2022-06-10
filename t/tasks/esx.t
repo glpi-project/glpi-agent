@@ -126,7 +126,7 @@ foreach my $test (keys %tests) {
 
     # Fix version client with the test one to avoid false positive while agent version is evolving
     $inventory->mergeContent({
-        VERSIONCLIENT => $tests{$test}->{client}
+        versionclient => $tests{$test}->{client}
     });
 
     my $content;
