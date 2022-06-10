@@ -11,6 +11,7 @@ use UNIVERSAL::require;
 
 use GLPI::Agent;
 use GLPI::Agent::Logger;
+use GLPI::Agent::Tools;
 
 my $log_prefix = "[http client] ";
 
@@ -41,6 +42,7 @@ sub new {
         ca_cert_dir     => $ca_cert_dir,
         ca_cert_file    => $ca_cert_file,
         ssl_cert_file   => $ssl_cert_file,
+        _vardir         => $config->{'vardir'},
     };
     bless $self, $class;
 
@@ -233,6 +235,13 @@ sub _setSSLOptions {
             $Net::SSLeay::trace = 3;
         }
 
+        # Support system specific certificate store
+        unless ($self->{ca_cert_file} || $self->{ca_cert_dir}) {
+            # Support keychain on Darwin and keystore on MSWin32
+            $self->{ca_cert_file} = $self->_KeyChain_or_KeyStore_Export()
+                if $OSNAME =~ /^darwin|MSWin32$/;
+        }
+
         if ($LWP::VERSION >= 6) {
             $self->{ua}->ssl_opts(SSL_ca_file => $self->{ca_cert_file})
                 if $self->{ca_cert_file};
@@ -267,6 +276,61 @@ sub _setSSLOptions {
     }
 
     $self->{ssl_set} = 1;
+}
+
+sub _KeyChain_or_KeyStore_Export {
+    my ($self) = @_;
+
+    my $logger = $self->{logger};
+    my $vardir = $self->{_vardir};
+    my $basename = $OSNAME eq 'darwin'  ? "keychain" : "keystore";
+    unless (defined($self->{_certchain})) {
+        if ($vardir && -d $vardir) {
+            $self->{_certchain} = "$vardir/$basename-export.pem" ;
+            $self->{_certchain_mtime} = (stat($self->{_certchain}))[9]
+                if -e $self->{_certchain};
+        } else {
+            File::Temp->require();
+            if ($EVAL_ERROR) {
+                $logger->error("Can't load File::Temp to store $basename export");
+                return;
+            }
+            # Store File::Temp object with client so the temp file is kept until
+            # the object is destroyed and no more used
+            $self->{_certchain_temp} = File::Temp->new(
+                TEMPLATE    => "$basename-export-XXXXXX",
+                SUFFIX      => ".pem",
+            );
+            $self->{_certchain} = $self->{_certchain_temp}->filename();
+        }
+    }
+
+    # The server certificate file won't be regenerated before agent program next start
+    # or it has been generated more than an hour ago
+    return $self->{_certchain}
+        if $self->{_certchain_mtime} && $BASETIME < $self->{_certchain_mtime}
+            && $self->{_certchain_mtime} > time - 3600;
+
+    $logger->debug(
+        $log_prefix .
+        (-e $self->{_certchain} ? "Updating" : "Creating") .
+        " '".$self->{_certchain}."' file to store $basename known certificates"
+    );
+
+    if ($OSNAME eq 'darwin') {
+        getAllLines(
+            command => "security find-certificate -a -p > '".$self->{_certchain}."'",
+            logger  => $logger
+        );
+    } else {
+    }
+
+    $self->{_certchain_mtime} = time;
+    return $self->{_certchain} if -s $self->{_certchain};
+
+    # Finally we should cache we got an empty result
+    unlink $self->{_certchain};
+    return $self->{_certchain} = "";
 }
 
 1;
