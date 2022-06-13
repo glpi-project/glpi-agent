@@ -33,6 +33,7 @@ sub init {
 
     $self->{_winrm} = GLPI::Agent::SOAP::WsMan->new(
         logger      => $self->{logger},
+        config      => $self->config(),
         url         => $url->canonical->as_string,
         user        => $self->{_user} || $ENV{USERNAME},
         password    => $self->{_pass} || $ENV{PASSWORD},

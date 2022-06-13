@@ -49,8 +49,6 @@ sub new {
     my $config = $params{config} // {};
 
     my $self = $class->SUPER::new(
-        timeout         => $config->{timeout},
-        no_ssl_check    => $config->{no_ssl_check},
         ca_cert_dir     => $config->{ca_cert_dir}   || $ENV{'CA_CERT_PATH'},
         ca_cert_file    => $config->{ca_cert_file}  || $ENV{'CA_CERT_FILE'},
         ssl_cert_file   => $config->{ssl_cert_file} || $ENV{'SSL_CERT_FILE'},
