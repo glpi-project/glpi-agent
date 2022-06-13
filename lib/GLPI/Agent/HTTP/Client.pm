@@ -323,6 +323,59 @@ sub _KeyChain_or_KeyStore_Export {
             logger  => $logger
         );
     } else {
+        # Windows keystore support
+        Cwd->require();
+        my $cwd = Cwd::cwd();
+
+        File::Temp->require();
+        if ($EVAL_ERROR) {
+            $logger->error("Can't load File::Temp to export $basename certificates");
+            return;
+        }
+
+        # Create a temporary folder in vardir to cd & export certificates
+        my $tmpdir = File::Temp->newdir(
+            TEMPLATE    => "$basename-export-XXXXXX",
+            DIR         => $vardir,
+            TMPDIR      => 1,
+        );
+        my $certdir = $tmpdir->dirname;
+        $certdir =~ s{\\}{/}g;
+        my $fhw;
+        if (-d $certdir && open($fhw, ">", $self->{_certchain})) {
+            $logger->debug2("Changing to '$certdir' temporary folder");
+            chdir $certdir;
+
+            # Export certificates from keystore as crt files
+            getAllLines(
+                command => "certutil -Store -Silent -Split",
+                logger  => $logger
+            );
+
+            # Convert each crt file to base64 encoded cer file and concatenate in certchain file
+            File::Glob->require();
+            foreach my $certfile (File::Glob::bsd_glob("$certdir/*")) {
+                if ($certfile =~ m{^$certdir/(.*\.crt)$}) {
+                    getAllLines(
+                        command => "certutil -encode $1 temp.cer",
+                        logger  => $logger
+                    );
+                    my $fhr;
+                    if (open($fhr, "<", "temp.cer")) {
+                        map { print $fhw $_ } <$fhr>;
+                        close($fhr);
+                    }
+                    unlink "$certdir/temp.cer";
+                }
+                unlink $certfile;
+            }
+
+            close($fhw);
+
+            # Get back to current dir
+            $logger->debug2("Changing back to '$cwd' folder");
+            chdir $cwd;
+        }
     }
 
     $self->{_certchain_mtime} = time;
