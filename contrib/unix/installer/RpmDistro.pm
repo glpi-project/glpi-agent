@@ -134,6 +134,7 @@ sub install {
         my @rpms = sort values(%pkgs);
         $self->_prepareDistro();
         my $command = $self->{_yum} ? "yum -y install @rpms" :
+            $self->{_zypper} ? "zypper -n install -y --allow-unsigned-rpm @rpms" :
             $self->{_dnf} ? "dnf -y install @rpms" : "";
         die "Unsupported rpm based platform\n" unless $command;
         my $err = $self->system($command);
@@ -183,19 +184,43 @@ sub _prepareDistro {
             $self->{_yum} = 1;
             delete $self->{_dnf};
         }
+    } elsif ($self->{_name} =~ /opensuse/i) {
+        $self->{_zypper} = 1;
+        delete $self->{_dnf};
+        $self->verbose("Checking devel_languages_perl repository is enabled");
+        # Always quiet this test even on verbose mode
+        if ($self->run("zypper -n repos devel_languages_perl" . ($self->verbose ? " >/dev/null" : ""))) {
+            $self->verbose("Installing devel_languages_perl repository...");
+            my $release = $self->{_release};
+            $release =~ s/ /_/g;
+            my $ret = 0;
+            foreach my $version ($self->{_version}, $release) {
+                $ret = $self->run("zypper -n --gpg-auto-import-keys addrepo https://download.opensuse.org/repositories/devel:/languages:/perl/$version/devel:languages:perl.repo")
+                    or last;
+            }
+            die "Can't install devel_languages_perl repository\n" if $ret;
+        }
+        $self->verbose("Enable devel_languages_perl repository...");
+        $self->run("zypper -n modifyrepo -e devel_languages_perl")
+            and die "Can't enable required devel_languages_perl repository\n";
+        $self->verbose("Refresh devel_languages_perl repository...");
+        $self->run("zypper -n --gpg-auto-import-keys refresh devel_languages_perl")
+            and die "Can't refresh devel_languages_perl repository\n";
     }
 
-    # We always need EPEL
-    my $epel = qx(rpm -q --queryformat '%{VERSION}' epel-release);
-    if ($? == 0 && $epel eq $v) {
-        $self->verbose("EPEL $v repository still installed");
-    } else {
-        $self->info("Installing EPEL $v repository...");
-        my $cmd = $self->{_yum} ? "yum" : "dnf";
-        if ( $self->system("$cmd -y install epel-release") != 0 ) {
-            my $epelcmd = "$cmd -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-$v.noarch.rpm";
-            my $ret = $self->run($epelcmd);
-            die "Can't install EPEL $v repository: $!\n" if $ret;
+    # We need EPEL only on redhat/centos
+    unless ($self->{_zypper}) {
+        my $epel = qx(rpm -q --queryformat '%{VERSION}' epel-release);
+        if ($? == 0 && $epel eq $v) {
+            $self->verbose("EPEL $v repository still installed");
+        } else {
+            $self->info("Installing EPEL $v repository...");
+            my $cmd = $self->{_yum} ? "yum" : "dnf";
+            if ( $self->system("$cmd -y install epel-release") != 0 ) {
+                my $epelcmd = "$cmd -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-$v.noarch.rpm";
+                my $ret = $self->run($epelcmd);
+                die "Can't install EPEL $v repository: $!\n" if $ret;
+            }
         }
     }
 }

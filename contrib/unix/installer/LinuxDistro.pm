@@ -66,7 +66,7 @@ my @distributions = (
 # the found name matches the given regexp
 my %classes = (
     DebDistro   => qr/debian|ubuntu/i,
-    RpmDistro   => qr/red\s?hat|centos|fedora/i,
+    RpmDistro   => qr/red\s?hat|centos|fedora|opensuse/i,
 );
 
 sub new {
@@ -172,6 +172,7 @@ sub _getDistro {
             chomp($line);
             $name        = $1 if $line =~ /^NAME="?([^"]+)"?/;
             $version     = $1 if $line =~ /^VERSION="?([^"]+)"?/;
+            $version     = $1 if !$version && $line =~ /^VERSION_ID="?([^"]+)"?/;
             $description = $1 if $line =~ /^PRETTY_NAME="?([^"]+)"?/;
         }
         close $handle;

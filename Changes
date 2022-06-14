@@ -43,6 +43,7 @@ packaging:
 * fix: AppImage support on older linux like CentOS 7
 * fix: AppImage uninstall support on older linux like CentOS 7
 * Update snap packaging to use perl 5.36.0
+* fix #139: Linux perl installer openSUSE support
 
 1.2 Wed, 13 Apr 2022
 
