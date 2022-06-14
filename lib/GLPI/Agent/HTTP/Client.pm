@@ -351,6 +351,10 @@ sub _KeyChain_or_KeyStore_Export {
                 command => "certutil -Store -Silent -Split",
                 logger  => $logger
             );
+            getAllLines(
+                command => "certutil -Store -Silent -Enterprise -Split",
+                logger  => $logger
+            );
 
             # Convert each crt file to base64 encoded cer file and concatenate in certchain file
             File::Glob->require();
