@@ -62,6 +62,7 @@
   <String Id="ServerSSLSetupGroup">SSL Options</String>
   <String Id="CACertDirDescription">CA Certificates Directory</String>
   <String Id="CACertFileDescription">CA Certificate File</String>
+  <String Id="SSLFingerPrintDescription">Fingerprint of SSL certificate to trust</String>
   <String Id="NoSSLCheckDescription">Disable SSL check (for security reason, only use it for debugging)</String>
 
   <!-- custom text for server target Proxy options setup dialog -->
