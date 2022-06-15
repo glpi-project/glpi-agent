@@ -22,6 +22,7 @@
         <text id="GLPI_Tag" key="SOFTWARE\GLPI-Agent" valueName="tag" />
         <text id="GLPI_ca-cert-dir" key="SOFTWARE\GLPI-Agent" valueName="ca-cert-dir" />
         <text id="GLPI_ca-cert-file" key="SOFTWARE\GLPI-Agent" valueName="ca-cert-file" />
+        <text id="GLPI_ssl-fingerprint" key="SOFTWARE\GLPI-Agent" valueName="ssl-fingerprint" />
         <text id="GLPI_httpd-ip" key="SOFTWARE\GLPI-Agent" valueName="httpd-ip" />
         <text id="GLPI_httpd-port" key="SOFTWARE\GLPI-Agent" valueName="httpd-port" required="true" />
         <text id="GLPI_httpd-trust" key="SOFTWARE\GLPI-Agent" valueName="httpd-trust" required="true" />
@@ -85,6 +86,7 @@
         <text id="GLPI_Tag" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="tag" />
         <text id="GLPI_ca-cert-dir" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="ca-cert-dir" />
         <text id="GLPI_ca-cert-file" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="ca-cert-file" />
+        <text id="GLPI_ssl-fingerprint" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="ssl-fingerprint" />
         <text id="GLPI_httpd-ip" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="httpd-ip" defaultValue="0.0.0.0" />
         <text id="GLPI_httpd-port" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="httpd-port" required="true" />
         <text id="GLPI_httpd-trust" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="httpd-trust" required="true" />

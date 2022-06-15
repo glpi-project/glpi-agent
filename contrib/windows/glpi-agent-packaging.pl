@@ -478,6 +478,7 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[    <RegistryValue Name="ca-cert-dir" Type="string" Value="[CA_CERT_DIR]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="ca-cert-file" Type="string" Value="[CA_CERT_FILE]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="ssl-cert-file" Type="string" Value="[SSL_CERT_FILE]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="ssl-fingerprint" Type="string" Value="[SSL_FINGERPRINT]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="vardir" Type="string" Value="[VARDIR]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="listen" Type="string" Value="[LISTEN]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="remote" Type="string" Value="[REMOTE]" />\n];

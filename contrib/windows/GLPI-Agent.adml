@@ -39,6 +39,10 @@
           <label>CA-cert-file</label>
           <defaultValue></defaultValue>
         </textBox>
+        <textBox refId="GLPI_ssl-fingerprint">
+          <label>ssl-fingerprint</label>
+          <defaultValue></defaultValue>
+        </textBox>
         <textBox refId="GLPI_httpd-ip">
           <label>httpd-ip</label>
           <defaultValue>0.0.0.0</defaultValue>

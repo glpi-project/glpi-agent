@@ -43,6 +43,7 @@ my @options = (
     'silent|S',
     'skip=s',
     'snap',
+    'ssl-fingerprint=s',
     'tag|t=s',
     'tasks=s',
     'type=s',
@@ -129,6 +130,8 @@ glpi-agent-linux-installer [options]
     --ca-cert-file=FILE            CA certificates file
     --no-ssl-check                 do not check server SSL certificate (false)
     -C --no-compression            do not compress communication with server (false)
+    --ssl-fingerprint=FINGERPRINT  Trust server certificate if its SSL fingerprint
+                                   matches the given one
 
   Web interface options:
     --no-httpd                     disable embedded web server (false)
