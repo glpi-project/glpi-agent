@@ -447,29 +447,9 @@ hash:
 
 the logger object to use (default: a new stderr logger)
 
-=item I<proxy>
+=item I<config>
 
-the URL of an HTTP proxy
-
-=item I<user>
-
-the user for HTTP authentication
-
-=item I<password>
-
-the password for HTTP authentication
-
-=item I<no_ssl_check>
-
-a flag allowing to ignore untrusted server certificates (default: false)
-
-=item I<ca_cert_file>
-
-the file containing trusted certificates
-
-=item I<ca_cert_dir>
-
-the directory containing trusted certificates
+the GLPI::Agent::Config object where to find agent SSL related options
 
 =back
 
