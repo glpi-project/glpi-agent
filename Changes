@@ -7,6 +7,10 @@ core:
   This avoid to use AppImage C library for binaries used during inventory.
 * refacto: cleanup some api calls to re-used still provided config during object
   creation. This reduces code revue while checking HTTP::Client supported features.
+* fix #33: support MacOSX keychain to look for glpi server CA or SSL certificat when
+  communicating via SSL with GLPI server
+* fix #108: support Windows keystore to look for glpi server CA or SSL certificat when
+  communicating via SSL with GLPI server
 
 inventory:
 * database: Oracle database inventory update
