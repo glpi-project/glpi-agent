@@ -49,6 +49,9 @@ packaging:
 * Update snap packaging to use perl 5.36.0
 * fix #139: Linux perl installer openSUSE support
 
+contrib:
+* Added option to uninstall OCS Agent in windows vbs script
+
 1.2 Wed, 13 Apr 2022
 
 core:
