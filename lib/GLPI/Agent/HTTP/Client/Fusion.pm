@@ -12,6 +12,8 @@ use HTTP::Headers;
 use HTTP::Cookies;
 use URI::Escape;
 
+use GLPI::Agent::Tools;
+
 my $log_prefix = "[http client] ";
 
 sub new {
@@ -111,11 +113,21 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
         $answer = $decoder->decode($content);
     };
 
-    if ($EVAL_ERROR) {
+    if ($EVAL_ERROR && $self->{logger}) {
         my @lines = split(/\n/, $content);
+        my $starting = '';
+        while (@lines && length($starting) < 120) {
+            my $line = getSanitizedString(shift(@lines));
+            if (length($line) < 120) {
+                $starting .= $line . "\n";
+            } else {
+                $starting .= substr($line, 0, 120) . " ...\n";
+            }
+        }
         $self->{logger}->error(
-            $log_prefix . "Can't decode JSON content, starting with $lines[0]"
-        ) if $self->{logger};
+            $log_prefix . "Can't decode JSON content, starting with: " .
+            $starting . (@lines ? "..." : "")
+        ) if $starting;
         return;
     }
 
