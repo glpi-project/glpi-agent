@@ -11,6 +11,11 @@ core:
   communicating via SSL with GLPI server
 * fix #108: support Windows keystore to look for glpi server CA or SSL certificat when
   communicating via SSL with GLPI server
+* Add 'ssl-fingerprint' option support to being able to trust a SSL server via its
+  server certificat known fingerprint
+* When 'no-ssl-check' option is used, warning is shown in log and the peer server
+  certificate fingerprint is also logged so it can be used in 'ssl-fingerprint'
+  option to trust peer ssl server
 
 inventory:
 * database: Oracle database inventory update

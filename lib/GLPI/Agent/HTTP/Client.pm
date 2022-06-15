@@ -42,6 +42,7 @@ sub new {
         ca_cert_dir     => $ca_cert_dir,
         ca_cert_file    => $ca_cert_file,
         ssl_cert_file   => $ssl_cert_file,
+        ssl_fingerprint => $params{ssl_fingerprint} || $config->{'ssl-fingerprint'},
         _vardir         => $config->{'vardir'},
     };
     bless $self, $class;
@@ -105,6 +106,34 @@ sub request {
         $result = $self->{ua}->request($request, $file);
         alarm 0;
     };
+
+    # Debug SSL support status when no requesting security
+    if ($self->{no_ssl_check}) {
+        my $headers = $result->headers();
+        my $warning = $headers->header("Client-SSL-Warning");
+        $logger->info($log_prefix . "SSL Client warning: $warning") if $warning;
+
+        my $class = $headers->header("Client-SSL-Socket-Class");
+        if ($class && $class eq "IO::Socket::SSL") {
+            my $infos = "";
+            foreach my $header (qw/Client-SSL-Cert-Issuer Client-SSL-Cert-Subject Client-SSL-Version Client-SSL-Cipher/) {
+                my $string = $headers->header($header)
+                    or next;
+                $infos .= ", " if $infos;
+                $header =~ /^Client-SSL-(.*)$/;
+                $infos .= "$1: '$string'";
+            }
+            $logger->info($log_prefix . "SSL Client info: $infos") if $infos;
+
+            my $fingerprint;
+            my ($socket) = $self->{ua}->conn_cache->get_connections('https');
+            $fingerprint = $socket->get_fingerprint() if $socket;
+            if ($fingerprint) {
+                $logger->info($log_prefix . "SSL server certificate fingerprint: $fingerprint");
+                $logger->info($log_prefix . "You can set it in conf as 'ssl-fingerprint' and disable 'no-ssl-check' option to trust that server certificate");
+            }
+        }
+    }
 
     # check result first
     if (!$result->is_success()) {
@@ -249,6 +278,8 @@ sub _setSSLOptions {
                 if $self->{ca_cert_dir};
             $self->{ua}->ssl_opts(SSL_cert_file => $self->{ssl_cert_file})
                 if $self->{ssl_cert_file};
+            $self->{ua}->ssl_opts(SSL_fingerprint => $self->{ssl_fingerprint})
+                if $self->{ssl_fingerprint};
         } else {
             # SSL_verifycn_scheme and SSL_verifycn_name are required
             die
@@ -263,6 +294,7 @@ sub _setSSLOptions {
                 ca_cert_file => $self->{ca_cert_file},
                 ca_cert_dir  => $self->{ca_cert_dir},
                 ssl_cert_file => $self->{ssl_cert_file},
+                ssl_fingerprint => $self->{ssl_fingerprint},
             );
 
             LWP::Protocol::implementor(

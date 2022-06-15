@@ -48,6 +48,7 @@ my $default = {
     'scan-profiles'           => undef,
     'server'                  => undef,
     'ssl-cert-file'           => undef,
+    'ssl-fingerprint'         => undef,
     'tag'                     => undef,
     'tasks'                   => undef,
     'timeout'                 => 180,
