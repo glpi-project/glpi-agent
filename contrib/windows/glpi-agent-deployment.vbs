@@ -147,17 +147,17 @@ UninstallOcsAgent = "No"
 '
 '
 
-Function removeOCS()
+Function removeOCSAgents()
    On error resume next
 
-   Dim OCS
+   Dim Uninstall
    ' Uninstall agent ocs if is installed
    ' Verification on OS 32 Bits
    On error resume next
-   OCS = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\OCS Inventory Agent\UninstallString")
+   Uninstall = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\OCS Inventory Agent\UninstallString")
    If err.number = 0 then
       WshShell.Run "CMD.EXE /C net stop ""OCS INVENTORY SERVICE""",0,True
-      WshShell.Run "CMD.EXE /C """ & OCS & """ /S /NOSPLASH",0,True
+      WshShell.Run "CMD.EXE /C """ & Uninstall & """ /S /NOSPLASH",0,True
       WshShell.Run "CMD.EXE /C rmdir ""%ProgramFiles%\OCS Inventory Agent"" /S /Q",0,True
       WshShell.Run "CMD.EXE /C rmdir ""%SystemDrive%\ocs-ng"" /S /Q",0,True
       WshShell.Run "CMD.EXE /C sc delete ""OCS INVENTORY""",0,True
@@ -165,10 +165,10 @@ Function removeOCS()
 
    ' Verification on OS 64 Bits
    On error resume next
-   OCS = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\OCS Inventory Agent\UninstallString")
+   Uninstall = WshShell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\OCS Inventory Agent\UninstallString")
    If err.number = 0 then
       WshShell.Run "CMD.EXE /C net stop ""OCS INVENTORY SERVICE""",0,True
-      WshShell.Run "CMD.EXE /C """ & OCS & """ /S /NOSPLASH",0,True
+      WshShell.Run "CMD.EXE /C """ & Uninstall & """ /S /NOSPLASH",0,True
       WshShell.Run "CMD.EXE /C rmdir ""%ProgramFiles(x86)%\OCS Inventory Agent"" /S /Q",0,True
       WshShell.Run "CMD.EXE /C rmdir ""%SystemDrive%\ocs-ng"" /S /Q",0,True
       WshShell.Run "CMD.EXE /C sc delete ""OCS INVENTORY""",0,True
@@ -176,11 +176,11 @@ Function removeOCS()
 
    ' Verification Agent V2 on 32Bit
    On error resume next
-   OCS = WshShell.RegRead("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\OCS Inventory NG Agent\UninstallString")
+   Uninstall = WshShell.RegRead("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\OCS Inventory NG Agent\UninstallString")
    If err.number = 0 then
       WshShell.Run "CMD.EXE /C net stop ""OCS INVENTORY SERVICE""",0,True
       WshShell.Run "CMD.EXE /C taskkill /F /IM ocssystray.exe",0,True
-      WshShell.Run "CMD.EXE /C """ & OCS & """ /S /NOSPLASH",0,True
+      WshShell.Run "CMD.EXE /C """ & Uninstall & """ /S /NOSPLASH",0,True
       WshShell.Run "CMD.EXE /C rmdir ""%ProgramFiles%\OCS Inventory Agent"" /S /Q",0,True
       WshShell.Run "CMD.EXE /C rmdir ""%SystemDrive%\ocs-ng"" /S /Q",0,True
       WshShell.Run "CMD.EXE /C sc delete ""OCS INVENTORY""",0,True
@@ -188,11 +188,11 @@ Function removeOCS()
 
    ' Verification Agent V2 on 64Bit
    On error resume next
-   OCS = WshShell.RegRead("HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\OCS Inventory NG Agent\UninstallString")
+   Uninstall = WshShell.RegRead("HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\OCS Inventory NG Agent\UninstallString")
    If err.number = 0 then
       WshShell.Run "CMD.EXE /C net stop ""OCS INVENTORY SERVICE""",0,True
       WshShell.Run "CMD.EXE /C taskkill /F /IM ocssystray.exe",0,True
-      WshShell.Run "CMD.EXE /C """ & OCS & """ /S /NOSPLASH",0,True
+      WshShell.Run "CMD.EXE /C """ & Uninstall & """ /S /NOSPLASH",0,True
       WshShell.Run "CMD.EXE /C rmdir ""%ProgramFiles%\OCS Inventory Agent"" /S /Q",0,True
       WshShell.Run "CMD.EXE /C rmdir ""%SystemDrive%\ocs-ng"" /S /Q",0,True
       WshShell.Run "CMD.EXE /C sc delete ""OCS INVENTORY""",0,True
@@ -457,7 +457,7 @@ Set WshShell = WScript.CreateObject("WScript.shell")
 nMinutesToAdvance = 5
 
 If UninstallOcsAgent = "Yes" Then
-   removeOCS()
+   removeOCSAgents()
 End If
 
 If RunUninstallFusionInventoryAgent = "Yes" Then
