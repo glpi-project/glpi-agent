@@ -130,7 +130,7 @@ subtest "unexpected content" => sub {
             }
         ),
         $logger,
-        "[http client] Can't decode JSON content, starting with $html_content",
+        "[http client] Can't decode JSON content, starting with: $html_content",
     );
 };
 
