@@ -1,6 +1,6 @@
 Revision history for GLPI agent
 
-1.3 not yet released
+1.3 Thu, 16 Jun 2022
 
 core:
 * fix: detect if agent is run via AppImage to cleanup LD_LIBRARY_PATH & LD_PRELOAD.
@@ -29,6 +29,9 @@ inventory:
 * PR #134: Fixed screen's edid fetch on linux, thanks to yweber-volta
 * fix #127: Fix JSON UTF-8 encoding on MACOSX
 * fix additional-content option support for json format
+* Updated pci.ids to 2022.05.18 version
+* Updated usb.ids to 2022.05.20 version
+* Bump Inventory task version to 1.12
 
 remoteinventory:
 * fallback on ssh command access when libssh2 fails to connect
@@ -36,6 +39,7 @@ remoteinventory:
 
 netdiscovery/netinventory:
 * Enhanced DefensePro support, thanks to @sectoolsacc
+* Updated sysobject.ids
 
 packaging:
 * Windows MSI installer based on StrawBerry Perl 5.36.0
@@ -3201,38 +3205,3 @@ WINDOWS
        * Deals correctly with the accountinfo if it's internaly stored in a
          array ref
        * BSD support by Thierry Lacoste
-
-inventory:
-* Updated pci.ids to 2022.05.18 version
-
-
-inventory:
-* Updated usb.ids to 2022.05.20 version
-
-
-netdiscovery/netinventory:
-* Updated sysobject.ids
-
-
-inventory:
-* Bump Inventory task version to 1.11
-
-netdiscovery/netinventory:
-* Bump NetDiscovery task version to 5.1
-* Bump NetInventory task version to 5.1
-
-collect:
-* Bump Collect task version to 2.8
-
-esx:
-* Bump ESX task version to 2.7
-
-deploy:
-* Bump Deploy task version to 2.10
-
-wakeonlan:
-* Bump WakeOnLan task version to 2.2
-
-toolbox:
-* Bump ToolBox plugin version to 1.0
-
