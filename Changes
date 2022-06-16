@@ -3201,3 +3201,15 @@ WINDOWS
        * Deals correctly with the accountinfo if it's internaly stored in a
          array ref
        * BSD support by Thierry Lacoste
+
+inventory:
+* Updated pci.ids to 2022.05.18 version
+
+
+inventory:
+* Updated usb.ids to 2022.05.20 version
+
+
+netdiscovery/netinventory:
+* Updated sysobject.ids
+
