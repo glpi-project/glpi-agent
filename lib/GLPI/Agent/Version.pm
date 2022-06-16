@@ -3,7 +3,7 @@ package GLPI::Agent::Version;
 use strict;
 use warnings;
 
-our $VERSION = "1.3";
+our $VERSION = "1.4-dev";
 our $PROVIDER = "GLPI";
 our $COMMENTS = [];
 
@@ -31,5 +31,5 @@ agent issue is reported.
 One very useful information should be first defined like in that example:
 
 our $COMMENTS = [
-    "Based on GLPI Agent 1.3"
+    "Based on GLPI Agent 1.4-dev"
 ];
