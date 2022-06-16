@@ -27,6 +27,7 @@ inventory:
 * fix partial property missing in json while partial inventory requested
 * fix #132: Missing LXC container memory limit
 * PR #134: Fixed screen's edid fetch on linux, thanks to yweber-volta
+* fix #127: Fix JSON UTF-8 encoding on MACOSX
 * fix additional-content option support for json format
 
 remoteinventory:
