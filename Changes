@@ -3201,3 +3201,38 @@ WINDOWS
        * Deals correctly with the accountinfo if it's internaly stored in a
          array ref
        * BSD support by Thierry Lacoste
+
+inventory:
+* Updated pci.ids to 2022.05.18 version
+
+
+inventory:
+* Updated usb.ids to 2022.05.20 version
+
+
+netdiscovery/netinventory:
+* Updated sysobject.ids
+
+
+inventory:
+* Bump Inventory task version to 1.11
+
+netdiscovery/netinventory:
+* Bump NetDiscovery task version to 5.1
+* Bump NetInventory task version to 5.1
+
+collect:
+* Bump Collect task version to 2.8
+
+esx:
+* Bump ESX task version to 2.7
+
+deploy:
+* Bump Deploy task version to 2.10
+
+wakeonlan:
+* Bump WakeOnLan task version to 2.2
+
+toolbox:
+* Bump ToolBox plugin version to 1.0
+
