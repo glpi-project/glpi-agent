@@ -125,12 +125,15 @@ sub request {
             }
             $logger->info($log_prefix . "SSL Client info: $infos") if $infos;
 
-            my $fingerprint;
-            my ($socket) = $self->{ua}->conn_cache->get_connections('https');
-            $fingerprint = $socket->get_fingerprint() if $socket;
-            if ($fingerprint) {
-                $logger->info($log_prefix . "SSL server certificate fingerprint: $fingerprint");
-                $logger->info($log_prefix . "You can set it in conf as 'ssl-fingerprint' and disable 'no-ssl-check' option to trust that server certificate");
+            # fingerprint IO::Socket::SSL API is only available since IO::Socket::SSL v1.967
+            if ($IO::Socket::SSL::VERSION >= 1.967) {
+                my $fingerprint;
+                my ($socket) = $self->{ua}->conn_cache->get_connections('https');
+                $fingerprint = $socket->get_fingerprint() if $socket;
+                if ($fingerprint) {
+                    $logger->info($log_prefix . "SSL server certificate fingerprint: $fingerprint");
+                    $logger->info($log_prefix . "You can set it in conf as 'ssl-fingerprint' and disable 'no-ssl-check' option to trust that server certificate");
+                }
             }
         }
     }
@@ -279,7 +282,7 @@ sub _setSSLOptions {
             $self->{ua}->ssl_opts(SSL_cert_file => $self->{ssl_cert_file})
                 if $self->{ssl_cert_file};
             $self->{ua}->ssl_opts(SSL_fingerprint => $self->{ssl_fingerprint})
-                if $self->{ssl_fingerprint};
+                if $self->{ssl_fingerprint} && $IO::Socket::SSL::VERSION >= 1.967;
         } else {
             # SSL_verifycn_scheme and SSL_verifycn_name are required
             die

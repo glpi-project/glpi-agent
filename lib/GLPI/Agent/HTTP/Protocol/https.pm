@@ -17,7 +17,7 @@ sub import {
     IO::Socket::SSL::set_ctx_defaults(ssl_cert_file => $params{ssl_cert_file})
         if $params{ssl_cert_file};
     IO::Socket::SSL::set_ctx_defaults(ssl_fingerprint => $params{ssl_fingerprint})
-        if $params{ssl_fingerprint};
+        if $params{ssl_fingerprint} && $IO::Socket::SSL::VERSION >= 1.967;
 }
 
 sub _extra_sock_opts {
