@@ -235,7 +235,7 @@ sub sendContent {
                                  "ERROR: ".$res->status_line(), "$info\n";
     }
 
-    print "DEBUG: $content\n" if $options->{debug};
+    print "DEBUG: $content\n" if $content && $options->{debug};
 
     return $res->is_success() && ! $error ;
 }
