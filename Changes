@@ -6,6 +6,9 @@ core:
 * fix #150: 'ssl-fingerprint' option support is only possible when using at least
   IO::Socket::SSL v1.967. This fixes 'no-ssl-check' support on CentOS 7.
 
+packaging:
+* Update MacOSX packages to use OpenSSL 3.0.4
+
 1.3 Thu, 16 Jun 2022
 
 core:
