@@ -8,6 +8,7 @@ core:
 
 packaging:
 * Update MacOSX packages to use OpenSSL 3.0.4
+* fix #151: Linux perl installer Oracle Linux support
 
 1.3 Thu, 16 Jun 2022
 

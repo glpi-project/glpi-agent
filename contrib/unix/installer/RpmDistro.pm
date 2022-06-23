@@ -174,6 +174,13 @@ sub _prepareDistro {
             $self->{_yum} = 1;
             delete $self->{_dnf};
         }
+    } elsif ($self->{_name} =~ /oracle linux/i) {
+        # On Oracle Linux server 8, we need "ol8_codeready_builder"
+        if (int($v) >= 8) {
+            $self->verbose("Checking Oracle Linux CodeReady Builder repository is enabled");
+            my $ret = $self->run("dnf config-manager --set-enabled ol${v}_codeready_builder");
+            die "Can't enable CodeReady Builder repository: $!\n" if $ret;
+        }
     } elsif ($self->{_name} =~ /centos|rocky/i) {
         # On CentOS 8, we need PowerTools
         if ($v eq "8") {
