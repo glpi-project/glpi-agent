@@ -113,7 +113,7 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
         # it can receive directly a CONTACT JSON answer
         GLPI::Agent::Protocol::Contact->require();
         if ($EVAL_ERROR) {
-            $logger->error("GLPI CONTACT Protocol not supported");
+            $logger->error("Can't load GLPI CONTACT Protocol support, you probably miss a perl library dependency");
         } else {
             my $contact;
             eval {
