@@ -25,7 +25,7 @@ sub isEnabled {
 sub _oracleHome {
     my (%params) = @_;
 
-    return $ENV{ORACLE_HOME} if $ENV{ORACLE_HOME} && -d $ENV{ORACLE_HOME}
+    return [$ENV{ORACLE_HOME}] if $ENV{ORACLE_HOME} && -d $ENV{ORACLE_HOME}
         && !$params{file}; # $params{file} is only set during tests
 
     my $inventory_loc = getFirstMatch(

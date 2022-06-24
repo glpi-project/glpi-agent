@@ -6,6 +6,9 @@ core:
 * fix #150: 'ssl-fingerprint' option support is only possible when using at least
   IO::Socket::SSL v1.967. This fixes 'no-ssl-check' support on CentOS 7.
 
+inventory:
+* fix Oracle inventory when ORACLE_HOME is still found in environment variables
+
 packaging:
 * Update MacOSX packages to use OpenSSL 3.0.4
 * fix #151: Linux perl installer Oracle Linux support
