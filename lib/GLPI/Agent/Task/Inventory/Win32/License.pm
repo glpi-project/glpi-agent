@@ -134,18 +134,22 @@ sub _scanOfficeLicences {
     #             └── ...
 
     foreach my $versionKey (keys %{$key}) {
-        my $registrationKey = $key->{$versionKey}->{'Registration/'};
-        next unless $registrationKey;
+        my $registrationKey = $key->{$versionKey}->{'Registration/'}
+            or next;
 
         foreach my $uuidKey (keys %{$registrationKey}) {
-
-            my $cleanUuidKey = lc( $uuidKey =~ /([-\w]+)/ && $1 );
+            # Skip value keys
+            next if $uuidKey =~ m{^/};
+            my ($cleanUuidKey) = $uuidKey =~ /([-\w]+)/
+                or next;
+            $cleanUuidKey = lc($cleanUuidKey);
             # Keep in memory seen product with ProductCode value or DigitalProductID
             $seenProducts->{$cleanUuidKey} = _getOfficeLicense($registrationKey->{$uuidKey})
                 if $registrationKey->{$uuidKey}->{'/DigitalProductID'};
             if ($registrationKey->{$uuidKey}->{'/ProductCode'} && $registrationKey->{$uuidKey}->{'/ProductName'}) {
+                my ($productcode) = $registrationKey->{$uuidKey}->{'/ProductCode'} =~ /([-\w]+)/;
                 $seenProducts->{$cleanUuidKey} = {
-                    PRODUCTCODE => lc($registrationKey->{$uuidKey}->{'/ProductCode'} =~ /([-\w]+)/ && $1),
+                    PRODUCTCODE => lc($productcode // ""),
                     FULLNAME    => encodeFromRegistry($registrationKey->{$uuidKey}->{'/ProductName'}),
                 };
                 $seenProducts->{$cleanUuidKey}->{'TRIAL'} = 1

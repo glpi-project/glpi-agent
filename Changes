@@ -8,6 +8,7 @@ core:
 
 inventory:
 * fix Oracle inventory when ORACLE_HOME is still found in environment variables
+* fix Office License scan on win32 due to an unexpected value key
 
 packaging:
 * Update MacOSX packages to use OpenSSL 3.0.4
