@@ -15,6 +15,9 @@ use GLPI::Agent::Tools;
 
 my $log_prefix = "[http client] ";
 
+# Keep SSL_ca for storing read local certificate store at the class level
+my $_SSL_ca;
+
 sub new {
     my ($class, %params) = @_;
 
@@ -267,12 +270,8 @@ sub _setSSLOptions {
             $Net::SSLeay::trace = 3;
         }
 
-        # Support system specific certificate store
-        unless ($self->{ca_cert_file} || $self->{ca_cert_dir}) {
-            # Support keychain on Darwin and keystore on MSWin32
-            $self->{ca_cert_file} = $self->_KeyChain_or_KeyStore_Export()
-                if $OSNAME =~ /^darwin|MSWin32$/;
-        }
+        # Support keychain on Darwin and keystore on MSWin32
+        my $SSL_ca = $self->_KeyChain_or_KeyStore_Export();
 
         if ($LWP::VERSION >= 6) {
             $self->{ua}->ssl_opts(SSL_ca_file => $self->{ca_cert_file})
@@ -283,6 +282,10 @@ sub _setSSLOptions {
                 if $self->{ssl_cert_file};
             $self->{ua}->ssl_opts(SSL_fingerprint => $self->{ssl_fingerprint})
                 if $self->{ssl_fingerprint} && $IO::Socket::SSL::VERSION >= 1.967;
+            # Use SSL_ca option to support system keychain or keystore to add
+            # discovered certificates to public ones
+            $self->{ua}->ssl_opts(SSL_ca => $SSL_ca)
+                if $SSL_ca && @{$SSL_ca};
         } else {
             # SSL_verifycn_scheme and SSL_verifycn_name are required
             die
@@ -298,6 +301,7 @@ sub _setSSLOptions {
                 ca_cert_dir  => $self->{ca_cert_dir},
                 ssl_cert_file => $self->{ssl_cert_file},
                 ssl_fingerprint => $self->{ssl_fingerprint},
+                ssl_ca => $SSL_ca,
             );
 
             LWP::Protocol::implementor(
@@ -316,57 +320,54 @@ sub _setSSLOptions {
 sub _KeyChain_or_KeyStore_Export {
     my ($self) = @_;
 
+    return unless $OSNAME =~ /^darwin|MSWin32$/;
+
     my $logger = $self->{logger};
     my $vardir = $self->{_vardir};
     my $basename = $OSNAME eq 'darwin'  ? "keychain" : "keystore";
-    unless (defined($self->{_certchain})) {
+    unless (defined($_SSL_ca)) {
+        # Just clean up file that could have been created by glpi-agent v1.3
         if ($vardir && -d $vardir) {
-            $self->{_certchain} = "$vardir/$basename-export.pem" ;
-            $self->{_certchain_mtime} = (stat($self->{_certchain}))[9]
-                if -e $self->{_certchain};
-        } else {
-            File::Temp->require();
-            if ($EVAL_ERROR) {
-                $logger->error("Can't load File::Temp to store $basename export");
-                return;
-            }
-            # Store File::Temp object with client so the temp file is kept until
-            # the object is destroyed and no more used
-            $self->{_certchain_temp} = File::Temp->new(
-                TEMPLATE    => "$basename-export-XXXXXX",
-                SUFFIX      => ".pem",
-            );
-            $self->{_certchain} = $self->{_certchain_temp}->filename();
+            my $obsolete = "$vardir/$basename-export.pem";
+            unlink $obsolete if -e $obsolete;
         }
     }
 
-    # The server certificate file won't be regenerated before agent program next start
-    # or it has been generated more than an hour ago
-    return $self->{_certchain}
-        if $self->{_certchain_mtime} && $BASETIME < $self->{_certchain_mtime}
-            && $self->{_certchain_mtime} > time - 3600;
+    # Read certificates are cached for one hour after the service is started
+    return $_SSL_ca->{_certs}
+        if $_SSL_ca->{_expiration} && time < $_SSL_ca->{_expiration};
 
     $logger->debug(
         $log_prefix .
-        (-e $self->{_certchain} ? "Updating" : "Creating") .
-        " '".$self->{_certchain}."' file to store $basename known certificates"
+        ($_SSL_ca ? "Updating" : "Reading") . " $basename known certificates"
     );
 
+    my @certs = ();
+    IO::Socket::SSL::Utils->require();
+
+    File::Temp->require();
+    if ($EVAL_ERROR) {
+        $logger->error("Can't load File::Temp to export $basename certificates");
+        return;
+    }
+
     if ($OSNAME eq 'darwin') {
+        my $tmpfile = File::Temp->new(
+            TEMPLATE    => "$basename-export-XXXXXX",
+            DIR         => $vardir,
+            SUFFIX      => ".pem",
+        );
+        my $file = $tmpfile->filename;
         getAllLines(
-            command => "security find-certificate -a -p > '".$self->{_certchain}."'",
+            command => "security find-certificate -a -p > '$file'",
             logger  => $logger
         );
+        @certs = IO::Socket::SSL::Utils::PEM_file2certs($file)
+            if -s $file;
     } else {
         # Windows keystore support
         Cwd->require();
         my $cwd = Cwd::cwd();
-
-        File::Temp->require();
-        if ($EVAL_ERROR) {
-            $logger->error("Can't load File::Temp to export $basename certificates");
-            return;
-        }
 
         # Create a temporary folder in vardir to cd & export certificates
         my $tmpdir = File::Temp->newdir(
@@ -376,8 +377,7 @@ sub _KeyChain_or_KeyStore_Export {
         );
         my $certdir = $tmpdir->dirname;
         $certdir =~ s{\\}{/}g;
-        my $fhw;
-        if (-d $certdir && open($fhw, ">", $self->{_certchain})) {
+        if (-d $certdir) {
             $logger->debug2("Changing to '$certdir' temporary folder");
             chdir $certdir;
 
@@ -399,17 +399,12 @@ sub _KeyChain_or_KeyStore_Export {
                         command => "certutil -encode $1 temp.cer",
                         logger  => $logger
                     );
-                    my $fhr;
-                    if (open($fhr, "<", "temp.cer")) {
-                        map { print $fhw $_ } <$fhr>;
-                        close($fhr);
-                    }
+                    push @certs, IO::Socket::SSL::Utils::PEM_file2cert("$certdir/temp.cer")
+                        if -s "$certdir/temp.cer";
                     unlink "$certdir/temp.cer";
                 }
                 unlink $certfile;
             }
-
-            close($fhw);
 
             # Get back to current dir
             $logger->debug2("Changing back to '$cwd' folder");
@@ -417,12 +412,9 @@ sub _KeyChain_or_KeyStore_Export {
         }
     }
 
-    $self->{_certchain_mtime} = time;
-    return $self->{_certchain} if -s $self->{_certchain};
-
-    # Finally we should cache we got an empty result
-    unlink $self->{_certchain};
-    return $self->{_certchain} = "";
+    # Update class level datas
+    $_SSL_ca->{_expiration} = time + 3600;
+    return $_SSL_ca->{_certs} = \@certs;
 }
 
 1;
