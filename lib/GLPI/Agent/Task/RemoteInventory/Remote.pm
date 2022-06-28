@@ -57,6 +57,7 @@ sub new {
 
     $self->{_protocol} = $scheme;
     $self->{_host} = $url->host;
+    $self->{_port} = $url->port;
     my $userinfo = $url->userinfo;
     if ($userinfo) {
         my ($user, $pass) = split(/:/, $userinfo);
@@ -94,6 +95,14 @@ sub host {
     $self->{_host} = $hostname if $hostname;
 
     return $self->{_host} // '';
+}
+
+sub port {
+    my ($self, $port) = @_;
+
+    $self->{_port} = $port if $port;
+
+    return $self->{_port} // 0;
 }
 
 sub mode {

@@ -12,6 +12,9 @@ inventory:
 * fix Oracle inventory when ORACLE_HOME is still found in environment variables
 * fix Office License scan on win32 due to an unexpected value key
 
+remoteinventory:
+* fix #159: Re-use port from given ssh url when using non-standard ssh port
+
 packaging:
 * Update MacOSX packages to use OpenSSL 3.0.4
 * fix #151: Linux perl installer Oracle Linux support

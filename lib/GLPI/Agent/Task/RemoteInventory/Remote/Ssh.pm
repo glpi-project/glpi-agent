@@ -16,6 +16,7 @@ sub _ssh {
     my ($self, $command) = @_;
     return unless $command;
     my $options = "-q -o BatchMode=yes";
+    $options .= " -p " . $self->port() if $self->port() && $self->port() != 22;
     $options .= " -l " . $self->{_user} if $self->{_user};
     return "ssh $options ".$self->host()." LANG=C $command";
 }
@@ -53,8 +54,9 @@ sub _connect {
         or return 0;
     return 1 if defined($ssh2->sock);
 
-    my $remote = $self->host();
-    my ($host, $port) = $remote =~ /^(.*):?(\d+)?$/;
+    my $host = $self->host();
+    my $port = $self->port();
+    my $remote = $host . ($port && $port == 22 ? "" : ":$port");
     $self->{logger}->debug2("Connecting to '$remote' remote host...");
     if (!$ssh2->connect($host, $port // 22)) {
         my @error = $ssh2->error;
