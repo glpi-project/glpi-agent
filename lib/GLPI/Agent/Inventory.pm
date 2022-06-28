@@ -113,7 +113,6 @@ my %checks = (
         INTERFACE => qr/^(SCSI|HDC|IDE|USB|1394|SATA|SAS|ATAPI)$/
     },
     VIRTUALMACHINES => {
-        VMTYPE => qr/^(physical|xen|virtualbox|virtual machine|vmware|qemu|solaris ?zones?|vserver|openvz|bsdjail|parallels|hyperv|aix_lpar|docker|libvirt|lxd|lxc|virtuozzo|kvm|hpvm|wsl[12])$/i,
         STATUS => qr/^(running|blocked|idle|paused|shutdown|crashed|dying|off)$/
     },
     SLOTS => {
