@@ -709,8 +709,6 @@ Set the timeout for network requests (defaults to 10 seconds).
 
 =item B<-p>, B<--port>=I<LIST>
 
-Do not contact the target before next scheduled time.
-
 A list of ports used when making a scan and to discover remote computers. The defaults is to
 scan the standard ssh port and winrm ports: I<22,5985,5986>.
 
@@ -743,7 +741,7 @@ Do not check server SSL certificate.
 
 Use I<USER> for remote authentication.
 
-=item B<-p>, B<--password>=I<PASSWORD>
+=item B<-P>, B<--password>=I<PASSWORD>
 
 Use I<PASSWORD> for remote authentication.
 
