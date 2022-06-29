@@ -12,6 +12,7 @@ inventory:
 * fix Oracle inventory when ORACLE_HOME is still found in environment variables
 * fix Office License scan on win32 due to an unexpected value key
 * fix #130: Add support for linux systemd-nspawn container
+* Add new Acer monitor model support: B226WL
 
 remoteinventory:
 * fix #159: Re-use port from given ssh url when using non-standard ssh port

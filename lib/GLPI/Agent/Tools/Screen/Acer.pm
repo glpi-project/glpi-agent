@@ -99,6 +99,7 @@ __DATA__
     0618    Acer B196HQL
     0771    B247Y
     0783    AL1923
+    033a    B226WL
     1228    ACER P1206P
     1701    ACER P1203
     1716    Acer P1283

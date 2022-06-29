@@ -58,6 +58,13 @@ my %edid_tests = (
         SERIAL       => 'L73085138132779b42HM',
         DESCRIPTION  => '13/2008'
     },
+    'acer-b226wl' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'B226WL',
+        ALTSERIAL    => 'LXVEE0018511',
+        SERIAL       => 'LXVEE0018030951c8511',
+        DESCRIPTION  => '3/2018'
+    },
     'acer-b247y' => {
         MANUFACTURER => 'Acer Technologies',
         CAPTION      => 'B247Y',
