@@ -1,6 +1,6 @@
 Revision history for GLPI agent
 
-1.4 not released yet
+1.4 Fri, 01 Jul 2022
 
 core:
 * fix #150: 'ssl-fingerprint' option support is only possible when using at least
