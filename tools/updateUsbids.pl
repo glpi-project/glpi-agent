@@ -30,6 +30,16 @@ my $version = getFirstMatch(
     pattern => qr/^#\s+Version:\s+([0-9.]+)/,
 );
 
+my $previous = getFirstMatch(
+    file    => "Changes",
+    pattern => qr/Updated usb.ids to ([0-9.]+) version/,
+);
+
+if ($version eq $previous) {
+    print "share/usb.ids was still up-to-date\n";
+    exit(0);
+}
+
 my $Changes = Changelog->new( file => "Changes" );
 $Changes->add( inventory => "Updated usb.ids to $version version" );
 $Changes->write();

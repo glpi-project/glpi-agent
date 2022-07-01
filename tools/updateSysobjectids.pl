@@ -34,7 +34,10 @@ $sha = Digest::SHA->new(1);
 $sha->addfile("share/sysobject.ids");
 my $newdigest = $sha->hexdigest;
 
-exit(0) if $digest eq $newdigest;
+if ($digest eq $newdigest) {
+    print "share/sysobject.ids is still up-to-date\n";
+    exit(0);
+}
 
 my $Changes = Changelog->new( file => "Changes" );
 $Changes->add( "netdiscovery/netinventory" => "Updated sysobject.ids" );
