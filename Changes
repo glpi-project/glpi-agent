@@ -7,6 +7,7 @@ core:
   IO::Socket::SSL v1.967. This fixes 'no-ssl-check' support on CentOS 7.
 * fix #148: SSL no more supported in normal case as side-effect of #33 & #108
   implemented feature
+* Enhanced error reporting with SSL connection issues
 
 inventory:
 * fix Oracle inventory when ORACLE_HOME is still found in environment variables

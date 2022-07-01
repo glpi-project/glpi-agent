@@ -213,13 +213,13 @@ sub request {
             # check we request through a proxy
             my $proxyreq = defined $result->request->{proxy};
 
-            my $message;
+            my @message = ($result->status_line());
             my $contentType = $result->header('content-type');
             if ($contentType && $contentType eq 'application/json' && $result->header('content-length')) {
                 if (GLPI::Agent::Protocol::Message->require()) {
                     my $content = GLPI::Agent::Protocol::Message->new(message => $result->content());
                     if ($content->status eq 'error' && $content->get('message')) {
-                        $message = $content->get('message');
+                        push @message, $content->get('message');
                     }
                 }
             }
@@ -229,8 +229,15 @@ sub request {
             my $warning = $result->header('client-warning') // '';
             $error_type = lc($warning) if $warning;
 
+            # Eventually add detailed SSL error message
+            if ($self->{ssl_set}) {
+                my $strcheck = IO::Socket::SSL::SSL_WANT_READ()."|".IO::Socket::SSL::SSL_WANT_WRITE();
+                push @message, $IO::Socket::SSL::SSL_ERROR
+                    unless $IO::Socket::SSL::SSL_ERROR =~ /$strcheck/;
+            }
+
             $logger->error(
-                $log_prefix . $error_type . ": " . $result->status_line() . ($message ? ", $message" : "")
+                $log_prefix . $error_type . ": " . join(", ", @message)
             ) unless $skiperror{$result->code()};
         }
     }
