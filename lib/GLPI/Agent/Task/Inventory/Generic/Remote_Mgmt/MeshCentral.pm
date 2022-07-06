@@ -41,7 +41,7 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $nodeId = _getNodeId()
+    my $nodeId    = _getNodeId(logger => $logger)
         or return;
 
     $inventory->addEntry(
@@ -56,9 +56,9 @@ sub doInventory {
 sub _getNodeId {
     my (%params) = @_;
 
-    return _winBased() if OSNAME eq 'MSWin32';
-    return _darwinBased() if OSNAME eq 'darwin';
-    return _linuxBased();
+    return _winBased(%params) if OSNAME eq 'MSWin32';
+    return _darwinBased(%params) if OSNAME eq 'darwin';
+    return _linuxBased(%params);
 }
 
 sub _winBased {
@@ -82,14 +82,17 @@ sub _linuxBased {
     );
 
     return getFirstLine(
-        command => "${command} -nodeid");
+            command => "${command} -nodeid",
+            logger  => $params{logger}
+    );
 }
 
 sub _darwinBased {
     my (%params) = @_;    
 
     return getFirstLine(
-        command => "/usr/local/mesh_services/meshagent/meshagent_osx64 -nodeid",
+            command => "/usr/local/mesh_services/meshagent/meshagent_osx64 -nodeid",
+            logger  => $params{logger}
     );
 }
 
