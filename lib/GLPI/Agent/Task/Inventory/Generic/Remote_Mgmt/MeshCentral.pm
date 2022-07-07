@@ -32,7 +32,8 @@ sub isEnabled {
         );
     }
 
-    return Glob('/etc/systemd/system/meshagent.service');
+    return unless OSNAME eq 'linux';
+    return has_file('/etc/systemd/system/meshagent.service');
 }
 
 sub doInventory {
@@ -76,14 +77,14 @@ sub _linuxBased {
     my (%params) = @_;    
 
     my $command = getFirstLine(
-            file    => "/etc/systemd/system/meshagent.service",
-            pattern => qr/Ex.*=(.*)\s\-/,
-            logger  => $params{logger},
+        file    => "/etc/systemd/system/meshagent.service",
+        pattern => qr/Ex.*=(.*)\s\-/,
+        logger  => $params{logger},
     );
 
     return getFirstLine(
-            command => "${command} -nodeid",
-            logger  => $params{logger}
+        command => "${command} -nodeid",
+        logger  => $params{logger}
     );
 }
 
@@ -91,8 +92,8 @@ sub _darwinBased {
     my (%params) = @_;    
 
     return getFirstLine(
-            command => "/usr/local/mesh_services/meshagent/meshagent_osx64 -nodeid",
-            logger  => $params{logger}
+        command => "/usr/local/mesh_services/meshagent/meshagent_osx64 -nodeid",
+        logger  => $params{logger}
     );
 }
 
