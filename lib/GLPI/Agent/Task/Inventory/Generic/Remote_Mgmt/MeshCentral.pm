@@ -11,7 +11,6 @@ use GLPI::Agent::Tools;
 
 sub isEnabled {
     my (%params) = @_;
-    my $logger    = $params{logger};
 
     if (OSNAME eq 'MSWin32') {
 
@@ -70,11 +69,11 @@ sub _winBased {
         logger      => $params{logger}
     );
 
-    return $nodeId; 
+    return $nodeId;
 }
 
 sub _linuxBased {
-    my (%params) = @_;    
+    my (%params) = @_;
 
     my $command = getFirstLine(
         file    => "/etc/systemd/system/meshagent.service",
@@ -89,7 +88,7 @@ sub _linuxBased {
 }
 
 sub _darwinBased {
-    my (%params) = @_;    
+    my (%params) = @_;
 
     return getFirstLine(
         command => "/usr/local/mesh_services/meshagent/meshagent_osx64 -nodeid",
