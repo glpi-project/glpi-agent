@@ -196,6 +196,57 @@ sub doInventory {
 sub _getType {
     my ($inventory, $logger) = @_;
 
+    # First check if we are in a container before checking virtualization as we
+    # still can detect the host is virtualized
+
+    if (canRun('/sbin/sysctl')) {
+        my $handle = getFileHandle(
+            command => '/sbin/sysctl -n security.jail.jailed',
+            logger => $logger
+        );
+        my $line = <$handle>;
+        close $handle;
+        return 'BSDJail' if $line && $line == 1;
+    }
+
+    # systemd based container like lxc or systemd-nspawn should be tested before
+    if (has_file('/proc/1/environ')) {
+        my $init_env = getAllLines(
+            file => '/proc/1/environ',
+            logger => $logger
+        );
+        if ($init_env) {
+            $init_env =~ s/\0/\n/g;
+            my $container_type = getFirstMatch(
+                string  => $init_env,
+                pattern => qr/^container=(\S+)/,
+                logger  => $logger
+            );
+            return $container_type if $container_type;
+        }
+    }
+
+    # OpenVZ
+    if (has_file('/proc/self/status')) {
+        my @selfstatus = getAllLines(
+            file => '/proc/self/status',
+            logger => $logger
+        );
+        foreach my $line (@selfstatus) {
+            my ($key, $value) = split(/:/, $line);
+            return "Virtuozzo" if $key eq 'envID' && $value > 0;
+        }
+    }
+
+    # WSL
+    if (has_file('/proc/sys/fs/binfmt_misc/WSLInterop')) {
+        return "WSL";
+    } elsif (canRun('lscpu') && getFirstMatch(command => 'lscpu', pattern => qr/^Hypervisor vendor:\s+(Windows Subsystem for Linux|Microsoft)/)) {
+        return "WSL";
+    } elsif (has_file('/proc/mounts') && getFirstMatch(file => '/proc/mounts', pattern => qr/^rootfs\s+\/\s+(wslfs)/)) {
+        return "WSL";
+    }
+
     my $SMANUFACTURER = $inventory->getBios('SMANUFACTURER');
     my $SMODEL        = $inventory->getBios('SMODEL');
     if ($SMANUFACTURER) {
@@ -269,16 +320,6 @@ sub _getType {
 
     my $result;
 
-    if (canRun('/sbin/sysctl')) {
-        my $handle = getFileHandle(
-            command => '/sbin/sysctl -n security.jail.jailed',
-            logger => $logger
-        );
-        my $line = <$handle>;
-        close $handle;
-        return 'BSDJail' if $line && $line == 1;
-    }
-
     # loaded modules
 
     if (has_file('/proc/modules')) {
@@ -329,44 +370,6 @@ sub _getType {
             close $handle;
             return $result if $result;
         }
-    }
-
-    # systemd based container like lxc or systemd-nspawn
-
-    if (has_file('/proc/1/environ')) {
-        my $init_env = getAllLines(
-            file => '/proc/1/environ',
-            logger => $logger
-        );
-        if ($init_env) {
-            $init_env =~ s/\0/\n/g;
-            my $container_type = getFirstMatch(
-                string  => $init_env,
-                pattern => qr/^container=(\S+)/,
-                logger  => $logger
-            );
-            return $container_type if $container_type;
-        }
-    }
-    # OpenVZ
-    if (has_file('/proc/self/status')) {
-        my @selfstatus = getAllLines(
-            file => '/proc/self/status',
-            logger => $logger
-        );
-        foreach my $line (@selfstatus) {
-            my ($key, $value) = split(/:/, $line);
-            $result = "Virtuozzo" if $key eq 'envID' && $value > 0;
-        }
-    }
-
-    # WSL
-    if (has_file('/proc/sys/fs/binfmt_misc/WSLInterop')) {
-        $result = "WSL";
-    } elsif (canRun('lscpu') && getFirstMatch(command => 'lscpu', pattern => qr/^Hypervisor vendor:\s+(Windows Subsystem for Linux|Microsoft)/)) {
-        $result = "WSL";
-    } elsif (has_file('/proc/mounts') && getFirstMatch(file => '/proc/mounts', pattern => qr/^rootfs\s+\/\s+(wslfs)/)) {
-        $result = "WSL";
     }
 
     return $result if $result;

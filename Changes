@@ -2,6 +2,9 @@ Revision history for GLPI agent
 
 1.5 not released yet
 
+inventory:
+* check if we are running in a container before checking we are running in a virtualmachine
+
 netdiscovery/netinventory:
 * Avoid to record invalid MAC Address from Netbios during netdiscovery task
 
