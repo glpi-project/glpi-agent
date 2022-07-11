@@ -5,6 +5,9 @@ Revision history for GLPI agent
 netdiscovery/netinventory:
 * Avoid to record invalid MAC Address from Netbios during netdiscovery task
 
+packaging:
+* Update MacOSX packages to use OpenSSL 3.0.5
+
 1.4 Fri, 01 Jul 2022
 
 core:
