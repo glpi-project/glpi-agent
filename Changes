@@ -2,6 +2,9 @@ Revision history for GLPI agent
 
 1.5 not released yet
 
+netdiscovery/netinventory:
+* Avoid to record invalid MAC Address from Netbios during netdiscovery task
+
 1.4 Fri, 01 Jul 2022
 
 core:

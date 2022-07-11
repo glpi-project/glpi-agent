@@ -641,8 +641,13 @@ sub _scanAddressByNetbios {
         }
     }
 
-    $device{MAC} = $ns->mac_address();
-    $device{MAC} =~ tr/-/:/;
+    my $mac = $ns->mac_address();
+    if ($mac) {
+        $mac =~ tr/-/:/;
+        $mac = getCanonicalMacAddress($mac);
+        $device{MAC} = $mac
+            if $mac;
+    }
 
     return %device;
 }
