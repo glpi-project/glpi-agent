@@ -24,8 +24,8 @@ sub _ssh {
 sub init {
     my ($self) = @_;
 
-    my $mode = $self->mode();
-    $self->resetmode() if ($mode && $mode !~ /^perl$/);
+    # Only 'perl' supported as mode for ssh remote inventory
+    $self->resetmode() unless $self->mode('perl');
 
     Net::SSH2->require();
     unless ($EVAL_ERROR) {
