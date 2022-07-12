@@ -127,6 +127,8 @@ sub doInventory {
                 _setBitdefenderInfos($antivirus,$logger);
             } elsif ($antivirus->{NAME} =~ /Norton|Symantec/i) {
                 _setNortonInfos($antivirus);
+            } elsif ($antivirus->{NAME} =~ /Trend Micro Security Agent/i) {
+                _setTrendMicroSecurityAgentInfos($antivirus);
             }
 
             $inventory->addEntry(
@@ -448,6 +450,29 @@ sub _setNortonInfos {
         if ($curdefs && $curdefs =~ /^CurDefs=(.*)$/) {
             $antivirus->{BASE_VERSION} = $1;
             last;
+        }
+    }
+}
+
+sub _setTrendMicroSecurityAgentInfos {
+    my ($antivirus) = @_;
+
+    my $SecurityAgentReg = _getSoftwareRegistryKeys(
+        'TrendMicro/PC-cillinNTCorp/CurrentVersion/Misc.',
+        [ qw(InternalNonCrcPatternVer TmListen_Ver) ]
+    );
+    if ($SecurityAgentReg) {
+        $antivirus->{VERSION} = $SecurityAgentReg->{TmListen_Ver}
+            if $SecurityAgentReg->{TmListen_Ver};
+        if ($SecurityAgentReg->{InternalNonCrcPatternVer}) {
+            my $version = hex($SecurityAgentReg->{InternalNonCrcPatternVer});
+            my ($major, $minor, $rev) = (
+                $version/100000,
+                $version%100000/100,
+                $version%100
+            );
+            $antivirus->{BASE_VERSION} = sprintf("%d.%03d.%02d", $major, $minor, $rev)
+                if $major;
         }
     }
 }
