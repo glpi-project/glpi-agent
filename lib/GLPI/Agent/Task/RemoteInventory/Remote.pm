@@ -181,9 +181,6 @@ sub dump {
         expiration  => $self->{_expiration},
     };
 
-    # Keep any specific variable
-    map { $dump->{$_} = $self->{$_} } @{$self->{_keep_in_dump}};
-
     return $dump;
 }
 
