@@ -4,6 +4,7 @@ Revision history for GLPI agent
 
 inventory:
 * check if we are running in a container before checking we are running in a virtualmachine
+* fix #135: Add MeshCentral as new recognized remote_mgmt, thanks to @miguelanruiz
 
 netdiscovery/netinventory:
 * Avoid to record invalid MAC Address from Netbios during netdiscovery task
