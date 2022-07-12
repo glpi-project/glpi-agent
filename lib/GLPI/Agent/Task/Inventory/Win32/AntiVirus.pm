@@ -462,6 +462,7 @@ sub _setTrendMicroSecurityAgentInfos {
         [ qw(InternalNonCrcPatternVer TmListen_Ver) ]
     );
     if ($SecurityAgentReg) {
+        $antivirus->{COMPANY} = "Trend Micro Inc.";
         $antivirus->{VERSION} = $SecurityAgentReg->{TmListen_Ver}
             if $SecurityAgentReg->{TmListen_Ver};
         if ($SecurityAgentReg->{InternalNonCrcPatternVer}) {
