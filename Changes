@@ -12,6 +12,7 @@ netdiscovery/netinventory:
 
 packaging:
 * Update MacOSX packages to use OpenSSL 3.0.5
+* Temporarily update PATH to use provided exe files when running agent from BAT scripts on win32
 
 1.4 Fri, 01 Jul 2022
 
