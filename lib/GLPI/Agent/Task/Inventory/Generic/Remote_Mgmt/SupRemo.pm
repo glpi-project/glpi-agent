@@ -113,7 +113,7 @@ sub _getID_MSWin32 {
         }
     }
 
-    return hex2dec($clientid);
+    return sprintf("%09d",hex2dec($clientid));
 }
 
 sub _getID_supremo_info {
