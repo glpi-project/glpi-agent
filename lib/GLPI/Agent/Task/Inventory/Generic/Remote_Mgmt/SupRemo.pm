@@ -64,15 +64,6 @@ sub doInventory {
     }
 }
 
-sub _getID {
-    my (%params) = @_;
-
-    my $osname = delete $params{osname} // '';
-
-    return _getID_MSWin32() if $osname eq "MSWin32";
-
-    return _getID_supremo_info(%params);
-}
 
 sub _getID_MSWin32 {
 
