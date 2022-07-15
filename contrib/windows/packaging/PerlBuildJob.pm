@@ -119,7 +119,7 @@ sub _build_steps {
                 #{ do=>'ignore_testfailure', distribution=>'ExtUtils-MakeMaker-6.72' },
                 #{ do=>'ignore_testfailure', distribution=>qr/^IPC-Cmd-/ },
                 { do=>'ignore_testfailure', distribution=>qr/^Net-Ping-/ }, # 2.72 fails
-                { do=>'skip', distribution => qr/^Filter-/, # 1.61 fails
+                { do=>'skip', distribution => qr/^Filter-/ }, # 1.61 fails
             ]
         },
         ### NEXT STEP 4 Install needed modules with agent dependencies #########
