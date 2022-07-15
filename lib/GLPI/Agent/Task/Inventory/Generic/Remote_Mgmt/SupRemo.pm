@@ -104,6 +104,8 @@ sub _getID_MSWin32 {
         }
     }
 
+    return unless $clientid;
+
     return sprintf("%09d",hex2dec($clientid));
 }
 
