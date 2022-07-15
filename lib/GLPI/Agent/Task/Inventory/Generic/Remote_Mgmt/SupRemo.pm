@@ -80,7 +80,7 @@ sub _getID_MSWin32 {
 
     unless ($clientid) {
         my $supremover_reg = getRegistryKey(
-            path => "HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/Supremo",
+            path => "HKEY_LOCAL_MACHINE/SOFTWARE/Supremo",
             # Important for remote inventory optimization
             required    => [ qw/ClientID/ ],
             maxdepth    => 2,
