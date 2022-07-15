@@ -83,6 +83,7 @@ sub _getID_MSWin32 {
             path => "HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/Supremo",
             # Important for remote inventory optimization
             required    => [ qw/ClientID/ ],
+            maxdepth    => 2,
         );
         if(!$supremover_reg && is64bit()){
             $supremover_reg = getRegistryKey(
