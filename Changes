@@ -9,6 +9,7 @@ inventory:
 
 netdiscovery/netinventory:
 * Avoid to record invalid MAC Address from Netbios during netdiscovery task
+* Enhanced Idrac support getting serialnumber, thanks to spinal_df on the forum
 
 packaging:
 * Update MacOSX packages to use OpenSSL 3.0.5
