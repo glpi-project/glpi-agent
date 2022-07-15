@@ -19,7 +19,7 @@ sub isEnabled {
         # Depending on the installation the supremo key can be in two place in X64 OS
 
         my $key = getRegistryKey(
-            path => "HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/Supremo",
+            path => "HKEY_LOCAL_MACHINE/SOFTWARE/Supremo",
             # Important for remote inventory optimization
             required    => [ qw/ClientID/ ],
             maxdepth    => 1,
