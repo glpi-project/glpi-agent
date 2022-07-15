@@ -70,7 +70,7 @@ sub _getID_MSWin32 {
     GLPI::Agent::Tools::Win32->use();
 
     my $clientid = getRegistryValue(
-        path => "HKEY_LOCAL_MACHINE/SOFTWARE/Supremo/Wow6432Node/ClientID",
+        path => "HKEY_LOCAL_MACHINE/SOFTWARE/Supremo/ClientID",
     );
     if (!$clientid && is64bit()) {
         $clientid = getRegistryValue(
