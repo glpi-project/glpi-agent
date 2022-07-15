@@ -47,10 +47,8 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $supRemoID = _getID(
-        osname  => OSNAME,
-        logger  => $logger
-    );
+    my $supRemoID = OSNAME eq 'MSWin32' ?
+        _getID_MSWin32(logger  => $logger) : _getID_supremo_info(logger  => $logger);
     if (defined($supRemoID)) {
         $logger->debug('Found SupRemoID : ' . $supRemoID) if ($logger);
 
