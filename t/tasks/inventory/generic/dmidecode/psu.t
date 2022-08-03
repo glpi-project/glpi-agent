@@ -19,7 +19,7 @@ my %tests = (
             PARTNUM        => '511777-001',
             SERIALNUMBER   => '5ANLE0BLLZ225W',
             MANUFACTURER   => 'Hewlett-Packard',
-            POWER_MAX      => '0.460 W',
+            POWER_MAX      => '460',
             HOTREPLACEABLE => 'No',
             LOCATION       => 'Bottom PS Bay',
             NAME           => 'Power Supply 1',
@@ -46,7 +46,7 @@ my %tests = (
             NAME            => 'Power Supply 1',
             PARTNUM         => '503296-B21',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '460 W',
+            POWER_MAX       => '460',
             SERIALNUMBER    => '5ANLD0C4D2T481',
             STATUS          => 'Present, Unknown'
         },
@@ -56,7 +56,7 @@ my %tests = (
             NAME            => 'Power Supply 2',
             PARTNUM         => '503296-B21',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '460 W',
+            POWER_MAX       => '460',
             SERIALNUMBER    => '5ANLD0C4D2T459',
             STATUS          => 'Present, Unknown'
         }
@@ -68,7 +68,7 @@ my %tests = (
             NAME            => 'PWR SPLY,550W,RDNT,DELTA',
             PARTNUM         => '0X185V',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '550 W',
+            POWER_MAX       => '550',
             SERIALNUMBER    => 'CN1797263T13QD',
             STATUS          => 'Present, Unknown'
         },
@@ -78,7 +78,7 @@ my %tests = (
             NAME            => 'PWR SPLY,550W,RDNT,DELTA',
             PARTNUM         => '0X185V',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '550 W',
+            POWER_MAX       => '550',
             SERIALNUMBER    => 'CN1797263T13QE',
             STATUS          => 'Present, Unknown'
         }
@@ -93,7 +93,7 @@ my %tests = (
             NAME            => 'PWR SPLY,350W,RDNT,LTON',
             PARTNUM         => '09WR03',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '350 W',
+            POWER_MAX       => '350',
             SERIALNUMBER    => 'CN7161561F0D94',
             STATUS          => 'Present, Unknown'
         },
@@ -103,7 +103,7 @@ my %tests = (
             NAME            => 'PWR SPLY,350W,RDNT,LTON',
             PARTNUM         => '09WR03',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '350 W',
+            POWER_MAX       => '350',
             SERIALNUMBER    => 'CN7161561F0C36',
             STATUS          => 'Present, Unknown'
         }
@@ -115,7 +115,7 @@ my %tests = (
             NAME            => 'PWR SPLY,350W,RDNT,LTON',
             PARTNUM         => '09WR03',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '350 W',
+            POWER_MAX       => '350',
             SERIALNUMBER    => 'CN7161561F0D94',
             STATUS          => 'Present, Unknown'
         },
@@ -125,7 +125,7 @@ my %tests = (
             NAME            => 'PWR SPLY,350W,RDNT,LTON',
             PARTNUM         => '09WR03',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '350 W',
+            POWER_MAX       => '350',
             SERIALNUMBER    => 'CN7161561F0C36',
             STATUS          => 'Present, Unknown'
         }
@@ -137,7 +137,7 @@ my %tests = (
             NAME            => 'PWR SPLY,750W,RDNT,EMSN',
             PARTNUM         => '00XW8W',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '750 W',
+            POWER_MAX       => '750',
             SERIALNUMBER    => 'PH1629862600EB',
             STATUS          => 'Present, Unknown'
         },
@@ -147,7 +147,7 @@ my %tests = (
             NAME            => 'PWR SPLY,750W,RDNT,EMSN',
             PARTNUM         => '00XW8W',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '750 W',
+            POWER_MAX       => '750',
             SERIALNUMBER    => 'PH16298624018E',
             STATUS          => 'Present, Unknown'
         }
@@ -157,7 +157,7 @@ my %tests = (
             HOTREPLACEABLE  => 'No',
             NAME            => 'S26113-E524-V50',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '300 W',
+            POWER_MAX       => '300',
             SERIALNUMBER    => '256732',
             STATUS          => 'Present, Unknown'
         }
@@ -169,7 +169,7 @@ my %tests = (
             NAME            => 'Power Supply 1',
             PARTNUM         => '503296-B21',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '460 W',
+            POWER_MAX       => '460',
             SERIALNUMBER    => '5ANLE0CLL1BCY9',
             STATUS          => 'Present, Unknown'
         },
@@ -179,7 +179,7 @@ my %tests = (
             NAME            => 'Power Supply 2',
             PARTNUM         => '503296-B21',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '460 W',
+            POWER_MAX       => '460',
             SERIALNUMBER    => '5ANLE0CLLZK668',
             STATUS          => 'Present, Unknown'
         }
@@ -212,7 +212,7 @@ my %tests = (
             NAME            => 'Power Supply 1',
             PARTNUM         => '656362-B21',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '460 W',
+            POWER_MAX       => '460',
             SERIALNUMBER    => '5BXRD0DLL3U1UJ',
             STATUS          => 'Present, Unknown'
         },
@@ -222,7 +222,7 @@ my %tests = (
             NAME            => 'Power Supply 2',
             PARTNUM         => '656362-B21',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '460 W',
+            POWER_MAX       => '460',
             SERIALNUMBER    => '5BXRD0BLL2Y1IC',
             STATUS          => 'Present, Unknown'
         }
@@ -234,7 +234,7 @@ my %tests = (
             NAME            => 'Power Supply 1',
             PARTNUM         => '865414-B21',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '800 W',
+            POWER_MAX       => '800',
             SERIALNUMBER    => '5WBXU0ALL875XW',
             STATUS          => 'Present, OK'
         },
@@ -244,7 +244,7 @@ my %tests = (
             NAME            => 'Power Supply 2',
             PARTNUM         => '865414-B21',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '800 W',
+            POWER_MAX       => '800',
             SERIALNUMBER    => '5WBXU0ALL873NT',
             STATUS          => 'Present, OK'
         }
@@ -256,7 +256,7 @@ my %tests = (
             NAME            => 'Power Supply 1',
             PARTNUM         => '720479-B21',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '800 W',
+            POWER_MAX       => '800',
             SERIALNUMBER    => '5DLVA0C4D9Y0T2',
             STATUS          => 'Present, OK'
         },
@@ -266,7 +266,7 @@ my %tests = (
             NAME            => 'Power Supply 2',
             PARTNUM         => '720479-B21',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '800 W',
+            POWER_MAX       => '800',
             SERIALNUMBER    => '5DLVA0C4D9Y480',
             STATUS          => 'Present, OK'
         }
@@ -279,7 +279,7 @@ my %tests = (
             NAME            => 'Power Supply 1',
             PARTNUM         => '656362-B21',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '460 W',
+            POWER_MAX       => '460',
             SERIALNUMBER    => '5BXRD0DLL5N7HT',
             STATUS          => 'Present, Unknown'
         },
@@ -289,7 +289,7 @@ my %tests = (
             NAME            => 'Power Supply 2',
             PARTNUM         => '656362-B21',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '460 W',
+            POWER_MAX       => '460',
             SERIALNUMBER    => '5BXRD0DLL5N7GV',
             STATUS          => 'Present, Unknown'
         }
@@ -301,7 +301,7 @@ my %tests = (
             NAME            => 'Power Supply 1',
             PARTNUM         => '656364-B21',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '1200 W',
+            POWER_MAX       => '1200',
             SERIALNUMBER    => '5BXRK0DLL4V1B6',
             STATUS          => 'Present, Unknown'
         },
@@ -311,7 +311,7 @@ my %tests = (
             NAME            => 'Power Supply 2',
             PARTNUM         => '656364-B21',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '1200 W',
+            POWER_MAX       => '1200',
             SERIALNUMBER    => '5BXRK0DLL4T36H',
             STATUS          => 'Present, Unknown'
         }
@@ -324,7 +324,7 @@ my %tests = (
             NAME            => 'PWS-406P-1R',
             PARTNUM         => 'PWS-406P-1R',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '400 W',
+            POWER_MAX       => '400',
             SERIALNUMBER    => 'P406PCG17LT2411',
             STATUS          => 'Present, OK'
         },
@@ -335,7 +335,7 @@ my %tests = (
             NAME            => 'PWS-406P-1R',
             PARTNUM         => 'PWS-406P-1R',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '400 W',
+            POWER_MAX       => '400',
             SERIALNUMBER    => 'P406PCG17LT2410',
             STATUS          => 'Present, OK'
         }
@@ -348,7 +348,7 @@ my %tests = (
             NAME            => 'PWS-407P-1R',
             PARTNUM         => 'PWS-407P-1R',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '400 W',
+            POWER_MAX       => '400',
             SERIALNUMBER    => 'P407PCH05GT0342',
             STATUS          => 'Present, OK'
         },
@@ -359,7 +359,7 @@ my %tests = (
             NAME            => 'PWS-407P-1R',
             PARTNUM         => 'PWS-407P-1R',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '400 W',
+            POWER_MAX       => '400',
             SERIALNUMBER    => 'P407PCH05GT0343',
             STATUS          => 'Present, OK'
         }
@@ -371,7 +371,7 @@ my %tests = (
             NAME            => 'PWS-703P-1R',
             PARTNUM         => 'PWS-703P-1R',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '700 W',
+            POWER_MAX       => '700',
             SERIALNUMBER    => 'P7031CC16UT9413',
             STATUS          => 'Present, OK'
         }
@@ -387,7 +387,7 @@ my %tests = (
             NAME            => 'PWS-2K04A-1R',
             PARTNUM         => 'PWS-2K04A-1R',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '2000 W',
+            POWER_MAX       => '2000',
             SERIALNUMBER    => 'P2K4ACG46ST2836',
             STATUS          => 'Present, OK'
         },
@@ -398,7 +398,7 @@ my %tests = (
             NAME            => 'PWS-2K04A-1R',
             PARTNUM         => 'PWS-2K04A-1R',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '2000 W',
+            POWER_MAX       => '2000',
             SERIALNUMBER    => 'P2K4ACG46ST2835',
             STATUS          => 'Present, OK'
         }
@@ -411,7 +411,7 @@ my %tests = (
             NAME            => 'PWS-2K04A-1R',
             PARTNUM         => 'PWS-2K04A-1R',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '2000 W',
+            POWER_MAX       => '2000',
             SERIALNUMBER    => 'P2K4ACG52ST0413',
             STATUS          => 'Present, OK'
         },
@@ -422,7 +422,7 @@ my %tests = (
             NAME            => 'PWS-2K04A-1R',
             PARTNUM         => 'PWS-2K04A-1R',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '2000 W',
+            POWER_MAX       => '2000',
             SERIALNUMBER    => 'P2K4ACG52ST0414',
             STATUS          => 'Present, OK'
         }
@@ -438,7 +438,7 @@ my %tests = (
             NAME            => 'PWS-751P-1R',
             PARTNUM         => 'PWS-751P-1R',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '750 W',
+            POWER_MAX       => '750',
             SERIALNUMBER    => 'P751PCH10A00840',
             STATUS          => 'Present, OK'
         },
@@ -449,7 +449,7 @@ my %tests = (
             NAME            => 'PWS-751P-1R',
             PARTNUM         => 'PWS-751P-1R',
             PLUGGED         => 'Yes',
-            POWER_MAX       => '750 W',
+            POWER_MAX       => '750',
             SERIALNUMBER    => 'P751PCH10A00839',
             STATUS          => 'Present, OK'
         }

@@ -32,6 +32,7 @@ our @EXPORT = qw(
     getCanonicalSpeed
     getCanonicalInterfaceSpeed
     getCanonicalSize
+    getCanonicalPower
     getSanitizedString
     getUtf8String
     trimWhitespace
@@ -323,6 +324,25 @@ sub getCanonicalSize {
         $unit eq 'kb'    ? int($value / ($base))         :
         $unit eq 'bytes' ? int($value / ($base * $base)) :
                            undef                         ;
+}
+
+sub getCanonicalPower {
+    my ($power) = @_;
+
+    ## no critic (ExplicitReturnUndef)
+
+    return undef unless $power;
+
+    my ($value, $unit) = $power =~ /([\d]+) \s? (\S*)\S*$/x
+        or return undef;
+
+    return $value unless $unit;
+
+    return
+        $unit eq 'kW' ? $value * 1000      :
+        $unit eq 'W'  ? $value             :
+        $unit eq 'mW' ? int($value / 1000) :
+                        undef              ;
 }
 
 sub compareVersion {

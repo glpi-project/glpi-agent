@@ -6,6 +6,7 @@ inventory:
 * check if we are running in a container before checking we are running in a virtualmachine
 * fix #135: Add MeshCentral as new recognized remote_mgmt, thanks to @miguelanruiz
 * fix #171: Add support for Trend Micro Security Agent antivirus on win32
+* fix #185: Normalize power supplies max power on Watt unit
 
 netdiscovery/netinventory:
 * Avoid to record invalid MAC Address from Netbios during netdiscovery task

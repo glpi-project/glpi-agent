@@ -54,6 +54,10 @@ sub doInventory {
         $psu->{'MANUFACTURER'} = getCanonicalManufacturer($psu->{'MANUFACTURER'})
             if $psu->{'MANUFACTURER'};
 
+        # Get canonical max power
+        $psu->{'POWER_MAX'} = getCanonicalPower($psu->{'POWER_MAX'})
+            if $psu->{'POWER_MAX'};
+
         # Validate PartNumber, as example, this fixes Dell PartNumbers
         if ($psu->{'PARTNUM'} && $psu->{'MANUFACTURER'}) {
             my $partnumber_factory = GLPI::Agent::Tools::PartNumber->new(
