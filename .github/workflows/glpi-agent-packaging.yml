@@ -605,6 +605,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Install squashfs tools
+      run: |
+        sudo apt -y install squashfs-tools
     - uses: actions/download-artifact@v2
       with:
         name: Debian-Build
