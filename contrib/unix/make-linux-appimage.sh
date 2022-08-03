@@ -166,8 +166,6 @@ cat >build/AppImageBuilder.yml <<APPIMAGEBUILDER_YAML
 version: 1
 
 AppDir:
-  path: build/AppDir
-
   app_info:
     id: org.glpi_project.glpi_agent
     name: glpi-agent
@@ -195,13 +193,32 @@ AppDir:
 
   after_bundle: |
     find build/AppDir -type f -name '*.pod' -delete; \
-    sed -ri 's|/usr/share/glpi-agent|\$ENV{APPDIR}/usr/share/glpi-agent|' build/AppDir/usr/share/glpi-agent/lib/setup.pm build/AppDir/usr/bin/glpi-*
+    sed -ri 's|/usr/share/glpi-agent|\$ENV{APPDIR}/usr/share/glpi-agent|' build/AppDir/usr/share/glpi-agent/lib/setup.pm build/AppDir/usr/bin/glpi-*; \
+    rm -f build/AppDir/usr/bin/{GET,POST,HEAD}
 
   files:
     exclude:
       - usr/sbin/update-*
-      - usr/bin/{c*,d*,e*,h*,i*,j*,lib*,lwp-*,GET,POST,HEAD,o*,s*,u*,x*,z*}
-      - usr/bin/{pci*,pod*,pi*,pl*,pr*,pt*,perl?*}
+      - usr/bin/c*
+      - usr/bin/d*
+      - usr/bin/e*
+      - usr/bin/h*
+      - usr/bin/i*
+      - usr/bin/j*
+      - usr/bin/lib*
+      - usr/bin/lwp-*
+      - usr/bin/o*
+      - usr/bin/s*
+      - usr/bin/u*
+      - usr/bin/x*
+      - usr/bin/z*
+      - usr/bin/pci*
+      - usr/bin/pod*
+      - usr/bin/pi*
+      - usr/bin/pl*
+      - usr/bin/pr*
+      - usr/bin/pt*
+      - usr/bin/perl?*
       - usr/share/man
       - usr/share/doc*
       - usr/lib/*/libperl.so.*
@@ -270,6 +287,6 @@ if ! type appimage-builder >/dev/null 2>&1; then
     exit 1
 fi
 
-appimage-builder --recipe build/AppImageBuilder.yml
+appimage-builder --appdir build/AppDir --recipe build/AppImageBuilder.yml
 
 ls -l *.AppImage
