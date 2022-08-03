@@ -600,14 +600,11 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    if: ${{ needs.setup-release.outputs.build == 'yes' }}
+    if: ${{ needs.setup-release.outputs.build == 'yes-but-skip-for-now'}}
     needs: [ setup-release, linux-debian-packaging ]
 
     steps:
     - uses: actions/checkout@v2
-    - name: Install squashfs tools
-      run: |
-        sudo apt -y install squashfs-tools
     - uses: actions/download-artifact@v2
       with:
         name: Debian-Build
