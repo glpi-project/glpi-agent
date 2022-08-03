@@ -622,6 +622,7 @@ jobs:
         UPDATE_INFO: gh-releases-zsync|glpi-project|glpi-agent|latest|*x86_64.AppImage.zsync
       with:
         recipe: build/AppImageBuilder.yml
+        args: --appdir build/AppDir
     - name: Quick tests
       run: |
         echo ====
