@@ -1,0 +1,73 @@
+# dmidecode 3.3-update-1
+SMBIOS 3.2 present.
+
+Handle 0x1100, DMI type 17, 92 bytes
+Memory Device
+        Array Handle: 0x1000
+        Error Information Handle: Not Provided
+        Total Width: 64 bits
+        Data Width: 64 bits
+        Size: 8 GB
+        Form Factor: SODIMM
+        Set: None
+        Locator: DIMM A
+        Bank Locator: Not Specified
+        Type: DDR4
+        Type Detail: Synchronous
+        Speed: 3200 MT/s
+        Manufacturer: 80AD000080AD
+        Serial Number: 25477B84
+        Asset Tag: 02214200
+        Part Number: HMAA1GS6CJR6N-XN
+        Rank: 1
+        Configured Memory Speed: 2667 MT/s
+        Minimum Voltage: Unknown
+        Maximum Voltage: Unknown
+        Configured Voltage: 1.2 V
+        Memory Technology: DRAM
+        Memory Operating Mode Capability: Volatile memory
+        Firmware Version: Not Specified
+        Module Manufacturer ID: Bank 1, Hex 0xAD
+        Module Product ID: Unknown
+        Memory Subsystem Controller Manufacturer ID: Unknown
+        Memory Subsystem Controller Product ID: Unknown
+        Non-Volatile Size: None
+        Volatile Size: 8 GB
+        Cache Size: None
+        Logical Size: None
+
+Handle 0x1104, DMI type 17, 92 bytes
+Memory Device
+        Array Handle: 0x1000
+        Error Information Handle: Not Provided
+        Total Width: 64 bits
+        Data Width: 64 bits
+        Size: 8 GB
+        Form Factor: SODIMM
+        Set: None
+        Locator: DIMM B
+        Bank Locator: Not Specified
+        Type: DDR4
+        Type Detail: Synchronous
+        Speed: 3200 MT/s
+        Manufacturer: 832500008325
+        Serial Number: 190020CB
+        Asset Tag: 41220300
+        Part Number: GSOG42F-18----------
+        Rank: 1
+        Configured Memory Speed: 2667 MT/s
+        Minimum Voltage: Unknown
+        Maximum Voltage: Unknown
+        Configured Voltage: 1.2 V
+        Memory Technology: DRAM
+        Memory Operating Mode Capability: Volatile memory
+        Firmware Version: Not Specified
+        Module Manufacturer ID: Bank 4, Hex 0x25
+        Module Product ID: Unknown
+        Memory Subsystem Controller Manufacturer ID: Unknown
+        Memory Subsystem Controller Product ID: Unknown
+        Non-Volatile Size: None
+        Volatile Size: 8 GB
+        Cache Size: None
+        Logical Size: None
+

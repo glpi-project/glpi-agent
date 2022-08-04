@@ -133,10 +133,12 @@ sub _getMemories {
                 $memory->{MODEL} = trimWhitespace(
                     getSanitizedString( hex2char($info->{'Part Number'}) )
                 );
+                $memory->{MODEL} =~ s/-+$//;
                 my $partnumber_factory = GLPI::Agent::Tools::PartNumber->new(@_);
                 my $partnumber = $partnumber_factory->match(
                     partnumber  => $memory->{MODEL},
                     category    => "memory",
+                    mm_id       => $info->{'Module Manufacturer ID'} // '',
                 );
                 if ($partnumber) {
                     $memory->{MANUFACTURER} = $partnumber->manufacturer;

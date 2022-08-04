@@ -11,6 +11,7 @@ use constant match_re   => qr/^HY?[59M]([ADHPT])[123458ABCNQ]........?.?-(..).?$
 
 use constant category       => "memory";
 use constant manufacturer   => "Hynix";
+use constant mm_id          => "Bank 1, Hex 0xAD";
 
 sub init {
     my ($self, $type_match, $speed_match ) = @_;

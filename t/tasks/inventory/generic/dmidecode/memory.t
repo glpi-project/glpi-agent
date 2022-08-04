@@ -2820,6 +2820,32 @@ my %tests = (
             'TYPE'             => undef
         },
     ],
+    'memory/hynix-kingmax' => [
+        {
+            CAPACITY         => 8192,
+            CAPTION          => 'DIMM A',
+            DESCRIPTION      => 'SODIMM',
+            MANUFACTURER     => 'Hynix',
+            MEMORYCORRECTION => undef,
+            MODEL            => 'HMAA1GS6CJR6N-XN',
+            NUMSLOTS         => 1,
+            SERIALNUMBER     => '25477B84',
+            SPEED            => '3200',
+            TYPE             => 'DDR4'
+        },
+        {
+            CAPACITY         => 8192,
+            CAPTION          => 'DIMM B',
+            DESCRIPTION      => 'SODIMM',
+            MANUFACTURER     => 'KingMax',
+            MEMORYCORRECTION => undef,
+            MODEL            => 'GSOG42F-18',
+            NUMSLOTS         => 2,
+            SERIALNUMBER     => '190020CB',
+            SPEED            => '3200',
+            TYPE             => 'DDR4'
+        }
+    ]
 );
 
 plan tests => (2 * scalar keys %tests) + 1;

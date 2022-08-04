@@ -11,6 +11,7 @@ use GLPI::Agent::Logger;
 
 use constant category       => "";
 use constant manufacturer   => "";
+use constant mm_id          => "";
 
 # Lower priorities will be checked first
 use constant priority   => 50;
@@ -58,10 +59,20 @@ sub match {
     foreach my $subclass (@subclasses) {
         # Filter out by category and eventually by manufacturer
         next if $params{category}     && $subclass->category     ne $params{category};
-        next if $params{manufacturer} && $subclass->manufacturer ne $params{manufacturer};
-        # Then match on regexp
-        my @matches = $params{partnumber} =~ $subclass->match_re
-            or next;
+        # Better check Module Manufacturer ID to select related manufacturer
+        if ($params{mm_id} && $subclass->mm_id) {
+            next unless $subclass->mm_id eq $params{mm_id};
+        } elsif ($params{manufacturer}) {
+            next unless $subclass->manufacturer eq $params{manufacturer};
+        }
+        my @matches;
+        if (defined($subclass->match_re)) {
+            @matches = $params{partnumber} =~ $subclass->match_re;
+            next unless @matches;
+        } else {
+            # Only support no partnumber regexp if mm_id matched
+            next unless $params{mm_id};
+        }
         bless $self, $subclass;
         $self->init(@matches);
         last;
