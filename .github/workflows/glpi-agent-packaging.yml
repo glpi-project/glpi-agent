@@ -605,24 +605,21 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Install AppImage Builder
+      id: install-appimage-builder
+      run: |
+        pip3 install appimage-builder
+      shell: bash
     - uses: actions/download-artifact@v2
       with:
         name: Debian-Build
-    - name: Prepare AppImage
-      id: prepare-appimage
+    - name: Make AppImage
+      id: make-appimage
       run: |
-        contrib/unix/make-linux-appimage.sh --version $VERSION --prepare
+        contrib/unix/make-linux-appimage.sh --version $VERSION
       shell: bash
       env:
         VERSION: ${{ needs.setup-release.outputs.version }}
-        LOCAL_SOURCE_FILE: /github/workspace/build
-    - name: Build AppImage
-      uses: AppImageCrafters/build-appimage-action@master
-      env:
-        UPDATE_INFO: gh-releases-zsync|glpi-project|glpi-agent|latest|*x86_64.AppImage.zsync
-      with:
-        recipe: build/AppImageBuilder.yml
-        args: --appdir=build/AppDir
     - name: Quick tests
       run: |
         echo ====
