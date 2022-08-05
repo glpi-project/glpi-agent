@@ -795,6 +795,12 @@ my %edid_tests = (
         SERIAL       => "68056070",
         DESCRIPTION  => '28/2020'
     },
+    'samsung-s22e390' => {
+        MANUFACTURER => 'Samsung Electric Company',
+        CAPTION      => 'S22E390',
+        SERIAL       => "809585995",
+        DESCRIPTION  => '33/2016'
+    },
 );
 
 plan tests => (scalar keys %edid_tests) + 1;

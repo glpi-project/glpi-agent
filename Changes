@@ -9,6 +9,7 @@ inventory:
 * fix #185: Normalize power supplies max power on Watt unit
 * Fix KingMax memory module manufacturer detection
 * Fix Positivo Informatica memory module manufacturer detection
+* Fix Samsung S22E390 monitor serialnumber
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
