@@ -35,8 +35,8 @@ sub init {
         logger      => $self->{logger},
         config      => $self->config(),
         url         => $url->canonical->as_string,
-        user        => $self->{_user} || $ENV{USERNAME},
-        password    => $self->{_pass} || $ENV{PASSWORD},
+        user        => $self->{_user},
+        password    => $self->{_pass},
         winrm       => 1,
     );
 }

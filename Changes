@@ -9,6 +9,9 @@ inventory:
 * fix #185: Normalize power supplies max power on Watt unit
 * Fix KingMax memory module manufacturer detection
 
+remoteinventory:
+* Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
+
 netdiscovery/netinventory:
 * Avoid to record invalid MAC Address from Netbios during netdiscovery task
 * Enhanced Idrac support getting serialnumber, thanks to spinal_df on the forum

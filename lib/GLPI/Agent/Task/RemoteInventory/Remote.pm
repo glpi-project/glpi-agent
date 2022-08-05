@@ -25,6 +25,8 @@ sub new {
         _deviceid   => $dump->{deviceid}   // '',
         _url        => $dump->{url}        // $params{url},
         _config     => $params{config}     // {},
+        _user       => $ENV{USERNAME},
+        _pass       => $ENV{PASSWORD},
         logger      => $params{logger},
     };
 
