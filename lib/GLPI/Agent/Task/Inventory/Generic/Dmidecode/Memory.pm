@@ -99,7 +99,7 @@ sub _getMemories {
                       |
                   ^0x
                       |
-                  0000
+                  \d{4}
                       |
                   \sDIMM
                   /ix )

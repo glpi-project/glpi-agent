@@ -2845,6 +2845,30 @@ my %tests = (
             SPEED            => '3200',
             TYPE             => 'DDR4'
         }
+    ],
+    'memory/positivo-informatica' => [
+        {
+            CAPTION          => 'ChannelA-DIMM0',
+            DESCRIPTION      => 'DIMM',
+            MANUFACTURER     => undef,
+            MEMORYCORRECTION => undef,
+            NUMSLOTS         => 1,
+            SERIALNUMBER     => undef,
+            SPEED            => undef,
+            TYPE             => undef
+        },
+        {
+            CAPACITY         => 8192,
+            CAPTION          => 'ChannelB-DIMM0',
+            DESCRIPTION      => 'SODIMM',
+            MANUFACTURER     => 'Positivo Informática',
+            MEMORYCORRECTION => undef,
+            MODEL            => 'P48808GSHCRN-VK',
+            NUMSLOTS         => 2,
+            SERIALNUMBER     => '0000065D',
+            SPEED            => '2667',
+            TYPE             => 'DDR4'
+        }
     ]
 );
 

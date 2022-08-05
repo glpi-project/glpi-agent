@@ -8,6 +8,7 @@ inventory:
 * fix #171: Add support for Trend Micro Security Agent antivirus on win32
 * fix #185: Normalize power supplies max power on Watt unit
 * Fix KingMax memory module manufacturer detection
+* Fix Positivo Informatica memory module manufacturer detection
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
