@@ -424,6 +424,7 @@ my %tests = (
             'VMTYPE' => 'VMware',
             'MEMORY' => '512',
             'UUID' => '564d9904-a176-a762-1b95-f75ddd0642d8',
+            'SERIAL' => "VMware-56 4d 99 04 a1 76 a7 62-1b 95 f7 5d dd 06 42 d8",
             'VCPU' => '1'
           },
           {
@@ -434,6 +435,7 @@ my %tests = (
             'VMTYPE' => 'VMware',
             'MEMORY' => '256',
             'UUID' => '564d0750-3ae1-d18d-1613-eb489b5844c8',
+            'SERIAL' => "VMware-56 4d 07 50 3a e1 d1 8d-16 13 eb 48 9b 58 44 c8",
             'VCPU' => '1'
           },
           {
@@ -444,6 +446,7 @@ my %tests = (
             'VMTYPE' => 'VMware',
             'MEMORY' => '4096',
             'UUID' => '564df277-de0f-b401-0060-7d6a675f6460',
+            'SERIAL' => "VMware-56 4d f2 77 de 0f b4 01-00 60 7d 6a 67 5f 64 60",
             'VCPU' => '2'
           },
           {
@@ -454,6 +457,7 @@ my %tests = (
             'VMTYPE' => 'VMware',
             'MEMORY' => '512',
             'UUID' => '564d79a4-7ea6-3423-2980-0c882a78f698',
+            'SERIAL' => "VMware-56 4d 79 a4 7e a6 34 23-29 80 0c 88 2a 78 f6 98",
             'VCPU' => '1'
           }
         ]

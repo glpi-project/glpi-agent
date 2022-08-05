@@ -380,11 +380,16 @@ sub getVirtualMachines {
             next;
         }
 
+        # Compute serialnumber set in bios by ESX
+        my @uuid_parts = unpack("A2A2A2A2xA2A2xA2A2xA2A2xA2A2A2A2A2A2", $machine->{summary}{config}{uuid});
+        my $serial = "VMware-".join(' ', @uuid_parts[0..7]).'-'.join(' ', @uuid_parts[8..15]);
+
         push @virtualMachines,
           {
             NAME    => $machine->{name},
             STATUS  => $status,
             UUID    => $machine->{summary}{config}{uuid},
+            SERIAL  => $serial,
             MEMORY  => $machine->{summary}{config}{memorySizeMB},
             VMTYPE  => 'VMware',
             VCPU    => $machine->{summary}{config}{numCpu},
