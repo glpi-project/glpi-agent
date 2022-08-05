@@ -244,7 +244,7 @@ sub _download {
     my $response = $self->{client}->request($request, $path, $peer, $timeout);
 
     if ($response->code != 200) {
-        if ($response->code != 404 || $response->status_line() =~ /Nothing found/) {
+        if ($peer && ($response->code != 404 || $response->status_line() =~ /Nothing found/)) {
             $self->{logger}->debug2("Remote peer $peer is useless, we should forget it out for a while");
             $self->{p2pnet}->forgetPeer($peer) if $self->{p2pnet};
         }
