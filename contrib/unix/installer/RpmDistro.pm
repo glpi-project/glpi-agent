@@ -159,37 +159,50 @@ sub _prepareDistro {
     # Still ready for Fedora
     return if $self->{_name} =~ /fedora/i;
 
-    my ($v) = $self->{_version} =~ /^(\d+)/;
+    my $v = int($self->{_version} =~ /^(\d+)/ ? $1 : 0)
+        or return;
 
     # Enable repo for RedHat or CentOS
     if ($self->{_name} =~ /red\s?hat/i) {
-        # On RHEL 8, enable codeready-builder repo
-        if ($v eq "8") {
-            my $arch = qx(arch);
-            chomp($arch);
-            $self->verbose("Checking codeready-builder-for-rhel-8-$arch-rpms repository repository is enabled");
-            my $ret = $self->run("subscription-manager repos --enable codeready-builder-for-rhel-8-$arch-rpms");
-            die "Can't enable codeready-builder-for-rhel-8-$arch-rpms repository: $!\n" if $ret;
-        } elsif (int($v) < 8) {
+        # Since RHEL 8, enable codeready-builder repo
+        if ($v < 8) {
             $self->{_yum} = 1;
             delete $self->{_dnf};
+        } else {
+            my $arch = qx(arch);
+            chomp($arch);
+            $self->verbose("Checking codeready-builder-for-rhel-$v-$arch-rpms repository repository is enabled");
+            my $ret = $self->run("subscription-manager repos --enable codeready-builder-for-rhel-$v-$arch-rpms");
+            die "Can't enable codeready-builder-for-rhel-$v-$arch-rpms repository: $!\n" if $ret;
         }
     } elsif ($self->{_name} =~ /oracle linux/i) {
         # On Oracle Linux server 8, we need "ol8_codeready_builder"
-        if (int($v) >= 8) {
+        if ($v >= 8) {
             $self->verbose("Checking Oracle Linux CodeReady Builder repository is enabled");
             my $ret = $self->run("dnf config-manager --set-enabled ol${v}_codeready_builder");
             die "Can't enable CodeReady Builder repository: $!\n" if $ret;
         }
-    } elsif ($self->{_name} =~ /centos|rocky/i) {
-        # On CentOS 8, we need PowerTools
-        if ($v eq "8") {
+    } elsif ($self->{_name} =~ /rocky/i) {
+        # On Rocky 8, we need PowerTools
+        # On Rocky 9, we need CRB
+        if ($v >= 9) {
+            $self->verbose("Checking CRB repository is enabled");
+            my $ret = $self->run("dnf config-manager --set-enabled crb");
+            die "Can't enable CRB repository: $!\n" if $ret;
+        } else {
             $self->verbose("Checking PowerTools repository is enabled");
             my $ret = $self->run("dnf config-manager --set-enabled powertools");
             die "Can't enable PowerTools repository: $!\n" if $ret;
-        } elsif (int($v) < 8) {
+        }
+    } elsif ($self->{_name} =~ /centos/i) {
+        # Since CentOS 8, we need PowerTools
+        if ($v < 8) {
             $self->{_yum} = 1;
             delete $self->{_dnf};
+        } else {
+            $self->verbose("Checking PowerTools repository is enabled");
+            my $ret = $self->run("dnf config-manager --set-enabled powertools");
+            die "Can't enable PowerTools repository: $!\n" if $ret;
         }
     } elsif ($self->{_name} =~ /opensuse/i) {
         $self->{_zypper} = 1;
