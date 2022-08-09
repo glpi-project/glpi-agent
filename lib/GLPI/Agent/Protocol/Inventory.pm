@@ -179,8 +179,8 @@ sub mergeContent {
 sub _setupStandardization {
     my ($self, $version) = @_;
 
-    # Parse version setting default support to 10.0.0-beta
-    my ($major, $minor, $rev, $suffix) = (10, 0, 0, 'beta');
+    # Parse version setting default support to 10.0.0
+    my ($major, $minor, $rev, $suffix) = (10, 0, 0, '');
     if ($version && $version =~ /^(\d+)\.(\d+)\.(\d+)(?:-(.*))$/) {
         $major = int($1);
         $minor = int($2);
