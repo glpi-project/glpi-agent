@@ -32,7 +32,8 @@ sub init {
         my $timeout = $self->config->{"backend-collect-timeout"} // 60;
         $self->{_ssh2} = Net::SSH2->new(timeout => $timeout * 1000);
         my $version = $self->{_ssh2}->version;
-        $self->{logger}->debug2("Using libssh2 $version for ssh remote");
+        $self->{logger}->debug2("Using libssh2 $version for ssh remote")
+            if $self->{logger};
     }
 }
 
