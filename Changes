@@ -17,6 +17,8 @@ inventory:
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
 * fix #157: failure when creating a new winrm remote if a ssh one has been defined
+* Fix remoteGlob function for ssh remote inventory as it was preventing storage
+  inventory to work properly when accessing remote via ssh command
 
 netdiscovery/netinventory:
 * Avoid to record invalid MAC Address from Netbios during netdiscovery task

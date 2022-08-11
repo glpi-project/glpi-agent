@@ -278,8 +278,10 @@ sub remoteGlob {
     my ($self, $glob, $test) = @_;
     return unless $glob;
 
+    my $command = "sh -c 'for f in $glob; do if test ".($test // "-e")." \"\$f\"; then echo \$f; fi; done'";
+
     my @glob = $self->getRemoteAllLines(
-        command => "sh -c 'for f in $glob; do if test ".($test // "-e")." \"\$f\"; then echo \$f; fi; done'"
+        command => $self->{_ssh2} ? $command : "\"$command\""
     );
 
     return @glob;
