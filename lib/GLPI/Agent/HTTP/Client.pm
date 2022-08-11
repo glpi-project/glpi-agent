@@ -230,7 +230,7 @@ sub request {
             $error_type = lc($warning) if $warning;
 
             # Eventually add detailed SSL error message
-            if ($self->{ssl_set}) {
+            if ($self->{ssl_set} && $IO::Socket::SSL::SSL_ERROR) {
                 my $strcheck = IO::Socket::SSL::SSL_WANT_READ()."|".IO::Socket::SSL::SSL_WANT_WRITE();
                 push @message, $IO::Socket::SSL::SSL_ERROR
                     unless $IO::Socket::SSL::SSL_ERROR =~ /$strcheck/;

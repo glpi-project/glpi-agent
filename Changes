@@ -2,6 +2,9 @@ Revision history for GLPI agent
 
 1.5 not released yet
 
+core:
+* Avoid an error with IO::Socket::SSL error reporting on older platform (CentOS7 confirmed)
+
 inventory:
 * check if we are running in a container before checking we are running in a virtualmachine
 * fix #135: Add MeshCentral as new recognized remote_mgmt, thanks to @miguelanruiz
