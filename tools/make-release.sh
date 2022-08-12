@@ -130,7 +130,7 @@ sed -ri -e "s/^SetupVersion = .*$/SetupVersion = \"$VERSION\"/" contrib/windows/
 # 4. Update tasks version if required
 perl -Itools -MChangelog -e '
     my @tasks = qw(
-        Inventory NetDiscovery NetInventory Collect ESX Deploy WakeOnLan
+        Inventory NetDiscovery NetInventory Collect ESX Deploy WakeOnLan RemoteInventory
     );
     my @plugins = qw(
         ToolBox
