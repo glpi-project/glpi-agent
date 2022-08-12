@@ -76,13 +76,25 @@ sub _connect {
     # Support authentication by password
     if ($self->{_pass}) {
         $self->{logger}->debug2("Try authentication by password...");
-        unless ($ssh2->auth_password($self->{_user}, $self->{_pass})) {
-            my @error = $ssh2->error;
-            $self->{logger}->debug("Can't authenticate to $remote with given password for ssh remoteinventory: @error");
-            $self->{logger}->debug2("Authenticated on $remote remote with given password");
+        my $user = $self->{_user};
+        unless ($user) {
+            if ($ENV{USER}) {
+                $user = $ENV{USER};
+                $self->{logger}->debug2("Trying '$user' as login");
+            } else {
+                $self->{logger}->error("No user given for password authentication");
+            }
         }
-        if ($ssh2->auth_ok) {
-            return 1;
+        if ($user) {
+            unless ($ssh2->auth_password($user, $self->{_pass})) {
+                my @error = $ssh2->error;
+                $self->{logger}->debug("Can't authenticate to $remote with given password for ssh remoteinventory: @error");
+                $self->{logger}->debug2("Authenticated on $remote remote with given password");
+            }
+            if ($ssh2->auth_ok) {
+                $self->{_user} = $user;
+                return 1;
+            }
         }
     }
 
