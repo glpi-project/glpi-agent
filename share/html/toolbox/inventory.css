@@ -1,4 +1,12 @@
 
+div.missing-deps {
+  font: 20px Arial, Helvetica;
+  background-color: #f29393;
+  margin: 0 0 15px 2px;
+  padding: 10px;
+  color: red;
+}
+
 div.tag {
   display: inline-block;
 }

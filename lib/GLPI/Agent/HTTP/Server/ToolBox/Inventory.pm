@@ -10,6 +10,7 @@ use threads::shared;
 use parent "GLPI::Agent::HTTP::Server::ToolBox";
 
 use English qw(-no_match_vars);
+use UNIVERSAL::require;
 use Encode qw(encode);
 use HTML::Entities;
 use Time::HiRes qw(gettimeofday usleep);
@@ -44,6 +45,12 @@ sub new {
         _scan   => 0,
         _local  => 0,
     };
+
+    my $missingdep = 0;
+    $missingdep = 1 unless GLPI::Agent::Task::NetDiscovery->require();
+    $missingdep += 2 unless GLPI::Agent::Task::NetInventory->require();
+    $self->{_missingdep} = $missingdep
+        if $missingdep;
 
     bless $self, $class;
 
@@ -117,6 +124,9 @@ sub update_template_hash {
             }
         }
     }
+
+    # Set missing deps
+    $hash->{missingdeps} = $self->{_missingdep} // '';
 
     # Set running task
     $hash->{outputid} = $self->{taskid} || '';
@@ -194,6 +204,13 @@ sub _submit_netscan {
 
 sub netscan {
     my ($self, $ip_range_name, $ip) = @_;
+
+    return $self->errors(
+        $self->{_missingdep} == 1 ? "netdiscovery task is not installed" :
+        $self->{_missingdep} == 2 ? "netdiscovery task is not installed" :
+            "netdiscovery and netinventory tasks are not installed"
+    )
+        if $self->{_missingdep};
 
     my $ip_range = $self->yaml('ip_range') || {};
     $ip_range = $ip_range->{$ip_range_name}
@@ -278,7 +295,6 @@ sub netscan {
     } unless @credentials;
 
     # Create an NetDiscovery task
-    GLPI::Agent::Task::NetDiscovery->require();
     my $netdisco = GLPI::Agent::Task::NetDiscovery->new(
         config       => $agent->{config},
         datadir      => $agent->{datadir},
@@ -702,9 +718,6 @@ use UNIVERSAL::require;
 use Encode qw(encode);
 use HTML::Entities;
 
-use GLPI::Agent::Task::NetInventory;
-use GLPI::Agent::Task::NetInventory::Job;
-
 sub new {
     my ($class, %params) = @_;
 
@@ -777,6 +790,9 @@ sub send {
             $self->{logger}->info("Skipping inventory for $ip on not recognized device type");
             return;
         }
+
+        GLPI::Agent::Task::NetInventory->require();
+        GLPI::Agent::Task::NetInventory::Job->require();
 
         my $inventory = GLPI::Agent::Task::NetInventory->new(
             target => GLPI::Agent::Task::NetInventory::Target->new(),

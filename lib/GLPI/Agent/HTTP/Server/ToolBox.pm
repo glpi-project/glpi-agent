@@ -16,7 +16,7 @@ use File::stat;
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Hostname;
 
-our $VERSION = "1.0";
+our $VERSION = "1.1";
 
 my %api_match = (
     version             => \&_version,

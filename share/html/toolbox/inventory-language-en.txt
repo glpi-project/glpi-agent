@@ -16,6 +16,9 @@ New tag:
 New tag will be automatically selected:
 Add new tag:
 tag:
+netdiscovery task not installed:
+netinventory task not installed:
+netdiscovery and netinventory tasks not installed:
 
 Inventory tasks:
 Created inventories:

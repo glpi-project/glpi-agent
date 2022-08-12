@@ -248,6 +248,11 @@ span.counter {
   box-shadow: 0px 1px 1px #999;
 }
 
+.big-button:disabled {
+  background-color: #faf9f8;
+  color: gray;
+}
+
 input.submit-secondary {
   color: black;
   background-color: #d6d6d6;

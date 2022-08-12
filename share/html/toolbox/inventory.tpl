@@ -31,9 +31,15 @@
         <input type='submit' class='big-button' name='submit/localinventory' value='{_"Run local inventory for this computer"}'>
       </div>
       <div class='run-task'>
-        <label class='task'>{_"Network scan"}</label>
+        <label class='task'>{_"Network scan"}</label>{
+            $msg = $missingdeps == 1 ? _"netdiscovery task not installed" :
+                $missingdeps == 2 ? _"netinventory task not installed" :
+                    _"netdiscovery and netinventory tasks not installed"
+                if $missingdeps;
+            $OUT = $missingdeps ? "<div class='missing-deps'>$msg</div>" : "";
+        }
         <label for='ip_range'>{_"Choose IP range"}:</label>
-        <select id='ip_range' name='input/ip_range'>
+        <select id='ip_range' name='input/ip_range'{$missingdeps ? " disabled" : ""}>
           <option></option>{
             foreach my $range (sort keys(%ip_range)) {
               my $name = encode('UTF-8', encode_entities($ip_range{$range}->{name} || $range));
@@ -48,7 +54,7 @@
         <label class='task-options'>{_"Options"}:&nbsp;</label>
         <div class='task-options'>
           <label class='run-options'>{_"Threads"}:</label>
-          <select id='threads' name='input/threads' class='run-options'>{
+          <select id='threads' name='input/threads' class='run-options'{$missingdeps ? " disabled" : ""}>{
             foreach my $opt (@threads_options) {
               $OUT .= "
             <option" .
@@ -57,7 +63,7 @@
             }}
           </select>
           <label class='run-options'>{_"SNMP Timeout"}:</label>
-          <select id='timeout' name='input/timeout' class='run-options'>{
+          <select id='timeout' name='input/timeout' class='run-options'{$missingdeps ? " disabled" : ""}>{
             foreach my $opt (@timeout_options) {
               $OUT .= "
             <option".
@@ -67,7 +73,7 @@
           </select>
         </div>
         <br/>
-        <input type='submit' class='big-button' name='submit/netscan' value='{_"Run network scan"}'>
+        <input type='submit' class='big-button' name='submit/netscan' value='{_"Run network scan"}'{$missingdeps ? " disabled" : ""}>
       </div>
     </div>
   </form>
