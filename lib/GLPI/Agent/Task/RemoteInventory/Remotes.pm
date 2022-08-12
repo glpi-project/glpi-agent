@@ -18,22 +18,8 @@ sub new {
     };
     bless $self, $class;
 
-    # Load remotes from storage
-    my $remotes = $self->{_storage}->restore( name => 'remotes' ) // {};
-    foreach my $id (keys(%{$remotes})) {
-        my $dump = $remotes->{$id};
-        next unless ref($dump) eq 'HASH';
-        my $remote = GLPI::Agent::Task::RemoteInventory::Remote->new(
-            dump    => $dump,
-            config  => $self->{_config},
-            logger  => $self->{logger},
-        );
-        $self->{_remotes}->{$id} = $remote
-            if $remote->supported();
-    }
-
+    # Handle remotes from --remote option or load them from storage
     if ($self->{_config}->{remote}) {
-        my $updated = 0;
         foreach my $url (split(/,/, $self->{_config}->{remote})) {
             next unless $url;
 
@@ -57,9 +43,21 @@ sub new {
             # Don't overwrite remote if still known
             next if $self->{_remotes}->{$id};
             $self->{_remotes}->{$id} = $remote;
-            $updated ++;
         }
-        $self->store() if $updated;
+    } else {
+        # Load remotes from storage
+        my $remotes = $self->{_storage}->restore( name => 'remotes' ) // {};
+        foreach my $id (keys(%{$remotes})) {
+            my $dump = $remotes->{$id};
+            next unless ref($dump) eq 'HASH';
+            my $remote = GLPI::Agent::Task::RemoteInventory::Remote->new(
+                dump    => $dump,
+                config  => $self->{_config},
+                logger  => $self->{logger},
+            );
+            $self->{_remotes}->{$id} = $remote
+                if $remote->supported();
+        }
     }
 
     return $self;
