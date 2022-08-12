@@ -12,7 +12,6 @@ sub new {
 
     my $self = {
         _config     => $params{config},
-        _storage    => $params{storage},
         _remotes    => {},
         logger      => $params{logger},
     };
@@ -45,6 +44,9 @@ sub new {
             $self->{_remotes}->{$id} = $remote;
         }
     } else {
+        # Keep storage if we need to store expiration
+        $self->{_storage} = $params{storage};
+
         # Load remotes from storage
         my $remotes = $self->{_storage}->restore( name => 'remotes' ) // {};
         foreach my $id (keys(%{$remotes})) {
@@ -89,6 +91,8 @@ sub next {
 
 sub store {
     my ($self) = @_;
+
+    return unless $self->{_storage};
 
     my $remotes = {};
 
