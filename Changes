@@ -20,6 +20,8 @@ remoteinventory:
 * Fix remoteGlob function for ssh remote inventory as it was preventing storage
   inventory to work properly when accessing remote via ssh command
 * Don't try to register/update remotes when provided via --remote glpi-agent option
+* Support 'remote-workers' configuration to define how many remoteinventory we can
+  run in parallel
 
 netdiscovery/netinventory:
 * Avoid to record invalid MAC Address from Netbios during netdiscovery task

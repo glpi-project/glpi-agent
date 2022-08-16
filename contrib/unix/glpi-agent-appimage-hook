@@ -96,6 +96,7 @@ GetOptions(
     'httpd-port=s',
     'httpd-trust=s',
     'remote=s',
+    'remote-workers=i',
     'scan-homedirs',
     'scan-profiles',
     'server|s=s',
@@ -575,7 +576,8 @@ glpi-agent-linux-installer.AppImage [options]
 
 =head2 Remote inventory task specific options
 
-    --remote=REMOTE                setup remote for which request remote inventory
+    --remote=REMOTE[,REMOTE]...    list of remotes for remoteinventory task
+    --remote-workers=COUNT         maximum number of workers for remoteinventory task
 
 =head2 Deploy task specific options
 

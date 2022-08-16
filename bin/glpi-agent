@@ -59,6 +59,7 @@ GetOptions(
     'list-categories',
     'listen',
     'remote=s',
+    'remote-workers=i',
     'set-forcerun',
     'scan-homedirs',
     'scan-profiles',
@@ -262,8 +263,9 @@ glpi-agent [options] [--server server|--local path]
     --credentials                  set credentials to support database inventory
 
   RemoteInventory task specific options:
-    --remote                       specify a list of remotes to process in place
+    --remote=REMOTE[,REMOTE]...    specify a list of remotes to process in place
                                    of remotes managed via glpi-remote command
+    --remote-workers=COUNT         maximum number of workers for remoteinventory task
 
   Package deployment task specific options:
     --no-p2p                       do not use peer to peer to download

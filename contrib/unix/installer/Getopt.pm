@@ -35,6 +35,8 @@ my @options = (
     'httpd-port=s',
     'httpd-trust=s',
     'reinstall',
+    'remote=s',
+    'remote-workers=i',
     'runnow',
     'scan-homedirs',
     'scan-profiles',
@@ -121,6 +123,10 @@ glpi-agent-linux-installer [options]
     --scan-profiles                set to scan user profiles (false)
     --backend-collect-timeout=TIME set timeout for inventory modules execution (30)
     -t --tag=TAG                   configure tag to define in inventories
+
+  RemoteInventory specific options:
+    --remote=REMOTE[,REMOTE]...    list of remotes for remoteinventory task
+    --remote-workers=COUNT         maximum number of workers for remoteinventory task
 
   Package deployment task specific options:
     --no-p2p                       set to not use peer to peer to download

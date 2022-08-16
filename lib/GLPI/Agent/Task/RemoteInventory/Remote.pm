@@ -116,6 +116,17 @@ sub mode {
     return $self->{_mode} // '';
 }
 
+sub retry {
+    my ($self, $delay) = @_;
+
+    if (defined($delay)) {
+        $self->{_retry} = $delay;
+        $self->expiration(time+$delay) if $delay;
+    }
+
+    return $self->{_retry} ? $self : 0;
+}
+
 sub resetmode {
     my ($self) = @_;
     delete $self->{_mode};

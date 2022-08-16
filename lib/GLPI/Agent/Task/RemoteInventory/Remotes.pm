@@ -76,17 +76,57 @@ sub getall {
     return values %{$self->{_remotes}};
 }
 
+sub sort {
+    my ($self) = @_;
+
+    return unless $self->{_list} && @{$self->{_list}} > 1;
+
+    $self->{_list} = [
+        sort { $a->expiration() <=> $b->expiration() } @{$self->{_list}}
+    ];
+}
+
 sub next {
     my ($self) = @_;
 
-    my @remotes = $self->getall()
+    # next API now always initialize an internal list
+    unless ($self->{_list}) {
+        my @remotes = $self->getall()
+            or return;
+
+        $self->{_list} = \@remotes;
+
+        $self->sort();
+    }
+
+    my $remote = shift @{$self->{_list}}
         or return;
 
-    my ($remote) = sort { $a->expiration() <=> $b->expiration() } @remotes;
-
-    return unless $remote->expiration() <= time || $self->{_config}->{force};
+    # Skip scheduling check if forcing and not re-trying a failed remote
+    unless ($self->{_config}->{force} && !$remote->retry()) {
+        return if ($self->{_config}->{'remote-scheduling'} || $remote->retry()) && $remote->expiration() > time;
+    }
 
     return $remote;
+}
+
+sub retry {
+    my ($self, $remote, $maxdelay) = @_;
+
+    return unless $self->{_list};
+
+    # Add one hour to last retry time
+    my $timeout = $remote->retry() // 0;
+    $timeout += 3600;
+    # But don't retry if the delay is overdue
+    return if $timeout > $maxdelay;
+
+    push @{$self->{_list}}, $remote->retry($timeout);
+
+    # Always sort in case of a not empty big list running for a bigger time than
+    # the retry expiration but not if forcing so retry always occurs after the
+    # last pending remote
+    $self->sort() unless $self->{_config}->{force};
 }
 
 sub store {

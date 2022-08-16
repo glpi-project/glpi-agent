@@ -256,6 +256,12 @@
     <SetProperty Id="CMDLINE_REMOTE" Before="AppSearch" Value="[REMOTE]" />
     <SetProperty Id="REMOTE"         After="AppSearch"  Value="[CMDLINE_REMOTE]"><![CDATA[CMDLINE_REMOTE<>""]]></SetProperty>
 
+    <Property Id="REMOTE_WORKERS" Secure="yes">
+      <RegistrySearch Id="RemoteWorkers" Root="HKLM" Key="[%agent_regpath%]" Name="remote-workers" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_REMOTE_WORKERS" Before="AppSearch" Value="[REMOTE_WORKERS]" />
+    <SetProperty Id="REMOTE_WORKERS"         After="AppSearch"  Value="[CMDLINE_REMOTE_WORKERS]"><![CDATA[CMDLINE_REMOTE_WORKERS<>""]]></SetProperty>
+
     <Property Id="HTML" Secure="yes">
       <RegistrySearch Id="Html" Root="HKLM" Key="[%agent_regpath%]" Name="html" Type="raw"/>
     </Property>

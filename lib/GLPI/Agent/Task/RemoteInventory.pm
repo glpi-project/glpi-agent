@@ -5,6 +5,8 @@ use warnings;
 
 use parent 'GLPI::Agent::Task::Inventory';
 
+use Parallel::ForkManager;
+
 use GLPI::Agent::Tools;
 use GLPI::Agent::Task::RemoteInventory::Remotes;
 
@@ -17,6 +19,9 @@ sub isEnabled {
         return 0;
     }
 
+    # Always enable remoteinventory task if remote option is set
+    return 1 if $self->{config}->{remote};
+
     my $remotes = GLPI::Agent::Task::RemoteInventory::Remotes->new(
         config  => $self->{config},
         storage => $self->{target}->getStorage(),
@@ -24,16 +29,16 @@ sub isEnabled {
     );
 
     my $errors = 0;
-    foreach my $remote ($remotes->getall()) {
+    while (my $remote = $remotes->next()) {
         my $error = $remote->checking_error();
         last unless $error;
         my $deviceid = $remote->deviceid
             or next;
         $self->{logger}->debug("Skipping remote inventory task execution for $deviceid: $error");
-        # We want to retry in a hour
-        $self->{target}->setNextRunDateFromNow(3600);
-        $remote->expiration($self->{target}->getNextRunDate());
-        $remotes->store();
+        if ($self->{config}->{"remote-scheduling"}) {
+            $remotes->retry($remote, $self->{target}->getMaxDelay());
+            $remotes->store();
+        }
         $errors++;
     }
 
@@ -43,8 +48,10 @@ sub isEnabled {
         return 1;
     }
 
-    $self->{logger}->debug("Remote inventory task execution disabled: ".(!$count ?
-        "no remote to inventory" : "all $count remotes are failing"));
+    $self->{logger}->debug(
+        "Remote inventory task execution disabled: ".
+        ($count ? "all $count remotes are failing" : "no remote to inventory")
+    );
 
     return 0;
 }
@@ -58,43 +65,76 @@ sub run {
         logger  => $self->{logger},
     );
 
-    # Handle only one reachable remote at a time
-    my $remote;
-    while ($remote = $remotes->next()) {
-        my $error = $remote->checking_error();
-        last unless $error;
-        my $deviceid = $remote->deviceid
-            or next;
-        $self->{logger}->debug("Skipping remote inventory task execution for $deviceid: $error");
-        # We want to retry in a hour
-        $self->{target}->setNextRunDateFromNow(3600);
-        $remote->expiration($self->{target}->getNextRunDate());
-        $remotes->store();
-    }
-    return unless $remote;
+    my $worker_count = $remotes->count() > 1 ? $self->{config}->{'remote-workers'} : 0;
 
     my $start = time;
 
-    $self->{deviceid} = $remote->deviceid();
+    my $manager = Parallel::ForkManager->new($worker_count);
+    $manager->set_waitpid_blocking_sleep(0);
 
-    # Set now we are remote
-    $self->setRemote($remote->protocol());
+    if ($worker_count) {
+        $manager->run_on_start(
+            sub {
+                my ($pid, $remote) = @_;
+                $self->{logger}->debug("Starting remoteinventory worker[$pid] to handle ".$remote->safe_url());
+            }
+        );
+    }
 
-    setRemoteForTools($remote);
+    $manager->run_on_finish(
+        sub {
+            my ($pid, $ret, $remote) = @_;
+            my $remoteid = $remote->safe_url();
+            if ($ret) {
+                $self->{logger}->debug("Remoteinventory worker[$pid] failed to handle $remoteid") if $worker_count;
+                # We want to schedule a retry but limited by target max delay
+                $remotes->retry($remote, $self->{target}->getMaxDelay());
+            } else {
+                $self->{logger}->debug("Remoteinventory worker[$pid] finished to handle $remoteid") if $worker_count;
+                $remote->expiration($self->{target}->computeNextRunDate());
+            }
+            # Store new remotes scheduling if required
+            $remotes->store();
+        }
+    );
 
-    $self->SUPER::run(%params);
+    while (my $remote = $remotes->next()) {
+        $manager->start($remote) and next;
 
-    $remote->disconnect();
+        my $error = $remote->checking_error();
+        my $deviceid = $remote->deviceid;
 
-    resetRemoteForTools();
+        my $remoteid = $deviceid // $remote->safe_url();
+        $self->{logger}->{prefix} = "[worker $$] $remoteid, " if $worker_count;
+        if ($error || !$deviceid) {
+            $self->{logger}->debug("Skipping remote inventory task execution for $remoteid: $error");
+            $manager->finish(1);
+            # In the case we have only one remote, finish won't leave the loop, so always last here
+            last;
+        }
+
+        $self->{deviceid} = $deviceid;
+
+        # Set now we are remote
+        $self->setRemote($remote->protocol());
+
+        setRemoteForTools($remote);
+
+        $self->SUPER::run(%params);
+
+        $remote->disconnect();
+
+        resetRemoteForTools();
+
+        delete $self->{logger}->{prefix} if $worker_count;
+
+        $manager->finish();
+    }
+
+    $manager->wait_all_children();
 
     my $timing = time - $start;
-    $self->{logger}->debug("Remote inventory run in $timing seconds");
-
-    # Set expiration from target for the remote before storing remotes
-    $self->{target}->resetNextRunDate();
-    $remote->expiration($self->{target}->getNextRunDate());
-    $remotes->store();
+    $self->{logger}->debug("Remote inventory task run in $timing seconds");
 }
 
 1;

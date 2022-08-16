@@ -52,7 +52,7 @@ sub _init {
     # handle persistent state
     $self->_loadState();
 
-    $self->{nextRunDate} = $self->_computeNextRunDate()
+    $self->{nextRunDate} = $self->computeNextRunDate()
         if (!$self->{nextRunDate} || $self->{nextRunDate} < time-$self->getMaxDelay());
 
     $self->_saveState();
@@ -117,7 +117,7 @@ sub resetNextRunDate {
     return if delete $self->{_expiration};
 
     $self->{_nextrundelay} = 0;
-    $self->{nextRunDate} = $self->_computeNextRunDate();
+    $self->{nextRunDate} = $self->computeNextRunDate();
     $self->_saveState();
 }
 
@@ -274,7 +274,7 @@ sub isGlpiServer {
 
 # compute a run date, as current date and a random delay
 # between maxDelay / 2 and maxDelay
-sub _computeNextRunDate {
+sub computeNextRunDate {
     my ($self) = @_;
 
     my $ret;
