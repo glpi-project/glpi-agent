@@ -21,15 +21,18 @@ use GLPI::Agent::Target;
 
 GLPI::Agent::Task::RemoteInventory->use();
 
+my $vardir = tempdir(CLEANUP => 1);
+
 # Base config for a Test logger and debug
 my %baseconfig = (
     logger  => 'Test',
     debug   => 1,
+    vardir  => $vardir,
 );
 
 my $agent = GLPI::Agent->new(
     datadir => tempdir(CLEANUP => 1),
-    vardir  => tempdir(CLEANUP => 1),
+    vardir  => $vardir,
     libdir  => 'blib/lib',
 );
 
