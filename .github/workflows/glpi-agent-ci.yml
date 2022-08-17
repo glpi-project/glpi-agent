@@ -64,7 +64,7 @@ jobs:
       shell: cmd
     - name: Install other modules
       run: |
-        cpanm --notest --verbose Compress::Zlib Parse::EDID Archive::Extract Win32::Unicode::File Parallel::ForkManager
+        cpanm --notest --verbose Compress::Zlib Parse::EDID Archive::Extract Win32::Unicode::File
       shell: cmd
     - name: Prepare Makefile
       run: perl Makefile.PL
