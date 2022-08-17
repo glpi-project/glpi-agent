@@ -26,6 +26,7 @@ my $vardir = tempdir(CLEANUP => 1);
 # Base config for a Test logger and debug
 my %baseconfig = (
     logger  => 'Test',
+    logfile => '', # Required when testing locally with registry set for an installed agent on win32
     debug   => 1,
     vardir  => $vardir,
 );
@@ -45,8 +46,11 @@ $inventory_module->mock('run', sub {});
 my $remotes_module = Test::MockModule->new('GLPI::Agent::Task::RemoteInventory::Remotes');
 $remotes_module->mock('store', sub { $runs++ });
 
+# Modify Ssh remote to do nothing
 my $ssh_remote_module = Test::MockModule->new('GLPI::Agent::Task::RemoteInventory::Remote::Ssh');
 $ssh_remote_module->mock('checking_error', sub { 0 });
+$ssh_remote_module->mock('disconnect', sub {});
+$ssh_remote_module->mock('init', sub {});
 
 my %test_cases = (
     notarget => {
