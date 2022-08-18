@@ -13,6 +13,7 @@ inventory:
 * Fix KingMax memory module manufacturer detection
 * Fix Positivo Informatica memory module manufacturer detection
 * Fix Samsung S22E390 monitor serialnumber
+* fix #196: don't inventory 2 times libvirt qemu virtualmachines on linux
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory

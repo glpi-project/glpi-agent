@@ -65,6 +65,9 @@ sub  _getVirtualMachines {
         my ($name, $class, $service) = $line =~ /^(\S+)\s+(\w+)\s+(\S+)/
             or next;
 
+        # Don't inventory libvirt-qemu as still supported by Libvirt module
+        next if $service && $service eq "libvirt-qemu";
+
         my $container;
         if ($machines{$name}) {
             $container = delete $machines{$name};
