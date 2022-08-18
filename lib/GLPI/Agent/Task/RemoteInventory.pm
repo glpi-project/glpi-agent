@@ -28,30 +28,12 @@ sub isEnabled {
         logger  => $self->{logger},
     );
 
-    my $errors = 0;
-    while (my $remote = $remotes->next()) {
-        my $error = $remote->checking_error();
-        last unless $error;
-        my $deviceid = $remote->deviceid
-            or next;
-        $self->{logger}->debug("Skipping remote inventory task execution for $deviceid: $error");
-        if ($self->{config}->{"remote-scheduling"}) {
-            $remotes->retry($remote, $self->{target}->getMaxDelay());
-            $remotes->store();
-        }
-        $errors++;
-    }
-
-    my $count = $remotes->count();
-    if ($count && $errors < $count) {
+    if ($remotes->count() && $remotes->next()) {
         $self->{logger}->debug("Remote inventory task execution enabled");
         return 1;
     }
 
-    $self->{logger}->debug(
-        "Remote inventory task execution disabled: ".
-        ($count ? "all $count remotes are failing" : "no remote to inventory")
-    );
+    $self->{logger}->debug("Remote inventory task execution disabled: no remote setup");
 
     return 0;
 }
@@ -76,7 +58,8 @@ sub run {
         $manager->run_on_start(
             sub {
                 my ($pid, $remote) = @_;
-                $self->{logger}->debug("Starting remoteinventory worker[$pid] to handle ".$remote->safe_url());
+                my $worker = $remote->worker();
+                $self->{logger}->debug("Starting remoteinventory worker[$worker] to handle ".$remote->safe_url());
             }
         );
     }
@@ -85,12 +68,13 @@ sub run {
         sub {
             my ($pid, $ret, $remote) = @_;
             my $remoteid = $remote->safe_url();
+            my $worker = $remote->worker();
             if ($ret) {
-                $self->{logger}->debug("Remoteinventory worker[$pid] failed to handle $remoteid") if $worker_count;
+                $self->{logger}->error("Remoteinventory worker[$worker] failed to handle $remoteid") if $worker_count;
                 # We want to schedule a retry but limited by target max delay
                 $remotes->retry($remote, $self->{target}->getMaxDelay());
             } else {
-                $self->{logger}->debug("Remoteinventory worker[$pid] finished to handle $remoteid") if $worker_count;
+                $self->{logger}->debug("Remoteinventory worker[$worker] finished to handle $remoteid") if $worker_count;
                 $remote->expiration($self->{target}->computeNextRunDate());
             }
             # Store new remotes scheduling if required
@@ -98,14 +82,16 @@ sub run {
         }
     );
 
+    my $worker = 0;
     while (my $remote = $remotes->next()) {
+        $remote->worker(++$worker) if $worker_count;
         $manager->start($remote) and next;
 
         my $error = $remote->checking_error();
         my $deviceid = $remote->deviceid;
 
         my $remoteid = $deviceid // $remote->safe_url();
-        $self->{logger}->{prefix} = "[worker $$] $remoteid, " if $worker_count;
+        $self->{logger}->{prefix} = "[worker $worker] $remoteid, " if $worker_count;
         if ($error || !$deviceid) {
             $self->{logger}->debug("Skipping remote inventory task execution for $remoteid: $error");
             $manager->finish(1);

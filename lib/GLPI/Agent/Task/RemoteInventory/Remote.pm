@@ -116,6 +116,14 @@ sub mode {
     return $self->{_mode} // '';
 }
 
+sub worker {
+    my ($self, $worker) = @_;
+
+    return $self->{_worker} = $worker if $worker;
+
+    return $self->{_worker} // 0;
+}
+
 sub retry {
     my ($self, $delay) = @_;
 
@@ -144,7 +152,7 @@ sub deviceid {
         my $hostname = $params{hostname} || $self->host();
         if ($hostname =~ $ip_address_pattern) {
             my $info = getaddrinfo($hostname);
-            if ($info && $info->{addr}) {
+            if (ref($info) && $info->{addr}) {
                 my ($err, $name) = getnameinfo($info->{addr});
                 $hostname = $name if $name;
             }

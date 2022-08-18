@@ -26,15 +26,6 @@ sub init {
 
     # Only 'perl' supported as mode for ssh remote inventory
     $self->resetmode() unless $self->mode('perl');
-
-    Net::SSH2->require();
-    unless ($EVAL_ERROR) {
-        my $timeout = $self->config->{"backend-collect-timeout"} // 60;
-        $self->{_ssh2} = Net::SSH2->new(timeout => $timeout * 1000);
-        my $version = $self->{_ssh2}->version;
-        $self->{logger}->debug2("Using libssh2 $version for ssh remote")
-            if $self->{logger};
-    }
 }
 
 sub disconnect {
@@ -51,6 +42,17 @@ sub disconnect {
 sub _connect {
     my ($self) = @_;
 
+    unless ($self->{_ssh2}) {
+        Net::SSH2->require();
+        unless ($EVAL_ERROR) {
+            my $timeout = $self->config->{"backend-collect-timeout"} // 60;
+            $self->{_ssh2} = Net::SSH2->new(timeout => $timeout * 1000);
+            my $version = $self->{_ssh2}->version;
+            $self->{logger}->debug2("Using libssh2 $version for ssh remote")
+                if $self->{logger};
+        }
+    }
+
     my $ssh2 = $self->{_ssh2}
         or return 0;
     return 1 if defined($ssh2->sock);
@@ -62,14 +64,29 @@ sub _connect {
     if (!$ssh2->connect($host, $port // 22)) {
         my @error = $ssh2->error;
         $self->{logger}->debug("Can't reach $remote for ssh remoteinventory via libss2: @error");
+        undef $self->{_ssh2};
         return;
     }
 
     # Use Trust On First Use policy to verify remote host
     $self->{logger}->debug2("Check remote host key...");
+    if ($OSNAME eq 'MSWin32') {
+        # On windows, use vardir as HOME to store known_hosts file
+        my $home = $self->config->{vardir};
+        $ENV{HOME} = $self->config->{vardir};
+        my $dotssh = "$home/.ssh";
+        mkdir $dotssh unless -d $dotssh;
+        unless (-e "$dotssh/known_hosts") {
+            # Create empty known_hosts
+            my $fh;
+            close($fh)
+                if open $fh, ">", "$dotssh/known_hosts";
+        }
+    }
     unless ($ssh2->check_hostkey(Net::SSH2::LIBSSH2_HOSTKEY_POLICY_TOFU())) {
         my @error = $ssh2->error;
         $self->{logger}->error("Can't trust $remote for ssh remoteinventory: @error");
+        undef $self->{_ssh2};
         return;
     }
 
@@ -89,9 +106,9 @@ sub _connect {
             unless ($ssh2->auth_password($user, $self->{_pass})) {
                 my @error = $ssh2->error;
                 $self->{logger}->debug("Can't authenticate to $remote with given password for ssh remoteinventory: @error");
-                $self->{logger}->debug2("Authenticated on $remote remote with given password");
             }
             if ($ssh2->auth_ok) {
+                $self->{logger}->debug2("Authenticated on $remote remote with given password");
                 $self->{_user} = $user;
                 return 1;
             }
@@ -127,6 +144,7 @@ sub _connect {
     }
 
     $self->{logger}->error("Can't authenticate on $remote remote host");
+    undef $self->{_ssh2};
     return 0;
 }
 
@@ -154,9 +172,7 @@ sub _ssh2_exec_status {
 sub checking_error {
     my ($self) = @_;
 
-    if ($self->{_ssh2} && !defined($self->{_ssh2}->sock) && !$self->_connect()) {
-        delete $self->{_ssh2};
-    }
+    $self->_connect();
 
     my $root = $self->getRemoteFirstLine(command => "id -u");
 

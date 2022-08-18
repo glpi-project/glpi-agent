@@ -12,6 +12,7 @@ sub new {
 
     my $self = {
         _config     => $params{config},
+        _count      => 0,
         _remotes    => {},
         logger      => $params{logger},
     };
@@ -33,15 +34,13 @@ sub new {
             $remote->supported()
                 or next;
 
-            # Always check the remote so deviceid can also be defined on first access
-            next if $remote->checking_error();
-
-            my $id = $remote->deviceid()
+            my $id = $remote->safe_url()
                 or next;
 
             # Don't overwrite remote if still known
             next if $self->{_remotes}->{$id};
             $self->{_remotes}->{$id} = $remote;
+            $self->{_count}++;
         }
     } else {
         # Keep storage if we need to store expiration
@@ -57,8 +56,9 @@ sub new {
                 config  => $self->{_config},
                 logger  => $self->{logger},
             );
-            $self->{_remotes}->{$id} = $remote
-                if $remote->supported();
+            next unless $remote->supported();
+            $self->{_remotes}->{$id} = $remote;
+            $self->{_count}++;
         }
     }
 
@@ -67,7 +67,7 @@ sub new {
 
 sub count {
     my ($self) = @_;
-    return scalar(keys(%{$self->{_remotes}}));
+    return $self->{_count};
 }
 
 sub getall {

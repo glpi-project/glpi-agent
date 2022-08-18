@@ -49,8 +49,6 @@ $remotes_module->mock('store', sub { $runs++ });
 # Modify Ssh remote to do nothing
 my $ssh_remote_module = Test::MockModule->new('GLPI::Agent::Task::RemoteInventory::Remote::Ssh');
 $ssh_remote_module->mock('checking_error', sub { 0 });
-$ssh_remote_module->mock('disconnect', sub {});
-$ssh_remote_module->mock('init', sub {});
 
 my %test_cases = (
     notarget => {

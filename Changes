@@ -24,6 +24,8 @@ remoteinventory:
 * Don't try to register/update remotes when provided via --remote glpi-agent option
 * Support 'remote-workers' configuration to define how many remoteinventory we can
   run in parallel
+* Initialize libssh2 in workers
+* Use vardir as home for .ssh/known_hosts file with libssh2 on windows
 
 netdiscovery/netinventory:
 * Avoid to record invalid MAC Address from Netbios during netdiscovery task
