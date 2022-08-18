@@ -163,6 +163,7 @@ my %tests = (
             VIRTUALDEV  => '0',
             GUID        => '{FD7B5BF5-2E4B-4CA4-0000-F633D86283A1}',
             dns         => '192.168.2.2',
+            TYPE        => 'ethernet',
             MTU         => undef
         },
         {
@@ -178,6 +179,7 @@ my %tests = (
             VIRTUALDEV  => '0',
             GUID        => '{FD7B5BF5-2E4B-4CA4-0000-F633D86283A1}',
             dns         => '192.168.2.2',
+            TYPE        => 'ethernet',
             MTU         => undef
         },
         {
@@ -191,6 +193,7 @@ my %tests = (
             STATUS      => 'Up',
             VIRTUALDEV  => '1',
             GUID        => '{F2274B7D-033B-4FD1-B721-6B1E0E48D26D}',
+            TYPE        => 'ethernet',
             IPDHCP      => undef,
             IPGATEWAY   => undef,
             MTU         => undef,
@@ -207,6 +210,7 @@ my %tests = (
             STATUS      => 'Up',
             VIRTUALDEV  => '1',
             GUID        => '{F2274B7D-033B-4FD1-B721-6B1E0E48D26D}',
+            TYPE        => 'ethernet',
             MTU         => undef,
             dns         => undef
         },
@@ -218,6 +222,7 @@ my %tests = (
             STATUS      => 'Down',
             VIRTUALDEV  => '0',
             GUID        => '{73513F19-5210-45E7-9CB5-6DB761D8291A}',
+            TYPE        => 'ethernet',
             MTU         => undef,
             dns         => undef
         },
@@ -229,6 +234,7 @@ my %tests = (
             STATUS      => 'Down',
             VIRTUALDEV  => '1',
             GUID        => '{201DE880-FE07-47BE-0000-A3ABDE40367F}',
+            TYPE        => 'ethernet',
             MTU         => undef,
             dns         => undef
         },
@@ -240,6 +246,7 @@ my %tests = (
             STATUS      => 'Down',
             VIRTUALDEV  => '0',
             GUID        => '{05CAEBD3-9408-4A3D-0000-EB10577755E3}',
+            TYPE        => 'wireless',
             MTU         => undef,
             dns         => undef
         }
