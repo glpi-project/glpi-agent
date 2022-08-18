@@ -618,7 +618,7 @@ sub getInterfaces {
     my @networkAdapter = getWMIObjects(
         moniker    => 'winmgmts://./root/StandardCimv2',
         class      => 'MSFT_NetAdapter',
-        properties => [ qw/InterfaceIndex PnPDeviceID Speed HardwareInterface InterfaceGuid InterfaceDescription/ ]
+        properties => [ qw/InterfaceIndex PnPDeviceID Speed HardwareInterface InterfaceGuid InterfaceDescription InterfaceType/ ]
     );
 
     if (!@networkAdapter) {

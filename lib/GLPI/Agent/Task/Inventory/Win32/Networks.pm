@@ -42,7 +42,7 @@ sub doInventory {
         delete $interface->{DNSDomain};
         delete $interface->{GUID};
 
-        if ($interface->{PNPDEVICEID}) {
+        if ($interface->{PNPDEVICEID} && !$interface->{TYPE}) {
             my $type = _getMediaType($interface->{PNPDEVICEID}, $keys);
             $interface->{TYPE} = $type if defined($type);
         }

@@ -51,6 +51,22 @@ sub getBaseInterface {
     $interface->{DNSDomain} = $self->{_config}->{DNSDomain} if $self->{_config}->{DNSDomain};
     $interface->{SPEED}     = int($self->{Speed} / 1_000_000) if $self->{Speed};
 
+    if ($self->{InterfaceType}) {
+        # Interface type as defined by the Internet Assigned Names Authority (IANA)
+        # Same list as default GLPI supported types
+        my %types = qw(
+            6   ethernet
+            7   ethernet
+            56  fiberchannel
+            62  ethernet
+            71  wireless
+            117 ethernet
+            169 ethernet
+        );
+        $interface->{TYPE} = $types{$self->{InterfaceType}}
+            if $types{$self->{InterfaceType}};
+    }
+
     return $interface;
 }
 
