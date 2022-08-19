@@ -160,7 +160,7 @@ OPTIONS="--debug "
 AGENTMODE[0]=none
 # FusionInventory Inventory or GLPI server URI
 # AGENTSERVER[0]=your.server.name
-# AGENTSERVER[0]=http://your.server.name/front/inventory.php
+# AGENTSERVER[0]=http://your.server.name/
 # AGENTSERVER[0]=http://your.glpiserveur.name/glpi/plugins/fusioninventory/
 # corresponds with --local=%{_localstatedir}/lib/%{name}
 # AGENTSERVER[0]=local

@@ -51,16 +51,14 @@ sub _getCanonicalURL {
         # Eventually split on a slash to get host and path
         if ($string =~ m{^([^/]+)[/](.*)$}) {
             $url->host($1);
-            $url->path($2);
+            $url->path($2 // '');
         } else {
             $url->host($string);
-            $url->path('front/inventory.php');
+            $url->path('');
         }
     } else {
-        die "invalid protocol for URL: $string"
+        die "invalid protocol for URL: $string\n"
             if $scheme ne 'http' && $scheme ne 'https';
-        # complete path if needed
-        $url->path('front/inventory.php') if !$url->path();
     }
 
     return $url;
