@@ -279,7 +279,11 @@ sub delete {
             my $id = $list->{remote}->deviceid();
             my $deleted = delete $remotes->{$id}
                 or warn "No such deviceid found: $id\n";
-            $storage->save( name => 'remotes', data => $remotes );
+            if (keys(%{$remotes})) {
+                $storage->save( name => 'remotes', data => $remotes );
+            } else {
+                $storage->remove( name => 'remotes' );
+            }
             print "$id remote agent deleted from $list->{target}->{id}\n" if $deleted;
         }
     }
