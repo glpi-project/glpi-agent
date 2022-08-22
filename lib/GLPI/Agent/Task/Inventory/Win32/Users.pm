@@ -148,7 +148,7 @@ sub _getLoggedUsers {
             Domain  => 'DOMAIN'
         })
     ) {
-        next if $seen->{$user->{LOGIN}}++;
+        next if !defined($user->{LOGIN}) || $seen->{$user->{LOGIN}}++;
 
         push @users, $user;
     }

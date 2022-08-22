@@ -277,7 +277,7 @@ sub enumerate {
                     moniker     => $params{moniker},
                     method      => $params{method},
                     selectorset => [ "$params{selector}=$selectorvalue" ],
-                    params      => $params{params},
+                    params      => [ @{$params{params}} ],
                     binds       => $params{binds},
                 );
                 push @items, $params{properties} ? _extract($result, $params{properties}) : $result;

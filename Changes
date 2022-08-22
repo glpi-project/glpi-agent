@@ -28,6 +28,7 @@ remoteinventory:
 * Use vardir as home for .ssh/known_hosts file with libssh2 on windows
 * Fix environment inventory
 * Fix wrong encoding with winrm
+* Fix current users inventory via winrm
 
 netdiscovery/netinventory:
 * Avoid to record invalid MAC Address from Netbios during netdiscovery task
