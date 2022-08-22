@@ -8,6 +8,7 @@ use parent 'GLPI::Agent::HTTP::Client';
 use XML::TreePP;
 use HTTP::Request;
 use HTTP::Headers;
+use Encode qw(decode encode);
 
 use GLPI::Agent::SOAP::WsMan::Envelope;
 use GLPI::Agent::SOAP::WsMan::Attribute;
@@ -94,7 +95,7 @@ sub debug2 {
 sub _send {
     my ( $self, $envelope, $header ) = @_;
 
-    my $xml = $tpp->write($envelope->get());
+    my $xml = encode('UTF-8', $tpp->write($envelope->get()));
     return $self->abort("Won't send wrong request")
         unless $xml;
 
@@ -184,7 +185,7 @@ sub enumerate {
             Enumerate->new(
                 OptimizeEnumeration->new(),
                 MaxElements->new(32000),
-                Filter->new($params{query}),
+                Filter->new(encode('UTF-8',$params{query})),
             )
         );
     } else {
@@ -319,7 +320,7 @@ sub _extract {
     my $hash = {};
 
     foreach my $property (@{$properties}) {
-        $hash->{$property} = $item->{$property};
+        $hash->{$property} = decode('UTF-8', $item->{$property});
     }
 
     return $hash;
@@ -458,11 +459,12 @@ sub runmethod {
         my $keynode = $node->get($key);
         @nodes = $keynode->nodes() if $keynode;
         if (@nodes && $key eq 'uValue') {
-            $value = join('', map { chr($_->string()) } @nodes);
+            $value = decode('UTF-8', join('', map { chr($_->string()) } @nodes));
         } elsif (@nodes && $key =~ /^sNames|Types$/) {
-            $value = [ map { $_->string() } @nodes ];
+            $value = [ map { decode('UTF-8', $_->string()) } @nodes ];
         } elsif ($keynode) {
-            $value = $key =~ /^sNames|Types$/ ? [ $keynode->string ] : $keynode->string;
+            my $string = decode('UTF-8', $keynode->string);
+            $value = $key =~ /^sNames|Types$/ ? [ $string ] : $string;
         }
         if ($params{binds} && $params{binds}->{$key}) {
             $key = $params{binds}->{$key};
@@ -501,7 +503,7 @@ sub shell {
     # WinRS option set
     my $optionset = OptionSet->new(
         Option->new( WINRS_NOPROFILE    => "TRUE" ),
-        Option->new( WINRS_CODEPAGE     => "437" ),
+        Option->new( WINRS_CODEPAGE     => "65001" ),
     );
 
     # Create a remote shell
