@@ -269,9 +269,7 @@ sub submit {
             if (-d $path) {
                 $file =
                     $path . "/" . $inventory->getDeviceId() .
-                    ($format eq 'xml' ? '.xml' : '.html');
-                $file = $path . "/" . $self->{agentid} . ".json"
-                    if $format eq 'json';
+                    ($format eq 'xml' ? '.xml' : $format eq 'json' ? '.json' : '.html');
                 last SWITCH;
             }
 

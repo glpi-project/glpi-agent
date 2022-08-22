@@ -15,6 +15,7 @@ inventory:
 * Fix Samsung S22E390 monitor serialnumber
 * fix #196: don't inventory 2 times libvirt qemu virtualmachines on linux
 * Enhanced network adapter type detection on windows 10
+* fix #119: Use deviceid instead of agentid for json filename
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
