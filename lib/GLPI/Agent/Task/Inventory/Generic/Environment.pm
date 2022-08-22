@@ -14,7 +14,7 @@ use constant    category    => "environment";
 sub isEnabled {
     return
         # We use WMI for Windows because of charset issue
-        $OSNAME ne 'MSWin32'
+        OSNAME ne 'MSWin32'
 }
 
 sub doInventory {
@@ -22,12 +22,26 @@ sub doInventory {
 
     my $inventory = $params{inventory};
 
-    foreach my $key (keys %ENV) {
+    my %env;
+    if ($inventory->getRemote()) {
+        foreach my $line (getAllLines(
+            command => 'env',
+            logger  => $params{logger},
+        )) {
+            next unless $line =~ /^(\w+)=(.*)$/;
+            next unless $1 ne '_' && defined($2);
+            $env{$1} = $2;
+        }
+    } else {
+        %env = %ENV;
+    }
+
+    foreach my $key (keys %env) {
         $inventory->addEntry(
             section => 'ENVS',
             entry   => {
                 KEY => $key,
-                VAL => $ENV{$key}
+                VAL => $env{$key}
             }
         );
     }

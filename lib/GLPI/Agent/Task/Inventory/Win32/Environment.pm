@@ -22,8 +22,9 @@ sub doInventory {
         class      => 'Win32_Environment',
         properties => [ qw/SystemVariable Name VariableValue/ ]
     )) {
-
-        next unless $object->{SystemVariable};
+        # 'true' value is provided when run remotely
+        next unless $object->{SystemVariable} &&
+            ($object->{SystemVariable} eq '1' || $object->{SystemVariable} eq 'true');
 
         $inventory->addEntry(
             section => 'ENVS',
