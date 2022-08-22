@@ -320,7 +320,17 @@ sub _extract {
     my $hash = {};
 
     foreach my $property (@{$properties}) {
-        $hash->{$property} = decode('UTF-8', $item->{$property});
+        if (ref($item->{$property}) eq 'ARRAY') {
+            $hash->{$property} = [
+                map { decode('UTF-8', $_) } @{$item->{$property}}
+            ];
+        } elsif (ref($item->{$property}) eq 'HASH') {
+            $hash->{$property} = {
+                map { $_ => _extract($item->{$property}, [ keys(%{$item->{$property}}) ]) } keys(%{$item->{$property}})
+            };
+        } else {
+            $hash->{$property} = decode('UTF-8', $item->{$property});
+        }
     }
 
     return $hash;

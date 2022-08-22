@@ -114,7 +114,8 @@ sub _isVirtual {
     return 1 if $self->_getPNPDeviceID() =~ /^ROOT/;
 
     # PhysicalAdapter only work on OS > XP
-    return $self->_getPhysicalAdapter() ? 0 : 1 if defined $self->_getPhysicalAdapter();
+    my $physical = $self->{HardwareInterface} || $self->{PhysicalAdapter};
+    return $physical =~ /^1|true/i ? 0 : 1 if defined($physical);
 
     # http://forge.fusioninventory.org/issues/1166
     my $description = $self->_getDescription();
@@ -143,12 +144,6 @@ sub _getGUID {
     my ($self) = @_;
 
     return $self->{InterfaceGuid} || $self->{GUID};
-}
-
-sub _getPhysicalAdapter {
-    my ($self) = @_;
-
-    return $self->{HardwareInterface} || $self->{PhysicalAdapter};
 }
 
 sub _getPNPDeviceID {
