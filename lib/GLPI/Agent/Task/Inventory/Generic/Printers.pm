@@ -21,6 +21,14 @@ sub isEnabled {
     # we use WMI on Windows
     return 0 if OSNAME eq 'MSWin32';
 
+    # Printers inventory not supported remotely
+    if ($params{remote}) {
+        $params{logger}->debug(
+            "printers inventory not supported remotely"
+        );
+        return 0;
+    }
+
     Net::CUPS->require();
     if ($EVAL_ERROR) {
         $params{logger}->debug(
