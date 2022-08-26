@@ -503,6 +503,8 @@ sub _transform {
     my $storages = $content->{STORAGES};
     if (ref($storages) eq 'ARRAY') {
         map {
+            $self->{logger}->debug2("Replacing $_->{SERIAL} storage serial by $_->{SERIALNUMBER}")
+                if exists($_->{SERIAL}) && $_->{SERIAL} ne $_->{SERIALNUMBER};
             $_->{SERIAL} = delete $_->{SERIALNUMBER}
         } grep { exists($_->{SERIALNUMBER}) } @{$storages};
     }
