@@ -17,6 +17,7 @@ inventory:
 * Enhanced network adapter type detection on windows 10
 * fix #119: Use deviceid instead of agentid for json filename
 * fix #199: Fix GPU VRAM inventory on win32
+* Enhanced video card inventory on linux
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory

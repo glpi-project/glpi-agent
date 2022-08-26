@@ -51,6 +51,8 @@ sub doInventory {
                 /usr/X11R6/bin
                 |
                 /etc/X11
+                |
+                /usr/libexec
             )
             /X
         }x;
@@ -59,18 +61,27 @@ sub doInventory {
     }
 
     if ($xorgPid) {
-        my $link = "/proc/$xorgPid/fd/0";
-        if (has_file($link)) {
-            $xorgData = _parseXorgFd(file => $link);
-            $logger->debug_result(
-                 action => 'reading Xorg log file',
-                 data   => $xorgData
-            );
-        } else {
-            $logger->debug_result(
-                 action => 'reading Xorg log file',
-                 status => "non-readable link $link"
-            );
+        my $fd = 0;
+        my %read;
+        while (has_file("/proc/$xorgPid/fd/$fd")) {
+            my $link = ReadLink("/proc/$xorgPid/fd/$fd");
+            $fd++;
+            next unless $link =~ /\.log$/;
+            next if $read{$link};
+            if (has_file($link)) {
+                $xorgData = _parseXorgFd(file => $link);
+                $logger->debug_result(
+                     action => "reading $link Xorg log file",
+                     data   => $xorgData
+                );
+                last if $xorgData;
+                $read{$link} = 1;
+            } else {
+                $logger->debug_result(
+                     action => "reading $link Xorg log file",
+                     status => "non-readable link $link"
+                );
+            }
         }
     } else {
         $logger->debug_result(
@@ -138,8 +149,8 @@ sub _parseXorgFd {
             $data->{name} = $1;
         } elsif ($line =~ /VESA VBE OEM Product:\s*(.*)/) {
             $data->{product} = $1;
-        } elsif ($line =~ /VESA VBE Total Mem: (\d+)\s*(\w+)/i) {
-            $data->{memory} = $1 . $2;
+        } elsif ($line =~ /(?:VESA VBE Total Mem|Memory): (\d+)\s*(\w+)/i) {
+            $data->{memory} = $1 . substr($2, 0, 2);
         } elsif ($line =~ /RADEON\(0\): Chipset: "(.*?)"/i) {
             # ATI /Radeon
             $data->{name} = $1;
