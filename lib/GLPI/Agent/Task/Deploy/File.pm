@@ -202,6 +202,15 @@ sub download {
                 $nextPathUpdate = _getNextPathUpdateTime();
             }
         }
+
+        # Here, we missed to download the part
+        if (!$lastPeer && !@peers && !@{$self->{mirrors}}) {
+            $self->{logger}->debug("can't download part as no mirror is defined");
+            $self->{logger}->debug("You probably missed to enable the GLPI option to use GLPI server as a mirror");
+            # Don't try to download any other part
+            $self->{logger}->error("Aborting download: no mirror");
+            last;
+        }
     }
 }
 
