@@ -157,18 +157,21 @@ my %xorg = (
         pcislot    => '05:00.0',
         pciid      => '10de:06e4:0000:0000',
         resolution => '1680x1050',
+        memory     => '524288kB',
         name       => 'GeForce 8400 GS (G98)'
     },
     'linux-nvidia-2' => {
         pcislot    => '01:00.0',
         pciid      => '10de:01d3:10b0:0401',
         resolution => '2960x1050',
+        memory     => '524288kB',
         name       => 'GeForce 7300 SE/7200 GS (G72)'
     },
     'linux-nvidia-3' => {
         pcislot    => '01:00.0',
         pciid      => '10de:014d:10de:0349',
         resolution => '1600x1200',
+        memory     => '131072kB',
         name       => 'Quadro FX 550 (NV43GL)',
     },
     'linux-vesa-1' => {

@@ -149,7 +149,7 @@ sub _parseXorgFd {
             $data->{name} = $1;
         } elsif ($line =~ /VESA VBE OEM Product:\s*(.*)/) {
             $data->{product} = $1;
-        } elsif ($line =~ /(?:VESA VBE Total Mem|Memory): (\d+)\s*(\w+)/i) {
+        } elsif ($line =~ /(?:VESA VBE Total Mem| Memory): (\d+)\s*(\w+)/i) {
             $data->{memory} = $1 . substr($2, 0, 2);
         } elsif ($line =~ /RADEON\(0\): Chipset: "(.*?)"/i) {
             # ATI /Radeon
