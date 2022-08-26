@@ -167,7 +167,8 @@ sub loadRegistryDump {
             next;
         }
 
-        if ($line =~ /^ " ([^"]+) " = hex:([a-f0-9,]+)/x) {
+        # hex(b) support is for QWORD datas
+        if ($line =~ /^ " ([^"]+) " = hex(?:\(b\))?:([a-f0-9,]+)/x) {
             my ($key, $value) = ($1, $2);
             $current_key->{'/' . $key} = _binary($2);
             $current_variable = '/' . $key if $line =~ /\\$/;
