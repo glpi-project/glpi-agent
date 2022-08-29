@@ -31,6 +31,10 @@ sub support {
 sub new {
     my ($class, @params) = @_;
 
+    # For some reasons, remote answers with wrong case on ResourceURI when remote is done from windows
+    $params[0]->{'rsp:ResourceURI'} = delete $params[0]->{'rsp:ResourceUri'}
+        if $params[0] && ref($params[0]) eq 'HASH' && exists($params[0]->{'rsp:ResourceUri'});
+
     my $self = $class->SUPER::new(@params);
 
     $self->push(
