@@ -46,6 +46,24 @@ my %tests = (
             RESOLUTION  => '1920x1080',
         }
     ],
+    'intel+nvidia' => [
+        {
+            CHIPSET     => undef,
+            MEMORY      => undef,
+            NAME        => 'Microsoft Remote Display Adapter',
+            RESOLUTION  => '1920x1080',
+        }, {
+            CHIPSET     => 'Intel(R) HD Graphics Family',
+            MEMORY      => 1024,
+            NAME        => 'Intel(R) HD Graphics 4600',
+            RESOLUTION  => '1920x1200',
+        }, {
+            CHIPSET     => 'NVIDIA GeForce GTX 950',
+            MEMORY      => 2048,
+            NAME        => 'NVIDIA GeForce GTX 950',
+            RESOLUTION  => '1920x1200',
+        }
+    ],
 );
 
 plan tests => (2 * scalar keys %tests) + 1;

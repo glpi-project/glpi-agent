@@ -42,7 +42,7 @@ sub _getVideos {
         class      => 'Win32_VideoController',
         properties => [ qw/
             CurrentHorizontalResolution CurrentVerticalResolution VideoProcessor
-            AdapterRAM Name DeviceID
+            AdapterRAM Name PNPDeviceID
         / ],
         %params
     )) {
@@ -61,19 +61,26 @@ sub _getVideos {
                 $object->{CurrentVerticalResolution};
         }
 
-        my $deviceid = $object->{DeviceID};
-        if ($deviceid && $deviceid =~ /(\d+)$/) {
-            $deviceid = sprintf("%04i", $1);
+        my $pnpdeviceid = _pnpdeviceid($object->{PNPDeviceID});
+        if ($pnpdeviceid) {
             # Try to get memory from registry
             my $videokey = getRegistryKey(
-                path     => "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Control/Class/{4d36e968-e325-11ce-bfc1-08002be10318}/$deviceid",
+                path     => "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Control/Class/{4d36e968-e325-11ce-bfc1-08002be10318}",
                 # Important for remote inventory optimization
-                required => [ qw/HardwareInformation.MemorySize/ ],
-                maxdepth => 1,
+                required => [ qw/HardwareInformation.MemorySize MatchingDeviceId/ ],
+                maxdepth => 2,
             );
-            if ($videokey && $videokey->{"/HardwareInformation.qwMemorySize"}) {
-                my $memorysize = unpack("Q", $videokey->{"/HardwareInformation.qwMemorySize"});
-                $video->{MEMORY} = $memorysize;
+            if ($videokey) {
+                foreach my $subkey (keys(%{$videokey})) {
+                    next unless $subkey =~ m{/$} && defined($videokey->{$subkey});
+                    my $thispnpdeviceid = _pnpdeviceid($videokey->{$subkey}->{"/MatchingDeviceId"})
+                        or next;
+                    next unless $thispnpdeviceid eq $pnpdeviceid;
+                    next unless defined($videokey->{$subkey}->{"/HardwareInformation.qwMemorySize"});
+                    my $memorysize = unpack("Q", $videokey->{$subkey}->{"/HardwareInformation.qwMemorySize"});
+                    $video->{MEMORY} = $memorysize;
+                    last;
+                }
             }
         }
 
@@ -84,6 +91,20 @@ sub _getVideos {
     }
 
     return @videos;
+}
+
+sub _pnpdeviceid {
+    my ($pnpdeviceid) = @_;
+
+    return unless $pnpdeviceid;
+
+    my @parts = split('&', $pnpdeviceid);
+    return unless @parts > 1;
+
+    my @found = grep { /^(pci\\ven|dev)_/i } @parts;
+    return unless @found == 2;
+
+    return lc(join('&', @found));
 }
 
 1;
