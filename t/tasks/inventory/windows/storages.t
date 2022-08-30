@@ -301,6 +301,35 @@ my %tests = (
             TYPE         => 'Fixed hard disk media'
         }
     ],
+    'win10-edu-2020-fr' => [
+        {
+            MANUFACTURER => undef,
+            MODEL        => 'VBOX HARDDISK',
+            DESCRIPTION  => 'Integrated : Bus 0 : Device 13 : Function 0 : Adapter 0 : Port 0',
+            NAME         => 'PhysicalDisk0',
+            TYPE         => 'Virtual',
+            INTERFACE    => 'SATA',
+            FIRMWARE     => '1.0',
+            SCSI_COID    => undef,
+            SCSI_LUN     => undef,
+            SCSI_UNID    => undef,
+            DISKSIZE     => 51200,
+            SERIAL       => 'VB56f85924-28919b73',
+        },
+        {
+            MANUFACTURER => '(Lecteurs de CD-ROM standard)',
+            MODEL        => 'VBOX CD-ROM',
+            DESCRIPTION  => 'Lecteur de CD-ROM',
+            NAME         => 'VBOX CD-ROM',
+            TYPE         => 'Virtual',
+            INTERFACE    => undef,
+            FIRMWARE     => undef,
+            SCSI_COID    => '0',
+            SCSI_LUN     => '0',
+            SCSI_UNID    => '0',
+            DISKSIZE     => 60,
+        },
+    ],
 );
 
 plan tests => (2 * scalar keys %tests) + 1;
@@ -317,9 +346,24 @@ foreach my $test (sort keys %tests) {
         mockGetWMIObjects($test)
     );
 
-    my @storages = GLPI::Agent::Task::Inventory::Win32::Storages::_getDrives(
-            class => 'Win32_DiskDrive'
+    my @storages;
+    my $storages;
+
+    $storages = GLPI::Agent::Task::Inventory::Win32::Storages::_getDrives(
+        class   => 'MSFT_PhysicalDisk',
+        moniker => 'winmgmts://./root/microsoft/windows/storage',
     );
+    unless (@{$storages}) {
+        $storages = GLPI::Agent::Task::Inventory::Win32::Storages::_getDrives(
+            class => 'Win32_DiskDrive'
+        );
+    }
+    push @storages, @{$storages};
+    $storages = GLPI::Agent::Task::Inventory::Win32::Storages::_getDrives(
+        class => 'Win32_CDROMDrive'
+    );
+    push @storages, @{$storages};
+
     cmp_deeply(
         \@storages,
         $tests{$test},

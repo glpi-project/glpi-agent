@@ -18,6 +18,7 @@ inventory:
 * fix #119: Use deviceid instead of agentid for json filename
 * fix #199: Fix GPU VRAM inventory on win32
 * Enhanced video card inventory on linux
+* fix #198: Fix enhancing storage inventory on win32
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
