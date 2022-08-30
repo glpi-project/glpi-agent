@@ -240,7 +240,7 @@ sub getHdparmInfo {
 
         $info->{DESCRIPTION}  = $1 if $line =~ /Transport:.+(SATA|SAS|SCSI|USB)/;
         $info->{DISKSIZE}     = $1 if $line =~ /1000:\s+(\d*)\sMBytes/;
-        $info->{FIRMWARE}     = $1 if $line =~ /Firmware Revision:\s+(\w+)/;
+        $info->{FIRMWARE}     = $1 if $line =~ /Firmware Revision:\s+([\w.]+)/;
         $info->{INTERFACE}    = $1 if $line =~ /Transport:.+(SATA|SAS|SCSI|USB)/;
         $info->{MODEL}        = $1 if $line =~ /Model Number:\s+(\w.+\w)/;
         $info->{SERIALNUMBER} = $1 if $line =~ /Serial Number:\s+([\w-]*)/;
