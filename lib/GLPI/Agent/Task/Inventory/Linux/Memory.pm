@@ -17,24 +17,20 @@ sub doInventory {
     my (%params) = @_;
 
     my $inventory = $params{inventory};
-    my $logger    = $params{logger};
 
-    my $handle = getFileHandle(file => '/proc/meminfo', logger => $logger);
-    return unless $handle;
+    my @lines = getAllLines(
+        file    => '/proc/meminfo',
+        logger  => $params{logger}
+    );
 
-    my $memorySize;
-    my $swapSize;
+    my $memoryLine = first { /^MemTotal:\s*(\d+)/ } @lines;
+    my $swapLine = first { /^SwapTotal:\s*(\d+)/ } @lines;
 
-    while (my $line = <$handle>) {
-        $memorySize = $1 if $line =~ /^MemTotal:\s*(\S+)/;
-        $swapSize = $1 if $line =~ /^SwapTotal:\s*(\S+)/;
-    }
-    close $handle;
+    my $hw;
+    $hw->{MEMORY} = int($1/1024) if $memoryLine && $memoryLine =~ /(\d+)/;
+    $hw->{SWAP}   = int($1/1024) if $swapLine   && $swapLine   =~ /(\d+)/;
 
-    $inventory->setHardware({
-        MEMORY => int($memorySize/ 1024),
-        SWAP   => int($swapSize / 1024),
-    });
+    $inventory->setHardware($hw);
 }
 
 1;
