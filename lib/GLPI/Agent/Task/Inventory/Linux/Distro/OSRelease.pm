@@ -62,7 +62,8 @@ sub _fixCentOS {
 
     my $os = $params{os} // {};
 
-    my $centos_release = getFirstLine(%params);
+    my $centos_release = getFirstLine(%params)
+        or return;
     ($os->{VERSION}) = $centos_release =~ /^CentOS .* ([0-9.]+.*)$/;
 }
 
