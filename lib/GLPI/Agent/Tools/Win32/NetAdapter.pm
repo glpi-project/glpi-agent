@@ -59,7 +59,7 @@ sub getBaseInterface {
             7   ethernet
             56  fiberchannel
             62  ethernet
-            71  wireless
+            71  wifi
             117 ethernet
             169 ethernet
         );
