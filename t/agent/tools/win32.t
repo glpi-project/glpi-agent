@@ -246,7 +246,7 @@ my %tests = (
             STATUS      => 'Down',
             VIRTUALDEV  => '0',
             GUID        => '{05CAEBD3-9408-4A3D-0000-EB10577755E3}',
-            TYPE        => 'wireless',
+            TYPE        => 'wifi',
             MTU         => undef,
             dns         => undef
         }
