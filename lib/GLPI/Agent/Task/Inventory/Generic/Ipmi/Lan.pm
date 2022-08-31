@@ -35,12 +35,11 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $handle = getFileHandle(
+    my @lines = getAllLines(
         logger => $logger,
         command => "ipmitool lan print",
     );
-
-    return unless $handle;
+    return unless @lines;
 
     my $interface = {
         DESCRIPTION => 'bmc',
@@ -49,7 +48,7 @@ sub doInventory {
         STATUS      => 'Down',
     };
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /^IP Address\s+:\s+($ip_address_pattern)/) {
             $interface->{IPADDRESS} = $1 unless $1 eq '0.0.0.0';
         }
@@ -63,7 +62,6 @@ sub doInventory {
             $interface->{MACADDR} = $1;
         }
     }
-    close $handle;
 
     $interface->{IPSUBNET} = getSubnetAddress(
         $interface->{IPADDRESS}, $interface->{IPMASK}

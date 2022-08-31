@@ -18,8 +18,8 @@ sub getInterfacesFromIfconfig {
         command => '/sbin/ifconfig -a',
         @_
     );
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @interfaces; # global list of interfaces
     my @addresses;  # per-interface list of addresses
@@ -30,7 +30,7 @@ sub getInterfacesFromIfconfig {
         IEEE     => 'wifi'
     );
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /^(\S+): flags=\d+<([^>]+)> (?:metric \d+ )?mtu (\d+)/) {
 
             if (@addresses) {
@@ -97,7 +97,6 @@ sub getInterfacesFromIfconfig {
             $_->{TYPE} = $types{$1} foreach @addresses;
         }
     }
-    close $handle;
 
     # last interface
     if (@addresses) {

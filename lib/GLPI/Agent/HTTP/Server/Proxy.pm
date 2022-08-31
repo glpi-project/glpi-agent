@@ -348,22 +348,15 @@ sub _handle_proxy_request {
         print $in $content;
         close($in);
 
-        my $out;
-        eval {
-            $out = getFileHandle(
-                command => 'gzip -dc ' . $in->filename(),
-                logger  => $self->{logger}
-            );
-        };
+        $content = getAllLines(
+            command => 'gzip -dc ' . $in->filename(),
+            logger  => $self->{logger}
+        );
 
-        unless ($out) {
+        unless (defined($content)) {
             $self->info("Can't uncompress $content_type Content-type in $self->{request} request from $clientIp");
             return $self->proxy_error(403, "Unsupported $content_type Content-type");
         }
-
-        local $INPUT_RECORD_SEPARATOR; # Set input to "slurp" mode.
-        $content = <$out>;
-        close($out);
     }
 
     # Fix content-type if it has been uncompressed

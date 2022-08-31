@@ -46,13 +46,13 @@ sub doInventory {
 }
 
 sub _getVirtualMachines {
+    my (%params) = @_;
 
-    my $handle = getFileHandle(@_);
-
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @machines;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
 
         my ($uuid) = $line =~ /uuid *\( *RO\) *: *([-0-9a-f]+) *$/;
         next unless $uuid;
@@ -66,20 +66,19 @@ sub _getVirtualMachines {
         push @machines, $machine;
 
     }
-    close $handle;
 
     return @machines;
 }
 
 sub  _getVirtualMachine {
+    my (%params) = @_;
 
-    my $handle = getFileHandle(@_);
-
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my $machine;
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
 
         # Lines format: extended-label (...): value(s)
         my ($extendedlabel, $value) =
@@ -117,7 +116,6 @@ sub  _getVirtualMachine {
             next;
         }
     }
-    close $handle;
 
     return $machine;
 }

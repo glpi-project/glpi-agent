@@ -31,12 +31,11 @@ sub  _getVirtualMachines {
         @_
     );
 
-    my $handle = getFileHandle(%params);
-
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @machines;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         my $info;
         foreach my $item (split(' ', $line)) {
             next unless $item =~ /(\S+)=(\S+)/;
@@ -52,7 +51,6 @@ sub  _getVirtualMachines {
         push @machines, $machine;
 
     }
-    close $handle;
 
     return @machines;
 }

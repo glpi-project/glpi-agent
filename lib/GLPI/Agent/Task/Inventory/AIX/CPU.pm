@@ -31,14 +31,15 @@ sub doInventory {
 }
 
 sub _getCPUs {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my $aixversion = Uname("-v");
 
     my @cpus;
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         my $device = $line;
 
         my $format = $aixversion >= 5 ?
@@ -110,7 +111,6 @@ sub _getCPUs {
 
         push @cpus, $cpu;
     }
-    close $handle;
 
     return @cpus;
 }

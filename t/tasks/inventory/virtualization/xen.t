@@ -9,6 +9,7 @@ use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 
+use GLPI::Agent::Tools qw(getAllLines);
 use GLPI::Test::Inventory;
 use GLPI::Agent::Task::Inventory::Virtualization::Xen;
 use GLPI::Agent::Tools::Virtualization;
@@ -590,8 +591,8 @@ plan tests =>
 my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %tests_xm_list) {
-    my $file = "resources/virtualization/xm/$test";
-    my @machines = GLPI::Agent::Task::Inventory::Virtualization::Xen::_getVirtualMachines(file => $file);
+    my @lines = getAllLines(file => "resources/virtualization/xm/$test");
+    my @machines = GLPI::Agent::Task::Inventory::Virtualization::Xen::_getVirtualMachines(lines => \@lines);
     cmp_deeply(\@machines, $tests_xm_list{$test}, "$test: parsing");
     lives_ok {
         $inventory->addEntry(section => 'VIRTUALMACHINES', entry => $_)

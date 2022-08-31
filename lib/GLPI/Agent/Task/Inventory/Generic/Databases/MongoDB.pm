@@ -216,10 +216,7 @@ sub _runJs {
     if (wantarray) {
         return map { chomp; $_ } grep { $_ !~ /^(loading file|connecting to|MongoDB server version):/ } getAllLines(%params);
     } else {
-        my $result  = getLastLine(%params);
-        return unless defined($result);
-        chomp($result);
-        return $result;
+        return getLastLine(%params);
     }
 }
 

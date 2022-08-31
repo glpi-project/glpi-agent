@@ -32,13 +32,14 @@ sub doInventory {
 }
 
 sub _getPackagesList {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my @packages;
     my %seen   = ();
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         next unless $line =~ m%^/nix/store/[^-]+-(.+)-(\d+(\.\d+)*)$%;
 
         my $package = {
@@ -51,8 +52,6 @@ sub _getPackagesList {
 
         push @packages, $package;
     }
-
-    close $handle;
 
     return \@packages;
 }

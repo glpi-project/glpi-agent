@@ -28,17 +28,15 @@ sub doInventory {
         $version = $info->{'Firmware info'}->{'firmware revision'};
         $serial  = $info->{'Platform info'}->{'machine serial number'};
     } else {
-        my $handle = getFileHandle(
-            logger  => $logger,
+        my @lines = getAllLines(
             command => "echo 'sc product cpu;il' | /usr/sbin/cstm",
             logger  => $logger
         );
-        while (my $line = <$handle>) {
+        foreach my $line (@lines) {
             next unless $line =~ /PDC Firmware/;
             next unless $line =~ /Revision:\s+(\S+)/;
             $version = "PDC $1";
         }
-        close $handle;
 
         $serial = getFirstMatch(
             logger  => $logger,

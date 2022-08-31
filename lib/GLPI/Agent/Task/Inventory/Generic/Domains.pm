@@ -25,12 +25,12 @@ sub doInventory {
     # and the domain search list
     my %dns_list;
     my %search_list;
-    my $handle = getFileHandle(
+    my @lines = getAllLines(
         file => '/etc/resolv.conf',
         logger => $logger
     );
-    if ($handle) {
-        while (my $line = <$handle>) {
+    if (@lines) {
+        foreach my $line (@lines) {
             if (my ($dns) = $line =~ /^nameserver\s+(\S+)/) {
                 $dns =~ s/\.+$//;
                 $dns_list{$dns} = 1;
@@ -39,7 +39,6 @@ sub doInventory {
                 $search_list{$domain} = 1;
             }
         }
-        close $handle;
     }
 
     my $dns = join('/', sort keys %dns_list);

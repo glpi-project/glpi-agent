@@ -204,15 +204,10 @@ sub handle {
         print $fd $data;
         close $fd;
 
-        my $out = getFileHandle(
+        $data = getAllLines(
             command => 'gzip -c ' . $fd->filename(),
             logger  => $self->{logger}
         );
-        next unless $out;
-
-        local $INPUT_RECORD_SEPARATOR; # Set input to "slurp" mode.
-        $data = <$out>;
-        close $out;
     }
 
     my $response = HTTP::Response->new(

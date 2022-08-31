@@ -23,18 +23,20 @@ sub getLsvpdInfos {
         @_
     );
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @devices;
     my $device;
 
     # skip first lines
-    while (my $line = <$handle>) {
+    while (1) {
+        my $line = shift @lines;
+        last unless defined($line);
         last if $line =~ /^\*FC \?+/;
     }
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /^\*FC \?+/) {
             # block delimiter
             push @devices, $device;
@@ -42,11 +44,9 @@ sub getLsvpdInfos {
             next;
         }
 
-        chomp $line;
         next unless $line =~ /^\* ([A-Z]{2}) \s+ (.*\S)/x;
         $device->{$1} = $2;
     }
-    close $handle;
 
     # last device
     push @devices, $device;
@@ -60,13 +60,12 @@ sub getAdaptersFromLsdev {
         @_
     );
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @adapters;
 
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         my @info = split(/:/, $line);
         push @adapters, {
             NAME        => $info[0],
@@ -74,7 +73,6 @@ sub getAdaptersFromLsdev {
             DESCRIPTION => $info[2]
         };
     }
-    close $handle;
 
     return @adapters;
 }

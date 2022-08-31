@@ -20,7 +20,8 @@ sub doInventory {
     my $logger    = $params{logger};
 
     my @storages = _getStorages(
-        logger => $logger, command => 'iostat -En'
+        logger  => $logger,
+        command => 'iostat -En'
     );
 
     foreach my $storage (@storages) {
@@ -40,15 +41,15 @@ sub doInventory {
 }
 
 sub _getStorages {
+    my (%params) = @_;
 
-    my $handle = getFileHandle(@_);
-
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @storages;
     my $storage;
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /^(\S+)\s+Soft/) {
             $storage->{NAME} = $1;
         }
@@ -56,7 +57,7 @@ sub _getStorages {
             Vendor:       \s (\S+)          \s+
             Product:      \s (\S.*?\S)      \s+
             Revision:     \s (\S+)          \s+
-            Serial \s No: \s (\S*)
+            Serial \s No: (?:\s (\S*))?
         /x) {
             $storage->{MANUFACTURER} = $1;
             $storage->{MODEL} = $2;
@@ -101,7 +102,6 @@ sub _getStorages {
             undef $storage;
         }
     }
-    close $handle;
 
     return @storages;
 }

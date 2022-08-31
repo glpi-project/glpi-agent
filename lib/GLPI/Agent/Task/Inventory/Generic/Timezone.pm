@@ -68,15 +68,14 @@ sub doInventory {
 
         $logger->debug("Using tzutil to get the timezone name");
 
-        my $handle = getFileHandle(
+        my @lines = getAllLines(
             logger  => $logger,
             command => 'tzutil /g',
         );
 
-        while ( my $line = <$handle> ) {
+        foreach my $line (@lines) {
             $tz_name = $line;
         }
-        close $handle;
 
     }
     elsif ( OSNAME ne 'MSWin32' ) {

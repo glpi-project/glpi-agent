@@ -32,16 +32,17 @@ sub doInventory {
 }
 
 sub _getPackagesList {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my @packages;
     my $package;
     my $index = 1;
     my %months = map { $_ => $index ++ } qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
 
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         next unless $line;
         next unless $line =~ /^(\S[^:]*):\s*(.*)$/;
 
@@ -78,7 +79,6 @@ sub _getPackagesList {
             $package->{SYSTEM_CATEGORY} = join(',', split(/\s+/,$value));
         }
     }
-    close $handle;
 
     # Add last software
     push @packages, $package

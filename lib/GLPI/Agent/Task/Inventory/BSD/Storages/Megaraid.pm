@@ -16,11 +16,14 @@ sub isEnabled {
 }
 
 sub _parseMfiutil {
-    my $handle = getFileHandle(@_);
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my @storages;
-    while (my $line = <$handle>) {
-        unless ( $line =~ m/^[^(]*\(\s+(\d+\w+)\)\s+\S+\s+<(\S+)\s+(\S+)\s+\S+\s+serial=(\S+)>\s+(\S+)\s+.*$/ ) { next; }
+    foreach my $line (@lines) {
+        next unless $line =~ m/^[^(]*\(\s+(\d+\w+)\)\s+\S+\s+<(\S+)\s+(\S+)\s+\S+\s+serial=(\S+)>\s+(\S+)\s+.*$/;
         my ( $size, $vendor, $model, $serial, $type ) = ( $1, $2, $3, $4, $5 );
 
         if ( $size =~ /(\d+)G/ ){
@@ -38,7 +41,6 @@ sub _parseMfiutil {
 
         push @storages, $storage;
     }
-    close $handle;
 
     return @storages;
 }
@@ -49,8 +51,9 @@ sub doInventory {
     my $inventory = $params{inventory};
 
     foreach my $storage (_parseMfiutil(
-                logger => $params{logger},
-                command => 'mfiutil show drives')) {
+        logger  => $params{logger},
+        command => 'mfiutil show drives'
+    )) {
         $inventory->addEntry(section => 'STORAGES', entry => $storage);
     }
 }

@@ -185,15 +185,10 @@ sub _compressGzip {
     print $in $data;
     close $in;
 
-    my $out = getFileHandle(
+    my $result = getAllLines(
         command => 'gzip -c ' . $in->filename(),
         logger  => $self->{logger}
     );
-    return unless $out;
-
-    local $INPUT_RECORD_SEPARATOR; # Set input to "slurp" mode.
-    my $result = <$out>;
-    close $out;
 
     return $result;
 }
@@ -211,15 +206,10 @@ sub _uncompressGzip {
     print $in $data;
     close $in;
 
-    my $out = getFileHandle(
+    my $result = getAllLines(
         command => 'gzip -dc ' . $in->filename(),
         logger  => $self->{logger}
     );
-    return unless $out;
-
-    local $INPUT_RECORD_SEPARATOR; # Set input to "slurp" mode.
-    my $result = <$out>;
-    close $out;
 
     return $result;
 }

@@ -36,14 +36,16 @@ sub doInventory {
 }
 
 sub _getSoftwaresList {
-    my $handle = getFileHandle(@_);
-    next unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     # skip headers
-    my $line = <$handle>;
+    shift @lines;
 
     my @softwares;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         my @entry = split(/:/, $line);
         next if $entry[1] =~ /^device/;
 
@@ -56,7 +58,6 @@ sub _getSoftwaresList {
             VERSION  => $entry[2],
         };
     }
-    close $handle;
 
     return \@softwares;
 }

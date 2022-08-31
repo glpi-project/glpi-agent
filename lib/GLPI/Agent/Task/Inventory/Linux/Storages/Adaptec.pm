@@ -56,14 +56,14 @@ sub _getDisksFromProc {
 
     return unless $params{controller};
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @disks;
     my $disk;
 
     my $count = -1;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /^Host: (\w+)/) {
             $count++;
             if ($1 eq $params{controller}) {
@@ -93,7 +93,6 @@ sub _getDisksFromProc {
             push @disks, $disk;
         }
     }
-    close $handle;
 
     return @disks;
 }

@@ -136,20 +136,18 @@ sub _getVirtualCPUs {
         @_
     );
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @cpus;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /The (\S+) processor operates at (\d+) MHz/) {
             push @cpus, {
                 type  => $1,
                 speed => $2,
             };
-            next;
         }
     }
-    close $handle;
 
     return @cpus;
 }
@@ -160,11 +158,11 @@ sub _getPhysicalCPUs {
         @_
     );
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @cpus;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         $line = getSanitizedString($line);
 
         if ($line =~ /^The physical processor has (\d+) virtual/) {
@@ -206,7 +204,6 @@ sub _getPhysicalCPUs {
             $cpu->{type} = $1;
         }
     }
-    close $handle;
 
     return @cpus;
 }

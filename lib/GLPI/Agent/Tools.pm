@@ -515,15 +515,15 @@ sub getFirstMatch {
     my (%params) = @_;
 
     return unless $params{pattern};
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my @results;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         @results = $line =~ $params{pattern};
         last if @results;
     }
-    close $handle;
 
     return wantarray ? @results : first { defined $_ } @results;
 }
@@ -549,16 +549,10 @@ sub getAllLines {
 sub getLinesCount {
     my (%params) = @_;
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
-    my $count = 0;
-    while (my $line = <$handle>) {
-        $count++;
-    }
-    close $handle;
-
-    return $count;
+    return scalar(@lines);
 }
 
 sub canRun {

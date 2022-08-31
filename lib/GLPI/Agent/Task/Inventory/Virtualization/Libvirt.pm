@@ -63,11 +63,11 @@ sub _getMachines {
 sub _parseList {
     my (%params) = @_;
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @machines;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next if $line =~ /^\s*Id/;
         next if $line =~ /^-{5}/;
         next unless $line =~ /^\s*(\d+|)(\-|)\s+(\S+)\s+(\S.+)/;
@@ -88,7 +88,6 @@ sub _parseList {
 
         push @machines, $machine;
     }
-    close $handle;
 
     return @machines;
 }

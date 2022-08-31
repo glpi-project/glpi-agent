@@ -110,11 +110,11 @@ sub _getInterfaces {
 sub _parseLanscan {
     my (%params) = @_;
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @interfaces;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~ /^
             0x($alt_mac_address_pattern)
             \s
@@ -136,31 +136,33 @@ sub _parseLanscan {
 
         push @interfaces, $interface;
     }
-    close $handle;
 
     return @interfaces;
 }
 
 sub _getLanadminInfo {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my $info;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~ /^(\S.+\S) \s+ = \s (.+)$/x;
         $info->{$1} = $2;
     }
-    close $handle;
 
     return $info;
 }
 
 sub _getIfconfigInfo {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my $info;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /<UP/) {
             $info->{status} = 'Up';
         }
@@ -171,18 +173,19 @@ sub _getIfconfigInfo {
             $info->{netmask} = hex2canonical($1);
         }
     }
-    close $handle;
 
     return $info;
 }
 
 # will be need to get the bonding configuration
 sub _getNwmgrInfo {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my $info;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~ /^
             (\w+)
             \s+
@@ -204,7 +207,6 @@ sub _getNwmgrInfo {
             related_if => undef
         }
     }
-    close $handle;
 
     return $info;
 }
@@ -215,11 +217,11 @@ sub _parseNetstatNrv {
         @_
     );
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my %interfaces;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~ /^
             ($ip_address_pattern) # address
             \/
@@ -252,7 +254,6 @@ sub _parseNetstatNrv {
             MTU         => $mtu
         }
     }
-    close $handle;
 
     return %interfaces;
 }

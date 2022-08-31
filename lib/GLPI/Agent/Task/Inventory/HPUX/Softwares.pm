@@ -36,12 +36,13 @@ sub doInventory {
 }
 
 sub _getSoftwaresList {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my @softwares;
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         next unless $line =~ /^
             \s\s     # two spaces
             (\S+)    # name
@@ -58,8 +59,6 @@ sub _getSoftwaresList {
             PUBLISHER => 'HP'
         };
     }
-
-    close $handle;
 
     return \@softwares;
 }

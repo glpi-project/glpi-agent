@@ -348,17 +348,17 @@ sub getSystemProfilerInfos {
 sub _getSystemProfilerInfosText {
     my (%params) = @_;
 
-    my $command = $params{type} ?
+    $params{command} = $params{type} ?
         "/usr/sbin/system_profiler $params{type}" : "/usr/sbin/system_profiler";
-    my $handle = getFileHandle(command => $command, %params);
+    my @lines = getAllLines(%params)
+        or return;
 
     my $info = {};
 
     my @parents = (
         [ $info, -1 ]
     );
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         $line = decode("UTF-8", $line);
 
         next unless $line =~ /^(\s*)(\S[^:]*):(?: (.*\S))?/;
@@ -416,7 +416,6 @@ sub _getSystemProfilerInfosText {
             push (@parents, [ $parent_node->{$key}, $level, $key ]);
         }
     }
-    close $handle;
 
     return $info;
 }
@@ -427,19 +426,18 @@ sub getIODevices {
     # passing expected class to the command ensure only instance of this class
     # are present in the output, reducing the size of the content to be parsed,
     # but still requires some manual filtering to avoid subclasses instances
-    my $command = $params{class} ? "ioreg -c $params{class}" : "ioreg -l";
+    $params{command} = $params{class} ? "ioreg -c $params{class}" : "ioreg -l";
     my $filter = $params{class} || '[^,]+';
 
-    $command .= " $params{options}" if $params{options};
+    $params{command} .= " $params{options}" if $params{options};
 
-    my $handle = getFileHandle(command => $command, %params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @devices;
     my $device;
 
-
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /<class $filter,/) {
             # new device block
             $device = {};
@@ -460,9 +458,7 @@ sub getIODevices {
             $device->{$1} = $2 || $3;
             next;
         }
-
     }
-    close $handle;
 
     # Always include last device
     push @devices, $device if $device;

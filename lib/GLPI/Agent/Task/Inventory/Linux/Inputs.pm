@@ -19,17 +19,17 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $handle = getFileHandle(
+    my @lines = getAllLines(
         file => '/proc/bus/input/devices',
         logger => $logger
     );
-    return unless $handle;
+    return unless @lines;
 
     my @inputs;
     my $device;
     my $in;
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /^I: Bus=.*Vendor=(.*) Prod/) {
             $in = 1;
             $device->{vendor}=$1;
@@ -65,7 +65,6 @@ sub doInventory {
             }
         }
     }
-    close $handle;
 
     foreach my $input (@inputs) {
         $inventory->addEntry(

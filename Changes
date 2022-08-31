@@ -4,6 +4,8 @@ Revision history for GLPI agent
 
 core:
 * Avoid an error with IO::Socket::SSL error reporting on older platform (CentOS7 confirmed)
+* Full refactoring of getFileHandle API usage to avoid bottlenecks during remoteinventory
+  of libssh2 remotes
 
 inventory:
 * check if we are running in a container before checking we are running in a virtualmachine
@@ -19,6 +21,7 @@ inventory:
 * fix #199: Fix GPU VRAM inventory on win32
 * Enhanced video card inventory on linux
 * fix #198: Fix enhancing storage inventory on win32
+* Fixed few minor issues while refactoring getFileHandle API
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
@@ -35,6 +38,7 @@ remoteinventory:
 * Fix current users inventory via winrm
 * fix #160: Fix error when running winrm inventory from windows
 * Optimize few more API while using libssh2
+* More ssh inventory optimization while using libssh2
 
 netdiscovery/netinventory:
 * Avoid to record invalid MAC Address from Netbios during netdiscovery task

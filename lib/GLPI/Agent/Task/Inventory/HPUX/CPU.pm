@@ -158,13 +158,15 @@ sub _parseMachinInfo {
 }
 
 sub _parseCprop {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my @cpus;
     my $instance;
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /^\[Instance\]: \d+/) {
             # new block
             $instance = {};
@@ -204,7 +206,6 @@ sub _parseCprop {
             }
         }
     }
-    close $handle;
 
     # filter missing cpus
     @cpus = grep { $_ } @cpus;

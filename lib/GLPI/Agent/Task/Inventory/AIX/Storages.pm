@@ -166,13 +166,12 @@ sub _getFloppies {
 sub _parseLsdev {
     my (%params) = @_;
 
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @devices;
 
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         next unless $line =~ $params{pattern};
 
         push @devices, {
@@ -180,7 +179,6 @@ sub _parseLsdev {
             DESCRIPTION => $2
         };
     }
-    close $handle;
 
     return @devices;
 }

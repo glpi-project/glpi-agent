@@ -99,21 +99,17 @@ sub reset_original_context {
 sub _setIndexedValues {
     my ($self, $file) = @_;
 
-    my $handle = getFileHandle(file => $file || $self->{_file});
-
-    # check first line
-    my $first_line = <$handle>;
-    seek($handle, 0, 0);
+    my @lines = getAllLines(file => $file || $self->{_file});
 
     # check first line for safety
-    die "invalid file format\n" unless $first_line =~ /^(\S+) = .*/;
+    die "invalid file format\n" unless $lines[0] =~ /^(\S+) = .*/;
 
-    my $numerical = substr($first_line, 0, 1) eq '.' ? 1 : 0 ;
+    my $numerical = substr($lines[0], 0, 1) eq '.' ? 1 : 0 ;
     my $last_value;
 
     $self->{_walk} = {};
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
 
         # Use different regex if walk contains numerical or symbolic oids
         if ($numerical) {
@@ -175,8 +171,6 @@ sub _setIndexedValues {
 
         $last_value = undef;
     }
-
-    close ($handle);
 }
 
 sub _setValue {

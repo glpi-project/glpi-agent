@@ -34,12 +34,11 @@ sub doInventory {
 sub  _getVirtualMachineState {
     my (%params) = @_;
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my $state = STATUS_OFF;
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         if ($line =~ m/^State:\s*(\S+)$/i) {
             $state = $1 eq 'RUNNING' ? STATUS_RUNNING :
                      $1 eq 'FROZEN'  ? STATUS_PAUSED  :
@@ -47,7 +46,6 @@ sub  _getVirtualMachineState {
             last;
         }
     }
-    close $handle;
 
     return $state;
 }
@@ -81,14 +79,13 @@ sub  _getVirtualMachine {
         $command .= " -c lxc.uts.name" if $proxmox;
     }
 
-    my $handle = getFileHandle(
+    my @lines = getAllLines(
         command => $params{test_cmdinfo} || $command,
         logger  => $params{logger}
     );
-    return unless $handle;
+    return unless @lines;
 
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         next if $line =~ /^#.*/;
         next unless $line =~ m/^\s*(\S+)\s*=\s*(\S+)\s*$/;
 
@@ -120,13 +117,18 @@ sub  _getVirtualMachine {
             }
         }
     }
-    close $handle;
 
     return $container;
 }
 
 sub  _getVirtualMachines {
     my (%params) = @_;
+
+    my @lines = getAllLines(
+        command => 'lxc-ls -1',
+        %params
+    );
+    return unless @lines;
 
     my $version = getFirstMatch(
         command => "lxc-ls --version",
@@ -136,23 +138,16 @@ sub  _getVirtualMachines {
 
     my $lxcpath = getFirstLine(
         command => "lxc-config lxc.lxcpath",
-        logger  => $params{logger}
+        %params
     ) || "/var/lib/lxc";
-
-    my $handle = getFileHandle(
-        command => 'lxc-ls -1',
-        logger  => $params{logger}
-    );
-    return unless $handle;
 
     my $rootfs_conf = $version < 2.1 ? "lxc.rootfs" : "lxc.rootfs.path";
     my $max_cpus = 0;
 
     my @machines;
 
-    while(my $name = <$handle>) {
+    foreach my $name (@lines) {
         # lxc-ls -1 shows one entry by line
-        chomp $name;
         $name =~ s/\s+$//;         # trim trailing whitespace
         next unless length($name); # skip if empty as name can contain space
 
@@ -206,7 +201,6 @@ sub  _getVirtualMachines {
 
         push @machines, $container;
     }
-    close $handle;
 
     return @machines;
 }

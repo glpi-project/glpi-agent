@@ -75,14 +75,13 @@ sub doInventory {
 sub _getDisksGroups {
     my (%params) = @_;
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @groups = ();
     my $line_count = 0;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         # Cleanup line
-        chomp($line);
         $line = trimWhitespace($line);
 
         # Logic to skip header
@@ -109,8 +108,6 @@ sub _getDisksGroups {
             FREE        => int($infos[$#infos-3])
         };
     }
-
-    close $handle;
 
     return \@groups;
 }

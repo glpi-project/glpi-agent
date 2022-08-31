@@ -64,13 +64,12 @@ sub getIpmiFru {
         return $__fru;
     }
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my ($block, $descr);
 
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
 
         if ($line =~ /^FRU Device Description : (.*)(?: \(ID (\d+)\))?/) {
             # start of block
@@ -91,8 +90,6 @@ sub getIpmiFru {
 
         $block->{$1} = trimWhitespace($2);
     }
-
-    close $handle;
 
     # push last block in list if still defined
     if ($block) {

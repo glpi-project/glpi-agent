@@ -60,12 +60,13 @@ sub _getBoardFromProc {
         @_
     );
 
-    my $handle = getFileHandle(%params);
+    my @lines = getAllLines(%params)
+        or return;
 
     my $infos;
 
     # Does the inverse of GLPI::Agent::Tools::Linux::getCPUsFromProc()
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /^([^:]+\S) \s* : \s (.+)/x) {
             $infos->{lc($1)} = trimWhitespace($2);
         } elsif ($line =~ /^$/) {
@@ -74,7 +75,6 @@ sub _getBoardFromProc {
             undef $infos;
         }
     }
-    close $handle;
 
     return $infos
         unless ($infos && (exists($infos->{processor}) || exists($infos->{cpu})));

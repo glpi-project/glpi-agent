@@ -74,12 +74,12 @@ sub _getLocalUsers {
         @_
     );
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @users;
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next if $line =~ /^#/;
         next if $line =~ /^[+-]/; # old format for external inclusion, see #2460
         my ($login, undef, $uid, $gid, $gecos, $home, $shell) =
@@ -94,7 +94,6 @@ sub _getLocalUsers {
             SHELL => $shell
         };
     }
-    close $handle;
 
     return @users;
 }
@@ -105,14 +104,13 @@ sub _getLocalGroups {
         @_
     );
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @groups;
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next if $line =~ /^#/;
-        chomp $line;
         my ($name, undef, $gid, $members) = split(/:/, $line);
 
         # prevent warning for malformed group file (#2384)
@@ -125,7 +123,6 @@ sub _getLocalGroups {
             MEMBER => \@members,
         };
     }
-    close $handle;
 
     return @groups;
 }
@@ -136,18 +133,17 @@ sub _getLoggedUsers {
         @_
     );
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @users;
     my $seen;
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~ /^(\S+)/;
         next if $seen->{$1}++;
         push @users, { LOGIN => $1 };
     }
-    close $handle;
 
     return @users;
 }
@@ -158,13 +154,12 @@ sub _getLastUser {
         @_
     );
 
-    my ($lastuser,$lastlogged);
+    my ($lastuser, $lastlogged);
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
-    while (my $last = <$handle>) {
-        chomp $last;
+    foreach my $last (@lines) {
         next if $last =~ /^(reboot|shutdown)/;
 
         my @last = split(/\s+/, $last);
@@ -178,7 +173,6 @@ sub _getLastUser {
         $lastlogged = @last > 3 ? "@last[0..3]" : undef;
         last;
     }
-    close $handle;
 
     return unless $lastuser;
 

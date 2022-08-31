@@ -34,16 +34,14 @@ sub doInventory {
 sub  _getVirtualMachineState {
     my (%params) = @_;
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my %info;
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         next unless $line =~ m/^(\S+):\s*(\S+)$/;
         $info{lc($1)} = $2;
     }
-    close $handle;
 
     my $state;
     $state->{VMID} = $info{pid};
@@ -60,15 +58,14 @@ sub  _getVirtualMachineState {
 sub  _getVirtualMachineConfig {
     my (%params) = @_;
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my $config = {
         VCPU => 0
     };
 
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         next if $line =~ /^#.*/;
         next unless $line =~ m/^\s*(\S+)\s*:\s*(\S+)\s*$/;
 
@@ -94,7 +91,6 @@ sub  _getVirtualMachineConfig {
             }
         }
     }
-    close $handle;
 
     return $config;
 }
@@ -102,13 +98,12 @@ sub  _getVirtualMachineConfig {
 sub  _getVirtualMachines {
     my (%params) = @_;
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @machines;
 
-    while(my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
 
         # Filter header
         next if ($line =~ /NAME.*STATE/);
@@ -140,7 +135,6 @@ sub  _getVirtualMachines {
             UUID   => getVirtualUUID($machineid, $name),
         };
     }
-    close $handle;
 
     return @machines;
 }

@@ -36,17 +36,16 @@ sub doInventory {
 }
 
 sub _getMachines {
-   my (%params) = @_;
+    my (%params) = @_;
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     # skip first line
-    my $line = <$handle>;
+    shift @lines;
 
     my @machines;
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         next unless has_file($line);
 
         my %info = _getMachineInfo(file => $line, logger => $params{logger});
@@ -63,24 +62,24 @@ sub _getMachines {
 
         push @machines, $machine;
     }
-    close $handle;
 
     return @machines;
 }
 
 sub _getMachineInfo {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my %info;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~ /^(\S+)\s*=\s*(\S+.*)/;
         my $key = $1;
         my $value = $2;
         $value =~ s/(^"|"$)//g;
         $info{$key} = $value;
     }
-    close $handle;
 
     return %info;
 }

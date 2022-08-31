@@ -42,7 +42,6 @@ sub doInventory {
             # Avoid security risk. Should never appends
             $uuid =~ s/[^A-Za-z0-9\.\s_-]//g;
 
-
             ($machine->{MEMORY}, $machine->{VCPU}) =
                 _parsePrlctlI(
                     logger  => $logger,
@@ -57,9 +56,10 @@ sub doInventory {
 }
 
 sub _parsePrlctlA {
-    my $handle = getFileHandle(@_);
+    my (%params) = @_;
 
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my %status_list = (
         'running'   => STATUS_RUNNING,
@@ -73,11 +73,10 @@ sub _parsePrlctlA {
 
 
     # get headers line first
-    my $line = <$handle>;
+    shift(@lines);
 
     my @machines;
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         my @info = split(/\s+/, $line, 4);
         my $uuid   = $info[0];
         my $status = $status_list{$info[1]};
@@ -98,16 +97,17 @@ sub _parsePrlctlA {
         };
     }
 
-    close $handle;
-
     return @machines;
 }
 
 sub _parsePrlctlI {
-    my $handle = getFileHandle(@_);
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my ($mem, $cpus);
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ m/^\s\smemory\s(.*)Mb/) {
             $mem = $1;
         }
@@ -115,8 +115,6 @@ sub _parsePrlctlI {
             $cpus = $1;
         }
     }
-
-    close $handle;
 
     return ($mem, $cpus);
 }

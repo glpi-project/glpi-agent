@@ -81,18 +81,17 @@ sub doInventory {
 sub _getCards {
     my ($file) = @_;
 
-    my $handle = getFileHandle(
-        file => $file,
+    my @lines = getAllLines(
+        file    => $file,
         command => "tw_cli info"
     );
-    return unless $handle;
+    return unless @lines;
 
     my @cards;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~ /^(c\d+)\s+([\w-]+)/;
         push @cards, { id => $1, model => $2 };
     }
-    close $handle;
 
     return @cards;
 }
@@ -100,18 +99,17 @@ sub _getCards {
 sub _getUnits {
     my ($card, $file) = @_;
 
-    my $handle = getFileHandle(
-        file => $file,
+    my @lines = getAllLines(
+        file    => $file,
         command => "tw_cli info $card->{id}"
     );
-    return unless $handle;
+    return unless @lines;
 
     my @units;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~ /^(u(\d+))/;
         push @units, { id => $1, index => $2 };
     }
-    close $handle;
 
     return @units;
 }
@@ -119,18 +117,17 @@ sub _getUnits {
 sub _getPorts {
     my ($card, $unit, $file) = @_;
 
-    my $handle = getFileHandle(
-        file => $file,
+    my @lines = getAllLines(
+        file    => $file,
         command => "tw_cli info $card->{id} $unit->{id}"
     );
-    return unless $handle;
+    return unless @lines;
 
     my @ports;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~ /(p\d+)/;
         push @ports, { id => $1 };
     }
-    close $handle;
 
     return @ports;
 }
@@ -138,15 +135,15 @@ sub _getPorts {
 sub _getStorage {
     my ($card, $port, $file) = @_;
 
-    my $handle = getFileHandle(
-        file => $file,
+    my @lines = getAllLines(
+        file    => $file,
         command =>
             "tw_cli info $card->{id} $port->{id} model serial capacity firmware"
     );
-    return unless $handle;
+    return unless @lines;
 
     my $storage;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /Model\s=\s(.*)/) {
             $storage->{MODEL} = $1;
         } elsif ($line =~ /Serial\s=\s(.*)/) {
@@ -157,7 +154,6 @@ sub _getStorage {
             $storage->{FIRMWARE} = $1
         }
     }
-    close $handle;
 
     $storage->{MANUFACTURER} = getCanonicalManufacturer(
         $storage->{MODEL}

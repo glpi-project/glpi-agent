@@ -28,20 +28,19 @@ sub doInventory {
 sub _getMachines {
     my (%params) = @_;
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my $utilVserver;
     my $cfgDir;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         $cfgDir = $1 if $line =~ /^\s+cfg-Directory:\s+(.*)$/;
         $utilVserver = $1 if $line =~ /^\s+util-vserver:\s+(.*)$/;
     }
-    close $handle;
 
     return unless has_folder($cfgDir);
 
-    $handle = getDirectoryHandle(directory => $cfgDir, logger => $params{logger});
+    my $handle = getDirectoryHandle(directory => $cfgDir, logger => $params{logger});
     return unless $handle;
 
     my @machines;

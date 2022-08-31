@@ -43,14 +43,11 @@ sub doInventory {
 sub  _getContainers {
     my (%params) = @_;
 
-
-    my $handle = getFileHandle(%params);
-
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @containers;
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         my @info = split $separator, $line;
         next unless $#info == $#wantedInfos;
 
@@ -72,7 +69,6 @@ sub  _getContainers {
         push @containers, $container;
 
     }
-    close $handle;
 
     return @containers;
 }

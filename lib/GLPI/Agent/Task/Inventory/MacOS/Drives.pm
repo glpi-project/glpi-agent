@@ -40,7 +40,10 @@ sub doInventory {
     foreach my $partition (_getPartitions()) {
         my $device = "/dev/$partition";
 
-        my $info = _getPartitionInfo(partition => $partition);
+        my $info = _getPartitionInfo(
+            command => "diskutil info $partition",
+            logger  => $logger
+        );
 
         my $filesystem = $filesystems{$device};
         next unless $filesystem;
@@ -83,19 +86,20 @@ sub doInventory {
 }
 
 sub _getPartitions {
-    my (%params) = @_;
+    my (%params) = (
+        command => "diskutil list",
+        @_
+    );
 
-    my $command = "diskutil list";
-    my $handle = getFileHandle(command => $command, %params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @devices;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         # partition identifiers look like disk0s1
         next unless $line =~ /(disk \d+ s \d+)$/x;
         push @devices, $1;
     }
-    close $handle;
 
     return @devices;
 }
@@ -103,16 +107,14 @@ sub _getPartitions {
 sub _getPartitionInfo {
     my (%params) = @_;
 
-    my $command = "diskutil info $params{partition}";
-    my $handle = getFileHandle(command => $command, %params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my $info;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~ /(\S[^:]+) : \s+ (\S.*\S)/x;
         $info->{$1} = $2;
     }
-    close $handle;
 
     return $info;
 }

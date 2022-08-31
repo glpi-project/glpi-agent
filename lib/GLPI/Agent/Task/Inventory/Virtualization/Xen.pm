@@ -18,33 +18,32 @@ sub isEnabled {
            canRun('xl');
 }
 
-sub canRunOK {
-    my ($cmd) = @_;
-
-    return !system("$cmd >/dev/null 2>&1");
-}
-
 sub doInventory {
     my (%params) = @_;
 
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $isXM = canRunOK('xm list');
-    my $isXL = canRunOK('xl list');
-
-    my $toolstack = $isXM ? 'xm' :
-                    $isXL ? 'xl' : undef;
-    my $listParam = $isXM ? '-l' :
-                    $isXL ? '-v' : undef;
+    my ($toolstack, $listParam) = ('xm', '-l');
+    my @lines = getAllLines(
+        command => 'xm list',
+        logger  => $logger
+    );
+    unless (@lines) {
+        ($toolstack, $listParam) = ('xl', '-v');
+        @lines = getAllLines(
+            command => 'xl list',
+            logger  => $logger
+        );
+    }
+    return unless @lines;
 
     $logger->info("Xen $toolstack toolstack detected");
 
-    my $command = "$toolstack list";
-    foreach my $machine (_getVirtualMachines(command => $command, logger => $logger)) {
+    foreach my $machine (_getVirtualMachines(lines => \@lines, logger => $logger)) {
         $machine->{SUBSYSTEM} = $toolstack;
         my $uuid = _getUUID(
-            command => "$command $listParam $machine->{NAME}",
+            command => "$toolstack list $listParam $machine->{NAME}",
             logger  => $logger
         );
         $machine->{UUID} = $uuid;
@@ -68,9 +67,7 @@ sub _getUUID {
 sub  _getVirtualMachines {
     my (%params) = @_;
 
-    my $handle = getFileHandle(%params);
-
-    return unless $handle;
+    return unless $params{lines} && @{$params{lines}};
 
     # xm status
     my %status_list = (
@@ -83,11 +80,10 @@ sub  _getVirtualMachines {
     );
 
     # drop headers
-    my $line  = <$handle>;
+    shift @{$params{lines}};
 
     my @machines;
-    while ($line = <$handle>) {
-        chomp $line;
+    foreach my $line (@{$params{lines}}) {
         next if $line =~ /^\s*$/;
         my ($name, $vmid, $memory, $vcpu, $status);
         my @fields = split(' ', $line);
@@ -123,9 +119,7 @@ sub  _getVirtualMachines {
         };
 
         push @machines, $machine;
-
     }
-    close $handle;
 
     return @machines;
 }

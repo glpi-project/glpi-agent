@@ -114,13 +114,13 @@ sub _parseDhcpLeaseFile {
     my ($logger, $if, $lease_file) = @_;
 
 
-    my $handle = getFileHandle(file => $lease_file, logger => $logger);
-    return unless $handle;
+    my @lines = getAllLines(file => $lease_file, logger => $logger)
+        or return;
 
     my ($lease, $dhcp, $server_ip, $expiration_time);
 
     # find the last lease for the interface with its expire date
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line=~ /^lease/i) {
             $lease = 1;
             next;
@@ -157,7 +157,6 @@ sub _parseDhcpLeaseFile {
             $expiration_time = timelocal($sec, $min, $hour, $day, $mon, $year);
         }
     }
-    close $handle;
 
     return unless $expiration_time;
 
@@ -168,19 +167,18 @@ sub _parseDhcpLeaseFile {
 
 sub getFilesystemsFromDf {
     my (%params) = @_;
-    my $handle = getFileHandle(%params);
+    my @lines = getAllLines(%params)
+        or return;
 
     my @filesystems;
 
     # get headers line first
-    my $line = <$handle>;
-    return unless $line;
+    my $header = shift @lines;
+    return unless $header;
 
-    chomp $line;
-    my @headers = split(/\s+/, $line);
+    my @headers = split(/\s+/, $header);
 
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         my @infos = split(/\s+/, $line);
 
         # depending on the df implementation, and how it is called
@@ -217,8 +215,6 @@ sub getFilesystemsFromDf {
         };
     }
 
-    close $handle;
-
     return wantarray ? @filesystems : \@filesystems ;
 }
 
@@ -228,11 +224,11 @@ sub getFilesystemsTypesFromMount {
         @_
     );
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @types;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         # BSD-style:
         # /dev/mirror/gm0s1d on / (ufs, local, soft-updates)
         if ($line =~ /^\S+ on \S+ \((\w+)/) {
@@ -246,7 +242,6 @@ sub getFilesystemsTypesFromMount {
             next;
         }
     }
-    close $handle;
 
     ### raw result: @types
 
@@ -267,14 +262,15 @@ sub _getProcessesBusybox {
         @_
     );
 
-    my $handle = getFileHandle(%params);
+    my @lines = getAllLines(%params)
+        or return;
 
     # skip headers
-    my $line = <$handle>;
+    shift @lines;
 
     my @processes;
 
-    while ($line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~
             /^
             \s* (\S+)
@@ -296,8 +292,6 @@ sub _getProcessesBusybox {
         };
     }
 
-    close $handle;
-
     return @processes;
 }
 
@@ -309,17 +303,18 @@ sub _getProcessesOther {
         @_
     );
 
-    my $handle = getFileHandle(%params);
+    my @lines = getAllLines(%params)
+        or return;
 
     # skip headers
-    my $line = <$handle>;
+    shift @lines;
 
     # get the current timestamp
     my $localtime = time();
 
     my @processes;
 
-    while ($line = <$handle>) {
+    foreach my $line (@lines) {
 
         next unless $line =~
             /^ \s*
@@ -353,8 +348,6 @@ sub _getProcessesOther {
             CMD           => $cmd
         };
     }
-
-    close $handle;
 
     return @processes;
 }
@@ -396,18 +389,20 @@ sub getRoutingTable {
         @_
     );
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my $routes;
 
     # first, skip all header lines
-    while (my $line = <$handle>) {
+    while (1) {
+        my $line = shift @lines;
+        last unless defined($line);
         last if $line =~ /^Destination/;
     }
 
     # second, collect routes
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~ /^
             (
                 $ip_address_pattern
@@ -427,7 +422,6 @@ sub getRoutingTable {
             /x;
         $routes->{$1} = $2;
     }
-    close $handle;
 
     return $routes;
 }

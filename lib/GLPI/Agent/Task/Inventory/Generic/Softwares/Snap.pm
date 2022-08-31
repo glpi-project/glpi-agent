@@ -65,12 +65,11 @@ sub doInventory {
 sub _getPackagesList {
     my (%params) = @_;
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @packages;
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         my @infos = split(/\s+/, $line)
             or next;
 
@@ -100,7 +99,6 @@ sub _getPackagesList {
 
         push @packages, $snap;
     }
-    close $handle;
 
     return \@packages;
 }

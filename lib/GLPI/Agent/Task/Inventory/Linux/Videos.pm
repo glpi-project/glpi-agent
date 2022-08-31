@@ -115,26 +115,29 @@ sub doInventory {
 }
 
 sub _getDdcprobeData {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my $data;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         $line =~ s/[[:cntrl:]]//g;
         $line =~ s/[^[:ascii:]]//g;
         $data->{$1} = $2 if $line =~ /^(\S+):\s+(.*)/;
     }
-    close $handle;
 
     return $data;
 }
 
 sub _parseXorgFd {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my $data;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /Modeline\s"(\S+?)"/) {
             $data->{resolution} = $1 if !$data->{resolution};
         } elsif ($line =~ /Integrated Graphics Chipset:\s+(.*)/) {
@@ -168,7 +171,6 @@ sub _parseXorgFd {
             $data->{product} = $1;
         }
     }
-    close $handle;
 
     return $data;
 }

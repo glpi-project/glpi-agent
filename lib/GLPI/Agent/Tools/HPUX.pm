@@ -23,13 +23,12 @@ sub getInfoFromMachinfo {
         @_
     );
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my $info;
     my $current;
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
 
         #key: value
         if ($line =~ /^ (\S [^:]+) : \s+ (.*\S)/x) {
@@ -67,7 +66,6 @@ sub getInfoFromMachinfo {
             next;
         }
     }
-    close $handle;
 
     return $info;
 }

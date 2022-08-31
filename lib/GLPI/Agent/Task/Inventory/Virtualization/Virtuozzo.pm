@@ -35,12 +35,12 @@ sub _parseVzlist {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $handle = getFileHandle(
+    my @lines = getAllLines(
         command => 'vzlist --all --no-header -o hostname,ctid,cpulimit,status,ostemplate',
         %params
     );
 
-    return unless $handle;
+    return unless @lines;
 
     my $vzlist;
     my $confctid_template = $params{ctid_template} ||
@@ -57,9 +57,7 @@ sub _parseVzlist {
         'unknown'   => STATUS_OFF,
     );
 
-    while (my $line = <$handle>) {
-
-        chomp $line;
+    foreach my $line (@lines) {
         my ($name, $ctid, $cpus, $status, $subsys) = split(/[ \t]+/, $line);
 
         my $ctid_conf = $confctid_template;
@@ -126,8 +124,6 @@ sub _parseVzlist {
 
         push @{$vzlist}, $container;
     }
-
-    close $handle;
 
     return $vzlist;
 }

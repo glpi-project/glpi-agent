@@ -32,13 +32,13 @@ sub _getInterfacesFromFcHost {
         command => 'systool -c fc_host -v',
         @_
     );
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @interfaces;
     my $interface;
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /Class Device = "(.+)"/) {
             $interface = {
                 DESCRIPTION => $1,
@@ -59,8 +59,6 @@ sub _getInterfacesFromFcHost {
             push @interfaces, $interface;
         }
     }
-
-    close $handle;
 
     return @interfaces;
 }

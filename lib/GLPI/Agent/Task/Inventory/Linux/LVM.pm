@@ -40,11 +40,11 @@ sub _getLogicalVolumes {
         @_
     );
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @volumes;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         my @infos = split(/\s+/, $line);
 
         push @volumes, {
@@ -55,9 +55,7 @@ sub _getLogicalVolumes {
             LV_UUID   => $infos[5],
             SEG_COUNT => $infos[6],
         }
-
     }
-    close $handle;
 
     return @volumes;
 }
@@ -68,11 +66,11 @@ sub _getPhysicalVolumes {
         @_
     );
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @volumes;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         my @infos = split(/\s+/, $line);
 
         my $pe_size;
@@ -92,7 +90,6 @@ sub _getPhysicalVolumes {
             VG_UUID     => $infos[8]
         };
     }
-    close $handle;
 
     return @volumes;
 }
@@ -103,11 +100,11 @@ sub _getVolumeGroups {
         @_
     );
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @groups;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         my @infos = split(/\s+/, $line);
 
         push @groups, {
@@ -121,7 +118,6 @@ sub _getVolumeGroups {
             VG_EXTENT_SIZE => $infos[8],
         };
     }
-    close $handle;
 
     return @groups;
 }

@@ -58,12 +58,12 @@ sub doInventory {
         my %info;
         # e.g:
         # LicenseType = "Site"
-        my $handle = getFileHandle(file => $vmwareFile);
-        foreach (<$handle>) {
+        my @lines = getAllLines(file => $vmwareFile, logger => $logger)
+            or next;
+        foreach (@lines) {
             next unless /^(\S+)\s=\s"(.*)"/;
             $info{$1} = $2;
         }
-        close $handle;
         next unless $info{Serial};
 
         my $date;
@@ -87,11 +87,12 @@ sub doInventory {
 sub _getTransmitLicenses {
     my (%params) = @_;
 
-    my $handle = getFileHandle(%params);
+    my @lines = getAllLines(%params)
+        or return;
 
     my %val;
     my $in;
-    foreach my $line (<$handle>) {
+    foreach my $line (@lines) {
         if ($in) {
             $val{$in} = $1 if $line =~ /<string>([\d\w\.-]+)<\/string>/;
             $in = undef;
@@ -101,7 +102,6 @@ sub _getTransmitLicenses {
             $in = "VERSION";
         }
     }
-    close $handle;
 
     return unless $val{KEY};
 

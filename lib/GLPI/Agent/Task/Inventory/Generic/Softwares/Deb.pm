@@ -52,14 +52,13 @@ sub doInventory {
 sub _getPackagesList {
     my (%params) = @_;
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @packages;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         # skip descriptions
         next if $line =~ /^ /;
-        chomp $line;
         my @infos = split("\t", $line);
 
         # Only keep as installed package if status matches
@@ -79,7 +78,6 @@ sub _getPackagesList {
             SYSTEM_CATEGORY => $infos[4]
         };
     }
-    close $handle;
 
     return \@packages;
 }

@@ -34,15 +34,15 @@ sub doInventory {
 sub _getOSRelease {
     my (%params) = @_;
 
-    my $handle = getFileHandle(%params);
+    my @lines = getAllLines(%params)
+        or return;
 
     my $os;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         $os->{NAME}      = $1 if $line =~ /^NAME="?([^"]+)"?/;
         $os->{VERSION}   = $1 if $line =~ /^VERSION="?([^"]+)"?/;
         $os->{FULL_NAME} = $1 if $line =~ /^PRETTY_NAME="?([^"]+)"?/;
     }
-    close $handle;
 
     return $os;
 }

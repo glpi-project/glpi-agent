@@ -16,14 +16,16 @@ sub isEnabled {
 }
 
 sub _parseMegasasctl {
-    my $handle = getFileHandle(
+    my (%params) = @_;
+
+    my @lines = getAllLines(
         command => 'megasasctl -v',
-        @_
+        %params
     );
-    return unless $handle;
+    return unless @lines;
 
     my @storages;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         unless( $line =~ /\s*([a-z]\d[a-z]\d+[a-z]\d+)\s+(\S+)\s+(\S+)\s*(\S+)\s+\S+\s+\S+\s*/ ){ next; }
         my ( $disk_addr, $vendor, $model, $size ) = ( $1, $2, $3, $4 );
 
@@ -41,7 +43,6 @@ sub _parseMegasasctl {
 
         push @storages, $storage;
     }
-    close $handle;
 
     return @storages;
 

@@ -57,16 +57,18 @@ sub _getDrives {
 }
 
 sub _parseBdf {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my @drives;
 
     # skip header
-    my $line = <$handle>;
+    shift @lines;
 
     my $device;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /^(\S+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+%)\s+(\S+)/) {
             push @drives, {
                 VOLUMN     => $1,
@@ -77,7 +79,7 @@ sub _parseBdf {
             next;
         }
 
-        if ($line =~ /^(\S+)\s/) {
+        if ($line =~ /^(\S+)\s*/) {
             $device = $1;
             next;
         }
@@ -89,10 +91,8 @@ sub _parseBdf {
                 FREE       => $3,
                 TYPE       => $5,
             };
-            next;
         }
     }
-    close $handle;
 
     return @drives;
 }
@@ -125,17 +125,9 @@ sub _getVxFSctime {
         unless $offset;
 
     # read value
-    my $handle = getFileHandle( file => $device, mode => "<:raw:bytes" )
+    my $dump = getAllLines(file => $device, mode => "<:raw:bytes" )
         or return;
-    my $raw;
-    if (seek($handle, $offset, 0)) {
-        $logger->error("Can't read 4 bytes on device $device: $ERRNO")
-            unless (read($handle, $raw, 4));
-    } else {
-        $logger->error("Can't seek offset $offset on device $device: $ERRNO");
-    }
-    close($handle);
-
+    my $raw = substr($dump, $offset, 4);
     return unless defined($raw);
 
     # Convert the 4-byte raw data to long integer and

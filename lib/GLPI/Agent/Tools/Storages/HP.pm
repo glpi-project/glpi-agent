@@ -39,17 +39,15 @@ sub HpInventory {
 sub _getSlots {
     my %params = @_;
 
-    my $command = $params{path} ?
-        "$params{path} ctrl all show" : undef;
-    my $handle  = getFileHandle(%params, command => $command);
-    return unless $handle;
+    $params{command} = "$params{path} ctrl all show" if $params{path};
+    my @lines = getAllLines(%params)
+        or return;
 
     my @slots;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~ /Slot (\d+)/;
         push @slots, $1;
     }
-    close $handle;
 
     return @slots;
 }
@@ -57,17 +55,17 @@ sub _getSlots {
 sub _getDrives {
     my %params = @_;
 
-    my $command = $params{path} && defined $params{slot} ?
-        "$params{path} ctrl slot=$params{slot} pd all show" : undef;
-    my $handle  = getFileHandle(%params, command => $command);
-    next unless $handle;
+    $params{command} = "$params{path} ctrl slot=$params{slot} pd all show"
+        if $params{path} && defined($params{slot});
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my @drives;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~ /physicaldrive (\S+)/;
         push @drives, $1;
     }
-    close $handle;
 
     return @drives;
 }
@@ -75,18 +73,18 @@ sub _getDrives {
 sub _getStorage {
     my %params = @_;
 
-    my $command = $params{path} && defined $params{slot} && defined $params{drive} ?
-        "$params{path} ctrl slot=$params{slot} pd $params{drive} show" : undef;
-    my $handle  = getFileHandle(%params, command => $command);
-    next unless $handle;
+    $params{command} = "$params{path} ctrl slot=$params{slot} pd $params{drive} show"
+        if $params{path} && defined($params{slot}) && defined($params{drive});
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my %data;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~ /^\s*(\S[^:]+):\s+(.+)$/x;
         $data{$1} = $2;
         $data{$1} =~ s/\s+$//;
     }
-    close $handle;
 
     my $storage = {
         DESCRIPTION  => $data{'Interface Type'},

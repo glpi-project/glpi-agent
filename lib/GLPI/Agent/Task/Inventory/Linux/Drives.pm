@@ -59,12 +59,12 @@ sub _getFilesystems {
 
     foreach my $filesystem (@filesystems) {
         if ($filesystem->{FILESYSTEM} =~ /^ext(2|3|4|4dev)/ && $has_dumpe2fs) {
-            my $handle = getFileHandle(
+            my @lines = getAllLines(
                 logger => $logger,
                 command => "dumpe2fs -h $filesystem->{VOLUMN}"
             );
-            next unless $handle;
-            while (my $line = <$handle>) {
+            next unless @lines;
+            foreach my $line (@lines) {
                 if ($line =~ /Filesystem UUID:\s+(\S+)/) {
                     $filesystem->{SERIAL} = $1
                         unless $filesystem->{SERIAL};
@@ -74,7 +74,6 @@ sub _getFilesystems {
                     $filesystem->{LABEL} = $1 unless $1 eq '<none>';
                 }
             }
-            close $handle;
             next;
         }
 
@@ -156,14 +155,12 @@ sub _getFilesystems {
             foreach my $name (@names) {
                 # Check cryptsetup status for the found slave/device
                 unless ($cryptsetup{$name}) {
-                    my $handle = getFileHandle( command => "cryptsetup status $name" )
+                    my @lines = getAllLines(command => "cryptsetup status $name")
                         or next;
-                    while (my $line = <$handle>) {
-                        chomp $line;
+                    foreach my $line (@lines) {
                         next unless ($line =~ /^\s*(.*):\s*(.*)$/);
                         $cryptsetup{$name}->{uc($1)} = $2;
                     }
-                    close $handle;
                 }
                 next unless $cryptsetup{$name};
 
@@ -186,14 +183,15 @@ sub _getFilesystemsFromHal {
 }
 
 sub _parseLshal {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my $devices = [];
     my $device = {};
 
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         if ($line =~ m{^udi = '/org/freedesktop/Hal/devices/(volume|block).*}) {
             $device = {};
             next;
@@ -224,7 +222,6 @@ sub _parseLshal {
             $device->{ISVOLUME} = 1;
         }
     }
-    close $handle;
 
     return $devices;
 }

@@ -118,19 +118,14 @@ sub _getStorages {
 sub _getAdpEnclosure {
     my (%params) = @_;
 
-    my $command = exists $params{adp} ? "megacli -EncInfo -a$params{adp} -NoLog" : undef;
-
-    my $handle = getFileHandle(
-        command => $command,
-        %params
-    );
-    return unless $handle;
+    $params{command} = "megacli -EncInfo -a$params{adp} -NoLog" if defined($params{adp});
+    my @lines = getAllLines(%params)
+        or return;
 
     my %enclosure;
     my $encl_id;
-    while (my $line = <$handle>) {
-        chomp $line;
 
+    foreach my $line (@lines) {
         if ($line =~ /Enclosure (\d+):/) {
             $encl_id = $1;
         }
@@ -139,7 +134,6 @@ sub _getAdpEnclosure {
             $enclosure{$encl_id} = $1;
         }
     }
-    close $handle;
 
     return \%enclosure;
 }
@@ -147,25 +141,22 @@ sub _getAdpEnclosure {
 sub _getSummary {
     my (%params) = @_;
 
-    my $command = exists $params{adp} ? "megacli -ShowSummary -a$params{adp} -NoLog" : undef;
-
-    my $handle = getFileHandle(
-        command => $command,
-        %params
-    );
-    return unless $handle;
+    $params{command} = "megacli -ShowSummary -a$params{adp} -NoLog" if defined($params{adp});
+    my @lines = getAllLines(%params)
+        or return;
 
     # fast forward to relevant section
-    while (my $line = <$handle>) {
+    while (1) {
+        my $line = shift @lines;
+        last unless defined($line);
         last if $line =~ /^\s+PD\s+$/;
     }
 
     my %drive;
     my $n = -1;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         # end of relevant section
         last if $line =~ /^Storage$/;
-        chomp $line;
 
         $n++ if $line =~ /Connector\s*:/;
 
@@ -184,7 +175,6 @@ sub _getSummary {
             $drive{$n}->{$1} = $2;
         }
     }
-    close $handle;
 
     # delete non-disks
     while (my ($k, $d) = each %drive) {
@@ -198,25 +188,19 @@ sub _getSummary {
 sub _getPDlist {
     my (%params) = @_;
 
-    my $command = exists $params{adp} ? "megacli -PDlist -a$params{adp} -NoLog" : undef;
-
-    my $handle = getFileHandle(
-        command => $command,
-        %params
-    );
-    return unless $handle;
+    $params{command} = "megacli -PDlist -a$params{adp} -NoLog" if defined($params{adp});
+    my @lines = getAllLines(%params)
+        or return;
 
     my %pdlist;
     my $n = 0;
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         next unless $line =~ /^([^:]+)\s*:\s*(.*\S)/;
         my $key = $1;
         my $val = $2;
         $n++ if $key =~ /Enclosure Device ID/;
         $pdlist{$n}->{$key} = $val;
     }
-    close $handle;
 
     return \%pdlist;
 }

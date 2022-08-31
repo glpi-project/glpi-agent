@@ -67,13 +67,13 @@ sub _getInterfaces {
 
     # complete with network information, extracted from lsattr
     foreach my $interface (@interfaces) {
-        my $handle = getFileHandle(
+        my @lines = getAllLines(
             command => "lsattr -E -l $interface->{DESCRIPTION}",
             logger  => $logger
         );
-        next unless $handle;
+        next unless @lines;
 
-        while (my $line = <$handle>) {
+        foreach my $line (@lines) {
             $interface->{IPADDRESS} = $1
                 if $line =~ /^netaddr \s+ ($ip_address_pattern)/x;
             $interface->{IPMASK} = $1
@@ -81,7 +81,6 @@ sub _getInterfaces {
             $interface->{STATUS} = $1
                 if $line =~ /^state \s+ (\w+)/x;
         }
-        close $handle;
     }
 
     foreach my $interface (@interfaces) {
@@ -99,12 +98,14 @@ sub _getInterfaces {
 }
 
 sub _parseLscfg {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my %addresses;
     my $current_interface;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /^\s+ ent(\d+) \s+ \S+ \s+/x) {
             $current_interface = "en$1";
         }
@@ -112,7 +113,6 @@ sub _parseLscfg {
             $addresses{$current_interface} = alt2canonical($1);
         }
     }
-    close $handle;
 
     return %addresses;
 }

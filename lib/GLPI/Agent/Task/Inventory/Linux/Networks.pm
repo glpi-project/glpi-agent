@@ -217,15 +217,14 @@ sub _getUevent {
     my ($name) = @_;
 
     my $file = "/sys/class/net/$name/device/uevent";
-    my $handle = getFileHandle(file => $file);
-    return unless $handle;
+    my @lines = getAllLines(file => $file)
+        or return;
 
     my $info;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~ /^(\w+)=(\S+)$/;
         $info->{$1} = $2;
     }
-    close $handle;
 
     return $info;
 }
@@ -233,14 +232,15 @@ sub _getUevent {
 sub _parseIwconfig {
     my (%params) = @_;
 
-    my $handle = getFileHandle(
+    $params{command} = "iwconfig $params{name}" if $params{name};
+    my @lines = getAllLines(
         %params,
         command => $params{name} ? "iwconfig $params{name}" : undef
     );
-    return unless $handle;
+    return unless @lines;
 
     my $info;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         $info->{version} = $1
             if $line =~ /IEEE (\S+)/;
         $info->{SSID} = $1
@@ -250,8 +250,6 @@ sub _parseIwconfig {
         $info->{BSSID} = $1
             if $line =~ /Access Point: ($mac_address_pattern)/;
     }
-
-    close $handle;
 
     return $info;
 }

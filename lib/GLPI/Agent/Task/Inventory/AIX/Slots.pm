@@ -42,12 +42,13 @@ sub doInventory {
 }
 
 sub _getSlots {
-    my $handle = getFileHandle(@_);
+    my (%params) = @_;
 
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @slots;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~ /^(.+):(.+)/;
 
         push @slots, {
@@ -55,7 +56,6 @@ sub _getSlots {
             DESIGNATION => $2,
         };
     }
-    close $handle;
 
     return @slots;
 }

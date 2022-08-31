@@ -42,11 +42,11 @@ sub _getDisks {
             pattern => qr/$device->{NAME}\.+lternate/
         );
 
-        my $handle = getFileHandle(
+        my @lines = getAllLines(
             command => "diskinfo -v $device->{NAME}",
             logger  => $logger
         );
-        while (my $line = <$handle>) {
+        foreach my $line (@lines) {
             if ($line =~ /^\s+size:\s+(\S+)/) {
                 $device->{DISKSIZE} = int($1/1024);
             }
@@ -54,7 +54,6 @@ sub _getDisks {
                 $device->{FIRMWARE} = $1;
             }
         }
-        close $handle;
 
         $device->{TYPE} = 'disk';
         push @disks, $device;
@@ -78,12 +77,14 @@ sub _getTapes {
 }
 
 sub _parseIoscan {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my @devices;
     my ($description, $model, $manufacturer);
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /^\s+(\S+)/ ) {
             my $device = $1;
 
@@ -99,7 +100,6 @@ sub _parseIoscan {
             ($manufacturer, $model) = $infos[17] =~ /^(\S+) \s+ (\S.*\S)$/x;
         }
     }
-    close $handle;
 
     return @devices;
 }

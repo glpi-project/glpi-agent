@@ -73,11 +73,11 @@ sub getDevicesFromUdev {
 sub _parseUdevEntry {
     my (%params) = @_;
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my ($result, $serial);
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /^S:.*-scsi-(\d+):(\d+):(\d+):(\d+)/) {
             $result->{SCSI_COID} = $1;
             $result->{SCSI_CHID} = $2;
@@ -99,7 +99,6 @@ sub _parseUdevEntry {
             $result->{DESCRIPTION} = $1;
         }
     }
-    close $handle;
 
     if (!$result->{SERIALNUMBER}) {
         $result->{SERIALNUMBER} = $serial;
@@ -116,11 +115,11 @@ sub getCPUsFromProc {
         @_
     );
 
-    my $handle = getFileHandle(%params);
+    my @lines = getAllLines(%params);
 
     my (@cpus, $cpu);
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /^([^:]+\S) \s* : \s (.+)/x) {
             $cpu->{lc($1)} = trimWhitespace($2);
         } elsif ($line =~ /^$/) {
@@ -130,7 +129,6 @@ sub getCPUsFromProc {
             undef $cpu;
         }
     }
-    close $handle;
 
     # push remaining cpu to the list, if it is valid cpu
     push @cpus, $cpu if $cpu && _isValidCPU($cpu);
@@ -158,12 +156,12 @@ sub getDevicesFromHal {
         $params{dump}->{lshal} = getAllLines(%params);
     }
 
-    my $handle = getFileHandle(%params);
+    my @lines = getAllLines(%params)
+        or return;
 
     my (@devices, $device);
 
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         if ($line =~ m{^udi = '/org/freedesktop/Hal/devices/(storage|legacy_floppy|block)}) {
             $device = {};
             next;
@@ -192,7 +190,6 @@ sub getDevicesFromHal {
             $device->{DISKSIZE} = int($value/(1024*1024) + 0.5);
         }
     }
-    close $handle;
 
     return @devices;
 }
@@ -514,8 +511,8 @@ sub getInterfacesFromIfconfig {
         command => '/sbin/ifconfig -a',
         @_
     );
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @interfaces;
     my $interface;
@@ -524,7 +521,7 @@ sub getInterfacesFromIfconfig {
         Ethernet => 'ethernet',
     );
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /^$/) {
             # end of interface section
             push @interfaces, $interface if $interface;
@@ -589,9 +586,7 @@ sub getInterfacesFromIfconfig {
         if ($line =~ /Link encap:(\S+)/) {
             $interface->{TYPE} = $types{$1};
         }
-
     }
-    close $handle;
 
     return @interfaces;
 }
@@ -645,12 +640,12 @@ sub getInterfacesFromIp {
         @_
     );
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my (@interfaces, @addresses, $interface);
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /^\d+:\s+(\S+): <([^>]+)>/) {
 
             if (@addresses) {
@@ -706,7 +701,6 @@ sub getInterfacesFromIp {
             };
         }
     }
-    close $handle;
 
     if (@addresses) {
         push @interfaces, @addresses;

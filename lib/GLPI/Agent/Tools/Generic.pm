@@ -43,12 +43,11 @@ sub getDmidecodeInfos {
         @_
     );
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
     my ($info, $block, $type);
 
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
 
         if ($line =~ /DMI type (\d+)/) {
             # start of block
@@ -73,7 +72,6 @@ sub getDmidecodeInfos {
 
         $block->{$1} = trimWhitespace($2);
     }
-    close $handle;
 
     # push last block in list if still defined
     if ($block) {
@@ -227,12 +225,12 @@ sub getHdparmInfo {
         $params{dump}->{"hdparm-".basename($params{device})} = getAllLines(%params);
     }
 
-    my $handle = getFileHandle(%params)
+    my @lines = getAllLines(%params)
         or return;
 
     my $info;
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /Integrity word not set/) {
             $info = {};
             last;
@@ -246,7 +244,6 @@ sub getHdparmInfo {
         $info->{SERIALNUMBER} = $1 if $line =~ /Serial Number:\s+([\w-]*)/;
         $info->{WWN}          = $1 if $line =~ /WWN Device Identifier:\s+(\w+)/;
     }
-    close $handle;
 
     return $info;
 }
@@ -256,12 +253,12 @@ sub getPCIDevices {
         command => 'lspci -v -nn',
         @_
     );
-    my $handle = getFileHandle(%params);
+    my @lines = getAllLines(%params)
+        or return;
 
     my (@controllers, $controller);
 
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
 
         if ($line =~ /^
             (\S+) \s                     # slot
@@ -294,8 +291,6 @@ sub getPCIDevices {
             $controller->{PCISUBSYSTEMID} = $1;
         }
     }
-
-    close $handle;
 
     return @controllers;
 }
@@ -393,13 +388,12 @@ sub _loadUSBDatabase {
 }
 
 sub _loadDatabase {
-    my $handle = getFileHandle(@_, local => 1);
-    return unless $handle;
+    my @lines = getAllLines(@_, local => 1)
+        or return;
 
     my ($vendors, $classes);
     my ($vendor_id, $device_id, $class_id);
-    while (my $line = <$handle>) {
-
+    foreach my $line (@lines) {
         if ($line =~ /^\t (\S{4}) \s+ (.*)/x) {
             # Device ID
             $device_id = $1;
@@ -422,7 +416,6 @@ sub _loadDatabase {
             $classes->{$class_id}->{subclasses}->{$subclass_id}->{name} = $2;
         }
     }
-    close $handle;
 
     return ($vendors, $classes);
 }
@@ -434,14 +427,13 @@ sub _loadEDIDDatabase {
     my $file = _getIdsFile( %params, idsfile => "edid.ids" )
         or return;
 
-    my $handle = getFileHandle( file => $file, local => 1 );
-    return unless $handle;
+    my @lines = getAllLines(file => $file, local => 1)
+        or return;
 
-    foreach my $line (<$handle>) {
+    foreach my $line (@lines) {
        next unless $line =~ /^([A-Z]{3}) __ (.*)$/;
        $EDIDVendors->{$1} = $2;
-   }
-    close $handle;
+    }
 
    return;
 }

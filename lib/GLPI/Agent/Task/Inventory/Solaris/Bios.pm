@@ -87,15 +87,14 @@ sub _parseShowRev {
         @_
     );
 
-    my $handle = getFileHandle(%params);
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my $infos;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~ /^ ([^:]+) : \s+ (\S+)/x;
         $infos->{$1} = $2;
     }
-    close $handle;
 
     return $infos;
 }

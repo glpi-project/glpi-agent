@@ -143,13 +143,15 @@ sub  _getInterfaceSpeed {
 }
 
 sub _parseIfconfig {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my @interfaces;
     my $interface;
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /^(\S+):(\S+):/) {
             # new interface
             push @interfaces, $interface if $interface;
@@ -188,7 +190,6 @@ sub _parseIfconfig {
             $interface->{STATUS} = "Up";
         }
     }
-    close $handle;
 
     # last interface
     push @interfaces, $interface if $interface;
@@ -197,11 +198,13 @@ sub _parseIfconfig {
 }
 
 sub _parseDladm {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my @interfaces;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next if $line =~ /device/;
         next if $line =~ /key/;
         my $interface = {
@@ -216,19 +219,20 @@ sub _parseDladm {
         $interface->{STATUS}      = 'Up' if $line =~ /UP/;
         push @interfaces, $interface;
     }
-    close $handle;
 
     return @interfaces;
 }
 
 sub _parsefcinfo {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my @interfaces;
     my $inc = 1;
     my $interface;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         $interface->{DESCRIPTION} = "HBA_Port_WWN_" . $inc
             if $line =~ /HBA Port WWN:\s+(\S+)/;
         $interface->{DESCRIPTION} .= " " . $1
@@ -257,7 +261,6 @@ sub _parsefcinfo {
             $inc++;
         }
     }
-    close $handle;
 
     return @interfaces;
 }

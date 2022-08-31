@@ -63,17 +63,18 @@ sub _getDevices {
 }
 
 sub _getDevicesFromLsusb {
-    my $handle = getFileHandle(
-        @_,
+    my (%params) = (
         command => 'lsusb -v',
+        @_
     );
 
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @devices;
     my $device;
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /^$/) {
             push @devices, $device if $device;
             undef $device;
@@ -89,7 +90,6 @@ sub _getDevicesFromLsusb {
             $device->{SUBCLASS} = $1;
         }
     }
-    close $handle;
     push @devices, $device if $device;
 
     return @devices;

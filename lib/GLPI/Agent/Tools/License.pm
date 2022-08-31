@@ -43,14 +43,14 @@ sub _decodeAdobeKey {
 sub getAdobeLicenses {
     my (%params) = @_;
 
-    my $handle = getFileHandle(%params);
+    my @lines = getAllLines(%params)
+        or return;
 
     my @licenses;
 
     my %data;
 
-    while (my $line = <$handle>) {
-        chomp($line);
+    foreach my $line (@lines) {
 
         my @f = split(/ <> /, $line);
 
@@ -66,7 +66,6 @@ sub getAdobeLicenses {
             $data{$f[1]}{$f[2]} = $f[3];
         }
     }
-    close $handle;
 
     foreach my $key (keys %data) {
         next unless $data{$key}{SN} || $data{$key}{with};

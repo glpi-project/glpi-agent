@@ -43,7 +43,6 @@ my @vmware_patterns = (
     'Vendor: VMware,\s+Model: VMware Virtual ',
     ': VMware Virtual IDE CDROM Drive'
 );
-my $vmware_pattern = _assemblePatterns(@vmware_patterns);
 
 my @qemu_patterns = (
     ' QEMUAPIC ',
@@ -54,20 +53,17 @@ my @qemu_patterns = (
     'Hypervisor detected: KVM',
     'Booting paravirtualized kernel on KVM'
 );
-my $qemu_pattern = _assemblePatterns(@qemu_patterns);
 
 my @virtual_machine_patterns = (
     ': Virtual HD,',
     ': Virtual CD,'
 );
-my $virtual_machine_pattern = _assemblePatterns(@virtual_machine_patterns);
 
 my @virtualbox_patterns = (
     ' VBOXBIOS ',
     ': VBOX HARDDISK,',
     ': VBOX CD-ROM,',
 );
-my $virtualbox_pattern = _assemblePatterns(@virtualbox_patterns);
 
 my @xen_patterns = (
     'Hypervisor signature: xen',
@@ -77,11 +73,19 @@ my @xen_patterns = (
     'xen-vbd: registered block device',
     'ACPI: [A-Z]{4} \(v\d+\s+Xen ',
 );
-my $xen_pattern = _assemblePatterns(@xen_patterns);
+
+my %match_patterns = (
+    VMware              => _assemblePatterns(@vmware_patterns),
+    QEMU                => _assemblePatterns(@qemu_patterns),
+    'Virtual Machine'   => _assemblePatterns(@virtual_machine_patterns),
+    VirtualBox          => _assemblePatterns(@virtualbox_patterns),
+    Xen                 => _assemblePatterns(@xen_patterns),
+);
+my @match_patterns_orderer = ('VMware', 'QEMU', 'Virtual Machine', 'VirtualBox', 'Xen');
 
 my %module_patterns = (
-    '^vmxnet\s' => 'VMware',
-    '^xen_\w+front\s' => 'Xen',
+    VMware  => qr/^vmxnet\s/,
+    Xen     => qr/^xen_\w+front\s/,
 );
 
 sub isEnabled {
@@ -200,12 +204,10 @@ sub _getType {
     # still can detect the host is virtualized
 
     if (canRun('/sbin/sysctl')) {
-        my $handle = getFileHandle(
+        my $line = getFirstLine(
             command => '/sbin/sysctl -n security.jail.jailed',
             logger => $logger
         );
-        my $line = <$handle>;
-        close $handle;
         return 'BSDJail' if $line && $line == 1;
     }
 
@@ -323,56 +325,46 @@ sub _getType {
     # loaded modules
 
     if (has_file('/proc/modules')) {
-        my $handle = getFileHandle(
+        my @lines = getAllLines(
             file => '/proc/modules',
             logger => $logger
         );
-        while (my $line = <$handle>) {
-            foreach my $pattern (keys %module_patterns) {
-                next unless $line =~ /$pattern/;
-                $result = $module_patterns{$pattern};
-                last;
-            }
+        foreach my $type (keys(%module_patterns)) {
+            return $type if any { $_ =~ $module_patterns{$type} } @lines;
         }
-        close $handle;
     }
-    return $result if $result;
 
     # dmesg
     # dmesg can be empty or near empty on some systems (notably on Debian 8)
 
-    my $handle;
+    my @lines;
     if (has_file('/var/log/dmesg') && FileStat('/var/log/dmesg')->size > 40) {
-        $handle = getFileHandle(file => '/var/log/dmesg', logger => $logger);
+        @lines = getAllLines(file => '/var/log/dmesg', logger => $logger);
     } elsif (canRun('/bin/dmesg')) {
-        $handle = getFileHandle(command => '/bin/dmesg', logger => $logger);
+        @lines = getAllLines(command => '/bin/dmesg', logger => $logger);
     } elsif (canRun('/sbin/dmesg')) {
         # On OpenBSD, dmesg is in sbin
         # http://forge.fusioninventory.org/issues/402
-        $handle = getFileHandle(command => '/sbin/dmesg', logger => $logger);
+        @lines = getAllLines(command => '/sbin/dmesg', logger => $logger);
     }
 
-    if ($handle) {
-        $result = _matchPatterns($handle);
-        close $handle;
+    if (@lines) {
+        $result = _matchPatterns(\@lines);
         return $result if $result;
     }
 
     # scsi
 
     if (has_file('/proc/scsi/scsi')) {
-        my $handle = getFileHandle(
+        my @lines = getAllLines(
             file => '/proc/scsi/scsi',
             logger => $logger
         );
-        if ($handle) {
-            $result = _matchPatterns($handle);
-            close $handle;
+        if (@lines) {
+            $result = _matchPatterns(\@lines);
             return $result if $result;
         }
     }
-
-    return $result if $result;
 
     return 'Physical';
 }
@@ -385,14 +377,11 @@ sub _assemblePatterns {
 }
 
 sub _matchPatterns {
-    my ($handle) = @_;
+    my ($lines) = @_;
 
-    while (my $line = <$handle>) {
-        return 'VMware'          if $line =~ $vmware_pattern;
-        return 'QEMU'            if $line =~ $qemu_pattern;
-        return 'Virtual Machine' if $line =~ $virtual_machine_pattern;
-        return 'VirtualBox'      if $line =~ $virtualbox_pattern;
-        return 'Xen'             if $line =~ $xen_pattern;
+    foreach my $line (@{$lines}) {
+        my $type = first { $line =~ $match_patterns{$_} } @match_patterns_orderer;
+        return $type if $type;
     }
 }
 

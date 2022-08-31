@@ -43,11 +43,11 @@ sub doInventory {
 sub _getDiskFromMptStatus {
     my (%params) = @_;
 
-    my $handle = getFileHandle(%params);
-    next unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my @disks;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~ /
             phys_id:(\d+) \s
             scsi_id:\d+ \s
@@ -68,7 +68,6 @@ sub _getDiskFromMptStatus {
 
         push @disks, $disk;
     }
-    close $handle;
 
     return @disks;
 }

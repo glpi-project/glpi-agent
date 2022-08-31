@@ -432,13 +432,12 @@ sub _loadSysObjectIDDatabase {
 
     return unless $params{datadir};
 
-    my $handle = getFileHandle(file => "$params{datadir}/sysobject.ids");
-    return unless $handle;
+    my @lines = getAllLines(file => "$params{datadir}/sysobject.ids")
+        or return;
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next if $line =~ /^#/;
         next if $line =~ /^$/;
-        chomp $line;
         my ($id, $manufacturer, $type, $model, $module) = split(/\t/, $line);
         $sysobjectid{$id} = {
             manufacturer => $manufacturer,
@@ -447,8 +446,6 @@ sub _loadSysObjectIDDatabase {
         };
         $sysobjectid{$id}->{module} = $module if $module;
     }
-
-    close $handle;
 }
 
 sub getDeviceFullInfo {

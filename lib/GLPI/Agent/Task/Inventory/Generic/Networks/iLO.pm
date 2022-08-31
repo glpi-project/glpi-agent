@@ -21,9 +21,8 @@ sub isEnabled {
 sub _parseHponcfg {
     my (%params) = @_;
 
-    my $handle = getFileHandle(%params);
-
-    return unless $handle;
+    my @lines = getAllLines(%params)
+        or return;
 
     my $interface = {
         DESCRIPTION => 'Management Interface - HP iLO',
@@ -32,7 +31,7 @@ sub _parseHponcfg {
         STATUS      => 'Down',
     };
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /<IP_ADDRESS VALUE="($ip_address_pattern)" ?\/>/) {
             $interface->{IPADDRESS} = $1 unless $1 eq '0.0.0.0';
         }
@@ -54,7 +53,6 @@ sub _parseHponcfg {
                 if $params{logger};
         }
     }
-    close $handle;
     $interface->{IPSUBNET} = getSubnetAddress(
         $interface->{IPADDRESS}, $interface->{IPMASK}
     );

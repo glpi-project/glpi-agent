@@ -43,12 +43,13 @@ sub doInventory {
 }
 
 sub _getPackagesList {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my @packages;
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         my @infos = split("\t", $line);
         my $package = {
             NAME        => $infos[0],
@@ -67,8 +68,6 @@ sub _getPackagesList {
         $package->{PUBLISHER} = $infos[5] if $infos[5] ne '(none)';
         push @packages, $package;
     }
-
-    close $handle;
 
     return \@packages;
 }

@@ -41,19 +41,18 @@ sub _getCpus {
     my $sysprofile_info = $infos->{'Hardware'}->{'Hardware Overview'};
 
     # more informations from sysctl
-    my $handle = getFileHandle(
+    my @lines = getAllLines(
         logger  => $params{logger},
         command => 'sysctl -a machdep.cpu',
         file    => $params{sysctl}
     );
+    return unless @lines;
 
     my $sysctl_info;
-    while (my $line = <$handle>) {
-        chomp $line;
+    foreach my $line (@lines) {
         next unless $line =~ /([^:]+) : \s (.+)/x;
         $sysctl_info->{$1} = $2;
     }
-    close $handle;
 
     my $type  = $sysctl_info->{'machdep.cpu.brand_string'} ||
                 $sysprofile_info->{'Processor Name'} ||

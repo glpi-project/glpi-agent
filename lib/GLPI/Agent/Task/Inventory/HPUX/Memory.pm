@@ -69,13 +69,15 @@ sub doInventory {
 }
 
 sub _parseCprop {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my @memories;
     my $instance;
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         if ($line =~ /\[Instance\]: \d+/) {
             # new block
             $instance = {};
@@ -98,14 +100,15 @@ sub _parseCprop {
             };
         }
     }
-    close $handle;
 
     return @memories;
 }
 
 sub _parseCstm {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my @memories;
 
@@ -118,7 +121,7 @@ sub _parseCstm {
     my $type;
     my $ok = 0;
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
 
         if ($line =~ /FRU\sSource\s+=\s+\S+\s+\(memory/ ) {
             $ok = 0;
@@ -169,18 +172,19 @@ sub _parseCstm {
         } # /Serial\s+Number\.*:\s*(\S+)\s+/
 
     }
-    close $handle;
 
     return @memories;
 }
 
 sub _parseCstm64 {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my @memories;
 
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
 
         # this pattern assumes memory slots are correctly
         # balanced (slot A and slot B are occuped)
@@ -204,7 +208,6 @@ sub _parseCstm64 {
             NUMSLOTS     => $5,
         };
     }
-    close $handle;
 
     return @memories;
 }

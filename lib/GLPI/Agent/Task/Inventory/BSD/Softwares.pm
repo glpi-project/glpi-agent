@@ -33,11 +33,13 @@ sub doInventory {
 }
 
 sub _getPackagesList {
-    my $handle = getFileHandle(@_);
-    return unless $handle;
+    my (%params) = @_;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my @packages;
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next unless $line =~ /^(\S+) - (\S+) \s+ (.*)/x;
         push @packages, {
             NAME     => $1,
@@ -46,9 +48,9 @@ sub _getPackagesList {
         };
     }
 
-    close $handle;
+    return unless @packages;
 
-    return @packages ? \@packages : undef;
+    return \@packages;
 }
 
 1;

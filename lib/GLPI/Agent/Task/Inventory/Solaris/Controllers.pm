@@ -19,14 +19,13 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $handle = getFileHandle(
+    my @lines = getAllLines(
         command => 'cfgadm -s cols=ap_id:type:info',
         logger  => $logger,
     );
+    return unless @lines;
 
-    return unless $handle;
-
-    while (my $line = <$handle>) {
+    foreach my $line (@lines) {
         next if $line =~  /^Ap_Id/;
         next unless $line =~ /^(\S+)\s+(\S+)\s+(\S+)/;
         my $name = $1;
@@ -41,7 +40,6 @@ sub doInventory {
             }
         );
     }
-    close $handle;
 }
 
 1;

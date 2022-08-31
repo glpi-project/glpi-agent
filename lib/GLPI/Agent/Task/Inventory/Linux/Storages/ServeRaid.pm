@@ -25,13 +25,13 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $handle1 = getFileHandle(
-        logger => $logger,
+    my @lines = getAllLines(
+        logger  => $logger,
         command => 'ipssend GETVERSION'
     );
-    return unless $handle1;
+    return unless @lines;
 
-    while (my $line1 = <$handle1>) {
+    foreach my $line (@lines) {
 
 # Example Output :
 # Found 1 IBM ServeRAID controller(s).
@@ -46,17 +46,17 @@ sub doInventory {
 #   Actual BIOS version            : 7.00.14
 #   Firmware version               : 7.00.14
 #   Device driver version          : 7.10.18
-        next unless /ServeRAID Controller Number\s(\d*)/;
+        next unless $line =~ /ServeRAID Controller Number\s(\d*)/;
         my $slot = $1;
 
         my $storage;
-        my $handle2 = getFileHandle(
-            logger => $logger,
+        my @config_lines = getAllLines(
+            logger  => $logger,
             command => "ipssend GETCONFIG $slot PD"
         );
-        next unless $handle2;
+        next unless @config_lines;
 
-        while (my $line2 =~ <$handle2>) {
+        foreach my $line2 (@config_lines) {
 # Example Output :
 #   Channel #1:
 #      Target on SCSI ID 0
@@ -85,9 +85,7 @@ sub doInventory {
                 undef $storage;
             }
         }
-        close $handle2;
     }
-    close $handle1;
 }
 
 1;
