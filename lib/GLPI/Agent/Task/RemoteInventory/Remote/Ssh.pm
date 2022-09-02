@@ -12,6 +12,8 @@ use GLPI::Agent::Tools;
 
 use constant    supported => 1;
 
+use constant    supported_modes => qw(ssh libssh2 perl);
+
 sub _ssh {
     my ($self, $command) = @_;
     return unless $command;
@@ -19,13 +21,6 @@ sub _ssh {
     $options .= " -p " . $self->port() if $self->port() && $self->port() != 22;
     $options .= " -l " . $self->{_user} if $self->{_user};
     return "ssh $options ".$self->host()." LANG=C $command";
-}
-
-sub init {
-    my ($self) = @_;
-
-    # Only 'perl' supported as mode for ssh remote inventory
-    $self->resetmode() unless $self->mode('perl');
 }
 
 sub disconnect {
@@ -42,7 +37,7 @@ sub disconnect {
 sub _connect {
     my ($self) = @_;
 
-    unless ($self->{_ssh2}) {
+    unless ($self->{_ssh2} || ($self->mode('ssh') && !$self->mode('libssh2'))) {
         Net::SSH2->require();
         unless ($EVAL_ERROR) {
             my $timeout = $self->config->{"backend-collect-timeout"} // 60;
@@ -172,7 +167,9 @@ sub _ssh2_exec_status {
 sub checking_error {
     my ($self) = @_;
 
-    $self->_connect();
+    my $libssh2 = $self->_connect();
+    return "Can't run simple command on remote via libssh2, check server is up and ssh access is setup"
+        if $self->mode('libssh2') && !$self->mode('ssh') && !$libssh2;
 
     my $root = $self->getRemoteFirstLine(command => "id -u");
 

@@ -39,6 +39,7 @@ remoteinventory:
 * fix #160: Fix error when running winrm inventory from windows
 * Optimize few more API while using libssh2
 * More ssh inventory optimization while using libssh2
+* Updated remote modes support: perl, ssh and libssh2 for remote ssh, ssl for winrm
 
 netdiscovery/netinventory:
 * Avoid to record invalid MAC Address from Netbios during netdiscovery task

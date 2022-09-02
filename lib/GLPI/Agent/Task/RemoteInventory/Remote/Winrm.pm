@@ -15,16 +15,15 @@ use GLPI::Agent::SOAP::WsMan;
 
 use constant    supported => 1;
 
+use constant    supported_modes => qw(ssl);
+
 sub init {
     my ($self) = @_;
 
     my $url = URI->new($self->url());
 
     # We need to translate url for LWP::UserAgent client
-    my $port = $url->port;
     $url->scheme( $self->mode('ssl') ? "https" : "http" );
-    # Reset port after changing scheme
-    $url->port($port);
     $url->path( "/wsman/" ) unless $url->path && $url->path ne '/';
     # Remove query in the case it contains mode=ssl
     $url->query_keywords([]);
@@ -423,10 +422,13 @@ use warnings;
 
 use parent 'URI::http';
 
-sub default_port {
-    my ($self) = @_;
-    my $modessl = $self->query() && $self->query() =~ /\bmode=ssl\b/i;
-    return $modessl ? 5986 : 5985;
+sub scheme {
+    my ($self, $scheme) = @_;
+
+    $self->SUPER::scheme($scheme);
+
+    # Set default port after scheme has been updated
+    $self->port($scheme eq 'https' ? 5986 : 5985) if !$self->_port;
 }
 
 1;

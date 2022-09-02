@@ -15,6 +15,8 @@ my $supported_protocols = qr/^ssh|winrm$/;
 
 use constant    supported => 0;
 
+use constant    supported_modes => ();
+
 sub new {
     my ($class, %params) = @_;
 
@@ -27,6 +29,7 @@ sub new {
         _config     => $params{config}     // {},
         _user       => $ENV{USERNAME},
         _pass       => $ENV{PASSWORD},
+        _modes      => {},
         logger      => $params{logger},
     };
 
@@ -70,7 +73,6 @@ sub new {
     # Check for mode, name & deviceid in url params
     my $query = $url->query() // '';
     my ($mode) = $query =~ /\bmode=(\w+)\b/;
-    $self->{_mode} = $mode if $mode;
     my ($hostname) = $query =~ /\b(?:host)?name=(\w+)\b/;
     $self->{_host} = $hostname if $hostname;
     unless ($self->{_deviceid}) {
@@ -80,6 +82,20 @@ sub new {
     }
 
     bless $self, $class;
+
+    # Update supported modes
+    if ($mode) {
+        foreach my $key (split('_', lc($mode))) {
+            if (grep { $_ eq $key } $self->supported_modes()) {
+                $self->{_modes}->{$key} = 1;
+            } else {
+                $self->{logger}->debug("Unsupported remote mode: $key");
+            }
+        }
+        $self->{logger}->debug("Remote mode enabled: ".join(' ', keys(%{$self->{_modes}})))
+            if keys(%{$self->{_modes}});
+    }
+
     $self->init();
 
     return $self;
@@ -110,10 +126,9 @@ sub port {
 sub mode {
     my ($self, $mode) = @_;
 
-    return $self->{_mode} && $self->{_mode} eq $mode
-        if $mode;
+    return $self->{_modes}->{$mode} if defined($mode);
 
-    return $self->{_mode} // '';
+    return $self->{_modes};
 }
 
 sub worker {
@@ -133,11 +148,6 @@ sub retry {
     }
 
     return $self->{_retry} ? $self : 0;
-}
-
-sub resetmode {
-    my ($self) = @_;
-    delete $self->{_mode};
 }
 
 sub deviceid {
