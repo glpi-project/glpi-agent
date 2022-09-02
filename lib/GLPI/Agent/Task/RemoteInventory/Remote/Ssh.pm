@@ -116,7 +116,7 @@ sub _connect {
         foreach my $file (glob($ENV{HOME}."/.ssh/*")) {
             next unless getFirstMatch(
                 file    => $file,
-                pattern => qr/^-----BEGIN (.*) PRIVATE KEY-----\n/,
+                pattern => qr/^-----BEGIN (.*) PRIVATE KEY-----$/,
             );
             my ($key) = $file =~ m{/([^/]+)$};
             $self->{_private_keys}->{$key} = $file;
