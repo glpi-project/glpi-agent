@@ -155,15 +155,13 @@ sub _setIndexedValues {
         last if $line =~ /^End of MIB$/;
 
         # potential continuation
-        if ($line !~ /^$/ && $line !~ /= ""$/ && $last_value) {
+        if ($line !~ /^$/ && $line !~ /= ""$/ && $line !~ /= STRING:$/ && $last_value) {
             if ($last_value->[0] eq 'STRING' &&
                 $last_value->[1] !~ /"$/
             ) {
-                chomp $line;
                 $last_value->[1] .= "\n" . $line;
                 next;
             } elsif ($last_value->[0] eq 'Hex-STRING') {
-                chomp $line;
                 $last_value->[1] .= $line;
                 next;
             }
@@ -255,7 +253,7 @@ sub _deepwalk {
     foreach my $ref (@{$base->[0]}) {
         # We need the subnode key as hash key
         my $key = $ref->[1];
-        # Keep the value is one is available
+        # Keep the value if one is available
         if (defined($ref->[3])) {
             $hash->{$key} = _getSanitizedValue(@{$ref->[3]});
         }
