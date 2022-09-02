@@ -151,10 +151,9 @@ sub _ssh2_exec_status {
 
     my $ret;
     my $chan = $self->{_ssh2}->channel();
-    $chan->setenv(LANG => "C");
     $chan->ext_data('ignore');
     $self->{logger}->debug2("Testing \"$command\"...");
-    if ($chan && $chan->exec($command)) {
+    if ($chan && $chan->exec("LANG=C $command")) {
         $ret = $chan->exit_status();
         $chan->close;
     } else {
@@ -257,10 +256,9 @@ sub getRemoteFileHandle {
         $self->_connect();
         my $chan = $self->{_ssh2}->channel();
         if ($chan) {
-            $chan->setenv(LANG => "C");
             $chan->ext_data('ignore');
             $self->{logger}->debug2("Running \"$command\"...");
-            if ($chan->exec($command)) {
+            if ($chan->exec("LANG=C $command")) {
                 return $chan;
             }
         }
