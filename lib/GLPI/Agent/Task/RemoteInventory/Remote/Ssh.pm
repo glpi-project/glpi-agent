@@ -341,34 +341,6 @@ sub getRemoteHostDomain {
 sub remoteTestFolder {
     my ($self, $folder) = @_;
 
-    # Support Net::SSH2 facilities to stat folder with sftp protocol
-    if ($self->{_ssh2}) {
-        # Reconnect if needed
-        $self->_connect();
-        my $sftp = $self->{_ssh2}->sftp();
-        if ($sftp) {
-            $self->{logger}->debug2("Trying to stat '$folder' via sftp subsystem");
-            my $stat = $sftp->stat($folder);
-            return 1 if defined($stat);
-            my @error = $sftp->error;
-            if (@error && $error[0]) {
-                if ($error[0] == 2) { # SSH_FX_NO_SUCH_FILE
-                    return 0;
-                } elsif ($error[0] == 3) { # SSH_FX_PERMISSION_DENIED
-                    $self->{logger}->debug2("Not authorized to access '$folder'");
-                    return 0;
-                } else {
-                    $self->{logger}->debug2("Unsupported SFTP error (@error)");
-                }
-            }
-
-            # Also log libssh2 error
-            @error = $self->{_ssh2}->error();
-            $self->{logger}->debug2("Failed to stat folder with SFTP: libssh2 err code is $error[1]");
-            $self->{logger}->debug("Failed to stat folder with SFTP: $error[2]");
-        }
-    }
-
     my $command = "test -d '$folder'";
 
     # Support Net::SSH2 facilities to exec command
