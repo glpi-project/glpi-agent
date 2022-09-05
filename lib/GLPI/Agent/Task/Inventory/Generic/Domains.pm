@@ -46,7 +46,6 @@ sub doInventory {
 
     # attempt to deduce the actual domain from the host name
     # and fallback on the domain search list
-    my $domain;
     my $hostname = getHostname();
     my $pos = index $hostname, '.';
 
