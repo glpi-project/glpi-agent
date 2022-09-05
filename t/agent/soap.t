@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use utf8;
 use LWP::UserAgent;
 use English qw(-no_match_vars);
 use HTTP::Response;
@@ -458,6 +459,17 @@ my %tests = (
             'MEMORY' => '512',
             'UUID' => '564d79a4-7ea6-3423-2980-0c882a78f698',
             'SERIAL' => "VMware-56 4d 79 a4 7e a6 34 23-29 80 0c 88 2a 78 f6 98",
+            'VCPU' => '1'
+          },
+          {
+            'NAME' => '阿帕奇网络服务器',
+            'STATUS' => STATUS_RUNNING,
+            'COMMENT' => '',
+            'MAC' => '00:0c:29:06:42:ef',
+            'VMTYPE' => 'VMware',
+            'MEMORY' => '512',
+            'UUID' => 'dc3cb882-0374-4379-875c-d5f6282cc8b9',
+            'SERIAL' => "VMware-dc 3c b8 82 03 74 43 79-87 5c d5 f6 28 2c c8 b9",
             'VCPU' => '1'
           }
         ]

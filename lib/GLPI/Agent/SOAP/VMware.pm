@@ -16,7 +16,10 @@ sub new {
 
     my $self = {
         url => $params{url},
-        tpp => XML::TreePP->new(force_array => [qw(returnval propSet)]),
+        tpp => XML::TreePP->new(
+            force_array => [qw(returnval propSet)],
+            utf8_flag   => 1
+        ),
     };
     bless $self, $class;
 

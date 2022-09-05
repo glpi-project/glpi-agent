@@ -4,6 +4,6 @@
  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <soapenv:Body>
-<RetrievePropertiesResponse xmlns="urn:vim25"><returnval><obj type="VirtualMachine">16</obj></returnval><returnval><obj type="VirtualMachine">32</obj></returnval><returnval><obj type="VirtualMachine">48</obj></returnval><returnval><obj type="VirtualMachine">64</obj></returnval></RetrievePropertiesResponse>
+<RetrievePropertiesResponse xmlns="urn:vim25"><returnval><obj type="VirtualMachine">16</obj></returnval><returnval><obj type="VirtualMachine">32</obj></returnval><returnval><obj type="VirtualMachine">48</obj></returnval><returnval><obj type="VirtualMachine">64</obj></returnval><returnval><obj type="VirtualMachine">48</obj></returnval><returnval><obj type="VirtualMachine">80</obj></returnval></RetrievePropertiesResponse>
 </soapenv:Body>
 </soapenv:Envelope>

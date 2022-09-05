@@ -410,6 +410,17 @@
             "uuid": "564d79a4-7ea6-3423-2980-0c882a78f698",
             "vcpu": 1,
             "vmtype": "vmware"
+         },
+         {
+            "comment": "",
+            "mac": "00:0c:29:06:42:ef",
+            "memory": 512,
+            "name": "阿帕奇网络服务器",
+            "serial": "VMware-dc 3c b8 82 03 74 43 79-87 5c d5 f6 28 2c c8 b9",
+            "status": "running",
+            "uuid": "dc3cb882-0374-4379-875c-d5f6282cc8b9",
+            "vcpu": 1,
+            "vmtype": "vmware"
          }
       ]
    },
