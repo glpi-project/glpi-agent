@@ -6,6 +6,8 @@ core:
 * Avoid an error with IO::Socket::SSL error reporting on older platform (CentOS7 confirmed)
 * Full refactoring of getFileHandle API usage to avoid bottlenecks during remoteinventory
   of libssh2 remotes
+* Refactoring of inventory output to share same API between glpi-agent, glpi-inventory and
+  glpi-esx
 
 inventory:
 * check if we are running in a container before checking we are running in a virtualmachine
@@ -51,6 +53,8 @@ deploy:
 
 esx:
 * Add SERIAL number to virtualmachines as they will be seen in BIOS
+* Updated glpi-esx: added --json option support, deprecated --directory option
+  in favor of new --path option, added --stdout option
 
 toolbox:
 * Fix Inventory page not displayed when netdiscovery or netinventory tasks are not installed

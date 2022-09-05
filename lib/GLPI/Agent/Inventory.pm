@@ -613,6 +613,87 @@ sub credentials {
     }
 }
 
+sub save {
+    my ($self, $path) = @_;
+
+    my ($handle, $file);
+    my $format = $self->getFormat();
+    unless ($format && $format =~ /^json|xml|html$/) {
+        if ($format) {
+            $self->{logger}->error("Unsupported inventory format $format, fallback on json");
+        } else {
+            $self->{logger}->info("Using json as default format");
+        }
+        $format = 'json';
+    }
+
+    if ($path eq '-') {
+        $handle = \*STDOUT;
+    } elsif (-d $path) {
+        $file = $path . "/" . $self->getDeviceId() . ".$format";
+    } else {
+        $file = $path;
+    }
+
+    if ($file) {
+        if ($OSNAME eq 'MSWin32' && Win32::Unicode::File->require()) {
+            $handle = Win32::Unicode::File->new('w', $file)
+                or $self->{logger}->error("Can't write to $file: $ERRNO");
+        } else {
+            open($handle, '>', $file)
+                or $self->{logger}->error("Can't write to $file: $ERRNO");
+        }
+        return unless $handle;
+    }
+
+    binmode $handle, ':encoding(UTF-8)'
+        unless $format eq "json";
+
+    if ($format eq 'json') {
+
+            my $json = $self->getContent();
+            print $handle $json->getContent();
+
+    } elsif ($format eq 'xml') {
+
+        my $tpp = XML::TreePP->new(
+            indent          => 2,
+            utf8_flag       => 1,
+            output_encoding => 'UTF-8'
+        );
+
+        print $handle $tpp->write({
+            REQUEST => {
+                CONTENT  => $self->getContent(),
+                DEVICEID => $self->getDeviceId(),
+                QUERY    => "INVENTORY",
+            }
+        });
+
+    } elsif ($format eq 'html') {
+
+        Text::Template->require();
+        my $template = Text::Template->new(
+            TYPE => 'FILE', SOURCE => "$self->{datadir}/html/inventory.tpl"
+        );
+
+         my $hash = {
+            version  => $GLPI::Agent::Version::VERSION,
+            deviceid => $self->getDeviceId(),
+            data     => $self->getContent(),
+            fields   => $self->getFields()
+        };
+
+        print $handle $template->fill_in(HASH => $hash);
+
+    } else {
+        $self->{logger}->error("Unsupported inventory format $format");
+        return 0;
+    }
+
+    return $file // $path;
+}
+
 1;
 __END__
 

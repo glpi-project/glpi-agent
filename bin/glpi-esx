@@ -16,6 +16,7 @@ use GLPI::Agent::Logger;
 use GLPI::Agent::Version;
 
 my $options = {
+    path    => '-'
 };
 
 GetOptions(
@@ -23,12 +24,15 @@ GetOptions(
     'host=s',
     'user=s',
     'password=s',
-    'directory=s',
+    'directory=s', # deprecated in favour of path or stdout
+    'path=s',
+    'stdout',
     'tag=s',
     'help',
     'version',
     'dump',
     'dumpfile=s',
+    'json',
 ) or pod2usage(-verbose => 0);
 
 pod2usage(-verbose => 0, -exitstatus => 0) if $options->{help};
@@ -49,11 +53,13 @@ my $esx = GLPI::Agent::Task::ESX->new(
 inventory_from_dump($options->{dumpfile})
     if ($options->{dumpfile});
 
+$options->{path} = '-' if $options->{stdout};
+$options->{path} = $options->{directory} unless $options->{path};
+
 pod2usage(-verbose => 0) unless
-    $options->{host}      and
-    $options->{user}      and
-    $options->{password}  and
-    $options->{directory};
+    $options->{host}      &&
+    $options->{user}      &&
+    $options->{password};
 
 if ($options->{dump}) {
     die "Data::Dumper perl module needed for --dump option. Please install it.\n"
@@ -78,7 +84,11 @@ foreach my $hostId (@$hostIds) {
 
     my $host = $esx->{vpbs}->getHostFullInfo($hostId);
     my $dumper = Data::Dumper->new([$host],["host"]);
-    $file =~ s/\.ocs$/-hostfullinfo.dump/;
+    if (!$file || $file eq '-') {
+        $file = $hostId."-hostfullinfo.dump";
+    } else {
+        $file =~ s/\.(xml|json)$/-hostfullinfo.dump/;
+    }
 
     if (open my $handle, '>', $file) {
         print $handle $dumper->Dump();
@@ -95,25 +105,14 @@ sub write_inventory {
     my ($hostId, $file) = @_;
 
     my $inventory = $esx->createInventory($hostId, $options->{tag});
+    $inventory->setFormat($options->{json} ? "json" : "xml");
 
-    $file = $options->{directory} . '/' . $inventory->getDeviceId() . ".ocs"
-        unless $file;
-
-    if (open my $handle, '>', $file) {
-        my $tpp = XML::TreePP->new(indent => 2);
-        print $handle $tpp->write({
-            REQUEST  => {
-                CONTENT  => $inventory->getContent(),
-                DEVICEID => $inventory->getDeviceId(),
-                QUERY    => "INVENTORY",
-            }
-        });
-
-        close $handle;
-        print("Inventory saved in $file\n");
+    $file = $inventory->save($options->{path}) unless $file;
+    if ($file) {
+        print STDERR "Inventory ".($file eq '-' ? "dumped\n" : "saved in $file\n");
     } else {
         $hasError = 1;
-        print("Can't write to $file: $ERRNO\n");
+        print STDERR "Can't write to $file: $ERRNO\n";
     }
 
     return $file;
@@ -121,7 +120,10 @@ sub write_inventory {
 
 sub inventory_from_dump {
     my ($file) = @_;
-    $file =~ s/\-hostfullinfo.dump$/.ocs/;
+
+    my $format = $options->{json} ? 'json' : 'xml';
+
+    $file =~ s/\-hostfullinfo.dump$/.$format/;
 
     die "dumpfile must be a *-hostfullinfo.dump file\n"
         if $file eq $options->{dumpfile};
@@ -161,15 +163,17 @@ glpi-esx - vCenter/ESX/ESXi remote inventory from command line
 
 =head1 SYNOPSIS
 
-glpi-esx --host <host> --user <user> --password <password> --directory <directory>
+glpi-esx --host <host> --user <user> --password <password> --path <directory or file>
 
   Options:
     --help                 this menu
     --host hostname        ESX server hostname
     --user username        user name
     --password xxxx        user password
-    --directory directory  output directory
+    --path path            output directory or file
+    --stdout               dump inventory on stdout (enabled by default if no path is set)
     --tag tag              tag for the inventoried machine
+    --json                 use json as format for generated inventories
 
   Advanced options:
     --dump                 also dump esx host full info datas in a *-hostfullinfo.dump file
@@ -177,12 +181,11 @@ glpi-esx --host <host> --user <user> --password <password> --directory <director
 
 =head1 EXAMPLES
 
-    % glpi-esx --host myesx --user foo --password bar --directory /tmp
+    % glpi-esx --host myesx --user foo --password bar --path /tmp --json
 
+You can import the .json file in your inventory server with the glpi-injector tool.
 
-You can import the .xml file in your inventory server with the glpi-injector tool.
-
-    % glpi-injector -v --file /tmp/*.xml -u https://example/
+    % glpi-injector -v --file /tmp/*.json -u https://example/
 
 =head1 DESCRIPTION
 

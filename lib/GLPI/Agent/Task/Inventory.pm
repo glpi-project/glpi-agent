@@ -256,46 +256,10 @@ sub submit {
     }
 
     if ($self->{target}->isType('local')) {
-        my $path   = $self->{target}->getPath();
-        my $format = $inventory->getFormat();
-        my ($file, $handle);
 
-        SWITCH: {
-            if ($path eq '-') {
-                $handle = \*STDOUT;
-                last SWITCH;
-            }
-
-            if (-d $path) {
-                $file =
-                    $path . "/" . $inventory->getDeviceId() .
-                    ($format eq 'xml' ? '.xml' : $format eq 'json' ? '.json' : '.html');
-                last SWITCH;
-            }
-
-            $file = $path;
-        }
-
-        if ($file) {
-            if (Win32::Unicode::File->require()) {
-                $handle = Win32::Unicode::File->new('w', $file);
-            } else {
-                open($handle, '>', $file)
-                    or die "Can't write to $file: $ERRNO\n";
-            }
-            $self->{logger}->error("Can't write to $file: $ERRNO")
-                unless $handle;
-        }
-
-        binmode $handle, ':encoding(UTF-8)'
-            unless $format eq "json";
-
-        $self->_printInventory($handle);
-
-        if ($file) {
-            $self->{logger}->info("Inventory saved in $file");
-            close $handle;
-        }
+        my $file = $inventory->save($self->{target}->getPath());
+        $self->{logger}->info("Inventory ".($file eq '-' ? "dumped on standard output" : "saved in $file"))
+            if $file;
 
     } elsif ($self->{target}->isGlpiServer()) {
 
@@ -627,60 +591,6 @@ sub _injectContent {
     }
 
     $self->{inventory}->mergeContent($content);
-}
-
-sub _printInventory {
-    my ($self, $handle) = @_;
-
-    my $format = $self->{inventory}->getFormat();
-
-    SWITCH: {
-        if ($format eq 'xml') {
-
-            my $tpp = XML::TreePP->new(
-                indent          => 2,
-                utf8_flag       => 1,
-                output_encoding => 'UTF-8'
-            );
-
-            print $handle $tpp->write({
-                REQUEST => {
-                    CONTENT  => $self->{inventory}->getContent(),
-                    DEVICEID => $self->{inventory}->getDeviceId(),
-                    QUERY    => "INVENTORY",
-                }
-            });
-
-            last SWITCH;
-        }
-
-        if ($format eq 'html') {
-            Text::Template->require();
-            my $template = Text::Template->new(
-                TYPE => 'FILE', SOURCE => "$self->{datadir}/html/inventory.tpl"
-            );
-
-             my $hash = {
-                version  => $GLPI::Agent::Version::VERSION,
-                deviceid => $self->{inventory}->getDeviceId(),
-                data     => $self->{inventory}->getContent(),
-                fields   => $self->{inventory}->getFields()
-            };
-
-            print $handle $template->fill_in(HASH => $hash);
-
-            last SWITCH;
-        }
-
-        if ($format eq 'json') {
-            my $json = $self->{inventory}->getContent();
-            print $handle $json->getContent();
-
-            last SWITCH;
-        }
-
-        die "unknown format $format\n";
-    }
 }
 
 1;
