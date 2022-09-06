@@ -120,13 +120,16 @@ sub _getDrives {
 
     my @drives;
 
+    my @properties = qw/
+        Manufacturer Model Caption Description Name MediaType InterfaceType
+        FirmwareRevision SerialNumber Size SCSIPort SCSILogicalUnit SCSITargetId
+        BusType FriendlyName DeviceId
+    /;
+    push @properties, qw(FirmwareVersion PhysicalLocation)
+        if $params{class} eq 'MSFT_PhysicalDisk';
+
     foreach my $object (getWMIObjects(
-        properties => [ qw/
-            Manufacturer Model Caption Description Name MediaType InterfaceType
-            FirmwareRevision SerialNumber Size
-            SCSIPort SCSILogicalUnit SCSITargetId
-            BusType FriendlyName DeviceId FirmwareVersion PhysicalLocation
-        / ],
+        properties => \@properties,
         %params
     )) {
 
