@@ -17,13 +17,13 @@ sub isEnabled {
         GLPI::Agent::Tools::Win32->use();
 
         my $key = getRegistryKey(
-            path        => "HKEY_LOCAL_MACHINE/SOFTWARE/Open Source/Mesh Agent",
+            path        => "HKEY_LOCAL_MACHINE/SOFTWARE/Open Source/",
             required    => [ qw/NodeId/ ],
-            maxdepth    => 1,
+            maxdepth    => 2,
             logger      => $params{logger}
         );
 
-        return $key && (keys %$key);
+        return $key && $key->{'Mesh Agent/'} && keys(%{$key->{'Mesh Agent/'}});
 
     } elsif (OSNAME eq 'darwin') {
         return canRun('defaults') && Glob(
