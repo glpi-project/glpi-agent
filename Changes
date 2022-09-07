@@ -46,6 +46,7 @@ remoteinventory:
 netdiscovery/netinventory:
 * Avoid to record invalid MAC Address from Netbios during netdiscovery task
 * Enhanced Idrac support getting serialnumber, thanks to spinal_df on the forum
+* Add support for option --v1 & --v2c to glpi-netdiscovery and glpi-netinventory scripts
 
 deploy:
 * Fix possible failure when mirror is set but misses file parts

@@ -44,6 +44,8 @@ GetOptions(
     'protocol=s@',
     'threads=i',
     'timeout=i',
+    'v1',
+    'v2c',
     'control',
     'debug+',
     'help',
@@ -115,6 +117,12 @@ if ($options->{type}) {
         -verbose => 0
     ) unless any { $options->{type} eq $_ } values %types;
     map { $_->{TYPE} = $options->{type} } @devices;
+}
+
+if ($options->{v1} || $options->{v2c}) {
+    $credentials->{VERSION} = $options->{v2c} ? '2c' : '1';
+    warn "SNMP v1 and SNMP v2c requested at the same time, will only use SNMP v2c\n"
+        if $options->{v1} && $options->{v2c};
 }
 
 if ($options->{community}) {
@@ -249,6 +257,14 @@ Multiple usage allowed, for multiple files.
 =item B<--communty> I<STRING>
 
 Use given string as SNMP community (assume SNMPv1)
+
+=item B<--v1> I<STRING>
+
+Use SNMP v1. This is the default.
+
+=item B<--v2c> I<STRING>
+
+Use SNMP v2c.
 
 =item B<--credentials> I<STRING>
 
