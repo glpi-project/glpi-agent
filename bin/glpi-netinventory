@@ -259,9 +259,41 @@ comma-separated list of key:value authentication parameters, such as:
 
 =item * version:2c,community:public
 
-=item * version:3,username:admin,authprotocol:sha,authpassword:s3cr3t
+=item * version:3,username:admin,authpassword:s3cr3t,privpassword:s3cr3t
 
 =item * etc.
+
+=back
+
+Supported keys are:
+
+=over
+
+=item * version with value set to 1, 2c or 3
+
+=back
+
+In the case version is set to 1 or 2c:
+
+=over
+
+=item * community
+
+=back
+
+In the case version is set to 3:
+
+=over
+
+=item * username (required)
+
+=item * authpassword
+
+=item * authprotocol with value set to md5 (the default if not set) or sha
+
+=item * privpassword (required if authpassword is set)
+
+=item * privprotocol with value set to des (the default if not set), aes or 3des
 
 =back
 
@@ -314,4 +346,4 @@ Run an inventory against a network device, using SNMP version 3 authentication
 and forcing its type:
 
     $> glpi-netinventory --host my.device --type NETWORKING \
-    --credentials version:3,username:admin,authprotocol:sha,authpassword:s3cr3t
+    --credentials version:3,username:admin,authpassword:s3cr3t,privpassword:s3cr3t
