@@ -57,6 +57,8 @@ sub new {
             if $error =~ /^No response from remote host/;
         die "authentication error on host $params{hostname}\n"
             if $error =~ /^Received usmStats(WrongDigests|UnknownUserNames)/;
+        die "Crypt::Rijndael perl module needs to be installed\n"
+            if $error =~ /Required module Crypt\/Rijndael\.pm not found/;
         die $error . "\n";
     }
 
