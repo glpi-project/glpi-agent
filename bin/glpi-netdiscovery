@@ -386,11 +386,11 @@ If no host or first ip is provided, ip is set to emulate 1.1.1.1 ip scan.
 Use given string as SNMP community (assume SNMPv1). This option can be used multiple
 times to try different communities.
 
-=item B<--v1> I<STRING>
+=item B<--v1>
 
 Use SNMP v1. This is the default, but you can use the option to try SNMP v1 & SNMP v2c.
 
-=item B<--v2c> I<STRING>
+=item B<--v2c>
 
 Use SNMP v2c. Can be used in combination with --v1 to try the 2 versions.
 

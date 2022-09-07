@@ -258,11 +258,11 @@ Multiple usage allowed, for multiple files.
 
 Use given string as SNMP community (assume SNMPv1)
 
-=item B<--v1> I<STRING>
+=item B<--v1>
 
 Use SNMP v1. This is the default.
 
-=item B<--v2c> I<STRING>
+=item B<--v2c>
 
 Use SNMP v2c.
 
