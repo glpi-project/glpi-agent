@@ -60,6 +60,7 @@ esx:
 
 toolbox:
 * Fix Inventory page not displayed when netdiscovery or netinventory tasks are not installed
+* Default configuration now authorize to update toolbox interface from the UI
 * Bump ToolBox plugin version to 1.1
 
 packaging:

@@ -166,7 +166,10 @@ sub init {
 
         # Create a default YAML when YAML file is missing
         if (! -e $self->{yamlconfig}) {
-            my $yaml_tiny = YAML::Tiny->read_string("---");
+            my $yaml_tiny = YAML::Tiny->read_string(join("\n",
+                "configuration:",
+                "  updating_support: yes"
+            ));
             $self->debug("Saving default ".$self->config('yaml')." file");
             $self->debug("YAML file: ".$self->{yamlconfig});
             $yaml_tiny->write($self->{yamlconfig});
