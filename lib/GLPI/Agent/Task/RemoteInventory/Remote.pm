@@ -123,6 +123,22 @@ sub port {
     return $self->{_port} // 0;
 }
 
+sub user {
+    my ($self, $user) = @_;
+
+    $self->{_user} = $user if defined($user);
+
+    return $self->{_user} // '';
+}
+
+sub pass {
+    my ($self, $pass) = @_;
+
+    $self->{_pass} = $pass if defined($pass);
+
+    return $self->{_pass} // '';
+}
+
 sub mode {
     my ($self, $mode) = @_;
 

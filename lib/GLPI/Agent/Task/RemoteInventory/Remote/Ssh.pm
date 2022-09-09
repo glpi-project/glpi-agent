@@ -19,7 +19,7 @@ sub _ssh {
     return unless $command;
     my $options = "-q -o BatchMode=yes";
     $options .= " -p " . $self->port() if $self->port() && $self->port() != 22;
-    $options .= " -l " . $self->{_user} if $self->{_user};
+    $options .= " -l " . $self->user() if $self->user();
     return "ssh $options ".$self->host()." LANG=C $command";
 }
 
@@ -86,9 +86,9 @@ sub _connect {
     }
 
     # Support authentication by password
-    if ($self->{_pass}) {
+    if ($self->pass()) {
         $self->{logger}->debug2("Try authentication by password...");
-        my $user = $self->{_user};
+        my $user = $self->user();
         unless ($user) {
             if ($ENV{USER}) {
                 $user = $ENV{USER};
@@ -98,13 +98,13 @@ sub _connect {
             }
         }
         if ($user) {
-            unless ($ssh2->auth_password($user, $self->{_pass})) {
+            unless ($ssh2->auth_password($user, $self->pass())) {
                 my @error = $ssh2->error;
                 $self->{logger}->debug("Can't authenticate to $remote with given password for ssh remoteinventory: @error");
             }
             if ($ssh2->auth_ok) {
                 $self->{logger}->debug2("Authenticated on $remote remote with given password");
-                $self->{_user} = $user;
+                $self->user($user);
                 return 1;
             }
         }
@@ -125,13 +125,13 @@ sub _connect {
     }
 
     # Support public key athentication
-    my $user = $self->{_user} // $ENV{USER};
+    my $user = $self->user() // $ENV{USER};
     foreach my $private (sort(keys(%{$self->{_private_keys}}))) {
         $self->{logger}->debug2("Try authentication using $private key...");
         my $file = $self->{_private_keys}->{$private};
         my $pubkey;
         $pubkey = $file.".pub" if -e $file.".pub";
-        next unless $ssh2->auth_publickey($user, $pubkey, $file, $self->{_pass});
+        next unless $ssh2->auth_publickey($user, $pubkey, $file, $self->pass());
         if ($ssh2->auth_ok) {
             $self->{logger}->debug2("Authenticated on $remote remote with $private key");
             return 1;
