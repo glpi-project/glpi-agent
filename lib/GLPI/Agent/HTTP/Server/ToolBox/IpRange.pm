@@ -137,7 +137,7 @@ sub update_template_hash {
     $hash->{page} = $hash->{display} ? int(($hash->{start}-1)/$hash->{display})+1 : 1;
     $hash->{pages} = $hash->{display} ? int(($hash->{list_count}-1)/$hash->{display})+1 : 1;
     $hash->{start} = $hash->{display} ? $hash->{start} - $hash->{start}%$hash->{display} : 0;
-    # Handle case we are indecing the last element
+    # Handle case we are indexing the last element
     $hash->{start} -= $hash->{display} if $hash->{start} == $hash->{list_count};
     $hash->{start} = 0 if $hash->{start} < 0;
 }
