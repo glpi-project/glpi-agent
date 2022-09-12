@@ -241,6 +241,7 @@ sub safe_url {
     my ($self) = @_;
 
     return $self->{_url} if $self->config && $self->config->{'show-passwords'};
+    return $self->{_url} unless length($self->pass());
 
     my $url = URI->new($self->{_url});
     return $self->{_url} unless $url->userinfo;
