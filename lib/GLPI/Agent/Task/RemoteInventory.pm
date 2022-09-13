@@ -87,6 +87,8 @@ sub run {
         $remote->worker(++$worker) if $worker_count;
         $manager->start($remote) and next;
 
+        $remote->prepare();
+
         my $error = $remote->checking_error();
         my $deviceid = $remote->deviceid;
 

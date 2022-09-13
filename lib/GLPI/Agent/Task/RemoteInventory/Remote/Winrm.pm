@@ -17,23 +17,39 @@ use constant    supported => 1;
 
 use constant    supported_modes => qw(ssl);
 
-sub init {
-    my ($self) = @_;
+sub handle_url {
+    my ($self, $url) = @_;
 
-    my $url = URI->new($self->url());
+    my $scheme = $self->mode('ssl') ? "https" : "http";
+    $url->scheme($scheme);
+    bless $url, "URI::$scheme";
+
+    if ($self->mode('ssl')) {
+        $url->port(5986) if $url->port == 443;
+    } else {
+        $url->port(5985) if $url->port == 80;
+    }
+
+    $self->SUPER::handle_url($url);
 
     # We need to translate url for LWP::UserAgent client
-    $url->scheme( $self->mode('ssl') ? "https" : "http" );
     $url->path( "/wsman/" ) unless $url->path && $url->path ne '/';
     # Remove query in the case it contains mode=ssl
     $url->query_keywords([]);
     # Reset user/pass from URL as they are passed for UA as params
     $url->userinfo(undef);
 
+    # Keep canonical URL for prepare API
+    $self->{_canonical_url} = $url->canonical->as_string;
+}
+
+sub prepare {
+    my ($self) = @_;
+
     $self->{_winrm} = GLPI::Agent::SOAP::WsMan->new(
         logger      => $self->{logger},
         config      => $self->config(),
-        url         => $url->canonical->as_string,
+        url         => $self->{_canonical_url},
         user        => $self->user(),
         password    => $self->pass(),
         winrm       => 1,
@@ -411,24 +427,6 @@ sub unloadRemoteLoadedUserHives {
         $self->{logger}->debug("Failed to unload $userhive registry")
             unless $unload && $unload->{exitcode} == 0;
     }
-}
-
-## no critic (ProhibitMultiplePackages)
-package
-    URI::winrm;
-
-use strict;
-use warnings;
-
-use parent 'URI::http';
-
-sub scheme {
-    my ($self, $scheme) = @_;
-
-    $self->SUPER::scheme($scheme);
-
-    # Set default port after scheme has been updated
-    $self->port($scheme eq 'https' ? 5986 : 5985) if !$self->_port;
 }
 
 1;

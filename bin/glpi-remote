@@ -219,6 +219,8 @@ sub add {
         $remote->supported()
             or next;
 
+        $remote->prepare();
+
         my $checkerror;
         $checkerror = $remote->checking_error() unless $options->{'no-check'};
         if ($checkerror) {

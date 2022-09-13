@@ -11,8 +11,6 @@ use Socket qw(getaddrinfo getnameinfo);
 
 use GLPI::Agent::Tools::Network;
 
-my $supported_protocols = qr/^ssh|winrm$/;
-
 use constant    supported => 0;
 
 use constant    supported_modes => ();
@@ -43,9 +41,6 @@ sub new {
         $url->host($self->{_url});
         $url->path('');
         $self->{_url} = $url->as_string;
-    } elsif ($scheme !~ $supported_protocols) {
-        $self->{logger}->error("Skipping '$self->{_url}' remote with unsupported '$scheme' protocol");
-        return $self;
     }
 
     my $subclass = ucfirst($scheme);
@@ -53,22 +48,11 @@ sub new {
     $class->require();
     if ($EVAL_ERROR) {
         $self->{logger}->debug("Failed to load $class module: $EVAL_ERROR");
-        $self->{logger}->error("Skipping '$self->{_url}' remote: class loading failure");
+        $self->{logger}->error("Skipping '$self->{_url}' remote: $EVAL_ERROR");
         return $self;
     }
 
-    # URI::winrm class is loaded with Remote::Winrm, so bless the URI object now
-    bless $url, "URI::winrm" if $scheme eq "winrm";
-
     $self->{_protocol} = $scheme;
-    $self->{_host} = $url->host;
-    $self->{_port} = $url->port;
-    my $userinfo = $url->userinfo;
-    if ($userinfo) {
-        my ($user, $pass) = split(/:/, $userinfo);
-        $self->{_user} = $user;
-        $self->{_pass} = $pass if defined($pass);
-    }
 
     # Check for mode, name & deviceid in url params
     my $query = $url->query() // '';
@@ -96,12 +80,25 @@ sub new {
             if keys(%{$self->{_modes}});
     }
 
-    $self->init();
+    $self->handle_url($url);
 
     return $self;
 }
 
-sub init {}
+sub handle_url {
+    my ($self, $url) = @_;
+
+    $self->{_host} = $url->host;
+    $self->{_port} = $url->port;
+    my $userinfo = $url->userinfo;
+    if ($userinfo) {
+        my ($user, $pass) = split(/:/, $userinfo);
+        $self->user($user);
+        $self->pass($pass) if defined($pass);
+    }
+}
+
+sub prepare {}
 
 sub checking_error {}
 
@@ -241,13 +238,14 @@ sub safe_url {
     my ($self) = @_;
 
     return $self->{_url} if $self->config && $self->config->{'show-passwords'};
-    return $self->{_url} unless length($self->pass());
 
-    my $url = URI->new($self->{_url});
-    return $self->{_url} unless $url->userinfo;
-    my ($user) = split(/:/, $url->userinfo);
-    $url->userinfo("$user:****");
-    return $url->as_string;
+    my $pass = $self->pass();
+    return $self->{_url} unless length($pass);
+
+    my $url = $self->{_url};
+    $url =~ s/:$pass/:****/;
+
+    return $url;
 }
 
 sub getRemoteFirstLine {
