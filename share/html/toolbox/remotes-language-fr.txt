@@ -1,0 +1,24 @@
+# Traductions en français par Teclib Edition
+
+
+Target: Cible
+Hostname: Nom d'h&ocirc;te
+
+Protocol: Protocole
+User: Utilisateur
+Password: Mot de passe
+
+
+Expired: Expiré
+Remote URL: URL inventaire distant
+
+Not supported because remote option is used: Non support&eacute; car l'option remote est utilis&eacute;e
+
+Add Remote: Ajouter inventaire distant
+Edit &laquo;&nbsp;%s&nbsp;&raquo; remote for %s: &Eacute;dition inventaire distant &laquo;&nbsp;%s&nbsp;&raquo; pour %s
+
+Remotes workers: Nbre de processeur d'inventaires distants
+Mark remotes as expired: Marquer les inventaires distants expirés
+Start remoteinventory task: Démarrer la tâche remoteinventory
+Running task: Tâche en cours d'exécution
+A remote inventory is still running: Un inventaire distant est déjà en cours

@@ -70,6 +70,18 @@ sub count {
     return $self->{_count};
 }
 
+sub get {
+    my ($self, $deviceid) = @_;
+
+    return $self->{_remotes}->{$deviceid};
+}
+
+sub getlist {
+    my ($self) = @_;
+
+    return keys %{$self->{_remotes}};
+}
+
 sub getall {
     my ($self) = @_;
 
@@ -145,6 +157,23 @@ sub store {
     my $umask = umask 0007;
     $self->{_storage}->save( name => 'remotes', data => $remotes );
     umask $umask;
+}
+
+sub add {
+    my ($self, $remote) = @_;
+
+    return unless $remote && ref($remote) =~ /^GLPI::Agent::Task::RemoteInventory::Remote/;
+
+    $self->{_remotes}->{$remote->deviceid()} = $remote;
+    return $remote->deviceid();
+}
+
+sub del {
+    my ($self, $deviceid) = @_;
+
+    return unless $deviceid && exists($self->{_remotes}->{$deviceid});
+
+    return delete $self->{_remotes}->{$deviceid};
 }
 
 1;

@@ -11,6 +11,7 @@ Configuration:
 IP range:
 IP Ranges:
 Credentials:
+Remotes:
 
 Edit:
 Update:

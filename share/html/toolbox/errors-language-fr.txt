@@ -64,3 +64,11 @@ New MIBSupport match: Nouvelle correspondance de support MIB
 Update MIBSupport match: Mise à jour de correspondance de support MIB
 Update ruleset: Mise à jour du jeu de règle
 Remove ruleset: Suppression du jeu de règle
+
+New remote: Nouvel inventaire distant
+Update remote: Mise à jour inventaire distant
+Not authorized to manage remotes: Vous n'avez pas les droits pour gérer les inventaires distants
+Can't create entry without target: Impossible de créer une entrée sans cible
+Can't update entry without target: Impossible de mettre à jour une entrée sans cible
+Can't update entry without source target: Impossible de mettre à jour une entrée sans cible source
+No such remote for target: Inventaire distant non disponible pour la cible

@@ -57,11 +57,9 @@ sub new {
     # Check for mode, name & deviceid in url params
     my $query = $url->query() // '';
     my ($mode) = $query =~ /\bmode=(\w+)\b/;
-    my ($hostname) = $query =~ /\b(?:host)?name=(\w+)\b/;
-    $self->{_host} = $hostname if $hostname;
     unless ($self->{_deviceid}) {
         # Ignore deviceid params when provided by dump
-        my ($deviceid) = $query =~ /\bdeviceid=(\w+)\b/;
+        my ($deviceid) = $query =~ /\bdeviceid=([\w.-]+)\b/;
         $self->{_deviceid} = $deviceid if $deviceid;
     }
 
@@ -73,11 +71,11 @@ sub new {
             if (grep { $_ eq $key } $self->supported_modes()) {
                 $self->{_modes}->{$key} = 1;
             } else {
-                $self->{logger}->debug("Unsupported remote mode: $key");
+                $self->{logger}->debug("Unsupported remote mode: $key") if $self->{logger};
             }
         }
         $self->{logger}->debug("Remote mode enabled: ".join(' ', keys(%{$self->{_modes}})))
-            if keys(%{$self->{_modes}});
+            if $self->{logger} && keys(%{$self->{_modes}});
     }
 
     $self->handle_url($url);

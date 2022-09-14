@@ -11,6 +11,7 @@ Raw YAML edition: Édition du YAML brut
 IP Ranges: Plages IP
 IP range: Plage IP
 Credentials: Identifiants
+Remotes: Inventaires distants
 
 Edit: Éditer
 Update: Mettre à jour

@@ -64,3 +64,11 @@ New MIBSupport match:
 Update MIBSupport match:
 Update ruleset:
 Remove ruleset:
+
+New remote:
+Update remote:
+Not authorized to manage remotes:
+Can't create entry without target:
+Can't update entry without target:
+Can't update entry without source target:
+No such remote for target:

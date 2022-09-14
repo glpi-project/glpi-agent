@@ -1,0 +1,24 @@
+# This file is not read but should reference any string that could be translated
+
+DeviceId:
+Target:
+Hostname:
+Port:
+Protocol:
+User:
+Password:
+Modes:
+Expiration:
+Expired:
+Remote URL:
+
+Not supported because remote option is used:
+
+Add Remote:
+Edit &laquo;&nbsp;%s&nbsp;&raquo; remote for %s:
+
+Remotes workers:
+Mark remotes as expired:
+Start remoteinventory task:
+Running task:
+A remote inventory is still running:

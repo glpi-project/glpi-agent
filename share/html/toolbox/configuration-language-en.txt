@@ -10,6 +10,7 @@ Navigation bar:
 Show Credentials in navigation bar:
 Show Inventory in navigation bar:
 Show IP Ranges in navigation bar:
+Show Remotes in navigation bar:
 Show Results in navigation bar:
 Show Raw YAML navigation:
 Network task:
@@ -37,6 +38,9 @@ Disable MibSupport in agent:
 MibSupport YAML file:
 Session timeout:
 Other fields to show in dedicated section:
+Show remote password:
+Allow remotes administration:
+Show remotes expiration time:
 
 Backup YAML:
 
