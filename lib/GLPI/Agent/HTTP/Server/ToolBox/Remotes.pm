@@ -330,7 +330,7 @@ sub events_cb {
 }
 
 sub _submit_start {
-    my ($self, $form) = @_;
+    my ($self) = @_;
 
     return $self->errors("A remote inventory is still running")
         if $self->{tasks} && @{$self->{tasks}};
