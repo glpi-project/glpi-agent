@@ -108,9 +108,9 @@ sub disabled {
 }
 
 sub disable {
-    my ($self) = @_;
+    my ($self, $reason) = @_;
     $self->{disabled} = 1;
-    $self->info("plugin disabled");
+    $self->info($reason // "plugin disabled");
 }
 
 sub log_prefix {

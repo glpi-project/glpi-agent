@@ -50,24 +50,21 @@ sub init {
     # Check certificate file is set
     unless ($self->{'cert_file'}) {
         $self->error("Plugin enabled without certificate file set in configuration");
-        $self->disable();
-        $self->info("Plugin disabled on wrong configuration");
+        $self->disable("Plugin disabled on wrong configuration");
         return;
     }
 
     # Check certificate file exists
     unless (-e $self->{'cert_file'}) {
         $self->error("Plugin enabled but $self->{'cert_file'} certificate file is missing");
-        $self->disable();
-        $self->info("Plugin disabled on wrong configuration");
+        $self->disable("Plugin disabled on wrong configuration");
         return;
     }
 
     # Check key file exists if set
     if ($self->{'key_file'} && ! -e $self->{'key_file'}) {
         $self->error("Plugin enabled but $self->{'key_file'} key file is missing");
-        $self->disable();
-        $self->info("Plugin disabled on wrong configuration");
+        $self->disable("Plugin disabled on wrong configuration");
         return;
     }
 
@@ -82,8 +79,7 @@ sub init {
     IO::Socket::SSL->require();
     if ($EVAL_ERROR) {
         $self->error("HTTPD can't load SSL support: $EVAL_ERROR");
-        $self->disable();
-        $self->info("Plugin disabled on wrong configuration");
+        $self->disable("Plugin disabled on wrong configuration");
         return;
     }
 

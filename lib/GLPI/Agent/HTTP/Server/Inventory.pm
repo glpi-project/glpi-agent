@@ -54,8 +54,7 @@ sub init {
     # Check secret is set if plugin is enabled
     unless ($self->config('token')) {
         $self->error("Plugin enabled without token in configuration");
-        $self->disable();
-        $self->info("Plugin disabled on wrong configuration");
+        $self->disable("Plugin disabled on wrong configuration");
         return;
     }
 
