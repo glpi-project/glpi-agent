@@ -73,9 +73,8 @@ sub new {
             $self->{logger}->debug($log_prefix . "HTTPD $name Server plugin loaded but disabled");
         } else {
             $self->{logger}->info($log_prefix . "HTTPD $name Server plugin loaded");
+            push @plugins, $plugin;
         }
-
-        push @plugins, $plugin;
     }
 
     # Sort and store loaded plugins

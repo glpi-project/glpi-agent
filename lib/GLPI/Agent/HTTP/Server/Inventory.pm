@@ -48,6 +48,17 @@ sub init {
 
     $self->SUPER::init(@_);
 
+    # Don't do more initialization if disabled
+    return if $self->disabled();
+
+    # Check secret is set if plugin is enabled
+    unless ($self->config('token')) {
+        $self->error("Plugin enabled without token in configuration");
+        $self->disable();
+        $self->info("Plugin disabled on wrong configuration");
+        return;
+    }
+
     $self->{request}  = 'none';
 
     my $defaults = $self->defaults();
@@ -62,13 +73,6 @@ sub init {
         logger     => $self->{logger},
         basevardir => $self->{server}->{agent}->{config}->{vardir},
     ) unless $self->{target};
-
-    # Check secret is set if plugin is enabled
-    if (!$self->disabled() && !$self->config('token')) {
-        $self->error("Plugin enabled without token in configuration");
-        $self->disable();
-        $self->info("Plugin disabled on wrong configuration");
-    }
 
     # Normalize no_compress
     $self->{no_compress} = $self->config('no_compress') !~ /^0|no$/i ? 1 : 0;
