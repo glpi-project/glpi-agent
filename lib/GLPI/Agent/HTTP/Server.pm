@@ -184,7 +184,8 @@ sub _handle {
 
     $logger->debug($log_prefix . "response status $status") unless $status == 1;
 
-    if ($status == 200 && $keepalive && --$maxKeepAlive) {
+    # Handle keepalive for success and authentication required status
+    if ((any { $status == $_ } (200, 401)) && $keepalive && --$maxKeepAlive) {
         # Looking for another request
         $request = $client->get_request();
         $self->_handle($client, $request, $clientIp, $maxKeepAlive) if $request;
@@ -231,7 +232,8 @@ sub _handle_plugins {
     # Don't log status if we forked
     $logger->debug($log_prefix . "response status $status") unless $status == 1;
 
-    if ($status == 200 && $keepalive && --$maxKeepAlive) {
+    # Handle keepalive for success and authentication required status
+    if ((any { $status == $_ } (200, 401)) && $keepalive && --$maxKeepAlive) {
         # Looking for another request
         $request = $client->get_request();
         $self->_handle_plugins($client, $request, $clientIp, $plugins, $maxKeepAlive) if $request;

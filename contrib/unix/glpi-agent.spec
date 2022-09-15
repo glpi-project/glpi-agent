@@ -207,6 +207,7 @@ install -m 644 -D  contrib/unix/%{name}.service %{buildroot}%{_unitdir}/%{name}.
 %dir %{_sysconfdir}/%{name}
 %config(noreplace) %{_sysconfdir}/%{name}/agent.cfg
 %config(noreplace) %{_sysconfdir}/%{name}/conf.d
+%config(noreplace) %{_sysconfdir}/%{name}/basic-authentication-server-plugin.cfg
 %config(noreplace) %{_sysconfdir}/%{name}/inventory-server-plugin.cfg
 %config(noreplace) %{_sysconfdir}/%{name}/server-test-plugin.cfg
 %config(noreplace) %{_sysconfdir}/%{name}/ssl-server-plugin.cfg

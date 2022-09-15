@@ -34,6 +34,7 @@ sub wanted {
 };
 
 print AGENT "etc/agent.cfg /usr/share/glpi-agent/etc\n";
+print AGENT "etc/basic-authentication-server-plugin.cfg /usr/share/glpi-agent/etc\n";
 print AGENT "etc/inventory-server-plugin.cfg /usr/share/glpi-agent/etc\n";
 print AGENT "etc/ssl-server-plugin.cfg /usr/share/glpi-agent/etc\n";
 print AGENT "etc/server-test-plugin.cfg /usr/share/glpi-agent/etc\n";

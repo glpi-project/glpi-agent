@@ -1,6 +1,7 @@
 
 # Diverted from /usr/share/glpi-agent/etc during postinst
 etc/glpi-agent/agent.cfg
+etc/glpi-agent/basic-authentication-server-plugin.cfg
 etc/glpi-agent/inventory-server-plugin.cfg
 etc/glpi-agent/server-test-plugin.cfg
 etc/glpi-agent/ssl-server-plugin.cfg

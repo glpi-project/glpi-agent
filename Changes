@@ -64,6 +64,10 @@ toolbox:
 * Support remotes management and remoteinventory task start
 * Bump ToolBox plugin version to 1.1
 
+basic-authentication-server-plugin:
+* New feature to support basic authentication on embedded http server via a dedicated plugin
+* Bump version to 1.0
+
 packaging:
 * Update MacOSX packages to use OpenSSL 3.0.5
 * Temporarily update PATH to use provided exe files when running agent from BAT scripts on win32
