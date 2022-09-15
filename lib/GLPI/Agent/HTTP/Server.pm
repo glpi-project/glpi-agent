@@ -133,6 +133,15 @@ sub _handle {
             last SWITCH;
         }
 
+        # static content request
+        if ($path =~ m{^/(logo\.png|site\.css|favicon\.ico)$}) {
+            my $file = $1;
+            last SWITCH if $method ne 'GET';
+            $client->send_file_response("$self->{htmldir}/$file");
+            $status = 200;
+            last SWITCH;
+        }
+
         # deploy request
         if ($path =~ m{^/deploy/getFile/./../([\w\d/-]+)$}) {
             last SWITCH if $method ne 'GET';
@@ -162,15 +171,6 @@ sub _handle {
         if ($path eq '/status') {
             last SWITCH if $method ne 'GET';
             $status = $self->_handle_status($client, $request, $clientIp);
-            last SWITCH;
-        }
-
-        # static content request
-        if ($path =~ m{^/(logo.png|site.css|favicon.ico)$}) {
-            my $file = $1;
-            last SWITCH if $method ne 'GET';
-            $client->send_file_response("$self->{htmldir}/$file");
-            $status = 200;
             last SWITCH;
         }
 
