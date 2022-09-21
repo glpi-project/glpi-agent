@@ -6,11 +6,11 @@ use warnings;
 use Test::Deep;
 use Test::Exception;
 use Test::More;
-use XML::TreePP;
 
 use GLPI::Agent::XML::Query::Prolog;
+use GLPI::Agent::Tools::XML;
 
-plan tests => 4;
+plan tests => 5;
 
 my $message;
 
@@ -27,10 +27,12 @@ lives_ok {
 
 isa_ok($message, 'GLPI::Agent::XML::Query::Prolog');
 
-my $tpp = XML::TreePP->new();
+my $xml = GLPI::Agent::Tools::XML->new(string => $message->getContent());
+
+isa_ok($xml, 'GLPI::Agent::Tools::XML');
 
 cmp_deeply(
-    scalar $tpp->parse($message->getContent()),
+    $xml->dump_as_hash(),
     {
         REQUEST => {
             DEVICEID => 'foo',

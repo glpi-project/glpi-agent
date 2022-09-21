@@ -7,11 +7,12 @@ use lib 't/lib';
 use English qw(-no_match_vars);
 use Test::Deep;
 use Test::More;
-use XML::TreePP;
 use UNIVERSAL::require;
 use Config;
 
 use GLPI::Test::Utils;
+
+use GLPI::Agent::Tools::XML;
 
 # check thread support availability
 if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
@@ -63,13 +64,18 @@ foreach my $walk (@sampleWalkResult) {
     );
     ok($rc == 0, 'success exit status sample'.$walk);
 
-    my $content = XML::TreePP->new()->parse($out);
+    my $content = GLPI::Agent::Tools::XML->new(string => $out)->dump_as_hash();
     ok($content, 'valid output sample'.$walk);
 
-    my $result = XML::TreePP->new()->parsefile('resources/walks/sample'.$walk.'.result');
-    $result->{'REQUEST'}{'CONTENT'}{'MODULEVERSION'} =
-        $GLPI::Agent::Task::NetInventory::VERSION;
-    $result->{'REQUEST'}{'DEVICEID'} = re('^\S+$');
+    my $result  = GLPI::Agent::Tools::XML->new(
+        file => "resources/walks/sample$walk.result"
+    )->dump_as_hash();
+
+    # Fix version before comparing
+    $result->{REQUEST}->{CONTENT}->{MODULEVERSION} = $GLPI::Agent::Task::NetInventory::VERSION;
+
+    # Fix deviceid before comparing
+    $result->{REQUEST}->{DEVICEID} = 'foo';
 
     cmp_deeply($content, $result, "expected output sample$walk");
 }

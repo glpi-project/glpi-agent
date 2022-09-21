@@ -7,13 +7,13 @@ use Config;
 use Test::Deep;
 use Test::Exception;
 use Test::More;
-use XML::TreePP;
 
 use GLPI::Agent::Version;
 use GLPI::Agent::Inventory;
 use GLPI::Agent::XML::Query::Inventory;
+use GLPI::Agent::Tools::XML;
 
-plan tests => 5;
+plan tests => 6;
 
 my $query;
 throws_ok {
@@ -30,11 +30,14 @@ lives_ok {
 
 isa_ok($query, 'GLPI::Agent::XML::Query::Inventory');
 
-my $tpp = XML::TreePP->new();
 my $AgentString = $GLPI::Agent::Version::PROVIDER."-Inventory_v".$GLPI::Agent::Version::VERSION;
 
+my $xml = GLPI::Agent::Tools::XML->new(string => $query->getContent());
+
+isa_ok($xml, 'GLPI::Agent::Tools::XML');
+
 cmp_deeply(
-    scalar $tpp->parse($query->getContent()),
+    $xml->dump_as_hash(),
     {
         REQUEST => {
             DEVICEID => 'foo',
@@ -62,8 +65,10 @@ $query = GLPI::Agent::XML::Query::Inventory->new(
     content => $inventory->getContent()
 );
 
+$xml->string($query->getContent());
+
 cmp_deeply(
-    scalar $tpp->parse($query->getContent()),
+    $xml->dump_as_hash(),
     {
         REQUEST => {
             DEVICEID => 'foo',

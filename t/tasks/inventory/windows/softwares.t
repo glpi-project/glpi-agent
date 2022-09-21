@@ -12,11 +12,11 @@ use Test::Exception;
 use Test::MockModule;
 use Test::More;
 use UNIVERSAL::require;
-use XML::TreePP;
 use File::Temp qw(tempdir);
 
 use GLPI::Agent::Inventory;
 use GLPI::Test::Utils;
+use GLPI::Agent::Tools::XML;
 use GLPI::Agent::Tools::Win32::Constants;
 use GLPI::Agent::Protocol::Inventory;
 
@@ -9572,12 +9572,8 @@ foreach my $test (keys %softwares_tests) {
         my $handle;
         open $handle, ">", "$folder/$test.xml";
         binmode $handle, ':encoding(UTF-8)';
-        my $tpp = XML::TreePP->new(
-            indent          => 2,
-            utf8_flag       => 1,
-            output_encoding => 'UTF-8'
-        );
-        print $handle $tpp->write({
+        my $xml = GLPI::Agent::Tools::XML->new();
+        print $handle $xml->write({
             REQUEST => {
                 CONTENT  => $inventory->getContent(),
                 DEVICEID => $inventory->getDeviceId(),
