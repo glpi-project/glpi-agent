@@ -1,5 +1,9 @@
 name: GLPI Agent CI
 
+# Perl lib caches are updated at least once a week
+# but you can update last-cache-validation-date to invalidate perl lib caches
+# last-cache-validation-date: 2022-09-21
+
 on:
   push:
   pull_request:
@@ -17,10 +21,23 @@ jobs:
       run: |
         sudo apt -y install cpanminus libmodule-install-perl
     - name: Check environment
+      id: check-version
       run: |
         perl --version
         cpanm --version
+        # Compute perl-version for current week to regen perl lib cache at least each week
+        perl -e '@t = localtime; print "::set-output name=cache-version::".$^V."-".int($t[7]/7)."\n"'
+    - name: Restore perl lib cache
+      id: cache
+      uses: pat-s/always-upload-cache@v3
+      with:
+        path: |
+            /usr/local/share/perl
+            /usr/local/lib/x86_64-linux-gnu/perl
+            /usr/local/bin
+        key: linux-ubuntu-test-perl-${{ steps.check-version.outputs.cache-version }}-lib-cache-${{ hashFiles('Makefile.PL', '.github/workflows/glpi-agent-ci.yml') }}
     - name: Install deps
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         cpanm --sudo --installdeps --verbose --notest .
         cpanm --sudo --verbose --notest Parse::EDID
@@ -50,19 +67,32 @@ jobs:
         echo 'C:\Strawberry\c\bin'         >> $GITHUB_PATH
       shell: bash
     - name: Check environment
+      id: check-version
       run: |
         echo "PATH=%PATH%"
         perl --version
         perl -V
+        perl -e '@t = localtime; print "::set-output name=cache-version::".$^V."-".int($t[7]/7)."\n"'
       shell: cmd
+    - name: Restore perl lib cache
+      uses: pat-s/always-upload-cache@v3
+      id: cache
+      with:
+        path: |
+            C:\Strawberry\perl\site\lib
+            C:\Strawberry\perl\site\bin
+        key: windows-test-perl-${{ steps.check-version.outputs.cache-version }}-lib-cache-${{ hashFiles('Makefile.PL', '.github/workflows/glpi-agent-ci.yml') }}
     - name: Install Module::Install
+      if: steps.cache.outputs.cache-hit != 'true'
       run: cpan -T Module::Install
       shell: cmd
     - name: Install deps
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         cpanm --notest --verbose --installdeps .
       shell: cmd
     - name: Install other modules
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         cpanm --notest --verbose Compress::Zlib Parse::EDID Archive::Extract Win32::Unicode::File
       shell: cmd
@@ -87,18 +117,33 @@ jobs:
         PERL_PREFIX=$(perl -MConfig -e 'print $Config{prefix}')
         echo "$PERL_PREFIX/bin" >> $GITHUB_PATH
     - name: Check environment
+      id: check-version
       run: |
         echo "PATH=$PATH"
         perl --version
         perl -V
+        # Compute perl-version for current week to regen perl lib cache at least each week
+        perl -e '@t = localtime; print "::set-output name=cache-version::".$^V."-".int($t[7]/7)."\n"'
     - name: Install openssl via brew
       run: brew install openssl
+    - name: Restore perl lib cache
+      id: cache
+      uses: pat-s/always-upload-cache@v3
+      with:
+        path: |
+            /usr/local/Cellar/perl/*/lib/perl5/site_perl
+            /usr/local/Cellar/perl/*/bin
+        key: macos-test-perl-${{ steps.check-version.outputs.cache-version }}-lib-cache-${{ hashFiles('Makefile.PL', '.github/workflows/glpi-agent-ci.yml') }}
     - name: Install Module::Install
-      run: cpan -T Module::Install
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: |
+        cpan -T Module::Install
     - name: Install cpanminus
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         cpan -T App::cpanminus
     - name: Install deps
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         cpanm --sudo --installdeps --verbose --notest .
         cpanm --sudo --verbose --notest Parse::EDID
