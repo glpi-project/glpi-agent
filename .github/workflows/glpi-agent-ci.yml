@@ -72,7 +72,7 @@ jobs:
         echo "PATH=%PATH%"
         perl --version
         perl -V
-        perl -e '@t = localtime; print "::set-output name=cache-version::".$^V."-".int($t[7]/7)."\n"'
+        perl -e "@t = localtime; print '::set-output name=cache-version::'.$^V.'-'.int($t[7]/7)"
       shell: cmd
     - name: Restore perl lib cache
       uses: pat-s/always-upload-cache@v3
