@@ -1,9 +1,8 @@
-package GLPI::Agent::Tools::XML;
+package GLPI::Agent::XML;
 
 use strict;
 use warnings;
 
-use English qw(-no_match_vars);
 use XML::LibXML;
 
 use GLPI::Agent::Logger;

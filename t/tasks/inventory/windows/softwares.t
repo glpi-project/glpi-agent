@@ -15,8 +15,8 @@ use UNIVERSAL::require;
 use File::Temp qw(tempdir);
 
 use GLPI::Agent::Inventory;
+use GLPI::Agent::XML;
 use GLPI::Test::Utils;
-use GLPI::Agent::Tools::XML;
 use GLPI::Agent::Tools::Win32::Constants;
 use GLPI::Agent::Protocol::Inventory;
 
@@ -9572,7 +9572,7 @@ foreach my $test (keys %softwares_tests) {
         my $handle;
         open $handle, ">", "$folder/$test.xml";
         binmode $handle, ':encoding(UTF-8)';
-        my $xml = GLPI::Agent::Tools::XML->new();
+        my $xml = GLPI::Agent::XML->new();
         print $handle $xml->write({
             REQUEST => {
                 CONTENT  => $inventory->getContent(),

@@ -14,9 +14,9 @@ use Test::MockObject::Extends;
 use Test::MockModule;
 
 use GLPI::Agent::Inventory;
+use GLPI::Agent::XML;
 use GLPI::Agent::SOAP::VMware;
 use GLPI::Agent::Tools::Virtualization;
-use GLPI::Agent::Tools::XML;
 
 my %tests = (
     'esx-4.1.0-1' => {
@@ -508,7 +508,7 @@ foreach my $test (keys %tests) {
             my ($action) =
                 $request->header('soapaction') =~ /"urn:vim25#(\S+)"/;
 
-            my $tree = GLPI::Agent::Tools::XML->new(string => $request->content())->dump_as_hash();
+            my $tree = GLPI::Agent::XML->new(string => $request->content())->dump_as_hash();
             my $body = $tree->{'soapenv:Envelope'}->{'soapenv:Body'};
             my $obj  = $body->{RetrieveProperties}->{specSet}->{objectSet}->{obj};
             if ($obj->{'-type'} && $obj->{'-type'} eq 'VirtualMachine') {

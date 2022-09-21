@@ -7,8 +7,8 @@ use Test::Deep;
 use Test::Exception;
 use Test::More;
 
+use GLPI::Agent::XML;
 use GLPI::Agent::XML::Query::Prolog;
-use GLPI::Agent::Tools::XML;
 
 plan tests => 5;
 
@@ -27,9 +27,9 @@ lives_ok {
 
 isa_ok($message, 'GLPI::Agent::XML::Query::Prolog');
 
-my $xml = GLPI::Agent::Tools::XML->new(string => $message->getContent());
+my $xml = GLPI::Agent::XML->new(string => $message->getContent());
 
-isa_ok($xml, 'GLPI::Agent::Tools::XML');
+isa_ok($xml, 'GLPI::Agent::XML');
 
 cmp_deeply(
     $xml->dump_as_hash(),

@@ -12,7 +12,7 @@ use Config;
 
 use GLPI::Test::Utils;
 
-use GLPI::Agent::Tools::XML;
+use GLPI::Agent::XML;
 
 # check thread support availability
 if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
@@ -64,10 +64,10 @@ foreach my $walk (@sampleWalkResult) {
     );
     ok($rc == 0, 'success exit status sample'.$walk);
 
-    my $content = GLPI::Agent::Tools::XML->new(string => $out)->dump_as_hash();
+    my $content = GLPI::Agent::XML->new(string => $out)->dump_as_hash();
     ok($content, 'valid output sample'.$walk);
 
-    my $result  = GLPI::Agent::Tools::XML->new(
+    my $result  = GLPI::Agent::XML->new(
         file => "resources/walks/sample$walk.result"
     )->dump_as_hash();
 

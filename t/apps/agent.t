@@ -9,7 +9,7 @@ use File::Temp;
 use Test::More;
 
 use GLPI::Agent::Tools;
-use GLPI::Agent::Tools::XML;
+use GLPI::Agent::XML;
 use GLPI::Test::Utils;
 use GLPI::Agent::Version;
 
@@ -286,6 +286,6 @@ sub check_content_ok {
         'output has correct encoding'
     );
 
-    $content = GLPI::Agent::Tools::XML->new(string => $out)->dump_as_hash();
+    $content = GLPI::Agent::XML->new(string => $out)->dump_as_hash();
     ok($content, 'output is valid XML');
 }

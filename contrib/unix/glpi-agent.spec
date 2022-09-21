@@ -287,7 +287,7 @@ install -m 644 -D  contrib/unix/%{name}.service %{buildroot}%{_unitdir}/%{name}.
 %{_datadir}/%{name}/lib/GLPI/Agent/Tools/Virtualization.pm
 %{_datadir}/%{name}/lib/GLPI/Agent/Tools/Win32*
 %{_datadir}/%{name}/lib/GLPI/Agent/Version.pm
-%{_datadir}/%{name}/lib/GLPI/Agent/XML/
+%{_datadir}/%{name}/lib/GLPI/Agent/XML*
 %{_datadir}/%{name}/lib/GLPI/Agent/Inventory/
 %{_datadir}/%{name}/lib/GLPI/Agent/Protocol/
 

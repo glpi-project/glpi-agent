@@ -10,8 +10,8 @@ use Test::More;
 
 use GLPI::Agent::Version;
 use GLPI::Agent::Inventory;
+use GLPI::Agent::XML;
 use GLPI::Agent::XML::Query::Inventory;
-use GLPI::Agent::Tools::XML;
 
 plan tests => 6;
 
@@ -32,9 +32,9 @@ isa_ok($query, 'GLPI::Agent::XML::Query::Inventory');
 
 my $AgentString = $GLPI::Agent::Version::PROVIDER."-Inventory_v".$GLPI::Agent::Version::VERSION;
 
-my $xml = GLPI::Agent::Tools::XML->new(string => $query->getContent());
+my $xml = GLPI::Agent::XML->new(string => $query->getContent());
 
-isa_ok($xml, 'GLPI::Agent::Tools::XML');
+isa_ok($xml, 'GLPI::Agent::XML');
 
 cmp_deeply(
     $xml->dump_as_hash(),
