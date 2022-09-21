@@ -8,6 +8,7 @@ core:
   of libssh2 remotes
 * Refactoring of inventory output to share same API between glpi-agent, glpi-inventory and
   glpi-esx
+* Introduce GLPI::Agent::Tools::XML API based on XML::LibXML to get rid of deprecated XML::TreePP
 
 inventory:
 * check if we are running in a container before checking we are running in a virtualmachine
