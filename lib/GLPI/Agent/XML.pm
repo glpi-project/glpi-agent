@@ -121,7 +121,9 @@ sub _dump {
     my $ret;
     if ($type == XML_ELEMENT_NODE) { # 1
         my $name = $node->nodeName;
+        my $count = 1;
         foreach my $leaf (map { _dump($_) } $node->childNodes()) {
+            warn "$name(".$count++."): $leaf\n" if $name eq "STORAGE" && $leaf;
             if (ref($leaf) eq 'HASH') {
                 foreach my $key (keys(%{$leaf})) {
                     # Transform key in array ref is necessary
