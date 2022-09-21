@@ -136,7 +136,7 @@ sub _dump {
             } elsif (!ref($ret->{$name})) {
                 $ret->{$name}->{'#text'} .= $leaf;
             } elsif ($leaf) {
-                die "Unsupported value type: $leaf\n";
+                warn "Unsupported value type for $name: '$leaf'".(ref($leaf) ? " (".ref($leaf).")" : "")."\n";
             }
         }
         if ($node->hasAttributes()) {
