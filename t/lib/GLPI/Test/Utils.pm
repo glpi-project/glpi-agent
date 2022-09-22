@@ -13,7 +13,6 @@ use GLPI::Agent::Tools;
 our @EXPORT = qw(
     run_executable
     test_port
-    test_localhost
     mockGetWMIObjects
     mockGetRegistryKey
     unsetProxyEnvVar
@@ -35,11 +34,6 @@ sub test_port {
     }
 
     return 0;
-}
-
-sub test_localhost {
-
-    return inet_aton('localhost');
 }
 
 sub mockGetWMIObjects {
