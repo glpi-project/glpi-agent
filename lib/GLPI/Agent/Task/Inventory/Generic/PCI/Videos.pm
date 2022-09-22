@@ -13,10 +13,7 @@ use GLPI::Agent::Tools::Generic;
 use constant    category    => "video";
 
 sub isEnabled {
-    # both windows and linux have dedicated modules
-    return
-        OSNAME ne 'MSWin32' &&
-        OSNAME ne 'linux';
+    return 1;
 }
 
 sub doInventory {
@@ -37,7 +34,8 @@ sub _getVideos {
     my @videos;
 
     foreach my $device (getPCIDevices(@_)) {
-        next unless $device->{NAME} =~ /graphics|vga|video|display/i;
+        next unless $device->{NAME} =~ /graphics|vga|video|display|3D controller/i;
+
         push @videos, {
             CHIPSET => $device->{NAME},
             NAME    => $device->{MANUFACTURER},

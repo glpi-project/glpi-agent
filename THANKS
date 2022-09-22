@@ -46,6 +46,7 @@ Jérome Lebas: Solaris patches
 Jon Clarke: patch
 Julien Safar: ArchLinux support
 Kevin Roy: patches
+Khad: patch
 Lucas Masse: Solaris Patches
 Ludovic Hutin: patch
 Marcin Kowalski: LXD support
@@ -59,7 +60,7 @@ Nicolas Eisen: patches
 Nicolas Richard: patches and bug reports
 Olivier Andreotti: AIX, Solaris patches
 Olivier Mengué
-Olivier Roussy: minor patches 
+Olivier Roussy: minor patches
 Pablo Nicola: AIX testing samples
 Philippe Camelio: AIX testing samples
 Philippe Libat: patchs and Xen support
