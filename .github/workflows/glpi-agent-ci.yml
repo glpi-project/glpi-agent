@@ -17,20 +17,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Install packages
+    - name: Install cpanminus
       run: |
-        sudo apt -y install cpanminus libmodule-install-perl \
-          libxml-treepp-perl libxml-xpath-perl \
-          libdatetime-perl libparallel-forkmanager-perl libparse-edid-perl \
-          libcpanel-json-xs-perl libossp-uuid-perl libfile-copy-recursive-perl \
-          libtext-template-perl libuniversal-require-perl libnet-ip-perl \
-          libnet-snmp-perl libipc-run-perl libhttp-proxy-perl libio-capture-perl \
-          libhttp-server-simple-perl libhttp-server-simple-authen-perl \
-          libtest-compile-perl libtest-deep-perl libtest-exception-perl \
-          libtest-mockmodule-perl libtest-mockobject-perl libtest-nowarnings-perl \
-          libtest-exception-perl libtest-perl-critic-perl libtest-pod-perl \
-          libextutils-helpers-perl libextutils-installpaths-perl libmodule-build-tiny-perl \
-          libtest-cpan-meta-perl
+        sudo apt -y install cpanminus libmodule-install-perl
     - name: Check environment
       id: check-version
       run: |
@@ -39,6 +28,8 @@ jobs:
     - name: Install deps
       run: |
         cpanm --sudo --installdeps --verbose --notest .
+        cpanm --sudo --verbose --notest Parse::EDID
+        cpanm --sudo --verbose --notest Test::Perl::Critic Test::Vars Test::Pod Test::Pod::Spelling::CommonMistakes Test::Whitespaces Test::CPAN::Meta
         cpanm --sudo --verbose --notest Test::Vars Test::Pod::Spelling::CommonMistakes Test::Whitespaces
     - name: Run make
       run: |
