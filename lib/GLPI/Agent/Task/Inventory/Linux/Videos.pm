@@ -7,6 +7,7 @@ use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Unix;
+use GLPI::Agent::Tools::Generic;
 
 use constant    category    => "video";
 
@@ -90,28 +91,38 @@ sub doInventory {
         );
     }
 
-    return unless $xorgData || $ddcprobeData;
+    my $skipPci;
+    if ($xorgData || $ddcprobeData) {
+        my $video = {
+            CHIPSET    => $xorgData->{product}    || $ddcprobeData->{product},
+            MEMORY     => $xorgData->{memory}     || $ddcprobeData->{memory},
+            NAME       => $xorgData->{name}       || $ddcprobeData->{oem},
+            RESOLUTION => $xorgData->{resolution} || $ddcprobeData->{dtiming},
+            PCISLOT    => $xorgData->{pcislot},
+            PCIID      => $xorgData->{pciid},
+        };
 
-    my $video = {
-        CHIPSET    => $xorgData->{product}    || $ddcprobeData->{product},
-        MEMORY     => $xorgData->{memory}     || $ddcprobeData->{memory},
-        NAME       => $xorgData->{name}       || $ddcprobeData->{oem},
-        RESOLUTION => $xorgData->{resolution} || $ddcprobeData->{dtiming},
-        PCISLOT    => $xorgData->{pcislot},
-        PCIID      => $xorgData->{pciid},
-    };
+        if ($video->{MEMORY} && $video->{MEMORY} =~ s/kb$//i) {
+            $video->{MEMORY} = int($video->{MEMORY} / 1024);
+        }
+        if ($video->{RESOLUTION}) {
+            $video->{RESOLUTION} =~ s/@.*//;
+        }
 
-    if ($video->{MEMORY} && $video->{MEMORY} =~ s/kb$//i) {
-        $video->{MEMORY} = int($video->{MEMORY} / 1024);
+        $inventory->addEntry(
+            section => 'VIDEOS',
+            entry   => $video
+        );
+
+        $skipPci = $video->{PCIID};
     }
-    if ($video->{RESOLUTION}) {
-        $video->{RESOLUTION} =~ s/@.*//;
-    }
 
-    $inventory->addEntry(
-        section => 'VIDEOS',
-        entry   => $video
-    );
+    foreach my $video (_getVideos(logger => $logger, skipPci => $skipPci)) {
+        $inventory->addEntry(
+            section => 'VIDEOS',
+            entry   => $video
+        );
+    }
 }
 
 sub _getDdcprobeData {
@@ -173,6 +184,26 @@ sub _parseXorgFd {
     }
 
     return $data;
+}
+
+sub _getVideos {
+    my (%params) = @_;
+
+    my $skipPci = $params{skipPci};
+    my @videos;
+
+    foreach my $device (getPCIDevices(@_)) {
+        next unless $device->{NAME} =~ /graphics|vga|video|display|3D controller/i;
+        if (defined $skipPci) {
+            next if $device->{PCIID} eq $skipPci;
+        }
+        push @videos, {
+            CHIPSET => $device->{NAME},
+            NAME    => $device->{MANUFACTURER},
+        };
+    }
+
+    return @videos;
 }
 
 1;
