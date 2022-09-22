@@ -44,7 +44,7 @@ Mandatory Perl modules:
 * Net::IP
 * Text::Template
 * UNIVERSAL::require
-* XML::TreePP
+* XML::LibXML
 * Cpanel::JSON::XS
 
 Optional Perl modules:
