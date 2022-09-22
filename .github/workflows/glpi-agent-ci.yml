@@ -29,6 +29,7 @@ jobs:
           libtest-compile-perl libtest-deep-perl libtest-exception-perl \
           libtest-mockmodule-perl libtest-mockobject-perl libtest-nowarnings-perl \
           libtest-exception-perl libtest-perl-critic-perl libtest-pod-perl \
+          libextutils-helpers-perl libextutils-installpaths-perl libmodule-build-tiny-perl \
           libtest-cpan-meta-perl
     - name: Check environment
       id: check-version
