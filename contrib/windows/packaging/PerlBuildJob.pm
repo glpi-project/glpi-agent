@@ -214,6 +214,7 @@ sub _build_steps {
                 { do=>'movedir', args=>[ '<image_dir>/perl/newbin', '<image_dir>/perl/bin' ] },
                 # Move DLLs required by modules next to their calling *.xs.dll
                 _movedllto('libexpat-1', 'XML/Parser/Expat'),
+                _movedllto('libxml2-2', 'XML/LibXML'),
                 _movedllto('libcrypto-1_1'.(_is64bit()?'-x64':''), 'Net/SSLeay'),
                 _movedllto('libssl-1_1'.(_is64bit()?'-x64':''), 'Net/SSLeay'),
                 _movedllto('zlib1', 'Net/SSLeay'),
