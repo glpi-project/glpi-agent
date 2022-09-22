@@ -6,6 +6,7 @@ use parent qw(HTTP::Server::Simple::CGI HTTP::Server::Simple::Authen);
 
 use English qw(-no_match_vars);
 use IO::Socket::SSL;
+use Socket;
 
 use GLPI::Test::Auth;
 
@@ -40,33 +41,6 @@ sub new {
     $self->host('127.0.0.1');
 
     return $self;
-}
-
-# Fixed and very simplified run method refactored from HTTP::Server::Simple run & _default_run methods
-sub run {
-    my $self = shift;
-
-    local $SIG{CHLD} = 'IGNORE';    # reap child processes
-
-    $self->setup_listener;
-    $self->after_setup_listener();
-
-    local $SIG{PIPE} = 'IGNORE'; # If we don't ignore SIGPIPE, a
-                                 # client closing the connection before we
-                                 # finish sending will cause the server to exit
-
-    while ( accept( my $remote = new FileHandle, HTTP::Server::Simple::HTTPDaemon ) ) {
-        $self->stdio_handle($remote);
-
-        # This is the point, we must not continue processing the request if SSL failed !!!
-        if ($self->accept_hook || !$self->{ssl}) {
-            *STDIN  = $self->stdin_handle();
-            *STDOUT = $self->stdout_handle();
-            select STDOUT;
-            &{$self->_process_request};
-        }
-        close $self->stdio_handle;
-    }
 }
 
 sub authen_handler {
@@ -162,6 +136,80 @@ sub background {
     sleep 1; # background() may come back prematurely, so give it a second to fire up
 
     return $pid;
+}
+
+# Use updated _process_request() to avoid error on undefined $remote_sockaddr
+sub _process_request {
+    my $self = shift;
+
+    # Create a callback closure that is invoked for each incoming request;
+    # the $self above is bound into the closure.
+    sub {
+
+        $self->stdio_handle(*STDIN) unless $self->stdio_handle;
+
+ # Default to unencoded, raw data out.
+ # if you're sending utf8 and latin1 data mixed, you may need to override this
+        binmode STDIN,  ':raw';
+        binmode STDOUT, ':raw';
+
+        # The ternary operator below is to protect against a crash caused by IE
+        # Ported from Catalyst::Engine::HTTP (Originally by Jasper Krogh and Peter Edwards)
+        # ( http://dev.catalyst.perl.org/changeset/5195, 5221 )
+
+        my $remote_sockaddr = getpeername( $self->stdio_handle );
+        my $family = $remote_sockaddr ? sockaddr_family($remote_sockaddr) : AF_INET;
+
+        my ( $iport, $iaddr ) = $remote_sockaddr
+                                ? ( ($family == AF_INET6) ? sockaddr_in6($remote_sockaddr)
+                                                          : sockaddr_in($remote_sockaddr) )
+                                : (undef,undef);
+
+        my $loopback = ($family == AF_INET6) ? "::1" : "127.0.0.1";
+        my $peeraddr = $loopback;
+        if ($iaddr) {
+            my ($host_err,$addr, undef) = Socket::getnameinfo($remote_sockaddr,Socket::NI_NUMERICHOST);
+            warn ($host_err) if $host_err;
+            $peeraddr = $addr || $loopback;
+        }
+
+        my ( $method, $request_uri, $proto ) = $self->parse_request;
+
+        unless ($self->valid_http_method($method) ) {
+            $self->bad_request;
+            return;
+        }
+
+        $proto ||= "HTTP/0.9";
+
+        my ( $file, $query_string )
+            = ( $request_uri =~ /([^?]*)(?:\?(.*))?/s );    # split at ?
+
+        $self->setup(
+            method       => $method,
+            protocol     => $proto,
+            query_string => ( defined($query_string) ? $query_string : '' ),
+            request_uri  => $request_uri,
+            path         => $file,
+            localname    => $self->host,
+            localport    => $self->port,
+            peername     => $peeraddr,
+            peeraddr     => $peeraddr,
+            peerport     => $iport,
+        );
+
+        # HTTP/0.9 didn't have any headers (I think)
+        if ( $proto =~ m{HTTP/(\d(\.\d)?)$} and $1 >= 1 ) {
+            my $headers = $self->parse_headers
+                or do { $self->bad_request; return };
+
+            $self->headers($headers);
+        }
+
+        $self->post_setup_hook if $self->can("post_setup_hook");
+
+        $self->handler;
+    }
 }
 
 sub root {
