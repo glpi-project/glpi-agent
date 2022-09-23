@@ -3,21 +3,21 @@ package GLPI::Agent::XML::Response;
 use strict;
 use warnings;
 
-use XML::TreePP;
+use GLPI::Agent::XML;
 
 sub new {
     my ($class, %params) = @_;
 
-    my $tpp = XML::TreePP->new(
+    my $xml = GLPI::Agent::XML->new(string => $params{content});
+    die "content is not an XML message" unless $xml->xml();
+
+    my $content = $xml->dump_as_hash(
         force_array   => [ qw/
             OPTION PARAM MODEL AUTHENTICATION RANGEIP DEVICE GET WALK
-            / ],
+        / ],
         attr_prefix   => '',
         text_node_key => 'content'
     );
-    my $content = $tpp->parse($params{content});
-
-    die "content is not an XML message" unless ref $content eq 'HASH';
     die "content is an invalid XML message" unless exists($content->{REPLY});
 
     my $self = {

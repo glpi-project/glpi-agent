@@ -6,6 +6,9 @@ use warnings;
 use XML::LibXML;
 
 use GLPI::Agent::Logger;
+use GLPI::Agent::Tools;
+
+my $debug = 1;
 
 sub new {
     my ($class, %params) = @_;
@@ -28,6 +31,7 @@ sub _init_libxml {
     $self->{_parser}->set_options(
         load_ext_dtd => 0,
         no_network   => 1,
+        no_blanks    => 1,
     );
 }
 
@@ -106,24 +110,26 @@ sub build_xml {
 sub write {
     my ($self, $hash) = @_;
 
-    $self->build_xml($hash)
-        or return;
+    if ($hash) {
+        $self->build_xml($hash)
+            or return;
+    }
 
     return $self->xml()->serialize(1);
 }
 
 # Recursive API to dump XML::LibXML objects as a hash tree more like XML::TreePP does
 sub _dump {
-    my ($node) = @_;
+    my ($self, $node, %params) = @_;
 
     my $type = $node->nodeType;
+    my $textkey = $params{text_node_key} // '#text';
 
     my $ret;
     if ($type == XML_ELEMENT_NODE) { # 1
         my $name = $node->nodeName;
         my $count = 1;
-        foreach my $leaf (map { _dump($_) } $node->childNodes()) {
-            warn "$name(".$count++."): $leaf\n" if $name eq "STORAGE" && $leaf;
+        foreach my $leaf (map { $self->_dump($_, %params) } $node->childNodes()) {
             if (ref($leaf) eq 'HASH') {
                 foreach my $key (keys(%{$leaf})) {
                     # Transform key in array ref is necessary
@@ -132,34 +138,35 @@ sub _dump {
                             unless ref($ret->{$name}->{$key}) eq 'ARRAY';
                         push @{$ret->{$name}->{$key}}, $leaf->{$key};
                     } else {
-                        $ret->{$name}->{$key} = $leaf->{$key};
+                        my $as_array = ref($params{force_array}) eq 'ARRAY' && any { $key eq $_ } @{$params{force_array}};
+                        $ret->{$name}->{$key} = $as_array ? [ $leaf->{$key} ] : $leaf->{$key};
                     }
                 }
             } elsif (!ref($ret->{$name})) {
-                $ret->{$name}->{'#text'} .= $leaf;
+                $ret->{$name}->{$textkey} .= $leaf;
             } elsif ($leaf) {
                 warn "Unsupported value type for $name: '$leaf'".(ref($leaf) ? " (".ref($leaf).")" : "")."\n";
+                $self->{debug} = $debug;
             }
         }
         if ($node->hasAttributes()) {
             foreach my $attribute ($node->attributes()) {
                 my $attr = $attribute->nodeName();
-                $ret->{$name}->{"-$attr"} = $attribute->getValue();
+                $ret->{$name}->{($params{attr_prefix} // "-").$attr} = $attribute->getValue();
             }
         }
         if (!defined($ret)) {
-            undef $ret->{$name};
-        } elsif (defined($ret->{$name}->{'#text'}) && keys(%{$ret->{$name}}) == 1) {
-            $ret->{$name} = $ret->{$name}->{'#text'};
-        } elsif (!$ret->{$name}->{'#text'}) {
-            delete $ret->{$name}->{'#text'};
+            $ret->{$name} = '';
+        } elsif (defined($ret->{$name}->{$textkey}) && keys(%{$ret->{$name}}) == 1) {
+            my $as_array = ref($params{force_array}) eq 'ARRAY' && any { $name eq $_ } @{$params{force_array}};
+            $ret->{$name} = $as_array ? [ $ret->{$name}->{$textkey} ] : $ret->{$name}->{$textkey};
+        } elsif (!defined($ret->{$name}->{$textkey})) {
+            delete $ret->{$name}->{$textkey};
         }
     } elsif ($type == XML_TEXT_NODE) { # 3
         $ret = $node->textContent;
-        # Clean up text being only XML indentation
-        $ret =~ s/^\n\s*$//m;
     } else {
-        die "Unsupported XML::LibXML node type: $type\n";
+        warn "Unsupported XML::LibXML node type: $type\n";
     }
 
     return $ret;
@@ -167,12 +174,14 @@ sub _dump {
 
 # Return a hash tree of the XML::LibXML content
 sub dump_as_hash {
-    my ($self) = @_;
+    my ($self, %params) = @_;
 
     my $xml = $self->xml()
         or return;
 
-    return _dump($xml->documentElement());
+    my $dump = $self->_dump($xml->documentElement(), %params);
+    print STDERR $self->write() if $self->{debug};
+    return $dump;
 }
 
 1;
