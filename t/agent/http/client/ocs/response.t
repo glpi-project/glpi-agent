@@ -88,11 +88,13 @@ subtest "empty content" => sub {
 
 
 subtest "mixedhtml content" => sub {
-    check_response_ok(
+    check_response_nok(
         scalar $client->send(
             message => $message,
             url     => "http://127.0.0.1:$port/mixedhtml",
         ),
+        $logger,
+        "[http client] unexpected content, starting with: <html><body>hello</body></html> a aee<REPLY><word>hello</word></REPLY>",
     );
 };
 
@@ -142,14 +144,19 @@ $server->stop();
 sub check_response_ok {
     my ($response) = @_;
 
-    plan tests => 3;
+    plan tests => 4;
     ok(defined $response, "response from server");
     isa_ok(
         $response,
         'GLPI::Agent::XML::Response',
         'response class'
     );
-    my $content = $response->getContent();
+
+    my $content;
+    lives_ok {
+        $content = $response->getContent();
+    } "Get response content";
+
     cmp_deeply(
         $content,
         { word => 'hello' },
