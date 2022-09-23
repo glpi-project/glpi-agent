@@ -137,7 +137,7 @@ my %responses = (
 </REPLY>
 ',
         SNMPQUERY   => [
-'<?xml version="1.0" encoding="UTF-8" ?>
+'<?xml version="1.0" encoding="UTF-8"?>
 <REQUEST>
   <CONTENT>
     <AGENT>
@@ -151,7 +151,7 @@ my %responses = (
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>
 ',
-'<?xml version="1.0" encoding="UTF-8" ?>
+'<?xml version="1.0" encoding="UTF-8"?>
 <REQUEST>
   <CONTENT>
     <DEVICE>
@@ -169,7 +169,7 @@ my %responses = (
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>
 ',
-'<?xml version="1.0" encoding="UTF-8" ?>
+'<?xml version="1.0" encoding="UTF-8"?>
 <REQUEST>
   <CONTENT>
     <AGENT>
@@ -182,7 +182,7 @@ my %responses = (
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>
 ',
-'<?xml version="1.0" encoding="UTF-8" ?>
+'<?xml version="1.0" encoding="UTF-8"?>
 <REQUEST>
   <CONTENT>
     <AGENT>
@@ -195,7 +195,7 @@ my %responses = (
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>
 ',
-'<?xml version="1.0" encoding="UTF-8" ?>
+'<?xml version="1.0" encoding="UTF-8"?>
 <REQUEST>
   <CONTENT>
     <AGENT>
@@ -209,7 +209,7 @@ my %responses = (
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>
 ',
-'<?xml version="1.0" encoding="UTF-8" ?>
+'<?xml version="1.0" encoding="UTF-8"?>
 <REQUEST>
   <CONTENT>
     <DEVICE>
@@ -229,7 +229,7 @@ my %responses = (
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>
 ',
-'<?xml version="1.0" encoding="UTF-8" ?>
+'<?xml version="1.0" encoding="UTF-8"?>
 <REQUEST>
   <CONTENT>
     <AGENT>
@@ -242,7 +242,7 @@ my %responses = (
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>
 ',
-'<?xml version="1.0" encoding="UTF-8" ?>
+'<?xml version="1.0" encoding="UTF-8"?>
 <REQUEST>
   <CONTENT>
     <AGENT>
@@ -277,7 +277,7 @@ my %responses = (
 </REPLY>
 ',
         SNMPQUERY   => [
-'<?xml version="1.0" encoding="UTF-8" ?>
+'<?xml version="1.0" encoding="UTF-8"?>
 <REQUEST>
   <CONTENT>
     <AGENT>
@@ -291,13 +291,13 @@ my %responses = (
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>
 ',
-'<?xml version="1.0" encoding="UTF-8" ?>
+'<?xml version="1.0" encoding="UTF-8"?>
 <REQUEST>
   <CONTENT>
     <DEVICE>
       <ERROR>
         <ID>86</ID>
-        <MESSAGE>SNMP emulation error: non-existing file &apos;xxx&apos;</MESSAGE>
+        <MESSAGE>SNMP emulation error: non-existing file \'xxx\'</MESSAGE>
         <TYPE>NETWORKING</TYPE>
       </ERROR>
     </DEVICE>
@@ -308,7 +308,7 @@ my %responses = (
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>
 ',
-'<?xml version="1.0" encoding="UTF-8" ?>
+'<?xml version="1.0" encoding="UTF-8"?>
 <REQUEST>
   <CONTENT>
     <AGENT>
@@ -321,7 +321,7 @@ my %responses = (
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>
 ',
-'<?xml version="1.0" encoding="UTF-8" ?>
+'<?xml version="1.0" encoding="UTF-8"?>
 <REQUEST>
   <CONTENT>
     <AGENT>
@@ -368,7 +368,7 @@ my %responses = (
 </REPLY>
 ',
         SNMPQUERY   => [
-'<?xml version="1.0" encoding="UTF-8" ?>
+'<?xml version="1.0" encoding="UTF-8"?>
 <REQUEST>
   <CONTENT>
     <DEVICE>
@@ -386,7 +386,7 @@ my %responses = (
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>
 ',
-'<?xml version="1.0" encoding="UTF-8" ?>
+'<?xml version="1.0" encoding="UTF-8"?>
 <REQUEST>
   <CONTENT>
     <DEVICE>
@@ -406,7 +406,7 @@ my %responses = (
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>
 ',
-'<?xml version="1.0" encoding="UTF-8" ?>
+'<?xml version="1.0" encoding="UTF-8"?>
 <REQUEST>
   <CONTENT>
     <DEVICE>
@@ -457,13 +457,13 @@ my %responses = (
 </REPLY>
 ',
         SNMPQUERY   => [
-'<?xml version="1.0" encoding="UTF-8" ?>
+'<?xml version="1.0" encoding="UTF-8"?>
 <REQUEST>
   <CONTENT>
     <DEVICE>
       <ERROR>
         <ID>84</ID>
-        <MESSAGE>SNMP emulation error: non-existing file &apos;xxx&apos;</MESSAGE>
+        <MESSAGE>SNMP emulation error: non-existing file \'xxx\'</MESSAGE>
         <TYPE>NETWORKING</TYPE>
       </ERROR>
     </DEVICE>

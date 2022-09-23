@@ -3,7 +3,7 @@ package GLPI::Agent::XML::Query;
 use strict;
 use warnings;
 
-use XML::TreePP;
+use GLPI::Agent::XML;
 
 sub new {
     my ($class, %params) = @_;
@@ -22,13 +22,7 @@ sub new {
 sub getContent {
     my ($self) = @_;
 
-    my $tpp = XML::TreePP->new(
-        indent          => 2,
-        utf8_flag       => 1,
-        output_encoding => 'UTF-8'
-    );
-
-    return $tpp->write({ REQUEST => $self->{h} });
+    return GLPI::Agent::XML->new()->write({ REQUEST => $self->{h} });
 }
 
 

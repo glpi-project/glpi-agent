@@ -97,6 +97,21 @@ sub build_xml {
             $node->appendChild($leaf);
             if (ref($hash->{$key}) eq 'HASH') {
                 $self->build_xml($hash->{$key}, $leaf);
+            } elsif (ref($hash->{$key}) eq 'ARRAY') {
+                foreach my $element (@{$hash->{$key}}) {
+                    # Keep first one and create new ones starting from second loop
+                    unless ($leaf) {
+                        $leaf = $xml->createElement($key);
+                        $node->appendChild($leaf);
+                    }
+                    if (ref($element)) {
+                        $self->build_xml($element, $leaf);
+                    } else {
+                        my $text = $xml->createTextNode($element);
+                        $leaf->appendChild($text);
+                    }
+                    undef $leaf;
+                }
             } else {
                 my $text = $xml->createTextNode($hash->{$key});
                 $leaf->appendChild($text);
