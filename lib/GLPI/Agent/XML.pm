@@ -5,10 +5,7 @@ use warnings;
 
 use XML::LibXML;
 
-use GLPI::Agent::Logger;
 use GLPI::Agent::Tools;
-
-my $debug = 1;
 
 sub new {
     my ($class, %params) = @_;
@@ -81,7 +78,7 @@ sub build_xml {
         if (ref($hash->{$key}) eq 'HASH') {
             $hash = $hash->{$key};
         } elsif (ref($hash->{$key})) {
-            die "Unsupported array ref as $key document root\n";
+            die "GLPI::Agent::XML: Unsupported array ref as $key document root\n";
         } else {
             $root->appendTextNode($hash->{$key});
             return 1;
@@ -134,8 +131,16 @@ sub write {
 }
 
 # Recursive API to dump XML::LibXML objects as a hash tree more like XML::TreePP does
-sub _dump {
-    my ($self, $node, %params) = @_;
+sub dump_as_hash {
+    my ($self, %params) = @_;
+
+    my $node = delete $params{node};
+    unless ($node) {
+        my $xml = $self->xml()
+            or return;
+
+        $node = $xml->documentElement();
+    }
 
     my $type = $node->nodeType;
     my $textkey = $params{text_node_key} // '#text';
@@ -143,8 +148,7 @@ sub _dump {
     my $ret;
     if ($type == XML_ELEMENT_NODE) { # 1
         my $name = $node->nodeName;
-        my $count = 1;
-        foreach my $leaf (map { $self->_dump($_, %params) } $node->childNodes()) {
+        foreach my $leaf (map { $self->dump_as_hash(node => $_, %params) } $node->childNodes()) {
             if (ref($leaf) eq 'HASH') {
                 foreach my $key (keys(%{$leaf})) {
                     # Transform key in array ref is necessary
@@ -160,8 +164,7 @@ sub _dump {
             } elsif (!ref($ret->{$name})) {
                 $ret->{$name}->{$textkey} .= $leaf;
             } elsif ($leaf) {
-                warn "Unsupported value type for $name: '$leaf'".(ref($leaf) ? " (".ref($leaf).")" : "")."\n";
-                $self->{debug} = $debug;
+                warn "GLPI::Agent::XML: Unsupported value type for $name: '$leaf'".(ref($leaf) ? " (".ref($leaf).")" : "")."\n";
             }
         }
         if ($node->hasAttributes()) {
@@ -181,22 +184,10 @@ sub _dump {
     } elsif ($type == XML_TEXT_NODE) { # 3
         $ret = $node->textContent;
     } else {
-        warn "Unsupported XML::LibXML node type: $type\n";
+        warn "GLPI::Agent::XML: Unsupported XML::LibXML node type: $type\n";
     }
 
     return $ret;
-}
-
-# Return a hash tree of the XML::LibXML content
-sub dump_as_hash {
-    my ($self, %params) = @_;
-
-    my $xml = $self->xml()
-        or return;
-
-    my $dump = $self->_dump($xml->documentElement(), %params);
-    print STDERR $self->write() if $self->{debug};
-    return $dump;
 }
 
 1;
