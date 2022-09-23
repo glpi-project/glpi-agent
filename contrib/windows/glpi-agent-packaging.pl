@@ -160,9 +160,13 @@ sub run {
         return;
     }
 
+    # Update PATH to include perl/bin for DLLs loading
+    my $binpath = catfile($self->global->{image_dir}, 'perl/bin');
+    $ENV{PATH} .= ":$binpath";
+
     # Without defined modules, run the tests
-    my $perlbin = catfile($self->global->{image_dir}, 'perl/bin/perl.exe');
-    my $makebin = catfile($self->global->{image_dir}, 'perl/bin/gmake.exe');
+    my $perlbin = catfile($binpath, 'perl.exe');
+    my $makebin = catfile($binpath, 'gmake.exe');
 
     my $makefile_pl_cmd = [ $perlbin, "Makefile.PL"];
     $self->boss->message(2, "Test: gonna run perl Makefile.PL");

@@ -211,14 +211,16 @@ sub _build_steps {
                 _movebin('libwinpthread-1.dll'),
                 _movebin('perl.exe'),
                 _movebin('perl'.$MAJOR.$MINOR.'.dll'),
+                # Also move DLLs required by modules
+                _movedll('libexpat-1'),
+                _movedll('libxml2-2'),
+                _movedll('liblzma-5'),
+                _movedll('libiconv-2'),
+                _movedll('libcrypto-1_1'.(_is64bit()?'-x64':'')),
+                _movedll('libssl-1_1'.(_is64bit()?'-x64':'')),
+                _movedll('zlib1'),
                 { do=>'removedir', args=>[ '<image_dir>/perl/bin' ] },
                 { do=>'movedir', args=>[ '<image_dir>/perl/newbin', '<image_dir>/perl/bin' ] },
-                # Move DLLs required by modules next to their calling *.xs.dll
-                _movedllto('libexpat-1', 'XML/Parser/Expat'),
-                _movedllto('libxml2-2', 'XML/LibXML'),
-                _movedllto('libcrypto-1_1'.(_is64bit()?'-x64':''), 'Net/SSLeay'),
-                _movedllto('libssl-1_1'.(_is64bit()?'-x64':''), 'Net/SSLeay'),
-                _movedllto('zlib1', 'Net/SSLeay'),
                 { do=>'movefile', args=>[ '<image_dir>/c/bin/gmake.exe', '<image_dir>/perl/bin/gmake.exe' ] }, # Needed for tests
                 { do=>'removedir', args=>[ '<image_dir>/bin' ] },
                 { do=>'removedir', args=>[ '<image_dir>/c' ] },
@@ -284,14 +286,14 @@ sub _movebin {
     };
 }
 
-sub _movedllto {
+sub _movedll {
     my ($dll, $to) = @_;
     my $file = $dll.(_is64bit()?'__':'_').'.dll';
     return {
         do      => 'movefile',
         args    => [
             '<image_dir>/c/bin/'.$file,
-            '<image_dir>/perl/vendor/lib/auto/'.$to.'/'.$file
+            '<image_dir>/perl/newbin/'.$file
         ]
     };
 }
