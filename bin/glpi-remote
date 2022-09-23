@@ -13,7 +13,6 @@ use LWP::UserAgent;
 use Pod::Usage;
 use Getopt::Long;
 use Digest::SHA;
-use XML::TreePP;
 use Time::HiRes qw(gettimeofday);
 use File::Which;
 use File::Find;
@@ -21,6 +20,7 @@ use File::Find;
 use GLPI::Agent::Config;
 use GLPI::Agent::Logger;
 use GLPI::Agent::Storage;
+use GLPI::Agent::XML;
 use GLPI::Agent::Task::RemoteInventory::Remote;
 
 our $VERSION = "1.0";
@@ -525,13 +525,11 @@ sub agent {
         }
 
         my $deviceid;
-        eval {
-            my $tpp = XML::TreePP->new();
-            my $tree = $tpp->parse($content);
+        my $xml = GLPI::Agent::XML->new(string => $content);
+        my $tree = $xml->dump_as_hash();
+        if ($tree && $tree->{REQUEST} && $tree->{REQUEST}->{DEVICEID}) {
             $deviceid = $tree->{REQUEST}->{DEVICEID};
-        };
-
-        unless ($deviceid) {
+        } else {
             warn "$host: No deviceid found in returned inventory output, skipping\n";
             next;
         }

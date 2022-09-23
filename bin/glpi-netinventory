@@ -9,7 +9,6 @@ use setup;
 use English qw(-no_match_vars);
 use Getopt::Long;
 use Pod::Usage;
-use XML::TreePP;
 
 use GLPI::Agent::Task::NetInventory;
 use GLPI::Agent::Task::NetInventory::Job;

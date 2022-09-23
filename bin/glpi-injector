@@ -9,9 +9,10 @@ use Fcntl qw(:flock);
 use Getopt::Long;
 use LWP::UserAgent;
 use Pod::Usage;
-use XML::TreePP;
 use Cpanel::JSON::XS;
 use Data::UUID;
+
+use GLPI::Agent::XML;
 
 my $options = {
     useragent => 'GLPI-Injector'
@@ -136,8 +137,8 @@ sub sendContent {
     if ($content =~ /^<\?xml/) {
         undef $agentid;
         if ($options->{"xml-ua"}) {
-            my $tpp = XML::TreePP->new();
-            my $tree = $tpp->parse( $content );
+            my $xml = GLPI::Agent::XML->new(string => $content);
+            my $tree = $xml->dump_as_hash();
             $useragent = $tree->{REQUEST}->{CONTENT}->{VERSIONCLIENT}
                 if $tree && $tree->{REQUEST} && $tree->{REQUEST}->{CONTENT} &&
                     $tree->{REQUEST}->{CONTENT}->{VERSIONCLIENT};
@@ -197,8 +198,8 @@ sub sendContent {
     eval {
         $content = $res->content;
         $content = uncompress($content) if $res->header('Content-type') =~ /x-compress-zlib/;
-        my $tpp = XML::TreePP->new();
-        my $tree = $tpp->parse($content);
+        my $xml = GLPI::Agent::XML->new(string => $content);
+        my $tree = $xml->dump_as_hash();
         $error = $tree->{REPLY}->{ERROR}
             if ref($tree->{REPLY}) eq 'HASH' && exists($tree->{REPLY}->{ERROR});
     };
