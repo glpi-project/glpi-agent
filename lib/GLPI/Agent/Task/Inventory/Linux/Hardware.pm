@@ -84,16 +84,13 @@ sub _getRHNSystemId {
     my ($file) = @_;
 
     return unless has_file($file);
-    return unless XML::TreePP->require();
-    my $tpp = XML::TreePP->new();
-    my $xml = getAllLines(file => $file)
+    return unless GLPI::Agent::XML->require();
+    my $xml = GLPI::Agent::XML->new(file => $file)
         or return;
-    eval {
-        my $h = $tpp->parse($xml);
-        foreach (@{$h->{params}{param}{value}{struct}{member}}) {
-            next unless $_->{name} eq 'system_id';
-            return $_->{value}{string};
-        }
+    my $h = $xml->dump_as_hash();
+    foreach (@{$h->{params}{param}{value}{struct}{member}}) {
+        next unless $_->{name} eq 'system_id';
+        return $_->{value}{string};
     }
 }
 

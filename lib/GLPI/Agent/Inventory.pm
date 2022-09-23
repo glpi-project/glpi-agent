@@ -10,6 +10,7 @@ use UNIVERSAL::require;
 
 use GLPI::Agent::Logger;
 use GLPI::Agent::Tools;
+use GLPI::Agent::XML;
 use GLPI::Agent::Version;
 
 use GLPI::Agent::Protocol::Message;
@@ -656,13 +657,9 @@ sub save {
 
     } elsif ($format eq 'xml') {
 
-        my $tpp = XML::TreePP->new(
-            indent          => 2,
-            utf8_flag       => 1,
-            output_encoding => 'UTF-8'
-        );
+        my $xml = GLPI::Agent::XML->new();
 
-        print $handle $tpp->write({
+        print $handle $xml->write({
             REQUEST => {
                 CONTENT  => $self->getContent(),
                 DEVICEID => $self->getDeviceId(),

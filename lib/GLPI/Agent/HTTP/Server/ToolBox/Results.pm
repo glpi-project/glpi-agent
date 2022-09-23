@@ -9,10 +9,10 @@ use English qw(-no_match_vars);
 use Encode qw(encode);
 use HTML::Entities;
 use File::stat;
-use XML::TreePP;
 
 use GLPI::Agent::Logger;
 use GLPI::Agent::Tools;
+use GLPI::Agent::XML;
 
 use GLPI::Agent::HTTP::Server::ToolBox::Results::Device;
 
@@ -40,6 +40,7 @@ sub new {
         _macs       => {},
         _devices    => {},
         need_init   => 1,
+        _xml        => GLPI::Agent::XML->new(),
     };
 
     bless $self, $class;
@@ -168,9 +169,9 @@ sub xml_analysis {
         # Don't reload file if still loaded and has not been updated
         next if $self->{_mtime}->{$file} && $self->{_mtime}->{$file} == $mtime;
 
-        my $tpp = XML::TreePP->new(utf8_flag => 1);
-        my $tree =$tpp->parsefile($file);
-        next unless $tree;
+        $self->{_xml}->file($file);
+        my $tree = $self->{_xml}->dump_as_hash()
+            or next;
 
         $self->{_mtime}->{$file} = $mtime;
 
@@ -513,7 +514,6 @@ sub _save_inventory {
 
     return unless $device && $device->ip;
 
-    my ($tpp, $xml);
     my $yaml_config = $self->yaml('configuration') || {};
     my $kind_base = $device->isLocalInventory ? 'inventory' : 'netinventory';
     my $file;
@@ -525,9 +525,10 @@ sub _save_inventory {
         $file .= ".xml";
     }
 
+    my $xml;
     if (-e $file) {
-        my $tpp = XML::TreePP->new(utf8_flag => 1);
-        $xml =$tpp->parsefile($file);
+        $self->{_xml}->file($file);
+        $xml = $self->{_xml}->dump_as_hash();
     } else {
         # Without existing inventory we suppose this is a new netinventory
         $xml = {
@@ -579,17 +580,8 @@ sub _save_inventory {
         $source->update_xml($xml, $device);
     }
 
-    unless ($tpp) {
-        $tpp = XML::TreePP->new(
-            first_out               => [ qw(CONTENT DEVICE) ],
-            last_out                => [ 'QUERY' ],
-            ignore_error            => 1,
-            indent                  => 2,
-            empty_element_tag_end   => ' />',
-        );
-    }
     $self->info("Saving updated $kind_base: $file");
-    $tpp->writefile($file, $xml, 'UTF-8');
+    $self->{_xml}->writefile($file, $xml);
 }
 
 sub _register_supported_modules {

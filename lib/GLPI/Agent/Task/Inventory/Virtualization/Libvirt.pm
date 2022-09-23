@@ -6,9 +6,9 @@ use warnings;
 use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
-use XML::TreePP;
 
 use GLPI::Agent::Tools;
+use GLPI::Agent::XML;
 
 sub isEnabled {
     return canRun('virsh');
@@ -113,7 +113,7 @@ sub _parseDumpxml {
 
     my $data;
     eval {
-        $data = XML::TreePP->new()->parse($xml);
+        $data = GLPI::Agent::XML->new(string => $xml)->dump_as_hash();
     };
     if ($EVAL_ERROR) {
         $params{logger}->error("Failed to parse XML output");

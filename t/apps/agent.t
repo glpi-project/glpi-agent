@@ -282,7 +282,7 @@ sub check_content_ok {
 
     like(
         $out,
-        qr/^<\?xml version="1.0" encoding="UTF-8" \?>/,
+        qr/^<\?xml version="1.0" encoding="UTF-8"\s*\?>/,
         'output has correct encoding'
     );
 

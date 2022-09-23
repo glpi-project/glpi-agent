@@ -250,11 +250,10 @@ sub _setESETInfos {
         # wanted node and parse it as XML
         my ($xml) = $string =~ /(<ESET\s.*<\/ESET>)/;
         if ($xml) {
-            XML::TreePP->require();
             my $expiration;
             eval {
-                my $tpp = XML::TreePP->new();
-                my $tree = $tpp->parse($xml);
+                GLPI::Agent::XML->require();
+                my $tree = GLPI::Agent::XML->new(string => $xml)->dump_as_hash();
                 $expiration = $tree->{ESET}->{PRODUCT_LICENSE_FILE}->{LICENSE}->{ACTIVE_PRODUCT}->{-EXPIRATION_DATE};
             };
             # Extracted expiration is like: 2018-11-17T12:00:00Z

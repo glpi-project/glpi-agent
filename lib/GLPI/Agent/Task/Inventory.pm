@@ -8,10 +8,10 @@ use parent 'GLPI::Agent::Task';
 use Config;
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
-use XML::TreePP;
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::Inventory;
+use GLPI::Agent::XML;
 
 use GLPI::Agent::Task::Inventory::Version;
 
@@ -564,10 +564,8 @@ sub _injectContent {
 
     my $content;
     if ($file =~ /\.xml$/) {
-        eval {
-            my $tree = XML::TreePP->new()->parsefile($file);
-            $content = $tree->{REQUEST}->{CONTENT};
-        };
+        my $tree = GLPI::Agent::XML->new(file => $file)->dump_as_hash();
+        $content = $tree->{REQUEST}->{CONTENT};
     } elsif ($file =~ /\.json$/) {
         die "Can't load GLPI Protocol Message library\n"
             unless GLPI::Agent::Protocol::Message->require();

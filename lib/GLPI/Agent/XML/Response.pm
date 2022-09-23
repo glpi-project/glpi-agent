@@ -8,16 +8,17 @@ use GLPI::Agent::XML;
 sub new {
     my ($class, %params) = @_;
 
-    my $xml = GLPI::Agent::XML->new(string => $params{content});
-    die "content is not an XML message" unless $xml->xml();
-
-    my $content = $xml->dump_as_hash(
+    my $xml = GLPI::Agent::XML->new(
         force_array   => [ qw/
             OPTION PARAM MODEL AUTHENTICATION RANGEIP DEVICE GET WALK
         / ],
         attr_prefix   => '',
-        text_node_key => 'content'
+        text_node_key => 'content',
+        string        => $params{content}
     );
+    die "content is not an XML message" unless $xml->xml();
+
+    my $content = $xml->dump_as_hash();
     die "content is an invalid XML message" unless exists($content->{REPLY});
 
     my $self = {

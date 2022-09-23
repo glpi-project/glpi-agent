@@ -7,10 +7,10 @@ use warnings;
 
 use parent 'GLPI::Agent::Task::Inventory::Generic::Databases';
 
-use XML::TreePP;
 use File::Temp;
 
 use GLPI::Agent::Tools;
+use GLPI::Agent::XML;
 use GLPI::Agent::Tools::Unix;
 use GLPI::Agent::Inventory::DatabaseService;
 
@@ -39,10 +39,11 @@ sub _oracleHome {
     my $inventory_xml = $inventory_loc . "/ContentsXML/inventory.xml";
     return unless -e $inventory_xml;
 
-    my $tpp = XML::TreePP->new(
-        force_array   => [ qw/HOME/ ],
+    my $xml = GLPI::Agent::XML->new(
+        force_array => [ qw/HOME/ ],
+        file        => $inventory_xml
     );
-    my $tree = $tpp->parsefile($inventory_xml);
+    my $tree = $xml->dump_as_hash();
     return unless $tree && $tree->{INVENTORY} && $tree->{INVENTORY}->{HOME_LIST}
         && $tree->{INVENTORY}->{HOME_LIST}->{HOME};
     return [

@@ -5,9 +5,8 @@ use warnings;
 
 use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use XML::TreePP;
-
 use GLPI::Agent::Tools;
+use GLPI::Agent::XML;
 
 use constant    category    => "storage";
 
@@ -38,8 +37,7 @@ sub _getStorages {
         %params
     );
     $lines =~ s/^kern.geom.confxml://;
-    my $tpp = XML::TreePP->new();
-    my $tree = $tpp->parse($lines);
+    my $tree = GLPI::Agent::XML->new(string => $lines)->dump_as_hash();
 
     my @storages = ();
     for my $class (@{$tree->{mesh}->{class}}) {

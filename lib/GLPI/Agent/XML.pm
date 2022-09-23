@@ -16,6 +16,11 @@ sub new {
     $self->string($params{string});
     $self->file($params{file});
 
+    foreach my $opt (qw(force_array text_node_key attr_prefix)) {
+        next unless defined($params{$opt});
+        $self->{"_$opt"} = $params{$opt};
+    }
+
     return $self;
 }
 
@@ -130,25 +135,41 @@ sub write {
     return $self->xml()->serialize(1);
 }
 
+sub writefile {
+    my ($self, $file, $hash) = @_;
+
+    if ($hash) {
+        $self->build_xml($hash)
+            or return;
+    }
+
+    my $fh;
+    if (open($fh, '>', $file)) {
+        print $fh $self->xml()->serialize(1);
+        close($fh);
+    }
+}
+
 # Recursive API to dump XML::LibXML objects as a hash tree more like XML::TreePP does
 sub dump_as_hash {
-    my ($self, %params) = @_;
+    my ($self, $node) = @_;
 
-    my $node = delete $params{node};
     unless ($node) {
         my $xml = $self->xml()
             or return;
 
-        $node = $xml->documentElement();
+        $node = $xml->documentElement()
+            or return;
     }
 
     my $type = $node->nodeType;
-    my $textkey = $params{text_node_key} // '#text';
 
     my $ret;
     if ($type == XML_ELEMENT_NODE) { # 1
+        my $textkey     = $self->{_text_node_key} // '#text';
+        my $force_array = $self->{_force_array};
         my $name = $node->nodeName;
-        foreach my $leaf (map { $self->dump_as_hash(node => $_, %params) } $node->childNodes()) {
+        foreach my $leaf (map { $self->dump_as_hash($_) } $node->childNodes()) {
             if (ref($leaf) eq 'HASH') {
                 foreach my $key (keys(%{$leaf})) {
                     # Transform key in array ref is necessary
@@ -157,7 +178,7 @@ sub dump_as_hash {
                             unless ref($ret->{$name}->{$key}) eq 'ARRAY';
                         push @{$ret->{$name}->{$key}}, $leaf->{$key};
                     } else {
-                        my $as_array = ref($params{force_array}) eq 'ARRAY' && any { $key eq $_ } @{$params{force_array}};
+                        my $as_array = ref($force_array) eq 'ARRAY' && any { $key eq $_ } @{$force_array};
                         $ret->{$name}->{$key} = $as_array ? [ $leaf->{$key} ] : $leaf->{$key};
                     }
                 }
@@ -168,15 +189,16 @@ sub dump_as_hash {
             }
         }
         if ($node->hasAttributes()) {
+            my $attr_prefix = $self->{_attr_prefix} // "-";
             foreach my $attribute ($node->attributes()) {
-                my $attr = $attribute->nodeName();
-                $ret->{$name}->{($params{attr_prefix} // "-").$attr} = $attribute->getValue();
+                my $attr = $attr_prefix.$attribute->nodeName();
+                $ret->{$name}->{$attr} = $attribute->getValue();
             }
         }
         if (!defined($ret)) {
             $ret->{$name} = '';
         } elsif (defined($ret->{$name}->{$textkey}) && keys(%{$ret->{$name}}) == 1) {
-            my $as_array = ref($params{force_array}) eq 'ARRAY' && any { $name eq $_ } @{$params{force_array}};
+            my $as_array = ref($force_array) eq 'ARRAY' && any { $name eq $_ } @{$force_array};
             $ret->{$name} = $as_array ? [ $ret->{$name}->{$textkey} ] : $ret->{$name}->{$textkey};
         } elsif (!defined($ret->{$name}->{$textkey})) {
             delete $ret->{$name}->{$textkey};
