@@ -92,6 +92,7 @@ sub build_xml {
     }
 
     foreach my $key (sort keys(%{$hash})) {
+        next unless defined($hash->{$key});
         if ($key =~ /^-(.*)$/) {
             $node->setAttribute($1, $hash->{$key});
         } else {
