@@ -75,7 +75,7 @@ sub _parseAnswer {
 
     return unless $answer;
 
-    my $xml = $self->{_xml}->string($answer);
+    $self->{_xml}->string($answer);
 
     my $dump = $self->{_xml}->dump_as_hash()
         or return;
