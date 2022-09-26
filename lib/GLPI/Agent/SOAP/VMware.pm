@@ -4,21 +4,21 @@ use strict;
 use warnings;
 
 use English qw(-no_match_vars);
-use XML::TreePP;
 use LWP::UserAgent;
 use HTTP::Cookies;
 
 use GLPI::Agent;
+use GLPI::Agent::XML;
 use GLPI::Agent::SOAP::VMware::Host;
 
 sub new {
     my ($class, %params) = @_;
 
     my $self = {
-        url => $params{url},
-        tpp => XML::TreePP->new(
-            force_array => [qw(returnval propSet)],
-            utf8_flag   => 1
+        url  => $params{url},
+        _xml => GLPI::Agent::XML->new(
+            force_array => [ qw(returnval propSet) ],
+            skip_attr   => 1, # Skip attributes while dumpoing as hash
         ),
     };
     bless $self, $class;
@@ -51,13 +51,13 @@ sub _send {
     if ( $res->is_success ) {
         return $res->content;
     } else {
-        my $err    = $res->content;
-        my $tmpRef = {};
+        my $err = $res->content;
+        my $tmpRef;
 
-        eval {
-            $err =~ s/.*(<faultstring>.*<\/faultstring>).*/$1/sg;
-            $tmpRef = $self->{tpp}->parse($err);
-        };
+        if ($err =~ m{(<faultstring>.*</faultstring>)}sg) {
+            $self->{_xml}->string($1);
+            $tmpRef = $self->{_xml}->dump_as_hash();
+        }
 
         my $errorString = $res->status_line;
         if ( $tmpRef && $tmpRef->{faultstring} ) {
@@ -71,30 +71,39 @@ sub _send {
 }
 
 sub _parseAnswer {
-    my ( $self, $answer ) = @_;
+    my ($self, $answer) = @_;
 
     return unless $answer;
 
-    local $INPUT_RECORD_SEPARATOR; # Set input to "slurp" mode.
+    my $xml = $self->{_xml}->string($answer);
 
-    # We simplify the XML structure
-    my $pattern = '.*<\w+Response xmlns="urn:vim25">(.+)</\w+Response>.*$';
-    $answer =~ s/$pattern/$1/sg;
-    $answer =~ s/ (xsi:|)type="[:\w]+"//sg;
-    $answer =~ s/[[:cntrl:]]//g;
-    my $tmpRef = $self->{tpp}->parse($answer);
+    my $dump = $self->{_xml}->dump_as_hash()
+        or return;
+
+    my $envelop = $dump->{'soapenv:Envelope'}
+        or return;
+
+    my $body = $envelop->{'soapenv:Body'}
+        or return;
+
+    my ($bodyKey) = keys(%{$body});
+    my $response = $body->{$bodyKey}
+        or return;
+
+    my $returnval = $response->{'returnval'}
+        or return;
 
     my $ref = [];
-    foreach ( @{ $tmpRef->{returnval} } ) {
-        if ( $_->{propSet} ) {
+    foreach my $val (@{$returnval}) {
+        if ($val->{propSet}) {
             my %tmp;
-            foreach my $p ( @{ $_->{propSet} } ) {
-                next unless $p->{val};
-                $tmp{ $p->{name} } = $p->{val};
+            foreach my $p (@{$val->{propSet}}) {
+                next unless $p->{name} && defined $p->{val};
+                $tmp{$p->{name}} = $p->{val};
             }
-            push @$ref, \%tmp;
+            push @{$ref}, \%tmp;
         } else {
-            push @$ref, $_;
+            push @{$ref}, $val;
         }
     }
 
@@ -156,7 +165,6 @@ sub connect {
     return if $answer =~ /ServerFaultCode/m;
 
     return $self->_parseAnswer($answer);
-
 }
 
 #sub getHostInfo {
@@ -228,9 +236,6 @@ sub _getVirtualMachineById {
         sprintf( $req, $self->{propertyCollector}, $id )
     );
     return [] unless $answer;
-
-    # hack to preserve  annotation / comment formating
-    $answer =~ s/\n/&#10;/gm;
 
     my $ref = $self->_parseAnswer($answer);
     return $ref;

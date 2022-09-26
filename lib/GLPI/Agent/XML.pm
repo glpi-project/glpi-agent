@@ -16,7 +16,7 @@ sub new {
     $self->string($params{string});
     $self->file($params{file});
 
-    foreach my $opt (qw(force_array text_node_key attr_prefix)) {
+    foreach my $opt (qw(force_array text_node_key attr_prefix skip_attr)) {
         next unless defined($params{$opt});
         $self->{"_$opt"} = $params{$opt};
     }
@@ -169,6 +169,7 @@ sub dump_as_hash {
     if ($type == XML_ELEMENT_NODE) { # 1
         my $textkey     = $self->{_text_node_key} // '#text';
         my $force_array = $self->{_force_array};
+        my $skip_attr   = $self->{_skip_attr};
         my $name = $node->nodeName;
         foreach my $leaf (map { $self->dump_as_hash($_) } $node->childNodes()) {
             if (ref($leaf) eq 'HASH') {
@@ -189,7 +190,7 @@ sub dump_as_hash {
                 warn "GLPI::Agent::XML: Unsupported value type for $name: '$leaf'".(ref($leaf) ? " (".ref($leaf).")" : "")."\n";
             }
         }
-        if ($node->hasAttributes()) {
+        if (!$skip_attr && $node->hasAttributes()) {
             my $attr_prefix = $self->{_attr_prefix} // "-";
             foreach my $attribute ($node->attributes()) {
                 my $attr = $attr_prefix.$attribute->nodeName();
