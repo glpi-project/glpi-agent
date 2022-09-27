@@ -3,6 +3,9 @@
 use strict;
 use warnings;
 
+use lib './lib';
+use setup;
+
 use Compress::Zlib;
 use English qw(-no_match_vars);
 use Fcntl qw(:flock);

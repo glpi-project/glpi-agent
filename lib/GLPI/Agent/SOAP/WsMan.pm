@@ -5,10 +5,11 @@ use warnings;
 
 use parent 'GLPI::Agent::HTTP::Client';
 
-use XML::TreePP;
 use HTTP::Request;
 use HTTP::Headers;
-use Encode qw(decode encode);
+use Encode qw(encode);
+
+use GLPI::Agent::XML;
 
 use GLPI::Agent::SOAP::WsMan::Envelope;
 use GLPI::Agent::SOAP::WsMan::Attribute;
@@ -41,7 +42,7 @@ use GLPI::Agent::SOAP::WsMan::MaxElements;
 use GLPI::Agent::SOAP::WsMan::SelectorSet;
 use GLPI::Agent::SOAP::WsMan::Selector;
 
-my $tpp;
+my $xml;
 my $wsman_debug = $ENV{WSMAN_DEBUG} ? 1 : 0;
 
 sub new {
@@ -62,12 +63,11 @@ sub new {
 
     bless $self, $class;
 
-    $tpp = XML::TreePP->new() unless $tpp;
-
-    # Don't send XML declaration, everything is in the Content-Type header
-    $tpp->set( xml_decl => '' );
-
-    $tpp->set( first_out => [ 's:Header' ] );
+    $xml = GLPI::Agent::XML->new(
+        first_out   => 's:Header',
+        no_xml_decl => '',
+        xml_format  => 0,
+    ) unless $xml;
 
     return $self;
 }
@@ -95,17 +95,17 @@ sub debug2 {
 sub _send {
     my ( $self, $envelope, $header ) = @_;
 
-    my $xml = encode('UTF-8', $tpp->write($envelope->get()));
+    my $message = $xml->write($envelope->get());
     return $self->abort("Won't send wrong request")
-        unless $xml;
+        unless $message;
 
     my $headers = HTTP::Headers->new(
         'Content-Type'      => 'application/soap+xml;charset=UTF-8',
-        'Content-length'    => length($xml // ''),
+        'Content-length'    => length($message // ''),
         %{$header},
     );
 
-    my $request = HTTP::Request->new( POST => $self->url(), $headers, $xml );
+    my $request = HTTP::Request->new( POST => $self->url(), $headers, $message );
 
     print STDERR "===>\n", $request->as_string, "===>\n" if $wsman_debug;
 
@@ -117,12 +117,12 @@ sub _send {
     print STDERR "<====\n", $response->as_string, "<====\n" if $wsman_debug;
 
     if ( $response->is_success ) {
-        my $tree = $tpp->parse($response->content);
-        return $tree;
+        $xml->string($response->content);
+        return $xml->dump_as_hash();
     } elsif ($response->header('Content-Type') && $response->header('Content-Type') =~ m{application/soap\+xml}) {
         # In case of failure (error 500) we can analyse the reason and log it
-        my $tree = $tpp->parse($response->content);
-        my $envelope = Envelope->new($tree);
+        $xml->string($response->content);
+        my $envelope = Envelope->new($xml->dump_as_hash());
         if ($envelope->header->action->is("fault")) {
             my $code = $envelope->body->fault->errorCode;
             return $self->abort("WMI resource not available") if $code && $code eq '2150858752';
@@ -322,14 +322,14 @@ sub _extract {
     foreach my $property (@{$properties}) {
         if (ref($item->{$property}) eq 'ARRAY') {
             $hash->{$property} = [
-                map { decode('UTF-8', $_) } @{$item->{$property}}
+                map { $_ } @{$item->{$property}}
             ];
         } elsif (ref($item->{$property}) eq 'HASH') {
             $hash->{$property} = {
                 map { $_ => _extract($item->{$property}, [ keys(%{$item->{$property}}) ]) } keys(%{$item->{$property}})
             };
         } else {
-            $hash->{$property} = decode('UTF-8', $item->{$property});
+            $hash->{$property} = $item->{$property};
         }
     }
 
@@ -469,11 +469,11 @@ sub runmethod {
         my $keynode = $node->get($key);
         @nodes = $keynode->nodes() if $keynode;
         if (@nodes && $key eq 'uValue') {
-            $value = decode('UTF-8', join('', map { chr($_->string()) } @nodes));
+            $value = join('', map { chr($_->string()) } @nodes);
         } elsif (@nodes && $key =~ /^sNames|Types$/) {
-            $value = [ map { decode('UTF-8', $_->string()) } @nodes ];
+            $value = [ map { $_->string() } @nodes ];
         } elsif ($keynode) {
-            my $string = decode('UTF-8', $keynode->string);
+            my $string = $keynode->string;
             $value = $key =~ /^sNames|Types$/ ? [ $string ] : $string;
         }
         if ($params{binds} && $params{binds}->{$key}) {

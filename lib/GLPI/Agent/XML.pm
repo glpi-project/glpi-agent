@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use XML::LibXML;
+use Encode qw(encode decode);
 
 use GLPI::Agent::Tools;
 
@@ -16,7 +17,7 @@ sub new {
     $self->string($params{string});
     $self->file($params{file});
 
-    foreach my $opt (qw(force_array text_node_key attr_prefix skip_attr)) {
+    foreach my $opt (qw(force_array text_node_key attr_prefix skip_attr first_out no_xml_decl xml_format)) {
         next unless defined($params{$opt});
         $self->{"_$opt"} = $params{$opt};
     }
@@ -58,13 +59,13 @@ sub has_xml {
 sub string {
     my ($self, $string) = @_;
 
-    return unless defined($string);
+    return unless defined($string) && length($string);
 
     $self->_init_libxml() unless $self->{_parser};
 
     delete $self->{_xml};
 
-    $self->_xml($self->{_parser}->parse_string($string));
+    $self->_xml($self->{_parser}->parse_string(decode("UTF-8", $string)));
 }
 
 sub file {
@@ -79,7 +80,13 @@ sub file {
     $self->_xml($self->{_parser}->parse_file($file));
 }
 
-sub build_xml {
+sub _encode {
+    my ($string) = @_;
+
+    return encode("UTF-8", $string);
+}
+
+sub _build_xml {
     my ($self, $hash, $node) = @_;
 
     my $xml = $self->_xml();
@@ -99,21 +106,33 @@ sub build_xml {
         } elsif (ref($hash->{$key})) {
             die "GLPI::Agent::XML: Unsupported array ref as $key document root\n";
         } else {
-            $root->appendTextNode($hash->{$key});
+            $root->appendTextNode(_encode($hash->{$key}));
             return 1;
         }
         $node = $root;
     }
 
-    foreach my $key (sort keys(%{$hash})) {
+    my @keys;
+    # Handle first_out option
+    if ($self->{_first_out} && exists($hash->{$self->{_first_out}})) {
+        push @keys, $self->{_first_out};
+        push @keys, sort grep { $_ ne $self->{_first_out} } keys(%{$hash});
+    } else {
+        @keys = sort keys(%{$hash});
+    }
+
+    foreach my $key (@keys) {
         next unless defined($hash->{$key});
         if ($key =~ /^-(.*)$/) {
             $node->setAttribute($1, $hash->{$key});
+        } elsif ($key eq '#text') {
+            my $text = $xml->createTextNode(_encode($hash->{$key}));
+            $node->appendChild($text);
         } else {
             my $leaf = $xml->createElement($key);
             $node->appendChild($leaf);
             if (ref($hash->{$key}) eq 'HASH') {
-                $self->build_xml($hash->{$key}, $leaf);
+                $self->_build_xml($hash->{$key}, $leaf);
             } elsif (ref($hash->{$key}) eq 'ARRAY') {
                 foreach my $element (@{$hash->{$key}}) {
                     # Keep first one and create new ones starting from second loop
@@ -122,15 +141,15 @@ sub build_xml {
                         $node->appendChild($leaf);
                     }
                     if (ref($element)) {
-                        $self->build_xml($element, $leaf);
+                        $self->_build_xml($element, $leaf);
                     } else {
-                        my $text = $xml->createTextNode($element);
+                        my $text = $xml->createTextNode(_encode($element));
                         $leaf->appendChild($text);
                     }
                     undef $leaf;
                 }
             } else {
-                my $text = $xml->createTextNode($hash->{$key});
+                my $text = $xml->createTextNode(_encode($hash->{$key}));
                 $leaf->appendChild($text);
             }
         }
@@ -143,24 +162,31 @@ sub write {
     my ($self, $hash) = @_;
 
     if ($hash) {
-        $self->build_xml($hash)
+        delete $self->{_xml};
+        $self->_build_xml($hash)
             or return;
     }
 
-    return $self->_xml()->serialize(1);
+    if ($self->{_no_xml_decl}) {
+        my $string;
+        foreach my $node ($self->_xml()->childNodes()) {
+            $string .= $node->toString($self->{_xml_format} // 1);
+        }
+        return $string;
+    }
+
+    return $self->_xml()->toString($self->{_xml_format} // 1);
 }
 
 sub writefile {
     my ($self, $file, $hash) = @_;
 
-    if ($hash) {
-        $self->build_xml($hash)
-            or return;
-    }
+    my $string = $self->write($hash);
+    return unless defined($string);
 
     my $fh;
     if (open($fh, '>', $file)) {
-        print $fh $self->_xml()->serialize(1);
+        print $fh $string;
         close($fh);
     }
 }
@@ -204,7 +230,7 @@ sub dump_as_hash {
                 warn "GLPI::Agent::XML: Unsupported value type for $name: '$leaf'".(ref($leaf) ? " (".ref($leaf).")" : "")."\n";
             }
         }
-        if (!$skip_attr && $node->hasAttributes()) {
+        unless ($skip_attr) {
             my $attr_prefix = $self->{_attr_prefix} // "-";
             foreach my $attribute ($node->attributes()) {
                 my $attr = $attr_prefix.$attribute->nodeName();

@@ -647,9 +647,6 @@ sub save {
         return unless $handle;
     }
 
-    binmode $handle, ':encoding(UTF-8)'
-        unless $format eq "json";
-
     if ($format eq 'json') {
 
             my $json = $self->getContent();
@@ -668,6 +665,8 @@ sub save {
         });
 
     } elsif ($format eq 'html') {
+
+        binmode $handle, ':encoding(UTF-8)';
 
         Text::Template->require();
         my $template = Text::Template->new(
