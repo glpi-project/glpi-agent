@@ -16,10 +16,10 @@ sub new {
         text_node_key => 'content',
         string        => $params{content}
     );
-    die "content is not an XML message" unless $xml->xml();
+    die "content is not an XML message" unless $xml->has_xml;
 
     my $content = $xml->dump_as_hash();
-    die "content is an invalid XML message" unless exists($content->{REPLY});
+    die "content is not an expected XML message" unless exists($content->{REPLY});
 
     my $self = {
         content => $content->{REPLY}

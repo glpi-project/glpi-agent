@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use English qw(-no_match_vars);
-use XML::TreePP;
 use XML::XPath;
 use Compress::Zlib;
 use File::Temp;
@@ -12,6 +11,7 @@ use File::Temp;
 use base "GLPI::Agent::HTTP::Server::Plugin";
 
 use GLPI::Agent::Tools;
+use GLPI::Agent::XML;
 use GLPI::Agent::Tools::UUID;
 use GLPI::Agent::HTTP::Client::OCS;
 use GLPI::Agent::HTTP::Client::GLPI;
@@ -375,12 +375,8 @@ sub _handle_proxy_request {
         my $message;
         if ($content_type !~ m|^application/json$|i) {
             # Only not json request expected here is a contact request
-            my $xml;
-            eval {
-                my $tpp = XML::TreePP->new();
-                $xml = $tpp->parse($content);
-            };
-            if ($EVAL_ERROR) {
+            my $xml = GLPI::Agent::XML->new(string => $content)->dump_as_hash();
+            unless ($xml) {
                 $self->debug("Not supported message: $EVAL_ERROR");
                 return $self->proxy_error(403, "Unsupported Content");
             }
@@ -618,7 +614,7 @@ sub _handle_proxy_request {
 
             $self->debug2("PROLOG request from $remoteid");
 
-            my $tpp = XML::TreePP->new(indent => 2);
+            my $xml = GLPI::Agent::XML->new();
             my $data = {
                 REPLY => {
                     RESPONSE    => 'SEND',
@@ -630,7 +626,7 @@ sub _handle_proxy_request {
                 200,
                 'OK',
                 HTTP::Headers->new( 'Content-Type' => 'application/xml' ),
-                $tpp->write($data)
+                $xml->write($data)
             );
 
             $client->send_response($response);

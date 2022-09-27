@@ -34,15 +34,25 @@ sub _init_libxml {
         load_ext_dtd => 0,
         no_network   => 1,
         no_blanks    => 1,
+        # Don't report parsing error
+        recover      => 2,
     );
 }
 
-sub xml {
+sub _xml {
     my ($self, $xml) = @_;
 
     $self->{_xml} = $xml if defined($xml);
 
     return $self->{_xml};
+}
+
+sub has_xml {
+    my ($self) = @_;
+
+    my $xml = $self->_xml;
+
+    return ref($xml) eq 'XML::LibXML::Document' && $xml->documentElement();
 }
 
 sub string {
@@ -52,7 +62,9 @@ sub string {
 
     $self->_init_libxml() unless $self->{_parser};
 
-    $self->xml($self->{_parser}->parse_string($string));
+    delete $self->{_xml};
+
+    $self->_xml($self->{_parser}->parse_string($string));
 }
 
 sub file {
@@ -62,20 +74,22 @@ sub file {
 
     $self->_init_libxml() unless $self->{_parser};
 
-    $self->xml($self->{_parser}->parse_file($file));
+    delete $self->{_xml};
+
+    $self->_xml($self->{_parser}->parse_file($file));
 }
 
 sub build_xml {
     my ($self, $hash, $node) = @_;
 
-    my $xml = $self->xml();
+    my $xml = $self->_xml();
 
     unless ($xml) {
         return unless ref($hash) eq 'HASH' && keys(%{$hash}) == 1;
 
         $self->_init_libxml() unless $self->{_parser};
 
-        $xml = $self->xml(XML::LibXML::Document->new("1.0", "UTF-8"));
+        $xml = $self->_xml(XML::LibXML::Document->new("1.0", "UTF-8"));
 
         my ($key) = keys(%{$hash});
         my $root = $xml->createElement($key);
@@ -133,7 +147,7 @@ sub write {
             or return;
     }
 
-    return $self->xml()->serialize(1);
+    return $self->_xml()->serialize(1);
 }
 
 sub writefile {
@@ -146,7 +160,7 @@ sub writefile {
 
     my $fh;
     if (open($fh, '>', $file)) {
-        print $fh $self->xml()->serialize(1);
+        print $fh $self->_xml()->serialize(1);
         close($fh);
     }
 }
@@ -156,7 +170,7 @@ sub dump_as_hash {
     my ($self, $node) = @_;
 
     unless ($node) {
-        my $xml = $self->xml()
+        my $xml = $self->_xml()
             or return;
 
         $node = $xml->documentElement()
