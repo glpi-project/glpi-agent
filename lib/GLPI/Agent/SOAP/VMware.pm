@@ -80,22 +80,19 @@ sub _parseAnswer {
     my $dump = $self->{_xml}->dump_as_hash()
         or return;
 
-    my $envelop = $dump->{'soapenv:Envelope'}
-        or return;
+    return unless exists($dump->{'soapenv:Envelope'}->{'soapenv:Body'});
 
-    my $body = $envelop->{'soapenv:Body'}
-        or return;
+    my $body = $dump->{'soapenv:Envelope'}->{'soapenv:Body'};
 
     my ($bodyKey) = keys(%{$body});
-    my $response = $body->{$bodyKey}
-        or return;
+    return unless exists($body->{$bodyKey}->{'returnval'});
 
-    my $returnval = $response->{'returnval'}
-        or return;
+    my $returnval = $body->{$bodyKey}->{'returnval'};
+    return unless ref($returnval) eq 'ARRAY';
 
     my $ref = [];
     foreach my $val (@{$returnval}) {
-        if ($val->{propSet}) {
+        if (ref($val->{propSet}) eq 'ARRAY') {
             my %tmp;
             foreach my $p (@{$val->{propSet}}) {
                 next unless $p->{name} && defined $p->{val};
@@ -202,10 +199,10 @@ sub _getVirtualMachineList {
     );
     my $ref = $self->_parseAnswer($answer);
     my @list;
-    if ( ref($ref) eq 'HASH' ) {
+    if (ref($ref) eq 'HASH') {
         push @list, $ref;
     }
-    elsif ($ref) {
+    elsif (ref($ref) eq 'ARRAY') {
         @list = @{$ref};
     }
 
@@ -237,8 +234,7 @@ sub _getVirtualMachineById {
     );
     return [] unless $answer;
 
-    my $ref = $self->_parseAnswer($answer);
-    return $ref;
+    return $self->_parseAnswer($answer) // [];
 }
 
 sub getHostFullInfo {
@@ -260,7 +256,7 @@ sub getHostFullInfo {
         'RetrieveProperties',
         sprintf( $req, $self->{propertyCollector}, $id )
     );
-    my $ref = $self->_parseAnswer($answer);
+    my $ref = $self->_parseAnswer($answer) // [];
     my $vms = [];
     my $machineIdList;
     if ( exists( $ref->[0]{vm}{ManagedObjectReference} ) ) {    # ESX 3.5
@@ -301,7 +297,7 @@ sub getHostIds {
 <skip>0</skip><selectSet xsi:type="TraversalSpec"><name>folderTraversalSpec</name><type>Folder</type><path>childEntity</path><skip>0</skip><selectSet><name>folderTraversalSpec</name></selectSet><selectSet><name>datacenterHostTraversalSpec</name></selectSet><selectSet><name>datacenterVmTraversalSpec</name></selectSet><selectSet><name>datacenterDatastoreTraversalSpec</name></selectSet><selectSet><name>datacenterNetworkTraversalSpec</name></selectSet><selectSet><name>computeResourceRpTraversalSpec</name></selectSet><selectSet><name>computeResourceHostTraversalSpec</name></selectSet><selectSet><name>hostVmTraversalSpec</name></selectSet><selectSet><name>resourcePoolVmTraversalSpec</name></selectSet></selectSet><selectSet xsi:type="TraversalSpec"><name>datacenterDatastoreTraversalSpec</name><type>Datacenter</type><path>datastoreFolder</path><skip>0</skip><selectSet><name>folderTraversalSpec</name></selectSet></selectSet><selectSet xsi:type="TraversalSpec"><name>datacenterNetworkTraversalSpec</name><type>Datacenter</type><path>networkFolder</path><skip>0</skip><selectSet><name>folderTraversalSpec</name></selectSet></selectSet><selectSet xsi:type="TraversalSpec"><name>datacenterVmTraversalSpec</name><type>Datacenter</type><path>vmFolder</path><skip>0</skip><selectSet><name>folderTraversalSpec</name></selectSet></selectSet><selectSet xsi:type="TraversalSpec"><name>datacenterHostTraversalSpec</name><type>Datacenter</type><path>hostFolder</path><skip>0</skip><selectSet><name>folderTraversalSpec</name></selectSet></selectSet><selectSet xsi:type="TraversalSpec"><name>computeResourceHostTraversalSpec</name><type>ComputeResource</type><path>host</path><skip>0</skip></selectSet><selectSet xsi:type="TraversalSpec"><name>computeResourceRpTraversalSpec</name><type>ComputeResource</type><path>resourcePool</path><skip>0</skip><selectSet><name>resourcePoolTraversalSpec</name></selectSet><selectSet><name>resourcePoolVmTraversalSpec</name></selectSet></selectSet><selectSet xsi:type="TraversalSpec"><name>resourcePoolTraversalSpec</name><type>ResourcePool</type><path>resourcePool</path><skip>0</skip><selectSet><name>resourcePoolTraversalSpec</name></selectSet><selectSet><name>resourcePoolVmTraversalSpec</name></selectSet></selectSet><selectSet xsi:type="TraversalSpec"><name>hostVmTraversalSpec</name><type>HostSystem</type><path>vm</path><skip>0</skip><selectSet><name>folderTraversalSpec</name></selectSet></selectSet><selectSet xsi:type="TraversalSpec"><name>resourcePoolVmTraversalSpec</name><type>ResourcePool</type><path>vm</path><skip>0</skip></selectSet></objectSet></specSet></RetrieveProperties></soapenv:Body></soapenv:Envelope>';
 
     my $answer = $self->_send('RetrieveProperties', sprintf($req) );
-    my $ref = $self->_parseAnswer($answer);
+    my $ref = $self->_parseAnswer($answer) // [];
 
     my @ids;
     foreach (@$ref) {
