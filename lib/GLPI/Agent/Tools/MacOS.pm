@@ -9,7 +9,6 @@ use English qw(-no_match_vars);
 use Memoize;
 use POSIX 'strftime';
 use Time::Local;
-use XML::TreePP;
 use UNIVERSAL::require;
 use Storable 'dclone';
 
@@ -65,8 +64,6 @@ sub _getSystemProfilerInfosXML {
     # Decode system_profiler output
     $xmlStr = decode("UTF-8", $xmlStr);
 
-    # As we don't want to use a module platform dependent, we use the XML::TreePP module
-    # with an option to keep XML's elements order
     my $info = {};
     if ($params{type} eq 'SPApplicationsDataType') {
         $info->{Applications} = _extractSoftwaresFromXml(
