@@ -65,10 +65,8 @@ $query = GLPI::Agent::XML::Query::Inventory->new(
     content => $inventory->getContent()
 );
 
-$xml->string($query->getContent());
-
 cmp_deeply(
-    $xml->dump_as_hash(),
+    $xml->string($query->getContent())->dump_as_hash(),
     {
         REQUEST => {
             DEVICEID => 'foo',

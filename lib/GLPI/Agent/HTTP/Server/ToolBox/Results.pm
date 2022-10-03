@@ -169,8 +169,7 @@ sub xml_analysis {
         # Don't reload file if still loaded and has not been updated
         next if $self->{_mtime}->{$file} && $self->{_mtime}->{$file} == $mtime;
 
-        $self->{_xml}->file($file);
-        my $tree = $self->{_xml}->dump_as_hash()
+        my $tree = $self->{_xml}->file($file)->dump_as_hash()
             or next;
 
         $self->{_mtime}->{$file} = $mtime;
@@ -527,8 +526,7 @@ sub _save_inventory {
 
     my $xml;
     if (-e $file) {
-        $self->{_xml}->file($file);
-        $xml = $self->{_xml}->dump_as_hash();
+        $xml = $self->{_xml}->file($file)->dump_as_hash();
     } else {
         # Without existing inventory we suppose this is a new netinventory
         $xml = {

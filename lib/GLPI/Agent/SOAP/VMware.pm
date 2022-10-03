@@ -55,8 +55,7 @@ sub _send {
         my $tmpRef;
 
         if ($err =~ m{(<faultstring>.*</faultstring>)}sg) {
-            $self->{_xml}->string($1);
-            $tmpRef = $self->{_xml}->dump_as_hash();
+            $tmpRef = $self->{_xml}->string($1)->dump_as_hash();
         }
 
         my $errorString = $res->status_line;
@@ -75,9 +74,7 @@ sub _parseAnswer {
 
     return unless $answer;
 
-    $self->{_xml}->string($answer);
-
-    my $dump = $self->{_xml}->dump_as_hash()
+    my $dump = $self->{_xml}->string($answer)->dump_as_hash()
         or return;
 
     return unless exists($dump->{'soapenv:Envelope'}->{'soapenv:Body'});

@@ -15,7 +15,7 @@ sub new {
     bless $self, $class;
 
     $self->string($params{string});
-    $self->file($params{file});
+    $self->file($params{file}) unless $self->has_xml();
 
     foreach my $opt (qw(force_array text_node_key attr_prefix skip_attr first_out no_xml_decl xml_format)) {
         next unless defined($params{$opt});
@@ -48,6 +48,14 @@ sub _xml {
     return $self->{_xml};
 }
 
+sub empty {
+    my ($self) = @_;
+
+    delete $self->{_xml};
+
+    return $self;
+}
+
 sub has_xml {
     my ($self) = @_;
 
@@ -59,25 +67,25 @@ sub has_xml {
 sub string {
     my ($self, $string) = @_;
 
-    return unless defined($string) && length($string);
+    return $self unless defined($string) && length($string);
 
     $self->_init_libxml() unless $self->{_parser};
 
-    delete $self->{_xml};
+    $self->empty->_xml($self->{_parser}->parse_string(decode("UTF-8", $string)));
 
-    $self->_xml($self->{_parser}->parse_string(decode("UTF-8", $string)));
+    return $self;
 }
 
 sub file {
     my ($self, $file) = @_;
 
-    return unless defined($file) && -e $file;
+    return $self unless defined($file) && -e $file;
 
     $self->_init_libxml() unless $self->{_parser};
 
-    delete $self->{_xml};
+    $self->empty->_xml($self->{_parser}->parse_file($file));
 
-    $self->_xml($self->{_parser}->parse_file($file));
+    return $self;
 }
 
 sub _encode {
@@ -114,18 +122,21 @@ sub _build_xml {
 
     my @keys;
     # Handle first_out option
-    if ($self->{_first_out} && exists($hash->{$self->{_first_out}})) {
-        push @keys, $self->{_first_out};
-        push @keys, sort grep { $_ ne $self->{_first_out} } keys(%{$hash});
+    if ($self->{_first_out} && any { exists($hash->{$_}) } @{$self->{_first_out}}) {
+        my @first_out = sort grep { exists($hash->{$_}) } @{$self->{_first_out}};
+        push @keys, @first_out;
+        push @keys, sort grep { my $k = $_ ; ! grep { $_ eq $k } @first_out } keys(%{$hash});
     } else {
         @keys = sort keys(%{$hash});
     }
+
+    my $textkey = $self->{_text_node_key} // '#text';
 
     foreach my $key (@keys) {
         next unless defined($hash->{$key});
         if ($key =~ /^-(.*)$/) {
             $node->setAttribute($1, $hash->{$key});
-        } elsif ($key eq '#text') {
+        } elsif ($key eq $textkey) {
             my $text = $xml->createTextNode(_encode($hash->{$key}));
             $node->appendChild($text);
         } else {
@@ -162,10 +173,11 @@ sub write {
     my ($self, $hash) = @_;
 
     if ($hash) {
-        delete $self->{_xml};
-        $self->_build_xml($hash)
+        $self->empty->_build_xml($hash)
             or return;
     }
+
+    return '' unless $self->has_xml();
 
     if ($self->{_no_xml_decl}) {
         my $string;
@@ -182,7 +194,7 @@ sub writefile {
     my ($self, $file, $hash) = @_;
 
     my $string = $self->write($hash);
-    return unless defined($string);
+    return unless defined($string) && $self->has_xml();
 
     my $fh;
     if (open($fh, '>', $file)) {

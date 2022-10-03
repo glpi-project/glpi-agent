@@ -65,10 +65,8 @@ lives_ok {
 
 isa_ok($message, 'GLPI::Agent::XML::Query');
 
-$xml->string($message->getContent());
-
 cmp_deeply(
-    $xml->dump_as_hash(),
+    $xml->string($message->getContent())->dump_as_hash(),
     {
         REQUEST => {
             CASTOR => [

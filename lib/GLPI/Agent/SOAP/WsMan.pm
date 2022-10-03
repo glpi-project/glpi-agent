@@ -64,7 +64,7 @@ sub new {
     bless $self, $class;
 
     $xml = GLPI::Agent::XML->new(
-        first_out   => 's:Header',
+        first_out   => [ 's:Header' ],
         no_xml_decl => '',
         xml_format  => 0,
     ) unless $xml;
