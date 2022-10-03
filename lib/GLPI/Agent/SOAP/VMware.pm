@@ -18,7 +18,7 @@ sub new {
         url  => $params{url},
         _xml => GLPI::Agent::XML->new(
             force_array => [ qw(returnval propSet) ],
-            skip_attr   => 1, # Skip attributes while dumpoing as hash
+            skip_attr   => 1, # Skip attributes while dumping as hash
         ),
     };
     bless $self, $class;
