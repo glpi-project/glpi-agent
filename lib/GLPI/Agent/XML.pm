@@ -247,6 +247,7 @@ sub dump_as_hash {
         }
     } elsif ($type == XML_TEXT_NODE || $type == XML_CDATA_SECTION_NODE) { # 3 & 4
         $ret = $node->textContent;
+        chomp($ret);
     } else {
         warn "GLPI::Agent::XML: Unsupported XML::LibXML node type: $type\n";
     }
