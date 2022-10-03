@@ -452,7 +452,7 @@ jobs:
           libtest-exception-perl libtest-mockmodule-perl                   \
           libtest-mockobject-perl libtext-template-perl                    \
           libsocket-getaddrinfo-perl libuniversal-require-perl liburi-perl \
-          libwww-perl libxml-treepp-perl libxml-xpath-perl libyaml-perl    \
+          libwww-perl libxml-libxml-perl libxml-xpath-perl libyaml-perl    \
           libossp-uuid-perl libcpanel-json-xs-perl devscripts
       shell: bash
     - name: Build debian packages

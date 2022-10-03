@@ -31,7 +31,6 @@ requires 'Net::IP'            => '0';
 requires 'Text::Template'     => '0';
 requires 'UNIVERSAL::require' => '0';
 requires 'XML::LibXML'        => '0';
-requires 'XML::TreePP'        => '0.26';
 requires 'XML::XPath'         => '0';
 requires 'YAML::Tiny'         => '0';
 requires 'Memoize'            => '0';

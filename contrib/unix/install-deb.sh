@@ -64,7 +64,7 @@ echo "Installing agent dependencies"
     apt-get -y install dmidecode hwdata ucf hdparm
     apt-get -y install perl libuniversal-require-perl libwww-perl libparse-edid-perl
     apt-get -y install libproc-daemon-perl libfile-which-perl libhttp-daemon-perl
-    apt-get -y install libxml-treepp-perl libyaml-perl libnet-cups-perl libnet-ip-perl
+    apt-get -y install libxml-libxml-perl libyaml-perl libnet-cups-perl libnet-ip-perl
     apt-get -y install libdigest-sha-perl libsocket-getaddrinfo-perl libtext-template-perl
     apt-get -y install libxml-xpath-perl
     apt-get -y install libwrite-net-perl
