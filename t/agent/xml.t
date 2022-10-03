@@ -346,12 +346,11 @@ my $xmldir  = tempdir();
 my $tpp;
 if (XML::TreePP->require()) {
     $tpp = XML::TreePP->new();
-    #~ $tpp->set( output_encoding => 'UTF-8', utf8_flag => 1 );
 }
 
 plan tests =>
-    (scalar keys %xmls) * 12 -
-    (2 * grep { $xmls{$_}->{skip_tpp_check} } keys %xmls) +
+    (scalar keys %xmls) * 10 +
+    2 * ($tpp ? 1 : 0) * ((scalar keys %xmls) - grep { $xmls{$_}->{skip_tpp_check} } keys %xmls) +
     (scalar @xml_files) * 2 +
     (scalar keys %file_cases) +
     2 * ($tpp ? 1 : 0) * (scalar(@xml_files) - @skip_treepp_test) +
