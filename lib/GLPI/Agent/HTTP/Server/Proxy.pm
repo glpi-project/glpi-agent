@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use English qw(-no_match_vars);
-use XML::XPath;
 use Compress::Zlib;
 use File::Temp;
 
@@ -573,20 +572,15 @@ sub _handle_proxy_request {
     my $deviceid;
     if ($content =~ m|^<\?xml|ms) {
         # Check if it's a PROLOG request
-        my $parser = XML::XPath->new(xml => $content);
-
-        # Don't validate XML against DTD, parsing may fail if a proxy is active
-        $XML::XPath::ParseParamEnt = 0;
-
-        my $query;
-        eval {
-            $query = $parser->getNodeText("/REQUEST/QUERY");
-        };
-        if ($EVAL_ERROR) {
+        my $xml = GLPI::Agent::XML->new(string => $content);
+        unless ($xml->has_xml()) {
             $self->info("Unsupported content in $self->{request} request from $clientIp");
             $self->debug("Content from $clientIp was starting with '".(substr($content,0,40))."'");
             return $self->proxy_error(403, 'Unsupported xml content');
         }
+
+        my $dump = $xml->dump_as_hash();
+        my $query = exists($dump->{REQUEST}->{QUERY}) ? $dump->{REQUEST}->{QUERY} : '';
 
         unless ($query && $query =~ /^PROLOG|INVENTORY$/) {
             $self->info("Not supported ".($query||"unknown")." query from $remoteid");
@@ -600,7 +594,7 @@ sub _handle_proxy_request {
             return $self->proxy_error(403, 'Unsupported query');
         }
 
-        $deviceid = $parser->getNodeText("/REQUEST/DEVICEID");
+        $deviceid = exists($dump->{REQUEST}->{DEVICEID}) ? $dump->{REQUEST}->{DEVICEID} : '';
 
         unless ($deviceid) {
             $self->info("Not supported $query query from $remoteid");
