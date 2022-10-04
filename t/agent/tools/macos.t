@@ -5566,11 +5566,20 @@ my %dateconv = (
     "2009-04-06T23:42:37Z" => [ 3*3600,     "07/04/2009" ],
 );
 
+my %datesStr = (
+    "not a date"      => 'not a date',
+    "7/8/15 11:11 PM" => '08/07/2015',
+    "7/31/09 9:18 AM" => '31/07/2009',
+    "1/13/10 6:16 PM" => '13/01/2010',
+    "04/09/11 22:42"  => '09/04/2011'
+);
+
 plan tests =>
     scalar (keys %system_profiler_tests) +
     scalar @ioreg_tests
     + 6 * scalar(keys %xmlparsing) + 3 * scalar(grep { $xmlparsing{$_}->{flatfile} } keys(%xmlparsing))
     + scalar (keys %dateconv)
+    + scalar (keys %datesStr)
     + 1;
 
 foreach my $test (keys %system_profiler_tests) {
@@ -5591,12 +5600,6 @@ foreach my $test (keys(%xmlparsing)) {
     if ($xmlparsing{$test}->{flatfile}) {
         my $flatFile = 'resources/macos/system_profiler/'.$xmlparsing{$test}->{flatfile};
         my $softwaresFromFlatFile = GLPI::Agent::Tools::MacOS::getSystemProfilerInfos(file => $flatFile, type => $type);
-
-        # Fix Last Modified date from flat file using expected API
-        foreach my $soft (values(%{$softwaresFromFlatFile->{"Applications"}})) {
-            $soft->{'Last Modified'} = GLPI::Agent::Task::Inventory::MacOS::Softwares::_formatDate($soft->{'Last Modified'})
-                if $soft->{'Last Modified'};
-        }
 
         ok (ref($softwaresFromFlatFile) eq 'HASH');
         cmp_deeply(
@@ -5646,6 +5649,11 @@ foreach my $test (keys(%xmlparsing)) {
 foreach my $date (keys(%dateconv)) {
     my $convertedDate = GLPI::Agent::Tools::MacOS::_getOffsetDate($date, $dateconv{$date}->[0]);
     ok ($convertedDate eq $dateconv{$date}->[1], $date . ': ' . $convertedDate . ' eq ' . $dateconv{$date}->[1] . ' ?');
+}
+
+for my $dateStr (keys(%datesStr)) {
+    my $formatted = GLPI::Agent::Tools::MacOS::_formatDate($dateStr);
+    ok ($formatted eq $datesStr{$dateStr}, "'" . $datesStr{$dateStr} ."' expected but got '" . $formatted . "'");
 }
 
 SKIP : {

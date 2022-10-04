@@ -35,14 +35,9 @@ sub _getSoftwaresList {
     my (%params) = @_;
 
     my $infos;
-    my $datesAlreadyFormatted = 1;
-    # when format used is 'text', dates are not formatted
-    # they have to be formatted so we use this variable to format dates if needed
-    if (!$params{format} || $params{format} eq 'text') {
-        $datesAlreadyFormatted = 0;
-    }
-    my $localTimeOffset = GLPI::Agent::Tools::MacOS::detectLocalTimeOffset();
-    $infos = GLPI::Agent::Tools::MacOS::getSystemProfilerInfos(
+
+    my $localTimeOffset = detectLocalTimeOffset();
+    $infos = getSystemProfilerInfos(
         %params,
         type            => 'SPApplicationsDataType',
         localTimeOffset => $localTimeOffset
@@ -59,22 +54,20 @@ sub _getSoftwaresList {
             $app->{'Get Info String'} &&
             $app->{'Get Info String'} =~ /^\S+, [A-Z]:\\/;
 
-        my $formattedDate = $app->{'Last Modified'};
-        if (!$datesAlreadyFormatted) {
-            $formattedDate = _formatDate($formattedDate);
-        }
-
-        my ($category, $userName) = _extractSoftwareSystemCategoryAndUserName($app->{'Location'});
-        push @softwares, {
+        my $soft = {
             NAME      => $name,
             VERSION   => $app->{'Version'},
-            COMMENTS  => $app->{'Kind'} ? '[' . $app->{'Kind'} . ']' : undef,
-            PUBLISHER => $app->{'Get Info String'},
-            # extract date's data and format these data
-            INSTALLDATE => $formattedDate,
-            SYSTEM_CATEGORY => $category,
-            USERNAME => $userName
         };
+
+        $soft->{PUBLISHER} = $app->{'Get Info String'} if $app->{'Get Info String'};
+        $soft->{INSTALLDATE} = $app->{'Last Modified'} if $app->{'Last Modified'};
+        $soft->{COMMENTS} = '[' . $app->{'Kind'} . ']' if $app->{'Kind'};
+
+        my ($category, $username) = _extractSoftwareSystemCategoryAndUserName($app->{'Location'});
+        $soft->{SYSTEM_CATEGORY} = $category if $category;
+        $soft->{USERNAME} = $username if $username;
+
+        push @softwares, $soft;
     }
 
     return \@softwares;
@@ -99,16 +92,6 @@ sub _extractSoftwareSystemCategoryAndUserName {
     }
 
     return ($category, $userName);
-}
-
-sub _formatDate {
-    my ($dateStr) = @_;
-
-    my @date = $dateStr =~ /^\s*(\d{1,2})\/(\d{1,2})\/(\d{2})\s*/;
-    return @date == 3 ?
-        sprintf("%02d/%02d/%d", $date[1], $date[0], 2000+$date[2])
-        :
-        $dateStr;
 }
 
 1;

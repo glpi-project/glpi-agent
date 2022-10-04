@@ -19,6 +19,7 @@ our @EXPORT = qw(
     getSystemProfilerInfos
     getIODevices
     getBootTime
+    detectLocalTimeOffset
 );
 
 memoize('getSystemProfilerInfos');
@@ -239,6 +240,16 @@ sub detectLocalTimeOffset {
     return -(timelocal(@gmTime) - timegm(@gmTime));
 }
 
+sub _formatDate {
+    my ($dateStr) = @_;
+
+    my @date = $dateStr =~ /^\s*(\d{1,2})\/(\d{1,2})\/(\d{2})\s*/;
+    return @date == 3 ?
+        sprintf("%02d/%02d/%d", $date[1], $date[0], 2000+$date[2])
+        :
+        $dateStr;
+}
+
 sub _dumpSoftwares {
     my ($softlist, $localtimeOffset) = @_;
 
@@ -341,6 +352,9 @@ sub getSystemProfilerInfos {
                 }
                 $parent_node = $parents[-1]->[0];
             }
+
+            # Handle 'Last Modified' case
+            $value = _formatDate($value) if $key eq 'Last Modified';
 
             # add the value to the current node
             $parent_node->{$key} = $value;
