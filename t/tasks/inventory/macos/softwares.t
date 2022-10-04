@@ -195,7 +195,7 @@ my %tests = (
             'PUBLISHER' => '6.0, © Copyright 2003-2009 Apple  Inc., all rights reserved.',
             'USERNAME' => '',
             'SYSTEM_CATEGORY' => 'System/Library',
-            'NAME' => 'Création de page Web',
+            'NAME' => 'Création de page Web',
             'COMMENTS' => '[Universal]',
             'INSTALLDATE' => '05/01/2011',
             'VERSION' => '6.0'
@@ -249,7 +249,7 @@ my %tests = (
             'PUBLISHER' => '4.6, Copyright 2008 Apple Computer, Inc.',
             'USERNAME' => '',
             'SYSTEM_CATEGORY' => 'System/Library',
-            'NAME' => 'Outil d’étalonnage du moniteur',
+            'NAME' => 'Outil d’étalonnage du moniteur',
             'INSTALLDATE' => '19/05/2009',
             'COMMENTS' => '[Intel]',
             'VERSION' => '4.6'
@@ -413,7 +413,7 @@ my %tests = (
             'VERSION' => '14.0.2',
             'PUBLISHER' => '14.0.2 (101115), © 2010 Microsoft Corporation. All rights reserved.',
             'USERNAME' => '',
-            'NAME' => 'Utilitaire de base de données Microsoft',
+            'NAME' => 'Utilitaire de base de données Microsoft',
             'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2011'
         },
         {
@@ -782,7 +782,7 @@ my %tests = (
             'VERSION' => '2.3.8',
             'PUBLISHER' => '2.3.8, Copyright (c) 2010 Apple Inc. All rights reserved.',
             'SYSTEM_CATEGORY' => 'Applications/Utilities',
-            'NAME' => 'Échange de fichiers Bluetooth',
+            'NAME' => 'Échange de fichiers Bluetooth',
             'USERNAME' => ''
         },
         {
@@ -924,7 +924,7 @@ my %tests = (
             'VERSION' => '1.1',
             'INSTALLDATE' => '09/07/2008',
             'COMMENTS' => '[Universal]',
-            'NAME' => 'À propos d’AHT',
+            'NAME' => 'À propos d’AHT',
             'SYSTEM_CATEGORY' => 'Library/Documentation',
             'USERNAME' => '',
             'PUBLISHER' => 'Apple Hardware Test Read Me'
@@ -1012,7 +1012,7 @@ my %tests = (
         },
         {
             'PUBLISHER' => '1.5.5 (155.2), Copyright © 2006-2009 Apple Inc. All Rights Reserved.',
-            'NAME' => 'Agent de la borne d’accès AirPort',
+            'NAME' => 'Agent de la borne d’accès AirPort',
             'SYSTEM_CATEGORY' => 'System/Library',
             'USERNAME' => '',
             'COMMENTS' => '[Universal]',
@@ -1313,7 +1313,7 @@ my %tests = (
             'VERSION' => '1.1.3',
             'PUBLISHER' => undef,
             'SYSTEM_CATEGORY' => 'System/Library',
-            'NAME' => 'Diagnostic réseau',
+            'NAME' => 'Diagnostic réseau',
             'USERNAME' => ''
         },
         {
@@ -1483,7 +1483,7 @@ my %tests = (
             'INSTALLDATE' => '24/04/2009',
             'COMMENTS' => '[Intel]',
             'SYSTEM_CATEGORY' => 'Applications/Utilities',
-            'NAME' => 'Éditeur AppleScript',
+            'NAME' => 'Éditeur AppleScript',
             'USERNAME' => '',
             'PUBLISHER' => undef
         },
@@ -1500,7 +1500,7 @@ my %tests = (
             'PUBLISHER' => '2.1.0 (100825), © 2010 Microsoft Corporation. All rights reserved.',
             'USERNAME' => '',
             'SYSTEM_CATEGORY' => 'Applications',
-            'NAME' => 'Connexion Bureau à Distance',
+            'NAME' => 'Connexion Bureau à Distance',
             'INSTALLDATE' => '13/01/2011',
             'COMMENTS' => '[Intel]',
             'VERSION' => '2.1.0'
@@ -1515,7 +1515,7 @@ my %tests = (
             'PUBLISHER' => undef
         },
         {
-            'NAME' => 'Exposé',
+            'NAME' => 'Exposé',
             'SYSTEM_CATEGORY' => 'Applications/Utilities',
             'USERNAME' => '',
             'PUBLISHER' => '1.1, Copyright 2007-2008 Apple Inc.',
@@ -1652,7 +1652,7 @@ my %tests = (
         {
             'PUBLISHER' => '1.1.1, Copyright © 2007-2009 Apple Inc., All Rights Reserved.',
             'USERNAME' => '',
-            'NAME' => 'Partage d’écran',
+            'NAME' => 'Partage d’écran',
             'SYSTEM_CATEGORY' => 'System/Library',
             'INSTALLDATE' => '02/07/2009',
             'COMMENTS' => '[Universal]',
@@ -1698,7 +1698,7 @@ my %tests = (
             'PUBLISHER' => undef,
             'USERNAME' => '',
             'SYSTEM_CATEGORY' => 'Applications/Utilities',
-            'NAME' => 'Trousseau d’accès',
+            'NAME' => 'Trousseau d’accès',
             'COMMENTS' => '[Intel]',
             'INSTALLDATE' => '07/07/2010',
             'VERSION' => '4.1'
@@ -1736,7 +1736,7 @@ my %tests = (
             'VERSION' => '2.3.8',
             'PUBLISHER' => '2.3.8, Copyright (c) 2010 Apple Inc. All rights reserved.',
             'SYSTEM_CATEGORY' => 'System/Library',
-            'NAME' => 'Assistant réglages Bluetooth',
+            'NAME' => 'Assistant réglages Bluetooth',
             'USERNAME' => ''
         },
         {
@@ -1913,7 +1913,7 @@ my %tests = (
         {
             'PUBLISHER' => '10.6.0, Copyright 1997-2009 Apple, Inc.',
             'USERNAME' => '',
-            'NAME' => 'Informations Système',
+            'NAME' => 'Informations Système',
             'SYSTEM_CATEGORY' => 'Applications/Utilities',
             'INSTALLDATE' => '05/01/2011',
             'COMMENTS' => '[Universal]',
@@ -1942,7 +1942,7 @@ my %tests = (
             'COMMENTS' => '[Universal]',
             'INSTALLDATE' => '20/02/2011',
             'USERNAME' => '',
-            'NAME' => 'Mise à jour de logiciels',
+            'NAME' => 'Mise à jour de logiciels',
             'SYSTEM_CATEGORY' => 'System/Library',
             'PUBLISHER' => 'Software Update version 4.0, Copyright © 2000-2009, Apple Inc. All rights reserved.'
         },
@@ -2033,7 +2033,7 @@ my %tests = (
             'VERSION' => '7.0',
             'PUBLISHER' => undef,
             'SYSTEM_CATEGORY' => 'Applications',
-            'NAME' => 'Préférences Système',
+            'NAME' => 'Préférences Système',
             'USERNAME' => ''
         },
         {
@@ -2068,14 +2068,14 @@ my %tests = (
             'INSTALLDATE' => '19/05/2009',
             'COMMENTS' => '[Intel]',
             'SYSTEM_CATEGORY' => 'Applications/Utilities',
-            'NAME' => 'Installation à distance de Mac OS X',
+            'NAME' => 'Installation à distance de Mac OS X',
             'USERNAME' => '',
             'PUBLISHER' => 'Remote Install Mac OS X 1.1.1, Copyright © 2007-2009 Apple Inc. All rights reserved'
         },
         {
             'PUBLISHER' => undef,
             'USERNAME' => '',
-            'NAME' => 'MÀJ du programme interne Bluetooth',
+            'NAME' => 'MÀJ du programme interne Bluetooth',
             'SYSTEM_CATEGORY' => 'Applications/Utilities',
             'COMMENTS' => '[Intel]',
             'INSTALLDATE' => '01/08/2009',
@@ -2147,7 +2147,7 @@ my %tests = (
         {
             'USERNAME' => '',
             'SYSTEM_CATEGORY' => 'Applications',
-            'NAME' => 'Aperçu',
+            'NAME' => 'Aperçu',
             'PUBLISHER' => '5.0.1, Copyright 2002-2009 Apple Inc.',
             'VERSION' => '5.0.3',
             'INSTALLDATE' => '05/01/2011',
@@ -2221,7 +2221,7 @@ my %tests = (
             'INSTALLDATE' => '19/05/2009',
             'VERSION' => '1.6',
             'PUBLISHER' => '1.6',
-            'NAME' => 'Assistant réglages de réseau',
+            'NAME' => 'Assistant réglages de réseau',
             'SYSTEM_CATEGORY' => 'System/Library',
             'USERNAME' => ''
         },
@@ -2247,7 +2247,7 @@ my %tests = (
             'PUBLISHER' => '12.2.8 (101117), © 2007 Microsoft Corporation. All rights reserved.',
             'USERNAME' => '',
             'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
-            'NAME' => 'Organigramme hiérarchique',
+            'NAME' => 'Organigramme hiérarchique',
             'COMMENTS' => '[Universal]',
             'INSTALLDATE' => '27/12/2010',
             'VERSION' => '12.2.8'
@@ -2310,7 +2310,7 @@ my %tests = (
             'VERSION' => '3.7.2',
             'COMMENTS' => '[Intel]',
             'INSTALLDATE' => '28/05/2009',
-            'NAME' => 'Colorimètre numérique',
+            'NAME' => 'Colorimètre numérique',
             'SYSTEM_CATEGORY' => 'Applications/Utilities',
             'USERNAME' => '',
             'PUBLISHER' => '3.7.2, Copyright 2001-2008 Apple Inc. All Rights Reserved.'
@@ -2353,7 +2353,7 @@ my %tests = (
         },
         {
             'SYSTEM_CATEGORY' => 'System/Library',
-            'NAME' => 'Utilitaire d’emplacement de mémoire',
+            'NAME' => 'Utilitaire d’emplacement de mémoire',
             'USERNAME' => '',
             'PUBLISHER' => undef,
             'VERSION' => '1.4.1',
@@ -2370,7 +2370,7 @@ my %tests = (
             'INSTALLDATE' => '05/01/2011'
         },
         {
-            'NAME' => 'Résolution des conflits',
+            'NAME' => 'Résolution des conflits',
             'SYSTEM_CATEGORY' => 'System/Library',
             'USERNAME' => '',
             'PUBLISHER' => '1.0, Copyright Apple Computer Inc. 2004',
@@ -2471,7 +2471,7 @@ my %tests = (
         {
             'PUBLISHER' => 'ver3.00, ©2005-2009 Brother Industries, Ltd. All Rights Reserved.',
             'USERNAME' => '',
-            'NAME' => 'Brother Contrôleur d\'état',
+            'NAME' => 'Brother Contrôleur d\'état',
             'SYSTEM_CATEGORY' => 'Library/Printers',
             'INSTALLDATE' => '19/05/2009',
             'COMMENTS' => '[Intel]',
@@ -2646,7 +2646,7 @@ my %tests = (
             'PUBLISHER' => undef,
             'USERNAME' => '',
             'SYSTEM_CATEGORY' => 'Applications/Utilities',
-            'NAME' => 'Préférences Java'
+            'NAME' => 'Préférences Java'
         },
         {
             'VERSION' => '1.1',
@@ -2761,7 +2761,7 @@ my %tests = (
             'INSTALLDATE' => '31/07/2009',
             'COMMENTS' => '[Universal]',
             'USERNAME' => '',
-            'NAME' => 'Assistant réglages',
+            'NAME' => 'Assistant réglages',
             'SYSTEM_CATEGORY' => 'System/Library',
             'PUBLISHER' => '10.6'
         },
@@ -2770,7 +2770,7 @@ my %tests = (
             'INSTALLDATE' => '19/05/2009',
             'COMMENTS' => '[Intel]',
             'SYSTEM_CATEGORY' => 'System/Library',
-            'NAME' => 'Service de résumé',
+            'NAME' => 'Service de résumé',
             'USERNAME' => '',
             'PUBLISHER' => 'Summary Service Version  2'
         },
@@ -2842,7 +2842,7 @@ my %tests = (
             'COMMENTS' => '[Universal]',
             'VERSION' => '12.2.8',
             'PUBLISHER' => '12.2.8 (101117), © 2007 Microsoft Corporation. All rights reserved.',
-            'NAME' => 'Bibliothèque de projets Microsoft',
+            'NAME' => 'Bibliothèque de projets Microsoft',
             'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
             'USERNAME' => ''
         },
@@ -3253,7 +3253,7 @@ my %tests = (
         },
         {
             'PUBLISHER' => undef,
-            'NAME' => 'Éditeur d\'équations Microsoft',
+            'NAME' => 'Éditeur d\'équations Microsoft',
             'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2011',
             'USERNAME' => '',
             'COMMENTS' => '[Intel]',
@@ -3262,7 +3262,7 @@ my %tests = (
         },
         {
             'USERNAME' => 'lubrano',
-            'NAME' => 'Zimbra Desktop désinstallateur',
+            'NAME' => 'Zimbra Desktop désinstallateur',
             'SYSTEM_CATEGORY' => 'zimbra/zdesktop',
             'PUBLISHER' => '1.0.4',
             'VERSION' => '1.0.4',
@@ -3352,7 +3352,7 @@ my %tests = (
         },
         {
             'USERNAME' => '',
-            'NAME' => 'Centre de téléchargement Microsoft',
+            'NAME' => 'Centre de téléchargement Microsoft',
             'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2011',
             'PUBLISHER' => '14.0.2 (101115), © 2010 Microsoft Corporation. All rights reserved.',
             'VERSION' => '14.0.2',
@@ -3398,7 +3398,7 @@ my %tests = (
         {
             'PUBLISHER' => 'Version 1.4.6, Copyright © 2000-2009 Apple Inc. All rights reserved.',
             'SYSTEM_CATEGORY' => 'Applications/Utilities',
-            'NAME' => 'Utilitaire de réseau',
+            'NAME' => 'Utilitaire de réseau',
             'USERNAME' => '',
             'INSTALLDATE' => '25/06/2009',
             'COMMENTS' => '[Intel]',
@@ -3410,7 +3410,7 @@ my %tests = (
             'INSTALLDATE' => '19/05/2009',
             'USERNAME' => '',
             'SYSTEM_CATEGORY' => 'Applications',
-            'NAME' => 'Aide-mémoire',
+            'NAME' => 'Aide-mémoire',
             'PUBLISHER' => undef
         },
         {
@@ -3667,7 +3667,7 @@ my %tests = (
         },
         {
             'USERNAME' => '',
-            'NAME' => 'Moniteur d’activité',
+            'NAME' => 'Moniteur d’activité',
             'SYSTEM_CATEGORY' => 'Applications/Utilities',
             'PUBLISHER' => undef,
             'VERSION' => '10.6',

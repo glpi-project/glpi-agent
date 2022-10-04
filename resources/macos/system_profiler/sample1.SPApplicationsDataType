@@ -9,7 +9,7 @@ Applications:
       Get Info String: 2.1.2, © 1995-2010 Apple Inc. All Rights Reserved.
       Location: /Applications/Utilities/Terminal.app
 
-    Mise à jour de logiciels:
+    Mise à jour de logiciels:
 
       Version: 4.0.6
       Last Modified: 04/09/11 22:42
@@ -69,7 +69,7 @@ Applications:
       Get Info String: AFP Client Session Monitor, Copyright © 2000 - 2010, Apple Inc.
       Location: /System/Library/Filesystems/AppleShare/check_afp.app
 
-    Informations Système:
+    Informations Système:
 
       Version: 10.6.0
       Last Modified: 04/09/11 22:43
@@ -253,7 +253,7 @@ Applications:
       Get Info String: 4.0, Copyright © 1997-2009 Apple Inc., All Rights Reserved
       Location: /System/Library/Input Methods/SCIM.app
 
-    Agent de la borne d’accès AirPort:
+    Agent de la borne d’accès AirPort:
 
       Version: 1.5.5
       Last Modified: 04/09/11 22:42
@@ -409,7 +409,7 @@ Applications:
       64-Bit (Intel): Yes
       Location: /Library/Scripts/ColorSync/Show Info.app
 
-    Outil d’étalonnage du moniteur:
+    Outil d’étalonnage du moniteur:
 
       Version: 4.6
       Last Modified: 04/09/11 22:42
@@ -426,7 +426,7 @@ Applications:
       64-Bit (Intel): Yes
       Location: /System/Library/CoreServices/Expansion Slot Utility.app
 
-    Utilitaire d’emplacement de mémoire:
+    Utilitaire d’emplacement de mémoire:
 
       Version: 1.4.1
       Last Modified: 04/09/11 22:42
@@ -486,7 +486,7 @@ Applications:
       Get Info String: 2.4.5, Copyright (c) 2011 Apple Inc. All rights reserved.
       Location: /System/Library/CoreServices/AVRCPAgent.app
 
-    Assistant réglages Bluetooth:
+    Assistant réglages Bluetooth:
 
       Version: 2.4.5
       Last Modified: 04/09/11 22:42
@@ -574,7 +574,7 @@ Applications:
       Get Info String: © Copyright 2009 Apple Inc., all rights reserved.
       Location: /System/Library/CoreServices/FileSyncAgent.app
 
-    Diagnostic réseau:
+    Diagnostic réseau:
 
       Version: 1.1.3
       Last Modified: 04/09/11 22:42
@@ -633,7 +633,7 @@ Applications:
       64-Bit (Intel): Yes
       Location: /System/Library/Frameworks/PubSub.framework/Versions/A/Resources/PubSubAgent.app
 
-    Aperçu:
+    Aperçu:
 
       Version: 5.0.3
       Last Modified: 04/09/11 22:42
@@ -667,7 +667,7 @@ Applications:
       Get Info String: 10.0, Copyright © 2010-2011 Apple Inc. All Rights Reserved.
       Location: /Applications/QuickTime Player.app
 
-    Installation à distance de Mac OS X:
+    Installation à distance de Mac OS X:
 
       Version: 1.1.1
       Last Modified: 04/09/11 22:42
@@ -692,7 +692,7 @@ Applications:
       64-Bit (Intel): Yes
       Location: /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app
 
-    Partage d’écran:
+    Partage d’écran:
 
       Version: 1.1.1
       Last Modified: 04/09/11 22:42
@@ -718,7 +718,7 @@ Applications:
       64-Bit (Intel): Yes
       Location: /System/Library/Services/Spotlight.service
 
-    Résolution des conflits:
+    Résolution des conflits:
 
       Version: 5.2
       Last Modified: 04/09/11 22:43
@@ -784,7 +784,7 @@ Applications:
       64-Bit (Intel): Yes
       Location: /System/Library/CoreServices/System Events.app
 
-    Préférences Système:
+    Préférences Système:
 
       Version: 7.0
       Last Modified: 04/09/11 22:42
@@ -908,7 +908,7 @@ Applications:
       Get Info String: 1.1, Copyright 2007-2008 Apple Inc.
       Location: /Applications/Time Machine.app
 
-    Exposé:
+    Exposé:
 
       Version: 1.1
       Last Modified: 04/09/11 22:42
@@ -1033,7 +1033,7 @@ Applications:
       Get Info String: 1.7, Copyright 2006-2008 Apple Inc.
       Location: /Applications/Dashboard.app
 
-    Échange de fichiers Bluetooth:
+    Échange de fichiers Bluetooth:
 
       Version: 2.4.5
       Last Modified: 04/09/11 22:42
@@ -1042,7 +1042,7 @@ Applications:
       Get Info String: 2.4.5, Copyright (c) 2011 Apple Inc. All rights reserved.
       Location: /Applications/Utilities/Bluetooth File Exchange.app
 
-    Trousseau d’accès:
+    Trousseau d’accès:
 
       Version: 4.1.1
       Last Modified: 04/09/11 22:42
@@ -1099,7 +1099,7 @@ Applications:
       Get Info String: 2.1.1, Copyright © 2004-2009 Apple Inc. All rights reserved.
       Location: /Applications/Automator.app
 
-    Préférences Java:
+    Préférences Java:
 
       Version: 13.6.0
       Last Modified: 17/02/12 12:35
@@ -1167,7 +1167,7 @@ Applications:
       Get Info String: 6.0, © Copyright 2003-2009 Apple Inc., all rights reserved.
       Location: /System/Library/Services/ImageCaptureService.app
 
-    Création de page Web:
+    Création de page Web:
 
       Version: 6.0
       Last Modified: 04/09/11 22:43
@@ -1973,23 +1973,23 @@ Applications:
       Get Info String: 11.2.0 (050714), © 2004 Microsoft Corporation.  All rights reserved.
       Location: /Applications/Office 2004 for Mac Test Drive/Office/Project Gallery Launcher
 
-    Éditeur d'équations:
+    Éditeur d'équations:
 
       Version: 11.0.0
       Last Modified: 12/12/05 13:00
       Kind: PowerPC
       64-Bit (Intel): No
       Get Info String: 11.0.0 (040108), ©2004 Microsoft Corporation.  All rights reserved.
-      Location: /Applications/Office 2004 for Mac Test Drive/Office/Éditeur d'équations
+      Location: /Applications/Office 2004 for Mac Test Drive/Office/Éditeur d'équations
 
-    Utilitaire de base de données:
+    Utilitaire de base de données:
 
       Version: 11.2.0
       Last Modified: 12/12/05 13:00
       Kind: PowerPC
       64-Bit (Intel): No
       Get Info String: 11.2.0 (050929), © 2004 Microsoft Corporation.  All rights reserved.
-      Location: /Applications/Office 2004 for Mac Test Drive/Office/Utilitaire de base de données
+      Location: /Applications/Office 2004 for Mac Test Drive/Office/Utilitaire de base de données
 
     Supprimer Office:
 
@@ -2036,7 +2036,7 @@ Applications:
       Get Info String: Pages User Guide
       Location: /Library/Documentation/Applications/iWork '06/Pages User Guide.app
 
-    Visite guidée d’iWork:
+    Visite guidée d’iWork:
 
       Version: 1.0.2
       Last Modified: 17/02/09 17:24
@@ -2286,7 +2286,7 @@ Applications:
       64-Bit (Intel): No
       Location: /Applications/Big Bang Board Games/Big Bang Tic-Tac-Toe.app
 
-    Utilitaire de réseau:
+    Utilitaire de réseau:
 
       Version: 1.4.6
       Last Modified: 25/06/09 04:25
@@ -2389,7 +2389,7 @@ Applications:
       Get Info String: 2.2, Copyright © 2001–2008 Apple Inc.
       Location: /System/Library/CoreServices/Directory Utility.app
 
-    Assistant réglages de réseau:
+    Assistant réglages de réseau:
 
       Version: 1.6
       Last Modified: 19/05/09 11:15
@@ -2448,7 +2448,7 @@ Applications:
       64-Bit (Intel): Yes
       Location: /System/Library/CoreServices/SecurityProxy.app
 
-    Éditeur AppleScript:
+    Éditeur AppleScript:
 
       Version: 2.3
       Last Modified: 24/04/09 15:41
@@ -2464,7 +2464,7 @@ Applications:
       64-Bit (Intel): No
       Location: /System/Library/CoreServices/SecurityFixer.app
 
-    Aide-mémoire:
+    Aide-mémoire:
 
       Version: 7.0
       Last Modified: 19/05/09 07:28
@@ -2472,7 +2472,7 @@ Applications:
       64-Bit (Intel): Yes
       Location: /Applications/Stickies.app
 
-    Service de résumé:
+    Service de résumé:
 
       Version: 2.0
       Last Modified: 19/05/09 07:27
@@ -2581,7 +2581,7 @@ Copyright © 2001-2009 Apple Inc.,
 Copyright © 2001-2002 Jim Ingham & Ian Reid
       Location: /System/Library/Frameworks/Tk.framework/Versions/8.5/Resources/Wish.app
 
-    Moniteur d’activité:
+    Moniteur d’activité:
 
       Version: 10.6
       Last Modified: 31/07/09 09:18
@@ -2589,7 +2589,7 @@ Copyright © 2001-2002 Jim Ingham & Ian Reid
       64-Bit (Intel): Yes
       Location: /Applications/Utilities/Activity Monitor.app
 
-    Colorimètre numérique:
+    Colorimètre numérique:
 
       Version: 3.7.2
       Last Modified: 28/05/09 07:06
@@ -2631,7 +2631,7 @@ Copyright © 2001-2002 Jim Ingham & Ian Reid
       64-Bit (Intel): Yes
       Location: /System/Library/Input Methods/50onPaletteServer.app
 
-    Assistant réglages:
+    Assistant réglages:
 
       Version: 10.6
       Last Modified: 31/07/09 09:25
@@ -2932,7 +2932,7 @@ Copyright © 2001-2002 Jim Ingham & Ian Reid
       Get Info String: HP Inkjet Driver 3.0, Copyright (c) 1994-2009 Hewlett-Packard Development Company, L.P.
       Location: /Library/Printers/hp/cups/Inkjet.driver
 
-    Brother Contrôleur d'état:
+    Brother Contrôleur d'état:
 
       Version: 3.00
       Last Modified: 19/05/09 03:15

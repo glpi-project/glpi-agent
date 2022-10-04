@@ -1,6 +1,6 @@
 Applications:
 
-    Exposé:
+    Exposé:
 
       Version: 1.1
       Last Modified: 2/20/11 3:34 PM
@@ -114,7 +114,7 @@ Applications:
       64-Bit (Intel): No
       Kind: PowerPC
 
-    À propos d’AHT:
+    À propos d’AHT:
 
       Version: 1.1
       Last Modified: 7/9/08 12:45 AM
@@ -149,11 +149,11 @@ Applications:
       64-Bit (Intel): No
       Kind: Intel
 
-    Assistant Enregistrement des paramètres personnels\\Profil de Microsoft Office:
+    Assistant Enregistrement des paramètres personnels\\Profil de Microsoft Office:
 
       Version: Windows XP
       Last Modified: 3/7/11 10:38 PM
-      Location: /Users/lubrano/Applications/{62224c9e-25f7-4c47-bbb7-70acf05cd357} Applications.localized/Assistant Enregistrement des paramètres personnels\\Profil de Microsoft Office.app
+      Location: /Users/lubrano/Applications/{62224c9e-25f7-4c47-bbb7-70acf05cd357} Applications.localized/Assistant Enregistrement des paramètres personnels\\Profil de Microsoft Office.app
       Get Info String: 7.4, C:\\Program Files\\Microsoft Office\\OFFICE11\\PROFLWIZ.EXE
       64-Bit (Intel): No
       Kind: Intel
@@ -496,7 +496,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Intel
 
-    Outil d’étalonnage du moniteur:
+    Outil d’étalonnage du moniteur:
 
       Version: 4.6
       Last Modified: 5/19/09 8:01 AM
@@ -643,7 +643,7 @@ Applications:
       64-Bit (Intel): Yes
       Kind: Intel
 
-    Mise à jour de logiciels:
+    Mise à jour de logiciels:
 
       Version: 4.0.6
       Last Modified: 2/20/11 3:34 PM
@@ -710,7 +710,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Universal
 
-    Centre de téléchargement Microsoft:
+    Centre de téléchargement Microsoft:
 
       Version: 14.0.2
       Last Modified: 1/13/11 5:38 PM
@@ -737,7 +737,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Intel
 
-    Assistant réglages Bluetooth:
+    Assistant réglages Bluetooth:
 
       Version: 2.3.8
       Last Modified: 1/5/11 5:56 PM
@@ -910,7 +910,7 @@ Applications:
       64-Bit (Intel): Yes
       Kind: Intel
 
-    Moniteur d’activité:
+    Moniteur d’activité:
 
       Version: 10.6
       Last Modified: 7/31/09 9:18 AM
@@ -936,7 +936,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Intel
 
-    Trousseau d’accès:
+    Trousseau d’accès:
 
       Version: 4.1
       Last Modified: 7/7/10 2:24 PM
@@ -1012,7 +1012,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Universal
 
-    Éditeur AppleScript:
+    Éditeur AppleScript:
 
       Version: 2.3
       Last Modified: 4/24/09 3:41 PM
@@ -1121,7 +1121,7 @@ Applications:
       64-Bit (Intel): Yes
       Kind: Intel
 
-    Utilitaire de base de données Microsoft:
+    Utilitaire de base de données Microsoft:
 
       Version: 14.0.2
       Last Modified: 1/13/11 5:38 PM
@@ -1231,7 +1231,7 @@ Applications:
       64-Bit (Intel): Yes
       Kind: Universal
 
-    Installation à distance de Mac OS X:
+    Installation à distance de Mac OS X:
 
       Version: 1.1.1
       Last Modified: 5/19/09 4:13 AM
@@ -1274,7 +1274,7 @@ Applications:
       64-Bit (Intel): Yes
       Kind: Universal
 
-    Utilitaire de réseau:
+    Utilitaire de réseau:
 
       Version: 1.4.6
       Last Modified: 6/25/09 4:25 AM
@@ -1361,7 +1361,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Universal
 
-    Organigramme hiérarchique:
+    Organigramme hiérarchique:
 
       Version: 12.2.8
       Last Modified: 12/27/10 2:23 PM
@@ -1370,11 +1370,11 @@ Applications:
       64-Bit (Intel): No
       Kind: Universal
 
-    Assistant Dépannage de diagnostic:
+    Assistant Dépannage de diagnostic:
 
       Version: 6.0
       Last Modified: 1/18/11 12:48 AM
-      Location: /Users/lubrano/Applications/{562821f7-d815-425f-991d-234ba29349a6} Applications.localized/Assistant Dépannage de diagnostic.app
+      Location: /Users/lubrano/Applications/{562821f7-d815-425f-991d-234ba29349a6} Applications.localized/Assistant Dépannage de diagnostic.app
       Get Info String: 6.0, C:\\Windows\\System32\\msdt.exe
       64-Bit (Intel): No
       Kind: Intel
@@ -1405,7 +1405,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Intel
 
-    Résolution des conflits:
+    Résolution des conflits:
 
       Version: 5.2
       Last Modified: 7/18/09 8:22 AM
@@ -1474,7 +1474,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Intel
 
-    Création de page Web:
+    Création de page Web:
 
       Version: 6.0
       Last Modified: 1/5/11 5:56 PM
@@ -1710,7 +1710,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Universal
 
-    Préférences Java:
+    Préférences Java:
 
       Version: 13.4.0
       Last Modified: 3/18/11 12:21 PM
@@ -1798,7 +1798,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Universal
 
-    Colorimètre numérique:
+    Colorimètre numérique:
 
       Version: 3.7.2
       Last Modified: 5/28/09 7:06 AM
@@ -1833,7 +1833,7 @@ Applications:
       64-Bit (Intel): Yes
       Kind: Universal
 
-    Connexion Bureau à Distance:
+    Connexion Bureau à Distance:
 
       Version: 2.1.0
       Last Modified: 1/13/11 5:28 PM
@@ -1908,7 +1908,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Universal
 
-    Aperçu:
+    Aperçu:
 
       Version: 5.0.3
       Last Modified: 1/5/11 5:56 PM
@@ -1943,7 +1943,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Intel
 
-    Diagnostic réseau:
+    Diagnostic réseau:
 
       Version: 1.1.3
       Last Modified: 7/7/10 2:24 PM
@@ -1985,7 +1985,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Universal
 
-    Préférences Système:
+    Préférences Système:
 
       Version: 7.0
       Last Modified: 6/27/09 8:09 AM
@@ -2205,7 +2205,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Intel
 
-    Bibliothèque de projets Microsoft:
+    Bibliothèque de projets Microsoft:
 
       Version: 12.2.8
       Last Modified: 12/27/10 2:23 PM
@@ -2240,11 +2240,11 @@ Applications:
       64-Bit (Intel): No
       Kind: Universal
 
-    Interpréteur de commandes Windows:
+    Interpréteur de commandes Windows:
 
       Version: 6.0
       Last Modified: 1/18/11 12:48 AM
-      Location: /Users/lubrano/Applications/{562821f7-d815-425f-991d-234ba29349a6} Applications.localized/Interpréteur de commandes Windows.app
+      Location: /Users/lubrano/Applications/{562821f7-d815-425f-991d-234ba29349a6} Applications.localized/Interpréteur de commandes Windows.app
       Get Info String: 6.0, C:\\Windows\\System32\\cmd.exe
       64-Bit (Intel): No
       Kind: Intel
@@ -2341,7 +2341,7 @@ Applications:
       64-Bit (Intel): Yes
       Kind: Intel
 
-    Utilitaire d’emplacement de mémoire:
+    Utilitaire d’emplacement de mémoire:
 
       Version: 1.4.1
       Last Modified: 1/5/11 5:56 PM
@@ -2401,7 +2401,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Intel
 
-    Échange de fichiers Bluetooth:
+    Échange de fichiers Bluetooth:
 
       Version: 2.3.8
       Last Modified: 1/5/11 5:56 PM
@@ -2860,11 +2860,11 @@ Applications:
       64-Bit (Intel): No
       Kind: Intel
 
-    Zimbra Desktop désinstallateur:
+    Zimbra Desktop désinstallateur:
 
       Version: 1.0.4
       Last Modified: 7/7/10 4:19 PM
-      Location: /Users/lubrano/zimbra/zdesktop/Zimbra Desktop désinstallateur.app
+      Location: /Users/lubrano/zimbra/zdesktop/Zimbra Desktop désinstallateur.app
       Get Info String: 1.0.4
       64-Bit (Intel): No
       Kind: Universal
@@ -2946,7 +2946,7 @@ Applications:
       64-Bit (Intel): Yes
       Kind: Intel
 
-    Aide-mémoire:
+    Aide-mémoire:
 
       Version: 7.0
       Last Modified: 5/19/09 7:28 AM
@@ -3055,7 +3055,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Intel
 
-    Assistant réglages de réseau:
+    Assistant réglages de réseau:
 
       Version: 1.6
       Last Modified: 5/19/09 11:15 AM
@@ -3130,7 +3130,7 @@ Applications:
       64-Bit (Intel): Yes
       Kind: Universal
 
-    Partage d’écran:
+    Partage d’écran:
 
       Version: 1.1.1
       Last Modified: 7/2/09 8:11 AM
@@ -3233,7 +3233,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Intel
 
-    Agent de la borne d’accès AirPort:
+    Agent de la borne d’accès AirPort:
 
       Version: 1.5.5
       Last Modified: 1/5/11 5:56 PM
@@ -3381,7 +3381,7 @@ Applications:
       64-Bit (Intel): Yes
       Kind: Universal
 
-    Informations Système:
+    Informations Système:
 
       Version: 10.6.0
       Last Modified: 1/5/11 5:56 PM
@@ -3441,7 +3441,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Intel
 
-    MÀJ du programme interne Bluetooth:
+    MÀJ du programme interne Bluetooth:
 
       Version: 2.0.1
       Last Modified: 8/1/09 1:21 AM
@@ -3546,7 +3546,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Intel
 
-    Brother Contrôleur d'état:
+    Brother Contrôleur d'état:
 
       Version: 3.00
       Last Modified: 5/19/09 3:15 AM
@@ -3647,7 +3647,7 @@ Applications:
       64-Bit (Intel): Yes
       Kind: Intel
 
-    Assistant réglages:
+    Assistant réglages:
 
       Version: 10.6
       Last Modified: 7/31/09 9:25 AM
@@ -3683,7 +3683,7 @@ Applications:
       64-Bit (Intel): Yes
       Kind: Universal
 
-    Service de résumé:
+    Service de résumé:
 
       Version: 2.0
       Last Modified: 5/19/09 7:27 AM
@@ -3773,7 +3773,7 @@ Applications:
       64-Bit (Intel): No
       Kind: Intel
 
-    Éditeur d'équations Microsoft:
+    Éditeur d'équations Microsoft:
 
       Version: 14.0.0
       Last Modified: 1/13/11 5:28 PM
@@ -3828,7 +3828,7 @@ Applications:
 
       Version: 12.2.8
       Last Modified: 12/27/10 2:23 PM
-      Location: /Applications/Microsoft Office 2008/Outils supplémentaires/Supprimer Office/Remove Office.app
+      Location: /Applications/Microsoft Office 2008/Outils supplémentaires/Supprimer Office/Remove Office.app
       Get Info String: 12.2.8 (101117), © 2007 Microsoft Corporation. All rights reserved.
       64-Bit (Intel): No
       Kind: Universal
