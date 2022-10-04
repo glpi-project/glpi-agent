@@ -3379,18 +3379,2199 @@ my @ioreg_tests = (
     }
 );
 
-my $versionNumbersComparisons = [
-    ['10.8.0', '10.11'],
-    ['5.22', '5.22.1'],
-    ['5.8.9.2', '5.10.3'],
-    ['5.4.2', '10.2']
-];
+my %xmlparsing = (
+    "10.8-system_profiler" => {
+        flatfile => "10.8-system_profiler_SPApplicationsDataType.example.txt",
+        xmlfile  => "10.8-system_profiler_SPApplicationsDataType_-xml.example.xml",
+        list => {
+          '50onPaletteServer' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '30/06/2009',
+            Location => '/System/Library/Input Methods/50onPaletteServer.app',
+            Version => '1.0.3'
+          },
+          ARDAgent => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '22/05/2009',
+            Location => '/System/Library/CoreServices/RemoteManagement/ARDAgent.app',
+            Version => '3.5.4'
+          },
+          'ARM Help' => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2009',
+            Location => '/Library/Application Support/Shark/Helpers/ARM Help.app',
+            Version => '4.7.1'
+          },
+          'AU Lab' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "2.1 \x{a9}2009, Apple, Inc",
+            Kind => 'Intel',
+            'Last Modified' => '25/06/2009',
+            Location => '/Developer/Applications/Audio/AU Lab.app',
+            Version => '2.1'
+          },
+          AVRCPAgent => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '2.4.5, Copyright (c) 2011 Apple Inc. All rights reserved.',
+            Kind => 'Universal',
+            'Last Modified' => '01/08/2009',
+            Location => '/System/Library/CoreServices/AVRCPAgent.app',
+            Version => '2.4.5'
+          },
+          'About Xcode' => {
+            '64-Bit (Intel)' => 'No',
+            'Get Info String' => 'About Xcode',
+            Kind => 'Universal',
+            'Last Modified' => '26/06/2009',
+            Location => '/Developer/About Xcode.app',
+            Version => '159'
+          },
+          'Accessibility Inspector' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'Accessibility Inspector 2.0, Copyright 2002-2009 Apple Inc.',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Utilities/Accessibility Tools/Accessibility Inspector.app',
+            Version => '2.0'
+          },
+          'Accessibility Verifier' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Utilities/Accessibility Tools/Accessibility Verifier.app',
+            Version => '1.2'
+          },
+          AddPrinter => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '24/07/2009',
+            Location => '/System/Library/CoreServices/AddPrinter.app',
+            Version => '6.6'
+          },
+          AddressBookManager => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '25/07/2009',
+            Location => '/System/Library/Frameworks/AddressBook.framework/Versions/A/Resources/AddressBookManager.app',
+            Version => '2.0.4'
+          },
+          AddressBookSync => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '25/07/2009',
+            Location => '/System/Library/Frameworks/AddressBook.framework/Versions/A/Resources/AddressBookSync.app',
+            Version => '2.0.4'
+          },
+          "Agent de la borne d\x{2019}acc\x{e8}s AirPort" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "1.5.4 (154.2), Copyright \x{a9} 2006-2009 Apple Inc. All Rights Reserved.",
+            Kind => 'Intel',
+            'Last Modified' => '11/06/2009',
+            Location => '/System/Library/CoreServices/AirPort Base Station Agent.app',
+            Version => '1.5.4'
+          },
+          "Aide-m\x{e9}moire" => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Applications/Stickies.app',
+            Version => '7.0'
+          },
+          "Aper\x{e7}u" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '5.0.1, Copyright 2002-2009 Apple Inc.',
+            Kind => 'Intel',
+            'Last Modified' => '15/07/2009',
+            Location => '/Applications/Preview.app',
+            Version => '5.0.3'
+          },
+          'App Store' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2015',
+            Location => '/Applications/App Store.app',
+            Version => '1.0.2'
+          },
+          Apple80211Agent => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.2.2, Copyright \x{a9} 2000\x{2013}2009 Apple Inc. All rights reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '21/07/2009',
+            Location => '/System/Library/CoreServices/Apple80211Agent.app',
+            Version => '6.2.2'
+          },
+          AppleFileServer => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2015',
+            Location => '/System/Library/CoreServices/AppleFileServer.app'
+          },
+          AppleGraphicsWarning => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'Version 2.0.3, Copyright Apple Inc., 2008',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/CoreServices/AppleGraphicsWarning.app',
+            Version => '2.0.3'
+          },
+          AppleMobileDeviceHelper => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2015',
+            Location => '/System/Library/PrivateFrameworks/MobileDevice.framework/Versions/A/AppleMobileDeviceHelper.app',
+            Version => '5.0'
+          },
+          AppleMobileSync => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2015',
+            Location => '/System/Library/PrivateFrameworks/MobileDevice.framework/Versions/A/AppleMobileSync.app',
+            Version => '5.0'
+          },
+          'AppleScript Runner' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/CoreServices/AppleScript Runner.app',
+            Version => '1.0.2'
+          },
+          'Assistant Boot Camp' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "Boot Camp Assistant 3.0.4, Copyright \x{a9} 2010 Apple Inc. All rights reserved",
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Applications/Utilities/Boot Camp Assistant.app',
+            Version => '3.0.4'
+          },
+          'Assistant de certification' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '02/07/2009',
+            Location => '/System/Library/CoreServices/Certificate Assistant.app',
+            Version => '3.0'
+          },
+          'Assistant migration' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2015',
+            Location => '/Applications/Utilities/Migration Assistant.app',
+            Version => '3.0.4'
+          },
+          "Assistant r\x{e9}glages" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '10.6',
+            Kind => 'Universal',
+            'Last Modified' => '31/07/2009',
+            Location => '/System/Library/CoreServices/Setup Assistant.app',
+            Version => '10.6'
+          },
+          "Assistant r\x{e9}glages Bluetooth" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '2.4.5, Copyright (c) 2011 Apple Inc. All rights reserved.',
+            Kind => 'Universal',
+            'Last Modified' => '01/08/2009',
+            Location => '/System/Library/CoreServices/Bluetooth Setup Assistant.app',
+            Version => '2.4.5'
+          },
+          "Assistant r\x{e9}glages de r\x{e9}seau" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '1.6',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/CoreServices/Network Setup Assistant.app',
+            Version => '1.6'
+          },
+          AutoImporter => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.0, \x{a9} Copyright 2000-2009 Apple Inc., all rights reserved.",
+            Kind => 'Intel',
+            'Last Modified' => '20/06/2009',
+            Location => '/System/Library/Image Capture/Support/Application/AutoImporter.app',
+            Version => '6.0.1'
+          },
+          Automator => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "2.1.1, Copyright \x{a9} 2004-2009 Apple Inc. All rights reserved.",
+            Kind => 'Intel',
+            'Last Modified' => '11/07/2009',
+            Location => '/Applications/Automator.app',
+            Version => '2.1.1'
+          },
+          'Automator Launcher' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "1.2, Copyright \x{a9} 2004-2009 Apple Inc. All rights reserved.",
+            Kind => 'Intel',
+            'Last Modified' => '11/07/2009',
+            Location => '/System/Library/CoreServices/Automator Launcher.app',
+            Version => '1.2'
+          },
+          'Automator Runner' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "1.1, Copyright \x{a9} 2006-2009 Apple Inc. All rights reserved.",
+            Kind => 'Intel',
+            'Last Modified' => '11/07/2009',
+            Location => '/System/Library/CoreServices/Automator Runner.app',
+            Version => '1.1'
+          },
+          BigTop => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2009',
+            Location => '/Developer/Applications/Performance Tools/BigTop.app',
+            Version => '4.7.1'
+          },
+          'Bluetooth Diagnostics Utility' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '2.2, Copyright (c) 2009 Apple Inc. All rights reserved.',
+            Kind => 'Universal',
+            'Last Modified' => '01/08/2009',
+            Location => '/Developer/Applications/Utilities/Bluetooth/Bluetooth Diagnostics Utility.app',
+            Version => '2.2'
+          },
+          'Bluetooth Explorer' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '2.2, Copyright (c) 2009 Apple Inc. All rights reserved.',
+            Kind => 'Universal',
+            'Last Modified' => '01/08/2009',
+            Location => '/Developer/Applications/Utilities/Bluetooth/Bluetooth Explorer.app',
+            Version => '2.2'
+          },
+          BluetoothAudioAgent => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '2.4.5, Copyright (c) 2011 Apple Inc. All rights reserved.',
+            Kind => 'Universal',
+            'Last Modified' => '01/08/2009',
+            Location => '/System/Library/CoreServices/BluetoothAudioAgent.app',
+            Version => '2.4.5'
+          },
+          BluetoothCamera => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.0.1, \x{a9} Copyright 2004-2011 Apple Inc., all rights reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '16/07/2009',
+            Location => '/System/Library/Image Capture/Devices/BluetoothCamera.app',
+            Version => '6.0.1'
+          },
+          BluetoothUIServer => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '2.4.5, Copyright (c) 2011 Apple Inc. All rights reserved.',
+            Kind => 'Universal',
+            'Last Modified' => '01/08/2009',
+            Location => '/System/Library/CoreServices/BluetoothUIServer.app',
+            Version => '2.4.5'
+          },
+          'Build Applet' => {
+            '64-Bit (Intel)' => 'No',
+            'Get Info String' => '2.6.0a0, (c) 2004 Python Software Foundation.',
+            'Last Modified' => '08/07/2009',
+            Location => '/Developer/Applications/Utilities/Python 2.6/Build Applet.app',
+            Version => '2.6.0'
+          },
+          'Build Applet_0' => {
+            '64-Bit (Intel)' => 'No',
+            'Get Info String' => '2.5.4a0, (c) 2004 Python Software Foundation.',
+            'Last Modified' => '08/07/2009',
+            Location => '/Developer/Applications/Utilities/MacPython 2.5/Build Applet.app',
+            Version => '2.5.4'
+          },
+          CCacheServer => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.5 Copyright \x{a9} 2008 Massachusetts Institute of Technology",
+            Kind => 'Universal',
+            'Last Modified' => '29/05/2009',
+            Location => '/System/Library/CoreServices/CCacheServer.app',
+            Version => '6.5.11'
+          },
+          'CHUD Remover' => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2009',
+            Location => '/Developer/Applications/Performance Tools/CHUD/CHUD Remover.app',
+            Version => '4.7.1'
+          },
+          CPUPalette => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2009',
+            Location => '/Library/Application Support/HWPrefs/CPUPalette.app',
+            Version => '4.7.1'
+          },
+          Calculette => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '06/07/2009',
+            Location => '/Applications/Calculator.app',
+            Version => '4.5.3'
+          },
+          Capture => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Applications/Utilities/Grab.app',
+            Version => '1.5'
+          },
+          "Carnet d\x{2019}adresses" => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '25/07/2009',
+            Location => '/Applications/Address Book.app',
+            Version => '5.0.3'
+          },
+          CharacterPalette => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '02/07/2009',
+            Location => '/System/Library/Input Methods/CharacterPalette.app',
+            Version => '1.0.4'
+          },
+          ChineseHandwriting => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '17/07/2009',
+            Location => '/System/Library/Input Methods/ChineseHandwriting.app',
+            Version => '1.0.1'
+          },
+          ChineseTextConverterService => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'Chinese Text Converter 1.1',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/Services/ChineseTextConverterService.app',
+            Version => '1.2'
+          },
+          "Colorim\x{e8}tre num\x{e9}rique" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '3.7.2, Copyright 2001-2008 Apple Inc. All Rights Reserved.',
+            Kind => 'Intel',
+            'Last Modified' => '28/05/2009',
+            Location => '/Applications/Utilities/DigitalColor Meter.app',
+            Version => '3.7.2'
+          },
+          'Configuration actions de dossier' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/CoreServices/Folder Actions Setup.app',
+            Version => '1.1.4'
+          },
+          'Configuration audio et MIDI' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '3.0.3, Copyright 2002-2010 Apple, Inc.',
+            Kind => 'Intel',
+            'Last Modified' => '11/07/2009',
+            Location => '/Applications/Utilities/Audio MIDI Setup.app',
+            Version => '3.0.3'
+          },
+          Console => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '07/04/2009',
+            Location => '/Applications/Utilities/Console.app',
+            Version => '10.6.3'
+          },
+          'Core Image Fun House' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Graphics Tools/Core Image Fun House.app',
+            Version => '2.1.43'
+          },
+          CoreLocationAgent => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "Copyright \x{a9} 2009 Apple Inc.",
+            Kind => 'Universal',
+            'Last Modified' => '20/07/2009',
+            Location => '/System/Library/CoreServices/CoreLocationAgent.app',
+            Version => '12.3'
+          },
+          CoreServicesUIAgent => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "Copyright \x{a9} 2009 Apple Inc.",
+            Kind => 'Intel',
+            'Last Modified' => '23/05/2009',
+            Location => '/System/Library/CoreServices/CoreServicesUIAgent.app',
+            Version => '41.5'
+          },
+          CrashReporterPrefs => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '01/08/2009',
+            Location => '/Developer/Applications/Utilities/CrashReporterPrefs.app',
+            Version => '10.6'
+          },
+          "Cr\x{e9}ation de page Web" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.0, \x{a9} Copyright 2003-2009 Apple  Inc., all rights reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '16/07/2009',
+            Location => '/System/Library/Image Capture/Automatic Tasks/Build Web Page.app',
+            Version => '6.0'
+          },
+          Dashboard => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '1.7, Copyright 2006-2008 Apple Inc.',
+            Kind => 'Universal',
+            'Last Modified' => '31/07/2009',
+            Location => '/Applications/Dashboard.app',
+            Version => '1.7'
+          },
+          Dashcode => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '31/07/2009',
+            Location => '/Developer/Applications/Dashcode.app',
+            Version => '3.0'
+          },
+          'Database Events' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/CoreServices/Database Events.app',
+            Version => '1.0.4'
+          },
+          'Default aohghmighlieiainnegkcijnfilokake' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '03/05/2015',
+            Location => '/Users/teclib/Library/Application Support/Google/Chrome/Default/Web Applications/_crx_aohghmighlieiainnegkcijnfilokake/Default aohghmighlieiainnegkcijnfilokake.app',
+            Version => '42.0.2311.135'
+          },
+          'Default aohghmighlieiainnegkcijnfilokake_0' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '03/05/2015',
+            Location => '/Users/walid/Library/Application Support/Google/Chrome/Default/Web Applications/_crx_aohghmighlieiainnegkcijnfilokake/Default aohghmighlieiainnegkcijnfilokake.app',
+            Version => '42.0.2311.135'
+          },
+          'Default apdfllckaahabafndbhieahigkjlhalf' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '29/07/2015',
+            Location => '/Users/walid/Library/Application Support/Google/Chrome/Default/Web Applications/_crx_apdfllckaahabafndbhieahigkjlhalf/Default apdfllckaahabafndbhieahigkjlhalf.app',
+            Version => '14.0'
+          },
+          'Default apdfllckaahabafndbhieahigkjlhalf_0' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '29/07/2015',
+            Location => '/Users/walid/Applications/Chrome Apps.localized/Default apdfllckaahabafndbhieahigkjlhalf.app',
+            Version => '14.0'
+          },
+          'Default blpcfgokakmgnkcojhhkbfbldkacnbeo' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '03/05/2015',
+            Location => '/Users/walid/Library/Application Support/Google/Chrome/Default/Web Applications/_crx_blpcfgokakmgnkcojhhkbfbldkacnbeo/Default blpcfgokakmgnkcojhhkbfbldkacnbeo.app',
+            Version => '42.0.2311.135'
+          },
+          'Default blpcfgokakmgnkcojhhkbfbldkacnbeo_0' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '03/05/2015',
+            Location => '/Users/walid/Applications/Chrome Apps.localized/Default blpcfgokakmgnkcojhhkbfbldkacnbeo.app',
+            Version => '42.0.2311.135'
+          },
+          'Default coobgpohoikkiipiblmjeljniedjpjpf' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '03/05/2015',
+            Location => '/Users/walid/Library/Application Support/Google/Chrome/Default/Web Applications/_crx_coobgpohoikkiipiblmjeljniedjpjpf/Default coobgpohoikkiipiblmjeljniedjpjpf.app',
+            Version => '42.0.2311.135'
+          },
+          'Default coobgpohoikkiipiblmjeljniedjpjpf_0' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '03/05/2015',
+            Location => '/Users/walid/Applications/Chrome Apps.localized/Default coobgpohoikkiipiblmjeljniedjpjpf.app',
+            Version => '42.0.2311.135'
+          },
+          'Default nmmhkkegccagdldgiimedpiccmgmieda' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '29/07/2015',
+            Location => '/Users/walid/Library/Application Support/Google/Chrome/Default/Web Applications/_crx_nmmhkkegccagdldgiimedpiccmgmieda/Default nmmhkkegccagdldgiimedpiccmgmieda.app',
+            Version => '0.1.2.0'
+          },
+          'Default pjkljhegncpnkpknbcohdijeoejaedia' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '03/05/2015',
+            Location => '/Users/walid/Library/Application Support/Google/Chrome/Default/Web Applications/_crx_pjkljhegncpnkpknbcohdijeoejaedia/Default pjkljhegncpnkpknbcohdijeoejaedia.app',
+            Version => '42.0.2311.135'
+          },
+          'Default pjkljhegncpnkpknbcohdijeoejaedia_0' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '03/05/2015',
+            Location => '/Users/walid/Applications/Chrome Apps.localized/Default pjkljhegncpnkpknbcohdijeoejaedia.app',
+            Version => '42.0.2311.135'
+          },
+          'Deskjet 2540 series [CE35D9]' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '24/07/2009',
+            Location => '/Users/teclib/Library/Printers/Deskjet 2540 series [CE35D9].app',
+            Version => '6.6'
+          },
+          "Diagnostic r\x{e9}seau" => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '20/05/2009',
+            Location => '/System/Library/CoreServices/Network Diagnostics.app',
+            Version => '1.1.3'
+          },
+          DiskImageMounter => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '11/07/2009',
+            Location => '/System/Library/CoreServices/DiskImageMounter.app',
+            Version => '10.6.8'
+          },
+          'DiskImages UI Agent' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '11/07/2009',
+            Location => '/System/Library/PrivateFrameworks/DiskImages.framework/Versions/A/Resources/DiskImages UI Agent.app',
+            Version => '289.1'
+          },
+          Dock => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'Dock 1.7',
+            Kind => 'Intel',
+            'Last Modified' => '31/07/2009',
+            Location => '/System/Library/CoreServices/Dock.app',
+            Version => '1.7'
+          },
+          'EM64T Help' => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2009',
+            Location => '/Library/Application Support/Shark/Helpers/EM64T Help.app',
+            Version => '4.7.1'
+          },
+          Embed => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '25/04/2009',
+            Location => '/Library/Scripts/ColorSync/Embed.app'
+          },
+          "Expos\x{e9}" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '1.1, Copyright 2007-2008 Apple Inc.',
+            Kind => 'Universal',
+            'Last Modified' => '31/07/2009',
+            Location => '/Applications/Utilities/Expose.app',
+            Version => '1.1'
+          },
+          Extract => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '25/04/2009',
+            Location => '/Library/Scripts/ColorSync/Extract.app'
+          },
+          'File Sync' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "\x{a9} Copyright 2009 Apple Inc., all rights reserved.",
+            Kind => 'Intel',
+            'Last Modified' => '23/07/2009',
+            Location => '/System/Library/CoreServices/File Sync.app',
+            Version => '5.0.3'
+          },
+          FileMerge => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Utilities/FileMerge.app',
+            Version => '2.4'
+          },
+          FileSyncAgent => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "\x{a9} Copyright 2009 Apple Inc., all rights reserved.",
+            Kind => 'Intel',
+            'Last Modified' => '23/07/2009',
+            Location => '/System/Library/CoreServices/FileSyncAgent.app',
+            Version => '5.0.3'
+          },
+          Finder => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'Mac OS X Finder 10.6.8',
+            Kind => 'Intel',
+            'Last Modified' => '31/07/2009',
+            Location => '/System/Library/CoreServices/Finder.app',
+            Version => '10.6.8'
+          },
+          Firefox => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'Firefox 37.0.2',
+            Kind => 'Intel',
+            'Last Modified' => '18/01/2016',
+            Location => '/Applications/Firefox.app',
+            Version => '37.0.2'
+          },
+          'Folder Actions Dispatcher' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/CoreServices/Folder Actions Dispatcher.app',
+            Version => '1.0.2'
+          },
+          FontRegistryUIAgent => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "Copyright \x{a9} 2011 Apple Inc.",
+            Kind => 'Intel',
+            'Last Modified' => '26/07/2009',
+            Location => '/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/ATS.framework/Versions/A/Support/FontRegistryUIAgent.app',
+            Version => '33.12'
+          },
+          FontSyncScripting => {
+            '64-Bit (Intel)' => 'No',
+            'Get Info String' => "FontSync Scripting 2.0. Copyright \x{a9} 2000-2008 Apple Inc.",
+            Kind => 'Universal',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/ScriptingAdditions/FontSyncScripting.app',
+            Version => '2.0.6'
+          },
+          'Front Row' => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Universal',
+            'Last Modified' => '22/07/2009',
+            Location => '/System/Library/CoreServices/Front Row.app',
+            Version => '2.2.1'
+          },
+          'Git Gui' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "Git Gui 0.19.0.18.g4498b \x{a9} 2006-2007 Shawn Pearce, et. al.",
+            Kind => 'Intel',
+            'Last Modified' => '03/05/2015',
+            Location => '/usr/local/Cellar/git/2.4.0/share/git-gui/lib/Git Gui.app',
+            Version => '0.19.0.18.g4498b'
+          },
+          Gmail => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '02/03/2016',
+            Location => '/Users/teclib/Library/Application Support/Google/Chrome/Default/Web Applications/_crx_pjkljhegncpnkpknbcohdijeoejaedia/Default pjkljhegncpnkpknbcohdijeoejaedia.app',
+            Version => '8.1'
+          },
+          Gmail_0 => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '02/03/2016',
+            Location => '/Users/teclib/Applications/Chrome Apps.localized/Default pjkljhegncpnkpknbcohdijeoejaedia.app',
+            Version => '8.1'
+          },
+          'Google Chrome' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '06/04/2016',
+            Location => '/Applications/Google Chrome.app',
+            Version => '49.0.2623.112'
+          },
+          "Google\x{a0}Drive" => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '02/03/2016',
+            Location => '/Users/teclib/Library/Application Support/Google/Chrome/Default/Web Applications/_crx_apdfllckaahabafndbhieahigkjlhalf/Default apdfllckaahabafndbhieahigkjlhalf.app',
+            Version => '14.1'
+          },
+          "Google\x{a0}Drive_0" => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '02/03/2016',
+            Location => '/Users/teclib/Applications/Chrome Apps.localized/Default apdfllckaahabafndbhieahigkjlhalf.app',
+            Version => '14.1'
+          },
+          Grapher => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '07/04/2009',
+            Location => '/Applications/Utilities/Grapher.app',
+            Version => '2.1'
+          },
+          HALLab => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Audio/HALLab.app',
+            Version => '1.6'
+          },
+          'HP Scan' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "Copyright \x{a9} 2010-2013, Hewlett-Packard Development Company, L.P.",
+            Kind => 'Intel',
+            'Last Modified' => '23/11/2015',
+            Location => '/Applications/Hewlett-Packard/HP Scan 3.app',
+            Version => '4.4.1'
+          },
+          'HP Scanner 3' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "Copyright \x{a9} 2011-2013, Hewlett-Packard Development Company, L.P.",
+            Kind => 'Intel',
+            'Last Modified' => '23/11/2015',
+            Location => '/Library/Image Capture/Devices/HP Scanner 3.app',
+            Version => '4.5.0'
+          },
+          'HP Utility' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'HP Utility 5.21.2, Copyright (c) 2005-2013 Hewlett-Packard Development Company, L.P.',
+            Kind => 'Intel',
+            'Last Modified' => '23/11/2015',
+            Location => '/Library/Printers/hp/Utilities/HP Utility.app',
+            Version => '5.21.2'
+          },
+          'Help Indexer' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Utilities/Help Indexer.app',
+            Version => '4.0'
+          },
+          HelpViewer => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '14/07/2009',
+            Location => '/System/Library/CoreServices/HelpViewer.app',
+            Version => '5.0.4'
+          },
+          'IA32 Help' => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2009',
+            Location => '/Library/Application Support/Shark/Helpers/IA32 Help.app',
+            Version => '4.7.1'
+          },
+          IORegistryExplorer => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Utilities/IORegistryExplorer.app',
+            Version => '2.1'
+          },
+          'Icon Composer' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Utilities/Icon Composer.app',
+            Version => '2.1'
+          },
+          'Image Capture Extension' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.1, \x{a9} Copyright 2000-2011 Apple Inc. All rights reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '16/07/2009',
+            Location => '/System/Library/Image Capture/Support/Image Capture Extension.app',
+            Version => '6.1'
+          },
+          'Image Capture Web Server' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.0, \x{a9} Copyright 2003-2009 Apple Inc., all rights reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '16/07/2009',
+            Location => '/System/Library/Image Capture/Support/Image Capture Web Server.app',
+            Version => '6.0'
+          },
+          'Image Events' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/CoreServices/Image Events.app',
+            Version => '1.1.4'
+          },
+          ImageCaptureService => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.0, \x{a9} Copyright 2003-2009 Apple Inc., all rights reserved.",
+            Kind => 'Intel',
+            'Last Modified' => '20/06/2009',
+            Location => '/System/Library/Services/ImageCaptureService.app',
+            Version => '6.0.1'
+          },
+          IncompatibleAppDisplay => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '01/08/2009',
+            Location => '/System/Library/PrivateFrameworks/SystemMigration.framework/Versions/A/Resources/IncompatibleAppDisplay.app',
+            Version => '305'
+          },
+          "Informations Syst\x{e8}me" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '10.6.0, Copyright 1997-2009 Apple, Inc.',
+            Kind => 'Universal',
+            'Last Modified' => '19/05/2009',
+            Location => '/Applications/Utilities/System Profiler.app',
+            Version => '10.6.0'
+          },
+          InkServer => {
+            '64-Bit (Intel)' => 'No',
+            'Get Info String' => '1.0, Copyright 2008 Apple Inc.',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/Input Methods/InkServer.app',
+            Version => '1.0'
+          },
+          Inkjet9 => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'HP Inkjet 9 Driver 2.3.1, Copyright (c) 1994-2013 Hewlett-Packard Development Company, L.P.',
+            Kind => 'Intel',
+            'Last Modified' => '19/08/2013',
+            Location => '/Library/Printers/hp/cups/Inkjet9.driver',
+            Version => '2.3.1'
+          },
+          "Installation \x{e0} distance de Mac\x{a0}OS\x{a0}X" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "Remote Install Mac OS X 1.1.1, Copyright \x{a9} 2007-2009 Apple Inc. All rights reserved",
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Applications/Utilities/Remote Install Mac OS X.app',
+            Version => '1.1.1'
+          },
+          Instruments => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '24/07/2009',
+            Location => '/Developer/Applications/Instruments.app',
+            Version => '2.0'
+          },
+          'Interface Builder' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '11/07/2009',
+            Location => '/Developer/Applications/Interface Builder.app',
+            Version => '3.2'
+          },
+          'Jar Bundler' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '08/07/2015',
+            Location => '/usr/share/java/Tools/Jar Bundler.app',
+            Version => '13.9.8'
+          },
+          'Jar Launcher' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '08/07/2015',
+            Location => '/System/Library/CoreServices/Jar Launcher.app',
+            Version => '13.9.8'
+          },
+          'Java VisualVM' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '08/07/2015',
+            Location => '/usr/share/java/Tools/Java VisualVM.app',
+            Version => '13.9.8'
+          },
+          'Java Web Start' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2015',
+            Location => '/System/Library/CoreServices/Java Web Start.app',
+            Version => '13.9.8'
+          },
+          KerberosAgent => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '29/05/2009',
+            Location => '/System/Library/CoreServices/KerberosAgent.app',
+            Version => '6.5.11'
+          },
+          KeyboardSetupAssistant => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/CoreServices/KeyboardSetupAssistant.app',
+            Version => '10.5.0'
+          },
+          KeyboardViewer => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "2.0, Copyright \x{a9} 2004-2009 Apple Inc., All Rights Reserved",
+            Kind => 'Universal',
+            'Last Modified' => '11/06/2009',
+            Location => '/System/Library/Input Methods/KeyboardViewer.app',
+            Version => '2.0'
+          },
+          'Keychain Scripting' => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Universal',
+            'Last Modified' => '03/07/2009',
+            Location => '/System/Library/ScriptingAdditions/Keychain Scripting.app',
+            Version => '4.0.2'
+          },
+          KoreanIM => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.0, Copyright \x{a9} 1997-2006 Apple Computer Inc., All Rights Reserved",
+            Kind => 'Universal',
+            'Last Modified' => '05/05/2009',
+            Location => '/System/Library/Input Methods/KoreanIM.app',
+            Version => '6.1'
+          },
+          Kotoeri => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '11/06/2009',
+            Location => '/System/Library/Input Methods/Kotoeri.app',
+            Version => '4.2.1'
+          },
+          "Lanceur d\x{2019}applets" => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '08/07/2015',
+            Location => '/usr/share/java/Tools/Applet Launcher.app',
+            Version => '13.9.8'
+          },
+          'Language Chooser' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'System Language Initializer',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2015',
+            Location => '/System/Library/CoreServices/Language Chooser.app',
+            Version => '20'
+          },
+          'Lecteur DVD' => {
+            '64-Bit (Intel)' => 'No',
+            'Get Info String' => "5.4, Copyright \x{a9} 2001-2010 by Apple Inc.  All Rights Reserved.",
+            Kind => 'Intel',
+            'Last Modified' => '14/07/2009',
+            Location => '/Applications/DVD Player.app',
+            Version => '5.4'
+          },
+          License => {
+            '64-Bit (Intel)' => 'No',
+            'Get Info String' => 'License',
+            Kind => 'Universal',
+            'Last Modified' => '25/07/2009',
+            Location => '/Library/Documentation/License.app',
+            Version => '11'
+          },
+          'Livre des polices' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "2.2.2, Copyright \x{a9} 2003-2010 Apple Inc.",
+            Kind => 'Intel',
+            'Last Modified' => '05/05/2009',
+            Location => '/Applications/Font Book.app',
+            Version => '2.2.2'
+          },
+          MRTAgent => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2015',
+            Location => '/System/Library/CoreServices/MRTAgent.app',
+            Version => '1.2'
+          },
+          Mail => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2015',
+            Location => '/Applications/Mail.app',
+            Version => '4.6'
+          },
+          MakePDF => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.0, \x{a9} Copyright 2003-2009 Apple Inc., all rights reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '16/07/2009',
+            Location => '/System/Library/Image Capture/Automatic Tasks/MakePDF.app',
+            Version => '6.0'
+          },
+          MallocDebug => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Universal',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Performance Tools/MallocDebug.app',
+            Version => '1.7.1'
+          },
+          ManagedClient => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '24/07/2009',
+            Location => '/System/Library/CoreServices/ManagedClient.app',
+            Version => '2.5'
+          },
+          MassStorageCamera => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.1, \x{a9} Copyright 2000-2011 Apple Inc. All rights reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '16/07/2009',
+            Location => '/System/Library/Image Capture/Devices/MassStorageCamera.app',
+            Version => '6.1'
+          },
+          Match => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '25/04/2009',
+            Location => '/Library/Scripts/ColorSync/Match.app'
+          },
+          MiniTerm => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'Terminal window application for PPP',
+            Kind => 'Universal',
+            'Last Modified' => '08/07/2015',
+            Location => '/usr/libexec/MiniTerm.app',
+            Version => '1.5'
+          },
+          "Mise \x{e0} jour de logiciels" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "Software Update version 4.0, Copyright \x{a9} 2000-2009, Apple Inc. All rights reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '08/07/2015',
+            Location => '/System/Library/CoreServices/Software Update.app',
+            Version => '4.0.6'
+          },
+          "Moniteur d\x{2019}activit\x{e9}" => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '31/07/2009',
+            Location => '/Applications/Utilities/Activity Monitor.app',
+            Version => '10.6'
+          },
+          NetAuthAgent => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '23/06/2009',
+            Location => '/System/Library/CoreServices/NetAuthAgent.app',
+            Version => '2.1'
+          },
+          OBEXAgent => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '2.4.5, Copyright (c) 2011 Apple Inc. All rights reserved.',
+            Kind => 'Universal',
+            'Last Modified' => '01/08/2009',
+            Location => '/System/Library/CoreServices/OBEXAgent.app',
+            Version => '2.4.5'
+          },
+          ODSAgent => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "1.4.1 (141.6), Copyright \x{a9} 2007-2009 Apple Inc. All Rights Reserved.",
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/CoreServices/ODSAgent.app',
+            Version => '1.4.1'
+          },
+          'OpenGL Driver Monitor' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "1.5, Copyright \x{a9} 2009 Apple Inc.",
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Graphics Tools/OpenGL Driver Monitor.app',
+            Version => '1.5'
+          },
+          'OpenGL Profiler' => {
+            '64-Bit (Intel)' => 'No',
+            'Get Info String' => '4.2, Copyright 2003-2009 Apple, Inc.',
+            Kind => 'Universal',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Graphics Tools/OpenGL Profiler.app',
+            Version => '4.2'
+          },
+          'OpenGL Shader Builder' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Graphics Tools/OpenGL Shader Builder.app',
+            Version => '2.1'
+          },
+          "Outil d\x{2019}\x{e9}talonnage du moniteur" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '4.6, Copyright 2008 Apple Computer, Inc.',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/ColorSync/Calibrators/Display Calibrator.app',
+            Version => '4.6'
+          },
+          PTPCamera => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.1, \x{a9} Copyright 2004-2011 Apple Inc., all rights reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '16/07/2009',
+            Location => '/System/Library/Image Capture/Devices/PTPCamera.app',
+            Version => '6.1'
+          },
+          PackageMaker => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Utilities/PackageMaker.app',
+            Version => '3.0.4'
+          },
+          PacketLogger => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '2.2, Copyright (c) 2009 Apple Inc. All rights reserved.',
+            Kind => 'Universal',
+            'Last Modified' => '01/08/2009',
+            Location => '/Developer/Applications/Utilities/Bluetooth/PacketLogger.app',
+            Version => '2.2'
+          },
+          "Paiements via le Chrome\x{a0}Web\x{a0}Store" => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '25/04/2016',
+            Location => '/Users/teclib/Library/Application Support/Google/Chrome/Default/Web Applications/_crx_nmmhkkegccagdldgiimedpiccmgmieda/Default nmmhkkegccagdldgiimedpiccmgmieda.app',
+            Version => '1.0.0.0'
+          },
+          ParentalControls => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '2.0, Copyright Apple Inc. 2007-2009',
+            Kind => 'Universal',
+            'Last Modified' => '01/08/2009',
+            Location => '/System/Library/PrivateFrameworks/FamilyControls.framework/Versions/A/Resources/ParentalControls.app',
+            Version => '2.0'
+          },
+          "Partage d\x{2019}\x{e9}cran" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "1.1.1, Copyright \x{a9} 2007-2009 Apple Inc., All Rights Reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '02/07/2009',
+            Location => '/System/Library/CoreServices/Screen Sharing.app',
+            Version => '1.1.1'
+          },
+          Pixie => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Graphics Tools/Pixie.app',
+            Version => '2.3'
+          },
+          PluginIM => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/Input Methods/PluginIM.app',
+            Version => '1.1'
+          },
+          PluginProcess => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '6534.59.10, Copyright 2003-2013 Apple Inc.',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2015',
+            Location => '/System/Library/PrivateFrameworks/WebKit2.framework/PluginProcess.app',
+            Version => '6534.59'
+          },
+          'PowerPC Help' => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2009',
+            Location => '/Library/Application Support/Shark/Helpers/PowerPC Help.app',
+            Version => '4.7.1'
+          },
+          PreferenceSyncClient => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '02/07/2009',
+            Location => '/System/Library/CoreServices/PreferenceSyncClient.app',
+            Version => '2.0'
+          },
+          'Printer Setup Utility' => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Universal',
+            'Last Modified' => '24/07/2009',
+            Location => '/System/Library/CoreServices/Printer Setup Utility.app',
+            Version => '6.6'
+          },
+          PrinterProxy => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '24/07/2009',
+            Location => '/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/Print.framework/Versions/A/Plugins/PrinterProxy.app',
+            Version => '6.6'
+          },
+          'Problem Reporter' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '01/08/2009',
+            Location => '/System/Library/CoreServices/Problem Reporter.app',
+            Version => '10.6.7'
+          },
+          "Programme de d\x{e9}sinstallation HP" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '5.2.0.13',
+            Kind => 'Intel',
+            'Last Modified' => '23/11/2015',
+            Location => '/Applications/Hewlett-Packard/HP Uninstaller.app',
+            Version => '5.2.0.13'
+          },
+          "Programme d\x{2019}installation" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "3.0, Copyright \x{a9} 2000-2006 Apple Computer Inc., All Rights Reserved",
+            Kind => 'Universal',
+            'Last Modified' => '27/06/2009',
+            Location => '/System/Library/CoreServices/Installer.app',
+            Version => '4.0'
+          },
+          Proof => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '25/04/2009',
+            Location => '/Library/Scripts/ColorSync/Proof.app'
+          },
+          'Property List Editor' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '11/07/2009',
+            Location => '/Developer/Applications/Utilities/Property List Editor.app',
+            Version => '3.2'
+          },
+          "Pr\x{e9}f\x{e9}rences Java" => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '08/07/2015',
+            Location => '/Applications/Utilities/Java Preferences.app',
+            Version => '13.9.8'
+          },
+          "Pr\x{e9}f\x{e9}rences Syst\x{e8}me" => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '27/06/2009',
+            Location => '/Applications/System Preferences.app',
+            Version => '7.0'
+          },
+          PubSubAgent => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '08/07/2015',
+            Location => '/System/Library/Frameworks/PubSub.framework/Versions/A/Resources/PubSubAgent.app',
+            Version => '1.0.5'
+          },
+          Python => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '2.6, (c) 2004 Python Software Foundation.',
+            Kind => 'Universal',
+            'Last Modified' => '08/07/2009',
+            Location => '/System/Library/Frameworks/Python.framework/Versions/2.6/Resources/Python.app',
+            Version => '2.6'
+          },
+          'Python Launcher' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "2.6.1, \x{a9} 001-2006 Python Software Foundation",
+            Kind => 'Universal',
+            'Last Modified' => '08/07/2009',
+            Location => '/System/Library/Frameworks/Python.framework/Versions/2.6/Resources/Python Launcher.app',
+            Version => '2.6.1'
+          },
+          'Python Launcher_0' => {
+            '64-Bit (Intel)' => 'No',
+            'Get Info String' => "2.5.4, \x{a9} 001-2006 Python Software Foundation",
+            Kind => 'Universal',
+            'Last Modified' => '08/07/2009',
+            Location => '/System/Library/Frameworks/Python.framework/Versions/2.5/Resources/Python Launcher.app',
+            Version => '2.5.4'
+          },
+          Python_0 => {
+            '64-Bit (Intel)' => 'No',
+            'Get Info String' => '2.5.4a0, (c) 2004 Python Software Foundation.',
+            Kind => 'Universal',
+            'Last Modified' => '08/07/2009',
+            Location => '/System/Library/Frameworks/Python.framework/Versions/2.5/Resources/Python.app',
+            Version => '2.5.4'
+          },
+          Python_1 => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Universal',
+            'Last Modified' => '13/05/2009',
+            Location => '/Developer/SDKs/MacOSX10.5.sdk/System/Library/Frameworks/Python.framework/Versions/2.5/Resources/Python.app'
+          },
+          'Quartz Composer' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '28/05/2009',
+            Location => '/Developer/Applications/Quartz Composer.app',
+            Version => '4.0'
+          },
+          'Quartz Composer Visualizer' => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Graphics Tools/Quartz Composer Visualizer.app',
+            Version => '1.2'
+          },
+          'Quartz Debug' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'Quartz Debug 4.0',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Performance Tools/Quartz Debug.app',
+            Version => '4.0'
+          },
+          'QuickTime Player' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "10.0, Copyright \x{a9} 2010-2011 Apple Inc. All Rights Reserved.",
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2015',
+            Location => '/Applications/QuickTime Player.app',
+            Version => '10.0'
+          },
+          'Recherche Google' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '02/03/2016',
+            Location => '/Users/teclib/Library/Application Support/Google/Chrome/Default/Web Applications/_crx_coobgpohoikkiipiblmjeljniedjpjpf/Default coobgpohoikkiipiblmjeljniedjpjpf.app',
+            Version => '0.0.0.60'
+          },
+          'Recherche Google_0' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '02/03/2016',
+            Location => '/Users/teclib/Applications/Chrome Apps.localized/Default coobgpohoikkiipiblmjeljniedjpjpf.app',
+            Version => '0.0.0.60'
+          },
+          'Reggie SE' => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2009',
+            Location => '/Developer/Applications/Performance Tools/CHUD/Hardware Tools/Reggie SE.app',
+            Version => '4.7.1'
+          },
+          Remove => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '25/04/2009',
+            Location => '/Library/Scripts/ColorSync/Remove.app'
+          },
+          Rename => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '25/04/2009',
+            Location => '/Library/Scripts/ColorSync/Rename.app'
+          },
+          'Repeat After Me' => {
+            '64-Bit (Intel)' => 'No',
+            'Get Info String' => "1.3, Copyright \x{a9} 2002-2005 Apple Computer, Inc.",
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Utilities/Speech/Repeat After Me.app',
+            Version => '1.3'
+          },
+          "R\x{e9}solution des conflits" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '1.0, Copyright Apple Computer Inc. 2004',
+            Kind => 'Universal',
+            'Last Modified' => '18/07/2009',
+            Location => '/System/Library/PrivateFrameworks/SyncServicesUI.framework/Versions/A/Resources/Conflict Resolver.app',
+            Version => '5.2'
+          },
+          SCIM => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "4.0, Copyright \x{a9} 1997-2009 Apple Inc., All Rights Reserved",
+            Kind => 'Universal',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/Input Methods/SCIM.app',
+            Version => '4.3'
+          },
+          SRLanguageModeler => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Utilities/Speech/SRLanguageModeler.app',
+            Version => '1.9'
+          },
+          Safari => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "5.1.10, Copyright \x{a9} 2003-2013 Apple Inc.",
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2015',
+            Location => '/Applications/Safari.app',
+            Version => '5.1.10'
+          },
+          Saturn => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2009',
+            Location => '/Developer/Applications/Performance Tools/CHUD/Saturn.app',
+            Version => '4.7.1'
+          },
+          ScanEventHandler => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'Copyright (c) 2013 Hewlett-Packard Development Company, L.P.',
+            Kind => 'Intel',
+            'Last Modified' => '23/11/2015',
+            Location => '/Library/Printers/hp/Utilities/Handlers/ScanEventHandler.app',
+            Version => '1.0.0'
+          },
+          ScreenReaderUIServer => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '18/07/2009',
+            Location => '/System/Library/PrivateFrameworks/ScreenReader.framework/Versions/A/Resources/ScreenReaderUIServer.app',
+            Version => '3.5.0'
+          },
+          ScreenSaverEngine => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '24/06/2009',
+            Location => '/System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app',
+            Version => '3.0.3'
+          },
+          SecurityAgent => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '18/07/2009',
+            Location => '/System/Library/CoreServices/SecurityAgent.app',
+            Version => '5.2'
+          },
+          SecurityFixer => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/CoreServices/SecurityFixer.app',
+            Version => '10.6'
+          },
+          SecurityProxy => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '21/05/2009',
+            Location => '/System/Library/CoreServices/SecurityProxy.app',
+            Version => '1.0'
+          },
+          ServerJoiner => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/07/2009',
+            Location => '/System/Library/CoreServices/ServerJoiner.app',
+            Version => '10.6.3'
+          },
+          "Service de r\x{e9}sum\x{e9}" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'Summary Service Version  2',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/Services/SummaryService.app',
+            Version => '2.0'
+          },
+          'Set Info' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '25/04/2009',
+            Location => '/Library/Scripts/ColorSync/Set Info.app'
+          },
+          Shark => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2009',
+            Location => '/Developer/Applications/Performance Tools/Shark.app',
+            Version => '4.7.1'
+          },
+          'Show Info' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '25/04/2009',
+            Location => '/Library/Scripts/ColorSync/Show Info.app'
+          },
+          Skype => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '19/08/2014',
+            Location => '/Applications/Skype.app',
+            Version => '6.15'
+          },
+          SleepX => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Utilities/SleepX.app',
+            Version => '2.7'
+          },
+          Spaces => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '1.1, Copyright 2007-2008 Apple Inc.',
+            Kind => 'Universal',
+            'Last Modified' => '31/07/2009',
+            Location => '/Applications/Utilities/Spaces.app',
+            Version => '1.1'
+          },
+          SpeakableItems => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/Speech/Recognizers/AppleSpeakableItems.SpeechRecognizer/Contents/Resources/SpeakableItems.app',
+            Version => '3.7.8'
+          },
+          'Speech Startup' => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '29/05/2009',
+            Location => '/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/SpeechRecognition.framework/Versions/A/Resources/Speech Startup.app',
+            Version => '3.8.1'
+          },
+          SpeechFeedbackWindow => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '29/05/2009',
+            Location => '/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/SpeechRecognition.framework/Versions/A/Resources/SpeechFeedbackWindow.app',
+            Version => '3.8.1'
+          },
+          SpeechRecognitionServer => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '29/05/2009',
+            Location => '/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/SpeechRecognition.framework/Versions/A/Resources/SpeechRecognitionServer.app',
+            Version => '3.11.1'
+          },
+          SpeechService => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '12/07/2009',
+            Location => '/System/Library/Services/SpeechService.service',
+            Version => '3.10.35'
+          },
+          SpeechSynthesisServer => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '12/07/2009',
+            Location => '/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/SpeechSynthesis.framework/Versions/A/Resources/SpeechSynthesisServer.app',
+            Version => '3.10.35'
+          },
+          'Spin Control' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'Spin Control',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Performance Tools/Spin Control.app',
+            Version => '0.9'
+          },
+          SpindownHD => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2009',
+            Location => '/Developer/Applications/Performance Tools/CHUD/Hardware Tools/SpindownHD.app',
+            Version => '4.7.1'
+          },
+          Spotlight => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '24/07/2009',
+            Location => '/System/Library/Services/Spotlight.service',
+            Version => '2.0'
+          },
+          SyncDiagnostics => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '18/07/2009',
+            Location => '/System/Library/Frameworks/SyncServices.framework/Versions/A/Resources/SyncDiagnostics.app',
+            Version => '5.2'
+          },
+          SyncServer => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "\x{a9} 2002-2003 Apple",
+            Kind => 'Universal',
+            'Last Modified' => '18/07/2009',
+            Location => '/System/Library/Frameworks/SyncServices.framework/Versions/A/Resources/SyncServer.app',
+            Version => '5.2'
+          },
+          Syncrospector => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "Syncrospector 3.0, \x{a9} 2004 Apple Computer, Inc., All rights reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '18/07/2009',
+            Location => '/Developer/Applications/Utilities/Syncrospector.app',
+            Version => '4.0'
+          },
+          'System Events' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/CoreServices/System Events.app',
+            Version => '1.3.4'
+          },
+          SystemUIServer => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'SystemUIServer version 1.6, Copyright 2000-2009 Apple Computer, Inc.',
+            Kind => 'Intel',
+            'Last Modified' => '22/07/2009',
+            Location => '/System/Library/CoreServices/SystemUIServer.app',
+            Version => '1.6'
+          },
+          TCIM => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.2, Copyright \x{a9} 1997-2006 Apple Computer Inc., All Rights Reserved",
+            Kind => 'Universal',
+            'Last Modified' => '07/07/2009',
+            Location => '/System/Library/Input Methods/TCIM.app',
+            Version => '6.3'
+          },
+          TWAINBridge => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.0.1, \x{a9} Copyright 2000-2010 Apple Inc., all rights reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '16/07/2009',
+            Location => '/System/Library/Image Capture/Devices/TWAINBridge.app',
+            Version => '6.0.1'
+          },
+          TamilIM => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'Tamil Input Method 1.2',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/Input Methods/TamilIM.app',
+            Version => '1.3'
+          },
+          Terminal => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "2.1.2, \x{a9} 1995-2010 Apple Inc. All Rights Reserved.",
+            Kind => 'Intel',
+            'Last Modified' => '06/07/2009',
+            Location => '/Applications/Utilities/Terminal.app',
+            Version => '2.1.2'
+          },
+          TextEdit => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '27/06/2009',
+            Location => '/Applications/TextEdit.app',
+            Version => '1.6'
+          },
+          'Ticket Viewer' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/CoreServices/Ticket Viewer.app',
+            Version => '1.0'
+          },
+          'Time Machine' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '1.1, Copyright 2007-2008 Apple Inc.',
+            Kind => 'Universal',
+            'Last Modified' => '31/07/2009',
+            Location => '/Applications/Time Machine.app',
+            Version => '1.1'
+          },
+          'Transfert de podcast' => {
+            '64-Bit (Intel)' => 'No',
+            'Get Info String' => "2.0.1, Copyright \x{a9} 2007-2009 Apple Inc.",
+            Kind => 'Intel',
+            'Last Modified' => '21/07/2009',
+            Location => '/Applications/Utilities/Podcast Capture.app',
+            Version => '2.0.2'
+          },
+          "Transfert d\x{2019}images" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.0, \x{a9} Copyright 2000-2009 Apple Inc., all rights reserved.",
+            Kind => 'Intel',
+            'Last Modified' => '20/06/2009',
+            Location => '/Applications/Image Capture.app',
+            Version => '6.0.1'
+          },
+          "Trousseau d\x{2019}acc\x{e8}s" => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '31/07/2009',
+            Location => '/Applications/Utilities/Keychain Access.app',
+            Version => '4.1.1'
+          },
+          Type1Camera => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.0, \x{a9} Copyright 2000-2009 Apple Inc., all rights reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '16/07/2009',
+            Location => '/System/Library/Image Capture/Devices/Type1Camera.app',
+            Version => '6.0'
+          },
+          Type2Camera => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.0, \x{a9} Copyright 2000-2009 Apple Inc., all rights reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '16/07/2009',
+            Location => '/System/Library/Image Capture/Devices/Type2Camera.app',
+            Version => '6.0'
+          },
+          Type3Camera => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.0, \x{a9} Copyright 2001-2009 Apple Inc., all rights reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '16/07/2009',
+            Location => '/System/Library/Image Capture/Devices/Type3Camera.app',
+            Version => '6.0'
+          },
+          Type4Camera => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.1, \x{a9} Copyright 2001-2011 Apple Inc. All rights reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '16/07/2009',
+            Location => '/System/Library/Image Capture/Devices/Type4Camera.app',
+            Version => '6.1'
+          },
+          Type5Camera => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.1, \x{a9} Copyright 2001-2011 Apple Inc., all rights reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '16/07/2009',
+            Location => '/System/Library/Image Capture/Devices/Type5Camera.app',
+            Version => '6.1'
+          },
+          Type6Camera => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.0, \x{a9} Copyright 2002-2009 Apple Inc., all rights reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '16/07/2009',
+            Location => '/System/Library/Image Capture/Devices/Type6Camera.app',
+            Version => '6.0'
+          },
+          Type7Camera => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.0, \x{a9} Copyright 2002-2009 Apple Inc., all rights reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '16/07/2009',
+            Location => '/System/Library/Image Capture/Devices/Type7Camera.app',
+            Version => '6.0'
+          },
+          Type8Camera => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "6.1, \x{a9} Copyright 2002-2011 Apple Inc., all rights reserved.",
+            Kind => 'Universal',
+            'Last Modified' => '16/07/2009',
+            Location => '/System/Library/Image Capture/Devices/Type8Camera.app',
+            Version => '6.1'
+          },
+          'URL Access Scripting' => {
+            '64-Bit (Intel)' => 'No',
+            'Get Info String' => "URL Access Scripting 1.1, Copyright \x{a9} 2002-2004 Apple Computer, Inc.",
+            Kind => 'Universal',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/ScriptingAdditions/URL Access Scripting.app',
+            Version => '1.1.1'
+          },
+          'USB Prober' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "3.7.5, Copyright \x{a9} 2002-2007 Apple Inc. All Rights Reserved.",
+            Kind => 'Intel',
+            'Last Modified' => '01/08/2009',
+            Location => '/Developer/Applications/Utilities/USB Prober.app',
+            Version => '3.7.5'
+          },
+          UnmountAssistantAgent => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '03/07/2009',
+            Location => '/System/Library/CoreServices/UnmountAssistantAgent.app',
+            Version => '1.0'
+          },
+          Updated => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'Firefox 43.0.4',
+            Kind => 'Intel',
+            'Last Modified' => '18/01/2016',
+            Location => '/Users/teclib/Library/Caches/Mozilla/updates/Applications/Firefox/updates/0/Updated.app',
+            Version => '43.0.4'
+          },
+          UserNotificationCenter => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/CoreServices/UserNotificationCenter.app',
+            Version => '3.1.0'
+          },
+          'Utilitaire AirPort' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '5.4.2, Copyright 2001-2009 Apple Inc.',
+            Kind => 'Intel',
+            'Last Modified' => '27/04/2009',
+            Location => '/Applications/Utilities/AirPort Utility.app',
+            Version => '5.4.2'
+          },
+          'Utilitaire AppleScript' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/CoreServices/AppleScript Utility.app',
+            Version => '1.1.1'
+          },
+          'Utilitaire ColorSync' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "4.6.2, \x{a9} Copyright 2009 Apple Inc.",
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Applications/Utilities/ColorSync Utility.app',
+            Version => '4.6.2'
+          },
+          'Utilitaire RAID' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "RAID Utility 1.0 (121), Copyright \x{a9} 2007-2009 Apple Inc.",
+            Kind => 'Intel',
+            'Last Modified' => '01/08/2009',
+            Location => '/Applications/Utilities/RAID Utility.app',
+            Version => '1.2'
+          },
+          'Utilitaire VoiceOver' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '18/07/2009',
+            Location => '/Applications/Utilities/VoiceOver Utility.app',
+            Version => '3.5.0'
+          },
+          'Utilitaire de disque' => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "Version 11.5.2, Copyright \x{a9} 1999-2010 Apple Inc. All rights reserved.",
+            Kind => 'Intel',
+            'Last Modified' => '01/08/2009',
+            Location => '/Applications/Utilities/Disk Utility.app',
+            Version => '11.5.2'
+          },
+          "Utilitaire de r\x{e9}seau" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "Version 1.4.6, Copyright \x{a9} 2000-2009 Apple Inc. All rights reserved.",
+            Kind => 'Intel',
+            'Last Modified' => '25/06/2009',
+            Location => '/Applications/Utilities/Network Utility.app',
+            Version => '1.4.6'
+          },
+          "Utilitaire d\x{2019}annuaire" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "2.2, Copyright \x{a9} 2001\x{2013}2008 Apple Inc.",
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/CoreServices/Directory Utility.app',
+            Version => '2.2'
+          },
+          "Utilitaire d\x{2019}archive" => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '18/06/2009',
+            Location => '/System/Library/CoreServices/Archive Utility.app',
+            Version => '10.6'
+          },
+          "Utilitaire d\x{2019}emplacement de m\x{e9}moire" => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/CoreServices/Memory Slot Utility.app',
+            Version => '1.4.1'
+          },
+          "Utilitaire d\x{2019}emplacement d\x{2019}extension" => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/CoreServices/Expansion Slot Utility.app',
+            Version => '1.4.1'
+          },
+          VietnameseIM => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/Input Methods/VietnameseIM.app',
+            Version => '1.1.1'
+          },
+          VoiceOver => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '18/07/2009',
+            Location => '/System/Library/CoreServices/VoiceOver.app',
+            Version => '3.5.0'
+          },
+          'VoiceOver Quickstart' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '18/07/2009',
+            Location => '/System/Library/PrivateFrameworks/ScreenReader.framework/Versions/A/Resources/VoiceOver Quickstart.app',
+            Version => '3.5.0'
+          },
+          WebKitPluginHost => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2015',
+            Location => '/System/Library/Frameworks/WebKit.framework/WebKitPluginHost.app',
+            Version => '6534'
+          },
+          WebKitPluginHost_0 => {
+            '64-Bit (Intel)' => 'No',
+            'Last Modified' => '11/07/2009',
+            Location => '/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/WebKit.framework/WebKitPluginHost.app'
+          },
+          WebProcess => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '6534.59.10, Copyright 2003-2013 Apple Inc.',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2015',
+            Location => '/System/Library/PrivateFrameworks/WebKit2.framework/WebProcess.app',
+            Version => '6534.59'
+          },
+          Wish => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "Wish Shell 8.5.7,
+Copyright \x{a9} 1989-2009 Tcl Core Team,
+Copyright \x{a9} 2002-2009 Daniel A. Steffen,
+Copyright \x{a9} 2001-2009 Apple Inc.,
+Copyright \x{a9} 2001-2002 Jim Ingham & Ian Reid",
+            Kind => 'Intel',
+            'Last Modified' => '23/07/2009',
+            Location => '/System/Library/Frameworks/Tk.framework/Versions/8.5/Resources/Wish.app',
+            Version => '8.5.7'
+          },
+          Wish_0 => {
+            '64-Bit (Intel)' => 'No',
+            'Get Info String' => "Wish Shell 8.4.19,
+Copyright \x{a9} 2009 Tcl Core Team,
+Copyright \x{a9} 2002-2009 Daniel A. Steffen,
+Initial MacOS X Port by Jim Ingham & Ian Reid,
+Copyright \x{a9} 2001-2002, Apple Computer, Inc.",
+            Kind => 'Intel',
+            'Last Modified' => '23/07/2009',
+            Location => '/System/Library/Frameworks/Tk.framework/Versions/8.4/Resources/Wish.app',
+            Version => '8.4.19'
+          },
+          Xcode => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'Xcode version 3.2',
+            Kind => 'Universal',
+            'Last Modified' => '31/07/2009',
+            Location => '/Developer/Applications/Xcode.app',
+            Version => '3.2'
+          },
+          'Yahoo! Sync' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/PrivateFrameworks/YahooSync.framework/Versions/A/Resources/Yahoo! Sync.app',
+            Version => '1.3'
+          },
+          YouTube => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '02/03/2016',
+            Location => '/Users/teclib/Library/Application Support/Google/Chrome/Default/Web Applications/_crx_blpcfgokakmgnkcojhhkbfbldkacnbeo/Default blpcfgokakmgnkcojhhkbfbldkacnbeo.app',
+            Version => '4.2.8'
+          },
+          YouTube_0 => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '02/03/2016',
+            Location => '/Users/teclib/Applications/Chrome Apps.localized/Default blpcfgokakmgnkcojhhkbfbldkacnbeo.app',
+            Version => '4.2.8'
+          },
+          autosetup => {
+            'Last Modified' => '14/08/2013',
+            Location => '/Library/Printers/hp/cups/tools/autosetup.tool'
+          },
+          check_afp => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "AFP Client Session Monitor, Copyright \x{a9} 2000 - 2010, Apple Inc.",
+            Kind => 'Universal',
+            'Last Modified' => '03/07/2009',
+            Location => '/System/Library/Filesystems/AppleShare/check_afp.app',
+            Version => '2.1'
+          },
+          commandtohp => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'HP Command File Filter 2.2.1, Copyright (c) 2006-2013 Hewlett-Packard Development Company, L.P.',
+            Kind => 'Intel',
+            'Last Modified' => '14/08/2013',
+            Location => '/Library/Printers/hp/cups/filters/commandtohp.filter',
+            Version => '2.2.1'
+          },
+          dotmacfx => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '26/06/2009',
+            Location => '/System/Library/Frameworks/SecurityFoundation.framework/Versions/A/dotmacfx.app',
+            Version => '3.0'
+          },
+          eaptlstrust => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/PrivateFrameworks/EAP8021X.framework/Support/eaptlstrust.app',
+            Version => '10.0'
+          },
+          fax => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'HP Fax 5.11.0, Copyright (c) 2009-2013 Hewlett-Packard Development Company, L.P.',
+            Kind => 'Intel',
+            'Last Modified' => '14/08/2013',
+            Location => '/Library/Printers/hp/Fax/fax.backend',
+            Version => '5.11.0'
+          },
+          hpdot4d => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'hpdot4d 4.8.3, Copyright (c) 2005-2013 Hewlett-Packard Development Company, L.P.',
+            Kind => 'Intel',
+            'Last Modified' => '23/11/2015',
+            Location => '/Library/Printers/hp/Frameworks/HPDeviceModel.framework/Versions/4.0/Runtime/hpdot4d.app',
+            Version => '4.8.3'
+          },
+          iCal => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '16/07/2009',
+            Location => '/Applications/iCal.app',
+            Version => '4.0.4'
+          },
+          'iCal Helper' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '16/07/2009',
+            Location => '/System/Library/Frameworks/CalendarStore.framework/Versions/A/Resources/iCal Helper.app',
+            Version => '4.0.4'
+          },
+          iChatAgent => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '29/07/2009',
+            Location => '/System/Library/Frameworks/IMCore.framework/iChatAgent.app',
+            Version => '5.0.3'
+          },
+          iSync => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "3.1.2, Copyright \x{a9} 2003-2010 Apple Inc.",
+            Kind => 'Intel',
+            'Last Modified' => '19/05/2009',
+            Location => '/Applications/iSync.app',
+            Version => '3.1.2'
+          },
+          'iSync Plug-in Maker' => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '19/05/2009',
+            Location => '/Developer/Applications/Utilities/iSync Plug-in Maker.app',
+            Version => '3.1'
+          },
+          iTunes => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => "iTunes 11.4, \x{a9} 2000\x{2013}2014 Apple Inc. All rights reserved.",
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2015',
+            Location => '/Applications/iTunes.app',
+            Version => '11.4'
+          },
+          kcSync => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '26/06/2009',
+            Location => '/System/Library/Frameworks/SecurityFoundation.framework/Versions/A/kcSync.app',
+            Version => '3.0.1'
+          },
+          loginwindow => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Universal',
+            'Last Modified' => '08/07/2015',
+            Location => '/System/Library/CoreServices/loginwindow.app',
+            Version => '6.1.2'
+          },
+          pdftopdf => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'HP PDF Filter 2.5.2, Copyright (c) 2001-2013 Hewlett-Packard Development Company, L.P.',
+            Kind => 'Intel',
+            'Last Modified' => '14/08/2013',
+            Location => '/Library/Printers/hp/cups/filters/pdftopdf.filter',
+            Version => '2.5.2'
+          },
+          quicklookd => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '1.0, Copyright Apple Inc. 2007',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2015',
+            Location => '/System/Library/Frameworks/QuickLook.framework/Versions/A/Resources/quicklookd.app',
+            Version => '2.3'
+          },
+          quicklookd32 => {
+            '64-Bit (Intel)' => 'No',
+            'Get Info String' => '1.0, Copyright Apple Inc. 2007',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2015',
+            Location => '/System/Library/Frameworks/QuickLook.framework/Versions/A/Resources/quicklookd32.app',
+            Version => '2.3'
+          },
+          rastertofax => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => 'HP Fax 5.11.0, Copyright (c) 2009-2013 Hewlett-Packard Development Company, L.P.',
+            Kind => 'Intel',
+            'Last Modified' => '14/08/2013',
+            Location => '/Library/Printers/hp/Fax/rastertofax.filter',
+            Version => '5.11.0'
+          },
+          rcd => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '2.6',
+            Kind => 'Intel',
+            'Last Modified' => '01/08/2009',
+            Location => '/System/Library/CoreServices/rcd.app',
+            Version => '2.6'
+          },
+          store_helper => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '02/06/2011',
+            Location => '/System/Library/PrivateFrameworks/CommerceKit.framework/Versions/A/Resources/store_helper.app',
+            Version => '1.0'
+          },
+          syncuid => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '4.0, Copyright Apple Computer Inc. 2004',
+            Kind => 'Universal',
+            'Last Modified' => '18/07/2009',
+            Location => '/System/Library/PrivateFrameworks/SyncServicesUI.framework/Versions/A/Resources/syncuid.app',
+            Version => '5.2'
+          },
+          updater => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '18/01/2016',
+            Location => '/Users/teclib/Library/Caches/Mozilla/updates/Applications/Firefox/updates/0/updater.app',
+            Version => '1.0'
+          },
+          webdav_cert_ui => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '08/07/2015',
+            Location => '/System/Library/Filesystems/webdav.fs/Support/webdav_cert_ui.app',
+            Version => '1.8.3'
+          },
+          wxPerl => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Universal',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/Perl/Extras/5.8.9/darwin-thread-multi-2level/auto/Wx/wxPerl.app',
+            Version => '1.0'
+          },
+          wxPerl_0 => {
+            '64-Bit (Intel)' => 'No',
+            Kind => 'Universal',
+            'Last Modified' => '19/05/2009',
+            Location => '/System/Library/Perl/Extras/5.10.0/darwin-thread-multi-2level/auto/Wx/wxPerl.app',
+            Version => '1.0'
+          },
+          "\x{c9}change de fichiers Bluetooth" => {
+            '64-Bit (Intel)' => 'Yes',
+            'Get Info String' => '2.4.5, Copyright (c) 2011 Apple Inc. All rights reserved.',
+            Kind => 'Universal',
+            'Last Modified' => '01/08/2009',
+            Location => '/Applications/Utilities/Bluetooth File Exchange.app',
+            Version => '2.4.5'
+          },
+          "\x{c9}diteur AppleScript" => {
+            '64-Bit (Intel)' => 'Yes',
+            Kind => 'Intel',
+            'Last Modified' => '24/04/2009',
+            Location => '/Applications/Utilities/AppleScript Editor.app',
+            Version => '2.3'
+          }
+        },
+        count => 291,
+    }
+);
+
+# Fix 'Get Info String' to be a regexp as it is not multiline on flatfile case
+foreach my $case (values(%xmlparsing)) {
+    foreach my $entry (values(%{$case->{list}})) {
+        my $string = $entry->{'Get Info String'}
+            or next;
+        my @lines = split("\n", $string);
+        next unless @lines > 1;
+        $string = $lines[0];
+        $string =~ s/\./\\./g;
+        $entry->{'Get Info String'} = re("^$string");
+    }
+}
+
+my %dateconv = (
+    # LastModified date         TZ offset   Expected
+    "2009-04-07T00:42:37Z" => [ 7200,       "07/04/2009" ],
+    "2009-04-06T23:42:37Z" => [ 3*3600,     "07/04/2009" ],
+);
 
 plan tests =>
     scalar (keys %system_profiler_tests) +
     scalar @ioreg_tests
-    + 11
-    + scalar (@$versionNumbersComparisons);
+    + 6 * scalar(keys %xmlparsing) + 3 * scalar(grep { $xmlparsing{$_}->{flatfile} } keys(%xmlparsing))
+    + scalar (keys %dateconv)
+    + 1;
 
 foreach my $test (keys %system_profiler_tests) {
     my $file = "resources/macos/system_profiler/$test";
@@ -3404,133 +5585,68 @@ foreach my $test (@ioreg_tests) {
     cmp_deeply(\@devices, $test->{results}, "$test->{file} ioreg parsing");
 }
 
-my $type = 'SPApplicationsDataType';
-my $flatFile = 'resources/macos/system_profiler/10.8-system_profiler_SPApplicationsDataType.example.txt';
-my $softwaresFromFlatFile = GLPI::Agent::Tools::MacOS::_getSystemProfilerInfosText(file => $flatFile, type => $type);
-my $xmlFile = 'resources/macos/system_profiler/10.8-system_profiler_SPApplicationsDataType_-xml.example.xml';
-my $softwaresFromXmlFile = GLPI::Agent::Tools::MacOS::_getSystemProfilerInfosXML(file => $xmlFile, type => $type, localTimeOffset => 7200);
+foreach my $test (keys(%xmlparsing)) {
+    my $type = 'SPApplicationsDataType';
 
-XML::XPath->require();
-my $checkXmlXPath = $EVAL_ERROR ? 0 : 1;
-SKIP : {
-    skip 'test only if module XML::XPath available', 6 unless $checkXmlXPath;
+    if ($xmlparsing{$test}->{flatfile}) {
+        my $flatFile = 'resources/macos/system_profiler/'.$xmlparsing{$test}->{flatfile};
+        my $softwaresFromFlatFile = GLPI::Agent::Tools::MacOS::getSystemProfilerInfos(file => $flatFile, type => $type);
 
-    ok (ref($softwaresFromFlatFile) eq 'HASH');
-    ok (ref($softwaresFromXmlFile) eq 'HASH');
-
-    # because existing function returns only first line of data
-    # and the new being tested here returns all lines
-    # just a few deletions that don't remove the sense of these tests
-    delete $softwaresFromFlatFile->{"Applications"}{"Wish"}{"Get\ Info\ String"};
-    delete $softwaresFromXmlFile->{"Applications"}{"Wish"}{"Get\ Info\ String"};
-    delete $softwaresFromFlatFile->{"Applications"}{"Wish_0"}{"Get\ Info\ String"};
-    delete $softwaresFromXmlFile->{"Applications"}{"Wish_0"}{"Get\ Info\ String"};
-
-    # before comparing, because with more recent method dates are already formatted,
-    # we format dates in the other hash as it's currently done
-    for my $soft (keys %{$softwaresFromFlatFile->{"Applications"}}) {
-        if (defined($softwaresFromFlatFile->{"Applications"}->{$soft}->{'Last Modified'})) {
-            my $formattedDate = GLPI::Agent::Task::Inventory::MacOS::Softwares::_formatDate($softwaresFromFlatFile->{"Applications"}->{$soft}->{'Last Modified'});
-            $softwaresFromFlatFile->{"Applications"}->{$soft}->{'Last Modified'} = $formattedDate;
+        # Fix Last Modified date from flat file using expected API
+        foreach my $soft (values(%{$softwaresFromFlatFile->{"Applications"}})) {
+            $soft->{'Last Modified'} = GLPI::Agent::Task::Inventory::MacOS::Softwares::_formatDate($soft->{'Last Modified'})
+                if $soft->{'Last Modified'};
         }
+
+        ok (ref($softwaresFromFlatFile) eq 'HASH');
+        cmp_deeply(
+            $softwaresFromFlatFile->{Applications},
+            $xmlparsing{$test}->{list},
+            "$test: flat file control"
+        );
+
+        my $softwaresFromFlatFileSize = scalar(keys %{$softwaresFromFlatFile->{'Applications'}});
+        ok ($softwaresFromFlatFileSize == $xmlparsing{$test}->{count},
+            "count: $softwaresFromFlatFileSize from flat file, expecting ".$xmlparsing{$test}->{count});
     }
 
-    cmp_deeply(
-        $softwaresFromFlatFile,
-        $softwaresFromXmlFile
-    );
-    my $softwaresFromFlatFileSize = scalar(keys %{$softwaresFromFlatFile->{'Applications'}});
-    my $softwaresFromXmlFileSize = scalar(keys %{$softwaresFromXmlFile->{'Applications'}});
-    ok ($softwaresFromFlatFileSize == $softwaresFromXmlFileSize,
-        $softwaresFromFlatFileSize.' from flat file and '.$softwaresFromXmlFileSize.' from XML file');
-
-    GLPI::Agent::Tools::MacOS::_initXmlParser(
-        file => 'resources/macos/system_profiler/10.8-system_profiler_SPApplicationsDataType_-xml.example.xml'
-    );
-    my $softs = GLPI::Agent::Tools::MacOS::_extractSoftwaresFromXml(
+    my $xmlFile = 'resources/macos/system_profiler/'.$xmlparsing{$test}->{xmlfile};
+    my $softwaresFromXmlFile = GLPI::Agent::Tools::MacOS::getSystemProfilerInfos(
+        file => $xmlFile,
+        type => $type,
+        format => 'xml',
         localTimeOffset => 7200
     );
-    ok ($softs);
-    ok (scalar(keys %$softs) == 291, 'must be 291 and is ' . scalar(keys %$softs));
-}
+    my $softwaresFromXmlFileSize = scalar(keys %{$softwaresFromXmlFile->{'Applications'}});
 
-my $extractedHash = {
-    '_name' => "Programme d’installation",
-    "has64BitIntelCode" => "yes",
-    "info" => "3.0, Copyright © 2000-2006 Apple Computer Inc., All Rights Reserved",
-    "lastModified" => "2009-06-27T06:18:49Z",
-    "path" => "/System/Library/CoreServices/Installer.app",
-    "runtime_environment" => "universal",
-    "version" => "4.0"
-};
-
-my $expectedHash = {
-    'Programme d’installation' => {
-        '64-Bit (Intel)' => 'yes',
-        'Get Info String'           => '3.0, Copyright © 2000-2006 Apple Computer Inc., All Rights Reserved',
-        'Last Modified'  => '2009-06-27T06:18:49Z',
-        'Location'       => '/System/Library/CoreServices/Installer.app',
-        'Kind'           => 'universal',
-        'Version'        => '4.0'
-    }
-};
-my $hashMapped = GLPI::Agent::Tools::MacOS::_mapApplicationDataKeys($extractedHash);
-cmp_deeply(
-    $expectedHash,
-    $hashMapped
-);
-
-
-my $dateStr = '2009-04-07T00:42:37Z';
-my $dateExpectedStr = '07/04/2009';
-my $offset = 7200;
-my $convertedDate = GLPI::Agent::Tools::MacOS::_convertDateFromApplicationDataXml($dateStr, $offset);
-ok ($dateExpectedStr eq $convertedDate, $dateExpectedStr . ' eq ' . $convertedDate . ' ?');
-
-$dateStr = '2009-04-06T23:42:37Z';
-$dateExpectedStr = '07/04/2009';
-$offset = 3600 * 3;
-$convertedDate = GLPI::Agent::Tools::MacOS::_convertDateFromApplicationDataXml($dateStr, $offset);
-ok ($dateExpectedStr eq $convertedDate, $dateExpectedStr . ' eq ' . $convertedDate . ' ?');
-
-sub _cmpVersionNumbers {
-    my ($str1, $str2) = @_;
-
-    my @list1 = reverse split(/\./, $str1);
-    my @list2 = reverse split(/\./, $str2);
-
-    my $cmp = 0;
-    my $int1;
-    while (
-        $cmp == 0 && ($int1 = pop @list1)
-    ) {
-        $int1 = int($int1);
-        my $int2 = pop @list2;
-        if (defined $int2) {
-            $int2 = int($int2);
-            $cmp = $int1 <=> $int2;
-        } else {
-            $cmp = 1;
-        }
-    }
-    # if $cmp is still 0 and list2 still contains values,
-    # so $str2 is greater
-    if ($cmp == 0 && (@list2) > 0) {
-        $cmp = -1;
-    }
-
-    return $cmp;
-}
-
-for my $listVersionNumbers (@$versionNumbersComparisons) {
-    my $cmp0vs1 = _cmpVersionNumbers($listVersionNumbers->[0], $listVersionNumbers->[1]);
-    my $cmp1vs0 = _cmpVersionNumbers($listVersionNumbers->[1], $listVersionNumbers->[0]);
-    ok (
-        $cmp0vs1 == -1
-        && $cmp1vs0 == 1
+    ok (ref($softwaresFromXmlFile) eq 'HASH');
+    cmp_deeply(
+        $softwaresFromXmlFile->{Applications},
+        $xmlparsing{$test}->{list},
+        "$test: XML file control"
     );
+    ok ($softwaresFromXmlFileSize == $xmlparsing{$test}->{count},
+        "count: $softwaresFromXmlFileSize from XML file, expecting ".$xmlparsing{$test}->{count});
+
+    my $softs = GLPI::Agent::Tools::MacOS::_extractSoftwaresFromXml(
+        file => $xmlFile,
+        localTimeOffset => 7200
+    );
+    ok (ref($softs) eq 'HASH');
+    cmp_deeply(
+        $softs,
+        $xmlparsing{$test}->{list},
+        "$test: XML file API control"
+    );
+    my $count = keys(%{$softs});
+    ok ($count == $xmlparsing{$test}->{count},
+        "extracted count: $count from XML file, expecting ".$xmlparsing{$test}->{count});
 }
-ok (_cmpVersionNumbers('5.34.54', '5.34.54') == 0);
+
+foreach my $date (keys(%dateconv)) {
+    my $convertedDate = GLPI::Agent::Tools::MacOS::_getOffsetDate($date, $dateconv{$date}->[0]);
+    ok ($convertedDate eq $dateconv{$date}->[1], $date . ': ' . $convertedDate . ' eq ' . $dateconv{$date}->[1] . ' ?');
+}
 
 SKIP : {
     skip 'MacOS specific test', 1 unless $OSNAME eq 'darwin';

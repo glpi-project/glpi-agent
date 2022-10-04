@@ -17,10 +17,13 @@ sub new {
     $self->string($params{string});
     $self->file($params{file}) unless $self->has_xml();
 
-    foreach my $opt (qw(force_array text_node_key attr_prefix skip_attr first_out no_xml_decl xml_format)) {
+    foreach my $opt (qw(force_array text_node_key attr_prefix skip_attr first_out no_xml_decl xml_format is_plist)) {
         next unless defined($params{$opt});
         $self->{"_$opt"} = $params{$opt};
     }
+
+    # Support required by GLPI::Agent::Tools::MacOS
+    $self->{_force_array} = [ qw(array dict) ] if $self->{_is_plist};
 
     return $self;
 }
@@ -222,10 +225,12 @@ sub dump_as_hash {
         my $textkey     = $self->{_text_node_key} // '#text';
         my $force_array = $self->{_force_array};
         my $skip_attr   = $self->{_skip_attr};
+        my $plist       = $self->{_is_plist};
         my $name = $node->nodeName;
         foreach my $leaf (map { $self->dump_as_hash($_) } $node->childNodes()) {
             if (ref($leaf) eq 'HASH') {
                 foreach my $key (keys(%{$leaf})) {
+                    next if $plist && $key =~ /^key|string|date|integer|real|data|true|false$/;
                     # Transform key in array ref is necessary
                     if (exists($ret->{$name}->{$key})) {
                         $ret->{$name}->{$key} = [ $ret->{$name}->{$key} ]
@@ -235,6 +240,13 @@ sub dump_as_hash {
                         my $as_array = ref($force_array) eq 'ARRAY' && any { $key eq $_ } @{$force_array};
                         $ret->{$name}->{$key} = $as_array ? [ $leaf->{$key} ] : $leaf->{$key};
                     }
+                }
+            } elsif ($plist) {
+                if ($name eq "key") {
+                    $self->{_current_name} = $leaf;
+                } elsif ($self->{_current_name}) {
+                    $ret->{$self->{_current_name}} = $leaf;
+                    delete $self->{_current_name};
                 }
             } elsif (!ref($ret->{$name})) {
                 $ret->{$name}->{$textkey} .= $leaf;

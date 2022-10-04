@@ -13,6 +13,7 @@ use UNIVERSAL::require;
 use Storable 'dclone';
 
 use GLPI::Agent::Tools;
+use GLPI::Agent::XML;
 
 our @EXPORT = qw(
     getSystemProfilerInfos
@@ -61,14 +62,11 @@ sub _getSystemProfilerInfosXML {
     my $xmlStr = getAllLines(command => $command, %params);
     return unless $xmlStr;
 
-    # Decode system_profiler output
-    $xmlStr = decode("UTF-8", $xmlStr);
-
     my $info = {};
     if ($params{type} eq 'SPApplicationsDataType') {
         $info->{Applications} = _extractSoftwaresFromXml(
-            %params,
-            xmlString => $xmlStr
+            string => $xmlStr,
+            %params
         );
     } elsif (
         $params{type} eq 'SPSerialATADataType'
@@ -77,6 +75,8 @@ sub _getSystemProfilerInfosXML {
         || $params{type} eq 'SPUSBDataType'
         || $params{type} eq 'SPFireWireDataType'
     ) {
+        # Decode system_profiler output
+        $xmlStr = decode("UTF-8", $xmlStr);
         $info->{storages} = _extractStoragesFromXml(
             %params,
             xmlString => $xmlStr
@@ -91,39 +91,16 @@ sub _getSystemProfilerInfosXML {
 sub _extractSoftwaresFromXml {
     my (%params) = @_;
 
-    _initXmlParser(%params);
+    my $xml = GLPI::Agent::XML->new(
+        is_plist => 1,
+        %params
+    )->dump_as_hash();
 
-    return unless $xmlParser;
+    return unless $xml && exists($xml->{plist}->{array}[0]->{dict}[0]->{array}[0]->{dict});
 
-    my $softwaresHash = {};
-    my $xPathExpr =  "/plist/array[1]/dict[1]/key[text()='_items']/following-sibling::array[1]/child::dict";
-    my $n = $xmlParser->findnodes($xPathExpr);
-    my @nl = $n->get_nodelist();
-    for my $elem (@nl) {
-        $softwaresHash = _mergeHashes($softwaresHash, _extractSoftwareDataFromXmlNode($elem, $params{logger}, $params{localTimeOffset}));
-    }
+    my $dict = $xml->{plist}->{array}[0]->{dict}[0]->{array}[0]->{dict};
 
-    return $softwaresHash;
-}
-
-sub _extractSoftwareDataFromXmlNode {
-    my ($xmlNode, $logger, $localTimeOffset) = @_;
-
-    my $soft = _makeHashFromKeyValuesTextNodes($xmlNode);
-    next unless $soft->{'_name'};
-
-    $soft = _applySpecialRulesOnApplicationData($soft);
-    my $convertedDate = _convertDateFromApplicationDataXml($soft->{lastModified}, $localTimeOffset);
-    if (defined $convertedDate) {
-        $soft->{lastModified} = $convertedDate;
-    } else {
-        if (defined $logger) {
-            $logger->error("can't parse retrieved dates in 'lastModified' field in XML file");
-        }
-    }
-    my $mappedHash = _mapApplicationDataKeys($soft);
-
-    return $mappedHash;
+    return _dumpSoftwares($dict, $params{localTimeOffset});
 }
 
 sub _extractStoragesFromXml {
@@ -249,25 +226,12 @@ sub _makeHashFromKeyValuesTextNodes {
     return $hash;
 }
 
-sub _convertDateFromApplicationDataXml {
-    my ($dateStrFromDataXml, $localtimeOffset) = @_;
+sub _getOffsetDate {
+    my ($lastmod, $localtimeOffset) = @_;
 
-    my $date;
-    if ($dateStrFromDataXml =~ /^(\d{4})[^0-9](\d{2})[^0-9](\d{2})[^0-9](\d{2}):(\d{2}):(\d{2})[^0-9]$/) {
-        $date = _convertDateToLocalDate($6, $5, $4, $3, $2 - 1, $1, $localtimeOffset);
-    }
-
-    return $date;
-}
-
-sub _convertDateToLocalDate {
-    my ($sec,$min,$hour,$mday,$mon,$year, $localtimeOffset) = @_;
-
-    my $epoch = timegm ($sec, $min, $hour, $mday, $mon, $year);
-
-    my $newEpoch = $epoch + $localtimeOffset;
-
-    return strftime("%d/%m/%Y", gmtime($newEpoch));
+    return unless $lastmod && $lastmod =~ /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})Z$/;
+    my $date = timegm($6, $5, $4, $3, $2 - 1, $1) + $localtimeOffset;
+    return strftime("%d/%m/%Y", gmtime($date));
 }
 
 sub detectLocalTimeOffset {
@@ -275,80 +239,74 @@ sub detectLocalTimeOffset {
     return -(timelocal(@gmTime) - timegm(@gmTime));
 }
 
-sub _applySpecialRulesOnApplicationData {
-    my ($hash) = @_;
+sub _dumpSoftwares {
+    my ($softlist, $localtimeOffset) = @_;
 
-    if (defined($hash->{has64BitIntelCode})) {
-        $hash->{has64BitIntelCode} = ucfirst $hash->{has64BitIntelCode};
-    }
-    if (defined($hash->{runtime_environment})) {
-        if ($hash->{runtime_environment} eq 'arch_x86') {
-            $hash->{runtime_environment} = 'Intel';
-        }
-        $hash->{runtime_environment} = ucfirst $hash->{runtime_environment};
-    }
+    my $list;
 
-    return $hash;
-}
+    foreach my $soft (@{$softlist}) {
 
-sub _mergeHashes {
-    my ($hash1, $hash2) = @_;
+        my $name = $soft->{_name}
+            or next;
 
-    for my $key (keys %$hash2) {
-        my $newKey = $key;
-        if (defined($hash1->{$key})) {
-            my $i = 0;
-            $newKey = $key . '_' . $i;
-            while (defined($hash1->{$newKey})) {
-                $newKey = $key . '_' . $i++;
+        my $entry = {};
+
+        # Normalize has64BitIntelCode & runtime_environment values
+        my $bits = delete $soft->{has64BitIntelCode};
+        $entry->{'64-Bit (Intel)'} = ucfirst($bits)
+            if defined($bits);
+
+        my $env = delete $soft->{runtime_environment};
+        if (defined($env)) {
+            if ($env eq 'arch_x86') {
+                $entry->{Kind} = 'Intel';
+            } else {
+                $entry->{Kind} = ucfirst($env);
             }
         }
-        $hash1->{$newKey} = $hash2->{$key};
+
+        # Convert lastModified
+        my $lastmod = delete $soft->{lastModified};
+        $entry->{'Last Modified'} = _getOffsetDate($lastmod, $localtimeOffset)
+            if defined($lastmod);
+
+        my %mapping = (
+            version => 'Version',
+            path    => 'Location',
+            info    => 'Get Info String'
+        );
+
+        foreach my $key (keys(%mapping)) {
+            next unless exists($soft->{$key});
+            $entry->{$mapping{$key}} = $soft->{$key};
+        }
+
+        # Merge hash
+        if (exists($list->{$name})) {
+            my $index = 0;
+            while (exists($list->{$name."_$index"})) {
+                $index++;
+            }
+            $name = $name."_$index";
+        }
+        $list->{$name} = $entry;
     }
 
-    return $hash1;
-}
-
-sub _mapApplicationDataKeys {
-    my ($hash) = @_;
-
-    my $mapping = {
-        'version' => 'Version',
-        'has64BitIntelCode' => '64-Bit (Intel)',
-        'lastModified' => 'Last Modified',
-        'path' => 'Location',
-        'runtime_environment' => 'Kind',
-        'info' => 'Get Info String'
-    };
-    my %hashMapped = map { ($mapping->{$_} || 'unMapped') => $hash->{$_} } keys %$hash;
-    delete $hashMapped{unMapped};
-
-    # to merge two hashes
-    # @hash1{keys %hash2} = values %hash2
-
-    return { $hash->{'_name'} => \%hashMapped };
+    return $list;
 }
 
 sub getSystemProfilerInfos {
     my (%params) = @_;
 
-    my $info;
-    if ($params{format} && $params{format} eq 'xml') {
-        $info = _getSystemProfilerInfosXML(%params);
-    } else {
-        $info = _getSystemProfilerInfosText(%params);
-    }
+    return _getSystemProfilerInfosXML(%params)
+        if defined($params{format}) && $params{format} eq 'xml';
 
-    return $info;
-}
-
-sub _getSystemProfilerInfosText {
-    my (%params) = @_;
-
-    $params{command} = $params{type} ?
-        "/usr/sbin/system_profiler $params{type}" : "/usr/sbin/system_profiler";
-    my @lines = getAllLines(%params)
-        or return;
+    my @lines = getAllLines(
+        command => $params{type} ?
+            "/usr/sbin/system_profiler $params{type}" : "/usr/sbin/system_profiler",
+        %params
+    );
+    return unless @lines;
 
     my $info = {};
 
