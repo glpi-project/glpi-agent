@@ -34,7 +34,7 @@ Applications:
       64-Bit (Intel): Yes
       Location: /Applications/Google Chrome.app
 
-    Préférences Système:
+    Préférences Système:
 
       Version: 7.0
       Last Modified: 6/27/09 8:09 AM
@@ -58,7 +58,7 @@ Applications:
       64-Bit (Intel): No
       Location: /Applications/Skype.app
 
-    Informations Système:
+    Informations Système:
 
       Version: 10.6.0
       Last Modified: 5/19/09 7:53 AM
@@ -92,7 +92,7 @@ Applications:
       64-Bit (Intel): Yes
       Location: /Users/teclib/Library/Printers/Deskjet 2540 series [CE35D9].app
 
-    Aperçu:
+    Aperçu:
 
       Version: 5.0.3
       Last Modified: 7/15/09 7:51 AM
@@ -208,7 +208,7 @@ Applications:
       Get Info String: Copyright © 2010-2013, Hewlett-Packard Development Company, L.P.
       Location: /Applications/Hewlett-Packard/HP Scan 3.app
 
-    Mise à jour de logiciels:
+    Mise à jour de logiciels:
 
       Version: 4.0.6
       Last Modified: 7/8/15 11:11 PM
@@ -226,7 +226,7 @@ Applications:
       Get Info String: HP Utility 5.21.2, Copyright (c) 2005-2013 Hewlett-Packard Development Company, L.P.
       Location: /Library/Printers/hp/Utilities/HP Utility.app
 
-    Programme de désinstallation HP:
+    Programme de désinstallation HP:
 
       Version: 5.2.0.13
       Last Modified: 11/23/15 5:11 PM
@@ -528,7 +528,7 @@ Applications:
       64-Bit (Intel): Yes
       Location: /usr/share/java/Tools/Java VisualVM.app
 
-    Préférences Java:
+    Préférences Java:
 
       Version: 13.9.8
       Last Modified: 7/8/15 11:11 PM
@@ -616,7 +616,7 @@ Applications:
       64-Bit (Intel): Yes
       Location: /Users/walid/Applications/Chrome Apps.localized/Default blpcfgokakmgnkcojhhkbfbldkacnbeo.app
 
-    Assistant réglages de réseau:
+    Assistant réglages de réseau:
 
       Version: 1.6
       Last Modified: 5/19/09 11:15 AM
@@ -625,7 +625,7 @@ Applications:
       Get Info String: 1.6
       Location: /System/Library/CoreServices/Network Setup Assistant.app
 
-    Assistant réglages Bluetooth:
+    Assistant réglages Bluetooth:
 
       Version: 2.4.5
       Last Modified: 8/1/09 8:05 AM
@@ -668,7 +668,7 @@ Applications:
       Get Info String: 4.0, Copyright Apple Computer Inc. 2004
       Location: /System/Library/PrivateFrameworks/SyncServicesUI.framework/Versions/A/Resources/syncuid.app
 
-    Résolution des conflits:
+    Résolution des conflits:
 
       Version: 5.2
       Last Modified: 7/18/09 8:22 AM
@@ -904,7 +904,7 @@ Applications:
       Get Info String: 6.0, © Copyright 2003-2009 Apple Inc., all rights reserved.
       Location: /System/Library/Image Capture/Automatic Tasks/MakePDF.app
 
-    Création de page Web:
+    Création de page Web:
 
       Version: 6.0
       Last Modified: 7/16/09 9:40 AM
@@ -1105,7 +1105,7 @@ Applications:
       64-Bit (Intel): Yes
       Location: /System/Library/CoreServices/ServerJoiner.app
 
-    Partage d’écran:
+    Partage d’écran:
 
       Version: 1.1.1
       Last Modified: 7/2/09 8:11 AM
@@ -1165,7 +1165,7 @@ Applications:
       Get Info String: 2.4.5, Copyright (c) 2011 Apple Inc. All rights reserved.
       Location: /System/Library/CoreServices/OBEXAgent.app
 
-    Diagnostic réseau:
+    Diagnostic réseau:
 
       Version: 1.1.3
       Last Modified: 5/20/09 10:47 AM
@@ -1181,7 +1181,7 @@ Applications:
       64-Bit (Intel): Yes
       Location: /System/Library/CoreServices/NetAuthAgent.app
 
-    Utilitaire d’emplacement de mémoire:
+    Utilitaire d’emplacement de mémoire:
 
       Version: 1.4.1
       Last Modified: 5/19/09 4:17 AM
@@ -1402,7 +1402,7 @@ Applications:
       Get Info String: 6.2.2, Copyright © 2000–2009 Apple Inc. All rights reserved.
       Location: /System/Library/CoreServices/Apple80211Agent.app
 
-    Agent de la borne d’accès AirPort:
+    Agent de la borne d’accès AirPort:
 
       Version: 1.5.4
       Last Modified: 6/11/09 4:27 AM
@@ -1419,7 +1419,7 @@ Applications:
       64-Bit (Intel): No
       Location: /System/Library/CoreServices/AddPrinter.app
 
-    Outil d’étalonnage du moniteur:
+    Outil d’étalonnage du moniteur:
 
       Version: 4.6
       Last Modified: 5/19/09 8:01 AM
@@ -1501,7 +1501,7 @@ Applications:
       Get Info String: 1.1, Copyright 2007-2008 Apple Inc.
       Location: /Applications/Utilities/Spaces.app
 
-    Installation à distance de Mac OS X:
+    Installation à distance de Mac OS X:
 
       Version: 1.1.1
       Last Modified: 5/19/09 4:13 AM
@@ -1528,7 +1528,7 @@ Applications:
       Get Info String: 2.0.1, Copyright © 2007-2009 Apple Inc.
       Location: /Applications/Utilities/Podcast Capture.app
 
-    Trousseau d’accès:
+    Trousseau d’accès:
 
       Version: 4.1.1
       Last Modified: 7/31/09 9:19 AM
@@ -1536,7 +1536,7 @@ Applications:
       64-Bit (Intel): Yes
       Location: /Applications/Utilities/Keychain Access.app
 
-    Exposé:
+    Exposé:
 
       Version: 1.1
       Last Modified: 7/31/09 9:18 AM
@@ -1571,7 +1571,7 @@ Applications:
       Get Info String: Boot Camp Assistant 3.0.4, Copyright © 2010 Apple Inc. All rights reserved
       Location: /Applications/Utilities/Boot Camp Assistant.app
 
-    Échange de fichiers Bluetooth:
+    Échange de fichiers Bluetooth:
 
       Version: 2.4.5
       Last Modified: 8/1/09 8:04 AM
@@ -1693,7 +1693,7 @@ Applications:
       64-Bit (Intel): No
       Location: /System/Library/Speech/Recognizers/AppleSpeakableItems.SpeechRecognizer/Contents/Resources/SpeakableItems.app
 
-    Service de résumé:
+    Service de résumé:
 
       Version: 2.0
       Last Modified: 5/19/09 7:27 AM
@@ -1887,7 +1887,7 @@ Copyright © 2001-2002, Apple Computer, Inc.
       64-Bit (Intel): Yes
       Location: /System/Library/CoreServices/Ticket Viewer.app
 
-    Assistant réglages:
+    Assistant réglages:
 
       Version: 10.6
       Last Modified: 7/31/09 9:25 AM
@@ -2382,7 +2382,7 @@ Copyright © 2001-2002, Apple Computer, Inc.
       Get Info String: About Xcode
       Location: /Developer/About Xcode.app
 
-    Utilitaire de réseau:
+    Utilitaire de réseau:
 
       Version: 1.4.6
       Last Modified: 6/25/09 4:25 AM
@@ -2407,7 +2407,7 @@ Copyright © 2001-2002, Apple Computer, Inc.
       64-Bit (Intel): Yes
       Location: /Applications/Utilities/Grab.app
 
-    Colorimètre numérique:
+    Colorimètre numérique:
 
       Version: 3.7.2
       Last Modified: 5/28/09 7:06 AM
@@ -2416,7 +2416,7 @@ Copyright © 2001-2002, Apple Computer, Inc.
       Get Info String: 3.7.2, Copyright 2001-2008 Apple Inc. All Rights Reserved.
       Location: /Applications/Utilities/DigitalColor Meter.app
 
-    Éditeur AppleScript:
+    Éditeur AppleScript:
 
       Version: 2.3
       Last Modified: 4/24/09 3:41 PM
@@ -2433,7 +2433,7 @@ Copyright © 2001-2002, Apple Computer, Inc.
       Get Info String: 5.4.2, Copyright 2001-2009 Apple Inc.
       Location: /Applications/Utilities/AirPort Utility.app
 
-    Moniteur d’activité:
+    Moniteur d’activité:
 
       Version: 10.6
       Last Modified: 7/31/09 9:18 AM
@@ -2441,7 +2441,7 @@ Copyright © 2001-2002, Apple Computer, Inc.
       64-Bit (Intel): Yes
       Location: /Applications/Utilities/Activity Monitor.app
 
-    Aide-mémoire:
+    Aide-mémoire:
 
       Version: 7.0
       Last Modified: 5/19/09 7:28 AM

@@ -71,7 +71,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Préférences Système</string>
+				<string>Préférences Système</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>lastModified</key>
@@ -113,7 +113,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Informations Système</string>
+				<string>Informations Système</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>info</key>
@@ -173,7 +173,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Aperçu</string>
+				<string>Aperçu</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>info</key>
@@ -377,7 +377,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Mise à jour de logiciels</string>
+				<string>Mise à jour de logiciels</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>info</key>
@@ -409,7 +409,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Programme de désinstallation HP</string>
+				<string>Programme de désinstallation HP</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>info</key>
@@ -941,7 +941,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Préférences Java</string>
+				<string>Préférences Java</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>lastModified</key>
@@ -1095,7 +1095,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Assistant réglages de réseau</string>
+				<string>Assistant réglages de réseau</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>info</key>
@@ -1111,7 +1111,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Assistant réglages Bluetooth</string>
+				<string>Assistant réglages Bluetooth</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>info</key>
@@ -1187,7 +1187,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Résolution des conflits</string>
+				<string>Résolution des conflits</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>info</key>
@@ -1605,7 +1605,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Création de page Web</string>
+				<string>Création de page Web</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>info</key>
@@ -1959,7 +1959,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Partage d’écran</string>
+				<string>Partage d’écran</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>info</key>
@@ -2065,7 +2065,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Diagnostic réseau</string>
+				<string>Diagnostic réseau</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>lastModified</key>
@@ -2093,7 +2093,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Utilitaire d’emplacement de mémoire</string>
+				<string>Utilitaire d’emplacement de mémoire</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>lastModified</key>
@@ -2483,7 +2483,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Agent de la borne d’accès AirPort</string>
+				<string>Agent de la borne d’accès AirPort</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>info</key>
@@ -2513,7 +2513,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Outil d’étalonnage du moniteur</string>
+				<string>Outil d’étalonnage du moniteur</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>info</key>
@@ -2655,7 +2655,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Installation à distance de Mac OS X</string>
+				<string>Installation à distance de Mac OS X</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>info</key>
@@ -2703,7 +2703,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Trousseau d’accès</string>
+				<string>Trousseau d’accès</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>lastModified</key>
@@ -2717,7 +2717,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Exposé</string>
+				<string>Exposé</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>info</key>
@@ -2779,7 +2779,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Échange de fichiers Bluetooth</string>
+				<string>Échange de fichiers Bluetooth</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>info</key>
@@ -2995,7 +2995,7 @@
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Service de résumé</string>
+				<string>Service de résumé</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>info</key>
@@ -3331,7 +3331,7 @@ Copyright © 2001-2002, Apple Computer, Inc.</string>
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Assistant réglages</string>
+				<string>Assistant réglages</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>info</key>
@@ -4201,7 +4201,7 @@ Copyright © 2001-2002, Apple Computer, Inc.</string>
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Utilitaire de réseau</string>
+				<string>Utilitaire de réseau</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>info</key>
@@ -4245,7 +4245,7 @@ Copyright © 2001-2002, Apple Computer, Inc.</string>
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Colorimètre numérique</string>
+				<string>Colorimètre numérique</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>info</key>
@@ -4261,7 +4261,7 @@ Copyright © 2001-2002, Apple Computer, Inc.</string>
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Éditeur AppleScript</string>
+				<string>Éditeur AppleScript</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>lastModified</key>
@@ -4291,7 +4291,7 @@ Copyright © 2001-2002, Apple Computer, Inc.</string>
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Moniteur d’activité</string>
+				<string>Moniteur d’activité</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>lastModified</key>
@@ -4305,7 +4305,7 @@ Copyright © 2001-2002, Apple Computer, Inc.</string>
 			</dict>
 			<dict>
 				<key>_name</key>
-				<string>Aide-mémoire</string>
+				<string>Aide-mémoire</string>
 				<key>has64BitIntelCode</key>
 				<string>yes</string>
 				<key>lastModified</key>
