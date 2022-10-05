@@ -134,7 +134,6 @@ parts:
      - libavahi-common3
      - libssh2-1
     stage:
-      - lib
       - usr/lib
       - usr/share/glpi-agent/bin/perl
       - usr/share/glpi-agent/lib
