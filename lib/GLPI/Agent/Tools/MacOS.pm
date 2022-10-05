@@ -10,7 +10,6 @@ use Memoize;
 use POSIX 'strftime';
 use Time::Local;
 use UNIVERSAL::require;
-use Storable 'dclone';
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::XML;
@@ -23,37 +22,6 @@ our @EXPORT = qw(
 );
 
 memoize('getSystemProfilerInfos');
-
-use constant {
-    KEY_ELEMENT_NAME   => 'key',
-    VALUE_ELEMENT_NAME => 'string',
-    DATE_ELEMENT_NAME  => 'date',
-    ARRAY_ELEMENT_NAME => 'array'
-};
-
-my $xmlParser;
-
-sub _initXmlParser {
-    my (%params) = @_;
-
-    XML::XPath->require();
-    if ($EVAL_ERROR) {
-        $params{logger}->debug(
-            'XML::XPath unavailable, unable launching _initXmlParser()'
-        ) if $params{logger};
-        return 0;
-    }
-    if ($params{xmlString}) {
-        $xmlParser = XML::XPath->new(xml => $params{xmlString});
-    } elsif ($params{file}) {
-        $xmlParser = XML::XPath->new(filename => $params{file});
-    }
-
-    # Don't validate XML against DTD, parsing may fail if a proxy is active
-    $XML::XPath::ParseParamEnt = 0;
-
-    return $xmlParser;
-}
 
 sub _getSystemProfilerInfosXML {
     my (%params) = @_;
@@ -69,18 +37,10 @@ sub _getSystemProfilerInfosXML {
             string => $xmlStr,
             %params
         );
-    } elsif (
-        $params{type} eq 'SPSerialATADataType'
-        || $params{type} eq 'SPDiscBurningDataType'
-        || $params{type} eq 'SPCardReaderDataType'
-        || $params{type} eq 'SPUSBDataType'
-        || $params{type} eq 'SPFireWireDataType'
-    ) {
-        # Decode system_profiler output
-        $xmlStr = decode("UTF-8", $xmlStr);
+    } elsif ($params{type} =~ /^SP(SerialATA|DiscBurning|CardReader|USB|FireWire)DataType$/) {
         $info->{storages} = _extractStoragesFromXml(
-            %params,
-            xmlString => $xmlStr
+            string => $xmlStr,
+            logger => $params{logger}
         );
     } else {
         # not implemented for every data types
@@ -89,7 +49,7 @@ sub _getSystemProfilerInfosXML {
     return $info;
 }
 
-sub _extractSoftwaresFromXml {
+sub _getDict {
     my (%params) = @_;
 
     my $xml = GLPI::Agent::XML->new(
@@ -97,134 +57,48 @@ sub _extractSoftwaresFromXml {
         %params
     )->dump_as_hash();
 
-    return unless $xml && exists($xml->{plist}->{array}[0]->{dict}[0]->{array}[0]->{dict});
+    return unless $xml && ref($xml->{plist}->{array}[0]->{dict}[0]->{array}) eq 'ARRAY';
 
-    my $dict = $xml->{plist}->{array}[0]->{dict}[0]->{array}[0]->{dict};
+    my $node = first { ref($_) eq 'HASH' && exists($_->{dict}) } @{$xml->{plist}->{array}[0]->{dict}[0]->{array}};
 
-    return _dumpSoftwares($dict, $params{localTimeOffset});
+    return $node->{dict};
+}
+
+sub _recSubStorage {
+    my ($list) = @_;
+
+    my @nodes;
+    foreach my $node (@{$list}) {
+        next unless ref($node) eq 'HASH';
+        if (exists($node->{array}[0]->{dict})) {
+            push @nodes, map { _recSubStorage($_->{dict}) }
+                grep { ref($_) eq 'HASH' && exists($_->{dict}) } @{$node->{array}};
+        }
+        if ($node->{_name}) {
+            # Always cleanup from subnodes
+            delete $node->{array};
+            push @nodes, $node;
+        }
+    }
+
+    return @nodes;
 }
 
 sub _extractStoragesFromXml {
     my (%params) = @_;
 
-    return unless $params{type};
+    my $dict = _getDict(%params)
+        or return;
 
-    _initXmlParser(%params);
+    my $storages = {};
 
-    return unless $xmlParser;
-
-    my $storagesHash = {};
-    my $xPathExpr;
-    if ($params{type} eq 'SPSerialATADataType') {
-        $xPathExpr =
-            "/plist/array[1]/dict[1]/key[text()='_items']/following-sibling::array[1]/child::dict"
-                . "/key[text()='_items']/following-sibling::array[1]/child::dict";
-    } elsif ($params{type} eq 'SPDiscBurningDataType'
-        || $params{type} eq 'SPCardReaderDataType'
-        || $params{type} eq 'SPUSBDataType') {
-        $xPathExpr = "//key[text()='_items']/following-sibling::array[1]/child::dict";
-    } elsif ($params{type} eq 'SPFireWireDataType') {
-        $xPathExpr = [
-            "//key[text()='_items']/following-sibling::array[1]"
-                . "/child::dict[key[text()='_name' and following-sibling::string[1][not(contains(.,'bus'))]]]",
-            "./key[text()='units']/following-sibling::array[1]/child::dict",
-            "./key[text()='units']/following-sibling::array[1]/child::dict"
-        ];
+    foreach my $storage (_recSubStorage($dict)) {
+        my $name = $storage->{_name}
+            or next;
+        $storages->{$name} = $storage;
     }
 
-    if (ref($xPathExpr) eq 'ARRAY') {
-        # next function call does not return anything
-        # it directly appends data to the hashref $storagesHash
-        _recursiveParsing({}, $storagesHash, undef, $xPathExpr);
-    } else {
-        my $n = $xmlParser->findnodes($xPathExpr);
-        my @nl = $n->get_nodelist();
-        for my $elem (@nl) {
-            my $storage = _makeHashFromKeyValuesTextNodes($elem);
-            next unless $storage->{_name};
-            $storagesHash->{$storage->{_name}} = $storage;
-        }
-    }
-    return $storagesHash;
-}
-
-# This function is used to parse ugly XML documents
-# It is used to aggregate data from a node and from its descendants
-
-sub _recursiveParsing {
-    my (
-        # data extracted from ancestors
-        $hashFields,
-        # hashref to merge data in
-        $hashElems,
-        # XML context node
-        $elemRoot,
-        # XPath expressions list to be processed
-        $xPathExpr
-    ) = @_;
-
-    # we use here dclone because each recursive call must have its own copy of these structure
-    my $xPathExprClone = dclone $xPathExpr;
-
-    # next XPath expression is eaten up
-    my $expr = shift @$xPathExprClone;
-
-    # XPath expression is processed at context $elemRoot
-    my $n = $xmlParser->findnodes($expr, $elemRoot);
-    my @nl = $n->get_nodelist();
-    if (scalar @nl > 0) {
-        for my $elem (@nl) {
-            # because of XML document specific format, we must do next call to create the hash
-            # in order to have a key-value structure
-            my $newHash = _makeHashFromKeyValuesTextNodes($elem);
-            next unless $newHash->{_name};
-
-            # we use here dclone because each recursive call must have its own copy of these structure
-            my $hashFieldsClone = dclone $hashFields;
-            # hashes are merged, existing values are overwritten (that is expected behaviour)
-            @$hashFieldsClone{keys %$newHash} = values %$newHash;
-            my $extractedElementName = $hashFieldsClone->{_name};
-
-            # if other XPath expressions have to be processed
-            if (scalar @$xPathExprClone) {
-                # recursive call
-                _recursiveParsing($hashFieldsClone, $hashElems, $elem, $xPathExprClone);
-            } else {
-                # no more XPath expression to process
-                # it's time to merge data in main hashref
-                $hashElems->{$extractedElementName} = { } unless $hashElems->{$extractedElementName};
-                @{$hashElems->{$extractedElementName}}{keys %$hashFieldsClone} = values %$hashFieldsClone;
-            }
-        }
-    } else {
-        # no more XML nodes found
-        # it's time to merge data in main hashref
-        if ($hashFields->{_name}) {
-            my $extractedElementName = $hashFields->{_name};
-            $hashElems->{$extractedElementName} = { } unless $hashElems->{$extractedElementName};
-            @{$hashElems->{$extractedElementName}}{keys %$hashFields} = values %$hashFields;
-        }
-    }
-}
-
-sub _makeHashFromKeyValuesTextNodes {
-    my ($node) = @_;
-
-    next unless $xmlParser;
-
-    my $hash;
-    my $currentKey;
-    my $n = $xmlParser->findnodes('*', $node);
-    my @nl = $n->get_nodelist();
-    for my $elem (@nl) {
-        if ($elem->getName() eq KEY_ELEMENT_NAME) {
-            $currentKey = $elem->string_value();
-        } elsif ($currentKey && $elem->getName() ne ARRAY_ELEMENT_NAME) {
-            $hash->{$currentKey} = $elem->string_value();
-            $currentKey = undef;
-        }
-    }
-    return $hash;
+    return $storages;
 }
 
 sub _getOffsetDate {
@@ -250,10 +124,13 @@ sub _formatDate {
         $dateStr;
 }
 
-sub _dumpSoftwares {
-    my ($softlist, $localtimeOffset) = @_;
+sub _extractSoftwaresFromXml {
+    my (%params) = @_;
 
-    my $list;
+    my $softlist = _getDict(%params)
+        or return;
+
+    my $softwares = {};
 
     foreach my $soft (@{$softlist}) {
 
@@ -278,7 +155,7 @@ sub _dumpSoftwares {
 
         # Convert lastModified
         my $lastmod = delete $soft->{lastModified};
-        $entry->{'Last Modified'} = _getOffsetDate($lastmod, $localtimeOffset)
+        $entry->{'Last Modified'} = _getOffsetDate($lastmod, $params{localTimeOffset})
             if defined($lastmod);
 
         my %mapping = (
@@ -293,17 +170,17 @@ sub _dumpSoftwares {
         }
 
         # Merge hash
-        if (exists($list->{$name})) {
+        if (exists($softwares->{$name})) {
             my $index = 0;
-            while (exists($list->{$name."_$index"})) {
+            while (exists($softwares->{$name."_$index"})) {
                 $index++;
             }
             $name = $name."_$index";
         }
-        $list->{$name} = $entry;
+        $softwares->{$name} = $entry;
     }
 
-    return $list;
+    return $softwares;
 }
 
 sub getSystemProfilerInfos {

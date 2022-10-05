@@ -20,14 +20,13 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $storages = [
+    foreach my $storage (
         _getSerialATAStorages(logger => $logger),
         _getDiscBurningStorages(logger => $logger),
         _getCardReaderStorages(logger => $logger),
         _getUSBStorages(logger => $logger),
         _getFireWireStorages(logger => $logger)
-    ];
-    foreach my $storage (@$storages) {
+    ) {
         $inventory->addEntry(
             section => 'STORAGES',
             entry   => $storage
@@ -41,41 +40,34 @@ sub _getSerialATAStorages {
     my $infos = getSystemProfilerInfos(
         type   => 'SPSerialATADataType',
         format => 'xml',
-        logger => $params{logger},
-        file   => $params{file}
+        %params
     );
     return unless $infos->{storages};
     my @storages = ();
-    for my $hash (values %{$infos->{storages}}) {
+    foreach my $hash (values %{$infos->{storages}}) {
+        next unless $hash->{partition_map_type};
         next if $hash->{_name} =~ /controller/i;
-        my $storage = _extractStorage($hash);
-        $storage->{TYPE} = 'Disk drive';
-        $storage->{INTERFACE} = 'SATA';
+        my $storage = {
+            NAME         => $hash->{bsd_name} || $hash->{_name},
+            MANUFACTURER => getCanonicalManufacturer($hash->{_name}),
+            TYPE         => 'Disk drive',
+            INTERFACE    => 'SATA',
+            SERIAL       => $hash->{device_serial},
+            MODEL        => $hash->{device_model} || $hash->{_name},
+            FIRMWARE     => $hash->{device_revision},
+            DESCRIPTION  => $hash->{_name}
+        };
+
+        _setDiskSize($hash, $storage);
+
+        # Cleanup manufacturer from model
+        $storage->{MODEL} =~ s/\s*$storage->{MANUFACTURER}\s*//i
+            if $storage->{MODEL};
+
         push @storages, _sanitizedHash($storage);
     }
 
     return @storages;
-}
-
-sub _extractStorage {
-    my ($hash) = @_;
-
-    my $storage = {
-        NAME         => $hash->{bsd_name} || $hash->{_name},
-        MANUFACTURER => getCanonicalManufacturer($hash->{_name}),
-#        TYPE         => $bus_name eq 'FireWire' ? '1394' : $bus_name,
-        SERIAL       => $hash->{device_serial},
-        MODEL        => $hash->{device_model} || $hash->{_name},
-        FIRMWARE     => $hash->{device_revision},
-        DISKSIZE     => _extractDiskSize($hash),
-        DESCRIPTION  => $hash->{_name}
-    };
-
-    if ($storage->{MODEL}) {
-        $storage->{MODEL} =~ s/\s*$storage->{MANUFACTURER}\s*//i;
-    }
-
-    return $storage;
 }
 
 sub _getDiscBurningStorages {
@@ -85,36 +77,30 @@ sub _getDiscBurningStorages {
     my $infos = getSystemProfilerInfos(
         type   => 'SPDiscBurningDataType',
         format => 'xml',
-        logger => $params{logger},
-        file   => $params{file}
+        %params
     );
     return @storages unless $infos->{storages};
 
-    for my $hash (values %{$infos->{storages}}) {
-        my $storage = _extractDiscBurning($hash);
-        $storage->{TYPE} = 'Disk burning';
+    foreach my $hash (values %{$infos->{storages}}) {
+        my $storage = {
+            NAME         => $hash->{bsd_name} || $hash->{_name},
+            MANUFACTURER => getCanonicalManufacturer($hash->{manufacturer} || $hash->{_name}),
+            TYPE         => 'Disk burning',
+            INTERFACE    => $hash->{interconnect} && $hash->{interconnect} eq 'SERIAL-ATA' ? "SATA" : "ATAPI",
+            MODEL        => $hash->{_name},
+            FIRMWARE     => $hash->{firmware}
+        };
+
+        _setDiskSize($hash, $storage);
+
+        # Cleanup manufacturer from model
+        $storage->{MODEL} =~ s/\s*$storage->{MANUFACTURER}\s*//i
+            if $storage->{MODEL};
+
         push @storages, _sanitizedHash($storage);
     }
 
     return @storages;
-}
-
-sub _extractDiscBurning {
-    my ($hash) = @_;
-
-    my $storage = {
-        NAME         => $hash->{bsd_name} || $hash->{_name},
-        MANUFACTURER => $hash->{manufacturer} ? getCanonicalManufacturer($hash->{manufacturer}) : getCanonicalManufacturer($hash->{_name}),
-        INTERFACE    => $hash->{interconnect} eq 'SERIAL-ATA' ? "SATA" : "ATAPI",
-        MODEL        => $hash->{_name},
-        FIRMWARE     => $hash->{firmware}
-    };
-
-    if ($storage->{MODEL}) {
-        $storage->{MODEL} =~ s/\s*$storage->{MANUFACTURER}\s*//i;
-    }
-
-    return $storage;
 }
 
 sub _getCardReaderStorages {
@@ -123,52 +109,36 @@ sub _getCardReaderStorages {
     my $infos = getSystemProfilerInfos(
         type   => 'SPCardReaderDataType',
         format => 'xml',
-        logger => $params{logger},
-        file   => $params{file}
+        %params
     );
     return unless $infos->{storages};
 
     my @storages = ();
-    for my $hash (values %{$infos->{storages}}) {
+    foreach my $hash (values %{$infos->{storages}}) {
+        next if ($hash->{iocontent} || $hash->{file_system} || $hash->{mount_point}) && !$hash->{partition_map_type};
         my $storage;
         if ($hash->{_name} eq 'spcardreader') {
-            $storage = _extractCardReader($hash);
-            $storage->{TYPE} = 'Card reader';
+            $storage = {
+                NAME         => $hash->{bsd_name} || $hash->{_name},
+                TYPE         => 'Card reader',
+                DESCRIPTION  => $hash->{_name},
+                SERIAL       => $hash->{spcardreader_serialnumber},
+                MODEL        => $hash->{_name},
+                FIRMWARE     => $hash->{'spcardreader_revision-id'},
+                MANUFACTURER => $hash->{'spcardreader_vendor-id'}
+            };
         } else {
-            $storage = _extractSdCard($hash);
-            $storage->{TYPE} = 'SD Card';
+            $storage = {
+                NAME         => $hash->{bsd_name} || $hash->{_name},
+                TYPE         => 'SD Card',
+                DESCRIPTION  => $hash->{_name},
+            };
+            _setDiskSize($hash, $storage);
         }
         push @storages, _sanitizedHash($storage);
     }
 
     return @storages;
-}
-
-sub _extractCardReader {
-    my ($hash) = @_;
-
-    my $storage = {
-        NAME         => $hash->{bsd_name} || $hash->{_name},
-        DESCRIPTION  => $hash->{_name},
-        SERIAL       => $hash->{spcardreader_serialnumber},
-        MODEL        => $hash->{_name},
-        FIRMWARE     => $hash->{'spcardreader_revision-id'},
-        MANUFACTURER => $hash->{'spcardreader_vendor-id'}
-    };
-
-    return $storage;
-}
-
-sub _extractSdCard {
-    my ($hash) = @_;
-
-    my $storage = {
-        NAME         => $hash->{bsd_name} || $hash->{_name},
-        DESCRIPTION  => $hash->{_name},
-        DISKSIZE     => _extractDiskSize($hash)
-    };
-
-    return $storage;
 }
 
 sub _getUSBStorages {
@@ -177,60 +147,61 @@ sub _getUSBStorages {
     my $infos = getSystemProfilerInfos(
         type   => 'SPUSBDataType',
         format => 'xml',
-        logger => $params{logger},
-        file   => $params{file}
+        %params
     );
     return unless $infos->{storages};
 
     my @storages = ();
-    for my $hash (values %{$infos->{storages}}) {
+    foreach my $hash (values %{$infos->{storages}}) {
         unless ($hash->{bsn_name} && $hash->{bsd_name} =~ /^disk/) {
             next if $hash->{_name} eq 'Mass Storage Device';
             next if $hash->{_name} =~ /keyboard|controller|IR Receiver|built-in|hub|mouse|usb(?:\d+)?bus/i;
             next if ($hash->{'Built-in_Device'} && $hash->{'Built-in_Device'} eq 'Yes');
+            next if ($hash->{iocontent} || $hash->{file_system} || $hash->{mount_point}) && !$hash->{partition_map_type};
         }
-        my $storage = _extractUSBStorage($hash);
-        $storage->{TYPE} = 'Disk drive';
-        $storage->{INTERFACE} = 'USB';
+        my $storage = {
+            NAME         => $hash->{bsd_name} || $hash->{_name},
+            TYPE         => 'Disk drive',
+            INTERFACE    => 'USB',
+            DESCRIPTION  => $hash->{_name},
+        };
+
+        _setDiskSize($hash, $storage);
+
+        my $extract = _getInfoExtract($hash);
+        $storage->{MODEL} = $extract->{device_model} || $hash->{_name};
+        $storage->{SERIAL} = $extract->{serial_num} if $extract->{serial_num};
+        $storage->{FIRMWARE} = $extract->{bcd_device} if $extract->{bcd_device};
+        $storage->{MANUFACTURER} = getCanonicalManufacturer($extract->{manufacturer})
+            if $extract->{manufacturer};
+
         push @storages, _sanitizedHash($storage);
     }
 
     return @storages;
 }
 
-sub _extractUSBStorage {
-    my ($hash) = @_;
+sub _setDiskSize {
+    my ($hash, $storage) = @_;
 
-    my $storage = {
-        NAME         => $hash->{bsd_name} || $hash->{_name},
-        DESCRIPTION  => $hash->{_name},
-        SERIAL       => _extractValueInHashWithKeyPattern(qr/^(?:\w_)?serial_num$/, $hash),
-        MODEL        => _extractValueInHashWithKeyPattern(qr/^(?:\w_)?device_model/, $hash) || $hash->{_name},
-        FIRMWARE     => _extractValueInHashWithKeyPattern(qr/^(?:\w_)?bcd_device$/, $hash),
-        MANUFACTURER => getCanonicalManufacturer(_extractValueInHashWithKeyPattern(qr/(?:\w+_)?manufacturer/, $hash)) || '',
-        DISKSIZE     => _extractDiskSize($hash)
-    };
+    return unless $hash->{size_in_bytes} || $hash->{size};
 
-    return $storage;
+    $storage->{DISKSIZE} = getCanonicalSize(
+        $hash->{size_in_bytes} ? $hash->{size_in_bytes} . ' bytes' : $hash->{size},
+        1024
+    );
 }
 
-sub _extractDiskSize {
+sub _getInfoExtract {
     my ($hash) = @_;
 
-    return $hash->{size_in_bytes} ?
-        getCanonicalSize($hash->{size_in_bytes} . ' bytes', 1024) :
-            getCanonicalSize($hash->{size}, 1024);
-}
-
-sub _extractValueInHashWithKeyPattern {
-    my ($pattern, $hash) = @_;
-
-    my $value = '';
-    my @keyMatches = grep { $_ =~ $pattern } keys %$hash;
-    if (@keyMatches && (scalar @keyMatches) == 1) {
-        $value = $hash->{$keyMatches[0]};
+    my $extract = {};
+    foreach my $key (keys(%{$hash})) {
+        next unless defined($hash->{$key}) && $key =~ /^(?:\w_)?(serial_num|device_model|bcd_device|manufacturer|product_id)/;
+        $extract->{$1} = $hash->{$key};
     }
-    return $value;
+
+    return $extract;
 }
 
 sub _getFireWireStorages {
@@ -239,36 +210,33 @@ sub _getFireWireStorages {
     my $infos = getSystemProfilerInfos(
         type   => 'SPFireWireDataType',
         format => 'xml',
-        logger => $params{logger},
-        file   => $params{file}
+        %params
     );
     return unless $infos->{storages};
 
     my @storages = ();
-    for my $hash (values %{$infos->{storages}}) {
-        my $storage = _extractFireWireStorage($hash);
-        $storage->{TYPE} = 'Disk drive';
-        $storage->{INTERFACE} = '1394';
+    foreach my $hash (values %{$infos->{storages}}) {
+        next unless $hash->{partition_map_type};
+        my $storage = {
+            NAME         => $hash->{bsd_name} || $hash->{_name},
+            TYPE         => 'Disk drive',
+            INTERFACE    => '1394',
+            DESCRIPTION  => $hash->{_name},
+        };
+
+        _setDiskSize($hash, $storage);
+
+        my $extract = _getInfoExtract($hash);
+        $storage->{MODEL} = $extract->{product_id} if $extract->{product_id};
+        $storage->{SERIAL} = $extract->{serial_num} if $extract->{serial_num};
+        $storage->{FIRMWARE} = $extract->{bcd_device} if $extract->{bcd_device};
+        $storage->{MANUFACTURER} = getCanonicalManufacturer($extract->{manufacturer})
+            if $extract->{manufacturer};
+
         push @storages, _sanitizedHash($storage);
     }
 
     return @storages;
-}
-
-sub _extractFireWireStorage {
-    my ($hash) = @_;
-
-    my $storage = {
-        NAME         => $hash->{bsd_name} || $hash->{_name},
-        DESCRIPTION  => $hash->{_name},
-        SERIAL       => _extractValueInHashWithKeyPattern(qr/^(?:\w_)?serial_num$/, $hash) || '',
-        MODEL        => _extractValueInHashWithKeyPattern(qr/^(?:\w_)?product_id$/, $hash) || '',
-        FIRMWARE     => _extractValueInHashWithKeyPattern(qr/^(?:\w_)?bcd_device$/, $hash) || '',
-        MANUFACTURER => getCanonicalManufacturer(_extractValueInHashWithKeyPattern(qr/(?:\w+_)?manufacturer/, $hash)) || '',
-        DISKSIZE     => _extractDiskSize($hash) || ''
-    };
-
-    return $storage;
 }
 
 sub _sanitizedHash {
