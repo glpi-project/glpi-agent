@@ -157,7 +157,6 @@ sub _build_steps {
                 # GLPI-Agent deps
                 qw/ Text::Template UNIVERSAL::require UNIVERSAL::isa Net::SSH2
                     XML::LibXML Memoize Time::HiRes Compress::Zlib
-                    XML::XPath
                     Parse::EDID Cpanel::JSON::XS JSON::PP YAML::Tiny Parallel::ForkManager
                     URI::Escape Net::NBName Thread::Queue Thread::Semaphore
                     Net::SNMP Net::SNMP::Security::USM Net::SNMP::Transport::IPv4::TCP
@@ -212,7 +211,6 @@ sub _build_steps {
                 _movebin('perl.exe'),
                 _movebin('perl'.$MAJOR.$MINOR.'.dll'),
                 # Also move DLLs required by modules
-                _movedll('libexpat-1'),
                 _movedll('libxml2-2'),
                 _movedll('liblzma-5'),
                 _movedll('libiconv-2'),

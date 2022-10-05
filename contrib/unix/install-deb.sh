@@ -66,7 +66,6 @@ echo "Installing agent dependencies"
     apt-get -y install libproc-daemon-perl libfile-which-perl libhttp-daemon-perl
     apt-get -y install libxml-libxml-perl libyaml-perl libnet-cups-perl libnet-ip-perl
     apt-get -y install libdigest-sha-perl libsocket-getaddrinfo-perl libtext-template-perl
-    apt-get -y install libxml-xpath-perl
     apt-get -y install libwrite-net-perl
 } >> GLPIAgentInstallation.log 2>/dev/null
 

@@ -112,7 +112,7 @@ parts:
       Crypt::DES Crypt::Rijndael Digest::HMAC Digest::SHA1
       Net::IP Net::Ping Net::SNMP Net::NBName Net::CUPS Net::SSH2
       Thread::Queue Parse::EDID Cpanel::JSON::XS JSON::PP
-      Text::Template XML::LibXML XML::XPath Memoize
+      Text::Template XML::LibXML Memoize
       YAML::Tiny Data::UUID Digest::SHA
       #Net::PCAP Net::Write::Layer2
       MODULES
@@ -122,14 +122,14 @@ parts:
      - libcups2-dev
      - libcupsfilters-dev
      - libcupsimage2-dev
-     - libexpat1-dev
+     - libxml2-dev
      - libssh2-1-dev
     stage-packages:
      - libcupsimage2
      - libcupsfilters1
      - libcups2
      - libssl1.1
-     - libexpat1
+     - libxml2
      - libavahi-client3
      - libavahi-common3
      - libssh2-1

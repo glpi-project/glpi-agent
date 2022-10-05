@@ -26,6 +26,7 @@ inventory:
 * fix #198: Fix enhancing storage inventory on win32
 * Fixed few minor issues while refactoring getFileHandle API
 * fix #229: Wrong vm name with Proxmox
+* MacOS: Refactoring to remove XML::XPath dependency
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
