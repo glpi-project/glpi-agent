@@ -45,7 +45,7 @@ sub _getSerialATAStorages {
     return unless $infos->{storages};
     my @storages = ();
     foreach my $hash (values %{$infos->{storages}}) {
-        next unless $hash->{partition_map_type};
+        next unless $hash->{partition_map_type} || $hash->{detachable_drive};
         next if $hash->{_name} =~ /controller/i;
         my $storage = {
             NAME         => $hash->{bsd_name} || $hash->{_name},

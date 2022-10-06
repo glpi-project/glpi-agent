@@ -43,6 +43,16 @@ my %testsSerialATA = (
     ],
     'SPSerialATADataType3.xml' => [
         {
+            NAME         => 'VBOX CD-ROM',
+            MANUFACTURER => 'VBOX CD-ROM',
+            INTERFACE    => 'SATA',
+            SERIAL       => 'VB1-1a2b3c4d',
+            MODEL        => '',
+            FIRMWARE     => '1.0',
+            TYPE         => 'Disk drive',
+            DESCRIPTION  => 'VBOX CD-ROM'
+        },
+        {
             NAME         => 'disk0',
             MANUFACTURER => 'VBOX HARDDISK',
             INTERFACE    => 'SATA',

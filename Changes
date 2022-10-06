@@ -28,6 +28,7 @@ inventory:
 * fix #229: Wrong vm name with Proxmox
 * MacOS: Refactoring to remove XML::XPath dependency
 * MacOS: Don't detect usb tablet as storage
+* MacOS: Support cd-rom reader inventory as storage
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
