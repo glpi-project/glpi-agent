@@ -1,0 +1,795 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>_SPCommandLineArguments</key>
+		<array>
+			<string>/usr/sbin/system_profiler</string>
+			<string>-nospawn</string>
+			<string>-xml</string>
+			<string>SPSerialATADataType</string>
+			<string>-detailLevel</string>
+			<string>full</string>
+		</array>
+		<key>_SPCompletionInterval</key>
+		<real>0.28488802909851074</real>
+		<key>_SPResponseTime</key>
+		<real>0.3264920711517334</real>
+		<key>_dataType</key>
+		<string>SPSerialATADataType</string>
+		<key>_detailLevel</key>
+		<integer>-1</integer>
+		<key>_items</key>
+		<array>
+			<dict>
+				<key>_items</key>
+				<array>
+					<dict>
+						<key>_name</key>
+						<string>VBOX HARDDISK</string>
+						<key>bsd_name</key>
+						<string>disk0</string>
+						<key>detachable_drive</key>
+						<string>no</string>
+						<key>device_model</key>
+						<string>VBOX HARDDISK                           </string>
+						<key>device_revision</key>
+						<string>1.0     </string>
+						<key>device_serial</key>
+						<string>VB52cb5022-c69e4cc4 </string>
+						<key>partition_map_type</key>
+						<string>guid_partition_map_type</string>
+						<key>removable_media</key>
+						<string>no</string>
+						<key>size</key>
+						<string>41,94 GB</string>
+						<key>size_in_bytes</key>
+						<integer>41943040000</integer>
+						<key>smart_status</key>
+						<string>Verified</string>
+						<key>spsata_medium_type</key>
+						<string>Solid State</string>
+						<key>spsata_ncq</key>
+						<string>Yes</string>
+						<key>spsata_ncq_depth</key>
+						<string>32</string>
+						<key>spsata_trim_support</key>
+						<string>No</string>
+						<key>volumes</key>
+						<array>
+							<dict>
+								<key>_name</key>
+								<string>EFI</string>
+								<key>bsd_name</key>
+								<string>disk0s1</string>
+								<key>file_system</key>
+								<string>MS-DOS FAT32</string>
+								<key>iocontent</key>
+								<string>EFI</string>
+								<key>size</key>
+								<string>209,7 MB</string>
+								<key>size_in_bytes</key>
+								<integer>209715200</integer>
+								<key>volume_uuid</key>
+								<string>0E239BC6-F960-3107-89CF-1C97F78BB46B</string>
+							</dict>
+							<dict>
+								<key>_name</key>
+								<string>disk0s2</string>
+								<key>bsd_name</key>
+								<string>disk0s2</string>
+								<key>iocontent</key>
+								<string>Apple_APFS</string>
+								<key>size</key>
+								<string>41,73 GB</string>
+								<key>size_in_bytes</key>
+								<integer>41733283840</integer>
+							</dict>
+						</array>
+					</dict>
+				</array>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_negotiatedlinkspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_physical_interconnect</key>
+				<string>SATA</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array>
+					<dict>
+						<key>_name</key>
+						<string>VBOX CD-ROM</string>
+						<key>detachable_drive</key>
+						<string>no</string>
+						<key>device_model</key>
+						<string>VBOX CD-ROM                             </string>
+						<key>device_revision</key>
+						<string>1.0     </string>
+						<key>device_serial</key>
+						<string>VB1-1a2b3c4d        </string>
+						<key>spsata_async_notify</key>
+						<string>No</string>
+						<key>spsata_ncq</key>
+						<string>No</string>
+						<key>spsata_power_off</key>
+						<string>No</string>
+					</dict>
+				</array>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_negotiatedlinkspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_physical_interconnect</key>
+				<string>SATA</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+			<dict>
+				<key>_items</key>
+				<array/>
+				<key>_name</key>
+				<string>Intel ICH8-M AHCI</string>
+				<key>spsata_portdescription</key>
+				<string>AHCI Version 1.10 Supported</string>
+				<key>spsata_portspeed</key>
+				<string>3 Gigabit</string>
+				<key>spsata_product</key>
+				<string>ICH8-M AHCI</string>
+				<key>spsata_vendor</key>
+				<string>Intel</string>
+			</dict>
+		</array>
+		<key>_parentDataType</key>
+		<string>SPHardwareDataType</string>
+		<key>_properties</key>
+		<dict>
+			<key>_name</key>
+			<dict>
+				<key>_isColumn</key>
+				<string>YES</string>
+				<key>_isOutlineColumn</key>
+				<string>YES</string>
+				<key>_order</key>
+				<string>0</string>
+			</dict>
+			<key>bsd_name</key>
+			<dict>
+				<key>_order</key>
+				<string>62</string>
+			</dict>
+			<key>detachable_drive</key>
+			<dict>
+				<key>_order</key>
+				<string>59</string>
+			</dict>
+			<key>device_manufacturer</key>
+			<dict>
+				<key>_order</key>
+				<string>40</string>
+			</dict>
+			<key>device_model</key>
+			<dict>
+				<key>_order</key>
+				<string>42</string>
+			</dict>
+			<key>device_revision</key>
+			<dict>
+				<key>_order</key>
+				<string>44</string>
+			</dict>
+			<key>device_serial</key>
+			<dict>
+				<key>_detailLevel</key>
+				<string>0</string>
+				<key>_order</key>
+				<string>46</string>
+			</dict>
+			<key>disc_burning</key>
+			<dict>
+				<key>_order</key>
+				<string>54</string>
+			</dict>
+			<key>file_system</key>
+			<dict>
+				<key>_order</key>
+				<string>60</string>
+			</dict>
+			<key>free_space</key>
+			<dict>
+				<key>_deprecated</key>
+				<true/>
+				<key>_order</key>
+				<string>12</string>
+			</dict>
+			<key>free_space_in_bytes</key>
+			<dict>
+				<key>_isByteSize</key>
+				<true/>
+				<key>_order</key>
+				<string>12</string>
+			</dict>
+			<key>mount_point</key>
+			<dict>
+				<key>_order</key>
+				<string>64</string>
+			</dict>
+			<key>optical_drive_type</key>
+			<dict>
+				<key>_order</key>
+				<string>50</string>
+			</dict>
+			<key>optical_media_type</key>
+			<dict>
+				<key>_order</key>
+				<string>52</string>
+			</dict>
+			<key>removable_media</key>
+			<dict>
+				<key>_order</key>
+				<string>56</string>
+			</dict>
+			<key>size</key>
+			<dict>
+				<key>_deprecated</key>
+				<true/>
+				<key>_order</key>
+				<string>10</string>
+			</dict>
+			<key>size_in_bytes</key>
+			<dict>
+				<key>_isByteSize</key>
+				<true/>
+				<key>_order</key>
+				<string>10</string>
+			</dict>
+			<key>spsata_async_notify</key>
+			<dict>
+				<key>_order</key>
+				<string>140</string>
+			</dict>
+			<key>spsata_bus</key>
+			<dict>
+				<key>_order</key>
+				<string>22</string>
+			</dict>
+			<key>spsata_linkspeed</key>
+			<dict>
+				<key>_order</key>
+				<string>38</string>
+			</dict>
+			<key>spsata_linkwidth</key>
+			<dict>
+				<key>_order</key>
+				<string>37</string>
+			</dict>
+			<key>spsata_medium_type</key>
+			<dict>
+				<key>_order</key>
+				<string>151</string>
+			</dict>
+			<key>spsata_name</key>
+			<dict>
+				<key>_order</key>
+				<string>20</string>
+			</dict>
+			<key>spsata_ncq</key>
+			<dict>
+				<key>_order</key>
+				<string>47</string>
+			</dict>
+			<key>spsata_ncq_depth</key>
+			<dict>
+				<key>_order</key>
+				<string>48</string>
+			</dict>
+			<key>spsata_negotiatedlinkspeed</key>
+			<dict>
+				<key>_order</key>
+				<string>35</string>
+			</dict>
+			<key>spsata_physical_interconnect</key>
+			<dict>
+				<key>_order</key>
+				<string>36</string>
+			</dict>
+			<key>spsata_pm_fbs</key>
+			<dict>
+				<key>_order</key>
+				<string>8</string>
+			</dict>
+			<key>spsata_pm_product_name</key>
+			<dict>
+				<key>_order</key>
+				<string>4</string>
+			</dict>
+			<key>spsata_pm_revision</key>
+			<dict>
+				<key>_order</key>
+				<string>6</string>
+			</dict>
+			<key>spsata_pm_snotification</key>
+			<dict>
+				<key>_order</key>
+				<string>10</string>
+			</dict>
+			<key>spsata_pm_vendor_name</key>
+			<dict>
+				<key>_order</key>
+				<string>2</string>
+			</dict>
+			<key>spsata_portspeed</key>
+			<dict>
+				<key>_order</key>
+				<string>34</string>
+			</dict>
+			<key>spsata_power_off</key>
+			<dict>
+				<key>_order</key>
+				<string>130</string>
+			</dict>
+			<key>spsata_product</key>
+			<dict>
+				<key>_order</key>
+				<string>30</string>
+			</dict>
+			<key>spsata_protocol</key>
+			<dict>
+				<key>_order</key>
+				<string>100</string>
+			</dict>
+			<key>spsata_revision</key>
+			<dict>
+				<key>_order</key>
+				<string>32</string>
+			</dict>
+			<key>spsata_rom-revision</key>
+			<dict>
+				<key>_order</key>
+				<string>26</string>
+			</dict>
+			<key>spsata_rotational_rate</key>
+			<dict>
+				<key>_order</key>
+				<string>150</string>
+			</dict>
+			<key>spsata_slot_name</key>
+			<dict>
+				<key>_order</key>
+				<string>24</string>
+			</dict>
+			<key>spsata_socket_type</key>
+			<dict>
+				<key>_order</key>
+				<string>120</string>
+			</dict>
+			<key>spsata_trim_support</key>
+			<dict>
+				<key>_order</key>
+				<string>152</string>
+			</dict>
+			<key>spsata_unit_number</key>
+			<dict>
+				<key>_order</key>
+				<string>110</string>
+			</dict>
+			<key>spsata_vendor</key>
+			<dict>
+				<key>_order</key>
+				<string>28</string>
+			</dict>
+			<key>volumes</key>
+			<dict>
+				<key>_detailLevel</key>
+				<string>0</string>
+			</dict>
+			<key>writable</key>
+			<dict>
+				<key>_order</key>
+				<string>58</string>
+			</dict>
+		</dict>
+		<key>_timeStamp</key>
+		<date>2022-10-06T16:43:05Z</date>
+		<key>_versionInfo</key>
+		<dict>
+			<key>com.apple.SystemProfiler.SPSerialATAReporter</key>
+			<string>2.7</string>
+		</dict>
+	</dict>
+</array>
+</plist>

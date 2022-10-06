@@ -155,7 +155,7 @@ sub _getUSBStorages {
     foreach my $hash (values %{$infos->{storages}}) {
         unless ($hash->{bsn_name} && $hash->{bsd_name} =~ /^disk/) {
             next if $hash->{_name} eq 'Mass Storage Device';
-            next if $hash->{_name} =~ /keyboard|controller|IR Receiver|built-in|hub|mouse|usb(?:\d+)?bus/i;
+            next if $hash->{_name} =~ /keyboard|controller|IR Receiver|built-in|hub|mouse|tablet|usb(?:\d+)?bus/i;
             next if ($hash->{'Built-in_Device'} && $hash->{'Built-in_Device'} eq 'Yes');
             next if ($hash->{iocontent} || $hash->{file_system} || $hash->{mount_point}) && !$hash->{partition_map_type};
         }

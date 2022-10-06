@@ -40,6 +40,19 @@ my %testsSerialATA = (
             TYPE         => 'Disk drive',
             DESCRIPTION  => 'APPLE SSD SD0128F'
         }
+    ],
+    'SPSerialATADataType3.xml' => [
+        {
+            NAME         => 'disk0',
+            MANUFACTURER => 'VBOX HARDDISK',
+            INTERFACE    => 'SATA',
+            SERIAL       => 'VB52cb5022-c69e4cc4',
+            MODEL        => '',
+            FIRMWARE     => '1.0',
+            DISKSIZE     => 40000,
+            TYPE         => 'Disk drive',
+            DESCRIPTION  => 'VBOX HARDDISK'
+        }
     ]
 );
 
@@ -54,7 +67,8 @@ my %testsDiscBurning = (
             TYPE         => 'Disk burning'
         }
     ],
-    'SPDiscBurningDataType2.xml' => []
+    'SPDiscBurningDataType2.xml' => [],
+    'SPDiscBurningDataType3.xml' => []
 );
 
 my %testsCardReader = (
@@ -85,7 +99,8 @@ my %testsCardReader = (
             DISKSIZE     => 15193,
             TYPE         => 'SD Card'
         }
-    ]
+    ],
+    'SPCardReaderDataType2.xml' => []
 );
 
 my %testsUSBStorage = (
@@ -218,7 +233,8 @@ my %testsUSBStorage = (
             INTERFACE    => 'USB',
             DISKSIZE     => 3819.52,
         }
-    ]
+    ],
+    'SPUSBDataType4.xml' => []
 );
 
 my %testsFireWireStorage = (
@@ -230,7 +246,8 @@ my %testsFireWireStorage = (
             INTERFACE    => '1394',
             TYPE         => 'Disk drive'
         }
-    ]
+    ],
+    'SPFireWireDataType2.xml' => []
 );
 
 my $nbTests = scalar (keys %testsSerialATA)
