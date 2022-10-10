@@ -36,7 +36,7 @@ sub _parseProcessList {
     foreach my $option (@options) {
         if ($option =~ m/^(?:[fhsv]d[a-d]|cdrom) (\S+)/) {
             $values->{name} = $1 if !$values->{name};
-        } elsif ($option =~ m/^name (\S+)/) {
+        } elsif ($option =~ m/^name ([^\s,]+)/) {
             $values->{name} = $1;
         } elsif ($option =~ m/^m .*size=(\S+)/) {
             my ($mem) = split(/,/,$1);

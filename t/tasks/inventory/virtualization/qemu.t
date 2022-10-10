@@ -59,6 +59,14 @@ my @tests = (
             uuid   => '6df8f2f4-34dc-44da-bff8-b52fc993a7d2'
         }
     },
+    {
+        CMD =>
+"/usr/bin/kvm -id 1010 -name pve100-wts1c,debug-threads=on -no-shutdown -chardev socket,id=qmp,path=/var/run/qemu-server/1010.qmp,server=on,wait=off -mon chardev=qmp,mode=control -chardev socket,id=qmp-event,path=/var/run/qmeventd.sock,reconnect=5 -mon chardev=qmp-event,mode=control -pidfile /var/run/qemu-server/1010.pid -daemonize -smbios type=1",
+        _result => {
+            name   => 'pve100-wts1c',
+            vmtype => 'kvm',
+        }
+    },
 );
 
 plan tests => (scalar @tests) + 1;
