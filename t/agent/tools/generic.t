@@ -7613,6 +7613,7 @@ my %lspci_tests = (
             DRIVER         => 'i915',
             PCISLOT        => '00:02.0',
             PCISUBSYSTEMID => '1028:0252',
+            MEMORY         => '256',
         },
         {
             PCICLASS       => '0380',
@@ -7991,6 +7992,7 @@ my %lspci_tests = (
             NAME           => 'VGA compatible controller',
             MANUFACTURER   => 'NVIDIA Corporation NV43GL [Quadro FX 550]',
             PCISUBSYSTEMID => '10de:0349',
+            MEMORY         => '128'
         },
         {
             NAME           => 'Ethernet controller',

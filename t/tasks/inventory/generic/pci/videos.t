@@ -16,17 +16,25 @@ my %tests = (
     'dell-xt2' => [
         {
             NAME    => 'Intel Corporation Mobile 4 Series Chipset Integrated Graphics Controller',
-            CHIPSET => 'VGA compatible controller'
+            CHIPSET => 'VGA compatible controller',
+            MEMORY  => '256',
+            PCIID   => '8086:2a42',
+            PCISLOT => '00:02.0',
         },
         {
             NAME    => 'Intel Corporation Mobile 4 Series Chipset Integrated Graphics Controller',
-            CHIPSET => 'Display controller'
+            CHIPSET => 'Display controller',
+            PCIID   => '8086:2a43',
+            PCISLOT => '00:02.1',
         }
     ],
     'linux-2' => [
         {
-            CHIPSET => 'VGA compatible controller',
-            NAME    => 'NVIDIA Corporation NV43GL [Quadro FX 550]'
+            CHIPSET => 'NVIDIA Corporation NV43GL',
+            NAME    => 'NVIDIA Corporation Quadro FX 550',
+            MEMORY  => '128',
+            PCIID   => '10de:014d',
+            PCISLOT => '01:00.0',
         }
     ]
 );

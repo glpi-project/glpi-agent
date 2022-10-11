@@ -50,7 +50,7 @@ sub _getVideos {
 
         my $manufacturer;
         if ($device->{PCISUBSYSTEMID}) {
-            my ($vendor_id, $device_id) = split (/:/, $device->{PCISUBSYSTEMID});
+            my ($vendor_id) = split (/:/, $device->{PCISUBSYSTEMID});
             my $vendor = getPCIDeviceVendor(id => $vendor_id, @_);
             $manufacturer = $vendor->{name} if $vendor;
             $name = $manufacturer.' '.$name if $manufacturer && $name;
