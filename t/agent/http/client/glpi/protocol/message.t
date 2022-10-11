@@ -51,7 +51,10 @@ my $content;
 lives_ok {
     $content = $message->getContent();
 } "Test message getContent";
-is($content, qq({"test":"passed"}), "Message content check");               # 11
+is($content, qq({
+   "test": "passed"
+}
+), "Message content check");               # 11
 
 # Message as hash
 lives_ok {
@@ -85,8 +88,8 @@ is($message->expiration, 345600, "Expiration 345600 seconds");
 $message->set('{"expiration": 36}');
 is($message->expiration, 129600, "Expiration 129600 seconds");              # 22
 
-is($message->status, undef, "No status");
-is($message->action, undef, "No action");
+is($message->status, "", "No status");
+is($message->action, "inventory", "No action");
 
 lives_ok {
     $message = GLPI::Agent::Protocol::Message->new(
@@ -109,7 +112,7 @@ lives_ok {
         expiration          => "2h",
     );
 } "Complex message with params";
-is($message->status, undef, "No status");
+is($message->status, "", "No status");
 is($message->action, "test", "Test action (2)");
 is($message->expiration, 7200, "Expiration 7200 seconds");
 is(keys(%{$message->get}), 2, "2 params sets");                             # 32

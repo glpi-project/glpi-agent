@@ -150,7 +150,7 @@ my %answers = (
     },
 );
 
-plan tests => 6 + 3*keys(%answers);
+plan tests => 7 + 3 * (keys %answers);
 
 my $logger = GLPI::Agent::Logger->new(
     logger => [ 'Test' ]

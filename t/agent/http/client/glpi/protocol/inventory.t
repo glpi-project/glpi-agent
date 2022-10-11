@@ -158,8 +158,10 @@ my %inventories = (
     "process" => {
         content     => {
             PROCESSES   => {
-                STARTED => "0000-00-00 00:00",
+                CMD     => "init",
+                STARTED => "2021-12-10 00:00",
                 PID     => "001",
+                USER    => "root",
             }
         },
         expected    => {
@@ -168,8 +170,10 @@ my %inventories = (
             itemtype    => "Computer",
             content     => {
                 processes   => {
-                    started => "0000-00-00 00:00:00",
+                    cmd     => "init",
+                    started => "2021-12-10 00:00:00",
                     pid     => 1,
+                    user    => "root"
                 }
             }
         },
@@ -178,8 +182,10 @@ my %inventories = (
     "process with date" => {
         content     => {
             PROCESSES   => {
+                CMD     => "init",
                 STARTED => "25/06/2021",
                 PID     => "001",
+                USER    => "root",
             }
         },
         expected    => {
@@ -188,8 +194,10 @@ my %inventories = (
             itemtype    => "Computer",
             content     => {
                 processes   => {
+                    cmd     => "init",
                     started => "2021-06-25 00:00:00",
                     pid     => 1,
+                    user    => "root"
                 }
             }
         },
@@ -198,8 +206,10 @@ my %inventories = (
     "process and wrong dateordatetime" => {
         content     => {
             PROCESSES   => {
+                CMD     => "init",
                 STARTED => "at boot",
                 PID     => "001",
+                USER    => "root",
             }
         },
         expected    => {
@@ -208,7 +218,9 @@ my %inventories = (
             itemtype    => "Computer",
             content     => {
                 processes   => {
+                    cmd     => "init",
                     pid     => 1,
+                    user    => "root"
                 }
             }
         },
@@ -241,6 +253,7 @@ my %inventories = (
             VIRTUALMACHINES => {
                 VCPU    => "16",
                 NAME    => "Glpi",
+                VMTYPE  => "lxc",
                 STATUS  => "Down"
             }
         },
@@ -252,6 +265,7 @@ my %inventories = (
                 virtualmachines => {
                     vcpu    => 16,
                     name    => "Glpi",
+                    vmtype  => "lxc",
                     status  => "down",
                 }
             }
@@ -261,16 +275,19 @@ my %inventories = (
     "vms and one with undefined memory" => {
         content     => {
             VIRTUALMACHINES => [
-            {
-                VCPU    => "16",
-                NAME    => "Glpi",
-                STATUS  => "Down"
-            },{
-                VCPU    => "0032",
-                NAME    => "Glpi32",
-                STATUS  => "UP",
-                MEMORY  => undef
-            }]
+                {
+                    VCPU    => "16",
+                    NAME    => "Glpi",
+                    VMTYPE  => "lxc",
+                    STATUS  => "Down"
+                },{
+                    VCPU    => "0032",
+                    NAME    => "Glpi32",
+                    VMTYPE  => "lxc",
+                    STATUS  => "UP",
+                    MEMORY  => undef
+                }
+            ]
         },
         expected    => {
             action      => "inventory",
@@ -278,15 +295,18 @@ my %inventories = (
             itemtype    => "Computer",
             content     => {
                 virtualmachines => [
-                {
-                    vcpu    => 16,
-                    name    => "Glpi",
-                    status  => "down",
-                },{
-                    vcpu    => 32,
-                    name    => "Glpi32",
-                    status  => "up",
-                }]
+                    {
+                        vcpu    => 16,
+                        name    => "Glpi",
+                        vmtype  => "lxc",
+                        status  => "down",
+                    },{
+                        vcpu    => 32,
+                        name    => "Glpi32",
+                        vmtype  => "lxc",
+                        status  => "up",
+                    }
+                ]
             }
         },
         itemtype    => "Computer",
