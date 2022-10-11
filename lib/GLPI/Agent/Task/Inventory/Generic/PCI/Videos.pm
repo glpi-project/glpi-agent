@@ -70,12 +70,13 @@ sub _getVideos {
     # Try to catch resolution with standard X11 clients if only one card is detected
     if (@videos == 1) {
         my ($xauth, $resolution);
-        unless ($ENV{XAUTHORITY}) {
+        unless ($ENV{XAUTHORITY} || $params{file}) {
             # Setup environment to be trusted by current running X server
             $xauth = getXAuthorityFile(%params);
             $ENV{XAUTHORITY} = $xauth if $xauth;
         }
-        if (canRun("xrandr")) {
+        if (canRun("xrandr") || $params{xrandr}) {
+            $params{file} .= ".xrandr" if $params{xrandr};
             my ($xres, $yres) = getFirstMatch(
                 command => "xrandr -d :0",
                 pattern => qr/^Screen.*current (\d+) x (\d+),/,
@@ -83,7 +84,8 @@ sub _getVideos {
             );
             $resolution = $xres.'x'.$yres if $xres && $yres;
         }
-        if (!$resolution && canRun("xdpyinfo")) {
+        if (!$resolution && (canRun("xdpyinfo") || $params{xdpyinfo})) {
+            $params{file} .= ".xdpyinfo" if $params{xdpyinfo};
             ($resolution) = getFirstMatch(
                 command => "xdpyinfo -d :0",
                 pattern => qr/^\s+dimensions:\s+(\d+x\d+)\s+pixels/,
