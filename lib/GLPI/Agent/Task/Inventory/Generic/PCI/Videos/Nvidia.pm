@@ -29,8 +29,9 @@ sub doInventory {
         my $pcislot = $video->{PCISLOT} // '';
         my ($current) = grep { $_->{PCISLOT} && $_->{PCISLOT} eq $pcislot } @{$videos};
         if ($current) {
-            $current->{NAME} = $video->{NAME} unless $current->{NAME};
+            $current->{NAME} = $video->{NAME} unless $current->{NAME} || !$video->{NAME};
             $current->{MEMORY} = $video->{MEMORY} if $video->{MEMORY};
+            $current->{CHIPSET} = $video->{CHIPSET} unless $current->{CHIPSET};
             $current->{RESOLUTION} = $video->{RESOLUTION} if $video->{RESOLUTION};
         } else {
             $inventory->addEntry(
@@ -58,6 +59,9 @@ sub _getNvidiaGpus {
         command => "nvidia-settings -t -c all -q gpus",
         @_
     );
+
+    # Support test cases
+    $params{file} .= ".gpus" if $params{file} && $params{gpus};
 
     my $gpus;
 
@@ -91,7 +95,7 @@ sub _getNvidiaVideos {
                 $xres = $1;
                 $yres = $2;
             } elsif ($line =~ /^Attributes queryable via .*:$num\[$gpu\]:/) {
-                $video = { NAME => $gpus->{$num}->{INFO} };
+                $video = { CHIPSET => $gpus->{$num}->{INFO} };
                 $video->{RESOLUTION} = $xres.'x'.$yres if $xres && $yres;
                 next;
             } elsif ($line =~ /^Attributes queryable via/) {
@@ -115,10 +119,10 @@ sub _getNvidiaVideos {
                 if ($vendor && exists($vendor->{devices}->{$device_id}->{name})) {
                     my $chipset = $vendor->{name} ? $vendor->{name}." " : "";
                     if ($vendor->{devices}->{$device_id}->{name} =~ /^(.*)\s+\[(.*)\]$/) {
-                        $video->{NAME} = $chipset.$1;
+                        $video->{CHIPSET} = $chipset.$1;
                         $chipset .= $2;
                     }
-                    $video->{CHIPSET} = $chipset;
+                    $video->{NAME} = $chipset;
                 }
             }
         }
