@@ -21,9 +21,11 @@ our @EXPORT = qw(
     getProcesses
     getRoutingTable
     getRootFSBirth
+    getXAuthorityFile
 );
 
 memoize('getProcesses');
+memoize('getXAuthorityFile');
 
 sub getDeviceCapacity {
     my (%params) = @_;
@@ -438,6 +440,35 @@ sub getRootFSBirth {
     );
 }
 
+sub getXAuthorityFile {
+    my (%params) = @_;
+
+    # first identify users using X
+    my %users;
+    foreach my $unix (Glob("/tmp/.X11-unix/*")) {
+        my $stat = FileStat($unix);
+        next unless $stat;
+        $users{$stat->uid} = 1;
+    }
+
+    # then found first users process using XAUTHORITY environment
+    my @pids = sort { $a <=> $b } map { int($_) } grep { /^\d+$/ } map { m{/proc/(.*)/environ} } Glob("/proc/*/environ");
+    my %stats;
+    foreach my $uid (keys(%users)) {
+        foreach my $pid (@pids) {
+            my $file = "/proc/$pid/environ";
+            my $stat = $stats{$file};
+            # Cache file stat if we need to test for another user
+            $stat = $stats{$file} = FileStat($file) unless $stat;
+            next unless $stat && $stat->uid eq $uid;
+            my $content = getAllLines(file => $file, %params);
+            my ($xauthority) = map { /^\w+=(.*)$/ } grep { /^XAUTHORITY=/ } split("\0", $content);
+            # Return on first found file
+            return $xauthority if $xauthority && has_file($xauthority);
+        }
+    }
+}
+
 1;
 __END__
 
@@ -531,3 +562,7 @@ Returns the routing table as an hashref, by parsing netstat command output.
 =head2 getRootFSBirth
 
 Returns the root filesystem birth date, by parsing stat / command output.
+
+=head2 getXAuthorityFile
+
+Returns the first found XAuthority file of any current X server user.
