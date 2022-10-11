@@ -1,0 +1,226 @@
+00:00.0 Host bridge [0600]: Intel Corporation Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers [8086:1904] (rev 08)
+	Subsystem: Dell Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers [1028:0704]
+	Flags: bus master, fast devsel, latency 0
+	Capabilities: [e0] Vendor Specific Information: Len=10 <?>
+	Kernel driver in use: skl_uncore
+
+00:02.0 VGA compatible controller [0300]: Intel Corporation Skylake GT2 [HD Graphics 520] [8086:1916] (rev 07) (prog-if 00 [VGA controller])
+	Subsystem: Dell Skylake GT2 [HD Graphics 520] [1028:0704]
+	Flags: bus master, fast devsel, latency 0, IRQ 126
+	Memory at db000000 (64-bit, non-prefetchable) [size=16M]
+	Memory at 90000000 (64-bit, prefetchable) [size=256M]
+	I/O ports at f000 [size=64]
+	[virtual] Expansion ROM at 000c0000 [disabled] [size=128K]
+	Capabilities: [40] Vendor Specific Information: Len=0c <?>
+	Capabilities: [70] Express Root Complex Integrated Endpoint, MSI 00
+	Capabilities: [ac] MSI: Enable+ Count=1/1 Maskable- 64bit-
+	Capabilities: [d0] Power Management version 2
+	Capabilities: [100] Process Address Space ID (PASID)
+	Capabilities: [200] Address Translation Service (ATS)
+	Capabilities: [300] Page Request Interface (PRI)
+	Kernel driver in use: i915
+	Kernel modules: i915
+
+00:04.0 Signal processing controller [1180]: Intel Corporation Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Thermal Subsystem [8086:1903] (rev 08)
+	Subsystem: Dell Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Thermal Subsystem [1028:0704]
+	Flags: fast devsel, IRQ 16
+	Memory at dc320000 (64-bit, non-prefetchable) [size=32K]
+	Capabilities: [90] MSI: Enable- Count=1/1 Maskable- 64bit-
+	Capabilities: [d0] Power Management version 3
+	Capabilities: [e0] Vendor Specific Information: Len=0c <?>
+	Kernel driver in use: proc_thermal
+	Kernel modules: processor_thermal_device
+
+00:14.0 USB controller [0c03]: Intel Corporation Sunrise Point-LP USB 3.0 xHCI Controller [8086:9d2f] (rev 21) (prog-if 30 [XHCI])
+	Subsystem: Dell Sunrise Point-LP USB 3.0 xHCI Controller [1028:0704]
+	Flags: bus master, medium devsel, latency 0, IRQ 122
+	Memory at dc310000 (64-bit, non-prefetchable) [size=64K]
+	Capabilities: [70] Power Management version 2
+	Capabilities: [80] MSI: Enable+ Count=1/8 Maskable- 64bit+
+	Kernel driver in use: xhci_hcd
+
+00:14.2 Signal processing controller [1180]: Intel Corporation Sunrise Point-LP Thermal subsystem [8086:9d31] (rev 21)
+	Subsystem: Dell Sunrise Point-LP Thermal subsystem [1028:0704]
+	Flags: fast devsel, IRQ 18
+	Memory at dc338000 (64-bit, non-prefetchable) [size=4K]
+	Capabilities: [50] Power Management version 3
+	Capabilities: [80] MSI: Enable- Count=1/1 Maskable- 64bit-
+	Kernel driver in use: intel_pch_thermal
+	Kernel modules: intel_pch_thermal
+
+00:15.0 Signal processing controller [1180]: Intel Corporation Sunrise Point-LP Serial IO I2C Controller #0 [8086:9d60] (rev 21)
+	Subsystem: Dell Sunrise Point-LP Serial IO I2C Controller [1028:0704]
+	Flags: bus master, fast devsel, latency 0, IRQ 16
+	Memory at dc337000 (64-bit, non-prefetchable) [size=4K]
+	Capabilities: [80] Power Management version 3
+	Capabilities: [90] Vendor Specific Information: Len=14 <?>
+	Kernel driver in use: intel-lpss
+	Kernel modules: intel_lpss_pci
+
+00:15.1 Signal processing controller [1180]: Intel Corporation Sunrise Point-LP Serial IO I2C Controller #1 [8086:9d61] (rev 21)
+	Subsystem: Dell Sunrise Point-LP Serial IO I2C Controller [1028:0704]
+	Flags: bus master, fast devsel, latency 0, IRQ 17
+	Memory at dc336000 (64-bit, non-prefetchable) [size=4K]
+	Capabilities: [80] Power Management version 3
+	Capabilities: [90] Vendor Specific Information: Len=14 <?>
+	Kernel driver in use: intel-lpss
+	Kernel modules: intel_lpss_pci
+
+00:16.0 Communication controller [0780]: Intel Corporation Sunrise Point-LP CSME HECI #1 [8086:9d3a] (rev 21)
+	Subsystem: Dell Sunrise Point-LP CSME HECI [1028:0704]
+	Flags: bus master, fast devsel, latency 0, IRQ 125
+	Memory at dc335000 (64-bit, non-prefetchable) [size=4K]
+	Capabilities: [50] Power Management version 3
+	Capabilities: [8c] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Kernel driver in use: mei_me
+	Kernel modules: mei_me
+
+00:17.0 SATA controller [0106]: Intel Corporation Sunrise Point-LP SATA Controller [AHCI mode] [8086:9d03] (rev 21) (prog-if 01 [AHCI 1.0])
+	Subsystem: Dell Sunrise Point-LP SATA Controller [AHCI mode] [1028:0704]
+	Flags: bus master, 66MHz, medium devsel, latency 0, IRQ 124
+	Memory at dc330000 (32-bit, non-prefetchable) [size=8K]
+	Memory at dc334000 (32-bit, non-prefetchable) [size=256]
+	I/O ports at f090 [size=8]
+	I/O ports at f080 [size=4]
+	I/O ports at f060 [size=32]
+	Memory at dc333000 (32-bit, non-prefetchable) [size=2K]
+	Capabilities: [80] MSI: Enable+ Count=1/1 Maskable- 64bit-
+	Capabilities: [70] Power Management version 3
+	Capabilities: [a8] SATA HBA v1.0
+	Kernel driver in use: ahci
+	Kernel modules: ahci
+
+00:1c.0 PCI bridge [0604]: Intel Corporation Sunrise Point-LP PCI Express Root Port #1 [8086:9d10] (rev f1) (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 16
+	Bus: primary=00, secondary=01, subordinate=39, sec-latency=0
+	I/O behind bridge: 00002000-00002fff
+	Memory behind bridge: c4000000-da0fffff
+	Prefetchable memory behind bridge: 00000000a0000000-00000000c1ffffff
+	Capabilities: [40] Express Root Port (Slot+), MSI 00
+	Capabilities: [80] MSI: Enable- Count=1/1 Maskable- 64bit-
+	Capabilities: [90] Subsystem: Dell Sunrise Point-LP PCI Express Root Port [1028:0704]
+	Capabilities: [a0] Power Management version 3
+	Capabilities: [100] Advanced Error Reporting
+	Capabilities: [140] Access Control Services
+	Capabilities: [200] L1 PM Substates
+	Capabilities: [220] #19
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+
+00:1c.4 PCI bridge [0604]: Intel Corporation Sunrise Point-LP PCI Express Root Port #5 [8086:9d14] (rev f1) (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 16
+	Bus: primary=00, secondary=3a, subordinate=3a, sec-latency=0
+	Memory behind bridge: dc200000-dc2fffff
+	Capabilities: [40] Express Root Port (Slot+), MSI 00
+	Capabilities: [80] MSI: Enable- Count=1/1 Maskable- 64bit-
+	Capabilities: [90] Subsystem: Dell Sunrise Point-LP PCI Express Root Port [1028:0704]
+	Capabilities: [a0] Power Management version 3
+	Capabilities: [100] Advanced Error Reporting
+	Capabilities: [140] Access Control Services
+	Capabilities: [200] L1 PM Substates
+	Capabilities: [220] #19
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+
+00:1c.5 PCI bridge [0604]: Intel Corporation Sunrise Point-LP PCI Express Root Port #6 [8086:9d15] (rev f1) (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 17
+	Bus: primary=00, secondary=3b, subordinate=3b, sec-latency=0
+	Memory behind bridge: dc100000-dc1fffff
+	Capabilities: [40] Express Root Port (Slot+), MSI 00
+	Capabilities: [80] MSI: Enable- Count=1/1 Maskable- 64bit-
+	Capabilities: [90] Subsystem: Dell Sunrise Point-LP PCI Express Root Port [1028:0704]
+	Capabilities: [a0] Power Management version 3
+	Capabilities: [100] Advanced Error Reporting
+	Capabilities: [140] Access Control Services
+	Capabilities: [220] #19
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+
+00:1d.0 PCI bridge [0604]: Intel Corporation Sunrise Point-LP PCI Express Root Port #9 [8086:9d18] (rev f1) (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 16
+	Bus: primary=00, secondary=3c, subordinate=3c, sec-latency=0
+	I/O behind bridge: 0000e000-0000efff
+	Memory behind bridge: dc000000-dc0fffff
+	Capabilities: [40] Express Root Port (Slot+), MSI 00
+	Capabilities: [80] MSI: Enable- Count=1/1 Maskable- 64bit-
+	Capabilities: [90] Subsystem: Dell Sunrise Point-LP PCI Express Root Port [1028:0704]
+	Capabilities: [a0] Power Management version 3
+	Capabilities: [100] Advanced Error Reporting
+	Capabilities: [140] Access Control Services
+	Capabilities: [200] L1 PM Substates
+	Capabilities: [220] #19
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+
+00:1f.0 ISA bridge [0601]: Intel Corporation Sunrise Point-LP LPC Controller [8086:9d48] (rev 21)
+	Subsystem: Dell Sunrise Point-LP LPC Controller [1028:0704]
+	Flags: bus master, medium devsel, latency 0
+
+00:1f.2 Memory controller [0580]: Intel Corporation Sunrise Point-LP PMC [8086:9d21] (rev 21)
+	Subsystem: Dell Sunrise Point-LP PMC [1028:0704]
+	Flags: fast devsel
+	Memory at dc32c000 (32-bit, non-prefetchable) [disabled] [size=16K]
+
+00:1f.3 Audio device [0403]: Intel Corporation Sunrise Point-LP HD Audio [8086:9d70] (rev 21) (prog-if 80)
+	Subsystem: Dell Sunrise Point-LP HD Audio [1028:0704]
+	Flags: bus master, fast devsel, latency 32, IRQ 128
+	Memory at dc328000 (64-bit, non-prefetchable) [size=16K]
+	Memory at dc300000 (64-bit, non-prefetchable) [size=64K]
+	Capabilities: [50] Power Management version 3
+	Capabilities: [60] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Kernel driver in use: snd_hda_intel
+	Kernel modules: snd_hda_intel, snd_soc_skl
+
+00:1f.4 SMBus [0c05]: Intel Corporation Sunrise Point-LP SMBus [8086:9d23] (rev 21)
+	Subsystem: Dell Sunrise Point-LP SMBus [1028:0704]
+	Flags: medium devsel, IRQ 255
+	Memory at dc332000 (64-bit, non-prefetchable) [size=256]
+	I/O ports at f040 [size=32]
+	Kernel modules: i2c_i801
+
+3a:00.0 Network controller [0280]: Intel Corporation Wireless 8260 [8086:24f3] (rev 3a)
+	Subsystem: Intel Corporation Wireless 8260 [8086:0050]
+	Flags: bus master, fast devsel, latency 0, IRQ 131
+	Memory at dc200000 (64-bit, non-prefetchable) [size=8K]
+	Capabilities: [c8] Power Management version 3
+	Capabilities: [d0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Capabilities: [40] Express Endpoint, MSI 00
+	Capabilities: [100] Advanced Error Reporting
+	Capabilities: [140] Device Serial Number 44-85-00-ff-ff-2b-86-b2
+	Capabilities: [14c] Latency Tolerance Reporting
+	Capabilities: [154] L1 PM Substates
+	Kernel driver in use: iwlwifi
+	Kernel modules: iwlwifi
+
+3b:00.0 Unassigned class [ff00]: Realtek Semiconductor Co., Ltd. RTS525A PCI Express Card Reader [10ec:525a] (rev 01)
+	Subsystem: Dell RTS525A PCI Express Card Reader [1028:0704]
+	Flags: bus master, fast devsel, latency 0, IRQ 123
+	Memory at dc100000 (32-bit, non-prefetchable) [size=4K]
+	Capabilities: [80] Power Management version 3
+	Capabilities: [90] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Capabilities: [b0] Express Endpoint, MSI 00
+	Capabilities: [100] Advanced Error Reporting
+	Capabilities: [148] Device Serial Number 00-00-00-01-00-4c-e0-00
+	Capabilities: [158] Latency Tolerance Reporting
+	Capabilities: [160] L1 PM Substates
+	Kernel driver in use: rtsx_pci
+	Kernel modules: rtsx_pci
+
+3c:00.0 Non-Volatile memory controller [0108]: Samsung Electronics Co Ltd NVMe SSD Controller SM951/PM951 [144d:a802] (rev 01) (prog-if 02 [NVM Express])
+	Subsystem: Samsung Electronics Co Ltd NVMe SSD Controller SM951/PM951 [144d:a801]
+	Flags: bus master, fast devsel, latency 0, IRQ 16, NUMA node 0
+	Memory at dc000000 (64-bit, non-prefetchable) [size=16K]
+	I/O ports at e000 [size=256]
+	Capabilities: [40] Power Management version 3
+	Capabilities: [50] MSI: Enable- Count=1/8 Maskable- 64bit+
+	Capabilities: [70] Express Endpoint, MSI 00
+	Capabilities: [b0] MSI-X: Enable+ Count=9 Masked-
+	Capabilities: [100] Advanced Error Reporting
+	Capabilities: [148] Device Serial Number 00-00-00-00-00-00-00-00
+	Capabilities: [158] Power Budgeting <?>
+	Capabilities: [168] #19
+	Capabilities: [188] Latency Tolerance Reporting
+	Capabilities: [190] L1 PM Substates
+	Kernel driver in use: nvme
+	Kernel modules: nvme
+

@@ -36,6 +36,33 @@ my %tests = (
             PCIID   => '10de:014d',
             PCISLOT => '01:00.0',
         }
+    ],
+    'nvidia-1' => [
+        {
+            CHIPSET => 'NVIDIA Corporation TU106',
+            NAME    => 'PNY GeForce RTX 2060 SUPER',
+            MEMORY  => '288',
+            PCIID   => '10de:1f06',
+            PCISLOT => '09:00.0',
+        }
+    ],
+    'linux-imac' => [
+        {
+            CHIPSET => 'Advanced Micro Devices, Inc. [AMD/ATI] RV730/M96-XT',
+            NAME    => 'Apple Inc. Mobility Radeon HD 4670',
+            MEMORY  => '256',
+            PCIID   => '1002:9488',
+            PCISLOT => '01:00.0',
+        }
+    ],
+    'linux-xps' => [
+        {
+            CHIPSET => 'Intel Corporation Skylake GT2',
+            NAME    => 'Dell HD Graphics 520',
+            MEMORY  => '256',
+            PCIID   => '8086:1916',
+            PCISLOT => '00:02.0',
+        }
     ]
 );
 

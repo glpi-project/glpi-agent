@@ -1,0 +1,598 @@
+00:00.0 Host bridge [0600]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Root Complex [1022:1480]
+	Subsystem: ASUSTeK Computer Inc. Device [1043:87c0]
+	Flags: fast devsel
+
+00:00.2 IOMMU [0806]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse IOMMU [1022:1481]
+	Subsystem: ASUSTeK Computer Inc. Device [1043:87c0]
+	Flags: fast devsel
+	Capabilities: [40] Secure device <?>
+	Capabilities: [64] MSI: Enable- Count=1/4 Maskable- 64bit+
+	Capabilities: [74] HyperTransport: MSI Mapping Enable+ Fixed+
+	Capabilities: [c8] Vendor Specific Information: Len=18 <?>
+
+00:01.0 Host bridge [0600]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge [1022:1482]
+	Flags: fast devsel, IOMMU group 0
+
+00:01.1 PCI bridge [0604]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse GPP Bridge [1022:1483] (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 27, IOMMU group 1
+	Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+	I/O behind bridge: [disabled]
+	Memory behind bridge: f7d00000-f7dfffff [size=1M]
+	Prefetchable memory behind bridge: [disabled]
+	Capabilities: [50] Power Management version 3
+	Capabilities: [58] Express Root Port (Slot+), MSI 00
+	Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Capabilities: [c0] Subsystem: ASUSTeK Computer Inc. Device [1043:87c0]
+	Capabilities: [c8] HyperTransport: MSI Mapping Enable+ Fixed+
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [140] Device Serial Number 00-0c-87-00-00-00-00-01
+	Capabilities: [150] Advanced Error Reporting
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [2a0] Access Control Services
+	Capabilities: [370] L1 PM Substates
+	Capabilities: [3c4] Designated Vendor-Specific: Vendor=1022 ID=0001 Rev=1 Len=44 <?>
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+	Kernel driver in use: pcieport
+
+00:01.2 PCI bridge [0604]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse GPP Bridge [1022:1483] (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 28, IOMMU group 2
+	Bus: primary=00, secondary=02, subordinate=08, sec-latency=0
+	I/O behind bridge: 0000f000-0000ffff [size=4K]
+	Memory behind bridge: f7200000-f77fffff [size=6M]
+	Prefetchable memory behind bridge: [disabled]
+	Capabilities: [50] Power Management version 3
+	Capabilities: [58] Express Root Port (Slot+), MSI 00
+	Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Capabilities: [c0] Subsystem: ASUSTeK Computer Inc. Device [1043:87c0]
+	Capabilities: [c8] HyperTransport: MSI Mapping Enable+ Fixed+
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [140] Device Serial Number 00-0c-87-00-00-00-00-01
+	Capabilities: [150] Advanced Error Reporting
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [2a0] Access Control Services
+	Capabilities: [370] L1 PM Substates
+	Capabilities: [3c4] Designated Vendor-Specific: Vendor=1022 ID=0001 Rev=1 Len=44 <?>
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+	Kernel driver in use: pcieport
+
+00:02.0 Host bridge [0600]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge [1022:1482]
+	DeviceName:  Onboard IGD
+	Flags: fast devsel, IOMMU group 3
+
+00:03.0 Host bridge [0600]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge [1022:1482]
+	Flags: fast devsel, IOMMU group 4
+
+00:03.1 PCI bridge [0604]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse GPP Bridge [1022:1483] (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 29, IOMMU group 5
+	Bus: primary=00, secondary=09, subordinate=09, sec-latency=0
+	I/O behind bridge: 0000e000-0000efff [size=4K]
+	Memory behind bridge: f6000000-f70fffff [size=17M]
+	Prefetchable memory behind bridge: 00000000e0000000-00000000f20fffff [size=289M]
+	Capabilities: [50] Power Management version 3
+	Capabilities: [58] Express Root Port (Slot+), MSI 00
+	Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Capabilities: [c0] Subsystem: ASUSTeK Computer Inc. Device [1043:87c0]
+	Capabilities: [c8] HyperTransport: MSI Mapping Enable+ Fixed+
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [140] Device Serial Number 00-0c-87-00-00-00-00-01
+	Capabilities: [150] Advanced Error Reporting
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [2a0] Access Control Services
+	Capabilities: [370] L1 PM Substates
+	Capabilities: [3c4] Designated Vendor-Specific: Vendor=1022 ID=0001 Rev=1 Len=44 <?>
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+	Kernel driver in use: pcieport
+
+00:04.0 Host bridge [0600]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge [1022:1482]
+	Flags: fast devsel, IOMMU group 6
+
+00:05.0 Host bridge [0600]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge [1022:1482]
+	Flags: fast devsel, IOMMU group 7
+
+00:07.0 Host bridge [0600]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge [1022:1482]
+	Flags: fast devsel, IOMMU group 8
+
+00:07.1 PCI bridge [0604]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B] [1022:1484] (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 31, IOMMU group 8
+	Bus: primary=00, secondary=0a, subordinate=0a, sec-latency=0
+	I/O behind bridge: [disabled]
+	Memory behind bridge: [disabled]
+	Prefetchable memory behind bridge: [disabled]
+	Capabilities: [50] Power Management version 3
+	Capabilities: [58] Express Root Port (Slot-), MSI 00
+	Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Capabilities: [c0] Subsystem: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B] [1022:1484]
+	Capabilities: [c8] HyperTransport: MSI Mapping Enable+ Fixed+
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+	Kernel driver in use: pcieport
+
+00:08.0 Host bridge [0600]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge [1022:1482]
+	Flags: fast devsel, IOMMU group 9
+
+00:08.1 PCI bridge [0604]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B] [1022:1484] (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 32, IOMMU group 9
+	Bus: primary=00, secondary=0b, subordinate=0b, sec-latency=0
+	I/O behind bridge: [disabled]
+	Memory behind bridge: f7800000-f7afffff [size=3M]
+	Prefetchable memory behind bridge: [disabled]
+	Capabilities: [50] Power Management version 3
+	Capabilities: [58] Express Root Port (Slot-), MSI 00
+	Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Capabilities: [c0] Subsystem: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B] [1022:1484]
+	Capabilities: [c8] HyperTransport: MSI Mapping Enable+ Fixed+
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+	Kernel driver in use: pcieport
+
+00:08.2 PCI bridge [0604]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B] [1022:1484] (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 33, IOMMU group 9
+	Bus: primary=00, secondary=0c, subordinate=0c, sec-latency=0
+	I/O behind bridge: [disabled]
+	Memory behind bridge: f7c00000-f7cfffff [size=1M]
+	Prefetchable memory behind bridge: [disabled]
+	Capabilities: [50] Power Management version 3
+	Capabilities: [58] Express Root Port (Slot-), MSI 00
+	Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Capabilities: [c0] Subsystem: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B] [1022:1484]
+	Capabilities: [c8] HyperTransport: MSI Mapping Enable+ Fixed+
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+	Kernel driver in use: pcieport
+
+00:08.3 PCI bridge [0604]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B] [1022:1484] (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 34, IOMMU group 9
+	Bus: primary=00, secondary=0d, subordinate=0d, sec-latency=0
+	I/O behind bridge: [disabled]
+	Memory behind bridge: f7b00000-f7bfffff [size=1M]
+	Prefetchable memory behind bridge: [disabled]
+	Capabilities: [50] Power Management version 3
+	Capabilities: [58] Express Root Port (Slot-), MSI 00
+	Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Capabilities: [c0] Subsystem: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B] [1022:1484]
+	Capabilities: [c8] HyperTransport: MSI Mapping Enable+ Fixed+
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+	Kernel driver in use: pcieport
+
+00:14.0 SMBus [0c05]: Advanced Micro Devices, Inc. [AMD] FCH SMBus Controller [1022:790b] (rev 61)
+	Subsystem: ASUSTeK Computer Inc. Device [1043:87c0]
+	Flags: 66MHz, medium devsel, IOMMU group 10
+	Kernel driver in use: piix4_smbus
+	Kernel modules: i2c_piix4, sp5100_tco
+
+00:14.3 ISA bridge [0601]: Advanced Micro Devices, Inc. [AMD] FCH LPC Bridge [1022:790e] (rev 51)
+	Subsystem: ASUSTeK Computer Inc. Device [1043:87c0]
+	Flags: bus master, 66MHz, medium devsel, latency 0, IOMMU group 10
+
+00:18.0 Host bridge [0600]: Advanced Micro Devices, Inc. [AMD] Matisse/Vermeer Data Fabric: Device 18h; Function 0 [1022:1440]
+	Flags: fast devsel, IOMMU group 11
+
+00:18.1 Host bridge [0600]: Advanced Micro Devices, Inc. [AMD] Matisse/Vermeer Data Fabric: Device 18h; Function 1 [1022:1441]
+	Flags: fast devsel, IOMMU group 11
+
+00:18.2 Host bridge [0600]: Advanced Micro Devices, Inc. [AMD] Matisse/Vermeer Data Fabric: Device 18h; Function 2 [1022:1442]
+	Flags: fast devsel, IOMMU group 11
+
+00:18.3 Host bridge [0600]: Advanced Micro Devices, Inc. [AMD] Matisse/Vermeer Data Fabric: Device 18h; Function 3 [1022:1443]
+	Flags: fast devsel, IOMMU group 11
+	Kernel driver in use: k10temp
+	Kernel modules: k10temp
+
+00:18.4 Host bridge [0600]: Advanced Micro Devices, Inc. [AMD] Matisse/Vermeer Data Fabric: Device 18h; Function 4 [1022:1444]
+	Flags: fast devsel, IOMMU group 11
+
+00:18.5 Host bridge [0600]: Advanced Micro Devices, Inc. [AMD] Matisse/Vermeer Data Fabric: Device 18h; Function 5 [1022:1445]
+	Flags: fast devsel, IOMMU group 11
+
+00:18.6 Host bridge [0600]: Advanced Micro Devices, Inc. [AMD] Matisse/Vermeer Data Fabric: Device 18h; Function 6 [1022:1446]
+	Flags: fast devsel, IOMMU group 11
+
+00:18.7 Host bridge [0600]: Advanced Micro Devices, Inc. [AMD] Matisse/Vermeer Data Fabric: Device 18h; Function 7 [1022:1447]
+	Flags: fast devsel, IOMMU group 11
+
+01:00.0 Non-Volatile memory controller [0108]: Phison Electronics Corporation E12 NVMe Controller [1987:5012] (rev 01) (prog-if 02 [NVM Express])
+	Subsystem: Phison Electronics Corporation E12 NVMe Controller [1987:5012]
+	Flags: bus master, fast devsel, latency 0, IRQ 71, NUMA node 0, IOMMU group 12
+	Memory at f7d00000 (64-bit, non-prefetchable) [size=16K]
+	Capabilities: [80] Express Endpoint, MSI 00
+	Capabilities: [d0] MSI-X: Enable+ Count=9 Masked-
+	Capabilities: [e0] MSI: Enable- Count=1/8 Maskable- 64bit+
+	Capabilities: [f8] Power Management version 3
+	Capabilities: [100] Latency Tolerance Reporting
+	Capabilities: [110] L1 PM Substates
+	Capabilities: [128] Alternative Routing-ID Interpretation (ARI)
+	Capabilities: [200] Advanced Error Reporting
+	Capabilities: [300] Secondary PCI Express
+	Kernel driver in use: nvme
+	Kernel modules: nvme
+
+02:00.0 PCI bridge [0604]: Advanced Micro Devices, Inc. [AMD] Matisse Switch Upstream [1022:57ad] (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 24, IOMMU group 13
+	Bus: primary=02, secondary=03, subordinate=08, sec-latency=0
+	I/O behind bridge: 0000f000-0000ffff [size=4K]
+	Memory behind bridge: f7200000-f77fffff [size=6M]
+	Prefetchable memory behind bridge: [disabled]
+	Capabilities: [50] Power Management version 3
+	Capabilities: [58] Express Upstream Port, MSI 00
+	Capabilities: [a0] MSI: Enable- Count=1/1 Maskable- 64bit+
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [370] L1 PM Substates
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+	Kernel driver in use: pcieport
+
+03:01.0 PCI bridge [0604]: Advanced Micro Devices, Inc. [AMD] Matisse PCIe GPP Bridge [1022:57a3] (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 35, IOMMU group 14
+	Bus: primary=03, secondary=04, subordinate=04, sec-latency=0
+	I/O behind bridge: [disabled]
+	Memory behind bridge: f7700000-f77fffff [size=1M]
+	Prefetchable memory behind bridge: [disabled]
+	Capabilities: [50] Power Management version 3
+	Capabilities: [58] Express Downstream Port (Slot+), MSI 00
+	Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Capabilities: [c0] Subsystem: ASUSTeK Computer Inc. Device [1043:87c0]
+	Capabilities: [c8] HyperTransport: MSI Mapping Enable+ Fixed+
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [140] Device Serial Number 00-0c-87-00-00-00-00-01
+	Capabilities: [150] Advanced Error Reporting
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [2a0] Access Control Services
+	Capabilities: [370] L1 PM Substates
+	Capabilities: [380] Downstream Port Containment
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+	Kernel driver in use: pcieport
+
+03:05.0 PCI bridge [0604]: Advanced Micro Devices, Inc. [AMD] Matisse PCIe GPP Bridge [1022:57a3] (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 36, IOMMU group 15
+	Bus: primary=03, secondary=05, subordinate=05, sec-latency=0
+	I/O behind bridge: 0000f000-0000ffff [size=4K]
+	Memory behind bridge: f7600000-f76fffff [size=1M]
+	Prefetchable memory behind bridge: [disabled]
+	Capabilities: [50] Power Management version 3
+	Capabilities: [58] Express Downstream Port (Slot+), MSI 00
+	Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Capabilities: [c0] Subsystem: ASUSTeK Computer Inc. Device [1043:87c0]
+	Capabilities: [c8] HyperTransport: MSI Mapping Enable+ Fixed+
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [140] Device Serial Number 00-0c-87-00-00-00-00-01
+	Capabilities: [150] Advanced Error Reporting
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [2a0] Access Control Services
+	Capabilities: [370] L1 PM Substates
+	Capabilities: [380] Downstream Port Containment
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+	Kernel driver in use: pcieport
+
+03:08.0 PCI bridge [0604]: Advanced Micro Devices, Inc. [AMD] Matisse PCIe GPP Bridge [1022:57a4] (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 37, IOMMU group 16
+	Bus: primary=03, secondary=06, subordinate=06, sec-latency=0
+	I/O behind bridge: [disabled]
+	Memory behind bridge: f7200000-f73fffff [size=2M]
+	Prefetchable memory behind bridge: [disabled]
+	Capabilities: [50] Power Management version 3
+	Capabilities: [58] Express Downstream Port (Slot-), MSI 00
+	Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Capabilities: [c0] Subsystem: Advanced Micro Devices, Inc. [AMD] Device [1022:1484]
+	Capabilities: [c8] HyperTransport: MSI Mapping Enable+ Fixed+
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+	Kernel driver in use: pcieport
+
+03:09.0 PCI bridge [0604]: Advanced Micro Devices, Inc. [AMD] Matisse PCIe GPP Bridge [1022:57a4] (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 39, IOMMU group 17
+	Bus: primary=03, secondary=07, subordinate=07, sec-latency=0
+	I/O behind bridge: [disabled]
+	Memory behind bridge: f7500000-f75fffff [size=1M]
+	Prefetchable memory behind bridge: [disabled]
+	Capabilities: [50] Power Management version 3
+	Capabilities: [58] Express Downstream Port (Slot-), MSI 00
+	Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Capabilities: [c0] Subsystem: Advanced Micro Devices, Inc. [AMD] Device [1022:1484]
+	Capabilities: [c8] HyperTransport: MSI Mapping Enable+ Fixed+
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+	Kernel driver in use: pcieport
+
+03:0a.0 PCI bridge [0604]: Advanced Micro Devices, Inc. [AMD] Matisse PCIe GPP Bridge [1022:57a4] (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 41, IOMMU group 18
+	Bus: primary=03, secondary=08, subordinate=08, sec-latency=0
+	I/O behind bridge: [disabled]
+	Memory behind bridge: f7400000-f74fffff [size=1M]
+	Prefetchable memory behind bridge: [disabled]
+	Capabilities: [50] Power Management version 3
+	Capabilities: [58] Express Downstream Port (Slot-), MSI 00
+	Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Capabilities: [c0] Subsystem: Advanced Micro Devices, Inc. [AMD] Device [1022:1484]
+	Capabilities: [c8] HyperTransport: MSI Mapping Enable+ Fixed+
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+	Kernel driver in use: pcieport
+
+04:00.0 Non-Volatile memory controller [0108]: Micron/Crucial Technology P1 NVMe PCIe SSD [c0a9:2263] (rev 03) (prog-if 02 [NVM Express])
+	Subsystem: Micron/Crucial Technology P1 NVMe PCIe SSD [c0a9:2263]
+	Flags: bus master, fast devsel, latency 0, IRQ 38, NUMA node 0, IOMMU group 19
+	Memory at f7700000 (64-bit, non-prefetchable) [size=16K]
+	Capabilities: [40] Power Management version 3
+	Capabilities: [50] MSI: Enable- Count=1/8 Maskable+ 64bit+
+	Capabilities: [70] Express Endpoint, MSI 00
+	Capabilities: [b0] MSI-X: Enable+ Count=16 Masked-
+	Capabilities: [100] Advanced Error Reporting
+	Capabilities: [158] Secondary PCI Express
+	Capabilities: [178] Latency Tolerance Reporting
+	Capabilities: [180] L1 PM Substates
+	Kernel driver in use: nvme
+	Kernel modules: nvme
+
+05:00.0 Ethernet controller [0200]: Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller [10ec:8168] (rev 15)
+	Subsystem: ASUSTeK Computer Inc. PRIME B450M-A Motherboard [1043:8677]
+	Flags: bus master, fast devsel, latency 0, IRQ 38, IOMMU group 20
+	I/O ports at f000 [size=256]
+	Memory at f7604000 (64-bit, non-prefetchable) [size=4K]
+	Memory at f7600000 (64-bit, non-prefetchable) [size=16K]
+	Capabilities: [40] Power Management version 3
+	Capabilities: [50] MSI: Enable- Count=1/1 Maskable- 64bit+
+	Capabilities: [70] Express Endpoint, MSI 01
+	Capabilities: [b0] MSI-X: Enable+ Count=4 Masked-
+	Capabilities: [100] Advanced Error Reporting
+	Capabilities: [140] Virtual Channel
+	Capabilities: [160] Device Serial Number 01-00-00-00-68-4c-e0-00
+	Capabilities: [170] Latency Tolerance Reporting
+	Capabilities: [178] L1 PM Substates
+	Kernel driver in use: r8169
+	Kernel modules: r8169
+
+06:00.0 Non-Essential Instrumentation [1300]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Reserved SPP [1022:1485]
+	Subsystem: ASUSTeK Computer Inc. Device [1043:87c0]
+	Flags: fast devsel, IOMMU group 16
+	Capabilities: [48] Vendor Specific Information: Len=08 <?>
+	Capabilities: [50] Power Management version 3
+	Capabilities: [64] Express Endpoint, MSI 00
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+
+06:00.1 USB controller [0c03]: Advanced Micro Devices, Inc. [AMD] Matisse USB 3.0 Host Controller [1022:149c] (prog-if 30 [XHCI])
+	Subsystem: ASUSTeK Computer Inc. Device [1043:87c0]
+	Flags: bus master, fast devsel, latency 0, IRQ 48, IOMMU group 16
+	Memory at f7300000 (64-bit, non-prefetchable) [size=1M]
+	Capabilities: [48] Vendor Specific Information: Len=08 <?>
+	Capabilities: [50] Power Management version 3
+	Capabilities: [64] Express Endpoint, MSI 00
+	Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Kernel driver in use: xhci_hcd
+
+06:00.3 USB controller [0c03]: Advanced Micro Devices, Inc. [AMD] Matisse USB 3.0 Host Controller [1022:149c] (prog-if 30 [XHCI])
+	Subsystem: Advanced Micro Devices, Inc. [AMD] Device [1022:148c]
+	Flags: bus master, fast devsel, latency 0, IRQ 40, IOMMU group 16
+	Memory at f7200000 (64-bit, non-prefetchable) [size=1M]
+	Capabilities: [48] Vendor Specific Information: Len=08 <?>
+	Capabilities: [50] Power Management version 3
+	Capabilities: [64] Express Endpoint, MSI 00
+	Capabilities: [a0] MSI: Enable- Count=1/8 Maskable- 64bit+
+	Capabilities: [c0] MSI-X: Enable+ Count=8 Masked-
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Kernel driver in use: xhci_hcd
+
+07:00.0 SATA controller [0106]: Advanced Micro Devices, Inc. [AMD] FCH SATA Controller [AHCI mode] [1022:7901] (rev 51) (prog-if 01 [AHCI 1.0])
+	Subsystem: Advanced Micro Devices, Inc. [AMD] FCH SATA Controller [AHCI mode] [1022:7901]
+	Flags: bus master, fast devsel, latency 0, IRQ 42, IOMMU group 17
+	Memory at f7500000 (32-bit, non-prefetchable) [size=2K]
+	Capabilities: [48] Vendor Specific Information: Len=08 <?>
+	Capabilities: [50] Power Management version 3
+	Capabilities: [64] Express Endpoint, MSI 00
+	Capabilities: [a0] MSI: Enable+ Count=1/16 Maskable- 64bit+
+	Capabilities: [d0] SATA HBA v1.0
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+	Kernel driver in use: ahci
+
+08:00.0 SATA controller [0106]: Advanced Micro Devices, Inc. [AMD] FCH SATA Controller [AHCI mode] [1022:7901] (rev 51) (prog-if 01 [AHCI 1.0])
+	Subsystem: Advanced Micro Devices, Inc. [AMD] FCH SATA Controller [AHCI mode] [1022:7901]
+	Flags: bus master, fast devsel, latency 0, IRQ 43, IOMMU group 18
+	Memory at f7400000 (32-bit, non-prefetchable) [size=2K]
+	Capabilities: [48] Vendor Specific Information: Len=08 <?>
+	Capabilities: [50] Power Management version 3
+	Capabilities: [64] Express Endpoint, MSI 00
+	Capabilities: [a0] MSI: Enable+ Count=1/16 Maskable- 64bit+
+	Capabilities: [d0] SATA HBA v1.0
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+	Kernel driver in use: ahci
+
+09:00.0 VGA compatible controller [0300]: NVIDIA Corporation TU106 [GeForce RTX 2060 SUPER] [10de:1f06] (rev a1) (prog-if 00 [VGA controller])
+	Subsystem: PNY Device [196e:1339]
+	Flags: bus master, fast devsel, latency 0, IRQ 104, IOMMU group 21
+	Memory at f6000000 (32-bit, non-prefetchable) [size=16M]
+	Memory at e0000000 (64-bit, prefetchable) [size=256M]
+	Memory at f0000000 (64-bit, prefetchable) [size=32M]
+	I/O ports at e000 [size=128]
+	Expansion ROM at f7000000 [virtual] [disabled] [size=512K]
+	Capabilities: [60] Power Management version 3
+	Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Capabilities: [78] Express Legacy Endpoint, MSI 00
+	Capabilities: [100] Virtual Channel
+	Capabilities: [250] Latency Tolerance Reporting
+	Capabilities: [258] L1 PM Substates
+	Capabilities: [128] Power Budgeting <?>
+	Capabilities: [420] Advanced Error Reporting
+	Capabilities: [600] Vendor Specific Information: ID=0001 Rev=1 Len=024 <?>
+	Capabilities: [900] Secondary PCI Express
+	Capabilities: [bb0] Physical Resizable BAR
+	Kernel driver in use: nvidia
+	Kernel modules: nouveau, nvidia_drm, nvidia
+
+09:00.1 Audio device [0403]: NVIDIA Corporation TU106 High Definition Audio Controller [10de:10f9] (rev a1)
+	Subsystem: PNY Device [196e:1339]
+	Flags: bus master, fast devsel, latency 0, IRQ 100, IOMMU group 21
+	Memory at f7080000 (32-bit, non-prefetchable) [size=16K]
+	Capabilities: [60] Power Management version 3
+	Capabilities: [68] MSI: Enable- Count=1/1 Maskable- 64bit+
+	Capabilities: [78] Express Endpoint, MSI 00
+	Capabilities: [100] Advanced Error Reporting
+	Kernel driver in use: snd_hda_intel
+	Kernel modules: snd_hda_intel
+
+09:00.2 USB controller [0c03]: NVIDIA Corporation TU106 USB 3.1 Host Controller [10de:1ada] (rev a1) (prog-if 30 [XHCI])
+	Subsystem: PNY Device [196e:1339]
+	Flags: fast devsel, IRQ 58, IOMMU group 21
+	Memory at f2000000 (64-bit, prefetchable) [size=256K]
+	Memory at f2040000 (64-bit, prefetchable) [size=64K]
+	Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Capabilities: [78] Express Endpoint, MSI 00
+	Capabilities: [b4] Power Management version 3
+	Capabilities: [100] Advanced Error Reporting
+	Kernel driver in use: xhci_hcd
+
+09:00.3 Serial bus controller [0c80]: NVIDIA Corporation TU106 USB Type-C UCSI Controller [10de:1adb] (rev a1)
+	Subsystem: PNY Device [196e:1339]
+	Flags: bus master, fast devsel, latency 0, IRQ 99, IOMMU group 21
+	Memory at f7084000 (32-bit, non-prefetchable) [size=4K]
+	Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Capabilities: [78] Express Endpoint, MSI 00
+	Capabilities: [b4] Power Management version 3
+	Capabilities: [100] Advanced Error Reporting
+	Kernel driver in use: nvidia-gpu
+	Kernel modules: i2c_nvidia_gpu
+
+0a:00.0 Non-Essential Instrumentation [1300]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Function [1022:148a]
+	Subsystem: ASUSTeK Computer Inc. Device [1043:87c0]
+	Flags: fast devsel, IOMMU group 8
+	Capabilities: [48] Vendor Specific Information: Len=08 <?>
+	Capabilities: [50] Power Management version 3
+	Capabilities: [64] Express Endpoint, MSI 00
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+
+0b:00.0 Non-Essential Instrumentation [1300]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Reserved SPP [1022:1485]
+	Subsystem: ASUSTeK Computer Inc. Device [1043:87c0]
+	Flags: fast devsel, IOMMU group 9
+	Capabilities: [48] Vendor Specific Information: Len=08 <?>
+	Capabilities: [50] Power Management version 3
+	Capabilities: [64] Express Endpoint, MSI 00
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+
+0b:00.1 Encryption controller [1080]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Cryptographic Coprocessor PSPCPP [1022:1486]
+	Subsystem: ASUSTeK Computer Inc. Device [1043:87c0]
+	Flags: bus master, fast devsel, latency 0, IRQ 68, IOMMU group 9
+	Memory at f7900000 (32-bit, non-prefetchable) [size=1M]
+	Memory at f7a08000 (32-bit, non-prefetchable) [size=8K]
+	Capabilities: [48] Vendor Specific Information: Len=08 <?>
+	Capabilities: [50] Power Management version 3
+	Capabilities: [64] Express Endpoint, MSI 00
+	Capabilities: [a0] MSI: Enable- Count=1/1 Maskable- 64bit+
+	Capabilities: [c0] MSI-X: Enable+ Count=2 Masked-
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [370] Transaction Processing Hints
+	Kernel driver in use: ccp
+	Kernel modules: ccp
+
+0b:00.3 USB controller [0c03]: Advanced Micro Devices, Inc. [AMD] Matisse USB 3.0 Host Controller [1022:149c] (prog-if 30 [XHCI])
+	Subsystem: ASUSTeK Computer Inc. Device [1043:87c0]
+	Flags: bus master, fast devsel, latency 0, IRQ 59, IOMMU group 9
+	Memory at f7800000 (64-bit, non-prefetchable) [size=1M]
+	Capabilities: [48] Vendor Specific Information: Len=08 <?>
+	Capabilities: [50] Power Management version 3
+	Capabilities: [64] Express Endpoint, MSI 00
+	Capabilities: [a0] MSI: Enable- Count=1/8 Maskable- 64bit+
+	Capabilities: [c0] MSI-X: Enable+ Count=8 Masked-
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [370] Transaction Processing Hints
+	Kernel driver in use: xhci_hcd
+
+0b:00.4 Audio device [0403]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse HD Audio Controller [1022:1487]
+	Subsystem: ASUSTeK Computer Inc. Device [1043:87bb]
+	Flags: bus master, fast devsel, latency 0, IRQ 102, IOMMU group 9
+	Memory at f7a00000 (32-bit, non-prefetchable) [size=32K]
+	Capabilities: [48] Vendor Specific Information: Len=08 <?>
+	Capabilities: [50] Power Management version 3
+	Capabilities: [64] Express Endpoint, MSI 00
+	Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [370] Transaction Processing Hints
+	Kernel driver in use: snd_hda_intel
+	Kernel modules: snd_hda_intel
+
+0c:00.0 SATA controller [0106]: Advanced Micro Devices, Inc. [AMD] FCH SATA Controller [AHCI mode] [1022:7901] (rev 51) (prog-if 01 [AHCI 1.0])
+	Subsystem: ASUSTeK Computer Inc. Device [1043:87c0]
+	Flags: bus master, fast devsel, latency 0, IRQ 45, IOMMU group 9
+	Memory at f7c00000 (32-bit, non-prefetchable) [size=2K]
+	Capabilities: [48] Vendor Specific Information: Len=08 <?>
+	Capabilities: [50] Power Management version 3
+	Capabilities: [64] Express Endpoint, MSI 00
+	Capabilities: [a0] MSI: Enable+ Count=1/16 Maskable- 64bit+
+	Capabilities: [d0] SATA HBA v1.0
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [370] Transaction Processing Hints
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+	Kernel driver in use: ahci
+
+0d:00.0 SATA controller [0106]: Advanced Micro Devices, Inc. [AMD] FCH SATA Controller [AHCI mode] [1022:7901] (rev 51) (prog-if 01 [AHCI 1.0])
+	Subsystem: ASUSTeK Computer Inc. Device [1043:87c0]
+	Flags: bus master, fast devsel, latency 0, IRQ 47, IOMMU group 9
+	Memory at f7b00000 (32-bit, non-prefetchable) [size=2K]
+	Capabilities: [48] Vendor Specific Information: Len=08 <?>
+	Capabilities: [50] Power Management version 3
+	Capabilities: [64] Express Endpoint, MSI 00
+	Capabilities: [a0] MSI: Enable+ Count=1/16 Maskable- 64bit+
+	Capabilities: [d0] SATA HBA v1.0
+	Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+	Capabilities: [270] Secondary PCI Express
+	Capabilities: [370] Transaction Processing Hints
+	Capabilities: [400] Data Link Feature <?>
+	Capabilities: [410] Physical Layer 16.0 GT/s <?>
+	Capabilities: [440] Lane Margining at the Receiver <?>
+	Kernel driver in use: ahci
+
