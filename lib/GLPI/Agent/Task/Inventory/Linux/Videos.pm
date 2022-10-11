@@ -20,6 +20,10 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
+    my $videos = $inventory->getSection('VIDEOS') || [];
+    # Assume videos was detected via pci scan
+    return if @{$videos};
+
     $logger->debug("retrieving display information:");
 
     my $ddcprobeData;

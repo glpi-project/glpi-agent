@@ -256,7 +256,7 @@ sub getPCIDevices {
     my @lines = getAllLines(%params)
         or return;
 
-    my (@controllers, $controller);
+    my (@controllers, $controller, $mem);
 
     foreach my $line (@lines) {
 
@@ -283,12 +283,16 @@ sub getPCIDevices {
         next unless defined $controller;
 
         if ($line =~ /^$/) {
+            $controller->{MEMORY} = $mem if $mem;
             push(@controllers, $controller);
             undef $controller;
+            undef $mem;
         } elsif ($line =~ /^\tKernel driver in use: (\w+)/) {
             $controller->{DRIVER} = $1;
         } elsif ($line =~ /^\tSubsystem: ?.* \[?([a-f\d]{4}:[a-f\d]{4})\]?/) {
             $controller->{PCISUBSYSTEMID} = $1;
+        } elsif ($line =~ /^\s+Memory.*\sprefetchable.*\[size=(.*)\]/) {
+            $mem += getCanonicalSize($1."B", 1024) // 0;
         }
     }
 
