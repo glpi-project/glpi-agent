@@ -7,63 +7,61 @@ use parent 'Exporter';
 use GLPI::Agent::Tools::Win32;
 
 our @EXPORT = qw(
-    getSystemUsers  getUserProfile
+    getSystemUsers
 );
 
 sub getSystemUsers {
 
     my @users;
 
-    foreach my $object (getWMIObjects(
-        moniker    => 'winmgmts:\\\\.\\root\\CIMV2',
-        class      => 'Win32_SystemUsers',
-        properties => [ qw/PartComponent/ ])
-    ) {
-        my ($name) = $object->{PartComponent} =~ /Win32_UserAccount.Name="([^"]*)"/
-            or next;
+    foreach my $profile (_getUserProfiles()) {
 
         my $query =
             "SELECT * FROM Win32_UserAccount " .
-            "WHERE Name='$name' AND Disabled='False' and Lockout='False'";
+            "WHERE Sid='$profile->{SID}' AND Disabled='False' AND Lockout='False' AND SIDType=1";
 
-        ($object) = getWMIObjects(
+        my ($object) = getWMIObjects(
             moniker    => 'winmgmts:\\\\.\\root\\CIMV2',
             query      => $query,
-            properties => [ qw/Name SID/ ]
+            properties => [ qw/Name/ ]
         );
 
         next unless $object;
 
         push @users, {
-            NAME => $object->{Name},
-            SID  => $object->{SID},
+            NAME   => $object->{Name},
+            SID    => $profile->{SID},
+            PATH   => $profile->{PATH},
+            LOADED => $profile->{LOADED},
         };
     }
 
     return @users;
 }
 
-sub getUserProfile {
-    my ($sid) = @_;
+sub _getUserProfiles {
 
-    return unless $sid;
+    my $query = "SELECT * FROM Win32_UserProfile WHERE LocalPath IS NOT NULL AND Special=FALSE";
 
-    my $query = "SELECT * FROM Win32_UserProfile WHERE SID='$sid'";
+    my @profiles;
 
-    my ($profile) = getWMIObjects(
+    foreach my $profile (getWMIObjects(
         moniker    => 'winmgmts:\\\\.\\root\\CIMV2',
         query      => $query,
-        properties => [ qw/Loaded LocalPath/ ],
-    );
+        properties => [ qw/Sid Loaded LocalPath/ ],
+    )) {
+        next unless $profile->{Sid} && defined($profile->{Loaded}) && defined($profile->{LocalPath});
 
-    return unless $profile && defined($profile->{Loaded}) && defined($profile->{LocalPath});
+        $profile->{LocalPath} =~ s{\\}{/}g;
 
-    $profile->{LocalPath} =~ s{\\}{/}g;
+        push @profiles, {
+            SID    => $profile->{Sid},
+            PATH   => $profile->{LocalPath},
+            LOADED => $profile->{Loaded} =~ /^1|true$/ ? 1 : 0
+        };
+    }
 
-    return {
-        LOADED => $profile->{Loaded} =~ /^1|true$/ ? 1 : 0,
-        PATH   => $profile->{LocalPath},
-    };
+    return @profiles;
 }
 
 1;

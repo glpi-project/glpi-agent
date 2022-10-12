@@ -9,7 +9,7 @@ use GLPI::Agent::SOAP::WsMan::Node;
 package
     PartComponent;
 
-# Used while looking for Win32_SystemUsers from GLPI::Agent::Tools::Win32::Users::getSystemUsers()
+# Required if we need to make request on Win32_SystemUsers
 
 use parent
     'Node';

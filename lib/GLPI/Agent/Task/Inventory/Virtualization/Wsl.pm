@@ -61,12 +61,9 @@ sub  _getUsersWslInstances {
     # Search users account for WSL instance
     foreach my $user (GLPI::Agent::Tools::Win32::Users::getSystemUsers()) {
 
-        my $profile = GLPI::Agent::Tools::Win32::Users::getUserProfile($user->{SID})
-            or next;
-
         my ($lxsskey, $userhive);
-        unless ($profile->{LOADED}) {
-            my $ntuserdat = $profile->{PATH}."/NTUSER.DAT";
+        unless ($user->{LOADED}) {
+            my $ntuserdat = $user->{PATH}."/NTUSER.DAT";
             # This call involves we use cleanupPrivileges before leaving
             $userhive = GLPI::Agent::Tools::Win32::loadUserHive( sid => $user->{SID}, file => $ntuserdat );
         }
@@ -79,9 +76,9 @@ sub  _getUsersWslInstances {
 
         # Support WSL2 memory/vcpu configuration
         my ($usermem, $uservcpu);
-        if (has_file($profile->{PATH}."/.wslconfig")) {
+        if (has_file($user->{PATH}."/.wslconfig")) {
             ($usermem, $uservcpu) = _parseWslConfig(
-                file    => $profile->{PATH}."/.wslconfig",
+                file    => $user->{PATH}."/.wslconfig",
                 %params
             );
         }
