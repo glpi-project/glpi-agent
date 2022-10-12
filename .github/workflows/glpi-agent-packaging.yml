@@ -37,7 +37,7 @@ jobs:
       macosx-notarization: ${{ steps.set-version.outputs.macosx-notarization }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set version
       id: set-version
       run: |
@@ -166,7 +166,7 @@ jobs:
     needs: setup-release
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Create folders for cached datas
       run: |
         mkdir C:\Strawberry-perl-for-GLPI-Agent_build\restore
@@ -310,7 +310,7 @@ jobs:
     needs: setup-release
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Restore points cache
       uses: pat-s/always-upload-cache@v2
       with:
@@ -406,7 +406,7 @@ jobs:
     needs: setup-release
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: snapcore/action-build@v1
       id: snapcraft
       env:
@@ -436,7 +436,7 @@ jobs:
     needs: setup-release
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Install build dependencies packages
       run: |
         sudo apt update
@@ -499,7 +499,7 @@ jobs:
     needs: setup-release
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Install build dependencies packages
       run: |
         sudo apt update
@@ -555,7 +555,7 @@ jobs:
     needs: [ setup-release, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging ]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: actions/download-artifact@v2
       with:
         name: RPM-Build
@@ -604,7 +604,7 @@ jobs:
     needs: [ setup-release, linux-debian-packaging ]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Install AppImage Builder
       id: install-appimage-builder
       run: |
@@ -663,7 +663,7 @@ jobs:
     needs: [ setup-release, windows-packaging, macosx-packaging, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging, linux-installer ]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Publish release
       id: publish-release
       run: |
@@ -717,7 +717,7 @@ jobs:
     needs: [ setup-release, windows-packaging, macosx-packaging, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging, linux-installer ]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         repository: ${{ github.repository_owner }}/glpi-project.github.io
         token: ${{ secrets.PUBLISHING_TOKEN }}
