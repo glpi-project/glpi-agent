@@ -14,54 +14,36 @@ sub getSystemUsers {
 
     my @users;
 
-    foreach my $profile (_getUserProfiles()) {
+    foreach my $userprofile (getWMIObjects(
+        query      => "SELECT * FROM Win32_UserProfile WHERE LocalPath IS NOT NULL AND Special=FALSE",
+        properties => [ qw/Sid Loaded LocalPath/ ],
+    )) {
+        next unless $userprofile->{Sid} && $userprofile->{Sid} =~ /^S-\d+-5-21-/;
 
-        my $query =
-            "SELECT * FROM Win32_UserAccount " .
-            "WHERE Sid='$profile->{SID}' AND Disabled='False' AND Lockout='False' AND SIDType=1";
+        next unless defined($userprofile->{Loaded}) && defined($userprofile->{LocalPath});
 
-        my ($object) = getWMIObjects(
-            moniker    => 'winmgmts:\\\\.\\root\\CIMV2',
-            query      => $query,
+        $userprofile->{LocalPath} =~ s{\\}{/}g;
+
+        my $user = {
+            SID    => $userprofile->{Sid},
+            PATH   => $userprofile->{LocalPath},
+            LOADED => $userprofile->{Loaded} =~ /^1|true$/ ? 1 : 0
+        };
+
+        my ($account) = getWMIObjects(
+            query      => "SELECT * FROM Win32_Account WHERE Sid='$userprofile->{Sid}' AND SIDType=1",
             properties => [ qw/Name/ ]
         );
+        if ($account && $account->{Name}) {
+            $user->{NAME} = $account->{Name};
+        } elsif ($user->{PATH} =~ m{/([^/]+)$}) {
+            $user->{NAME} = $1;
+        }
 
-        next unless $object;
-
-        push @users, {
-            NAME   => $object->{Name},
-            SID    => $profile->{SID},
-            PATH   => $profile->{PATH},
-            LOADED => $profile->{LOADED},
-        };
+        push @users, $user;
     }
 
     return @users;
-}
-
-sub _getUserProfiles {
-
-    my $query = "SELECT * FROM Win32_UserProfile WHERE LocalPath IS NOT NULL AND Special=FALSE";
-
-    my @profiles;
-
-    foreach my $profile (getWMIObjects(
-        moniker    => 'winmgmts:\\\\.\\root\\CIMV2',
-        query      => $query,
-        properties => [ qw/Sid Loaded LocalPath/ ],
-    )) {
-        next unless $profile->{Sid} && defined($profile->{Loaded}) && defined($profile->{LocalPath});
-
-        $profile->{LocalPath} =~ s{\\}{/}g;
-
-        push @profiles, {
-            SID    => $profile->{Sid},
-            PATH   => $profile->{LocalPath},
-            LOADED => $profile->{Loaded} =~ /^1|true$/ ? 1 : 0
-        };
-    }
-
-    return @profiles;
 }
 
 1;
