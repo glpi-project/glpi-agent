@@ -117,6 +117,11 @@ SetupOptions = "/quiet RUNNOW=1 SERVER='http://glpi.yourcompany.com/'"
 '
 Setup = "GLPI-Agent-" & SetupVersion & "-" & SetupArchitecture & ".msi"
 
+' Reconfigure
+'    Just reconfigure the current installation if installed agent has the same version
+'
+Reconfigure = "Yes"
+
 ' Repair
 '    Repair the installation when Setup is still installed.
 '
@@ -378,6 +383,15 @@ Function IsInstallationNeeded(strSetupVersion, strSetupArchitecture, strSystemAr
    End If
 End Function
 
+Function IsSelectedReconfigure()
+   If LCase(Reconfigure) <> "no" Then
+      ShowMessage("Installation reconfigure: " & SetupVersion)
+      IsSelectedReconfigure = True
+   Else
+      IsSelectedReconfigure = False
+   End If
+End Function
+
 Function IsSelectedRepair()
    If LCase(Repair) <> "no" Then
       ShowMessage("Installation repairing: " & SetupVersion)
@@ -512,6 +526,11 @@ If IsInstallationNeeded(SetupVersion, SetupArchitecture, strSystemArchitecture) 
    bInstall = True
 ElseIf IsSelectedRepair() Then
    strInstallOrRepair = "/fa"
+   bInstall = True
+ElseIf IsSelectedReconfigure() Then
+   If not hasOption("REINSTALL") Then
+      SetupOptions = SetupOptions & " REINSTALL=feat_AGENT"
+   End If
    bInstall = True
 End If
 
