@@ -52,7 +52,7 @@
 '
 
 Option Explicit
-Dim Repair, Verbose
+Dim Reconfigure, Repair, Verbose
 Dim Setup, SetupArchitecture, SetupLocation, SetupNightlyLocation, SetupOptions, SetupVersion, RunUninstallFusionInventoryAgent, UninstallOcsAgent
 
 '
