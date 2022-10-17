@@ -1,0 +1,24 @@
+Attributes queryable via host.local:0[gpu:0]:
+  NvidiaDriverVersion: 515.76
+  PCIEMaxLinkWidth: 16
+  PCIECurrentLinkWidth: 4
+  TotalDedicatedGPUMemory: 4096
+  UsedDedicatedGPUMemory: 2
+  Irq: 185
+  CUDACores: 896
+  GPUMemoryInterface: 128
+  GPUCoreTemp: 48
+  BusRate: 16
+  PCIDomain: 0
+  PCIBus: 1
+  PCIDevice: 0
+  PCIFunc: 0
+  PCIID: 4318,8093
+  PCIEGen: 4
+  GPUPowerSource: 0
+  ECCSupported: 0
+  ECCConfigurationSupported: 0
+  GpuUUID: GPU-4640c21d-ed13-51ba-5d41-1ff313225d61
+  GPUSlowdownTempThreshold: 94
+  GPUShutdownTempThreshold: 99
+Attributes queryable via host.local:0[thermalsensor:0]:

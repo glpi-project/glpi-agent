@@ -8930,6 +8930,238 @@ my %lspci_tests = (
             REV            => '01',
         },
     ],
+    'linux-asus-portable' => [        {
+            MANUFACTURER   => 'Intel Corporation 11th Gen Core Processor Host Bridge/DRAM Registers',
+            NAME           => 'Host bridge',
+            PCICLASS       => '0600',
+            PCIID          => '8086:9a14',
+            PCISLOT        => '0000:00:00.0',
+            PCISUBSYSTEMID => '1043:1a52',
+            REV            => '01',
+        },
+        {
+            DRIVER         => 'i915',
+            MANUFACTURER   => 'Intel Corporation TigerLake-LP GT2 [Iris Xe Graphics]',
+            MEMORY         => '256',
+            NAME           => 'VGA compatible controller',
+            PCICLASS       => '0300',
+            PCIID          => '8086:9a49',
+            PCISLOT        => '0000:00:02.0',
+            PCISUBSYSTEMID => '1043:189c',
+            REV            => '01',
+        },
+        {
+            DRIVER         => 'proc_thermal',
+            MANUFACTURER   => 'Intel Corporation TigerLake-LP Dynamic Tuning Processor Participant',
+            NAME           => 'Signal processing controller',
+            PCICLASS       => '1180',
+            PCIID          => '8086:9a03',
+            PCISLOT        => '0000:00:04.0',
+            PCISUBSYSTEMID => '1043:1a52',
+            REV            => '01',
+        },
+        {
+            DRIVER       => 'pcieport',
+            MANUFACTURER => 'Intel Corporation 11th Gen Core Processor PCIe Controller',
+            NAME         => 'PCI bridge',
+            PCICLASS     => '0604',
+            PCIID        => '8086:9a09',
+            PCISLOT      => '0000:00:06.0',
+            REV          => '01',
+        },
+        {
+            DRIVER       => 'pcieport',
+            MANUFACTURER => 'Intel Corporation Tiger Lake-LP Thunderbolt 4 PCI Express Root Port #0',
+            NAME         => 'PCI bridge',
+            PCICLASS     => '0604',
+            PCIID        => '8086:9a23',
+            PCISLOT      => '0000:00:07.0',
+            REV          => '01',
+        },
+        {
+            MANUFACTURER   => 'Intel Corporation GNA Scoring Accelerator module',
+            NAME           => 'System peripheral',
+            PCICLASS       => '0880',
+            PCIID          => '8086:9a11',
+            PCISLOT        => '0000:00:08.0',
+            PCISUBSYSTEMID => '1043:1a52',
+            REV            => '01',
+        },
+        {
+            DRIVER       => 'intel_vsec',
+            MANUFACTURER => 'Intel Corporation Tigerlake Telemetry Aggregator Driver',
+            NAME         => 'Signal processing controller',
+            PCICLASS     => '1180',
+            PCIID        => '8086:9a0d',
+            PCISLOT      => '0000:00:0a.0',
+            REV          => '01',
+        },
+        {
+            DRIVER       => 'xhci_hcd',
+            MANUFACTURER => 'Intel Corporation Tiger Lake-LP Thunderbolt 4 USB Controller',
+            NAME         => 'USB controller',
+            PCICLASS     => '0c03',
+            PCIID        => '8086:9a13',
+            PCISLOT      => '0000:00:0d.0',
+            REV          => '01',
+        },
+        {
+            DRIVER         => 'thunderbolt',
+            MANUFACTURER   => 'Intel Corporation Tiger Lake-LP Thunderbolt 4 NHI #0',
+            NAME           => 'USB controller',
+            PCICLASS       => '0c03',
+            PCIID          => '8086:9a1b',
+            PCISLOT        => '0000:00:0d.2',
+            PCISUBSYSTEMID => '2222:1111',
+            REV            => '01',
+        },
+        {
+            DRIVER         => 'vmd',
+            MANUFACTURER   => 'Intel Corporation Volume Management Device NVMe RAID Controller',
+            NAME           => 'RAID bus controller',
+            PCICLASS       => '0104',
+            PCIID          => '8086:9a0b',
+            PCISLOT        => '0000:00:0e.0',
+            PCISUBSYSTEMID => '8086:0000',
+            REV            => undef
+        },
+        {
+            DRIVER         => 'xhci_hcd',
+            MANUFACTURER   => 'Intel Corporation Tiger Lake-LP USB 3.2 Gen 2x1 xHCI Host Controller',
+            NAME           => 'USB controller',
+            PCICLASS       => '0c03',
+            PCIID          => '8086:a0ed',
+            PCISLOT        => '0000:00:14.0',
+            PCISUBSYSTEMID => '1043:201f',
+            REV            => '20',
+        },
+        {
+            MANUFACTURER   => 'Intel Corporation Tiger Lake-LP Shared SRAM',
+            NAME           => 'RAM memory',
+            PCICLASS       => '0500',
+            PCIID          => '8086:a0ef',
+            PCISLOT        => '0000:00:14.2',
+            PCISUBSYSTEMID => '1043:1a52',
+            REV            => '20',
+        },
+        {
+            DRIVER         => 'iwlwifi',
+            MANUFACTURER   => 'Intel Corporation Wi-Fi 6 AX201',
+            NAME           => 'Network controller',
+            PCICLASS       => '0280',
+            PCIID          => '8086:a0f0',
+            PCISLOT        => '0000:00:14.3',
+            PCISUBSYSTEMID => '8086:0074',
+            REV            => '20',
+        },
+        {
+            DRIVER         => 'intel',
+            MANUFACTURER   => 'Intel Corporation Tiger Lake-LP Serial IO I2C Controller #0',
+            NAME           => 'Serial bus controller',
+            PCICLASS       => '0c80',
+            PCIID          => '8086:a0e8',
+            PCISLOT        => '0000:00:15.0',
+            PCISUBSYSTEMID => '1043:1a52',
+            REV            => '20',
+        },
+        {
+            DRIVER         => 'intel',
+            MANUFACTURER   => 'Intel Corporation Tiger Lake-LP Serial IO I2C Controller #1',
+            NAME           => 'Serial bus controller',
+            PCICLASS       => '0c80',
+            PCIID          => '8086:a0e9',
+            PCISLOT        => '0000:00:15.1',
+            PCISUBSYSTEMID => '1043:1a52',
+            REV            => '20',
+        },
+        {
+            DRIVER         => 'mei_me',
+            MANUFACTURER   => 'Intel Corporation Tiger Lake-LP Management Engine Interface',
+            NAME           => 'Communication controller',
+            PCICLASS       => '0780',
+            PCIID          => '8086:a0e0',
+            PCISLOT        => '0000:00:16.0',
+            PCISUBSYSTEMID => '1043:1a52',
+            REV            => '20',
+        },
+        {
+            MANUFACTURER   => 'Intel Corporation RST VMD Managed Controller',
+            NAME           => 'System peripheral',
+            PCICLASS       => '0880',
+            PCIID          => '8086:09ab',
+            PCISLOT        => '0000:00:1d.0',
+            PCISUBSYSTEMID => '1043:1a52',
+            REV            => undef
+        },
+        {
+            MANUFACTURER   => 'Intel Corporation Tiger Lake-LP LPC Controller',
+            NAME           => 'ISA bridge',
+            PCICLASS       => '0601',
+            PCIID          => '8086:a082',
+            PCISLOT        => '0000:00:1f.0',
+            PCISUBSYSTEMID => '1043:1a52',
+            REV            => '20',
+        },
+        {
+            DRIVER         => 'snd_hda_intel',
+            MANUFACTURER   => 'Intel Corporation Tiger Lake-LP Smart Sound Technology Audio Controller',
+            NAME           => 'Audio device',
+            PCICLASS       => '0403',
+            PCIID          => '8086:a0c8',
+            PCISLOT        => '0000:00:1f.3',
+            PCISUBSYSTEMID => '1043:1a52',
+            REV            => '20',
+        },
+        {
+            DRIVER         => 'i801_smbus',
+            MANUFACTURER   => 'Intel Corporation Tiger Lake-LP SMBus Controller',
+            NAME           => 'SMBus',
+            PCICLASS       => '0c05',
+            PCIID          => '8086:a0a3',
+            PCISLOT        => '0000:00:1f.4',
+            PCISUBSYSTEMID => '1043:1a52',
+            REV            => '20',
+        },
+        {
+            MANUFACTURER   => 'Intel Corporation Tiger Lake-LP SPI Controller',
+            NAME           => 'Serial bus controller',
+            PCICLASS       => '0c80',
+            PCIID          => '8086:a0a4',
+            PCISLOT        => '0000:00:1f.5',
+            PCISUBSYSTEMID => '1043:1a52',
+            REV            => '20',
+        },
+        {
+            DRIVER         => 'nvidia',
+            MANUFACTURER   => 'NVIDIA Corporation TU117M [GeForce GTX 1650 Mobile / Max-Q]',
+            MEMORY         => '288',
+            NAME           => '3D controller',
+            PCICLASS       => '0302',
+            PCIID          => '10de:1f9d',
+            PCISLOT        => '0000:01:00.0',
+            PCISUBSYSTEMID => '1043:189c',
+            REV            => undef
+        },
+        {
+            DRIVER       => 'pcieport',
+            MANUFACTURER => 'Intel Corporation Tiger Lake-LP PCI Express Root Port #9',
+            NAME         => 'PCI bridge',
+            PCICLASS     => '0604',
+            PCIID        => '8086:a0b0',
+            PCISLOT      => '10000:e0:1d.0',
+            REV          => '20',
+        },
+        {
+            DRIVER         => 'nvme',
+            MANUFACTURER   => 'Intel Corporation Device',
+            NAME           => 'Non-Volatile memory controller',
+            PCICLASS       => '0108',
+            PCIID          => '8086:f1aa',
+            PCISLOT        => '10000:e1:00.0',
+            PCISUBSYSTEMID => '8086:390f',
+            REV            => '03',
+        },
+    ],
 );
 
 my %hdparm_tests = (
@@ -8980,6 +9212,7 @@ foreach my $test (keys %cpu_tests) {
 foreach my $test (keys %lspci_tests) {
     my $file = "resources/generic/lspci/$test";
     my @devices = getPCIDevices(file => $file);
+    #~ print STDERR _dumpLspci($test, @devices) if $test eq 'linux-asus-portable';
     cmp_deeply(\@devices, $lspci_tests{$test}, "$test lspci parsing");
 }
 
@@ -8995,4 +9228,24 @@ foreach my $test (keys %edid_vendor_tests) {
         $edid_vendor_tests{$test},
         "edid vendor identification: $test"
     );
+}
+
+# Use it to format new lspci test entry
+sub _dumpLspci {
+    my $name = shift @_;
+    print STDERR "\n    '$name' => [\n";
+    foreach my $device (@_) {
+        print STDERR "        {\n";
+        my ($len) = sort { $b <=> $a } map { length($_) } keys(%{$device});
+        foreach my $key (sort(keys(%{$device}))) {
+            print STDERR sprintf("            %-".$len."s => ", $key);
+            if (defined($device->{$key})) {
+                print STDERR "'$device->{$key}',\n";
+            } else {
+                print STDERR "undef\n";
+            }
+        }
+        print STDERR "        },\n";
+    }
+    print STDERR "    ],\n";
 }

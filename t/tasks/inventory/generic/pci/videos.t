@@ -66,6 +66,22 @@ my %tests = (
             PCISLOT     => '00:02.0',
             RESOLUTION  => '1680x1050',
         }
+    ],
+    'linux-asus-portable' => [
+        {
+            CHIPSET     => 'Intel Corporation TigerLake-LP GT2',
+            NAME        => 'ASUSTeK Computer Inc. Iris Xe Graphics',
+            MEMORY      => '256',
+            PCIID       => '8086:9a49',
+            PCISLOT     => '0000:00:02.0',
+        },
+        {
+            CHIPSET     => 'NVIDIA Corporation TU117M',
+            NAME        => 'ASUSTeK Computer Inc. GeForce GTX 1650 Mobile / Max-Q',
+            MEMORY      => '288',
+            PCIID       => '10de:1f9d',
+            PCISLOT     => '0000:01:00.0',
+        }
     ]
 );
 
