@@ -1,0 +1,187 @@
+0000:00:00.0 Host bridge [0600]: Intel Corporation 11th Gen Core Processor Host Bridge/DRAM Registers [8086:9a14] (rev 01)
+	Subsystem: ASUSTeK Computer Inc. Device [1043:1a52]
+	Flags: bus master, fast devsel, latency 0, IOMMU group 0
+	Capabilities: <access denied>
+	Kernel modules: igen6_edac
+
+0000:00:02.0 VGA compatible controller [0300]: Intel Corporation TigerLake-LP GT2 [Iris Xe Graphics] [8086:9a49] (rev 01) (prog-if 00 [VGA controller])
+	DeviceName: VGA
+	Subsystem: ASUSTeK Computer Inc. Device [1043:189c]
+	Flags: bus master, fast devsel, latency 0, IRQ 156, IOMMU group 1
+	Memory at 6034000000 (64-bit, non-prefetchable) [size=16M]
+	Memory at 4000000000 (64-bit, prefetchable) [size=256M]
+	I/O ports at 4000 [size=64]
+	Expansion ROM at 000c0000 [virtual] [disabled] [size=128K]
+	Capabilities: <access denied>
+	Kernel driver in use: i915
+	Kernel modules: i915
+
+0000:00:04.0 Signal processing controller [1180]: Intel Corporation TigerLake-LP Dynamic Tuning Processor Participant [8086:9a03] (rev 01)
+	Subsystem: ASUSTeK Computer Inc. Device [1043:1a52]
+	Flags: fast devsel, IRQ 16, IOMMU group 2
+	Memory at 6035240000 (64-bit, non-prefetchable) [size=128K]
+	Capabilities: <access denied>
+	Kernel driver in use: proc_thermal
+	Kernel modules: processor_thermal_device_pci_legacy
+
+0000:00:06.0 PCI bridge [0604]: Intel Corporation 11th Gen Core Processor PCIe Controller [8086:9a09] (rev 01) (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 123, IOMMU group 3
+	Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+	I/O behind bridge: 00003000-00003fff [size=4K]
+	Memory behind bridge: 85000000-860fffff [size=17M]
+	Prefetchable memory behind bridge: 0000006020000000-0000006031ffffff [size=288M]
+	Capabilities: <access denied>
+	Kernel driver in use: pcieport
+
+0000:00:07.0 PCI bridge [0604]: Intel Corporation Tiger Lake-LP Thunderbolt 4 PCI Express Root Port #0 [8086:9a23] (rev 01) (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 124, IOMMU group 4
+	Bus: primary=00, secondary=02, subordinate=2c, sec-latency=0
+	I/O behind bridge: 00005000-00005fff [size=4K]
+	Memory behind bridge: 78000000-841fffff [size=194M]
+	Prefetchable memory behind bridge: 0000006000000000-000000601bffffff [size=448M]
+	Capabilities: <access denied>
+	Kernel driver in use: pcieport
+
+0000:00:08.0 System peripheral [0880]: Intel Corporation GNA Scoring Accelerator module [8086:9a11] (rev 01)
+	Subsystem: ASUSTeK Computer Inc. Device [1043:1a52]
+	Flags: fast devsel, IRQ 255, IOMMU group 5
+	Memory at 603529a000 (64-bit, non-prefetchable) [disabled] [size=4K]
+	Capabilities: <access denied>
+
+0000:00:0a.0 Signal processing controller [1180]: Intel Corporation Tigerlake Telemetry Aggregator Driver [8086:9a0d] (rev 01)
+	Flags: fast devsel, IOMMU group 6
+	Memory at 6035280000 (64-bit, non-prefetchable) [size=32K]
+	Capabilities: <access denied>
+	Kernel driver in use: intel_vsec
+	Kernel modules: intel_vsec
+
+0000:00:0d.0 USB controller [0c03]: Intel Corporation Tiger Lake-LP Thunderbolt 4 USB Controller [8086:9a13] (rev 01) (prog-if 30 [XHCI])
+	Flags: bus master, medium devsel, latency 0, IRQ 125, IOMMU group 7
+	Memory at 6035270000 (64-bit, non-prefetchable) [size=64K]
+	Capabilities: <access denied>
+	Kernel driver in use: xhci_hcd
+
+0000:00:0d.2 USB controller [0c03]: Intel Corporation Tiger Lake-LP Thunderbolt 4 NHI #0 [8086:9a1b] (rev 01) (prog-if 40 [USB4 Host Interface])
+	Subsystem: Device [2222:1111]
+	Flags: bus master, fast devsel, latency 0, IRQ 16, IOMMU group 7
+	Memory at 6035200000 (64-bit, non-prefetchable) [size=256K]
+	Memory at 6035299000 (64-bit, non-prefetchable) [size=4K]
+	Capabilities: <access denied>
+	Kernel driver in use: thunderbolt
+	Kernel modules: thunderbolt
+
+0000:00:0e.0 RAID bus controller [0104]: Intel Corporation Volume Management Device NVMe RAID Controller [8086:9a0b]
+	Subsystem: Intel Corporation Device [8086:0000]
+	Flags: bus master, fast devsel, latency 0, IOMMU group 8
+	Memory at 6032000000 (64-bit, non-prefetchable) [size=32M]
+	Memory at 76000000 (32-bit, non-prefetchable) [size=32M]
+	Memory at 6035100000 (64-bit, non-prefetchable) [size=1M]
+	Capabilities: <access denied>
+	Kernel driver in use: vmd
+	Kernel modules: vmd
+
+0000:00:14.0 USB controller [0c03]: Intel Corporation Tiger Lake-LP USB 3.2 Gen 2x1 xHCI Host Controller [8086:a0ed] (rev 20) (prog-if 30 [XHCI])
+	Subsystem: ASUSTeK Computer Inc. Device [1043:201f]
+	Flags: medium devsel, IRQ 126, IOMMU group 9
+	Memory at 6035260000 (64-bit, non-prefetchable) [size=64K]
+	Capabilities: <access denied>
+	Kernel driver in use: xhci_hcd
+
+0000:00:14.2 RAM memory [0500]: Intel Corporation Tiger Lake-LP Shared SRAM [8086:a0ef] (rev 20)
+	Subsystem: ASUSTeK Computer Inc. Device [1043:1a52]
+	Flags: fast devsel, IOMMU group 9
+	Memory at 6035290000 (64-bit, non-prefetchable) [disabled] [size=16K]
+	Memory at 6035298000 (64-bit, non-prefetchable) [disabled] [size=4K]
+	Capabilities: <access denied>
+
+0000:00:14.3 Network controller [0280]: Intel Corporation Wi-Fi 6 AX201 [8086:a0f0] (rev 20)
+	DeviceName: WLAN
+	Subsystem: Intel Corporation Device [8086:0074]
+	Flags: bus master, fast devsel, latency 0, IRQ 19, IOMMU group 10
+	Memory at 603528c000 (64-bit, non-prefetchable) [size=16K]
+	Capabilities: <access denied>
+	Kernel driver in use: iwlwifi
+	Kernel modules: iwlwifi
+
+0000:00:15.0 Serial bus controller [0c80]: Intel Corporation Tiger Lake-LP Serial IO I2C Controller #0 [8086:a0e8] (rev 20)
+	Subsystem: ASUSTeK Computer Inc. Device [1043:1a52]
+	Flags: bus master, fast devsel, latency 0, IRQ 27, IOMMU group 11
+	Memory at 4017000000 (64-bit, non-prefetchable) [size=4K]
+	Capabilities: <access denied>
+	Kernel driver in use: intel-lpss
+
+0000:00:15.1 Serial bus controller [0c80]: Intel Corporation Tiger Lake-LP Serial IO I2C Controller #1 [8086:a0e9] (rev 20)
+	Subsystem: ASUSTeK Computer Inc. Device [1043:1a52]
+	Flags: bus master, fast devsel, latency 0, IRQ 40, IOMMU group 11
+	Memory at 4017001000 (64-bit, non-prefetchable) [virtual] [size=4K]
+	Capabilities: <access denied>
+	Kernel driver in use: intel-lpss
+
+0000:00:16.0 Communication controller [0780]: Intel Corporation Tiger Lake-LP Management Engine Interface [8086:a0e0] (rev 20)
+	Subsystem: ASUSTeK Computer Inc. Device [1043:1a52]
+	Flags: bus master, fast devsel, latency 0, IRQ 183, IOMMU group 12
+	Memory at 6035295000 (64-bit, non-prefetchable) [size=4K]
+	Capabilities: <access denied>
+	Kernel driver in use: mei_me
+	Kernel modules: mei_me
+
+0000:00:1d.0 System peripheral [0880]: Intel Corporation RST VMD Managed Controller [8086:09ab]
+	Subsystem: ASUSTeK Computer Inc. Device [1043:1a52]
+	Flags: fast devsel, IOMMU group 13
+
+0000:00:1f.0 ISA bridge [0601]: Intel Corporation Tiger Lake-LP LPC Controller [8086:a082] (rev 20)
+	Subsystem: ASUSTeK Computer Inc. Device [1043:1a52]
+	Flags: bus master, fast devsel, latency 0, IOMMU group 14
+
+0000:00:1f.3 Audio device [0403]: Intel Corporation Tiger Lake-LP Smart Sound Technology Audio Controller [8086:a0c8] (rev 20) (prog-if 80)
+	Subsystem: ASUSTeK Computer Inc. Device [1043:1a52]
+	Flags: bus master, fast devsel, latency 32, IRQ 184, IOMMU group 14
+	Memory at 6035288000 (64-bit, non-prefetchable) [size=16K]
+	Memory at 6035000000 (64-bit, non-prefetchable) [size=1M]
+	Capabilities: <access denied>
+	Kernel driver in use: snd_hda_intel
+	Kernel modules: snd_hda_intel, snd_sof_pci_intel_tgl
+
+0000:00:1f.4 SMBus [0c05]: Intel Corporation Tiger Lake-LP SMBus Controller [8086:a0a3] (rev 20)
+	Subsystem: ASUSTeK Computer Inc. Device [1043:1a52]
+	Flags: medium devsel, IRQ 16, IOMMU group 14
+	Memory at 6035294000 (64-bit, non-prefetchable) [size=256]
+	I/O ports at efa0 [size=32]
+	Kernel driver in use: i801_smbus
+	Kernel modules: i2c_i801
+
+0000:00:1f.5 Serial bus controller [0c80]: Intel Corporation Tiger Lake-LP SPI Controller [8086:a0a4] (rev 20)
+	Subsystem: ASUSTeK Computer Inc. Device [1043:1a52]
+	Flags: fast devsel, IOMMU group 14
+	Memory at 74800000 (32-bit, non-prefetchable) [size=4K]
+
+0000:01:00.0 3D controller [0302]: NVIDIA Corporation TU117M [GeForce GTX 1650 Mobile / Max-Q] [10de:1f9d] (rev a1)
+	DeviceName: Second VGA
+	Subsystem: ASUSTeK Computer Inc. Device [1043:189c]
+	Flags: bus master, fast devsel, latency 0, IRQ 185, IOMMU group 15
+	Memory at 85000000 (32-bit, non-prefetchable) [size=16M]
+	Memory at 6020000000 (64-bit, prefetchable) [size=256M]
+	Memory at 6030000000 (64-bit, prefetchable) [size=32M]
+	I/O ports at 3000 [size=128]
+	Expansion ROM at 86000000 [virtual] [disabled] [size=512K]
+	Capabilities: <access denied>
+	Kernel driver in use: nvidia
+	Kernel modules: nouveau, nvidia_drm, nvidia
+
+10000:e0:1d.0 PCI bridge [0604]: Intel Corporation Tiger Lake-LP PCI Express Root Port #9 [8086:a0b0] (rev 20) (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0, IRQ 146, IOMMU group 8
+	Bus: primary=00, secondary=e1, subordinate=e1, sec-latency=0
+	I/O behind bridge: [disabled]
+	Memory behind bridge: 76000000-761fffff [size=2M]
+	Prefetchable memory behind bridge: [disabled]
+	Capabilities: <access denied>
+	Kernel driver in use: pcieport
+
+10000:e1:00.0 Non-Volatile memory controller [0108]: Intel Corporation Device [8086:f1aa] (rev 03) (prog-if 02 [NVM Express])
+	Subsystem: Intel Corporation Device [8086:390f]
+	Flags: bus master, fast devsel, latency 0, IRQ -2147483648, NUMA node 0, IOMMU group 8
+	Memory at 76000000 (64-bit, non-prefetchable) [size=16K]
+	Capabilities: <access denied>
+	Kernel driver in use: nvme
+	Kernel modules: nvme
+

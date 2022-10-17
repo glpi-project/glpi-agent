@@ -25,6 +25,15 @@ my %tests = (
             RESOLUTION  => '1920x1080',
         }
     ],
+    'linux-asus-portable' => [
+        {
+            CHIPSET     => 'NVIDIA Corporation TU117M',
+            NAME        => 'NVIDIA Corporation GeForce GTX 1650 Mobile / Max-Q',
+            MEMORY      => '4096',
+            PCIID       => '10de:1f9d',
+            PCISLOT     => '01:00.0',
+        },
+    ],
 );
 
 my %merged = (
@@ -46,6 +55,40 @@ my %merged = (
                 PCIID       => '10de:1f06',
                 PCISLOT     => '09:00.0',
                 RESOLUTION  => '1920x1080',
+            }
+        ],
+    },
+    'linux-asus-portable' => {
+        origin => [
+            {
+                CHIPSET     => 'Intel Corporation TigerLake-LP GT2',
+                NAME        => 'ASUSTeK Computer Inc. Iris Xe Graphics',
+                MEMORY      => '256',
+                PCIID       => '8086:9a49',
+                PCISLOT     => '0000:00:02.0',
+            },
+            {
+                CHIPSET     => 'NVIDIA Corporation TU117M',
+                NAME        => 'ASUSTeK Computer Inc. GeForce GTX 1650 Mobile / Max-Q',
+                MEMORY      => '288',
+                PCIID       => '10de:1f9d',
+                PCISLOT     => '0000:01:00.0',
+            }
+        ],
+        merged => [
+            {
+                CHIPSET     => 'Intel Corporation TigerLake-LP GT2',
+                NAME        => 'ASUSTeK Computer Inc. Iris Xe Graphics',
+                MEMORY      => '256',
+                PCIID       => '8086:9a49',
+                PCISLOT     => '0000:00:02.0',
+            },
+            {
+                CHIPSET     => 'NVIDIA Corporation TU117M',
+                NAME        => 'ASUSTeK Computer Inc. GeForce GTX 1650 Mobile / Max-Q',
+                MEMORY      => '4096',
+                PCIID       => '10de:1f9d',
+                PCISLOT     => '0000:01:00.0',
             }
         ],
     },
