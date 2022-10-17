@@ -26,8 +26,7 @@ sub doInventory {
     my $videos = $inventory->getSection('VIDEOS') || [];
 
     foreach my $video (_getNvidiaVideos(logger => $logger)) {
-        my $pcislot = $video->{PCISLOT} // '';
-        my ($current) = grep { $_->{PCISLOT} && $_->{PCISLOT} eq $pcislot } @{$videos};
+        my ($current) = grep { _samePciSlot($_->{PCISLOT}, $video->{PCISLOT} // '') } @{$videos};
         if ($current) {
             $current->{NAME} = $video->{NAME} unless $current->{NAME} || !$video->{NAME};
             $current->{MEMORY} = $video->{MEMORY} if $video->{MEMORY};
@@ -42,14 +41,30 @@ sub doInventory {
     }
 }
 
+my $pcislot_re = qr/^(?:([0-9a-f]+):)?([0-9a-f]{2}):([0-9a-f]{2})\.([0-9a-f]+)$/i;
+sub _samePciSlot {
+    my ($first, $second) = @_;
+
+    my @first  = $first  =~ $pcislot_re;
+    my @second = $second =~ $pcislot_re;
+
+    return hex($first[0] // 0) == hex($second[0] // 0)
+        && hex($first[1]) == hex($second[1])
+        && hex($first[2]) == hex($second[2])
+        && hex($first[3]) == hex($second[3]) ? 1 : 0;
+}
+
 sub _updatePci {
     my ($hash) = @_;
 
+    my $dom  = delete $hash->{PCIDOMAIN};
     my $bus  = delete $hash->{PCIBUS};
     my $dev  = delete $hash->{PCIDEVICE};
     my $func = delete $hash->{PCIFUNC};
     $hash->{PCISLOT} = sprintf("%02x:%02x.%x", $bus, $dev, $func)
         if defined($bus) && defined($dev) && defined($func);
+    $hash->{PCISLOT} = sprintf("%04x:%s", $dom, $hash->{PCISLOT})
+        if $dom;
 
     return $hash;
 }
@@ -106,6 +121,8 @@ sub _getNvidiaVideos {
 
             if ($line =~ /^\s+TotalDedicatedGPUMemory:\s+(\d+)/) {
                 $video->{MEMORY} = $1;
+            } elsif ($line =~ /^\s+PCIDomain:\s+(\d+)/) {
+                $video->{PCIDOMAIN} = $1;
             } elsif ($line =~ /^\s+PCIBus:\s+(\d+)/) {
                 $video->{PCIBUS} = $1;
             } elsif ($line =~ /^\s+PCIDevice:\s+(\d+)/) {
