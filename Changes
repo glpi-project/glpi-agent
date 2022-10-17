@@ -9,6 +9,7 @@ core:
 * Refactoring of inventory output to share same API between glpi-agent, glpi-inventory and
   glpi-esx
 * Introduce GLPI::Agent::XML API based on XML::LibXML to get rid of deprecated XML::TreePP
+* fix #242: Fix ca-cert-dir can't be used on win32 & macosx since v1.3
 
 inventory:
 * check if we are running in a container before checking we are running in a virtualmachine

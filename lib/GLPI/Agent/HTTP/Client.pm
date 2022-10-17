@@ -278,7 +278,10 @@ sub _setSSLOptions {
         }
 
         # Support keychain on Darwin and keystore on MSWin32
-        my $SSL_ca = $self->_KeyChain_or_KeyStore_Export();
+        # But not if ca-cert-dir option is used
+        my $SSL_ca;
+        $SSL_ca = $self->_KeyChain_or_KeyStore_Export()
+            unless $self->{ca_cert_dir};
 
         if ($LWP::VERSION >= 6) {
             $self->{ua}->ssl_opts(SSL_ca_file => $self->{ca_cert_file})
