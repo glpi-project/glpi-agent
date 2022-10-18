@@ -459,6 +459,8 @@ foreach my $file (sort @xml_files) {
             }
         }
         my $content = getAllLines(file => $file);
+        # Cleanup BOM if set
+        $content =~ s/^\xEF\xBB\xBF//;
         lives_ok {
             $xmltpp = _normalize_xmltreepp($tpp->parse(decode("UTF-8", $content)));
         } "<$file> xml file parsing with XML::TreePP";
