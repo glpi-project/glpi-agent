@@ -53,7 +53,27 @@ my %tests = (
             VOLTAGE      => 10800,
         }
     ],
-    'windows-hyperV' => undef
+    'windows-hyperV' => undef,
+    'windows-10-notebook' => [
+        {
+            NAME         => '00HW023',
+            SERIAL       => '541',
+            DATE         => '24/05/2018',
+            MANUFACTURER => 'SMP',
+            CHEMISTRY    => 'LiP',
+            VOLTAGE      => 11400,
+            CAPACITY     => 23540,
+        },
+        {
+            NAME         => '01AV406',
+            SERIAL       => '3319',
+            DATE         => '02/06/2018',
+            MANUFACTURER => 'SMP',
+            CHEMISTRY    => 'LiP',
+            VOLTAGE      => 11460,
+            CAPACITY     => 26060,
+        }
+    ],
 );
 
 plan tests =>
@@ -65,6 +85,7 @@ my $inventory = GLPI::Test::Inventory->new();
 
 foreach my $test (keys %tests) {
     my $file = "resources/generic/dmidecode/$test";
+    $file = "resources/generic/dmidecode/batteries/$test" unless -e $file;
     my @batteries = GLPI::Agent::Task::Inventory::Generic::Dmidecode::Battery::_getBatteries(file => $file);
     cmp_deeply(\@batteries, $tests{$test} || [], "$test: parsing");
     next unless @batteries;

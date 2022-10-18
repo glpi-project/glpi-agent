@@ -1,0 +1,30 @@
+SMBIOS 3.0 present.
+
+Handle 0x0023, DMI type 22, 26 bytes
+Portable Battery
+	Location: Front
+	Manufacturer: SMP
+	Name: 00HW023
+	Design Capacity: 23540 mWh
+	Design Voltage: 11400 mV
+	SBDS Version: 03.01
+	Maximum Error: Unknown
+	SBDS Serial Number: 021D
+	SBDS Manufacture Date: 2018-05-24
+	SBDS Chemistry: LiP
+	OEM-specific Information: 0x00000000
+
+Handle 0x0024, DMI type 22, 26 bytes
+Portable Battery
+	Location: Rear
+	Manufacturer: SMP
+	Name: 01AV406
+	Design Capacity: 26060 mWh
+	Design Voltage: 11460 mV
+	SBDS Version: 03.01
+	Maximum Error: Unknown
+	SBDS Serial Number: 0CF7
+	SBDS Manufacture Date: 2018-06-02
+	SBDS Chemistry: LiP
+	OEM-specific Information: 0x00000000
+

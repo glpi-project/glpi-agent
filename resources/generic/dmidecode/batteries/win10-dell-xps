@@ -1,0 +1,17 @@
+# dmidecode 3.3-update-1
+SMBIOS 2.8 present.
+
+Handle 0x1600, DMI type 22, 26 bytes
+Portable Battery
+	Location: Sys. Battery Bay
+	Manufacturer: SMP
+	Manufacture Date: 09/15/2017
+	Serial Number: 0A75
+	Name: DELL JHXPY53
+	Design Capacity: 57530 mWh
+	Design Voltage: 7600 mV
+	SBDS Version: 1.0
+	Maximum Error: 100%
+	SBDS Chemistry: LiP
+	OEM-specific Information: 0x00000801
+
