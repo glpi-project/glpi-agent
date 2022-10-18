@@ -31,6 +31,7 @@ inventory:
 * MacOS: Don't detect usb tablet as storage
 * MacOS: Support cd-rom reader inventory as storage
 * Update system users detection for WSL inventory on win32
+* fix #240: Update battery inventory on win32
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
