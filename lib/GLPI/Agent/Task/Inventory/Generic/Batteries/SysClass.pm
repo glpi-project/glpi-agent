@@ -8,7 +8,7 @@ use parent 'GLPI::Agent::Task::Inventory::Module';
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Batteries;
 
-# Run after virtualization to decide if found component is virtual
+# Define some kind of priority so we can update batteries inventory
 our $runAfterIfEnabled = [ qw(
     GLPI::Agent::Task::Inventory::Generic::Dmidecode::Battery
     GLPI::Agent::Task::Inventory::Generic::Batteries::Acpiconf

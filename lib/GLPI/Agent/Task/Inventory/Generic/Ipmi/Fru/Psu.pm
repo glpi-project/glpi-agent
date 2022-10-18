@@ -11,7 +11,7 @@ use GLPI::Agent::Tools::PowerSupplies;
 
 use constant    category    => "psu";
 
-# Run after virtualization to decide if found component is virtual
+# Define a priority so we can update powersupplies inventory
 our $runAfterIfEnabled = [ qw(
     GLPI::Agent::Task::Inventory::Generic::Dmidecode::Psu
 )];
