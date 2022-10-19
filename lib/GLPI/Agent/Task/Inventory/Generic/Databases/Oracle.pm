@@ -95,9 +95,19 @@ sub _setEnv {
         }
     }
 
+    # Find ORACLE_BASE for latest Oracle versions
+    my $oraclebase;
+    if (has_file("$home/install/orabasetab")) {
+        ($oraclebase) = getFirstMatch(
+            file    => "$home/install/orabasetab",
+            pattern => qr/^$home:([^:]+):/
+        );
+    }
+
     # Setup environment for sqlplus
     $ENV{ORACLE_SID}  = $sid if $sid;
     $ENV{ORACLE_HOME} = $home;
+    $ENV{ORACLE_BASE} = $oraclebase if $oraclebase;
     $ENV{LD_LIBRARY_PATH} = join(":", map { $home.$_ } "", "/lib", "/network/lib");
 }
 
@@ -124,7 +134,7 @@ sub _getDatabaseService {
     unless ($params{istest}) {
         my $oracle_home = _oracleHome();
         if ($oracle_home && @{$oracle_home}) {
-            map { $reset_ENV{$_} = $ENV{$_} } qw/ORACLE_HOME ORACLE_SID LD_LIBRARY_PATH/;
+            map { $reset_ENV{$_} = $ENV{$_} } qw/ORACLE_HOME ORACLE_BASE ORACLE_SID LD_LIBRARY_PATH/;
             foreach my $home (@{$oracle_home}) {
                 next unless -d $home;
                 my ($sqlplus_path) = first { ! -d "$_/sqlplus" && canRun("$_/sqlplus") } $home, $home."/bin";
@@ -361,7 +371,7 @@ sub _runSql {
                 $user = $asm_pmon->{USER} if $asm_pmon;
                 $env = "ORACLE_SID=$ENV{ORACLE_SID}";
             }
-            foreach my $key (qw(ORACLE_HOME LD_LIBRARY_PATH)) {
+            foreach my $key (qw(ORACLE_HOME ORACLE_BASE LD_LIBRARY_PATH)) {
                 next unless $ENV{$key};
                 $env .= " " if $env;
                 $env .= "$key='$ENV{$key}'";

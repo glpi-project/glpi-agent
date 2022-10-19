@@ -32,6 +32,7 @@ inventory:
 * MacOS: Support cd-rom reader inventory as storage
 * Update system users detection for WSL inventory on win32
 * fix #240: Update battery inventory on win32
+* Use ORACLE_BASE environment so Oracle database inventory supports latest versions
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
