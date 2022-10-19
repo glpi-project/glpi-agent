@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use parent 'Exporter';
 
+use Encode qw(encode);
+
 use GLPI::Agent::Tools::Win32;
 
 our @EXPORT = qw(
@@ -23,6 +25,7 @@ sub getSystemUserProfiles {
         next unless defined($userprofile->{Loaded}) && defined($userprofile->{LocalPath});
 
         $userprofile->{LocalPath} =~ s{\\}{/}g;
+        $userprofile->{LocalPath} = encode(getLocalCodepage(), $userprofile->{LocalPath});
 
         push @profiles, {
             SID    => $userprofile->{Sid},
