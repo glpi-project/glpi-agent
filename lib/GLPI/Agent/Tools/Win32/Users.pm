@@ -7,12 +7,12 @@ use parent 'Exporter';
 use GLPI::Agent::Tools::Win32;
 
 our @EXPORT = qw(
-    getSystemUsers
+    getSystemUserProfiles
 );
 
-sub getSystemUsers {
+sub getSystemUserProfiles {
 
-    my @users;
+    my @profiles;
 
     foreach my $userprofile (getWMIObjects(
         query      => "SELECT * FROM Win32_UserProfile WHERE LocalPath IS NOT NULL AND Special=FALSE",
@@ -24,26 +24,14 @@ sub getSystemUsers {
 
         $userprofile->{LocalPath} =~ s{\\}{/}g;
 
-        my $user = {
+        push @profiles, {
             SID    => $userprofile->{Sid},
             PATH   => $userprofile->{LocalPath},
             LOADED => $userprofile->{Loaded} =~ /^1|true$/ ? 1 : 0
         };
-
-        my ($account) = getWMIObjects(
-            query      => "SELECT * FROM Win32_Account WHERE Sid='$userprofile->{Sid}' AND SIDType=1",
-            properties => [ qw/Name/ ]
-        );
-        if ($account && $account->{Name}) {
-            $user->{NAME} = $account->{Name};
-        } elsif ($user->{PATH} =~ m{/([^/]+)$}) {
-            $user->{NAME} = $1;
-        }
-
-        push @users, $user;
     }
 
-    return @users;
+    return @profiles;
 }
 
 1;

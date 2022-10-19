@@ -33,6 +33,8 @@ inventory:
 * Update system users detection for WSL inventory on win32
 * fix #240: Update battery inventory on win32
 * Use ORACLE_BASE environment so Oracle database inventory supports latest versions
+* fix #232: Don't try to get profile username via WMI request to avoid timeout
+  on ActiveDirectoy during WSL inventory
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory

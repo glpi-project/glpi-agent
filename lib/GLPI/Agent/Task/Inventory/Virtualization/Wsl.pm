@@ -58,17 +58,18 @@ sub  _getUsersWslInstances {
     my $kernel_version = $operatingSystem->{Version} // '';
     my ($build) = $kernel_version =~ /^\d+\.\d+\.(\d+)/;
 
-    # Search users account for WSL instance
-    foreach my $user (GLPI::Agent::Tools::Win32::Users::getSystemUsers()) {
+    # Search users profiles for existing WSL instance
+    foreach my $user (GLPI::Agent::Tools::Win32::Users::getSystemUserProfiles()) {
+        my $sid = $user->{SID};
 
         my ($lxsskey, $userhive);
         unless ($user->{LOADED}) {
             my $ntuserdat = $user->{PATH}."/NTUSER.DAT";
             # This call involves we use cleanupPrivileges before leaving
-            $userhive = GLPI::Agent::Tools::Win32::loadUserHive( sid => $user->{SID}, file => $ntuserdat );
+            $userhive = GLPI::Agent::Tools::Win32::loadUserHive( sid => $sid, file => $ntuserdat );
         }
         $lxsskey = GLPI::Agent::Tools::Win32::getRegistryKey(
-            path        => "HKEY_USERS/$user->{SID}/SOFTWARE/Microsoft/Windows/CurrentVersion/Lxss/",
+            path        => "HKEY_USERS/$sid/SOFTWARE/Microsoft/Windows/CurrentVersion/Lxss/",
             # Important for remote inventory optimization
             required    => [ qw/BasePath DistributionName/ ],
         )
@@ -90,7 +91,8 @@ sub  _getUsersWslInstances {
                 or next;
             my $distro = $lxsskey->{$sub}->{'/DistributionName'}
                 or next;
-            my $hostname = "$distro on $user->{NAME} account";
+            my $username = _getProfileUsername($sid);
+            my $hostname = $username ? "$distro on $username account" : "$distro on $sid profile";
 
             # Create an UUID based on user SID and distro name
             my $uuid = uc(create_uuid_from_name($user->{SID}."/".$distro));
@@ -132,6 +134,19 @@ sub  _getUsersWslInstances {
     GLPI::Agent::Tools::Win32::cleanupPrivileges();
 
     return @machines;
+}
+
+sub _getProfileUsername {
+    my ($sid) = @_;
+
+    my $userenvkey = getRegistryKey(
+        path        => "HKEY_USERS/$sid/Volatile Environment/",
+        # Important for remote inventory optimization
+        required    => [ qw/USERNAME/ ],
+    )
+        or return;
+
+    return $userenvkey->{'/USERNAME'};
 }
 
 sub _parseWslConfig {
