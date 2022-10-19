@@ -10,6 +10,7 @@ use GLPI::Agent::Tools::Win32;
 
 our @EXPORT = qw(
     getSystemUserProfiles
+    getProfileUsername
 );
 
 sub getSystemUserProfiles {
@@ -35,6 +36,24 @@ sub getSystemUserProfiles {
     }
 
     return @profiles;
+}
+
+sub getProfileUsername {
+    my ($user) = @_;
+
+    # First try to get username from volatile environment
+    my $userenvkey = getRegistryKey(
+        path        => "HKEY_USERS/$user->{SID}/Volatile Environment/",
+        # Important for remote inventory optimization
+        required    => [ qw/USERNAME/ ],
+    );
+    return $userenvkey->{'/USERNAME'}
+        if $userenvkey && defined($userenvkey->{'/USERNAME'}) && length($userenvkey->{'/USERNAME'});
+
+    # Finally fall-back on user extraction from profile path, but this is not reliable
+    # as the username may have been changed after the account has been created
+    my ($username) = $user->{PATH} =~ m{/([^/]+)$};
+    return decode(getLocalCodepage(), $username);
 }
 
 1;

@@ -91,7 +91,7 @@ sub  _getUsersWslInstances {
                 or next;
             my $distro = $lxsskey->{$sub}->{'/DistributionName'}
                 or next;
-            my $username = _getProfileUsername($sid);
+            my $username = GLPI::Agent::Tools::Win32::Users::getProfileUsername($user);
             my $hostname = $username ? "$distro on $username account" : "$distro on $sid profile";
 
             # Create an UUID based on user SID and distro name
@@ -134,19 +134,6 @@ sub  _getUsersWslInstances {
     GLPI::Agent::Tools::Win32::cleanupPrivileges();
 
     return @machines;
-}
-
-sub _getProfileUsername {
-    my ($sid) = @_;
-
-    my $userenvkey = getRegistryKey(
-        path        => "HKEY_USERS/$sid/Volatile Environment/",
-        # Important for remote inventory optimization
-        required    => [ qw/USERNAME/ ],
-    )
-        or return;
-
-    return $userenvkey->{'/USERNAME'};
 }
 
 sub _parseWslConfig {
