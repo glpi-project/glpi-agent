@@ -4,13 +4,14 @@ use strict;
 use warnings;
 use parent 'Exporter';
 
-use Encode qw(encode);
+use Encode qw(decode encode);
 
 use GLPI::Agent::Tools::Win32;
 
 our @EXPORT = qw(
     getSystemUserProfiles
     getProfileUsername
+    getUsers
 );
 
 sub getSystemUserProfiles {
@@ -50,10 +51,50 @@ sub getProfileUsername {
     return $userenvkey->{'/USERNAME'}
         if $userenvkey && defined($userenvkey->{'/USERNAME'}) && length($userenvkey->{'/USERNAME'});
 
+    # Then try WMI request
+    my ($account) = getUsers(sid => $user->{SID});
+    return $account->{NAME} if $account && $account->{NAME};
+
     # Finally fall-back on user extraction from profile path, but this is not reliable
     # as the username may have been changed after the account has been created
     my ($username) = $user->{PATH} =~ m{/([^/]+)$};
     return decode(getLocalCodepage(), $username);
+}
+
+sub getUsers {
+    my (%params) = @_;
+
+    my @conditions = qw(
+        Disabled='False'
+        Lockout='False'
+    );
+    push @conditions, "LocalAccount='True'" if $params{localusers};
+    push @conditions, "SID='$params{sid}'" if $params{sid};
+    if ($params{login}) {
+        $params{login} =~ s/'/\\'/g;
+        push @conditions, "Name='$params{login}'";
+    }
+
+    my $query = "SELECT * FROM Win32_UserAccount WHERE ".join(" AND ", @conditions);
+
+    my @users;
+
+    # Warning ! On a large network, this WMI call can negatively affect
+    # performance and fails with a timeout
+    foreach my $object (getWMIObjects(
+        moniker    => 'winmgmts:\\\\.\\root\\CIMV2',
+        query      => $query,
+        properties => [ qw/Domain Name SID/ ],
+        logger     => $params{logger}
+    )) {
+        push @users, {
+            DOMAIN  => $object->{Domain},
+            NAME    => $object->{Name},
+            ID      => $object->{SID},
+        };
+    }
+
+    return @users;
 }
 
 1;

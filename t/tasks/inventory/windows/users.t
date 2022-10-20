@@ -3,8 +3,7 @@
 use strict;
 use warnings;
 use lib 't/lib';
-#use utf8;
-use Encode;
+use Encode qw(decode encode);
 
 use English qw(-no_match_vars);
 use Test::Deep;
@@ -59,18 +58,9 @@ my $tools_module = Test::MockModule->new(
     'GLPI::Agent::Tools::Win32'
 );
 
-# Variant of sub mockGetRegistryKey fo
-sub mock_GetRegistryKey {
-    my ($test) = @_;
-
-    return sub {
-        my (%params) = @_;
-
-        my $last_elt = (split(/\//, $params{keyName}))[-1];
-        my $file = "resources/win32/registry/$test-$last_elt.reg";
-        return loadRegistryDump($file);
-    };
-}
+my $users_module = Test::MockModule->new(
+    'GLPI::Agent::Tools::Win32::Users'
+);
 
 foreach my $test (keys %tests) {
 
@@ -84,8 +74,11 @@ foreach my $test (keys %tests) {
         mockGetWMIObjects($test)
     );
 
-    #my $preloaded_hkey = loadRegistryDump("resources/win32/registry/$test.reg");
-#use Data::Dumper ; print STDERR "HKEY: ",Dumper($preloaded_hkey);
+    $users_module->mock(
+        'getWMIObjects',
+        mockGetWMIObjects($test)
+    );
+
     my $user = GLPI::Agent::Task::Inventory::Win32::Users::_getLastUser();
 
     cmp_deeply(

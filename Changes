@@ -37,6 +37,7 @@ inventory:
   on ActiveDirectoy during WSL inventory
 * Fix scan-profiles option to check softwares from not logged users on win32
 * Filter out session info for MongoDB database inventory
+* Update users inventory support on win32
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory

@@ -9,6 +9,7 @@ use English qw(-no_match_vars);
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Win32;
+use GLPI::Agent::Tools::Win32::Users;
 
 use constant    other_categories
                             => qw(local_user local_group);
@@ -24,16 +25,19 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    if (!$params{no_category}->{local_user}) {
-        foreach my $user (_getLocalUsers(logger => $logger)) {
+    unless ($params{no_category}->{local_user}) {
+        foreach my $user (getUsers(
+            localusers  => 1,
+            logger      => $logger
+        )) {
             $inventory->addEntry(
                 section => 'LOCAL_USERS',
-                entry   => $user
+                entry   => { map { $_ => $user->{$_} } qw/LOGIN SID/ }
             );
         }
     }
 
-    if (!$params{no_category}->{local_group}) {
+    unless ($params{no_category}->{local_group}) {
         foreach my $group (_getLocalGroups(logger => $logger)) {
             $inventory->addEntry(
                 section => 'LOCAL_GROUPS',
@@ -74,29 +78,6 @@ sub doInventory {
             });
         }
     }
-}
-
-sub _getLocalUsers {
-
-    my $query =
-        "SELECT * FROM Win32_UserAccount " .
-        "WHERE LocalAccount='True' AND Disabled='False' AND Lockout='False'";
-
-    my @users;
-
-    foreach my $object (getWMIObjects(
-        moniker    => 'winmgmts:\\\\.\\root\\CIMV2',
-        query      => $query,
-        properties => [ qw/Name SID/ ])
-    ) {
-        my $user = {
-            NAME => $object->{Name},
-            ID   => $object->{SID},
-        };
-        push @users, $user;
-    }
-
-    return @users;
 }
 
 sub _getLocalGroups {
@@ -157,11 +138,30 @@ sub _getLoggedUsers {
 }
 
 sub _getLastUser {
+    my %params = @_;
 
     my $user;
 
+    my ($system) = getWMIObjects(
+        class      => 'Win32_ComputerSystem',
+        properties => [ qw/Name UserName/ ],
+        %params
+    );
+    if ($system && $system->{Name} && $system->{UserName}) {
+        my $user   = $system->{UserName};
+        my $domain = $system->{Name};
+        if ($system->{UserName} =~ /^([^\\]*)\\(.*)$/) {
+            $domain = $1 unless $1 eq '.';
+            $user   = $2;
+        }
+        return {
+            DOMAIN  => $domain,
+            LOGIN   => $user
+        };
+    }
+
     return unless any {
-        $user = getRegistryValue(path => "HKEY_LOCAL_MACHINE/$_")
+        $user = getRegistryValue(path => "HKEY_LOCAL_MACHINE/$_", %params)
     } (
         'SOFTWARE/Microsoft/Windows/CurrentVersion/Authentication/LogonUI/LastLoggedOnSAMUser',
         'SOFTWARE/Microsoft/Windows/CurrentVersion/Authentication/LogonUI/LastLoggedOnUser',
@@ -170,38 +170,25 @@ sub _getLastUser {
     );
 
     # LastLoggedOnSAMUser becomes the mandatory value to detect last logged on user
-    my @user = $user =~ /^([^\\]*)\\(.*)$/;
-    if ( @user == 2 ) {
-        # Try to get local user from user part if domain is just a dot
-        return $user[0] eq '.' ? _getLocalUser($user[1]) :
-            {
-                LOGIN   => $user[1],
-                DOMAIN  => $user[0]
-            };
+    if ($user =~ /^([^\\]*)\\(.*)$/) {
+        $user = {
+            DOMAIN  => $1,
+            LOGIN   => $2
+        };
+        # Update domain if just a dot
+        $user->{DOMAIN} = $system->{Name}
+            if $user->{DOMAIN} eq '.' && $system && $system->{Name};
+        if ($user->{DOMAIN} eq '.') {
+            my ($useraccount) = getUsers(
+                login => $user->{LOGIN},
+                %params
+            );
+            $user->{DOMAIN} = $useraccount->{DOMAIN}
+                if $useraccount;
+        }
     }
 
     return $user;
-}
-
-sub _getLocalUser {
-    my ($name) = @_;
-
-    my $query = "SELECT * FROM Win32_UserAccount WHERE LocalAccount = True";
-
-    my @local_users = getWMIObjects(
-        moniker    => 'winmgmts:\\\\.\\root\\CIMV2',
-        query      => $query,
-        properties => [ qw/Name Domain/ ]
-    );
-
-    my $user = first { $_->{Name} eq $name } @local_users;
-
-    return unless $user;
-
-    return {
-        LOGIN   => $user->{Name},
-        DOMAIN  => $user->{Domain}
-    };
 }
 
 1;
