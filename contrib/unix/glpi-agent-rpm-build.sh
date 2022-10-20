@@ -96,5 +96,5 @@ do
     ARCH=${rpm##*.}
     [ -e "$RPMDIR/$ARCH/$rpm.rpm" ] || exit 1
     echo "$BASE-rpm: $(ls -l $RPMDIR/$ARCH/$rpm.rpm)"
-    [ -n "$GITHUB_REF" ] && echo "::set-output name=$BASE-rpm:: $RPMDIR/$ARCH/$rpm.rpm"
+    [ -n "$GITHUB_REF" ] && echo "$BASE-rpm=$RPMDIR/$ARCH/$rpm.rpm" >>$GITHUB_OUTPUT
 done
