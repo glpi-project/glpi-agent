@@ -36,6 +36,7 @@ inventory:
 * fix #232: Don't try to get profile username via WMI request to avoid timeout
   on ActiveDirectoy during WSL inventory
 * Fix scan-profiles option to check softwares from not logged users on win32
+* Filter out session info for MongoDB database inventory
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory

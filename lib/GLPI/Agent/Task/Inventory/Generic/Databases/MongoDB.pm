@@ -113,6 +113,8 @@ sub _getDatabaseService {
         if ($databases =~ /^ERR/) {
             $logger->error("Failed to get database list, $databases") if $logger;
         } else {
+            # Cleanup any "Implicit session header"
+            $databases =~ s/^Implicit \s+ session: \s+ session \s+ { [^}]+ } \s*//x;
             eval {
                 @databases = grep { ref($_) eq 'HASH' } @{ decode_json($databases) };
             };
