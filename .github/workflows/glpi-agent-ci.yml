@@ -121,7 +121,7 @@ jobs:
         perl --version
         perl -V
         # Compute perl-version for current week to regen perl lib cache at least each week
-        perl -e '@t = localtime; print 'cache-version='.$^V.'-'.int($t[7]/7)."\n"' >>$GITHUB_OUTPUT
+        perl -e '@t = localtime; print "cache-version=".$^V."-".int($t[7]/7)."\n"' >>$GITHUB_OUTPUT
     - name: Install openssl via brew
       run: brew install openssl
     - name: Restore perl lib cache
