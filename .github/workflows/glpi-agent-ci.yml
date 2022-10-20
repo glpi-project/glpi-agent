@@ -70,10 +70,10 @@ jobs:
         echo "PATH=%PATH%"
         perl --version
         perl -V
-        perl -e "@t = localtime; print '::set-output name=cache-version::'.$^V.'-'.int($t[7]/7)"
+        perl -e "@t = localtime; print 'cache-version='.$^V.'-'.int($t[7]/7)" >>$GITHUB_OUTPUT
       shell: cmd
     - name: Restore perl lib cache
-      uses: pat-s/always-upload-cache@v3
+      uses: actions/cache@v3
       id: cache
       with:
         path: |
@@ -121,12 +121,12 @@ jobs:
         perl --version
         perl -V
         # Compute perl-version for current week to regen perl lib cache at least each week
-        perl -e '@t = localtime; print "::set-output name=cache-version::".$^V."-".int($t[7]/7)."\n"'
+        perl -e '@t = localtime; print 'cache-version='.$^V.'-'.int($t[7]/7)."\n"' >>$GITHUB_OUTPUT
     - name: Install openssl via brew
       run: brew install openssl
     - name: Restore perl lib cache
       id: cache
-      uses: pat-s/always-upload-cache@v3
+      uses: actions/cache@v3
       with:
         path: |
             /usr/local/Cellar/perl/*/lib/perl5/site_perl

@@ -42,28 +42,28 @@ jobs:
       id: set-version
       run: |
         if [ -n "$CODESIGN_COMMAND" ]; then
-            echo "::set-output name=win32-signing::alt"
+            echo "win32-signing=alt" >>$GITHUB_OUTPUT
         elif [ -n "$CST_USERNAME" ]; then
-            echo "::set-output name=win32-signing::cst"
+            echo "win32-signing=cst" >>$GITHUB_OUTPUT
         else
-            echo "::set-output name=win32-signing::no"
+            echo "win32-signing=no" >>$GITHUB_OUTPUT
         fi
         if [ -n "$APPSIGNID" -a -n "$INSTSIGNID" ]; then
-            echo "::set-output name=macosx-signing::yes"
+            echo "macosx-signing=yes" >>$GITHUB_OUTPUT
             if [ "${{ env.macosx_notarize_support }}" == "yes" ]; then
                 NOTARIZE="yes"
             else
                 NOTARIZE="no"
             fi
         else
-            echo "::set-output name=macosx-signing::no"
+            echo "macosx-signing=no" >>$GITHUB_OUTPUT
         fi
         if [ -z "${GITHUB_REF##*refs/tags/*}" ]; then
             VERSION="${GITHUB_REF#*refs/tags/}"
             echo "New release on $VERSION $tag"
-            echo "::set-output name=create-release::yes"
-            echo "::set-output name=build::yes"
-            echo "::set-output name=tag_name::$VERSION"
+            echo "create-release=yes" >>$GITHUB_OUTPUT
+            echo "build=yes" >>$GITHUB_OUTPUT
+            echo "tag_name=$VERSION" >>$GITHUB_OUTPUT
         else
             VERSION=$(perl -Ilib -MGLPI::Agent::Version -e 'print $GLPI::Agent::Version::VERSION')
             VERSION=${VERSION%-dev}-git${GITHUB_SHA:0:8}
@@ -72,13 +72,13 @@ jobs:
                     TYPE=nightly
                     if [ -z "$PUBLISHING_TOKEN" ]; then
                         echo "No PUBLISHING_TOKEN defined to publish GLPI-Agent nightly builds"
-                        echo "::set-output name=create-release::no"
-                        echo "::set-output name=build::no"
+                        echo "create-release=no" >>$GITHUB_OUTPUT
+                        echo "build=no" >>$GITHUB_OUTPUT
                         exit 0
                     elif gh api /repos/{owner}/glpi-project.github.io/git/refs/tags/glpi-agent-development-$VERSION --silent 2>/dev/null; then
                         echo "GLPI-Agent v$VERSION still published as development build"
-                        echo "::set-output name=create-release::no"
-                        echo "::set-output name=build::no"
+                        echo "create-release=no" >>$GITHUB_OUTPUT
+                        echo "build=no" >>$GITHUB_OUTPUT
                         exit 0
                     fi
                 else
@@ -88,46 +88,46 @@ jobs:
                 # For nightly, we also check if we had any commit during the last 24 hours
                 if [ "$SKIP_NIGHTLY" = "0 nightly" -o -z "$( git rev-list -n 1 --after="24 hours" ${{ github.sha }} )" ]; then
                     echo "No nightly release needed"
-                    echo "::set-output name=create-release::no"
-                    echo "::set-output name=build::no"
+                    echo "create-release=no" >>$GITHUB_OUTPUT
+                    echo "build=no" >>$GITHUB_OUTPUT
                 else
                     echo "New $TYPE release as $VERSION version"
-                    echo "::set-output name=create-release::${{ env.publish_development_build }}"
-                    echo "::set-output name=build::yes"
-                    echo "::set-output name=tag_name::$TYPE-$VERSION"
+                    echo "create-release=${{ env.publish_development_build }}" >>$GITHUB_OUTPUT
+                    echo "build=yes" >>$GITHUB_OUTPUT
+                    echo "tag_name=$TYPE-$VERSION" >>$GITHUB_OUTPUT
                 fi
             else
                 echo "Just building $VERSION version"
-                echo "::set-output name=create-release::no"
-                echo "::set-output name=build::yes"
-                echo "::set-output name=tag_name::development-$VERSION"
+                echo "create-release=no" >>$GITHUB_OUTPUT
+                echo "build=yes" >>$GITHUB_OUTPUT
+                echo "tag_name=development-$VERSION" >>$GITHUB_OUTPUT
                 NOTARIZE="no"
             fi
         fi
-        echo "::set-output name=version::$VERSION"
+        echo "version=$VERSION" >>$GITHUB_OUTPUT
         case "${VERSION#*-}" in
             $VERSION)
-                echo "::set-output name=revname::v$VERSION"
-                echo "::set-output name=prerelease::false"
+                echo "revname=v$VERSION" >>$GITHUB_OUTPUT
+                echo "prerelease=false" >>$GITHUB_OUTPUT
                 ;;
             test*)
-                echo "::set-output name=revname::v${VERSION%-test*} Test release ${VERSION#*-test}"
-                echo "::set-output name=prerelease::true"
+                echo "revname=v${VERSION%-test*} Test release ${VERSION#*-test}" >>$GITHUB_OUTPUT
+                echo "prerelease=true" >>$GITHUB_OUTPUT
                 ;;
             beta*)
-                echo "::set-output name=revname::v${VERSION%-beta*} Beta release ${VERSION#*-beta}"
-                echo "::set-output name=prerelease::true"
+                echo "revname=v${VERSION%-beta*} Beta release ${VERSION#*-beta}" >>$GITHUB_OUTPUT
+                echo "prerelease=true" >>$GITHUB_OUTPUT
                 ;;
             *)
-                echo "::set-output name=revname::v$VERSION Development release"
-                echo "::set-output name=prerelease::true"
+                echo "revname=v$VERSION Development release" >>$GITHUB_OUTPUT
+                echo "prerelease=true" >>$GITHUB_OUTPUT
                 ;;
         esac
         # Check if MacOSX packaging notarization is required
-        echo "::set-output name=macosx-notarization::$NOTARIZE"
+        echo "macosx-notarization=$NOTARIZE" >>$GITHUB_OUTPUT
         # Set user and mail for nightly release
-        echo "::set-output name=user-name::$(git log --format='%an' HEAD^!)"
-        echo "::set-output name=user-email::$(git log --format='%ae' HEAD^!)"
+        echo "user-name=$(git log --format='%an' HEAD^!)" >>$GITHUB_OUTPUT
+        echo "user-email=$(git log --format='%ae' HEAD^!)" >>$GITHUB_OUTPUT
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -173,7 +173,7 @@ jobs:
         mkdir C:\Strawberry-perl-for-GLPI-Agent_build\tools
       shell: cmd
     - name: Restore points cache
-      uses: pat-s/always-upload-cache@v3
+      uses: actions/cache@v3
       with:
         path: |
             C:/Strawberry-perl-for-GLPI-Agent_build/tools
@@ -312,7 +312,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Restore points cache
-      uses: pat-s/always-upload-cache@v3
+      uses: actions/cache@v3
       with:
         path: |
           contrib/macosx/*.gz
@@ -458,7 +458,7 @@ jobs:
     - name: Build debian packages
       id: debbuild
       run: |
-        echo "::set-output name=debpath:: $(dirname $PWD)"
+        echo "debpath=$(dirname $PWD)" >>$GITHUB_OUTPUT
         # make -gitXXXXXXXX release when not tagged
         if [ -z "${VERSION##*-*}" ]; then
             tools/make-release.sh --no-git $VERSION
