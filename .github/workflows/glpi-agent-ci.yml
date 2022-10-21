@@ -70,7 +70,7 @@ jobs:
         echo "PATH=%PATH%"
         perl --version
         perl -V
-        perl -e "@t = localtime; print 'cache-version='.$^V.'-'.int($t[7]/7)" >>$GITHUB_OUTPUT
+        perl -e "@t = localtime; print 'cache-version='.$^V.'-'.int($t[7]/7)" >>%GITHUB_OUTPUT%
       shell: cmd
     - name: Restore perl lib cache
       uses: actions/cache@v3
