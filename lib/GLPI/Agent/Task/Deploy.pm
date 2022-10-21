@@ -92,10 +92,10 @@ sub processRemote {
     my $folder = $self->{target}->getStorage()->getDirectory();
     my $datastore = GLPI::Agent::Task::Deploy::Datastore->new(
         config => $self->{config},
-        path   => $folder.'/deploy',
+        path   => $folder,
         logger => $logger
     );
-    $datastore->cleanUp( force => $datastore->diskIsFull() );
+    $datastore->cleanUp();
 
     my $jobList = [];
     my $files;

@@ -5,10 +5,11 @@ use warnings;
 
 use Compress::Zlib;
 use English qw(-no_match_vars);
+use File::Spec;
 use File::Path qw(mkpath);
 use UNIVERSAL::require;
 use GLPI::Agent::Tools;
-use Encode;
+use Encode qw(encode is_utf8);
 
 sub new {
     my ($class, %params) = @_;
@@ -19,10 +20,8 @@ sub new {
         files => []
     };
 
-    if (! -d $self->{path}) {
-        die "path `".$self->{path}."' doesn't exit.";
-    }
-
+    die "$class: Path '".$self->{path}."' doesn't exit\n"
+        unless -d $self->{path};
 
     bless $self, $class;
 }
@@ -46,9 +45,8 @@ sub prepare {
         if ($OSNAME eq 'MSWin32') {
             GLPI::Agent::Tools::Win32->require;
             my $localCodepage = GLPI::Agent::Tools::Win32::getLocalCodepage();
-            if (Encode::is_utf8($file->{name})) {
-                $file->{name_local} = encode($localCodepage, $file->{name});
-            }
+            $file->{name_local} = encode($localCodepage, $file->{name})
+                if is_utf8($file->{name});
         }
 
         # If the file will be extracted, we simplify its name to avoid problem during
@@ -62,24 +60,21 @@ sub prepare {
         }
 
 
-        my $finalFilePath = $self->{path}.'/'.$file->{name_local};
+        my $finalFilePath = File::Spec->catdir($self->{path}, $file->{name_local});
 
         my $fh;
-        if (!open($fh, '>', $finalFilePath)) {
+        unless (open($fh, '>', $finalFilePath)) {
             $logger->debug("Failed to open '$finalFilePath': $ERRNO");
             return;
         }
         binmode($fh);
         foreach my $sha512 (@{$file->{multiparts}}) {
             my $partFilePath = $file->getPartFilePath($sha512);
-            if (! -f $partFilePath) {
-                $logger->debug("Missing multipart element '$partFilePath'");
-            }
+            $logger->debug("Missing multipart element '$partFilePath'")
+                unless -f $partFilePath;
 
-            my $part;
-            my $buf;
+            my ($part, $buf);
             if ($part = gzopen($partFilePath, 'rb')) {
-
                 $logger->debug("reading $sha512");
                 while ($part->gzread($buf, 1024) > 0) {
                     print $fh $buf;
@@ -91,7 +86,7 @@ sub prepare {
         }
         close($fh);
 
-        if (!$file->validateFileByPath($finalFilePath)) {
+        unless ($file->validateFileByPath($finalFilePath)) {
             $logger->info("Failed to construct the final file.: $finalFilePath");
             return;
         }
@@ -100,7 +95,7 @@ sub prepare {
 
     # Now uncompress
     foreach my $file (@{$self->{files}}) {
-        my $finalFilePath = $self->{path}.'/'.$file->{name_local};
+        my $finalFilePath = File::Spec->catdir($self->{path}, $file->{name_local});
 
         if ($file->{uncompress}) {
             if(canRun('7z')) {
@@ -113,11 +108,12 @@ sub prepare {
                     }
                 }
                 if ($tarball && ($finalFilePath =~ /tgz$/i || $finalFilePath =~ /tar\.(gz|xz|bz2)$/i)) {
-                    foreach (`7z x -o\"$self->{path}\" \"$self->{path}/$tarball\"`) {
-                       chomp;
+                    my $tarballpath = File::Spec->catdir($self->{path}, $tarball);
+                    foreach (`7z x -o\"$self->{path}\" \"$tarballpath\"`) {
+                        chomp;
                         $logger->debug2("7z: $_");
                     }
-                    unlink($self->{path}.'/'.$tarball);
+                    unlink($tarballpath);
                 }
             } else {
                 Archive::Extract->require;
@@ -128,8 +124,8 @@ sub prepare {
                 } elsif (!$ae->extract( to => $self->{path} )) {
                     $logger->debug("Failed to extract '$finalFilePath'");
                 }
-# We ignore failure here because one my have activated the
-# extract flag on common file and this should be harmless
+                # We ignore failure here because one my have activated the
+                # extract flag on common file and this should be harmless
             }
             unlink($finalFilePath);
         }

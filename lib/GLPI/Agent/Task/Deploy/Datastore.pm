@@ -6,7 +6,7 @@ use warnings;
 use English qw(-no_match_vars);
 use File::Glob;
 use File::Spec;
-use File::Path qw(mkpath rmtree);
+use File::Path qw(mkpath remove_tree);
 use UNIVERSAL::require;
 
 use GLPI::Agent::Tools;
@@ -18,7 +18,7 @@ use GLPI::Agent::Task::Deploy::DiskFree;
 sub new {
     my ($class, %params) = @_;
 
-    die "no path parameter" unless $params{path};
+    die "$class: No path parameter\n" unless $params{path};
 
     my $self = {
         config => $params{config},
@@ -27,9 +27,9 @@ sub new {
                   GLPI::Agent::Logger->new(),
     };
 
-    if (!$self->{path}) {
-      die("No datastore path");
-    }
+    die("$class: No datastore path\n") unless $self->{path};
+
+    $self->{path} = File::Spec->catdir($self->{path}, "deploy");
 
     bless $self, $class;
 
@@ -37,44 +37,47 @@ sub new {
 }
 
 sub cleanUp {
-    my ($self, %params) = @_;
+    my ($self) = @_;
 
     return unless -d $self->{path};
 
     my @storageDirs;
-    push @storageDirs, File::Glob::bsd_glob($self->{path}.'/fileparts/private/*');
-    push @storageDirs, File::Glob::bsd_glob($self->{path}.'/fileparts/shared/*');
+    push @storageDirs, File::Glob::bsd_glob(File::Spec->catdir($self->{path}, "fileparts", "private", "*"));
+    push @storageDirs, File::Glob::bsd_glob(File::Spec->catdir($self->{path}, "fileparts", "shared", "*"));
 
-    if (-d $self->{path}.'/workdir/') {
-        remove_tree( $self->{path}.'/workdir/', {error => \my $err} );
-    }
+    remove_tree(File::Spec->catdir($self->{path}, "workdir"));
+
+    # Compute diskIsFull after workdir has been cleaned up and before we start to clean up fileparts
+    my $diskIsFull = $self->diskIsFull();
+
+    # We will check retention time using a one minute time frame
+    my $timeframe = time - time % 60;
 
     my $remaining = 0;
     foreach my $dir (@storageDirs) {
 
-        if (!-d $dir) {
+        unless (-d $dir) {
             unlink $dir;
             next;
         }
 
-        next unless $dir =~ /(\d+)$/;
+        my ($timestamp) = $dir =~ /(\d+)$/
+            or next;
 
-        # Check retention time using a one minute time frame
-        my $timeframe = time - time % 60 ;
-        if ($timeframe >= $1 || $params{force}) {
-            remove_tree( $dir, {error => \my $err} );
+        if ($diskIsFull || $timeframe >= $timestamp) {
+            remove_tree( $dir );
         } else {
             $remaining ++;
         }
     }
 
-    return $remaining;
+    remove_tree($self->{path}) unless $remaining;
 }
 
 sub createWorkDir {
     my ($self, $uuid) = @_;
 
-    my $path = $self->{path}.'/workdir/'.$uuid;
+    my $path = File::Spec->catdir($self->{path}, "workdir", $uuid);
 
     mkpath($path);
     return unless -d $path;
@@ -97,14 +100,14 @@ sub diskIsFull {
         logger => $logger
     );
 
-    if (!defined($freeSpace)) {
+    unless (defined($freeSpace)) {
         $logger->debug2('$freeSpace is undef!');
         $freeSpace = 0;
     }
 
     $logger->debug("Free space on $self->{path}: $freeSpace");
-    # 400MB Free, should be set by a config option
-    return ($freeSpace < 2000);
+    # 2GB Free, should be set by a config option
+    return $freeSpace < 2000 ? 1 : 0;
 }
 
 sub getP2PNet {
@@ -133,12 +136,6 @@ sub saveP2PNet {
         $self->{p2pnetstorage}->save( name => "p2pnet", data => $peers );
         $self->{save_expiration} = time + 60;
     }
-}
-
-# imported from File-Path-2.09
-sub remove_tree {
-    push @_, {} unless @_ and UNIVERSAL::isa($_[-1],'HASH');
-    goto &rmtree;
 }
 
 1;

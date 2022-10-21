@@ -39,7 +39,7 @@ sub doMaintenance {
         logger => $self->{logger}
     );
 
-    $datastore->cleanUp( force => $datastore->diskIsFull() );
+    $datastore->cleanUp();
 }
 
 1;

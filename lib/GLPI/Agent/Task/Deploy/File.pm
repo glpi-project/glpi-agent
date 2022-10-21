@@ -6,6 +6,7 @@ use warnings;
 use Digest::SHA;
 use English qw(-no_match_vars);
 use File::Basename;
+use File::Spec;
 use File::Path qw(mkpath);
 use File::Glob;
 use HTTP::Request;
@@ -13,8 +14,8 @@ use HTTP::Request;
 sub new {
     my ($class, %params) = @_;
 
-    die "no datastore parameter" unless $params{datastore};
-    die "no sha512 parameter" unless $params{sha512};
+    die "$class: No datastore parameter\n" unless $params{datastore};
+    die "$class: No sha512 parameter\n" unless $params{sha512};
 
     my $self = {
         p2p                => $params{data}->{p2p},
@@ -52,15 +53,15 @@ sub normalizedPartFilePath {
     my ($self, $sha512) = @_;
 
     return unless $sha512 =~ /^(.)(.)(.{6})/;
-    my $subFilePath = $1.'/'.$2.'/'.$3;
+    my $subFilePath = File::Spec->catdir($1, $2, $3);
 
-    my $filePath = $self->{datastore}->{path}.'/fileparts/';
+    my $filePath = File::Spec->catdir($self->{datastore}->{path}, 'fileparts');
     my $retention_duration;
     if ($self->{p2p}) {
-        $filePath .= 'shared/';
+        $filePath = File::Spec->catdir($filePath, 'shared');
         $retention_duration = $self->{retention_duration} * 60;
     } else {
-        $filePath .= 'private/';
+        $filePath = File::Spec->catdir($filePath, 'private');
         $retention_duration = $self->{retention_duration} ?
             $self->{retention_duration} * 60 : $self->{prolog_delay} * 3;
     }
@@ -70,9 +71,23 @@ sub normalizedPartFilePath {
     # minute time frame to follow the retention duration unit
     my $expiration    = time + $retention_duration + 60;
     my $retentiontime = $expiration - $expiration % 60 ;
-    $filePath .= $retentiontime . '/' . $subFilePath;
+    $filePath = File::Spec->catdir($filePath, $retentiontime, $subFilePath);
 
     return $filePath;
+}
+
+sub _cleanPath {
+    my ($path) = @_;
+    my @treepath = File::Spec->splitpath($path);
+    $treepath[2] = '';
+    my $cleanmaxdir = 5;
+    while ($cleanmaxdir--) {
+        my @folder = File::Spec->splitdir($treepath[1]);
+        pop @folder;
+        $treepath[1] = File::Spec->catdir(@folder);
+        # Will remove tree unless folder is not empty
+        last unless rmdir File::Spec->catpath(@treepath);
+    }
 }
 
 sub cleanup_private {
@@ -88,10 +103,8 @@ sub cleanup_private {
     foreach my $sha512 (@{$self->{multiparts}}) {
         my $path = $self->getPartFilePath($sha512);
         unlink $path if -f $path;
+        _cleanPath($path);
     }
-
-    # This may leave an empty folder tree, but it will be cleaned by
-    # Maintenance event when convenient
 }
 
 sub resetPartFilePaths {
@@ -110,29 +123,26 @@ sub resetPartFilePaths {
     }
 
     foreach my $path (keys(%updates)) {
-        File::Path::mkpath(dirname($updates{$path}));
+        mkpath(dirname($updates{$path}));
         rename $path, $updates{$path};
+        _cleanPath($path);
     }
-
-    # This may leave an empty folder tree, but it will be cleaned by
-    # Maintenance event when convenient
 }
 
 sub getPartFilePath {
     my ($self, $sha512) = @_;
 
     return unless $sha512 =~ /^(.)(.)(.{6})/;
-    my $subFilePath = $1.'/'.$2.'/'.$3;
+    my $subFilePath = File::Spec->catdir($1, $2, $3);
 
     my @storageDirs = (
-        File::Glob::bsd_glob($self->{datastore}->{path}.'/fileparts/shared/*'),
-        File::Glob::bsd_glob($self->{datastore}->{path}.'/fileparts/private/*')
+        File::Glob::bsd_glob(File::Spec->catdir($self->{datastore}->{path}, 'fileparts', 'shared', '*')),
+        File::Glob::bsd_glob(File::Spec->catdir($self->{datastore}->{path}, 'fileparts', 'private', '*'))
     );
 
     foreach my $dir (@storageDirs) {
-        if (-f $dir.'/'.$subFilePath) {
-            return $dir.'/'.$subFilePath;
-        }
+        my $filePath = File::Spec->catdir($dir, $subFilePath);
+        return $filePath if -f $filePath;
     }
 
     return $self->normalizedPartFilePath($sha512);
@@ -141,7 +151,10 @@ sub getPartFilePath {
 sub download {
     my ($self) = @_;
 
-    die unless $self->{mirrors};
+    unless ($self->{mirrors}) {
+        $self->{logger}->error("No mirror set on deploy job");
+        die;
+    }
 
     my @peers;
     if ($self->{p2p}) {
@@ -170,7 +183,7 @@ sub download {
         if (-f $path) {
             next PART if $self->_getSha512ByFile($path) eq $sha512;
         }
-        File::Path::mkpath(dirname($path));
+        mkpath(dirname($path));
 
         # try to download from the same peer as last part, if defined
         if ($lastPeer) {
