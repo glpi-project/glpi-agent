@@ -39,7 +39,7 @@ sub doMaintenance {
         logger => $self->{logger}
     );
 
-    $datastore->cleanUp();
+    return $datastore->cleanUp();
 }
 
 1;

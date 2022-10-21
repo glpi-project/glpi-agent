@@ -72,6 +72,9 @@ sub cleanUp {
     }
 
     remove_tree($self->{path}) unless $remaining;
+
+    # Returns remaining file parts so Maintenance event knows if it must be scheduled again
+    return $remaining;
 }
 
 sub createWorkDir {
