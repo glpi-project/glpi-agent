@@ -195,14 +195,19 @@ sub _prepareDistro {
             die "Can't enable PowerTools repository: $!\n" if $ret;
         }
     } elsif ($self->{_name} =~ /centos/i) {
-        # Since CentOS 8, we need PowerTools
-        if ($v < 8) {
-            $self->{_yum} = 1;
-            delete $self->{_dnf};
-        } else {
+        # On CentOS 8, we need PowerTools
+        # Since CentOS 9, we need CRB
+        if ($v >= 9) {
+            $self->verbose("Checking CRB repository is enabled");
+            my $ret = $self->run("dnf config-manager --set-enabled crb");
+            die "Can't enable CRB repository: $!\n" if $ret;
+        } elsif ($v == 8) {
             $self->verbose("Checking PowerTools repository is enabled");
             my $ret = $self->run("dnf config-manager --set-enabled powertools");
             die "Can't enable PowerTools repository: $!\n" if $ret;
+        } else {
+            $self->{_yum} = 1;
+            delete $self->{_dnf};
         }
     } elsif ($self->{_name} =~ /opensuse/i) {
         $self->{_zypper} = 1;
