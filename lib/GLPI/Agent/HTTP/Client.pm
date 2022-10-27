@@ -393,11 +393,27 @@ sub _KeyChain_or_KeyStore_Export {
 
             # Export certificates from keystore as crt files
             getAllLines(
-                command => "certutil -Store -Silent -Split",
+                command => "certutil -Silent -Split -Store CA",
                 logger  => $logger
             );
             getAllLines(
-                command => "certutil -Store -Silent -Enterprise -Split",
+                command => "certutil -Silent -Split -Store Root",
+                logger  => $logger
+            );
+            getAllLines(
+                command => "certutil -Silent -Split -Enterprise -Store CA",
+                logger  => $logger
+            );
+            getAllLines(
+                command => "certutil -Silent -Split -Enterprise -Store Root",
+                logger  => $logger
+            );
+            getAllLines(
+                command => "certutil -Silent -Split -GroupPolicy -Store CA",
+                logger  => $logger
+            );
+            getAllLines(
+                command => "certutil -Silent -Split -GroupPolicy -Store Root",
                 logger  => $logger
             );
 
