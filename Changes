@@ -85,7 +85,7 @@ basic-authentication-server-plugin:
 * Bump version to 1.0
 
 packaging:
-* Update MacOSX packages to use OpenSSL 3.0.5 & zlib 1.2.13
+* Update MacOSX packages to use OpenSSL 3.0.7 & zlib 1.2.13
 * Temporarily update PATH to use provided exe files when running agent from BAT scripts on win32
 * win32: updated dmidecode to 3.4-update-1
 
