@@ -217,6 +217,7 @@ sub _build_steps {
                 _movedll('libcrypto-1_1'.(_is64bit()?'-x64':'')),
                 _movedll('libssl-1_1'.(_is64bit()?'-x64':'')),
                 _movedll('zlib1'),
+                _movedll('libssh2-1'),
                 { do=>'removedir', args=>[ '<image_dir>/perl/bin' ] },
                 { do=>'movedir', args=>[ '<image_dir>/perl/newbin', '<image_dir>/perl/bin' ] },
                 { do=>'movefile', args=>[ '<image_dir>/c/bin/gmake.exe', '<image_dir>/perl/bin/gmake.exe' ] }, # Needed for tests
