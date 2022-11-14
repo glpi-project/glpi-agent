@@ -115,7 +115,7 @@ sub _build_steps {
         {
             plugin => 'Perl::Dist::Strawberry::Step::UpgradeCpanModules',
             exceptions => [
-                # possible 'do' options: ignore_testfailure | skiptest | skip - e.g. 
+                # possible 'do' options: ignore_testfailure | skiptest | skip - e.g.
                 #{ do=>'ignore_testfailure', distribution=>'ExtUtils-MakeMaker-6.72' },
                 #{ do=>'ignore_testfailure', distribution=>qr/^IPC-Cmd-/ },
                 { do=>'ignore_testfailure', distribution=>qr/^Net-Ping-/ }, # 2.72 fails
