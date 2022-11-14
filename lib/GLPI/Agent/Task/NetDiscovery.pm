@@ -2,7 +2,7 @@ package GLPI::Agent::Task::NetDiscovery;
 
 use strict;
 use warnings;
-use threads;
+
 use parent 'GLPI::Agent::Task';
 
 use constant DEVICE_PER_MESSAGE => 4;
@@ -11,8 +11,8 @@ use English qw(-no_match_vars);
 use Net::IP;
 use Time::localtime;
 use Time::HiRes qw(usleep);
-use Thread::Queue v2.01;
 use UNIVERSAL::require;
+use Parallel::ForkManager;
 
 use GLPI::Agent::Version;
 use GLPI::Agent::Tools;
@@ -117,48 +117,11 @@ sub isEnabled {
     return 1;
 }
 
-sub _discovery_thread {
-    my ($self, $jobs, $done) = @_;
-
-    my $count = 0;
-
-    my $id = threads->tid();
-    $self->{logger}->debug("[thread $id] creation");
-
-    # run as long as they are a job to process
-    while (my $job = $jobs->dequeue()) {
-
-        last unless ref($job) eq 'HASH';
-        last if $job->{leave};
-
-        my $result = $self->_scanAddress($job);
-
-        if ($result && defined($job->{entity})) {
-            $result->{ENTITY} = $job->{entity};
-        }
-
-        # Only send result if a device was found which involves setting IP
-        $self->_sendResultMessage($result, $job->{pid})
-            if $result->{IP};
-
-        $done->enqueue($job);
-        $count ++;
-    }
-
-    delete $self->{logger}->{prefix};
-
-    $self->{logger}->debug2("[thread $id] processed $count scans");
-    $self->{logger}->debug("[thread $id] termination");
-}
-
 sub run {
     my ($self) = @_;
 
     my $abort = 0;
     $SIG{TERM} = sub { $abort = 1; };
-
-    # Keep a flag if client has still been set in a caller script
-    my $keep_client = defined($self->{client});
 
     # check discovery methods available
     if (canRun('arp')) {
@@ -197,76 +160,97 @@ sub run {
     my ($max_threads) = sort { $b <=> $a } map { int($_->max_threads()) }
         @{$self->{jobs}};
 
-    my %running_threads = ();
+    # Prepare fork manager
+    my $manager = Parallel::ForkManager->new($max_threads);
+    $manager->set_waitpid_blocking_sleep(0);
+
     my %queues = ();
 
-    # initialize FIFOs
-    my $jobs = Thread::Queue->new();
-    my $done = Thread::Queue->new();
+    # Callback to update %queues
+    $manager->run_on_finish(
+        sub {
+            my ($pid, $ret, $jobid, $signal, $coredump, $data) = @_;
+            if (!$ret && $data) {
+                $queues{$jobid}->{size} += $data->{size};
+                push @{$queues{$jobid}->{ranges}}, $data->{range};
+            }
+        }
+    );
 
     # Start jobs by preparing range queues and counting ips
-    my $max_count = 0;
-    my $minimum_expiration = time + 1;
     foreach my $job (@{$self->{jobs}}) {
-        my $pid = $job->pid;
+        my $jobid = $job->pid;
 
-        my $queue = {
+        # Initialize queue
+        $queues{$jobid} = {
             max_in_queue        => $job->max_threads(),
             in_queue            => 0,
             timeout             => $job->timeout(),
             snmp_credentials    => $job->getValidCredentials(),
             ranges              => [],
             size                => 0,
+            done                => 0,
         };
 
-        $self->{logger}->debug("initializing job $pid");
+        $self->{logger}->debug("initializing job $jobid");
 
         # process each address block
         foreach my $range ($job->ranges()) {
             my $start = $range->{start};
             my $end   = $range->{end};
+
+            $manager->start($jobid) and next;
+
             my $block = Net::IP->new( "$start-$end" );
             if (!$block || !$block->ip() || $block->{binip} !~ /1/) {
                 $self->{logger}->error(
                     "IPv4 range not supported by Net::IP: $start-$end"
                 );
-                next;
+                $manager->finish(1);
             }
 
             unless ($block->size()) {
                 $self->{logger}->error("Skipping empty range: $start-$end");
-                next;
+                $manager->finish(2);
             }
 
             $self->{logger}->debug("initializing block $start-$end");
 
-            $queue->{size} += $block->size()->numify();
             $range->{block} = $block;
-            push @{$queue->{ranges}}, $range;
-        }
 
+            my $data = {
+                size    => $block->size()->numify(),
+                range   => $range
+            };
+
+            $manager->finish(0, $data);
+        }
+    }
+
+    $manager->wait_all_children();
+
+    # Check computed queues
+    my $max_count = 0;
+    my $minimum_timeout = 1;
+    foreach my $jobid (keys(%queues)) {
+        my $queue = $queues{$jobid};
         unless ($queue->{size}) {
-            $self->{logger}->debug("no valid block found for job $pid");
-            $self->_sendStartMessage($pid);
-            $self->_sendBlockMessage($pid, 0);
-            $self->_sendStopMessage($pid);
-            $self->_sendStopMessage($pid);
+            $self->{logger}->debug("no valid block found for job $jobid");
+            $self->_sendStartMessage($jobid);
+            $self->_sendBlockMessage($jobid, 0);
+            $self->_sendStopMessage($jobid);
+            $self->_sendStopMessage($jobid);
+            delete $queues{$jobid};
             next;
         }
-
-        # Keep job as queue
-        $queues{$pid} = $queue;
 
         # Update total count
         $max_count += $queue->{size};
 
         # Update minimum expiration
-        $minimum_expiration += $queue->{size} * $queue->{timeout};
+        $minimum_timeout += $queue->{size} * $queue->{timeout};
     }
-
-    # Don't keep client until we created threads to avoid segfault if SSL is used
-    # with older openssl libs, but only if it is still not set by a script
-    delete $self->{client} unless $keep_client;
+    my $minimum_expiration = time + $minimum_timeout;
 
     # Define a realistic block scan expiration : at least one minute by address
 
@@ -278,37 +262,44 @@ sub run {
     $expiration = $minimum_expiration if $expiration < $minimum_expiration;
     $self->_logExpirationHours($expiration);
 
-    # no need more threads than ips to scan
-    my $threads_count = $max_threads > $max_count ? $max_count : $max_threads;
-
-    $self->{logger}->debug("creating $threads_count worker threads");
-    for (my $i = 0; $i < $threads_count; $i++) {
-        my $newthread = threads->create(sub { $self->_discovery_thread($jobs, $done); });
-        # Keep known created threads in a hash
-        $running_threads{$newthread->tid()} = $newthread ;
-        usleep(50000) until ($newthread->is_running() || $newthread->is_joinable());
-    }
-
-    # Check really started threads number vs really running ones
-    my @really_running  = map { $_->tid() } threads->list(threads::running);
-    my @started_threads = keys(%running_threads);
-    unless (@really_running == $threads_count && keys(%running_threads) == $threads_count) {
-        $self->{logger}->debug(scalar(@really_running)." really running: [@really_running]");
-        $self->{logger}->debug(scalar(@started_threads)." started: [@started_threads]");
-    }
-
+    # no need more worker than ips to scan
+    my $worker_count = $max_threads > $max_count ? $max_count : $max_threads;
     my $queued_count = 0;
+
+    $self->{logger}->debug("creating $worker_count workers");
+    $manager->set_max_procs($worker_count);
+
+    # Callback for processed scan
+    $manager->run_on_finish(
+        sub {
+            my ($pid, $ret, $jobid) = @_;
+            my $queue = $queues{$jobid};
+            $queue->{in_queue} --;
+            $queued_count--;
+            $queue->{done} ++;
+            if ($queue->{done} == $queue->{size}) {
+                # send final message to the server before cleaning threads
+                $self->_sendStopMessage($jobid);
+
+                delete $queues{$jobid};
+
+                # send final message to the server
+                $self->_sendStopMessage($jobid);
+            }
+        }
+    );
+
     my $job_count = 0;
     my $jid_len = length(sprintf("%i",$max_count));
     my $jid_pattern = "#%0".$jid_len."i";
 
     # We need to guaranty we don't have more than max_in_queue device in shared
     # queue for each job
-    while (my @pids = sort { $a <=> $b } keys(%queues)) {
+    while (my @jobs = sort { $a <=> $b } keys(%queues)) {
 
         # Enqueue as ip as possible
-        foreach my $pid (@pids) {
-            my $queue = $queues{$pid};
+        foreach my $jobid (@jobs) {
+            my $queue = $queues{$jobid};
             next unless @{$queue->{ranges}};
             next if $queue->{in_queue} >= $queue->{max_in_queue};
             my $range = $queue->{ranges}->[0];
@@ -317,109 +308,65 @@ sub run {
             # Still update block and handle range list
             shift @{$queue->{ranges}} unless $range->{block} = $block + 1;
             next unless $blockip;
-            my $address = {
-                ip                  => $blockip,
-                snmp_ports          => $range->{ports},
-                snmp_domains        => $range->{domains},
-                entity              => $range->{entity},
-                pid                 => $pid,
-                timeout             => $queue->{timeout},
-                snmp_credentials    => $queue->{snmp_credentials},
-                jid                 => sprintf($jid_pattern, ++$job_count),
-            };
-            $address->{walk} = $range->{walk} if $range->{walk};
-            # Don't forget to send initial start message to the server
-            unless ($queue->{started}) {
-                $queue->{started} = 1;
-                $self->_sendStartMessage($pid);
-                # Also send block size to the server
-                $self->_sendBlockMessage($pid, $queue->{size});
-            }
+
             $queue->{in_queue} ++;
-            $jobs->enqueue($address);
             $queued_count++;
-        }
-
-        # as long as some of our threads are still running...
-        if (keys(%running_threads)) {
-
-            # send available results on the fly
-            while (my $address = $done->dequeue_nb()) {
-                my $pid = $address->{pid};
-                my $queue = $queues{$pid};
-                $queue->{in_queue} --;
-                $queued_count--;
-                unless ($queue->{in_queue} || @{$queue->{ranges}}) {
-                    # send final message to the server before cleaning threads
-                    $self->_sendStopMessage($pid);
-
-                    delete $queues{$pid};
-
-                    # send final message to the server
-                    $self->_sendStopMessage($pid);
-                }
-                # Check if it's time to abort a thread or reduce expiration
-                $max_count--;
-                if ($max_count < $threads_count) {
-                    $jobs->enqueue({ leave => 1 });
-                    $threads_count--;
-                } elsif ($threads_count > 1) {
-                    # Only reduce expiration when still using some threads
-                    # Reduce expiration from target expiration but not queue timeout
-                    $expiration -= $target_expiration - $queue->{timeout};
-                    $expiration = $minimum_expiration if $expiration < $minimum_expiration;
-                    $self->_logExpirationHours($expiration);
-                }
-            }
-
-            # wait for a little
-            usleep(50000);
 
             if ($expiration && time > $expiration) {
                 $self->{logger}->warning("Aborting netdiscovery task as it reached expiration time");
-                # detach all our running worker
-                foreach my $tid (keys(%running_threads)) {
-                    $running_threads{$tid}->detach()
-                        if $running_threads{$tid}->is_running();
-                    delete $running_threads{$tid};
-                }
+                $abort ++;
                 last;
             }
 
             if ($abort) {
                 $self->{logger}->warning("Aborting netdiscovery task on TERM signal");
-                # detach all our running worker
-                foreach my $tid (keys(%running_threads)) {
-                    if ($running_threads{$tid}->is_running()) {
-                        $running_threads{$tid}->detach();
-                        $jobs->enqueue({ leave => 1 });
-                    }
-                    delete $running_threads{$tid};
-                }
                 last;
             }
 
-            # List our created and possibly running threads in a list to check
-            my %running_threads_checklist = map { $_ => 0 }
-                keys(%running_threads);
-
-            foreach my $running (threads->list(threads::running)) {
-                my $tid = $running->tid();
-                # Skip if this running thread tid is not is our started list
-                next unless exists($running_threads{$tid});
-
-                # Check a thread is still running
-                $running_threads_checklist{$tid} = 1 ;
+            # Don't forget to send initial start message to the server
+            unless ($queue->{started}) {
+                $self->{logger}->debug("starting job $jobid with $queue->{size} ips to scan using $queue->{max_in_queue} workers");
+                $queue->{started} = 1;
+                $self->_sendStartMessage($jobid);
+                # Also send block size to the server
+                $self->_sendBlockMessage($jobid, $queue->{size});
             }
 
-            # Clean our started list from thread tid that don't run anymore
-            foreach my $tid (keys(%running_threads_checklist)) {
-                delete $running_threads{$tid}
-                    unless $running_threads_checklist{$tid};
+            $job_count++;
+
+            # Start worker and still try for another ip for this job
+            $manager->start($jobid) and redo;
+
+            my $jobaddress = {
+                ip                  => $blockip,
+                snmp_ports          => $range->{ports},
+                snmp_domains        => $range->{domains},
+                entity              => $range->{entity},
+                pid                 => $jobid,
+                timeout             => $queue->{timeout},
+                snmp_credentials    => $queue->{snmp_credentials},
+                jid                 => sprintf($jid_pattern, $job_count),
+            };
+            $jobaddress->{walk} = $range->{walk} if $range->{walk};
+
+            my $result = $self->_scanAddress($jobaddress);
+
+            if ($result && $result->{IP}) {
+                $result->{ENTITY} = $range->{entity} if defined($range->{entity});
+                $self->_sendResultMessage($result, $jobid);
             }
-            last unless keys(%running_threads);
+
+            $manager->finish(0);
         }
+
+        last if $abort;
+
+        # wait a little bit
+        usleep(50000);
+        $manager->reap_finished_children();
     }
+
+    $manager->wait_all_children();
 
     if ($queued_count) {
         $self->{logger}->error("$queued_count devices scan result missed");
@@ -430,11 +377,6 @@ sub run {
         $self->{logger}->error("job $pid aborted");
         $self->_sendExitMessage($pid);
     }
-
-    # Cleanup joinable threads
-    $_->join() foreach threads->list(threads::joinable);
-    $self->{logger}->debug("All netdiscovery threads terminated")
-        unless threads->list(threads::running);
 
     # Reset expiration
     setExpirationTime();
@@ -502,8 +444,7 @@ sub _scanAddress {
     my ($self, $params) = @_;
 
     my $logger = $self->{logger};
-    my $id     = threads->tid();
-    $logger->{prefix} = "[thread $id] $params->{jid}, ";
+    $logger->{prefix} = "$params->{jid}, ";
     $logger->debug("scanning $params->{ip}");
 
     # Used by unittest to test arp cases
