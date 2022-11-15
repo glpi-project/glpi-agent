@@ -12,11 +12,6 @@ use Test::Deep qw(cmp_deeply);
 
 use GLPI::Agent::Logger;
 
-# check thread support availability
-if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
-    plan skip_all => 'thread support required';
-}
-
 GLPI::Agent::Task::NetDiscovery->use();
 
 # Setup a target with a Test logger and debug
