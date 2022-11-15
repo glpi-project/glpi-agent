@@ -238,7 +238,7 @@ sub run {
     # Callback for processed scan
     $manager->run_on_finish(
         sub {
-            my ($pid, $ret, $jobid) = @_;
+            my ($pid, $ret, $jobid, $signal, $coredump, $timeout) = @_;
             my $job = $jobs{$jobid};
             $queued_count--;
             if ($job->done) {
@@ -249,6 +249,11 @@ sub run {
 
                 # send final message to the server
                 $self->_sendStopMessage($jobid);
+            }
+            # Update expiration time if required
+            if ($ret && $timeout>0) {
+                my $expiration = getExpirationTime() + $timeout;
+                setExpirationTime( expiration => $expiration );
             }
         }
     );
@@ -317,6 +322,40 @@ sub run {
             if ($result && $result->{IP}) {
                 $result->{ENTITY} = $range->{entity} if defined($range->{entity});
                 $self->_sendResultMessage($result, $jobid);
+
+                # Eventually chain with netinventory when requested
+                if ($result->{AUTHSNMP} && $job->netscan) {
+                    GLPI::Agent::Task::NetInventory->require();
+                    my $inventory = GLPI::Agent::Task::NetInventory->new(
+                        map { $_ => $self->{$_} } qw(config datadir target deviceid logger agentid)
+                    );
+
+                    GLPI::Agent::Task::NetInventory::Job->require();
+                    my $timeout = $job->timeout >= 15 ? $job->timeout : 15;
+                    $inventory->{jobs} = [
+                        GLPI::Agent::Task::NetInventory::Job->new(
+                            params => {
+                                PID           => $jobid,
+                                THREADS_QUERY => 1,
+                                TIMEOUT       => ,
+                            },
+                            devices     => [{
+                                ID           => 0,
+                                IP           => $blockip,
+                                PORT         => $result->{AUTHPORT}     // '',
+                                PROTOCOL     => $result->{AUTHPROTOCOL} // '',
+                                AUTHSNMP_ID  => $result->{AUTHSNMP}
+                            }],
+                            credentials => $jobaddress->{snmp_credentials},
+                        )
+                    ];
+
+                    $inventory->{client} = $self->{client};
+                    $inventory->run();
+
+                    # Finish with return code to update task expiration
+                    $manager->finish(1, $timeout);
+                }
             }
 
             $manager->finish(0);
