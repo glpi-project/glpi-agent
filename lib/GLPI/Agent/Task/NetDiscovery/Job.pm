@@ -37,6 +37,11 @@ sub max_threads {
     return $self->{_params}->{THREADS_DISCOVERY} || 1;
 }
 
+sub netscan {
+    my ($self) = @_;
+    return $self->{_params}->{NETSCAN} || 0;
+}
+
 sub getQueueParams {
     my ($self, $range) = @_;
 
