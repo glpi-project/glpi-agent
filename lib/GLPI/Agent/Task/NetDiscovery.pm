@@ -256,7 +256,7 @@ sub run {
 
     # Can be set from GLPI::Agent::HTTP::Server::ToolBox::Inventory
     my $target_expiration = $self->{target_expiration} || 60;
-    $target_expiration = 60 if ($target_expiration < 60);
+    $target_expiration = 60 if $target_expiration < 60;
     setExpirationTime( timeout => $max_count * $target_expiration );
     my $expiration = getExpirationTime();
     $expiration = $minimum_expiration if $expiration < $minimum_expiration;
@@ -293,11 +293,10 @@ sub run {
     my $jid_len = length(sprintf("%i",$max_count));
     my $jid_pattern = "#%0".$jid_len."i";
 
-    # We need to guaranty we don't have more than max_in_queue device in shared
-    # queue for each job
+    # We need to guaranty we don't have more than max_in_queue request in queue for each job
     while (my @jobs = sort { $a <=> $b } keys(%queues)) {
 
-        # Enqueue as ip as possible
+        # Enqueue as ip as possible for each job
         foreach my $jobid (@jobs) {
             my $queue = $queues{$jobid};
             next unless @{$queue->{ranges}};
@@ -306,7 +305,8 @@ sub run {
             my $block = $range->{block};
             my $blockip = $block->ip();
             # Still update block and handle range list
-            shift @{$queue->{ranges}} unless $range->{block} = $block + 1;
+            $range->{block} = $block + 1;
+            shift @{$queue->{ranges}} unless $range->{block};
             next unless $blockip;
 
             $queue->{in_queue} ++;
@@ -334,8 +334,11 @@ sub run {
 
             $job_count++;
 
-            # Start worker and still try for another ip for this job
+            # Start worker and still try to enqueue another ip for this job
             $manager->start($jobid) and redo;
+
+            # We should better use a new client on fork
+            delete $self->{client};
 
             my $jobaddress = {
                 ip                  => $blockip,
