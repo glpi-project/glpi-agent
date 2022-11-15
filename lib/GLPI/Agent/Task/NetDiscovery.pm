@@ -8,7 +8,6 @@ use parent 'GLPI::Agent::Task';
 use constant DEVICE_PER_MESSAGE => 4;
 
 use English qw(-no_match_vars);
-use Net::IP;
 use Time::localtime;
 use Time::HiRes qw(usleep);
 use UNIVERSAL::require;
@@ -164,91 +163,58 @@ sub run {
     my $manager = Parallel::ForkManager->new($max_threads);
     $manager->set_waitpid_blocking_sleep(0);
 
-    my %queues = ();
+    my %jobs = ();
 
     # Callback to update %queues
     $manager->run_on_finish(
         sub {
-            my ($pid, $ret, $jobid, $signal, $coredump, $data) = @_;
-            if (!$ret && $data) {
-                $queues{$jobid}->{size} += $data->{size};
-                push @{$queues{$jobid}->{ranges}}, $data->{range};
-            }
+            my ($pid, $ret, $jobid, $signal, $coredump, $params) = @_;
+            $jobs{$jobid}->updateQueue(%{$params})
+                if $ret && $params;
         }
     );
 
     # Start jobs by preparing range queues and counting ips
     foreach my $job (@{$self->{jobs}}) {
         my $jobid = $job->pid;
-
-        # Initialize queue
-        $queues{$jobid} = {
-            max_in_queue        => $job->max_threads(),
-            in_queue            => 0,
-            timeout             => $job->timeout(),
-            snmp_credentials    => $job->getValidCredentials(),
-            ranges              => [],
-            size                => 0,
-            done                => 0,
-        };
+        $jobs{$jobid} = $job;
 
         $self->{logger}->debug("initializing job $jobid");
 
-        # process each address block
+        # process each iprange
         foreach my $range ($job->ranges()) {
-            my $start = $range->{start};
-            my $end   = $range->{end};
 
             $manager->start($jobid) and next;
 
-            my $block = Net::IP->new( "$start-$end" );
-            if (!$block || !$block->ip() || $block->{binip} !~ /1/) {
-                $self->{logger}->error(
-                    "IPv4 range not supported by Net::IP: $start-$end"
-                );
-                $manager->finish(1);
-            }
+            my ($ret, $params) = $job->getQueueParams($range);
 
-            unless ($block->size()) {
-                $self->{logger}->error("Skipping empty range: $start-$end");
-                $manager->finish(2);
-            }
-
-            $self->{logger}->debug("initializing block $start-$end");
-
-            $range->{block} = $block;
-
-            my $data = {
-                size    => $block->size()->numify(),
-                range   => $range
-            };
-
-            $manager->finish(0, $data);
+            $manager->finish($ret, $params);
         }
     }
 
     $manager->wait_all_children();
 
-    # Check computed queues
+    # Check computed jobs queue
     my $max_count = 0;
     my $minimum_timeout = 1;
-    foreach my $jobid (keys(%queues)) {
-        my $queue = $queues{$jobid};
-        unless ($queue->{size}) {
+    foreach my $job (@{$self->{jobs}}) {
+        my $jobid = $job->pid;
+        my $size  = $job->queuesize;
+        unless ($size) {
             $self->{logger}->debug("no valid block found for job $jobid");
             $self->_sendStartMessage($jobid);
             $self->_sendBlockMessage($jobid, 0);
             $self->_sendStopMessage($jobid);
             $self->_sendStopMessage($jobid);
-            delete $queues{$jobid};
+            delete $jobs{$jobid};
             next;
         }
 
         # Update total count
-        $max_count += $queue->{size};
+        $max_count += $size;
 
         # Update minimum expiration
-        $minimum_timeout += $queue->{size} * $queue->{timeout};
+        $minimum_timeout += $size * $job->timeout;
     }
     my $minimum_expiration = time + $minimum_timeout;
 
@@ -273,15 +239,13 @@ sub run {
     $manager->run_on_finish(
         sub {
             my ($pid, $ret, $jobid) = @_;
-            my $queue = $queues{$jobid};
-            $queue->{in_queue} --;
+            my $job = $jobs{$jobid};
             $queued_count--;
-            $queue->{done} ++;
-            if ($queue->{done} == $queue->{size}) {
+            if ($job->done) {
                 # send final message to the server before cleaning threads
                 $self->_sendStopMessage($jobid);
 
-                delete $queues{$jobid};
+                delete $jobs{$jobid};
 
                 # send final message to the server
                 $self->_sendStopMessage($jobid);
@@ -294,22 +258,17 @@ sub run {
     my $jid_pattern = "#%0".$jid_len."i";
 
     # We need to guaranty we don't have more than max_in_queue request in queue for each job
-    while (my @jobs = sort { $a <=> $b } keys(%queues)) {
+    while (my @jobs = sort { $a <=> $b } keys(%jobs)) {
 
         # Enqueue as ip as possible for each job
         foreach my $jobid (@jobs) {
-            my $queue = $queues{$jobid};
-            next unless @{$queue->{ranges}};
-            next if $queue->{in_queue} >= $queue->{max_in_queue};
-            my $range = $queue->{ranges}->[0];
-            my $block = $range->{block};
-            my $blockip = $block->ip();
-            # Still update block and handle range list
-            $range->{block} = $block + 1;
-            shift @{$queue->{ranges}} unless $range->{block};
-            next unless $blockip;
+            my $job = $jobs{$jobid};
+            next unless $job->ranges;
+            next if $job->max_in_queue;
+            my $range = $job->range;
+            my $blockip = $job->nextip()
+                or next;
 
-            $queue->{in_queue} ++;
             $queued_count++;
 
             if ($expiration && time > $expiration) {
@@ -324,12 +283,13 @@ sub run {
             }
 
             # Don't forget to send initial start message to the server
-            unless ($queue->{started}) {
-                $self->{logger}->debug("starting job $jobid with $queue->{size} ips to scan using $queue->{max_in_queue} workers");
-                $queue->{started} = 1;
+            unless ($job->started) {
+                my $size = $job->queuesize;
+                my $max  = $job->max_threads;
+                $self->{logger}->debug("starting job $jobid with $size ips to scan using $max workers");
                 $self->_sendStartMessage($jobid);
                 # Also send block size to the server
-                $self->_sendBlockMessage($jobid, $queue->{size});
+                $self->_sendBlockMessage($jobid, $size);
             }
 
             $job_count++;
@@ -346,8 +306,8 @@ sub run {
                 snmp_domains        => $range->{domains},
                 entity              => $range->{entity},
                 pid                 => $jobid,
-                timeout             => $queue->{timeout},
-                snmp_credentials    => $queue->{snmp_credentials},
+                timeout             => $job->timeout,
+                snmp_credentials    => $job->snmp_credentials,
                 jid                 => sprintf($jid_pattern, $job_count),
             };
             $jobaddress->{walk} = $range->{walk} if $range->{walk};
@@ -376,9 +336,9 @@ sub run {
     }
 
     # Send exit message if we quit during a job still being run
-    foreach my $pid (sort { $a <=> $b } keys(%queues)) {
-        $self->{logger}->error("job $pid aborted");
-        $self->_sendExitMessage($pid);
+    foreach my $jobid (sort { $a <=> $b } keys(%jobs)) {
+        $self->{logger}->error("job $jobid aborted");
+        $self->_sendExitMessage($jobid);
     }
 
     # Reset expiration
