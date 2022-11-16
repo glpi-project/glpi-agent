@@ -6,6 +6,7 @@ use lib 't/lib';
 use File::Temp qw(tempdir);
 use UNIVERSAL::require;
 use Config;
+use Storable;
 
 use Test::Exception;
 use Test::More;
@@ -25,12 +26,8 @@ use GLPI::Agent::Task::NetInventory::Version;
 our $VERSION = $GLPI::Agent::Version::VERSION;
 our $TASKVERSION = GLPI::Agent::Task::NetInventory::Version::VERSION;
 
-# check thread support availability
-if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
-    plan skip_all => 'thread support required';
-}
-
 GLPI::Agent::Task::NetInventory->use();
+GLPI::Agent::Task::NetInventory::Job->use();
 
 # Setup a target with a Test logger and debug
 my $logger = GLPI::Agent::Logger->new(
@@ -112,7 +109,7 @@ my %responses = (
         cmp     => {
             jobs    => 2,
             devices => [ 1, 1 ],
-            lastlog => qr/All netinventory threads terminated/
+            lastlog => qr/All netinventory workers terminated/
         },
         PROLOG  =>
 '<?xml version="1.0" encoding="UTF-8"?>
@@ -262,7 +259,7 @@ my %responses = (
         cmp     => {
             jobs    => 1,
             devices => [ 1 ],
-            lastlog => qr/All netinventory threads terminated/
+            lastlog => qr/All netinventory workers terminated/
         },
         PROLOG  =>
 '<?xml version="1.0" encoding="UTF-8"?>
@@ -342,7 +339,7 @@ my %responses = (
         cmp     => {
             jobs    => 2,
             devices => [ 2, 1 ],
-            lastlog => qr/All netinventory threads terminated/
+            lastlog => qr/All netinventory workers terminated/
         },
         PROLOG  =>
 '<?xml version="1.0" encoding="UTF-8"?>
@@ -440,7 +437,7 @@ my %responses = (
         cmp     => {
             jobs    => 1,
             devices => [ 1 ],
-            lastlog => qr/All netinventory threads terminated/
+            lastlog => qr/All netinventory workers terminated/
         },
         PROLOG  =>
 '<?xml version="1.0" encoding="UTF-8"?>
@@ -480,15 +477,15 @@ my %responses = (
 );
 
 my $plan_tests_count = 6 * keys(%responses);
-foreach my $case (keys(%responses)) {
-    $plan_tests_count += scalar(@{$responses{$case}->{SNMPQUERY}})
-        if $responses{$case}->{SNMPQUERY};
+foreach my $case (values(%responses)) {
+    next unless $case->{SNMPQUERY};
+    $plan_tests_count += scalar(@{$case->{SNMPQUERY}});
 }
 
 plan tests => $plan_tests_count ;
 
-my $queue = Thread::Queue->new();
-my $tid = threads->tid();
+my $test_pid = $$;
+my $storable_tempdir = tempdir(CLEANUP => 1);
 
 my $client_module = Test::MockModule->new('GLPI::Agent::HTTP::Client::OCS');
 $client_module->mock('send', sub {
@@ -524,10 +521,9 @@ $client_module->mock('send', sub {
             unshift @{$response}, @others if @others;
         }
 
-        # When received in another thread than test thread, keep %params to be
-        # re-used for the same call later from the test thread
-        if (threads->tid() != $tid) {
-            $queue->enqueue(\%params);
+        # In workers, store %params to be sent later in testing process
+        if ($test_pid != $$) {
+            store \%params, "$storable_tempdir/sent-$$";
         } else {
             cmp_deeply($sent, $message, "Sent $query message");
         }
@@ -568,9 +564,11 @@ foreach my $case (keys(%responses)) {
 
     $task->run() if $task->isEnabled($response);
 
-    # "Re-send" in test thread calls from other threads, see client send() mock up
-    while (my $sent = $queue->dequeue_nb()) {
+    # Send back in current test process what workers wanted to send
+    foreach my $file (glob("$storable_tempdir/sent-*")) {
+        my $sent = retrieve($file);
         $client->send(%{$sent});
+        unlink $file;
     }
 
     ok(

@@ -91,6 +91,6 @@ like(
 );
 like(
     $err,
-    qr/All netinventory threads terminated/,
+    qr/All netinventory workers terminated/,
     'last thread ended'
 );
