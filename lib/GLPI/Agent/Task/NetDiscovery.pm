@@ -160,7 +160,8 @@ sub run {
         @{$self->{jobs}};
 
     # Prepare fork manager
-    my $manager = Parallel::ForkManager->new($max_threads);
+    my $tempdir = $self->{target}->getStorage()->getDirectory();
+    my $manager = Parallel::ForkManager->new($max_threads, $tempdir);
     $manager->set_waitpid_blocking_sleep(0);
 
     my %jobs = ();
@@ -242,7 +243,7 @@ sub run {
             my $job = $jobs{$jobid};
             $queued_count--;
             if ($job->done) {
-                # send final message to the server before cleaning threads
+                # send final message to the server before cleaning jobs
                 $self->_sendStopMessage($jobid);
 
                 delete $jobs{$jobid};
@@ -251,7 +252,7 @@ sub run {
                 $self->_sendStopMessage($jobid);
             }
             # Update expiration time if required
-            if ($ret && $timeout>0) {
+            if ($ret && $timeout && $timeout>0) {
                 my $expiration = getExpirationTime() + $timeout;
                 setExpirationTime( expiration => $expiration );
             }
@@ -325,6 +326,9 @@ sub run {
 
                 # Eventually chain with netinventory when requested
                 if ($result->{AUTHSNMP} && $job->netscan) {
+                    my $credentials = [
+                        grep { $_->{ID} == $result->{AUTHSNMP} } @{$jobaddress->{snmp_credentials}}
+                    ];
                     GLPI::Agent::Task::NetInventory->require();
                     my $inventory = GLPI::Agent::Task::NetInventory->new(
                         map { $_ => $self->{$_} } qw(config datadir target deviceid logger agentid)
@@ -337,16 +341,21 @@ sub run {
                             params => {
                                 PID           => $jobid,
                                 THREADS_QUERY => 1,
-                                TIMEOUT       => ,
+                                TIMEOUT       => $timeout,
+                                NO_START_STOP => 1
                             },
-                            devices     => [{
-                                ID           => 0,
-                                IP           => $blockip,
-                                PORT         => $result->{AUTHPORT}     // '',
-                                PROTOCOL     => $result->{AUTHPROTOCOL} // '',
-                                AUTHSNMP_ID  => $result->{AUTHSNMP}
-                            }],
-                            credentials => $jobaddress->{snmp_credentials},
+                            devices => [
+                                {
+                                    ID          => 0,
+                                    IP          => $blockip,
+                                    PORT        => $result->{AUTHPORT}     // '',
+                                    PROTOCOL    => $result->{AUTHPROTOCOL} // '',
+                                    AUTHSNMP_ID => $result->{AUTHSNMP},
+                                    # Just to keep the same logger prefix
+                                    logprefix   => $self->{logger}->{prefix}
+                                }
+                            ],
+                            credentials => $credentials,
                         )
                     ];
 
