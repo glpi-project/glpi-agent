@@ -2,13 +2,13 @@ package GLPI::Agent::Task::NetInventory;
 
 use strict;
 use warnings;
-use threads;
+
 use parent 'GLPI::Agent::Task';
 
 use English qw(-no_match_vars);
 use Time::HiRes qw(usleep);
-use Thread::Queue v2.01;
 use UNIVERSAL::require;
+use Parallel::ForkManager;
 
 use GLPI::Agent::XML::Query;
 use GLPI::Agent::Version;
@@ -102,68 +102,15 @@ sub isEnabled {
     return 1;
 }
 
-sub _inventory_thread {
-    my ($self, $jobs, $done) = @_;
-
-    my $id = threads->tid();
-    $self->{logger}->debug("[thread $id] creation");
-
-    # run as long as they are a job to process
-    while (my $job = $jobs->dequeue()) {
-
-        last unless ref($job) eq 'HASH';
-        last if $job->{leave};
-
-        my $device = $job->{device};
-
-        my $result;
-        eval {
-            $result = $self->_queryDevice($job);
-        };
-        if ($EVAL_ERROR) {
-            chomp $EVAL_ERROR;
-            $result = {
-                ERROR => {
-                    ID      => $device->{ID},
-                    MESSAGE => $EVAL_ERROR
-                }
-            };
-
-            $result->{ERROR}->{TYPE} = $device->{TYPE} if $device->{TYPE};
-
-            # Inserted back device PID in result if set by server
-            $result->{PID} = $device->{PID} if defined($device->{PID});
-
-            $self->{logger}->error("[thread $id] $EVAL_ERROR");
-        }
-
-        # Get result PID from result
-        my $pid = delete $result->{PID};
-
-        # Directly send the result message from the thread, but use job pid if
-        # it was not set in result
-        $self->_sendResultMessage($result, $pid || $job->{pid});
-
-        $done->enqueue($job);
-    }
-
-    delete $self->{logger}->{prefix};
-
-    $self->{logger}->debug("[thread $id] termination");
-}
-
 sub run {
     my ($self, %params) = @_;
+
+    my $abort = 0;
+    $SIG{TERM} = sub { $abort = 1; };
 
     # Extract greatest max_threads from jobs
     my ($max_threads) = sort { $b <=> $a } map { int($_->max_threads()) }
         @{$self->{jobs}};
-
-    my %running_threads = ();
-
-    # initialize FIFOs
-    my $jobs = Thread::Queue->new();
-    my $done = Thread::Queue->new();
 
     # count devices and check skip_start_stop
     my $devices_count   = 0;
@@ -171,8 +118,8 @@ sub run {
     foreach my $job (@{$self->{jobs}}) {
         $devices_count += $job->count();
         # newer server won't need START message if PID is provided on <DEVICE/>
-        $skip_start_stop = any { defined($_->{PID}) } $job->devices()
-            unless $skip_start_stop;
+        next if $skip_start_stop;
+        $skip_start_stop = $job->skip_start_stop || any { defined($_->{PID}) } $job->devices();
     }
 
     # Define a job expiration: 15 minutes by device to scan should be enough, but not less than an hour
@@ -183,33 +130,18 @@ sub run {
     my $expiration = getExpirationTime();
     $self->_logExpirationHours($expiration);
 
-    # no need more threads than devices to scan
-    my $threads_count = $max_threads > $devices_count ? $devices_count : $max_threads;
+    # no need more workers than devices to scan
+    my $worker_count = $max_threads > $devices_count ? $devices_count : $max_threads;
 
-    $self->{logger}->debug("creating $threads_count worker threads");
-    for (my $i = 0; $i < $threads_count; $i++) {
-        my $newthread = threads->create(sub { $self->_inventory_thread($jobs, $done); });
-        # Keep known created threads in a hash
-        $running_threads{$newthread->tid()} = $newthread ;
-        usleep(50000) until ($newthread->is_running() || $newthread->is_joinable());
-    }
+    # Prepare fork manager
+    my $manager = Parallel::ForkManager->new($worker_count);
+    $manager->set_waitpid_blocking_sleep(0);
 
-    # Check really started threads number vs really running ones
-    my @really_running  = map { $_->tid() } threads->list(threads::running);
-    my @started_threads = keys(%running_threads);
-    unless (@really_running == $threads_count && keys(%running_threads) == $threads_count) {
-        $self->{logger}->debug(scalar(@really_running)." really running: [@really_running]");
-        $self->{logger}->debug(scalar(@started_threads)." started: [@started_threads]");
-    }
-
-    my %queues = ();
+    my %jobs = ();
     my $pid_index = 1;
 
     # Start jobs by preparing queues
     foreach my $job (@{$self->{jobs}}) {
-
-        # SNMP credentials
-        my $credentials = $job->credentials();
 
         # set pid
         my $pid = $job->pid() || $pid_index++;
@@ -217,127 +149,136 @@ sub run {
         # send initial message to server unless it supports newer protocol
         $self->_sendStartMessage($pid) unless $skip_start_stop;
 
-        # prepare queue
-        my $queue = $queues{$pid} || {
-            max_in_queue    => $job->max_threads(),
-            in_queue        => 0,
-            todo            => []
-        };
-        foreach my $device ($job->devices()) {
-            push @{$queue->{todo}}, {
-                pid         => $pid,
-                device      => $device,
-                timeout     => $job->timeout(),
-                credentials => $credentials->{$device->{AUTHSNMP_ID}}
-            };
-        }
+        # Only keep job if it has devices to scan
+        my @devices = $job->devices()
+            or next;
 
-        # Only keep queue if we have a device to scan
-        $queues{$pid} = $queue
-            if @{$queue->{todo}};
+        # prepare job
+        $jobs{$pid} = $job unless $jobs{$pid};
+        $jobs{$pid}->updateQueue(\@devices);
     }
 
     my $queued_count = 0;
+
+    # Callback for processed device
+    $manager->run_on_finish(
+        sub {
+            my ($pid, $ret, $jobid) = @_;
+            my $job = $jobs{$jobid};
+            $queued_count--;
+            if ($job->done) {
+                # send final message to the server before cleaning jobs
+                $self->_sendStopMessage($jobid) unless $skip_start_stop;
+
+                delete $jobs{$jobid};
+
+                # send final message to the server
+                $self->_sendStopMessage($jobid) unless $skip_start_stop;
+            }
+            $devices_count--;
+            # Only reduce expiration when few devices are still to be scanned
+            if ($devices_count > 4 && $expiration > time + $devices_count*$target_expiration) {
+                $expiration -= $target_expiration;
+                setExpirationTime( expiration => $expiration );
+                $self->_logExpirationHours($expiration);
+            }
+        }
+    );
+
     my $job_count = 0;
     my $jid_len = length(sprintf("%i",$devices_count));
-    my $jid_pattern = "#%0".$jid_len."i";
+    my $jid_pattern = "#%0".$jid_len."i, ";
 
-    # We need to guaranty we don't have more than max_in_queue device in shared
-    # queue for each job
-    while (my @pids = sort { $a <=> $b } keys(%queues)) {
+    # We need to guaranty we don't have more than max_in_queue request in queue for each job
+    while (my @pids = sort { $a <=> $b } keys(%jobs)) {
 
-        # Enqueue as device as possible
+        # Enqueue as device as possible for each job
         foreach my $pid (@pids) {
-            my $queue = $queues{$pid};
-            next unless @{$queue->{todo}};
-            next if $queue->{in_queue} >= $queue->{max_in_queue};
-            my $device = shift @{$queue->{todo}};
-            $queue->{in_queue} ++;
-            $device->{jid} = sprintf($jid_pattern, ++$job_count);
-            $jobs->enqueue($device);
+            my $job = $jobs{$pid};
+            next if $job->no_more || $job->max_in_queue;
+            my $device = $job->nextdevice
+                or next;
+
             $queued_count++;
-        }
-
-        # as long as some of our threads are still running...
-        if (keys(%running_threads)) {
-
-            # send available results on the fly
-            while (my $device = $done->dequeue_nb()) {
-                my $pid = $device->{pid};
-                my $queue = $queues{$pid};
-                $queue->{in_queue} --;
-                $queued_count--;
-                unless ($queue->{in_queue} || @{$queue->{todo}}) {
-                    # send final message to the server before cleaning threads unless it supports newer protocol
-                    $self->_sendStopMessage($pid) unless $skip_start_stop;
-
-                    delete $queues{$pid};
-
-                    # send final message to the server unless it supports newer protocol
-                    $self->_sendStopMessage($pid) unless $skip_start_stop;
-                }
-                # Check if it's time to abort a thread
-                $devices_count--;
-                if ($devices_count < $threads_count) {
-                    $jobs->enqueue({ leave => 1 });
-                    $threads_count--;
-                } elsif ($threads_count > 1 && $devices_count > 4) {
-                    # Only reduce expiration when still using all threads or few devices are still to be scanned
-                    $expiration -= $target_expiration;
-                    $self->_logExpirationHours($expiration);
-                }
-            }
-
-            # wait for a little
-            usleep(50000);
 
             if ($expiration && time > $expiration) {
                 $self->{logger}->warning("Aborting netinventory job as it reached expiration time");
-                # detach all our running worker
-                foreach my $tid (keys(%running_threads)) {
-                    $running_threads{$tid}->detach()
-                        if $running_threads{$tid}->is_running();
-                    delete $running_threads{$tid};
-                }
+                $abort ++;
                 last;
             }
 
-            # List our created and possibly running threads in a list to check
-            my %running_threads_checklist = map { $_ => 0 }
-                keys(%running_threads);
-
-            foreach my $running (threads->list(threads::running)) {
-                my $tid = $running->tid();
-                # Skip if this running thread tid is not is our started list
-                next unless exists($running_threads{$tid});
-
-                # Check a thread is still running
-                $running_threads_checklist{$tid} = 1 ;
+            if ($abort) {
+                $self->{logger}->warning("Aborting netinventory task on TERM signal");
+                last;
             }
 
-            # Clean our started list from thread tid that don't run anymore
-            foreach my $tid (keys(%running_threads_checklist)) {
-                delete $running_threads{$tid}
-                    unless $running_threads_checklist{$tid};
+            $job_count++;
+
+            # Start worker and still try to enqueue another device for this job
+            $manager->start($pid) and redo;
+
+            # logprefix can be set by NetDiscovery task if netscan is enabled
+            $self->{logger}->{prefix} = delete $device->{logprefix}
+                // sprintf($jid_pattern, $job_count);
+
+            my $result;
+            eval {
+                $result = $self->_queryDevice(
+                    pid         => $pid,
+                    timeout     => $job->timeout(),
+                    credential  => $job->credential($device->{AUTHSNMP_ID}),
+                    device      => $device
+                );
+            };
+            if ($EVAL_ERROR) {
+                chomp $EVAL_ERROR;
+                $result = {
+                    ERROR => {
+                        ID      => $device->{ID},
+                        MESSAGE => $EVAL_ERROR
+                    }
+                };
+
+                $result->{ERROR}->{TYPE} = $device->{TYPE} if $device->{TYPE};
+
+                # Inserted back device PID in result if set by server
+                $result->{PID} = $device->{PID} if defined($device->{PID});
+
+                $self->{logger}->error("$EVAL_ERROR");
             }
-            last unless keys(%running_threads);
+
+            # Get result PID from result
+            my $thispid = delete $result->{PID};
+
+            # Directly send the result message from the worker, but use job pid if
+            # it was not set in result
+            $self->_sendResultMessage($result, $thispid || $pid);
+
+            $self->{logger}->{prefix} = "";
+
+            $manager->finish(0);
         }
+
+        last if $abort;
+
+        # wait a little bit
+        usleep(50000);
+        $manager->reap_finished_children();
     }
+
+    $manager->wait_all_children();
+
+    $self->{logger}->debug("All netinventory workers terminated");
 
     if ($queued_count) {
         $self->{logger}->error("$queued_count devices inventory are missing");
     }
 
     # Send exit message if we quit during a job still being run
-    foreach my $pid (sort { $a <=> $b } keys(%queues)) {
+    foreach my $pid (sort { $a <=> $b } keys(%jobs)) {
         $self->{logger}->error("job $pid aborted");
         $self->_sendExitMessage($pid);
     }
-
-    # Cleanup joinable threads
-    $_->join() foreach threads->list(threads::joinable);
-    $self->{logger}->debug("All netinventory threads terminated")
-        unless threads->list(threads::running);
 
     # Reset expiration
     setExpirationTime();
@@ -448,17 +389,16 @@ sub _sendResultMessage {
 }
 
 sub _queryDevice {
-    my ($self, $params) = @_;
+    my ($self, %params) = @_;
 
-    my $credentials = $params->{credentials};
-    my $device      = $params->{device};
-    my $logger      = $self->{logger};
-    my $id          = threads->tid();
-    $logger->{prefix} = "[thread $id] $params->{jid}, ";
-    $logger->debug(
-        "scanning $device->{ID}: $device->{IP}" .
+    my $credential  = $params{credential};
+    my $device      = $params{device};
+
+    $self->{logger}->debug(
+        "full snmp scan of $device->{IP}" .
         ( $device->{PORT} ? ' on port ' . $device->{PORT} : '' ) .
-        ( $device->{PROTOCOL} ? ' via ' . $device->{PROTOCOL} : '' )
+        ( $device->{PROTOCOL} ? ' via ' . $device->{PROTOCOL} : '' ) .
+        " with credentials " . $device->{AUTHSNMP_ID}
     );
 
     my $snmp;
@@ -476,17 +416,17 @@ sub _queryDevice {
             GLPI::Agent::SNMP::Live->require();
             # AUTHPASSPHRASE & PRIVPASSPHRASE are deprecated but still used by FusionInventory for GLPI plugin
             $snmp = GLPI::Agent::SNMP::Live->new(
-                version      => $credentials->{VERSION},
+                version      => $credential->{VERSION},
                 hostname     => $device->{IP},
                 port         => $device->{PORT},
                 domain       => $device->{PROTOCOL},
-                timeout      => $params->{timeout} || 15,
-                community    => $credentials->{COMMUNITY},
-                username     => $credentials->{USERNAME},
-                authpassword => $credentials->{AUTHPASSPHRASE} // $credentials->{AUTHPASSWORD},
-                authprotocol => $credentials->{AUTHPROTOCOL},
-                privpassword => $credentials->{PRIVPASSPHRASE} // $credentials->{PRIVPASSWORD},
-                privprotocol => $credentials->{PRIVPROTOCOL},
+                timeout      => $params{timeout} || 15,
+                community    => $credential->{COMMUNITY},
+                username     => $credential->{USERNAME},
+                authpassword => $credential->{AUTHPASSPHRASE} // $credential->{AUTHPASSWORD},
+                authprotocol => $credential->{AUTHPROTOCOL},
+                privpassword => $credential->{PRIVPASSPHRASE} // $credential->{PRIVPASSWORD},
+                privprotocol => $credential->{PRIVPROTOCOL},
             );
         };
         die "SNMP communication error: $EVAL_ERROR" if $EVAL_ERROR;
@@ -496,7 +436,6 @@ sub _queryDevice {
         id      => $device->{ID},
         type    => $device->{TYPE},
         snmp    => $snmp,
-        model   => $params->{model},
         config  => $self->{config},
         logger  => $self->{logger},
         # Include glpi version if known so modules can verify it for supported feature
