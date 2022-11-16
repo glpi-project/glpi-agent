@@ -94,8 +94,7 @@ if ($options->{file}) {
         ID           => $id++,
         FILE         => $_,
         IP           => shift @{$options->{host}},
-        AUTHSNMP_ID  => 1,
-        MODELSNMP_ID => 1
+        AUTHSNMP_ID  => 1
     } foreach @{$options->{file}};
 } else {
     push @devices, {
@@ -103,8 +102,7 @@ if ($options->{file}) {
         IP           => $_,
         PORT         => shift @{$options->{port}},
         PROTOCOL     => shift @{$options->{protocol}},
-        AUTHSNMP_ID  => 1,
-        MODELSNMP_ID => 1
+        AUTHSNMP_ID  => 1
     } foreach @{$options->{host}};
 }
 
