@@ -461,7 +461,8 @@ sub getXAuthorityFile {
             # Cache file stat if we need to test for another user
             $stat = $stats{$file} = FileStat($file) unless $stat;
             next unless $stat && $stat->uid eq $uid;
-            my $content = getAllLines(file => $file, %params);
+            my $content = getAllLines(file => $file, %params)
+                or next;
             my ($xauthority) = map { /^\w+=(.*)$/ } grep { /^XAUTHORITY=/ } split("\0", $content);
             # Return on first found file
             return $xauthority if $xauthority && has_file($xauthority);
