@@ -64,7 +64,7 @@ sub getComponents {
     # adding root unit
     if (scalar @components) {
         push @components, {
-            INDEX            => 1,
+            INDEX            => -1,
             CONTAINEDININDEX => 0,
             TYPE             => 'stack',
             NAME             => 'Force10 S-series Stack'
@@ -128,7 +128,7 @@ sub _get_stack_units {
     foreach my $index (@indexes) {
         push @components, {
             INDEX            => getCanonicalConstant($walks{INDEX}->{$index} || $index),
-            CONTAINEDININDEX => 1,
+            CONTAINEDININDEX => -1,
             TYPE             => 'chassis',
         };
     };
