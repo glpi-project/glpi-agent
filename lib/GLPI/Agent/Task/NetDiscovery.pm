@@ -22,6 +22,8 @@ use GLPI::Agent::Tools::Expiration;
 use GLPI::Agent::Tools::SNMP;
 use GLPI::Agent::XML::Query;
 use GLPI::Agent::HTTP::Client::OCS;
+# We need to preload MibSupport configuration before running threads
+use GLPI::Agent::SNMP::MibSupport;
 
 use GLPI::Agent::Task::NetDiscovery::Version;
 use GLPI::Agent::Task::NetDiscovery::Job;
@@ -155,6 +157,12 @@ sub run {
             "can't be used"
         );
     }
+
+    # Preload MibSupport
+    GLPI::Agent::SNMP::MibSupport::preload(
+        config  => $self->{config},
+        logger  => $self->{logger}
+    );
 
     # Extract greatest max_threads from jobs
     my ($max_threads) = sort { $b <=> $a } map { int($_->max_threads()) }
