@@ -135,7 +135,10 @@ if ($options->{community}) {
 
 my $inventory = GLPI::Agent::Task::NetInventory->new(
     %setup,
-    target => GLPI::Agent::Task::NetInventory::Target->new(),
+    target => GLPI::Agent::Target::Local->new(
+        path       => defined($options->{save}) ? $options->{save} : '-',
+        basevardir => $setup{vardir}
+    ),
     config => GLPI::Agent::Config->new(options => $options),
     logger => GLPI::Agent::Logger->new(config => $options)
 );
@@ -148,56 +151,12 @@ $inventory->{jobs} = [
             TIMEOUT       => $options->{timeout},
         },
         devices     => \@devices,
-        credentials => [ $credentials ]
+        credentials => [ $credentials ],
+        showcontrol => $options->{control}
     )
 ];
 
-$inventory->{client} =
-    GLPI::Agent::Task::NetInventory::Client->new(
-        control => $options->{control}
-    );
-
 $inventory->run();
-
-package GLPI::Agent::Task::NetInventory::Client;
-
-sub new {
-    my ($class, %params) = @_;
-
-    return bless {
-        control => $params{control}
-    }, $class;
-}
-
-sub send {
-    my ($self, %params) = @_;
-
-    # don't display control message by default
-    return unless $self->{control}
-        or $params{message}->{h}->{CONTENT}->{DEVICE};
-
-    print $params{message}->getContent();
-}
-
-## no critic (ProhibitMultiplePackages)
-package GLPI::Agent::Task::NetInventory::Target;
-
-use parent "GLPI::Agent::Target";
-
-use constant getType    => 'local';
-
-sub new {
-    my ($class) = @_;
-
-    return bless {}, $class;
-}
-
-sub getUrl {
-    my ($self, %params) = @_;
-
-    ## no critic (ExplicitReturnUndef)
-    return undef;
-}
 
 __END__
 

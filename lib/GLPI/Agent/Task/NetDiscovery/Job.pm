@@ -18,6 +18,8 @@ sub new {
         _credentials    => $params{credentials},
         _ranges         => $params{ranges},
         _snmpwalk       => $params{file},
+        _netscan        => $params{netscan} // 0,
+        _control        => $params{showcontrol} // 0,
     };
     bless $self, $class;
 }
@@ -39,7 +41,12 @@ sub max_threads {
 
 sub netscan {
     my ($self) = @_;
-    return $self->{_params}->{NETSCAN} || 0;
+    return $self->{_netscan};
+}
+
+sub control {
+    my ($self) = @_;
+    return $self->{_control};
 }
 
 sub getQueueParams {

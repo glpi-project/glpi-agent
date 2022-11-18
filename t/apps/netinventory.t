@@ -14,11 +14,6 @@ use GLPI::Test::Utils;
 
 use GLPI::Agent::XML;
 
-# check thread support availability
-if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
-    plan skip_all => 'thread support required';
-}
-
 my @sampleWalkResult = (4, 6);
 
 plan tests => 12 + 3 * @sampleWalkResult;

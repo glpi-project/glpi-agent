@@ -18,7 +18,8 @@ sub new {
         _params         => $params{params},
         _credentials    => $params{credentials},
         _devices        => $devices,
-        _count          => scalar(@{$devices})
+        _count          => scalar(@{$devices}),
+        _control        => $params{showcontrol} // 0
     };
 
     bless $self, $class;
@@ -125,4 +126,10 @@ sub nextdevice {
 
     return $device;
 }
+
+sub control {
+    my ($self) = @_;
+    return $self->{_control};
+}
+
 1;

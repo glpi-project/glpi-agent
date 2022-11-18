@@ -12,11 +12,6 @@ use Config;
 use GLPI::Agent::Tools;
 use GLPI::Test::Utils;
 
-# check thread support availability
-if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
-    plan skip_all => 'thread support required';
-}
-
 GLPI::Agent::Task::NetDiscovery->use();
 
 plan tests => 9;
