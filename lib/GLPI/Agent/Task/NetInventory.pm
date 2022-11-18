@@ -9,6 +9,7 @@ use English qw(-no_match_vars);
 use Time::HiRes qw(usleep);
 use UNIVERSAL::require;
 use Parallel::ForkManager;
+use File::Path qw(mkpath);
 
 use GLPI::Agent::XML::Query;
 use GLPI::Agent::Version;
@@ -134,7 +135,8 @@ sub run {
     my $worker_count = $max_threads > $devices_count ? $devices_count : $max_threads;
 
     # Prepare fork manager
-    my $manager = Parallel::ForkManager->new($worker_count);
+    $self->{logger}->debug("using $worker_count netinventory worker".($worker_count > 1 ? "s" : ""));
+    my $manager = Parallel::ForkManager->new($worker_count > 1 ? $worker_count : 0);
     $manager->set_waitpid_blocking_sleep(0);
 
     my %jobs = ();
@@ -217,9 +219,9 @@ sub run {
             # Start worker and still try to enqueue another device for this job
             $manager->start($pid) and redo;
 
-            # logprefix can be set by NetDiscovery task if netscan is enabled
-            $self->{logger}->{prefix} = delete $device->{logprefix}
-                // sprintf($jid_pattern, $job_count);
+            # logprefix can still be set by NetDiscovery task if netscan is enabled
+            $self->{logger}->{prefix} = sprintf($jid_pattern, $job_count)
+                unless $self->{logger}->{prefix};
 
             my $result;
             eval {
@@ -252,9 +254,9 @@ sub run {
 
             # Directly send the result message from the worker, but use job pid if
             # it was not set in result
-            $self->_sendResultMessage($result, $thispid || $pid);
+            $self->_sendResultMessage($result, $thispid || $pid, $device->{IP});
 
-            $self->{logger}->{prefix} = "";
+            delete $self->{logger}->{prefix} if $worker_count > 1;
 
             $manager->finish(0);
         }
@@ -268,7 +270,7 @@ sub run {
 
     $manager->wait_all_children();
 
-    $self->{logger}->debug("All netinventory workers terminated");
+    $self->{logger}->debug($worker_count>1 ? "All netinventory workers terminated" : "Netinventory worker terminated");
 
     if ($queued_count) {
         $self->{logger}->error("$queued_count devices inventory are missing");
@@ -309,11 +311,11 @@ sub _logExpirationHours {
         $remaining = sprintf("%.1f hour", $remaining);
     }
 
-    $self->{logger}->debug("Current run expiration timeout: $remaining");
+    $self->{logger}->debug("Current netinventory run expiration timeout: $remaining");
 }
 
 sub _sendMessage {
-    my ($self, $content) = @_;
+    my ($self, $content, $ip) = @_;
 
     my $message = GLPI::Agent::XML::Query->new(
         deviceid => $self->{deviceid} || 'foo',
@@ -321,18 +323,46 @@ sub _sendMessage {
         content  => $content
     );
 
-    # task-specific client, if needed
-    unless ($self->{client}) {
-        $self->{client} = GLPI::Agent::HTTP::Client::OCS->new(
-            logger  => $self->{logger},
-            config  => $self->{config},
+    if ($self->{target}->isType('local')) {
+        my ($handle, $file);
+        my $device = $content->{DEVICE}
+            or return;
+        my $path = $self->{target}->getPath();
+        if ($path eq '-') {
+            $handle = \*STDOUT;
+        } else {
+            $path .= "/netinventory";
+            mkpath($path);
+            $file = $path . "/$ip.xml";
+        }
+
+        if ($file) {
+            if ($OSNAME eq 'MSWin32' && Win32::Unicode::File->require()) {
+                $handle = Win32::Unicode::File->new('w', $file)
+                    or $self->{logger}->error("Can't write to $file: $ERRNO");
+            } else {
+                open($handle, '>', $file)
+                    or $self->{logger}->error("Can't write to $file: $ERRNO");
+            }
+            return unless $handle;
+            $self->{logger}->info("Netinventory result for $ip saved in $file");
+        }
+
+        print $handle $message->getContent();
+
+    } elsif ($self->{target}->isType('server')) {
+        unless ($self->{client}) {
+            $self->{client} = GLPI::Agent::HTTP::Client::OCS->new(
+                logger  => $self->{logger},
+                config  => $self->{config},
+            );
+        }
+
+        $self->{client}->send(
+            url     => $self->{target}->getUrl(),
+            message => $message
         );
     }
-
-    $self->{client}->send(
-        url     => $self->{target}->getUrl(),
-        message => $message
-    );
 }
 
 sub _sendStartMessage {
@@ -373,7 +403,7 @@ sub _sendExitMessage {
 }
 
 sub _sendResultMessage {
-    my ($self, $result, $pid) = @_;
+    my ($self, $result, $pid, $ip) = @_;
 
     my $content = {
         DEVICE        => $result,
@@ -385,7 +415,7 @@ sub _sendResultMessage {
     $content->{STORAGES} = delete $result->{STORAGES}
         if $result->{STORAGES};
 
-    $self->_sendMessage($content);
+    $self->_sendMessage($content, $ip);
 }
 
 sub _queryDevice {

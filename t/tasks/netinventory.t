@@ -259,7 +259,7 @@ my %responses = (
         cmp     => {
             jobs    => 1,
             devices => [ 1 ],
-            lastlog => qr/All netinventory workers terminated/
+            lastlog => qr/Netinventory worker terminated/
         },
         PROLOG  =>
 '<?xml version="1.0" encoding="UTF-8"?>
@@ -437,7 +437,7 @@ my %responses = (
         cmp     => {
             jobs    => 1,
             devices => [ 1 ],
-            lastlog => qr/All netinventory workers terminated/
+            lastlog => qr/Netinventory worker terminated/
         },
         PROLOG  =>
 '<?xml version="1.0" encoding="UTF-8"?>

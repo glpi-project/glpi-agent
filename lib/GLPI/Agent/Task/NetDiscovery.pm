@@ -12,6 +12,7 @@ use Time::localtime;
 use Time::HiRes qw(usleep);
 use UNIVERSAL::require;
 use Parallel::ForkManager;
+use File::Path qw(mkpath);
 
 use GLPI::Agent::Version;
 use GLPI::Agent::Tools;
@@ -161,7 +162,8 @@ sub run {
 
     # Prepare fork manager
     my $tempdir = $self->{target}->getStorage()->getDirectory();
-    my $manager = Parallel::ForkManager->new($max_threads, $tempdir);
+    mkpath($tempdir);
+    my $manager = Parallel::ForkManager->new($max_threads > 1 ? $max_threads : 0, $tempdir);
     $manager->set_waitpid_blocking_sleep(0);
 
     my %jobs = ();
@@ -233,13 +235,13 @@ sub run {
     my $worker_count = $max_threads > $max_count ? $max_count : $max_threads;
     my $queued_count = 0;
 
-    $self->{logger}->debug("creating $worker_count workers");
-    $manager->set_max_procs($worker_count);
+    $self->{logger}->debug("using $worker_count netdiscovery worker".($worker_count > 1 ? "s" : ""));
+    $manager->set_max_procs($worker_count > 1 ? $worker_count : 0);
 
     # Callback for processed scan
     $manager->run_on_finish(
         sub {
-            my ($pid, $ret, $jobid, $signal, $coredump, $timeout) = @_;
+            my ($pid, $ret, $jobid, $signal, $coredump, $infos) = @_;
             my $job = $jobs{$jobid};
             $queued_count--;
             if ($job->done) {
@@ -252,8 +254,8 @@ sub run {
                 $self->_sendStopMessage($jobid);
             }
             # Update expiration time if required
-            if ($ret && $timeout && $timeout>0) {
-                my $expiration = getExpirationTime() + $timeout;
+            if ($ret && $infos && $infos->{timeout} > 0) {
+                my $expiration = getExpirationTime() + $infos->{timeout};
                 setExpirationTime( expiration => $expiration );
             }
         }
@@ -261,7 +263,7 @@ sub run {
 
     my $job_count = 0;
     my $jid_len = length(sprintf("%i",$max_count));
-    my $jid_pattern = "#%0".$jid_len."i";
+    my $jid_pattern = "#%0".$jid_len."i, ";
 
     # We need to guaranty we don't have more than max_in_queue request in queue for each job
     while (my @jobs = sort { $a <=> $b } keys(%jobs)) {
@@ -292,7 +294,7 @@ sub run {
             unless ($job->started) {
                 my $size = $job->queuesize;
                 my $max  = $job->max_threads;
-                $self->{logger}->debug("starting job $jobid with $size ips to scan using $max workers");
+                $self->{logger}->debug("starting job $jobid with $size ip".($size > 1 ? "s" : "")." to scan using $max worker".($max > 1 ? "s" : ""));
                 $self->_sendStartMessage($jobid);
                 # Also send block size to the server
                 $self->_sendBlockMessage($jobid, $size);
@@ -303,8 +305,14 @@ sub run {
             # Start worker and still try to enqueue another ip for this job
             $manager->start($jobid) and redo;
 
+            $self->{logger}->{prefix} = sprintf($jid_pattern, $job_count);
+
+            # Support glpi-netdiscovery --control option
+            $self->{_control} = $job->control;
+
             # We should better use a new client on fork
-            delete $self->{client};
+            delete $self->{client}
+                if ref($self->{client}) eq "GLPI::Agent::HTTP::Client::OCS" && $worker_count > 1;
 
             my $jobaddress = {
                 ip                  => $blockip,
@@ -313,8 +321,7 @@ sub run {
                 entity              => $range->{entity},
                 pid                 => $jobid,
                 timeout             => $job->timeout,
-                snmp_credentials    => $job->snmp_credentials,
-                jid                 => sprintf($jid_pattern, $job_count),
+                snmp_credentials    => $job->snmp_credentials
             };
             $jobaddress->{walk} = $range->{walk} if $range->{walk};
 
@@ -350,9 +357,7 @@ sub run {
                                     IP          => $blockip,
                                     PORT        => $result->{AUTHPORT}     // '',
                                     PROTOCOL    => $result->{AUTHPROTOCOL} // '',
-                                    AUTHSNMP_ID => $result->{AUTHSNMP},
-                                    # Just to keep the same logger prefix
-                                    logprefix   => $self->{logger}->{prefix}
+                                    AUTHSNMP_ID => $result->{AUTHSNMP}
                                 }
                             ],
                             credentials => $credentials,
@@ -363,9 +368,11 @@ sub run {
                     $inventory->run();
 
                     # Finish with return code to update task expiration
-                    $manager->finish(1, $timeout);
+                    $manager->finish(1, { timeout => $timeout });
                 }
             }
+
+            delete $self->{logger}->{prefix} if $worker_count > 1;
 
             $manager->finish(0);
         }
@@ -378,6 +385,8 @@ sub run {
     }
 
     $manager->wait_all_children();
+
+    $self->{logger}->debug($worker_count>1 ? "All netdiscovery workers terminated" : "Netdiscovery worker terminated");
 
     if ($queued_count) {
         $self->{logger}->error("$queued_count devices scan result missed");
@@ -418,7 +427,7 @@ sub _logExpirationHours {
         $remaining = sprintf("%.1f hour", $remaining);
     }
 
-    $self->{logger}->debug("Current run expiration timeout: $remaining");
+    $self->{logger}->debug("Current netdiscovery run expiration timeout: $remaining");
 }
 
 sub abort {
@@ -437,26 +446,54 @@ sub _sendMessage {
         content  => $content
     );
 
-    # task-specific client, if needed
-    unless ($self->{client}) {
-        $self->{client} = GLPI::Agent::HTTP::Client::OCS->new(
-            logger  => $self->{logger},
-            config  => $self->{config},
+    if ($self->{target}->isType('local')) {
+        my ($handle, $file, $ip);
+        my $path = $self->{target}->getPath();
+        if ($path eq '-') {
+            return unless $content->{DEVICE} || $self->{_control};
+            $handle = \*STDOUT;
+        } else {
+            # We don't have to save control messages
+            return unless $content->{DEVICE};
+            $path .= "/netdiscovery";
+            mkpath($path);
+            $ip = $content->{DEVICE}->[0]->{IP};
+            $file = $path . "/$ip.xml";
+        }
+
+        if ($file) {
+            if ($OSNAME eq 'MSWin32' && Win32::Unicode::File->require()) {
+                $handle = Win32::Unicode::File->new('w', $file)
+                    or $self->{logger}->error("Can't write to $file: $ERRNO");
+            } else {
+                open($handle, '>', $file)
+                    or $self->{logger}->error("Can't write to $file: $ERRNO");
+            }
+            return unless $handle;
+            $self->{logger}->info("Netdiscovery result for $ip saved in $file");
+        }
+
+        print $handle $message->getContent();
+
+    } elsif ($self->{target}->isType('server')) {
+        unless ($self->{client}) {
+            $self->{client} = GLPI::Agent::HTTP::Client::OCS->new(
+                logger  => $self->{logger},
+                config  => $self->{config},
+            );
+        }
+
+        $self->{client}->send(
+            url     => $self->{target}->getUrl(),
+            message => $message
         );
     }
-
-    $self->{client}->send(
-        url     => $self->{target}->getUrl(),
-        message => $message
-    );
 }
 
 sub _scanAddress {
     my ($self, $params) = @_;
 
-    my $logger = $self->{logger};
-    $logger->{prefix} = "$params->{jid}, ";
-    $logger->debug("scanning $params->{ip}");
+    $self->{logger}->debug("scanning $params->{ip}");
 
     # Used by unittest to test arp cases
     $self->{arp} = $params->{arp} if $params->{arp};

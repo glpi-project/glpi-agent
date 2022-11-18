@@ -69,7 +69,10 @@ pod2usage(
 
 my $discovery = GLPI::Agent::Task::NetDiscovery->new(
     %setup,
-    target => GLPI::Agent::Task::NetInventory::Target->new(),
+    target => GLPI::Agent::Target::Local->new(
+        path       => defined($options->{save}) ? $options->{save} : '-',
+        basevardir => $setup{vardir}
+    ),
     config => GLPI::Agent::Config->new(options => $options),
     logger => GLPI::Agent::Logger->new(config => $options)
 );
@@ -128,16 +131,16 @@ $discovery->{jobs} = [
                 PROTOCOL => $options->{protocol},
             }
         ],
-        file => $options->{file},
-        credentials => \@credentials
+        file        => $options->{file},
+        credentials => \@credentials,
+        netscan     => $options->{inventory},
+        showcontrol => $options->{control}
     )
 ];
+
 if (defined($options->{entity})) {
     $discovery->{jobs}->[0]->{ranges}->[0]->{ENTITY} = $options->{entity};
 }
-$discovery->{client} = GLPI::Agent::Task::NetDiscovery::Client->new(
-    logger => $discovery->{logger},
-);
 
 if ($options->{save} && $options->{debug}) {
     print STDERR
@@ -148,168 +151,7 @@ if ($options->{save} && $options->{debug}) {
     print STDERR "====\n";
 }
 
-# Set target expiration to 15 minutes if we are chaining inventory
-$discovery->run(
-    target_expiration   => $options->{inventory} ? 900 : 60
-);
-
-## no critic (ProhibitMultiplePackages)
-package GLPI::Agent::Task::NetDiscovery::Client;
-
-use threads;
-
-use English qw(-no_match_vars);
-use UNIVERSAL::require;
-
-use GLPI::Agent::Task::NetInventory;
-use GLPI::Agent::Task::NetInventory::Job;
-use GLPI::Agent::Logger;
-
-sub new {
-    my ($class, %params) = @_;
-
-    return bless {
-        logger  => $params{logger} ||
-            GLPI::Agent::Logger->new(config => $main::options),
-    }, $class;
-}
-
-sub netdiscovery { 1 }
-
-sub ip {}
-
-sub send {
-    my ($self, %params) = @_;
-
-    # Get options from main program
-    my $options = $main::options;
-    my $devices = $params{message}->{h}->{CONTENT}->{DEVICE};
-    my $device  = ref($devices) eq 'ARRAY' ? $devices->[0] :
-                  ref($devices) eq 'HASH'  ? $devices      : undef;
-
-    # don't display control message by default
-    return unless ($options->{control} || $device);
-
-    my $ip  = $device ? $device->{IP} || $self->ip() : undef;
-    my $xml = $params{message}->getContent();
-
-    if ($options->{save} && $device) {
-        die "No ip given with device\n" unless $ip;
-        if ($self->netdiscovery()) {
-            $self->{logger}->info("Saving $ip discovery infos as XML...");
-            _writeXml($options->{save} . "/netdiscovery", "$ip.xml", $xml);
-        } else {
-            if ($device->{ERROR}) {
-                my $message = $device->{ERROR}->{MESSAGE};
-                $self->{logger}->error("Inventory failed on $message");
-                $self->{logger}->error("Check your credentials") if $message =~ /timeout/;
-            } else {
-                $self->{logger}->info("Saving $ip inventory infos as XML...");
-                _writeXml($options->{save} . "/netinventory", "$ip.xml", $xml);
-            }
-        }
-    } else {
-        print $xml;
-    }
-
-    if ($self->netdiscovery() && $options->{inventory} && $device) {
-        die "No ip given with device\n" unless $ip;
-
-        unless ($device->{TYPE}) {
-            $self->{logger}->info("Skipping inventory for $ip on not recognized device type");
-            return;
-        }
-
-        unless ($device->{AUTHSNMP}) {
-            $self->{logger}->info("Skipping inventory for $ip on no SNMP response");
-            return;
-        }
-
-        my $inventory = GLPI::Agent::Task::NetInventory->new(
-            %main::setup,
-            target => GLPI::Agent::Task::NetInventory::Target->new(),
-            logger => GLPI::Agent::Logger->new(config => $options)
-        );
-
-        # Multi-threading still set on NetDiscovery task and we are only
-        # requesting one device scan
-        $inventory->{jobs} = [
-            GLPI::Agent::Task::NetInventory::Job->new(
-                params => {
-                    PID           => 1,
-                    THREADS_QUERY => 1,
-                    TIMEOUT       => $options->{timeout},
-                },
-                devices     => [{
-                    ID           => 0,
-                    IP           => $ip,
-                    PORT         => $options->{port}     ? $device->{AUTHPORT}     : '',
-                    PROTOCOL     => $options->{protocol} ? $device->{AUTHPROTOCOL} : '',
-                    AUTHSNMP_ID  => $device->{AUTHSNMP}
-                }],
-                credentials => \@{main::credentials},
-            )
-        ];
-
-        $inventory->{client} = GLPI::Agent::Task::NetInventory::Client->new(
-            logger  => $self->{logger},
-            ip      => $ip
-        );
-
-        $inventory->run();
-    }
-}
-
-sub _writeXml {
-    my ($folder, $file, $xml) = @_;
-
-    mkdir $folder unless -d $folder;
-
-    die "Can't create $folder directory: $!\n" unless -d $folder;
-
-    if (open(my $XML,">", $folder.'/'.$file)) {
-        print $XML $xml;
-        close($XML);
-    } else {
-        die "Failed to write '$folder/$file': $!\n";
-    }
-}
-
-package GLPI::Agent::Task::NetInventory::Target;
-
-sub new {
-    my ($class, %params) = @_;
-
-    return bless {}, $class;
-}
-
-sub getUrl {
-    my ($self, %params) = @_;
-
-    ## no critic (ExplicitReturnUndef)
-    return undef;
-}
-
-package GLPI::Agent::Task::NetInventory::Client;
-
-use parent -norequire, 'GLPI::Agent::Task::NetDiscovery::Client';
-
-sub new {
-    my ($class, %params) = @_;
-
-    my $self = $class->SUPER::new(%params);
-
-    $self->{_ip} = $params{ip};
-
-    return bless $self, $class;
-}
-
-sub netdiscovery { 0 }
-
-sub ip {
-    my ($self) = @_;
-    return $self->{_ip};
-}
+$discovery->run();
 
 __END__
 

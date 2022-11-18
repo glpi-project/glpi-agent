@@ -28,8 +28,6 @@ Test::Compile::all_pm_files_ok(@files);
 sub filter {
 
     if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
-        return 0 if $_ =~ m{Agent/Task/NetInventory.pm};
-        return 0 if $_ =~ m{Agent/Task/NetDiscovery.pm};
         return 0 if $_ =~ m{Agent/Tools/Win32.pm};
         return 0 if $_ =~ m{Agent/Daemon/Win32.pm};
         return 0 if $_ =~ m{Agent/Task/Inventory/Win32};
