@@ -18,6 +18,8 @@ use GLPI::Agent::Tools::Hardware;
 use GLPI::Agent::Tools::Network;
 use GLPI::Agent::Tools::Expiration;
 use GLPI::Agent::HTTP::Client::OCS;
+# We need to preload MibSupport configuration before running threads
+use GLPI::Agent::SNMP::MibSupport;
 
 use GLPI::Agent::Task::NetInventory::Version;
 use GLPI::Agent::Task::NetInventory::Job;
@@ -108,6 +110,12 @@ sub run {
 
     my $abort = 0;
     $SIG{TERM} = sub { $abort = 1; };
+
+    # Preload MibSupport
+    GLPI::Agent::SNMP::MibSupport::preload(
+        config  => $self->{config},
+        logger  => $self->{logger}
+    );
 
     # Extract greatest max_threads from jobs
     my ($max_threads) = sort { $b <=> $a } map { int($_->max_threads()) }
