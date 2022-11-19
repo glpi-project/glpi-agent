@@ -102,7 +102,22 @@ my %tests = (
         }
     ],
     'hp-dl360-gen7' => [],
-    'hp-dl360-gen8' => [],
+    'hp-dl360-gen8' => [
+        {
+            'SERIAL'       => '001438020C8EF10',
+            'NAME'         => 'Smart Array P420i Controller',
+            'REV'          => 'B',
+            'TYPE'         => 'SAS Ctlr'
+        },
+        {
+            'MODEL'        => '634025-001',
+            'SERIAL'       => 'CN82150W2G',
+            'NAME'         => 'HP Ethernet 1Gb 4-port 331FLR Adapter',
+            'REV'          => '00',
+            'TYPE'         => 'Ethernet Adptr',
+            'MANUFACTURER' => 'Hewlett-Packard'
+        }
+    ],
 );
 
 plan tests => 2 * (scalar keys %tests) + 1;

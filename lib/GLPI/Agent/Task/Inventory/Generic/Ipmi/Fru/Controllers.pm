@@ -11,11 +11,11 @@ use GLPI::Agent::Tools::IpmiFru;
 use constant    category    => "controller";
 
 my $CONTROLLERS = qr/^(?:
-    BP             |
-    PERC           |
-    NDC            |
-    Ethernet Adptr |
-    SAS Ctlr
+    BP               |
+    PERC             |
+    NDC              |
+    Ethernet\s+Adptr |
+    SAS\s+Ctlr
 )\d*\s+/x;
 
 sub isEnabled {
