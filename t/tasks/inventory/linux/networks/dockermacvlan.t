@@ -23,7 +23,8 @@ my %tests = (
             STATUS      => 'Up',
             TYPE        => 'ethernet',
             DESCRIPTION => 'pinba_network@pinbatwo-bmashard1',
-            MACADDR     => '02:42:0a:14:d2:ab'
+            MACADDR     => '02:42:0a:14:d2:ab',
+            VIRTUALDEV  => 1
         },
         {
             IPADDRESS   => '10.20.210.162',
@@ -31,7 +32,8 @@ my %tests = (
             STATUS      => 'Up',
             TYPE        => 'ethernet',
             DESCRIPTION => 'pinba_network@pinbatwo-staging1',
-            MACADDR     => '02:42:0a:14:d2:a2'
+            MACADDR     => '02:42:0a:14:d2:a2',
+            VIRTUALDEV  => 1
         },
         {
             IPADDRESS   => '10.20.210.153',
@@ -39,7 +41,8 @@ my %tests = (
             STATUS      => 'Up',
             TYPE        => 'ethernet',
             DESCRIPTION => 'pinba_network@pinbatwo-www1',
-            MACADDR     => '02:42:0a:14:d2:99'
+            MACADDR     => '02:42:0a:14:d2:99',
+            VIRTUALDEV  => 1
         },
         {
             IPADDRESS   => '10.20.210.160',
@@ -47,7 +50,8 @@ my %tests = (
             STATUS      => 'Up',
             TYPE        => 'ethernet',
             DESCRIPTION => 'pinba_network@pinbatwo-cpp2',
-            MACADDR     => '02:42:0a:14:d2:a0'
+            MACADDR     => '02:42:0a:14:d2:a0',
+            VIRTUALDEV  => 1
         },
     ],
 );

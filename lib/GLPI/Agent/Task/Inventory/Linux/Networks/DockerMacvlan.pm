@@ -5,7 +5,7 @@ use warnings;
 
 use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use JSON::PP;
+use Cpanel::JSON::XS;
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Network;
 
@@ -51,30 +51,28 @@ sub _getInterfaces {
 
     my @interfaces;
 
-    eval {
-        my $json = JSON::PP->new;
-        my $data = $json->decode($lines);
+    my $data = decode_json $lines;
 
-        foreach my $record (@$data) {
-            while (my ($k, $container) = each %{$record->{Containers}}) {
-                my $interface = {
-                    DESCRIPTION => $record->{Name} . "@" . $container->{Name},
-                    MACADDR     => $container->{MacAddress},
-                    STATUS      => 'Up',
-                    TYPE        => 'ethernet',
-                };
-                if ($container->{IPv4Address} =~ /^($ip_address_pattern)\/(\d+)$/) {
-                    $interface->{IPADDRESS} = $1;
-                    $interface->{IPMASK} = getNetworkMask($2);
-                }
-                if ($container->{IPv6Address} =~ /^(\S+)\/(\d+)$/) {
-                    $interface->{IPADDRESS6} = $1;
-                    $interface->{IPMASK6} = getNetworkMaskIPv6($2);
-                }
-                push @interfaces, $interface;
+    foreach my $record (@$data) {
+        while (my ($k, $container) = each %{$record->{Containers}}) {
+            my $interface = {
+                DESCRIPTION => $record->{Name} . "@" . $container->{Name},
+                MACADDR     => $container->{MacAddress},
+                STATUS      => 'Up',
+                TYPE        => 'ethernet',
+                VIRTUALDEV  => 1
+            };
+            if ($container->{IPv4Address} =~ /^($ip_address_pattern)\/(\d+)$/) {
+                $interface->{IPADDRESS} = $1;
+                $interface->{IPMASK} = getNetworkMask($2);
             }
+            if ($container->{IPv6Address} =~ /^(\S+)\/(\d+)$/) {
+                $interface->{IPADDRESS6} = $1;
+                $interface->{IPMASK6} = getNetworkMaskIPv6($2);
+            }
+            push @interfaces, $interface;
         }
-    };
+    }
 
     return @interfaces;
 }
