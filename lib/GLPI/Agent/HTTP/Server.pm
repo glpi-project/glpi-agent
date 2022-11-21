@@ -20,6 +20,9 @@ use GLPI::Agent::Logger;
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Network;
 
+# Expire trusted ip/ranges cache after a minute
+use constant TRUSTED_CACHE_TIMEOUT => 60;
+
 # Limit maximum requests number handled in a keep-alive connection
 use constant MaxKeepAlive => 8;
 
@@ -39,7 +42,7 @@ sub new {
     };
     bless $self, $class;
 
-    $self->setTrustedAddresses(%params);
+    $self->_handleTrustedAddressesCache($params{trust});
 
     # Load any Server sub-module as plugin
     my @plugins = ();
@@ -85,25 +88,67 @@ sub new {
     return $self;
 }
 
-sub setTrustedAddresses {
-    my ($self, %params) = @_;
+sub _handleTrustedAddressesCache {
+    my ($self, $trust) = @_;
+
+    # Initialize trusted cache or check expiration
+    if ($trust) {
+        $self->{trusted_cache_trust} = $trust;
+    } else {
+        # No cache needed unless it has been initialized with some trusted ip or range
+        # But log untrusted during re-init
+        return $self->_log_untrusted(delete $self->{trust})
+            unless $self->{trusted_cache_trust};
+        # Check cache expirarion
+        return unless time > $self->{trusted_cache_expiration};
+        $trust = $self->{trusted_cache_trust};
+    }
+
+    # Always reset trust adresses
+    my $delete = delete $self->{trust} // {};
 
     # compute addresses allowed for push requests
     foreach my $target ($self->{agent}->getTargets()) {
         next unless $target->isType('server');
         my $url  = $target->getUrl();
         my $host = URI->new($url)->host();
-        my @addresses = compile($host, $self->{logger});
-        $self->{trust}->{$url} = \@addresses;
+        # Don't resolv server address if still found
+        next if $self->{trust}->{$host};
+        my @addresses = compile($host, $self->{logger})
+            or next;
+        $self->{trust}->{$host} = \@addresses;
         $self->{logger}->debug("Trusted target ip: ".join(", ",map { $_->print() } @addresses));
+        # Forget previous definition
+        delete $delete->{$host};
     }
-    if ($params{trust}) {
-        foreach my $string (@{$params{trust}}) {
-            my @addresses = compile($string, $self->{logger})
-                or next;
-            $self->{trust}->{$string} = \@addresses;
-            $self->{logger}->debug("Trusted client ip: ".join(", ",map { $_->print() } @addresses));
-        }
+
+    # Add addresses and ranges defined by httpd-trust option
+    foreach my $string (@{$trust}) {
+        # Don't resolv server address if still found
+        next if $self->{trust}->{$string};
+        my @addresses = compile($string, $self->{logger})
+            or next;
+        $self->{trust}->{$string} = \@addresses;
+        $self->{logger}->debug("Trusted client ip/range: ".join(", ",map { $_->print() } @addresses));
+        # Forget previous definition
+        delete $delete->{$string};
+    }
+
+    # Log lost trust
+    $self->_log_untrusted($delete);
+
+    # Define cache expiration
+    $self->{trusted_cache_expiration} = time + TRUSTED_CACHE_TIMEOUT;
+}
+
+sub _log_untrusted {
+    my ($self, $delete) = shift;
+
+    return unless ref($delete) eq 'HASH';
+
+    # Log lost trust
+    foreach my $string (keys(%{$delete})) {
+        $self->{logger}->debug("'$string' client no more trusted");
     }
 }
 
@@ -447,6 +492,9 @@ sub _handle_status {
 sub _isTrusted {
     my ($self, $address) = @_;
 
+    # Reset trusted on expiration
+    $self->_handleTrustedAddressesCache();
+
     foreach my $trusted_addresses (values %{$self->{trust}}) {
         return 1
             if isPartOf(
@@ -630,8 +678,8 @@ sub needToRestart {
     );
 
     # Be sure to reset computed trusted addresses
-    delete $self->{trust};
-    $self->setTrustedAddresses(%params);
+    delete $self->{trusted_cache_trust};
+    $self->_handleTrustedAddressesCache($params{trust});
 
     return 0;
 }
