@@ -11,6 +11,7 @@ core:
 * Introduce GLPI::Agent::XML API based on XML::LibXML to get rid of deprecated XML::TreePP
 * fix #242: Fix ca-cert-dir can't be used on win32 & macosx since v1.3
 * Export all possible CA & Root certificates from Windows keystore for SSL support
+* Fix #257: Also support SSL certificates included in User keystore on windows
 
 inventory:
 * check if we are running in a container before checking we are running in a virtualmachine
