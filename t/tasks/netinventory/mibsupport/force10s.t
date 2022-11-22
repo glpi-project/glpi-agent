@@ -14,7 +14,13 @@ use GLPI::Agent::SNMP::Device;
 use GLPI::Agent::SNMP::MibSupport::Force10S;
 
 
-my $units = [
+my $components = [
+    {
+		'CONTAINEDININDEX' => '0',
+		'INDEX'            => '-1',
+		'NAME'             => 'Force10 S-series Stack',
+		'TYPE'             => 'stack',
+    },
     {
         'CONTAINEDININDEX' => '-1',
         'DESCRIPTION'      => '48-port E/FE/GE (SB)',
@@ -103,9 +109,6 @@ my $units = [
         'SERIAL'           => 'DL251280022',
         'TYPE'             => 'chassis',
     },
-];
-
-my $ports = [
     {
         'CONTAINEDININDEX' => '1',
         'INDEX'            => '34653186',
@@ -228,7 +231,7 @@ my $ports = [
     },
 ];
 
-plan tests => 3;
+plan tests => 2;
 
 my $snmp = GLPI::Agent::SNMP::Mock->new(
     file => "resources/walks/force10s.walk"
@@ -237,11 +240,6 @@ my $device = GLPI::Agent::SNMP::Device->new('snmp' => $snmp);
 my $mibsupport = GLPI::Agent::SNMP::MibSupport::Force10S->new('device' => $device);
 
 cmp_bag(
-    $units,
-    $mibsupport->_get_stack_units()
-);
-
-cmp_bag(
-    $ports,
-    $mibsupport->_get_ports()
+    $components,
+    $mibsupport->getComponents()
 );
