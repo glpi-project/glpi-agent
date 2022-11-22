@@ -64,8 +64,8 @@ sub getComponents {
     # adding root unit
     if (scalar @components) {
         push @components, {
-            CONTAINEDININDEX => '-1',
-            INDEX            => '0',
+            CONTAINEDININDEX => '0',
+            INDEX            => '-1',
             TYPE             => 'stack',
             NAME             => 'Force10 S-series Stack'
         };
@@ -126,9 +126,12 @@ sub _get_stack_units {
     # Initialize components array
     my @components;
     foreach my $index (@indexes) {
+        my $idx = getCanonicalConstant($walks{INDEX}->{$index} || $index);
         push @components, {
-            INDEX            => getCanonicalConstant($walks{INDEX}->{$index} || $index),
-            CONTAINEDININDEX => '0',
+            INDEX            => $idx,
+            # minimal chassis number in an interface name is zero, e.g. Gi0/1
+            NAME             => $idx - 1,
+            CONTAINEDININDEX => '-1',
             TYPE             => 'chassis',
         };
     };
