@@ -16,10 +16,10 @@ use GLPI::Agent::SNMP::MibSupport::Force10S;
 
 my $components = [
     {
-		'CONTAINEDININDEX' => '0',
-		'INDEX'            => '-1',
-		'NAME'             => 'Force10 S-series Stack',
-		'TYPE'             => 'stack',
+        'CONTAINEDININDEX' => '0',
+        'INDEX'            => '-1',
+        'NAME'             => 'Force10 S-series Stack',
+        'TYPE'             => 'stack',
     },
     {
         'CONTAINEDININDEX' => '-1',
