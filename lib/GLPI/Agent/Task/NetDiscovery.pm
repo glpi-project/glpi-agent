@@ -20,7 +20,6 @@ use GLPI::Agent::Tools::Network;
 use GLPI::Agent::Tools::Hardware;
 use GLPI::Agent::Tools::Expiration;
 use GLPI::Agent::Tools::SNMP;
-use GLPI::Agent::XML::Query;
 use GLPI::Agent::HTTP::Client::OCS;
 # We need to preload MibSupport configuration before running threads
 use GLPI::Agent::SNMP::MibSupport;
@@ -181,7 +180,7 @@ sub run {
         sub {
             my ($pid, $ret, $jobid, $signal, $coredump, $params) = @_;
             $jobs{$jobid}->updateQueue(%{$params})
-                if $ret && $params;
+                if $jobid && $ret && $params;
         }
     );
 
@@ -213,10 +212,18 @@ sub run {
         my $size  = $job->queuesize;
         unless ($size) {
             $self->{logger}->debug("no valid block found for job $jobid");
-            $self->_sendStartMessage($jobid);
-            $self->_sendBlockMessage($jobid, 0);
-            $self->_sendStopMessage($jobid);
-            $self->_sendStopMessage($jobid);
+            # Always send control messages from a worker to avoid issue on win32
+            $manager->start_child( 0, sub {
+                # Support glpi-netdiscovery --control option
+                $self->{_control} = $job->control;
+
+                $self->_sendStartMessage($jobid);
+                $self->_sendBlockMessage($jobid, 0);
+                $self->_sendStopMessage($jobid);
+                $self->_sendStopMessage($jobid);
+                return;
+            });
+            $manager->wait_all_children();
             delete $jobs{$jobid};
             next;
         }
@@ -250,9 +257,13 @@ sub run {
     $manager->run_on_finish(
         sub {
             my ($pid, $ret, $jobid, $signal, $coredump, $infos) = @_;
+            return unless $jobid;
             my $job = $jobs{$jobid};
             $queued_count--;
             if ($job->done) {
+                # Support glpi-netdiscovery --control option
+                $self->{_control} = $job->control;
+
                 # send final message to the server before cleaning jobs
                 $self->_sendStopMessage($jobid);
 
@@ -303,9 +314,17 @@ sub run {
                 my $size = $job->queuesize;
                 my $max  = $job->max_threads;
                 $self->{logger}->debug("starting job $jobid with $size ip".($size > 1 ? "s" : "")." to scan using $max worker".($max > 1 ? "s" : ""));
-                $self->_sendStartMessage($jobid);
-                # Also send block size to the server
-                $self->_sendBlockMessage($jobid, $size);
+                # Always send control messages from a worker to avoid issue on win32
+                $manager->start_child( 0, sub {
+                    # Support glpi-netdiscovery --control option
+                    $self->{_control} = $job->control;
+
+                    $self->_sendStartMessage($jobid);
+                    # Also send block size to the server
+                    $self->_sendBlockMessage($jobid, $size);
+                    return;
+                });
+                $manager->wait_all_children();
             }
 
             $job_count++;
@@ -314,9 +333,6 @@ sub run {
             $manager->start($jobid) and redo;
 
             $self->{logger}->{prefix} = sprintf($jid_pattern, $job_count);
-
-            # Support glpi-netdiscovery --control option
-            $self->{_control} = $job->control;
 
             # We should better use a new client on fork
             delete $self->{client}
@@ -448,6 +464,9 @@ sub abort {
 sub _sendMessage {
     my ($self, $content) = @_;
 
+    # Load GLPI::Agent::XML::Query as late as possible
+    return unless GLPI::Agent::XML::Query->require();
+
     my $message = GLPI::Agent::XML::Query->new(
         deviceid => $self->{deviceid} || 'foo',
         query    => 'NETDISCOVERY',
@@ -482,6 +501,7 @@ sub _sendMessage {
         }
 
         print $handle $message->getContent();
+        close($handle) if $file;
 
     } elsif ($self->{target}->isType('server')) {
         unless ($self->{client}) {

@@ -26,7 +26,7 @@ my $port = GLPI::Agent::Tools::first { test_port($_) } 8080 .. 8180;
 if (!$port) {
     plan skip_all => 'no available port';
 } else {
-    plan tests => 7;
+    plan tests => 8;
 }
 
 my $logger = GLPI::Agent::Logger->new(
@@ -54,8 +54,10 @@ $server = GLPI::Test::Server->new(
 );
 my $compressed   = HTTP::Headers->new("Content-type" => "application/x-compress-zlib");
 my $xml_content  = "<REPLY><word>hello</word></REPLY>";
+my $expected     = { word => 'hello' };
 my $html_content = "<html><body>hello</body></html>";
 my $altered      = "\n" . compress($xml_content);
+my $empty_node   = join("\n", '<?xml version="1.0"?>', '<REPLY/>');
 
 sub _response {
     return "HTTP/1.0 " . HTTP::Response->new(@_)->as_string("\r\n");
@@ -69,6 +71,7 @@ $server->set_dispatch({
     '/unexpected'   => sub { print _response(200, undef, $compressed, compress($html_content)); },
     '/correct'      => sub { print _response(200, undef, $compressed, compress($xml_content)); },
     '/altered'      => sub { print _response(200, undef, $compressed, $altered); },
+    '/emptyvalid'   => sub { print _response(200, undef, $compressed, compress($empty_node)); },
 });
 $server->background() or BAIL_OUT("can't launch the server");
 
@@ -149,6 +152,16 @@ subtest "altered response" => sub {
     );
 };
 
+$expected = "";
+subtest "emptyvalid response" => sub {
+    check_response_ok(
+        scalar $client->send(
+            message => $message,
+            url     => "http://127.0.0.1:$port/emptyvalid",
+        ),
+    );
+};
+
 $server->stop();
 
 sub check_response_ok {
@@ -169,7 +182,7 @@ sub check_response_ok {
 
     cmp_deeply(
         $content,
-        { word => 'hello' },
+        $expected,
         'response content'
     );
 }

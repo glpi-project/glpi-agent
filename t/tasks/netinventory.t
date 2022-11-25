@@ -17,6 +17,7 @@ use GLPI::Agent::Logger;
 use GLPI::Agent::Config;
 use GLPI::Agent::Target::Server;
 use GLPI::Agent::HTTP::Client::OCS;
+use GLPI::Agent::XML::Response;
 use GLPI::Agent::XML::Query::Prolog;
 use GLPI::Agent::XML::Response;
 

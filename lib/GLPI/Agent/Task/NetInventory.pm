@@ -11,7 +11,6 @@ use UNIVERSAL::require;
 use Parallel::ForkManager;
 use File::Path qw(mkpath);
 
-use GLPI::Agent::XML::Query;
 use GLPI::Agent::Version;
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Hardware;
@@ -156,8 +155,9 @@ sub run {
         # set pid
         my $pid = $job->pid() || $pid_index++;
 
-        # send initial message to server unless it supports newer protocol
-        $self->_sendStartMessage($pid) unless $skip_start_stop;
+        # send initial message to server in a worker unless it supports newer protocol
+        $manager->start_child(0, sub { $self->_sendStartMessage($pid) })
+            unless $skip_start_stop;
 
         # Only keep job if it has devices to scan
         my @devices = $job->devices()
@@ -167,6 +167,7 @@ sub run {
         $jobs{$pid} = $job unless $jobs{$pid};
         $jobs{$pid}->updateQueue(\@devices);
     }
+    $manager->wait_all_children();
 
     my $queued_count = 0;
 
@@ -174,6 +175,7 @@ sub run {
     $manager->run_on_finish(
         sub {
             my ($pid, $ret, $jobid) = @_;
+            return unless $jobid;
             my $job = $jobs{$jobid};
             $queued_count--;
             if ($job->done) {
@@ -325,6 +327,9 @@ sub _logExpirationHours {
 sub _sendMessage {
     my ($self, $content, $ip) = @_;
 
+    # Load GLPI::Agent::XML::Query as late as possible
+    return unless GLPI::Agent::XML::Query->require();
+
     my $message = GLPI::Agent::XML::Query->new(
         deviceid => $self->{deviceid} || 'foo',
         query    => 'SNMPQUERY',
@@ -357,6 +362,7 @@ sub _sendMessage {
         }
 
         print $handle $message->getContent();
+        close($handle) if $file;
 
     } elsif ($self->{target}->isType('server')) {
         unless ($self->{client}) {
