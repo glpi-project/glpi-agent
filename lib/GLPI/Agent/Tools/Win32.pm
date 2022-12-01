@@ -109,7 +109,7 @@ sub getWMIObjects {
         args  => \@_
     };
 
-    return _call_win32_ole_dependent_api($win32_ole_dependent_api);
+    return call_not_thread_safe_api_on_win32($win32_ole_dependent_api);
 }
 
 sub _getWMIObjects {
@@ -886,6 +886,8 @@ my @win32_ole_calls : shared;
 sub start_Win32_OLE_Worker {
 
     unless (defined($worker)) {
+        # Be sure to not come here from the initialized thread
+        $worker = 0;
 
         # Handle thread KILL signal
         $SIG{KILL} = sub { threads->exit(); };
@@ -906,9 +908,9 @@ sub setupWorkerLogger {
 
     # Just create a new Logger object in worker to update default module configuration
     return defined(GLPI::Agent::Logger->new(%params))
-        unless (defined($worker));
+        unless $worker;
 
-    return _call_win32_ole_dependent_api({
+    return call_not_thread_safe_api_on_win32({
         funct => 'setupWorkerLogger',
         args  => [ %params ]
     });
@@ -919,7 +921,7 @@ sub getLastError {
     return @{$worker_lasterror}
         unless (defined($worker));
 
-    return _call_win32_ole_dependent_api({
+    return call_not_thread_safe_api_on_win32({
         funct => 'getLastError',
         array => 1,
         args  => []
@@ -977,16 +979,21 @@ sub _win32_ole_worker {
             setExpirationTime(%$call);
 
             # Found requested private function and call it as expected
-            my $funct;
+            my $funct = $call->{funct};
+            if (defined($call->{module})) {
+                my $module = $call->{module};
+                $module->require() or die "Can't load required $module library\n";
+                $funct = $module."::".$funct;
+            }
             eval {
                 no strict 'refs'; ## no critic (ProhibitNoStrict)
-                $funct = \&{$call->{'funct'}};
+                $funct = \&{$funct};
             };
-            if (exists($call->{'array'}) && $call->{'array'}) {
-                my @results = &{$funct}(@{$call->{'args'}});
+            if (exists($call->{array}) && $call->{array}) {
+                my @results = &{$funct}(@{$call->{args}});
                 $result = \@results;
             } else {
-                $result = &{$funct}(@{$call->{'args'}});
+                $result = &{$funct}(@{$call->{args}});
             }
 
             # Keep Win32::OLE error for later reporting
@@ -1004,7 +1011,7 @@ sub _win32_ole_worker {
     }
 }
 
-sub _call_win32_ole_dependent_api {
+sub call_not_thread_safe_api_on_win32 {
     my ($call) = @_
         or return;
 
@@ -1053,7 +1060,7 @@ sub _call_win32_ole_dependent_api {
                 # Worker is failing: get back to mono-thread and pray
                 $worker->detach() if (defined($worker) && !$worker->is_detached());
                 $worker = undef;
-                return _call_win32_ole_dependent_api(@_);
+                return call_not_thread_safe_api_on_win32(@_);
             }
         }
 
