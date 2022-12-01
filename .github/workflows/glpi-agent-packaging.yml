@@ -623,6 +623,10 @@ jobs:
     - name: Quick tests
       run: |
         echo ====
+        echo Install libfuse2 as required by AppImage
+        sudo apt update
+        sudo apt -y install libfuse2
+        echo ====
         echo Installer version:
         ./glpi-agent-$VERSION-x86_64.AppImage --version
         echo ====
