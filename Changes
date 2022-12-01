@@ -44,6 +44,7 @@ inventory:
 * Update users inventory support on win32
 * PR #261: Fix regexp for IPMI FRU Controller inventory, thanks to po1vo
 * PR #262: Fix docker networks are virtual, thanks to po1vo
+* fix #258: Fix slots support on AIX
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory

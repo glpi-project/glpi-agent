@@ -49,11 +49,14 @@ sub _getSlots {
 
     my @slots;
     foreach my $line (@lines) {
-        next unless $line =~ /^(.+):(.+)/;
+        next unless
+        my ($name, $designation, $description) = split(":", $line);
+        next unless defined($name) && defined($designation) && defined($description);
 
         push @slots, {
-            NAME        => $1,
-            DESIGNATION => $2,
+            NAME        => $name,
+            DESIGNATION => $designation,
+            DESCRIPTION => $description,
         };
     }
 
