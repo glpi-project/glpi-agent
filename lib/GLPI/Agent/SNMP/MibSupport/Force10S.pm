@@ -58,8 +58,10 @@ sub getComponents {
 
     my @components;
 
-    push @components, @{$self->_get_stack_units()};
-    push @components, @{$self->_get_ports()};
+    my $stack_components = $self->_get_stack_units();
+    my $ports_components = $self->_get_ports();
+    push @components, @{$stack_components} if $stack_components;
+    push @components, @{$ports_components} if $ports_components;
 
     # adding root unit
     if (scalar @components) {
