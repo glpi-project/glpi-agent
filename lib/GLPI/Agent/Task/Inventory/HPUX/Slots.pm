@@ -42,7 +42,9 @@ sub _getSlots {
     foreach my $line (@lines) {
         my @info = split(/:/, $line);
         push @slots, {
-            DESIGNATION => $info[17],
+            NAME        => $info[9].$info[10],
+            DESIGNATION => $info[13],
+            DESCRIPTION => $info[17],
         };
     }
 

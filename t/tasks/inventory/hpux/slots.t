@@ -15,70 +15,110 @@ use GLPI::Agent::Task::Inventory::HPUX::Slots;
 my %tests = (
     'hpux2-ioa' => [
         {
-            DESIGNATION => 'System Bus Adapter (1229)',
+            NAME        => 'sba0',
+            DESIGNATION => 'root.sba',
+            DESCRIPTION => 'System Bus Adapter (1229)',
         }
     ],
     'hpux2-ba' => [
         {
-            DESIGNATION => 'Local PCI-X Bus Adapter (122e)',
+            NAME        => 'pci_adapter0/0',
+            DESIGNATION => 'root.sba.lba',
+            DESCRIPTION => 'Local PCI-X Bus Adapter (122e)',
         },
         {
-            DESIGNATION => 'Local PCI-X Bus Adapter (122e)',
+            NAME        => 'pci_adapter0/1',
+            DESIGNATION => 'root.sba.lba',
+            DESCRIPTION => 'Local PCI-X Bus Adapter (122e)',
         },
         {
-            DESIGNATION => 'Local PCI-X Bus Adapter (122e)',
+            NAME        => 'pci_adapter0/2',
+            DESIGNATION => 'root.sba.lba',
+            DESCRIPTION => 'Local PCI-X Bus Adapter (122e)',
         },
         {
-            DESIGNATION => 'Local PCI-X Bus Adapter (122e)',
+            NAME        => 'pci_adapter0/3',
+            DESIGNATION => 'root.sba.lba',
+            DESCRIPTION => 'Local PCI-X Bus Adapter (122e)',
         },
         {
-            DESIGNATION => 'PCItoPCI Bridge',
+            NAME        => 'pci_adapter0/3/1/0',
+            DESIGNATION => 'root.sba.lba.PCItoPCI',
+            DESCRIPTION => 'PCItoPCI Bridge',
         },
         {
-            DESIGNATION => 'Local PCI-X Bus Adapter (122e)',
+            NAME        => 'pci_adapter0/4',
+            DESIGNATION => 'root.sba.lba',
+            DESCRIPTION => 'Local PCI-X Bus Adapter (122e)',
         },
         {
-            DESIGNATION => 'Local PCI-X Bus Adapter (122e)',
+            NAME        => 'pci_adapter0/5',
+            DESIGNATION => 'root.sba.lba',
+            DESCRIPTION => 'Local PCI-X Bus Adapter (122e)',
         },
         {
-            DESIGNATION => 'Local PCI-X Bus Adapter (122e)',
+            NAME        => 'pci_adapter0/6',
+            DESIGNATION => 'root.sba.lba',
+            DESCRIPTION => 'Local PCI-X Bus Adapter (122e)',
         },
         {
-            DESIGNATION => 'Core I/O Adapter',
+            NAME        => 'pdh250',
+            DESIGNATION => 'root.pdh',
+            DESCRIPTION => 'Core I/O Adapter',
         }
     ],
     'hpux1-ioa' => [
         {
-            DESIGNATION => 'System Bus Adapter (1229)',
+            NAME        => 'sba0',
+            DESIGNATION => 'root.sba',
+            DESCRIPTION => 'System Bus Adapter (1229)',
         }
     ],
     'hpux1-ba' => [
         {
-            DESIGNATION => 'Local PCI-X Bus Adapter (122e)',
+            NAME        => 'pci_adapter0/0',
+            DESIGNATION => 'root.sba.lba',
+            DESCRIPTION => 'Local PCI-X Bus Adapter (122e)',
         },
         {
-            DESIGNATION => 'Local PCI-X Bus Adapter (122e)',
+            NAME        => 'pci_adapter0/1',
+            DESIGNATION => 'root.sba.lba',
+            DESCRIPTION => 'Local PCI-X Bus Adapter (122e)',
         },
         {
-            DESIGNATION => 'Local PCI-X Bus Adapter (122e)',
+            NAME        => 'pci_adapter0/2',
+            DESIGNATION => 'root.sba.lba',
+            DESCRIPTION => 'Local PCI-X Bus Adapter (122e)',
         },
         {
-            DESIGNATION => 'Local PCI-X Bus Adapter (122e)',
+            NAME        => 'pci_adapter0/3',
+            DESIGNATION => 'root.sba.lba',
+            DESCRIPTION => 'Local PCI-X Bus Adapter (122e)',
         },
         {
-            DESIGNATION => 'PCItoPCI Bridge',
+            NAME        => 'pci_adapter0/3/1/0',
+            DESIGNATION => 'root.sba.lba.PCItoPCI',
+            DESCRIPTION => 'PCItoPCI Bridge',
         },
         {
-            DESIGNATION => 'Local PCI-X Bus Adapter (122e)',
+            NAME        => 'pci_adapter0/4',
+            DESIGNATION => 'root.sba.lba',
+            DESCRIPTION => 'Local PCI-X Bus Adapter (122e)',
         },
         {
-            DESIGNATION => 'Local PCI-X Bus Adapter (122e)',
+            NAME        => 'pci_adapter0/5',
+            DESIGNATION => 'root.sba.lba',
+            DESCRIPTION => 'Local PCI-X Bus Adapter (122e)',
         },
         {
-            DESIGNATION => 'Local PCI-X Bus Adapter (122e)',
+            NAME        => 'pci_adapter0/6',
+            DESIGNATION => 'root.sba.lba',
+            DESCRIPTION => 'Local PCI-X Bus Adapter (122e)',
         },
         {
-            DESIGNATION => 'Core I/O Adapter',
+            NAME        => 'pdh250',
+            DESIGNATION => 'root.pdh',
+            DESCRIPTION => 'Core I/O Adapter',
         }
     ]
 );
