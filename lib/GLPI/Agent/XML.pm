@@ -27,7 +27,7 @@ sub new {
     if ($need_dedicated_thread && !$params{threaded}) {
         $self->{_id} = _GLPI_XML_win32_thread_binding(
             api     => "new",
-            args    => [ %params, threaded => 1 ]
+            args    => [ %params ]
         );
         return $self;
     }
@@ -46,6 +46,7 @@ sub new {
         xml_format
         is_plist
         tag_compression
+        threaded
     );
 
     # Support required by GLPI::Agent::Tools::MacOS
@@ -102,7 +103,7 @@ sub has_xml {
 
     my $xml = $self->_xml;
 
-    return ref($xml) eq 'XML::LibXML::Document' && $xml->documentElement();
+    return ref($xml) eq 'XML::LibXML::Document' && $xml->documentElement() ? 1 : 0;
 }
 
 sub string {
@@ -111,16 +112,19 @@ sub string {
     return $self unless defined($string) && length($string);
 
     if ($need_dedicated_thread && $self->{_id}) {
-        return _GLPI_XML_win32_thread_binding(
+        _GLPI_XML_win32_thread_binding(
             _id  => $self->{_id},
             api  => "string",
             args => [ $string ]
         );
+        return $self;
     }
 
     $self->_init_libxml() unless $self->{_parser};
 
     $self->_empty->_xml($self->{_parser}->parse_string(decode("UTF-8", $string)));
+
+    return if $self->{_threaded};
 
     return $self;
 }
@@ -131,16 +135,19 @@ sub file {
     return $self unless defined($file) && -e $file;
 
     if ($need_dedicated_thread && $self->{_id}) {
-        return _GLPI_XML_win32_thread_binding(
+        _GLPI_XML_win32_thread_binding(
             _id  => $self->{_id},
             api  => "file",
             args => [ $file ]
         );
+        return $self;
     }
 
     $self->_init_libxml() unless $self->{_parser};
 
     $self->_empty->_xml($self->{_parser}->parse_file($file));
+
+    return if $self->{_threaded};
 
     return $self;
 }
@@ -377,7 +384,7 @@ sub _GLPI_XML_win32_binded_thread {
     $xmlid = ++$xmlid % 4294967296 ;
     while (exists($XMLs{$xmlid})) { $xmlid++ };
 
-    $XMLs{$xmlid} = GLPI::Agent::XML->new(@{$infos{args}});
+    $XMLs{$xmlid} = GLPI::Agent::XML->new(@{$infos{args}}, threaded => 1);
     return $xmlid;
 }
 
