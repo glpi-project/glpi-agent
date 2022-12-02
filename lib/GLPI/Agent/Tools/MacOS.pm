@@ -67,7 +67,7 @@ sub _recSubStorage {
     my @nodes;
     foreach my $node (@{$list}) {
         next unless ref($node) eq 'HASH';
-        if (ref($node->{array}[0]) eq 'HASH' && exists($node->{array}[0]->{dict})) {
+        if ($node->{array} && ref($node->{array}[0]) eq 'HASH' && exists($node->{array}[0]->{dict})) {
             push @nodes, map { _recSubStorage($_->{dict}) }
                 grep { ref($_) eq 'HASH' && exists($_->{dict}) } @{$node->{array}};
         }
