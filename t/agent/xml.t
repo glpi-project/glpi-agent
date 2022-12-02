@@ -438,7 +438,7 @@ foreach my $test (sort keys %xmls) {
     );
 
     is(
-        $xml->empty->write($dump),
+        $xml->write($dump),
         $xmls{$test}->{has_xml} // 1 ? $xmls{$test}->{write} // $xmls{$test}->{content} : '',
         "<$test> xml as string"
     );
