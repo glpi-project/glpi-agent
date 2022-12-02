@@ -477,6 +477,14 @@ my %responses = (
     },
 );
 
+# Index expected SNMPQUERY in a hash so we don't need to have them ordered
+foreach my $test (keys(%responses)) {
+    next unless ref($responses{$test}->{SNMPQUERY});
+    map {
+        $responses{$test}->{index}->{$_} ++;
+    } @{$responses{$test}->{SNMPQUERY}};
+}
+
 my $plan_tests_count = 6 * keys(%responses);
 foreach my $case (values(%responses)) {
     next unless $case->{SNMPQUERY};
@@ -504,29 +512,12 @@ $client_module->mock('send', sub {
 
     if (ref($response) eq 'ARRAY') {
         my $sent = $params{message}->getContent();
-        my $message = shift @{$response}
-            or die "\nUnexpected $query sent message:\n$sent\n";
-
-        # Dirty hack: the test was working as messages was ordered thanks to not
-        # working multi-threading algorithm. So try to compare messages while they
-        # have the same length but we need to handle the case where many responses has
-        # the same length and in that case, we better try to find it in the list
-        my @matchs = grep { length($sent) == length($_) } @{$response};
-        if (@matchs) {
-            my $max = @{$response};
-            my @others = ();
-            while ($max-- && @matchs>1 ? $sent ne $message : length($sent) != length($message)) {
-                push @others, $message;
-                $message = shift @{$response};
-            }
-            unshift @{$response}, @others if @others;
-        }
 
         # In workers, store %params to be sent later in testing process
         if ($test_pid != $$) {
             store \%params, "$storable_tempdir/sent-$$";
         } else {
-            cmp_deeply($sent, $message, "Sent $query message");
+            ok ($responses{$case}->{index}->{$sent}--, "Sent $query message");
         }
     }
 
