@@ -35,10 +35,18 @@ sub new {
     $self->string($params{string});
     $self->file($params{file}) unless $self->has_xml();
 
-    foreach my $opt (qw(force_array text_node_key attr_prefix skip_attr first_out no_xml_decl xml_format is_plist)) {
-        next unless defined($params{$opt});
-        $self->{"_$opt"} = $params{$opt};
-    }
+    # Support library options set as private object attributes
+    map { $self->{"_$_"} = $params{$_} } grep { defined($params{$_}) } qw(
+        force_array
+        text_node_key
+        attr_prefix
+        skip_attr
+        first_out
+        no_xml_decl
+        xml_format
+        is_plist
+        tag_compression
+    );
 
     # Support required by GLPI::Agent::Tools::MacOS
     $self->{_force_array} = [ qw(array dict) ] if $self->{_is_plist};
@@ -244,6 +252,9 @@ sub write {
     }
 
     return '' unless $self->has_xml();
+
+    # Support XML::LibXML setTagCompression option
+    $XML::LibXML::setTagCompression = $self->{_tag_compression} ? 1 : 0 ;
 
     if ($self->{_no_xml_decl}) {
         my $string;
