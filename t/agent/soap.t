@@ -316,9 +316,6 @@ my %tests = (
             'VIRTUALDEV' => 1,
             'STATUS' => 'Up',
             'MACADDR' => '00:50:56:75:f7:2e',
-            'SPEED' => undef,
-            'PCISLOT' => undef,
-            'DRIVER' => undef,
             'MTU' => '1500',
             'DESCRIPTION' => 'vmk0',
             'IPADDRESS' => '10.0.2.189'
@@ -327,20 +324,16 @@ my %tests = (
             'VIRTUALDEV' => 0,
             'STATUS' => 'Down',
             'MACADDR' => '00:1b:24:f0:6a:45',
-            'SPEED' => '0',
             'PCISLOT' => '00:08.0',
             'DRIVER' => 'forcedeth',
-            'MTU' => undef,
             'DESCRIPTION' => 'vmnic0',
           },
           {
             'VIRTUALDEV' => 0,
             'STATUS' => 'Down',
             'MACADDR' => '00:1b:24:f0:6a:46',
-            'SPEED' => '0',
             'PCISLOT' => '00:09.0',
             'DRIVER' => 'forcedeth',
-            'MTU' => undef,
             'DESCRIPTION' => 'vmnic1',
           },
           {
@@ -350,17 +343,14 @@ my %tests = (
             'SPEED' => '100',
             'PCISLOT' => '06:04.0',
             'DRIVER' => 'tg3',
-            'MTU' => undef,
             'DESCRIPTION' => 'vmnic2',
           },
           {
             'VIRTUALDEV' => 0,
             'STATUS' => 'Down',
             'MACADDR' => '00:1b:24:f0:6a:44',
-            'SPEED' => '0',
             'PCISLOT' => '06:04.1',
             'DRIVER' => 'tg3',
-            'MTU' => undef,
             'DESCRIPTION' => 'vmnic3',
           },
           {
@@ -368,10 +358,6 @@ my %tests = (
             'VIRTUALDEV' => 0,
             'STATUS' => 'Up',
             'MACADDR' => '00:50:56:4e:eb:6f',
-            'SPEED' => undef,
-            'PCISLOT' => undef,
-            'DRIVER' => undef,
-            'MTU' => undef,
             'DESCRIPTION' => 'vswif0',
             'IPADDRESS' => '10.0.2.190'
           }
@@ -510,9 +496,10 @@ foreach my $test (keys %tests) {
 
             my $tree = GLPI::Agent::XML->new(string => $request->content())->dump_as_hash();
             my $body = $tree->{'soapenv:Envelope'}->{'soapenv:Body'};
-            my $obj  = $body->{RetrieveProperties}->{specSet}->{objectSet}->{obj};
-            if ($obj->{'-type'} && $obj->{'-type'} eq 'VirtualMachine') {
-                $action .= "-VM-$obj->{'#text'}";
+            if ($body->{RetrieveProperties}) {
+                my $obj = $body->{RetrieveProperties}->{specSet}->{objectSet}->{obj};
+                $action .= "-VM-$obj->{'#text'}"
+                    if $obj->{'-type'} && $obj->{'-type'} eq 'VirtualMachine';
             }
             my $file = $dir . "/" . $action . ".soap";
 
