@@ -205,22 +205,34 @@ sub _getNic {
     my ($ref, $isVirtual) = @_;
 
     my $nic = {
-        DESCRIPTION => $ref->{device},
-        DRIVER      => $ref->{driver},
-        IPADDRESS   => $ref->{spec}{ip}{ipAddress},
-        IPMASK      => $ref->{spec}{ip}{subnetMask},
-        MACADDR     => $ref->{mac} || $ref->{spec}{mac},
-        MTU         => $ref->{spec}{mtu},
-        PCISLOT     => $ref->{pci},
-        STATUS      => $ref->{spec}{ip}{ipAddress} ? 'Up' : 'Down',
         VIRTUALDEV  => $isVirtual,
-        SPEED       => $ref->{spec}{linkSpeed}{speedMb},
     };
 
-    # Clean up if not set
-    map {
-        delete $nic->{$_} unless $nic->{$_}
-    } qw/IPADDRESS IPMASK/;
+    my %binding = qw(
+        DESCRIPTION device
+        DRIVER      driver
+        PCISLOT     pci
+        MACADDR     mac
+    );
+
+    while (my ($key, $dump) = each %binding) {
+        next unless $ref->{$dump};
+        $nic->{$key} = $ref->{$dump};
+    }
+
+    my $spec = $ref->{spec};
+    if ($spec) {
+        my $ip = $spec->{ip};
+        if ($ip) {
+            $nic->{IPADDRESS} = $ip->{ipAddress}  if $ip->{ipAddress};
+            $nic->{IPMASK}    = $ip->{subnetMask} if $ip->{subnetMask};
+        }
+        $nic->{MACADDR} = $spec->{mac} if !$nic->{MACADDR} && $spec->{mac};
+        $nic->{MTU}     = $spec->{mtu} if $spec->{mtu};
+        $nic->{SPEED}   = $spec->{linkSpeed}->{speedMb}
+            if $spec->{linkSpeed} && $spec->{linkSpeed}->{speedMb};
+    }
+    $nic->{STATUS} = $nic->{IPADDRESS} ? 'Up' : 'Down';
 
     return $nic;
 }
@@ -235,7 +247,6 @@ sub getNetworks {
     foreach my $nicType (qw/vnic pnic consoleVnic/)  {
         foreach (_asArray($self->{hash}[0]{config}{network}{$nicType}))
         {
-
             next if $seen->{$_->{device}}++;
             my $isVirtual = $nicType eq 'vnic'?1:0;
             push @networks, _getNic($_, $isVirtual);
@@ -279,7 +290,7 @@ sub getStorages {
                 $serialnumber .= $_ foreach ( @{ $altName->{data} } );
             }
         }
-        if ( $entry->{capacity}{blockSize} && $entry->{capacity}{block} ) {
+        if ($entry->{capacity} && $entry->{capacity}->{blockSize} && $entry->{capacity}->{block}) {
             $size = int(($entry->{capacity}{blockSize} *$entry->{capacity}{block})/1024/1024);
         }
         my $manufacturer;

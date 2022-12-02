@@ -68,9 +68,10 @@ foreach my $test (keys %tests) {
 
             my $tree = GLPI::Agent::XML->new(string => $request->content())->dump_as_hash();
             my $body = $tree->{'soapenv:Envelope'}->{'soapenv:Body'};
-            my $obj  = $body->{RetrieveProperties}->{specSet}->{objectSet}->{obj};
-            if ($obj->{'-type'} && $obj->{'-type'} eq 'VirtualMachine') {
-                $action .= "-VM-$obj->{'#text'}";
+            if ($body->{RetrieveProperties}) {
+                my $obj = $body->{RetrieveProperties}->{specSet}->{objectSet}->{obj};
+                $action .= "-VM-$obj->{'#text'}"
+                    if $obj->{'-type'} && $obj->{'-type'} eq 'VirtualMachine';
             }
             my $file = $resource . "/" . $action . ".soap";
 

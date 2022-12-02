@@ -293,7 +293,6 @@
             "driver": "forcedeth",
             "mac": "00:1b:24:f0:6a:45",
             "pcislot": "00:08.0",
-            "speed": "0",
             "status": "down",
             "virtualdev": false
          },
@@ -302,7 +301,6 @@
             "driver": "forcedeth",
             "mac": "00:1b:24:f0:6a:46",
             "pcislot": "00:09.0",
-            "speed": "0",
             "status": "down",
             "virtualdev": false
          },
@@ -320,7 +318,6 @@
             "driver": "tg3",
             "mac": "00:1b:24:f0:6a:44",
             "pcislot": "06:04.1",
-            "speed": "0",
             "status": "down",
             "virtualdev": false
          },
