@@ -81,17 +81,8 @@ sub _xml {
     return $self->{_xml};
 }
 
-sub empty {
+sub _empty {
     my ($self) = @_;
-
-    if ($need_dedicated_thread && $self->{_id}) {
-        _GLPI_XML_win32_thread_binding(
-            _id  => $self->{_id},
-            api  => "empty",
-            args => []
-        );
-        return $self;
-    }
 
     delete $self->{_xml};
 
@@ -129,7 +120,7 @@ sub string {
 
     $self->_init_libxml() unless $self->{_parser};
 
-    $self->empty->_xml($self->{_parser}->parse_string(decode("UTF-8", $string)));
+    $self->_empty->_xml($self->{_parser}->parse_string(decode("UTF-8", $string)));
 
     return $self;
 }
@@ -149,7 +140,7 @@ sub file {
 
     $self->_init_libxml() unless $self->{_parser};
 
-    $self->empty->_xml($self->{_parser}->parse_file($file));
+    $self->_empty->_xml($self->{_parser}->parse_file($file));
 
     return $self;
 }
@@ -247,7 +238,7 @@ sub write {
     }
 
     if ($hash) {
-        $self->empty->_build_xml($hash)
+        $self->_empty->_build_xml($hash)
             or return;
     }
 
