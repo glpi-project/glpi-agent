@@ -29,6 +29,7 @@ my %baseconfig = (
     logfile => '', # Required when testing locally with registry set for an installed agent on win32
     debug   => 1,
     vardir  => $vardir,
+    'remote-workers' => 1,
 );
 
 my $agent = GLPI::Agent->new(
