@@ -372,7 +372,7 @@ sub _GLPI_XML_win32_binded_thread {
 
     if (defined($id)) {
         if ($infos{destroy}) {
-           delete $XMLs{$id};
+            delete $XMLs{$id};
             return;
         } else {
             # API call on cached object

@@ -67,6 +67,11 @@ pod2usage(
     -message => "\nsave folder must exist, aborting\n", -verbose => 0
 ) if ($options->{save} && ! -d $options->{save});
 
+if ($OSNAME eq 'MSWin32' && $options->{threads} > 1) {
+    GLPI::Agent::Tools::Win32->require();
+    GLPI::Agent::Tools::Win32::start_Win32_OLE_Worker();
+}
+
 my $discovery = GLPI::Agent::Task::NetDiscovery->new(
     %setup,
     target => GLPI::Agent::Target::Local->new(
