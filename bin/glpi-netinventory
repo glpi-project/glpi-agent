@@ -133,6 +133,11 @@ if ($options->{community}) {
     $credentials->{COMMUNITY} = 'public';
 }
 
+if ($OSNAME eq 'MSWin32' && $options->{threads} > 1) {
+    GLPI::Agent::Tools::Win32->require();
+    GLPI::Agent::Tools::Win32::start_Win32_OLE_Worker();
+}
+
 my $inventory = GLPI::Agent::Task::NetInventory->new(
     %setup,
     target => GLPI::Agent::Target::Local->new(
