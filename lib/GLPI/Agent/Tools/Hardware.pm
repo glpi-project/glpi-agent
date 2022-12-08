@@ -1193,7 +1193,7 @@ sub _getLLDPInfo {
         }
 
         my $connection = {
-            SYSMAC => lc(alt2canonical($mac))
+            SYSMAC => lc(alt2canonical($mac)) || lc(alt2canonical(getCanonicalString($mac)))
         };
         $connection->{SYSDESCR} = $sysdescr if $sysdescr;
         $connection->{SYSNAME} = $sysname if $sysname;
@@ -1202,11 +1202,28 @@ sub _getLLDPInfo {
         # duplicating chassisId
         my $portId = $lldpRemPortId->{$suffix};
         if ($portId !~ /^0x/ or length($portId) != 14) {
-            $connection->{IFNUMBER} = getCanonicalString($portId);
+            $portId = getCanonicalString($portId);
+            if ($portId =~ /^\d+$/) {
+                $connection->{IFNUMBER} = $portId;
+            } else {
+                my $maybe_mac = lc(alt2canonical($portId));
+                if ($maybe_mac) {
+                    push @{$connection->{MAC}}, $maybe_mac;
+                } elsif (!$connection->{IFDESCR}) {
+                    $connection->{IFDESCR} = $portId;
+                }
+            }
         }
 
         my $ifdescr = getCanonicalString($lldpRemPortDesc->{$suffix});
-        $connection->{IFDESCR} = $ifdescr if $ifdescr;
+        if (defined($ifdescr)) {
+            # Sometime ifnumber is indeed set as ifdescr
+            if ($ifdescr =~ /^\d+$/ && !defined($connection->{IFNUMBER})) {
+                $connection->{IFNUMBER} = $ifdescr;
+            } else {
+                $connection->{IFDESCR} = $ifdescr;
+            }
+        }
 
         my $id           = _getElement($suffix, -2);
         my $interface_id =
