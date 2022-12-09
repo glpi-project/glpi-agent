@@ -1209,7 +1209,7 @@ sub _getLLDPInfo {
                 my $maybe_mac = lc(alt2canonical($portId));
                 if ($maybe_mac) {
                     push @{$connection->{MAC}}, $maybe_mac;
-                } elsif (!$connection->{IFDESCR}) {
+                } else {
                     $connection->{IFDESCR} = $portId;
                 }
             }
@@ -1220,7 +1220,7 @@ sub _getLLDPInfo {
             # Sometime ifnumber is indeed set as ifdescr
             if ($ifdescr =~ /^\d+$/ && !defined($connection->{IFNUMBER})) {
                 $connection->{IFNUMBER} = $ifdescr;
-            } else {
+            } elsif (!$connection->{IFDESCR}) {
                 $connection->{IFDESCR} = $ifdescr;
             }
         }
