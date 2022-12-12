@@ -786,6 +786,62 @@ my %ifconfig_tests = (
             IPADDRESS6  => 'fe80::223:aeff:fe8c:33b6',
             IPADDRESS   => '10.1.65.145'
         }
+    ],
+    'linux-el8' => [
+        {
+            DESCRIPTION => 'docker0',
+            IPADDRESS   => '172.17.0.1',
+            IPMASK      => '255.255.0.0',
+            MACADDR     => '02:42:0c:d5:0f:d7',
+            STATUS      => 'Up',
+            TYPE        => 'ethernet',
+        },
+        {
+            DESCRIPTION => 'eth0',
+            MACADDR     => 'e4:11:5b:ed:36:0c',
+            STATUS      => 'Up',
+            TYPE        => 'ethernet'
+        },
+        {
+            DESCRIPTION => 'eth1',
+            TYPE        => 'ethernet',
+            STATUS      => 'Down',
+            MACADDR     => 'e4:11:5b:ed:36:38'
+        },
+        {
+            DESCRIPTION => 'eth2',
+            MACADDR     => 'e4:11:5b:ed:36:0e',
+            STATUS      => 'Down',
+            TYPE        => 'ethernet',
+        },
+		{
+            DESCRIPTION => 'eth3',
+            STATUS      => 'Down',
+            TYPE        => 'ethernet',
+            MACADDR     => 'e4:11:5b:ed:36:3a'
+        },
+        {
+            DESCRIPTION => 'eth0:srv',
+            IPADDRESS   => '10.10.220.100',
+            IPMASK      => '255.255.255.255',
+            MACADDR     => 'e4:11:5b:ed:36:0c',
+            STATUS      => 'Up',
+            TYPE        => 'ethernet',
+        },
+        {
+            DESCRIPTION => 'lo',
+            IPADDRESS6  => '::1',
+            STATUS      => 'Up',
+        },
+        {
+            DESCRIPTION => 'macvlan0',
+            IPADDRESS   => '10.10.220.101',
+            IPADDRESS6  => 'fe80::260f:e9bb:60de:58f4',
+            IPMASK      => '255.255.255.0',
+            MACADDR     => '4e:05:62:03:69:e7',
+            STATUS      => 'Up',
+            TYPE        => 'ethernet',
+        }
     ]
 );
 
@@ -1034,8 +1090,83 @@ my %ipaddrshow_tests = (
             DESCRIPTION => 'br0',
             STATUS      => 'Up',
             MACADDR     => 'aa:4b:c2:02:31:15'
-        }
+        },
+        {
+            DESCRIPTION => 'eth0',
+            MACADDR     => 'f0:1f:af:0f:a4:0c',
+            STATUS      => 'Up',
+        },
     ],
+    'ip_addr-el8' => [
+        {
+            DESCRIPTION => 'lo',
+            MACADDR     => '00:00:00:00:00:00',
+            STATUS      => 'Up',
+            IPADDRESS   => '127.0.0.1',
+            IPSUBNET    => '127.0.0.0',
+            IPMASK      => '255.0.0.0',
+        },
+        {
+            DESCRIPTION => 'lo',
+            MACADDR     => '00:00:00:00:00:00',
+            STATUS      => 'Up',
+            IPADDRESS6  => '::1',
+            IPSUBNET6   => '::',
+            IPMASK6     => 'fff0::',
+        },
+        {
+            DESCRIPTION => 'eth0:srv',
+            IPADDRESS   => '10.10.220.100',
+            IPSUBNET    => '10.10.220.100',
+            IPMASK      => '255.255.255.255',
+            MACADDR     => 'e4:11:5b:ed:36:0c',
+            STATUS      => 'Up',
+        },
+        {
+            DESCRIPTION => 'eth2',
+            STATUS      => 'Down',
+            MACADDR     => 'e4:11:5b:ed:36:0e',
+        },
+        {
+            DESCRIPTION => 'eth1',
+            STATUS      => 'Down',
+            MACADDR     => 'e4:11:5b:ed:36:38',
+        },
+		{
+            DESCRIPTION => 'eth3',
+            STATUS      => 'Down',
+            MACADDR     => 'e4:11:5b:ed:36:3a',
+        },
+        {
+            DESCRIPTION => 'macvlan0',
+            IPADDRESS   => '10.10.220.101',
+            IPSUBNET    => '10.10.220.0',
+            IPMASK      => '255.255.255.0',
+            MACADDR     => '4e:05:62:03:69:e7',
+            STATUS      => 'Up',
+        },
+        {
+            DESCRIPTION => 'macvlan0@eth0',
+            IPADDRESS6  => 'fe80::260f:e9bb:60de:58f4',
+            IPSUBNET6   => 'fe80::',
+            IPMASK6     => 'ffff:ffff:ffff:ffff::',
+            MACADDR     => '4e:05:62:03:69:e7',
+            STATUS      => 'Up',
+        },
+        {
+            DESCRIPTION => 'docker0',
+            IPADDRESS   => '172.17.0.1',
+            IPMASK      => '255.255.0.0',
+            IPSUBNET    => '172.17.0.0',
+            MACADDR     => '02:42:0c:d5:0f:d7',
+            STATUS      => 'Up',
+        },
+        {
+            DESCRIPTION => 'eth0',
+            MACADDR     => 'e4:11:5b:ed:36:0c',
+            STATUS      => 'Up',
+        },
+    ]
 );
 
 plan tests =>
