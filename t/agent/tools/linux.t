@@ -814,7 +814,7 @@ my %ifconfig_tests = (
             STATUS      => 'Down',
             TYPE        => 'ethernet',
         },
-		{
+        {
             DESCRIPTION => 'eth3',
             STATUS      => 'Down',
             TYPE        => 'ethernet',
