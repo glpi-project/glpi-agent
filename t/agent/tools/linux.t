@@ -1132,7 +1132,7 @@ my %ipaddrshow_tests = (
             STATUS      => 'Down',
             MACADDR     => 'e4:11:5b:ed:36:38',
         },
-		{
+        {
             DESCRIPTION => 'eth3',
             STATUS      => 'Down',
             MACADDR     => 'e4:11:5b:ed:36:3a',
