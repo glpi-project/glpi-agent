@@ -46,6 +46,7 @@ inventory:
 * PR #262: Fix docker networks are virtual, thanks to po1vo
 * fix #258: Fix slots support on AIX
 * Fix HPUX slots support
+* PR #295: Update aliased network interfaces support on linux, thanks to po1vo
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
