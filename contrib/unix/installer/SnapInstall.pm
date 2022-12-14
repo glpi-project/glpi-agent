@@ -120,10 +120,10 @@ sub install_cron {
     $self->verbose("Installin glpi-agent hourly cron file...");
     open my $cron, ">", "/etc/cron.hourly/glpi-agent"
         or die "Can't create hourly crontab for glpi-agent: $!\n";
-    print $cron q{
-#!/bin/bash
-NAME=glpi-agent
-LOG=/var/log/$NAME/$NAME.log
+    print $cron q{#!/bin/bash
+
+NAME=glpi-agent-cron
+LOG=/var/log/$NAME.log
 
 exec >>$LOG 2>&1
 
