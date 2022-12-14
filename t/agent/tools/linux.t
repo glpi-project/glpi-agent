@@ -1074,6 +1074,11 @@ my %ipaddrshow_tests = (
             IPMASK6     => 'ffff:ffff:ffff:ffff::'
         },
         {
+            DESCRIPTION => 'eth0',
+            MACADDR     => 'f0:1f:af:0f:a4:0c',
+            STATUS      => 'Up',
+        },
+        {
             DESCRIPTION => 'eth0:0',
             MACADDR     => 'f0:1f:af:0f:a4:0c',
             STATUS      => 'Up',
@@ -1090,11 +1095,6 @@ my %ipaddrshow_tests = (
             DESCRIPTION => 'br0',
             STATUS      => 'Up',
             MACADDR     => 'aa:4b:c2:02:31:15'
-        },
-        {
-            DESCRIPTION => 'eth0',
-            MACADDR     => 'f0:1f:af:0f:a4:0c',
-            STATUS      => 'Up',
         },
     ],
     'ip_addr-el8' => [
@@ -1113,6 +1113,11 @@ my %ipaddrshow_tests = (
             IPADDRESS6  => '::1',
             IPSUBNET6   => '::',
             IPMASK6     => 'fff0::',
+        },
+        {
+            DESCRIPTION => 'eth0',
+            MACADDR     => 'e4:11:5b:ed:36:0c',
+            STATUS      => 'Up',
         },
         {
             DESCRIPTION => 'eth0:srv',
@@ -1159,11 +1164,6 @@ my %ipaddrshow_tests = (
             IPMASK      => '255.255.0.0',
             IPSUBNET    => '172.17.0.0',
             MACADDR     => '02:42:0c:d5:0f:d7',
-            STATUS      => 'Up',
-        },
-        {
-            DESCRIPTION => 'eth0',
-            MACADDR     => 'e4:11:5b:ed:36:0c',
             STATUS      => 'Up',
         },
     ]
