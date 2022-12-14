@@ -392,7 +392,7 @@ sub _getSysObjectIDInfo {
     }
 
     if (!$device_id) {
-        $logger->debug("invalid sysobjectID $params{id}: no device ID")
+        $logger->debug2("partial sysobjectID $params{id}: only manufacturer ID")
             if $logger;
     }
 
@@ -413,8 +413,7 @@ sub _getSysObjectIDInfo {
     $match = $sysobjectid{$manufacturer_id};
     if ($match) {
         $logger->debug(
-            "partial match for sysobjectID $params{id} in database: ".
-            "unknown device ID"
+            "partial match for sysobjectID $params{id} on manufacturer ID"
         ) if $logger;
         return $match;
     }
