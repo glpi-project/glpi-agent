@@ -649,6 +649,8 @@ sub getInterfacesFromIp {
         if ($line =~ /^\d+:\s+(\S+): <([^>]+)>/) {
 
             if (@addresses) {
+                push @interfaces, $interface
+                    if !any { $_->{DESCRIPTION} eq $interface->{DESCRIPTION} } @addresses;
                 push @interfaces, @addresses;
                 undef @addresses;
             } elsif ($interface) {
@@ -703,26 +705,12 @@ sub getInterfacesFromIp {
     }
 
     if (@addresses) {
+        push @interfaces, $interface
+            if !any { $_->{DESCRIPTION} eq $interface->{DESCRIPTION} } @addresses;
         push @interfaces, @addresses;
         undef @addresses;
     } elsif ($interface) {
         push @interfaces, $interface;
-    }
-
-    # Verifying that a real interface exists when an alias exists:
-    # e.g. if eth0:srv exists, eth0 must exist as well
-    my %interfaces_names = map { $_->{DESCRIPTION} => $_ } @interfaces;
-
-    for my $name (grep /:/, keys %interfaces_names) {
-        my ($parent_name) = ($name =~ /^([\w\d]+):/);
-
-        next if exists $interfaces_names{$parent_name};
-
-        push @interfaces, {
-            DESCRIPTION => $parent_name,
-            MACADDR     => $interfaces_names{$name}->{MACADDR},
-            STATUS      => $interfaces_names{$name}->{STATUS},
-        };
     }
 
     return @interfaces;
