@@ -130,10 +130,14 @@ my %interface_variables = (
     IFSTATUS         => {
         oid  => '.1.3.6.1.2.1.2.2.1.8',
         type => 'constant',
+        min  => 1,
+        max  => 7,
     },
     IFINTERNALSTATUS => {
         oid  => '.1.3.6.1.2.1.2.2.1.7',
         type => 'constant',
+        min  => 1,
+        max  => 3,
     },
     IFLASTCHANGE     => {
         oid  => '.1.3.6.1.2.1.2.2.1.9',
@@ -162,6 +166,8 @@ my %interface_variables = (
     IFPORTDUPLEX     => {
         oid  => '.1.3.6.1.2.1.10.7.2.1.19',
         type => 'constant',
+        min  => 1,
+        max  => 3,
     },
     IFALIAS          => {
         oid  => '.1.3.6.1.2.1.31.1.1.1.18',
@@ -578,6 +584,15 @@ sub _setGenericProperties {
                                       $raw_value;
             $ports->{$suffix}->{$key} = $value
                 if defined $value && $value ne '';
+
+            # Check constraint on constant to remove broken values
+            if ($type eq 'constant') {
+                my ($min, $max) = ($variable->{min}, $variable->{max});
+                delete $ports->{$suffix}->{$key}
+                    if defined($min) && $value < $min;
+                delete $ports->{$suffix}->{$key}
+                    if defined($max) && $value > $max;
+            }
         }
     }
 

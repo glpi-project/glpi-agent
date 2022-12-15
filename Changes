@@ -72,6 +72,9 @@ netdiscovery/netinventory:
 * Enhanced Idrac support getting serialnumber, thanks to spinal_df on the forum
 * Add support for option --v1 & --v2c to glpi-netdiscovery and glpi-netinventory scripts
 * fix #277: Wrong IFNUMBER set in connections for some devices supporting LLDP
+* Fix to support constraint on IFPORTDUPLEX, IFSTATUS & IFINTERNALSTATUS to prevent
+  devices not respecting standards to be rejected by GLPI 10. This can fix the import
+  of few Fortinet devices.
 
 deploy:
 * Fix possible failure when mirror is set but misses file parts
