@@ -34,27 +34,6 @@ sub new {
         undef $requestid;
     }
 
-    # check compression mode
-    if (!$self->{no_compress} && Compress::Zlib->require()) {
-        # RFC 1950
-        $self->{compression} = 'zlib';
-        $self->{logger}->debug(_log_prefix."Using Compress::Zlib for compression");
-    } elsif (!$self->{no_compress} && canRun('gzip')) {
-        # RFC 1952
-        $self->{compression} = 'gzip';
-        $self->{logger}->debug(_log_prefix."Using gzip for compression");
-    } else {
-        $self->{compression} = 'none';
-        $self->{logger}->debug(_log_prefix."Not using compression");
-    }
-
-    # Set content-type header relative to selected compression
-    $self->{ua}->default_header('Content-type' =>
-        $self->{compression} eq 'zlib' ? "application/x-compress-zlib" :
-        $self->{compression} eq 'gzip' ? "application/x-compress-gzip" :
-                                         "application/json"
-    );
-
     $self->{ua}->default_header(
         'GLPI-Agent-ID' => is_uuid_string($params{agentid}) ?
             $params{agentid} : uuid_to_string($params{agentid})
@@ -91,7 +70,7 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
     my $request_content = $message->getContent();
     $logger->debug2(_log_prefix . "sending message:\n$request_content");
 
-    $request_content = $self->_compress($request_content);
+    $request_content = $self->compress($request_content);
     unless ($request_content) {
         $logger->error(_log_prefix . 'inflating problem');
         return;
@@ -119,7 +98,7 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
 
         my $type = $response->header("Content-type") // "";
         if ($type =~ m{^application/x-}i) {
-            my $uncompressed_content = $self->_uncompress($content, $type);
+            my $uncompressed_content = $self->uncompress($content, $type);
             unless ($uncompressed_content) {
                 unless (length($content)) {
                     $logger->error(_log_prefix . "Got empty answer") if $response->is_success();
@@ -173,68 +152,6 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
     }
 
     return $answer;
-}
-
-sub _compress {
-    my ($self, $data) = @_;
-
-    return
-        $self->{compression} eq 'zlib' ? Compress::Zlib::compress($data) :
-        $self->{compression} eq 'gzip' ? $self->_compressGzip($data)     :
-                                         $data;
-}
-
-sub _uncompress {
-    my ($self, $data, $type) = @_;
-
-    return unless defined($type);
-
-    $type =~ s|^application/||i;
-
-    if ($type =~ /^x-compress-zlib$/i) {
-        $self->{logger}->debug2("format: Zlib");
-        return Compress::Zlib::uncompress($data);
-    } elsif ($type =~ /^x-compress-gzip$/i) {
-        $self->{logger}->debug2("format: Gzip");
-        return $self->_uncompressGzip($data);
-    } elsif ($type =~ /^json$/i) {
-        $self->{logger}->debug2("format: JSON");
-        return $data;
-    } else {
-        $self->{logger}->debug2("unsupported format: $type");
-        return;
-    }
-}
-
-sub _compressGzip {
-    my ($self, $data) = @_;
-
-    File::Temp->require();
-    my $in = File::Temp->new();
-    print $in $data;
-    close $in;
-
-    my $result = getAllLines(
-        command => 'gzip -c ' . $in->filename(),
-        logger  => $self->{logger}
-    );
-
-    return $result;
-}
-
-sub _uncompressGzip {
-    my ($self, $data) = @_;
-
-    my $in = File::Temp->new();
-    print $in $data;
-    close $in;
-
-    my $result = getAllLines(
-        command => 'gzip -dc ' . $in->filename(),
-        logger  => $self->{logger}
-    );
-
-    return $result;
 }
 
 1;

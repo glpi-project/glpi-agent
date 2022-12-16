@@ -200,9 +200,13 @@ sub sendContent {
     my $error;
     eval {
         $content = $res->content;
-        $content = uncompress($content) if $res->header('Content-type') =~ /x-compress-zlib/;
+        if ($res->header('Content-type') =~ /x-compress-zlib/) {
+            print "DEBUG: Uncompressing received content\n" if $options->{debug};
+            $content = uncompress($content);
+        }
         my $xml = GLPI::Agent::XML->new(string => $content);
-        my $tree = $xml->dump_as_hash();
+        my $tree = $xml->dump_as_hash()
+            or die "Not an XML\n";
         $error = $tree->{REPLY}->{ERROR}
             if ref($tree->{REPLY}) eq 'HASH' && exists($tree->{REPLY}->{ERROR});
     };
@@ -215,9 +219,32 @@ sub sendContent {
                 if ($json->{status} eq "error") {
                     $error = $json->{message} // "Server failed to import" .
                         ($options->{debug} ? "" : ", use --debug option to debug");
-                } elsif ($json->{status} eq "pending") {
-                    # TODO Handle proxy
-                    print "proxy processing... ";
+                } elsif ($json->{status} eq "pending" && $res->header('GLPI-Request-ID')) {
+                    print "DEBUG, CONTENT: $content\n" if defined($content) && $options->{debug};
+                    print "waiting for proxy, ";
+                    # Next request should be a GET with expected RequestID and no content
+                    $request->method("GET");
+                    $request->content("");
+                    $request->header("GLPI-Request-ID" => $res->header('GLPI-Request-ID'));
+                    my $max_pending_request = 12;
+                    while ($max_pending_request--) {
+                        my $expiration = $json->{expiration} // "";
+                        if ($expiration =~ /^(\d+)s$/ && $1) {
+                            print "waiting $1s... ";
+                            sleep $1;
+                        }
+                        $res = $ua->request($request);
+                        $content = $res->content;
+                        print "DEBUG, CONTENT: $content\n" if defined($content) && $options->{debug};
+                        $json = decode_json($content);
+                    }
+                    if ($json->{status} eq "pending") {
+                        print "failed to get final proxy answer";
+                    } elsif ($json->{status} ne "ok") {
+                        $error = $json->{message} // "Server failed to import" .
+                            ($options->{debug} ? "" : ", use --debug option to debug");
+                    }
+                    undef $content;
                 } elsif ($json->{status} ne "ok") {
                     $error = $json->{message} // "Server failed to import" .
                         ($options->{debug} ? "" : ", use --debug option to debug");
@@ -234,9 +261,13 @@ sub sendContent {
     }
 
     if ($options->{verbose} || $error) {
-        print $error           ? "ERROR: $error" :
-            $res->is_success() ? "OK"            :
-                                 "ERROR: ".$res->status_line(), "$info\n";
+        if ($res->is_success()) {
+            print "OK\n";
+        } elsif ($error) {
+            # Chomp seems inefficient on multi-lined strings
+            chop($error) if $error =~ /\n$/m;
+            print "ERROR$info: ".$res->status_line().", $error\n";
+        }
     }
 
     print "DEBUG: $content\n" if $content && $options->{debug};

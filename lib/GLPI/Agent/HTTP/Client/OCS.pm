@@ -14,7 +14,7 @@ use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::UUID;
 use GLPI::Agent::XML::Response;
 
-my $log_prefix = "[http client] ";
+use constant    _log_prefix => "[http client] ";
 
 sub new {
     my ($class, %params) = @_;
@@ -23,31 +23,9 @@ sub new {
 
     $self->{ua}->default_header('Pragma' => 'no-cache');
 
-    # check compression mode
-    if (!$self->{no_compress} && Compress::Zlib->require()) {
-        # RFC 1950
-        $self->{compression} = 'zlib';
-        $self->{ua}->default_header('Content-type' => 'application/x-compress-zlib');
-        $self->{logger}->debug(
-            $log_prefix .
-            'Using Compress::Zlib for compression'
-        );
-    } elsif (!$self->{no_compress} && canRun('gzip')) {
-        # RFC 1952
-        $self->{compression} = 'gzip';
-        $self->{ua}->default_header('Content-type' => 'application/x-compress-gzip');
-        $self->{logger}->debug(
-            $log_prefix .
-            'Using gzip for compression'
-        );
-    } else {
-        $self->{compression} = 'none';
-        $self->{ua}->default_header('Content-type' => 'application/xml');
-        $self->{logger}->debug(
-            $log_prefix .
-            'Not using compression'
-        );
-    }
+    # Fix content-type header when not compressing
+    $self->{ua}->default_header('Content-type' => 'application/xml')
+        if $self->{compression} eq 'none';
 
     # GLPI Agent will advertize it supports GLPI protocol by sending its agentid
     # via GLPI-Agent-ID HTTP header. Legacy plugins will simply ignore it.
@@ -69,11 +47,11 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
     my $logger  = $self->{logger};
 
     my $request_content = $message->getContent();
-    $logger->debug2($log_prefix . "sending message:\n$request_content");
+    $logger->debug2(_log_prefix . "sending message:\n$request_content");
 
-    $request_content = $self->_compress(encode('UTF-8', $request_content));
+    $request_content = $self->compress(encode('UTF-8', $request_content));
     if (!$request_content) {
-        $logger->error($log_prefix . 'inflating problem');
+        $logger->error(_log_prefix . 'inflating problem');
         return;
     }
 
@@ -88,19 +66,19 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
 
     my $response_content = $response->content();
     if (!$response_content) {
-        $logger->error($log_prefix . "unknown content format");
+        $logger->error(_log_prefix . "unknown content format");
         return;
     }
 
-    my $uncompressed_response_content = $self->_uncompress($response_content);
+    my $uncompressed_response_content = $self->uncompress($response_content, $response->header("Content-type"));
     if (!$uncompressed_response_content) {
         $logger->error(
-            $log_prefix . "can't uncompress content starting with: ".substr($response_content, 0, 500)
+            _log_prefix . "can't uncompress content starting with: ".substr($response_content, 0, 500)
         );
         return;
     }
 
-    $logger->debug2($log_prefix . "receiving message:\n$uncompressed_response_content");
+    $logger->debug2(_log_prefix . "receiving message:\n$uncompressed_response_content");
 
     my $result;
     eval {
@@ -133,83 +111,10 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
     unless (defined($result)) {
         my @lines = split(/\n/, substr($uncompressed_response_content,0,120));
         $logger->error(
-            $log_prefix . "unexpected content, starting with: $lines[0]"
+            _log_prefix . "unexpected content, starting with: $lines[0]"
         );
         return;
     }
-
-    return $result;
-}
-
-sub _compress {
-    my ($self, $data) = @_;
-
-    return
-        $self->{compression} eq 'zlib' ? $self->_compressZlib($data) :
-        $self->{compression} eq 'gzip' ? $self->_compressGzip($data) :
-                                         $data;
-}
-
-sub _uncompress {
-    my ($self, $data) = @_;
-
-    if ($data =~ /(\x78\x9C.*)/s) {
-        $self->{logger}->debug2("format: Zlib");
-        return $self->_uncompressZlib($1);
-    } elsif ($data =~ /(\x1F\x8B\x08.*)/s) {
-        $self->{logger}->debug2("format: Gzip");
-        return $self->_uncompressGzip($1);
-    } elsif ($data =~ /(<html><\/html>|)[^<]*(<.*>)\s*$/s) {
-        $self->{logger}->debug2("format: Plaintext");
-        return $2;
-    } elsif ($data =~ /^\s*(\{.*\})\s*$/s) {
-        $self->{logger}->debug2("format: JSON");
-        return $1;
-    } else {
-        $self->{logger}->debug2("format: Unknown");
-        return;
-    }
-}
-
-sub _compressZlib {
-    my ($self, $data) = @_;
-
-    return Compress::Zlib::compress($data);
-}
-
-sub _compressGzip {
-    my ($self, $data) = @_;
-
-    File::Temp->require();
-    my $in = File::Temp->new();
-    print $in $data;
-    close $in;
-
-    my $result = getAllLines(
-        command => 'gzip -c ' . $in->filename(),
-        logger  => $self->{logger}
-    );
-
-    return $result;
-}
-
-sub _uncompressZlib {
-    my ($self, $data) = @_;
-
-    return Compress::Zlib::uncompress($data);
-}
-
-sub _uncompressGzip {
-    my ($self, $data) = @_;
-
-    my $in = File::Temp->new();
-    print $in $data;
-    close $in;
-
-    my $result = getAllLines(
-        command => 'gzip -dc ' . $in->filename(),
-        logger  => $self->{logger}
-    );
 
     return $result;
 }

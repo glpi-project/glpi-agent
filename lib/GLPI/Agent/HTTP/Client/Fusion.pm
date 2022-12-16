@@ -14,12 +14,15 @@ use URI::Escape;
 
 use GLPI::Agent::Tools;
 
-my $log_prefix = "[http client] ";
+use constant    _log_prefix => "[http client] ";
 
 sub new {
     my ($class, %params) = @_;
 
-    my $self = $class->SUPER::new(%params);
+    my $self = $class->SUPER::new(
+        no_compress => 1,
+        %params
+    );
 
     $self->{_cookies} = HTTP::Cookies->new ;
 
@@ -79,7 +82,7 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
     if ($method eq 'GET') {
         $request = HTTP::Request->new($method => $url);
     } else {
-        $self->{logger}->debug2($log_prefix."POST: ".$urlparams) if $self->{logger};
+        $self->{logger}->debug2(_log_prefix."POST: ".$urlparams) if $self->{logger};
         my $headers = HTTP::Headers->new(
             'Content-Type' => 'application/x-www-form-urlencoded',
             'Referer'      => $referer
@@ -100,7 +103,7 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
 
     my $content = $response->content();
     unless ($content) {
-        $self->{logger}->error( $log_prefix . "Got empty response" )
+        $self->{logger}->error( _log_prefix . "Got empty response" )
             if $self->{logger};
         return;
     }
@@ -125,7 +128,7 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
             }
         }
         $self->{logger}->error(
-            $log_prefix . "Can't decode JSON content, starting with: " .
+            _log_prefix . "Can't decode JSON content, starting with: " .
             $starting . (@lines ? "..." : "")
         ) if $starting;
         return;

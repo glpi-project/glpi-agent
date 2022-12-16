@@ -9,6 +9,8 @@ use English qw(-no_match_vars);
 use Test::Deep;
 use Test::Exception;
 use Test::More;
+use HTTP::Response;
+use HTTP::Headers;
 
 use GLPI::Agent::Logger;
 use GLPI::Agent::HTTP::Client::OCS;
@@ -50,17 +52,23 @@ my ($server, $response);
 $server = GLPI::Test::Server->new(
     port => $port,
 );
-my $header  = "HTTP/1.0 200 OK\r\n\r\n";
+my $compressed   = HTTP::Headers->new("Content-type" => "application/x-compress-zlib");
 my $xml_content  = "<REPLY><word>hello</word></REPLY>";
 my $html_content = "<html><body>hello</body></html>";
+my $altered      = "\n" . compress($xml_content);
+
+sub _response {
+    return "HTTP/1.0 " . HTTP::Response->new(@_)->as_string("\r\n");
+}
+
 $server->set_dispatch({
-    '/error'        => sub { print "HTTP/1.0 403 NOK\r\n\r\n"; },
-    '/empty'        => sub { print $header; },
-    '/uncompressed' => sub { print $header . $html_content; },
-    '/mixedhtml'   => sub { print $header . $html_content." a aee".$xml_content ; },
-    '/unexpected'   => sub { print $header . compress($html_content); },
-    '/correct'      => sub { print $header . compress($xml_content); },
-    '/altered'      => sub { print $header . "\n" . compress($xml_content); },
+    '/error'        => sub { print _response(403, "NOK"); },
+    '/empty'        => sub { print _response(200); },
+    '/uncompressed' => sub { print _response(200, undef, undef, $html_content); },
+    '/mixedhtml'    => sub { print _response(200, undef, undef, $html_content." a aee".$xml_content); },
+    '/unexpected'   => sub { print _response(200, undef, $compressed, compress($html_content)); },
+    '/correct'      => sub { print _response(200, undef, $compressed, compress($xml_content)); },
+    '/altered'      => sub { print _response(200, undef, $compressed, $altered); },
 });
 $server->background() or BAIL_OUT("can't launch the server");
 
@@ -131,11 +139,13 @@ subtest "correct response" => sub {
 };
 
 subtest "altered response" => sub {
-    check_response_ok(
+    check_response_nok(
         scalar $client->send(
             message => $message,
             url     => "http://127.0.0.1:$port/altered",
         ),
+        $logger,
+        "[http client] can't uncompress content starting with: $altered",
     );
 };
 

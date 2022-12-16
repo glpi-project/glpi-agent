@@ -14,6 +14,8 @@ core:
 * Fix #257: Also support SSL certificates included in User keystore on windows
 * Cache trusted hosts to be able to resolv them in case of DNS resolving failure,
   fixes fusioninventory/fusioninventory-agent#1033
+* Refactoring of communication with server to share compressing code between used classes and
+  to better report import errors when refused by the server
 
 inventory:
 * check if we are running in a container before checking we are running in a virtualmachine

@@ -13,7 +13,7 @@ use GLPI::Agent;
 use GLPI::Agent::Logger;
 use GLPI::Agent::Tools;
 
-my $log_prefix = "[http client] ";
+use constant    _log_prefix => "[http client] ";
 
 # Keep SSL_ca for storing read local certificate store at the class level
 my $_SSL_ca;
@@ -66,6 +66,27 @@ sub new {
         $self->{ua}->env_proxy();
     }
 
+    # check compression mode
+    if (!$self->{no_compress} && Compress::Zlib->require()) {
+        # RFC 1950
+        $self->{compression} = 'zlib';
+        $self->{logger}->debug2(_log_prefix . "Using Compress::Zlib for compression");
+    } elsif (!$self->{no_compress} && canRun('gzip')) {
+        # RFC 1952
+        $self->{compression} = 'gzip';
+        $self->{logger}->debug2(_log_prefix . "Using gzip for compression");
+    } else {
+        $self->{compression} = 'none';
+        $self->{logger}->debug2(_log_prefix . "Not using compression");
+    }
+
+    # Set content-type header relative to selected compression
+    $self->{ua}->default_header('Content-type' =>
+        $self->{compression} eq 'zlib' ? "application/x-compress-zlib" :
+        $self->{compression} eq 'gzip' ? "application/x-compress-gzip" :
+                                         "application/json"
+    );
+
     return $self;
 }
 
@@ -96,7 +117,7 @@ sub request {
                 if ($proxy_pass);
         }
         $logger->debug(
-            $log_prefix .
+            _log_prefix .
             "Using '".$proxy_uri->as_string()."' as proxy for $scheme protocol"
         );
     }
@@ -114,7 +135,7 @@ sub request {
     if ($self->{no_ssl_check}) {
         my $headers = $result->headers();
         my $warning = $headers->header("Client-SSL-Warning");
-        $logger->info($log_prefix . "SSL Client warning: $warning") if $warning;
+        $logger->info(_log_prefix . "SSL Client warning: $warning") if $warning;
 
         my $class = $headers->header("Client-SSL-Socket-Class");
         if ($class && $class eq "IO::Socket::SSL") {
@@ -126,7 +147,7 @@ sub request {
                 $header =~ /^Client-SSL-(.*)$/;
                 $infos .= "$1: '$string'";
             }
-            $logger->info($log_prefix . "SSL Client info: $infos") if $infos;
+            $logger->info(_log_prefix . "SSL Client info: $infos") if $infos;
 
             # fingerprint IO::Socket::SSL API is only available since IO::Socket::SSL v1.967
             if ($IO::Socket::SSL::VERSION >= 1.967) {
@@ -134,8 +155,8 @@ sub request {
                 my ($socket) = $self->{ua}->conn_cache->get_connections('https');
                 $fingerprint = $socket->get_fingerprint() if $socket;
                 if ($fingerprint) {
-                    $logger->info($log_prefix . "SSL server certificate fingerprint: $fingerprint");
-                    $logger->info($log_prefix . "You can set it in conf as 'ssl-fingerprint' and disable 'no-ssl-check' option to trust that server certificate");
+                    $logger->info(_log_prefix . "SSL server certificate fingerprint: $fingerprint");
+                    $logger->info(_log_prefix . "You can set it in conf as 'ssl-fingerprint' and disable 'no-ssl-check' option to trust that server certificate");
                 }
             }
         }
@@ -147,7 +168,7 @@ sub request {
         if ($result->code() == 401) {
             if ($self->{user} && $self->{password}) {
                 $logger->debug(
-                    $log_prefix .
+                    _log_prefix .
                     "authentication required, submitting credentials"
                 );
                 # compute authentication parameters
@@ -166,7 +187,7 @@ sub request {
                    ($scheme eq 'https' ? 443 : 80);
                 foreach my $authen (@authen) {
                     $logger->debug(
-                        $log_prefix .
+                        _log_prefix .
                         "authentication required, trying $authen with $self->{user} user" .
                         ( $authenticate{$authen} ? " ($authenticate{$authen})" : "" )
                     );
@@ -185,11 +206,11 @@ sub request {
                         alarm 0;
                     };
                     last if $result->is_success();
-                    $logger->debug("$log_prefix$authen authentication failed");
+                    $logger->debug(_log_prefix."$authen authentication failed");
                 }
                 if (!$result->is_success()) {
                     $logger->error(
-                        $log_prefix .
+                        _log_prefix .
                         ($result->code() == 401 ?
                             "authentication required, wrong credentials" :
                             "authentication required, error status: " . $result->status_line())
@@ -198,14 +219,14 @@ sub request {
             } else {
                 # abort
                 $logger->error(
-                    $log_prefix .
+                    _log_prefix .
                     "authentication required, no credentials available"
                 );
             }
 
         } elsif ($result->code() == 407) {
             $logger->error(
-                $log_prefix .
+                _log_prefix .
                 "proxy authentication required, wrong or no proxy credentials"
             );
 
@@ -215,12 +236,21 @@ sub request {
 
             my @message = ($result->status_line());
             my $contentType = $result->header('content-type');
-            if ($contentType && $contentType eq 'application/json' && $result->header('content-length')) {
+            my $message = $result->content();
+            $message = $self->uncompress($message, $contentType) if $contentType && $contentType =~ /x-compress/;
+            if ($message && $message =~ /^{/) {
                 if (GLPI::Agent::Protocol::Message->require()) {
-                    my $content = GLPI::Agent::Protocol::Message->new(message => $result->content());
+                    my $content = GLPI::Agent::Protocol::Message->new(message => $message);
                     if ($content->status eq 'error' && $content->get('message')) {
                         push @message, $content->get('message');
                     }
+                }
+            } elsif ($message && $message =~ /^</) {
+                if (GLPI::Agent::XML->require()) {
+                    my $xml = GLPI::Agent::XML->new(string => $message);
+                    my $tree = $xml->dump_as_hash();
+                    push @message, grep { $_ } split("\n", $tree->{REPLY}->{ERROR})
+                        if $tree && ref($tree->{REPLY}) eq 'HASH' && exists($tree->{REPLY}->{ERROR});
                 }
             }
 
@@ -237,7 +267,7 @@ sub request {
             }
 
             $logger->error(
-                $log_prefix . $error_type . ": " . join(", ", @message)
+                _log_prefix . $error_type . ": " . join(", ", @message)
             ) unless $skiperror{$result->code()};
         }
     }
@@ -348,7 +378,7 @@ sub _KeyChain_or_KeyStore_Export {
         if $_SSL_ca->{_expiration} && time < $_SSL_ca->{_expiration};
 
     $logger->debug(
-        $log_prefix .
+        _log_prefix .
         ($_SSL_ca ? "Updating" : "Reading") . " $basename known certificates"
     );
 
@@ -449,6 +479,82 @@ sub _KeyChain_or_KeyStore_Export {
     # Update class level datas
     $_SSL_ca->{_expiration} = time + 3600;
     return $_SSL_ca->{_certs} = \@certs;
+}
+
+sub compress {
+    my ($self, $data) = @_;
+
+    return
+        $self->{compression} eq 'zlib' ? Compress::Zlib::compress($data) :
+        $self->{compression} eq 'gzip' ? $self->_compressGzip($data)     :
+                                         $data;
+}
+
+sub uncompress {
+    my ($self, $data, $type) = @_;
+
+    if ($type) {
+        $type =~ s|^application/||i;
+    } else {
+        $type = "unspecified";
+    }
+
+    if ($type =~ /^x-compress-zlib$/i) {
+        $self->{logger}->debug2("format: Zlib");
+        return Compress::Zlib::uncompress($data);
+    } elsif ($type =~ /^x-compress-gzip$/i) {
+        $self->{logger}->debug2("format: Gzip");
+        return $self->_uncompressGzip($data);
+    } elsif ($type =~ /^json$/i) {
+        $self->{logger}->debug2("format: JSON");
+        return $data;
+    } elsif ($type =~ /^xml$/i) {
+        $self->{logger}->debug2("format: XML");
+        return $data;
+    } elsif ($data =~ /^\s*(\{.*\})\s*$/s) {
+        $self->{logger}->debug2("format: JSON detected");
+        return $1;
+    } elsif ($data =~ /^<\?xml version/) {
+        $self->{logger}->debug2("format: XML detected");
+        return $data;
+    } elsif ($data =~ /(<html><\/html>|)[^<]*(<.*>)\s*$/s) {
+        $self->{logger}->debug2("format: Plaintext");
+        return $2;
+    } else {
+        $self->{logger}->debug2("unsupported format: $type");
+        return;
+    }
+}
+
+sub _compressGzip {
+    my ($self, $data) = @_;
+
+    File::Temp->require();
+    my $in = File::Temp->new();
+    print $in $data;
+    close $in;
+
+    my $result = getAllLines(
+        command => 'gzip -c ' . $in->filename(),
+        logger  => $self->{logger}
+    );
+
+    return $result;
+}
+
+sub _uncompressGzip {
+    my ($self, $data) = @_;
+
+    my $in = File::Temp->new();
+    print $in $data;
+    close $in;
+
+    my $result = getAllLines(
+        command => 'gzip -dc ' . $in->filename(),
+        logger  => $self->{logger}
+    );
+
+    return $result;
 }
 
 1;
