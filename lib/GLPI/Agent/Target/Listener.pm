@@ -117,6 +117,9 @@ sub _store_sessions {
     my $storage = $self->getStorage();
     $storage->save( name => 'Sessions', data => $datas );
 
+    my $errcheck = $storage->error();
+    $self->{logger}->error($errcheck) if $errcheck;
+
     $self->{_storing_session_timer} = time + STORE_SESSION_TIMEOUT;
     $self->{_touched_sessions} = 0;
 }
