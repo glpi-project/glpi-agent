@@ -11,6 +11,12 @@ use Storable;
 
 use GLPI::Agent::Logger;
 
+{
+    no warnings;
+    # We want to catch Storable croak more cleanly and decide ourself how to log it
+    $Storable::{logcroak} = sub { die "$!\n"; };
+}
+
 sub new {
     my ($class, %params) = @_;
 
@@ -84,14 +90,31 @@ sub modified {
     return $st && $st->mtime > $self->{_mtime}->{$file} ? 1 : 0;
 }
 
+sub error {
+    my ($self, $error) = @_;
+
+    return $self->{_error} = $error if $error;
+
+    # Forget and return last error
+    return delete $self->{_error};
+}
+
 sub save {
     my ($self, %params) = @_;
 
     my $file = $self->_getFilePath(%params);
 
-    store($params{data}, $file) or warn;
+    eval {
+        store($params{data}, $file);
+    };
 
-    $self->_cache_mtime($file);
+    if (!$EVAL_ERROR) {
+        $self->_cache_mtime($file);
+    } else {
+        $self->error("Can't save $file: $EVAL_ERROR");
+        # Do not retry on error
+        $self->{_mtime}->{$file} = time;
+    }
 }
 
 sub restore {
