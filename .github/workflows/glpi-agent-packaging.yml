@@ -17,6 +17,13 @@ on:
       - develop
   schedule:
     - cron: '10 1 * * *'
+  workflow_dispatch:
+    inputs:
+      nightly:
+        description: 'Nightly publishing'
+        required: true
+        default: true
+        type: boolean
 
 jobs:
   setup-release:
@@ -67,8 +74,8 @@ jobs:
         else
             VERSION=$(perl -Ilib -MGLPI::Agent::Version -e 'print $GLPI::Agent::Version::VERSION')
             VERSION=${VERSION%-dev}-git${GITHUB_SHA:0:8}
-            if [ "${{ github.event_name }}" = "schedule" -o "${{ env.publish_development_build }}" = "yes" ]; then
-                if [ "${{ github.event_name }}" = "schedule" ]; then
+            if [ "${{ github.event_name }}" = "schedule" -o "${{ inputs.nightly }}" = "true" -o "${{ env.publish_development_build }}" = "yes" ]; then
+                if [ "${{ github.event_name }}" = "schedule" -o "${{ inputs.nightly }}" = "true" ]; then
                     TYPE=nightly
                     if [ -z "$PUBLISHING_TOKEN" ]; then
                         echo "No PUBLISHING_TOKEN defined to publish GLPI-Agent nightly builds"
