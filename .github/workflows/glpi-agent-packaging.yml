@@ -610,6 +610,14 @@ jobs:
       run: |
         pip3 install appimage-builder
       shell: bash
+    # Following step is necessary until ubuntu package version parsing is fixed
+    # See https://github.com/AppImageCrafters/appimage-builder/issues/280 principle
+    - name: Patch appimage-builder
+      id: temporary-appimage-builder-fix
+      run: |
+        echo "TODO: Remove this hack when no more needed"
+        contrib/unix/appimage-builder-patch.sh
+      shell: bash
     - uses: actions/download-artifact@v3
       with:
         name: Debian-Build
