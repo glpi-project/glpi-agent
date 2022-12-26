@@ -612,18 +612,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Install AppImage Builder
+    # We use AppImage Builder development version as 1.1 is failing
+    - name: Install AppImage Builder development version
       id: install-appimage-builder
       run: |
-        pip3 install appimage-builder
-      shell: bash
-    # Following step is necessary until ubuntu package version parsing is fixed
-    # See https://github.com/AppImageCrafters/appimage-builder/issues/280 principle
-    - name: Patch appimage-builder
-      id: temporary-appimage-builder-fix
-      run: |
-        echo "TODO: Remove this hack when no more needed"
-        contrib/unix/appimage-builder-patch.sh
+        pip3 install git+https://github.com/AppImageCrafters/appimage-builder.git
       shell: bash
     - uses: actions/download-artifact@v3
       with:
