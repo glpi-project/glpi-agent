@@ -159,6 +159,17 @@ sub _submit_add_v3 {
     $form->{snmpversion} = "v3";
 }
 
+sub _submit_add_remotecred {
+    my ($self, $form) = @_;
+
+    return unless $form;
+
+    # We should return an empty add form with name edition allowed
+    $form->{empty} = 1;
+    $form->{allow_name_edition} = 1;
+    $form->{type} = "ssh";
+}
+
 sub _submit_rename {
     my ($self, $form) = @_;
 
@@ -281,6 +292,7 @@ my %handlers = (
     'submit/add'            => \&_submit_add,
     'submit/add-v1-v2c'     => \&_submit_add_v1_v2c,
     'submit/add-v3'         => \&_submit_add_v3,
+    'submit/add-remotecred' => \&_submit_add_remotecred,
     'submit/rename'         => \&_submit_rename,
     'submit/update'         => \&_submit_update,
     'submit/delete-v1-v2c'  => \&_submit_delete_v1_v2c,
