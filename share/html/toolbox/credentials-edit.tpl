@@ -6,7 +6,7 @@
     $this = encode('UTF-8', encode_entities($edit));
     $name         = $cred->{name} || $this || $form{"input/name"} || "";
     $id           = $cred->{id}   || "";
-    $version      = $cred->{snmpversion}  || $form{"input/snmpversion"}  || "";
+    $version      = $cred->{snmpversion}  || $form{"input/snmpversion"}  || $form{snmpversion} || $snmpversion || "";
     $community    = $cred->{community}    || $form{"input/community"}    || "";
     $username     = $cred->{username}     || $form{"input/username"}     || "";
     $authprotocol = $cred->{authprotocol} || $form{"input/authprotocol"} || "";
