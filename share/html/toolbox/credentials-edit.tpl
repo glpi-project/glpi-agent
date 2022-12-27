@@ -9,6 +9,9 @@
     $version      = $cred->{snmpversion}  || $form{"input/snmpversion"}  || $form{snmpversion} || $snmpversion || "";
     $community    = $cred->{community}    || $form{"input/community"}    || "";
     $username     = $cred->{username}     || $form{"input/username"}     || "";
+    $remoteuser   = $cred->{remoteuser}   || $form{"input/remoteuser"}   || "";
+    $remotepass   = $cred->{remotepass}   || $form{"input/remotepass"}   || "";
+    $type         = $cred->{type}         || $form{"input/type"}         || $form{remotecreds} ? "ssh" : "snmp";
     $authprotocol = $cred->{authprotocol} || $form{"input/authprotocol"} || "";
     $authpassword = $cred->{authpassword} || $form{"input/authpassword"} || "";
     $privprotocol = $cred->{privprotocol} || $form{"input/privprotocol"} || "";
@@ -21,6 +24,7 @@
     <input type='hidden' name='edit' value='{$this}'/>{
       $form{empty} ? "
     <input type='hidden' name='empty' value='1'/>" : "" }
+    <input type='hidden' name='remotecreds' id='remotecreds' value='{$form{remotecreds}||""}'/>
     <div class='form-edit-row'>
       <div class='form-edit'>
         <label for='name'>{_"Name"}</label>
@@ -31,7 +35,22 @@
         </div>
       </div>
     </div>
-    <div class='form-edit-row'>
+    <div class='form-edit-row' id='type-option' style='display: flex'>
+      <div class='form-edit'>
+        <label>{_"Type"}</label>
+        <div class='form-edit-row' id='radio-options'>
+          <input type="radio" name="input/type" id="snmp" value="snmp" onchange="type_change()"{$type eq "snmp" ? " checked" : ""}>
+          <label for='snmp'>snmp</label>
+          <input type="radio" name="input/type" id="ssh" value="ssh" onchange="type_change()"{$type eq "ssh" ? " checked" : ""}>
+          <label for='ssh'>ssh</label>
+          <input type="radio" name="input/type" id="winrm" value="winrm" onchange="type_change()"{$type eq "winrm" ? " checked" : ""}>
+          <label for='winrm'>winrm</label>
+          <input type="radio" name="input/type" id="esx" value="esx" onchange="type_change()"{$type eq "esx" ? " checked" : ""}>
+          <label for='esx'>esx</label>
+        </div>
+      </div>
+    </div>
+    <div class='form-edit-row' id='snmp-version-option' style='display: {$type eq "snmp" ? "flex" : "none"}'>
       <div class='form-edit'>
         <label>{_"Version"}</label>
         <div class='form-edit-row' id='radio-options'>
@@ -44,13 +63,13 @@
         </div>
       </div>
     </div>
-    <div class='form-edit-row' id='v1-v2c-option' style='display: {!$version || $version =~ /v1|v2c/ ? "flex" : "none"}'>
+    <div class='form-edit-row' id='v1-v2c-option' style='display: {$type eq "snmp" && (!$version || $version =~ /v1|v2c/) ? "flex" : "none"}'>
       <div class='form-edit'>
         <label for='community'>{_"Community"}</label>
         <input class='input-row' type='text' id='community' name='input/community' placeholder='{_"Community"}' value='{$community}' {$version eq "v3" ? " disabled" : ""}>
       </div>
     </div>
-    <div class='form-edit-row' id='v3-options' style='display: {$version && $version eq "v3" ? "flex" : "none"}'>
+    <div class='form-edit-row' id='v3-options' style='display: {$type eq "snmp" && $version && $version eq "v3" ? "flex" : "none"}'>
       <div class='form-edit'>
         <label for='username'>{_"Username"}</label>
         <input class='input-row' type='text' id='username' name='input/username' placeholder='{_"Username"}' value='{$username}' size='12' {!$version || $version ne "v3" ? " disabled" : ""}>
@@ -58,7 +77,7 @@
       <div class='form-edit'>
         <label for='authproto'>{_"Authentication protocol"}</label>
         <div class='form-edit-row'>
-          <select class='input-row' id='authproto' name='input/authprotocol' {!$version || $version ne "v3" ? " disabled" : ""}>
+          <select class='input-row' id='authproto' name='input/authprotocol' {$type eq "snmp" && (!$version || $version ne "v3") ? " disabled" : ""}>
             <option{$authprotocol ? "" : " selected"}></option>
             <option{$authprotocol eq "md5" ? " selected" : ""}>md5</option>
             <option{$authprotocol eq "sha" ? " selected" : ""}>sha</option>
@@ -82,6 +101,18 @@
         <label for='authpass'>{_"Privacy password"}</label>
         <div class='form-edit-row'>
           <input class='input-row' id='privpass' type='text' name='input/privpassword' placeholder='{_"Privacy password"}' value='{$privpassword}' size='20' {!$version || $version ne "v3" ? " disabled" : ""}>
+        </div>
+      </div>
+    </div>
+    <div class='form-edit-row' id='remote-options' style='display: {$type ne "snmp" ? "flex" : "none"}'>
+      <div class='form-edit'>
+        <label for='remoteuser'>{_"Username"}</label>
+        <input class='input-row' type='text' id='remoteuser' name='input/remoteuser' placeholder='{_"Username"}' value='{$remoteuser}' size='12'>
+      </div>
+      <div class='form-edit'>
+        <label for='remotepass'>{_"Authentication password"}</label>
+        <div class='form-edit-row'>
+          <input class='input-row'  type='text'id='remotepass' name='input/remotepass' placeholder='{_"Authentication password"}' value='{$remotepass}' size='24'>
         </div>
       </div>
     </div>
@@ -116,5 +147,19 @@
       document.getElementById("authpass").disabled=!b;
       document.getElementById("privproto").disabled=!b;
       document.getElementById("privpass").disabled=!b;
+  \}
+  function type_change() \{
+    if (document.getElementById("snmp").checked) \{
+      document.getElementById("remote-options").style = "display: none";
+      document.getElementById("snmp-version-option").style = "display: flex";
+      document.getElementById("remotecreds").value = "0";
+      version_change();
+    \} else \{
+      document.getElementById("v3-options").style = "display: none";
+      document.getElementById("v1-v2c-option").style = "display: none";
+      document.getElementById("snmp-version-option").style = "display: none";
+      document.getElementById("remote-options").style = "display: flex";
+      document.getElementById("remotecreds").value = "1";
+    \}
   \}
   </script>
