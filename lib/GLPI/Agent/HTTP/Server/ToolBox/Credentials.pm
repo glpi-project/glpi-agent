@@ -270,8 +270,11 @@ sub _submit_delete_v3 {
 }
 
 sub _submit_cancel {
-    my ($self) = @_;
+    my ($self, $form) = @_;
     $self->reset_edit();
+    delete $form->{empty};
+    # Select snmp version list from current selected snmp version
+    $form->{snmpversion} = delete $form->{'input/snmpversion'};
 }
 
 my %handlers = (
