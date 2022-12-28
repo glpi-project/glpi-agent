@@ -103,28 +103,53 @@ sub _submit_add {
         return $self->errors("New credential: An entry still exists with that name: '$name'");
     }
     if ($form->{'input/name'}) {
+        my @keys;
         # Validate form
-        if (!$form->{"input/snmpversion"}) {
-            return $self->errors("New credential: SNMP version is mandatory");
-        } elsif ($form->{"input/snmpversion"} !~ /v1|v2c|v3/) {
-            return $self->errors("New credential: Wrong SNMP version");
-        } elsif ($form->{"input/snmpversion"} =~ /v1|v2c/ && !$form->{"input/community"}) {
-            return $self->errors("New credential: Community is mandatory with version: ".$form->{"input/snmpversion"});
-        } elsif ($form->{"input/snmpversion"} =~ /v3/ && !$form->{"input/username"}) {
-            return $self->errors("Credential update: Username is mandatory with SNMP v3");
-        }
-        # Cleanup unused by version
-        if ($form->{"input/snmpversion"} =~ /v1|v2c/) {
-            foreach my $key (qw(username authprotocol authpassword privprotocol privpassword)) {
-                delete $form->{"input/$key"};
+        my $type = $form->{"input/type"} // "snmp";
+        if ($type eq 'snmp') {
+            if (!$form->{"input/snmpversion"}) {
+                return $self->errors("New credential: SNMP version is mandatory");
+            } elsif ($form->{"input/snmpversion"} !~ /v1|v2c|v3/) {
+                return $self->errors("New credential: Wrong SNMP version");
+            } elsif ($form->{"input/snmpversion"} =~ /v1|v2c/ && !$form->{"input/community"}) {
+                return $self->errors("New credential: Community is mandatory with version: ".$form->{"input/snmpversion"});
+            } elsif ($form->{"input/snmpversion"} =~ /v3/ && !$form->{"input/username"}) {
+                return $self->errors("New credential: Username is mandatory with SNMP v3");
             }
+            # Cleanup unused by version
+            if ($form->{"input/snmpversion"} =~ /^v1|v2c$/) {
+                foreach my $key (qw(username authprotocol authpassword privprotocol privpassword)) {
+                    delete $form->{"input/$key"};
+                }
+            } else {
+                delete $form->{"input/community"};
+            }
+            # Required to show the same list version on reload
+            $form->{snmpversion} = $form->{"input/snmpversion"};
+            # Supported keys
+            @keys = qw(snmpversion community description username authprotocol authpassword privprotocol privpassword);
         } else {
-            delete $form->{"input/community"};
+            if ($type !~ /^ssh|winrm|esx$/) {
+                return $self->errors("New credential: Unsupported remote inventory type");
+            } elsif (!(defined($form->{"input/remoteuser"}) && length($form->{"input/remoteuser"}))) {
+                return $self->errors("New credential: Username is mandatory for remote inventory types");
+            } elsif ($type =~ /^winrm|esx$/ && !(defined($form->{"input/remotepass"}) && length($form->{"input/remotepass"}))) {
+                return $self->errors(sprintf("New credential: Password is mandatory for %s remote inventory type", $type));
+            } elsif ($type =~ /^ssh$/ && !(defined($form->{"input/remotepass"}) && length($form->{"input/remotepass"}))) {
+                $self->infos("New credential: No password for ssh remote inventory type involves you installed public key authentication");
+            }
+            # Supported keys
+            @keys = qw(description type remoteuser remotepass);
         }
         # Add credential
         $credentials->{$name} = {};
-        foreach my $key (qw(snmpversion community description username authprotocol authpassword privprotocol privpassword)) {
+        foreach my $key (@keys) {
             my $input = "input/$key";
+            # Remap remoteuser & remotepass keys
+            if ($type ne "snmp") {
+                $key = "username" if $key eq "remoteuser";
+                $key = "password" if $key eq "remotepass";
+            }
             if (defined($form->{$input}) && length($form->{$input})) {
                 $credentials->{$name}->{$key} = $form->{$input};
             }
@@ -193,15 +218,33 @@ sub _submit_update {
             $name = encode('UTF-8', $name);
             return $self->errors("Credential update: An entry still exists with that name: '$name'");
         }
+        my @keys;
         # Validate form
-        if (!$form->{"input/snmpversion"}) {
-            return $self->errors("Credential update: SNMP version is mandatory");
-        } elsif ($form->{"input/snmpversion"} !~ /v1|v2c|v3/) {
-            return $self->errors("Credential update: Wrong SNMP version");
-        } elsif ($form->{"input/snmpversion"} =~ /v1|v2c/ && !$form->{"input/community"}) {
-            return $self->errors("Credential update: Community is mandatory with version: ".$form->{"input/snmpversion"});
-        } elsif ($form->{"input/snmpversion"} =~ /v3/ && !$form->{"input/username"}) {
-            return $self->errors("Credential update: Username is mandatory with SNMP v3");
+        my $type = $form->{"input/type"} // "snmp";
+        if ($type eq 'snmp') {
+            if (!$form->{"input/snmpversion"}) {
+                return $self->errors("Credential update: SNMP version is mandatory");
+            } elsif ($form->{"input/snmpversion"} !~ /v1|v2c|v3/) {
+                return $self->errors("Credential update: Wrong SNMP version");
+            } elsif ($form->{"input/snmpversion"} =~ /v1|v2c/ && !$form->{"input/community"}) {
+                return $self->errors("Credential update: Community is mandatory with version: ".$form->{"input/snmpversion"});
+            } elsif ($form->{"input/snmpversion"} =~ /v3/ && !$form->{"input/username"}) {
+                return $self->errors("Credential update: Username is mandatory with SNMP v3");
+            }
+            # Supported keys
+            @keys = qw(snmpversion community description username authprotocol authpassword privprotocol privpassword);
+        } else {
+            if ($type !~ /^ssh|winrm|esx$/) {
+                return $self->errors("Credential update: Unsupported remote inventory type");
+            } elsif (!(defined($form->{"input/remoteuser"}) && length($form->{"input/remoteuser"}))) {
+                return $self->errors("Credential update: Username is mandatory for remote inventory types");
+            } elsif ($type =~ /^winrm|esx$/ && !(defined($form->{"input/remotepass"}) && length($form->{"input/remotepass"}))) {
+                return $self->errors(sprintf("Credential update: Password is mandatory for %s remote inventory type", $type));
+            } elsif ($type =~ /^ssh$/ && !(defined($form->{"input/remotepass"}) && length($form->{"input/remotepass"}))) {
+                $self->infos("Credential update: No password for ssh remote inventory type involves you installed public key authentication");
+            }
+            # Supported keys
+            @keys = qw(description type remoteuser remotepass);
         }
         # Rename the entry
         if ($entry ne $update) {
@@ -233,17 +276,24 @@ sub _submit_update {
                 if $count;
         }
         $self->edit($entry);
-        # Cleanup unused by version
-        if ($form->{"input/snmpversion"} =~ /v1|v2c/) {
-            foreach my $key (qw(username authprotocol authpassword privprotocol privpassword)) {
-                delete $form->{"input/$key"};
+        if ($type eq 'snmp') {
+            # Cleanup unused by version
+            if ($form->{"input/snmpversion"} =~ /^v1|v2c$/) {
+                foreach my $key (qw(username authprotocol authpassword privprotocol privpassword)) {
+                    delete $form->{"input/$key"};
+                }
+            } else {
+                delete $form->{"input/community"};
             }
-        } else {
-            delete $form->{"input/community"};
         }
         # Update credential
-        foreach my $key (qw(name snmpversion community description username authprotocol authpassword privprotocol privpassword)) {
+        foreach my $key (@keys) {
             my $input = "input/$key";
+            # Remap remoteuser & remotepass keys
+            if ($type ne "snmp") {
+                $key = "username" if $key eq "remoteuser";
+                $key = "password" if $key eq "remotepass";
+            }
             if (defined($form->{$input}) && length($form->{$input})) {
                 $credentials->{$entry}->{$key} = $form->{$input};
             } else {

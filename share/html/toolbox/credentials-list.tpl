@@ -167,11 +167,12 @@
   foreach my $entry (sort keys(%credentials)) {
     my $type = $credentials{$entry}->{type}
         or next;
+    next if $type eq 'snmp';
     $count++;
     my $this = encode('UTF-8', encode_entities($entry));
     my $id = $credentials{$entry}->{id};
-    my $user = $credentials{$entry}->{username};
-    my $password = $credentials{$entry}->{password};
+    my $remoteuser = $credentials{$entry}->{username};
+    my $remotepass = $credentials{$entry}->{password};
     my $description = $credentials{$entry}->{description} || "";
     my $name = $credentials{$entry}->{name} || $this ;
     $OUT .= "
@@ -185,8 +186,8 @@
             </td>
             <td class='list' width='10%'".($id ?" title='id = $id'":"")."><a href='$url_path/$request?edit=".uri_escape($this)."'>$name</a></td>
             <td class='list' width='10%' >$type</td>
-            <td class='list' width='10%' >$username</td>
-            <td class='list' width='10%' >$password</td>
+            <td class='list' width='10%' >$remoteuser</td>
+            <td class='list' width='10%' >$remotepass</td>
             <td class='list'>$description</td>
           </tr>";
   }
