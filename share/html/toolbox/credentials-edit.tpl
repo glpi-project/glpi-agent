@@ -9,9 +9,9 @@
     $version      = $cred->{snmpversion}  || $form{"input/snmpversion"}  || $form{snmpversion} || $snmpversion || "";
     $community    = $cred->{community}    || $form{"input/community"}    || "";
     $username     = $cred->{username}     || $form{"input/username"}     || "";
-    $remoteuser   = $cred->{remoteuser}   || $form{"input/remoteuser"}   || "";
-    $remotepass   = $cred->{remotepass}   || $form{"input/remotepass"}   || "";
-    $type         = $cred->{type}         || $form{"input/type"}         || $form{remotecreds} ? "ssh" : "snmp";
+    $remoteuser   = $cred->{username}     || $form{"input/remoteuser"}   || "";
+    $remotepass   = $cred->{password}     || $form{"input/remotepass"}   || "";
+    $type         = $cred->{type}         || $form{"input/type"}         || ($form{remotecreds} ? "ssh" : "snmp");
     $authprotocol = $cred->{authprotocol} || $form{"input/authprotocol"} || "";
     $authpassword = $cred->{authpassword} || $form{"input/authpassword"} || "";
     $privprotocol = $cred->{privprotocol} || $form{"input/privprotocol"} || "";
