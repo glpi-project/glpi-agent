@@ -13,6 +13,7 @@
     <input type='hidden' name='form' value='{$request}'/>
     <input type='hidden' id='snmpversion' name='snmpversion' value='{$form{snmpversion}||"v2c"}'/>
     <input type='hidden' id='remotecreds' name='remotecreds' value='{$form{remotecreds}||""}'/>
+    <input type='hidden' id='showpass' name='show-password' value='{$form{"show-password"}||"off"}'/>
     <div id='snmp-v1-v2c-tab' class="tabcontent"{
         !$form{remotecreds} && (!$form{snmpversion} || $form{snmpversion} =~ /^v1|v2c$/) ? " style='display: block;'" : ""}>
       <table>
@@ -35,6 +36,7 @@
   use HTML::Entities;
   use URI::Escape;
   $count = 0;
+  $showpass = $form{"show-password"} && $form{"show-password"} eq "on" ? 1 : 0;
   foreach my $entry (sort keys(%credentials)) {
     my $version = $credentials{$entry}->{snmpversion};
     next unless $version && $version =~ /^v1|v2c$/;
@@ -110,6 +112,10 @@
     my $ppass = $credentials{$entry}->{privpassword} || "";
     my $description = $credentials{$entry}->{description} || "";
     my $name = $credentials{$entry}->{name} || $this ;
+    unless ($showpass) {
+        $apass = "****" if length($apass);
+        $ppass = "****" if length($ppass);
+    }
     $OUT .= "
           <tr class='$request'>
             <td class='checkbox'>
@@ -119,7 +125,7 @@
                 <span class='custom-checkbox'></span>
               </label>
             </td>
-            <td class='list' width='10%'".($id ?" title='id = $id'":"")."><a href='$url_path/$request?edit=".uri_escape($this)."'>$name</a></td>
+            <td class='list' width='10%'".($id ?" title='id = $id'":"")."><a href='$url_path/$request?edit=".uri_escape($this).($showpass ? "&show-password=on" : "")."'>$name</a></td>
             <td class='list' width='10%' >$user</td>
             <td class='list' width='10%' >".($aproto?"[$aproto] ":"")."$apass</td>
             <td class='list' width='10%' >".($pproto?"[$pproto] ":"")."$ppass</td>
@@ -140,6 +146,13 @@
       <div class='select-row'>
         <div class='arrow-left'></div>
         <input class='submit-secondary' type='submit' name='submit/delete-v3' value='{_"Delete"}'>
+      </div>
+      <div class='form-edit-row' style='display: flex'>
+        <label class='switch'>
+          <input class='switch' type='checkbox'{$showpass ? " checked" : ""} onclick='show_password(this.checked)'>
+          <span class='slider'></span>
+        </label>
+        <label for='show-password-switch' class='text'>{_"Show password"}</label>
       </div>
       <hr/>
       <input class='big-button' type='submit' name='submit/add-v3' value='{_"Add Credential"}'>
@@ -175,6 +188,9 @@
     my $remotepass = $credentials{$entry}->{password};
     my $description = $credentials{$entry}->{description} || "";
     my $name = $credentials{$entry}->{name} || $this ;
+    unless ($showpass) {
+        $remotepass = "****" if length($remotepass);
+    }
     $OUT .= "
           <tr class='$request'>
             <td class='checkbox'>
@@ -184,7 +200,7 @@
                 <span class='custom-checkbox'></span>
               </label>
             </td>
-            <td class='list' width='10%'".($id ?" title='id = $id'":"")."><a href='$url_path/$request?edit=".uri_escape($this)."'>$name</a></td>
+            <td class='list' width='10%'".($id ?" title='id = $id'":"")."><a href='$url_path/$request?edit=".uri_escape($this).($showpass ? "&show-password=on" : "")."'>$name</a></td>
             <td class='list' width='10%' >$type</td>
             <td class='list' width='10%' >$remoteuser</td>
             <td class='list' width='10%' >$remotepass</td>
@@ -205,6 +221,13 @@
       <div class='select-row'>
         <div class='arrow-left'></div>
         <input class='submit-secondary' type='submit' name='submit/delete-remotecred' value='{_"Delete"}'>
+      </div>
+      <div class='form-edit-row' style='display: flex'>
+        <label class='switch'>
+          <input class='switch' type='checkbox'{$showpass ? " checked" : ""} onclick='show_password(this.checked)'>
+          <span class='slider'></span>
+        </label>
+        <label for='show-password-switch' class='text'>{_"Show password"}</label>
       </div>
       <hr/>
       <input class='big-button' type='submit' name='submit/add-remotecred' value='{_"Add Credential"}'>
@@ -232,5 +255,9 @@
     if (target.id != "remote-creds")
       document.getElementById("snmpversion").value = target.id === "snmp-v1-v2c" ? "v2c" : "v3";
     document.getElementById("remotecreds").value = target.id === "remote-creds" ? "1" : "";
+  \}
+  function show_password(checked) \{
+    document.getElementById('showpass').value = checked ? 'on' : 'off';
+    document.forms["{$request}"].submit();
   \}
   </script>
