@@ -17,6 +17,7 @@
     $privprotocol = $cred->{privprotocol} || $form{"input/privprotocol"} || "";
     $privpassword = $cred->{privpassword} || $form{"input/privpassword"} || "";
     $description  = $cred->{description}  || $form{"input/description"}  || "";
+    $showpass     = $form{"show-password"} && $form{"show-password"} eq "on" ? 1 : 0;
     $credentials{$edit} ? sprintf(_("Edit &laquo;&nbsp;%s&nbsp;&raquo; credential"), ($cred->{name} || $this))
       : _"Add new credential"}</h2>
   <form name='{$request}' method='post' action='{$url_path}/{$request}'>
@@ -38,7 +39,7 @@
     <div class='form-edit-row' id='type-option' style='display: flex'>
       <div class='form-edit'>
         <label>{_"Type"}</label>
-        <div class='form-edit-row' id='radio-options'>
+        <div class='form-edit-row' id='type-options'>
           <input type="radio" name="input/type" id="snmp" value="snmp" onchange="type_change()"{$type eq "snmp" ? " checked" : ""}>
           <label for='snmp'>snmp</label>
           <input type="radio" name="input/type" id="ssh" value="ssh" onchange="type_change()"{$type eq "ssh" ? " checked" : ""}>
@@ -53,7 +54,7 @@
     <div class='form-edit-row' id='snmp-version-option' style='display: {$type eq "snmp" ? "flex" : "none"}'>
       <div class='form-edit'>
         <label>{_"Version"}</label>
-        <div class='form-edit-row' id='radio-options'>
+        <div class='form-edit-row' id='snmp-version-options'>
           <input type="radio" name="input/snmpversion" id="v1" value="v1" onchange="version_change()"{$version && $version eq "v1" ? " checked" : ""}>
           <label for='v1'>v1</label>
           <input type="radio" name="input/snmpversion" id="v2c" value="v2c" onchange="version_change()"{!$version || $version eq "v2c" ? " checked" : ""}>
@@ -85,7 +86,7 @@
         </div>
         <label for='authpass'>{_"Authentication password"}</label>
         <div class='form-edit-row'>
-          <input class='input-row' id='authpass' type='text' name='input/authpassword' placeholder='{_"Authentication password"}' value='{$authpassword}' size='20' {!$version || $version ne "v3" ? " disabled" : ""}>
+          <input class='input-row' id='authpass' type='{$showpass ? "text" : "password"}' name='input/authpassword' placeholder='{_"Authentication password"}' value='{$authpassword}' size='20' {!$version || $version ne "v3" ? " disabled" : ""}>
         </div>
       </div>
       <div class='form-edit'>
@@ -100,7 +101,7 @@
         </div>
         <label for='authpass'>{_"Privacy password"}</label>
         <div class='form-edit-row'>
-          <input class='input-row' id='privpass' type='text' name='input/privpassword' placeholder='{_"Privacy password"}' value='{$privpassword}' size='20' {!$version || $version ne "v3" ? " disabled" : ""}>
+          <input class='input-row' id='privpass' type='{$showpass ? "text" : "password"}' name='input/privpassword' placeholder='{_"Privacy password"}' value='{$privpassword}' size='20' {!$version || $version ne "v3" ? " disabled" : ""}>
         </div>
       </div>
     </div>
@@ -112,7 +113,7 @@
       <div class='form-edit'>
         <label for='remotepass'>{_"Authentication password"}</label>
         <div class='form-edit-row'>
-          <input class='input-row'  type='text'id='remotepass' name='input/remotepass' placeholder='{_"Authentication password"}' value='{$remotepass}' size='24'>
+          <input class='input-row'  type='{$showpass ? "text" : "password"}' id='remotepass' name='input/remotepass' placeholder='{_"Authentication password"}' value='{$remotepass}' size='24'>
         </div>
       </div>
     </div>
@@ -121,6 +122,13 @@
         <label for='description'>{_"Description"}</label>
         <input class='input-row' type='text' id='description' name='input/description' placeholder='{_"Description"}' value='{$description}' size='40'>
       </div>
+    </div>
+    <div class='form-edit-row' id='show-password' style='display: {$type ne "snmp" || $version eq "v3" ? "flex" : "none"}'>
+      <label class='switch'>
+        <input name='show-password' id='show-password-switch' class='switch' type='checkbox'{$showpass ? " checked" : ""} onclick='show_password()'>
+        <span class='slider'></span>
+      </label>
+      <label for='show-password-switch' class='text'>{_"Show password"}</label>
     </div>
     <input type='submit' class='big-button' name='submit/{
       $credentials{$edit} ?
@@ -161,5 +169,13 @@
       document.getElementById("remote-options").style = "display: flex";
       document.getElementById("remotecreds").value = "1";
     \}
+  \}
+  function show_password() \{
+    var checked;
+    checked = document.getElementById('show-password-switch').checked;
+    document.getElementById('remotepass').type = checked ? 'text' : 'password';
+    document.getElementById('authpass').type = checked ? 'text' : 'password';
+    document.getElementById('privpass').type = checked ? 'text' : 'password';
+    document.getElementById('navbar-credentials').href = '{$url_path."/credentials"}'+(checked ? '?show-password=on' : '');
   \}
   </script>
