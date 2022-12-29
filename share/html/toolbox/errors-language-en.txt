@@ -72,3 +72,8 @@ Can't create entry without target:
 Can't update entry without target:
 Can't update entry without source target:
 No such remote for target:
+
+Unsupported remote inventory type:
+Username is mandatory for remote inventory types:
+Password is mandatory for %s remote inventory type:
+No password for ssh remote inventory type involves you installed public key authentication:

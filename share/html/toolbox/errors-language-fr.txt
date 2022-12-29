@@ -72,3 +72,8 @@ Can't create entry without target: Impossible de créer une entrée sans cible
 Can't update entry without target: Impossible de mettre à jour une entrée sans cible
 Can't update entry without source target: Impossible de mettre à jour une entrée sans cible source
 No such remote for target: Inventaire distant non disponible pour la cible
+
+Unsupported remote inventory type: Type d'inventaire distant non supporté
+Username is mandatory for remote inventory types: Un nom d'utilisateur est nécessaire pour les types inventaire distant
+Password is mandatory for %s remote inventory type: Un mot de passe est nécessaire pour l'inventaire distant de type %s
+No password for ssh remote inventory type involves you installed public key authentication: Pas de mot de passe implique que vous ayez installé une clé publique pour l'authentification
