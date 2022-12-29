@@ -657,6 +657,41 @@ sub getInterfaces {
         push @interfaces, $netAdapter->getInterfaces();
     }
 
+    # Also try to include connected vpn connection
+    my @vpnConnections = getWMIObjects(
+        moniker    => 'winmgmts://./Root/Microsoft/Windows/RemoteAccess/Client',
+        class      => 'PS_VpnConnection',
+        properties => [ qw/Guid ConnectionStatus Name/ ]
+    );
+    foreach my $vpnConnection (@vpnConnections) {
+        next unless $vpnConnection && $vpnConnection->{Name} &&
+            $vpnConnection->{ConnectionStatus} &&
+            $vpnConnection->{ConnectionStatus} eq "Connected";
+
+        my $vpn = {
+            DESCRIPTION => $vpnConnection->{Name},
+            TYPE        => "ethernet",
+            VIRTUALDEV  => 1,
+            STATUS      => "up"
+        };
+
+        if ($vpnConnection->{Guid}) {
+            my $interface = getRegistryKey(
+                path => 'HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/services/Tcpip/Parameters/Interfaces/'.$vpnConnection->{Guid},
+                # Important for remote inventory optimization
+                required    => [ qw/DhcpIPAddress DhcpSubnetMask/ ],
+            );
+            if ($interface) {
+                $vpn->{IPADDRESS} = $interface->{DhcpIPAddress}
+                    if $interface->{DhcpIPAddress};
+                $vpn->{IPMASK} = $interface->{DhcpSubnetMask}
+                    if $interface->{DhcpSubnetMask};
+            }
+        }
+
+        push @interfaces, $vpn;
+    }
+
     return @interfaces;
 }
 
