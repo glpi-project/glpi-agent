@@ -39,10 +39,21 @@
         map { $checkbox{$_} = 1 } @{$range->{credentials}} if !keys(%checkbox) && @{$range->{credentials}};
         @credentials = sort { $a cmp $b } keys(%checkbox);
         foreach my $credential (@credentials) {
-          next unless $credentials{$credential};
+          my $cred = $credentials{$credential}
+            or next;
           $OUT .= "
-          <li><input type='checkbox' name='checkbox/".encode('UTF-8', encode_entities($credential))."' checked>".
-            encode('UTF-8', encode_entities($credentials{$credential}->{name} || $credential))."</li>";
+          <li>
+            <input type='checkbox' name='checkbox/".encode('UTF-8', encode_entities($credential))."' checked>
+            <div class='tooltip'>
+              <a href='$url_path/credentials?edit=$credential'>".encode('UTF-8', encode_entities($cred->{name} || $credential))."
+                <div class='right'>
+                  <p>".($cred->{type} ? _("Type").":&nbsp;".$cred->{type} : _("SNMP version").":&nbsp;".$cred->{snmpversion})."</p>
+                  <p>".(!$cred->{type} && $cred->{snmpversion} ne "v3" ? _("Community").":&nbsp;".$cred->{community} : _("Username").":&nbsp;".$cred->{username})."</p>
+                  <i></i>
+                </div>
+              </a>
+            </div>
+          </li>";
           delete $credentials{$credential};
         }
         if (keys(%credentials)) {

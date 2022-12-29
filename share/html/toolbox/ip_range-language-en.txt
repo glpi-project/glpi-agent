@@ -13,3 +13,8 @@ Add credential:
 Remove credential:
 Return to IP ranges:
 Associated credentials:
+
+SNMP version:
+Type:
+Community:
+Username:

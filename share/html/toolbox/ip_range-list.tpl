@@ -41,8 +41,17 @@
     my $ip_end   = $range->{ip_end} || "";
     my $tips     = $range->{id} ? " title='id=".$range->{id}."'": "";
     my $description = $range->{description} || "";
-    my $thiscredentials = join("<br/>", map {
-            encode('UTF-8', encode_entities($credentials{$_}->{name} || $_))
+    my $thiscredentials = join("
+            <br/>", map { "
+            <div class='tooltip'>
+              <a href='$url_path/credentials?edit=$_'>".encode('UTF-8', encode_entities($credentials{$_}->{name} || $_))."
+                <div class='right'>
+                  <p>".($credentials{$_}->{type} ? _("Type").":&nbsp;".$credentials{$_}->{type} : _("SNMP version").":&nbsp;".$credentials{$_}->{snmpversion})."</p>
+                  <p>".(!$credentials{$_}->{type} && $credentials{$_}->{snmpversion} ne "v3" ? _("Community").":&nbsp;".$credentials{$_}->{community} : _("Username").":&nbsp;".$credentials{$_}->{username})."</p>
+                  <i></i>
+                </div>
+              </a>
+            </div>"
         } @{$range->{credentials}});
     $OUT .= "
         <tr class='$request'$tips>
