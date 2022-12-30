@@ -20,7 +20,7 @@ sub doInventory {
 
     my $port;
     my $command = "ssh-keyscan";
-    if (has_file('/etc/ssh/sshd_config')) {
+    if (canRead('/etc/ssh/sshd_config')) {
         foreach my $line (getAllLines( file => '/etc/ssh/sshd_config' )) {
             next unless $line =~ /^Port\s+(\d+)/;
             $port = $1;

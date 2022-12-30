@@ -22,7 +22,7 @@ sub _dmi_info {
     my ($info) = @_;
     my $class = '/sys/class/dmi/id/'.$info;
     return if has_folder($class);
-    return unless has_file($class);
+    return unless canRead($class);
     return getFirstLine(file => $class);
 }
 

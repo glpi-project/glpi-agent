@@ -11,7 +11,7 @@ use GLPI::Agent::Tools::Linux;
 use constant    category    => "cpu";
 
 sub isEnabled {
-    return has_file('/proc/cpuinfo');
+    return canRead('/proc/cpuinfo');
 }
 
 sub doInventory {

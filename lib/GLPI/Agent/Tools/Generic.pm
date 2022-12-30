@@ -5,7 +5,6 @@ use warnings;
 use parent 'Exporter';
 
 use English qw(-no_match_vars);
-use Memoize;
 use File::stat;
 use File::Basename qw(basename);
 
@@ -29,13 +28,6 @@ my $PCIClasses;
 my $USBVendors;
 my $USBClasses;
 my $EDIDVendors;
-
-# this trigger some errors under Win32:
-# Anonymous function called in forbidden scalar context
-if ($OSNAME ne 'MSWin32') {
-    memoize('getDmidecodeInfos');
-    memoize('getPCIDevices');
-}
 
 sub getDmidecodeInfos {
     my (%params) = (

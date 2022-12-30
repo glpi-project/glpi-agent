@@ -10,7 +10,7 @@ use GLPI::Agent::Tools;
 use constant    category    => "bios";
 
 sub isEnabled {
-    return has_file('/proc/cpuinfo');
+    return canRead('/proc/cpuinfo');
 }
 
 sub doInventory {

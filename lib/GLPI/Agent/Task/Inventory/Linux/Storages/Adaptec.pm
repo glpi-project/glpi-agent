@@ -13,7 +13,7 @@ use GLPI::Agent::Tools::Linux;
 our $runMeIfTheseChecksFailed = ['GLPI::Agent::Task::Inventory::Linux::Storages'];
 
 sub isEnabled {
-    return has_file('/proc/scsi/scsi');
+    return canRead('/proc/scsi/scsi');
 }
 
 sub doInventory {

@@ -148,12 +148,12 @@ sub doInventory {
 
     } elsif ($type eq "systemd-nspawn") {
         my $uuid;
-        if (-e "/run/host/container-uuid") {
+        if (canRead("/run/host/container-uuid")) {
             $uuid = getAllLines(
                 file    => "/run/host/container-uuid",
                 logger  => $logger
             );
-        } else {
+        } elsif (canRead("/proc/1/environ")) {
             my $init_env = getAllLines(
                 file    => '/proc/1/environ',
                 logger  => $logger
@@ -212,7 +212,7 @@ sub _getType {
     }
 
     # systemd based container like lxc or systemd-nspawn should be tested before
-    if (has_file('/proc/1/environ')) {
+    if (canRead('/proc/1/environ')) {
         my $init_env = getAllLines(
             file => '/proc/1/environ',
             logger => $logger
@@ -229,7 +229,7 @@ sub _getType {
     }
 
     # OpenVZ
-    if (has_file('/proc/self/status')) {
+    if (canRead('/proc/self/status')) {
         my @selfstatus = getAllLines(
             file => '/proc/self/status',
             logger => $logger
@@ -324,7 +324,7 @@ sub _getType {
 
     # loaded modules
 
-    if (has_file('/proc/modules')) {
+    if (canRead('/proc/modules')) {
         my @lines = getAllLines(
             file => '/proc/modules',
             logger => $logger
@@ -338,7 +338,7 @@ sub _getType {
     # dmesg can be empty or near empty on some systems (notably on Debian 8)
 
     my @lines;
-    if (has_file('/var/log/dmesg') && FileStat('/var/log/dmesg')->size > 40) {
+    if (canRead('/var/log/dmesg') && FileStat('/var/log/dmesg')->size > 40) {
         @lines = getAllLines(file => '/var/log/dmesg', logger => $logger);
     } elsif (canRun('/bin/dmesg')) {
         @lines = getAllLines(command => '/bin/dmesg', logger => $logger);
@@ -355,7 +355,7 @@ sub _getType {
 
     # scsi
 
-    if (has_file('/proc/scsi/scsi')) {
+    if (canRead('/proc/scsi/scsi')) {
         my @lines = getAllLines(
             file => '/proc/scsi/scsi',
             logger => $logger

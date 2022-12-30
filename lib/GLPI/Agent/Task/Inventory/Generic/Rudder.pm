@@ -12,7 +12,7 @@ use GLPI::Agent::Tools;
 use constant    category    => "rudder";
 
 sub isEnabled {
-    return has_file(getUuidFile());
+    return canRead(getUuidFile());
 }
 
 sub getUuidFile {

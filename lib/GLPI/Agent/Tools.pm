@@ -10,7 +10,6 @@ use File::Basename;
 use File::Spec;
 use File::stat;
 use File::Which;
-use Memoize;
 use UNIVERSAL::require;
 
 use GLPI::Agent::Tools::Expiration;
@@ -43,6 +42,7 @@ our @EXPORT = qw(
     getLinesCount
     compareVersion
     canRun
+    canRead
     hex2char
     hex2dec
     dec2hex
@@ -66,15 +66,6 @@ our @EXPORT = qw(
     Uname
     month
 );
-
-# this trigger some errors under win32:
-# Anonymous function called in forbidden scalar context
-if ($OSNAME ne 'MSWin32') {
-    memoize('canRun');
-    memoize('Uname');
-    memoize('has_file');
-    memoize('OSNAME');
-}
 
 our $remote;
 
@@ -120,6 +111,12 @@ sub has_file {
     my $f = shift;
     return -e $f unless $remote;
     return $remote->remoteTestFile($f);
+}
+
+sub canRead {
+    my $f = shift;
+    return -r $f unless $remote;
+    return $remote->remoteTestFile($f, 'r');
 }
 
 sub has_link {
@@ -879,10 +876,6 @@ Returns true if given binary can be executed.
 =head2 canRead($file)
 
 Returns true if given file can be read.
-
-=head2 canLoad($module)
-
-Returns true if given perl module can be loaded (and actually loads it).
 
 =head2 hex2char($value)
 

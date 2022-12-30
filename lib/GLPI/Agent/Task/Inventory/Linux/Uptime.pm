@@ -12,7 +12,7 @@ use GLPI::Agent::Tools;
 use constant    category    => "os";
 
 sub isEnabled {
-    return has_file('/proc/uptime');
+    return canRead('/proc/uptime');
 }
 
 sub doInventory {

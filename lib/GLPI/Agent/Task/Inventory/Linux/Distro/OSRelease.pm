@@ -8,7 +8,7 @@ use parent 'GLPI::Agent::Task::Inventory::Module';
 use GLPI::Agent::Tools;
 
 sub isEnabled {
-  return has_file('/etc/os-release');
+  return canRead('/etc/os-release');
 }
 
 sub doInventory {
@@ -21,12 +21,12 @@ sub doInventory {
     # Handle Debian case where version is not complete like in Ubuntu
     # by checking /etc/debian_version
     _fixDebianOS(file => '/etc/debian_version', os => $os)
-        if has_file('/etc/debian_version');
+        if canRead('/etc/debian_version');
 
     # Handle CentOS case as version is not well-defined on this distro
     # See https://bugs.centos.org/view.php?id=8359
     _fixCentOS(file => '/etc/centos-release', os => $os)
-        if has_file('/etc/centos-release') && (!$os->{VERSION} || $os->{VERSION} =~ /^\d+ /);
+        if canRead('/etc/centos-release') && (!$os->{VERSION} || $os->{VERSION} =~ /^\d+ /);
 
     $inventory->setOperatingSystem($os);
 }

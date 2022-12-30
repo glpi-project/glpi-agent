@@ -11,7 +11,6 @@ use constant SPEED_UNKNOWN =>      65535 ; # See linux/ethtool.h, to be read as 
 
 use English qw(-no_match_vars);
 use File::Basename qw(basename dirname);
-use Memoize;
 use Socket qw(PF_INET SOCK_DGRAM);
 
 use GLPI::Agent::Tools;
@@ -28,8 +27,6 @@ our @EXPORT = qw(
     getInterfacesFromIp
     getInterfacesInfosFromIoctl
 );
-
-memoize('getDevicesFromUdev');
 
 sub getDevicesFromUdev {
     my (%params) = @_;
@@ -322,7 +319,7 @@ sub _getValueFromSysProc {
 
     ## no critic (ExplicitReturnUndef)
 
-    my $file = first { has_file($root.$_) }
+    my $file = first { canRead($root.$_) }
         "/sys/block/$device/$key",
         "/sys/block/$device/device/$key",
         "/proc/ide/$device/$key",

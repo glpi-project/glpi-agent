@@ -129,7 +129,7 @@ sub _getInterfaces {
         }
 
         if (defined($interface->{STATUS}) && $interface->{STATUS} eq 'Up') {
-            if (has_file("/sys/class/net/$interface->{DESCRIPTION}/speed")) {
+            if (canRead("/sys/class/net/$interface->{DESCRIPTION}/speed")) {
                 my $speed = getFirstLine(
                     file => "/sys/class/net/$interface->{DESCRIPTION}/speed"
                 );

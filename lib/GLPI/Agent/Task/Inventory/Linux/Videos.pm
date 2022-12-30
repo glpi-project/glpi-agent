@@ -67,7 +67,7 @@ sub doInventory {
     if ($xorgPid) {
         my $fd = 0;
         my %read;
-        while (has_file("/proc/$xorgPid/fd/$fd")) {
+        while (canRead("/proc/$xorgPid/fd/$fd")) {
             my $link = ReadLink("/proc/$xorgPid/fd/$fd");
             $fd++;
             next unless $link =~ /\.log$/;

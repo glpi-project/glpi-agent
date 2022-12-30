@@ -7,7 +7,6 @@ use parent 'Exporter';
 use English qw(-no_match_vars);
 use File::Which;
 use File::Basename qw(basename);
-use Memoize;
 use Time::Local;
 
 use GLPI::Agent::Tools;
@@ -23,9 +22,6 @@ our @EXPORT = qw(
     getRootFSBirth
     getXAuthorityFile
 );
-
-memoize('getProcesses');
-memoize('getXAuthorityFile');
 
 sub getDeviceCapacity {
     my (%params) = @_;

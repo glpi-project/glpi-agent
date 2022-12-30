@@ -350,7 +350,7 @@ sub remoteTestFolder {
 }
 
 sub remoteTestFile {
-    my ($self, $file) = @_;
+    my ($self, $file, $filetest) = @_;
 
     # Support Net::SSH2 facilities to stat file with sftp protocol
     if ($self->{_ssh2}) {
@@ -358,6 +358,13 @@ sub remoteTestFile {
         $self->_connect();
         my $sftp = $self->{_ssh2}->sftp();
         if ($sftp) {
+            if ($filetest && $filetest eq "r") {
+                $self->{logger}->debug2("Trying to stat if '$file' is readable via sftp subsystem");
+                my $fh = $sftp->open($file);
+                return 0 unless $fh;
+                close($fh);
+                return 1;
+            }
             $self->{logger}->debug2("Trying to stat '$file' via sftp subsystem");
             my $stat = $sftp->stat($file);
             return 1 if defined($stat);
@@ -380,7 +387,7 @@ sub remoteTestFile {
         }
     }
 
-    my $command = "test -e '$file'";
+    my $command = $filetest && $filetest eq "r" ? "test -r '$file'" : "test -e '$file'";
 
     # Support Net::SSH2 facilities to exec command
     my $ret = $self->_ssh2_exec_status($command);

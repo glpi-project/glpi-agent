@@ -11,7 +11,7 @@ use GLPI::Agent::Tools::Hostname;
 use constant    category    => "hardware";
 
 sub isEnabled {
-    return has_file("/etc/resolv.conf");
+    return canRead("/etc/resolv.conf");
 }
 
 sub doInventory {

@@ -7,15 +7,11 @@ use parent 'Exporter';
 use English qw(-no_match_vars);
 
 use GLPI::Agent::Tools;
-use Memoize;
 
 our @EXPORT = qw(
     getLsvpdInfos
     getAdaptersFromLsdev
 );
-
-memoize('getLsvpdInfos');
-memoize('getAdaptersFromLsdev');
 
 sub getLsvpdInfos {
     my (%params) = (

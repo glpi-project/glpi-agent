@@ -67,7 +67,7 @@ our $runMeIfTheseChecksFailed =
     ["GLPI::Agent::Task::Inventory::Linux::Distro::OSRelease"];
 
 sub isEnabled {
-    return !(has_file('/etc/os-release'));
+    return canRead('/etc/os-release') ? 0 : 1;
 }
 
 sub doInventory {

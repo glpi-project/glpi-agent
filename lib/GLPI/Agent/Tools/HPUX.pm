@@ -7,15 +7,11 @@ use parent 'Exporter';
 use English qw(-no_match_vars);
 
 use GLPI::Agent::Tools;
-use Memoize;
 
 our @EXPORT = qw(
     getInfoFromMachinfo
     isHPVMGuest
 );
-
-memoize('getInfoFromMachinfo');
-memoize('isHPVMGuest');
 
 sub getInfoFromMachinfo {
     my (%params) = (

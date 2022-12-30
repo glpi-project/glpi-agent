@@ -7,7 +7,6 @@ use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 use File::Basename qw(basename);
-use Memoize;
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Generic;
@@ -15,8 +14,6 @@ use GLPI::Agent::Tools::Linux;
 use GLPI::Agent::Tools::Unix;
 
 use constant    category    => "storage";
-
-memoize('_correctHdparmAvailable');
 
 sub isEnabled {
     return 1;

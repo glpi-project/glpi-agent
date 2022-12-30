@@ -197,7 +197,7 @@ sub _getScreensFromUnix {
                     no_chdir => 1,
                     wanted   => sub {
                         return unless basename($_) eq 'edid';
-                        return unless has_file($_);
+                        return unless canRead($_);
                         my $edid = getAllLines(file => $_);
                         push @screens, { edid => $edid } if $edid;
                     },

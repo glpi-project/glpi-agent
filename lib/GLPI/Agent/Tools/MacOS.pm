@@ -6,7 +6,6 @@ use parent 'Exporter';
 
 use Encode;
 use English qw(-no_match_vars);
-use Memoize;
 use POSIX 'strftime';
 use Time::Local;
 use UNIVERSAL::require;
@@ -20,8 +19,6 @@ our @EXPORT = qw(
     getBootTime
     detectLocalTimeOffset
 );
-
-memoize('getSystemProfilerInfos');
 
 sub _getSystemProfilerInfosXML {
     my (%params) = @_;

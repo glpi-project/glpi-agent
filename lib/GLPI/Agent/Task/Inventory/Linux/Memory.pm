@@ -10,7 +10,7 @@ use GLPI::Agent::Tools;
 use constant    category    => "memory";
 
 sub isEnabled {
-    return has_file('/proc/meminfo');
+    return canRead('/proc/meminfo');
 }
 
 sub doInventory {

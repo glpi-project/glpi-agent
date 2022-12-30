@@ -7,7 +7,6 @@ use parent 'Exporter';
 use English qw(-no_match_vars);
 
 use GLPI::Agent::Tools;
-use Memoize;
 
 our @EXPORT = qw(
     getZone
@@ -16,11 +15,6 @@ our @EXPORT = qw(
     getReleaseInfo
     getSmbios
 );
-
-memoize('getZone');
-memoize('getPrtdiagInfos');
-memoize('getReleaseInfo');
-memoize('getSmbios');
 
 sub getZone {
     return canRun('zonename') ?

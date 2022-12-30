@@ -22,7 +22,7 @@ sub _get_anydesk_config {
         push @configs, Glob('/etc/anydesk_ad_*/system.conf');
         push @configs, '/etc/anydesk/system.conf';
     }
-    return grep { has_file($_) } @configs;
+    return grep { canRead($_) } @configs;
 }
 
 sub isEnabled {
