@@ -165,9 +165,9 @@ sub sendContent {
 
     # Support proxy setup
     if ($options->{proxy}) {
-        $self->{ua}->proxy(['http', 'https'], $options->{proxy});
+        $ua->proxy(['http', 'https'], $options->{proxy});
     }  else {
-        $self->{ua}->env_proxy();
+        $ua->env_proxy();
     }
 
     my $request = HTTP::Request->new( POST => $options->{url} );
