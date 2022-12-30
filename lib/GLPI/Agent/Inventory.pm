@@ -642,8 +642,10 @@ sub save {
             $handle = Win32::Unicode::File->new('w', $file)
                 or $self->{logger}->error("Can't write to $file: $ERRNO");
         } else {
-            open($handle, '>', $file)
-                or $self->{logger}->error("Can't write to $file: $ERRNO");
+            unless (open($handle, '>', $file)) {
+                $self->{logger}->error("Can't write to $file: $ERRNO");
+                undef $handle;
+            }
         }
         return unless $handle;
     }
