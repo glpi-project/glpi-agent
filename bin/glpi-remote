@@ -73,6 +73,8 @@ pod2usage(-verbose => 0, -exitstatus => 0) if $options->{help};
 if ($options->{vardir}) {
     die "Wrong vardir option: $!\n" unless -d $options->{vardir};
     $setup{vardir} = $options->{vardir};
+} else {
+    $options->{vardir} = $setup{vardir};
 }
 
 my ($cmd, @params) = @ARGV;
@@ -193,7 +195,6 @@ sub add {
     if ($options->{server} || $options->{local}) {
         my $config = GLPI::Agent::Config->new(
             options => $options,
-            vardir  => $setup{vardir},
         );
         my $targets = $config->getTargets();
         foreach my $target (@{$targets}) {
@@ -525,7 +526,7 @@ sub agent {
         }
 
         my $deviceid;
-        my $xml = GLPI::Agent::XML->new(string => $content);
+        $xml = GLPI::Agent::XML->new(string => $content);
         my $tree = $xml->dump_as_hash();
         if ($tree && $tree->{REQUEST} && $tree->{REQUEST}->{DEVICEID}) {
             $deviceid = $tree->{REQUEST}->{DEVICEID};
