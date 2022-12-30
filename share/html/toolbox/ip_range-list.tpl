@@ -58,7 +58,7 @@
           <td class='checkbox'>
             <label class='checkbox'>
               <input class='checkbox' type='checkbox' name='checkbox/".encode_entities($entry)."'".
-              ($edit && $edit eq $entry ? " checked" : "").">
+              ($form{"checkbox/".$entry} eq "on" ? " checked" : "").">
               <span class='custom-checkbox'></span>
             </label>
           </td>
