@@ -30,6 +30,9 @@ BEGIN {
 sub getHostname {
     my (%params) = @_;
 
+    my $remote = $GLPI::Agent::Tools::remote;
+    return $remote->getRemoteHostname() if $remote;
+
     my $hostname = $OSNAME eq 'MSWin32' ?
         _getHostnameWindows() :
         _getHostnameUnix()    ;
@@ -42,9 +45,6 @@ sub getHostname {
 }
 
 sub _getHostnameUnix {
-
-    my $remote = $GLPI::Agent::Tools::remote;
-    return $remote->getRemoteHostname() if $remote;
 
     Sys::Hostname->require();
     return Sys::Hostname::hostname();

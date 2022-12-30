@@ -68,6 +68,7 @@ remoteinventory:
 * More ssh inventory optimization while using libssh2
 * Updated remote modes support: perl, ssh and libssh2 for remote ssh, ssl for winrm
 * Fix libssh2 was missing from win32 packaging
+* Fix remote hostname for ssh remote inventory run from a win32 agent
 
 netdiscovery/netinventory:
 * Avoid to record invalid MAC Address from Netbios during netdiscovery task
