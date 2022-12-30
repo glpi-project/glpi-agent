@@ -551,6 +551,8 @@ sub write_yaml {
             }
             $yaml_tiny->write($yaml_file)
                 or $self->error("Failed to save ".$self->config('yaml').": $EVAL_ERROR");
+            # Reset YAML loaded time
+            $self->{_yaml_loaded_time}->{$yaml_file} = time;
         } elsif ($backup) {
             $self->error("Can't make backup of YAML file: ".$self->config('yaml'));
         } else {
