@@ -48,6 +48,9 @@ proxy-server-plugin:
 injector:
 * Support --ssl-cert-file option to permit SSL client authentication
 
+toolbox:
+* fix #254: Add credential to iprange not working after adding first one
+
 packaging:
 * Update MacOSX packages to use OpenSSL 3.1.3 & zlib 1.3
 * Install basic-authentication-server-plugin.cfg plugin default configuration on debian
