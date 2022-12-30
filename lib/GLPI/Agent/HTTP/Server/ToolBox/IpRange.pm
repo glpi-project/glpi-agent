@@ -202,8 +202,8 @@ sub _submit_add {
                 delete $ip_range->{$name}->{$key};
             }
         }
-        my @credentials = sort { $a cmp $b } map { m{^checkbox/(.*)$} }
-            grep { /^checkbox\// && $form->{$_} eq 'on' } keys(%{$form});
+        my @credentials = sort { $a cmp $b } map { m{^checkbox/cred/(.*)$} }
+            grep { m{^checkbox/cred/} && $form->{$_} eq 'on' } keys(%{$form});
         if (@credentials) {
             $ip_range->{$name}->{credentials} = \@credentials;
         } else {
@@ -271,8 +271,8 @@ sub _submit_update {
                 delete $ip_range->{$entry}->{$key};
             }
         }
-        my @credentials = sort { $a cmp $b } map { m{^checkbox/(.*)$} }
-            grep { /^checkbox\// && $form->{$_} eq 'on' } keys(%{$form});
+        my @credentials = sort { $a cmp $b } map { m{^checkbox/cred/(.*)$} }
+            grep { m{^checkbox/cred/} && $form->{$_} eq 'on' } keys(%{$form});
         if (@credentials) {
             $ip_range->{$entry}->{credentials} = \@credentials;
         } else {
@@ -321,7 +321,7 @@ sub _submit_addcredential {
     if (defined($form->{'edit'})) {
         my $name = $form->{'edit'};
         $form->{empty} = 1 unless $name;
-        $form->{"checkbox/$credential"} = "on";
+        $form->{"checkbox/cred/$credential"} = "on";
     } else {
         my @selected = map { m{^checkbox/(.*)$} }
             grep { m{^checkbox/} && $form->{$_} eq 'on' } keys(%{$form});
@@ -349,7 +349,7 @@ sub _submit_rmcredential {
     return $self->errors("IP range credential removing: Invalid credential")
         unless (defined($credential) && length($credential));
     my @selected = map { m{^checkbox/(.*)$} }
-        grep { /^checkbox\// && $form->{$_} eq 'on' } keys(%{$form});
+        grep { m{^checkbox/} && $form->{$_} eq 'on' } keys(%{$form});
 
     return $self->errors("IP range credential removing: No IP range selected")
         unless @selected;
