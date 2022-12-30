@@ -543,6 +543,8 @@ sub _analyse_event {
         $task->{current_module} = $1;
     } elsif ($event =~ /\[warning\] Aborting net(discovery|inventory) task/) {
         $task->{aborted} = 1;
+    } elsif ($event =~ /\[error\] Can't write to/) {
+        $task->{failed} = 1;
     }
 
     # Percent for progress bar
@@ -631,6 +633,8 @@ sub ajax {
     }
     $headers{'X-Inventory-Status'} = 'aborted'
         if $task->{aborted};
+    $headers{'X-Inventory-Status'} = 'failed'
+        if $task->{failed};
 
     my $message = '';
     # index should be read first from request to support multi-users acces on the
