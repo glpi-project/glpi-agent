@@ -35,7 +35,7 @@
       <div id='credentials'>
         <ul>{
         my @credentials = ();
-        my %checkbox = map { m{^checkbox/(.*)$} => 1 } grep { m{^checkbox/} && $form{$_} eq 'on' } keys(%form);
+        my %checkbox = map { m{^checkbox/cred/(.*)$} => 1 } grep { m{^checkbox/cred/} && $form{$_} eq 'on' } keys(%form);
         map { $checkbox{$_} = 1 } @{$range->{credentials}} if !keys(%checkbox) && @{$range->{credentials}};
         @credentials = sort { $a cmp $b } keys(%checkbox);
         foreach my $credential (@credentials) {
@@ -43,7 +43,7 @@
             or next;
           $OUT .= "
           <li>
-            <input type='checkbox' name='checkbox/".encode('UTF-8', encode_entities($credential))."' checked>
+            <input type='checkbox' name='checkbox/cred/".encode('UTF-8', encode_entities($credential))."' checked>
             <div class='tooltip'>
               <a href='$url_path/credentials?edit=$credential'>".encode('UTF-8', encode_entities($cred->{name} || $credential))."
                 <div class='right'>
