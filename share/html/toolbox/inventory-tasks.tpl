@@ -14,6 +14,7 @@
     my $percent = $tasks{$task}->{percent} || 0;
     my $done    = $tasks{$task}->{done}    || 0;
     my $aborted = $tasks{$task}->{aborted} || 0;
+    my $failed  = $tasks{$task}->{failed}  || 0;
     push @running, $task
       unless ($done || $percent == 100 || $aborted);
     $OUT .= "
@@ -25,9 +26,9 @@
         </div>
         <div class='progress-col'>
           <div class='progress-bar'>
-            <div id='$task-scanned-bar' class='".($percent == 100 ? "completed" : $aborted ? "aborted" : "scanning")."'>
+            <div id='$task-scanned-bar' class='".($failed ? "failed" : ($percent == 100) ? "completed" : $aborted ? "aborted" : "scanning")."'>
               <span id='$task-progress-bar-text' class='progressbar-text'>".(
-                $percent == 100 ? _("Completed") : $aborted ? _("Aborted") : "")."</span>
+                $failed ? _("Failure") : ($percent == 100) ? _("Completed") : $aborted ? _("Aborted") : "")."</span>
             </div>
           </div>
         </div>
@@ -139,7 +140,8 @@
     output = document.getElementById(task+'-output');
     completed = document.getElementById(task+'-scanned-bar').className == "completed";
     aborted = document.getElementById(task+'-scanned-bar').className == "aborted";
-    if (completed || aborted) \{
+    failed = document.getElementById(task+'-scanned-bar').className == "failed";
+    if (completed || aborted || failed) \{
       document.getElementById(task+'-freeze-log-option').innerHTML = '';
       document.getElementById(task+'-abort-button').innerHTML = '';
     \}
@@ -171,6 +173,7 @@
       \}
       running = this.getResponseHeader('X-Inventory-Status')=='running' ? true : false;
       aborted = this.getResponseHeader('X-Inventory-Status')=='aborted' ? true : false;
+      failed  = this.getResponseHeader('X-Inventory-Status')=='failed'  ? true : false;
       inventory_count = this.getResponseHeader('X-Inventory-Count');
       if (!this.getResponseHeader('X-Inventory-IsLocal')) \{
         var scanned, maxcount, permax, percount, snmp, others, unknown;
@@ -204,6 +207,9 @@
         document.getElementById(task+'-progress-bar-text').innerHTML = '{_"Aborted"}';
         document.getElementById(task+'-scanned-bar').className = "aborted";
         document.getElementById(task+'-scanned-bar').style.width = "100%";
+      \} else if (failed) \{
+        document.getElementById(task+'-progress-bar-text').innerHTML = '{_"Failure"}';
+        document.getElementById(task+'-scanned-bar').className = "failed";
       \} else \{
         document.getElementById(task+'-progress-bar-text').innerHTML = percent == 100 ? '{_"Completed"}' : '';
       \}

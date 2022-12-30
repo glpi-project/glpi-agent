@@ -15,6 +15,7 @@ None: Aucun
 New tag: Nouveau tag
 New tag will be automatically selected: Le nouveau tag sera automatiquement sélectionné
 Add new tag: Ajouter un nouveau tag
+
 netdiscovery task not installed: Tâche netdiscovery non installée
 netinventory task not installed: Tâche netinventory non installée
 netdiscovery and netinventory tasks not installed: Tâches netdiscovery et netinventory non installées
@@ -37,3 +38,4 @@ Completed: Terminée
 Aborted: Interrompue
 %s network scan: Scan réseau de %s
 Freeze log output: Geler la mise à jour du journal
+Failure: &Eacute;chec

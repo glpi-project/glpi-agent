@@ -166,6 +166,12 @@ input.expand-task {
   background-color: #ccc;
 }
 
+.failed {
+  text-align: center;
+  width: 100%;
+  background-color: #ff0000;
+}
+
 .slider-fix {
   width: 32px;
   height: 18px;

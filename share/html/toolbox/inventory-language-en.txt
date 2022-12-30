@@ -38,3 +38,4 @@ Completed:
 Aborted:
 %s network scan:
 Freeze log output:
+Failure:
