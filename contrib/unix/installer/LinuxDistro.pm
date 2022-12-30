@@ -81,6 +81,7 @@ sub new {
         _runnow     => delete $options->{runnow}  // 0,
         _dont_ask   => delete $options->{"no-question"} // 0,
         _type       => delete $options->{type},
+        _user_proxy => delete $options->{"use-current-user-proxy"} // 0,
         _options    => $options,
         _cleanpkg   => 1,
         _skip       => {},
@@ -302,6 +303,12 @@ sub configure {
         }
         # Only ask configuration if no server
         $self->ask_configure() unless $self->{_dont_ask};
+    }
+
+    # Check to use current user proxy environment
+    if (!$self->{_options}->{proxy} && $self->{_user_proxy}) {
+        my $proxy = $ENV{HTTPS_PROXY} // $ENV{HTTP_PROXY};
+        $self->{_options}->{proxy} = $proxy if $proxy;
     }
 
     if (keys(%{$self->{_options}})) {

@@ -31,6 +31,7 @@ my @options = (
     'no-compression|C',
     'no-task=s',
     'no-p2p',
+    'proxy|P=s',
     'httpd-ip=s',
     'httpd-port=s',
     'httpd-trust=s',
@@ -51,6 +52,7 @@ my @options = (
     'type=s',
     'uninstall',
     'unpack',
+    'use-current-user-proxy',
     'verbose|v',
     'version',
 );
@@ -133,6 +135,9 @@ glpi-agent-linux-installer [options]
                                    deploy task packages
 
   Network options:
+    -P --proxy=PROXY               proxy address
+    --use-current-user-proxy       Configure proxy address from current user environment (false)
+                                   and only if --proxy option is not used
     --ca-cert-file=FILE            CA certificates file
     --no-ssl-check                 do not check server SSL certificate (false)
     -C --no-compression            do not compress communication with server (false)
