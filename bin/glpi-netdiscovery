@@ -10,6 +10,7 @@ use English qw(-no_match_vars);
 use Getopt::Long;
 use Pod::Usage;
 
+use GLPI::Agent::Target::Local;
 use GLPI::Agent::Task::NetDiscovery;
 use GLPI::Agent::Task::NetDiscovery::Job;
 use GLPI::Agent::Config;
