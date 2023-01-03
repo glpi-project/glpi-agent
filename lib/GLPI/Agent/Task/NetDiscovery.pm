@@ -359,6 +359,9 @@ sub run {
             my $result = $self->_scanAddress($jobaddress);
 
             if ($result && $result->{IP}) {
+                # For TooBox, we need to insert used ip_range as device property to report it in results
+                $result->{"-ip_range"} = $job->ip_range if $job->ip_range;
+
                 $result->{ENTITY} = $range->{entity} if defined($range->{entity});
                 $self->_sendResultMessage($result, $jobid);
 

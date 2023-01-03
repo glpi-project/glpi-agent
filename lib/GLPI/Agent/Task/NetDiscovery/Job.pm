@@ -20,6 +20,7 @@ sub new {
         _snmpwalk       => $params{file},
         _netscan        => $params{netscan} // 0,
         _control        => $params{showcontrol} // 0,
+        _ip_range       => $params{ip_range} // '',
     };
     bless $self, $class;
 }
@@ -42,6 +43,11 @@ sub max_threads {
 sub netscan {
     my ($self) = @_;
     return $self->{_netscan};
+}
+
+sub ip_range {
+    my ($self) = @_;
+    return $self->{_ip_range};
 }
 
 sub control {
