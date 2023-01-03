@@ -157,6 +157,12 @@ label {
   padding-right: 1em;
 }
 
+#advanced-options ul, li {
+  line-height: 1.5em;
+  list-style: none;
+  margin: 0px;
+}
+
 .input-row {
   margin-left: 5px;
 }

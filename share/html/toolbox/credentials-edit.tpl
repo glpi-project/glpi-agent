@@ -17,6 +17,9 @@
     $privprotocol = $cred->{privprotocol} || $form{"input/privprotocol"} || "";
     $privpassword = $cred->{privpassword} || $form{"input/privpassword"} || "";
     $description  = $cred->{description}  || $form{"input/description"}  || "";
+    $port         = $cred->{port}         || $form{"input/port"}         || "";
+    $protocol     = $cred->{protocol}     || $form{"input/protocol"}     || "";
+    $mode         = $cred->{mode}         || $form{"input/mode"}         || "";
     $showpass     = $form{"show-password"} && $form{"show-password"} eq "on" ? 1 : 0;
     $credentials{$edit} ? sprintf(_("Edit &laquo;&nbsp;%s&nbsp;&raquo; credential"), ($cred->{name} || $this))
       : _"Add new credential"}</h2>
@@ -55,11 +58,11 @@
       <div class='form-edit'>
         <label>{_"Version"}</label>
         <div class='form-edit-row' id='snmp-version-options'>
-          <input type="radio" name="input/snmpversion" id="v1" value="v1" onchange="version_change()"{$version && $version eq "v1" ? " checked" : ""}>
+          <input type="radio" name="input/snmpversion" id="v1" value="v1" onchange="version_change()"{$version && $version eq "v1" ? " checked" : ""}{$type ne "snmp" ? " disabled" : ""}>
           <label for='v1'>v1</label>
-          <input type="radio" name="input/snmpversion" id="v2c" value="v2c" onchange="version_change()"{!$version || $version eq "v2c" ? " checked" : ""}>
+          <input type="radio" name="input/snmpversion" id="v2c" value="v2c" onchange="version_change()"{!$version || $version eq "v2c" ? " checked" : ""}{$type ne "snmp" ? " disabled" : ""}>
           <label for='v2c'>v2c</label>
-          <input type="radio" name="input/snmpversion" id="v3" value="v3" onchange="version_change()"{$version && $version eq "v3" ? " checked" : ""}>
+          <input type="radio" name="input/snmpversion" id="v3" value="v3" onchange="version_change()"{$version && $version eq "v3" ? " checked" : ""}{$type ne "snmp" ? " disabled" : ""}>
           <label for='v3'>v3</label>
         </div>
       </div>
@@ -67,13 +70,13 @@
     <div class='form-edit-row' id='v1-v2c-option' style='display: {$type eq "snmp" && (!$version || $version =~ /v1|v2c/) ? "flex" : "none"}'>
       <div class='form-edit'>
         <label for='community'>{_"Community"}</label>
-        <input class='input-row' type='text' id='community' name='input/community' placeholder='{_"Community"}' value='{$community}' {$version eq "v3" ? " disabled" : ""}>
+        <input class='input-row' type='text' id='community' name='input/community' placeholder='{_"Community"}' value='{$community}' {$type ne "snmp" || $version eq "v3" ? " disabled" : ""}>
       </div>
     </div>
     <div class='form-edit-row' id='v3-options' style='display: {$type eq "snmp" && $version && $version eq "v3" ? "flex" : "none"}'>
       <div class='form-edit'>
         <label for='username'>{_"Username"}</label>
-        <input class='input-row' type='text' id='username' name='input/username' placeholder='{_"Username"}' value='{$username}' size='12' {!$version || $version ne "v3" ? " disabled" : ""}>
+        <input class='input-row' type='text' id='username' name='input/username' placeholder='{_"Username"}' value='{$username}' size='12' {$type ne "snmp" || $version ne "v3" ? " disabled" : ""}>
       </div>
       <div class='form-edit'>
         <label for='authproto'>{_"Authentication protocol"}</label>
@@ -114,6 +117,41 @@
         <label for='remotepass'>{_"Authentication password"}</label>
         <div class='form-edit-row'>
           <input class='input-row'  type='{$showpass ? "text" : "password"}' id='remotepass' name='input/remotepass' placeholder='{_"Authentication password"}' value='{$remotepass}' size='24'>
+        </div>
+      </div>
+    </div>
+    <div class='form-edit-row' id='advanced-options' style='display: {$type ne "esx" ? "flex" : "none"}'>
+      <div class='form-edit'>
+        <label for='port'>{_"Port"}</label>
+        <input class='input-row' type='text' id='port' name='input/port' placeholder='{
+            $type eq "snmp" ? 161 : $type eq "ssh" ? 22 : $type eq "winrm" && $mode eq "ssl" ? 5986 : $type eq "winrm" ? 5985 : 0
+        }' value='{$port}' size='6'{$type eq "esx" ? " disabled" : ""}>
+      </div>
+      <div class='form-edit' id='advanced-options-protocol' style='display: {$type eq "snmp" ? "flex" : "none"}'>
+        <label for='protocol'>{_"Protocol"}</label>
+        <div class='form-edit-row'>
+          <select class='input-row' id='protocol' name='input/protocol'{$type ne "snmp" ? " disabled" : ""}>
+            <option{!protocol || $protocol eq "udp" ? " selected" : ""}>udp</option>
+            <option{$protocol eq "tcp" ? " selected" : ""}>tcp</option>
+          </select>
+        </div>
+      </div>
+      <div class='form-edit' id='advanced-options-ssh-mode' style='display: {$type eq "ssh" ? "flex" : "none"}'>
+        <label>{_"Remote SSH Mode"}</label>
+        <div class='form-edit-row'>
+          <ul>
+            <li><input type='checkbox' id='ssh-mode' name='checkbox/mode/ssh'{(grep { $_ eq "ssh" } split(/,/, $mode) ? " checked" : "").($type ne "ssh" ? " disabled" : "")}>ssh</li>
+            <li><input type='checkbox' id='libssh2-mode' name='checkbox/mode/libssh2'{(grep { $_ eq "libssh2" } split(/,/, $mode) ? " checked" : "").($type ne "ssh" ? " disabled" : "")}>libssh2</li>
+            <li><input type='checkbox' id='perl-mode' name='checkbox/mode/perl'{(grep { $_ eq "perl" } split(/,/, $mode) ? " checked" : "").($type ne "ssh" ? " disabled" : "")}>perl</li>
+          </ul>
+        </div>
+      </div>
+      <div class='form-edit' id='advanced-options-winrm-mode' style='display: {$type eq "winrm" ? "flex" : "none"}'>
+        <label>{_"Remote WinRM Mode"}</label>
+        <div class='form-edit-row'>
+          <ul>
+            <li><input type='checkbox' id='ssl' name='checkbox/mode/ssl' onchange="type_change()"{($mode eq "ssl" ? " checked" : "").($type ne "winrm" ? " disabled" : "")}>ssl</li>
+          </ul>
         </div>
       </div>
     </div>
@@ -161,6 +199,18 @@
       document.getElementById("remote-options").style = "display: none";
       document.getElementById("snmp-version-option").style = "display: flex";
       document.getElementById("remotecreds").value = "0";
+      document.getElementById("port").placeholder = "161";
+      document.getElementById("advanced-options-protocol").style = "display: flex";
+      document.getElementById("protocol").disabled = false;
+      document.getElementById("v1").disabled = false;
+      document.getElementById("v2c").disabled = false;
+      document.getElementById("v3").disabled = false;
+      document.getElementById("community").disabled = false;
+      document.getElementById("username").disabled = false;
+      document.getElementById("authproto").disabled = false;
+      document.getElementById("authpass").disabled = false;
+      document.getElementById("privproto").disabled = false;
+      document.getElementById("privpass").disabled = false;
       version_change();
     \} else \{
       document.getElementById("v3-options").style = "display: none";
@@ -168,6 +218,48 @@
       document.getElementById("snmp-version-option").style = "display: none";
       document.getElementById("remote-options").style = "display: flex";
       document.getElementById("remotecreds").value = "1";
+      document.getElementById("advanced-options-protocol").style = "display: none";
+      document.getElementById("protocol").disabled = true;
+      document.getElementById("v1").disabled = true;
+      document.getElementById("v2c").disabled = true;
+      document.getElementById("v3").disabled = true;
+      document.getElementById("community").disabled = true;
+      document.getElementById("username").disabled = true;
+      document.getElementById("authproto").disabled = true;
+      document.getElementById("authpass").disabled = true;
+      document.getElementById("privproto").disabled = true;
+      document.getElementById("privpass").disabled = true;
+    \}
+    if (document.getElementById("ssh").checked) \{
+      document.getElementById("advanced-options-ssh-mode").style = "display: flex";
+      document.getElementById("port").placeholder = "22";
+      document.getElementById("ssh-mode").disabled = false;
+      document.getElementById("libssh2-mode").disabled = false;
+      document.getElementById("perl-mode").disabled = false;
+    \} else \{
+      document.getElementById("advanced-options-ssh-mode").style = "display: none";
+      document.getElementById("ssh-mode").disabled = true;
+      document.getElementById("libssh2-mode").disabled = true;
+      document.getElementById("perl-mode").disabled = true;
+    \}
+    if (document.getElementById("winrm").checked) \{
+      document.getElementById("advanced-options-winrm-mode").style = "display: flex";
+      document.getElementById("ssl").disabled = false;
+      if (document.getElementById("ssl").checked) \{
+        document.getElementById("port").placeholder = "5986";
+      \} else \{
+        document.getElementById("port").placeholder = "5985";
+      \}
+    \} else \{
+      document.getElementById("advanced-options-winrm-mode").style = "display: none";
+      document.getElementById("ssl").disabled = true;
+    \}
+    if (document.getElementById("esx").checked) \{
+      document.getElementById("advanced-options").style = "display: none";
+      document.getElementById("port").disabled = true;
+    \} else \{
+      document.getElementById("advanced-options").style = "display: flex";
+      document.getElementById("port").disabled = false;
     \}
   \}
   function show_password() \{
