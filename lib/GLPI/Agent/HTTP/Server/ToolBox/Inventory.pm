@@ -3,10 +3,6 @@ package GLPI::Agent::HTTP::Server::ToolBox::Inventory;
 use strict;
 use warnings;
 
-use threads;
-use threads 'exit' => 'threads_only';
-use threads::shared;
-
 use parent "GLPI::Agent::HTTP::Server::ToolBox";
 
 use English qw(-no_match_vars);
@@ -164,10 +160,6 @@ sub event_logger {
     # called on logging message in any thread
     push @{$logger->{backends}}, $self;
 
-    # Set logger as shared thread
-    $self->{_event_logger_lock} = 0;
-    share($self->{_event_logger_lock});
-
     return $logger;
 }
 
@@ -181,7 +173,6 @@ sub addMessage {
 
     my $taskid = $self->{taskid};
     if ($agent->forked()) {
-        lock($self->{_event_logger_lock});
         $agent->forked_process_event("LOGGER,$taskid,[$params{level}] $params{message}");
     } else {
         my $messages = $self->{tasks}->{$taskid}->{messages};
@@ -250,30 +241,37 @@ sub netscan {
     my @credentials = ();
     my $credentials = $self->yaml('credentials') || {};
     foreach my $credential (@{$ip_range->{credentials} || []}) {
+        my $CRED;
         my $cred = $credentials->{$credential}
             or return $self->errors("No such credentials: $credential");
-        return $self->errors("Missing version on credentials: ".($cred->{name}||$credential))
-            unless defined($cred->{snmpversion});
-        my $CRED = {
-            # brackets are here cosmetic for task logs and will be filtered in
-            # GLPI::Agent::HTTP::Server::ToolBox::Results::NetDiscovery
-            ID      => "[$credential]",
-            VERSION =>
-                $cred->{snmpversion} eq 'v1'  ? '1'  :
-                $cred->{snmpversion} eq 'v2c' ? '2c' :
-                $cred->{snmpversion} eq 'v3'  ? '3'  : '1',
-        };
-        if ($cred->{snmpversion} =~ /^v1|v2c$/) {
-            $CRED->{COMMUNITY} = $cred->{community} || "public";
-        } elsif ($cred->{snmpversion} eq 'v3') {
-            $CRED->{USERNAME} = $cred->{username}
-                or return $self->errors("Missing username on credentials: ".($cred->{name}||$credential));
-            $CRED->{AUTHPASSWORD} = $cred->{authpassword} || '';
-            $CRED->{AUTHPROTOCOL} = $cred->{authprotocol} || '';
-            $CRED->{PRIVPASSWORD} = $cred->{privpassword} || '';
-            $CRED->{PRIVPROTOCOL} = $cred->{privprotocol} || '';
+        if (!defined($cred->{type}) || $cred->{type} eq 'snmp') {
+            return $self->errors("Missing version on credentials: ".($cred->{name}||$credential))
+                unless defined($cred->{snmpversion});
+            $CRED = {
+                # brackets are here cosmetic for task logs and will be filtered in
+                # GLPI::Agent::HTTP::Server::ToolBox::Results::NetDiscovery
+                ID      => "[$credential]",
+                VERSION =>
+                    $cred->{snmpversion} eq 'v1'  ? '1'  :
+                    $cred->{snmpversion} eq 'v2c' ? '2c' :
+                    $cred->{snmpversion} eq 'v3'  ? '3'  : '1',
+            };
+            if ($cred->{snmpversion} =~ /^v1|v2c$/) {
+                $CRED->{COMMUNITY} = $cred->{community} || "public";
+            } elsif ($cred->{snmpversion} eq 'v3') {
+                $CRED->{USERNAME} = $cred->{username}
+                    or return $self->errors("Missing username on credentials: ".($cred->{name}||$credential));
+                $CRED->{AUTHPASSWORD} = $cred->{authpassword} || '';
+                $CRED->{AUTHPROTOCOL} = $cred->{authprotocol} || '';
+                $CRED->{PRIVPASSWORD} = $cred->{privpassword} || '';
+                $CRED->{PRIVPROTOCOL} = $cred->{privprotocol} || '';
+            }
         }
-        push @credentials, $CRED;
+        if ($CRED) {
+            push @credentials, $CRED;
+        } else {
+            $self->{logger}->debug("Credential $credential of type $cred->{type} not used");
+        }
     }
 
     # From here we can continue in a forked process
@@ -299,17 +297,11 @@ sub netscan {
         config       => $agent->{config},
         datadir      => $agent->{datadir},
         logger       => $logger,
-        target       => GLPI::Agent::Task::NetInventory::Target->new(),
+        target       => GLPI::Agent::Target::Local->new(
+            path       => $yaml_config->{networktask_save} // '.',
+            basevardir => $agent->{vardir},
+        ),
         deviceid     => $agent->{deviceid},
-    );
-    # Set client logger
-    $netdisco->{client} = GLPI::Agent::Task::NetDiscovery::Client->new(
-        logger      => $logger,
-        save        => $yaml_config->{networktask_save} || '.',
-        timeout     => $self->get_from_session('netscan_timeout_option') || $self->{timeout_default},
-        credentials => \@credentials,
-        tag         => $self->get_from_session('inventory_tag'),
-        ip_range    => $ip_range_name,
     );
 
     # Compute ranges
@@ -335,6 +327,8 @@ sub netscan {
             THREADS_DISCOVERY => $self->get_from_session('netscan_threads_option') || $self->{threads_default},
             TIMEOUT           => $self->get_from_session('netscan_timeout_option') || $self->{timeout_default},
         },
+        ip_range => $ip_range_name,
+        netscan => 1,
         ranges => \@ranges,
         credentials => \@credentials
     );
@@ -423,7 +417,7 @@ sub _submit_localinventory {
 
     $inventory->run();
     my $chrono = sprintf("%0.3f", gettimeofday() - $starttime);
-    $logger->info("$task->{name}: $procname done");
+    $logger->info("$task->{name}: $procname ".($inventory->{aborted} ? "aborted" : "done"));
     $logger->debug("Task run in $chrono seconds");
     $agent->forked_process_event("DONE,$taskid");
     $agent->fork_exit();
@@ -470,50 +464,43 @@ sub _analyse_event {
     my $task = $self->{tasks}->{$taskid}
         or return;
 
-    if ($event =~ /^\[debug\] scanning block (.*)$/) {
+    if ($event =~ /^\[debug\] initializing block (.*)$/) {
         my $block = Net::IP->new($1);
         my $count = 0;
         do {
             $count++;
         } while (++$block);
         $task->{maxcount} = $count;
-    } elsif ($event =~ /^\[debug\] creating (\d+) worker threads/) {
-        $task->{maxthreads} = int($1) unless $task->{maxthreads};
-    } elsif ($event =~ /^\[debug\] \[thread (\d+)\] creation$/) {
-        $task->{threads}->{int($1)} = 0
-            if keys(%{$task->{threads}}) < $task->{maxthreads};
-    } elsif ($event =~ /\[thread (\d+)\] #(\d+), scanning ([0-9a-f.:]+)/) {
-        my $th = int($1);
-        my $scan = $task->{threads}->{$th};
-        if (defined($scan)) {
+    } elsif ($event =~ /^\[debug\] #(\d+), scanning ([0-9a-f.:]+)/) {
+        my $worker = int($1);
+        $task->{workers}->[$worker] = 1
+            if $worker <= $task->{maxcount};
+    } elsif ($event =~ /^\[debug\] #(\d+), worker termination/) {
+        my $worker = int($1);
+        if ($task->{workers}->[$worker]) {
+            $task->{count}++;
             $task->{unknown}++
-                if $scan && !$task->{snmp}->[$scan] && !$task->{ping}->[$scan] && !$task->{arp}->[$scan];
-            $task->{count}++ if $task->{threads}->{$th};
-            $task->{threads}->{$th} = int($2);
+                if !$task->{snmp}->[$worker] && !$task->{ping}->[$worker] && !$task->{arp}->[$worker];
         }
-    } elsif ($event =~ /\[thread (\d+)\] termination/) {
-        my $scan = $task->{threads}->{int($1)};
-        $task->{count}++ if $scan;
-        $task->{unknown}++
-            if $scan && !$task->{snmp}->[$scan] && !$task->{ping}->[$scan] && !$task->{arp}->[$scan];
-    } elsif ($event =~ /\[thread (\d+)\] #(\d+), - scanning .* with SNMP, .*: (.*)/) {
-        $task->{snmp}->[int($2)] = $3 eq 'success'
-            unless $task->{snmp} && $task->{snmp}->[int($2)];
-    } elsif ($event =~ /\[thread (\d+)\] #(\d+), - scanning .* with .* ping: (.*)/) {
-        $task->{ping}->[int($2)] = $3 eq 'success'
-            unless $task->{ping} && $task->{ping}->[int($2)];
+    } elsif ($event =~ /^\[debug\] #(\d+), - scanning .* with SNMP, .*: (.*)/) {
+        $task->{snmp}->[int($1)] = $2 eq 'success';
+    } elsif ($event =~ /^\[debug\] #(\d+), - scanning .* with .* ping: (.*)/) {
+        $task->{ping}->[int($1)] = $2 eq 'success';
         _update_others($task);
-    } elsif ($event =~ /\[thread (\d+)\] #(\d+), - scanning .* in arp table: (.*)/) {
-        $task->{arp}->[int($2)] = $3 eq 'success';
+    } elsif ($event =~ /^\[debug\] #(\d+), - scanning .* in arp table: (.*)/) {
+        $task->{arp}->[int($1)] = $2 eq 'success';
         _update_others($task);
-    } elsif ($event =~ /\[thread (\d+)\] .* Saving .* discovery infos as XML.../) {
-        my $scan = $task->{threads}->{int($1)};
-        $task->{snmp_support}++ if $scan && $task->{snmp}->[$scan];
+    } elsif ($event =~ /^\[info\] #(\d+), Netdiscovery result for .* saved in/) {
+        my $worker = int($1);
+        $task->{snmp_support}++ if $task->{workers}->[$worker] && $task->{snmp}->[$worker];
         $self->update_results();
-    } elsif ($event =~ /Saving .* inventory infos as XML.../) {
-        $task->{inventory_count}++;
+    } elsif ($event =~ /^\[info\] #(\d+), Netinventory result for .* saved in/) {
+        my $worker = int($1);
+        $task->{inventory_count}++ if $task->{workers}->[$worker] && $task->{snmp}->[$worker];
         $self->update_results();
-    } elsif ($event =~ /network (inventory|discovery).* done/) {
+    } elsif ($event =~ /^\[warning\] job \d+ aborted/) {
+        $task->{aborted} = 1;
+    } elsif ($event =~ /network scan done/) {
         delete $task->{snmp};
         delete $task->{ping};
         delete $task->{arp};
@@ -521,6 +508,8 @@ sub _analyse_event {
         delete $task->{maxthreads};
         # Guaranty to set progress bar at 100%
         $task->{count} = $task->{maxcount};
+    } elsif ($event =~ /local inventory aborted/) {
+        $task->{aborted} = 1;
     } elsif ($event =~ /local inventory done/) {
         $task->{inventory_count}++;
         # Guaranty to set progress bar at 100%
@@ -629,7 +618,6 @@ sub ajax {
     if ($query{'what'} && $query{'what'} eq 'abort' && (!$task->{percent} || $task->{percent}<100)) {
         $self->debug2("Abort request for: $task->{name}");
         $agent->abort_child($taskid);
-        $task->{aborted} = 1;
     }
     $headers{'X-Inventory-Status'} = 'aborted'
         if $task->{aborted};
@@ -709,190 +697,6 @@ sub handle_form {
             last;
         }
     }
-}
-
-## no critic (ProhibitMultiplePackages)
-package
-    GLPI::Agent::Task::NetDiscovery::Client;
-
-use threads;
-
-use English qw(-no_match_vars);
-use UNIVERSAL::require;
-use Encode qw(encode);
-use HTML::Entities;
-
-sub new {
-    my ($class, %params) = @_;
-
-    return bless {
-        logger      => $params{logger},
-        save        => $params{save},
-        timeout     => $params{timeout},
-        credentials => $params{credentials},
-        tag         => $params{tag},
-        ip_range    => $params{ip_range},
-    }, $class;
-}
-
-sub netdiscovery { 1 }
-
-sub ip {}
-
-sub mac {}
-
-sub send {
-    my ($self, %params) = @_;
-
-    my $devices = $params{message}->{h}->{CONTENT}->{DEVICE};
-    my $device  = ref($devices) eq 'ARRAY' ? $devices->[0] :
-                  ref($devices) eq 'HASH'  ? $devices      : undef;
-    return unless $device;
-
-    # Set ip range in XML as device attribute so we can use handle rescan request
-    $device->{"-ip_range"} = encode('UTF-8', encode_entities($self->{ip_range})) if $self->{ip_range};
-    my $authsnmp = $device->{AUTHSNMP};
-    $device->{AUTHSNMP} = encode('UTF-8', encode_entities($authsnmp));
-
-    my $ip  = $device ? $device->{IP} || $self->ip() : undef;
-    # Set MAC from discovery if not seen by NetInventory
-    $device->{INFO}->{MAC} = $self->mac
-        if (!$self->netdiscovery() && $device->{INFO} && !$device->{INFO}->{MAC} && $self->mac);
-    my $xml = $params{message}->getContent();
-
-    if ($self->{save} && $device) {
-        die "No ip given with device\n" unless $ip;
-        my $tag = defined($self->{tag}) && length($self->{tag}) ? "_".$self->{tag} : "";
-        # Skip the case where only a wrong arp entry was seen, in that case, ARP node
-        # exists but is set to undef. In case of just ping, MAC node is missing.
-        if ($self->netdiscovery()) {
-            $self->{logger}->info("Saving $ip discovery infos as XML...");
-            _writeXml($self->{save} . "/netdiscovery", $ip.$tag.".xml", $xml);
-        } else {
-            if ($device->{ERROR}) {
-                my $message = $device->{ERROR}->{MESSAGE};
-                $self->{logger}->error("Inventory failed on $message");
-                $self->{logger}->error("Check your credentials") if $message =~ /timeout/;
-            } else {
-                $self->{logger}->info("Saving $ip inventory infos as XML...");
-                _writeXml($self->{save} . "/netinventory", $ip.$tag.".xml", $xml);
-            }
-        }
-    } else {
-        print $xml;
-    }
-
-    if ($self->netdiscovery() && $device) {
-        die "No ip given with device\n" unless $ip;
-
-        unless ($device->{AUTHSNMP}) {
-            $self->{logger}->info("Skipping inventory for $ip on no SNMP response");
-            return;
-        }
-
-        unless ($device->{TYPE}) {
-            $self->{logger}->info("Skipping inventory for $ip on not recognized device type");
-            return;
-        }
-
-        GLPI::Agent::Task::NetInventory->require();
-        GLPI::Agent::Task::NetInventory::Job->require();
-
-        my $inventory = GLPI::Agent::Task::NetInventory->new(
-            target => GLPI::Agent::Task::NetInventory::Target->new(),
-            logger => $self->{logger}
-        );
-
-        # Multi-threading still set on NetDiscovery task and we are only
-        # requesting one device scan
-        $inventory->{jobs} = [
-            GLPI::Agent::Task::NetInventory::Job->new(
-                params => {
-                    PID           => 1,
-                    THREADS_QUERY => 1,
-                    TIMEOUT       => 60,
-                },
-                devices     => [{
-                    ID           => 0,
-                    IP           => $ip,
-                    #~ PORT         => $options->{port},
-                    #~ PROTOCOL     => $options->{protocol},
-                    AUTHSNMP_ID  => $authsnmp,
-                }],
-                credentials => $self->{credentials},
-            )
-        ];
-
-        $inventory->{client} = GLPI::Agent::Task::NetInventory::Client->new(
-            logger      => $self->{logger},
-            ip          => $ip,
-            mac         => $device->{MAC},
-            save        => $self->{save},
-            tag         => $self->{tag},
-        );
-
-        $inventory->run();
-    }
-}
-
-sub _writeXml {
-    my ($folder, $file, $xml) = @_;
-
-    mkdir $folder unless -d $folder;
-
-    die "Can't create $folder directory: $!\n" unless -d $folder;
-
-    my $fh;
-    if (open($fh,">", "$folder/$file")) {
-        print $fh $xml;
-        close($fh);
-    } else {
-        die "Failed to write '$folder/$file': $!\n";
-    }
-}
-
-package
-    GLPI::Agent::Task::NetInventory::Target;
-
-sub new {
-    my ($class, %params) = @_;
-
-    return bless {}, $class;
-}
-
-sub getUrl {
-    my ($self, %params) = @_;
-
-    ## no critic (ExplicitReturnUndef)
-    return undef;
-}
-
-package
-    GLPI::Agent::Task::NetInventory::Client;
-
-use parent -norequire, 'GLPI::Agent::Task::NetDiscovery::Client';
-
-sub new {
-    my ($class, %params) = @_;
-
-    my $self = $class->SUPER::new(%params);
-
-    $self->{_ip} = $params{ip};
-    $self->{_mac} = $params{mac};
-
-    return bless $self, $class;
-}
-
-sub netdiscovery { 0 }
-
-sub ip {
-    my ($self) = @_;
-    return $self->{_ip};
-}
-
-sub mac {
-    my ($self) = @_;
-    return $self->{_mac};
 }
 
 1;
