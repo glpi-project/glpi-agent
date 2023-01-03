@@ -26,9 +26,9 @@
         </div>
         <div class='progress-col'>
           <div class='progress-bar'>
-            <div id='$task-scanned-bar' class='".($failed ? "failed" : ($percent == 100) ? "completed" : $aborted ? "aborted" : "scanning")."'>
+            <div id='$task-scanned-bar' class='".($failed ? "failed" : $aborted ? "aborted" : ($percent == 100) ? "completed" : "scanning")."'>
               <span id='$task-progress-bar-text' class='progressbar-text'>".(
-                $failed ? _("Failure") : ($percent == 100) ? _("Completed") : $aborted ? _("Aborted") : "")."</span>
+                $failed ? _("Failure") : $aborted ? _("Aborted") : ($percent == 100) ? _("Completed") : "")."</span>
             </div>
           </div>
         </div>
