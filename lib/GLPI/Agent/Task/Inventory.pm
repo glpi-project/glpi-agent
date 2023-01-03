@@ -112,6 +112,7 @@ sub run {
         );
     }
 
+    $self->{aborted} = 0;
     $self->{modules} = {};
 
     my $tag = $self->{config}->{'tag'};
@@ -172,10 +173,12 @@ sub run {
             || ($self->{target}->isType('server') && !$self->{target}->isGlpiServer());
 
     $self->_initModulesList();
-    $self->_feedInventory();
+    $self->_feedInventory() unless $self->{aborted};
 
     # Tell perl modules hash can now be cleaned from memory
     delete $self->{modules};
+
+    return if $self->{aborted};
 
     return $self->submit();
 }
@@ -367,8 +370,13 @@ sub _initModulesList {
     my @modules = $self->getModules('Inventory');
     die "no inventory module found\n" if !@modules;
 
+    # Support aborting
+    $SIG{TERM} = sub { $self->{aborted} = 1; };
+
     # first pass: compute all relevant modules
     foreach my $module (sort @modules) {
+        return if $self->{aborted};
+
         # compute parent module:
         my @components = split('::', $module);
         my $parent = @components > 5 ?
@@ -454,6 +462,8 @@ sub _initModulesList {
         ## no critic (ProhibitProlongedStrictureOverride)
         no strict 'refs'; ## no critic (ProhibitNoStrict)
 
+        return if $self->{aborted};
+
         # skip modules already disabled
         next unless $self->{modules}->{$module}->{enabled};
         # skip non-fallback modules
@@ -536,8 +546,12 @@ sub _feedInventory {
         grep { $self->{modules}->{$_}->{enabled} }
         keys %{$self->{modules}};
 
+    # Support aborting
+    $SIG{TERM} = sub { $self->{aborted} = 1; };
+
     foreach my $module (sort @modules) {
         $self->_runModule($module);
+        return if $self->{aborted};
     }
 
     # Inject additional content if required
