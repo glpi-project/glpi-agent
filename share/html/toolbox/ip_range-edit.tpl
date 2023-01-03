@@ -1,6 +1,7 @@
   <h2>{
     use Encode qw(encode);
     use HTML::Entities;
+    use URI::Escape;
     $range = $ip_range{$edit} || {};
     $this = encode('UTF-8', encode_entities($edit));
     $ip_range{$edit} ? sprintf(_("Edit &laquo;&nbsp;%s&nbsp;&raquo; ip range"), ($range->{name} || $this))
@@ -45,7 +46,7 @@
           <li>
             <input type='checkbox' name='checkbox/cred/".encode('UTF-8', encode_entities($credential))."' checked>
             <div class='tooltip'>
-              <a href='$url_path/credentials?edit=$credential'>".encode('UTF-8', encode_entities($cred->{name} || $credential))."
+              <a href='$url_path/credentials?edit=".uri_escape(encode("UTF-8", $credential))."'>".encode('UTF-8', encode_entities($cred->{name} || $credential))."
                 <div class='right'>
                   <p>".($cred->{type} ? _("Type").":&nbsp;".$cred->{type} : _("SNMP version").":&nbsp;".$cred->{snmpversion})."</p>
                   <p>".(!$cred->{type} && $cred->{snmpversion} ne "v3" ? _("Community").":&nbsp;".$cred->{community} : _("Username").":&nbsp;".$cred->{username})."</p>
