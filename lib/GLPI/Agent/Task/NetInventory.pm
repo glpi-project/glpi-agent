@@ -288,7 +288,7 @@ sub run {
 
     # Send exit message if we quit during a job still being run
     foreach my $pid (sort { $a <=> $b } keys(%jobs)) {
-        $self->{logger}->error("job $pid aborted");
+        $self->{logger}->warning("job $pid aborted");
         $self->_sendExitMessage($pid);
     }
 

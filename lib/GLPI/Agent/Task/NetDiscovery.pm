@@ -253,10 +253,17 @@ sub run {
     $self->{logger}->debug("using $worker_count netdiscovery worker".($worker_count > 1 ? "s" : ""));
     $manager->set_max_procs($worker_count > 1 ? $worker_count : 0);
 
+    my @related_job;
+    my $job_count = 0;
+    my $jid_len = length(sprintf("%i",$max_count));
+    my $jid_pattern = "#%0".$jid_len."i, ";
+
     # Callback for processed scan
     $manager->run_on_finish(
         sub {
-            my ($pid, $ret, $jobid, $signal, $coredump, $infos) = @_;
+            my ($pid, $ret, $worker, $signal, $coredump, $infos) = @_;
+            return unless $worker;
+            my $jobid = $related_job[$worker];
             return unless $jobid;
             my $job = $jobs{$jobid};
             $queued_count--;
@@ -277,12 +284,9 @@ sub run {
                 my $expiration = getExpirationTime() + $infos->{timeout};
                 setExpirationTime( expiration => $expiration );
             }
+            $self->{logger}->debug(sprintf($jid_pattern, $worker)."worker termination");
         }
     );
-
-    my $job_count = 0;
-    my $jid_len = length(sprintf("%i",$max_count));
-    my $jid_pattern = "#%0".$jid_len."i, ";
 
     # We need to guaranty we don't have more than max_in_queue request in queue for each job
     while (my @jobs = sort { $a <=> $b } keys(%jobs)) {
@@ -329,8 +333,11 @@ sub run {
 
             $job_count++;
 
+            # Keep a reference to the related job for run_on_finish call
+            $related_job[$job_count] = $jobid;
+
             # Start worker and still try to enqueue another ip for this job
-            $manager->start($jobid) and redo;
+            $manager->start($job_count) and redo;
 
             $self->{logger}->{prefix} = sprintf($jid_pattern, $job_count);
 
@@ -358,7 +365,7 @@ sub run {
                 # Eventually chain with netinventory when requested
                 if ($result->{AUTHSNMP} && $job->netscan) {
                     my $credentials = [
-                        grep { $_->{ID} == $result->{AUTHSNMP} } @{$jobaddress->{snmp_credentials}}
+                        grep { $_->{ID} eq $result->{AUTHSNMP} } @{$jobaddress->{snmp_credentials}}
                     ];
                     GLPI::Agent::Task::NetInventory->require();
                     my $inventory = GLPI::Agent::Task::NetInventory->new(
@@ -418,7 +425,7 @@ sub run {
 
     # Send exit message if we quit during a job still being run
     foreach my $jobid (sort { $a <=> $b } keys(%jobs)) {
-        $self->{logger}->error("job $jobid aborted");
+        $self->{logger}->warning("job $jobid aborted");
         $self->_sendExitMessage($jobid);
     }
 
