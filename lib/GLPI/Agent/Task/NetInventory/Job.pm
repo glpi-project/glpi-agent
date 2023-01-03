@@ -66,7 +66,7 @@ sub credential {
     } elsif (!@{$self->{_credentials}}) {
         $self->{logger}->warning("No SNMP credential provided for this job")
     } else {
-        ($credential) = first { $_->{ID} == $id } @{$self->{_credentials}}
+        ($credential) = first { $_->{ID} eq $id } @{$self->{_credentials}}
             or $self->{logger}->warning("No SNMP credential with $id ID provided");
     }
 
