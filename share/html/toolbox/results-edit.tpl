@@ -24,6 +24,7 @@
     </div>{
   use Encode qw(encode);
   use HTML::Entities;
+  use URI::Escape;
   $device = $devices{$edit};
   $select_fields = "";
   @has_selected_fields = ();
@@ -103,9 +104,9 @@
           }
         }
         if ($fieldname && $fieldname eq 'credential') {
-          $OUT .= $credentials{$value} ? "<a href='$url_path/credentials?edit=$value'>".($credentials{$value}->{name} || $value)."</a>" : "";
+          $OUT .= $credentials{decode_entities($value)} ? "<a href='$url_path/credentials?edit=".uri_escape(encode("UTF-8", $value))."'>".($credentials{$value}->{name} || $value)."</a>" : "";
         } elsif ($fieldname && $fieldname eq 'ip_range') {
-          $OUT .= $ip_range{$value} ? "<a href='$url_path/ip_range?edit=$value'>".($ip_range{$value}->{name} || $value)."</a>" : "";
+          $OUT .= $ip_range{decode_entities($value)} ? "<a href='$url_path/ip_range?edit=".uri_escape(encode("UTF-8", $value))."'>".($ip_range{$value}->{name} || $value)."</a>" : "";
         } elsif ($fieldname && ($device->noedit($prefix.$fieldname) || !$do)) {
           $OUT .= $fieldname =~ /^type|source$/ ? _($value) : $value;
         } elsif ($fieldname && $do eq 'edit') {
