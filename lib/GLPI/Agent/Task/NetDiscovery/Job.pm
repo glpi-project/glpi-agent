@@ -201,6 +201,7 @@ sub _getValidCredentials {
     my @credentials;
 
     foreach my $credential (@{$self->{_credentials}}) {
+        next if $credential->{TYPE} && $credential->{TYPE} ne 'snmp';
         if ($credential->{VERSION} eq '3') {
             # a user name is required
             next unless $credential->{USERNAME};
