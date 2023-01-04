@@ -77,3 +77,8 @@ Unsupported remote inventory type: Type d'inventaire distant non supporté
 Username is mandatory for remote inventory types: Un nom d'utilisateur est nécessaire pour les types inventaire distant
 Password is mandatory for %s remote inventory type: Un mot de passe est nécessaire pour l'inventaire distant de type %s
 No password for ssh remote inventory type involves you installed public key authentication: Pas de mot de passe implique que vous ayez installé une clé publique pour l'authentification
+
+Invalid %s port: Port %s invalide
+Invalid SNMP protocol: Protocole SNMP invalide
+Port definition ignored: Définition de port ignorée
+Unsupported %s mode for %s removeinventory: Mode %s non supporté pour l'inventaire distant %s

@@ -20,6 +20,7 @@
     $port         = $cred->{port}         || $form{"input/port"}         || "";
     $protocol     = $cred->{protocol}     || $form{"input/protocol"}     || "";
     $mode         = $cred->{mode}         || $form{"input/mode"}         || "";
+    %modes = map { $_ => 1 } split(',', $mode);
     $showpass     = $form{"show-password"} && $form{"show-password"} eq "on" ? 1 : 0;
     $credentials{$edit} ? sprintf(_("Edit &laquo;&nbsp;%s&nbsp;&raquo; credential"), ($cred->{name} || $this))
       : _"Add new credential"}</h2>
@@ -124,7 +125,7 @@
       <div class='form-edit'>
         <label for='port'>{_"Port"}</label>
         <input class='input-row' type='text' id='port' name='input/port' placeholder='{
-            $type eq "snmp" ? 161 : $type eq "ssh" ? 22 : $type eq "winrm" && $mode eq "ssl" ? 5986 : $type eq "winrm" ? 5985 : 0
+            $type eq "snmp" ? 161 : $type eq "ssh" ? 22 : $type eq "winrm" && $modes{ssl} ? 5986 : $type eq "winrm" ? 5985 : 0
         }' value='{$port}' size='6'{$type eq "esx" ? " disabled" : ""}>
       </div>
       <div class='form-edit' id='advanced-options-protocol' style='display: {$type eq "snmp" ? "flex" : "none"}'>
@@ -140,9 +141,9 @@
         <label>{_"Remote SSH Mode"}</label>
         <div class='form-edit-row'>
           <ul>
-            <li><input type='checkbox' id='ssh-mode' name='checkbox/mode/ssh'{(grep { $_ eq "ssh" } split(/,/, $mode) ? " checked" : "").($type ne "ssh" ? " disabled" : "")}>ssh</li>
-            <li><input type='checkbox' id='libssh2-mode' name='checkbox/mode/libssh2'{(grep { $_ eq "libssh2" } split(/,/, $mode) ? " checked" : "").($type ne "ssh" ? " disabled" : "")}>libssh2</li>
-            <li><input type='checkbox' id='perl-mode' name='checkbox/mode/perl'{(grep { $_ eq "perl" } split(/,/, $mode) ? " checked" : "").($type ne "ssh" ? " disabled" : "")}>perl</li>
+            <li><input type='checkbox' id='ssh-mode' name='checkbox/mode/ssh'{$modes{ssh} ? " checked" : ""}{$type ne "ssh" ? " disabled" : ""}>ssh</li>
+            <li><input type='checkbox' id='libssh2-mode' name='checkbox/mode/libssh2'{$modes{libssh2} ? " checked" : ""}{$type ne "ssh" ? " disabled" : ""}>libssh2</li>
+            <li><input type='checkbox' id='perl-mode' name='checkbox/mode/perl'{$modes{perl} ? " checked" : ""}{$type ne "ssh" ? " disabled" : ""}>perl</li>
           </ul>
         </div>
       </div>
@@ -150,7 +151,7 @@
         <label>{_"Remote WinRM Mode"}</label>
         <div class='form-edit-row'>
           <ul>
-            <li><input type='checkbox' id='ssl' name='checkbox/mode/ssl' onchange="type_change()"{($mode eq "ssl" ? " checked" : "").($type ne "winrm" ? " disabled" : "")}>ssl</li>
+            <li><input type='checkbox' id='ssl' name='checkbox/mode/ssl' onchange="type_change()"{$modes{ssl} ? " checked" : ""}{$type ne "winrm" ? " disabled" : ""}>ssl</li>
           </ul>
         </div>
       </div>
