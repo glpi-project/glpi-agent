@@ -77,3 +77,8 @@ Unsupported remote inventory type:
 Username is mandatory for remote inventory types:
 Password is mandatory for %s remote inventory type:
 No password for ssh remote inventory type involves you installed public key authentication:
+
+Invalid %s port:
+Invalid SNMP protocol:
+Port definition ignored:
+Unsupported %s mode for %s removeinventory:

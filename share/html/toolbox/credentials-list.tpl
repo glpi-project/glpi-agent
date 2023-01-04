@@ -28,6 +28,8 @@
             <th width='10%'>{_"Credential name"}</th>
             <th width='10%'>{_"Version"}</th>
             <th width='10%'>{_"Community"}</th>
+            <th width='10%'>{_"Port"}</th>
+            <th width='10%'>{_"Protocol"}</th>
             <th width>{"Description"}</th>
           </tr>
         </thead>
@@ -44,6 +46,8 @@
     my $this = encode('UTF-8', encode_entities($entry));
     my $id = $credentials{$entry}->{id};
     my $community = $credentials{$entry}->{community};
+    my $port = $credentials{$entry}->{port} || "";
+    my $protocol = $credentials{$entry}->{protocol} || "";
     my $description = $credentials{$entry}->{description} || "";
     my $name = $credentials{$entry}->{name} || $this ;
     $OUT .= "
@@ -57,7 +61,9 @@
             </td>
             <td class='list' width='10%'".($id ?" title='id = $id'":"")."><a href='$url_path/$request?edit=".uri_escape($this)."'>$name</a></td>
             <td class='list' width='10%'>$version</td>
-            <td class='list' width='10%' >$community</td>
+            <td class='list' width='10%'>$community</td>
+            <td class='list' width='10%'>$port</td>
+            <td class='list' width='10%'>$protocol</td>
             <td class='list'>$description</td>
           </tr>";
   }
@@ -94,6 +100,8 @@
             <th width='10%'>{_"Username"}</th>
             <th width='10%'>{_"Authentication"}</th>
             <th width='10%'>{_"Privacy"}</th>
+            <th width='10%'>{_"Port"}</th>
+            <th width='10%'>{_"Protocol"}</th>
             <th width>{_"Description"}</th>
           </tr>
         </thead>
@@ -110,6 +118,8 @@
     my $apass = $credentials{$entry}->{authpassword} || "";
     my $pproto = $credentials{$entry}->{privprotocol};
     my $ppass = $credentials{$entry}->{privpassword} || "";
+    my $port = $credentials{$entry}->{port} || "";
+    my $protocol = $credentials{$entry}->{protocol} || "";
     my $description = $credentials{$entry}->{description} || "";
     my $name = $credentials{$entry}->{name} || $this ;
     unless ($showpass) {
@@ -126,9 +136,11 @@
               </label>
             </td>
             <td class='list' width='10%'".($id ?" title='id = $id'":"")."><a href='$url_path/$request?edit=".uri_escape($this).($showpass ? "&show-password=on" : "")."'>$name</a></td>
-            <td class='list' width='10%' >$user</td>
-            <td class='list' width='10%' >".($aproto?"[$aproto] ":"")."$apass</td>
-            <td class='list' width='10%' >".($pproto?"[$pproto] ":"")."$ppass</td>
+            <td class='list' width='10%'>$user</td>
+            <td class='list' width='10%'>".($aproto?"[$aproto] ":"")."$apass</td>
+            <td class='list' width='10%'>".($pproto?"[$pproto] ":"")."$ppass</td>
+            <td class='list' width='10%'>$port</td>
+            <td class='list' width='10%'>$protocol</td>
             <td class='list'>$description</td>
           </tr>";
   }
@@ -172,6 +184,8 @@
             <th width='10%'>{_"Type"}</th>
             <th width='10%'>{_"Username"}</th>
             <th width='10%'>{_"Password"}</th>
+            <th width='10%'>{_"Port"}</th>
+            <th width='10%'>{_"Mode"}</th>
             <th width>{_"Description"}</th>
           </tr>
         </thead>
@@ -186,6 +200,8 @@
     my $id = $credentials{$entry}->{id};
     my $remoteuser = $credentials{$entry}->{username};
     my $remotepass = $credentials{$entry}->{password};
+    my $port = $credentials{$entry}->{port} || "";
+    my $mode = $credentials{$entry}->{mode} || "";
     my $description = $credentials{$entry}->{description} || "";
     my $name = $credentials{$entry}->{name} || $this ;
     unless ($showpass) {
@@ -201,9 +217,11 @@
               </label>
             </td>
             <td class='list' width='10%'".($id ?" title='id = $id'":"")."><a href='$url_path/$request?edit=".uri_escape($this).($showpass ? "&show-password=on" : "")."'>$name</a></td>
-            <td class='list' width='10%' >$type</td>
-            <td class='list' width='10%' >$remoteuser</td>
-            <td class='list' width='10%' >$remotepass</td>
+            <td class='list' width='10%'>$type</td>
+            <td class='list' width='10%'>$remoteuser</td>
+            <td class='list' width='10%'>$remotepass</td>
+            <td class='list' width='10%'>$port</td>
+            <td class='list' width='10%'>$mode</td>
             <td class='list'>$description</td>
           </tr>";
   }
