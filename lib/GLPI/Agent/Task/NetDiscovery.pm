@@ -716,6 +716,13 @@ sub _scanAddressBySNMP {
 
     foreach my $try (@{$tries}) {
         my $credential = $try->{credential};
+
+        # Set port & domain from credential if present and not set in try for ip range
+        $try->{port} = $credential->{PORT}
+            if !defined($try->{port}) && defined($credential->{PORT}) && $credential->{PORT} =~ /^\d+$/;
+        $try->{domain} = $credential->{PROTOCOL}
+            if !defined($try->{domain}) && $credential->{PROTOCOL} && $credential->{PROTOCOL} =~ /^udp|tcp$/;
+
         my $device = $self->_scanAddressBySNMPReal(
             ip         => $params->{ip},
             port       => $try->{port},

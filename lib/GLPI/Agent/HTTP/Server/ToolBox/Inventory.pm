@@ -248,6 +248,7 @@ sub netscan {
             return $self->errors("Missing version on credentials: ".($cred->{name}||$credential))
                 unless defined($cred->{snmpversion});
             $CRED = {
+                TYPE    => 'snmp',
                 # brackets are here cosmetic for task logs and will be filtered in
                 # GLPI::Agent::HTTP::Server::ToolBox::Results::NetDiscovery
                 ID      => "[$credential]",
@@ -266,6 +267,10 @@ sub netscan {
                 $CRED->{PRIVPASSWORD} = $cred->{privpassword} || '';
                 $CRED->{PRIVPROTOCOL} = $cred->{privprotocol} || '';
             }
+            # Add port set on credential
+            $CRED->{PORT}     = $cred->{port} if defined($cred->{port});
+            # Add protocol set on credential if it's not the default
+            $CRED->{PROTOCOL} = $cred->{protocol} if $cred->{protocol} && $cred->{protocol} ne 'udp';
         }
         if ($CRED) {
             push @credentials, $CRED;
@@ -309,8 +314,6 @@ sub netscan {
     my $RANGE = {
         IPSTART  => $ip || $ip_range->{ip_start},
         IPEND    => $ip || $ip_range->{ip_end},
-        #PORT     => $ip_range->{port},
-        #PROTOCOL => $ip_range->{protocol},
     };
     $RANGE->{ENTITY} = $ip_range->{entities_id}
         if defined($ip_range->{entities_id});
