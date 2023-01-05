@@ -24,6 +24,7 @@ use GLPI::Agent::Version;
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Generic;
 use GLPI::Agent::Protocol::Contact;
+use GLPI::Agent::Event;
 
 my $PROVIDER = $GLPI::Agent::Version::PROVIDER;
 
@@ -134,7 +135,7 @@ sub run {
             $logger->error($EVAL_ERROR) if ($EVAL_ERROR && $logger);
             if ($net_error) {
                 # Prefer to retry event later on net error
-                $event->{delay} = 60;
+                $event->rundate(time + 60);
                 $target->addEvent($event);
             }
 
@@ -208,22 +209,24 @@ sub _reloadConfIfNeeded {
 sub runTargetEvent {
     my ($self, $target, $event) = @_;
 
-    $self->{logger}->debug("target $target->{id}: ".($event->{name}//"unknown")." event for $event->{task} task");
+    return unless $event->name && $event->task;
+
+    $self->{logger}->debug("target ".$target->id().": ".$event->name()." event for ".$event->task()." task");
 
     $self->{event} = $event;
 
-    if ($event && $event->{init}) {
+    if ($event && $event->init) {
         eval {
             # We don't need to fork for init event
-            $self->runTaskReal($target, ucfirst($event->{task}));
+            $self->runTaskReal($target, ucfirst($event->task));
         };
     } else {
         # Simulate CONTACT server response
         my $contact = GLPI::Agent::Protocol::Contact->new(
-            tasks => { $event->{task} => { params => [$event] }}
+            tasks => { $event->task => { params => [ $event->params ] }}
         );
         eval {
-            $self->runTask($target, ucfirst($event->{task}), $contact);
+            $self->runTask($target, ucfirst($event->task), $contact);
         };
         $self->{logger}->error($EVAL_ERROR) if $EVAL_ERROR;
         $self->setStatus($target->paused() ? 'paused' : 'waiting');
@@ -271,6 +274,32 @@ sub runTask {
         $self->runTaskReal($target, $name, $response);
 
         $self->fork_exit(0);
+    }
+}
+
+sub handleTaskCache {
+    my ($self, $name, $task) = @_;
+
+    return unless $task && $task->keepcache();
+
+    # Try to cache data provided by the task if the next run can require it
+    my $cachedata = $task->cachedata();
+    if (defined($cachedata) && GLPI::Agent::Protocol::Message->require()) {
+        my $data = GLPI::Agent::Protocol::Message->new(message => $cachedata);
+        $self->forked_process_event("AGENTCACHE,$name,".$data->getRawContent());
+    }
+}
+
+sub handleTaskEvent {
+    my ($self, $name, $task) = @_;
+
+    return unless $task;
+    my $event = $task->event()
+        or return;
+
+    if (GLPI::Agent::Protocol::Message->require()) {
+        my $message = GLPI::Agent::Protocol::Message->new(message => $event->dump_for_message());
+        $self->forked_process_event("TASKEVENT,$name,".$message->getRawContent());
     }
 }
 
@@ -406,8 +435,8 @@ sub events_cb {
         $self->{_cache}->{$task} = $data->get;
     } elsif ($type eq 'TASKEVENT' && $dump =~ /^\{/ && GLPI::Agent::Protocol::Message->require()) {
         my $message = GLPI::Agent::Protocol::Message->new(message => $dump);
-        my $event = $message->get;
-        my $targetid = $event->{target};
+        my $event = GLPI::Agent::Event->new(from_message => $message->get);
+        my $targetid = $event->target;
         my @targets = grep { !$targetid || $_->id() eq $targetid } $self->getTargets();
         map { $_->addEvent($event) } @targets;
     }

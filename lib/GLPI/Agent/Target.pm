@@ -7,6 +7,7 @@ use English qw(-no_match_vars);
 
 use GLPI::Agent::Logger;
 use GLPI::Agent::Storage;
+use GLPI::Agent::Event;
 
 my $errMaxDelay = 0;
 
@@ -44,6 +45,9 @@ sub _init {
     # target identity
     $self->{id} = $params{id};
 
+    # Initialize logger prefix
+    $self->{_logprefix} = "[target $self->{id}]";
+
     $self->{storage} = GLPI::Agent::Storage->new(
         logger    => $self->{logger},
         directory => $params{vardir}
@@ -65,7 +69,7 @@ sub _init {
     $self->_saveState();
 
     $logger->debug(
-        "[target $self->{id}] Next " .
+        "$self->{_logprefix} Next " .
         ($self->isType("server") ? "server contact" : "tasks run") .
         " planned " .
         ($self->{nextRunDate} < time ? "now" : "for ".localtime($self->{nextRunDate}))
@@ -143,77 +147,77 @@ sub triggerTaskInitEvents {
     return unless $self->{tasks} && @{$self->{tasks}};
 
     foreach my $task (@{$self->{tasks}}) {
-        push @{$self->{_events}}, {
-            name    => "init",
+        push @{$self->{_events}}, GLPI::Agent::Event->new(
             task    => $task,
             init    => "yes",
             rundate => time+10,
-        };
+        );
     }
 }
 
 sub addEvent {
     my ($self, $event) = @_;
 
+    # event name is mandatory
+    return unless $event->name;
+
     my $logger = $self->{logger};
+    my $logprefix = $self->{_logprefix};
 
     # Check for supported events
-    my $partial = delete $event->{partial};
-    if ($partial && $partial =~ /^yes|1$/i && defined($event->{category})) {
-        unless ($event->{category}) {
-            $logger->debug("[target $self->{id}] Not supported partial inventory request without selected category");
+    if ($event->partial) {
+        unless ($event->category) {
+            $logger->debug("$logprefix Not supported partial inventory request without selected category");
             return 0;
         }
-        # Partial inventory request on given categories
-        $event->{partial} = 1;
-        $event->{task}    = "inventory";
-        $event->{name}    = "partial inventory";
-        $logger->debug("[target $self->{id}] Partial inventory event on category: $event->{category}");
+        $logger->debug("$logprefix Partial inventory event on category: ".$event->category);
         # Remove any existing partial inventory event
-        $self->{_events} = [ grep { ! $_->{partial} } @{$self->{_events}} ]
+        $self->{_events} = [ grep { ! $_->partial } @{$self->{_events}} ]
             if $self->{_events} && @{$self->{_events}};
-    } elsif ($event->{maintenance} && $event->{maintenance} =~ /^yes|1$/i) {
-        my $debug = "[target $self->{id}] New $event->{name} event on $event->{task} task";
-        my $count = 0;
-        $count = @{$self->{_events}} if $self->{_events};
-        if ($count) {
+    } elsif ($event->maintenance) {
+        unless ($event->task) {
+            $logger->debug("$logprefix Not supported maintenance request without selected task");
+            return 0;
+        }
+        my $debug = "New";
+        if ($self->{_events}) {
+            my $count = @{$self->{_events}};
             # Remove any existing maintenance event for the same target
             $self->{_events} = [
                 grep {
-                    ! $_->{maintenance} || $_->{task} ne $event->{task} || $_->{target} ne $event->{target}
+                    ! $_->maintenance || $_->task ne $event->task || $_->target ne $event->target
                 } @{$self->{_events}}
             ];
-            $debug = "[target $self->{id}] Replacing $event->{name} event on $event->{task} task"
-                if @{$self->{_events}} < $count;
+            $debug = "Replacing" if @{$self->{_events}} < $count;
         }
-        $logger->debug($debug);
+        $logger->debug(sprintf("%s %s %s event on %s task", $logprefix, $debug, $event->name, $event->task));
     } else {
-        $logger->debug("[target $self->{id}] Not supported event request: ".join("-",keys(%{$event})));
+        $logger->debug("$logprefix Not supported event request: ".$event->dump_as_string());
         return 0;
     }
 
-    if (@{$self->{_events}}>20) {
-        $logger->debug("[target $self->{id}] Event requests overflow, skipping new event");
+    if (@{$self->{_events}} > 20) {
+        $logger->debug("$logprefix Event requests overflow, skipping new event");
         return 0;
     } elsif ($self->{_next_event}) {
-        my $nexttime = $self->{_next_event}->{$event->{name}};
+        my $nexttime = $self->{_next_event}->{$event->name};
         if ($nexttime && time < $nexttime) {
-            $logger->debug("[target $self->{id}] Skipping too early new $event->{name} event");
+            $logger->debug("$logprefix Skipping too early new ".$event->name()." event");
             return 0;
         }
         # Do not accept the same event in less than 15 seconds
-        $self->{_next_event}->{$event->{name}} = time + 15;
+        $self->{_next_event}->{$event->name} = time + 15;
     }
 
-    my $delay = delete $event->{delay} // 0;
-    $event->{rundate} = time + $delay;
-    $logger->debug2("[target $self->{id}] Event scheduled in $delay seconds") if $delay;
+    my $delay = $event->delay() // 0;
+    $event->rundate(time + $delay);
+    $logger->debug2("$logprefix Event scheduled in $delay seconds") if $delay;
 
-    if ($self->{_events} && !@{$self->{_events}}) {
+    if (!$self->{_events} || !@{$self->{_events}}) {
         push @{$self->{_events}}, $event;
     } else {
         $self->{_events} = [
-            sort { $a->{rundate} <=> $b->{rundate} } @{$self->{_events}}, $event
+            sort { $a->rundate <=> $b->rundate } @{$self->{_events}}, $event
         ];
     }
 
@@ -222,7 +226,7 @@ sub addEvent {
 
 sub getEvent {
     my ($self) = @_;
-    return unless @{$self->{_events}} && time >= $self->{_events}->[0]->{rundate};
+    return unless @{$self->{_events}} && time >= $self->{_events}->[0]->rundate;
     return shift @{$self->{_events}};
 }
 

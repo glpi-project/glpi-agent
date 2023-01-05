@@ -63,7 +63,7 @@ sub _credentials {
                     $logger->debug("Credential request error: $message")
                         if $logger;
                 } else {
-                    $logger->error("Unsupported credentials request answer")
+                    $logger->error("Database credential request not supported by server")
                         if $logger;
                 }
             } else {
