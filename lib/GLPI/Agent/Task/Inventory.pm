@@ -12,6 +12,7 @@ use UNIVERSAL::require;
 use GLPI::Agent::Tools;
 use GLPI::Agent::Inventory;
 use GLPI::Agent::XML;
+use GLPI::Agent::Event;
 
 use GLPI::Agent::Task::Inventory::Version;
 
@@ -77,7 +78,7 @@ sub isEnabled {
                     if (@validated) {
                         push @params, @validated;
                     } else {
-                        my $debug = join(",", map { "$_=".($param->{$_}//"") } keys(%{$param}));
+                        my $debug = join("&", map { "$_=".($param->{$_}//"") } keys(%{$param}));
                         $self->{logger}->debug("Skipping invalid params: $debug")
                     }
                 }
@@ -192,7 +193,7 @@ sub setupEvent {
         return;
     }
 
-    unless ($event->{partial}) {
+    unless ($event->partial) {
         $self->{logger}->debug("Only support partial inventory events for Inventory task");
         return;
     }
@@ -201,8 +202,8 @@ sub setupEvent {
     $self->{inventory}->isPartial(1);
 
     # Support event with category defined
-    if ($event->{category}) {
-        my %keep = map { lc($_) => 1 } grep { ! $self->{disabled}->{$_} } split(/,+/, $event->{category});
+    if ($event->category) {
+        my %keep = map { lc($_) => 1 } grep { ! $self->{disabled}->{$_} } split(/,+/, $event->category);
         unless (keys(%keep)) {
             $self->{logger}->info("Nothing to inventory on partial inventory event");
             return;

@@ -111,7 +111,7 @@ sub event {
 
     $self->{event} = $event if defined($event);
 
-    return $self->{event} if defined($self->{event});
+    return $self->{event};
 }
 
 sub resetEvent {

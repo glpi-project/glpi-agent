@@ -19,6 +19,7 @@ use GLPI::Agent::Version;
 use GLPI::Agent::Logger;
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Network;
+use GLPI::Agent::Event;
 
 # Expire trusted ip/ranges cache after a minute
 use constant TRUSTED_CACHE_TIMEOUT => 60;
@@ -461,10 +462,14 @@ sub _handle_now {
             if ($query) {
                 my %event = map { /^([^=]+)=(.*)$/ } grep { /[^=]=/ } split('&', $query);
                 foreach my $target (@targets) {
-                    if (my $event = $target->addEvent(\%event)) {
-                        $logger->debug($log_prefix."$event->{name} triggering event on ".$target->id());
+                    my $id = $target->id;
+                    my $event = GLPI::Agent::Event->new(%event);
+                    next if $event->target && $event->target ne $target->id;
+                    # Only support partial event requests via /now
+                    if ($event->name && $event->partial && $target->addEvent($event)) {
+                        $logger->debug($log_prefix.$event->name." triggering event on $id");
                     } else {
-                        $logger->debug($log_prefix."unsupported target event: $query");
+                        $logger->debug($log_prefix."unsupported event for $id target: ".($event->name ? $event->dump_as_string() : substr($query, 0, 255)));
                     }
                 }
             } else {

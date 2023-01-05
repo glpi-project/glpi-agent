@@ -19,6 +19,7 @@ use GLPI::Agent::Target::Server;
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Hostname;
 use GLPI::Agent::Tools::UUID;
+use GLPI::Agent::Event;
 
 our $VERSION = $GLPI::Agent::Version::VERSION;
 my $PROVIDER = $GLPI::Agent::Version::PROVIDER;
@@ -460,36 +461,36 @@ sub runTaskReal {
     );
 
     # Handle init event and return
-    if ($self->{event} && $self->{event}->{init}) {
+    # init event first initiates maintenance event on deploy task
+    if ($self->{event} && $self->{event}->init) {
         my $event = $task->newEvent();
-        $target->addEvent($event) if $event;
+        $target->addEvent($event) if $event && $event->name;
         return;
     }
 
     return if $response && !$task->isEnabled($response);
 
-    $self->{logger}->info("running task $name".($self->{event} ? ": $self->{event}->{name} event" : ""));
+    my $event = $self->{event} ? $self->{event}->name : "";
+    $self->{logger}->info("running task $name".($event ? ": $event event" : ""));
     $self->{current_task} = $task;
 
     $task->run();
 
-    # Try to cache data provided by the task if the next run can require it
-    if ($task->keepcache() && ref($self) =~ /Daemon/) {
-        my $cachedata = $task->cachedata();
-        if (defined($cachedata) && GLPI::Agent::Protocol::Message->require()) {
-            my $data = GLPI::Agent::Protocol::Message->new(message => $cachedata);
-            $self->forked_process_event("AGENTCACHE,$name,".$data->getRawContent());
-        }
-    }
+    # Handle task cache if required
+    $self->handleTaskCache($name, $task);
 
     # Try to handle task new event
-    my $event = $task->event();
-    if ($event && ref($self) =~ /Daemon/ && GLPI::Agent::Protocol::Message->require()) {
-        my $message = GLPI::Agent::Protocol::Message->new(message => $event);
-        $self->forked_process_event("TASKEVENT,$name,".$message->getRawContent());
-    }
+    $self->handleTaskEvent($name, $task);
 
     delete $self->{current_task};
+}
+
+# Only supported when running as daemon
+sub handleTaskCache {
+}
+
+# Only supported when running as daemon
+sub handleTaskEvent {
 }
 
 sub getStatus {

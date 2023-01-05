@@ -15,6 +15,7 @@ use GLPI::Agent::Task::Deploy::ActionProcessor;
 use GLPI::Agent::Task::Deploy::Datastore;
 use GLPI::Agent::Task::Deploy::File;
 use GLPI::Agent::Task::Deploy::Job;
+use GLPI::Agent::Event;
 
 use GLPI::Agent::Task::Deploy::Version;
 
@@ -413,22 +414,24 @@ sub run {
 
     my $event = $self->event;
     if ($event) {
-        if ($event->{maintenance} && GLPI::Agent::Task::Deploy::Maintenance->require()) {
-            $logger->debug("Deploy task $event->{name} event for ".$self->{target}->id(). " target");
+        my $name = $event->name;
+        if ($name && $event->maintenance && GLPI::Agent::Task::Deploy::Maintenance->require()) {
+            my $nextEvent;
+            my $targetid = $self->{target}->id;
+            $logger->debug("Deploy task $name event for $targetid target");
             my $maintenance = GLPI::Agent::Task::Deploy::Maintenance->new(
                 target  => $self->{target},
                 config  => $self->{config},
                 logger  => $self->{logger},
             );
             if ($maintenance->doMaintenance()) {
-                $event = $self->newEvent();
-                $logger->debug("Planning another $event->{name} event for ".$self->{target}->id(). " target in $event->{delay}s");
+                $nextEvent = $self->newEvent();
+                $logger->debug("Planning another $name event for $targetid target in ".$event->delay()."s");
             } else {
                 # Don't restart event if datastore has been fully cleaned up
-                $logger->debug("No need to plan another $event->{name} event for ".$self->{target}->id(). " target");
-                undef $event;
+                $logger->debug("No need to plan another $name event for $targetid target");
             }
-            $self->resetEvent($event);
+            $self->resetEvent($nextEvent);
         }
         return;
     }
@@ -485,13 +488,13 @@ sub run {
 sub newEvent {
     my ($self) = @_;
 
-    return {
+    return GLPI::Agent::Event->new(
         name        => "storage maintenance",
         task        => "deploy",
         maintenance => "yes",
         target      => $self->{target}->id(),
         delay       => 120,
-    };
+    );
 }
 
 1;
