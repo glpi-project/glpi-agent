@@ -15,6 +15,7 @@ use GLPI::Agent::Task::Inventory;
 use GLPI::Agent::Target::Local;
 use GLPI::Agent::Logger;
 use GLPI::Agent::Config;
+use GLPI::Agent::Event;
 use GLPI::Agent::Version;
 
 my $options = {
@@ -54,12 +55,12 @@ pod2usage(-verbose => 0, -exitval => 0) if $options->{help};
 
 my $event;
 if ($options->{partial}) {
-    $event = {
+    $event = GLPI::Agent::Event->new(
         task        => "inventory",
         partial     => 1,
         category    => $options->{partial},
         name        => "partial inventory",
-    };
+    );
 }
 
 my $config = GLPI::Agent::Config->new(
