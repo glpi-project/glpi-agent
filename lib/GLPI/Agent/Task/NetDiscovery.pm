@@ -507,11 +507,14 @@ sub _sendMessage {
                     or $self->{logger}->error("Can't write to $file: $ERRNO");
             }
             return unless $handle;
-            $self->{logger}->info("Netdiscovery result for $ip saved in $file");
         }
 
         print $handle $message->getContent();
-        close($handle) if $file;
+
+        if ($file) {
+            close($handle);
+            $self->{logger}->info("Netdiscovery result for $ip saved in $file");
+        }
 
     } elsif ($self->{target}->isType('server')) {
         unless ($self->{client}) {

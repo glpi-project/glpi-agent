@@ -40,7 +40,6 @@ sub new {
         _macs       => {},
         _devices    => {},
         need_init   => 1,
-        _xml        => GLPI::Agent::XML->new(),
     };
 
     bless $self, $class;
@@ -169,7 +168,7 @@ sub xml_analysis {
         # Don't reload file if still loaded and has not been updated
         next if $self->{_mtime}->{$file} && $self->{_mtime}->{$file} == $mtime;
 
-        my $tree = $self->{_xml}->file($file)->dump_as_hash()
+        my $tree = GLPI::Agent::XML->new(file => $file)->dump_as_hash()
             or next;
 
         $self->{_mtime}->{$file} = $mtime;
@@ -526,7 +525,7 @@ sub _save_inventory {
 
     my $xml;
     if (-e $file) {
-        $xml = $self->{_xml}->file($file)->dump_as_hash();
+        $xml = GLPI::Agent::XML->new(file => $file)->dump_as_hash();
     } else {
         # Without existing inventory we suppose this is a new netinventory
         $xml = {
@@ -579,7 +578,7 @@ sub _save_inventory {
     }
 
     $self->info("Saving updated $kind_base: $file");
-    $self->{_xml}->writefile($file, $xml);
+    GLPI::Agent::XML->new()->writefile($file, $xml);
 }
 
 sub _register_supported_modules {
