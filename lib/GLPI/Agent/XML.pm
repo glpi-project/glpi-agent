@@ -376,7 +376,7 @@ sub _GLPI_XML_win32_binded_thread {
             return;
         } else {
             # API call on cached object
-            return $XMLs{$id}->$api(@{$infos{args}});
+            return $XMLs{$id} && $XMLs{$id}->$api(@{$infos{args}});
         }
     }
 
