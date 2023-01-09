@@ -27,6 +27,11 @@ use GLPI::Agent::Protocol::Contact;
 
 my $PROVIDER = $GLPI::Agent::Version::PROVIDER;
 
+# Avoid being killed on early SIGUSR1 signal
+my $runnow = 0;
+$SIG{USR1} = sub { $runnow = 1; }
+    unless $OSNAME eq 'MSWin32';
+
 sub init {
     my ($self, %params) = @_;
 
@@ -51,6 +56,12 @@ sub init {
     $SIG{HUP} = sub { $self->reinit(); };
     $SIG{USR1} = sub { $self->runNow(); }
         unless ($OSNAME eq 'MSWin32');
+
+    # Handle USR1 signal received during start
+    if ($runnow) {
+        $runnow = 0;
+        $self->runNow();
+    }
 }
 
 sub reinit {
