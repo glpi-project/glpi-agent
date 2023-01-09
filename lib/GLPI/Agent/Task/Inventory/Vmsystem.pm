@@ -215,6 +215,7 @@ sub _getType {
     if (canRead('/proc/1/environ')) {
         my $init_env = getAllLines(
             file => '/proc/1/environ',
+            no_error_log => 1,
             logger => $logger
         );
         if ($init_env) {

@@ -433,7 +433,7 @@ sub getFileHandle {
             if (!open $handle, $mode, $params{file}) {
                 $params{logger}->error(
                     "Can't open file $params{file}: $ERRNO"
-                ) if $params{logger};
+                ) if $params{logger} && !$params{no_error_log};
                 return;
             }
             last SWITCH;
@@ -462,7 +462,7 @@ sub getFileHandle {
             if (!$cmdpid) {
                 $params{logger}->error(
                     "Can't run command $logcommand: $ERRNO"
-                ) if $params{logger};
+                ) if $params{logger} && !$params{no_error_log};
                 return;
             }
             # Kill command if a timeout was set
