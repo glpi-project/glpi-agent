@@ -9,6 +9,6 @@ body:
     id: description
     attributes:
       label: Your idea
-      placeolder: My idea
+      placeholder: My idea
     validations:
       required: true

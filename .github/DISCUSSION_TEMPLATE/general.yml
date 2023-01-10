@@ -8,6 +8,6 @@ body:
     id: description
     attributes:
       label: Your question
-      placeolder: My question
+      placeholder: My question
     validations:
       required: true
