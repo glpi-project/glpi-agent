@@ -1,0 +1,13 @@
+title: "[General] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        General question about GLPI Agent or related to glpi-agent github project
+  - type: textarea
+    id: description
+    attributes:
+      label: Your question
+      placeolder: My question
+    validations:
+      required: true

@@ -1,0 +1,8 @@
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Announcement
+      placeholder: Make an announcement
+    validations:
+      required: true

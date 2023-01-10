@@ -1,0 +1,26 @@
+title: "[Q&A] "
+labels: ["help wanted"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        You have a problem using GLPI Agent and you're not sure this is a bug. Ask your questions here.
+  - type: dropdown
+    id: documentation
+    attributes:
+      label: Documentation & bug reporting acknowledgment
+      description: I read the [documentation](https://glpi-agent.readthedocs.io/en/latest/) and particularly the [bug reporting](https://glpi-agent.readthedocs.io/en/latest/bug-reporting.html) page before submitting my question.
+      options:
+        - Yes, I read it
+        - Not applicable
+      multiple: true
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe your problem
+      description: A clear description of your problem
+      placeholder: About my problem
+    validations:
+      required: true

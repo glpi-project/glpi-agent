@@ -1,0 +1,14 @@
+title: "[Idea] "
+labels: ["feature request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        You have an idea or feature request for GLPI Agent or related to glpi-agent github project.
+  - type: textarea
+    id: description
+    attributes:
+      label: Your idea
+      placeolder: My idea
+    validations:
+      required: true

@@ -14,6 +14,7 @@ body:
       options:
         - Yes, I read it
         - Not applicable
+      multiple: true
     validations:
       required: true
   - type: dropdown
@@ -90,6 +91,8 @@ body:
       label: GLPI version
       description: What is your GLPI version on server-side ?
       options:
+        - 10.0.5
+        - 10.0.4
         - 10.0.3
         - 10.0.2
         - 10.0.1
@@ -110,11 +113,15 @@ body:
       label: GLPIInventory plugin or FusionInventory for GLPI plugin version
       description: What is your GLPIInventory or FusionInventory for GLPI plugin version on server-side ?
       options:
+        - 1.0.6
+        - 1.0.5
         - 1.0.4
         - 1.0.3
         - 1.0.2
         - 1.0.1
         - 1.0.0
+        - 10.0.3+1.0
+        - 10.0.2+1.0
         - 10.0.1+1.0
         - 10.0.0+1.0
         - 9.5+4.2
