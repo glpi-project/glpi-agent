@@ -28,6 +28,7 @@ my @options = (
     'logfile=s',
     'no-httpd',
     'no-ssl-check',
+    'no-category=s',
     'no-compression|C',
     'no-task=s',
     'no-p2p',
