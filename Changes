@@ -74,6 +74,9 @@ core:
 * Refactoring of communication with server to share compressing code between used classes and
   to better report import errors when refused by the server
 * Handle early received SIGUSR1 signal as runnow request in place of killing the service
+* Support forbid_not_trusted option for all httpd server plugins. The option is set to "no"
+  by default to keep compatibility with older configurations. If set to "yes", only trusted
+  ips will be authorized to access related httpd plugin features.
 * Report dedicated warning when inventory support is disabled server-side
 * win32: Add API to request win32 registry value with better Unicode support
 * win32: Get rid of encodeFromRegistry() API after enhanced Unicode registry support

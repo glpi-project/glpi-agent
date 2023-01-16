@@ -43,6 +43,8 @@ sub defaults {
         disabled    => "yes",
         configtest  => "test",
         port        => 0,
+        # Supported by class GLPI::Agent::HTTP::Server::Plugin
+        forbid_not_trusted => "no",
     };
 }
 

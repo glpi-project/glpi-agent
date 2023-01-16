@@ -201,6 +201,12 @@ sub _handle {
             if ($plugin->urlMatch($path)) {
                 undef $error_400;
                 last SWITCH unless $plugin->supported_method($method);
+                # Only support trusted client if required
+                if ($plugin->forbid_not_trusted() && !$self->_isTrusted($clientIp)) {
+                    $status = 403;
+                    $client->send_error(403);
+                    last SWITCH;
+                }
                 $status = $plugin->handle($client, $request, $clientIp);
                 last SWITCH if $status;
             }
@@ -262,6 +268,12 @@ sub _handle_plugins {
         if ($plugin->urlMatch($path)) {
             $match = 1;
             last unless ($plugin->supported_method($method));
+            # Only support trusted client if required
+            if ($plugin->forbid_not_trusted() && !$self->_isTrusted($clientIp)) {
+                $status = 403;
+                $client->send_error(403);
+                last;
+            }
             $status = $plugin->handle($client, $request, $clientIp);
             $self->{_timer_event} = time+10
                 if ($self->{_timer_event} > time+10);

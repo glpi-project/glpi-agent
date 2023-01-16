@@ -39,6 +39,7 @@ sub defaults {
         # Supported by class GLPI::Agent::HTTP::Server::Plugin
         maxrate             => 600,
         maxrate_period      => 600,
+        forbid_not_trusted  => "no",
     };
 }
 

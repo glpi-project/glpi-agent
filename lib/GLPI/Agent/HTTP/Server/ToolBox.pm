@@ -256,6 +256,8 @@ sub defaults {
         addnavlink  => undef,
         headercolor => undef,
         raw_edition => "no",
+        # Supported by class GLPI::Agent::HTTP::Server::Plugin
+        forbid_not_trusted => "no",
     };
 }
 
