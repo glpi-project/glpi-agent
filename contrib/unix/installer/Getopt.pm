@@ -32,7 +32,7 @@ my @options = (
     'no-compression|C',
     'no-task=s',
     'no-p2p',
-    'password=s',
+    'password|p=s',
     'proxy|P=s',
     'httpd-ip=s',
     'httpd-port=s',
@@ -54,7 +54,7 @@ my @options = (
     'type=s',
     'uninstall',
     'unpack',
-    'user=s',
+    'user|u=s',
     'use-current-user-proxy',
     'verbose|v',
     'version',
@@ -146,6 +146,8 @@ glpi-agent-linux-installer [options]
     -C --no-compression            do not compress communication with server (false)
     --ssl-fingerprint=FINGERPRINT  Trust server certificate if its SSL fingerprint
                                    matches the given one
+    -u --user=USER                 user name for server authentication
+    -p --password=PASSWORD         password for server authentication
 
   Web interface options:
     --no-httpd                     disable embedded web server (false)
