@@ -68,6 +68,10 @@ sub init {
             $self->debug($self->{name}." Server plugin configuration missing: $config");
         }
     }
+
+    # Handle forbid_not_trusted option
+    my $forbid_not_trusted = $self->config("forbid_not_trusted");
+    $self->{forbid_not_trusted} = defined($forbid_not_trusted) && $forbid_not_trusted !~ /^0|no$/i ? 1 : 0;
 }
 
 # Plugins with greater priority values are used first
@@ -146,6 +150,12 @@ sub config {
     $self->{$name} = $value if (defined($value));
     return $self->{$name};
 }
+
+# Don't trust client by default
+sub forbid_not_trusted {
+    my ($self) = @_;
+    return $self->{forbid_not_trusted};
+};
 
 sub config_file {}
 

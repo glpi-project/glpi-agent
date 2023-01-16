@@ -28,6 +28,8 @@ sub defaults {
         ssl_cert_file       => undef,
         ssl_key_file        => undef,
         ssl_cipher          => undef,
+        # Supported by class GLPI::Agent::HTTP::Server::Plugin
+        forbid_not_trusted => "no",
     };
 }
 
