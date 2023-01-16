@@ -112,6 +112,7 @@ packaging:
 * fix #298: Fix cron script for debian in linux perl installer
 * fix #305: Support --proxy & --use-current-user-proxy options in linux perl installer
 * fix missing --no-category support in linux perl installer
+* fix #315: Add --user & --password options support in linux perl installer
 
 contrib:
 * Added an option to reconfigure installed agent in windows vbs script. It is enabled
