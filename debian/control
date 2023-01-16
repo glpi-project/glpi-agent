@@ -62,6 +62,7 @@ Depends:
  libwww-perl,
  libparse-edid-perl,
  libproc-daemon-perl,
+ libparallel-forkmanager-perl,
  libuniversal-require-perl,
  libfile-which-perl,
  libxml-libxml-perl,
@@ -148,7 +149,8 @@ Depends:
  libdigest-hmac-perl,
  libnet-ip-perl,
  libnet-snmp-perl,
- libnet-nbname-perl
+ libnet-nbname-perl,
+ libparallel-forkmanager-perl
 Description: network device discovery for GLPI Agent
  This module scans your networks to quickly identify its hosts with SNMP,
  Echo Ping, TimeStamp ping, arp table lookup and NetBIOS request:
