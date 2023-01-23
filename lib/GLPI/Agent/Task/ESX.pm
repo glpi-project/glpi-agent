@@ -174,8 +174,8 @@ sub run {
 
     return unless $jobs;
     return unless ref( $jobs->{jobs} ) eq 'ARRAY';
-    $self->{logger}->info(
-        "Got " . int( @{ $jobs->{jobs} } ) . " VMware host(s) to inventory." );
+    my $plural = @{$jobs->{jobs}} > 1 ? "s" : "";
+    $self->{logger}->info("Having to contact ".scalar(@{$jobs->{jobs}})." remote ESX server".$plural);
 
     my $serverclient;
     if ($self->{target}->isGlpiServer()) {
