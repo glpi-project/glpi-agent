@@ -119,7 +119,7 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
         };
         if ($EVAL_ERROR) {
             if ($content =~ /Inventory is disabled/i) {
-                $logger->error(
+                $logger->warning(
                     _log_prefix . "Inventory support is disabled server-side"
                 );
             } else {
