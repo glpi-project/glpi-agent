@@ -118,8 +118,14 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
             $answer->set($content);
         };
         if ($EVAL_ERROR) {
-            my @lines = split(/\n/, substr($content, 0, 256));
-            $logger->error(_log_prefix . "unexpected content, starting with: $lines[0]".(@lines>1?"\n".$lines[1]:""));
+            if ($content =~ /Inventory is disabled/i) {
+                $logger->error(
+                    _log_prefix . "Inventory support is disabled server-side"
+                );
+            } else {
+                my @lines = split(/\n/, substr($content, 0, 256));
+                $logger->error(_log_prefix . "unexpected content, starting with: $lines[0]".(@lines>1?"\n".$lines[1]:""));
+            }
             return;
         }
         unless ($answer->is_valid_message()) {

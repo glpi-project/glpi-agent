@@ -70,7 +70,8 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
         return;
     }
 
-    my $uncompressed_response_content = $self->uncompress($response_content, $response->header("Content-type"));
+    my $type = $response->header("Content-type") // "text/plain";
+    my $uncompressed_response_content = $type =~ m{^application/x-}i ? $self->uncompress($response_content, $type) : $response_content;
     if (!$uncompressed_response_content) {
         $logger->error(
             _log_prefix . "can't uncompress content starting with: ".substr($response_content, 0, 500)
@@ -109,10 +110,16 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
         }
     }
     unless (defined($result)) {
-        my @lines = split(/\n/, substr($uncompressed_response_content,0,120));
-        $logger->error(
-            _log_prefix . "unexpected content, starting with: $lines[0]"
-        );
+        if ($uncompressed_response_content =~ /Inventory is disabled/i) {
+            $logger->warning(
+                _log_prefix . "Inventory support is disabled server-side"
+            );
+        } else {
+            my @lines = split(/\n/, substr($uncompressed_response_content,0,120));
+            $logger->error(
+                _log_prefix . "unexpected content, starting with: $lines[0]"
+            );
+        }
         return;
     }
 

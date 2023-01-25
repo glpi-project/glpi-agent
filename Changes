@@ -17,6 +17,7 @@ core:
 * Refactoring of communication with server to share compressing code between used classes and
   to better report import errors when refused by the server
 * Handle early received SIGUSR1 signal as runnow request in place of killing the service
+* Report dedicated warning when inventory support is disabled server-side
 
 inventory:
 * check if we are running in a container before checking we are running in a virtualmachine
