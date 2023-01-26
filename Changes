@@ -51,6 +51,8 @@ inventory:
 * fix #258: Fix slots support on AIX
 * Fix HPUX slots support
 * PR #295: Update aliased network interfaces support on linux, thanks to po1vo
+* fix #323: Office license inventory was broken when a not expected value was found
+  in registry
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory

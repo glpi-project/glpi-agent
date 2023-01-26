@@ -134,6 +134,8 @@ sub _scanOfficeLicences {
     #             └── ...
 
     foreach my $versionKey (keys %{$key}) {
+        # Skip value keys
+        next if $versionKey =~ m{^/};
         my $registrationKey = $key->{$versionKey}->{'Registration/'}
             or next;
 
