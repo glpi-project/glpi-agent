@@ -53,6 +53,7 @@ inventory:
 * PR #295: Update aliased network interfaces support on linux, thanks to po1vo
 * fix #323: Office license inventory was broken when a not expected value was found
   in registry
+* fix #322: Add new Acer monitor model support: V247Y
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory

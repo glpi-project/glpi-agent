@@ -98,6 +98,7 @@ __DATA__
     057f    SA240Y
     0618    Acer B196HQL
     0771    B247Y
+    0772    V247Y
     0783    AL1923
     033a    B226WL
     1228    ACER P1206P
