@@ -182,9 +182,9 @@ sub _prepareDistro {
             my $ret = $self->run("dnf config-manager --set-enabled ol${v}_codeready_builder");
             die "Can't enable CodeReady Builder repository: $!\n" if $ret;
         }
-    } elsif ($self->{_name} =~ /rocky/i) {
+    } elsif ($self->{_name} =~ /rocky|almalinux/i) {
         # On Rocky 8, we need PowerTools
-        # On Rocky 9, we need CRB
+        # On Rocky/AlmaLinux 9, we need CRB
         if ($v >= 9) {
             $self->verbose("Checking CRB repository is enabled");
             my $ret = $self->run("dnf config-manager --set-enabled crb");
