@@ -5,8 +5,6 @@ use warnings;
 use lib 't/lib';
 
 use English qw(-no_match_vars);
-use File::Path;
-use File::Temp qw(tempdir);
 use Test::Deep;
 use Test::More;
 
