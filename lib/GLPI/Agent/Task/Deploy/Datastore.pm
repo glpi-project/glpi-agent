@@ -6,7 +6,7 @@ use warnings;
 use English qw(-no_match_vars);
 use File::Glob;
 use File::Spec;
-use File::Path qw(mkpath remove_tree);
+use File::Path qw(make_path);
 use UNIVERSAL::require;
 
 use GLPI::Agent::Tools;
@@ -82,7 +82,7 @@ sub createWorkDir {
 
     my $path = File::Spec->catdir($self->{path}, "workdir", $uuid);
 
-    mkpath($path);
+    make_path($path);
     return unless -d $path;
 
     return GLPI::Agent::Task::Deploy::Datastore::WorkDir->new(

@@ -5,12 +5,14 @@ use warnings;
 use parent 'Exporter';
 
 use English qw(-no_match_vars);
-use GLPI::Agent::Tools;
-
 use UNIVERSAL::require;
+use File::Find;
+
+use GLPI::Agent::Tools;
 
 our @EXPORT = qw(
     getFreeSpace
+    remove_tree
 );
 
 sub getFreeSpace {
@@ -20,6 +22,29 @@ sub getFreeSpace {
         _getFreeSpace(@_);
 
     return $freeSpace;
+}
+
+sub remove_tree {
+    my ($folder) = @_;
+
+    no warnings 'File::Find';
+
+    finddepth(
+        {
+            no_chdir => 1,
+            wanted   => sub {
+                # Unlink files not not current folder
+                unlink $File::Find::name unless $File::Find::name eq $File::Find::dir;
+            },
+            postprocess => sub {
+                # Finally try to remove folder when folder should be empty
+                rmdir $File::Find::dir;
+            }
+        },
+        $folder
+    );
+
+    return -d $folder || -e $folder ? 0 : 1;
 }
 
 sub _getFreeSpaceWindows {

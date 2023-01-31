@@ -6,10 +6,10 @@ use warnings;
 use Compress::Zlib;
 use English qw(-no_match_vars);
 use File::Spec;
-use File::Path qw(mkpath);
 use UNIVERSAL::require;
-use GLPI::Agent::Tools;
 use Encode qw(encode is_utf8);
+
+use GLPI::Agent::Tools;
 
 sub new {
     my ($class, %params) = @_;
@@ -24,6 +24,11 @@ sub new {
         unless -d $self->{path};
 
     bless $self, $class;
+}
+
+sub path {
+    my ($self) = @_;
+    return $self->{path};
 }
 
 sub addFile {

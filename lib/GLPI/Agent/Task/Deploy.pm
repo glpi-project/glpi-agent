@@ -294,11 +294,15 @@ sub processRemote {
         $logger->debug2("Processing for job $job->{uuid}...");
 
         # PROCESSING
-        my $actionProcessor =
-          GLPI::Agent::Task::Deploy::ActionProcessor->new(
-            workdir => $workdir
+        my $actionProcessor = GLPI::Agent::Task::Deploy::ActionProcessor->new(
+            logger  => $logger,
+            workdir => $workdir->path()
         );
         my $actionnum = 0;
+
+        # Essentially to change dir to workdir
+        $actionProcessor->starting();
+
         while ( my $action = $job->getNextToProcess() ) {
             my ($actionName, $params) = %$action;
             if ( $params && (ref( $params->{checks} ) eq 'ARRAY') ) {
@@ -316,8 +320,10 @@ sub processRemote {
             $job->currentStep('processing');
 
             my $ret;
-            eval { $ret = $actionProcessor->process($actionName, $params, $logger); };
-            $ret->{msg} = [] unless $ret->{msg};
+            eval {
+                $ret = $actionProcessor->process($actionName, $params);
+            };
+            $ret->{msg} = [] unless $ret && $ret->{msg};
             push @{$ret->{msg}}, $@ if $@;
 
             my $name = $params->{name} || "action #".($actionnum+1);
@@ -352,7 +358,9 @@ sub processRemote {
                     msg       => "$name, processing failure"
                 );
 
-                next JOB;
+                # Mark processing as failed and leave loop
+                $actionProcessor->failure();
+                last;
             }
             $job->setStatus(
                 status    => 'ok',
@@ -362,6 +370,12 @@ sub processRemote {
 
             $actionnum++;
         }
+
+        # Essentially to change dir back from workdir
+        $actionProcessor->done();
+
+        # Handle next job if action processor failed
+        next if $actionProcessor->failed();
 
         # USER INTERACTION
         $job->next_on_usercheck(type => 'after');

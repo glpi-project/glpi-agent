@@ -8,7 +8,7 @@ use Test::More;
 use File::Temp qw(tempdir);
 use File::Copy;
 use File::Basename qw(dirname);
-use File::Path qw(mkpath);
+use File::Path qw(make_path);
 
 plan tests => 6;
 
@@ -39,7 +39,7 @@ my $partFilePath = $file->getPartFilePath($sha512);
 ok($partFilePath, "getPartFilePath()");
 ok(! -f $partFilePath, "file does not exist yet");
 ok(!$file->filePartsExists(), "filePartsExists() fails");
-File::Path::mkpath(dirname($partFilePath));
+make_path(dirname($partFilePath));
 copy("$filedir/toto", $partFilePath);
 ok(-f $file->getPartFilePath($sha512), "file exists");
 ok($file->filePartsExists(), "filePartsExists() success");

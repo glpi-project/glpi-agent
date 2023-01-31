@@ -3,6 +3,8 @@ package GLPI::Agent::Task::Deploy::ActionProcessor::Action::Cmd;
 use strict;
 use warnings;
 
+use parent 'GLPI::Agent::Task::Deploy::ActionProcessor::Action';
+
 use Fcntl qw(SEEK_SET);
 use UNIVERSAL::require;
 
@@ -49,7 +51,7 @@ sub _evaluateRet {
 }
 
 sub _runOnUnix {
-    my ($params, $logger) = @_;
+    my ($self, $params) = @_;
 
     my $buf = `$params->{exec} 2>&1` || '';
     my $errMsg = "$ERRNO";
@@ -58,13 +60,13 @@ sub _runOnUnix {
     # We shoudl report exitStatus as if it was started from shell
     my $exitStatus = $CHILD_ERROR < 0 ? 127 : $CHILD_ERROR >> 8;
 
-    $logger->debug2("Run: ".$buf);
+    $self->debug2("Run: ".$buf);
 
     return ($buf, $errMsg, $exitStatus);
 }
 
 sub _runOnWindows {
-    my ($params, $logger) = @_;
+    my ($self, $params) = @_;
 
     GLPI::Agent::Tools::Win32->require;
 
@@ -79,7 +81,7 @@ sub _runOnWindows {
         $buf .= $line;
     }
     close $fd;
-    $logger->debug2("Run: ".$buf);
+    $self->debug2("Run: ".$buf);
 
     my $errMsg = '';
     if ($exitcode eq '293') {
@@ -91,7 +93,8 @@ sub _runOnWindows {
 
 
 sub do {
-    my ($params, $logger) = @_;
+    my ($self, $params) = @_;
+
     return { 0, ["Internal agent error"]} unless $params->{exec};
 
     my %envsSaved;
@@ -108,9 +111,9 @@ sub do {
     my $exitStatus;
 
     if ($OSNAME eq 'MSWin32') {
-        ($buf, $errMsg, $exitStatus) = _runOnWindows(@_);
+        ($buf, $errMsg, $exitStatus) = $self->_runOnWindows($params);
     } else {
-        ($buf, $errMsg, $exitStatus) = _runOnUnix(@_);
+        ($buf, $errMsg, $exitStatus) = $self->_runOnUnix($params);
     }
 
     my $logLineLimit = defined($params->{logLineLimit}) ?
@@ -143,9 +146,9 @@ sub do {
     unshift @msg, "================================";
 
     foreach (@msg) {
-        $logger->debug($_);
+        $self->debug($_);
     }
-    $logger->debug("final status: ".$status);
+    $self->debug("final status: ".$status);
 
     if ($params->{envs}) {
         foreach my $key (keys %envsSaved) {

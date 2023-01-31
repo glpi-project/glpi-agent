@@ -89,6 +89,10 @@ deploy:
 * Fix possible failure when mirror is set but misses file parts
 * Report friendly message if no mirror is defined to download file parts
 * Refacto to keep deploy tree as clean as possible
+* Refacto to add debug
+* Fix copy & move actions failing under win32 while running as a service
+* Add unit tests for ActionProcessor
+* Bump version to 3.0
 
 esx:
 * Add SERIAL number to virtualmachines as they will be seen in BIOS

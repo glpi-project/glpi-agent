@@ -3,14 +3,22 @@ package GLPI::Agent::Task::Deploy::ActionProcessor::Action::Delete;
 use strict;
 use warnings;
 
+use parent 'GLPI::Agent::Task::Deploy::ActionProcessor::Action';
+
 use Encode;
-use File::Path;
 use UNIVERSAL::require;
 
 use English qw(-no_match_vars);
 
+use GLPI::Agent::Task::Deploy::DiskFree;
+
 sub do {
-    my ($params, $logger) = @_;
+    my ($self, $params) = @_;
+
+    return {
+        status => 0,
+        msg => [ "No folder to delete" ]
+    } unless $params->{list} && @{$params->{list}};
 
     my $msg = [];
     my $status = 1;
@@ -27,15 +35,19 @@ sub do {
             }
         }
 
-        File::Path::remove_tree($loc_local);
-        $status = 0 if -e $loc;
-        my $m = "Failed to delete $loc";
-        push @$msg, $m;
-        $logger->debug($m);
+        $self->debug2("Trying to delete '$loc'");
+        remove_tree($loc_local);
+
+        if (-e $loc || -d $loc) {
+            $status = 0;
+            my $m = "Failed to delete $loc";
+            push @$msg, $m;
+            $self->debug($m);
+        }
     }
     return {
-    status => $status,
-    msg => $msg,
+        status  => $status,
+        msg     => $msg,
     };
 }
 

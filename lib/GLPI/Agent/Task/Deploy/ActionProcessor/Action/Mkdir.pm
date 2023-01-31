@@ -3,16 +3,20 @@ package GLPI::Agent::Task::Deploy::ActionProcessor::Action::Mkdir;
 use strict;
 use warnings;
 
-use File::Path;
+use parent 'GLPI::Agent::Task::Deploy::ActionProcessor::Action';
+
+use File::Path qw(make_path);
 use Encode;
-
 use English qw(-no_match_vars);
-
 use UNIVERSAL::require;
 
 sub do {
-    my ($params, $logger) = @_;
+    my ($self, $params) = @_;
 
+    return {
+        status => 0,
+        msg => [ "No destination folder to create" ]
+    } unless $params->{list} && @{$params->{list}};
 
     my $msg = [];
     my $status = 1;
@@ -29,20 +33,23 @@ sub do {
         if (-d $dir_local) {
             my $m = "Directory $dir already exists";
             push @$msg, $m;
-            $logger->debug($m);
+            $self->debug($m);
         } else {
-            File::Path::mkpath($dir_local);
+            my $error;
+            $self->debug2("Trying to create '$dir'");
+            make_path($dir_local, { error => \$error });
             if (!-d $dir_local) {
                 $status = 0;
                 my $m = "Failed to create $dir directory";
                 push @$msg, $m;
-                $logger->debug($m);
+                push @$msg, $error if $error;
+                map { $self->debug($_) } @$msg;
             }
         }
     }
     return {
-    status => $status,
-    msg => $msg,
+        status => $status,
+        msg => $msg,
     };
 }
 

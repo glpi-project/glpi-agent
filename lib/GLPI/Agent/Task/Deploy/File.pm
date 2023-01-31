@@ -7,7 +7,7 @@ use Digest::SHA;
 use English qw(-no_match_vars);
 use File::Basename;
 use File::Spec;
-use File::Path qw(mkpath);
+use File::Path qw(make_path);
 use File::Glob;
 use HTTP::Request;
 
@@ -123,7 +123,7 @@ sub resetPartFilePaths {
     }
 
     foreach my $path (keys(%updates)) {
-        mkpath(dirname($updates{$path}));
+        make_path(dirname($updates{$path}));
         rename $path, $updates{$path};
         _cleanPath($path);
     }
@@ -183,7 +183,7 @@ sub download {
         if (-f $path) {
             next PART if $self->_getSha512ByFile($path) eq $sha512;
         }
-        mkpath(dirname($path));
+        make_path(dirname($path));
 
         # try to download from the same peer as last part, if defined
         if ($lastPeer) {

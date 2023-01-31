@@ -5,7 +5,7 @@ use warnings;
 use lib 't/lib';
 
 use English qw(-no_match_vars);
-use File::Path;
+use File::Path qw(make_path);
 use File::Temp qw(tempdir);
 use Test::Deep;
 use Test::More;
@@ -109,7 +109,7 @@ cmp_deeply(
 sub create_file {
     my ($directory, $file, $content) = @_;
 
-    mkpath($directory);
+    make_path($directory);
 
     open (my $fh, '>', "$directory/$file")
         or die "can't create $directory/$file: $!";
