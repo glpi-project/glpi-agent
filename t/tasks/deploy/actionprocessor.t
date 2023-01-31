@@ -7,16 +7,9 @@ use lib 't/lib';
 use English qw(-no_match_vars);
 use Test::More;
 use Test::Exception;
-#~ use Test::MockModule;
-#~ use Test::Deep;
 use File::Path qw(make_path);
 use File::Temp qw(tempdir);
 use Cwd;
-
-BEGIN {
-    # use mock modules for non-available ones
-    push @INC, 't/lib/fake/windows' if $OSNAME ne 'MSWin32';
-}
 
 use GLPI::Agent::Logger;
 use GLPI::Test::Utils;
@@ -61,7 +54,7 @@ lives_ok {
     );
 } "Create action processor";
 
-ok(getcwd() ne $tmp, "Not in workdir");
+ok(getcwd() ne $tmp, "Not in workdir, expected '$tmp' but we're in '".getcwd()."'");
 
 lives_ok {
     $processor->starting;
