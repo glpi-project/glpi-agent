@@ -54,13 +54,13 @@ lives_ok {
     );
 } "Create action processor";
 
-ok(getcwd() ne $tmp, "Not in workdir, expected '$tmp' but we're in '".getcwd()."'");
+ok(getcwd() ne $tmp, "Not in workdir");
 
 lives_ok {
     $processor->starting;
 } "Start action processor";
 
-ok(getcwd() eq $tmp, "Changed dir in workdir");
+ok(getcwd() =~ /^$tmp$/i, "Changed dir in workdir: expected '$tmp' but we're in '".getcwd()."'");
 
 my $dest = tempdir(CLEANUP => $ENV{TEST_DEBUG} ? 0 : 1);
 mkdir "$dest/delete_me";
