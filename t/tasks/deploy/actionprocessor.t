@@ -28,7 +28,11 @@ my @test_paths = qw(
 
 plan tests => 53 + scalar(@test_paths);
 
-my $tmp = tempdir(CLEANUP => $ENV{TEST_DEBUG} ? 0 : 1);
+# Use current dir to fix issue with GH Actions on MacOSX
+my $tmp = tempdir(DIR => getcwd(), CLEANUP => $ENV{TEST_DEBUG} ? 0 : 1);
+
+# Required on win32
+$tmp =~ s{\\}{/}g;
 
 # Create simple folder tree
 foreach my $path (@test_paths) {
@@ -60,7 +64,7 @@ lives_ok {
     $processor->starting;
 } "Start action processor";
 
-ok(getcwd() =~ /^$tmp$/i, "Changed dir in workdir: expected '$tmp' but we're in '".getcwd()."'");
+ok(getcwd() eq $tmp, "Changed dir in workdir: expected '$tmp' but we're in '".getcwd()."'");
 
 my $dest = tempdir(CLEANUP => $ENV{TEST_DEBUG} ? 0 : 1);
 mkdir "$dest/delete_me";
