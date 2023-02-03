@@ -8,8 +8,9 @@
   @running = ();
   foreach my $task (@tasks) {
     my $opened = $opened_task && $opened_task eq $task;
-    my $ip_range = encode('UTF-8', encode_entities($tasks{$task}->{ip_range} || ''));
-    my $value = $tasks{$task}->{name};
+    my $ip_ranges = $tasks{$task}->{ip_ranges} || [];
+    my $ip_range  = @{$ip_ranges} == 1 ? encode('UTF-8', encode_entities($ip_ranges->[0])) : "";
+    my $value = encode('UTF-8', encode_entities($tasks{$task}->{name}));
     $value .= ": ".($tasks{$task}->{ip} ? $tasks{$task}->{ip}."/":"").$ip_range if $ip_range;
     my $percent = $tasks{$task}->{percent} || 0;
     my $done    = $tasks{$task}->{done}    || 0;
@@ -20,7 +21,7 @@
     $OUT .= "
     <li class='task'>
       <div class='task'>
-        <div class='name-col'".($ip_range ? " title='".sprintf(_("%s network scan"), $ip_range)."'" : "").">
+        <div class='name-col'".(@{$ip_ranges} ? " title='".sprintf(_("%s network scan"), $ip_range)."'" : "").">
           <input id='expand-$task' class='expand-task' type='checkbox' onchange='expand_task(\"$task\")'>
           <label id='$task-expand-label' for='expand-$task' class='closed'>$value</label>
         </div>
@@ -39,7 +40,7 @@
           <div class='counters-row'>
             <div class='counter-cell'>
               <label>";
-    if ($tasks{$task}->{ip_range}) {
+    if (@{$ip_ranges}) {
       $OUT .= _("Created inventories")."</label>
               <div class='counters-row'>
                 <span class='counter' id='$task-inventory-count' title='"._("Should match devices with SNMP support count")."'>
@@ -94,7 +95,7 @@
               <input id='show-log-$task' class='switch' type='checkbox' onclick='show_log(\"$task\")'>
               <span class='slider'></span>
             </label>
-            <label for='show-log-$task' class='text'>".sprintf( _("Show &laquo;&nbsp;%s&nbsp;&raquo; task log"), $tasks{$task}->{name}.($ip_range ? ": $ip_range" : ""))."</label>
+            <label for='show-log-$task' class='text'>".sprintf( _("Show &laquo;&nbsp;%s&nbsp;&raquo; task log"), $value)."</label>
             <div class='abort-button' id='$task-abort-button'>".(($done || $percent == 100 || $aborted)? "" :
               "<input class='submit-secondary' type='button' name='abort/$task' value='"._("Abort")."' onclick='abort_task(\"$task\")'>")."
             </div>
@@ -251,7 +252,7 @@
   function check_all_expandable() \{
     var all_cb = document.querySelectorAll('input[type="checkbox"]');
     for ( var cb = all_cb[0], i = 0; i < all_cb.length; ++i, cb = all_cb[i] )
-      if (cb.className == 'expand-task' && cb.checked) expand_task(cb.id.slice(7));
+      if (cb.className == 'expand-task' && cb.checked && cb.id != 'expand-runtask') expand_task(cb.id.slice(7));
       else if (cb.className == 'switch' && cb.checked) show_log(cb.id.slice(9));
   \}
   check_all_expandable();

@@ -677,3 +677,7 @@ input:checked + .slider:before {
     border: 1px solid #000000;
     box-shadow: 0 1px 8px rgba(0,0,0,0.5);
 }
+
+.disabled {
+  background: repeating-linear-gradient(45deg, #fff 0px, #eee 2px, #aaa 3px, #aaa 3px, #eee 4px, #fff 5px);
+}

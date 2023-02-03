@@ -1,6 +1,6 @@
 # This file is not read but should reference any string that could be translated
 
-Create a new inventory task:
+#Create a new inventory task:
 Local inventory:
 Run local inventory for this computer:
 Network scan:
@@ -39,3 +39,17 @@ Aborted:
 %s network scan:
 Freeze log output:
 Failure:
+
+Inventory jobs:
+Add new inventory job:
+Edit &laquo;&nbsp;%s&nbsp;&raquo; inventory job:
+Create inventory job:
+Run inventory task:
+Job name:
+Configuration:
+Scheduling:
+Last run date:
+Next run date:
+Add ip range:
+Remove ip range:
+Job is disabled:

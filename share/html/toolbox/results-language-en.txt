@@ -8,7 +8,7 @@ OS Name:
 Location:
 Manufacturer:
 Model:
-Type:
+
 UUID:
 Source:
 IP:

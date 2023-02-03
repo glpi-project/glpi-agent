@@ -396,7 +396,7 @@ sub handle_form {
             next if $device->isLocalInventory();
             my $inventory = $self->page('inventory')
                 or next;
-            my $netscan = $inventory->netscan($device->get('ip_range'), $device->ip);
+            my $netscan = $inventory->netscan("", [$device->get('ip_range')], $device->ip);
             $self->{tasks}->{$device->ip} = $inventory->{tasks}->{$netscan};
         }
         $self->send_redirect('inventory')

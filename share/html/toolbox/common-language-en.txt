@@ -37,3 +37,7 @@ Cancel:
 
 Reset:
 Reverse selection:
+
+Type:
+Disable:
+Enable:

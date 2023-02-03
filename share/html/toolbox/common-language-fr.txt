@@ -32,7 +32,12 @@ empty list: liste vide
 
 Add: Ajouter
 Name: Nom
+
 Cancel: Annuler
 
 Reset: Vider
 Reverse selection: Inverser la sélection
+
+
+Disable: Désactiver
+Enable: Activer

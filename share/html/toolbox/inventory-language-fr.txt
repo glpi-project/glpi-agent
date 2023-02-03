@@ -1,6 +1,6 @@
 # Traductions en français par Teclib Edition
 
-Create a new inventory task: Créer une nouvelle tâche d'inventaire
+#Create a new inventory task: Créer une nouvelle tâche d'inventaire
 Local inventory: Inventaire local
 Run local inventory for this computer: Lancer un inventaire local sur cet ordinateur
 Network scan: Scan réseau
@@ -39,3 +39,17 @@ Aborted: Interrompue
 %s network scan: Scan réseau de %s
 Freeze log output: Geler la mise à jour du journal
 Failure: &Eacute;chec
+
+Inventory jobs: Planification des tâches d'inventaire
+Add new inventory job: Planifier un nouvel inventaire
+Edit &laquo;&nbsp;%s&nbsp;&raquo; inventory job: Éditer la tâche d'inventaire &laquo;&nbsp;%s&nbsp;&raquo;
+Create inventory job: Créer la tâche d'inventaire
+Run inventory task: Démarrer une tâche d'inventaire
+Job name: Nom de tâche
+
+Scheduling: Planification
+Last run date: Dernière exécution
+Next run date: Prochaine exécution
+Add ip range: Ajouter plage ip
+Remove ip range: Retirer plage ip
+Job is disabled: Planification désactivée
