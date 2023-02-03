@@ -82,3 +82,8 @@ Invalid %s port:
 Invalid SNMP protocol:
 Port definition ignored:
 Unsupported %s mode for %s removeinventory:
+
+Job %s has no type:
+Job %s has a not supported type:
+New job:
+Unsupported job type:

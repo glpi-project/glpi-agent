@@ -17,6 +17,7 @@ use GLPI::Agent::Tools;
 use GLPI::Agent::Target;
 
 use constant    inventory   => "inventory";
+use constant    jobs        => "jobs";
 
 sub index {
     return inventory;
@@ -103,22 +104,56 @@ sub update_template_hash {
     return unless $hash;
 
     my $yaml = $self->yaml() || {};
-    my $yaml_config = $yaml->{configuration} || {};
+    my $jobs = $self->yaml('jobs') || {};
+    my $ip_range = $self->yaml('ip_range') || {};
+    my $yaml_config = $self->yaml('configuration') || {};
 
     # Update Text::Template HASH but protect some values by encoding html entities
-    foreach my $base (qw(ip_range)) {
+    foreach my $base (qw(ip_range jobs)) {
         $hash->{$base} = {};
         next unless $yaml->{$base};
         foreach my $name (keys(%{$yaml->{$base}})) {
             my $entry = $yaml->{$base}->{$name};
-            foreach my $key (qw(name ip_start ip_end)) {
+            foreach my $key (keys(%{$entry})) {
                 my $value = $entry->{$key};
                 next unless defined($value);
                 $value = encode('UTF-8', encode_entities($value))
-                    if $key =~ /^name$/;
+                    if $key =~ /^name|ip_range|description$/;
                 $hash->{$base}->{$name}->{$key} = $value;
             }
         }
+    }
+
+    # Don't include listing datas when editing
+    unless ($self->edit()) {
+        $hash->{columns} = [
+            [ name          => "Job name"      ],
+            [ type          => "Type"          ],
+            [ config        => "Configuration" ],
+            [ scheduling    => "Scheduling"    ],
+            [ last_run_date => "Last run date" ],
+            [ next_run_date => "Next run date" ],
+            [ description   => "Description"   ]
+        ];
+        $hash->{order} = $self->get_from_session('jobs_order') || "ascend";
+        my $asc = $hash->{order} eq 'ascend';
+        my $ordering = $hash->{ordering_column} = $self->get_from_session('jobs_ordering_column') || 'name';
+        my $name_ordering = $ordering eq 'name';
+        $hash->{jobs_order} = [
+            sort {
+                my ($A, $B) =  $asc ? ( $a, $b ) : ( $b, $a );
+                if ($name_ordering) {
+                    $A cmp $B
+                } else {
+                    ($jobs->{$A}->{$ordering} || '') cmp ($jobs->{$B}->{$ordering} || '') || $A cmp $B
+                }
+            } keys(%{$jobs})
+        ];
+        my @display_options = grep { /^\d+$/ } split(/[|]/,$yaml_config->{display_options} || '30|0|5|10|20|40|50|100|500');
+        $hash->{display_options} = [ sort { $a <=> $b } keys(%{{map { $_ => 1 } @display_options}}) ];
+        my $display = $self->get_from_session('display');
+        $hash->{display} = length($display) ? $display : $display_options[0];
+        $hash->{iprange_options} = [ sort { $a cmp $b } map { encode('UTF-8', encode_entities($_)) } keys(%{$ip_range}) ];
     }
 
     # Set missing deps
@@ -126,8 +161,6 @@ sub update_template_hash {
 
     # Set running task
     $hash->{outputid} = $self->{taskid} || '';
-    $hash->{set_range} = $self->{taskid} && $self->{tasks}->{$self->{taskid}}
-        ? encode('UTF-8', encode_entities($self->{tasks}->{$self->{taskid}}->{ip_range} || '')) : '';
     $hash->{tasks} = $self->{tasks} || {};
     $hash->{verbosity} = $self->{verbosity} || 'debug';
     my @threads_option = grep { /^\d+$/ } split(/[|]/,$yaml_config->{threads_options} || '1|5|10|20|40');
@@ -147,7 +180,143 @@ sub update_template_hash {
 my %handlers = (
     'submit/localinventory' => \&_submit_localinventory,
     'submit/netscan'        => \&_submit_netscan,
+    'submit/add'            => \&_submit_add,
+    'submit/delete'         => \&_submit_delete,
+    'submit/add-iprange'    => \&_submit_addiprange,
+    'submit/rm-iprange'     => \&_submit_rmiprange,
+    'submit/disable'        => \&_submit_disable,
+    'submit/enable'         => \&_submit_enable,
+    'submit/run-now'        => \&_submit_runnow,
+    'submit/rename'         => \&_submit_rename,
+    'submit/newtag'         => \&_submit_newtag,
 );
+
+sub _submit_rename {
+    my ($self, $form) = @_;
+
+    return unless $form;
+
+    # Just enable the name field
+    $form->{allow_name_edition} = 1;
+}
+
+sub _submit_newtag {
+    my ($self, $form) = @_;
+
+    return unless $form;
+
+    # Keep name edition status
+    $form->{allow_name_edition} = $form->{empty}
+        if exists($form->{empty});
+}
+
+sub _submit_add {
+    my ($self, $form, $yaml) = @_;
+
+    return unless $form;
+
+    $form->{allow_name_edition} = $form->{empty}
+        if exists($form->{empty});
+
+    my $jobs = $yaml->{jobs} || {};
+
+    # Validate input/name before updating
+    my $name = $form->{'input/name'};
+    if ($name && exists($jobs->{$name})) {
+        $name = encode('UTF-8', $name);
+        return $self->errors("New job: An entry still exists with that name: '$name'");
+    }
+    if ($form->{'input/name'}) {
+        my @keys;
+        # Validate form
+        my $type = $form->{"input/type"};
+        return $self->errors("New job: Unsupported job type")
+            unless $type =~ /^inventory|netscan$/;
+        if ($type eq 'netscan') {
+            # TODO Validate netscan form
+        } else {
+            # TODO Validate local inventory form
+        }
+        # TODO Define job
+        $self->need_save(jobs);
+        delete $form->{empty};
+        delete $form->{allow_name_edition};
+    } elsif (!$name) {
+        $self->errors("New job: Can't create entry without name") if $form->{empty};
+        # We should return an empty add form with name edition allowed
+        $form->{empty} = 1;
+        $form->{allow_name_edition} = 1;
+    }
+}
+
+sub _submit_delete {
+    my ($self, $form, $yaml) = @_;
+}
+
+sub _submit_addiprange {
+    my ($self, $form, $yaml) = @_;
+}
+
+sub _submit_rmiprange {
+    my ($self, $form, $yaml) = @_;
+}
+
+sub _submit_disable {
+    my ($self, $form, $yaml) = @_;
+
+    return unless $form && $yaml;
+
+    my $jobs = $yaml->{jobs} || {};
+    my @selected = map { m{^checkbox/(.*)$} } grep { /^checkbox\// && $form->{$_} eq 'on' } keys(%{$form});
+    foreach my $name (@selected) {
+        next unless $jobs->{$name};
+        $jobs->{$name}->{enabled} = "false";
+        $self->need_save(jobs);
+    }
+}
+
+sub _submit_enable {
+    my ($self, $form, $yaml) = @_;
+
+    return unless $form && $yaml;
+
+    my $jobs = $yaml->{jobs} || {};
+    my @selected = map { m{^checkbox/(.*)$} } grep { /^checkbox\// && $form->{$_} eq 'on' } keys(%{$form});
+    foreach my $name (@selected) {
+        next unless $jobs->{$name};
+        $jobs->{$name}->{enabled} = "true";
+        $self->need_save(jobs);
+    }
+}
+
+sub _submit_runnow {
+    my ($self, $form, $yaml) = @_;
+
+    return unless $form && $yaml;
+
+    my $jobs = $yaml->{jobs} || {};
+    my @selected = map { m{^checkbox/(.*)$} } grep { /^checkbox\// && $form->{$_} eq 'on' } keys(%{$form});
+    foreach my $name (@selected) {
+        my $job = $jobs->{$name}
+            or next;
+        unless ($job->{type}) {
+            $self->warning(sprintf("Job %s has no type", encode('UTF-8', $name)));
+            next;
+        }
+        my $config = $job->{config} // {};
+        if ($job->{type} eq 'local') {
+            $self->_run_local($config->{tag}, $yaml, $name);
+            next if $self->errors();
+        } elsif ($job->{type} eq 'netscan') {
+            $self->netscan($name);
+        } else {
+            $self->warning(sprintf("Job %s has a not supported type", encode('UTF-8', $name)));
+            next;
+        }
+        $job->{last_run_date} = time;
+        $self->need_save(jobs);
+    }
+}
 
 sub event_logger {
     my ($self) = @_;
@@ -183,6 +352,10 @@ sub addMessage {
 sub _submit_netscan {
     my ($self, $form, $yaml) = @_;
 
+    # Keep name edition status
+    $form->{allow_name_edition} = $form->{empty}
+        if exists($form->{empty});
+
     return $self->errors("No IP range selected")
         unless $form->{'input/ip_range'};
 
@@ -190,11 +363,11 @@ sub _submit_netscan {
     return $self->errors("No such IP range")
         unless $ip_range->{$form->{'input/ip_range'}};
 
-    return $self->netscan($form->{'input/ip_range'});
+    return $self->netscan("", [$form->{'input/ip_range'}]);
 }
 
 sub netscan {
-    my ($self, $ip_range_name, $ip) = @_;
+    my ($self, $name, $ip_ranges, $ip) = @_;
 
     return $self->errors(
         $self->{_missingdep} == 1 ? "netdiscovery task is not installed" :
@@ -203,15 +376,21 @@ sub netscan {
     )
         if $self->{_missingdep};
 
+    my $jobs = $name ? $self->yaml('jobs') : {};
+    my $job = $name && $jobs ? $jobs->{$name} : {};
+
+    $ip_ranges = $job->{config}->{ip_range} || []
+        if !$ip_ranges && $name && $job && $job->{config};
+
     my $ip_range = $self->yaml('ip_range') || {};
-    $ip_range = $ip_range->{$ip_range_name}
+    my @ip_ranges = grep { exists($ip_range->{$_}) } @{$ip_ranges}
         or return;
 
     my $procname = "network scan";
     my ($running) = grep {
-        $_->{procname} eq $procname && $_->{done} == 0 &&
-        $_->{ip_range} eq $ip_range_name && !$_->{aborted} &&
-        (!$_->{ip} || $_->{ip} eq $ip || !$ip)
+        $_->{procname} eq $procname && $_->{done} == 0 && !$_->{aborted} && 
+        (($name && $_->{name} eq $name) || (@{$ip_ranges} == 1 && grep { $ip_ranges->[0] eq $_ } @{$_->{ip_ranges}}))
+        && (!$_->{ip} || $_->{ip} eq $ip || !$ip)
     } values(%{$self->{tasks}});
     return $self->errors("A $procname is still running for an IP on that range: $ip, ".$running->{name})
         if ($running && $ip && $running->{ip});
@@ -229,8 +408,8 @@ sub netscan {
         index       => 0,
         procname    => $procname,
         done        => 0,
-        ip_range    => $ip_range_name,
-        name        => 'scan'.$self->{_scan}++,
+        ip_ranges   => $ip_ranges,
+        name        => $name || 'scan'.$self->{_scan}++,
         time        => time,
         ip          => $ip,
     };
@@ -239,43 +418,52 @@ sub netscan {
 
     # Compute credentials
     my @credentials = ();
+    my %credentials = ();
     my $credentials = $self->yaml('credentials') || {};
-    foreach my $credential (@{$ip_range->{credentials} || []}) {
-        my $CRED;
-        my $cred = $credentials->{$credential}
-            or return $self->errors("No such credentials: $credential");
-        if (!defined($cred->{type}) || $cred->{type} eq 'snmp') {
-            return $self->errors("Missing version on credentials: ".($cred->{name}||$credential))
-                unless defined($cred->{snmpversion});
-            $CRED = {
-                TYPE    => 'snmp',
-                # brackets are here cosmetic for task logs and will be filtered in
-                # GLPI::Agent::HTTP::Server::ToolBox::Results::NetDiscovery
-                ID      => "[$credential]",
-                VERSION =>
-                    $cred->{snmpversion} eq 'v1'  ? '1'  :
-                    $cred->{snmpversion} eq 'v2c' ? '2c' :
-                    $cred->{snmpversion} eq 'v3'  ? '3'  : '1',
-            };
-            if ($cred->{snmpversion} =~ /^v1|v2c$/) {
-                $CRED->{COMMUNITY} = $cred->{community} || "public";
-            } elsif ($cred->{snmpversion} eq 'v3') {
-                $CRED->{USERNAME} = $cred->{username}
-                    or return $self->errors("Missing username on credentials: ".($cred->{name}||$credential));
-                $CRED->{AUTHPASSWORD} = $cred->{authpassword} || '';
-                $CRED->{AUTHPROTOCOL} = $cred->{authprotocol} || '';
-                $CRED->{PRIVPASSWORD} = $cred->{privpassword} || '';
-                $CRED->{PRIVPROTOCOL} = $cred->{privprotocol} || '';
+    foreach my $range (@ip_ranges) {
+        my $range_cred = $ip_range->{$range}->{credentials}
+            or next;
+        foreach my $credential (@{$range_cred}) {
+            my $CRED;
+            my $cred = $credentials->{$credential}
+                or return $self->errors("No such credentials: $credential");
+            if (!defined($cred->{type}) || $cred->{type} eq 'snmp') {
+                return $self->errors("Missing version on credentials: ".($cred->{name}||$credential))
+                    unless defined($cred->{snmpversion});
+                $CRED = {
+                    TYPE    => 'snmp',
+                    # brackets are here cosmetic for task logs and will be filtered in
+                    # GLPI::Agent::HTTP::Server::ToolBox::Results::NetDiscovery
+                    ID      => "[$credential]",
+                    VERSION =>
+                        $cred->{snmpversion} eq 'v1'  ? '1'  :
+                        $cred->{snmpversion} eq 'v2c' ? '2c' :
+                        $cred->{snmpversion} eq 'v3'  ? '3'  : '1',
+                };
+                if ($cred->{snmpversion} =~ /^v1|v2c$/) {
+                    $CRED->{COMMUNITY} = $cred->{community} || "public";
+                } elsif ($cred->{snmpversion} eq 'v3') {
+                    $CRED->{USERNAME} = $cred->{username}
+                        or return $self->errors("Missing username on credentials: ".($cred->{name}||$credential));
+                    $CRED->{AUTHPASSWORD} = $cred->{authpassword} || '';
+                    $CRED->{AUTHPROTOCOL} = $cred->{authprotocol} || '';
+                    $CRED->{PRIVPASSWORD} = $cred->{privpassword} || '';
+                    $CRED->{PRIVPROTOCOL} = $cred->{privprotocol} || '';
+                }
+                # Add port set on credential if not default one
+                $CRED->{PORT}     = $cred->{port} if defined($cred->{port}) && int($cred->{port}) != 161;
+                # Add protocol set on credential if it's not the default
+                $CRED->{PROTOCOL} = $cred->{protocol} if $cred->{protocol} && $cred->{protocol} ne 'udp';
             }
-            # Add port set on credential
-            $CRED->{PORT}     = $cred->{port} if defined($cred->{port});
-            # Add protocol set on credential if it's not the default
-            $CRED->{PROTOCOL} = $cred->{protocol} if $cred->{protocol} && $cred->{protocol} ne 'udp';
-        }
-        if ($CRED) {
-            push @credentials, $CRED;
-        } else {
-            $self->{logger}->debug("Credential $credential of type $cred->{type} not used");
+            if ($CRED) {
+                if ($name) {
+                    push @{$credentials{$range}}, $CRED;
+                } else {
+                    push @credentials, $CRED;
+                }
+            } else {
+                $self->{logger}->debug("Credential $credential of type $cred->{type} not used");
+            }
         }
     }
 
@@ -288,14 +476,18 @@ sub netscan {
 
     my $logger = $self->event_logger();
     my $starttime = gettimeofday();
-    $logger->info("Scanning $ip_range_name range as $task->{name} $procname task...");
+    if ($name) {
+        $logger->info("Starting $name $procname task job...");
+    } else {
+        $logger->info("Scanning $ip_ranges->[0] range as $task->{name} $procname task...");
+    }
 
     # Set default credentials to public v1 & public v2c if none set
     push @credentials, {
         ID => 1, VERSION => "1", COMMUNITY => 'public'
     }, {
         ID => 2, VERSION => "2c", COMMUNITY => 'public'
-    } unless @credentials;
+    } unless @credentials || keys(%credentials);
 
     # Create an NetDiscovery task
     my $netdisco = GLPI::Agent::Task::NetDiscovery->new(
@@ -311,15 +503,28 @@ sub netscan {
 
     # Compute ranges
     my @ranges = ();
-    my $RANGE = {
-        IPSTART  => $ip || $ip_range->{ip_start},
-        IPEND    => $ip || $ip_range->{ip_end},
-    };
-    $RANGE->{ENTITY} = $ip_range->{entities_id}
-        if defined($ip_range->{entities_id});
-    $RANGE->{ID} = $ip_range->{id}
-        if defined($ip_range->{id});
-    push @ranges, $RANGE;
+    foreach my $range (@ip_ranges) {
+        my $RANGE = {
+            NAME    => $range,
+            IPSTART => $ip || $ip_range->{$range}->{ip_start},
+            IPEND   => $ip || $ip_range->{$range}->{ip_end},
+        };
+        $RANGE->{ENTITY} = $ip_range->{$range}->{entities_id}
+            if defined($ip_range->{$range}->{entities_id});
+        $RANGE->{ID} = $ip_range->{$range}->{id}
+            if defined($ip_range->{$range}->{id});
+        push @ranges, $RANGE;
+    }
+
+    # Support threads & timeout job configuration or get them from current session
+    my ($threads, $timeout);
+    if ($name && $job && $job->{config}) {
+        $threads = $job->{config}->{threads};
+        $timeout = $job->{config}->{timeout};
+    } else {
+        $threads = $self->get_from_session('netscan_threads_option');
+        $timeout = $self->get_from_session('netscan_timeout_option');
+    }
 
     # Add job to task
     GLPI::Agent::Task::NetDiscovery::Job->require();
@@ -327,20 +532,20 @@ sub netscan {
         logger => $logger,
         params => {
             PID               => 1,
-            THREADS_DISCOVERY => $self->get_from_session('netscan_threads_option') || $self->{threads_default},
-            TIMEOUT           => $self->get_from_session('netscan_timeout_option') || $self->{timeout_default},
+            THREADS_DISCOVERY => $threads || $self->{threads_default},
+            TIMEOUT           => $timeout || $self->{timeout_default},
         },
-        ip_range => $ip_range_name,
+        ip_range => $ip_ranges,
         netscan => 1,
         ranges => \@ranges,
-        credentials => \@credentials
+        credentials => @credentials ? \@credentials : \%credentials
     );
 
     $logger->info("Running $task->{name} task...");
     $netdisco->{target_expiration} = $ip ? 300 : 60;
     $netdisco->run();
     my $chrono = sprintf("%0.3f", gettimeofday() - $starttime);
-    $logger->info("$task->{name}: $ip_range_name $procname done");
+    $logger->info("$task->{name}: ".($name || $ip_ranges->[0])." $procname done");
     $logger->debug("Task run in $chrono seconds");
     $agent->forked_process_event("DONE,$taskid");
     $agent->fork_exit();
@@ -348,6 +553,12 @@ sub netscan {
 
 sub _submit_localinventory {
     my ($self, $form, $yaml) = @_;
+
+    return $self->_run_local($self->get_from_session('inventory_tag'), $yaml);
+}
+
+sub _run_local {
+    my ($self, $tag, $yaml, $name) = @_;
 
     my $procname = "local inventory";
     return $self->errors("A $procname is still running")
@@ -357,14 +568,14 @@ sub _submit_localinventory {
 
     my $yaml_config = $yaml->{configuration} || {};
 
-    # Generate a taskid an associate it the task
+    # Generate a taskid an associate it to the task
     my $taskid = $self->_task_id();
     $self->{tasks}->{$taskid} = {
         messages    => [],
         index       => 0,
         procname    => $procname,
         done        => 0,
-        name        => 'local'.$self->{_local}++,
+        name        => $name // 'local'.$self->{_local}++,
         time        => time,
         found       => 1,
         islocal     => 1,
@@ -382,7 +593,7 @@ sub _submit_localinventory {
     );
 
     # Set agent tag if set for the plugin
-    $agent->{config}->{tag} = $self->get_from_session('inventory_tag');
+    $agent->{config}->{tag} = $tag;
 
     my $logger = $self->event_logger();
     my $starttime = gettimeofday();
@@ -692,6 +903,8 @@ sub handle_form {
             $self->write_yaml();
         }
     }
+
+    $self->edit($form->{'edit'}) if defined($form->{'edit'});
 
     foreach my $handler (keys(%handlers)) {
         if (exists($form->{$handler})) {

@@ -20,7 +20,6 @@ sub new {
         _snmpwalk       => $params{file},
         _netscan        => $params{netscan} // 0,
         _control        => $params{showcontrol} // 0,
-        _ip_range       => $params{ip_range} // '',
     };
     bless $self, $class;
 }
@@ -43,11 +42,6 @@ sub max_threads {
 sub netscan {
     my ($self) = @_;
     return $self->{_netscan};
-}
-
-sub ip_range {
-    my ($self) = @_;
-    return $self->{_ip_range};
 }
 
 sub control {
@@ -165,7 +159,7 @@ sub ranges {
 
     $self->{_queue} = {
         in_queue            => 0,
-        snmp_credentials    => $self->_getValidCredentials(),
+        snmp_credentials    => $self->_getValidCredentials() // [],
         ranges              => [],
         size                => 0,
         done                => 0,
@@ -174,7 +168,8 @@ sub ranges {
     my @ranges = ();
 
     foreach my $range (@{$self->{_ranges}}) {
-        push @ranges, {
+        my $thisrange = {
+            name    => $range->{NAME} // "",
             ports   => _getSNMPPorts($range->{PORT}),
             domains => _getSNMPProtocols($range->{PROTOCOL}),
             entity  => $range->{ENTITY},
@@ -182,6 +177,12 @@ sub ranges {
             end     => $range->{IPEND},
             walk    => $self->{_snmpwalk},
         };
+        # Support ToolBox model where credentials are linked to range
+        if ($range->{NAME}) {
+            $thisrange->{name} = $range->{NAME};
+            $thisrange->{credentials} = $self->_getValidCredentials($range->{NAME});
+        }
+        push @ranges, $thisrange;
     }
 
     return @ranges;
@@ -196,11 +197,17 @@ sub snmp_credentials {
 }
 
 sub _getValidCredentials {
-    my ($self) = @_;
+    my ($self, $name) = @_;
 
     my @credentials;
 
-    foreach my $credential (@{$self->{_credentials}}) {
+    # Support ToolBox model where credentials are linked to range
+    return if $name && ref($self->{_credentials}) ne 'HASH';
+    return if !$name && ref($self->{_credentials}) eq 'HASH';
+
+    my $credentials = $name ? $self->{_credentials}->{$name} : $self->{_credentials};
+
+    foreach my $credential (@{$credentials}) {
         next if $credential->{TYPE} && $credential->{TYPE} ne 'snmp';
         if ($credential->{VERSION} eq '3') {
             # a user name is required
@@ -243,8 +250,10 @@ sub _getSNMPProtocols {
 
     # Supported protocols can be used as '-domain' option for Net::SNMP session
     my @supported_protocols = (
+        'udp',
         'udp/ipv4',
         'udp/ipv6',
+        'tcp',
         'tcp/ipv4',
         'tcp/ipv6'
     );

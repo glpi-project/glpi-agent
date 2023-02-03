@@ -352,7 +352,7 @@ sub run {
                 entity              => $range->{entity},
                 pid                 => $jobid,
                 timeout             => $job->timeout,
-                snmp_credentials    => $job->snmp_credentials
+                snmp_credentials    => $range->{credentials} || $job->snmp_credentials
             };
             $jobaddress->{walk} = $range->{walk} if $range->{walk};
 
@@ -360,7 +360,7 @@ sub run {
 
             if ($result && $result->{IP}) {
                 # For TooBox, we need to insert used ip_range as device property to report it in results
-                $result->{"-ip_range"} = $job->ip_range if $job->ip_range;
+                $result->{"-ip_range"} = $range->{name} if $range->{name};
 
                 $result->{ENTITY} = $range->{entity} if defined($range->{entity});
                 $self->_sendResultMessage($result, $jobid);

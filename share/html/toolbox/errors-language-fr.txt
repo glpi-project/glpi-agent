@@ -82,3 +82,8 @@ Invalid %s port: Port %s invalide
 Invalid SNMP protocol: Protocole SNMP invalide
 Port definition ignored: Définition de port ignorée
 Unsupported %s mode for %s removeinventory: Mode %s non supporté pour l'inventaire distant %s
+
+Job %s has no type: La planification %s n'a pas de type
+Job %s has a not supported type: La planification %s a un type non supporté
+New job: Nouvelle planification
+Unsupported job type: Type de planification non supportée
