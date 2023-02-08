@@ -84,6 +84,7 @@ netdiscovery/netinventory:
   devices not respecting standards to be rejected by GLPI 10. This can fix the import
   of few Fortinet devices.
 * Add support for Zyxel devices
+* fix #337: Add TP-Link linux appliance support
 
 deploy:
 * Fix possible failure when mirror is set but misses file parts

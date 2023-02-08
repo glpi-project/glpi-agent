@@ -9,6 +9,7 @@ use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::SNMP;
 
 use constant    iso         => '.1.3.6.1.2.1';
+use constant    sysDescr    => iso . '.1.1.0';
 use constant    enterprises => '.1.3.6.1.4.1' ;
 use constant    linux       => enterprises . '.8072.3.2.10' ;
 
@@ -122,6 +123,20 @@ sub getType {
         };
         return 'NETWORKING';
     }
+
+    # sysDescr analysis
+    my $sysDescr =  getCanonicalString($self->get(sysDescr));
+    if ($sysDescr) {
+        # TP-Link detection
+        if ($sysDescr =~ /^Linux (TL-\S+) ([0-9.]+) #1/i) {
+            $device->{_Appliance} = {
+                MODEL           => $1,
+                FIRMWARE        => $2,
+                MANUFACTURER    => 'TP-Link'
+            };
+            return 'NETWORKING';
+        }
+    }
 }
 
 sub _hasProcess {
@@ -219,6 +234,14 @@ sub run {
             DESCRIPTION     => "Unifi AP System version",
             TYPE            => "system",
             VERSION         => getCanonicalString($self->get(unifiApSystemVersion)),
+            MANUFACTURER    => $manufacturer
+        };
+    } elsif ($manufacturer eq 'TP-Link' && $device->{_Appliance} && $device->{_Appliance}->{FIRMWARE}) {
+        $firmware = {
+            NAME            => $self->getModel(),
+            DESCRIPTION     => "Firmware version",
+            TYPE            => "system",
+            VERSION         => $device->{_Appliance}->{FIRMWARE},
             MANUFACTURER    => $manufacturer
         };
     }
