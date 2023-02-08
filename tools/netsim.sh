@@ -591,7 +591,7 @@ function _import {
             return
         fi
     fi
-    for file in $FILES
+    for file in $_FILES
     do
         if [ -e "$file" ]; then
             name="${file##*/}"
