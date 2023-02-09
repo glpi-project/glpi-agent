@@ -54,7 +54,7 @@ use constant    unifiApSystemVersion    => ubntUniFi . '.3.6.0' ;
 
 our $mibSupport = [
     {
-        name        => "linux",
+        name        => "linuxAppliance",
         sysobjectid => getRegexpOidMatch(linux)
     }
 ];
