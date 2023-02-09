@@ -101,6 +101,7 @@ netdiscovery/netinventory:
   for which speed is set
 * fix #351: Add better Canon printers & plotters support
 * Update LLDP support for Juniper devices
+* fix #331: Fix Juniper LLDP support
 
 deploy:
 * Fix possible failure when mirror is set but misses file parts
