@@ -21,3 +21,7 @@ override_dh_auto_test:
 override_dh_auto_build:
 	dh_auto_build
 	perl debian/refresh-install-files
+
+# Use gzip compression to keep best compatibility with older debian/ubuntu distros
+override_dh_builddeb:
+	dh_builddeb -- -Zgzip

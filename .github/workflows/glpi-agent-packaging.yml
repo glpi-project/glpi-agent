@@ -470,7 +470,7 @@ jobs:
         if [ -z "${VERSION##*-*}" ]; then
             tools/make-release.sh --no-git $VERSION
         fi
-        dpkg-buildpackage -d -b --no-sign -Zgzip
+        dpkg-buildpackage -d -b --no-sign
       shell: bash
       env:
         VERSION: ${{ needs.setup-release.outputs.version }}
