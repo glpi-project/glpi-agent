@@ -15,7 +15,6 @@ our @EXPORT = qw(
     getCanonicalCount
     isInteger
     getRegexpOidMatch
-    isStringHexadecimal
 );
 
 sub getCanonicalSerialNumber {
