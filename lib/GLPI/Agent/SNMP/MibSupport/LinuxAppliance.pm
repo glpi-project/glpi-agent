@@ -6,6 +6,7 @@ use warnings;
 use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 
 use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Hardware;
 use GLPI::Agent::Tools::SNMP;
 
 use constant    iso         => '.1.3.6.1.2.1';
@@ -124,6 +125,23 @@ sub getType {
         return 'NETWORKING';
     }
 
+    # SNMP-FRAMEWORK-MIB: Analyze snmpEngineID which can gives:
+    #  - IANA private OID Number to identify manufacturer
+    #  - A unique identifier which can be IP, Mac or serialnumber
+    my $snmpEngineID = hex2char($self->get(snmpEngineID));
+    if ($snmpEngineID) {
+        my @decode = unpack("C4", pack("H8", substr($snmpEngineID, 0, 8)));
+        my $manufacturerid = (($decode[0] & 0x7f) * 16777216) + ($decode[1] * 65536) + $decode[2] * 256 + $decode[3];
+        my $match = getManufacturerIDInfo($manufacturerid);
+        if ($match && $match->{manufacturer} && $match->{type}) {
+            $device->{_Appliance} = {
+                MODEL           => $match->{model} // "",
+                MANUFACTURER    => $match->{manufacturer}
+            };
+            return $match->{type};
+        }
+    }
+
     # sysDescr analysis
     my $sysDescr =  getCanonicalString($self->get(sysDescr));
     if ($sysDescr) {
@@ -213,29 +231,38 @@ sub run {
 
     my $firmware;
     if ($manufacturer eq 'Synology') {
-        $firmware = {
-            NAME            => "$manufacturer DSM",
-            DESCRIPTION     => "$manufacturer DSM firmware",
-            TYPE            => "system",
-            VERSION         => getCanonicalString($self->get(dsmInfo_version)),
-            MANUFACTURER    => $manufacturer
-        };
+        my $dsmInfo_version = $self->get(dsmInfo_version);
+        if (defined($dsmInfo_version)) {
+            $firmware = {
+                NAME            => "$manufacturer DSM",
+                DESCRIPTION     => "$manufacturer DSM firmware",
+                TYPE            => "system",
+                VERSION         => getCanonicalString($dsmInfo_version),
+                MANUFACTURER    => $manufacturer
+            };
+        }
     } elsif ($manufacturer eq 'CheckPoint') {
-        $firmware = {
-            NAME            => getCanonicalString($self->get(svnProdName)),
-            DESCRIPTION     => "$manufacturer SVN version",
-            TYPE            => "system",
-            VERSION         => getCanonicalString($self->get(svnVersion)),
-            MANUFACTURER    => $manufacturer
-        };
+        my $svnVersion = $self->get(svnVersion);
+        if (defined($svnVersion)) {
+            $firmware = {
+                NAME            => getCanonicalString($self->get(svnProdName)),
+                DESCRIPTION     => "$manufacturer SVN version",
+                TYPE            => "system",
+                VERSION         => getCanonicalString($svnVersion),
+                MANUFACTURER    => $manufacturer
+            };
+        }
     } elsif ($manufacturer eq 'Ubiquiti') {
-        $firmware = {
-            NAME            => $self->getModel(),
-            DESCRIPTION     => "Unifi AP System version",
-            TYPE            => "system",
-            VERSION         => getCanonicalString($self->get(unifiApSystemVersion)),
-            MANUFACTURER    => $manufacturer
-        };
+        my $unifiApSystemVersion = $self->get(unifiApSystemVersion);
+        if (defined($unifiApSystemVersion)) {
+            $firmware = {
+                NAME            => $self->getModel(),
+                DESCRIPTION     => "Unifi AP System version",
+                TYPE            => "system",
+                VERSION         => getCanonicalString($unifiApSystemVersion),
+                MANUFACTURER    => $manufacturer
+            };
+        }
     } elsif ($manufacturer eq 'TP-Link' && $device->{_Appliance} && $device->{_Appliance}->{FIRMWARE}) {
         $firmware = {
             NAME            => $self->getModel(),

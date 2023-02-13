@@ -14,6 +14,7 @@ use GLPI::Agent::SNMP::Device;
 our @EXPORT = qw(
     getDeviceInfo
     getDeviceFullInfo
+    getManufacturerIDInfo
 );
 
 my %types = (
@@ -373,6 +374,14 @@ sub getDeviceInfo {
     my $device = _getDevice(%params);
 
     return $device->getDiscoveryInfo();
+}
+
+sub getManufacturerIDInfo {
+    my ($manufacturer_id) = @_;
+
+    return unless $manufacturer_id;
+
+    return $sysobjectid{$manufacturer_id};
 }
 
 sub _getSysObjectIDInfo {
