@@ -54,6 +54,8 @@ inventory:
 * fix #323: Office license inventory was broken when a not expected value was found
   in registry
 * fix #322: Add new Acer monitor model support: V247Y
+* Fix perl error when enumerating batteries on linux and the system sees HID one,
+  for a mouse as example
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory

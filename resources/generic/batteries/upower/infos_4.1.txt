@@ -1,0 +1,32 @@
+  native-path:          BAT0
+  vendor:               SMP-COS3.66
+  model:                DELL XDY9K16
+  serial:               3829
+  power supply:         yes
+  updated:              jeu. 16 févr. 2023 10:36:03 (5 seconds ago)
+  has history:          yes
+  has statistics:       yes
+  battery
+    present:             yes
+    rechargeable:        yes
+    state:               discharging
+    warning-level:       none
+    energy:              24,645 Wh
+    energy-empty:        0 Wh
+    energy-full:         54 Wh
+    energy-full-design:  54 Wh
+    energy-rate:         8,685 W
+    voltage:             14,827 V
+    charge-cycles:       N/A
+    time to empty:       2,8 hours
+    percentage:          51%
+    capacity:            88,2222%
+    technology:          lithium-polymer
+    icon-name:          'battery-good-symbolic'
+  History (charge):
+    1676540133    51,000    discharging
+  History (rate):
+    1676540163    8,685    discharging
+    1676540133    8,010    discharging
+    1676540103    11,520    discharging
+    1676540073    8,220    discharging

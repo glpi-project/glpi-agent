@@ -1,0 +1,14 @@
+  native-path:          hidpp_battery_0
+  model:                Anywhere MX
+  serial:               1017-9b-29-dd-8f
+  power supply:         no
+  updated:              jeu. 16 févr. 2023 10:27:03 (21 seconds ago)
+  has history:          yes
+  has statistics:       yes
+  keyboard
+    present:             yes
+    rechargeable:        yes
+    state:               discharging
+    warning-level:       none
+    percentage:          90%
+    icon-name:          'battery-full-symbolic'

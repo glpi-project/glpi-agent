@@ -17,6 +17,10 @@ my %testUpowerEnumerate = (
     'enumerate_2.txt' => [
         '/org/freedesktop/UPower/devices/battery_BAT0',
     ],
+    'enumerate_4.txt' => [
+        '/org/freedesktop/UPower/devices/battery_BAT0',
+        '/org/freedesktop/UPower/devices/battery_hidpp_battery_0',
+    ],
 );
 
 my %testUpowerInfos = (
@@ -45,6 +49,20 @@ my %testUpowerInfos = (
         MANUFACTURER    => 'ASUSTeK',
         SERIAL          => 0,
         REAL_CAPACITY   => '74496',
+    },
+    'infos_4.1.txt' => {
+        NAME            => 'DELL XDY9K16',
+        CAPACITY        => '54000',
+        VOLTAGE         => '14827',
+        CHEMISTRY       => 'lithium-polymer',
+        MANUFACTURER    => 'SMP-COS3.66',
+        SERIAL          => 3829,
+        REAL_CAPACITY   => '54000',
+    },
+    'infos_4.2.txt' => {
+        NAME            => 'Anywhere MX',
+        CHEMISTRY       => undef,
+        SERIAL          => '1017-9b-29-dd-8f',
     },
 );
 
@@ -88,6 +106,31 @@ my %testUpowerMerged = (
                 MANUFACTURER    => 'SMP',
                 DATE            => '10/11/2015',
                 REAL_CAPACITY   => '53405'
+            }
+        ],
+    },
+    'dell_4' => {
+        dmidecode => 'dmidecode_4.txt',
+        upowerlist => [ 'infos_4.1.txt' ],
+        step1 => [
+            {
+                NAME         => 'DELL XDY9K16',
+                CAPACITY     => '54000',
+                VOLTAGE      => '15000',
+                CHEMISTRY    => 'Lithium Ion',
+                SERIAL       => 3829,
+                MANUFACTURER => 'SMP-COS3.66',
+            }
+        ],
+        merged => [
+            {
+                NAME            => 'DELL XDY9K16',
+                CAPACITY        => '54000',
+                VOLTAGE         => '14827',
+                CHEMISTRY       => 'lithium-polymer',
+                SERIAL          => 3829,
+                MANUFACTURER    => 'SMP-COS3.66',
+                REAL_CAPACITY   => '54000'
             }
         ],
     },

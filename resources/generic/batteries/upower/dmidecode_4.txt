@@ -1,0 +1,17 @@
+# dmidecode 3.4
+Getting SMBIOS data from sysfs.
+SMBIOS 3.3.0 present.
+
+Handle 0x0029, DMI type 22, 26 bytes
+Portable Battery
+    Location: Battery Bay
+    Manufacturer: SMP-COS3.66
+    Manufacture Date: 0
+    Serial Number: 3829
+    Name: DELL XDY9K16
+    Chemistry: Lithium Ion
+    Design Capacity: 54000 mWh
+    Design Voltage: 15000 mV
+    SBDS Version: 49
+    Maximum Error: 2%
+    OEM-specific Information: 0x00000801

@@ -1,0 +1,4 @@
+/org/freedesktop/UPower/devices/line_power_AC
+/org/freedesktop/UPower/devices/battery_BAT0
+/org/freedesktop/UPower/devices/battery_hidpp_battery_0
+/org/freedesktop/UPower/devices/DisplayDevice

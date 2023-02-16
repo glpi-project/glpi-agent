@@ -35,11 +35,14 @@ sub sanitizeBatterySerial {
     return '0' unless defined($serial);
 
     # Simplify zeros-only serial
-    return '0' if ($serial =~ /^0+$/);
+    return '0' if $serial =~ /^0+$/;
 
-    # Prepare to keep serial as decimal if we can recognize it as hexadecimal
+    return trimWhitespace($serial)
+        unless $serial =~ /^[0-9A-F]+$/i;
+
+    # Prepare to keep serial as decimal if we have recognized it as hexadecimal
     $serial = '0x'.$serial
-        if ($serial =~ /^[0-9a-fA-F]+$/ && ($serial =~ /[a-fA-F]/ || $serial =~ /^0/));
+        if $serial =~ /[a-f]/i || $serial =~ /^0/;
 
     # Convert as decimal string
     return sprintf("%d", hex2dec($serial));
