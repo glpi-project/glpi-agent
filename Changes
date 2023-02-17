@@ -56,6 +56,7 @@ inventory:
 * fix #322: Add new Acer monitor model support: V247Y
 * Fix perl error when enumerating batteries on linux and the system sees HID one,
   for a mouse as example
+* fix #344: Fix manufacturer for AG Neovo monitors
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory

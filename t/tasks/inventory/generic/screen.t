@@ -247,6 +247,12 @@ my %edid_tests = (
         SERIAL       => 'JR81100Y000014775910',
         DESCRIPTION  => '10/2020'
     },
+    'aic-e-191' => {
+        MANUFACTURER => 'AG Neovo',
+        CAPTION      => 'E-191',
+        SERIAL       => '1409',
+        DESCRIPTION  => '49/2009'
+    },
     'crt.13' => {
         MANUFACTURER => 'Litronic Inc',
         CAPTION      => 'A1554NEL',
