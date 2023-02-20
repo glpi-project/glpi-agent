@@ -55,7 +55,8 @@ sub _getFilesystems {
     # Anyway attempt to get details with filesystem-dependant utilities
     my $has_dumpe2fs   = canRun('dumpe2fs');
     my $has_xfs_db     = canRun('xfs_db');
-    my $has_dosfslabel = canRun('dosfslabel');
+    my $has_fatlabel   = canRun('fatlabel');
+    my $has_dosfslabel = $has_fatlabel ? 0 : canRun('dosfslabel');
 
     foreach my $filesystem (@filesystems) {
         if ($filesystem->{FILESYSTEM} =~ /^ext(2|3|4|4dev)/ && $has_dumpe2fs) {
@@ -93,11 +94,14 @@ sub _getFilesystems {
             next;
         }
 
-        if ($filesystem->{FILESYSTEM} eq 'vfat' && $has_dosfslabel) {
-            $filesystem->{LABEL} = getFirstLine(
+        if ($filesystem->{FILESYSTEM} eq 'vfat' && ($has_fatlabel || $has_dosfslabel)) {
+            my $label = getLastLine(
                 logger  => $logger,
-                command => "dosfslabel $filesystem->{VOLUMN}"
+                command => ($has_fatlabel ? "fatlabel" : "dosfslabel")." ".$filesystem->{VOLUMN}
             );
+            # Keep label only if last line starts with a non space character
+            $filesystem->{LABEL} = trimWhitespace($label)
+                if defined($label) && $label =~ /^\S/;
             next;
         }
     }

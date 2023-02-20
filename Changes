@@ -57,6 +57,7 @@ inventory:
 * Fix perl error when enumerating batteries on linux and the system sees HID one,
   for a mouse as example
 * fix #344: Fix manufacturer for AG Neovo monitors
+* fix #346: Fix partition label for dirty vfat ones on linux
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
