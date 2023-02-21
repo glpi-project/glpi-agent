@@ -17,6 +17,7 @@ use GLPI::Agent::Tools::Hardware;
 use GLPI::Agent::Tools::Network;
 use GLPI::Agent::Tools::Expiration;
 use GLPI::Agent::HTTP::Client::OCS;
+use GLPI::Agent::SNMP::Device;
 
 use GLPI::Agent::Task::NetInventory::Version;
 use GLPI::Agent::Task::NetInventory::Job;
@@ -80,6 +81,35 @@ sub isEnabled {
     }
 
     $self->{jobs} = \@jobs;
+
+    # Check server response for OIDs definitions
+    my $content = $contact->getContent();
+    if ($content && ref($content->{OIDS}) eq "HASH") {
+        foreach my $key (keys(%{$content->{OIDS}})) {
+            next unless GLPI::Agent::SNMP::Device::isOidScanSupported($key);
+            my $lckey = lc($key);
+            my @oids = sort {
+                my $first  = $a =~ /^OID_(\d+)$/;
+                my $second = $b =~ /^OID_(\d+)$/;
+                int($first) <=> int($second)
+            } grep { /^OID_\d+$/ }keys(%{$content->{OIDS}->{$key}});
+            my $oids = [];
+            my $count = 0;
+            foreach my $oid (@oids) {
+                $oid = $content->{OIDS}->{$key}->{$oid};
+                next unless defined($oid);
+                if ($oid =~ /^(\.?)(\d+\.)+\d+$/) {
+                    $count++;
+                    push @{$oids}, $1 ? $oid : ".".$oid;
+                } else {
+                    $self->{logger}->debug2("Skipping not supported oid format for $lckey: $oid");
+                }
+            }
+            next unless $count;
+            $self->{oids}->{$lckey} = $oids;
+            $self->{logger}->debug("Devices will be scanned for $lckey value on $count oid".($count>1 ? "s" : ""));
+        }
+    }
 
     return 1;
 }
@@ -481,7 +511,8 @@ sub _queryDevice {
         model   => $params->{model},
         config  => $self->{config},
         logger  => $self->{logger},
-        datadir => $self->{datadir}
+        datadir => $self->{datadir},
+        oids    => $self->{oids},
     );
 
     # Inserted back device PID in result if set by server

@@ -502,6 +502,9 @@ sub getDeviceFullInfo {
     # Set other requested infos
     $device->setInventoryBaseInfos();
 
+    # Set dedicated values scanning provided oids
+    $device->setDedicatedValues($params{oids});
+
     _setGenericProperties(
         device => $device,
         snmp   => $snmp,

@@ -67,6 +67,17 @@ my $inventory_only_base_variables = {
     },
 };
 
+# For each support key, we defined the path in the inventory, like "INFO/SOMEPATH"
+my %SUPPORTED_VALUE_SCAN = (
+    ASSETTAG    => "INFO",
+);
+
+sub isOidScanSupported {
+    my ($value) = @_;
+
+    return $value && defined($SUPPORTED_VALUE_SCAN{$value}) ? 1 : 0;
+}
+
 sub new {
     my ($class, %params) = @_;
 
@@ -579,6 +590,32 @@ sub setComponents {
         $components = $self->{MIBSUPPORT}->getMethod('getComponents') || [];
         foreach my $component (@{$components}) {
             $self->addComponent($component);
+        }
+    }
+}
+
+sub setDedicatedValues {
+    my ($self, $oids) = @_;
+
+    return unless $oids && ref($oids) eq 'HASH';
+
+    foreach my $key (keys(%{$oids})) {
+        next unless $oids->{$key} && ref($oids->{$key}) eq 'ARRAY';
+        foreach my $oid (@{$oids->{$key}}) {
+            my $value = getCanonicalString($self->get($oid));
+            if (defined($value) && length($value)) {
+                my $uckey = uc($key);
+                my $base = $self;
+                foreach my $node (split('/', $SUPPORTED_VALUE_SCAN{$uckey})) {
+                    if (exists($base->{$node})) {
+                        $base = $base->{$node};
+                    } else {
+                        $base = $base->{$node} = {};
+                    }
+                }
+                $base->{$uckey} = $value;
+                last;
+            }
         }
     }
 }
