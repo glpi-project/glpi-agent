@@ -106,6 +106,7 @@ esx:
 * Updated glpi-esx: added --json option support, deprecated --directory option
   in favor of new --path option, added --stdout option
 * fix #204: Fix wrong encoding
+* Enhanced vCenter 7.x support
 
 injector:
 * Support --proxy option or use current user proxy environment if set

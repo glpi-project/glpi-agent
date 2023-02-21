@@ -256,17 +256,18 @@ sub getHostFullInfo {
     my $ref = $self->_parseAnswer($answer) // [];
     my $vms = [];
     my $machineIdList;
-    if ( exists( $ref->[0]{vm}{ManagedObjectReference} ) ) {    # ESX 3.5
-        if ( ref( $ref->[0]{vm}{ManagedObjectReference} ) eq 'ARRAY' ) {
-            $machineIdList = $ref->[0]{vm}{ManagedObjectReference};
+    my $vm = ref($ref) eq 'ARRAY' && @{$ref} && ref($ref->[0]) eq 'HASH' && exists($ref->[0]{vm}) ? $ref->[0]{vm} : "";
+    # $vm can be an empty string for vCenter 7
+    if (ref($vm) eq 'HASH' && exists($vm->{ManagedObjectReference})) {    # ESX 3.5
+        if (ref($vm->{ManagedObjectReference}) eq 'ARRAY') {
+            $machineIdList = $vm->{ManagedObjectReference};
         } else {
-            push @$machineIdList, $ref->[0]{vm}{ManagedObjectReference};
+            push @$machineIdList, $vm->{ManagedObjectReference};
         }
     } else {
         $machineIdList = $self->_getVirtualMachineList();
     }
 
-    #$vm = $ref->[0]{vm};
     foreach my $id (@$machineIdList) {
         push @$vms, $self->_getVirtualMachineById($id);
     }
