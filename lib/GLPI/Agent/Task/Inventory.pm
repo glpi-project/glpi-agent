@@ -520,6 +520,7 @@ sub _runModule {
             params        => $self->{params},
             scan_homedirs => $self->{config}->{'scan-homedirs'},
             scan_profiles => $self->{config}->{'scan-profiles'},
+            assetname_support => $self->{config}->{'assetname-support'},
         }
     );
     $self->{modules}->{$module}->{done} = 1;

@@ -56,6 +56,7 @@ my $default = {
     'timeout'                 => 180,
     'user'                    => undef,
     'vardir'                  => undef,
+    'assetname-support'       => 1,
 };
 
 my $confReloadIntervalMinValue = 60;
