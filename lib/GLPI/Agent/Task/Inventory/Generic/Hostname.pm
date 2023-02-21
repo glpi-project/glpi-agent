@@ -26,9 +26,9 @@ sub doInventory {
     # use the hostname as desired
     my $hostname;
     if ($assetname_support == 2 ) {
-	    $hostname = getHostname();
+        $hostname = getHostname();
     } else {
-	    $hostname = getHostname(short => 1);
+        $hostname = getHostname(short => 1);
     }
 
     $inventory->setHardware({NAME => $hostname});
