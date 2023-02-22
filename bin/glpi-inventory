@@ -24,6 +24,7 @@ my $options = {
 
 GetOptions(
     $options,
+    'assetname-support=i',
     'additional-content=s',
     'backend-collect-timeout=s',
     'credentials=s@',
@@ -108,6 +109,10 @@ glpi-inventory [options]
     --backend-collect-timeout=TIME timeout for inventory modules
                                      execution (30)
     --additional-content=FILE      additional inventory content file
+    --assetname-support=1|2        [unix/linux only] set the asset name depending on the given value:
+                                    - 1 (the default), the short hostname is used as asset name
+                                    - 2, the as-is hostname (can be fqdn) is used as asset name
+                                   this feature is not supported on MacOS or Windows
     --verbose                      verbose output (control messages)
     --debug                        debug output (execution traces)
     -h --help                      print this message and exit

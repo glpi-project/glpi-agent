@@ -58,6 +58,10 @@ inventory:
   for a mouse as example
 * fix #344: Fix manufacturer for AG Neovo monitors
 * fix #346: Fix partition label for dirty vfat ones on linux
+* Feature: support assetname-support as option for agent on most unix
+  if 1 (the default), the short hostname is used as asset name
+  if 2, the as-is hostname (can be fqdn) is used as asset name
+  this feature does not apply on MacOS or Windows
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory

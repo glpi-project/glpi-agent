@@ -18,6 +18,7 @@ my $options = {};
 
 GetOptions(
     $options,
+    'assetname-support=i',
     'additional-content=s',
     'backend-collect-timeout=s',
     'ca-cert-dir=s',
@@ -258,6 +259,10 @@ glpi-agent [options] [--server server|--local path]
     --backend-collect-timeout=TIME timeout for inventory modules
                                      execution (30)
     --additional-content=FILE      additional inventory content file
+    --assetname-support=1|2        [unix/linux only] set the asset name depending on the given value:
+                                    - 1 (the default), the short hostname is used as asset name
+                                    - 2, the as-is hostname (can be fqdn) is used as asset name
+                                   this feature is not supported on MacOS or Windows
     --partial=CATEGORY             make a partial inventory of given category
                                      items, this option implies --json
     --credentials                  set credentials to support database inventory
