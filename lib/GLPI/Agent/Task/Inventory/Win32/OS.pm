@@ -44,11 +44,6 @@ sub doInventory {
     my $installDate = getFormatedWMIDateTime($operatingSystem->{InstallDate});
     $installDate = _getInstallDate() unless $installDate;
 
-    # Finally get the name through native Win32::API if local inventory and as
-    # WMI DB is sometimes broken
-    my $hostname = $computerSystem->{DNSHostName} || $computerSystem->{Name};
-    $hostname = getHostname(short => 1) unless $hostname || $inventory->getRemote();
-
     my $os = {
         NAME           => "Windows",
         ARCH           => $arch,
