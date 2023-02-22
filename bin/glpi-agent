@@ -261,6 +261,7 @@ glpi-agent [options] [--server server|--local path]
     --additional-content=FILE      additional inventory content file
     --assetname-support=1|2        if 1 (the default), the short hostname is used as asset name
                                    if 2, the as-is hostname (can be fqdn) is used as asset name
+				   Warning: this feature does not apply on MacOS or Windows
     --partial=CATEGORY             make a partial inventory of given category
                                      items, this option implies --json
     --credentials                  set credentials to support database inventory

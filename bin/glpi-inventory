@@ -111,6 +111,7 @@ glpi-inventory [options]
     --additional-content=FILE      additional inventory content file
     --assetname-support=1|2        if 1 (the default), the short hostname is used as asset name
                                    if 2, the as-is hostname (can be fqdn) is used as asset name
+				   Warning: this feature does not apply on MacOS or Windows
     --verbose                      verbose output (control messages)
     --debug                        debug output (execution traces)
     -h --help                      print this message and exit
