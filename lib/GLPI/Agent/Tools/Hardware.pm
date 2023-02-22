@@ -1130,7 +1130,12 @@ sub _setConnectedDevices {
             my $edp_connection  = $edp_info->{$interface_id};
 
             if ($lldp_connection) {
-                if ($edp_connection->{SYSDESCR} eq $lldp_connection->{SYSDESCR}) {
+                # Also check if SYSMAC is the same
+                if (
+                    first {
+                        defined($edp_connection->{$_}) && defined($lldp_connection->{$_}) && lc($edp_connection->{$_}) eq lc($lldp_connection->{$_})
+                    } qw(SYSDESCR SYSMAC)
+                ) {
                     # same device, everything OK
                     foreach my $key (qw/IP/) {
                         $lldp_connection->{$key} = $edp_connection->{$key};
