@@ -89,6 +89,7 @@ __DATA__
     0424    Acer V246HQL
     042e    Acer K242HQL
     0468    Acer KA240HQ
+    046f    R240HY
     0480    V276HL
     0503    R221Q
     0512    K222HQL

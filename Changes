@@ -53,7 +53,7 @@ inventory:
 * PR #295: Update aliased network interfaces support on linux, thanks to po1vo
 * fix #323: Office license inventory was broken when a not expected value was found
   in registry
-* fix #322: Add new Acer monitor model support: V247Y
+* fix #322, #328: Add new Acer monitor model support: V247Y, R240HY
 * Fix perl error when enumerating batteries on linux and the system sees HID one,
   for a mouse as example
 * fix #344: Fix manufacturer for AG Neovo monitors

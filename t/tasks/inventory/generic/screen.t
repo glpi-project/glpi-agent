@@ -114,6 +114,13 @@ my %edid_tests = (
         SERIAL       => 'J5401009000001205911',
         DESCRIPTION  => '32/2008'
     },
+    'acer-r240hy' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'R240HY',
+        ALTSERIAL    => 'T4BEE00C2411',
+        SERIAL       => 'T4BEE00C112089502411',
+        DESCRIPTION  => '12/2021'
+    },
     'acer-sa240y' => {
         MANUFACTURER => 'Acer Technologies',
         CAPTION      => 'SA240Y',
