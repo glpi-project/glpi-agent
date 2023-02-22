@@ -92,6 +92,7 @@ netdiscovery/netinventory:
 * fix #343: Add SNMP-FRAMEWORK-MIB snmpEngineID support to linux appliance MIBSupport.
   It permits to import some Ubiquiti linux Appliance devices.
 * Fix EDP/LLDP information reconciliation on Extreme devices
+* Fix TRUNK flag setting: fixes a case on Extreme devices
 
 deploy:
 * Fix possible failure when mirror is set but misses file parts

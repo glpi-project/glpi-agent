@@ -1588,7 +1588,7 @@ sub _setTrunkPorts {
                 "invalid interface ID $port_id while setting trunk flag, " .
                 "aborting"
             ) if $logger;
-            last;
+            next;
         }
         $ports->{$port_id}->{TRUNK} = $trunk_ports->{$port_id};
     }
