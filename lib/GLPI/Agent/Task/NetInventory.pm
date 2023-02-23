@@ -512,7 +512,7 @@ sub _queryDevice {
         config  => $self->{config},
         logger  => $self->{logger},
         datadir => $self->{datadir},
-        oids    => $self->{oids},
+        oids    => $self->{oids} // $self->{config}->{oids},
     );
 
     # Inserted back device PID in result if set by server

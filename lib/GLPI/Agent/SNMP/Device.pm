@@ -75,7 +75,7 @@ my %SUPPORTED_VALUE_SCAN = (
 sub isOidScanSupported {
     my ($value) = @_;
 
-    return $value && defined($SUPPORTED_VALUE_SCAN{$value}) ? 1 : 0;
+    return $value && defined($SUPPORTED_VALUE_SCAN{uc($value)}) ? 1 : 0;
 }
 
 sub new {

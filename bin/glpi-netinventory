@@ -42,6 +42,7 @@ GetOptions(
     'port=s@',
     'protocol=s@',
     'threads=i',
+    'oids=s@',
     'timeout=i',
     'v1',
     'v2c',
@@ -217,6 +218,7 @@ glpi-netinventory [options] [--host <host>|--file <file>]
     --timeout <TIME>       SNMP timeout, in seconds (15)
     --type <TYPE>          force device type
     --threads <COUNT>      number of inventory threads (1)
+    --oids <STRING>        list of values and SNMP oids to scan
     --control              output control messages
     --debug                debug output
     -h --help              print this message and exit
@@ -341,6 +343,20 @@ allowed types:
 
 Use given number of inventory threads.
 
+=item B<--oids> I<STRING>
+
+Define SNMP oids to scan for specified value. Can be specified multiple times.
+
+Only assettag is supported for now, <STRING> possible format:
+
+=over
+
+=item * assettag,<OIDS>
+
+=back
+
+Where <OIDS> is a list of snmp oid separated by commas
+
 =item B<--control>
 
 Output server-agent control messages, in addition to inventory result itself.
@@ -362,3 +378,13 @@ and forcing its type:
 
     $> glpi-netinventory --host my.device --type NETWORKING \
     --credentials version:3,username:admin,authpassword:s3cr3t,privpassword:s3cr3t
+
+Run an inventory on a network device scanning for assettag on a list of 2 oids:
+
+    $> glpi-netinventory --host 192.168.0.1 --credentials version:2c,community:public \
+    --oids assettag,.1.3.6.1.4.1.9.9.719.1.88.1.1.22.0,.1.3.6.1.4.1.674.10892.2.1.1.11.0
+
+or:
+
+    $> glpi-netinventory --host 192.168.0.1 --credentials version:2c,community:public \
+    --oids assettag,.1.3.6.1.4.1.9.9.719.1.88.1.1.22.0 --oids assettag,.1.3.6.1.4.1.674.10892.2.1.1.11.0

@@ -39,6 +39,7 @@ my $default = {
     'no-compression'          => undef,
     'no-task'                 => [],
     'no-p2p'                  => undef,
+    'oids'                    => undef,
     'password'                => undef,
     'proxy'                   => undef,
     'httpd-ip'                => undef,
@@ -354,6 +355,30 @@ sub _checkContent {
         } else {
             $self->{$option} = [];
         }
+    }
+
+    # Analyze oids option, the default separators are ';' and ','
+    if ($self->{oids}) {
+        GLPI::Agent::SNMP::Device->require();
+        my $oids = {};
+        my $count = 0;
+        # oids is an array ref when provided as commandline option
+        foreach my $def (ref($self->{oids}) eq 'ARRAY' ? @{$self->{oids}} : split(/;+/, $self->{oids})) {
+            my @defs = split(/,+/, $def);
+            my $key = shift @defs;
+            die "Config: usage of '$key' as value target in 'oids' option is not supported\n"
+                unless GLPI::Agent::SNMP::Device::isOidScanSupported($key);
+            foreach my $oid (@defs) {
+                if ($oid =~ /^(\.?)(\d+\.)+\d+$/) {
+                    push @{$oids->{$key}}, $1 ? $oid : ".".$oid;
+                    $count++;
+                } else {
+                    die "Config: usage of '$oid' as oid to scan in 'oids' option is not supported\n";
+                }
+            }
+        }
+        die "Config: found no oid to scan in 'oids' option\n" unless $count;
+        $self->{oids} = $oids;
     }
 
     # Normalize files and folders path
