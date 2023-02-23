@@ -1360,6 +1360,12 @@ sub _getLLDPInfo {
                 if $PortIdSubtype;
         }
 
+        # Handle specific Juniper case where shown IFDESCR can indeed be a virtual port
+        if ($connection->{SYSDESCR} =~ /^Juniper/ && $connection->{IFDESCR} =~ /\.\d+$/) {
+            # Transform IFDESCR to point physical port and not virtual one
+            $connection->{IFDESCR} =~ s/\.\d+$//;
+        }
+
         my $id           = _getElement($suffix, -2);
         my $interface_id =
             ! exists $port2interface->{$id} ? $id                   :
