@@ -99,6 +99,7 @@ netdiscovery/netinventory:
 * Fix TRUNK flag setting: fixes a case on Extreme devices
 * Add new mac address detection algorithm: get the mac address of the first interface
   for which speed is set
+* fix #351: Add better Canon printers & plotters support
 
 deploy:
 * Fix possible failure when mirror is set but misses file parts
