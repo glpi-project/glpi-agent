@@ -400,6 +400,17 @@ sub setMacAddress {
             return $self->{MAC} = $currentMac
                 if ($macs{$currentMac} == $macs{$sortedMac[0]} - 1);
         }
+
+        # Finally try to set mac from the first interface having speed set
+        # On printer with ethernet port & wifi port, speed is not set if wifi is not configured
+        my $ifSpeed = $self->walk(".1.3.6.1.2.1.2.2.1.5");
+        foreach my $index (sort { $a <=> $b } keys(%{$ifSpeed})) {
+            next unless $ifSpeed->{$index};
+            my $currentMac = getCanonicalMacAddress($addresses->{$index})
+                or next;
+            next unless first { $_ eq $currentMac } @valid_mac_addresses;
+            return $self->{MAC} = $currentMac;
+        }
     }
 }
 

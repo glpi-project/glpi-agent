@@ -97,6 +97,8 @@ netdiscovery/netinventory:
   It permits to import some Ubiquiti linux Appliance devices.
 * Fix EDP/LLDP information reconciliation on Extreme devices
 * Fix TRUNK flag setting: fixes a case on Extreme devices
+* Add new mac address detection algorithm: get the mac address of the first interface
+  for which speed is set
 
 deploy:
 * Fix possible failure when mirror is set but misses file parts
