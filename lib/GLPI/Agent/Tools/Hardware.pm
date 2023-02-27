@@ -1158,6 +1158,17 @@ sub _setConnectedDevices {
     }
 }
 
+sub _sortChassisIdSuffix {
+    my ($a, $b) = @_;
+    my @a = split('\.', $a);
+    my @b = split('\.', $b);
+    return (
+            defined($a[2]) && defined($b[2]) && $a[2] <=> $b[2]
+        ) || (
+            defined($a[1]) && defined($b[1]) && $a[1] <=> $b[1]
+        ) || $a[0] <=> $b[0];
+}
+
 sub _getLLDPInfo {
     my (%params) = @_;
 
@@ -1167,6 +1178,7 @@ sub _getLLDPInfo {
     my $results;
     my $ChassisIdSubType = $snmp->walk('.1.0.8802.1.1.2.1.4.1.1.4');
     my $lldpRemChassisId = $snmp->walk('.1.0.8802.1.1.2.1.4.1.1.5');
+    my $lldpRemPortIdSubtype = $snmp->walk('.1.0.8802.1.1.2.1.4.1.1.6');
     my $lldpRemPortId    = $snmp->walk('.1.0.8802.1.1.2.1.4.1.1.7');
     my $lldpRemPortDesc  = $snmp->walk('.1.0.8802.1.1.2.1.4.1.1.8');
     my $lldpRemSysName   = $snmp->walk('.1.0.8802.1.1.2.1.4.1.1.9');
@@ -1192,7 +1204,9 @@ sub _getLLDPInfo {
         '7' => "local"
     );
 
-    while (my ($suffix, $mac) = each %{$lldpRemChassisId}) {
+    # Always parse LLDP infos in the same order
+    foreach my $suffix (sort { _sortChassisIdSuffix($a, $b) } keys(%{$lldpRemChassisId})) {
+        my $mac = $lldpRemChassisId->{$suffix};
         my $sysdescr = getCanonicalString($lldpRemSysDesc->{$suffix});
         my $sysname = getCanonicalString($lldpRemSysName->{$suffix});
         next unless ($sysdescr || $sysname);
@@ -1226,20 +1240,37 @@ sub _getLLDPInfo {
         $connection->{SYSDESCR} = $sysdescr if $sysdescr;
         $connection->{SYSNAME} = $sysname if $sysname;
 
-        # portId is either a port number or a port mac address,
-        # duplicating chassisId
+        # portId is either a port number or a port mac address, duplicating chassisId
+        my $PortIdSubtype = "";
+        $PortIdSubtype = getCanonicalString($lldpRemPortIdSubtype->{suffix}) || ""
+            if $lldpRemPortIdSubtype && $lldpRemPortIdSubtype->{suffix};
         my $portId = $lldpRemPortId->{$suffix};
-        if ($portId !~ /^0x/ or length($portId) != 14) {
+        # As before we need to guess portId type if not set
+        if (!$PortIdSubtype) {
+            if ($portId =~ /^0x[0-9a-f]{12}$/i) {
+                my $thismac = lc(alt2canonical($portId));
+                push @{$connection->{MAC}}, $thismac unless $thismac eq $connection->{SYSMAC};
+            } else {
+                $portId = getCanonicalString($portId);
+                if ($portId =~ /^\d+$/) {
+                    $connection->{IFNUMBER} = $portId;
+                } else {
+                    my $maybe_mac = lc(alt2canonical($portId));
+                    if ($maybe_mac) {
+                        push @{$connection->{MAC}}, $maybe_mac unless $maybe_mac eq $connection->{SYSMAC};
+                    } else {
+                        $connection->{IFDESCR} = $portId;
+                    }
+                }
+            }
+        } elsif ($PortIdSubtype eq '3') { # Mac address
+            push @{$connection->{MAC}}, lc(alt2canonical($portId));
+        } elsif ($PortIdSubtype eq '7') { # "local" should be the remote IFNUMBER
             $portId = getCanonicalString($portId);
             if ($portId =~ /^\d+$/) {
                 $connection->{IFNUMBER} = $portId;
             } else {
-                my $maybe_mac = lc(alt2canonical($portId));
-                if ($maybe_mac) {
-                    push @{$connection->{MAC}}, $maybe_mac;
-                } else {
-                    $connection->{IFDESCR} = $portId;
-                }
+                $connection->{IFDESCR} = $portId;
             }
         }
 
@@ -1251,6 +1282,9 @@ sub _getLLDPInfo {
             } elsif (!$connection->{IFDESCR}) {
                 $connection->{IFDESCR} = $ifdescr;
             }
+        } else {
+            $logger->debug("LLDP support: skipping portId $portId ($PortIdSubtype)")
+                if $PortIdSubtype;
         }
 
         my $id           = _getElement($suffix, -2);
