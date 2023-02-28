@@ -1344,7 +1344,8 @@ sub _getLLDPInfo {
                 $connection->{IFDESCR} = $portId;
             }
         } else {
-            $logger->debug("LLDP support: skipping portId $portId ($PortIdSubtype)");
+            $logger->debug("LLDP support: skipping portId $portId ($PortIdSubtype)")
+                if $PortIdSubtype;
         }
 
         my $ifdescr = getCanonicalString($lldpRemPortDesc->{$suffix});
@@ -1361,7 +1362,7 @@ sub _getLLDPInfo {
         }
 
         # Handle specific Juniper case where shown IFDESCR can indeed be a virtual port
-        if ($connection->{SYSDESCR} =~ /^Juniper/ && $connection->{IFDESCR} =~ /\.\d+$/) {
+        if ($connection->{SYSDESCR} && $connection->{IFDESCR} && $connection->{SYSDESCR} =~ /^Juniper/ && $connection->{IFDESCR} =~ /\d+\.\d+$/) {
             # Transform IFDESCR to point physical port and not virtual one
             $connection->{IFDESCR} =~ s/\.\d+$//;
         }
