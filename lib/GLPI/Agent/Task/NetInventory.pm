@@ -44,14 +44,22 @@ sub isEnabled {
     }
 
     my @jobs;
+    # Parse and validate options
     foreach my $option (@options) {
-        if (!$option->{DEVICE}) {
+
+        next unless ref($option) eq 'HASH';
+
+        unless (ref($option->{DEVICE}) eq 'ARRAY') {
             $self->{logger}->error("invalid job: no device defined");
             next;
         }
 
         my @devices;
         foreach my $device (@{$option->{DEVICE}}) {
+            unless (ref($device) eq 'HASH') {
+                $self->{logger}->error("invalid device found");
+                next;
+            }
             if (!$device->{IP}) {
                 $self->{logger}->error("invalid device: no address defined");
                 next;
@@ -64,7 +72,17 @@ sub isEnabled {
             next;
         }
 
+        unless (ref($option->{PARAM}) eq 'ARRAY') {
+            $self->{logger}->error("invalid job: no valid param defined");
+            next;
+        }
+
         my $params = $option->{PARAM}->[0];
+
+        unless (ref($params) eq 'HASH') {
+            $self->{logger}->error("invalid job: invalid param defined");
+            next;
+        }
 
         push @jobs, GLPI::Agent::Task::NetInventory::Job->new(
             logger      => $self->{logger},

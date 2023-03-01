@@ -49,14 +49,19 @@ sub isEnabled {
     }
 
     my @jobs;
+    # Parse and validate options
     foreach my $option (@options) {
-        if (!$option->{RANGEIP}) {
+
+        next unless ref($option) eq 'HASH';
+
+        unless (ref($option->{RANGEIP}) eq 'ARRAY') {
             $self->{logger}->error("invalid job: no IP range defined");
             next;
         }
 
         my @ranges;
         foreach my $range (@{$option->{RANGEIP}}) {
+            next unless ref($range) eq 'HASH';
             if (!$range->{IPSTART}) {
                 $self->{logger}->error(
                     "invalid range: no first address defined"
@@ -77,11 +82,18 @@ sub isEnabled {
             next;
         }
 
+        unless (ref($option->{PARAM}) eq 'ARRAY') {
+            $self->{logger}->error("invalid job: no valid param defined");
+            next;
+        }
+
         my $params = $option->{PARAM}->[0];
-        if (!$params) {
+
+        unless (ref($params) eq 'HASH') {
             $self->{logger}->error("invalid job: no PARAM defined");
             next;
         }
+
         if (!defined($params->{PID})) {
             $self->{logger}->error("invalid job: no PID defined");
             next;
