@@ -187,6 +187,35 @@ my %tests = (
             }
         ],
         PROCESSNUMBER => '1280265592/024'
+    },
+    message4 => {
+        OPTION => [
+            {
+                comment => 'This is a wrong query as DEVICE is empty',
+                AUTHENTICATION => [
+                    {
+                        ID             => '1',
+                        AUTHPROTOCOL   => '',
+                        PRIVPROTOCOL   => '',
+                        USERNAME       => '',
+                        AUTHPASSPHRASE => '',
+                        VERSION        => '1',
+                        COMMUNITY      => 'public',
+                        PRIVPASSPHRASE => ''
+                    },
+                ],
+                NAME => 'SNMPQUERY',
+                DEVICE => [ '' ],
+                PARAM => [
+                    {
+                        PID           => '1',
+                        THREADS_QUERY => '1',
+                        CORE_QUERY    => '1'
+                    }
+                ]
+            }
+        ],
+        PROCESSNUMBER => '1'
     }
 );
 

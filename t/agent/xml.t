@@ -131,6 +131,48 @@ my %xmls = (
 },
         dump => { REQUEST => { CONTENT => { SOFTWARES => [ { NAME => "foo", VERSION => "b\xe0r\xe9" } ] } } },
     },
+    forced_with_an_empty_array => {
+        options => {
+            force_array => [ qw(OPTION PARAM DEVICE AUTHENTICATION) ]
+        },
+        content => qq{<?xml version="1.0" encoding="UTF-8"?>
+<REPLY>
+  <OPTION comment="This is a wrong query as DEVICE is empty">
+    <AUTHENTICATION COMMUNITY="public" ID="1" VERSION="1"/>
+    <DEVICE></DEVICE>
+    <NAME>SNMPQUERY</NAME>
+    <PARAM CORE_QUERY="1" PID="1" THREADS_QUERY="1"/>
+  </OPTION>
+  <PROCESSNUMBER>1</PROCESSNUMBER>
+</REPLY>
+},
+        dump => {
+            REPLY => {
+                PROCESSNUMBER => '1',
+                OPTION => [
+                    {
+                        '-comment' => 'This is a wrong query as DEVICE is empty',
+                        NAME => "SNMPQUERY",
+                        PARAM => [
+                            {
+                                '-CORE_QUERY' => '1',
+                                '-THREADS_QUERY' => '1',
+                                '-PID' => '1'
+                            }
+                        ],
+                        DEVICE => [ "" ], # This is an error in the related protocol
+                        AUTHENTICATION => [
+                            {
+                                '-ID' => '1',
+                                '-COMMUNITY' => 'public',
+                                '-VERSION' => '1'
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
     attributes => {
         options => { force_array => [ qw(OPTION AUTHENTICATION) ], xml_format => 0 },
         content => qq{<?xml version="1.0"?>
