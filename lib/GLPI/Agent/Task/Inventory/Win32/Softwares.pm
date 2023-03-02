@@ -224,6 +224,9 @@ sub _getSoftwaresList {
         # only keep subkeys with more than 1 value
         my $data = $softwares->{$rawGuid};
         my %infos = $data->Information;
+        # Just to support related test
+        %infos = ( CntValues => scalar(grep { /^\// } keys(%{$data})) )
+            unless exists($infos{CntValues});
         next unless $infos{CntValues} > 1;
 
         my $guid = encodeFromRegistry($rawGuid);
