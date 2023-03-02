@@ -39,4 +39,12 @@ sub SubKeyNames {
     return @keys;
 }
 
+sub Information {
+    my ($self) = @_ ;
+    # Only CntValues is used in Softwares inventory
+    return CntValues => scalar(grep { m|^/| } keys(%{$self}));
+}
+
+sub Handle {}
+
 1;

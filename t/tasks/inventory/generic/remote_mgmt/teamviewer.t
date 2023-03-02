@@ -15,6 +15,11 @@ use GLPI::Test::Utils;
 
 use GLPI::Agent::Task::Inventory::Generic::Remote_Mgmt::TeamViewer;
 
+BEGIN {
+    # use mock modules for non-available ones
+    push @INC, 't/lib/fake/windows' if $OSNAME ne 'MSWin32';
+}
+
 my %teamviewer_win32 = (
     '14.1.3399' => "660666566",
     '15.27.3'   => "881955027",

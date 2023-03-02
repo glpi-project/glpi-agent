@@ -18,4 +18,6 @@ sub constant {
     return $constants{$constant} if exists($constants{$constant});
 }
 
+sub RegQueryValueExW {}
+
 1;
