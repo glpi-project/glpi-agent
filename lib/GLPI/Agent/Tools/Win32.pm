@@ -26,7 +26,8 @@ use constant KEY_READ     => 0x20019;
 ################################################################################
 BEGIN {
     use English qw(-no_match_vars);
-    if ($OSNAME ne 'MSWin32') {
+    # Fake Win32 module loading unless under testing with our oab fakes modules
+    if ($OSNAME ne 'MSWin32' && ! grep { $_ =~ qr{t/lib/fake/windows} } @INC) {
         $INC{'Win32/Job.pm'} = "-";
         $INC{'Win32/TieRegistry.pm'} = "-";
     }
@@ -60,6 +61,7 @@ our @EXPORT = qw(
     getInterfaces
     getRegistryValue
     getRegistryKey
+    getRegistryKeyValue
     getWMIObjects
     getLocalCodepage
     runCommand
@@ -283,6 +285,34 @@ sub getRegistryValue {
     } else {
         return $params{withtype} ? [$key->GetValue($valueName)] : $key->{"/$valueName"} ;
     }
+}
+
+sub getRegistryKeyValue {
+    my ($key, $valueName) = @_;
+
+    Win32API::Registry->require()
+        or return $key->{"/$valueName"};
+
+    my ($valType, $valData, $dLen) = (0, "", 0);
+
+    my $valueNameW = encode("UTF16-LE", $valueName);
+
+    Win32API::Registry::RegQueryValueExW($key->Handle, $valueNameW, [], $valType, $valData, $dLen)
+        or return $key->{"/$valueName"};
+
+    # Only REG_SZ really needs to be handled in our context
+    my $value;
+    if ($valType eq Win32::TieRegistry::REG_SZ() || $valType eq Win32::TieRegistry::REG_EXPAND_SZ()) {
+        substr($valData, -1) = "" if substr($valData,-1) eq "\0";
+        $value = decode("UTF16-LE", $valData);
+    } elsif ($valType eq Win32::TieRegistry::REG_MULTI_SZ()) {
+        substr($valData, -1) = "" if substr($valData,-1) eq "\0";
+        $value = [ map { decode("UTF16-LE", $_) } split (/\0/, $valData) ];
+    } else {
+        $value = $key->{"/$valueName"};
+    }
+
+    return wantarray ? ($value, $valType) : $value;
 }
 
 sub _getRegistryValueFromWMI {

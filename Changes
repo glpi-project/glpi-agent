@@ -18,6 +18,7 @@ core:
   to better report import errors when refused by the server
 * Handle early received SIGUSR1 signal as runnow request in place of killing the service
 * Report dedicated warning when inventory support is disabled server-side
+* win32: Add API to request win32 registry value with better Unicode support
 
 inventory:
 * check if we are running in a container before checking we are running in a virtualmachine
@@ -62,6 +63,7 @@ inventory:
   if 1 (the default), the short hostname is used as asset name
   if 2, the as-is hostname (can be fqdn) is used as asset name
   this feature does not apply on MacOS or Windows
+* fix #349: Use API supporting Unicode to read sofwares name and publisher on win32
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory

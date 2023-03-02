@@ -206,28 +206,32 @@ sub _getSoftwaresList {
 
     return unless $softwares;
 
+    my %mapping = qw(
+        NAME                DisplayName
+        COMMENTS            Comments
+        HELPLINK            HelpLink
+        RELEASE_TYPE        ReleaseType
+        VERSION             DisplayVersion
+        PUBLISHER           Publisher
+        URL_INFO_ABOUT      URLInfoAbout
+        UNINSTALL_STRING    UninstallString
+    );
+
     foreach my $rawGuid (keys %$softwares) {
         # skip variables
         next if $rawGuid =~ m{^/};
 
         # only keep subkeys with more than 1 value
         my $data = $softwares->{$rawGuid};
-        next unless keys %$data > 1;
+        my %infos = $data->Information;
+        next unless $infos{CntValues} > 1;
 
         my $guid = encodeFromRegistry($rawGuid);
         $guid =~ s/\/$//; # drop the tailing /
 
         my $software = {
             FROM             => "registry",
-            NAME             => encodeFromRegistry($data->{'/DisplayName'}) ||
-                                $guid, # folder name
-            COMMENTS         => encodeFromRegistry($data->{'/Comments'}),
-            HELPLINK         => encodeFromRegistry($data->{'/HelpLink'}),
-            RELEASE_TYPE     => encodeFromRegistry($data->{'/ReleaseType'}),
-            VERSION          => encodeFromRegistry($data->{'/DisplayVersion'}),
-            PUBLISHER        => encodeFromRegistry($data->{'/Publisher'}),
-            URL_INFO_ABOUT   => encodeFromRegistry($data->{'/URLInfoAbout'}),
-            UNINSTALL_STRING => encodeFromRegistry($data->{'/UninstallString'}),
+            NAME             => $guid, # folder name as default
             INSTALLDATE      => _dateFormat($data->{'/InstallDate'}),
             VERSION_MINOR    => hex2dec($data->{'/MinorVersion'}),
             VERSION_MAJOR    => hex2dec($data->{'/MajorVersion'}),
@@ -238,10 +242,16 @@ sub _getSoftwaresList {
                 CATEGORY_SYSTEM_COMPONENT : CATEGORY_APPLICATION
         };
 
+        foreach my $key (keys(%mapping)) {
+            my $value = getRegistryKeyValue($data, $mapping{$key})
+                or next;
+            $software->{$key} = $value;
+        }
+
         $software->{USERID} = $params{userid} if $params{userid};
         $software->{USERNAME} = $params{username} if $params{username};
 
-        # Workaround for #415
+        # Workaround for #415 (may be no more useful since using getRegistryKeyValue() api)
         $software->{VERSION} =~ s/[\000-\037].*// if $software->{VERSION};
 
         # Set install date to last registry key update time
