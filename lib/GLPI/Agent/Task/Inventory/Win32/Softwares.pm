@@ -217,11 +217,11 @@ sub _getSoftwaresList {
         UNINSTALL_STRING    UninstallString
     );
 
-    my @subKeys = $softwares->SubKeyNames()
+    my @subKeys = map { /^(.*)\/$/ } grep { m{/$} } keys(%{$softwares})
         or return;
     foreach my $guid (@subKeys) {
         # only keep subkeys with more than 1 value
-        my $data = $softwares->Open($guid)
+        my $data = $softwares->{$guid."/"}
             or next;
         my %infos = $data->Information;
         # Just to support related test

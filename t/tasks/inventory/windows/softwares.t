@@ -7433,12 +7433,6 @@ my $module = Test::MockModule->new(
     'GLPI::Agent::Task::Inventory::Win32::Softwares'
 );
 $module->mock(
-    'getLocalCodePage',
-    sub {
-        return $encoding // "cp1252";
-    }
-);
-$module->mock(
     'canRun',
     sub { $_[0] eq 'powershell' }
 );
