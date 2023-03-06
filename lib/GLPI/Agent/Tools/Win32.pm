@@ -491,10 +491,10 @@ sub _getRegistryDynamic {
             if ($valueName eq '*') {
                 foreach (grep { m|^/| } keys %$key) {
                     s{^/}{};
-                    $ret{$sub.$second."/".$_} = $params{withtype} ? [$key->GetValue($_)] : $key->{"/$_"} ;
+                    $ret{$sub.$second."/".$_} = getRegistryKeyValue($key, $_, $params{withtype});
                 }
             } elsif (exists($key->{"/$valueName"})) {
-                $ret{$sub.$second."/".$valueName} = $params{withtype} ? [$key->GetValue($valueName)] : $key->{"/$valueName"} ;
+                $ret{$sub.$second."/".$valueName} = getRegistryKeyValue($key, $valueName, $params{withtype});
             }
         }
     }
