@@ -46,14 +46,6 @@ my $module = Test::MockModule->new(
     'GLPI::Agent::Task::Inventory::Win32::Users'
 );
 
-$module->mock(
-    'encodeFromRegistry',
-    sub {
-        return undef unless $_[0];
-        return encode("UTF-8", decode('cp1252', $_[0]));
-    }
-);
-
 my $tools_module = Test::MockModule->new(
     'GLPI::Agent::Tools::Win32'
 );

@@ -54,8 +54,7 @@ sub doInventory {
                 method  => "GetBinaryValue", # method for winrm remote inventory
             ));
 
-    my $description =
-        encodeFromRegistry(getRegistryValue(path => 'HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Services/lanmanserver/Parameters/srvcomment'));
+    my $description = getRegistryValue(path => 'HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Services/lanmanserver/Parameters/srvcomment');
 
     my $swap = $operatingSystem->{TotalSwapSpaceSize} && $operatingSystem->{TotalSwapSpaceSize} =~ /^\d+$/ ?
         int($operatingSystem->{TotalSwapSpaceSize} / (1024 * 1024)) : undef;

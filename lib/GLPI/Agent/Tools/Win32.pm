@@ -55,7 +55,6 @@ my $localCodepage;
 
 our @EXPORT = qw(
     is64bit
-    encodeFromRegistry
     KEY_WOW64_64
     KEY_WOW64_32
     getInterfaces
@@ -97,20 +96,6 @@ sub getLocalCodepage {
     }
 
     return $localCodepage;
-}
-
-sub encodeFromRegistry {
-    my ($string) = @_;
-
-    ## no critic (ExplicitReturnUndef)
-    return undef unless $string;
-
-    return $string if Encode::is_utf8($string);
-
-    # Don't re-encode while using winrm
-    return $string if $GLPI::Agent::Tools::remote;
-
-    return decode(getLocalCodepage(), $string);
 }
 
 sub getWMIObjects {
@@ -279,26 +264,28 @@ sub getRegistryValue {
         my %ret;
         foreach (grep { m|^/| } keys %$key) {
             s{^/}{};
-            $ret{$_} = $params{withtype} ? [$key->GetValue($_)] : $key->{"/$_"} ;
+            $ret{$_} = getRegistryKeyValue($key, $_, $params{withtype});
         }
         return \%ret;
     } else {
-        return $params{withtype} ? [$key->GetValue($valueName)] : $key->{"/$valueName"} ;
+        return getRegistryKeyValue($key, $valueName, $params{withtype});
     }
 }
 
 sub getRegistryKeyValue {
-    my ($key, $valueName) = @_;
+    my ($key, $valueName, $withType) = @_;
 
     Win32API::Registry->require()
-        or return $key->{"/$valueName"};
+        # Only really required for tests
+        or return $withType ? [ $key->{"/$valueName"}, $key->{"/$valueName"} =~ /^0x/ ? 4 : 1 ] : $key->{"/$valueName"};
 
     my ($valType, $valData, $dLen) = (0, "", 0);
 
     my $valueNameW = encode("UTF16-LE", $valueName);
 
     Win32API::Registry::RegQueryValueExW($key->Handle, $valueNameW, [], $valType, $valData, $dLen)
-        or return $key->{"/$valueName"};
+        # Only really required for tests
+        or return $withType ? [ $key->{"/$valueName"}, $key->{"/$valueName"} =~ /^0x/ ? 4 : 1 ] : $key->{"/$valueName"};
 
     # Only REG_SZ really needs to be handled in our context
     my $value;
@@ -312,7 +299,7 @@ sub getRegistryKeyValue {
         $value = $key->{"/$valueName"};
     }
 
-    return wantarray ? ($value, $valType) : $value;
+    return $withType ? [ $value, $valType ] : $value;
 }
 
 sub _getRegistryValueFromWMI {

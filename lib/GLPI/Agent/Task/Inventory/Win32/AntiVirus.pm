@@ -100,10 +100,14 @@ sub doInventory {
             if (!$antivirus->{VERSION} || !$antivirus->{COMPANY}) {
                 my $registry = _getAntivirusUninstall($antivirus->{NAME});
                 if ($registry) {
-                    $antivirus->{VERSION} = encodeFromRegistry($registry->{"/DisplayVersion"})
-                        if (!$antivirus->{VERSION} && $registry->{"/DisplayVersion"});
-                    $antivirus->{COMPANY} = encodeFromRegistry($registry->{"/Publisher"})
-                        if (!$antivirus->{COMPANY} && $registry->{"/Publisher"});
+                    unless ($antivirus->{VERSION}) {
+                        my $version = getRegistryKeyValue($registry, "DisplayVersion");
+                        $antivirus->{VERSION} = $version if $version;
+                    }
+                    unless ($antivirus->{COMPANY}) {
+                        my $company = getRegistryKeyValue($registry, "Publisher");
+                        $antivirus->{COMPANY} = $company if $company;
+                    }
                 }
             }
 

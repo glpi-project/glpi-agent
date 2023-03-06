@@ -307,8 +307,6 @@ sub _encodeRegistryValueForCollect {
     # Dump REG_BINARY/REG_RESOURCE_LIST/REG_FULL_RESOURCE_DESCRIPTOR as hex strings
     if (defined($type) && ($type == 3 || $type >= 8)) {
         $value = join(" ", map { sprintf "%02x", ord } split(//, $value));
-    } else {
-        $value = GLPI::Agent::Tools::Win32::encodeFromRegistry($value);
     }
 
     return $value;

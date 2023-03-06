@@ -53,19 +53,17 @@ sub _getRegistryData {
         );
 
         if (ref($value) eq "HASH") {
-            foreach ( keys %$value ) {
-                my $n = encodeFromRegistry($_) || '';
-                my $v = encodeFromRegistry($value->{$_}) || '';
+            foreach my $key (keys(%{$value})) {
                 push @data, { section => 'REGISTRY', entry => {
                         NAME => $name,
-                        REGVALUE => "$n=$v"
+                        REGVALUE => "$key=".$value->{$_}
                     }
                 };
             }
         } else {
             push @data, {section => 'REGISTRY', entry => {
                     NAME => $name,
-                    REGVALUE => encodeFromRegistry($value)
+                    REGVALUE => $value
                 }
             };
         }

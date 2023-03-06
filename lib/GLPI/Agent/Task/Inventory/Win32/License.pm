@@ -148,11 +148,12 @@ sub _scanOfficeLicences {
             # Keep in memory seen product with ProductCode value or DigitalProductID
             $seenProducts->{$cleanUuidKey} = _getOfficeLicense($registrationKey->{$uuidKey})
                 if $registrationKey->{$uuidKey}->{'/DigitalProductID'};
-            if ($registrationKey->{$uuidKey}->{'/ProductCode'} && $registrationKey->{$uuidKey}->{'/ProductName'}) {
+            my $productName = getRegistryKeyValue($registrationKey->{$uuidKey}, 'ProductName');
+            if ($registrationKey->{$uuidKey}->{'/ProductCode'} && $productName) {
                 my ($productcode) = $registrationKey->{$uuidKey}->{'/ProductCode'} =~ /([-\w]+)/;
                 $seenProducts->{$cleanUuidKey} = {
                     PRODUCTCODE => lc($productcode // ""),
-                    FULLNAME    => encodeFromRegistry($registrationKey->{$uuidKey}->{'/ProductName'}),
+                    FULLNAME    => $productName,
                 };
                 $seenProducts->{$cleanUuidKey}->{'TRIAL'} = 1
                     if $registrationKey->{$uuidKey}->{'/ProductNameBrand'} && $registrationKey->{$uuidKey}->{'/ProductNameBrand'} =~ /trial/i;
@@ -188,10 +189,10 @@ sub _getOfficeLicense {
         PRODUCTID => $key->{'/ProductID'},
         UPDATE    => $key->{'/SPLevel'},
         OEM       => $key->{'/OEM'},
-        FULLNAME  => encodeFromRegistry($key->{'/ProductName'}) ||
-                     encodeFromRegistry($key->{'/ConvertToEdition'}),
-        NAME      => encodeFromRegistry($key->{'/ProductNameNonQualified'}) ||
-                     encodeFromRegistry($key->{'/ProductNameVersion'})
+        FULLNAME  => getRegistryKeyValue($key, 'ProductName') ||
+                     getRegistryKeyValue($key, 'ConvertToEdition'),
+        NAME      => getRegistryKeyValue($key, 'ProductNameNonQualified') ||
+                     getRegistryKeyValue($key, 'ProductNameVersion')
     };
 
     if ($key->{'/TrialType'} && $key->{'/TrialType'} =~ /(\d+)$/) {

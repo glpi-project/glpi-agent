@@ -7234,7 +7234,7 @@ my %softwares_tests = (
             'PUBLISHER' => "Компания КриптоПро",
             'URL_INFO_ABOUT' => 'http://www.cryptopro.ru'
         },
-                  {
+        {
             'FROM' => 'uwp',
             'VERSION' => '10.0.19041.423',
             'ARCH' => 'neutral',

@@ -217,24 +217,21 @@ sub _getSoftwaresList {
         UNINSTALL_STRING    UninstallString
     );
 
-    foreach my $rawGuid (keys %$softwares) {
-        # skip variables
-        next if $rawGuid =~ m{^/};
-
+    my @subKeys = $softwares->SubKeyNames()
+        or return;
+    foreach my $guid (@subKeys) {
         # only keep subkeys with more than 1 value
-        my $data = $softwares->{$rawGuid};
+        my $data = $softwares->Open($guid)
+            or next;
         my %infos = $data->Information;
         # Just to support related test
         %infos = ( CntValues => scalar(grep { /^\// } keys(%{$data})) )
             unless exists($infos{CntValues});
         next unless $infos{CntValues} > 1;
 
-        my $guid = encodeFromRegistry($rawGuid);
-        $guid =~ s/\/$//; # drop the tailing /
-
         my $software = {
             FROM             => "registry",
-            NAME             => $guid, # folder name as default
+            NAME             => $guid, # subkey name as default
             INSTALLDATE      => _dateFormat($data->{'/InstallDate'}),
             VERSION_MINOR    => hex2dec($data->{'/MinorVersion'}),
             VERSION_MAJOR    => hex2dec($data->{'/MajorVersion'}),

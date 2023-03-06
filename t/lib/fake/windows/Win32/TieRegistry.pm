@@ -47,4 +47,9 @@ sub Information {
 
 sub Handle {}
 
+sub Open {
+    my ($self, $subkey) = @_ ;
+    return $self->{"$subkey/"};
+}
+
 1;
