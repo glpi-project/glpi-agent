@@ -56,7 +56,7 @@ sub _getRegistryData {
             foreach my $key (keys(%{$value})) {
                 push @data, { section => 'REGISTRY', entry => {
                         NAME => $name,
-                        REGVALUE => "$key=".$value->{$_}
+                        REGVALUE => "$key=".$value->{key}
                     }
                 };
             }
