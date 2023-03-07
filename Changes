@@ -66,6 +66,7 @@ inventory:
   this feature does not apply on MacOS or Windows
 * fix #349: Use API supporting Unicode to read sofwares name and publisher on win32
 * Enhanced Unicode support when looking up registry values on win32
+* Add vpn connection as virtual interface on win32
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory

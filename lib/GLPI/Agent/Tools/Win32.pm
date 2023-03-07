@@ -588,7 +588,7 @@ sub getInterfaces {
         properties => [ qw/
             Index InterfaceIndex Description IPEnabled DHCPServer MACAddress MTU
             DefaultIPGateway DNSServerSearchOrder IPAddress IPSubnet
-            DNSDomain
+            DNSDomain SettingID
             /
         ]
     )) {
@@ -599,6 +599,7 @@ sub getInterfaces {
             IPDHCP      => $object->{DHCPServer},
             MACADDR     => $object->{MACAddress},
             MTU         => $object->{MTU},
+            GUID        => $object->{SettingID},
             DNSDomain   => $object->{DNSDomain}
         };
 
@@ -655,6 +656,46 @@ sub getInterfaces {
         ) or next;
 
         push @interfaces, $netAdapter->getInterfaces();
+    }
+
+    # Also try to include connected vpn
+    my $count = 0;
+    my $interfaces = getRegistryKey(
+        path => 'HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/services/Tcpip/Parameters/Interfaces',
+        # Important for remote inventory optimization
+        required    => [ qw/DhcpIPAddress DhcpSubnetMask VPNInterface/ ],
+    );
+    foreach my $interface (keys(%{$interfaces})) {
+        my ($guid) = $interface =~ m{^(\{........-....-....-....-............\})/$}
+            or next;
+        next unless $interfaces->{$interface}->{VPNInterface};
+        # This vpn interface is still well-known
+        next if grep { $_->{GUID} && uc($_->{GUID}) eq uc($guid) } @configurations;
+        my $vpn = {
+            DESCRIPTION => "vpn".$count,
+            TYPE        => "ethernet",
+            VIRTUALDEV  => 1,
+            STATUS      => "up"
+        };
+        my $ip = $interfaces->{$interface}->{DhcpIPAddress}
+            or next;
+        # Skip vpn if not running
+        next if $ip eq '0.0.0.0';
+        $vpn->{IPADDRESS} = $ip;
+        $vpn->{IPMASK} = $interfaces->{$interface}->{DhcpSubnetMask}
+            if $interfaces->{$interface}->{DhcpSubnetMask};
+
+        # Also try to update vpn name but we may not have access to it if not in the right context
+        my ($vpnConnection) = getWMIObjects(
+            moniker    => 'winmgmts:{impersonationLevel=impersonate,(security)}!//./Root/Microsoft/Windows/RemoteAccess/Client',
+            query      => "SELECT * FROM PS_VpnConnection WHERE Guid = '".uc($guid)."' OR Guid = '".lc($guid)."'",
+            properties => [ qw/Name/ ]
+        );
+        $vpn->{DESCRIPTION} = $vpnConnection->{Name}
+            if $vpnConnection && $vpnConnection->{Name};
+
+        push @interfaces, $vpn;
+        $count++;
     }
 
     return @interfaces;
