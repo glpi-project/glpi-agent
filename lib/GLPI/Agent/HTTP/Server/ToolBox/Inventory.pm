@@ -117,8 +117,11 @@ sub update_template_hash {
             foreach my $key (keys(%{$entry})) {
                 my $value = $entry->{$key};
                 next unless defined($value);
-                $value = encode('UTF-8', encode_entities($value))
-                    if $key =~ /^name|ip_range|description$/;
+                if ($key =~ /^name|ip_range|description$/) {
+                    $value = encode('UTF-8', encode_entities($value));
+                } elsif ($key =~ /^enabled$/) {
+                    $value = $self->isyes($value);
+                }
                 $hash->{$base}->{$name}->{$key} = $value;
             }
         }
@@ -127,7 +130,7 @@ sub update_template_hash {
     # Don't include listing datas when editing
     unless ($self->edit()) {
         $hash->{columns} = [
-            [ name          => "Job name"      ],
+            [ name          => "Task name"     ],
             [ type          => "Type"          ],
             [ config        => "Configuration" ],
             [ scheduling    => "Scheduling"    ],
@@ -224,25 +227,32 @@ sub _submit_add {
     my $name = $form->{'input/name'};
     if ($name && exists($jobs->{$name})) {
         $name = encode('UTF-8', $name);
-        return $self->errors("New job: An entry still exists with that name: '$name'");
+        return $self->errors("New task: An entry still exists with that name: '$name'");
     }
     if ($form->{'input/name'}) {
         my @keys;
         # Validate form
         my $type = $form->{"input/type"};
-        return $self->errors("New job: Unsupported job type")
-            unless $type =~ /^inventory|netscan$/;
+        return $self->errors("New task: Unsupported task type")
+            unless $type =~ /^local|netscan$/;
+        my $enabled = $self->yesno($form->{"input/enabled"});
+        my $job = {
+            enabled     => $enabled,
+            type        => $type,
+        };
         if ($type eq 'netscan') {
             # TODO Validate netscan form
         } else {
-            # TODO Validate local inventory form
+            $job->{config}->{tag} = $form->{"input/tag"}
+                if $form->{"input/tag"};
         }
-        # TODO Define job
+        $job->{description} = $form->{"input/description"} if $form->{"input/description"};
+        $jobs->{$name} = $job;
         $self->need_save(jobs);
         delete $form->{empty};
         delete $form->{allow_name_edition};
     } elsif (!$name) {
-        $self->errors("New job: Can't create entry without name") if $form->{empty};
+        $self->errors("New task: Can't create entry without name") if $form->{empty};
         # We should return an empty add form with name edition allowed
         $form->{empty} = 1;
         $form->{allow_name_edition} = 1;
@@ -251,14 +261,72 @@ sub _submit_add {
 
 sub _submit_delete {
     my ($self, $form, $yaml) = @_;
+
+    return unless $form && $yaml;
+
+    my $jobs = $yaml->{jobs} || {};
+    my @selected = map { m{^checkbox/(.*)$} } grep { /^checkbox\// && $form->{$_} eq 'on' } keys(%{$form});
+    foreach my $name (@selected) {
+        my $job = $jobs->{$name}
+            or next;
+        if ($self->isyes($job->{enabled})) {
+            $self->errors(sprintf("Update task: Can't delete enabled task: &laquo;&nbsp;%s&nbsp;&raquo;", encode('UTF-8', $name)));
+            next;
+        }
+        delete $jobs->{$name};
+        $self->need_save(jobs);
+    }
 }
 
 sub _submit_addiprange {
     my ($self, $form, $yaml) = @_;
+
+    return unless $form && $yaml;
+
+    my $iprange = $form->{'input/ip_range'}
+        or return;
+
+    my $jobs = $yaml->{jobs} || {};
+    my @selected = map { m{^checkbox/(.*)$} } grep { /^checkbox\// && $form->{$_} eq 'on' } keys(%{$form});
+    foreach my $name (@selected) {
+        my $job = $jobs->{$name}
+            or next;
+        # Filter out jobs
+        next unless $job->{type} && $job->{type} eq 'netscan';
+        next unless ref($job->{config}) eq 'HASH';
+        next unless ref($job->{config}->{ip_range}) eq 'ARRAY';
+        next if first { $_ eq $iprange } @{$job->{config}->{ip_range}};
+        # Add ip range
+        push @{$job->{config}->{ip_range}}, $iprange;
+        $self->need_save(jobs);
+    }
 }
 
 sub _submit_rmiprange {
     my ($self, $form, $yaml) = @_;
+
+    return unless $form && $yaml;
+
+    my $iprange = $form->{'input/ip_range'}
+        or return;
+
+    my $jobs = $yaml->{jobs}
+        or return;
+
+    my @selected = map { m{^checkbox/(.*)$} } grep { /^checkbox\// && $form->{$_} eq 'on' } keys(%{$form});
+    foreach my $name (@selected) {
+        my $job = $jobs->{$name}
+            or next;
+        # Filter out jobs
+        next unless $job->{type} && $job->{type} eq 'netscan';
+        next unless ref($job->{config}) eq 'HASH';
+        next unless ref($job->{config}->{ip_range}) eq 'ARRAY';
+        # Remove ip range
+        $job->{config}->{ip_range} = [
+            grep { $_ ne $iprange } @{$job->{config}->{ip_range}}
+        ];
+        $self->need_save(jobs);
+    }
 }
 
 sub _submit_disable {
@@ -270,7 +338,7 @@ sub _submit_disable {
     my @selected = map { m{^checkbox/(.*)$} } grep { /^checkbox\// && $form->{$_} eq 'on' } keys(%{$form});
     foreach my $name (@selected) {
         next unless $jobs->{$name};
-        $jobs->{$name}->{enabled} = "false";
+        $jobs->{$name}->{enabled} = $self->yesno('no');
         $self->need_save(jobs);
     }
 }
@@ -284,7 +352,7 @@ sub _submit_enable {
     my @selected = map { m{^checkbox/(.*)$} } grep { /^checkbox\// && $form->{$_} eq 'on' } keys(%{$form});
     foreach my $name (@selected) {
         next unless $jobs->{$name};
-        $jobs->{$name}->{enabled} = "true";
+        $jobs->{$name}->{enabled} = $self->yesno('yes');
         $self->need_save(jobs);
     }
 }
@@ -300,7 +368,7 @@ sub _submit_runnow {
         my $job = $jobs->{$name}
             or next;
         unless ($job->{type}) {
-            $self->warning(sprintf("Job %s has no type", encode('UTF-8', $name)));
+            $self->warning(sprintf("Task has no type: &laquo;&nbsp;%s&nbsp;&raquo;", encode('UTF-8', $name)));
             next;
         }
         my $config = $job->{config} // {};
@@ -310,10 +378,11 @@ sub _submit_runnow {
         } elsif ($job->{type} eq 'netscan') {
             $self->netscan($name);
         } else {
-            $self->warning(sprintf("Job %s has a not supported type", encode('UTF-8', $name)));
+            $self->warning(sprintf("Task has not a supported type: &laquo;&nbsp;%s&nbsp;&raquo;", encode('UTF-8', $name)));
             next;
         }
-        $job->{last_run_date} = time;
+        # Change scalar type to integer to be stored as integer in YAML
+        $job->{last_run_date} = int(time);
         $self->need_save(jobs);
     }
 }

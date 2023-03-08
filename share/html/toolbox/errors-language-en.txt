@@ -75,15 +75,20 @@ No such remote for target:
 
 Unsupported remote inventory type:
 Username is mandatory for remote inventory types:
-Password is mandatory for %s remote inventory type:
+Password is mandatory for this remote inventory type:
 No password for ssh remote inventory type involves you installed public key authentication:
 
-Invalid %s port:
+Invalid SNMP port:
+Invalid SSH port:
+Invalid WINRM port:
 Invalid SNMP protocol:
 Port definition ignored:
-Unsupported %s mode for %s removeinventory:
+Unsupported mode for SSH removeinventory:
+Unsupported mode for WINRM removeinventory:
 
-Job %s has no type:
-Job %s has a not supported type:
-New job:
-Unsupported job type:
+Task has no type:
+Task has not a supported type:
+New task:
+Update task:
+Unsupported task type:
+Can't delete enabled task:

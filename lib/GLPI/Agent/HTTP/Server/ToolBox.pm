@@ -1002,12 +1002,12 @@ sub config {
 
 sub yesno {
     my ($self, $value) = @_;
-    return $value && $value =~ /^1|yes$/i ? "yes" : "no";
+    return $value && $value =~ /^1|yes|true$/i ? "yes" : "no";
 }
 
 sub isyes {
     my ($self, $value) = @_;
-    return $value && $value =~ /^1|yes$/i ? 1 : 0;
+    return $value && $value =~ /^1|yes|true$/i ? 1 : 0;
 }
 
 sub page {

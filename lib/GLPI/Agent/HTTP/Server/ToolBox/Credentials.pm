@@ -116,7 +116,7 @@ sub _submit_add {
             } elsif ($form->{"input/snmpversion"} =~ /v3/ && !$form->{"input/username"}) {
                 return $self->errors("New credential: Username is mandatory with SNMP v3");
             } elsif ($form->{"input/port"} && ($form->{"input/port"} !~ /^\d+$/ || int($form->{"input/port"}) < 0 || int($form->{"input/port"}) > 65535)) {
-                return $self->errors(sprintf("New credential: Invalid %s port", "SNMP"));
+                return $self->errors("New credential: Invalid SNMP port");
             } elsif ($form->{"input/protocol"} && $form->{"input/protocol"} !~ /^udp|tcp+$/) {
                 return $self->errors("New credential: Invalid SNMP protocol");
             }
@@ -138,7 +138,7 @@ sub _submit_add {
             } elsif (!(defined($form->{"input/remoteuser"}) && length($form->{"input/remoteuser"}))) {
                 return $self->errors("New credential: Username is mandatory for remote inventory types");
             } elsif ($type =~ /^winrm|esx$/ && !(defined($form->{"input/remotepass"}) && length($form->{"input/remotepass"}))) {
-                return $self->errors(sprintf("New credential: Password is mandatory for %s remote inventory type", $type));
+                return $self->errors(sprintf("New credential: Password is mandatory for this remote inventory type: %s", $type));
             } elsif ($type =~ /^ssh$/ && !(defined($form->{"input/remotepass"}) && length($form->{"input/remotepass"}))) {
                 $self->infos("New credential: No password for ssh remote inventory type involves you installed public key authentication");
             } elsif ($type ne 'esx' && $form->{"input/port"} && ($form->{"input/port"} !~ /^\d+$/ || int($form->{"input/port"}) < 0 || int($form->{"input/port"}) > 65535)) {
@@ -148,9 +148,9 @@ sub _submit_add {
             } elsif (grep { m{^checkbox/mode/} && $form->{$_} eq 'on'} keys(%{$form})) {
                 my @modes = map { m{^checkbox/mode/(.*)$} } grep { m{^checkbox/mode/} } keys(%{$form});
                 foreach my $mode (@modes) {
-                    return $self->errors(sprintf("New credential: Unsupported %s mode for %s removeinventory", $mode, uc($type)))
+                    return $self->errors(sprintf("New credential: Unsupported mode for SSH removeinventory: %s", $mode))
                         if $type eq 'ssh' && $mode !~ /^ssh|libssh2|perl$/;
-                    return $self->errors(sprintf("New credential: Unsupported %s mode for %s removeinventory", $mode, uc($type)))
+                    return $self->errors(sprintf("New credential: Unsupported mode for WINRM removeinventory: %s", $mode))
                         if $type eq 'winrm' && $mode !~ /^ssl$/;
                 }
                 $form->{'input/mode'} = join(",", @modes);
@@ -251,7 +251,7 @@ sub _submit_update {
             } elsif ($form->{"input/snmpversion"} =~ /v3/ && !$form->{"input/username"}) {
                 return $self->errors("Credential update: Username is mandatory with SNMP v3");
             } elsif ($form->{"input/port"} && ($form->{"input/port"} !~ /^\d+$/ || int($form->{"input/port"}) < 0 || int($form->{"input/port"}) > 65535)) {
-                return $self->errors(sprintf("Credential update: Invalid %s port", "SNMP"));
+                return $self->errors("Credential update: Invalid SNMP port");
             } elsif ($form->{"input/protocol"} && $form->{"input/protocol"} !~ /^udp|tcp+$/) {
                 return $self->errors("Credential update: Invalid SNMP protocol");
             }
@@ -263,7 +263,7 @@ sub _submit_update {
             } elsif (!(defined($form->{"input/remoteuser"}) && length($form->{"input/remoteuser"}))) {
                 return $self->errors("Credential update: Username is mandatory for remote inventory types");
             } elsif ($type =~ /^winrm|esx$/ && !(defined($form->{"input/remotepass"}) && length($form->{"input/remotepass"}))) {
-                return $self->errors(sprintf("Credential update: Password is mandatory for %s remote inventory type", $type));
+                return $self->errors(sprintf("Credential update: Password is mandatory for this remote inventory type: %s", $type));
             } elsif ($type =~ /^ssh$/ && !(defined($form->{"input/remotepass"}) && length($form->{"input/remotepass"}))) {
                 $self->infos("Credential update: No password for ssh remote inventory type involves you installed public key authentication");
             } elsif ($type ne 'esx' && $form->{"input/port"} && ($form->{"input/port"} !~ /^\d+$/ || int($form->{"input/port"}) < 0 || int($form->{"input/port"}) > 65535)) {
@@ -273,9 +273,9 @@ sub _submit_update {
             } elsif (grep { m{^checkbox/mode/} && $form->{$_} eq 'on'} keys(%{$form})) {
                 my @modes = map { m{^checkbox/mode/(.*)$} } grep { m{^checkbox/mode/} } keys(%{$form});
                 foreach my $mode (@modes) {
-                    return $self->errors(sprintf("Credential update: Unsupported %s mode for %s removeinventory", $mode, uc($type)))
+                    return $self->errors(sprintf("Credential update: Unsupported mode for SSH removeinventory: %s", $mode))
                         if $type eq 'ssh' && $mode !~ /^ssh|libssh2|perl$/;
-                    return $self->errors(sprintf("Credential update: Unsupported %s mode for %s removeinventory", $mode, uc($type)))
+                    return $self->errors(sprintf("Credential update: Unsupported mode for WINRM removeinventory: %s", $mode))
                         if $type eq 'winrm' && $mode !~ /^ssl$/;
                 }
                 $form->{'input/mode'} = join(",", @modes);

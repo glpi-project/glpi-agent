@@ -10,8 +10,8 @@
     $configuration = $job->{config}        || "";
     $scheduling    = $job->{scheduling}    || $form{"input/scheduling"} || "";
     $description   = $job->{description}   || $form{"input/description"}  || "";
-    $jobs{$edit} ? sprintf(_("Edit &laquo;&nbsp;%s&nbsp;&raquo; inventory job"), ($job->{name} || $this))
-      : _"Add new inventory job"}</h2>
+    $jobs{$edit} ? sprintf(_("Edit &laquo;&nbsp;%s&nbsp;&raquo; inventory task"), ($job->{name} || $this))
+      : _"Add new inventory task"}</h2>
   <form name='{$request}' method='post' action='{$url_path}/{$request}'>
     <input type='hidden' name='form' value='{$request}'/>
     <input type='hidden' name='edit' value='{$this}'/>{
@@ -76,7 +76,7 @@
     <input type='submit' class='big-button' name='submit/{
       $jobs{$edit} ?
         "update' value='"._("Update") :
-        "add' value='"._("Create inventory job")}'>
+        "add' value='"._("Create inventory task")}'>
     <input type='submit' class='big-button' name='submit/cancel' value='{_("Cancel")}'>
   </form>
   <script>
