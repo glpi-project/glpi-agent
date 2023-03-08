@@ -1,5 +1,5 @@
 
-  <h2>{_"Inventory jobs"}</h2>
+  <h2>{_"Inventory tasks"}</h2>
   <form name='{$request}' method='post' action='{$url_path}/{$request}'>
     <input type='hidden' name='form' value='{$request}'/>
     <input type='hidden' id='display' name='display' value='{$display}'/>{
@@ -39,14 +39,14 @@
     my $job         = $jobs{$entry};
     my $this        = encode('UTF-8', encode_entities($entry));
     my $name        = $job->{name} || $this;
-    my $enabled     = $job->{enabled} && $job->{enabled} eq 'true';
+    my $enabled     = $job->{enabled};
     my $type        = $job->{type} || "";
     $type = $job->{type} eq 'local' ? _"Local inventory" : _"Network scan"
         if $job->{type} && $job->{type} =~ /^local|netscan$/;
     my $ip_range    = $job->{ip_range} || "";
     my $scheduling  = $job->{scheduling} || "";
     my $lastrun     = $job->{last_run_date} ? localtime($job->{last_run_date}) : "";
-    my $nextrun     = ($enabled ? $job->{next_run_date} : _"Job is disabled") || "";
+    my $nextrun     = ($enabled ? $job->{next_run_date} : _"Disabled task") || "";
     my $description = $job->{description} || "";
     my $class = "list".($enabled ? "" : " disabled");
     $OUT .= "
@@ -106,9 +106,12 @@
     $listed >= 50 ? $listnav : "" }
     <div class='select-row'>
       <div class='arrow-left'></div>
-      <input class='submit-secondary' type='submit' name='submit/delete' value='{_"Delete"}'>
+      <input class='submit-secondary' type='submit' name='submit/run-now' value='{_"Run task"}'>
       <div class='separation'></div>
-      <label class='selection-option'>{_"Associated ip range"}:</label>
+      <input class='submit-secondary' type='submit' name='submit/disable' value='{_"Disable"}'>
+      <input class='submit-secondary' type='submit' name='submit/enable' value='{_"Enable"}'>
+      <div class='separation'></div>
+      <label class='selection-option'>{_"IP range"}:</label>
       <select class='selection-option' name='input/ip_range'>
         <option{
           $ip_range = $form{"input/credentials"} || "";
@@ -121,13 +124,10 @@
       <input class='submit-secondary' type='submit' name='submit/add-iprange' value='{_"Add ip range"}'>
       <input class='submit-secondary' type='submit' name='submit/rm-iprange' value='{_"Remove ip range"}'>
       <div class='separation'></div>
-      <input class='submit-secondary' type='submit' name='submit/disable' value='{_"Disable"}'>
-      <input class='submit-secondary' type='submit' name='submit/enable' value='{_"Enable"}'>
-      <div class='separation'></div>
-      <input class='submit-secondary' type='submit' name='submit/run-now' value='{_"Run now"}'>
+      <input class='submit-secondary' type='submit' name='submit/delete' value='{_"Delete"}'>
     </div>
     <br/>
-    <input class='big-button' type='submit' name='submit/add' value='{_"Add new inventory job"}'>
+    <input class='big-button' type='submit' name='submit/add' value='{_"Add new inventory task"}'>
   </form>
   <script>
   function toggle_all(from) \{

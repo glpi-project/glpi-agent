@@ -40,16 +40,16 @@ Aborted:
 Freeze log output:
 Failure:
 
-Inventory jobs:
-Add new inventory job:
-Edit &laquo;&nbsp;%s&nbsp;&raquo; inventory job:
-Create inventory job:
-Run inventory task:
-Job name:
+Inventory tasks:
+Add new inventory task:
+Edit &laquo;&nbsp;%s&nbsp;&raquo; inventory task:
+Create inventory task:
+Run task:
+Task name:
 Configuration:
 Scheduling:
 Last run date:
 Next run date:
 Add ip range:
 Remove ip range:
-Job is disabled:
+Disabled task:
