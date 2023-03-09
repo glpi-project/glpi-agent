@@ -148,7 +148,7 @@ perl -Itools -MChangelog -e '
         Inventory NetDiscovery NetInventory Collect ESX Deploy WakeOnLan RemoteInventory
     );
     my @plugins = qw(
-        ToolBox
+        ToolBox BasicAuthentication Proxy SSL Test
     );
     my $count = 0;
     my $Changes = Changelog->new( file => "Changes" );

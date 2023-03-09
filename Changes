@@ -115,7 +115,6 @@ deploy:
 * Refacto to add debug
 * Fix copy & move actions failing under win32 while running as a service
 * Add unit tests for ActionProcessor
-* Bump version to 3.0
 
 esx:
 * Add SERIAL number to virtualmachines as they will be seen in BIOS
@@ -134,11 +133,9 @@ toolbox:
 * Fix Inventory page not displayed when netdiscovery or netinventory tasks are not installed
 * Default configuration now authorize to update toolbox interface from the UI
 * Support remotes management and remoteinventory task start
-* Bump ToolBox plugin version to 1.1
 
 basic-authentication-server-plugin:
 * New feature to support basic authentication on embedded http server via a dedicated plugin
-* Bump version to 1.0
 
 packaging:
 * Update MacOSX packages to use OpenSSL 3.0.8 & zlib 1.2.13
@@ -295,7 +292,7 @@ collect:
 ssl-server-plugin:
 * Fix: Support closing forked SSL connections without shutdown SSL to support Proxy server plugin
 * Support "ssl_cipher" option to set SSL version to use or disable obsolete protocol version
-* Bump version to 1.1
+* Bump SSL plugin version to 1.1
 
 injector:
 * Fix shortly named directory are skipped
@@ -445,8 +442,8 @@ esx:
 * Support OPERATINGSYSTEM node
 * Fix CONTROLLERS inventory
 
-proxy-plugin:
-* Bump Proxy HTTP server plugin version to 2.1
+proxy-server-plugin:
+* Bump Proxy plugin version to 2.1
 * Fix glpi_protocol option support
 * Fix legacy XML protocol fallback support
 

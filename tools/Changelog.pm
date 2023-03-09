@@ -72,6 +72,13 @@ sub write {
 
 sub task_version_update {
     my ($self, $task) = @_;
+
+    my $section = $task =~ /^Net(Discovery|Inventory)$/ ? "netdiscovery/netinventory" : lc($task);
+
+    # Don't try to bump version if still set manually
+    my @still = grep { /Bump $task task version to/ } @{$self->{$section}}
+        and return 0;
+
     my @bumps = grep { /Bump $task task version to/ } @{$self->{_last_lines}};
     my ($previous) = @bumps ? $bumps[0] =~ /Bump $task task version to (.*)$/ : "";
     my $latest;
@@ -82,15 +89,28 @@ sub task_version_update {
     return 0 unless $latest;
     return 0 if $previous && $latest eq $previous;
 
-    my $section = $task =~ /^Net(Discovery|Inventory)$/ ? "netdiscovery/netinventory" : lc($task);
-
     $self->add($section => "Bump $task task version to $latest");
 
     return 1;
 }
 
+my %httpd_plugin_section_mapping = qw(
+    BasicAuthentication         basic-authentication-server-plugin
+    Inventory                   inventory-server-plugin
+    Proxy                       proxy-server-plugin
+    SSL                         ssl-server-plugin
+    Test                        test-server-plugin
+);
+
 sub httpd_plugin_version_update {
     my ($self, $plugin) = @_;
+
+    my $section = $httpd_plugin_section_mapping{$plugin} || lc($plugin);
+
+    # Don't try to bump version if still set manually
+    my @still = grep { /Bump $plugin plugin version to/ } @{$self->{$section}}
+        and return 0;
+
     my @bumps = grep { /Bump $plugin plugin version to/ } @{$self->{_last_lines}};
     my ($previous) = @bumps ? $bumps[0] =~ /Bump $plugin plugin version to (.*)$/ : "";
     my $latest;
@@ -100,8 +120,6 @@ sub httpd_plugin_version_update {
 
     return 0 unless $latest;
     return 0 if $previous && $latest eq $previous;
-
-    my $section = lc($plugin);
 
     $self->add($section => "Bump $plugin plugin version to $latest");
 
