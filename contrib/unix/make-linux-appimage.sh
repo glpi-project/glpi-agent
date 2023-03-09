@@ -190,6 +190,7 @@ AppDir:
       - glpi-agent-task-deploy
       - glpi-agent-task-esx
       - glpi-agent-task-network
+      - libcrypt-rijndael-perl
 
   after_bundle: |
     find build/AppDir -type f -name '*.pod' -delete; \
