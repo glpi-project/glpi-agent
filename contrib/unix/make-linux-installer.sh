@@ -4,7 +4,7 @@ HERE="`pwd`"
 
 cd "${0%/*}"
 
-: ${VERSION:=1.0-dev}
+: ${VERSION:=1.4}
 : ${DISTRO:=linux}
 
 while [ -n "$1" ]
@@ -68,12 +68,12 @@ PKG.deb is a list of deb packages to include.
 PKG.snap is the snap package to include.
 
 Typical usage:
-$0 --version 1.0 --rpm glpi-agent-1.0.noarch.rpm glpi-agent-task-network-1.0.noarch.rpm \
-  --deb glpi-agent_1.0_all.deb glpi-agent-task-network_1.0_all.deb --snap glpi-agent_1.0_amd64.snap
+$0 --version $VERSION --rpm glpi-agent-$VERSION.noarch.rpm glpi-agent-task-network-$VERSION.noarch.rpm \
+  --deb glpi-agent_${VERSION}_all.deb glpi-agent-task-network_${VERSION}_all.deb --snap glpi-agent_${VERSION}_amd64.snap
 
 When creating a dedicated installer, it is possible to make it fully offline by adding
 packages as dependencies. They will be automatically installed with the agent:
-$0 --version 1.0 --distro centos7 --rpm glpi-agent-1.0.noarch.rpm \
+$0 --version $VERSION --distro centos7 --rpm glpi-agent-$VERSION.noarch.rpm \
   --deps perl-Net-CUPS-0.61-13.el7.x86_64 perl-Parse-EDID-1.0.7-1.el7.noarch
 
 It is also possible to include configuration related files to be installed under

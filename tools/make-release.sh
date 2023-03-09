@@ -124,8 +124,23 @@ our \$COMMENTS = [
 ];
 VERSION
 
+# Compute next release minor version for replacement in few scripts
+MAJORVERSION=${VERSION%%.*}
+NEXTMINOR=${VERSION%%-*}
+NEXTMINOR=${NEXTMINOR#*.}
+let NEXTMINOR++
+
 # Also update SetupVersion in VBS
-sed -ri -e "s/^SetupVersion = .*$/SetupVersion = \"$VERSION\"/" contrib/windows/glpi-agent-deployment.vbs
+sed -ri -e "s/^SetupVersion = .*$/SetupVersion = \"$VERSION\"/" \
+    -e "s/^'SetupVersion = .*$/'SetupVersion = \"$MAJORVERSION.$NEXTMINOR-gitABCDEFGH\"/" \
+    contrib/windows/glpi-agent-deployment.vbs
+
+# Update default version in scripts
+sed -ri -e "s/^: \$\{VERSION:=.*\}$/: \${VERSION:=$VERSION}/" \
+    contrib/unix/make-linux-appimage.sh \
+    contrib/unix/make-linux-installer.sh
+sed -ri -e "s/VERSION => .*$/VERSION => \"$MAJORVERSION.$NEXTMINOR-dev\";/" \
+    contrib/unix/installer/InstallerVersion.pm
 
 # 4. Update tasks version if required
 perl -Itools -MChangelog -e '
