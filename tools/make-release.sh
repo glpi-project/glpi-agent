@@ -126,9 +126,9 @@ VERSION
 
 # Compute next release minor version for replacement in few scripts
 MAJORVERSION=${VERSION%%.*}
-NEXTMINOR=${VERSION%%-*}
-NEXTMINOR=${NEXTMINOR#*.}
-let NEXTMINOR++
+MINORVERSION=${VERSION%%-*}
+MINORVERSION=${MINORVERSION#*.}
+NEXTMINOR=$((MINORVERSION+1))
 
 # Also update SetupVersion in VBS
 sed -ri -e "s/^SetupVersion = .*$/SetupVersion = \"$VERSION\"/" \
