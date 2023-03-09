@@ -226,7 +226,6 @@ use constant _dir_id_match => { qw(
     perl\agent\glpi\agent\task\deploy\usercheck              d_deploy_uc
     perl\agent\glpi\agent\task\collect       d_collect
     perl\agent\glpi\agent\task\esx           d_esx_task
-    perl\agent\glpi\agent\soap               d_esx_soap
     perl\agent\glpi\agent\soap\vmware        d_esx_vmware
     perl\agent\glpi\agent\task\wakeonlan     d_wol
 )};
