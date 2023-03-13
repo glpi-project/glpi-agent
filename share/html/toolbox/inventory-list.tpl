@@ -58,7 +58,7 @@
               <span class='custom-checkbox'></span>
             </label>
           </td>
-          <td class='list' width='10%'><a href='$url_path/$request?edit=".uri_escape($this)."'>$name</a></td>
+          <td class='list' width='10%'><div class='flex'><a href='$url_path/$request?edit=".uri_escape($this)."'>$name</a><div class='grow'></div><button type='button' class='eye' onclick='visibility(\"$this\")'><span id='eye-$this' class='eye-show'/></button></div></td>
           <td class='list' width='10%'>$type</td>
           <td class='list' width='10%'>$ip_range</td>
           <td class='$class' width='10%'>$scheduling</td>
@@ -135,5 +135,13 @@
     for ( var i = 0; i < all_cb.length; i++ )
       if (all_cb[i] != from)
         all_cb[i].checked = !all_cb[i].checked;
+  \}
+  function visibility(task) \{
+    eye = document.getElementById('eye-'+task);
+    if (eye.className == 'eye-show') \{
+      eye.className = 'eye-hide';
+    \} else \{
+      eye.className = 'eye-show';
+    \}
   \}
   </script>
