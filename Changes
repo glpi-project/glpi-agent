@@ -67,6 +67,8 @@ inventory:
 * fix #349: Use API supporting Unicode to read sofwares name and publisher on win32
 * Enhanced Unicode support when looking up registry values on win32
 * Add vpn connection as virtual interface on win32
+* fix missing category to Batteries module on win32 and fix perl error reported
+  when battery report on win32 is empty
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory

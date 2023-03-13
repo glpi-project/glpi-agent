@@ -9,6 +9,8 @@ use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Batteries;
 use GLPI::Agent::XML;
 
+use constant    category    => "battery";
+
 # Define some kind of priority so we can update batteries inventory
 our $runAfterIfEnabled = [ qw(
     GLPI::Agent::Task::Inventory::Generic::Dmidecode::Battery
@@ -75,6 +77,10 @@ sub _getBatteriesFromPowercfg {
 
     my $powercfg = $xml->dump_as_hash()
         or return;
+
+    # Check validity
+    return unless ref($powercfg) eq 'HASH' && ref($powercfg->{BatteryReport}) eq 'HASH'
+        && ref($powercfg->{BatteryReport}->{Batteries}) eq 'HASH';
 
     return unless exists($powercfg->{BatteryReport}->{Batteries}->{Battery})
         && ref($powercfg->{BatteryReport}->{Batteries}->{Battery}) eq 'ARRAY';
