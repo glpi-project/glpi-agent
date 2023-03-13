@@ -64,12 +64,12 @@ Dim Setup, SetupArchitecture, SetupLocation, SetupNightlyLocation, SetupOptions,
 ' SetupVersion
 '    Setup version with the pattern <major>.<minor>.<release>[-<package>]
 '
-SetupVersion = "1.7"
+SetupVersion = "1.4"
 
 ' When using a nightly built version, uncomment the following SetupVersion definition line
 ' replacing gitABCDEFGH with the most recent git revision found on the nightly builds site
 ' In that case, SetupNightlyLocation will be selected as location in place of SetupLocation
-'SetupVersion = "1.8-gitABCDEFGH"
+'SetupVersion = "1.5-gitABCDEFGH"
 
 ' SetupLocation
 '    Depending on your needs or your environment, you can use either a HTTP or
