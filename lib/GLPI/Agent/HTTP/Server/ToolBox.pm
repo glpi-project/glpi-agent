@@ -34,6 +34,8 @@ my %api_match = (
     "flatpickr.js"      => \&_file,
     "logo.png"          => \&_logo,
     "config.png"        => \&_file,
+    "eye.png"           => \&_file,
+    "eye-crossed.png"   => \&_file,
     "arrow-left.png"    => \&_file,
     "favicon.ico"       => \&_favicon,
 );
