@@ -32,6 +32,7 @@
       </thead>
       <tbody>{
   my $count = -$start;
+  @running = ();
   $listed = 0;
   foreach my $entry (@jobs_order) {
     next unless $count++>=0;
@@ -48,9 +49,11 @@
     my $lastrun     = $job->{last_run_date} ? localtime($job->{last_run_date}) : "";
     my $nextrun     = ($enabled ? $job->{next_run_date} : _"Disabled task") || "";
     my $description = $job->{description} || "";
-    my $class = "list".($enabled ? "" : " disabled");
+    my $enabled     = $enabled ? "" : " disabled";
+    my @runs        = sort { $tasks{$b}->{time} <=> $tasks{$a}->{time} } grep { defined($tasks{$_}->{name}) && $tasks{$_}->{name} eq $entry } keys(%tasks);
+    my $eyeshow     = @runs && defined($form{"show-run/$entry"}) && $form{"show-run/$entry"} eq "on" ? " checked" : "";
     $OUT .= "
-        <tr class='$request'$tips>
+        <tr class='$request'>
           <td class='checkbox'>
             <label class='checkbox'>
               <input class='checkbox' type='checkbox' name='checkbox/".encode_entities($entry)."'".
@@ -58,14 +61,154 @@
               <span class='custom-checkbox'></span>
             </label>
           </td>
-          <td class='list' width='10%'><div class='flex'><a href='$url_path/$request?edit=".uri_escape($this)."'>$name</a><div class='grow'></div><button type='button' class='eye' onclick='visibility(\"$this\")'><span id='eye-$this' class='eye-show'/></button></div></td>
+          <td class='list' width='10%'>";
+    $OUT .= "
+          <div class='flex'>"
+      if @runs;
+    $OUT .= "<a href='$url_path/$request?edit=".uri_escape($this)."'>$name</a>";
+    $OUT .= "
+            <div class='grow'></div>
+            <label class='eye'>
+              <input id='show-run-$this' name='show-run/$this' class='eye' type='checkbox' onclick='visibility(\"$this\")'$eyeshow>
+              <span id='eye-$this' class='".($eyeshow ? "eye-hide" : "eye-show")."'/>
+            </label>
+          "
+      if @runs;
+    $OUT .= "</td>
           <td class='list' width='10%'>$type</td>
           <td class='list' width='10%'>$ip_range</td>
-          <td class='$class' width='10%'>$scheduling</td>
-          <td class='$class' width='15%'>$lastrun</td>
-          <td class='$class' width='15%'>$nextrun</td>
+          <td class='list$enabled' width='10%'>$scheduling</td>
+          <td class='list$enabled' width='15%'>$lastrun</td>
+          <td class='list$enabled' width='15%'>$nextrun</td>
           <td class='list'>$description</td>
         </tr>";
+    $OUT .= "
+        <tr class='$request' id='run-$this' style='display: ".($eyeshow ? "table-row" : "none")."'>
+          <td class='list' colspan='8'>"
+      if @runs;
+    foreach my $run (@runs) {
+      my $task = $tasks{$run};
+      my $ip_ranges = $tasks{$run}->{ip_ranges} || [];
+      my $percent = $task->{percent} || 0;
+      my $done    = $task->{done}    || 0;
+      my $aborted = $task->{aborted} || 0;
+      my $failed  = $task->{failed}  || 0;
+      push @running, $run
+        unless ($done || $percent == 100 || $aborted);
+      $OUT .= "
+            <div class='task'>
+              <div class='name-col'>
+                <input id='expand-$run' name='expand/$run' class='expand-task' type='checkbox' onchange='expand_task(\"$run\")'".($form{"expand/$run"} && $form{"expand/$run"} eq "on" ? " checked" : "").">
+                <label id='$run-expand-label' for='expand-$run' class='closed'>$this</label>
+              </div>
+              <div class='progress-col'>
+                <div class='progress-bar'>
+                  <div id='$run-scanned-bar' class='".($failed ? "failed" : $aborted ? "aborted" : ($percent == 100) ? "completed" : "scanning")."'>
+                    <span id='$run-progress-bar-text' class='progressbar-text'>".(
+                      $failed ? _("Failure") : $aborted ? _("Aborted") : ($percent == 100) ? _("Completed") : "")."</span>
+                  </div>
+                </div>
+              </div>
+            </div>";
+      $OUT .= "
+            <div id='$run-counters' class='task-details'>
+              <div class='progress-col'>
+                <div class='counters-row'>
+                  <div class='counter-cell'>
+                    <label>";
+      if ($task->{islocal}) {
+        $OUT .= _("Local inventory")."</label>
+                  <div class='counters-row'>
+                    <span class='counter' id='$run-inventory-count'>".($task->{inventory_count} || 0)."</span>
+                  </div>
+                </div>";
+      } else {
+        $OUT .= _("Created inventories")."</label>
+                  <div class='counters-row'>
+                    <span class='counter' id='$run-inventory-count' title='"._("Should match devices with SNMP support count")."'>
+                      ".($task->{inventory_count} || 0).($task->{inventory_count} && $task->{snmp_support} ? "/".$task->{snmp_support} : "")."
+                    </span>
+                  </div>
+                </div>
+                <div class='counter-cell'>
+                  <label>"._("Scanned IPs")."</label>
+                  <div class='counters-row'>
+                    <span class='counter' id='$run-scanned' title='"._("Scanned IPs for this IP range")."'>
+                      ".($task->{count} || 0).($task->{count} && $task->{count} < $task->{maxcount} ? "/".$task->{maxcount} : "")."
+                    </span>
+                  </div>
+                </div>
+                <div class='counter-cell'>
+                  <label>"._("Devices with SNMP support")."</label>
+                  <div class='counters-row'>
+                    <span class='counter' id='$run-snmp' title='"._("IPs for which we found a device supporting SNMP with provided credentials")."'>
+                      ".($task->{snmp_support} || 0).($task->{snmp_support} && $task->{count} ? "/".$task->{count} : "")."
+                    </span>
+                  </div>
+                </div>
+                <div class='counter-cell'>
+                  <label>"._("IPs without SNMP response")."</label>
+                  <div class='counters-row'>
+                    <span class='counter' id='$run-others' title='"._("These IPs are responding to ping or are found in ARP table")."\n".
+                      _("But we didn't find any device supporting SNMP with provided credentials")."'>
+                      ".($task->{others_support} || 0).($task->{others_support} && $task->{count} ? "/".$task->{count} : "")."
+                    </span>
+                  </div>
+                </div>
+                <div class='counter-cell'>
+                  <label>"._("IPs without PING response")."</label>
+                  <div class='counters-row'>
+                    <span class='counter' id='$run-unknown' title='"._("IPs not responding to ping and not seen in ARP table")."'>
+                      ".($task->{unknown} || 0).($task->{unknown} && $task->{count} ? "/".$task->{count} : "")."
+                    </span>
+                  </div>
+                </div>";
+      }
+      my $freeze_status = "disabled";
+      if ($done || $percent == 100) {
+        $freeze_status = "onclick='toggle_freeze_log(\"$run\")'";
+        $freeze_status .= " checked" if $form{"freeze-log/$run"} && $form{"freeze-log/$run"} eq 'on';
+      }
+      my $verbosity = $form{"verbosity/$run"} // "debug";
+      $OUT .= "
+            </div>
+            <div class='output-header'>
+              <label class='switch'>
+                <input id='show-log-$run' name='show-log/$run' class='switch' type='checkbox' onclick='show_log(\"$run\")'".($form{"show-log/$run"} && $form{"show-log/$run"} eq "on" ? " checked" : "").">
+                <span class='slider'></span>
+              </label>
+              <label for='show-log-$run' class='text'>".sprintf( _("Show &laquo;&nbsp;%s&nbsp;&raquo; task log"), $this)."</label>
+              <div class='abort-button' id='$run-abort-button'>".(($done || $percent == 100 || $aborted)? "" :
+                "<input class='submit-secondary' type='button' name='abort/$run' value='"._("Abort")."' onclick='abort_task(\"$run\")'>")."
+              </div>
+              <div class='log-freezer' id='$run-freeze-log-option'>
+                <label class='switch'>
+                  <input id='freeze-log-$run' name='freeze-log/$run' class='freezer-switch' type='checkbox' $freeze_status>
+                  <span class='slider slider-fix'></span>
+                </label>
+                <label for='freeze-log-$run' class='text text-fix'>"._("Freeze log output")."</label>
+              </div>
+              <div class='verbosity-option' id='$run-verbosity-option'>
+                "._("Verbosity").":
+                <select id='$run-verbosity' name='verbosity/$run' class='verbosity-options' onchange='verbosity_change(\"$run\");'>";
+      foreach my $opt (qw(info debug debug2)) {
+        $OUT .= "
+                <option".($verbosity && $verbosity eq $opt ? " selected" : "").">$opt</option>";
+      }
+      $OUT .= "
+                </select>
+              </div>
+            </div>
+            <textarea id='$run-output' class='output' wrap='off' readonly style='display: none'></textarea>
+          </div>
+        </div>
+      </li>";
+      last;
+    }
+    $OUT .= "
+          </td>
+        </tr>"
+      if @runs;
     last if $display && $count >= $display;
   }
   # Handle empty list case
@@ -130,18 +273,168 @@
     <input class='big-button' type='submit' name='submit/add' value='{_"Add new inventory task"}'>
   </form>
   <script>
+  var outputids = [{ join(", ", map { "'$_'" } @running) }];
+  var output_index = \{{ join(", ", map { "'$_': 0" } @running) }\};
+  var freezed_log = \{{ join(", ", map { "'$_': false" } @running) }\};
+  var whats = \{{ join(", ", map { "'$_': 'full'" } @running) }\};
+  var ajax_queue = [];
+  var ajax_trigger;
+  var xhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
   function toggle_all(from) \{
     var all_cb = document.querySelectorAll('input[type="checkbox"]');
     for ( var i = 0; i < all_cb.length; i++ )
-      if (all_cb[i] != from)
+      if (all_cb[i].className === 'checkbox' && all_cb[i] != from)
         all_cb[i].checked = !all_cb[i].checked;
   \}
   function visibility(task) \{
     eye = document.getElementById('eye-'+task);
-    if (eye.className == 'eye-show') \{
+    if (eye.className === 'eye-show') \{
       eye.className = 'eye-hide';
+      document.getElementById('run-'+task).style.display = "table-row";
     \} else \{
       eye.className = 'eye-show';
+      document.getElementById('run-'+task).style.display = "none";
     \}
   \}
+  function expand_task(task) \{
+    var expand = document.getElementById('expand-'+task);
+    document.getElementById(task+'-counters').style.display = expand.checked ? "flex" : "none";
+    document.getElementById(task+'-expand-label').className = expand.checked ? 'opened' : 'closed';
+  \}
+  function show_log(task) \{
+    var output, checked, completed, aborted;
+    checked = document.getElementById('show-log-'+task).checked;
+    output = document.getElementById(task+'-output');
+    completed = document.getElementById(task+'-scanned-bar').className === "completed";
+    aborted = document.getElementById(task+'-scanned-bar').className === "aborted";
+    failed = document.getElementById(task+'-scanned-bar').className === "failed";
+    if (completed || aborted || failed) \{
+      document.getElementById(task+'-freeze-log-option').innerHTML = '';
+      document.getElementById(task+'-abort-button').innerHTML = '';
+    \}
+    document.getElementById(task+'-freeze-log-option').style.display = checked ? 'block' : 'none';
+    document.getElementById(task+'-verbosity-option').style.display = checked ? 'block' : 'none';
+    output.style.display = checked ? 'block' : 'none';
+    if (checked && output.innerHTML === '') ajax_load('full', task);
+  \}
+  function toggle_freeze_log(task) \{
+    var checked = document.getElementById('freeze-log-'+task).checked;
+    freezed_log[task] = checked;
+    if (!checked) ajax_load('full', task);
+  \}
+  xhttp.onreadystatechange = function() \{
+    if (this.readyState === 4 && this.status === 200) \{
+      var index, running, inventory_count, percent, task, output, aborted;
+      task = this.getResponseHeader('X-Inventory-Task');
+      output = document.getElementById(task+'-output');
+      index = this.getResponseHeader('X-Inventory-Index');
+      if (!freezed_log[task]) \{
+        if (this.getResponseHeader('X-Inventory-Output') === 'full') \{
+          output.innerHTML = this.responseText;
+          output.scrollTop = 0;
+        \} else \{
+          output.innerHTML += this.responseText;
+          if (index && output_index[task] != index ) output.scrollTop = output.scrollHeight;
+        \}
+        if (index) output_index[task] = index;
+      \}
+      running = this.getResponseHeader('X-Inventory-Status') === 'running' ? true : false;
+      aborted = this.getResponseHeader('X-Inventory-Status') === 'aborted' ? true : false;
+      failed  = this.getResponseHeader('X-Inventory-Status') === 'failed'  ? true : false;
+      inventory_count = this.getResponseHeader('X-Inventory-Count');
+      if (!this.getResponseHeader('X-Inventory-IsLocal')) \{
+        var scanned, maxcount, permax, percount, snmp, others, unknown;
+        scanned = this.getResponseHeader('X-Inventory-Scanned');
+        maxcount = this.getResponseHeader('X-Inventory-MaxCount');
+        permax = maxcount && Number(scanned)<Number(maxcount)? "/"+maxcount : "";
+        document.getElementById(task+'-scanned').innerHTML = scanned ? scanned+permax : 0;
+        percount = scanned ? "/"+scanned : "";
+        others = this.getResponseHeader('X-Inventory-With-Others');
+        snmp = this.getResponseHeader('X-Inventory-With-SNMP');
+        document.getElementById(task+'-others').innerHTML = others ? others+percount : 0;
+        document.getElementById(task+'-snmp').innerHTML = snmp ? snmp+percount : 0;
+        unknown = this.getResponseHeader('X-Inventory-Unknown');
+        document.getElementById(task+'-unknown').innerHTML = unknown ? unknown+percount : 0;
+        inventory_count = inventory_count+(Number(snmp)?"/"+snmp:"")
+      \}
+      document.getElementById(task+'-inventory-count').innerHTML = inventory_count ? inventory_count : 0;
+      percent = this.getResponseHeader('X-Inventory-Percent');
+      document.getElementById(task+'-scanned-bar').style.width = percent+"%";
+      if (percent === 100) \{
+        document.getElementById(task+'-scanned-bar').className = "completed";
+        if (freezed_log[task]) \{
+          whats[task] = 'full';
+          outputids.push(task);
+          freezed_log[task] = false;
+        \}
+        document.getElementById(task+'-freeze-log-option').innerHTML = '';
+        document.getElementById(task+'-abort-button').innerHTML = '';
+      \}
+      if (aborted) \{
+        document.getElementById(task+'-progress-bar-text').innerHTML = '{_"Aborted"}';
+        document.getElementById(task+'-scanned-bar').className = "aborted";
+        document.getElementById(task+'-scanned-bar').style.width = "100%";
+      \} else if (failed) \{
+        document.getElementById(task+'-progress-bar-text').innerHTML = '{_"Failure"}';
+        document.getElementById(task+'-scanned-bar').className = "failed";
+      \} else \{
+        document.getElementById(task+'-progress-bar-text').innerHTML = percent === 100 ? '{_"Completed"}' : '';
+      \}
+      if (running || (!aborted && (!percent || percent < 100))) \{
+        outputids.push(task);
+        if (this.responseText != '...') whats[task] = 'more';
+      \}
+      if (ajax_queue.length) \{
+        ajax_trigger = setTimeout(ajax_request, 10);
+      \} else if (outputids.length) \{
+        ajax_trigger = setTimeout(ajax_load, 10);
+      \}
+    \}
+  \}
+  function ajax_request() \{
+    var url;
+    if (ajax_queue.length) \{
+      if (xhttp.readyState == 0 || xhttp.readyState == 4) \{
+        url = ajax_queue.shift();
+        xhttp.open('GET', url, true);
+        xhttp.send();
+      \} else \{
+        ajax_trigger = setTimeout(ajax_request, 10);
+      \}
+    \}
+  \}
+  function ajax_load(what, task) \{
+    var url, verbosity;
+    if (!task) task = outputids.shift();
+    if (task) \{
+      if (!what) what = whats[task];
+      url = '{$url_path}/{$request}/ajax?id='+task+'&what='+what;
+      verbosity = document.getElementById(task+'-verbosity').value;
+      if (verbosity) url += '&'+verbosity
+      if (output_index[task] && what != 'full') url += '&index=' + output_index[task];
+      ajax_queue.push(url);
+      ajax_trigger = setTimeout(ajax_request, 10);
+    \}
+  \}
+  function verbosity_change(task) \{
+    if (ajax_trigger) clearTimeout(ajax_trigger);
+    ajax_load('full', task);
+  \}
+  function abort_task(task) \{
+    if (ajax_trigger) clearTimeout(ajax_trigger);
+    ajax_load('abort', task);
+  \}
+  function htmldecode(str) \{
+    var txt = document.createElement('textarea');
+    txt.innerHTML = str;
+    return txt.value;
+  \}
+  function check_all_expandable() \{
+    var all_cb = document.querySelectorAll('input[type="checkbox"]');
+    for ( var cb = all_cb[0], i = 0; i < all_cb.length; ++i, cb = all_cb[i] )
+      if (cb.className === 'expand-task' && cb.checked && cb.id != 'expand-runtask') expand_task(cb.id.slice(7));
+      else if (cb.className === 'switch' && cb.checked) show_log(cb.id.slice(9));
+  \}
+  check_all_expandable();
+  ajax_load();
   </script>
