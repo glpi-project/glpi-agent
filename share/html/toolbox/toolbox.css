@@ -714,3 +714,13 @@ span.eye-hide {
 .grow {
   flex-grow: 1;
 }
+
+.eye {
+  height: 0;
+  padding-top: 0;
+  font-size: 16px;
+}
+
+input.eye {
+  display: none;
+}
