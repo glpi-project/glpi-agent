@@ -373,10 +373,14 @@ sub _submit_runnow {
         }
         my $config = $job->{config} // {};
         if ($job->{type} eq 'local') {
-            $self->_run_local($config->{tag}, $yaml, $name);
+            # Recycle taskid
+            my ($taskid) = grep { $self->{tasks}->{$_}->{name} eq $name && $self->{tasks}->{$_}->{islocal} } keys(%{$self->{tasks}});
+            $self->_run_local($config->{tag}, $yaml, $name, $taskid);
             next if $self->errors();
         } elsif ($job->{type} eq 'netscan') {
-            $self->netscan($name);
+            # Recycle taskid
+            my ($taskid) = grep { $self->{tasks}->{$_}->{name} eq $name && !$self->{tasks}->{$_}->{islocal} } keys(%{$self->{tasks}});
+            $self->netscan($name, $taskid);
         } else {
             $self->warning(sprintf("Task has not a supported type: &laquo;&nbsp;%s&nbsp;&raquo;", encode('UTF-8', $name)));
             next;
@@ -436,7 +440,7 @@ sub _submit_netscan {
 }
 
 sub netscan {
-    my ($self, $name, $ip_ranges, $ip) = @_;
+    my ($self, $name, $ip_ranges, $ip, $taskid) = @_;
 
     return $self->errors(
         $self->{_missingdep} == 1 ? "netdiscovery task is not installed" :
@@ -470,8 +474,9 @@ sub netscan {
 
     my $yaml_config = $self->yaml('configuration') || {};
 
-    # Generate a taskid an associate it the task
-    my $taskid = $self->_task_id();
+    # Generate a taskid if necessary
+    $taskid = $self->_task_id()
+        unless $taskid;
     $self->{tasks}->{$taskid} = {
         messages    => [],
         index       => 0,
@@ -627,7 +632,7 @@ sub _submit_localinventory {
 }
 
 sub _run_local {
-    my ($self, $tag, $yaml, $name) = @_;
+    my ($self, $tag, $yaml, $name, $taskid) = @_;
 
     my $procname = "local inventory";
     return $self->errors("A $procname is still running")
@@ -637,8 +642,9 @@ sub _run_local {
 
     my $yaml_config = $yaml->{configuration} || {};
 
-    # Generate a taskid an associate it to the task
-    my $taskid = $self->_task_id();
+    # Generate a taskid if necessary
+    $taskid = $self->_task_id()
+        unless $taskid;
     $self->{tasks}->{$taskid} = {
         messages    => [],
         index       => 0,

@@ -51,7 +51,8 @@
     my $description = $job->{description} || "";
     my $enabled     = $enabled ? "" : " disabled";
     my @runs        = sort { $tasks{$b}->{time} <=> $tasks{$a}->{time} } grep { defined($tasks{$_}->{name}) && $tasks{$_}->{name} eq $entry } keys(%tasks);
-    my $eyeshow     = @runs && defined($form{"show-run/$entry"}) && $form{"show-run/$entry"} eq "on" ? " checked" : "";
+    # A new running task starts with index=0, we should always show it
+    my $eyeshow     = @runs && (!$tasks{$runs[0]}->{index} || (defined($form{"show-run/$entry"}) && $form{"show-run/$entry"} eq "on")) ? " checked" : "";
     $OUT .= "
         <tr class='$request'>
           <td class='checkbox'>
@@ -360,7 +361,7 @@
       document.getElementById(task+'-inventory-count').innerHTML = inventory_count ? inventory_count : 0;
       percent = this.getResponseHeader('X-Inventory-Percent');
       document.getElementById(task+'-scanned-bar').style.width = percent+"%";
-      if (percent === 100) \{
+      if (percent === '100') \{
         document.getElementById(task+'-scanned-bar').className = "completed";
         if (freezed_log[task]) \{
           whats[task] = 'full';
@@ -378,16 +379,16 @@
         document.getElementById(task+'-progress-bar-text').innerHTML = '{_"Failure"}';
         document.getElementById(task+'-scanned-bar').className = "failed";
       \} else \{
-        document.getElementById(task+'-progress-bar-text').innerHTML = percent === 100 ? '{_"Completed"}' : '';
+        document.getElementById(task+'-progress-bar-text').innerHTML = percent === '100' ? '{_"Completed"}' : '';
       \}
-      if (running || (!aborted && (!percent || percent < 100))) \{
+      if (running || (!aborted && (!percent || percent != '100'))) \{
         outputids.push(task);
         if (this.responseText != '...') whats[task] = 'more';
       \}
       if (ajax_queue.length) \{
-        ajax_trigger = setTimeout(ajax_request, 10);
+        ajax_trigger = setTimeout(ajax_request, 100);
       \} else if (outputids.length) \{
-        ajax_trigger = setTimeout(ajax_load, 10);
+        ajax_trigger = setTimeout(ajax_load, 100);
       \}
     \}
   \}
@@ -399,7 +400,7 @@
         xhttp.open('GET', url, true);
         xhttp.send();
       \} else \{
-        ajax_trigger = setTimeout(ajax_request, 10);
+        ajax_trigger = setTimeout(ajax_request, 100);
       \}
     \}
   \}
