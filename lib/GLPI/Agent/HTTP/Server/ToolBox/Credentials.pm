@@ -291,26 +291,16 @@ sub _submit_update {
             my $ip_range = $yaml->{ip_range} || {};
             my $count = 0;
             foreach my $range (values(%{$ip_range})) {
-                my $credentials = $range->{credentials}
-                    or next;
-                next unless @{$credentials};
-                my @credentials = ();
-                my $seen = 0;
-                foreach my $cred (@{$credentials}) {
-                    if ($cred eq $update) {
-                        push @credentials, $entry;
-                        $self->need_save("ip_range");
-                        $seen++;
-                        $count++;
-                    } else {
-                        push @credentials, $cred;
-                    }
-                }
-                $range->{credentials} = \@credentials
-                    if $seen;
+                next unless ref($range->{credentials}) eq 'ARRAY';
+                next unless first { $_ eq $update } @{$range->{credentials}};
+                $range->{credentials} = [
+                    map { $_ eq $update ? $entry : $_ } @{$range->{credentials}}
+                ];
             }
-            $self->debug2("Fixed $count ip_range credential refs")
-                if $count;
+            if ($count) {
+                $self->need_save("ip_range");
+                $self->debug2("Fixed $count ip_range credential refs");
+            }
         }
         $self->edit($entry);
         if ($type eq 'snmp') {

@@ -245,8 +245,25 @@ sub _submit_update {
             return $self->errors("IP range update: An entry still exists with that name: '$name'");
         }
         # Rename the entry if necessary
-        $ip_range->{$entry} = delete $ip_range->{$update}
-            if ($entry ne $update);
+        if ($entry ne $update) {
+            $ip_range->{$entry} = delete $ip_range->{$update};
+            # And update any reference usage in jobs
+            my $jobs = $self->yaml('jobs') || {};
+            my $count = 0;
+            foreach my $job (values(%{$jobs})) {
+                next unless ref($job->{config}) eq 'HASH';
+                next unless ref($job->{config}->{ip_range}) eq 'ARRAY';
+                next unless first { $_ eq $update } @{$job->{config}->{ip_range}};
+                $count++;
+                $job->{config}->{ip_range} = [
+                    map { $_ eq $update ? $entry : $_ } @{$job->{config}->{ip_range}}
+                ];
+            }
+            if ($count) {
+                $self->need_save('jobs');
+                $self->debug2("Fixed $count jobs ip_range refs");
+            }
+        }
         $self->edit($entry);
         # Validate form
         if (!$form->{"input/ip_start"}) {
