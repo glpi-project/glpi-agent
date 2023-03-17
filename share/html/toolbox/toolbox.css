@@ -624,19 +624,15 @@ input:checked + .slider:before {
   transform: translateX(8px);
 }
 
-.tooltip {
+.with-tooltip {
     display: inline-block;
     position: relative;
     border-bottom: 1px dotted #666;
     text-align: left;
 }
 
-.tooltip .right {
+.with-tooltip .tooltip {
     min-width: 200px;
-    top: 50%;
-    left: 100%;
-    margin-left: 10px;
-    transform: translate(0, -50%);
     padding: 8px 8px;
     color: #000000;
     background-color: #ffffff;
@@ -651,31 +647,63 @@ input:checked + .slider:before {
     display: none;
 }
 
-.tooltip:hover .right {
+.with-tooltip:hover .tooltip {
     display: block;
 }
 
-.tooltip .right i {
+.with-tooltip .tooltip i {
     position: absolute;
-    top: 50%;
-    right: 100%;
     margin-top: -12px;
-    width: 12px;
-    height: 24px;
     overflow: hidden;
 }
 
-.tooltip .right i::after {
+.with-tooltip .tooltip i::after {
     content: '';
     position: absolute;
     width: 12px;
     height: 12px;
-    left: 0;
-    top: 50%;
     transform: translate(50%,-50%) rotate(-45deg);
     background-color: #ffffff;
     border: 1px solid #000000;
     box-shadow: 0 1px 8px rgba(0,0,0,0.5);
+}
+
+.with-tooltip .right-tooltip {
+    top: 50%;
+    left: 100%;
+    margin-left: 10px;
+    transform: translate(0, -50%);
+}
+
+.with-tooltip .right-tooltip i {
+    top: 50%;
+    right: 100%;
+    width: 12px;
+    height: 24px;
+}
+
+.with-tooltip .right-tooltip i::after {
+    left: 0;
+    top: 50%;
+}
+
+.with-tooltip .bottom-tooltip {
+    left: 75%;
+    margin-top: 10px;
+    transform: translate(-50%, 0);
+}
+
+.with-tooltip .bottom-tooltip i {
+    top: 0;
+    left: 50%;
+    margin-left: -24px;
+    width: 24px;
+    height: 12px;
+}
+
+.with-tooltip .bottom-tooltip i::after {
+    left: 0;
+    top: 100%;
 }
 
 .disabled {

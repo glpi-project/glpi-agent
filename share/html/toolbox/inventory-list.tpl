@@ -44,7 +44,7 @@
     my $type        = $job->{type} || "";
     $type = $job->{type} eq 'local' ? _"Local inventory" : _"Network scan"
         if $job->{type} && $job->{type} =~ /^local|netscan$/;
-    my $ip_range    = $job->{ip_range} || "";
+    my $config      = $job->{config} || "";
     my $scheduling  = $job->{scheduling} || "";
     my $lastrun     = $job->{last_run_date} ? localtime($job->{last_run_date}) : "";
     my $nextrun     = ($enabled ? $job->{next_run_date} : _"Disabled task") || "";
@@ -75,9 +75,30 @@
             </label>
           "
       if @runs;
+    my $configuration = "";
+    if ($job->{type} eq 'local' && defined($config->{tag}) && length($config->{tag})) {
+      $configuration .= _("Tag").": ".$config->{tag};
+    } elsif ($job->{type} eq 'netscan' && ref($config->{ip_range}) eq 'ARRAY') {
+      $configuration .= _("IP range").": ".join(",", map { "
+            <div class='with-tooltip'>
+              <a href='$url_path/ip_range?edit=".uri_escape(encode("UTF-8", $_))."'>".encode('UTF-8', encode_entities($_))."
+                <div class='tooltip bottom-tooltip'>
+                  <p>"._("First ip").": ".$ip_range{$_}->{ip_start}."</p>
+                  <p>"._("Last ip").": ".$ip_range{$_}->{ip_end}."</p>
+                  <p>"._("Credentials").": ".join(",", map { encode('UTF-8', encode_entities($_)) } @{$ip_range{$_}->{credentials}//[]})."</p>
+                  <i></i>
+                </div>
+              </a>
+            </div>"
+        } @{$config->{ip_range}});
+      $configuration .= "<br/>"._("Threads").": ".$config->{threads}
+        if $config->{threads};
+      $configuration .= "<br/>"._("Timeout").sprintf(": %ds", $config->{timeout})
+        if $config->{timeout};
+    }
     $OUT .= "</td>
           <td class='list' width='10%'>$type</td>
-          <td class='list' width='10%'>$ip_range</td>
+          <td class='list' width='10%'>$configuration</td>
           <td class='list$enabled' width='10%'>$scheduling</td>
           <td class='list$enabled' width='15%'>$lastrun</td>
           <td class='list$enabled' width='15%'>$nextrun</td>

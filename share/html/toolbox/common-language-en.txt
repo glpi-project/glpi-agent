@@ -12,6 +12,7 @@ IP range:
 IP Ranges:
 Credentials:
 Remotes:
+Tag:
 
 Edit:
 Update:
@@ -41,3 +42,5 @@ Reverse selection:
 Type:
 Disable:
 Enable:
+First ip:
+Last ip:

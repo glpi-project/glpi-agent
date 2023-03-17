@@ -43,9 +43,9 @@
     my $description = $range->{description} || "";
     my $thiscredentials = join("
             <br/>", map { "
-            <div class='tooltip'>
+            <div class='with-tooltip'>
               <a href='$url_path/credentials?edit=".uri_escape(encode("UTF-8", $_))."'>".encode('UTF-8', encode_entities($credentials{$_}->{name} || $_))."
-                <div class='right'>
+                <div class='tooltip right-tooltip'>
                   <p>".($credentials{$_}->{type} ? _("Type").":&nbsp;".$credentials{$_}->{type} : _("SNMP version").":&nbsp;".$credentials{$_}->{snmpversion})."</p>
                   <p>".(!$credentials{$_}->{type} && $credentials{$_}->{snmpversion} ne "v3" ? _("Community").":&nbsp;".$credentials{$_}->{community} : _("Username").":&nbsp;".$credentials{$_}->{username})."</p>
                   <i></i>
