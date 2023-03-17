@@ -78,8 +78,14 @@ sub doInventory {
         next if $process->{CMD} =~ /^\[/;
         next if $process->{CMD} !~ /(qemu|kvm|qemu-kvm|qemu-system\S+) .*\S/x;
 
+        # Don't inventory qemu guest agent as a virtualmachine
+        next if $process->{CMD} =~ /qemu-ga/;
+
         my $values = _parseProcessList($process);
         next unless $values;
+
+        # Name is mandatory, if we don't see it, the process is probably not related to a VM
+        next unless defined($values->{name}) && length($values->{name});
 
         $inventory->addEntry(
             section => 'VIRTUALMACHINES',
