@@ -53,3 +53,4 @@ Next run date: Prochaine exécution
 Add ip range: Ajouter plage ip
 Remove ip range: Retirer plage ip
 Disabled task: Tâche désactivée
+Timeout: Délai d'expiration

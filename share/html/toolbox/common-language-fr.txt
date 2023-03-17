@@ -13,6 +13,7 @@ IP range: Plage IP
 Credentials: Identifiants
 Remotes: Inventaires distants
 
+
 Edit: Éditer
 Update: Mettre à jour
 Delete: Supprimer
@@ -41,3 +42,5 @@ Reverse selection: Inverser la sélection
 
 Disable: Désactiver
 Enable: Activer
+First ip: Première ip
+Last ip: Dernière ip
