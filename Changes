@@ -132,6 +132,9 @@ collect:
 injector:
 * Support --proxy option or use current user proxy environment if set
 
+proxy-server-plugin
+* Fix file storage on windows
+
 toolbox:
 * Fix Inventory page not displayed when netdiscovery or netinventory tasks are not installed
 * Default configuration now authorize to update toolbox interface from the UI

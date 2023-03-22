@@ -18,7 +18,7 @@ use GLPI::Agent::HTTP::Client::GLPI;
 use GLPI::Agent::Protocol::Message;
 use GLPI::Agent::Protocol::Answer;
 
-our $VERSION = "2.1";
+our $VERSION = "2.2";
 
 sub urlMatch {
     my ($self, $path) = @_;
@@ -452,6 +452,7 @@ sub _handle_proxy_request {
                 $self->error("Can't store datas from $remoteid");
                 return $self->proxy_error(500, "Proxy failed to store datas");
             }
+            binmode($DATA);
             print $DATA $content;
             close($DATA);
             unless (-s $file == length($content)) {
@@ -661,6 +662,7 @@ sub _handle_proxy_request {
             $self->error("Can't store content from $clientIp $self->{request} request");
             return $self->proxy_error(500, 'Proxy cannot store content');
         }
+        binmode($XML);
         print $XML $content;
         close($XML);
         if (-s $xmlfile != length($content)) {
