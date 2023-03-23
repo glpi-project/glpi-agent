@@ -11,19 +11,32 @@
 #    depending on current computer. This permits to run the agent on different
 #    computers if they have different hostname.
 
-cd "${0%/*}"
+cd "$(dirname "$0")"
 
-: ${APPIMAGE:=$(echo glpi-agent*.AppImage 2>/dev/null)}
+: ${APPIMAGE:=}
 
-if [ -z "${APPIMAGE%\**}" ]; then
-    echo "No AppImage is $PWD, set it via APPIMAGE environment variable" >&2
+if [ -z "$APPIMAGE" ]; then
+    OTHERS=""
+    for appimage in $(ls -1rt glpi-agent*.AppImage 2>/dev/null)
+    do
+        if [ -z "$APPIMAGE" ]; then
+            APPIMAGE="$appimage"
+        else
+            [ -n "$OTHERS" ] && OTHERS="$OTHERS "
+            OTHER="$OTHERS$appimage"
+        fi
+    done
+fi
+
+if [ ! -e "$APPIMAGE" ]; then
+    echo "No AppImage in $PWD, set it via APPIMAGE environment variable" >&2
     exit 1
 fi
 
-if [ -z "${APPIMAGE%%* *}" ]; then
-    echo "Too much AppImage found in $PWD, select one via APPIMAGE environment variable or remove the wrong ones" >&2
-    echo "Found: $APPIMAGE" >&2
-    exit 1
+if [ -n "$OTHERS" ]; then
+    echo "More than one AppImage found in $PWD, you may need to select one via APPIMAGE environment variable or remove the wrong ones" >&2
+    echo "Others found: $OTHERS" >&2
+    echo "Selected one: $APPIMAGE" >&2
 fi
 
 if [ ! -e "$APPIMAGE" ]; then
@@ -33,8 +46,12 @@ elif [ ! -x "$APPIMAGE" ]; then
     chmod +x "$APPIMAGE"
 fi
 
-if [ "${APPIMAGE%/*}" == "$APPIMAGE" ]; then
+# Use relative path to current folder if necessary
+if [ "$( basename "$APPIMAGE" )" = "$APPIMAGE" ]; then
     APPIMAGE="./$APPIMAGE"
+    APPIMAGE_FULLPATH="$(pwd)/$APPIMAGE"
+else
+    APPIMAGE_FULLPATH="$APPIMAGE"
 fi
 
 [ -d var ] || mkdir var
@@ -44,42 +61,68 @@ if [ ! -d etc ]; then
         echo "Can't copy etc folder from AppImage, run $0 as root" >&2
         exit 1
     fi
-    echo "Copying etc folder from AppImages..."
+    echo "Copying etc folder from AppImage..."
     OFFSET=$("$APPIMAGE" --appimage-offset)
     [ -d mnt ] || mkdir mnt
-    mount "$APPIMAGE" mnt/ -o offset=$OFFSET \
-        || exit 1
+    if ! mount "$APPIMAGE" mnt/ -o offset=$OFFSET; then
+        echo "Failed to mount AppImage" >&2
+        exit 1
+    fi
     cp -a mnt/usr/share/glpi-agent/etc etc
     umount mnt
     rmdir mnt
     [ -d etc/conf.d ] || mkdir etc/conf.d
     echo "vardir = var" >etc/conf.d/00-vardir.cfg
+fi
 
-    echo "Create scripts..."
-    for script in glpi-agent glpi-inventory glpi-netdiscovery glpi-netinventory glpi-esx glpi-injector glpi-remote
-    do
-        case $script in
-            glpi-agent)  OPTS="--conf-file=etc/agent.cfg --vardir=\"\$VARDIR\"" ;;
-            glpi-remote) OPTS="--vardir=\"\$VARDIR\"" ;;
-            *)           OPTS="" ;;
-        esac
-        cat >$script <<SCRIPT
+if [ -e glpi-agent ]; then
+    echo "Updating scripts..."
+else
+    echo "Creating scripts..."
+fi
+for script in glpi-agent glpi-inventory glpi-netdiscovery glpi-netinventory glpi-esx glpi-injector glpi-remote
+do
+    case $script in
+        glpi-agent)  OPTS="--conf-file=etc/agent.cfg --vardir=\"\$VARDIR\"" ;;
+        glpi-remote) OPTS="--vardir=\"\$VARDIR\"" ;;
+        *)           OPTS="" ;;
+    esac
+    cat >$script <<SCRIPT
 #! /bin/sh
-cd "\${0%/*}"
-source ./glpi-agent-portable.sh
-exec "$APPIMAGE" --script=$script $OPTS \$*
+
+cd "\$(dirname "\$0")"
+
+# vardir will depend on current hostname
+if [ -z "\$HOSTNAME" ]; then
+    VARDIR="var/\$(hostname)"
+else
+    VARDIR="var/\$HOSTNAME"
+fi
+
+[ -d "\$VARDIR" ] || mkdir "\$VARDIR"
+
+if [ -x "$APPIMAGE" ]; then
+    exec "$APPIMAGE" --script=$script $OPTS \$*
+else
+    echo "$APPIMAGE not available in \$(pwd)" >&2
+    exit 1
+fi
 SCRIPT
-        chmod +x $script
-    done
-    cat >perl <<PERL
+    chmod +x $script
+done
+
+cat >perl <<PERL
 #! /bin/sh
-source "\${0%/*}/glpi-agent-portable.sh"
-exec "$APPIMAGE" --perl \$*
+if [ -x "$APPIMAGE_FULLPATH" ]; then
+    exec "$APPIMAGE_FULLPATH" --perl \$*
+elif [ -x "$APPIMAGE" ]; then
+    exec "$APPIMAGE" --perl \$*
+else
+    echo "$APPIMAGE_FULLPATH can't be run" >&2
+    echo "$APPIMAGE not available in \$(pwd)" >&2
+    exit 1
+fi
 PERL
     chmod +x perl
     echo "Glpi Agent linux portable is ready"
 fi
-
-# vardir will depend on current hostname
-VARDIR=var/$HOSTNAME
-[ -d "$VARDIR" ] || mkdir "$VARDIR"
