@@ -70,6 +70,7 @@ inventory:
 * fix missing category to Batteries module on win32 and fix perl error reported
   when battery report on win32 is empty
 * fix #366: Don't inventory qemu guest agent process as qemu vm
+* fix #371: Add new Acer monitor model support: B246HL, B246HYL, V243HL, CB241H, V193
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
