@@ -123,6 +123,5 @@ else
     exit 1
 fi
 PERL
-    chmod +x perl
-    echo "Glpi Agent linux portable is ready"
-fi
+chmod +x perl
+echo "Glpi Agent linux portable is ready"
