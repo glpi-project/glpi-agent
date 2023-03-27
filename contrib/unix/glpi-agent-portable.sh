@@ -17,13 +17,13 @@ cd "$(dirname "$0")"
 
 if [ -z "$APPIMAGE" ]; then
     OTHERS=""
-    for appimage in $(ls -1rt glpi-agent*.AppImage 2>/dev/null)
+    for appimage in $(ls -1t glpi-agent*.AppImage 2>/dev/null)
     do
         if [ -z "$APPIMAGE" ]; then
             APPIMAGE="$appimage"
         else
             [ -n "$OTHERS" ] && OTHERS="$OTHERS "
-            OTHER="$OTHERS$appimage"
+            OTHERS="$OTHERS$appimage"
         fi
     done
 fi
