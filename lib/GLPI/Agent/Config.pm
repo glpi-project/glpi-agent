@@ -414,7 +414,8 @@ sub getTargets {
             push @targets,
                 GLPI::Agent::Target::Local->new(
                     logger     => $params{logger},
-                    delaytime  => $self->{delaytime},
+                    maxDelay   => $self->{delaytime},
+                    delaytime  => $self->{delaytime} > 3600 ? 3600 : $self->{delaytime},
                     basevardir => $params{vardir},
                     path       => $path,
                     html       => $self->{html},

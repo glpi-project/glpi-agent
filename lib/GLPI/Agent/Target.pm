@@ -49,8 +49,15 @@ sub _init {
         directory => $params{vardir}
     );
 
+    my $keepMaxDelay = $self->getMaxDelay();
+
     # handle persistent state
     $self->_loadState();
+
+    # Update maxDelay from provided config when not a server
+    unless ($self->isType('server')) {
+        $self->setMaxDelay($keepMaxDelay);
+    }
 
     $self->{nextRunDate} = $self->computeNextRunDate()
         if (!$self->{nextRunDate} || $self->{nextRunDate} < time-$self->getMaxDelay());

@@ -71,6 +71,8 @@ inventory:
   when battery report on win32 is empty
 * fix #366: Don't inventory qemu guest agent process as qemu vm
 * fix #371: Add new Acer monitor model support: B246HL, B246HYL, V243HL, CB241H, V193
+* Fix inventory delay support for Local target to use the delaytime from configuration
+  in place of always 3600 seconds
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
