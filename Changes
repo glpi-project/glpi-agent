@@ -148,7 +148,7 @@ basic-authentication-server-plugin:
 * New feature to support basic authentication on embedded http server via a dedicated plugin
 
 packaging:
-* Update MacOSX packages to use OpenSSL 3.0.8 & zlib 1.2.13
+* Update MacOSX packages to use OpenSSL 3.1.0 & zlib 1.2.13
 * Temporarily update PATH to use provided exe files when running agent from BAT scripts on win32
 * win32: updated dmidecode to 3.5
 * macosx: updated dmidecode to 3.5-macosx
