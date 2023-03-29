@@ -54,3 +54,4 @@ Add ip range: Ajouter plage ip
 Remove ip range: Retirer plage ip
 Disabled task: Tâche désactivée
 Timeout: Délai d'expiration
+Associated ip ranges: Plages ip associées

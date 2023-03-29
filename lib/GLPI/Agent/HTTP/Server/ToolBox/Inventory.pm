@@ -184,6 +184,7 @@ my %handlers = (
     'submit/localinventory' => \&_submit_localinventory,
     'submit/netscan'        => \&_submit_netscan,
     'submit/add'            => \&_submit_add,
+    'submit/update'         => \&_submit_update,
     'submit/delete'         => \&_submit_delete,
     'submit/add-iprange'    => \&_submit_addiprange,
     'submit/rm-iprange'     => \&_submit_rmiprange,
@@ -195,31 +196,49 @@ my %handlers = (
 );
 
 sub _submit_rename {
-    my ($self, $form) = @_;
+    my ($self, $form, $yaml) = @_;
 
     return unless $form;
 
-    # Just enable the name field
-    $form->{allow_name_edition} = 1;
+    my $jobs = $yaml->{jobs} || {};
+
+    my $edit = $self->edit();
+    my $newname = $form->{'input/new-name'};
+
+    # Do nothing if no new was provided
+    return unless defined($newname) && length($newname);
+
+    # Do nothing if nothing to rename
+    return unless defined($edit) && length($edit);
+
+    # Do nothing if name is the same
+    return if $newname eq $form->{'edit'};
+
+    if (exists($jobs->{$newname})) {
+        $newname = encode('UTF-8', $newname);
+        return $self->errors("Rename task: An entry still exists with that name: '$newname'");
+    }
+
+    unless (exists($jobs->{$edit})) {
+        $edit = encode('UTF-8', $edit);
+        return $self->errors("Rename task: No such entry to rename: '$edit'");
+    }
+
+    $jobs->{$newname} = delete $jobs->{$edit};
+    $self->need_save(jobs);
+    $self->edit($newname);
 }
 
 sub _submit_newtag {
     my ($self, $form) = @_;
 
     return unless $form;
-
-    # Keep name edition status
-    $form->{allow_name_edition} = $form->{empty}
-        if exists($form->{empty});
 }
 
 sub _submit_add {
     my ($self, $form, $yaml) = @_;
 
     return unless $form;
-
-    $form->{allow_name_edition} = $form->{empty}
-        if exists($form->{empty});
 
     my $jobs = $yaml->{jobs} || {};
 
@@ -230,7 +249,6 @@ sub _submit_add {
         return $self->errors("New task: An entry still exists with that name: '$name'");
     }
     if ($form->{'input/name'}) {
-        my @keys;
         # Validate form
         my $type = $form->{"input/type"};
         return $self->errors("New task: Unsupported task type")
@@ -250,12 +268,65 @@ sub _submit_add {
         $jobs->{$name} = $job;
         $self->need_save(jobs);
         delete $form->{empty};
-        delete $form->{allow_name_edition};
     } elsif (!$name) {
         $self->errors("New task: Can't create entry without name") if $form->{empty};
-        # We should return an empty add form with name edition allowed
+        # We should return an empty add form
         $form->{empty} = 1;
-        $form->{allow_name_edition} = 1;
+    }
+}
+
+sub _submit_update {
+    my ($self, $form, $yaml) = @_;
+
+    return unless $form;
+
+    my $jobs = $yaml->{jobs} || {};
+    my $edit = $self->edit();
+    my $job = $jobs->{$edit};
+
+    if ($job) {
+        # Validate form
+        my $type = $form->{"input/type"};
+        return $self->errors("Update task: Unsupported task type")
+            unless $type =~ /^local|netscan$/;
+        if ($job->{type} ne $type) {
+            $job->{type} = $type;
+            $self->need_save(jobs);
+        }
+
+        if (defined($form->{"input/enabled"})) {
+            my $enabled = $self->yesno($form->{"input/enabled"});
+            if ($job->{enabled} ne $enabled) {
+                $job->{enabled} = $enabled;
+                $self->need_save(jobs);
+            }
+        }
+
+        if ($type eq 'netscan') {
+            # TODO Validate netscan form
+        } else {
+            my $tag = $form->{"input/tag"};
+            if (!$tag && exists($job->{config}->{tag})) {
+                delete $job->{config}->{tag};
+                $self->need_save(jobs);
+            } elsif ($tag && (!exists($job->{config}->{tag}) || $job->{config}->{tag} ne $tag)) {
+                $job->{config} = { tag => $tag };
+                $self->need_save(jobs);
+            }
+        }
+
+        my $description = $form->{"input/description"};
+        if (defined($description)) {
+            if (!length($description)) {
+                delete $job->{description};
+                $self->need_save(jobs);
+            } elsif (!defined($job->{description}) || $job->{description} ne $description) {
+                $job->{description} = $description;
+                $self->need_save(jobs);
+            }
+        }
+    } else {
+        $self->errors("Update task: Nothing to update");
     }
 }
 
@@ -424,10 +495,6 @@ sub addMessage {
 
 sub _submit_netscan {
     my ($self, $form, $yaml) = @_;
-
-    # Keep name edition status
-    $form->{allow_name_edition} = $form->{empty}
-        if exists($form->{empty});
 
     return $self->errors("No IP range selected")
         unless $form->{'input/ip_range'};
