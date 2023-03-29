@@ -105,8 +105,9 @@
           <td class='list'>$description</td>
         </tr>";
     $OUT .= "
-        <tr class='$request' id='run-$this' style='display: ".($eyeshow ? "table-row" : "none")."'>
-          <td class='list' colspan='8'>"
+        <tr class='sub-row' id='run-$this' style='display: ".($eyeshow ? "table-row" : "none")."'>
+          <td class='checkbox'>&nbsp;</td>
+          <td class='list' colspan='7'>"
       if @runs;
     foreach my $run (@runs) {
       my $task = $tasks{$run};
