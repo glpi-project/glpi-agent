@@ -54,3 +54,4 @@ Add ip range:
 Remove ip range:
 Disabled task:
 Timeout:
+Associated ip range:

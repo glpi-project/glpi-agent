@@ -92,3 +92,5 @@ New task: Nouvelle tâche
 Update task: Mise à jour d'une tâche
 Unsupported task type: Type de tâche non supportée
 Can't delete enabled task: Impossible d'effacer la tâche active
+Rename task: Renommer la tâche
+Nothing to update: Rien à mettre à jour

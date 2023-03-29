@@ -92,3 +92,5 @@ New task:
 Update task:
 Unsupported task type:
 Can't delete enabled task:
+Rename task:
+Nothing to update:
