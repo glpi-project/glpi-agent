@@ -98,10 +98,10 @@
     }
     $OUT .= "</td>
           <td class='list' width='10%'>$type</td>
-          <td class='list' width='10%'>$configuration</td>
           <td class='list$enabled' width='10%'>$scheduling</td>
           <td class='list$enabled' width='15%'>$lastrun</td>
           <td class='list$enabled' width='15%'>$nextrun</td>
+          <td class='list'>$configuration</td>
           <td class='list'>$description</td>
         </tr>";
     $OUT .= "

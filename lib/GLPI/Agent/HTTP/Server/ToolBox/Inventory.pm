@@ -7,8 +7,9 @@ use parent "GLPI::Agent::HTTP::Server::ToolBox";
 
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
-use Encode qw(encode);
+use Encode qw(decode encode);
 use HTML::Entities;
+use URI::Escape;
 use Time::HiRes qw(gettimeofday usleep);
 use Net::IP;
 
@@ -132,10 +133,10 @@ sub update_template_hash {
         $hash->{columns} = [
             [ name          => "Task name"     ],
             [ type          => "Type"          ],
-            [ config        => "Configuration" ],
             [ scheduling    => "Scheduling"    ],
             [ last_run_date => "Last run date" ],
             [ next_run_date => "Next run date" ],
+            [ config        => "Configuration" ],
             [ description   => "Description"   ]
         ];
         $hash->{order} = $self->get_from_session('jobs_order') || "ascend";
@@ -184,6 +185,7 @@ my %handlers = (
     'submit/localinventory' => \&_submit_localinventory,
     'submit/netscan'        => \&_submit_netscan,
     'submit/add'            => \&_submit_add,
+    'submit/cancel'         => \&_submit_cancel,
     'submit/update'         => \&_submit_update,
     'submit/delete'         => \&_submit_delete,
     'submit/add-iprange'    => \&_submit_addiprange,
@@ -230,9 +232,33 @@ sub _submit_rename {
 }
 
 sub _submit_newtag {
+    my ($self, $form, $yaml) = @_;
+
+    return unless $form;
+
+    my $jobs = $yaml->{jobs} || {};
+
+    my $edit = $self->edit();
+    my $newtag = $form->{'input/newtag'};
+
+    # Do nothing if no new tag was provided
+    return unless defined($newtag) && length($newtag);
+
+    my $job = $jobs->{$edit}
+        or return;
+
+    return unless $job->{type} && $job->{type} eq 'local';
+
+    $job->{config}->{tag} = $newtag;
+    $self->need_save(jobs);
+}
+
+sub _submit_cancel {
     my ($self, $form) = @_;
 
     return unless $form;
+
+    $self->reset_edit();
 }
 
 sub _submit_add {
@@ -259,7 +285,18 @@ sub _submit_add {
             type        => $type,
         };
         if ($type eq 'netscan') {
-            # TODO Validate netscan form
+            my $ipranges = $yaml->{ip_range} || {};
+            my $iprange = $form->{'add-iprange'}
+                or return $self->errors("New task: No IP range selected");
+            my @ipranges = map { decode('UTF-8', uri_unescape($_)) } split('&', $iprange)
+                or return $self->errors("New task: No IP range selected");
+            @ipranges = grep { exists($ipranges->{$_}) } @ipranges
+                or return $self->errors("New task: No IP range selected");
+            $job->{config}->{ip_range} = [ sort @ipranges ];
+            my $threads = int($form->{"input/threads"} || $self->{threads_default});
+            $job->{config}->{threads} = $threads;
+            my $timeout = int($form->{"input/timeout"}) || 1;
+            $job->{config}->{timeout} = $timeout;
         } else {
             $job->{config}->{tag} = $form->{"input/tag"}
                 if $form->{"input/tag"};
@@ -303,7 +340,35 @@ sub _submit_update {
         }
 
         if ($type eq 'netscan') {
-            # TODO Validate netscan form
+            my $ipranges = $yaml->{ip_range} || {};
+            my @ipranges = map { m{^checkbox/ip_range/(.*)$} } grep { /^checkbox\/ip_range\// && $form->{$_} eq 'on' } keys(%{$form});
+            return $self->errors("Update task: No IP range selected")
+                unless @ipranges;
+            my %previous = map { $_ => 1 } @{$job->{config} ? $job->{config}->{ip_range} // [] : []};
+            my $new = 0;
+            my %newconfig = ();
+            foreach my $iprange (@ipranges) {
+                return $self->errors("Update task: No such IP range")
+                    unless $ipranges->{$iprange};
+                $newconfig{$iprange} = 1;
+                $new++ unless $previous{$iprange};
+                delete $previous{$iprange};
+            }
+            # We have a new config if new iprange has been added or if one from previous has not been kept
+            if ($new || keys(%previous)) {
+                $job->{config}->{ip_range} = [ sort keys(%newconfig) ];
+                $self->need_save(jobs);
+            }
+            my $threads = int($form->{"input/threads"});
+            if ($threads > 0 && (!$job->{config} || !$job->{config}->{threads} || int($job->{config}->{threads}) != $threads)) {
+                $job->{config}->{threads} = $threads;
+                $self->need_save(jobs);
+            }
+            my $timeout = int($form->{"input/timeout"});
+            if ($timeout > 0 && (!$job->{config} || !$job->{config}->{timeout} || int($job->{config}->{timeout}) != $timeout)) {
+                $job->{config}->{timeout} = $timeout;
+                $self->need_save(jobs);
+            }
         } else {
             my $tag = $form->{"input/tag"};
             if (!$tag && exists($job->{config}->{tag})) {
@@ -354,22 +419,40 @@ sub _submit_addiprange {
 
     return unless $form && $yaml;
 
-    my $iprange = $form->{'input/ip_range'}
-        or return;
-
     my $jobs = $yaml->{jobs} || {};
-    my @selected = map { m{^checkbox/(.*)$} } grep { /^checkbox\// && $form->{$_} eq 'on' } keys(%{$form});
-    foreach my $name (@selected) {
-        my $job = $jobs->{$name}
-            or next;
-        # Filter out jobs
-        next unless $job->{type} && $job->{type} eq 'netscan';
-        next unless ref($job->{config}) eq 'HASH';
-        next unless ref($job->{config}->{ip_range}) eq 'ARRAY';
-        next if first { $_ eq $iprange } @{$job->{config}->{ip_range}};
-        # Add ip range
-        push @{$job->{config}->{ip_range}}, $iprange;
+    my $ipranges = $yaml->{ip_range} || {};
+
+    my $edit = $self->edit();
+    if ($edit) {
+        my $job = $jobs->{$edit}
+            or return;
+        return unless $job->{type} && $job->{type} eq 'netscan';
+        my $iprange = $form->{'add-iprange'}
+            or return;
+        my @ipranges = map { decode('UTF-8', uri_unescape($_)) } split('&', $iprange)
+            or return;
+        my @current = $job->{config} ? @{$job->{config}->{ip_range} // []} : ();
+        my %iprange = map { $_ => 1 } @current;
+        map { $iprange{$_} = 1 } grep { exists($ipranges->{$_}) } @ipranges;
+        $job->{config}->{ip_range} = [ sort keys(%iprange) ];
         $self->need_save(jobs);
+    } else {
+        my $iprange = $form->{'input/ip_range'}
+            or return;
+
+        my @selected = map { m{^checkbox/(.*)$} } grep { /^checkbox\// && $form->{$_} eq 'on' } keys(%{$form});
+        foreach my $name (@selected) {
+            my $job = $jobs->{$name}
+                or next;
+            # Filter out jobs
+            next unless $job->{type} && $job->{type} eq 'netscan';
+            next unless ref($job->{config}) eq 'HASH';
+            next unless ref($job->{config}->{ip_range}) eq 'ARRAY';
+            next if first { $_ eq $iprange } @{$job->{config}->{ip_range}};
+            # Add ip range
+            push @{$job->{config}->{ip_range}}, $iprange;
+            $self->need_save(jobs);
+        }
     }
 }
 
