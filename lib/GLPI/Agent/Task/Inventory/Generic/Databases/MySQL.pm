@@ -182,7 +182,14 @@ sub _mysqlOptionsFile {
         print $fh "port = $credential->{port}\n" if $credential->{port};
         print $fh "user = $credential->{login}\n" if $credential->{login};
         print $fh "socket = $credential->{socket}\n" if $credential->{socket};
-        print $fh "password = $credential->{password}\n" if $credential->{password};
+        if ($credential->{password}) {
+            my $password = $credential->{password};
+            if ($password =~ /[#'"]/) {
+                $password =~ s/"/\\"/g;
+                $password = '"'.$password.'"'
+            }
+            print $fh "password = $password\n";
+        }
         print $fh "connect-timeout = 30\n";
         close($fh);
     }
