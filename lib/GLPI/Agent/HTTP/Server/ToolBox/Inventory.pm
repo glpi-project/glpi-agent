@@ -611,7 +611,7 @@ sub netscan {
 
     my $procname = "network scan";
     my ($running) = grep {
-        $_->{procname} eq $procname && $_->{done} == 0 && !$_->{aborted} && 
+        $_->{procname} eq $procname && $_->{done} == 0 && !$_->{aborted} &&
         (($name && $_->{name} eq $name) || (@{$ip_ranges} == 1 && grep { $ip_ranges->[0] eq $_ } @{$_->{ip_ranges}}))
         && (!$_->{ip} || $_->{ip} eq $ip || !$ip)
     } values(%{$self->{tasks}});
