@@ -444,6 +444,35 @@ sub read_yaml {
         }
     }
 
+    # Normalize some integer values
+    my $configuration = $self->yaml("configuration");
+    if ($configuration) {
+        map { $configuration->{$_} = int($configuration->{$_}) } grep { defined($configuration->{$_}) } qw{
+            session_timeout
+        };
+    }
+    my $jobs = $self->yaml("jobs");
+    if ($jobs) {
+        foreach my $job (values(%{$jobs})) {
+            map { $job->{$_} = int($job->{$_}) } grep { defined($job->{$_}) } qw{
+                last_run_date next_run_date
+            };
+            my $config = $job->{config}
+                or next;
+            map { $config->{$_} = int($config->{$_}) } grep { defined($config->{$_}) } qw{
+                threads timeout
+            };
+        }
+    }
+    my $credentials = $self->yaml("credentials");
+    if ($credentials) {
+        foreach my $credential (values(%{$credentials})) {
+            map { $credential->{$_} = int($credential->{$_}) } grep { defined($credential->{$_}) } qw{
+                port
+            };
+        }
+    }
+
     return 1;
 }
 

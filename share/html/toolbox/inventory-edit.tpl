@@ -22,8 +22,8 @@
       <div class='form-edit'>
         <label for='name'>{_"Name"}</label>
         <div class='form-edit-row'>
-          <input class='input-row' type='text' id='name' name='input/name' placeholder='{_"Name"}' value='{$name}' size='20' {$id ? " title='Id: $id'" : ""} disabled/>
-          <input type='button' class='button' value='{_"Rename"}' onclick='handle_rename()'/>
+          <input class='input-row' type='text' id='name' name='input/name' placeholder='{_"Name"}' value='{$name}' size='20' {($id ? " title='Id: $id'" : "").($form{empty} ? "" : " disabled")}/>
+          <input type='button' class='button' value='{_"Rename"}' onclick='handle_rename()'{$form{empty} ? " style='display:none'" : ""}/>
         </div>
         <div id='rename-overlay' class='overlay' onclick='cancel_rename()'>
           <div class='overlay-frame' onclick='event.stopPropagation()'>
@@ -84,15 +84,16 @@
         <div id='ip-ranges'>
           <ul>{
           my @ipranges = ();
+          my %selected = ();
           my %checkbox = map { m{^checkbox/ip_range/(.*)$} => 1 } grep { m{^checkbox/ip_range/} && $form{$_} eq 'on' } keys(%form);
-          map { $checkbox{$_} = 1 } @{$job->{config}->{ip_range}} if !keys(%checkbox) && @{$job->{config}->{ip_range}//[]};
+          map { $checkbox{$_} = 1 } @{$job->{config}->{ip_range}} if @{$job->{config} ? $job->{config}->{ip_range} // [] : []};
           @ipranges = sort { $a cmp $b } keys(%checkbox);
           foreach my $name (@ipranges) {
             my $range = $ip_range{$name}
               or next;
             $OUT .= "
             <li>
-              <input type='checkbox' name='checkbox/ip_range/'".encode('UTF-8', encode_entities($name))."' checked/>
+              <input type='checkbox' name='checkbox/ip_range/".encode('UTF-8', encode_entities($name))."' checked/>
               <div class='with-tooltip'>
                 <a href='$url_path/ip_range?edit=".uri_escape(encode("UTF-8", $name))."'>".encode('UTF-8', encode_entities($range->{name} || $name))."
                   <div class='tooltip right-tooltip'>
@@ -104,20 +105,25 @@
                 </a>
               </div>
             </li>";
-            delete $ip_range{$name};
+            $selected{$name} = 1;
           }
-          if (keys(%ip_range)) {
+          my @remains = grep { !exists($selected{$_}) } keys(%ip_range);
+          if (@remains) {
             my $select = $form{"input/ip_range"} || "";
             $OUT .= "
             <li>
-              <select id='select-iprange' name='input/ip_range'".($type ne "local" ? "" : " disabled").">
-                <option".($select ? "" : " selected")."></option>".
+              <input id='add-iprange' type='hidden' name='add-iprange' value='".(@remains == 1 ? encode('UTF-8', encode_entities($remains[0])) : "").($type eq "local" ? "" : " disabled")."'/>
+              <select id='select-iprange' onchange='updateSelectIprange(this)' size='".
+                (@remains > 5 ? 5 : scalar(@remains))."'".
+                ($type ne "local" ? "" : " disabled").
+                (@ipranges ? "" : " required").(@remains > 1 ? " multiple" : "").">".
             join("", map { "
-                <option".(($select && $select eq $_)? " selected" : "").
+                <option".(($select && $select eq $_) || @remains == 1 ? " selected" : "").
             " value='".encode('UTF-8', encode_entities($_))."'>".encode('UTF-8', encode_entities($ip_range{$_}->{name} || $_))."</option>"
-          } sort { $a cmp $b } keys(%ip_range))."
-              </select>
-              <input id='add-iprange' class='input-row' type='submit' name='submit/add-iprange' value='".(_"Add ip range")."'/>
+          } sort { $a cmp $b } @remains)."
+              </select>".(@remains > 1 ? "
+              <br/>" : "").($form{empty} ? "" : "
+              <input type='submit' name='submit/add-iprange' value='".(_"Add ip range")."'/>")."
             </li>";
           }
           '';}
@@ -125,10 +131,37 @@
         </div>
       </div>
     </div>
+    <div class='form-edit' id='netscan-options-2' style='display: {$type ne "local" ? "flex" : "none"}'>
+      <label>{_"Options"}:</label>
+      <div class='form-edit-row'>
+        <div class='form-edit-row'>
+          <label for='threads' class='run-options'>{_"Threads"}:</label>
+          <select id='threads' name='input/threads' class='run-options'{$type ne "local" ? "" : " disabled"}>{
+            foreach my $opt (@threads_options) {
+              $OUT .= "
+            <option" .
+                ($threads_option && $threads_option eq $opt ? " selected" : "") .
+                ">$opt</option>";
+            }}
+          </select>
+        </div>
+        <div class='form-edit-row'>
+          <label for='timeout' class='run-options'>{_"SNMP Timeout"}:</label>
+          <select id='timeout' name='input/timeout' class='run-options'{$type ne "local" ? "" : " disabled"}>{
+            foreach my $opt (@timeout_options) {
+              $OUT .= "
+            <option".
+                ($timeout_option && $timeout_option eq $opt ? " selected" : "").
+                ">$opt</option>";
+            }}
+          </select>
+        </div>
+      </div>
+    </div>
     <div class='form-edit-row'>
       <div class='form-edit'>
-      <label for='desc'>{_"Description"}</label>
-      <input class='input-row' type='text' id='desc' name='input/description' placeholder='{_"Description"}' value='{$job->{description} || $form{"input/description"} || ""}' size='40'>
+        <label for='desc'>{_"Description"}</label>
+        <input class='input-row' type='text' id='desc' name='input/description' placeholder='{_"Description"}' value='{$job->{description} || $form{"input/description"} || ""}' size='40'>
       </div>
     </div>
     <input type='submit' class='big-button' name='submit/{
@@ -147,10 +180,12 @@
       document.getElementById("tag-config").disabled = !islocal;
       document.getElementById("config-newtag").disabled = !islocal;
       // Netscan form
+      document.getElementById("netscan-options-2").style = netscanshow;
       document.getElementById("netscan-options").style = netscanshow;
-      document.getElementById("tag-config").disabled = islocal;
       document.getElementById("add-iprange").disabled = islocal;
       document.getElementById("select-iprange").disabled = islocal;
+      document.getElementById("threads").disabled = islocal;
+      document.getElementById("timeout").disabled = islocal;
     \}
     function config_new_tag () \{
       document.getElementById("config-newtag").disabled = false;
@@ -167,5 +202,18 @@
     function cancel_rename () \{
       document.getElementById("rename-overlay").style.display = "none";
       document.getElementById("input-rename").disabled = true;
+    \}
+    function updateSelectIprange (select) \{
+      var input = document.getElementById("add-iprange-select")
+      var options = select.options;
+      input.value = '';
+      for (var i = 0; i < options.length; i++) \{
+        if (options[i].selected) \{
+          if (input.value[0] != null)
+            input.value += "&";
+          input.value += encodeURIComponent(options[i].value);
+          options[i].selected = true;
+        \}
+      \}
     \}
   </script>
