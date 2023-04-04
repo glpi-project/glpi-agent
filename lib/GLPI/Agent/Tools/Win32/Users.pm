@@ -51,7 +51,34 @@ sub getProfileUsername {
     return $userenvkey->{'/USERNAME'}
         if $userenvkey && defined($userenvkey->{'/USERNAME'}) && length($userenvkey->{'/USERNAME'});
 
-    # Then try WMI request
+    # Then try to get it from Group Policy Caching
+    my $cacheentry = getRegistryKey(
+        path        => "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows/CurrentVersion/Group Policy/DataStore/$user->{SID}/0",
+        # Important for remote inventory optimization
+        required    => [ qw/szTargetName/ ],
+    );
+    return $cacheentry->{'/szTargetName'}
+        if $cacheentry && defined($cacheentry->{'/szTargetName'}) && length($cacheentry->{'/szTargetName'});
+
+    # Eventually look up in LogonUI session datas
+    my $sessiondata = getRegistryKey(
+        path        => "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows/CurrentVersion/Authentication/LogonUI/SessionData",
+        # Important for remote inventory optimization
+        required    => [ qw/LoggedOnUserSID LoggedOnUser/ ],
+    );
+    if ($sessiondata) {
+        foreach my $key (keys(%{$sessiondata})) {
+            next unless $key =~ m{/$};
+            my $usersid = $sessiondata->{$key}->{'/LoggedOnUserSID'};
+            next unless defined($usersid) && $user->{SID} eq $usersid;
+            my $account = $sessiondata->{$key}->{'/LoggedOnUser'};
+            next unless defined($account);
+            my ($username) = $account =~ /^[^\\]*\\(.*)$/;
+            return $username if defined($username) && length($username);
+        }
+    }
+
+    # Finally try WMI request
     my ($account) = getUsers(sid => $user->{SID});
     return $account->{NAME} if $account && $account->{NAME};
 

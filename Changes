@@ -74,6 +74,7 @@ inventory:
 * Fix inventory delay support for Local target to use the delaytime from configuration
   in place of always 3600 seconds
 * Fix mysql/mariadb databases inventory if credentials includes special chars in password
+* fix #360: Avoid more WMI timeout during software inventory using scan_profiles option
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
