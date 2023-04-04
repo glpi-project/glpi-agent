@@ -75,6 +75,8 @@ inventory:
   in place of always 3600 seconds
 * Fix mysql/mariadb databases inventory if credentials includes special chars in password
 * fix #360: Avoid more WMI timeout during software inventory using scan_profiles option
+* Update service pack reporting on windows 10 and later to report BuildNumber + Update
+  Build Revision (UBR) like reported by system winver command.
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory

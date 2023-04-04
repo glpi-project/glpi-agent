@@ -26,7 +26,7 @@ sub doInventory {
     my ($operatingSystem) = getWMIObjects(
         class      => 'Win32_OperatingSystem',
         properties => [ qw/
-            Caption Version CSDVersion LastBootUpTime InstallDate
+            Caption Version CSDVersion LastBootUpTime InstallDate BuildNumber
         / ]
     );
 
@@ -51,8 +51,19 @@ sub doInventory {
         BOOT_TIME      => $boottime,
         KERNEL_VERSION => $operatingSystem->{Version},
         FULL_NAME      => $operatingSystem->{Caption},
-        SERVICE_PACK   => $operatingSystem->{CSDVersion}
     };
+
+    # UBR (Update Build Revision) replace Service Pack after XP/2003
+    my $UBR = hex2dec(getRegistryValue(
+        path => 'HKEY_LOCAL_MACHINE/Software/Microsoft/Windows NT/CurrentVersion/UBR',
+        # Needed for remote inventory
+        method  => "GetDWORDValue",
+    ));
+    if ($UBR) {
+        $os->{SERVICE_PACK} = $operatingSystem->{BuildNumber} ? $operatingSystem->{BuildNumber}.".$UBR" : "$UBR";
+    } elsif (defined($operatingSystem->{CSDVersion})) {
+        $os->{SERVICE_PACK} = $operatingSystem->{CSDVersion};
+    }
 
     # Support DisplayVersion as Operating system version from Windows 10 20H1
     my $displayversion = getRegistryValue(
