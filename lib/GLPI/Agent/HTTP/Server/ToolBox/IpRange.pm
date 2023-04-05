@@ -240,7 +240,7 @@ sub _submit_rename {
 
     unless (exists($ip_range->{$edit})) {
         $edit = encode('UTF-8', $edit);
-        return $self->errors("Rename IP range: No such entry to rename: '$edit'");
+        return $self->errors("Rename IP range: No such IP range: '$edit'");
     }
 
     $ip_range->{$newname} = delete $ip_range->{$edit};
@@ -249,15 +249,21 @@ sub _submit_rename {
 
     # We also need to update any usage in tasks
     my $jobs = $self->yaml('jobs') || {};
+    my $count = 0;
     foreach my $job (values(%{$jobs})) {
         next unless $job->{type} eq 'netscan';
         my $config = $job->{config}
             or next;
-        next unless $config->{ip_range} && first { $_ eq $edit } @{$config->{ip_range}};
+        next unless ref($config) eq 'HASH';
+        next unless ref($config->{ip_range} eq 'ARRAY' && first { $_ eq $edit } @{$config->{ip_range}};
         my @ipranges = grep { $_ ne $edit } @{$config->{ip_range}};
         push @ipranges, $newname;
         $config->{ip_range}= [ sort @ipranges ];
+        $count++;
+    }
+    if ($count) {
         $self->need_save('jobs');
+        $self->debug2("Fixed $count jobs ip_range refs");
     }
 }
 
@@ -266,36 +272,12 @@ sub _submit_update {
 
     return unless $form && $ip_range;
 
-    my $update = $form->{'edit'};
-    if ($update && exists($ip_range->{$update})) {
+    my $edit = $form->{'edit'};
+    if ($edit && exists($ip_range->{$edit})) {
         # Validate input/name before updating
-        my $name = $form->{'input/name'} || $update;
+        my $name = $form->{'input/name'} || $edit;
         my $id   = $form->{'input/id'};
         my $entry = $name . ( $id ? "-$id" : "" );
-        if ($entry && $entry ne $update && exists($ip_range->{$entry})) {
-            $name = encode('UTF-8', $name);
-            return $self->errors("IP range update: An entry still exists with that name: '$name'");
-        }
-        # Rename the entry if necessary
-        if ($entry ne $update) {
-            $ip_range->{$entry} = delete $ip_range->{$update};
-            # And update any reference usage in jobs
-            my $jobs = $self->yaml('jobs') || {};
-            my $count = 0;
-            foreach my $job (values(%{$jobs})) {
-                next unless ref($job->{config}) eq 'HASH';
-                next unless ref($job->{config}->{ip_range}) eq 'ARRAY';
-                next unless first { $_ eq $update } @{$job->{config}->{ip_range}};
-                $count++;
-                $job->{config}->{ip_range} = [
-                    map { $_ eq $update ? $entry : $_ } @{$job->{config}->{ip_range}}
-                ];
-            }
-            if ($count) {
-                $self->need_save('jobs');
-                $self->debug2("Fixed $count jobs ip_range refs");
-            }
-        }
         $self->edit($entry);
         # Validate form
         if (!$form->{"input/ip_start"}) {
@@ -329,6 +311,8 @@ sub _submit_update {
         }
         $self->need_save(ip_range);
         $self->reset_edit();
+    } else {
+        $self->errors("IP range update: No such IP range: '$edit'");
     }
 }
 

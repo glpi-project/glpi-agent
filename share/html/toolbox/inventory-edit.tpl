@@ -28,7 +28,7 @@
         <div id='rename-overlay' class='overlay' onclick='cancel_rename()'>
           <div class='overlay-frame' onclick='event.stopPropagation()'>
             <label for='rename' class='newtag'>{_"Rename"}:</label>
-            <input id='input-rename' type='text' class='newtag' name='input/new-name' value='{$name}' size='30' disabled/>
+            <input id='input-rename' type='text' class='newtag' name='input/new-name' value='{$form{"input/new-name"} || $name}' size='30' disabled/>
             <input type='submit' class='big-button' name='submit/rename' value='{_"Rename"}'/>
             <input type='button' class='big-button' name='submit/rename-cancel' value='{_"Cancel"}' onclick='cancel_rename()'/>
           </div>

@@ -223,7 +223,7 @@ sub _submit_rename {
 
     unless (exists($jobs->{$edit})) {
         $edit = encode('UTF-8', $edit);
-        return $self->errors("Rename task: No such entry to rename: '$edit'");
+        return $self->errors("Rename task: No such task: '$edit'");
     }
 
     $jobs->{$newname} = delete $jobs->{$edit};
