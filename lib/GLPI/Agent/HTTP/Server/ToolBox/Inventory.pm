@@ -391,7 +391,8 @@ sub _submit_update {
             }
         }
     } else {
-        $self->errors("Update task: Nothing to update");
+        $self->errors("Update task: No such task: '$edit'");
+        $self->reset_edit();
     }
 }
 
