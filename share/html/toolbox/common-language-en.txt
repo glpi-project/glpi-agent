@@ -17,7 +17,7 @@ Tag:
 Edit:
 Update:
 Delete:
-Allow renaming:
+Rename:
 Revert selection:
 
 yes:

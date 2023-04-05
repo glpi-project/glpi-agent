@@ -17,7 +17,7 @@ Remotes: Inventaires distants
 Edit: Éditer
 Update: Mettre à jour
 Delete: Supprimer
-Allow renaming: Autoriser le renommage
+Rename: Renommer
 Revert selection: Inverser la sélection
 
 yes: oui
