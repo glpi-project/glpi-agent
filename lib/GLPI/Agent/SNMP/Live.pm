@@ -121,7 +121,7 @@ sub reset_original_context {
                              undef   ;
 
     if ($version eq 'snmpv3') {
-        delete $self->{context};
+        $self->{context} = "";
     } else {
         $self->{session} = $self->{oldsession};
         delete $self->{oldsession};
@@ -135,7 +135,7 @@ sub get {
 
     my $session = $self->{session};
     my %options = (-varbindlist => [$oid]);
-    $options{'-contextname'} = $self->{context} if $self->{context};
+    $options{'-contextname'} = $self->{context} if defined($self->{context});
 
     my $response = $session->get_request(%options);
 
@@ -158,7 +158,7 @@ sub walk {
 
     my $session = $self->{session};
     my %options = (-baseoid => $oid);
-    $options{'-contextname'}    = $self->{context} if $self->{context};
+    $options{'-contextname'}    = $self->{context} if defined($self->{context});
     $options{'-maxrepetitions'} = 1                if $session->version() != 0;
 
     my $response = $session->get_table(%options);

@@ -118,6 +118,7 @@ netdiscovery/netinventory:
 * fix #351: Add better Canon printers & plotters support
 * Update LLDP support for Juniper devices
 * fix #353: Don't crash task on invalid jobs which may be sent by the server
+* Fix context switching reset with SNMPv3 which may prevent any new request to work
 
 deploy:
 * Fix possible failure when mirror is set but misses file parts
