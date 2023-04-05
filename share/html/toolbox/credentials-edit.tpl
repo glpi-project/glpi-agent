@@ -34,9 +34,16 @@
       <div class='form-edit'>
         <label for='name'>{_"Name"}</label>
         <div class='form-edit-row'>
-          <input class='input-row' type='text' id='name' name='input/name' placeholder='{_"Name"}' value='{$name}' size='20'{
-            ($id ? " title='Id: $id'" : "").($form{allow_name_edition} ? ">" : " disabled>
-          <input class='input-row' type='submit' name='submit/rename' value='"._("Allow renaming")."'>")}
+          <input class='input-row' type='text' id='name' name='input/name' placeholder='{_"Name"}' value='{$name}' size='20'{($id ? " title='Id: $id'" : "").($form{empty} ? "" : " disabled")}/>
+          <input type='button' class='button' value='{_"Rename"}' onclick='handle_rename()'{$form{empty} ? " style='display:none'" : ""}/>
+        </div>
+        <div id='rename-overlay' class='overlay' onclick='cancel_rename()'>
+          <div class='overlay-frame' onclick='event.stopPropagation()'>
+            <label for='rename' class='newtag'>{_"Rename"}:</label>
+            <input id='input-rename' type='text' class='newtag' name='input/new-name' value='{$form{"input/new-name"} || $name}' size='30' disabled/>
+            <input type='submit' class='big-button' name='submit/rename' value='{_"Rename"}'/>
+            <input type='button' class='big-button' name='submit/rename-cancel' value='{_"Cancel"}' onclick='cancel_rename()'/>
+          </div>
         </div>
       </div>
     </div>
@@ -270,5 +277,13 @@
     document.getElementById('authpass').type = checked ? 'text' : 'password';
     document.getElementById('privpass').type = checked ? 'text' : 'password';
     document.getElementById('navbar-credentials').href = '{$url_path."/credentials"}'+(checked ? '?show-password=on' : '');
+  \}
+  function handle_rename () \{
+    document.getElementById("input-rename").disabled = false;
+    document.getElementById("rename-overlay").style.display = "block";
+  \}
+  function cancel_rename () \{
+    document.getElementById("rename-overlay").style.display = "none";
+    document.getElementById("input-rename").disabled = true;
   \}
   </script>

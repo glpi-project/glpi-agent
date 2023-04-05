@@ -94,8 +94,6 @@ sub _submit_add {
 
     return unless $form && $credentials;
 
-    $form->{allow_name_edition} = $form->{empty};
-
     # Validate input/name before updating
     my $name = $form->{'input/name'};
     if ($name && exists($credentials->{$name})) {
@@ -176,7 +174,6 @@ sub _submit_add {
             if exists($credentials->{$name}->{port});
         $self->need_save(credentials);
         delete $form->{empty};
-        delete $form->{allow_name_edition};
     } elsif (!$name) {
         $self->errors("New credential: Can't create entry without name");
     }
@@ -189,7 +186,6 @@ sub _submit_add_v1_v2c {
 
     # We should return an empty add form with name edition allowed
     $form->{empty} = 1;
-    $form->{allow_name_edition} = 1;
     $form->{snmpversion} = "v2c";
 }
 
@@ -200,7 +196,6 @@ sub _submit_add_v3 {
 
     # We should return an empty add form with name edition allowed
     $form->{empty} = 1;
-    $form->{allow_name_edition} = 1;
     $form->{snmpversion} = "v3";
 }
 
@@ -211,17 +206,55 @@ sub _submit_add_remotecred {
 
     # We should return an empty add form with name edition allowed
     $form->{empty} = 1;
-    $form->{allow_name_edition} = 1;
     $form->{type} = "ssh";
 }
 
 sub _submit_rename {
-    my ($self, $form) = @_;
+    my ($self, $form, $credentials) = @_;
 
     return unless $form;
 
-    # Just enable the name field
-    $form->{allow_name_edition} = 1;
+    my $edit = $self->edit();
+    my $newname = $form->{'input/new-name'};
+
+    # Do nothing if no new was provided
+    return unless defined($newname) && length($newname);
+
+    # Do nothing if nothing to rename
+    return unless defined($edit) && length($edit);
+
+    # Do nothing if name is the same
+    return if $newname eq $form->{'edit'};
+
+    if (exists($credentials->{$newname})) {
+        $newname = encode('UTF-8', $newname);
+        return $self->errors("Rename credential: An entry still exists with that name: '$newname'");
+    }
+
+    unless (exists($credentials->{$edit})) {
+        $edit = encode('UTF-8', $edit);
+        return $self->errors("Rename credential: No such credential: '$edit'");
+    }
+
+    $credentials->{$newname} = delete $credentials->{$edit};
+    $self->need_save(credentials);
+    $self->edit($newname);
+
+    # We also need to fix any credential ref in ip_range credentials entries
+    my $ip_range = $self->yaml('ip_range') || {};
+    my $count = 0;
+    foreach my $range (values(%{$ip_range})) {
+        next unless ref($range->{credentials}) eq 'ARRAY';
+        next unless first { $_ eq $edit } @{$range->{credentials}};
+        my @credentials = grep { $_ ne $edit } @{$range->{credentials}};
+        push @credentials, $newname;
+        $range->{credentials} = [ sort @credentials ];
+        $count++;
+    }
+    if ($count) {
+        $self->need_save('ip_range');
+        $self->debug2("Fixed $count ip_range credential refs");
+    }
 }
 
 sub _submit_update {
@@ -229,15 +262,12 @@ sub _submit_update {
 
     return unless $form && $credentials;
 
-    my $update = $form->{'edit'};
-    if ($update && exists($credentials->{$update})) {
-        my $name = $form->{'input/name'} || $update;
+    my $edit = $form->{'edit'};
+    if ($edit && exists($credentials->{$edit})) {
+        my $name = $form->{'input/name'} || $edit;
         my $id   = $form->{'input/id'};
         my $entry = $name . ( $id ? "-$id" : "" );
-        if ($entry && $entry ne $update && exists($credentials->{$entry})) {
-            $name = encode('UTF-8', $name);
-            return $self->errors("Credential update: An entry still exists with that name: '$name'");
-        }
+        $self->edit($entry);
         my @keys;
         # Validate form
         my $type = $form->{"input/type"} // "snmp";
@@ -283,26 +313,6 @@ sub _submit_update {
             # Supported keys
             @keys = qw(description type remoteuser remotepass port mode);
         }
-        # Rename the entry
-        if ($entry ne $update) {
-            $credentials->{$entry} = delete $credentials->{$update};
-            # We also need to fix any credential ref in ip_range credentials entries
-            my $yaml = $self->yaml() || {};
-            my $ip_range = $yaml->{ip_range} || {};
-            my $count = 0;
-            foreach my $range (values(%{$ip_range})) {
-                next unless ref($range->{credentials}) eq 'ARRAY';
-                next unless first { $_ eq $update } @{$range->{credentials}};
-                $range->{credentials} = [
-                    map { $_ eq $update ? $entry : $_ } @{$range->{credentials}}
-                ];
-            }
-            if ($count) {
-                $self->need_save("ip_range");
-                $self->debug2("Fixed $count ip_range credential refs");
-            }
-        }
-        $self->edit($entry);
         if ($type eq 'snmp') {
             # Cleanup unused by version
             if ($form->{"input/snmpversion"} =~ /^v1|v2c$/) {
@@ -328,9 +338,11 @@ sub _submit_update {
             }
         }
         # Convert port as integer to be cleaner in yaml
-        $credentials->{$name}->{port} = int($credentials->{$name}->{port})
-            if exists($credentials->{$name}->{port});
+        $credentials->{$entry}->{port} = int($credentials->{$entry}->{port})
+            if exists($credentials->{$entry}->{port});
         $self->need_save(credentials);
+    } else {
+        $self->errors("Credential update: No such credential: '$edit'");
     }
 }
 
