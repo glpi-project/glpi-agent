@@ -3,6 +3,7 @@
 ERROR: ERREUR
 
 New IP range: Nouvelle plage IP
+Rename IP range: Renommage de plage IP
 No ip range provided name: Pas de nom de plage ip fourni
 An entry still exists with that name: Une entrée existe déjà avec ce nom
 Start ip is mandatory: L'ip de début est mandataire

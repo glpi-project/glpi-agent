@@ -169,8 +169,6 @@ sub _submit_add {
 
     return unless $form && $ip_range;
 
-    $form->{allow_name_edition} = $form->{empty};
-
     # Validate input/name before updating
     my $name = trimWhitespace($form->{'input/name'} || $form->{'edit'} || "");
     if ($name && exists($ip_range->{$name})) {
@@ -211,22 +209,56 @@ sub _submit_add {
         }
         $self->need_save(ip_range);
         delete $form->{empty};
-        delete $form->{allow_name_edition};
     } else {
         $self->errors("New IP range: Can't create entry without name") if $form->{empty};
         # We should return an empty add form with name edition allowed
         $form->{empty} = 1;
-        $form->{allow_name_edition} = 1;
     }
 }
 
 sub _submit_rename {
-    my ($self, $form) = @_;
+    my ($self, $form, $ip_range) = @_;
 
-    return unless $form;
+    return unless $form && $ip_range;
 
-    # Just enable the name field
-    $form->{allow_name_edition} = 1;
+    my $edit = $self->edit();
+    my $newname = $form->{'input/new-name'};
+
+    # Do nothing if no new was provided
+    return unless defined($newname) && length($newname);
+
+    # Do nothing if nothing to rename
+    return unless defined($edit) && length($edit);
+
+    # Do nothing if name is the same
+    return if $newname eq $form->{'edit'};
+
+    if (exists($ip_range->{$newname})) {
+        $newname = encode('UTF-8', $newname);
+        return $self->errors("Rename IP range: An entry still exists with that name: '$newname'");
+    }
+
+    unless (exists($ip_range->{$edit})) {
+        $edit = encode('UTF-8', $edit);
+        return $self->errors("Rename IP range: No such entry to rename: '$edit'");
+    }
+
+    $ip_range->{$newname} = delete $ip_range->{$edit};
+    $self->need_save(ip_range);
+    $self->edit($newname);
+
+    # We also need to update any usage in tasks
+    my $jobs = $self->yaml('jobs') || {};
+    foreach my $job (values(%{$jobs})) {
+        next unless $job->{type} eq 'netscan';
+        my $config = $job->{config}
+            or next;
+        next unless $config->{ip_range} && first { $_ eq $edit } @{$config->{ip_range}};
+        my @ipranges = grep { $_ ne $edit } @{$config->{ip_range}};
+        push @ipranges, $newname;
+        $config->{ip_range}= [ sort @ipranges ];
+        $self->need_save('jobs');
+    }
 }
 
 sub _submit_update {
@@ -324,8 +356,6 @@ sub _submit_addcredential {
     my $credentials = $yaml->{credentials} || {};
 
     return unless $form && $ip_range && $credentials;
-
-    $form->{allow_name_edition} = $form->{empty};
 
     my $credential = $form->{'input/credentials'};
     return $self->errors("IP range credential adding: No credential selected")
