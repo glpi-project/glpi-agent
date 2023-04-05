@@ -3,6 +3,7 @@
 ERROR:
 
 New IP range:
+Rename IP range:
 No ip range provided name:
 An entry still exists with that name:
 Start ip is mandatory:
