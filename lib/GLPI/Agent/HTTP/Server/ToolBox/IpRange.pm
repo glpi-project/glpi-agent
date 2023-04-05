@@ -274,11 +274,6 @@ sub _submit_update {
 
     my $edit = $form->{'edit'};
     if ($edit && exists($ip_range->{$edit})) {
-        # Validate input/name before updating
-        my $name = $form->{'input/name'} || $edit;
-        my $id   = $form->{'input/id'};
-        my $entry = $name . ( $id ? "-$id" : "" );
-        $self->edit($entry);
         # Validate form
         if (!$form->{"input/ip_start"}) {
             return $self->errors("IP range update: Start ip is mandatory");
@@ -297,22 +292,22 @@ sub _submit_update {
         foreach my $key (qw(ip_start ip_end description)) {
             my $input = "input/$key";
             if (defined($form->{$input}) && length($form->{$input})) {
-                $ip_range->{$entry}->{$key} = $form->{$input};
+                $ip_range->{$edit}->{$key} = $form->{$input};
             } else {
-                delete $ip_range->{$entry}->{$key};
+                delete $ip_range->{$edit}->{$key};
             }
         }
         my @credentials = sort { $a cmp $b } map { m{^checkbox/cred/(.*)$} }
             grep { m{^checkbox/cred/} && $form->{$_} eq 'on' } keys(%{$form});
         if (@credentials) {
-            $ip_range->{$entry}->{credentials} = \@credentials;
+            $ip_range->{$edit}->{credentials} = \@credentials;
         } else {
-            delete $ip_range->{$entry}->{credentials};
+            delete $ip_range->{$edit}->{credentials};
         }
         $self->need_save(ip_range);
-        $self->reset_edit();
     } else {
         $self->errors("IP range update: No such IP range: '$edit'");
+        $self->reset_edit();
     }
 }
 

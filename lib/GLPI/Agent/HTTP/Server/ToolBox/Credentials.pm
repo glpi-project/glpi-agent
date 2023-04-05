@@ -264,10 +264,6 @@ sub _submit_update {
 
     my $edit = $form->{'edit'};
     if ($edit && exists($credentials->{$edit})) {
-        my $name = $form->{'input/name'} || $edit;
-        my $id   = $form->{'input/id'};
-        my $entry = $name . ( $id ? "-$id" : "" );
-        $self->edit($entry);
         my @keys;
         # Validate form
         my $type = $form->{"input/type"} // "snmp";
@@ -332,17 +328,18 @@ sub _submit_update {
                 $key = "password" if $key eq "remotepass";
             }
             if (defined($form->{$input}) && length($form->{$input})) {
-                $credentials->{$entry}->{$key} = $form->{$input};
+                $credentials->{$edit}->{$key} = $form->{$input};
             } else {
-                delete $credentials->{$entry}->{$key};
+                delete $credentials->{$edit}->{$key};
             }
         }
         # Convert port as integer to be cleaner in yaml
-        $credentials->{$entry}->{port} = int($credentials->{$entry}->{port})
-            if exists($credentials->{$entry}->{port});
+        $credentials->{$edit}->{port} = int($credentials->{$edit}->{port})
+            if exists($credentials->{$edit}->{port});
         $self->need_save(credentials);
     } else {
         $self->errors("Credential update: No such credential: '$edit'");
+        $self->reset_edit();
     }
 }
 
