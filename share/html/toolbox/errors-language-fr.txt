@@ -36,6 +36,7 @@ Wrong SNMP version: Mauvaise version SNMP
 Community is mandatory with version: La communauté est obligatoire avec cette version
 Username is mandatory with SNMP v3: Le nom est obligatoire avec SNMP v3
 Credential update: Mise à jour de l'identifiant
+Rename credential: Renommage de l'identifiant
 
 Deleting results: Suppression de résultats
 No result selected: Pas de résultat sélectionné

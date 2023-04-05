@@ -36,6 +36,7 @@ Wrong SNMP version:
 Community is mandatory with version:
 Username is mandatory with SNMP v3:
 Credential update:
+Rename credential:
 
 Deleting results:
 No result selected:
