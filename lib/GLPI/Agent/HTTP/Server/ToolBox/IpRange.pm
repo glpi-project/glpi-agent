@@ -255,10 +255,10 @@ sub _submit_rename {
         my $config = $job->{config}
             or next;
         next unless ref($config) eq 'HASH';
-        next unless ref($config->{ip_range} eq 'ARRAY' && first { $_ eq $edit } @{$config->{ip_range}};
+        next unless ref($config->{ip_range}) eq 'ARRAY' && first { $_ eq $edit } @{$config->{ip_range}};
         my @ipranges = grep { $_ ne $edit } @{$config->{ip_range}};
         push @ipranges, $newname;
-        $config->{ip_range}= [ sort @ipranges ];
+        $config->{ip_range} = [ sort @ipranges ];
         $count++;
     }
     if ($count) {
