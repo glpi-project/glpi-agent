@@ -284,6 +284,8 @@ sub _submit_add {
             enabled     => $enabled,
             type        => $type,
         };
+        $job->{config}->{tag} = $form->{"input/tag"}
+            if $form->{"input/tag"};
         if ($type eq 'netscan') {
             my $ipranges = $yaml->{ip_range} || {};
             my $iprange = $form->{'add-iprange'}
@@ -297,9 +299,6 @@ sub _submit_add {
             $job->{config}->{threads} = $threads;
             my $timeout = int($form->{"input/timeout"}) || 1;
             $job->{config}->{timeout} = $timeout;
-        } else {
-            $job->{config}->{tag} = $form->{"input/tag"}
-                if $form->{"input/tag"};
         }
         $job->{description} = $form->{"input/description"} if $form->{"input/description"};
         $jobs->{$name} = $job;
@@ -339,6 +338,15 @@ sub _submit_update {
             }
         }
 
+        my $tag = $form->{"input/tag"};
+        if (!$tag && exists($job->{config}->{tag})) {
+            delete $job->{config}->{tag};
+            $self->need_save(jobs);
+        } elsif ($tag && (!exists($job->{config}->{tag}) || $job->{config}->{tag} ne $tag)) {
+            $job->{config}->{tag} = $tag;
+            $self->need_save(jobs);
+        }
+
         if ($type eq 'netscan') {
             my $ipranges = $yaml->{ip_range} || {};
             my @ipranges = map { m{^checkbox/ip_range/(.*)$} } grep { /^checkbox\/ip_range\// && $form->{$_} eq 'on' } keys(%{$form});
@@ -367,15 +375,6 @@ sub _submit_update {
             my $timeout = int($form->{"input/timeout"});
             if ($timeout > 0 && (!$job->{config} || !$job->{config}->{timeout} || int($job->{config}->{timeout}) != $timeout)) {
                 $job->{config}->{timeout} = $timeout;
-                $self->need_save(jobs);
-            }
-        } else {
-            my $tag = $form->{"input/tag"};
-            if (!$tag && exists($job->{config}->{tag})) {
-                delete $job->{config}->{tag};
-                $self->need_save(jobs);
-            } elsif ($tag && (!exists($job->{config}->{tag}) || $job->{config}->{tag} ne $tag)) {
-                $job->{config} = { tag => $tag };
                 $self->need_save(jobs);
             }
         }
