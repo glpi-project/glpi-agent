@@ -40,7 +40,7 @@ Aborted:
 Freeze log output:
 Failure:
 
-Inventory tasks:
+Only for remote inventory and ESX tasks:
 Add new inventory task:
 Edit &laquo;&nbsp;%s&nbsp;&raquo; inventory task:
 Create inventory task:

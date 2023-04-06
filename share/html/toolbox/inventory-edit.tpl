@@ -52,11 +52,12 @@
         </ul>
       </div>
     </div>
-    <div class='form-edit-row' id='local-options' style='display: {$type eq "local" ? "flex" : "none"}'>
+    <div class='form-edit-row' id='tag-option'>
       <div class='form-edit'>
         <label for='tag' class='tag'>{_"Use a tag"}:</label>
+        <p id='tag-option-condition' class='run-options' style='display: {$type eq "local" ? "none" : "flex"}'>{_"Only for remote inventory and ESX tasks"}</p>
         <div class='tag'>
-          <select id='tag-config' class='tag' name='input/tag'{$type eq "local" ? "" : " disabled"}>
+          <select id='tag-config' class='tag' name='input/tag'>
             <option value=''{!$edit_tag ? " selected" : ""}>{_"None"}</option>{
             foreach my $tag (@tag_options) {
               my $encoded = encode('UTF-8', encode_entities($tag));
@@ -173,12 +174,9 @@
   <script>
     function jobtype_change() \{
       var islocal = document.getElementById("type/local").checked;
-      var localshow   = islocal ? "display: flex" : "display: none";
       var netscanshow = islocal ? "display: none" : "display: flex";
-      // Local form
-      document.getElementById("local-options").style = localshow;
-      document.getElementById("tag-config").disabled = !islocal;
-      document.getElementById("config-newtag").disabled = !islocal;
+      // Tag option
+      document.getElementById("tag-option-condition").style = netscanshow;
       // Netscan form
       document.getElementById("netscan-options-2").style = netscanshow;
       document.getElementById("netscan-options").style = netscanshow;

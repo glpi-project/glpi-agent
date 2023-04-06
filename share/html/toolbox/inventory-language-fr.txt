@@ -40,7 +40,7 @@ Aborted: Interrompue
 Freeze log output: Geler la mise à jour du journal
 Failure: &Eacute;chec
 
-Inventory tasks: Tâches d'inventaire
+Only for remote inventory and ESX tasks: Uniquement pour les tâches d'inventaire distant ou ESX
 Add new inventory task: Ajoûter une nouvelle tâche d'inventaire
 Edit &laquo;&nbsp;%s&nbsp;&raquo; inventory task: Éditer la tâche d'inventaire &laquo;&nbsp;%s&nbsp;&raquo;
 Create inventory task: Créer la tâche d'inventaire

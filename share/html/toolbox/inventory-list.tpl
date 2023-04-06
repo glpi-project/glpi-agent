@@ -76,9 +76,7 @@
           "
       if @runs;
     my $configuration = "";
-    if ($job->{type} eq 'local' && defined($config->{tag}) && length($config->{tag})) {
-      $configuration .= _("Tag").": ".$config->{tag};
-    } elsif ($job->{type} eq 'netscan' && ref($config->{ip_range}) eq 'ARRAY') {
+    if ($job->{type} eq 'netscan' && ref($config->{ip_range}) eq 'ARRAY') {
       $configuration .= _("IP range").": ".join(",", map { "
             <div class='with-tooltip'>
               <a href='$url_path/ip_range?edit=".uri_escape(encode("UTF-8", $_))."'>".encode('UTF-8', encode_entities($_))."
@@ -96,6 +94,8 @@
       $configuration .= "<br/>"._("Timeout").sprintf(": %ds", $config->{timeout})
         if $config->{timeout};
     }
+    $configuration .= ($configuration ? "<br/>" : "")._("Tag").": ".$config->{tag}
+        if defined($config->{tag}) && length($config->{tag});
     $OUT .= "</td>
           <td class='list' width='10%'>$type</td>
           <td class='list$enabled' width='10%'>$scheduling</td>
