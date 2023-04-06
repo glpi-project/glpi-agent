@@ -96,3 +96,4 @@ Unsupported task type: Type de tâche non supportée
 Can't delete enabled task: Impossible d'effacer la tâche active
 Rename task: Renommer la tâche
 No such task: Pas de telle tâche
+Unsupported target: Cible non supportée

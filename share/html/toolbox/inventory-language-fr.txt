@@ -19,6 +19,8 @@ Add new tag: Ajouter un nouveau tag
 netdiscovery task not installed: Tâche netdiscovery non installée
 netinventory task not installed: Tâche netinventory non installée
 netdiscovery and netinventory tasks not installed: Tâches netdiscovery et netinventory non installées
+Agent folder: Dossier de l'agent
+Target: Cible
 
 Inventory tasks: Tâches d'inventaire
 Created inventories: Inventaires créés

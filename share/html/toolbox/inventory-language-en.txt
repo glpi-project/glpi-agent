@@ -19,6 +19,8 @@ tag:
 netdiscovery task not installed:
 netinventory task not installed:
 netdiscovery and netinventory tasks not installed:
+Agent folder:
+Target:
 
 Inventory tasks:
 Created inventories:
