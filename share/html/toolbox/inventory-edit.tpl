@@ -112,7 +112,7 @@
             my $select = $form{"input/ip_range"} || "";
             $OUT .= "
             <li>
-              <input id='add-iprange' type='hidden' name='add-iprange' value='".(@remains == 1 ? encode('UTF-8', encode_entities($remains[0])) : "").($type eq "local" ? "" : " disabled")."'/>
+              <input id='add-iprange' type='hidden' name='add-iprange' value='".(@remains == 1 ? encode('UTF-8', encode_entities($remains[0])) : "")."'".($type ne "local" ? "" : " disabled")."/>
               <select id='select-iprange' onchange='updateSelectIprange(this)' size='".
                 (@remains > 5 ? 5 : scalar(@remains))."'".
                 ($type ne "local" ? "" : " disabled").
@@ -204,7 +204,7 @@
       document.getElementById("input-rename").disabled = true;
     \}
     function updateSelectIprange (select) \{
-      var input = document.getElementById("add-iprange-select")
+      var input = document.getElementById("add-iprange")
       var options = select.options;
       input.value = '';
       for (var i = 0; i < options.length; i++) \{
