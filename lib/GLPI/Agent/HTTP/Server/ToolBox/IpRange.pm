@@ -398,8 +398,9 @@ sub _submit_rmcredential {
 }
 
 sub _submit_cancel {
-    my ($self) = @_;
+    my ($self, $form) = @_;
     $self->reset_edit();
+    delete $form->{empty};
 }
 
 my %handlers = (

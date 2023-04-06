@@ -271,6 +271,7 @@ sub _submit_cancel {
     return unless $form;
 
     $self->reset_edit();
+    delete $form->{empty};
 }
 
 sub _submit_add {

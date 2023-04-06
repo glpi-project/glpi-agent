@@ -9,10 +9,8 @@ IP range end: Fin de plage IP
 Associated credentials: Identifiants associés
 Add credential: Ajouter l'identifiant
 Remove credential: Supprimer l'identifiant
-Return to IP ranges: Retourner aux plages IP
 Associated credentials: Identifiants associés
 
 SNMP version: Version SNMP
-
 Community: Communauté
 Username: Utilisateur
