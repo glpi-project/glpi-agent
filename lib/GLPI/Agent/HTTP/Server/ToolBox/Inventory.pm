@@ -163,6 +163,18 @@ sub update_template_hash {
     # Set missing deps
     $hash->{missingdeps} = $self->{_missingdep} // '';
 
+    # Set known targets
+    my $agent = $self->{toolbox}->{server}->{agent};
+    $self->{targets} = $hash->{targets} = {};
+    foreach my $target ($agent->getTargets()) {
+        next if $target->isType('listener');
+        my $id = $target->id()
+            or next;
+        $hash->{targets}->{$id} = [ $target->getType(), $target->getName() ];
+    }
+    # Default target when creating a new task
+    $hash->{default_target} = $hash->{targets}->{server0} ? 'server0' : '';
+
     # Set running task
     $hash->{outputid} = $self->{taskid} || '';
     $hash->{tasks} = $self->{tasks} || {};
@@ -284,6 +296,11 @@ sub _submit_add {
             enabled     => $enabled,
             type        => $type,
         };
+        my $target = $form->{"input/target"};
+        return $self->errors("New task: Unsupported target")
+            if $target && !exists($self->{targets}->{$target});
+        $job->{config}->{target} = $target
+            if $target;
         $job->{config}->{tag} = $form->{"input/tag"}
             if $form->{"input/tag"};
         if ($type eq 'netscan') {
@@ -336,6 +353,17 @@ sub _submit_update {
                 $job->{enabled} = $enabled;
                 $self->need_save(jobs);
             }
+        }
+
+        my $target = $form->{"input/target"};
+        return $self->errors("Update task: Unsupported target")
+            if $target && !exists($self->{targets}->{$target});
+        if ($target && (!$job->{config}->{target} || $job->{config}->{target} ne $target)) {
+            $job->{config}->{target} = $target;
+            $self->need_save(jobs);
+        } elsif (!$target && $job->{config}->{target}) {
+            delete $job->{config}->{target};
+            $self->need_save(jobs);
         }
 
         my $tag = $form->{"input/tag"};

@@ -636,7 +636,8 @@ input:checked + .slider:before {
 }
 
 .with-tooltip .tooltip {
-    min-width: 200px;
+    width: 200px;
+    min-width: max-content;
     padding: 8px 8px;
     color: #000000;
     background-color: #ffffff;

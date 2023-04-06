@@ -75,9 +75,24 @@
             </label>
           "
       if @runs;
-    my $configuration = "";
+    my @configuration;
+    my $target = $config->{target};
+    my @target_tooltip;
+    if ($target && $targets{$target}) {
+      @target_tooltip = ( $targets{$target}->[0], encode('UTF-8', encode_entities($targets{$target}->[1])));
+    } else {
+      $target = _("Agent folder");
+      @target_tooltip = ( local => $target );
+    }
+    push @configuration, _("Target").":&nbsp;
+            <div class='with-tooltip'>$target
+              <div class='tooltip bottom-tooltip'>
+                <p>".join("<br>", @target_tooltip)."</p>
+                <i></i>
+              </div>
+            </div>";
     if ($job->{type} eq 'netscan' && ref($config->{ip_range}) eq 'ARRAY') {
-      $configuration .= _("IP range").": ".join(",", map { "
+      push @configuration, _("IP range").": ".join(",", map { "
             <div class='with-tooltip'>
               <a href='$url_path/ip_range?edit=".uri_escape(encode("UTF-8", $_))."'>".encode('UTF-8', encode_entities($_))."
                 <div class='tooltip bottom-tooltip'>
@@ -89,19 +104,19 @@
               </a>
             </div>"
         } @{$config->{ip_range}});
-      $configuration .= "<br/>"._("Threads").": ".$config->{threads}
+      push @configuration, _("Threads").": ".$config->{threads}
         if $config->{threads};
-      $configuration .= "<br/>"._("Timeout").sprintf(": %ds", $config->{timeout})
+      push @configuration, _("Timeout").sprintf(": %ds", $config->{timeout})
         if $config->{timeout};
     }
-    $configuration .= ($configuration ? "<br/>" : "")._("Tag").": ".$config->{tag}
-        if defined($config->{tag}) && length($config->{tag});
+    push @configuration, _("Tag").": ".$config->{tag}
+      if defined($config->{tag}) && length($config->{tag});
     $OUT .= "</td>
           <td class='list' width='10%'>$type</td>
           <td class='list$enabled' width='10%'>$scheduling</td>
           <td class='list$enabled' width='15%'>$lastrun</td>
           <td class='list$enabled' width='15%'>$nextrun</td>
-          <td class='list'>$configuration</td>
+          <td class='list'>".join("<br/>", @configuration)."</td>
           <td class='list'>$description</td>
         </tr>";
     $OUT .= "

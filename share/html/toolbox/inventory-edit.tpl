@@ -9,6 +9,7 @@
     $type          = $job->{type}          || $form{"input/type"} || "netscan";
     $configuration = $job->{config}        || {};
     $edit_tag      = $configuration->{tag} || $form{"input/tag"}  || $current_tag || "";
+    $edit_target   = $configuration->{target} || $form{"input/target"}  || ($form{empty} ? $default_target : "");
     $scheduling    = $job->{scheduling}    || $form{"input/scheduling"} || "";
     $description   = $job->{description}   || $form{"input/description"}  || "";
     $jobs{$edit} ? sprintf(_("Edit &laquo;&nbsp;%s&nbsp;&raquo; inventory task"), ($job->{name} || $this))
@@ -35,7 +36,7 @@
         </div>
       </div>
     </div>
-    <div class='form-edit-row' id='type-option' style='display: {$jobs{$edit} && $type ? "flex" : "flex"}'>
+    <div class='form-edit-row' id='type-option'>
       <div class='form-edit'>
         <label>{_"Type"}</label>
       </div>
@@ -50,6 +51,20 @@
             <label for='netscan'>{_"Network scan"}</label>
           </li>
         </ul>
+      </div>
+    </div>
+    <div class='form-edit-row'>
+      <div class='form-edit'>
+        <label for='target-config' class='tag'>{_"Target"}</label>
+        <select id='target-config' class='tag' name='input/target'>
+          <option value=''{$edit_target ? "" : " selected"} title='local = {_"Agent folder"}'>{_"Agent folder"}</option>{
+          foreach my $target (keys(%targets)) {
+            my $encoded = $targets{$target}->[0]." = ".encode('UTF-8', encode_entities($targets{$target}->[1]));
+            $OUT .= "
+          <option id='target-$target'".
+                ( $edit_target && $edit_target eq $target ? " selected" : "" )." title='$encoded'>$target</option>"
+          }}
+        </select>
       </div>
     </div>
     <div class='form-edit-row' id='tag-option'>
