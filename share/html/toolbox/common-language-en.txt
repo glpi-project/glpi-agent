@@ -13,6 +13,8 @@ IP Ranges:
 Credentials:
 Remotes:
 Tag:
+DeviceID:
+AgentID:
 
 Edit:
 Update:
