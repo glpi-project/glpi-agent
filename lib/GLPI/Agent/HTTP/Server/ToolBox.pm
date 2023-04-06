@@ -15,6 +15,7 @@ use File::stat;
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Hostname;
+use GLPI::Agent::Tools::UUID;
 
 our $VERSION = "1.1";
 
@@ -776,6 +777,8 @@ sub _index {
         template_path   => $self->{htmldir}."/toolbox",
         lang            => $yaml_config->{'language'} || $languages[0],
         default_lang    => $languages[0],
+        deviceid        => $self->{server}->{agent}->{deviceid},
+        agentid         => uuid_to_string($self->{server}->{agent}->{agentid}),
     };
 
     # Keep self ref in hash for template include support

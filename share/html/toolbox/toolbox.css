@@ -756,3 +756,15 @@ span.eye-hide {
 input.eye {
   display: none;
 }
+
+.footer-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.footer-cell {
+  display: flex;
+  flex-direction: column;
+  padding-left: 1em;
+  padding-right: 1em;
+}
