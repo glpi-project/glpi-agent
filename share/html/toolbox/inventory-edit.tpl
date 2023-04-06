@@ -184,7 +184,7 @@
       $jobs{$edit} ?
         "update' value='"._("Update") :
         "add' value='"._("Create inventory task")}'/>
-    <input type='submit' class='big-button' name='submit/cancel' value='{_("Cancel")}'/>
+    <input type='submit' class='big-button' name='submit/cancel' formnovalidate='1' value='{_("Cancel")}'/>
   </form>
   <script>
     function jobtype_change() \{
