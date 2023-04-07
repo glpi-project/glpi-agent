@@ -43,7 +43,7 @@ sub run {
         my $mac = getCanonicalMacAddress($cpsIfSecureLastMacAddress->{$port})
             or next;
         next unless $device->{PORTS} && $device->{PORTS}->{PORT} && $device->{PORTS}->{PORT}->{$port};
-        $device->{PORTS}->{PORT}->{$port}->{CONNECTIONS}->{CONNECTION}->{MAC} = $mac;
+        $device->{PORTS}->{PORT}->{$port}->{CONNECTIONS}->{CONNECTION}->{MAC} = [ $mac ];
     }
 }
 
