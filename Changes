@@ -120,6 +120,7 @@ netdiscovery/netinventory:
 * fix #353: Don't crash task on invalid jobs which may be sent by the server
 * Fix context switching reset with SNMPv3 which may prevent any new request to work
 * fix #372: Add support connection detection using Cisco Port Security feature
+* Enhanced Dell PowerConnect components support
 
 deploy:
 * Fix possible failure when mirror is set but misses file parts

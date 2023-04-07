@@ -10,6 +10,10 @@ use GLPI::Agent::Tools::SNMP;
 use constant
     entPhysicalEntry    => '.1.3.6.1.2.1.47.1.1.1.1';
 
+# See Dell-Vendor-MIB
+use constant
+    productIdentificationSerialNumber   => '.1.3.6.1.4.1.674.10895.3000.1.2.100.8.1.2';
+
 # components interface variables
 my %physical_components_variables = (
     INDEX            => { # entPhysicalIndex
@@ -168,6 +172,11 @@ sub new {
         };
     };
 
+    # Dell chassis serialnumbers should be retrieved from a private oid
+    my $dellSerialNumbers = $device->walk(productIdentificationSerialNumber);
+    $self->{_dellSN} = $dellSerialNumbers
+        if $dellSerialNumbers && keys(%{$dellSerialNumbers}) > 1;
+
     $self->{_indexes} = \@indexes;
     $self->{_walks}   = \%walks;
 
@@ -184,6 +193,7 @@ sub getPhysicalComponents {
 
     my $i = 0;
     my $count = @{$self->{_indexes}};
+    my $module = 0;
 
     # Populate all components
     while ($i < $count) {
@@ -204,6 +214,18 @@ sub getPhysicalComponents {
                                       $raw_value;
             $component->{$key} = $value
                 if defined($value) && length($value);
+        }
+
+        # Fix Chassis S/N for Dell devices
+        if ($self->{_dellSN} && $component->{TYPE} && $component->{TYPE} eq 'chassis') {
+            if ($component->{NAME} && $component->{NAME} =~ /^Unit (\d+)$/) {
+                $module = int($1);
+            } else {
+                $module++;
+            }
+            my $serial = getCanonicalSerialNumber($self->{_dellSN}->{$module});
+            $component->{SERIAL} = $serial
+                if $serial && (!$component->{SERIAL} || $component->{SERIAL} ne $serial);
         }
     }
 
