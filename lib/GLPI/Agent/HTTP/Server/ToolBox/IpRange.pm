@@ -322,6 +322,29 @@ sub _submit_delete {
     return $self->errors("Deleting IP range: No IP range selected")
         unless @delete;
 
+    # We also need to check if any range is used in tasks
+    my %used = ();
+    my %delete = map { $_ => 1 } @delete;
+    my $keys = keys(%delete);
+    my $jobs = $self->yaml('jobs') || {};
+    foreach my $job (values(%{$jobs})) {
+        next unless $job->{type} eq 'netscan';
+        my $config = $job->{config}
+            or next;
+        next unless ref($config) eq 'HASH';
+        next unless ref($config->{ip_range}) eq 'ARRAY';
+        foreach my $iprange (@{$config->{ip_range}}) {
+            next if exists($used{$iprange});
+            next unless exists($delete{$iprange});
+            $used{$iprange} = encode('UTF-8', $iprange);
+            delete $delete{$iprange};
+            last unless --$keys;
+        }
+        last unless $keys;
+    }
+    return $self->errors("Deleting IP range: Can't delete used IP range: ".join(",", sort values(%used)))
+        if keys(%used);
+
     foreach my $name (@delete) {
         delete $ip_range->{$name};
         $self->need_save(ip_range);
