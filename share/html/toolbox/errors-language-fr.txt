@@ -29,6 +29,7 @@ Missing version on credentials: La version manque sur les identifiants
 Missing username on credentials: Le nom d'utilisateur manque sur les identifiants
 A local inventory is still running: Un inventaire local est déjà en cours
 Unsupported IP range: Plage IP non supportée
+Can't delete used IP range: Impossible de supprimer une plage IP utilisée
 
 New credential: Nouvel identifiant
 SNMP version is mandatory: La version SNMP est obligatoire
@@ -37,6 +38,9 @@ Community is mandatory with version: La communauté est obligatoire avec cette v
 Username is mandatory with SNMP v3: Le nom est obligatoire avec SNMP v3
 Credential update: Mise à jour de l'identifiant
 Rename credential: Renommage de l'identifiant
+Delete credential: Suppression d'identifiant
+No credential selected: Pas d'identifiant sélectionné
+Can't delete used credential: Impossible de supprimer un identifiant utilisé
 
 Deleting results: Suppression de résultats
 No result selected: Pas de résultat sélectionné

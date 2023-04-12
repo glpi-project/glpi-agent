@@ -238,7 +238,7 @@
       </table>
       <div class='select-row'>
         <div class='arrow-left'></div>
-        <input class='submit-secondary' type='submit' name='submit/delete-remotecred' value='{_"Delete"}'>
+        <input class='submit-secondary' type='submit' name='submit/delete-remote' value='{_"Delete"}'>
       </div>
       <div class='form-edit-row' style='display: flex'>
         <label class='switch'>

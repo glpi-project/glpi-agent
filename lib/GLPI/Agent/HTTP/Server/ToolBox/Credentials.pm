@@ -350,6 +350,14 @@ sub _submit_delete_v1_v2c {
 
     my @delete = map { m{^checkbox-v1-v2c/(.*)$} }
         grep { /^checkbox-v1-v2c\// && $form->{$_} eq 'on' } keys(%{$form});
+
+    return $self->errors("Delete credential: No credential selected")
+        unless @delete;
+
+    my @used = $self->_used_credentials(\@delete);
+    return $self->errors("Delete credential: Can't delete used credential: ".join(",", @used))
+        if @used;
+
     foreach my $name (@delete) {
         delete $credentials->{$name};
         $self->need_save(credentials);
@@ -363,10 +371,64 @@ sub _submit_delete_v3 {
 
     my @delete = map { m{^checkbox-v3/(.*)$} }
         grep { /^checkbox-v3\// && $form->{$_} eq 'on' } keys(%{$form});
+
+    return $self->errors("Delete credential: No credential selected")
+        unless @delete;
+
+    my @used = $self->_used_credentials(\@delete);
+    return $self->errors("Delete credential: Can't delete used credential: ".join(",", @used))
+        if @used;
+
     foreach my $name (@delete) {
         delete $credentials->{$name};
         $self->need_save(credentials);
     }
+}
+
+sub _submit_delete_remotes {
+    my ($self, $form, $credentials) = @_;
+
+    return unless $form && $credentials;
+
+    my @delete = map { m{^checkbox-remotes/(.*)$} }
+        grep { /^checkbox-remotes\// && $form->{$_} eq 'on' } keys(%{$form});
+
+    return $self->errors("Delete credential: No credential selected")
+        unless @delete;
+
+    my @used = $self->_used_credentials(\@delete);
+    return $self->errors("Delete credential: Can't delete used credential: ".join(",", @used))
+        if @used;
+
+    foreach my $name (@delete) {
+        delete $credentials->{$name};
+        $self->need_save(credentials);
+    }
+}
+
+sub _used_credentials {
+    my ($self, $delete) = @_;
+
+    # We also need to check if any credential is used in any ip range
+    my %used = ();
+    my %delete = map { $_ => 1 } @{$delete};
+    my $keys = keys(%delete);
+    my $ipranges = $self->yaml('ip_range') || {};
+    foreach my $range (values(%{$ipranges})) {
+        my $credentials = $range->{credentials}
+            or next;
+        next unless ref($credentials) eq 'ARRAY';
+        foreach my $credential (@{$credentials}) {
+            next if exists($used{$credential});
+            next unless exists($delete{$credential});
+            $used{$credential} = encode('UTF-8', $credential);
+            delete $delete{$credential};
+            last unless --$keys;
+        }
+        last unless $keys;
+    }
+
+    return sort values(%used);
 }
 
 sub _submit_cancel {
@@ -386,6 +448,7 @@ my %handlers = (
     'submit/update'         => \&_submit_update,
     'submit/delete-v1-v2c'  => \&_submit_delete_v1_v2c,
     'submit/delete-v3'      => \&_submit_delete_v3,
+    'submit/delete-remote'  => \&_submit_delete_remotes,
     'submit/cancel'         => \&_submit_cancel,
 );
 

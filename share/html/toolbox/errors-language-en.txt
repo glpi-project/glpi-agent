@@ -29,6 +29,7 @@ Missing version on credentials:
 Missing username on credentials:
 A local inventory is still running:
 Unsupported IP range:
+Can't delete used IP range:
 
 New credential:
 SNMP version is mandatory:
@@ -37,6 +38,9 @@ Community is mandatory with version:
 Username is mandatory with SNMP v3:
 Credential update:
 Rename credential:
+Delete credential:
+No credential selected:
+Can't delete used credential:
 
 Deleting results:
 No result selected:
