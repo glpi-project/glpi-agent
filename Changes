@@ -77,6 +77,7 @@ inventory:
 * fix #360: Avoid more WMI timeout during software inventory using scan_profiles option
 * Update service pack reporting on windows 10 and later to report BuildNumber + Update
   Build Revision (UBR) like reported by system winver command.
+* fix #374: Better try to get profile username from powershell script
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory

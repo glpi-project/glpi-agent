@@ -51,6 +51,24 @@ sub getProfileUsername {
     return $userenvkey->{'/USERNAME'}
         if $userenvkey && defined($userenvkey->{'/USERNAME'}) && length($userenvkey->{'/USERNAME'});
 
+    # Then try to get it from PowerShell as it seems to be faster
+    my ($ntaccount) = runPowerShell(
+        script  => '
+            # Setup encoding to UTF-8
+            $PreviousEncoding = [console]::OutputEncoding
+            $OutputEncoding   = [console]::InputEncoding = [console]::OutputEncoding = New-Object System.Text.UTF8Encoding
+
+            ((New-Object System.Security.Principal.SecurityIdentifier("'.$user->{SID}.'")).Translate([System.Security.Principal.NTAccount])).Value
+
+            # Restore encoding
+            $OutputEncoding = [console]::InputEncoding = [console]::OutputEncoding = $PreviousEncoding
+        '
+    );
+    if ($ntaccount) {
+        my ($username) = $ntaccount =~ /^[^\\]*\\(.*)$/;
+        return $username if defined($username) && length($username);
+    }
+
     # Then try to get it from Group Policy Caching
     my $cacheentry = getRegistryKey(
         path        => "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows/CurrentVersion/Group Policy/DataStore/$user->{SID}/0",
