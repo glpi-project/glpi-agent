@@ -57,7 +57,7 @@ sub getProfileUsername {
         # Important for remote inventory optimization
         required    => [ qw/szTargetName/ ],
     );
-    return $cacheentry->{'/szTargetName'}
+    return decode(getLocalCodepage(), $cacheentry->{'/szTargetName'})
         if $cacheentry && defined($cacheentry->{'/szTargetName'}) && length($cacheentry->{'/szTargetName'});
 
     # Eventually look up in LogonUI session datas
@@ -74,7 +74,7 @@ sub getProfileUsername {
             my $account = $sessiondata->{$key}->{'/LoggedOnUser'};
             next unless defined($account);
             my ($username) = $account =~ /^[^\\]*\\(.*)$/;
-            return $username if defined($username) && length($username);
+            return decode(getLocalCodepage(), $username) if defined($username) && length($username);
         }
     }
 
