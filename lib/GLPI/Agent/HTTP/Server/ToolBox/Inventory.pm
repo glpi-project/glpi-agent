@@ -142,12 +142,26 @@ sub update_template_hash {
         $hash->{order} = $self->get_from_session('jobs_order') || "ascend";
         my $asc = $hash->{order} eq 'ascend';
         my $ordering = $hash->{ordering_column} = $self->get_from_session('jobs_ordering_column') || 'name';
-        my $name_ordering = $ordering eq 'name';
         $hash->{jobs_order} = [
             sort {
                 my ($A, $B) =  $asc ? ( $a, $b ) : ( $b, $a );
-                if ($name_ordering) {
+                if ($ordering eq 'name') {
                     $A cmp $B
+                } elsif ($ordering eq 'last_run_date') {
+                    ($jobs->{$A}->{$ordering} || 0) <=> ($jobs->{$B}->{$ordering} || 0) || $A cmp $B
+                } elsif ($ordering eq 'next_run_date') {
+                    my ($A1, $B1) = ($jobs->{$A}->{$ordering} || 0, $jobs->{$B}->{$ordering} || 0);
+                    unless ($self->isyes($jobs->{$A}->{enabled})) {
+                        $A1 = $jobs->{$A}->{last_run_date} || 0;
+                    }
+                    unless ($self->isyes($jobs->{$B}->{enabled})) {
+                        $B1 = $jobs->{$B}->{last_run_date} || 0;
+                    }
+                    $A1 <=> $B1 || $A cmp $B
+                } elsif ($ordering eq 'scheduling') {
+                    ($jobs->{$A}->{$ordering} && $jobs->{$A}->{$ordering}->[0] || '') cmp ($jobs->{$B}->{$ordering} && $jobs->{$B}->{$ordering}->[0] || '') || $A cmp $B
+                } elsif ($ordering eq 'config') {
+                    ($jobs->{$A}->{$ordering} && $jobs->{$A}->{$ordering}->{target} || '') cmp ($jobs->{$B}->{$ordering} && $jobs->{$B}->{$ordering}->{target} || '') || $A cmp $B
                 } else {
                     ($jobs->{$A}->{$ordering} || '') cmp ($jobs->{$B}->{$ordering} || '') || $A cmp $B
                 }
@@ -1120,6 +1134,12 @@ sub handle_form {
 
     # Only handle inventory if the inventory navbar is enabled (by default)
     return unless !exists($yaml_config->{'inventory_navbar'}) || $self->isyes($yaml_config->{'inventory_navbar'});
+
+    $self->store_in_session( 'jobs_ordering_column' => $form->{'col'} )
+        if $form->{'col'} && $form->{'col'} =~ /^name|type|config|scheduling|last_run_date|next_run_date|description$/;
+
+    $self->store_in_session( 'jobs_order' => $form->{'order'} )
+        if $form->{'order'} && $form->{'order'} =~ /^ascend|descend$/;
 
     $self->{verbosity} =  $form->{'input/verbose'}
         && $form->{'input/verbose'} =~ /^info|debug|debug2$/ ?
