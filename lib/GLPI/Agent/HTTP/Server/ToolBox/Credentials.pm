@@ -354,9 +354,9 @@ sub _submit_delete_v1_v2c {
     return $self->errors("Delete credential: No credential selected")
         unless @delete;
 
-    my @used = $self->_used_credentials(\@delete);
-    return $self->errors("Delete credential: Can't delete used credential: ".join(",", @used))
-        if @used;
+    my $used = $self->_used_credentials(\@delete);
+    return $self->errors("Delete credential: Can't delete used credential: ".$used)
+        if $used;
 
     foreach my $name (@delete) {
         delete $credentials->{$name};
@@ -375,9 +375,9 @@ sub _submit_delete_v3 {
     return $self->errors("Delete credential: No credential selected")
         unless @delete;
 
-    my @used = $self->_used_credentials(\@delete);
-    return $self->errors("Delete credential: Can't delete used credential: ".join(",", @used))
-        if @used;
+    my $used = $self->_used_credentials(\@delete);
+    return $self->errors("Delete credential: Can't delete used credential: ".$used)
+        if $used;
 
     foreach my $name (@delete) {
         delete $credentials->{$name};
@@ -396,9 +396,9 @@ sub _submit_delete_remotes {
     return $self->errors("Delete credential: No credential selected")
         unless @delete;
 
-    my @used = $self->_used_credentials(\@delete);
-    return $self->errors("Delete credential: Can't delete used credential: ".join(",", @used))
-        if @used;
+    my $used = $self->_used_credentials(\@delete);
+    return $self->errors("Delete credential: Can't delete used credential: ".$used)
+        if $used;
 
     foreach my $name (@delete) {
         delete $credentials->{$name};
@@ -428,7 +428,7 @@ sub _used_credentials {
         last unless $keys;
     }
 
-    return sort values(%used);
+    return join(",", sort values(%used));
 }
 
 sub _submit_cancel {
