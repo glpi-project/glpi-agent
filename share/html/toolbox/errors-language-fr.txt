@@ -35,7 +35,7 @@ New credential: Nouvel identifiant
 SNMP version is mandatory: La version SNMP est obligatoire
 Wrong SNMP version: Mauvaise version SNMP
 Community is mandatory with version: La communauté est obligatoire avec cette version
-Username is mandatory with SNMP v3: Le nom est obligatoire avec SNMP v3
+Username is mandatory with SNMP v3: Le nom d'utilisateur est obligatoire avec SNMP v3
 Credential update: Mise à jour de l'identifiant
 Rename credential: Renommage de l'identifiant
 Delete credential: Suppression d'identifiant
@@ -80,8 +80,8 @@ Can't update entry without source target: Impossible de mettre à jour une entr�
 No such remote for target: Inventaire distant non disponible pour la cible
 
 Unsupported remote inventory type: Type d'inventaire distant non supporté
-Username is mandatory for remote inventory types: Un nom d'utilisateur est nécessaire pour les types inventaire distant
-Password is mandatory for this remote inventory type: Un mot de passe est nécessaire pour ce type d'inventaire distant
+Username is mandatory for remote inventory types: Un nom d'utilisateur est obligatoire pour les types inventaire distant
+Password is mandatory for this remote inventory type: Un mot de passe est obligatoire pour ce type d'inventaire distant
 No password for ssh remote inventory type involves you installed public key authentication: Pas de mot de passe implique que vous ayez installé une clé publique pour l'authentification
 
 Invalid SNMP port: Port SNMP invalide
