@@ -1,0 +1,11 @@
+# This file is not read but should reference any string that could be translated
+
+Scheduling name: Nom de planification
+
+Add new scheduling: Ajouter une nouvelle planification
+Edit &laquo;&nbsp;%s&nbsp;&raquo; scheduling: Édition de la planification &laquo;&nbsp;%s&nbsp;&raquo;:
+
+Time unit: Unité de temps
+
+timeslot:
+Timeslot:

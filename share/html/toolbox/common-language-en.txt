@@ -11,6 +11,7 @@ Configuration:
 IP range:
 IP Ranges:
 Credentials:
+Scheduling:
 Remotes:
 Tag:
 DeviceID:
@@ -46,3 +47,16 @@ Disable:
 Enable:
 First ip:
 Last ip:
+
+Delay:
+delay:
+second:
+seconds:
+minute:
+minutes:
+hour:
+hours:
+day:
+days:
+week:
+weeks:

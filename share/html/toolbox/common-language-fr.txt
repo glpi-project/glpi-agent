@@ -11,6 +11,7 @@ Raw YAML edition: Édition du YAML brut
 IP Ranges: Plages IP
 IP range: Plage IP
 Credentials: Identifiants
+Scheduling: Planification
 Remotes: Inventaires distants
 
 
@@ -46,3 +47,16 @@ Disable: Désactiver
 Enable: Activer
 First ip: Première ip
 Last ip: Dernière ip
+
+Delay: Délai
+delay: délai
+second: seconde
+seconds: secondes
+
+
+hour: heure
+hours: heures
+day: jour
+days: jours
+week: semaine
+weeks: semaines

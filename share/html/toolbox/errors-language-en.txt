@@ -101,3 +101,16 @@ Can't delete enabled task:
 Rename task:
 No such task:
 Unsupported target:
+
+New scheduling:
+Scheduling update:
+Rename scheduling:
+No such scheduling:
+Delete scheduling:
+No scheduling selected:
+Scheduling type is mandatory:
+Unsupported scheduling type:
+Can't delete used scheduling:
+Unsupported delay time:
+Unsupported delay time unit:
+Minimum delay time is one minute:
