@@ -4,6 +4,7 @@ ToolBox plugin Configuration:
 
 Credentials YAML file:
 IP Ranges YAML file:
+Scheduling YAML file:
 Navigation:
 Default page:
 Navigation bar:
@@ -12,6 +13,7 @@ Show Inventory in navigation bar:
 Show IP Ranges in navigation bar:
 Show Remotes in navigation bar:
 Show Results in navigation bar:
+Show Scheduling in navigation bar:
 Show Raw YAML navigation:
 Network task:
 Base folder to save XML:

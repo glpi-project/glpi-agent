@@ -1,0 +1,11 @@
+# This file is not read but should reference any string that could be translated
+
+Scheduling name:
+
+Add new scheduling:
+Edit &laquo;&nbsp;%s&nbsp;&raquo; scheduling:
+
+Time unit:
+
+timeslot:
+Timeslot:

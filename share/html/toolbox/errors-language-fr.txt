@@ -101,3 +101,16 @@ Can't delete enabled task: Impossible d'effacer la tâche active
 Rename task: Renommer la tâche
 No such task: Pas de telle tâche
 Unsupported target: Cible non supportée
+
+New scheduling: Nouvelle planification
+Scheduling update: Mise à jour de la planification
+Rename scheduling: Renommage de planification
+No such scheduling: Pas de telle planification
+Delete scheduling: Suppression de planification
+No scheduling selected: Pas de planification sélectionnée
+Scheduling type is mandatory: Le type de planification est obligatoire
+Unsupported scheduling type: Type de planification non supporté
+Can't delete used scheduling: Impossible de supprimer une planification utilisée
+Unsupported delay time: Durée de délai non supportée
+Unsupported delay time unit: Unité de délai non supportée
+Minimum delay time is one minute: Le délai minimum est d'une minute

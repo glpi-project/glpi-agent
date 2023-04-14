@@ -4,6 +4,7 @@ ToolBox plugin Configuration: Configuration du plugin ToolBox
 
 Credentials YAML file: Fichier YAML des identifiants
 IP Ranges YAML file: Fichier YAML des plages IP
+Scheduling YAML file: Fichier YAML des planifications
 
 Default page: Page d'accueil
 Navigation bar: Barre de navigation
@@ -12,6 +13,7 @@ Show Inventory in navigation bar: Afficher la navigation vers l'inventaire
 Show IP Ranges in navigation bar: Afficher la navigation vers les plages IP
 Show Remotes in navigation bar: Afficher la navigation vers les inventaires distants
 Show Results in navigation bar: Afficher la navigation vers les résultats
+Show Scheduling in navigation bar: Afficher la navigation vers la planification
 Show Raw YAML navigation: Afficher la navigation vers le YAML brute
 Network task: Tâche réseau
 Base folder to save XML: Dossier de base pour sauver les fichiers XML
