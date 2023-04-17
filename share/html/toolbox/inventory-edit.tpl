@@ -10,7 +10,9 @@
     $configuration = $job->{config}        || {};
     $edit_tag      = $configuration->{tag} || $form{"input/tag"}  || $current_tag || "";
     $edit_target   = $configuration->{target} || $form{"input/target"}  || ($form{empty} ? $default_target : "");
-    $scheduling    = $job->{scheduling}    || $form{"input/scheduling"} || "";
+    $scheduling    = $job->{scheduling}    || [];
+    $first_sched   = @{$scheduling} ? $scheduling->[0] : undef;
+    $schedtype     = $first_sched ? $scheduling{$first_sched}->{type} : $form{"input/scheduling-type"} || "delay";
     $description   = $job->{description}   || $form{"input/description"}  || "";
     $jobs{$edit} ? sprintf(_("Edit &laquo;&nbsp;%s&nbsp;&raquo; inventory task"), ($job->{name} || $this))
       : _"Add new inventory task"}</h2>
@@ -42,11 +44,11 @@
       </div>
       <div class='form-edit'>
         <ul class='type-options'>
-          <li style='display: {$jobs{$edit} && $type ne "local" ? "none" : "flex"}'>
+          <li style='display: {$jobs{$edit} && $type ne "local" ? "none" : "block"}'>
             <input type="radio" name="input/type" id="type/local" value="local" onchange="jobtype_change()"{$type eq "local" ? " checked" : ""}/>
             <label for='local'>{_"Local inventory"}</label>
           </li>
-          <li style='display: {$jobs{$edit} && $type ne "netscan" ? "none" : "flex"}'>
+          <li style='display: {$jobs{$edit} && $type ne "netscan" ? "none" : "block"}'>
             <input type="radio" name="input/type" id="type/netscan" value="netscan" onchange="jobtype_change()"{$type eq "netscan" ? " checked" : ""}/>
             <label for='netscan'>{_"Network scan"}</label>
           </li>
@@ -65,6 +67,42 @@
                 ( $edit_target && $edit_target eq $target ? " selected" : "" )." title='$encoded'>$target</option>"
           }}
         </select>
+      </div>
+    </div>
+    <div class='form-edit-row' id='scheduling-option'>
+      <div class='form-edit'>
+        <label for='input/scheduling/type'>{_"Scheduling type"}</label>
+      </div>
+    </div>
+    <div class='form-edit-row scheduling-type-options'>
+      <div class='form-edit'>
+        <ul class='scheduling-type-options'>
+          <li style='display: {$jobs{$edit} && @{$scheduling} && $schedtype ne "delay" ? "none" : "block"}'>
+            <input type="radio" name="input/scheduling/type" id="scheduling/type/delay" value="delay" onchange="schedtype_change()"{$schedtype eq "delay" ? " checked" : ""}/>
+            <label for='scheduling/type/delay'>{_"Delay"}</label>
+          </li>
+          <li style='display: {$jobs{$edit} && @{$scheduling} && $schedtype ne "timeslot" ? "none" : "block"}'>
+            <input type="radio" name="input/scheduling/type" id="scheduling/type/timeslot" value="timeslot" onchange="schedtype_change()"{$schedtype eq "timeslot" ? " checked" : ""}/>
+            <label for='scheduling/type/timeslot'>{_"Timeslot"}</label>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class='form-edit-row' id='delay-option' style='display: {$schedtype eq "delay" ? "flex" : "none"}'>
+      <div class='form-edit'>
+        <label for='delay-config' class='tag'>{_"Delay"}:</label>
+        <div class='tag'>
+          <select id='delay-config' class='tag' name='input/delay'{$schedtype ne 'delay' ? " disabled" : ""}>
+            <option value=''{!$edit_tag ? " selected" : ""}>{_"None"}</option>{
+            foreach my $delay (sort grep { $scheduling{$_}->{type} eq 'delay' } keys(%scheduling)) {
+              my $encoded = encode('UTF-8', encode_entities($delay));
+              $OUT .= "
+            <option id='option-$delay'".
+                  ( $first_sched && $first_sched eq $delay ? " selected" : "" ).
+                  " value='$encoded'>$encoded</option>"
+            }}
+          </select>
+        </div>
       </div>
     </div>
     <div class='form-edit-row' id='tag-option'>
@@ -199,6 +237,13 @@
       document.getElementById("select-iprange").disabled = islocal;
       document.getElementById("threads").disabled = islocal;
       document.getElementById("timeout").disabled = islocal;
+    \}
+    function schedtype_change() \{
+      var isdelay = document.getElementById("scheduling/type/delay").checked;
+      var delayshow = isdelay ? "display: flex" : "display: none";
+      // Delay option
+      document.getElementById("delay-option").style = delayshow;
+      document.getElementById("delay-config").disabled = !isdelay;
     \}
     function config_new_tag () \{
       document.getElementById("config-newtag").disabled = false;

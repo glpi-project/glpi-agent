@@ -110,7 +110,7 @@ sub update_template_hash {
     my $yaml_config = $self->yaml('configuration') || {};
 
     # Update Text::Template HASH but protect some values by encoding html entities
-    foreach my $base (qw(ip_range jobs)) {
+    foreach my $base (qw(ip_range jobs scheduling)) {
         $hash->{$base} = {};
         next unless $yaml->{$base};
         foreach my $name (keys(%{$yaml->{$base}})) {
