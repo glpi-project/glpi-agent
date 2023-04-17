@@ -57,3 +57,5 @@ Remove ip range:
 Disabled task:
 Timeout:
 Associated ip range:
+
+Scheduling type:

@@ -45,7 +45,7 @@
     $type = $job->{type} eq 'local' ? _"Local inventory" : _"Network scan"
         if $job->{type} && $job->{type} =~ /^local|netscan$/;
     my $config      = $job->{config} || "";
-    my $scheduling  = $job->{scheduling} || "";
+    my $scheduling  = $job->{scheduling} || [];
     my $lastrun     = $job->{last_run_date} ? localtime($job->{last_run_date}) : "";
     my $nextrun     = ($enabled ? $job->{next_run_date} : _"Disabled task") || "";
     my $description = $job->{description} || "";
@@ -111,9 +111,35 @@
     }
     push @configuration, _("Tag").": ".$config->{tag}
       if defined($config->{tag}) && length($config->{tag});
+    my @scheduling;
+    if (ref($scheduling) eq 'ARRAY') {
+      foreach my $sched (sort @{$scheduling}) {
+        if ($scheduling{$sched}->{type} eq 'delay') {
+          my %units = qw( s second m minute h hour d day w week);
+          my $delay = $scheduling{$sched}->{delay} || "24h";
+          my ($number, $unit) = $delay =~ /^(\d+)([smhdw])?$/;
+          $number = 24 unless $number;
+          $unit = "h" unless $unit;
+          $unit = $units{$unit};
+          $unit .= "s" if $number > 1;
+          $delay = $number." "._($unit);
+          push @scheduling, "
+            <div class='with-tooltip'>
+              <a href='$url_path/scheduling?edit=".uri_escape(encode("UTF-8", $sched))."'>".encode('UTF-8', encode_entities($sched))."
+                <div class='tooltip bottom-tooltip'>
+                  <p>"._("Delay").": ".$delay."</p>".($scheduling{$sched}->{description} ? "
+                  <p>"._("Description").": ".encode('UTF-8', encode_entities($scheduling{$sched}->{description}))."</p>" : "")."
+                  <i></i>
+                </div>
+              </a>
+            </div>";
+        } else {
+        }
+      }
+    }
     $OUT .= "</td>
           <td class='list' width='10%'>$type</td>
-          <td class='list$enabled' width='10%'>$scheduling</td>
+          <td class='list$enabled' width='10%'>".join(",", @scheduling)."</td>
           <td class='list$enabled' width='15%'>$lastrun</td>
           <td class='list$enabled' width='15%'>$nextrun</td>
           <td class='list'>".join("<br/>", @configuration)."</td>

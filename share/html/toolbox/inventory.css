@@ -205,3 +205,9 @@ h2 {
 ul.type-options {
   margin-bottom: 0px;
 }
+
+ul.scheduling-type-options {
+  margin: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
