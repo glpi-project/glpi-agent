@@ -92,12 +92,25 @@
       <div class='form-edit'>
         <label for='delay-config' class='tag'>{_"Delay"}:</label>
         <div class='tag'>
-          <select id='delay-config' class='tag' name='input/delay'{$schedtype ne 'delay' ? " disabled" : ""}>
-            <option value=''{!$edit_tag ? " selected" : ""}>{_"None"}</option>{
+          <select id='delay-config' class='tag' name='input/delay'{$schedtype ne 'delay' ? " disabled" : ""}>{$edit_tag ? "" : "
+            <option value='' selected>"._("None")."</option>"}{
+            my %units = qw( s second m minute h hour d day w week);
             foreach my $delay (sort grep { $scheduling{$_}->{type} eq 'delay' } keys(%scheduling)) {
+              my $value = $scheduling{$delay}->{delay} || "24h";
+              my ($number, $unit) = $value =~ /^(\d+)([smhdw])?$/;
+              $number = 24 unless $number;
+              $unit = "h" unless $unit;
+              $unit = $units{$unit};
+              $unit .= "s" if $number > 1;
+              my $title = _("Delay").": ".$number." "._($unit);
+              my $description = $scheduling{$delay}->{description};
+              if ($description) {
+                $description =~ s/[']/\\'/g;
+                $title .= "\n"._("Description").": ".encode('UTF-8', $description);
+              }
               my $encoded = encode('UTF-8', encode_entities($delay));
               $OUT .= "
-            <option id='option-$delay'".
+            <option id='option-$delay' title='$title'".
                   ( $first_sched && $first_sched eq $delay ? " selected" : "" ).
                   " value='$encoded'>$encoded</option>"
             }}
