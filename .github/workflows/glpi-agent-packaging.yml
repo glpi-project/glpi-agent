@@ -680,14 +680,16 @@ jobs:
         sudo apt -y install libmodule-install-perl libuniversal-require-perl \
           libwww-perl libdigest-sha-perl
       shell: bash
-    - name: Build source archive
+    - name: Build sources archive
       id: srcbuild
       run: |
-        perl Makefile.PL
         # make -gitXXXXXXXX release when not tagged
         if [ -z "${VERSION##*-*}" ]; then
             tools/make-release.sh --no-git --no-deb-changelog $VERSION
         fi
+        perl Makefile.PL
+        make manifest
+        make
         make dist DISTVNAME=GLPI-Agent-$VERSION
       shell: bash
       env:
