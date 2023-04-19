@@ -665,12 +665,57 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  sources:
+
+    runs-on: ubuntu-latest
+
+    if: ${{ needs.setup-release.outputs.build == 'yes' }}
+    needs: setup-release
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install build dependencies packages
+      run: |
+        sudo apt update
+        sudo apt -y install libmodule-install-perl libfile-which-perl      \
+          libwww-perl libnet-ip-perl libtext-template-perl                 \
+          libuniversal-require-perl libxml-libxml-perl libyaml-perl        \
+          libdigest-sha-perl libcpanel-json-xs-perl libossp-uuid-perl      \
+          libdatetime-perl
+      shell: bash
+    - name: Build source archive
+      id: srcbuild
+      run: |
+        perl Makefile.PL
+        # make -gitXXXXXXXX release when not tagged
+        if [ -z "${VERSION##*-*}" ]; then
+            tools/make-release.sh --no-git $VERSION
+        fi
+        make dist DISTVNAME=GLPI-Agent-$VERSION
+      shell: bash
+      env:
+        VERSION: ${{ needs.setup-release.outputs.version }}
+    - name: Upload built archive artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: Sources
+        path: |
+          GLPI-Agent-*.tar.gz
+    - name: Upload Sources Archive
+      id: upload-sources-asset
+      if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
+      run: |
+        gh release upload ${{ needs.setup-release.outputs.tag_name }} GLPI-Agent-*.tar.gz
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   publish-release:
 
     runs-on: ubuntu-latest
 
     if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
-    needs: [ setup-release, windows-packaging, macosx-packaging, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging, linux-installer ]
+    needs: [ setup-release, windows-packaging, macosx-packaging, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging, linux-installer, sources ]
 
     steps:
     - uses: actions/checkout@v3
@@ -724,7 +769,7 @@ jobs:
 
     #if: ${{ needs.setup-release.outputs.create-release == 'no' && needs.setup-release.outputs.build == 'yes' }}
     if: ${{ needs.setup-release.outputs.create-release == 'no' && needs.setup-release.outputs.build == 'yes' && startsWith(needs.setup-release.outputs.tag_name, 'nightly') }}
-    needs: [ setup-release, windows-packaging, macosx-packaging, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging, linux-installer ]
+    needs: [ setup-release, windows-packaging, macosx-packaging, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging, linux-installer, sources ]
 
     steps:
     - uses: actions/checkout@v3
@@ -759,6 +804,10 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: Windows-Build
+        path: glpi-agent
+    - uses: actions/download-artifact@v3
+      with:
+        name: Sources
         path: glpi-agent
     - name: Cleanup nightly
       run: |

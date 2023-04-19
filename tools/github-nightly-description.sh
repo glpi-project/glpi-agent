@@ -117,6 +117,10 @@ Deploy | [glpi-agent-task-deploy-${VERSION}.noarch.rpm](glpi-agent-task-deploy-$
 WakeOnLan | [glpi-agent-task-wakeonlan-${VERSION}.noarch.rpm](glpi-agent-task-wakeonlan-${VERSION}.noarch.rpm)
 Cron | [glpi-agent-cron-${VERSION}.noarch.rpm](glpi-agent-cron-${VERSION}.noarch.rpm)
 
+### Sources
+
+[GLPI-Agent-${VERSION}.tar.gz](GLPI-Agent-${VERSION}.tar.gz)
+
 <p><a href='#content'>Back to top</a></p>
 ---
 
