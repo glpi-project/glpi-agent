@@ -677,7 +677,8 @@ jobs:
     - name: Install build dependencies packages
       run: |
         sudo apt update
-        sudo apt -y install libmodule-install-perl devscripts
+        sudo apt -y install libmodule-install-perl libuniversal-require-perl \
+          libwww-perl libdigest-sha-perl
       shell: bash
     - name: Build source archive
       id: srcbuild
@@ -685,7 +686,7 @@ jobs:
         perl Makefile.PL
         # make -gitXXXXXXXX release when not tagged
         if [ -z "${VERSION##*-*}" ]; then
-            tools/make-release.sh --no-git $VERSION
+            tools/make-release.sh --no-git --no-deb-changelog $VERSION
         fi
         make dist DISTVNAME=GLPI-Agent-$VERSION
       shell: bash

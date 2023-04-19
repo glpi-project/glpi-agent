@@ -25,6 +25,7 @@ Options:
     -h --help           Show the help
     --no-merge --devel  Don't merge the created release branch
     --no-git            Don't use git command to create commits, tag and merge
+    --no-deb-changelog  Don't try to update debian packaging changelog
     --debrev N          Set debian package revision to N (defaults=1)
 HELP
             ;;
@@ -33,6 +34,9 @@ HELP
             ;;
         --no-git)
             GIT="no"
+            ;;
+        --no-deb-changelog)
+            DEBCHANGELOG="skip"
             ;;
         --debrev)
             shift
@@ -174,12 +178,14 @@ export DEBEMAIL="$(git config --get user.email)"
 : ${DEBFULLNAME:=$(git log --pretty=format:"%an" -n 1)}
 : ${DEBEMAIL:=$(git log --pretty=format:"%ae" -n 1)}
 if [ -n "$DEBFULLNAME" -a -n "$DEBEMAIL" ]; then
-    CURRENT=$(dpkg-parsechangelog -S version)
-    EPOCH=${CURRENT%%:*}
-    if [ "${VERSION%-*}" = "$VERSION" -a -z "$DEBREV" ]; then
-        DEBREV="-1"
+    if [ -z "$DEBCHANGELOG" -o "$DEBCHANGELOG" != "skip" ]; then
+        CURRENT=$(dpkg-parsechangelog -S version)
+        EPOCH=${CURRENT%%:*}
+        if [ "${VERSION%-*}" = "$VERSION" -a -z "$DEBREV" ]; then
+            DEBREV="-1"
+        fi
+        dch -b -D unstable --newversion "$EPOCH:$VERSION$DEBREV" "New upstream release $VERSION"
     fi
-    dch -b -D unstable --newversion "$EPOCH:$VERSION$DEBREV" "New upstream release $VERSION"
 else
     echo "No github user or email set, aborting" >&2
     exit 1
