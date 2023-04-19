@@ -677,11 +677,7 @@ jobs:
     - name: Install build dependencies packages
       run: |
         sudo apt update
-        sudo apt -y install libmodule-install-perl libfile-which-perl      \
-          libwww-perl libnet-ip-perl libtext-template-perl                 \
-          libuniversal-require-perl libxml-libxml-perl libyaml-perl        \
-          libdigest-sha-perl libcpanel-json-xs-perl libossp-uuid-perl      \
-          libdatetime-perl
+        sudo apt -y install libmodule-install-perl devscripts
       shell: bash
     - name: Build source archive
       id: srcbuild
