@@ -1,0 +1,48 @@
+
+------------------------------------------------------------------------
+GLPI Agent Monitor
+------------------------------------------------------------------------
+
+LICENSE
+
+This file is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+
+This file is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA,
+or see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+@author(s) Leonardo Bernardes (redddcyclone)
+@license   GNU GPL version 2 or (at your option) any later version
+           http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html
+@since     2023
+
+------------------------------------------------------------------------
+
+This is a monitoring tool for GLPI Agent on Windows. It sits on the
+system tray. The icon is the GLPI Agent logo, and it changes color
+from blue to red depending on the Agent status. As of now, it will
+only go to red if the Agent service is not running.
+
+By default, the tool will open minimized to the system tray, but a
+window will be opened if you left-click the icon. This window shows
+details such as the installed GLPI Agent version, the Agent service
+status and its startup type. Also, it displays the current Agent
+status (as it would be shown on the /status page).
+
+You can force an inventory by right-clicking the system tray icon and
+clicking "Force inventory" or by clicking the "Force inventory" button
+on the tool window.
+
+------------------------------------------------------------------------

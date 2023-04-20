@@ -1,0 +1,32 @@
+name: Compile GLPI-AgentMonitor
+
+on:
+  push:
+  pull_request:
+    branches:
+      - develop
+      - glpi-agentmonitor
+
+jobs:
+  windows-compile:
+    runs-on: windows-2022
+    
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ilammy/msvc-dev-cmd@v1.12.1
+      with:
+        arch: x86
+        vsversion: 2022
+    - name: create Release directory
+      run: |
+        mkdir "contrib\windows\GLPI-AgentMonitor\Release"
+      shell: cmd
+    - name: compile source
+      run: |
+        cl /c /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /permissive- /Fo"contrib\\windows\\GLPI-AgentMonitor\\Release\\" /external:W3 /Gd /TP /analyze- /FC /utf-8 "contrib\windows\GLPI-AgentMonitor\GLPI-AgentMonitor.cpp"
+    - name: compile resource
+      run: |
+        rc /D _UNICODE /D UNICODE /l"0x0409" /fo"contrib\windows\GLPI-AgentMonitor\Release\GLPI-AgentMonitor.res" "contrib\windows\GLPI-AgentMonitor\GLPI-AgentMonitor.rc"
+    - name: link
+      run: |
+        link /OUT:"contrib\windows\GLPI-AgentMonitor\Release\GLPI-AgentMonitor.exe" /INCREMENTAL:NO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /SAFESEH "contrib\windows\GLPI-AgentMonitor\Release\GLPI-AgentMonitor.res" "contrib\windows\GLPI-AgentMonitor\Release\GLPI-AgentMonitor.obj"
