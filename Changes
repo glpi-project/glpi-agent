@@ -98,7 +98,6 @@ remoteinventory:
 * Updated remote modes support: perl, ssh and libssh2 for remote ssh, ssl for winrm
 * Fix libssh2 was missing from win32 packaging
 * Fix remote hostname for ssh remote inventory run from a win32 agent
-* Add Aruba MibSupport to fix model on wifi master AP
 
 netdiscovery/netinventory:
 * Avoid to record invalid MAC Address from Netbios during netdiscovery task
@@ -122,6 +121,7 @@ netdiscovery/netinventory:
 * Fix context switching reset with SNMPv3 which may prevent any new request to work
 * fix #372: Add support connection detection using Cisco Port Security feature
 * Enhanced Dell PowerConnect components support
+* Add Aruba MibSupport to fix model on wifi master AP
 
 deploy:
 * Fix possible failure when mirror is set but misses file parts
