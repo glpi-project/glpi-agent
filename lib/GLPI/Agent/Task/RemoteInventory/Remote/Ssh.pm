@@ -14,6 +14,8 @@ use constant    supported => 1;
 
 use constant    supported_modes => qw(ssh libssh2 perl);
 
+my %cache;
+
 sub _ssh {
     my ($self, $command) = @_;
     return unless $command;
@@ -31,6 +33,9 @@ sub disconnect {
         delete $self->{_ssh2};
         $self->{logger}->debug2("Disconnected from '".$self->host()."' remote host...");
     }
+
+    # Cleanup cache
+    $self->_reset_cache();
 }
 
 # APIs dedicated to Net::SSH2 support
@@ -202,6 +207,10 @@ sub checking_error {
             }
         }
 
+        # Don't try ssh command if mode has been set to libssh2 only
+        return "Failed to store deviceid on remote with libssh2"
+            if $self->mode('libssh2') && !$self->mode('ssh');
+
         system($self->_ssh("sh -c \"'$command'\""))
             or return "Can't store deviceid on remote";
     }
@@ -264,6 +273,12 @@ sub getRemoteFileHandle {
         }
     }
 
+    # Don't try ssh command if mode has been set to libssh2 only
+    if ($self->mode('libssh2') && !$self->mode('ssh')) {
+        $self->{logger}->debug("Failed to run \"$command\" in libssh2 mode only");
+        return;
+    }
+
     $command =~ s/\\/\\\\/g;
     $command =~ s/\$/\\\$/g;
 
@@ -284,17 +299,41 @@ sub remoteCanRun {
     return $ret == 0
         if defined($ret);
 
+    # Don't try ssh command if mode has been set to libssh2 only
+    return 0 if $self->mode('libssh2') && !$self->mode('ssh');
+
     my $stderr = $OSNAME eq 'MSWin32' ? " 2>nul" : " 2>/dev/null";
 
     return system($self->_ssh($command).$stderr) == 0;
 }
 
+sub _reset_cache {
+    my ($self) = @_;
+    my $cachekey = $self->host();
+    $cachekey .= ":".$self->port() if $self->port();
+    delete $cache{$cachekey};
+}
+
+sub _cache {
+    my ($self, $key, $value) = @_;
+    my $cachekey = $self->host();
+    $cachekey .= ":".$self->port() if $self->port();
+    return $cache{$cachekey}->{$key} = $value if defined($value);
+    return unless exists($cache{$cachekey}) && defined($cache{$cachekey}->{$key});
+    return $cache{$cachekey}->{$key};
+}
+
 sub OSName {
     my ($self) = @_;
-    my $OS = lc($self->getRemoteFirstLine(command => "uname -s"));
-    return 'solaris' if $OS eq 'sunos';
-    return 'hpux' if $OS eq 'hp-ux';
-    return $OS;
+    my $cached = $self->_cache("_osname");
+    return $cached if defined($cached);
+    my $osname = lc($self->getRemoteFirstLine(command => "uname -s"));
+    if ($osname eq 'sunos') {
+        $osname = 'solaris' ;
+    } elsif ($osname eq 'hp-ux') {
+        $osname = 'hpux';
+    }
+    return $self->_cache("_osname", $osname);
 }
 
 sub remoteGlob {
@@ -346,6 +385,9 @@ sub remoteTestFolder {
     return $ret == 0
         if defined($ret);
 
+    # Don't try ssh command if mode has been set to libssh2 only
+    return 0 if $self->mode('libssh2') && !$self->mode('ssh');
+
     return system($self->_ssh($command)) == 0;
 }
 
@@ -394,6 +436,9 @@ sub remoteTestFile {
     return $ret == 0
         if defined($ret);
 
+    # Don't try ssh command if mode has been set to libssh2 only
+    return 0 if $self->mode('libssh2') && !$self->mode('ssh');
+
     return system($self->_ssh($command)) == 0;
 }
 
@@ -406,6 +451,9 @@ sub remoteTestLink {
     my $ret = $self->_ssh2_exec_status($command);
     return $ret == 0
         if defined($ret);
+
+    # Don't try ssh command if mode has been set to libssh2 only
+    return 0 if $self->mode('libssh2') && !$self->mode('ssh');
 
     return system($self->_ssh($command)) == 0;
 }
