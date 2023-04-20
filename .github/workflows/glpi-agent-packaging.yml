@@ -55,7 +55,10 @@ jobs:
         else
             echo "win32-signing=no" >>$GITHUB_OUTPUT
         fi
-        if [ -n "$APPSIGNID" -a -n "$INSTSIGNID" ]; then
+        # To disable MacOSX packages signing, you can set "no" as MACOSX_SIGNING secret in GH.
+        # This permits to disable/enable it from GH UI at any time. You still need APPSIGNID &
+        # INSTSIGNID obtained from Apple.
+        if [ -n "$APPSIGNID" -a -n "$INSTSIGNID" -a "$MACOSX_SIGNING" != "no" ]; then
             echo "macosx-signing=yes" >>$GITHUB_OUTPUT
             if [ "${{ env.macosx_notarize_support }}" == "yes" ]; then
                 NOTARIZE="yes"
@@ -64,8 +67,14 @@ jobs:
             fi
         else
             echo "macosx-signing=no" >>$GITHUB_OUTPUT
+            NOTARIZE="no"
         fi
         if [ -z "${GITHUB_REF##*refs/tags/*}" ]; then
+            # Abort publishing if MACOSX_SIGNING secret was set to "no"
+            if [ "$MACOSX_SIGNING" == "no" -a -n "$APPSIGNID" -a -n "$INSTSIGNID" ]; then
+                echo "MACOSX_SIGNING secret is set to 'no'. Remove it before publishing." >&2
+                exit 1
+            fi
             VERSION="${GITHUB_REF#*refs/tags/}"
             echo "New release on $VERSION $tag"
             echo "create-release=yes" >>$GITHUB_OUTPUT
@@ -143,6 +152,7 @@ jobs:
         CST_USERNAME: ${{ secrets.CST_USERNAME }}
         APPSIGNID: ${{ secrets.MACOSX_APPSIGNID }}
         INSTSIGNID: ${{ secrets.MACOSX_INSTSIGNID }}
+        MACOSX_SIGNING: ${{ secrets.MACOSX_SIGNING }}
     - name: Generate release description
       id: github-release-body
       if: ${{ steps.set-version.outputs.create-release == 'yes' }}
