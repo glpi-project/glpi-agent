@@ -352,12 +352,12 @@ jobs:
     - name: Import Installer Signing Cert
       id: installer-signing-cert
       uses: apple-actions/import-codesign-certs@v2
-      if: ${{ needs.setup-release.outputs.macosx-signing == 'yes' }}
+      if: ${{ needs.setup-release.outputs.macosx-signing == 'yes' && vars.MACOSX_SIGNING != 'no' }}
       with:
         p12-file-base64: ${{ secrets.MACOSX_INSTALLER_P12 }}
         p12-password: ${{ secrets.MACOSX_P12_PASSWORD }}
         create-keychain: false
-        keychain-password: ${{ steps.application-signing-cert.outputs.keychain-password && vars.MACOSX_SIGNING != 'no' }}
+        keychain-password: ${{ steps.application-signing-cert.outputs.keychain-password }}
     - name: Build package
       run: |
         # Handle repository variables to eventually disable code signing and notarization
