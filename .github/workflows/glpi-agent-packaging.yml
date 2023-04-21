@@ -55,12 +55,9 @@ jobs:
         else
             echo "win32-signing=no" >>$GITHUB_OUTPUT
         fi
-        # To disable MacOSX packages signing, you can set "no" as MACOSX_SIGNING secret in GH.
-        # This permits to disable/enable it from GH UI at any time. You still need APPSIGNID &
-        # INSTSIGNID obtained from Apple.
-        if [ -n "$APPSIGNID" -a -n "$INSTSIGNID" -a "$MACOSX_SIGNING" != "no" ]; then
+        if [ -n "$APPSIGNID" -a -n "$INSTSIGNID" ]; then
             echo "macosx-signing=yes" >>$GITHUB_OUTPUT
-            if [ "${{ env.macosx_notarize_support }}" == "yes" ]; then
+            if [ "${{ env.macosx_notarize_support }}" == "yes" -a "${{ vars.MACOSX_NOTARIZE }}" != "no" ]; then
                 NOTARIZE="yes"
             else
                 NOTARIZE="no"
@@ -70,9 +67,14 @@ jobs:
             NOTARIZE="no"
         fi
         if [ -z "${GITHUB_REF##*refs/tags/*}" ]; then
-            # Abort publishing if MACOSX_SIGNING secret was set to "no"
-            if [ "$MACOSX_SIGNING" == "no" -a -n "$APPSIGNID" -a -n "$INSTSIGNID" ]; then
-                echo "MACOSX_SIGNING secret is set to 'no'. Remove it before publishing." >&2
+            # Abort publishing if MACOSX_SIGNING variable was set to "no"
+            if [ "${{ vars.MACOSX_SIGNING }}" == "no" -a -n "$APPSIGNID" -a -n "$INSTSIGNID" ]; then
+                echo "MACOSX_SIGNING has been disabled in GH variables. Fix it before publishing." >&2
+                exit 1
+            fi
+            # Abort publishing if MACOSX_NOTARIZE variable was set to "no"
+            if [ "${{ vars.MACOSX_NOTARIZE }}" == "no" -a "$NOTARIZE" == "yes" ]; then
+                echo "MACOSX_NOTARIZE has been disabled in GH variables. Fix it before publishing." >&2
                 exit 1
             fi
             VERSION="${GITHUB_REF#*refs/tags/}"
@@ -152,7 +154,6 @@ jobs:
         CST_USERNAME: ${{ secrets.CST_USERNAME }}
         APPSIGNID: ${{ secrets.MACOSX_APPSIGNID }}
         INSTSIGNID: ${{ secrets.MACOSX_INSTSIGNID }}
-        MACOSX_SIGNING: ${{ secrets.MACOSX_SIGNING }}
     - name: Generate release description
       id: github-release-body
       if: ${{ steps.set-version.outputs.create-release == 'yes' }}
@@ -344,7 +345,7 @@ jobs:
     - name: Import Application Signing Cert
       id: application-signing-cert
       uses: apple-actions/import-codesign-certs@v2
-      if: ${{ needs.setup-release.outputs.macosx-signing == 'yes' }}
+      if: ${{ needs.setup-release.outputs.macosx-signing == 'yes' && vars.MACOSX_SIGNING != 'no' }}
       with:
         p12-file-base64: ${{ secrets.MACOSX_APPLICATION_P12 }}
         p12-password: ${{ secrets.MACOSX_P12_PASSWORD }}
@@ -356,15 +357,34 @@ jobs:
         p12-file-base64: ${{ secrets.MACOSX_INSTALLER_P12 }}
         p12-password: ${{ secrets.MACOSX_P12_PASSWORD }}
         create-keychain: false
-        keychain-password: ${{ steps.application-signing-cert.outputs.keychain-password }}
+        keychain-password: ${{ steps.application-signing-cert.outputs.keychain-password && vars.MACOSX_SIGNING != 'no' }}
     - name: Build package
       run: |
-        ./contrib/macosx/glpi-agent-packaging.sh --arch ${{ matrix.arch }} --notarize ${{ needs.setup-release.outputs.macosx-notarization }}
+        # Handle repository variables to eventually disable code signing and notarization
+        if [ -n "${{ vars.MACOSX_SIGNING }}" -o -n "${{ vars.MACOSX_NOTARIZE }}" ]; then
+          echo "GH Variables:"
+          if [ -n "${{ vars.MACOSX_SIGNING }}" ]; then
+            echo " - MACOSX_SIGNING : ${{ vars.MACOSX_SIGNING }}"
+            if [ "${{ vars.MACOSX_SIGNING }}" == "no" ]; then
+              MACOSX_NOTARIZE="no"
+              unset APPSIGNID INSTSIGNID
+            fi
+          fi
+          if [ -n "${{ vars.MACOSX_NOTARIZE }}" ]; then
+            echo " - MACOSX_NOTARIZE: ${{ vars.MACOSX_NOTARIZE }}"
+            if [ "${{ vars.MACOSX_NOTARIZE }}" == "no" ]; then
+              MACOSX_NOTARIZE="no"
+              unset NOTARIZE_USER NOTARIZE_PASSWORD
+            fi
+          fi
+        fi
+        ./contrib/macosx/glpi-agent-packaging.sh --arch ${{ matrix.arch }} --notarize $MACOSX_NOTARIZE
       env:
         APPSIGNID: ${{ secrets.MACOSX_APPSIGNID }}
         INSTSIGNID: ${{ secrets.MACOSX_INSTSIGNID }}
         NOTARIZE_USER: ${{ secrets.MACOSX_NOTARIZE_USER }}
         NOTARIZE_PASSWORD: ${{ secrets.MACOSX_NOTARIZE_PASSWORD }}
+        MACOSX_NOTARIZE: ${{ needs.setup-release.outputs.macosx-notarization }}
       shell: bash
     - name: List generated files
       if: success() || failure()
