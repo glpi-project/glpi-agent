@@ -9,24 +9,30 @@ on:
 
 jobs:
   windows-compile:
-    runs-on: windows-2022
+    runs-on: windows-latest
+    
+    strategy:
+      matrix:
+        arch: [ x64, x86 ]
     
     steps:
     - uses: actions/checkout@v3
     - uses: ilammy/msvc-dev-cmd@v1.12.1
       with:
-        arch: x86
-        vsversion: 2022
-    - name: create Release directory
+        arch: ${{ matrix.arch }}
+    - name: Compile and link
       run: |
-        mkdir "contrib\windows\GLPI-AgentMonitor\Release"
-      shell: cmd
-    - name: compile source
-      run: |
-        cl /c /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /permissive- /Fo"contrib\\windows\\GLPI-AgentMonitor\\Release\\" /external:W3 /Gd /TP /analyze- /FC /utf-8 "contrib\windows\GLPI-AgentMonitor\GLPI-AgentMonitor.cpp"
-    - name: compile resource
-      run: |
-        rc /D _UNICODE /D UNICODE /l"0x0409" /fo"contrib\windows\GLPI-AgentMonitor\Release\GLPI-AgentMonitor.res" "contrib\windows\GLPI-AgentMonitor\GLPI-AgentMonitor.rc"
-    - name: link
-      run: |
-        link /OUT:"contrib\windows\GLPI-AgentMonitor\Release\GLPI-AgentMonitor.exe" /INCREMENTAL:NO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /SAFESEH "contrib\windows\GLPI-AgentMonitor\Release\GLPI-AgentMonitor.res" "contrib\windows\GLPI-AgentMonitor\Release\GLPI-AgentMonitor.obj"
+        msbuild contrib\windows\GLPI-AgentMonitor\GLPI-AgentMonitor.vcxproj -p:Configuration=Release -p:Platform=${{ matrix.arch }} -p:OutDir=Release\ -p:IntermediateOutputPath=Release\ -v:detailed -fl -flp:logfile=contrib\windows\GLPI-AgentMonitor\Release\msbuild.log
+    - name: Upload built artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: GLPI-AgentMonitor-Build-${{ matrix.arch }}
+        path: |
+          contrib\windows\GLPI-AgentMonitor\Release\*.exe
+    - name: Upload build logs artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: GLPI-AgentMonitor-BuildLogs-${{ matrix.arch }}
+        path: |
+          contrib\windows\GLPI-AgentMonitor\Release\msbuild.log
+          contrib\windows\GLPI-AgentMonitor\Release\*.tlog
