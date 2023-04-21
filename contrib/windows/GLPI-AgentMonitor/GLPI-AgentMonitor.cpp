@@ -184,7 +184,7 @@ VOID GetAgentStatus(HWND hWnd, LPWSTR szAgStatus, DWORD dwAgStatusLen)
                 if (dwSize == 0)
                     break;
 
-                DWORD dwOffset = responseBody.size();
+                size_t dwOffset = responseBody.size();
                 responseBody.resize(dwOffset + dwSize);
 
                 if(!WinHttpReadData(hReq, &responseBody[dwOffset], dwSize, &dwDownloaded))
@@ -607,7 +607,7 @@ LRESULT CALLBACK DlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 case IDC_SERVICESTATUS:
                     SetTextColor(hdc, colorSvcStatus);
-                    return (BOOL)GetSysColorBrush(COLOR_MENU);
+                    return (LRESULT)GetSysColorBrush(COLOR_MENU);
             }
             break;
         }
