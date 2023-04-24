@@ -196,11 +196,11 @@ my %consumable_types = (
 my %printer_pagecounters_variables = (
     TOTAL      => {
         oid   => [
-            '.1.3.6.1.4.1.1347.42.10.1.1.12.1.1', #Kyocera specific counter for printers and MF
+            '.1.3.6.1.4.1.1347.43.10.1.1.12.1.1', #Kyocera specific counter for printers and MF
                                                   # If you were really keen you could calculate misfeed rates
-                                                  # based on the difference betwwen this and the default OID
+                                                  # based on the difference between this and the default OID
                                                   # value and use it to flag a call out of service techs.
-                                                  # Hint: Increasing rate = bald paper pickup roller tyres.
+                                                  # Hint: Increasing rate = bad paper pickup roller types.
             '.1.3.6.1.2.1.43.10.2.1.4.1.1'        #Default Value
             ]
     },
