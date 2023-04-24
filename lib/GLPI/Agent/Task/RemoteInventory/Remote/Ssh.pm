@@ -17,12 +17,13 @@ use constant    supported_modes => qw(ssh libssh2 perl);
 my %cache;
 
 sub _ssh {
-    my ($self, $command) = @_;
-    return unless $command;
-    my $options = "-q -o BatchMode=yes";
-    $options .= " -p " . $self->port() if $self->port() && $self->port() != 22;
-    $options .= " -l " . $self->user() if $self->user();
-    return "ssh $options ".$self->host()." LANG=C $command";
+    my ($self) = @_;
+
+    my @command = qw(ssh -q -o BatchMode=yes);
+    push @command, "-p", $self->port() if $self->port() && $self->port() != 22;
+    push @command, "-l", $self->user() if $self->user();
+
+    return @command, $self->host(), "LANG=C";
 }
 
 sub disconnect {
@@ -211,7 +212,7 @@ sub checking_error {
         return "Failed to store deviceid on remote with libssh2"
             if $self->mode('libssh2') && !$self->mode('ssh');
 
-        system($self->_ssh("sh -c \"'$command'\"")) == 0
+        system($self->_ssh(), "sh", "-c", "'$command'") == 0
             or return "Can't store deviceid on remote";
     }
 
@@ -283,7 +284,7 @@ sub getRemoteFileHandle {
     $command =~ s/\$/\\\$/g;
 
     return getFileHandle(
-        command => $self->_ssh($command),
+        command => join(" ", $self->_ssh(), $command),
         logger  => $self->{logger},
         local   => 1
     );
@@ -302,9 +303,9 @@ sub remoteCanRun {
     # Don't try ssh command if mode has been set to libssh2 only
     return 0 if $self->mode('libssh2') && !$self->mode('ssh');
 
-    my $stderr = $OSNAME eq 'MSWin32' ? " 2>nul" : " 2>/dev/null";
+    my $stderr = $OSNAME eq 'MSWin32' ? "2>nul" : "2>/dev/null";
 
-    return system($self->_ssh($command).$stderr) == 0;
+    return system($self->_ssh(), $command, $stderr) == 0;
 }
 
 sub _reset_cache {
@@ -378,17 +379,15 @@ sub getRemoteHostDomain {
 sub remoteTestFolder {
     my ($self, $folder) = @_;
 
-    my $command = "test -d '$folder'";
-
     # Support Net::SSH2 facilities to exec command
-    my $ret = $self->_ssh2_exec_status($command);
+    my $ret = $self->_ssh2_exec_status("test -d '$folder'");
     return $ret == 0
         if defined($ret);
 
     # Don't try ssh command if mode has been set to libssh2 only
     return 0 if $self->mode('libssh2') && !$self->mode('ssh');
 
-    return system($self->_ssh($command)) == 0;
+    return system($self->_ssh(), "test", "-d", "'$folder'") == 0;
 }
 
 sub remoteTestFile {
@@ -429,17 +428,17 @@ sub remoteTestFile {
         }
     }
 
-    my $command = $filetest && $filetest eq "r" ? "test -r '$file'" : "test -e '$file'";
+    my $testflag = $filetest && $filetest eq "r" ? "-r" :  "-e";
 
     # Support Net::SSH2 facilities to exec command
-    my $ret = $self->_ssh2_exec_status($command);
+    my $ret = $self->_ssh2_exec_status("test $testflag '$file'");
     return $ret == 0
         if defined($ret);
 
     # Don't try ssh command if mode has been set to libssh2 only
     return 0 if $self->mode('libssh2') && !$self->mode('ssh');
 
-    return system($self->_ssh($command)) == 0;
+    return system($self->_ssh(), "test", $testflag, "'$file'") == 0;
 }
 
 sub remoteTestLink {
@@ -455,7 +454,7 @@ sub remoteTestLink {
     # Don't try ssh command if mode has been set to libssh2 only
     return 0 if $self->mode('libssh2') && !$self->mode('ssh');
 
-    return system($self->_ssh($command)) == 0;
+    return system($self->_ssh(), "test", "-h", "'$link'") == 0;
 }
 
 # This API only need to return ctime & mtime
