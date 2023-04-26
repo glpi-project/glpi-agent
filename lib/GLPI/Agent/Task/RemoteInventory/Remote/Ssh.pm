@@ -280,9 +280,6 @@ sub getRemoteFileHandle {
         return;
     }
 
-    $command =~ s/\\/\\\\/g;
-    $command =~ s/\$/\\\$/g;
-
     return getFileHandle(
         command => [ $self->_ssh(), $command ],
         logger  => $self->{logger},
@@ -344,7 +341,7 @@ sub remoteGlob {
     my $command = "sh -c 'for f in $glob; do if test ".($test // "-e")." \"\$f\"; then echo \$f; fi; done'";
 
     my @glob = $self->getRemoteAllLines(
-        command => $self->{_ssh2} ? $command : "\"$command\""
+        command => $command
     );
 
     return @glob;
