@@ -280,6 +280,8 @@ sub delete {
             my $storage = $list->{storage};
             my $remotes = $storage->restore( name => 'remotes' ) // {};
             my $id = $list->{remote}->deviceid();
+            ($id) = grep { $remotes->{$_}->{deviceid} eq $id } keys(%{$remotes})
+                unless $remotes->{$id};
             my $deleted = delete $remotes->{$id}
                 or warn "No such deviceid found: $id\n";
             if (keys(%{$remotes})) {
