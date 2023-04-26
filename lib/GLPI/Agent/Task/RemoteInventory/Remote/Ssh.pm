@@ -284,7 +284,7 @@ sub getRemoteFileHandle {
     $command =~ s/\$/\\\$/g;
 
     return getFileHandle(
-        command => join(" ", $self->_ssh(), $command),
+        command => [ $self->_ssh(), $command ],
         logger  => $self->{logger},
         local   => 1
     );

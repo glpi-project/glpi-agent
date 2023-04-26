@@ -417,7 +417,7 @@ sub getDirectoryHandle {
     return $handle;
 }
 
-my $cmdtemplate = $OSNAME eq 'MSWin32' ? "%s 2>nul" : "exec %s 2>/dev/null";
+my $nostderr = $OSNAME eq 'MSWin32' ? "2>nul" : "2>/dev/null";
 sub getFileHandle {
     my (%params) = @_;
 
@@ -440,7 +440,7 @@ sub getFileHandle {
         }
         if ($params{command}) {
             # limit log command size if too large like for powershell commands
-            my $logcommand = $params{command};
+            my $logcommand = ref($params{command}) eq "ARRAY" ? "@{$params{command}}" : $params{command};
             while (length($logcommand)>120 && $logcommand =~ /\w\s+\w/) {
                 ($logcommand) = $logcommand =~ /^(.*\w)\s+\w+/;
                 $logcommand .= " ...";
@@ -457,8 +457,12 @@ sub getFileHandle {
                 if $ENV{LD_LIBRARY_PATH} && $ENV{APPRUN_STARTUP_APPIMAGE_UUID} && $ENV{APPDIR};
             # Ignore 'Broken Pipe' warnings on Solaris
             local $SIG{PIPE} = 'IGNORE' if $OSNAME eq 'solaris';
-            my $command = sprintf($cmdtemplate, $params{command});
-            my $cmdpid  = open($handle, '-|', $command);
+            my $cmdpid;
+            if (ref($params{command}) eq "ARRAY") {
+                $cmdpid  = open($handle, '-|', @{$params{command}}, $nostderr);
+            } else {
+                $cmdpid  = open($handle, '-|', $params{command}." ".$nostderr);
+            }
             if (!$cmdpid) {
                 $params{logger}->error(
                     "Can't run command $logcommand: $ERRNO"
