@@ -90,10 +90,9 @@ UINT const WMAPP_NOTIFYCALLBACK = WM_APP + 1;
 // Dynamic text colors
 COLORREF colorSvcStatus = RGB(0, 0, 0);
 
-// Global string buffers
-WCHAR szBuffer[256], szTitleBuf[128];
-DWORD dwBufferLen = sizeof(szBuffer);
-DWORD dwTitleBufLen = sizeof(szTitleBuf);
+// Global string buffer
+WCHAR szBuffer[256];
+DWORD dwBufferLen = sizeof(szBuffer) / sizeof(WCHAR);
 
 
 //-[APP FUNCTIONS]-------------------------------------------------------------
@@ -157,6 +156,15 @@ VOID ShowWindowFront(HWND hWnd, int nCmdShow)
     SetFocus(hWnd);
     SetActiveWindow(hWnd);
     AttachThreadInput(dwCurID, dwMyID, FALSE);
+}
+
+// Loads the specified strings from the resources and shows a message box
+VOID LoadStringAndMessageBox(HINSTANCE hIns, HWND hWn, UINT msgResId, UINT titleResId, UINT mbFlags)
+{
+    WCHAR szBuf[256], szTitleBuf[128];
+    LoadString(hIns, msgResId, szBuf, sizeof(szBuf) / sizeof(WCHAR));
+    LoadString(hIns, titleResId, szTitleBuf, sizeof(szTitleBuf) / sizeof(WCHAR));
+    MessageBox(hWn, szBuf, szTitleBuf, mbFlags);
 }
 
 // Requests GLPI Agent status via HTTP and stores it on a wide-char string
@@ -225,41 +233,23 @@ VOID ForceInventory(HWND hWnd)
                     if (!WinHttpQueryHeaders(hReq, WINHTTP_QUERY_STATUS_CODE | WINHTTP_QUERY_FLAG_NUMBER,
                         WINHTTP_HEADER_NAME_BY_INDEX, &dwStatusCode, &dwSize, WINHTTP_NO_HEADER_INDEX))
                     {
-                        LoadString(hInst, IDS_ERR_FORCEINV_NORESPONSE, szBuffer, dwBufferLen);
-                        LoadString(hInst, IDS_ERROR, szTitleBuf, dwTitleBufLen);
-                        MessageBox(hWnd, szBuffer, szTitleBuf, MB_OK | MB_ICONERROR);
+                        LoadStringAndMessageBox(hInst, hWnd, IDS_ERR_FORCEINV_NORESPONSE, IDS_ERROR, MB_OK | MB_ICONERROR);
                     }
                     else {
                         if (dwStatusCode != 200)
-                        {
-                            LoadString(hInst, IDS_ERR_FORCEINV_NOTALLOWED, szBuffer, dwBufferLen);
-                            LoadString(hInst, IDS_ERROR, szTitleBuf, dwTitleBufLen);
-                            MessageBox(hWnd, szBuffer, szTitleBuf, MB_OK | MB_ICONERROR);
-                        }
+                            LoadStringAndMessageBox(hInst, hWnd, IDS_ERR_FORCEINV_NOTALLOWED, IDS_ERROR, MB_OK | MB_ICONERROR);
                         else
-                        {
-                            LoadString(hInst, IDS_MSG_FORCEINV_OK, szBuffer, dwBufferLen);
-                            LoadString(hInst, IDS_APP_TITLE, szTitleBuf, dwTitleBufLen);
-                            MessageBox(hWnd, szBuffer, szTitleBuf, MB_OK | MB_ICONINFORMATION);
-                        }
+                            LoadStringAndMessageBox(hInst, hWnd, IDS_MSG_FORCEINV_OK, IDS_APP_TITLE, MB_OK | MB_ICONINFORMATION);
                     }
                 }
             }
             WinHttpCloseHandle(hReq);
         }
         else
-        {
-            LoadString(hInst, IDS_ERR_AGENTERR, szBuffer, dwBufferLen);
-            LoadString(hInst, IDS_ERROR, szTitleBuf, dwTitleBufLen);
-            MessageBox(hWnd, szBuffer, szTitleBuf, MB_OK | MB_ICONERROR);
-        }
+            LoadStringAndMessageBox(hInst, hWnd, IDS_ERR_AGENTERR, IDS_ERROR, MB_OK | MB_ICONERROR);
     }
-    else 
-    {
-        LoadString(hInst, IDS_ERR_NOTRUNNING, szBuffer, dwBufferLen);
-        LoadString(hInst, IDS_ERROR, szTitleBuf, dwTitleBufLen);
-        MessageBox(hWnd, szBuffer, szTitleBuf, MB_OK | MB_ICONERROR);
-    }
+    else
+        LoadStringAndMessageBox(hInst, hWnd, IDS_ERR_NOTRUNNING, IDS_ERROR, MB_OK | MB_ICONERROR);
 }
 
 // Updates the main window statuses
@@ -404,7 +394,7 @@ VOID CALLBACK UpdateStatus(HWND hWnd, UINT message, UINT idTimer, DWORD dwTime)
 
         // Agent status
         WCHAR szAgStatus[128];
-        GetAgentStatus(hWnd, szAgStatus, sizeof(szAgStatus));
+        GetAgentStatus(hWnd, szAgStatus, sizeof(szAgStatus) / sizeof(WCHAR));
         SetDlgItemText(hWnd, IDC_AGENTSTATUS, szAgStatus);
     }
 
@@ -471,9 +461,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
         wsprintf(szKey, L"SOFTWARE\\WOW6432Node\\%s", SERVICE_NAME);
         lRes = RegOpenKeyEx(HKEY_LOCAL_MACHINE, szKey, 0, KEY_READ | KEY_WOW64_64KEY, &hk);
         if (lRes != ERROR_SUCCESS) {
-            LoadString(hInst, IDS_ERR_AGENTSETTINGS, szBuffer, dwBufferLen);
-            LoadString(hInst, IDS_ERROR, szTitleBuf, dwTitleBufLen);
-            MessageBox(NULL, szBuffer, szTitleBuf, MB_OK | MB_ICONERROR);
+            LoadStringAndMessageBox(hInst, NULL, IDS_ERR_AGENTSETTINGS, IDS_ERROR, MB_OK | MB_ICONERROR);
             return -10;
         }
     }
@@ -482,9 +470,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
         // Get HTTPD port
         lRes = RegQueryValueEx(hk, L"httpd-port", 0, NULL, (LPBYTE)szValueBuf, &szValueBufLen);
         if (lRes != ERROR_SUCCESS) {
-            LoadString(hInst, IDS_ERR_HTTPDPORT, szBuffer, dwBufferLen);
-            LoadString(hInst, IDS_ERROR, szTitleBuf, dwTitleBufLen);
-            MessageBox(NULL, szBuffer, szTitleBuf, MB_OK | MB_ICONERROR);
+            LoadStringAndMessageBox(hInst, NULL, IDS_ERR_HTTPDPORT, IDS_ERROR, MB_OK | MB_ICONERROR);
             return -30;
         }
         else
@@ -502,9 +488,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
     HWND hWnd = CreateDialog(hInst, MAKEINTRESOURCE(IDD_MAIN), NULL, (DLGPROC)DlgProc);
     if (!hWnd) {
-        LoadString(hInst, IDS_ERR_MAINWINDOW, szBuffer, dwBufferLen);
-        LoadString(hInst, IDS_ERROR, szTitleBuf, dwTitleBufLen);
-        MessageBox(NULL, szBuffer, szTitleBuf, MB_OK | MB_ICONERROR);
+        LoadStringAndMessageBox(hInst, NULL, IDS_ERR_MAINWINDOW, IDS_ERROR, MB_OK | MB_ICONERROR);
         return -40;
     }
 
