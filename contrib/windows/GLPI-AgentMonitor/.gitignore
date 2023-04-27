@@ -3,3 +3,4 @@ Release
 *.vcxproj.user
 .vs
 Thumbs.db
+Debug

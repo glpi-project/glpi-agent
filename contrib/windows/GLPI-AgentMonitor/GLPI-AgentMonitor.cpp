@@ -443,23 +443,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 {
     hInst = hInstance;
 
-    // Read app version from resource
-    HRSRC hResInfo = FindResource(hInst, MAKEINTRESOURCE(VS_VERSION_INFO), RT_VERSION);
-    if (!hResInfo) return -1;
-    HGLOBAL hResData = LoadResource(hInst, hResInfo);
-    if (!hResData) return -1;
-    LPVOID pRes = LockResource(hResData);
-    LPVOID pResCopy = LocalAlloc(LMEM_FIXED, SizeofResource(hInst, hResInfo));
-    if (!pResCopy) return -1;
-    CopyMemory(pResCopy, pRes, SizeofResource(hInst, hResInfo));
-    FreeResource(hResData);
-    UINT uLen;
-    VS_FIXEDFILEINFO* lpFfi;
-    VerQueryValue(pResCopy, TEXT("\\"), (LPVOID*)&lpFfi, &uLen);
-    LocalFree(pResCopy);
-    DWORD dwVerMaj, dwVerMin;
-    dwVerMaj = HIWORD(lpFfi->dwFileVersionMS);
-    dwVerMin = LOWORD(lpFfi->dwFileVersionMS);
+    // Read app version
+    WCHAR szFileName[MAX_PATH];
+    GetModuleFileName(NULL, szFileName, MAX_PATH);
+    DWORD dwSize = GetFileVersionInfoSize(szFileName, 0);
+    VS_FIXEDFILEINFO* lpFfi = NULL;
+    UINT uFfiLen = 0;
+    WCHAR* szVerBuffer = new WCHAR[dwSize];
+    GetFileVersionInfo(szFileName, 0, dwSize, &szVerBuffer);
+    VerQueryValue(&szVerBuffer, L"\\", (LPVOID*)&lpFfi, &uFfiLen);
+    DWORD dwVerMaj = HIWORD(lpFfi->dwFileVersionMS);
+    DWORD dwVerMin = LOWORD(lpFfi->dwFileVersionMS);
 
     GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 
