@@ -211,7 +211,7 @@ sub checking_error {
         return "Failed to store deviceid on remote with libssh2"
             if $self->mode('libssh2') && !$self->mode('ssh');
 
-        system($self->_ssh("sh -c \"'$command'\""))
+        system($self->_ssh("sh -c \"'$command'\"")) == 0
             or return "Can't store deviceid on remote";
     }
 
