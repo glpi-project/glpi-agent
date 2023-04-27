@@ -6,6 +6,7 @@ use parent 'Exporter';
 
 use Encode qw(decode encode);
 
+use GLPI::Agent::Logger;
 use GLPI::Agent::Tools::Win32;
 
 our @EXPORT = qw(
@@ -22,7 +23,7 @@ sub getSystemUserProfiles {
         query      => "SELECT * FROM Win32_UserProfile WHERE LocalPath IS NOT NULL AND Special=FALSE",
         properties => [ qw/Sid Loaded LocalPath/ ],
     )) {
-        next unless $userprofile->{Sid} && $userprofile->{Sid} =~ /^S-\d+-5-21-/;
+        next unless $userprofile->{Sid} && $userprofile->{Sid} =~ /^S-\d+-5-21(-\d+)+$/;
 
         next unless defined($userprofile->{Loaded}) && defined($userprofile->{LocalPath});
 
@@ -58,13 +59,23 @@ sub getProfileUsername {
             $PreviousEncoding = [console]::OutputEncoding
             $OutputEncoding   = [console]::InputEncoding = [console]::OutputEncoding = New-Object System.Text.UTF8Encoding
 
-            ((New-Object System.Security.Principal.SecurityIdentifier("'.$user->{SID}.'")).Translate([System.Security.Principal.NTAccount])).Value
+            try {
+                ((New-Object System.Security.Principal.SecurityIdentifier("'.$user->{SID}.'")).Translate([System.Security.Principal.NTAccount])).Value
+            }
+            catch {
+                Write-Output "Exception: $($PSItem.FullyQualifiedErrorId)"
+            }
 
             # Restore encoding
             $OutputEncoding = [console]::InputEncoding = [console]::OutputEncoding = $PreviousEncoding
         '
     );
     if ($ntaccount) {
+        if ($ntaccount =~ /^Exception: (.*)/) {
+            my $logger = GLPI::Agent::Logger->new();
+            $logger->info("Got PowerShell Exception when looking for $user->{SID} profile username: $1");
+            return "Domain deleted account" if $1 && $1 eq "IdentityNotMappedException";
+        }
         my ($username) = $ntaccount =~ /^[^\\]*\\(.*)$/;
         return $username if defined($username) && length($username);
     }
