@@ -187,7 +187,7 @@ VOID GetAgentStatus(HWND hWnd, LPWSTR szAgStatus, DWORD dwAgStatusLen)
                 size_t dwOffset = responseBody.size();
                 responseBody.resize(dwOffset + dwSize);
 
-                if(!WinHttpReadData(hReq, &responseBody[dwOffset], dwSize, &dwDownloaded))
+                if (!WinHttpReadData(hReq, &responseBody[dwOffset], dwSize, &dwDownloaded))
                     break;
                 if (dwDownloaded == 0)
                     break;
@@ -197,7 +197,7 @@ VOID GetAgentStatus(HWND hWnd, LPWSTR szAgStatus, DWORD dwAgStatusLen)
 
             size_t respSize = responseBody.size() + 1;
             size_t cnvChars = 0;
-            // Must remove "status: " from the string (respoSize - 8)
+            // Must remove "status: " from the string (respSize - 8)
             mbstowcs_s(&cnvChars, szAgStatus, respSize - 8, (LPCSTR)&responseBody[8], _TRUNCATE);
         }
         WinHttpCloseHandle(hReq);
@@ -267,10 +267,10 @@ VOID CALLBACK UpdateStatus(HWND hWnd, UINT message, UINT idTimer, DWORD dwTime)
 {
     SC_HANDLE hSc = OpenSCManager(NULL, SERVICES_ACTIVE_DATABASE, SERVICE_QUERY_STATUS);
     SC_HANDLE hSvc = OpenService(hSc, SERVICE_NAME, SERVICE_QUERY_STATUS);
-    SERVICE_STATUS lpsvcStatus;
-    if (!QueryServiceStatus(hSvc, &lpsvcStatus)) { }
-    if (&lpsvcStatus != NULL)
-        running = lpsvcStatus.dwCurrentState == SERVICE_RUNNING;
+    SERVICE_STATUS svcStatus;
+    BOOL querySvcOk = QueryServiceStatus(hSvc, &svcStatus);
+    if (querySvcOk)
+        running = svcStatus.dwCurrentState == SERVICE_RUNNING;
 
     if (IsWindowVisible(hWnd))
     {
@@ -357,8 +357,8 @@ VOID CALLBACK UpdateStatus(HWND hWnd, UINT message, UINT idTimer, DWORD dwTime)
 
 
         // Service running status
-        if (&lpsvcStatus != NULL) {
-            switch (lpsvcStatus.dwCurrentState)
+        if (querySvcOk) {
+            switch (svcStatus.dwCurrentState)
             {
                 case SERVICE_STOPPED:
                     LoadString(hInst, IDS_SVC_STOPPED, szBuffer, dwBufferLen);
@@ -470,15 +470,23 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     {
         wsprintf(szKey, L"SOFTWARE\\WOW6432Node\\%s", SERVICE_NAME);
         lRes = RegOpenKeyEx(HKEY_LOCAL_MACHINE, szKey, 0, KEY_READ | KEY_WOW64_64KEY, &hk);
-        if (lRes != ERROR_SUCCESS)
+        if (lRes != ERROR_SUCCESS) {
+            LoadString(hInst, IDS_ERR_AGENTSETTINGS, szBuffer, dwBufferLen);
+            LoadString(hInst, IDS_ERROR, szTitleBuf, dwTitleBufLen);
+            MessageBox(NULL, szBuffer, szTitleBuf, MB_OK | MB_ICONERROR);
             return -10;
+        }
     }
     if (lRes == ERROR_SUCCESS)
     {   
         // Get HTTPD port
         lRes = RegQueryValueEx(hk, L"httpd-port", 0, NULL, (LPBYTE)szValueBuf, &szValueBufLen);
-        if (lRes != ERROR_SUCCESS)
+        if (lRes != ERROR_SUCCESS) {
+            LoadString(hInst, IDS_ERR_HTTPDPORT, szBuffer, dwBufferLen);
+            LoadString(hInst, IDS_ERROR, szTitleBuf, dwTitleBufLen);
+            MessageBox(NULL, szBuffer, szTitleBuf, MB_OK | MB_ICONERROR);
             return -30;
+        }
         else
             dwPort = _wtoi(szValueBuf);
     }
@@ -493,8 +501,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     //-------------------------------------------------------------------------
 
     HWND hWnd = CreateDialog(hInst, MAKEINTRESOURCE(IDD_MAIN), NULL, (DLGPROC)DlgProc);
-    if (!hWnd)
-        return FALSE;
+    if (!hWnd) {
+        LoadString(hInst, IDS_ERR_MAINWINDOW, szBuffer, dwBufferLen);
+        LoadString(hInst, IDS_ERROR, szTitleBuf, dwTitleBufLen);
+        MessageBox(NULL, szBuffer, szTitleBuf, MB_OK | MB_ICONERROR);
+        return -40;
+    }
 
     HICON icon = (HICON)LoadImage(hInst, MAKEINTRESOURCE(IDI_GLPIOK), IMAGE_ICON, 0, 0, LR_DEFAULTCOLOR | LR_DEFAULTSIZE);
     SendMessage(hWnd, WM_SETICON, ICON_SMALL, (LPARAM)icon);
@@ -515,7 +527,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     SendMessage(GetDlgItem(hWnd, IDC_PCLOGO), STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hLogo);
 
     WCHAR szVer[20];
-    wsprintf(szVer, L"v%d.%d", dwVerMaj,dwVerMin);
+    wsprintf(szVer, L"v%d.%d", dwVerMaj, dwVerMin);
     SetDlgItemText(hWnd, IDC_VERSION, szVer);
 
     LoadString(hInst, IDS_APP_TITLE, szBuffer, dwBufferLen);
