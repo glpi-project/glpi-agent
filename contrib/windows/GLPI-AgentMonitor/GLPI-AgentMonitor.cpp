@@ -440,8 +440,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     VS_FIXEDFILEINFO* lpFfi = NULL;
     UINT uFfiLen = 0;
     WCHAR* szVerBuffer = new WCHAR[dwSize];
-    GetFileVersionInfo(szFileName, 0, dwSize, &szVerBuffer);
-    VerQueryValue(&szVerBuffer, L"\\", (LPVOID*)&lpFfi, &uFfiLen);
+    GetFileVersionInfo(szFileName, 0, dwSize, szVerBuffer);
+    VerQueryValue(szVerBuffer, L"\\", (LPVOID*)&lpFfi, &uFfiLen);
     DWORD dwVerMaj = HIWORD(lpFfi->dwFileVersionMS);
     DWORD dwVerMin = LOWORD(lpFfi->dwFileVersionMS);
 
