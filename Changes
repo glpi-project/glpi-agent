@@ -168,6 +168,7 @@ packaging:
 * fix #305: Support --proxy & --use-current-user-proxy options in linux perl installer
 * fix missing --no-category support in linux perl installer
 * fix #315: Add --user & --password options support in linux perl installer
+* fix #386: Support Oracle Linux 7 in linux perl installer
 
 tools:
 * Fix import command in netsim.sh script

@@ -177,7 +177,10 @@ sub _prepareDistro {
         }
     } elsif ($self->{_name} =~ /oracle linux/i) {
         # On Oracle Linux server 8, we need "ol8_codeready_builder"
-        if ($v >= 8) {
+        if ($v < 8) {
+            $self->{_yum} = 1;
+            delete $self->{_dnf};
+        } else {
             $self->verbose("Checking Oracle Linux CodeReady Builder repository is enabled");
             my $ret = $self->run("dnf config-manager --set-enabled ol${v}_codeready_builder");
             die "Can't enable CodeReady Builder repository: $!\n" if $ret;
