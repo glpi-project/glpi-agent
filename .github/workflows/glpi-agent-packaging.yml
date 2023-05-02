@@ -290,6 +290,15 @@ jobs:
         files: |
           C:\Strawberry-perl-for-GLPI-Agent_build\output\GLPI-Agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.msi
           C:\Strawberry-perl-for-GLPI-Agent_build\output\glpi-agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.zip
+    - name: VirusTotal Report Analysis
+      if: ${{ needs.setup-release.outputs.create-release == 'yes' || startsWith(needs.setup-release.outputs.tag_name, 'nightly') }}
+      run: |
+        perl tools\virustotal-report-analysis.pl \
+          C:\Strawberry-perl-for-GLPI-Agent_build\output\GLPI-Agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.msi \
+          C:\Strawberry-perl-for-GLPI-Agent_build\output\glpi-agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.zip
+      shell: cmd
+      env:
+        VT_API_KEY: ${{ secrets.VT_API_KEY }}
     - name: Upload Portable Archive Asset
       id: upload-portable-archive-asset
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
