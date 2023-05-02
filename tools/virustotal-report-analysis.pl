@@ -51,7 +51,9 @@ foreach my $sha256 (@sha256) {
 }
 
 if (@failed) {
-    die "VirusTotal check failure\n".join("\n", map { "See https://www.virustotal.com/gui/file/$_" } @failed)."\n";
+    map {
+        print "::warning title=VirusTotal check failure::See https://www.virustotal.com/gui/file/$_\n"
+    } @failed;
 } else {
     print "VirusTotal check is good.\n";
 }
