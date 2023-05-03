@@ -12,7 +12,7 @@
 : ${BUILDER_MAIL:="gbougard_at_teclib.com"}
 
 : ${APPSIGNID:=}
-: ${INSTSINGID:=}
+: ${INSTSIGNID:=}
 : ${NOTARIZE:=no}
 
 let SIGNED=0
@@ -535,6 +535,35 @@ cat >pkg/Distribution.xml <<-CUSTOM
 	    <os-version min="$MACOSX_DEPLOYMENT_TARGET" />
 	</installer-gui-script>
 CUSTOM
+
+echo "Prepare Info.plist..."
+[ -d pkg/payload/Applications/GLPI-Agent/Contents ] || mkdir -p pkg/payload/Applications/GLPI-Agent/Contents
+cat >pkg/payload/Applications/GLPI-Agent/Contents/Info.plist <<-INFO_PLIST
+	<?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+	<plist version="1.0">
+	<dict>
+	    <key>CFBundleShortVersionString</key>
+	    <string>$VERSION</string>
+	    <key>CFBundleVersion</key>
+	    <string>$VERSION</string>
+	    <key>NSHumanReadableCopyright</key>
+	    <string>Copyright 2023 GLPI-Project, GNU General Public License v2</string>
+	    <key>CFBundleDevelopmentRegion</key>
+	    <string>en</string>
+	    <key>CFBundleName</key>
+	    <string>GLPI-Agent</string>
+	    <key>CFBundleExecutable</key>
+	    <string>glpi-agent</string>
+	    <key>CFBundleIdentifier</key>
+	    <string>org.glpi-project.glpi-agent</string>
+	    <key>CFBundleInfoDictionaryVersion</key>
+	    <string>6.0</string>
+	    <key>CFBundlePackageType</key>
+	    <string>APPL</string>
+	</dict>
+	</plist>
+INFO_PLIST
 
 echo "Build package"
 ./munkipkg pkg
