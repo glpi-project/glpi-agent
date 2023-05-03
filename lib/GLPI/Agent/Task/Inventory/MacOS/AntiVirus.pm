@@ -1,0 +1,73 @@
+package GLPI::Agent::Task::Inventory::MacOS::AntiVirus;
+
+use strict;
+use warnings;
+
+use parent 'GLPI::Agent::Task::Inventory::Module';
+
+use UNIVERSAL::require;
+use Cpanel::JSON::XS;
+
+use GLPI::Agent::Tools;
+
+use constant    category    => "antivirus";
+
+sub isEnabled {
+    # Only MS Defender is supported
+    return canRun('mdatp');
+}
+
+sub doInventory {
+    my (%params) = @_;
+
+    my $inventory = $params{inventory};
+    my $logger    = $params{logger};
+
+    my $antivirus = _getMSDefender(logger => $logger);
+    if ($antivirus) {
+        $inventory->addEntry(
+            section => 'ANTIVIRUS',
+            entry   => $antivirus
+        );
+
+        $logger->debug2("Added $antivirus->{NAME}".($antivirus->{VERSION}? " v$antivirus->{VERSION}":""))
+            if $logger;
+    }
+}
+
+sub _getMSDefender {
+    my (%params) =  (
+        command => 'mdatp health --output json',
+        @_
+    );
+
+    my $antivirus = {
+        COMPANY     => "Microsoft",
+        NAME        => "Microsoft Defender",
+        ENABLED     => 0,
+        UPTODATE    => 0,
+    };
+
+    my $output = getAllLines(%params)
+        or return;
+
+    my $infos = decode_json($output);
+    return unless ref($infos) eq 'HASH' && $infos->{healthy};
+
+    $antivirus->{VERSION} = $infos->{appVersion}
+        if $infos->{appVersion};
+    $antivirus->{BASE_VERSION} = $infos->{definitionsVersion}
+        if $infos->{definitionsVersion};
+    $antivirus->{UPTODATE} = $infos->{definitionsStatus}->{'$type'} && $infos->{definitionsStatus}->{'$type'} eq 'upToDate' ? 1 : 0
+        if $infos->{definitionsStatus};
+    $antivirus->{ENABLED} = $infos->{realTimeProtectionEnabled}->{value} == Cpanel::JSON::XS::true() ? 1 : 0
+        if $infos->{realTimeProtectionEnabled} && $infos->{realTimeProtectionEnabled}->{value};
+    if ($infos->{productExpiration} && $infos->{productExpiration} =~ /^\d+$/) {
+        my @date = localtime(int($infos->{productExpiration})/1000);
+        $antivirus->{EXPIRATION} = sprintf("%02d/%02d/%04d", $date[3], $date[4]+1, $date[5]+1900);
+    }
+
+    return $antivirus;
+}
+
+1;

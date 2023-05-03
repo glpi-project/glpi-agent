@@ -80,6 +80,7 @@ inventory:
   Build Revision (UBR) like reported by system winver command.
 * fix #374: Better try to get profile username from powershell script
 * fix #384: Enhance #374 fix to support domain deleted user witout falling back on WMI
+* fix #367: Add Microsoft Defender Antivirus inventory support to MacOSX
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
