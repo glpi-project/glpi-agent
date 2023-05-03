@@ -157,7 +157,7 @@ sub _build_steps {
                 # GLPI-Agent deps
                 qw/ Text::Template UNIVERSAL::require UNIVERSAL::isa Net::SSH2
                     XML::LibXML Memoize Time::HiRes Compress::Zlib
-                    Parse::EDID Cpanel::JSON::XS JSON::PP YAML::Tiny Parallel::ForkManager
+                    Parse::EDID Cpanel::JSON::XS YAML::Tiny Parallel::ForkManager
                     URI::Escape Net::NBName Thread::Queue Thread::Semaphore
                     Net::SNMP Net::SNMP::Security::USM Net::SNMP::Transport::IPv4::TCP
                     Net::SNMP::Transport::IPv6::TCP Net::SNMP::Transport::IPv6::UDP

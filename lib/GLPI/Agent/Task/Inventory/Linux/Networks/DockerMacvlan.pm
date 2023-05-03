@@ -52,6 +52,7 @@ sub _getInterfaces {
     my @interfaces;
 
     my $data = decode_json $lines;
+    return unless ref($data) eq 'ARRAY';
 
     foreach my $record (@$data) {
         while (my ($k, $container) = each %{$record->{Containers}}) {

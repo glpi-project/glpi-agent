@@ -6,7 +6,7 @@ use parent 'GLPI::Agent::HTTP::Client';
 
 use English qw(-no_match_vars);
 
-use JSON::PP;
+use Cpanel::JSON::XS;
 use HTTP::Request;
 use HTTP::Headers;
 use HTTP::Cookies;
@@ -110,10 +110,7 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
 
     my $answer;
     eval {
-        my $decoder = JSON::PP->new
-            or die "Can't use JSON::PP decoder: $!";
-
-        $answer = $decoder->decode($content);
+        $answer = decode_json $content;
     };
 
     if ($EVAL_ERROR && $self->{logger}) {

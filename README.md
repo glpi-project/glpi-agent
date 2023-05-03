@@ -111,7 +111,7 @@ Mandatory Perl modules:
 * Archive::Extract
 * Digest::SHA
 * File::Copy::Recursive
-* JSON::PP
+* Cpanel::JSON::XS
 * URI::Escape
 
 Mandatory Perl modules for P2P Support:

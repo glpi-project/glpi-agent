@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use JSON::PP;
+use Cpanel::JSON::XS;
 use Test::More;
 
 use UNIVERSAL::require;

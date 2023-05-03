@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use JSON::PP;
 use English qw(-no_match_vars);
 use Test::Deep;
 use Test::Exception;

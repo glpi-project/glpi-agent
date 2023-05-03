@@ -5,7 +5,7 @@ use warnings;
 
 use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use JSON::PP;
+use Cpanel::JSON::XS;
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Virtualization;
@@ -80,8 +80,7 @@ sub _getStatus {
     my $lines = getAllLines(%params);
     my $status = '';
     eval {
-        my $coder = JSON::PP->new;
-        my $containerData = $coder->decode($lines);
+        my $containerData = decode_json $lines;
         $status =
             ((ref $containerData eq 'ARRAY' && $containerData->[0]->{State}->{Running})
                     || (ref $containerData eq 'HASH' && $containerData->{State}->{Running})) ?

@@ -338,10 +338,10 @@ sub _setFSecureInfos {
     my $infos = getAllLines(file => $path);
     return unless $infos;
 
-    JSON::PP->require();
+    Cpanel::JSON::XS->require();
     my @licenses;
     eval {
-        $infos = JSON::PP::decode_json($infos);
+        $infos = Cpanel::JSON::XS::decode_json($infos);
         @licenses = @{$infos->{local}->{windows}->{secl}->{subscription}->{license_table}};
     };
     return unless @licenses;
@@ -401,11 +401,10 @@ sub _setBitdefenderInfos {
         [ 'SurveyDataInfo' ],
         sub { $_[0]->{"/SurveyDataInfo"} }
     );
-    if ($surveydata) {
-        JSON::PP->require();
+    if ($surveydata && Cpanel::JSON::XS->require()) {
         my $datas;
         eval {
-            $datas = JSON::PP::decode_json($surveydata);
+            $datas = Cpanel::JSON::XS::decode_json($surveydata);
         };
         if (defined($datas->{days_left})) {
             my @date = localtime(time+86400*$datas->{days_left});

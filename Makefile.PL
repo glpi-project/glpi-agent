@@ -65,7 +65,7 @@ test_requires 'HTTP::Server::Simple::Authen' => '0';
 test_requires 'IO::Socket::SSL'              => '0';
 test_requires 'IO::Capture::Stderr'          => '0';
 test_requires 'IPC::Run'                     => '0';
-test_requires 'JSON::PP'                     => '0';
+test_requires 'Cpanel::JSON::XS'             => '0';
 test_requires 'Net::SNMP'                    => '0';
 test_requires 'LWP::Protocol::https'         => '0';
 test_requires 'Parallel::ForkManager'        => '0';
@@ -88,7 +88,7 @@ recommends 'Net::SSH2'                       => '0';
 # Deploy
 recommends 'Archive::Extract'             => '0';
 recommends 'File::Copy::Recursive'        => '0';
-recommends 'JSON::PP'                     => '0';
+recommends 'Cpanel::JSON::XS'             => '0';
 recommends 'Net::Ping'                    => '0';
 recommends 'Parallel::ForkManager'        => '0';
 recommends 'URI::Escape'                  => '0';
