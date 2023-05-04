@@ -152,8 +152,8 @@ jobs:
         PUBLISHING_TOKEN: ${{ secrets.PUBLISHING_TOKEN }}
         CODESIGN_COMMAND: ${{ secrets.CODESIGN_COMMAND }}
         CST_USERNAME: ${{ secrets.CST_USERNAME }}
-        APPSIGNID: ${{ secrets.MACOSX_APPSIGNID }}
-        INSTSIGNID: ${{ secrets.MACOSX_INSTSIGNID }}
+        APPSIGNID: ${{ vars.MACOSX_APPSIGNID }}
+        INSTSIGNID: ${{ vars.MACOSX_INSTSIGNID }}
     - name: Generate release description
       id: github-release-body
       if: ${{ steps.set-version.outputs.create-release == 'yes' }}
@@ -389,8 +389,8 @@ jobs:
         fi
         ./contrib/macosx/glpi-agent-packaging.sh --arch ${{ matrix.arch }} --notarize $MACOSX_NOTARIZE
       env:
-        APPSIGNID: ${{ secrets.MACOSX_APPSIGNID }}
-        INSTSIGNID: ${{ secrets.MACOSX_INSTSIGNID }}
+        APPSIGNID: ${{ vars.MACOSX_APPSIGNID }}
+        INSTSIGNID: ${{ vars.MACOSX_INSTSIGNID }}
         NOTARIZE_USER: ${{ secrets.MACOSX_NOTARIZE_USER }}
         NOTARIZE_PASSWORD: ${{ secrets.MACOSX_NOTARIZE_PASSWORD }}
         MACOSX_NOTARIZE: ${{ needs.setup-release.outputs.macosx-notarization }}
