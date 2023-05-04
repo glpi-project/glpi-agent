@@ -5,7 +5,7 @@ use warnings;
 
 use JSON;
 use LWP::UserAgent;
-use Digest::SHA;
+use Digest::SHA qw($errmsg);
 
 unless ($ENV{VT_API_KEY}) {
     print STDERR "Set VT_API_KEY environment variable to your VirusTotal API Key if you want to check VirtusTotal reports.\n";
@@ -19,8 +19,12 @@ while (@ARGV) {
     if ($arg =~ /^--sha256$/) {
         push @sha256, shift @ARGV;
     } elsif (-e $arg) {
-        my $sha256 = Digest::SHA->new(256)->addfile($arg, "b")->hexdigest();
-        push @sha256, $sha256;
+        my $digest = eval { Digest::SHA->new(256)->addfile($arg, "b") };
+        if ($@) {
+            warn "shasum: $arg: $errmsg\n" if $errmsg;
+            next;
+        }
+        push @sha256, $digest->hexdigest();
     } else {
         print STDERR "No such '$_' file\n";
     }
