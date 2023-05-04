@@ -293,8 +293,8 @@ jobs:
     - name: VirusTotal Report Analysis
       if: ${{ vars.VT_SKIP_REPORT_ANALYSIS != 'yes' && ( needs.setup-release.outputs.create-release == 'yes' || startsWith(needs.setup-release.outputs.tag_name, 'nightly') ) }}
       run: |
-        perl tools\virustotal-report-analysis.pl \
-          C:\Strawberry-perl-for-GLPI-Agent_build\output\GLPI-Agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.msi \
+        perl tools\virustotal-report-analysis.pl ^
+          C:\Strawberry-perl-for-GLPI-Agent_build\output\GLPI-Agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.msi ^
           C:\Strawberry-perl-for-GLPI-Agent_build\output\glpi-agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.zip
       shell: cmd
       env:
