@@ -6,6 +6,8 @@ use warnings;
 use JSON;
 use LWP::UserAgent;
 use Digest::SHA qw($errmsg);
+use English qw(-no_match_vars);
+use UNIVERSAL::require;
 
 unless ($ENV{VT_API_KEY}) {
     print STDERR "Set VT_API_KEY environment variable to your VirusTotal API Key if you want to check VirtusTotal reports.\n";
@@ -13,11 +15,14 @@ unless ($ENV{VT_API_KEY}) {
 }
 
 my @sha256;
+my $path;
 
 while (@ARGV) {
     my $arg = shift @ARGV;
     if ($arg =~ /^--sha256$/) {
         push @sha256, shift @ARGV;
+    } elsif ($arg =~ /^--path$/) {
+        $path = shift @ARGV;
     } elsif (-e $arg) {
         my $digest = eval { Digest::SHA->new(256)->addfile($arg, "b") };
         if ($@) {
@@ -55,6 +60,18 @@ foreach my $sha256 (@sha256) {
      unless $json->{data} && $json->{data}->{attributes} && $json->{data}->{attributes}->{last_analysis_stats};
     my $stat = $json->{data}->{attributes}->{last_analysis_stats};
     push @failed, $sha256 if $stat->{suspicious} || $stat->{malicious};
+    if ($path) {
+        my $handle;
+        if ($OSNAME eq 'MSWin32' && Win32::Unicode::File->require()) {
+            $handle = Win32::Unicode::File->new('w', "$path\\$sha256.json");
+        } else {
+            open $handle, ">", "$path/$sha256.json";
+        }
+        if ($handle) {
+            print $handle $content;
+            close($handle);
+        }
+    }
 }
 
 if (@failed) {
