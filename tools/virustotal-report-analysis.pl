@@ -24,7 +24,9 @@ while (@ARGV) {
             warn "shasum: $arg: $errmsg\n" if $errmsg;
             next;
         }
-        push @sha256, $digest->hexdigest();
+        my $sha256 = $digest->hexdigest();
+        print "debug: $arg sha256: $sha256\n";
+        push @sha256, $sha256;
     } else {
         print STDERR "No such '$_' file\n";
     }
