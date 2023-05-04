@@ -19,9 +19,8 @@ while (@ARGV) {
     if ($arg =~ /^--sha256$/) {
         push @sha256, shift @ARGV;
     } elsif (-e $arg) {
-        my $sha256 = Digest::SHA->new(256);
-        $sha256->addfile($arg);
-        push @sha256, $sha256->hexdigest;
+        my $sha256 = Digest::SHA->new(256)->addfile($arg, "b")->hexdigest();
+        push @sha256, $sha256;
     } else {
         print STDERR "No such '$_' file\n";
     }
