@@ -14,7 +14,7 @@ use constant    category    => "antivirus";
 
 sub isEnabled {
     # Only MS Defender is supported
-    return canRun('mdatp');
+    return canRun('/usr/local/bin/mdatp');
 }
 
 sub doInventory {
@@ -37,7 +37,7 @@ sub doInventory {
 
 sub _getMSDefender {
     my (%params) =  (
-        command => 'mdatp health --output json',
+        command => '/usr/local/bin/mdatp health --output json',
         @_
     );
 
