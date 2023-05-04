@@ -467,7 +467,7 @@ if [ -n "$NOTARIZE_USER" -a -n "$NOTARIZE_PASSWORD" -a "$NOTARIZE" == "yes" ]; t
 	        <key>username</key>
 	        <string>$NOTARIZE_USER</string>
 	        <key>password</key>
-	        <string>$NOTARIZE_PASSWORD</string>
+	        <string>@env:NOTARIZE_PASSWORD</string>
 	    </dict>
 BUILD_INFO
 fi
