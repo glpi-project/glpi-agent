@@ -192,10 +192,10 @@ AppDir:
       - glpi-agent-task-network
       - libcrypt-rijndael-perl
 
-  after_bundle: |
-    find build/AppDir -type f -name '*.pod' -delete; \
-    sed -ri 's|/usr/share/glpi-agent|\$ENV{APPDIR}/usr/share/glpi-agent|' build/AppDir/usr/share/glpi-agent/lib/setup.pm build/AppDir/usr/bin/glpi-*; \
-    rm -f build/AppDir/usr/bin/{GET,POST,HEAD}
+  after_bundle:
+    - find build/AppDir -type f -name '*.pod' -delete
+    - sed -ri 's|/usr/share/glpi-agent|\$ENV{APPDIR}/usr/share/glpi-agent|' build/AppDir/usr/share/glpi-agent/lib/setup.pm build/AppDir/usr/bin/glpi-*
+    - rm -f build/AppDir/usr/bin/{GET,POST,HEAD}
 
   files:
     exclude:
@@ -289,5 +289,7 @@ if ! type appimage-builder >/dev/null 2>&1; then
 fi
 
 appimage-builder --appdir build/AppDir --recipe build/AppImageBuilder.yml
+
+chmod +x *.AppImage
 
 ls -l *.AppImage
