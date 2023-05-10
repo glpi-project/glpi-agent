@@ -15,6 +15,13 @@
    This script makes fusioninventory-compatible xml from netdisco data.
    Stoatwblr says even if it is ugly and slow, it works ;-)
 
+## Other contribs
+
+ * Windows:
+   * [GLPI-Agent Monitor](https://github.com/glpi-project/glpi-agentmonitor):
+     Little tool developed by @redddcyclone which provides a systray icon to monitor glpi-agent service status
+     and permits to request glpi-agent to run its tasks.
+
 ## Submit your contribs
 
  * Clone [GLPI-Agent github repository](https://github.com/glpi-project/glpi-agent)
