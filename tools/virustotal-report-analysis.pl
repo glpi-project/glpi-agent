@@ -13,13 +13,17 @@ unless ($ENV{VT_API_KEY}) {
     exit(0);
 }
 
-my @sha256;
+my %sha256;
 my $path;
+my $debug = scalar(grep { /^--debug$/ } @ARGV);
 
 while (@ARGV) {
     my $arg = shift @ARGV;
     if ($arg =~ /^--sha256$/) {
-        push @sha256, shift @ARGV;
+        my $sha256 = shift @ARGV;
+        $sha256{$sha256} = "";
+    } elsif ($arg =~ /^--debug$/) {
+        $debug = 1;
     } elsif ($arg =~ /^--path$/) {
         $path = shift @ARGV;
         chdir $path
@@ -31,13 +35,14 @@ while (@ARGV) {
             next;
         }
         my $sha256 = $digest->hexdigest();
-        print "debug: $arg sha256: $sha256\n";
-        push @sha256, $sha256;
+        print "debug: $arg sha256: $sha256\n" if $debug;
+        $sha256{$sha256} = " for $arg";
     } else {
-        print STDERR "No such '$_' file\n";
+        print STDERR "No such '$arg' file\n";
     }
 }
 
+my @sha256 = keys(%sha256);
 unless (@sha256) {
     print STDERR "No VirusTotal report to verify\n";
     exit(2);
@@ -47,35 +52,72 @@ my $ua = LWP::UserAgent->new(ssl_opts => { verify_hostname => 1 });
 my $baseurl = 'https://www.virustotal.com/api/v3/files';
 my @failed;
 
-foreach my $sha256 (@sha256) {
-    my $url = "$baseurl/$sha256";
-    print "debug: requesting $url...\n";
-    my $response = $ua->get( $url, 'x-apikey' => $ENV{VT_API_KEY});
-    die "$url error: ".$response->status_line."\n"
-       unless $response->is_success;
+my $first    = scalar(@sha256);
+my $try      = 20 * $first;
+my $nexttry  = 0;
+my $timeout  = time + 600;
+my $waittime = 15;
+my %report;
 
-    my $content = $response->content
-        or die "$url error: No content\n";
-    my $json = JSON->new->allow_nonref->decode($content)
-        or die "$url error: No json decoded from '$content'\n";
-    die "$url error: No expected data in '".JSON->new->allow_nonref->pretty->encode($json)."'\n"
-        unless $json->{data} && $json->{data}->{attributes} && $json->{data}->{attributes}->{last_analysis_stats};
-    my $stat = $json->{data}->{attributes}->{last_analysis_stats};
-    push @failed, $sha256 if $stat->{suspicious} || $stat->{malicious};
-
-    my $handle;
-    open $handle, ">", "$sha256.json"
-        or die "Can't write $sha256.json to $path: $!\n";
-    print $handle $content;
-    close($handle);
+while (time < $timeout && @sha256 && $try) {
+    if (time > $nexttry) {
+        my $sha256 = shift @sha256;
+        my $url = "$baseurl/$sha256";
+        print localtime().": debug: requesting $url...\n" if $debug;
+        my $response = $ua->get( $url, 'x-apikey' => $ENV{VT_API_KEY});
+        $nexttry = time + (--$first > 0 ? 0 : $waittime);
+        if ($response->is_success) {
+            my $content = $response->content;
+            if ($content) {
+                my $json = JSON->new->allow_nonref->decode($content);
+                if ($json) {
+                    # We expect to find VBA32 in results as we got false positive with that editor in the past
+                    if (exists($json->{data}->{attributes}->{last_analysis_results}->{VBA32})) {
+                        my $stat = $json->{data}->{attributes}->{last_analysis_stats};
+                        if ($stat) {
+                            if ($stat->{suspicious} || $stat->{malicious}) {
+                                push @failed, $sha256;
+                                print localtime().": Got malicious analysis reporting".$sha256{$sha256}."\n";
+                                print "::warning title=Malicous analysis reporting$sha256{$sha256}::See https://www.virustotal.com/gui/file/$sha256\n";
+                            } else {
+                                print localtime().": No malicious analysis reporting".$sha256{$sha256}."\n";
+                            }
+                        } else {
+                            warn localtime().": $url error: No expected stats data in '".JSON->new->allow_nonref->pretty->encode($json)."'\n";
+                        }
+                        my $handle;
+                        if (open $handle, ">", "$sha256.json") {
+                            print $handle $content;
+                            close($handle);
+                        } else {
+                            warn localtime().": Can't write $sha256.json to $path: $!\n";
+                        }
+                        # Don't try to get next report for that sha256
+                        undef $sha256;
+                    } elsif ($json->{error} && $json->{error}->{code}) {
+                        print localtime().": Report error code".$sha256{$sha256}.": ".$json->{error}->{code}."\n";
+                    } else {
+                        print localtime().": Analysis is running".$sha256{$sha256}."\n";
+                    }
+                } else {
+                    warn localtime().": $url error: No json decoded from '$content'\n";
+                }
+            } else {
+                warn localtime().": $url error: No content\n";
+            }
+        } else {
+            warn localtime().": $url error: ".$response->status_line."\n";
+        }
+        push @sha256, $sha256 if defined($sha256);
+        $try--;
+    }
+    sleep 1;
 }
 
 if (@failed) {
-    map {
-        print "::warning title=VirusTotal check failure::See https://www.virustotal.com/gui/file/$_\n"
-    } @failed;
+    print localtime().": Got malicious VirusTotal analysis reporting for ".scalar(@failed)." file".(@failed > 1 ? "s" : "").".\n";
 } else {
-    print "VirusTotal check is good.\n";
+    print localtime().": VirusTotal analysis reporting seems good.\n";
 }
 
 exit(0);
