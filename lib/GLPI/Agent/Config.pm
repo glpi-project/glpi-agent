@@ -347,6 +347,7 @@ sub _checkContent {
             no-task
             no-category
             tasks
+            ssl-fingerprint
     /) {
         # Check if defined AND SCALAR
         # to avoid split a ARRAY ref or HASH ref...

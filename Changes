@@ -21,6 +21,7 @@ core:
 * win32: Add API to request win32 registry value with better Unicode support
 * win32: Get rid of encodeFromRegistry() API after enhanced Unicode registry support
 * Get rid of JSON::PP
+* fix #393: Support ssl-fingerprint option as a comma-separated list
 
 inventory:
 * check if we are running in a container before checking we are running in a virtualmachine
