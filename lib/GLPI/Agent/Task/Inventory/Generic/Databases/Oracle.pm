@@ -28,29 +28,37 @@ sub _oracleHome {
     return [$ENV{ORACLE_HOME}] if $ENV{ORACLE_HOME} && -d $ENV{ORACLE_HOME}
         && !$params{file}; # $params{file} is only set during tests
 
+    my @oracle_homes;
+
+    # Check the oraInst.loc file
     my $inventory_loc = getFirstMatch(
         file    => $params{file} // '/etc/oraInst.loc',
         pattern => qr/^inventory_loc=(.*)$/
-    )
-        or return;
-
-    return unless -d $inventory_loc;
-
-    my $inventory_xml = $inventory_loc . "/ContentsXML/inventory.xml";
-    return unless -e $inventory_xml;
-
-    my $xml = GLPI::Agent::XML->new(
-        force_array => [ qw/HOME/ ],
-        file        => $inventory_xml
     );
-    my $tree = $xml->dump_as_hash();
-    return unless $tree && $tree->{INVENTORY} && $tree->{INVENTORY}->{HOME_LIST}
-        && $tree->{INVENTORY}->{HOME_LIST}->{HOME};
-    return [
-        map { $_->{"-LOC"} } grep {
-            ! $_->{"-REMOVED"}
-        } @{$tree->{INVENTORY}->{HOME_LIST}->{HOME}}
-    ];
+
+    if ($inventory_loc && -d $inventory_loc) {
+        my $inventory_xml = $inventory_loc . "/ContentsXML/inventory.xml";
+        if (-e $inventory_xml) {
+            my $xml = GLPI::Agent::XML->new(
+                force_array => [ qw/HOME/ ],
+                file        => $inventory_xml
+            );
+            my $tree = $xml->dump_as_hash();
+            push @oracle_homes, map { $_->{"-LOC"} } grep { ! $_->{"-REMOVED"} } @{$tree->{INVENTORY}->{HOME_LIST}->{HOME}}
+                if $tree && $tree->{INVENTORY} && $tree->{INVENTORY}->{HOME_LIST} && $tree->{INVENTORY}->{HOME_LIST}->{HOME};
+        }
+    }
+
+    # Check the oratab file for "XE:<oracleHomeXE>:"
+    if (-e '/etc/oratab') {
+        foreach my $line (getAllLines(file => '/etc/oratab')) {
+            next unless $line =~ /^XE:(.*):/;
+            push @oracle_homes, $1 if -d $1;
+        }
+    }
+
+    return unless @oracle_homes;
+    return \@oracle_homes;
 }
 
 sub doInventory {
