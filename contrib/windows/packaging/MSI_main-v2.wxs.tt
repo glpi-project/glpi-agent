@@ -46,6 +46,12 @@
     <SetProperty Id="CMDLINE_EXECMODE" Before="AppSearch" Value="[EXECMODE]" />
     <SetProperty Id="EXECMODE"         After="AppSearch"  Value="[CMDLINE_EXECMODE]"><![CDATA[CMDLINE_EXECMODE<>""]]></SetProperty>
 
+    <Property Id="AGENTMONITOR" Secure="yes">
+      <RegistrySearch Id="AgentMonitor" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="AgentMonitor" Type="raw" />
+    </Property>
+    <SetProperty Id="CMDLINE_AGENTMONITOR" Before="AppSearch" Value="[AGENTMONITOR]" />
+    <SetProperty Id="AGENTMONITOR"         After="AppSearch"  Value="[CMDLINE_AGENTMONITOR]"><![CDATA[CMDLINE_AGENTMONITOR<>""]]></SetProperty>
+
     <Property Id="ADD_FIREWALL_EXCEPTION" Secure="yes">
       <RegistrySearch Id="AddFirewallException" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="AddFirewallException" Type="raw" />
     </Property>
@@ -331,6 +337,7 @@
     <SetProperty Id="ADD_FIREWALL_EXCEPTION" Action="ADD_FIREWALL_EXCEPTION_Default" After="AppSearch" Value="1">NOT ADD_FIREWALL_EXCEPTION</SetProperty>
     <SetProperty Id="EXECMODE"               Action="EXECMODE_Default"               After="AppSearch" Value="1">NOT EXECMODE</SetProperty>
     <SetProperty Id="RUNNOW"                 Action="RUNNOW_Default"                 After="AppSearch" Value="0">NOT RUNNOW</SetProperty>
+    <SetProperty Id="AGENTMONITOR"           Action="AGENTMONITOR_Default"           After="AppSearch" Value="0">NOT AGENTMONITOR</SetProperty>
     <SetProperty Id="TASK_FREQUENCY"         Action="TASK_FREQUENCY_Default"         After="AppSearch" Value="hourly">NOT TASK_FREQUENCY</SetProperty>
     <SetProperty Id="TASK_MINUTE_MODIFIER"   Action="TASK_MINUTE_MODIFIER_Default"   After="AppSearch" Value="15">NOT TASK_MINUTE_MODIFIER</SetProperty>
     <SetProperty Id="TASK_HOURLY_MODIFIER"   Action="TASK_HOURLY_MODIFIER_Default"   After="AppSearch" Value="1">NOT TASK_HOURLY_MODIFIER</SetProperty>
@@ -347,6 +354,7 @@
     <SetProperty Id="SCAN_PROFILES" Sequence="ui" Action="SCAN_PROFILES_Unset" After="AppSearch" Value=""><![CDATA[SCAN_PROFILES<>"1"]]></SetProperty>
     <SetProperty Id="NO_P2P"        Sequence="ui" Action="NO_P2P_Unset"        After="AppSearch" Value=""><![CDATA[NO_P2P<>"1"]]></SetProperty>
     <SetProperty Id="RUNNOW"        Sequence="ui" Action="RUNNOW_Unset"        After="AppSearch" Value=""><![CDATA[RUNNOW<>"1"]]></SetProperty>
+    <SetProperty Id="AGENTMONITOR"  Sequence="ui" Action="AGENTMONITOR_Unset"  After="AppSearch" Value=""><![CDATA[AGENTMONITOR<>"1"]]></SetProperty>
     <SetProperty Id="NO_SSL_CHECK"  Sequence="ui" Action="NO_SSL_CHECK_Unset"  After="AppSearch" Value=""><![CDATA[NO_SSL_CHECK<>"1"]]></SetProperty>
     <SetProperty Id="LAZY"          Sequence="ui" Action="LAZY_Unset"          After="AppSearch" Value=""><![CDATA[LAZY<>"1"]]></SetProperty>
 
@@ -359,6 +367,7 @@
     <SetProperty Id="SCAN_PROFILES" Sequence="ui" Action="SCAN_PROFILES_UnsetForReg" Before="ExecuteAction" Value="0"><![CDATA[NOT SCAN_PROFILES OR SCAN_PROFILES<>"1"]]></SetProperty>
     <SetProperty Id="NO_P2P"       Sequence="ui" Action="NO_P2P_SetForReg"         Before="ExecuteAction" Value="0"><![CDATA[NOT NO_P2P OR NO_P2P<>"1"]]></SetProperty>
     <SetProperty Id="RUNNOW"       Sequence="ui" Action="RUNNOW_SetForReg"         Before="ExecuteAction" Value="0"><![CDATA[NOT RUNNOW OR RUNNOW<>"1"]]></SetProperty>
+    <SetProperty Id="AGENTMONITOR" Sequence="ui" Action="AGENTMONITOR_SetForReg"   Before="ExecuteAction" Value="0"><![CDATA[NOT AGENTMONITOR OR AGENTMONITOR<>"1"]]></SetProperty>
     <SetProperty Id="HTML"         Sequence="ui" Action="HTML_SetForReg"           Before="ExecuteAction" Value="0"><![CDATA[NOT HTML OR HTML<>"1"]]></SetProperty>
     <SetProperty Id="JSON"         Sequence="ui" Action="JSON_SetForReg"           Before="ExecuteAction" Value="0"><![CDATA[NOT JSON OR JSON<>"1"]]></SetProperty>
     <SetProperty Id="LAZY"         Sequence="ui" Action="LAZY_SetForReg"           Before="ExecuteAction" Value="0"><![CDATA[NOT LAZY OR LAZY<>"1"]]></SetProperty>
@@ -376,6 +385,7 @@
     <SetProperty Id="UNINSTALL_LOG" After="LaunchConditions" Value="[UPGRADEDIR]log"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
 
     <Icon Id="i_main_ico" SourceFile="$(var.FileMainIcon)" />
+    <Icon Id="agentmonitor.ico" SourceFile="$(var.FileMainIcon)" />
 
     <WixVariable Id="WixUILicenseRtf" Value="$(var.FileLicenseRtf)" />
     <WixVariable Id="WixUIDialogBmp"  Value="$(var.FileDialogBmp)" />
@@ -426,6 +436,8 @@
       <Custom Action="CA_SetARPInstallLoc"    Before="RegisterProduct" />
       <Custom Action="SetDefaultLogFile"      After="CostFinalize">NOT LOGFILE</Custom>
       <Custom Action="SetDefaultVarDir"       After="CostFinalize">NOT VARDIR</Custom>
+
+      <Custom Action="WixCloseApplications"   Before="InstallValidate"/>
 
       <!-- We need to use higher sequence numbers for AppSearch and LaunchConditions to have enough sequence room to schedule all properties related custom actions -->
       <AppSearch Sequence="100" />
@@ -726,10 +738,14 @@
         </Control>
         <Control Id="ExecModeGrp" Type="GroupBox" X="60" Y="70" Width="250" Height="90" Text="!(loc.ExecModeDlgGroup)" />
         <Control Id="ExecModeChoice" Type="RadioButtonGroup" Property="_EXECMODE_RADIO_BUTTON" X="70" Y="90" Width="230" Height="70" />
-        <Control Id="RunNow" Type="CheckBox" X="60" Y="190" Width="250" Height="10" Text="!(loc.RunNow)" CheckBoxValue="1" Property="RUNNOW" />
-        <Control Id="Lazy" Type="CheckBox" X="60" Y="205" Width="250" Height="20" Disabled="yes" Text="!(loc.Lazy)" ToolTip="!(loc.LazyToolTip)" CheckBoxValue="1" Property="LAZY">
+        <Control Id="RunNow" Type="CheckBox" X="60" Y="170" Width="250" Height="10" Text="!(loc.RunNow)" CheckBoxValue="1" Property="RUNNOW" />
+        <Control Id="Lazy" Type="CheckBox" X="60" Y="185" Width="250" Height="20" Disabled="yes" Text="!(loc.Lazy)" ToolTip="!(loc.LazyToolTip)" CheckBoxValue="1" Property="LAZY">
           <Condition Action="enable"><![CDATA[_EXECMODE_RADIO_BUTTON <> "1"]]></Condition>
           <Condition Action="disable">_EXECMODE_RADIO_BUTTON = 1</Condition>
+        </Control>
+        <Control Id="InstallAgentMonitor" Type="CheckBox" X="60" Y="210" Width="250" Height="10" Text="!(loc.InstallAgentMonitor)" CheckBoxValue="1" Property="AGENTMONITOR">
+          <Condition Action="disable"><![CDATA[_EXECMODE_RADIO_BUTTON <> "1"]]></Condition>
+          <Condition Action="enable">_EXECMODE_RADIO_BUTTON = 1</Condition>
         </Control>
       </Dialog>
       <RadioButtonGroup Property="_EXECMODE_RADIO_BUTTON">
@@ -980,7 +996,15 @@
         </Directory> <!-- INSTALLDIR -->
       </Directory>   <!-- ProgramFilesFolder -->
 
+      <Directory Id="ProgramMenuFolder" />
+
     </Directory>     <!-- TARGETDIR -->
+
+[%- IF bits==32 %]
+    <util:CloseApplication Id="CloseGlpiAgentMonitor" Target="GLPI-AgentMonitor-x86.exe" EndSessionMessage="yes" RebootPrompt="no"></util:CloseApplication>
+[%- ELSE %]
+    <util:CloseApplication Id="CloseGlpiAgentMonitor" Target="GLPI-AgentMonitor-x64.exe" EndSessionMessage="yes" RebootPrompt="no"></util:CloseApplication>
+[%- END %]
 
     <Feature Id="feat_MSI"  Title="!(loc.ProductTitle)" Description="!(loc.ProductDescription)" Level="1" Display="expand" Absent="disallow">
       <!-- feat_AGENT permits to use "Change" requests to entirely (re-)configure the agent -->

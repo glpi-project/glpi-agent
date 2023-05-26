@@ -85,6 +85,7 @@
   <String Id="RunNow">Run inventory immediatly after installation</String>
   <String Id="Lazy">Respect the frequency of inventories specified by the server (recommended)</String>
   <String Id="LazyToolTip">Lazy option</String>
+  <String Id="InstallAgentMonitor">Install GLPI-AgentMonitor as systray icon for all users</String>
 
   <!-- custom text for windows task mode setup dialog -->
   <String Id="TaskModeDlgTitle">[ProductName] Setup</String>

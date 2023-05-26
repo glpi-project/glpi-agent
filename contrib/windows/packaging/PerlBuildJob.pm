@@ -5,7 +5,7 @@ use parent 'Exporter';
 
 use constant {
     PERL_VERSION       => "5.36.0",
-    PERL_BUILD_STEPS   => 8,
+    PERL_BUILD_STEPS   => 7,
 };
 
 our @EXPORT = qw(build_job PERL_VERSION PERL_BUILD_STEPS);
@@ -232,6 +232,7 @@ sub _build_steps {
                 { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/x86/hdparm.exe', '<image_dir>/perl/bin' ] },
                 { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/'.$ARCH.'/7z.exe', '<image_dir>/perl/bin' ] },
                 { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/'.$ARCH.'/7z.dll', '<image_dir>/perl/bin' ] },
+                { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/'.$ARCH.'/GLPI-AgentMonitor-'.$ARCH.'.exe', '<image_dir>/perl/bin' ] },
             ],
         };
 }
