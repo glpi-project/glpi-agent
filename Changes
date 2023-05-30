@@ -130,6 +130,7 @@ netdiscovery/netinventory:
 * Enhanced Dell PowerConnect components support
 * Add Aruba MibSupport to fix model on wifi master AP
 * fix #382: Fix TOTAL page counter on Kyocera printers
+* fix #396: SKip CDP info from Cisco Communicator installed on computers
 
 deploy:
 * Fix possible failure when mirror is set but misses file parts

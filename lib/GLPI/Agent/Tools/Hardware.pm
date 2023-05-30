@@ -1077,6 +1077,9 @@ sub _setConnectedDevices {
             my $lldp_connection = $port->{CONNECTIONS}->{CONNECTION};
             my $cdp_connection  = $cdp_info->{$interface_id};
 
+            # Skip CDP entry if MODEL shows this is a computer with Cisco Communicator installed
+            next if $cdp_connection->{MODEL} && $cdp_connection->{MODEL} =~ /^Communicator/i;
+
             if ($lldp_connection) {
                 my $match = 0;
 
