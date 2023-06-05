@@ -63,14 +63,20 @@ sub _getDatabaseService {
         )
             or next;
 
+        my $name =_runSql(
+            sql     => "SELECT \@\@servicename",
+            %params
+        )
+            or next;
+
         my $version =_runSql(
             sql     => "SELECT \@\@version",
             %params
         )
             or next;
-        my ($manufacturer, $name) = $version =~ /^
+        my ($manufacturer) = $version =~ /^
             (Microsoft) \s+
-            (SQL \s+ Server \s+ \d+)
+            SQL \s+ Server \s+ \d+
         /xi
             or next;
 
