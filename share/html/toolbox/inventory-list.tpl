@@ -133,7 +133,29 @@
                 </div>
               </a>
             </div>";
-        } else {
+        } elsif ($scheduling{$sched}->{type} eq 'timeslot') {
+          my $weekday  = $scheduling{$sched}->{weekday}
+            or next;
+          my $start    = $scheduling{$sched}->{start}
+            or next;
+          my $duration = $scheduling{$sched}->{duration}
+            or next;
+          my ($hour, $minute) = $start =~ /^(\d{2}):(\d{2})$/
+            or next;
+          my ($dhour, $dminute) = $duration =~ /^(\d{2}):(\d{2})$/
+            or next;
+          push @scheduling, "
+            <div class='with-tooltip'>
+              <a href='$url_path/scheduling?edit=".uri_escape(encode("UTF-8", $sched))."'>".encode('UTF-8', encode_entities($sched))."
+                <div class='tooltip bottom-tooltip'>
+                  <p>"._("day").": ".($weekday eq '*' ? _("all") : _($weekday))."</p>
+                  <p>"._("start").": ".$hour."h".$minute."</p>
+                  <p>"._("duration").": ".$dhour."h".$dminute."</p>".($scheduling{$sched}->{description} ? "
+                  <p>"._("Description").": ".encode('UTF-8', encode_entities($scheduling{$sched}->{description}))."</p>" : "")."
+                  <i></i>
+                </div>
+              </a>
+            </div>";
         }
       }
     }

@@ -332,6 +332,25 @@ sub _submit_add {
             my $timeout = int($form->{"input/timeout"}) || 1;
             $job->{config}->{timeout} = $timeout;
         }
+        return $self->errors("New task: Scheduling type is mandatory")
+            unless $form->{"input/scheduling/type"};
+        return $self->errors("New task: Unsupported scheduling type")
+            unless $form->{"input/scheduling/type"} =~ /^delay|timeslot$/;
+        my $scheduling = $yaml->{scheduling} || {};
+        if ($form->{"input/scheduling/type"} eq 'delay') {
+            return $self->errors("New task: No such scheduling")
+                unless $form->{"input/delay"} && $scheduling->{$form->{"input/delay"}};
+            $job->{scheduling} = [ $form->{"input/delay"} ];
+        } else {
+            return $self->errors("New task: No scheduling selected")
+                unless $form->{"input/timeslot"} && $form->{"set-timeslot"};
+            return $self->errors("New task: No such scheduling")
+                unless $scheduling->{$form->{"input/timeslot"}};
+            my @timeslots = map { decode('UTF-8', uri_unescape($_)) } split('&', $form->{"set-timeslot"});
+            return $self->errors("New task: No such scheduling")
+                if grep { ! $scheduling->{$_} } @timeslots;
+            $job->{scheduling} = \@timeslots;
+        }
         $job->{description} = $form->{"input/description"} if $form->{"input/description"};
         $jobs->{$name} = $job;
         $self->need_save(jobs);
@@ -420,6 +439,26 @@ sub _submit_update {
                 $job->{config}->{timeout} = $timeout;
                 $self->need_save(jobs);
             }
+        }
+
+        return $self->errors("Update task: Scheduling type is mandatory")
+            unless $form->{"input/scheduling/type"};
+        return $self->errors("Update task: Unsupported scheduling type")
+            unless $form->{"input/scheduling/type"} =~ /^delay|timeslot$/;
+        my $scheduling = $yaml->{scheduling} || {};
+        if ($form->{"input/scheduling/type"} eq 'delay') {
+            return $self->errors("Update task: No such scheduling")
+                unless $form->{"input/delay"} && $scheduling->{$form->{"input/delay"}};
+            $job->{scheduling} = [ $form->{"input/delay"} ];
+        } else {
+            return $self->errors("Update task: No scheduling selected")
+                unless $form->{"input/timeslot"} && $form->{"set-timeslot"};
+            return $self->errors("Update task: No such scheduling")
+                unless $scheduling->{$form->{"input/timeslot"}};
+            my @timeslots = map { decode('UTF-8', uri_unescape($_)) } split('&', $form->{"set-timeslot"});
+            return $self->errors("Update task: No such scheduling")
+                if grep { ! $scheduling->{$_} } @timeslots;
+            $job->{scheduling} = \@timeslots;
         }
 
         my $description = $form->{"input/description"};

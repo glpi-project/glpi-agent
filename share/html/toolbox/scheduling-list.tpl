@@ -50,6 +50,14 @@
       $unit .= "s" if $number > 1;
       push @configuration, $number." "._($unit);
     } else {
+      my @config;
+      my $weekday = $schedule->{weekday};
+      push @config, _("day").": ".($weekday eq "*" ? _("all") : _($weekday)) if $weekday;
+      foreach my $key (qw(start duration)) {
+        next unless $schedule->{$key} && $schedule->{$key} =~ /^(\d{2}):(\d{2})$/;
+        push @config, _($key).": $1h$2";
+      }
+      push @configuration, join(", ", @config) if @config;
     }
     my $configuration = join("
             <br/>", @configuration);

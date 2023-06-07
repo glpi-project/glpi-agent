@@ -146,7 +146,7 @@ select:disabled {
 
 label {
   font: 20px Arial, Helvetica;
-  padding-top: 10px;
+  padding: 5px;
 }
 
 .form-edit-row {
@@ -580,7 +580,7 @@ label.switch {
 }
 
 label.text {
-  padding-top: 5px;
+  padding-top: 10px;
   cursor: pointer;
 }
 
@@ -768,4 +768,8 @@ input.eye {
   flex-direction: column;
   padding-left: 1em;
   padding-right: 1em;
+}
+
+.description {
+  padding-bottom: 1em;
 }

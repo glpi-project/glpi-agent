@@ -50,6 +50,8 @@ Last ip: Dernière ip
 
 Delay: Délai
 delay: délai
+Timeslot: Créneau horaire
+Timeslots: Créneaux horaires
 second: seconde
 seconds: secondes
 
@@ -60,3 +62,13 @@ day: jour
 days: jours
 week: semaine
 weeks: semaines
+start: début
+duration: durée
+all: tous
+mon: lun
+tue: mar
+wed: mer
+thu: jeu
+fri: ven
+sat: sam
+sun: dim
