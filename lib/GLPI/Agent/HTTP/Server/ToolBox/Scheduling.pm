@@ -156,6 +156,24 @@ sub _submit_add {
                 if $unit eq 'second' && $delay < 60;
             $config->{delay} = $delay . substr($unit, 0, 1);
         } elsif ($form->{"input/type"} eq "timeslot") {
+            my $weekday = $form->{"input/weekday"} || '*';
+            return $self->errors("New scheduling: Unsupported week day")
+                unless $weekday =~ /^\*|mon|tue|wed|thu|fri|sat|sun$/;
+            $config->{weekday} = $weekday;
+            foreach my $key (qw(start duration)) {
+                my $hour = $form->{"input/$key/hour"} || "00";
+                my $min  = $form->{"input/$key/minute"} || "00";
+                return $self->errors("New scheduling: Invalid timeslot hour")
+                    unless $hour =~ /^\d+$/ && int($hour) >= 0 && (int($hour) < 24 || ($key eq 'duration' && int($hour) <= 24));
+                return $self->errors("New scheduling: Invalid timeslot minute")
+                    unless $min =~ /^\d+$/ && int($min) >= 0 && int($min) < 60;
+                if ($key eq 'duration') {
+                    my $duration = int($hour)*60 + int($min);
+                    return $self->errors("New scheduling: Invalid timeslot duration")
+                        unless $duration > 0 && $duration <= 24*60;
+                }
+                $config->{$key} = $hour.":".$min;
+            }
         } else {
             return $self->errors("New scheduling: Unsupported scheduling type");
         }
@@ -212,13 +230,12 @@ sub _submit_rename {
     my $jobs = $self->yaml('jobs') || {};
     my $count = 0;
     foreach my $job (values(%{$jobs})) {
-        my $config = $job->{config}
+        my $scheduling = $job->{scheduling}
             or next;
-        next unless ref($config) eq 'HASH';
-        next unless ref($config->{scheduling}) eq 'ARRAY' && first { $_ eq $edit } @{$config->{scheduling}};
-        my @scheduling = grep { $_ ne $edit } @{$config->{scheduling}};
+        next unless ref($scheduling) eq 'ARRAY' && first { $_ eq $edit } @{$scheduling};
+        my @scheduling = grep { $_ ne $edit } @{$scheduling};
         push @scheduling, $newname;
-        $config->{scheduling} = [ sort @scheduling ];
+        $job->{scheduling} = [ sort @scheduling ];
         $count++;
     }
     if ($count) {
@@ -243,10 +260,28 @@ sub _submit_update {
             my $unit = $form->{"input/timeunit"} || "hour";
             return $self->errors("Scheduling update: Unsupported delay time unit")
                 unless $unit =~ /^second|minute|hour|day|week$/;
-            return $self->errors("New scheduling: Minimum delay time is one minute")
+            return $self->errors("Scheduling update: Minimum delay time is one minute")
                 if $unit eq 'second' && $delay < 60;
             $config->{delay} = $delay . substr($unit, 0, 1);
         } elsif ($config->{type} eq "timeslot") {
+            my $weekday = $form->{"input/weekday"} || '*';
+            return $self->errors("Scheduling update: Unsupported week day")
+                unless $weekday =~ /^\*|mon|tue|wed|thu|fri|sat|sun$/;
+            $config->{weekday} = $weekday;
+            foreach my $key (qw(start duration)) {
+                my $hour = $form->{"input/$key/hour"} || "00";
+                my $min  = $form->{"input/$key/minute"} || "00";
+                return $self->errors("Scheduling update: Invalid timeslot hour")
+                    unless $hour =~ /^\d+$/ && int($hour) >= 0 && (int($hour) < 24 || ($key eq 'duration' && int($hour) <= 24));
+                return $self->errors("Scheduling update: Invalid timeslot minute")
+                    unless $min =~ /^\d+$/ && int($min) >= 0 && int($min) < 60;
+                if ($key eq 'duration') {
+                    my $duration = int($hour)*60 + int($min);
+                    return $self->errors("Scheduling update: Invalid timeslot duration")
+                        unless $duration > 0 && $duration <= 24*60;
+                }
+                $config->{$key} = $hour.":".$min;
+            }
         } else {
             return $self->errors("Scheduling update: Unsupported scheduling type");
         }

@@ -13,6 +13,7 @@
     $scheduling    = $job->{scheduling}    || [];
     $first_sched   = @{$scheduling} ? $scheduling->[0] : undef;
     $schedtype     = $first_sched ? $scheduling{$first_sched}->{type} : $form{"input/scheduling-type"} || "delay";
+    $edit_delay    = $form{"input/delay"}  || "";
     $description   = $job->{description}   || $form{"input/description"}  || "";
     $jobs{$edit} ? sprintf(_("Edit &laquo;&nbsp;%s&nbsp;&raquo; inventory task"), ($job->{name} || $this))
       : _"Add new inventory task"}</h2>
@@ -77,11 +78,11 @@
     <div class='form-edit-row scheduling-type-options'>
       <div class='form-edit'>
         <ul class='scheduling-type-options'>
-          <li style='display: {$jobs{$edit} && @{$scheduling} && $schedtype ne "delay" ? "none" : "block"}'>
+          <li>
             <input type="radio" name="input/scheduling/type" id="scheduling/type/delay" value="delay" onchange="schedtype_change()"{$schedtype eq "delay" ? " checked" : ""}/>
             <label for='scheduling/type/delay'>{_"Delay"}</label>
           </li>
-          <li style='display: {$jobs{$edit} && @{$scheduling} && $schedtype ne "timeslot" ? "none" : "block"}'>
+          <li>
             <input type="radio" name="input/scheduling/type" id="scheduling/type/timeslot" value="timeslot" onchange="schedtype_change()"{$schedtype eq "timeslot" ? " checked" : ""}/>
             <label for='scheduling/type/timeslot'>{_"Timeslot"}</label>
           </li>
@@ -92,7 +93,7 @@
       <div class='form-edit'>
         <label for='delay-config' class='tag'>{_"Delay"}:</label>
         <div class='tag'>
-          <select id='delay-config' class='tag' name='input/delay'{$schedtype ne 'delay' ? " disabled" : ""}>{$edit_tag ? "" : "
+          <select id='delay-config' class='tag' name='input/delay'{$schedtype ne 'delay' ? " disabled" : ""}>{$edit_delay ? "" : "
             <option value='' selected>"._("None")."</option>"}{
             my %units = qw( s second m minute h hour d day w week);
             foreach my $delay (sort grep { $scheduling{$_}->{type} eq 'delay' } keys(%scheduling)) {
@@ -113,6 +114,45 @@
             <option id='option-$delay' title='$title'".
                   ( $first_sched && $first_sched eq $delay ? " selected" : "" ).
                   " value='$encoded'>$encoded</option>"
+            }}
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class='form-edit-row' id='timeslot-option' style='display: {$schedtype eq "timeslot" ? "flex" : "none"}'>
+      <div class='form-edit'>
+        <label for='timeslot-config' class='tag'>{_"Timeslots"}:</label>
+        <div class='tag'>{
+            @timeslots = ();
+            foreach my $timeslot (sort grep { $scheduling{$_}->{type} eq 'timeslot' } keys(%scheduling)) {
+              my $weekday  = $scheduling{$timeslot}->{weekday}
+                or next;
+              my $start    = $scheduling{$timeslot}->{start}
+                or next;
+              my $duration = $scheduling{$timeslot}->{duration}
+                or next;
+              my ($hour, $minute) = $start =~ /^(\d{2}):(\d{2})$/
+                or next;
+              my ($dhour, $dminute) = $duration =~ /^(\d{2}):(\d{2})$/
+                or next;
+              my $title = _("Timeslot").":\n - ".ucfirst(_("day")).": ".ucfirst(($weekday eq '*' ? _("all") : _($weekday)));
+              $title .= "\n - ".ucfirst(_("start")).": ".$hour."h".$minute."\n - ".ucfirst(_("duration")).": ".$dhour."h".$dminute;
+              my $description = $scheduling{$delay}->{description};
+              if ($description) {
+                $description =~ s/[']/\\'/g;
+                $title .= "\n"._("Description").": ".encode('UTF-8', $description);
+              }
+              push @timeslots, [ $timeslot, $title ];
+            }
+            $OUT .= "";
+          }
+          <input id='set-timeslot' type='hidden' name='set-timeslot' value='{ join("&", map { encode('UTF-8', encode_entities($_)) } grep { $scheduling{$_}->{type} eq 'timeslot' } @{$scheduling}) }'{$schedtype ne 'timeslot' ? " disabled" : ""}/>
+          <select id='timeslot-config'{@timeslots > 1 ? " multiple" : "" } onchange='updateSelectTimeslot(this)' class='tag' name='input/timeslot'{$schedtype ne 'timeslot' ? " disabled" : ""}>{
+            foreach my $timeslot (@timeslots) {
+              my ($name, $title) = @{$timeslot};
+              my $encoded = encode('UTF-8', encode_entities($name));
+              $OUT .= "
+            <option id='option-$name' title='$title'".((grep { $_ eq $name } @{$scheduling}) ? " selected" : "" )." value='$encoded'>$encoded</option>";
             }}
           </select>
         </div>
@@ -254,9 +294,13 @@
     function schedtype_change() \{
       var isdelay = document.getElementById("scheduling/type/delay").checked;
       var delayshow = isdelay ? "display: flex" : "display: none";
-      // Delay option
+      var timeslotshow = isdelay ? "display: none" : "display: flex";
+      // Delay options
       document.getElementById("delay-option").style = delayshow;
       document.getElementById("delay-config").disabled = !isdelay;
+      document.getElementById("timeslot-option").style = timeslotshow;
+      document.getElementById("timeslot-config").disabled = isdelay;
+      document.getElementById("set-timeslot").disabled = isdelay;
     \}
     function config_new_tag () \{
       document.getElementById("config-newtag").disabled = false;
@@ -280,6 +324,19 @@
       input.value = '';
       for (var i = 0; i < options.length; i++) \{
         if (options[i].selected) \{
+          if (input.value[0] != null)
+            input.value += "&";
+          input.value += encodeURIComponent(options[i].value);
+          options[i].selected = true;
+        \}
+      \}
+    \}
+    function updateSelectTimeslot (select) \{
+      var input = document.getElementById("set-timeslot")
+      var options = select.options;
+      input.value = '';
+      for (var i = 0; i < options.length; i++) \{
+        if (options[i].selected && options[i].value != '') \{
           if (input.value[0] != null)
             input.value += "&";
           input.value += encodeURIComponent(options[i].value);

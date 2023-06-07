@@ -8,4 +8,6 @@ Edit &laquo;&nbsp;%s&nbsp;&raquo; scheduling:
 Time unit:
 
 timeslot:
-Timeslot:
+
+The approximate delay time between two tasks runs:
+Week day, day time and duration of a time slot during which a task will be executed once:

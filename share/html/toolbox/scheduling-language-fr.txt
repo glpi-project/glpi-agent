@@ -7,5 +7,7 @@ Edit &laquo;&nbsp;%s&nbsp;&raquo; scheduling: Édition de la planification &laqu
 
 Time unit: Unité de temps
 
-timeslot:
-Timeslot:
+timeslot: créneau horaire
+
+The approximate delay time between two tasks runs: Le temps approximatif entre deux exécutions de tâches
+Week day, day time and duration of a time slot during which a task will be executed once: Jour de la semaine, heure du jour et durée d'un créneau horaire durant lequel une tâche sera exécutée une fois
