@@ -251,7 +251,7 @@
                 </div>";
       }
       my $freeze_status = "disabled";
-      if ($done || $percent == 100) {
+      unless ($done || $percent == 100) {
         $freeze_status = "onclick='toggle_freeze_log(\"$run\")'";
         $freeze_status .= " checked" if $form{"freeze-log/$run"} && $form{"freeze-log/$run"} eq 'on';
       }
@@ -270,7 +270,7 @@
               <div class='log-freezer' id='$run-freeze-log-option'>
                 <label class='switch'>
                   <input id='freeze-log-$run' name='freeze-log/$run' class='freezer-switch' type='checkbox' $freeze_status>
-                  <span class='slider slider-fix'></span>
+                  <span class='slider'></span>
                 </label>
                 <label for='freeze-log-$run' class='text text-fix'>"._("Freeze log output")."</label>
               </div>
