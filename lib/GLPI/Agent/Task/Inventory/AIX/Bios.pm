@@ -55,7 +55,7 @@ sub doInventory {
         # lparname is also used on another AIX system, administrators should avoid
         # such usage as they won't be able to migrate the 2 LPARs on the same server
         if ($lparname) {
-            $ssn = "aixlpar-$lparname";
+            $ssn = "aixlpar-$vpd->{SE}-$lparname";
         } else {
             $ssn = "aixlpar-$vpd->{SE}-$name";
         }

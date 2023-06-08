@@ -84,6 +84,7 @@ inventory:
 * fix #367: Add Microsoft Defender Antivirus inventory support to MacOSX
 * fix #399: Support OracleXE database inventory
 * fix #409: Fix instance name in MSSQL database inventory
+* Fix LPAR serialnumber support on AIX
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
