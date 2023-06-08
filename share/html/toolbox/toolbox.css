@@ -594,15 +594,12 @@ label.text {
 .slider {
   position: absolute;
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   border-radius: 8px;
   background-color: #ccc;
   -webkit-transition: .1s;
   transition: .1s;
-  margin-right: 0.5em;
+  width: 32px;
+  height: 18px;
 }
 
 .slider:before {

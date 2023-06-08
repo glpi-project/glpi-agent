@@ -151,13 +151,13 @@ input.expand-task {
   display: none;
   width: 40px;
   height: 18px;
-  margin: 5px 0 2px 0.5em;
+  margin-top: 10px;
 }
 
 .abort-button {
   text-align: center;
   width: 25%;
-  margin-top: -5px;
+  margin-top: 0px;
 }
 
 .aborted {
@@ -172,19 +172,15 @@ input.expand-task {
   background-color: #ff0000;
 }
 
-.slider-fix {
-  width: 32px;
-  height: 18px;
-  margin: 10px;
-}
-
 .text-fix {
-  margin-left: 40px;
+  margin-top: 10px;
+  margin-left: 2em;
 }
 
 .verbosity-option {
   text-align: right;
   display: none;
+  margin-top: 10px;
 }
 
 select.verbosity-options {
