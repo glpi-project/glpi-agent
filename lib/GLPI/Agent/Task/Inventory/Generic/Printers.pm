@@ -59,19 +59,23 @@ sub doInventory {
 
     foreach my $printer (@printers) {
         my $uri = $printer->getUri();
-        my $name = $uri;
-        $name =~ s/^.*\/\/([^\.]*).*$/$1/eg ;
-        $name =~ s/%([0-9A-Fa-f]{2})/chr(hex($1))/eg;
+        my ($opts) = $uri =~ /^[^?]+\?(.*)$/;
+        my @opts = split("&amp;", $opts // "");
+
+        my $printer = {
+            NAME        => $printer->getName(),
+            PORT        => $uri,
+            DESCRIPTION => $printer->getDescription(),
+            DRIVER      => $printer->getOptionValue("printer-make-and-model"),
+        };
+
+        my ($serial) = map { /^serial=(.+)$/ } grep { /^serial=.+/ } @opts;
+        ($serial) = map { /^uuid=(.+)$/ } grep { /^uuid=.+/ } @opts unless $serial;
+        $printer->{SERIAL} = $serial if $serial;
+
         $inventory->addEntry(
             section => 'PRINTERS',
-            entry   => {
-                NAME        => $name,
-                PORT        => $uri,
-                DESCRIPTION => $printer->getDescription(),
-                DRIVER      => $printer->getOptionValue(
-                                   "printer-make-and-model"
-                               ),
-            }
+            entry   => $printer
         );
     }
 
