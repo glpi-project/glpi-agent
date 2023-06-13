@@ -20,20 +20,10 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    # index VPD infos by AX field
-    my %infos =
-        map  { $_->{AX} => $_ }
-        grep { $_->{AX} }
-        getLsvpdInfos(logger => $logger);
-
     foreach my $slot (_getSlots(
         command => 'lsdev -Cc bus -F "name:description"',
         logger  => $logger
     )) {
-
-        $slot->{DESCRIPTION} = $infos{$slot->{NAME}}->{YL}
-            if $infos{$slot->{NAME}};
-
         $inventory->addEntry(
             section => 'SLOTS',
             entry   => $slot
@@ -47,10 +37,16 @@ sub _getSlots {
     my @lines = getAllLines(%params)
         or return;
 
+    # index description by AX field from VPD infos
+    my %description =
+        map  { $_->{AX} => $_->{YL} }
+        grep { $_->{AX} && $_->{YL} }
+        getLsvpdInfos(logger => $params{logger});
+
     my @slots;
     foreach my $line (@lines) {
-        next unless
         my ($name, $designation, $description) = split(":", $line);
+        $description = $description{$name} if $name && !$description && $description{$name};
         next unless defined($name) && defined($designation) && defined($description);
 
         push @slots, {
