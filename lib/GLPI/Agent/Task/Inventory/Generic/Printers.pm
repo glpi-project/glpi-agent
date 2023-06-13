@@ -60,7 +60,7 @@ sub doInventory {
     foreach my $printer (@printers) {
         my $uri = $printer->getUri();
         my ($opts) = $uri =~ /^[^?]+\?(.*)$/;
-        my @opts = split("&amp;", $opts // "");
+        my @opts = split("&", $opts // "");
 
         my $printer = {
             NAME        => $printer->getName(),
