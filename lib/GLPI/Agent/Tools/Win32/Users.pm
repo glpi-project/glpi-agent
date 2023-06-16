@@ -71,10 +71,14 @@ sub getProfileUsername {
         '
     );
     if ($ntaccount) {
-        if ($ntaccount =~ /^Exception: (.*)/) {
+        if ($ntaccount =~ /^Exception: (.+)/) {
             my $logger = GLPI::Agent::Logger->new();
-            $logger->info("Got PowerShell Exception when looking for $user->{SID} profile username: $1");
-            return "Domain deleted account" if $1 && $1 eq "IdentityNotMappedException";
+            if ($1 eq "IdentityNotMappedException") {
+                $logger->debug("Got '$1' PowerShell Exception looking for $user->{SID} profile username: domain deleted user");
+                return "Domain deleted account";
+            }
+            $logger->debug("Got '$1' PowerShell Exception looking for $user->{SID} profile username: unknown account");
+            return "Unknown account";
         }
         my ($username) = $ntaccount =~ /^[^\\]*\\(.*)$/;
         return $username if defined($username) && length($username);
