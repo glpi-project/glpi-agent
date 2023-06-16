@@ -179,7 +179,7 @@ packaging:
 * fix missing --no-category support in linux perl installer
 * fix #315: Add --user & --password options support in linux perl installer
 * fix #386: Support Oracle Linux 7 in linux perl installer
-* win32: Support GLPI-AgentMonitor v1.2.1 installation with MSI packaging
+* win32: Support GLPI-AgentMonitor v1.2.2 installation with MSI packaging
 
 tools:
 * Fix import command in netsim.sh script
