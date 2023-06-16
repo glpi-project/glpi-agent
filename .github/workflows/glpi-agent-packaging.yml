@@ -48,7 +48,9 @@ jobs:
     - name: Set version
       id: set-version
       run: |
-        if [ -n "$CODESIGN_COMMAND" ]; then
+        if [ "${{ vars.WIN32_SIGNING }}" == "no" ]; then
+            echo "win32-signing=no" >>$GITHUB_OUTPUT
+        elif [ -n "$CODESIGN_COMMAND" ]; then
             echo "win32-signing=alt" >>$GITHUB_OUTPUT
         elif [ -n "$CST_USERNAME" ]; then
             echo "win32-signing=cst" >>$GITHUB_OUTPUT
