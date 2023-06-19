@@ -85,7 +85,11 @@ sub _getCPUs {
         my $registryInfo  = $registryInfos->{"$logicalId/"};
 
         # Compute WMI threads for this CPU if not available in dmidecode, this is the case on win2003r2 with 932370 hotfix applied (see #2894)
-        my $wmi_threads   = !$dmidecodeInfo->{THREAD} && $object->{NumberOfCores} ? $object->{NumberOfLogicalProcessors}/$object->{NumberOfCores} : undef;
+        my $wmi_threads   = !$dmidecodeInfo->{THREAD} && $object->{NumberOfCores} && $object->{NumberOfLogicalProcessors} ?
+            $object->{NumberOfLogicalProcessors}/$object->{NumberOfCores} : undef;
+
+        # Support case thread count is not an integer. This can happen is cpu provides performance and efficiency cores.
+        $wmi_threads = int($wmi_threads)+1 if $wmi_threads && $wmi_threads > int($wmi_threads);
 
         # Split CPUID from its value inside registry
         my @splitted_identifier = split(/ |\n/, $registryInfo->{'/Identifier'} || $object->{Description});
