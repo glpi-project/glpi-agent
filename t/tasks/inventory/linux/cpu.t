@@ -39,7 +39,7 @@ my %i386 = (
             MANUFACTURER   => 'Intel',
             ARCH           => 'i386',
             MODEL          => '44',
-            THREAD         => '8',
+            THREAD         => '2',
             STEPPING       => '2',
             SPEED          => '2400',
             EXTERNAL_CLOCK => 5860,
@@ -51,7 +51,7 @@ my %i386 = (
             MANUFACTURER   => 'Intel',
             MODEL          => '44',
             SPEED          => '2400',
-            THREAD         => '8',
+            THREAD         => '2',
             ARCH           => 'i386',
             CORE           => '4',
             STEPPING       => '2',
@@ -76,7 +76,7 @@ my %i386 = (
             NAME            => 'Intel(R) Xeon(R) CPU E5-2699 v3 @ 2.30GHz',
             SPEED           => '2300',
             STEPPING        => '2',
-            THREAD          => '8'
+            THREAD          => '2'
         },
         {
             ARCH            => 'i386',
@@ -91,7 +91,7 @@ my %i386 = (
             NAME            => 'Intel(R) Xeon(R) CPU E5-2699 v3 @ 2.30GHz',
             SPEED           => '2300',
             STEPPING        => '2',
-            THREAD          => '8'
+            THREAD          => '2'
         }
     ],
     'rhel-6.2-vmware-2vcpus' => [
@@ -173,13 +173,13 @@ my %i386 = (
             CORE         => '4',
             NAME         => 'Intel(R) Xeon(R) CPU E5504 @ 2.00GHz',
             MODEL        => 26,
-            THREAD       => '4',
+            THREAD       => '1',
         }
     ],
     'toshiba-r630-2-core' => [
         {
             ARCH         => 'i386',
-            THREAD       => '4',
+            THREAD       => '2',
             NAME         => 'Intel(R) Core(TM) i3 CPU M 350 @ 2.27GHz',
             CORE         => '2',
             MODEL        => '37',

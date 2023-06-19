@@ -86,6 +86,7 @@ inventory:
 * fix #409: Fix instance name in MSSQL database inventory
 * Fix LPAR serialnumber support on AIX
 * fix #420: Enhanced linux printer inventory based on CUPS
+* Fix cpu thread inventory on x86 linux
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory

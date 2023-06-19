@@ -46,7 +46,10 @@ sub _getCPUs {
         if (defined $cpuId) {
             next if $seen{$cpuId}++;
             $core   = $logicalCpu->{'cpu cores'};
-            $thread = $logicalCpu->{'siblings'};
+            $thread = $core && $logicalCpu->{'siblings'} && $logicalCpu->{'siblings'} >= $core ?
+                $logicalCpu->{'siblings'}/$core : 1;
+            # Support case thread count is not an integer. This can happen is cpu providers performance and efficient cores.
+            $thread = int($thread)+1 if $thread > int($thread);
         } else {
             $cpuId  = $count;
             $core   = 1;
