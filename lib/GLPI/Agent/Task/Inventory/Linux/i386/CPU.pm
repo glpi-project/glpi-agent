@@ -48,7 +48,7 @@ sub _getCPUs {
             $core   = $logicalCpu->{'cpu cores'};
             $thread = $core && $logicalCpu->{'siblings'} && $logicalCpu->{'siblings'} >= $core ?
                 $logicalCpu->{'siblings'}/$core : 1;
-            # Support case thread count is not an integer. This can happen is cpu providers performance and efficient cores.
+            # Support case thread count is not an integer. This can happen is cpu provides performance and efficiency cores.
             $thread = int($thread)+1 if $thread > int($thread);
         } else {
             $cpuId  = $count;
