@@ -134,7 +134,10 @@ sub getCpusFromDmidecode {
         };
 
         if ($info->{'Thread Count'} && $corecount) {
-            $cpu->{THREAD} = int($info->{'Thread Count'} / $corecount);
+            $cpu->{THREAD} = $info->{'Thread Count'} / $corecount;
+
+            # Support case thread is not an integer. This can happen is cpu provides performance and efficiency cores.
+            $cpu->{THREAD} = int($cpu->{THREAD})+1 if $cpu->{THREAD} && $cpu->{THREAD} > int($cpu->{THREAD});
         }
 
         $cpu->{NAME} =
