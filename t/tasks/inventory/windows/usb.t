@@ -79,14 +79,14 @@ my %tests = (
     ],
     xppro2 => [
         {
-            MANUFACTURER => 'Cherry GmbH',
+            MANUFACTURER => 'CHERRY',
             NAME         => 'Concentrador USB genérico',
             CAPTION      => 'Concentrador USB genérico',
             VENDORID     => '046A',
             PRODUCTID    => '0009'
         },
         {
-            MANUFACTURER => 'Cherry GmbH',
+            MANUFACTURER => 'CHERRY',
             NAME         => 'Dispositivo compuesto USB',
             CAPTION       => 'Dispositivo compuesto USB',
             VENDORID     => '046A',
@@ -94,7 +94,7 @@ my %tests = (
         },
         {
             CAPTION      => 'SmartTerminal XX44',
-            MANUFACTURER => 'Cherry GmbH',
+            MANUFACTURER => 'CHERRY',
             NAME         => 'SmartTerminal XX44',
             CAPTION      => 'SmartTerminal XX44',
             VENDORID     => '046A',
