@@ -88,6 +88,8 @@ inventory:
 * fix #420: Enhanced linux printer inventory based on CUPS
 * Fix cpu thread inventory on x86 linux
 * fix #411: Fix cpu thread on win32 when performance & efficiency cores are present
+* Updated pci.ids to 2023.06.19 version
+* Updated usb.ids to 2023.05.17 version
 
 remoteinventory:
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
@@ -137,6 +139,7 @@ netdiscovery/netinventory:
 * fix #382: Fix TOTAL page counter on Kyocera printers
 * fix #396: SKip CDP info from Cisco Communicator installed on computers
 * fix #417: Add Sophos UTM support
+* Updated sysobject.ids
 
 deploy:
 * Fix possible failure when mirror is set but misses file parts
