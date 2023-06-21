@@ -92,6 +92,7 @@ inventory:
 * Updated usb.ids to 2023.05.17 version
 
 remoteinventory:
+* Security fix: CVE-2023-34254
 * Fix USERNAME & PASSWORD environment variable support with ssh remote inventory
 * fix #157: failure when creating a new winrm remote if a ssh one has been defined
 * Fix remoteGlob function for ssh remote inventory as it was preventing storage
