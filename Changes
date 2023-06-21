@@ -1,6 +1,6 @@
 Revision history for GLPI agent
 
-1.5 not released yet
+1.5 Wed, 21 Jun 2023
 
 core:
 * Avoid an error with IO::Socket::SSL error reporting on older platform (CentOS7 confirmed)
@@ -90,6 +90,7 @@ inventory:
 * fix #411: Fix cpu thread on win32 when performance & efficiency cores are present
 * Updated pci.ids to 2023.06.19 version
 * Updated usb.ids to 2023.05.17 version
+* Bump Inventory task version to 1.13
 
 remoteinventory:
 * Security fix: CVE-2023-34254
@@ -113,6 +114,7 @@ remoteinventory:
 * Fix remote hostname for ssh remote inventory run from a win32 agent
 * Minor optimization by adding OSName caching to avoid recurrent same command request
 * Don't fallback on ssh if mode has been set to libssh2 only
+* Bump RemoteInventory task version to 1.2
 
 netdiscovery/netinventory:
 * Avoid to record invalid MAC Address from Netbios during netdiscovery task
@@ -149,6 +151,7 @@ deploy:
 * Refacto to add debug
 * Fix copy & move actions failing under win32 while running as a service
 * Add unit tests for ActionProcessor
+* Bump Deploy task version to 3.0
 
 esx:
 * Add SERIAL number to virtualmachines as they will be seen in BIOS
@@ -156,9 +159,11 @@ esx:
   in favor of new --path option, added --stdout option
 * fix #204: Fix wrong encoding
 * Enhanced vCenter 7.x support
+* Bump ESX task version to 2.8
 
 collect:
 * Better unicode support when looking up registry values
+* Bump Collect task version to 2.9
 
 injector:
 * Support --proxy option or use current user proxy environment if set
@@ -166,14 +171,17 @@ injector:
 
 proxy-server-plugin:
 * Fix file storage on windows
+* Bump Proxy plugin version to 2.2
 
 toolbox:
 * Fix Inventory page not displayed when netdiscovery or netinventory tasks are not installed
 * Default configuration now authorize to update toolbox interface from the UI
 * Support remotes management and remoteinventory task start
+* Bump ToolBox plugin version to 1.1
 
 basic-authentication-server-plugin:
 * New feature to support basic authentication on embedded http server via a dedicated plugin
+* Bump BasicAuthentication plugin version to 1.0
 
 packaging:
 * Update MacOSX packages to use OpenSSL 3.1.1 & zlib 1.2.13
