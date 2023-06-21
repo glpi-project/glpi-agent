@@ -160,7 +160,7 @@ injector:
 * Support --proxy option or use current user proxy environment if set
 * Add new injector source code written in golang
 
-proxy-server-plugin
+proxy-server-plugin:
 * Fix file storage on windows
 
 toolbox:
