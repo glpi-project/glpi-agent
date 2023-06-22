@@ -55,6 +55,7 @@ sub init {
     # Try to figure out installation type from installed packages
     if ($self->{_packages} && !$self->{_type}) {
         my $installed = join(",", sort keys(%{$self->{_packages}}));
+        $self->{_type} = "custom";
         foreach my $type (keys(%DebInstallTypes)) {
             my $install_type = join(",", sort @{$DebInstallTypes{$type}});
             if ($installed eq $install_type) {
