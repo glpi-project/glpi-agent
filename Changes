@@ -3,6 +3,11 @@ Revision history for GLPI agent
 1.6 not yet released
 
 core:
+* Rework of agent events support
+* Add support for tasks cache & tasks events
+* Support forbid_not_trusted option for all httpd server plugins. The option is set to "no"
+  by default to keep compatibility with older configurations. If set to "yes", only trusted
+  ips will be authorized to access related httpd plugin features.
 * fix #434: Fix XML encoding when sent by OCS client code, thanks to Nikolay Chizhov (@nchizhov)
 * fix #438: Fix forking when required on win32 for Proxy & ToolBox plugins, and so
   this fixes IPC support on win32
@@ -11,6 +16,7 @@ core:
 * Update getCanonicalSize() to recognize kibibyte, mebibyte, gibibyte, tebibyte
   pebibyte and exbibyte units
 * Always report first found route in unix getRoutingTable() API
+* fix: Update GLPI::Agent::XML class to make calls in a dedicated thread on win32
 
 inventory:
 * Fix inventory failure due to Oracle database inventory on win32
@@ -45,6 +51,10 @@ netdiscovery/netinventory:
 proxy-server-plugin:
 * fix #461: Fix XML content-type support for inventories sent by android agent
 
+netdiscovery/netinventory:
+* Use Parallel::ForkManager for netdiscovery & netinventory tasks
+* Preload mibsupport as optimization
+
 injector:
 * Support --ssl-cert-file option to permit SSL client authentication
 
@@ -74,9 +84,6 @@ core:
 * Refactoring of communication with server to share compressing code between used classes and
   to better report import errors when refused by the server
 * Handle early received SIGUSR1 signal as runnow request in place of killing the service
-* Support forbid_not_trusted option for all httpd server plugins. The option is set to "no"
-  by default to keep compatibility with older configurations. If set to "yes", only trusted
-  ips will be authorized to access related httpd plugin features.
 * Report dedicated warning when inventory support is disabled server-side
 * win32: Add API to request win32 registry value with better Unicode support
 * win32: Get rid of encodeFromRegistry() API after enhanced Unicode registry support
