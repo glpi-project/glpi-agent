@@ -1284,7 +1284,6 @@ sub _load_jobs {
     my ($self) = @_;
 
     my $jobs = $self->yaml(jobs) // {};
-    my $agent = $self->{toolbox}->{server}->{agent};
     my $target = $self->{toolbox}->{target};
     foreach my $name (keys(%{$jobs})) {
         my $job = $jobs->{$name}
