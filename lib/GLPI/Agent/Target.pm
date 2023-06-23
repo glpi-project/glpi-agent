@@ -191,12 +191,19 @@ sub addEvent {
             $debug = "Replacing" if @{$self->{_events}} < $count;
         }
         $logger->debug(sprintf("%s %s %s event on %s task", $logprefix, $debug, $event->name, $event->task));
+    } elsif ($event->job) {
+        my $rundate = $event->rundate;
+        if ($rundate) {
+            $logger->debug(sprintf("%s Adding %s job event as %s task scheduled on %s", $logprefix, $event->name, $event->task, scalar(localtime($rundate))));
+        } else {
+            $logger->debug(sprintf("%s Adding %s job event as %s task", $logprefix, $event->name, $event->task));
+        }
     } else {
         $logger->debug("$logprefix Not supported event request: ".$event->dump_as_string());
         return 0;
     }
 
-    if (@{$self->{_events}} > 20) {
+    if (@{$self->{_events}} >= 1024) {
         $logger->debug("$logprefix Event requests overflow, skipping new event");
         return 0;
     } elsif ($self->{_next_event}) {
@@ -209,11 +216,14 @@ sub addEvent {
         $self->{_next_event}->{$event->name} = time + 15;
     }
 
-    my $delay = $event->delay() // 0;
-    $event->rundate(time + $delay);
-    $logger->debug2("$logprefix Event scheduled in $delay seconds") if $delay;
+    # Job should still have rundate set
+    unless ($event->job) {
+        my $delay = $event->delay() // 0;
+        $event->rundate(time + $delay);
+        $logger->debug2("$logprefix Event scheduled in $delay seconds") if $delay;
+    }
 
-    if (!$self->{_events} || !@{$self->{_events}}) {
+    if (!$self->{_events} || !@{$self->{_events}} || $event->rundate > $self->{_events}->[-1]->rundate) {
         push @{$self->{_events}}, $event;
     } else {
         $self->{_events} = [
@@ -224,8 +234,25 @@ sub addEvent {
     return $event;
 }
 
+sub delEvent {
+    my ($self, $event) = @_;
+
+    return unless $event->name;
+
+    # Always accept new event for this name
+    delete $self->{_next_event}->{$event->name}
+        if $self->{_next_event};
+
+    # Cleanup event list
+    $self->{_events} = [ grep { $_->name ne $event->name } @{$self->{_events}} ]
+}
+
 sub getEvent {
-    my ($self) = @_;
+    my ($self, $name) = @_;
+    if ($name) {
+        my ($event) = grep { $_->name eq $name } @{$self->{_events}};
+        return $event;
+    }
     return unless @{$self->{_events}} && time >= $self->{_events}->[0]->rundate;
     return shift @{$self->{_events}};
 }

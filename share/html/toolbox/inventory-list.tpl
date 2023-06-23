@@ -47,7 +47,7 @@
     my $config      = $job->{config} || "";
     my $scheduling  = $job->{scheduling} || [];
     my $lastrun     = $job->{last_run_date} ? localtime($job->{last_run_date}) : "";
-    my $nextrun     = ($enabled ? $job->{next_run_date} : _"Disabled task") || "";
+    my $nextrun     = ($enabled ? localtime($job->{next_run_date}) : _"Disabled task") || "";
     my $description = $job->{description} || "";
     my $enabled     = $enabled ? "" : " disabled";
     my @runs        = sort { $tasks{$b}->{time} <=> $tasks{$a}->{time} } grep { defined($tasks{$_}->{name}) && $tasks{$_}->{name} eq $entry } keys(%tasks);

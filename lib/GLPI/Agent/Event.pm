@@ -21,6 +21,8 @@ sub new {
     #  - can be requested by glpi-inventory run via --partial parameter
     # 3. maintenance: internal event to trigger maintenance needs
     #  - for deploy, it cleans up storage from file parts when too old
+    # 4. job:
+    #  - job events are created by toolbox managed inventory tasks
     if ($params{init} && $params{init} =~ /^yes|1$/i) {
         # Partial inventory request on given categories
         $self = {
@@ -48,6 +50,13 @@ sub new {
             _task        => $params{task} // '',
             _name        => $params{name} // "maintenance",
             _delay       => $params{delay} // 0,
+        };
+    } elsif ($params{name} && $params{job} && $params{job} =~ /^yes|1$/i) {
+        $self = {
+            _job     => 1,
+            _name    => $params{name},
+            _rundate => $params{rundate} // 0,
+            _task    => $params{task} // 'unknown',
         };
     }
 
@@ -79,6 +88,11 @@ sub partial {
 sub maintenance {
     my ($self) = @_;
     return $self->{_maintenance} // 0;
+}
+
+sub job {
+    my ($self) = @_;
+    return $self->{_job} // 0;
 }
 
 # Event attributes

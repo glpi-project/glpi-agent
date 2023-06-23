@@ -20,6 +20,8 @@ use GLPI::Agent::Target;
 use constant    inventory   => "inventory";
 use constant    jobs        => "jobs";
 
+use constant    need_init   => 1;
+
 sub index {
     return inventory;
 }
@@ -53,6 +55,14 @@ sub new {
     bless $self, $class;
 
     return $self;
+}
+
+sub init {
+    my ($self) = @_;
+
+    return unless $self->read_yaml();
+
+    $self->_load_jobs();
 }
 
 sub yaml_config_specs {
@@ -105,7 +115,7 @@ sub update_template_hash {
     return unless $hash;
 
     my $yaml = $self->yaml() || {};
-    my $jobs = $self->yaml('jobs') || {};
+    my $jobs = $self->yaml(jobs) || {};
     my $ip_range = $self->yaml('ip_range') || {};
     my $yaml_config = $self->yaml('configuration') || {};
 
@@ -208,8 +218,6 @@ sub update_template_hash {
 }
 
 my %handlers = (
-    'submit/localinventory' => \&_submit_localinventory,
-    'submit/netscan'        => \&_submit_netscan,
     'submit/add'            => \&_submit_add,
     'submit/cancel'         => \&_submit_cancel,
     'submit/update'         => \&_submit_update,
@@ -611,7 +619,7 @@ sub _submit_runnow {
         if ($job->{type} eq 'local') {
             # Recycle taskid
             my ($taskid) = grep { $self->{tasks}->{$_}->{name} eq $name && $self->{tasks}->{$_}->{islocal} } keys(%{$self->{tasks}});
-            $self->_run_local($config->{tag}, $yaml, $name, $taskid);
+            $self->_run_local($config->{tag}, $yaml, $name, $taskid, $config->{target});
             next if $self->errors();
         } elsif ($job->{type} eq 'netscan') {
             # Recycle taskid
@@ -624,6 +632,18 @@ sub _submit_runnow {
         # Change scalar type to integer to be stored as integer in YAML
         $job->{last_run_date} = int(time);
         $self->need_save(jobs);
+
+        # We need to reschedule event if enabled
+        if ($self->isyes($job->{enabled})) {
+            my $event = $self->{toolbox}->{target}->getEvent($name);
+            # To find next run date, we need to reset not_before time by setting it to now/last_run_date
+            my $rundate = $self->_get_next_run_date($name, $job, $job->{last_run_date});
+            $event->rundate($rundate);
+            $job->{next_run_date} = $rundate;
+            # Re-schedule event
+            $self->{toolbox}->{target}->delEvent($event);
+            $self->{toolbox}->{target}->addEvent($event);
+        }
     }
 }
 
@@ -656,19 +676,6 @@ sub addMessage {
         my $messages = $self->{tasks}->{$taskid}->{messages};
         push @{$messages}, "[$params{level}] $params{message}";
     }
-}
-
-sub _submit_netscan {
-    my ($self, $form, $yaml) = @_;
-
-    return $self->errors("No IP range selected")
-        unless $form->{'input/ip_range'};
-
-    my $ip_range = $yaml->{ip_range} || {};
-    return $self->errors("No such IP range")
-        unless $ip_range->{$form->{'input/ip_range'}};
-
-    return $self->netscan("", [$form->{'input/ip_range'}]);
 }
 
 sub netscan {
@@ -857,14 +864,8 @@ sub netscan {
     $agent->fork_exit();
 }
 
-sub _submit_localinventory {
-    my ($self, $form, $yaml) = @_;
-
-    return $self->_run_local($self->get_from_session('inventory_tag'), $yaml);
-}
-
 sub _run_local {
-    my ($self, $tag, $yaml, $name, $taskid) = @_;
+    my ($self, $tag, $yaml, $name, $taskid, $targetid) = @_;
 
     my $procname = "local inventory";
     return $self->errors("A $procname is still running")
@@ -906,29 +907,37 @@ sub _run_local {
     my $starttime = gettimeofday();
     $logger->info("Running $task->{name} task...");
 
-    my $path = !$yaml_config->{networktask_save} || $yaml_config->{networktask_save} eq '.' ?
-        "inventory" : $yaml_config->{networktask_save}."/inventory";
+    my $target;
+    if ($targetid) {
+        ($target) = grep { $_->id() eq $targetid } $agent->getTargets();
+    }
 
-    # Create a local target and update it to run now
-    GLPI::Agent::Target::Local->require();
-    my $local = GLPI::Agent::Target::Local->new(
-        logger     => $logger,
-        delaytime  => 1,
-        basevardir => $agent->{vardir},
-        path       => $path
-    );
+    # If not using an agent target, create a local target and update it to run now
+    unless ($target) {
+        my $path = !$yaml_config->{networktask_save} || $yaml_config->{networktask_save} eq '.' ?
+            "inventory" : $yaml_config->{networktask_save}."/inventory";
 
-    # Make sure path exists as folder
-    mkdir $path unless -d $path;
+        # Make sure path exists as folder
+        mkdir $path unless -d $path;
+
+        GLPI::Agent::Target::Local->require();
+        $target = GLPI::Agent::Target::Local->new(
+            logger     => $logger,
+            delaytime  => 1,
+            basevardir => $agent->{vardir},
+            path       => $path
+        );
+    }
 
     # Create an Inventory task
     GLPI::Agent::Task::Inventory->require();
     my $inventory = GLPI::Agent::Task::Inventory->new(
-        config       => $agent->{config},
-        datadir      => $agent->{datadir},
-        logger       => $logger,
-        target       => $local,
-        deviceid     => $agent->{deviceid},
+        config      => $agent->{config},
+        datadir     => $agent->{datadir},
+        logger      => $logger,
+        target      => $target,
+        deviceid    => $agent->{deviceid},
+        agentid     => $agent->{agentid},
     );
 
     # Report modules count to prepare progress bar handling (we don't count
@@ -957,9 +966,52 @@ sub register_events_cb {
 sub events_cb {
     my ($self, $event) = @_;
 
-    return unless defined($event);
-
-    if ($event =~ /^LOGGER,([^,]*),(.*)$/) {
+    if (!defined($event) && $self->{toolbox}->{target}) {
+        my $jobs = $self->yaml(jobs);
+        unless (defined($jobs)) {
+            return unless $self->read_yaml();
+            $jobs = $self->yaml(jobs);
+        }
+        # Time to check if we need to run a job
+        my $event = $self->{toolbox}->{target}->getEvent();
+        return 0 unless $event && $event->job;
+        my $name = $event->name;
+        my $job  = $jobs->{$name};
+        if ($job && $job->{type} && $self->isyes($job->{enabled})) {
+            my $type = $job->{type};
+            if ($type eq 'local') {
+                my $config = $job->{config} // {};
+                my $yaml = $self->yaml() || {};
+                # Recycle taskid
+                my ($taskid) = grep { $self->{tasks}->{$_}->{name} eq $name && $self->{tasks}->{$_}->{islocal} } keys(%{$self->{tasks}});
+                $self->_run_local($config->{tag}, $yaml, $name, $taskid, $config->{target});
+            } elsif ($type eq 'netscan') {
+                # Recycle taskid
+                my ($taskid) = grep { $self->{tasks}->{$_}->{name} eq $name && !$self->{tasks}->{$_}->{islocal} } keys(%{$self->{tasks}});
+                $self->netscan($name, $taskid);
+            } else {
+                return 0;
+            }
+            my $errors = $self->errors();
+            my $reset_last_run;
+            if (ref($errors) eq 'ARRAY' && @{$errors}) {
+                map { $self->debug($_) } @{$errors};
+                $reset_last_run = $job->{last_run_date};
+            }
+            # Change scalar type to integer to be stored as integer in YAML
+            $job->{last_run_date} = int(time);
+            my $rundate = $self->_get_next_run_date($name, $job);
+            $event->rundate($rundate);
+            # We should reset last run on errors as we needed to set it to get next run date as usual
+            $job->{last_run_date} = $reset_last_run if $reset_last_run;
+            $job->{next_run_date} = $rundate;
+            $self->need_save(jobs);
+            $self->write_yaml();
+            # Re-schedule event
+            $self->{toolbox}->{target}->delEvent($event);
+            $self->{toolbox}->{target}->addEvent($event);
+        }
+    } elsif ($event =~ /^LOGGER,([^,]*),(.*)$/) {
         my $taskid = $1;
         return unless $self->{tasks}->{$taskid};
         my $msg = encode('UTF-8', $2);
@@ -1226,6 +1278,140 @@ sub handle_form {
             last;
         }
     }
+}
+
+sub _load_jobs {
+    my ($self) = @_;
+
+    my $jobs = $self->yaml(jobs) // {};
+    my $agent = $self->{toolbox}->{server}->{agent};
+    my $target = $self->{toolbox}->{target};
+    foreach my $name (keys(%{$jobs})) {
+        my $job = $jobs->{$name}
+            or next;
+        next unless $self->isyes($job->{enabled});
+        my %event = (
+            job     => 1,
+            name    => $name,
+            task    => $job->{type} eq 'local' ? "inventory" : "netscan",
+        );
+        my $event = GLPI::Agent::Event->new(%event);
+        if ($job->{next_run_date} && $job->{next_run_date} > time) {
+            $event->rundate($job->{next_run_date});
+        } else {
+            my $rundate = $self->_get_next_run_date($name, $job);
+            $event->rundate($rundate);
+            $job->{next_run_date} = $rundate;
+            $self->need_save(jobs);
+        }
+        $target->delEvent($event);
+        $target->addEvent($event);
+    }
+
+    # Save updated jobs if required
+    $self->write_yaml();
+}
+
+sub _get_next_run_date {
+    my ($self, $name, $job, $not_before) = @_;
+
+    return unless $job;
+
+    # not_before could be reset when job is forced to run now
+    $self->{_not_before} = {} unless $self->{_not_before};
+    $not_before = $self->{_not_before}->{$name} // 0
+        unless $not_before;
+
+    my $last = $job->{last_run_date} // 0;
+    my $scheduling = $self->yaml('scheduling') // {};
+
+    my %wd = qw( sun 0 mon 1 tue 2 wed 3 thu 4 fri 5 sat 6 );
+
+    my @delay;
+    foreach my $schedule (@{$job->{scheduling}}) {
+        my $sched = $scheduling->{$schedule}
+            or next;
+        next unless $sched->{type};
+        my $now = time;
+        if ($sched->{type} eq 'delay' && $sched->{delay}) {
+            my ($delay, $unit) = $sched->{delay} =~ /^(\d+)(s|m|h|d|w)$/
+                or next;
+            $delay = int($delay) * ($unit eq 's' ? 1 :
+                                    $unit eq 'm' ? 60 :
+                                    $unit eq 'h' ? 3600 :
+                                    $unit eq 'd' ? 86400 : 7*86400);
+            my $next_start = $last + $delay;
+            $next_start = $not_before if $next_start < $not_before;
+            my $fuzzy = $delay >= 86400 ? int(rand(3600)-1800) :
+                        $delay >=  3600 ? int(rand(300)-150)   :
+                        $delay >=   120 ? int(rand(10)-5)      : 0 ;
+            if ($next_start + $fuzzy < $now) {
+                $next_start = $now;
+                $fuzzy      = int(rand($delay > 60 ? 60 : $delay));
+            }
+            push @delay, {
+                start       => $next_start + $fuzzy,
+                not_before  => $next_start + $delay,
+            };
+        } elsif ($sched->{type} eq 'timeslot' && $sched->{start} && $sched->{duration} && $sched->{weekday}) {
+            my @cur = localtime($now);
+            my $daystart = $now - $cur[2]*3600 - $cur[1]*60 - $cur[0];
+            my ($h, $m) = $sched->{start} =~ /^(\d{2}):(\d{2})$/
+                or next;
+            my ($hd, $dm) = $sched->{duration} =~ /^(\d{2}):(\d{2})$/
+                or next;
+            my $hmstart = int($h)*3600 + int($m)*60;
+            my $duration = int($hd)*3600 + int($dm)*60;
+
+            # Find all timeslot start time for max a 2 weeks windows around the current day, this guarantee to find at least 2 timeslots including the next one
+            my @ts;
+            my $rangedays = $sched->{weekday} eq '*' ? 1 : 7;
+            foreach my $thisday (-$rangedays..$rangedays) {
+                if ($sched->{weekday} ne '*') {
+                    my $weekday = ($cur[6] + $thisday) % 7;
+                    next unless $wd{$sched->{weekday}} == $weekday;
+                }
+                push @ts, $daystart + $thisday*86400 + $hmstart;
+            }
+
+            # From found timeslot start times, extract the next start and the previous
+            my ($prevstart, $nextstart);
+            while (@ts) {
+                my $start = pop @ts;
+                if ($start > $now) {
+                    $nextstart = $start;
+                } else {
+                    $prevstart = $start;
+                    last;
+                }
+            }
+
+            # If we are in the previous windows and it has not been run, we still have to start during it
+            # Or we have to start during the following windows
+            if ($now >= $prevstart && $now < $prevstart+$duration && (!$last || $last < $prevstart)) {
+                push @delay, {
+                    start       => $now + int(rand($prevstart + $duration - $now)),
+                    not_before  => $prevstart + $duration
+                };
+            } else {
+                push @delay, {
+                    start       => $nextstart + int(rand($duration)),
+                    not_before  => $nextstart + $duration
+                };
+            }
+        }
+    }
+
+    # Choose sooner delay
+    my $rundate = shift @delay;
+    foreach my $delay (@delay) {
+        $rundate = $delay if $delay->{start} < $rundate->{start};
+    }
+
+    # Keep not before for next run date request
+    $self->{_not_before}->{$name} = $rundate->{not_before};
+
+    return $rundate->{start};
 }
 
 1;

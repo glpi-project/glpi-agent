@@ -18,6 +18,8 @@ use GLPI::Agent::HTTP::Server::ToolBox::Results::Device;
 
 use constant    results => "results";
 
+use constant    need_init   => 1;
+
 sub index {
     return results;
 }
@@ -39,7 +41,6 @@ sub new {
         _mtime      => {},
         _macs       => {},
         _devices    => {},
-        need_init   => 1,
     };
 
     bless $self, $class;
