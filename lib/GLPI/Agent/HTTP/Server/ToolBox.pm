@@ -184,7 +184,7 @@ sub init {
     $self->scan_yaml_files();
 
     # Pages may require some initialization
-    map { delete $_->{need_init} && $_->init() } values(%{$self->{_pages}});
+    map { $_->init() } grep { $_->need_init() } values(%{$self->{_pages}});
 
     # Stil update Result page
     $self->{_results}->xml_analysis() if $self->{_results};
@@ -232,6 +232,8 @@ sub handle {
 
     return &{$api_match{$self->{request}}}( $self, $client, $request, $clientIp );
 }
+
+sub need_init {}
 
 sub ajax_support {
     return 0;

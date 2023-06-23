@@ -639,7 +639,12 @@ sub forked_process_event {
 
     return unless length($event);
     if (length($event) > 65535) {
-        $self->{logger}->error("Skipping too long forked process event");
+        my ($type) = split(",", $event)
+            or return;
+        $type = substr($event, 0, 64) if length($type) > 64;
+        # Just ignore too big logger event like full inventory content logged at debug2 level
+        return if $type eq 'LOGGER';
+        $self->{logger}->error("Skipping $type too long forked process event");
         return;
     }
 
