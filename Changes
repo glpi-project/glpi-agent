@@ -2,6 +2,9 @@ Revision history for GLPI agent
 
 1.6 not yet released
 
+packaging:
+* Install basic-authentication-server-plugin.cfg plugin default configuration on debian
+
 1.5 Wed, 21 Jun 2023
 
 core:
