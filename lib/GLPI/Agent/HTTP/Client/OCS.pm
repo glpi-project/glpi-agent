@@ -8,7 +8,6 @@ use English qw(-no_match_vars);
 use HTTP::Request;
 use UNIVERSAL::require;
 use URI;
-use Encode;
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::UUID;
@@ -49,7 +48,7 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
     my $request_content = $message->getContent();
     $logger->debug2(_log_prefix . "sending message:\n$request_content");
 
-    $request_content = $self->compress(encode('UTF-8', $request_content));
+    $request_content = $self->compress($request_content);
     if (!$request_content) {
         $logger->error(_log_prefix . 'inflating problem');
         return;
