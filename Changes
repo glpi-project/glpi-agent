@@ -2,6 +2,9 @@ Revision history for GLPI agent
 
 1.6 not yet released
 
+core:
+* fix #434: Fix XML encoding when sent by OCS client code, thanks to Nikolay Chizhov (@nchizhov)
+
 packaging:
 * Install basic-authentication-server-plugin.cfg plugin default configuration on debian
 
