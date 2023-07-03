@@ -38,13 +38,13 @@
       <div class='form-edit'>
         <label for='name'>{_"Name"}</label>
         <div class='form-edit-row'>
-          <input class='input-row' type='text' id='name' name='input/name' value='{ $schedule->{name} || $this || $form{"input/name"} }' size='20'{$form{empty} ? "" : " disabled"}>
+          <input class='input-row' type='text' id='name' name='input/name' value='{ $schedule->{name} || $this || $form{"input/name"} }' size='20'{$form{empty} ? "" : " disabled"} required />
           <input type='button' class='button' value='{_"Rename"}' onclick='handle_rename()'{$form{empty} ? " style='display:none'" : ""}/>
         </div>
         <div id='rename-overlay' class='overlay' onclick='cancel_rename()'>
           <div class='overlay-frame' onclick='event.stopPropagation()'>
             <label for='rename' class='newtag'>{_"Rename"}:</label>
-            <input id='input-rename' type='text' class='newtag' name='input/new-name' value='{ $form{"input/new-name"} || $schedule->{name} || $this }' size='30' disabled/>
+            <input id='input-rename' type='text' class='newtag' name='input/new-name' value='{ $form{"input/new-name"} || $schedule->{name} || $this }' size='30' disabled />
             <input type='submit' class='big-button' name='submit/rename' value='{_"Rename"}'/>
             <input type='button' class='big-button' name='submit/rename-cancel' value='{_"Cancel"}' onclick='cancel_rename()'/>
           </div>
@@ -55,9 +55,9 @@
       <div class='form-edit'>
         <label>{_"Type"}</label>
         <div class='form-edit-row' id='type-options'>
-          <input type="radio" name="input/type" id="delay" value="delay"{$type eq "delay" ? " checked" : ""}{$form{empty} ? ' onchange="type_change()"' : ' disabled'}>
+          <input type="radio" name="input/type" id="delay" value="delay"{$type eq "delay" ? " checked" : ""}{$form{empty} ? ' onchange="type_change()"' : ' disabled'}/>
           <label for='delay'>{_("delay")}</label>
-          <input type="radio" name="input/type" id="timeslot" value="timeslot"{$type eq "timeslot" ? " checked" : ""}{$form{empty} ? ' onchange="type_change()"' : ' disabled'}>
+          <input type="radio" name="input/type" id="timeslot" value="timeslot"{$type eq "timeslot" ? " checked" : ""}{$form{empty} ? ' onchange="type_change()"' : ' disabled'}/>
           <label for='timeslot'>{_("timeslot")}</label>
         </div>
       </div>
@@ -74,7 +74,7 @@
     <div class='form-edit-row' id='delay-config' style='display: {$type eq "delay" ? "flex" : "none"}'>
       <div class='form-edit'>
         <label for='delaytime'>{_"Delay"}</label>
-        <input class='input-row' type='number' id='delaytime' name='input/delay' value='{$delay || 24}' {$type ne "delay" ? " disabled" : ""}>
+        <input class='input-row' type='number' id='delaytime' name='input/delay' value='{$delay || 24}' {$type ne "delay" ? " disabled" : ""}/>
       </div>
       <div class='form-edit'>
         <label for='delayunit'>{_"Time unit"}</label>
@@ -151,8 +151,8 @@
     <input type='submit' class='big-button' name='submit/{
       $scheduling{$edit} ?
         "update' value='"._("Update") :
-        "add' value='"._("Add") }'>
-    <input type='submit' class='big-button' name='submit/cancel' value='{_("Cancel")}'>
+        "add' value='"._("Add") }'/>
+    <input type='submit' class='big-button' name='submit/cancel' value='{_("Cancel")}'/>
   </form>
   <script>
     function handle_rename () \{

@@ -11,7 +11,7 @@
         <tr>
           <th class='checkbox' title='{_"Revert selection"}'>
             <label class='checkbox'>
-              <input class='checkbox' type='checkbox' name='checkbox-remotes' onclick='toggle_all(this)'>
+              <input class='checkbox' type='checkbox' name='checkbox-remotes' onclick='toggle_all(this)'/>
               <span class='custom-checkbox all_cb'></span>
             </label>
           </th>
@@ -40,7 +40,7 @@
           <td class='checkbox'>
             <label class='checkbox'>
               <input class='checkbox' type='checkbox' name='checkbox-remotes/$id'".
-              ($edit && $edit eq $entry ? " checked" : "").">
+              ($edit && $edit eq $entry ? " checked" : "")."/>
               <span class='custom-checkbox'></span>
             </label>
           </td>
@@ -78,7 +78,7 @@
         <tr>
           <th class='checkbox' title='"._("Revert selection")."'>
             <label class='checkbox'>
-              <input class='checkbox' type='checkbox' onclick='toggle_all(this)'>
+              <input class='checkbox' type='checkbox' onclick='toggle_all(this)'/>
               <span class='custom-checkbox all_cb'></span>
             </label>
           </th>";
@@ -101,7 +101,7 @@
     $listed >= 50 ? $listnav : "" }
     <div class='select-row'>
       <div class='arrow-left'></div>{ $remotes_admin ? "
-      <input class='submit-secondary' type='submit' name='submit/delete-remote' value='"._("Delete")."'>
+      <input class='submit-secondary' type='submit' name='submit/delete-remote' value='"._("Delete")."'/>
       <div class='separation'></div>" : "" }
       <label class='selection-option'>{_"Remotes workers"}:</label>
       <select id='workers' class='selection-option' name='workers'>{
@@ -112,11 +112,11 @@
           ">$opt</option>";
       }}
       </select>
-      <input class='submit-secondary' type='submit' name='submit/expire-remotes' value='{_"Mark remotes as expired"}'>
-      <input class='submit-secondary' type='submit' name='submit/start-task' value='{_"Start remoteinventory task"}'{ $disable_start ? " disabled" : "" }>
+      <input class='submit-secondary' type='submit' name='submit/expire-remotes' value='{_"Mark remotes as expired"}'/>
+      <input class='submit-secondary' type='submit' name='submit/start-task' value='{_"Start remoteinventory task"}'{ $disable_start ? " disabled" : "" }/>
     </div>
     <hr/>{ $remotes_admin ? "
-    <input class='big-button' type='submit' name='submit/add-remote' value='"._("Add Remote")."'>" : "" }
+    <input class='big-button' type='submit' name='submit/add-remote' value='"._("Add Remote")."'/>" : "" }
   </form>
   <script>
   function toggle_all(from) \{

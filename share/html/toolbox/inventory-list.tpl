@@ -13,7 +13,7 @@
         <tr>
           <th class='checkbox' title='{_"Revert selection"}'>{ @jobs_order ? "
             <label class='checkbox'>
-              <input class='checkbox' type='checkbox' onclick='toggle_all(this)'>
+              <input class='checkbox' type='checkbox' onclick='toggle_all(this)'/>
               <span class='custom-checkbox all_cb'></span>
             </label>
           ": "&nbsp;"
@@ -58,7 +58,7 @@
           <td class='checkbox'>
             <label class='checkbox'>
               <input class='checkbox' type='checkbox' name='checkbox/".encode_entities($entry)."'".
-              ($form{"checkbox/".$entry} eq "on" ? " checked" : "").">
+              ($form{"checkbox/".$entry} eq "on" ? " checked" : "")."/>
               <span class='custom-checkbox'></span>
             </label>
           </td>
@@ -70,7 +70,7 @@
     $OUT .= "
             <div class='grow'></div>
             <label class='eye'>
-              <input id='show-run-$this' name='show-run/$this' class='eye' type='checkbox' onclick='visibility(\"$this\")'$eyeshow>
+              <input id='show-run-$this' name='show-run/$this' class='eye' type='checkbox' onclick='visibility(\"$this\")'$eyeshow/>
               <span id='eye-$this' class='".($eyeshow ? "eye-hide" : "eye-show")."'/>
             </label>
           "
@@ -184,7 +184,7 @@
       $OUT .= "
             <div class='task'>
               <div class='name-col'>
-                <input id='expand-$run' name='expand/$run' class='expand-task' type='checkbox' onchange='expand_task(\"$run\")'".($form{"expand/$run"} && $form{"expand/$run"} eq "on" ? " checked" : "").">
+                <input id='expand-$run' name='expand/$run' class='expand-task' type='checkbox' onchange='expand_task(\"$run\")'".($form{"expand/$run"} && $form{"expand/$run"} eq "on" ? " checked" : "")."/>
                 <label id='$run-expand-label' for='expand-$run' class='closed'>$this</label>
               </div>
               <div class='progress-col'>
@@ -250,9 +250,9 @@
                   </div>
                 </div>";
       }
-      my $freeze_status = "disabled";
+      my $freeze_status = " disabled";
       unless ($done || $percent == 100) {
-        $freeze_status = "onclick='toggle_freeze_log(\"$run\")'";
+        $freeze_status = " onclick='toggle_freeze_log(\"$run\")'";
         $freeze_status .= " checked" if $form{"freeze-log/$run"} && $form{"freeze-log/$run"} eq 'on';
       }
       my $verbosity = $form{"verbosity/$run"} // "debug";
@@ -260,16 +260,16 @@
             </div>
             <div class='output-header'>
               <label class='switch'>
-                <input id='show-log-$run' name='show-log/$run' class='switch' type='checkbox' onclick='show_log(\"$run\")'".($form{"show-log/$run"} && $form{"show-log/$run"} eq "on" ? " checked" : "").">
+                <input id='show-log-$run' name='show-log/$run' class='switch' type='checkbox' onclick='show_log(\"$run\")'".($form{"show-log/$run"} && $form{"show-log/$run"} eq "on" ? " checked" : "")."/>
                 <span class='slider'></span>
               </label>
               <label for='show-log-$run' class='text'>".sprintf( _("Show &laquo;&nbsp;%s&nbsp;&raquo; task log"), $this)."</label>
               <div class='abort-button' id='$run-abort-button'>".(($done || $percent == 100 || $aborted)? "" :
-                "<input class='submit-secondary' type='button' name='abort/$run' value='"._("Abort")."' onclick='abort_task(\"$run\")'>")."
+                "<input class='submit-secondary' type='button' name='abort/$run' value='"._("Abort")."' onclick='abort_task(\"$run\")'/>")."
               </div>
               <div class='log-freezer' id='$run-freeze-log-option'>
                 <label class='switch'>
-                  <input id='freeze-log-$run' name='freeze-log/$run' class='freezer-switch' type='checkbox' $freeze_status>
+                  <input id='freeze-log-$run' name='freeze-log/$run' class='freezer-switch' type='checkbox'$freeze_status/>
                   <span class='slider'></span>
                 </label>
                 <label for='freeze-log-$run' class='text text-fix'>"._("Freeze log output")."</label>
@@ -313,7 +313,7 @@
         <tr>
           <th class='checkbox' title='"._("Revert selection")."'>
             <label class='checkbox'>
-              <input class='checkbox' type='checkbox' onclick='toggle_all(this)'>
+              <input class='checkbox' type='checkbox' onclick='toggle_all(this)'/>
               <span class='custom-checkbox all_cb'></span>
             </label>
           </th>";
@@ -335,10 +335,10 @@
     $listed >= 50 ? $listnav : "" }
     <div class='select-row'>
       <div class='arrow-left'></div>
-      <input class='submit-secondary' type='submit' name='submit/run-now' value='{_"Run task"}'>
+      <input class='submit-secondary' type='submit' name='submit/run-now' value='{_"Run task"}'/>
       <div class='separation'></div>
-      <input class='submit-secondary' type='submit' name='submit/disable' value='{_"Disable"}'>
-      <input class='submit-secondary' type='submit' name='submit/enable' value='{_"Enable"}'>
+      <input class='submit-secondary' type='submit' name='submit/disable' value='{_"Disable"}'/>
+      <input class='submit-secondary' type='submit' name='submit/enable' value='{_"Enable"}'/>
       <div class='separation'></div>
       <label class='selection-option'>{_"IP range"}:</label>
       <select class='selection-option' name='input/ip_range'>
@@ -350,13 +350,13 @@
           " value='$_'>".($ip_range{$_}->{name} || $_)."</option>"
         } @iprange_options)}
       </select>
-      <input class='submit-secondary' type='submit' name='submit/add-iprange' value='{_"Add ip range"}'>
-      <input class='submit-secondary' type='submit' name='submit/rm-iprange' value='{_"Remove ip range"}'>
+      <input class='submit-secondary' type='submit' name='submit/add-iprange' value='{_"Add ip range"}'/>
+      <input class='submit-secondary' type='submit' name='submit/rm-iprange' value='{_"Remove ip range"}'/>
       <div class='separation'></div>
-      <input class='submit-secondary' type='submit' name='submit/delete' value='{_"Delete"}'>
+      <input class='submit-secondary' type='submit' name='submit/delete' value='{_"Delete"}'/>
     </div>
     <br/>
-    <input class='big-button' type='submit' name='submit/add' value='{_"Add new inventory task"}'>
+    <input class='big-button' type='submit' name='submit/add' value='{_"Add new inventory task"}'/>
   </form>
   <script>
   var outputids = [{ join(", ", map { "'$_'" } @running) }];

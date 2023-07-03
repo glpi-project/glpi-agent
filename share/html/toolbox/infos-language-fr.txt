@@ -1,3 +1,7 @@
 # Traductions en français par Teclib Edition
 
 
+
+New credential: Nouvel identifiant
+Credential update: Mise à jour de l'identifiant
+No password for ssh remote inventory type involves you installed public key authentication: Pas de mot de passe implique que vous ayez installé une clé publique pour l'authentification

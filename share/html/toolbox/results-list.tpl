@@ -32,7 +32,7 @@
         <tr>
           <th class='checkbox' title='{_"Revert selection"}'>{ @columns ? "
             <label class='checkbox'>
-              <input class='checkbox' type='checkbox' onclick='toggle_all(this)'>
+              <input class='checkbox' type='checkbox' onclick='toggle_all(this)'/>
               <span class='custom-checkbox all_cb'></span>
             </label>
           ": "&nbsp;"
@@ -62,7 +62,7 @@
           <td class='checkbox'>
             <label class='checkbox'>
               <input class='checkbox' type='checkbox' name='checkbox/$entry'".
-              ($edit && $edit eq $entry ? " checked" : "").">
+              ($edit && $edit eq $entry ? " checked" : "")."/>
               <span class='custom-checkbox'></span>
             </label>
           </td>";
@@ -97,7 +97,7 @@
         <tr>
           <th class='checkbox'>
             <label class='checkbox'>
-              <input class='checkbox' type='checkbox' onclick='toggle_all(this)'>
+              <input class='checkbox' type='checkbox' onclick='toggle_all(this)'/>
               <span class='custom-checkbox all_cb'></span>
             </label>
           </th>";
@@ -119,8 +119,8 @@
     $listed >= 50 ? $list_nav : "" }
     <div class='select-row'>
       <div class='arrow-left'></div>
-      <input class='submit-secondary' type='submit' name='submit/delete' value='{_"Delete"}'>
-      <input class='submit-secondary' type='submit' name='submit/scan' value='{_"Scan again"}'>{
+      <input class='submit-secondary' type='submit' name='submit/delete' value='{_"Delete"}'/>
+      <input class='submit-secondary' type='submit' name='submit/scan' value='{_"Scan again"}'/>{
     if (@tags||"") { # The test avoids to render a 0 when no tag is defined
       $OUT .= "
       <div class='separation'></div>
@@ -134,8 +134,8 @@
     }}
     </div>
     <hr/>
-    <input class='big-button' type='submit' name='submit/export' value='{_"Download results"}' title='{_"Results will be filtered by tag if set"}'>
-    <input class='big-button' type='submit' name='submit/full-export' value='{_"Download full scan datas"}' title='{_"No filtering by tag will be applied"}'>
+    <input class='big-button' type='submit' name='submit/export' value='{_"Download results"}' title='{_"Results will be filtered by tag if set"}'/>
+    <input class='big-button' type='submit' name='submit/full-export' value='{_"Download full scan datas"}' title='{_"No filtering by tag will be applied"}'/>
   </form>
   <script>
   function toggle_all(from) \{

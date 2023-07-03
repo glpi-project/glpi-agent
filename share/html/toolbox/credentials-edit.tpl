@@ -34,13 +34,13 @@
       <div class='form-edit'>
         <label for='name'>{_"Name"}</label>
         <div class='form-edit-row'>
-          <input class='input-row' type='text' id='name' name='input/name' value='{$name}' size='20'{($id ? " title='Id: $id'" : "").($form{empty} ? "" : " disabled")}/>
+          <input class='input-row' type='text' id='name' name='input/name' value='{$name}' size='20'{($id ? " title='Id: $id'" : "").($form{empty} ? "" : " disabled")} required />
           <input type='button' class='button' value='{_"Rename"}' onclick='handle_rename()'{$form{empty} ? " style='display:none'" : ""}/>
         </div>
         <div id='rename-overlay' class='overlay' onclick='cancel_rename()'>
           <div class='overlay-frame' onclick='event.stopPropagation()'>
             <label for='rename' class='newtag'>{_"Rename"}:</label>
-            <input id='input-rename' type='text' class='newtag' name='input/new-name' value='{$form{"input/new-name"} || $name}' size='30' disabled/>
+            <input id='input-rename' type='text' class='newtag' name='input/new-name' value='{$form{"input/new-name"} || $name}' size='30' disabled />
             <input type='submit' class='big-button' name='submit/rename' value='{_"Rename"}'/>
             <input type='button' class='big-button' name='submit/rename-cancel' value='{_"Cancel"}' onclick='cancel_rename()'/>
           </div>
@@ -51,13 +51,13 @@
       <div class='form-edit'>
         <label>{_"Type"}</label>
         <div class='form-edit-row' id='type-options'>
-          <input type="radio" name="input/type" id="snmp" value="snmp" onchange="type_change()"{$type eq "snmp" ? " checked" : ""}>
+          <input type="radio" name="input/type" id="snmp" value="snmp" onchange="type_change()"{$type eq "snmp" ? " checked" : ""}/>
           <label for='snmp'>snmp</label>
-          <input type="radio" name="input/type" id="ssh" value="ssh" onchange="type_change()"{$type eq "ssh" ? " checked" : ""}>
+          <input type="radio" name="input/type" id="ssh" value="ssh" onchange="type_change()"{$type eq "ssh" ? " checked" : ""}/>
           <label for='ssh'>ssh</label>
-          <input type="radio" name="input/type" id="winrm" value="winrm" onchange="type_change()"{$type eq "winrm" ? " checked" : ""}>
+          <input type="radio" name="input/type" id="winrm" value="winrm" onchange="type_change()"{$type eq "winrm" ? " checked" : ""}/>
           <label for='winrm'>winrm</label>
-          <input type="radio" name="input/type" id="esx" value="esx" onchange="type_change()"{$type eq "esx" ? " checked" : ""}>
+          <input type="radio" name="input/type" id="esx" value="esx" onchange="type_change()"{$type eq "esx" ? " checked" : ""}/>
           <label for='esx'>esx</label>
         </div>
       </div>
@@ -66,11 +66,11 @@
       <div class='form-edit'>
         <label>{_"Version"}</label>
         <div class='form-edit-row' id='snmp-version-options'>
-          <input type="radio" name="input/snmpversion" id="v1" value="v1" onchange="version_change()"{$version && $version eq "v1" ? " checked" : ""}{$type ne "snmp" ? " disabled" : ""}>
+          <input type="radio" name="input/snmpversion" id="v1" value="v1" onchange="version_change()"{$version && $version eq "v1" ? " checked" : ""}{$type ne "snmp" ? " disabled" : ""}/>
           <label for='v1'>v1</label>
-          <input type="radio" name="input/snmpversion" id="v2c" value="v2c" onchange="version_change()"{!$version || $version eq "v2c" ? " checked" : ""}{$type ne "snmp" ? " disabled" : ""}>
+          <input type="radio" name="input/snmpversion" id="v2c" value="v2c" onchange="version_change()"{!$version || $version eq "v2c" ? " checked" : ""}{$type ne "snmp" ? " disabled" : ""}/>
           <label for='v2c'>v2c</label>
-          <input type="radio" name="input/snmpversion" id="v3" value="v3" onchange="version_change()"{$version && $version eq "v3" ? " checked" : ""}{$type ne "snmp" ? " disabled" : ""}>
+          <input type="radio" name="input/snmpversion" id="v3" value="v3" onchange="version_change()"{$version && $version eq "v3" ? " checked" : ""}{$type ne "snmp" ? " disabled" : ""}/>
           <label for='v3'>v3</label>
         </div>
       </div>
@@ -78,13 +78,13 @@
     <div class='form-edit-row' id='v1-v2c-option' style='display: {$type eq "snmp" && (!$version || $version =~ /v1|v2c/) ? "flex" : "none"}'>
       <div class='form-edit'>
         <label for='community'>{_"Community"}</label>
-        <input class='input-row' type='text' id='community' name='input/community' placeholder='public' value='{$community}' {$type ne "snmp" || $version eq "v3" ? " disabled" : ""}>
+        <input class='input-row' type='text' id='community' name='input/community' placeholder='public' value='{$community}'{$type ne "snmp" || $version eq "v3" ? " disabled" : ""} required />
       </div>
     </div>
     <div class='form-edit-row' id='v3-options' style='display: {$type eq "snmp" && $version && $version eq "v3" ? "flex" : "none"}'>
       <div class='form-edit'>
         <label for='username'>{_"Username"}</label>
-        <input class='input-row' type='text' id='username' name='input/username' value='{$username}' size='12' autocomplete='new-password'{$type ne "snmp" || $version ne "v3" ? " disabled" : ""}>
+        <input class='input-row' type='text' id='username' name='input/username' value='{$username}' size='12' autocomplete='new-password'{$type ne "snmp" || $version ne "v3" ? " disabled" : ""} required />
       </div>
       <div class='form-edit'>
         <label for='authproto'>{_"Authentication protocol"}</label>
@@ -97,7 +97,7 @@
         </div>
         <label for='authpass'>{_"Authentication password"}</label>
         <div class='form-edit-row'>
-          <input class='input-row' id='authpass' type='{$showpass ? "text" : "password"}' name='input/authpassword' value='{$authpassword}' size='20' autocomplete='new-password'{!$version || $version ne "v3" ? " disabled" : ""}>
+          <input class='input-row' id='authpass' type='{$showpass ? "text" : "password"}' name='input/authpassword' value='{$authpassword}' size='20' autocomplete='new-password'{!$version || $version ne "v3" ? " disabled" : ""}/>
         </div>
       </div>
       <div class='form-edit'>
@@ -112,19 +112,19 @@
         </div>
         <label for='authpass'>{_"Privacy password"}</label>
         <div class='form-edit-row'>
-          <input class='input-row' id='privpass' type='{$showpass ? "text" : "password"}' name='input/privpassword' value='{$privpassword}' size='20' autocomplete='new-password'{!$version || $version ne "v3" ? " disabled" : ""}>
+          <input class='input-row' id='privpass' type='{$showpass ? "text" : "password"}' name='input/privpassword' value='{$privpassword}' size='20' autocomplete='new-password'{!$version || $version ne "v3" ? " disabled" : ""}/>
         </div>
       </div>
     </div>
     <div class='form-edit-row' id='remote-options' style='display: {$type ne "snmp" ? "flex" : "none"}'>
       <div class='form-edit'>
         <label for='remoteuser'>{_"Username"}</label>
-        <input class='input-row' type='text' id='remoteuser' name='input/remoteuser' value='{$remoteuser}' size='12' autocomplete='new-password'{$type eq "snmp" ? " disabled" : ""}>
+        <input class='input-row' type='text' id='remoteuser' name='input/remoteuser' value='{$remoteuser}' size='12' autocomplete='new-password'{$type eq "snmp" ? " disabled" : ""} required />
       </div>
       <div class='form-edit'>
         <label for='remotepass'>{_"Authentication password"}</label>
         <div class='form-edit-row'>
-          <input class='input-row'  type='{$showpass ? "text" : "password"}' id='remotepass' name='input/remotepass' value='{$remotepass}' size='24' autocomplete='new-password'{$type eq "snmp" ? " disabled" : ""}>
+          <input class='input-row'  type='{$showpass ? "text" : "password"}' id='remotepass' name='input/remotepass' value='{$remotepass}' size='24' autocomplete='new-password'{$type eq "snmp" ? " disabled" : ""}/>
         </div>
       </div>
     </div>
@@ -133,7 +133,7 @@
         <label for='port'>{_"Port"}</label>
         <input class='input-row' type='text' id='port' name='input/port' placeholder='{
             $type eq "snmp" ? 161 : $type eq "ssh" ? 22 : $type eq "winrm" && $modes{ssl} ? 5986 : $type eq "winrm" ? 5985 : 0
-        }' value='{$port}' size='6'{$type eq "esx" ? " disabled" : ""}>
+        }' value='{$port}' size='6'{$type eq "esx" ? " disabled" : ""}/>
       </div>
       <div class='form-edit' id='advanced-options-protocol' style='display: {$type eq "snmp" ? "flex" : "none"}'>
         <label for='protocol'>{_"Protocol"}</label>
@@ -148,9 +148,9 @@
         <label>{_"Remote SSH Mode"}</label>
         <div class='form-edit-row'>
           <ul>
-            <li><input type='checkbox' id='ssh-mode' name='checkbox/mode/ssh'{$modes{ssh} ? " checked" : ""}{$type ne "ssh" ? " disabled" : ""}>ssh</li>
-            <li><input type='checkbox' id='libssh2-mode' name='checkbox/mode/libssh2'{$modes{libssh2} ? " checked" : ""}{$type ne "ssh" ? " disabled" : ""}>libssh2</li>
-            <li><input type='checkbox' id='perl-mode' name='checkbox/mode/perl'{$modes{perl} ? " checked" : ""}{$type ne "ssh" ? " disabled" : ""}>perl</li>
+            <li><input type='checkbox' id='ssh-mode' name='checkbox/mode/ssh'{$modes{ssh} ? " checked" : ""}{$type ne "ssh" ? " disabled" : ""}/>ssh</li>
+            <li><input type='checkbox' id='libssh2-mode' name='checkbox/mode/libssh2'{$modes{libssh2} ? " checked" : ""}{$type ne "ssh" ? " disabled" : ""}/>libssh2</li>
+            <li><input type='checkbox' id='perl-mode' name='checkbox/mode/perl'{$modes{perl} ? " checked" : ""}{$type ne "ssh" ? " disabled" : ""}/>perl</li>
           </ul>
         </div>
       </div>
@@ -158,7 +158,7 @@
         <label>{_"Remote WinRM Mode"}</label>
         <div class='form-edit-row'>
           <ul>
-            <li><input type='checkbox' id='ssl' name='checkbox/mode/ssl' onchange="type_change()"{$modes{ssl} ? " checked" : ""}{$type ne "winrm" ? " disabled" : ""}>ssl</li>
+            <li><input type='checkbox' id='ssl' name='checkbox/mode/ssl' onchange="type_change()"{$modes{ssl} ? " checked" : ""}{$type ne "winrm" ? " disabled" : ""}/>ssl</li>
           </ul>
         </div>
       </div>
@@ -166,12 +166,12 @@
     <div class='form-edit-row'>
       <div class='form-edit'>
         <label for='description'>{_"Description"}</label>
-        <input class='input-row' type='text' id='description' name='input/description' value='{$description}' size='40'>
+        <input class='input-row' type='text' id='description' name='input/description' value='{$description}' size='40'/>
       </div>
     </div>
     <div class='form-edit-row' id='show-password' style='display: {$type ne "snmp" || $version eq "v3" ? "flex" : "none"}'>
       <label class='switch'>
-        <input name='show-password' id='show-password-switch' class='switch' type='checkbox'{$showpass ? " checked" : ""} onclick='show_password()'>
+        <input name='show-password' id='show-password-switch' class='switch' type='checkbox'{$showpass ? " checked" : ""} onclick='show_password()'/>
         <span class='slider'></span>
       </label>
       <label for='show-password-switch' class='text'>{_"Show password"}</label>
@@ -179,8 +179,8 @@
     <input type='submit' class='big-button' name='submit/{
       $credentials{$edit} ?
         "update' value='"._("Update") :
-        "add' value='"._("Create Credential")}'>
-    <input type='submit' class='big-button' name='submit/cancel' value='{_("Cancel")}'>
+        "add' value='"._("Create Credential")}'/>
+    <input type='submit' class='big-button' name='submit/cancel' value='{_("Cancel")}'/>
   </form>
   <script>
   function version_change() \{

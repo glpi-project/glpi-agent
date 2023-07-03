@@ -11,7 +11,7 @@
         <tr>
           <th class='checkbox' title='{_"Revert selection"}'>{ @scheduling_order ? "
             <label class='checkbox'>
-              <input class='checkbox' type='checkbox' onclick='toggle_all(this)'>
+              <input class='checkbox' type='checkbox' onclick='toggle_all(this)'/>
               <span class='custom-checkbox all_cb'></span>
             </label>
           ": "&nbsp;"
@@ -66,7 +66,7 @@
           <td class='checkbox'>
             <label class='checkbox'>
               <input class='checkbox' type='checkbox' name='checkbox/".encode_entities($entry)."'".
-              ($form{"checkbox/".$entry} eq "on" ? " checked" : "").">
+              ($form{"checkbox/".$entry} eq "on" ? " checked" : "")."/>
               <span class='custom-checkbox'></span>
             </label>
           </td>
@@ -93,7 +93,7 @@
         <tr>
           <th class='checkbox' title='"._("Revert selection")."'>
             <label class='checkbox'>
-              <input class='checkbox' type='checkbox' onclick='toggle_all(this)'>
+              <input class='checkbox' type='checkbox' onclick='toggle_all(this)'/>
               <span class='custom-checkbox all_cb'></span>
             </label>
           </th>";
@@ -115,10 +115,10 @@
     $listed >= 50 ? $listnav : "" }
     <div class='select-row'>
       <div class='arrow-left'></div>
-      <input class='submit-secondary' type='submit' name='submit/delete' value='{_"Delete"}'>
+      <input class='submit-secondary' type='submit' name='submit/delete' value='{_"Delete"}'/>
     </div>
     <hr/>
-    <input class='big-button' type='submit' name='submit/add' value='{_"Add new scheduling"}'>
+    <input class='big-button' type='submit' name='submit/add' value='{_"Add new scheduling"}'/>
   </form>
   <script>
   function toggle_all(from) \{

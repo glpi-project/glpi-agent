@@ -21,7 +21,7 @@
           <tr>
             <th class='checkbox' title='{_"Revert selection"}'>
               <label class='checkbox'>
-                <input class='checkbox' type='checkbox' name='checkbox-v1-v2c' onclick='toggle_all(this)'>
+                <input class='checkbox' type='checkbox' name='checkbox-v1-v2c' onclick='toggle_all(this)'/>
                 <span class='custom-checkbox all_cb'></span>
               </label>
             </th>
@@ -55,7 +55,7 @@
             <td class='checkbox'>
               <label class='checkbox'>
                 <input class='checkbox' type='checkbox' name='checkbox-v1-v2c/$this'".
-                ($edit && $edit eq $entry ? " checked" : "").">
+                ($edit && $edit eq $entry ? " checked" : "")."/>
                 <span class='custom-checkbox'></span>
               </label>
             </td>
@@ -80,10 +80,10 @@
       </table>
       <div class='select-row'>
         <div class='arrow-left'></div>
-        <input class='submit-secondary' type='submit' name='submit/delete-v1-v2c' value='{_"Delete"}'>
+        <input class='submit-secondary' type='submit' name='submit/delete-v1-v2c' value='{_"Delete"}'/>
       </div>
       <hr/>
-      <input class='big-button' type='submit' name='submit/add-v1-v2c' value='{_"Add Credential"}'>
+      <input class='big-button' type='submit' name='submit/add-v1-v2c' value='{_"Add Credential"}'/>
     </div>
     <div id='snmp-v3-tab' class="tabcontent"{
         !$form{remotecreds} && $form{snmpversion} && $form{snmpversion} =~ /^v3$/ ? " style='display: block;'" : ""}>
@@ -92,7 +92,7 @@
           <tr>
             <th class='checkbox' title='{_"Revert selection"}'>
               <label class='checkbox'>
-                <input class='checkbox' type='checkbox' name='checkbox-v3' onclick='toggle_all(this)'>
+                <input class='checkbox' type='checkbox' name='checkbox-v3' onclick='toggle_all(this)'/>
                 <span class='custom-checkbox all_cb'></span>
               </label>
             </th>
@@ -131,7 +131,7 @@
             <td class='checkbox'>
               <label class='checkbox'>
                 <input class='checkbox' type='checkbox' name='checkbox-v3/$this'".
-                ($edit && $edit eq $entry ? " checked" : "").">
+                ($edit && $edit eq $entry ? " checked" : "")."/>
                 <span class='custom-checkbox'></span>
               </label>
             </td>
@@ -157,17 +157,17 @@
       </table>
       <div class='select-row'>
         <div class='arrow-left'></div>
-        <input class='submit-secondary' type='submit' name='submit/delete-v3' value='{_"Delete"}'>
+        <input class='submit-secondary' type='submit' name='submit/delete-v3' value='{_"Delete"}'/>
       </div>
       <div class='form-edit-row' style='display: flex'>
         <label class='switch'>
-          <input class='switch' type='checkbox'{$showpass ? " checked" : ""} onclick='show_password(this.checked)'>
+          <input class='switch' type='checkbox'{$showpass ? " checked" : ""} onclick='show_password(this.checked)'/>
           <span class='slider'></span>
         </label>
         <label for='show-password-switch' class='text'>{_"Show password"}</label>
       </div>
       <hr/>
-      <input class='big-button' type='submit' name='submit/add-v3' value='{_"Add Credential"}'>
+      <input class='big-button' type='submit' name='submit/add-v3' value='{_"Add Credential"}'/>
     </div>
     <div id='remote-creds-tab' class="tabcontent"{
         $form{remotecreds} ? " style='display: block;'" : ""}>
@@ -176,7 +176,7 @@
           <tr>
             <th class='checkbox' title='{_"Revert selection"}'>
               <label class='checkbox'>
-                <input class='checkbox' type='checkbox' name='checkbox-remotes' onclick='toggle_all(this)'>
+                <input class='checkbox' type='checkbox' name='checkbox-remotes' onclick='toggle_all(this)'/>
                 <span class='custom-checkbox all_cb'></span>
               </label>
             </th>
@@ -212,7 +212,7 @@
             <td class='checkbox'>
               <label class='checkbox'>
                 <input class='checkbox' type='checkbox' name='checkbox-remotes/$this'".
-                ($edit && $edit eq $entry ? " checked" : "").">
+                ($edit && $edit eq $entry ? " checked" : "")."/>
                 <span class='custom-checkbox'></span>
               </label>
             </td>
@@ -238,17 +238,17 @@
       </table>
       <div class='select-row'>
         <div class='arrow-left'></div>
-        <input class='submit-secondary' type='submit' name='submit/delete-remote' value='{_"Delete"}'>
+        <input class='submit-secondary' type='submit' name='submit/delete-remote' value='{_"Delete"}'/>
       </div>
       <div class='form-edit-row' style='display: flex'>
         <label class='switch'>
-          <input class='switch' type='checkbox'{$showpass ? " checked" : ""} onclick='show_password(this.checked)'>
+          <input class='switch' type='checkbox'{$showpass ? " checked" : ""} onclick='show_password(this.checked)'/>
           <span class='slider'></span>
         </label>
         <label for='show-password-switch' class='text'>{_"Show password"}</label>
       </div>
       <hr/>
-      <input class='big-button' type='submit' name='submit/add-remotecred' value='{_"Add Credential"}'>
+      <input class='big-button' type='submit' name='submit/add-remotecred' value='{_"Add Credential"}'/>
     </div>
   </form>
   <script>
