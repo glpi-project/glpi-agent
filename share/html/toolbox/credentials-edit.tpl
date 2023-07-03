@@ -180,7 +180,7 @@
       $credentials{$edit} ?
         "update' value='"._("Update") :
         "add' value='"._("Create Credential")}'/>
-    <input type='submit' class='big-button' name='submit/cancel' value='{_("Cancel")}'/>
+    <input type='submit' class='big-button secondary-button' name='submit/cancel' value='{_("Cancel")}'/>
   </form>
   <script>
   function version_change() \{
