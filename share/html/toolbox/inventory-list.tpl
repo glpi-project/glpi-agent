@@ -49,7 +49,7 @@
     my $lastrun     = $job->{last_run_date} ? localtime($job->{last_run_date}) : "";
     my $nextrun     = ($enabled ? localtime($job->{next_run_date}) : _"Disabled task") || "";
     my $description = $job->{description} || "";
-    my $enabled     = $enabled ? "" : " disabled";
+    $enabled        = $enabled ? "" : " disabled";
     my @runs        = sort { $tasks{$b}->{time} <=> $tasks{$a}->{time} } grep { defined($tasks{$_}->{name}) && $tasks{$_}->{name} eq $entry } keys(%tasks);
     # A new running task starts with index=0, we should always show it
     my $eyeshow     = @runs && (!$tasks{$runs[0]}->{index} || (defined($form{"show-run/$entry"}) && $form{"show-run/$entry"} eq "on")) ? " checked" : "";
@@ -87,7 +87,7 @@
     push @configuration, _("Target").":&nbsp;
             <div class='with-tooltip'>$target
               <div class='tooltip bottom-tooltip'>
-                <p>".join("<br>", @target_tooltip)."</p>
+                <p>".join("</p><p>", @target_tooltip)."</p>
                 <i></i>
               </div>
             </div>";
@@ -164,7 +164,11 @@
           <td class='list$enabled' width='10%'>".join(",", @scheduling)."</td>
           <td class='list$enabled' width='15%'>$lastrun</td>
           <td class='list$enabled' width='15%'>$nextrun</td>
-          <td class='list'>".join("<br/>", @configuration)."</td>
+          <td class='list'>
+            <ul class='config'>
+              ".join("\n", map { "<li class='config'>$_</li>" } @configuration)."
+            </ul>
+          </td>
           <td class='list'>$description</td>
         </tr>";
     $OUT .= "
@@ -355,7 +359,7 @@
       <div class='separation'></div>
       <input class='submit-secondary' type='submit' name='submit/delete' value='{_"Delete"}'/>
     </div>
-    <br/>
+    <hr/>
     <input class='big-button' type='submit' name='submit/add' value='{_"Add new inventory task"}'/>
   </form>
   <script>

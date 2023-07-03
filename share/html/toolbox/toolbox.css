@@ -777,3 +777,12 @@ input.eye {
 .description {
   padding-bottom: 1em;
 }
+
+ul.config {
+  margin: 3px;
+  padding: 3px;
+}
+
+li.config {
+  line-height: 1.2em;
+}

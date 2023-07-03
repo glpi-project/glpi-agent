@@ -39,7 +39,7 @@
     my $name     = $schedule->{name} || $this;
     my $type     = $schedule->{type} || "delay";
     my $description = $schedule->{description} || "";
-    my @configuration;
+    my $configuration;
     if ($type eq "delay") {
       my %units = qw( s second m minute h hour d day w week);
       my $delay = $schedule->{delay} || "24h";
@@ -48,7 +48,7 @@
       $unit = "h" unless $unit;
       $unit = $units{$unit};
       $unit .= "s" if $number > 1;
-      push @configuration, $number." "._($unit);
+      $configuration = $number." "._($unit);
     } else {
       my @config;
       my $weekday = $schedule->{weekday};
@@ -57,10 +57,8 @@
         next unless $schedule->{$key} && $schedule->{$key} =~ /^(\d{2}):(\d{2})$/;
         push @config, _($key).": $1h$2";
       }
-      push @configuration, join(", ", @config) if @config;
+      $configuration = join(", ", @config) if @config;
     }
-    my $configuration = join("
-            <br/>", @configuration);
     $OUT .= "
         <tr class='$request'>
           <td class='checkbox'>
@@ -72,7 +70,7 @@
           </td>
           <td class='list' width='10%'><a href='$url_path/$request?edit=".uri_escape($this)."'>$name</a></td>
           <td class='list' width='10%'>"._($type)."</td>
-          <td class='list' width='10%'>$configuration</td>
+          <td class='list' width='20%'>$configuration</td>
           <td class='list'>$description</td>
         </tr>";
     last if $display && $count >= $display;

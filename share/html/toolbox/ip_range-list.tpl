@@ -41,18 +41,6 @@
     my $ip_end   = $range->{ip_end} || "";
     my $tips     = $range->{id} ? " title='id=".$range->{id}."'": "";
     my $description = $range->{description} || "";
-    my $thiscredentials = join("
-            <br/>", map { "
-            <div class='with-tooltip'>
-              <a href='$url_path/credentials?edit=".uri_escape(encode("UTF-8", $_))."'>".encode('UTF-8', encode_entities($credentials{$_}->{name} || $_))."
-                <div class='tooltip right-tooltip'>
-                  <p>".($credentials{$_}->{type} ? _("Type").":&nbsp;".$credentials{$_}->{type} : _("SNMP version").":&nbsp;".$credentials{$_}->{snmpversion})."</p>
-                  <p>".(!$credentials{$_}->{type} && $credentials{$_}->{snmpversion} ne "v3" ? _("Community").":&nbsp;".$credentials{$_}->{community} : _("Username").":&nbsp;".$credentials{$_}->{username})."</p>
-                  <i></i>
-                </div>
-              </a>
-            </div>"
-        } @{$range->{credentials}});
     $OUT .= "
         <tr class='$request'$tips>
           <td class='checkbox'>
@@ -65,7 +53,22 @@
           <td class='list' width='10%'><a href='$url_path/$request?edit=".uri_escape($this)."'>$name</a></td>
           <td class='list' width='10%'>$ip_start</td>
           <td class='list' width='10%'>$ip_end</td>
-          <td class='list' width='10%'>$thiscredentials</td>
+          <td class='list' width='10%'>
+            <ul class='config'>".join("", map { "
+              <li class='config'>
+                <div class='with-tooltip'>
+                  <a href='$url_path/credentials?edit=".uri_escape(encode("UTF-8", $_))."'>".encode('UTF-8', encode_entities($credentials{$_}->{name} || $_))."
+                    <div class='tooltip right-tooltip'>
+                      <p>".($credentials{$_}->{type} ? _("Type").":&nbsp;".$credentials{$_}->{type} : _("SNMP version").":&nbsp;".$credentials{$_}->{snmpversion})."</p>
+                      <p>".(!$credentials{$_}->{type} && $credentials{$_}->{snmpversion} ne "v3" ? _("Community").":&nbsp;".$credentials{$_}->{community} : _("Username").":&nbsp;".$credentials{$_}->{username})."</p>
+                      <i></i>
+                    </div>
+                  </a>
+                </div>
+              </li>"
+            } @{$range->{credentials}})."
+            </ul>
+          </td>
           <td class='list'>$description</td>
         </tr>";
     last if $display && $count >= $display;
