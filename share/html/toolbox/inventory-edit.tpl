@@ -26,13 +26,13 @@
       <div class='form-edit'>
         <label for='name'>{_"Name"}</label>
         <div class='form-edit-row'>
-          <input class='input-row' type='text' id='name' name='input/name' value='{$name}' size='20' {($id ? " title='Id: $id'" : "").($form{empty} ? "" : " disabled")}/>
+          <input class='input-row' type='text' id='name' name='input/name' value='{$name}' size='20'{($id ? " title='Id: $id'" : "").($form{empty} ? "" : " disabled")} required />
           <input type='button' class='button' value='{_"Rename"}' onclick='handle_rename()'{$form{empty} ? " style='display:none'" : ""}/>
         </div>
         <div id='rename-overlay' class='overlay' onclick='cancel_rename()'>
           <div class='overlay-frame' onclick='event.stopPropagation()'>
             <label for='rename' class='newtag'>{_"Rename"}:</label>
-            <input id='input-rename' type='text' class='newtag' name='input/new-name' value='{$form{"input/new-name"} || $name}' size='30' disabled/>
+            <input id='input-rename' type='text' class='newtag' name='input/new-name' value='{$form{"input/new-name"} || $name}' size='30' disabled />
             <input type='submit' class='big-button' name='submit/rename' value='{_"Rename"}'/>
             <input type='button' class='big-button' name='submit/rename-cancel' value='{_"Cancel"}' onclick='cancel_rename()'/>
           </div>
@@ -178,7 +178,7 @@
           <div id='config-newtag-overlay' class='overlay' onclick='cancel_config_newtag()'>
             <div class='overlay-frame' onclick='event.stopPropagation()'>
               <label for='newtag' class='newtag' title='{_"New tag will be automatically selected"}'>{_"New tag"}:</label>
-              <input id='config-newtag' class='newtag' type='text' name='input/newtag' value='' size='20' title='{_"New tag will be automatically selected"}' disabled/>
+              <input id='config-newtag' class='newtag' type='text' name='input/newtag' value='' size='20' title='{_"New tag will be automatically selected"}' disabled />
               <input type='submit' class='big-button' name='submit/newtag' value='{_"Add"}'/>
               <input type='button' class='big-button' name='submit/newtag-cancel' value='{_"Cancel"}' onclick='cancel_config_newtag()'/>
             </div>
@@ -200,7 +200,7 @@
               or next;
             $OUT .= "
             <li>
-              <input type='checkbox' name='checkbox/ip_range/".encode('UTF-8', encode_entities($name))."' checked/>
+              <input type='checkbox' name='checkbox/ip_range/".encode('UTF-8', encode_entities($name))."' checked />
               <div class='with-tooltip'>
                 <a href='$url_path/ip_range?edit=".uri_escape(encode("UTF-8", $name))."'>".encode('UTF-8', encode_entities($range->{name} || $name))."
                   <div class='tooltip right-tooltip'>
@@ -268,7 +268,7 @@
     <div class='form-edit-row'>
       <div class='form-edit'>
         <label for='desc'>{_"Description"}</label>
-        <input class='input-row' type='text' id='desc' name='input/description' value='{$job->{description} || $form{"input/description"} || ""}' size='40'>
+        <input class='input-row' type='text' id='desc' name='input/description' value='{$job->{description} || $form{"input/description"} || ""}' size='40'/>
       </div>
     </div>
     <input type='submit' class='big-button' name='submit/{

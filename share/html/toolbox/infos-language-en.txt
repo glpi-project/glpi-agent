@@ -1,3 +1,7 @@
 # This file is not read but should reference any string that could be translated
 
 INFO:
+
+New credential:
+Credential update:
+No password for ssh remote inventory type involves you installed public key authentication:

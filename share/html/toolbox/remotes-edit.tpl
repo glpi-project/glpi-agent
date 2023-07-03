@@ -26,17 +26,17 @@
     <div class='form-edit-row'>
       <div class='form-edit'>
       <label for='url'>{_"Remote URL"}</label>
-      <input class='input-row' type='text' id='url' name='input/url' value='{($remote && $remote->{url}) || $form{"input/url"} || ""}' size='60'>
+      <input class='input-row' type='text' id='url' name='input/url' value='{($remote && $remote->{url}) || $form{"input/url"} || ""}' size='60' required />
       </div>
     </div>
     <div class='form-edit-row'>
       <div class='form-edit'>
       <label for='deviceid'>{_"DeviceId"}</label>
-      <input class='input-row' type='text' id='deviceid' name='input/deviceid' value='{($remote && $remote->{deviceid}) || $form{"input/deviceid"} || ""}' size='60'>
+      <input class='input-row' type='text' id='deviceid' name='input/deviceid' value='{($remote && $remote->{deviceid}) || $form{"input/deviceid"} || ""}' size='60'/>
       </div>
     </div>
     <input type='submit' class='big-button' name='submit/{ $remote ?
         "update-remote' value='"._("Update") :
-        "add-remote' value='"._("Add") }'>
-    <input type='submit' class='big-button' name='submit/cancel' value='{_("Cancel")}'>
+        "add-remote' value='"._("Add") }'/>
+    <input type='submit' class='big-button' name='submit/cancel' value='{_("Cancel")}'/>
   </form>

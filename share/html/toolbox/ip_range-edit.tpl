@@ -15,13 +15,13 @@
       <div class='form-edit'>
         <label for='name'>{_"Name"}</label>
         <div class='form-edit-row'>
-          <input class='input-row' type='text' id='name' name='input/name' value='{ $range->{name} || $this || $form{"input/name"} }' size='20'{$form{empty} ? "" : " disabled"}>
+          <input class='input-row' type='text' id='name' name='input/name' value='{ $range->{name} || $this || $form{"input/name"} }' size='20'{$form{empty} ? "" : " disabled"} required />
           <input type='button' class='button' value='{_"Rename"}' onclick='handle_rename()'{$form{empty} ? " style='display:none'" : ""}/>
         </div>
         <div id='rename-overlay' class='overlay' onclick='cancel_rename()'>
           <div class='overlay-frame' onclick='event.stopPropagation()'>
             <label for='rename' class='newtag'>{_"Rename"}:</label>
-            <input id='input-rename' type='text' class='newtag' name='input/new-name' value='{ $form{"input/new-name"} || $range->{name} || $this }' size='30' disabled/>
+            <input id='input-rename' type='text' class='newtag' name='input/new-name' value='{ $form{"input/new-name"} || $range->{name} || $this }' size='30' disabled />
             <input type='submit' class='big-button' name='submit/rename' value='{_"Rename"}'/>
             <input type='button' class='big-button' name='submit/rename-cancel' value='{_"Cancel"}' onclick='cancel_rename()'/>
           </div>
@@ -31,11 +31,11 @@
     <div class='form-edit-row'>
       <div class='form-edit'>
         <label for='ip_start'>{_"IP range start"}</label>
-        <input class='input-row' type='text' id='ip_start' name='input/ip_start' placeholder='A.B.C.D' value='{$range->{ip_start} || $form{"input/ip_start"} || ""}' size='15'>
+        <input class='input-row' type='text' id='ip_start' name='input/ip_start' placeholder='A.B.C.D' value='{$range->{ip_start} || $form{"input/ip_start"} || ""}' size='15'/>
       </div>
       <div class='form-edit'>
         <label for='ip_end'>{_"IP range end"}</label>
-        <input class='input-row' type='text' id='ip_end' name='input/ip_end' placeholder='W.X.Y.Z' value='{$range->{ip_end} || $form{"input/ip_end"} || ""}' size='15'>
+        <input class='input-row' type='text' id='ip_end' name='input/ip_end' placeholder='W.X.Y.Z' value='{$range->{ip_end} || $form{"input/ip_end"} || ""}' size='15'/>
       </div>
     </div>
     <div class='form-edit'>
@@ -51,7 +51,7 @@
             or next;
           $OUT .= "
           <li>
-            <input type='checkbox' name='checkbox/cred/".encode('UTF-8', encode_entities($credential))."' checked>
+            <input type='checkbox' name='checkbox/cred/".encode('UTF-8', encode_entities($credential))."' checked />
             <div class='with-tooltip'>
               <a href='$url_path/credentials?edit=".uri_escape(encode("UTF-8", $credential))."'>".encode('UTF-8', encode_entities($cred->{name} || $credential))."
                 <div class='tooltip right-tooltip'>
@@ -75,7 +75,7 @@
           " value='".encode('UTF-8', encode_entities($_))."'>".encode('UTF-8', encode_entities($credentials{$_}->{name} || $_))."</option>"
         } sort { $a cmp $b } keys(%credentials))."
             </select>
-            <input class='input-row' type='submit' name='submit/addcredential' value='".(_"Add credential")."'>
+            <input class='input-row' type='submit' name='submit/addcredential' value='".(_"Add credential")."'/>
           </li>";
         }
         '';}
@@ -85,14 +85,14 @@
     <div class='form-edit-row'>
       <div class='form-edit'>
       <label for='desc'>{_"Description"}</label>
-      <input class='input-row' type='text' id='desc' name='input/description' value='{$range->{description} || $form{"input/description"} || ""}' size='40'>
+      <input class='input-row' type='text' id='desc' name='input/description' value='{$range->{description} || $form{"input/description"} || ""}' size='40'/>
       </div>
     </div>
     <input type='submit' class='big-button' name='submit/{
       $ip_range{$edit} ?
         "update' value='"._("Update") :
-        "add' value='"._("Add") }'>
-    <input type='submit' class='big-button' name='submit/cancel' value='{_("Cancel")}'>
+        "add' value='"._("Add") }'/>
+    <input type='submit' class='big-button' name='submit/cancel' value='{_("Cancel")}'/>
   </form>
   <script>
     function handle_rename () \{

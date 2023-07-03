@@ -11,7 +11,7 @@
         <tr>
           <th class='checkbox' title='{_"Revert selection"}'>{ @ranges_order ? "
             <label class='checkbox'>
-              <input class='checkbox' type='checkbox' onclick='toggle_all(this)'>
+              <input class='checkbox' type='checkbox' onclick='toggle_all(this)'/>
               <span class='custom-checkbox all_cb'></span>
             </label>
           ": "&nbsp;"
@@ -58,7 +58,7 @@
           <td class='checkbox'>
             <label class='checkbox'>
               <input class='checkbox' type='checkbox' name='checkbox/".encode_entities($entry)."'".
-              ($form{"checkbox/".$entry} eq "on" ? " checked" : "").">
+              ($form{"checkbox/".$entry} eq "on" ? " checked" : "")."/>
               <span class='custom-checkbox'></span>
             </label>
           </td>
@@ -86,7 +86,7 @@
         <tr>
           <th class='checkbox' title='"._("Revert selection")."'>
             <label class='checkbox'>
-              <input class='checkbox' type='checkbox' onclick='toggle_all(this)'>
+              <input class='checkbox' type='checkbox' onclick='toggle_all(this)'/>
               <span class='custom-checkbox all_cb'></span>
             </label>
           </th>";
@@ -108,7 +108,7 @@
     $listed >= 50 ? $listnav : "" }
     <div class='select-row'>
       <div class='arrow-left'></div>
-      <input class='submit-secondary' type='submit' name='submit/delete' value='{_"Delete"}'>
+      <input class='submit-secondary' type='submit' name='submit/delete' value='{_"Delete"}'/>
       <div class='separation'></div>
       <label class='selection-option'>{_"Associated credentials"}:</label>
       <select class='selection-option' name='input/credentials'>
@@ -120,11 +120,11 @@
           " value='$_'>".($credentials{$_}->{name} || $_)."</option>"
         } @cred_options)}
       </select>
-      <input class='submit-secondary' type='submit' name='submit/addcredential' value='{_"Add credential"}'>
-      <input class='submit-secondary' type='submit' name='submit/rmcredential' value='{_"Remove credential"}'>
+      <input class='submit-secondary' type='submit' name='submit/addcredential' value='{_"Add credential"}'/>
+      <input class='submit-secondary' type='submit' name='submit/rmcredential' value='{_"Remove credential"}'/>
     </div>
     <hr/>
-    <input class='big-button' type='submit' name='submit/add' value='{_"Add new IP range"}'>
+    <input class='big-button' type='submit' name='submit/add' value='{_"Add new IP range"}'/>
   </form>
   <script>
   function toggle_all(from) \{
