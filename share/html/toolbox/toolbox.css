@@ -126,6 +126,9 @@ input.submit {
   vertical-align: middle;
   margin-top: 20px;
   margin-right: 30px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
 
 #submit {
