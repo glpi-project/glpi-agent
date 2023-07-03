@@ -22,7 +22,6 @@ netdiscovery and netinventory tasks not installed:
 Agent folder:
 Target:
 
-Inventory tasks:
 Created inventories:
 Should match devices with SNMP support count:
 Show &laquo;&nbsp;%s&nbsp;&raquo; task log:

@@ -16,6 +16,7 @@ Remotes:
 Tag:
 DeviceID:
 AgentID:
+Inventory tasks:
 
 Edit:
 Update:

@@ -22,7 +22,6 @@ netdiscovery and netinventory tasks not installed: Tâches netdiscovery et netin
 Agent folder: Dossier de l'agent
 Target: Cible
 
-Inventory tasks: Tâches d'inventaire
 Created inventories: Inventaires créés
 Should match devices with SNMP support count: Devrait correspondre au nombre d'équipements avec support SNMP
 Show &laquo;&nbsp;%s&nbsp;&raquo; task log: Montrer le journal de la tâche &laquo;&nbsp;%s&nbsp;&raquo;
