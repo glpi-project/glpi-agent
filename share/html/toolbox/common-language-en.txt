@@ -50,6 +50,7 @@ Last ip:
 
 Delay:
 delay:
+timeslot:
 Timeslot:
 Timeslots:
 second:
@@ -64,6 +65,7 @@ week:
 weeks:
 start:
 duration:
+Duration:
 all:
 mon:
 tue:
@@ -72,3 +74,10 @@ thu:
 fri:
 sat:
 sun:
+monday:
+tuesday:
+wednesday:
+thursday:
+friday:
+saturday:
+sunday:
