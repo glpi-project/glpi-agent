@@ -26,7 +26,7 @@
       <div class='form-edit'>
         <label for='name'>{_"Name"}</label>
         <div class='form-edit-row'>
-          <input class='input-row' type='text' id='name' name='input/name' placeholder='{_"Name"}' value='{$name}' size='20' {($id ? " title='Id: $id'" : "").($form{empty} ? "" : " disabled")}/>
+          <input class='input-row' type='text' id='name' name='input/name' value='{$name}' size='20' {($id ? " title='Id: $id'" : "").($form{empty} ? "" : " disabled")}/>
           <input type='button' class='button' value='{_"Rename"}' onclick='handle_rename()'{$form{empty} ? " style='display:none'" : ""}/>
         </div>
         <div id='rename-overlay' class='overlay' onclick='cancel_rename()'>
@@ -178,7 +178,7 @@
           <div id='config-newtag-overlay' class='overlay' onclick='cancel_config_newtag()'>
             <div class='overlay-frame' onclick='event.stopPropagation()'>
               <label for='newtag' class='newtag' title='{_"New tag will be automatically selected"}'>{_"New tag"}:</label>
-              <input id='config-newtag' class='newtag' type='text' name='input/newtag' placeholder='{_"tag"}' value='' size='20' title='{_"New tag will be automatically selected"}' disabled/>
+              <input id='config-newtag' class='newtag' type='text' name='input/newtag' value='' size='20' title='{_"New tag will be automatically selected"}' disabled/>
               <input type='submit' class='big-button' name='submit/newtag' value='{_"Add"}'/>
               <input type='button' class='big-button' name='submit/newtag-cancel' value='{_"Cancel"}' onclick='cancel_config_newtag()'/>
             </div>
@@ -268,7 +268,7 @@
     <div class='form-edit-row'>
       <div class='form-edit'>
         <label for='desc'>{_"Description"}</label>
-        <input class='input-row' type='text' id='desc' name='input/description' placeholder='{_"Description"}' value='{$job->{description} || $form{"input/description"} || ""}' size='40'>
+        <input class='input-row' type='text' id='desc' name='input/description' value='{$job->{description} || $form{"input/description"} || ""}' size='40'>
       </div>
     </div>
     <input type='submit' class='big-button' name='submit/{

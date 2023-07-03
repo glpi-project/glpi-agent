@@ -34,7 +34,7 @@
       <div class='form-edit'>
         <label for='name'>{_"Name"}</label>
         <div class='form-edit-row'>
-          <input class='input-row' type='text' id='name' name='input/name' placeholder='{_"Name"}' value='{$name}' size='20'{($id ? " title='Id: $id'" : "").($form{empty} ? "" : " disabled")}/>
+          <input class='input-row' type='text' id='name' name='input/name' value='{$name}' size='20'{($id ? " title='Id: $id'" : "").($form{empty} ? "" : " disabled")}/>
           <input type='button' class='button' value='{_"Rename"}' onclick='handle_rename()'{$form{empty} ? " style='display:none'" : ""}/>
         </div>
         <div id='rename-overlay' class='overlay' onclick='cancel_rename()'>
@@ -78,13 +78,13 @@
     <div class='form-edit-row' id='v1-v2c-option' style='display: {$type eq "snmp" && (!$version || $version =~ /v1|v2c/) ? "flex" : "none"}'>
       <div class='form-edit'>
         <label for='community'>{_"Community"}</label>
-        <input class='input-row' type='text' id='community' name='input/community' placeholder='{_"Community"}' value='{$community}' {$type ne "snmp" || $version eq "v3" ? " disabled" : ""}>
+        <input class='input-row' type='text' id='community' name='input/community' placeholder='public' value='{$community}' {$type ne "snmp" || $version eq "v3" ? " disabled" : ""}>
       </div>
     </div>
     <div class='form-edit-row' id='v3-options' style='display: {$type eq "snmp" && $version && $version eq "v3" ? "flex" : "none"}'>
       <div class='form-edit'>
         <label for='username'>{_"Username"}</label>
-        <input class='input-row' type='text' id='username' name='input/username' placeholder='{_"Username"}' value='{$username}' size='12' autocomplete='new-password'{$type ne "snmp" || $version ne "v3" ? " disabled" : ""}>
+        <input class='input-row' type='text' id='username' name='input/username' value='{$username}' size='12' autocomplete='new-password'{$type ne "snmp" || $version ne "v3" ? " disabled" : ""}>
       </div>
       <div class='form-edit'>
         <label for='authproto'>{_"Authentication protocol"}</label>
@@ -97,7 +97,7 @@
         </div>
         <label for='authpass'>{_"Authentication password"}</label>
         <div class='form-edit-row'>
-          <input class='input-row' id='authpass' type='{$showpass ? "text" : "password"}' name='input/authpassword' placeholder='{_"Authentication password"}' value='{$authpassword}' size='20' autocomplete='new-password'{!$version || $version ne "v3" ? " disabled" : ""}>
+          <input class='input-row' id='authpass' type='{$showpass ? "text" : "password"}' name='input/authpassword' value='{$authpassword}' size='20' autocomplete='new-password'{!$version || $version ne "v3" ? " disabled" : ""}>
         </div>
       </div>
       <div class='form-edit'>
@@ -112,19 +112,19 @@
         </div>
         <label for='authpass'>{_"Privacy password"}</label>
         <div class='form-edit-row'>
-          <input class='input-row' id='privpass' type='{$showpass ? "text" : "password"}' name='input/privpassword' placeholder='{_"Privacy password"}' value='{$privpassword}' size='20' autocomplete='new-password'{!$version || $version ne "v3" ? " disabled" : ""}>
+          <input class='input-row' id='privpass' type='{$showpass ? "text" : "password"}' name='input/privpassword' value='{$privpassword}' size='20' autocomplete='new-password'{!$version || $version ne "v3" ? " disabled" : ""}>
         </div>
       </div>
     </div>
     <div class='form-edit-row' id='remote-options' style='display: {$type ne "snmp" ? "flex" : "none"}'>
       <div class='form-edit'>
         <label for='remoteuser'>{_"Username"}</label>
-        <input class='input-row' type='text' id='remoteuser' name='input/remoteuser' placeholder='{_"Username"}' value='{$remoteuser}' size='12' autocomplete='new-password'{$type eq "snmp" ? " disabled" : ""}>
+        <input class='input-row' type='text' id='remoteuser' name='input/remoteuser' value='{$remoteuser}' size='12' autocomplete='new-password'{$type eq "snmp" ? " disabled" : ""}>
       </div>
       <div class='form-edit'>
         <label for='remotepass'>{_"Authentication password"}</label>
         <div class='form-edit-row'>
-          <input class='input-row'  type='{$showpass ? "text" : "password"}' id='remotepass' name='input/remotepass' placeholder='{_"Authentication password"}' value='{$remotepass}' size='24' autocomplete='new-password'{$type eq "snmp" ? " disabled" : ""}>
+          <input class='input-row'  type='{$showpass ? "text" : "password"}' id='remotepass' name='input/remotepass' value='{$remotepass}' size='24' autocomplete='new-password'{$type eq "snmp" ? " disabled" : ""}>
         </div>
       </div>
     </div>
@@ -166,7 +166,7 @@
     <div class='form-edit-row'>
       <div class='form-edit'>
         <label for='description'>{_"Description"}</label>
-        <input class='input-row' type='text' id='description' name='input/description' placeholder='{_"Description"}' value='{$description}' size='40'>
+        <input class='input-row' type='text' id='description' name='input/description' value='{$description}' size='40'>
       </div>
     </div>
     <div class='form-edit-row' id='show-password' style='display: {$type ne "snmp" || $version eq "v3" ? "flex" : "none"}'>
