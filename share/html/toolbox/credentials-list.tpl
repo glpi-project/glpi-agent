@@ -16,7 +16,7 @@
     <input type='hidden' id='showpass' name='show-password' value='{$form{"show-password"}||"off"}'/>
     <div id='snmp-v1-v2c-tab' class="tabcontent"{
         !$form{remotecreds} && (!$form{snmpversion} || $form{snmpversion} =~ /^v1|v2c$/) ? " style='display: block;'" : ""}>
-      <table>
+      <table class='credentials'>
         <thead>
           <tr>
             <th class='checkbox' title='{_"Revert selection"}'>
@@ -87,7 +87,7 @@
     </div>
     <div id='snmp-v3-tab' class="tabcontent"{
         !$form{remotecreds} && $form{snmpversion} && $form{snmpversion} =~ /^v3$/ ? " style='display: block;'" : ""}>
-      <table>
+      <table class='credentials'>
         <thead>
           <tr>
             <th class='checkbox' title='{_"Revert selection"}'>
@@ -171,7 +171,7 @@
     </div>
     <div id='remote-creds-tab' class="tabcontent"{
         $form{remotecreds} ? " style='display: block;'" : ""}>
-      <table>
+      <table class='credentials'>
         <thead>
           <tr>
             <th class='checkbox' title='{_"Revert selection"}'>
