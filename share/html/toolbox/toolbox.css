@@ -271,6 +271,11 @@ span.counter {
   color: gray;
 }
 
+.secondary-button {
+  color: gray;
+  background-color: #d6d6d6;
+}
+
 input.submit-secondary {
   color: black;
   background-color: #d6d6d6;

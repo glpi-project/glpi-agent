@@ -152,7 +152,7 @@
       $scheduling{$edit} ?
         "update' value='"._("Update") :
         "add' value='"._("Add") }'/>
-    <input type='submit' class='big-button' name='submit/cancel' value='{_("Cancel")}'/>
+    <input type='submit' class='big-button secondary-button' name='submit/cancel' value='{_("Cancel")}'/>
   </form>
   <script>
     function handle_rename () \{
