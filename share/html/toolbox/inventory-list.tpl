@@ -1,5 +1,4 @@
 
-  <h2>{_"Inventory tasks"}</h2>
   <form name='{$request}' method='post' action='{$url_path}/{$request}'>
     <input type='hidden' name='form' value='{$request}'/>
     <input type='hidden' id='display' name='display' value='{$display}'/>{
@@ -343,19 +342,6 @@
       <div class='separation'></div>
       <input class='submit-secondary' type='submit' name='submit/disable' value='{_"Disable"}'/>
       <input class='submit-secondary' type='submit' name='submit/enable' value='{_"Enable"}'/>
-      <div class='separation'></div>
-      <label class='selection-option'>{_"IP range"}:</label>
-      <select class='selection-option' name='input/ip_range'>
-        <option{
-          $ip_range = $form{"input/credentials"} || "";
-          $ip_range ? "" : " selected"}></option>{
-          join("", map { "
-        <option".(($ip_range && $ip_range eq $_)? " selected" : "").
-          " value='$_'>".($ip_range{$_}->{name} || $_)."</option>"
-        } @iprange_options)}
-      </select>
-      <input class='submit-secondary' type='submit' name='submit/add-iprange' value='{_"Add ip range"}'/>
-      <input class='submit-secondary' type='submit' name='submit/rm-iprange' value='{_"Remove ip range"}'/>
       <div class='separation'></div>
       <input class='submit-secondary' type='submit' name='submit/delete' value='{_"Delete"}'/>
     </div>
