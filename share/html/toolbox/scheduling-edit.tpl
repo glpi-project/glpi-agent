@@ -100,13 +100,13 @@
             <option{$weekday eq "wed" ? " selected" : ""} value="wed">{_("wednesday")}</option>
             <option{$weekday eq "thu"  ? " selected" : ""} value="thu">{_("thursday")}</option>
             <option{$weekday eq "fri"    ? " selected" : ""} value="fri">{_("friday")}</option>
-            <option{$weekday eq "sat" ? " selected" : ""} value="sat">{_("satursday")}</option>
+            <option{$weekday eq "sat" ? " selected" : ""} value="sat">{_("saturday")}</option>
             <option{$weekday eq "sun"    ? " selected" : ""} value="sun">{_("sunday")}</option>
           </select>
         </div>
       </div>
       <div class='form-edit'>
-        <label for='hour'>{_"Day time (hh:mm)"}</label>
+        <label for='hour'>{_("Day time")." (hh:mm)"}</label>
         <div class='form-edit-row'>
           <select class='input-row' id='hour' name='input/start/hour' {$type eq "delay" ? " disabled" : ""}>{
           join("", map { "
@@ -124,7 +124,7 @@
         </div>
       </div>
       <div class='form-edit'>
-        <label for='duration-hour'>{_"Duration (hh:mm)"}</label>
+        <label for='duration-hour'>{_("Duration")." (hh:mm)"}</label>
         <div class='form-edit-row'>
           <select class='input-row' id='duration-hour' name='input/duration/hour' {$type eq "delay" ? " disabled" : ""}>{
           join("", map { "
