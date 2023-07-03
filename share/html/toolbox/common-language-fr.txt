@@ -16,6 +16,7 @@ Remotes: Inventaires distants
 
 
 
+Inventory tasks: Tâches d'inventaire
 
 Edit: Éditer
 Update: Mettre à jour

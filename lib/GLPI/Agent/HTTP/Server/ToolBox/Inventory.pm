@@ -74,7 +74,7 @@ sub yaml_config_specs {
             type        => $self->isyes($yaml_config->{'updating_support'}) ? "bool" : "readonly",
             value       => $self->yesno($yaml_config->{'inventory_navbar'} || 1),
             text        => "Show Inventory in navigation bar",
-            navbar      => "Inventory",
+            navbar      => "Inventory tasks",
             link        => $self->index(),
             index       => 10, # index in navbar
         },
@@ -214,7 +214,7 @@ sub update_template_hash {
     my @tag_options = split(/[,]+/,$yaml_config->{inventory_tags} || '');
     $hash->{tag_options} = \@tag_options;
     $hash->{current_tag} = $self->get_from_session('inventory_tag');
-    $hash->{title} = "Inventory";
+    $hash->{title} = "Inventory tasks";
 }
 
 my %handlers = (
