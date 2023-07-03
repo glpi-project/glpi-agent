@@ -31,6 +31,10 @@ th {
   white-space: nowrap;
 }
 
+td {
+  padding: 3px;
+}
+
 tr:hover {
   background-color: #f1f1f1;
 }
@@ -367,7 +371,7 @@ select.selection-option {
 }
 
 th.checkbox {
-  padding: 1px;
+  padding: 3px;
   width: 20px;
 }
 
