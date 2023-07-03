@@ -22,6 +22,11 @@ a.noline {
 
 table {
   width: 100%;
+  padding-top: 0.5em;
+}
+
+table.credentials {
+  padding-top: 0;
 }
 
 th {
@@ -46,10 +51,6 @@ tr:hover {
 td.list {
   border-bottom: 1px solid #eee;
   padding: 5px;
-}
-
-table.ip_range {
-  padding-top: 0.5em;
 }
 
 #header {
