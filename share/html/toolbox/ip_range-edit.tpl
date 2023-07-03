@@ -15,7 +15,7 @@
       <div class='form-edit'>
         <label for='name'>{_"Name"}</label>
         <div class='form-edit-row'>
-          <input class='input-row' type='text' id='name' name='input/name' placeholder='{_"Name"}' value='{ $range->{name} || $this || $form{"input/name"} }' size='20'{$form{empty} ? "" : " disabled"}>
+          <input class='input-row' type='text' id='name' name='input/name' value='{ $range->{name} || $this || $form{"input/name"} }' size='20'{$form{empty} ? "" : " disabled"}>
           <input type='button' class='button' value='{_"Rename"}' onclick='handle_rename()'{$form{empty} ? " style='display:none'" : ""}/>
         </div>
         <div id='rename-overlay' class='overlay' onclick='cancel_rename()'>
@@ -85,7 +85,7 @@
     <div class='form-edit-row'>
       <div class='form-edit'>
       <label for='desc'>{_"Description"}</label>
-      <input class='input-row' type='text' id='desc' name='input/description' placeholder='{_"Description"}' value='{$range->{description} || $form{"input/description"} || ""}' size='40'>
+      <input class='input-row' type='text' id='desc' name='input/description' value='{$range->{description} || $form{"input/description"} || ""}' size='40'>
       </div>
     </div>
     <input type='submit' class='big-button' name='submit/{
