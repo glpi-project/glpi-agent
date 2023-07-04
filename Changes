@@ -4,6 +4,8 @@ Revision history for GLPI agent
 
 core:
 * fix #434: Fix XML encoding when sent by OCS client code, thanks to Nikolay Chizhov (@nchizhov)
+* fix #438: Fix forking when required on win32 for Proxy & ToolBox plugins, and so
+  this fixes IPC support on win32
 
 packaging:
 * Install basic-authentication-server-plugin.cfg plugin default configuration on debian
