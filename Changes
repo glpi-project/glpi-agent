@@ -7,6 +7,9 @@ core:
 * fix #438: Fix forking when required on win32 for Proxy & ToolBox plugins, and so
   this fixes IPC support on win32
 
+inventory:
+* Fix inventory failure due to Oracle database inventory on win32
+
 packaging:
 * Install basic-authentication-server-plugin.cfg plugin default configuration on debian
 

@@ -28,6 +28,9 @@ sub _oracleHome {
     return [$ENV{ORACLE_HOME}] if $ENV{ORACLE_HOME} && -d $ENV{ORACLE_HOME}
         && !$params{file}; # $params{file} is only set during tests
 
+    # Oracle home discovery not supported on windows
+    return if OSNAME eq 'MSWin32';
+
     my @oracle_homes;
 
     # Check the oraInst.loc file
@@ -369,7 +372,7 @@ sub _runSql {
             $sql.";",
             "QUIT";
 
-        unless ($params{connect}) {
+        if (!$params{connect} && canRun("su")) {
             my $user = "oracle";
             my $env = "";
             if ($ENV{ORACLE_SID}) {
