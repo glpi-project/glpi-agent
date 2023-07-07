@@ -25,11 +25,13 @@ sub isEnabled {
 sub _oracleHome {
     my (%params) = @_;
 
-    return [$ENV{ORACLE_HOME}] if $ENV{ORACLE_HOME} && -d $ENV{ORACLE_HOME}
-        && !$params{file}; # $params{file} is only set during tests
+    # $params{file} is only set during tests
+    unless ($params{file}) {
+        return [$ENV{ORACLE_HOME}] if $ENV{ORACLE_HOME} && -d $ENV{ORACLE_HOME};
 
-    # Oracle home discovery not supported on windows
-    return if OSNAME eq 'MSWin32';
+        # Oracle home discovery not supported on windows
+        return if OSNAME eq 'MSWin32';
+    }
 
     my @oracle_homes;
 
