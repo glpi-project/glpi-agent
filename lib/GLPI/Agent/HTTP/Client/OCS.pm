@@ -11,7 +11,6 @@ use URI;
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::UUID;
-use GLPI::Agent::XML::Response;
 
 use constant    _log_prefix => "[http client] ";
 
@@ -82,6 +81,9 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
 
     my $result;
     eval {
+        # Load GLPI::Agent::XML::Response as late as possible
+        GLPI::Agent::XML::Response->require();
+
         $result = GLPI::Agent::XML::Response->new(
             content => $uncompressed_response_content
         );

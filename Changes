@@ -6,6 +6,7 @@ core:
 * fix #434: Fix XML encoding when sent by OCS client code, thanks to Nikolay Chizhov (@nchizhov)
 * fix #438: Fix forking when required on win32 for Proxy & ToolBox plugins, and so
   this fixes IPC support on win32
+* fix #438: Also load XML::LibXML as late as possible to avoid multi-threading issues on win32
 
 inventory:
 * Fix inventory failure due to Oracle database inventory on win32

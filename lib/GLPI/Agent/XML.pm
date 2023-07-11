@@ -3,7 +3,7 @@ package GLPI::Agent::XML;
 use strict;
 use warnings;
 
-use XML::LibXML;
+use UNIVERSAL::require;
 use Encode qw(encode decode);
 
 use GLPI::Agent::Tools;
@@ -30,6 +30,10 @@ sub new {
 
 sub _init_libxml {
     my ($self) = @_;
+
+    # Load XML::LibXML as late as possible
+    XML::LibXML->require()
+        or die "Can't load XML::LibXML required library\n";
 
     $self->{_parser} = XML::LibXML->new();
 
@@ -221,7 +225,7 @@ sub dump_as_hash {
     my $type = $node->nodeType;
 
     my $ret;
-    if ($type == XML_ELEMENT_NODE) { # 1
+    if ($type == XML::LibXML::XML_ELEMENT_NODE()) { # 1
         my $textkey     = $self->{_text_node_key} // '#text';
         my $force_array = $self->{_force_array};
         my $skip_attr   = $self->{_skip_attr};
@@ -269,7 +273,7 @@ sub dump_as_hash {
         } elsif (!defined($ret->{$name}->{$textkey})) {
             delete $ret->{$name}->{$textkey};
         }
-    } elsif ($type == XML_TEXT_NODE || $type == XML_CDATA_SECTION_NODE) { # 3 & 4
+    } elsif ($type == XML::LibXML::XML_TEXT_NODE() || $type == XML::LibXML::XML_CDATA_SECTION_NODE()) { # 3 & 4
         $ret = $node->textContent;
         chomp($ret);
         # Cleanup empty nodes like "<node>\n    </node>"
