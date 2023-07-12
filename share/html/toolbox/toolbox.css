@@ -586,7 +586,6 @@ div.overlay {
 }
 
 label.switch {
-  position: relative;
   width: 40px;
   height: 8px;
   margin: 5px 0 2px 0.5em;

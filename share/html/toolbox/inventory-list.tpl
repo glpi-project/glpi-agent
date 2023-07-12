@@ -31,7 +31,7 @@
       </thead>
       <tbody>{
   my $count = -$start;
-  @running = ();
+  @visible = ();
   $listed = 0;
   foreach my $entry (@jobs_order) {
     next unless $count++>=0;
@@ -50,8 +50,9 @@
     my $description = $job->{description} || "";
     $enabled        = $enabled ? "" : " disabled";
     my @runs        = sort { $tasks{$b}->{time} <=> $tasks{$a}->{time} } grep { defined($tasks{$_}->{name}) && $tasks{$_}->{name} eq $entry } keys(%tasks);
+    my ($taskid)    = grep { defined($tasks{$_}->{name}) && $tasks{$_}->{name} eq $entry } keys(%tasks);
     # A new running task starts with index=0, we should always show it
-    my $eyeshow     = @runs && (!$tasks{$runs[0]}->{index} || (defined($form{"show-run/$entry"}) && $form{"show-run/$entry"} eq "on")) ? " checked" : "";
+    my $eyeshow     = $taskid && (!$tasks{$taskid}->{index} || (defined($form{"show-run/$entry"}) && $form{"show-run/$entry"} eq "on")) ? " checked" : "";
     $OUT .= "
         <tr class='$request'>
           <td class='checkbox'>
@@ -64,7 +65,7 @@
           <td class='list' width='10%'>";
     $OUT .= "
           <div class='flex'>"
-      if @runs;
+      if $taskid;
     $OUT .= "<a href='$url_path/$request?edit=".uri_escape($this)."'>$name</a>";
     $OUT .= "
             <div class='grow'></div>
@@ -73,7 +74,7 @@
               <span id='eye-$this' class='".($eyeshow ? "eye-hide" : "eye-show")."'/>
             </label>
           "
-      if @runs;
+      if $taskid;
     my @configuration;
     my $target = $config->{target};
     my @target_tooltip;
@@ -161,8 +162,8 @@
     $OUT .= "</td>
           <td class='list' width='10%'>$type</td>
           <td class='list$enabled' width='10%'>".join(",", @scheduling)."</td>
-          <td class='list$enabled' width='15%'>$lastrun</td>
-          <td class='list$enabled' width='15%'>$nextrun</td>
+          <td class='list$enabled' width='15%'".($taskid ? " id='$taskid-lastrun'" : "").">$lastrun</td>
+          <td class='list$enabled' width='15%'".($taskid ? " id='$taskid-nextrun'" : "").">$nextrun</td>
           <td class='list'>
             <ul class='config'>
               ".join("\n", map { "<li class='config'>$_</li>" } @configuration)."
@@ -170,37 +171,34 @@
           </td>
           <td class='list'>$description</td>
         </tr>";
-    $OUT .= "
-        <tr class='sub-row' id='run-$this' style='display: ".($eyeshow ? "table-row" : "none")."'>
-          <td class='checkbox'>&nbsp;</td>
-          <td class='list' colspan='7'>"
-      if @runs;
-    foreach my $run (@runs) {
-      my $task = $tasks{$run};
-      my $ip_ranges = $tasks{$run}->{ip_ranges} || [];
+    if ($taskid) {
+      my $task = $tasks{$taskid};
+      my $ip_ranges = $tasks{$taskid}->{ip_ranges} || [];
       my $percent = $task->{percent} || 0;
       my $done    = $task->{done}    || 0;
       my $aborted = $task->{aborted} || 0;
       my $failed  = $task->{failed}  || 0;
-      push @running, $run
-        unless ($done || $percent == 100 || $aborted);
+      push @visible, $taskid;
       $OUT .= "
+        <tr class='sub-row' id='run-$this' style='display: ".($eyeshow ? "table-row" : "none")."'>
+          <td class='checkbox'>&nbsp;</td>
+          <td class='list' colspan='7'>
             <div class='task'>
               <div class='name-col'>
-                <input id='expand-$run' name='expand/$run' class='expand-task' type='checkbox' onchange='expand_task(\"$run\")'".($form{"expand/$run"} && $form{"expand/$run"} eq "on" ? " checked" : "")."/>
-                <label id='$run-expand-label' for='expand-$run' class='closed'>$this</label>
+                <input id='expand-$taskid' name='expand/$taskid' class='expand-task' type='checkbox' onchange='expand_task(\"$taskid\")'".($form{"expand/$taskid"} && $form{"expand/$taskid"} eq "on" ? " checked" : "")."/>
+                <label id='$taskid-expand-label' for='expand-$taskid' class='closed'>$this</label>
               </div>
               <div class='progress-col'>
                 <div class='progress-bar'>
-                  <div id='$run-scanned-bar' class='".($failed ? "failed" : $aborted ? "aborted" : ($percent == 100) ? "completed" : "scanning")."'>
-                    <span id='$run-progress-bar-text' class='progressbar-text'>".(
+                  <div id='$taskid-scanned-bar' class='".($failed ? "failed" : $aborted ? "aborted" : ($percent == 100) ? "completed" : "scanning")."'>
+                    <span id='$taskid-progress-bar-text' class='progressbar-text'>".(
                       $failed ? _("Failure") : $aborted ? _("Aborted") : ($percent == 100) ? _("Completed") : "")."</span>
                   </div>
                 </div>
               </div>
             </div>";
       $OUT .= "
-            <div id='$run-counters' class='task-details'>
+            <div id='$taskid-counters' class='task-details'>
               <div class='progress-col'>
                 <div class='counters-row'>
                   <div class='counter-cell'>
@@ -208,13 +206,13 @@
       if ($task->{islocal}) {
         $OUT .= _("Local inventory")."</label>
                   <div class='counters-row'>
-                    <span class='counter' id='$run-inventory-count'>".($task->{inventory_count} || 0)."</span>
+                    <span class='counter' id='$taskid-inventory-count'>".($task->{inventory_count} || 0)."</span>
                   </div>
                 </div>";
       } else {
         $OUT .= _("Created inventories")."</label>
                   <div class='counters-row'>
-                    <span class='counter' id='$run-inventory-count' title='"._("Should match devices with SNMP support count")."'>
+                    <span class='counter' id='$taskid-inventory-count' title='"._("Should match devices with SNMP support count")."'>
                       ".($task->{inventory_count} || 0).($task->{inventory_count} && $task->{snmp_support} ? "/".$task->{snmp_support} : "")."
                     </span>
                   </div>
@@ -222,7 +220,7 @@
                 <div class='counter-cell'>
                   <label>"._("Scanned IPs")."</label>
                   <div class='counters-row'>
-                    <span class='counter' id='$run-scanned' title='"._("Scanned IPs for this IP range")."'>
+                    <span class='counter' id='$taskid-scanned' title='"._("Scanned IPs for this IP range")."'>
                       ".($task->{count} || 0).($task->{count} && $task->{count} < $task->{maxcount} ? "/".$task->{maxcount} : "")."
                     </span>
                   </div>
@@ -230,7 +228,7 @@
                 <div class='counter-cell'>
                   <label>"._("Devices with SNMP support")."</label>
                   <div class='counters-row'>
-                    <span class='counter' id='$run-snmp' title='"._("IPs for which we found a device supporting SNMP with provided credentials")."'>
+                    <span class='counter' id='$taskid-snmp' title='"._("IPs for which we found a device supporting SNMP with provided credentials")."'>
                       ".($task->{snmp_support} || 0).($task->{snmp_support} && $task->{count} ? "/".$task->{count} : "")."
                     </span>
                   </div>
@@ -238,7 +236,7 @@
                 <div class='counter-cell'>
                   <label>"._("IPs without SNMP response")."</label>
                   <div class='counters-row'>
-                    <span class='counter' id='$run-others' title='"._("These IPs are responding to ping or are found in ARP table")."\n".
+                    <span class='counter' id='$taskid-others' title='"._("These IPs are responding to ping or are found in ARP table")."\n".
                       _("But we didn't find any device supporting SNMP with provided credentials")."'>
                       ".($task->{others_support} || 0).($task->{others_support} && $task->{count} ? "/".$task->{count} : "")."
                     </span>
@@ -247,7 +245,7 @@
                 <div class='counter-cell'>
                   <label>"._("IPs without PING response")."</label>
                   <div class='counters-row'>
-                    <span class='counter' id='$run-unknown' title='"._("IPs not responding to ping and not seen in ARP table")."'>
+                    <span class='counter' id='$taskid-unknown' title='"._("IPs not responding to ping and not seen in ARP table")."'>
                       ".($task->{unknown} || 0).($task->{unknown} && $task->{count} ? "/".$task->{count} : "")."
                     </span>
                   </div>
@@ -255,49 +253,43 @@
       }
       my $freeze_status = " disabled";
       unless ($done || $percent == 100) {
-        $freeze_status = " onclick='toggle_freeze_log(\"$run\")'";
-        $freeze_status .= " checked" if $form{"freeze-log/$run"} && $form{"freeze-log/$run"} eq 'on';
+        $freeze_status = " onclick='toggle_freeze_log(\"$taskid\")'";
+        $freeze_status .= " checked" if $form{"freeze-log/$taskid"} && $form{"freeze-log/$taskid"} eq 'on';
       }
-      my $verbosity = $form{"verbosity/$run"} // "debug";
+      my $verbosity = $form{"verbosity/$taskid"} // "debug";
       $OUT .= "
             </div>
             <div class='output-header'>
               <label class='switch'>
-                <input id='show-log-$run' name='show-log/$run' class='switch' type='checkbox' onclick='show_log(\"$run\")'".($form{"show-log/$run"} && $form{"show-log/$run"} eq "on" ? " checked" : "")."/>
+                <input id='show-log-$taskid' name='show-log/$taskid' class='switch' type='checkbox' onclick='show_log(\"$taskid\")'".($form{"show-log/$taskid"} && $form{"show-log/$taskid"} eq "on" ? " checked" : "")."/>
                 <span class='slider'></span>
               </label>
-              <label for='show-log-$run' class='text'>".sprintf( _("Show &laquo;&nbsp;%s&nbsp;&raquo; task log"), $this)."</label>
-              <div class='abort-button' id='$run-abort-button'>".(($done || $percent == 100 || $aborted)? "" :
-                "<input class='submit-secondary' type='button' name='abort/$run' value='"._("Abort")."' onclick='abort_task(\"$run\")'/>")."
+              <label for='show-log-$taskid' class='text'>".sprintf( _("Show &laquo;&nbsp;%s&nbsp;&raquo; task log"), $this)."</label>
+              <div class='abort-button'>
+                <input class='submit-secondary' id='$taskid-abort-button' type='button' name='abort/$taskid' value='"._("Abort")."' onclick='abort_task(\"$taskid\")' style='display: ".($done || $percent == 100 || $aborted ? "none" : "inline")."'/>
               </div>
-              <div class='log-freezer' id='$run-freeze-log-option'>
-                <label class='switch'>
-                  <input id='freeze-log-$run' name='freeze-log/$run' class='freezer-switch' type='checkbox'$freeze_status/>
+              <div class='log-freezer' id='$taskid-freeze-log' >
+                <label class='switch' id='$taskid-freeze-log-option' style='display: ".($done || $percent == 100 || $aborted || !$form{"show-log/$taskid"} && !$form{"show-log/$taskid"} ne "on"? "none" : "inline")."'>
+                  <input id='freeze-log-$taskid' name='freeze-log/$taskid' class='freezer-switch' type='checkbox'$freeze_status/>
                   <span class='slider'></span>
                 </label>
-                <label for='freeze-log-$run' class='text text-fix'>"._("Freeze log output")."</label>
+                <label for='freeze-log-$taskid' class='text text-fix' id='$taskid-freeze-log-label' style='display: ".($done || $percent == 100 || $aborted || !$form{"show-log/$taskid"} && !$form{"show-log/$taskid"} ne "on"? "none" : "inline")."'>"._("Freeze log output")."</label>
               </div>
-              <div class='verbosity-option' id='$run-verbosity-option'>
+              <div class='verbosity-option' id='$taskid-verbosity-option'>
                 "._("Verbosity").":
-                <select id='$run-verbosity' name='verbosity/$run' class='verbosity-options' onchange='verbosity_change(\"$run\");'>";
+                <select id='$taskid-verbosity' name='verbosity/$taskid' class='verbosity-options' onchange='verbosity_change(\"$taskid\");'>";
       foreach my $opt (qw(info debug debug2)) {
         $OUT .= "
-                <option".($verbosity && $verbosity eq $opt ? " selected" : "").">$opt</option>";
+                  <option".($verbosity && $verbosity eq $opt ? " selected" : "").">$opt</option>";
       }
       $OUT .= "
                 </select>
               </div>
             </div>
-            <textarea id='$run-output' class='output' wrap='off' readonly style='display: none'></textarea>
-          </div>
-        </div>
-      </li>";
-      last;
-    }
-    $OUT .= "
+            <textarea id='$taskid-output' class='output' wrap='off' readonly style='display: none'></textarea>
           </td>
-        </tr>"
-      if @runs;
+        </tr>";
+    }
     last if $display && $count >= $display;
   }
   # Handle empty list case
@@ -349,10 +341,11 @@
     <input class='big-button' type='submit' name='submit/add' value='{_"Add new inventory task"}'/>
   </form>
   <script>
-  var outputids = [{ join(", ", map { "'$_'" } @running) }];
-  var output_index = \{{ join(", ", map { "'$_': 0" } @running) }\};
-  var freezed_log = \{{ join(", ", map { "'$_': false" } @running) }\};
-  var whats = \{{ join(", ", map { "'$_': 'full'" } @running) }\};
+  var outputids = [{ join(", ", map { "'$_'" } @visible) }];
+  var output_index = \{{ join(", ", map { "'$_': 0" } @visible) }\};
+  var timeouts = new Map([{ join(", ", map { "['$_',  0]" } @visible) }]);
+  var freezed_log = \{{ join(", ", map { "'$_': false" } @visible) }\};
+  var whats = \{{ join(", ", map { "'$_': 'full'" } @visible) }\};
   var ajax_queue = [];
   var ajax_trigger;
   var xhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
@@ -385,11 +378,13 @@
     aborted = document.getElementById(task+'-scanned-bar').className === "aborted";
     failed = document.getElementById(task+'-scanned-bar').className === "failed";
     if (completed || aborted || failed) \{
-      document.getElementById(task+'-freeze-log-option').innerHTML = '';
-      document.getElementById(task+'-abort-button').innerHTML = '';
+      document.getElementById(task+'-freeze-log').style.display = 'none';
+      document.getElementById(task+'-abort-button').style.display = 'none';
+    \} else \{
+      document.getElementById(task+'-abort-button').style.display = 'inline';
+      document.getElementById(task+'-freeze-log').style.display = checked ? 'inline' : 'none';
     \}
-    document.getElementById(task+'-freeze-log-option').style.display = checked ? 'block' : 'none';
-    document.getElementById(task+'-verbosity-option').style.display = checked ? 'block' : 'none';
+    document.getElementById(task+'-verbosity-option').style.display = checked ? 'inline' : 'none';
     output.style.display = checked ? 'block' : 'none';
     if (checked && output.innerHTML === '') ajax_load('full', task);
   \}
@@ -400,10 +395,13 @@
   \}
   xhttp.onreadystatechange = function() \{
     if (this.readyState === 4 && this.status === 200) \{
-      var index, running, inventory_count, percent, task, output, aborted;
+      var index, running, inventory_count, percent, task, output, aborted, last_run_date, checked;
+      var enabled = false;
       task = this.getResponseHeader('X-Inventory-Task');
       output = document.getElementById(task+'-output');
       index = this.getResponseHeader('X-Inventory-Index');
+      checked = document.getElementById('show-log-'+task).checked;
+      last_run_date = this.getResponseHeader('X-Inventory-LastRunDate');
       if (!freezed_log[task]) \{
         if (this.getResponseHeader('X-Inventory-Output') === 'full') \{
           output.innerHTML = this.responseText;
@@ -437,14 +435,20 @@
       percent = this.getResponseHeader('X-Inventory-Percent');
       document.getElementById(task+'-scanned-bar').style.width = percent+"%";
       if (percent === '100') \{
-        document.getElementById(task+'-scanned-bar').className = "completed";
+        enabled = true;
         if (freezed_log[task]) \{
           whats[task] = 'full';
-          outputids.push(task);
           freezed_log[task] = false;
+        \} else \{
+          whats[task] = 'status';
         \}
-        document.getElementById(task+'-freeze-log-option').innerHTML = '';
-        document.getElementById(task+'-abort-button').innerHTML = '';
+        document.getElementById(task+'-freeze-log-option').style.display = 'none';
+        document.getElementById(task+'-freeze-log-label').style.display = 'none';
+        document.getElementById(task+'-abort-button').style.display = 'none';
+      \} else \{
+        document.getElementById(task+'-freeze-log-option').style.display = checked ? 'inline' : 'none';
+        document.getElementById(task+'-freeze-log-label').style.display = checked ? 'inline' : 'none';
+        document.getElementById(task+'-abort-button').style.display = 'inline';
       \}
       if (aborted) \{
         document.getElementById(task+'-progress-bar-text').innerHTML = '{_"Aborted"}';
@@ -454,12 +458,24 @@
         document.getElementById(task+'-progress-bar-text').innerHTML = '{_"Failure"}';
         document.getElementById(task+'-scanned-bar').className = "failed";
       \} else \{
+        document.getElementById(task+'-scanned-bar').className = percent === '100' ? "completed" : "scanning";
         document.getElementById(task+'-progress-bar-text').innerHTML = percent === '100' ? '{_"Completed"}' : '';
       \}
       if (running || (!aborted && (!percent || percent != '100'))) \{
-        outputids.push(task);
+        enabled = true;
         if (this.responseText != '...') whats[task] = 'more';
       \}
+      if (last_run_date) \{
+        var next_run_date = this.getResponseHeader('X-Inventory-NextRunDate');
+        var next_run_time = Number(this.getResponseHeader('X-Inventory-NextRunTime'));
+        document.getElementById(task+'-lastrun').innerHTML = last_run_date;
+        if (next_run_date) \{
+          enabled = true;
+          document.getElementById(task+'-nextrun').innerHTML = next_run_date;
+          timeouts[task] = next_run_time * 1000;
+        \}
+      \}
+      if (enabled) outputids.push(task);
       if (ajax_queue.length) \{
         ajax_trigger = setTimeout(ajax_request, 100);
       \} else if (outputids.length) \{
@@ -481,15 +497,36 @@
   \}
   function ajax_load(what, task) \{
     var url, verbosity;
+    var next_ajax_load = 100;
     if (!task) task = outputids.shift();
     if (task) \{
       if (!what) what = whats[task];
       url = '{$url_path}/{$request}/ajax?id='+task+'&what='+what;
-      verbosity = document.getElementById(task+'-verbosity').value;
-      if (verbosity) url += '&'+verbosity
-      if (output_index[task] && what != 'full') url += '&index=' + output_index[task];
-      ajax_queue.push(url);
-      ajax_trigger = setTimeout(ajax_request, 10);
+      if (what === 'status') \{
+        var timeout = timeouts[task];
+        if (timeout && timeout > Date.now()) \{
+          next_ajax_load = 1000;
+          if (outputids.length)
+            for ( var i = 0; i < outputids.length; i++ )
+              if (!timeouts.has(outputids[i]) || timeouts[outputids[i]]-1000 < Date.now()) \{
+                next_ajax_load = 100;
+                break;
+              \}
+          outputids.push(task);
+        \} else \{
+          ajax_queue.push(url);
+        \}
+      \} else \{
+        verbosity = document.getElementById(task+'-verbosity').value;
+        if (verbosity) url += '&'+verbosity
+        if (output_index[task] && what != 'full') url += '&index=' + output_index[task];
+        ajax_queue.push(url);
+      \}
+      if (ajax_queue.length) \{
+        ajax_trigger = setTimeout(ajax_request, 10);
+      \} else \{
+        ajax_trigger = setTimeout(ajax_load, next_ajax_load);
+      \}
     \}
   \}
   function verbosity_change(task) \{
