@@ -37,8 +37,12 @@ my %api_match = (
     "config.png"        => \&_file,
     "eye.png"           => \&_file,
     "eye-crossed.png"   => \&_file,
-    "arrow-left.png"    => \&_file,
     "favicon.ico"       => \&_favicon,
+    "tabler-icons.min.css" => \&_file,
+    "fonts/tabler-icons.eot" => \&_file,
+    "fonts/tabler-icons.ttf" => \&_file,
+    "fonts/tabler-icons.woff" => \&_file,
+    "fonts/tabler-icons.woff2" => \&_file,
 );
 
 sub urlMatch {

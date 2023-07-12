@@ -79,7 +79,7 @@
         </tbody>
       </table>
       <div class='select-row'>
-        <div class='arrow-left'></div>
+        <i class='ti ti-corner-left-up arrow-left'></i>
         <input class='submit-secondary' type='submit' name='submit/delete-v1-v2c' value='{_"Delete"}'/>
       </div>
       <hr/>
@@ -156,7 +156,7 @@
         </tbody>
       </table>
       <div class='select-row'>
-        <div class='arrow-left'></div>
+        <i class='ti ti-corner-left-up arrow-left'></i>
         <input class='submit-secondary' type='submit' name='submit/delete-v3' value='{_"Delete"}'/>
       </div>
       <div class='form-edit-row' style='display: flex'>
@@ -237,7 +237,7 @@
         </tbody>
       </table>
       <div class='select-row'>
-        <div class='arrow-left'></div>
+        <i class='ti ti-corner-left-up arrow-left'></i>
         <input class='submit-secondary' type='submit' name='submit/delete-remote' value='{_"Delete"}'/>
       </div>
       <div class='form-edit-row' style='display: flex'>

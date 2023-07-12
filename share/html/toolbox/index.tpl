@@ -18,6 +18,7 @@
     -e "$template_path/custom.css" ? "
   <link rel='stylesheet' href='$url_path/custom.css' type='text/css' />"
     : "" }
+  <link rel="stylesheet" href="{$url_path}/tabler-icons.min.css" type="text/css" />
   <link rel="shortcut icon" type="images/x-icon" href="{$url_path}/favicon.ico" >
 </head>
 <body>

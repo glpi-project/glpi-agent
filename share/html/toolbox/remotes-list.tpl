@@ -100,7 +100,7 @@
     </table>{
     $listed >= 50 ? $listnav : "" }
     <div class='select-row'>
-      <div class='arrow-left'></div>{ $remotes_admin ? "
+      <i class='ti ti-corner-left-up arrow-left'></i>{ $remotes_admin ? "
       <input class='submit-secondary' type='submit' name='submit/delete-remote' value='"._("Delete")."'/>
       <div class='separation'></div>" : "" }
       <label class='selection-option'>{_"Remotes workers"}:</label>

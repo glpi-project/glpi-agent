@@ -118,7 +118,7 @@
     </table>{
     $listed >= 50 ? $list_nav : "" }
     <div class='select-row'>
-      <div class='arrow-left'></div>
+      <i class='ti ti-corner-left-up arrow-left'></i>
       <input class='submit-secondary' type='submit' name='submit/delete' value='{_"Delete"}'/>
       <input class='submit-secondary' type='submit' name='submit/scan' value='{_"Scan again"}'/>{
     if (@tags||"") { # The test avoids to render a 0 when no tag is defined
