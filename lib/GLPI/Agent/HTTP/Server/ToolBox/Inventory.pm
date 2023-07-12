@@ -456,6 +456,7 @@ sub _submit_update {
             return $self->errors("Update task: No such scheduling")
                 unless $form->{"input/delay"} && $scheduling->{$form->{"input/delay"}};
             $job->{scheduling} = [ $form->{"input/delay"} ];
+            $self->need_save(jobs);
         } else {
             return $self->errors("Update task: No scheduling selected")
                 unless $form->{"input/timeslot"} && $form->{"set-timeslot"};
@@ -465,6 +466,7 @@ sub _submit_update {
             return $self->errors("Update task: No such scheduling")
                 if grep { ! $scheduling->{$_} } @timeslots;
             $job->{scheduling} = \@timeslots;
+            $self->need_save(jobs);
         }
 
         my $description = $form->{"input/description"};
@@ -479,8 +481,8 @@ sub _submit_update {
         }
     } else {
         $self->errors("Update task: No such task: '$edit'");
-        $self->reset_edit();
     }
+    $self->reset_edit();
 }
 
 sub _submit_delete {
@@ -524,9 +526,25 @@ sub _submit_enable {
     my $jobs = $yaml->{jobs} || {};
     my @selected = map { m{^checkbox/(.*)$} } grep { /^checkbox\// && $form->{$_} eq 'on' } keys(%{$form});
     foreach my $name (@selected) {
-        next unless $jobs->{$name};
-        $jobs->{$name}->{enabled} = $self->yesno('yes');
-        $self->need_save(jobs);
+        my $job = $jobs->{$name}
+            or next;
+        if (!$self->isyes($job->{enabled})) {
+            $job->{enabled} = $self->yesno('yes');
+            $self->need_save(jobs);
+            # We need to schedule event if just enabled
+            my %event = (
+                job     => 1,
+                name    => $name,
+                task    => $job->{type} eq 'local' ? "inventory" : "netscan",
+            );
+            my $event = GLPI::Agent::Event->new(%event);
+            my $rundate = $self->_get_next_run_date($name, $job, $job->{last_run_date});
+            $event->rundate($rundate);
+            $job->{next_run_date} = $rundate;
+            # Re-schedule event
+            $self->{toolbox}->{target}->delEvent($event);
+            $self->{toolbox}->{target}->addEvent($event);
+        }
     }
 }
 
@@ -1127,19 +1145,29 @@ sub ajax {
         if $task->{failed};
 
     my $message = '';
-    # index should be read first from request to support multi-users acces on the
-    # same task output
-    my $index = $query{index} || $task->{index};
-    while ($index < @{$task->{messages}}) {
-        my $lf = $index ? "\n" : "";
-        my $this = $task->{messages}->[$index++];
-        $message .= $lf . $this if !$filter_qr || $this =~ $filter_qr;
-    }
-    $task->{index} = $index;
-    $headers{'X-Inventory-Index'} = $index;
+    # Don't include journal if requiring status but set last run date and next run date
+    if ($query{'what'} && $query{'what'} eq 'status') {
+        my $jobs = $self->yaml(jobs) // {};
+        my $job  = $jobs->{$task->{name}} // {};
+        $headers{'X-Inventory-LastRunDate'} = localtime($job->{last_run_date});
+        if ($self->isyes($job->{enabled}) && $job->{next_run_date}) {
+            $headers{'X-Inventory-NextRunDate'} = localtime($job->{next_run_date});
+            $headers{'X-Inventory-NextRunTime'} = $job->{next_run_date};
+        }
+    } else {
+        # index should be read first from request to support multi-users acces on the same task output
+        my $index = $query{index} || $task->{index};
+        while ($index < @{$task->{messages}}) {
+            my $lf = $index ? "\n" : "";
+            my $this = $task->{messages}->[$index++];
+            $message .= $lf . $this if !$filter_qr || $this =~ $filter_qr;
+        }
+        $task->{index} = $index;
+        $headers{'X-Inventory-Index'} = $index;
 
-    # For some reasons, first ajax response should not be empty...
-    $message = '...' unless $index || $message;
+        # For some reasons, first ajax response should not be empty...
+        $message = '...' unless $index || $message;
+    }
 
     return 200, 'OK', \%headers, $message;
 }
