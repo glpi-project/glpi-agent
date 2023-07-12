@@ -4,6 +4,6 @@
     </div>
     <div id="pagetitle"><b>{_($title)}</b></div>
     <div id="configmenu">
-      <a href="{$url_path}/configuration" title="{_"Configuration"}" style='background: url("{$url_path}/config.png") 0 0 no-repeat;'></a>
+      <a href="{$url_path}/configuration" title="{_"Configuration"}"><i class="ti ti-settings-filled"></i></a>
     </div>
   </div>

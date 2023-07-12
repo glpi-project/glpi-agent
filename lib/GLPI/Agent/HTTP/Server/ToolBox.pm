@@ -34,7 +34,6 @@ my %api_match = (
     "mibsupport.css"    => \&_file,
     "flatpickr.js"      => \&_file,
     "logo.png"          => \&_logo,
-    "config.png"        => \&_file,
     "eye.png"           => \&_file,
     "eye-crossed.png"   => \&_file,
     "favicon.ico"       => \&_favicon,
