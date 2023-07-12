@@ -329,7 +329,7 @@
     </table>{
     $listed >= 50 ? $listnav : "" }
     <div class='select-row'>
-      <div class='arrow-left'></div>
+      <i class='ti ti-corner-left-up arrow-left'></i>
       <input class='submit-secondary' type='submit' name='submit/run-now' value='{_"Run task"}'/>
       <div class='separation'></div>
       <input class='submit-secondary' type='submit' name='submit/disable' value='{_"Disable"}'/>

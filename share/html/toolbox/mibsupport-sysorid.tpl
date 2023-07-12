@@ -55,7 +55,7 @@
       </tbody>
     </table>
     <div class='select-row'>
-      <div class='arrow-left'></div>
+      <i class='ti ti-corner-left-up arrow-left'></i>
       <input class='submit-secondary' type='submit' name='submit/delete' value='{_"Delete"}'>
       <div class='separation'></div>
       <label class='selection-option'>{_"Associated rules"}:</label>

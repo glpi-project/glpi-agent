@@ -60,6 +60,7 @@ injector:
 
 toolbox:
 * fix #254: Add credential to iprange not working after adding first one
+* Use tabler-icons v 2.24.0
 
 packaging:
 * Update MacOSX packages to use OpenSSL 3.1.3 & zlib 1.3
