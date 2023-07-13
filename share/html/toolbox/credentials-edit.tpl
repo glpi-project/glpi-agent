@@ -21,7 +21,6 @@
     $protocol     = $cred->{protocol}     || $form{"input/protocol"}     || "";
     $mode         = $cred->{mode}         || $form{"input/mode"}         || "";
     %modes = map { $_ => 1 } split(',', $mode);
-    $showpass     = $form{"show-password"} && $form{"show-password"} eq "on" ? 1 : 0;
     $credentials{$edit} ? sprintf(_("Edit &laquo;&nbsp;%s&nbsp;&raquo; credential"), ($cred->{name} || $this))
       : _"Add new credential"}</h2>
   <form name='{$request}' method='post' action='{$url_path}/{$request}' autocomplete='off'>
@@ -97,7 +96,8 @@
         </div>
         <label for='authpass'>{_"Authentication password"}</label>
         <div class='form-edit-row'>
-          <input class='input-row' id='authpass' type='{$showpass ? "text" : "password"}' name='input/authpassword' value='{$authpassword}' size='20' autocomplete='new-password'{!$version || $version ne "v3" ? " disabled" : ""}/>
+          <input class='input-row' id='authpass' type='password' name='input/authpassword' value='{$authpassword}' size='20' autocomplete='new-password'{!$version || $version ne "v3" ? " disabled" : ""}/>
+          <i class='pass-eye ti ti-eye' onclick='show_password(this, "authpass")' title='{_"Show password"}'></i>
         </div>
       </div>
       <div class='form-edit'>
@@ -112,7 +112,8 @@
         </div>
         <label for='authpass'>{_"Privacy password"}</label>
         <div class='form-edit-row'>
-          <input class='input-row' id='privpass' type='{$showpass ? "text" : "password"}' name='input/privpassword' value='{$privpassword}' size='20' autocomplete='new-password'{!$version || $version ne "v3" ? " disabled" : ""}/>
+          <input class='input-row' id='privpass' type='password' name='input/privpassword' value='{$privpassword}' size='20' autocomplete='new-password'{!$version || $version ne "v3" ? " disabled" : ""}/>
+          <i class='pass-eye ti ti-eye' onclick='show_password(this, "privpass")' title='{_"Show password"}'></i>
         </div>
       </div>
     </div>
@@ -124,7 +125,8 @@
       <div class='form-edit'>
         <label for='remotepass'>{_"Authentication password"}</label>
         <div class='form-edit-row'>
-          <input class='input-row'  type='{$showpass ? "text" : "password"}' id='remotepass' name='input/remotepass' value='{$remotepass}' size='24' autocomplete='new-password'{$type eq "snmp" ? " disabled" : ""}/>
+          <input class='input-row'  type='password' id='remotepass' name='input/remotepass' value='{$remotepass}' size='24' autocomplete='new-password'{$type eq "snmp" ? " disabled" : ""}/>
+          <i class='pass-eye ti ti-eye' onclick='show_password(this, "remotepass")' title='{_"Show password"}'></i>
         </div>
       </div>
     </div>
@@ -168,13 +170,6 @@
         <label for='description'>{_"Description"}</label>
         <input class='input-row' type='text' id='description' name='input/description' value='{$description}' size='40'/>
       </div>
-    </div>
-    <div class='form-edit-row' id='show-password' style='display: {$type ne "snmp" || $version eq "v3" ? "flex" : "none"}'>
-      <label class='switch'>
-        <input name='show-password' id='show-password-switch' class='switch' type='checkbox'{$showpass ? " checked" : ""} onclick='show_password()'/>
-        <span class='slider'></span>
-      </label>
-      <label for='show-password-switch' class='text'>{_"Show password"}</label>
     </div>
     <input type='submit' class='big-button' name='submit/{
       $credentials{$edit} ?
@@ -270,13 +265,11 @@
       document.getElementById("port").disabled = false;
     \}
   \}
-  function show_password() \{
-    var checked;
-    checked = document.getElementById('show-password-switch').checked;
-    document.getElementById('remotepass').type = checked ? 'text' : 'password';
-    document.getElementById('authpass').type = checked ? 'text' : 'password';
-    document.getElementById('privpass').type = checked ? 'text' : 'password';
-    document.getElementById('navbar-credentials').href = '{$url_path."/credentials"}'+(checked ? '?show-password=on' : '');
+  function show_password(i,id) \{
+    var type = document.getElementById(id).type;
+    document.getElementById(id).type = type === "password" ? "text" : "password";
+    i.className = type === "password" ? "pass-eye ti ti-eye-off" : "pass-eye ti ti-eye";
+    i.title = type === "password" ? "{_('Hide password')}" : "{_('Show password')}";
   \}
   function handle_rename () \{
     document.getElementById("input-rename").disabled = false;
