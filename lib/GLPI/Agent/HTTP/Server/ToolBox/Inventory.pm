@@ -380,6 +380,15 @@ sub _submit_update {
             $jobs->{$newname} = delete $jobs->{$edit};
             $self->need_save(jobs);
 
+            # We need to unschedule any current event
+            my %event = (
+                job     => 1,
+                name    => $edit,
+                task    => $job->{type} eq 'local' ? "inventory" : "netscan",
+            );
+            my $event = GLPI::Agent::Event->new(%event);
+            $self->{toolbox}->{target}->delEvent($event);
+
             # Reset edited entry
             $edit = $newname;
             $self->edit($edit);
@@ -469,6 +478,24 @@ sub _submit_update {
                 $self->need_save(jobs);
             }
         }
+
+        # We need to re-schedule event in the case the scheduling changed
+        my %event = (
+            job     => 1,
+            name    => $edit,
+            task    => $job->{type} eq 'local' ? "inventory" : "netscan",
+        );
+        my $event = GLPI::Agent::Event->new(%event);
+        my $rundate = $self->_get_next_run_date($edit, $job, $job->{last_run_date});
+        $event->rundate($rundate);
+        $job->{next_run_date} = $rundate;
+        # Re-schedule event
+        $self->{toolbox}->{target}->delEvent($event);
+        $self->{toolbox}->{target}->addEvent($event);
+
+        # Reset edited entry
+        $edit = $newname;
+        $self->edit($edit);
     } else {
         $self->errors("Update task: No such task: '$edit'");
     }
