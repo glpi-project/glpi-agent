@@ -82,8 +82,8 @@
   if ($update_support) {
     $OUT .= "
     <div class='config-inputs'>
-      <input class='submit' type='submit' name='submit/update' value='"._("Update")."'>
-      <input class='submit' type='submit' name='submit/backup' value='"._("Backup YAML")."'>
+      <input class='big-button' type='submit' name='submit/update' value='"._("Update")."'>
+      <input class='big-button' type='submit' name='submit/backup' value='"._("Backup YAML")."'>
     </div>";
   }}
   </form>
