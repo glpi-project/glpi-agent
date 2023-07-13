@@ -282,7 +282,7 @@ sub _submit_update {
                 return $self->errors("Credential update: Invalid SNMP protocol");
             }
             # Supported keys
-            @keys = qw(snmpversion community description username authprotocol authpassword privprotocol privpassword port protocol);
+            @keys = qw(snmpversion community description username authprotocol authpassword privprotocol privpassword port protocol type);
         } else {
             if ($type !~ /^ssh|winrm|esx$/) {
                 return $self->errors("Credential update: Unsupported remote inventory type");
