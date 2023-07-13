@@ -50,13 +50,13 @@
       <div class='form-edit'>
         <label>{_"Type"}</label>
         <div class='form-edit-row' id='type-options'>
-          <input type="radio" name="input/type" id="snmp" value="snmp" onchange="type_change()"{$type eq "snmp" ? " checked" : ""}/>
+          <input type="radio" name="input/type" id="snmp" value="snmp" onchange="type_change(this)"{$type eq "snmp" ? " checked" : ""}/>
           <label for='snmp'>snmp</label>
-          <input type="radio" name="input/type" id="ssh" value="ssh" onchange="type_change()"{$type eq "ssh" ? " checked" : ""}/>
+          <input type="radio" name="input/type" id="ssh" value="ssh" onchange="type_change(this)"{$type eq "ssh" ? " checked" : ""}/>
           <label for='ssh'>ssh</label>
-          <input type="radio" name="input/type" id="winrm" value="winrm" onchange="type_change()"{$type eq "winrm" ? " checked" : ""}/>
+          <input type="radio" name="input/type" id="winrm" value="winrm" onchange="type_change(this)"{$type eq "winrm" ? " checked" : ""}/>
           <label for='winrm'>winrm</label>
-          <input type="radio" name="input/type" id="esx" value="esx" onchange="type_change()"{$type eq "esx" ? " checked" : ""}/>
+          <input type="radio" name="input/type" id="esx" value="esx" onchange="type_change(this)"{$type eq "esx" ? " checked" : ""}/>
           <label for='esx'>esx</label>
         </div>
       </div>
@@ -197,8 +197,8 @@
       document.getElementById("privproto").disabled=!b;
       document.getElementById("privpass").disabled=!b;
   \}
-  function type_change() \{
-    if (document.getElementById("snmp").checked) \{
+  function type_change(type) \{
+    if (type.value === "snmp") \{
       document.getElementById("remote-options").style = "display: none";
       document.getElementById("snmp-version-option").style = "display: flex";
       document.getElementById("remotecreds").value = "0";
@@ -214,6 +214,8 @@
       document.getElementById("authpass").disabled = false;
       document.getElementById("privproto").disabled = false;
       document.getElementById("privpass").disabled = false;
+      document.getElementById("remoteuser").disabled = true;
+      document.getElementById("remotepass").disabled = true;
       version_change();
     \} else \{
       document.getElementById("v3-options").style = "display: none";
@@ -232,8 +234,10 @@
       document.getElementById("authpass").disabled = true;
       document.getElementById("privproto").disabled = true;
       document.getElementById("privpass").disabled = true;
+      document.getElementById("remoteuser").disabled = false;
+      document.getElementById("remotepass").disabled = false;
     \}
-    if (document.getElementById("ssh").checked) \{
+    if (type.value === "ssh") \{
       document.getElementById("advanced-options-ssh-mode").style = "display: flex";
       document.getElementById("port").placeholder = "22";
       document.getElementById("ssh-mode").disabled = false;
@@ -245,7 +249,7 @@
       document.getElementById("libssh2-mode").disabled = true;
       document.getElementById("perl-mode").disabled = true;
     \}
-    if (document.getElementById("winrm").checked) \{
+    if (type.value === "winrm") \{
       document.getElementById("advanced-options-winrm-mode").style = "display: flex";
       document.getElementById("ssl").disabled = false;
       if (document.getElementById("ssl").checked) \{
@@ -257,7 +261,7 @@
       document.getElementById("advanced-options-winrm-mode").style = "display: none";
       document.getElementById("ssl").disabled = true;
     \}
-    if (document.getElementById("esx").checked) \{
+    if (type.value === "esx") \{
       document.getElementById("advanced-options").style = "display: none";
       document.getElementById("port").disabled = true;
     \} else \{
