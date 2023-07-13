@@ -209,54 +209,6 @@ sub _submit_add_remotecred {
     $form->{type} = "ssh";
 }
 
-sub _submit_rename {
-    my ($self, $form, $credentials) = @_;
-
-    return unless $form;
-
-    my $edit = $self->edit();
-    my $newname = $form->{'input/new-name'};
-
-    # Do nothing if no new was provided
-    return unless defined($newname) && length($newname);
-
-    # Do nothing if nothing to rename
-    return unless defined($edit) && length($edit);
-
-    # Do nothing if name is the same
-    return if $newname eq $form->{'edit'};
-
-    if (exists($credentials->{$newname})) {
-        $newname = encode('UTF-8', $newname);
-        return $self->errors("Rename credential: An entry still exists with that name: '$newname'");
-    }
-
-    unless (exists($credentials->{$edit})) {
-        $edit = encode('UTF-8', $edit);
-        return $self->errors("Rename credential: No such credential: '$edit'");
-    }
-
-    $credentials->{$newname} = delete $credentials->{$edit};
-    $self->need_save(credentials);
-    $self->edit($newname);
-
-    # We also need to fix any credential ref in ip_range credentials entries
-    my $ip_range = $self->yaml('ip_range') || {};
-    my $count = 0;
-    foreach my $range (values(%{$ip_range})) {
-        next unless ref($range->{credentials}) eq 'ARRAY';
-        next unless first { $_ eq $edit } @{$range->{credentials}};
-        my @credentials = grep { $_ ne $edit } @{$range->{credentials}};
-        push @credentials, $newname;
-        $range->{credentials} = [ sort @credentials ];
-        $count++;
-    }
-    if ($count) {
-        $self->need_save('ip_range');
-        $self->debug2("Fixed $count ip_range credential refs");
-    }
-}
-
 sub _submit_update {
     my ($self, $form, $credentials) = @_;
 
@@ -319,6 +271,39 @@ sub _submit_update {
                 delete $form->{"input/community"};
             }
         }
+
+        # Support renaming
+        my $newname = $form->{'input/name'};
+        if (defined($newname) && length($newname) && $newname ne $edit) {
+            if (exists($credentials->{$newname})) {
+                $newname = encode('UTF-8', $newname);
+                return $self->errors("Rename credentials: An entry still exists with that name: '$newname'");
+            }
+
+            $credentials->{$newname} = delete $credentials->{$edit};
+            $self->need_save(credentials);
+
+            # We also need to fix any credential ref in ip_range credentials entries
+            my $ip_range = $self->yaml('ip_range') || {};
+            my $count = 0;
+            foreach my $range (values(%{$ip_range})) {
+                next unless ref($range->{credentials}) eq 'ARRAY';
+                next unless first { $_ eq $edit } @{$range->{credentials}};
+                my @credentials = grep { $_ ne $edit } @{$range->{credentials}};
+                push @credentials, $newname;
+                $range->{credentials} = [ sort @credentials ];
+                $count++;
+            }
+            if ($count) {
+                $self->need_save('ip_range');
+                $self->debug2("Fixed $count ip_range credential refs");
+            }
+
+            # Reset edited entry
+            $edit = $newname;
+            $self->edit($edit);
+        }
+
         # Update credential
         foreach my $key (@keys) {
             my $input = "input/$key";
@@ -444,7 +429,6 @@ my %handlers = (
     'submit/add-v1-v2c'     => \&_submit_add_v1_v2c,
     'submit/add-v3'         => \&_submit_add_v3,
     'submit/add-remotecred' => \&_submit_add_remotecred,
-    'submit/rename'         => \&_submit_rename,
     'submit/update'         => \&_submit_update,
     'submit/delete-v1-v2c'  => \&_submit_delete_v1_v2c,
     'submit/delete-v3'      => \&_submit_delete_v3,
