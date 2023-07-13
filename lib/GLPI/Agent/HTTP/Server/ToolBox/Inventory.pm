@@ -182,6 +182,16 @@ sub update_template_hash {
         my $display = $self->get_from_session('display');
         $hash->{display} = length($display) ? $display : $display_options[0];
         $hash->{iprange_options} = [ sort { $a cmp $b } map { encode('UTF-8', encode_entities($_)) } keys(%{$ip_range}) ];
+        $hash->{list_count} = scalar(keys(%{$jobs}));
+        $self->delete_in_session('jobs_start') unless $hash->{display};
+        $hash->{start} = $self->get_from_session('jobs_start') || 1;
+        $hash->{start} = $hash->{list_count} if $hash->{start} > $hash->{list_count};
+        $hash->{page}  = $hash->{display} ? int(($hash->{start}-1)/$hash->{display})+1 : 1;
+        $hash->{pages} = $hash->{display} ? int(($hash->{list_count}-1)/$hash->{display})+1 : 1;
+        $hash->{start} = $hash->{display} ? $hash->{start} - $hash->{start}%$hash->{display} : 0;
+        # Handle case we are indexing the last element
+        $hash->{start} -= $hash->{display} if $hash->{start} == $hash->{list_count};
+        $hash->{start} = 0 if $hash->{start} < 0;
     }
 
     # Set missing deps
@@ -1188,6 +1198,12 @@ sub handle_form {
 
     $self->store_in_session( 'jobs_order' => $form->{'order'} )
         if $form->{'order'} && $form->{'order'} =~ /^ascend|descend$/;
+
+    $self->store_in_session( 'jobs_start' => int($form->{'start'}) )
+        if defined($form->{'start'}) && $form->{'start'} =~ /^\d+$/;
+
+    $self->store_in_session( 'display' => $form->{'display'} =~ /^\d+$/ ? $form->{'display'} : 0 )
+        if defined($form->{'display'});
 
     $self->{verbosity} =  $form->{'input/verbose'}
         && $form->{'input/verbose'} =~ /^info|debug|debug2$/ ?
