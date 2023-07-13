@@ -216,57 +216,6 @@ sub _submit_add {
     }
 }
 
-sub _submit_rename {
-    my ($self, $form, $ip_range) = @_;
-
-    return unless $form && $ip_range;
-
-    my $edit = $self->edit();
-    my $newname = $form->{'input/new-name'};
-
-    # Do nothing if no new was provided
-    return unless defined($newname) && length($newname);
-
-    # Do nothing if nothing to rename
-    return unless defined($edit) && length($edit);
-
-    # Do nothing if name is the same
-    return if $newname eq $form->{'edit'};
-
-    if (exists($ip_range->{$newname})) {
-        $newname = encode('UTF-8', $newname);
-        return $self->errors("Rename IP range: An entry still exists with that name: '$newname'");
-    }
-
-    unless (exists($ip_range->{$edit})) {
-        $edit = encode('UTF-8', $edit);
-        return $self->errors("Rename IP range: No such IP range: '$edit'");
-    }
-
-    $ip_range->{$newname} = delete $ip_range->{$edit};
-    $self->need_save(ip_range);
-    $self->edit($newname);
-
-    # We also need to update any usage in tasks
-    my $jobs = $self->yaml('jobs') || {};
-    my $count = 0;
-    foreach my $job (values(%{$jobs})) {
-        next unless $job->{type} eq 'netscan';
-        my $config = $job->{config}
-            or next;
-        next unless ref($config) eq 'HASH';
-        next unless ref($config->{ip_range}) eq 'ARRAY' && first { $_ eq $edit } @{$config->{ip_range}};
-        my @ipranges = grep { $_ ne $edit } @{$config->{ip_range}};
-        push @ipranges, $newname;
-        $config->{ip_range} = [ sort @ipranges ];
-        $count++;
-    }
-    if ($count) {
-        $self->need_save('jobs');
-        $self->debug2("Fixed $count jobs ip_range refs");
-    }
-}
-
 sub _submit_update {
     my ($self, $form, $ip_range) = @_;
 
@@ -284,6 +233,41 @@ sub _submit_update {
         } elsif (!Net::IP->new($form->{"input/ip_end"})) {
             return $self->errors("IP range update: Wrong end ip format");
         }
+
+        my $newname = $form->{'input/name'};
+        if (defined($newname) && length($newname) && $newname ne $edit) {
+            if (exists($ip_range->{$newname})) {
+                $newname = encode('UTF-8', $newname);
+                return $self->errors("Rename IP range: An entry still exists with that name: '$newname'");
+            }
+
+            $ip_range->{$newname} = delete $ip_range->{$edit};
+            $self->need_save(ip_range);
+
+            # We also need to update any usage in tasks
+            my $jobs = $self->yaml('jobs') || {};
+            my $count = 0;
+            foreach my $job (values(%{$jobs})) {
+                next unless $job->{type} eq 'netscan';
+                my $config = $job->{config}
+                    or next;
+                next unless ref($config) eq 'HASH';
+                next unless ref($config->{ip_range}) eq 'ARRAY' && first { $_ eq $edit } @{$config->{ip_range}};
+                my @ipranges = grep { $_ ne $edit } @{$config->{ip_range}};
+                push @ipranges, $newname;
+                $config->{ip_range} = [ sort @ipranges ];
+                $count++;
+            }
+            if ($count) {
+                $self->need_save('jobs');
+                $self->debug2("Fixed $count jobs ip_range refs");
+            }
+
+            # Reset edited entry
+            $edit = $newname;
+            $self->edit($edit);
+        }
+
         # Validate IP Range as expected in NetDiscovery task
         my $block = Net::IP->new( $form->{"input/ip_start"}."-".$form->{"input/ip_end"} );
         return $self->errors("IP range update: Unsupported IP range: ".Net::IP->Error())
@@ -428,7 +412,6 @@ sub _submit_cancel {
 
 my %handlers = (
     'submit/add'            => \&_submit_add,
-    'submit/rename'         => \&_submit_rename,
     'submit/update'         => \&_submit_update,
     'submit/delete'         => \&_submit_delete,
     'submit/addcredential'  => \&_submit_addcredential,

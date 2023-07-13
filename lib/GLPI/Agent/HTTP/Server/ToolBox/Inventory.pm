@@ -235,43 +235,8 @@ my %handlers = (
     'submit/disable'        => \&_submit_disable,
     'submit/enable'         => \&_submit_enable,
     'submit/run-now'        => \&_submit_runnow,
-    'submit/rename'         => \&_submit_rename,
     'submit/newtag'         => \&_submit_newtag,
 );
-
-sub _submit_rename {
-    my ($self, $form, $yaml) = @_;
-
-    return unless $form;
-
-    my $jobs = $yaml->{jobs} || {};
-
-    my $edit = $self->edit();
-    my $newname = $form->{'input/new-name'};
-
-    # Do nothing if no new was provided
-    return unless defined($newname) && length($newname);
-
-    # Do nothing if nothing to rename
-    return unless defined($edit) && length($edit);
-
-    # Do nothing if name is the same
-    return if $newname eq $form->{'edit'};
-
-    if (exists($jobs->{$newname})) {
-        $newname = encode('UTF-8', $newname);
-        return $self->errors("Rename task: An entry still exists with that name: '$newname'");
-    }
-
-    unless (exists($jobs->{$edit})) {
-        $edit = encode('UTF-8', $edit);
-        return $self->errors("Rename task: No such task: '$edit'");
-    }
-
-    $jobs->{$newname} = delete $jobs->{$edit};
-    $self->need_save(jobs);
-    $self->edit($newname);
-}
 
 sub _submit_newtag {
     my ($self, $form, $yaml) = @_;
@@ -403,6 +368,21 @@ sub _submit_update {
                 $job->{enabled} = $enabled;
                 $self->need_save(jobs);
             }
+        }
+
+        my $newname = $form->{'input/name'};
+        if (defined($newname) && length($newname) && $newname ne $edit) {
+            if (exists($jobs->{$newname})) {
+                $newname = encode('UTF-8', $newname);
+                return $self->errors("Rename task: An entry still exists with that name: '$newname'");
+            }
+
+            $jobs->{$newname} = delete $jobs->{$edit};
+            $self->need_save(jobs);
+
+            # Reset edited entry
+            $edit = $newname;
+            $self->edit($edit);
         }
 
         my $target = $form->{"input/target"};
