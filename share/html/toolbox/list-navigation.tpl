@@ -1,12 +1,12 @@
     <div class='list-nav'>
       <div class='arrow'>{
         $display && $start ? "
-        <a href='$url_path/$request?start=1' class='arrow'>&LeftArrowBar;</a>" : ""}
+        <a href='$url_path/$request?start=1' class='arrow'><i class='ti ti-chevron-left-pipe'></i></a>" : ""}
       </div>
       <div class='arrow'>{
         $newstart = $display && $page > 1 ? ($page-2)*$display+1 : 0;
         $OUT .= $display && $start ? "
-        <a href='$url_path/$request?start=$newstart' class='arrow'>&LeftArrow;</a>" : "" }
+        <a href='$url_path/$request?start=$newstart' class='arrow'><i class='ti ti-chevron-left'></i></a>" : "" }
       </div>
       <div class='list-count'>{
         $list_count ?
@@ -18,12 +18,12 @@
       <div class='arrow'>{
         $newstart = $pages > $page ? $page*$display+1 : 0;
         $display && $newstart ? "
-        <a href='$url_path/$request?start=$newstart' class='arrow'>&RightArrow;</a>" : "" }
+        <a href='$url_path/$request?start=$newstart' class='arrow'><i class='ti ti-chevron-right'></i></a>" : "" }
       </div>
       <div class='arrow'>{
         $newstart = $pages > $page ? ($pages-1)*$display+1 : 0;
         $display && $newstart ? "
-        <a href='$url_path/$request?start=$newstart' class='arrow'>&RightArrowBar;</a>" : "" }
+        <a href='$url_path/$request?start=$newstart' class='arrow'><i class='ti ti-chevron-right-pipe'></i></a>" : "" }
       </div>
       <div class='display-option list-option'>
         {_"Display (number of items)"}
