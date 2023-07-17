@@ -32,18 +32,18 @@
     <div class='form-edit-row' id='type-option'>
       <div class='form-edit'>
         <label>{_"Type"}</label>
-      </div>
-      <div class='form-edit'>
-        <ul class='type-options'>
-          <li style='display: {$jobs{$edit} && $type ne "local" ? "none" : "block"}'>
-            <input type="radio" name="input/type" id="type/local" value="local" onchange="jobtype_change()"{$type eq "local" ? " checked" : ""}/>
-            <label for='local'>{_"Local inventory"}</label>
-          </li>
-          <li style='display: {$jobs{$edit} && $type ne "netscan" ? "none" : "block"}'>
-            <input type="radio" name="input/type" id="type/netscan" value="netscan" onchange="jobtype_change()"{$type eq "netscan" ? " checked" : ""}/>
-            <label for='netscan'>{_"Network scan"}</label>
-          </li>
-        </ul>
+        <div class='form-edit-row'>
+          <ul class='options'>
+            <li style='display: {$jobs{$edit} && $type ne "local" ? "none" : "block"}'>
+              <input type="radio" name="input/type" id="type/local" value="local" onchange="jobtype_change()"{$type eq "local" ? " checked" : ""}/>
+              <label for='local'>{_"Local inventory"}</label>
+            </li>
+            <li style='display: {$jobs{$edit} && $type ne "netscan" ? "none" : "block"}'>
+              <input type="radio" name="input/type" id="type/netscan" value="netscan" onchange="jobtype_change()"{$type eq "netscan" ? " checked" : ""}/>
+              <label for='netscan'>{_"Network scan"}</label>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
     <div class='form-edit-row'>
@@ -63,25 +63,23 @@
     <div class='form-edit-row' id='scheduling-option'>
       <div class='form-edit'>
         <label for='input/scheduling/type'>{_"Scheduling type"}</label>
-      </div>
-    </div>
-    <div class='form-edit-row scheduling-type-options'>
-      <div class='form-edit'>
-        <ul class='scheduling-type-options'>
-          <li>
-            <input type="radio" name="input/scheduling/type" id="scheduling/type/delay" value="delay" onchange="schedtype_change()"{$schedtype eq "delay" ? " checked" : ""}/>
-            <label for='scheduling/type/delay'>{_"Delay"}</label>
-          </li>
-          <li>
-            <input type="radio" name="input/scheduling/type" id="scheduling/type/timeslot" value="timeslot" onchange="schedtype_change()"{$schedtype eq "timeslot" ? " checked" : ""}/>
-            <label for='scheduling/type/timeslot'>{_"Timeslot"}</label>
-          </li>
-        </ul>
+        <div class='form-edit-row'>
+          <ul class='options'>
+            <li>
+              <input type="radio" name="input/scheduling/type" id="scheduling/type/delay" value="delay" onchange="schedtype_change()"{$schedtype eq "delay" ? " checked" : ""}/>
+              <label for='scheduling/type/delay'>{_"Delay"}</label>
+            </li>
+            <li>
+              <input type="radio" name="input/scheduling/type" id="scheduling/type/timeslot" value="timeslot" onchange="schedtype_change()"{$schedtype eq "timeslot" ? " checked" : ""}/>
+              <label for='scheduling/type/timeslot'>{_"Timeslot"}</label>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
     <div class='form-edit-row' id='delay-option' style='display: {$schedtype eq "delay" ? "flex" : "none"}'>
       <div class='form-edit'>
-        <label for='delay-config' class='tag'>{_"Delay"}:</label>
+        <label for='delay-config' class='tag'>{_"Delay"}</label>
         <div class='tag'>
           <select id='delay-config' class='tag' name='input/delay'{$schedtype ne 'delay' ? " disabled" : ""}>{
             my %units = qw( s second m minute h hour d day w week);
@@ -110,7 +108,7 @@
     </div>
     <div class='form-edit-row' id='timeslot-option' style='display: {$schedtype eq "timeslot" ? "flex" : "none"}'>
       <div class='form-edit'>
-        <label for='timeslot-config' class='tag'>{_"Timeslots"}:</label>
+        <label for='timeslot-config' class='tag'>{_"Timeslots"}</label>
         <div class='tag'>{
             @timeslots = ();
             foreach my $timeslot (sort grep { $scheduling{$_}->{type} eq 'timeslot' } keys(%scheduling)) {
@@ -149,7 +147,7 @@
     </div>
     <div class='form-edit-row' id='tag-option'>
       <div class='form-edit'>
-        <label for='tag' class='tag'>{_"Use a tag"}:</label>
+        <label for='tag' class='tag'>{_"Use a tag"}</label>
         <em class='hint' id='tag-option-condition' style='display: {$type eq "local" ? "none" : "flex"}'>{_"Only for remote inventory and ESX tasks"}</em>
         <div class='tag'>
           <select id='tag-config' class='tag' name='input/tag'>
@@ -178,7 +176,7 @@
       <div class='form-edit'>
         <label>{_"Associated ip ranges"}</label>
         <div id='ip-ranges'>
-          <ul>{
+          <ul class='options'>{
           my @ipranges = ();
           my %selected = ();
           my %checkbox = map { m{^checkbox/ip_range/(.*)$} => 1 } grep { m{^checkbox/ip_range/} && $form{$_} eq 'on' } keys(%form);
@@ -227,31 +225,30 @@
         </div>
       </div>
     </div>
-    <div class='form-edit' id='netscan-options-2' style='display: {$type ne "local" ? "flex" : "none"}'>
-      <label>{_"Options"}:</label>
-      <div class='form-edit-row'>
-        <div class='form-edit-row'>
-          <label for='threads' class='run-options'>{_"Threads"}:</label>
-          <select id='threads' name='input/threads' class='run-options'{$type ne "local" ? "" : " disabled"}>{
-            foreach my $opt (@threads_options) {
-              $OUT .= "
-            <option" .
-                ($threads_option && $threads_option eq $opt ? " selected" : "") .
-                ">$opt</option>";
-            }}
-          </select>
-        </div>
-        <div class='form-edit-row'>
-          <label for='timeout' class='run-options'>{_"SNMP Timeout"}:</label>
-          <select id='timeout' name='input/timeout' class='run-options'{$type ne "local" ? "" : " disabled"}>{
-            foreach my $opt (@timeout_options) {
-              $OUT .= "
-            <option".
-                ($timeout_option && $timeout_option eq $opt ? " selected" : "").
-                ">$opt</option>";
-            }}
-          </select>
-        </div>
+    <div class='form-edit-row' id='netscan-options-2' style='display: {$type ne "local" ? "flex" : "none"}'>
+      <div class='form-edit'>
+        <label for='threads'>{_"Threads"}</label>
+        <select id='threads' name='input/threads' class='run-options'{$type ne "local" ? "" : " disabled"}>{
+          foreach my $opt (@threads_options) {
+            $OUT .= "
+          <option" .
+              ($threads_option && $threads_option eq $opt ? " selected" : "") .
+              ">$opt</option>";
+          }}
+        </select>
+      </div>
+    </div>
+    <div class='form-edit-row' id='netscan-options-3' style='display: {$type ne "local" ? "flex" : "none"}'>
+      <div class='form-edit'>
+        <label for='timeout'>{_"SNMP Timeout"}</label>
+        <select id='timeout' name='input/timeout' class='run-options'{$type ne "local" ? "" : " disabled"}>{
+          foreach my $opt (@timeout_options) {
+            $OUT .= "
+          <option".
+              ($timeout_option && $timeout_option eq $opt ? " selected" : "").
+              " value='$opt'>${opt}s</option>";
+          }}
+        </select>
       </div>
     </div>
     <div class='form-edit-row'>
@@ -274,6 +271,7 @@
       document.getElementById("tag-option-condition").style = netscanshow;
       // Netscan form
       document.getElementById("netscan-options-2").style = netscanshow;
+      document.getElementById("netscan-options-3").style = netscanshow;
       document.getElementById("netscan-options").style = netscanshow;
       document.getElementById("add-iprange").disabled = islocal;
       document.getElementById("select-iprange").disabled = islocal;

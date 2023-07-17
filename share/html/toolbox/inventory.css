@@ -16,11 +16,15 @@ select.tag {
   display: block;
   width: 20em;
   margin-top: 0.3em;
+  margin-left: 1em;
 }
 
 a.tag {
   display: block;
   text-align: right;
+  font-size: 20px;
+  margin-left: 1em;
+  width: 20em;
 }
 
 label.tag {
@@ -60,10 +64,11 @@ label.task {
 }
 
 .run-options {
-  font: 12px Arial, Helvetica;
-  margin: 5px 20px 0 5px;
-  padding: 0;
-  border-radius: 0;
+  font: 20px Arial, Helvetica;
+  display: block;
+  width: 3em;
+  margin-top: 0.3em;
+  margin-left: 1em;
 }
 
 ul.tasks {
@@ -198,12 +203,10 @@ h2 {
   margin-bottom: 0px;
 }
 
-ul.type-options {
-  margin-bottom: 0px;
-}
-
-ul.scheduling-type-options {
+ul.options {
   margin: 0px;
-  padding-top: 0px;
+  padding-top: 0.3em;
   padding-bottom: 0px;
+  padding-left: 0.5em;
+  margin-left: 0.5em;
 }
