@@ -12,9 +12,6 @@
     -e "$template_path/$request.css" ? "
   <link rel='stylesheet' href='$url_path/$request.css' type='text/css' />"
     : "" }{
-    $request eq 'results' && $edit && $need_datetime ? "
-  <link rel='stylesheet' href='$url_path/flatpickr.min.css' type='text/css' />"
-    : "" }{
     -e "$template_path/custom.css" ? "
   <link rel='stylesheet' href='$url_path/custom.css' type='text/css' />"
     : "" }

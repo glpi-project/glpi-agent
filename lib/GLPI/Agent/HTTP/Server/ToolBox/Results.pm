@@ -291,7 +291,6 @@ sub update_template_hash {
                 next if !$device->type && $section->{match} eq 'COMPUTER';
                 next if $device->type !~ $re_match;
             }
-            $hash->{need_datetime} += scalar(grep { $_->{type} =~ /^date/ } values(%{$section->{fields}}));
             push @{$hash->{sections}}, $section;
         }
         $hash->{checked_fields} = $self->get_from_session('checked_fields');
@@ -385,6 +384,8 @@ sub handle_form {
             : ();
         foreach my $field (@fields_update) {
             next if $device->noedit($field);
+            # Fix date time format submitted by datetime-local input to match our required format
+            $form->{"edit/$field"} = "$1 $2" if $form->{"edit/$field"} =~ /^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})$/;
             next if $device->get($field) eq $form->{"edit/$field"};
             $device->set($field => $form->{"edit/$field"});
             $changes++;

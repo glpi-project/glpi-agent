@@ -129,11 +129,11 @@
             <input type='number' name='$editname' value='$value'/>";
           } elsif ($field->{type} eq 'date') {
             $OUT .= "
-            <input type='text' id='dt_$fieldname' name='$editname' value='$value' onclick='opendatetime(\"dt_$fieldname\", false)'/>
+            <input type='date' id='dt_$fieldname' name='$editname' value='$value'/>
             <input type='button' value='".(_"Reset")."' onclick='document.getElementById(\"dt_$fieldname\").value = \"$value\"'/>";
           } elsif ($field->{type} eq 'datetime') {
             $OUT .= "
-            <input type='text' id='dt_$fieldname' name='$editname' value='$value' onclick='opendatetime(\"dt_$fieldname\", true)'/>
+            <input type='datetime-local' id='dt_$fieldname' name='$editname' value='$value'/>
             <input type='button' value='".(_"Reset")."' onclick='document.getElementById(\"dt_$fieldname\").value = \"$value\"'/>";
           } elsif ($field->{type} eq 'textarea') {
             $OUT .= "
@@ -266,21 +266,21 @@
     </div>";
     if ($do eq 'edit' && $has_selected_fields) {
       $OUT .= "
-    <div class='center'><input class='submit' type='submit' name='submit/set-selected-fields' value='".(_"Apply selected fields")."'/></div>";
+    <div class='center'><input class='submit-secondary' type='submit' name='submit/set-selected-fields' value='".(_"Apply selected fields")."'/></div>";
     }
   }
   $OUT .= "
     <hr/>".($do eq 'edit' ? "
-    <input class='submit' type='submit' name='submit/update' value='"._("Update")."'/>" : "")."
-    <input class='submit' type='submit' name='submit/delete-device' value='"._("Delete")."'/>";
+    <input class='big-button' type='submit' name='submit/update' value='"._("Update")."'/>" : "")."
+    <input class='secondary-button' type='submit' name='submit/delete-device' value='"._("Delete")."'/>";
   if ($do eq 'edit') {
     if ($select_fields) {
       $OUT .= "
-    <input class='submit' type='button' onclick='select_fields()' value='".(_"Select fields for propagation")."'/>";
+    <input class='secondary-button' type='button' onclick='select_fields()' value='".(_"Select fields for propagation")."'/>";
     }
     if (keys(%checked_fields)) {
       $OUT .= "
-    <input class='submit' type='submit' name='submit/stop-propagation' value='".(_"Stop fields propagation")."'/>";
+    <input class='secondary-button' type='submit' name='submit/stop-propagation' value='".(_"Stop fields propagation")."'/>";
     }
   }}
     <hr/>
@@ -292,26 +292,4 @@
       <input type='hidden' name='next-edit' value='{$index < $#devices_order ? $devices_order[$index+1] : ""}'/>
       <div class='other-option'>{_"Go to next device after deletion"}</div>
     </div>
-  </form>{
-  $need_datetime ? "
-  <script src='$url_path/flatpickr.js'></script>
-  <script>
-    var dts =\{\};
-    function opendatetime(id, time) \{
-      var input = document.getElementById(id);
-      var dt = dts[id];
-      if (!dt) \{
-        dt = flatpickr(input, \{
-          'allowInput': true,
-          'enableTime': time,
-          'time_24hr': true,
-          'defaultHour': new Date().getHours(),
-          'defaultMinute': new Date().getMinutes(),
-        \});
-        dts[id] = dt;
-      \}
-      if (input.value) dt.setDate(input.value);
-      dt.open();
-    \}
-  </script>" : ""
-}
+  </form>
