@@ -186,6 +186,16 @@ label {
   margin-left: 5px;
 }
 
+input.input-row {
+  font: 20px Arial, Helvetica;
+  margin-top: 0.3em;
+  margin-left: 1em;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  padding: 5px;
+  width: 20em;
+}
+
 .right {
   text-align: right;
   flex-direction: column;
