@@ -801,3 +801,15 @@ ul.config {
 li.config {
   line-height: 1.2em;
 }
+
+em.hint {
+  margin: 5px;
+}
+
+em.hint::before {
+  content: "\f635";
+  font-family: tabler-icons;
+  font-style: normal;
+  font-size: 1.2em;
+  padding-right: 0.3em;
+}

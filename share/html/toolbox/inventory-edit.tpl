@@ -152,7 +152,7 @@
     <div class='form-edit-row' id='tag-option'>
       <div class='form-edit'>
         <label for='tag' class='tag'>{_"Use a tag"}:</label>
-        <p id='tag-option-condition' class='run-options' style='display: {$type eq "local" ? "none" : "flex"}'>{_"Only for remote inventory and ESX tasks"}</p>
+        <em class='hint' id='tag-option-condition' style='display: {$type eq "local" ? "none" : "flex"}'>{_"Only for remote inventory and ESX tasks"}</em>
         <div class='tag'>
           <select id='tag-config' class='tag' name='input/tag'>
             <option value=''{!$edit_tag ? " selected" : ""}>{_"None"}</option>{
