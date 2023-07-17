@@ -14,6 +14,12 @@
     $first_sched   = @{$scheduling} ? $scheduling->[0] : undef;
     $schedtype     = $first_sched ? $scheduling{$first_sched}->{type} : $form{"input/scheduling-type"} || "delay";
     $description   = $job->{description}   || $form{"input/description"}  || "";
+    # Check timeslots count to decide how to show delay & timeslot select
+    $timeslots     = scalar(grep { $scheduling{$_}->{type} eq 'timeslot' } keys(%scheduling));
+    $delays        = scalar(grep { $scheduling{$_}->{type} eq 'delay' } keys(%scheduling));
+    $delaysize     = $timeslots > 1 ? $timeslots < 5 ? $timeslots : 5 : 0;
+    $delaysize     = $delays < 5 ? $delays : 5
+      if $delays > $delaysize;
     $jobs{$edit} ? sprintf(_("Edit &laquo;&nbsp;%s&nbsp;&raquo; inventory task"), ($job->{name} || $this))
       : _"Add new inventory task"}</h2>
   <form name='{$request}' method='post' action='{$url_path}/{$request}'>
@@ -81,7 +87,7 @@
       <div class='form-edit'>
         <label for='delay-config' class='tag'>{_"Delay"}</label>
         <div class='tag'>
-          <select id='delay-config' class='tag' name='input/delay'{$schedtype ne 'delay' ? " disabled" : ""}>{
+          <select id='delay-config' class='tag' name='input/delay'{$delaysize ? " size='$delaysize'" : ""}{$schedtype ne 'delay' ? " disabled" : " required"}>{
             my %units = qw( s second m minute h hour d day w week);
             foreach my $delay (sort grep { $scheduling{$_}->{type} eq 'delay' } keys(%scheduling)) {
               my $value = $scheduling{$delay}->{delay} || "24h";
@@ -134,7 +140,7 @@
             $OUT .= "";
           }
           <input id='set-timeslot' type='hidden' name='set-timeslot' value='{ join("&", map { encode('UTF-8', encode_entities($_)) } grep { $scheduling{$_}->{type} eq 'timeslot' } @{$scheduling}) }'{$schedtype ne 'timeslot' ? " disabled" : ""}/>
-          <select id='timeslot-config'{@timeslots > 1 ? " multiple" : "" } onchange='updateSelectTimeslot(this)' class='tag' name='input/timeslot'{$schedtype ne 'timeslot' ? " disabled" : ""}>{
+          <select id='timeslot-config'{$delaysize ? " multiple size='$delaysize'" : "" } onchange='updateSelectTimeslot(this)' class='tag' name='input/timeslot'{$schedtype ne 'timeslot' ? " disabled" : " required"}>{
             foreach my $timeslot (@timeslots) {
               my ($name, $title) = @{$timeslot};
               my $encoded = encode('UTF-8', encode_entities($name));
@@ -285,8 +291,10 @@
       // Delay options
       document.getElementById("delay-option").style = delayshow;
       document.getElementById("delay-config").disabled = !isdelay;
+      document.getElementById("delay-config").required = isdelay;
       document.getElementById("timeslot-option").style = timeslotshow;
       document.getElementById("timeslot-config").disabled = isdelay;
+      document.getElementById("timeslot-config").required = !isdelay;
       document.getElementById("set-timeslot").disabled = isdelay;
     \}
     function config_new_tag () \{
