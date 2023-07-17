@@ -64,12 +64,8 @@
     </div>
     <div class='form-edit'>
       <label>{_"Configuration"}</label>
-    </div>
-    <div class='form-edit-row description' id='delay-description' style='display: {$type eq "delay" ? "flex" : "none"}'>
-      {_"The approximate delay time between two tasks runs"}
-    </div>
-    <div class='form-edit-row description' id='timeslot-description' style='display: {$type eq "timeslot" ? "flex" : "none"}'>
-      {_"Week day, day time and duration of a time slot during which a task will be executed once"}
+      <em class='hint' id='delay-description' style='display: {$type eq "delay" ? "flex" : "none"}'>{_"The approximate delay time between two tasks runs"}</em>
+      <em class='hint' id='timeslot-description' style='display: {$type eq "timeslot" ? "flex" : "none"}'>{_"Week day, day time and duration of a time slot during which a task will be executed once"}</em>
     </div>
     <div class='form-edit-row' id='delay-config' style='display: {$type eq "delay" ? "flex" : "none"}'>
       <div class='form-edit'>
