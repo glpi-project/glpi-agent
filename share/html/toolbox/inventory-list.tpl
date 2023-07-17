@@ -473,6 +473,8 @@
           enabled = true;
           document.getElementById(task+'-nextrun').innerHTML = next_run_date;
           timeouts[task] = next_run_time * 1000;
+        \} else \{
+          enabled = false;
         \}
       \}
       if (enabled) outputids.push(task);
