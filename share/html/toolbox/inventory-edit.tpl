@@ -13,7 +13,6 @@
     $scheduling    = $job->{scheduling}    || [];
     $first_sched   = @{$scheduling} ? $scheduling->[0] : undef;
     $schedtype     = $first_sched ? $scheduling{$first_sched}->{type} : $form{"input/scheduling-type"} || "delay";
-    $edit_delay    = $form{"input/delay"}  || "";
     $description   = $job->{description}   || $form{"input/description"}  || "";
     $jobs{$edit} ? sprintf(_("Edit &laquo;&nbsp;%s&nbsp;&raquo; inventory task"), ($job->{name} || $this))
       : _"Add new inventory task"}</h2>
@@ -84,8 +83,7 @@
       <div class='form-edit'>
         <label for='delay-config' class='tag'>{_"Delay"}:</label>
         <div class='tag'>
-          <select id='delay-config' class='tag' name='input/delay'{$schedtype ne 'delay' ? " disabled" : ""}>{$edit_delay ? "" : "
-            <option value='' selected>"._("None")."</option>"}{
+          <select id='delay-config' class='tag' name='input/delay'{$schedtype ne 'delay' ? " disabled" : ""}>{
             my %units = qw( s second m minute h hour d day w week);
             foreach my $delay (sort grep { $scheduling{$_}->{type} eq 'delay' } keys(%scheduling)) {
               my $value = $scheduling{$delay}->{delay} || "24h";
