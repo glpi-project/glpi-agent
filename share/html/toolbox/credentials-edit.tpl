@@ -124,7 +124,7 @@
     <div class='form-edit-row' id='advanced-options' style='display: {$type ne "esx" ? "flex" : "none"}'>
       <div class='form-edit'>
         <label for='port'>{_"Port"}</label>
-        <input class='input-row' type='number' id='port' name='input/port'  min='1' max='65535' placeholder='{$type eq "ssh" ? 22 : $type eq "winrm" && $modes{ssl} ? 5986 : $type eq "winrm" ? 5985 : 161}' value='{$port}' size='7'{$type eq "esx" ? " disabled" : ""}/>
+        <input class='input-row input-number' type='number' id='port' name='input/port'  min='1' max='65535' placeholder='{$type eq "ssh" ? 22 : $type eq "winrm" && $modes{ssl} ? 5986 : $type eq "winrm" ? 5985 : 161}' value='{$port}' size='7'{$type eq "esx" ? " disabled" : ""}/>
       </div>
       <div class='form-edit' id='advanced-options-protocol' style='display: {$type eq "snmp" ? "flex" : "none"}'>
         <label for='protocol'>{_"Protocol"}</label>
