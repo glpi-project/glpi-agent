@@ -463,13 +463,22 @@ span.custom-checkbox:after {
 }
 
 #credentials li {
-  line-height: 1.5em;
+  font: 20px Arial, Helvetica;
   list-style: none;
   margin-left: 5px;
 }
 
 #credentials ul {
-  padding: 0;
+  padding-left: 1em;
+  margin: 0px;
+}
+
+#credentials select,option {
+  font: 20px Arial, Helvetica;
+}
+
+input.credentials {
+  width: initial;
 }
 
 .tab {

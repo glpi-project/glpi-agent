@@ -58,9 +58,11 @@
               <li class='config'>
                 <div class='with-tooltip'>
                   <a href='$url_path/credentials?edit=".uri_escape(encode("UTF-8", $_))."'>".encode('UTF-8', encode_entities($credentials{$_}->{name} || $_))."
-                    <div class='tooltip right-tooltip'>
-                      <p>".($credentials{$_}->{type} ? _("Type").":&nbsp;".$credentials{$_}->{type} : _("SNMP version").":&nbsp;".$credentials{$_}->{snmpversion})."</p>
-                      <p>".(!$credentials{$_}->{type} && $credentials{$_}->{snmpversion} ne "v3" ? _("Community").":&nbsp;".$credentials{$_}->{community} : _("Username").":&nbsp;".$credentials{$_}->{username})."</p>
+                    <div class='tooltip right-tooltip'>".($credentials{$_}->{type} ? "
+                      <p>"._("Type").":&nbsp;".$credentials{$_}->{type}."</p>" : "").((!$credentials{$_}->{type} || $credentials{$_}->{type} eq "snmp") && $credentials{$_}->{snmpversion} ? "
+                      <p>"._("SNMP version").":&nbsp;".$credentials{$_}->{snmpversion}."</p>" : "")."
+                      <p>".((!$credentials{$_}->{type} || $credentials{$_}->{type} eq "snmp") && $credentials{$_}->{snmpversion} && $credentials{$_}->{snmpversion} ne "v3" ? _("Community").":&nbsp;".$credentials{$_}->{community} : _("Username").":&nbsp;".$credentials{$_}->{username})."</p>".($credentials{$_}->{description} ? "
+                      <p>"._("Description").":&nbsp;".encode('UTF-8', $credentials{$_}->{description})."</p>" : "")."
                       <i></i>
                     </div>
                   </a>
