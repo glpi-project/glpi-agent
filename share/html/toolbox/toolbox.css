@@ -196,6 +196,20 @@ input.input-row {
   width: 20em;
 }
 
+select.input-row  {
+  font: 20px Arial, Helvetica;
+  margin-top: 0.3em;
+  margin-left: 1em;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  padding: 5px;
+  width: 6em;
+}
+
+input.input-number {
+  width: 6em;
+}
+
 .right {
   text-align: right;
   flex-direction: column;
@@ -481,6 +495,11 @@ input.credentials {
   width: initial;
 }
 
+#type-options,#snmp-version-options {
+  padding-left: 1em;
+  margin: 0px;
+}
+
 .tab {
   overflow: hidden;
 }
@@ -749,8 +768,9 @@ input:checked + .slider:before {
 }
 
 i.pass-eye {
-  font-size: 1.2em;
-  margin: 2px;
+  font-size: 30px;
+  margin-top: 8px;
+  margin-left: 3px;
 }
 
 button.eye {
