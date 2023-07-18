@@ -25,15 +25,18 @@
         <label for='ip_start'>{_"IP range start"}</label>
         <input class='input-row' type='text' id='ip_start' name='input/ip_start' placeholder='A.B.C.D' value='{$range->{ip_start} || $form{"input/ip_start"} || ""}' size='15'/>
       </div>
+    </div>
+    <div class='form-edit-row'>
       <div class='form-edit'>
         <label for='ip_end'>{_"IP range end"}</label>
         <input class='input-row' type='text' id='ip_end' name='input/ip_end' placeholder='W.X.Y.Z' value='{$range->{ip_end} || $form{"input/ip_end"} || ""}' size='15'/>
       </div>
     </div>
-    <div class='form-edit'>
-      <label>{_"Associated credentials"}</label>
-      <div id='credentials'>
-        <ul>{
+    <div class='form-edit-row'>
+      <div class='form-edit'>
+        <label>{_"Associated credentials"}</label>
+        <div class='form-edit-row' id='credentials'>
+          <ul>{
         my @credentials = ();
         my %checkbox = map { m{^checkbox/cred/(.*)$} => 1 } grep { m{^checkbox/cred/} && $form{$_} eq 'on' } keys(%form);
         map { $checkbox{$_} = 1 } @{$range->{credentials}} if !keys(%checkbox) && @{$range->{credentials}};
@@ -41,37 +44,55 @@
         foreach my $credential (@credentials) {
           my $cred = $credentials{$credential}
             or next;
+          my $credname = encode('UTF-8', encode_entities($cred->{name} || $credential));
           $OUT .= "
-          <li>
-            <input type='checkbox' name='checkbox/cred/".encode('UTF-8', encode_entities($credential))."' checked />
-            <div class='with-tooltip'>
-              <a href='$url_path/credentials?edit=".uri_escape(encode("UTF-8", $credential))."'>".encode('UTF-8', encode_entities($cred->{name} || $credential))."
-                <div class='tooltip right-tooltip'>
-                  <p>".($cred->{type} ? _("Type").":&nbsp;".$cred->{type} : _("SNMP version").":&nbsp;".$cred->{snmpversion})."</p>
-                  <p>".(!$cred->{type} && $cred->{snmpversion} ne "v3" ? _("Community").":&nbsp;".$cred->{community} : _("Username").":&nbsp;".$cred->{username})."</p>
-                  <i></i>
-                </div>
-              </a>
-            </div>
-          </li>";
+            <li>
+              <input type='checkbox' name='checkbox/cred/$credname' checked />
+              <div class='with-tooltip'>
+                <a href='$url_path/credentials?edit=".uri_escape($credname)."'>$credname
+                  <div class='tooltip right-tooltip'>".($cred->{type} ? "
+                    <p>"._("Type").":&nbsp;".$cred->{type}."</p>" : "").((!$cred->{type} || $cred->{type} eq "snmp") && $cred->{snmpversion} ? "
+                    <p>"._("SNMP version").":&nbsp;".$cred->{snmpversion}."</p>" : "")."
+                    <p>".((!$cred->{type} || $cred->{type} eq "snmp") && $cred->{snmpversion} && $cred->{snmpversion} ne "v3" ? _("Community").":&nbsp;".$cred->{community} : _("Username").":&nbsp;".$cred->{username})."</p>".($cred->{description} ? "
+                    <p>"._("Description").":&nbsp;".encode('UTF-8', $cred->{description})."</p>" : "")."
+                    <i></i>
+                  </div>
+                </a>
+              </div>
+            </li>";
           delete $credentials{$credential};
         }
         if (keys(%credentials)) {
           my $select = $form{"input/credentials"} || "";
           $OUT .= "
-          <li>
-            <select name='input/credentials'>
-              <option".($select ? "" : " selected")."></option>".
-          join("", map { "
-              <option".(($select && $select eq $_)? " selected" : "").
-          " value='".encode('UTF-8', encode_entities($_))."'>".encode('UTF-8', encode_entities($credentials{$_}->{name} || $_))."</option>"
-        } sort { $a cmp $b } keys(%credentials))."
-            </select>
-            <input class='input-row' type='submit' name='submit/addcredential' value='".(_"Add credential")."'/>
-          </li>";
+            <li>
+              <select name='input/credentials'>
+                <option".($select ? "" : " selected")."></option>";
+          foreach my $credential (sort { $a cmp $b } keys(%credentials)) {
+            my $cred = $credentials{$credential}
+              or next;
+            my $credname = encode('UTF-8', encode_entities($cred->{name} || $credential));
+            my $title = $cred->{type} ? _("Type").":&nbsp;".$cred->{type} : "";
+            $title .= (length($title) ? "\n" : "")._("SNMP version").":&nbsp;".$cred->{snmpversion}
+              if (!$cred->{type} || $cred->{type} eq "snmp") && $cred->{snmpversion};
+            $title .= (length($title) ? "\n" : "").((!$cred->{type} || $cred->{type} eq "snmp") && $cred->{snmpversion} && $cred->{snmpversion} ne "v3" ? _("Community").":&nbsp;".$cred->{community} : _("Username").":&nbsp;".$cred->{username});
+            my $description = $cred->{description};
+            if ($description) {
+              $description =~ s/[']/\\'/g;
+              $title .= "\n"._("Description").": ".encode('UTF-8', $description);
+            }
+            $OUT .= "
+                <option".(($select && $select eq $credential)? " selected" : "")." value='$credname' title='$title'>$credname
+                </option>";
+          }
+          $OUT .= "
+              </select>
+              <input class='input-row credentials' type='submit' name='submit/addcredential' value='".(_"Add credential")."'/>
+            </li>";
         }
         '';}
-        </ul>
+          </ul>
+        </div>
       </div>
     </div>
     <div class='form-edit-row'>
