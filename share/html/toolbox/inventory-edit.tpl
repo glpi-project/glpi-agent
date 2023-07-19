@@ -219,6 +219,7 @@
                 (@ipranges ? "" : " required").(@remains > 1 ? " multiple" : "").">".
             join("", map { "
                 <option".(($select && $select eq $_) || @remains == 1 ? " selected" : "").
+                " title='"._("First ip").": ".$ip_range{$_}->{ip_start}."\n"._("Last ip").": ".$ip_range{$_}->{ip_end}."\n"._("Credentials").": ".join(",", map { encode('UTF-8', encode_entities($_)) } @{$ip_range{$_}->{credentials}//[]})."' ".
             " value='".encode('UTF-8', encode_entities($_))."'>".encode('UTF-8', encode_entities($ip_range{$_}->{name} || $_))."</option>"
           } sort { $a cmp $b } @remains)."
               </select>".(@remains > 1 ? "

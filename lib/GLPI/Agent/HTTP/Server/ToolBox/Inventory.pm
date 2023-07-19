@@ -232,6 +232,7 @@ my %handlers = (
     'submit/cancel'         => \&_submit_cancel,
     'submit/update'         => \&_submit_update,
     'submit/delete'         => \&_submit_delete,
+    'submit/add-iprange'    => \&_submit_addiprange,
     'submit/disable'        => \&_submit_disable,
     'submit/enable'         => \&_submit_enable,
     'submit/run-now'        => \&_submit_runnow,
@@ -517,6 +518,31 @@ sub _submit_delete {
             next;
         }
         delete $jobs->{$name};
+        $self->need_save(jobs);
+    }
+}
+
+sub _submit_addiprange {
+    my ($self, $form, $yaml) = @_;
+
+    return unless $form && $yaml;
+
+    my $jobs = $yaml->{jobs} || {};
+    my $ipranges = $yaml->{ip_range} || {};
+
+    my $edit = $self->edit();
+    if ($edit) {
+        my $job = $jobs->{$edit}
+            or return;
+        return unless $job->{type} && $job->{type} eq 'netscan';
+        my $iprange = $form->{'add-iprange'}
+            or return;
+        my @ipranges = map { decode('UTF-8', uri_unescape($_)) } split('&', $iprange)
+            or return;
+        my @current = $job->{config} ? @{$job->{config}->{ip_range} // []} : ();
+        my %iprange = map { $_ => 1 } @current;
+        map { $iprange{$_} = 1 } grep { exists($ipranges->{$_}) } @ipranges;
+        $job->{config}->{ip_range} = [ sort keys(%iprange) ];
         $self->need_save(jobs);
     }
 }

@@ -210,3 +210,8 @@ ul.options {
   padding-left: 0.5em;
   margin-left: 0.5em;
 }
+
+#ip-ranges li {
+  font: 20px Arial, Helvetica;
+  line-height: 1.5em;
+}
