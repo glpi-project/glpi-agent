@@ -195,55 +195,6 @@ sub _submit_add {
     }
 }
 
-sub _submit_rename {
-    my ($self, $form, $scheduling) = @_;
-
-    return unless $form && $scheduling;
-
-    my $edit = $self->edit();
-    my $newname = $form->{'input/new-name'};
-
-    # Do nothing if no new was provided
-    return unless defined($newname) && length($newname);
-
-    # Do nothing if nothing to rename
-    return unless defined($edit) && length($edit);
-
-    # Do nothing if name is the same
-    return if $newname eq $form->{'edit'};
-
-    if (exists($scheduling->{$newname})) {
-        $newname = encode('UTF-8', $newname);
-        return $self->errors("Rename scheduling: An entry still exists with that name: '$newname'");
-    }
-
-    unless (exists($scheduling->{$edit})) {
-        $edit = encode('UTF-8', $edit);
-        return $self->errors("Rename scheduling: No such scheduling: '$edit'");
-    }
-
-    $scheduling->{$newname} = delete $scheduling->{$edit};
-    $self->need_save(scheduling);
-    $self->edit($newname);
-
-    # We also need to update any usage in tasks
-    my $jobs = $self->yaml('jobs') || {};
-    my $count = 0;
-    foreach my $job (values(%{$jobs})) {
-        my $scheduling = $job->{scheduling}
-            or next;
-        next unless ref($scheduling) eq 'ARRAY' && first { $_ eq $edit } @{$scheduling};
-        my @scheduling = grep { $_ ne $edit } @{$scheduling};
-        push @scheduling, $newname;
-        $job->{scheduling} = [ sort @scheduling ];
-        $count++;
-    }
-    if ($count) {
-        $self->need_save('jobs');
-        $self->debug2("Fixed $count jobs scheduling refs");
-    }
-}
-
 sub _submit_update {
     my ($self, $form, $scheduling) = @_;
 
@@ -285,6 +236,39 @@ sub _submit_update {
         } else {
             return $self->errors("Scheduling update: Unsupported scheduling type");
         }
+
+        my $newname = $form->{'input/name'};
+        if (defined($newname) && length($newname) && $newname ne $edit) {
+            if (exists($scheduling->{$newname})) {
+                $newname = encode('UTF-8', $newname);
+                return $self->errors("Rename scheduling: An entry still exists with that name: '$newname'");
+            }
+
+            $scheduling->{$newname} = delete $scheduling->{$edit};
+            $self->need_save(scheduling);
+
+            # We also need to update any usage in tasks
+            my $jobs = $self->yaml('jobs') || {};
+            my $count = 0;
+            foreach my $job (values(%{$jobs})) {
+                my $scheduling = $job->{scheduling}
+                    or next;
+                next unless ref($scheduling) eq 'ARRAY' && first { $_ eq $edit } @{$scheduling};
+                my @scheduling = grep { $_ ne $edit } @{$scheduling};
+                push @scheduling, $newname;
+                $job->{scheduling} = [ sort @scheduling ];
+                $count++;
+            }
+            if ($count) {
+                $self->need_save('jobs');
+                $self->debug2("Fixed $count jobs scheduling refs");
+            }
+
+            # Reset edited entry
+            $edit = $newname;
+            $self->edit($edit);
+        }
+
         # Update scheduling
         foreach my $key (qw(description)) {
             my $input = "input/$key";
@@ -345,7 +329,6 @@ sub _submit_cancel {
 
 my %handlers = (
     'submit/add'            => \&_submit_add,
-    'submit/rename'         => \&_submit_rename,
     'submit/update'         => \&_submit_update,
     'submit/delete'         => \&_submit_delete,
     'submit/cancel'         => \&_submit_cancel,
