@@ -7,6 +7,7 @@ Edit &laquo;&nbsp;%s&nbsp;&raquo; scheduling: Édition de la planification &laqu
 
 Time unit: Unité de temps
 Week day: Jour de la semaine
+Start: Début
 Day time: Heure du jour
 
 The approximate delay time between two tasks runs: Le temps approximatif entre deux exécutions de tâches

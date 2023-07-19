@@ -6,6 +6,7 @@
     $schedule = $scheduling{$edit} || {};
     $this = encode('UTF-8', encode_entities($edit));
     $type = $schedule->{type} || $form{"input/type"} || "delay";
+    ($weekday, $start, $dstring, $duration_time, $duration_unit) = qw(* 00:00 1h00 1 hour);
     if ($type eq 'delay' || $type ne 'timeslot') {
       $delay = $schedule->{delay} || $form{"input/delay"} || "24";
       my ($number, $unit) = $delay =~ /^(\d+)([smhdw])?$/;
@@ -13,19 +14,20 @@
       my %units = qw( s second m minute h hour d day w week );
       $timeunit = $units{$unit} if $unit && $units{$unit};
     } else { # timeslot type
-      $weekday = $schedule->{weekday} || $form{"input/weekday"} || "*";
-      my $start = $schedule->{start} || "00:00";
-      my $duration = $schedule->{duration} || "00:00";
-      ($hour, $minute) = $start =~ /^(\d{2}):(\d{2})$/;
-      $hour = $form{"input/start/hour"} || "00"
-        unless defined($hour);
-      $minute = $form{"input/start/minute"} || "00"
-        unless defined($minute);
-      ($dhour, $dminute) = $duration =~ /^(\d{2}):(\d{2})$/;
-      $dhour = $form{"input/duration/hour"} || "00"
-        unless defined($dhour);
-      $dminute = $form{"input/duration/minute"} || "00"
-        unless defined($dminute);
+      $weekday = $schedule->{weekday} || $form{"input/weekday"}
+        if $schedule->{weekday} || $form{"input/weekday"};
+      $start = $schedule->{start}
+        if $schedule->{start};
+      my $duration = $schedule->{duration} || "01:00";
+      my ($dhour, $dminute) = $duration =~ /^(\d{2}):(\d{2})$/;
+      if (int($dminute)) {
+        $duration_unit = "minute";
+        $duration_time = int($dhour) * 60 + int($dminute);
+      } else {
+        $duration_unit = "hour";
+        $duration_time = int($dhour);
+      }
+      $dstring = sprintf('%dh%02d', $dhour, $dminute);
     }
     $scheduling{$edit} ? sprintf(_("Edit &laquo;&nbsp;%s&nbsp;&raquo; scheduling"), ($schedule->{name} || $this))
       : _"Add new scheduling"}</h2>
@@ -61,18 +63,19 @@
     <div class='form-edit-row' id='delay-config' style='display: {$type eq "delay" ? "flex" : "none"}'>
       <div class='form-edit'>
         <label for='delaytime'>{_"Delay"}</label>
-        <input class='input-row' type='number' id='delaytime' name='input/delay' value='{$delay || 24}' {$type ne "delay" ? " disabled" : ""}/>
+        <input class='input-row input-number' type='number' id='delaytime' name='input/delay' value='{$delay}'{$type ne "delay" ? " disabled" : ""}/>
       </div>
       <div class='form-edit'>
         <label for='delayunit'>{_"Time unit"}</label>
         <div class='form-edit-row'>
-          <select class='input-row' id='delayunit' name='input/timeunit' {$type ne "delay" ? " disabled" : ""}>
+          <select class='input-row' id='delayunit' name='input/timeunit' onchange='delay_unit_change(this.value)'{$type ne "delay" ? " disabled" : ""}>
             <option{$timeunit eq "second" ? " selected" : ""} value="second">{_("second")}</option>
             <option{$timeunit eq "minute" ? " selected" : ""} value="minute">{_("minute")}</option>
             <option{$timeunit eq "hour"   ? " selected" : ""} value="hour">{_("hour")}</option>
             <option{$timeunit eq "day"    ? " selected" : ""} value="day">{_("day")}</option>
             <option{$timeunit eq "week"   ? " selected" : ""} value="week">{_("week")}</option>
           </select>
+          <input type='hidden' id='prev/delayunit' value='{$timeunit}'/>
         </div>
       </div>
     </div>
@@ -80,7 +83,7 @@
       <div class='form-edit'>
         <label for='week-day'>{_"Week day"}</label>
         <div class='form-edit-row'>
-          <select class='input-row' id='weekday' name='input/weekday' {$type eq "delay" ? " disabled" : ""}>
+          <select class='input-row' id='weekday' name='input/weekday'{$type eq "delay" ? " disabled" : ""}>
             <option{$weekday eq "*"         ? " selected" : ""} value="*">{_("all")}</option>
             <option{$weekday eq "mon"    ? " selected" : ""} value="mon">{_("monday")}</option>
             <option{$weekday eq "tue"   ? " selected" : ""} value="tues">{_("tuesday")}</option>
@@ -93,39 +96,25 @@
         </div>
       </div>
       <div class='form-edit'>
-        <label for='hour'>{_("Day time")." (hh:mm)"}</label>
+        <label for='start'>{_("Start")}</label>
         <div class='form-edit-row'>
-          <select class='input-row' id='hour' name='input/start/hour' {$type eq "delay" ? " disabled" : ""}>{
-          join("", map { "
-            <option".($hour eq $_ ? " selected" : "")." value='$_'>$_</option>"
-          } map { sprintf("%02d", $_) } 0..23)
-          }
-          </select>
-          :
-          <select class='input-row' id='minute' name='input/start/minute' {$type eq "delay" ? " disabled" : ""}>{
-            join("", map { "
-            <option".($minute eq $_ ? " selected" : "")." value='$_'>$_</option>"
-            } map { sprintf("%02d", $_) } 0..59)
-          }
-          </select>
+          <input class='input-row input-time' type='time' id='start' name='input/start' value='{$start}' title='{_("Day time")}'{$type eq "delay" ? " disabled" : ""}>
         </div>
       </div>
       <div class='form-edit'>
-        <label for='duration-hour'>{_("Duration")." (hh:mm)"}</label>
+        <label for='duration-time'>{_("Duration")}</label>
         <div class='form-edit-row'>
-          <select class='input-row' id='duration-hour' name='input/duration/hour' {$type eq "delay" ? " disabled" : ""}>{
-          join("", map { "
-            <option".($dhour eq $_ ? " selected" : "")." value='$_'>$_</option>"
-          } map { sprintf("%02d", $_) } 0..24)
-          }
+          <input class='input-row input-number' type='number' id='duration-time' min='1' max='{$duration_unit eq "minute" ? 1440 : 24}' name='input/duration/value' value='{$duration_time}' onchange='duration_change(this.value)'{$type eq "delay" ? " disabled" : ""}/>
+        </div>
+      </div>
+      <div class='form-edit'>
+        <label for='duration-unit'>{_("Time unit")}</label>
+        <div class='form-edit-row'>
+          <select class='input-row' id='duration-unit' name='input/duration/unit' onchange='duration_unit_change(this.value)'{$type eq "delay" ? " disabled" : ""}>
+            <option{$duration_unit eq "minute" ? " selected" : ""} value="minute">{_("minute")}</option>
+            <option{$duration_unit eq "hour"   ? " selected" : ""} value="hour">{_("hour")}</option>
           </select>
-          :
-          <select class='input-row' id='duration-minute' name='input/duration/minute' {$type eq "delay" ? " disabled" : ""}>{
-            join("", map { "
-            <option".($dminute eq $_ ? " selected" : "")." value='$_'>$_</option>"
-            } map { sprintf("%02d", $_) } 0..59)
-          }
-          </select>
+          <input class='input-row input-time' type='text' id='duration' value='{$dstring}' disabled />
         </div>
       </div>
     </div>
@@ -151,10 +140,9 @@
         document.getElementById("timeslot-config").style = "display: none";
         document.getElementById("timeslot-description").style = "display: none";
         document.getElementById("weekday").disabled = true;
-        document.getElementById("hour").disabled = true;
-        document.getElementById("minute").disabled = true;
-        document.getElementById("duration-hour").disabled = true;
-        document.getElementById("duration-minute").disabled = true;
+        document.getElementById("daytime").disabled = true;
+        document.getElementById("duration-time").disabled = true;
+        document.getElementById("duration-unit").disabled = true;
       \} else \{
         document.getElementById("delay-description").style = "display: none";
         document.getElementById("delay-config").style = "display: none";
@@ -163,10 +151,47 @@
         document.getElementById("timeslot-config").style = "display: flex";
         document.getElementById("timeslot-description").style = "display: flex";
         document.getElementById("weekday").disabled = false;
-        document.getElementById("hour").disabled = false;
-        document.getElementById("minute").disabled = false;
-        document.getElementById("duration-hour").disabled = false;
-        document.getElementById("duration-minute").disabled = false;
+        document.getElementById("daytime").disabled = false;
+        document.getElementById("duration-time").disabled = false;
+        document.getElementById("duration-unit").disabled = false;
       \}
+    \}
+    function delay_unit_change(unit) \{
+      var delay = document.getElementById("delaytime").value;
+      var prev  = document.getElementById("prev/delayunit").value;
+      if (prev === 'minute') delay *= 60;
+      else if (prev === 'hour') delay *= 3600;
+      else if (prev === 'day') delay *= 86400;
+      else if (prev === 'week') delay *= 604800;
+      if (unit === 'minute') delay /= 60;
+      else if (unit === 'hour') delay /= 3600;
+      else if (unit === 'day') delay /= 86400;
+      else if (unit === 'week') delay /= 604800;
+      document.getElementById("prev/delayunit").value = unit;
+      document.getElementById("delaytime").value = Math.round(delay);
+    \}
+    function duration_change(duration) \{
+      var unit = document.getElementById("duration-unit").value;
+      if (unit==='minute') \{
+        var minutes = duration%60;
+        let minute = minutes.toString();
+        if (minute.length<2) minute = "0"+minute;
+        let hour = ((duration-minute)/60).toString();
+        document.getElementById("duration").value = hour+"h"+minute;
+      \} else \{
+        document.getElementById("duration").value = duration+"h00";
+      \}
+    \}
+    function duration_unit_change(unit) \{
+      var duration = document.getElementById("duration-time").value;
+      if (unit === 'minute') \{
+        duration *= 60;
+        document.getElementById("duration-time").max = 1440;
+      \} else \{
+        duration = Math.round(duration/60);
+        document.getElementById("duration-time").max = 24;
+      \}
+      document.getElementById("duration-time").value = duration;
+      duration_change(duration);
     \}
   </script>
