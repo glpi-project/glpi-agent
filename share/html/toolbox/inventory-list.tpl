@@ -128,7 +128,7 @@
               <a href='$url_path/scheduling?edit=".uri_escape(encode("UTF-8", $sched))."'>".encode('UTF-8', encode_entities($sched))."
                 <div class='tooltip bottom-tooltip'>
                   <p>"._("Delay").": ".$delay."</p>".($scheduling{$sched}->{description} ? "
-                  <p>"._("Description").": ".encode('UTF-8', encode_entities($scheduling{$sched}->{description}))."</p>" : "")."
+                  <p>"._("Description").": ".encode('UTF-8', $scheduling{$sched}->{description})."</p>" : "")."
                   <i></i>
                 </div>
               </a>
@@ -151,7 +151,7 @@
                   <p>"._("day").": ".($weekday eq '*' ? _("all") : _($weekday))."</p>
                   <p>"._("start").": ".$hour."h".$minute."</p>
                   <p>"._("duration").": ".$dhour."h".$dminute."</p>".($scheduling{$sched}->{description} ? "
-                  <p>"._("Description").": ".encode('UTF-8', encode_entities($scheduling{$sched}->{description}))."</p>" : "")."
+                  <p>"._("Description").": ".encode('UTF-8', $scheduling{$sched}->{description})."</p>" : "")."
                   <i></i>
                 </div>
               </a>
