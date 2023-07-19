@@ -160,20 +160,22 @@ sub _submit_add {
             return $self->errors("New scheduling: Unsupported week day")
                 unless $weekday =~ /^\*|mon|tue|wed|thu|fri|sat|sun$/;
             $config->{weekday} = $weekday;
-            foreach my $key (qw(start duration)) {
-                my $hour = $form->{"input/$key/hour"} || "00";
-                my $min  = $form->{"input/$key/minute"} || "00";
-                return $self->errors("New scheduling: Invalid timeslot hour")
-                    unless $hour =~ /^\d+$/ && int($hour) >= 0 && (int($hour) < 24 || ($key eq 'duration' && int($hour) <= 24));
-                return $self->errors("New scheduling: Invalid timeslot minute")
-                    unless $min =~ /^\d+$/ && int($min) >= 0 && int($min) < 60;
-                if ($key eq 'duration') {
-                    my $duration = int($hour)*60 + int($min);
-                    return $self->errors("New scheduling: Invalid timeslot duration")
-                        unless $duration > 0 && $duration <= 24*60;
-                }
-                $config->{$key} = $hour.":".$min;
-            }
+            my $start = $form->{"input/start"} || '00:00';
+            return $self->errors("New scheduling: Invalid timeslot")
+                unless $start =~ /^(\d{2}):(\d{2})$/;
+            return $self->errors("New scheduling: Invalid timeslot")
+                unless $1 >= 0 && $1 < 24  && $2 >= 0 && $2 < 60;
+            $config->{start} = $start;
+            my $duration_time = $form->{"input/duration/value"} || "1";
+            my $duration_unit = $form->{"input/duration/unit"} || "hour";
+            return $self->errors("New scheduling: Invalid timeslot duration")
+                unless $duration_time =~ /^\d+$/ && $duration_unit =~ /^minute|hour$/;
+            my $hour = $duration_unit eq 'hour' ? int($duration_time) : int($duration_time/60);
+            my $min  = $duration_unit eq 'hour' ? 0 : int($duration_time%60);
+            my $duration = $hour*60 + $min;
+            return $self->errors("New scheduling: Invalid timeslot duration")
+                unless $duration > 0 && $duration <= 24*60;
+            $config->{duration} = sprintf("%02d:%02d", $hour, $min);
         } else {
             return $self->errors("New scheduling: Unsupported scheduling type");
         }
@@ -219,20 +221,22 @@ sub _submit_update {
             return $self->errors("Scheduling update: Unsupported week day")
                 unless $weekday =~ /^\*|mon|tue|wed|thu|fri|sat|sun$/;
             $config->{weekday} = $weekday;
-            foreach my $key (qw(start duration)) {
-                my $hour = $form->{"input/$key/hour"} || "00";
-                my $min  = $form->{"input/$key/minute"} || "00";
-                return $self->errors("Scheduling update: Invalid timeslot hour")
-                    unless $hour =~ /^\d+$/ && int($hour) >= 0 && (int($hour) < 24 || ($key eq 'duration' && int($hour) <= 24));
-                return $self->errors("Scheduling update: Invalid timeslot minute")
-                    unless $min =~ /^\d+$/ && int($min) >= 0 && int($min) < 60;
-                if ($key eq 'duration') {
-                    my $duration = int($hour)*60 + int($min);
-                    return $self->errors("Scheduling update: Invalid timeslot duration")
-                        unless $duration > 0 && $duration <= 24*60;
-                }
-                $config->{$key} = $hour.":".$min;
-            }
+            my $start = $form->{"input/start"} || '00:00';
+            return $self->errors("Scheduling update: Invalid timeslot")
+                unless $start =~ /^(\d{2}):(\d{2})$/;
+            return $self->errors("Scheduling update: Invalid timeslot")
+                unless $1 >= 0 && $1 < 24  && $2 >= 0 && $2 < 60;
+            $config->{start} = $start;
+            my $duration_time = $form->{"input/duration/value"} || "1";
+            my $duration_unit = $form->{"input/duration/unit"} || "hour";
+            return $self->errors("Scheduling update: Invalid timeslot duration")
+                unless $duration_time =~ /^\d+$/ && $duration_unit =~ /^minute|hour$/;
+            my $hour = $duration_unit eq 'hour' ? int($duration_time) : int($duration_time/60);
+            my $min  = $duration_unit eq 'hour' ? 0 : int($duration_time%60);
+            my $duration = $hour*60 + $min;
+            return $self->errors("Scheduling update: Invalid timeslot duration")
+                unless $duration > 0 && $duration <= 24*60;
+            $config->{duration} = sprintf("%02d:%02d", $hour, $min);
         } else {
             return $self->errors("Scheduling update: Unsupported scheduling type");
         }

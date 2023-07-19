@@ -210,6 +210,10 @@ input.input-number {
   width: 6em;
 }
 
+input.input-time {
+  width: 4em;
+}
+
 .right {
   text-align: right;
   flex-direction: column;

@@ -114,6 +114,5 @@ Unsupported delay time: Durée de délai non supportée
 Unsupported delay time unit: Unité de délai non supportée
 Minimum delay time is one minute: Le délai minimum est d'une minute
 Unsupported week day: Jour de la semaine non supporté
-Invalid timeslot hour: Heure de créneau horaire invalide
-Invalid timeslot minute: Minute de créneau horaire invalide
+Invalid timeslot start time: Heure de début du créneau horaire invalide
 Invalid timeslot duration: Durée de créneau horaire invalide

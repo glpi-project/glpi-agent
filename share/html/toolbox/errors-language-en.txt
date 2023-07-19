@@ -114,6 +114,5 @@ Unsupported delay time:
 Unsupported delay time unit:
 Minimum delay time is one minute:
 Unsupported week day:
-Invalid timeslot hour:
-Invalid timeslot minute:
+Invalid timeslot start time:
 Invalid timeslot duration:
