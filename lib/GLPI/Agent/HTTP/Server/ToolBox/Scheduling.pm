@@ -352,6 +352,9 @@ sub handle_form {
     $self->store_in_session( 'scheduling_order' => $form->{'order'} )
         if $form->{'order'} && $form->{'order'} =~ /^ascend|descend$/;
 
+    $self->store_in_session( 'scheduling_start' => int($form->{'start'}) )
+        if defined($form->{'start'}) && $form->{'start'} =~ /^\d+$/;
+
     $self->store_in_session( 'display' => $form->{'display'} =~ /^\d+$/ ? $form->{'display'} : 0 )
         if defined($form->{'display'});
 
