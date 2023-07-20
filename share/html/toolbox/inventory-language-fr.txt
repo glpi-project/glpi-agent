@@ -24,6 +24,10 @@ Target: Cible
 
 Created inventories: Inventaires créés
 Should match devices with SNMP support count: Devrait correspondre au nombre d'équipements avec support SNMP
+Show task progress: Montrer la progression de tâche
+Hide task progress: Cacher la progression de tâche
+Show task report: Montrer le rapport de tâche
+Hide task report: Cacher le rapport de tâche
 Show &laquo;&nbsp;%s&nbsp;&raquo; task log: Montrer le journal de la tâche &laquo;&nbsp;%s&nbsp;&raquo;
 Scanned IPs: IPs scannées
 Devices with SNMP support: &Eacute;quipements avec support SNMP

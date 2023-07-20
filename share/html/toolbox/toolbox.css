@@ -777,31 +777,6 @@ i.pass-eye {
   margin-left: 3px;
 }
 
-button.eye {
-  height: 0;
-  border: 0;
-  cursor: pointer;
-  background: none;
-}
-
-span.eye-show {
-  display: inline-block;
-  height: 1.2em;
-  width: 1.2em;
-  background: url("eye.png") 0 0 no-repeat;
-  background-size: cover;
-  background-origin: content-box;
-}
-
-span.eye-hide {
-  display: inline-block;
-  height: 1.2em;
-  width: 1.2em;
-  background: url("eye-crossed.png") 0 0 no-repeat;
-  background-size: cover;
-  background-origin: content-box;
-}
-
 .flex {
   display: flex;
 }
@@ -810,14 +785,9 @@ span.eye-hide {
   flex-grow: 1;
 }
 
-.eye {
-  height: 0;
-  padding-top: 0;
-  font-size: 16px;
-}
-
-input.eye {
-  display: none;
+.toggle-icon {
+  font-size: 20px;
+  margin-left: 3px;
 }
 
 .footer-row {
