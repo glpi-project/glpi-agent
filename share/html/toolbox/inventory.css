@@ -153,7 +153,6 @@ input.expand-task {
 .log-freezer {
   text-align: center;
   flex-grow: 1;
-  display: none;
   width: 40px;
   height: 18px;
   margin-top: 10px;

@@ -402,11 +402,13 @@
     aborted = document.getElementById(task+'-scanned-bar').className === "aborted";
     failed = document.getElementById(task+'-scanned-bar').className === "failed";
     if (completed || aborted || failed) \{
-      document.getElementById(task+'-freeze-log').style.display = 'none';
       document.getElementById(task+'-abort-button').style.display = 'none';
+      document.getElementById(task+'-freeze-log-option').style.display = 'none';
+      document.getElementById(task+'-freeze-log-label').style.display = 'none';
     \} else \{
       document.getElementById(task+'-abort-button').style.display = 'inline';
-      document.getElementById(task+'-freeze-log').style.display = checked ? 'inline' : 'none';
+      document.getElementById(task+'-freeze-log-option').style.display = checked ? 'inline' : 'none';
+      document.getElementById(task+'-freeze-log-label').style.display = checked ? 'inline' : 'none';
     \}
     document.getElementById(task+'-verbosity-option').style.display = checked ? 'inline' : 'none';
     output.style.display = checked ? 'block' : 'none';
