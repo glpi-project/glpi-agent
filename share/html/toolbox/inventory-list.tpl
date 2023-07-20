@@ -51,8 +51,6 @@
     $enabled        = $enabled ? "" : " disabled";
     my @runs        = sort { $tasks{$b}->{time} <=> $tasks{$a}->{time} } grep { defined($tasks{$_}->{name}) && $tasks{$_}->{name} eq $entry } keys(%tasks);
     my ($taskid)    = grep { defined($tasks{$_}->{name}) && $tasks{$_}->{name} eq $entry } keys(%tasks);
-    # A new running task starts with index=0, we should always show it
-    my $eyeshow     = $taskid && (!$tasks{$taskid}->{index} || (defined($form{"show-run/$entry"}) && $form{"show-run/$entry"} eq "on")) ? " checked" : "";
     $OUT .= "
         <tr class='$request'>
           <td class='checkbox'>
@@ -69,10 +67,8 @@
     $OUT .= "<a href='$url_path/$request?edit=".uri_escape($this)."'>$name</a>";
     $OUT .= "
             <div class='grow'></div>
-            <label class='eye'>
-              <input id='show-run-$this' name='show-run/$this' class='eye' type='checkbox' onclick='visibility(\"$this\")'$eyeshow/>
-              <span id='eye-$this' class='".($eyeshow ? "eye-hide" : "eye-show")."'/>
-            </label>
+            <i id='eye-$taskid' class='toggle-icon ti ti-eye".($show_task ? "-off" : "")."' onclick='toggle_show_task(\"$taskid\")' title='"._("Show task")."'></i>
+            <i id='report-$taskid' class='toggle-icon ti ti-article".($show_report ? "-off" : "")."' onclick='toggle_show_task_report(\"$taskid\")' title='"._("Show task report")."'></i>
           "
       if $taskid;
     my @configuration;
@@ -180,15 +176,11 @@
       my $failed  = $task->{failed}  || 0;
       push @visible, $taskid;
       $OUT .= "
-        <tr class='sub-row' id='run-$this' style='display: ".($eyeshow ? "table-row" : "none")."'>
+        <tr class='sub-row' id='run-$taskid'>
           <td class='checkbox'>&nbsp;</td>
-          <td class='list' colspan='7'>
+          <td class='list' colspan='8'>
             <div class='task'>
-              <div class='name-col'>
-                <input id='expand-$taskid' name='expand/$taskid' class='expand-task' type='checkbox' onchange='expand_task(\"$taskid\")'".($form{"expand/$taskid"} && $form{"expand/$taskid"} eq "on" ? " checked" : "")."/>
-                <label id='$taskid-expand-label' for='expand-$taskid' class='closed'>$this</label>
-              </div>
-              <div class='progress-col'>
+              <div id='$taskid-progress' class='progress-col'>
                 <div class='progress-bar'>
                   <div id='$taskid-scanned-bar' class='".($failed ? "failed" : $aborted ? "aborted" : ($percent == 100) ? "completed" : "scanning")."'>
                     <span id='$taskid-progress-bar-text' class='progressbar-text'>".(
@@ -355,20 +347,52 @@
       if (all_cb[i].className === 'checkbox' && all_cb[i] != from)
         all_cb[i].checked = !all_cb[i].checked;
   \}
-  function visibility(task) \{
-    eye = document.getElementById('eye-'+task);
-    if (eye.className === 'eye-show') \{
-      eye.className = 'eye-hide';
-      document.getElementById('run-'+task).style.display = "table-row";
+  function toggle_show_task(taskid) \{
+    var eye = document.getElementById('eye-'+taskid);
+    if (!eye.className.endsWith('-off')) \{
+      eye.className = 'toggle-icon ti ti-eye-off';
+      document.getElementById(taskid+'-progress').style.display = "block";
+      sessionStorage.setItem('eye-'+taskid, true);
+      document.getElementById('run-'+taskid).style.display = "table-row";
     \} else \{
-      eye.className = 'eye-show';
-      document.getElementById('run-'+task).style.display = "none";
+      eye.className = 'toggle-icon ti ti-eye';
+      document.getElementById(taskid+'-progress').style.display = "none";
+      sessionStorage.removeItem('eye-'+taskid);
+      document.getElementById('run-'+taskid).style.display = sessionStorage.getItem('report-'+taskid) ? "table-row" : "none";
     \}
   \}
-  function expand_task(task) \{
-    var expand = document.getElementById('expand-'+task);
-    document.getElementById(task+'-counters').style.display = expand.checked ? "flex" : "none";
-    document.getElementById(task+'-expand-label').className = expand.checked ? 'opened' : 'closed';
+  function toggle_show_task_report(taskid) \{
+    var report = document.getElementById('report-'+taskid);
+    if (!report.className.endsWith('-off')) \{
+      report.className = 'toggle-icon ti ti-article-off';
+      document.getElementById(taskid+'-counters').style.display = "flex";
+      sessionStorage.setItem('report-'+taskid, true);
+      document.getElementById('run-'+taskid).style.display = "table-row";
+    \} else \{
+      report.className = 'toggle-icon ti ti-article';
+      document.getElementById(taskid+'-counters').style.display = "none";
+      sessionStorage.removeItem('report-'+taskid);
+      document.getElementById('run-'+taskid).style.display = sessionStorage.getItem('eye-'+taskid) ? "table-row" : "none";
+    \}
+  \}
+  function set_status(taskid) \{
+    var eye = 'eye-'+taskid;
+    var report = 'report-'+taskid;
+    var seen = sessionStorage.getItem('seen-'+taskid);
+    if (!seen) \{ // Manage to always show progress bar first time we see a task
+      sessionStorage.setItem('seen-'+taskid, true);
+      sessionStorage.setItem(eye, true);
+    \}
+    var show_task = sessionStorage.getItem(eye);
+    var show_report = sessionStorage.getItem(report);
+    document.getElementById(eye).className = 'toggle-icon ti ti-eye'+(show_task ? "-off" : "");
+    document.getElementById(taskid+'-progress').style.display = show_task ? "block" : "none";
+    document.getElementById(report).className = 'toggle-icon ti ti-article'+(show_report ? "-off" : "");
+    document.getElementById(taskid+'-counters').style.display = show_report ? "flex" : "none";
+    document.getElementById('run-'+taskid).style.display = show_task || show_report ? "table-row" : "none";
+  \}
+  for ( var i = 0; i < outputids.length; i++ ) \{
+    set_status(outputids[i]);
   \}
   function show_log(task) \{
     var output, checked, completed, aborted;
@@ -434,7 +458,9 @@
       document.getElementById(task+'-inventory-count').innerHTML = inventory_count ? inventory_count : 0;
       percent = this.getResponseHeader('X-Inventory-Percent');
       document.getElementById(task+'-scanned-bar').style.width = percent+"%";
+      var show_task = sessionStorage.getItem('eye-'+task);
       if (percent === '100') \{
+        if (!show_task) document.getElementById('eye-'+task).className = 'toggle-icon ti ti-eye'
         enabled = true;
         if (freezed_log[task]) \{
           whats[task] = 'full';
@@ -446,6 +472,7 @@
         document.getElementById(task+'-freeze-log-label').style.display = 'none';
         document.getElementById(task+'-abort-button').style.display = 'none';
       \} else \{
+        if (!show_task) document.getElementById('eye-'+task).className = 'toggle-icon ti ti-eye-exclamation'
         document.getElementById(task+'-freeze-log-option').style.display = checked ? 'inline' : 'none';
         document.getElementById(task+'-freeze-log-label').style.display = checked ? 'inline' : 'none';
         document.getElementById(task+'-abort-button').style.display = 'inline';
@@ -547,8 +574,7 @@
   function check_all_expandable() \{
     var all_cb = document.querySelectorAll('input[type="checkbox"]');
     for ( var cb = all_cb[0], i = 0; i < all_cb.length; ++i, cb = all_cb[i] )
-      if (cb.className === 'expand-task' && cb.checked && cb.id != 'expand-runtask') expand_task(cb.id.slice(7));
-      else if (cb.className === 'switch' && cb.checked) show_log(cb.id.slice(9));
+      if (cb.className === 'switch' && cb.checked) show_log(cb.id.slice(9));
   \}
   check_all_expandable();
   ajax_load();

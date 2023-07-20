@@ -24,6 +24,10 @@ Target:
 
 Created inventories:
 Should match devices with SNMP support count:
+Show task progress:
+Hide task progress:
+Show task report:
+Hide task report:
 Show &laquo;&nbsp;%s&nbsp;&raquo; task log:
 Scanned IPs:
 Devices with SNMP support:
