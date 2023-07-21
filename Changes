@@ -10,6 +10,7 @@ core:
 
 inventory:
 * Fix inventory failure due to Oracle database inventory on win32
+* Fix AMD Epyc CPU inventory on win32
 
 packaging:
 * Install basic-authentication-server-plugin.cfg plugin default configuration on debian

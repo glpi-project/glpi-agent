@@ -88,6 +88,7 @@ sub isInvalidBiosValue {
             Not \s* Specified                  |
             Not \s* Present                    |
             Not \s* Available                  |
+            Not \s* Installed                  |
             Default \s* string                 |
             System \s* Product \s* Name        |
             System \s* manufacturer            |
