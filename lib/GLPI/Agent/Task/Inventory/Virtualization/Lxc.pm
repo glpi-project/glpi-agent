@@ -67,7 +67,7 @@ sub  _getVirtualMachine {
     # Proxmox environment sets name as number
     my $proxmox = $name =~ /^\d+$/ ? 1 : 0;
 
-    my $command = "lxc-info -n '$name' -c lxc.cgroup.memory.limit_in_bytes -c lxc.cgroup.cpuset.cpus";
+    my $command = "lxc-info -n '$name' -c lxc.cgroup.memory.limit_in_bytes -c lxc.cgroup2.memory.max -c lxc.cgroup.cpuset.cpus -c lxc.cgroup2.cpuset.cpus";
     if ($params{version} < 2.1) {
         # Before 2.1, we need to find MAC as lxc.network.hwaddr in config
         $command .= "; grep lxc.network.hwaddr $params{config}";
@@ -96,7 +96,7 @@ sub  _getVirtualMachine {
                 if $val =~ $mac_address_pattern;
         }
 
-        if ($key eq 'lxc.cgroup.memory.limit_in_bytes') {
+        if ($key eq 'lxc.cgroup.memory.limit_in_bytes' || $key eq 'lxc.cgroup2.memory.max') {
             $val .= "b" if $val =~ /[KMGTP]$/i;
             $container->{MEMORY} = getCanonicalSize($val, 1024);
         }
@@ -106,7 +106,7 @@ sub  _getVirtualMachine {
             $container->{NAME} = $val;
         }
 
-        if ($key eq 'lxc.cgroup.cpuset.cpus') {
+        if ($key eq 'lxc.cgroup.cpuset.cpus' || $key eq 'lxc.cgroup2.cpuset.cpus') {
             ###eg: lxc.cgroup.cpuset.cpus = 0,3-5,7,2,1
             foreach my $cpu ( split( /,/, $val ) ){
                 if ( $cpu =~ /(\d+)-(\d+)/ ){

@@ -11,6 +11,7 @@ core:
 inventory:
 * Fix inventory failure due to Oracle database inventory on win32
 * Fix AMD Epyc CPU inventory on win32
+* fix #447: Support Cgroup 2 resource limits on LXC containers inventory
 
 packaging:
 * Install basic-authentication-server-plugin.cfg plugin default configuration on debian
