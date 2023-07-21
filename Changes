@@ -14,6 +14,7 @@ inventory:
 
 packaging:
 * Install basic-authentication-server-plugin.cfg plugin default configuration on debian
+* fix #446: Always add Sys::Hostname dependency to rpm packaging
 
 1.5 Wed, 21 Jun 2023
 
