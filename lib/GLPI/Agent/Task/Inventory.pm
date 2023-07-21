@@ -119,6 +119,7 @@ sub run {
     my $inventory = GLPI::Agent::Inventory->new(
         statedir => $self->{target}->getStorage()->getDirectory(),
         deviceid => $self->{deviceid},
+        datadir  => $self->{datadir},
         logger   => $self->{logger},
         tag      => $tag
     );

@@ -137,6 +137,7 @@ sub new {
 
     my $self = {
         deviceid       => $params{deviceid},
+        datadir        => $params{datadir},
         logger         => $params{logger} || GLPI::Agent::Logger->new(),
         fields         => \%fields,
         _format        => '',

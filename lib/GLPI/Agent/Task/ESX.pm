@@ -54,8 +54,9 @@ sub createInventory {
     my $host = $vpbs->getHostFullInfo($id);
 
     my $inventory = GLPI::Agent::Inventory->new(
-        logger => $self->{logger},
-        tag    => $tag
+        datadir => $self->{datadir},
+        logger  => $self->{logger},
+        tag     => $tag
     );
 
     $inventory->setRemote('esx');
