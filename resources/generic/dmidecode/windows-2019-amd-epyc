@@ -1,0 +1,27 @@
+# dmidecode 3.5
+SMBIOS 3.1.0 present.
+
+Handle 0x0004, DMI type 4, 48 bytes
+Processor Information
+        Socket Designation: None
+        Type: Central Processor
+        Family: Unknown
+        Manufacturer: Unknown
+        ID: 00 00 00 00 00 00 00 00
+        Version: Not Installed
+        Voltage: Unknown
+        External Clock: Unknown
+        Max Speed: Unknown
+        Current Speed: Unknown
+        Status: Populated, Enabled
+        Upgrade: None
+        L1 Cache Handle: Not Provided
+        L2 Cache Handle: Not Provided
+        L3 Cache Handle: Not Provided
+        Serial Number: None
+        Asset Tag: None
+        Part Number: None
+        Core Count: 4
+        Core Enabled: 4
+        Thread Count: 1
+        Characteristics: None

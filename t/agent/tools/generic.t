@@ -834,10 +834,8 @@ my %dmidecode_tests = (
     'openbsd-3.7' => {
          6 => [
             {
-                'Installed Size' => 'Not Installed',
                 'Socket Designation' => 'BANK_1',
                 'Error Status' => 'OK',
-                'Enabled Size' => 'Not Installed',
                 'Current Speed' => '70 ns',
                 'Bank Connections' => '2'
             },
@@ -851,10 +849,8 @@ my %dmidecode_tests = (
                 'Bank Connections' => '3'
             },
             {
-                'Installed Size' => 'Not Installed',
                 'Socket Designation' => 'BANK_3',
                 'Error Status' => 'OK',
-                'Enabled Size' => 'Not Installed',
                 'Current Speed' => '70 ns',
                 'Bank Connections' => '4'
             },
@@ -877,18 +873,14 @@ my %dmidecode_tests = (
                 'Bank Connections' => '6'
             },
             {
-                'Installed Size' => 'Not Installed',
                 'Socket Designation' => 'BANK_6',
                 'Error Status' => 'OK',
-                'Enabled Size' => 'Not Installed',
                 'Current Speed' => '70 ns',
                 'Bank Connections' => '7'
             },
             {
-                'Installed Size' => 'Not Installed',
                 'Socket Designation' => 'BANK_7',
                 'Error Status' => 'OK',
-                'Enabled Size' => 'Not Installed',
                 'Current Speed' => '70 ns',
                 'Bank Connections' => '8'
             }
@@ -1512,8 +1504,6 @@ my %dmidecode_tests = (
                 'Socket' => 'DIMM1'
             },
             {
-                'Installed Size' => 'Not Installed',
-                'Enabled Size' => 'Not Installed',
                 'Socket' => 'DIMM2'
             }
         ],

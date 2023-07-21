@@ -172,6 +172,21 @@ my %tests = (
             THREAD       => '1',
             CORE         => '4'
         }
+    ],
+    '2019-amd-epyc' => [
+        {
+            DESCRIPTION  => 'AMD64 Family 23 Model 49 Stepping 0',
+            ID           => '0000000000000000',
+            MANUFACTURER => 'AMD',
+            NAME         => 'AMD EPYC 7302 16-Core Processor',
+            FAMILYNUMBER => '23',
+            MODEL        => '49',
+            SERIAL       => 'None',
+            SPEED        => '2994',
+            STEPPING     => '0',
+            THREAD       => '1',
+            CORE         => '4'
+        },
     ]
 );
 
