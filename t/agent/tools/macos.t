@@ -3092,6 +3092,9 @@ my @ioreg_tests = (
                 'locationID'          => '488636416',
                 'iManufacturer'       => '1',
                 'iSerialNumber'       => '0',
+                'IOCFPlugInTypes'     => {
+                    "9dc7b780-9ec0-11d4-a54f-000a27052861" => "IOUSBFamily.kext/Contents/PlugIns/IOUSBLib.bundle"
+                },
                 'idVendor'            => '1452'
             },
             {
@@ -3117,6 +3120,9 @@ my @ioreg_tests = (
                 'locationID'          => '1562378240',
                 'iManufacturer'       => '1',
                 'iSerialNumber'       => '0',
+                'IOCFPlugInTypes'     => {
+                    "9dc7b780-9ec0-11d4-a54f-000a27052861" => "IOUSBFamily.kext/Contents/PlugIns/IOUSBLib.bundle"
+                },
                 'idVendor'            => '1452'
             },
             {
@@ -3142,6 +3148,9 @@ my @ioreg_tests = (
                 'locationID'          => '2098200576',
                 'iManufacturer'       => '0',
                 'iSerialNumber'       => '0',
+                'IOCFPlugInTypes'     => {
+                    "9dc7b780-9ec0-11d4-a54f-000a27052861" => "IOUSBFamily.kext/Contents/PlugIns/IOUSBLib.bundle"
+                },
                 'idVendor'            => '1452'
             },
             {
@@ -3167,6 +3176,9 @@ my @ioreg_tests = (
                 'locationID'          => '18446744073663414272',
                 'iManufacturer'       => '1',
                 'iSerialNumber'       => '0',
+                'IOCFPlugInTypes'     => {
+                    "9dc7b780-9ec0-11d4-a54f-000a27052861" => "IOUSBFamily.kext/Contents/PlugIns/IOUSBLib.bundle"
+                },
                 'idVendor'            => '1452'
             },
             {
@@ -3193,6 +3205,9 @@ my @ioreg_tests = (
                 'iManufacturer'       => '1',
                 'iSerialNumber'       => '3',
                 'idVendor'            => '6518',
+                'IOCFPlugInTypes'     => {
+                    "9dc7b780-9ec0-11d4-a54f-000a27052861" => "IOUSBFamily.kext/Contents/PlugIns/IOUSBLib.bundle"
+                },
                 'USB Serial Number'   => '16270078C5C90000'
             }
         ],
@@ -3223,6 +3238,9 @@ my @ioreg_tests = (
                 'locationID'          => '438304768',
                 'iManufacturer'       => '2',
                 'iSerialNumber'       => '0',
+                'IOCFPlugInTypes'     => {
+                    "9dc7b780-9ec0-11d4-a54f-000a27052861" => "IOUSBFamily.kext/Contents/PlugIns/IOUSBLib.bundle"
+                },
                 'idVendor'            => '1112'
             },
             {
@@ -3248,6 +3266,9 @@ my @ioreg_tests = (
                 'locationID'          => '437256192',
                 'iManufacturer'       => '0',
                 'iSerialNumber'       => '0',
+                'IOCFPlugInTypes'     => {
+                    "9dc7b780-9ec0-11d4-a54f-000a27052861" => "IOUSBFamily.kext/Contents/PlugIns/IOUSBLib.bundle"
+                },
                 'idVendor'            => '1452'
             },
             {
@@ -3273,6 +3294,9 @@ my @ioreg_tests = (
                 'locationID'          => '18446744073613213696',
                 'iManufacturer'       => '1',
                 'iSerialNumber'       => '0',
+                'IOCFPlugInTypes'     => {
+                    "9dc7b780-9ec0-11d4-a54f-000a27052861" => "IOUSBFamily.kext/Contents/PlugIns/IOUSBLib.bundle"
+                },
                 'idVendor'            => '1452'
             },
             {
@@ -3298,6 +3322,9 @@ my @ioreg_tests = (
                 'locationID'          => '1561329664',
                 'iManufacturer'       => '1',
                 'iSerialNumber'       => '0',
+                'IOCFPlugInTypes'     => {
+                    "9dc7b780-9ec0-11d4-a54f-000a27052861" => "IOUSBFamily.kext/Contents/PlugIns/IOUSBLib.bundle"
+                },
                 'idVendor'            => '1452'
             },
             {
@@ -3324,6 +3351,9 @@ my @ioreg_tests = (
                 'iManufacturer'       => '10',
                 'iSerialNumber'       => '5',
                 'idVendor'            => '1439',
+                'IOCFPlugInTypes'     => {
+                    "9dc7b780-9ec0-11d4-a54f-000a27052861" => "IOUSBFamily.kext/Contents/PlugIns/IOUSBLib.bundle"
+                },
                 'USB Serial Number'   => '6E7A5FFFFFFF'
             },
             {
@@ -3350,6 +3380,9 @@ my @ioreg_tests = (
                 'iManufacturer'       => '1',
                 'iSerialNumber'       => '3',
                 'idVendor'            => '1452',
+                'IOCFPlugInTypes'     => {
+                    "9dc7b780-9ec0-11d4-a54f-000a27052861" => "IOUSBFamily.kext/Contents/PlugIns/IOUSBLib.bundle"
+                },
                 'USB Serial Number'   => '6067E773DA9722F4 (03.01)'
             }
         ]
@@ -3374,6 +3407,305 @@ my @ioreg_tests = (
                 'manufacturer'    => 'Apple Inc.',
                 'product-name'    => 'MacBook2,1',
                 'IOPlatformArgs'  => '0030aa0100c0a901906aaf0100000000'
+            }
+        ],
+    },
+    {
+        file    => 'AppleCLCD2',
+        class   => 'AppleCLCD2',
+        results => [
+            {
+                'IOMFBScalingLimits'            => {
+                    "YUVLayer_MaxScale"             => "4",
+                    "YUVLayer_MinScaleFraction"     => "2",
+                    "RGBLayer_MinScaleFraction"     => "2",
+                    "RGBLayer_MaxScale"             => "4"
+                },
+                'DisplayPipePlaneBaseAlignment' => {
+                    "DefaultStride"                 => "0",
+                    "LinearX_Alignment"             => "64",
+                    "LinearY_Alignment"             => "1",
+                    "PlaneBaseAlignmentLinear"      => "64"
+                },
+                'DisplayAttributes'             => {
+                    "ProductAttributes" => {}
+                },
+                'DisplayPipeStrideRequirements' => {
+                    "StrideLinearHorizontal"        => "64",
+                    "StrideLinearVertical"          => "1"
+                },
+                'IOMFBDisplayRefresh'           => {
+                    "displayRefreshStepMachTime"        => "0",
+                    "displayRefreshStep"                => "0",
+                    "displayMaxRefreshInterval"         => "71579924",
+                    "displayMinRefreshInterval"         => "71579924",
+                    "displayMinRefreshIntervalMachTime" => "400001",
+                    "displayMaxRefreshIntervalMachTime" => "400001"
+                },
+                'BacklightMatching'             => {
+                    "IOPropertyMatch"   => {
+                        "backlight-control" => "Yes"
+                    }
+                },
+                'M3TimingParameters'            => {
+                    "subframe-interrupt-time-lines"     => "1578",
+                    "subframe-duration-nclks"           => "400001",
+                    "display-lead-time-nclks"           => "25667",
+                    "initial-vbi-advance-lines"         => "2",
+                    "initial-subframe-irq-time-lines"   => "1578",
+                    "vbi-advance-lines"                 => "2"
+                },
+                'IOPowerManagement'             => {
+                    "CapabilityFlags"   => "32768",
+                    "MaxPowerState"     => "1",
+                    "CurrentPowerState" => "1"
+                },
+                'IOMFBMaxSrcPixels'             => {
+                    "PixelClock"                    => "533333328",
+                    "MaxSrcRectTotal"               => "22118400",
+                    "MaxSrcBufferHeight"            => "16384",
+                    "IOMFBMaxCompressedSizeInBytes" => "0",
+                    "VideoClock"                    => "133315016",
+                    "MaxSrcRectWidth"               => "5120",
+                    "MaxSrcBufferWidth"             => "16384",
+                    "MaxVideoSrcDownscalingWidth"   => "20482"
+                },
+                'IOMFB Debug Info'              => {},
+                'Panel_ID'                      => 'GMG136500QNNR89A2+000000002H01B2+PROD+Y000000000000+00000000000000000000000000+PX07M0812P01010704+6758BK9G30002122TTCYYW1GA81610766+S688688GP3S688688GU3S688688GP3S688688G',
+                'DebugUInt32'                   => '0',
+                'CFBundleIdentifierKernel'      => 'com.apple.driver.AppleMobileDispH13G-DCP',
+                'APTFixedRR'                    => '0',
+                'IOMFBContrastEnhancerStrength' => '2194',
+                'IOMFBTestBacklightDimValue'    => '33795',
+                'ALSSRGBCoeffsPrecision'        => '8',
+                'AODFixedRR'                    => '0',
+                'APTEventsMask'                 => '0',
+                'IOClass'                       => 'AppleCLCD2',
+                'BLMAHOutputFreq'               => '0',
+                'MaxVideoSrcDownscalingWidth'   => '20482',
+                'ALSSChannelCount'              => '4',
+                'brightnessCorrection'          => '65536',
+                'PixelClock'                    => '533333328',
+                'IOProviderClass'               => 'AppleARMIODevice',
+                'PDCSettleCount'                => '1',
+                'APTDefaultGrayValue'           => '255',
+                'QMSVRREnableConfig'            => '0',
+                'ALSSSumsPrecision'             => '36',
+                'CECorrectionFactor'            => '65536',
+                'QoSDebug'                      => '1',
+                'clockRatio'                    => '262180',
+                'IOPersonalityPublisher'        => 'com.apple.driver.AppleMobileDispH13G-DCP',
+                'IOMFB_KTRACE_API_VERSION'      => '3.0',
+                'BLMAHMode'                     => '1',
+                'BLMPLimitCfg'                  => '1',
+                'brightnessCorrectionB'         => '65536',
+                'ProxScanPlan'                  => '18446744073709551615',
+                'IOGeneralInterest'             => 'IOCommand is not serializable',
+                'maxPeakBpp'                    => '0',
+                'IdleCachingMethod'             => '2',
+                'color-accuracy-index'          => '37',
+                'IOMFBBICSType'                 => '0',
+                'PDCGlobalTemp'                 => '0',
+                'InitialPanelTemperature'       => '1966080',
+                'DisplayWidth'                  => '2560',
+                'ProxScanPosition'              => '0',
+                'IOMFBBrightnessLevel'          => '14228838',
+                'bics_mode'                     => '0',
+                'IOMFBBrightnessLevelMA'        => '18446744073709551615',
+                'Brightness_Scale'              => '70455',
+                'DPTimingModeId'                => '2',
+                'CMDegammaMethod'               => '0',
+                'ALSSWindowCount'               => '64',
+                'IdleState'                     => '2',
+                'DisplayHeight'                 => '1600',
+                'overdriveCompCutoff'           => '334233600',
+                'BLNitsCap'                     => '27592238',
+                'BLMVLEDManual'                 => '230',
+                'IOMFBBrightnessLevelIDAC'      => '18446744073709551615',
+                'AmbientBrightness'             => '31550502',
+                'AODWaitForWalkdown'            => '1',
+                'APTPDCEnablePM'                => '1',
+                'ean-mode-caching'              => '0',
+                'CFBundleIdentifier'            => 'com.apple.driver.AppleMobileDispH13G-DCP',
+                'W40a_Blending_OK'              => '1',
+                'IOProbeScore'                  => '0',
+                'BlendOutputCSCMethod'          => '0',
+                'DisableDisplayOptimize'        => '0',
+                'IOMFBStatsTapPoint'            => '1',
+                'maxAverageBpp'                 => '0',
+                'IOMatchCategory'               => 'IODefaultMatchCategory',
+                'FFR_table_index'               => '0',
+                'IONameMatched'                 => 'disp0,t8103',
+                'VideoClock'                    => '133315016',
+                'PixelCaptureConfig'            => '0',
+                'forcePixelBacklightModulation' => '2',
+                'BLMAHUPCount'                  => '0'
+            },
+            {
+                'IOPowerManagement'             => {
+                    "CapabilityFlags"   => "32768",
+                    "MaxPowerState"     => "1",
+                    "CurrentPowerState" => "1"
+                },
+                'DisplayPipePlaneBaseAlignment' => {
+                    "DefaultStride"                 => "0",
+                    "LinearX_Alignment"             => "64",
+                    "LinearY_Alignment"             => "1",
+                    "PlaneBaseAlignmentLinear"      => "64"
+                },
+                'Transport'                     => {
+                    "Upstream"  => "DP",
+                    "Downstream"=> "DP"
+                },
+                'IOMFBMaxSrcPixels'             => {
+                    "PixelClock"                    => "0",
+                    "MaxSrcRectTotal"               => "26542080",
+                    "MaxSrcBufferHeight"            => "16384",
+                    "IOMFBMaxCompressedSizeInBytes" => "0",
+                    "VideoClock"                    => "0",
+                    "MaxSrcRectWidth"               => "6144",
+                    "MaxSrcBufferWidth"             => "16384",
+                    "MaxVideoSrcDownscalingWidth"   => "0"
+                },
+                'M3TimingParameters'            => {
+                    "subframe-interrupt-time-lines"     => "1381",
+                    "subframe-duration-nclks"           => "400329",
+                    "display-lead-time-nclks"           => "27570",
+                    "initial-vbi-advance-lines"         => "2",
+                    "initial-subframe-irq-time-lines"   => "1381",
+                    "vbi-advance-lines"                 => "2"
+                },
+                'BacklightMatching'             => {
+                    "IOPropertyMatch"   => {
+                        "backlight-control" => "Yes"
+                    }
+                },
+                'DisplayAttributes'             => {
+                    "SupportsSuspend"       => "No",
+                    "MaximumRefreshRate"    => "75",
+                    "SupportsActiveOff"     => "No",
+                    "PortID"                => "0",
+                    "ProductAttributes" => {
+                        "ManufacturerID"            => "DEL",
+                        "YearOfManufacture"         => "2021",
+                        "SerialNumber"              => "825642060",
+                        "ProductName"               => "DELL P2421DC",
+                        "AlphanumericSerialNumber"  => "4S0QR63",
+                        "LegacyManufacturerID"      => "4268",
+                        "ProductID"                 => "53496",
+                        "WeekOfManufacture"         => "36"
+                    },
+                    "MaxVerticalImageSize"          => "30",
+                    "MinimumVariableRefreshRate"    => "3211264",
+                    "MaxHorizontalImageSize"        => "53",
+                    "HasHDMILegacyEDID"             => "No",
+                    "Chromaticity"  => {
+                        "Red"   => {
+                            "X"     => "43392",
+                            "Y"     => "21632"
+                        },
+                        "Green" => {
+                            "X"     => "19904",
+                            "Y"     => "40256"
+                        },
+                        "Blue"  => {
+                            "X"     => "9792",
+                            "Y"     => "4032"
+                        }
+                    },
+                    "DefaultColorSpaceIsSRGB"       => "No",
+                    "NativeFormatHorizontalPixels"  => "2560",
+                    "DefaultWhitePoint" => {
+                        "X"     => "20544",
+                        "Y"     => "21568",
+                        "Gamma" => "144179"
+                    },
+                    "SupportsVariableRefreshRate"   => "No",
+                    "AspectRatio"                   => "15",
+                    "MinimumRefreshRate"            => "49",
+                    "MaximumVariableRefreshRate"    => "4915200",
+                    "WhitePoints"   => [
+                        {
+                            "X"     => "20544",
+                            "Y"     => "21568",
+                            "Gamma" => "144179"
+                        }
+                    ],
+                    "PreciseAspectRatio"            => "115780",
+                    "ContinuousFrequencySupport"    => "None",
+                    "SupportsStandby"               => "Yes",
+                    "NativeFormatVerticalPixels"    => "1440"
+                },
+                'IOMFB Debug Info'              => {},
+                'IOMFBDisplayRefresh'           => {
+                    "displayRefreshStepMachTime"        => "0",
+                    "displayRefreshStep"                => "0",
+                    "displayMaxRefreshInterval"         => "178956970",
+                    "displayMinRefreshInterval"         => "71582788",
+                    "displayMinRefreshIntervalMachTime" => "399984",
+                    "displayMaxRefreshIntervalMachTime" => "999984"
+                },
+                'DisplayPipeStrideRequirements' => {
+                    "StrideLinearHorizontal"        => "64",
+                    "StrideLinearVertical"          => "1"
+                },
+                'IOMFBScalingLimits'            => {
+                    "YUVLayer_MaxScale"             => "4",
+                    "YUVLayer_MinScaleFraction"     => "2",
+                    "RGBLayer_MinScaleFraction"     => "2",
+                    "RGBLayer_MaxScale"             => "4"
+                },
+                'CFBundleIdentifierKernel'      => 'com.apple.driver.AppleMobileDispH13G-DCP',
+                'IOMFBStatsTapPoint'            => '1',
+                'IOMFB_KTRACE_API_VERSION'      => '3.0',
+                'DPTimingModeId'                => '51',
+                'APTEventsMask'                 => '0',
+                'IONameMatched'                 => 'dispext0,t8103',
+                'PDCSettleCount'                => '1',
+                'DebugUInt32'                   => '0',
+                'IOMatchCategory'               => 'IODefaultMatchCategory',
+                'bics_mode'                     => '0',
+                'DisableDisplayOptimize'        => '0',
+                'AODWaitForWalkdown'            => '1',
+                'QMSVRREnableConfig'            => '0',
+                'BlendOutputCSCMethod'          => '0',
+                'maxAverageBpp'                 => '0',
+                'AODFixedRR'                    => '0',
+                'color-accuracy-index'          => '0',
+                'clockRatio'                    => '0',
+                'QoSDebug'                      => '0',
+                'EDID UUID'                     => '10ACF8D0-0000-0000-241F-0104A5351E78',
+                'PixelClock'                    => '0',
+                'W40a_Blending_OK'              => '1',
+                'Panel_ID'                      => 'GMG136500QNNR89A2+000000002H01B2+PROD+Y000000000000+00000000000000000000000000+PX07M0812P01010704+6758BK9G30002122TTCYYW1GA81610766+S688688GP3S688688GU3S688688GP3S688688G',
+                'ProxScanPlan'                  => '18446744073709551615',
+                'IOMFBBrightnessLevelMA'        => '18446744073709551615',
+                'FFR_table_index'               => '0',
+                'AmbientBrightness'             => '65536',
+                'IOProviderClass'               => 'AppleARMIODevice',
+                'DisplayHeight'                 => '1440',
+                'IOMFBUUID'                     => '10ACF8D0-0000-0000-241F-0104A5351E78',
+                'IdleCachingMethod'             => '2',
+                'PixelCaptureConfig'            => '0',
+                'IOPersonalityPublisher'        => 'com.apple.driver.AppleMobileDispH13G-DCP',
+                'IdleState'                     => '5',
+                'IOMFBBrightnessLevelIDAC'      => '18446744073709551615',
+                'APTPDCEnablePM'                => '1',
+                'APTDefaultGrayValue'           => '255',
+                'brightnessCorrection'          => '65536',
+                'IOMFBBICSType'                 => '0',
+                'IOClass'                       => 'AppleCLCD2',
+                'MaxVideoSrcDownscalingWidth'   => '6144',
+                'APTFixedRR'                    => '0',
+                'maxPeakBpp'                    => '0',
+                'brightnessCorrectionB'         => '65536',
+                'CMDegammaMethod'               => '0',
+                'IOProbeScore'                  => '0',
+                'VideoClock'                    => '0',
+                'CFBundleIdentifier'            => 'com.apple.driver.AppleMobileDispH13G-DCP',
+                'ProxScanPosition'              => '0',
+                'IOMFBBrightnessLevel'          => '65536',
+                'DisplayWidth'                  => '2560'
             }
         ],
     }
@@ -5574,12 +5906,66 @@ my %datesStr = (
     "04/09/11 22:42"  => '09/04/2011'
 );
 
+my @ioregparsing = (
+    {
+        name    => "empty hash",
+        value   => '{}',
+        expect  => {}
+    },
+    {
+        name    => "simple hash",
+        value   => '{"abc"=1}',
+        expect  => {abc=>"1"}
+    },
+    {
+        name    => "hash tree",
+        value   => '{"class"="point","point"={"x"=1,"y"=1,"color"="white"}}',
+        expect  => {class=>"point",point=>{x=>"1",y=>"1",color=>"white"}}
+    },
+    {
+        name    => "simple list",
+        value   => '("abc",1)',
+        expect  => [ "abc", "1" ]
+    },
+    {
+        name    => "list in hash tree",
+        value   => '{"class"="point","point"=(1,1,"white")}',
+        expect  => {class=>"point",point=>["1","1","white"]}
+    },
+    {
+        name    => "list with hash",
+        value   => '("start",{"x"=1,"y"=1,"color"="white"},"end")',
+        expect  => ["start",{x=>"1",y=>"1",color=>"white"},"end"]
+    },
+    {
+        name    => "list with one hash element",
+        value   => '({"x"=1,"y"=1,"color"="white"})',
+        expect  => [{x=>"1",y=>"1",color=>"white"}]
+    },
+    {
+        name    => "hash tree 2",
+        value   => '{"dp"="yes","product"={"serial"=1234},"gamma"=1,"size"={"x"=1920,"y"=1080},"color"=32}',
+        expect  => {dp=>"yes",product=>{serial=>"1234"},gamma=>"1",size=>{x=>"1920",y=>"1080"},color=>"32"}
+    },
+    {
+        name    => "hash tree 3",
+        value   => '{"dp"="yes","product"={"serial"=1234},"gamma"=1,"colors"={"red"={"r"=255,"g"=0,"b"=0},"green"={"r"=0,"g"=255,"b"=0}},"color"=32}',
+        expect  => {dp=>"yes",product=>{serial=>"1234"},gamma=>"1",colors=>{red=>{r=>"255",g=>"0",b=>"0"},green=>{r=>"0",g=>"255",b=>"0"}},color=>"32"}
+    },
+    {
+        name    => "hash tree with list",
+        value   => '{"dp"="yes","product"={"serial"=1234},"gamma"=1,"colors"={"red"={"r"=255,"g"=0,"b"=0},"green"={"r"=0,"g"=255,"b"=0}},"color"=32,"points"=({"x"=0,"y"=0}),"ratio"="16/9"}',
+        expect  => {dp=>"yes",product=>{serial=>"1234"},gamma=>"1",colors=>{red=>{r=>"255",g=>"0",b=>"0"},green=>{r=>"0",g=>"255",b=>"0"}},color=>"32",points=>[{x=>"0",y=>"0"}],ratio=>"16/9"}
+    },
+);
+
 plan tests =>
     scalar (keys %system_profiler_tests) +
     scalar @ioreg_tests
     + 6 * scalar(keys %xmlparsing) + 3 * scalar(grep { $xmlparsing{$_}->{flatfile} } keys(%xmlparsing))
     + scalar (keys %dateconv)
     + scalar (keys %datesStr)
+    + scalar @ioregparsing
     + 1;
 
 foreach my $test (keys %system_profiler_tests) {
@@ -5592,6 +5978,11 @@ foreach my $test (@ioreg_tests) {
     my $file = "resources/macos/ioreg/$test->{file}";
     my @devices = getIODevices(file => $file, class => $test->{class});
     cmp_deeply(\@devices, $test->{results}, "$test->{file} ioreg parsing");
+}
+
+foreach my $test (@ioregparsing) {
+    my $parsed = GLPI::Agent::Tools::MacOS::_parseIORegAttributes($test->{value});
+    cmp_deeply($parsed, $test->{expect}, "$test->{name} ioreg parsing");
 }
 
 foreach my $test (keys(%xmlparsing)) {

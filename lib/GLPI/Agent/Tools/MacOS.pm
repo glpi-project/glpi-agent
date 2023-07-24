@@ -282,6 +282,7 @@ sub getIODevices {
 
     foreach my $line (@lines) {
         if ($line =~ /<class $filter,/) {
+            push @devices, $device if $device;
             # new device block
             $device = {};
             next;
@@ -296,9 +297,13 @@ sub getIODevices {
             next;
         }
 
-        if ($line =~ /"([^"]+)" \s = \s <? (?: "([^"]+)" | ([0-9a-f]+)) >?/ix) {
-            # string or numeric property
-            $device->{$1} = $2 || $3;
+        if ($line =~ /"([^"]+)" \s = \s ( <?"[^"]+">? | <?[0-9a-f]+>? | {.*} )$/ix) {
+            my ($key, $value) = ($1, $2);
+            $value = $1 if $value =~ /^<(.*)>$/;
+            $value = $1 if $value =~ /^"(.*)"$/;
+            $value = _parseIORegAttributes($value) if $value =~ /^{.*}$/;
+            # string, numeric or hash property
+            $device->{$key} = $value;
             next;
         }
     }
@@ -307,6 +312,55 @@ sub getIODevices {
     push @devices, $device if $device;
 
     return @devices;
+}
+
+my $remain;
+sub _parseIORegAttributes {
+    my ($string, $ref, $reflist) = @_;
+
+    # Initialization when starting to parse a string
+    unless ($ref) {
+        $reflist = [];
+        undef $remain;
+    }
+
+    if ($string =~ /^{(.*)$/) {
+        my $newref = {};
+        push @{$reflist}, $ref if $ref;
+        _parseIORegAttributes($1, $newref, $reflist);
+        return $newref;
+    } elsif ($string =~ /^\((.*)$/) {
+        my $newref = [];
+        push @{$reflist}, $ref if $ref;
+        _parseIORegAttributes($1, $newref, $reflist);
+        return $newref;
+    }
+
+    if ($string =~ /^"([^"]+)"=(.*)$/) {
+        my $key = $1;
+        $ref->{$key} = _parseIORegAttributes($2, $ref, $reflist);
+    } elsif ($string =~ /^"([^"]+)"(.*)$/ || $string =~ /^([^,}\)]+)([,}\)].*)$/) {
+        $remain = $2;
+        if (ref($ref) eq 'ARRAY') {
+            push @{$ref}, $1;
+        } else {
+            return $1;
+        }
+    }
+
+    if (defined($remain) && length($remain)) {
+        if ($remain =~ /^([,}\)])(.*)$/) {
+            $remain = $2;
+            if ($1 eq '}' || $1 eq ')') {
+                my $parent = pop @{$reflist};
+                push @{$parent}, $ref if ref($parent) eq 'ARRAY';
+                $ref = $parent if $parent;
+            }
+        }
+        _parseIORegAttributes($remain, $ref, $reflist) if length($remain);
+    }
+
+    return $ref;
 }
 
 sub getBootTime {
