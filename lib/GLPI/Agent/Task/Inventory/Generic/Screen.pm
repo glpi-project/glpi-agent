@@ -13,6 +13,7 @@ use File::Find;
 use File::Basename;
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Screen;
+use GLPI::Agent::Tools::Generic;
 
 use constant    category    => "monitor";
 
@@ -310,7 +311,8 @@ sub _getScreensFromMacOS {
             $screen->{CAPTION} = $attributes->{ProductName} if $attributes->{ProductName};
             $screen->{SERIAL} = $attributes->{AlphanumericSerialNumber} if $attributes->{AlphanumericSerialNumber};
             $screen->{ALTSERIAL} = $attributes->{SerialNumber} if $attributes->{SerialNumber};
-            $screen->{MANUFACTURER} = $attributes->{ManufacturerID} if $attributes->{ManufacturerID};
+            $screen->{MANUFACTURER} = getEDIDVendor(id => $attributes->{ManufacturerID}) || $attributes->{ManufacturerID}
+                if $attributes->{ManufacturerID};
             $screen->{DESCRIPTION} = $attributes->{WeekOfManufacture}."/".$attributes->{YearOfManufacture}
                 if $attributes->{WeekOfManufacture} && $attributes->{YearOfManufacture};
         }

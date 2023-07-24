@@ -836,7 +836,7 @@ my %macos_tests = (
             {
                 SERIAL          => '4S0QR63',
                 DESCRIPTION     => '36/2021',
-                MANUFACTURER    => 'DEL',
+                MANUFACTURER    => 'Dell Inc.',
                 ALTSERIAL       => '825642060',
                 CAPTION         => 'DELL P2421DC'
             }
