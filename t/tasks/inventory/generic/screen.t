@@ -2,12 +2,16 @@
 
 use strict;
 use warnings;
+use lib 't/lib';
 
 use English qw(-no_match_vars);
 use Test::Deep qw(cmp_deeply);
 use Test::More;
+use Test::MockModule;
 use UNIVERSAL::require;
 
+use GLPI::Agent::Config;
+use GLPI::Agent::Logger;
 use GLPI::Agent::Tools;
 use GLPI::Agent::Task::Inventory::Generic::Screen;
 
@@ -823,7 +827,24 @@ my %edid_tests = (
     },
 );
 
-plan tests => (scalar keys %edid_tests) + 1;
+my %macos_tests = (
+    'AppleCLCD2' => {
+        class => {
+            AppleCLCD2 => "AppleCLCD2",
+        },
+        expect => [
+            {
+                SERIAL          => '4S0QR63',
+                DESCRIPTION     => '36/2021',
+                MANUFACTURER    => 'DEL',
+                ALTSERIAL       => '825642060',
+                CAPTION         => 'DELL P2421DC'
+            }
+        ],
+    },
+);
+
+plan tests => (scalar keys %edid_tests) + (scalar keys %macos_tests) + 1;
 
 foreach my $test (sort keys %edid_tests) {
     my $file = "resources/generic/edid/$test";
@@ -831,4 +852,33 @@ foreach my $test (sort keys %edid_tests) {
         or die "Can't read $file: $!\n";
     my $info = GLPI::Agent::Task::Inventory::Generic::Screen::_getEdidInfo(edid => $edid, datadir => './share');
     cmp_deeply($info, $edid_tests{$test}, $test);
+}
+
+my $module = Test::MockModule->new(
+    'GLPI::Agent::Tools::MacOS'
+);
+
+my $logger = GLPI::Agent::Logger->new(
+    config => GLPI::Agent::Config->new(
+        options => {
+            config => 'none',
+            logger => 'Test'
+        }
+    )
+);
+
+foreach my $test (sort keys %macos_tests) {
+
+    $module->mock(
+        'getIODevices',
+        sub {
+            my (%params) = @_;
+            return unless defined($macos_tests{$test}->{class}->{$params{class}});
+            $params{file} = "resources/macos/ioreg/".$macos_tests{$test}->{class}->{$params{class}};
+            return $module->original('getIODevices')->(%params);
+        }
+    );
+
+    my @screen = GLPI::Agent::Task::Inventory::Generic::Screen::_getScreensFromMacOS(logger => $logger);
+    cmp_deeply(\@screen, $macos_tests{$test}->{expect}, "MacOS: $test");
 }

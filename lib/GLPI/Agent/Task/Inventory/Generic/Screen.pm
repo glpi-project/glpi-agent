@@ -290,6 +290,12 @@ sub _getScreensFromMacOS {
         logger  => $logger,
     );
 
+    push @displays, GLPI::Agent::Tools::MacOS::getIODevices(
+        class   => 'AppleCLCD2',
+        options => '-r -lw0 -d 1',
+        logger  => $logger,
+    );
+
     foreach my $display (@displays) {
         my $screen = {};
         if ($display->{IODisplayCapabilityString} && $display->{IODisplayCapabilityString} =~ /model\((.*)\)/) {
@@ -297,9 +303,18 @@ sub _getScreensFromMacOS {
         }
         if ($display->{IODisplayEDID} && $display->{IODisplayEDID} =~ /^[0-9a-f]+$/i
           && (length($display->{IODisplayEDID}) == 256 || length($display->{IODisplayEDID}) == 512)) {
-            $screen->{edid} = pack("H*", $display->{IODisplayEDID})
+            $screen->{edid} = pack("H*", $display->{IODisplayEDID});
         }
-        push @screens, $screen;
+        if ($display->{DisplayAttributes} && ref($display->{DisplayAttributes}) eq 'HASH' && ref($display->{DisplayAttributes}->{ProductAttributes}) eq 'HASH') {
+            my $attributes = $display->{DisplayAttributes}->{ProductAttributes};
+            $screen->{CAPTION} = $attributes->{ProductName} if $attributes->{ProductName};
+            $screen->{SERIAL} = $attributes->{AlphanumericSerialNumber} if $attributes->{AlphanumericSerialNumber};
+            $screen->{ALTSERIAL} = $attributes->{SerialNumber} if $attributes->{SerialNumber};
+            $screen->{MANUFACTURER} = $attributes->{ManufacturerID} if $attributes->{ManufacturerID};
+            $screen->{DESCRIPTION} = $attributes->{WeekOfManufacture}."/".$attributes->{YearOfManufacture}
+                if $attributes->{WeekOfManufacture} && $attributes->{YearOfManufacture};
+        }
+        push @screens, $screen if keys(%{$screen});
     }
 
     return @screens if @screens;

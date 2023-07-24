@@ -13,6 +13,7 @@ inventory:
 * Fix AMD Epyc CPU inventory on win32
 * fix #447: Support Cgroup 2 resource limits on LXC containers inventory
 * Fix local inventory when html format is requested as output format
+* fix #430: Enhanced monitor support on MacOS Ventura with M1 CPU
 
 packaging:
 * Install basic-authentication-server-plugin.cfg plugin default configuration on debian
