@@ -6,9 +6,9 @@ New IP range: Nouvelle plage IP
 Rename IP range: Renommage de plage IP
 No ip range provided name: Pas de nom de plage ip fourni
 An entry still exists with that name: Une entrée existe déjà avec ce nom
-Start ip is mandatory: L'ip de début est mandataire
+Start ip is mandatory: L'ip de début est obligatoire
 Wrong start ip format: Mauvais format pour l'ip de début
-End ip is mandatory: L'ip de fin est mandataire
+End ip is mandatory: L'ip de fin est obligatoire
 Wrong end ip format: Mauvais format pour l'ip de fin
 Can't create entry without name: Impossible de créer une entrée sans nom
 IP range credential adding: Ajoût d'identifiant pour une plage IP
