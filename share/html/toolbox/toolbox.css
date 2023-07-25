@@ -817,12 +817,15 @@ li.config {
 
 em.hint {
   margin: 5px;
+  color: #444;
 }
 
 em.hint::before {
   content: "\f635";
   font-family: tabler-icons;
   font-style: normal;
-  font-size: 1.2em;
-  padding-right: 0.3em;
+  font-size: 1.5em;
+  padding-right: 0.2em;
+  position: relative;
+  top: -0.2em;
 }
