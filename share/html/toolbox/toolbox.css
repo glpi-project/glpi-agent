@@ -3,7 +3,7 @@ body, p, li {
   color: black;
   font-size: 16px;
   text-align: left;
-  margin: 0 auto;
+  margin: 0 auto 3em auto;
 }
 
 a {
@@ -120,6 +120,9 @@ td.list {
   margin-top: 20px;
   display: flex;
   flex-direction: column;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
 
 #page li {
@@ -138,9 +141,6 @@ input.submit {
   vertical-align: middle;
   margin-top: 20px;
   margin-right: 30px;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
 }
 
 #submit {
