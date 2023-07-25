@@ -16,8 +16,8 @@
     } else { # timeslot type
       $weekday = $schedule->{weekday} || $form{"input/weekday"}
         if $schedule->{weekday} || $form{"input/weekday"};
-      $start = $schedule->{start}
-        if $schedule->{start};
+      $start = $schedule->{start} || $form{"input/start"}
+        if $schedule->{start} || $form{"input/start"};
       my $duration = $schedule->{duration} || "01:00";
       my ($dhour, $dminute) = $duration =~ /^(\d{2}):(\d{2})$/;
       if (int($dminute)) {
@@ -26,6 +26,18 @@
       } else {
         $duration_unit = "hour";
         $duration_time = int($dhour);
+      }
+      $duration_time = $form{"input/duration/value"}
+        if $form{"input/duration/value"};
+      if ($form{"input/duration/unit"}) {
+        $duration_unit = $form{"input/duration/unit"};
+        if ($duration_unit eq "minute") {
+          $dhour = int($duration_time/60);
+          $dminute = $duration_time%60;
+        } else {
+          $dhour = int($duration_time);
+          $dminute = 0;
+        }
       }
       $dstring = sprintf('%dh%02d', $dhour, $dminute);
     }
@@ -140,7 +152,7 @@
         document.getElementById("timeslot-config").style = "display: none";
         document.getElementById("timeslot-description").style = "display: none";
         document.getElementById("weekday").disabled = true;
-        document.getElementById("daytime").disabled = true;
+        document.getElementById("start").disabled = true;
         document.getElementById("duration-time").disabled = true;
         document.getElementById("duration-unit").disabled = true;
       \} else \{
@@ -151,7 +163,7 @@
         document.getElementById("timeslot-config").style = "display: flex";
         document.getElementById("timeslot-description").style = "display: flex";
         document.getElementById("weekday").disabled = false;
-        document.getElementById("daytime").disabled = false;
+        document.getElementById("start").disabled = false;
         document.getElementById("duration-time").disabled = false;
         document.getElementById("duration-unit").disabled = false;
       \}
