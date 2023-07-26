@@ -42,7 +42,7 @@ my %tests = (
             SCSI_COID    => '2',
             SCSI_LUN     => '0',
             SCSI_UNID    => '0',
-            DISKSIZE     => 102398,
+            DISKSIZE     => 107372,
             SERIAL       => 'VB2cff0f95-b2f7db11',
         },
         {
@@ -56,7 +56,7 @@ my %tests = (
             SCSI_COID    => '32',
             SCSI_LUN     => '1',
             SCSI_UNID    => '0',
-            DISKSIZE     => 94,
+            DISKSIZE     => 98,
         },
     ],
     '2008-Enterprise' => [
@@ -71,7 +71,7 @@ my %tests = (
             SCSI_COID    => '3',
             SCSI_LUN     => '0',
             SCSI_UNID    => '5',
-            DISKSIZE     => 10236,
+            DISKSIZE     => 10733,
             SERIAL       => '6177c38f910a83560899e28ee97c6204',
         },
         {
@@ -85,7 +85,7 @@ my %tests = (
             SCSI_COID    => '3',
             SCSI_LUN     => '0',
             SCSI_UNID    => '8',
-            DISKSIZE     => 10236,
+            DISKSIZE     => 10733,
             SERIAL       => '6177c384f3a4b22fe3a32a1f1df90dd1',
         },
         {
@@ -99,7 +99,7 @@ my %tests = (
             SCSI_COID    => '3',
             SCSI_LUN     => '0',
             SCSI_UNID    => '1',
-            DISKSIZE     => 15359,
+            DISKSIZE     => 16105,
             SERIAL       => '6177c38465431cc70afd3be80ab1d98a',
         },
         {
@@ -113,7 +113,7 @@ my %tests = (
             SCSI_COID    => '3',
             SCSI_LUN     => '0',
             SCSI_UNID    => '11',
-            DISKSIZE     => 5114,
+            DISKSIZE     => 5362,
             SERIAL       => '6177c38882b0dcfec9dc3525ae711228',
         },
         {
@@ -127,7 +127,7 @@ my %tests = (
             SCSI_COID    => '3',
             SCSI_LUN     => '0',
             SCSI_UNID    => '4',
-            DISKSIZE     => 10236,
+            DISKSIZE     => 10733,
             SERIAL       => '6177c38fa127e960d13ab1f8f7926078',
         },
         {
@@ -141,7 +141,7 @@ my %tests = (
             SCSI_COID    => '3',
             SCSI_LUN     => '0',
             SCSI_UNID    => '0',
-            DISKSIZE     => 51199,
+            DISKSIZE     => 53686,
             SERIAL       => '6177c3800071a573d412dbd2e9a6f956',
         },
         {
@@ -155,7 +155,7 @@ my %tests = (
             SCSI_COID    => '3',
             SCSI_LUN     => '0',
             SCSI_UNID    => '10',
-            DISKSIZE     => 10236,
+            DISKSIZE     => 10733,
             SERIAL       => '6177c38350ccec80e6da3e20ed996381',
         },
         {
@@ -169,7 +169,7 @@ my %tests = (
             SCSI_COID    => '3',
             SCSI_LUN     => '0',
             SCSI_UNID    => '3',
-            DISKSIZE     => 10236,
+            DISKSIZE     => 10733,
             SERIAL       => '6177c38326803917dd2ef267a714c769',
         },
         {
@@ -183,7 +183,7 @@ my %tests = (
             SCSI_COID    => '3',
             SCSI_LUN     => '0',
             SCSI_UNID    => '6',
-            DISKSIZE     => 20473,
+            DISKSIZE     => 21467,
             SERIAL       => '6177c387b3af81b5328641579c1f7529',
         },
         {
@@ -197,7 +197,7 @@ my %tests = (
             SCSI_COID    => '3',
             SCSI_LUN     => '0',
             SCSI_UNID    => '9',
-            DISKSIZE     => 10236,
+            DISKSIZE     => 10733,
             SERIAL       => '6177c381745989ec97acaa3f8c78b479',
         },
         {
@@ -211,7 +211,7 @@ my %tests = (
             SCSI_COID    => '3',
             SCSI_LUN     => '0',
             SCSI_UNID    => '2',
-            DISKSIZE     => 20473,
+            DISKSIZE     => 21467,
             SERIAL       => '6177c387f9626cdf1fdd32a9cc06eadc',
         },
         {
@@ -225,7 +225,7 @@ my %tests = (
             SCSI_COID    => '3',
             SCSI_LUN     => '0',
             SCSI_UNID    => '12',
-            DISKSIZE     => 5114,
+            DISKSIZE     => 5362,
             SERIAL       => '6177c38064011ebba03c8181a9278340',
         },
         {
@@ -239,7 +239,7 @@ my %tests = (
             SCSI_COID    => '3',
             SCSI_LUN     => '0',
             SCSI_UNID    => '13',
-            DISKSIZE     => 5114,
+            DISKSIZE     => 5362,
             SERIAL       => '6177c38a85018bdb60210b12fcc086ca',
         },
         {
@@ -253,7 +253,7 @@ my %tests = (
             SCSI_COID    => '3',
             SCSI_LUN     => '0',
             SCSI_UNID    => '14',
-            DISKSIZE     => 5114,
+            DISKSIZE     => 5362,
             SERIAL       => '6177c38f54fc585faac8c2c9e22f6d1f',
         },
         {
@@ -267,7 +267,7 @@ my %tests = (
             SCSI_COID    => '3',
             SCSI_LUN     => '0',
             SCSI_UNID    => '15',
-            DISKSIZE     => 5114,
+            DISKSIZE     => 5362,
             SERIAL       => '6177c38082d23ed577bf5edbc0e01e20',
         },
         {
@@ -281,14 +281,14 @@ my %tests = (
             SCSI_COID    => '4',
             SCSI_LUN     => '0',
             SCSI_UNID    => '0',
-            DISKSIZE     => 5114,
+            DISKSIZE     => 5362,
             SERIAL       => '6177c38f7f15954bc0aecde5929afc0a',
         },
     ],
     'win10-crypt' => [
         {
             DESCRIPTION  => 'Lecteur de disque',
-            DISKSIZE     => 488382,
+            DISKSIZE     => 512105,
             FIRMWARE     => 'AACA4100',
             INTERFACE    => 'SCSI',
             MANUFACTURER => '(Lecteurs de disque standard)',
@@ -313,7 +313,7 @@ my %tests = (
             SCSI_COID    => undef,
             SCSI_LUN     => undef,
             SCSI_UNID    => undef,
-            DISKSIZE     => 51200,
+            DISKSIZE     => 53687,
             SERIAL       => 'VB56f85924-28919b73',
         },
         {
@@ -327,7 +327,7 @@ my %tests = (
             SCSI_COID    => '0',
             SCSI_LUN     => '0',
             SCSI_UNID    => '0',
-            DISKSIZE     => 60,
+            DISKSIZE     => 63,
         },
     ],
 );

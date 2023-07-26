@@ -42,7 +42,9 @@ sub doInventory {
             );
             for my $k (qw(MODEL FIRMWARE SERIALNUMBER DISKSIZE)) {
                 next unless defined($info->{$k});
-                $storage->{$k} = trimWhitespace($info->{$k});
+                # Be sure to not override a value with an empty or null value
+                my $value = trimWhitespace($info->{$k});
+                $storage->{$k} = $value if $value;
             }
         }
 
@@ -149,7 +151,7 @@ sub _getDrives {
         # Cleanup field which may contain spaces
         $drive->{FIRMWARE} = trimWhitespace($drive->{FIRMWARE}) if $drive->{FIRMWARE};
 
-        $drive->{DISKSIZE} = int($object->{Size} / (1024 * 1024))
+        $drive->{DISKSIZE} = int($object->{Size} / 1_000_000)
             if $object->{Size};
 
         if ($object->{SerialNumber} && $object->{SerialNumber} !~ /^ +$/) {
