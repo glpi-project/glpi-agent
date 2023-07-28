@@ -718,6 +718,10 @@ input:checked + .slider:before {
   overflow: hidden;
 }
 
+.tooltip p {
+  margin-bottom: 0;
+}
+
 .with-tooltip .tooltip i::after {
   content: '';
   position: absolute;
