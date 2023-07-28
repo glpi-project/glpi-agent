@@ -213,7 +213,7 @@
             $OUT .= "
             <li>
               <input id='add-iprange' type='hidden' name='add-iprange' value='".(@remains == 1 ? encode('UTF-8', encode_entities($remains[0])) : "")."'".($type ne "local" ? "" : " disabled")."/>
-              <select id='select-iprange' onchange='updateSelectIprange(this)' size='".
+              <select id='select-iprange' class='iprange' onchange='updateSelectIprange(this)' size='".
                 (@remains > 5 ? 5 : scalar(@remains))."'".
                 ($type ne "local" ? "" : " disabled").
                 (@ipranges ? "" : " required").(@remains > 1 ? " multiple" : "").">".

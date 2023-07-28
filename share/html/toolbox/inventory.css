@@ -19,6 +19,11 @@ select.tag {
   margin-left: 1em;
 }
 
+select.iprange {
+  font-size: 20px;
+  width: 20em;
+}
+
 a.tag {
   display: block;
   text-align: right;
