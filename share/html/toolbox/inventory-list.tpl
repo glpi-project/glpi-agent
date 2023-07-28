@@ -258,7 +258,7 @@
               </label>
               <label for='show-log-$taskid' class='text'>".sprintf( _("Show &laquo;&nbsp;%s&nbsp;&raquo; task log"), $this)."</label>
               <div class='abort-button'>
-                <input class='submit-secondary' id='$taskid-abort-button' type='button' name='abort/$taskid' value='"._("Abort")."' onclick='abort_task(\"$taskid\")' style='display: ".($done || $percent == 100 || $aborted ? "none" : "inline")."'/>
+                <button class='inline secondary' id='$taskid-abort-button' type='button' name='abort/$taskid' alt='"._("Abort")."' onclick='abort_task(\"$taskid\")' style='display: ".($done || $percent == 100 || $aborted ? "none" : "inline")."'><i class='secondary ti ti-player-stop-filled'></i>"._("Abort")."</button>
               </div>
               <div class='log-freezer' id='$taskid-freeze-log' >
                 <label class='switch' id='$taskid-freeze-log-option' style='display: ".($done || $percent == 100 || $aborted || !$form{"show-log/$taskid"} && !$form{"show-log/$taskid"} ne "on"? "none" : "inline")."'>
@@ -322,15 +322,15 @@
     $listed >= 50 ? $listnav : "" }
     <div class='select-row'>
       <i class='ti ti-corner-left-up arrow-left'></i>
-      <input class='submit-secondary' type='submit' name='submit/run-now' value='{_"Run task"}'/>
+      <button class='secondary' type='submit' name='submit/run-now' alt='{_"Run task"}'><i class='secondary ti ti-player-play-filled'></i>{_"Run task"}</button>
       <div class='separation'></div>
-      <input class='submit-secondary' type='submit' name='submit/disable' value='{_"Disable"}'/>
-      <input class='submit-secondary' type='submit' name='submit/enable' value='{_"Enable"}'/>
+      <button class='secondary' type='submit' name='submit/enable' alt='{_"Enable"}'><i class='secondary ti ti-settings-automation'></i>{_"Enable"}</button>
+      <button class='secondary' type='submit' name='submit/disable' alt='{_"Disable"}'><i class='secondary ti ti-settings-off'></i>{_"Disable"}</button>
       <div class='separation'></div>
-      <input class='submit-secondary' type='submit' name='submit/delete' value='{_"Delete"}'/>
+      <button class='secondary' type='submit' name='submit/delete' alt='{_"Delete"}'><i class='secondary ti ti-trash-filled'></i>{_"Delete"}</button>
     </div>
     <hr/>
-    <input class='big-button' type='submit' name='submit/add' value='{_"Add new inventory task"}'/>
+    <button class='big-button' type='submit' name='submit/add' alt='{_"Add new inventory task"}'><i class='primary ti ti-plus'></i>{_"Add new inventory task"}</button>
   </form>
   <script>
   var outputids = [{ join(", ", map { "'$_'" } @visible) }];

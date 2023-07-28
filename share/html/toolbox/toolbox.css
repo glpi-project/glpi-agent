@@ -329,6 +329,37 @@ input.submit-secondary:disabled {
   color: gray;
 }
 
+button.secondary {
+  color: black;
+  background-color: #d6d6d6;
+  font-weight: normal;
+  margin: 5px;
+  padding: 5px;
+  border: 0;
+}
+
+button.secondary:hover {
+  opacity: .9;
+  box-shadow: 0px 1px 1px #999;
+}
+
+button.secondary:disabled {
+  box-shadow: 0px 1px 1px #999;
+  color: gray;
+}
+
+i.secondary {
+  margin-right: 4px;
+}
+
+i.primary {
+  margin-right: 6px;
+}
+
+button.inline {
+  margin: 3px;
+}
+
 .select-row {
   margin-top: 10px;
   display: flex;
@@ -406,7 +437,7 @@ select.selection-option {
   width: 1px;
   height: 20px;
   background: linear-gradient(#aaa, #aaa) 0 0 no-repeat;
-  margin: 5px 10px 5px 10px;
+  margin: 10px;
 }
 
 th.checkbox {

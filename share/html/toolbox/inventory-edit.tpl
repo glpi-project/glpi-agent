@@ -172,8 +172,8 @@
             <div class='overlay-frame' onclick='event.stopPropagation()'>
               <label for='newtag' class='newtag' title='{_"New tag will be automatically selected"}'>{_"New tag"}:</label>
               <input id='config-newtag' class='newtag' type='text' name='input/newtag' value='' size='20' title='{_"New tag will be automatically selected"}' disabled />
-              <input type='submit' class='big-button' name='submit/newtag' value='{_"Add"}'/>
-              <input type='button' class='big-button' name='submit/newtag-cancel' value='{_"Cancel"}' onclick='cancel_config_newtag()'/>
+              <button type='submit' class='big-button' name='submit/newtag' alt='{_"Add"}'><i class='primary ti ti-plus'></i>{_"Add"}</button>
+              <button type='button' class='big-button' name='submit/newtag-cancel' alt='{_"Cancel"}' onclick='cancel_config_newtag()'><i class='primary ti ti-x'></i>{_"Cancel"}</button>
             </div>
           </div>
       </div>
@@ -224,7 +224,7 @@
           } sort { $a cmp $b } @remains)."
               </select>".(@remains > 1 ? "
               <br/>" : "").($form{empty} ? "" : "
-              <input type='submit' name='submit/add-iprange' value='".(_"Add ip range")."'/>")."
+              <button type='submit' class='secondary' name='submit/add-iprange' alt='".(_"Add ip range")."'><i class='secondary ti ti-plus'></i>".(_"Add ip range")."</button>")."
             </li>";
           }
           '';}
@@ -264,11 +264,11 @@
         <input class='input-row' type='text' id='desc' name='input/description' value='{$job->{description} || $form{"input/description"} || ""}' size='40'/>
       </div>
     </div>
-    <input type='submit' class='big-button' name='submit/{
+    <button type='submit' class='big-button' name='submit/{
       $jobs{$edit} ?
-        "update' value='"._("Update") :
-        "add' value='"._("Create inventory task")}'/>
-    <input type='submit' class='big-button secondary-button' name='submit/cancel' formnovalidate='1' value='{_("Cancel")}'/>
+        "update' alt='"._("Update") :
+        "add' alt='"._("Create inventory task")}'><i class='primary ti ti-device-floppy'></i>{$jobs{$edit} ? _("Update") : _("Create inventory task")}</button>
+    <button type='submit' class='big-button secondary-button' name='submit/cancel' formnovalidate='1' alt='{_("Cancel")}'><i class='primary ti ti-x'></i>{_("Cancel")}</button>
   </form>
   <script>
     function jobtype_change() \{
