@@ -499,8 +499,8 @@ sub _submit_update {
         $self->edit($edit);
     } else {
         $self->errors("Update task: No such task: '$edit'");
+        $self->reset_edit();
     }
-    $self->reset_edit();
 }
 
 sub _submit_delete {
