@@ -285,8 +285,8 @@ sub _submit_update {
         $self->need_save(scheduling);
     } else {
         $self->errors("Scheduling update: No such scheduling: '$edit'");
+        $self->reset_edit();
     }
-    $self->reset_edit();
 }
 
 sub _submit_delete {
