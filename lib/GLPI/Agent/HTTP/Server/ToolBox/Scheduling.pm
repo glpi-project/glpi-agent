@@ -50,6 +50,7 @@ sub yaml_config_specs {
             text        => "Show Scheduling in navigation bar",
             navbar      => "Scheduling",
             link        => $self->index(),
+            icon        => "clock-edit",
             index       => 60, # index in navbar
         },
         iprange_yaml  => {

@@ -81,6 +81,7 @@ sub yaml_config_specs {
             text        => "Show Remotes in navigation bar",
             navbar      => "Remotes",
             link        => $self->index(),
+            icon        => "devices-pc",
             index       => 30, # index in navbar
         },
         remotes_show_password  => {

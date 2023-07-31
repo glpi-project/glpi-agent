@@ -51,6 +51,7 @@ sub yaml_config_specs {
             text        => "Show IP Ranges in navigation bar",
             navbar      => "IP Ranges",
             link        => $self->index(),
+            icon        => "network",
             index       => 40, # index in navbar
         },
         iprange_yaml  => {

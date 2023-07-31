@@ -76,6 +76,7 @@ sub yaml_config_specs {
             text        => "Show Inventory in navigation bar",
             navbar      => "Inventory tasks",
             link        => $self->index(),
+            icon        => "subtask",
             index       => 10, # index in navbar
         },
         threads_options  => {

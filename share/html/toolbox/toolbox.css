@@ -588,7 +588,7 @@ input.credentials {
 #navbar li {
   margin: 0;
   background-color: #e6e6e6;
-  text-align: center;
+  text-align: left;
   border-bottom: 1px solid #fff;
   border-top: 1px solid #fff;
 }
@@ -597,8 +597,14 @@ input.credentials {
   background-color: #efefef;
 }
 
+#navbar i {
+  margin-right: 0.4em;
+  margin-left: -1.4em;
+}
+
 div.nav {
-  padding: .5em 1em;
+  padding: .5em;
+  margin-left: 1.4em;
 }
 
 label.closed {

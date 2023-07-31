@@ -50,6 +50,7 @@ sub yaml_config_specs {
             text        => "Show MibSupport in navigation bar",
             navbar      => "MibSupport",
             link        => $self->index(),
+            icon        => "router",
             index       => 90, # index in navbar
         },
         mibsupport_disabled  => {
