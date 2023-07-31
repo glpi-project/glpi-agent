@@ -50,6 +50,7 @@ sub yaml_config_specs {
             text        => "Show Credentials in navigation bar",
             navbar      => "Credentials",
             link        => $self->index(),
+            icon        => "key",
             index       => 50, # index in navbar
         },
         credentials_yaml  => {

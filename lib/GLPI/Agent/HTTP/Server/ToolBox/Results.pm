@@ -87,6 +87,7 @@ sub yaml_config_specs {
             text        => "Show Results in navigation bar",
             navbar      => "Results",
             link        => $self->index(),
+            icon        => "report",
             index       => 20, # index in navbar
         },
         custom_fields_yaml => {

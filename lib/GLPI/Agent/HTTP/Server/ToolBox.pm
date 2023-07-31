@@ -294,6 +294,7 @@ sub yaml_config_specs {
             text        => "Show Raw YAML navigation",
             navbar      => "Raw YAML".($self->config('raw_edition') ? " edition" : ""),
             link        => "yaml",
+            icon        => "clipboard-text",
             index       => 100, # index in navbar
         },
         default_page => {
@@ -746,9 +747,10 @@ sub _index {
                 or next;
             my $link = delete $config_specs->{$key}->{link}
                 or next;
+            my $icon = delete $config_specs->{$key}->{icon};
             next unless $self->isyes($config_specs->{$key}->{value});
             my $index = delete $config_specs->{$key}->{index} || 0;
-            push @{$navbar{$index}}, [ $navbar, $link ];
+            push @{$navbar{$index}}, [ $navbar, $link, $icon ];
         }
     }
     foreach my $index (sort { $a <=> $b } keys(%navbar)) {
