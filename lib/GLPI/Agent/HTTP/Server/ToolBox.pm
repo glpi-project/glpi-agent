@@ -574,7 +574,10 @@ sub write_yaml {
             if ($backup) {
                 $self->info("Making backup of YAML file: ".$self->config('yaml'));
                 my ($ext) = $self->config('yaml') =~ m|\.(ya?ml)$|;
-                $yaml_file = $self->confdir() . "/backup/" . $self->config('yaml');
+                my $backup_dir = $self->confdir() . "/backup";
+                # Be sure a backup folder exists
+                mkdir $backup_dir unless -d $backup_dir;
+                $yaml_file = $backup_dir . "/" . $self->config('yaml');
                 $yaml_file =~ s/\.ya?ml$//;
                 $yaml_file .= "$backup.$ext";
             } else {
