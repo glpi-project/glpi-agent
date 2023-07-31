@@ -384,12 +384,14 @@ hr {
 
 .selection-option {
   font: 14px Arial, Helvetica;
+  margin-top: 0.5em;
   margin-left: 5px;
 }
 
 select.selection-option {
   font: 14px Arial, Helvetica;
   margin-right: 4px;
+  margin-bottom: 0.5em;
 }
 
 .col-sort-ascend::before {
@@ -524,6 +526,10 @@ span.custom-checkbox:after {
 
 #credentials select,option {
   font: 20px Arial, Helvetica;
+}
+
+option {
+  font: 14px Arial, Helvetica;
 }
 
 input.credentials {
