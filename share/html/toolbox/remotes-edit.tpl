@@ -35,8 +35,8 @@
       <input class='input-row' type='text' id='deviceid' name='input/deviceid' value='{($remote && $remote->{deviceid}) || $form{"input/deviceid"} || ""}' size='60'/>
       </div>
     </div>
-    <input type='submit' class='big-button' name='submit/{ $remote ?
-        "update-remote' value='"._("Update") :
-        "add-remote' value='"._("Add") }'/>
-    <input type='submit' class='big-button secondary-button' name='submit/cancel' value='{_("Cancel")}'/>
+    <button type='submit' class='big-button' name='submit/{ $remote ?
+        "update-remote' value='1' alt='"._("Update")."'><i class='primary ti ti-device-floppy'></i>"._("Update") :
+        "add-remote' value='1' alt='"._("Add")."'><i class='primary ti ti-plus'></i>"._("Add") }</button>
+    <button type='submit' class='big-button secondary-button' name='submit/cancel' value='1' alt='{_("Cancel")}'><i class='primary ti ti-x'></i>{_("Cancel")}</button>
   </form>

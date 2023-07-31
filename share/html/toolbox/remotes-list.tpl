@@ -101,7 +101,7 @@
     $listed >= 50 ? $listnav : "" }
     <div class='select-row'>
       <i class='ti ti-corner-left-up arrow-left'></i>{ $remotes_admin ? "
-      <input class='submit-secondary' type='submit' name='submit/delete-remote' value='"._("Delete")."'/>
+      <button class='secondary' type='submit' name='submit/delete-remote' value='1' alt='"._("Delete")."'><i class='secondary ti ti-trash-filled'></i>"._("Delete")."</button>
       <div class='separation'></div>" : "" }
       <label class='selection-option'>{_"Remotes workers"}:</label>
       <select id='workers' class='selection-option' name='workers'>{
@@ -112,11 +112,11 @@
           ">$opt</option>";
       }}
       </select>
-      <input class='submit-secondary' type='submit' name='submit/expire-remotes' value='{_"Mark remotes as expired"}'/>
-      <input class='submit-secondary' type='submit' name='submit/start-task' value='{_"Start remoteinventory task"}'{ $disable_start ? " disabled" : "" }/>
+      <button class='secondary' type='submit' name='submit/expire-remotes' value='1' alt='{_"Mark remotes as expired"}'><i class='secondary ti ti-calendar-x'></i>{_"Mark remotes as expired"}</button>
+      <button class='secondary' type='submit' name='submit/start-task' value='1' alt='{_"Start remoteinventory task"}'{ $disable_start ? " disabled" : "" }><i class='secondary ti ti-player-play-filled'></i>{_"Start remoteinventory task"}</button>
     </div>
     <hr/>{ $remotes_admin ? "
-    <input class='big-button' type='submit' name='submit/add-remote' value='"._("Add Remote")."'/>" : "" }
+    <button class='big-button' type='submit' name='submit/add-remote' value='1' alt='"._("Add Remote")."'><i class='secondary ti ti-plus'></i>"._("Add Remote")."</button>" : "" }
   </form>
   <script>
   function toggle_all(from) \{
