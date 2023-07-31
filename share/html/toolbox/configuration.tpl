@@ -82,8 +82,8 @@
   if ($update_support) {
     $OUT .= "
     <div class='config-inputs'>
-      <input class='big-button' type='submit' name='submit/update' value='"._("Update")."'>
-      <input class='big-button' type='submit' name='submit/backup' value='"._("Backup YAML")."'>
+      <button class='big-button' type='submit' name='submit/update' value='1' alt='"._("Update")."'><i class='primary ti ti-device-floppy'></i>"._("Update")."</button>
+      <button class='big-button secondary-button' type='submit' name='submit/backup' value='1' alt='"._("Backup YAML")."'><i class='primary ti ti-database-export'></i>"._("Backup YAML")."</button>
     </div>";
   }}
   </form>
