@@ -177,7 +177,7 @@
     <a href='$url_path/inventory' class='see-link'>".sprintf(_("See %s task"),$task.": ".$device->{ip}."/".encode('UTF-8', encode_entities($device->{ip_range})))."</a>";
       } elsif (!$device->isLocalInventory()) {
         $OUT .= "
-    <input class='submit-secondary' type='submit' name='submit/scan' value='".(_"Scan this device")."'/>";
+    <button class='secondary' type='submit' name='submit/scan' value='1' alt=".(_"Scan this device")."'><i class='primary ti ti-player-play-filled'></i>".(_"Scan this device")."</button>";
       }
     }
   }
@@ -187,9 +187,9 @@
       <div class='overlay-frame fields-frame' onclick='event.stopPropagation()'>"
       .$select_fields."
         <hr/>
-        <input type='button' class='big-button' onclick='toggle_all()' value='".(_"Reverse selection")."'/>
-        <input type='submit' class='big-button' name='submit/select-fields' value='".(_"Save the selection")."'/>
-        <input type='button' class='big-button' onclick='cancel_select()' value='".(_"Cancel")."'/>
+        <button type='button' class='big-button' onclick='toggle_all()' alt='".(_"Reverse selection")."'><i class='primary ti ti-select'></i>".(_"Reverse selection")."</button>
+        <button type='submit' class='big-button' name='submit/select-fields' value='1' alt='".(_"Save the selection")."'><i class='primary ti ti-device-floppy'></i>".(_"Save the selection")."</button>
+        <button type='button' class='big-button' onclick='cancel_select()' alt='".(_"Cancel")."'><i class='primary ti ti-x'></i>".(_"Cancel")."</button>
       </div>
     </div>
     <script>
@@ -266,21 +266,21 @@
     </div>";
     if ($do eq 'edit' && $has_selected_fields) {
       $OUT .= "
-    <div class='center'><input class='submit-secondary' type='submit' name='submit/set-selected-fields' value='".(_"Apply selected fields")."'/></div>";
+    <div class='center'><button class='secondary' type='submit' name='submit/set-selected-fields' value='1' alt='".(_"Apply selected fields")."'><i class='primary ti ti-device-floppy'></i>".(_"Apply selected fields")."</button></div>";
     }
   }
   $OUT .= "
     <hr/>".($do eq 'edit' ? "
-    <input class='big-button' type='submit' name='submit/update' value='"._("Update")."'/>" : "")."
-    <input class='secondary-button' type='submit' name='submit/delete-device' value='"._("Delete")."'/>";
+    <button class='big-button' type='submit' name='submit/update' value='1' alt='"._("Update")."'><i class='primary ti ti-device-floppy'></i>".(_"Update")."</button>" : "")."
+    <button class='big-button secondary-button' type='submit' name='submit/delete-device' value='1' alt='"._("Delete")."'><i class='primary ti ti-trash'></i>".(_"Delete")."</button>";
   if ($do eq 'edit') {
     if ($select_fields) {
       $OUT .= "
-    <input class='secondary-button' type='button' onclick='select_fields()' value='".(_"Select fields for propagation")."'/>";
+    <button class='big-button secondary-button' type='button' onclick='select_fields()' value='1' alt='".(_"Select fields for propagation")."'><i class='primary ti ti-transfer-in'></i>".(_"Select fields for propagation")."</button>";
     }
     if (keys(%checked_fields)) {
       $OUT .= "
-    <input class='secondary-button' type='submit' name='submit/stop-propagation' value='".(_"Stop fields propagation")."'/>";
+    <button class='big-button secondary-button' type='submit' name='submit/stop-propagation' value='1' alt=".(_"Stop fields propagation")."'><i class='primary ti ti-x'></i>".(_"Stop fields propagation")."</button>";
     }
   }}
     <hr/>
