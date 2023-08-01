@@ -16,6 +16,7 @@ inventory:
 * fix #430: Enhanced monitor support on MacOS Ventura with M1 CPU
 * fix #449: Don't override storage size with null value reported by hdparm on win32
 * Report storage size detected by WMI in Mib in place of Mb on win32
+* Update RustDesk remote_mgmt support starting from RustDesk v1.2.2
 
 packaging:
 * Install basic-authentication-server-plugin.cfg plugin default configuration on debian

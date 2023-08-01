@@ -34,6 +34,36 @@ sub doInventory {
         pattern => qr/^id\s*=\s*'(.*)'$/
     );
 
+    # Add support for --get-id parameter available since RustDesk 1.2 as id becomes empty in conf
+    # Only works starting with RustDesk v1.2.2
+    unless (defined($RustDeskID) && length($RustDeskID)) {
+        my $command = OSNAME eq 'MSWin32' ? 'C:\Program Files\RustDesk\rustdesk.exe' : 'rustdesk';
+        if (canRun($command)) {
+            $command = '"'.$command.'"' if OSNAME eq 'MSWin32';
+            my $required = 1;
+            my $version = getFirstLine(
+                command => $command." --version",
+                logger  => $logger
+            );
+            if ($version && $version =~ /^(\d+)\.(\d+)\.(\d+)$/) {
+                $required = int($1) > 1 || (int($1) == 1 && int($2) > 2) || (int($1) == 1 && int($2) == 2 && int($3) >= 2) ? 0 : 1;
+            }
+            if ($required) {
+                $logger->debug("Can't get RustDesk ID, at least RustDesk v1.2.2 is required") if $logger;
+                return;
+            }
+            $RustDeskID = getFirstMatch(
+                command => $command." --get-id",
+                logger  => $logger,
+                pattern => qr/^(\d+)$/
+            );
+            unless ($RustDeskID) {
+                $logger->debug("Can't get RustDesk ID, RustDesk is probably not running") if $logger;
+                return;
+            }
+        }
+    }
+
     if (defined($RustDeskID)) {
         $logger->debug('Found RustDesk ID : ' . $RustDeskID) if $logger;
 
