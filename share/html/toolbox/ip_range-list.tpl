@@ -113,7 +113,7 @@
     $listed >= 50 ? $listnav : "" }
     <div class='select-row'>
       <i class='ti ti-corner-left-up arrow-left'></i>
-      <input class='submit-secondary' type='submit' name='submit/delete' value='{_"Delete"}'/>
+      <button class='secondary' type='submit' name='submit/delete' value='1' alt='{_"Delete"}'><i class='primary ti ti-trash'></i>{_"Delete"}</button>
       <div class='separation'></div>
       <label class='selection-option'>{_"Associated credentials"}:</label>
       <select class='selection-option' name='input/credentials'>
@@ -125,11 +125,11 @@
           " value='$_'>".($credentials{$_}->{name} || $_)."</option>"
         } @cred_options)}
       </select>
-      <input class='submit-secondary' type='submit' name='submit/addcredential' value='{_"Add credential"}'/>
-      <input class='submit-secondary' type='submit' name='submit/rmcredential' value='{_"Remove credential"}'/>
+      <button class='secondary' type='submit' name='submit/addcredential' value='1' alt='{_"Add credential"}'><i class='primary ti ti-playlist-add'></i>{_"Add credential"}</button>
+      <button class='secondary' type='submit' name='submit/rmcredential' value='1' alt='{_"Remove credential"}'><i class='primary ti ti-playlist-x'></i>{_"Remove credential"}</button>
     </div>
     <hr/>
-    <input class='big-button' type='submit' name='submit/add' value='{_"Add new IP range"}'/>
+    <button class='big-button' type='submit' name='submit/add' value='1' alt='{_"Add new IP range"}'><i class='primary ti ti-plus'></i>{_"Add new IP range"}</button>
   </form>
   <script>
   function toggle_all(from) \{
