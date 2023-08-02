@@ -140,7 +140,7 @@ sub init {
     $self->{htmldir} = $self->{server}->{htmldir} || '';
 
     # Normalize raw_edition
-    $self->config('raw_edition', $self->config('raw_edition') =~ /^0|no$/i ? 0 : 1);
+    $self->config('raw_edition', $self->yesno($self->config('raw_edition')));
 
     # Normalize headercolor as HTML color
     if ($self->config('headercolor')) {
@@ -292,7 +292,7 @@ sub yaml_config_specs {
             type        => $self->isyes($yaml_config->{updating_support}) ? "bool" : "readonly",
             value       => $self->yesno($yaml_config->{yaml_navbar}),
             text        => "Show Raw YAML navigation",
-            navbar      => "Raw YAML".($self->config('raw_edition') ? " edition" : ""),
+            navbar      => "Raw YAML".($self->isyes($self->config('raw_edition')) ? " edition" : ""),
             link        => "yaml",
             icon        => "clipboard-text",
             index       => 100, # index in navbar
@@ -665,8 +665,8 @@ sub _index {
     if ($request->method() eq 'POST') {
         $form = $self->_get_form($request->content());
 
-        if ($form->{'raw-yaml'}) {
-            if ($self->config('raw_edition')) {
+        if ($form->{'update'} && $form->{'raw-yaml'}) {
+            if ($self->isyes($self->config('raw_edition'))) {
                 $self->yaml( YAML::Tiny->read_string($form->{'raw-yaml'}) );
                 $self->need_save();
             }
@@ -1032,6 +1032,8 @@ sub reset_edit {
 sub config {
     my ($self, $name, $value) = @_;
 
+    return unless $name;
+
     # Handle config in parent for pages
     return $self->{toolbox}->config($name, $value)
         if $self->{toolbox};
@@ -1042,12 +1044,12 @@ sub config {
 
 sub yesno {
     my ($self, $value) = @_;
-    return $value && $value =~ /^1|yes|true$/i ? "yes" : "no";
+    return defined($value) && $value =~ /^1|yes|true$/i ? "yes" : "no";
 }
 
 sub isyes {
     my ($self, $value) = @_;
-    return $value && $value =~ /^1|yes|true$/i ? 1 : 0;
+    return defined($value) && $value =~ /^1|yes|true$/i ? 1 : 0;
 }
 
 sub page {
