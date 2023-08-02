@@ -199,7 +199,7 @@ select.verbosity-options {
 textarea.output {
   height: 40em;
   width: 100%;
-  margin-right: 1em;
+  margin: 0px;
 }
 
 h2 {
