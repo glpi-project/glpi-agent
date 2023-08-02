@@ -136,11 +136,11 @@
       <input class='input-row' type='text' id='desc' name='input/description' value='{$schedule->{description} || $form{"input/description"} || ""}' size='40'>
       </div>
     </div>
-    <input type='submit' class='big-button' name='submit/{
+    <button type='submit' class='big-button' value='1' name='submit/{
       $scheduling{$edit} ?
         "update' value='"._("Update") :
-        "add' value='"._("Add") }'/>
-    <input type='submit' class='big-button secondary-button' name='submit/cancel' value='{_("Cancel")}'/>
+        "add' value='"._("Add") }'><i class='primary ti ti-device-floppy'></i>{ $scheduling{$edit} ? _("Update") : _("Add") }</button>
+    <button type='submit' class='big-button secondary-button' name='submit/cancel' formnovalidate='1' value='1' alt='{_("Cancel")}'><i class='primary ti ti-x'></i>{_("Cancel")}</button>
   </form>
   <script>
     function type_change() \{

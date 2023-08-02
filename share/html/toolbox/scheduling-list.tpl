@@ -113,10 +113,10 @@
     $listed >= 50 ? $listnav : "" }
     <div class='select-row'>
       <i class='ti ti-corner-left-up arrow-left'></i>
-      <input class='submit-secondary' type='submit' name='submit/delete' value='{_"Delete"}'/>
+      <button class='secondary' type='submit' name='submit/delete' value='1' alt='{_"Delete"}'><i class='primary ti ti-trash'></i>{_"Delete"}</button>
     </div>
     <hr/>
-    <input class='big-button' type='submit' name='submit/add' value='{_"Add new scheduling"}'/>
+    <button class='big-button' type='submit' name='submit/add' value='1' alt='{_"Add new scheduling"}'><i class='primary ti ti-plus'></i>{_"Add new scheduling"}</button>
   </form>
   <script>
   function toggle_all(from) \{
