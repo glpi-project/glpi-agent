@@ -87,7 +87,7 @@
           }
           $OUT .= "
               </select>
-              <input class='input-row credentials' type='submit' name='submit/addcredential' value='".(_"Add credential")."'/>
+              <button class='secondary input-row credentials' type='submit' name='submit/addcredential' value='1' alt='".(_"Add credential")."'><i class='primary ti ti-playlist-add'></i>".(_"Add credential")."</button>
             </li>";
         }
         '';}
@@ -101,9 +101,9 @@
       <input class='input-row' type='text' id='desc' name='input/description' value='{$range->{description} || $form{"input/description"} || ""}' size='40'/>
       </div>
     </div>
-    <input type='submit' class='big-button' name='submit/{
+    <button type='submit' class='big-button' value='1' name='submit/{
       $ip_range{$edit} ?
-        "update' value='"._("Update") :
-        "add' value='"._("Add") }'/>
-    <input type='submit' class='big-button secondary-button' name='submit/cancel' value='{_("Cancel")}'/>
+        "update' alt='"._("Update") :
+        "add' alt='"._("Add") }'><i class='primary ti ti-device-floppy'></i>{ $ip_range{$edit} ? _("Update") : _("Add credential") }</button>
+    <button type='submit' class='big-button secondary-button' name='submit/cancel' formnovalidate='1' value='1' alt='{_("Cancel")}'><i class='primary ti ti-x'></i>{_("Cancel")}</button>
   </form>
