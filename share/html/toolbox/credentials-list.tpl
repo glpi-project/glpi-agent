@@ -78,10 +78,10 @@
       </table>
       <div class='select-row'>
         <i class='ti ti-corner-left-up arrow-left'></i>
-        <input class='submit-secondary' type='submit' name='submit/delete-v1-v2c' value='{_"Delete"}'/>
+        <button class='secondary' type='submit' name='submit/delete-v1-v2c' value='1' alt='{_"Delete"}'><i class='primary ti ti-trash'></i>{_"Delete"}</button>
       </div>
       <hr/>
-      <input class='big-button' type='submit' name='submit/add-v1-v2c' value='{_"Add Credential"}'/>
+      <button class='big-button' type='submit' name='submit/add-v1-v2c' value='1' alt='{_"Add Credential"}'><i class='primary ti ti-plus'></i>{_"Add Credential"}</button>
     </div>
     <div id='snmp-v3-tab' class="tabcontent"{
         !$form{remotecreds} && $form{snmpversion} && $form{snmpversion} =~ /^v3$/ ? " style='display: block;'" : ""}>
@@ -154,10 +154,10 @@
       </table>
       <div class='select-row'>
         <i class='ti ti-corner-left-up arrow-left'></i>
-        <input class='submit-secondary' type='submit' name='submit/delete-v3' value='{_"Delete"}'/>
+        <button class='secondary' type='submit' name='submit/delete-v3' value='1' alt='{_"Delete"}'><i class='primary ti ti-trash'></i>{_"Delete"}</button>
       </div>
       <hr/>
-      <input class='big-button' type='submit' name='submit/add-v3' value='{_"Add Credential"}'/>
+      <button class='big-button' type='submit' name='submit/add-v3' value='1' alt='{_"Add Credential"}'><i class='primary ti ti-plus'></i>{_"Add Credential"}</button>
     </div>
     <div id='remote-creds-tab' class="tabcontent"{
         $form{remotecreds} ? " style='display: block;'" : ""}>
@@ -226,10 +226,10 @@
       </table>
       <div class='select-row'>
         <i class='ti ti-corner-left-up arrow-left'></i>
-        <input class='submit-secondary' type='submit' name='submit/delete-remote' value='{_"Delete"}'/>
+        <button class='secondary' type='submit' name='submit/delete-remotec' value='1' alt='{_"Delete"}'><i class='primary ti ti-trash'></i>{_"Delete"}</button>
       </div>
       <hr/>
-      <input class='big-button' type='submit' name='submit/add-remotecred' value='{_"Add Credential"}'/>
+      <button class='big-button' type='submit' name='submit/add-remotecred' value='1' alt='{_"Add Credential"}'><i class='primary ti ti-plus'></i>{_"Add Credential"}</button>
     </div>
   </form>
   <script>

@@ -160,11 +160,11 @@
         <input class='input-row' type='text' id='description' name='input/description' value='{$description}' size='40'/>
       </div>
     </div>
-    <input type='submit' class='big-button' name='submit/{
+    <button type='submit' class='big-button' name='submit/{
       $credentials{$edit} ?
-        "update' value='"._("Update") :
-        "add' value='"._("Create Credential")}'/>
-    <input type='submit' class='big-button secondary-button' name='submit/cancel' value='{_("Cancel")}'/>
+        "update' alt='"._("Update") :
+        "add' alt='"._("Create Credential")}' value='1'><i class='primary ti ti-device-floppy'></i>{ $credentials{$edit} ? _("Update") : _("Create Credential") }</button>
+    <button type='submit' class='big-button secondary-button' name='submit/cancel' formnovalidate='1' value='1' alt='{_("Cancel")}'><i class='primary ti ti-x'></i>{_("Cancel")}</button>
   </form>
   <script>
   function version_change() \{
