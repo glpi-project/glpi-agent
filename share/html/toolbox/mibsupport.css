@@ -4,7 +4,13 @@
 }
 
 p.infos {
-  font-size: 10px;
+  margin: 5px;
+  padding-top: 1em;
+}
+
+em.hint::before {
+  font-size: 1.2em;
+  top: 0em;
 }
 
 p.home {
