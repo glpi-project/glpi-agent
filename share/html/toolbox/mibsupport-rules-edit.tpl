@@ -12,7 +12,7 @@
       <div class='form-edit'>
         <label for='rule'>{_"Rule"}</label>
         <div class='form-edit-row'>
-          <input class='input-row' type='text' id='rule' name='input/rule' value='{$this || $form{"input/rule"} }' pattern='^[A-Za-z0-9][A-Za-z0-9._-]*$' size='20' title='{_"Rule name must be uniq, begin by a letter or digit and only contain letters, digits or eventually tirets, dots and underscores"}'>
+          <input class='input-row' type='text' id='rule' name='input/rule' value='{$this || $form{"input/rule"} }' pattern='^[A-Za-z0-9][A-Za-z0-9._-]*$' size='20' title='{_"Rule name must be uniq, begin by a letter or digit and only contain letters, digits or eventually tirets, dots and underscores"}' required>
         </div>
       </div>
     </div>
@@ -51,5 +51,5 @@
         <input class='input-row' type='text' id='description' name='input/description' value='{$description || $form{"input/description"} || ""}' size='80'>
       </div>
     </div>
-    <input type='submit' class='big-button' name='submit/{
-      $this ? "update/rule' value='"._("Update") : "add/rule' value='"._("Add") }'>
+    <button type='submit' class='big-button' name='submit/{
+      $this ? "update/rule' alt='"._("Update") : "add/rule' alt='"._("Add") }' value='1'><i class='primary ti ti-device-floppy'></i>{ $this ? _("Update") : _("Add") }</button>
