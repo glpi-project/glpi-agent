@@ -51,7 +51,7 @@
     </table>
     <div class='select-row'>
       <i class='ti ti-corner-left-up arrow-left'></i>
-      <input class='submit-secondary' type='submit' name='submit/delete' value='{_"Delete"}'>
+      <button class='secondary' type='submit' name='submit/delete' value='1' alt='{_"Delete"}'><i class='secondary ti ti-trash-filled'></i>{_"Delete"}</button>
     </div>
     <hr/>
     <p>{_"Agent still supports following aliases"}:</p>
@@ -72,4 +72,4 @@
       </tbody>
     </table>
     <hr/>
-    <input class='big-button' type='submit' name='submit/add/alias' value='{_"Add new alias"}'>
+    <button class='big-button' type='submit' name='submit/add/alias' value='1' alt='{_("Add new alias")}'><i class='primary ti ti-plus'></i>{_("Add new alias")}</button>

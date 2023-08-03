@@ -12,7 +12,7 @@
       <div class='form-edit'>
         <label for='name'>{_"Name"}</label>
         <div class='form-edit-row'>
-          <input class='input-row' type='text' id='rule' name='input/name' value='{$this || $form{"input/name"} }' pattern='^[A-Za-z0-9][A-Za-z0-9._-]*$' size='20' title='{_"Name must be uniq, begin by a letter or digit and only contain letters, digits or eventually tirets, dots and underscores"}'>
+          <input class='input-row' type='text' id='rule' name='input/name' value='{$this || $form{"input/name"} }' pattern='^[A-Za-z0-9][A-Za-z0-9._-]*$' size='20' title='{_"Name must be uniq, begin by a letter or digit and only contain letters, digits or eventually tirets, dots and underscores"}' required>
         </div>
       </div>
     </div>
@@ -46,7 +46,7 @@
               <option".(($select && $select eq $_)? " selected" : "").">$_</option>"
             } sort { $a cmp $b } keys(%rules))."
             </select>
-            <input class='input-row' type='submit' name='submit/add/rule' value='".(_"Add rule")."'>
+            <button class='secondary' type='submit' name='submit/add/rule' value='1' alt='"._("Add rule")."'><i class='secondary ti ti-playlist-add'></i>"._("Add rule")."</button>
           </li>";
         }}
         </ul>
@@ -58,5 +58,5 @@
         <input class='input-row' type='text' id='description' name='input/description' value='{$description || $form{"input/description"} || ""}' size='80'>
       </div>
     </div>
-    <input type='submit' class='big-button' name='submit/{
-      $this ? "update/sysorid' value='"._("Update") : "add/sysorid' value='"._("Add") }'>
+    <button type='submit' class='big-button' name='submit/{
+      $this ? "update/sysorid' alt='"._("Update") : "add/sysorid' alt='"._("Add") }' value='1'><i class='primary ti ti-device-floppy'></i>{ $this ? _("Update") : _("Add") }</button>
