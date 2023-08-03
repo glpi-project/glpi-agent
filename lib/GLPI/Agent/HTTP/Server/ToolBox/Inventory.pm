@@ -615,7 +615,7 @@ sub _submit_runnow {
         } elsif ($job->{type} eq 'netscan') {
             # Recycle taskid
             my ($taskid) = grep { $self->{tasks}->{$_}->{name} eq $name && !$self->{tasks}->{$_}->{islocal} } keys(%{$self->{tasks}});
-            $self->netscan($name, $taskid);
+            $self->netscan($name, $taskid, $config->{target});
         } else {
             $self->warning(sprintf("Task has not a supported type: &laquo;&nbsp;%s&nbsp;&raquo;", encode('UTF-8', $name)));
             next;
@@ -670,7 +670,7 @@ sub addMessage {
 }
 
 sub netscan {
-    my ($self, $name, $ip_ranges, $ip, $taskid) = @_;
+    my ($self, $name, $ip_ranges, $ip, $taskid, $targetid) = @_;
 
     return $self->errors(
         $self->{_missingdep} == 1 ? "netdiscovery task is not installed" :
@@ -793,15 +793,33 @@ sub netscan {
         ID => 2, VERSION => "2c", COMMUNITY => 'public'
     } unless @credentials || keys(%credentials);
 
+    my $target;
+    if ($targetid) {
+        ($target) = grep { $_->id() eq $targetid } $agent->getTargets();
+    }
+
+    # If not using an agent target, create a local target and update it to run now
+    unless ($target) {
+        my $path = $yaml_config->{networktask_save} // '.';
+
+        # Make sure path exists as folder
+        mkdir $path unless -d $path;
+
+        GLPI::Agent::Target::Local->require();
+        $target = GLPI::Agent::Target::Local->new(
+            logger     => $logger,
+            delaytime  => 1,
+            basevardir => $agent->{vardir},
+            path       => $path
+        );
+    }
+
     # Create an NetDiscovery task
     my $netdisco = GLPI::Agent::Task::NetDiscovery->new(
         config       => $agent->{config},
         datadir      => $agent->{datadir},
         logger       => $logger,
-        target       => GLPI::Agent::Target::Local->new(
-            path       => $yaml_config->{networktask_save} // '.',
-            basevardir => $agent->{vardir},
-        ),
+        target       => $target,
         deviceid     => $agent->{deviceid},
     );
 
@@ -979,7 +997,7 @@ sub events_cb {
             } elsif ($type eq 'netscan') {
                 # Recycle taskid
                 my ($taskid) = grep { $self->{tasks}->{$_}->{name} eq $name && !$self->{tasks}->{$_}->{islocal} } keys(%{$self->{tasks}});
-                $self->netscan($name, $taskid);
+                $self->netscan($name, $taskid, $config->{target});
             } else {
                 return 0;
             }
