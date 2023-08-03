@@ -988,8 +988,8 @@ sub events_cb {
         my $job  = $jobs->{$name};
         if ($job && $job->{type} && $self->isyes($job->{enabled})) {
             my $type = $job->{type};
+            my $config = $job->{config} // {};
             if ($type eq 'local') {
-                my $config = $job->{config} // {};
                 my $yaml = $self->yaml() || {};
                 # Recycle taskid
                 my ($taskid) = grep { $self->{tasks}->{$_}->{name} eq $name && $self->{tasks}->{$_}->{islocal} } keys(%{$self->{tasks}});
