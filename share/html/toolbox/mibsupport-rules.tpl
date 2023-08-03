@@ -1,9 +1,9 @@
     <p class='infos'>
-      <br/>{
+      <em class='hint'>{
   use URI::Escape;
   Text::Template::fill_in_file("$template_path/mibsupport-rules-infos.tpl", HASH => $hash)
-    || "Error loading mibsupport-rules-infos.tpl template: $Text::Template::ERROR"
-}      <br/>
+    || "Error loading mibsupport-rules-infos.tpl template: $Text::Template::ERROR"}
+      </em>
     </p>
     <table>
       <thead>

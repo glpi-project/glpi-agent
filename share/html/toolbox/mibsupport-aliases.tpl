@@ -1,9 +1,9 @@
     <p class='infos'>
-      <br/>
+      <em class='hint'>
       {_"Here is the list of known aliases"}.<br/>
       {_"Alias must be uniq, begin by a letter or digit and only contain letters, digits or eventually tirets, dots and underscores"}.<br/>
       {_"Aliases are used to fully resolve symbolic OID to plain numeric OID"}.<br/>
-      <br/>
+      </em>
     </p>
     <table>
       <thead>
