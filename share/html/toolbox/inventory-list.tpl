@@ -47,7 +47,7 @@
     my $scheduling  = $job->{scheduling} || [];
     my $lastrun     = $job->{last_run_date} ? localtime($job->{last_run_date}) : "";
     my $nextrun     = ($enabled ? localtime($job->{next_run_date}) : _"Disabled task") || "";
-    my $description = $job->{description} || "";
+    my $description = $job->{description} || ($job->{config}->{ip} ? sprintf(_("%s network scan"), $job->{config}->{ip}) : "");
     $enabled        = $enabled ? "" : " disabled";
     my @runs        = sort { $tasks{$b}->{time} <=> $tasks{$a}->{time} } grep { defined($tasks{$_}->{name}) && $tasks{$_}->{name} eq $entry } keys(%tasks);
     my ($taskid)    = grep { defined($tasks{$_}->{name}) && $tasks{$_}->{name} eq $entry } keys(%tasks);

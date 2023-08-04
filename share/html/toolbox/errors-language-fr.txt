@@ -100,6 +100,7 @@ Can't delete enabled task: Impossible d'effacer la tâche active
 Rename task: Renommer la tâche
 No such task: Pas de telle tâche
 Unsupported target: Cible non supportée
+Start task: Démarrer la tâche
 
 New scheduling: Nouvelle planification
 Scheduling update: Mise à jour de la planification

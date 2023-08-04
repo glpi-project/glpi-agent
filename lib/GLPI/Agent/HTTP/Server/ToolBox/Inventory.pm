@@ -153,6 +153,26 @@ sub update_template_hash {
         $hash->{order} = $self->get_from_session('jobs_order') || "ascend";
         my $asc = $hash->{order} eq 'ascend';
         my $ordering = $hash->{ordering_column} = $self->get_from_session('jobs_ordering_column') || 'name';
+
+        # Include netscan tasks run from results page
+        my %scan_tasks = ();
+        my $tasks = $self->{tasks} || {};
+        foreach my $taskid (grep { $tasks->{$_}->{name} && !exists($jobs->{$tasks->{$_}->{name}}) } keys(%{$tasks})) {
+            my $task = $tasks->{$taskid};
+            my $name = $task->{name};
+            $hash->{jobs}->{$name} = {
+                name            => $name,
+                last_run_date   => $task->{time},
+                enabled         => 0,
+                type            => "netscan",
+                config          => {
+                    ip_range        => $task->{ip_ranges},
+                    ip              => $task->{ip},
+                },
+            };
+        }
+        $jobs = $hash->{jobs};
+
         $hash->{jobs_order} = [
             sort {
                 my ($A, $B) =  $asc ? ( $a, $b ) : ( $b, $a );
@@ -512,14 +532,18 @@ sub _submit_delete {
     my $jobs = $yaml->{jobs} || {};
     my @selected = map { m{^checkbox/(.*)$} } grep { /^checkbox\// && $form->{$_} eq 'on' } keys(%{$form});
     foreach my $name (@selected) {
-        my $job = $jobs->{$name}
-            or next;
-        if ($self->isyes($job->{enabled})) {
-            $self->errors(sprintf("Update task: Can't delete enabled task: &laquo;&nbsp;%s&nbsp;&raquo;", encode('UTF-8', $name)));
-            next;
+        my $job = $jobs->{$name};
+        if ($job) {
+            if ($self->isyes($job->{enabled})) {
+                $self->errors(sprintf("Update task: Can't delete enabled task: &laquo;&nbsp;%s&nbsp;&raquo;", encode('UTF-8', $name)));
+                next;
+            }
+            delete $jobs->{$name};
+            $self->need_save(jobs);
+        } else {
+            my ($taskid) = first { $self->{tasks}->{$_}->{name} eq $name } keys(%{$self->{tasks}});
+            delete $self->{tasks}->{$taskid} if $taskid;
         }
-        delete $jobs->{$name};
-        $self->need_save(jobs);
     }
 }
 
@@ -615,7 +639,7 @@ sub _submit_runnow {
         } elsif ($job->{type} eq 'netscan') {
             # Recycle taskid
             my ($taskid) = grep { $self->{tasks}->{$_}->{name} eq $name && !$self->{tasks}->{$_}->{islocal} } keys(%{$self->{tasks}});
-            $self->netscan($name, $taskid, $config->{target});
+            $self->netscan($name, undef, undef, $taskid, $config->{target});
         } else {
             $self->warning(sprintf("Task has not a supported type: &laquo;&nbsp;%s&nbsp;&raquo;", encode('UTF-8', $name)));
             next;
@@ -687,7 +711,7 @@ sub netscan {
 
     my $ip_range = $self->yaml('ip_range') || {};
     my @ip_ranges = grep { exists($ip_range->{$_}) } @{$ip_ranges}
-        or return;
+        or return $self->errors("Start task: No such IP range");
 
     my $procname = "network scan";
     my ($running) = grep {
@@ -997,7 +1021,7 @@ sub events_cb {
             } elsif ($type eq 'netscan') {
                 # Recycle taskid
                 my ($taskid) = grep { $self->{tasks}->{$_}->{name} eq $name && !$self->{tasks}->{$_}->{islocal} } keys(%{$self->{tasks}});
-                $self->netscan($name, $taskid, $config->{target});
+                $self->netscan($name, undef, undef, $taskid, $config->{target});
             } else {
                 return 0;
             }
@@ -1211,7 +1235,7 @@ sub ajax {
     if ($query{'what'} && $query{'what'} eq 'status') {
         my $jobs = $self->yaml(jobs) // {};
         my $job  = $jobs->{$task->{name}} // {};
-        $headers{'X-Inventory-LastRunDate'} = localtime($job->{last_run_date});
+        $headers{'X-Inventory-LastRunDate'} = localtime($job->{last_run_date}||$task->{time});
         if ($self->isyes($job->{enabled}) && $job->{next_run_date}) {
             $headers{'X-Inventory-NextRunDate'} = localtime($job->{next_run_date});
             $headers{'X-Inventory-NextRunTime'} = $job->{next_run_date};
