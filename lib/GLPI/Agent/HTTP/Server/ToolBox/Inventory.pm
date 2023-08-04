@@ -155,7 +155,6 @@ sub update_template_hash {
         my $ordering = $hash->{ordering_column} = $self->get_from_session('jobs_ordering_column') || 'name';
 
         # Include netscan tasks run from results page
-        my %scan_tasks = ();
         my $tasks = $self->{tasks} || {};
         foreach my $taskid (grep { $tasks->{$_}->{name} && !exists($jobs->{$tasks->{$_}->{name}}) } keys(%{$tasks})) {
             my $task = $tasks->{$taskid};
