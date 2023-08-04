@@ -402,6 +402,7 @@ sub handle_form {
             my $netscan = $inventory->netscan("", [$device->get('ip_range')], $device->ip);
             $self->{tasks}->{$device->ip} = $inventory->{tasks}->{$netscan};
         }
+        return if $self->errors();
         $self->send_redirect('inventory')
             unless $self->edit();
     } elsif ($form->{'submit/delete-device'}) {
