@@ -18,6 +18,9 @@ inventory:
 * Report storage size detected by WMI in Mib in place of Mb on win32
 * Update RustDesk remote_mgmt support starting from RustDesk v1.2.2
 
+netdiscovery/netinventory:
+* Enhanced Aruba IAP models support
+
 packaging:
 * Install basic-authentication-server-plugin.cfg plugin default configuration on debian
 * fix #446: Always add Sys::Hostname dependency to rpm packaging
