@@ -23,6 +23,7 @@ netdiscovery/netinventory:
 * Enhanced CheckPoint devices support
 
 packaging:
+* Update MacOSX packages to use OpenSSL 3.1.2
 * Install basic-authentication-server-plugin.cfg plugin default configuration on debian
 * fix #446: Always add Sys::Hostname dependency to rpm packaging
 
