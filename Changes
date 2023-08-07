@@ -20,6 +20,7 @@ inventory:
 
 netdiscovery/netinventory:
 * Enhanced Aruba IAP models support
+* Enhanced CheckPoint devices support
 
 packaging:
 * Install basic-authentication-server-plugin.cfg plugin default configuration on debian
