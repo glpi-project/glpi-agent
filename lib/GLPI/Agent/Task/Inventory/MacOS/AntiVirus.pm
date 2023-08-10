@@ -64,7 +64,11 @@ sub _getMSDefender {
         if $infos->{realTimeProtectionEnabled} && $infos->{realTimeProtectionEnabled}->{value};
     if ($infos->{productExpiration} && $infos->{productExpiration} =~ /^\d+$/) {
         my @date = localtime(int($infos->{productExpiration})/1000);
-        $antivirus->{EXPIRATION} = sprintf("%02d/%02d/%04d", $date[3], $date[4]+1, $date[5]+1900);
+        $antivirus->{EXPIRATION} = sprintf("%04d-%02d-%02d", $date[5]+1900, $date[4]+1, $date[3]);
+    }
+    if ($infos->{definitionsUpdated} && $infos->{definitionsUpdated} =~ /^\d+$/) {
+        my @date = localtime(int($infos->{definitionsUpdated})/1000);
+        $antivirus->{BASE_CREATION} = sprintf("%04d-%02d-%02d", $date[5]+1900, $date[4]+1, $date[3]);
     }
 
     return $antivirus;

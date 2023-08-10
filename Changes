@@ -17,6 +17,7 @@ inventory:
 * fix #449: Don't override storage size with null value reported by hdparm on win32
 * Report storage size detected by WMI in Mib in place of Mb on win32
 * Update RustDesk remote_mgmt support starting from RustDesk v1.2.2
+* Fix Microsoft Defender Antivirus support on MacOSX
 
 netdiscovery/netinventory:
 * Enhanced Aruba IAP models support

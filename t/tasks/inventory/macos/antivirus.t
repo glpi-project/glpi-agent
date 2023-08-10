@@ -20,7 +20,8 @@ my %av_tests = (
         UPTODATE        => 1,
         VERSION         => "101.98.30",
         BASE_VERSION    => "1.389.10.0",
-        EXPIRATION      => "06/09/2023",
+        EXPIRATION      => "2023-09-06",
+        BASE_CREATION   => "2023-05-03",
     },
 );
 
