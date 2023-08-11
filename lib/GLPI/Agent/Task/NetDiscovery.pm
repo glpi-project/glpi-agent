@@ -815,7 +815,7 @@ sub _scanAddressBySNMPReal {
 }
 
 sub _scanAddressByRemote {
-    my ($self, $params) = @_;
+    #my ($self, $params) = @_;
 
     # TODO implement esx, ssh & winrm scan support
 
