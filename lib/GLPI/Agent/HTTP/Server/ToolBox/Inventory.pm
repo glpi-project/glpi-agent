@@ -880,6 +880,7 @@ sub netscan {
             THREADS_DISCOVERY => $threads || $self->{threads_default},
             TIMEOUT           => $timeout || $self->{timeout_default},
         },
+        localtask => 1,
         ip_range => $ip_ranges,
         netscan => 1,
         ranges => \@ranges,
