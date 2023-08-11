@@ -214,13 +214,14 @@ sub run {
             $self->{logger}->debug("no valid block found for job $jobid");
             # Always send control messages from a worker to avoid issue on win32
             $manager->start_child( 0, sub {
-                # Support glpi-netdiscovery --control option
+                # Support glpi-netdiscovery --control option & local task from ToolBox
                 $self->{_control} = $job->control;
-
-                $self->_sendStartMessage($jobid);
-                $self->_sendBlockMessage($jobid, 0);
-                $self->_sendStopMessage($jobid);
-                $self->_sendStopMessage($jobid);
+                unless ($job->localtask) {
+                    $self->_sendStartMessage($jobid);
+                    $self->_sendBlockMessage($jobid, 0);
+                    $self->_sendStopMessage($jobid);
+                    $self->_sendStopMessage($jobid);
+                }
                 return;
             });
             $manager->wait_all_children();
@@ -268,16 +269,16 @@ sub run {
             my $job = $jobs{$jobid};
             $queued_count--;
             if ($job->done) {
-                # Support glpi-netdiscovery --control option
+                # Support glpi-netdiscovery --control option & local task from ToolBox
                 $self->{_control} = $job->control;
 
                 # send final message to the server before cleaning jobs
-                $self->_sendStopMessage($jobid);
+                $self->_sendStopMessage($jobid) unless $job->localtask;
 
                 delete $jobs{$jobid};
 
                 # send final message to the server
-                $self->_sendStopMessage($jobid);
+                $self->_sendStopMessage($jobid) unless $job->localtask;
             }
             # Update expiration time if required
             if ($ret && $infos && $infos->{timeout} > 0) {
@@ -320,12 +321,14 @@ sub run {
                 $self->{logger}->debug("starting job $jobid with $size ip".($size > 1 ? "s" : "")." to scan using $max worker".($max > 1 ? "s" : ""));
                 # Always send control messages from a worker to avoid issue on win32
                 $manager->start_child( 0, sub {
-                    # Support glpi-netdiscovery --control option
+                    # Support glpi-netdiscovery --control option & local task from ToolBox
                     $self->{_control} = $job->control;
 
-                    $self->_sendStartMessage($jobid);
-                    # Also send block size to the server
-                    $self->_sendBlockMessage($jobid, $size);
+                    unless ($job->localtask) {
+                        $self->_sendStartMessage($jobid);
+                        # Also send block size to the server
+                        $self->_sendBlockMessage($jobid, $size);
+                    }
                     return;
                 });
                 $manager->wait_all_children();
@@ -360,15 +363,22 @@ sub run {
 
             if ($result && $result->{IP}) {
                 # For TooBox, we need to insert used ip_range as device property to report it in results
-                $result->{"-ip_range"} = $range->{name} if $range->{name};
+                # But this is only required when storing locally
+                $result->{"-ip_range"} = $range->{name} if $range->{name} && $self->{target}->isType('local');
 
                 $result->{ENTITY} = $range->{entity} if defined($range->{entity});
+
+                my $authsnmp = $result->{AUTHSNMP};
+                # Don't keep authsnmp in result for local task sending to server
+                delete $result->{AUTHSNMP}
+                    if $job->localtask && $self->{target}->isType('server');
+
                 $self->_sendResultMessage($result, $jobid);
 
                 # Eventually chain with netinventory when requested
-                if ($result->{AUTHSNMP} && $job->netscan) {
+                if ($authsnmp && $job->netscan) {
                     my $credentials = [
-                        grep { $_->{ID} eq $result->{AUTHSNMP} } @{$jobaddress->{snmp_credentials}}
+                        grep { $_->{ID} eq $authsnmp } @{$jobaddress->{snmp_credentials}}
                     ];
                     GLPI::Agent::Task::NetInventory->require();
                     my $inventory = GLPI::Agent::Task::NetInventory->new(
@@ -391,7 +401,7 @@ sub run {
                                     IP          => $blockip,
                                     PORT        => $result->{AUTHPORT}     // '',
                                     PROTOCOL    => $result->{AUTHPROTOCOL} // '',
-                                    AUTHSNMP_ID => $result->{AUTHSNMP}
+                                    AUTHSNMP_ID => $authsnmp
                                 }
                             ],
                             credentials => $credentials,
@@ -429,7 +439,7 @@ sub run {
     # Send exit message if we quit during a job still being run
     foreach my $jobid (sort { $a <=> $b } keys(%jobs)) {
         $self->{logger}->warning("job $jobid aborted");
-        $self->_sendExitMessage($jobid);
+        $self->_sendExitMessage($jobid) unless $jobs{$jobid}->localtask;
     }
 
     # Reset expiration
@@ -540,6 +550,7 @@ sub _scanAddress {
     $self->{arp} = $params->{arp} if $params->{arp};
 
     my %device = (
+        $params->{remote}        ? $self->_scanAddressByRemote($params)  : (),
         $INC{'Net/SNMP.pm'}      ? $self->_scanAddressBySNMP($params)    : (),
         $INC{'Net/NBName.pm'}    ? $self->_scanAddressByNetbios($params) : (),
         $INC{'Net/Ping.pm'}      ? $self->_scanAddressByPing($params)    : (),
@@ -801,6 +812,14 @@ sub _scanAddressBySNMPReal {
     return unless $info;
 
     return $info;
+}
+
+sub _scanAddressByRemote {
+    my ($self, $params) = @_;
+
+    # TODO implement esx, ssh & winrm scan support
+
+    return;
 }
 
 sub _sendStartMessage {

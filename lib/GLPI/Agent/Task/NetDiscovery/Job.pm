@@ -20,6 +20,7 @@ sub new {
         _snmpwalk       => $params{file},
         _netscan        => $params{netscan} // 0,
         _control        => $params{showcontrol} // 0,
+        _localtask      => $params{localtask} // 0,
     };
     bless $self, $class;
 }
@@ -47,6 +48,11 @@ sub netscan {
 sub control {
     my ($self) = @_;
     return $self->{_control};
+}
+
+sub localtask {
+    my ($self) = @_;
+    return $self->{_localtask};
 }
 
 sub getQueueParams {
@@ -179,7 +185,6 @@ sub ranges {
         };
         # Support ToolBox model where credentials are linked to range
         if ($range->{NAME}) {
-            $thisrange->{name} = $range->{NAME};
             $thisrange->{credentials} = $self->_getValidCredentials($range->{NAME});
         }
         push @ranges, $thisrange;
@@ -207,21 +212,63 @@ sub _getValidCredentials {
 
     my $credentials = $name ? $self->{_credentials}->{$name} : $self->{_credentials};
 
+    my ($snmp, $valid_snmp, $invalid_snmp, $remote, $valid_remote, $invalid_remote) = (0, 0, 0, 0, 0, 0);
     foreach my $credential (@{$credentials}) {
-        next if $credential->{TYPE} && $credential->{TYPE} ne 'snmp';
-        if ($credential->{VERSION} eq '3') {
-            # a user name is required
-            next unless $credential->{USERNAME};
-            # DES support is required
-            next unless Crypt::DES->require();
+        next if $credential->{TYPE} && $credential->{TYPE} !~ /^snmp|esx|ssh|winrm$/;
+        if ($credential->{TYPE} eq 'snmp') {
+            $snmp++;
+            if ($credential->{VERSION} eq '3') {
+                # a user name is required
+                unless ($credential->{USERNAME}) {
+                    $self->{logger}->warning("No username defined for a SNMPv3 credential")
+                        unless $invalid_snmp++;
+                    $invalid_snmp++;
+                    next;
+                }
+                # DES support is required
+                unless (Crypt::DES->require()) {
+                    $self->{logger}->warning("Crypt::DES perl module required for SNMPv3 credentials")
+                        unless $invalid_snmp++;
+                    $invalid_snmp++;
+                    next;
+                }
+            } elsif (!$credential->{COMMUNITY}) {
+                $self->{logger}->warning("No community defined for a credential")
+                    unless $invalid_snmp++;
+                $invalid_snmp++;
+                next;
+            }
+            $valid_snmp++;
         } else {
-            next unless $credential->{COMMUNITY};
+            $remote++;
+            unless (defined($credential->{USERNAME}) && length($credential->{USERNAME})) {
+                $self->{logger}->warning("No username defined for a $credential->{TYPE} credential")
+                    unless $invalid_remote++;
+                $invalid_remote++;
+                next;
+            }
+            if ($credential->{TYPE} =~ /^esx|winrm$/ && (!defined($credential->{PASSWORD}) || !length($credential->{PASSWORD}))) {
+                $self->{logger}->warning("No password defined for a $credential->{TYPE} credential")
+                    unless $invalid_remote++;
+                $invalid_remote++;
+                next;
+            }
+            if ($credential->{TYPE} =~ /^ssh|winrm$/ && defined($credential->{PORT}) && ($credential->{PORT} !~ /^\d+$/ || ($credential->{PORT} < 0 || $credential->{PORT} > 65535))) {
+                $self->{logger}->warning("Not valid port defined for a $credential->{TYPE} credential")
+                    unless $invalid_remote++;
+                $invalid_remote++;
+                next;
+            }
+            $valid_remote++;
         }
         push @credentials, $credential;
     }
 
     $self->{logger}->warning("No valid SNMP credential defined for this scan")
-        unless @credentials;
+        unless !$snmp || $valid_snmp;
+
+    $self->{logger}->warning("No valid remote credential defined for this scan")
+        unless !$remote || $valid_remote;
 
     return \@credentials;
 }
@@ -241,7 +288,6 @@ sub _getSNMPPorts {
 
     return [ sort keys %ports ];
 }
-
 
 sub _getSNMPProtocols {
     my ($protocols) = @_;
