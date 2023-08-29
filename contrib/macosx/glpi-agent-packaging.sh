@@ -5,8 +5,8 @@
 # ZLIB: https://www.zlib.net/
 : ${PERL_VERSION:=5.36.0}
 : ${OPENSSL_VERSION:=3.1.2}
-: ${ZLIB_VERSION:=1.2.13}
-: ${ZLIB_SHA256:=b3a24de97a8fdbc835b9833169501030b8977031bcb54b3b3ac13740f846ab30}
+: ${ZLIB_VERSION:=1.3}
+: ${ZLIB_SHA256:=ff0ba4c292013dbc27530b3a81e1f9a813cd39de01ca5e0f8bf355702efa593e}
 
 : ${BUILDER_NAME:="Guillaume Bougard (teclib)"}
 : ${BUILDER_MAIL:="gbougard_at_teclib.com"}
