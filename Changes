@@ -24,6 +24,9 @@ netdiscovery/netinventory:
 * Enhanced Aruba IAP models support
 * Enhanced CheckPoint devices support
 
+proxy-server-plugin:
+* fix #461: Fix XML content-type support for inventories sent by android agent
+
 packaging:
 * Update MacOSX packages to use OpenSSL 3.1.2
 * Install basic-authentication-server-plugin.cfg plugin default configuration on debian
