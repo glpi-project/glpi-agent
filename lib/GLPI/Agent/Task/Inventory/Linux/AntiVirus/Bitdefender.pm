@@ -10,7 +10,7 @@ use UNIVERSAL::require;
 use GLPI::Agent::Tools;
 
 sub isEnabled {
-    return canRun('/opt/bitdefender-security-tools/bin/bduitool');
+    return canRun('/opt/bitdefender-security-tools/bin/bduitool about');
 }
 
 sub doInventory {
