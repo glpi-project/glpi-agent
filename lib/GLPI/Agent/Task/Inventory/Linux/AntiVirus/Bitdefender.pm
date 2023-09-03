@@ -47,7 +47,7 @@ sub _getBitdefenderInfo {
     my $new_update_available = '';
     my $new_security_content_available = '';
 
-    foreach my $line (split("\n", $bduitool_output)) {
+    foreach my $line (@output) {
         if ($line =~ /^Product version:/) {
             ($product_version = $line) =~ s/^Product version:\s+//;
         } elsif ($line =~ /^Engines version:/) {
