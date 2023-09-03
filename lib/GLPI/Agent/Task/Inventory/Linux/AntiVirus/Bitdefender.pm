@@ -48,16 +48,18 @@ sub _getBitdefenderInfo {
     my $new_security_content_available = '';
 
     foreach my $line (@output) {
-        if ($line =~ /^Product version:/) {
-            ($product_version = $line) =~ s/^Product version:\s+//;
-        } elsif ($line =~ /^Engines version:/) {
-            ($engines_version = $line) =~ s/^Engines version:\s+//;
-        } elsif ($line =~ /^Antimalware status:/) {
-            ($antimalware_status = $line) =~ s/^Antimalware status:\s+//;
-        } elsif ($line =~ /^New product update available:/) {
-            ($new_update_available = $line) =~ s/^New product update available:\s+//;
-        } elsif ($line =~ /^New security content available:/) {
-            ($new_security_content_available = $line) =~ s/^New security content available:\s+//;
+        my ($key, $value) = $line =~ /^([^:]+):\s+(.*)$/
+            or next;
+        if ($key eq "Product version") {
+            $product_version = $value;
+        } elsif ($key eq "Engines version") {
+            $engines_version = $value;
+        } elsif ($key eq "Antimalware status") {
+            $antimalware_status = $value;
+        } elsif ($key eq "New product update available") {
+            $new_update_available = $value;
+        } elsif ($key eq "New security content available") {
+            $new_security_content_available = $value;
         }
     }
 
