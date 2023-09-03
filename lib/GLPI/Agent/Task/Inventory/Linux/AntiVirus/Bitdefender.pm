@@ -80,3 +80,6 @@ sub _getBitdefenderInfo {
         "expiration" => ''
     };
 }
+
+1;
+
