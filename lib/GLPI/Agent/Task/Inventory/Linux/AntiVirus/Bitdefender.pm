@@ -37,7 +37,7 @@ sub _getBitdefenderInfo {
         @_
     );
 
-    my $bduitool_output = getAllLines(%params)
+    my @output = getAllLines(%params)
         or return;
 
     my $product_version = '';
