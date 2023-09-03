@@ -6,7 +6,6 @@ use warnings;
 use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use UNIVERSAL::require;
-use Cpanel::JSON::XS;
 
 use GLPI::Agent::Tools;
 
