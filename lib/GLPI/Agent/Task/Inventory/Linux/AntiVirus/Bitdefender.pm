@@ -60,6 +60,8 @@ sub _getBitdefenderInfo {
             $new_update_available = $value;
         } elsif ($key eq "New security content available") {
             $new_security_content_available = $value;
+        } elsif ($key eq "Last security content update" && $value =~ /^(\d{4}-\d+-\d+) at/) {
+            $av->{base_creation} = $1;
         }
     }
 
