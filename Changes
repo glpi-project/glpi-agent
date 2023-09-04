@@ -11,7 +11,7 @@ core:
 inventory:
 * Fix inventory failure due to Oracle database inventory on win32
 * Fix AMD Epyc CPU inventory on win32
-* fix #447: Support Cgroup 2 resource limits on LXC containers inventory
+* fix #447, #464: Support Cgroup 2 resource limits on LXC containers inventory
 * Fix local inventory when html format is requested as output format
 * fix #430: Enhanced monitor support on MacOS Ventura with M1 CPU
 * fix #449: Don't override storage size with null value reported by hdparm on win32

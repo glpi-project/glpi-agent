@@ -108,6 +108,7 @@ sub  _getVirtualMachine {
 
         if ($key eq 'lxc.cgroup.cpuset.cpus' || $key eq 'lxc.cgroup2.cpuset.cpus') {
             ###eg: lxc.cgroup.cpuset.cpus = 0,3-5,7,2,1
+            $container->{VCPU} = 0;
             foreach my $cpu ( split( /,/, $val ) ){
                 if ( $cpu =~ /(\d+)-(\d+)/ ){
                     $container->{VCPU} += $2 - $1 + 1;
