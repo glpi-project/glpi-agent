@@ -40,47 +40,31 @@ sub _getBitdefenderInfo {
     my @output = getAllLines(%params)
         or return;
 
-    my $product_version = '';
-    my $engines_version = '';
-    my $enabled = '';
-    my $antimalware_status = '';
-    my $new_update_available = '';
-    my $new_security_content_available = '';
+    my $av = {
+        "name" => 'Bitdefender Endpoint Security Tools (BEST) for Linux',
+        "manufacturer" => 'Bitdefender',
+        "company" => 'Bitdefender',
+        "uptodate" => 1,
+    };
 
     foreach my $line (@output) {
-        my ($key, $value) = $line =~ /^([^:]+):\s+(.*)$/
+        my ($key, $value) = $line =~ /^([^:]+):\s+(.+)$/
             or next;
         if ($key eq "Product version") {
-            $product_version = $value;
+            $av->{version} = $value;
         } elsif ($key eq "Engines version") {
-            $engines_version = $value;
+            $av->{base_version} = $value;
         } elsif ($key eq "Antimalware status") {
-            $antimalware_status = $value;
-        } elsif ($key eq "New product update available") {
-            $new_update_available = $value;
-        } elsif ($key eq "New security content available") {
-            $new_security_content_available = $value;
+            $av->{enabled} = $value eq "On" ? 1 : 0;
+        } elsif ($key =~ /New (product update|security content) available/) {
+            # Set "uptodate" to 0 if one of "new product update available" or "new security content available" is not "no"
+            $av->{uptodate} = 0 if $value ne "no";
         } elsif ($key eq "Last security content update" && $value =~ /^(\d{4}-\d+-\d+) at/) {
             $av->{base_creation} = $1;
         }
     }
 
-    $enabled = ($antimalware_status eq 'On') ? 1 : 0;
-
-    # Set "uptodate" to 1 if both "new product update" and "new security content" are 'no'
-    my $uptodate = ($new_update_available eq 'no' && $new_security_content_available eq 'no') ? 1 : 0;
-
-    return {
-        "name" => 'Bitdefender Endpoint Security Tools (BEST) for Linux',
-        "manufacturer" => 'Bitdefender',
-        "company" => 'Bitdefender',
-        "version" => $product_version,
-        "base_version" => $engines_version,
-        "base_creation" => '',
-        "enabled" => $enabled,
-        "uptodate" => $uptodate,
-        "expiration" => ''
-    };
+    return $av;
 }
 
 1;
