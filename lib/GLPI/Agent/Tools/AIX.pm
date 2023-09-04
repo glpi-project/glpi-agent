@@ -10,6 +10,7 @@ use GLPI::Agent::Tools;
 
 our @EXPORT = qw(
     getLsvpdInfos
+    getLsconfInfos
     getAdaptersFromLsdev
 );
 
@@ -48,6 +49,33 @@ sub getLsvpdInfos {
     push @devices, $device;
 
     return @devices;
+}
+
+sub getLsconfInfos {
+    my (%params) = (
+        command => 'lsconf',
+        @_
+    );
+
+    my @lines = getAllLines(%params)
+        or return;
+
+    my ($key, $infos);
+
+    foreach my $line (@lines) {
+        $line =~ s/\r$//;
+        if ($line =~ /^(\S[^:]+) : \s+ (.+) \s*$/x) {
+            $infos->{$1} = $2;
+        } elsif ($line =~ /^\s*$/) {
+            undef $key;
+        } elsif ($key && $line =~ /^\s+ (\S[^:]+) : \s+ (.+) \s*$/x) {
+            $infos->{$key}->{$1} = $2;
+        } elsif (!$key && $line =~ /^\S/) {
+            $key = $line;
+        }
+    }
+
+    return $infos;
 }
 
 sub getAdaptersFromLsdev {
