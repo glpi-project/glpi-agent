@@ -1,0 +1,79 @@
+System Model: IBM,7040-681
+Machine Serial Number: 835A7AA
+Processor Type: PowerPC_POWER4
+Number Of Processors: 8
+Processor Clock Speed: 1100 MHz
+CPU Type: 64-bit
+Kernel Type: 64-bit
+LPAR Info: 5 JAVADEV1 - kukicha
+Memory Size: 10240 MB
+Good Memory Size: 10240 MB
+Platform Firmware level: 3H041021
+Firmware Version: IBM,RG041021_d78e05_s
+Console Login: enable
+Auto Restart: true
+Full Core: true
+ 
+Network Information
+        Host Name: bb1p5-1.hursley.ibm.com
+        IP Address: 9.20.136.92
+        Sub Netmask: 255.255.255.128
+        Gateway: 9.20.136.1
+        Name Server: 9.20.136.11
+        Domain Name: hursley.ibm.com
+ 
+Paging Space Information
+        Total Paging Space: 512MB
+        Percent Used: 21%
+ 
+Volume Groups Information
+============================================================================== 
+rootvg:
+PV_NAME           PV STATE          TOTAL PPs   FREE PPs    FREE DISTRIBUTION
+hdisk0            active            546         290         109..06..04..65..106
+============================================================================== 
+ 
+INSTALLED RESOURCE LIST
+
+The following resources are installed on the machine.
++/- = Added or deleted from Resource List.
+*   = Diagnostic support not available.
+        
+  Model Architecture: chrp
+  Model Implementation: Multiple Processor, PCI bus
+        
++ sys0                            System Object
++ sysplanar0                      System Planar
+* vio0                            Virtual I/O Bus
+* vsa0                            LPAR Virtual Serial Adapter
+* vty0                            Asynchronous Terminal
+* pci12            U1.5-P2        PCI Bus
+* pci11            U1.5-P2        PCI Bus
+* pci10            U1.5-P2        PCI Bus
+* pci9             U1.5-P1        PCI Bus
+* pci14            U1.5-P1        PCI Bus
++ scsi0            U1.5-P1/Z2     Wide/Ultra-3 SCSI I/O Controller
++ hdisk0           U1.5-P1/Z2-A8  16 Bit LVD SCSI Disk Drive (73400 MB)
++ ses0             U1.5-P1/Z2-Af  SCSI Enclosure Services Device
+* pci8             U1.5-P1        PCI Bus
+* pci7             U1.5-P1        PCI Bus
+* pci6             U1.9-P2        PCI Bus
+* pci5             U1.9-P2        PCI Bus
+* pci4             U1.9-P2        PCI Bus
+* pci13            U1.9-P2        PCI Bus
++ ent0             U1.9-P2-I3/E1  Gigabit Ethernet-SX PCI Adapter (14100401)
+* pci3             U1.9-P1        PCI Bus
+* pci2             U1.9-P1        PCI Bus
+* pci1             U1.9-P1        PCI Bus
+* pci0             U1.18-P1-H2    PCI Bus
++ L2cache0                        L2 Cache
++ mem0                            Memory
++ proc11           U1.18-P1-C3    Processor
++ proc12           U1.18-P1-C3    Processor
++ proc13           U1.18-P1-C3    Processor
++ proc16           U1.18-P1-C4    Processor
++ proc17           U1.18-P1-C4    Processor
++ proc18           U1.18-P1-C4    Processor
++ proc22           U1.18-P1-C4    Processor
++ proc23           U1.18-P1-C4    Processor
+
