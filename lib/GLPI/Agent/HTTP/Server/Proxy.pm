@@ -18,7 +18,7 @@ use GLPI::Agent::HTTP::Client::GLPI;
 use GLPI::Agent::Protocol::Message;
 use GLPI::Agent::Protocol::Answer;
 
-our $VERSION = "2.2";
+our $VERSION = "2.3";
 
 sub urlMatch {
     my ($self, $path) = @_;
@@ -560,7 +560,7 @@ sub _handle_proxy_request {
 
     # Fallback here to legacy passive proxy mode, only for XML inventory submission
 
-    if ($content_type !~ m|^application/xml$|i) {
+    if ($content_type !~ m|^application/xml|i) {
         $self->info("Unsupported '$content_type' Content-type header provided in $self->{request} request from $clientIp");
         return $self->proxy_error(403, 'Unsupported Content-type');
     }

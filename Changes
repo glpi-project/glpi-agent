@@ -11,7 +11,7 @@ core:
 inventory:
 * Fix inventory failure due to Oracle database inventory on win32
 * Fix AMD Epyc CPU inventory on win32
-* fix #447: Support Cgroup 2 resource limits on LXC containers inventory
+* fix #447, #464: Support Cgroup 2 resource limits on LXC containers inventory
 * Fix local inventory when html format is requested as output format
 * fix #430: Enhanced monitor support on MacOS Ventura with M1 CPU
 * fix #449: Don't override storage size with null value reported by hdparm on win32
@@ -24,8 +24,11 @@ netdiscovery/netinventory:
 * Enhanced Aruba IAP models support
 * Enhanced CheckPoint devices support
 
+proxy-server-plugin:
+* fix #461: Fix XML content-type support for inventories sent by android agent
+
 packaging:
-* Update MacOSX packages to use OpenSSL 3.1.2
+* Update MacOSX packages to use OpenSSL 3.1.2 & zlib 1.3
 * Install basic-authentication-server-plugin.cfg plugin default configuration on debian
 * fix #446: Always add Sys::Hostname dependency to rpm packaging
 
