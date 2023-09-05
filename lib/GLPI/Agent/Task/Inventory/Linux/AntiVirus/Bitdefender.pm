@@ -68,4 +68,3 @@ sub _getBitdefenderInfo {
 }
 
 1;
-
