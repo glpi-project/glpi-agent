@@ -41,10 +41,9 @@ sub _getBitdefenderInfo {
         or return;
 
     my $av = {
-        "name" => 'Bitdefender Endpoint Security Tools (BEST) for Linux',
-        "manufacturer" => 'Bitdefender',
-        "company" => 'Bitdefender',
-        "uptodate" => 1,
+        NAME     => 'Bitdefender Endpoint Security Tools (BEST) for Linux',
+        COMPANY  => 'Bitdefender',
+        UPTODATE => 1,
     };
 
     foreach my $line (@output) {
