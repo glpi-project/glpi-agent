@@ -26,7 +26,7 @@ sub doInventory {
             entry   => $antivirus
         );
 
-        $logger->debug2("Added $antivirus->{name}" . ($antivirus->{version} ? " v$antivirus->{version}" : ""))
+        $logger->debug2("Added $antivirus->{NAME}" . ($antivirus->{VERSION} ? " v$antivirus->{VERSION}" : ""))
             if $logger;
     }
 }
