@@ -674,7 +674,7 @@ sub save {
             TYPE => 'FILE', SOURCE => "$self->{datadir}/html/inventory.tpl"
         );
 
-         my $hash = {
+        my $hash = {
             version  => $GLPI::Agent::Version::VERSION,
             deviceid => $self->getDeviceId(),
             data     => $self->getContent(),
