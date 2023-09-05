@@ -43,7 +43,8 @@ sub _getBitdefenderInfo {
     my $av = {
         NAME     => 'Bitdefender Endpoint Security Tools (BEST) for Linux',
         COMPANY  => 'Bitdefender',
-        UPTODATE => 1,
+        ENABLED => 0,
+        UPTODATE => 0,
     };
 
     foreach my $line (@output) {
@@ -53,7 +54,7 @@ sub _getBitdefenderInfo {
             $av->{VERSION} = $value;
         } elsif ($key eq "Engines version") {
             $av->{BASE_VERSION} = $value;
-        } elsif ($key eq "Antimalware status") {
+        } elsif ($key eq "  - Antimalware status") {
             $av->{ENABLED} = $value eq "On" ? 1 : 0;
         } elsif ($key =~ /New (product update|security content) available/) {
             # Set "uptodate" to 0 if one of "new product update available" or "new security content available" is not "no"
