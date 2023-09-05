@@ -48,13 +48,13 @@ sub _getBitdefenderInfo {
     };
 
     foreach my $line (@output) {
-        my ($key, $value) = $line =~ /^([^:]+):\s+(.+)$/
+        my ($key, $value) = $line =~ /^(?:\s+-\s)?([^:]+):\s+(.+)$/
             or next;
         if ($key eq "Product version") {
             $av->{VERSION} = $value;
         } elsif ($key eq "Engines version") {
             $av->{BASE_VERSION} = $value;
-        } elsif ($key eq "  - Antimalware status") {
+        } elsif ($key eq "Antimalware status") {
             $av->{ENABLED} = $value eq "On" ? 1 : 0;
         } elsif ($key =~ /New (product update|security content) available/) {
             # Set "uptodate" to 0 if one of "new product update available" or "new security content available" is not "no"
