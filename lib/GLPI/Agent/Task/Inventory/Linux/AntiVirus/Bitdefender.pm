@@ -50,16 +50,16 @@ sub _getBitdefenderInfo {
         my ($key, $value) = $line =~ /^([^:]+):\s+(.+)$/
             or next;
         if ($key eq "Product version") {
-            $av->{version} = $value;
+            $av->{VERSION} = $value;
         } elsif ($key eq "Engines version") {
-            $av->{base_version} = $value;
+            $av->{BASE_VERSION} = $value;
         } elsif ($key eq "Antimalware status") {
-            $av->{enabled} = $value eq "On" ? 1 : 0;
+            $av->{ENABLED} = $value eq "On" ? 1 : 0;
         } elsif ($key =~ /New (product update|security content) available/) {
             # Set "uptodate" to 0 if one of "new product update available" or "new security content available" is not "no"
-            $av->{uptodate} = 0 if $value ne "no";
+            $av->{UPTODATE} = 0 if $value ne "no";
         } elsif ($key eq "Last security content update" && $value =~ /^(\d{4}-\d+-\d+) at/) {
-            $av->{base_creation} = $1;
+            $av->{BASE_CREATION} = $1;
         }
     }
 
