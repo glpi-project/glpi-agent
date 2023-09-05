@@ -44,7 +44,7 @@ sub _getBitdefenderInfo {
         NAME     => 'Bitdefender Endpoint Security Tools (BEST) for Linux',
         COMPANY  => 'Bitdefender',
         ENABLED => 0,
-        UPTODATE => 0,
+        UPTODATE => 1,
     };
 
     foreach my $line (@output) {
