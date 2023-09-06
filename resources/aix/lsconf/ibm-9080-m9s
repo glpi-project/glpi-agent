@@ -1,0 +1,79 @@
+System Model: IBM,9080-M9S
+Machine Serial Number: 45XY777
+Processor Type: PowerPC_POWER9
+Processor Implementation Mode: POWER 9
+Processor Version: PV_9_Compat
+Number Of Processors: 1
+Processor Clock Speed: 3400 MHz
+CPU Type: 64-bit
+Kernel Type: 64-bit
+LPAR Info: 7 aix45
+Memory Size: 8192 MB
+Good Memory Size: 8192 MB
+Platform Firmware level: VH950_099
+Firmware Version: IBM,FW950.40 (VH950_099)
+Console Login: enable
+Auto Restart: true
+Full Core: false
+NX Crypto Acceleration: Capable and Enabled
+In-Core Crypto Acceleration: Capable, but not Enabled
+
+Network Information
+        Host Name: aix45
+        IP Address: 192.168.1.45
+        Sub Netmask: 255.255.255.0
+        Gateway: 192.168.1.1
+        Name Server: 192.168.1.10
+        Domain Name: domain.org
+
+Paging Space Information
+        Total Paging Space: 20912MB
+        Percent Used: 0%
+
+Volume Groups Information
+==============================================================================
+Inactive VGs
+==============================================================================
+altinst_rootvg
+==============================================================================
+Active VGs
+==============================================================================
+psvg:
+PV_NAME           PV STATE          TOTAL PPs   FREE PPs    FREE DISTRIBUTION
+hdisk1            active            1275        0           00..00..00..00..00
+==============================================================================
+
+rootvg:
+PV_NAME           PV STATE          TOTAL PPs   FREE PPs    FREE DISTRIBUTION
+hdisk0            active            639         171         43..00..00..00..128
+==============================================================================
+
+INSTALLED RESOURCE LIST
+
+The following resources are installed on the machine.
++/- = Added or deleted from Resource List.
+*   = Diagnostic support not available.
+
+  Model Architecture: chrp
+  Model Implementation: Multiple Processor, PCI bus
+
++ sys0                                                                             System Object
++ sysplanar0                                                                       System Planar
+* vio0                                                                             Virtual I/O Bus
+* ent1             U9080.M9S.21EC277-V7-C5-T1                                      Virtual I/O Ethernet Adapter (l-lan)
+* ent0             U9080.M9S.21EC277-V7-C2-T1                                      Virtual I/O Ethernet Adapter (l-lan)
+* vsa0             U9080.M9S.21EC277-V7-C0                                         LPAR Virtual Serial Adapter
+* vty0             U9080.M9S.21EC277-V7-C0-L0                                      Asynchronous Terminal
++ fcs0             U9080.M9S.21EC277-V7-C3-T1                                      Virtual Fibre Channel Client Adapter
+* fscsi0           U9080.M9S.21EC277-V7-C3-T1                                      FC SCSI I/O Controller Protocol Device
+* sfwcomm0         U9080.M9S.21EC277-V7-C3-T1-W0-L0                                Fibre Channel Storage Framework Comm
++ fcs1             U9080.M9S.21EC277-V7-C4-T1                                      Virtual Fibre Channel Client Adapter
+* fscsi1           U9080.M9S.21EC277-V7-C4-T1                                      FC SCSI I/O Controller Protocol Device
+* hdisk0           U9080.M9S.21EC277-V7-C4-T1-W50050773000000E6-L4000400000000000  MPIO IBM 2107 FC Disk
+* hdisk1           U9080.M9S.21EC277-V7-C4-T1-W50050773000000E6-L4000400600000000  MPIO IBM 2107 FC Disk
+* hdisk2           U9080.M9S.21EC277-V7-C4-T1-W50050773000000E6-L4000400700000000  MPIO IBM 2107 FC Disk
+* sfwcomm1         U9080.M9S.21EC277-V7-C4-T1-W0-L0                                Fibre Channel Storage Framework Comm
++ L2cache0                                                                         L2 Cache
++ mem0                                                                             Memory
++ proc0                                                                            Processor
+

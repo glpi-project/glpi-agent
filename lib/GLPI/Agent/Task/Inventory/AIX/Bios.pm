@@ -20,9 +20,20 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger = $params{logger};
 
-    my ($ssn, $bios_version);
+    my $bios = _getInfos(logger => $logger);
 
-    my @infos = getLsvpdInfos(logger => $logger);
+    $inventory->setBios($bios);
+}
+
+sub _getInfos {
+    my (%params) = @_;
+
+    my @infos = getLsvpdInfos(%params);
+
+    my $bios ={
+        BMANUFACTURER => 'IBM',
+        SMANUFACTURER => 'IBM',
+    };
 
     # Get the BIOS version from the System Microcode Image (MI) version, in
     # 'System Firmware' section of VPD, containing three space separated values:
@@ -35,39 +46,46 @@ sub doInventory {
     if ($system) {
         # we only return the currently booted firmware
         my @firmwares = split(' ', $system->{MI});
-        $bios_version = $firmwares[0];
+        $bios->{BVERSION} = $firmwares[0];
     }
 
     my $vpd = first { $_->{DS} eq 'System VPD' } @infos;
+    if ($vpd) {
+        $bios->{SSN}    = $vpd->{SE} || "";
+        $bios->{SMODEL} = $vpd->{TM} || "";
+    }
+
+    # Use lsconf if lsvpd is not usable
+    unless ($bios->{SSN} && $bios->{SMODEL} && $bios->{BVERSION}) {
+        my $lsconf = getLsconfInfos(%params);
+        if ($lsconf) {
+            $bios->{SSN}      = $lsconf->{"Machine Serial Number"} || "";
+            $bios->{BVERSION} = $lsconf->{"Platform Firmware level"} || "";
+            ($bios->{SMANUFACTURER}, $bios->{SMODEL}) = split(",", $lsconf->{"System Model"} || "");
+        }
+    }
 
     my $unameL = Uname("-L");
     # LPAR partition can access the serial number of the host computer
-    $ssn = $vpd->{SE};
-    if ($unameL && $unameL =~ /^(\d+)\s+\S+/) {
+    if ($bios->{SSN} && $unameL && $unameL =~ /^(\d+)\s+\S+/) {
         my $name = $1;
         my $lparname = getFirstMatch(
-            logger  => $logger,
+            logger  => $params{logger},
             command => "lparstat -i",
-            pattern => qr/Partition Name.*:\s+(.*)$/
+            pattern => qr/Partition\s+Name.*:\s+(.*)$/
         );
         # But an lpar can be migrated between hosts then we don't use to not have
         # a SSN change during such migration. Anyway there's still a risk a given
         # lparname is also used on another AIX system, administrators should avoid
         # such usage as they won't be able to migrate the 2 LPARs on the same server
         if ($lparname) {
-            $ssn = "aixlpar-$vpd->{SE}-$lparname";
+            $bios->{SSN} = "aixlpar-$bios->{SSN}-$lparname";
         } else {
-            $ssn = "aixlpar-$vpd->{SE}-$name";
+            $bios->{SSN} = "aixlpar-$bios->{SSN}-$name";
         }
     }
 
-    $inventory->setBios({
-        BMANUFACTURER => 'IBM',
-        SMANUFACTURER => 'IBM',
-        SMODEL        => $vpd->{TM},
-        SSN           => $ssn,
-        BVERSION      => $bios_version,
-    });
+    return $bios;
 }
 
 1;

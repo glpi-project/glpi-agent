@@ -1934,6 +1934,71 @@ my %lsvpd_tests = (
     ],
 );
 
+my %lsconf_tests = (
+    'ibm-7040-681' => {
+    'Platform Firmware level' => '3H041021',
+    'Full Core' => 'true',
+    'Network Information' => {
+        'Sub Netmask' => '255.255.255.128',
+        'Name Server' => '9.20.136.11',
+        'Gateway' => '9.20.136.1',
+        'Host Name' => 'bb1p5-1.hursley.ibm.com',
+        'IP Address' => '9.20.136.92',
+        'Domain Name' => 'hursley.ibm.com'
+    },
+    'Processor Type' => 'PowerPC_POWER4',
+    'Good Memory Size' => '10240 MB',
+    'Firmware Version' => 'IBM,RG041021_d78e05_s',
+    'Paging Space Information' => {
+        'Total Paging Space' => '512MB',
+        'Percent Used' => '21%'
+    },
+    'Kernel Type' => '64-bit',
+    'Processor Clock Speed' => '1100 MHz',
+    'Number Of Processors' => '8',
+    'Console Login' => 'enable',
+    'LPAR Info' => '5 JAVADEV1 - kukicha',
+    'Memory Size' => '10240 MB',
+    'CPU Type' => '64-bit',
+    'System Model' => 'IBM,7040-681',
+    'Auto Restart' => 'true',
+    'Machine Serial Number' => '835A7AA'
+    },
+    'ibm-9080-m9s' => {
+        'Auto Restart' => 'true',
+        'LPAR Info' => '7 aix45',
+        'Console Login' => 'enable',
+        'Full Core' => 'false',
+        'Memory Size' => '8192 MB',
+        'Processor Type' => 'PowerPC_POWER9',
+        'Good Memory Size' => '8192 MB',
+        'Network Information' => {
+            'Gateway' => '192.168.1.1',
+            'Name Server' => '192.168.1.10',
+            'IP Address' => '192.168.1.45',
+            'Host Name' => 'aix45',
+            'Domain Name' => 'domain.org',
+            'Sub Netmask' => '255.255.255.0'
+        },
+        'Processor Clock Speed' => '3400 MHz',
+        'Paging Space Information' => {
+            'Percent Used' => '0%',
+            'Total Paging Space' => '20912MB'
+        },
+        'Number Of Processors' => '1',
+        'Kernel Type' => '64-bit',
+        'Processor Version' => 'PV_9_Compat',
+        'Firmware Version' => 'IBM,FW950.40 (VH950_099)',
+        'Processor Implementation Mode' => 'POWER 9',
+        'Machine Serial Number' => '45XY777',
+        'NX Crypto Acceleration' => 'Capable and Enabled',
+        'CPU Type' => '64-bit',
+        'In-Core Crypto Acceleration' => 'Capable, but not Enabled',
+        'Platform Firmware level' => 'VH950_099',
+        'System Model' => 'IBM,9080-M9S'
+    },
+);
+
 my %lsdev_tests = (
     'aix-5.3a' => [
         {
@@ -2214,12 +2279,19 @@ my %lsdev_tests = (
 
 plan tests =>
     (scalar keys %lsvpd_tests) +
+    (scalar keys %lsconf_tests) +
     (scalar keys %lsdev_tests);
 
 foreach my $test (keys %lsvpd_tests) {
     my $file = "resources/aix/lsvpd/$test";
     my @infos = getLsvpdInfos(file => $file);
     cmp_deeply(\@infos, $lsvpd_tests{$test}, "$test lsvpd parsing");
+}
+
+foreach my $test (keys %lsconf_tests) {
+    my $file = "resources/aix/lsconf/$test";
+    my $infos = getLsconfInfos(file => $file);
+    cmp_deeply($infos, $lsconf_tests{$test}, "$test lsconf parsing");
 }
 
 foreach my $test (keys %lsdev_tests) {
