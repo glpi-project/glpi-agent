@@ -79,7 +79,7 @@ ok (
 );
 
 ok (
-    defined($server->{trust}->{'127.0.0.1'}),
+    defined($server->{trust}->{'192.168.0.0/24'}),
     '192.168.0.0/24 as trusted range'
 );
 
