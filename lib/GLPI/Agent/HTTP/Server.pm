@@ -207,7 +207,7 @@ sub _handle {
 
         # now request
         if ($path =~ m{^/now(?:/\S*)?$}) {
-            last SWITCH if $method ne 'GET';
+            last SWITCH if $method ne 'GET' && $method ne 'OPTIONS';
             $status = $self->_handle_now($client, $request, $clientIp);
             last SWITCH;
         }
@@ -230,7 +230,7 @@ sub _handle {
     $logger->debug($log_prefix . "response status $status") unless $status == 1;
 
     # Handle keepalive for success and authentication required status
-    if ((any { $status == $_ } (200, 401)) && $keepalive && --$maxKeepAlive) {
+    if ((any { $status == $_ } (200, 204, 401)) && $keepalive && --$maxKeepAlive) {
         # Looking for another request
         $request = $client->get_request();
         $self->_handle($client, $request, $clientIp, $maxKeepAlive) if $request;
@@ -420,7 +420,9 @@ sub _handle_now {
     my $logger = $self->{logger};
 
     my ($code, $message) = qw( 200 OK );
-    my $trace;
+    my ($trace, $content);
+
+    my $headers = HTTP::Headers->new();
 
     my @targets;
     foreach my $target ($self->{agent}->getTargets()) {
@@ -436,41 +438,82 @@ sub _handle_now {
     push @targets, $self->{agent}->getTargets()
         if !@targets && $self->_isTrusted($clientIp);
 
-    if (@targets) {
-        my $query = uri_unescape($request->uri()->query());
-        if ($query) {
-            my %event = map { /^([^=]+)=(.*)$/ } grep { /[^=]=/ } split('&', $query);
-            foreach my $target (@targets) {
-                if (my $event = $target->addEvent(\%event)) {
-                    $logger->debug($log_prefix."$event->{name} triggering event on ".$target->id());
-                } else {
-                    $logger->debug($log_prefix."unsupported target event: $query");
+    # Support CORS OPTIONS requests
+    if ($request->method eq 'OPTIONS') {
+        my $acrm = $request->header('Access-Control-Request-Method');
+        if (!@targets || !$acrm || $acrm ne "GET") {
+            $code = 403;
+            $message = "Access denied";
+            $trace   = @targets ? "invalid OPTIONS request (unsupported method)" : "invalid request (untrusted address)";
+        } else {
+            # OPTIONS requests are handled with an empty content
+            $code = 204;
+            $trace = "cors OPTIONS request";
+            # Answer CORS request with Access-Control-Request-Method header
+            $headers->header('Access-Control-Request-Method' => 'GET');
+        }
+
+    } else {
+        $headers->header('Content-Type' => 'text/html');
+
+        if (@targets) {
+            my $query = uri_unescape($request->uri()->query());
+            if ($query) {
+                my %event = map { /^([^=]+)=(.*)$/ } grep { /[^=]=/ } split('&', $query);
+                foreach my $target (@targets) {
+                    if (my $event = $target->addEvent(\%event)) {
+                        $logger->debug($log_prefix."$event->{name} triggering event on ".$target->id());
+                    } else {
+                        $logger->debug($log_prefix."unsupported target event: $query");
+                    }
                 }
+            } else {
+                map { $_->setNextRunDateFromNow() } @targets;
+                $trace = "rescheduling next contact for all targets right now";
             }
         } else {
-            map { $_->setNextRunDateFromNow() } @targets;
-            $trace = "rescheduling next contact for all targets right now";
+            $code    = 403;
+            $message = "Access denied";
+            $trace   = "invalid request (untrusted address)";
         }
-    } else {
-        $code    = 403;
-        $message = "Access denied";
-        $trace   = "invalid request (untrusted address)";
+
+        my $template = Text::Template->new(
+            TYPE => 'FILE', SOURCE => "$self->{htmldir}/now.tpl"
+        );
+
+        my $hash = {
+            message => $message
+        };
+
+        $content = $template->fill_in(HASH => $hash);
     }
 
-    my $template = Text::Template->new(
-        TYPE => 'FILE', SOURCE => "$self->{htmldir}/now.tpl"
-    );
+    if ($code != 403) {
+        my $origin = $request->header("Origin") || "";
+        # Check to add Access-Control-Allow-Origin if Origin matches a target
+        if ($origin) {
+            my $this = URI->new($origin);
+            foreach my $target (@targets) {
+                my $url = $target->getUrl();
+                if ($url->authority eq $this->authority) {
+                    # Answer CORS request with required headers
+                    $headers->header('Access-Control-Allow-Origin'   => $origin);
+                    $headers->header('Access-Control-Allow-Headers'  => '*')
+                        if $request->header('Access-Control-Request-Headers');
+                    last;
+                }
+            }
+            # Verify we set allowed origin or deny answer
+            unless ($headers->header('Access-Control-Allow-Origin')) {
+                $code    = 403;
+                $message = "Access denied";
+                $trace   = "invalid request (not allowed origin)";
+                undef $content;
+            }
+        }
+    }
 
-    my $hash = {
-        message => $message
-    };
-
-    my $response = HTTP::Response->new(
-        $code,
-        'OK',
-        HTTP::Headers->new('Content-Type' => 'text/html'),
-        $template->fill_in(HASH => $hash)
-    );
+    my $response = HTTP::Response->new($code, $message." ($trace)", $headers, $content);
 
     $client->send_response($response);
     $logger->debug($log_prefix . $trace) if $trace;
