@@ -1,29 +1,44 @@
-body, p, li {
+body {
   font-family: Arial,Helvetica,sans-serif;
   color: black;
-  font-size:18px;
-  text-align:center; /* for IE */
-  margin:0 auto; /* for the rest */
+  font-size: 18px;
+  text-align: center; /* for IE */
+  margin: 0 auto; /* for the rest */
 }
+
 a {
   color: black;
   text-decoration: underline;
   font-family: Arial,Helvetica,sans-serif;
 }
+
 a:hover {
   color: #ff9900;
   text-decoration: underline;
   font-family: Arial,Helvetica,sans-serif;
 }
+
 #background {
   padding: 40px 80px 300px;
-  background:url(logo.png);
+  background: url(logo.png);
   background-repeat: no-repeat;
   background-origin: content-box;
   background-clip: padding-box;
 }
 
+#status {
+  height: 5em;
+}
+
 .sessions {
   font-size: 12px;
+  text-align: left;
+}
+
+.block {
+  padding-bottom: 1.5em;
+}
+
+.section {
   text-align: left;
 }
