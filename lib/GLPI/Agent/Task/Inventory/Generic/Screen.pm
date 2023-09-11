@@ -112,7 +112,7 @@ sub _getScreensFromWindows {
         next unless $object->{InstanceName};
         next unless $object->{Active};
 
-        $object->{InstanceName} =~ s/_\d+//;
+        $object->{InstanceName} =~ s/_\d+$//;
         my $screen = {
             id => $object->{InstanceName}
         };

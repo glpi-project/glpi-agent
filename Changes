@@ -22,6 +22,7 @@ inventory:
 * fix #458: Add Microsoft Defender Antivirus support on Linux, thanks to @j-ldes
 * Refactoring & enhanced Aix bios inventory to use lsconf as fallback
 * PR #472: Add BitDefender Antivirus support on Linux, thanks to @ticgal
+* fix #479: Fix monitor inventory when PNPDeviceID contains an underscore on win32
 
 netdiscovery/netinventory:
 * Enhanced Aruba IAP models support
