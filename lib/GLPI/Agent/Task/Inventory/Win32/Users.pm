@@ -153,6 +153,14 @@ sub _getLastUser {
         if ($system->{UserName} =~ /^([^\\]*)\\(.*)$/) {
             $domain = $1 unless $1 eq '.';
             $user   = $2;
+            # Handle AzureAD case
+            if ($domain && $domain eq 'AzureAD') {
+                my $upn = _getLastLoggedAzureADUserUPN(name => $user, %params);
+                if ($upn && $upn =~ /^([^@]+)\@(.+)$/) {
+                    $user   = $1;
+                    $domain = $2;
+                }
+            }
         }
         return {
             DOMAIN  => $domain,
@@ -185,10 +193,38 @@ sub _getLastUser {
             );
             $user->{DOMAIN} = $useraccount->{DOMAIN}
                 if $useraccount;
+        } elsif ($user->{DOMAIN} eq 'AzureAD') {
+            # Handle AzureAD case
+            my $upn = _getLastLoggedAzureADUserUPN(name => $user->{LOGIN}, %params);
+            if ($upn && $upn =~ /^([^@]+)\@(.+)$/) {
+                $user->{LOGIN}  = $1;
+                $user->{DOMAIN} = $2;
+            }
         }
     }
 
     return $user;
+}
+
+sub _getLastLoggedAzureADUserUPN {
+    my %params = @_;
+
+    my $sid = getRegistryValue(
+        path => "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows/CurrentVersion/Authentication/LogonUI/LastLoggedOnUserSID",
+        %params
+    );
+    return unless $sid;
+
+    my $samname = getRegistryValue(
+        path => "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/IdentityStore/Cache/$sid/IdentityCache/$sid/SAMName",
+        %params
+    );
+    return unless $samname && $params{name} && $samname eq $params{name};
+
+    return getRegistryValue(
+        path => "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/IdentityStore/Cache/$sid/IdentityCache/$sid/UserName",
+        %params
+    );
 }
 
 1;

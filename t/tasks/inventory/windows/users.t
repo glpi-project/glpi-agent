@@ -38,6 +38,10 @@ my %tests = (
        LOGIN  => 'teclib',
        DOMAIN => 'XPS-FUSIONINVEN'
     },
+    '11-AzureAD' => {
+       LOGIN  => 'johndoe',
+       DOMAIN => 'nowhere.org'
+    },
 );
 
 plan tests => scalar (keys %tests) + 1;
