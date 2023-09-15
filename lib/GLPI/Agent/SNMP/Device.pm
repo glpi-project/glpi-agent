@@ -428,7 +428,7 @@ sub setModel {
             $self->get('.1.3.6.1.2.1.25.3.2.1.3.1')    :
             exists $self->{TYPE} && $self->{TYPE} eq 'POWER' ?
             $self->get('.1.3.6.1.2.1.33.1.1.5.0')      : # UPS-MIB
-            $self->get('.1.3.6.1.2.1.47.1.1.1.1.13.1') ;
+            $self->{snmp}->get_first('.1.3.6.1.2.1.47.1.1.1.1.13');
         $self->{MODEL} = getCanonicalString($model) if $model;
     }
 

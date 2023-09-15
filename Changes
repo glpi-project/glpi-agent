@@ -29,6 +29,8 @@ inventory:
 netdiscovery/netinventory:
 * Enhanced Aruba IAP models support
 * Enhanced CheckPoint devices support
+* Enhanced Cisco devices support
+* Enhanced Citrix devices support
 
 proxy-server-plugin:
 * fix #461: Fix XML content-type support for inventories sent by android agent

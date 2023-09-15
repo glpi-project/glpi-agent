@@ -125,23 +125,6 @@ sub getType {
         return 'NETWORKING';
     }
 
-    # SNMP-FRAMEWORK-MIB: Analyze snmpEngineID which can gives:
-    #  - IANA private OID Number to identify manufacturer
-    #  - A unique identifier which can be IP, Mac or serialnumber
-    my $snmpEngineID = hex2char($self->get(snmpEngineID));
-    if ($snmpEngineID) {
-        my @decode = unpack("C4", pack("H8", substr($snmpEngineID, 0, 8)));
-        my $manufacturerid = (($decode[0] & 0x7f) * 16777216) + ($decode[1] * 65536) + $decode[2] * 256 + $decode[3];
-        my $match = getManufacturerIDInfo($manufacturerid);
-        if ($match && $match->{manufacturer} && $match->{type}) {
-            $device->{_Appliance} = {
-                MODEL           => $match->{model} // "",
-                MANUFACTURER    => $match->{manufacturer}
-            };
-            return $match->{type};
-        }
-    }
-
     # sysDescr analysis
     my $sysDescr =  getCanonicalString($self->get(sysDescr));
     if ($sysDescr) {
@@ -153,6 +136,47 @@ sub getType {
                 MANUFACTURER    => 'TP-Link'
             };
             return 'NETWORKING';
+        }
+    }
+
+    # SNMP-FRAMEWORK-MIB: Analyze snmpEngineID which can gives:
+    #  - IANA private OID Number to identify manufacturer
+    #  - A unique identifier which can be IP, Mac or serialnumber
+    my $snmpEngineID = hex2char($self->get(snmpEngineID));
+    $snmpEngineID = hex2char("0x".$snmpEngineID) if defined($snmpEngineID) && $snmpEngineID =~ /^[0-9a-fA-F]+$/ && !(length($snmpEngineID)%2);
+    if ($snmpEngineID) {
+        my @decode = unpack("C5", $snmpEngineID);
+        my $manufacturerid = (($decode[0] & 0x7f) * 16777216) + ($decode[1] * 65536) + $decode[2] * 256 + $decode[3];
+        my $match = getManufacturerIDInfo($manufacturerid);
+        if ($match && $match->{manufacturer} && $match->{type}) {
+            $device->{_Appliance} = {
+                MODEL           => $match->{model} // "",
+                MANUFACTURER    => $match->{manufacturer}
+            };
+            if ($decode[0] & 0x80) {
+                my $remaining = substr($snmpEngineID, 5);
+                if ($decode[4] == 3) {
+                    # Remaining is a MAC to be used as serial
+                    $device->{_Appliance}->{SERIAL} = getCanonicalMacAddress($remaining);
+                } elsif ($decode[4] == 4) {
+                    # Remaining is text, administratively assigned
+                    $device->{_Appliance}->{SERIAL} = getCanonicalString($remaining);
+                } elsif ($decode[4] == 5) {
+                    # Remaining is bytes, administratively assigned
+                    $device->{_Appliance}->{SERIAL} = unpack("H*", $remaining);
+                } elsif ($decode[4] >= 128) {
+                    # Remaining is device specific, just get an hex-string for the bytes
+                    $device->{_Appliance}->{SERIAL} = unpack("H*", $remaining);
+               }
+            }
+            # Try to identify device
+            # Cisco FMC/FTD appliance detection, lookup for an existing process
+            if ($self->_hasProcess('sfestreamer')) {
+                $device->{_Appliance}->{MODEL} = 'FMC';
+                $device->{_Appliance}->{MANUFACTURER} = 'Cisco';
+                return 'NETWORKING';
+            }
+            return $match->{type};
         }
     }
 }
@@ -215,6 +239,8 @@ sub getSerial {
     } elsif ($manufacturer eq 'Ubiquiti' && $device->{MAC}) {
         $serial = $device->{MAC};
         $serial =~ s/://g;
+    } elsif ($device->{_Appliance} && $device->{_Appliance}->{SERIAL}) {
+        $serial = $device->{_Appliance}->{SERIAL};
     }
 
     return $serial;
