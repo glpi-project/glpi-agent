@@ -31,16 +31,17 @@ GLPI::Agent::Task::Inventory::Win32::Users->require();
 
 my %tests = (
     '7-AD' => {
-       LOGIN  => 'teclib',
-       DOMAIN => 'AD'
+        LOGIN  => 'teclib',
+        DOMAIN => 'AD'
     },
     '10-StandAlone' => {
-       LOGIN  => 'teclib',
-       DOMAIN => 'XPS-FUSIONINVEN'
+        LOGIN  => 'teclib',
+        DOMAIN => 'XPS-FUSIONINVEN'
     },
     '11-AzureAD' => {
-       LOGIN  => 'johndoe',
-       DOMAIN => 'nowhere.org'
+        LOGIN     => 'johndoe',
+        DOMAIN    => 'nowhere.org',
+        _fullname => 'JohnDoe@AzureAD'
     },
 );
 

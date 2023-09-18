@@ -49,19 +49,12 @@ sub doInventory {
     # Handles seen users without being case sensitive
     my %seen = ();
 
-    foreach my $user (_getLoggedUsers(logger => $logger)) {
-        my $fullname = lc($user->{LOGIN}).'@'.lc($user->{DOMAIN});
-        $inventory->addEntry(
-            section => 'USERS',
-            entry   => $user
-        ) unless $seen{$fullname}++;
-    }
-
     my $lastLoggedUser = _getLastUser(logger => $logger);
     if ($lastLoggedUser) {
         # Include last logged user as usual computer user
         if (ref($lastLoggedUser) eq 'HASH') {
-            my $fullname = lc($lastLoggedUser->{LOGIN}).'@'.lc($lastLoggedUser->{DOMAIN});
+            my $fullname = delete $lastLoggedUser->{_fullname};
+            $fullname = $fullname ? lc($fullname) : lc($lastLoggedUser->{LOGIN}).'@'.lc($lastLoggedUser->{DOMAIN});
             $inventory->addEntry(
                 section => 'USERS',
                 entry   => $lastLoggedUser
@@ -77,6 +70,14 @@ sub doInventory {
                 LASTLOGGEDUSER => $lastLoggedUser
             });
         }
+    }
+
+    foreach my $user (_getLoggedUsers(logger => $logger)) {
+        my $fullname = lc($user->{LOGIN}).'@'.lc($user->{DOMAIN});
+        $inventory->addEntry(
+            section => 'USERS',
+            entry   => $user
+        ) unless $seen{$fullname}++;
     }
 }
 
@@ -148,24 +149,24 @@ sub _getLastUser {
         %params
     );
     if ($system && $system->{Name} && $system->{UserName}) {
-        my $user   = $system->{UserName};
-        my $domain = $system->{Name};
-        if ($system->{UserName} =~ /^([^\\]*)\\(.*)$/) {
-            $domain = $1 unless $1 eq '.';
-            $user   = $2;
+        my $user = {
+            DOMAIN  => $system->{UserName},
+            LOGIN   => $system->{Name}
+        };
+        if ($user->{DOMAIN} =~ /^([^\\]*)\\(.*)$/) {
+            $user->{DOMAIN} = $1 unless $1 eq '.';
+            $user->{LOGIN}  = $2;
             # Handle AzureAD case
-            if ($domain && $domain eq 'AzureAD') {
-                my $upn = _getLastLoggedAzureADUserUPN(name => $user, %params);
+            if ($user->{DOMAIN} && $user->{DOMAIN} eq 'AzureAD') {
+                my $upn = _getLastLoggedAzureADUserUPN(name => $user->{LOGIN}, %params);
                 if ($upn && $upn =~ /^([^@]+)\@(.+)$/) {
-                    $user   = $1;
-                    $domain = $2;
+                    $user->{_fullname} = $user->{LOGIN}.'@AzureAD';
+                    $user->{LOGIN}     = $1;
+                    $user->{DOMAIN}    = $2;
                 }
             }
         }
-        return {
-            DOMAIN  => $domain,
-            LOGIN   => $user
-        };
+        return $user;
     }
 
     return unless any {
@@ -197,8 +198,9 @@ sub _getLastUser {
             # Handle AzureAD case
             my $upn = _getLastLoggedAzureADUserUPN(name => $user->{LOGIN}, %params);
             if ($upn && $upn =~ /^([^@]+)\@(.+)$/) {
-                $user->{LOGIN}  = $1;
-                $user->{DOMAIN} = $2;
+                $user->{_fullname} = $user->{LOGIN}.'@AzureAD';
+                $user->{LOGIN}     = $1;
+                $user->{DOMAIN}    = $2;
             }
         }
     }

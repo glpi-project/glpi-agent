@@ -24,7 +24,7 @@ inventory:
 * PR #472: Add BitDefender Antivirus support on Linux, thanks to @ticgal
 * fix #479: Fix monitor inventory when PNPDeviceID contains an underscore on win32
 * fix #476: Support to retrieve last logged user UPN from authentication cache on win32
-  to ease computers ans users linking in GLPI
+  to ease computers ans users linking in GLPI when using Azure AD
 
 netdiscovery/netinventory:
 * Enhanced Aruba IAP models support
