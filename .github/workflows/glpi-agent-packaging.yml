@@ -105,8 +105,8 @@ jobs:
                     TYPE=development
                 fi
                 SKIP_NIGHTLY="${{ env.number_of_nightly_build_to_keep }} $TYPE"
-                # For nightly, we also check if we had any commit during the last 24 hours
-                if [ "$SKIP_NIGHTLY" = "0 nightly" -o -z "$( git rev-list -n 1 --after="24 hours" ${{ github.sha }} )" ]; then
+                # For nightly, we also check if we had any commit during the last 24 hours unless it is a manually forced run for which INPUT_NIGHTLY should be set
+                if [ -z "$INPUT_NIGHTLY" -a "$SKIP_NIGHTLY" = "0 nightly" -o -z "$( git rev-list -n 1 --after="24 hours" ${{ github.sha }} )" ]; then
                     echo "No nightly release needed"
                     echo "create-release=no" >>$GITHUB_OUTPUT
                     echo "build=no" >>$GITHUB_OUTPUT
