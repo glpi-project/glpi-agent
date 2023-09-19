@@ -331,7 +331,7 @@ sub _handle_root {
     }
 
     my @sessions = ();
-    if ($logger && $logger->debug_level() > 1) {
+    if ($trust && $logger && $logger->debug_level() > 1) {
         GLPI::Agent::Target::Listener->require();
         if ($EVAL_ERROR) {
             $self->{logger}->debug($log_prefix . "Failed to load Listener target module: $EVAL_ERROR");
