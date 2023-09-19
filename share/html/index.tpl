@@ -9,14 +9,13 @@
   <div id='background'>
     <p id='version' class='block'>This is GLPI Agent {$version}</p>
     <div id='status'>
-      <p>The current status is {$status}</p>{
-  if ($trust && (@server_targets||@local_targets)) {
-    $OUT .= "
-      <div id='force' class='block'>
-        <a href='/now'>Force an Inventory</a>
-      </div>
-    </div>";
+      <p>The current status is {$status}</p>
+      <div id='force' class='block'>{
+    $OUT .= $trust && (@server_targets || @local_targets) ? "
+        <a href='/now'>Force an Inventory</a>" : "";
   }
+      </div>
+    </div>{
 
   if (@server_targets || @local_targets || @httpd_plugins || @sessions) {
     $OUT .= "
