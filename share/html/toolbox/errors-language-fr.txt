@@ -27,6 +27,7 @@ A network scan is still running for that IP range: Un scan réseau tourne déjà
 No such credentials: Pas de tels identifiants
 Missing version on credentials: La version manque sur les identifiants
 Missing username on credentials: Le nom d'utilisateur manque sur les identifiants
+Missing password on credentials: Le mot de passe manque sur les identifiants
 A local inventory is still running: Un inventaire local est déjà en cours
 Unsupported IP range: Plage IP non supportée
 Can't delete used IP range: Impossible de supprimer une plage IP utilisée
