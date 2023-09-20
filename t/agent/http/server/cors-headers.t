@@ -32,17 +32,22 @@ my $logger = GLPI::Agent::Logger->new(
     logger => [ 'Test' ]
 );
 
-my $basevardir = tempdir(CLEANUP => $ENV{TEST_DEBUG} ? 0 : 1);
+my $agent = GLPI::Test::Agent->new();
+
 my $target = GLPI::Agent::Target::Server->new(
+    logger     => $logger,
     url        => 'http://127.0.0.1/',
-    basevardir => $basevardir
+    basevardir => $agent->{config}->{vardir}
 );
+
+# Add server target to agent as it should be done normally
+push @{$agent->{targets}}, $target;
 
 my $server;
 
 lives_ok {
     $server = GLPI::Agent::HTTP::Server->new(
-        agent     => GLPI::Test::Agent->new(),
+        agent     => $agent,
         ip        => '127.0.0.1',
         logger    => $logger,
         port      => $port,
@@ -50,9 +55,6 @@ lives_ok {
         htmldir   => 'share/html'
     );
 } 'instanciation with localhost trusted: ok';
-
-# Add server target to agent as it should be done normally
-push @{$server->{agent}->{targets}}, $target;
 
 lives_ok {
     $server->init();
