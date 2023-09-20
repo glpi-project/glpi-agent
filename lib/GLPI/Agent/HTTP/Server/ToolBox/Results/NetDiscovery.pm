@@ -212,6 +212,7 @@ sub _getDevices {
     my $now = time;
     if (!$devices->{_cleanup_expiration} || $now > $devices->{_cleanup_expiration}) {
         foreach my $ip (keys(%{$devices})) {
+            next unless ref($devices->{$ip});
             delete $devices->{$ip}
                 if $devices->{$ip}->{expiration} && $now > $devices->{$ip}->{expiration};
         }
