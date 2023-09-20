@@ -355,7 +355,8 @@ sub run {
                 entity              => $range->{entity},
                 pid                 => $jobid,
                 timeout             => $job->timeout,
-                snmp_credentials    => $range->{credentials} || $job->snmp_credentials
+                snmp_credentials    => $range->{snmp_credentials}   || $job->snmp_credentials,
+                remote_credentials  => $range->{remote_credentials} || $job->remote_credentials
             };
             $jobaddress->{walk} = $range->{walk} if $range->{walk};
 
@@ -365,15 +366,17 @@ sub run {
                 $result->{ENTITY} = $range->{entity} if defined($range->{entity});
 
                 my $authsnmp = $result->{AUTHSNMP};
-                if ($authsnmp && $job->localtask) {
+                # AUTHREMOTE can be set in results but is not actually supported by GLPI
+                my $authremote = delete $result->{AUTHREMOTE};
+                if (($authsnmp || $authremote) && $job->localtask) {
                     # Don't keep authsnmp in result for local task
                     delete $result->{AUTHSNMP};
-                    # For TooBox, we keep used authsnmp & ip_range for results page in target storage
+                    # For TooBox, we keep used authsnmp|authremote & ip_range for results page in target storage
                     if ($self->{target}->isType('local')) {
                         my $storage = $self->{target}->getStorage();
                         my $devices = $storage->restore(name => "NetDisco-Devices") // {};
                         $devices->{$result->{IP}} = {
-                            credential  => $authsnmp,
+                            credential  => $authsnmp || $authremote,
                             ip_range    => $range->{name},
                             # Set expiration to ~3 months (3*30*86400)
                             expiration  => time + 7776000
@@ -422,6 +425,18 @@ sub run {
 
                     # Finish with return code to update task expiration
                     $manager->finish(1, { timeout => $timeout });
+
+                } elsif ($authremote && $job->netscan) {
+                    my $credentials = [
+                        grep { $_->{ID} eq $authremote } @{$jobaddress->{remote_credentials}}
+                    ];
+                    if ($credentials->{TYPE} eq 'esx') {
+                        GLPI::Agent::Task::ESX->require();
+                        # TODO Support ESX task run
+                    } else {
+                        GLPI::Agent::Task::RemoteInventory->require();
+                        # TODO Support RemoteInventory task run
+                    }
                 }
             }
 
@@ -558,9 +573,21 @@ sub _scanAddress {
     # Used by unittest to test arp cases
     $self->{arp} = $params->{arp} if $params->{arp};
 
-    my %device = (
-        $params->{remote}        ? $self->_scanAddressByRemote($params)  : (),
-        $INC{'Net/SNMP.pm'}      ? $self->_scanAddressBySNMP($params)    : (),
+    my %device;
+
+    # First eventually try to scan with remote credentials
+    if ($params->{remote_credentials}) {
+        %device = $self->_scanAddressByRemote($params);
+    }
+
+    # Skip snmp scanning if got a response of type COMPUTER
+    unless (!$INC{'Net/SNMP.pm'} || ($device{TYPE} && $device{TYPE} eq 'COMPUTER')) {
+        %device = $self->_scanAddressBySNMP($params);
+    }
+
+    # Then scan for standard network datas
+    %device = (
+        %device,
         $INC{'Net/NBName.pm'}    ? $self->_scanAddressByNetbios($params) : (),
         $INC{'Net/Ping.pm'}      ? $self->_scanAddressByPing($params)    : (),
         $self->{arp}             ? $self->_scanAddressByArp($params)     : (),

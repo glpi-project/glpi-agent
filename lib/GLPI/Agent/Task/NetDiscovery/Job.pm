@@ -163,9 +163,12 @@ sub ranges {
     # After _queue has been defined, return the queue ranges count
     return scalar(@{$self->{_queue}->{ranges}}) if $self->{_queue};
 
+    my ($snmp_credentials, $remote_credentials) = $self->_getValidCredentials();
+
     $self->{_queue} = {
         in_queue            => 0,
-        snmp_credentials    => $self->_getValidCredentials() // [],
+        snmp_credentials    => $snmp_credentials   // [],
+        remote_credentials  => $remote_credentials // [],
         ranges              => [],
         size                => 0,
         done                => 0,
@@ -185,7 +188,9 @@ sub ranges {
         };
         # Support ToolBox model where credentials are linked to range
         if ($range->{NAME}) {
-            $thisrange->{credentials} = $self->_getValidCredentials($range->{NAME});
+            my ($snmp_credentials, $remote_credentials) = $self->_getValidCredentials($range->{NAME});
+            $thisrange->{snmp_credentials}   = $snmp_credentials   // [];
+            $thisrange->{remote_credentials} = $remote_credentials // [];
         }
         push @ranges, $thisrange;
     }
@@ -201,10 +206,19 @@ sub snmp_credentials {
     return $self->{_queue}->{snmp_credentials};
 }
 
+sub remote_credentials {
+    my ($self) = @_;
+
+    return unless $self->{_queue};
+
+    return $self->{_queue}->{remote_credentials};
+}
+
 sub _getValidCredentials {
     my ($self, $name) = @_;
 
-    my @credentials;
+    my @snmp_credentials = ();
+    my @remote_credentials = ();
 
     # Support ToolBox model where credentials are linked to range
     return if $name && ref($self->{_credentials}) ne 'HASH';
@@ -240,6 +254,7 @@ sub _getValidCredentials {
                 next;
             }
             $valid_snmp++;
+            push @snmp_credentials, $credential;
         } else {
             $remote++;
             unless (defined($credential->{USERNAME}) && length($credential->{USERNAME})) {
@@ -261,8 +276,8 @@ sub _getValidCredentials {
                 next;
             }
             $valid_remote++;
+            push @remote_credentials, $credential;
         }
-        push @credentials, $credential;
     }
 
     $self->{logger}->warning("No valid SNMP credential defined for this scan")
@@ -271,7 +286,7 @@ sub _getValidCredentials {
     $self->{logger}->warning("No valid remote credential defined for this scan")
         unless !$remote || $valid_remote;
 
-    return \@credentials;
+    return \@snmp_credentials, \@remote_credentials;
 }
 
 sub _getSNMPPorts {

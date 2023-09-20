@@ -781,6 +781,23 @@ sub netscan {
                 $CRED->{PORT}     = $cred->{port} if defined($cred->{port}) && int($cred->{port}) != 161;
                 # Add protocol set on credential if it's not the default
                 $CRED->{PROTOCOL} = $cred->{protocol} if $cred->{protocol} && $cred->{protocol} ne 'udp';
+
+            } else {
+                # ESX & RemoteInventory related credentials
+                return $self->errors("Missing username on credentials: ".($cred->{name}||$credential))
+                    unless defined($cred->{username});
+                return $self->errors("Missing password on credentials: ".($cred->{name}||$credential))
+                    unless defined($cred->{password}) || $cred->{type} eq 'ssh';
+                $CRED = {
+                    # brackets are here cosmetic for task logs and will be filtered in
+                    # GLPI::Agent::HTTP::Server::ToolBox::Results::NetDiscovery
+                    ID  => "[$credential]"
+                };
+                # Complete CRED with required and defined attributes
+                my @map = qw{type username password};
+                push @map, qw{mode port}
+                    unless $cred->{type} eq 'esx';
+                map { $CRED->{uc($_)} = $cred->{$_} } grep { $cred->{$_} } @map;
             }
             if ($CRED) {
                 if ($name) {

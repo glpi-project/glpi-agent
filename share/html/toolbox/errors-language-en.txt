@@ -27,6 +27,7 @@ A network scan is still running for that IP range:
 No such credentials:
 Missing version on credentials:
 Missing username on credentials:
+Missing password on credentials:
 A local inventory is still running:
 Unsupported IP range:
 Can't delete used IP range:
