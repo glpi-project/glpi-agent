@@ -215,7 +215,8 @@ sub _getValidCredentials {
     my ($snmp, $valid_snmp, $invalid_snmp, $remote, $valid_remote, $invalid_remote) = (0, 0, 0, 0, 0, 0);
     foreach my $credential (@{$credentials}) {
         next if $credential->{TYPE} && $credential->{TYPE} !~ /^snmp|esx|ssh|winrm$/;
-        if ($credential->{TYPE} eq 'snmp') {
+        # Support no credentials type as legacy snmp credentials
+        if (!$credential->{TYPE} || $credential->{TYPE} eq 'snmp') {
             $snmp++;
             if ($credential->{VERSION} eq '3') {
                 # a user name is required
