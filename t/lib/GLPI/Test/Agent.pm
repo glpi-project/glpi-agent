@@ -9,11 +9,16 @@ use File::Temp;
 sub new {
     my ($class) = @_;
 
+    # It's more reliable to store File::Temp object in a private property and then store the vardir path in config as a string
+    my $vardir = File::Temp->newdir();
+    my $path   = $vardir->dirname;
+
     my $self = {
         status  => 'ok',
         targets => [],
+        _vardir => $vardir,
         config  => {
-            vardir  => File::Temp->newdir()
+            vardir  => $path
         }
     };
     bless $self, $class;
