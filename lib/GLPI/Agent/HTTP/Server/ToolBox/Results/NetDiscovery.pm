@@ -8,6 +8,7 @@ use parent "GLPI::Agent::HTTP::Server::ToolBox::Results::Fields";
 use Memoize;
 
 use GLPI::Agent::Tools;
+use GLPI::Agent::Target::Local;
 
 memoize('__sortable_by_ip');
 
@@ -187,6 +188,40 @@ sub __sortable_by_ip {
     return join("", map { sprintf("%02X",$_) } split(/\./, $device->{ip}));
 }
 
+sub _getDevices {
+    my ($self) = @_;
+
+    # Get stored credentials & ip_range for devices from local target storage
+    my $yaml_config = $self->{results}->yaml('configuration') || {};
+    my $path = $yaml_config->{networktask_save} // '.';
+
+    # Make sure path exists as folder before accessing storage
+    mkdir $path unless -d $path;
+
+    my $target = GLPI::Agent::Target::Local->new(
+        logger     => $self->{logger},
+        delaytime  => 0,
+        basevardir => $self->{results}->{toolbox}->{server}->{agent}->{config}->{vardir},
+        path       => $path
+    );
+
+    my $storage = $target->getStorage();
+    my $devices = $storage->restore(name => "NetDisco-Devices") // {};
+
+    # Check to clean up expired ips but no more than one time an hour
+    my $now = time;
+    if (!$devices->{_cleanup_expiration} || $now > $devices->{_cleanup_expiration}) {
+        foreach my $ip (keys(%{$devices})) {
+            delete $devices->{$ip}
+                if $devices->{$ip}->{expiration} && $now > $devices->{$ip}->{expiration};
+        }
+        $devices->{_cleanup_expiration} = $now + 3600;
+        $storage->save(name => "NetDisco-Devices", data => $devices);
+    }
+
+    return $devices;
+}
+
 sub analyze {
     my ($self, $name, $tree, $file) = @_;
 
@@ -202,10 +237,24 @@ sub analyze {
 
     my $device = $self->fields_common_analysis($dev);
 
-    # Fix credential if AUTHSNMP was set into []
-    $device->{credential} = $1
-        if ($device->{credential} && $device->{credential} =~ /^\[(.*)\]$/);
+    my $device_scan_result;
+    unless ($device->{credential} && $device->{ip_range}) {
+        my $devices = $self->_getDevices();
+        $device_scan_result = $devices->{$device->{ip}}
+            if $devices && $devices->{$device->{ip}};
+    }
 
+    # Fix credential & ip_range if set in dedicated storage
+    if ($device_scan_result) {
+        $device->{credential} = $device_scan_result->{credential}
+            if $device_scan_result->{credential};
+        $device->{ip_range} = $device_scan_result->{ip_range}
+            if $device_scan_result->{ip_range};
+    }
+
+    # Fix credential if credential was set into []
+    $device->{credential} = $1
+        if $device->{credential} && $device->{credential} =~ /^\[(.*)\]$/;
 
     if ($dev->{IPS} && ref($dev->{IPS}->{IP})) {
         $device->{ips} = join(',', @{$dev->{IPS}->{IP}});

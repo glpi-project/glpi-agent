@@ -362,16 +362,25 @@ sub run {
             my $result = $self->_scanAddress($jobaddress);
 
             if ($result && $result->{IP}) {
-                # For TooBox, we need to insert used ip_range as device property to report it in results
-                # But this is only required when storing locally
-                $result->{"-ip_range"} = $range->{name} if $range->{name} && $self->{target}->isType('local');
-
                 $result->{ENTITY} = $range->{entity} if defined($range->{entity});
 
                 my $authsnmp = $result->{AUTHSNMP};
-                # Don't keep authsnmp in result for local task sending to server
-                delete $result->{AUTHSNMP}
-                    if $job->localtask && $self->{target}->isType('server');
+                if ($authsnmp && $job->localtask) {
+                    # Don't keep authsnmp in result for local task
+                    delete $result->{AUTHSNMP};
+                    # For TooBox, we keep used authsnmp & ip_range for results page in target storage
+                    if ($self->{target}->isType('local')) {
+                        my $storage = $self->{target}->getStorage();
+                        my $devices = $storage->restore(name => "NetDisco-Devices") // {};
+                        $devices->{$result->{IP}} = {
+                            credential  => $authsnmp,
+                            ip_range    => $range->{name},
+                            # Set expiration to ~3 months (3*30*86400)
+                            expiration  => time + 7776000
+                        };
+                        $storage->save(name => "NetDisco-Devices", data => $devices);
+                    }
+                }
 
                 $self->_sendResultMessage($result, $jobid);
 
