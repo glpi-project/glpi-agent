@@ -178,36 +178,6 @@ sub run {
     my $plural = @{$jobs->{jobs}} > 1 ? "s" : "";
     $self->{logger}->info("Having to contact ".scalar(@{$jobs->{jobs}})." remote ESX server".$plural);
 
-    my $serverclient;
-    if ($self->{target}->isGlpiServer()) {
-        GLPI::Agent::HTTP::Client::GLPI->require();
-        return $self->{logger}->error("GLPI Protocol library can't be loaded")
-            if $EVAL_ERROR;
-
-        $serverclient = GLPI::Agent::HTTP::Client::GLPI->new(
-            logger  => $self->{logger},
-            config  => $self->{config},
-            agentid => uuid_to_string($self->{agentid}),
-        );
-
-        return $self->{logger}->error("Can't load GLPI Protocol Inventory library")
-            unless GLPI::Agent::Protocol::Inventory->require();
-    } else {
-        # Deprecated XML based protocol
-        GLPI::Agent::HTTP::Client::OCS->require();
-        return $self->{logger}->error("OCS Protocol library can't be loaded")
-            if $EVAL_ERROR;
-
-        $serverclient = GLPI::Agent::HTTP::Client::OCS->new(
-            logger  => $self->{logger},
-            config  => $self->{config},
-        );
-
-        GLPI::Agent::XML::Query::Inventory->require();
-        return $self->{logger}->error("XML::Query::Inventory library can't be loaded")
-            if $EVAL_ERROR;
-    }
-
     foreach my $job ( @{ $jobs->{jobs} } ) {
 
         if ( !$self->connect(
@@ -216,7 +186,7 @@ sub run {
                 password => $job->{password}
         )) {
             $self->{client}->send(
-                "url" => $self->{esxRemote},
+                url   => $self->{esxRemote},
                 args  => {
                     action => 'setLog',
                     machineid => $self->{deviceid},
@@ -230,12 +200,82 @@ sub run {
             next;
         }
 
-        my $hostIds = $self->getHostIds();
-        foreach my $hostId (@$hostIds) {
-            my $inventory = $self->createInventory(
-                $hostId, $self->{config}->{tag}
+        $self->serverInventory();
+
+        $self->{client}->send(
+            url   => $self->{esxRemote},
+            args  => $self->lastError ? {
+                action => 'setLog',
+                machineid => $self->{deviceid},
+                part      => 'inventory',
+                uuid      => $job->{uuid},
+                msg       => $self->lastError(),
+                code      => 'ko'
+            } : {
+                action => 'setLog',
+                machineid => $self->{deviceid},
+                uuid      => $job->{uuid},
+                code      => 'ok'
+            }
+        );
+    }
+
+    return $self;
+}
+
+sub serverInventory {
+    # $host_callback can be used to dump datas retrieved from ESX server as done by glpi-esx
+    # and is only used for local target
+    my ($self, $path, $host_callback) = @_;
+
+    # Initialize GLPI server submission if required
+    if ($self->{target}->isType('server') && !$self->{serverclient}) {
+        if ($self->{target}->isGlpiServer()) {
+            GLPI::Agent::HTTP::Client::GLPI->require();
+            if ($EVAL_ERROR) {
+                $self->lastError("GLPI Protocol library can't be loaded");
+                return;
+            }
+
+            $self->{serverclient} = GLPI::Agent::HTTP::Client::GLPI->new(
+                logger  => $self->{logger},
+                config  => $self->{config},
+                agentid => uuid_to_string($self->{agentid}),
             );
 
+            GLPI::Agent::Protocol::Inventory->require();
+            if ($EVAL_ERROR) {
+                $self->lastError("Can't load GLPI Protocol Inventory library");
+                return;
+            }
+        } else {
+            # Deprecated XML based protocol
+            GLPI::Agent::HTTP::Client::OCS->require();
+            if ($EVAL_ERROR) {
+                $self->lastError("OCS Protocol library can't be loaded");
+                return;
+            }
+
+            $self->{serverclient} = GLPI::Agent::HTTP::Client::OCS->new(
+                logger  => $self->{logger},
+                config  => $self->{config},
+            );
+
+            GLPI::Agent::XML::Query::Inventory->require();
+            if ($EVAL_ERROR) {
+                $$self->lastError("XML::Query::Inventory library can't be loaded");
+                return;
+            }
+        }
+    }
+
+    my $hostIds = $self->getHostIds();
+    foreach my $hostId (@$hostIds) {
+        my $inventory = $self->createInventory(
+            $hostId, $self->{config}->{tag}
+        );
+
+        if ($self->{target}->isType('server')) {
             my $message;
             if ($self->{target}->isGlpiServer()) {
                 $inventory->setFormat('json');
@@ -251,24 +291,27 @@ sub run {
                 );
             }
 
-            $serverclient->send(
+            $self->{serverclient}->send(
                 url     => $self->{target}->getUrl(),
                 message => $message
             );
-        }
-        $self->{client}->send(
-            "url" => $self->{esxRemote},
-            args  => {
-                action => 'setLog',
-                machineid => $self->{deviceid},
-                uuid      => $job->{uuid},
-                code      => 'ok'
+        } elsif ($self->{target}->isType('local')) {
+            $inventory->setFormat($self->{config}->{json} ? 'json' : 'xml');
+            my $file = $inventory->save($path // $self->{target}->getPath());
+            if ($file eq '-') {
+                $self->{logger}->debug("Inventory dumped");
+            } elsif (-e $file) {
+                $self->{logger}->info("Inventory saved in $file");
+            } else {
+                $self->{logger}->error("Failed to save inventory in $file, aborting");
+                $self->lastError("Can't save inventory file");
+                last;
             }
-        );
-
+            if (ref($host_callback) eq 'CODE') {
+                &{$host_callback}($hostId, $file);
+            }
+        }
     }
-
-    return $self;
 }
 
 sub lastError {

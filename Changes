@@ -48,6 +48,11 @@ netdiscovery/netinventory:
 * Enhanced Citrix devices support
 * PR #500: Enhanced Synology NAS support with drives & storages support
 
+esx:
+* Refactoring to share more code between task & glpi-esx script and to support netscan
+* Added --debug option support to glpi-esx
+* fixed & updated unittests
+
 proxy-server-plugin:
 * fix #461: Fix XML content-type support for inventories sent by android agent
 
