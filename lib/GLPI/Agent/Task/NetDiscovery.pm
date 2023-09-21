@@ -580,8 +580,8 @@ sub _scanAddress {
         %device = $self->_scanAddressByRemote($params);
     }
 
-    # Skip snmp scanning if got a response of type COMPUTER
-    unless (!$INC{'Net/SNMP.pm'} || ($device{TYPE} && $device{TYPE} eq 'COMPUTER')) {
+    # Skip snmp scanning if got an authenticated result
+    unless (!$INC{'Net/SNMP.pm'} || $device{AUTHREMOTE}) {
         %device = $self->_scanAddressBySNMP($params);
     }
 
@@ -851,11 +851,74 @@ sub _scanAddressBySNMPReal {
 }
 
 sub _scanAddressByRemote {
-    #my ($self, $params) = @_;
+    my ($self, $params) = @_;
 
-    # TODO implement esx, ssh & winrm scan support
+    my (%device, $found, $error);
+    my %params = map { $_ => $self->{$_} } qw(config datadir target deviceid logger agentid);
 
-    return;
+    foreach my $credential (@{$params->{remote_credentials}}) {
+
+        next unless $credential->{TYPE};
+
+        if ($credential->{TYPE} eq 'esx') {
+
+            GLPI::Agent::Task::ESX->require();
+
+            my $esxscan = GLPI::Agent::Task::ESX->new(%params);
+
+            if ($esxscan->connect(
+                host     => $params->{ip},
+                user     => $credential->{USERNAME},
+                password => $credential->{PASSWORD}
+            )) {
+                $found++;
+            } else {
+                $error = $esxscan->lastError();
+                my %errors = (
+                    'n/a'                    => '',
+                    '405 Method Not Allowed' => 'not supporting VMWare SOAP API'
+                );
+                $error = $errors{$error} if $errors{$error};
+
+                # Anyway set COMPUTER type as we got an answer
+                $device{TYPE} = 'COMPUTER';
+            }
+
+            # no result means either no host, no response, or invalid credentials
+            $self->{logger}->debug(
+                sprintf "- scanning %s with ESX, credentials %s: %s",
+                $params->{ip},
+                $credential->{ID},
+                $found ? 'success' : $error ? "no result, $error"  : 'no result'
+            );
+        } else {
+            # TODO implement remoteinventory scan support
+
+            GLPI::Agent::Task::RemoteInventory->require();
+
+            my $scan = GLPI::Agent::Task::RemoteInventory->new(%params);
+
+            # no result means either no host, no response, or invalid credentials
+            $self->{logger}->debug(
+                sprintf "- scanning %s%s with %sRemoteInventory, credentials %s: %s",
+                $params->{ip},
+                $credential->{PORT} ? ':'.$credential->{PORT} : '',
+                $credential->{TYPE} ? $credential->{TYPE}.' ' : '',
+                $credential->{ID},
+                $found ? 'success' : $error ? "no result, $error"  : 'no result'
+            );
+        }
+
+        if ($found) {
+            $device{AUTHREMOTE} = $credential->{ID};
+            $device{TYPE}       = 'COMPUTER';
+            last;
+        }
+
+        undef $error;
+    }
+
+    return %device;
 }
 
 sub _sendStartMessage {
