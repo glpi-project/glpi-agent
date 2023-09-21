@@ -77,8 +77,8 @@ sub  _getVirtualMachineConfig {
 
         if ($key eq 'limits.memory') {
             $config->{MEMORY} = getCanonicalSize($val);
-        } elsif ($key eq 'limits.cpu') {
-            $config->{VCPU} = int($val);
+        } elsif ($key eq 'limits.cpu' && $val =~ /^"?(\d+)"?$/) {
+            $config->{VCPU} = int($1);
         }
 
         if ($key eq 'lxc.cgroup.cpuset.cpus') {
