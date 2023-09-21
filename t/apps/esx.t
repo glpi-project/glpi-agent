@@ -10,7 +10,7 @@ use Test::More;
 use GLPI::Agent::Task::ESX;
 use GLPI::Test::Utils;
 
-plan tests => 7;
+plan tests => 13;
 
 my ($out, $err, $rc);
 
@@ -36,4 +36,22 @@ like(
     $out,
     qr{glpi-esx $GLPI::Agent::Task::ESX::VERSION},
     '--version stdout'
+);
+
+($out, $err, $rc) = run_executable('glpi-esx', '--dumpfile resources/esx/esx-4.1.0-1-hostfullinfo.dump.gz');
+ok($rc == 0, '--dumpfile exit status');
+is($err, '', '--dumpfile stderr');
+like(
+    $out,
+    qr{<DEVICEID>esx-test\.teclib\.local-\d+-\d+-\d+-\d+-\d+-\d+</DEVICEID>},
+    '--dumpfile stdout'
+);
+
+($out, $err, $rc) = run_executable('glpi-esx', '--json --dumpfile resources/esx/esx-4.1.0-1-hostfullinfo.dump.gz');
+ok($rc == 0, '--json --dumpfile exit status');
+is($err, '', '--json --dumpfile stderr');
+like(
+    $out,
+    qr{"deviceid": "esx-test\.teclib\.local-\d+-\d+-\d+-\d+-\d+-\d+",},
+    '--json --dumpfile stdout'
 );

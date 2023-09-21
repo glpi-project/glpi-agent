@@ -10,9 +10,12 @@ use English qw(-no_match_vars) ;
 use Getopt::Long;
 use Pod::Usage;
 use UNIVERSAL::require;
+use File::Temp;
 
 use GLPI::Agent::Task::ESX;
 use GLPI::Agent::Logger;
+use GLPI::Agent::Config;
+use GLPI::Agent::Target::Local;
 use GLPI::Agent::Version;
 
 my $options = {
@@ -28,6 +31,7 @@ GetOptions(
     'path=s',
     'stdout',
     'tag=s',
+    'debug+',
     'help',
     'version',
     'dump',
@@ -46,12 +50,25 @@ if ($options->{version}) {
     exit 0;
 }
 
+my $config = GLPI::Agent::Config->new(
+    options => { map { $_ => $options->{$_} } qw{debug tag json} }
+);
+
+my $logger = GLPI::Agent::Logger->new(config => $config);
+
 my $esx = GLPI::Agent::Task::ESX->new(
-    target => {},
+    logger => $logger,
+    config => $config,
+    target => GLPI::Agent::Target::Local->new(
+        logger     => $logger,
+        path       => $options->{path},
+        json       => $config->{json},
+        basevardir => File::Temp->newdir(CLEANUP => 1),
+    ),
 );
 
 inventory_from_dump($options->{dumpfile})
-    if ($options->{dumpfile});
+    if $options->{dumpfile};
 
 $options->{path} = '-' if $options->{stdout};
 $options->{path} = $options->{directory} unless $options->{path};
@@ -74,13 +91,15 @@ if (!$esx->connect(
     die "Connection failure: ".$esx->lastError()."\n";
 }
 
-my $hasError = 0;
-my $hostIds = $esx->getHostIds();
-foreach my $hostId (@$hostIds) {
+$esx->serverInventory($options->{path}, $options->{dump} ? \&dump_from_hostfullinfo : undef);
 
-    my $file = write_inventory($hostId);
+exit($esx->lastError ? 1 : 0);
 
-    next unless ($options->{dump});
+sub dump_from_hostfullinfo {
+    my ($hostId, $file) = @_
+        or return;
+
+    return unless $esx;
 
     my $host = $esx->{vpbs}->getHostFullInfo($hostId);
     my $dumper = Data::Dumper->new([$host],["host"]);
@@ -93,29 +112,11 @@ foreach my $hostId (@$hostIds) {
     if (open my $handle, '>', $file) {
         print $handle $dumper->Dump();
         close $handle;
-        print("ESX Host full info dump saved in $file\n");
+        print "ESX Host full info dump saved in $file\n";
     } else {
-        $hasError = 1;
-        print("Can't write to $file: $ERRNO\n");
+        $esx->lastError("Can't save host full info dump");
+        print STDERR "Can't write to $file: $ERRNO\n" ;
     }
-}
-exit($hasError);
-
-sub write_inventory {
-    my ($hostId, $file) = @_;
-
-    my $inventory = $esx->createInventory($hostId, $options->{tag});
-    $inventory->setFormat($options->{json} ? "json" : "xml");
-
-    $file = $inventory->save($options->{path}) unless $file;
-    if ($file) {
-        print STDERR "Inventory ".($file eq '-' ? "dumped\n" : "saved in $file\n");
-    } else {
-        $hasError = 1;
-        print STDERR "Can't write to $file: $ERRNO\n";
-    }
-
-    return $file;
 }
 
 sub inventory_from_dump {
@@ -123,27 +124,44 @@ sub inventory_from_dump {
 
     my $format = $options->{json} ? 'json' : 'xml';
 
-    $file =~ s/\-hostfullinfo.dump$/.$format/;
+    $file =~ s/\-hostfullinfo.dump(.gz)?$/.$format/;
 
-    die "dumpfile must be a *-hostfullinfo.dump file\n"
+    die "dumpfile must be a *-hostfullinfo.dump or *-hostfullinfo.dump.gz file\n"
         if $file eq $options->{dumpfile};
 
     our $host ;
 
-    do $options->{dumpfile}
-        or die "Can't load $options->{dumpfile}: $!\n";
+    my $fh;
+
+    # Support gzip compressed hostfullinfo.dump
+    my $mode = $options->{dumpfile} =~ /\.gz$/ ? "-|" : "<";
+    my $expr = $options->{dumpfile} =~ /\.gz$/ ? "gunzip -c $options->{dumpfile}" : $options->{dumpfile};
+    open $fh, $mode, $expr
+        or die "Can't open $options->{dumpfile}: $!\n";
+    my $dump = join("", <$fh>);
+    close($fh);
+
+    {
+        ## no critic (ProhibitStringyEval)
+        local ${^MAX_NESTED_EVAL_BEGIN_BLOCKS} = 0;
+        eval($dump)
+            or die "Can't load $options->{dumpfile}: $!\n";
+    }
 
     die "Can't load host full infos from $options->{dumpfile}\n"
         unless $host;
 
     $esx->{vpbs} = GLPI::Agent::Task::ESX::Dump->new($host);
 
-    write_inventory(undef, $file);
+    $esx->serverInventory($options->{path} // $file);
 
     exit 0;
 }
 
-package GLPI::Agent::Task::ESX::Dump;
+package
+    GLPI::Agent::Task::ESX::Dump;
+
+use parent qw(GLPI::Agent::SOAP::VMware::Host);
 
 sub new {
     my ($class, $fullinfo) = @_;
@@ -153,6 +171,11 @@ sub new {
 sub getHostFullInfo {
     my ($self) = @_;
     return $self->{_fullinfo};
+}
+
+sub getHostIds {
+    my ($self) = @_;
+    return [ $self->getHostname() ];
 }
 
 __END__
@@ -167,6 +190,7 @@ glpi-esx --host <host> --user <user> --password <password> --path <directory or 
 
   Options:
     --help                 this menu
+    --debug                debug mode (false)
     --host hostname        ESX server hostname
     --user username        user name
     --password xxxx        user password

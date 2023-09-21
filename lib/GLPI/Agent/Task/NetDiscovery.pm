@@ -365,6 +365,9 @@ sub run {
             if ($result && $result->{IP}) {
                 $result->{ENTITY} = $range->{entity} if defined($range->{entity});
 
+                # Keep private attributs from the result
+                my $esxscan = delete $result->{_esxscan};
+
                 my $authsnmp = $result->{AUTHSNMP};
                 # AUTHREMOTE can be set in results but is not actually supported by GLPI
                 my $authremote = delete $result->{AUTHREMOTE};
@@ -388,55 +391,59 @@ sub run {
                 $self->_sendResultMessage($result, $jobid);
 
                 # Eventually chain with netinventory when requested
-                if ($authsnmp && $job->netscan) {
-                    my $credentials = [
-                        grep { $_->{ID} eq $authsnmp } @{$jobaddress->{snmp_credentials}}
-                    ];
-                    GLPI::Agent::Task::NetInventory->require();
-                    my $inventory = GLPI::Agent::Task::NetInventory->new(
-                        map { $_ => $self->{$_} } qw(config datadir target deviceid logger agentid)
-                    );
+                if ($job->netscan) {
+                    my $timeout = 15;
+                    if ($authsnmp) {
+                        my $credentials = [
+                            grep { $_->{ID} eq $authsnmp } @{$jobaddress->{snmp_credentials}}
+                        ];
 
-                    GLPI::Agent::Task::NetInventory::Job->require();
-                    my $timeout = $job->timeout >= 15 ? $job->timeout : 15;
-                    $inventory->{jobs} = [
-                        GLPI::Agent::Task::NetInventory::Job->new(
-                            params => {
-                                PID           => $jobid,
-                                THREADS_QUERY => 1,
-                                TIMEOUT       => $timeout,
-                                NO_START_STOP => 1
-                            },
-                            devices => [
-                                {
-                                    ID          => 0,
-                                    IP          => $blockip,
-                                    PORT        => $result->{AUTHPORT}     // '',
-                                    PROTOCOL    => $result->{AUTHPROTOCOL} // '',
-                                    AUTHSNMP_ID => $authsnmp
-                                }
-                            ],
-                            credentials => $credentials,
-                        )
-                    ];
+                        GLPI::Agent::Task::NetInventory->require();
+                        my $inventory = GLPI::Agent::Task::NetInventory->new(
+                            map { $_ => $self->{$_} } qw(config datadir target deviceid logger agentid)
+                        );
 
-                    $inventory->{client} = $self->{client};
-                    $inventory->run();
+                        GLPI::Agent::Task::NetInventory::Job->require();
+                        $timeout = $job->timeout >= 15 ? $job->timeout : 15;
+                        $inventory->{jobs} = [
+                            GLPI::Agent::Task::NetInventory::Job->new(
+                                params => {
+                                    PID           => $jobid,
+                                    THREADS_QUERY => 1,
+                                    TIMEOUT       => $timeout,
+                                    NO_START_STOP => 1
+                                },
+                                devices => [
+                                    {
+                                        ID          => 0,
+                                        IP          => $blockip,
+                                        PORT        => $result->{AUTHPORT}     // '',
+                                        PROTOCOL    => $result->{AUTHPROTOCOL} // '',
+                                        AUTHSNMP_ID => $authsnmp
+                                    }
+                                ],
+                                credentials => $credentials,
+                            )
+                        ];
+
+                        $inventory->{client} = $self->{client};
+                        $inventory->run();
+
+                    } elsif ($authremote) {
+                        my $credentials = [
+                            grep { $_->{ID} eq $authremote } @{$jobaddress->{remote_credentials}}
+                        ];
+                        if ($credentials->{TYPE} eq 'esx') {
+                            # As we still have run the connection part in _scanAddressByRemote(), we reuse the connected object
+                            $esxscan->serverInventory();
+                        } else {
+                            GLPI::Agent::Task::RemoteInventory->require();
+                            # TODO Support RemoteInventory task run
+                        }
+                    }
 
                     # Finish with return code to update task expiration
                     $manager->finish(1, { timeout => $timeout });
-
-                } elsif ($authremote && $job->netscan) {
-                    my $credentials = [
-                        grep { $_->{ID} eq $authremote } @{$jobaddress->{remote_credentials}}
-                    ];
-                    if ($credentials->{TYPE} eq 'esx') {
-                        GLPI::Agent::Task::ESX->require();
-                        # TODO Support ESX task run
-                    } else {
-                        GLPI::Agent::Task::RemoteInventory->require();
-                        # TODO Support RemoteInventory task run
-                    }
                 }
             }
 
@@ -871,6 +878,7 @@ sub _scanAddressByRemote {
                 user     => $credential->{USERNAME},
                 password => $credential->{PASSWORD}
             )) {
+                $device{_esxscan} = $esxscan;
                 $found++;
             } else {
                 $error = $esxscan->lastError();
@@ -880,8 +888,8 @@ sub _scanAddressByRemote {
                 );
                 $error = $errors{$error} if $errors{$error};
 
-                # Anyway set COMPUTER type as we got an answer
-                $device{TYPE} = 'COMPUTER';
+                # Anyway set COMPUTER type if we got an answer
+                $device{TYPE} = 'COMPUTER' if $error;
             }
 
             # no result means either no host, no response, or invalid credentials
@@ -896,7 +904,7 @@ sub _scanAddressByRemote {
 
             GLPI::Agent::Task::RemoteInventory->require();
 
-            my $scan = GLPI::Agent::Task::RemoteInventory->new(%params);
+            #~ my $scan = GLPI::Agent::Task::RemoteInventory->new(%params);
 
             # no result means either no host, no response, or invalid credentials
             $self->{logger}->debug(

@@ -8,6 +8,7 @@ use lib 't/lib';
 use English qw(-no_match_vars);
 use File::Temp qw(tempdir);
 use LWP::UserAgent;
+use UNIVERSAL::require;
 
 use Test::More;
 use Test::Deep;
@@ -114,11 +115,23 @@ foreach my $test (keys %tests) {
 
     my $inventory;
     lives_ok {
-        $inventory = $esx->createInventory(
-            deviceid => $test,
-            tag      => 'test'
-        );
+        $inventory = $esx->createInventory($test, 'test');
     } "$test: create inventory";
+
+    # We can update expected hostfullinfo dump by setting DUMP_HOSTFULLINFO environment variable
+    if ($ENV{DUMP_HOSTFULLINFO}) {
+        Data::Dumper->require();
+        $Data::Dumper::Indent = 1;
+        $Data::Dumper::Sortkeys = 1;
+        my $host = $esx->{vpbs}->getHostFullInfo($test);
+        my $dumper = Data::Dumper->new([$host],["host"]);
+        open my $handle, '>', $resource."-hostfullinfo.dump"
+            or die "Can't write $test hostfullinfo dump: $!\n";
+        print $handle $dumper->Dump();
+        close $handle;
+        $Data::Dumper::Indent = 2;
+        $Data::Dumper::Sortkeys = 0;
+    }
 
     lives_ok {
         $inventory->setFormat('json');
