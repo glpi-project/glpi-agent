@@ -8,6 +8,8 @@ core:
   this fixes IPC support on win32
 * fix #438: Also load XML::LibXML as late as possible to avoid multi-threading issues on win32
 * Make http server supports CORS protocol for /now requests
+* Update getCanonicalSize() to recognize kibibyte, mebibyte, gibibyte, tebibyte
+  pebibyte and exbibyte units
 
 inventory:
 * Fix inventory failure due to Oracle database inventory on win32
@@ -25,6 +27,7 @@ inventory:
 * fix #479: Fix monitor inventory when PNPDeviceID contains an underscore on win32
 * fix #476: Support to retrieve last logged user UPN from authentication cache on win32
   to ease computers ans users linking in GLPI when using Azure AD
+* fix #488: Fix memory & cpu supports for LXD virtualization
 
 netdiscovery/netinventory:
 * Enhanced Aruba IAP models support

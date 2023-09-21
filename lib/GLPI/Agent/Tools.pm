@@ -314,7 +314,15 @@ sub getCanonicalSize {
         $value =~ s/,/\./;
     }
 
+    # check unit for i char in it to reset unit & base accordingly
+    if ($unit =~ /^([eptgmk])ib$/) {
+        $unit = $1."b";
+        $base = 1024;
+    }
+
     return
+        $unit eq 'eb'    ? $value * $base * $base * $base * $base :
+        $unit eq 'pb'    ? $value * $base * $base * $base :
         $unit eq 'tb'    ? $value * $base * $base        :
         $unit eq 'gb'    ? $value * $base                :
         $unit eq 'mb'    ? $value                        :
