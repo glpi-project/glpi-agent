@@ -43,6 +43,9 @@ my @distributions = (
     # rocky-release contains something like "Rocky Linux release 8.5 (Green Obsidian)
     [ '/etc/rocky-release',     'Rocky Linux',                'release ([\d.]+)', '%s',                     'RpmDistro' ],
 
+    # almalinux-release contains something like "AlmaLinux release 9.2 (Turquoise Kodkod)"
+    [ '/etc/almalinux-release',    'AlmaLinux',                     'release ([\d.]+)', '%s',                     'RpmDistro' ],
+
     # centos-release contains something like "CentOS Linux release 6.0 (Final)
     [ '/etc/centos-release',    'CentOS',                     'release ([\d.]+)', '%s',                     'RpmDistro' ],
 
