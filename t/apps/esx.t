@@ -38,20 +38,25 @@ like(
     '--version stdout'
 );
 
-($out, $err, $rc) = run_executable('glpi-esx', '--dumpfile resources/esx/esx-4.1.0-1-hostfullinfo.dump.gz');
-ok($rc == 0, '--dumpfile exit status');
-is($err, '', '--dumpfile stderr');
-like(
-    $out,
-    qr{<DEVICEID>esx-test\.teclib\.local-\d+-\d+-\d+-\d+-\d+-\d+</DEVICEID>},
-    '--dumpfile stdout'
-);
+SKIP: {
+    skip "No gunzip command on win32", 6
+            if $OSNAME eq "MSWin32";
 
-($out, $err, $rc) = run_executable('glpi-esx', '--json --dumpfile resources/esx/esx-4.1.0-1-hostfullinfo.dump.gz');
-ok($rc == 0, '--json --dumpfile exit status');
-is($err, '', '--json --dumpfile stderr');
-like(
-    $out,
-    qr{"deviceid": "esx-test\.teclib\.local-\d+-\d+-\d+-\d+-\d+-\d+",},
-    '--json --dumpfile stdout'
-);
+    ($out, $err, $rc) = run_executable('glpi-esx', '--dumpfile resources/esx/esx-4.1.0-1-hostfullinfo.dump.gz');
+    ok($rc == 0, '--dumpfile exit status');
+    is($err, '', '--dumpfile stderr');
+    like(
+        $out,
+        qr{<DEVICEID>esx-test\.teclib\.local-\d+-\d+-\d+-\d+-\d+-\d+</DEVICEID>},
+        '--dumpfile stdout'
+    );
+
+    ($out, $err, $rc) = run_executable('glpi-esx', '--json --dumpfile resources/esx/esx-4.1.0-1-hostfullinfo.dump.gz');
+    ok($rc == 0, '--json --dumpfile exit status');
+    is($err, '', '--json --dumpfile stderr');
+    like(
+        $out,
+        qr{"deviceid": "esx-test\.teclib\.local-\d+-\d+-\d+-\d+-\d+-\d+",},
+        '--json --dumpfile stdout'
+    );
+}
