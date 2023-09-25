@@ -21,6 +21,7 @@
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
     <Property Id="INSTALLLEVEL" Value="3" />
 
+    <!-- CONFIG can be used to reset config if set to "reset", forgetting any registry found value -->
     <SetProperty Id="CMDLINE_CONFIG" Before="AppSearch" Value="[CONFIG]" />
 
     <!-- Properties used by a radio button needs to have a value otherwise an error is rised during MSI build -->
