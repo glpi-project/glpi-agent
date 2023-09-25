@@ -21,6 +21,8 @@
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
     <Property Id="INSTALLLEVEL" Value="3" />
 
+    <SetProperty Id="CMDLINE_CONFIG" Before="AppSearch" Value="[CONFIG]" />
+
     <!-- Properties used by a radio button needs to have a value otherwise an error is rised during MSI build -->
     <Property Id="_EXECMODE_RADIO_BUTTON" Value="1" Secure="yes" />
 
@@ -32,316 +34,317 @@
       <RegistrySearch Id="QuickInstall" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="QuickInstall" Type="raw" />
     </Property>
     <SetProperty Id="CMDLINE_QUICKINSTALL" Before="AppSearch" Value="[QUICKINSTALL]" />
-    <SetProperty Id="QUICKINSTALL"         After="AppSearch"  Value="[CMDLINE_QUICKINSTALL]"><![CDATA[CMDLINE_QUICKINSTALL<>""]]></SetProperty>
+    <SetProperty Id="QUICKINSTALL"         After="AppSearch"  Value="[CMDLINE_QUICKINSTALL]"><![CDATA[CMDLINE_QUICKINSTALL<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="RUNNOW" Secure="yes">
       <RegistrySearch Id="RunNow" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="RunNow" Type="raw" />
     </Property>
     <SetProperty Id="CMDLINE_RUNNOW" Before="AppSearch" Value="[RUNNOW]" />
-    <SetProperty Id="RUNNOW"         After="AppSearch"  Value="[CMDLINE_RUNNOW]"><![CDATA[CMDLINE_RUNNOW<>""]]></SetProperty>
+    <SetProperty Id="RUNNOW"         After="AppSearch"  Value="[CMDLINE_RUNNOW]"><![CDATA[CMDLINE_RUNNOW<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="EXECMODE" Secure="yes">
       <RegistrySearch Id="ExecMode" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="ExecMode" Type="raw" />
     </Property>
     <SetProperty Id="CMDLINE_EXECMODE" Before="AppSearch" Value="[EXECMODE]" />
-    <SetProperty Id="EXECMODE"         After="AppSearch"  Value="[CMDLINE_EXECMODE]"><![CDATA[CMDLINE_EXECMODE<>""]]></SetProperty>
+    <SetProperty Id="EXECMODE"         After="AppSearch"  Value="[CMDLINE_EXECMODE]"><![CDATA[CMDLINE_EXECMODE<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="AGENTMONITOR" Secure="yes">
       <RegistrySearch Id="AgentMonitor" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="AgentMonitor" Type="raw" />
     </Property>
     <SetProperty Id="CMDLINE_AGENTMONITOR" Before="AppSearch" Value="[AGENTMONITOR]" />
-    <SetProperty Id="AGENTMONITOR"         After="AppSearch"  Value="[CMDLINE_AGENTMONITOR]"><![CDATA[CMDLINE_AGENTMONITOR<>""]]></SetProperty>
+    <SetProperty Id="AGENTMONITOR"         After="AppSearch"  Value="[CMDLINE_AGENTMONITOR]"><![CDATA[CMDLINE_AGENTMONITOR<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="ADD_FIREWALL_EXCEPTION" Secure="yes">
       <RegistrySearch Id="AddFirewallException" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="AddFirewallException" Type="raw" />
     </Property>
     <SetProperty Id="CMDLINE_ADD_FIREWALL_EXCEPTION" Before="AppSearch" Value="[ADD_FIREWALL_EXCEPTION]" />
-    <SetProperty Id="ADD_FIREWALL_EXCEPTION"         After="AppSearch"  Value="[CMDLINE_ADD_FIREWALL_EXCEPTION]"><![CDATA[CMDLINE_ADD_FIREWALL_EXCEPTION<>""]]></SetProperty>
+    <SetProperty Id="ADD_FIREWALL_EXCEPTION"         After="AppSearch"  Value="[CMDLINE_ADD_FIREWALL_EXCEPTION]"><![CDATA[CMDLINE_ADD_FIREWALL_EXCEPTION<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="TASK_FREQUENCY" Secure="yes">
       <RegistrySearch Id="TaskFrequency" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="TaskFrequency" Type="raw" />
     </Property>
     <SetProperty Id="CMDLINE_TASK_FREQUENCY" Before="AppSearch" Value="[TASK_FREQUENCY]" />
-    <SetProperty Id="TASK_FREQUENCY"         After="AppSearch"  Value="[CMDLINE_TASK_FREQUENCY]"><![CDATA[CMDLINE_TASK_FREQUENCY<>""]]></SetProperty>
+    <SetProperty Id="TASK_FREQUENCY"         After="AppSearch"  Value="[CMDLINE_TASK_FREQUENCY]"><![CDATA[CMDLINE_TASK_FREQUENCY<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="TASK_MINUTE_MODIFIER" Secure="yes">
       <RegistrySearch Id="TaskMinuteModifier" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="TaskMinuteModifier" Type="raw" />
     </Property>
     <SetProperty Id="CMDLINE_TASK_MINUTE_MODIFIER" Before="AppSearch" Value="[TASK_MINUTE_MODIFIER]" />
-    <SetProperty Id="TASK_MINUTE_MODIFIER"         After="AppSearch"  Value="[CMDLINE_TASK_MINUTE_MODIFIER]"><![CDATA[CMDLINE_TASK_MINUTE_MODIFIER<>""]]></SetProperty>
+    <SetProperty Id="TASK_MINUTE_MODIFIER"         After="AppSearch"  Value="[CMDLINE_TASK_MINUTE_MODIFIER]"><![CDATA[CMDLINE_TASK_MINUTE_MODIFIER<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="TASK_HOURLY_MODIFIER" Secure="yes">
       <RegistrySearch Id="TaskHourlyModifier" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="TaskHourlyModifier" Type="raw" />
     </Property>
     <SetProperty Id="CMDLINE_TASK_HOURLY_MODIFIER" Before="AppSearch" Value="[TASK_HOURLY_MODIFIER]" />
-    <SetProperty Id="TASK_HOURLY_MODIFIER"         After="AppSearch"  Value="[CMDLINE_TASK_HOURLY_MODIFIER]"><![CDATA[CMDLINE_TASK_HOURLY_MODIFIER<>""]]></SetProperty>
+    <SetProperty Id="TASK_HOURLY_MODIFIER"         After="AppSearch"  Value="[CMDLINE_TASK_HOURLY_MODIFIER]"><![CDATA[CMDLINE_TASK_HOURLY_MODIFIER<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="TASK_DAILY_MODIFIER" Secure="yes">
       <RegistrySearch Id="TaskDailyModifier" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="TaskDailyModifier" Type="raw" />
     </Property>
     <SetProperty Id="CMDLINE_TASK_DAILY_MODIFIER" Before="AppSearch" Value="[TASK_DAILY_MODIFIER]" />
-    <SetProperty Id="TASK_DAILY_MODIFIER"         After="AppSearch"  Value="[CMDLINE_TASK_DAILY_MODIFIER]"><![CDATA[CMDLINE_TASK_DAILY_MODIFIER<>""]]></SetProperty>
+    <SetProperty Id="TASK_DAILY_MODIFIER"         After="AppSearch"  Value="[CMDLINE_TASK_DAILY_MODIFIER]"><![CDATA[CMDLINE_TASK_DAILY_MODIFIER<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="SERVER" Secure="yes">
       <RegistrySearch Id="Server" Root="HKLM" Key="[%agent_regpath%]" Name="server" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_SERVER"  Before="AppSearch" Value="[SERVER]" />
-    <SetProperty Id="SERVER"          After="AppSearch"  Value="[CMDLINE_SERVER]"><![CDATA[CMDLINE_SERVER<>""]]></SetProperty>
+    <SetProperty Id="SERVER"          After="AppSearch"  Value="[CMDLINE_SERVER]"><![CDATA[CMDLINE_SERVER<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="LOCAL" Secure="yes">
       <RegistrySearch Id="Local" Root="HKLM" Key="[%agent_regpath%]" Name="local" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_LOCAL"   Before="AppSearch" Value="[LOCAL]" />
-    <SetProperty Id="LOCAL"           After="AppSearch"  Value="[CMDLINE_LOCAL]"><![CDATA[CMDLINE_LOCAL<>""]]></SetProperty>
+    <SetProperty Id="LOCAL"           After="AppSearch"  Value="[CMDLINE_LOCAL]"><![CDATA[CMDLINE_LOCAL<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="ADDITIONAL_CONTENT" Secure="yes">
       <RegistrySearch Id="AdditionalContent" Root="HKLM" Key="[%agent_regpath%]" Name="additional-content" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_ADDITIONAL_CONTENT"   Before="AppSearch" Value="[ADDITIONAL_CONTENT]" />
-    <SetProperty Id="ADDITIONAL_CONTENT"           After="AppSearch"  Value="[CMDLINE_ADDITIONAL_CONTENT]"><![CDATA[CMDLINE_ADDITIONAL_CONTENT<>""]]></SetProperty>
+    <SetProperty Id="ADDITIONAL_CONTENT"           After="AppSearch"  Value="[CMDLINE_ADDITIONAL_CONTENT]"><![CDATA[CMDLINE_ADDITIONAL_CONTENT<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="DEBUG" Secure="yes">
       <RegistrySearch Id="Debug" Root="HKLM" Key="[%agent_regpath%]" Name="debug" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_DEBUG"   Before="AppSearch" Value="[DEBUG]" />
-    <SetProperty Id="DEBUG"           After="AppSearch"  Value="[CMDLINE_DEBUG]"><![CDATA[CMDLINE_DEBUG<>""]]></SetProperty>
+    <SetProperty Id="DEBUG"           After="AppSearch"  Value="[CMDLINE_DEBUG]"><![CDATA[CMDLINE_DEBUG<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="LOGGER" Secure="yes">
       <RegistrySearch Id="Logger" Root="HKLM" Key="[%agent_regpath%]" Name="logger" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_LOGGER" Before="AppSearch" Value="[LOGGER]" />
-    <SetProperty Id="LOGGER"         After="AppSearch"  Value="[CMDLINE_LOGGER]"><![CDATA[CMDLINE_LOGGER<>""]]></SetProperty>
+    <SetProperty Id="LOGGER"         After="AppSearch"  Value="[CMDLINE_LOGGER]"><![CDATA[CMDLINE_LOGGER<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="LOGFILE" Secure="yes">
       <RegistrySearch Id="LogFile" Root="HKLM" Key="[%agent_regpath%]" Name="logfile" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_LOGFILE" Before="AppSearch" Value="[LOGFILE]" />
-    <SetProperty Id="LOGFILE"         After="AppSearch"  Value="[CMDLINE_LOGFILE]"><![CDATA[CMDLINE_LOGFILE<>""]]></SetProperty>
+    <SetProperty Id="LOGFILE"         After="AppSearch"  Value="[CMDLINE_LOGFILE]"><![CDATA[CMDLINE_LOGFILE<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="LOGFILE_MAXSIZE" Secure="yes">
       <RegistrySearch Id="LogFileMaxSize" Root="HKLM" Key="[%agent_regpath%]" Name="logfile-maxsize" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_LOGFILE_MAXSIZE" Before="AppSearch" Value="[LOGFILE_MAXSIZE]" />
-    <SetProperty Id="LOGFILE_MAXSIZE"         After="AppSearch"  Value="[CMDLINE_LOGFILE_MAXSIZE]"><![CDATA[CMDLINE_LOGFILE_MAXSIZE<>""]]></SetProperty>
+    <SetProperty Id="LOGFILE_MAXSIZE"         After="AppSearch"  Value="[CMDLINE_LOGFILE_MAXSIZE]"><![CDATA[CMDLINE_LOGFILE_MAXSIZE<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="NO_HTTPD" Secure="yes">
       <RegistrySearch Id="NoHTTPd" Root="HKLM" Key="[%agent_regpath%]" Name="no-httpd" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_NO_HTTPD" Before="AppSearch" Value="[NO_HTTPD]" />
-    <SetProperty Id="NO_HTTPD"         After="AppSearch"  Value="[CMDLINE_NO_HTTPD]"><![CDATA[CMDLINE_NO_HTTPD<>""]]></SetProperty>
+    <SetProperty Id="NO_HTTPD"         After="AppSearch"  Value="[CMDLINE_NO_HTTPD]"><![CDATA[CMDLINE_NO_HTTPD<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="HTTPD_IP" Secure="yes">
       <RegistrySearch Id="Httpd_IP" Root="HKLM" Key="[%agent_regpath%]" Name="httpd-ip" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_HTTPD_IP" Before="AppSearch" Value="[HTTPD_IP]" />
-    <SetProperty Id="HTTPD_IP"         After="AppSearch"  Value="[CMDLINE_HTTPD_IP]"><![CDATA[CMDLINE_HTTPD_IP<>""]]></SetProperty>
+    <SetProperty Id="HTTPD_IP"         After="AppSearch"  Value="[CMDLINE_HTTPD_IP]"><![CDATA[CMDLINE_HTTPD_IP<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="HTTPD_PORT" Secure="yes">
       <RegistrySearch Id="Httpd_Port" Root="HKLM" Key="[%agent_regpath%]" Name="httpd-port" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_HTTPD_PORT" Before="AppSearch" Value="[HTTPD_PORT]" />
-    <SetProperty Id="HTTPD_PORT"         After="AppSearch"  Value="[CMDLINE_HTTPD_PORT]"><![CDATA[CMDLINE_HTTPD_PORT<>""]]></SetProperty>
+    <SetProperty Id="HTTPD_PORT"         After="AppSearch"  Value="[CMDLINE_HTTPD_PORT]"><![CDATA[CMDLINE_HTTPD_PORT<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="HTTPD_TRUST" Secure="yes">
       <RegistrySearch Id="Httpd_Trust" Root="HKLM" Key="[%agent_regpath%]" Name="httpd-trust" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_HTTPD_TRUST" Before="AppSearch" Value="[HTTPD_TRUST]" />
-    <SetProperty Id="HTTPD_TRUST"         After="AppSearch"  Value="[CMDLINE_HTTPD_TRUST]"><![CDATA[CMDLINE_HTTPD_TRUST<>""]]></SetProperty>
+    <SetProperty Id="HTTPD_TRUST"         After="AppSearch"  Value="[CMDLINE_HTTPD_TRUST]"><![CDATA[CMDLINE_HTTPD_TRUST<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="TAG" Secure="yes">
       <RegistrySearch Id="Tag" Root="HKLM" Key="[%agent_regpath%]" Name="tag" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_TAG" Before="AppSearch" Value="[TAG]" />
-    <SetProperty Id="TAG"         After="AppSearch"  Value="[CMDLINE_TAG]"><![CDATA[CMDLINE_TAG<>""]]></SetProperty>
+    <SetProperty Id="TAG"         After="AppSearch"  Value="[CMDLINE_TAG]"><![CDATA[CMDLINE_TAG<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="SCAN_HOMEDIRS" Secure="yes">
       <RegistrySearch Id="ScanHomedirs" Root="HKLM" Key="[%agent_regpath%]" Name="scan-homedirs" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_SCAN_HOMEDIRS" Before="AppSearch" Value="[SCAN_HOMEDIRS]" />
-    <SetProperty Id="SCAN_HOMEDIRS"         After="AppSearch"  Value="[CMDLINE_SCAN_HOMEDIRS]"><![CDATA[CMDLINE_SCAN_HOMEDIRS<>""]]></SetProperty>
+    <SetProperty Id="SCAN_HOMEDIRS"         After="AppSearch"  Value="[CMDLINE_SCAN_HOMEDIRS]"><![CDATA[CMDLINE_SCAN_HOMEDIRS<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="SCAN_PROFILES" Secure="yes">
       <RegistrySearch Id="ScanProfiles" Root="HKLM" Key="[%agent_regpath%]" Name="scan-profiles" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_SCAN_PROFILES" Before="AppSearch" Value="[SCAN_PROFILES]" />
-    <SetProperty Id="SCAN_PROFILES"         After="AppSearch"  Value="[CMDLINE_SCAN_PROFILES]"><![CDATA[CMDLINE_SCAN_PROFILES<>""]]></SetProperty>
+    <SetProperty Id="SCAN_PROFILES"         After="AppSearch"  Value="[CMDLINE_SCAN_PROFILES]"><![CDATA[CMDLINE_SCAN_PROFILES<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="TIMEOUT" Secure="yes">
       <RegistrySearch Id="TimeOut" Root="HKLM" Key="[%agent_regpath%]" Name="timeout" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_TIMEOUT" Before="AppSearch" Value="[TIMEOUT]" />
-    <SetProperty Id="TIMEOUT"         After="AppSearch"  Value="[CMDLINE_TIMEOUT]"><![CDATA[CMDLINE_TIMEOUT<>""]]></SetProperty>
+    <SetProperty Id="TIMEOUT"         After="AppSearch"  Value="[CMDLINE_TIMEOUT]"><![CDATA[CMDLINE_TIMEOUT<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="DELAYTIME" Secure="yes">
       <RegistrySearch Id="DelayTime" Root="HKLM" Key="[%agent_regpath%]" Name="delaytime" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_DELAYTIME" Before="AppSearch" Value="[DELAYTIME]" />
-    <SetProperty Id="DELAYTIME"         After="AppSearch"  Value="[CMDLINE_DELAYTIME]"><![CDATA[CMDLINE_DELAYTIME<>""]]></SetProperty>
+    <SetProperty Id="DELAYTIME"         After="AppSearch"  Value="[CMDLINE_DELAYTIME]"><![CDATA[CMDLINE_DELAYTIME<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="BACKEND_COLLECT_TIMEOUT" Secure="yes">
       <RegistrySearch Id="BackendCollectTimeout" Root="HKLM" Key="[%agent_regpath%]" Name="backend-collect-timeout" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_BACKEND_COLLECT_TIMEOUT" Before="AppSearch" Value="[BACKEND_COLLECT_TIMEOUT]" />
-    <SetProperty Id="BACKEND_COLLECT_TIMEOUT"         After="AppSearch"  Value="[CMDLINE_BACKEND_COLLECT_TIMEOUT]"><![CDATA[CMDLINE_BACKEND_COLLECT_TIMEOUT<>""]]></SetProperty>
+    <SetProperty Id="BACKEND_COLLECT_TIMEOUT"         After="AppSearch"  Value="[CMDLINE_BACKEND_COLLECT_TIMEOUT]"><![CDATA[CMDLINE_BACKEND_COLLECT_TIMEOUT<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="NO_P2P" Secure="yes">
       <RegistrySearch Id="NoP2p" Root="HKLM" Key="[%agent_regpath%]" Name="no-p2p" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_NO_P2P" Before="AppSearch" Value="[NO_P2P]" />
-    <SetProperty Id="NO_P2P"         After="AppSearch"  Value="[CMDLINE_NO_P2P]"><![CDATA[CMDLINE_NO_P2P<>""]]></SetProperty>
+    <SetProperty Id="NO_P2P"         After="AppSearch"  Value="[CMDLINE_NO_P2P]"><![CDATA[CMDLINE_NO_P2P<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="TASKS" Secure="yes">
       <RegistrySearch Id="Tasks" Root="HKLM" Key="[%agent_regpath%]" Name="tasks" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_TASKS" Before="AppSearch" Value="[TASKS]" />
-    <SetProperty Id="TASKS"         After="AppSearch"  Value="[CMDLINE_TASKS]"><![CDATA[CMDLINE_TASKS<>""]]></SetProperty>
+    <SetProperty Id="TASKS"         After="AppSearch"  Value="[CMDLINE_TASKS]"><![CDATA[CMDLINE_TASKS<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="NO_TASK" Secure="yes">
       <RegistrySearch Id="NoTask" Root="HKLM" Key="[%agent_regpath%]" Name="no-task" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_NO_TASK" Before="AppSearch" Value="[NO_TASK]" />
-    <SetProperty Id="NO_TASK"         After="AppSearch"  Value="[CMDLINE_NO_TASK]"><![CDATA[CMDLINE_NO_TASK<>""]]></SetProperty>
+    <SetProperty Id="NO_TASK"         After="AppSearch"  Value="[CMDLINE_NO_TASK]"><![CDATA[CMDLINE_NO_TASK<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="NO_CATEGORY" Secure="yes">
       <RegistrySearch Id="NoCategory" Root="HKLM" Key="[%agent_regpath%]" Name="no-category" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_NO_CATEGORY" Before="AppSearch" Value="[NO_CATEGORY]" />
-    <SetProperty Id="NO_CATEGORY"         After="AppSearch"  Value="[CMDLINE_NO_CATEGORY]"><![CDATA[CMDLINE_NO_CATEGORY<>""]]></SetProperty>
+    <SetProperty Id="NO_CATEGORY"         After="AppSearch"  Value="[CMDLINE_NO_CATEGORY]"><![CDATA[CMDLINE_NO_CATEGORY<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="CA_CERT_DIR" Secure="yes">
       <RegistrySearch Id="CACertDir" Root="HKLM" Key="[%agent_regpath%]" Name="ca-cert-dir" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_CA_CERT_DIR" Before="AppSearch" Value="[CA_CERT_DIR]" />
-    <SetProperty Id="CA_CERT_DIR"         After="AppSearch"  Value="[CMDLINE_CA_CERT_DIR]"><![CDATA[CMDLINE_CA_CERT_DIR<>""]]></SetProperty>
+    <SetProperty Id="CA_CERT_DIR"         After="AppSearch"  Value="[CMDLINE_CA_CERT_DIR]"><![CDATA[CMDLINE_CA_CERT_DIR<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="CA_CERT_FILE" Secure="yes">
       <RegistrySearch Id="CACertFile" Root="HKLM" Key="[%agent_regpath%]" Name="ca-cert-file" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_CA_CERT_FILE" Before="AppSearch" Value="[CA_CERT_FILE]" />
-    <SetProperty Id="CA_CERT_FILE"         After="AppSearch"  Value="[CMDLINE_CA_CERT_FILE]"><![CDATA[CMDLINE_CA_CERT_FILE<>""]]></SetProperty>
+    <SetProperty Id="CA_CERT_FILE"         After="AppSearch"  Value="[CMDLINE_CA_CERT_FILE]"><![CDATA[CMDLINE_CA_CERT_FILE<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="SSL_FINGERPRINT" Secure="yes">
       <RegistrySearch Id="SSLFingerPrint" Root="HKLM" Key="[%agent_regpath%]" Name="ssl-fingerprint" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_SSL_FINGERPRINT" Before="AppSearch" Value="[SSL_FINGERPRINT]" />
-    <SetProperty Id="SSL_FINGERPRINT"         After="AppSearch"  Value="[CMDLINE_SSL_FINGERPRINT]"><![CDATA[CMDLINE_SSL_FINGERPRINT<>""]]></SetProperty>
+    <SetProperty Id="SSL_FINGERPRINT"         After="AppSearch"  Value="[CMDLINE_SSL_FINGERPRINT]"><![CDATA[CMDLINE_SSL_FINGERPRINT<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="SSL_CERT_FILE" Secure="yes">
       <RegistrySearch Id="SSLCertFile" Root="HKLM" Key="[%agent_regpath%]" Name="ssl-cert-file" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_SSL_CERT_FILE" Before="AppSearch" Value="[SSL_CERT_FILE]" />
-    <SetProperty Id="SSL_CERT_FILE"         After="AppSearch"  Value="[CMDLINE_SSL_CERT_FILE]"><![CDATA[CMDLINE_SSL_CERT_FILE<>""]]></SetProperty>
+    <SetProperty Id="SSL_CERT_FILE"         After="AppSearch"  Value="[CMDLINE_SSL_CERT_FILE]"><![CDATA[CMDLINE_SSL_CERT_FILE<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="NO_COMPRESSION" Secure="yes">
       <RegistrySearch Id="NoCompression" Root="HKLM" Key="[%agent_regpath%]" Name="no-compression" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_NO_COMPRESSION" Before="AppSearch" Value="[NO_COMPRESSION]" />
-    <SetProperty Id="NO_COMPRESSION"         After="AppSearch"  Value="[CMDLINE_NO_COMPRESSION]"><![CDATA[CMDLINE_NO_COMPRESSION<>""]]></SetProperty>
+    <SetProperty Id="NO_COMPRESSION"         After="AppSearch"  Value="[CMDLINE_NO_COMPRESSION]"><![CDATA[CMDLINE_NO_COMPRESSION<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="PROXY" Secure="yes">
       <RegistrySearch Id="Proxy" Root="HKLM" Key="[%agent_regpath%]" Name="proxy" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_PROXY" Before="AppSearch" Value="[PROXY]" />
-    <SetProperty Id="PROXY"         After="AppSearch"  Value="[CMDLINE_PROXY]"><![CDATA[CMDLINE_PROXY<>""]]></SetProperty>
+    <SetProperty Id="PROXY"         After="AppSearch"  Value="[CMDLINE_PROXY]"><![CDATA[CMDLINE_PROXY<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="PASSWORD" Secure="yes">
       <RegistrySearch Id="Password" Root="HKLM" Key="[%agent_regpath%]" Name="password" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_PASSWORD" Before="AppSearch" Value="[PASSWORD]" />
-    <SetProperty Id="PASSWORD"         After="AppSearch"  Value="[CMDLINE_PASSWORD]"><![CDATA[CMDLINE_PASSWORD<>""]]></SetProperty>
+    <SetProperty Id="PASSWORD"         After="AppSearch"  Value="[CMDLINE_PASSWORD]"><![CDATA[CMDLINE_PASSWORD<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="USER" Secure="yes">
       <RegistrySearch Id="User" Root="HKLM" Key="[%agent_regpath%]" Name="user" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_USER" Before="AppSearch" Value="[USER]" />
-    <SetProperty Id="USER"         After="AppSearch"  Value="[CMDLINE_USER]"><![CDATA[CMDLINE_USER<>""]]></SetProperty>
+    <SetProperty Id="USER"         After="AppSearch"  Value="[CMDLINE_USER]"><![CDATA[CMDLINE_USER<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="REMOTE" Secure="yes">
       <RegistrySearch Id="Remote" Root="HKLM" Key="[%agent_regpath%]" Name="remote" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_REMOTE" Before="AppSearch" Value="[REMOTE]" />
-    <SetProperty Id="REMOTE"         After="AppSearch"  Value="[CMDLINE_REMOTE]"><![CDATA[CMDLINE_REMOTE<>""]]></SetProperty>
+    <SetProperty Id="REMOTE"         After="AppSearch"  Value="[CMDLINE_REMOTE]"><![CDATA[CMDLINE_REMOTE<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="REMOTE_WORKERS" Secure="yes">
       <RegistrySearch Id="RemoteWorkers" Root="HKLM" Key="[%agent_regpath%]" Name="remote-workers" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_REMOTE_WORKERS" Before="AppSearch" Value="[REMOTE_WORKERS]" />
-    <SetProperty Id="REMOTE_WORKERS"         After="AppSearch"  Value="[CMDLINE_REMOTE_WORKERS]"><![CDATA[CMDLINE_REMOTE_WORKERS<>""]]></SetProperty>
+    <SetProperty Id="REMOTE_WORKERS"         After="AppSearch"  Value="[CMDLINE_REMOTE_WORKERS]"><![CDATA[CMDLINE_REMOTE_WORKERS<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="HTML" Secure="yes">
       <RegistrySearch Id="Html" Root="HKLM" Key="[%agent_regpath%]" Name="html" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_HTML" Before="AppSearch" Value="[HTML]" />
-    <SetProperty Id="HTML"         After="AppSearch"  Value="[CMDLINE_HTML]"><![CDATA[CMDLINE_HTML<>""]]></SetProperty>
+    <SetProperty Id="HTML"         After="AppSearch"  Value="[CMDLINE_HTML]"><![CDATA[CMDLINE_HTML<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="JSON" Secure="yes">
       <RegistrySearch Id="Json" Root="HKLM" Key="[%agent_regpath%]" Name="json" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_JSON" Before="AppSearch" Value="[JSON]" />
-    <SetProperty Id="JSON"         After="AppSearch"  Value="[CMDLINE_JSON]"><![CDATA[CMDLINE_JSON<>""]]></SetProperty>
+    <SetProperty Id="JSON"         After="AppSearch"  Value="[CMDLINE_JSON]"><![CDATA[CMDLINE_JSON<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="CONF_RELOAD_INTERVAL" Secure="yes">
       <RegistrySearch Id="ConfReloadInterval" Root="HKLM" Key="[%agent_regpath%]" Name="conf-reload-interval" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_CONF_RELOAD_INTERVAL" Before="AppSearch" Value="[CONF_RELOAD_INTERVAL]" />
-    <SetProperty Id="CONF_RELOAD_INTERVAL"         After="AppSearch"  Value="[CMDLINE_CONF_RELOAD_INTERVAL]"><![CDATA[CMDLINE_CONF_RELOAD_INTERVAL<>""]]></SetProperty>
+    <SetProperty Id="CONF_RELOAD_INTERVAL"         After="AppSearch"  Value="[CMDLINE_CONF_RELOAD_INTERVAL]"><![CDATA[CMDLINE_CONF_RELOAD_INTERVAL<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="NO_SSL_CHECK" Secure="yes">
       <RegistrySearch Id="NoSSLCheck" Root="HKLM" Key="[%agent_regpath%]" Name="no-ssl-check" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_NO_SSL_CHECK" Before="AppSearch" Value="[NO_SSL_CHECK]" />
-    <SetProperty Id="NO_SSL_CHECK"         After="AppSearch"  Value="[CMDLINE_NO_SSL_CHECK]"><![CDATA[CMDLINE_NO_SSL_CHECK<>""]]></SetProperty>
+    <SetProperty Id="NO_SSL_CHECK"         After="AppSearch"  Value="[CMDLINE_NO_SSL_CHECK]"><![CDATA[CMDLINE_NO_SSL_CHECK<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="LAZY" Secure="yes">
       <RegistrySearch Id="Lazy" Root="HKLM" Key="[%agent_regpath%]" Name="lazy" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_LAZY" Before="AppSearch" Value="[LAZY]" />
-    <SetProperty Id="LAZY"         After="AppSearch"  Value="[CMDLINE_LAZY]"><![CDATA[CMDLINE_LAZY<>""]]></SetProperty>
+    <SetProperty Id="LAZY"         After="AppSearch"  Value="[CMDLINE_LAZY]"><![CDATA[CMDLINE_LAZY<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="LISTEN" Secure="yes">
       <RegistrySearch Id="Listen" Root="HKLM" Key="[%agent_regpath%]" Name="listen" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_LISTEN" Before="AppSearch" Value="[LISTEN]" />
-    <SetProperty Id="LISTEN"         After="AppSearch"  Value="[CMDLINE_LISTEN]"><![CDATA[CMDLINE_LISTEN<>""]]></SetProperty>
+    <SetProperty Id="LISTEN"         After="AppSearch"  Value="[CMDLINE_LISTEN]"><![CDATA[CMDLINE_LISTEN<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="VARDIR" Secure="yes">
       <RegistrySearch Id="VarDir" Root="HKLM" Key="[%agent_regpath%]" Name="vardir" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_VARDIR" Before="AppSearch" Value="[VARDIR]" />
-    <SetProperty Id="VARDIR"         After="AppSearch"  Value="[CMDLINE_VARDIR]"><![CDATA[CMDLINE_VARDIR<>""]]></SetProperty>
+    <SetProperty Id="VARDIR"         After="AppSearch"  Value="[CMDLINE_VARDIR]"><![CDATA[CMDLINE_VARDIR<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <!-- Configuration defaults after handling command line and registry checks -->
-    <SetProperty Id="DEBUG"         Action="DEBUG_Default"         After="AppSearch"  Value="0">NOT DEBUG</SetProperty>
-    <SetProperty Id="LOGGER"        Action="LOGGER_Default"        After="AppSearch"  Value="file">NOT LOGGER</SetProperty>
-    <SetProperty Id="LOGFILE_MAXSIZE" Action="LOGFILE_MAXSIZE_Default" After="AppSearch" Value="4">NOT LOGFILE_MAXSIZE</SetProperty>
-    <SetProperty Id="NO_HTTPD"      Action="NO_HTTPD_Default"      After="AppSearch"  Value="0">NOT NO_HTTPD</SetProperty>
-    <SetProperty Id="HTTPD_IP"      Action="HTTPD_IP_Default"      After="AppSearch"  Value="0.0.0.0">NOT HTTPD_IP</SetProperty>
-    <SetProperty Id="HTTPD_PORT"    Action="HTTPD_PORT_Default"    After="AppSearch"  Value="62354">NOT HTTPD_PORT</SetProperty>
-    <SetProperty Id="HTTPD_TRUST"   Action="HTTPD_TRUST_Default"   After="AppSearch"  Value="127.0.0.1/32">NOT HTTPD_TRUST</SetProperty>
-    <SetProperty Id="SCAN_HOMEDIRS" Action="SCAN_HOMEDIRS_Default" After="AppSearch"  Value="0">NOT SCAN_HOMEDIRS</SetProperty>
-    <SetProperty Id="SCAN_PROFILES" Action="SCAN_PROFILES_Default" After="AppSearch"  Value="0">NOT SCAN_PROFILES</SetProperty>
-    <SetProperty Id="TIMEOUT"       Action="TIMEOUT_Default"       After="AppSearch"  Value="180">NOT TIMEOUT</SetProperty>
-    <SetProperty Id="DELAYTIME"     Action="DELAYTIME_Default"     After="AppSearch"  Value="3600">NOT DELAYTIME</SetProperty>
-    <SetProperty Id="NO_COMPRESSION" Action="NO_COMPRESSION_Default" After="AppSearch" Value="0">NOT NO_COMPRESSION</SetProperty>
-    <SetProperty Id="NO_P2P"        Action="NO_P2P_Default"        After="AppSearch"  Value="0">NOT NO_P2P</SetProperty>
-    <SetProperty Id="HTML"          Action="HTML_Default"          After="AppSearch"  Value="0">NOT HTML</SetProperty>
-    <SetProperty Id="JSON"          Action="JSON_Default"          After="AppSearch"  Value="0">NOT JSON</SetProperty>
-    <SetProperty Id="LAZY"          Action="LAZY_Default"          After="AppSearch"  Value="1">NOT LAZY</SetProperty>
-    <SetProperty Id="LISTEN"        Action="LISTEN_Default"        After="AppSearch"  Value="0">NOT LISTEN</SetProperty>
-    <SetProperty Id="NO_SSL_CHECK"  Action="NO_SSL_CHECK_Default"  After="AppSearch"  Value="0">NOT NO_SSL_CHECK</SetProperty>
-    <SetProperty Id="CONF_RELOAD_INTERVAL" Action="CONF_RELOAD_INTERVAL_Default" After="AppSearch" Value="0">NOT CONF_RELOAD_INTERVAL</SetProperty>
-    <SetProperty Id="BACKEND_COLLECT_TIMEOUT" Action="BACKEND_COLLECT_TIMEOUT_Default" After="AppSearch" Value="180">NOT BACKEND_COLLECT_TIMEOUT</SetProperty>
+    <SetProperty Id="DEBUG"                   Action="DEBUG_Default"                    After="SetDEBUG"                    Value="0">NOT DEBUG</SetProperty>
+    <SetProperty Id="LOGGER"                  Action="LOGGER_Default"                   After="SetLOGGER"                   Value="file">NOT LOGGER</SetProperty>
+    <SetProperty Id="LOGFILE_MAXSIZE"         Action="LOGFILE_MAXSIZE_Default"          After="SetLOGFILE_MAXSIZE"          Value="4">NOT LOGFILE_MAXSIZE</SetProperty>
+    <SetProperty Id="NO_HTTPD"                Action="NO_HTTPD_Default"                 After="SetNO_HTTPD"                 Value="0">NOT NO_HTTPD</SetProperty>
+    <SetProperty Id="HTTPD_IP"                Action="HTTPD_IP_Default"                 After="SetHTTPD_IP"                 Value="0.0.0.0">NOT HTTPD_IP</SetProperty>
+    <SetProperty Id="HTTPD_PORT"              Action="HTTPD_PORT_Default"               After="SetHTTPD_PORT"               Value="62354">NOT HTTPD_PORT</SetProperty>
+    <SetProperty Id="HTTPD_TRUST"             Action="HTTPD_TRUST_Default"              After="SetHTTPD_TRUST"              Value="127.0.0.1/32">NOT HTTPD_TRUST</SetProperty>
+    <SetProperty Id="SCAN_HOMEDIRS"           Action="SCAN_HOMEDIRS_Default"            After="SetSCAN_HOMEDIRS"            Value="0">NOT SCAN_HOMEDIRS</SetProperty>
+    <SetProperty Id="SCAN_PROFILES"           Action="SCAN_PROFILES_Default"            After="SetSCAN_PROFILES"            Value="0">NOT SCAN_PROFILES</SetProperty>
+    <SetProperty Id="TIMEOUT"                 Action="TIMEOUT_Default"                  After="SetTIMEOUT"                  Value="180">NOT TIMEOUT</SetProperty>
+    <SetProperty Id="DELAYTIME"               Action="DELAYTIME_Default"                After="SetDELAYTIME"                Value="3600">NOT DELAYTIME</SetProperty>
+    <SetProperty Id="NO_COMPRESSION"          Action="NO_COMPRESSION_Default"           After="SetNO_COMPRESSION"           Value="0">NOT NO_COMPRESSION</SetProperty>
+    <SetProperty Id="NO_P2P"                  Action="NO_P2P_Default"                   After="SetNO_P2P"                   Value="0">NOT NO_P2P</SetProperty>
+    <SetProperty Id="REMOTE_WORKERS"          Action="REMOTE_WORKERS_Default"           After="SetREMOTE_WORKERS"           Value="1">NOT REMOTE_WORKERS</SetProperty>
+    <SetProperty Id="HTML"                    Action="HTML_Default"                     After="SetHTML"                     Value="0">NOT HTML</SetProperty>
+    <SetProperty Id="JSON"                    Action="JSON_Default"                     After="SetJSON"                     Value="0">NOT JSON</SetProperty>
+    <SetProperty Id="LAZY"                    Action="LAZY_Default"                     After="SetLAZY"                     Value="1">NOT LAZY</SetProperty>
+    <SetProperty Id="LISTEN"                  Action="LISTEN_Default"                   After="SetLISTEN"                   Value="0">NOT LISTEN</SetProperty>
+    <SetProperty Id="NO_SSL_CHECK"            Action="NO_SSL_CHECK_Default"             After="SetNO_SSL_CHECK"             Value="0">NOT NO_SSL_CHECK</SetProperty>
+    <SetProperty Id="CONF_RELOAD_INTERVAL"    Action="CONF_RELOAD_INTERVAL_Default"     After="SetCONF_RELOAD_INTERVAL"     Value="0">NOT CONF_RELOAD_INTERVAL</SetProperty>
+    <SetProperty Id="BACKEND_COLLECT_TIMEOUT" Action="BACKEND_COLLECT_TIMEOUT_Default"  After="SetBACKEND_COLLECT_TIMEOUT"  Value="180">NOT BACKEND_COLLECT_TIMEOUT</SetProperty>
 
     <!-- Installer configuration defaults -->
-    <SetProperty Id="QUICKINSTALL"           Action="QUICKINSTALL_Default"           After="AppSearch" Value="1">NOT QUICKINSTALL</SetProperty>
-    <SetProperty Id="ADD_FIREWALL_EXCEPTION" Action="ADD_FIREWALL_EXCEPTION_Default" After="AppSearch" Value="1">NOT ADD_FIREWALL_EXCEPTION</SetProperty>
-    <SetProperty Id="EXECMODE"               Action="EXECMODE_Default"               After="AppSearch" Value="1">NOT EXECMODE</SetProperty>
-    <SetProperty Id="RUNNOW"                 Action="RUNNOW_Default"                 After="AppSearch" Value="0">NOT RUNNOW</SetProperty>
-    <SetProperty Id="AGENTMONITOR"           Action="AGENTMONITOR_Default"           After="AppSearch" Value="0">NOT AGENTMONITOR</SetProperty>
-    <SetProperty Id="TASK_FREQUENCY"         Action="TASK_FREQUENCY_Default"         After="AppSearch" Value="hourly">NOT TASK_FREQUENCY</SetProperty>
-    <SetProperty Id="TASK_MINUTE_MODIFIER"   Action="TASK_MINUTE_MODIFIER_Default"   After="AppSearch" Value="15">NOT TASK_MINUTE_MODIFIER</SetProperty>
-    <SetProperty Id="TASK_HOURLY_MODIFIER"   Action="TASK_HOURLY_MODIFIER_Default"   After="AppSearch" Value="1">NOT TASK_HOURLY_MODIFIER</SetProperty>
-    <SetProperty Id="TASK_DAILY_MODIFIER"    Action="TASK_DAILY_MODIFIER_Default"    After="AppSearch" Value="1">NOT TASK_DAILY_MODIFIER</SetProperty>
+    <SetProperty Id="QUICKINSTALL"            Action="QUICKINSTALL_Default"             After="SetQUICKINSTALL"             Value="1">NOT QUICKINSTALL</SetProperty>
+    <SetProperty Id="ADD_FIREWALL_EXCEPTION"  Action="ADD_FIREWALL_EXCEPTION_Default"   After="SetADD_FIREWALL_EXCEPTION"   Value="1">NOT ADD_FIREWALL_EXCEPTION</SetProperty>
+    <SetProperty Id="EXECMODE"                Action="EXECMODE_Default"                 After="SetEXECMODE"                 Value="1">NOT EXECMODE</SetProperty>
+    <SetProperty Id="RUNNOW"                  Action="RUNNOW_Default"                   After="SetRUNNOW"                   Value="0">NOT RUNNOW</SetProperty>
+    <SetProperty Id="AGENTMONITOR"            Action="AGENTMONITOR_Default"             After="SetAGENTMONITOR"             Value="0">NOT AGENTMONITOR</SetProperty>
+    <SetProperty Id="TASK_FREQUENCY"          Action="TASK_FREQUENCY_Default"           After="SetTASK_FREQUENCY"           Value="hourly">NOT TASK_FREQUENCY</SetProperty>
+    <SetProperty Id="TASK_MINUTE_MODIFIER"    Action="TASK_MINUTE_MODIFIER_Default"     After="SetTASK_MINUTE_MODIFIER"     Value="15">NOT TASK_MINUTE_MODIFIER</SetProperty>
+    <SetProperty Id="TASK_HOURLY_MODIFIER"    Action="TASK_HOURLY_MODIFIER_Default"     After="SetTASK_HOURLY_MODIFIER"     Value="1">NOT TASK_HOURLY_MODIFIER</SetProperty>
+    <SetProperty Id="TASK_DAILY_MODIFIER"     Action="TASK_DAILY_MODIFIER_Default"      After="SetTASK_DAILY_MODIFIER"      Value="1">NOT TASK_DAILY_MODIFIER</SetProperty>
 
     <!-- Fix properties handled as a checkbox, they must be undefined to uncheck the CB -->
     <SetProperty Id="QUICKINSTALL" Sequence="ui" Action="QUICKINSTALL_Unset" After="AppSearch" Value=""><![CDATA[QUICKINSTALL<>"1"]]></SetProperty>
