@@ -64,6 +64,14 @@ my %tests = (
             RESOLUTION  => '1920x1200',
         }
     ],
+    'intel-hd-graphics' => [
+        {
+            CHIPSET     => 'Intel(R) HD Graphics Family',
+            MEMORY      => 2108,
+            NAME        => 'Intel(R) HD Graphics',
+            RESOLUTION  => '1680x1050',
+        }
+    ],
 );
 
 plan tests => (2 * scalar keys %tests) + 1;

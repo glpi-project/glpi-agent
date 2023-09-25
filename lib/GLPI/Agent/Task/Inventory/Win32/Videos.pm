@@ -67,7 +67,7 @@ sub _getVideos {
             my $videokey = getRegistryKey(
                 path     => "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Control/Class/{4d36e968-e325-11ce-bfc1-08002be10318}",
                 # Important for remote inventory optimization
-                required => [ qw/HardwareInformation.MemorySize MatchingDeviceId/ ],
+                required => [ qw/HardwareInformation.MemorySize HardwareInformation.qwMemorySize MatchingDeviceId/ ],
                 maxdepth => 2,
             );
             if ($videokey) {
@@ -76,10 +76,15 @@ sub _getVideos {
                     my $thispnpdeviceid = _pnpdeviceid($videokey->{$subkey}->{"/MatchingDeviceId"})
                         or next;
                     next unless $thispnpdeviceid eq $pnpdeviceid;
-                    next unless defined($videokey->{$subkey}->{"/HardwareInformation.qwMemorySize"});
-                    my $memorysize = unpack("Q", $videokey->{$subkey}->{"/HardwareInformation.qwMemorySize"});
-                    $video->{MEMORY} = $memorysize;
-                    last;
+                    if (defined($videokey->{$subkey}->{"/HardwareInformation.qwMemorySize"})) {
+                        my $memorysize = unpack("Q", $videokey->{$subkey}->{"/HardwareInformation.qwMemorySize"});
+                        $video->{MEMORY} = $memorysize;
+                        last;
+                    } elsif (defined($videokey->{$subkey}->{"/HardwareInformation.MemorySize"})) {
+                        my $memorysize = unpack("L", $videokey->{$subkey}->{"/HardwareInformation.MemorySize"});
+                        $video->{MEMORY} = $memorysize;
+                        last;
+                    }
                 }
             }
         }
