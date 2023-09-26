@@ -70,9 +70,9 @@ sub _getID_MSWin32 {
 
     my $tree = GLPI::Agent::XML->new(string => $internetid)->dump_as_hash();
 
-    return unless defined($tree) && defined($tree->{nodes_path_to_internet_id});
+    return unless defined($tree) && defined($tree->{rms_internet_id_settings});
 
-    return $tree->{nodes_path_to_internet_id}->{internet_id};
+    return $tree->{rms_internet_id_settings}->{internet_id};
 }
 
 1;
