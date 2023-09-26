@@ -23,15 +23,15 @@ sub isEnabled {
             maxdepth    => 1,
             logger => $params{logger}
         );
-        if (!$key && is64bit()) {
-            $key = getRegistryKey(
-                path => 'HKEY_LOCAL_MACHINE/SOFTWARE/Usoris/Remote Utilities Host/Host/Parameters',
-                # Important for remote inventory optimization
-                required    => [ qw/InternetId/ ],
-                maxdepth    => 1,
-                logger => $params{logger}
-            );
-        }
+        # if (!$key && is64bit()) {
+        #     $key = getRegistryKey(
+        #         path => 'HKEY_LOCAL_MACHINE/SOFTWARE/Usoris/Remote Utilities Host/Host/Parameters',
+        #         # Important for remote inventory optimization
+        #         required    => [ qw/InternetId/ ],
+        #         maxdepth    => 1,
+        #         logger => $params{logger}
+        #     );
+        # }
 
         return 1;
     }
