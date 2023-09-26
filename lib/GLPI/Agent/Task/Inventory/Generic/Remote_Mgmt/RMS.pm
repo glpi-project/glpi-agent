@@ -71,18 +71,19 @@ sub _getID {
 sub _getID_MSWin32 {
 
     GLPI::Agent::Tools::Win32->use();
+    GLPI::Agent::XML->use();
 
-    my $clientid = getRegistryValue(
+    my $internetid = getRegistryValue(
         path => 'HKEY_LOCAL_MACHINE/SOFTWARE/Usoris/Remote Utilities Host/Host/Parameters/InternetId',
     );
 
-    $clientid = hex2dec($clientid);
+    $internetid = hex2dec($clientid);
 
-    $clientid = substr($clientid, 0, index($clientid, '</internet_id'));
-    $clientid = substr($clientid, index($clientid, '<internet_id>')+13);
+    my $tree = GLPI::Agent::XML->new(string => $internetid)->dump_as_hash();
 
-    return $clientid;
+    return unless defined($tree) && defined($tree->{nodes_path_to_internet_id});
 
+    return $tree->{nodes_path_to_internet_id}->{internet_id};
 }
 
 1;
