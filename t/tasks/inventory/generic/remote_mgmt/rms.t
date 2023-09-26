@@ -48,7 +48,7 @@ sub _mockGetRegistryKey {
 
         # We can mock getRegistryKey or better _getRegistryKey to cover getRegistryValue
         my $path = $params{path} || $params{keyName};
-        my $file = "resources/generic/rms/rms.reg";
+        my $file = "resources/generic/rms/rms-$test-$path.reg";
         return loadRegistryDump($file);
     };
 }
