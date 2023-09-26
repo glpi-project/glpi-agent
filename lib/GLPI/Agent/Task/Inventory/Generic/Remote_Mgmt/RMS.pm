@@ -27,7 +27,7 @@ sub isEnabled {
         return 1;
     }
 
-    return canRun('rms');
+    return 0;
 }
 
 sub doInventory {
