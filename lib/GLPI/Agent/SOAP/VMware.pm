@@ -82,7 +82,7 @@ sub _parseAnswer {
     my $body = $dump->{'soapenv:Envelope'}->{'soapenv:Body'};
 
     my ($bodyKey) = keys(%{$body});
-    return unless exists($body->{$bodyKey}->{'returnval'});
+    return unless ref($body->{$bodyKey}) eq 'HASH' && exists($body->{$bodyKey}->{'returnval'});
 
     my $returnval = $body->{$bodyKey}->{'returnval'};
     return unless ref($returnval) eq 'ARRAY';
