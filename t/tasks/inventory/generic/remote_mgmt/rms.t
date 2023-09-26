@@ -24,7 +24,13 @@ my $module = Test::MockModule->new(
     'GLPI::Agent::Tools::Win32'
 );
 
-foreach my $test () {
+my %win32_tests = (
+    yes1n => "<expected id>",
+);
+
+plan tests => (scalar keys %win32_tests) + 1;
+
+foreach my $test (keys(%win32_tests)) {
     $module->mock(
         '_getRegistryKey',
         _mockGetRegistryKey($test)
