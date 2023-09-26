@@ -6,6 +6,7 @@ use warnings;
 use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
+use UNIVERSAL::require;
 
 use GLPI::Agent::Tools;
 
