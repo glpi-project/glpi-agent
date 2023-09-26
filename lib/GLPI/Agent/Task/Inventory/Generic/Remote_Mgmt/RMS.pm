@@ -45,9 +45,7 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $InternetID = _getID(
-        osname  => OSNAME,
-        logger  => $logger
+    my $InternetID = OSNAME eq 'MSWin32' ? _getID_MSWin32(logger  => $logger) : _getID(logger  => $logger);
     );
     if (defined($InternetID)) {
         $logger->debug('Found InternetID : ' . $InternetID) if ($logger);
