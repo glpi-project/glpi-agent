@@ -25,7 +25,7 @@ my $module = Test::MockModule->new(
 );
 
 my %win32_tests = (
-    yes1n => "<expected id>",
+    '7.0.0.1' => "891-759-358-441",
 );
 
 plan tests => (scalar keys %win32_tests) + 1;
