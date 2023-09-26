@@ -36,8 +36,8 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $InternetID = OSNAME eq 'MSWin32' ? _getID_MSWin32(logger  => $logger) : _getID(logger  => $logger);
-    );
+    my $InternetID = _getID(logger  => $logger);
+    
     if (defined($InternetID)) {
         $logger->debug('Found InternetID : ' . $InternetID) if ($logger);
 
@@ -54,11 +54,6 @@ sub doInventory {
 }
 
 sub _getID {
-#     my (%params) = @_;
-}
-
-sub _getID_MSWin32 {
-
     GLPI::Agent::Tools::Win32->use();
     GLPI::Agent::XML->use();
 
@@ -66,7 +61,7 @@ sub _getID_MSWin32 {
         path => 'HKEY_LOCAL_MACHINE/SOFTWARE/Usoris/Remote Utilities Host/Host/Parameters/InternetId',
     );
 
-    $internetid = hex2dec($clientid);
+    $internetid = hex2dec($internetid);
 
     my $tree = GLPI::Agent::XML->new(string => $internetid)->dump_as_hash();
 
