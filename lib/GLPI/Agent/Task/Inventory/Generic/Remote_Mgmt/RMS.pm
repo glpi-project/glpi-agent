@@ -33,7 +33,7 @@ sub isEnabled {
             );
         }
 
-        return $key && (keys %$key);
+        return 1;
     }
 
     return canRun('rms');
