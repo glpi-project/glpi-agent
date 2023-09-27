@@ -18,7 +18,7 @@ use constant discovery => [ qw(
 # http://fusioninventory.org/documentation/dev/spec/protocol/netinventory.html
 # STORAGES is specified in inventory.schema.json and can be used to inventory SAN disks
 use constant inventory => [ qw(
-        INFO PORTS MODEMS FIRMWARES SIMCARDS PAGECOUNTERS CARTRIDGES COMPONENTS STORAGES
+        INFO PORTS MODEMS FIRMWARES SIMCARDS PAGECOUNTERS CARTRIDGES COMPONENTS STORAGES DRIVES
     )];
 
 # common base variables
