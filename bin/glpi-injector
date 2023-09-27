@@ -33,6 +33,7 @@ GetOptions(
     'recursive|R',
     'file|f=s',
     'no-ssl-check',
+    'ssl-cert-file=s',
     'proxy|P=s',
     'url|u=s',
     'useragent=s',
@@ -173,12 +174,18 @@ sub sendContent {
     my $request = HTTP::Request->new( POST => $options->{url} );
 
     my $info = "";
-    if ($options->{"no-ssl-check"}) {
+    if ($options->{"no-ssl-check"} || $options->{"ssl-cert-file"}) {
         my $url = $request->uri();
         if ($url->scheme() eq 'https') {
             if ($ua->can('ssl_opts')) {
-                $ua->ssl_opts(verify_hostname => 0, SSL_verify_mode => 0);
-                $info = " (ssl check disabled)";
+                IO::Socket::SSL->require();
+                if ($options->{"no-ssl-check"}) {
+                    $ua->ssl_opts(verify_hostname => 0, SSL_verify_mode => 0);
+                    $info = " (ssl check disabled)";
+                } elsif ($options->{"ssl-cert-file"}) {
+                    $ua->ssl_opts(SSL_cert_file => $options->{"ssl-cert-file"});
+                    $info = " (ssl cert file)";
+                }
             } else {
                 $info = " (unsupported ssl options)";
             }
@@ -308,6 +315,7 @@ glpi-injector [options] [--file <file>|--directory <directory>|--stdin|--userage
     -x --xml-ua    use Client version found in XML as User-Agent for POST
     -x --json-ua   use Client version found in JSON as User-Agent for POST
     --no-ssl-check do not check server SSL certificate
+    --ssl-cert-file client certificate file
     -C --no-compression don't compress sent XML inventories
     -P --proxy=PROXY proxy address
 
