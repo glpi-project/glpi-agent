@@ -294,16 +294,18 @@ sub run {
 
         foreach my $key (keys(%{$volumesNames}))
         {
-            my $name = trimWhitespace(getCanonicalString($volumesNames->{$key}));
+            my $name = trimWhitespace(getCanonicalString($volumesNames->{$key}))
+                or next;
 
-            my $volumes = {
-            VOLUMN => $name,
-            FREE => getCanonicalSize("$volumesFreeSizes->{$key} bytes"),
-            TOTAL => getCanonicalSize("$volumesTotalSizes->{$key} bytes")
+            my $volumn = {
+                VOLUMN => $name,
             };
+            $volumn->{FREE} = getCanonicalSize("$volumesFreeSizes->{$key} bytes")
+                if $volumesFreeSizes->{$key};
+            $volumn->{TOTAL} => getCanonicalSize("$volumesTotalSizes->{$key} bytes")
+                if $volumesTotalSizes->{$key};
 
-            push @{$device->{DRIVES}}, $volumes
-            if $volumes->{VOLUMN};
+            push @{$device->{DRIVES}}, $volumn;
         }
 
         my $dsmInfo_version = $self->get(dsmInfo_version);
