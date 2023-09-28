@@ -269,20 +269,11 @@ sub run {
     my $firmware;
     if ($manufacturer eq 'Synology') {
         
-        my $diskModels = $self->walk(dsmDiskModel)
-        or return;
-
-        my $diskNames = $self->walk(dsmDiskName)
-        or return;
-
-        my $volumesNames = $self->walk(dsmRaidName)
-        or return;
-
-        my $volumesFreeSizes = $self->walk(dsmRaidFreeSize)
-        or return;
-
-        my $volumesTotalSizes = $self->walk(dsmRaidTotalSize)
-        or return;
+        my $diskModels = $self->walk(dsmDiskModel) // {};
+        my $diskNames = $self->walk(dsmDiskName) // {};
+        my $volumesNames = $self->walk(dsmRaidName) // {};
+        my $volumesFreeSizes = $self->walk(dsmRaidFreeSize) // {};
+        my $volumesTotalSizes = $self->walk(dsmRaidTotalSize) // {};
 
         foreach my $key (keys(%{$diskModels})){
 
