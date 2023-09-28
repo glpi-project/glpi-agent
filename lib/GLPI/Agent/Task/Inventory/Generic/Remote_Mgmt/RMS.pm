@@ -35,7 +35,7 @@ sub doInventory {
     my $logger    = $params{logger};
 
     my $InternetID = _getID(logger  => $logger);
-    
+
     if (defined($InternetID)) {
         $logger->debug('Found InternetID : ' . $InternetID) if ($logger);
 
