@@ -32,6 +32,19 @@ use constant    dsmInfo_modelName    => dsmInfo . '.1.0';
 use constant    dsmInfo_serialNumber => dsmInfo . '.2.0';
 use constant    dsmInfo_version      => dsmInfo . '.3.0';
 
+# SYNOLOGY-DISK-MIB
+use constant    syno_diskEntry       => synology . '.2.1.1';
+use constant    syno_diskID          => syno_diskEntry . '.2';
+use constant    syno_diskModel       => syno_diskEntry . '.3';
+use constant    syno_diskType        => syno_diskEntry . '.4';
+use constant    syno_diskName        => syno_diskEntry . '.12';
+
+# SYNOLOGY-RAID-MIB
+use constant    syno_raidEntry       => synology . '.3.1.1';
+use constant    syno_raidName        => syno_raidEntry . '.2';
+use constant    syno_raidFreeSize    => syno_raidEntry . '.4';
+use constant    syno_raidTotalSize   => syno_raidEntry . '.5';
+
 # CHECKPOINT-MIB
 use constant    svnProdName                 => checkpoint  . '.1.6.1.0';
 use constant    svnVersion                  => checkpoint  . '.1.6.4.1.0';
@@ -257,6 +270,49 @@ sub run {
 
     my $firmware;
     if ($manufacturer eq 'Synology') {
+        my $diskIDs    = $self->walk(syno_diskID) // {};
+        my $diskModels = $self->walk(syno_diskModel) // {};
+        my $diskTypes  = $self->walk(syno_diskType) // {};
+        my $diskNames  = $self->walk(syno_diskName) // {};
+        my $volumesNames      = $self->walk(syno_raidName) // {};
+        my $volumesFreeSizes  = $self->walk(syno_raidFreeSize) // {};
+        my $volumesTotalSizes = $self->walk(syno_raidTotalSize) // {};
+
+        foreach my $key (keys(%{$diskModels})){
+            my $model = trimWhitespace(getCanonicalString($diskModels->{$key}) // "")
+                or next;
+            my $storage = {
+                MODEL   => $model,
+                TYPE    => 'disk',
+            };
+            my $diskName = trimWhitespace(getCanonicalString($diskNames->{$key}) // "") || trimWhitespace(getCanonicalString($diskIDs->{$key}) // "");
+            my $diskManufacturer = trimWhitespace(getCanonicalManufacturer($model) // "");
+            my $diskType = trimWhitespace(getCanonicalString($diskTypes->{$key}) // "");
+            $storage->{NAME} = $diskName
+                if $diskName;
+            $storage->{MANUFACTURER} = $diskManufacturer
+                if $diskManufacturer;
+            $storage->{INTERFACE} = $diskType
+                if $diskType;
+            push @{$device->{STORAGES}}, $storage;
+        }
+
+        foreach my $key (keys(%{$volumesNames}))
+        {
+            my $name = trimWhitespace(getCanonicalString($volumesNames->{$key}) // "")
+                or next;
+
+            my $volumn = {
+                VOLUMN => $name,
+            };
+            $volumn->{FREE} = getCanonicalSize("$volumesFreeSizes->{$key} bytes")
+                if $volumesFreeSizes->{$key};
+            $volumn->{TOTAL} = getCanonicalSize("$volumesTotalSizes->{$key} bytes")
+                if $volumesTotalSizes->{$key};
+
+            push @{$device->{DRIVES}}, $volumn;
+        }
+
         my $dsmInfo_version = $self->get(dsmInfo_version);
         if (defined($dsmInfo_version)) {
             $firmware = {

@@ -35,6 +35,7 @@ netdiscovery/netinventory:
 * Enhanced CheckPoint devices support
 * Enhanced Cisco devices support
 * Enhanced Citrix devices support
+* PR #500: Enhanced Synology NAS support with drives & storages support
 
 proxy-server-plugin:
 * fix #461: Fix XML content-type support for inventories sent by android agent
