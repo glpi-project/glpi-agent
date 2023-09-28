@@ -13,22 +13,19 @@ use GLPI::Agent::Tools;
 sub isEnabled {
     my (%params) = @_;
 
-    if (OSNAME eq 'MSWin32') {
+    return 0 unless OSNAME eq 'MSWin32';
 
-        GLPI::Agent::Tools::Win32->use();
+    GLPI::Agent::Tools::Win32->use();
 
-        my $key = getRegistryKey(
-            path => 'HKEY_LOCAL_MACHINE/SOFTWARE/Usoris/Remote Utilities Host/Host/Parameters',
-            # Important for remote inventory optimization
-            required    => [ qw/InternetId/ ],
-            maxdepth    => 1,
-            logger => $params{logger}
-        );
+    my $key = getRegistryKey(
+        path => 'HKEY_LOCAL_MACHINE/SOFTWARE/Usoris/Remote Utilities Host/Host/Parameters',
+        # Important for remote inventory optimization
+        required    => [ qw/InternetId/ ],
+        maxdepth    => 1,
+        logger => $params{logger}
+    );
 
-        return 1;
-    }
-
-    return 0;
+    return defined($key) ? 1 : 0;
 }
 
 sub doInventory {
