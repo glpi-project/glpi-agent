@@ -52,11 +52,14 @@ sub doInventory {
 }
 
 sub _getID {
+    my (%params) = @_;
+
     GLPI::Agent::Tools::Win32->use();
     GLPI::Agent::XML->use();
 
     my $internetid = getRegistryValue(
         path => 'HKEY_LOCAL_MACHINE/SOFTWARE/Usoris/Remote Utilities Host/Host/Parameters/InternetId',
+        %params
     );
 
     $internetid = hex2dec($internetid);
