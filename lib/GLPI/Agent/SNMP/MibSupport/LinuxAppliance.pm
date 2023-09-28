@@ -310,7 +310,8 @@ sub run {
             $volumn->{TOTAL} = getCanonicalSize("$volumesTotalSizes->{$key} bytes")
                 if $volumesTotalSizes->{$key};
 
-            push @{$device->{DRIVES}}, $volumn;
+            push @{$device->{DRIVES}}, $volumn
+                if defined($volumn->{FREE}) && defined($volumn->{TOTAL});
         }
 
         my $dsmInfo_version = $self->get(dsmInfo_version);
