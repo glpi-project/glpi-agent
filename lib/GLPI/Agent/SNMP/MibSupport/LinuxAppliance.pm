@@ -278,7 +278,7 @@ sub run {
         foreach my $key (keys(%{$diskModels})){
 
             my $storage = {
-            TYPE    => 'disk',
+                TYPE    => 'disk',
             };
 
             my $name = trimWhitespace(getCanonicalString($diskNames->{$key}));
