@@ -281,13 +281,14 @@ sub run {
                 TYPE    => 'disk',
             };
 
-            my $name = trimWhitespace(getCanonicalString($diskNames->{$key}));
-            my $model = $diskModels->{$key};
+            my $name = trimWhitespace(getCanonicalString($diskNames->{$key}))
+                or next;
+            my $model = $diskModels->{$key}
+                or next;
             my $manufacturer = getCanonicalManufacturer($model);
             $storage->{MANUFACTURER} = $manufacturer; 
             $storage->{MODEL} = $model . " - " . $name;
-            push @{$device->{STORAGES}}, $storage
-            if $storage->{MODEL};
+            push @{$device->{STORAGES}}, $storage;
         }
 
 
