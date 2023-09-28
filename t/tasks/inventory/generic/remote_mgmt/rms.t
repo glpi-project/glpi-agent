@@ -36,7 +36,7 @@ foreach my $test (keys(%win32_tests)) {
         _mockGetRegistryKey($test)
     );
     my $internetID = GLPI::Agent::Task::Inventory::Generic::Remote_Mgmt::RMS::_getID();
-    is($win32_tests{$test}, $internetID, "RMS win32 getID - $test");
+    is($internetID, $win32_tests{$test}, "RMS win32 getID - $test");
 }
 
 # Adapted from GLPI::Test::Utils mockGetRegistryKey()
