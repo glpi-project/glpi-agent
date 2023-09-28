@@ -214,7 +214,7 @@ sub getCanonicalManufacturer {
         "Hitachi"         => qr/^(HD|IC|HU|HGST)/,
         "Seagate"         => qr/^(ST|(?i)seagate)/,
         "Sony"            => qr/^OPTIARC/i,
-        "Western Digital" => qr/^(WDC|(?i)western)/,
+        "Western Digital" => qr/^(WDC?|(?i)western)/,
     );
 
     if (exists $manufacturers{$manufacturer}) {
