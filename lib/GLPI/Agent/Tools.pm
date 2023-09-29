@@ -210,7 +210,7 @@ sub getCanonicalManufacturer {
 
     my %regexp = (
         "Apple"           => qr/^APPLE/i,
-        "Hewlett-Packard" => qr/^(hp|HPE?|(?i)hewlett[ -]packard)/,
+        "Hewlett-Packard" => qr/^(hp|HPE?|(?i)hewlett[ -]packard|MM)/,
         "Hitachi"         => qr/^(HD|IC|HU|HGST)/,
         "Seagate"         => qr/^(ST|(?i)seagate)/,
         "Sony"            => qr/^OPTIARC/i,

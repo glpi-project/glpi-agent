@@ -111,6 +111,10 @@ sub _getDevices {
             );
         }
 
+        if ($device->{NAME} =~ /^nvme/) {
+            $device->{INTERFACE} = "NVME";
+        }
+
         # In some case, serial can't be defined using hdparm (command missing or virtual disk)
         # Then we can define a serial searching for few specific identifiers
         # But avoid to search S/N for empty removable meaning no disk has been inserted

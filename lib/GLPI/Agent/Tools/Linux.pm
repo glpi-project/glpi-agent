@@ -278,6 +278,7 @@ sub getDevicesFromProc {
             my $manufacturer = getCanonicalManufacturer($device->{MODEL});
             $device->{MANUFACTURER} = $manufacturer
                 unless $manufacturer eq $device->{MODEL};
+            $device->{DESCRIPTION} = "SATA" if $name =~ /^sd/;
         }
 
         # WWN
@@ -288,7 +289,8 @@ sub getDevicesFromProc {
         foreach my $subsystem ("device/subsystem","device/device/subsystem") {
             my $link = _readLinkFromSysFs("/sys/block/$name/$subsystem", $root, $dump);
             next unless ($link && $link =~ m|^/sys/bus/(\w+)$|);
-            $device->{DESCRIPTION} = uc($1);
+            $device->{DESCRIPTION} = uc($1)
+                unless $device->{DESCRIPTION} && $device->{DESCRIPTION} eq "SATA" && $1 eq "scsi";
             last;
         }
 
