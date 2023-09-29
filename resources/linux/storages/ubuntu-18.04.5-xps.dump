@@ -111,6 +111,7 @@ $STORAGE = [
     'MODEL' => 'PM951 NVMe SAMSUNG 256GB',
     'NAME' => 'nvme0n1',
     'SERIALNUMBER' => 'S29NNXAH146772',
+    'INTERFACE' => 'NVME',
     'TYPE' => 'disk'
   }
 ];
