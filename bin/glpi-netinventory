@@ -184,6 +184,10 @@ sub send {
 ## no critic (ProhibitMultiplePackages)
 package GLPI::Agent::Task::NetInventory::Target;
 
+use parent "GLPI::Agent::Target";
+
+use constant getType    => 'local';
+
 sub new {
     my ($class) = @_;
 
