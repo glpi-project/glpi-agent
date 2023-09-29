@@ -77,6 +77,7 @@ sub new {
 
     my $self = {
         snmp   => $snmp,
+        glpi   => $params{glpi} // '', # glpi server version if we need to check feature support
         logger => $logger
     };
 

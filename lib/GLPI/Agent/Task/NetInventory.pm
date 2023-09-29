@@ -499,6 +499,8 @@ sub _queryDevice {
         model   => $params->{model},
         config  => $self->{config},
         logger  => $self->{logger},
+        # Include glpi version if known so modules can verify it for supported feature
+        glpi    => $self->{target}->isType('server') ? $self->{target}->getTaskVersion('inventory') : '',
         datadir => $self->{datadir}
     );
 

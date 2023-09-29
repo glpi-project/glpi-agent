@@ -5,6 +5,8 @@ use warnings;
 
 use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 
+use version;
+
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Hardware;
 use GLPI::Agent::Tools::SNMP;
@@ -274,9 +276,6 @@ sub run {
         my $diskModels = $self->walk(syno_diskModel) // {};
         my $diskTypes  = $self->walk(syno_diskType) // {};
         my $diskNames  = $self->walk(syno_diskName) // {};
-        my $volumesNames      = $self->walk(syno_raidName) // {};
-        my $volumesFreeSizes  = $self->walk(syno_raidFreeSize) // {};
-        my $volumesTotalSizes = $self->walk(syno_raidTotalSize) // {};
 
         foreach my $key (keys(%{$diskModels})){
             my $model = trimWhitespace(getCanonicalString($diskModels->{$key}) // "")
@@ -297,21 +296,30 @@ sub run {
             push @{$device->{STORAGES}}, $storage;
         }
 
-        foreach my $key (keys(%{$volumesNames}))
-        {
-            my $name = trimWhitespace(getCanonicalString($volumesNames->{$key}) // "")
-                or next;
+        my $glpi_version = $device->{glpi} ? version->parse($device->{glpi}) : 0;
+        if (!$glpi_version || $glpi_version > version->parse('10.0.10')) {
+            my $volumesNames      = $self->walk(syno_raidName) // {};
+            my $volumesFreeSizes  = $self->walk(syno_raidFreeSize) // {};
+            my $volumesTotalSizes = $self->walk(syno_raidTotalSize) // {};
 
-            my $volumn = {
-                VOLUMN => $name,
-            };
-            $volumn->{FREE} = getCanonicalSize("$volumesFreeSizes->{$key} bytes")
-                if $volumesFreeSizes->{$key};
-            $volumn->{TOTAL} = getCanonicalSize("$volumesTotalSizes->{$key} bytes")
-                if $volumesTotalSizes->{$key};
+            foreach my $key (keys(%{$volumesNames}))
+            {
+                my $name = trimWhitespace(getCanonicalString($volumesNames->{$key}) // "")
+                    or next;
 
-            push @{$device->{DRIVES}}, $volumn
-                if defined($volumn->{FREE}) && defined($volumn->{TOTAL});
+                my $volumn = {
+                    VOLUMN => $name,
+                };
+                $volumn->{FREE} = getCanonicalSize("$volumesFreeSizes->{$key} bytes")
+                    if $volumesFreeSizes->{$key};
+                $volumn->{TOTAL} = getCanonicalSize("$volumesTotalSizes->{$key} bytes")
+                    if $volumesTotalSizes->{$key};
+
+                push @{$device->{DRIVES}}, $volumn
+                    if defined($volumn->{FREE}) && defined($volumn->{TOTAL});
+            }
+        } elsif ($device->{logger}) {
+            $device->{logger}->debug("Skipping DISKS inventory as glpi $glpi_version is out-dated, you should upgrade your glpi server");
         }
 
         my $dsmInfo_version = $self->get(dsmInfo_version);
