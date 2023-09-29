@@ -273,6 +273,13 @@ sub getDevicesFromProc {
                     'removable' : 'disk'
         };
 
+        # Wrong ATA manufacturer, still try to found it from found model
+        if ($device->{MANUFACTURER} && $device->{MANUFACTURER} eq 'ATA' && $device->{MODEL}) {
+            my $manufacturer = getCanonicalManufacturer($device->{MODEL});
+            $device->{MANUFACTURER} = $manufacturer
+                unless $manufacturer eq $device->{MODEL};
+        }
+
         # WWN
         my $wwn = _getValueFromSysProc($logger, $name, 'wwid', $root, $dump);
         $device->{WWN} = $wwn if $wwn && $wwn =~ s/^naa\./wwn-/;

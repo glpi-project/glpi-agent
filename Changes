@@ -29,6 +29,7 @@ inventory:
   to ease computers ans users linking in GLPI when using Azure AD
 * fix #488: Fix memory & cpu supports for LXD virtualization
 * fix #494: Fix video card memory size may be wrongly reported on win32
+* Update manufacturer support for linux storages
 
 netdiscovery/netinventory:
 * Enhanced Aruba IAP models support

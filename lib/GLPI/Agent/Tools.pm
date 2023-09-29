@@ -215,6 +215,8 @@ sub getCanonicalManufacturer {
         "Seagate"         => qr/^(ST|(?i)seagate)/,
         "Sony"            => qr/^OPTIARC/i,
         "Western Digital" => qr/^(WDC?|(?i)western)/,
+        "Crucial"         => qr/^CT/,
+        "PNY"             => qr/^PNY/,
     );
 
     if (exists $manufacturers{$manufacturer}) {
@@ -228,6 +230,7 @@ sub getCanonicalManufacturer {
         hitachi    |
         ibm        |
         intel      |
+        kingston   |
         matshita   |
         maxtor     |
         nvidia     |

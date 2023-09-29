@@ -95,9 +95,9 @@ sub _getDevices {
         );
 
         if (!$device->{MANUFACTURER} || $device->{MANUFACTURER} eq 'ATA') {
-            $device->{MANUFACTURER} = getCanonicalManufacturer(
-                $device->{MODEL}
-            );
+            my $manufacturer = getCanonicalManufacturer($device->{MODEL});
+            $device->{MANUFACTURER} = $manufacturer
+                if $manufacturer ne $device->{MODEL};
         } elsif ($device->{MANUFACTURER} && $device->{MANUFACTURER} =~ /^0x(\w+)$/) {
             my $vendor = getPCIDeviceVendor(id => lc($1));
             $device->{MANUFACTURER} = $vendor->{name}
