@@ -79,6 +79,10 @@ packaging:
 * fix #446: Always add Sys::Hostname dependency to rpm packaging
 * fix #493: Add support for CONFIG=reset option for MSI Installer
 
+contrib:
+* fix #429: Permit MSI package installation from current folder
+* fix #505: [Idea] Improve VBS deployment with a check if installed correctly or retry
+
 1.5 Wed, 21 Jun 2023
 
 core:
