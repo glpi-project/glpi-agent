@@ -348,21 +348,31 @@ my @datadirs = ($OSNAME ne 'linux') ? () : (
 sub _getIdsFile {
     my (%params) = @_;
 
+    my $idsfile = $params{idsfile}
+        or return;
+
     # Initialize datadir to share if run from tests
     my $datadir = $params{datadir} || "share";
 
-    return "$datadir/$params{idsfile}"
+    return "$datadir/$idsfile"
         unless @datadirs;
 
     # Try to use the most recent ids file from well-known places
     my %files = map { $_ => stat($_)->ctime() } grep { -s $_ }
-        map { "$_/$params{idsfile}" } @datadirs, $datadir ;
+        map { "$_/$idsfile" } @datadirs, $datadir ;
 
     # Sort by creation time
     my @sorted_files = sort { $files{$a} <=> $files{$b} } keys(%files);
 
     unless (@sorted_files) {
-        $params{logger}->error("$params{idsfile} not found") if $params{logger};
+        if ($params{logger}) {
+            $params{logger}->warning("$idsfile not found");
+            my $message = $idsfile =~ /^(pci|usb)\.ids$/ ? "You may need to install $idsfile package" : "";
+            my $shareurl = "https://github.com/glpi-project/glpi-agent/tree/develop/share";
+            $message .= ($message ? "or y" : "Y")."ou can download $idsfile file from $shareurl and install it into $datadir folder"
+                if $datadir && -d $datadir;
+            $params{logger}->info($message) if $message;
+        }
         return;
     }
 
