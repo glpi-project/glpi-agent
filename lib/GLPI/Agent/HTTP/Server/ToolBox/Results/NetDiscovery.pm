@@ -172,7 +172,7 @@ sub fields {
         section => "netscan",
         type    => "readonly",
         from    => "AUTHSNMP",
-        text    => "SNMP Credential",
+        text    => "Credential",
         column  => 31,
         editcol => 1,
         index   => 31,

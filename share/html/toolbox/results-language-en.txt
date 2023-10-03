@@ -15,7 +15,7 @@ IP:
 IPs:
 MAC:
 Contact:
-SNMP Credential:
+Credential:
 IP Range:
 
 Networking:

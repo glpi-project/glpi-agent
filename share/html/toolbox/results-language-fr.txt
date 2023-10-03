@@ -15,7 +15,7 @@ Model: Modèle
 
 MAC: Adresse MAC
 
-SNMP Credential: Identifiant SNMP
+Credential: Identifiant
 IP Range: Plage IP
 
 Networking: Configuration réseau
