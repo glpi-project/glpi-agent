@@ -17,6 +17,7 @@ Requires: perl(Proc::Daemon)
 Requires: perl(Socket::GetAddrInfo)
 Requires: perl(DateTime)
 Requires: perl(Sys::Hostname)
+Requires: perl(XML::LibXML)
 #Recommended for inventory module
 Recommends: perl(Net::CUPS)
 Recommends: perl(Parse::EDID)
