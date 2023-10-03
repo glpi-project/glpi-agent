@@ -430,15 +430,19 @@ sub run {
                         $inventory->run();
 
                     } elsif ($authremote) {
-                        my $credentials = [
-                            grep { $_->{ID} eq $authremote } @{$jobaddress->{remote_credentials}}
-                        ];
-                        if ($credentials->{TYPE} eq 'esx') {
-                            # As we still have run the connection part in _scanAddressByRemote(), we reuse the connected object
-                            $esxscan->serverInventory();
-                        } else {
-                            GLPI::Agent::Task::RemoteInventory->require();
-                            # TODO Support RemoteInventory task run
+                        my $credentials = first { $_->{ID} eq $authremote } @{$jobaddress->{remote_credentials}};
+                        if ($credentials) {
+                            my $path;
+                            $path = $self->{target}->getPath() if $self->{target}->isType('local');
+                            # When target path is agent folder, inventory should be saved in inventory subfolder
+                            $path .= '/inventory' if $path eq '.';
+                            if ($credentials->{TYPE} eq 'esx' && $esxscan) {
+                                # As we still have run the connection part in _scanAddressByRemote(), we reuse the connected object
+                                $esxscan->serverInventory($path);
+                            } else {
+                                GLPI::Agent::Task::RemoteInventory->require();
+                                # TODO Support RemoteInventory task run
+                            }
                         }
                     }
 
