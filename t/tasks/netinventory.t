@@ -19,7 +19,6 @@ use GLPI::Agent::Target::Server;
 use GLPI::Agent::HTTP::Client::OCS;
 use GLPI::Agent::XML::Response;
 use GLPI::Agent::XML::Query::Prolog;
-use GLPI::Agent::XML::Response;
 
 use GLPI::Agent::Version;
 use GLPI::Agent::Task::NetInventory::Version;
