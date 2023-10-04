@@ -145,6 +145,9 @@ sub analyze {
     $device->{ip} = $1
         if $device->{ips} && $device->{ips} =~ /^(\d+\.\d+\.\d+\.\d+)/;
 
+    # Get deviceid for deduplication
+    $device->{deviceid} = $tree->{REQUEST}->{DEVICEID};
+
     # Get MAC from NETWORKS ports
     if ($dev->{NETWORKS} && $device->{ip}) {
         my @network_ports = ref($dev->{NETWORKS}) eq 'ARRAY' ? @{$dev->{NETWORKS}} : ($dev->{NETWORKS});

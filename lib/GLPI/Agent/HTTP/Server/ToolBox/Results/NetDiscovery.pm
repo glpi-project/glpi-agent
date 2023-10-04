@@ -251,6 +251,10 @@ sub analyze {
             if $device_scan_result->{credential};
         $device->{ip_range} = $device_scan_result->{ip_range}
             if $device_scan_result->{ip_range};
+        # Set deviceid for deduplication
+        # 'ha-host' is set when inventory is done on an ESX server, this doesn't work for a vCenter
+        $device->{deviceid} = ref($device_scan_result->{deviceid}) eq 'HASH' ? $device_scan_result->{deviceid}->{'ha-host'} : $device_scan_result->{deviceid}
+            if $device_scan_result->{deviceid};
     }
 
     # Fix credential if credential was set into []

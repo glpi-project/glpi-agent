@@ -134,8 +134,17 @@ sub deduplicate {
     my ($self, $devices) = @_;
 
     my $found;
+    my $deviceid = $self->get('deviceid');
     foreach my $device (values(%{$devices})) {
         next if $device == $self;
+        # we want to merge datas from netdiscovery & inventory when deviceid was store in local target storage
+        if ($deviceid) {
+            my $thisdeviceid = $device->get('deviceid');
+            if ($thisdeviceid && $thisdeviceid eq $deviceid) {
+                $found = $device;
+                last;
+            }
+        }
         next unless $device->ip && $device->ip eq $self->ip;
         #next unless $device->mac && $device->mac eq $self->mac;
         next unless $device->tag eq $self->tag;
