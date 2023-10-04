@@ -369,6 +369,7 @@ sub run {
                 my $esxscan = delete $result->{_esxscan};
 
                 my $authsnmp = $result->{AUTHSNMP};
+                my $deviceid;
                 # AUTHREMOTE can be set in results but is not actually supported by GLPI
                 my $authremote = delete $result->{AUTHREMOTE};
                 if (($authsnmp || $authremote) && $job->localtask) {
@@ -376,15 +377,16 @@ sub run {
                     delete $result->{AUTHSNMP};
                     # For TooBox, we keep used authsnmp|authremote & ip_range for results page in target storage
                     if ($self->{target}->isType('local')) {
-                        my $storage = $self->{target}->getStorage();
-                        my $devices = $storage->restore(name => "NetDisco-Devices") // {};
-                        $devices->{$result->{IP}} = {
+                        my $device = $self->_storeNetDiscoDevices(
+                            ip          => $result->{IP},
                             credential  => $authsnmp || $authremote,
                             ip_range    => $range->{name},
                             # Set expiration to ~3 months (3*30*86400)
                             expiration  => time + 7776000
-                        };
-                        $storage->save(name => "NetDisco-Devices", data => $devices);
+                        );
+                        # Still keep eventually known deviceid for later check
+                        $deviceid = $device->{deviceid}
+                            if defined($device->{deviceid});
                     }
                 }
 
@@ -430,6 +432,17 @@ sub run {
                         $inventory->run();
 
                     } elsif ($authremote) {
+                        my $collectdeviceid = sub {
+                            my ($inventory, $hostid) = @_;
+                            # No need to update deviceid if used one if the stored one
+                            return if ($hostid && ref($deviceid) eq 'HASH' && $inventory->getDeviceId() eq $deviceid->{$hostid})
+                                || ($deviceid && $inventory->getDeviceId() eq $deviceid);
+                            $self->_storeNetDiscoDevices(
+                                ip       => $result->{IP},
+                                deviceid => $inventory->getDeviceId(),
+                                hostid   => $hostid
+                            );
+                        };
                         my $credentials = first { $_->{ID} eq $authremote } @{$jobaddress->{remote_credentials}};
                         if ($credentials) {
                             my $path;
@@ -438,7 +451,7 @@ sub run {
                             $path .= '/inventory' if $path eq '.';
                             if ($credentials->{TYPE} eq 'esx' && $esxscan) {
                                 # As we still have run the connection part in _scanAddressByRemote(), we reuse the connected object
-                                $esxscan->serverInventory($path);
+                                $esxscan->serverInventory($path, $collectdeviceid, $deviceid);
                             } else {
                                 GLPI::Agent::Task::RemoteInventory->require();
                                 # TODO Support RemoteInventory task run
@@ -479,6 +492,40 @@ sub run {
 
     # Reset expiration
     setExpirationTime();
+}
+
+sub _storeNetDiscoDevices {
+    my ($self, %params) = @_;
+
+    my $storage = $self->{target}->getStorage()
+        or return;
+
+    my $ip = $params{ip}
+        or return;
+
+    my $devices = $storage->restore(name => "NetDisco-Devices") // {};
+    my $hostid  = $params{hostid};
+    my $updated = $devices->{$ip} ? 0 : 1;
+    my $device  = $devices->{$ip} // {};
+
+    foreach my $key (qw{credential ip_range expiration deviceid}) {
+        next unless defined($params{$key});
+        if ($key eq 'deviceid' && $hostid) {
+            $device->{$key} = {} unless ref($device->{$key}) eq 'HASH';
+            next if defined($device->{$key}->{$hostid}) && $device->{$key}->{$hostid} eq $params{$key};
+            $device->{$key}->{$hostid} = $params{$key};
+        } else {
+            next if defined($device->{$key}) && $device->{$key} eq $params{$key};
+            $device->{$key} = $params{$key};
+        }
+        $updated++;
+    }
+
+    $devices->{$ip} = $device;
+    $storage->save(name => "NetDisco-Devices", data => $devices)
+        if $updated;
+
+    return $device;
 }
 
 sub _logExpirationHours {

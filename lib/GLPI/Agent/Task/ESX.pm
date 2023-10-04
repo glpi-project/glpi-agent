@@ -45,7 +45,7 @@ sub connect {
 }
 
 sub createInventory {
-    my ( $self, $id, $tag ) = @_;
+    my ( $self, $id, $tag, $deviceid ) = @_;
 
     die unless $self->{vpbs};
 
@@ -54,9 +54,11 @@ sub createInventory {
     my $host = $vpbs->getHostFullInfo($id);
 
     my $inventory = GLPI::Agent::Inventory->new(
-        datadir => $self->{datadir},
-        logger  => $self->{logger},
-        tag     => $tag
+        datadir  => $self->{datadir},
+        logger   => $self->{logger},
+        tag      => $tag,
+        # deviceid can be set and so reused from previous netscan
+        deviceid => $deviceid
     );
 
     $inventory->setRemote('esx');
@@ -226,7 +228,7 @@ sub run {
 sub serverInventory {
     # $host_callback can be used to dump datas retrieved from ESX server as done by glpi-esx
     # and is only used for local target
-    my ($self, $path, $host_callback) = @_;
+    my ($self, $path, $host_callback, $deviceids) = @_;
 
     # Initialize GLPI server submission if required
     if ($self->{target}->isType('server') && !$self->{serverclient}) {
@@ -271,8 +273,10 @@ sub serverInventory {
 
     my $hostIds = $self->getHostIds();
     foreach my $hostId (@$hostIds) {
+        my $deviceid;
+        $deviceid = $deviceids->{$hostId} if ref($deviceids) eq 'HASH';
         my $inventory = $self->createInventory(
-            $hostId, $self->{config}->{tag}
+            $hostId, $self->{config}->{tag}, $deviceid
         );
 
         if ($self->{target}->isType('server')) {
@@ -308,7 +312,13 @@ sub serverInventory {
                 last;
             }
             if (ref($host_callback) eq 'CODE') {
-                &{$host_callback}($hostId, $file);
+                # $devices is set when called by netscan to keep esx deviceid consistent
+                # and don't duplicate inventory file when storing them
+                if ($deviceids) {
+                    &{$host_callback}($inventory, $hostId);
+                } else {
+                    &{$host_callback}($hostId, $file);
+                }
             }
         }
     }
