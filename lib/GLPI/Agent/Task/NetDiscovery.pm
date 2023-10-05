@@ -951,11 +951,31 @@ sub _scanAddressByRemote {
                 $found ? 'success' : $error ? "no result, $error"  : 'no result'
             );
         } else {
-            # TODO implement remoteinventory scan support
 
-            GLPI::Agent::Task::RemoteInventory->require();
+            GLPI::Agent::Task::RemoteInventory::Remote->require();
+            URI->require();
 
-            #~ my $scan = GLPI::Agent::Task::RemoteInventory->new(%params);
+            my $url = URI->new("http://".$params->{ip});
+            my $userinfo = $credential->{USERNAME};
+            $userinfo .= ":".$credential->{PASSWORD} unless empty($credential->{PASSWORD});
+            $url->userinfo($userinfo) unless empty($userinfo);
+            $url->port($credential->{PORT}) unless empty($credential->{PORT});
+            $url->query("?mode=".$credential->{MODE}) unless empty($credential->{MODE});
+            $url->scheme($credential->{TYPE});
+
+            my $remote = GLPI::Agent::Task::RemoteInventory::Remote->new(
+                logger  => $self->{logger},
+                url     => $url->as_string(),
+            );
+            next unless $remote->supported();
+
+            $remote->prepare();
+
+            $error = $remote->checking_error();
+            unless ($error) {
+                $device{_remote} = $remote;
+                $found++;
+            }
 
             # no result means either no host, no response, or invalid credentials
             $self->{logger}->debug(

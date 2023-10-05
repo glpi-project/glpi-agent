@@ -45,7 +45,9 @@ sub _connect {
 
     unless ($self->{_ssh2} || ($self->mode('ssh') && !$self->mode('libssh2'))) {
         Net::SSH2->require();
-        unless ($EVAL_ERROR) {
+        if ($EVAL_ERROR) {
+            $self->{logger}->debug("Can't use libssh2: $EVAL_ERROR");
+        } else {
             my $timeout = $self->config->{"backend-collect-timeout"} // 60;
             $self->{_ssh2} = Net::SSH2->new(timeout => $timeout * 1000);
             my $version = $self->{_ssh2}->version;
@@ -64,7 +66,7 @@ sub _connect {
     $self->{logger}->debug2("Connecting to '$remote' remote host...");
     if (!$ssh2->connect($host, $port // 22)) {
         my @error = $ssh2->error;
-        $self->{logger}->debug("Can't reach $remote for ssh remoteinventory via libss2: @error");
+        $self->{logger}->debug("Can't reach $remote for ssh remoteinventory via libssh2: @error");
         undef $self->{_ssh2};
         return;
     }
