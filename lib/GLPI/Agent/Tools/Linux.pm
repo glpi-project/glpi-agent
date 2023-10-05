@@ -26,6 +26,7 @@ our @EXPORT = qw(
     getInterfacesFromIfconfig
     getInterfacesFromIp
     getInterfacesInfosFromIoctl
+    getDefaultGatewayFromIp
 );
 
 sub getDevicesFromUdev {
@@ -722,6 +723,31 @@ sub getInterfacesFromIp {
     return @interfaces;
 }
 
+sub getDefaultGatewayFromIp {
+    my (%params) = (
+        command => '/sbin/ip -o route list default',
+        @_
+    );
+
+    my @lines = getAllLines(%params)
+        or return;
+
+    my ($gateway, $metric);
+
+    foreach (@lines) {
+        next unless /^default\s+(.*)$/;
+        my %infos = split(/\s+/, $1);
+        # Only keep route with lower metric
+        if ($infos{metric}) {
+            next if $metric && int($infos{metric}) >= $metric;
+            $metric = int($infos{metric});
+        }
+        $gateway = $infos{via} // '';
+    }
+
+    return $gateway;
+}
+
 1;
 __END__
 
@@ -849,5 +875,21 @@ Availables parameters:
 =item command the command to use (default: /sbin/ip addr show)
 
 =item file the file to use
+
+=back
+
+=head2 getDefaultGatewayFromIp(%params)
+
+Returns the default ip gateway, by parsing ip command output.
+
+Availables parameters:
+
+=over
+
+=item logger a logger object
+
+=item command the command to use (default: /sbin/ip -o route list default)
+
+=item file a file to use in place of command, can be used for tests
 
 =back

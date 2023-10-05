@@ -34,7 +34,7 @@ sub doInventory {
     my $logger    = $params{logger};
 
     my $routes = getRoutingTable(logger => $logger);
-    my $default = $routes->{'0.0.0.0'};
+    my $default = $routes->{'0.0.0.0'} // $routes->{'default'};
 
     my @interfaces = _getInterfaces(logger => $logger);
     foreach my $interface (@interfaces) {

@@ -1169,12 +1169,18 @@ my %ipaddrshow_tests = (
     ]
 );
 
+my %gateway_tests = (
+    'default-gateway-1' => '192.168.1.254',
+    'default-gateway-2' => '192.168.1.254',
+);
+
 plan tests =>
     (scalar keys %udev_tests)     +
     (scalar keys %cpuinfo_tests)  +
     (scalar keys %hal_tests)      +
     (scalar keys %smartctl_tests) +
     (scalar keys %ifconfig_tests) +
+    (scalar keys %gateway_tests)  +
     (scalar keys %ipaddrshow_tests);
 
 foreach my $test (keys %udev_tests) {
@@ -1213,4 +1219,10 @@ foreach my $test (keys %ipaddrshow_tests) {
     my $file = "resources/linux/ip/$test";
     my @interfaces = getInterfacesFromIp(file => $file);
     cmp_deeply(\@interfaces, $ipaddrshow_tests{$test}, $test);
+}
+
+foreach my $test (keys %gateway_tests) {
+    my $file = "resources/linux/ip/$test";
+    my $gateway = getDefaultGatewayFromIp(file => $file);
+    is($gateway, $gateway_tests{$test}, "$test default gateway parsing");
 }

@@ -1,0 +1,1 @@
+default via 192.168.1.254 dev wlan0 proto dhcp src 192.168.1.10 metric 600 
