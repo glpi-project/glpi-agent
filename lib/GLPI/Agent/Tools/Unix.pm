@@ -418,6 +418,8 @@ sub getRoutingTable {
                 link\#\d+
             )
             /x;
+        # Don't override a route as the first one is the more specific
+        next if $routes->{$1};
         $routes->{$1} = $2;
     }
 

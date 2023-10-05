@@ -10,6 +10,7 @@ core:
 * Make http server supports CORS protocol for /now requests
 * Update getCanonicalSize() to recognize kibibyte, mebibyte, gibibyte, tebibyte
   pebibyte and exbibyte units
+* Always report first found route in unix getRoutingTable() API
 
 inventory:
 * Fix inventory failure due to Oracle database inventory on win32
