@@ -146,8 +146,6 @@ sub deduplicate {
             }
         }
         next unless $device->ip && $device->ip eq $self->ip;
-        #next unless $device->mac && $device->mac eq $self->mac;
-        next unless $device->tag eq $self->tag;
         $found = $device;
         last;
     }

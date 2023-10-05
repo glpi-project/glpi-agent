@@ -69,12 +69,12 @@ sub fields {
         name    => "osname",
         section => "default",
         type    => "readonly",
-        from    => "OSNAME",
+        from    => "FULL_NAME",
         text    => "OS Name",
         column  => 10,
         editcol => 1,
         index   => 4,
-        tag     => "HARDWARE",
+        tag     => "OPERATINGSYSTEM",
     },
     {
         name    => "manufacturer",
@@ -149,18 +149,31 @@ sub analyze {
     $device->{deviceid} = $tree->{REQUEST}->{DEVICEID};
 
     # Get MAC from NETWORKS ports
-    if ($dev->{NETWORKS} && $device->{ip}) {
+    if ($dev->{NETWORKS}) {
         my @network_ports = ref($dev->{NETWORKS}) eq 'ARRAY' ? @{$dev->{NETWORKS}} : ($dev->{NETWORKS});
-        my ($network_port) = grep {
-            $_->{IPADDRESS} && $_->{IPADDRESS} eq $device->{ip}
-        } @network_ports;
-        $device->{mac} = $network_port->{MACADDR};
+        @network_ports = grep { !$_->{VIRTUALDEV} && $_->{MACADDR} && $_->{MACADDR} ne '00:00:00:00:00:00' } @network_ports;
+        if ($device->{ip}) {
+            my ($network_port) = grep {
+                $_->{IPADDRESS} && $_->{IPADDRESS} eq $device->{ip}
+            } @network_ports;
+            $device->{mac} = $network_port->{MACADDR};
+        }
         # Also set all network cards MAC so we can match netscan device on MAC
+        my @ports = grep { $_->{IPADDRESS} || $_->{IPADDRESS6} } @network_ports;
         my %macs = (
-            map { $_->{MACADDR} => 1 }
-                grep { !$_->{VIRTUALDEV} } grep { $_->{IPADDRESS} } @network_ports
+            map { $_->{MACADDR} => $_->{IPADDRESS} // $_->{IPADDRESS6} } @ports
         );
         $device->{macs} = [ keys(%macs) ];
+        if (!$device->{ip} || !$device->{ips}) {
+            my %mac_by_ip = map { ($_->{IPADDRESS} // $_->{IPADDRESS6}) => $_->{MACADDR} } @ports;
+            my @ips = map { $_->{IPADDRESS} || $_->{IPADDRESS6} } @ports;
+            $device->{ip} = $ips[0] unless $device->{ip};
+            $device->{mac} = $mac_by_ip{$device->{ip}}
+                unless $device->{mac} || !$device->{ip};
+            # Set ips if still not set
+            $device->{ips} = join(',', @ips)
+                unless $device->{ips};
+        }
     }
 
     $device->{type} = "COMPUTER";
