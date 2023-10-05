@@ -21,6 +21,7 @@ BEGIN {
 our $ARGV;
 
 our @EXPORT = qw(
+    empty
     first
     getDirectoryHandle
     getFileHandle
@@ -147,6 +148,10 @@ sub GetNextUser {
         uid     => $entry[2],
         dir     => $entry[7]
     };
+}
+
+sub empty {
+    return defined($_[0]) && length($_[0]) ? 0 : 1;
 }
 
 # Avoid List::Util dependency re-using 'any' sub as template
@@ -964,3 +969,7 @@ Return the content of a given file.
 =head2 month($month)
 
 Return the month number of the given short month name.
+
+=head2 empty($string)
+
+Return true if the given string is not defined or empty.
