@@ -343,30 +343,31 @@ sub handle_form {
 
     my $device;
     if (my $edit = $self->edit()) {
-        $device = $self->{_devices}->{$edit};
-        # Check Source for the entry is NetDiscovery or Edition
-        if ($device->source =~ /^NetDiscovery|Edition$/) {
-            $self->{_do} = 'edit';
-        } elsif ($device->source =~ /^Local|NetInventory$/) {
-            if ($device->source eq 'NetInventory' && $device->type !~ /^NETWORKING|PRINTER|STORAGE$/) {
-                # First we fix noedit for values provided by NetInventory
-                foreach my $key ($device->noedit()) {
-                    next if $device->noedit($key);
-                    next unless length($device->get($key));
-                    $device->dontedit($key);
+        if ($device = $self->{_devices}->{$edit}) {
+            # Check Source for the entry is NetDiscovery or Edition
+            if ($device->source =~ /^NetDiscovery|Edition$/) {
+                $self->{_do} = 'edit';
+            } elsif ($device->source =~ /^Local|NetInventory$/) {
+                if ($device->source eq 'NetInventory' && $device->type !~ /^NETWORKING|PRINTER|STORAGE$/) {
+                    # First we fix noedit for values provided by NetInventory
+                    foreach my $key ($device->noedit()) {
+                        next if $device->noedit($key);
+                        next unless length($device->get($key));
+                        $device->dontedit($key);
+                    }
+                    # Then permit to change type as it won't be supported on server side
+                    $device->editfield('type');
+                    # Finally, this can permit to also fix serial or even mac when also not found by netdiscovery
+                } else {
+                    # Only custom fields can be edited
+                    foreach my $key ($device->noedit()) {
+                        next if $device->noedit($key);
+                        next if $key =~ m|^custom/|;
+                        $device->dontedit($key);
+                    }
                 }
-                # Then permit to change type as it won't be supported on server side
-                $device->editfield('type');
-                # Finally, this can permit to also fix serial or even mac when also not found by netdiscovery
-            } else {
-                # Only custom fields can be edited
-                foreach my $key ($device->noedit()) {
-                    next if $device->noedit($key);
-                    next if $key =~ m|^custom/|;
-                    $device->dontedit($key);
-                }
+                $self->{_do} = (grep { not $device->noedit($_) } $device->noedit()) ? 'edit' : '';
             }
-            $self->{_do} = (grep { not $device->noedit($_) } $device->noedit()) ? 'edit' : '';
         }
     }
 
