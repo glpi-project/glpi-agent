@@ -2,6 +2,7 @@
 
 IP range name:
 
+Add IP range:
 Add new IP range:
 Edit &laquo;&nbsp;%s&nbsp;&raquo; ip range:
 IP range start:

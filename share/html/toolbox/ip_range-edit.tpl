@@ -104,6 +104,6 @@
     <button type='submit' class='big-button' value='1' name='submit/{
       $ip_range{$edit} ?
         "update' alt='"._("Update") :
-        "add' alt='"._("Add") }'><i class='primary ti ti-device-floppy'></i>{ $ip_range{$edit} ? _("Update") : _("Add credential") }</button>
+        "add' alt='"._("Add") }'><i class='primary ti ti-device-floppy'></i>{ $ip_range{$edit} ? _("Update") : _("Add IP range") }</button>
     <button type='submit' class='big-button secondary-button' name='submit/cancel' formnovalidate='1' value='1' alt='{_("Cancel")}'><i class='primary ti ti-x'></i>{_("Cancel")}</button>
   </form>
