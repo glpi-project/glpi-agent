@@ -71,9 +71,9 @@ sub _getBatteryFromSysClass {
     my (%params) = @_;
 
     my $battery = {
-        NAME            => getFirstLine(file => "$params{psu}/model_name"),
-        CHEMISTRY       => getFirstLine(file => "$params{psu}/technology"),
-        SERIAL          => sanitizeBatterySerial(getFirstLine(file => "$params{psu}/serial_number")),
+        NAME            => getFirstLine(file => "$params{psu}/model_name") // '',
+        CHEMISTRY       => getFirstLine(file => "$params{psu}/technology") // '',
+        SERIAL          => sanitizeBatterySerial(getFirstLine(file => "$params{psu}/serial_number")) // '',
     };
 
     my $manufacturer = getFirstLine(file => "$params{psu}/manufacturer");
