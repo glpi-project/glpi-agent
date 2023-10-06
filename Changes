@@ -33,6 +33,7 @@ inventory:
 * Update manufacturer support for linux storages
 * fix #511: First try to use ip route to find default gateway on linux
   Also fix default gateway suppport on most unix
+* Fix no more available local users inventory since 1.5 on win32
 
 netdiscovery/netinventory:
 * Enhanced Aruba IAP models support

@@ -32,7 +32,7 @@ sub doInventory {
         )) {
             $inventory->addEntry(
                 section => 'LOCAL_USERS',
-                entry   => { map { $_ => $user->{$_} } qw/LOGIN SID/ }
+                entry   => { map { $_ => $user->{$_} } qw/NAME ID/ }
             );
         }
     }
