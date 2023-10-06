@@ -52,6 +52,7 @@ sub prepare {
         url         => $self->{_canonical_url},
         user        => $self->user(),
         password    => $self->pass(),
+        timeout     => $self->timeout(),
         winrm       => 1,
     );
 }

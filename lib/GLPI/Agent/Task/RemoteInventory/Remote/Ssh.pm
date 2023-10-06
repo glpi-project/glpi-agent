@@ -22,6 +22,7 @@ sub _ssh {
     my @command = qw(ssh -q -o BatchMode=yes);
     push @command, "-p", $self->port() if $self->port() && $self->port() != 22;
     push @command, "-l", $self->user() if $self->user();
+    push @command, "-o ConnectionTimeout=".$self->timeout() if $self->timeout();
 
     return @command, $self->host(), "LANG=C";
 }
@@ -48,7 +49,7 @@ sub _connect {
         if ($EVAL_ERROR) {
             $self->{logger}->debug("Can't use libssh2: $EVAL_ERROR");
         } else {
-            my $timeout = $self->config->{"backend-collect-timeout"} // 60;
+            my $timeout = $self->timeout();
             $self->{_ssh2} = Net::SSH2->new(timeout => $timeout * 1000);
             my $version = $self->{_ssh2}->version;
             $self->{logger}->debug2("Using libssh2 $version for ssh remote")

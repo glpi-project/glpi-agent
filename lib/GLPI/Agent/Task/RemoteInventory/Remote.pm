@@ -28,6 +28,7 @@ sub new {
         _user       => $ENV{USERNAME},
         _pass       => $ENV{PASSWORD},
         _modes      => {},
+        _timeout    => $params{timeout}    // 0,
         logger      => $params{logger},
     };
 
@@ -200,6 +201,14 @@ sub protocol {
     my ($self) = @_;
 
     return $self->{_protocol};
+}
+
+sub timeout {
+    my ($self, $timeout) = @_;
+
+    $self->{_timeout} = $timeout if defined($timeout);
+
+    return $self->{_timeout} || $self->config->{"backend-collect-timeout"} // 60;
 }
 
 sub expiration {
