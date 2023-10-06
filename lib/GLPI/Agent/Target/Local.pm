@@ -36,6 +36,13 @@ sub getPath {
     return $self->{path};
 }
 
+sub setPath {
+    my ($self, $path) = @_;
+
+    $self->{path} = $path
+        if $path && -d $path;
+}
+
 sub getName {
     my ($self) = @_;
 
@@ -94,6 +101,10 @@ Reset the local target counter.
 =head2 getPath()
 
 Return the local output directory for this target.
+
+=head2 setPath($path)
+
+Set the local output directory for this target.
 
 =head2 getName()
 

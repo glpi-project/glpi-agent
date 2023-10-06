@@ -365,8 +365,8 @@ sub run {
             if ($result && $result->{IP}) {
                 $result->{ENTITY} = $range->{entity} if defined($range->{entity});
 
-                # Keep private attributs from the result
-                my $esxscan = delete $result->{_esxscan};
+                # Keep _found private attribut from the result
+                my $found = delete $result->{_found};
 
                 my $authsnmp = $result->{AUTHSNMP};
                 my $deviceid;
@@ -444,17 +444,41 @@ sub run {
                             );
                         };
                         my $credentials = first { $_->{ID} eq $authremote } @{$jobaddress->{remote_credentials}};
-                        if ($credentials) {
+                        if ($credentials && $found) {
                             my $path;
                             $path = $self->{target}->getPath() if $self->{target}->isType('local');
                             # When target path is agent folder, inventory should be saved in inventory subfolder
                             $path .= '/inventory' if $path eq '.';
-                            if ($credentials->{TYPE} eq 'esx' && $esxscan) {
-                                # As we still have run the connection part in _scanAddressByRemote(), we reuse the connected object
-                                $esxscan->serverInventory($path, $collectdeviceid, $deviceid);
+                            # As we still have run the connection part in _scanAddressByRemote(), we reuse the connected object
+                            if ($credentials->{TYPE} eq 'esx') {
+                                $found->serverInventory($path, $collectdeviceid, $deviceid);
                             } else {
-                                GLPI::Agent::Task::RemoteInventory->require();
-                                # TODO Support RemoteInventory task run
+                                # Setup a remote inventory as it is done in GLPI::Agent::Task::RemoteInventory
+                                GLPI::Agent::Task::Inventory->require();
+
+                                # Update local target path if the case it has been set to agent folder
+                                $self->{target}->setPath($path)
+                                    if $self->{target}->isType('local');
+
+                                my $task = GLPI::Agent::Task::Inventory->new(
+                                    logger      => $self->{logger},
+                                    config      => $self->{config},
+                                    datadir     => $self->{datadir},
+                                    target      => $self->{target},
+                                    agentid     => $self->{agentid},
+                                    deviceid    => $found->deviceid // $found->safe_url(),
+                                );
+
+                                # Set now task is a remote one
+                                $task->setRemote($found->protocol());
+
+                                setRemoteForTools($found);
+
+                                $task->run();
+
+                                $found->disconnect();
+
+                                resetRemoteForTools();
                             }
                         }
                     }
@@ -911,7 +935,7 @@ sub _scanAddressBySNMPReal {
 sub _scanAddressByRemote {
     my ($self, $params) = @_;
 
-    my (%device, $found, $error);
+    my (%device, $error);
     my %params = map { $_ => $self->{$_} } qw(config datadir target deviceid logger agentid);
 
     foreach my $credential (@{$params->{remote_credentials}}) {
@@ -929,8 +953,7 @@ sub _scanAddressByRemote {
                 user     => $credential->{USERNAME},
                 password => $credential->{PASSWORD}
             )) {
-                $device{_esxscan} = $esxscan;
-                $found++;
+                $device{_found} = $esxscan;
             } else {
                 $error = $esxscan->lastError();
                 my %errors = (
@@ -942,14 +965,6 @@ sub _scanAddressByRemote {
                 # Anyway set COMPUTER type if we got an answer
                 $device{TYPE} = 'COMPUTER' if $error;
             }
-
-            # no result means either no host, no response, or invalid credentials
-            $self->{logger}->debug(
-                sprintf "- scanning %s with ESX, credentials %s: %s",
-                $params->{ip},
-                $credential->{ID},
-                $found ? 'success' : $error ? "no result, $error"  : 'no result'
-            );
         } else {
 
             GLPI::Agent::Task::RemoteInventory::Remote->require();
@@ -972,23 +987,21 @@ sub _scanAddressByRemote {
             $remote->prepare();
 
             $error = $remote->checking_error();
-            unless ($error) {
-                $device{_remote} = $remote;
-                $found++;
-            }
-
-            # no result means either no host, no response, or invalid credentials
-            $self->{logger}->debug(
-                sprintf "- scanning %s%s with %sRemoteInventory, credentials %s: %s",
-                $params->{ip},
-                $credential->{PORT} ? ':'.$credential->{PORT} : '',
-                $credential->{TYPE} ? $credential->{TYPE}.' ' : '',
-                $credential->{ID},
-                $found ? 'success' : $error ? "no result, $error"  : 'no result'
-            );
+            $device{_found} = $remote
+                unless $error;
         }
 
-        if ($found) {
+        # no result means either no host, no response, or invalid credentials
+        $self->{logger}->debug(
+            sprintf "- scanning %s%s with %s, credentials %s: %s",
+            $params->{ip},
+            $credential->{TYPE} ne 'esx' && $credential->{PORT} ? ':'.$credential->{PORT} : '',
+            $credential->{TYPE} eq 'esx' ? 'ESX' : $credential->{TYPE}.' RemoteInventory',
+            $credential->{ID},
+            $device{_found} ? 'success' : $error ? "no result, $error"  : 'no result'
+        );
+
+        if ($device{_found}) {
             $device{AUTHREMOTE} = $credential->{ID};
             $device{TYPE}       = 'COMPUTER';
             last;
