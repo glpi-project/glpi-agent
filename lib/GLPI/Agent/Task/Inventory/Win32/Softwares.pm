@@ -12,6 +12,7 @@ use GLPI::Agent::Tools::Win32::Constants;
 use constant    category    => "software";
 
 my $seen = {};
+my $remoteInventory;
 
 sub isEnabled {
     return 1;
@@ -22,6 +23,8 @@ sub doInventory {
 
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
+
+    $remoteInventory = $inventory->getRemote();
 
     my $is64bit = is64bit();
 
@@ -176,6 +179,8 @@ sub _dateFormat {
 sub _keyLastWriteDateString {
     my ($key) = @_;
 
+    return if $remoteInventory;
+
     return unless OSNAME eq 'MSWin32';
 
     return unless (ref($key) eq "Win32::TieRegistry");
@@ -223,8 +228,8 @@ sub _getSoftwaresList {
         # only keep subkeys with more than 1 value
         my $data = $softwares->{$guid."/"}
             or next;
-        my %infos = $data->Information;
-        # Just to support related test
+        my %infos = $remoteInventory ? () : $data->Information;
+        # Just to support related test & remoteinventory
         %infos = ( CntValues => scalar(grep { /^\// } keys(%{$data})) )
             unless exists($infos{CntValues});
         next unless $infos{CntValues} > 1;
