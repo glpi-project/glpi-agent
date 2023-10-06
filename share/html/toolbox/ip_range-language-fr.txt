@@ -2,6 +2,7 @@
 
 IP range name: Nom de plage IP
 
+Add IP range: Ajouter la plage IP
 Add new IP range: Ajouter une nouvelle plage IP
 Edit &laquo;&nbsp;%s&nbsp;&raquo; ip range: Editer la plage IP &laquo;&nbsp;%s&nbsp;&raquo;
 IP range start: Début de plage IP
