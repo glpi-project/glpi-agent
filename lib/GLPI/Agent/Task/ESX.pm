@@ -128,6 +128,7 @@ sub run {
     $self->{client} = GLPI::Agent::HTTP::Client::Fusion->new(
         logger  => $self->{logger},
         config  => $self->{config},
+        timeout => $self->timeout(),
     );
     die unless $self->{client};
 
@@ -330,6 +331,14 @@ sub lastError {
     $self->{lastError} = $error if $error;
 
     return $self->{lastError} || "n/a";
+}
+
+sub timeout {
+    my ($self, $timeout) = @_;
+
+    $self->{_timeout} = $timeout if defined($timeout);
+
+    return $self->{_timeout} || $self->{config}->{"backend-collect-timeout"} // 60;
 }
 
 1;

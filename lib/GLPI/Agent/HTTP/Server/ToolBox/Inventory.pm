@@ -89,9 +89,9 @@ sub yaml_config_specs {
         timeout_options  => {
             category    => "Network task",
             type        => $self->isyes($yaml_config->{'updating_support'}) ? "text" : "readonly",
-            value       => $yaml_config->{'timeout_options'} || '1|10|30|60',
-            text        => "Network task SNMP timeout options",
-            tips        => "SNMP timeout options separated by pipes,\nfirst value used as default timeout\n(default=1|10|30|60)",
+            value       => $yaml_config->{'timeout_options'} || '1|2|5|10|30|60',
+            text        => "Network task timeout options",
+            tips        => "Timeout options separated by pipes,\nfirst value used as default timeout\n(default=1|2|5|10|30|60)",
         },
         networktask_save  => {
             category    => "Network task",

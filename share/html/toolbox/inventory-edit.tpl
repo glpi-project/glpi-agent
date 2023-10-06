@@ -247,7 +247,7 @@
     </div>
     <div class='form-edit-row' id='netscan-options-3' style='display: {$type ne "local" ? "flex" : "none"}'>
       <div class='form-edit'>
-        <label for='timeout'>{_"SNMP Timeout"}</label>
+        <label for='timeout'>{_"Connection timeout"}</label>
         <select id='timeout' name='input/timeout' class='run-options'{$type ne "local" ? "" : " disabled"}>{
           foreach my $opt (@timeout_options) {
             $OUT .= "

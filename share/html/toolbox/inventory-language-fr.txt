@@ -7,7 +7,7 @@ Network scan: Scan réseau
 Choose IP range: Sélectionner la plage IP
 
 Threads: Nombre de processus
-SNMP Timeout: Délai max de non réponse SNMP
+Connection timeout: Délai d'expiration de connexion
 Run network scan: Lancer un scan réseau
 Inventory tag: Tag d'inventaire
 Use a tag: Utiliser un tag

@@ -947,6 +947,7 @@ sub _scanAddressByRemote {
             GLPI::Agent::Task::ESX->require();
 
             my $esxscan = GLPI::Agent::Task::ESX->new(%params);
+            $esxscan->timeout($params->{timeout});
 
             if ($esxscan->connect(
                 host     => $params->{ip},
@@ -981,6 +982,7 @@ sub _scanAddressByRemote {
             my $remote = GLPI::Agent::Task::RemoteInventory::Remote->new(
                 logger  => $self->{logger},
                 url     => $url->as_string(),
+                timeout => $params->{timeout},
             );
             next unless $remote->supported();
 

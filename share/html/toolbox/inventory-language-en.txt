@@ -7,7 +7,7 @@ Network scan:
 Choose IP range:
 Options:
 Threads:
-SNMP Timeout:
+Connection timeout:
 Run network scan:
 Inventory tag:
 Use a tag:
