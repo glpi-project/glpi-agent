@@ -47,6 +47,9 @@ netdiscovery/netinventory:
 * Enhanced Cisco devices support
 * Enhanced Citrix devices support
 * PR #500: Enhanced Synology NAS support with drives & storages support
+* Use Parallel::ForkManager for netdiscovery & netinventory tasks
+* Preload mibsupport as optimization
+* Add ESX & RemoteInventory scanning support to netdiscovery
 
 esx:
 * Refactoring to share more code between task & glpi-esx script and to support netscan
@@ -56,14 +59,16 @@ esx:
 proxy-server-plugin:
 * fix #461: Fix XML content-type support for inventories sent by android agent
 
-netdiscovery/netinventory:
-* Use Parallel::ForkManager for netdiscovery & netinventory tasks
-* Preload mibsupport as optimization
-
 injector:
 * Support --ssl-cert-file option to permit SSL client authentication
 
 toolbox:
+* Feature: Inventory is now a list of local inventory or netscan task job
+* Feature: Support task job scheduling management in a dedicated page
+* Feature: Support ESX & RemoteInventory as credentials type
+* Feature: Support ESX & RemoteInventory credentials in IP range
+* Feature: Inventory netscan job can be started to discover and inventory ESX or
+  RemoteInventory computers
 * fix #254: Add credential to iprange not working after adding first one
 * Use tabler-icons v 2.24.0
 * Store discovered snmp credentials and ip_range in dedicated storage in place of netdisco XML
