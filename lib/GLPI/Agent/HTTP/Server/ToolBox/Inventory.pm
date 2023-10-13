@@ -355,6 +355,8 @@ sub _submit_add {
         }
         $job->{description} = $form->{"input/description"} if $form->{"input/description"};
         $jobs->{$name} = $job;
+        # Be sure jobs are linked in yaml structure
+        $yaml->{jobs} = $jobs;
         $self->need_save(jobs);
         delete $form->{empty};
     } elsif (!$name) {
@@ -1019,7 +1021,7 @@ sub events_cb {
     if (!defined($event) && $self->{toolbox}->{target}) {
         my $jobs = $self->yaml(jobs);
         unless (defined($jobs)) {
-            return unless $self->read_yaml();
+            return unless $self->reload_yaml_on_change();
             $jobs = $self->yaml(jobs);
         }
         # Time to check if we need to run a job
@@ -1344,6 +1346,9 @@ sub handle_form {
             last;
         }
     }
+
+    # Save YAML if required
+    $self->write_yaml() if $self->save_needed(jobs);
 }
 
 sub _load_jobs {

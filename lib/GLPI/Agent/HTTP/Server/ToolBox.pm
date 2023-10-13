@@ -501,6 +501,8 @@ sub reload_yaml_on_change {
             $self->{_results}->reset();
         }
     }
+
+    return $reload_needed;
 }
 
 sub write_yaml {
