@@ -1,3 +1,4 @@
+{ # This comment to keep a line feed at the beginning of this template inclusion }
     <div class='list-nav'>
       <div class='arrow'>{
         $display && $start ? "<a href='$url_path/$request?start=1' class='arrow'><i class='ti ti-chevron-left-pipe'></i></a>" : "";

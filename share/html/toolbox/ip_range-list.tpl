@@ -1,3 +1,4 @@
+{ # This comment to keep a line feed at the beginning of this template inclusion }
   <form name='{$request}' method='post' action='{$url_path}/{$request}'>
     <input type='hidden' name='form' value='{$request}'/>
     <input type='hidden' id='display' name='display' value='{$display}'/>{
@@ -7,6 +8,7 @@ use URI::Escape;
 
 if (@ranges_order) {
   my $listnav = Text::Template::fill_in_file($template_path."/list-navigation.tpl", HASH => $hash);
+  chomp($listnav) if defined($listnav);
   $OUT .= $listnav ? $listnav : "
     <div id='errors'><p>Error loading list-navigation.tpl template: $Text::Template::ERROR</p></div>";
   $OUT .= "
@@ -104,7 +106,7 @@ if (@ranges_order) {
     }
     $OUT .= "
         </tr>
-      </tbody>\n".$listnav;
+      </tbody>";
   }
   $credential = $form{"input/credentials"} || "";
   $OUT .= "
@@ -124,6 +126,7 @@ if (@ranges_order) {
       <button class='secondary' type='submit' name='submit/addcredential' value='1' alt='"._("Add credential")."'><i class='primary ti ti-playlist-add'></i>"._("Add credential")."</button>
       <button class='secondary' type='submit' name='submit/rmcredential' value='1' alt='"._("Remove credential")."'><i class='primary ti ti-playlist-x'></i>"._("Remove credential")."</button>
     </div>";
+  $OUT .= $listnav if $listed >= 50 && $listnav;
 } else {
   # Handle empty list case
   $OUT .= "
