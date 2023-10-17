@@ -167,7 +167,8 @@ if (@jobs_order) {
           <td class='list$enabled' width='15%'".($taskid ? " id='$taskid-nextrun'" : "").">$nextrun</td>
           <td class='list'>
             <ul class='config'>
-              ".join("\n", map { "<li class='config'>$_</li>" } @configuration)."
+              ".join("", map { "
+              <li class='config'>$_</li>" } @configuration)."
             </ul>
           </td>
           <td class='list'>$description</td>
