@@ -60,18 +60,23 @@ sub _getDevices {
 sub _getDevicesFromWMI {
     my @devices;
 
+    my ($vendorid, $productid, $serial);
+
     foreach my $object (getWMIObjects(
         class      => 'CIM_LogicalDevice',
         properties => [ qw/Caption DeviceID Name/ ]
     )) {
-        next unless $object->{DeviceID} =~ /^USB\\VID_(\w+)&PID_(\w+)\\(.*)/;
+        next unless ($vendorid, $productid, $serial) = $object->{DeviceID} =~ /^USB\\VID_(\w+)&PID_(\w+)\\(.*)/;
+
+        # Support manufacturers wrongly using iSerial with fields definition
+        $serial = $1 if $serial =~ /^S\/N:([0-9A-F]+)/i;
 
         push @devices, {
             CAPTION   => $object->{Caption},
             NAME      => $object->{Name},
-            VENDORID  => $1,
-            PRODUCTID => $2,
-            SERIAL    => $3
+            VENDORID  => $vendorid,
+            PRODUCTID => $productid,
+            SERIAL    => $serial
         };
     }
 

@@ -82,8 +82,15 @@ sub _getDevicesFromLsusb {
             $device->{VENDORID} = $1;
         } elsif ($line =~ /^\s*idProduct\s*0x(\w+)/i) {
             $device->{PRODUCTID} = $1;
-        } elsif ($line =~ /^\s*iSerial\s*\d+\s(\w+)/i) {
-            $device->{SERIAL} = $1;
+        } elsif ($line =~ /^\s*iSerial\s*\d+\s(.*)$/i) {
+            my $iSerial = trimWhitespace($1);
+            # 1. Support manufacturers wrongly using iSerial with fields definition
+            # 2. Don't include serials with colons as they seems to be an internal id for hub layers
+            if ($iSerial =~ /S\/N:([^: ]+)/) {
+                $device->{SERIAL} = $1;
+            } elsif (!empty($iSerial) && $iSerial !~ /:/) {
+                $device->{SERIAL} = $1;
+            }
         } elsif ($line =~ /^\s*bInterfaceClass\s*(\d+)/i) {
             $device->{CLASS} = $1;
         } elsif ($line =~ /^\s*bInterfaceSubClass\s*(\d+)/i) {

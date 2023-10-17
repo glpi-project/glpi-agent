@@ -1,0 +1,16 @@
+Bus 002 Device 018: ID 05e0:1200 Symbol Technologies Bar Code Scanner
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               2.00
+  bDeviceClass            0
+  bDeviceSubClass         0
+  bDeviceProtocol         0
+  bMaxPacketSize0         8
+  idVendor           0x05e0 Symbol Technologies
+  idProduct          0x1200 Bar Code Scanner
+  bcdDevice            2.01
+  iManufacturer           1 ﾩSymbol Technologies, Inc, 2002
+  iProduct                2 Symbol Bar Code Scanner
+  iSerial                 3 S/N:28A1CC69D1D8AE4585EDA53F7CD6CB88 Rev:NBRMSAAHDM:            
+

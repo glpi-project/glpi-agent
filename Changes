@@ -40,6 +40,8 @@ inventory:
 * fix #511: First try to use ip route to find default gateway on linux
   Also fix default gateway suppport on most unix
 * Fix no more available local users inventory since 1.5 on win32
+* fix #519: Fix inventory of usb bar code scanner from Symbol Technologies
+  On linux, skip wrong serialnumbers like "0000" on usb hubs
 
 netdiscovery/netinventory:
 * Enhanced Aruba IAP models support

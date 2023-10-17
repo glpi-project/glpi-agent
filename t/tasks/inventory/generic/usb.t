@@ -19,7 +19,6 @@ my %lsusb_tests = (
             SUBCLASS   => '0',
             CLASS      => '9',
             PRODUCTID  => '0001',
-            SERIAL     => '0000',
         },
         {
             VENDORID   => '0a5c',
@@ -47,14 +46,12 @@ my %lsusb_tests = (
         },
         {
             CLASS     => '9',
-            SERIAL    => '0000',
             SUBCLASS  => '0',
             VENDORID  => '1d6b',
             PRODUCTID => '0001'
         },
         {
             CLASS     => '9',
-            SERIAL    => '0000',
             SUBCLASS  => '0',
             VENDORID  => '1d6b',
             PRODUCTID => '0001'
@@ -68,14 +65,12 @@ my %lsusb_tests = (
         },
         {
             CLASS     => '9',
-            SERIAL    => '0000',
             SUBCLASS  => '0',
             VENDORID  => '1d6b',
             PRODUCTID => '0001'
         },
         {
             CLASS     => '9',
-            SERIAL    => '0000',
             SUBCLASS  => '0',
             VENDORID  => '1d6b',
             PRODUCTID => '0001'
@@ -88,7 +83,6 @@ my %lsusb_tests = (
         },
         {
             CLASS     => '9',
-            SERIAL    => '0000',
             SUBCLASS  => '0',
             VENDORID  => '1d6b',
             PRODUCTID => '0001'
@@ -101,17 +95,22 @@ my %lsusb_tests = (
         },
         {
             CLASS     => '9',
-            SERIAL    => '0000',
             SUBCLASS  => '0',
             VENDORID  => '1d6b',
             PRODUCTID => '0002'
         },
         {
             CLASS     => '9',
-            SERIAL    => '0000',
             SUBCLASS  => '0',
             VENDORID  => '1d6b',
             PRODUCTID => '0002'
+        }
+    ],
+    'ubuntu-bar-code-scanner' => [
+        {
+            VENDORID   => '05e0',
+            PRODUCTID  => '1200',
+            SERIAL     => '28A1CC69D1D8AE4585EDA53F7CD6CB88',
         }
     ]
 );
@@ -166,6 +165,15 @@ my %usb_tests = (
             PRODUCTID    => '101f',
             MANUFACTURER => 'Kensington',
             CAPTION      => re('^PocketMouse Pro')
+        }
+    ],
+    'ubuntu-bar-code-scanner' => [
+        {
+            VENDORID     => '05e0',
+            PRODUCTID    => '1200',
+            MANUFACTURER => 'Symbol Technologies',
+            SERIAL       => '28A1CC69D1D8AE4585EDA53F7CD6CB88',
+            CAPTION      => re('^Bar Code Scanner')
         }
     ]
 );

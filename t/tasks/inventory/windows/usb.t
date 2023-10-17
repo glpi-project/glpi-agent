@@ -127,6 +127,16 @@ my %tests = (
             VENDORID     => '03F0',
             PRODUCTID    => '3817'
         }
+    ],
+    "bar-code-scanner" => [
+        {
+            MANUFACTURER => 'Symbol Technologies',
+            NAME         => 'Bar Code Scanner',
+            CAPTION      => 'Bar Code Scanner',
+            SERIAL       => '28A1CC69D1D8AE4585EDA53F7CD6CB88',
+            VENDORID     => '05E0',
+            PRODUCTID    => '1200'
+        }
     ]
 );
 
