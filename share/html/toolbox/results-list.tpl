@@ -25,7 +25,7 @@
     <input type='hidden' name='form' value='{$request}'/>
     <input type='hidden' id='display' name='display' value='{$display}'/>
 {
-    $list_nav = Text::Template::fill_in_file($template_path."/list-navigation.tpl", HASH => $hash)
+    $listnav = Text::Template::fill_in_file($template_path."/list-navigation.tpl", HASH => $hash)
       || "Error loading list-navigation.tpl template: $Text::Template::ERROR"
 }    <table>
       <thead>
@@ -116,7 +116,7 @@
       </thead>";
   }}
     </table>{
-    $listed >= 50 ? $list_nav : "" }
+    $listed >= 50 ? $listnav : "" }
     <div class='select-row'>
       <i class='ti ti-corner-left-up arrow-left'></i>
       <button class='secondary' type='submit' name='submit/delete' alt='{_"Delete"}' value='1'><i class='primary ti ti-trash'></i>{_"Delete"}</button>
