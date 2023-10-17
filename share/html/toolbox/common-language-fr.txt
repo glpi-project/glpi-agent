@@ -27,9 +27,7 @@ Revert selection: Inverser la sélection
 yes: oui
 no: non
 
-From: De
-to: à
-of: sur
+From %d to %d of %s: De %d à %d sur %s
 
 Display (number of items): Affichage (nombre de lignes)
 no limit: pas de limite

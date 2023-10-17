@@ -27,9 +27,7 @@ Revert selection:
 yes:
 no:
 
-From:
-to:
-of:
+From %d to %d of %s:
 
 Display (number of items):
 no limit:
