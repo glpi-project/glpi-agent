@@ -108,7 +108,7 @@ if (@ranges_order) {
         </tr>
       </tbody>";
   }
-  $credential = $form{"input/credentials"} || "";
+  my $credential = $form{"input/credentials"} || "";
   $OUT .= "
     </table>
     <div class='select-row'>
