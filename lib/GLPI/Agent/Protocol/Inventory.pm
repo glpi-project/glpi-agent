@@ -138,6 +138,11 @@ my %normalize = (
         required        => [ qw/NAME VMTYPE/ ],
         integer         => [ qw/MEMORY VCPU/ ],
         lowercase       => [ qw/STATUS VMTYPE/ ],
+        pattern         => [
+            [
+                STATUS  => '^(running|blocked|idle|paused|shutdown|crashed|dying|off)$'
+            ]
+        ]
     },
     LICENSEINFOS     => {
         boolean         => [ qw/TRIAL/ ],
@@ -367,6 +372,16 @@ sub _recursive_not_defined_cleanup {
 
 sub _norm {
     my ($self, $norm, $entry, $value, $entrykey) = @_;
+
+    # pattern normalization is special as $value should be an array ref in that case
+    if ($norm eq "pattern" && ref($value) eq 'ARRAY') {
+        my ($key, $pattern) = @{$value};
+        return if !defined($entry->{$key}) || $entry->{$key} =~ /$pattern/;
+        $self->{logger}->debug("inventory format: Removing $entrykey $key value as not matching /$pattern/ regexp: '$entry->{$key}'")
+            if $self->{logger};
+        delete $entry->{$key};
+        return;
+    }
 
     return unless defined($entry->{$value});
 

@@ -42,6 +42,7 @@ inventory:
 * Fix no more available local users inventory since 1.5 on win32
 * fix #519: Fix inventory of usb bar code scanner from Symbol Technologies
   On linux, skip wrong serialnumbers like "0000" on usb hubs
+* Support json format normalization based on regexp to remove unsupported virtualmachine status
 
 netdiscovery/netinventory:
 * Enhanced Aruba IAP models support
