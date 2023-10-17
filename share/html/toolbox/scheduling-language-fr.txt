@@ -12,3 +12,5 @@ Day time: Heure du jour
 
 The approximate delay time between two tasks runs: Le temps approximatif entre deux exécutions de tâches
 Week day, day time and duration of a time slot during which a task will be executed once: Jour de la semaine, heure du jour et durée d'un créneau horaire durant lequel une tâche sera exécutée une fois
+
+No scheduling defined: Pas de planification définie

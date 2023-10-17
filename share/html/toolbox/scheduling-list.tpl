@@ -1,21 +1,25 @@
+{ # This comment to keep a line feed at the beginning of this template inclusion }
   <form name='{$request}' method='post' action='{$url_path}/{$request}'>
     <input type='hidden' name='form' value='{$request}'/>
     <input type='hidden' id='display' name='display' value='{$display}'/>{
-    use Encode qw(encode);
-    use HTML::Entities;
-    use URI::Escape;
-    $listnav = Text::Template::fill_in_file($template_path."/list-navigation.tpl", HASH => $hash)
-      || "Error loading list-navigation.tpl template: $Text::Template::ERROR" }
-    <table class='scheduling'>
+use Encode qw(encode);
+use HTML::Entities;
+use URI::Escape;
+
+if (@scheduling_order) {
+  my $listnav = Text::Template::fill_in_file($template_path."/list-navigation.tpl", HASH => $hash);
+  chomp($listnav) if defined($listnav);
+  $OUT .= $listnav ? $listnav : "
+    <div id='errors'><p>Error loading list-navigation.tpl template: $Text::Template::ERROR</p></div>";
+  $OUT .= "<table class='scheduling'>
       <thead>
         <tr>
-          <th class='checkbox' title='{_"Revert selection"}'>{ @scheduling_order ? "
+          <th class='checkbox' title='"._("Revert selection")."'>
             <label class='checkbox'>
               <input class='checkbox' type='checkbox' onclick='toggle_all(this)'/>
               <span class='custom-checkbox all_cb'></span>
             </label>
-          ": "&nbsp;"
-          }</th>{
+          </th>";
   $other_order = $order eq 'ascend' ? 'descend' : 'ascend';
   foreach my $column (@columns) {
     my ($name, $text) = @{$column};
@@ -24,13 +28,15 @@
           <th".($name eq $ordering_column ? " class='col-sort-$order'" : "").">
             <a class='noline' href='$url_path/$request?col=$name&order=$order_req'";
     $OUT .= "&start=$start" if $start;
-    $OUT .= ">"._($text)."</a></th>";
-  }}
+    $OUT .= ">"._($text)."</a>
+          </th>";
+  }
+  $OUT .= "
         </tr>
       </thead>
-      <tbody>{
+      <tbody>";
   my $count = -$start;
-  $listed = 0;
+  my $listed = 0;
   foreach my $entry (@scheduling_order) {
     next unless $count++>=0;
     $listed++;
@@ -38,6 +44,7 @@
     my $this     = encode('UTF-8', encode_entities($entry));
     my $name     = $schedule->{name} || $this;
     my $type     = $schedule->{type} || "delay";
+    my $checked  = $form{"checkbox/$entry"} eq "on" ? " checked" : "";
     my $description = $schedule->{description} || "";
     my $configuration;
     if ($type eq "delay") {
@@ -63,8 +70,7 @@
         <tr class='$request'>
           <td class='checkbox'>
             <label class='checkbox'>
-              <input class='checkbox' type='checkbox' name='checkbox/".encode_entities($entry)."'".
-              ($form{"checkbox/".$entry} eq "on" ? " checked" : "")."/>
+              <input class='checkbox' type='checkbox' name='checkbox/$this'$checked/>
               <span class='custom-checkbox'></span>
             </label>
           </td>
@@ -74,14 +80,6 @@
           <td class='list'>$description</td>
         </tr>";
     last if $display && $count >= $display;
-  }
-  # Handle empty list case
-  unless (@scheduling_order) {
-    $OUT .= "
-        <tr class='$request'>
-          <td width='20px'>&nbsp;</td>
-          <td class='list' colspan='5'>"._("empty list")."</td>
-        </tr>";
   }
   $OUT .= "
       </tbody>";
@@ -108,13 +106,21 @@
     $OUT .= "
         </tr>
       </tbody>";
-  }}
-    </table>{
-    $listed >= 50 ? $listnav : "" }
+  }
+  $OUT .= "
+    </table>
     <div class='select-row'>
       <i class='ti ti-corner-left-up arrow-left'></i>
-      <button class='secondary' type='submit' name='submit/delete' value='1' alt='{_"Delete"}'><i class='primary ti ti-trash'></i>{_"Delete"}</button>
-    </div>
+      <button class='secondary' type='submit' name='submit/delete' value='1' alt='"._("Delete")."'><i class='primary ti ti-trash'></i>"._("Delete")."</button>
+    </div>";
+  $OUT .= $listnav if $listed >= 50 && $listnav;
+} else {
+  # Handle empty list case
+  $OUT .= "
+    <div id='empty-list'>
+      <p>"._("No scheduling defined")."</p>
+    </div>";
+}}
     <hr/>
     <button class='big-button' type='submit' name='submit/add' value='1' alt='{_"Add new scheduling"}'><i class='primary ti ti-plus'></i>{_"Add new scheduling"}</button>
   </form>
