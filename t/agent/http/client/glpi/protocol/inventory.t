@@ -248,13 +248,13 @@ my %inventories = (
         },
         itemtype    => "Computer",
     },
-    "vm" => {
+    "vm-down" => {
         content     => {
             VIRTUALMACHINES => {
                 VCPU    => "16",
                 NAME    => "Glpi",
                 VMTYPE  => "lxc",
-                STATUS  => "Down"
+                STATUS  => "Down" # Not supported status
             }
         },
         expected    => {
@@ -265,8 +265,7 @@ my %inventories = (
                 virtualmachines => {
                     vcpu    => 16,
                     name    => "Glpi",
-                    vmtype  => "lxc",
-                    status  => "down",
+                    vmtype  => "lxc"
                 }
             }
         },
@@ -279,12 +278,12 @@ my %inventories = (
                     VCPU    => "16",
                     NAME    => "Glpi",
                     VMTYPE  => "lxc",
-                    STATUS  => "Down"
+                    STATUS  => "Off"
                 },{
                     VCPU    => "0032",
                     NAME    => "Glpi32",
                     VMTYPE  => "lxc",
-                    STATUS  => "UP",
+                    STATUS  => "Running",
                     MEMORY  => undef
                 }
             ]
@@ -299,12 +298,12 @@ my %inventories = (
                         vcpu    => 16,
                         name    => "Glpi",
                         vmtype  => "lxc",
-                        status  => "down",
+                        status  => "off",
                     },{
                         vcpu    => 32,
                         name    => "Glpi32",
                         vmtype  => "lxc",
-                        status  => "up",
+                        status  => "running",
                     }
                 ]
             }
