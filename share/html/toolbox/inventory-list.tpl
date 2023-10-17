@@ -1,22 +1,26 @@
-
+{ # This comment to keep a line feed at the beginning of this template inclusion }
   <form name='{$request}' method='post' action='{$url_path}/{$request}'>
     <input type='hidden' name='form' value='{$request}'/>
     <input type='hidden' id='display' name='display' value='{$display}'/>{
-    use Encode qw(encode);
-    use HTML::Entities;
-    use URI::Escape;
-    $listnav = Text::Template::fill_in_file($template_path."/list-navigation.tpl", HASH => $hash)
-      || "Error loading list-navigation.tpl template: $Text::Template::ERROR" }
+use Encode qw(encode);
+use HTML::Entities;
+use URI::Escape;
+
+if (@jobs_order) {
+  my $listnav = Text::Template::fill_in_file($template_path."/list-navigation.tpl", HASH => $hash);
+  chomp($listnav) if defined($listnav);
+  $OUT .= $listnav ? $listnav : "
+    <div id='errors'><p>Error loading list-navigation.tpl template: $Text::Template::ERROR</p></div>";
+  $OUT .= "
     <table class='inventory'>
       <thead>
         <tr>
-          <th class='checkbox' title='{_"Revert selection"}'>{ @jobs_order ? "
+          <th class='checkbox' title='"._("Revert selection")."'>
             <label class='checkbox'>
               <input class='checkbox' type='checkbox' onclick='toggle_all(this)'/>
               <span class='custom-checkbox all_cb'></span>
             </label>
-          ": "&nbsp;"
-          }</th>{
+          </th>";
   $other_order = $order eq 'ascend' ? 'descend' : 'ascend';
   foreach my $column (@columns) {
     my ($name, $text) = @{$column};
@@ -26,10 +30,11 @@
             <a class='noline' href='$url_path/$request?col=$name&order=$order_req'";
     $OUT .= "&start=$start" if $start;
     $OUT .= ">"._($text)."</a></th>";
-  }}
+  }
+  $OUT .= "
         </tr>
       </thead>
-      <tbody>{
+      <tbody>";
   my $count = -$start;
   @visible = ();
   $listed = 0;
@@ -284,14 +289,6 @@
     }
     last if $display && $count >= $display;
   }
-  # Handle empty list case
-  unless (@jobs_order) {
-    $OUT .= "
-        <tr class='$request'>
-          <td width='20px'>&nbsp;</td>
-          <td class='list' colspan='7'>"._("empty list")."</td>
-        </tr>";
-  }
   $OUT .= "
       </tbody>";
   if ($listed >= 50) {
@@ -317,18 +314,26 @@
     $OUT .= "
         </tr>
       </tbody>";
-  }}
-    </table>{
-    $listed >= 50 ? $listnav : "" }
+  }
+  $OUT .= "
+    </table>
     <div class='select-row'>
       <i class='ti ti-corner-left-up arrow-left'></i>
-      <button class='secondary' type='submit' name='submit/run-now' alt='{_"Run task"}'><i class='secondary ti ti-player-play-filled'></i>{_"Run task"}</button>
+      <button class='secondary' type='submit' name='submit/run-now' alt='"._("Run task")."'><i class='secondary ti ti-player-play-filled'></i>"._("Run task")."</button>
       <div class='separation'></div>
-      <button class='secondary' type='submit' name='submit/enable' alt='{_"Enable"}'><i class='secondary ti ti-settings-automation'></i>{_"Enable"}</button>
-      <button class='secondary' type='submit' name='submit/disable' alt='{_"Disable"}'><i class='secondary ti ti-settings-off'></i>{_"Disable"}</button>
+      <button class='secondary' type='submit' name='submit/enable' alt='"._("Enable")."'><i class='secondary ti ti-settings-automation'></i>"._("Enable")."</button>
+      <button class='secondary' type='submit' name='submit/disable' alt='"._("Disable")."'><i class='secondary ti ti-settings-off'></i>"._("Disable")."</button>
       <div class='separation'></div>
-      <button class='secondary' type='submit' name='submit/delete' alt='{_"Delete"}'><i class='secondary ti ti-trash-filled'></i>{_"Delete"}</button>
-    </div>
+      <button class='secondary' type='submit' name='submit/delete' alt='"._("Delete")."'><i class='secondary ti ti-trash-filled'></i>"._("Delete")."</button>
+    </div>";
+  $OUT .= $listnav if $listed >= 50 && $listnav;
+} else {
+  # Handle empty list case
+  $OUT .= "
+    <div id='empty-list'>
+      <p>"._("No inventory task defined")."</p>
+    </div>";
+}}
     <hr/>
     <button class='big-button' type='submit' name='submit/add' alt='{_"Add new inventory task"}'><i class='primary ti ti-plus'></i>{_"Add new inventory task"}</button>
   </form>

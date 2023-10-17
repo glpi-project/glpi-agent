@@ -62,3 +62,5 @@ Timeout: Délai d'expiration
 Associated ip ranges: Plages ip associées
 
 Scheduling type: Type de planification
+
+No inventory task defined: Pas de tâche d'inventaire définie

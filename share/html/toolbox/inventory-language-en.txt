@@ -62,3 +62,5 @@ Timeout:
 Associated ip range:
 
 Scheduling type:
+
+No inventory task defined:
