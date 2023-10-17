@@ -228,6 +228,11 @@ p.home {
   font-size: 16px;
 }
 
+#empty-list {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
 #errors p {
   background-color: #ff0000;
   color: #900000;

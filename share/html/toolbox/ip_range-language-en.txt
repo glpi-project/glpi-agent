@@ -10,8 +10,9 @@ IP range end:
 Associated credentials:
 Add credential:
 Remove credential:
-Associated credentials:
 
 SNMP version:
 Community:
 Username:
+
+No IP range defined:

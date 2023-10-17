@@ -1,21 +1,24 @@
   <form name='{$request}' method='post' action='{$url_path}/{$request}'>
     <input type='hidden' name='form' value='{$request}'/>
     <input type='hidden' id='display' name='display' value='{$display}'/>{
-    use Encode qw(encode);
-    use HTML::Entities;
-    use URI::Escape;
-    $listnav = Text::Template::fill_in_file($template_path."/list-navigation.tpl", HASH => $hash)
-      || "Error loading list-navigation.tpl template: $Text::Template::ERROR" }
+use Encode qw(encode);
+use HTML::Entities;
+use URI::Escape;
+
+if (@ranges_order) {
+  my $listnav = Text::Template::fill_in_file($template_path."/list-navigation.tpl", HASH => $hash);
+  $OUT .= "Error loading list-navigation.tpl template: $Text::Template::ERROR"
+    unless $listnav;
+  $OUT .= "
     <table class='ip_range'>
       <thead>
         <tr>
-          <th class='checkbox' title='{_"Revert selection"}'>{ @ranges_order ? "
+          <th class='checkbox' title='"._("Revert selection")."'>
             <label class='checkbox'>
               <input class='checkbox' type='checkbox' onclick='toggle_all(this)'/>
               <span class='custom-checkbox all_cb'></span>
             </label>
-          ": "&nbsp;"
-          }</th>{
+          </th>";
   $other_order = $order eq 'ascend' ? 'descend' : 'ascend';
   foreach my $column (@columns) {
     my ($name, $text) = @{$column};
@@ -24,13 +27,15 @@
           <th".($name eq $ordering_column ? " class='col-sort-$order'" : "").">
             <a class='noline' href='$url_path/$request?col=$name&order=$order_req'";
     $OUT .= "&start=$start" if $start;
-    $OUT .= ">"._($text)."</a></th>";
-  }}
+    $OUT .= ">"._($text)."</a>
+          </th>";
+  }
+  $OUT .= "
         </tr>
       </thead>
-      <tbody>{
+      <tbody>";
   my $count = -$start;
-  $listed = 0;
+  my $listed = 0;
   foreach my $entry (@ranges_order) {
     next unless $count++>=0;
     $listed++;
@@ -40,13 +45,13 @@
     my $ip_start = $range->{ip_start} || "";
     my $ip_end   = $range->{ip_end} || "";
     my $tips     = $range->{id} ? " title='id=".$range->{id}."'": "";
+    my $checked  = $form{"checkbox/$entry"} eq "on" ? " checked" : "";
     my $description = $range->{description} || "";
     $OUT .= "
         <tr class='$request'$tips>
           <td class='checkbox'>
             <label class='checkbox'>
-              <input class='checkbox' type='checkbox' name='checkbox/".encode_entities($entry)."'".
-              ($form{"checkbox/".$entry} eq "on" ? " checked" : "")."/>
+              <input class='checkbox' type='checkbox' name='checkbox/$this'$checked/>
               <span class='custom-checkbox'></span>
             </label>
           </td>
@@ -75,14 +80,6 @@
         </tr>";
     last if $display && $count >= $display;
   }
-  # Handle empty list case
-  unless (@ranges_order) {
-    $OUT .= "
-        <tr class='$request'>
-          <td width='20px'>&nbsp;</td>
-          <td class='list' colspan='5'>"._("empty list")."</td>
-        </tr>";
-  }
   $OUT .= "
       </tbody>";
   if ($listed >= 50) {
@@ -107,27 +104,33 @@
     }
     $OUT .= "
         </tr>
-      </tbody>";
-  }}
-    </table>{
-    $listed >= 50 ? $listnav : "" }
+      </tbody>\n".$listnav;
+  }
+  $credential = $form{"input/credentials"} || "";
+  $OUT .= "
+    </table>
     <div class='select-row'>
       <i class='ti ti-corner-left-up arrow-left'></i>
-      <button class='secondary' type='submit' name='submit/delete' value='1' alt='{_"Delete"}'><i class='primary ti ti-trash'></i>{_"Delete"}</button>
+      <button class='secondary' type='submit' name='submit/delete' value='1' alt='"._("Delete")."'><i class='primary ti ti-trash'></i>"._("Delete")."</button>
       <div class='separation'></div>
-      <label class='selection-option'>{_"Associated credentials"}:</label>
+      <label class='selection-option'>"._("Associated credentials")."</label>
       <select class='selection-option' name='input/credentials'>
-        <option{
-          $credential = $form{"input/credentials"} || "";
-          $credential ? "" : " selected"}></option>{
+        <option".($credential ? "" : " selected")."></option>".
           join("", map { "
         <option".(($credential && $credential eq $_)? " selected" : "").
           " value='$_'>".($credentials{$_}->{name} || $_)."</option>"
-        } @cred_options)}
+        } @cred_options)."
       </select>
-      <button class='secondary' type='submit' name='submit/addcredential' value='1' alt='{_"Add credential"}'><i class='primary ti ti-playlist-add'></i>{_"Add credential"}</button>
-      <button class='secondary' type='submit' name='submit/rmcredential' value='1' alt='{_"Remove credential"}'><i class='primary ti ti-playlist-x'></i>{_"Remove credential"}</button>
-    </div>
+      <button class='secondary' type='submit' name='submit/addcredential' value='1' alt='"._("Add credential")."'><i class='primary ti ti-playlist-add'></i>"._("Add credential")."</button>
+      <button class='secondary' type='submit' name='submit/rmcredential' value='1' alt='"._("Remove credential")."'><i class='primary ti ti-playlist-x'></i>"._("Remove credential")."</button>
+    </div>";
+} else {
+  # Handle empty list case
+  $OUT .= "
+    <div id='empty-list'>
+      <p>"._("No IP range defined")."</p>
+    </div>";
+}}
     <hr/>
     <button class='big-button' type='submit' name='submit/add' value='1' alt='{_"Add new IP range"}'><i class='primary ti ti-plus'></i>{_"Add new IP range"}</button>
   </form>
