@@ -7,8 +7,8 @@ use URI::Escape;
 
 if (@ranges_order) {
   my $listnav = Text::Template::fill_in_file($template_path."/list-navigation.tpl", HASH => $hash);
-  $OUT .= "Error loading list-navigation.tpl template: $Text::Template::ERROR"
-    unless $listnav;
+  $OUT .= $listnav ? $listnav : "
+    <div id='errors'><p>Error loading list-navigation.tpl template: $Text::Template::ERROR</p></div>";
   $OUT .= "
     <table class='ip_range'>
       <thead>
