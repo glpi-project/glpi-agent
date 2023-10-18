@@ -129,13 +129,13 @@ sub update_template_hash {
 
 my %handlers = (
     aliases         => {
-        'submit/cancel'         => \&_submit_cancel,
+        'submit/back-to-list'   => \&_submit_back_to_list,
         'submit/add/alias'      => \&_submit_add_alias,
         'submit/update/alias'   => \&_submit_update_alias,
         'submit/delete'         => \&_submit_delete,
     },
     sysobjectid    => {
-        'submit/cancel'             => \&_submit_cancel,
+        'submit/back-to-list'       => \&_submit_back_to_list,
         'submit/add/sysobjectid'    => \&_submit_add_sysobjectid,
         'submit/update/sysobjectid' => \&_submit_update_sysobjectid,
         'submit/delete'             => \&_submit_delete,
@@ -143,7 +143,7 @@ my %handlers = (
         'submit/del/rule'           => \&_submit_del_rule_in_ruleset,
     },
     sysorid         => {
-        'submit/cancel'         => \&_submit_cancel,
+        'submit/back-to-list'   => \&_submit_back_to_list,
         'submit/add/sysorid'    => \&_submit_add_sysorid,
         'submit/update/sysorid' => \&_submit_update_sysorid,
         'submit/delete'         => \&_submit_delete,
@@ -151,7 +151,7 @@ my %handlers = (
         'submit/del/rule'       => \&_submit_del_rule_in_ruleset,
     },
     rules           => {
-        'submit/cancel'         => \&_submit_cancel,
+        'submit/back-to-list'   => \&_submit_back_to_list,
         'submit/add/rule'       => \&_submit_add_rule,
         'submit/update/rule'    => \&_submit_update_rule,
         'submit/delete'         => \&_submit_delete,
@@ -186,7 +186,7 @@ sub handle_form {
     }
 }
 
-sub _submit_cancel {
+sub _submit_back_to_list {
     my ($self) = @_;
     $self->reset_edit();
 }

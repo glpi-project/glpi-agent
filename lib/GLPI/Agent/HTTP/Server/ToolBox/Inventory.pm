@@ -249,7 +249,7 @@ sub update_template_hash {
 
 my %handlers = (
     'submit/add'            => \&_submit_add,
-    'submit/cancel'         => \&_submit_cancel,
+    'submit/back-to-list'   => \&_submit_back_to_list,
     'submit/update'         => \&_submit_update,
     'submit/delete'         => \&_submit_delete,
     'submit/add-iprange'    => \&_submit_addiprange,
@@ -281,7 +281,7 @@ sub _submit_newtag {
     $self->need_save(jobs);
 }
 
-sub _submit_cancel {
+sub _submit_back_to_list {
     my ($self, $form) = @_;
 
     return unless $form;

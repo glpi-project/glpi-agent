@@ -381,7 +381,7 @@ sub _submit_start {
     $agent->fork_exit();
 }
 
-sub _submit_cancel {
+sub _submit_back_to_list {
     my ($self, $form) = @_;
     delete $form->{empty};
     $self->reset_edit();
@@ -391,7 +391,7 @@ my %admin_handlers = (
     'submit/add-remote'     => \&_submit_add,
     'submit/update-remote'  => \&_submit_update,
     'submit/delete-remote'  => \&_submit_delete,
-    'submit/cancel'         => \&_submit_cancel,
+    'submit/back-to-list'   => \&_submit_back_to_list,
 );
 
 my %handlers = (

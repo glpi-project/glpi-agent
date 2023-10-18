@@ -405,7 +405,7 @@ sub _submit_rmcredential {
     }
 }
 
-sub _submit_cancel {
+sub _submit_back_to_list {
     my ($self, $form) = @_;
     $self->reset_edit();
     delete $form->{empty};
@@ -417,7 +417,7 @@ my %handlers = (
     'submit/delete'         => \&_submit_delete,
     'submit/addcredential'  => \&_submit_addcredential,
     'submit/rmcredential'   => \&_submit_rmcredential,
-    'submit/cancel'         => \&_submit_cancel,
+    'submit/back-to-list'   => \&_submit_back_to_list,
 );
 
 sub handle_form {

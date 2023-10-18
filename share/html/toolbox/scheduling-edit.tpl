@@ -140,7 +140,7 @@
       $scheduling{$edit} ?
         "update' value='"._("Update") :
         "add' value='"._("Add") }'><i class='primary ti ti-device-floppy'></i>{ $scheduling{$edit} ? _("Update") : _("Add") }</button>
-    <button type='submit' class='big-button secondary-button' name='submit/cancel' formnovalidate='1' value='1' alt='{_("Cancel")}'><i class='primary ti ti-x'></i>{_("Cancel")}</button>
+    <button type='submit' class='big-button secondary-button' name='submit/back-to-list' formnovalidate='1' value='1' alt='{_("Go back to list")}'><i class='primary ti ti-x'></i>{_("Go back to list")}</button>
   </form>
   <script>
     function type_change() \{

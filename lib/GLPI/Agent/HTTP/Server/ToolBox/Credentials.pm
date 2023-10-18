@@ -417,12 +417,10 @@ sub _used_credentials {
     return join(",", sort values(%used));
 }
 
-sub _submit_cancel {
+sub _submit_back_to_list {
     my ($self, $form) = @_;
     $self->reset_edit();
     delete $form->{empty};
-    # Select snmp version list from current selected snmp version
-    $form->{snmpversion} = delete $form->{'input/snmpversion'};
 }
 
 my %handlers = (
@@ -434,7 +432,7 @@ my %handlers = (
     'submit/delete-v1-v2c'  => \&_submit_delete_v1_v2c,
     'submit/delete-v3'      => \&_submit_delete_v3,
     'submit/delete-remote'  => \&_submit_delete_remotes,
-    'submit/cancel'         => \&_submit_cancel,
+    'submit/back-to-list'   => \&_submit_back_to_list,
 );
 
 sub handle_form {

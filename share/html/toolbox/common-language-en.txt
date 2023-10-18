@@ -37,6 +37,7 @@ Add:
 Name:
 Description:
 Cancel:
+Go back to list:
 
 Reset:
 Reverse selection:
