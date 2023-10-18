@@ -15,102 +15,56 @@ use GLPI::Agent::Task::Inventory::Generic::USB;
 my %lsusb_tests = (
     'dell-xt2' => [
         {
-            VENDORID   => '1d6b',
-            SUBCLASS   => '0',
-            CLASS      => '9',
-            PRODUCTID  => '0001',
+            VENDORID     => '413c',
+            SUBCLASS     => '1',
+            CLASS        => '3',
+            PRODUCTID    => '8161'
         },
         {
-            VENDORID   => '0a5c',
-            SUBCLASS   => '0',
-            CLASS      => '9',
-            PRODUCTID  => '4500',
+            VENDORID     => '413c',
+            SUBCLASS     => '1',
+            CLASS        => '3',
+            PRODUCTID    => '8162'
         },
         {
-            VENDORID   => '413c',
-            SUBCLASS   => '1',
-            CLASS      => '3',
-            PRODUCTID  => '8161',
+            NAME         => 'Dell Wireless 365 Bluetooth Module',
+            VENDORID     => '413c',
+            SUBCLASS     => '1',
+            CLASS        => '254',
+            PRODUCTID    => '8160',
+            MANUFACTURER => 'Dell Computer Corp'
         },
         {
-            VENDORID   => '413c',
-            SUBCLASS   => '1',
-            CLASS      => '3',
-            PRODUCTID  => '8162',
+            NAME         => '5880',
+            VENDORID     => '0a5c',
+            SERIAL       => '0123456789ABCD',
+            SUBCLASS     => '0',
+            CLASS        => '254',
+            PRODUCTID    => '5801',
+            MANUFACTURER => 'Broadcom Corp'
         },
         {
-            VENDORID   => '413c',
-            SUBCLASS   => '1',
-            CLASS      => '254',
-            PRODUCTID  => '8160',
+            CLASS        => '0',
+            SUBCLASS     => '0',
+            VENDORID     => '1b96',
+            PRODUCTID    => '0001'
         },
         {
-            CLASS     => '9',
-            SUBCLASS  => '0',
-            VENDORID  => '1d6b',
-            PRODUCTID => '0001'
-        },
-        {
-            CLASS     => '9',
-            SUBCLASS  => '0',
-            VENDORID  => '1d6b',
-            PRODUCTID => '0001'
-        },
-        {
-            VENDORID  => '0a5c',
-            SERIAL    => '0123456789ABCD',
-            SUBCLASS  => '0',
-            CLASS     => '254',
-            PRODUCTID => '5801',
-        },
-        {
-            CLASS     => '9',
-            SUBCLASS  => '0',
-            VENDORID  => '1d6b',
-            PRODUCTID => '0001'
-        },
-        {
-            CLASS     => '9',
-            SUBCLASS  => '0',
-            VENDORID  => '1d6b',
-            PRODUCTID => '0001'
-        },
-        {
-            CLASS     => '0',
-            SUBCLASS  => '0',
-            VENDORID  => '1b96',
-            PRODUCTID => '0001'
-        },
-        {
-            CLASS     => '9',
-            SUBCLASS  => '0',
-            VENDORID  => '1d6b',
-            PRODUCTID => '0001'
-        },
-        {
-            VENDORID  => '047d',
-            SUBCLASS  => '1',
-            CLASS     => '3',
-            PRODUCTID => '101f',
-        },
-        {
-            CLASS     => '9',
-            SUBCLASS  => '0',
-            VENDORID  => '1d6b',
-            PRODUCTID => '0002'
-        },
-        {
-            CLASS     => '9',
-            SUBCLASS  => '0',
-            VENDORID  => '1d6b',
-            PRODUCTID => '0002'
+            NAME         => 'Kensington PocketMouse Pro',
+            VENDORID     => '047d',
+            SUBCLASS     => '1',
+            CLASS        => '3',
+            PRODUCTID    => '101f',
+            MANUFACTURER => 'Kensington'
         }
     ],
     'ubuntu-bar-code-scanner' => [
         {
-            VENDORID   => '05e0',
-            PRODUCTID  => '1200',
-            SERIAL     => '28A1CC69D1D8AE4585EDA53F7CD6CB88',
+            NAME         => 'Symbol Bar Code Scanner',
+            VENDORID     => '05e0',
+            PRODUCTID    => '1200',
+            SERIAL       => '28A1CC69D1D8AE4585EDA53F7CD6CB88',
+            MANUFACTURER => 'ﾩSymbol Technologies, Inc, 2002'
         }
     ]
 );
@@ -118,14 +72,7 @@ my %lsusb_tests = (
 my %usb_tests = (
     'dell-xt2' => [
         {
-            VENDORID     => '0a5c',
-            SUBCLASS     => '0',
-            CLASS        => '9',
-            PRODUCTID    => '4500',
-            MANUFACTURER => 'Broadcom Corp.',
-            CAPTION      => re('^BCM2046B1 USB 2.0 Hub')
-        },
-        {
+            NAME         => re('^Integrated Keyboard'),
             VENDORID     => '413c',
             SUBCLASS     => '1',
             CLASS        => '3',
@@ -134,6 +81,7 @@ my %usb_tests = (
             CAPTION      => re('^Integrated Keyboard')
         },
         {
+            NAME         => re('^Integrated Touchpad'),
             VENDORID     => '413c',
             SUBCLASS     => '1',
             CLASS        => '3',
@@ -142,6 +90,7 @@ my %usb_tests = (
             CAPTION      => re('^Integrated Touchpad')
         },
         {
+            NAME         => re('^Wireless 365 Bluetooth'),
             VENDORID     => '413c',
             SUBCLASS     => '1',
             CLASS        => '254',
@@ -150,6 +99,7 @@ my %usb_tests = (
             CAPTION      => re('^Wireless 365 Bluetooth')
         },
         {
+            NAME         => re('^BCM5880 Secure Applications Processor'),
             VENDORID     => '0a5c',
             SERIAL       => '0123456789ABCD',
             SUBCLASS     => '0',
@@ -159,6 +109,7 @@ my %usb_tests = (
             CAPTION      => re('^BCM5880 Secure Applications Processor')
         },
         {
+            NAME         => re('^PocketMouse Pro'),
             VENDORID     => '047d',
             SUBCLASS     => '1',
             CLASS        => '3',
@@ -169,6 +120,7 @@ my %usb_tests = (
     ],
     'ubuntu-bar-code-scanner' => [
         {
+            NAME         => re('Bar Code Scanner'),
             VENDORID     => '05e0',
             PRODUCTID    => '1200',
             MANUFACTURER => 'Symbol Technologies',
