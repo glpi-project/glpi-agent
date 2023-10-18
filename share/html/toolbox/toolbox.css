@@ -203,7 +203,7 @@ select.input-row  {
   border-radius: 5px;
   border: 1px solid #ccc;
   padding: 5px;
-  width: 6em;
+  min-width: 7em;
 }
 
 input.input-number {
@@ -211,7 +211,7 @@ input.input-number {
 }
 
 input.input-time {
-  width: 4em;
+  width: 6em;
 }
 
 .right {
