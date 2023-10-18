@@ -376,7 +376,7 @@ sub _norm {
     # pattern normalization is special as $value should be an array ref in that case
     if ($norm eq "pattern" && ref($value) eq 'ARRAY') {
         my ($key, $pattern) = @{$value};
-        return if !defined($entry->{$key}) || $entry->{$key} =~ /$pattern/;
+        return if !defined($entry->{$key}) || $entry->{$key} =~ /$pattern/i;
         $self->{logger}->debug("inventory format: Removing $entrykey $key value as not matching /$pattern/ regexp: '$entry->{$key}'")
             if $self->{logger};
         delete $entry->{$key};
