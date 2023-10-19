@@ -212,7 +212,7 @@ sub _submit_add {
         delete $form->{empty};
     } else {
         $self->errors("New IP range: Can't create entry without name") if $form->{empty};
-        # We should return an empty add form with name edition allowed
+        # We still should return an empty add form
         $form->{empty} = 1;
     }
 }
