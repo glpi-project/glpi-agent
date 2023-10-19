@@ -71,6 +71,8 @@ sub update_template_hash {
     return unless $hash;
 
     my $yaml = $self->yaml() || {};
+    my $credentials = $self->yaml('credentials') || {};
+    my $yaml_config = $self->yaml('configuration') || {};
 
     # Update Text::Template HASH but protect some values by encoding html entities
     foreach my $base (qw(credentials)) {
@@ -88,6 +90,56 @@ sub update_template_hash {
         }
     }
     $hash->{title} = "Credentials";
+
+    # Don't include listing datas when editing
+    return if $self->edit();
+
+    $hash->{columns} = [
+        [ name        => "Credentials name" ],
+        [ type        => "Type"             ],
+        [ config      => "Configuration"    ],
+        [ description => "Description"      ]
+    ];
+    $hash->{order} = $self->get_from_session('credentials_order') || "ascend";
+    my $asc = $hash->{order} eq 'ascend';
+    my $ordering = $hash->{ordering_column} = $self->get_from_session('credentials_ordering_column') || 'name';
+    my %type_order = qw( unknown 0 esx 1 snmp_v1 2 snmp_v2c 3 snmp_v3 4 ssh 5 winrm 6);
+    $hash->{credentials_order} = [
+        sort {
+            my ($A, $B) =  $asc ? ( $a, $b ) : ( $b, $a );
+            if ($ordering eq 'config') {
+                ($credentials->{$A}->{community} || $credentials->{$A}->{username} || '') cmp ($credentials->{$B}->{community} || $credentials->{$B}->{username} || '')
+                    || $A cmp $B
+            } elsif ($ordering eq 'type') {
+                my ($typeA, $typeB) = map {
+                    if (!$credentials->{$_}->{type} || $credentials->{$_}->{type} eq 'snmp') {
+                        $credentials->{$_}->{snmpversion} ? 'snmp_'.$credentials->{$_}->{snmpversion} : 'unknown';
+                    } else {
+                        $credentials->{$_}->{type};
+                    }
+                } ($A, $B);
+                ($type_order{$typeA} || 0) <=> ($type_order{$typeB} || 0)
+                    || $A cmp $B
+            } else {
+                ($credentials->{$A}->{$ordering} || '') cmp ($credentials->{$B}->{$ordering} || '')
+                    || $A cmp $B
+            }
+        } keys(%{$credentials})
+    ];
+    my @display_options = grep { /^\d+$/ } split(/[|]/,$yaml_config->{display_options} || '30|0|5|10|20|40|50|100|500');
+    $hash->{display_options} = [ sort { $a <=> $b } keys(%{{map { $_ => 1 } @display_options}}) ];
+    my $display = $self->get_from_session('display');
+    $hash->{display} = length($display) ? $display : $display_options[0];
+    $hash->{list_count} = scalar(@{$hash->{credentials_order}});
+    $self->delete_in_session('credentials_start') unless $hash->{display};
+    $hash->{start} = $self->get_from_session('credentials_start') || 1;
+    $hash->{start} = $hash->{list_count} if $hash->{start} > $hash->{list_count};
+    $hash->{page} = $hash->{display} ? int(($hash->{start}-1)/$hash->{display})+1 : 1;
+    $hash->{pages} = $hash->{display} ? int(($hash->{list_count}-1)/$hash->{display})+1 : 1;
+    $hash->{start} = $hash->{display} ? $hash->{start} - $hash->{start}%$hash->{display} : 0;
+    # Handle case we are indexing the last element
+    $hash->{start} -= $hash->{display} if $hash->{start} == $hash->{list_count};
+    $hash->{start} = 0 if $hash->{start} < 0;
 }
 
 sub _submit_add {
@@ -176,38 +228,10 @@ sub _submit_add {
         $self->need_save(credentials);
         delete $form->{empty};
     } elsif (!$name) {
-        $self->errors("New credential: Can't create entry without name");
+        $self->errors("New credential: Can't create entry without name") if $form->{empty};
+        # We still should return an empty add form
+        $form->{empty} = 1;
     }
-}
-
-sub _submit_add_v1_v2c {
-    my ($self, $form) = @_;
-
-    return unless $form;
-
-    # We should return an empty add form with name edition allowed
-    $form->{empty} = 1;
-    $form->{snmpversion} = "v2c";
-}
-
-sub _submit_add_v3 {
-    my ($self, $form) = @_;
-
-    return unless $form;
-
-    # We should return an empty add form with name edition allowed
-    $form->{empty} = 1;
-    $form->{snmpversion} = "v3";
-}
-
-sub _submit_add_remotecred {
-    my ($self, $form) = @_;
-
-    return unless $form;
-
-    # We should return an empty add form with name edition allowed
-    $form->{empty} = 1;
-    $form->{type} = "ssh";
 }
 
 sub _submit_update {
@@ -329,55 +353,13 @@ sub _submit_update {
     }
 }
 
-sub _submit_delete_v1_v2c {
+sub _submit_delete {
     my ($self, $form, $credentials) = @_;
 
     return unless $form && $credentials;
 
-    my @delete = map { m{^checkbox-v1-v2c/(.*)$} }
-        grep { /^checkbox-v1-v2c\// && $form->{$_} eq 'on' } keys(%{$form});
-
-    return $self->errors("Delete credential: No credential selected")
-        unless @delete;
-
-    my $used = $self->_used_credentials(\@delete);
-    return $self->errors("Delete credential: Can't delete used credential: ".$used)
-        if $used;
-
-    foreach my $name (@delete) {
-        delete $credentials->{$name};
-        $self->need_save(credentials);
-    }
-}
-
-sub _submit_delete_v3 {
-    my ($self, $form, $credentials) = @_;
-
-    return unless $form && $credentials;
-
-    my @delete = map { m{^checkbox-v3/(.*)$} }
-        grep { /^checkbox-v3\// && $form->{$_} eq 'on' } keys(%{$form});
-
-    return $self->errors("Delete credential: No credential selected")
-        unless @delete;
-
-    my $used = $self->_used_credentials(\@delete);
-    return $self->errors("Delete credential: Can't delete used credential: ".$used)
-        if $used;
-
-    foreach my $name (@delete) {
-        delete $credentials->{$name};
-        $self->need_save(credentials);
-    }
-}
-
-sub _submit_delete_remotes {
-    my ($self, $form, $credentials) = @_;
-
-    return unless $form && $credentials;
-
-    my @delete = map { m{^checkbox-remotes/(.*)$} }
-        grep { /^checkbox-remotes\// && $form->{$_} eq 'on' } keys(%{$form});
+    my @delete = map { m{^checkbox/(.*)$} }
+        grep { /^checkbox\// && $form->{$_} eq 'on' } keys(%{$form});
 
     return $self->errors("Delete credential: No credential selected")
         unless @delete;
@@ -425,13 +407,8 @@ sub _submit_back_to_list {
 
 my %handlers = (
     'submit/add'            => \&_submit_add,
-    'submit/add-v1-v2c'     => \&_submit_add_v1_v2c,
-    'submit/add-v3'         => \&_submit_add_v3,
-    'submit/add-remotecred' => \&_submit_add_remotecred,
     'submit/update'         => \&_submit_update,
-    'submit/delete-v1-v2c'  => \&_submit_delete_v1_v2c,
-    'submit/delete-v3'      => \&_submit_delete_v3,
-    'submit/delete-remote'  => \&_submit_delete_remotes,
+    'submit/delete'         => \&_submit_delete,
     'submit/back-to-list'   => \&_submit_back_to_list,
 );
 
@@ -446,6 +423,19 @@ sub handle_form {
     my $yaml_config = $yaml->{configuration} || {};
     return unless defined($yaml_config->{'credentials_navbar'}) &&
         $yaml_config->{'credentials_navbar'} =~ /^1|yes$/i;
+
+    # Save few values in session
+    $self->store_in_session( 'credentials_ordering_column' => $form->{'col'} )
+        if $form->{'col'} && $form->{'col'} =~ /^name|type|config|description$/;
+
+    $self->store_in_session( 'credentials_order' => $form->{'order'} )
+        if $form->{'order'} && $form->{'order'} =~ /^ascend|descend$/;
+
+    $self->store_in_session( 'credentials_start' => int($form->{'start'}) )
+        if defined($form->{'start'}) && $form->{'start'} =~ /^\d+$/;
+
+    $self->store_in_session( 'display' => $form->{'display'} =~ /^\d+$/ ? $form->{'display'} : 0 )
+        if defined($form->{'display'});
 
     $self->edit($form->{'edit'}) if defined($form->{'edit'});
 

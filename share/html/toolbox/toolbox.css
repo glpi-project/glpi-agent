@@ -25,10 +25,6 @@ table {
   padding-top: 0.5em;
 }
 
-table.credentials {
-  padding-top: 0;
-}
-
 th {
   background-color: #e6e6e6;
   border-bottom: 1px solid #eee;
