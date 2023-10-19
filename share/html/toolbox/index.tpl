@@ -44,7 +44,7 @@
         agent   => _($GLPI::Agent::Version::PROVIDER." Agent").
             " v".$GLPI::Agent::Version::VERSION,
         url     => "https://github.com/glpi-project/glpi-agent",
-        plugin  => _("ToolBox Plugin").
+        plugin  => _("ToolBox GLPI Agent plugin").
             " v".$GLPI::Agent::HTTP::Server::ToolBox::VERSION,
         deviceid => $hash->{deviceid} || "",
         agentid => $hash->{agentid} || "",

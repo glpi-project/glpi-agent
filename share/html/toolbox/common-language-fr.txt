@@ -2,7 +2,7 @@
 
 Home: Accueil
 GLPI Agent: Agent GLPI
-ToolBox Plugin: Plugin ToolBox
+ToolBox GLPI Agent plugin: Agent GLPI plugin ToolBox
 Inventory: Inventaire
 Results: Résultats
 Raw YAML: YAML brut

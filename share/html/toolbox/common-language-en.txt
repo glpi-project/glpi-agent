@@ -2,7 +2,7 @@
 
 Home:
 GLPI Agent:
-ToolBox Plugin:
+ToolBox GLPI Agent plugin:
 Inventory:
 Results:
 Raw YAML:
