@@ -82,6 +82,7 @@ packaging:
 * Install basic-authentication-server-plugin.cfg plugin default configuration on debian
 * fix #446: Always add Sys::Hostname dependency to rpm packaging
 * fix #493: Add support for CONFIG=reset option for MSI Installer
+* fix #522: Fix etc, log & var folders are not deleted from installation folder on MSI uninstall
 
 contrib:
 * fix #429: Permit MSI package installation from current folder

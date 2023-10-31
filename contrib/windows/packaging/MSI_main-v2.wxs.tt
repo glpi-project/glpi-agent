@@ -28,7 +28,7 @@
     <Property Id="_EXECMODE_RADIO_BUTTON" Value="1" Secure="yes" />
 
     <Property Id="UPGRADEDIR" Secure="yes">
-      <RegistrySearch Id="InstallDir" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="InstallLocation" Type="raw" />
+      <RegistrySearch Id="InstallDir" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="InstallDir" Type="raw" />
     </Property>
 
     <Property Id="QUICKINSTALL" Secure="yes">
