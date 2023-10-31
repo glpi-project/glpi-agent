@@ -78,7 +78,7 @@ toolbox:
 * Store discovered snmp credentials and ip_range in dedicated storage in place of netdisco XML
 
 packaging:
-* Update MacOSX packages to use OpenSSL 3.1.3 & zlib 1.3
+* Update MacOSX packages to use OpenSSL 3.1.4 & zlib 1.3
 * Install basic-authentication-server-plugin.cfg plugin default configuration on debian
 * fix #446: Always add Sys::Hostname dependency to rpm packaging
 * fix #493: Add support for CONFIG=reset option for MSI Installer
