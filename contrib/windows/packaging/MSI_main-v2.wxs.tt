@@ -386,7 +386,7 @@
     <!-- After LaunchConditions means also after AppSearch and there is more sequence number free space there -->
     <SetProperty Id="UNINSTALL_VAR" After="LaunchConditions" Value="[UPGRADEDIR]var"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
     <SetProperty Id="UNINSTALL_ETC" After="LaunchConditions" Value="[UPGRADEDIR]etc"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
-    <SetProperty Id="UNINSTALL_LOG" After="LaunchConditions" Value="[UPGRADEDIR]log"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
+    <SetProperty Id="UNINSTALL_LOG" After="LaunchConditions" Value="[UPGRADEDIR]logs"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
 
     <Icon Id="i_main_ico" SourceFile="$(var.FileMainIcon)" />
     <Icon Id="agentmonitor.ico" SourceFile="$(var.FileMainIcon)" />
