@@ -230,6 +230,8 @@ netdiscovery/netinventory:
 * fix #396: SKip CDP info from Cisco Communicator installed on computers
 * fix #417: Add Sophos UTM support
 * Updated sysobject.ids
+* Bump NetDiscovery task version to 6.0
+* Bump NetInventory task version to 6.0
 
 deploy:
 * Fix possible failure when mirror is set but misses file parts
