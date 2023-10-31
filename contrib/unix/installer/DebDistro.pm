@@ -78,7 +78,7 @@ sub _extract_deb {
         or die "Failed to extract $pkg: $!\n";
     my $pwd = $ENV{PWD} || qx/pwd/;
     chomp($pwd);
-    return "$pwd/$pkg";
+    return $pwd =~ /\s/ ? "'$pwd/$pkg'" : "$pwd/$pkg";
 }
 
 sub install {
