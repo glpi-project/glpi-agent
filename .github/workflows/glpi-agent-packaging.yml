@@ -308,7 +308,7 @@ jobs:
     - name: Upload Portable Archive Asset
       id: upload-portable-archive-asset
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
-      uses: actions/upload-release-asset@v1
+      uses: fiddlermikey/upload-release-assets@d33b61be358467363a2fd6532baabd54722875ed
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -319,7 +319,7 @@ jobs:
     - name: Upload MSI Installer Asset
       id: upload-msi-asset
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
-      uses: actions/upload-release-asset@v1
+      uses: fiddlermikey/upload-release-assets@d33b61be358467363a2fd6532baabd54722875ed
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -430,7 +430,7 @@ jobs:
     - name: Upload MacOSX PKG installer
       id: upload-macosx-pkg-asset
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
-      uses: actions/upload-release-asset@v1
+      uses: fiddlermikey/upload-release-assets@d33b61be358467363a2fd6532baabd54722875ed
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -441,7 +441,7 @@ jobs:
     - name: Upload MacOSX DMG installer image
       id: upload-macosx-dmg-asset
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
-      uses: actions/upload-release-asset@v1
+      uses: fiddlermikey/upload-release-assets@d33b61be358467363a2fd6532baabd54722875ed
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -471,7 +471,7 @@ jobs:
     - name: Upload Snap Package
       id: upload-linux-snap-asset
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
-      uses: actions/upload-release-asset@v1
+      uses: fiddlermikey/upload-release-assets@d33b61be358467363a2fd6532baabd54722875ed
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
