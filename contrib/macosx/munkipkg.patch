@@ -1,5 +1,5 @@
---- munkipkg.orig	2021-12-07 12:07:12.526044706 +0100
-+++ munkipkg	2021-12-07 15:40:54.750806705 +0100
+--- munkipkg.orig	2023-11-02 15:01:22.396891562 +0100
++++ munkipkg	2023-11-02 20:08:17.670089202 +0100
 @@ -63,6 +63,8 @@
  
  BUILD_INFO_FILE = "build-info"
@@ -36,12 +36,70 @@
  
      retcode = subprocess.call(cmd)
      if retcode:
-@@ -770,6 +785,8 @@
-         build_info['notarization_info']['username'],
-         '--output-format',
-         'xml',
-+        '-t',
-+        'osx',
+@@ -685,11 +700,15 @@
+     '''Add --password or --apiKey + --apiIssuer options to the command'''
+     if (
+         'apple_id' in build_info['notarization_info'] and
++        'team_id' in build_info['notarization_info'] and
+         'password' in build_info['notarization_info']
+     ):
+         cmd.extend(
+-            '--apple-id', build_info['notarization_info']['apple_id'],
+-            '--password', build_info['notarization_info']['password']
++            [
++                '--apple-id', build_info['notarization_info']['apple_id'],
++                '--team-id', build_info['notarization_info']['team_id'],
++                '--password', build_info['notarization_info']['password']
++            ]
+         )
+     elif (
+           'keychain_profile' in build_info['notarization_info']
+@@ -702,7 +721,7 @@
+         )
+     else:
+         raise MunkiPkgError(
+-            "apple_id + password or keychain_profile"
++            "apple_id + password + team_id or keychain_profile"
+             "must be specified in notarization_info."
+         )
+ 
+@@ -722,13 +741,16 @@
+     add_authentication_options(cmd, build_info)
+ 
+     retcode, proc_stdout, proc_stderr = run_subprocess(cmd)
++    if retcode:
++        print("notarytool: FAILURE " + proc_stderr, file=sys.stderr)
++        raise MunkiPkgError("Notarization upload failed. Unable to run xcrun notarytool")
+     if proc_stdout.startswith('Generated JWT'):
+         proc_stdout = proc_stdout.split('\n',1)[1]
+     try:
+         output = readPlistFromString(proc_stdout.encode("UTF-8"))
+     except ExpatError:
+         print(proc_stderr, file=sys.stderr)
+-        raise MunkiPkgError("Notarization upload failed. Unable to run xcrun altool")
++        raise MunkiPkgError("Notarization upload failed. Unable to run xcrun notarytool")
+ 
+     if retcode:
+         for product_error in output.get('product-errors', []):
+@@ -737,7 +759,7 @@
+                 file=sys.stderr
+             )
+         raise MunkiPkgError("Notarization failed")
+-    
++
+     try:
+         request_id = output['id']
+         display("id " + request_id, options.quiet, "notarytool")
+@@ -760,8 +782,11 @@
+         'plist',
      ]
      add_authentication_options(cmd, build_info)
+-    
++
+     retcode, proc_stdout, proc_stderr = run_subprocess(cmd)
++    if retcode:
++        print("notarytool: FAILURE " + proc_stderr, file=sys.stderr)
++        raise MunkiPkgError("Notarization check failed. Unable to run xcrun notarytool")
+     if proc_stdout.startswith('Generated JWT'):
+         proc_stdout = proc_stdout.split('\n',1)[1]
  

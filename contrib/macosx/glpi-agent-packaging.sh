@@ -91,10 +91,10 @@ export MACOSX_DEPLOYMENT_TARGET
 BUILD_PREFIX="/Applications/GLPI-Agent"
 
 # We uses munkipkg script to simplify the process
-# Thanks to https://github.com/munki/munki-pkg project
+# Thanks to notarytool branch in https://github.com/munki/munki-pkg project
 if [ ! -e munkipkg ]; then
     echo "Downloading munkipkg script..."
-    curl -so munkipkg https://raw.githubusercontent.com/munki/munki-pkg/main/munkipkg
+    curl -so munkipkg https://raw.githubusercontent.com/munki/munki-pkg/notarytool/munkipkg
     if [ ! -e munkipkg ]; then
         echo "Failed to download munkipkg script" >&2
         exit 3
@@ -460,12 +460,14 @@ fi
 	    </dict>
 BUILD_INFO
 fi
-if [ -n "$NOTARIZE_USER" -a -n "$NOTARIZE_PASSWORD" -a "$NOTARIZE" == "yes" ]; then
+if [ -n "$NOTARIZE_USER" -a -n "$NOTARIZE_PASSWORD" -a -n "$NOTARIZE_TEAMID" -a "$NOTARIZE" == "yes" ]; then
     cat >>pkg/build-info.plist <<-BUILD_INFO
 	    <key>notarization_info</key>
 	    <dict>
-	        <key>username</key>
+	        <key>apple_id</key>
 	        <string>$NOTARIZE_USER</string>
+	        <key>team_id</key>
+	        <string>$NOTARIZE_TEAMID</string>
 	        <key>password</key>
 	        <string>@env:NOTARIZE_PASSWORD</string>
 	    </dict>
@@ -574,7 +576,7 @@ mv -vf "pkg/build/$PKG" "build/$PKG"
 [ -n "$INSTSIGNID" ] && pkgutil --check-signature "build/$PKG"
 
 # Notarization check
-[ -n "$NOTARIZE_USER" -a -n "$NOTARIZE_PASSWORD" -a "$NOTARIZE" == "yes" ] && xcrun stapler validate "build/$PKG"
+[ -n "$NOTARIZE_USER" -a -n "$NOTARIZE_PASSWORD" -a -n "$NOTARIZE_TEAMID" -a "$NOTARIZE" == "yes" ] && xcrun stapler validate "build/$PKG"
 
 rm -f "build/$DMG"
 echo "Create DMG"

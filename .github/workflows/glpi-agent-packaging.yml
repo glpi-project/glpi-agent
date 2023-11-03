@@ -389,7 +389,7 @@ jobs:
             echo " - MACOSX_NOTARIZE: ${{ vars.MACOSX_NOTARIZE }}"
             if [ "${{ vars.MACOSX_NOTARIZE }}" == "no" ]; then
               MACOSX_NOTARIZE="no"
-              unset NOTARIZE_USER NOTARIZE_PASSWORD
+              unset NOTARIZE_USER NOTARIZE_PASSWORD NOTARIZE_TEAMID
             fi
           fi
         fi
@@ -399,6 +399,7 @@ jobs:
         INSTSIGNID: ${{ vars.MACOSX_INSTSIGNID }}
         NOTARIZE_USER: ${{ secrets.MACOSX_NOTARIZE_USER }}
         NOTARIZE_PASSWORD: ${{ secrets.MACOSX_NOTARIZE_PASSWORD }}
+        NOTARIZE_TEAMID: ${{ vars.MACOSX_NOTARIZE_TEAMID }}
         MACOSX_NOTARIZE: ${{ needs.setup-release.outputs.macosx-notarization }}
       shell: bash
     - name: List generated files
