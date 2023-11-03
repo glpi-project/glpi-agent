@@ -469,7 +469,7 @@ if [ -n "$NOTARIZE_USER" -a -n "$NOTARIZE_PASSWORD" -a -n "$NOTARIZE_TEAMID" -a 
 	        <key>team_id</key>
 	        <string>$NOTARIZE_TEAMID</string>
 	        <key>password</key>
-	        <string>@env:NOTARIZE_PASSWORD</string>
+	        <string>$NOTARIZE_PASSWORD</string>
 	    </dict>
 BUILD_INFO
 fi
