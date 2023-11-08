@@ -90,17 +90,16 @@ export MACOSX_DEPLOYMENT_TARGET
 
 BUILD_PREFIX="/Applications/GLPI-Agent"
 
-# We uses munkipkg script to simplify the process
-# Thanks to notarytool branch in https://github.com/munki/munki-pkg project
+# We uses a modified munkipkg script to simplify the process
+# The modification targets notarytool support & distribution build
+# Get munkipkg from a modified version of https://github.com/munki/munki-pkg project's notarytool branch
 if [ ! -e munkipkg ]; then
-    echo "Downloading munkipkg script..."
-    curl -so munkipkg https://raw.githubusercontent.com/munki/munki-pkg/notarytool/munkipkg
+    echo "Downloading modified munkipkg script..."
+    curl -so munkipkg https://raw.githubusercontent.com/g-bougard/munki-pkg/used-by-glpi-agent/munkipkg
     if [ ! -e munkipkg ]; then
         echo "Failed to download munkipkg script" >&2
         exit 3
     fi
-    # Use our patch to tune productbuild and notarization with other required parameters
-    [ -e munkipkg.patch ] && patch < munkipkg.patch
     chmod +x munkipkg
 fi
 
