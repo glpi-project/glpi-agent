@@ -417,7 +417,7 @@ SKIP: {
     chmod 400, $local_store;
     _request();
     subtest "only only_local_store but can't store" => sub {
-        check_error(500, "Proxy failed to store datas");
+        check_error(500, "Proxy failed to store json");
     };
     chmod 755, $local_store;
 }

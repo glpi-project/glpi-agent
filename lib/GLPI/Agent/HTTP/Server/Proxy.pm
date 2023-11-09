@@ -445,19 +445,20 @@ sub _handle_proxy_request {
 
         if ($local_store && $action ne "contact") {
             my $file = $local_store;
+            my $json = ($message->get("deviceid") || $agentid).".json";
             $file =~ s|/*$||;
-            $file .= "/$agentid.data";
-            $self->debug("Saving datas from $remoteid in $file");
+            $file .= "/$json";
+            $self->debug("Saving $json from $remoteid in $local_store");
             my $DATA;
             unless (open($DATA, '>', $file)) {
-                $self->error("Can't store datas from $remoteid");
-                return $self->proxy_error(500, "Proxy failed to store datas");
+                $self->error("Can't store $json from $remoteid");
+                return $self->proxy_error(500, "Proxy failed to store json");
             }
             binmode($DATA);
             print $DATA $content;
             close($DATA);
             unless (-s $file == length($content)) {
-                $self->error("Failed to store datas from $remoteid");
+                $self->error("Failed to store $json from $remoteid");
                 return $self->proxy_error(500, "Proxy storing failure");
             }
         }
