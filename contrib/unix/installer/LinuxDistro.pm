@@ -69,7 +69,7 @@ my @distributions = (
 # the found name matches the given regexp
 my %classes = (
     DebDistro   => qr/debian|ubuntu/i,
-    RpmDistro   => qr/red\s?hat|centos|fedora|opensuse/i,
+    RpmDistro   => qr/red\s?hat|centos|fedora|opensuse|almalinux|rocky/i,
 );
 
 sub new {
