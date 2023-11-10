@@ -50,6 +50,7 @@ netdiscovery/netinventory:
 * Enhanced CheckPoint devices support
 * Enhanced Cisco devices support
 * Enhanced Citrix devices support
+* Enhanced Zebra printers support
 * PR #500: Enhanced Synology NAS support with drives & storages support
 * Use Parallel::ForkManager for netdiscovery & netinventory tasks
 * Preload mibsupport as optimization
