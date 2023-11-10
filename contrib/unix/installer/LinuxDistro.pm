@@ -44,7 +44,7 @@ my @distributions = (
     [ '/etc/rocky-release',     'Rocky Linux',                'release ([\d.]+)', '%s',                     'RpmDistro' ],
 
     # almalinux-release contains something like "AlmaLinux release 9.2 (Turquoise Kodkod)"
-    [ '/etc/almalinux-release',    'AlmaLinux',                     'release ([\d.]+)', '%s',                     'RpmDistro' ],
+    [ '/etc/almalinux-release', 'AlmaLinux',                  'release ([\d.]+)', '%s',                     'RpmDistro' ],
 
     # centos-release contains something like "CentOS Linux release 6.0 (Final)
     [ '/etc/centos-release',    'CentOS',                     'release ([\d.]+)', '%s',                     'RpmDistro' ],
@@ -69,7 +69,7 @@ my @distributions = (
 # the found name matches the given regexp
 my %classes = (
     DebDistro   => qr/debian|ubuntu/i,
-    RpmDistro   => qr/red\s?hat|centos|fedora|opensuse|almalinux|rocky/i,
+    RpmDistro   => qr/red\s?hat|centos|fedora|opensuse|almalinux|rocky|oracle/i,
 );
 
 sub new {
@@ -91,13 +91,18 @@ sub new {
         _downgrade  => 0,
     };
     bless $self, $class;
+}
+
+sub analyze {
+    my ($self) = @_;
+
+    my $options = $self->{_options};
 
     my $distro = delete $options->{distro};
     my $force  = delete $options->{force};
     my $snap   = delete $options->{snap} // 0;
 
-    my ($name, $version, $release);
-    ($name, $version, $release, $class) = $self->_getDistro();
+    my ($name, $version, $release, $class) = $self->_getDistro();
     if ($force) {
         $name = $distro if defined($distro);
         $version = "unknown version" unless defined($version);
@@ -116,8 +121,6 @@ sub new {
     die "Unsupported $release linux distribution ($name:$version)\n"
         unless defined($class);
 
-    bless $self, $class;
-
     $self->verbose("Running on linux distro: $release : $name : $version...");
 
     # service is mandatory when set with cron option
@@ -134,9 +137,7 @@ sub new {
         map { $self->{_skip}->{$_} } split(/,+/, $skip);
     }
 
-    $self->init();
-
-    return $self;
+    bless $self, $class;
 }
 
 sub init {
@@ -162,26 +163,79 @@ sub verbose {
     return $self->{_verbose} && !$self->{_silent} ? 1 : 0;
 }
 
+sub open_os_file {
+    my ($self, $file, $opening) = @_;
+
+    die "Can't open another system file: $self->{_fh_file} still opened\n"
+        if $self->{_fh} && $self->{_fh_file};
+
+    # base_folder is used for tests
+    $self->{_fh_file} = $self->{base_folder} ? "$self->{base_folder}$file" : $file;
+
+    if ($opening && $opening eq '>') {
+        open $self->{_fh}, $opening, $self->{_fh_file};
+    } else {
+        open $self->{_fh}, $self->{_fh_file};
+    }
+    return $self->{_fh};
+}
+
+sub close_os_file {
+    my $self = shift;
+
+    delete $self->{_fh_file};
+    close(delete $self->{_fh}) if $self->{_fh};
+}
+
+sub chmod_os_file {
+    my ($self, $mode, $file) = @_;
+
+    # base_folder is used for tests
+    chmod $mode, $self->{base_folder} ? "$self->{base_folder}$file" : $file;
+}
+
+sub os_file_exists {
+    my ($self, $file) = @_;
+
+    # base_folder is used for tests
+    return -e ($self->{base_folder} ? "$self->{base_folder}$file" : $file);
+}
+
 sub _getDistro {
     my $self = shift;
 
     my $handle;
+    my $osreleasefile = '/etc/os-release';
 
-    if (-e '/etc/os-release') {
-        open $handle, '/etc/os-release';
-        die "Can't open '/etc/os-release': $!\n" unless defined($handle);
+    if ($self->os_file_exists($osreleasefile)) {
+        $handle = $self->open_os_file($osreleasefile)
+            or die "Can't open '$osreleasefile': $!\n";
 
-        my ($name, $version, $description);
+        my ($name, $version, $description, $class);
         while (my $line = <$handle>) {
             chomp($line);
-            $name        = $1 if $line =~ /^NAME="?([^"]+)"?/;
-            $version     = $1 if $line =~ /^VERSION="?([^"]+)"?/;
-            $version     = $1 if !$version && $line =~ /^VERSION_ID="?([^"]+)"?/;
-            $description = $1 if $line =~ /^PRETTY_NAME="?([^"]+)"?/;
+            if ($line =~ /^NAME="?([^"]+)"?/ || (!$name && $line =~ /^REDHAT_SUPPORT_PRODUCT="?([^"]+)"?/)) {
+                $name = $1;
+                $class = 'RpmDistro' if $line =~ /^REDHAT_/;
+            } elsif ($line =~ /^VERSION="?([^"]+)"?/ || (!$version && ($line =~ /^VERSION_ID="?([^"]+)"?/ || $line =~ /^REDHAT_SUPPORT_PRODUCT_VERSION="?([^"]+)"?/))) {
+                $version = $1;
+            } elsif ($line =~ /^PRETTY_NAME="?([^"]+)"?/) {
+                $description = $1;
+            }
         }
-        close $handle;
+        $self->close_os_file();
 
-        my ($class) = grep { $name =~ $classes{$_} } keys(%classes);
+        ($class) = grep { $name =~ $classes{$_} } keys(%classes)
+            unless $class || !$name;
+
+        if ($class && $class eq 'RpmDistro' && !$description && $self->os_file_exists('/etc/redhat-release')) {
+            $handle = $self->open_os_file('/etc/redhat-release');
+            if (defined($handle)) {
+                $description = <$handle>;
+                chomp($description);
+                $self->close_os_file();
+            }
+        }
 
         return $name, $version, $description, $class
             if $class;
@@ -190,7 +244,7 @@ sub _getDistro {
     # Otherwise analyze first line of a given file, see @distributions
     my $distro;
     foreach my $d ( @distributions ) {
-        next unless -f $d->[0];
+        next unless $self->os_file_exists($d->[0]);
         $distro = $d;
         last;
     }
@@ -200,11 +254,13 @@ sub _getDistro {
 
     $self->verbose("Found distro: $name");
 
-    open $handle, $file;
-    die "Can't open '$file': $!\n" unless defined($handle);
+    $handle = $self->open_os_file($file)
+        or die "Can't open '$file': $!\n";
 
     my $line = <$handle>;
     chomp $line;
+
+    $self->close_os_file();
 
     # Arch Linux has an empty release file
     my ($release, $version);
@@ -282,13 +338,12 @@ sub configure {
     # only if no configuration option has been provided
     my $installed_config = "$folder/00-install.cfg";
     my $current_config;
-    if (-e $installed_config && ! keys(%{$self->{_options}})) {
+    if ($self->os_file_exists($installed_config) && ! keys(%{$self->{_options}})) {
         push @configs, $installed_config;
-        my $fh;
-        open $fh, "<", $installed_config
+        my $fh = $self->open_os_file($installed_config)
             or die "Can't read $installed_config: $!\n";
         $current_config = <$fh>;
-        close($fh);
+        $self->close_os_file();
     }
 
     # Ask configuration unless in silent mode, request or server or local is given as option
@@ -319,8 +374,7 @@ sub configure {
         die "Can't apply configuration without $folder folder\n"
             unless -d $folder;
 
-        my $fh;
-        open $fh, ">", $installed_config
+        my $fh = self->open_os_file($installed_config, '>')
             or die "Can't create $installed_config: $!\n";
         $self->verbose("Writing configuration in $installed_config");
         foreach my $option (sort keys(%{$self->{_options}})) {
@@ -328,7 +382,8 @@ sub configure {
             $self->verbose("Adding: $option = $value");
             print $fh "$option = $value\n";
         }
-        close($fh);
+        $self->close_os_file()
+            or die "Failed to write $installed_config: $!\n";
     } else {
         $self->info("No configuration to apply") unless @configs;
     }

@@ -201,7 +201,7 @@ sub install_cron {
     return $self->info("Failed to stop glpi-agent service") if $ret;
 
     $self->verbose("Installing glpi-agent hourly cron file...");
-    open my $cron, ">", "/etc/cron.hourly/glpi-agent"
+    my $cron = $self->open_os_file('/etc/cron.hourly/glpi-agent', '>')
         or die "Can't create hourly crontab for glpi-agent: $!\n";
     print $cron q{#!/bin/bash
 
@@ -220,11 +220,11 @@ echo "[$(date '+%c')] Running $NAME $OPTIONS"
 /usr/bin/$NAME $OPTIONS
 echo "[$(date '+%c')] End of cron job ($PATH)"
 };
-    close($cron);
-    chmod 0755, "/etc/cron.hourly/glpi-agent";
-    if (! -e "/etc/default/glpi-agent") {
+    $self->close_os_file();
+    $self->chmod_os_file(0755, '/etc/cron.hourly/glpi-agent');
+    unless ($self->os_file_exists('/etc/default/glpi-agent')) {
         $self->verbose("Installing glpi-agent system default config...");
-        open my $default, ">", "/etc/default/glpi-agent"
+        my $default = $self->open_os_file('/etc/default/glpi-agent', '>')
             or die "Can't create system default config for glpi-agent: $!\n";
         print $default q{
 # By default, ask agent to wait a random time
@@ -233,7 +233,7 @@ OPTIONS="--wait 120"
 # By default, runs are lazy, so the agent won't contact the server before it's time to
 OPTIONS="$OPTIONS --lazy"
 };
-        close($default);
+        $self->close_os_file();
     }
 }
 

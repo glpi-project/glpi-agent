@@ -52,6 +52,9 @@ if ($install || $uninstall || $reinstall) {
 
 my $distro = LinuxDistro->new($options);
 
+$distro->analyze();
+$distro->init();
+
 my $installed = $distro->installed;
 my $bypass = $extract && $extract ne "keep" ? 1 : 0;
 if ($installed && !$uninstall && !$reinstall && !$bypass && $version =~ /-git\w+$/ && $version ne $installed) {
