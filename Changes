@@ -62,6 +62,7 @@ esx:
 
 proxy-server-plugin:
 * fix #461: Fix XML content-type support for inventories sent by android agent
+* Store json inventories with right name where locally storing inventories
 
 injector:
 * Support --ssl-cert-file option to permit SSL client authentication
@@ -83,6 +84,7 @@ packaging:
 * fix #446: Always add Sys::Hostname dependency to rpm packaging
 * fix #493: Add support for CONFIG=reset option for MSI Installer
 * fix #522: Fix etc, log & var folders are not deleted from installation folder on MSI uninstall
+* fix #527: Support AlmaLinux 9.2 in linux perl installer"
 
 contrib:
 * fix #429: Permit MSI package installation from current folder
