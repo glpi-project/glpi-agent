@@ -6,16 +6,19 @@ use warnings;
 use lib 'contrib/unix/installer';
 
 use English qw(-no_match_vars);
+use UNIVERSAL::require;
 use File::Temp qw(tempdir);
 
 use Test::Exception;
 use Test::More;
-use Test::NoWarnings;
 
 use LinuxDistro;
 
 plan skip_all => 'Only tested on linux'
     unless $OSNAME =~ /^linux$/i;
+
+Test::NoWarnings->use()
+    if $OSNAME eq 'linux';
 
 my %distros = (
     'unknown' => {
