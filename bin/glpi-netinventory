@@ -43,6 +43,7 @@ GetOptions(
     'protocol=s@',
     'threads=i',
     'timeout=i',
+    'backend-collect-timeout=s',
     'v1',
     'v2c',
     'control',
@@ -181,6 +182,8 @@ glpi-netinventory [options] [--host <host>|--file <file>]
     --community <STRING>   community string (public)
     --credentials <STRING> SNMP credentials (version:1,community:public)
     --timeout <TIME>       SNMP timeout, in seconds (15)
+    --backend-collect-timeout <TIME>
+                           base expiration timeout, in seconds (180)
     --type <TYPE>          force device type
     --threads <COUNT>      number of inventory threads (1)
     --control              output control messages
@@ -281,6 +284,11 @@ In the case version is set to 3:
 =item B<--timeout> I<TIME>
 
 Set SNMP timeout, in seconds.
+
+=item B<--backen-collect-timeout> I<TIME>
+
+Set base expiration timeout, in seconds. It is used to set one device scan:
+180 by default, means 900 (5x180) by device.
 
 =item B<--type> I<TYPE>
 

@@ -174,6 +174,7 @@ sub run {
     $manager->set_waitpid_blocking_sleep(0);
 
     my %jobs = ();
+    my $netscan = 0;
 
     # Callback to update %queues
     $manager->run_on_finish(
@@ -188,6 +189,9 @@ sub run {
     foreach my $job (@{$self->{jobs}}) {
         my $jobid = $job->pid;
         $jobs{$jobid} = $job;
+
+        # We need to find if job is a netscan to compute the right expiration time
+        $netscan = 1 if $job->netscan();
 
         $self->{logger}->debug("initializing job $jobid");
 
@@ -239,8 +243,10 @@ sub run {
 
     # Define a realistic block scan expiration : at least one minute by address
 
-    # Can be set from GLPI::Agent::HTTP::Server::ToolBox::Inventory
-    my $target_expiration = $self->{target_expiration} || 60;
+    # Define a job expiration based on backend-collect-timeout but not less than 1 minute by device
+    # Always make it larger if running a netscan
+    my $target_expiration = $self->{config}->{'backend-collect-timeout'} || 60;
+    $target_expiration *= 5 if $netscan;
     $target_expiration = 60 if $target_expiration < 60;
     setExpirationTime( timeout => $max_count * $target_expiration );
     my $expiration = getExpirationTime();
@@ -305,6 +311,7 @@ sub run {
 
             if ($expiration && time > $expiration) {
                 $self->{logger}->warning("Aborting netdiscovery task as it reached expiration time");
+                $self->{logger}->info("You can set backend-collect-timout higher than the default to use a longer expiration timeout");
                 $abort ++;
                 last;
             }

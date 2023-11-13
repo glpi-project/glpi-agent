@@ -130,8 +130,9 @@ sub run {
         $skip_start_stop = $job->skip_start_stop || any { defined($_->{PID}) } $job->devices();
     }
 
-    # Define a job expiration: 15 minutes by device to scan should be enough, but not less than an hour
-    my $target_expiration = 900;
+    # Define a job expiration based on backend-collect-timeout: by default 15 minutes
+    # by device to scan should be enough, keeping a large minimal global task expiration of one hour
+    my $target_expiration = 5*$self->{config}->{'backend-collect-timeout'};
     my $global_timeout = $devices_count * $target_expiration;
     $global_timeout = 3600 if $global_timeout < 3600;
     setExpirationTime( timeout => $global_timeout );
@@ -215,6 +216,7 @@ sub run {
 
             if ($expiration && time > $expiration) {
                 $self->{logger}->warning("Aborting netinventory job as it reached expiration time");
+                $self->{logger}->info("You can set backend-collect-timout higher than the default to use a longer expiration timeout");
                 $abort ++;
                 last;
             }
