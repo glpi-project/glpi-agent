@@ -157,8 +157,10 @@ sub run {
         my $pid = $job->pid() || $pid_index++;
 
         # send initial message to server in a worker unless it supports newer protocol
-        $manager->start_child(0, sub { $self->_sendStartMessage($pid) })
-            unless $skip_start_stop;
+        unless ($skip_start_stop || $manager->start(0)) {
+            $self->_sendStartMessage($pid);
+            $manager->finish();
+        }
 
         # Only keep job if it has devices to scan
         my @devices = $job->devices()

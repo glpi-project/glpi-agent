@@ -58,6 +58,7 @@ netdiscovery/netinventory:
 * Add ESX & RemoteInventory scanning support to netdiscovery
 * fix #327: Make task expiration a function of backend-collect-timeout configuration
   Add backend-collect-timeout support to glpi-netdiscovery & glpi-netinventory scripts
+* fix #521: Keep compatibility with older platforms when using Parallel::ForkManager
 
 esx:
 * Refactoring to share more code between task & glpi-esx script and to support netscan

@@ -217,7 +217,7 @@ sub run {
         unless ($size) {
             $self->{logger}->debug("no valid block found for job $jobid");
             # Always send control messages from a worker to avoid issue on win32
-            $manager->start_child( 0, sub {
+            unless ($manager->start(0)) {
                 # Support glpi-netdiscovery --control option & local task from ToolBox
                 $self->{_control} = $job->control;
                 unless ($job->localtask) {
@@ -226,8 +226,8 @@ sub run {
                     $self->_sendStopMessage($jobid);
                     $self->_sendStopMessage($jobid);
                 }
-                return;
-            });
+                $manager->finish();
+            }
             $manager->wait_all_children();
             delete $jobs{$jobid};
             next;
@@ -327,7 +327,7 @@ sub run {
                 my $max  = $job->max_threads;
                 $self->{logger}->debug("starting job $jobid with $size ip".($size > 1 ? "s" : "")." to scan using $max worker".($max > 1 ? "s" : ""));
                 # Always send control messages from a worker to avoid issue on win32
-                $manager->start_child( 0, sub {
+                unless ($manager->start(0)) {
                     # Support glpi-netdiscovery --control option & local task from ToolBox
                     $self->{_control} = $job->control;
 
@@ -336,8 +336,8 @@ sub run {
                         # Also send block size to the server
                         $self->_sendBlockMessage($jobid, $size);
                     }
-                    return;
-                });
+                    $manager->finish();
+                }
                 $manager->wait_all_children();
             }
 
