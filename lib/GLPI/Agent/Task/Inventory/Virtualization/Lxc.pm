@@ -14,7 +14,7 @@ use GLPI::Agent::Tools::Network;
 use GLPI::Agent::Tools::Virtualization;
 
 sub isEnabled {
-    return canRun('lxc-ls');
+    return canRun('lxc-ls') || canRun('pct');
 }
 
 sub doInventory {
@@ -22,7 +22,11 @@ sub doInventory {
 
     my $inventory = $params{inventory};
 
-    my @machines = _getVirtualMachines( logger => $params{logger} );
+    # Check if we require to list containers using proxmox pct command
+    my @machines = _getVirtualMachines(
+        runpct => canRun('pct'),
+        logger => $params{logger}
+    );
 
     foreach my $machine (@machines) {
         $inventory->addEntry(
@@ -53,26 +57,28 @@ sub  _getVirtualMachineState {
 sub  _getVirtualMachine {
     my (%params) = @_;
 
-    my $name = $params{name};
+    my $name   = $params{name};
+    my $ctid   = $params{ctid} // $name;
+    my $config = "$params{lxcpath}/$ctid/config";
     my $container = {
         NAME    => $name,
         VMTYPE  => 'lxc',
         VCPU    => 0,
         STATUS  => _getVirtualMachineState(
-            command => $params{test_cmdstate} || "lxc-info -n '$name' -s",
+            command => $params{test_cmdstate} || "lxc-info -n '$ctid' -s",
             logger => $params{logger}
         )
     };
 
-    # Proxmox environment sets name as number
-    my $proxmox = $name =~ /^\d+$/ ? 1 : 0;
+    # Proxmox environment sets name as number and it should have been passed as ctid
+    my $proxmox = $ctid =~ /^\d+$/ ? 1 : 0;
 
-    my $command = "lxc-info -n '$name' -c lxc.cgroup.memory.limit_in_bytes -c lxc.cgroup2.memory.max -c lxc.cgroup.cpuset.cpus -c lxc.cgroup2.cpuset.cpus";
+    my $command = "lxc-info -n '$ctid' -c lxc.cgroup.memory.limit_in_bytes -c lxc.cgroup2.memory.max -c lxc.cgroup.cpuset.cpus -c lxc.cgroup2.cpuset.cpus";
     if ($params{version} < 2.1) {
         # Before 2.1, we need to find MAC as lxc.network.hwaddr in config
-        $command .= "; grep lxc.network.hwaddr $params{config}";
+        $command .= "; grep lxc.network.hwaddr $config";
         # Look for lxc.utsname from config file in Proxmox environment
-        $command .= "; grep utsname $params{config}" if $proxmox;
+        $command .= "; grep utsname $config" if $proxmox;
     } else {
         $command .= " -c lxc.net.0.hwaddr";
         # Look for lxc.uts.name in Proxmox environment
@@ -126,7 +132,7 @@ sub  _getVirtualMachines {
     my (%params) = @_;
 
     my @lines = getAllLines(
-        command => 'lxc-ls -1',
+        command => $params{runpct} ? 'pct list' : 'lxc-ls -1',
         %params
     );
     return unless @lines;
@@ -144,18 +150,37 @@ sub  _getVirtualMachines {
 
     my $rootfs_conf = $version < 2.1 ? "lxc.rootfs" : "lxc.rootfs.path";
     my $max_cpus = 0;
+    my $pct_name_offset = 0;
 
     my @machines;
 
     foreach my $name (@lines) {
+        my $vmid;
+        # Support pct when running with proxmox
+        if ($params{runpct}) {
+            if ($name =~ /^(VMID\s.*\s)Name.*$/) {
+                $pct_name_offset = length($1);
+                next;
+            } elsif ($pct_name_offset) {
+                $vmid = $1 if $name =~ m/^(\d+)/;
+                $name = substr($name, $pct_name_offset);
+            } else {
+                next;
+            }
+        }
+
         # lxc-ls -1 shows one entry by line
         $name =~ s/\s+$//;         # trim trailing whitespace
         next unless length($name); # skip if empty as name can contain space
 
+        # Handle proxmox case using vmid as container name in commands
+        my $ctid = $params{runpct} && $vmid ? $vmid : $name;
+
         my $container = _getVirtualMachine(
             name    => $name,
+            ctid    => $ctid,
             version => $version,
-            config  => "$lxcpath/$name/config",
+            lxcpath => $lxcpath,
             logger  => $params{logger}
         );
 
@@ -169,18 +194,18 @@ sub  _getVirtualMachines {
         my ($machineid, $hostname);
         if ( $container->{STATUS} && $container->{STATUS} eq STATUS_RUNNING ) {
             $machineid = getFirstLine(
-                command => "lxc-attach -n '$name' -- /bin/cat /etc/machine-id",
+                command => "lxc-attach -n '$ctid' -- /bin/cat /etc/machine-id",
                 logger => $params{logger}
             );
             $hostname = getFirstLine(
-                command => "lxc-attach -n '$name' -- /bin/cat /etc/hostname",
+                command => "lxc-attach -n '$ctid' -- /bin/cat /etc/hostname",
                 logger => $params{logger}
             );
         } else {
             # Try to directly access container filesystem for not powered container
             # Works for standard fs or overlay rootfs
             my $rootfs = getFirstMatch(
-                command => "/usr/bin/lxc-info -n '$name' -c $rootfs_conf",
+                command => "/usr/bin/lxc-info -n '$ctid' -c $rootfs_conf",
                 pattern => qr/^lxc\.rootfs.*\s*=\s*(.*)$/,
                 logger  => $params{logger}
             );

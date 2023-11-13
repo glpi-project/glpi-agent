@@ -44,6 +44,7 @@ inventory:
   On linux, skip wrong serialnumbers like "0000" on usb hubs
 * Fix USB devices inventory on linux
 * Support json format normalization based on regexp to remove unsupported virtualmachine status
+* fix #463: Support lxc containers in Proxmox cluster
 
 netdiscovery/netinventory:
 * Enhanced Aruba IAP models support

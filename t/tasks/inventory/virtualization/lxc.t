@@ -75,10 +75,11 @@ foreach my $name (keys(%container_tests)) {
     $file =~ s|/|\\|g if $OSNAME eq "MSWin32";
     my $config = GLPI::Agent::Task::Inventory::Virtualization::Lxc::_getVirtualMachine(
         name          => $name =~ /(^.*)-proxmox$/ ? $1 : $name,
+        ctid          => $name =~ /(^.*)-proxmox$/ ? $1 : "",
         version       => $container_tests{$name}->{version},
         test_cmdstate => $OSNAME eq "MSWin32" ? "type $file" : "cat $file",
         test_cmdinfo  => $OSNAME eq "MSWin32" ? "type $file" : "cat $file",
-        config        => $file,
+        lxcpath       => "resources/virtualization/lxc",
     );
     cmp_deeply($config, $container_tests{$name}->{result}, "checking $name lxc container");
 }
