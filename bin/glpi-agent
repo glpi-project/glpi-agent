@@ -256,8 +256,7 @@ glpi-agent [options] [--server server|--local path]
     --html                         save the inventory as HTML (false)
     --json                         save the inventory as JSON (false)
     -f --force                     always send data to server (false)
-    --backend-collect-timeout=TIME timeout for inventory modules
-                                     execution (30)
+    --backend-collect-timeout=TIME timeout for inventory modules execution (180)
     --additional-content=FILE      additional inventory content file
     --assetname-support=1|2        [unix/linux only] set the asset name depending on the given value:
                                     - 1 (the default), the short hostname is used as asset name
