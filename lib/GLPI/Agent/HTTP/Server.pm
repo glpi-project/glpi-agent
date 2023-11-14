@@ -336,11 +336,18 @@ sub _handle_root {
 
     my $trust = $self->_isTrusted($clientIp);
     my @listening_plugins = ();
+    my %plugins_url = ();
     if ($trust) {
         my @httpd_plugins = map { @{$_->{plugins}} } values(%{$self->{listeners}});
         push @httpd_plugins, @{$self->{_plugins}};
         @listening_plugins = map { { port => $_->config('port') || $self->{port}, name => $_->name() } }
             grep { ! $_->disabled() } @httpd_plugins;
+
+        foreach my $plugin (@httpd_plugins) {
+            my $url = $plugin->url($request)
+                or next;
+            $plugins_url{$plugin->name()} = $url;
+        }
     }
 
     my @sessions = ();
@@ -365,6 +372,7 @@ sub _handle_root {
         trust          => $trust,
         status         => $self->{agent}->getStatus(),
         httpd_plugins  => \@listening_plugins,
+        plugins_url    => \%plugins_url,
         server_targets => \@server_targets,
         local_targets  => \@local_targets,
         sessions       => \@sessions,

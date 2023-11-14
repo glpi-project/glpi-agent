@@ -6,6 +6,7 @@ use warnings;
 use base "GLPI::Agent::Config";
 
 use Cwd qw(abs_path);
+use URI;
 
 use GLPI::Agent::Tools;
 
@@ -86,6 +87,22 @@ sub name {
 # is to be read while config_file() method returns a config filename
 sub defaults {
     return {};
+}
+
+sub url {
+    my ($self, $request) = @_;
+
+    my $defaults = $self->defaults();
+    return unless $defaults->{url_path};
+
+    my ($scheme) = ref($request->uri()) =~ /^URI::(.+)$/;
+    return unless $scheme && $scheme =~ /^http/;
+
+    my ($path) = $self->config('url_path') // $defaults->{url_path};
+    my $uri = URI->new($scheme.'://'.$request->header('host').$path);
+    $uri->port($self->port()) if $self->port();
+
+    return $uri->canonical();
 }
 
 sub supported_method {

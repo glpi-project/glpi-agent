@@ -57,6 +57,9 @@ sub defaults {
     };
 }
 
+# Don't publish an url on glpi-agent index page
+sub url {}
+
 sub supported_method {
     my ($self, $method) = @_;
 

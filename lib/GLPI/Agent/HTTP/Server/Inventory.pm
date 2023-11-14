@@ -44,6 +44,9 @@ sub defaults {
     };
 }
 
+# Don't publish an url on glpi-agent index page
+sub url {}
+
 sub init {
     my ($self) = @_;
 

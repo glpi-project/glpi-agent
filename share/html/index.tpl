@@ -54,8 +54,13 @@
         <p>HTTPD plugins listening ports:</p>
         <ul>";
       foreach my $plugin (@httpd_plugins) {
+        my $url = $plugins_url{$plugin->{name}};
         $OUT .= "
-          <li>$plugin->{port}: $plugin->{name}</li>";
+          <li>$plugin->{port}: ";
+        $OUT .= "<a href='$url'>" if $url;
+        $OUT .= $plugin->{name};
+        $OUT .= "</a>" if $url;
+        $OUT .= "</li>";
       }
       $OUT .= "
         </ul>
