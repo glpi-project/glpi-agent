@@ -8,6 +8,7 @@ use parent "GLPI::Agent::HTTP::Server::Plugin";
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 use Text::Template;
+use URI;
 use URI::Escape;
 use HTML::Entities;
 use Encode qw(decode encode);
@@ -296,6 +297,16 @@ sub yaml_config_specs {
             link        => "yaml",
             icon        => "clipboard-text",
             index       => 100, # index in navbar
+        },
+        agent_home_navbar => {
+            category    => "Navigation bar",
+            type        => $self->isyes($yaml_config->{updating_support}) ? "bool" : "readonly",
+            value       => $self->yesno($yaml_config->{agent_home_navbar}),
+            text        => "Show agent home navigation",
+            navbar      => "Agent home",
+            link        => "agent-home", # agent home link is set dynamically when this is set to agent-home
+            icon        => "home",
+            index       => 110, # index in navbar
         },
         default_page => {
             category    => "Navigation",
@@ -754,6 +765,16 @@ sub _index {
                 or next;
             my $icon = delete $config_specs->{$key}->{icon};
             next unless $self->isyes($config_specs->{$key}->{value});
+            # Update agent home navigation link if required
+            if ($link eq "agent-home") {
+                my ($scheme) = ref($request->uri()) =~ /^URI::(.+)$/;
+                if ($scheme && $scheme =~ /^http/) {
+                    my $uri = URI->new($scheme.'://'.$request->header('host').'/');
+                    $uri->port($self->{server}->{port})
+                        if $self->{server}->{port} && $self->{server}->{port} != $self->port();
+                    $link = $uri->canonical();
+                }
+            }
             my $index = delete $config_specs->{$key}->{index} || 0;
             push @{$navbar{$index}}, [ $navbar, $link, $icon ];
         }
@@ -1087,7 +1108,7 @@ sub _fix_default_page_options {
     foreach my $list (@{$config_specs}) {
         foreach my $config (%{$list}) {
             my $page = $list->{$config};
-            next unless $page->{navbar} && $page->{link} && defined($page->{index});
+            next unless $page->{navbar} && $page->{link} && defined($page->{index}) && $page->{link} ne 'agent-home';
             next unless $self->isyes($page->{value});
             $enabled{$config} = $page;
         }

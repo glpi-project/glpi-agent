@@ -6,7 +6,7 @@
       my ( $text, $link, $icon ) = @{$navbar};
       $OUT .= "
       <li".($request eq $link ? $li_style : "").
-        '><a href="'.$url_path."/".$link.
+        '><a href="'.($link =~ /^http/ ? $link : $url_path."/".$link).
         '"'.($request eq $link ? $a_style : "").
         " id='navbar-$link'><div class='nav'>".($icon ? "<i class='ti ti-$icon'></i>" : "")._($text)."</div></a></li>";
       }

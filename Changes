@@ -82,6 +82,8 @@ toolbox:
 * fix #254: Add credential to iprange not working after adding first one
 * Use tabler-icons v 2.24.0
 * Store discovered snmp credentials and ip_range in dedicated storage in place of netdisco XML
+* fix #255: Add ToolBox url on agent index page and support enabling agent home
+  link in navigation bar
 
 packaging:
 * Update MacOSX packages to use OpenSSL 3.1.4 & zlib 1.3
