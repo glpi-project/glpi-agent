@@ -22,7 +22,6 @@ sub isEnabled {
         # Important for remote inventory optimization
         required    => [ qw/InternetId/ ],
         maxdepth    => 1,
-        logger => $params{logger}
     );
 
     return defined($key) ? 1 : 0;
