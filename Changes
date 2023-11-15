@@ -68,6 +68,7 @@ esx:
 proxy-server-plugin:
 * fix #461: Fix XML content-type support for inventories sent by android agent
 * Store json inventories with right name where locally storing inventories
+* Fixed compressed content support
 
 injector:
 * Support --ssl-cert-file option to permit SSL client authentication

@@ -363,7 +363,7 @@ sub _handle_proxy_request {
     }
 
     # Fix content-type if it has been uncompressed
-    if ($content_type =~ m|^application/x-compress|) {
+    if ($content_type =~ m|^application/x-compress|i) {
         $content_type = "application/json" if $content =~ /^{/;
         $content_type = "application/xml" if $content =~ /^<\?xml/;
     }
