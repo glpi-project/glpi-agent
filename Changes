@@ -45,6 +45,9 @@ inventory:
 * Fix USB devices inventory on linux
 * Support json format normalization based on regexp to remove unsupported virtualmachine status
 * fix #463: Support lxc containers in Proxmox cluster
+* Updated pci.ids to 2023.11.11 version
+* Updated usb.ids to 2023.11.08 version
+* Bump Inventory task version to 1.13
 
 netdiscovery/netinventory:
 * Enhanced Aruba IAP models support
