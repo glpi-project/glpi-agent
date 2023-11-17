@@ -109,7 +109,7 @@ packaging:
 * fix #446: Always add Sys::Hostname dependency to rpm packaging
 * fix #493: Add support for CONFIG=reset option for MSI Installer
 * fix #522: Fix etc, log & var folders are not deleted from installation folder on MSI uninstall
-* fix #527: Support AlmaLinux 9.2 in linux perl installer"
+* fix #527: Support AlmaLinux 9.2 in linux perl installer
 * win32: Updated GLPI-AgentMonitor to v1.2.3 with spanish and russian translation
 
 contrib:
