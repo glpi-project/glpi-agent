@@ -61,9 +61,6 @@ sub _getSentineloneInfo {
         } elsif ($key eq "Connectivity") {
             # SentinelAgent does not directly report "uptodate" status but we can assume it is updated if the cloud connectivity is working.
             $av->{UPTODATE} = $value eq "On" ? 1 : 0;
-        # Not this item as SentinelOne antivirus is not using the traditional signatures definition model
-		# } elsif ($key eq "Last security content update" && $value =~ /^(\d{4}-\d+-\d+) at/) {
-        #    $av->{BASE_CREATION} = $1;
         }
     }
 
