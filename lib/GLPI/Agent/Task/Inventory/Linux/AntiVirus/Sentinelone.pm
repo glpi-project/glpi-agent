@@ -32,18 +32,20 @@ sub doInventory {
 }
 
 sub _getSentineloneInfo {
-	my @command1 = getAllLines(command => '/opt/sentinelone/bin/sentinelctl version');
-	my @command2 = getAllLines(command => '/opt/sentinelone/bin/sentinelctl engines status');
-	my @command3 = getAllLines(command => '/opt/sentinelone/bin/sentinelctl control status');
-	my @command4 = getAllLines(command => '/opt/sentinelone/bin/sentinelctl management status');
+    my (%params) = @_;
 
-    my @output = (@command1,@command2,@command3,@command4)
+    my $cmd = '/opt/sentinelone/bin/sentinelctl';
+
+    my @output = getAllLines(
+        command => "$cmd version && $cmd engines status && $cmd control status && $cmd management status",
+        %params
+    )
         or return;
 
     my $av = {
         NAME     => 'SentinelAgent',
         COMPANY  => 'SentinelOne',
-        ENABLED => 0,
+        ENABLED  => 0,
         UPTODATE => 0,
     };
 
