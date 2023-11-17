@@ -377,6 +377,10 @@ sub _KeyChain_or_KeyStore_Export {
     return $_SSL_ca->{_certs}
         if $_SSL_ca->{_expiration} && time < $_SSL_ca->{_expiration};
 
+    # Free stored certificates
+    IO::Socket::SSL::Utils::CERT_free(@{$_SSL_ca->{_certs}})
+        if ref($_SSL_ca->{_certs}) eq 'ARRAY';
+
     $logger->debug(
         _log_prefix .
         ($_SSL_ca ? "Updating" : "Reading") . " $basename known certificates"
@@ -476,6 +480,13 @@ sub _KeyChain_or_KeyStore_Export {
         }
     }
 
+    # Always include default CA file from Mozilla::CA
+    if (Mozilla::CA->require()) {
+        my $cacert = Mozilla::CA::SSL_ca_file();
+        push @certs, IO::Socket::SSL::Utils::PEM_file2certs($cacert)
+            if -e $cacert;
+    }
+
     # Update class level datas
     $_SSL_ca->{_expiration} = time + 3600;
     return $_SSL_ca->{_certs} = \@certs;
@@ -555,6 +566,12 @@ sub _uncompressGzip {
     );
 
     return $result;
+}
+
+sub END {
+    # Free eventually stored certificates
+    IO::Socket::SSL::Utils::CERT_free(@{$_SSL_ca->{_certs}})
+        if ref($_SSL_ca->{_certs}) eq 'ARRAY';
 }
 
 1;

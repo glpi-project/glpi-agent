@@ -2,6 +2,14 @@ Revision history for GLPI agent
 
 1.7 not yet released
 
+1.6.1 Fri, 17 Nov 2023
+
+core:
+* fix #530: Also include Mozilla::CA default store when including windows keystore
+  or macosx keychains certificates as IO::Socket::SSL can't no more use them since
+  LWP::Protocol::https update.
+  This fixes SSL connection issues appeared with 1.6 release.
+
 1.6 Wed, 15 Nov 2023
 
 core:
