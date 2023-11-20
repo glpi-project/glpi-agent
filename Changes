@@ -5,6 +5,9 @@ Revision history for GLPI agent
 inventory:
 * PR #531: Add SentinelOne Antivirus support on Linux, thanks to @MarcSamD
 
+toolbox:
+* fix #533: Fix Toolbox export buttons in inventory results
+
 1.6.1 Fri, 17 Nov 2023
 
 core:
