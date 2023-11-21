@@ -5,6 +5,9 @@ Revision history for GLPI agent
 inventory:
 * PR #531: Add SentinelOne Antivirus support on Linux, thanks to @MarcSamD
 
+netdiscovery/netinventory:
+* Enhanced Toshiba printers support
+
 toolbox:
 * fix #533: Fix Toolbox export buttons in inventory results
 
