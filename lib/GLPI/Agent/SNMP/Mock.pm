@@ -99,7 +99,8 @@ sub reset_original_context {
 sub _setIndexedValues {
     my ($self, $file) = @_;
 
-    my @lines = getAllLines(file => $file || $self->{_file});
+    my @lines = getAllLines(file => $file || $self->{_file})
+        or die "No content found in ".($file || $self->{_file})." file\n";
 
     # check first line for safety
     die "invalid file format\n" unless $lines[0] =~ /^(\S+) = .*/;
