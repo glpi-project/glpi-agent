@@ -46,8 +46,11 @@ sub getHostname {
 
 sub _getHostnameUnix {
 
-    Sys::Hostname->require();
-    return Sys::Hostname::hostname();
+    Net::Domain->require();
+    my $fqdn = Net::Domain::hostfqdn();
+    $fqdn =~ s/\.$//;
+
+    return $fqdn;
 }
 
 sub _getHostnameWindows {
