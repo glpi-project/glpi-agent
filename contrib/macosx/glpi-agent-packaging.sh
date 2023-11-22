@@ -424,7 +424,7 @@ cat >pkg/build-info.plist <<-BUILD_INFO
 	    <key>distribution_style</key>
 	    <true/>
 	    <key>identifier</key>
-	    <string>org.glpi-project.glpi-agent</string>
+	    <string>com.teclib.glpi-agent</string>
 	    <key>install_location</key>
 	    <string>/</string>
 	    <key>name</key>
@@ -518,7 +518,7 @@ cat >pkg/Distribution.xml <<-CUSTOM
 	<?xml version="1.0" encoding="utf-8" standalone="no"?>
 	<installer-gui-script minSpecVersion="2">
 	    <title>GLPI-Agent $VERSION ($ARCH)</title>
-	    <pkg-ref id="org.glpi-project.glpi-agent" version="$VERSION" onConclusion="none">$PKG</pkg-ref>
+	    <pkg-ref id="com.teclib.glpi-agent" version="$VERSION" onConclusion="none">$PKG</pkg-ref>
 	    <license file="License.txt" mime-type="text/plain" />
 	    <background file="background.png" uti="public.png" alignment="bottomleft"/>
 	    <background-darkAqua file="background.png" uti="public.png" alignment="bottomleft"/>
@@ -526,12 +526,12 @@ cat >pkg/Distribution.xml <<-CUSTOM
 	    <options customize="never" require-scripts="false" hostArchitectures="$ARCH"/>
 	    <choices-outline>
 	        <line choice="default">
-	            <line choice="org.glpi-project.glpi-agent"/>
+	            <line choice="com.teclib.glpi-agent"/>
 	        </line>
 	    </choices-outline>
 	    <choice id="default"/>
-	    <choice id="org.glpi-project.glpi-agent" visible="false">
-	        <pkg-ref id="org.glpi-project.glpi-agent"/>
+	    <choice id="com.teclib.glpi-agent" visible="false">
+	        <pkg-ref id="com.teclib.glpi-agent"/>
 	    </choice>
 	    <os-version min="$MACOSX_DEPLOYMENT_TARGET" />
 	</installer-gui-script>
@@ -557,7 +557,7 @@ cat >pkg/payload/Applications/GLPI-Agent/Contents/Info.plist <<-INFO_PLIST
 	    <key>CFBundleExecutable</key>
 	    <string>glpi-agent</string>
 	    <key>CFBundleIdentifier</key>
-	    <string>org.glpi-project.glpi-agent</string>
+	    <string>com.teclib.glpi-agent</string>
 	    <key>CFBundleInfoDictionaryVersion</key>
 	    <string>6.0</string>
 	    <key>CFBundlePackageType</key>

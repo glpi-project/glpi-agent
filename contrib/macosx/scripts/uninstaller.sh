@@ -5,8 +5,8 @@ INSTALLPATH="`pwd`"
 cd ..
 
 echo "Stopping and unloading service"
-sudo launchctl stop org.glpi-project.glpi-agent
-sudo launchctl unload /Library/LaunchDaemons/org.glpi-project.glpi-agent.plist
+sudo launchctl stop com.teclib.glpi-agent
+sudo launchctl unload /Library/LaunchDaemons/com.teclib.glpi-agent.plist
 
 # Still wait until process has been stopped
 read PID XXX <<<`ps -ec -o pid,command | grep glpi-agent`
@@ -37,8 +37,8 @@ done <<-FILES
     $INSTALLPATH
     /var/log/glpi-agent.log
     /usr/local/bin/dmidecode
-    /Library/LaunchDaemons/org.glpi-project.glpi-agent.plist
+    /Library/LaunchDaemons/com.teclib.glpi-agent.plist
 FILES
 
 # Unregister package
-sudo pkgutil --forget org.glpi-project.glpi-agent $INSTALLPATH
+sudo pkgutil --forget com.teclib.glpi-agent $INSTALLPATH
