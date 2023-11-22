@@ -11,6 +11,9 @@ netdiscovery/netinventory:
 toolbox:
 * fix #533: Fix Toolbox export buttons in inventory results
 
+injector:
+* fix #537: Make -x, --xml-ua & --json-ua options equivalent and update help text
+
 1.6.1 Fri, 17 Nov 2023
 
 core:

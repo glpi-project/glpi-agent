@@ -139,18 +139,16 @@ sub sendContent {
         $content = uncompress($content);
     }
 
-    if ($content =~ /^<\?xml/) {
-        undef $agentid;
-        if ($options->{"xml-ua"}) {
+    if ($options->{"xml-ua"} || $options->{"json-ua"}) {
+        if ($content =~ /^<\?xml/) {
+            undef $agentid;
             my $xml = GLPI::Agent::XML->new(string => $content);
             my $tree = $xml->dump_as_hash();
             $useragent = $tree->{REQUEST}->{CONTENT}->{VERSIONCLIENT}
                 if $tree && $tree->{REQUEST} && $tree->{REQUEST}->{CONTENT} &&
                     $tree->{REQUEST}->{CONTENT}->{VERSIONCLIENT};
-        }
-    } elsif ($agentid || $content =~ /^{/) {
-        $agentid = newagentid() unless $agentid;
-        if ($options->{"xml-ua"} || $options->{"json-ua"}) {
+        } elsif ($agentid || $content =~ /^{/) {
+            $agentid = newagentid() unless $agentid;
             my $json = decode_json($content);
             $useragent = $json->{content}->{versionclient}
                 if $json && $json->{content} && $json->{content}->{versionclient};
@@ -299,7 +297,10 @@ glpi-injector - A tool to push inventory in an OCS Inventory or compatible serve
 
 =head1 SYNOPSIS
 
-glpi-injector [options] [--file <file>|--directory <directory>|--stdin|--useragent <user-agent>]
+glpi-injector [-h|--help] [-R|--recursive] [-r|--remove] [-v|--verbose] [--debug]
+    [--useragent <user-agent>|-x|--xml-ua|--json-ua] [-C|--no-compression]
+    [--no-ssl-check] [--ssl-cert-file <private certificate file>] [[-P|--proxy] <proxy url>]
+    [[-f|--file] <file>|[-d|--directory] <directory>|--stdin] [-u|--url] <url>
 
   Options:
     -h --help      this menu
@@ -312,8 +313,8 @@ glpi-injector [options] [--file <file>|--directory <directory>|--stdin|--userage
     --debug        debug mode to output server answer
     --stdin        read data from STDIN
     --useragent    set used HTTP User-Agent for POST
-    -x --xml-ua    use Client version found in XML as User-Agent for POST
-    -x --json-ua   use Client version found in JSON as User-Agent for POST
+    -x --xml-ua --json-ua
+                   use Client version found in XML or JSON as User-Agent for POST
     --no-ssl-check do not check server SSL certificate
     --ssl-cert-file client certificate file
     -C --no-compression don't compress sent XML inventories
