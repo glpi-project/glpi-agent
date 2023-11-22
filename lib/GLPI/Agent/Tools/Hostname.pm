@@ -48,7 +48,7 @@ sub _getHostnameUnix {
 
     Net::Domain->require();
     my $fqdn = Net::Domain::hostfqdn();
-    $fqdn =~ s/\.$//;
+    $fqdn =~ s/\.$//;  # the module may return a trailing dot
 
     return $fqdn;
 }
