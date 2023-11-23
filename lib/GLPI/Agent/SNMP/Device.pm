@@ -440,7 +440,7 @@ sub setModel {
     }
 
     # reset manufacturer by rule as real vendor based on first model word
-    if (exists $self->{MODEL}) {
+    unless (empty($self->{MODEL})) {
         my ($first_word) = $self->{MODEL} =~ /(\S+)/;
         my $result = $sysmodel_first_word{lc($first_word)};
         if ($result && $result->{manufacturer}) {
