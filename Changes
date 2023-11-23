@@ -4,6 +4,13 @@ Revision history for GLPI agent
 
 inventory:
 * PR #531: Add SentinelOne Antivirus support on Linux, thanks to @MarcSamD
+* Feature: Update support assetname-support as option for agent on most unix
+  if 1 (the default), the short hostname is used as asset name
+  if 2, the as-is hostname (can be fqdn) is used as asset name
+  if 3, the fqdn hostname is used as asset name
+  this feature does not apply on MacOS or Windows
+  this feature now works for remote ssh and for option 3, it requires perl installed
+  on targeted computer and perl mode enabled on defined remote.
 
 netdiscovery/netinventory:
 * Enhanced Toshiba printers support
