@@ -583,7 +583,15 @@ sub _handlePersistentState {
 
     if (!$self->{deviceid} && !$data->{deviceid}) {
         # compute an unique agent identifier, based on host name and current time
-        my $hostname = getHostname();
+        my %config = ();
+        if ($self->{config}->{'assetname-support'}) {
+            if ($self->{config}->{'assetname-support'} == 1) {
+                $config{short} = 1;
+            } elsif ($self->{config}->{'assetname-support'} == 3) {
+                $config{fqdn} = 1;
+            }
+        }
+        my $hostname = getHostname(%config);
 
         my ($year, $month , $day, $hour, $min, $sec) =
             (localtime (time))[5, 4, 3, 2, 1, 0];
