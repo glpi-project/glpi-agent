@@ -14,6 +14,8 @@ inventory:
   this feature does not apply on MacOS or Windows
   this feature now works for remote ssh and for option 3, it requires perl installed
   on targeted computer and perl mode enabled on defined remote.
+* Feature: Make assetname-support option also works to compute agent deviceid when
+  unknown
 
 netdiscovery/netinventory:
 * Enhanced Toshiba printers support
