@@ -26,11 +26,11 @@ my @hex2canonical_tests = (
 );
 
 my @alt2canonical_tests = (
-    [ 'AABBCCDDEEFF', 'AA:BB:CC:DD:EE:FF' ],
-    [ '0xAABBCCDDEEFF', 'AA:BB:CC:DD:EE:FF' ],
-    [ 'AA:BB:CC:DD:EE:FF', 'AA:BB:CC:DD:EE:FF' ],
-    [ 'AA BB CC DD EE FF', 'AA:BB:CC:DD:EE:FF' ],
-    [ 'AA-BB-CC-DD-EE-FF', 'AA:BB:CC:DD:EE:FF' ],
+    [ 'AABBCCDDEEFF', 'aa:bb:cc:dd:ee:ff' ],
+    [ '0xAABBCCDDEEFF', 'aa:bb:cc:dd:ee:ff' ],
+    [ 'AA:BB:CC:DD:EE:FF', 'aa:bb:cc:dd:ee:ff' ],
+    [ 'AA BB CC DD EE FF', 'aa:bb:cc:dd:ee:ff' ],
+    [ 'AA-BB-CC-DD-EE-FF', 'aa:bb:cc:dd:ee:ff' ],
 );
 
 my @mask_tests = (

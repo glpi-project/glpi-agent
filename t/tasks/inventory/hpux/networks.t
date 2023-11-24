@@ -177,56 +177,56 @@ my %nwmgr_tests = (
         lan7 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '98:4B:E1:5B:D0:87',
+            mac        => '98:4b:e1:5b:d0:87',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan13 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '98:4B:E1:5B:D0:8E',
+            mac        => '98:4b:e1:5b:d0:8e',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan5000 => {
             media      => 'vlan',
             status     => 'UP',
-            mac        => '00:17:A4:77:04:28',
+            mac        => '00:17:a4:77:04:28',
             related_if => undef,
             driver     => 'vlan'
         },
         lan1 => {
             media      => '10GBASE',
             status     => 'UP',
-            mac        => '00:17:A4:77:04:2A',
+            mac        => '00:17:a4:77:04:2a',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan4 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '98:4B:E1:5B:D0:82',
+            mac        => '98:4b:e1:5b:d0:82',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan11 => {
             media      => '10GBASE',
             status     => 'UP',
-            mac        => '00:17:A4:77:04:48',
+            mac        => '00:17:a4:77:04:48',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan0 => {
             media      => '10GBASE',
             status     => 'UP',
-            mac        => '00:17:A4:77:04:28',
+            mac        => '00:17:a4:77:04:28',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan9 => {
             media      => '10GBASE',
             status     => 'UP',
-            mac        => '00:17:A4:77:04:2E',
+            mac        => '00:17:a4:77:04:2e',
             related_if => undef,
             driver     => 'iexgbe'
         },
@@ -240,14 +240,14 @@ my %nwmgr_tests = (
         lan2 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '00:17:A4:77:04:38',
+            mac        => '00:17:a4:77:04:38',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan10 => {
             media      => '10GBASE',
             status     => 'UP',
-            mac        => '00:17:A4:77:04:46',
+            mac        => '00:17:a4:77:04:46',
             related_if => undef,
             driver     => 'iexgbe'
         },
@@ -261,56 +261,56 @@ my %nwmgr_tests = (
         lan900 => {
             media      => 'hp_apa',
             status     => 'UP',
-            mac        => '00:17:A4:77:04:28',
+            mac        => '00:17:a4:77:04:28',
             related_if => undef,
             driver     => 'hp_apa'
         },
         lan3 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '00:17:A4:77:04:3A',
+            mac        => '00:17:a4:77:04:3a',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan14 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '98:4B:E1:5B:D0:8B',
+            mac        => '98:4b:e1:5b:d0:8b',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan15 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '98:4B:E1:5B:D0:8F',
+            mac        => '98:4b:e1:5b:d0:8f',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan5001 => {
             media      => 'vlan',
             status     => 'UP',
-            mac        => '00:17:A4:77:04:46',
+            mac        => '00:17:a4:77:04:46',
             related_if => undef,
             driver     => 'vlan'
         },
         lan8 => {
             media      => '10GBASE',
             status     => 'UP',
-            mac        => '00:17:A4:77:04:2C',
+            mac        => '00:17:a4:77:04:2c',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan6 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '98:4B:E1:5B:D0:83',
+            mac        => '98:4b:e1:5b:d0:83',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan12 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '98:4B:E1:5B:D0:8A',
+            mac        => '98:4b:e1:5b:d0:8a',
             related_if => undef,
             driver     => 'iexgbe'
         },
@@ -324,14 +324,14 @@ my %nwmgr_tests = (
         lan901 => {
             media      => 'hp_apa',
             status     => 'UP',
-            mac        => '00:17:A4:77:04:46',
+            mac        => '00:17:a4:77:04:46',
             related_if => undef,
             driver     => 'hp_apa'
         },
         lan5 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '98:4B:E1:5B:D0:86',
+            mac        => '98:4b:e1:5b:d0:86',
             related_if => undef,
             driver     => 'iexgbe'
         }
@@ -340,56 +340,56 @@ my %nwmgr_tests = (
         lan7 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '98:4B:E1:5B:73:2D',
+            mac        => '98:4b:e1:5b:73:2d',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan13 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '98:4B:E1:5B:73:34',
+            mac        => '98:4b:e1:5b:73:34',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan5000 => {
             media      => 'vlan',
             status     => 'UP',
-            mac        => '00:17:A4:77:00:20',
+            mac        => '00:17:a4:77:00:20',
             related_if => undef,
             driver     => 'vlan'
         },
         lan1 => {
             media      => '10GBASE',
             status     => 'UP',
-            mac        => '00:17:A4:77:00:22',
+            mac        => '00:17:a4:77:00:22',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan4 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '98:4B:E1:5B:73:28',
+            mac        => '98:4b:e1:5b:73:28',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan11 => {
             media      => '10GBASE',
             status     => 'UP',
-            mac        => '00:17:A4:77:00:50',
+            mac        => '00:17:a4:77:00:50',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan0 => {
             media      => '10GBASE',
             status     => 'UP',
-            mac        => '00:17:A4:77:00:20',
+            mac        => '00:17:a4:77:00:20',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan9 => {
             media      => '10GBASE',
             status     => 'UP',
-            mac        => '00:17:A4:77:00:26',
+            mac        => '00:17:a4:77:00:26',
             related_if => undef,
             driver     => 'iexgbe'
         },
@@ -403,14 +403,14 @@ my %nwmgr_tests = (
         lan2 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '00:17:A4:77:00:42',
+            mac        => '00:17:a4:77:00:42',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan10 => {
             media      => '10GBASE',
             status     => 'UP',
-            mac        => '00:17:A4:77:00:40',
+            mac        => '00:17:a4:77:00:40',
             related_if => undef,
             driver     => 'iexgbe'
         },
@@ -424,56 +424,56 @@ my %nwmgr_tests = (
         lan900 => {
             media      => 'hp_apa',
             status     => 'UP',
-            mac        => '00:17:A4:77:00:20',
+            mac        => '00:17:a4:77:00:20',
             related_if => undef,
             driver     => 'hp_apa'
         },
         lan3 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '00:17:A4:77:00:3E',
+            mac        => '00:17:a4:77:00:3e',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan14 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '98:4B:E1:5B:73:31',
+            mac        => '98:4b:e1:5b:73:31',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan15 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '98:4B:E1:5B:73:35',
+            mac        => '98:4b:e1:5b:73:35',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan5001 => {
             media      => 'vlan',
             status     => 'UP',
-            mac        => '00:17:A4:77:00:40',
+            mac        => '00:17:a4:77:00:40',
             related_if => undef,
             driver     => 'vlan'
         },
         lan8 => {
             media      => '10GBASE',
             status     => 'UP',
-            mac        => '00:17:A4:77:00:24',
+            mac        => '00:17:a4:77:00:24',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan6 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '98:4B:E1:5B:73:29',
+            mac        => '98:4b:e1:5b:73:29',
             related_if => undef,
             driver     => 'iexgbe'
         },
         lan12 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '98:4B:E1:5B:73:30',
+            mac        => '98:4b:e1:5b:73:30',
             related_if => undef,
             driver     => 'iexgbe'
         },
@@ -487,14 +487,14 @@ my %nwmgr_tests = (
         lan901 => {
             media      => 'hp_apa',
             status     => 'UP',
-            mac        => '00:17:A4:77:00:40',
+            mac        => '00:17:a4:77:00:40',
             related_if => undef,
             driver     => 'hp_apa'
         },
         lan5 => {
             media      => '10GBASE',
             status     => 'DOWN',
-            mac        => '98:4B:E1:5B:73:2C',
+            mac        => '98:4b:e1:5b:73:2c',
             related_if => undef,
             driver     => 'iexgbe'
         }
@@ -627,266 +627,266 @@ my %lanscan_tests = (
             DESCRIPTION => 'lan1',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:A4'
+            MACADDR     => '00:17:a4:77:08:a4'
         },
         {
             lan_id      => '10',
             DESCRIPTION => 'lan10',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:E8'
+            MACADDR     => '00:17:a4:77:08:e8'
         },
         {
             lan_id      => '11',
             DESCRIPTION => 'lan11',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:EC'
+            MACADDR     => '00:17:a4:77:08:ec'
         },
         {
             lan_id      => '12',
             DESCRIPTION => 'lan12',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '1C:C1:DE:40:C6:BE'
+            MACADDR     => '1c:c1:de:40:c6:be'
         },
         {
             lan_id      => '13',
             DESCRIPTION => 'lan13',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '1C:C1:DE:40:C6:C2'
+            MACADDR     => '1c:c1:de:40:c6:c2'
         },
         {
             lan_id      => '14',
             DESCRIPTION => 'lan14',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '1C:C1:DE:40:C6:BF'
+            MACADDR     => '1c:c1:de:40:c6:bf'
         },
         {
             lan_id      => '15',
             DESCRIPTION => 'lan15',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '1C:C1:DE:40:C6:C3'
+            MACADDR     => '1c:c1:de:40:c6:c3'
         },
         {
             lan_id      => '2',
             DESCRIPTION => 'lan2',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:A8'
+            MACADDR     => '00:17:a4:77:08:a8'
         },
         {
             lan_id      => '3',
             DESCRIPTION => 'lan3',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:AC'
+            MACADDR     => '00:17:a4:77:08:ac'
         },
         {
             lan_id      => '16',
             DESCRIPTION => 'lan16',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:F0'
+            MACADDR     => '00:17:a4:77:08:f0'
         },
         {
             lan_id      => '17',
             DESCRIPTION => 'lan17',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:F4'
+            MACADDR     => '00:17:a4:77:08:f4'
         },
         {
             lan_id      => '18',
             DESCRIPTION => 'lan18',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '1C:C1:DE:40:C6:C6'
+            MACADDR     => '1c:c1:de:40:c6:c6'
         },
         {
             lan_id      => '19',
             DESCRIPTION => 'lan19',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '1C:C1:DE:40:C6:CA'
+            MACADDR     => '1c:c1:de:40:c6:ca'
         },
         {
             lan_id      => '20',
             DESCRIPTION => 'lan20',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '1C:C1:DE:40:C6:C7'
+            MACADDR     => '1c:c1:de:40:c6:c7'
         },
         {
             lan_id      => '21',
             DESCRIPTION => 'lan21',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '1C:C1:DE:40:C6:CB'
+            MACADDR     => '1c:c1:de:40:c6:cb'
         },
         {
             lan_id      => '22',
             DESCRIPTION => 'lan22',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:F8'
+            MACADDR     => '00:17:a4:77:08:f8'
         },
         {
             lan_id      => '37',
             DESCRIPTION => 'lan37',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:FC'
+            MACADDR     => '00:17:a4:77:08:fc'
         },
         {
             lan_id      => '23',
             DESCRIPTION => 'lan23',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => 'D8:D3:85:D8:14:62'
+            MACADDR     => 'd8:d3:85:d8:14:62'
         },
         {
             lan_id      => '38',
             DESCRIPTION => 'lan38',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => 'D8:D3:85:D8:14:66'
+            MACADDR     => 'd8:d3:85:d8:14:66'
         },
         {
             lan_id      => '24',
             DESCRIPTION => 'lan24',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => 'D8:D3:85:D8:14:63'
+            MACADDR     => 'd8:d3:85:d8:14:63'
         },
         {
             lan_id      => '39',
             DESCRIPTION => 'lan39',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => 'D8:D3:85:D8:14:67'
+            MACADDR     => 'd8:d3:85:d8:14:67'
         },
         {
             lan_id      => '6',
             DESCRIPTION => 'lan6',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:A2'
+            MACADDR     => '00:17:a4:77:08:a2'
         },
         {
             lan_id      => '7',
             DESCRIPTION => 'lan7',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:A6'
+            MACADDR     => '00:17:a4:77:08:a6'
         },
         {
             lan_id      => '25',
             DESCRIPTION => 'lan25',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:B2'
+            MACADDR     => '00:17:a4:77:08:b2'
         },
         {
             lan_id      => '26',
             DESCRIPTION => 'lan26',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:E6'
+            MACADDR     => '00:17:a4:77:08:e6'
         },
         {
             lan_id      => '27',
             DESCRIPTION => 'lan27',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:F2'
+            MACADDR     => '00:17:a4:77:08:f2'
         },
         {
             lan_id      => '28',
             DESCRIPTION => 'lan28',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:F6'
+            MACADDR     => '00:17:a4:77:08:f6'
         },
         {
             lan_id      => '29',
             DESCRIPTION => 'lan29',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '1C:C1:DE:40:E6:4B'
+            MACADDR     => '1c:c1:de:40:e6:4b'
         },
         {
             lan_id      => '30',
             DESCRIPTION => 'lan30',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '1C:C1:DE:40:E6:4F'
+            MACADDR     => '1c:c1:de:40:e6:4f'
         },
         {
             lan_id      => '8',
             DESCRIPTION => 'lan8',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:AA'
+            MACADDR     => '00:17:a4:77:08:aa'
         },
         {
             lan_id      => '9',
             DESCRIPTION => 'lan9',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:AE'
+            MACADDR     => '00:17:a4:77:08:ae'
         },
         {
             lan_id      => '31',
             DESCRIPTION => 'lan31',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:EA'
+            MACADDR     => '00:17:a4:77:08:ea'
         },
         {
             lan_id      => '32',
             DESCRIPTION => 'lan32',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:EE'
+            MACADDR     => '00:17:a4:77:08:ee'
         },
         {
             lan_id      => '33',
             DESCRIPTION => 'lan33',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:FA'
+            MACADDR     => '00:17:a4:77:08:fa'
         },
         {
             lan_id      => '34',
             DESCRIPTION => 'lan34',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:FE'
+            MACADDR     => '00:17:a4:77:08:fe'
         },
         {
             lan_id      => '35',
             DESCRIPTION => 'lan35',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '1C:C1:DE:40:E6:53'
+            MACADDR     => '1c:c1:de:40:e6:53'
         },
         {
             lan_id      => '36',
             DESCRIPTION => 'lan36',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '1C:C1:DE:40:E6:57'
+            MACADDR     => '1c:c1:de:40:e6:57'
         },
         {
             lan_id      => '900',
             DESCRIPTION => 'lan900',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:A0'
+            MACADDR     => '00:17:a4:77:08:a0'
         },
         {
             lan_id      => '901',
@@ -900,7 +900,7 @@ my %lanscan_tests = (
             DESCRIPTION => 'lan902',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:17:A4:77:08:B0'
+            MACADDR     => '00:17:a4:77:08:b0'
         },
         {
             lan_id      => '903',
@@ -923,14 +923,14 @@ my %lanscan_tests = (
             DESCRIPTION => 'lan0',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:16:35:3E:AC:5C'
+            MACADDR     => '00:16:35:3e:ac:5c'
         },
         {
             lan_id      => '1',
             DESCRIPTION => 'lan1',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:16:35:3E:AC:5D'
+            MACADDR     => '00:16:35:3e:ac:5d'
         }
     ],
     hpux2 => [
@@ -939,14 +939,14 @@ my %lanscan_tests = (
             DESCRIPTION => 'lan0',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:16:35:3E:AC:44'
+            MACADDR     => '00:16:35:3e:ac:44'
         },
         {
             lan_id      => '1',
             DESCRIPTION => 'lan1',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => '00:16:35:3E:AC:45'
+            MACADDR     => '00:16:35:3e:ac:45'
         },
         {
             lan_id      => '900',
