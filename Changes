@@ -21,6 +21,7 @@ injector:
 packaging:
 * Update MacOSX packages to use OpenSSL 3.2.0
 * Update MacOSX packaging to use "com.teclib.glpi-agent" as AppID and service identifier
+* Fix linux installer typo preventing configuration update when required
 
 1.6.1 Fri, 17 Nov 2023
 

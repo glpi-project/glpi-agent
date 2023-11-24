@@ -374,7 +374,7 @@ sub configure {
         die "Can't apply configuration without $folder folder\n"
             unless -d $folder;
 
-        my $fh = self->open_os_file($installed_config, '>')
+        my $fh = $self->open_os_file($installed_config, '>')
             or die "Can't create $installed_config: $!\n";
         $self->verbose("Writing configuration in $installed_config");
         foreach my $option (sort keys(%{$self->{_options}})) {
