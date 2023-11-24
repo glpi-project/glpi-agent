@@ -2,11 +2,15 @@ Revision history for GLPI agent
 
 1.7 not yet released
 
+core:
+* Make alt2canonical() always return a mac address in lower case if found one
+
 inventory:
 * PR #531: Add SentinelOne Antivirus support on Linux, thanks to @MarcSamD
 
 netdiscovery/netinventory:
 * Enhanced Toshiba printers support
+* Fix LLDP support
 
 toolbox:
 * fix #533: Fix Toolbox export buttons in inventory results

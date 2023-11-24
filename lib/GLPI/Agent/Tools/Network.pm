@@ -139,8 +139,9 @@ sub alt2canonical {
     my ($address) = @_;
     return unless $address;
 
-    my @bytes = $address =~ /^(?:0x)?([[:xdigit:]]{2})[ :-]?([[:xdigit:]]{2})[ :-]?([[:xdigit:]]{2})[ :-]?([[:xdigit:]]{2})[ :-]?([[:xdigit:]]{2})[ :-]?([[:xdigit:]]{2})$/;
-    return join(':', @bytes);
+    my @bytes = $address =~ /^(?:0x)?([[:xdigit:]]{2})[ :-]?([[:xdigit:]]{2})[ :-]?([[:xdigit:]]{2})[ :-]?([[:xdigit:]]{2})[ :-]?([[:xdigit:]]{2})[ :-]?([[:xdigit:]]{2})$/
+        or return;
+    return lc(join(':', @bytes));
 }
 
 sub getNetworkMask {

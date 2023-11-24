@@ -1250,56 +1250,54 @@ sub _getLLDPInfo {
         }
 
         my $connection = {
-            SYSMAC => lc(alt2canonical($mac)) || lc(alt2canonical(getCanonicalString($mac)))
+            SYSMAC => alt2canonical($mac) || alt2canonical(getCanonicalString($mac)) || getCanonicalMacAddress($mac)
         };
         $connection->{SYSDESCR} = $sysdescr if $sysdescr;
         $connection->{SYSNAME} = $sysname if $sysname;
 
         # portId is either a port number or a port mac address, duplicating chassisId
         my $PortIdSubtype = "";
-        $PortIdSubtype = getCanonicalString($lldpRemPortIdSubtype->{suffix}) || ""
-            if $lldpRemPortIdSubtype && $lldpRemPortIdSubtype->{suffix};
-        my $portId = $lldpRemPortId->{$suffix};
+        $PortIdSubtype = getCanonicalString($lldpRemPortIdSubtype->{$suffix})
+            if $lldpRemPortIdSubtype && !empty($lldpRemPortIdSubtype->{$suffix});
+        my $portId = getCanonicalString($lldpRemPortId->{$suffix} // "");
         # As before we need to guess portId type if not set
         if (!$PortIdSubtype) {
-            if ($portId =~ /^0x[0-9a-f]{12}$/i) {
-                my $thismac = lc(alt2canonical($portId));
-                push @{$connection->{MAC}}, $thismac unless $thismac eq $connection->{SYSMAC};
-            } else {
-                $portId = getCanonicalString($portId);
+            if ($portId =~ $mac_address_pattern) {
+                my $thismac = alt2canonical($portId);
+                push @{$connection->{MAC}}, $thismac unless !$thismac || $thismac eq $connection->{SYSMAC};
+            } elsif (!empty($portId)) {
                 if ($portId =~ /^\d+$/) {
                     $connection->{IFNUMBER} = $portId;
                 } else {
-                    my $maybe_mac = lc(alt2canonical($portId));
-                    if ($maybe_mac) {
-                        push @{$connection->{MAC}}, $maybe_mac unless $maybe_mac eq $connection->{SYSMAC};
+                    my $maybe_mac = alt2canonical($portId) || getCanonicalMacAddress($portId);
+                    if ($maybe_mac && $maybe_mac ne $connection->{SYSMAC}) {
+                        # Add mac only if different than SYSMAC
+                        push @{$connection->{MAC}}, $maybe_mac;
                     } else {
                         $connection->{IFDESCR} = $portId;
                     }
                 }
             }
         } elsif ($PortIdSubtype eq '3') { # Mac address
-            push @{$connection->{MAC}}, lc(alt2canonical($portId));
-        } elsif ($PortIdSubtype eq '7') { # "local" should be the remote IFNUMBER
-            $portId = getCanonicalString($portId);
+            my $mac = alt2canonical($portId) || getCanonicalMacAddress($lldpRemPortId->{$suffix});
+            # Add mac only if different than SYSMAC
+            push @{$connection->{MAC}}, $mac if $mac && $mac ne $connection->{SYSMAC};
+        } elsif ($PortIdSubtype eq '1' || $PortIdSubtype eq '5' || $PortIdSubtype eq '7') { # Interface alias or interface name or "local", "local" should be the remote IFNUMBER
             if ($portId =~ /^\d+$/) {
                 $connection->{IFNUMBER} = $portId;
-            } else {
+            } elsif ($portId) {
                 $connection->{IFDESCR} = $portId;
             }
         }
 
         my $ifdescr = getCanonicalString($lldpRemPortDesc->{$suffix});
-        if (defined($ifdescr)) {
+        unless (empty($ifdescr)) {
             # Sometime ifnumber is indeed set as ifdescr
-            if ($ifdescr =~ /^\d+$/ && !defined($connection->{IFNUMBER})) {
+            if ($ifdescr =~ /^\d+$/ && empty($connection->{IFNUMBER})) {
                 $connection->{IFNUMBER} = $ifdescr;
-            } elsif (!$connection->{IFDESCR}) {
+            } elsif (empty($connection->{IFDESCR})) {
                 $connection->{IFDESCR} = $ifdescr;
             }
-        } else {
-            $logger->debug("LLDP support: skipping portId $portId ($PortIdSubtype)")
-                if $PortIdSubtype;
         }
 
         my $id           = _getElement($suffix, -2);
@@ -1364,13 +1362,13 @@ sub _getCDPInfo {
         if ($deviceId =~ /^0x/) {
             if (length($deviceId) == 14) {
                 # let's assume it is a mac address if the length is 6 bytes
-                $connection->{SYSMAC} = lc(alt2canonical($deviceId));
+                $connection->{SYSMAC} = alt2canonical($deviceId);
             } else {
                 # otherwise it's may be an hex-encode hostname
                 $deviceId = getCanonicalString($deviceId);
                 if ($deviceId =~ /^[0-9A-Fa-f]{12}$/) {
                     # let's assume it is a mac address if the length is 12 chars
-                    $connection->{SYSMAC} = lc(alt2canonical($deviceId));
+                    $connection->{SYSMAC} = alt2canonical($deviceId);
                 } elsif (!$connection->{SYSNAME}) {
                     $connection->{SYSNAME} = $deviceId;
                 }
@@ -1381,11 +1379,11 @@ sub _getCDPInfo {
 
         if ($connection->{SYSNAME} &&
             $connection->{SYSNAME} =~ /^SIP([A-F0-9a-f]*)$/) {
-            $connection->{SYSMAC} = lc(alt2canonical("0x".$1));
+            $connection->{SYSMAC} = alt2canonical("0x".$1);
         } elsif ($connection->{SYSNAME} &&
             $connection->{SYSNAME} =~ /^SIP-(.*)$/ &&
             $deviceId =~ /^$1([0-9A-Fa-f]{12})$/) {
-            $connection->{SYSMAC} = lc(alt2canonical("0x".$1));
+            $connection->{SYSMAC} = alt2canonical("0x".$1);
         }
 
         # warning: multiple neighbors announcement for the same interface
