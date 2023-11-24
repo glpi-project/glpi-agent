@@ -15,6 +15,7 @@ injector:
 * fix #537: Make -x, --xml-ua & --json-ua options equivalent and update help text
 
 packaging:
+* Update MacOSX packages to use OpenSSL 3.2.0
 * Update MacOSX packaging to use "com.teclib.glpi-agent" as AppID and service identifier
 
 1.6.1 Fri, 17 Nov 2023
