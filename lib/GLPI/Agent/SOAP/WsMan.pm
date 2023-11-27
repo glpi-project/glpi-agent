@@ -125,7 +125,7 @@ sub _send {
         my $envelope = Envelope->new($xml->dump_as_hash());
         if ($envelope->header->action->is("fault")) {
             my $code = $envelope->body->fault->errorCode;
-            return $self->abort("WMI resource not available") if $code && $code eq '2150858752';
+            return $self->abort("WMI ".($self->{_resource_class} ? $self->{_resource_class}." " : "")."resource not available") if $code && $code eq '2150858752';
             $self->debug2("Raw client xml request: ".$message);
             $self->debug2("Raw server xml answer: ".$response->content);
             my $text = $envelope->body->fault->reason->text;
@@ -174,6 +174,7 @@ sub enumerate {
 
     my @items;
     my $class = $params{query} ? '*' : $params{class};
+    $self->{_resource_class} = $class unless $class eq '*';
     my $url = $self->resource_url($class, $params{moniker});
 
     my $messageid = MessageID->new();
@@ -308,6 +309,9 @@ sub enumerate {
 
     # Send End to remote
     $self->end($operationid);
+
+    # Forget what resource was requested
+    delete $self->{_resource_class};
 
     return @items;
 }
