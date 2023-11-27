@@ -75,7 +75,7 @@ sub new {
 sub abort {
     my ( $self, $message ) = @_;
     $self->lasterror($message);
-    $self->{logger}->debug($message) if $self->{logger};
+    $self->{logger}->debug2($message) if $self->{logger};
     return;
 }
 
