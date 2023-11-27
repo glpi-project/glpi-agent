@@ -190,6 +190,11 @@ sub doInventory {
         if ($machineid && $hostname) {
             $inventory->setHardware({ UUID => getVirtualUUID($machineid, $hostname) });
         }
+    } elsif ($type eq 'VirtualBox') {
+        # On VirtualBox, set SSN from system uuid. Here we support win32 without dmidecode case.
+        my $uuid  = $inventory->getHardware('UUID');
+        $inventory->setBios({ SSN  => lc($uuid) })
+            if $uuid && !$inventory->getBios('SSN');
     }
 
     $inventory->setHardware({

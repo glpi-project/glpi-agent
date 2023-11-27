@@ -64,11 +64,9 @@ sub _getBios {
     $bios->{SSN} = $chassis_info->{'Serial Number'} if (!defined($bios->{SSN}));
     $bios->{MSN} = $base_info->{'Serial Number'};
 
-    if ($bios->{MMODEL} && $bios->{MMODEL} eq "VirtualBox" &&
-        $bios->{SSN} eq "0" &&
-        $bios->{MSN} eq "0") {
-        $bios->{SSN} = $system_info->{'UUID'}
-    }
+    # On VirtualBox, set SSN from system uuid
+    $bios->{SSN} = lc($system_info->{'UUID'})
+        if $bios->{MMODEL} && $bios->{MMODEL} eq "VirtualBox" && !$bios->{SSN} && !$bios->{MSN} && !empty($system_info->{'UUID'});
 
     return $bios;
 }
