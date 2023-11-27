@@ -945,7 +945,7 @@ sub _keepOleLastError {
         if ($error != 0x80004005 && $error != 0x80020003) {
             $worker_lasterror = [ $error, $known_ole_errors{$error} ];
             my $logger = GLPI::Agent::Logger->new();
-            $logger->debug("Win32::OLE ERROR: ".($known_ole_errors{$error}||$lasterror));
+            $logger->debug2("Win32::OLE ERROR: ".($known_ole_errors{$error}||$lasterror));
         }
     } else {
         $worker_lasterror = [];
