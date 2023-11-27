@@ -40,6 +40,7 @@ But we didn't find any device supporting SNMP with provided credentials:
 IPs not responding to ping and not seen in ARP table:
 Verbosity:
 Completed:
+Abort:
 Aborted:
 %s network scan:
 Freeze log output:

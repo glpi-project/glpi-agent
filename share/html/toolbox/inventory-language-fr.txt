@@ -40,6 +40,7 @@ But we didn't find any device supporting SNMP with provided credentials: Mais au
 IPs not responding to ping and not seen in ARP table: IPs ne répondant pas au ping et non trouvées dans la table ARP
 Verbosity: Verbosité
 Completed: Terminée
+Abort: Interrompre
 Aborted: Interrompue
 %s network scan: Scan réseau de %s
 Freeze log output: Geler la mise à jour du journal
