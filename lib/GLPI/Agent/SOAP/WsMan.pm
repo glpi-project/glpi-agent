@@ -126,7 +126,7 @@ sub _send {
         if ($envelope->header->action->is("fault")) {
             my $code = $envelope->body->fault->errorCode;
             return $self->abort("WMI resource not available") if $code && $code eq '2150858752';
-            $self->debug2("Raw client xml request: ".$xml);
+            $self->debug2("Raw client xml request: ".$message);
             $self->debug2("Raw server xml answer: ".$response->content);
             my $text = $envelope->body->fault->reason->text;
             return $self->abort($text || $response->status_line);
