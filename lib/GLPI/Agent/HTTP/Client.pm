@@ -90,6 +90,13 @@ sub new {
     return $self;
 }
 
+sub timeout {
+    my ($self, $timeout) = @_;
+
+    # Get/set LWP::UserAgent timeout as required
+    return $self->{ua}->timeout($timeout);
+}
+
 sub request {
     my ($self, $request, $file, $no_proxy_host, $timeout, %skiperror) = @_;
 

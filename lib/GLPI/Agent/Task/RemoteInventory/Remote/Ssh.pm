@@ -172,6 +172,15 @@ sub _ssh2_exec_status {
     return $ret;
 }
 
+sub timeout {
+    my ($self, $timeout) = @_;
+
+    # Reset Net::SSH2 current client timeout if required
+    $self->{_ssh2}->timeout($timeout * 1000) if $timeout && $self->{_ssh2};
+
+    $self->SUPER::timeout($timeout);
+}
+
 sub checking_error {
     my ($self) = @_;
 

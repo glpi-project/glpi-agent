@@ -4,6 +4,7 @@ Revision history for GLPI agent
 
 core:
 * Make alt2canonical() always return a mac address in lower case if found one
+* Fix HTTP::Client API to support timeout update
 
 inventory:
 * PR #531: Add SentinelOne Antivirus support on Linux, thanks to @MarcSamD
@@ -17,9 +18,14 @@ inventory:
 * Feature: Make assetname-support option also works to compute agent deviceid when
   unknown
 
+remoteinventory:
+* Fix connection timeout API to support timeout update 
+
 netdiscovery/netinventory:
 * Enhanced Toshiba printers support
 * Fix LLDP support
+* Update timeout to backend-collect-timeout configuration when scanning ESX or
+  RemoteInventory after a successful scan requested by ToolBox
 
 esx:
 * Fix first connection timeout support
@@ -27,6 +33,7 @@ esx:
 
 toolbox:
 * fix #533: Fix Toolbox export buttons in inventory results
+* Fix wrong remote inventory results when using a short timeout for quickier detection
 
 injector:
 * fix #537: Make -x, --xml-ua & --json-ua options equivalent and update help text

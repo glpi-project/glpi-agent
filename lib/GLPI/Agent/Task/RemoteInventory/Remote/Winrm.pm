@@ -57,6 +57,15 @@ sub prepare {
     );
 }
 
+sub timeout {
+    my ($self, $timeout) = @_;
+
+    # Reset http client timeout if required
+    $self->{_winrm}->timeout($timeout) if $timeout && $self->{_winrm};
+
+    $self->SUPER::timeout($timeout);
+}
+
 sub checking_error {
     my ($self) = @_;
 

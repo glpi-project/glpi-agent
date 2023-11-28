@@ -452,6 +452,11 @@ sub run {
                         };
                         my $credentials = first { $_->{ID} eq $authremote } @{$jobaddress->{remote_credentials}};
                         if ($credentials && $found) {
+
+                            # Reset timeout to backend-collect-timeout as first set one is only for discovery
+                            $timeout = $self->{config}->{"backend-collect-timeout"};
+                            $found->timeout($timeout);
+
                             my $path;
                             $path = $self->{target}->getPath() if $self->{target}->isType('local');
                             # When target path is agent folder, inventory should be saved in inventory subfolder
