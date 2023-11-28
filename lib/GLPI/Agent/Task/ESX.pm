@@ -34,8 +34,11 @@ sub connect {
 
     my $url = 'https://' . $params{host} . '/sdk/vimService';
 
-    my $vpbs =
-      GLPI::Agent::SOAP::VMware->new(url => $url, vcenter => 1 );
+    my $vpbs = GLPI::Agent::SOAP::VMware->new(
+        url     => $url,
+        vcenter => 1,
+        timeout => $self->timeout(),
+    );
     if ( !$vpbs->connect( $params{user}, $params{password} ) ) {
         $self->lastError($vpbs->{lastError});
         return;
@@ -128,7 +131,6 @@ sub run {
     $self->{client} = GLPI::Agent::HTTP::Client::Fusion->new(
         logger  => $self->{logger},
         config  => $self->{config},
-        timeout => $self->timeout(),
     );
     die unless $self->{client};
 
@@ -337,6 +339,9 @@ sub timeout {
     my ($self, $timeout) = @_;
 
     $self->{_timeout} = $timeout if defined($timeout);
+
+    # Set http client timeout if required
+    $self->{vpbs}->timeout($timeout) if $timeout && $self->{vpbs};
 
     return $self->{_timeout} || $self->{config}->{"backend-collect-timeout"} // 60;
 }

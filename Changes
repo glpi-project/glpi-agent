@@ -21,6 +21,9 @@ netdiscovery/netinventory:
 * Enhanced Toshiba printers support
 * Fix LLDP support
 
+esx:
+* Fix first connection timeout support
+
 toolbox:
 * fix #533: Fix Toolbox export buttons in inventory results
 

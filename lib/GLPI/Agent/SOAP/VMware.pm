@@ -35,6 +35,13 @@ sub new {
     return $self;
 }
 
+sub timeout {
+    my ($self, $timeout) = @_;
+
+    # Get/set LWP::UserAgent timeout as required
+    return $self->{ua}->timeout($timeout);
+}
+
 sub _send {
     my ( $self, $action, $xmlToSend ) = @_;
 
