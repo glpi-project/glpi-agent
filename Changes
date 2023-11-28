@@ -23,6 +23,7 @@ netdiscovery/netinventory:
 
 esx:
 * Fix first connection timeout support
+* Added --timeout option support to glpi-esx
 
 toolbox:
 * fix #533: Fix Toolbox export buttons in inventory results
