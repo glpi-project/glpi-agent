@@ -180,6 +180,20 @@ sub getRemoteHostname {
 sub getRemoteFQDN {
     my ($self) = @_;
 
+    # First try to get FQDN from registry
+    my $tcpip_key = $self->getRemoteRegistryKey(
+        path        => 'HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/services/Tcpip/Parameters',
+        required    => [ 'Hostname', 'Domain', 'NV Hostname', 'NV Domain' ],
+        maxdepth    => 0,
+        logger      => $self->{logger}
+    );
+    if ($tcpip_key) {
+        my $hostname = $tcpip_key->{'/Hostname'} // $tcpip_key->{'/NV Hostname'};
+        my $domain   = $tcpip_key->{'/Domain'}   // $tcpip_key->{'/NV Domain'};
+        return join('.', $hostname, $domain)
+            unless empty($hostname) || empty($domain);
+    }
+
     my $computersystem = $self->_getComputerSystem()
         or return;
 

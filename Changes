@@ -20,6 +20,7 @@ inventory:
 
 remoteinventory:
 * Fix connection timeout API to support timeout update 
+* Update win32 fqdn inventory
 
 netdiscovery/netinventory:
 * Enhanced Toshiba printers support
