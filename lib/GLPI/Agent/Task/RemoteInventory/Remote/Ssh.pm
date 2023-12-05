@@ -374,14 +374,14 @@ sub getRemoteHostname {
 sub getRemoteFQDN {
     my ($self) = @_;
     # command is run remotely
-    return $self->getRemoteFirstLine(command => "perl -e \"'use Net::Domain qw(hostfqdn); print hostfqdn()'\"")
+    return $self->getRemoteFirstLine(command => "perl -e \"use Net::Domain qw(hostfqdn); print hostfqdn()\"")
         if $self->mode('perl');
 }
 
 sub getRemoteHostDomain {
     my ($self) = @_;
     # command will be run remotely
-    return $self->getRemoteFirstLine(command => "perl -e \"'use Net::Domain qw(hostdomain); print hostdomain()'\"")
+    return $self->getRemoteFirstLine(command => "perl -e \"use Net::Domain qw(hostdomain); print hostdomain()\"")
         if $self->mode('perl');
 }
 
