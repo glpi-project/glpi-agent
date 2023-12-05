@@ -605,4 +605,57 @@ sub remoteTimeZone {
     return $tz;
 }
 
+sub remotePerlModule {
+    my ($self, $module, $version) = @_;
+
+    my $command = "perl -M$module -e " .($version ? "'exit(\$".$module."::VERSION < $version)'" : "1");
+
+    # Support Net::SSH2 facilities to exec command
+    my $ret = $self->_ssh2_exec_status($command);
+    return $ret == 0
+        if defined($ret);
+
+    # Don't try ssh command if mode has been set to libssh2 only
+    return 0 if $self->mode('libssh2') && !$self->mode('ssh');
+
+    my $stderr = $OSNAME eq 'MSWin32' ? "2>nul" : "2>/dev/null";
+
+    return system($self->_ssh(), $command, $stderr) == 0;
+}
+
+sub remoteGetPrinters {
+    my ($self) = @_;
+
+    my @printers;
+
+    if ($self->mode('perl')) {
+        my $printer;
+        foreach my $line ($self->getRemoteAllLines(
+            command => "perl -MNet::CUPS -e 'map { print \"uri: \".\$_->getUri().\"\\nname: \".\$_->getName().\"\\ndriver: \".\$_->getOptionValue(\"printer-make-and-model\").\"\\ndescription: \".\$_->getDescription().\"\\n---\\n\" } Net::CUPS->new->getDestinations()'"
+        )) {
+            if ($line =~ /^name: (.+)$/) {
+                $printer->{NAME} = $1;
+            } elsif ($line =~ /^uri: (.+)$/) {
+                $printer->{PORT} = $1;
+                my ($opts) = $1 =~ /^[^?]+\?(.*)$/;
+                my @opts = split("&", $opts // "");
+                my ($serial) = map { /^serial=(.+)$/ } grep { /^serial=.+/ } @opts;
+                ($serial) = map { /^uuid=(.+)$/ } grep { /^uuid=.+/ } @opts unless $serial;
+                $printer->{SERIAL} = $serial if $serial;
+            } elsif ($line =~ /^driver: (.+)$/) {
+                $printer->{DRIVER} = $1;
+            } elsif ($line =~ /^description: (.+)$/) {
+                $printer->{DESCRIPTION} = $1;
+            } elsif ($line =~ /^---$/) {
+                push @printers, $printer if $printer;
+                undef $printer;
+            } elsif ($printer && $printer->{DESCRIPTION}) {
+                $printer->{DESCRIPTION} .= "\n".$line;
+            }
+        }
+    }
+
+    return @printers;
+}
+
 1;

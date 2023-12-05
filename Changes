@@ -24,6 +24,7 @@ remoteinventory:
 * Update win32 fqdn inventory
 * Add timezone inventory support
 * Fix OS FQDN and domain for ssh remote inventory
+* Add printers inventory support for ssh remote inventory with perl mode
 
 netdiscovery/netinventory:
 * Enhanced Toshiba printers support

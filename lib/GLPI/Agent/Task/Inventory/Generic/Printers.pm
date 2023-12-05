@@ -21,12 +21,27 @@ sub isEnabled {
     # we use WMI on Windows
     return 0 if OSNAME eq 'MSWin32';
 
-    # Printers inventory not supported remotely
+    # Printers inventory only supported remotely with Net::CUPS
     if ($params{remote}) {
-        $params{logger}->debug(
-            "printers inventory not supported remotely"
-        );
-        return 0;
+        unless ($GLPI::Agent::Tools::remote->mode('perl')) {
+            $params{logger}->debug(
+                "printers inventory not supported remotely without perl mode enabled"
+            );
+            return 0;
+        }
+        unless ($GLPI::Agent::Tools::remote->remotePerlModule('Net::CUPS')) {
+            $params{logger}->debug(
+                "printers inventory not supported remotely without Net::CUPS Perl module on remote"
+            );
+            return 0;
+        }
+        unless ($GLPI::Agent::Tools::remote->remotePerlModule('Net::CUPS', "0.60")) {
+            $params{logger}->debug(
+                "Net::CUPS Perl remote module too old (required at least: 0.60), unable to retrieve printers"
+            );
+            return 0;
+        }
+        return 1;
     }
 
     Net::CUPS->require();
@@ -53,6 +68,18 @@ sub doInventory {
     my (%params) = @_;
 
     my $inventory = $params{inventory};
+    my $remote    = $inventory->getRemote();
+
+    # We should handle remote case
+    if ($remote) {
+        foreach my $printer ($GLPI::Agent::Tools::remote->remoteGetPrinters()) {
+            $inventory->addEntry(
+                section => 'PRINTERS',
+                entry   => $printer
+            );
+        }
+        return;
+    }
 
     my $cups = Net::CUPS->new();
     my @printers = $cups->getDestinations();
