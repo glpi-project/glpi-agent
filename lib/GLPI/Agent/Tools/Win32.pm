@@ -569,7 +569,7 @@ sub runPowerShell {
     my $file = $fh->filename;
     return unless $file && -f $file;
 
-    return map { s/\r$//; decode("UTF-8", $_) } getAllLines(
+    return map { my $line = $_ ; $line =~ s/\r$//; decode("UTF-8", $line) } getAllLines(
         command => "powershell -NonInteractive -ExecutionPolicy Unrestricted -File $file",
         %params
     );

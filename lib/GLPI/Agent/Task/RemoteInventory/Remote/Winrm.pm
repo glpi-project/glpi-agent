@@ -269,7 +269,7 @@ sub remoteTimeZone {
 
     # Use PowerShell script to extract seconds since epoch
     $self->{logger}->debug("Using PowerShell to get timezone");
-    my @lines = map { $_ =~ s/\r$// ; $_ } grep { defined($_) } $self->runPowerShell(
+    my @lines = map { my $line = $_ ; $line =~ s/\r$//; $line } grep { defined($_) } $self->runPowerShell(
         script  => '(Get-TimeZone).Id;(Get-TimeZone).BaseUtcOffset.TotalSeconds'
     );
     if (@lines) {
@@ -292,7 +292,7 @@ sub runPowerShell {
 
     my $psOption = "-encodedCommand " . encode_base64(encode("UTF16-LE", $script), "");
 
-    return map { s/\r$//; decode("UTF-8", $_) } getAllLines(
+    return map { my $line = $_ ; $line =~ s/\r$//; decode("UTF-8", $line) } getAllLines(
         command => "powershell -NonInteractive -ExecutionPolicy Unrestricted $psOption",
         logger  => $self->{logger}
     );
