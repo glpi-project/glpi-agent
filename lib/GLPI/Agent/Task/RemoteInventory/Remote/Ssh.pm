@@ -543,4 +543,66 @@ sub remoteGetNextUser {
     return shift(@{$self->{_users}}) if $self->{_users};
 }
 
+sub remoteTimeZone {
+    my ($self) = @_;
+
+    my ($tz, $tz_name, $tz_offset, $fallback);
+
+    $self->{logger}->debug2("Using date command to get timezone");
+    my $timezone = getFirstLine(
+        command => 'date +"%Z ; %z"',
+        logger  => $self->{logger}
+    );
+    ($fallback, $tz_offset) = $timezone =~ /^(.*) ; ([-+]?\d+)$/
+        unless empty($timezone);
+
+    # Check TZ environment variable
+    $timezone = getFirstLine(
+        command => 'echo $TZ',
+        logger  => $self->{logger}
+    );
+    $tz_name = $timezone unless empty($timezone);
+
+    # Try other methods (inspired by DateTime::TimeZone::Local::Unix)
+    unless ($tz_name) {
+        $tz_name = trimWhitespace(getFirstLine(
+            file    => '/etc/timezone',
+            logger  => $self->{logger}
+        ));
+    }
+    unless ($tz_name) {
+        my $link = $self->remoteReadLink('/etc/localtime');
+        $tz_name = $1
+            if !empty($link) && $link =~ m{zoneinfo/(?:posix/|right/)?(.*)$};
+    }
+    unless ($tz_name) {
+        $tz_name = trimWhitespace(getFirstMatch(
+            file    => '/etc/TIMEZONE',
+            pattern => qr/^\s*TZ\s*=\s*(\S+)/,
+            logger  => $self->{logger}
+        ));
+    }
+    unless ($tz_name) {
+        $tz_name = trimWhitespace(getFirstMatch(
+            file    => '/etc/sysconfig/clock',
+            pattern => qr/^(?:TIME)?ZONE="([^"]+)"/,
+            logger  => $self->{logger}
+        ));
+    }
+    unless ($tz_name) {
+        $tz_name = trimWhitespace(getFirstMatch(
+            file    => '/etc/default/init',
+            pattern => qr/^TZ=(.+)/,
+            logger  => $self->{logger}
+        ));
+    }
+
+    $tz->{NAME}   = $tz_name // $fallback
+        unless empty($tz_name) && empty($fallback);
+    $tz->{OFFSET} = $tz_offset
+        unless empty($tz_offset);
+
+    return $tz;
+}
+
 1;

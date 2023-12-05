@@ -26,6 +26,14 @@ sub doInventory {
 
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
+    my $remote    = $inventory->getRemote();
+
+    # We should handle remote case
+    if ($remote) {
+        my $tz = $GLPI::Agent::Tools::remote->remoteTimeZone();
+        $inventory->setOperatingSystem({ TIMEZONE => $tz }) if $tz;
+        return;
+    }
 
     # Compute a timezone offset like '+0200' using the difference between UTC and local time
     # Might require merging with detectLocalTimeOffset (macOS inventory) in the future

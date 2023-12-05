@@ -5,6 +5,7 @@ Revision history for GLPI agent
 core:
 * Make alt2canonical() always return a mac address in lower case if found one
 * Fix HTTP::Client API to support timeout update
+* Move runPowerShell() API remote case support in RemoteInventory API
 
 inventory:
 * PR #531: Add SentinelOne Antivirus support on Linux, thanks to @MarcSamD
@@ -21,6 +22,7 @@ inventory:
 remoteinventory:
 * Fix connection timeout API to support timeout update 
 * Update win32 fqdn inventory
+* Add timezone inventory support
 
 netdiscovery/netinventory:
 * Enhanced Toshiba printers support

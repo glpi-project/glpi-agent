@@ -9,9 +9,13 @@ use UNIVERSAL::require;
 use parent 'GLPI::Agent::Task::RemoteInventory::Remote';
 
 use URI;
+use POSIX;
+use MIME::Base64;
+use Encode qw(decode encode);
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::SOAP::WsMan;
+use GLPI::Agent::Tools::Win32::TimeZone;
 
 use constant    supported => 1;
 
@@ -256,6 +260,42 @@ sub remoteReadLink {
 
 sub remoteGetNextUser {
     # GetNextUser not supported as not used for MSWin32 inventory
+}
+
+sub remoteTimeZone {
+    my ($self) = @_;
+
+    my $tz;
+
+    # Use PowerShell script to extract seconds since epoch
+    $self->{logger}->debug("Using PowerShell to get timezone");
+    my @lines = map { $_ =~ s/\r$// ; $_ } grep { defined($_) } $self->runPowerShell(
+        script  => '(Get-TimeZone).Id;(Get-TimeZone).BaseUtcOffset.TotalSeconds'
+    );
+    if (@lines) {
+        my ($tz_name, $tz_offset) = @lines;
+        $tz->{NAME} = WindowsToIANA($tz_name) if $tz_name;
+        if ($tz_offset =~ /\d/) {
+            my $offset_sign = $tz_offset < 0 ? '-' : '+';
+            $tz->{OFFSET} = strftime($offset_sign."\%H\%M", gmtime(abs(int($tz_offset))));
+        }
+    }
+
+    return $tz;
+}
+
+sub runPowerShell {
+    my ($self, %params) = @_;
+
+    my $script = $params{script}
+        or return;
+
+    my $psOption = "-encodedCommand " . encode_base64(encode("UTF16-LE", $script), "");
+
+    return map { s/\r$//; decode("UTF-8", $_) } getAllLines(
+        command => "powershell -NonInteractive -ExecutionPolicy Unrestricted $psOption",
+        logger  => $self->{logger}
+    );
 }
 
 sub winrm_url {

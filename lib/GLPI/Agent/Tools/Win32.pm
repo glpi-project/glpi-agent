@@ -553,27 +553,24 @@ sub runCommand {
 sub runPowerShell {
     my (%params) = @_;
 
+    my $remote = $GLPI::Agent::Tools::remote;
+
     my $script = delete $params{script}
         or return;
 
-    my ($fh, $psOption);
-    if ($GLPI::Agent::Tools::remote) {
-        $psOption = "-encodedCommand " . encode_base64(encode("UTF16-LE", $script), "");
-    } else {
-        # Keeps File::Temp object in %params so temporary file is removed while leaving
-        $fh = File::Temp->new(
-            TEMPLATE    => 'get-appxpackage-XXXXXX',
-            SUFFIX      => '.ps1'
-        );
-        print $fh $script;
-        close( $fh);
-        my $file = $fh->filename;
-        return unless $file && -f $file;
-        $psOption = "-File $file";
-    }
+    return $remote->runPowerShell(script => $script) if $remote;
 
-    return map { decode("UTF-8", $_) } getAllLines(
-        command => "powershell -NonInteractive -ExecutionPolicy Unrestricted $psOption",
+    my $fh = File::Temp->new(
+        TEMPLATE    => 'get-appxpackage-XXXXXX',
+        SUFFIX      => '.ps1'
+    );
+    print $fh $script;
+    close( $fh);
+    my $file = $fh->filename;
+    return unless $file && -f $file;
+
+    return map { s/\r$//; decode("UTF-8", $_) } getAllLines(
+        command => "powershell -NonInteractive -ExecutionPolicy Unrestricted -File $file",
         %params
     );
 }
