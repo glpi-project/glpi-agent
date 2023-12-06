@@ -50,9 +50,9 @@ sub _getVideos {
 
         my $video = {
             CHIPSET => $object->{VideoProcessor},
-            MEMORY  => $object->{AdapterRAM},
             NAME    => $object->{Name},
         };
+        $video->{MEMORY} = $object->{AdapterRAM} if $object->{AdapterRAM};
 
         if ($object->{CurrentHorizontalResolution}) {
             $video->{RESOLUTION} =
@@ -81,8 +81,10 @@ sub _getVideos {
                         $video->{MEMORY} = $memorysize;
                         last;
                     } elsif (defined($videokey->{$subkey}->{"/HardwareInformation.MemorySize"})) {
-                        my $memorysize = unpack("L", $videokey->{$subkey}->{"/HardwareInformation.MemorySize"});
-                        $video->{MEMORY} = $memorysize;
+                        my $memorysize = $videokey->{$subkey}->{"/HardwareInformation.MemorySize"} =~ /^0x/ ?
+                            hex2dec($videokey->{$subkey}->{"/HardwareInformation.MemorySize"})
+                            : unpack("L", $videokey->{$subkey}->{"/HardwareInformation.MemorySize"});
+                        $video->{MEMORY} = $memorysize if $memorysize;
                         last;
                     }
                 }

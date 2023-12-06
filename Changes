@@ -18,6 +18,7 @@ inventory:
   on targeted computer and perl mode enabled on defined remote.
 * Feature: Make assetname-support option also works to compute agent deviceid when
   unknown
+* Fix video card memory inventory on win32
 
 remoteinventory:
 * Fix connection timeout API to support timeout update 
