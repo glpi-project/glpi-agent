@@ -127,7 +127,7 @@ sub remoteCanRun {
     # Still return when looking for command with unix standard path
     return 0 if $binary =~ m{^(/usr)?/(s?bin|Library)/};
 
-    # Support where argument synatx with a path set
+    # Support where argument syntax with a path set
     if ($binary =~ m|(.*)[\\/]([^\\/]+)$|) {
         $binary = "$1:$2";
         $binary =~ s|/|\\|g;
