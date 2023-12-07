@@ -58,6 +58,7 @@ sub new {
     );
 
     $self->{_url} = $params{url};
+    $self->{_lang} = 'en-US';
     $self->{_winrm} = $params{winrm} // 0;
     $self->{_noauth} = $params{user} && $params{password} ? 0 : 1;
 
@@ -166,6 +167,13 @@ sub identify {
 
     $self->debug2("Identify response: ".$identify->ProductVendor." - ".$identify->ProductVersion);
 
+    # Get remote lang as default lang for future exchanges
+    my $lang = $envelope->attribute('xml:lang');
+    if ($lang) {
+        $self->{_lang} = $lang;
+        $self->debug2("Identify response language: ".$lang);
+    }
+
     return $identify;
 }
 
@@ -209,8 +217,8 @@ sub enumerate {
             $action,
             $messageid,
             MaxEnvelopeSize->new(512000),
-            Locale->new("en-US"),
-            DataLocale->new("en-US"),
+            Locale->new($self->{_lang}),
+            DataLocale->new($self->{_lang}),
             $sid,
             $operationid,
             SequenceId->new(),
@@ -425,8 +433,8 @@ sub runmethod {
             $action,
             $messageid,
             MaxEnvelopeSize->new(512000),
-            Locale->new("en-US"),
-            DataLocale->new("en-US"),
+            Locale->new($self->{_lang}),
+            DataLocale->new($self->{_lang}),
             $sid,
             $operationid,
             SequenceId->new(),
@@ -530,8 +538,8 @@ sub shell {
             $action,
             $messageid,
             MaxEnvelopeSize->new(512000),
-            Locale->new("en-US"),
-            DataLocale->new("en-US"),
+            Locale->new($self->{_lang}),
+            DataLocale->new($self->{_lang}),
             $sid,
             $operationid,
             SequenceId->new(),
@@ -597,8 +605,8 @@ sub shell {
             $action,
             $messageid,
             MaxEnvelopeSize->new(512000),
-            Locale->new("en-US"),
-            DataLocale->new("en-US"),
+            Locale->new($self->{_lang}),
+            DataLocale->new($self->{_lang}),
             $sid,
             $operationid,
             SequenceId->new(),
@@ -691,8 +699,8 @@ sub receive {
                 Action->new("receive"),
                 $messageid,
                 MaxEnvelopeSize->new(512000),
-                Locale->new("en-US"),
-                DataLocale->new("en-US"),
+                Locale->new($self->{_lang}),
+                DataLocale->new($self->{_lang}),
                 $sid,
                 $operationid,
                 SequenceId->new(),
@@ -783,8 +791,8 @@ sub signal {
             Action->new("signal"),
             $messageid,
             MaxEnvelopeSize->new(512000),
-            Locale->new("en-US"),
-            DataLocale->new("en-US"),
+            Locale->new($self->{_lang}),
+            DataLocale->new($self->{_lang}),
             $sid,
             $operationid,
             SequenceId->new(),
@@ -841,8 +849,8 @@ sub delete {
             Action->new("delete"),
             $messageid,
             MaxEnvelopeSize->new(512000),
-            Locale->new("en-US"),
-            DataLocale->new("en-US"),
+            Locale->new($self->{_lang}),
+            DataLocale->new($self->{_lang}),
             $sid,
             $operationid,
             SequenceId->new(),
