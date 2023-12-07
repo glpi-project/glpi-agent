@@ -54,7 +54,7 @@ sub yaml_config_specs {
             index       => 50, # index in navbar
         },
         credentials_yaml  => {
-            category    => "IP Ranges",
+            category    => "Toolbox plugin configuration",
             type        => $self->isyes($yaml_config->{'updating_support'}) ? "option" : "readonly",
             value       => $yaml_config->{'credentials_yaml'} || (
                 $self->isyes($yaml_config->{'updating_support'}) ? "" : "[default]"),
