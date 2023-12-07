@@ -576,12 +576,6 @@ sub run {
 
     my $dest = catfile($self->global->{image_dir}, 'perl/agent/GLPI/Agent/Version.pm');
     $t->process($version, $vars, $dest) || die $t->error();
-
-    # Update default conf to include conf.d folder
-    open CONF, ">>", catfile($self->global->{image_dir}, 'etc/agent.cfg')
-        or die "Can't open default conf: $!\n";
-    print CONF "include 'conf.d/'\n";
-    close(CONF);
 }
 
 package
