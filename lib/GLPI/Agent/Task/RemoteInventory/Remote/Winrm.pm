@@ -268,7 +268,7 @@ sub remoteTimeZone {
     my $tz;
 
     # Use PowerShell script to extract seconds since epoch
-    $self->{logger}->debug("Using PowerShell to get timezone");
+    $self->{logger}->debug2("Using PowerShell to get timezone");
     my @lines = map { my $line = $_ ; $line =~ s/\r$//; $line } grep { defined($_) } $self->runPowerShell(
         script  => '(Get-TimeZone).Id;(Get-TimeZone).BaseUtcOffset.TotalSeconds'
     );
