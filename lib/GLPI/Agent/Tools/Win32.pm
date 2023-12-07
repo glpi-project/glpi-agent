@@ -275,9 +275,9 @@ sub getRegistryValue {
 sub getRegistryKeyValue {
     my ($key, $valueName, $withType) = @_;
 
-    Win32API::Registry->require()
-        # Only really required for tests
-        or return $withType ? [ $key->{"/$valueName"}, $key->{"/$valueName"} =~ /^0x/ ? 4 : 1 ] : $key->{"/$valueName"};
+    # Required for RemoteInventory or tests
+    return $withType ? [ $key->{"/$valueName"}, $key->{"/$valueName"} =~ /^0x/ ? 4 : 1 ] : $key->{"/$valueName"}
+        if $GLPI::Agent::Tools::remote || !Win32API::Registry->require();
 
     my ($valType, $valData, $dLen) = (0, "", 0);
 
