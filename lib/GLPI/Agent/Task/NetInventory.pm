@@ -209,7 +209,9 @@ sub run {
 
         # Enqueue as device as possible for each job
         foreach my $pid (@pids) {
-            my $job = $jobs{$pid};
+            # job may has just been done & deleted in run_on_finish() manager callback
+            my $job = $jobs{$pid}
+                or next;
             next if $job->no_more || $job->max_in_queue;
             my $device = $job->nextdevice
                 or next;

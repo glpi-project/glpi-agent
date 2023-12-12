@@ -33,6 +33,7 @@ netdiscovery/netinventory:
 * Fix LLDP support
 * Update timeout to backend-collect-timeout configuration when scanning ESX or
   RemoteInventory after a successful scan requested by ToolBox
+* Fix possible concurrency error leading to an unrecoverable blocked task
 
 esx:
 * Fix first connection timeout support

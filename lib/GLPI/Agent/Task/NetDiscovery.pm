@@ -300,7 +300,9 @@ sub run {
 
         # Enqueue as ip as possible for each job
         foreach my $jobid (@jobs) {
-            my $job = $jobs{$jobid};
+            # job may has just been done & deleted in run_on_finish() manager callback
+            my $job = $jobs{$jobid}
+                or next;
             next unless $job->ranges;
             next if $job->max_in_queue;
             my $range = $job->range;
