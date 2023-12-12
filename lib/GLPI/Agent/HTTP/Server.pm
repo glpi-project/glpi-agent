@@ -324,17 +324,17 @@ sub _handle_root {
         return 500;
     }
 
+    my $trust = $self->_isTrusted($clientIp);
     my @server_targets =
-        map { { name => $_->getUrl(), date => $_->getFormatedNextRunDate() } }
+        map { { id => $_->id(), target => $trust ? $_->getUrl() : '', date => $_->getFormatedNextRunDate() } }
         grep { $_->isType('server') }
         $self->{agent}->getTargets();
 
     my @local_targets =
-        map { { name => $_->getPath(), date => $_->getFormatedNextRunDate() } }
+        map { { id => $_->id(), target => $trust ? $_->getPath() : '', date => $_->getFormatedNextRunDate() } }
         grep { $_->isType('local') }
         $self->{agent}->getTargets();
 
-    my $trust = $self->_isTrusted($clientIp);
     my @listening_plugins = ();
     my %plugins_url = ();
     if ($trust) {

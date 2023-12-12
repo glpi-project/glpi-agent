@@ -6,6 +6,8 @@ core:
 * Make alt2canonical() always return a mac address in lower case if found one
 * Fix HTTP::Client API to support timeout update
 * Move runPowerShell() API remote case support in RemoteInventory API
+* Update httpd default page to show targets id and server url or local path only
+  for trusted clients
 
 inventory:
 * PR #531: Add SentinelOne Antivirus support on Linux, thanks to @MarcSamD

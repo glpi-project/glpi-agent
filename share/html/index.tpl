@@ -27,7 +27,7 @@
         <ul>";
       foreach my $target (@server_targets) {
         $OUT .= "
-          <li>$target->{name}: $target->{date}</li>";
+          <li>".($target->{target} ? "<a href='$target->{target}' target='_blank'>$target->{id}</a>" : $target->{id}).": $target->{date}</li>";
       }
       $OUT .= "
         </ul>
@@ -41,7 +41,7 @@
         <ul>";
       foreach my $target (@local_targets) {
         $OUT .= "
-          <li>$target->{name}: $target->{date}</li>";
+          <li>$target->{id}: $target->{date}".($target->{target} ? "<br/>folder: <tt>$target->{target}</tt>" : "")."</li>";
       }
       $OUT .= "
         </ul>
