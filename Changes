@@ -8,6 +8,8 @@ core:
 * Move runPowerShell() API remote case support in RemoteInventory API
 * Update httpd default page to show targets id and server url or local path only
   for trusted clients
+* Update local target API to support getFullPath() & setFullPath() calls
+* Handle '.' local target when run as a service to save inventories in vardir
 
 inventory:
 * PR #531: Add SentinelOne Antivirus support on Linux, thanks to @MarcSamD
@@ -36,6 +38,7 @@ netdiscovery/netinventory:
 * Update timeout to backend-collect-timeout configuration when scanning ESX or
   RemoteInventory after a successful scan requested by ToolBox
 * Fix possible concurrency error leading to an unrecoverable blocked task
+* Use new local target API to set expected saving folder
 
 esx:
 * Fix first connection timeout support
@@ -44,6 +47,7 @@ esx:
 toolbox:
 * fix #533: Fix Toolbox export buttons in inventory results
 * Fix wrong remote inventory results when using a short timeout for quickier detection
+* Handle agent folder as vardir folder when agent is running as a service
 
 injector:
 * fix #537: Make -x, --xml-ua & --json-ua options equivalent and update help text

@@ -81,9 +81,12 @@ if (@jobs_order) {
     my @target_tooltip;
     if ($target && $targets{$target}) {
       @target_tooltip = ( $targets{$target}->[0], encode('UTF-8', encode_entities($targets{$target}->[1])));
-    } else {
+    } elsif (!$default_local || $default_local eq '.') {
       $target = _("Agent folder");
       @target_tooltip = ( local => $target );
+    } else {
+      $target = _("Configured folder");
+      @target_tooltip = ( local => "<tt>$default_local</tt>" );
     }
     push @configuration, _("Target").":&nbsp;
             <div class='with-tooltip'>$target

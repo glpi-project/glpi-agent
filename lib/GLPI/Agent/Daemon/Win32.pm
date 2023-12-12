@@ -39,6 +39,19 @@ sub new {
     return $self;
 }
 
+sub init {
+    my ($self, %params) = @_;
+
+    $self->SUPER::init(%params);
+
+    # When running as a service the script makes a chdir to perl/bin and this isn't
+    # convenient for local target set to "." so we need to fix it to vardir folder
+    foreach my $target (@{$self->{targets}}) {
+        next unless $target->isType('local') && $target->getPath() eq '.';
+        $target->setFullPath($self->{config}->{vardir});
+    }
+}
+
 sub name  {
     my ($self, $name) = @_;
 

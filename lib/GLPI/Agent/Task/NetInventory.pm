@@ -350,8 +350,8 @@ sub _sendMessage {
         if ($path eq '-') {
             $handle = \*STDOUT;
         } else {
-            $path .= "/netinventory";
-            mkpath($path);
+            $path = $self->{target}->getFullPath("netinventory");
+            mkpath($path) unless -d $path;
             $file = $path . "/$ip.xml";
         }
 

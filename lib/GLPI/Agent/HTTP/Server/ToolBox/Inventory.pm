@@ -62,6 +62,18 @@ sub init {
 
     return unless $self->read_yaml();
 
+    # Update networktask_save folder is running as a service and folder set to '.'
+    my $yaml_config = $self->yaml('configuration') || {};
+    if (empty($yaml_config->{'networktask_save'}) || $yaml_config->{'networktask_save'} eq '.') {
+        my $agent = $self->{toolbox}->{server}->{agent};
+        if (($OSNAME eq 'MSWin32' && ref($agent) eq 'GLPI::Agent::Daemon::Win32') || getppid() == 1) {
+            # We are running as a service and we must fix networktask_save to vardir
+            $yaml_config->{'networktask_save'} = $agent->{vardir};
+            $self->need_save("configuration");
+            $self->write_yaml();
+        }
+    }
+
     $self->_load_jobs();
 }
 
@@ -224,10 +236,13 @@ sub update_template_hash {
         next if $target->isType('listener');
         my $id = $target->id()
             or next;
-        $hash->{targets}->{$id} = [ $target->getType(), $target->getName() ];
+        $hash->{targets}->{$id} = [ $target->getType(), $target->isType('local') ? $target->getFullPath() : $target->getName() ];
     }
     # Default target when creating a new task
     $hash->{default_target} = $hash->{targets}->{server0} ? 'server0' : '';
+
+    # Default folder: '.' means "Agent Folder"
+    $hash->{default_local} = $yaml_config->{networktask_save} // '.';
 
     # Set running task
     $hash->{outputid} = $self->{taskid} || '';
@@ -842,7 +857,7 @@ sub netscan {
 
     # If not using an agent target, create a local target and update it to run now
     unless ($target) {
-        my $path = $yaml_config->{networktask_save} // '.';
+        my $path = $yaml_config->{networktask_save} || '.';
 
         # Make sure path exists as folder
         mkdir $path unless -d $path;
@@ -854,6 +869,10 @@ sub netscan {
             basevardir => $agent->{vardir},
             path       => $path
         );
+
+        # When running as a service we need to use vardir as default local folder
+        $target->setFullPath($agent->{vardir})
+            if $path eq '.' && (($OSNAME eq 'MSWin32' && ref($agent) eq 'GLPI::Agent::Daemon::Win32') || getppid() == 1);
     }
 
     # Create an NetDiscovery task
@@ -965,8 +984,7 @@ sub _run_local {
 
     # If not using an agent target, create a local target and update it to run now
     unless ($target) {
-        my $path = !$yaml_config->{networktask_save} || $yaml_config->{networktask_save} eq '.' ?
-            "inventory" : $yaml_config->{networktask_save}."/inventory";
+        my $path = $yaml_config->{networktask_save} || '.';
 
         # Make sure path exists as folder
         mkdir $path unless -d $path;
@@ -978,6 +996,10 @@ sub _run_local {
             basevardir => $agent->{vardir},
             path       => $path
         );
+
+        # When running as a service we need to use vardir as default local folder
+        $target->setFullPath($agent->{vardir})
+            if $path eq '.' && (($OSNAME eq 'MSWin32' && ref($agent) eq 'GLPI::Agent::Daemon::Win32') || getppid() == 1);
     }
 
     # Create an Inventory task

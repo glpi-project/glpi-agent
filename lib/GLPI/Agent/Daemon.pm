@@ -107,8 +107,8 @@ sub run {
         foreach my $target (@targets) {
             my $date = $target->getFormatedNextRunDate();
             my $id   = $target->id();
-            my $name = $target->getName();
-            $logger->info("target $id: next run: $date - $name");
+            my $info = $target->isType('local') ? $target->getFullPath() : $target->getName();
+            $logger->info("target $id: next run: $date - $info");
         }
     }
 

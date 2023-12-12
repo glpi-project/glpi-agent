@@ -262,7 +262,7 @@ sub submit {
 
     if ($self->{target}->isType('local')) {
 
-        my $file = $inventory->save($self->{target}->getPath());
+        my $file = $inventory->save($self->{target}->getFullPath());
         $self->{logger}->info("Inventory ".($file eq '-' ? "dumped on standard output" : "saved in $file"))
             if $file;
 

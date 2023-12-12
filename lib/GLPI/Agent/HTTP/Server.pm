@@ -331,7 +331,7 @@ sub _handle_root {
         $self->{agent}->getTargets();
 
     my @local_targets =
-        map { { id => $_->id(), target => $trust ? $_->getPath() : '', date => $_->getFormatedNextRunDate() } }
+        map { { id => $_->id(), target => $trust ? $_->getFullPath() : '', date => $_->getFormatedNextRunDate() } }
         grep { $_->isType('local') }
         $self->{agent}->getTargets();
 

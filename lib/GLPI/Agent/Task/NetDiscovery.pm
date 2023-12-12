@@ -459,10 +459,12 @@ sub run {
                             $timeout = $self->{config}->{"backend-collect-timeout"};
                             $found->timeout($timeout);
 
-                            my $path;
-                            $path = $self->{target}->getPath() if $self->{target}->isType('local');
-                            # When target path is agent folder, inventory should be saved in inventory subfolder
-                            $path .= '/inventory' if $path eq '.';
+                            my ($path, $agentfolder);
+                            if ($self->{target}->isType('local')) {
+                                $agentfolder = $self->{target}->getPath() eq '.' ? 'inventory' : '';
+                                # When target path is agent folder, inventory should be saved in inventory subfolder
+                                $path = $self->{target}->getFullPath($agentfolder);
+                            }
                             # As we still have run the connection part in _scanAddressByRemote(), we reuse the connected object
                             if ($credentials->{TYPE} eq 'esx') {
                                 $found->serverInventory($path, $collectdeviceid, $deviceid);
@@ -470,9 +472,8 @@ sub run {
                                 # Setup a remote inventory as it is done in GLPI::Agent::Task::RemoteInventory
                                 GLPI::Agent::Task::Inventory->require();
 
-                                # Update local target path if the case it has been set to agent folder
-                                $self->{target}->setPath($path)
-                                    if $self->{target}->isType('local');
+                                # Update local target path in the case it has been updated
+                                $self->{target}->setFullPath($path) if $agentfolder;
 
                                 my $task = GLPI::Agent::Task::Inventory->new(
                                     logger      => $self->{logger},
@@ -622,8 +623,8 @@ sub _sendMessage {
         } else {
             # We don't have to save control messages
             return unless $content->{DEVICE};
-            $path .= "/netdiscovery";
-            mkpath($path);
+            $path = $self->{target}->getFullPath("netdiscovery");
+            mkpath($path) unless -d $path;
             $ip = $content->{DEVICE}->[0]->{IP};
             $file = $path . "/$ip.xml";
         }
