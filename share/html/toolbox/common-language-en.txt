@@ -17,6 +17,7 @@ Tag:
 DeviceID:
 AgentID:
 Inventory tasks:
+Agent home:
 
 Edit:
 Update:

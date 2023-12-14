@@ -15,6 +15,7 @@ Show Remotes in navigation bar:
 Show Results in navigation bar:
 Show Scheduling in navigation bar:
 Show Raw YAML navigation:
+Show agent home navigation:
 Network task:
 Base folder to save inventory files:
 Network task threads number options:

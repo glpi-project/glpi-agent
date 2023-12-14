@@ -15,6 +15,7 @@ Show Remotes in navigation bar: Afficher la navigation vers les inventaires dist
 Show Results in navigation bar: Afficher la navigation vers les résultats
 Show Scheduling in navigation bar: Afficher la navigation vers la planification
 Show Raw YAML navigation: Afficher la navigation vers le YAML brute
+Show agent home navigation: Afficher la navigation vers la page index de l'agent
 Network task: Tâche réseau
 Base folder to save inventory files: Dossier de base pour sauver les fichiers d'inventaire
 Network task threads number options: Options du nombre de threads pour le scan réseau
