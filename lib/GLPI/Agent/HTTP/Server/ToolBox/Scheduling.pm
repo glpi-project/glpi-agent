@@ -54,7 +54,7 @@ sub yaml_config_specs {
             index       => 60, # index in navbar
         },
         scheduling_yaml => {
-            category    => "Scheduling",
+            category    => "Toolbox plugin configuration",
             type        => $self->isyes($yaml_config->{'updating_support'}) ? "option" : "readonly",
             value       => $yaml_config->{'scheduling_yaml'} || (
                 $self->isyes($yaml_config->{'updating_support'}) ? "" : "[default]"),
