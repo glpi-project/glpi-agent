@@ -58,6 +58,7 @@ sub yaml_config_specs {
             type        => $self->isyes($yaml_config->{'updating_support'}) ? "bool" : "readonly",
             value       => $self->yesno($yaml_config->{'mibsupport_disabled'}),
             text        => "Disable MibSupport in agent",
+            only_if     => $self->isyes($yaml_config->{'mibsupport_navbar'}),
         },
         mibsupport_yaml  => {
             category    => "MibSupport",
@@ -67,6 +68,7 @@ sub yaml_config_specs {
             options     => $self->yaml_files(),
             text        => "MibSupport YAML file",
             yaml_base   => mibsupport,
+            only_if     => $self->isyes($yaml_config->{'mibsupport_navbar'}),
         }
     };
 }

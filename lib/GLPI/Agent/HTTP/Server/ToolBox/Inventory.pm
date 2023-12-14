@@ -97,6 +97,7 @@ sub yaml_config_specs {
             value       => $yaml_config->{'threads_options'} || '1|5|10|20|40',
             text        => "Network task threads number options",
             tips        => "threads number options separated by pipes,\nfirst value used as default threads\n(default=1|5|10|20|40)",
+            only_if     => $self->isyes($yaml_config->{'inventory_navbar'}),
         },
         timeout_options  => {
             category    => "Network task",
@@ -104,6 +105,7 @@ sub yaml_config_specs {
             value       => $yaml_config->{'timeout_options'} || '1|2|5|10|30|60',
             text        => "Network task timeout options",
             tips        => "Timeout options separated by pipes,\nfirst value used as default timeout\n(default=1|2|5|10|30|60)",
+            only_if     => $self->isyes($yaml_config->{'inventory_navbar'}),
         },
         networktask_save  => {
             category    => "Network task",
@@ -111,6 +113,7 @@ sub yaml_config_specs {
             value       => $yaml_config->{'networktask_save'} || '.',
             text        => "Base folder to save inventory files",
             tips        => "Base folder may be relative to the agent folder",
+            only_if     => $self->isyes($yaml_config->{'inventory_navbar'}),
         },
         inventory_tags  => {
             category    => "Inventories",
@@ -118,6 +121,7 @@ sub yaml_config_specs {
             value       => $yaml_config->{'inventory_tags'} || '',
             text        => "List of tags",
             tips        => "Tags separated by commas\nYou can use it to separate inventory files by site",
+            only_if     => $self->isyes($yaml_config->{'inventory_navbar'}),
         },
     };
 }

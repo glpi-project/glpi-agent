@@ -79,6 +79,7 @@ sub yaml_config_specs {
             value       => $yaml_config->{'default_columns'} || 'name|mac|ip|serial|tag|source|type',
             text        => "Defaut columns for results list view",
             tips        => "Ordered columns list separated by pipes\n(default=name|mac|ip|serial|tag|source|type)",
+            only_if     => $self->isyes($yaml_config->{'results_navbar'}),
         },
         results_navbar  => {
             category    => "Navigation bar",
@@ -98,6 +99,7 @@ sub yaml_config_specs {
             options     => $self->yaml_files(),
             text        => "Custom fields YAML file",
             yaml_base   => 'container',
+            only_if     => $self->isyes($yaml_config->{'results_navbar'}),
         },
         archive_format  => {
             category    => "Results",
@@ -105,6 +107,7 @@ sub yaml_config_specs {
             value       => $yaml_config->{'archive_format'} || $self->_supported_archive_formats()->[0],
             options     => $self->_supported_archive_formats(),
             text        => "Exported archive format",
+            only_if     => $self->isyes($yaml_config->{'results_navbar'}),
         },
         other_fields    => {
             category    => "Results",
@@ -128,6 +131,7 @@ sub yaml_config_specs {
                             NODE can match on any kind of XML
                             NODE path is expect to be under the first 'REQUEST' node
                             As examples, 'DEVICEID' and 'CONTENT,VERSIONCLIENT' are valid paths",
+            only_if     => $self->isyes($yaml_config->{'results_navbar'}),
         }
     };
 }

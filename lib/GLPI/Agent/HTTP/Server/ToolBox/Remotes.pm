@@ -89,18 +89,21 @@ sub yaml_config_specs {
             type        => $self->isyes($yaml_config->{'updating_support'}) ? "bool" : "readonly",
             value       => $self->yesno($yaml_config->{'remotes_show_password'}),
             text        => "Show remote password",
+            only_if     => $self->isyes($yaml_config->{'remotes_navbar'}),
         },
         remotes_admin  => {
             category    => "Remotes",
             type        => $self->isyes($yaml_config->{'updating_support'}) ? "bool" : "readonly",
             value       => $self->yesno($yaml_config->{'remotes_admin'}),
             text        => "Allow remotes administration",
+            only_if     => $self->isyes($yaml_config->{'remotes_navbar'}),
         },
         remotes_show_expiration  => {
             category    => "Remotes",
             type        => $self->isyes($yaml_config->{'updating_support'}) ? "bool" : "readonly",
             value       => $self->yesno($yaml_config->{'remotes_show_expiration'}),
             text        => "Show remotes expiration time",
+            only_if     => $self->isyes($yaml_config->{'remotes_navbar'}),
         },
         remotes_workers  => {
             category    => "Remotes",
@@ -108,6 +111,7 @@ sub yaml_config_specs {
             value       => $yaml_config->{'remotes_workers'} || '1|2|5|10|20',
             text        => "Remotes workers number options",
             tips        => "Remotes workers number options separated by pipes,\nfirst value used as default workers\n(default=1|2|5|10|20)",
+            only_if     => $self->isyes($yaml_config->{'remotes_navbar'}),
         },
     };
 }
