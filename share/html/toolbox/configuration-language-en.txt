@@ -16,7 +16,7 @@ Show Results in navigation bar:
 Show Scheduling in navigation bar:
 Show Raw YAML navigation:
 Network task:
-Base folder to save XML:
+Base folder to save inventory files:
 Network task threads number options:
 Network task SNMP timeout options:
 Defaut columns for results list view:

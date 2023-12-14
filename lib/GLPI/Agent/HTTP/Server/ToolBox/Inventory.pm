@@ -109,7 +109,7 @@ sub yaml_config_specs {
             category    => "Network task",
             type        => $self->isyes($yaml_config->{'updating_support'}) ? "text" : "readonly",
             value       => $yaml_config->{'networktask_save'} || '.',
-            text        => "Base folder to save XML",
+            text        => "Base folder to save inventory files",
             tips        => "Base folder may be relative to the agent folder",
         },
         inventory_tags  => {

@@ -16,7 +16,7 @@ Show Results in navigation bar: Afficher la navigation vers les résultats
 Show Scheduling in navigation bar: Afficher la navigation vers la planification
 Show Raw YAML navigation: Afficher la navigation vers le YAML brute
 Network task: Tâche réseau
-Base folder to save XML: Dossier de base pour sauver les fichiers XML
+Base folder to save inventory files: Dossier de base pour sauver les fichiers d'inventaire
 Network task threads number options: Options du nombre de threads pour le scan réseau
 Network task SNMP timeout options: Options du délai SNMP maximum pour le scan réseau
 Defaut columns for results list view: Colonnes par défaut pour la liste des résultats
