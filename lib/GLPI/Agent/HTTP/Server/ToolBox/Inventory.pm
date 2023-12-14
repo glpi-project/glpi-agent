@@ -85,7 +85,7 @@ sub yaml_config_specs {
             category    => "Navigation bar",
             type        => $self->isyes($yaml_config->{'updating_support'}) ? "bool" : "readonly",
             value       => $self->yesno($yaml_config->{'inventory_navbar'} || 1),
-            text        => "Show Inventory in navigation bar",
+            text        => "Show Inventory tasks in navigation bar",
             navbar      => "Inventory tasks",
             link        => $self->index(),
             icon        => "subtask",

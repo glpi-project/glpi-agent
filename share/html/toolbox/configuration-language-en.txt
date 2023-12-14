@@ -9,7 +9,7 @@ Navigation:
 Default page:
 Navigation bar:
 Show Credentials in navigation bar:
-Show Inventory in navigation bar:
+Show Inventory tasks in navigation bar:
 Show IP Ranges in navigation bar:
 Show Remotes in navigation bar:
 Show Results in navigation bar:

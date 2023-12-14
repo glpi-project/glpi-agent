@@ -9,7 +9,7 @@ Scheduling YAML file: Fichier YAML des planifications
 Default page: Page d'accueil
 Navigation bar: Barre de navigation
 Show Credentials in navigation bar: Afficher la navigation vers les identifiants
-Show Inventory in navigation bar: Afficher la navigation vers l'inventaire
+Show Inventory tasks in navigation bar: Afficher la navigation vers les tâches d'inventaire
 Show IP Ranges in navigation bar: Afficher la navigation vers les plages IP
 Show Remotes in navigation bar: Afficher la navigation vers les inventaires distants
 Show Results in navigation bar: Afficher la navigation vers les résultats
