@@ -22,7 +22,7 @@ sub _ssh {
     my @command = qw(ssh -q -o BatchMode=yes);
     push @command, "-p", $self->port() if $self->port() && $self->port() != 22;
     push @command, "-l", $self->user() if $self->user();
-    push @command, "-o ConnectionTimeout=".$self->timeout() if $self->timeout();
+    push @command, "-o ConnectTimeout=".$self->timeout() if $self->timeout();
 
     return @command, $self->host(), "LANG=C";
 }
