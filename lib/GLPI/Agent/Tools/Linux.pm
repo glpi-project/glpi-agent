@@ -735,14 +735,17 @@ sub getDefaultGatewayFromIp {
     my ($gateway, $metric);
 
     foreach (@lines) {
-        next unless /^default\s+(.*)$/;
-        my %infos = split(/\s+/, $1);
+        my ($info) = /^default\s+(.*)$/
+            or next;
+        my ($thisvia) = $info =~ /\bvia\s+(\S+)\b/
+            or next;
+        my ($thismetric) = $info =~ /\bmetric\s+(\d+)\b/;
         # Only keep route with lower metric
-        if ($infos{metric}) {
-            next if $metric && int($infos{metric}) >= $metric;
-            $metric = int($infos{metric});
+        if ($thismetric) {
+            next if $metric && int($thismetric) >= $metric;
+            $metric = int($thismetric);
         }
-        $gateway = $infos{via} // '';
+        $gateway = $thisvia;
     }
 
     return $gateway;

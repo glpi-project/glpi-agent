@@ -23,6 +23,7 @@ inventory:
 * Feature: Make assetname-support option also works to compute agent deviceid when
   unknown
 * Fix video card memory inventory on win32
+* fix #554: Network inventory may be missing on linux with faulty default route parsing
 
 remoteinventory:
 * Fix connection timeout API to support timeout update 

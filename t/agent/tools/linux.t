@@ -5,6 +5,7 @@ use warnings;
 
 use Test::Deep;
 use Test::More;
+use Test::NoWarnings;
 
 use GLPI::Agent::Tools::Linux;
 
@@ -1172,9 +1173,10 @@ my %ipaddrshow_tests = (
 my %gateway_tests = (
     'default-gateway-1' => '192.168.1.254',
     'default-gateway-2' => '192.168.1.254',
+    'default-gateway-3' => '192.168.1.254',
 );
 
-plan tests =>
+plan tests => 1 +
     (scalar keys %udev_tests)     +
     (scalar keys %cpuinfo_tests)  +
     (scalar keys %hal_tests)      +
