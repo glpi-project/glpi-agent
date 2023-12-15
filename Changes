@@ -32,6 +32,8 @@ remoteinventory:
 * Add printers inventory support for ssh remote inventory with perl mode
 * Fix error preventing software inventory of windows remote from a win32 agent
 * Fix typo in ConnectTimeout option use with ssh command mode
+* Add '--stricthostkeychecking' option to glpi-remote, supported values are the same
+  than StrictHostKeyChecking ssh option (see ssh_config man page), default to 'accept-new'.
 
 netdiscovery/netinventory:
 * Enhanced Toshiba printers support

@@ -23,6 +23,7 @@ sub _ssh {
     push @command, "-p", $self->port() if $self->port() && $self->port() != 22;
     push @command, "-l", $self->user() if $self->user();
     push @command, "-o ConnectTimeout=".$self->timeout() if $self->timeout();
+    push @command, map { "-o $_" } grep { !empty($_) && /^\w+=/ } $self->options();
 
     return @command, $self->host(), "LANG=C";
 }
@@ -87,7 +88,20 @@ sub _connect {
                 if open $fh, ">", "$dotssh/known_hosts";
         }
     }
-    unless ($ssh2->check_hostkey(Net::SSH2::LIBSSH2_HOSTKEY_POLICY_TOFU())) {
+    my $hostkey_checking = Net::SSH2::LIBSSH2_HOSTKEY_POLICY_TOFU();
+    foreach my $option ($self->options()) {
+        next unless $option =~ /^StrictHostKeyChecking=(yes|no|off|accept-new|ask)$/i;
+        if ($option =~ /accept-new$/i) {
+            $hostkey_checking = Net::SSH2::LIBSSH2_HOSTKEY_POLICY_TOFU();
+        } elsif ($option =~ /yes$/i) {
+            $hostkey_checking = Net::SSH2::LIBSSH2_HOSTKEY_POLICY_STRICT();
+        } elsif ($option =~ /ask$/i) {
+            $hostkey_checking = Net::SSH2::LIBSSH2_HOSTKEY_POLICY_ASK();
+        } else {
+            $hostkey_checking = Net::SSH2::LIBSSH2_HOSTKEY_POLICY_ADVISORY();
+        }
+    }
+    unless ($ssh2->check_hostkey($hostkey_checking)) {
         my @error = $ssh2->error;
         $self->{logger}->error("Can't trust $remote for ssh remoteinventory: @error");
         undef $self->{_ssh2};
@@ -170,6 +184,14 @@ sub _ssh2_exec_status {
     }
 
     return $ret;
+}
+
+sub options {
+    my ($self, $options) = @_;
+
+    $self->{_options} = $options if ref($options) eq 'ARRAY';
+
+    return $self->{_options} ? @{$self->{_options}} : ();
 }
 
 sub timeout {
