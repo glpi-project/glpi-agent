@@ -607,12 +607,13 @@ sub getInterfacesInfosFromIoctl {
     return unless $params{interface};
 
     # We don't support this feature on remote inventory
-    return if $GLPI::Agent::Tools::remote;
+    return { ERROR => "syscall not remotely supported" }
+        if $GLPI::Agent::Tools::remote;
 
     my $logger = $params{logger};
 
     socket(my $socket, PF_INET, SOCK_DGRAM, 0)
-        or return ;
+        or return { ERROR => "can't open socket" };
 
     # Pack command in ethtool_cmd struct
     my $cmd = pack("L3SC6L2SC2L3", ETHTOOL_GSET);
@@ -621,7 +622,8 @@ sub getInterfacesInfosFromIoctl {
     my $request = pack("a16p", $params{interface}, $cmd);
 
     my $retval = ioctl($socket, SIOCETHTOOL, $request) || -1;
-    return if ($retval < 0);
+    return { ERROR => "$!" }
+        if $retval < 0;
 
     # Unpack returned datas
     my @datas = unpack("L3SC6L2SC2L3", $cmd);
@@ -634,6 +636,7 @@ sub getInterfacesInfosFromIoctl {
     # Forget speed value if got unknown speed special value
     if ($datas->{SPEED} == SPEED_UNKNOWN) {
         delete $datas->{SPEED};
+        $datas->{ERROR} = "unknown speed found";
         $logger->debug2("Unknown speed found on $params{interface}")
             if $logger;
     }

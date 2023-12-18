@@ -155,7 +155,7 @@ sub _getInterfaces {
                 } else {
                     $logger->debug_result(
                         action => 'retrieving interface speed from syscall',
-                        status => 'syscall failed'
+                        status => $infos && $infos->{ERROR} ? $infos->{ERROR} : 'syscall failed'
                     );
                 }
             }
