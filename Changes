@@ -24,6 +24,7 @@ inventory:
   unknown
 * Fix video card memory inventory on win32
 * fix #554: Network inventory may be missing on linux with faulty default route parsing
+* Add network speed discovery for wireless network devices on linux
 
 remoteinventory:
 * Fix connection timeout API to support timeout update 

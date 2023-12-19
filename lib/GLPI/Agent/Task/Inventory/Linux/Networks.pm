@@ -136,6 +136,24 @@ sub _getInterfaces {
                 my $speed = getFirstLine(
                     file => "/sys/class/net/$interface->{DESCRIPTION}/speed"
                 );
+                $interface->{SPEED} = $speed && $speed > 0 ? $speed : 0;
+            }
+            if (!$interface->{SPEED} && has_folder("/sys/class/net/$interface->{DESCRIPTION}/wireless")) {
+                my $speed;
+                if (canRun("iwconfig")) {
+                    $speed = getFirstMatch(
+                        command => "iwconfig ".$interface->{DESCRIPTION},
+                        pattern => qr/^\s+Bit Rate=(\d+)\s+Mb\/s/,
+                        logger  => $logger
+                    );
+                }
+                if (!$speed && canRun("nmcli")) {
+                    $speed = getFirstMatch(
+                        command => "nmcli -c no -g DEVICE,ACTIVE,RATE dev wifi list ifname ".$interface->{DESCRIPTION},
+                        pattern => qr/^$interface->{DESCRIPTION}:yes:(\d+)\sMbit\/s$/,
+                        logger  => $logger
+                    );
+                }
                 $interface->{SPEED} = $speed if $speed;
             }
             # On older kernels, we should try ethtool system call for speed
