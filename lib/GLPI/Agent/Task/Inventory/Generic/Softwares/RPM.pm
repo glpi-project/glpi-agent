@@ -5,6 +5,8 @@ use warnings;
 
 use parent 'GLPI::Agent::Task::Inventory::Module';
 
+use Encode qw(decode);
+
 use GLPI::Agent::Tools;
 
 sub isEnabled {
@@ -49,7 +51,7 @@ sub _getPackagesList {
         or return;
 
     my @packages;
-    foreach my $line (@lines) {
+    foreach my $line (map { decode("UTF-8", $_) } @lines) {
         my @infos = split("\t", $line);
         my $package = {
             NAME        => $infos[0],
