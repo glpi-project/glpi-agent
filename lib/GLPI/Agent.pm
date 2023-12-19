@@ -366,7 +366,7 @@ sub runTarget {
         $client = GLPI::Agent::HTTP::Client::OCS->new(
             logger  => $self->{logger},
             config  => $self->{config},
-            agentid =>  $agentid,
+            agentid => $agentid,
         );
 
         return unless GLPI::Agent::XML::Query::Prolog->require();
