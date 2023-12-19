@@ -53,6 +53,7 @@ toolbox:
 * fix #533: Fix Toolbox export buttons in inventory results
 * Fix wrong remote inventory results when using a short timeout for quickier detection
 * Handle agent folder as vardir folder when agent is running as a service
+* Fix netscan task fails to submit remote inventories with JSON protocol
 
 injector:
 * fix #537: Make -x, --xml-ua & --json-ua options equivalent and update help text

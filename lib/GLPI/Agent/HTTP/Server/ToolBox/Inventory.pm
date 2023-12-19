@@ -881,11 +881,12 @@ sub netscan {
 
     # Create an NetDiscovery task
     my $netdisco = GLPI::Agent::Task::NetDiscovery->new(
-        config       => $agent->{config},
-        datadir      => $agent->{datadir},
-        logger       => $logger,
-        target       => $target,
-        deviceid     => $agent->{deviceid},
+        config      => $agent->{config},
+        datadir     => $agent->{datadir},
+        logger      => $logger,
+        target      => $target,
+        deviceid    => $agent->{deviceid},
+        agentid     => $agent->{agentid},
     );
 
     # Compute ranges
