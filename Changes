@@ -10,6 +10,8 @@ core:
   for trusted clients
 * Update local target API to support getFullPath() & setFullPath() calls
 * Handle '.' local target when run as a service to save inventories in vardir
+* Reduce internal IPC event supported size
+* To optimize IPC support, read all event messages before triggering events
 
 inventory:
 * PR #531: Add SentinelOne Antivirus support on Linux, thanks to @MarcSamD
@@ -55,6 +57,7 @@ toolbox:
 * Fix wrong remote inventory results when using a short timeout for quickier detection
 * Handle agent folder as vardir folder when agent is running as a service
 * Fix netscan task fails to submit remote inventories with JSON protocol
+* Fix locking on logger IPC events when running netscan for server target on win32
 
 injector:
 * fix #537: Make -x, --xml-ua & --json-ua options equivalent and update help text

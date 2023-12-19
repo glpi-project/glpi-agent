@@ -453,6 +453,7 @@ sub handleChildren {
         my $child = $self->{_fork}->{$pid};
 
         # Check if any forked process is communicating
+        my @messages;
         delete $child->{in} unless $child->{in} && $child->{in}->opened;
         while ($child->{in} && $child->{pollin} && $child->{poll} && &{$child->{poll}}($child->{pollin})) {
             my $msg = " " x 5;
@@ -465,13 +466,16 @@ sub handleChildren {
                         if $child->{in}->sysread($len, 2);
                     if ($len) {
                         my $event;
-                        $self->_trigger_event($event)
+                        push @messages, $event
                             if $child->{in}->sysread($event, $len);
                     }
                 }
             }
             $count++;
         }
+
+        # Trigger events after they have been read
+        map { $self->_trigger_event($_) } @messages;
 
         # Check if any forked process has been finished
         waitpid($pid, WNOHANG)
@@ -638,7 +642,8 @@ sub forked_process_event {
     return unless $self->forked() && defined($event);
 
     return unless length($event);
-    if (length($event) > 65535) {
+    # On MSWin32, syswrite can block if header+size+event is greater than 512 bytes
+    if (length($event) > 505) {
         my ($type) = split(",", $event)
             or return;
         $type = substr($event, 0, 64) if length($type) > 64;
