@@ -42,6 +42,12 @@ sub timeout {
     return $self->{ua}->timeout($timeout);
 }
 
+sub lastError {
+    my ($self) = @_;
+
+    return $self->{_lastError} // '';
+}
+
 sub _send {
     my ( $self, $action, $xmlToSend ) = @_;
 
@@ -69,7 +75,7 @@ sub _send {
         if ( $tmpRef && $tmpRef->{faultstring} ) {
             $errorString .= ": " . $tmpRef->{faultstring};
         }
-        $self->{lastError} = $errorString;
+        $self->{_lastError} = $errorString;
         return;
     }
 
@@ -116,13 +122,13 @@ sub connect {
     my ( $self, $user, $password ) = @_;
 
     unless ($user) {
-        $self->{lastError} = "No user".($self->{lastError} ? "" : " and password").
+        $self->{_lastError} = "No user".($self->{lastError} ? "" : " and password").
             " provided for ESX connection";
         return;
     }
 
     unless ($password) {
-        $self->{lastError} = "No password provided for ESX connection";
+        $self->{_lastError} = "No password provided for ESX connection";
         return;
     }
 

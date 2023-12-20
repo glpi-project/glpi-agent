@@ -40,7 +40,7 @@ sub connect {
         timeout => $self->timeout(),
     );
     if ( !$vpbs->connect( $params{user}, $params{password} ) ) {
-        $self->lastError($vpbs->{lastError});
+        $self->lastError($vpbs->lastError() || "Connection failure");
         return;
     }
 
@@ -330,9 +330,12 @@ sub serverInventory {
 sub lastError {
     my ($self, $error) = @_;
 
+    $self->{lastError} = $self->{esx}->lastError()
+        if $self->{esx};
+
     $self->{lastError} = $error if $error;
 
-    return $self->{lastError} || "n/a";
+    return $self->{lastError};
 }
 
 sub timeout {

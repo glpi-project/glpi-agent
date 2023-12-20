@@ -973,7 +973,6 @@ sub _scanAddressByRemote {
             } else {
                 $error = $esxscan->lastError();
                 my %errors = (
-                    'n/a'                    => '',
                     '405 Method Not Allowed' => 'not supporting VMWare SOAP API'
                 );
                 $error = $errors{$error} if $errors{$error};

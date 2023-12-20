@@ -51,6 +51,7 @@ netdiscovery/netinventory:
 esx:
 * Fix first connection timeout support
 * Added --timeout option support to glpi-esx
+* Fix wrong 'n/a' ko status report to tasks managed by GLPI Inventory plugin
 
 toolbox:
 * fix #533: Fix Toolbox export buttons in inventory results
