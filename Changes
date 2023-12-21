@@ -30,6 +30,7 @@ inventory:
 * fix #554: Network inventory may be missing on linux with faulty default route parsing
 * Add network speed discovery for wireless network devices on linux
 * Fix rpm software summary encoding for rpm-based software inventory
+* Bump Inventory task version to 1.15
 
 remoteinventory:
 * Fix connection timeout API to support timeout update 
@@ -41,6 +42,7 @@ remoteinventory:
 * Fix typo in ConnectTimeout option use with ssh command mode
 * Add '--stricthostkeychecking' option to glpi-remote, supported values are the same
   than StrictHostKeyChecking ssh option (see ssh_config man page), default to 'accept-new'.
+* Bump RemoteInventory task version to 1.4
 
 netdiscovery/netinventory:
 * Enhanced Toshiba printers support
@@ -49,11 +51,14 @@ netdiscovery/netinventory:
   RemoteInventory after a successful scan requested by ToolBox
 * Fix possible concurrency error leading to an unrecoverable blocked task
 * Use new local target API to set expected saving folder
+* Bump NetDiscovery task version to 6.1
+* Bump NetInventory task version to 6.1
 
 esx:
 * Fix first connection timeout support
 * Added --timeout option support to glpi-esx
 * Fix wrong 'n/a' ko status report to tasks managed by GLPI Inventory plugin
+* Bump ESX task version to 2.10
 
 toolbox:
 * fix #533: Fix Toolbox export buttons in inventory results
@@ -61,6 +66,7 @@ toolbox:
 * Handle agent folder as vardir folder when agent is running as a service
 * Fix netscan task fails to submit remote inventories with JSON protocol
 * Fix locking on logger IPC events when running netscan for server target on win32
+* Bump ToolBox plugin version to 1.3
 
 injector:
 * fix #537: Make -x, --xml-ua & --json-ua options equivalent and update help text
