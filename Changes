@@ -53,6 +53,7 @@ netdiscovery/netinventory:
 * Use new local target API to set expected saving folder
 * Bump NetDiscovery task version to 6.1
 * Bump NetInventory task version to 6.1
+* Updated sysobject.ids
 
 esx:
 * Fix first connection timeout support
