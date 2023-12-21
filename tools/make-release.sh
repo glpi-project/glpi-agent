@@ -84,7 +84,7 @@ tools/updateSysobjectids.pl
 
 # 2. Make a commit for IDS files update
 if [ "$GIT" != "no" ]; then
-    if git status -s | egrep -q "share/(pci|usb|sysobject)\.ids$"; then
+    if git status -s | grep -E -q "share/(pci|usb|sysobject)\.ids$"; then
         git commit -a -m "feat: Updated IDS files"
     fi
 fi
@@ -168,7 +168,7 @@ perl -Itools -MChangelog -e '
 
 # 5. Update changelog version and release date
 RELEASE_DATE=$(LANG=C date +"%a, %d %b %Y")
-sed -ri -e "s/.* not released yet/$VERSION $RELEASE_DATE/" Changes
+sed -ri -e "s/.* (not released yet|not yet release)/$VERSION $RELEASE_DATE/" Changes
 
 # Update version in Makefile.PL
 sed -ri -e "s/^version '.*';$/version '$VERSION';/" Makefile.PL

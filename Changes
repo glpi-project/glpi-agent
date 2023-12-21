@@ -1,6 +1,6 @@
 Revision history for GLPI agent
 
-1.7 not yet released
+1.7 Thu, 21 Dec 2023
 
 core:
 * Make alt2canonical() always return a mac address in lower case if found one
