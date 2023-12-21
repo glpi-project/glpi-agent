@@ -97,6 +97,6 @@ WakeOnLan | [glpi-agent-task-wakeonlan-${VERSION}${RPMREV}.noarch.rpm]($REPO/rel
 Cron | [glpi-agent-cron-${VERSION}${RPMREV}.noarch.rpm]($REPO/releases/download/$TAG/glpi-agent-cron-${VERSION}${RPMREV}.noarch.rpm)
 
 ## Sources
-[GLPI-Agent-${VERSION}.tar.gz](GLPI-Agent-${VERSION}.tar.gz)
+[GLPI-Agent-${VERSION}.tar.gz]($REPO/releases/download/$TAG/GLPI-Agent-${VERSION}.tar.gz)
 
 DESCRIPTION
