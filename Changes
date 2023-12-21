@@ -12,6 +12,8 @@ core:
 * Handle '.' local target when run as a service to save inventories in vardir
 * Reduce internal IPC event supported size
 * To optimize IPC support, read all event messages before triggering events
+* fix #560: Skip export of keystore on win32 or keychain on MacOSX if any one of
+  ca-cert-file, ca-cert-dir or ssl-fingerprint options is used
 
 inventory:
 * PR #531: Add SentinelOne Antivirus support on Linux, thanks to @MarcSamD

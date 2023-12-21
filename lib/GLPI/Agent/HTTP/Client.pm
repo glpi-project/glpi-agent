@@ -315,10 +315,7 @@ sub _setSSLOptions {
         }
 
         # Support keychain on Darwin and keystore on MSWin32
-        # But not if ca-cert-dir option is used
-        my $SSL_ca;
-        $SSL_ca = $self->_KeyChain_or_KeyStore_Export()
-            unless $self->{ca_cert_dir};
+        my $SSL_ca = $self->_KeyChain_or_KeyStore_Export();
 
         if ($LWP::VERSION >= 6) {
             $self->{ua}->ssl_opts(SSL_ca_file => $self->{ca_cert_file})
@@ -367,7 +364,11 @@ sub _setSSLOptions {
 sub _KeyChain_or_KeyStore_Export {
     my ($self) = @_;
 
+    # Only MacOSX and MSWin32 are supported
     return unless $OSNAME =~ /^darwin|MSWin32$/;
+
+    # But we don't need to extract anything if we still use an option to authenticate server certificate
+    return if $self->{ca_cert_file} || $self->{ca_cert_dir} || $self->{ssl_fingerprint};
 
     my $logger = $self->{logger};
     my $vardir = $self->{_vardir};
