@@ -168,7 +168,7 @@ perl -Itools -MChangelog -e '
 
 # 5. Update changelog version and release date
 RELEASE_DATE=$(LANG=C date +"%a, %d %b %Y")
-sed -ri -e "s/.* (not released yet|not yet release)/$VERSION $RELEASE_DATE/" Changes
+sed -ri -e "s/.* (not released yet|not yet released)/$VERSION $RELEASE_DATE/" Changes
 
 # Update version in Makefile.PL
 sed -ri -e "s/^version '.*';$/version '$VERSION';/" Makefile.PL
