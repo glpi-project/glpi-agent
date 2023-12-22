@@ -1,3 +1,9 @@
+glpi-agent (1:1.7.1-1) unstable; urgency=medium
+
+  * New upstream release 1.7.1
+
+ -- Guillaume Bougard <gbougard@teclib.com>  Fri, 22 Dec 2023 16:13:14 +0100
+
 glpi-agent (1:1.7-1) unstable; urgency=medium
 
   * New upstream release 1.7
