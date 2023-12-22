@@ -1,6 +1,6 @@
 Revision history for GLPI agent
 
-1.7.1 not yet released
+1.7.1 Fri, 22 Dec 2023
 
 core:
 * fix #567: Test ssl-fingerprint option as an empty array to still try to export
