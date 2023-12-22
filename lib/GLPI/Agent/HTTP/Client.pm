@@ -368,7 +368,7 @@ sub _KeyChain_or_KeyStore_Export {
     return unless $OSNAME =~ /^darwin|MSWin32$/;
 
     # But we don't need to extract anything if we still use an option to authenticate server certificate
-    return if $self->{ca_cert_file} || $self->{ca_cert_dir} || $self->{ssl_fingerprint};
+    return if $self->{ca_cert_file} || $self->{ca_cert_dir} || (ref($self->{ssl_fingerprint}) eq 'ARRAY' && @{$self->{ssl_fingerprint}});
 
     my $logger = $self->{logger};
     my $vardir = $self->{_vardir};

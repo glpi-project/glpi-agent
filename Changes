@@ -1,6 +1,11 @@
 Revision history for GLPI agent
 
-1.8 not yet released
+1.7.1 not yet released
+
+core:
+* fix #567: Test ssl-fingerprint option as an empty array to still try to export
+  windows keystore or macosx keychain for SSL certificate validation checks
+  This fixes SSL connection issues appeared with 1.7 release on windows & macosx.
 
 1.7 Thu, 21 Dec 2023
 
