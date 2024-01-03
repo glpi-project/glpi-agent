@@ -182,7 +182,7 @@ glpi-agent-linux-installer [options]
                                      - "snap": don't install but extract snap package
     --runnow                       run agent tasks on installation (false)
     --type=INSTALL_TYPE            select type of installation (typical)
-                                     - "typical" to only install inventory task
+                                     - "typical" to only install Computer Inventory and Remote Inventory tasks
                                      - "network" to install glpi-agent and network related tasks
                                      - "all" to install all tasks
                                      - or tasks to install in a comma-separated list
