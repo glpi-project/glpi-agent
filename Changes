@@ -10,6 +10,7 @@ netdiscovery/netinventory:
 * Keep device mac address found via snmp during netdiscovery as this is the one
   which will be reported during netinventory. This will fix duplication issues
   while using "(by mac)" import & update rules in GLPI.
+* fix #574: Updated page counters support for Ricoh printers
 
 1.7.1 Fri, 22 Dec 2023
 
