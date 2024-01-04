@@ -25,7 +25,7 @@ sub doInventory {
     my $default = getDefaultGatewayFromIp(logger => $logger);
     unless ($default) {
         my $routes = getRoutingTable(command => 'netstat -nr', logger => $logger);
-        my $default = $routes->{'0.0.0.0'} || $routes->{'default'};
+        $default = $routes->{'0.0.0.0'} || $routes->{'default'};
     }
 
     my @interfaces = _getInterfaces(logger => $logger);

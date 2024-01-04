@@ -2,6 +2,9 @@ Revision history for GLPI agent
 
 1.8 not yet released
 
+inventory:
+* Fix network default route discovery on linux
+
 netdiscovery/netinventory:
 * Keep device mac address found via snmp during netdiscovery as this is the one
   which will be reported during netinventory. This will fix duplication issues
