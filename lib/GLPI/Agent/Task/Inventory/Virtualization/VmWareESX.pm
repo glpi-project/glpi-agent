@@ -71,7 +71,7 @@ sub _getMachineInfo {
 
     my %info;
     foreach my $line (@lines) {
-        next unless $line = /^(\S+)\s*=\s*(\S+.*)/;
+        next unless $line =~ /^(\S+)\s*=\s*(\S+.*)/;
         my $key = $1;
         my $value = $2;
         $value =~ s/(^"|"$)//g;
