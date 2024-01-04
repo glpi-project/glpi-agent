@@ -120,7 +120,7 @@ sub  _getUsersWslInstances {
                 NAME        => $hostname,
                 VMTYPE      => "WSL$version",
                 SUBSYSTEM   => "WSL",
-                VCPU        => $uservcpu // $vcpu,
+                VCPU        => $maxvcpu,
                 MEMORY      => $maxmemory,
                 UUID        => $uuid,
             };

@@ -63,7 +63,7 @@ sub doInventory {
         $inventory->addEntry(
             section => 'DRIVES',
             entry   => {
-                LABEL   => $diskgroup->{NAME},
+                LABEL   => $name,
                 VOLUMN  => 'diskgroup',
                 TOTAL   => $diskgroup->{TOTAL},
                 FREE    => $diskgroup->{FREE}

@@ -57,8 +57,7 @@ sub new {
             }
         }
         if ($mib_support->{privateoid}) {
-            my $private = $device->get($mib_support->{privateoid})
-                or next;
+            next unless $device->get($mib_support->{privateoid});
             $logger->debug("PrivateOID match: $mibname mib support enabled") if $logger;
             $self->{_SUPPORT}->{$module} = $module->new( device => $device );
             next;

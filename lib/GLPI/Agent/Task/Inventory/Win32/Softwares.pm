@@ -118,17 +118,17 @@ sub _loadUserSoftware {
     my $inventory = $params{inventory};
     my $is64bit   = $params{is64bit};
     my $logger    = $params{logger};
+    my @userhives;
 
     foreach my $profile (@{$params{profiles}}) {
         my $sid = $profile->{SID}
             or next;
         my ($userid) = $sid =~ /-(\d+)$/;
 
-        my $userhive;
         unless ($profile->{LOADED}) {
             my $ntuserdat = $profile->{PATH}."/NTUSER.DAT";
             # This call involves we use cleanupPrivileges before leaving
-            $userhive = loadUserHive(sid => $sid, file => $ntuserdat);
+            push @userhives, loadUserHive(sid => $sid, file => $ntuserdat);
         }
 
         my $username = GLPI::Agent::Tools::Win32::Users::getProfileUsername($profile)
