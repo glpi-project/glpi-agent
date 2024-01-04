@@ -344,8 +344,7 @@ sub _sendMessage {
 
     if ($self->{target}->isType('local')) {
         my ($handle, $file);
-        my $device = $content->{DEVICE}
-            or return;
+        return unless $content->{DEVICE};
         my $path = $self->{target}->getPath();
         if ($path eq '-') {
             $handle = \*STDOUT;

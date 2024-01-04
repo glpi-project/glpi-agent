@@ -429,8 +429,7 @@ sub runTask {
     while ( $self->{task_thread} ) {
         if ($self->{task_thread}->is_joinable()) {
             $self->{task_thread}->join();
-            my $thread = delete $self->{task_thread};
-            undef $thread;
+            delete $self->{task_thread};
         }
         $self->sleep(1);
     }

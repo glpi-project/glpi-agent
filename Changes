@@ -2,6 +2,16 @@ Revision history for GLPI agent
 
 1.8 not yet released
 
+inventory:
+* Fix network default route discovery on linux
+* Fix virtualmachine inventory on computer providing vmware-cmd command
+
+netdiscovery/netinventory:
+* Keep device mac address found via snmp during netdiscovery as this is the one
+  which will be reported during netinventory. This will fix duplication issues
+  while using "(by mac)" import & update rules in GLPI.
+* fix #574: Updated page counters support for Ricoh printers
+
 1.7.1 Fri, 22 Dec 2023
 
 core:
