@@ -684,10 +684,10 @@ sub _scanAddress {
 
     # Then scan for standard network datas
     %device = (
-        %device,
         $INC{'Net/NBName.pm'}    ? $self->_scanAddressByNetbios($params) : (),
         $INC{'Net/Ping.pm'}      ? $self->_scanAddressByPing($params)    : (),
         $self->{arp}             ? $self->_scanAddressByArp($params)     : (),
+        %device,
     );
 
     # don't report anything without a minimal amount of information

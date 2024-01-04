@@ -2,6 +2,11 @@ Revision history for GLPI agent
 
 1.8 not yet released
 
+netdiscovery/netinventory:
+* Keep device mac address found via snmp during netdiscovery as this is the one
+  which will be reported during netinventory. This will fix duplication issues
+  while using "(by mac)" import & update rules in GLPI.
+
 1.7.1 Fri, 22 Dec 2023
 
 core:
