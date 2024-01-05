@@ -11,6 +11,9 @@ netdiscovery/netinventory:
   which will be reported during netinventory. This will fix duplication issues
   while using "(by mac)" import & update rules in GLPI.
 * fix #574: Updated page counters support for Ricoh printers
+  Also updated with refacto in dedicated MibSupport module page counters support
+  for Canon printers
+* Added page counters support for Canon LPB7660 models
 
 1.7.1 Fri, 22 Dec 2023
 
