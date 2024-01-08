@@ -36,7 +36,7 @@ sub doInventory {
     # If only one component is defined and we are under a vmsystem, we can update
     # component capacity to real found size. This permits to support memory size updates.
     my $vmsystem = $inventory->getHardware('VMSYSTEM');
-    if ($vmsystem && $vmsystem ne 'Physical') {
+    if ($vmsystem && $vmsystem !~ /^(Physical|VMware)$/) {
         my @components = grep { exists $_->{CAPACITY} } @$memories;
         if ( @components == 1) {
             my $real_memory = $inventory->getHardware('MEMORY');
