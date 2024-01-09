@@ -13,6 +13,7 @@ netdiscovery/netinventory:
 * fix #574: Updated page counters support for Ricoh printers
   Also updated with refacto in dedicated MibSupport module page counters support
   for Canon printers
+  Add scanned counter on Ricoh
 * Added page counters support for Canon LPB7660 models
 
 1.7.1 Fri, 22 Dec 2023

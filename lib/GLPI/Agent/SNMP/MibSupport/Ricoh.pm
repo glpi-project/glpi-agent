@@ -76,9 +76,11 @@ sub run {
             401 => 'PRINTBLACK',
             402 => 'PRINTCOLOR',
             403 => 'PRINTCOLOR',
+            870 => 'SCANNED',
+            871 => 'SCANNED',
         );
 
-        my %add_mapping = map { $_ => 1 } (202, 203, 402, 403);
+        my %add_mapping = map { $_ => 1 } (202, 203, 402, 403, 870, 871);
 
         foreach my $index (sort keys(%{$types})) {
             my $type  = $types->{$index};
