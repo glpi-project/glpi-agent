@@ -5,6 +5,7 @@ use warnings;
 
 use parent 'GLPI::Agent::Task::Inventory';
 
+use English qw(-no_match_vars);
 use Parallel::ForkManager;
 
 use GLPI::Agent::Tools;
@@ -48,6 +49,12 @@ sub run {
     );
 
     my $worker_count = $remotes->count() > 1 ? $self->{config}->{'remote-workers'} : 0;
+
+    # On windows, worker_count should not be upper than 60 due to a perl limitation
+    if ($OSNAME eq 'MSWin32' && $worker_count > 60) {
+        $self->{logger}->info("Limiting workers count from $worker_count to 60 on MSWin32");
+        $worker_count = 60;
+    }
 
     my $start = time;
 

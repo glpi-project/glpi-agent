@@ -2,6 +2,10 @@ Revision history for GLPI agent
 
 1.8 not yet released
 
+core:
+* Parallel::ForkManager must not use more than 60 workers on MSWin32 due to a
+  perl limitation on this operating system
+
 inventory:
 * Fix network default route discovery on linux
 * Fix virtualmachine inventory on computer providing vmware-cmd command

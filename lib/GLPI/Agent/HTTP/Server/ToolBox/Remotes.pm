@@ -356,7 +356,7 @@ sub _submit_start {
     my $logger = $self->{logger};
     my $starttime = gettimeofday();
 
-    # Configure agent to use required workes and only process expired remotes
+    # Configure agent to use required workers and only process expired remotes
     $agent->{config}->{'remote-workers'} = $workers || 1;
     $agent->{config}->{'remote-scheduling'} = 1;
 

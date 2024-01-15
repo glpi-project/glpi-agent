@@ -120,6 +120,12 @@ sub run {
     my ($max_threads) = sort { $b <=> $a } map { int($_->max_threads()) }
         @{$self->{jobs}};
 
+    # On windows, max_threads should not be upper than 60 due to a perl limitation
+    if ($OSNAME eq 'MSWin32' && $max_threads > 60) {
+        $self->{logger}->info("Limiting threads from $max_threads to 60 on MSWin32");
+        $max_threads = 60;
+    }
+
     # count devices and check skip_start_stop
     my $devices_count   = 0;
     my $skip_start_stop = 0;

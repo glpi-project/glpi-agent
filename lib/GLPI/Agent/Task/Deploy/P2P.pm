@@ -28,6 +28,12 @@ sub new {
         p2pnet        => {}
     };
 
+    # On windows, max_workers should not be bigger than 60 due to a perl limitation
+    if ($OSNAME eq 'MSWin32' && $self->{max_workers} > 60) {
+        $self->{logger}->info("Limiting workers from $self->{max_workers} to 60 on MSWin32");
+        $self->{max_workers} = 60;
+    }
+
     bless $self, $class;
 
     return $self;
