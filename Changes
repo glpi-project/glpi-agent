@@ -21,6 +21,7 @@ netdiscovery/netinventory:
   Add page counters support for Xerox and Konica printers
 * Added page counters support for Canon LPB7660 models
 * Added Konica printer firmwares support
+* Prevent multi-threading issues on win32 due to Netbios datas parsing
 
 1.7.1 Fri, 22 Dec 2023
 

@@ -805,9 +805,11 @@ sub _scanAddressByNetbios {
 
     return if $params->{walk};
 
-    my $nb = Net::NBName->new();
-
-    my $ns = $nb->node_status($params->{ip});
+    my $ns;
+    eval {
+        my $nb = Net::NBName->new();
+        $ns = $nb->node_status($params->{ip});
+    };
 
     $self->{logger}->debug(
         sprintf "- scanning %s with netbios: %s",
@@ -819,8 +821,11 @@ sub _scanAddressByNetbios {
     my %device;
     foreach my $rr ($ns->names()) {
         my $suffix = $rr->suffix();
-        my $G      = $rr->G();
-        my $name   = $rr->name();
+        next unless defined($suffix);
+        my $G = $rr->G()
+            or next;
+        my $name = $rr->name()
+            or next;
         if ($suffix == 0 && $G eq 'GROUP') {
             $device{WORKGROUP} = getSanitizedString($name);
         }
