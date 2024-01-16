@@ -22,6 +22,9 @@ netdiscovery/netinventory:
 * Added page counters support for Canon LPB7660 models
 * Added Konica printer firmwares support
 * Prevent multi-threading issues on win32 due to Netbios datas parsing
+* Enhanced Brother devices support
+* When looking for privateoid rule in MibSupport search, the rule must match on
+  defined value, even if the private oid returns zero.
 
 1.7.1 Fri, 22 Dec 2023
 
