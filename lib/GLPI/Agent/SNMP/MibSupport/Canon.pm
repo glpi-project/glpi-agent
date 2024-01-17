@@ -25,6 +25,7 @@ use constant ppmPrinter     => ppmMIB . '.1.2';
 use constant ppmPrinterName => ppmPrinter . '.1.1.2.1';
 
 use constant countersC55XX      => canon . '.1.11.1.3.1.4';
+use constant typesLPB76XX       => canon . '.1.11.2.1.1.2';
 use constant countersLPB76XX    => canon . '.1.11.2.1.1.3';
 
 our $mibSupport = [
@@ -91,25 +92,49 @@ sub run {
         }
     } elsif ($counters = $self->walk(countersLPB76XX)) {
 
+        my $types = $self->walk(typesLPB76XX)
+            or return;
+
         my %mapping = (
-            1   => 'TOTAL',
-            2   => 'PRINTBLACK',
-            3   => 'PRINTBLACK',
-            4   => 'PRINTCOLOR',
-            5   => 'PRINTCOLOR',
+            'Total 1'                                   => 'TOTAL',
+            'Total (Black 1)'                           => 'PRINTBLACK',
+            'Total (Black/Large)'                       => 'PRINTBLACK',
+            'Total (Black/Small)'                       => 'PRINTBLACK',
+            'Total (Full Color + Single Color/Large)'   => 'PRINTCOLOR',
+            'Total (Full Color + Single Color/Small)'   => 'PRINTCOLOR',
+            'Print (Total 1)'                           => 'PRINTTOTAL',
+            'Copy (Total 1)'                            => 'COPYTOTAL',
+            'Scan (Total 1)'                            => 'SCANNED',
         );
 
-        my %add_mapping = map { $_ => 1 } (2, 3, 4, 5);
+        my %add_mapping = map { $_ => 1 } (
+            'Total (Black/Large)',
+            'Total (Black/Small)',
+            'Total (Full Color + Single Color/Large)',
+            'Total (Full Color + Single Color/Small)',
+        );
 
-        foreach my $index (sort keys(%{$counters})) {
-            my $counter = $mapping{$index}
+        my %skip_add_mapping = (
+            'Total (Black 1)'   => ['Total (Black/Large)', 'Total (Black/Small)'],
+        );
+
+        foreach my $index (sort keys(%{$types})) {
+            my $type = hex2char($types->{$index})
+                or next;
+            my $counter = $mapping{$type}
                 or next;
             my $count = $counters->{$index}
                 or next;
-            if ($add_mapping{$index} && $device->{PAGECOUNTERS}->{$counter}) {
+            if ($add_mapping{$type} && $device->{PAGECOUNTERS}->{$counter}) {
                 $device->{PAGECOUNTERS}->{$counter} += $count;
             } else {
                 $device->{PAGECOUNTERS}->{$counter} = $count;
+            }
+            if ($skip_add_mapping{$type}) {
+                # Forget other possible mapping
+                foreach my $key (@{$skip_add_mapping{$type}}) {
+                    delete $mapping{$key};
+                }
             }
         }
     }
