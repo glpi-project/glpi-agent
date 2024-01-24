@@ -9,6 +9,7 @@ core:
 inventory:
 * Fix network default route discovery on linux
 * Fix virtualmachine inventory on computer providing vmware-cmd command
+* fix #589: Make additional-content option works as before when merging a json list
 
 netdiscovery/netinventory:
 * Keep device mac address found via snmp during netdiscovery as this is the one
