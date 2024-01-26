@@ -374,7 +374,7 @@ sub _getScreens {
         }
     }
 
-    return values(%screens);
+    return map { $screens{$_} } sort keys(%screens);
 }
 
 1;
