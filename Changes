@@ -13,6 +13,8 @@ inventory:
 * Add new 'full-inventory-postpone' option which default to 14. The agent will try
   to submit partial inventory with only changed categories to limit the inventory
   size most of the time. The option can only be used with GLPI 10 and its JSON format.
+* Update inventory to be generated in a consistent order as required by new
+  'full-inventory-postpone' option to detect changes
 
 netdiscovery/netinventory:
 * Keep device mac address found via snmp during netdiscovery as this is the one

@@ -224,7 +224,7 @@ sub _getSoftwaresList {
 
     my @subKeys = map { /^(.*)\/$/ } grep { m{/$} } keys(%{$softwares})
         or return;
-    foreach my $guid (@subKeys) {
+    foreach my $guid (sort @subKeys) {
         # only keep subkeys with more than 1 value
         my $data = $softwares->{$guid."/"}
             or next;

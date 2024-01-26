@@ -122,7 +122,8 @@ sub _makeProfileAndConnectionsAssociation {
     }
 
     my @profiles = ();
-    for my $p (values %{$firewallProfiles}) {
+    foreach my $profil (sort keys(%{$firewallProfiles})) {
+        my $p = $firewallProfiles->{$profil};
         my @p;
         if ($p->{CONNECTIONS} && ref($p->{CONNECTIONS}) eq 'ARRAY') {
             my @conns = @{$p->{CONNECTIONS}};
