@@ -57,6 +57,7 @@ my $default = {
     'user'                    => undef,
     'vardir'                  => undef,
     'assetname-support'       => 1,
+    'full-inventory-postpone' => 14,
 };
 
 my $confReloadIntervalMinValue = 60;

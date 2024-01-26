@@ -452,13 +452,9 @@ sub setTag {
 
 }
 
-my @checked_sections = sort qw(
-    HARDWARE    BIOS        MEMORIES    SLOTS       REGISTRY    CONTROLLERS
-    MONITORS    PORTS       STORAGES    DRIVES      INPUTS      MODEMS
-    NETWORKS    PRINTERS    SOUNDS      SOFTWARES   VIDEOS      CPUS
-    ANTIVIRUS   BATTERIES   FIREWALL    OPERATINGSYSTEM         LICENSEINFOS
-    VIRTUALMACHINES
-);
+my %always_keep_sections = map { $_ => 1 } qw(BIOS HARDWARE);
+my %dont_check_sections = map { $_ => 1 } qw(ACCESSLOG VERSIONPROVIDER);
+my @checked_sections = sort grep { ! $dont_check_sections{$_} } keys(%fields);
 
 sub _checksum {
     my ($key, $ref, $sha, $len) = @_;
@@ -485,7 +481,7 @@ sub _checksum {
 }
 
 sub computeChecksum {
-    my ($self) = @_;
+    my ($self, $postpone_config) = @_;
 
     my $logger = $self->{logger};
 
@@ -510,6 +506,14 @@ sub computeChecksum {
     }
     $last_state = GLPI::Agent::Protocol::Message->new() unless $last_state;
 
+    # Prepare to postpone full inventory when required
+    my $postpone = 0;
+    $postpone = (($last_state->get('_postpone_count') // 0) + 1) % ($postpone_config+1)
+        if $postpone_config;
+
+    # Always disable postpone if format is not json
+    $postpone = 0 unless $self->getFormat() eq 'json';
+
     my $save_state = 0;
     foreach my $section (@checked_sections) {
         my ($sha, $len) = _checksum($section, $self->{content}->{$section});
@@ -525,9 +529,18 @@ sub computeChecksum {
         my $digest = $sha->hexdigest;
 
         # check if the section did change since the last run
-        next if ref($state) eq 'HASH' &&
+        if (
+            ref($state) eq 'HASH' &&
             defined($state->{len}) && $state->{len} == $len &&
-            defined($state->{digest}) && $state->{digest} eq $digest;
+            defined($state->{digest}) && $state->{digest} eq $digest
+        ) {
+            # If we can postpone full inventory, remove section and set inventory as partial
+            if ($postpone && !$always_keep_sections{$section}) {
+                delete $self->{content}->{$section};
+                $self->isPartial(1);
+            }
+            next;
+        }
 
         $logger->debug("Section $section has changed since last inventory");
 
@@ -540,6 +553,12 @@ sub computeChecksum {
         );
         $save_state++;
     }
+
+    $logger->debug("Full inventory ".
+        ($postpone_config && $self->isPartial() ? "postponed: $postpone/$postpone_config" : "kept")
+    );
+
+    $last_state->merge(_postpone_count => $postpone) if $postpone_config;
 
     $self->{last_state_content} = $last_state;
 

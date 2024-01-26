@@ -563,8 +563,9 @@ sub _feedInventory {
     $versionprovider->{ETIME} = time() - $begin
         if $versionprovider;
 
-    # Don't compute checksum on partial inventory
-    $self->{inventory}->computeChecksum() unless $self->{partial} || $self->{nochecksum};
+    # Don't compute checksum on partial inventory or with glpi-inventory script
+    $self->{inventory}->computeChecksum($self->{config}->{'full-inventory-postpone'})
+        unless $self->{partial} || $self->{nochecksum};
 }
 
 sub _injectContent {
