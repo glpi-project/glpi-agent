@@ -5,6 +5,7 @@ Revision history for GLPI agent
 core:
 * Parallel::ForkManager must not use more than 60 workers on MSWin32 due to a
   perl limitation on this operating system
+* Refacto events management to permit a task to trigger another one
 
 inventory:
 * Fix network default route discovery on linux
@@ -31,6 +32,10 @@ netdiscovery/netinventory:
 * Enhanced Brother devices support
 * When looking for privateoid rule in MibSupport search, the rule must match on
   defined value, even if the private oid returns zero.
+
+deploy:
+* Force agent to run a partial software inventory after the deploy task is done
+  if this has been set as a requirement in any job sent by the server
 
 1.7.1 Fri, 22 Dec 2023
 

@@ -294,6 +294,10 @@ sub processRemote {
 
         $logger->debug2("Processing for job $job->{uuid}...");
 
+        # Run partial software inventory if requried and job processing has started
+        $self->{_software_inventory_required} = 1
+            if $job->requiresSoftwaresInventory();
+
         # PROCESSING
         my $actionProcessor = GLPI::Agent::Task::Deploy::ActionProcessor->new(
             logger  => $logger,
@@ -481,6 +485,17 @@ sub run {
 
     # Always plan a maintenance event when a job has been run
     $self->resetEvent($self->newEvent());
+
+    # Also plan a partial software inventory if this has been required in a job
+    if ($self->{_software_inventory_required}) {
+        $self->addEvent(GLPI::Agent::Event->new(
+            name        => "software inventory",
+            task        => "inventory",
+            partial     => "software",
+            target      => $self->{target}->id(),
+            delay       => 0,
+        ));
+    }
 
     return 1;
 }

@@ -293,13 +293,11 @@ sub handleTaskCache {
 sub handleTaskEvent {
     my ($self, $name, $task) = @_;
 
-    return unless $task;
-    my $event = $task->event()
-        or return;
+    return unless $task && GLPI::Agent::Protocol::Message->require();
 
-    if (GLPI::Agent::Protocol::Message->require()) {
+    foreach my $event ($task->events()) {
         my $message = GLPI::Agent::Protocol::Message->new(message => $event->dump_for_message());
-        $self->forked_process_event("TASKEVENT,$name,".$message->getRawContent());
+        $self->forked_process_event("TASKEVENT,".($event->task||$name).",".$message->getRawContent());
     }
 }
 
