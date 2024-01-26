@@ -94,7 +94,7 @@ sub merge {
 
 sub list {
     my ($self) = @_;
-    return map { $_->dump() } values(%{$self->{list}});
+    return map { $_->dump() } sort { $a->deviceid cmp $b->deviceid } values(%{$self->{list}});
 }
 
 # Also implement a powersupply class, but split name on new line to not export it in CPAN
