@@ -32,6 +32,7 @@ netdiscovery/netinventory:
 * Enhanced Brother devices support
 * When looking for privateoid rule in MibSupport search, the rule must match on
   defined value, even if the private oid returns zero.
+* fix #590: Add Pantum printer support
 
 deploy:
 * Force agent to run a partial software inventory after the deploy task is done
