@@ -193,7 +193,7 @@ jobs:
         mkdir C:\Strawberry-perl-for-GLPI-Agent_build\tools
       shell: cmd
     - name: Restore points cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
             C:/Strawberry-perl-for-GLPI-Agent_build/tools
@@ -274,13 +274,13 @@ jobs:
       shell: cmd
     - name: Upload windows built artifacts
       if: success() || failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Windows-Build
         path: C:\Strawberry-perl-for-GLPI-Agent_build\output
     - name: Upload debug MSI-Build artifacts
       if: failure() #success() || failure() # Only enable on failure or when debugging is required
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: MSI-Build-Debug
         path: C:\Strawberry-perl-for-GLPI-Agent_build\build\msi
@@ -301,7 +301,7 @@ jobs:
         VT_API_KEY: ${{ secrets.VT_API_KEY }}
     - name: Upload VirusTotal Report
       if: ${{ vars.VT_SKIP_REPORT_ANALYSIS != 'yes' && ( needs.setup-release.outputs.create-release == 'yes' || startsWith(needs.setup-release.outputs.tag_name, 'nightly') ) }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: VirusTotal-Report
         path: C:\Strawberry-perl-for-GLPI-Agent_build\output\*.json
@@ -345,7 +345,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Restore points cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           contrib/macosx/*.gz
@@ -409,7 +409,7 @@ jobs:
       shell: bash
     - name: Upload MacOSX built artifacts
       if: success() || failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: MacOSX-Build
         path: |
@@ -417,7 +417,7 @@ jobs:
           contrib/macosx/build/*.dmg
     - name: Upload MacOSX Perl building debug artifacts
       if: success() || failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: MacOSX-Perl-Config-${{ matrix.arch }}
         path: |
@@ -465,7 +465,7 @@ jobs:
       env:
         TERM: ${{ env.TERM }}:${{ needs.setup-release.outputs.version }}
     - name: Upload Snap built artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Snap-Build
         path: ${{ steps.snapcraft.outputs.snap }}
@@ -526,7 +526,7 @@ jobs:
         lintian --profile debian --show-overrides -L ">=pedantic"
       shell: bash
     - name: Upload built deb artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Debian-Build
         path: |
@@ -576,13 +576,13 @@ jobs:
             glpi-agent-task-esx glpi-agent-cron
       shell: bash
     - name: Upload built rpm artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: RPM-Build
         path: |
           ${{ steps.rpmbuild.outputs.rpmdir }}/noarch/*.rpm
     - name: Upload rpm sources artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: RPM-Sources
         path: |
@@ -607,13 +607,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: RPM-Build
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Debian-Build
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Snap-Build
     - name: Build installer
@@ -633,7 +633,7 @@ jobs:
       env:
         VERSION: ${{ needs.setup-release.outputs.version }}
     - name: Upload built installer artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Linux-Installer-Build
         path: |
@@ -662,7 +662,7 @@ jobs:
       run: |
         pip3 install git+https://github.com/AppImageCrafters/appimage-builder.git
       shell: bash
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Debian-Build
     - name: Make AppImage
@@ -691,7 +691,7 @@ jobs:
       env:
         VERSION: ${{ needs.setup-release.outputs.version }}
     - name: Upload built installer artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Linux-AppImage-Build
         path: |
@@ -741,7 +741,7 @@ jobs:
       env:
         VERSION: ${{ needs.setup-release.outputs.version }}
     - name: Upload built archive artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Sources
         path: |
@@ -822,35 +822,35 @@ jobs:
         repository: ${{ github.repository_owner }}/glpi-project.github.io
         token: ${{ secrets.PUBLISHING_TOKEN }}
         fetch-depth: 0
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Linux-Installer-Build
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: RPM-Build
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Debian-Build
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Snap-Build
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Linux-AppImage-Build
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: MacOSX-Build
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Windows-Build
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Sources
         path: glpi-agent
