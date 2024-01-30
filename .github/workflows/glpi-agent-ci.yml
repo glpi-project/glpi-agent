@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install packages
       run: |
         sudo apt -y install cpanminus libmodule-install-perl libxml-libxml-perl \
@@ -57,7 +57,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Update environment
       run: |
         echo 'C:\Strawberry\perl\bin'      >> $GITHUB_PATH
@@ -109,7 +109,7 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Update environment
       run: |
         PERL_PREFIX=$(perl -MConfig -e 'print $Config{prefix}')
