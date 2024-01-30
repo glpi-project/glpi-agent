@@ -276,7 +276,7 @@ jobs:
       if: success() || failure()
       uses: actions/upload-artifact@v4
       with:
-        name: Windows-Build
+        name: Windows-Build-${{ matrix.arch }}
         path: C:\Strawberry-perl-for-GLPI-Agent_build\output
     - name: Upload debug MSI-Build artifacts
       if: failure() #success() || failure() # Only enable on failure or when debugging is required
@@ -411,7 +411,7 @@ jobs:
       if: success() || failure()
       uses: actions/upload-artifact@v4
       with:
-        name: MacOSX-Build
+        name: MacOSX-Build-${{ matrix.arch }}
         path: |
           contrib/macosx/build/*.pkg
           contrib/macosx/build/*.dmg
@@ -844,12 +844,14 @@ jobs:
         path: glpi-agent
     - uses: actions/download-artifact@v4
       with:
-        name: MacOSX-Build
+        pattern: MacOSX-Build-*
         path: glpi-agent
+        merge-multiple: true
     - uses: actions/download-artifact@v4
       with:
-        name: Windows-Build
+        pattern: Windows-Build-*
         path: glpi-agent
+        merge-multiple: true
     - uses: actions/download-artifact@v4
       with:
         name: Sources
