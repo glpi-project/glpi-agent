@@ -313,6 +313,12 @@
     <SetProperty Id="CMDLINE_VARDIR" Before="AppSearch" Value="[VARDIR]" />
     <SetProperty Id="VARDIR"         After="AppSearch"  Value="[CMDLINE_VARDIR]"><![CDATA[CMDLINE_VARDIR<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
+    <Property Id="FULL_INVENTORY_POSTPONE" Secure="yes">
+      <RegistrySearch Id="FullInventoryPostpone" Root="HKLM" Key="[%agent_regpath%]" Name="full-inventory-postpone" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_FULL_INVENTORY_POSTPONE" Before="AppSearch" Value="[FULL_INVENTORY_POSTPONE]" />
+    <SetProperty Id="FULL_INVENTORY_POSTPONE"         After="AppSearch"  Value="[CMDLINE_FULL_INVENTORY_POSTPONE]"><![CDATA[CMDLINE_FULL_INVENTORY_POSTPONE<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
     <!-- Configuration defaults after handling command line and registry checks -->
     <SetProperty Id="DEBUG"                   Action="DEBUG_Default"                    After="LaunchConditions"  Value="0"><![CDATA[NOT DEBUG OR (DEBUG<>"1" AND DEBUG<>"2")]]></SetProperty>
     <SetProperty Id="LOGGER"                  Action="LOGGER_Default"                   After="LaunchConditions"  Value="file"><![CDATA[NOT LOGGER]]></SetProperty>
@@ -335,6 +341,7 @@
     <SetProperty Id="NO_SSL_CHECK"            Action="NO_SSL_CHECK_Default"             After="LaunchConditions"  Value="0"><![CDATA[NOT NO_SSL_CHECK OR NO_SSL_CHECK<>"1"]]></SetProperty>
     <SetProperty Id="CONF_RELOAD_INTERVAL"    Action="CONF_RELOAD_INTERVAL_Default"     After="LaunchConditions"  Value="0"><![CDATA[NOT CONF_RELOAD_INTERVAL]]></SetProperty>
     <SetProperty Id="BACKEND_COLLECT_TIMEOUT" Action="BACKEND_COLLECT_TIMEOUT_Default"  After="LaunchConditions"  Value="180"><![CDATA[NOT BACKEND_COLLECT_TIMEOUT]]></SetProperty>
+    <SetProperty Id="FULL_INVENTORY_POSTPONE" Action="FULL_INVENTORY_POSTPONE_Default"  After="LaunchConditions"  Value="14"><![CDATA[NOT FULL_INVENTORY_POSTPONE]]></SetProperty>
 
     <!-- Installer configuration defaults -->
     <SetProperty Id="QUICKINSTALL"            Action="QUICKINSTALL_Default"             After="LaunchConditions"  Value="1"><![CDATA[NOT QUICKINSTALL OR QUICKINSTALL<>"0"]]></SetProperty>
