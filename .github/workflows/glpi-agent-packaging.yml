@@ -282,7 +282,7 @@ jobs:
       if: failure() #success() || failure() # Only enable on failure or when debugging is required
       uses: actions/upload-artifact@v4
       with:
-        name: MSI-Build-Debug
+        name: MSI-Build-Debug-${{ matrix.arch }}
         path: C:\Strawberry-perl-for-GLPI-Agent_build\build\msi
     - name: VirusTotal Scan
       uses: crazy-max/ghaction-virustotal@v3
@@ -303,7 +303,7 @@ jobs:
       if: ${{ vars.VT_SKIP_REPORT_ANALYSIS != 'yes' && ( needs.setup-release.outputs.create-release == 'yes' || startsWith(needs.setup-release.outputs.tag_name, 'nightly') ) }}
       uses: actions/upload-artifact@v4
       with:
-        name: VirusTotal-Report
+        name: VirusTotal-Report-${{ matrix.arch }}
         path: C:\Strawberry-perl-for-GLPI-Agent_build\output\*.json
     - name: Upload Portable Archive Asset
       id: upload-portable-archive-asset
