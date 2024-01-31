@@ -508,7 +508,8 @@ sub computeChecksum {
 
     # Prepare to postpone full inventory when required
     my $postpone = 0;
-    $postpone = (($last_state->get('_postpone_count') // 0) + 1) % ($postpone_config+1)
+    my $current_count = $last_state->get('_postpone_count') // '0';
+    $postpone = ($current_count =~ /^\d+$/ ? int($current_count)+1 : 1) % ($postpone_config+1)
         if $postpone_config;
 
     # Always disable postpone if format is not json

@@ -564,7 +564,7 @@ sub _feedInventory {
         if $versionprovider;
 
     # Don't compute checksum on partial inventory or with glpi-inventory script
-    $self->{inventory}->computeChecksum($self->{config}->{'full-inventory-postpone'})
+    $self->{inventory}->computeChecksum($self->{config}->{'full-inventory-postpone'} =~ /^\d+$/ ? int($self->{config}->{'full-inventory-postpone'}) : 0)
         unless $self->{partial} || $self->{nochecksum};
 }
 
