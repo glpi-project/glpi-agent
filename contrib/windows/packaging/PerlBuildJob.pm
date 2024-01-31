@@ -4,11 +4,15 @@ package
 use parent 'Exporter';
 
 use constant {
-    PERL_VERSION       => "5.36.0",
+    PERL_VERSION       => "5.38.2",
     PERL_BUILD_STEPS   => 7,
+    # Always include / at the end of EXTLIBS_BASE_URL
+    EXTLIBS_BASE_URL   => 'https://github.com/StrawberryPerl/build-extlibs/releases/download/',
+    toolchain          => 'dev_gcc13.1_20230606',
+    toolchain_date     => '20230606'
 };
 
-our @EXPORT = qw(build_job PERL_VERSION PERL_BUILD_STEPS);
+our @EXPORT = qw(build_job PERL_VERSION PERL_BUILD_STEPS EXTLIBS_BASE_URL);
 
 my $ARCH = 'x64';
 
@@ -41,44 +45,41 @@ sub _build_steps {
             plugin  => 'Perl::Dist::Strawberry::Step::BinaryToolsAndLibs',
             install_packages => {
                 #tools
-                'dmake'         => _tools('dmake-warn_20170512'),
-                'pexports'      => _tools('pexports-0.47-bin_20170426'),
-                'patch'         => _tools('patch-2.5.9-7-bin_20100110_UAC'),
+                'patch'         => _tools('patch', '2.7.5', '20230420'),
                 #gcc, gmake, gdb & co.
                 'gcc-toolchain' => { url=>_gcctoolchain(), install_to=>'c' },
-                'gcc-license'   => _gcctoolchainlicense(),
                 #libs
-                'bzip2'         => _gcclib('2019Q2','bzip2-1.0.6'),
-                'db'            => _gcclib('2019Q2','db-6.2.38'),
-                'expat'         => _gcclib('2019Q2','expat-2.2.6'),
-                'fontconfig'    => _gcclib('2019Q2','fontconfig-2.13.1'),
-                'freeglut'      => _gcclib('2020Q1','freeglut-2.8.1', '20200209'),
-                'freetype'      => _gcclib('2019Q2','freetype-2.10.0'),
-                'gdbm'          => _gcclib('2019Q2','gdbm-1.18'),
-                'giflib'        => _gcclib('2019Q2','giflib-5.1.9'),
-                'gmp'           => _gcclib('2019Q2','gmp-6.1.2'),
-                'graphite2'     => _gcclib('2019Q2','graphite2-1.3.13'),
-                'harfbuzz'      => _gcclib('2019Q2','harfbuzz-2.3.1'),
-                'jpeg'          => _gcclib('2019Q2','jpeg-9c'),
-                'libffi'        => _gcclib('2020Q1','libffi-3.3'),
-                'libgd'         => _gcclib('2019Q2','libgd-2.2.5'),
-                'liblibiconv'   => _gcclib('2019Q2','libiconv-1.16'),
-                'libidn2'       => _gcclib('2019Q2','libidn2-2.1.1'),
-                'liblibpng'     => _gcclib('2019Q2','libpng-1.6.37'),
-                'liblibssh2'    => _gcclib('2019Q2','libssh2-1.8.2'),
-                'libunistring'  => _gcclib('2019Q2','libunistring-0.9.10'),
-                'liblibxml2'    => _gcclib('2019Q2','libxml2-2.9.9'),
-                'liblibXpm'     => _gcclib('2019Q2','libXpm-3.5.12'),
-                'liblibxslt'    => _gcclib('2019Q2','libxslt-1.1.33'),
-                'mpc'           => _gcclib('2019Q2','mpc-1.1.0'),
-                'mpfr'          => _gcclib('2019Q2','mpfr-4.0.2'),
-                'openssl'       => _gcclib('2021Q1','openssl-1.1.1i'),
-                'readline'      => _gcclib('2019Q2','readline-8.0'),
-                't1lib'         => _gcclib('2019Q2','t1lib-5.1.2'),
-                'termcap'       => _gcclib('2019Q2','termcap-1.3.1'),
-                'tiff'          => _gcclib('2019Q2','tiff-4.0.10'),
-                'xz'            => _gcclib('2019Q2','xz-5.2.4'),
-                'zlib'          => _gcclib('2019Q2','zlib-1.2.11'),
+                'bzip2'         => _gcclib('bzip2-1.0.6'),
+                'db'            => _gcclib('db-6.2.38'),
+                'expat'         => _gcclib('expat-2.2.6'),
+                'fontconfig'    => _gcclib('fontconfig-2.13.1'),
+                'freeglut'      => _gcclib('freeglut-3.4.0'),
+                'freetype'      => _gcclib('freetype-2.10.0'),
+                'gdbm'          => _gcclib('gdbm-1.19'),
+                'giflib'        => _gcclib('giflib-5.1.9'),
+                'gmp'           => _gcclib('gmp-6.2.1'),
+                'graphite2'     => _gcclib('graphite2-1.3.13'),
+                'harfbuzz'      => _gcclib('harfbuzz-2.3.1'),
+                'jpeg'          => _gcclib('jpeg-9c'),
+                'libffi'        => _gcclib('libffi-3.2.1'),
+                'libgd'         => _gcclib('libgd-2.3.3'),
+                'libiconv'      => _gcclib('libiconv-1.17'),
+                'libidn2'       => _gcclib('libidn2-2.1.1'),
+                'libpng'        => _gcclib('libpng-1.6.37'),
+                'libssh2'       => _gcclib('libssh2-1.10.0'),
+                'libunistring'  => _gcclib('libunistring-1.1'),
+                'libxml2'       => _gcclib('libxml2-2.10.4'),
+                'libXpm'        => _gcclib('libXpm-3.5.12'),
+                'libxslt'       => _gcclib('libxslt-1.1.37'),
+                'mpc'           => _gcclib('mpc-1.3.1'),
+                'mpfr'          => _gcclib('mpfr-4.2.0'),
+                'openssl'       => _gcclib('openssl-1.1.1q'),
+                'readline'      => _gcclib('readline-8.2'),
+                't1lib'         => _gcclib('t1lib-5.1.2'),
+                'termcap'       => _gcclib('termcap-1.3.1'),
+                'tiff'          => _gcclib('tiff-4.5.0'),
+                'xz'            => _gcclib('xz-5.2.4'),
+                'zlib'          => _gcclib('zlib-1.2.11'),
             },
         },
         ### NEXT STEP 1 Binaries cleanup #######################################
@@ -89,6 +90,8 @@ sub _build_steps {
                 { do=>'movefile',   args=>[ '<image_dir>/c/lib/libdb-6.1.a', '<image_dir>/c/lib/libdb.a' ] }, #XXX ugly hack
                 { do=>'removefile', args=>[ '<image_dir>/c/bin/gccbug', '<image_dir>/c/bin/ld.gold.exe', '<image_dir>/c/bin/ld.bfd.exe' ] },
                 { do=>'removefile_recursive', args=>[ '<image_dir>/c', qr/.+\.la$/i ] }, # https://rt.cpan.org/Public/Bug/Display.html?id=127184
+                { do=>'make_rw', args=>[ '<image_dir>/c/include/db.h' ] },     #  band-aid for ro flag on db headers
+                { do=>'make_rw', args=>[ '<image_dir>/c/include/db_cxx.h' ] },
             ],
         },
         ### NEXT STEP 2 Build perl #############################################
@@ -98,12 +101,20 @@ sub _build_steps {
             cf_email   => 'strawberry-perl@project', #IMPORTANT: keep 'strawberry-perl' before @
             perl_debug => 0,    # can be overridden by --perl_debug=N option
             perl_64bitint => 1, # ignored on 64bit, can be overridden by --perl_64bitint | --noperl_64bitint option
-            buildoptextra => '-D__USE_MINGW_ANSI_STDIO',
             patch => { #DST paths are relative to the perl src root
                 'contrib/windows/packaging/agentexe.ico'        => 'win32/agentexe.ico',
-                'contrib/windows/packaging/win32_config.gc.tt'  => 'win32/config.gc',
                 'contrib/windows/packaging/agentexe.rc.tt'      => 'win32/perlexe.rc',
-                'contrib/windows/packaging/win32_config_H.gc'   => 'win32/config_H.gc',
+                'config_H.gc'                                 => {
+                    HAS_MKSTEMP => 'define',
+                    HAS_BUILTIN_CHOOSE_EXPR => 'define',
+                    HAS_SYMLINK             => 'define',
+                },
+                'config.gc'                                 => {  # see Step.pm for list of default updates
+                    d_builtin_choose_expr => 'define',
+                    d_mkstemp             => 'define',
+                    d_symlink             => 'define', # many cpan modules fail tests when defined
+                    osvers                => '10',
+                },
             },
             license => { #SRC paths are relative to the perl src root
                 'Readme'   => '<image_dir>/licenses/perl/Readme',
@@ -143,6 +154,8 @@ sub _build_steps {
                 qw/ Net-SSLeay Mozilla::CA IO-Socket-SSL /,
 
                 # network
+                # https://github.com/StrawberryPerl/Perl-Dist-Strawberry/issues/72
+                { module => 'https://github.com/StrawberryPerl/Perl-Dist-Strawberry/releases/download/dev_20230318/Socket6-0.29_01.tar.gz' },
                 qw/ IO::Socket::IP IO::Socket::INET6 HTTP::Daemon /,
                 qw/ HTTP-Server-Simple LWP::Protocol::https LWP::UserAgent /,
 
@@ -241,38 +254,29 @@ sub _is64bit {
     return $ARCH eq 'x64' ? 1 : 0;
 }
 
-sub _bits {
-    return $ARCH eq 'x64' ? 64 : 32;
-}
-
 sub _perl_source_url {
     return 'https://www.cpan.org/src/5.0/perl-'.PERL_VERSION.'.tar.gz'
 }
 
+sub _package_url {
+    my ($folder, $file) = @_;
+    return '<package_url>' . $folder . '/' . $file;
+}
+
 sub _tools {
-    my ($tool) = @_;
-    my $bits = _bits();
-    return '<package_url>/kmx/'.$bits.'_tools/'.$bits.'bit_'.$tool.'.zip';
+    my ($tool, $version, $date) = @_;
+    $date = toolchain_date unless $date;
+    my $folder = $date eq '20230420' ? 'dev_gcc10.3_20230313' : toolchain_date;
+    return _package_url($folder, '64bit_' . $tool . '-' . $version . '-bin_' . $date . '.zip');
 }
 
 sub _gcctoolchain {
-    my $bits = _bits();
-    return '<package_url>/kmx/'.$bits.'_gcctoolchain/mingw64-w'.$bits.'-gcc8.3.0_20190316.zip';
-}
-
-sub _gcctoolchainlicense {
-    my $bits = _bits();
-    return '<package_url>/kmx/'.$bits.'_gcctoolchain/mingw64-w'.$bits.'-gcc8.3.0_20190316-lic.zip';
+    return _package_url(toolchain, 'winlibs_gcc13.1r5.zip');
 }
 
 sub _gcclib {
-    my ($quarter, $lib, $date) = @_;
-    my $bits = _bits();
-    unless ($date) {
-        my %date = qw( 2019Q2 20190522 2020Q1 20200207 2020Q3 20200712 2021Q1 20210124);
-        $date = $date{$quarter};
-    }
-    return '<package_url>/kmx/'.$bits.'_libs/gcc83-'.$quarter.'/'.$bits.'bit_'.$lib.'-bin_'.$date.'.zip';
+    my ($lib) = @_;
+    return _package_url(toolchain, '64bit_' . $lib . '-bin_' . toolchain_date . '.zip');
 }
 
 sub _movebin {

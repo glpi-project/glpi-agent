@@ -180,7 +180,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        arch: [ x64, x86 ]
+        arch: [ x64 ]
 
     if: ${{ needs.setup-release.outputs.build == 'yes' }}
     needs: setup-release
@@ -223,17 +223,9 @@ jobs:
     - name: Prepare Makefile
       run: perl Makefile.PL
       shell: cmd
-    - name: Install Perl::Dist::Strawberry
+    - name: Install latest Perl::Dist::Strawberry from github
       run: |
-        cpanm --notest --verbose Perl::Dist::Strawberry
-      shell: cmd
-    - name: Fix Perl::Dist::Strawberry for perl 5.34
-      run: |
-        perl -i -pe "s/makefile.mk/Makefile/" C:\Strawberry\perl\site\lib\Perl\Dist\Strawberry\Step\InstallPerlCore.pm
-      shell: cmd
-    - name: Fix Perl::Dist::Strawberry to support patching perl 5.34
-      run: |
-        perl -i -pe "s/use Text::Diff;/use Text::Diff;use Text::Patch;/" C:\Strawberry\perl\site\lib\Perl\Dist\Strawberry\Step.pm
+        cpanm --notest --verbose https://github.com/StrawberryPerl/Perl-Dist-Strawberry.git
       shell: cmd
     - name: Build package
       run: |

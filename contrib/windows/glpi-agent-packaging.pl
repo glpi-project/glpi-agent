@@ -102,6 +102,7 @@ sub build_app {
         -image_dir      => "C:\\Strawberry-perl-for-$provider-Agent",
         -working_dir    => "C:\\Strawberry-perl-for-$provider-Agent_build",
         -wixbin_dir     => $wixbin_dir,
+        -package_url    => EXTLIBS_BASE_URL,
         -notest_modules,
         -nointeractive,
         -restorepoints,
