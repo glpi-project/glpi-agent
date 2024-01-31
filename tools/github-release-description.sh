@@ -41,7 +41,6 @@ Don't forget to follow our [installation documentation](https://glpi-agent.readt
 Arch | Windows installer | Windows portable archive
 ---|:---|:---
 64 bits | [GLPI-Agent-$VERSION-x64.msi]($REPO/releases/download/$TAG/GLPI-Agent-$VERSION-x64.msi) | [glpi-agent-$VERSION-x64.zip]($REPO/releases/download/$TAG/glpi-agent-$VERSION-x64.zip)
-32 bits | [GLPI-Agent-$VERSION-x86.msi]($REPO/releases/download/$TAG/GLPI-Agent-$VERSION-x86.msi) | [glpi-agent-$VERSION-x86.zip]($REPO/releases/download/$TAG/glpi-agent-$VERSION-x86.zip)
 
 ## MacOSX
 

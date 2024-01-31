@@ -2,7 +2,7 @@
 
 set -e
 
-unset HEADER
+unset HEADER MSI_X86
 
 while [ -n "$1" ]
 do
@@ -41,6 +41,11 @@ title: GLPI-Agent Nightly Builds
 HEADER
 fi
 
+# Support x86 MSI is still available
+if [ -e "glpi-agent/GLPI-Agent-$VERSION-x86.msi" -a -e "glpi-agent/GLPI-Agent-$VERSION-x86.zip" ]; then
+    MSI_X86="32 bits | [GLPI-Agent-$VERSION-x86.msi](GLPI-Agent-$VERSION-x86.msi) | [GLPI-Agent-$VERSION-x86.zip](GLPI-Agent-$VERSION-x86.zip)"
+fi
+
 cat <<DESCRIPTION
 # GLPI-Agent v$VERSION nightly build
 
@@ -51,7 +56,7 @@ Built on $DATE
 Arch | Windows installer | Windows portable archive
 ---|:---|:---
 64 bits | [GLPI-Agent-$VERSION-x64.msi](GLPI-Agent-$VERSION-x64.msi) | [GLPI-Agent-$VERSION-x64.zip](GLPI-Agent-$VERSION-x64.zip)
-32 bits | [GLPI-Agent-$VERSION-x86.msi](GLPI-Agent-$VERSION-x86.msi) | [GLPI-Agent-$VERSION-x86.zip](GLPI-Agent-$VERSION-x86.zip)
+$MSI_X86
 
 ## MacOSX <a href="#macosx-${VERSION//./-}">#</a> {#macosx-${VERSION//./-}}
 
