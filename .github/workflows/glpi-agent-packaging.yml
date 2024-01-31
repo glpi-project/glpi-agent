@@ -756,6 +756,43 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        name: Linux-Installer-Build
+    - uses: actions/download-artifact@v4
+      with:
+        name: RPM-Build
+    - uses: actions/download-artifact@v4
+      with:
+        name: Debian-Build
+    - uses: actions/download-artifact@v4
+      with:
+        name: Snap-Build
+    - uses: actions/download-artifact@v4
+      with:
+        name: Linux-AppImage-Build
+    - uses: actions/download-artifact@v4
+      with:
+        pattern: MacOSX-Build-*
+        merge-multiple: true
+    - uses: actions/download-artifact@v4
+      with:
+        pattern: Windows-Build-*
+        merge-multiple: true
+    - uses: actions/download-artifact@v4
+      with:
+        name: Sources
+    - name: Generate and upload sha256 file
+      id: upload-sha256-asset
+      run: |
+        # Clean up not published files from Debian-Build
+        rm -f *.buildinfo *.changes
+        sha256sum *$VERSION* > glpi-agent-$VERSION.sha256
+        gh release upload ${{ needs.setup-release.outputs.tag_name }} glpi-agent-$VERSION.sha256
+      shell: bash
+      env:
+        VERSION: ${{ needs.setup-release.outputs.version }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Publish release
       id: publish-release
       run: |
@@ -874,26 +911,34 @@ jobs:
                 ;;
         esac
         # Get script to prepare page
+        cd glpi-agent
         curl -L -s -o github-nightly-description.sh https://github.com/glpi-project/glpi-agent/raw/develop/tools/github-nightly-description.sh
         chmod +x github-nightly-description.sh
+        sha256sum *${{ needs.setup-release.outputs.version }}* >sha256.txt
+        mv sha256.txt glpi-agent-${{ needs.setup-release.outputs.version }}.sha256
         ./github-nightly-description.sh --header --version ${{ needs.setup-release.outputs.version }} >index.md.new
         git config --local user.email "${{ needs.setup-release.outputs.user-email }}"
         git config --local user.name "${{ needs.setup-release.outputs.user-name }}"
-        egrep '^# ' glpi-agent/index.md | \
+        egrep '^# ' index.md | \
         while read dash agent version x
         do
             VERSION="${version#v}"
             if (( --COUNT > 0 )); then
                 echo "Keeping glpi-agent $VERSION build"
-                read date time tz <<<$(git log -n1 --pretty=%ci -- glpi-agent/glpi-agent_${VERSION}_all.deb)
+                if [ ! -e glpi-agent-$VERSION.sha256 ]; then
+                    sha256sum *$VERSION* >sha256.txt
+                    mv sha256.txt glpi-agent-$VERSION.sha256
+                fi
+                read date time tz <<<$(git log -n1 --pretty=%ci -- glpi-agent_${VERSION}_all.deb)
                 ./github-nightly-description.sh --version $VERSION --date "$date $time UTC" >>index.md.new
             else
                 echo "Removing glpi-agent $VERSION build"
-                git filter-branch --prune-empty -f --index-filter "git rm --cached --ignore-unmatch glpi-agent/*$VERSION*" HEAD
+                git filter-branch --prune-empty -f --index-filter "git rm --cached --ignore-unmatch *$VERSION*" HEAD
             fi
         done
-        mv -vf index.md.new glpi-agent/index.md
+        mv -vf index.md.new index.md
         rm -f github-nightly-description.sh
+        cd ..
         echo "Repository status:"
         git status
         ls -lt glpi-agent
