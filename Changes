@@ -16,6 +16,8 @@ inventory:
   size most of the time. The option can only be used with GLPI 10 and its JSON format.
 * Update inventory to be generated in a consistent order as required by new
   'full-inventory-postpone' option to detect changes
+* Update glpi-agent script with --full-inventory-postpone option support
+* Update glpi-agent script with --full option support to force a full inventory
 
 netdiscovery/netinventory:
 * Keep device mac address found via snmp during netdiscovery as this is the one
