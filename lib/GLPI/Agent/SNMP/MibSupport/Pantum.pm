@@ -41,6 +41,10 @@ sub getModel {
     return $self->get(prtGeneralPrinterName);
 }
 
+sub getManufacturer {
+    return 'Pantum';
+}
+
 sub getSerial {
     my ($self) = @_;
 
