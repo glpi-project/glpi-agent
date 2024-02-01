@@ -911,23 +911,26 @@ jobs:
                 ;;
         esac
         # Get script to prepare page
-        cd glpi-agent
         curl -L -s -o github-nightly-description.sh https://github.com/glpi-project/glpi-agent/raw/develop/tools/github-nightly-description.sh
         chmod +x github-nightly-description.sh
-        sha256sum *${{ needs.setup-release.outputs.version }}* >sha256.txt
-        mv sha256.txt glpi-agent-${{ needs.setup-release.outputs.version }}.sha256
-        ./github-nightly-description.sh --header --version ${{ needs.setup-release.outputs.version }} >index.md.new
+        cd glpi-agent
+        echo "Generating glpi-agent ${{ needs.setup-release.outputs.version }} packages sha256 file"
+        sha256sum *${{ needs.setup-release.outputs.version }}* > glpi-agent-${{ needs.setup-release.outputs.version }}.sha256
+        cd ..
+        ./github-nightly-description.sh --header --version ${{ needs.setup-release.outputs.version }} >glpi-agent/index.md.new
         git config --local user.email "${{ needs.setup-release.outputs.user-email }}"
         git config --local user.name "${{ needs.setup-release.outputs.user-name }}"
-        egrep '^# ' index.md | \
+        egrep '^# ' glpi-agent/index.md | \
         while read dash agent version x
         do
             VERSION="${version#v}"
             if (( --COUNT > 0 )); then
                 echo "Keeping glpi-agent $VERSION build"
-                if [ ! -e glpi-agent-$VERSION.sha256 ]; then
-                    sha256sum *$VERSION* >sha256.txt
-                    mv sha256.txt glpi-agent-$VERSION.sha256
+                if [ ! -e glpi-agent/glpi-agent-$VERSION.sha256 ]; then
+                    cd glpi-agent
+                    echo "Generating glpi-agent $VERSION packages sha256 file"
+                    sha256sum *$VERSION* > glpi-agent-$VERSION.sha256
+                    cd ..
                 fi
                 read date time tz <<<$(git log -n1 --pretty=%ci -- glpi-agent_${VERSION}_all.deb)
                 ./github-nightly-description.sh --version $VERSION --date "$date $time UTC" >>index.md.new
@@ -936,9 +939,8 @@ jobs:
                 git filter-branch --prune-empty -f --index-filter "git rm --cached --ignore-unmatch *$VERSION*" HEAD
             fi
         done
-        mv -vf index.md.new index.md
+        mv -vf glpi-agent/index.md.new glpi-agent/index.md
         rm -f github-nightly-description.sh
-        cd ..
         echo "Repository status:"
         git status
         ls -lt glpi-agent
