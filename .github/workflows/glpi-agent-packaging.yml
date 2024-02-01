@@ -933,7 +933,7 @@ jobs:
                     cd ..
                 fi
                 read date time tz <<<$(git log -n1 --pretty=%ci -- glpi-agent_${VERSION}_all.deb)
-                ./github-nightly-description.sh --version $VERSION --date "$date $time UTC" >>index.md.new
+                ./github-nightly-description.sh --version $VERSION --date "$date $time UTC" >>glpi-agent/index.md.new
             else
                 echo "Removing glpi-agent $VERSION build"
                 git filter-branch --prune-empty -f --index-filter "git rm --cached --ignore-unmatch *$VERSION*" HEAD
