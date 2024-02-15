@@ -1005,6 +1005,7 @@ sub _scanAddressByRemote {
             $url->scheme($credential->{TYPE});
 
             my $remote = GLPI::Agent::Task::RemoteInventory::Remote->new(
+                config  => $self->{config},
                 logger  => $self->{logger},
                 url     => $url->as_string(),
                 timeout => $params->{timeout},

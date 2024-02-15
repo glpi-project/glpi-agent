@@ -40,6 +40,10 @@ deploy:
 * Force agent to run a partial software inventory after the deploy task is done
   if this has been set as a requirement in any job sent by the server
 
+toolbox:
+* fix #532: Make libssh2 use the right place when looking for known_hosts file
+  on windows
+
 packaging:
 * Update MacOSX to use perl 5.38.2, OpenSSL 3.2.1 and zlib 1.3.1
 * Update Windows MSI installer to use StrawBerry Perl 5.38.2

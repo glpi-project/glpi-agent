@@ -223,8 +223,10 @@ sub _submit_add {
         }
     }
 
+    my $agent = $self->{toolbox}->{server}->{agent};
     my $remote = GLPI::Agent::Task::RemoteInventory::Remote->new(
         url     => $form->{'input/url'},
+        config  => $agent->{config},
         logger  => $self->{logger}
     );
 
@@ -260,8 +262,10 @@ sub _submit_update {
     $self->need_save($target);
     my $expiration = $remote->expiration();
 
+    my $agent = $self->{toolbox}->{server}->{agent};
     $remote = GLPI::Agent::Task::RemoteInventory::Remote->new(
         url     => $form->{'input/url'},
+        config  => $agent->{config},
         logger  => $self->{logger}
     );
 
