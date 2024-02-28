@@ -18,6 +18,7 @@ inventory:
   'full-inventory-postpone' option to detect changes
 * Update glpi-agent script with --full-inventory-postpone option support
 * Update glpi-agent script with --full option support to force a full inventory
+* fix #611: Wrong bios value as array on win32 bios when using WMI in proxmox vm
 
 netdiscovery/netinventory:
 * Keep device mac address found via snmp during netdiscovery as this is the one

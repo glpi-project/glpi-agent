@@ -96,7 +96,7 @@ sub doInventory {
             $bios->{SSN} = $object->{SerialNumber}
                 unless $bios->{SSN};
         }
-        $bios->{MMODEL}          = $object->{Product};
+        $bios->{MMODEL} = $object->{Product};
         unless (empty($object->{Manufacturer})) {
             $bios->{MMANUFACTURER} = $object->{Manufacturer};
             $bios->{SMANUFACTURER} = $object->{Manufacturer}
@@ -105,6 +105,8 @@ sub doInventory {
     }
 
     foreach (keys %$bios) {
+        # Handle case we have an array of one string in place of the expected string
+        $bios->{$_} = shift @{$bios->{$_}} if ref($bios->{$_}) eq 'ARRAY';
         $bios->{$_} =~ s/\s+$// if $bios->{$_};
         delete $bios->{$_} if isInvalidBiosValue($bios->{$_});
     }
