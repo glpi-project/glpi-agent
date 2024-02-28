@@ -45,7 +45,7 @@ sub doInventory {
                 command => $command." --version",
                 logger  => $logger
             );
-            if ($version && $version =~ /^(\d+)\.(\d+)\.(\d+)$/) {
+            if ($version && $version =~ /^(\d+)\.(\d+)\.(\d+)/) {
                 $required = int($1) > 1 || (int($1) == 1 && int($2) > 2) || (int($1) == 1 && int($2) == 2 && int($3) >= 2) ? 0 : 1;
             }
             if ($required) {
