@@ -25,7 +25,7 @@ map { $INC{"Perl/Dist/GLPI/Agent/Step/$_.pm"} = __FILE__ } qw(Update OutputMSI T
 # Perl::Dist::Strawberry doesn't detect WiX 3.11 which is installed on windows github images
 # Algorithm imported from Perl::Dist::Strawberry::Step::OutputMSM_MSI::_detect_wix_dir
 my $wixbin_dir;
-for my $v (qw/3.0 3.5 3.6 3.11/) {
+for my $v (qw/3.14 3.11 3.6 3.5 3.0/) {
     my $WIX_REGISTRY_KEY = "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows Installer XML/$v";
     # 0x200 = KEY_WOW64_32KEY
     my $r = Win32::TieRegistry->new($WIX_REGISTRY_KEY => { Access => KEY_READ|0x200, Delimiter => q{/} });
