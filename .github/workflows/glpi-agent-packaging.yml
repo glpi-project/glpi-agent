@@ -189,19 +189,31 @@ jobs:
     - uses: actions/checkout@v4
     - name: Create folders for cached datas
       run: |
+        mkdir C:\Strawberry-perl-for-GLPI-Agent_build\download
         mkdir C:\Strawberry-perl-for-GLPI-Agent_build\restore
         mkdir C:\Strawberry-perl-for-GLPI-Agent_build\tools
       shell: cmd
     - name: Restore points cache
       uses: actions/cache@v4
+      id: built-perl-cache
       with:
         path: |
             C:/Strawberry-perl-for-GLPI-Agent_build/tools
             C:/Strawberry-perl-for-GLPI-Agent_build/restore
-        key: windows-packaging-cache-${{ matrix.arch }}-${{ hashFiles('contrib\windows\glpi-agent-packaging.pl', 'contrib\windows\packaging\*') }}
+        key: windows-packaging-cache-${{ matrix.arch }}-${{ hashFiles('contrib\windows\glpi-agent-extlibs-build.pl', 'contrib\windows\glpi-agent-packaging.pl', 'contrib\windows\packaging\*') }}
+    - name: Restore Toolchain points cache
+      uses: actions/cache@v4
+      id: built-extlibs-cache
+      if: ${{ steps.built-perl-cache.outputs.cache-hit != 'true' }}
+      with:
+        path: |
+            C:/Strawberry-perl-for-GLPI-Agent_build/download/winlibs*.zip
+            C:/Strawberry-perl-for-GLPI-Agent_build/download/extlibs.zip
+        key: windows-packaging-extlibs-cache-${{ matrix.arch }}-${{ hashFiles('contrib\windows\glpi-agent-extlibs-build.pl', 'contrib\windows\packaging\ToolchainBuildJob.pm', 'contrib\windows\packaging\*.patch') }}
     - name: List files in cached paths
       if: success() || failure()
       run: |
+        dir C:\Strawberry-perl-for-GLPI-Agent_build\download
         dir C:\Strawberry-perl-for-GLPI-Agent_build\restore
         dir C:\Strawberry-perl-for-GLPI-Agent_build\tools
       shell: cmd
@@ -226,6 +238,11 @@ jobs:
     - name: Install latest Perl::Dist::Strawberry from github
       run: |
         cpanm --notest --verbose https://github.com/StrawberryPerl/Perl-Dist-Strawberry.git
+      shell: cmd
+    - name: Build Extlibs with Perl Toolchain
+      if: ${{ steps.built-perl-cache.outputs.cache-hit != 'true' && steps.built-extlibs-cache.outputs.cache-hit != 'true' }}
+      run: |
+        perl contrib\windows\glpi-agent-extlibs-build.pl --arch ${{ matrix.arch }}
       shell: cmd
     - name: Build package
       run: |

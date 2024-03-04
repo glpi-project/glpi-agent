@@ -1,0 +1,11 @@
+--- Makefile.orig
++++ Makefile
+@@ -97,7 +97,7 @@
+ # HKEY_CURRENT_USER\Software\Perl and HKEY_LOCAL_MACHINE\Software\Perl in
+ # the Registry.
+ #
+-#USE_NO_REGISTRY = define
++USE_NO_REGISTRY = define
+ 
+ #
+ # uncomment exactly one of the following

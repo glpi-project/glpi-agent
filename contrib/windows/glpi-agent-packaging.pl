@@ -20,7 +20,7 @@ use lib 'lib';
 use GLPI::Agent::Version;
 
 # HACK: make "use Perl::Dist::GLPI::Agent::Step::XXX" works as included plugin
-map { $INC{"Perl/Dist/GLPI/Agent/Step/$_.pm"} = __FILE__ } qw(Update OutputMSI Test InstallModules);
+map { $INC{"Perl/Dist/GLPI/Agent/Step/$_.pm"} = __FILE__ } qw(Update OutputMSI Test ToolChain InstallPerlCore InstallModules);
 
 # Perl::Dist::Strawberry doesn't detect WiX 3.11 which is installed on windows github images
 # Algorithm imported from Perl::Dist::Strawberry::Step::OutputMSM_MSI::_detect_wix_dir
@@ -102,7 +102,6 @@ sub build_app {
         -image_dir      => "C:\\Strawberry-perl-for-$provider-Agent",
         -working_dir    => "C:\\Strawberry-perl-for-$provider-Agent_build",
         -wixbin_dir     => $wixbin_dir,
-        -package_url    => EXTLIBS_BASE_URL,
         -notest_modules,
         -nointeractive,
         -restorepoints,
@@ -137,6 +136,66 @@ foreach my $bits (sort values(%do)) {
 print "All packages building processing passed\n";
 
 exit(0);
+
+package
+    Perl::Dist::GLPI::Agent::Step::ToolChain;
+
+use parent 'Perl::Dist::Strawberry::Step::BinaryToolsAndLibs';
+
+use File::Spec::Functions qw(catfile catdir);
+
+sub run {
+    my ($self) = @_;
+
+    foreach my $p (@{$self->{config}->{packages}}) {
+        $self->_install($p);
+        $self->boss->message(5, "pkg='$p->{name}'");
+    }
+}
+
+sub _install {
+    my ($self, $pkg) = @_;
+    my $name = $pkg->{name};
+    $self->boss->message(1, "installing package '$name'\n");
+
+    my $file       = $pkg->{file};
+    my $install_to = $pkg->{install_to} || '';
+
+    # Unpack the archive
+    my $tgz = catfile($self->global->{download_dir}, $file);
+    my $tgt = catdir($self->global->{image_dir}, $install_to);
+    $self->_extract($tgz, $tgt);
+}
+
+package
+    Perl::Dist::GLPI::Agent::Step::InstallPerlCore;
+
+use parent 'Perl::Dist::Strawberry::Step::InstallPerlCore';
+
+use Text::Patch;
+use File::Copy qw(copy);
+use File::Slurp;
+use Text::Diff;
+
+sub _patch_file {
+    my ($self, $new, $dst, $dir, $tt_vars, $no_backup) = @_;
+
+    # We only need to replace patch case
+    return $self->SUPER::_patch_file($new, $dst, $dir, $tt_vars, $no_backup)
+        unless $new =~ /\.patch$/;
+
+    $self->boss->message(5, "_patch_file: applying patch on '$dst'\n");
+    copy($dst, "$dst.backup") if !$no_backup && -f $dst && !-f "$dst.backup";
+    my $diff = read_file($new);
+    my $indata = read_file($dst);
+    my $outdata = patch($indata, $diff, STYLE=>"Unified");
+
+    my $r = $self->_unset_ro($dst);
+    write_file($dst, $outdata);
+    $self->_restore_ro($dst, $r);
+
+    write_file("$dst.diff", diff("$dst.backup", $dst)) if -f "$dst.backup";
+}
 
 package
     Perl::Dist::GLPI::Agent::Step::Test;

@@ -3,16 +3,14 @@ package
 
 use parent 'Exporter';
 
+use ToolchainBuildJob;
+
 use constant {
     PERL_VERSION       => "5.38.2",
     PERL_BUILD_STEPS   => 7,
-    # Always include / at the end of EXTLIBS_BASE_URL
-    EXTLIBS_BASE_URL   => 'https://github.com/StrawberryPerl/build-extlibs/releases/download/',
-    toolchain          => 'dev_gcc13.1_20230606',
-    toolchain_date     => '20230606'
 };
 
-our @EXPORT = qw(build_job PERL_VERSION PERL_BUILD_STEPS EXTLIBS_BASE_URL);
+our @EXPORT = qw(build_job PERL_VERSION PERL_BUILD_STEPS);
 
 my $ARCH = 'x64';
 
@@ -42,74 +40,45 @@ sub _build_steps {
     return
         ### FIRST STEP 0 : Binaries donwloads ##################################
         {
-            plugin  => 'Perl::Dist::Strawberry::Step::BinaryToolsAndLibs',
-            install_packages => {
-                #tools
-                'patch'         => _tools('patch', '2.7.5', '20230420'),
-                #gcc, gmake, gdb & co.
-                'gcc-toolchain' => { url=>_gcctoolchain(), install_to=>'c' },
-                #libs
-                'bzip2'         => _gcclib('bzip2-1.0.6'),
-                'db'            => _gcclib('db-6.2.38'),
-                'expat'         => _gcclib('expat-2.2.6'),
-                'fontconfig'    => _gcclib('fontconfig-2.13.1'),
-                'freeglut'      => _gcclib('freeglut-3.4.0'),
-                'freetype'      => _gcclib('freetype-2.10.0'),
-                'gdbm'          => _gcclib('gdbm-1.19'),
-                'giflib'        => _gcclib('giflib-5.1.9'),
-                'gmp'           => _gcclib('gmp-6.2.1'),
-                'graphite2'     => _gcclib('graphite2-1.3.13'),
-                'harfbuzz'      => _gcclib('harfbuzz-2.3.1'),
-                'jpeg'          => _gcclib('jpeg-9c'),
-                'libffi'        => _gcclib('libffi-3.2.1'),
-                'libgd'         => _gcclib('libgd-2.3.3'),
-                'libiconv'      => _gcclib('libiconv-1.17'),
-                'libidn2'       => _gcclib('libidn2-2.1.1'),
-                'libpng'        => _gcclib('libpng-1.6.37'),
-                'libssh2'       => _gcclib('libssh2-1.10.0'),
-                'libunistring'  => _gcclib('libunistring-1.1'),
-                'libxml2'       => _gcclib('libxml2-2.10.4'),
-                'libXpm'        => _gcclib('libXpm-3.5.12'),
-                'libxslt'       => _gcclib('libxslt-1.1.37'),
-                'mpc'           => _gcclib('mpc-1.3.1'),
-                'mpfr'          => _gcclib('mpfr-4.2.0'),
-                'openssl'       => _gcclib('openssl-1.1.1q'),
-                'readline'      => _gcclib('readline-8.2'),
-                't1lib'         => _gcclib('t1lib-5.1.2'),
-                'termcap'       => _gcclib('termcap-1.3.1'),
-                'tiff'          => _gcclib('tiff-4.5.0'),
-                'xz'            => _gcclib('xz-5.2.4'),
-                'zlib'          => _gcclib('zlib-1.2.11'),
-            },
+            plugin  => 'Perl::Dist::GLPI::Agent::Step::ToolChain',
+            packages => [
+                {
+                    name        => 'winlibs-x86_64',
+                    file        => ToolchainBuildJob::TOOLCHAIN_ARCHIVE(),
+                },
+                {
+                    name        => 'extlibs',
+                    file        => 'extlibs.zip',
+                    install_to  => 'mingw64',
+                }
+            ],
         },
         ### NEXT STEP 1 Binaries cleanup #######################################
         {
             plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
             commands => [
-                { do=>'removefile', args=>[ '<image_dir>/c/i686-w64-mingw32/lib/libglut.a', '<image_dir>/c/i686-w64-mingw32/lib/libglut32.a' ] }, #XXX-32bit only workaround
-                { do=>'movefile',   args=>[ '<image_dir>/c/lib/libdb-6.1.a', '<image_dir>/c/lib/libdb.a' ] }, #XXX ugly hack
-                { do=>'removefile', args=>[ '<image_dir>/c/bin/gccbug', '<image_dir>/c/bin/ld.gold.exe', '<image_dir>/c/bin/ld.bfd.exe' ] },
-                { do=>'removefile_recursive', args=>[ '<image_dir>/c', qr/.+\.la$/i ] }, # https://rt.cpan.org/Public/Bug/Display.html?id=127184
-                { do=>'make_rw', args=>[ '<image_dir>/c/include/db.h' ] },     #  band-aid for ro flag on db headers
-                { do=>'make_rw', args=>[ '<image_dir>/c/include/db_cxx.h' ] },
+                { do => 'movedir', args => [ '<image_dir>/mingw64', '<image_dir>/c' ] },
+                { do => 'removefile_recursive', args => [ '<image_dir>/c', qr/.+\.la$/i ] }, # https://rt.cpan.org/Public/Bug/Display.html?id=127184
+                { do => 'copyfile', args => [ '<image_dir>/c/bin/mingw32-make.exe', '<image_dir>/c/bin/gmake.exe', 1 ] },
             ],
         },
         ### NEXT STEP 2 Build perl #############################################
         {
-            plugin     => 'Perl::Dist::Strawberry::Step::InstallPerlCore',
+            plugin     => 'Perl::Dist::GLPI::Agent::Step::InstallPerlCore',
             url        => _perl_source_url(),
             cf_email   => 'strawberry-perl@project', #IMPORTANT: keep 'strawberry-perl' before @
             perl_debug => 0,    # can be overridden by --perl_debug=N option
             perl_64bitint => 1, # ignored on 64bit, can be overridden by --perl_64bitint | --noperl_64bitint option
             patch => { #DST paths are relative to the perl src root
-                'contrib/windows/packaging/agentexe.ico'        => 'win32/agentexe.ico',
-                'contrib/windows/packaging/agentexe.rc.tt'      => 'win32/perlexe.rc',
-                'config_H.gc'                                 => {
-                    HAS_MKSTEMP => 'define',
+                'contrib/windows/packaging/agentexe.ico'    => 'win32/agentexe.ico',
+                'contrib/windows/packaging/agentexe.rc.tt'  => 'win32/perlexe.rc',
+                'contrib/windows/packaging/Makefile.patch'  => 'win32/Makefile', # Define USE_NO_REGISTRY in Makefile
+                'config_H.gc'   => {
+                    HAS_MKSTEMP             => 'define',
                     HAS_BUILTIN_CHOOSE_EXPR => 'define',
                     HAS_SYMLINK             => 'define',
                 },
-                'config.gc'                                 => {  # see Step.pm for list of default updates
+                'config.gc'     => {  # see Step.pm for list of default updates
                     d_builtin_choose_expr => 'define',
                     d_mkstemp             => 'define',
                     d_symlink             => 'define', # many cpan modules fail tests when defined
@@ -226,9 +195,10 @@ sub _build_steps {
                 # Also move DLLs required by modules
                 _movedll('libxml2-2'),
                 _movedll('liblzma-5'),
+                _movedll('libcharset-1'),
                 _movedll('libiconv-2'),
-                _movedll('libcrypto-1_1'.(_is64bit()?'-x64':'')),
-                _movedll('libssl-1_1'.(_is64bit()?'-x64':'')),
+                _movedll('libcrypto-3'),
+                _movedll('libssl-3'),
                 _movedll('zlib1'),
                 _movedll('libssh2-1'),
                 { do=>'removedir', args=>[ '<image_dir>/perl/bin' ] },
@@ -256,27 +226,6 @@ sub _is64bit {
 
 sub _perl_source_url {
     return 'https://www.cpan.org/src/5.0/perl-'.PERL_VERSION.'.tar.gz'
-}
-
-sub _package_url {
-    my ($folder, $file) = @_;
-    return '<package_url>' . $folder . '/' . $file;
-}
-
-sub _tools {
-    my ($tool, $version, $date) = @_;
-    $date = toolchain_date unless $date;
-    my $folder = $date eq '20230420' ? 'dev_gcc10.3_20230313' : toolchain_date;
-    return _package_url($folder, '64bit_' . $tool . '-' . $version . '-bin_' . $date . '.zip');
-}
-
-sub _gcctoolchain {
-    return _package_url(toolchain, 'winlibs_gcc13.1r5.zip');
-}
-
-sub _gcclib {
-    my ($lib) = @_;
-    return _package_url(toolchain, '64bit_' . $lib . '-bin_' . toolchain_date . '.zip');
 }
 
 sub _movebin {
