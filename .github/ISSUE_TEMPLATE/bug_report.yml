@@ -77,6 +77,7 @@ body:
       label: GLPI Agent version
       description: What GLPI agent version is triggering this issue ?
       options:
+        - 1.7.1
         - 1.7
         - 1.6.1
         - 1.6
@@ -112,17 +113,15 @@ body:
   - type: dropdown
     id: plugin-version
     attributes:
-      label: GLPIInventory plugin or FusionInventory for GLPI plugin version
+      label: GLPIInventory plugin or other plugin version
       description: What is your GLPIInventory or FusionInventory for GLPI plugin version on server-side ?
       options:
+        - GLPI Inventory v1.3.5
         - GLPI Inventory v1.3.4
-        - GLPI Inventory v1.3.3
+        - GLPI Inventory v1.3.x (See additional context below)
         - GLPI Inventory v1.x.x (See additional context below)
-        - FusionInventory for GLPI v10.0.3+1.0
-        - FusionInventory for GLPI v10.0.x+1.0 (See additional context below)
-        - FusionInventory for GLPI v9.5+4.2
+        - FusionInventory for GLPI (See additional context below)
         - Other (See additional context below)
-        - development release (See additional context below)
         - Not applicable
       multiple: true
     validations:
