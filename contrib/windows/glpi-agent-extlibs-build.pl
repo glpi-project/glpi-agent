@@ -26,10 +26,7 @@ my $provider = $GLPI::Agent::Version::PROVIDER;
 my $version = $GLPI::Agent::Version::VERSION;
 
 sub toolchain_builder {
-    my ($bits, $notest, $clean) = @_;
-
-    die "32 bits toolchain build not supported\n"
-        if $bits == 32;
+    my ($arch, $notest, $clean) = @_;
 
     my $cpus = 0;
     if (open my $fh, "-|", "wmic cpu get NumberOfCores") {
@@ -46,8 +43,8 @@ sub toolchain_builder {
         _provided_by        => PROVIDED_BY,
         _no_test            => $notest,
         _clean              => $clean,
-        arch                => $bits == 32 ? "x86" : "x64",
-        _dllsuffix          => '__',
+        arch                => $arch,
+        _dllsuffix          => $arch eq "x86" ? '_' : '__',
         _cpus               => $cpus,
     );
 
@@ -83,9 +80,12 @@ while ( @ARGV ) {
 # Still select a defaut arch if none has been selected
 $do{x64} = 64 unless keys(%do);
 
-foreach my $bits (sort values(%do)) {
-    print "Building $bits bits toolchain packages for $provider-Agent $version...\n";
-    my $tcb = toolchain_builder($bits, $notest, $clean);
+die "32 bits toolchain build not supported\n"
+    if $do{x86};
+
+foreach my $arch (sort keys(%do)) {
+    print "Building $arch toolchain packages for $provider-Agent $version...\n";
+    my $tcb = toolchain_builder($arch, $notest, $clean);
     $tcb->do_job();
     exit(1) unless -e catfile($tcb->global->{debug_dir}, 'global_dump_FINAL.txt');
 }

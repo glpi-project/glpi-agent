@@ -74,7 +74,7 @@ if ($ENV{GITHUB_REF} && $ENV{GITHUB_REF} =~ m|refs/tags/(.+)$|) {
 }
 
 sub build_app {
-    my ($bits, $notest) = @_;
+    my ($arch, $notest) = @_;
 
     my $package_rev = $ENV{PACKAGE_REVISION} || PACKAGE_REVISION;
 
@@ -93,8 +93,8 @@ sub build_app {
         agent_regpath   => "Software\\$provider-Agent",
         service_name    => lc($provider).'-agent',
         msi_sharedir    => 'contrib/windows/packaging',
-        arch            => $bits == 32 ? "x86" : "x64",
-        _dllsuffix      => $bits == 32 ? '_' : '__',
+        arch            => $arch,
+        _dllsuffix      => $arch eq "x86" ? '_' : '__',
         _restore_step   => PERL_BUILD_STEPS,
     );
 
@@ -126,9 +126,15 @@ while ( @ARGV ) {
     }
 }
 
-foreach my $bits (sort values(%do)) {
-    print "Building $bits bits packages...\n";
-    my $app = build_app($bits, $notest);
+# Still select a defaut arch if none has been selected
+$do{x64} = 64 unless keys(%do);
+
+die "32 bits packaging build no more supported\n"
+    if $do{x86};
+
+foreach my $arch (sort keys(%do)) {
+    print "Building $arch packages...\n";
+    my $app = build_app($arch, $notest);
     $app->do_job();
     # global_dump_FINAL.txt must exist in debug_dir if all steps have been passed
     exit(1) unless -e catfile($app->global->{debug_dir}, 'global_dump_FINAL.txt');
@@ -221,10 +227,22 @@ sub run {
     $self->boss->message(2, "Test: gonna run perl Makefile.PL");
     my $rv = $self->execute_standard($makefile_pl_cmd);
     die "ERROR: TEST, perl Makefile.PL\n" unless (defined $rv && $rv == 0);
+}
 
-    my @test_files = ref($self->{config}->{test_files}) ?
-        map { bsd_glob($_) } @{$self->{config}->{test_files}} : qw(t/01compile.t);
-    if (ref($self->{config}->{skip_tests}) && @{$self->{config}->{skip_tests}}) {
+sub test {
+    my $self = shift;
+
+    # Update PATH to include perl/bin for DLLs loading
+    my $binpath = catfile($self->global->{image_dir}, 'perl/bin');
+    $ENV{PATH} .= ":$binpath";
+
+    # Without defined modules, run the tests
+    my $makebin = catfile($binpath, 'gmake.exe');
+
+    my @test_files = qw(t/01compile.t);
+    @test_files = map { bsd_glob($_) } @{$self->{config}->{test_files}}
+        if ref($self->{config}->{test_files}) && @{$self->{config}->{test_files}};
+    if (@test_files && ref($self->{config}->{skip_tests}) && @{$self->{config}->{skip_tests}}) {
         my %skip_tests = map { $_ => 1 } @{$self->{config}->{skip_tests}};
         @test_files = grep { not $skip_tests{$_} } @test_files;
     }
@@ -233,11 +251,9 @@ sub run {
     my $make_test_cmd = [ $makebin, "test" ];
     push @{$make_test_cmd}, "TEST_FILES=@test_files" if @test_files;
     $self->boss->message(2, "Test: gonna run gmake test");
-    $rv = $self->execute_standard($make_test_cmd);
+    my $rv = $self->execute_standard($make_test_cmd);
     die "ERROR: TEST, make test\n" unless (defined $rv && $rv == 0);
 }
-
-sub test {}
 
 package
     Perl::Dist::GLPI::Agent::Step::InstallModules;
