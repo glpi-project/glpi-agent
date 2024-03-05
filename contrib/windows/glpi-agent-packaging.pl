@@ -94,6 +94,7 @@ sub build_app {
         service_name    => lc($provider).'-agent',
         msi_sharedir    => 'contrib/windows/packaging',
         arch            => $bits == 32 ? "x86" : "x64",
+        _dllsuffix      => $bits == 32 ? '_' : '__',
         _restore_step   => PERL_BUILD_STEPS,
     );
 
@@ -203,22 +204,10 @@ package
 use parent 'Perl::Dist::Strawberry::Step';
 
 use File::Spec::Functions qw(catfile catdir);
+use File::Glob qw(:glob);
 
 sub run {
     my $self = shift;
-
-    # If modules are defined, just install the modules
-    if ($self->{config}->{modules}) {
-        my @list = map {
-            {
-                module => $_,
-                skiptest => 1,
-                install_to => 'site',
-            }
-        } @{$self->{config}->{modules}};
-        $self->install_modlist(@list) or die "FAILED to install test modules\n";
-        return;
-    }
 
     # Update PATH to include perl/bin for DLLs loading
     my $binpath = catfile($self->global->{image_dir}, 'perl/bin');
@@ -233,8 +222,16 @@ sub run {
     my $rv = $self->execute_standard($makefile_pl_cmd);
     die "ERROR: TEST, perl Makefile.PL\n" unless (defined $rv && $rv == 0);
 
+    my @test_files = ref($self->{config}->{test_files}) ?
+        map { bsd_glob($_) } @{$self->{config}->{test_files}} : qw(t/01compile.t);
+    if (ref($self->{config}->{skip_tests}) && @{$self->{config}->{skip_tests}}) {
+        my %skip_tests = map { $_ => 1 } @{$self->{config}->{skip_tests}};
+        @test_files = grep { not $skip_tests{$_} } @test_files;
+    }
+
     # Only test files compilation
-    my $make_test_cmd = [ $makebin, "test", "TEST_FILES=t/01compile.t" ];
+    my $make_test_cmd = [ $makebin, "test" ];
+    push @{$make_test_cmd}, "TEST_FILES=@test_files" if @test_files;
     $self->boss->message(2, "Test: gonna run gmake test");
     $rv = $self->execute_standard($make_test_cmd);
     die "ERROR: TEST, make test\n" unless (defined $rv && $rv == 0);
@@ -700,9 +697,10 @@ sub ask_about_restorepoint {
     return $restorepoint;
 }
 
-sub build_job_pre {
-    my ($self) = @_;
-    $self->SUPER::build_job_pre();
+sub create_buildmachine {
+    my ($self, $job, $restorepoint) = @_;
+
+    $self->SUPER::create_buildmachine($job, $restorepoint);
 
     my $provider = $self->global->{_provider};
     my $version = $self->global->{agent_version};
@@ -712,76 +710,13 @@ sub build_job_pre {
     $self->global->{output_basename} = "$provider-Agent-$version-$arch" ;
 }
 
-sub build_job_post {
-    my ($self) = @_;
-    $self->SUPER::build_job_post();
-}
-
 sub load_jobfile {
     my ($self) = @_;
 
-    my $job = build_job($self->global->{arch}, $self->global->{_revision});
-    push @{$job->{build_job_steps}},
-        ### NEXT STEP ###########################
-        {
-            plugin => 'Perl::Dist::GLPI::Agent::Step::Test',
-        }
-        unless $self->global->{_no_test} ;
-    push @{$job->{build_job_steps}}, $self->_other_job_steps();
-
-    return $job;
-}
-
-sub _other_job_steps {
-    my ($self) = @_;
-    return
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
-        commands => [
-            # Cleanup modules and files used for tests
-            { do=>'removedir', args=>[ '<image_dir>/perl/site/lib' ] },
-            { do=>'createdir', args=>[ '<image_dir>/perl/site/lib' ] },
-            { do=>'removefile', args=>[ '<image_dir>/perl/bin/gmake.exe' ] },
-            # updates for glpi-agent
-            { do=>'createdir', args=>[ '<image_dir>/perl/agent' ] },
-            { do=>'createdir', args=>[ '<image_dir>/var' ] },
-            { do=>'createdir', args=>[ '<image_dir>/logs' ] },
-            { do=>'movefile', args=>[ '<image_dir>/perl/bin/perl.exe', '<image_dir>/perl/bin/glpi-agent.exe' ] },
-            { do=>'copydir', args=>[ 'lib/GLPI', '<image_dir>/perl/agent/GLPI' ] },
-            { do=>'copydir', args=>[ 'lib/GLPI', '<image_dir>/perl/agent/GLPI' ] },
-            { do=>'copydir', args=>[ 'etc', '<image_dir>/etc' ] },
-            { do=>'createdir', args=>[ '<image_dir>/etc/conf.d' ] },
-            { do=>'copydir', args=>[ 'bin', '<image_dir>/perl/bin' ] },
-            { do=>'copydir', args=>[ 'share', '<image_dir>/share' ] },
-            { do=>'copyfile', args=>[ 'contrib/windows/packaging/setup.pm', '<image_dir>/perl/lib' ] },
-        ],
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::GLPI::Agent::Step::Update',
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::Strawberry::Step::OutputZIP', # no options needed
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::GLPI::Agent::Step::OutputMSI',
-        exclude  => [
-            #'dirname\subdir1\subdir2',
-            #'dirname\file.pm',
-        ],
-        #BEWARE: msi_upgrade_code is a fixed value for all same arch releases (for ever)
-        msi_upgrade_code    => $self->global->{arch} eq 'x64' ? '0DEF72A8-E5EE-4116-97DC-753718E19CD5' : '7F25A9A4-BCAE-4C15-822D-EAFBD752CFEC',
-        app_publisher       => "Teclib'",
-        url_about           => 'https://glpi-project.org/',
-        url_help            => 'https://glpi-project.org/discussions/',
-        msi_root_dir        => 'GLPI-Agent',
-        msi_main_icon       => 'contrib/windows/packaging/glpi-agent.ico',
-        msi_license_rtf     => 'contrib/windows/packaging/gpl-2.0.rtf',
-        msi_dialog_bmp      => 'contrib/windows/packaging/GLPI-Agent_Dialog.bmp',
-        msi_banner_bmp      => 'contrib/windows/packaging/GLPI-Agent_Banner.bmp',
-        msi_debug           => 0,
-    };
+    return build_job(
+        $self->global->{arch},
+        $self->global->{_revision},
+        $self->global->{_no_test},
+        $self->global->{_dllsuffix},
+    );
 }

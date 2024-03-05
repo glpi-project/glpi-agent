@@ -7,15 +7,13 @@ use ToolchainBuildJob;
 
 use constant {
     PERL_VERSION       => "5.38.2",
-    PERL_BUILD_STEPS   => 7,
+    PERL_BUILD_STEPS   => 9,
 };
 
 our @EXPORT = qw(build_job PERL_VERSION PERL_BUILD_STEPS);
 
-my $ARCH = 'x64';
-
 sub build_job {
-    my ($arch, $rev) = @_;
+    my ($arch, $rev, $notest, $dllsuffix) = @_;
 ### job description for building GLPI Agent
 
 #Available '<..>' macros:
@@ -23,7 +21,7 @@ sub build_job {
 # <dist_sharedir> is placeholder for Perl::Dist::Strawberry's distribution sharedir
 # <image_dir>     is placeholder for C:\Strawberry-perl-for-GLPI-Agent
 
-    $ARCH = $arch;
+    my ($MAJOR, $MINOR) = PERL_VERSION =~ /^(\d+)\.(\d+)\./;
 
     return {
         app_version     => PERL_VERSION.'.'.$rev, #BEWARE: do not use '.0.0' in the last two version digits
@@ -31,13 +29,8 @@ sub build_job {
         app_fullname    => 'Strawberry Perl'.($arch eq 'x64'?' (64-bit)':''),
         app_simplename  => 'strawberry-perl',
         maketool        => 'gmake', # 'dmake' or 'gmake'
-        build_job_steps => [ _build_steps() ],
-    }
-}
+        build_job_steps => [
 
-sub _build_steps {
-    my ($MAJOR, $MINOR) = PERL_VERSION =~ /^(\d+)\.(\d+)\./;
-    return
         ### FIRST STEP 0 : Binaries donwloads ##################################
         {
             plugin  => 'Perl::Dist::GLPI::Agent::Step::ToolChain',
@@ -65,7 +58,7 @@ sub _build_steps {
         ### NEXT STEP 2 Build perl #############################################
         {
             plugin     => 'Perl::Dist::GLPI::Agent::Step::InstallPerlCore',
-            url        => _perl_source_url(),
+            url        => 'https://www.cpan.org/src/5.0/perl-'.PERL_VERSION.'.tar.gz',
             cf_email   => 'strawberry-perl@project', #IMPORTANT: keep 'strawberry-perl' before @
             perl_debug => 0,    # can be overridden by --perl_debug=N option
             perl_64bitint => 1, # ignored on 64bit, can be overridden by --perl_64bitint | --noperl_64bitint option
@@ -173,9 +166,14 @@ sub _build_steps {
         },
         ### NEXT STEP 7 Install modules for test ###############################
         {
-            plugin => 'Perl::Dist::GLPI::Agent::Step::Test',
-            modules => [
-                qw(
+            plugin => 'Perl::Dist::GLPI::Agent::Step::InstallModules',
+            modules => [ map {
+                    {
+                        module => $_,
+                        skiptest => 1,
+                        install_to => 'site',
+                    }
+                } qw(
                     HTTP::Proxy HTTP::Server::Simple::Authen IO::Capture::Stderr
                     Test::Compile Test::Deep Test::MockModule Test::MockObject
                     Test::NoWarnings
@@ -187,45 +185,98 @@ sub _build_steps {
             plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
             commands => [
                 { do=>'createdir', args=>[ '<image_dir>/perl/newbin' ] },
-                _movebin('libgcc_s_'.(_is64bit()?'seh':'dw2').'-1.dll'),
+                _movebin('libgcc_s_'.($arch eq 'x64' ? 'seh' : 'dw2').'-1.dll'),
                 _movebin('libstdc++-6.dll'),
                 _movebin('libwinpthread-1.dll'),
                 _movebin('perl.exe'),
                 _movebin('perl'.$MAJOR.$MINOR.'.dll'),
                 # Also move DLLs required by modules
-                _movedll('libxml2-2'),
-                _movedll('liblzma-5'),
-                _movedll('libcharset-1'),
-                _movedll('libiconv-2'),
-                _movedll('libcrypto-3'),
-                _movedll('libssl-3'),
-                _movedll('zlib1'),
-                _movedll('libssh2-1'),
+                _movedll('libxml2-2', $dllsuffix),
+                _movedll('liblzma-5', $dllsuffix),
+                _movedll('libcharset-1', $dllsuffix),
+                _movedll('libiconv-2', $dllsuffix),
+                _movedll('libcrypto-3', $dllsuffix),
+                _movedll('libssl-3', $dllsuffix),
+                _movedll('zlib1', $dllsuffix),
+                _movedll('libssh2-1', $dllsuffix),
                 { do=>'removedir', args=>[ '<image_dir>/perl/bin' ] },
                 { do=>'movedir', args=>[ '<image_dir>/perl/newbin', '<image_dir>/perl/bin' ] },
                 { do=>'movefile', args=>[ '<image_dir>/c/bin/gmake.exe', '<image_dir>/perl/bin/gmake.exe' ] }, # Needed for tests
                 { do=>'removedir', args=>[ '<image_dir>/bin' ] },
                 { do=>'removedir', args=>[ '<image_dir>/c' ] },
-                { do=>'removedir', args=>[ '<image_dir>/'.(_is64bit()?'x86_64':'i686').'-w64-mingw32' ] },
+                { do=>'removedir', args=>[ '<image_dir>/'.($arch eq 'x64' ? 'x86_64' : 'i686').'-w64-mingw32' ] },
                 { do=>'removedir', args=>[ '<image_dir>/include' ] },
                 { do=>'removedir', args=>[ '<image_dir>/lib' ] },
                 { do=>'removedir', args=>[ '<image_dir>/libexec' ] },
                 # Other binaries used by agent
                 { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/x86/dmidecode.exe', '<image_dir>/perl/bin' ] },
                 { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/x86/hdparm.exe', '<image_dir>/perl/bin' ] },
-                { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/'.$ARCH.'/7z.exe', '<image_dir>/perl/bin' ] },
-                { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/'.$ARCH.'/7z.dll', '<image_dir>/perl/bin' ] },
-                { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/'.$ARCH.'/GLPI-AgentMonitor-'.$ARCH.'.exe', '<image_dir>/perl/bin' ] },
+                { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/'.$arch.'/7z.exe', '<image_dir>/perl/bin' ] },
+                { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/'.$arch.'/7z.dll', '<image_dir>/perl/bin' ] },
+                { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/'.$arch.'/GLPI-AgentMonitor-'.$arch.'.exe', '<image_dir>/perl/bin' ] },
             ],
-        };
-}
-
-sub _is64bit {
-    return $ARCH eq 'x64' ? 1 : 0;
-}
-
-sub _perl_source_url {
-    return 'https://www.cpan.org/src/5.0/perl-'.PERL_VERSION.'.tar.gz'
+        },
+        ### NEXT STEP 9 Run GLPI Agent test suite ##############################
+        {
+            plugin      => 'Perl::Dist::GLPI::Agent::Step::Test',
+            disable     => $notest,
+            # By default only t/01compile.t is run
+            test_files  => [
+                #~ qw(t/*.t t/*/*.t t/*/*/*.t t/*/*/*/*.t t/*/*/*/*/*.t t/*/*/*/*/*/*.t)
+            ],
+            skip_tests  => [
+                # Fails if not run as administrator
+                #~ qw(t/agent/config.t)
+            ],
+        },
+        ### NEXT STEP 10 Finalize environment ##################################
+        {
+            plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
+            commands => [
+                # Cleanup modules and files used for tests
+                { do=>'removedir', args=>[ '<image_dir>/perl/site/lib' ] },
+                { do=>'createdir', args=>[ '<image_dir>/perl/site/lib' ] },
+                { do=>'removefile', args=>[ '<image_dir>/perl/bin/gmake.exe' ] },
+                # updates for glpi-agent
+                { do=>'createdir', args=>[ '<image_dir>/perl/agent' ] },
+                { do=>'createdir', args=>[ '<image_dir>/var' ] },
+                { do=>'createdir', args=>[ '<image_dir>/logs' ] },
+                { do=>'movefile', args=>[ '<image_dir>/perl/bin/perl.exe', '<image_dir>/perl/bin/glpi-agent.exe' ] },
+                { do=>'copydir', args=>[ 'lib/GLPI', '<image_dir>/perl/agent/GLPI' ] },
+                { do=>'copydir', args=>[ 'lib/GLPI', '<image_dir>/perl/agent/GLPI' ] },
+                { do=>'copydir', args=>[ 'etc', '<image_dir>/etc' ] },
+                { do=>'createdir', args=>[ '<image_dir>/etc/conf.d' ] },
+                { do=>'copydir', args=>[ 'bin', '<image_dir>/perl/bin' ] },
+                { do=>'copydir', args=>[ 'share', '<image_dir>/share' ] },
+                { do=>'copyfile', args=>[ 'contrib/windows/packaging/setup.pm', '<image_dir>/perl/lib' ] },
+            ],
+        },
+        ### NEXT STEP 11 Finalize release ######################################
+        {
+            plugin => 'Perl::Dist::GLPI::Agent::Step::Update',
+        },
+        ### NEXT STEP 12 Generate Portable Archive #############################
+        {
+            plugin => 'Perl::Dist::Strawberry::Step::OutputZIP',
+        },
+        ### NEXT STEP 13 Generate MSI Package ##################################
+        {
+            plugin => 'Perl::Dist::GLPI::Agent::Step::OutputMSI',
+            exclude  => [],
+            #BEWARE: msi_upgrade_code is a fixed value for all same arch releases (for ever)
+            msi_upgrade_code    => $arch eq 'x64' ? '0DEF72A8-E5EE-4116-97DC-753718E19CD5' : '7F25A9A4-BCAE-4C15-822D-EAFBD752CFEC',
+            app_publisher       => "Teclib'",
+            url_about           => 'https://glpi-project.org/',
+            url_help            => 'https://glpi-project.org/discussions/',
+            msi_root_dir        => 'GLPI-Agent',
+            msi_main_icon       => 'contrib/windows/packaging/glpi-agent.ico',
+            msi_license_rtf     => 'contrib/windows/packaging/gpl-2.0.rtf',
+            msi_dialog_bmp      => 'contrib/windows/packaging/GLPI-Agent_Dialog.bmp',
+            msi_banner_bmp      => 'contrib/windows/packaging/GLPI-Agent_Banner.bmp',
+            msi_debug           => 0,
+        }
+        ],
+    }
 }
 
 sub _movebin {
@@ -240,8 +291,8 @@ sub _movebin {
 }
 
 sub _movedll {
-    my ($dll, $to) = @_;
-    my $file = $dll.(_is64bit()?'__':'_').'.dll';
+    my ($dll, $suffix) = @_;
+    my $file = $dll.$suffix.'.dll';
     return {
         do      => 'movefile',
         args    => [
