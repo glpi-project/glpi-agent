@@ -158,6 +158,12 @@ jobs:
       if: steps.built-perl-cache.outputs.cache-hit == 'true'
       run: perl contrib/windows/glpi-agent-built-perl-tests.pl
       shell: cmd
+    - name: Upload windows built artifacts
+      if: success() || failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: Built-Perl-Windows-Test-Debug
+        path: C:\Strawberry-perl-for-GLPI-Agent_build\output
 
   macos-test:
 
