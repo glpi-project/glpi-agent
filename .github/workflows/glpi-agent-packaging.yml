@@ -214,6 +214,15 @@ jobs:
         dir C:\Strawberry-perl-for-GLPI-Agent_build\download
         dir C:\Strawberry-perl-for-GLPI-Agent_build\restore
       shell: cmd
+    - name: Restore required perl libraries cache
+      uses: actions/cache@v4
+      id: perl-site-cache
+      if: steps.built-perl-cache.outputs.cache-hit == 'true'
+      with:
+        path: |
+            C:\Strawberry\perl\site\lib
+            C:\Strawberry\perl\site\bin
+        key: built-perl-windows-packaging-perl-site-cache-${{ matrix.arch }}-${{ hashFiles('contrib\windows\glpi-agent-extlibs-build.pl', 'contrib\windows\glpi-agent-packaging.pl', 'contrib\windows\packaging\*') }}
     - name: Update environment
       run: |
         echo 'C:\Strawberry\perl\bin'      >> $GITHUB_PATH
@@ -227,12 +236,14 @@ jobs:
         perl -V
       shell: cmd
     - name: Install Module::Install
+      if: steps.perl-site-cache.outputs.cache-hit != 'true'
       run: cpan -T Module::Install
       shell: cmd
     - name: Prepare Makefile
       run: perl Makefile.PL
       shell: cmd
     - name: Install latest Perl::Dist::Strawberry from github
+      if: steps.perl-site-cache.outputs.cache-hit != 'true'
       run: |
         cpanm --notest --verbose https://github.com/StrawberryPerl/Perl-Dist-Strawberry.git
       shell: cmd
