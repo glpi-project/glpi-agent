@@ -82,6 +82,19 @@ sub run {
     # Without defined modules, run the tests
     my $perlbin = catfile($binpath, 'perl.exe');
 
+    # Run few checks
+    my @checks = (
+        "OpenSSL version"   => [ "-MNet::SSLeay", "-e", 'print Net::SSLeay::SSLeay_version(0)," (", sprintf("0x%x",Net::SSLeay::SSLeay()),") installed with perl $^V\n"' ],
+        "libxml2 version"   => [ "-MXML::LibXML", "-e", 'print STDERR "Using libxml2 v".XML::LibXML::LIBXML_DOTTED_VERSION()."\n"' ],
+    );
+    while (@checks) {
+        my $check   = shift @checks;
+        my $options = shift @checks;
+        $self->boss->message(2, "Check: $check");
+        unshift @{$options}, $perlbin;
+        $self->execute_standard($options);
+    }
+
     my $makefile_pl_cmd = [ $perlbin, "Makefile.PL"];
     $self->boss->message(2, "Test: gonna run perl Makefile.PL");
     my $rv = $self->execute_standard($makefile_pl_cmd);
