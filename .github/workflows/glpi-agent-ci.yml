@@ -104,7 +104,7 @@ jobs:
       run: gmake test
       shell: cmd
 
-  built-windows-test:
+  built-perl-windows-test:
 
     runs-on: windows-latest
 
@@ -121,6 +121,10 @@ jobs:
         path: |
             C:/Strawberry-perl-for-GLPI-Agent_build/restore
         key: windows-packaging-cache-x64-${{ hashFiles('contrib\windows\glpi-agent-extlibs-build.pl', 'contrib\windows\glpi-agent-packaging.pl', 'contrib\windows\packaging\*') }}
+    - name: Log warning on cache miss
+      if: steps.built-perl-cache.outputs.cache-hit != 'true'
+      run: |
+        echo '::warning title=Built Perl not available in cache::You should be able to restart this job after packaging workflow run.'
     - name: Update environment
       if: steps.built-perl-cache.outputs.cache-hit == 'true'
       run: |
@@ -141,10 +145,6 @@ jobs:
       if: steps.built-perl-cache.outputs.cache-hit == 'true'
       run: perl contrib/windows/glpi-agent-built-perl-tests.pl
       shell: cmd
-    - name: Set warning & notice on cache miss
-      if: steps.built-perl-cache.outputs.cache-hit == 'false'
-      run: |
-        echo '::warning title=Built Perl not available in cache::You should be able to restart this job after packaging workflow run.'
 
   macos-test:
 

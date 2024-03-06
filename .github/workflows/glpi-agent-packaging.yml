@@ -202,7 +202,7 @@ jobs:
     - name: Restore Toolchain points cache
       uses: actions/cache@v4
       id: built-extlibs-cache
-      if: ${{ steps.built-perl-cache.outputs.cache-hit != 'true' }}
+      if: steps.built-perl-cache.outputs.cache-hit != 'true'
       with:
         path: |
             C:/Strawberry-perl-for-GLPI-Agent_build/download/winlibs*.zip
@@ -237,7 +237,7 @@ jobs:
         cpanm --notest --verbose https://github.com/StrawberryPerl/Perl-Dist-Strawberry.git
       shell: cmd
     - name: Build Extlibs with Perl Toolchain
-      if: ${{ steps.built-perl-cache.outputs.cache-hit != 'true' && steps.built-extlibs-cache.outputs.cache-hit != 'true' }}
+      if: steps.built-perl-cache.outputs.cache-hit != 'true' && steps.built-extlibs-cache.outputs.cache-hit != 'true'
       run: |
         perl contrib\windows\glpi-agent-extlibs-build.pl --arch ${{ matrix.arch }}
       shell: cmd
