@@ -114,8 +114,8 @@ jobs:
       run: |
         mkdir C:\Strawberry-perl-for-GLPI-Agent_build\restore
       shell: cmd
-    - name: Restore points cache
-      uses: actions/cache@v4
+    - name: Restore built perl from packaging cache
+      uses: actions/cache/restore@v4
       id: built-perl-cache
       with:
         path: |
