@@ -191,14 +191,12 @@ jobs:
       run: |
         mkdir C:\Strawberry-perl-for-GLPI-Agent_build\download
         mkdir C:\Strawberry-perl-for-GLPI-Agent_build\restore
-        mkdir C:\Strawberry-perl-for-GLPI-Agent_build\tools
       shell: cmd
     - name: Restore points cache
       uses: actions/cache@v4
       id: built-perl-cache
       with:
         path: |
-            C:/Strawberry-perl-for-GLPI-Agent_build/tools
             C:/Strawberry-perl-for-GLPI-Agent_build/restore
         key: windows-packaging-cache-${{ matrix.arch }}-${{ hashFiles('contrib\windows\glpi-agent-extlibs-build.pl', 'contrib\windows\glpi-agent-packaging.pl', 'contrib\windows\packaging\*') }}
     - name: Restore Toolchain points cache
@@ -215,7 +213,6 @@ jobs:
       run: |
         dir C:\Strawberry-perl-for-GLPI-Agent_build\download
         dir C:\Strawberry-perl-for-GLPI-Agent_build\restore
-        dir C:\Strawberry-perl-for-GLPI-Agent_build\tools
       shell: cmd
     - name: Update environment
       run: |
