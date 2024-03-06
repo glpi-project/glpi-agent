@@ -125,6 +125,15 @@ jobs:
       if: steps.built-perl-cache.outputs.cache-hit != 'true'
       run: |
         echo '::warning title=Built Perl not available in cache::You should be able to restart this job after packaging workflow run.'
+    - name: Restore required perl libraries cache
+      uses: actions/cache@v4
+      id: perl-site-cache
+      if: steps.built-perl-cache.outputs.cache-hit == 'true'
+      with:
+        path: |
+            C:\Strawberry\perl\site\lib
+            C:\Strawberry\perl\site\bin
+        key: built-perl-windows-test-perl-site-cache-x64-${{ hashFiles('contrib\windows\glpi-agent-extlibs-build.pl', 'contrib\windows\glpi-agent-packaging.pl', 'contrib\windows\packaging\*') }}
     - name: Update environment
       if: steps.built-perl-cache.outputs.cache-hit == 'true'
       run: |
@@ -133,13 +142,17 @@ jobs:
         echo 'C:\Strawberry\c\bin'         >> $GITHUB_PATH
       shell: bash
     - name: Install Module::Install
-      if: steps.built-perl-cache.outputs.cache-hit == 'true'
+      if: steps.built-perl-cache.outputs.cache-hit == 'true' && steps.perl-site-cache.outputs.cache-hit != 'true'
       run: cpan -T Module::Install
       shell: cmd
     - name: Install latest Perl::Dist::Strawberry from github
-      if: steps.built-perl-cache.outputs.cache-hit == 'true'
+      if: steps.built-perl-cache.outputs.cache-hit == 'true' && steps.perl-site-cache.outputs.cache-hit != 'true'
       run: |
         cpanm --notest --verbose https://github.com/StrawberryPerl/Perl-Dist-Strawberry.git
+      shell: cmd
+    - name: Prepare Makefile
+      if: steps.built-perl-cache.outputs.cache-hit == 'true'
+      run: perl Makefile.PL
       shell: cmd
     - name: Run tests script
       if: steps.built-perl-cache.outputs.cache-hit == 'true'
