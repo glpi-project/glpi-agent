@@ -145,14 +145,14 @@ jobs:
       if: steps.built-perl-cache.outputs.cache-hit == 'true' && steps.perl-site-cache.outputs.cache-hit != 'true'
       run: cpan -T Module::Install
       shell: cmd
+    - name: Prepare Makefile
+      if: steps.built-perl-cache.outputs.cache-hit == 'true'
+      run: perl Makefile.PL
+      shell: cmd
     - name: Install latest Perl::Dist::Strawberry from github
       if: steps.built-perl-cache.outputs.cache-hit == 'true' && steps.perl-site-cache.outputs.cache-hit != 'true'
       run: |
         cpanm --notest --verbose https://github.com/StrawberryPerl/Perl-Dist-Strawberry.git
-      shell: cmd
-    - name: Prepare Makefile
-      if: steps.built-perl-cache.outputs.cache-hit == 'true'
-      run: perl Makefile.PL
       shell: cmd
     - name: Run tests script
       if: steps.built-perl-cache.outputs.cache-hit == 'true'
