@@ -221,7 +221,6 @@ sub run {
 
     # Without defined modules, run the tests
     my $perlbin = catfile($binpath, 'perl.exe');
-    my $makebin = catfile($binpath, 'gmake.exe');
 
     my $makefile_pl_cmd = [ $perlbin, "Makefile.PL"];
     $self->boss->message(2, "Test: gonna run perl Makefile.PL");
