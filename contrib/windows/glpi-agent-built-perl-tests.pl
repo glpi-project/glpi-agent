@@ -235,6 +235,7 @@ sub load_jobfile {
                 # By default all possible test will be run
                 test_files  => [
                     #~ qw(t/*.t t/*/*.t t/*/*/*.t t/*/*/*/*.t t/*/*/*/*/*.t t/*/*/*/*/*/*.t)
+                    qw(t/*.t t/*/*.t)
                 ],
                 skip_tests  => [
                     # Fails if not run as administrator
