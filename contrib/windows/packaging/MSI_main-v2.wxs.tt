@@ -452,8 +452,8 @@
       <Custom Action="WixCloseApplications"   Before="InstallValidate"/>
 
       <!-- We need to use higher sequence numbers for AppSearch and LaunchConditions to have enough sequence room to schedule all properties related custom actions -->
-      <AppSearch Sequence="100" />
-      <LaunchConditions Sequence="200" />
+      <AppSearch Sequence="200" />
+      <LaunchConditions Sequence="400" />
 
       <!-- Schedule custom action to always remove windows task if exists -->
       <Custom Action="SetEndTask" Before="EndTask" />
@@ -505,8 +505,8 @@
       <!-- Better set ProgressDlg to be after MigrateFeatureStates so we can safely insert SetProperties before ExecuteAction -->
       <Show Dialog="ProgressDlg"              After="MigrateFeatureStates" />
       <!-- We need to use higher sequence numbers for AppSearch and LaunchConditions to have enough sequence room to schedule all properties related custom actions -->
-      <AppSearch Sequence="100" />
-      <LaunchConditions Sequence="200" />
+      <AppSearch Sequence="200" />
+      <LaunchConditions Sequence="400" />
     </InstallUISequence>
 
     <Condition Message="Cannot install on Windows 9x or ME systems."><![CDATA[VersionNT]]></Condition>
