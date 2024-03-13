@@ -45,10 +45,18 @@ sub disconnect {
 sub _connect {
     my ($self) = @_;
 
+    # We don't need to retry too early if an attempt failed recently
+    if ($self->{_ssh2_dont_retry_before}) {
+        return 0 if time < $self->{_ssh2_dont_retry_before};
+        delete $self->{_ssh2_dont_retry_before};
+    }
+
     unless ($self->{_ssh2} || ($self->mode('ssh') && !$self->mode('libssh2'))) {
         Net::SSH2->require();
         if ($EVAL_ERROR) {
             $self->{logger}->debug("Can't use libssh2: $EVAL_ERROR");
+            # Don't retry to load libssh2 before a minute
+            $self->{_ssh2_dont_retry_before} = time + 60;
         } else {
             my $timeout = $self->timeout();
             $self->{_ssh2} = Net::SSH2->new(timeout => $timeout * 1000);
@@ -70,7 +78,9 @@ sub _connect {
         my @error = $ssh2->error;
         $self->{logger}->debug("Can't reach $remote for ssh remoteinventory via libssh2: @error");
         undef $self->{_ssh2};
-        return;
+        # Don't retry to connect with libssh2 before a minute
+        $self->{_ssh2_dont_retry_before} = time + 60;
+        return 0;
     }
 
     # Use Trust On First Use policy to verify remote host
@@ -103,9 +113,11 @@ sub _connect {
     }
     unless ($ssh2->check_hostkey($hostkey_checking)) {
         my @error = $ssh2->error;
-        $self->{logger}->error("Can't trust $remote for ssh remoteinventory: @error");
+        $self->{logger}->error("[libssh2] Can't trust $remote for ssh remoteinventory: @error");
         undef $self->{_ssh2};
-        return;
+        # Don't retry to connect with libssh2 before a minute
+        $self->{_ssh2_dont_retry_before} = time + 60;
+        return 0;
     }
 
     # Support authentication by password
@@ -161,8 +173,12 @@ sub _connect {
         }
     }
 
-    $self->{logger}->error("Can't authenticate on $remote remote host");
+    $self->{logger}->error("Can't authenticate on $remote remote host via libssh2");
     undef $self->{_ssh2};
+
+    # Don't retry libssh2 before a minute
+    $self->{_ssh2_dont_retry_before} = time + 60;
+
     return 0;
 }
 

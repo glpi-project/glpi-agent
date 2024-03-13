@@ -21,6 +21,10 @@ inventory:
 * fix #611: Wrong bios value as array on win32 bios when using WMI in proxmox vm
 * fix #609: Fix rustdesk remote management version analysis
 
+remoteinventory:
+* Limit the number of attempts and reported errors when libssh2 fails but ssh command
+  works. Libssh2 attempts will be disabled for a minute on failed attempt.
+
 netdiscovery/netinventory:
 * Keep device mac address found via snmp during netdiscovery as this is the one
   which will be reported during netinventory. This will fix duplication issues
