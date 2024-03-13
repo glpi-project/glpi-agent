@@ -170,7 +170,7 @@ sub deviceid {
 
     # If not defined, use same algorithm than in Inventory module
     unless ($self->{_deviceid}) {
-        # Try to resolve address is host given as an ip
+        # Try to resolve address if host is given as an ip
         my $hostname = $params{hostname} || $self->host();
         if ($hostname =~ $ip_address_pattern) {
             my $info = getaddrinfo($hostname);
