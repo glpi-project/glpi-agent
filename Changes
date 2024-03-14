@@ -41,6 +41,9 @@ netdiscovery/netinventory:
 * When looking for privateoid rule in MibSupport search, the rule must match on
   defined value, even if the private oid returns zero.
 * fix #590: Add Pantum printer support
+* Fix RemoteInventory not run during netscan if any any of other test is failing,
+  meaning RemoteInventory was functionnal only if at least ping works or the
+  targeted computer was in the same network (arp works).
 
 deploy:
 * Force agent to run a partial software inventory after the deploy task is done
@@ -49,6 +52,7 @@ deploy:
 toolbox:
 * fix #532: Make libssh2 use the right place when looking for known_hosts file
   on windows
+* Fix RemoteInventory can not be started during netscan
 
 packaging:
 * Update MacOSX to use perl 5.38.2, OpenSSL 3.2.1 and zlib 1.3.1

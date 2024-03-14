@@ -698,6 +698,7 @@ sub _scanAddress {
 
     # don't report anything without a minimal amount of information
     return unless
+        $device{AUTHREMOTE}   ||
         $device{MAC}          ||
         $device{SNMPHOSTNAME} ||
         $device{DNSHOSTNAME}  ||
