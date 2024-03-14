@@ -369,7 +369,7 @@ sub _getIdsFile {
             $params{logger}->warning("$idsfile not found");
             my $message = $idsfile =~ /^(pci|usb)\.ids$/ ? "You may need to install $idsfile package" : "";
             my $shareurl = "https://github.com/glpi-project/glpi-agent/tree/develop/share";
-            $message .= ($message ? "or y" : "Y")."ou can download $idsfile file from $shareurl and install it into $datadir folder"
+            $message .= ($message ? " or y" : "Y")."ou can download $idsfile file from $shareurl and install it into $datadir folder"
                 if $datadir && -d $datadir;
             $params{logger}->info($message) if $message;
         }
