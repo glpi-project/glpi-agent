@@ -67,6 +67,7 @@ packaging:
   - StrawBerry Perl 5.38.2
 * Windows MSI installer is only provided for x64
 * Fix MSI "Back" button on "VerifyReady" dialog in Repair or Remove mode
+* Fix MSI to reuse InstallDir set in registry on upgrade
 
 1.7.1 Fri, 22 Dec 2023
 

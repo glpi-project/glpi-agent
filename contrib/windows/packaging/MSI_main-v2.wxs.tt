@@ -30,6 +30,8 @@
     <Property Id="UPGRADEDIR" Secure="yes">
       <RegistrySearch Id="InstallDir" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="InstallDir" Type="raw" />
     </Property>
+    <!-- Reuse InstallDir set in registry if possible -->
+    <SetProperty Id="INSTALLDIR" After="AppSearch" Value="[UPGRADEDIR]"><![CDATA[INSTALLDIR="" AND UPGRADEDIR<>"" AND CMDLINE_CONFIG<>"reset"]]></SetProperty>
 
     <Property Id="QUICKINSTALL" Secure="yes">
       <RegistrySearch Id="QuickInstall" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="QuickInstall" Type="raw" />
