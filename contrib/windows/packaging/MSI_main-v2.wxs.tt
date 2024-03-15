@@ -605,9 +605,9 @@
       <Publish Dialog="DebugOptionsDlg"       Control="Back"   Event="NewDialog" Value="AdvancedOptionsDlg">1</Publish>
       <Publish Dialog="DebugOptionsDlg"       Control="Next"   Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
 
-      <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="MaintenanceTypeDlg" Order="1"><![CDATA[WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"]]></Publish>
-      <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="D_TargetSetupDlg" Order="2"><![CDATA[QUICKINSTALL]]></Publish>
-      <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="DebugOptionsDlg" Order="3"><![CDATA[NOT QUICKINSTALL]]></Publish>
+      <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="D_TargetSetupDlg" Order="1"><![CDATA[QUICKINSTALL]]></Publish>
+      <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="DebugOptionsDlg" Order="2"><![CDATA[NOT QUICKINSTALL]]></Publish>
+      <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="MaintenanceTypeDlg" Order="3"><![CDATA[WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"]]></Publish>
 
       <Publish Dialog="MaintenanceWelcomeDlg" Control="Next"   Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
       <!-- Reinstall feat_AGENT feature on Change case so service could be reinstalled and restarted, registry values saved and firewall exception setup -->
