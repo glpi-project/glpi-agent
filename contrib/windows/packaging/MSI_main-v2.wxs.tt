@@ -436,6 +436,12 @@
     <CustomAction Id="SetTaskDaily" Property="TaskDaily" Value="&quot;[SystemFolder]schtasks.exe&quot; /f /tn &quot;$(var.AgentName)&quot; /create /ru system /tr '&quot;[#f_glpiagent]&quot;' /sc daily /mo [TASK_DAILY_MODIFIER]" Execute="immediate" />
     <CustomAction Id="TaskDaily" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
+    <CustomAction Id="SetFixInstallDir" Property="FixInstallDir" Value="&quot;[SystemFolder]icacls.exe&quot; &quot;[INSTALLDIR].&quot; /inheritance:r" Execute="immediate" />
+    <CustomAction Id="FixInstallDir" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+    <CustomAction Id="UpdateLocalDir" Property="LOCAL" Value="[LOCAL]\" Execute="immediate" />
+    <CustomAction Id="SetFixLocalDir" Property="FixLocalDir" Value="&quot;[SystemFolder]icacls.exe&quot; &quot;[LOCAL].&quot; /inheritance:r" Execute="immediate" />
+    <CustomAction Id="FixLocalDir" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+
     <InstallExecuteSequence>
       <!-- InstallExecuteSequence is used to define Custom Actions that fire after the UI is finished and the install is starting to execute -->
       <Custom Action="CA_SetARPInstallLoc"    Before="RegisterProduct" />
@@ -447,6 +453,13 @@
       <!-- We need to use higher sequence numbers for AppSearch and LaunchConditions to have enough sequence room to schedule all properties related custom actions -->
       <AppSearch Sequence="100" />
       <LaunchConditions Sequence="200" />
+
+      <Custom Action="SchedSecureObjects_x64" After="CreateFolders"><![CDATA[NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SetFixInstallDir" After="SchedSecureObjects"><![CDATA[NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="FixInstallDir" After="SetFixInstallDir"><![CDATA[NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="UpdateLocalDir" Before="CostFinalize"><![CDATA[LOCAL<>"" AND NOT LOCAL>>"\" AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SetFixLocalDir" After="SchedSecureObjects"><![CDATA[LOCAL<>"" AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="FixLocalDir" After="SetFixLocalDir"><![CDATA[LOCAL<>"" AND NOT REMOVE~="ALL"]]></Custom>
 
       <!-- Schedule custom action to always remove windows task if exists -->
       <Custom Action="SetEndTask" Before="EndTask" />

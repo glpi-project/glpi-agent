@@ -398,7 +398,16 @@ sub _tree2xml {
         # see: http://stackoverflow.com/questions/10358989/wix-using-keypath-on-components-directories-files-registry-etc-etc
         $feat = $self->_get_dir_feature($dir_id);
         $result .= $ident ."  ". qq[<Component Id="$component_id" Guid="{$component_guid}" KeyPath="yes" Feature="$feat">\n];
-        $result .= $ident ."  ". qq[    <CreateFolder />\n];
+        if ($dir_id eq 'd_install') {
+                $result .= $ident ."    ". qq[  <CreateFolder>\n];
+                $result .= $ident ."    ". qq[    <util:PermissionEx GenericAll="yes" User="CREATOR OWNER" />\n];
+                $result .= $ident ."    ". qq[    <util:PermissionEx GenericAll="yes" User="LocalSystem" />\n];
+                $result .= $ident ."    ". qq[    <util:PermissionEx GenericAll="yes" User="Administrators" />\n];
+                $result .= $ident ."    ". qq[    <util:PermissionEx GenericWrite="no" GenericExecute="yes" GenericRead="yes" User="AuthenticatedUser" />\n];
+                $result .= $ident ."    ". qq[  </CreateFolder>\n];
+        } else {
+                $result .= $ident ."  ". qq[    <CreateFolder />\n];
+        }
         if ($dir_id eq 'd_var') {
             $result .= $ident ."  ". qq[    <util:RemoveFolderEx On="uninstall" Property="UNINSTALL_VAR" />\n];
         } elsif ($dir_id eq 'd_etc') {
@@ -411,11 +420,16 @@ sub _tree2xml {
         $result .= $ident ."  ". qq[</Component>\n];
         # Also add virtual folder properties under d_install
         if ($dir_id eq 'd_install') {
-            foreach my $id (qw(_LOCALDIR)) {
+            foreach my $id (qw(LOCAL)) {
                 $result .= $ident ."  ". qq[<Directory Id="$id">\n];
                 ($component_id, $component_guid) = $self->_gen_component_id(lc($id).".create");
                 $result .= $ident ."    ". qq[<Component Id="$component_id" Guid="{$component_guid}" KeyPath="yes" Feature="$feat">\n];
-                $result .= $ident ."    ". qq[  <CreateFolder />\n];
+                $result .= $ident ."    ". qq[  <CreateFolder>\n];
+                $result .= $ident ."    ". qq[    <util:PermissionEx GenericAll="yes" User="CREATOR OWNER" />\n];
+                $result .= $ident ."    ". qq[    <util:PermissionEx GenericAll="yes" User="LocalSystem" />\n];
+                $result .= $ident ."    ". qq[    <util:PermissionEx GenericAll="yes" User="Administrators" />\n];
+                $result .= $ident ."    ". qq[    <util:PermissionEx GenericWrite="no" GenericExecute="yes" GenericRead="yes" User="AuthenticatedUser" />\n];
+                $result .= $ident ."    ". qq[  </CreateFolder>\n];
                 $result .= $ident ."    ". qq[  <RemoveFolder Id="rm.] .lc($id). qq[" On="uninstall" />\n];
                 $result .= $ident ."    ". qq[</Component>\n];
                 $result .= $ident ."  ". qq[</Directory>\n];

@@ -1,5 +1,12 @@
 Revision history for GLPI agent
 
+1.7.2 not yet released
+
+packaging:
+* [SECURITY] Fix CVE-2024-28241: A local user could modify the GLPI-Agent installation
+  to gain higher privileges, but only when GLPI Agent is not installed in the default
+  installation folder
+
 1.7.1 Fri, 22 Dec 2023
 
 core:
