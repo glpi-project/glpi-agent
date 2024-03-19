@@ -6,6 +6,8 @@ packaging:
 * [SECURITY] Fix CVE-2024-28241: A local user could modify the GLPI-Agent installation
   to gain higher privileges, but only when GLPI Agent is not installed in the default
   installation folder
+* [SECURITY] Fix CVE-2024-28240: A local user could modify the GLPI Agent configuration
+  to gain higher privileges
 
 1.7.1 Fri, 22 Dec 2023
 

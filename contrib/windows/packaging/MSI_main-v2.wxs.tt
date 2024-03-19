@@ -442,7 +442,14 @@
     <CustomAction Id="SetFixLocalDir" Property="FixLocalDir" Value="&quot;[SystemFolder]icacls.exe&quot; &quot;[LOCAL].&quot; /inheritance:r" Execute="immediate" />
     <CustomAction Id="FixLocalDir" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
 
+    <CustomAction Id="SetCheckRunningAsAdmin" Property="WixQuietExecCmdLine" Value="&quot;[SystemFolder]net.exe&quot; file" Execute="immediate" />
+    <CustomAction Id="CheckRunningAsAdmin" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="immediate" Return="check" Impersonate="yes" />
+    <CustomAction Id="FatalError" Error="25000" />
+
     <InstallExecuteSequence>
+      <Custom Action="SetCheckRunningAsAdmin" Before="CheckRunningAsAdmin"><![CDATA[Installed AND (NOT REMOVE~="ALL")]]></Custom>
+      <Custom Action="CheckRunningAsAdmin" After="LaunchConditions"><![CDATA[Installed AND (NOT REMOVE~="ALL")]]></Custom>
+
       <!-- InstallExecuteSequence is used to define Custom Actions that fire after the UI is finished and the install is starting to execute -->
       <Custom Action="CA_SetARPInstallLoc"    Before="RegisterProduct" />
       <Custom Action="SetDefaultLogFile"      After="CostFinalize"><![CDATA[NOT LOGFILE]]></Custom>
@@ -506,6 +513,9 @@
     </InstallExecuteSequence>
 
     <InstallUISequence>
+      <Custom Action="SetCheckRunningAsAdmin" Before="CheckRunningAsAdmin"><![CDATA[Installed AND (NOT REMOVE~="ALL")]]></Custom>
+      <Custom Action="CheckRunningAsAdmin" After="LaunchConditions"><![CDATA[Installed AND (NOT REMOVE~="ALL")]]></Custom>
+
       <!-- InstallUISequence is used to define a dialog or Custom Action that fires in the UI sequence of events during the install -->
       <Custom Action="CA_GetARPInstallLoc"    Before="CostInitialize"><![CDATA[UPGRADINGPRODUCTCODE AND UPGRADEDIR]]></Custom>
       <!-- Better set ProgressDlg to be after MigrateFeatureStates so we can safely insert SetProperties before ExecuteAction -->
@@ -523,6 +533,8 @@
     <UIRef Id='WixUI_Common' />
 
     <UI Id="WixUI_MyInstallDlg">
+      <Error Id="25000">Only administrators can modify [AgentName] installation</Error>
+
       <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
       <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
       <TextStyle Id="WixUI_Font_Title"  FaceName="Tahoma" Size="9" Bold="yes" />
