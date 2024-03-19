@@ -461,7 +461,11 @@
       <AppSearch Sequence="100" />
       <LaunchConditions Sequence="200" />
 
+[%- IF bits==32 %]
+      <Custom Action="SchedSecureObjects" After="CreateFolders"><![CDATA[NOT REMOVE~="ALL"]]></Custom>
+[%- ELSE %]
       <Custom Action="SchedSecureObjects_x64" After="CreateFolders"><![CDATA[NOT REMOVE~="ALL"]]></Custom>
+[%- END %]
       <Custom Action="SetFixInstallDir" After="SchedSecureObjects"><![CDATA[NOT REMOVE~="ALL"]]></Custom>
       <Custom Action="FixInstallDir" After="SetFixInstallDir"><![CDATA[NOT REMOVE~="ALL"]]></Custom>
       <Custom Action="UpdateLocalDir" Before="CostFinalize"><![CDATA[LOCAL<>"" AND NOT LOCAL>>"\" AND NOT REMOVE~="ALL"]]></Custom>
