@@ -3,10 +3,10 @@
 # PERL: https://www.perl.org/get.html
 # SSL:  https://www.openssl.org/source/
 # ZLIB: https://www.zlib.net/
-: ${PERL_VERSION:=5.36.0}
-: ${OPENSSL_VERSION:=3.2.0}
-: ${ZLIB_VERSION:=1.3}
-: ${ZLIB_SHA256:=ff0ba4c292013dbc27530b3a81e1f9a813cd39de01ca5e0f8bf355702efa593e}
+: ${PERL_VERSION:=5.38.2}
+: ${OPENSSL_VERSION:=3.2.1}
+: ${ZLIB_VERSION:=1.3.1}
+: ${ZLIB_SHA256:=9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23}
 
 : ${BUILDER_NAME:="Guillaume Bougard (teclib)"}
 : ${BUILDER_MAIL:="gbougard_at_teclib.com"}
