@@ -18,7 +18,7 @@ sub toolchain_build_steps {
         app_version     => sprintf("%d.%d.%d.%d", (localtime)[5 ,7 ,2 ,1]),
         bits            => $arch eq 'x64' ? 64 : 32,
         build_job_steps => [
-            ### FIRST STEP 0 : Toolchain donwload ##############################
+            ### FIRST STEP 0 : Toolchain download & install ####################
             {
                 plugin              => 'Perl::Dist::Strawberry::Step::ToolChain',
                 install_packages    => {
