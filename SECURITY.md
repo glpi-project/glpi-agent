@@ -4,7 +4,7 @@
 
 If you found a security issue, please contact us by:
 
-- [our huntr page](https://huntr.dev/repos/glpi-project/glpi-agent/)
+- the [github security advisories page](https://github.com/glpi-project/glpi-agent/security/advisories)
 - a mail to \[glpi-security AT ow2.org\]
 
 You should provide us all details about the issue and the way to reproduce it.
