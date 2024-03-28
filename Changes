@@ -73,6 +73,7 @@ packaging:
 * Windows MSI installer is only provided for x64
 * Fix MSI "Back" button on "VerifyReady" dialog in Repair or Remove mode
 * Fix MSI to reuse InstallDir set in registry on upgrade
+* Updated Windows packages 7-Zip commandline tools to v23.01
 
 1.7.2 Mon, 25 Mar 2024
 
