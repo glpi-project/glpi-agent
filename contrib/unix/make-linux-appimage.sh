@@ -4,7 +4,6 @@ set -e
 
 ROOT="`pwd`"
 
-: ${VERSION:=1.7.2}
 : ${ARCH:=x86_64}
 
 PREPARE="no"
@@ -41,8 +40,8 @@ It need to find official glpi-agent deb files in the current folder.
 
 Set VERSION to the glpi-agent used version.
 
-Typical usage:
-$0 --version 1.0 --prepare
+Typical usage where X.Y is GLPI-Agent version:
+$0 --version X.Y --prepare
 
 It is possible to include configuration related files to be installed under
 /etc/glpi-agent/conf.d and have them automatically installed. Files extensions is

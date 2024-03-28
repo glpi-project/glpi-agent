@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use lib 'installer';
+use lib qw(installer contrib/unix/installer);
 
 use InstallerVersion;
 use Getopt;
