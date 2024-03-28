@@ -2,7 +2,7 @@
 '  ------------------------------------------------------------------------
 '  glpi-agent-deployment.vbs
 '  Copyright (C) 2010-2017 by the FusionInventory Development Team.
-'  Copyright (C) 2021 by the Teclib SAS
+'  Copyright (C) 2021-2024 by the Teclib SAS
 '  ------------------------------------------------------------------------
 '
 '  LICENSE
@@ -28,14 +28,15 @@
 '  ------------------------------------------------------------------------
 '
 '  @package   GLPI Agent
-'  @file      .\contrib\windows\glpi-agent-deployment.vbs
+'  @version   1.7.2
+'  @file      contrib/windows/glpi-agent-deployment.vbs
 '  @author(s) Benjamin Accary <meldrone@orange.fr>
 '             Christophe Pujol <chpujol@gmail.com>
 '             Marc Caissial <marc.caissial@zenitique.fr>
 '             Tomas Abad <tabadgp@gmail.com>
 '             Guillaume Bougard <gbougard@teclib.com>
 '  @copyright Copyright (c) 2010-2017 FusionInventory Team
-'             Copyright (c) 2021 Teclib SAS
+'             Copyright (c) 2021-2024 Teclib SAS
 '  @license   GNU GPL version 2 or (at your option) any later version
 '             http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html
 '  @link      http://www.glpi-project.org/

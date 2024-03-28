@@ -10,10 +10,12 @@
 
 set -e
 
+: ${RELEASEBRANCH:=develop}
+
 while [ -n "$1" ]
 do
     case "$1" in
-        --help|-h) cat <<HELP
+        --help|-h) exec cat <<HELP
 Usage:
     make-release.sh [-h|--help] [--no-merge|--devel] <VERSION>
 
@@ -25,8 +27,11 @@ Options:
     -h --help           Show the help
     --no-merge --devel  Don't merge the created release branch
     --no-git            Don't use git command to create commits, tag and merge
+    --no-ids-update     Don't update IDS files under tools folder: usb.ids, pci.ids & sysobject.ids
+    --branch <BRANCH>   Set release branch on <BRANCH>: default is "develop" branch
     --no-deb-changelog  Don't try to update debian packaging changelog
     --debrev N          Set debian package revision to N (defaults=1)
+
 HELP
             ;;
         --no-merge|--devel)
@@ -34,6 +39,13 @@ HELP
             ;;
         --no-git)
             GIT="no"
+            ;;
+        --no-ids-update)
+            IDS="no"
+            ;;
+        --branch)
+            shift
+            RELEASEBRANCH="$1"
             ;;
         --no-deb-changelog)
             DEBCHANGELOG="skip"
@@ -58,34 +70,36 @@ if [ -z "$VERSION" ]; then
 fi
 
 # Be sure to run from parent folder
-cd "${0%make-release.sh}.."
+[ -e Makefile.PL ] || cd "${0%/*}/.."
 
 if [ "$GIT" != "no" ]; then
     BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
-    # Verify we are on develop branch or still on the right branch
-    if [ "$BRANCH" != "develop" -a "$BRANCH" != "release/$VERSION" ]; then
-        echo "Not on the develop branch" >&2
+    # Verify we are on release branch or still on the right branch
+    if [ "$BRANCH" != "$RELEASEBRANCH" -a "$BRANCH" != "release/$VERSION" ]; then
+        echo "Not on $RELEASEBRANCH or release/$VERSION branch" >&2
         exit 2
     fi
 
     echo
     echo ----
-    if [ "$BRANCH" = "develop" ] && ! git checkout -b release/$VERSION; then
+    if [ "$BRANCH" = "$RELEASEBRANCH" ] && ! git checkout -b release/$VERSION; then
         echo "Can't create dedicated release branch" >&2
         exit 3
     fi
 fi
 
 # 1. Update pci.ids, usb.ids & sysobject.ids (and possibly Changes)
-tools/updatePciids.pl
-tools/updateUsbids.pl
-tools/updateSysobjectids.pl
+if [ "$IDS" != "no" ]; then
+    tools/updatePciids.pl
+    tools/updateUsbids.pl
+    tools/updateSysobjectids.pl
 
-# 2. Make a commit for IDS files update
-if [ "$GIT" != "no" ]; then
-    if git status -s | grep -E -q "share/(pci|usb|sysobject)\.ids$"; then
-        git commit -a -m "feat: Updated IDS files"
+    # 2. Make a commit for IDS files update
+    if [ "$GIT" != "no" ]; then
+        if git status -s | grep -E -q "share/(pci|usb|sysobject)\.ids$"; then
+            git commit -a -m "feat: Updated IDS files"
+        fi
     fi
 fi
 
@@ -136,7 +150,8 @@ MINORVERSION=${MINORVERSION%.*}
 NEXTMINOR=$((MINORVERSION+1))
 
 # Also update SetupVersion in VBS
-sed -ri -e "s/^SetupVersion = .*$/SetupVersion = \"$VERSION\"/" \
+sed -ri -e "s/^'  \@version   .*$/'  \@version   $VERSION/" \
+    -e "s/^SetupVersion = .*$/SetupVersion = \"$VERSION\"/" \
     -e "s/^'SetupVersion = .*$/'SetupVersion = \"$MAJORVERSION.$NEXTMINOR-gitABCDEFGH\"/" \
     contrib/windows/glpi-agent-deployment.vbs
 
@@ -196,7 +211,7 @@ if [ "$MERGE" = "no" ]; then
     echo
     echo ----
     echo "Skipping tagging to $VERSION"
-    echo "Skipping merging in develop"
+    echo "Skipping merging in $RELEASEBRANCH"
     echo "You have now to handle manually release/$VERSION branch"
     exit 0
 fi
@@ -206,9 +221,9 @@ git tag $VERSION
 
 echo
 echo ----
-# 8. Make release branch merge into develop
-git checkout develop
-git merge --no-ff release/$VERSION -m "Merge $VERSION release branch into develop"
+# 8. Make release branch merge into RELEASEBRANCH
+git checkout $RELEASEBRANCH
+git merge --no-ff release/$VERSION -m "Merge $VERSION release branch into $RELEASEBRANCH"
 
 # 9. Delete release branch
 git branch -d release/$VERSION
@@ -219,6 +234,6 @@ cat <<PUBLISHING
 ----
 To publish $VERSION release, you should:
  - review the log         : git log -p
- - push the develop branch: git push
+ - push the $RELEASEBRANCH branch: git push
 
 PUBLISHING
