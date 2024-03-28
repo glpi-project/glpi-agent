@@ -1,0 +1,6 @@
+
+LIBRARY      "ca"
+
+EXPORTS
+; customaction.cpp
+    CheckElevatedCustomAction

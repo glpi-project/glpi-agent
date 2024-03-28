@@ -56,7 +56,11 @@ toolbox:
 * Fix RemoteInventory can not be started during netscan
 
 packaging:
-* Update MacOSX to use perl 5.38.2, OpenSSL 3.2.1 and zlib 1.3.1
+* [SECURITY] New fix for CVE-2024-28240: A local user could modify the GLPI Agent
+  configuration to gain higher privileges if installed on windows with MSI packaging.
+  The fix is now based on our own CustomAction Dll which not rely on our capacity
+  to run an external command requiring elevated privilege.
+  So it is far more robust than preivous one.
 * Update Windows MSI packing building process to use:
   - gcc 13.2.0posix-18.1.1-11.0.1-msvcrt-r6
   - msys2-base 20240113
@@ -69,6 +73,16 @@ packaging:
 * Windows MSI installer is only provided for x64
 * Fix MSI "Back" button on "VerifyReady" dialog in Repair or Remove mode
 * Fix MSI to reuse InstallDir set in registry on upgrade
+
+1.7.2 Mon, 25 Mar 2024
+
+packaging:
+* [SECURITY] Fix CVE-2024-28241: A local user could modify the GLPI-Agent installation
+  to gain higher privileges, but only on windows with MSI packaging when GLPI Agent
+  is not installed in the default installation folder
+* [SECURITY] Fix CVE-2024-28240: A local user could modify the GLPI Agent configuration
+  to gain higher privileges if installed on windows with MSI packaging
+* Update MacOSX to use perl 5.38.2, OpenSSL 3.2.1 and zlib 1.3.1
 
 1.7.1 Fri, 22 Dec 2023
 

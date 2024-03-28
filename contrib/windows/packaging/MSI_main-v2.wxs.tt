@@ -445,7 +445,20 @@
     <CustomAction Id="SetTaskDaily" Property="TaskDaily" Value="&quot;[SystemFolder]schtasks.exe&quot; /f /tn &quot;$(var.AgentName)&quot; /create /ru system /tr '&quot;[#f_glpiagent]&quot;' /sc daily /mo [TASK_DAILY_MODIFIER]" Execute="immediate" />
     <CustomAction Id="TaskDaily" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
+    <!-- Support dedicated CustomActions to handle CVE-2024-28241 -->
+    <CustomAction Id="SetFixInstallDir" Property="FixInstallDir" Value="&quot;[SystemFolder]icacls.exe&quot; &quot;[INSTALLDIR].&quot; /inheritance:r" Execute="immediate" />
+    <CustomAction Id="FixInstallDir" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+    <CustomAction Id="UpdateLocalDir" Property="LOCAL" Value="[LOCAL]\" Execute="immediate" />
+    <CustomAction Id="SetFixLocalDir" Property="FixLocalDir" Value="&quot;[SystemFolder]icacls.exe&quot; &quot;[LOCAL].&quot; /inheritance:r" Execute="immediate" />
+    <CustomAction Id="FixLocalDir" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+
+    <!-- Support dedicated CheckElevated CustomAction to handle CVE-2024-28240 -->
+    <CustomAction Id='CheckElevated' BinaryKey='CustomActionBinary' DllEntry='CheckElevatedCustomAction' Execute='immediate' Return='check' />
+    <Binary Id='CustomActionBinary' SourceFile='contrib\windows\packaging\tools\ca\ca.dll' />
+
     <InstallExecuteSequence>
+      <Custom Action="CheckElevated" Before="LaunchConditions"><![CDATA[Installed AND (NOT REMOVE~="ALL")]]></Custom>
+
       <!-- InstallExecuteSequence is used to define Custom Actions that fire after the UI is finished and the install is starting to execute -->
       <Custom Action="CA_SetARPInstallLoc"    Before="RegisterProduct" />
       <Custom Action="SetDefaultLogFile"      After="CostFinalize"><![CDATA[NOT LOGFILE]]></Custom>
@@ -456,6 +469,17 @@
       <!-- We need to use higher sequence numbers for AppSearch and LaunchConditions to have enough sequence room to schedule all properties related custom actions -->
       <AppSearch Sequence="200" />
       <LaunchConditions Sequence="400" />
+
+[%- IF bits==32 %]
+      <Custom Action="SchedSecureObjects" After="CreateFolders"><![CDATA[NOT REMOVE~="ALL"]]></Custom>
+[%- ELSE %]
+      <Custom Action="SchedSecureObjects_x64" After="CreateFolders"><![CDATA[NOT REMOVE~="ALL"]]></Custom>
+[%- END %]
+      <Custom Action="SetFixInstallDir" After="SchedSecureObjects"><![CDATA[NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="FixInstallDir" After="SetFixInstallDir"><![CDATA[NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="UpdateLocalDir" Before="CostFinalize"><![CDATA[LOCAL<>"" AND NOT LOCAL>>"\" AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SetFixLocalDir" After="SchedSecureObjects"><![CDATA[LOCAL<>"" AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="FixLocalDir" After="SetFixLocalDir"><![CDATA[LOCAL<>"" AND NOT REMOVE~="ALL"]]></Custom>
 
       <!-- Schedule custom action to always remove windows task if exists -->
       <Custom Action="SetEndTask" Before="EndTask" />
@@ -502,6 +526,7 @@
     </InstallExecuteSequence>
 
     <InstallUISequence>
+      <Custom Action="CheckElevated" Before="LaunchConditions"><![CDATA[Installed AND (NOT REMOVE~="ALL")]]></Custom>
       <!-- InstallUISequence is used to define a dialog or Custom Action that fires in the UI sequence of events during the install -->
       <Custom Action="CA_GetARPInstallLoc"    Before="CostInitialize"><![CDATA[UPGRADINGPRODUCTCODE AND UPGRADEDIR]]></Custom>
       <!-- Better set ProgressDlg to be after MigrateFeatureStates so we can safely insert SetProperties before ExecuteAction -->
@@ -519,6 +544,8 @@
     <UIRef Id='WixUI_Common' />
 
     <UI Id="WixUI_MyInstallDlg">
+      <Error Id="25000">Only administrators can modify $(var.AgentName) installation</Error>
+
       <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
       <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
       <TextStyle Id="WixUI_Font_Title"  FaceName="Tahoma" Size="9" Bold="yes" />

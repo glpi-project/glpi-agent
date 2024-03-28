@@ -15,6 +15,8 @@ use lib 'lib';
 use GLPI::Agent::Version;
 
 use lib abs_path(File::Spec->rel2abs('../packaging', __FILE__));
+
+use CustomActionDllBuildJob;
 use ToolchainBuildJob;
 
 BEGIN {
@@ -26,18 +28,7 @@ my $provider = $GLPI::Agent::Version::PROVIDER;
 my $version = $GLPI::Agent::Version::VERSION;
 
 sub toolchain_builder {
-    my ($arch, $notest, $clean) = @_;
-
-    my $cpus = 0;
-    if (open my $fh, "-|", "wmic cpu get NumberOfCores") {
-        while (<$fh>) {
-            next unless /^(\d+)/;
-            my $count = int($1);
-            $cpus = $count if $count > 1;
-            last;
-        }
-        close($fh);
-    }
+    my ($arch, $notest, $clean, $cpus, $cadll) = @_;
 
     my $app = Perl::Dist::ToolChain->new(
         _provided_by        => PROVIDED_BY,
@@ -46,11 +37,14 @@ sub toolchain_builder {
         arch                => $arch,
         _dllsuffix          => $arch eq "x86" ? '_' : '__',
         _cpus               => $cpus,
+        _cadll              => $cadll,
     );
 
     # We use same working_dir to share cached download folder in GH Actions
     $app->parse_options(
-        -image_dir      => "C:\\Strawberry-perl-for-$provider-Agent",
+        -image_dir      => $cadll ?
+            "C:\\Strawberry-perl-for-$provider-Agent_build\\build"
+            : "C:\\Strawberry-perl-for-$provider-Agent",
         -working_dir    => "C:\\Strawberry-perl-for-$provider-Agent_build",
         -nointeractive,
         -norestorepoints,
@@ -62,6 +56,7 @@ sub toolchain_builder {
 my %do = ();
 my $notest = 0;
 my $clean  = 0;
+my $cadll  = 0;
 while ( @ARGV ) {
     my $arg = shift @ARGV;
     if ($arg eq "--arch") {
@@ -74,6 +69,8 @@ while ( @ARGV ) {
         $notest = 1;
     } elsif ($arg eq "--clean") {
         $clean = 1;
+    } elsif ($arg eq "--cadll") {
+        $cadll = 1;
     }
 }
 
@@ -83,11 +80,26 @@ $do{x64} = 64 unless keys(%do);
 die "32 bits toolchain build not supported\n"
     if $do{x86};
 
+my $cpus = 0;
+if (open my $fh, "-|", "wmic cpu get NumberOfCores") {
+    while (<$fh>) {
+        next unless /^(\d+)/;
+        my $count = int($1);
+        $cpus = $count if $count > 1;
+        last;
+    }
+    close($fh);
+}
+
 foreach my $arch (sort keys(%do)) {
-    print "Building $arch toolchain packages for $provider-Agent $version...\n";
-    my $tcb = toolchain_builder($arch, $notest, $clean);
-    $tcb->do_job();
-    exit(1) unless -e catfile($tcb->global->{debug_dir}, 'global_dump_FINAL.txt');
+    if ($cadll) {
+        print "Building $arch ca.dll for $provider-Agent $version MSI installer CustomAction...\n";
+    } else {
+        print "Building $arch toolchain packages for $provider-Agent $version...\n";
+    }
+    my $builder = toolchain_builder($arch, $notest, $clean, $cpus, $cadll);
+    $builder->do_job();
+    exit(1) unless -e catfile($builder->global->{debug_dir}, 'global_dump_FINAL.txt');
 }
 
 print "All toolchain packages building processing passed\n";
@@ -138,7 +150,10 @@ sub create_dirs {
 sub load_jobfile {
     my ($self) = @_;
 
-    return ToolchainBuildJob::toolchain_build_steps($self->global->{arch});
+    return $self->global->{_cadll} ?
+        CustomActionDllBuildJob::build_steps($self->global->{arch})
+        :
+        ToolchainBuildJob::toolchain_build_steps($self->global->{arch});
 }
 
 sub prepare_build_ENV {
@@ -194,7 +209,40 @@ package
 
 use parent qw(Perl::Dist::Strawberry::Step::BinaryToolsAndLibs);
 
-use File::Spec::Functions qw(catdir);
+use File::Spec::Functions qw(catdir catfile);
+
+sub run {
+    my ($self) = @_;
+
+    return $self->SUPER::run()
+        unless ref($self->{config}->{packages}) eq 'ARRAY';
+
+    foreach my $p (@{$self->{config}->{packages}}) {
+        $self->_install($p);
+        $self->boss->message(5, "pkg='$p->{name}'");
+    }
+}
+
+sub _install {
+    my ($self, $pkg, $data) = @_;
+
+    return $self->SUPER::_install($pkg, $data)
+        if $self->{config}->{install_packages};
+
+    my $name = $pkg->{name};
+
+    if ($pkg->{not_if_file}) {
+        my $file = catdir($self->global->{build_dir}, $pkg->{not_if_file});
+        return $self->boss->message(1, "package '$name' still installed\n")
+            if -e $file;
+    }
+
+    $self->boss->message(1, "installing package '$name'\n");
+
+    # Unpack the archive
+    my $tgz = catfile($self->global->{download_dir}, $pkg->{file});
+    $self->_extract($tgz);
+}
 
 sub _extract {
     my ($self, $from) = @_;
@@ -328,12 +376,14 @@ package
 
 use parent qw(Perl::Dist::Strawberry::Step::Msys2);
 
-use File::Spec::Functions qw(catdir catfile);
+use File::Spec::Functions qw(catdir catfile splitpath);
 use File::Path qw(make_path remove_tree);
 use File::Find;
+use File::Slurp qw(write_file);
 
 use Archive::Tar;
 use IO::Uncompress::UnXz;
+use Data::Dump qw(pp);
 
 # Fix native implementation to ignore symlink, at least required par libxml2 archive
 sub _extract {
@@ -375,6 +425,11 @@ sub _extract {
 sub run {
     my ($self) = @_;
 
+    if ($self->{config}->{version} eq "__GLPI_AGENT_VERSION__") {
+        $self->{config}->{version} = $GLPI::Agent::Version::VERSION;
+        $self->{config}->{use_glpi_version} = 1;
+    }
+
     $self->boss->message(2, "#### $self->{config}->{name} v$self->{config}->{version}");
     if ($self->{config}->{skip}) {
         $self->boss->message(2, "* skipping");
@@ -390,12 +445,15 @@ sub run {
     }
 
     my $folder = $self->_resolve($self->{config}->{dest} || "<name>-<version>");
-    my $src = catdir($self->global->{build_dir}, $folder);
+    my $src = $self->{config}->{folder} || catdir($self->global->{build_dir}, $folder);
     remove_tree($src)
         if $self->{config}->{always_extract} && -d $src;
     # We always have to extract if patches need to be applied
     if (-d $src && (!$self->{config}->{patches} || !@{$self->{config}->{patches}})) {
-        $self->boss->message(2, "* $folder still extracted: skipping archive download and extraction");
+        $self->boss->message(2, $self->{config}->{folder} ?
+              "* running in $self->{config}->{folder}"
+            : "* $folder still extracted: skipping archive download and extraction"
+        );
     } else {
         # Download library archive
         my $url = $self->_resolve($self->{config}->{url});
@@ -444,6 +502,34 @@ sub run {
 
     $self->boss->message(2, "* make/build stage");
 
+    if ($self->{config}->{use_glpi_version}) {
+        my ($MAJOR, $MINOR, $REV) = $self->{config}->{version} =~ /^(\d+)\.(\d+)\.?(\d+)?/;
+        push @{$self->{config}->{make_opts}}, "MAJOR=$MAJOR", "MINOR=$MINOR";
+        push @{$self->{config}->{make_opts}}, "REV=$REV" if $REV;
+        # Update manifest file from template if set
+        if ($self->{config}->{manifest}) {
+            my %vars = (
+                VERSION => $self->{config}->{version},
+                MAJOR   => $MAJOR,
+                MINOR   => $MINOR,
+                REV     => $REV // "0",
+            );
+            my @path = splitpath($self->{config}->{manifest});
+            my $manifest = pop(@path);
+            my $current = File::Spec->curdir();
+            my $tt_file = catfile($current, @path, "$manifest.tt");
+            my $output = catfile($current, @path, $manifest);
+            $vars{_path} = \@path;
+            $vars{_manifest} = $manifest;
+            $vars{_current} = $current;
+            $vars{_tt_file} = $tt_file;
+            $vars{_output} = $output;
+            write_file(catfile($self->global->{debug_dir}, 'TTvars_'.$manifest.'_'.time.'.txt'), pp(\%vars)); #debug dump
+            my $t = Template->new(ABSOLUTE=>1);
+            $t->process($tt_file, \%vars, $output) || die $t->error();
+        }
+    }
+
     $self->_make(undef, $self->{config}->{make_opts})
         and die "make failure\n";
     $self->{config}->{post_make} and $self->_commands('post_make', $self->{config}->{post_make})
@@ -451,10 +537,11 @@ sub run {
     $self->global->{_no_test} or $self->{config}->{skip_test} or $self->_make('test')
         and die "test failure\n";
 
-    $self->boss->message(2, "* make/install stage");
+    $self->boss->message(2, "* make/install stage")
+        unless $self->{config}->{skip_install};
 
     my $install = $self->{config}->{install_opts} && @{$self->{config}->{install_opts}} ? '' : 'install';
-    $self->_make( $install, $self->{config}->{install_opts})
+    $self->{config}->{skip_install} or $self->_make( $install, $self->{config}->{install_opts})
         and die "install failure\n";
     $self->{config}->{install_file} and $self->_install_file();
     $self->{config}->{post_install} and $self->_commands('post_install', $self->{config}->{post_install})
@@ -484,7 +571,7 @@ sub _make {
 
     my $log = catfile($self->global->{debug_dir}, $self->_resolve("<name>-<version>-make").(defined($what) ? "-install" : "").".log.txt");
 
-    my @command = ('make');
+    my @command = ('gmake');
     if ($what) {
         push @command, $what;
     } elsif (!defined($what) && $self->{config}->{make_use_cpus} && $self->global->{_cpus}) {

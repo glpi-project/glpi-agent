@@ -198,11 +198,17 @@ jobs:
       with:
         path: |
             C:/Strawberry-perl-for-GLPI-Agent_build/restore
-        key: windows-packaging-cache-${{ matrix.arch }}-${{ hashFiles('contrib\windows\glpi-agent-extlibs-build.pl', 'contrib\windows\glpi-agent-packaging.pl', 'contrib\windows\packaging\*') }}
+        key: windows-packaging-perl-cache-${{ matrix.arch }}-${{ hashFiles('contrib\windows\glpi-agent-extlibs-build.pl', 'contrib\windows\glpi-agent-packaging.pl', 'contrib\windows\packaging\*') }}
+    - name: Restore ca.dll points cache
+      uses: actions/cache@v4
+      id: built-ca-dll-cache
+      with:
+        path: contrib/windows/packaging/tools/ca/ca.dll
+        key: windows-packaging-ca-dll-cache-${{ matrix.arch }}-${{ hashFiles('contrib\windows\glpi-agent-extlibs-build.pl', 'contrib\windows\packaging\ToolchainBuildJob.pm', 'contrib\windows\packaging\CustomActionDllBuildJob.pm', 'contrib\windows\packaging\tools\ca\Makefile', 'contrib\windows\packaging\tools\ca\dll\*') }}
     - name: Restore Toolchain points cache
       uses: actions/cache@v4
       id: built-extlibs-cache
-      if: steps.built-perl-cache.outputs.cache-hit != 'true'
+      if: steps.built-perl-cache.outputs.cache-hit != 'true' || steps.built-ca-dll-cache.outputs.cache-hit != 'true'
       with:
         path: |
             C:/Strawberry-perl-for-GLPI-Agent_build/download/winlibs*.zip
@@ -250,6 +256,11 @@ jobs:
       if: steps.built-perl-cache.outputs.cache-hit != 'true' && steps.built-extlibs-cache.outputs.cache-hit != 'true'
       run: |
         perl contrib\windows\glpi-agent-extlibs-build.pl --arch ${{ matrix.arch }}
+      shell: cmd
+    - name: Build ca.dll with Perl Toolchain
+      if: steps.built-ca-dll-cache.outputs.cache-hit != 'true'
+      run: |
+        perl contrib\windows\glpi-agent-extlibs-build.pl --arch ${{ matrix.arch }} --cadll
       shell: cmd
     - name: Build package
       run: |

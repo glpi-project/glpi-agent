@@ -4,7 +4,7 @@ set -e
 
 ROOT="`pwd`"
 
-: ${VERSION:=1.4}
+: ${VERSION:=1.7.2}
 : ${ARCH:=x86_64}
 
 PREPARE="no"
