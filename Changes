@@ -75,6 +75,14 @@ packaging:
 * Fix MSI to reuse InstallDir set in registry on upgrade
 * Updated Windows packages 7-Zip commandline tools to v23.01
 
+1.7.3 not yet released
+
+packaging:
+* Fix LOCAL is set to installation folder when LOCAL is not used on MSI windows
+  installation, and even if it was set empty in installer UI
+* Enhanced CVE-2024-28241 fix to only apply folder security if folder is not a
+  subfolder of system "Program Files" folder
+
 1.7.2 Mon, 25 Mar 2024
 
 packaging:

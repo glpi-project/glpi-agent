@@ -97,7 +97,9 @@
       <RegistrySearch Id="Local" Root="HKLM" Key="[%agent_regpath%]" Name="local" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_LOCAL"   Before="AppSearch" Value="[LOCAL]" />
-    <SetProperty Id="LOCAL"           After="AppSearch"  Value="[CMDLINE_LOCAL]"><![CDATA[CMDLINE_LOCAL<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+    <!-- Also compare to ProgramFiles64Folder to fix wrongly set LOCAL in 1.7.2 -->
+    <SetProperty Id="LOCAL"           After="AppSearch"  Value="[CMDLINE_LOCAL]"><![CDATA[CMDLINE_LOCAL<>"" OR LOCAL=INSTALLDIR OR CMDLINE_CONFIG="reset"]]></SetProperty>
+    <SetDirectory Id="_LOCALDIR"      Before="CostFinalize" Value="[LOCAL]" />
 
     <Property Id="ADDITIONAL_CONTENT" Secure="yes">
       <RegistrySearch Id="AdditionalContent" Root="HKLM" Key="[%agent_regpath%]" Name="additional-content" Type="raw"/>
@@ -471,15 +473,19 @@
       <LaunchConditions Sequence="400" />
 
 [%- IF bits==32 %]
-      <Custom Action="SchedSecureObjects" After="CreateFolders"><![CDATA[NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SchedSecureObjects" After="CreateFolders"><![CDATA[NOT INSTALLDIR<<ProgramFilesFolder AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SetFixInstallDir" After="SchedSecureObjects"><![CDATA[NOT INSTALLDIR<<ProgramFilesFolder AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="FixInstallDir" After="SetFixInstallDir"><![CDATA[NOT INSTALLDIR<<ProgramFilesFolder AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SetFixLocalDir" After="SchedSecureObjects"><![CDATA[LOCAL<>"" AND NOT LOCAL<<ProgramFilesFolder AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="FixLocalDir" After="SetFixLocalDir"><![CDATA[LOCAL<>"" AND NOT LOCAL<<ProgramFilesFolder AND NOT REMOVE~="ALL"]]></Custom>
 [%- ELSE %]
-      <Custom Action="SchedSecureObjects_x64" After="CreateFolders"><![CDATA[NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SchedSecureObjects_x64" After="CreateFolders"><![CDATA[NOT INSTALLDIR<<ProgramFiles64Folder AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SetFixInstallDir" After="SchedSecureObjects_x64"><![CDATA[NOT INSTALLDIR<<ProgramFiles64Folder AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="FixInstallDir" After="SetFixInstallDir"><![CDATA[NOT INSTALLDIR<<ProgramFiles64Folder AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SetFixLocalDir" After="SchedSecureObjects_x64"><![CDATA[LOCAL<>"" AND NOT LOCAL<<ProgramFiles64Folder AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="FixLocalDir" After="SetFixLocalDir"><![CDATA[LOCAL<>"" AND NOT LOCAL<<ProgramFilesFolder AND NOT REMOVE~="ALL"]]></Custom>
 [%- END %]
-      <Custom Action="SetFixInstallDir" After="SchedSecureObjects"><![CDATA[NOT REMOVE~="ALL"]]></Custom>
-      <Custom Action="FixInstallDir" After="SetFixInstallDir"><![CDATA[NOT REMOVE~="ALL"]]></Custom>
       <Custom Action="UpdateLocalDir" Before="CostFinalize"><![CDATA[LOCAL<>"" AND NOT LOCAL>>"\" AND NOT REMOVE~="ALL"]]></Custom>
-      <Custom Action="SetFixLocalDir" After="SchedSecureObjects"><![CDATA[LOCAL<>"" AND NOT REMOVE~="ALL"]]></Custom>
-      <Custom Action="FixLocalDir" After="SetFixLocalDir"><![CDATA[LOCAL<>"" AND NOT REMOVE~="ALL"]]></Custom>
 
       <!-- Schedule custom action to always remove windows task if exists -->
       <Custom Action="SetEndTask" Before="EndTask" />
@@ -1036,6 +1042,19 @@
 <!-- generated directory tree - END -->
         </Directory> <!-- INSTALLDIR -->
       </Directory>   <!-- ProgramFilesFolder -->
+
+      <Directory Id="_LOCALDIR">
+        <Component Id="LocalDir" Guid="$(var.LocalDirGuid)" KeyPath="yes" Feature="feat_AGENT">
+          <CreateFolder>
+            <util:PermissionEx GenericAll="yes" User="CREATOR OWNER" />
+            <util:PermissionEx GenericAll="yes" User="LocalSystem" />
+            <util:PermissionEx GenericAll="yes" User="Administrators" />
+            <util:PermissionEx GenericExecute="yes" GenericRead="yes" User="AuthenticatedUser" />
+          </CreateFolder>
+          <RemoveFolder Id="rm.local" On="uninstall" />
+          <Condition><![CDATA[LOCAL<>""]]></Condition>
+        </Component>
+      </Directory>
 
       <Directory Id="ProgramMenuFolder" />
 

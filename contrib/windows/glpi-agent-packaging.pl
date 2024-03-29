@@ -7,6 +7,7 @@ use Win32::TieRegistry qw( KEY_READ );
 use File::Spec;
 use Cwd qw(abs_path);
 use File::Spec::Functions qw(catfile);
+use Data::UUID;
 
 use constant {
     PACKAGE_REVISION    => "1", #BEWARE: always start with 1
@@ -90,6 +91,7 @@ sub build_app {
         agent_vertag    => $versiontag // '',
         agent_fullname  => $provider.' Agent',
         agent_rootdir   => $provider.'-Agent',
+        agent_localguid => Data::UUID->new()->create_str(),
         agent_regpath   => "Software\\$provider-Agent",
         service_name    => lc($provider).'-agent',
         msi_sharedir    => 'contrib/windows/packaging',
@@ -490,23 +492,6 @@ sub _tree2xml {
             $result .= $ident ."  ". qq[    <RemoveFolder Id="rm.$dir_id" On="uninstall" />\n];
         }
         $result .= $ident ."  ". qq[</Component>\n];
-        # Also add virtual folder properties under d_install
-        if ($dir_id eq 'd_install') {
-            foreach my $id (qw(LOCAL)) {
-                $result .= $ident ."  ". qq[<Directory Id="$id">\n];
-                ($component_id, $component_guid) = $self->_gen_component_id(lc($id).".create");
-                $result .= $ident ."    ". qq[<Component Id="$component_id" Guid="{$component_guid}" KeyPath="yes" Feature="$feat">\n];
-                $result .= $ident ."    ". qq[  <CreateFolder>\n];
-                $result .= $ident ."    ". qq[    <util:PermissionEx GenericAll="yes" User="CREATOR OWNER" />\n];
-                $result .= $ident ."    ". qq[    <util:PermissionEx GenericAll="yes" User="LocalSystem" />\n];
-                $result .= $ident ."    ". qq[    <util:PermissionEx GenericAll="yes" User="Administrators" />\n];
-                $result .= $ident ."    ". qq[    <util:PermissionEx GenericWrite="no" GenericExecute="yes" GenericRead="yes" User="AuthenticatedUser" />\n];
-                $result .= $ident ."    ". qq[  </CreateFolder>\n];
-                $result .= $ident ."    ". qq[  <RemoveFolder Id="rm.] .lc($id). qq[" On="uninstall" />\n];
-                $result .= $ident ."    ". qq[</Component>\n];
-                $result .= $ident ."  ". qq[</Directory>\n];
-            }
-        }
     }
 
     if (scalar(@f) > 0) {
