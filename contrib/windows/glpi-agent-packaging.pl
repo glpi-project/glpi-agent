@@ -679,22 +679,22 @@ sub create_dirs {
     foreach my $global (qw(image_dir build_dir debug_dir env_dir)) {
         my $dir = $self->global->{$global}
             or next;
-        next unless -d $dir;
+        if (-d $dir) {
+            my $delete = '';
+            if ($global eq 'build_dir') {
+                $delete = catdir($dir, "msi");
+                next unless -d $delete;
+            } else {
+                $delete = $dir;
+            }
 
-        my $delete = '';
-        if ($global eq 'build_dir') {
-            $delete = catdir($dir, "msi");
-            next unless -d $delete;
-        } else {
-            $delete = $dir;
-        }
+            remove_tree($delete) or die "ERROR: cannot delete '$delete'\n";
 
-        remove_tree($delete) or die "ERROR: cannot delete '$delete'\n";
-
-        # We may have some issue with fs synchro, be ready to wait a little
-        my $timeout = time + 10;
-        while ($delete && -d $delete && time < $timeout) {
-            usleep(100000);
+            # We may have some issue with fs synchro, be ready to wait a little
+            my $timeout = time + 10;
+            while ($delete && -d $delete && time < $timeout) {
+                usleep(100000);
+            }
         }
         -d $dir or make_path($dir) or die "ERROR: cannot create '$dir'\n";
     }
