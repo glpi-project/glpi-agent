@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install packages
       run: |
         sudo apt -y install cpanminus libmodule-install-perl libxml-libxml-perl \
@@ -57,7 +57,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Update environment
       run: |
         echo 'C:\Strawberry\perl\bin'      >> $GITHUB_PATH
@@ -73,7 +73,7 @@ jobs:
         perl -e "@t = localtime; print 'cache-version='.$^V.'-'.int($t[7]/7)" >>%GITHUB_OUTPUT%
       shell: cmd
     - name: Restore perl lib cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       id: cache
       with:
         path: |
@@ -109,7 +109,7 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Update environment
       run: |
         PERL_PREFIX=$(perl -MConfig -e 'print $Config{prefix}')
@@ -129,7 +129,7 @@ jobs:
         echo "$(brew --prefix)/opt/libxml2/bin" >> $GITHUB_PATH
     - name: Restore perl lib cache
       id: cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
             /usr/local/Cellar/perl/*/lib/perl5/site_perl

@@ -44,7 +44,7 @@ jobs:
       macosx-notarization: ${{ steps.set-version.outputs.macosx-notarization }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set version
       id: set-version
       run: |
@@ -186,14 +186,14 @@ jobs:
     needs: setup-release
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Create folders for cached datas
       run: |
         mkdir C:\Strawberry-perl-for-GLPI-Agent_build\restore
         mkdir C:\Strawberry-perl-for-GLPI-Agent_build\tools
       shell: cmd
     - name: Restore points cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
             C:/Strawberry-perl-for-GLPI-Agent_build/tools
@@ -203,7 +203,6 @@ jobs:
       if: success() || failure()
       run: |
         dir C:\Strawberry-perl-for-GLPI-Agent_build\restore
-        dir C:\Strawberry-perl-for-GLPI-Agent_build\tools
       shell: cmd
     - name: Update environment
       run: |
@@ -227,11 +226,11 @@ jobs:
       run: |
         cpanm --notest --verbose Perl::Dist::Strawberry
       shell: cmd
-    - name: Fix Perl::Dist::Strawberry for perl 5.34
+    - name: Fix Perl::Dist::Strawberry for perl
       run: |
         perl -i -pe "s/makefile.mk/Makefile/" C:\Strawberry\perl\site\lib\Perl\Dist\Strawberry\Step\InstallPerlCore.pm
       shell: cmd
-    - name: Fix Perl::Dist::Strawberry to support patching perl 5.34
+    - name: Fix Perl::Dist::Strawberry to support patching perl
       run: |
         perl -i -pe "s/use Text::Diff;/use Text::Diff;use Text::Patch;/" C:\Strawberry\perl\site\lib\Perl\Dist\Strawberry\Step.pm
       shell: cmd
@@ -274,15 +273,15 @@ jobs:
       shell: cmd
     - name: Upload windows built artifacts
       if: success() || failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: Windows-Build
+        name: Windows-Build-${{ matrix.arch }}
         path: C:\Strawberry-perl-for-GLPI-Agent_build\output
     - name: Upload debug MSI-Build artifacts
       if: failure() #success() || failure() # Only enable on failure or when debugging is required
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: MSI-Build-Debug
+        name: MSI-Build-Debug-${{ matrix.arch }}
         path: C:\Strawberry-perl-for-GLPI-Agent_build\build\msi
     - name: VirusTotal Scan
       uses: crazy-max/ghaction-virustotal@v3
@@ -301,9 +300,9 @@ jobs:
         VT_API_KEY: ${{ secrets.VT_API_KEY }}
     - name: Upload VirusTotal Report
       if: ${{ vars.VT_SKIP_REPORT_ANALYSIS != 'yes' && ( needs.setup-release.outputs.create-release == 'yes' || startsWith(needs.setup-release.outputs.tag_name, 'nightly') ) }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: VirusTotal-Report
+        name: VirusTotal-Report-${{ matrix.arch }}
         path: C:\Strawberry-perl-for-GLPI-Agent_build\output\*.json
     - name: Upload Portable Archive Asset
       id: upload-portable-archive-asset
@@ -343,9 +342,9 @@ jobs:
     needs: setup-release
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Restore points cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           contrib/macosx/*.gz
@@ -409,15 +408,15 @@ jobs:
       shell: bash
     - name: Upload MacOSX built artifacts
       if: success() || failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: MacOSX-Build
+        name: MacOSX-Build-${{ matrix.arch }}
         path: |
           contrib/macosx/build/*.pkg
           contrib/macosx/build/*.dmg
     - name: Upload MacOSX Perl building debug artifacts
       if: success() || failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: MacOSX-Perl-Config-${{ matrix.arch }}
         path: |
@@ -459,13 +458,13 @@ jobs:
     needs: setup-release
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: snapcore/action-build@v1
       id: snapcraft
       env:
         TERM: ${{ env.TERM }}:${{ needs.setup-release.outputs.version }}
     - name: Upload Snap built artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Snap-Build
         path: ${{ steps.snapcraft.outputs.snap }}
@@ -489,7 +488,7 @@ jobs:
     needs: setup-release
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install build dependencies packages
       run: |
         sudo apt update
@@ -526,7 +525,7 @@ jobs:
         lintian --profile debian --show-overrides -L ">=pedantic"
       shell: bash
     - name: Upload built deb artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Debian-Build
         path: |
@@ -550,7 +549,7 @@ jobs:
     needs: setup-release
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install build dependencies packages
       run: |
         sudo apt update
@@ -576,13 +575,13 @@ jobs:
             glpi-agent-task-esx glpi-agent-cron
       shell: bash
     - name: Upload built rpm artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: RPM-Build
         path: |
           ${{ steps.rpmbuild.outputs.rpmdir }}/noarch/*.rpm
     - name: Upload rpm sources artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: RPM-Sources
         path: |
@@ -606,14 +605,14 @@ jobs:
     needs: [ setup-release, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging ]
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/download-artifact@v3
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
       with:
         name: RPM-Build
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Debian-Build
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Snap-Build
     - name: Build installer
@@ -633,7 +632,7 @@ jobs:
       env:
         VERSION: ${{ needs.setup-release.outputs.version }}
     - name: Upload built installer artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Linux-Installer-Build
         path: |
@@ -655,14 +654,14 @@ jobs:
     needs: [ setup-release, linux-debian-packaging ]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     # We use AppImage Builder development version as 1.1 is failing
     - name: Install AppImage Builder development version
       id: install-appimage-builder
       run: |
         pip3 install git+https://github.com/AppImageCrafters/appimage-builder.git
       shell: bash
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Debian-Build
     - name: Make AppImage
@@ -691,7 +690,7 @@ jobs:
       env:
         VERSION: ${{ needs.setup-release.outputs.version }}
     - name: Upload built installer artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Linux-AppImage-Build
         path: |
@@ -719,7 +718,7 @@ jobs:
     needs: setup-release
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install build dependencies packages
       run: |
         sudo apt update
@@ -741,7 +740,7 @@ jobs:
       env:
         VERSION: ${{ needs.setup-release.outputs.version }}
     - name: Upload built archive artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Sources
         path: |
@@ -763,7 +762,44 @@ jobs:
     needs: [ setup-release, windows-packaging, macosx-packaging, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging, linux-installer, sources ]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        name: Linux-Installer-Build
+    - uses: actions/download-artifact@v4
+      with:
+        name: RPM-Build
+    - uses: actions/download-artifact@v4
+      with:
+        name: Debian-Build
+    - uses: actions/download-artifact@v4
+      with:
+        name: Snap-Build
+    - uses: actions/download-artifact@v4
+      with:
+        name: Linux-AppImage-Build
+    - uses: actions/download-artifact@v4
+      with:
+        pattern: MacOSX-Build-*
+        merge-multiple: true
+    - uses: actions/download-artifact@v4
+      with:
+        pattern: Windows-Build-*
+        merge-multiple: true
+    - uses: actions/download-artifact@v4
+      with:
+        name: Sources
+    - name: Generate and upload sha256 file
+      id: upload-sha256-asset
+      run: |
+        # Clean up not published files from Debian-Build
+        rm -f *.buildinfo *.changes
+        sha256sum *$VERSION* > glpi-agent-$VERSION.sha256
+        gh release upload ${{ needs.setup-release.outputs.tag_name }} glpi-agent-$VERSION.sha256
+      shell: bash
+      env:
+        VERSION: ${{ needs.setup-release.outputs.version }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Publish release
       id: publish-release
       run: |
@@ -817,40 +853,42 @@ jobs:
     needs: [ setup-release, windows-packaging, macosx-packaging, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging, linux-installer, sources ]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         repository: ${{ github.repository_owner }}/glpi-project.github.io
         token: ${{ secrets.PUBLISHING_TOKEN }}
         fetch-depth: 0
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Linux-Installer-Build
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: RPM-Build
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Debian-Build
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Snap-Build
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Linux-AppImage-Build
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
-        name: MacOSX-Build
+        pattern: MacOSX-Build-*
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+        merge-multiple: true
+    - uses: actions/download-artifact@v4
       with:
-        name: Windows-Build
+        pattern: Windows-Build-*
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+        merge-multiple: true
+    - uses: actions/download-artifact@v4
       with:
         name: Sources
         path: glpi-agent
