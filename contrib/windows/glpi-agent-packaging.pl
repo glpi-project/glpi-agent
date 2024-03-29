@@ -669,8 +669,8 @@ package
 
 use parent qw(Perl::Dist::Strawberry);
 
-use File::Path qw(remove_tree);
-use File::Spec::Functions qw(canonpath);
+use File::Path qw(remove_tree make_path);
+use File::Spec::Functions qw(canonpath catdir);
 use File::Glob qw(:glob);
 use Time::HiRes qw(usleep);
 use PerlBuildJob;
@@ -694,16 +694,39 @@ sub create_dirs {
     foreach my $global (qw(image_dir build_dir debug_dir env_dir)) {
         my $dir = $self->global->{$global}
             or next;
-        remove_tree($dir) if -d $dir;
+        next unless -d $dir;
+
+        my $delete = '';
+        if ($global eq 'build_dir') {
+            $delete = catdir($dir, "msi");
+            next unless -d $delete;
+        } else {
+            $delete = $dir;
+        }
+
+        remove_tree($delete) or die "ERROR: cannot delete '$delete'\n";
 
         # We may have some issue with fs synchro, be ready to wait a little
         my $timeout = time + 10;
-        while (-d $dir && time < $timeout) {
+        while ($delete && -d $delete && time < $timeout) {
             usleep(100000);
         }
+        -d $dir or make_path($dir) or die "ERROR: cannot create '$dir'\n";
     }
 
-    $self->SUPER::create_dirs();
+    my $wdir = $self->global->{working_dir};
+    unless (-d $wdir) {
+        make_path($wdir) or die "ERROR: cannot create '$wdir'\n";
+    }
+
+    make_path(catdir($self->global->{env_dir}, 'temp'));
+    make_path(catdir($self->global->{env_dir}, 'AppDataRoaming'));
+    make_path(catdir($self->global->{env_dir}, 'AppDataLocal'));
+    make_path(catdir($self->global->{env_dir}, 'UserProfile'));
+
+    # Create only if not exists
+    -d $self->global->{restore_dir} or make_path($self->global->{restore_dir}) or die "ERROR: cannot create '".$self->global->{restore_dir}."'\n";
+    -d $self->global->{output_dir}  or make_path($self->global->{output_dir})  or die "ERROR: cannot create '".$self->global->{output_dir}."'\n";
 }
 
 sub ask_about_restorepoint {
