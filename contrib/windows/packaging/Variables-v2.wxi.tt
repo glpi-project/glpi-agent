@@ -15,6 +15,7 @@
   <?define URLAbout          = "[%url_about%]" ?>           <!-- e.g. "https://glpi-project.org/" -->
   <?define URLHelp           = "[%url_help%]" ?>            <!-- e.g. "https://glpi-project.org/discussions/" -->
   <?define RootDir           = "[%agent_rootdir%]" ?>       <!-- e.g. "GLPI-Agent" -->
+  <?define LocalDirGuid      = "[%agent_localguid%]" ?>
 
   <?define FileMainIcon      = "[%msi_main_icon%]" ?>
   <?define FileLicenseRtf    = "[%msi_license_rtf%]" ?>
