@@ -537,7 +537,7 @@
     <UIRef Id='WixUI_Common' />
 
     <UI Id="WixUI_MyInstallDlg">
-      <Error Id="25000">Only administrators can modify [AgentName] installation</Error>
+      <Error Id="25000">Only administrators can modify $(var.AgentName) installation</Error>
 
       <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
       <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
