@@ -97,8 +97,8 @@
       <RegistrySearch Id="Local" Root="HKLM" Key="[%agent_regpath%]" Name="local" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_LOCAL"   Before="AppSearch" Value="[LOCAL]" />
-    <!-- Also compare to ProgramFiles64Folder to fix wrongly set LOCAL in 1.7.2 -->
-    <SetProperty Id="LOCAL"           After="AppSearch"  Value="[CMDLINE_LOCAL]"><![CDATA[CMDLINE_LOCAL<>"" OR LOCAL=INSTALLDIR OR CMDLINE_CONFIG="reset"]]></SetProperty>
+    <!-- Also compare to UPGRADEDIR to fix wrongly set LOCAL in 1.7.2 -->
+    <SetProperty Id="LOCAL"           After="AppSearch"  Value="[CMDLINE_LOCAL]"><![CDATA[CMDLINE_LOCAL<>"" OR (UPGRADEDIR<>"" AND LOCAL=UPGRADEDIR) OR CMDLINE_CONFIG="reset"]]></SetProperty>
     <SetDirectory Id="_LOCALDIR"      Before="CostFinalize" Value="[LOCAL]" />
 
     <Property Id="ADDITIONAL_CONTENT" Secure="yes">
@@ -483,7 +483,7 @@
       <Custom Action="SetFixInstallDir" After="SchedSecureObjects_x64"><![CDATA[NOT INSTALLDIR<<ProgramFiles64Folder AND NOT REMOVE~="ALL"]]></Custom>
       <Custom Action="FixInstallDir" After="SetFixInstallDir"><![CDATA[NOT INSTALLDIR<<ProgramFiles64Folder AND NOT REMOVE~="ALL"]]></Custom>
       <Custom Action="SetFixLocalDir" After="SchedSecureObjects_x64"><![CDATA[LOCAL<>"" AND NOT LOCAL<<ProgramFiles64Folder AND NOT REMOVE~="ALL"]]></Custom>
-      <Custom Action="FixLocalDir" After="SetFixLocalDir"><![CDATA[LOCAL<>"" AND NOT LOCAL<<ProgramFilesFolder AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="FixLocalDir" After="SetFixLocalDir"><![CDATA[LOCAL<>"" AND NOT LOCAL<<ProgramFiles64Folder AND NOT REMOVE~="ALL"]]></Custom>
 [%- END %]
       <Custom Action="UpdateLocalDir" Before="CostFinalize"><![CDATA[LOCAL<>"" AND NOT LOCAL>>"\" AND NOT REMOVE~="ALL"]]></Custom>
 
