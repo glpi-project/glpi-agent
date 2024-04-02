@@ -219,7 +219,7 @@ jobs:
       run: |
         dir C:\Strawberry-perl-for-GLPI-Agent_build\download
         dir C:\Strawberry-perl-for-GLPI-Agent_build\restore
-        dir contrib/windows/packaging/tools/ca
+        dir contrib\windows\packaging\tools\ca
       shell: cmd
     - name: Restore required perl libraries cache
       uses: actions/cache@v4
