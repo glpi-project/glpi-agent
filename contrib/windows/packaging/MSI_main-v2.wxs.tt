@@ -95,7 +95,7 @@
       <RegistrySearch Id="Local" Root="HKLM" Key="[%agent_regpath%]" Name="local" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_LOCAL"   Before="AppSearch" Value="[LOCAL]" />
-    <!-- Also compare to ProgramFiles64Folder to fix wrongly set LOCAL in 1.7.2 -->
+    <!-- Also compare to INSTALLDIR to fix wrongly set LOCAL in 1.7.2 -->
     <SetProperty Id="LOCAL"           After="AppSearch"  Value="[CMDLINE_LOCAL]"><![CDATA[CMDLINE_LOCAL<>"" OR LOCAL=INSTALLDIR OR CMDLINE_CONFIG="reset"]]></SetProperty>
     <SetDirectory Id="_LOCALDIR"      Before="CostFinalize" Value="[LOCAL]" />
 
@@ -407,19 +407,43 @@
     <CustomAction Id="SetDefaultLogFile"   Property="LOGFILE" Value="[INSTALLDIR]logs\glpi-agent.log" Execute="firstSequence" />
     <CustomAction Id="SetDefaultVarDir"    Property="VARDIR"  Value="[INSTALLDIR]var" Execute="firstSequence" />
 
+[%- IF bits==32 %]
     <CustomAction Id="SetDeleteFirewallExceptionCmd" Property="DeleteFirewallException" Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;!(loc.FirewallExceptionName)&quot;" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetDeleteFirewallExceptionCmd" Property="DeleteFirewallException" Value="&quot;[System64Folder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;!(loc.FirewallExceptionName)&quot;" Execute="immediate" />
+[%- END %]
     <CustomAction Id="DeleteFirewallException" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+[%- IF bits==32 %]
     <CustomAction Id="SetAddFirewallExceptionInCmd" Property="AddFirewallExceptionIn" Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall add rule name=&quot;!(loc.FirewallExceptionName)&quot; program=&quot;[#f_agent_exe]&quot; description=&quot;!(loc.FirewallExceptionDescription)&quot; protocol=TCP dir=in localport=[HTTPD_PORT] action=allow" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetAddFirewallExceptionInCmd" Property="AddFirewallExceptionIn" Value="&quot;[System64Folder]netsh.exe&quot; advfirewall firewall add rule name=&quot;!(loc.FirewallExceptionName)&quot; program=&quot;[#f_agent_exe]&quot; description=&quot;!(loc.FirewallExceptionDescription)&quot; protocol=TCP dir=in localport=[HTTPD_PORT] action=allow" Execute="immediate" />
+[%- END %]
     <CustomAction Id="AddFirewallExceptionIn" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+[%- IF bits==32 %]
     <CustomAction Id="SetAddFirewallExceptionOutCmd" Property="AddFirewallExceptionOut" Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall add rule name=&quot;!(loc.FirewallExceptionName)&quot; program=&quot;[#f_agent_exe]&quot; description=&quot;!(loc.OutgoingFirewallExceptionDescription)&quot; dir=out action=allow" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetAddFirewallExceptionOutCmd" Property="AddFirewallExceptionOut" Value="&quot;[System64Folder]netsh.exe&quot; advfirewall firewall add rule name=&quot;!(loc.FirewallExceptionName)&quot; program=&quot;[#f_agent_exe]&quot; description=&quot;!(loc.OutgoingFirewallExceptionDescription)&quot; dir=out action=allow" Execute="immediate" />
+[%- END %]
     <CustomAction Id="AddFirewallExceptionOut" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
     <!-- GLPI Agent 1.0 to 1.2 installers was creating wrongly named firewall rules, prepare CustomAction to clean up them -->
+[%- IF bits==32 %]
     <CustomAction Id="SetDeleteWrongFirewallRuleInCmd"  Property="DeleteFirewallWrongIn"  Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;program=description= embedded HTTP server incoming traffic&quot;" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetDeleteWrongFirewallRuleInCmd"  Property="DeleteFirewallWrongIn"  Value="&quot;[System64Folder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;program=description= embedded HTTP server incoming traffic&quot;" Execute="immediate" />
+[%- END %]
     <CustomAction Id="DeleteFirewallWrongIn" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+[%- IF bits==32 %]
     <CustomAction Id="SetDeleteWrongFirewallRuleOutCmd" Property="DeleteFirewallWrongOut" Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;program=description= outgoing traffic&quot;" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetDeleteWrongFirewallRuleOutCmd" Property="DeleteFirewallWrongOut" Value="&quot;[System64Folder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;program=description= outgoing traffic&quot;" Execute="immediate" />
+[%- END %]
     <CustomAction Id="DeleteFirewallWrongOut" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+[%- IF bits==32 %]
     <CustomAction Id="SetDeleteWrongFirewallRuleExeCmd" Property="DeleteFirewallWrongExe" Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;program=[#f_agent_exe]&quot;" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetDeleteWrongFirewallRuleExeCmd" Property="DeleteFirewallWrongExe" Value="&quot;[System64Folder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;program=[#f_agent_exe]&quot;" Execute="immediate" />
+[%- END %]
     <CustomAction Id="DeleteFirewallWrongExe" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
     <CustomAction Id="SetForceRun" Property="ForceRun" Value="&quot;[#f_glpiagent]&quot; --set-forcerun" Execute="immediate" />
@@ -427,21 +451,50 @@
     <CustomAction Id="SetRunNow" Property="RunNow" Value="&quot;[#f_glpiagent]&quot; --force" Execute="immediate" />
     <CustomAction Id="RunNow" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
+[%- IF bits==32 %]
     <CustomAction Id="SetEndTask" Property="EndTask" Value="&quot;[SystemFolder]schtasks.exe&quot; /tn &quot;$(var.AgentName)&quot; /end" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetEndTask" Property="EndTask" Value="&quot;[System64Folder]schtasks.exe&quot; /tn &quot;$(var.AgentName)&quot; /end" Execute="immediate" />
+[%- END %]
     <CustomAction Id="EndTask" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+[%- IF bits==32 %]
     <CustomAction Id="SetDeleteTask" Property="DeleteTask" Value="&quot;[SystemFolder]schtasks.exe&quot; /f /tn &quot;$(var.AgentName)&quot; /delete" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetDeleteTask" Property="DeleteTask" Value="&quot;[System64Folder]schtasks.exe&quot; /f /tn &quot;$(var.AgentName)&quot; /delete" Execute="immediate" />
+[%- END %]
     <CustomAction Id="DeleteTask" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+[%- IF bits==32 %]
     <CustomAction Id="SetTaskMinute" Property="TaskMinute" Value="&quot;[SystemFolder]schtasks.exe&quot; /f /tn &quot;$(var.AgentName)&quot; /create /ru system /tr '&quot;[#f_glpiagent]&quot;' /sc minute /mo [TASK_MINUTE_MODIFIER]" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetTaskMinute" Property="TaskMinute" Value="&quot;[System64Folder]schtasks.exe&quot; /f /tn &quot;$(var.AgentName)&quot; /create /ru system /tr '&quot;[#f_glpiagent]&quot;' /sc minute /mo [TASK_MINUTE_MODIFIER]" Execute="immediate" />
+[%- END %]
     <CustomAction Id="TaskMinute" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+[%- IF bits==32 %]
     <CustomAction Id="SetTaskHourly" Property="TaskHourly" Value="&quot;[SystemFolder]schtasks.exe&quot; /f /tn &quot;$(var.AgentName)&quot; /create /ru system /tr '&quot;[#f_glpiagent]&quot;' /sc hourly /mo [TASK_HOURLY_MODIFIER]" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetTaskHourly" Property="TaskHourly" Value="&quot;[System64Folder]schtasks.exe&quot; /f /tn &quot;$(var.AgentName)&quot; /create /ru system /tr '&quot;[#f_glpiagent]&quot;' /sc hourly /mo [TASK_HOURLY_MODIFIER]" Execute="immediate" />
+[%- END %]
     <CustomAction Id="TaskHourly" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+[%- IF bits==32 %]
     <CustomAction Id="SetTaskDaily" Property="TaskDaily" Value="&quot;[SystemFolder]schtasks.exe&quot; /f /tn &quot;$(var.AgentName)&quot; /create /ru system /tr '&quot;[#f_glpiagent]&quot;' /sc daily /mo [TASK_DAILY_MODIFIER]" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetTaskDaily" Property="TaskDaily" Value="&quot;[System64Folder]schtasks.exe&quot; /f /tn &quot;$(var.AgentName)&quot; /create /ru system /tr '&quot;[#f_glpiagent]&quot;' /sc daily /mo [TASK_DAILY_MODIFIER]" Execute="immediate" />
+[%- END %]
     <CustomAction Id="TaskDaily" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
+    <!-- Support dedicated CustomActions to handle CVE-2024-28241 -->
+[%- IF bits==32 %]
     <CustomAction Id="SetFixInstallDir" Property="FixInstallDir" Value="&quot;[SystemFolder]icacls.exe&quot; &quot;[INSTALLDIR].&quot; /inheritance:r" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetFixInstallDir" Property="FixInstallDir" Value="&quot;[System64Folder]icacls.exe&quot; &quot;[INSTALLDIR].&quot; /inheritance:r" Execute="immediate" />
+[%- END %]
     <CustomAction Id="FixInstallDir" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
     <CustomAction Id="UpdateLocalDir" Property="LOCAL" Value="[LOCAL]\" Execute="immediate" />
+[%- IF bits==32 %]
     <CustomAction Id="SetFixLocalDir" Property="FixLocalDir" Value="&quot;[SystemFolder]icacls.exe&quot; &quot;[LOCAL].&quot; /inheritance:r" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetFixLocalDir" Property="FixLocalDir" Value="&quot;[System64Folder]icacls.exe&quot; &quot;[LOCAL].&quot; /inheritance:r" Execute="immediate" />
+[%- END %]
     <CustomAction Id="FixLocalDir" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
 
     <CustomAction Id="SetCheckRunningAsAdmin" Property="WixQuietExecCmdLine" Value="&quot;[SystemFolder]net.exe&quot; file" Execute="immediate" />
@@ -464,17 +517,17 @@
       <LaunchConditions Sequence="200" />
 
 [%- IF bits==32 %]
-      <Custom Action="SchedSecureObjects" After="CreateFolders"><![CDATA[NOT INSTALLDIR<<ProgramFilesFolder AND NOT REMOVE~="ALL"]]></Custom>
-      <Custom Action="SetFixInstallDir" After="SchedSecureObjects"><![CDATA[NOT INSTALLDIR<<ProgramFilesFolder AND NOT REMOVE~="ALL"]]></Custom>
-      <Custom Action="FixInstallDir" After="SetFixInstallDir"><![CDATA[NOT INSTALLDIR<<ProgramFilesFolder AND NOT REMOVE~="ALL"]]></Custom>
-      <Custom Action="SetFixLocalDir" After="SchedSecureObjects"><![CDATA[LOCAL<>"" AND NOT LOCAL<<ProgramFilesFolder AND NOT REMOVE~="ALL"]]></Custom>
-      <Custom Action="FixLocalDir" After="SetFixLocalDir"><![CDATA[LOCAL<>"" AND NOT LOCAL<<ProgramFilesFolder AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SchedSecureObjects" After="CreateFolders"><![CDATA[NOT (INSTALLDIR<<ProgramFilesFolder AND (NOT LOCAL OR LOCAL<<ProgramFilesFolder)) AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SetFixInstallDir" After="SchedSecureObjects"><![CDATA[NOT (INSTALLDIR<<ProgramFilesFolder AND (NOT LOCAL OR LOCAL<<ProgramFilesFolder)) AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="FixInstallDir" After="SetFixInstallDir"><![CDATA[NOT (INSTALLDIR<<ProgramFilesFolder AND (NOT LOCAL OR LOCAL<<ProgramFilesFolder)) AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SetFixLocalDir" After="SchedSecureObjects"><![CDATA[LOCAL<>"" AND NOT (INSTALLDIR<<ProgramFilesFolder AND LOCAL<<ProgramFilesFolder) AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="FixLocalDir" After="SetFixLocalDir"><![CDATA[LOCAL<>"" AND NOT (INSTALLDIR<<ProgramFilesFolder AND LOCAL<<ProgramFilesFolder) AND NOT REMOVE~="ALL"]]></Custom>
 [%- ELSE %]
-      <Custom Action="SchedSecureObjects_x64" After="CreateFolders"><![CDATA[NOT INSTALLDIR<<ProgramFiles64Folder AND NOT REMOVE~="ALL"]]></Custom>
-      <Custom Action="SetFixInstallDir" After="SchedSecureObjects_x64"><![CDATA[NOT INSTALLDIR<<ProgramFiles64Folder AND NOT REMOVE~="ALL"]]></Custom>
-      <Custom Action="FixInstallDir" After="SetFixInstallDir"><![CDATA[NOT INSTALLDIR<<ProgramFiles64Folder AND NOT REMOVE~="ALL"]]></Custom>
-      <Custom Action="SetFixLocalDir" After="SchedSecureObjects_x64"><![CDATA[LOCAL<>"" AND NOT LOCAL<<ProgramFiles64Folder AND NOT REMOVE~="ALL"]]></Custom>
-      <Custom Action="FixLocalDir" After="SetFixLocalDir"><![CDATA[LOCAL<>"" AND NOT LOCAL<<ProgramFilesFolder AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SchedSecureObjects_x64" After="CreateFolders"><![CDATA[NOT (INSTALLDIR<<ProgramFiles64Folder AND (NOT LOCAL OR LOCAL<<ProgramFiles64Folder)) AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SetFixInstallDir" After="SchedSecureObjects_x64"><![CDATA[NOT (INSTALLDIR<<ProgramFiles64Folder AND (NOT LOCAL OR LOCAL<<ProgramFiles64Folder)) AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="FixInstallDir" After="SetFixInstallDir"><![CDATA[NOT (INSTALLDIR<<ProgramFiles64Folder AND (NOT LOCAL OR LOCAL<<ProgramFiles64Folder)) AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SetFixLocalDir" After="SchedSecureObjects_x64"><![CDATA[LOCAL<>"" AND NOT (INSTALLDIR<<ProgramFiles64Folder AND LOCAL<<ProgramFiles64Folder) AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="FixLocalDir" After="SetFixLocalDir"><![CDATA[LOCAL<>"" AND NOT (INSTALLDIR<<ProgramFiles64Folder AND LOCAL<<ProgramFiles64Folder) AND NOT REMOVE~="ALL"]]></Custom>
 [%- END %]
       <Custom Action="UpdateLocalDir" Before="CostFinalize"><![CDATA[LOCAL<>"" AND NOT LOCAL>>"\" AND NOT REMOVE~="ALL"]]></Custom>
 
