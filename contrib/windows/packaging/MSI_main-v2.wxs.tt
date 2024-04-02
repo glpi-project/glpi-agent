@@ -525,13 +525,13 @@
       <LaunchConditions Sequence="400" />
 
 [%- IF bits==32 %]
-      <Custom Action="SchedSecureObjects" After="CreateFolders"><![CDATA[NOT INSTALLDIR<<ProgramFilesFolder AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SchedSecureObjects" After="CreateFolders"><![CDATA[(NOT INSTALLDIR<<ProgramFilesFolder OR (LOCAL<>"" AND NOT LOCAL<<ProgramFiles64Folder)) AND NOT REMOVE~="ALL"]]></Custom>
       <Custom Action="SetFixInstallDir" After="SchedSecureObjects"><![CDATA[NOT INSTALLDIR<<ProgramFilesFolder AND NOT REMOVE~="ALL"]]></Custom>
       <Custom Action="FixInstallDir" After="SetFixInstallDir"><![CDATA[NOT INSTALLDIR<<ProgramFilesFolder AND NOT REMOVE~="ALL"]]></Custom>
       <Custom Action="SetFixLocalDir" After="SchedSecureObjects"><![CDATA[LOCAL<>"" AND NOT LOCAL<<ProgramFilesFolder AND NOT REMOVE~="ALL"]]></Custom>
       <Custom Action="FixLocalDir" After="SetFixLocalDir"><![CDATA[LOCAL<>"" AND NOT LOCAL<<ProgramFilesFolder AND NOT REMOVE~="ALL"]]></Custom>
 [%- ELSE %]
-      <Custom Action="SchedSecureObjects_x64" After="CreateFolders"><![CDATA[NOT INSTALLDIR<<ProgramFiles64Folder AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SchedSecureObjects_x64" After="CreateFolders"><![CDATA[(NOT INSTALLDIR<<ProgramFiles64Folder OR (LOCAL<>"" AND NOT LOCAL<<ProgramFiles64Folder)) AND NOT REMOVE~="ALL"]]></Custom>
       <Custom Action="SetFixInstallDir" After="SchedSecureObjects_x64"><![CDATA[NOT INSTALLDIR<<ProgramFiles64Folder AND NOT REMOVE~="ALL"]]></Custom>
       <Custom Action="FixInstallDir" After="SetFixInstallDir"><![CDATA[NOT INSTALLDIR<<ProgramFiles64Folder AND NOT REMOVE~="ALL"]]></Custom>
       <Custom Action="SetFixLocalDir" After="SchedSecureObjects_x64"><![CDATA[LOCAL<>"" AND NOT LOCAL<<ProgramFiles64Folder AND NOT REMOVE~="ALL"]]></Custom>
