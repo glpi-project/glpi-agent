@@ -28,7 +28,7 @@
 '  ------------------------------------------------------------------------
 '
 '  @package   GLPI Agent
-'  @version   1.7.2
+'  @version   1.7.3
 '  @file      contrib/windows/glpi-agent-deployment.vbs
 '  @author(s) Benjamin Accary <meldrone@orange.fr>
 '             Christophe Pujol <chpujol@gmail.com>
@@ -65,7 +65,7 @@ Dim Setup, SetupArchitecture, SetupLocation, SetupNightlyLocation, SetupOptions,
 ' SetupVersion
 '    Setup version with the pattern <major>.<minor>.<release>[-<package>]
 '
-SetupVersion = "1.7.2"
+SetupVersion = "1.7.3"
 
 ' When using a nightly built version, uncomment the following SetupVersion definition line
 ' replacing gitABCDEFGH with the most recent git revision found on the nightly builds site
