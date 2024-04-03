@@ -1,6 +1,6 @@
 Revision history for GLPI agent
 
-1.7.3 not yet released
+1.7.3 Wed, 03 Apr 2024
 
 packaging:
 * Fix LOCAL was set to installation folder during windows MSI installation v1.7.2,
