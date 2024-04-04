@@ -565,7 +565,7 @@ sub runPowerShell {
         SUFFIX      => '.ps1'
     );
     print $fh $script;
-    close( $fh);
+    close $fh;
     my $file = $fh->filename;
     return unless $file && -f $file;
 
@@ -1113,6 +1113,35 @@ sub setPoller {
 sub getPoller {
     my ($poller) = @_;
     return $poller->down_nb();
+}
+
+sub getEventFile {
+    my ($folder, $event) = @_;
+
+    my $template = "efile-XXXXXXXXXXX";
+    my ($fh, $filename) = File::Temp::tempfile($template, DIR => $folder, SUFFIX => '.evt');
+    binmode($fh);
+    print $fh $event;
+    close $fh;
+
+    return $filename;
+}
+
+sub readEventFile {
+    my ($file, $size) = @_;
+
+    return unless -e $file && $size > 0;
+
+    my $event;
+    if (open my $fh, "<", $file) {
+        binmode($fh);
+        read($fh, $event, $size);
+        close $fh;
+    }
+
+    unlink $file;
+
+    return $event;
 }
 
 sub getFormatedWMIDateTime {

@@ -12,10 +12,13 @@ use Time::HiRes qw(usleep);
 # By convention, we just use 5 chars string as possible internal IPC messages.
 # IPC_LEAVE from children is supported and is only really useful while debugging.
 # IPC_EVENT can be used to handle events recognized in parent
+# IPC_EFILE can be used to handle events recognized in parent and is used on MSWin32
+#           when transmitted event is too big for IPC
 # IPC_ABORT can be used to abort a forked process
 use constant IPC_LEAVE  => 'LEAVE';
 use constant IPC_EVENT  => 'EVENT';
 use constant IPC_ABORT  => 'ABORT';
+use constant IPC_EFILE  => 'EFILE';
 
 use parent 'GLPI::Agent';
 
@@ -467,6 +470,27 @@ sub handleChildren {
                         push @messages, $event
                             if $child->{in}->sysread($event, $len);
                     }
+                } elsif ($msg eq IPC_EFILE) {
+                    my $len;
+                    $len = unpack("S", $len)
+                        if $child->{in}->sysread($len, 2);
+                    if ($len>2) {
+                        my ($event, $size, $file);
+                        $size = unpack("S", $size)
+                            if $child->{in}->sysread($size, 2);
+                        if ($child->{in}->sysread($file, $len-2)) {
+                            $event = GLPI::Agent::Tools::Win32::readEventFile($file, $size);
+                            if (!defined($event) || length($event) != $size) {
+                                # Limit log rate of IPC_EVENT event read failure from IPC_EFILE
+                                if (!$self->{_efile_logger_failure_timeout} || time > $self->{_efile_logger_failure_timeout}) {
+                                    $self->{logger}->debug2($child->{name} . "[$pid] failed to read IPC_EVENT from $file file");
+                                    $self->{_efile_logger_failure_timeout} = time + 5;
+                                }
+                            } else {
+                                push @messages, $event;
+                            }
+                        }
+                    }
                 }
             }
             $count++;
@@ -641,13 +665,18 @@ sub forked_process_event {
 
     return unless length($event);
     # On MSWin32, syswrite can block if header+size+event is greater than 512 bytes
-    if (length($event) > 505) {
+    if (length($event) > 505 && $OSNAME eq 'MSWin32') {
         my ($type) = split(",", $event)
             or return;
         $type = substr($event, 0, 64) if length($type) > 64;
         # Just ignore too big logger event like full inventory content logged at debug2 level
         return if $type eq 'LOGGER';
-        $self->{logger}->error("Skipping $type too long forked process event");
+
+        # Convert event to efile: event content in a file
+        my $file = GLPI::Agent::Tools::Win32::getEventFile($self->{vardir}, $event);
+        my $efile = pack("S", length($event)).$file;
+        $self->{_ipc_out}->syswrite(IPC_EFILE.pack("S", length($efile)).$efile);
+        GLPI::Agent::Tools::Win32::setPoller($self->{_ipc_pollin});
         return;
     }
 

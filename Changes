@@ -6,6 +6,8 @@ core:
 * Parallel::ForkManager must not use more than 60 workers on MSWin32 due to a
   perl limitation on this operating system
 * Refacto events management to permit a task to trigger another one
+* IPC long messages only have size limitation on windows
+* Add new IPC message type to handle too long IPC_EVENT messages on windows
 
 inventory:
 * Fix network default route discovery on linux
@@ -50,6 +52,9 @@ netdiscovery/netinventory:
 deploy:
 * Force agent to run a partial software inventory after the deploy task is done
   if this has been set as a requirement in any job sent by the server
+
+proxy-server-plugin:
+* Fix issues due to wrong support of long IPC messages
 
 toolbox:
 * fix #532: Make libssh2 use the right place when looking for known_hosts file
