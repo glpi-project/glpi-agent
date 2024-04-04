@@ -21,6 +21,7 @@ inventory:
 * fix #611: Wrong bios value as array on win32 bios when using WMI in proxmox vm
 * fix #609: Fix rustdesk remote management version analysis
 * fix #630: Enhanced support for linux on Raspberry Pi 3
+* Fix ioreg command output parsing on MacOSX to avoid Deep Recursion perl warning
 
 remoteinventory:
 * Limit the number of attempts and reported errors when libssh2 fails but ssh command

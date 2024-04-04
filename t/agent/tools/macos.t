@@ -10,6 +10,7 @@ use Test::Deep;
 use Test::More;
 use English;
 use UNIVERSAL::require;
+use Data::Dumper;
 
 use GLPI::Agent::Tools::MacOS;
 use GLPI::Agent::Task::Inventory::MacOS::Softwares;
@@ -3411,6 +3412,212 @@ my @ioreg_tests = (
         ],
     },
     {
+        file    => 'IOPlatformExpertDevice-2',
+        class   => 'IOPlatformExpertDevice',
+        results => [
+            {
+                'serial-number' => '46564838000000000000000000433032514d33465346564838000000000000000000000000000000000000',
+                'clock-frequency' => '00e1f505',
+                'board-id' => 'Mac-E43C1C25D4880AD6',
+                'target-type' => 'Mac',
+                'IOBusyInterest' => 'IOCommand is not serializable',
+                'IOPlatformSystemSleepPolicy' => '534c505402001300841e120004000000001400000004000006000000000000000f250000000000000000400000004000000010000000100007000000000000000f25000000000000841e120004000000001800000008000005000000000000000f25000000000000841e120004000000081000000800000005000000000000000f250000000000002000000020000000000000000000000005000000000000000f2500000000000008000000080000000000000000000000060000000000000000010000010000000000040000000400000000000000000005000000000000000f250000000000000000010000000100000000000000000006000000000000000001000000000000c416000000000000080000000800000005000000000000000f25000000000000c416100000001000204000002040000007000000080000000f3d000000000000c416000000000000200000002000000005000000000000000f25000000000000d416000010000000000000000000000005000000000000000f25000000000000c41e120044000000061000000600000007000000020000000f3d000000000000841e120004000000001000000000000007000000020000000f3d000000000000c41600000000000000c0000000c0000007000000080000000f3d000000000000c416000000000000088000000880000005000000000000000f25000000000000c416000000000000000000000000000007000000010000000f3d0000000000004000000040000000060000000600000007000000000000000f350000000000000000000000000000000000000000000007000000000000000f35000000000000',
+                'IOPlatformSerialNumber' => 'C02QM3FSFVH8',
+                'compatible' => 'MacBookPro12,1',
+                'IOPolledInterface' => 'SMCPolledInterface is not serializable',
+                'manufacturer' => 'Apple Inc.',
+                'IOPlatformUUID' => 'CE3A2773-AF9E-515B-918B-5EE5C09372D7',
+                'platform-feature' => '0200000000000000',
+                'model' => 'MacBookPro12,1',
+                'system-type' => '02',
+                'product-name' => 'MacBookPro12,1',
+                'version' => '1.0',
+                'name' => '/'
+            }
+        ],
+    },
+    {
+        file    => 'AppleBacklightDisplay',
+        class   => 'AppleBacklightDisplay',
+        results => [
+            {
+                'IOProbeScore' => 3000,
+                'IODisplayAttributes' => {
+                    'IODisplayAttributes' => '<676174760000000073676c6604000000726c6f630100000063706220020000006364670080808000676c666400000000>'
+                },
+                'IODisplayGUID' => '436849163854938112',
+                'IOProviderClass' => 'IODisplayConnect',
+                'CFBundleIdentifierKernel' => 'com.apple.iokit.IOGraphicsFamily',
+                'IODisplayConnectFlags' => '00080000',
+                'IOPowerManagement' => {
+                    'CurrentPowerState' => 3,
+                    'MaxPowerState' => 3,
+                    'CapabilityFlags' => 49152
+                },
+                'IODisplayEDID' => '00ffffffffffff0006102aa0000000000a180104a51d1278026fb1a7554c9e250c505400000001010101010101010101010101010101e26800a0a0402e60302036001eb31000001a000000fc00436f6c6f72204c43440a2020200000001000000000000000000000000000000000001000000000000000000000000000000075',
+                'IODisplayPrefsKey' => 'IOService:/AppleACPIPlatformExpert/PCI0@0/AppleACPIPCI/IGPU@2/AppleIntelFramebuffer@0/display0/AppleBacklightDisplay-610-a02a',
+                'DisplayVendorID' => 1552,
+                'DisplayProductID' => 41002,
+                'IOMatchCategory' => 'IODefaultMatchCategory',
+                'DisplaySerialNumber' => 0,
+                'IOClass' => 'AppleBacklightDisplay',
+                'CFBundleIdentifier' => 'com.apple.iokit.IOGraphicsFamily',
+                'IODisplayParameters' => {
+                    'rgsc' => {
+                        'max' => 65536,
+                        'min' => 0,
+                        'value' => 65536
+                    },
+                    'ggsc' => {
+                        'value' => 65536,
+                        'max' => 65536,
+                        'min' => 0
+                    },
+                    'brightness' => {
+                        'max' => 1024,
+                        'min' => 0,
+                        'value' => 575
+                    },
+                    'bklt' => {
+                        'value' => 378,
+                        'min' => 0,
+                        'max' => 1388
+                    },
+                    'fade-style' => {
+                        'value' => 0,
+                        'min' => 0,
+                        'max' => 10
+                    },
+                    'vblm' => {
+                        'max' => 196608,
+                        'min' => 0,
+                        'value' => 65536
+                    },
+                    'brightness-probe' => {
+                        'max' => 1024,
+                        'min' => 0,
+                        'value' => 575
+                    },
+                    'ownr' => '4294968317',
+                    'fade-time2' => {
+                        'value' => 4000,
+                        'max' => 10000,
+                        'min' => 0
+                    },
+                    'usable-linear-brightness' => {
+                        'max' => 1385,
+                        'min' => 23,
+                        'value' => 315
+                    },
+                    'fade-time3' => {
+                        'min' => 0,
+                        'max' => 10000,
+                        'value' => 500
+                    },
+                    'linear-brightness-probe' => {
+                        'value' => 315,
+                        'min' => 0,
+                        'max' => 1385
+                    },
+                    'linear-brightness' => {
+                        'min' => 0,
+                        'max' => 1385,
+                        'value' => 315
+                    },
+                    'fade-time1' => {
+                        'max' => 10000,
+                        'min' => 0,
+                        'value' => 500
+                    },
+                    'dsyp' => {
+                        'value' => 2,
+                        'max' => 2,
+                        'min' => 0
+                    },
+                    'bgsc' => {
+                        'max' => 65536,
+                        'min' => 0,
+                        'value' => 65536
+                    },
+                    'brightness-fade' => {
+                        'min' => 0,
+                        'max' => 1023,
+                        'value' => 0
+                    },
+                    'commit' => {
+                        'reg' => 0
+                    }
+                }
+            }
+        ],
+    },
+    {
+        file    => 'AppleDisplay',
+        class   => 'AppleDisplay',
+        results => [
+            {
+                'IODisplayPrefsKey' => 'IOService:/AppleACPIPlatformExpert/PCI0@0/AppleACPIPCI/IGPU@2/AppleIntelFramebuffer@2/display0/AppleDisplay-10ac-4023',
+                'DisplaySerialNumber' => 843535699,
+                'DisplayVendorID' => 4268,
+                'IODisplayConnectFlags' => '00000000',
+                'IODisplayEDID' => '00ffffffffffff0010ac2340535547321f1201036a221b78ee8d45a5564b9b26135054a54b008180714f010101010101010101010101302a009851002a4030701300520e1100001e000000ff004338393148383752324755530a000000fc0044454c4c203137303846500a20000000fd00384c1e510e000a202020202020009b',
+                'IOMatchCategory' => 'IODefaultMatchCategory',
+                'DisplayProductID' => 16419,
+                'IOPowerManagement' => {
+                    'MaxPowerState' => 3,
+                    'CapabilityFlags' => 49152,
+                    'CurrentPowerState' => 3
+                },
+                'IODisplayParameters' => {
+                    'cyuv' => {
+                        'min' => 0,
+                        'max' => 268435456,
+                        'value' => 268435456
+                    },
+                    'vblm' => {
+                        'max' => 196608,
+                        'value' => 65536,
+                        'min' => 0
+                    },
+                    'rgsc' => {
+                        'max' => 65536,
+                        'value' => 65536,
+                        'min' => 0
+                    },
+                    'cmod' => {
+                        'max' => 4096,
+                        'value' => 1,
+                        'min' => 0
+                    },
+                    'ggsc' => {
+                        'max' => 65536,
+                        'value' => 65536,
+                        'min' => 0
+                    },
+                    'colr' => {
+                        'min' => 0,
+                        'value' => 257,
+                        'max' => '18446744073709551615'
+                    },
+                    'bgsc' => {
+                        'min' => 0,
+                        'max' => 65536,
+                        'value' => 65536
+                    },
+                    'ownr' => '4294968319'
+                },
+                'IOProbeScore' => 2000,
+                'CFBundleIdentifier' => 'com.apple.iokit.IOGraphicsFamily',
+                'IOClass' => 'AppleDisplay',
+                'IODisplayAttributes' => {
+                    'IODisplayAttributes' => '<676174760000000073676c6600000000726c6f630100000063706220000000006364670080808000676c666400000000>'
+                },
+                'CFBundleIdentifierKernel' => 'com.apple.iokit.IOGraphicsFamily',
+                'IOProviderClass' => 'IODisplayConnect'
+            }
+        ],
+    },
+    {
         file    => 'AppleCLCD2',
         class   => 'AppleCLCD2',
         results => [
@@ -5974,15 +6181,21 @@ foreach my $test (keys %system_profiler_tests) {
     cmp_deeply($infos, $system_profiler_tests{$test}, "$test system profiler parsing");
 }
 
-foreach my $test (@ioreg_tests) {
-    my $file = "resources/macos/ioreg/$test->{file}";
-    my @devices = getIODevices(file => $file, class => $test->{class});
-    cmp_deeply(\@devices, $test->{results}, "$test->{file} ioreg parsing");
-}
-
 foreach my $test (@ioregparsing) {
     my $parsed = GLPI::Agent::Tools::MacOS::_parseIORegAttributes($test->{value});
     cmp_deeply($parsed, $test->{expect}, "$test->{name} ioreg parsing");
+}
+
+foreach my $test (@ioreg_tests) {
+    my $file = "resources/macos/ioreg/$test->{file}";
+    my @devices = getIODevices(file => $file, class => $test->{class});
+    # Dump found result when still not integrated in test file
+    unless ($test->{results} && @{$test->{results}}) {
+        my $dumper = Data::Dumper->new(\@devices)->Useperl(1)->Indent(1)->Pad("            ");
+        $dumper->{xpad} = "    ";
+        print STDERR "CURRENT RESULTS: ", $dumper->Dump();
+    }
+    cmp_deeply(\@devices, $test->{results}, "$test->{file} ioreg parsing");
 }
 
 foreach my $test (keys(%xmlparsing)) {

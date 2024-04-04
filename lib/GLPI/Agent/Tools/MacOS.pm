@@ -316,48 +316,37 @@ sub getIODevices {
 
 my $remain;
 sub _parseIORegAttributes {
-    my ($string, $ref, $reflist) = @_;
+    my ($string, $ref) = @_;
 
-    # Initialization when starting to parse a string
-    unless ($ref) {
-        $reflist = [];
-        undef $remain;
-    }
+    $remain = $string;
 
-    if ($string =~ /^{(.*)$/) {
-        my $newref = {};
-        push @{$reflist}, $ref if $ref;
-        _parseIORegAttributes($1, $newref, $reflist);
-        return $newref;
-    } elsif ($string =~ /^\((.*)$/) {
-        my $newref = [];
-        push @{$reflist}, $ref if $ref;
-        _parseIORegAttributes($1, $newref, $reflist);
-        return $newref;
-    }
-
-    if ($string =~ /^"([^"]+)"=(.*)$/) {
-        my $key = $1;
-        $ref->{$key} = _parseIORegAttributes($2, $ref, $reflist);
-    } elsif ($string =~ /^"([^"]+)"(.*)$/ || $string =~ /^([^,}\)]+)([,}\)].*)$/) {
-        $remain = $2;
-        if (ref($ref) eq 'ARRAY') {
-            push @{$ref}, $1;
-        } else {
-            return $1;
-        }
-    }
-
-    if (defined($remain) && length($remain)) {
-        if ($remain =~ /^([,}\)])(.*)$/) {
-            $remain = $2;
-            if ($1 eq '}' || $1 eq ')') {
-                my $parent = pop @{$reflist};
-                push @{$parent}, $ref if ref($parent) eq 'ARRAY';
-                $ref = $parent if $parent;
+    while (defined($remain) && length($remain)) {
+        if ($remain =~ /^{(.*)$/) {
+            if (ref($ref) eq 'ARRAY') {
+                push @{$ref}, _parseIORegAttributes($1, {});
+            } else {
+                return _parseIORegAttributes($1, {});
             }
+        } elsif ($remain =~ /^\((.*)$/) {
+            if (ref($ref) eq 'ARRAY') {
+                push @{$ref}, _parseIORegAttributes($1, []);
+            } else {
+                return _parseIORegAttributes($1, []);
+            }
+        } elsif ($remain =~ /^"([^"]+)"=(.*)$/) {
+            my $key = $1;
+            $ref->{$key} = _parseIORegAttributes($2, $ref);
+        } elsif ($remain =~ /^"([^"]+)"(.*)$/ || $remain =~ /^([^,}\)]+)([,}\)].*|)$/) {
+            $remain = $2;
+            if (ref($ref) eq 'ARRAY') {
+                push @{$ref}, $1;
+            } else {
+                return $1;
+            }
+        } elsif ($remain =~ /^([,}\)])(.*)$/) {
+            $remain = $2;
+            last if $1 eq '}' || $1 eq ')';
         }
-        _parseIORegAttributes($remain, $ref, $reflist) if length($remain);
     }
 
     return $ref;
