@@ -24,6 +24,7 @@ inventory:
 * fix #609: Fix rustdesk remote management version analysis
 * fix #630: Enhanced support for linux on Raspberry Pi 3
 * Fix ioreg command output parsing on MacOSX to avoid Deep Recursion perl warning
+* Fix software publisher analysis in software inventory on MacOSX
 
 remoteinventory:
 * Limit the number of attempts and reported errors when libssh2 fails but ssh command

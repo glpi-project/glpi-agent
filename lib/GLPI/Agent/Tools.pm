@@ -231,6 +231,7 @@ sub getCanonicalManufacturer {
         broadcom   |
         compaq     |
         dell       |
+        epson      |
         fujitsu    |
         hitachi    |
         ibm        |
