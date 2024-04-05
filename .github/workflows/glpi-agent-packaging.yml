@@ -313,7 +313,7 @@ jobs:
         name: MSI-Build-Debug-${{ matrix.arch }}
         path: C:\Strawberry-perl-for-GLPI-Agent_build\build\msi
     - name: VirusTotal Scan
-      uses: crazy-max/ghaction-virustotal@v3
+      uses: crazy-max/ghaction-virustotal@v4
       if: ${{ needs.setup-release.outputs.create-release == 'yes' || startsWith(needs.setup-release.outputs.tag_name, 'nightly') }}
       with:
         vt_api_key: ${{ secrets.VT_API_KEY }}
@@ -336,7 +336,7 @@ jobs:
     - name: Upload Portable Archive Asset
       id: upload-portable-archive-asset
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
-      uses: fiddlermikey/upload-release-assets@d33b61be358467363a2fd6532baabd54722875ed
+      uses: shogo82148/actions-upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -347,7 +347,7 @@ jobs:
     - name: Upload MSI Installer Asset
       id: upload-msi-asset
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
-      uses: fiddlermikey/upload-release-assets@d33b61be358467363a2fd6532baabd54722875ed
+      uses: shogo82148/actions-upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -387,14 +387,14 @@ jobs:
         key: macosx-packaging-restore-points-${{ matrix.os }}-${{ matrix.arch }}-${{ hashFiles('contrib/macosx/glpi-agent-packaging.sh') }}
     - name: Import Application Signing Cert
       id: application-signing-cert
-      uses: apple-actions/import-codesign-certs@v2
+      uses: slidoapp/import-codesign-certs@5565bb656f60c98c8fc515f3444dd8db73545dc2
       if: ${{ needs.setup-release.outputs.macosx-signing == 'yes' && vars.MACOSX_SIGNING != 'no' }}
       with:
         p12-file-base64: ${{ secrets.MACOSX_APPLICATION_P12 }}
         p12-password: ${{ secrets.MACOSX_P12_PASSWORD }}
     - name: Import Installer Signing Cert
       id: installer-signing-cert
-      uses: apple-actions/import-codesign-certs@v2
+      uses: slidoapp/import-codesign-certs@5565bb656f60c98c8fc515f3444dd8db73545dc2
       if: ${{ needs.setup-release.outputs.macosx-signing == 'yes' && vars.MACOSX_SIGNING != 'no' }}
       with:
         p12-file-base64: ${{ secrets.MACOSX_INSTALLER_P12 }}
@@ -459,7 +459,7 @@ jobs:
     - name: Upload MacOSX PKG installer
       id: upload-macosx-pkg-asset
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
-      uses: fiddlermikey/upload-release-assets@d33b61be358467363a2fd6532baabd54722875ed
+      uses: shogo82148/actions-upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -470,7 +470,7 @@ jobs:
     - name: Upload MacOSX DMG installer image
       id: upload-macosx-dmg-asset
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
-      uses: fiddlermikey/upload-release-assets@d33b61be358467363a2fd6532baabd54722875ed
+      uses: shogo82148/actions-upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -500,7 +500,7 @@ jobs:
     - name: Upload Snap Package
       id: upload-linux-snap-asset
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
-      uses: fiddlermikey/upload-release-assets@d33b61be358467363a2fd6532baabd54722875ed
+      uses: shogo82148/actions-upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
