@@ -44,7 +44,7 @@ extern "C" UINT WINAPI CheckElevatedCustomAction(MSIHANDLE hInstall)
     hr = initialize(hInstall, "CheckElevatedCustomACtion");
     if (FAILED(hr))
     {
-        return ERROR_INSTALL_FAILURE;
+        return finalize(ERROR_INSTALL_FAILURE);
     }
 
     hr = CheckIfCurrentProcIsElevated(&bElevated);
