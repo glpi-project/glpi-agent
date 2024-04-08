@@ -387,14 +387,14 @@ jobs:
         key: macosx-packaging-restore-points-${{ matrix.os }}-${{ matrix.arch }}-${{ hashFiles('contrib/macosx/glpi-agent-packaging.sh') }}
     - name: Import Application Signing Cert
       id: application-signing-cert
-      uses: slidoapp/import-codesign-certs@5565bb656f60c98c8fc515f3444dd8db73545dc2
+      uses: slidoapp/import-codesign-certs@1923310662e8682dd05b76b612b53301f431cd5d
       if: ${{ needs.setup-release.outputs.macosx-signing == 'yes' && vars.MACOSX_SIGNING != 'no' }}
       with:
         p12-file-base64: ${{ secrets.MACOSX_APPLICATION_P12 }}
         p12-password: ${{ secrets.MACOSX_P12_PASSWORD }}
     - name: Import Installer Signing Cert
       id: installer-signing-cert
-      uses: slidoapp/import-codesign-certs@5565bb656f60c98c8fc515f3444dd8db73545dc2
+      uses: slidoapp/import-codesign-certs@1923310662e8682dd05b76b612b53301f431cd5d
       if: ${{ needs.setup-release.outputs.macosx-signing == 'yes' && vars.MACOSX_SIGNING != 'no' }}
       with:
         p12-file-base64: ${{ secrets.MACOSX_INSTALLER_P12 }}
