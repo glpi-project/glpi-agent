@@ -507,17 +507,31 @@ sub _tree2xml {
             # see: http://stackoverflow.com/questions/10358989/wix-using-keypath-on-components-directories-files-registry-etc-etc
             $result .= $ident ."  ". qq[<Component Id="$component_id" Guid="{$component_guid}" Feature="$this_feat">\n];
             $result .= $ident ."  ". qq[  <File Id="$file_id" Name="$file_basename" ShortName="$file_shortname" Source="$f->{full_name}" KeyPath="yes"$vital />\n];
-            # Add service, registry and firewall definitions on feat_AGENT
+            # Only add service setup on feat_AGENT
             if ($this_feat eq "feat_AGENT") {
                 my $servicename = $self->global->{service_name};
-                my $installversion = $self->global->{agent_version};
-                my $regpath = "Software\\".$self->global->{_provider}."-Agent";
                 $result .= $ident ."  ". qq[  <ServiceInstall Name="$servicename" Start="auto"\n];
                 $result .= $ident ."  ". qq[                  ErrorControl="normal" DisplayName="!(loc.ServiceDisplayName)" Description="!(loc.ServiceDescription)" Interactive="no"\n];
                 $result .= $ident ."  ". qq[                  Type="ownProcess" Arguments='-I"[INSTALLDIR]perl\\agent" -I"[INSTALLDIR]perl\\site\\lib" -I"[INSTALLDIR]perl\\vendor\\lib" -I"[INSTALLDIR]perl\\lib" "[INSTALLDIR]perl\\bin\\glpi-win32-service"'>\n];
                 $result .= $ident ."  ". qq[    <util:ServiceConfig FirstFailureActionType="restart" SecondFailureActionType="restart" ThirdFailureActionType="restart" RestartServiceDelayInSeconds="60" />\n];
                 $result .= $ident ."  ". qq[  </ServiceInstall>\n];
                 $result .= $ident ."  ". qq[  <ServiceControl Id="SetupService" Name="$servicename" Start="install" Stop="both" Remove="both" Wait="yes" />\n];
+            } elsif ($file_id eq "f_agentmonitor_exe") {
+                my $regpath = "Software\\Microsoft\\Windows\\CurrentVersion\\Run";
+                # Install GLPI-AgentMonitor only when required
+                $result .= $ident ."  ". qq[  <Condition>AGENTMONITOR=1 AND EXECMODE=1</Condition>\n];
+                # Add registry entry dedicated to GLPI-AgentMonitor autorun
+                $result .= $ident ."  ". qq[  <RegistryValue Root="HKLM" Key="$regpath" Name="GLPI-AgentMonitor" Type="string" Value="[#f_agentmonitor_exe]" />\n];
+                # Add Start menu shortcut for GLPI-AgentMonitor
+                $result .= $ident ."  ". qq[  <Shortcut Id="AgentMonitorStartMenu" Advertise="yes" Directory="ProgramMenuFolder" Name="GLPI Agent Monitor" WorkingDirectory="d_perl_bin" Icon="agentmonitor.ico" />\n];
+            }
+            # Add dedicated component for registry just after feat_AGENT
+            if ($this_feat eq "feat_AGENT") {
+                my $installversion = $self->global->{agent_version};
+                my $regpath = "Software\\".$self->global->{_provider}."-Agent";
+                ($component_id, $component_guid) = $self->_gen_component_id("registry");
+                $result .= $ident ."  ". qq[</Component>\n];
+                $result .= $ident ."  ". qq[<Component Id="$component_id" Guid="{$component_guid}" Feature="$this_feat">\n];
                 $result .= $ident ."  ". qq[  <RegistryKey Root="HKLM" Key="$regpath">\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="additional-content" Type="string" Value="[ADDITIONAL_CONTENT]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="debug" Type="string" Value="[DEBUG]" />\n];
@@ -572,14 +586,6 @@ sub _tree2xml {
                 # Add registry entry dedicated to deployment vbs check
                 $result .= $ident ."  ". qq[    <RegistryValue Name="Version" Type="string" Value="$installversion" />\n];
                 $result .= $ident ."  ". qq[  </RegistryKey>\n];
-            } elsif ($file_id eq "f_agentmonitor_exe") {
-                my $regpath = "Software\\Microsoft\\Windows\\CurrentVersion\\Run";
-                # Install GLPI-AgentMonitor only when required
-                $result .= $ident ."  ". qq[  <Condition>AGENTMONITOR=1 AND EXECMODE=1</Condition>\n];
-                # Add registry entry dedicated to GLPI-AgentMonitor autorun
-                $result .= $ident ."  ". qq[  <RegistryValue Root="HKLM" Key="$regpath" Name="GLPI-AgentMonitor" Type="string" Value="[#f_agentmonitor_exe]" />\n];
-                # Add Start menu shortcut for GLPI-AgentMonitor
-                $result .= $ident ."  ". qq[  <Shortcut Id="AgentMonitorStartMenu" Advertise="yes" Directory="ProgramMenuFolder" Name="GLPI Agent Monitor" WorkingDirectory="d_perl_bin" Icon="agentmonitor.ico" />\n];
             }
             $result .= $ident ."  ". qq[</Component>\n];
         }
