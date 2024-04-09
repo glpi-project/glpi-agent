@@ -9,6 +9,7 @@ use Test::Deep qw(cmp_deeply);
 use Test::More;
 use Test::MockModule;
 use UNIVERSAL::require;
+use Data::Dumper;
 
 use GLPI::Agent::Config;
 use GLPI::Agent::Logger;
@@ -841,10 +842,59 @@ my %macos_tests = (
                 CAPTION         => 'DELL P2421DC'
             }
         ],
+        invtest => [
+            {
+                ALTSERIAL       => '825642060',
+                CAPTION         => 'DELL P2421DC',
+                DESCRIPTION     => '36/2021',
+                MANUFACTURER    => 'Dell Inc.',
+                SERIAL          => '4S0QR63'
+            }
+        ],
+    },
+    'AppleCLCD2-2' => {
+        class => {
+            AppleCLCD2 => "AppleCLCD2-2",
+        },
+        expect => [
+            {
+                MANUFACTURER    => '00-10-fa'
+            },
+            {
+                ALTSERIAL       => '809649484',
+                CAPTION         => 'DELL P2421DC',
+                DESCRIPTION     => '43/2021',
+                MANUFACTURER    => 'Dell Inc.',
+                SERIAL          => '9D5RR63'
+            },
+            {
+                ALTSERIAL       => '809976140',
+                CAPTION         => 'DELL P2421DC',
+                DESCRIPTION     => '43/2021',
+                MANUFACTURER    => 'Dell Inc.',
+                SERIAL          => '5LWQR63'
+            }
+        ],
+        invtest => [
+            {
+                ALTSERIAL       => '809976140',
+                CAPTION         => 'DELL P2421DC',
+                DESCRIPTION     => '43/2021',
+                MANUFACTURER    => 'Dell Inc.',
+                SERIAL          => '5LWQR63'
+            },
+            {
+                ALTSERIAL       => '809649484',
+                CAPTION         => 'DELL P2421DC',
+                DESCRIPTION     => '43/2021',
+                MANUFACTURER    => 'Dell Inc.',
+                SERIAL          => '9D5RR63'
+            }
+        ],
     },
 );
 
-plan tests => (scalar keys %edid_tests) + (scalar keys %macos_tests) + 1;
+plan tests => (scalar keys %edid_tests) + (2 * scalar keys %macos_tests) + 1;
 
 foreach my $test (sort keys %edid_tests) {
     my $file = "resources/generic/edid/$test";
@@ -880,5 +930,20 @@ foreach my $test (sort keys %macos_tests) {
     );
 
     my @screen = GLPI::Agent::Task::Inventory::Generic::Screen::_getScreensFromMacOS(logger => $logger);
+    # Dump found expect when still not integrated in test file
+    unless ($macos_tests{$test}->{expect} && @{$macos_tests{$test}->{expect}}) {
+        my $dumper = Data::Dumper->new([\@screen], ["\$macos_tests{$test}->{expect}"])->Useperl(1)->Indent(1)->Quotekeys(0)->Sortkeys(1)->Pad("        ");
+        $dumper->{xpad} = "    ";
+        print STDERR "====\nExpected parsing:", $dumper->Dump();
+    }
     cmp_deeply(\@screen, $macos_tests{$test}->{expect}, "MacOS: $test");
+
+    my @screeninv = GLPI::Agent::Task::Inventory::Generic::Screen::_getScreens(logger => $logger, screens => \@screen);
+    # Dump found invtest when still not integrated in test file
+    unless ($macos_tests{$test}->{invtest} && @{$macos_tests{$test}->{invtest}}) {
+        my $dumper = Data::Dumper->new([\@screeninv], ["\$macos_tests{$test}->{invtest}"])->Useperl(1)->Indent(1)->Quotekeys(0)->Sortkeys(1)->Pad("        ");
+        $dumper->{xpad} = "    ";
+        print STDERR "====\nExpected inventory: ", $dumper->Dump();
+    }
+    cmp_deeply(\@screeninv, $macos_tests{$test}->{invtest}, "MacOS: $test invtest");
 }

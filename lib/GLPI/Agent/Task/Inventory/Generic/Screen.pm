@@ -330,33 +330,36 @@ sub _getScreens {
 
     my %screens = ();
 
-    my @screens =
-        OSNAME eq 'MSWin32' ?  _getScreensFromWindows(%params) :
-        OSNAME eq 'darwin' ?   _getScreensFromMacOS(%params) :
+    # $params{screens} can only be set during tests
+    my @screens = $params{screens} ? @{$params{screens}} :
+        OSNAME eq 'MSWin32' ?   _getScreensFromWindows(%params) :
+        OSNAME eq 'darwin' ?    _getScreensFromMacOS(%params) :
                                 _getScreensFromUnix(%params);
 
     foreach my $screen (@screens) {
-        next unless $screen->{edid};
+        next unless $screen->{edid} || ($screen->{SERIAL} && $screen->{CAPTION});
 
-        my $info = _getEdidInfo(
-            edid    => $screen->{edid},
-            logger  => $params{logger},
-            datadir => $params{datadir},
-        );
-        if ($info) {
-            $screen->{CAPTION}      = $info->{CAPTION};
-            $screen->{DESCRIPTION}  = $info->{DESCRIPTION};
-            $screen->{MANUFACTURER} = $info->{MANUFACTURER};
-            $screen->{SERIAL}       = $info->{SERIAL};
-            $screen->{ALTSERIAL}    = $info->{ALTSERIAL} if $info->{ALTSERIAL};
+        if ($screen->{edid}) {
+            my $info = _getEdidInfo(
+                edid    => $screen->{edid},
+                logger  => $params{logger},
+                datadir => $params{datadir},
+            );
+            if ($info) {
+                $screen->{CAPTION}      = $info->{CAPTION};
+                $screen->{DESCRIPTION}  = $info->{DESCRIPTION};
+                $screen->{MANUFACTURER} = $info->{MANUFACTURER};
+                $screen->{SERIAL}       = $info->{SERIAL};
+                $screen->{ALTSERIAL}    = $info->{ALTSERIAL} if $info->{ALTSERIAL};
+            }
+
+            $screen->{BASE64} = encode_base64($screen->{edid});
+
+            delete $screen->{edid};
         }
 
-        $screen->{BASE64} = encode_base64($screen->{edid});
-
-        delete $screen->{edid};
-
         # Add or merge found values
-        my $serial = $info->{SERIAL} || $screen->{BASE64};
+        my $serial = $screen->{SERIAL} || $screen->{BASE64};
         if (!exists($screens{$serial})) {
             $screens{$serial} = $screen ;
         } else {

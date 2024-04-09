@@ -3065,9 +3065,8 @@ my %system_profiler_tests = (
 
 );
 
-my @ioreg_tests = (
-    {
-        file    => 'IOUSBDevice1',
+my %ioreg_tests = (
+    'IOUSBDevice1' => {
         class   => 'IOUSBDevice',
         results => [
             {
@@ -3213,8 +3212,7 @@ my @ioreg_tests = (
             }
         ],
     },
-    {
-        file    => 'IOUSBDevice2',
+    'IOUSBDevice2' => {
         class   => 'IOUSBDevice',
         results => [
             {
@@ -3388,8 +3386,7 @@ my @ioreg_tests = (
             }
         ]
     },
-    {
-        file    => 'IOPlatformExpertDevice',
+    'IOPlatformExpertDevice' => {
         class   => 'IOPlatformExpertDevice',
         results => [
             {
@@ -3411,8 +3408,7 @@ my @ioreg_tests = (
             }
         ],
     },
-    {
-        file    => 'IOPlatformExpertDevice-2',
+    'IOPlatformExpertDevice-2' => {
         class   => 'IOPlatformExpertDevice',
         results => [
             {
@@ -3436,8 +3432,7 @@ my @ioreg_tests = (
             }
         ],
     },
-    {
-        file    => 'AppleBacklightDisplay',
+    'AppleBacklightDisplay' => {
         class   => 'AppleBacklightDisplay',
         results => [
             {
@@ -3551,8 +3546,7 @@ my @ioreg_tests = (
             }
         ],
     },
-    {
-        file    => 'AppleDisplay',
+    'AppleDisplay' => {
         class   => 'AppleDisplay',
         results => [
             {
@@ -3617,8 +3611,7 @@ my @ioreg_tests = (
             }
         ],
     },
-    {
-        file    => 'AppleCLCD2',
+    'AppleCLCD2' => {
         class   => 'AppleCLCD2',
         results => [
             {
@@ -3913,6 +3906,487 @@ my @ioreg_tests = (
                 'ProxScanPosition'              => '0',
                 'IOMFBBrightnessLevel'          => '65536',
                 'DisplayWidth'                  => '2560'
+            }
+        ],
+    },
+    'AppleCLCD2-2' => {
+        class   => 'AppleCLCD2',
+        results => [
+            {
+                'M3TimingParameters' => {
+                    'initial-vbi-advance-lines' => 2,
+                    'display-lead-time-nclks' => 25126,
+                    'subframe-duration-nclks' => 100000,
+                    'subframe-interrupt-time-lines' => 845,
+                    'initial-subframe-irq-time-lines' => 845,
+                    'vbi-advance-lines' => 2
+                },
+                'AODFixedRR' => 0,
+                'IOMFB_KTRACE_API_VERSION' => '3.0',
+                'IOMFBContrastEnhancerStrength' => 2642,
+                'overdriveCompCutoff' => 334233600,
+                'DisplayWidth' => 3024,
+                'IOMatchCategory' => 'IODefaultMatchCategory',
+                'ALSSSumsPrecision' => 36,
+                'W40a_Blending_OK' => 1,
+                'PixelCaptureConfig' => 0,
+                'IdleCachingMethod' => 2,
+                'IOMFBBrightnessLevelIDAC' => '18446744073709551615',
+                'maxAverageBpp' => 0,
+                'Brightness_Scale' => 66152,
+                'forcePixelBacklightModulation' => 2,
+                'ALSSChannelCount' => 4,
+                'CECorrectionFactor' => 65536,
+                'AOTEnableOffTimestamp' => '6849637772108',
+                'ean-mode-caching' => 1,
+                'IOMFBScalingLimits' => {
+                    'RGBLayer_MaxScale' => 4,
+                    'YUVLayer_MinScaleFraction' => 2,
+                    'YUVLayer_MaxScale' => 4,
+                    'RGBLayer_MinScaleFraction' => 2
+                },
+                'Panel_ID' => 'FMX20510FMBPP5CA5+DE1S1C45273109+PROD+B149215111522+AG20472920472B20471A204710+K42810991Y71611115+6550N2137KF08C00TIYWLG9AD1192441B+SJHGJHFJYFSJHGJHFJYFSJHGJHFJYFSJHGJHFJ',
+                'APTFixedRR' => 0,
+                'ProxScanPosition' => 0,
+                'maxPeakBpp' => 0,
+                'IdleState' => 2,
+                'color-accuracy-index' => 0,
+                'IOMFBMaxSrcPixels' => {
+                    'MaxSrcBufferWidth' => 16384,
+                    'MaxSrcRectWidth' => 7680,
+                    'MaxVideoSrcDownscalingWidth' => 7680,
+                    'MaxSrcRectTotal' => 33177600,
+                    'IOMFBMaxCompressedSizeInBytes' => 0,
+                    'VideoClock' => 402280000,
+                    'MaxSrcBufferHeight' => 16384,
+                    'PixelClock' => 0
+                },
+                'DebugUInt32' => 0,
+                'ALSSWindowCount' => 64,
+                'IOPersonalityPublisher' => 'com.apple.driver.AppleMobileDispT600X-DCP',
+                'PixelClock' => 0,
+                'IOMFB Debug Info' => {},
+                'IOProviderClass' => 'AppleARMIODevice',
+                'BacklightMatching' => {
+                    'IOPropertyMatch' => {
+                        'backlight-control' => 'Yes'
+                    }
+                },
+                'ean-mode-update-thesh' => 172800,
+                'PCC2DLedAccelLog' => 0,
+                'DisplayHeight' => 1964,
+                'limit_max_physical_brightness' => 104857600,
+                'BLMAHUPCount' => 0,
+                'MaxVideoSrcDownscalingWidth' => 7680,
+                'IOGeneralInterest' => 'IOCommand is not serializable',
+                'IOProbeScore' => 0,
+                'DPTimingModeId' => 2,
+                'CFBundleIdentifier' => 'com.apple.driver.AppleMobileDispT600X-DCP',
+                'CMDegammaMethod' => 0,
+                'displayOnContinuousTimestamp' => '6849645056215',
+                'clockRatio' => 0,
+                'IOMFBBrightnessLevelMA' => '18446744073709551615',
+                'APTPDCEnablePM' => 1,
+                'BlendOutputCSCMethod' => 0,
+                'brightnessCorrection' => 65536,
+                'IOMFBStatsTapPoint' => 1,
+                'DisableBConBoot' => 0,
+                'IOMFBBrightnessLevel' => 13448095,
+                'APTEventsMask' => 0,
+                'BLMPLimitCfg' => 1,
+                'IONameMatched' => 'disp0,t600x',
+                'InitialPanelTemperature' => 1914306,
+                'brightnessCorrectionB' => 65536,
+                'PDCSettleCount' => 1,
+                'DisplayPipeStrideRequirements' => {
+                    'StrideLinearVertical' => 1,
+                    'StrideLinearHorizontal' => 64
+                },
+                'IOClass' => 'AppleCLCD2',
+                'PDCDataVersion' => 16,
+                'DisplayPipePlaneBaseAlignment' => {
+                    'DefaultStride' => 0,
+                    'PlaneBaseAlignmentLinear' => 64,
+                    'LinearX_Alignment' => 64,
+                    'LinearY_Alignment' => 1
+                },
+                'BLNitsCap' => 26342152,
+                'FFR_table_index' => 0,
+                'CFBundleIdentifierKernel' => 'com.apple.driver.AppleMobileDispT600X-DCP',
+                'ModeBlm' => 0,
+                'BLMVLEDManual' => 220,
+                'ALSSRGBCoeffsPrecision' => 8,
+                'DisableDisplayOptimize' => 0,
+                'bics_mode' => 0,
+                'PCC2DLedAccelOut' => 0,
+                'DisplayAttributes' => {
+                    'ProductAttributes' => {
+                        'ManufacturerID' => '00-10-fa',
+                        'ProductID' => '62892014646337',
+                        'LegacyManufacturerID' => 1552
+                    }
+                },
+                'IOMFBBICSType' => 2,
+                'AODWaitForWalkdown' => 1,
+                'QMSVRREnableConfig' => 0,
+                'ProxScanPlan' => '18446744073709551615',
+                'QoSDebug' => 1,
+                'IOPowerManagement' => {
+                    'MaxPowerState' => 1,
+                    'CapabilityFlags' => 32768,
+                    'CurrentPowerState' => 1
+                },
+                'IOMFBTestBacklightDimValue' => 8405,
+                'APTDefaultGrayValue' => 255,
+                'M3DiagsTimeout' => 0,
+                'AmbientBrightness' => 66813520,
+                'displayOnTimestamp' => '1502447433212',
+                'BLMAHMode' => 2,
+                'IOMFBDisplayRefresh' => {
+                    'displayMaxRefreshIntervalMachTime' => 1000000,
+                    'displayRefreshStepMachTime' => 100000,
+                    'displayMinRefreshInterval' => 35785667,
+                    'displayMinRefreshIntervalMachTime' => 200000,
+                    'displayRefreshStep' => 4166000,
+                    'displayMaxRefreshInterval' => 178928337
+                },
+                'VideoClock' => 0,
+                'PDCGlobalTemp' => 0,
+                'BLMAHOutputFreq' => 0
+            },
+            {
+                'APTEventsMask' => 0,
+                'PixelCaptureConfig' => 0,
+                'IOMFBBrightnessLevelIDAC' => '18446744073709551615',
+                'IONameMatched' => 'dispext0,t600x',
+                'IdleCachingMethod' => 2,
+                'brightnessCorrectionB' => 65536,
+                'PDCSettleCount' => 1,
+                'maxAverageBpp' => 0,
+                'AOTEnableOffTimestamp' => '6849637766588',
+                'IOClass' => 'AppleCLCD2',
+                'DisplayPipeStrideRequirements' => {
+                    'StrideLinearHorizontal' => 64,
+                    'StrideLinearVertical' => 1
+                },
+                'Transport' => {
+                    'Upstream' => 'DP',
+                    'Downstream' => 'DP'
+                },
+                'DisplayPipePlaneBaseAlignment' => {
+                    'DefaultStride' => 0,
+                    'PlaneBaseAlignmentLinear' => 64,
+                    'LinearY_Alignment' => 1,
+                    'LinearX_Alignment' => 64
+                },
+                'IOMFBScalingLimits' => {
+                    'YUVLayer_MinScaleFraction' => 2,
+                    'RGBLayer_MaxScale' => 4,
+                    'RGBLayer_MinScaleFraction' => 2,
+                    'YUVLayer_MaxScale' => 4
+                },
+                'CFBundleIdentifierKernel' => 'com.apple.driver.AppleMobileDispT600X-DCP',
+                'FFR_table_index' => 0,
+                'Panel_ID' => 'FMX20510FMBPP5CA5+DE1S1C45273109+PROD+B149215111522+AG20472920472B20471A204710+K42810991Y71611115+6550N2137KF08C00TIYWLG9AD1192441B+SJHGJHFJYFSJHGJHFJYFSJHGJHFJYFSJHGJHFJ',
+                'AODFixedRR' => 0,
+                'IOMFBBrightnessLevelMA' => '18446744073709551615',
+                'M3TimingParameters' => {
+                    'initial-vbi-advance-lines' => 2,
+                    'display-lead-time-nclks' => 27570,
+                    'initial-subframe-irq-time-lines' => 1381,
+                    'subframe-interrupt-time-lines' => 1381,
+                    'subframe-duration-nclks' => 400329,
+                    'vbi-advance-lines' => 2
+                },
+                'clockRatio' => 0,
+                'IOMFB_KTRACE_API_VERSION' => '3.0',
+                'APTPDCEnablePM' => 1,
+                'DisplayWidth' => 2560,
+                'BlendOutputCSCMethod' => 0,
+                'IOMatchCategory' => 'IODefaultMatchCategory',
+                'brightnessCorrection' => 65536,
+                'IOMFBBrightnessLevel' => 65536,
+                'W40a_Blending_OK' => 1,
+                'IOMFBStatsTapPoint' => 1,
+                'BacklightMatching' => {
+                    'IOPropertyMatch' => {
+                        'backlight-control' => 'Yes'
+                    }
+                },
+                'MaxVideoSrcDownscalingWidth' => 7680,
+                'APTDefaultGrayValue' => 255,
+                'DisplayHeight' => 1440,
+                'AmbientBrightness' => 65536,
+                'IOProbeScore' => 0,
+                'DPTimingModeId' => 51,
+                'IOMFBDisplayRefresh' => {
+                    'displayMaxRefreshInterval' => 178956970,
+                    'displayMinRefreshIntervalMachTime' => 399984,
+                    'displayRefreshStep' => 0,
+                    'displayMaxRefreshIntervalMachTime' => 999984,
+                    'displayMinRefreshInterval' => 71582788,
+                    'displayRefreshStepMachTime' => 0
+                },
+                'VideoClock' => 0,
+                'CFBundleIdentifier' => 'com.apple.driver.AppleMobileDispT600X-DCP',
+                'IOMFBUUID' => '10ACF8D0-0000-0000-2B1F-0104A5351E78',
+                'CMDegammaMethod' => 0,
+                'APTFixedRR' => 0,
+                'EDID UUID' => '10ACF8D0-0000-0000-2B1F-0104A5351E78',
+                'maxPeakBpp' => 0,
+                'ProxScanPosition' => 0,
+                'DebugUInt32' => 0,
+                'IdleState' => 5,
+                'color-accuracy-index' => 0,
+                'IOMFBMaxSrcPixels' => {
+                    'MaxSrcBufferHeight' => 16384,
+                    'PixelClock' => 0,
+                    'MaxSrcRectTotal' => 33177600,
+                    'VideoClock' => 0,
+                    'IOMFBMaxCompressedSizeInBytes' => 0,
+                    'MaxVideoSrcDownscalingWidth' => 0,
+                    'MaxSrcRectWidth' => 7680,
+                    'MaxSrcBufferWidth' => 16384
+                },
+                'DisableDisplayOptimize' => 0,
+                'DisplayAttributes' => {
+                    'PortID' => 32,
+                    'DefaultWhitePoint' => {
+                        'X' => 20544,
+                        'Gamma' => 144179,
+                        'Y' => 21568
+                    },
+                    'ProductAttributes' => {
+                        'SerialNumber' => 809649484,
+                        'ProductName' => 'DELL P2421DC',
+                        'WeekOfManufacture' => 43,
+                        'ManufacturerID' => 'DEL',
+                        'ProductID' => 53496,
+                        'YearOfManufacture' => 2021,
+                        'LegacyManufacturerID' => 4268,
+                        'AlphanumericSerialNumber' => '9D5RR63'
+                    },
+                    'MinimumVariableRefreshRate' => 3211264,
+                    'NativeFormatVerticalPixels' => 1440,
+                    'MaxHorizontalImageSize' => 53,
+                    'SupportsVariableRefreshRate' => 'No',
+                    'AspectRatio' => 15,
+                    'DefaultColorSpaceIsSRGB' => 'No',
+                    'ContinuousFrequencySupport' => 'None',
+                    'NativeFormatHorizontalPixels' => 2560,
+                    'SupportsStandby' => 'Yes',
+                    'WhitePoints' => [
+                        {
+                            'X' => 20544,
+                            'Y' => 21568,
+                            'Gamma' => 144179
+                        }
+                    ],
+                    'MaxVerticalImageSize' => 30,
+                    'Chromaticity' => {
+                        'Red' => {
+                            'Y' => 21632,
+                            'X' => 43392
+                        },
+                        'Green' => {
+                            'Y' => 40256,
+                            'X' => 19904
+                        },
+                        'Blue' => {
+                            'Y' => 4032,
+                            'X' => 9792
+                        }
+                    },
+                    'PreciseAspectRatio' => 115780,
+                    'MinimumRefreshRate' => 49,
+                    'MaximumRefreshRate' => 75,
+                    'SupportsSuspend' => 'No',
+                    'HasHDMILegacyEDID' => 'No',
+                    'SupportsActiveOff' => 'No',
+                    'MaximumVariableRefreshRate' => 4915200
+                },
+                'IOMFBBICSType' => 0,
+                'AODWaitForWalkdown' => 1,
+                'bics_mode' => 0,
+                'IOPersonalityPublisher' => 'com.apple.driver.AppleMobileDispT600X-DCP',
+                'ProxScanPlan' => '18446744073709551615',
+                'IOProviderClass' => 'AppleARMIODevice',
+                'PixelClock' => 0,
+                'IOMFB Debug Info' => {},
+                'QMSVRREnableConfig' => 0,
+                'IOPowerManagement' => {
+                    'CurrentPowerState' => 1,
+                    'CapabilityFlags' => 32768,
+                    'MaxPowerState' => 1
+                },
+                'QoSDebug' => 0
+            },
+            {
+                'IOMFBMaxSrcPixels' => {
+                    'VideoClock' => 0,
+                    'IOMFBMaxCompressedSizeInBytes' => 0,
+                    'MaxSrcRectTotal' => 33177600,
+                    'MaxVideoSrcDownscalingWidth' => 0,
+                    'MaxSrcRectWidth' => 7680,
+                    'MaxSrcBufferWidth' => 16384,
+                    'PixelClock' => 0,
+                    'MaxSrcBufferHeight' => 16384
+                },
+                'IdleState' => 5,
+                'color-accuracy-index' => 0,
+                'DebugUInt32' => 0,
+                'DisableDisplayOptimize' => 0,
+                'EDID UUID' => '10ACF8D0-0000-0000-2B1F-0104A5351E78',
+                'APTFixedRR' => 0,
+                'ProxScanPosition' => 0,
+                'maxPeakBpp' => 0,
+                'QMSVRREnableConfig' => 0,
+                'IOMFB Debug Info' => {},
+                'PixelClock' => 0,
+                'IOProviderClass' => 'AppleARMIODevice',
+                'ProxScanPlan' => '18446744073709551615',
+                'IOPowerManagement' => {
+                    'CapabilityFlags' => 32768,
+                    'CurrentPowerState' => 1,
+                    'MaxPowerState' => 1
+                },
+                'QoSDebug' => 0,
+                'bics_mode' => 0,
+                'AODWaitForWalkdown' => 1,
+                'DisplayAttributes' => {
+                    'MaximumVariableRefreshRate' => 4915200,
+                    'SupportsActiveOff' => 'No',
+                    'HasHDMILegacyEDID' => 'No',
+                    'SupportsSuspend' => 'No',
+                    'MaximumRefreshRate' => 75,
+                    'MinimumRefreshRate' => 49,
+                    'PreciseAspectRatio' => 115780,
+                    'MaxVerticalImageSize' => 30,
+                    'Chromaticity' => {
+                        'Green' => {
+                            'X' => 19904,
+                            'Y' => 40256
+                        },
+                        'Blue' => {
+                            'Y' => 4032,
+                            'X' => 9792
+                        },
+                        'Red' => {
+                            'X' => 43392,
+                            'Y' => 21632
+                        }
+                    },
+                    'SupportsStandby' => 'Yes',
+                    'WhitePoints' => [
+                        {
+                            'X' => 20544,
+                            'Gamma' => 144179,
+                            'Y' => 21568
+                        }
+                    ],
+                    'NativeFormatHorizontalPixels' => 2560,
+                    'ContinuousFrequencySupport' => 'None',
+                    'DefaultColorSpaceIsSRGB' => 'No',
+                    'AspectRatio' => 15,
+                    'SupportsVariableRefreshRate' => 'No',
+                    'MaxHorizontalImageSize' => 53,
+                    'NativeFormatVerticalPixels' => 1440,
+                    'ProductAttributes' => {
+                        'SerialNumber' => 809976140,
+                        'WeekOfManufacture' => 43,
+                        'ProductName' => 'DELL P2421DC',
+                        'YearOfManufacture' => 2021,
+                        'ProductID' => 53496,
+                        'ManufacturerID' => 'DEL',
+                        'AlphanumericSerialNumber' => '5LWQR63',
+                        'LegacyManufacturerID' => 4268
+                    },
+                    'MinimumVariableRefreshRate' => 3211264,
+                    'PortID' => 0,
+                    'DefaultWhitePoint' => {
+                        'X' => 20544,
+                        'Gamma' => 144179,
+                        'Y' => 21568
+                    }
+                },
+                'IOMFBBICSType' => 0,
+                'IOPersonalityPublisher' => 'com.apple.driver.AppleMobileDispT600X-DCP',
+                'AmbientBrightness' => 65536,
+                'IOProbeScore' => 0,
+                'BacklightMatching' => {
+                    'IOPropertyMatch' => {
+                        'backlight-control' => 'Yes'
+                    }
+                },
+                'DisplayHeight' => 1440,
+                'APTDefaultGrayValue' => 255,
+                'MaxVideoSrcDownscalingWidth' => 7680,
+                'CMDegammaMethod' => 0,
+                'IOMFBUUID' => '10ACF8D0-0000-0000-2B1F-0104A5351E78',
+                'IOMFBDisplayRefresh' => {
+                    'displayRefreshStep' => 0,
+                    'displayMinRefreshIntervalMachTime' => 399984,
+                    'displayMaxRefreshInterval' => 178956970,
+                    'displayMinRefreshInterval' => 71582788,
+                    'displayRefreshStepMachTime' => 0,
+                    'displayMaxRefreshIntervalMachTime' => 999984
+                },
+                'DPTimingModeId' => 51,
+                'VideoClock' => 0,
+                'CFBundleIdentifier' => 'com.apple.driver.AppleMobileDispT600X-DCP',
+                'APTPDCEnablePM' => 1,
+                'IOMFB_KTRACE_API_VERSION' => '3.0',
+                'BlendOutputCSCMethod' => 0,
+                'DisplayWidth' => 2560,
+                'clockRatio' => 0,
+                'M3TimingParameters' => {
+                    'vbi-advance-lines' => 2,
+                    'subframe-duration-nclks' => 400329,
+                    'subframe-interrupt-time-lines' => 1381,
+                    'initial-subframe-irq-time-lines' => 1381,
+                    'display-lead-time-nclks' => 27570,
+                    'initial-vbi-advance-lines' => 2
+                },
+                'IOMFBBrightnessLevelMA' => '18446744073709551615',
+                'AODFixedRR' => 0,
+                'IOMFBStatsTapPoint' => 1,
+                'W40a_Blending_OK' => 1,
+                'IOMFBBrightnessLevel' => 65536,
+                'IOMatchCategory' => 'IODefaultMatchCategory',
+                'brightnessCorrection' => 65536,
+                'brightnessCorrectionB' => 65536,
+                'maxAverageBpp' => 0,
+                'PDCSettleCount' => 1,
+                'APTEventsMask' => 0,
+                'PixelCaptureConfig' => 0,
+                'IdleCachingMethod' => 2,
+                'IONameMatched' => 'dispext1,t600x',
+                'IOMFBBrightnessLevelIDAC' => '18446744073709551615',
+                'IOMFBScalingLimits' => {
+                    'YUVLayer_MinScaleFraction' => 2,
+                    'RGBLayer_MaxScale' => 4,
+                    'YUVLayer_MaxScale' => 4,
+                    'RGBLayer_MinScaleFraction' => 2
+                },
+                'Panel_ID' => 'FMX20510FMBPP5CA5+DE1S1C45273109+PROD+B149215111522+AG20472920472B20471A204710+K42810991Y71611115+6550N2137KF08C00TIYWLG9AD1192441B+SJHGJHFJYFSJHGJHFJYFSJHGJHFJYFSJHGJHFJ',
+                'CFBundleIdentifierKernel' => 'com.apple.driver.AppleMobileDispT600X-DCP',
+                'FFR_table_index' => 0,
+                'DisplayPipeStrideRequirements' => {
+                    'StrideLinearHorizontal' => 64,
+                    'StrideLinearVertical' => 1
+                },
+                'IOClass' => 'AppleCLCD2',
+                'AOTEnableOffTimestamp' => '6849637766991',
+                'DisplayPipePlaneBaseAlignment' => {
+                    'DefaultStride' => 0,
+                    'PlaneBaseAlignmentLinear' => 64,
+                    'LinearY_Alignment' => 1,
+                    'LinearX_Alignment' => 64
+                },
+                'Transport' => {
+                    'Downstream' => 'DP',
+                    'Upstream' => 'DP'
+                }
             }
         ],
     }
@@ -6168,7 +6642,7 @@ my @ioregparsing = (
 
 plan tests =>
     scalar (keys %system_profiler_tests) +
-    scalar @ioreg_tests
+    scalar (keys %ioreg_tests)
     + 6 * scalar(keys %xmlparsing) + 3 * scalar(grep { $xmlparsing{$_}->{flatfile} } keys(%xmlparsing))
     + scalar (keys %dateconv)
     + scalar (keys %datesStr)
@@ -6186,16 +6660,16 @@ foreach my $test (@ioregparsing) {
     cmp_deeply($parsed, $test->{expect}, "$test->{name} ioreg parsing");
 }
 
-foreach my $test (@ioreg_tests) {
-    my $file = "resources/macos/ioreg/$test->{file}";
-    my @devices = getIODevices(file => $file, class => $test->{class});
+foreach my $test (keys(%ioreg_tests)) {
+    my $file = "resources/macos/ioreg/$test";
+    my @devices = getIODevices(file => $file, class => $ioreg_tests{$test}->{class});
     # Dump found result when still not integrated in test file
-    unless ($test->{results} && @{$test->{results}}) {
-        my $dumper = Data::Dumper->new(\@devices)->Useperl(1)->Indent(1)->Pad("            ");
+    unless ($ioreg_tests{$test}->{results} && @{$ioreg_tests{$test}->{results}}) {
+        my $dumper = Data::Dumper->new([\@devices], ["\$ioreg_tests{$test}->{results}"])->Useperl(1)->Indent(1)->Quotekeys(0)->Sortkeys(1)->Pad("        ");
         $dumper->{xpad} = "    ";
-        print STDERR "CURRENT RESULTS: ", $dumper->Dump();
+        print STDERR "====\nCURRENT RESULTS: ", $dumper->Dump();
     }
-    cmp_deeply(\@devices, $test->{results}, "$test->{file} ioreg parsing");
+    cmp_deeply(\@devices, $ioreg_tests{$test}->{results}, "$test ioreg parsing");
 }
 
 foreach my $test (keys(%xmlparsing)) {

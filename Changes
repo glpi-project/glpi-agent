@@ -25,6 +25,8 @@ inventory:
 * fix #630: Enhanced support for linux on Raspberry Pi 3
 * Fix ioreg command output parsing on MacOSX to avoid Deep Recursion perl warning
 * Fix software publisher analysis in software inventory on MacOSX
+* Enhance #430 fix: Don't make edid mandatory if monitor SERIAL & CAPTION are still
+  found. This fixes monitors inventory on Apple M1.
 
 remoteinventory:
 * Limit the number of attempts and reported errors when libssh2 fails but ssh command
