@@ -518,7 +518,7 @@
       <Custom Action="SetDefaultLogFile"      After="CostFinalize"><![CDATA[NOT LOGFILE]]></Custom>
       <Custom Action="SetDefaultVarDir"       After="CostFinalize"><![CDATA[NOT VARDIR]]></Custom>
 
-      <Custom Action="WixCloseApplications"   Before="InstallValidate"/>
+      <Custom Action="WixCloseApplications"   Before="StopServices"/>
 
       <!-- We need to use higher sequence numbers for AppSearch and LaunchConditions to have enough sequence room to schedule all properties related custom actions -->
       <AppSearch Sequence="200" />
@@ -1113,9 +1113,9 @@
     </Directory>     <!-- TARGETDIR -->
 
 [%- IF bits==32 %]
-    <util:CloseApplication Id="CloseGlpiAgentMonitor" Target="GLPI-AgentMonitor-x86.exe" EndSessionMessage="yes" RebootPrompt="no"></util:CloseApplication>
+    <util:CloseApplication Id="CloseGlpiAgentMonitor" Target="GLPI-AgentMonitor-x86.exe" TerminateProcess="0" RebootPrompt="no"></util:CloseApplication>
 [%- ELSE %]
-    <util:CloseApplication Id="CloseGlpiAgentMonitor" Target="GLPI-AgentMonitor-x64.exe" EndSessionMessage="yes" RebootPrompt="no"></util:CloseApplication>
+    <util:CloseApplication Id="CloseGlpiAgentMonitor" Target="GLPI-AgentMonitor-x64.exe" TerminateProcess="0" RebootPrompt="no"></util:CloseApplication>
 [%- END %]
 
     <Feature Id="feat_MSI"  Title="!(loc.ProductTitle)" Description="!(loc.ProductDescription)" Level="1" Display="expand" Absent="disallow">
