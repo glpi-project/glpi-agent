@@ -51,6 +51,7 @@ netdiscovery/netinventory:
 * Fix RemoteInventory not run during netscan if any any of other test is failing,
   meaning RemoteInventory was functionnal only if at least ping works or the
   targeted computer was in the same network (arp works).
+* Add support for Socomec PDU
 
 deploy:
 * Force agent to run a partial software inventory after the deploy task is done
