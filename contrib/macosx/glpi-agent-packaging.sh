@@ -413,6 +413,9 @@ sed -i .4.bak -Ee "s/^logger *=.*/logger = File/" $AGENT_CFG
 sed -i .5.bak -Ee "s/^#?logfile *=.*/logfile = \/var\/log\/glpi-agent.log/" $AGENT_CFG
 sed -i .6.bak -Ee "s/^#?logfile-maxsize *=.*/logfile-maxsize = 10/" $AGENT_CFG
 sed -i .7.bak -Ee "s/^#?include \"conf\.d\/\"/include \"conf.d\"/" $AGENT_CFG
+# By default, only enable inventory task on MacOSX
+sed -i .8.bak -Ee "/^#tasks = inventory/ a\\
+tasks = inventory" $AGENT_CFG
 rm -f $AGENT_CFG*.bak
 
 echo "Create build-info.plist..."

@@ -87,6 +87,8 @@ packaging:
 * Fix the way Glpi-AgentMonitor is stopped during upgrade to prevent service
   installation issues
 * Remove Deploy & Collect tasks from Typical installation on windows
+* On MacOSX, by default, only enable inventory task on MacOSX. You'll have now to
+  explicitely enable required tasks in an "etc/conf.d" ".cfg" file.
 
 1.7.3 Wed, 03 Apr 2024
 
