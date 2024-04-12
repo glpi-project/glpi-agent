@@ -1122,8 +1122,8 @@
       <!-- feat_AGENT permits to use "Change" requests to entirely (re-)configure the agent -->
       <Feature Id="feat_AGENT" Display="hidden" Absent="disallow" />
       <Feature Id="feat_NETINV"  Title="!(loc.NetInventory)" Description="!(loc.NetInventoryDescription)" Level="1000" />
-      <Feature Id="feat_DEPLOY"  Title="!(loc.Deploy)" Description="!(loc.DeployDescription)" Level="3" />
-      <Feature Id="feat_COLLECT" Title="!(loc.Collect)" Description="!(loc.CollectDescription)" Level="3" />
+      <Feature Id="feat_DEPLOY"  Title="!(loc.Deploy)" Description="!(loc.DeployDescription)" Level="1000" />
+      <Feature Id="feat_COLLECT" Title="!(loc.Collect)" Description="!(loc.CollectDescription)" Level="1000" />
       <Feature Id="feat_ESX"     Title="!(loc.Esx)" Description="!(loc.EsxDescription)" Level="1000" />
       <!-- Level=0: WOL still not supported in this installer -->
       <Feature Id="feat_WOL"     Title="!(loc.Wol)" Description="!(loc.WolDescription)" Level="0" />

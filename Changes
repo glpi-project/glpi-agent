@@ -86,6 +86,7 @@ packaging:
 * Updated Windows packages 7-Zip commandline tools to v23.01
 * Fix the way Glpi-AgentMonitor is stopped during upgrade to prevent service
   installation issues
+* Remove Deploy & Collect tasks from Typical installation on windows
 
 1.7.3 Wed, 03 Apr 2024
 
