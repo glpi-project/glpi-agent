@@ -20,6 +20,10 @@ use constant    cisco_local => cisco . '.2';
 # See OLD-CISCO-MEMORY-MIB
 use constant    hostName    => cisco_local . '.1.3.0' ;
 
+# See CISCO-MEMORY-POOL
+use constant    ciscoMemoryPoolUsed     => cisco . '.9.48.1.1.1.5';
+use constant    ciscoMemoryPoolFree     => cisco . '.9.48.1.1.1.6';
+
 our $mibSupport = [
     {
         name        => "cisco",
@@ -40,6 +44,41 @@ sub getSnmpHostname {
     my ($self) = @_;
 
     return getCanonicalString($self->get(hostName));
+}
+
+sub run {
+	my ($self) = @_;
+
+	my $device = $self->device
+		or return;
+	
+	# my $ramFree = $self->get(ciscoMemoryPoolFree.'.1');
+	my $ramFree = 0;
+	my $ramsFree = $self->walk(ciscoMemoryPoolFree) || {};
+	if ($ramsFree) {
+        	foreach my $index (keys(%{$ramsFree})) {
+			$ramFree += $ramsFree->{$index};
+        	}
+	}
+
+	$device->{INFO}->{MEMORY} = int($ramFree / (1000 * 1000)) 
+		if defined($ramFree) && isInteger($ramFree);
+	# $device->{logger}->debug("Cisco MEMORY: " . $device->{INFO}->{MEMORY});
+	
+	if(!(defined($device->{INFO}->{RAM}))) {
+		# my $ramUsed = $self->get(ciscoMemoryPoolUsed.'.1');
+		my $ramUsed = 0;
+		my $ramsUsed = $self->walk(ciscoMemoryPoolUsed) || {};
+		if ($ramsUsed) {
+			foreach my $index (keys(%{$ramsUsed})) {
+				$ramUsed += $ramsUsed->{$index};
+			}
+		}
+	
+		$device->{INFO}->{RAM} = sprintf "%.0f", ($ramFree + $ramUsed) / (1000 * 1000)
+			if defined($ramFree) && isInteger($ramFree) && defined($ramUsed) && isInteger($ramUsed);
+		# $device->{logger}->debug("Cisco RAM: " . $device->{INFO}->{RAM});
+	}
 }
 
 1;
