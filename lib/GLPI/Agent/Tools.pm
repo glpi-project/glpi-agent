@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use parent 'Exporter';
 
-use Encode qw(encode);
+use Encode qw(decode encode);
 use English qw(-no_match_vars);
 use File::Basename;
 use File::Spec;
@@ -394,6 +394,7 @@ sub getUtf8String {
         | \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
         )*\z/x) {
         $string = encode("UTF-8", $string);
+        $string = decode("UTF-8", $string);
     };
 
     return $string;
