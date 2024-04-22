@@ -91,7 +91,7 @@ sub toolchain_build_steps {
             {
                 plugin  => 'Perl::Dist::Strawberry::Step::BuildLibrary',
                 name    => 'xz',
-                version => '5.6.1',
+                version => '5.4.6',
                 url     => 'https://github.com/tukaani-project/<name>/releases/download/v<version>/<name>-<version>.tar.gz',
                 skip_if_file    => 'bin/liblzma-5__.dll',
                 skip_test       => 1,
