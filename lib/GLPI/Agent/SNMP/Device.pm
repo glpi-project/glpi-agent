@@ -8,7 +8,6 @@ use GLPI::Agent::Tools::SNMP;
 use GLPI::Agent::Tools::Network;
 use GLPI::Agent::SNMP::MibSupport;
 use GLPI::Agent::SNMP::Device::Components;
-use Encode;
 
 # Supported infos are specified here:
 # http://fusioninventory.org/documentation/dev/spec/protocol/netdiscovery.html
@@ -479,9 +478,6 @@ sub setManufacturer {
 sub setBaseInfos {
     my ($self) = @_;
     $self->_set_from_oid_list($base_variables, $self);
-
-    $self->{LOCATION} = Encode::decode('utf8', $self->{LOCATION})
-				if defined($self->{LOCATION});
 
     # Filter out LOCATION & CONTACT from unwanted values
     if ($self->{LOCATION} && $self->{LOCATION} =~ /edit \/etc.*snmp.*\.conf/) {
