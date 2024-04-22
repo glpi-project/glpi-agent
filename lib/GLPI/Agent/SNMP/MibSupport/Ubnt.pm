@@ -43,7 +43,10 @@ sub getModel {
 sub getSerial {
     my ($self) = @_;
 
-    my $serial = $self->getMacAddress;
+    my $device = $self->device
+        or return;
+
+    my $serial = $device->{MAC} || getCanonicalMacAddress($self->get(ubntWlStatApMac));
     $serial =~ s/://g;
 
     return $serial;
