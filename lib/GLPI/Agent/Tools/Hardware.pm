@@ -405,6 +405,18 @@ sub _getSysObjectIDInfo {
     }
 
     # fallback to partial match
+    while (my ($device_partial_id) = $device_id =~ /^(\d+.*)\.\d+$/) {
+        $match = $sysobjectid{$manufacturer_id . '.' . $device_partial_id};
+        if ($match) {
+            $logger->debug(
+                "partial match for sysobjectID $params{id} on partial SysObject ID"
+            ) if $logger;
+            return $match;
+        }
+        $device_id = $device_partial_id;
+    }
+
+    # fallback to partial match on manufacturer only
     $match = $sysobjectid{$manufacturer_id};
     if ($match) {
         $logger->debug(
