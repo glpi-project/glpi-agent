@@ -97,19 +97,19 @@ sub run {
         foreach my $index (keys(%$unifiVapNameValues)) {
             # Compares the device's current radio port name to the AP's radio list (e.g. raX eq raX)
             if ($ifdescr eq $unifiVapNameValues->{$index}) {
-             # Defines the port alias with the name of the radio (e.g. raX)
-             $device->{PORTS}->{PORT}->{$port}->{IFALIAS} = $ifdescr;
-             # Replaces the radio port name with its respective <SSID>
-             $device->{PORTS}->{PORT}->{$port}->{IFNAME} = getCanonicalString($unifiVapEssidValues->{$index});
-             
-             # raX and raiX are the network interfaces for the 2.4GHz and 5GHz radios respectively
-             if($ifdescr =~ m/^ra(\d+)$/) {
-              $device->{PORTS}->{PORT}->{$port}->{IFNAME} .= " (2.4GHz)";
-             } elsif($ifdescr =~ m/^rai(\d+)$/) {
-              $device->{PORTS}->{PORT}->{$port}->{IFNAME} .= " (5GHz)";
-             }
-                
-             last;
+                # Defines the port alias with the name of the radio (e.g. raX)
+                $device->{PORTS}->{PORT}->{$port}->{IFALIAS} = $ifdescr;
+                # Replaces the radio port name with its respective <SSID>
+                $device->{PORTS}->{PORT}->{$port}->{IFNAME} = getCanonicalString($unifiVapEssidValues->{$index});
+
+                # raX and raiX are the network interfaces for the 2.4GHz and 5GHz radios respectively
+                if ($ifdescr =~ m/^ra\d+$/) {
+                    $device->{PORTS}->{PORT}->{$port}->{IFNAME} .= " (2.4GHz)";
+                } elsif ($ifdescr =~ m/^rai\d+$/) {
+                    $device->{PORTS}->{PORT}->{$port}->{IFNAME} .= " (5GHz)";
+                }
+
+                last;
             }
         }
     }
