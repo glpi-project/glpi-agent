@@ -33,13 +33,13 @@ our $mibSupport = [
 
 sub getFirmware {
     my ($self) = @_;
-    
+
     return getCanonicalString($self->get(unifiApSystemVersion));
 }
 
 sub getModel {
     my ($self) = @_;
-    
+
     return getCanonicalString($self->get(unifiApSystemModel));
 }
 
@@ -97,6 +97,11 @@ sub run {
                     $device->{PORTS}->{PORT}->{$port}->{IFNAME} .= " (2.4GHz)";
                 } elsif ($ifdescr =~ m/^rai\d+$/) {
                     $device->{PORTS}->{PORT}->{$port}->{IFNAME} .= " (5GHz)";
+                }
+
+                # Replaces the port iftype from "Ethernet" (6) to "WiFi" (71)
+                if($device->{PORTS}->{PORT}->{$port}->{IFTYPE} == 6) {
+                    $device->{PORTS}->{PORT}->{$port}->{IFTYPE} = 71
                 }
 
                 last;
