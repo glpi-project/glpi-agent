@@ -40,11 +40,7 @@ sub getFirmware {
 sub getModel {
     my ($self) = @_;
     
-    my $device = $self->device
-        or return;
-
-    return getCanonicalString($self->get(unifiApSystemModel))
-        if not defined($device->{MODEL});
+    return getCanonicalString($self->get(unifiApSystemModel));
 }
 
 sub getSerial {
@@ -62,10 +58,7 @@ sub getSerial {
 sub getMacAddress {
     my ($self) = @_;
 
-    my $device = $self->device
-        or return;
-
-    return getCanonicalMacAddress($self->get(ubntWlStatApMac)) || $device->{MAC};
+    return getCanonicalMacAddress($self->get(ubntWlStatApMac));
 }
 
 sub run {
