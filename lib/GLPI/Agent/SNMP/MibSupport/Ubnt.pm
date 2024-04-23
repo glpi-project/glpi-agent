@@ -83,7 +83,7 @@ sub run {
         # If you have more than one SSID there will also be more raX, raiX for each SSID.
         my $ifdescr = $device->{PORTS}->{PORT}->{$port}->{IFDESCR};
         next unless defined($ifdescr) && $ifdescr =~ /^ra/;
-		
+
         # Replaces the port iftype from "Ethernet" (6) to "WiFi" (71)
         if ($device->{PORTS}->{PORT}->{$port}->{IFTYPE} == 6) {
             $device->{PORTS}->{PORT}->{$port}->{IFTYPE} = 71
