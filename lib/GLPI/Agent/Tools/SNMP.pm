@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use base 'Exporter';
 
+use Encode qw(decode);
+
 use GLPI::Agent::Tools;
 
 our @EXPORT = qw(
@@ -56,7 +58,8 @@ sub getCanonicalString {
     # Finally cleanup EOL if some is remaining at the end
     chomp($value);
 
-    return $value;
+    # Finally return decoded string
+    return decode('UTF-8', $value);
 }
 
 sub getCanonicalMacAddress {
