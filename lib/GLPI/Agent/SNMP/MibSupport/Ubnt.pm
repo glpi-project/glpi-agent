@@ -92,7 +92,7 @@ sub run {
         # For each device Radio port (raX, raiX etc.)
         # If you have more than one SSID there will also be more raX, raiX for each SSID.
         my $ifdescr = $device->{PORTS}->{PORT}->{$port}->{IFDESCR};
-        next unless (defined($ifdescr) && $ifdescr !~ m/^(?!ra)/);
+        next unless defined($ifdescr) && $ifdescr =~ /^ra/;
 
         foreach my $index (keys(%$unifiVapNameValues)) {
             # Compares the device's current radio port name to the AP's radio list (e.g. raX eq raX)
