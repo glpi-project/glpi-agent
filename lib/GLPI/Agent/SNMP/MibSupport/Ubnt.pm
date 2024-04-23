@@ -34,10 +34,7 @@ our $mibSupport = [
 sub getFirmware {
     my ($self) = @_;
     
-    my $firmware = getCanonicalString($self->get(unifiApSystemVersion));
-
-    return $firmware
-        if defined($firmware);
+    return getCanonicalString($self->get(unifiApSystemVersion));
 }
 
 sub getModel {
