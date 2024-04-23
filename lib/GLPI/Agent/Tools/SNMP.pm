@@ -52,6 +52,9 @@ sub getCanonicalString {
     # reduce linefeeds which can be found in descriptions or comments
     $value =~ s/\p{Control}+\n/\n/g;
 
+    # Decode string before attempting any truncate on invalid char
+    $value = decode('UTF-8', $value);
+
     # truncate after first invalid character but keep newline as valid
     $value =~ s/[^\p{Print}\n].*$//;
 
@@ -59,7 +62,7 @@ sub getCanonicalString {
     chomp($value);
 
     # Finally return decoded string
-    return decode('UTF-8', $value);
+    return $value;
 }
 
 sub getCanonicalMacAddress {
