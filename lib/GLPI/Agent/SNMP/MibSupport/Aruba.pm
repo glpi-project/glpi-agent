@@ -20,6 +20,8 @@ use constant    aiMIB   => aruba . '.2.3.3.1' ;
 use constant    aiVirtualControllerVersion  => aiMIB . '.1.4.0';
 use constant    aiAPSerialNum               => aiMIB . '.2.1.1.4';
 use constant    aiAPModelName               => aiMIB . '.2.1.1.6';
+use constant    aiWlanESSID                 => aiMIB . '.2.3.1.3';
+use constant    aiWlanMACAddress            => aiMIB . '.2.3.1.4';
 
 our $mibSupport = [
     {
@@ -81,6 +83,50 @@ sub getModel {
     return unless $model;
 
     return "AP $model";
+}
+
+sub run {
+    my ($self) = @_;
+
+    my $device = $self->device
+        or return;
+
+    # Get list of device ports (e.g. radioX_ssid_idY)
+    my $ports = $device->{PORTS}->{PORT};
+
+    # Equivalent to "show ap bss-table" Aruba IAP CLI output command:
+
+    # Get list of SSID
+    my $aiWlanESSIDValues = $self->walk(aiWlanESSID) || {};
+    # Get list of Radios (e.g. radioX_ssid_idY etc.)
+    my $aiWlanMACAddressValues = $self->walk(aiWlanMACAddress) || {};
+    # The list of Radios is co-related to the list of SSIDs
+    # $aiWlanMACAddressValues->{0} = radio0_ssid_id0
+    # $aiWlanESSIDValues->{0} = <SSID>
+
+    foreach my $index (keys(%$aiWlanMACAddressValues)) {
+        # Get WLAN BSSID (e.g. XX:XX:XX:XX:XX:XX)
+        my $wlanMacAddress = getCanonicalMacAddress($aiWlanMACAddressValues->{$index});
+
+        foreach my $port (keys(%$ports)) {
+            my $ifMacAddress = $device->{PORTS}->{PORT}->{$port}->{MAC};
+            next unless defined($ifMacAddress) && $ifMacAddress eq $wlanMacAddress;
+
+            my $ifDescr = $device->{PORTS}->{PORT}->{$port}->{IFDESCR};
+
+            # Defines the port alias with the name of the radio (e.g. radioX_ssid_idY)
+            $device->{PORTS}->{PORT}->{$port}->{IFALIAS} = $ifDescr;
+            # Replaces the radio port name with its respective <SSID>
+            $device->{PORTS}->{PORT}->{$port}->{IFNAME} = getCanonicalString($aiWlanESSIDValues->{$index});
+
+            # radio0 and radio1 are the network interfaces for the 5GHz and 2.4GHz radios respectively
+            if ($ifDescr =~ m/^radio(0)/) {
+                $device->{PORTS}->{PORT}->{$port}->{IFNAME} .= " (5GHz)";
+            } elsif ($ifDescr =~ m/^radio(1)/) {
+                $device->{PORTS}->{PORT}->{$port}->{IFNAME} .= " (2.4GHz)";
+            }
+        }
+    }
 }
 
 1;
