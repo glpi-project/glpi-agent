@@ -83,6 +83,11 @@ sub run {
         # If you have more than one SSID there will also be more raX, raiX for each SSID.
         my $ifdescr = $device->{PORTS}->{PORT}->{$port}->{IFDESCR};
         next unless defined($ifdescr) && $ifdescr =~ /^ra/;
+		
+        # Replaces the port iftype from "Ethernet" (6) to "WiFi" (71)
+        if ($device->{PORTS}->{PORT}->{$port}->{IFTYPE} == 6) {
+            $device->{PORTS}->{PORT}->{$port}->{IFTYPE} = 71
+        }
 
         foreach my $index (keys(%$unifiVapNameValues)) {
             # Compares the device's current radio port name to the AP's radio list (e.g. raX eq raX)
@@ -97,11 +102,6 @@ sub run {
                     $device->{PORTS}->{PORT}->{$port}->{IFNAME} .= " (2.4GHz)";
                 } elsif ($ifdescr =~ m/^rai\d+$/) {
                     $device->{PORTS}->{PORT}->{$port}->{IFNAME} .= " (5GHz)";
-                }
-
-                # Replaces the port iftype from "Ethernet" (6) to "WiFi" (71)
-                if($device->{PORTS}->{PORT}->{$port}->{IFTYPE} == 6) {
-                    $device->{PORTS}->{PORT}->{$port}->{IFTYPE} = 71
                 }
 
                 last;
