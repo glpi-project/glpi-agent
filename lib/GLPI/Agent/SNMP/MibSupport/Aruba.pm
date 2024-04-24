@@ -118,14 +118,18 @@ sub run {
             $device->{PORTS}->{PORT}->{$port}->{IFALIAS} = $ifDescr
                 unless empty($ifDescr);
             # Replaces the radio port name with its respective <SSID>
-            $device->{PORTS}->{PORT}->{$port}->{IFNAME} = getCanonicalString($aiWlanESSIDValues->{$index});
+            my $ifName = getCanonicalString($aiWlanESSIDValues->{$index});
+            unless (empty($ifName)) {
+                # radio0 and radio1 are the network interfaces for the 5GHz and 2.4GHz radios respectively
+                if ($ifDescr =~ m/^radio0/) {
+                    $ifName .= " (5GHz)";
+                } elsif ($ifDescr =~ m/^radio1/) {
+                    $ifName .= " (2.4GHz)";
+                }
 
-            # radio0 and radio1 are the network interfaces for the 5GHz and 2.4GHz radios respectively
-            if ($ifDescr =~ m/^radio(0)/) {
-                $device->{PORTS}->{PORT}->{$port}->{IFNAME} .= " (5GHz)";
-            } elsif ($ifDescr =~ m/^radio(1)/) {
-                $device->{PORTS}->{PORT}->{$port}->{IFNAME} .= " (2.4GHz)";
+                $device->{PORTS}->{PORT}->{$port}->{IFNAME} = $ifName;
             }
+            last;
         }
     }
 }
