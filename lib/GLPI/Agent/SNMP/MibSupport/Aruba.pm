@@ -112,10 +112,11 @@ sub run {
             my $ifMacAddress = $device->{PORTS}->{PORT}->{$port}->{MAC};
             next unless defined($ifMacAddress) && $ifMacAddress eq $wlanMacAddress;
 
-            my $ifDescr = $device->{PORTS}->{PORT}->{$port}->{IFDESCR};
+            my $ifDescr = $device->{PORTS}->{PORT}->{$port}->{IFDESCR} // "";
 
             # Defines the port alias with the name of the radio (e.g. radioX_ssid_idY)
-            $device->{PORTS}->{PORT}->{$port}->{IFALIAS} = $ifDescr;
+            $device->{PORTS}->{PORT}->{$port}->{IFALIAS} = $ifDescr
+                unless empty($ifDescr);
             # Replaces the radio port name with its respective <SSID>
             $device->{PORTS}->{PORT}->{$port}->{IFNAME} = getCanonicalString($aiWlanESSIDValues->{$index});
 
