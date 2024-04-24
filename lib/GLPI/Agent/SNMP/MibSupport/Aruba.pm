@@ -106,7 +106,8 @@ sub run {
 
     foreach my $index (keys(%$aiWlanMACAddressValues)) {
         # Get WLAN BSSID (e.g. XX:XX:XX:XX:XX:XX)
-        my $wlanMacAddress = getCanonicalMacAddress($aiWlanMACAddressValues->{$index});
+        my $wlanMacAddress = getCanonicalMacAddress($aiWlanMACAddressValues->{$index})
+            or next;
 
         foreach my $port (keys(%$ports)) {
             my $ifMacAddress = $device->{PORTS}->{PORT}->{$port}->{MAC};
