@@ -85,8 +85,8 @@ sub run {
         next unless defined($ifdescr) && $ifdescr =~ /^ra/;
 
         # Replaces the port iftype from "Ethernet" (6) to "WiFi" (71)
-        if ($device->{PORTS}->{PORT}->{$port}->{IFTYPE} == 6) {
-            $device->{PORTS}->{PORT}->{$port}->{IFTYPE} = 71
+        if ($device->{PORTS}->{PORT}->{$port}->{IFTYPE} && $device->{PORTS}->{PORT}->{$port}->{IFTYPE} == 6) {
+            $device->{PORTS}->{PORT}->{$port}->{IFTYPE} = 71;
         }
 
         foreach my $index (keys(%$unifiVapNameValues)) {
