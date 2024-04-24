@@ -362,9 +362,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-latest
+          - os: macos-12
             arch: x86_64
-          - os: macos-latest
+          - os: macos-12
             arch: arm64
 
     if: ${{ needs.setup-release.outputs.build == 'yes' }}
