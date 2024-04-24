@@ -54,6 +54,8 @@ netdiscovery/netinventory:
 * Add support for Socomec PDU
 * fix #653: Some values like LOCATION or CONTACT can be wrongly encoded
 * Add Dell MibSupport dedicated module
+* PR #657: Improve Ubnt serial and SSID detection, thanks to @eduardomozart
+* PR #658: Improve Aruba SSID detection, thanks to @eduardomozart
 
 deploy:
 * Force agent to run a partial software inventory after the deploy task is done
