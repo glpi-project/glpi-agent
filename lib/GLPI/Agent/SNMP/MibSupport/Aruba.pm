@@ -45,8 +45,10 @@ sub _this {
         if ($dot1qTpFdbStatus) {
             my ($subkey) = first {
                 $dot1qTpFdbStatus->{$_} eq '4' } keys(%{$dot1qTpFdbStatus});
-            my ($extracted) = $subkey =~ /^\d+\.(.*)$/;
-            $self->{_this} = $extracted if $extracted;
+            unless (empty($subkey)) {
+                my ($extracted) = $subkey =~ /^\d+\.(.*)$/;
+                $self->{_this} = $extracted unless empty($extracted);
+            }
         }
     }
 
