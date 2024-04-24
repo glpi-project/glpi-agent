@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use base 'Exporter';
 
+use Encode qw(decode);
+
 use GLPI::Agent::Tools;
 
 our @EXPORT = qw(
@@ -50,12 +52,16 @@ sub getCanonicalString {
     # reduce linefeeds which can be found in descriptions or comments
     $value =~ s/\p{Control}+\n/\n/g;
 
+    # Decode string before attempting any truncate on invalid char
+    $value = decode('UTF-8', $value);
+
     # truncate after first invalid character but keep newline as valid
     $value =~ s/[^\p{Print}\n].*$//;
 
     # Finally cleanup EOL if some is remaining at the end
     chomp($value);
 
+    # Finally return decoded string
     return $value;
 }
 

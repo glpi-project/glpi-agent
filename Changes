@@ -52,6 +52,8 @@ netdiscovery/netinventory:
   meaning RemoteInventory was functionnal only if at least ping works or the
   targeted computer was in the same network (arp works).
 * Add support for Socomec PDU
+* fix #653: Some values like LOCATION or CONTACT can be wrongly encoded
+* Add Dell MibSupport dedicated module
 
 deploy:
 * Force agent to run a partial software inventory after the deploy task is done
