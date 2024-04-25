@@ -8337,7 +8337,2932 @@ my %tests = (
             'COMMENTS' => '[64-bit]',
             'SYSTEM_CATEGORY' => 'System/Library',
             'NAME' => 'TamilIM'
-        }    ],
+        }
+    ],
+    'sample4' => [
+        {
+            'VERSION' => '1.5.3',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'NAME' => 'Adobe AIR Updater',
+            'SYSTEM_CATEGORY' => 'Library/Frameworks',
+            'INSTALLDATE' => '09/08/2020'
+        },
+        {
+            'NAME' => 'TrackpadIM',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'Dock',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.8'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'XCPreviewAgent_0',
+            'VERSION' => '13.3',
+            'SYSTEM_CATEGORY' => 'System/iOSSupport',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => 25,
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'RegisterPluginIMApp'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'ManagedClient',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '14.2'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'FolderActionsDispatcher',
+            'VERSION' => '1.0'
+        },
+        {
+            'INSTALLDATE' => '04/17/2020',
+            'PUBLISHER' => 'Microsoft',
+            'SYSTEM_CATEGORY' => 'Library/Application Support',
+            'VERSION' => '4.70',
+            'NAME' => 'Microsoft AutoUpdate',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'NAME' => 'AXVisualSupportAgent',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'VERSION' => 16,
+            'NAME' => 'AirScanScanner',
+            'COMMENTS' => '[Universal]',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'VERSION' => '1.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'universalAccessAuthWarn',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Wish',
+            'VERSION' => '8.5.9'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'ABAssistantService',
+            'VERSION' => '11.0',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => "E\x{301}diteur de script",
+            'VERSION' => '2.11',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Applications',
+            'PUBLISHER' => 'Microsoft',
+            'INSTALLDATE' => '06/14/2020',
+            'VERSION' => '8.0.1',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'NAME' => 'Messenger'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '1.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "A\x{300} propos de ce Mac"
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Applications',
+            'INSTALLDATE' => '06/15/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'Pages',
+            'VERSION' => '6.2'
+        },
+        {
+            'PUBLISHER' => 'Mozilla',
+            'INSTALLDATE' => '04/10/2020',
+            'SYSTEM_CATEGORY' => 'Applications',
+            'NAME' => 'Firefox',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '124.0.2'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Library/Printers',
+            'INSTALLDATE' => '03/29/2020',
+            'PUBLISHER' => 'Kyocera Document Solutions Inc.',
+            'VERSION' => '5.4.0401',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'rastertopcl_F'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'AppleSpell',
+            'VERSION' => '2.4',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'VERSION' => '1.0',
+            'NAME' => 'Aide Cadran',
+            'COMMENTS' => '[Universal]',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '6.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Lecteur DVD'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => "Appareils jumele\x{301}s",
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '3.6.0'
+        },
+        {
+            'NAME' => 'Quick Look Simulator',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Utilitaire de re\x{301}seau",
+            'VERSION' => '1.9.2'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Library/Printers',
+            'PUBLISHER' => 'HP Inc.',
+            'INSTALLDATE' => '05/25/2020',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'fax',
+            'VERSION' => '5.17.3'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Localiser',
+            'VERSION' => '3.0',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'NAME' => "Colorime\x{300}tre nume\x{301}rique",
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '5.22',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Applications'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'SoftwareUpdateNotificationManager',
+            'VERSION' => '1.0'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Library/Printers',
+            'PUBLISHER' => 'EPSON',
+            'INSTALLDATE' => '08/19/2020',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'rastertoepfax',
+            'VERSION' => '1.71'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'FontRegistryUIAgent',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '81.0'
+        },
+        {
+            'VERSION' => '1.1.2',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Utilitaire AppleScript',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '2.0',
+            'NAME' => "Service de re\x{301}sume\x{301}",
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'AOSAlertManager',
+            'VERSION' => '1.07',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'VERSION' => '10.5',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'QuickTime Player',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'PUBLISHER' => 'Simone Lehmann',
+            'INSTALLDATE' => '08/08/2020',
+            'SYSTEM_CATEGORY' => 'Applications',
+            'NAME' => 'GIMP',
+            'COMMENTS' => '[Other]',
+            'VERSION' => '2.8.14p2'
+        },
+        {
+            'VERSION' => '1.5a8',
+            'NAME' => 'DNA Strider',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'INSTALLDATE' => '06/04/2020',
+            'SYSTEM_CATEGORY' => 'Applications/DNA Strider 1.5a9 Folder'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Applications',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '06/15/2020',
+            'VERSION' => '10.2.0',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'GarageBand_0'
+        },
+        {
+            'VERSION' => '11.0',
+            'NAME' => "Trousseaux d\x{2019}acce\x{300}s",
+            'COMMENTS' => '[Universal]',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Applications'
+        },
+        {
+            'PUBLISHER' => 'EPSON',
+            'INSTALLDATE' => '08/19/2020',
+            'SYSTEM_CATEGORY' => 'Library/Printers',
+            'VERSION' => '1.71',
+            'NAME' => "Moniteur de re\x{301}ception de fax",
+            'COMMENTS' => '[Intel]'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '1.0',
+            'NAME' => 'STMUIHelper',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Applications/Utilities',
+            'INSTALLDATE' => '06/14/2020',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'NAME' => 'Adobe AIR Uninstaller',
+            'VERSION' => '1.5.3'
+        },
+        {
+            'VERSION' => '1.71',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'epsonfax',
+            'SYSTEM_CATEGORY' => 'Library/Printers',
+            'PUBLISHER' => 'EPSON',
+            'INSTALLDATE' => '08/19/2020'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'KeyboardAccessAgent',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => 10
+        },
+        {
+            'NAME' => 'Template',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'VERSION' => '1.5.3',
+            'INSTALLDATE' => '09/08/2020',
+            'SYSTEM_CATEGORY' => 'Library/Frameworks'
+        },
+        {
+            'NAME' => 'EPSON Scanner',
+            'COMMENTS' => '[Intel]',
+            'VERSION' => '5.7.24',
+            'INSTALLDATE' => '10/06/2020',
+            'PUBLISHER' => 'EPSON',
+            'SYSTEM_CATEGORY' => 'Library/Image Capture'
+        },
+        {
+            'VERSION' => '1.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'SpacesTouchBarAgent',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Users/admin',
+            'INSTALLDATE' => '04/05/2020',
+            'VERSION' => '3_5',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'Untitled'
+        },
+        {
+            'VERSION' => '1.2.2',
+            'COMMENTS' => '[Other]',
+            'NAME' => 'Adobe Acrobat Updater',
+            'SYSTEM_CATEGORY' => 'Library/Application Support',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Adobe Systems Inc.'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '1.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Pass Viewer'
+        },
+        {
+            'INSTALLDATE' => '09/14/2020',
+            'PUBLISHER' => 'Adobe Systems Inc.',
+            'SYSTEM_CATEGORY' => 'Library/Application Support',
+            'NAME' => 'Uninstall Product',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'VERSION' => '3.5.15.0'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'AirPort Base Station Agent',
+            'VERSION' => '2.2.1'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'NAME' => 'Utilitaire de disque',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '21.5'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '1.0',
+            'NAME' => 'WidgetKit Simulator',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'NAME' => 'Spotlight_0',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'EmojiFunctionRowIM',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'iCloud Drive',
+            'VERSION' => '1.0',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'NAME' => 'UniversalAccessControl',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '7.0',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '72.100',
+            'NAME' => 'UserNotificationCenter',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'VERSION' => '6.3',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'JapaneseIM-KanaTyping',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '1742.6.1',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'PTPCamera'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Applications',
+            'INSTALLDATE' => '06/14/2020',
+            'PUBLISHER' => 'Bio-Rad Labs. Inc.',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'NAME' => 'Image Lab',
+            'VERSION' => '5.2'
+        },
+        {
+            'VERSION' => '16.79.2',
+            'NAME' => 'Microsoft PowerPoint',
+            'COMMENTS' => '[Universal]',
+            'PUBLISHER' => 'Microsoft',
+            'INSTALLDATE' => '02/21/2020',
+            'SYSTEM_CATEGORY' => 'Applications'
+        },
+        {
+            'PUBLISHER' => 'XMind Ltd.',
+            'INSTALLDATE' => '06/14/2020',
+            'SYSTEM_CATEGORY' => 'Applications',
+            'NAME' => 'XMind',
+            'COMMENTS' => '[Intel]',
+            'VERSION' => '8_Update_1'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'NAME' => "Pre\x{301}fe\x{301}rences Syste\x{300}me",
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '15.0'
+        },
+        {
+            'VERSION' => '8.1',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'syncuid',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'DiscHelper',
+            'VERSION' => '1.0'
+        },
+        {
+            'NAME' => 'SnapNDrag',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'VERSION' => '2.6.5',
+            'INSTALLDATE' => '12/08/2020',
+            'PUBLISHER' => 'Yellow Mug Software',
+            'SYSTEM_CATEGORY' => 'Applications'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '1.0',
+            'NAME' => 'Ordinateur',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'VERSION' => '1.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'HindiIM',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '10.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'identityservicesd'
+        },
+        {
+            'NAME' => 'storeuid',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'VERSION' => '3.3.1',
+            'NAME' => 'OnyX',
+            'COMMENTS' => '[Intel]',
+            'INSTALLDATE' => '10/21/2020',
+            'PUBLISHER' => 'Joel BARRIERE',
+            'SYSTEM_CATEGORY' => 'Applications'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '8.1',
+            'NAME' => "Re\x{301}solution des conflits",
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'VERSION' => '2.80.1',
+            'NAME' => 'Mendeley Reference Manager',
+            'COMMENTS' => '[Intel]',
+            'PUBLISHER' => 'Elsevier Inc.',
+            'INSTALLDATE' => '10/27/2020',
+            'SYSTEM_CATEGORY' => 'Applications'
+        },
+        {
+            'VERSION' => '9.0',
+            'NAME' => 'loginwindow',
+            'COMMENTS' => '[Universal]',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '1.0',
+            'NAME' => 'SCIM',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'VERSION' => '2.12.7',
+            'NAME' => 'Terminal',
+            'COMMENTS' => '[Universal]',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Applications'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'NAME' => 'Assistant migration',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '12.7'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'NAME' => 'Contacts',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '2498.5.1'
+        },
+        {
+            'NAME' => 'Dictionnaire',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '2.3.0',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Applications'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '6.1.27',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Dicte\x{301}e vocale"
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'VERSION' => 2395,
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Install Command Line Developer Tools'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'NAME' => 'Calculette',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '10.16'
+        },
+        {
+            'VERSION' => 25,
+            'NAME' => 'PluginIM',
+            'COMMENTS' => '[Universal]',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'PUBLISHER' => 'David Kocher',
+            'INSTALLDATE' => '11/04/2020',
+            'SYSTEM_CATEGORY' => 'Applications',
+            'VERSION' => '8.7.1',
+            'NAME' => 'Cyberduck',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'qlmanage',
+            'VERSION' => '1.0'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'JavaLauncher',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => 319
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Applications/F-Secure',
+            'INSTALLDATE' => '01/03/2020',
+            'PUBLISHER' => 'F-Secure',
+            'VERSION' => '3.0.51507',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "WithSecure\x{2122} XFENCE"
+        },
+        {
+            'VERSION' => '2.8',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Grapher',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Applications',
+            'PUBLISHER' => 'Mek&Tosj.',
+            'INSTALLDATE' => '06/14/2020',
+            'VERSION' => 'EnzymeX 3.1',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'NAME' => 'EnzymeX'
+        },
+        {
+            'VERSION' => '2667.4.3.1',
+            'NAME' => 'CoreLocationAgent',
+            'COMMENTS' => '[Universal]',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'VERSION' => 131,
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'XProtect',
+            'SYSTEM_CATEGORY' => 'Library/Apple',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '04/24/2020'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'NAME' => 'Console',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.1'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Dwell Control',
+            'VERSION' => '1.0',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Jumelage de la SmartCard',
+            'VERSION' => '1.0'
+        },
+        {
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'NAME' => 'Inkscape',
+            'VERSION' => '0.91',
+            'SYSTEM_CATEGORY' => 'Applications',
+            'INSTALLDATE' => '06/14/2020',
+            'PUBLISHER' => 'Inkscape Developers'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'quicklookd',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '5.0'
+        },
+        {
+            'VERSION' => '9.0.88.6',
+            'NAME' => 'SpeechService',
+            'COMMENTS' => '[Universal]',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '1.1.6',
+            'NAME' => 'Image Events',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'NAME' => "Connexion Bureau a\x{300} Distance",
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'VERSION' => '2.1.1',
+            'INSTALLDATE' => '06/14/2020',
+            'PUBLISHER' => 'Microsoft',
+            'SYSTEM_CATEGORY' => 'Applications'
+        },
+        {
+            'INSTALLDATE' => '08/19/2020',
+            'PUBLISHER' => 'EPSON',
+            'SYSTEM_CATEGORY' => 'Library/Printers',
+            'VERSION' => '1.71',
+            'NAME' => 'commandFilter',
+            'COMMENTS' => '[Intel]'
+        },
+        {
+            'PUBLISHER' => 'Microsoft',
+            'INSTALLDATE' => '02/21/2020',
+            'SYSTEM_CATEGORY' => 'Applications',
+            'VERSION' => '16.79.2',
+            'NAME' => 'Microsoft Word',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'AddressBookSourceSync',
+            'VERSION' => '11.0',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Notes',
+            'VERSION' => '4.9'
+        },
+        {
+            'NAME' => 'TYIM',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Livres',
+            'VERSION' => '4.4'
+        },
+        {
+            'NAME' => 'HP Fax Archive',
+            'COMMENTS' => '[Intel]',
+            'VERSION' => '5.37.1',
+            'INSTALLDATE' => '10/25/2020',
+            'PUBLISHER' => 'HP Inc.',
+            'SYSTEM_CATEGORY' => 'Library/Printers'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '1.0',
+            'NAME' => 'nbagent',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'VERSION' => '13.3',
+            'NAME' => 'XCPreviewAgent',
+            'COMMENTS' => '[Universal]',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'PUBLISHER' => 'Microsoft',
+            'INSTALLDATE' => '04/17/2020',
+            'SYSTEM_CATEGORY' => 'Applications',
+            'VERSION' => '16.84',
+            'NAME' => 'Microsoft OneNote',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Family (OSX)',
+            'VERSION' => '1.0',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '1.0',
+            'NAME' => 'DiskImageMounter',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'VERSION' => '4.3.2',
+            'NAME' => 'Bourse',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'Diagnostics Reporter',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'VoiceOver',
+            'VERSION' => 10
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'VERSION' => '1.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'PodcastsAuthAgent'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '03/12/2020',
+            'SYSTEM_CATEGORY' => 'Applications/GarageBand.localized',
+            'NAME' => 'GarageBand',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'VERSION' => '6.0.5'
+        },
+        {
+            'NAME' => "Programme d\x{2019}installation d\x{2019}apps iOS",
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'VERSION' => '6.3.9',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Utilitaire AirPort',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'NAME' => 'Podcasts',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.1.0',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Applications'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '2.1',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'ChineseTextConverterService'
+        },
+        {
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'Kyocera Print Panel',
+            'VERSION' => '5.4.0516',
+            'SYSTEM_CATEGORY' => 'Applications',
+            'PUBLISHER' => 'Kyocera Document Solutions Inc.',
+            'INSTALLDATE' => '03/29/2020'
+        },
+        {
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'pdftopdf',
+            'VERSION' => '2.7.1',
+            'SYSTEM_CATEGORY' => 'Library/Printers',
+            'PUBLISHER' => 'HP Inc.',
+            'INSTALLDATE' => '05/25/2020'
+        },
+        {
+            'VERSION' => '1.0',
+            'NAME' => 'LinkedNotesUIService',
+            'COMMENTS' => '[Universal]',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Applications/F-Secure',
+            'INSTALLDATE' => '01/03/2020',
+            'PUBLISHER' => 'F-Secure',
+            'VERSION' => '3.0.51507',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Uninstall WithSecure\x{2122} Elements Agent"
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'PressAndHold',
+            'VERSION' => '1.0'
+        },
+        {
+            'VERSION' => '3.0.51507',
+            'NAME' => 'fschotfix',
+            'COMMENTS' => '[Universal]',
+            'PUBLISHER' => 'F-Secure',
+            'INSTALLDATE' => '04/17/2020',
+            'SYSTEM_CATEGORY' => 'Library/F-Secure'
+        },
+        {
+            'VERSION' => '2.0.51',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'ApE',
+            'SYSTEM_CATEGORY' => 'Applications',
+            'INSTALLDATE' => '06/14/2020'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Cre\x{301}ation de page web",
+            'VERSION' => '10.1'
+        },
+        {
+            'VERSION' => '3.6.0',
+            'NAME' => 'RapportUIAgent',
+            'COMMENTS' => '[Universal]',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'NAME' => 'Photo Library Migration Utility',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '2.0',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'NAME' => 'Installation en cours',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '3.0',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'VERSION' => '1.0',
+            'NAME' => 'Keychain Circle Notification',
+            'COMMENTS' => '[Universal]',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Messages',
+            'VERSION' => '14.0',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '5.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'FaceTime'
+        },
+        {
+            'VERSION' => '2.0.1',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'CharacterPalette',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'KoreanIM',
+            'VERSION' => '1.0'
+        },
+        {
+            'NAME' => 'Canon IJScanner6',
+            'COMMENTS' => '[Intel]',
+            'VERSION' => '4.0.0',
+            'INSTALLDATE' => '06/26/2020',
+            'PUBLISHER' => 'Canon Inc.',
+            'SYSTEM_CATEGORY' => 'Library/Image Capture'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'OSDUIHelper',
+            'VERSION' => '1.1',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'NAME' => 'FAX Utility',
+            'COMMENTS' => '[Intel]',
+            'VERSION' => '1.73',
+            'PUBLISHER' => 'EPSON',
+            'INSTALLDATE' => '08/19/2020',
+            'SYSTEM_CATEGORY' => 'Library/Printers'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Apple Silicon]',
+            'NAME' => "Programme de mise a\x{300} jour Rosetta 2",
+            'VERSION' => '1.0'
+        },
+        {
+            'INSTALLDATE' => '06/14/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'Applications/Utilities',
+            'NAME' => 'XQuartz',
+            'COMMENTS' => '[Other]',
+            'VERSION' => '2.7.7'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Library/Image Capture',
+            'INSTALLDATE' => '10/25/2020',
+            'PUBLISHER' => 'HP Inc.',
+            'VERSION' => '4.9.4',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'HP Scanner 3'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Library/Image Capture',
+            'INSTALLDATE' => '06/26/2020',
+            'PUBLISHER' => 'Canon Inc.',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'Canon IJScanner2',
+            'VERSION' => '4.0.0'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '10.0',
+            'NAME' => 'imagent',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'AirDrop',
+            'VERSION' => '1.0',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'VERSION' => '2.3',
+            'NAME' => 'Dictaphone',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'VERSION' => '2.10',
+            'NAME' => 'Automator',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'NAME' => "Me\x{301}te\x{301}o",
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '2.1',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Assistant de certification',
+            'VERSION' => '5.0',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => 361,
+            'NAME' => 'rcd',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'VERSION' => '3105.3.1',
+            'NAME' => 'Siri_0',
+            'COMMENTS' => '[Universal]',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Applications/Adobe Photoshop Elements 9',
+            'INSTALLDATE' => '07/09/2020',
+            'PUBLISHER' => 'Adobe Systems Inc.',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'NAME' => 'Adobe Photoshop Elements',
+            'VERSION' => '9.0 (20100905.m.9093)'
+        },
+        {
+            'VERSION' => 1,
+            'NAME' => 'Menu des scripts',
+            'COMMENTS' => '[Universal]',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'NAME' => 'SSMenuAgent',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '3.9.8',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '1.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'iCloud Drive'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '6.3',
+            'NAME' => 'JapaneseIM-RomajiTyping',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'AOSUIPrefPaneLauncher',
+            'VERSION' => '1.0'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'IDSRemoteURLConnectionAgent',
+            'VERSION' => '10.0',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '1.2',
+            'NAME' => 'Configuration des actions de dossier',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => "Programme d\x{2019}installation d\x{2019}Automator",
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '2.10'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => "Utilitaire d\x{2019}annuaire",
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '6.2'
+        },
+        {
+            'NAME' => 'ControlStrip',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'VERSION' => '1.17',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'TextEdit',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'iCloud',
+            'VERSION' => '1.0',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'INSTALLDATE' => '06/14/2020',
+            'PUBLISHER' => 'RStudio Inc.',
+            'SYSTEM_CATEGORY' => 'Applications',
+            'NAME' => 'RStudio',
+            'COMMENTS' => '[Intel]',
+            'VERSION' => '0.98.1103'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => 6,
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Mise a\x{300} jour de logiciels"
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '1.0',
+            'NAME' => 'AskPermissionUI',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Support Tool',
+            'VERSION' => '3.0.51507',
+            'SYSTEM_CATEGORY' => 'Applications/F-Secure',
+            'PUBLISHER' => 'F-Secure',
+            'INSTALLDATE' => '01/03/2020'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'VERSION' => '1.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Re\x{301}cents"
+        },
+        {
+            'VERSION' => '5.17.3',
+            'NAME' => 'rastertofax',
+            'COMMENTS' => '[Intel]',
+            'INSTALLDATE' => '05/25/2020',
+            'PUBLISHER' => 'HP Inc.',
+            'SYSTEM_CATEGORY' => 'Library/Printers'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'FindMyMacMessenger',
+            'VERSION' => '4.1'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '11.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'AddressBookManager'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Language Chooser',
+            'VERSION' => '1.0',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'VERSION' => '1.0.1',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'ScriptMonitor',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'VERSION' => '1.6',
+            'NAME' => 'TamilIM',
+            'COMMENTS' => '[Universal]',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'VERSION' => '5.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'UnmountAssistantAgent',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'VERSION' => '1.0',
+            'NAME' => "Assistant d\x{2019}effacement",
+            'COMMENTS' => '[Universal]',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Library/Application Support',
+            'INSTALLDATE' => '09/14/2020',
+            'PUBLISHER' => 'Adobe Systems Inc.',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'NAME' => 'adobe_licutil',
+            'VERSION' => 'Adobe License Utility 1.0.0.15 (BuildVersion: 1.0; BuildDate: Mon Aug 23 2010 21:49:00)'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'VERSION' => '1.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'PIPAgent'
+        },
+        {
+            'VERSION' => '4.2',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'Numbers',
+            'SYSTEM_CATEGORY' => 'Applications',
+            'INSTALLDATE' => '06/15/2020'
+        },
+        {
+            'VERSION' => '8.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'CalendarFileHandler',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'VERSION' => '1.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'FollowUpUI',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Informations syste\x{300}me",
+            'VERSION' => '11.0'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Applications/Utilities',
+            'INSTALLDATE' => '06/14/2020',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'NAME' => 'Adobe AIR Application Installer',
+            'VERSION' => '1.5.3'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'eaptlstrust',
+            'VERSION' => '13.0',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'VERSION' => 'R 3.1.3 GUI 1.65 Mavericks build',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'R',
+            'SYSTEM_CATEGORY' => 'Applications',
+            'INSTALLDATE' => '06/14/2020'
+        },
+        {
+            'INSTALLDATE' => '05/24/2020',
+            'USERNAME' => 'admin',
+            'VERSION' => undef,
+            'NAME' => 'com.apple.ctcategories',
+            'COMMENTS' => '[Other]',
+            'SYSTEM_CATEGORY' => 'Library/HTTPStorages'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Applications',
+            'PUBLISHER' => 'VideoLAN',
+            'INSTALLDATE' => '06/14/2020',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'VLC',
+            'VERSION' => '2.2.1'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'CoreServicesUIAgent',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => 369
+        },
+        {
+            'INSTALLDATE' => '08/19/2020',
+            'PUBLISHER' => 'EPSON',
+            'SYSTEM_CATEGORY' => 'Library/Printers',
+            'VERSION' => '1.71',
+            'NAME' => 'EPFaxAutoSetupTool',
+            'COMMENTS' => '[Intel]'
+        },
+        {
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'LogTransport2',
+            'VERSION' => '2.0.1.011',
+            'SYSTEM_CATEGORY' => 'Library/Application Support',
+            'PUBLISHER' => 'Adobe Systems Inc.',
+            'INSTALLDATE' => '09/14/2020'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'IMTransferAgent',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '10.0'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Transfert d\x{2019}images",
+            'VERSION' => '8.0',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'NAME' => 'NativeMessagingHost_0',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '5.0',
+            'PUBLISHER' => 'Adobe Inc.',
+            'INSTALLDATE' => '02/01/2020',
+            'SYSTEM_CATEGORY' => 'Library/Application Support'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'NAME' => 'Utilitaire VoiceOver',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => 10
+        },
+        {
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'NAME' => 'Adobe Application Manager',
+            'VERSION' => '1.5.113.0',
+            'SYSTEM_CATEGORY' => 'Library/Application Support',
+            'PUBLISHER' => 'Adobe Systems Inc.',
+            'INSTALLDATE' => '09/14/2020'
+        },
+        {
+            'VERSION' => '2.2.9',
+            'NAME' => 'Microsoft Error Reporting',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'PUBLISHER' => 'Microsoft',
+            'INSTALLDATE' => '02/29/2020',
+            'SYSTEM_CATEGORY' => 'Library/Application Support'
+        },
+        {
+            'VERSION' => '1.07',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'AOSPushRelay',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'IMAutomaticHistoryDeletionAgent',
+            'VERSION' => '10.0'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '1.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'TCIM'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '11.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Aperc\x{327}u"
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'SpeechRecognitionServer',
+            'VERSION' => '9.0.59.2'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Rappels',
+            'VERSION' => '7.0',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'VietnameseIM',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '1.0',
+            'NAME' => 'iCloudUserNotificationsd',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'PUBLISHER' => '-Adobe Systems Inc.',
+            'INSTALLDATE' => '07/09/2020',
+            'SYSTEM_CATEGORY' => 'Applications/Adobe',
+            'VERSION' => '3.07',
+            'NAME' => 'PhotoshopdotcomInspirationBrowser',
+            'COMMENTS' => '[32-bit (Unsupported)]'
+        },
+        {
+            'NAME' => 'ScreenSaverEngine',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '5.0',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'LocationMenu',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'VERSION' => '1.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'screencaptureui'
+        },
+        {
+            'NAME' => 'DFRHUD',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Visualiseur de ticket',
+            'VERSION' => '4.1'
+        },
+        {
+            'VERSION' => '3.9.8',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'ARDAgent',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Ajouter une imprimante',
+            'VERSION' => 17
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Temps d\x{2019}e\x{301}cran",
+            'VERSION' => '3.0'
+        },
+        {
+            'NAME' => 'Finder',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '12.5',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'VERSION' => '3.5',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Configuration audio et MIDI',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'MakePDF',
+            'VERSION' => '10.1'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '1.1.0',
+            'NAME' => '50onPaletteServer',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Applications',
+            'INSTALLDATE' => '02/21/2020',
+            'PUBLISHER' => 'Microsoft',
+            'VERSION' => '16.79.3',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Microsoft Outlook'
+        },
+        {
+            'VERSION' => '1.1.4',
+            'NAME' => 'Microsoft Ship Asserts',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'INSTALLDATE' => '02/29/2020',
+            'PUBLISHER' => 'Microsoft',
+            'SYSTEM_CATEGORY' => 'Library/Application Support'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => 613,
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'WebKitPluginHost'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '1.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Installer Progress'
+        },
+        {
+            'VERSION' => '16.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Mail',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'VERSION' => '17.0',
+            'NAME' => 'WiFiAgent',
+            'COMMENTS' => '[Universal]',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'VirtualScanner',
+            'VERSION' => '1742.6.1',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Library/Application Support',
+            'PUBLISHER' => 'Adobe Systems Inc.',
+            'INSTALLDATE' => '07/09/2020',
+            'VERSION' => '3.5.15.0',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'NAME' => '{F0915E53-C75D-4FF2-ADCB-4D4DB79927F6}'
+        },
+        {
+            'VERSION' => '10.13',
+            'NAME' => 'Problem Reporter',
+            'COMMENTS' => '[Universal]',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'NAME' => 'hpdot4d_0',
+            'COMMENTS' => '[Intel]',
+            'VERSION' => '5.3.1',
+            'INSTALLDATE' => '10/25/2020',
+            'PUBLISHER' => 'HP Inc.',
+            'SYSTEM_CATEGORY' => 'Library/Printers'
+        },
+        {
+            'PUBLISHER' => 'Google LLC',
+            'INSTALLDATE' => '12/07/2020',
+            'VERSION' => '121.0.6167.0',
+            'USERNAME' => 'agoulut',
+            'NAME' => 'GoogleUpdater',
+            'COMMENTS' => '[Universal]',
+            'SYSTEM_CATEGORY' => 'Library/Application Support'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Utilitaire ColorSync',
+            'VERSION' => '12.0.0',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'NAME' => 'Mission Control',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.2'
+        },
+        {
+            'INSTALLDATE' => '06/14/2020',
+            'PUBLISHER' => 'Adobe Systems Inc.',
+            'SYSTEM_CATEGORY' => 'Applications',
+            'VERSION' => '9.0.2.(20101217.p.9699)',
+            'NAME' => 'Adobe Elements 9 Organizer',
+            'COMMENTS' => '[32-bit (Unsupported)]'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'System Events',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.3.6'
+        },
+        {
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'Canon IJScanner4',
+            'VERSION' => '4.0.0',
+            'SYSTEM_CATEGORY' => 'Library/Image Capture',
+            'INSTALLDATE' => '06/26/2020',
+            'PUBLISHER' => 'Canon Inc.'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Library/Printers',
+            'INSTALLDATE' => '05/25/2020',
+            'PUBLISHER' => 'HP Inc.',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'hpPreProcessing',
+            'VERSION' => '1.7.2'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'Calibration Assistant',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0'
+        },
+        {
+            'NAME' => 'Raccourcis',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '5.0',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Applications'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '1.0',
+            'NAME' => 'AMSEngagementViewService',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'TextInputMenuAgent',
+            'VERSION' => '1.0'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'VERSION' => '1742.6.1',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'MassStorageCamera'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'AddressBookSync',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '11.0'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'SpeechSynthesizerAuditor',
+            'VERSION' => '1.0'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '1.9',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'ODSAgent'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Library/Application Scripts',
+            'VERSION' => undef,
+            'USERNAME' => 'agoulut',
+            'NAME' => 'group.is.workflow',
+            'COMMENTS' => '[Other]',
+            'INSTALLDATE' => '05/30/2020'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'VERSION' => '7.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'HelpViewer'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Re\x{301}seau",
+            'VERSION' => '1.0',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '5.0',
+            'NAME' => 'Captive Network Assistant',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Utilitaire de logement de me\x{301}moire",
+            'VERSION' => '1.5.3'
+        },
+        {
+            'VERSION' => '1.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'AquaAppearanceHelper',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'Xcode Previews',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '13.3'
+        },
+        {
+            'VERSION' => '1.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'ShortcutDroplet',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Library/Application Support',
+            'PUBLISHER' => 'Adobe Systems Inc.',
+            'INSTALLDATE' => '09/14/2020',
+            'VERSION' => '1.5.113.0',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'NAME' => 'AAM Registration Notifier'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Photo Booth',
+            'VERSION' => '12.2'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'Database Events',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0.6'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Library/Application Support',
+            'PUBLISHER' => 'Adobe Inc.',
+            'INSTALLDATE' => '02/26/2020',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Acrobat Update Helper',
+            'VERSION' => '1.2.2'
+        },
+        {
+            'NAME' => 'Launchpad',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Applications'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '11.0',
+            'NAME' => 'Diagnostics sans fil',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'VERSION' => '3.0.51507',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'fsavd',
+            'SYSTEM_CATEGORY' => 'Library/F-Secure',
+            'PUBLISHER' => 'F-Secure',
+            'INSTALLDATE' => '01/03/2020'
+        },
+        {
+            'VERSION' => '6.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Maison',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'VERSION' => '7.0',
+            'NAME' => 'Photos',
+            'COMMENTS' => '[Universal]',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Applications'
+        },
+        {
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'ImageJ64',
+            'VERSION' => '10.2',
+            'SYSTEM_CATEGORY' => 'Applications/ImageJ',
+            'INSTALLDATE' => '07/23/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'VERSION' => '3.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'App Store',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'NAME' => 'Adobe Help',
+            'VERSION' => '3.2.1.650',
+            'SYSTEM_CATEGORY' => 'Applications/Adobe',
+            'INSTALLDATE' => '07/09/2020'
+        },
+        {
+            'NAME' => 'Commande universelle',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'CIMFindInputCodeTool',
+            'VERSION' => 104
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'ClassroomStudentMenuExtra',
+            'VERSION' => '1.0'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '1.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'CinematicFramingOnboardingUI'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '2.0',
+            'NAME' => "Utilitaire de logement d\x{2019}extension",
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '1.07',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'AOSHeartbeat'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Library/Printers',
+            'PUBLISHER' => 'HP Inc.',
+            'INSTALLDATE' => '10/25/2020',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'ScanEventHandler',
+            'VERSION' => '1.4.0'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Calendrier',
+            'VERSION' => '11.0',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '8.1',
+            'NAME' => 'SyncServer',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '6.2',
+            'NAME' => 'NetAuthAgent',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Musique',
+            'VERSION' => '1.2.5',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Library/Application Scripts',
+            'INSTALLDATE' => '08/08/2020',
+            'USERNAME' => 'agoulut',
+            'VERSION' => undef,
+            'COMMENTS' => '[Other]',
+            'NAME' => 'com.microsoft.openxml'
+        },
+        {
+            'NAME' => 'TextInputSwitcher',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.1',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'VERSION' => '6.2.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Programme d\x{2019}installation"
+        },
+        {
+            'VERSION' => '11.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'AddressBookUrlForwarder',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'VERSION' => '1.0',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'NAME' => 'Fiji',
+            'SYSTEM_CATEGORY' => 'Applications',
+            'INSTALLDATE' => '06/14/2020'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "E\x{301}checs",
+            'VERSION' => '3.18'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'VERSION' => '1.0',
+            'NAME' => 'KerberosMenuExtra',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'NAME' => 'HP Utility',
+            'COMMENTS' => '[Intel]',
+            'VERSION' => '5.37.1',
+            'PUBLISHER' => 'HP Inc.',
+            'INSTALLDATE' => '10/25/2020',
+            'SYSTEM_CATEGORY' => 'Library/Printers'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'SpeechSynthesisServer',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '9.0.88.6'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Plans',
+            'VERSION' => '3.0',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'VERSION' => '1.0',
+            'NAME' => "Centre de contro\x{302}le",
+            'COMMENTS' => '[Universal]',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'sociallayerd',
+            'VERSION' => '1.0'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Applications/ImageJ',
+            'INSTALLDATE' => '07/23/2020',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'NAME' => 'ImageJ',
+            'VERSION' => '10.2'
+        },
+        {
+            'VERSION' => '1.0',
+            'NAME' => 'AutomationModeUI',
+            'COMMENTS' => '[Universal]',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'VERSION' => '9.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "E\x{301}change de fichiers Bluetooth"
+        },
+        {
+            'PUBLISHER' => 'HP Inc.',
+            'INSTALLDATE' => '10/25/2020',
+            'SYSTEM_CATEGORY' => 'Library/Printers',
+            'VERSION' => '4.17.1',
+            'NAME' => 'hpdot4d',
+            'COMMENTS' => '[Intel]'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'ThermalTrap',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'MTLReplayer',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'AppSSOAgent',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0'
+        },
+        {
+            'VERSION' => '1040.6',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'AVB Audio Configuration',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Library/Printers',
+            'PUBLISHER' => 'HP Inc.',
+            'INSTALLDATE' => '10/25/2020',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'HP Device Monitor Manager',
+            'VERSION' => '5.37.1'
+        },
+        {
+            'VERSION' => '623.100.1',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'DiskImages UI Agent',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'VERSION' => '1.0',
+            'NAME' => 'AinuIM',
+            'COMMENTS' => '[Universal]',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Applications',
+            'PUBLISHER' => 'Microsoft',
+            'INSTALLDATE' => '06/14/2020',
+            'VERSION' => '14.0.2',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'NAME' => 'Lync'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Applications',
+            'INSTALLDATE' => '04/10/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '17.4.1',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Safari'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'PrinterProxy',
+            'VERSION' => 20
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Library/Printers',
+            'PUBLISHER' => 'HP Inc.',
+            'INSTALLDATE' => '09/26/2020',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'commandtohp',
+            'VERSION' => '2.4.1'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '5.1',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Assistant d\x{2019}e\x{301}valuation"
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Library/Application Scripts',
+            'INSTALLDATE' => '05/20/2020',
+            'NAME' => 'com.microsoft.openxml_1',
+            'COMMENTS' => '[Other]',
+            'VERSION' => undef,
+            'USERNAME' => 'admin'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'VERSION' => '1.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Famille'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'KeyboardSetupAssistant',
+            'VERSION' => '1.0'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Capture d\x{2019}e\x{301}cran",
+            'VERSION' => '1.0',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Game Center',
+            'VERSION' => '1.0'
+        },
+        {
+            'NAME' => 'Assistive Control',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '2.0',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Library/Application Scripts',
+            'INSTALLDATE' => '05/24/2020',
+            'USERNAME' => 'admin',
+            'VERSION' => undef,
+            'COMMENTS' => '[Other]',
+            'NAME' => 'group.is.workflow_0'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'OpenSpell',
+            'VERSION' => '1.0',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'VERSION' => '10.0',
+            'NAME' => 'Livre des polices',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Library/Printers',
+            'PUBLISHER' => 'Kyocera Document Solutions Inc.',
+            'INSTALLDATE' => '03/29/2020',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'rastertokpsl',
+            'VERSION' => '1.0.3629'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Library/Image Capture',
+            'PUBLISHER' => 'HP Inc.',
+            'INSTALLDATE' => '08/14/2020',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'HPScanner',
+            'VERSION' => '1.10.3'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '1.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'UIKitSystem'
+        },
+        {
+            'NAME' => 'Keynote',
+            'COMMENTS' => '[Intel]',
+            'VERSION' => '7.2',
+            'INSTALLDATE' => '06/15/2020',
+            'SYSTEM_CATEGORY' => 'Applications'
+        },
+        {
+            'VERSION' => '10.14',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Moniteur d\x{2019}activite\x{301}",
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'NAME' => 'Microsoft Excel',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '16.79.2',
+            'INSTALLDATE' => '02/21/2020',
+            'PUBLISHER' => 'Microsoft',
+            'SYSTEM_CATEGORY' => 'Applications'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Shortcuts Events',
+            'VERSION' => '1.0'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'NowPlayingTouchUI',
+            'VERSION' => '1.0'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'Automator Application Stub',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.3'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'Centre de notifications',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.0'
+        },
+        {
+            'INSTALLDATE' => '09/08/2020',
+            'SYSTEM_CATEGORY' => 'Library/Frameworks',
+            'NAME' => 'Adobe AIR Application Installer_0',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'VERSION' => '1.5.3'
+        },
+        {
+            'VERSION' => '4.1',
+            'NAME' => 'ParentalControls',
+            'COMMENTS' => '[Universal]',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => 10,
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'ScreenReaderUIServer'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'VERSION' => '10.15',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Utilitaire d\x{2019}archive"
+        },
+        {
+            'INSTALLDATE' => '07/09/2020',
+            'PUBLISHER' => 'Adobe Systems Inc.',
+            'SYSTEM_CATEGORY' => 'Applications/Utilities',
+            'NAME' => 'ExtendScript Toolkit',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'VERSION' => 'ESTK CS5 3.5.0.52'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '2.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Partage d\x{2019}e\x{301}cran"
+        },
+        {
+            'VERSION' => '1.7',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'SystemUIServer',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'AccessibilityVisualsAgent',
+            'VERSION' => '1.0'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Assistant re\x{301}glages",
+            'VERSION' => '10.10'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => "E\x{301}talonnage de moniteur",
+            'VERSION' => '4.14',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'VERSION' => '3.0.51507',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "WithSecure\x{2122} Elements Agent",
+            'SYSTEM_CATEGORY' => 'Applications/F-Secure',
+            'INSTALLDATE' => '01/03/2020',
+            'PUBLISHER' => 'F-Secure'
+        },
+        {
+            'VERSION' => '10.2',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Aide-me\x{301}moire",
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Applications',
+            'INSTALLDATE' => '04/17/2020',
+            'PUBLISHER' => 'Adobe Inc.',
+            'VERSION' => '24.002.20687',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Adobe Acrobat Reader'
+        },
+        {
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'HP Product Research Manager',
+            'VERSION' => '10.37.1',
+            'SYSTEM_CATEGORY' => 'Library/Printers',
+            'INSTALLDATE' => '10/25/2020',
+            'PUBLISHER' => 'HP Inc.'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'VERSION' => 10,
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Pre\x{301}sentation de VoiceOver"
+        },
+        {
+            'VERSION' => '1.0',
+            'NAME' => 'PowerChime',
+            'COMMENTS' => '[Universal]',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Assistant Boot Camp',
+            'VERSION' => '6.1.0'
+        },
+        {
+            'VERSION' => '3.5.15.0',
+            'NAME' => 'Setup',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'INSTALLDATE' => '09/14/2020',
+            'PUBLISHER' => 'Adobe Systems Inc.',
+            'SYSTEM_CATEGORY' => 'Library/Application Support'
+        },
+        {
+            'VERSION' => '2.0',
+            'NAME' => 'AirPlayUIAgent',
+            'COMMENTS' => '[Universal]',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'VERSION' => '111.0.5563.110',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Google Chrome',
+            'SYSTEM_CATEGORY' => 'Applications',
+            'PUBLISHER' => 'Google LLC',
+            'INSTALLDATE' => '03/21/2020'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Assistant re\x{301}glages Bluetooth",
+            'VERSION' => '9.0'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'QuickLookUIHelper',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '5.0'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Time Machine',
+            'VERSION' => '1.3'
+        },
+        {
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '05/30/2020',
+            'SYSTEM_CATEGORY' => 'Library/Apple',
+            'VERSION' => '1.93',
+            'NAME' => 'MRT',
+            'COMMENTS' => '[Universal]'
+        },
+        {
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'NAME' => 'Spotlight',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '3.0'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Programme d\x{2019}installation de profil",
+            'VERSION' => '1.0',
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'EscrowSecurityAlert',
+            'VERSION' => '1.0'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'UASharedPasteboardProgressUI',
+            'VERSION' => '54.1'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'VERSION' => '9.0.59.2',
+            'COMMENTS' => '[Universal]',
+            'NAME' => "Programme de te\x{301}le\x{301}chargement de parole"
+        },
+        {
+            'NAME' => 'AAM Updates Notifier',
+            'COMMENTS' => '[32-bit (Unsupported)]',
+            'VERSION' => '1.5.113.0',
+            'INSTALLDATE' => '09/14/2020',
+            'PUBLISHER' => 'Adobe Systems Inc.',
+            'SYSTEM_CATEGORY' => 'Library/Application Support'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'VERSION' => '9.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'BluetoothUIServer'
+        },
+        {
+            'NAME' => 'Microsoft Teams classic',
+            'COMMENTS' => '[Universal]',
+            'VERSION' => '1.00.627656',
+            'PUBLISHER' => 'Microsoft',
+            'INSTALLDATE' => '11/08/2020',
+            'SYSTEM_CATEGORY' => 'Applications'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'NativeMessagingHost',
+            'VERSION' => '5.0',
+            'SYSTEM_CATEGORY' => 'Library/Application Support',
+            'PUBLISHER' => 'Adobe Inc.',
+            'INSTALLDATE' => '02/01/2020'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Siri',
+            'VERSION' => '1.0'
+        },
+        {
+            'PUBLISHER' => 'Skype Communications S.a.r.l',
+            'INSTALLDATE' => '11/08/2020',
+            'SYSTEM_CATEGORY' => 'Applications',
+            'VERSION' => '16.30.32',
+            'NAME' => 'Skype Entreprise',
+            'COMMENTS' => '[Intel]'
+        },
+        {
+            'VERSION' => '9.0',
+            'NAME' => 'OBEXAgent',
+            'COMMENTS' => '[Universal]',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        },
+        {
+            'COMMENTS' => '[Other]',
+            'NAME' => 'com.microsoft.openxml_0',
+            'VERSION' => undef,
+            'USERNAME' => 'admin',
+            'INSTALLDATE' => '05/20/2020',
+            'SYSTEM_CATEGORY' => 'Library/Containers'
+        },
+        {
+            'VERSION' => '24.055.0317',
+            'NAME' => 'OneDrive',
+            'COMMENTS' => '[Universal]',
+            'PUBLISHER' => 'Microsoft',
+            'INSTALLDATE' => '04/10/2020',
+            'SYSTEM_CATEGORY' => 'Applications'
+        },
+        {
+            'NAME' => 'FileZilla',
+            'COMMENTS' => '[Intel]',
+            'VERSION' => '3.64.0',
+            'PUBLISHER' => 'Tim Kosse',
+            'INSTALLDATE' => '04/26/2020',
+            'SYSTEM_CATEGORY' => 'Applications'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Horloge',
+            'VERSION' => '1.0'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'System/Library',
+            'PUBLISHER' => 'Apple',
+            'INSTALLDATE' => '02/26/2020',
+            'VERSION' => '1.0',
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'Gestion du stockage'
+        },
+        {
+            'COMMENTS' => '[Universal]',
+            'NAME' => 'TV',
+            'VERSION' => '1.2.5',
+            'SYSTEM_CATEGORY' => 'System/Applications',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple'
+        },
+        {
+            'SYSTEM_CATEGORY' => 'Applications',
+            'INSTALLDATE' => '06/15/2020',
+            'COMMENTS' => '[Intel]',
+            'NAME' => 'iMovie',
+            'VERSION' => '10.1.6'
+        },
+        {
+            'VERSION' => '1.0',
+            'NAME' => 'BluetoothUIService',
+            'COMMENTS' => '[Universal]',
+            'INSTALLDATE' => '02/26/2020',
+            'PUBLISHER' => 'Apple',
+            'SYSTEM_CATEGORY' => 'System/Library'
+        }
+    ],
 );
 
 

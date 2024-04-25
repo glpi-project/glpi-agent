@@ -55,6 +55,8 @@ sub _getSoftwaresList {
             $app->{'Get Info String'} =~ /^\S+, [A-Z]:\\/;
 
         my $version = $app->{'Version'};
+        # Cleanup dotted version from spaces
+        $version =~ s/ \. /./g unless empty($version);
         my $soft = {
             NAME      => $name,
             VERSION   => $version,
@@ -77,10 +79,10 @@ sub _getSoftwaresList {
             if (grep { /\bApple\b/i } @publisher) {
                 $publisher = 'Apple';
             } else {
-                ($publisher) = grep { /(\(C\)|\x{a9}|Copyright)/i } @publisher;
+                ($publisher) = grep { /(\(C\)|\x{a9}|Copyright|\x{ef}\x{bf}\x{bd})/i } @publisher;
                 unless (empty($publisher)) {
                     $publisher = $1 if $publisher =~ /\sby\s(.*)/i;
-                    $publisher =~ s/.*(\(C\)|\x{a9}|Copyright)\s*//gi;
+                    $publisher =~ s/.*(\(C\)|\x{a9}|Copyright|\x{ef}\x{bf}\x{bd})\s*//gi;
                     $publisher =~ s/\s*All rights reserved\.?\s*//i;
                     $publisher =~ s/\s*Incorporated.*/ Inc./i;
                     $publisher =~ s/\s*Corporation.*//i;
