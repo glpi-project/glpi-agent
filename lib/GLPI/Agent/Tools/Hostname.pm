@@ -60,8 +60,11 @@ sub _getHostnameUnix {
 
     if ($params{fqdn}) {
         Net::Domain->require();
-        $hostname = Net::Domain::hostfqdn();
-        $hostname =~ s/\.$//;  # the module may return a trailing dot
+        my $fqdn = Net::Domain::hostfqdn();
+        unless (empty($fqdn)) {
+            $fqdn =~ s/\.$//;  # the module may return a trailing dot
+            $hostname = $fqdn;
+        }
     } else {
         Sys::Hostname->require();
         $hostname = Sys::Hostname::hostname();

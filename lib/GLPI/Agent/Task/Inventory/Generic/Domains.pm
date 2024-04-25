@@ -47,7 +47,7 @@ sub doInventory {
     # attempt to deduce the actual domain from the host name
     # and fallback on the domain search list
     my $hostname = getHostname(fqdn => 1);
-    my $pos = index $hostname, '.';
+    my $pos = empty($hostname) ? 0 : index $hostname, '.';
 
     if ($pos > 0) {
         $hostname =~ s/\.+$//;
