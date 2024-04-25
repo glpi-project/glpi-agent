@@ -46,7 +46,7 @@ sub _getSoftwaresList {
     my $info = $infos->{Applications};
 
     my @softwares;
-    for my $name (keys %$info) {
+    for my $name (sort keys %$info) {
         my $app = $info->{$name};
 
         # Windows application found by Parallels (issue #716)

@@ -39,7 +39,7 @@ sub _getVideoCards {
 
     my @videos;
 
-    foreach my $videoName (keys %{$infos->{'Graphics/Displays'}}) {
+    foreach my $videoName (sort keys %{$infos->{'Graphics/Displays'}}) {
         my $videoCardInfo = $infos->{'Graphics/Displays'}->{$videoName};
 
         my $memory = getCanonicalSize($videoCardInfo->{'VRAM (Total)'} ||

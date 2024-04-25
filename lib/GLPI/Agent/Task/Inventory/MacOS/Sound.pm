@@ -23,7 +23,7 @@ sub doInventory {
     my $infos = getSystemProfilerInfos(type => 'SPAudioDataType', logger => $logger);
     my $info = $infos->{'Audio (Built In)'};
 
-    foreach my $sound (keys %$info){
+    foreach my $sound (sort keys %$info){
         $inventory->addEntry(
             section => 'SOUNDS',
             entry   => {

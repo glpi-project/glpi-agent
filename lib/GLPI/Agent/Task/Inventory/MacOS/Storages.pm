@@ -44,7 +44,8 @@ sub _getSerialATAStorages {
     );
     return unless $infos->{storages};
     my @storages = ();
-    foreach my $hash (values %{$infos->{storages}}) {
+    foreach my $name (sort keys %{$infos->{storages}}) {
+        my $hash = $infos->{storages}->{$name};
         next unless $hash->{partition_map_type} || $hash->{detachable_drive};
         next if $hash->{_name} =~ /controller/i;
         my $storage = {
@@ -81,7 +82,8 @@ sub _getDiscBurningStorages {
     );
     return @storages unless $infos->{storages};
 
-    foreach my $hash (values %{$infos->{storages}}) {
+    foreach my $name (sort keys %{$infos->{storages}}) {
+        my $hash = $infos->{storages}->{$name};
         my $storage = {
             NAME         => $hash->{bsd_name} || $hash->{_name},
             MANUFACTURER => getCanonicalManufacturer($hash->{manufacturer} || $hash->{_name}),
@@ -114,7 +116,8 @@ sub _getCardReaderStorages {
     return unless $infos->{storages};
 
     my @storages = ();
-    foreach my $hash (values %{$infos->{storages}}) {
+    foreach my $name (sort keys %{$infos->{storages}}) {
+        my $hash = $infos->{storages}->{$name};
         next if ($hash->{iocontent} || $hash->{file_system} || $hash->{mount_point}) && !$hash->{partition_map_type};
         my $storage;
         if ($hash->{_name} eq 'spcardreader') {
@@ -152,7 +155,8 @@ sub _getUSBStorages {
     return unless $infos->{storages};
 
     my @storages = ();
-    foreach my $hash (values %{$infos->{storages}}) {
+    foreach my $name (sort keys %{$infos->{storages}}) {
+        my $hash = $infos->{storages}->{$name};
         unless ($hash->{bsn_name} && $hash->{bsd_name} =~ /^disk/) {
             next if $hash->{_name} eq 'Mass Storage Device';
             next if $hash->{_name} =~ /keyboard|controller|IR Receiver|built-in|hub|mouse|tablet|usb(?:\d+)?bus/i;
@@ -215,7 +219,8 @@ sub _getFireWireStorages {
     return unless $infos->{storages};
 
     my @storages = ();
-    foreach my $hash (values %{$infos->{storages}}) {
+    foreach my $name (sort keys %{$infos->{storages}}) {
+        my $hash = $infos->{storages}->{$name};
         next unless $hash->{partition_map_type};
         my $storage = {
             NAME         => $hash->{bsd_name} || $hash->{_name},
