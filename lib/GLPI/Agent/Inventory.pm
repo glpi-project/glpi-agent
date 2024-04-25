@@ -516,6 +516,7 @@ sub computeChecksum {
     $postpone = 0 unless $self->getFormat() eq 'json';
 
     my $save_state = 0;
+    my @delete_sections;
     foreach my $section (@checked_sections) {
         my ($sha, $len) = _checksum($section, $self->{content}->{$section});
         my $state = $last_state->get($section);
@@ -524,6 +525,8 @@ sub computeChecksum {
                 $logger->debug("Section $section has disappeared since last inventory");
                 $last_state->delete($section);
                 $save_state++;
+                # On missing section, a full inventory must be submitted
+                $postpone = 0;
             }
             next;
         }
@@ -535,10 +538,9 @@ sub computeChecksum {
             defined($state->{len}) && $state->{len} == $len &&
             defined($state->{digest}) && $state->{digest} eq $digest
         ) {
-            # If we can postpone full inventory, remove section and set inventory as partial
+            # In the case we will be able to postpone full inventory, keep section as to be removed
             if ($postpone && !$always_keep_sections{$section}) {
-                delete $self->{content}->{$section};
-                $self->isPartial(1);
+                push @delete_sections, $section;
             }
             next;
         }
@@ -553,6 +555,14 @@ sub computeChecksum {
             }
         );
         $save_state++;
+    }
+
+    # If we can postpone full inventory, remove section and set inventory as partial
+    if ($postpone && @delete_sections) {
+        foreach my $section (@delete_sections) {
+            delete $self->{content}->{$section};
+        }
+        $self->isPartial(1);
     }
 
     $logger->debug("Full inventory ".
