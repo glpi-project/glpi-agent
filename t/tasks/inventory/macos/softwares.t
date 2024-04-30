@@ -22,6 +22,8 @@ my %tests = (
     'sample2' => [ 407, 0 ],
     'sample3' => [ 317, 0 ],
     'sample4' => [ 367, 0 ],
+    'sample5' => [ 367, 0 ],
+    'sample6' => [ 362, 0 ],
 );
 
 plan tests => 3 * scalar (keys %tests)
