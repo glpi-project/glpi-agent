@@ -3,14 +3,14 @@ use utf8;
 
 $results = [
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '06/30/2009',
         'NAME' => '50onPaletteServer',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '1.0.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => 'ARDAgent',
         'PUBLISHER' => 'Apple',
@@ -18,14 +18,14 @@ $results = [
         'VERSION' => '3.5.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'ARM Help',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '4.7.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'AU Lab',
         'PUBLISHER' => 'Apple',
@@ -33,7 +33,7 @@ $results = [
         'VERSION' => '2.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'AVRCPAgent',
         'PUBLISHER' => 'Apple',
@@ -41,14 +41,14 @@ $results = [
         'VERSION' => '2.4.5'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '10/23/2010',
         'NAME' => 'About Xcode',
         'SYSTEM_CATEGORY' => 'Developer',
         'VERSION' => 169
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Accessibility Inspector',
         'PUBLISHER' => 'Apple',
@@ -56,14 +56,14 @@ $results = [
         'VERSION' => '2.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Accessibility Verifier',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '1.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'AddPrinter',
         'PUBLISHER' => 'Apple',
@@ -71,7 +71,7 @@ $results = [
         'VERSION' => '6.6'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'AddressBookManager',
         'PUBLISHER' => 'Apple',
@@ -79,7 +79,7 @@ $results = [
         'VERSION' => '2.0.4'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'AddressBookSync',
         'PUBLISHER' => 'Apple',
@@ -87,7 +87,7 @@ $results = [
         'VERSION' => '2.0.4'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => "Agent de la borne d\x{2019}acc\x{e8}s AirPort",
         'PUBLISHER' => 'Apple',
@@ -95,14 +95,14 @@ $results = [
         'VERSION' => '1.5.5'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'Aide-mémoire',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '7.0'
     },
     {
-        'COMMENTS' => '[PowerPC]',
+        'ARCH' => 'PowerPC',
         'INSTALLDATE' => '12/12/2005',
         'NAME' => 'Alerts Daemon',
         'PUBLISHER' => 'Microsoft',
@@ -110,7 +110,7 @@ $results = [
         'VERSION' => '040322'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Aperçu',
         'PUBLISHER' => 'Apple',
@@ -118,14 +118,14 @@ $results = [
         'VERSION' => '5.0.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => 'App Store',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '1.0.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Apple80211Agent',
         'PUBLISHER' => 'Apple',
@@ -133,7 +133,7 @@ $results = [
         'VERSION' => '6.2.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => 'AppleFileServer',
         'PUBLISHER' => 'Apple',
@@ -141,7 +141,7 @@ $results = [
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'AppleGraphicsWarning',
         'PUBLISHER' => 'Apple',
@@ -149,7 +149,7 @@ $results = [
         'VERSION' => '2.0.3'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => 'AppleMobileDeviceHelper',
         'PUBLISHER' => 'Apple',
@@ -157,7 +157,7 @@ $results = [
         'VERSION' => '5.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => 'AppleMobileSync',
         'PUBLISHER' => 'Apple',
@@ -165,7 +165,7 @@ $results = [
         'VERSION' => '5.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'AppleScript Runner',
         'PUBLISHER' => 'Apple',
@@ -173,21 +173,21 @@ $results = [
         'VERSION' => '1.0.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Application Loader',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '1.4.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/30/2009',
         'NAME' => 'Aquamacs Emacs',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => 22
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Assistant Boot Camp',
         'PUBLISHER' => 'Apple',
@@ -195,7 +195,7 @@ $results = [
         'VERSION' => '3.0.4'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Assistant de certification',
         'PUBLISHER' => 'Apple',
@@ -203,14 +203,14 @@ $results = [
         'VERSION' => '3.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Assistant migration',
         'SYSTEM_CATEGORY' => 'Applications/Utilities',
         'VERSION' => '3.0.4'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '07/31/2009',
         'NAME' => 'Assistant réglages',
         'PUBLISHER' => 'Apple',
@@ -218,7 +218,7 @@ $results = [
         'VERSION' => '10.6'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Assistant réglages Bluetooth',
         'PUBLISHER' => 'Apple',
@@ -226,7 +226,7 @@ $results = [
         'VERSION' => '2.4.5'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'Assistant réglages de réseau',
         'PUBLISHER' => 'Apple',
@@ -234,7 +234,7 @@ $results = [
         'VERSION' => '1.6'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'AutoImporter',
         'PUBLISHER' => 'Apple',
@@ -242,7 +242,7 @@ $results = [
         'VERSION' => '6.0.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Automator',
         'PUBLISHER' => 'Apple',
@@ -250,7 +250,7 @@ $results = [
         'VERSION' => '2.1.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Automator Launcher',
         'PUBLISHER' => 'Apple',
@@ -258,7 +258,7 @@ $results = [
         'VERSION' => '1.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Automator Runner',
         'PUBLISHER' => 'Apple',
@@ -266,7 +266,7 @@ $results = [
         'VERSION' => '1.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '10/06/2009',
         'NAME' => 'BibDesk',
         'PUBLISHER' => 'Michael O. McCracken.',
@@ -274,70 +274,70 @@ $results = [
         'VERSION' => '1.3.20'
     },
     {
-        'COMMENTS' => '[PowerPC]',
+        'ARCH' => 'PowerPC',
         'INSTALLDATE' => '12/13/2006',
         'NAME' => 'Bienvenue sur Tiger',
         'SYSTEM_CATEGORY' => 'Library/Documentation',
         'VERSION' => '1.0.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '04/05/2007',
         'NAME' => 'Big Bang 4-In-A-Row',
         'SYSTEM_CATEGORY' => 'Applications/Big Bang Board Games',
         'VERSION' => '2.51'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '04/05/2007',
         'NAME' => 'Big Bang Backgammon',
         'SYSTEM_CATEGORY' => 'Applications/Big Bang Board Games',
         'VERSION' => '2.51'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '04/05/2007',
         'NAME' => 'Big Bang Checkers',
         'SYSTEM_CATEGORY' => 'Applications/Big Bang Board Games',
         'VERSION' => '2.51'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '04/05/2007',
         'NAME' => 'Big Bang Chess',
         'SYSTEM_CATEGORY' => 'Applications/Big Bang Board Games',
         'VERSION' => '2.51'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '04/05/2007',
         'NAME' => 'Big Bang Mancala',
         'SYSTEM_CATEGORY' => 'Applications/Big Bang Board Games',
         'VERSION' => '2.51'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '04/05/2007',
         'NAME' => 'Big Bang Reversi',
         'SYSTEM_CATEGORY' => 'Applications/Big Bang Board Games',
         'VERSION' => '2.51'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '04/05/2007',
         'NAME' => 'Big Bang Tic-Tac-Toe',
         'SYSTEM_CATEGORY' => 'Applications/Big Bang Board Games',
         'VERSION' => '2.51'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'BigTop',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '4.7.3'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Bluetooth Diagnostics Utility',
         'PUBLISHER' => 'Apple',
@@ -345,7 +345,7 @@ $results = [
         'VERSION' => '2.3.6'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Bluetooth Explorer',
         'PUBLISHER' => 'Apple',
@@ -353,7 +353,7 @@ $results = [
         'VERSION' => '2.3.6'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'BluetoothAudioAgent',
         'PUBLISHER' => 'Apple',
@@ -361,7 +361,7 @@ $results = [
         'VERSION' => '2.4.5'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'BluetoothCamera',
         'PUBLISHER' => 'Apple',
@@ -369,7 +369,7 @@ $results = [
         'VERSION' => '6.0.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'BluetoothUIServer',
         'PUBLISHER' => 'Apple',
@@ -377,7 +377,7 @@ $results = [
         'VERSION' => '2.4.5'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'Brother Contrôleur d\'état',
         'PUBLISHER' => 'Brother Industries',
@@ -385,7 +385,7 @@ $results = [
         'VERSION' => '3.00'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/29/2009',
         'NAME' => 'Brother Scanner',
         'PUBLISHER' => 'Brother Industries',
@@ -407,7 +407,7 @@ $results = [
         'VERSION' => '2.6.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'CCacheServer',
         'PUBLISHER' => 'Apple',
@@ -415,14 +415,14 @@ $results = [
         'VERSION' => '6.5.11'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'CHUD Remover',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '4.7.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/15/2009',
         'NAME' => 'CIJAutoSetupTool',
         'PUBLISHER' => 'CANON INC.',
@@ -430,7 +430,7 @@ $results = [
         'VERSION' => '1.7.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/15/2009',
         'NAME' => 'CIJScannerRegister',
         'PUBLISHER' => 'CANON INC.',
@@ -438,21 +438,21 @@ $results = [
         'VERSION' => '1.0.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'CPUPalette',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '4.7.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Calculette',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '4.5.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/15/2009',
         'NAME' => 'Canon IJ Printer Utility',
         'PUBLISHER' => 'CANON INC.',
@@ -460,7 +460,7 @@ $results = [
         'VERSION' => '7.17.10'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/15/2009',
         'NAME' => 'Canon IJScanner1',
         'PUBLISHER' => 'CANON INC.',
@@ -468,7 +468,7 @@ $results = [
         'VERSION' => '1.0.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/15/2009',
         'NAME' => 'Canon IJScanner2',
         'PUBLISHER' => 'CANON INC.',
@@ -476,28 +476,28 @@ $results = [
         'VERSION' => '1.0.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'Capture',
         'SYSTEM_CATEGORY' => 'Applications/Utilities',
         'VERSION' => '1.5'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => "Carnet d\x{2019}adresses",
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '5.0.3'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '07/02/2009',
         'NAME' => 'CharacterPalette',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '1.0.4'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'Chess',
         'PUBLISHER' => 'Apple',
@@ -505,21 +505,21 @@ $results = [
         'VERSION' => '2.4.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'ChineseHandwriting',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '1.0.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'ChineseTextConverterService',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '1.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '05/28/2009',
         'NAME' => 'Colorimètre numérique',
         'PUBLISHER' => 'Apple',
@@ -527,14 +527,14 @@ $results = [
         'VERSION' => '3.7.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '03/15/2006',
         'NAME' => 'Comic Life',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '1.2.4 (v554)'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Configuration actions de dossier',
         'PUBLISHER' => 'Apple',
@@ -542,7 +542,7 @@ $results = [
         'VERSION' => '1.1.4'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Configuration audio et MIDI',
         'PUBLISHER' => 'Apple',
@@ -550,21 +550,21 @@ $results = [
         'VERSION' => '3.0.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Console',
         'SYSTEM_CATEGORY' => 'Applications/Utilities',
         'VERSION' => '10.6.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Core Image Fun House',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '2.1.43'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'CoreLocationAgent',
         'PUBLISHER' => 'Apple',
@@ -572,7 +572,7 @@ $results = [
         'VERSION' => '12.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'CoreServicesUIAgent',
         'PUBLISHER' => 'Apple',
@@ -580,14 +580,14 @@ $results = [
         'VERSION' => '41.5'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'CrashReporterPrefs',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '10.6.3'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Création de page Web',
         'PUBLISHER' => 'Apple',
@@ -595,7 +595,7 @@ $results = [
         'VERSION' => '6.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Dashboard',
         'PUBLISHER' => 'Apple',
@@ -603,14 +603,14 @@ $results = [
         'VERSION' => '1.7'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Dashcode',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '3.0.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Database Events',
         'PUBLISHER' => 'Apple',
@@ -618,7 +618,7 @@ $results = [
         'VERSION' => '1.0.4'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/18/2009',
         'NAME' => 'Deskjet',
         'PUBLISHER' => 'Hewlett-Packard Development Company',
@@ -626,7 +626,7 @@ $results = [
         'VERSION' => '3.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Diagnostic réseau',
         'PUBLISHER' => 'Apple',
@@ -634,14 +634,14 @@ $results = [
         'VERSION' => '1.1.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Dictionnaire',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '2.1.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'DiskImageMounter',
         'PUBLISHER' => 'Apple',
@@ -649,14 +649,14 @@ $results = [
         'VERSION' => '10.6.8'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'DiskImages UI Agent',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '289.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Dock',
         'PUBLISHER' => 'Apple',
@@ -664,14 +664,14 @@ $results = [
         'VERSION' => '1.7'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'EM64T Help',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '4.7.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '07/09/2009',
         'NAME' => 'EPIJAutoSetupTool2',
         'PUBLISHER' => 'SEIKO EPSON',
@@ -679,7 +679,7 @@ $results = [
         'VERSION' => '8.02'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '07/09/2009',
         'NAME' => 'EPSON Scanner',
         'PUBLISHER' => 'EPSON',
@@ -687,14 +687,14 @@ $results = [
         'VERSION' => '5.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Embed',
         'SYSTEM_CATEGORY' => 'Library/Scripts',
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '07/09/2009',
         'NAME' => 'Epson Printer Utility Lite',
         'PUBLISHER' => 'Epson',
@@ -702,14 +702,14 @@ $results = [
         'VERSION' => '8.02'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '10/06/2009',
         'NAME' => 'Excalibur',
         'SYSTEM_CATEGORY' => 'Applications/TeX',
         'VERSION' => '4.0.7'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Exposé',
         'PUBLISHER' => 'Apple',
@@ -717,14 +717,14 @@ $results = [
         'VERSION' => '1.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Extract',
         'SYSTEM_CATEGORY' => 'Library/Scripts',
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'File Sync',
         'PUBLISHER' => 'Apple',
@@ -732,14 +732,14 @@ $results = [
         'VERSION' => '5.0.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'FileMerge',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '2.5'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'FileSyncAgent',
         'PUBLISHER' => 'Apple',
@@ -747,7 +747,7 @@ $results = [
         'VERSION' => '5.0.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Finder',
         'PUBLISHER' => 'Apple',
@@ -755,7 +755,7 @@ $results = [
         'VERSION' => '10.6.8'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Folder Actions Dispatcher',
         'PUBLISHER' => 'Apple',
@@ -763,7 +763,7 @@ $results = [
         'VERSION' => '1.0.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'FontRegistryUIAgent',
         'PUBLISHER' => 'Apple',
@@ -771,7 +771,7 @@ $results = [
         'VERSION' => '33.12'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'FontSyncScripting',
         'PUBLISHER' => 'Apple',
@@ -779,7 +779,7 @@ $results = [
         'VERSION' => '2.0.6'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Front Row',
         'PUBLISHER' => 'Apple',
@@ -787,7 +787,7 @@ $results = [
         'VERSION' => '2.2.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Front Row_0',
         'PUBLISHER' => 'Apple',
@@ -795,7 +795,7 @@ $results = [
         'VERSION' => '1.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '10/15/2009',
         'NAME' => 'GarageBand',
         'PUBLISHER' => 'Apple',
@@ -803,7 +803,7 @@ $results = [
         'VERSION' => '3.0.5'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '10/22/2010',
         'NAME' => 'Git Gui',
         'PUBLISHER' => 'Shawn Pearce',
@@ -811,35 +811,35 @@ $results = [
         'VERSION' => '0.13.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '04/07/2009',
         'NAME' => 'Grapher',
         'SYSTEM_CATEGORY' => 'Applications/Utilities',
         'VERSION' => '2.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2009',
         'NAME' => "Guide de l\x{2019}utilisateur de Keynote",
         'SYSTEM_CATEGORY' => 'Library/Documentation',
         'VERSION' => '1.0.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2009',
         'NAME' => "Guide de l\x{2019}utilisateur de Pages",
         'SYSTEM_CATEGORY' => 'Library/Documentation',
         'VERSION' => '1.0.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'HALLab',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '1.6'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/23/2009',
         'NAME' => 'HP Printer Utility',
         'PUBLISHER' => 'Hewlett-Packard Development Company',
@@ -847,7 +847,7 @@ $results = [
         'VERSION' => '8.1.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/23/2009',
         'NAME' => 'HP Utility',
         'PUBLISHER' => 'Hewlett-Packard Development Company',
@@ -855,7 +855,7 @@ $results = [
         'VERSION' => '4.6.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '07/25/2009',
         'NAME' => 'HPFaxBackend',
         'PUBLISHER' => 'Hewlett-Packard Development Company',
@@ -863,7 +863,7 @@ $results = [
         'VERSION' => '3.1.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '07/24/2009',
         'NAME' => 'HPScanner',
         'PUBLISHER' => 'Hewlett-Packard Company',
@@ -871,14 +871,14 @@ $results = [
         'VERSION' => '1.1.52'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Help Indexer',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '4.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'HelpViewer',
         'PUBLISHER' => 'Apple',
@@ -886,28 +886,28 @@ $results = [
         'VERSION' => '5.0.4'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'IA32 Help',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '4.7.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'IORegistryExplorer',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '2.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Icon Composer',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '2.1.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Image Capture Extension',
         'PUBLISHER' => 'Apple',
@@ -915,7 +915,7 @@ $results = [
         'VERSION' => '6.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Image Capture Web Server',
         'PUBLISHER' => 'Apple',
@@ -923,7 +923,7 @@ $results = [
         'VERSION' => '6.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Image Events',
         'PUBLISHER' => 'Apple',
@@ -931,7 +931,7 @@ $results = [
         'VERSION' => '1.1.4'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'ImageCaptureService',
         'PUBLISHER' => 'Apple',
@@ -939,14 +939,14 @@ $results = [
         'VERSION' => '6.0.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'IncompatibleAppDisplay',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => 305
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Informations Système',
         'PUBLISHER' => 'Apple',
@@ -954,7 +954,7 @@ $results = [
         'VERSION' => '10.6.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'InkServer',
         'PUBLISHER' => 'Apple',
@@ -962,7 +962,7 @@ $results = [
         'VERSION' => '1.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/16/2009',
         'NAME' => 'Inkjet',
         'PUBLISHER' => 'Hewlett-Packard Development Company',
@@ -970,7 +970,7 @@ $results = [
         'VERSION' => '3.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/16/2009',
         'NAME' => 'Inkjet1',
         'PUBLISHER' => 'Hewlett-Packard Development Company',
@@ -978,7 +978,7 @@ $results = [
         'VERSION' => '2.1.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/16/2009',
         'NAME' => 'Inkjet3',
         'PUBLISHER' => 'Hewlett-Packard Development Company',
@@ -986,7 +986,7 @@ $results = [
         'VERSION' => '2.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/16/2009',
         'NAME' => 'Inkjet4',
         'PUBLISHER' => 'Hewlett-Packard Development Company',
@@ -994,7 +994,7 @@ $results = [
         'VERSION' => '2.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/16/2009',
         'NAME' => 'Inkjet5',
         'PUBLISHER' => 'Hewlett-Packard Development Company',
@@ -1002,7 +1002,7 @@ $results = [
         'VERSION' => '2.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/16/2009',
         'NAME' => 'Inkjet6',
         'PUBLISHER' => 'Hewlett-Packard Development Company',
@@ -1010,7 +1010,7 @@ $results = [
         'VERSION' => '1.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/16/2009',
         'NAME' => 'Inkjet8',
         'PUBLISHER' => 'Hewlett-Packard Development Company',
@@ -1018,7 +1018,7 @@ $results = [
         'VERSION' => '2.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Installation à distance de Mac OS X',
         'PUBLISHER' => 'Apple',
@@ -1026,28 +1026,28 @@ $results = [
         'VERSION' => '1.1.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Instruments',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '2.7'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Interface Builder',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '3.2.6'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => 'Jar Bundler',
         'SYSTEM_CATEGORY' => 'usr/share',
         'VERSION' => '13.6.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => 'Jar Launcher',
         'PUBLISHER' => 'Apple',
@@ -1055,14 +1055,14 @@ $results = [
         'VERSION' => '13.6.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => 'Java VisualVM',
         'SYSTEM_CATEGORY' => 'usr/share',
         'VERSION' => '13.6.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => 'Java Web Start',
         'PUBLISHER' => 'Apple',
@@ -1070,7 +1070,7 @@ $results = [
         'VERSION' => '13.6.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'KerberosAgent',
         'PUBLISHER' => 'Apple',
@@ -1078,7 +1078,7 @@ $results = [
         'VERSION' => '6.5.11'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'KeyboardSetupAssistant',
         'PUBLISHER' => 'Apple',
@@ -1086,7 +1086,7 @@ $results = [
         'VERSION' => '10.5.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '06/11/2009',
         'NAME' => 'KeyboardViewer',
         'PUBLISHER' => 'Apple',
@@ -1094,14 +1094,14 @@ $results = [
         'VERSION' => '2.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Keychain Scripting',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '4.0.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2009',
         'NAME' => 'Keynote',
         'PUBLISHER' => 'Apple',
@@ -1109,7 +1109,7 @@ $results = [
         'VERSION' => '3.0.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '05/05/2009',
         'NAME' => 'KoreanIM',
         'PUBLISHER' => 'Apple',
@@ -1117,28 +1117,28 @@ $results = [
         'VERSION' => '6.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Kotoeri',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '4.2.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '10/06/2009',
         'NAME' => 'LaTeXiT',
         'SYSTEM_CATEGORY' => 'Applications/TeX',
         'VERSION' => '1.16.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => "Lanceur d\x{2019}applets",
         'SYSTEM_CATEGORY' => 'usr/share',
         'VERSION' => '13.6.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => 'Language Chooser',
         'PUBLISHER' => 'Apple',
@@ -1146,7 +1146,7 @@ $results = [
         'VERSION' => 20
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/22/2009',
         'NAME' => 'Laserjet',
         'PUBLISHER' => 'Hewlett-Packard Development Company',
@@ -1154,7 +1154,7 @@ $results = [
         'VERSION' => '1.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Lecteur DVD',
         'PUBLISHER' => 'Apple',
@@ -1162,14 +1162,14 @@ $results = [
         'VERSION' => '5.4'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '07/01/2009',
         'NAME' => 'Lexmark Scanner',
         'SYSTEM_CATEGORY' => 'Library/Image Capture',
         'VERSION' => '3.2.45'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '07/01/2009',
         'NAME' => 'LexmarkCUPSDriver',
         'PUBLISHER' => 'Lexmark International',
@@ -1177,14 +1177,14 @@ $results = [
         'VERSION' => '1.1.26'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '07/25/2009',
         'NAME' => 'License',
         'SYSTEM_CATEGORY' => 'Library/Documentation',
         'VERSION' => 11
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Livre des polices',
         'PUBLISHER' => 'Apple',
@@ -1192,21 +1192,21 @@ $results = [
         'VERSION' => '2.2.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '08/15/2010',
         'NAME' => 'MacVim',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '7.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Mail',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '4.5'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'MakePDF',
         'PUBLISHER' => 'Apple',
@@ -1214,14 +1214,14 @@ $results = [
         'VERSION' => '6.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'MallocDebug',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '1.7.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'ManagedClient',
         'PUBLISHER' => 'Apple',
@@ -1229,7 +1229,7 @@ $results = [
         'VERSION' => '2.5'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'MassStorageCamera',
         'PUBLISHER' => 'Apple',
@@ -1237,14 +1237,14 @@ $results = [
         'VERSION' => '6.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Match',
         'SYSTEM_CATEGORY' => 'Library/Scripts',
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[PowerPC]',
+        'ARCH' => 'PowerPC',
         'INSTALLDATE' => '12/22/2005',
         'NAME' => 'Microsoft Cert Manager',
         'PUBLISHER' => 'Microsoft',
@@ -1252,7 +1252,7 @@ $results = [
         'VERSION' => '050929'
     },
     {
-        'COMMENTS' => '[PowerPC]',
+        'ARCH' => 'PowerPC',
         'INSTALLDATE' => '12/12/2005',
         'NAME' => 'Microsoft Clip Gallery',
         'PUBLISHER' => 'Microsoft',
@@ -1260,7 +1260,7 @@ $results = [
         'VERSION' => '11.2.0'
     },
     {
-        'COMMENTS' => '[PowerPC]',
+        'ARCH' => 'PowerPC',
         'INSTALLDATE' => '12/12/2005',
         'NAME' => 'Microsoft Database Daemon',
         'PUBLISHER' => 'Microsoft',
@@ -1268,7 +1268,7 @@ $results = [
         'VERSION' => '11.2.0'
     },
     {
-        'COMMENTS' => '[PowerPC]',
+        'ARCH' => 'PowerPC',
         'INSTALLDATE' => '12/12/2005',
         'NAME' => 'Microsoft Entourage',
         'PUBLISHER' => 'Microsoft',
@@ -1276,7 +1276,7 @@ $results = [
         'VERSION' => '11.2.1'
     },
     {
-        'COMMENTS' => '[PowerPC]',
+        'ARCH' => 'PowerPC',
         'INSTALLDATE' => '12/12/2005',
         'NAME' => 'Microsoft Error Reporting',
         'PUBLISHER' => 'Microsoft',
@@ -1284,7 +1284,7 @@ $results = [
         'VERSION' => '050811'
     },
     {
-        'COMMENTS' => '[PowerPC]',
+        'ARCH' => 'PowerPC',
         'INSTALLDATE' => '12/12/2005',
         'NAME' => 'Microsoft Excel',
         'PUBLISHER' => 'Microsoft',
@@ -1292,7 +1292,7 @@ $results = [
         'VERSION' => '11.2.0'
     },
     {
-        'COMMENTS' => '[PowerPC]',
+        'ARCH' => 'PowerPC',
         'INSTALLDATE' => '12/12/2005',
         'NAME' => 'Microsoft Graph',
         'PUBLISHER' => 'Microsoft',
@@ -1300,7 +1300,7 @@ $results = [
         'VERSION' => '11.2.0'
     },
     {
-        'COMMENTS' => '[PowerPC]',
+        'ARCH' => 'PowerPC',
         'INSTALLDATE' => '12/12/2005',
         'NAME' => 'Microsoft Office Notifications',
         'PUBLISHER' => 'Microsoft',
@@ -1308,7 +1308,7 @@ $results = [
         'VERSION' => '11.2.0'
     },
     {
-        'COMMENTS' => '[PowerPC]',
+        'ARCH' => 'PowerPC',
         'INSTALLDATE' => '12/12/2005',
         'NAME' => 'Microsoft PowerPoint',
         'PUBLISHER' => 'Microsoft',
@@ -1316,7 +1316,7 @@ $results = [
         'VERSION' => '11.2.0'
     },
     {
-        'COMMENTS' => '[PowerPC]',
+        'ARCH' => 'PowerPC',
         'INSTALLDATE' => '12/12/2005',
         'NAME' => 'Microsoft Query',
         'PUBLISHER' => 'Microsoft',
@@ -1324,7 +1324,7 @@ $results = [
         'VERSION' => '10.0.0'
     },
     {
-        'COMMENTS' => '[PowerPC]',
+        'ARCH' => 'PowerPC',
         'INSTALLDATE' => '12/12/2005',
         'NAME' => 'Microsoft Word',
         'PUBLISHER' => 'Microsoft',
@@ -1332,14 +1332,14 @@ $results = [
         'VERSION' => '11.2.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'MiniTerm',
         'SYSTEM_CATEGORY' => 'usr/libexec',
         'VERSION' => '1.5'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Mise à jour de logiciels',
         'PUBLISHER' => 'Apple',
@@ -1347,14 +1347,14 @@ $results = [
         'VERSION' => '4.0.6'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '07/31/2009',
         'NAME' => "Moniteur d\x{2019}activit\x{e9}",
         'SYSTEM_CATEGORY' => 'Applications/Utilities',
         'VERSION' => '10.6'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'NetAuthAgent',
         'PUBLISHER' => 'Apple',
@@ -1362,7 +1362,7 @@ $results = [
         'VERSION' => '2.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'OBEXAgent',
         'PUBLISHER' => 'Apple',
@@ -1370,7 +1370,7 @@ $results = [
         'VERSION' => '2.4.5'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'ODSAgent',
         'PUBLISHER' => 'Apple',
@@ -1378,7 +1378,7 @@ $results = [
         'VERSION' => '1.4.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/16/2009',
         'NAME' => 'Officejet',
         'PUBLISHER' => 'Hewlett-Packard Development Company',
@@ -1386,7 +1386,7 @@ $results = [
         'VERSION' => '3.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '03/15/2006',
         'NAME' => 'OmniOutliner',
         'PUBLISHER' => 'The Omni Group',
@@ -1394,7 +1394,7 @@ $results = [
         'VERSION' => '3.5'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'OpenGL Driver Monitor',
         'PUBLISHER' => 'Apple',
@@ -1402,7 +1402,7 @@ $results = [
         'VERSION' => '1.5'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'OpenGL Profiler',
         'PUBLISHER' => 'Apple',
@@ -1410,14 +1410,14 @@ $results = [
         'VERSION' => '4.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'OpenGL Shader Builder',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '2.1'
     },
     {
-        'COMMENTS' => '[PowerPC]',
+        'ARCH' => 'PowerPC',
         'INSTALLDATE' => '12/12/2005',
         'NAME' => 'Organization Chart',
         'PUBLISHER' => 'Microsoft',
@@ -1425,7 +1425,7 @@ $results = [
         'VERSION' => '11.0.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => "Outil d\x{2019}\x{e9}talonnage du moniteur",
         'PUBLISHER' => 'Apple',
@@ -1433,7 +1433,7 @@ $results = [
         'VERSION' => '4.6'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'PTPCamera',
         'PUBLISHER' => 'Apple',
@@ -1441,14 +1441,14 @@ $results = [
         'VERSION' => '6.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'PackageMaker',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '3.0.4'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'PacketLogger',
         'PUBLISHER' => 'Apple',
@@ -1456,7 +1456,7 @@ $results = [
         'VERSION' => '2.3.6'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2009',
         'NAME' => 'Pages',
         'PUBLISHER' => 'Apple',
@@ -1464,7 +1464,7 @@ $results = [
         'VERSION' => '2.0.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'ParentalControls',
         'PUBLISHER' => 'Apple',
@@ -1472,7 +1472,7 @@ $results = [
         'VERSION' => '2.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => "Partage d\x{2019}\x{e9}cran",
         'PUBLISHER' => 'Apple',
@@ -1480,14 +1480,14 @@ $results = [
         'VERSION' => '1.1.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Photo Booth',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '3.0.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/16/2009',
         'NAME' => 'Photosmart',
         'PUBLISHER' => 'Hewlett-Packard Development Company',
@@ -1495,7 +1495,7 @@ $results = [
         'VERSION' => '4.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/16/2009',
         'NAME' => 'PhotosmartPro',
         'PUBLISHER' => 'Hewlett-Packard Development Company',
@@ -1503,21 +1503,21 @@ $results = [
         'VERSION' => '3.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Pixie',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '2.3'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'PluginIM',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '1.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => 'PluginProcess',
         'PUBLISHER' => 'Apple',
@@ -1525,14 +1525,14 @@ $results = [
         'VERSION' => '6534.52'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'PowerPC Help',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '4.7.3'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '07/02/2009',
         'NAME' => 'PreferenceSyncClient',
         'PUBLISHER' => 'Apple',
@@ -1540,42 +1540,42 @@ $results = [
         'VERSION' => '2.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '10/15/2009',
         'NAME' => 'Premiers contacts avec GarageBand',
         'SYSTEM_CATEGORY' => 'Library/Documentation',
         'VERSION' => '1.0.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2009',
         'NAME' => 'Premiers contacts avec iDVD',
         'SYSTEM_CATEGORY' => 'Library/Documentation',
         'VERSION' => '1.0.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2009',
         'NAME' => 'Premiers contacts avec iMovie',
         'SYSTEM_CATEGORY' => 'Library/Documentation',
         'VERSION' => '1.0.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2009',
         'NAME' => 'Premiers contacts avec iPhoto',
         'SYSTEM_CATEGORY' => 'Library/Documentation',
         'VERSION' => '1.0.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2009',
         'NAME' => 'Premiers contacts avec iWeb',
         'SYSTEM_CATEGORY' => 'Library/Documentation',
         'VERSION' => '1.0.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Printer Setup Utility',
         'PUBLISHER' => 'Apple',
@@ -1583,7 +1583,7 @@ $results = [
         'VERSION' => '6.6'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'PrinterProxy',
         'PUBLISHER' => 'Apple',
@@ -1591,7 +1591,7 @@ $results = [
         'VERSION' => '6.6'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Problem Reporter',
         'PUBLISHER' => 'Apple',
@@ -1599,7 +1599,7 @@ $results = [
         'VERSION' => '10.6.7'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '06/27/2009',
         'NAME' => "Programme d\x{2019}installation",
         'PUBLISHER' => 'Apple',
@@ -1607,7 +1607,7 @@ $results = [
         'VERSION' => '4.0'
     },
     {
-        'COMMENTS' => '[PowerPC]',
+        'ARCH' => 'PowerPC',
         'INSTALLDATE' => '12/12/2005',
         'NAME' => 'Project Gallery Launcher',
         'PUBLISHER' => 'Microsoft',
@@ -1615,35 +1615,35 @@ $results = [
         'VERSION' => '11.2.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Proof',
         'SYSTEM_CATEGORY' => 'Library/Scripts',
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Property List Editor',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '5.3'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => 'Préférences Java',
         'SYSTEM_CATEGORY' => 'Applications/Utilities',
         'VERSION' => '13.6.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Préférences Système',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '7.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => 'PubSubAgent',
         'PUBLISHER' => 'Apple',
@@ -1651,7 +1651,7 @@ $results = [
         'VERSION' => '1.0.5'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Python',
         'PUBLISHER' => 'Apple',
@@ -1659,7 +1659,7 @@ $results = [
         'VERSION' => '2.5.4'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Python Launcher',
         'PUBLISHER' => 'Apple',
@@ -1667,7 +1667,7 @@ $results = [
         'VERSION' => '2.5.4'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Python Launcher_0',
         'PUBLISHER' => 'Apple',
@@ -1675,7 +1675,7 @@ $results = [
         'VERSION' => '2.6.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Python_0',
         'PUBLISHER' => 'Apple',
@@ -1683,7 +1683,7 @@ $results = [
         'VERSION' => '2.6'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Python_1',
         'PUBLISHER' => 'Apple',
@@ -1691,28 +1691,28 @@ $results = [
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Quartz Composer',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '4.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Quartz Composer Visualizer',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '1.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Quartz Debug',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '4.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => 'QuickTime Player',
         'PUBLISHER' => 'Apple',
@@ -1726,28 +1726,28 @@ $results = [
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Reggie SE',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '4.7.3'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Remove',
         'SYSTEM_CATEGORY' => 'Library/Scripts',
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Rename',
         'SYSTEM_CATEGORY' => 'Library/Scripts',
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Repeat After Me',
         'PUBLISHER' => 'Apple',
@@ -1755,7 +1755,7 @@ $results = [
         'VERSION' => '1.3'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Résolution des conflits',
         'PUBLISHER' => 'Apple',
@@ -1763,7 +1763,7 @@ $results = [
         'VERSION' => '5.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'SCIM',
         'PUBLISHER' => 'Apple',
@@ -1771,14 +1771,14 @@ $results = [
         'VERSION' => '4.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'SRLanguageModeler',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '1.9'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => 'Safari',
         'PUBLISHER' => 'Apple',
@@ -1786,7 +1786,7 @@ $results = [
         'VERSION' => '5.1.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '07/01/2009',
         'NAME' => 'Samsung Scanner',
         'PUBLISHER' => 'Samsung Electronics Co.',
@@ -1794,21 +1794,21 @@ $results = [
         'VERSION' => '2.00.29'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Saturn',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '4.7.3'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'ScreenReaderUIServer',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '3.5.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'ScreenSaverEngine',
         'PUBLISHER' => 'Apple',
@@ -1816,7 +1816,7 @@ $results = [
         'VERSION' => '3.0.3'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'SecurityAgent',
         'PUBLISHER' => 'Apple',
@@ -1824,7 +1824,7 @@ $results = [
         'VERSION' => '5.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'SecurityFixer',
         'PUBLISHER' => 'Apple',
@@ -1832,7 +1832,7 @@ $results = [
         'VERSION' => '10.6'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '05/21/2009',
         'NAME' => 'SecurityProxy',
         'PUBLISHER' => 'Apple',
@@ -1840,7 +1840,7 @@ $results = [
         'VERSION' => '1.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'ServerJoiner',
         'PUBLISHER' => 'Apple',
@@ -1848,42 +1848,42 @@ $results = [
         'VERSION' => '10.6.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'Service de résumé',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '2.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Set Info',
         'SYSTEM_CATEGORY' => 'Library/Scripts',
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Shark',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '4.7.3'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Show Info',
         'SYSTEM_CATEGORY' => 'Library/Scripts',
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'SleepX',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '2.7'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Spaces',
         'PUBLISHER' => 'Apple',
@@ -1891,14 +1891,14 @@ $results = [
         'VERSION' => '1.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'SpeakableItems',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '3.7.8'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Speech Startup',
         'PUBLISHER' => 'Apple',
@@ -1906,7 +1906,7 @@ $results = [
         'VERSION' => '3.8.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'SpeechFeedbackWindow',
         'PUBLISHER' => 'Apple',
@@ -1914,7 +1914,7 @@ $results = [
         'VERSION' => '3.8.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'SpeechRecognitionServer',
         'PUBLISHER' => 'Apple',
@@ -1922,14 +1922,14 @@ $results = [
         'VERSION' => '3.11.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '07/12/2009',
         'NAME' => 'SpeechService',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '3.10.35'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '07/12/2009',
         'NAME' => 'SpeechSynthesisServer',
         'PUBLISHER' => 'Apple',
@@ -1937,28 +1937,28 @@ $results = [
         'VERSION' => '3.10.35'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Spin Control',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '0.9'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'SpindownHD',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '4.7.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '07/24/2009',
         'NAME' => 'Spotlight',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '2.0'
     },
     {
-        'COMMENTS' => '[PowerPC]',
+        'ARCH' => 'PowerPC',
         'INSTALLDATE' => '12/12/2005',
         'NAME' => 'Supprimer Office',
         'PUBLISHER' => 'Microsoft',
@@ -1966,7 +1966,7 @@ $results = [
         'VERSION' => '11.2.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'SyncDiagnostics',
         'PUBLISHER' => 'Apple',
@@ -1974,7 +1974,7 @@ $results = [
         'VERSION' => '5.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'SyncServer',
         'PUBLISHER' => 'Apple',
@@ -1982,7 +1982,7 @@ $results = [
         'VERSION' => '5.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Syncrospector',
         'PUBLISHER' => 'Apple',
@@ -1990,7 +1990,7 @@ $results = [
         'VERSION' => '5.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'System Events',
         'PUBLISHER' => 'Apple',
@@ -1998,7 +1998,7 @@ $results = [
         'VERSION' => '1.3.4'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'SystemUIServer',
         'PUBLISHER' => 'Apple',
@@ -2006,7 +2006,7 @@ $results = [
         'VERSION' => '1.6'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'TCIM',
         'PUBLISHER' => 'Apple',
@@ -2014,7 +2014,7 @@ $results = [
         'VERSION' => '6.3'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'TWAINBridge',
         'PUBLISHER' => 'Apple',
@@ -2022,28 +2022,28 @@ $results = [
         'VERSION' => '6.0.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'TamilIM',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '1.3'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '10/06/2009',
         'NAME' => 'TeX Live Utility',
         'SYSTEM_CATEGORY' => 'Applications/TeX',
         'VERSION' => '0.65'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '10/06/2009',
         'NAME' => 'TeXShop',
         'SYSTEM_CATEGORY' => 'Applications/TeX',
         'VERSION' => '2.26'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Terminal',
         'PUBLISHER' => 'Apple',
@@ -2051,14 +2051,14 @@ $results = [
         'VERSION' => '2.1.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/27/2009',
         'NAME' => 'TextEdit',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '1.6'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'Ticket Viewer',
         'PUBLISHER' => 'Apple',
@@ -2066,7 +2066,7 @@ $results = [
         'VERSION' => '1.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Time Machine',
         'PUBLISHER' => 'Apple',
@@ -2074,7 +2074,7 @@ $results = [
         'VERSION' => '1.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Transfert de podcast',
         'PUBLISHER' => 'Apple',
@@ -2082,7 +2082,7 @@ $results = [
         'VERSION' => '2.0.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => "Transfert d\x{2019}images",
         'PUBLISHER' => 'Apple',
@@ -2090,21 +2090,21 @@ $results = [
         'VERSION' => '6.0.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => "Trousseau d\x{2019}acc\x{e8}s",
         'SYSTEM_CATEGORY' => 'Applications/Utilities',
         'VERSION' => '4.1.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/28/2011',
         'NAME' => 'TrueCrypt',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '7.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Type1Camera',
         'PUBLISHER' => 'Apple',
@@ -2112,7 +2112,7 @@ $results = [
         'VERSION' => '6.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Type2Camera',
         'PUBLISHER' => 'Apple',
@@ -2120,7 +2120,7 @@ $results = [
         'VERSION' => '6.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Type3Camera',
         'PUBLISHER' => 'Apple',
@@ -2128,7 +2128,7 @@ $results = [
         'VERSION' => '6.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Type4Camera',
         'PUBLISHER' => 'Apple',
@@ -2136,7 +2136,7 @@ $results = [
         'VERSION' => '6.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Type5Camera',
         'PUBLISHER' => 'Apple',
@@ -2144,7 +2144,7 @@ $results = [
         'VERSION' => '6.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Type6Camera',
         'PUBLISHER' => 'Apple',
@@ -2152,7 +2152,7 @@ $results = [
         'VERSION' => '6.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Type7Camera',
         'PUBLISHER' => 'Apple',
@@ -2160,7 +2160,7 @@ $results = [
         'VERSION' => '6.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Type8Camera',
         'PUBLISHER' => 'Apple',
@@ -2168,7 +2168,7 @@ $results = [
         'VERSION' => '6.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'URL Access Scripting',
         'PUBLISHER' => 'Apple',
@@ -2176,7 +2176,7 @@ $results = [
         'VERSION' => '1.1.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'USB Prober',
         'PUBLISHER' => 'Apple',
@@ -2184,7 +2184,7 @@ $results = [
         'VERSION' => '4.0.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '07/03/2009',
         'NAME' => 'UnmountAssistantAgent',
         'PUBLISHER' => 'Apple',
@@ -2192,7 +2192,7 @@ $results = [
         'VERSION' => '1.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'UserNotificationCenter',
         'PUBLISHER' => 'Apple',
@@ -2200,7 +2200,7 @@ $results = [
         'VERSION' => '3.1.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Utilitaire AirPort',
         'PUBLISHER' => 'Apple',
@@ -2208,7 +2208,7 @@ $results = [
         'VERSION' => '5.5.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'Utilitaire AppleScript',
         'PUBLISHER' => 'Apple',
@@ -2216,7 +2216,7 @@ $results = [
         'VERSION' => '1.1.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Utilitaire ColorSync',
         'PUBLISHER' => 'Apple',
@@ -2224,7 +2224,7 @@ $results = [
         'VERSION' => '4.6.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Utilitaire RAID',
         'PUBLISHER' => 'Apple',
@@ -2232,14 +2232,14 @@ $results = [
         'VERSION' => '1.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Utilitaire VoiceOver',
         'SYSTEM_CATEGORY' => 'Applications/Utilities',
         'VERSION' => '3.5.0'
     },
     {
-        'COMMENTS' => '[PowerPC]',
+        'ARCH' => 'PowerPC',
         'INSTALLDATE' => '12/12/2005',
         'NAME' => 'Utilitaire de base de données',
         'PUBLISHER' => 'Microsoft',
@@ -2247,7 +2247,7 @@ $results = [
         'VERSION' => '11.2.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Utilitaire de disque',
         'PUBLISHER' => 'Apple',
@@ -2255,7 +2255,7 @@ $results = [
         'VERSION' => '11.5.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '07/01/2009',
         'NAME' => 'Utilitaire de l\'imprimante Lexmark',
         'PUBLISHER' => 'Lexmark International',
@@ -2263,7 +2263,7 @@ $results = [
         'VERSION' => '1.2.10'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/25/2009',
         'NAME' => 'Utilitaire de réseau',
         'PUBLISHER' => 'Apple',
@@ -2271,7 +2271,7 @@ $results = [
         'VERSION' => '1.4.6'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => "Utilitaire d\x{2019}annuaire",
         'PUBLISHER' => 'Apple',
@@ -2279,7 +2279,7 @@ $results = [
         'VERSION' => '2.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => "Utilitaire d\x{2019}archive",
         'PUBLISHER' => 'Apple',
@@ -2287,7 +2287,7 @@ $results = [
         'VERSION' => '10.6'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => "Utilitaire d\x{2019}emplacement de m\x{e9}moire",
         'PUBLISHER' => 'Apple',
@@ -2295,7 +2295,7 @@ $results = [
         'VERSION' => '1.4.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => "Utilitaire d\x{2019}emplacement d\x{2019}extension",
         'PUBLISHER' => 'Apple',
@@ -2303,28 +2303,28 @@ $results = [
         'VERSION' => '1.4.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '10/14/2009',
         'NAME' => 'VPNClient',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '4.9.01.0180'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'VietnameseIM',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '1.1.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2009',
         'NAME' => "Visite guid\x{e9}e d\x{2019}iWork",
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '1.0.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'VoiceOver',
         'PUBLISHER' => 'Apple',
@@ -2332,14 +2332,14 @@ $results = [
         'VERSION' => '3.5.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'VoiceOver Quickstart',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '3.5.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => 'WebKitPluginHost',
         'PUBLISHER' => 'Apple',
@@ -2354,7 +2354,7 @@ $results = [
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => 'WebProcess',
         'PUBLISHER' => 'Apple',
@@ -2362,7 +2362,7 @@ $results = [
         'VERSION' => '6534.52'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '07/23/2009',
         'NAME' => 'Wish',
         'PUBLISHER' => 'Apple',
@@ -2370,7 +2370,7 @@ $results = [
         'VERSION' => '8.4.19'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '07/23/2009',
         'NAME' => 'Wish_0',
         'PUBLISHER' => 'Apple',
@@ -2384,21 +2384,21 @@ $results = [
         'VERSION' => '2.3.6'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Xcode',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '3.2.6'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'Yahoo! Sync',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '1.3'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'check_afp',
         'PUBLISHER' => 'Apple',
@@ -2406,7 +2406,7 @@ $results = [
         'VERSION' => '2.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '07/09/2009',
         'NAME' => 'commandtoescp',
         'PUBLISHER' => 'SEIKO EPSON',
@@ -2414,7 +2414,7 @@ $results = [
         'VERSION' => '8.02'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '06/15/2009',
         'NAME' => 'commandtohp',
         'PUBLISHER' => 'Hewlett-Packard Development Company',
@@ -2422,7 +2422,7 @@ $results = [
         'VERSION' => '1.9.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'dotmacfx',
         'PUBLISHER' => 'Apple',
@@ -2430,14 +2430,14 @@ $results = [
         'VERSION' => '3.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'eaptlstrust',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '10.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '05/02/2010',
         'NAME' => 'hpdot4d',
         'PUBLISHER' => 'Hewlett-Packard Development Company',
@@ -2445,7 +2445,7 @@ $results = [
         'VERSION' => '3.5.0'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '03/30/2009',
         'NAME' => 'hprastertojpeg',
         'PUBLISHER' => 'Hewlett-Packard Development Company',
@@ -2453,7 +2453,7 @@ $results = [
         'VERSION' => '1.0.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '10/06/2009',
         'NAME' => 'i-Installer',
         'PUBLISHER' => 'Gerben Wierda--',
@@ -2461,14 +2461,14 @@ $results = [
         'VERSION' => '2.94'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'iCal',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '4.0.4'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'iCal Helper',
         'PUBLISHER' => 'Apple',
@@ -2476,14 +2476,14 @@ $results = [
         'VERSION' => '4.0.4'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'iChat',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '5.0.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'iChatAgent',
         'PUBLISHER' => 'Apple',
@@ -2491,7 +2491,7 @@ $results = [
         'VERSION' => '5.0.3'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2009',
         'NAME' => 'iDVD',
         'PUBLISHER' => 'Apple',
@@ -2499,7 +2499,7 @@ $results = [
         'VERSION' => '6.0.4'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2009',
         'NAME' => 'iMovie HD',
         'PUBLISHER' => 'Apple',
@@ -2507,7 +2507,7 @@ $results = [
         'VERSION' => '6.0.3'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2009',
         'NAME' => 'iPhoto',
         'PUBLISHER' => 'Apple',
@@ -2515,7 +2515,7 @@ $results = [
         'VERSION' => '6.0.6'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'iSync',
         'PUBLISHER' => 'Apple',
@@ -2523,14 +2523,14 @@ $results = [
         'VERSION' => '3.1.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'iSync Plug-in Maker',
         'SYSTEM_CATEGORY' => 'Developer/Applications',
         'VERSION' => '3.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => 'iTunes',
         'PUBLISHER' => 'Apple',
@@ -2538,7 +2538,7 @@ $results = [
         'VERSION' => '10.5.3'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '02/17/2009',
         'NAME' => 'iWeb',
         'PUBLISHER' => 'Apple',
@@ -2546,7 +2546,7 @@ $results = [
         'VERSION' => '1.1.2'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'kcSync',
         'PUBLISHER' => 'Apple',
@@ -2554,7 +2554,7 @@ $results = [
         'VERSION' => '3.0.1'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'loginwindow',
         'PUBLISHER' => 'Apple',
@@ -2562,7 +2562,7 @@ $results = [
         'VERSION' => '6.1.1'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '04/16/2009',
         'NAME' => 'pdftopdf',
         'PUBLISHER' => 'Hewlett-Packard Development Company',
@@ -2570,7 +2570,7 @@ $results = [
         'VERSION' => '1.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '07/09/2009',
         'NAME' => 'pdftopdf2',
         'PUBLISHER' => 'SEIKO EPSON',
@@ -2578,7 +2578,7 @@ $results = [
         'VERSION' => '8.02'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'quicklookd',
         'PUBLISHER' => 'Apple',
@@ -2586,7 +2586,7 @@ $results = [
         'VERSION' => '2.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'quicklookd32',
         'PUBLISHER' => 'Apple',
@@ -2594,7 +2594,7 @@ $results = [
         'VERSION' => '2.3'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '07/09/2009',
         'NAME' => 'rastertoescpII',
         'PUBLISHER' => 'SEIKO EPSON',
@@ -2602,7 +2602,7 @@ $results = [
         'VERSION' => '8.02'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'rcd',
         'PUBLISHER' => 'Apple',
@@ -2610,14 +2610,14 @@ $results = [
         'VERSION' => '2.6'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'store_helper',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '1.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'syncuid',
         'PUBLISHER' => 'Apple',
@@ -2625,28 +2625,28 @@ $results = [
         'VERSION' => '5.2'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '02/17/2012',
         'NAME' => 'webdav_cert_ui',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '1.8.3'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'wxPerl',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '1.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '05/19/2009',
         'NAME' => 'wxPerl_0',
         'SYSTEM_CATEGORY' => 'System/Library',
         'VERSION' => '1.0'
     },
     {
-        'COMMENTS' => '[Universal]',
+        'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2011',
         'NAME' => 'Échange de fichiers Bluetooth',
         'PUBLISHER' => 'Apple',
@@ -2654,14 +2654,14 @@ $results = [
         'VERSION' => '2.4.5'
     },
     {
-        'COMMENTS' => '[Intel]',
+        'ARCH' => 'Intel',
         'INSTALLDATE' => '04/24/2009',
         'NAME' => 'Éditeur AppleScript',
         'SYSTEM_CATEGORY' => 'Applications/Utilities',
         'VERSION' => '2.3'
     },
     {
-        'COMMENTS' => '[PowerPC]',
+        'ARCH' => 'PowerPC',
         'INSTALLDATE' => '12/12/2005',
         'NAME' => 'Éditeur d\'équations',
         'PUBLISHER' => 'Microsoft',

@@ -103,7 +103,7 @@ sub _getSoftwaresList {
         }
 
         $soft->{INSTALLDATE} = $app->{'Last Modified'} if $app->{'Last Modified'};
-        $soft->{COMMENTS} = '[' . $app->{'Kind'} . ']' if $app->{'Kind'};
+        $soft->{ARCH} = $app->{'Kind'} if $app->{'Kind'};
 
         my ($category, $username) = _extractSoftwareSystemCategoryAndUserName($app->{'Location'});
         $soft->{SYSTEM_CATEGORY} = $category if $category;

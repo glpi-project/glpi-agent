@@ -3,7 +3,7 @@ use utf8;
 
 $results = [
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => '11-0247-srvimp.inra',
         'SYSTEM_CATEGORY' => 'Library/Printers',
@@ -11,7 +11,7 @@ $results = [
         'VERSION' => 15
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => '11-0247-srvimp.inra_0',
         'SYSTEM_CATEGORY' => 'Library/Printers',
@@ -19,7 +19,7 @@ $results = [
         'VERSION' => 15
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => '50onPaletteServer',
         'PUBLISHER' => 'Apple',
@@ -27,7 +27,7 @@ $results = [
         'VERSION' => '1.1.0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/22/2020',
         'NAME' => 'ABAssistantService',
         'PUBLISHER' => 'Apple',
@@ -35,7 +35,7 @@ $results = [
         'VERSION' => '11,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'AOSAlertManager',
         'PUBLISHER' => 'Apple',
@@ -43,7 +43,7 @@ $results = [
         'VERSION' => '1,07'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'AOSHeartbeat',
         'PUBLISHER' => 'Apple',
@@ -51,7 +51,7 @@ $results = [
         'VERSION' => '1,07'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'AOSPushRelay',
         'PUBLISHER' => 'Apple',
@@ -59,7 +59,7 @@ $results = [
         'VERSION' => '1,07'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'ARDAgent',
         'PUBLISHER' => 'Apple',
@@ -67,7 +67,7 @@ $results = [
         'VERSION' => '3.9.8'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/18/2020',
         'NAME' => 'ARDAgent_0',
         'PUBLISHER' => 'Apple',
@@ -75,7 +75,7 @@ $results = [
         'VERSION' => '3.9.8'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'AVB Audio Configuration',
         'PUBLISHER' => 'Apple',
@@ -83,7 +83,7 @@ $results = [
         'VERSION' => '850,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'AXVisualSupportAgent',
         'PUBLISHER' => 'Apple',
@@ -91,7 +91,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '12/22/2020',
         'NAME' => 'Accessibility Inspector',
         'PUBLISHER' => 'Apple',
@@ -99,7 +99,7 @@ $results = [
         'VERSION' => '5,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'AccessibilityVisualsAgent',
         'PUBLISHER' => 'Apple',
@@ -107,7 +107,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'AddPrinter',
         'PUBLISHER' => 'Apple',
@@ -115,7 +115,7 @@ $results = [
         'VERSION' => 15
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/22/2020',
         'NAME' => 'AddressBookManager',
         'PUBLISHER' => 'Apple',
@@ -123,7 +123,7 @@ $results = [
         'VERSION' => '11,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/22/2020',
         'NAME' => 'AddressBookSourceSync',
         'PUBLISHER' => 'Apple',
@@ -131,7 +131,7 @@ $results = [
         'VERSION' => '11,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/22/2020',
         'NAME' => 'AddressBookSync',
         'PUBLISHER' => 'Apple',
@@ -139,7 +139,7 @@ $results = [
         'VERSION' => '11,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/22/2020',
         'NAME' => 'AddressBookUrlForwarder',
         'PUBLISHER' => 'Apple',
@@ -147,7 +147,7 @@ $results = [
         'VERSION' => '11,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => "Agent de la borne d\x{2019}acc\x{e8}s AirPort",
         'PUBLISHER' => 'Apple',
@@ -155,7 +155,7 @@ $results = [
         'VERSION' => '2.2.1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Aide-mémoire',
         'PUBLISHER' => 'Apple',
@@ -163,7 +163,7 @@ $results = [
         'VERSION' => '10,2'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'AinuIM',
         'PUBLISHER' => 'Apple',
@@ -171,7 +171,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'AirDrop',
         'PUBLISHER' => 'Apple',
@@ -179,7 +179,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '08/28/2020',
         'NAME' => 'AirPlayUIAgent',
         'PUBLISHER' => 'Apple',
@@ -187,7 +187,7 @@ $results = [
         'VERSION' => '2,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'AirScanLegacyDiscovery',
         'PUBLISHER' => 'Apple',
@@ -195,7 +195,7 @@ $results = [
         'VERSION' => 15
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'AirScanScanner',
         'PUBLISHER' => 'Apple',
@@ -203,14 +203,14 @@ $results = [
         'VERSION' => 15
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '03/14/2020',
         'NAME' => 'ApE',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '3.1.4'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Aperçu',
         'PUBLISHER' => 'Apple',
@@ -218,7 +218,7 @@ $results = [
         'VERSION' => '11,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'App Store',
         'PUBLISHER' => 'Apple',
@@ -226,7 +226,7 @@ $results = [
         'VERSION' => '3,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'AppSSOAgent',
         'PUBLISHER' => 'Apple',
@@ -234,7 +234,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Appareils jumelés',
         'PUBLISHER' => 'Apple',
@@ -242,7 +242,7 @@ $results = [
         'VERSION' => '1.9.5'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'AppleFileServer',
         'PUBLISHER' => 'Apple',
@@ -250,7 +250,7 @@ $results = [
         'VERSION' => '2,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '08/28/2020',
         'NAME' => 'AppleMobileDeviceHelper',
         'PUBLISHER' => 'Apple',
@@ -258,7 +258,7 @@ $results = [
         'VERSION' => '5,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '08/28/2020',
         'NAME' => 'AppleMobileSync',
         'PUBLISHER' => 'Apple',
@@ -266,7 +266,7 @@ $results = [
         'VERSION' => '5,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'AquaAppearanceHelper',
         'PUBLISHER' => 'Apple',
@@ -274,7 +274,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'AskPermissionUI',
         'PUBLISHER' => 'Apple',
@@ -282,7 +282,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/08/2020',
         'NAME' => 'Assistant Boot Camp',
         'PUBLISHER' => 'Apple',
@@ -290,7 +290,7 @@ $results = [
         'VERSION' => '6.1.0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/15/2020',
         'NAME' => 'Assistant de certification',
         'PUBLISHER' => 'Apple',
@@ -298,7 +298,7 @@ $results = [
         'VERSION' => '5,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => "Assistant d\x{2019}\x{e9}valuation",
         'PUBLISHER' => 'Apple',
@@ -306,7 +306,7 @@ $results = [
         'VERSION' => '4,6'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Assistant migration',
         'PUBLISHER' => 'Apple',
@@ -314,7 +314,7 @@ $results = [
         'VERSION' => '10,15'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '10/29/2020',
         'NAME' => 'Assistant réglages',
         'PUBLISHER' => 'Apple',
@@ -322,7 +322,7 @@ $results = [
         'VERSION' => '10,10'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/30/2020',
         'NAME' => 'Assistant réglages Bluetooth',
         'PUBLISHER' => 'Apple',
@@ -330,7 +330,7 @@ $results = [
         'VERSION' => '7.0.6'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Assistive Control',
         'PUBLISHER' => 'Apple',
@@ -338,7 +338,7 @@ $results = [
         'VERSION' => '2,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'AutoImporter',
         'PUBLISHER' => 'Apple',
@@ -346,7 +346,7 @@ $results = [
         'VERSION' => '6,7'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Automator',
         'PUBLISHER' => 'Apple',
@@ -354,7 +354,7 @@ $results = [
         'VERSION' => '2,10'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/30/2020',
         'NAME' => 'BluetoothUIServer',
         'PUBLISHER' => 'Apple',
@@ -362,7 +362,7 @@ $results = [
         'VERSION' => '7.0.6'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/25/2020',
         'NAME' => 'Bourse',
         'PUBLISHER' => 'Apple',
@@ -370,7 +370,7 @@ $results = [
         'VERSION' => '2,5'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'CIMFindInputCodeTool',
         'PUBLISHER' => 'Apple',
@@ -378,7 +378,7 @@ $results = [
         'VERSION' => 104
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '09/20/2020',
         'NAME' => 'CMake',
         'PUBLISHER' => 'Kitware Inc.',
@@ -386,7 +386,7 @@ $results = [
         'VERSION' => '3.27.6'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Calculette',
         'PUBLISHER' => 'Apple',
@@ -394,7 +394,7 @@ $results = [
         'VERSION' => '10.15.4'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'CalendarFileHandler',
         'PUBLISHER' => 'Apple',
@@ -402,7 +402,7 @@ $results = [
         'VERSION' => '8,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Calendrier',
         'PUBLISHER' => 'Apple',
@@ -410,7 +410,7 @@ $results = [
         'VERSION' => '11,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Calibration Assistant',
         'PUBLISHER' => 'Apple',
@@ -418,7 +418,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/26/2020',
         'NAME' => 'Canon IJScanner2',
         'PUBLISHER' => 'Canon Inc.',
@@ -426,7 +426,7 @@ $results = [
         'VERSION' => '4.0.0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/26/2020',
         'NAME' => 'Canon IJScanner4',
         'PUBLISHER' => 'Canon Inc.',
@@ -434,7 +434,7 @@ $results = [
         'VERSION' => '4.0.0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/26/2020',
         'NAME' => 'Canon IJScanner6',
         'PUBLISHER' => 'Canon Inc.',
@@ -442,7 +442,7 @@ $results = [
         'VERSION' => '4.0.0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Captive Network Assistant',
         'PUBLISHER' => 'Apple',
@@ -450,7 +450,7 @@ $results = [
         'VERSION' => '5,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => "Capture d\x{2019}\x{e9}cran",
         'PUBLISHER' => 'Apple',
@@ -458,7 +458,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Centre de notifications',
         'PUBLISHER' => 'Apple',
@@ -466,7 +466,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'CharacterPalette',
         'PUBLISHER' => 'Apple',
@@ -474,7 +474,7 @@ $results = [
         'VERSION' => '2.0.1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'ChineseTextConverterService',
         'PUBLISHER' => 'Apple',
@@ -482,14 +482,14 @@ $results = [
         'VERSION' => '2,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Cocoa-AppleScript Applet',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[32/64-bit]',
+        'ARCH' => '32/64-bit',
         'INSTALLDATE' => '12/19/2020',
         'NAME' => 'CodonCode Aligner',
         'PUBLISHER' => 'CodonCode',
@@ -497,7 +497,7 @@ $results = [
         'VERSION' => '5.1.4'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Colorimètre numérique',
         'PUBLISHER' => 'Apple',
@@ -505,7 +505,7 @@ $results = [
         'VERSION' => '5,15'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Configuration audio et MIDI',
         'PUBLISHER' => 'Apple',
@@ -513,7 +513,7 @@ $results = [
         'VERSION' => '3,5'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Configuration des actions de dossier',
         'PUBLISHER' => 'Apple',
@@ -521,7 +521,7 @@ $results = [
         'VERSION' => '1,2'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Console',
         'PUBLISHER' => 'Apple',
@@ -529,7 +529,7 @@ $results = [
         'VERSION' => '1,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'Contacts',
         'PUBLISHER' => 'Apple',
@@ -537,7 +537,7 @@ $results = [
         'VERSION' => '12,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/11/2020',
         'NAME' => 'ControlStrip',
         'PUBLISHER' => 'Apple',
@@ -545,7 +545,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'CoreLocationAgent',
         'PUBLISHER' => 'Apple',
@@ -553,7 +553,7 @@ $results = [
         'VERSION' => '2394.0.22'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'CoreServicesUIAgent',
         'PUBLISHER' => 'Apple',
@@ -561,7 +561,7 @@ $results = [
         'VERSION' => '340,3'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '03/11/2020',
         'NAME' => 'Cortex XDR',
         'PUBLISHER' => 'Palo Alto Networks',
@@ -569,7 +569,7 @@ $results = [
         'VERSION' => '7.9.101'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '03/11/2020',
         'NAME' => 'Cortex XDR Agent',
         'PUBLISHER' => 'Palo Alto Networks',
@@ -577,7 +577,7 @@ $results = [
         'VERSION' => '7.9.101'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '03/11/2020',
         'NAME' => 'Cortex XDR Configuration Wizard',
         'PUBLISHER' => 'Palo Alto Networks',
@@ -585,7 +585,7 @@ $results = [
         'VERSION' => '7.9.101'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '03/11/2020',
         'NAME' => 'Cortex XDR Uninstaller',
         'PUBLISHER' => 'Palo Alto Networks',
@@ -593,7 +593,7 @@ $results = [
         'VERSION' => '7.9.101'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '12/22/2020',
         'NAME' => 'Create ML',
         'PUBLISHER' => 'Apple',
@@ -601,7 +601,7 @@ $results = [
         'VERSION' => '2,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Création de page web',
         'PUBLISHER' => 'Apple',
@@ -609,7 +609,7 @@ $results = [
         'VERSION' => '10,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '05/30/2020',
         'NAME' => 'Cyberduck',
         'PUBLISHER' => 'David Kocher',
@@ -617,7 +617,7 @@ $results = [
         'VERSION' => '8.6.0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'DFRHUD',
         'PUBLISHER' => 'Apple',
@@ -625,7 +625,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Database Events',
         'PUBLISHER' => 'Apple',
@@ -633,7 +633,7 @@ $results = [
         'VERSION' => '1.0.6'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Diagnostics sans fil',
         'PUBLISHER' => 'Apple',
@@ -641,7 +641,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Dictaphone',
         'PUBLISHER' => 'Apple',
@@ -649,7 +649,7 @@ $results = [
         'VERSION' => '2,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Dictionnaire',
         'PUBLISHER' => 'Apple',
@@ -657,7 +657,7 @@ $results = [
         'VERSION' => '2.3.0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Dictée vocale',
         'PUBLISHER' => 'Apple',
@@ -665,7 +665,7 @@ $results = [
         'VERSION' => '6.0.60.1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'DiscHelper',
         'PUBLISHER' => 'Apple',
@@ -673,7 +673,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'DiskImageMounter',
         'PUBLISHER' => 'Apple',
@@ -681,7 +681,7 @@ $results = [
         'VERSION' => '559.100.2'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'DiskImages UI Agent',
         'PUBLISHER' => 'Apple',
@@ -689,7 +689,7 @@ $results = [
         'VERSION' => '559.100.2'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Dock',
         'PUBLISHER' => 'Apple',
@@ -697,7 +697,7 @@ $results = [
         'VERSION' => '1,8'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Dwell Control',
         'PUBLISHER' => 'Apple',
@@ -705,7 +705,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '08/19/2020',
         'NAME' => 'EPFaxAutoSetupTool',
         'PUBLISHER' => 'EPSON',
@@ -713,7 +713,7 @@ $results = [
         'VERSION' => '1,71'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '10/06/2020',
         'NAME' => 'EPSON Scanner',
         'PUBLISHER' => 'EPSON',
@@ -721,7 +721,7 @@ $results = [
         'VERSION' => '5.7.24'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '01/18/2020',
         'NAME' => 'Embed',
         'PUBLISHER' => 'Apple',
@@ -729,7 +729,7 @@ $results = [
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'EmojiFunctionRowIM',
         'PUBLISHER' => 'Apple',
@@ -737,7 +737,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/18/2020',
         'NAME' => 'EscrowSecurityAlert',
         'PUBLISHER' => 'Apple',
@@ -745,7 +745,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '01/18/2020',
         'NAME' => 'Extract',
         'PUBLISHER' => 'Apple',
@@ -753,7 +753,7 @@ $results = [
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '08/19/2020',
         'NAME' => 'FAX Utility',
         'PUBLISHER' => 'EPSON',
@@ -761,7 +761,7 @@ $results = [
         'VERSION' => '1,73'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'FaceTime',
         'PUBLISHER' => 'Apple',
@@ -769,7 +769,7 @@ $results = [
         'VERSION' => '5,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Famille',
         'PUBLISHER' => 'Apple',
@@ -777,14 +777,14 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '03/28/2020',
         'NAME' => 'Fiji',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => 1
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '12/19/2020',
         'NAME' => 'FileMerge',
         'PUBLISHER' => 'Apple',
@@ -792,7 +792,7 @@ $results = [
         'VERSION' => '2,11'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '04/02/2020',
         'NAME' => 'FinchTV',
         'PUBLISHER' => 'Geospiza Inc.',
@@ -800,7 +800,7 @@ $results = [
         'VERSION' => '1.3.0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'FindMyMacMessenger',
         'PUBLISHER' => 'Apple',
@@ -808,7 +808,7 @@ $results = [
         'VERSION' => '4,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'Finder',
         'PUBLISHER' => 'Apple',
@@ -816,7 +816,7 @@ $results = [
         'VERSION' => '10.15.8'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '03/25/2020',
         'NAME' => 'Firefox',
         'PUBLISHER' => 'Mozilla',
@@ -824,7 +824,7 @@ $results = [
         'VERSION' => '124.0.1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'FolderActionsDispatcher',
         'PUBLISHER' => 'Apple',
@@ -832,7 +832,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'FollowUpUI',
         'PUBLISHER' => 'Apple',
@@ -840,7 +840,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'FontRegistryUIAgent',
         'PUBLISHER' => 'Apple',
@@ -848,7 +848,7 @@ $results = [
         'VERSION' => '81,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/21/2020',
         'NAME' => 'Foxit PDF Editor',
         'PUBLISHER' => 'Foxit',
@@ -856,7 +856,7 @@ $results = [
         'VERSION' => '11.1.2.0420'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '04/02/2020',
         'NAME' => 'FoxitPDFEditorUpdateService',
         'PUBLISHER' => 'Foxit',
@@ -865,7 +865,7 @@ $results = [
         'VERSION' => '11.1.2'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/13/2020',
         'NAME' => 'GIMP-2',
         'PUBLISHER' => 'GNOME Foundation',
@@ -873,7 +873,7 @@ $results = [
         'VERSION' => '2.10.32'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'Gestion du stockage',
         'PUBLISHER' => 'Apple',
@@ -881,7 +881,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/19/2020',
         'NAME' => 'GlobalProtect',
         'PUBLISHER' => 'Palo Alto Networks',
@@ -889,7 +889,7 @@ $results = [
         'VERSION' => '6.0.5-30'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/19/2020',
         'NAME' => 'Google Chrome',
         'PUBLISHER' => 'Google LLC',
@@ -897,7 +897,7 @@ $results = [
         'VERSION' => '103.0.5060.134'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '03/04/2020',
         'NAME' => 'GoogleUpdater',
         'PUBLISHER' => 'Google LLC',
@@ -906,7 +906,7 @@ $results = [
         'VERSION' => '122.0.6234.0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Grapher',
         'PUBLISHER' => 'Apple',
@@ -914,7 +914,7 @@ $results = [
         'VERSION' => '2,7'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'HelpViewer',
         'PUBLISHER' => 'Apple',
@@ -922,7 +922,7 @@ $results = [
         'VERSION' => '6,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'HindiIM',
         'PUBLISHER' => 'Apple',
@@ -930,7 +930,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/18/2020',
         'NAME' => 'IDSRemoteURLConnectionAgent',
         'PUBLISHER' => 'Apple',
@@ -938,7 +938,7 @@ $results = [
         'VERSION' => '10,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/14/2020',
         'NAME' => 'IGV_2.16',
         'PUBLISHER' => 'THE BROAD INSTITUTE INC',
@@ -946,7 +946,7 @@ $results = [
         'VERSION' => '2.16.2'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/15/2020',
         'NAME' => 'IMAutomaticHistoryDeletionAgent',
         'PUBLISHER' => 'Apple',
@@ -954,7 +954,7 @@ $results = [
         'VERSION' => '10,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/15/2020',
         'NAME' => 'IMTransferAgent',
         'PUBLISHER' => 'Apple',
@@ -962,7 +962,7 @@ $results = [
         'VERSION' => '10,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Image Events',
         'PUBLISHER' => 'Apple',
@@ -970,7 +970,7 @@ $results = [
         'VERSION' => '1.1.6'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'ImageCaptureService',
         'PUBLISHER' => 'Apple',
@@ -978,7 +978,7 @@ $results = [
         'VERSION' => '6,7'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'Informations système',
         'PUBLISHER' => 'Apple',
@@ -986,7 +986,7 @@ $results = [
         'VERSION' => '10,14'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Install Command Line Developer Tools',
         'PUBLISHER' => 'Apple',
@@ -994,7 +994,7 @@ $results = [
         'VERSION' => 2373
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Install in Progress',
         'PUBLISHER' => 'Apple',
@@ -1002,7 +1002,7 @@ $results = [
         'VERSION' => '3,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Installer Progress',
         'PUBLISHER' => 'Apple',
@@ -1010,7 +1010,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '04/02/2020',
         'NAME' => 'Instruments',
         'PUBLISHER' => 'Apple',
@@ -1018,7 +1018,7 @@ $results = [
         'VERSION' => '12,4'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'JapaneseIM',
         'PUBLISHER' => 'Apple',
@@ -1026,7 +1026,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Jar Launcher',
         'PUBLISHER' => 'Apple',
@@ -1034,7 +1034,7 @@ $results = [
         'VERSION' => '15.0.1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Java Web Start',
         'PUBLISHER' => 'Apple',
@@ -1042,7 +1042,7 @@ $results = [
         'VERSION' => '15.0.1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Jeux',
         'PUBLISHER' => 'Apple',
@@ -1050,7 +1050,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/15/2020',
         'NAME' => 'Jumelage de la SmartCard',
         'PUBLISHER' => 'Apple',
@@ -1058,7 +1058,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'KerberosMenuExtra',
         'PUBLISHER' => 'Apple',
@@ -1066,7 +1066,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'KeyboardAccessAgent',
         'PUBLISHER' => 'Apple',
@@ -1074,7 +1074,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'KeyboardSetupAssistant',
         'PUBLISHER' => 'Apple',
@@ -1082,7 +1082,7 @@ $results = [
         'VERSION' => '10,7'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/15/2020',
         'NAME' => 'Keychain Circle Notification',
         'PUBLISHER' => 'Apple',
@@ -1090,7 +1090,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'KoreanIM',
         'PUBLISHER' => 'Apple',
@@ -1098,7 +1098,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/19/2020',
         'NAME' => 'Kyocera Print Panel',
         'PUBLISHER' => 'Kyocera Document Solutions Inc.',
@@ -1106,7 +1106,7 @@ $results = [
         'VERSION' => '5.4.0516'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '10/29/2020',
         'NAME' => 'Language Chooser',
         'PUBLISHER' => 'Apple',
@@ -1114,7 +1114,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Launchpad',
         'PUBLISHER' => 'Apple',
@@ -1122,7 +1122,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Lecteur DVD',
         'PUBLISHER' => 'Apple',
@@ -1130,7 +1130,7 @@ $results = [
         'VERSION' => '6,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Livre des polices',
         'PUBLISHER' => 'Apple',
@@ -1138,7 +1138,7 @@ $results = [
         'VERSION' => '10,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '08/07/2020',
         'NAME' => 'Livres',
         'PUBLISHER' => 'Apple',
@@ -1146,7 +1146,7 @@ $results = [
         'VERSION' => '2,4'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'Localiser',
         'PUBLISHER' => 'Apple',
@@ -1154,7 +1154,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'LocationMenu',
         'PUBLISHER' => 'Apple',
@@ -1162,7 +1162,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/05/2020',
         'NAME' => 'MRT',
         'PUBLISHER' => 'Apple',
@@ -1170,7 +1170,7 @@ $results = [
         'VERSION' => '1,62'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'Mail',
         'PUBLISHER' => 'Apple',
@@ -1178,7 +1178,7 @@ $results = [
         'VERSION' => '13,4'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/12/2020',
         'NAME' => 'Maison',
         'PUBLISHER' => 'Apple',
@@ -1186,7 +1186,7 @@ $results = [
         'VERSION' => '4,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'MakePDF',
         'PUBLISHER' => 'Apple',
@@ -1194,7 +1194,7 @@ $results = [
         'VERSION' => '10,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/08/2020',
         'NAME' => 'ManagedClient',
         'PUBLISHER' => 'Apple',
@@ -1202,7 +1202,7 @@ $results = [
         'VERSION' => '12,3'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/18/2020',
         'NAME' => 'MassStorageCamera',
         'PUBLISHER' => 'Apple',
@@ -1210,7 +1210,7 @@ $results = [
         'VERSION' => '10,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '01/18/2020',
         'NAME' => 'Match',
         'PUBLISHER' => 'Apple',
@@ -1218,7 +1218,7 @@ $results = [
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Menu des scripts',
         'PUBLISHER' => 'Apple',
@@ -1226,7 +1226,7 @@ $results = [
         'VERSION' => 1
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'Messages',
         'PUBLISHER' => 'Apple',
@@ -1234,7 +1234,7 @@ $results = [
         'VERSION' => '13,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '03/13/2020',
         'NAME' => 'Microsoft AutoUpdate',
         'PUBLISHER' => 'Microsoft',
@@ -1242,7 +1242,7 @@ $results = [
         'VERSION' => '4,69'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/19/2020',
         'NAME' => 'Microsoft Excel',
         'PUBLISHER' => 'Microsoft',
@@ -1250,7 +1250,7 @@ $results = [
         'VERSION' => '16.66.1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/19/2020',
         'NAME' => 'Microsoft OneNote',
         'PUBLISHER' => 'Microsoft',
@@ -1258,7 +1258,7 @@ $results = [
         'VERSION' => '16.66.1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/19/2020',
         'NAME' => 'Microsoft Outlook',
         'PUBLISHER' => 'Microsoft',
@@ -1266,7 +1266,7 @@ $results = [
         'VERSION' => '16.66.1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/19/2020',
         'NAME' => 'Microsoft PowerPoint',
         'PUBLISHER' => 'Microsoft',
@@ -1274,7 +1274,7 @@ $results = [
         'VERSION' => '16.66.1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '10/11/2020',
         'NAME' => 'Microsoft Teams classic',
         'PUBLISHER' => 'Microsoft',
@@ -1282,7 +1282,7 @@ $results = [
         'VERSION' => '1.00.627656'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/19/2020',
         'NAME' => 'Microsoft Word',
         'PUBLISHER' => 'Microsoft',
@@ -1290,7 +1290,7 @@ $results = [
         'VERSION' => '16.66.1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '09/03/2020',
         'NAME' => 'Mise à jour de logiciels',
         'PUBLISHER' => 'Apple',
@@ -1298,7 +1298,7 @@ $results = [
         'VERSION' => 6
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Mission Control',
         'PUBLISHER' => 'Apple',
@@ -1306,7 +1306,7 @@ $results = [
         'VERSION' => '1,2'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '08/28/2020',
         'NAME' => 'MobileDeviceUpdater',
         'PUBLISHER' => 'Apple',
@@ -1314,7 +1314,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '08/19/2020',
         'NAME' => 'Moniteur de réception de fax',
         'PUBLISHER' => 'EPSON',
@@ -1322,7 +1322,7 @@ $results = [
         'VERSION' => '1,71'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => "Moniteur d\x{2019}activit\x{e9}",
         'PUBLISHER' => 'Apple',
@@ -1330,7 +1330,7 @@ $results = [
         'VERSION' => '10,14'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/29/2020',
         'NAME' => 'Musique',
         'PUBLISHER' => 'Apple',
@@ -1338,7 +1338,7 @@ $results = [
         'VERSION' => '1.0.6'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Météo',
         'PUBLISHER' => 'Apple',
@@ -1346,7 +1346,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'NetAuthAgent',
         'PUBLISHER' => 'Apple',
@@ -1354,7 +1354,7 @@ $results = [
         'VERSION' => '6,2'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Notes',
         'PUBLISHER' => 'Apple',
@@ -1362,7 +1362,7 @@ $results = [
         'VERSION' => '4,7'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/10/2020',
         'NAME' => 'NowPlayingTouchUI',
         'PUBLISHER' => 'Apple',
@@ -1370,7 +1370,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/10/2020',
         'NAME' => 'NowPlayingWidgetContainer',
         'PUBLISHER' => 'Apple',
@@ -1378,7 +1378,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/30/2020',
         'NAME' => 'OBEXAgent',
         'PUBLISHER' => 'Apple',
@@ -1386,7 +1386,7 @@ $results = [
         'VERSION' => '7.0.6'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'ODSAgent',
         'PUBLISHER' => 'Apple',
@@ -1394,7 +1394,7 @@ $results = [
         'VERSION' => '1,8'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'OSDUIHelper',
         'PUBLISHER' => 'Apple',
@@ -1402,7 +1402,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '04/02/2020',
         'NAME' => 'OneDrive',
         'PUBLISHER' => 'Microsoft',
@@ -1410,7 +1410,7 @@ $results = [
         'VERSION' => '24.050.0310'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'Ordinateur',
         'PUBLISHER' => 'Apple',
@@ -1418,7 +1418,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'PIPAgent',
         'PUBLISHER' => 'Apple',
@@ -1426,7 +1426,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/18/2020',
         'NAME' => 'PTPCamera',
         'PUBLISHER' => 'Apple',
@@ -1434,7 +1434,7 @@ $results = [
         'VERSION' => '10,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '10/13/2020',
         'NAME' => 'Papers 3 (Legacy)',
         'PUBLISHER' => 'Labtiva Inc',
@@ -1442,7 +1442,7 @@ $results = [
         'VERSION' => '3.4.25'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'ParentalControls',
         'PUBLISHER' => 'Apple',
@@ -1450,7 +1450,7 @@ $results = [
         'VERSION' => '4,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/18/2020',
         'NAME' => "Partage d\x{2019}\x{e9}cran",
         'PUBLISHER' => 'Apple',
@@ -1458,7 +1458,7 @@ $results = [
         'VERSION' => '1.7.2'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Pass Viewer',
         'PUBLISHER' => 'Apple',
@@ -1466,7 +1466,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Photo Booth',
         'PUBLISHER' => 'Apple',
@@ -1474,7 +1474,7 @@ $results = [
         'VERSION' => '11,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Photo Library Migration Utility',
         'PUBLISHER' => 'Apple',
@@ -1482,7 +1482,7 @@ $results = [
         'VERSION' => '2,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/08/2020',
         'NAME' => 'Photos',
         'PUBLISHER' => 'Apple',
@@ -1490,7 +1490,7 @@ $results = [
         'VERSION' => '5,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Plans',
         'PUBLISHER' => 'Apple',
@@ -1498,7 +1498,7 @@ $results = [
         'VERSION' => '2,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'PluginIM',
         'PUBLISHER' => 'Apple',
@@ -1506,7 +1506,7 @@ $results = [
         'VERSION' => 20
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Podcasts',
         'PUBLISHER' => 'Apple',
@@ -1514,7 +1514,7 @@ $results = [
         'VERSION' => '1.0.0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'PodcastsAuthAgent',
         'PUBLISHER' => 'Apple',
@@ -1522,7 +1522,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'PowerChime',
         'PUBLISHER' => 'Apple',
@@ -1530,7 +1530,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'PressAndHold',
         'PUBLISHER' => 'Apple',
@@ -1538,7 +1538,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'PrinterProxy',
         'PUBLISHER' => 'Apple',
@@ -1546,7 +1546,7 @@ $results = [
         'VERSION' => 15
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '10/30/2020',
         'NAME' => 'Problem Reporter',
         'PUBLISHER' => 'Apple',
@@ -1554,7 +1554,7 @@ $results = [
         'VERSION' => '10,13'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Programme de téléchargement de parole',
         'PUBLISHER' => 'Apple',
@@ -1562,7 +1562,7 @@ $results = [
         'VERSION' => '9.0.15'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => "Programme d\x{2019}installation",
         'PUBLISHER' => 'Apple',
@@ -1570,7 +1570,7 @@ $results = [
         'VERSION' => '6.2.0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => "Programme d\x{2019}installation d\x{2019}Automator",
         'PUBLISHER' => 'Apple',
@@ -1578,7 +1578,7 @@ $results = [
         'VERSION' => '2,10'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '01/18/2020',
         'NAME' => 'Proof',
         'PUBLISHER' => 'Apple',
@@ -1586,7 +1586,7 @@ $results = [
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'Préférences Système',
         'PUBLISHER' => 'Apple',
@@ -1594,7 +1594,7 @@ $results = [
         'VERSION' => '14,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '08/07/2020',
         'NAME' => 'Présentation de VoiceOver',
         'PUBLISHER' => 'Apple',
@@ -1602,7 +1602,7 @@ $results = [
         'VERSION' => 10
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '04/11/2020',
         'NAME' => 'PyMOL',
         'PUBLISHER' => 'Schrodinger',
@@ -1610,7 +1610,7 @@ $results = [
         'VERSION' => '2.5.5'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/19/2020',
         'NAME' => 'Python',
         'PUBLISHER' => 'Apple',
@@ -1618,7 +1618,7 @@ $results = [
         'VERSION' => '3.8.2'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Python_0',
         'PUBLISHER' => 'Apple',
@@ -1626,7 +1626,7 @@ $results = [
         'VERSION' => '2.7.16'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/18/2020',
         'NAME' => 'Quick Look Simulator',
         'PUBLISHER' => 'Apple',
@@ -1634,7 +1634,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/18/2020',
         'NAME' => 'QuickLookUIHelper',
         'PUBLISHER' => 'Apple',
@@ -1642,7 +1642,7 @@ $results = [
         'VERSION' => '5,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'QuickTime Player',
         'PUBLISHER' => 'Apple',
@@ -1650,14 +1650,14 @@ $results = [
         'VERSION' => '10,5'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/19/2020',
         'NAME' => 'R',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => 'R 3.6.3 GUI 1.70 El Capitan build'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/07/2020',
         'NAME' => 'RStudio',
         'PUBLISHER' => 'RStudio Inc.',
@@ -1665,7 +1665,7 @@ $results = [
         'VERSION' => '2023.06.1+524'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Rappels',
         'PUBLISHER' => 'Apple',
@@ -1673,7 +1673,7 @@ $results = [
         'VERSION' => '7,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'RapportUIAgent',
         'PUBLISHER' => 'Apple',
@@ -1681,7 +1681,7 @@ $results = [
         'VERSION' => '1.9.5'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '12/22/2020',
         'NAME' => 'Reality Composer',
         'PUBLISHER' => 'Apple',
@@ -1689,7 +1689,7 @@ $results = [
         'VERSION' => '1,5'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'RegisterPluginIMApp',
         'PUBLISHER' => 'Apple',
@@ -1697,7 +1697,7 @@ $results = [
         'VERSION' => 20
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '01/18/2020',
         'NAME' => 'Remove',
         'PUBLISHER' => 'Apple',
@@ -1705,7 +1705,7 @@ $results = [
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '01/18/2020',
         'NAME' => 'Rename',
         'PUBLISHER' => 'Apple',
@@ -1713,7 +1713,7 @@ $results = [
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '10/30/2020',
         'NAME' => 'ReportPanic',
         'PUBLISHER' => 'Apple',
@@ -1721,7 +1721,7 @@ $results = [
         'VERSION' => '10,13'
     },
     {
-        'COMMENTS' => '[32-bit (Unsupported)]',
+        'ARCH' => '32-bit (Unsupported)',
         'INSTALLDATE' => '07/19/2020',
         'NAME' => 'Reset Serial Cloner',
         'PUBLISHER' => 'Franck Perez',
@@ -1729,7 +1729,7 @@ $results = [
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'Récents',
         'PUBLISHER' => 'Apple',
@@ -1737,7 +1737,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'Récents_0',
         'PUBLISHER' => 'Apple',
@@ -1745,7 +1745,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'Réseau',
         'PUBLISHER' => 'Apple',
@@ -1753,7 +1753,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Résolution des conflits',
         'PUBLISHER' => 'Apple',
@@ -1761,7 +1761,7 @@ $results = [
         'VERSION' => '8,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'SCIM',
         'PUBLISHER' => 'Apple',
@@ -1769,7 +1769,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/18/2020',
         'NAME' => 'SSMenuAgent',
         'PUBLISHER' => 'Apple',
@@ -1777,7 +1777,7 @@ $results = [
         'VERSION' => '3.9.8'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'STMUIHelper',
         'PUBLISHER' => 'Apple',
@@ -1785,7 +1785,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'Safari',
         'PUBLISHER' => 'Apple',
@@ -1793,7 +1793,7 @@ $results = [
         'VERSION' => '15.6.1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/21/2020',
         'NAME' => 'Save as Foxit PDF',
         'PUBLISHER' => 'Foxit',
@@ -1802,7 +1802,7 @@ $results = [
         'VERSION' => '11.1.2'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '08/07/2020',
         'NAME' => 'ScreenReaderUIServer',
         'PUBLISHER' => 'Apple',
@@ -1810,7 +1810,7 @@ $results = [
         'VERSION' => 10
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'ScreenSaverEngine',
         'PUBLISHER' => 'Apple',
@@ -1818,7 +1818,7 @@ $results = [
         'VERSION' => '5,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'ScriptMonitor',
         'PUBLISHER' => 'Apple',
@@ -1826,7 +1826,7 @@ $results = [
         'VERSION' => '1.0.1'
     },
     {
-        'COMMENTS' => '[32-bit (Unsupported)]',
+        'ARCH' => '32-bit (Unsupported)',
         'INSTALLDATE' => '07/19/2020',
         'NAME' => 'SerialCloner 2-6-1',
         'PUBLISHER' => 'Franck Perez',
@@ -1834,7 +1834,7 @@ $results = [
         'VERSION' => '2.6.1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Service de résumé',
         'PUBLISHER' => 'Apple',
@@ -1842,7 +1842,7 @@ $results = [
         'VERSION' => '2,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '01/18/2020',
         'NAME' => 'Set Info',
         'PUBLISHER' => 'Apple',
@@ -1850,7 +1850,7 @@ $results = [
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[32-bit (Unsupported)]',
+        'ARCH' => '32-bit (Unsupported)',
         'INSTALLDATE' => '04/03/2020',
         'NAME' => 'Setup',
         'PUBLISHER' => 'Adobe Systems Inc.',
@@ -1858,7 +1858,7 @@ $results = [
         'VERSION' => '1.0.135.0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '01/18/2020',
         'NAME' => 'Show Info',
         'PUBLISHER' => 'Apple',
@@ -1866,7 +1866,7 @@ $results = [
         'VERSION' => undef
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Simulateur de widget',
         'PUBLISHER' => 'Apple',
@@ -1874,7 +1874,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '12/19/2020',
         'NAME' => 'Simulator',
         'PUBLISHER' => 'Apple',
@@ -1882,7 +1882,7 @@ $results = [
         'VERSION' => '12,4'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/11/2020',
         'NAME' => 'Siri',
         'PUBLISHER' => 'Apple',
@@ -1890,7 +1890,7 @@ $results = [
         'VERSION' => '200.6.1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Siri_0',
         'PUBLISHER' => 'Apple',
@@ -1898,7 +1898,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '09/23/2020',
         'NAME' => 'Skype Entreprise',
         'PUBLISHER' => 'Skype Communications S.a.r.l',
@@ -1906,7 +1906,7 @@ $results = [
         'VERSION' => '16.30.32'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/20/2020',
         'NAME' => 'SnapGene Viewer',
         'PUBLISHER' => 'GSL Biotech LLC',
@@ -1914,7 +1914,7 @@ $results = [
         'VERSION' => '7.0.1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'SocialPushAgent',
         'PUBLISHER' => 'Apple',
@@ -1922,7 +1922,7 @@ $results = [
         'VERSION' => 62
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '09/03/2020',
         'NAME' => 'SoftwareUpdateNotificationManager',
         'PUBLISHER' => 'Apple',
@@ -1930,7 +1930,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'SpacesTouchBarAgent',
         'PUBLISHER' => 'Apple',
@@ -1938,7 +1938,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'SpeechRecognitionServer',
         'PUBLISHER' => 'Apple',
@@ -1946,7 +1946,7 @@ $results = [
         'VERSION' => '9.0.15'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'SpeechSynthesisServer',
         'PUBLISHER' => 'Apple',
@@ -1954,7 +1954,7 @@ $results = [
         'VERSION' => '9.0.24'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '08/07/2020',
         'NAME' => 'SpeechSynthesizerAuditor',
         'PUBLISHER' => 'Apple',
@@ -1962,7 +1962,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/17/2020',
         'NAME' => 'Spotlight',
         'PUBLISHER' => 'Apple',
@@ -1970,7 +1970,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'SyncServer',
         'PUBLISHER' => 'Apple',
@@ -1978,7 +1978,7 @@ $results = [
         'VERSION' => '8,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'System Events',
         'PUBLISHER' => 'Apple',
@@ -1986,7 +1986,7 @@ $results = [
         'VERSION' => '1.3.6'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'SystemUIServer',
         'PUBLISHER' => 'Apple',
@@ -1994,7 +1994,7 @@ $results = [
         'VERSION' => '1,7'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'TCIM',
         'PUBLISHER' => 'Apple',
@@ -2002,7 +2002,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/19/2020',
         'NAME' => 'TV',
         'PUBLISHER' => 'Apple',
@@ -2010,7 +2010,7 @@ $results = [
         'VERSION' => '1.0.6'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'TYIM',
         'PUBLISHER' => 'Apple',
@@ -2018,7 +2018,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'TamilIM',
         'PUBLISHER' => 'Apple',
@@ -2026,7 +2026,7 @@ $results = [
         'VERSION' => '1,6'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Terminal',
         'PUBLISHER' => 'Apple',
@@ -2034,7 +2034,7 @@ $results = [
         'VERSION' => '2,10'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'TextEdit',
         'PUBLISHER' => 'Apple',
@@ -2042,7 +2042,7 @@ $results = [
         'VERSION' => '1,15'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'TextInputMenuAgent',
         'PUBLISHER' => 'Apple',
@@ -2050,7 +2050,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'TextInputSwitcher',
         'PUBLISHER' => 'Apple',
@@ -2058,7 +2058,7 @@ $results = [
         'VERSION' => '1,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'ThermalTrap',
         'PUBLISHER' => 'Apple',
@@ -2066,7 +2066,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Time Machine',
         'PUBLISHER' => 'Apple',
@@ -2074,7 +2074,7 @@ $results = [
         'VERSION' => '1,3'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'TrackpadIM',
         'PUBLISHER' => 'Apple',
@@ -2082,7 +2082,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => "Transfert d\x{2019}images",
         'PUBLISHER' => 'Apple',
@@ -2090,7 +2090,7 @@ $results = [
         'VERSION' => '8,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => "Trousseaux d\x{2019}acc\x{e8}s",
         'PUBLISHER' => 'Apple',
@@ -2098,7 +2098,7 @@ $results = [
         'VERSION' => '10,5'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/18/2020',
         'NAME' => 'Type4Camera',
         'PUBLISHER' => 'Apple',
@@ -2106,7 +2106,7 @@ $results = [
         'VERSION' => '10,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/19/2020',
         'NAME' => 'UASharedPasteboardProgressUI',
         'PUBLISHER' => 'Apple',
@@ -2114,7 +2114,7 @@ $results = [
         'VERSION' => '54,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'UIKitSystem',
         'PUBLISHER' => 'Apple',
@@ -2122,14 +2122,14 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[32-bit (Unsupported)]',
+        'ARCH' => '32-bit (Unsupported)',
         'INSTALLDATE' => '07/07/2020',
         'NAME' => 'UnRarX',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => 'UnRarX version 2.2'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'UniversalAccessControl',
         'PUBLISHER' => 'Apple',
@@ -2137,7 +2137,7 @@ $results = [
         'VERSION' => '7,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'UniversalAccessHUD',
         'PUBLISHER' => 'Apple',
@@ -2145,7 +2145,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'UnmountAssistantAgent',
         'PUBLISHER' => 'Apple',
@@ -2153,7 +2153,7 @@ $results = [
         'VERSION' => '5,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'UserNotificationCenter',
         'PUBLISHER' => 'Apple',
@@ -2161,7 +2161,7 @@ $results = [
         'VERSION' => '3.3.0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Utilitaire AirPort',
         'PUBLISHER' => 'Apple',
@@ -2169,7 +2169,7 @@ $results = [
         'VERSION' => '6.3.9'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Utilitaire AppleScript',
         'PUBLISHER' => 'Apple',
@@ -2177,7 +2177,7 @@ $results = [
         'VERSION' => '1.1.2'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Utilitaire ColorSync',
         'PUBLISHER' => 'Apple',
@@ -2185,7 +2185,7 @@ $results = [
         'VERSION' => '4.14.0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '08/07/2020',
         'NAME' => 'Utilitaire VoiceOver',
         'PUBLISHER' => 'Apple',
@@ -2193,7 +2193,7 @@ $results = [
         'VERSION' => 10
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'Utilitaire de disque',
         'PUBLISHER' => 'Apple',
@@ -2201,7 +2201,7 @@ $results = [
         'VERSION' => '19,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Utilitaire de logement de mémoire',
         'PUBLISHER' => 'Apple',
@@ -2209,7 +2209,7 @@ $results = [
         'VERSION' => '1.5.3'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => "Utilitaire de logement d\x{2019}extension",
         'PUBLISHER' => 'Apple',
@@ -2217,7 +2217,7 @@ $results = [
         'VERSION' => '2,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Utilitaire de réseau',
         'PUBLISHER' => 'Apple',
@@ -2225,7 +2225,7 @@ $results = [
         'VERSION' => '1.9.2'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => "Utilitaire d\x{2019}annuaire",
         'PUBLISHER' => 'Apple',
@@ -2233,7 +2233,7 @@ $results = [
         'VERSION' => '6,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => "Utilitaire d\x{2019}archive",
         'PUBLISHER' => 'Apple',
@@ -2241,7 +2241,7 @@ $results = [
         'VERSION' => '10,15'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'VietnameseIM',
         'PUBLISHER' => 'Apple',
@@ -2249,7 +2249,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/18/2020',
         'NAME' => 'VirtualScanner',
         'PUBLISHER' => 'Apple',
@@ -2257,7 +2257,7 @@ $results = [
         'VERSION' => '4,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Visualiseur de ticket',
         'PUBLISHER' => 'Apple',
@@ -2265,7 +2265,7 @@ $results = [
         'VERSION' => '4,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '08/07/2020',
         'NAME' => 'VoiceOver',
         'PUBLISHER' => 'Apple',
@@ -2273,7 +2273,7 @@ $results = [
         'VERSION' => 10
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '09/01/2020',
         'NAME' => 'WebKitPluginHost',
         'PUBLISHER' => 'Apple',
@@ -2281,7 +2281,7 @@ $results = [
         'VERSION' => 609
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '08/28/2020',
         'NAME' => 'WiFiAgent',
         'PUBLISHER' => 'Apple',
@@ -2289,7 +2289,7 @@ $results = [
         'VERSION' => '13,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Widget Bourse',
         'PUBLISHER' => 'Apple',
@@ -2297,7 +2297,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Wish',
         'PUBLISHER' => 'Apple',
@@ -2305,7 +2305,7 @@ $results = [
         'VERSION' => '8.5.9'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '01/09/2020',
         'NAME' => 'Xcode',
         'PUBLISHER' => 'Apple',
@@ -2313,7 +2313,7 @@ $results = [
         'VERSION' => '12,4'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '12/22/2020',
         'NAME' => 'Xcode Server Builder',
         'PUBLISHER' => 'Apple',
@@ -2321,7 +2321,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '08/19/2020',
         'NAME' => 'commandFilter',
         'PUBLISHER' => 'EPSON',
@@ -2329,7 +2329,7 @@ $results = [
         'VERSION' => '1,71'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'eaptlstrust',
         'PUBLISHER' => 'Apple',
@@ -2337,7 +2337,7 @@ $results = [
         'VERSION' => '13,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '08/19/2020',
         'NAME' => 'epsonfax',
         'PUBLISHER' => 'EPSON',
@@ -2345,7 +2345,7 @@ $results = [
         'VERSION' => '1,71'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'iCloud',
         'PUBLISHER' => 'Apple',
@@ -2353,7 +2353,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'iCloud Drive',
         'PUBLISHER' => 'Apple',
@@ -2361,7 +2361,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '08/24/2020',
         'NAME' => 'iCloud Drive_0',
         'PUBLISHER' => 'Apple',
@@ -2369,7 +2369,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'iCloudUserNotificationsd',
         'PUBLISHER' => 'Apple',
@@ -2377,7 +2377,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/18/2020',
         'NAME' => 'identityservicesd',
         'PUBLISHER' => 'Apple',
@@ -2385,7 +2385,7 @@ $results = [
         'VERSION' => '10,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/15/2020',
         'NAME' => 'imagent',
         'PUBLISHER' => 'Apple',
@@ -2393,7 +2393,7 @@ $results = [
         'VERSION' => '10,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/15/2020',
         'NAME' => 'loginwindow',
         'PUBLISHER' => 'Apple',
@@ -2401,7 +2401,7 @@ $results = [
         'VERSION' => '9,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'nbagent',
         'PUBLISHER' => 'Apple',
@@ -2409,7 +2409,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/18/2020',
         'NAME' => 'qlmanage',
         'PUBLISHER' => 'Apple',
@@ -2417,7 +2417,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/18/2020',
         'NAME' => 'quicklookd',
         'PUBLISHER' => 'Apple',
@@ -2425,7 +2425,7 @@ $results = [
         'VERSION' => '5,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '08/19/2020',
         'NAME' => 'rastertoepfax',
         'PUBLISHER' => 'EPSON',
@@ -2433,7 +2433,7 @@ $results = [
         'VERSION' => '1,71'
     },
     {
-        'COMMENTS' => '[32/64-bit]',
+        'ARCH' => '32/64-bit',
         'INSTALLDATE' => '07/19/2020',
         'NAME' => 'rastertokpsl',
         'PUBLISHER' => 'Kyocera Document Solutions Inc.',
@@ -2441,7 +2441,7 @@ $results = [
         'VERSION' => '1.0.3629'
     },
     {
-        'COMMENTS' => '[32/64-bit]',
+        'ARCH' => '32/64-bit',
         'INSTALLDATE' => '07/19/2020',
         'NAME' => 'rastertopcl_F',
         'PUBLISHER' => 'Kyocera Document Solutions Inc.',
@@ -2449,7 +2449,7 @@ $results = [
         'VERSION' => '5.4.0401'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'rcd',
         'PUBLISHER' => 'Apple',
@@ -2457,7 +2457,7 @@ $results = [
         'VERSION' => 360
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'screencaptureui',
         'PUBLISHER' => 'Apple',
@@ -2465,7 +2465,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'storeuid',
         'PUBLISHER' => 'Apple',
@@ -2473,7 +2473,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'syncuid',
         'PUBLISHER' => 'Apple',
@@ -2481,7 +2481,7 @@ $results = [
         'VERSION' => '8,1'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'universalAccessAuthWarn',
         'PUBLISHER' => 'Apple',
@@ -2489,7 +2489,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '12/18/2020',
         'NAME' => 'zoom',
         'PUBLISHER' => 'Zoom Video Communications',
@@ -2497,7 +2497,7 @@ $results = [
         'VERSION' => '5.16.10 (25689)'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'À propos de ce Mac',
         'PUBLISHER' => 'Apple',
@@ -2505,7 +2505,7 @@ $results = [
         'VERSION' => '1,0'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '07/24/2020',
         'NAME' => 'Échange de fichiers Bluetooth',
         'PUBLISHER' => 'Apple',
@@ -2513,7 +2513,7 @@ $results = [
         'VERSION' => '7.0.6'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Échecs',
         'PUBLISHER' => 'Apple',
@@ -2521,7 +2521,7 @@ $results = [
         'VERSION' => '3,17'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Éditeur de script',
         'PUBLISHER' => 'Apple',
@@ -2529,7 +2529,7 @@ $results = [
         'VERSION' => '2,11'
     },
     {
-        'COMMENTS' => '[64-bit]',
+        'ARCH' => '64-bit',
         'INSTALLDATE' => '06/06/2020',
         'NAME' => 'Étalonnage de moniteur',
         'PUBLISHER' => 'Apple',
