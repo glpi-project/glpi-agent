@@ -150,6 +150,18 @@ sub _extractSoftwaresFromXml {
             }
         }
 
+        # Set Kind from arch_kind when available
+        unless (empty($soft->{arch_kind})) {
+            my %kind = (
+                arch_arm_i64    => "Universal",
+                arch_arm        => "Arm",
+                arch_i64        => "Intel (x86_64)",
+                arch_i32        => "Intel (i386)",
+                arch_other      => "Other",
+            );
+            $entry->{Kind} = $kind{$soft->{arch_kind}} if exists($kind{$soft->{arch_kind}});
+        }
+
         # Convert lastModified
         my $lastmod = delete $soft->{lastModified};
         $entry->{'Last Modified'} = _getOffsetDate($lastmod, $params{localTimeOffset})
