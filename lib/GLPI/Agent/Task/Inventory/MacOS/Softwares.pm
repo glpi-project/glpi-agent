@@ -20,7 +20,7 @@ sub doInventory {
 
     my $inventory = $params{inventory};
 
-    my $softwares = _getSoftwaresList(logger => $params{logger}, format => 'xml');
+    my $softwares = _getSoftwaresList(logger => $params{logger});
     return unless $softwares;
 
     foreach my $software (@$softwares) {
@@ -38,9 +38,10 @@ sub _getSoftwaresList {
 
     my $localTimeOffset = detectLocalTimeOffset();
     $infos = getSystemProfilerInfos(
-        %params,
         type            => 'SPApplicationsDataType',
-        localTimeOffset => $localTimeOffset
+        localTimeOffset => $localTimeOffset,
+        format          => 'xml',
+        %params
     );
 
     my $info = $infos->{Applications};
