@@ -26,6 +26,9 @@ my %tests = (
     'sample6' => [ 362, 0 ],
 );
 
+# Use a fixed local timezone offset
+my $localTimeOffset = 7200;
+
 plan tests => 3 * scalar (keys %tests)
     + 7;
 
@@ -40,7 +43,11 @@ foreach my $test (sort keys %tests) {
         $format = "xml";
     }
     my $dump = $file.".results.txt";
-    my $softwares = GLPI::Agent::Task::Inventory::MacOS::Softwares::_getSoftwaresList(file => $file, format => $format);
+    my $softwares = GLPI::Agent::Task::Inventory::MacOS::Softwares::_getSoftwaresList(
+        file            => $file,
+        format          => $format,
+        localTimeOffset => $localTimeOffset
+    );
     # Dump found result when still not integrated in test file
     my ($count, $update) = ref($tests{$test}) eq 'ARRAY' ? @{$tests{$test}} : (0, 1);
     unless ($count && !$update && -e $dump) {
