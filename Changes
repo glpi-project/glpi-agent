@@ -8,6 +8,7 @@ core:
 * Refacto events management to permit a task to trigger another one
 * IPC long messages only have size limitation on windows
 * Add new IPC message type to handle too long IPC_EVENT messages on windows
+* Refacto XML parsing of plist files on MacOSX
 
 inventory:
 * Fix network default route discovery on linux

@@ -49,9 +49,6 @@ sub new {
         threaded
     );
 
-    # Support required by GLPI::Agent::Tools::MacOS
-    $self->{_force_array} = [ qw(array dict) ] if $self->{_is_plist};
-
     return $self;
 }
 
@@ -302,15 +299,30 @@ sub dump_as_hash {
 
     my $ret;
     if ($type == XML::LibXML::XML_ELEMENT_NODE()) { # 1
+        my $current_plist_key;
         my $textkey     = $self->{_text_node_key} // '#text';
         my $force_array = $self->{_force_array};
         my $skip_attr   = $self->{_skip_attr};
         my $plist       = $self->{_is_plist};
         my $name = $node->nodeName;
-        foreach my $leaf (map { $self->dump_as_hash($_) } $node->childNodes()) {
-            if (ref($leaf) eq 'HASH') {
+        foreach my $child ($node->childNodes()) {
+            my $leaf = $self->dump_as_hash($child);
+            if ($plist) {
+                if ($name eq "array") {
+                    $ret = [] unless ref($ret) eq 'ARRAY';
+                    push @{$ret}, $leaf;
+                } elsif ($name eq "dict") {
+                    if (defined($current_plist_key)) {
+                        $ret->{$current_plist_key} = $leaf;
+                        undef $current_plist_key;
+                    } else {
+                        $current_plist_key = $leaf;
+                    }
+                } else {
+                    $ret = $leaf;
+                }
+            } elsif (ref($leaf) eq 'HASH') {
                 foreach my $key (keys(%{$leaf})) {
-                    next if $plist && $key =~ /^key|string|date|integer|real|data|true|false$/;
                     # Transform key in array ref is necessary
                     if (exists($ret->{$name}->{$key})) {
                         $ret->{$name}->{$key} = [ $ret->{$name}->{$key} ]
@@ -321,27 +333,27 @@ sub dump_as_hash {
                         $ret->{$name}->{$key} = $as_array ? [ $leaf->{$key} ] : $leaf->{$key};
                     }
                 }
-            } elsif ($plist) {
-                if ($name eq "key") {
-                    $self->{_current_name} = $leaf;
-                } elsif ($self->{_current_name}) {
-                    $ret->{$self->{_current_name}} = $leaf;
-                    delete $self->{_current_name};
-                }
             } elsif (!ref($ret->{$name})) {
                 $ret->{$name}->{$textkey} .= $leaf;
             } elsif ($leaf) {
                 warn "GLPI::Agent::XML: Unsupported value type for $name: '$leaf'".(ref($leaf) ? " (".ref($leaf).")" : "")."\n";
             }
         }
-        unless ($skip_attr) {
+        # We should skip XML attributs when reading a MacOSX plist file
+        unless ($plist || $skip_attr) {
             my $attr_prefix = $self->{_attr_prefix} // "-";
             foreach my $attribute ($node->attributes()) {
                 my $attr = $attr_prefix.$attribute->nodeName();
                 $ret->{$name}->{$attr} = $attribute->getValue();
             }
         }
-        if (!defined($ret)) {
+        if ($plist) {
+            if ($name eq 'array') {
+                $ret = [] unless defined($ret);
+            } elsif ($name !~ /^key|string|date|integer|real|data|true|false|array|dict$/) {
+                $ret = { $name => $ret };
+            }
+        } elsif (!defined($ret)) {
             $ret->{$name} = '';
         } elsif (defined($ret->{$name}->{$textkey}) && keys(%{$ret->{$name}}) == 1) {
             my $as_array = ref($force_array) eq 'ARRAY' && any { $name eq $_ } @{$force_array};

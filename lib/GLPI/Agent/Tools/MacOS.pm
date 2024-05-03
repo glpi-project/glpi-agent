@@ -36,6 +36,7 @@ sub _getSystemProfilerInfosXML {
         );
     } elsif ($params{type} =~ /^SP(SerialATA|DiscBurning|CardReader|USB|FireWire)DataType$/) {
         $info->{storages} = _extractStoragesFromXml(
+            type   => $params{type},
             string => $xmlStr,
             logger => $params{logger}
         );
@@ -49,31 +50,32 @@ sub _getSystemProfilerInfosXML {
 sub _getDict {
     my (%params) = @_;
 
+    my $dict = $params{dict} // '_items';
+
     my $xml = GLPI::Agent::XML->new(
         is_plist => 1,
         %params
     )->dump_as_hash();
 
-    return unless $xml && ref($xml->{plist}->{array}[0]->{dict}[0]->{array}) eq 'ARRAY';
+    return unless $xml && ref($xml->{plist}) eq 'ARRAY' && ref($xml->{plist}->[0]) eq 'HASH' && ref($xml->{plist}->[0]->{$dict}) eq 'ARRAY';
 
-    my $node = first { ref($_) eq 'HASH' && exists($_->{dict}) } @{$xml->{plist}->{array}[0]->{dict}[0]->{array}};
-
-    return $node->{dict};
+    return $xml->{plist}->[0]->{$dict};
 }
 
 sub _recSubStorage {
-    my ($list) = @_;
+    my ($list, $sublistkey, $depth) = @_;
+
+    my $listkey = $depth && !empty($sublistkey) ? $sublistkey : "_items";
 
     my @nodes;
     foreach my $node (@{$list}) {
         next unless ref($node) eq 'HASH';
-        if ($node->{array} && ref($node->{array}[0]) eq 'HASH' && exists($node->{array}[0]->{dict})) {
-            push @nodes, map { _recSubStorage($_->{dict}) }
-                grep { ref($_) eq 'HASH' && exists($_->{dict}) } @{$node->{array}};
+        if ($listkey && ref($node->{$listkey}) eq 'ARRAY') {
+            push @nodes, _recSubStorage($node->{$listkey}, $sublistkey, $depth+1);
         }
         if ($node->{_name}) {
             # Always cleanup from subnodes
-            delete $node->{array};
+            delete $node->{$listkey};
             push @nodes, $node;
         }
     }
@@ -84,12 +86,15 @@ sub _recSubStorage {
 sub _extractStoragesFromXml {
     my (%params) = @_;
 
+    my $type = delete $params{type} // '';
+    my $sublistkey = $type eq 'SPFireWireDataType' ? 'units' : '_items';
+
     my $dict = _getDict(%params)
         or return;
 
     my $storages = {};
 
-    foreach my $storage (_recSubStorage($dict)) {
+    foreach my $storage (_recSubStorage($dict, $sublistkey, 0)) {
         my $name = $storage->{_name}
             or next;
         $storages->{$name} = $storage;
@@ -129,6 +134,8 @@ sub _extractSoftwaresFromXml {
 
     my $softwares = {};
 
+    return unless ref($softlist) eq 'ARRAY';
+
     foreach my $soft (@{$softlist}) {
 
         my $name = $soft->{_name}
@@ -166,6 +173,16 @@ sub _extractSoftwaresFromXml {
         my $lastmod = delete $soft->{lastModified};
         $entry->{'Last Modified'} = _getOffsetDate($lastmod, $params{localTimeOffset})
             if defined($lastmod);
+
+        # Keep only meaningful signed_by element
+        if (ref($soft->{'signed_by'}) eq 'ARRAY') {
+            $entry->{'Signed by'} = first { /^Developer ID Application:/ } @{$soft->{'signed_by'}};
+        }
+
+        # Mimic plaintext output format extraction
+        if ($soft->{'obtained_from'} && $soft->{'obtained_from'} eq 'identified_developer') {
+            $entry->{'Obtained from'} = "Identified Developer";
+        }
 
         my %mapping = (
             version => 'Version',
