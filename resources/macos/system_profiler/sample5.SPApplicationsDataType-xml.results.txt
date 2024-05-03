@@ -103,7 +103,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '26/02/2024',
         'NAME' => 'Acrobat Update Helper',
-        'PUBLISHER' => 'Adobe Systems Inc.',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '1.2.2'
     },
@@ -171,7 +171,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '17/04/2024',
         'NAME' => 'Adobe Acrobat Reader',
-        'PUBLISHER' => '-Adobe Systems Inc.',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '24.002.20687'
     },
@@ -489,7 +489,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '26/06/2014',
         'NAME' => 'Canon IJScanner2',
-        'PUBLISHER' => 'CANON INC.',
+        'PUBLISHER' => 'Canon Inc.',
         'SYSTEM_CATEGORY' => 'Library/Image Capture',
         'VERSION' => '4.0.0'
     },
@@ -497,7 +497,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '26/06/2014',
         'NAME' => 'Canon IJScanner4',
-        'PUBLISHER' => 'CANON INC.',
+        'PUBLISHER' => 'Canon Inc.',
         'SYSTEM_CATEGORY' => 'Library/Image Capture',
         'VERSION' => '4.0.0'
     },
@@ -505,7 +505,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '26/06/2014',
         'NAME' => 'Canon IJScanner6',
-        'PUBLISHER' => 'CANON INC.',
+        'PUBLISHER' => 'Canon Inc.',
         'SYSTEM_CATEGORY' => 'Library/Image Capture',
         'VERSION' => '4.0.0'
     },
@@ -658,6 +658,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '04/11/2023',
         'NAME' => 'Cyberduck',
+        'PUBLISHER' => 'David Kocher',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '8.7.1'
     },
@@ -763,7 +764,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '19/08/2015',
         'NAME' => 'EPFaxAutoSetupTool',
-        'PUBLISHER' => 'Seiko Epson',
+        'PUBLISHER' => 'EPSON',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '1.71'
     },
@@ -771,7 +772,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '06/10/2015',
         'NAME' => 'EPSON Scanner',
-        'PUBLISHER' => 'Seiko Epson',
+        'PUBLISHER' => 'EPSON',
         'SYSTEM_CATEGORY' => 'Library/Image Capture',
         'VERSION' => '5.7.24'
     },
@@ -841,7 +842,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '19/08/2015',
         'NAME' => 'FAX Utility',
-        'PUBLISHER' => 'Seiko Epson',
+        'PUBLISHER' => 'EPSON',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '1.73'
     },
@@ -901,6 +902,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '10/04/2024',
         'NAME' => 'Firefox',
+        'PUBLISHER' => 'Mozilla',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '124.0.2'
     },
@@ -931,7 +933,7 @@ $results = [
         'ARCH' => 'Other',
         'INSTALLDATE' => '08/08/2022',
         'NAME' => 'GIMP',
-        'PUBLISHER' => 'The GIMP Team',
+        'PUBLISHER' => 'Simone Lehmann',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '2.8.14p2'
     },
@@ -971,7 +973,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '21/03/2023',
         'NAME' => 'Google Chrome',
-        'PUBLISHER' => 'Google LLC.',
+        'PUBLISHER' => 'Google LLC',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '111.0.5563.110'
     },
@@ -979,6 +981,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '07/12/2023',
         'NAME' => 'GoogleUpdater',
+        'PUBLISHER' => 'Google LLC',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'USERNAME' => 'agoulut',
         'VERSION' => '121.0.6167.0'
@@ -994,7 +997,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '25/10/2017',
         'NAME' => 'HP Device Monitor Manager',
-        'PUBLISHER' => 'Hewlett-Packard',
+        'PUBLISHER' => 'HP Inc.',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '5.37.1'
     },
@@ -1002,7 +1005,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '25/10/2017',
         'NAME' => 'HP Fax Archive',
-        'PUBLISHER' => 'HP Development Company',
+        'PUBLISHER' => 'HP Inc.',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '5.37.1'
     },
@@ -1010,7 +1013,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '25/10/2017',
         'NAME' => 'HP Product Research Manager',
-        'PUBLISHER' => 'Hewlett-Packard',
+        'PUBLISHER' => 'HP Inc.',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '10.37.1'
     },
@@ -1018,7 +1021,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '25/10/2017',
         'NAME' => 'HP Scanner 3',
-        'PUBLISHER' => 'HP Development Company',
+        'PUBLISHER' => 'HP Inc.',
         'SYSTEM_CATEGORY' => 'Library/Image Capture',
         'VERSION' => '4.9.4'
     },
@@ -1026,7 +1029,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '25/10/2017',
         'NAME' => 'HP Utility',
-        'PUBLISHER' => 'HP Development Company',
+        'PUBLISHER' => 'HP Inc.',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '5.37.1'
     },
@@ -1034,7 +1037,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '14/08/2018',
         'NAME' => 'HPScanner',
-        'PUBLISHER' => 'HP Development Company',
+        'PUBLISHER' => 'HP Inc.',
         'SYSTEM_CATEGORY' => 'Library/Image Capture',
         'VERSION' => '1.10.3'
     },
@@ -1230,6 +1233,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '29/03/2023',
         'NAME' => 'Kyocera Print Panel',
+        'PUBLISHER' => 'Kyocera Document Solutions Inc.',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '5.4.0516'
     },
@@ -1365,6 +1369,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '27/10/2022',
         'NAME' => 'Mendeley Reference Manager',
+        'PUBLISHER' => 'Elsevier Inc.',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '2.80.1'
     },
@@ -1403,6 +1408,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '17/04/2024',
         'NAME' => 'Microsoft AutoUpdate',
+        'PUBLISHER' => 'Microsoft',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '4.70'
     },
@@ -1418,6 +1424,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '21/02/2024',
         'NAME' => 'Microsoft Excel',
+        'PUBLISHER' => 'Microsoft',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '16.79.2'
     },
@@ -1425,6 +1432,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '17/04/2024',
         'NAME' => 'Microsoft OneNote',
+        'PUBLISHER' => 'Microsoft',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '16.84'
     },
@@ -1432,6 +1440,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '21/02/2024',
         'NAME' => 'Microsoft Outlook',
+        'PUBLISHER' => 'Microsoft',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '16.79.3'
     },
@@ -1439,6 +1448,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '21/02/2024',
         'NAME' => 'Microsoft PowerPoint',
+        'PUBLISHER' => 'Microsoft',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '16.79.2'
     },
@@ -1454,6 +1464,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '08/11/2023',
         'NAME' => 'Microsoft Teams classic',
+        'PUBLISHER' => 'Microsoft',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '1.00.627656'
     },
@@ -1461,6 +1472,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '21/02/2024',
         'NAME' => 'Microsoft Word',
+        'PUBLISHER' => 'Microsoft',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '16.79.2'
     },
@@ -1483,7 +1495,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '19/08/2015',
         'NAME' => "Moniteur de re\x{301}ception de fax",
-        'PUBLISHER' => 'Seiko Epson',
+        'PUBLISHER' => 'EPSON',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '1.71'
     },
@@ -1506,6 +1518,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '01/02/2021',
         'NAME' => 'NativeMessagingHost',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '5.0'
     },
@@ -1513,6 +1526,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '01/02/2021',
         'NAME' => 'NativeMessagingHost_0',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '5.0'
     },
@@ -1574,6 +1588,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '25/04/2024',
         'NAME' => 'OneDrive',
+        'PUBLISHER' => 'Microsoft',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '24.065.0331'
     },
@@ -1581,6 +1596,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '21/10/2017',
         'NAME' => 'OnyX',
+        'PUBLISHER' => 'Joel BARRIERE',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '3.3.1'
     },
@@ -1672,7 +1688,7 @@ $results = [
         'ARCH' => 'Intel (i386)',
         'INSTALLDATE' => '09/07/2012',
         'NAME' => 'PhotoshopdotcomInspirationBrowser',
-        'PUBLISHER' => '-Adobe Systems Inc.',
+        'PUBLISHER' => 'Adobe Systems Inc.',
         'SYSTEM_CATEGORY' => 'Applications/Adobe',
         'VERSION' => '3.07'
     },
@@ -1831,7 +1847,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '14/06/2017',
         'NAME' => 'RStudio',
-        'PUBLISHER' => 'RStudio',
+        'PUBLISHER' => 'RStudio Inc.',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '0.98.1103'
     },
@@ -1924,7 +1940,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '25/10/2017',
         'NAME' => 'ScanEventHandler',
-        'PUBLISHER' => 'HP Development Company',
+        'PUBLISHER' => 'HP Inc.',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '1.4.0'
     },
@@ -2001,6 +2017,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '08/11/2023',
         'NAME' => 'Skype Entreprise',
+        'PUBLISHER' => 'Skype Communications S.a.r.l',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '16.30.32'
     },
@@ -2075,6 +2092,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '03/01/2024',
         'NAME' => 'Support Tool',
+        'PUBLISHER' => 'F-Secure',
         'SYSTEM_CATEGORY' => 'Applications/F-Secure',
         'VERSION' => '3.0.51507'
     },
@@ -2239,6 +2257,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '03/01/2024',
         'NAME' => "Uninstall WithSecure\x{2122} Elements Agent",
+        'PUBLISHER' => 'F-Secure',
         'SYSTEM_CATEGORY' => 'Applications/F-Secure',
         'VERSION' => '3.0.51507'
     },
@@ -2354,7 +2373,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '14/06/2017',
         'NAME' => 'VLC',
-        'PUBLISHER' => 'the VideoLAN team',
+        'PUBLISHER' => 'VideoLAN',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '2.2.1'
     },
@@ -2424,6 +2443,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '03/01/2024',
         'NAME' => "WithSecure\x{2122} Elements Agent",
+        'PUBLISHER' => 'F-Secure',
         'SYSTEM_CATEGORY' => 'Applications/F-Secure',
         'VERSION' => '3.0.51507'
     },
@@ -2431,6 +2451,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '03/01/2024',
         'NAME' => "WithSecure\x{2122} XFENCE",
+        'PUBLISHER' => 'F-Secure',
         'SYSTEM_CATEGORY' => 'Applications/F-Secure',
         'VERSION' => '3.0.51507'
     },
@@ -2524,7 +2545,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '19/08/2015',
         'NAME' => 'commandFilter',
-        'PUBLISHER' => 'Seiko Epson',
+        'PUBLISHER' => 'EPSON',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '1.71'
     },
@@ -2532,7 +2553,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '26/09/2016',
         'NAME' => 'commandtohp',
-        'PUBLISHER' => 'HP Development Company',
+        'PUBLISHER' => 'HP Inc.',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '2.4.1'
     },
@@ -2547,7 +2568,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '19/08/2015',
         'NAME' => 'epsonfax',
-        'PUBLISHER' => 'Seiko Epson',
+        'PUBLISHER' => 'EPSON',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '1.71'
     },
@@ -2555,7 +2576,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '25/05/2017',
         'NAME' => 'fax',
-        'PUBLISHER' => 'HP Development Company',
+        'PUBLISHER' => 'HP Inc.',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '5.17.3'
     },
@@ -2563,6 +2584,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '03/01/2024',
         'NAME' => 'fsavd',
+        'PUBLISHER' => 'F-Secure',
         'SYSTEM_CATEGORY' => 'Library/F-Secure',
         'VERSION' => '3.0.51507'
     },
@@ -2570,6 +2592,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '17/04/2024',
         'NAME' => 'fschotfix',
+        'PUBLISHER' => 'F-Secure',
         'SYSTEM_CATEGORY' => 'Library/F-Secure',
         'VERSION' => '3.0.51507'
     },
@@ -2593,7 +2616,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '25/05/2017',
         'NAME' => 'hpPreProcessing',
-        'PUBLISHER' => 'HP Development Company',
+        'PUBLISHER' => 'HP Inc.',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '1.7.2'
     },
@@ -2601,7 +2624,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '25/10/2017',
         'NAME' => 'hpdot4d',
-        'PUBLISHER' => 'HP Development Company',
+        'PUBLISHER' => 'HP Inc.',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '4.17.1'
     },
@@ -2609,7 +2632,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '25/10/2017',
         'NAME' => 'hpdot4d_0',
-        'PUBLISHER' => 'HP Development Company',
+        'PUBLISHER' => 'HP Inc.',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '5.3.1'
     },
@@ -2683,7 +2706,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '25/05/2017',
         'NAME' => 'pdftopdf',
-        'PUBLISHER' => 'HP Development Company',
+        'PUBLISHER' => 'HP Inc.',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '2.7.1'
     },
@@ -2707,7 +2730,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '19/08/2015',
         'NAME' => 'rastertoepfax',
-        'PUBLISHER' => 'Seiko Epson',
+        'PUBLISHER' => 'EPSON',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '1.71'
     },
@@ -2715,7 +2738,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '25/05/2017',
         'NAME' => 'rastertofax',
-        'PUBLISHER' => 'HP Development Company',
+        'PUBLISHER' => 'HP Inc.',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '5.17.3'
     },
@@ -2723,6 +2746,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '29/03/2023',
         'NAME' => 'rastertokpsl',
+        'PUBLISHER' => 'Kyocera Document Solutions Inc.',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '1.0.3629'
     },
@@ -2730,6 +2754,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '29/03/2023',
         'NAME' => 'rastertopcl_F',
+        'PUBLISHER' => 'Kyocera Document Solutions Inc.',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '5.4.0401'
     },

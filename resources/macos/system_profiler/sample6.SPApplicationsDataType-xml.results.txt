@@ -6,7 +6,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '13/07/2015',
         'NAME' => '4Peaks',
-        'PUBLISHER' => 'Nucleobytes BV.',
+        'PUBLISHER' => 'Nucleobytes BV',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '1.8'
     },
@@ -87,7 +87,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '26/02/2024',
         'NAME' => 'Acrobat Update Helper',
-        'PUBLISHER' => 'Adobe Systems Inc.',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '1.2.2'
     },
@@ -127,7 +127,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '15/04/2024',
         'NAME' => 'Adobe Acrobat Reader',
-        'PUBLISHER' => '-Adobe Systems Inc.',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '24.002.20687'
     },
@@ -143,13 +143,14 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '28/06/2023',
         'NAME' => 'Adobe Crash Reporter',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '10.1.3'
     },
     {
         'INSTALLDATE' => '29/06/2023',
         'NAME' => 'Adobe Elements 2023 Organizer',
-        'PUBLISHER' => 'Adobe.',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '21.0 (20230329.Git.m1.392a82c)'
     },
@@ -157,6 +158,7 @@ $results = [
         'ARCH' => 'Arm',
         'INSTALLDATE' => '29/06/2023',
         'NAME' => 'Adobe Photoshop Elements 2023',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Applications/Adobe Photoshop Elements 2023',
         'VERSION' => '21.0 (20230329.Git.m1.392a82c)'
     },
@@ -164,7 +166,7 @@ $results = [
         'ARCH' => 'Arm',
         'INSTALLDATE' => '29/06/2023',
         'NAME' => 'Adobe Photoshop Elements Editor',
-        'PUBLISHER' => 'Adobe Systems Inc.',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Applications/Adobe Photoshop Elements 2023',
         'VERSION' => '21.0 (20230329.Git.m1.392a82c)'
     },
@@ -172,6 +174,7 @@ $results = [
         'ARCH' => 'Arm',
         'INSTALLDATE' => '28/06/2023',
         'NAME' => 'Adobe Update Helper',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '5.8.0.592'
     },
@@ -179,6 +182,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '28/06/2023',
         'NAME' => 'AdobeCRDaemon',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '10.1.3'
     },
@@ -692,6 +696,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '20/12/2023',
         'NAME' => 'Cyberduck',
+        'PUBLISHER' => 'David Kocher',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '8.7.1'
     },
@@ -812,6 +817,7 @@ $results = [
         'ARCH' => 'Arm',
         'INSTALLDATE' => '28/06/2023',
         'NAME' => 'EORG_21_1',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '5.8.0.592'
     },
@@ -826,7 +832,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '22/07/2015',
         'NAME' => 'EnzymeX',
-        'PUBLISHER' => 'Nucleobytes BV.',
+        'PUBLISHER' => 'Nucleobytes BV',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => 'EnzymeX 3.3.3'
     },
@@ -926,6 +932,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '22/04/2024',
         'NAME' => 'Firefox',
+        'PUBLISHER' => 'Mozilla',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '115.10.0'
     },
@@ -964,6 +971,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '30/01/2024',
         'NAME' => 'Foxit PDF Editor',
+        'PUBLISHER' => 'Foxit',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '13.0.1.61866'
     },
@@ -971,6 +979,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '30/01/2024',
         'NAME' => 'Foxit PDF Editor Activation',
+        'PUBLISHER' => 'Foxit',
         'SYSTEM_CATEGORY' => 'usr/local',
         'VERSION' => '13.0.1'
     },
@@ -978,6 +987,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '25/04/2024',
         'NAME' => 'FoxitPDFEditorUpdateService',
+        'PUBLISHER' => 'Foxit',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'USERNAME' => 'ceboulard',
         'VERSION' => '13.0.1'
@@ -986,6 +996,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '19/01/2024',
         'NAME' => 'FoxitPDFEditorUpdateService_0',
+        'PUBLISHER' => 'Foxit',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'USERNAME' => 'ceboulard',
         'VERSION' => '11.1.5'
@@ -1008,7 +1019,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '20/12/2021',
         'NAME' => 'GIMP-2',
-        'PUBLISHER' => 'The GIMP Team',
+        'PUBLISHER' => 'GNOME Foundation',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '2.10.30'
     },
@@ -1032,6 +1043,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '04/07/2023',
         'NAME' => 'GlobalProtect',
+        'PUBLISHER' => 'Palo Alto Networks',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '6.0.5-30'
     },
@@ -1039,7 +1051,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '09/04/2022',
         'NAME' => 'Google Chrome',
-        'PUBLISHER' => 'Google LLC.',
+        'PUBLISHER' => 'Google LLC',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '100.0.4896.88'
     },
@@ -1070,7 +1082,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '08/10/2020',
         'NAME' => 'HP Easy Admin',
-        'PUBLISHER' => 'Hewlett-Packard',
+        'PUBLISHER' => 'HP Inc.',
         'USERNAME' => 'ijpb-pri',
         'VERSION' => '1.2.0'
     },
@@ -1078,7 +1090,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '08/10/2020',
         'NAME' => 'HP Easy Admin 2',
-        'PUBLISHER' => 'Hewlett-Packard',
+        'PUBLISHER' => 'HP Inc.',
         'USERNAME' => 'ijpb-pri',
         'VERSION' => '1.2.0'
     },
@@ -1086,7 +1098,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '24/01/2022',
         'NAME' => 'HP Easy Start',
-        'PUBLISHER' => 'Hewlett-Packard',
+        'PUBLISHER' => 'HP Inc.',
         'USERNAME' => 'ijpb-pri',
         'VERSION' => '2.13.0'
     },
@@ -1094,7 +1106,7 @@ $results = [
         'ARCH' => 'Arm',
         'INSTALLDATE' => '28/06/2023',
         'NAME' => 'HPSE_21_1',
-        'PUBLISHER' => 'Hewlett-Packard',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '5.8.0.592'
     },
@@ -1168,6 +1180,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '28/06/2023',
         'NAME' => 'Install',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '5.8.0.592'
     },
@@ -1274,6 +1287,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '05/04/2023',
         'NAME' => 'Kyocera Print Panel',
+        'PUBLISHER' => 'Kyocera Document Solutions Inc.',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '5.4.0516'
     },
@@ -1331,6 +1345,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '28/06/2023',
         'NAME' => 'LogTransport',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '10.1.3'
     },
@@ -1338,6 +1353,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '14/09/2022',
         'NAME' => 'MEGA11',
+        'PUBLISHER' => 'Center for Evolutionary Functional Genomics',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '0.1'
     },
@@ -1421,6 +1437,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '17/04/2024',
         'NAME' => 'Microsoft AutoUpdate',
+        'PUBLISHER' => 'Microsoft',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '4.70'
     },
@@ -1428,6 +1445,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '28/03/2024',
         'NAME' => 'Microsoft Defender',
+        'PUBLISHER' => 'Microsoft',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '101.24010.0017'
     },
@@ -1435,6 +1453,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '17/04/2024',
         'NAME' => 'Microsoft Excel',
+        'PUBLISHER' => 'Microsoft',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '16.84'
     },
@@ -1442,6 +1461,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '17/04/2024',
         'NAME' => 'Microsoft OneNote',
+        'PUBLISHER' => 'Microsoft',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '16.84'
     },
@@ -1449,6 +1469,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '24/04/2024',
         'NAME' => 'Microsoft Outlook',
+        'PUBLISHER' => 'Microsoft',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '16.84.1'
     },
@@ -1456,6 +1477,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '24/04/2024',
         'NAME' => 'Microsoft PowerPoint',
+        'PUBLISHER' => 'Microsoft',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '16.84.1'
     },
@@ -1463,6 +1485,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '14/02/2024',
         'NAME' => 'Microsoft Teams classic',
+        'PUBLISHER' => 'Microsoft',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '1.00.628554'
     },
@@ -1470,6 +1493,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '17/04/2024',
         'NAME' => 'Microsoft Word',
+        'PUBLISHER' => 'Microsoft',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '16.84'
     },
@@ -1514,6 +1538,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '14/04/2022',
         'NAME' => 'NativeMessagingHost',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '5.0'
     },
@@ -1521,6 +1546,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '04/04/2022',
         'NAME' => 'NativeMessagingHost_0',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '5.0'
     },
@@ -1589,6 +1615,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '30/04/2024',
         'NAME' => 'OneDrive',
+        'PUBLISHER' => 'Microsoft',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '24.070.0407'
     },
@@ -1596,6 +1623,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '03/03/2024',
         'NAME' => 'Open To Start Support Session',
+        'PUBLISHER' => 'Bomgar',
         'USERNAME' => 'ceboulard',
         'VERSION' => '24.1.1'
     },
@@ -1626,6 +1654,7 @@ $results = [
         'ARCH' => 'Arm',
         'INSTALLDATE' => '28/06/2023',
         'NAME' => 'PSE_21_1',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '5.8.0.592'
     },
@@ -1685,6 +1714,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '29/06/2023',
         'NAME' => 'Photoshop Elements and Premiere Elements',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '1.0'
     },
@@ -1751,6 +1781,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '24/01/2022',
         'NAME' => "Programme de de\x{301}sinstallation HP",
+        'PUBLISHER' => 'HP Inc.',
         'USERNAME' => 'ijpb-pri',
         'VERSION' => '5.14.0'
     },
@@ -1805,7 +1836,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '18/11/2020',
         'NAME' => 'PyMOL',
-        'PUBLISHER' => 'Schrödinger',
+        'PUBLISHER' => 'Schrodinger',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '2.4.1'
     },
@@ -1837,6 +1868,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '14/04/2022',
         'NAME' => 'R',
+        'PUBLISHER' => 'Simon Urbanek',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => 'R 4.1.3 GUI 1.77 High Sierra build'
     },
@@ -1844,7 +1876,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '18/03/2022',
         'NAME' => 'RStudio',
-        'PUBLISHER' => 'RStudio',
+        'PUBLISHER' => 'RStudio Inc.',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '2022.02.1+461'
     },
@@ -1912,6 +1944,7 @@ $results = [
         'ARCH' => 'Intel (i386)',
         'INSTALLDATE' => '14/04/2022',
         'NAME' => 'Reset Serial Cloner',
+        'PUBLISHER' => 'Franck Perez',
         'SYSTEM_CATEGORY' => 'Applications/SerialCloner2-6',
         'VERSION' => undef
     },
@@ -1973,6 +2006,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '30/01/2024',
         'NAME' => 'Save as Foxit PDF',
+        'PUBLISHER' => 'Foxit',
         'SYSTEM_CATEGORY' => 'Library/PDF Services',
         'VERSION' => '13.0.1'
     },
@@ -2003,7 +2037,7 @@ $results = [
         'ARCH' => 'Intel (i386)',
         'INSTALLDATE' => '14/04/2022',
         'NAME' => 'SerialCloner 2-6-1',
-        'PUBLISHER' => 'F. Perez',
+        'PUBLISHER' => 'Franck Perez',
         'SYSTEM_CATEGORY' => 'Applications/SerialCloner2-6',
         'VERSION' => '2.6.1'
     },
@@ -2065,6 +2099,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '25/09/2023',
         'NAME' => 'Skype Entreprise',
+        'PUBLISHER' => 'Skype Communications S.a.r.l',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '16.30.32'
     },
@@ -2238,6 +2273,7 @@ $results = [
         'ARCH' => 'Universal',
         'INSTALLDATE' => '24/05/2022',
         'NAME' => 'Thunderbird',
+        'PUBLISHER' => 'Mozilla',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '91.9.1'
     },
@@ -2295,6 +2331,7 @@ $results = [
         'ARCH' => 'Arm',
         'INSTALLDATE' => '28/06/2023',
         'NAME' => 'Uninstaller',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '5.8.0.592'
     },
@@ -2394,6 +2431,7 @@ $results = [
     {
         'INSTALLDATE' => '18/06/2021',
         'NAME' => 'VLC',
+        'PUBLISHER' => 'VideoLAN',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '3.0.16'
     },
@@ -2496,6 +2534,7 @@ $results = [
         'ARCH' => 'Arm',
         'INSTALLDATE' => '21/11/2023',
         'NAME' => 'ZoomAutoUpdater',
+        'PUBLISHER' => 'Zoom Video Communications',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'USERNAME' => 'ceboulard',
         'VERSION' => '5.16.2 (23409)'
@@ -2512,6 +2551,7 @@ $results = [
         'ARCH' => 'Arm',
         'INSTALLDATE' => '28/06/2023',
         'NAME' => 'adobe_licensing_helper',
+        'PUBLISHER' => 'Adobe Inc.',
         'SYSTEM_CATEGORY' => 'Library/Application Support',
         'VERSION' => '1.0.0.73'
     },
@@ -2664,6 +2704,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '05/04/2023',
         'NAME' => 'rastertokpsl',
+        'PUBLISHER' => 'Kyocera Document Solutions Inc.',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '1.0.3629'
     },
@@ -2671,6 +2712,7 @@ $results = [
         'ARCH' => 'Intel (x86_64)',
         'INSTALLDATE' => '05/04/2023',
         'NAME' => 'rastertopcl_F',
+        'PUBLISHER' => 'Kyocera Document Solutions Inc.',
         'SYSTEM_CATEGORY' => 'Library/Printers',
         'VERSION' => '5.4.0401'
     },
@@ -2723,6 +2765,7 @@ $results = [
         'ARCH' => 'Arm',
         'INSTALLDATE' => '21/11/2023',
         'NAME' => 'zoom',
+        'PUBLISHER' => 'Zoom Video Communications',
         'SYSTEM_CATEGORY' => 'Applications',
         'VERSION' => '5.16.2 (23409)'
     }

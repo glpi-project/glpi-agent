@@ -1756,7 +1756,7 @@ $results = [
         'ARCH' => '32-bit (Unsupported)',
         'INSTALLDATE' => '07/09/2020',
         'NAME' => 'PhotoshopdotcomInspirationBrowser',
-        'PUBLISHER' => '-Adobe Systems Inc.',
+        'PUBLISHER' => 'Adobe Systems Inc.',
         'SYSTEM_CATEGORY' => 'Applications/Adobe',
         'VERSION' => '3.07'
     },

@@ -67,7 +67,7 @@ sub _getSoftwaresList {
         if ($source eq 'Apple' || ($app->{'Location'} && $app->{'Location'} =~ m{/System/Library/(CoreServices|Frameworks)/})) {
             $soft->{PUBLISHER} = 'Apple';
         } elsif ($source eq 'Identified Developer' && $app->{'Signed by'}) {
-            my ($developer) = $app->{'Signed by'} =~ /^Developer ID Application: ([^,]*),/;
+            my ($developer) = $app->{'Signed by'} =~ /^Developer ID Application: ([^,]*),?/;
             $developer = $1 if !empty($developer) && $developer =~ /^(.*)\s+\(.*\)$/;
             $developer =~ s/\s*Incorporated.*/ Inc./i unless empty($developer);
             $developer =~ s/\s*Corporation.*//i unless empty($developer);
@@ -87,7 +87,7 @@ sub _getSoftwaresList {
                     $publisher =~ s/\s*All rights reserved\.?\s*//i;
                     $publisher =~ s/\s*Incorporated.*/ Inc./i;
                     $publisher =~ s/\s*Corporation.*//i;
-                    $publisher =~ s/\s*\d+(-\d+)?\s*//g;
+                    $publisher =~ s/\s*\d+(\s*-\s*\d+)?\s*//g;
                     $soft->{PUBLISHER} = $publisher unless empty($publisher);
                 }
             }
