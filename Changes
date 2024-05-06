@@ -34,6 +34,7 @@ inventory:
 remoteinventory:
 * Limit the number of attempts and reported errors when libssh2 fails but ssh command
   works. Libssh2 attempts will be disabled for a minute on failed attempt.
+* Clarify debug, warning and error messages
 
 netdiscovery/netinventory:
 * Keep device mac address found via snmp during netdiscovery as this is the one

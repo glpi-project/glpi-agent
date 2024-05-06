@@ -34,7 +34,7 @@ sub disconnect {
     if ($self->{_ssh2}) {
         $self->{_ssh2}->disconnect() if $self->{_ssh2}->sock;
         delete $self->{_ssh2};
-        $self->{logger}->debug2("Disconnected from '".$self->host()."' remote host...");
+        $self->{logger}->debug2("[libssh2] Disconnected from '".$self->host()."' remote host...");
     }
 
     # Cleanup cache
@@ -73,10 +73,10 @@ sub _connect {
     my $host = $self->host();
     my $port = $self->port();
     my $remote = $host . ($port && $port == 22 ? "" : ":$port");
-    $self->{logger}->debug2("Connecting to '$remote' remote host...");
+    $self->{logger}->debug2("[libssh2] Connecting to '$remote' remote host...");
     if (!$ssh2->connect($host, $port // 22)) {
         my @error = $ssh2->error;
-        $self->{logger}->debug("Can't reach $remote for ssh remoteinventory via libssh2: @error");
+        $self->{logger}->debug("[libssh2] Can't reach $remote for ssh remoteinventory: @error");
         undef $self->{_ssh2};
         # Don't retry to connect with libssh2 before a minute
         $self->{_ssh2_dont_retry_before} = time + 60;
@@ -84,7 +84,7 @@ sub _connect {
     }
 
     # Use Trust On First Use policy to verify remote host
-    $self->{logger}->debug2("Check remote host key...");
+    $self->{logger}->debug2("[libssh2] Check remote host key...");
     if ($OSNAME eq 'MSWin32') {
         # On windows, use vardir as HOME to store known_hosts file
         my $home = $self->config->{vardir};
@@ -122,23 +122,23 @@ sub _connect {
 
     # Support authentication by password
     if ($self->pass()) {
-        $self->{logger}->debug2("Try authentication by password...");
+        $self->{logger}->debug2("[libssh2] Trying password authentication...");
         my $user = $self->user();
         unless ($user) {
             if ($ENV{USER}) {
                 $user = $ENV{USER};
-                $self->{logger}->debug2("Trying '$user' as login");
+                $self->{logger}->debug2("[libssh2] Trying '$user' as login");
             } else {
-                $self->{logger}->error("No user given for password authentication");
+                $self->{logger}->error("[libssh2] No user given for password authentication");
             }
         }
         if ($user) {
             unless ($ssh2->auth_password($user, $self->pass())) {
                 my @error = $ssh2->error;
-                $self->{logger}->debug("Can't authenticate to $remote with given password for ssh remoteinventory: @error");
+                $self->{logger}->debug("[libssh2] Can't authenticate to $remote with given password for ssh remoteinventory: @error");
             }
             if ($ssh2->auth_ok) {
-                $self->{logger}->debug2("Authenticated on $remote remote with given password");
+                $self->{logger}->debug2("[libssh2] Authenticated on $remote remote with given password");
                 $self->user($user);
                 return 1;
             }
@@ -159,21 +159,21 @@ sub _connect {
         $self->{_private_keys_lastscan} = time;
     }
 
-    # Support public key athentication
+    # Support public key authentication
     my $user = $self->user() // $ENV{USER};
     foreach my $private (sort(keys(%{$self->{_private_keys}}))) {
-        $self->{logger}->debug2("Try authentication using $private key...");
+        $self->{logger}->debug2("[libssh2] Trying publickey authentication using $private key...");
         my $file = $self->{_private_keys}->{$private};
         my $pubkey;
         $pubkey = $file.".pub" if -e $file.".pub";
         next unless $ssh2->auth_publickey($user, $pubkey, $file, $self->pass());
         if ($ssh2->auth_ok) {
-            $self->{logger}->debug2("Authenticated on $remote remote with $private key");
+            $self->{logger}->debug2("[libssh2] Authenticated on $remote remote with $private key");
             return 1;
         }
     }
 
-    $self->{logger}->error("Can't authenticate on $remote remote host via libssh2");
+    $self->{logger}->error("[libssh2] Can't authenticate on $remote remote host");
     undef $self->{_ssh2};
 
     # Don't retry libssh2 before a minute
@@ -196,7 +196,7 @@ sub _ssh2_exec_status {
         $ret = $chan->exit_status();
         $chan->close;
     } else {
-        $self->{logger}->debug2("Failed to start '$command' using ssh2 lib");
+        $self->{logger}->debug2("[libssh2] Failed to start '$command'");
     }
 
     return $ret;
@@ -223,7 +223,7 @@ sub checking_error {
     my ($self) = @_;
 
     my $libssh2 = $self->_connect();
-    return "Can't run simple command on remote via libssh2, check server is up and ssh access is setup"
+    return "[libssh2] Can't run simple command on remote, check server is up and ssh access is setup"
         if $self->mode('libssh2') && !$self->mode('ssh') && !$libssh2;
 
     my $root = $self->getRemoteFirstLine(command => "id -u");
@@ -252,18 +252,18 @@ sub checking_error {
         my $ret = $self->_ssh2_exec_status($command);
         if (defined($ret)) {
             if ($ret) {
-                $self->{logger}->warning("Failed to store deviceid using ssh2");
+                $self->{logger}->warning("[libssh2] Failed to store deviceid");
             } else {
                 return '';
             }
         }
 
         # Don't try ssh command if mode has been set to libssh2 only
-        return "Failed to store deviceid on remote with libssh2"
+        return "[libssh2] Failed to store deviceid on remote"
             if $self->mode('libssh2') && !$self->mode('ssh');
 
         system($self->_ssh(), "sh", "-c", "'$command'") == 0
-            or return "Can't store deviceid on remote";
+            or return "[ssh] Can't store deviceid on remote";
     }
 
     return '';
@@ -280,19 +280,19 @@ sub getRemoteFileHandle {
             $self->_connect();
             my $sftp = $self->{_ssh2}->sftp();
             if ($sftp) {
-                $self->{logger}->debug2("Trying to read '$params{file}' via sftp subsystem");
+                $self->{logger}->debug2("[libssh2] Trying to read '$params{file}' via sftp subsystem");
                 my $fh = $sftp->open($params{file});
                 return $fh if $fh;
                 my @error = $sftp->error;
                 if (@error && $error[0]) {
                     if ($error[0] == 2) { # SSH_FX_NO_SUCH_FILE
-                        $self->{logger}->debug2("'$params{file}' file not found");
+                        $self->{logger}->debug2("[libssh2] '$params{file}' file not found");
                         return;
                     } elsif ($error[0] == 3) { # SSH_FX_PERMISSION_DENIED
-                        $self->{logger}->debug2("Not authorized to read '$params{file}'");
+                        $self->{logger}->debug2("[libssh2] Not authorized to read '$params{file}'");
                         return;
                     } else {
-                        $self->{logger}->debug2("Unsupported SFTP error (@error)");
+                        $self->{logger}->debug2("[libssh2] Unsupported SFTP error (@error)");
                     }
                 }
 
@@ -317,7 +317,7 @@ sub getRemoteFileHandle {
         my $chan = $self->{_ssh2}->channel();
         if ($chan) {
             $chan->ext_data('ignore');
-            $self->{logger}->debug2("Running \"$command\"...");
+            $self->{logger}->debug2("[libssh2] Running \"$command\"...");
             if ($chan->exec("LANG=C $command")) {
                 return $chan;
             }
@@ -326,7 +326,7 @@ sub getRemoteFileHandle {
 
     # Don't try ssh command if mode has been set to libssh2 only
     if ($self->mode('libssh2') && !$self->mode('ssh')) {
-        $self->{logger}->debug("Failed to run \"$command\" in libssh2 mode only");
+        $self->{logger}->debug("[libssh2] Failed to run \"$command\" in libssh2 mode only");
         return;
     }
 
@@ -447,13 +447,13 @@ sub remoteTestFile {
         my $sftp = $self->{_ssh2}->sftp();
         if ($sftp) {
             if ($filetest && $filetest eq "r") {
-                $self->{logger}->debug2("Trying to stat if '$file' is readable via sftp subsystem");
+                $self->{logger}->debug2("[libssh2] Trying to stat if '$file' is readable via sftp subsystem");
                 my $fh = $sftp->open($file);
                 return 0 unless $fh;
                 close($fh);
                 return 1;
             }
-            $self->{logger}->debug2("Trying to stat '$file' via sftp subsystem");
+            $self->{logger}->debug2("[libssh2] Trying to stat '$file' via sftp subsystem");
             my $stat = $sftp->stat($file);
             return 1 if defined($stat);
             my @error = $sftp->error;
@@ -461,10 +461,10 @@ sub remoteTestFile {
                 if ($error[0] == 2) { # SSH_FX_NO_SUCH_FILE
                     return 0;
                 } elsif ($error[0] == 3) { # SSH_FX_PERMISSION_DENIED
-                    $self->{logger}->debug2("Not authorized to access '$file'");
+                    $self->{logger}->debug2("[libssh2] Not authorized to access '$file'");
                     return 0;
                 } else {
-                    $self->{logger}->debug2("Unsupported SFTP error (@error)");
+                    $self->{logger}->debug2("[libssh2] Unsupported SFTP error (@error)");
                 }
             }
 
@@ -514,7 +514,7 @@ sub remoteFileStat {
         $self->_connect();
         my $sftp = $self->{_ssh2}->sftp();
         if ($sftp) {
-            $self->{logger}->debug2("Trying to stat '$file' via sftp subsystem");
+            $self->{logger}->debug2("[libssh2] Trying to stat '$file' via sftp subsystem");
             my $stat = $sftp->stat($file);
             if (ref($stat) eq 'HASH') {
                 return (
@@ -537,10 +537,10 @@ sub remoteFileStat {
                 if ($error[0] == 2) { # SSH_FX_NO_SUCH_FILE
                     return;
                 } elsif ($error[0] == 3) { # SSH_FX_PERMISSION_DENIED
-                    $self->{logger}->debug2("Not authorized to access '$file'");
+                    $self->{logger}->debug2("[libssh2] Not authorized to access '$file'");
                     return;
                 } else {
-                    $self->{logger}->debug2("Unsupported SFTP error (@error)");
+                    $self->{logger}->debug2("[libssh2] Unsupported SFTP error (@error)");
                 }
             }
 
