@@ -30,6 +30,9 @@ inventory:
   found. This fixes monitors inventory on Apple M1.
 * Fix MacOSX software arch should be set in ARCH field
 * Fix Lenovo T24v-10 monitor serial number inventory
+* Add base code to support usb device update on MSWin32, mainly to report expected
+  or fix serialnumber for specific device with well-know method to get required
+  datas. This base code is required to fix #650.
 
 remoteinventory:
 * Limit the number of attempts and reported errors when libssh2 fails but ssh command
