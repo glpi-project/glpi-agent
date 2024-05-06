@@ -29,6 +29,7 @@ inventory:
 * Enhance #430 fix: Don't make edid mandatory if monitor SERIAL & CAPTION are still
   found. This fixes monitors inventory on Apple M1.
 * Fix MacOSX software arch should be set in ARCH field
+* Fix Lenovo T24v-10 monitor serial number inventory
 
 remoteinventory:
 * Limit the number of attempts and reported errors when libssh2 fails but ssh command

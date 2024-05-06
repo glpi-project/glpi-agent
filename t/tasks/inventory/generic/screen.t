@@ -820,6 +820,18 @@ my %edid_tests = (
         SERIAL       => "68056070",
         DESCRIPTION  => '28/2020'
     },
+    'lenovo-LT2452' => {
+        CAPTION      => 'LEN LT2452pwC',
+        DESCRIPTION  => '51/2011',
+        MANUFACTURER => 'Lenovo Group Limited',
+        SERIAL       => '5a485035'
+    },
+    'lenovo-T24v-10' => {
+        CAPTION      => 'T24v-10',
+        DESCRIPTION  => '51/2019',
+        MANUFACTURER => 'Lenovo Group Limited',
+        SERIAL       => 'V905BAYH'
+    },
     'samsung-s22e390' => {
         MANUFACTURER => 'Samsung Electric Company',
         CAPTION      => 'S22E390',
@@ -897,11 +909,21 @@ my %macos_tests = (
 plan tests => (scalar keys %edid_tests) + (2 * scalar keys %macos_tests) + 1;
 
 foreach my $test (sort keys %edid_tests) {
+    my $dumper;
     my $file = "resources/generic/edid/$test";
     my $edid = getAllLines(file => $file)
         or die "Can't read $file: $!\n";
     my $info = GLPI::Agent::Task::Inventory::Generic::Screen::_getEdidInfo(edid => $edid, datadir => './share');
-    cmp_deeply($info, $edid_tests{$test}, $test);
+    if (!$edid_tests{$test} || !keys(%{$edid_tests{$test}})) {
+        $dumper = Data::Dumper->new([$info], [$test])->Useperl(1)->Indent(1)->Quotekeys(0)->Sortkeys(1)->Pad("    ");
+        $dumper->{xpad} = "    ";
+        print STDERR "====\n$test: Expecting ", $dumper->Dump();
+    }
+    SKIP: {
+        skip "$test: Expecting ".$dumper->Dump(), 1
+            if $dumper;
+        cmp_deeply($info, $edid_tests{$test}, $test);
+    }
 }
 
 my $module = Test::MockModule->new(

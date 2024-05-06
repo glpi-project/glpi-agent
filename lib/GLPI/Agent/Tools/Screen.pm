@@ -28,6 +28,10 @@ sub new {
     # http://forge.fusioninventory.org/issues/1614
     if ($self->{edid}->{serial_number2} && $self->{edid}->{serial_number2}->[0]) {
         $self->{_serial} = $self->{edid}->{serial_number2}->[0];
+        # Check if serial ends by 0x0A if it is shorter then 13 chars, problem found on Lenovo monitors
+        my $lf = index($self->{_serial}, chr(0x0A));
+        $self->{_serial} = substr($self->{_serial}, 0, $lf)
+            unless $lf < 0;
     } else {
         $self->{_serial} = sprintf("%08x", $self->{edid}->{serial_number});
     }
