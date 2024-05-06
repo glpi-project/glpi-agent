@@ -286,6 +286,7 @@ install -m 644 -D  contrib/unix/%{name}.service %{buildroot}%{_unitdir}/%{name}.
 %{_datadir}/%{name}/lib/GLPI/Agent/Tools/Solaris.pm
 %{_datadir}/%{name}/lib/GLPI/Agent/Tools/Standards*
 %{_datadir}/%{name}/lib/GLPI/Agent/Tools/Storages/
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/USB*
 %{_datadir}/%{name}/lib/GLPI/Agent/Tools/UUID.pm
 %{_datadir}/%{name}/lib/GLPI/Agent/Tools/Unix.pm
 %{_datadir}/%{name}/lib/GLPI/Agent/Tools/Virtualization.pm
