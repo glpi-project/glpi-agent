@@ -58,7 +58,7 @@
     <SetProperty Id="AGENTMONITOR"         After="AppSearch"  Value="[CMDLINE_AGENTMONITOR]"><![CDATA[CMDLINE_AGENTMONITOR<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="AGENTMONITOR_NEWTICKET_URL" Secure="yes">
-      <RegistrySearch Id="NewTicket-URL" Root="HKLM" Key="[%agent_regpath%]\Monitor" Name="NewTicket-URL" Type="raw" />
+      <RegistrySearch Id="NewTicket_URL" Root="HKLM" Key="[%agent_regpath%]\Monitor" Name="NewTicket-URL" Type="raw" />
     </Property>
     <SetProperty Id="CMDLINE_AGENTMONITOR_NEWTICKET_URL" Before="AppSearch" Value="[AGENTMONITOR_NEWTICKET_URL]" />
     <SetProperty Id="AGENTMONITOR_NEWTICKET_URL"         After="AppSearch"  Value="[CMDLINE_AGENTMONITOR_NEWTICKET_URL]"><![CDATA[CMDLINE_AGENTMONITOR_NEWTICKET_URL<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
