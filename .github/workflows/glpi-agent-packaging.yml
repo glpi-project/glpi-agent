@@ -253,6 +253,11 @@ jobs:
       run: |
         cpanm --notest --verbose https://github.com/StrawberryPerl/Perl-Dist-Strawberry.git
       shell: cmd
+    - name: Install Syntax::Keyword::Try required by Perl::Dist::Strawberry scripts
+      if: steps.perl-site-cache.outputs.cache-hit != 'true'
+      run: |
+        cpanm --notest --verbose Syntax::Keyword::Try
+      shell: cmd
     - name: Build Extlibs with Perl Toolchain
       if: steps.built-perl-cache.outputs.cache-hit != 'true' && steps.built-extlibs-cache.outputs.cache-hit != 'true'
       run: |
