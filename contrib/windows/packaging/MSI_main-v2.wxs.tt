@@ -57,6 +57,12 @@
     <SetProperty Id="CMDLINE_AGENTMONITOR" Before="AppSearch" Value="[AGENTMONITOR]" />
     <SetProperty Id="AGENTMONITOR"         After="AppSearch"  Value="[CMDLINE_AGENTMONITOR]"><![CDATA[CMDLINE_AGENTMONITOR<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
+    <Property Id="AGENTMONITOR_NEWTICKET_URL" Secure="yes">
+      <RegistrySearch Id="NewTicket-URL" Root="HKLM" Key="[%agent_regpath%]\Monitor" Name="NewTicket-URL" Type="raw" />
+    </Property>
+    <SetProperty Id="CMDLINE_AGENTMONITOR_NEWTICKET_URL" Before="AppSearch" Value="[AGENTMONITOR_NEWTICKET_URL]" />
+    <SetProperty Id="AGENTMONITOR_NEWTICKET_URL"         After="AppSearch"  Value="[CMDLINE_AGENTMONITOR_NEWTICKET_URL]"><![CDATA[CMDLINE_AGENTMONITOR_NEWTICKET_URL<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
     <Property Id="ADD_FIREWALL_EXCEPTION" Secure="yes">
       <RegistrySearch Id="AddFirewallException" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="AddFirewallException" Type="raw" />
     </Property>
@@ -357,6 +363,9 @@
     <SetProperty Id="TASK_MINUTE_MODIFIER"    Action="TASK_MINUTE_MODIFIER_Default"     After="LaunchConditions"  Value="15"><![CDATA[NOT TASK_MINUTE_MODIFIER]]></SetProperty>
     <SetProperty Id="TASK_HOURLY_MODIFIER"    Action="TASK_HOURLY_MODIFIER_Default"     After="LaunchConditions"  Value="1"><![CDATA[NOT TASK_HOURLY_MODIFIER]]></SetProperty>
     <SetProperty Id="TASK_DAILY_MODIFIER"     Action="TASK_DAILY_MODIFIER_Default"      After="LaunchConditions"  Value="1"><![CDATA[NOT TASK_DAILY_MODIFIER]]></SetProperty>
+
+    <!-- Monitor configuration defaults -->
+    <SetProperty Id="AGENTMONITOR_NEWTICKET_URL"  Action="AGENTMONITOR_NEWTICKET_URL_Default" After="LaunchConditions"  Value=""><![CDATA[NOT AGENTMONITOR_NEWTICKET_URL]]></SetProperty>
 
     <!-- Fix properties handled as a checkbox, they must be undefined to uncheck the CB -->
     <SetProperty Id="QUICKINSTALL"            Sequence="ui"   Action="QUICKINSTALL_Unset"             After="CostFinalize"  Value=""><![CDATA[QUICKINSTALL<>"1"]]></SetProperty>

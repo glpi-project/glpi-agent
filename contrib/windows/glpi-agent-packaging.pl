@@ -586,6 +586,9 @@ sub _tree2xml {
                 # Add registry entry dedicated to deployment vbs check
                 $result .= $ident ."  ". qq[    <RegistryValue Name="Version" Type="string" Value="$installversion" />\n];
                 $result .= $ident ."  ". qq[  </RegistryKey>\n];
+                $result .= $ident ."  ". qq[  <RegistryKey Root="HKLM" Key="$regpath\\Monitor">\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="NewTicket-URL" Type="string" Value="[AGENTMONITOR_NEWTICKET_URL]" />\n];
+                $result .= $ident ."  ". qq[  </RegistryKey>\n];
             }
             $result .= $ident ."  ". qq[</Component>\n];
         }
