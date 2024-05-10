@@ -33,6 +33,7 @@ inventory:
 * Add base code to support usb device update on MSWin32, mainly to report expected
   or fix serialnumber for specific device with well-know method to get required
   datas. This base code is required to fix #650.
+* fix #651: Detect missing prefix for BenQ monitors serialnumber
 
 remoteinventory:
 * Limit the number of attempts and reported errors when libssh2 fails but ssh command

@@ -265,6 +265,27 @@ my %edid_tests = (
         SERIAL       => '1409',
         DESCRIPTION  => '49/2009'
     },
+    'benq-bl2420-tf' => {
+        ALTSERIAL    => 'X1J08410019',
+        CAPTION      => 'BenQ LCD',
+        DESCRIPTION  => '5/2018',
+        MANUFACTURER => 'BenQ Corporation',
+        SERIAL       => 'ETX1J08410019'
+    },
+    'benq-bl2420-tf.2' => {
+        ALTSERIAL    => 'V5J00208019',
+        CAPTION      => 'BenQ LCD',
+        DESCRIPTION  => '21/2018',
+        MANUFACTURER => 'BenQ Corporation',
+        SERIAL       => 'ETV5J00208019'
+    },
+    'benq-bl2420-tf.3' => {
+        ALTSERIAL    => '44H01046019',
+        CAPTION      => 'BenQ LCD',
+        DESCRIPTION  => '14/2017',
+        MANUFACTURER => 'BenQ Corporation',
+        SERIAL       => 'ET44H01046019'
+    },
     'crt.13' => {
         MANUFACTURER => 'Litronic Inc',
         CAPTION      => 'A1554NEL',

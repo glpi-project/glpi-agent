@@ -50,6 +50,7 @@ sub new {
 my %EDID_MANUFACTURER_TO_SUBCLASS = (
     ACR => 'Acer',
     AIC => 'Neovo',
+    BNQ => 'BenQ',
     ENC => 'Eizo',
     GSM => 'Goldstar',
     PHL => 'Philips',
