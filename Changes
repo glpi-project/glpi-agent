@@ -83,7 +83,7 @@ packaging:
   to run an external command requiring elevated privilege.
   So it is far more robust than preivous one.
 * Update Windows MSI packing building process to use:
-  - gcc 13.2.0posix-18.1.5-11.0.1-msvcrt-r8
+  - gcc 14.1.0posix-18.1.5-11.0.1-msvcrt-r1
   - msys2-base 20240113
   - zlib 1.3.1
   - OpenSSL 3.2.1
