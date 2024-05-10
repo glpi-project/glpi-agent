@@ -251,7 +251,7 @@ jobs:
     - name: Install latest Perl::Dist::Strawberry from github
       if: steps.perl-site-cache.outputs.cache-hit != 'true'
       run: |
-        cpanm --notest --verbose https://github.com/StrawberryPerl/Perl-Dist-Strawberry.git@f5195c0d072eba9a529c5d8fef6475395c5e0abb
+        cpanm --notest --verbose https://github.com/StrawberryPerl/Perl-Dist-Strawberry.git
       shell: cmd
     - name: Build Extlibs with Perl Toolchain
       if: steps.built-perl-cache.outputs.cache-hit != 'true' && steps.built-extlibs-cache.outputs.cache-hit != 'true'
