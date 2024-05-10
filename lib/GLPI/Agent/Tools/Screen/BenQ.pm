@@ -10,12 +10,13 @@ use GLPI::Agent::Tools;
 sub serial {
     my ($self) = @_;
 
-    my $prefix = unpack("Z*", pack("L", $self->{edid}->{serial_number}));
+    my $prefix;
+    if ($self->{edid}->{serial_number2}) {
+        $prefix = unpack("Z*", pack("L", $self->{edid}->{serial_number}));
+        undef $prefix unless $prefix =~ /^([A-Z]+)$/;
+    }
 
-    my $cleanprefix = $prefix;
-    $cleanprefix =~ s/[^A-Z]//g;
-
-    return $self->{_fixed_serial} = length($prefix) == length($cleanprefix) ? $prefix.$self->{_serial} : $self->{_serial};
+    return $self->{_fixed_serial} = $prefix ? $prefix.$self->{_serial} : $self->{_serial};
 }
 
 sub altserial {
