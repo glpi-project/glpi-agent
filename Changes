@@ -90,7 +90,7 @@ packaging:
   - OpenSSL 3.2.1
   - libssh2 1.11.0
   - liblzma from xz 5.4.6
-  - libxml2 2.12.6
+  - libxml2 2.12.7
   - StrawBerry Perl 5.38.2
 * Windows MSI installer is only provided for x64
 * Fix MSI "Back" button on "VerifyReady" dialog in Repair or Remove mode

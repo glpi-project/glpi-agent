@@ -192,7 +192,7 @@ sub toolchain_build_steps {
             {
                 plugin  => 'Perl::Dist::Strawberry::Step::BuildLibrary',
                 name    => 'libxml2',
-                version => '2.12.6',
+                version => '2.12.7',
                 url     => 'https://download.gnome.org/sources/<name>/2.12/<name>-<version>.tar.xz',
                 skip_if_file    => 'bin/libxml2-2__.dll',
                 skip_test       => 1,
