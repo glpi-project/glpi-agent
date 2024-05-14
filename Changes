@@ -56,7 +56,7 @@ netdiscovery/netinventory:
 * When looking for privateoid rule in MibSupport search, the rule must match on
   defined value, even if the private oid returns zero.
 * fix #590: Add Pantum printer support
-* Fix RemoteInventory not run during netscan if any any of other test is failing,
+* Fix RemoteInventory not run during netscan if any of the other tests is failing,
   meaning RemoteInventory was functionnal only if at least ping works or the
   targeted computer was in the same network (arp works).
 * Add support for Socomec PDU
