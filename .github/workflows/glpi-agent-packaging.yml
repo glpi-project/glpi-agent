@@ -341,8 +341,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.setup-release.outputs.upload_url }}
-        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\glpi-agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.zip
-        asset_name: glpi-agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.zip
+        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\GLPI-Agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.zip
+        asset_name: GLPI-Agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.zip
         asset_content_type: application/zip
     - name: Upload MSI Installer Asset
       id: upload-msi-asset
