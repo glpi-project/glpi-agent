@@ -1,6 +1,6 @@
 Revision history for GLPI agent
 
-1.8 not yet released
+1.8 Wed, 15 May 2024
 
 core:
 * Parallel::ForkManager must not use more than 60 workers on MSWin32 due to a
