@@ -99,6 +99,6 @@ Cron | [glpi-agent-cron-${VERSION}${RPMREV}.noarch.rpm]($REPO/releases/download/
 [GLPI-Agent-${VERSION}.tar.gz]($REPO/releases/download/$TAG/GLPI-Agent-${VERSION}.tar.gz)
 
 ## SHA256 sums
-All sha256 sums for released filed can be retrieved from [glpi-agent-${VERSION}.sha256](glpi-agent-${VERSION}.sha256).
+All sha256 sums for released filed can be retrieved from [glpi-agent-${VERSION}.sha256]($REPO/releases/download/$TAG/glpi-agent-${VERSION}.sha256).
 
 DESCRIPTION
