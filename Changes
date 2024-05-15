@@ -34,6 +34,8 @@ inventory:
   or fix serialnumber for specific device with well-know method to get required
   datas. This base code is required to fix #650.
 * fix #651: Detect missing prefix for BenQ monitors serialnumber
+* Updated pci.ids to 2024.05.14 version
+* Updated usb.ids to 2024.03.18 version
 
 remoteinventory:
 * Limit the number of attempts and reported errors when libssh2 fails but ssh command
@@ -64,6 +66,7 @@ netdiscovery/netinventory:
 * Add Dell MibSupport dedicated module
 * PR #657: Improve Ubnt serial and SSID detection, thanks to @eduardomozart
 * PR #658: Improve Aruba SSID detection, thanks to @eduardomozart
+* Updated sysobject.ids
 
 deploy:
 * Force agent to run a partial software inventory after the deploy task is done
