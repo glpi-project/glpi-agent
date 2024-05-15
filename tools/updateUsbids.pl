@@ -11,6 +11,13 @@ use LWP::UserAgent;
 use Changelog;
 use GLPI::Agent::Tools;
 
+# Touch usb.ids file with stored date to make mirror API works as expected
+my ($date, $time) = getFirstMatch(
+    file    => "share/usb.ids",
+    pattern => qr/^#\s+Date:\s+([0-9-]+)\s+([0-9:]+)/,
+);
+system("touch -d '$date $time' share/usb.ids") if $date && $time;
+
 my $ua = LWP::UserAgent->new();
 
 my $response = $ua->mirror(

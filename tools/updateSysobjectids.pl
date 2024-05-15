@@ -12,6 +12,10 @@ use Digest::SHA;
 use Changelog;
 use GLPI::Agent::Tools;
 
+# Touch sysobject.ids file with last commit date to make mirror API works as expected
+my $date = qx{LANG=C git log -n 1 --format=format:\%aD share/sysobject.ids};
+system("touch -d '$date' share/sysobject.ids") if $date;
+
 my $ua = LWP::UserAgent->new();
 
 my $sha = Digest::SHA->new(1);
