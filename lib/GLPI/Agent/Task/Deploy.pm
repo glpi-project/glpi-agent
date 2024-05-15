@@ -294,7 +294,7 @@ sub processRemote {
 
         $logger->debug2("Processing for job $job->{uuid}...");
 
-        # Run partial software inventory if requried and job processing has started
+        # Run partial software inventory if required and job processing has started
         $self->{_software_inventory_required} = 1
             if $job->requiresSoftwaresInventory();
 

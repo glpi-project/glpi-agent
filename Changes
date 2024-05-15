@@ -94,7 +94,6 @@ packaging:
   - StrawBerry Perl 5.38.2
 * Windows MSI installer is only provided for x64
 * Fix MSI "Back" button on "VerifyReady" dialog in Repair or Remove mode
-* Fix MSI to reuse InstallDir set in registry on upgrade
 * Updated Windows packages 7-Zip commandline tools to v23.01
 * Fix the way Glpi-AgentMonitor is stopped during upgrade to prevent service
   installation issues
@@ -112,6 +111,7 @@ packaging:
   even if LOCAL was not used or it was set empty in installer UI
 * Enhanced CVE-2024-28241 fix to only apply folder security if install folder and
   eventually LOCAL folder are subfolders of system "Program Files" folder
+* Fix MSI to reuse InstallDir set in registry on upgrade
 
 1.7.2 Mon, 25 Mar 2024
 
