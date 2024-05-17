@@ -7,6 +7,7 @@ use parent qw(Exporter);
 
 use File::Spec;
 use Cwd qw(abs_path);
+use Win32::API;
 
 our @EXPORT = ('%setup');
 
@@ -19,5 +20,11 @@ our %setup = (
     vardir  => $basefolder.'/var',
     libdir  => $basefolder.'/perl/agent',
 );
+
+my $apiSetDllDirectory = Win32::API->new(
+    'kernel32',
+    'BOOL SetDllDirectoryA(LPCSTR lpPathName)'
+);
+$apiSetDllDirectory->Call($basefolder.'/perl/bin');
 
 1;
