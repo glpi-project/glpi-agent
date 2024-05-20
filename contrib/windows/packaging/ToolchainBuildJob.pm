@@ -182,6 +182,7 @@ sub toolchain_build_steps {
                         '--with-zlib-lib=zlib1<dllsuffix>',
                         '--with-zlib-include=<prefix>/include',
                         '-DOPENSSLBIN="\\"<prefix>/bin\\""',
+                        '-DLIBZ=zlib1<dllsuffix>',
                         'mingw64',
                     ],
                 ],
