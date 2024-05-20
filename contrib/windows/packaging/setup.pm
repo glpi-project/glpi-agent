@@ -25,6 +25,6 @@ my $apiSetDllDirectory = Win32::API->new(
     'kernel32',
     'BOOL SetDllDirectoryA(LPCSTR lpPathName)'
 );
-$apiSetDllDirectory->Call($basefolder.'/perl/bin');
+$apiSetDllDirectory->Call(File::Spec->catdir($basefolder, 'perl', 'bin'));
 
 1;
