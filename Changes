@@ -4,6 +4,7 @@ Revision history for GLPI agent
 
 packaging:
 * Fix: Call SetDllDirectory system API to help finding provided DLL libraries on windows
+* Fix: Fix OpenSSL to use zlib1__.dll provided library
 
 1.8 Wed, 15 May 2024
 
