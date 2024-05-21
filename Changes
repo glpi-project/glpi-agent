@@ -2,6 +2,9 @@ Revision history for GLPI agent
 
 1.9 not yet released
 
+Deploy:
+* Fix: Avoid possible crash on windows while using WTS for User Interactions
+
 packaging:
 * Fix: Call SetDllDirectory system API to help finding provided DLL libraries on windows
 * Fix: Fix OpenSSL to use zlib1__.dll provided library
