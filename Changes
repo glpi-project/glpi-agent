@@ -5,6 +5,10 @@ Revision history for GLPI agent
 Deploy:
 * Fix: Avoid possible crash on windows while using WTS for User Interactions
 
+toolbox:
+* fix #582, #596, #671: UTF-8 and special characters are now supported in user and
+  password for RemoteInventory credentials
+
 packaging:
 * Fix: Call SetDllDirectory system API to help finding provided DLL libraries on windows
 * Fix: Fix OpenSSL to use zlib1__.dll provided library

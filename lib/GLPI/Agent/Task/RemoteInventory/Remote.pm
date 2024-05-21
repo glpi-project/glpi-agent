@@ -6,7 +6,9 @@ use warnings;
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 
+use Encode qw(encode);
 use URI;
+use URI::Escape;
 use Socket qw(getaddrinfo getnameinfo);
 
 use GLPI::Agent::Tools::Network;
@@ -92,8 +94,8 @@ sub handle_url {
     my $userinfo = $url->userinfo;
     if ($userinfo) {
         my ($user, $pass) = split(/:/, $userinfo);
-        $self->user($user);
-        $self->pass($pass) if defined($pass);
+        $self->user(uri_unescape($user));
+        $self->pass(uri_unescape($pass)) if defined($pass);
     }
 }
 
@@ -246,7 +248,7 @@ sub safe_url {
 
     return $self->{_url} if $self->config && $self->config->{'show-passwords'};
 
-    my $pass = $self->pass();
+    my $pass = uri_escape(encode("UTF-8", $self->pass()));
     return $self->{_url} unless length($pass);
 
     my $url = $self->{_url};
