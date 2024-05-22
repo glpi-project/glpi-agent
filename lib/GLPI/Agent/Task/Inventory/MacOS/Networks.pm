@@ -118,6 +118,23 @@ sub _parseIfconfig {
             };
             $interface->{MACADDR} = $netsetup->{$1}->{macaddr}
                 if $netsetup->{$1} && $netsetup->{$1}->{macaddr};
+
+            # Set port type
+            if ($interface->{DESCRIPTION}) {
+                if ($interface->{DESCRIPTION} =~ /^lo\d+$/) {
+                    $interface->{TYPE} = 'loopback';
+                } elsif ($interface->{DESCRIPTION} =~ /bridge/i) {
+                    $interface->{TYPE} = 'bridge';
+                } elsif ($interface->{DESCRIPTION} =~ /wi-?fi/i) {
+                    $interface->{TYPE} = 'wifi';
+                } elsif ($interface->{DESCRIPTION} =~ /bluetooth/i) {
+                    $interface->{TYPE} = 'bluetooth';
+                } elsif ($interface->{DESCRIPTION} =~ /phone/i) {
+                    $interface->{TYPE} = 'dialup';
+                } elsif ($interface->{DESCRIPTION} =~ /ethernet|thunderbolt|usb.*lan/i) {
+                    $interface->{TYPE} = 'ethernet';
+                }
+            }
         }
 
         if ($line =~ /inet ($ip_address_pattern)/) {
@@ -139,7 +156,7 @@ sub _parseIfconfig {
         if ($line =~ /mtu (\S+)/) {
             $interface->{MTU} = $1;
         }
-        if ($line =~ /media (\S+)/) {
+        if ($line =~ /media (\S+)/ && empty($interface->{TYPE})) {
             $interface->{TYPE} = $1;
         }
         if ($line =~ /media: \S+ \((\d+)baseTX <.*>\)/) {

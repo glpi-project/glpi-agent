@@ -6,6 +6,7 @@ Inventory:
 * fix #676: Always include OPERATINGSYSTEM section if SOFTWARES one is in partial
   inventory as this is required by GLPI. This fixes issues with full-inventory-postpone
   new feature introduced in 1.8 and with --partial glpi-inventory script option.
+* fix #673: Fix support of network port type on MacOSX
 
 Deploy:
 * Fix: Avoid possible crash on windows while using WTS for User Interactions
