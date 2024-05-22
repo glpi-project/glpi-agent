@@ -230,6 +230,8 @@ sub setupEvent {
             # also need to get hardware and bios category to keep them in cache
             $keep{hardware} = 1;
             $keep{bios} = 1;
+            # For software category, GLPI requires we also keep os category
+            $keep{os} = 1 if $keep{software};
             $self->keepcache(1);
         }
         foreach my $category (@categories) {

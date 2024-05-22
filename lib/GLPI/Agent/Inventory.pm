@@ -517,6 +517,7 @@ sub computeChecksum {
 
     my $save_state = 0;
     my @delete_sections;
+    my $keep_os = 0;
     foreach my $section (@checked_sections) {
         my ($sha, $len) = _checksum($section, $self->{content}->{$section});
         my $state = $last_state->get($section);
@@ -545,6 +546,9 @@ sub computeChecksum {
             next;
         }
 
+        # For software category, GLPI requires we also keep os category
+        $keep_os = 1 if $section eq 'SOFTWARES';
+
         $logger->debug("Section $section has changed since last inventory");
 
         # store the new value.
@@ -560,6 +564,8 @@ sub computeChecksum {
     # If we can postpone full inventory, remove section and set inventory as partial
     if ($postpone && @delete_sections) {
         foreach my $section (@delete_sections) {
+            # For software category, GLPI requires we also keep os category
+            next if $section eq 'OPERATINGSYSTEM' && $keep_os;
             delete $self->{content}->{$section};
         }
         $self->isPartial(1);
