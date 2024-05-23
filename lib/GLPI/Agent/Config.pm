@@ -58,6 +58,7 @@ my $default = {
     'vardir'                  => undef,
     'assetname-support'       => 1,
     'full-inventory-postpone' => 14,
+    'snmp-retries'            => 0,
 };
 
 my $confReloadIntervalMinValue = 60;

@@ -941,6 +941,7 @@ sub _scanAddressBySNMPReal {
                 authprotocol => $params{credential}->{AUTHPROTOCOL},
                 privpassword => $params{credential}->{PRIVPASSPHRASE} // $params{credential}->{PRIVPASSWORD},
                 privprotocol => $params{credential}->{PRIVPROTOCOL},
+                retries      => $self->{config}->{'snmp-retries'} // 0,
             );
         };
     }

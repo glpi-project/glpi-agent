@@ -185,6 +185,12 @@
     <SetProperty Id="CMDLINE_TIMEOUT" Before="AppSearch" Value="[TIMEOUT]" />
     <SetProperty Id="TIMEOUT"         After="AppSearch"  Value="[CMDLINE_TIMEOUT]"><![CDATA[CMDLINE_TIMEOUT<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
+    <Property Id="SNMP_RETRIES" Secure="yes">
+      <RegistrySearch Id="SnmpRetries" Root="HKLM" Key="[%agent_regpath%]" Name="snmp-retries" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_SNMP_RETRIES" Before="AppSearch" Value="[SNMP_RETRIES]" />
+    <SetProperty Id="SNMP_RETRIES"         After="AppSearch"  Value="[CMDLINE_SNMP_RETRIES]"><![CDATA[CMDLINE_SNMP_RETRIES<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
     <Property Id="DELAYTIME" Secure="yes">
       <RegistrySearch Id="DelayTime" Root="HKLM" Key="[%agent_regpath%]" Name="delaytime" Type="raw"/>
     </Property>
@@ -340,6 +346,7 @@
     <SetProperty Id="SCAN_HOMEDIRS"           Action="SCAN_HOMEDIRS_Default"            After="LaunchConditions"  Value="0"><![CDATA[NOT SCAN_HOMEDIRS OR SCAN_HOMEDIRS<>"1"]]></SetProperty>
     <SetProperty Id="SCAN_PROFILES"           Action="SCAN_PROFILES_Default"            After="LaunchConditions"  Value="0"><![CDATA[NOT SCAN_PROFILES OR SCAN_PROFILES<>"1"]]></SetProperty>
     <SetProperty Id="TIMEOUT"                 Action="TIMEOUT_Default"                  After="LaunchConditions"  Value="180"><![CDATA[NOT TIMEOUT]]></SetProperty>
+    <SetProperty Id="SNMP_RETRIES"            Action="SNMP_RETRIES_Default"             After="LaunchConditions"  Value="0"><![CDATA[NOT SNMP_RETRIES]]></SetProperty>
     <SetProperty Id="DELAYTIME"               Action="DELAYTIME_Default"                After="LaunchConditions"  Value="3600"><![CDATA[NOT DELAYTIME]]></SetProperty>
     <SetProperty Id="NO_COMPRESSION"          Action="NO_COMPRESSION_Default"           After="LaunchConditions"  Value="0"><![CDATA[NOT NO_COMPRESSION OR NO_COMPRESSION<>"1"]]></SetProperty>
     <SetProperty Id="NO_P2P"                  Action="NO_P2P_Default"                   After="LaunchConditions"  Value="0"><![CDATA[NOT NO_P2P OR NO_P2P<>"1"]]></SetProperty>

@@ -26,7 +26,7 @@ sub new {
 
     # shared options
     my %options = (
-        -retries  => 0,
+        -retries  => $params{retries} // 0,
         -version  => $version,
         -hostname => $params{hostname},
         -port     => $params{port}      || SNMP_PORT,
@@ -99,7 +99,7 @@ sub switch_vlan_context {
         $self->{oldsession} = $self->{session} unless $self->{oldsession};
         ($self->{session}, $error) = Net::SNMP->session(
             -timeout   => $self->{session}->timeout(),
-            -retries   => 0,
+            -retries   => $self->{session}->retries(),
             -version   => $version,
             -hostname  => $self->{session}->hostname(),
             -community => $self->{community} . '@' . $vlan_id

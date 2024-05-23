@@ -8,6 +8,11 @@ Inventory:
   new feature introduced in 1.8 and with --partial glpi-inventory script option.
 * fix #673: Fix support of network port type on MacOSX
 
+netdiscovery/netinventory:
+* fix #642: Support snmp-retries configuration parameter to set snmp requests
+  maximum retries in place of the default of 0.
+  glpi-netdiscovery & glpi-netinventory supports --retries option.
+
 Deploy:
 * Fix: Avoid possible crash on windows while using WTS for User Interactions
 
