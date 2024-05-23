@@ -23,6 +23,7 @@ toolbox:
 packaging:
 * Fix: Call SetDllDirectory system API to help finding provided DLL libraries on windows
 * Fix: Fix OpenSSL to use zlib1__.dll provided library
+* Fix: full-inventory-postpone not fully integrated in registry by windows MSI installer
 
 1.8 Wed, 15 May 2024
 

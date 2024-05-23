@@ -552,6 +552,7 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[    <RegistryValue Name="snmp-retries" Type="string" Value="[SNMP_RETRIES]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="delaytime" Type="string" Value="[DELAYTIME]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="backend-collect-timeout" Type="string" Value="[BACKEND_COLLECT_TIMEOUT]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="full-inventory-postpone" Type="string" Value="[FULL_INVENTORY_POSTPONE]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="no-task" Type="string" Value="[NO_TASK]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="no-category" Type="string" Value="[NO_CATEGORY]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="no-compression" Type="string" Value="[NO_COMPRESSION]" />\n];
