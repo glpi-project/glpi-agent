@@ -9,6 +9,7 @@ Inventory:
 * fix #673: Fix support of network port type on MacOSX
 * fix #675: Enhanced MSSQL database inventory on Windows by discovering installed
   instances.
+* fix #680: Enhanced disk storage serialnumber support on Windows
 
 netdiscovery/netinventory:
 * fix #642: Support snmp-retries configuration parameter to set snmp requests

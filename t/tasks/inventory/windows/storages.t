@@ -10,6 +10,7 @@ use Test::Exception;
 use Test::MockModule;
 use Test::More;
 use UNIVERSAL::require;
+use Data::Dumper;
 
 use GLPI::Agent::Inventory;
 use GLPI::Test::Utils;
@@ -330,6 +331,22 @@ my %tests = (
             DISKSIZE     => 63,
         },
     ],
+    'latitude-7480' => [
+        {
+            DESCRIPTION  => 'PCI Slot 12 : Bus 60 : Device 0 : Function 0 : Adapter 0',
+            DISKSIZE     => 512110,
+            FIRMWARE     => '20007A00',
+            INTERFACE    => 'NVMe',
+            MANUFACTURER => undef,
+            MODEL        => 'PC300 NVMe SK hynix 512GB',
+            NAME         => 'PhysicalDisk0',
+            SCSI_COID    => undef,
+            SCSI_LUN     => undef,
+            SCSI_UNID    => undef,
+            SERIAL       => 'FJ68NXXXXXXXXXXXX',
+            TYPE         => 'SSD'
+        }
+    ],
 );
 
 plan tests => (2 * scalar keys %tests) + 1;
@@ -364,11 +381,18 @@ foreach my $test (sort keys %tests) {
     );
     push @storages, @{$storages};
 
-    cmp_deeply(
-        \@storages,
-        $tests{$test},
-        "$test: parsing"
-    );
+    if (ref($tests{$test}) eq 'ARRAY' && scalar(@{$tests{$test}})) {
+        cmp_deeply(
+            \@storages,
+            $tests{$test},
+            "$test: parsing"
+        );
+    } else {
+        my $dumper = Data::Dumper->new([\@storages], [$test])->Useperl(1)->Indent(1)->Quotekeys(0)->Sortkeys(1)->Pad("    ");
+        $dumper->{xpad} = "    ";
+        print STDERR $dumper->Dump();
+        fail "$test: still no result integrated";
+    }
     lives_ok {
         $inventory->addEntry(section => 'STORAGES', entry => $_)
             foreach @storages;

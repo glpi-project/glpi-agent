@@ -127,7 +127,7 @@ sub _getDrives {
         FirmwareRevision SerialNumber Size SCSIPort SCSILogicalUnit SCSITargetId
         BusType FriendlyName DeviceId
     /;
-    push @properties, qw(FirmwareVersion PhysicalLocation)
+    push @properties, qw(FirmwareVersion PhysicalLocation AdapterSerialNumber)
         if $params{class} eq 'MSFT_PhysicalDisk';
 
     foreach my $object (getWMIObjects(
@@ -154,12 +154,16 @@ sub _getDrives {
         $drive->{DISKSIZE} = int($object->{Size} / 1_000_000)
             if $object->{Size};
 
-        if ($object->{SerialNumber} && $object->{SerialNumber} !~ /^ +$/) {
+        # First use AdapterSerialNumber as SerialNumber
+        my $serial = trimWhitespace($object->{AdapterSerialNumber});
+        ($serial) = $serial =~ /^(\S+)/ unless empty($serial);
+        $serial = trimWhitespace($object->{SerialNumber}) if empty($serial);
+        unless (empty($serial)) {
             # Try to decode serial only for known case
             if ($drive->{MODEL} =~ /VBOX HARDDISK ATA/) {
-                $drive->{SERIAL} = _decodeSerialNumber($object->{SerialNumber});
+                $drive->{SERIAL} = _decodeSerialNumber($serial);
             } else {
-                $drive->{SERIAL} = $object->{SerialNumber};
+                $drive->{SERIAL} = $serial;
             }
         }
 
