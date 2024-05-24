@@ -7,6 +7,8 @@ Inventory:
   inventory as this is required by GLPI. This fixes issues with full-inventory-postpone
   new feature introduced in 1.8 and with --partial glpi-inventory script option.
 * fix #673: Fix support of network port type on MacOSX
+* fix #675: Enhanced MSSQL database inventory on Windows by discovering installed
+  instances.
 
 netdiscovery/netinventory:
 * fix #642: Support snmp-retries configuration parameter to set snmp requests
