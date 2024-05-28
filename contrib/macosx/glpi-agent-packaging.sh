@@ -217,11 +217,11 @@ if [ ! -d "build/openssl-$OPENSSL_VERSION" ]; then
     echo ======== Build openssl $OPENSSL_VERSION
     ARCHIVE="openssl-$OPENSSL_VERSION.tar.gz"
     OPENSSL_URL="https://github.com/openssl/openssl/releases/download/openssl-$OPENSSL_VERSION/$ARCHIVE"
-    [ -e "$ARCHIVE" ] || curl -so "$ARCHIVE" "$OPENSSL_URL"
+    [ -e "$ARCHIVE" ] || curl -sLo "$ARCHIVE" "$OPENSSL_URL"
 
     # Eventually verify archive
     if [ -n "$SHASUM" ]; then
-        [ -e "$ARCHIVE.sha256" ] || curl -so "$ARCHIVE.sha256" "$OPENSSL_URL.sha256"
+        [ -e "$ARCHIVE.sha256" ] || curl -sLo "$ARCHIVE.sha256" "$OPENSSL_URL.sha256"
         read SHA256 x <<<$( $SHASUM -a 256 $ARCHIVE )
         read EXPECTED x <<<$( cat $ARCHIVE.sha256 )
         # Don't abort build if sha256 is empty as this happens on github
