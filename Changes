@@ -2,6 +2,9 @@ Revision history for GLPI agent
 
 1.10 not yet released
 
+* Update Windows MSI packing building process to use:
+  - gcc 13.3.0posix-11.0.1-msvcrt-r1
+
 1.9 Tue, 28 May 2024
 
 inventory:
