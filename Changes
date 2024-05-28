@@ -1,8 +1,8 @@
 Revision history for GLPI agent
 
-1.9 not yet released
+1.9 Tue, 28 May 2024
 
-Inventory:
+inventory:
 * fix #676: Always include OPERATINGSYSTEM section if SOFTWARES one is in partial
   inventory as this is required by GLPI. This fixes issues with full-inventory-postpone
   new feature introduced in 1.8 and with --partial glpi-inventory script option.
@@ -10,18 +10,27 @@ Inventory:
 * fix #675: Enhanced MSSQL database inventory on Windows by discovering installed
   instances.
 * fix #680: Enhanced disk storage serialnumber support on Windows
+* Bump Inventory task version to 1.16
+
+remoteinventory:
+* fix special characters handling in passwords
+* Bump RemoteInventory task version to 1.5
 
 netdiscovery/netinventory:
 * fix #642: Support snmp-retries configuration parameter to set snmp requests
   maximum retries in place of the default of 0.
   glpi-netdiscovery & glpi-netinventory supports --retries option.
+* Bump NetDiscovery task version to 6.2
+* Bump NetInventory task version to 6.2
 
-Deploy:
+deploy:
 * Fix: Avoid possible crash on windows while using WTS for User Interactions
+* Bump Deploy task version to 3.1
 
 toolbox:
 * fix #582, #596, #671: UTF-8 and special characters are now supported in user and
   password for RemoteInventory credentials
+* Bump ToolBox plugin version to 1.4
 
 packaging:
 * Fix: Call SetDllDirectory system API to help finding provided DLL libraries on windows
