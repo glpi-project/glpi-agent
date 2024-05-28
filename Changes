@@ -2,7 +2,7 @@ Revision history for GLPI agent
 
 1.9 not yet released
 
-Inventory:
+inventory:
 * fix #676: Always include OPERATINGSYSTEM section if SOFTWARES one is in partial
   inventory as this is required by GLPI. This fixes issues with full-inventory-postpone
   new feature introduced in 1.8 and with --partial glpi-inventory script option.
@@ -11,12 +11,15 @@ Inventory:
   instances.
 * fix #680: Enhanced disk storage serialnumber support on Windows
 
+remoteinventory:
+* fix special characters handling in passwords
+
 netdiscovery/netinventory:
 * fix #642: Support snmp-retries configuration parameter to set snmp requests
   maximum retries in place of the default of 0.
   glpi-netdiscovery & glpi-netinventory supports --retries option.
 
-Deploy:
+deploy:
 * Fix: Avoid possible crash on windows while using WTS for User Interactions
 
 toolbox:
