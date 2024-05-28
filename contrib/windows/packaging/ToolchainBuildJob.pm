@@ -158,8 +158,8 @@ sub toolchain_build_steps {
             {
                 plugin  => 'Perl::Dist::Strawberry::Step::BuildLibrary',
                 name    => 'openssl',
-                version => '3.2.1',
-                url     => 'https://www.openssl.org/source/<name>-<version>.tar.gz',
+                version => '3.3.0',
+                url     => 'https://github.com/openssl/openssl/releases/download/<name>-<version>/<name>-<version>.tar.gz',
                 skip_if_file    => 'bin/openssl.exe',
                 skip_test       => 1,
                 configure_help  => 1,

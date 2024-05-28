@@ -1,10 +1,10 @@
 #! /bin/bash
 
 # PERL: https://www.perl.org/get.html
-# SSL:  https://www.openssl.org/source/
+# SSL:  https://github.com/openssl/openssl/releases
 # ZLIB: https://www.zlib.net/
 : ${PERL_VERSION:=5.38.2}
-: ${OPENSSL_VERSION:=3.2.1}
+: ${OPENSSL_VERSION:=3.3.0}
 : ${ZLIB_VERSION:=1.3.1}
 : ${ZLIB_SHA256:=9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23}
 
@@ -216,7 +216,7 @@ echo ========
 if [ ! -d "build/openssl-$OPENSSL_VERSION" ]; then
     echo ======== Build openssl $OPENSSL_VERSION
     ARCHIVE="openssl-$OPENSSL_VERSION.tar.gz"
-    OPENSSL_URL="https://www.openssl.org/source/$ARCHIVE"
+    OPENSSL_URL="https://github.com/openssl/openssl/releases/download/openssl-$OPENSSL_VERSION/$ARCHIVE"
     [ -e "$ARCHIVE" ] || curl -so "$ARCHIVE" "$OPENSSL_URL"
 
     # Eventually verify archive
