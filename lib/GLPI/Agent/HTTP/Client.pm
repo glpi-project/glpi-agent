@@ -141,7 +141,7 @@ sub request {
         my $key = $url->as_string;
         if ($oauth2->{$key}) {
             # Update access token using current url clone if expired
-            $self->_getOauthAccessTokent($url->clone())
+            $self->_getOauthAccessToken($url->clone())
                 if time >= $oauth2->{$key}->{expires};
 
             if ($oauth2->{$key}) {
@@ -207,7 +207,7 @@ sub request {
         if ($result->code() == 401) {
             if ($self->{oauth_client} && $self->{oauth_secret}) {
                 # Get access token using current url clone
-                $self->_getOauthAccessTokent($url->clone());
+                $self->_getOauthAccessToken($url->clone());
 
                 my $oauth_token = $oauth2->{$url->as_string};
                 if ($oauth_token) {
@@ -376,7 +376,7 @@ sub request {
     return $result;
 }
 
-sub _getOauthAccessTokent {
+sub _getOauthAccessToken {
     my ($self, $url) = @_;
 
     if (empty($self->{oauth_client}) || empty($self->{oauth_secret})) {
