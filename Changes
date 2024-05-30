@@ -2,6 +2,9 @@ Revision history for GLPI agent
 
 1.10 not yet released
 
+core:
+* Add support for OAuth2 authentication included in next main GLPI version.
+
 packaging:
 * Update Windows MSI packing building process to use:
   - gcc 13.3.0posix-11.0.1-msvcrt-r1

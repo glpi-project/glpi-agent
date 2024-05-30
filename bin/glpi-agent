@@ -52,6 +52,8 @@ GetOptions(
     'no-compression|C',
     'no-task=s',
     'no-p2p',
+    'oauth-client-id=s',
+    'oauth-client-secret=s',
     'partial=s',
     'password|p=s',
     'pidfile:s',

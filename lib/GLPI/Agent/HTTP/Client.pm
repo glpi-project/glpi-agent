@@ -5,6 +5,7 @@ use warnings;
 
 use English qw(-no_match_vars);
 use URI;
+use HTTP::Request;
 use HTTP::Status;
 use LWP::UserAgent;
 use UNIVERSAL::require;
@@ -12,11 +13,15 @@ use UNIVERSAL::require;
 use GLPI::Agent;
 use GLPI::Agent::Logger;
 use GLPI::Agent::Tools;
+use GLPI::Agent::Protocol::Message;
 
 use constant    _log_prefix => "[http client] ";
 
 # Keep SSL_ca for storing read local certificate store at the class level
 my $_SSL_ca;
+
+# Keep Oauth2 access token
+my $oauth2;
 
 sub new {
     my ($class, %params) = @_;
@@ -39,6 +44,8 @@ sub new {
         logger          => $params{logger} || GLPI::Agent::Logger->new(),
         user            => $params{user}     || $config->{'user'},
         password        => $params{password} || $config->{'password'},
+        oauth_client    => $params{oauth_client} || $config->{'oauth-client-id'},
+        oauth_secret    => $params{oauth_secret} || $config->{'oauth-client-secret'},
         ssl_set         => 0,
         no_ssl_check    => $params{no_ssl_check} || $config->{'no-ssl-check'},
         no_compress     => $params{no_compress}  || $config->{'no-compression'},
@@ -129,6 +136,31 @@ sub request {
         );
     }
 
+    # Try to set Bearer header if oauth2 access token has still been requested
+    if ($oauth2) {
+        my $key = $url->as_string;
+        if ($oauth2->{$key}) {
+            # Update access token using current url clone if expired
+            $self->_getOauthAccessTokent($url->clone())
+                if time >= $oauth2->{$key}->{expires};
+
+            if ($oauth2->{$key}) {
+                # Add token bearer as Authorization header
+                $request->header(Authorization => "Bearer " . $oauth2->{$key}->{token});
+
+                $logger->debug(
+                    _log_prefix .
+                    "submitting request with access token authorization"
+                );
+            } else {
+                $logger->debug(
+                    _log_prefix .
+                    "no more oauth access token authorization available"
+                );
+            }
+        }
+    }
+
     my $result = HTTP::Response->new( 500 );
     eval {
         if ($OSNAME eq 'MSWin32' && $scheme eq 'https') {
@@ -173,7 +205,47 @@ sub request {
     if (!$result->is_success()) {
         # authentication required
         if ($result->code() == 401) {
-            if ($self->{user} && $self->{password}) {
+            if ($self->{oauth_client} && $self->{oauth_secret}) {
+                # Get access token using current url clone
+                $self->_getOauthAccessTokent($url->clone());
+
+                my $oauth_token = $oauth2->{$url->as_string};
+                if ($oauth_token) {
+                    # Add token bearer as Authorization header
+                    $request->header(Authorization => "Bearer " . $oauth_token->{token});
+
+                    $logger->debug(
+                        _log_prefix .
+                        "authentication required, submitting request with access token authorization"
+                    );
+
+                    # replay request
+                    eval {
+                        if ($OSNAME eq 'MSWin32' && $scheme eq 'https') {
+                            alarm $self->{ua}->{timeout};
+                        }
+                        $result = $self->{ua}->request($request, $file);
+                        alarm 0;
+                    };
+                    if (!$result->is_success()) {
+                        my $error = $result->code() == 401 ?
+                            "authentication required, wrong access token" :
+                            "authentication required, error status: " . $result->status_line();
+                        if ($result->header('content-length')) {
+                            my $contentType = $result->header('content-type');
+                            my $message = $result->content();
+                            $message = $self->uncompress($message, $contentType) if $contentType && $contentType =~ /x-compress/;
+                            if ($message && $message =~ /^{/) {
+                                my $content = GLPI::Agent::Protocol::Message->new(message => $message);
+                                if ($content->status eq 'error' && $content->get('message')) {
+                                    $error = $content->get('message');
+                                }
+                            }
+                        }
+                        $logger->error(_log_prefix . $error);
+                    }
+                }
+            } elsif ($self->{user} && $self->{password}) {
                 $logger->debug(
                     _log_prefix .
                     "authentication required, submitting credentials"
@@ -224,11 +296,30 @@ sub request {
                     );
                 }
             } else {
+                my $error = "authentication required, no credentials available";
+
+                # Try to extract error message if given
+                if ($result->header('content-length')) {
+                    my $contentType = $result->header('content-type');
+                    my $message = $result->content();
+                    $message = $self->uncompress($message, $contentType) if $contentType && $contentType =~ /x-compress/;
+                    if ($message && $message =~ /^{/) {
+                        my $content = GLPI::Agent::Protocol::Message->new(message => $message);
+                        if ($content->status eq 'error' && $content->get('message')) {
+                            $error = $content->get('message');
+                        }
+                    } elsif ($message && $message =~ /^</) {
+                        if (GLPI::Agent::XML->require()) {
+                            my $xml = GLPI::Agent::XML->new(string => $message);
+                            my $tree = $xml->dump_as_hash();
+                            ($error) = grep { $_ } split("\n", $tree->{REPLY}->{ERROR})
+                                if $tree && ref($tree->{REPLY}) eq 'HASH' && exists($tree->{REPLY}->{ERROR});
+                        }
+                    }
+                }
+
                 # abort
-                $logger->error(
-                    _log_prefix .
-                    "authentication required, no credentials available"
-                );
+                $logger->error(_log_prefix . $error);
             }
 
         } elsif ($result->code() == 407) {
@@ -283,6 +374,79 @@ sub request {
     $self->{ua}->timeout($current_timeout);
 
     return $result;
+}
+
+sub _getOauthAccessTokent {
+    my ($self, $url) = @_;
+
+    if (empty($self->{oauth_client}) || empty($self->{oauth_secret})) {
+        $self->{logger}->error(
+            _log_prefix .
+            "oauth access token missing"
+        );
+        return;
+    }
+
+    $self->{logger}->debug(
+        _log_prefix .
+        "authentication required, querying oauth access token"
+    );
+
+    my $key = $url->as_string;
+    # Cleanup eventually still stored token
+    delete $oauth2->{$key};
+
+    # Guess access token api path from url
+    my $path = $url->path();
+    $path = $1 if $path =~ /^(.*)(marketplace|plugins).*$/;
+    $path =~ s{/+$}{};
+    $path .= '/' unless empty($path);
+    $path .= 'api.php/token';
+    $url->path($path);
+
+    my $request = HTTP::Request->new(POST => $url);
+    my $json = GLPI::Agent::Protocol::Message->new(
+        message => {
+            grant_type      => "client_credentials",
+            client_id       => $self->{oauth_client},
+            client_secret   => $self->{oauth_secret},
+            scope           => ["inventory"],
+        }
+    );
+    my $content = $json->getRawContent();
+    $request->header('Content-Type' => 'application/json');
+    $request->header('Content-Length' => length($content));
+    $request->content($content);
+
+    # play token request
+    my $result;
+    eval {
+        if ($OSNAME eq 'MSWin32' && $url->scheme() eq 'https') {
+            alarm $self->{ua}->{timeout};
+        }
+        $result = $self->{ua}->request($request);
+        alarm 0;
+    };
+
+    if ($result && $result->is_success()) {
+        my $contentType = $result->header('content-type');
+        my $length = $result->header('content-length');
+        if ($length && $contentType =~ m{application/json}i) {
+            my $message = $result->content();
+            my $content = GLPI::Agent::Protocol::Message->new(message => $message);
+            my $token = $content->converted();
+            if ($token->{token_type} && $token->{token_type} eq 'Bearer' && !empty($token->{access_token})) {
+                $oauth2->{$key} = {
+                    token   => $token->{access_token},
+                    expires => time + ($token->{expires_in} && $token->{expires_in} =~ /^\d+$/ ? $token->{expires_in} : 60),
+                };
+            } else {
+                $self->{logger}->error(_log_prefix . "Unsupported token returned from oauth server: $message");
+            }
+        }
+    } else {
+        $self->{logger}->error(_log_prefix . "Failed to request oauth access token: ".$result->status_line());
+    }
 }
 
 sub _setSSLOptions {
@@ -564,6 +728,7 @@ sub _compressGzip {
 sub _uncompressGzip {
     my ($self, $data) = @_;
 
+    File::Temp->require();
     my $in = File::Temp->new();
     print $in $data;
     close $in;

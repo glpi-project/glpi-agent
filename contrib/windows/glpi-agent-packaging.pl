@@ -563,6 +563,8 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[    <RegistryValue Name="no-ssl-check" Type="string" Value="[NO_SSL_CHECK]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="user" Type="string" Value="[USER]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="password" Type="string" Value="[PASSWORD]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="oauth-client-id" Type="string" Value="[OAUTH_CLIENT_ID]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="oauth-client-secret" Type="string" Value="[OAUTH_CLIENT_SECRET]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="proxy" Type="string" Value="[PROXY]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="tasks" Type="string" Value="[TASKS]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="ca-cert-dir" Type="string" Value="[CA_CERT_DIR]" />\n];

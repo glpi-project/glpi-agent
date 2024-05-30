@@ -275,6 +275,18 @@
     <SetProperty Id="CMDLINE_USER" Before="AppSearch" Value="[USER]" />
     <SetProperty Id="USER"         After="AppSearch"  Value="[CMDLINE_USER]"><![CDATA[CMDLINE_USER<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
+    <Property Id="OAUTH_CLIENT_ID" Secure="yes">
+      <RegistrySearch Id="OAuthClientId" Root="HKLM" Key="[%agent_regpath%]" Name="oauth-client-id" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_OAUTH_CLIENT_ID" Before="AppSearch" Value="[OAUTH_CLIENT_ID]" />
+    <SetProperty Id="OAUTH_CLIENT_ID"         After="AppSearch"  Value="[CMDLINE_OAUTH_CLIENT_ID]"><![CDATA[CMDLINE_OAUTH_CLIENT_ID<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
+    <Property Id="OAUTH_CLIENT_SECRET" Secure="yes">
+      <RegistrySearch Id="OAuthClientSecret" Root="HKLM" Key="[%agent_regpath%]" Name="oauth-client-secret" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_OAUTH_CLIENT_SECRET" Before="AppSearch" Value="[OAUTH_CLIENT_SECRET]" />
+    <SetProperty Id="OAUTH_CLIENT_SECRET"         After="AppSearch"  Value="[CMDLINE_OAUTH_CLIENT_SECRET]"><![CDATA[CMDLINE_OAUTH_CLIENT_SECRET<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
     <Property Id="REMOTE" Secure="yes">
       <RegistrySearch Id="Remote" Root="HKLM" Key="[%agent_regpath%]" Name="remote" Type="raw"/>
     </Property>
