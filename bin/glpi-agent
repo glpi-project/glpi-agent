@@ -309,6 +309,10 @@ glpi-agent [options] [--server server|--local path]
     --listen                       enable listener target if no local or
                                    server target is defined
 
+  Server authentication:
+    --oauth-client-id=ID           oauth client id to request oauth access token
+    --oauth-client-secret=SECRET   oauth client secret to request oauth access token
+
   Logging options:
     --logger=BACKEND               logger backend (stderr)
     --logfile=FILE                 log file
@@ -680,6 +684,20 @@ Multiple values can be specified, using comma as a separator.
 This option should be used if no local or server target is defined and
 the agent still needs to answer http requests. B<--no-httpd> should not be set
 and B<--httpd-trust> should be set to enable trusted remote clients.
+
+=back
+
+=head2 Server authentication
+
+=over
+
+=item B<--oauth-client-id>=I<ID>
+
+The OAuth client id required to authenticate against GLPI >= 11.
+
+=item B<--oauth-client-secret>=I<SECRET>
+
+The OAuth client secret required to authenticate against GLPI >= 11.
 
 =back
 
