@@ -5,6 +5,9 @@ Revision history for GLPI agent
 core:
 * Add support for OAuth2 authentication included in next main GLPI version.
 
+injector:
+* Add support for OAuth2 authentication
+
 packaging:
 * Update Windows MSI packing building process to use:
   - gcc 13.3.0posix-11.0.1-msvcrt-r1

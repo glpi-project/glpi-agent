@@ -44,6 +44,8 @@ GetOptions(
     'xml-ua|x',
     'json-ua',
     'no-compression|C',
+    'oauth-client-id=s',
+    'oauth-client-secret=s',
 );
 
 $OUTPUT_AUTOFLUSH = 1;
@@ -190,6 +192,49 @@ sub sendContent {
         }
     }
 
+    # Support Oauth access token request
+    my $bearer_token;
+    if ($options->{"oauth-client-id"} && $options->{"oauth-client-secret"}) {
+        # Guess access token api path from url
+        my $url = $request->uri()->clone();
+        my $path = $url->path();
+        $path = $1 if $path =~ /^(.*)(marketplace|plugins).*$/;
+        $path =~ s{/+$}{};
+        $path .= '/' if length($path);
+        $path .= 'api.php/token';
+        $url->path($path);
+
+        my $oauth_request = HTTP::Request->new(POST => $url);
+        my $content = encode_json(
+            {
+                grant_type      => "client_credentials",
+                client_id       => $options->{"oauth-client-id"},
+                client_secret   => $options->{"oauth-client-secret"},
+                scope           => ["inventory"],
+            }
+        );
+        $oauth_request->header('Content-Type' => 'application/json');
+        $oauth_request->header('Content-Length' => length($content));
+        $oauth_request->content($content);
+
+        print "requesting oauth access token\n"
+            if $options->{debug};
+
+        my $res = $ua->request($oauth_request);
+        if ($res->is_success()) {
+            my $content = $res->content;
+            eval {
+                my $json = decode_json($content);
+                $bearer_token = $json->{access_token};
+            };
+            if ($EVAL_ERROR) {
+                print "ERROR (oauth-access-request): invalid oauth access token: $content\n";
+            }
+        } else {
+            print "ERROR (oauth-access-request): ".$res->status_line().", failed to request oauth access token\n";
+        }
+    }
+
     $request->header(
         'Pragma' => 'no-cache',
         'Content-type', $options->{"no-compression"} ?
@@ -199,6 +244,10 @@ sub sendContent {
 
     if ($agentid) {
         $request->header('GLPI-Agent-ID' => $agentid);
+    }
+
+    if ($bearer_token) {
+        $request->header('Authorization' => "Bearer $bearer_token");
     }
 
     if ($options->{debug}) {
@@ -319,6 +368,10 @@ glpi-injector [-h|--help] [-R|--recursive] [-r|--remove] [-v|--verbose] [--debug
     --ssl-cert-file client certificate file
     -C --no-compression don't compress sent XML inventories
     -P --proxy=PROXY proxy address
+    --oauth-client-id
+                   oauth client id to request oauth access token
+    --oauth-client-secret
+                   oauth client secret to request oauth access token
 
   Examples:
     glpi-injector -v -f /tmp/toto-2010-09-10-11-42-22.json --url https://login:pw@example/
