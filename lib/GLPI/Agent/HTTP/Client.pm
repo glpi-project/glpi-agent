@@ -9,6 +9,7 @@ use HTTP::Request;
 use HTTP::Status;
 use LWP::UserAgent;
 use UNIVERSAL::require;
+use Digest::SHA qw(sha256_hex);
 
 use GLPI::Agent;
 use GLPI::Agent::Logger;
@@ -418,6 +419,11 @@ sub _getOauthAccessToken {
     $request->header('Content-Length' => length($content));
     $request->content($content);
 
+    # Don't log secrets
+    $content =~ s/client_id":"[^"]*"/client_id":"CLIENT_ID"/;
+    $content =~ s/client_secret":"[^"]*"/client_secret":"CLIENT_SECRET"/;
+    $self->{logger}->debug2(_log_prefix . "sending message: (real content sha256sum: ".sha256_hex($content).")\n$content");
+
     # play token request
     my $result;
     eval {
@@ -440,12 +446,15 @@ sub _getOauthAccessToken {
                     token   => $token->{access_token},
                     expires => time + ($token->{expires_in} && $token->{expires_in} =~ /^\d+$/ ? $token->{expires_in} : 60),
                 };
+                $self->{logger}->debug(_log_prefix . "Bearer oauth token received (expiration: $token->{expires_in}s)\n");
             } else {
                 $self->{logger}->error(_log_prefix . "Unsupported token returned from oauth server: $message");
             }
         }
     } else {
         $self->{logger}->error(_log_prefix . "Failed to request oauth access token: ".$result->status_line());
+        $self->{logger}->debug2(_log_prefix . "received message:\n".$result->content())
+            if $result->header('content-length');
     }
 }
 
