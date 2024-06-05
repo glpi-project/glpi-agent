@@ -10,6 +10,7 @@ use HTTP::Status;
 use LWP::UserAgent;
 use UNIVERSAL::require;
 use Digest::SHA qw(sha256_hex);
+use Cpanel::JSON::XS;
 
 use GLPI::Agent;
 use GLPI::Agent::Logger;
@@ -232,9 +233,9 @@ sub request {
                         my $error = $result->code() == 401 ?
                             "authentication required, wrong access token" :
                             "authentication required, error status: " . $result->status_line();
-                        if ($result->header('content-length')) {
+                        my $message = $result->content();
+                        if (length($message)) {
                             my $contentType = $result->header('content-type');
-                            my $message = $result->content();
                             $message = $self->uncompress($message, $contentType) if $contentType && $contentType =~ /x-compress/;
                             if ($message && $message =~ /^{/) {
                                 my $content = GLPI::Agent::Protocol::Message->new(message => $message);
@@ -388,11 +389,6 @@ sub _getOauthAccessToken {
         return;
     }
 
-    $self->{logger}->debug(
-        _log_prefix .
-        "authentication required, querying oauth access token"
-    );
-
     my $key = $url->as_string;
     # Cleanup eventually still stored token
     delete $oauth2->{$key};
@@ -404,6 +400,11 @@ sub _getOauthAccessToken {
     $path .= '/' unless empty($path);
     $path .= 'api.php/token';
     $url->path($path);
+
+    $self->{logger}->debug(
+        _log_prefix .
+        "authentication required, querying oauth access token on ".$url->as_string
+    );
 
     my $request = HTTP::Request->new(POST => $url);
     my $json = GLPI::Agent::Protocol::Message->new(
@@ -420,9 +421,10 @@ sub _getOauthAccessToken {
     $request->content($content);
 
     # Don't log secrets
+    my $sha256 = sha256_hex($content);
     $content =~ s/client_id":"[^"]*"/client_id":"CLIENT_ID"/;
     $content =~ s/client_secret":"[^"]*"/client_secret":"CLIENT_SECRET"/;
-    $self->{logger}->debug2(_log_prefix . "sending message: (real content sha256sum: ".sha256_hex($content).")\n$content");
+    $self->{logger}->debug2(_log_prefix . "sending message: (real content sha256sum: $sha256)\n$content");
 
     # play token request
     my $result;
@@ -434,11 +436,18 @@ sub _getOauthAccessToken {
         alarm 0;
     };
 
-    if ($result && $result->is_success()) {
-        my $contentType = $result->header('content-type');
-        my $length = $result->header('content-length');
-        if ($length && $contentType =~ m{application/json}i) {
-            my $message = $result->content();
+    unless ($result) {
+        $self->{logger}->error(_log_prefix . "Failed to request oauth access token: no response");
+        return;
+    }
+
+    my $message = $result->content();
+    my $contentType = $result->header('content-type');
+    $self->{logger}->debug2(_log_prefix . "received message: ($contentType)\n$message")
+        if length($message) && $contentType;
+
+    if ($result->is_success()) {
+        if (length($message) && $contentType =~ m{application/json}i) {
             my $content = GLPI::Agent::Protocol::Message->new(message => $message);
             my $token = $content->converted();
             if ($token->{token_type} && $token->{token_type} eq 'Bearer' && !empty($token->{access_token})) {
@@ -448,13 +457,13 @@ sub _getOauthAccessToken {
                 };
                 $self->{logger}->debug(_log_prefix . "Bearer oauth token received (expiration: $token->{expires_in}s)\n");
             } else {
-                $self->{logger}->error(_log_prefix . "Unsupported token returned from oauth server: $message");
+                $self->{logger}->error(_log_prefix . "Unsupported token returned from oauth server");
             }
+        } else {
+            $self->{logger}->error(_log_prefix . "Unsupported response returned from oauth server");
         }
     } else {
         $self->{logger}->error(_log_prefix . "Failed to request oauth access token: ".$result->status_line());
-        $self->{logger}->debug2(_log_prefix . "received message:\n".$result->content())
-            if $result->header('content-length');
     }
 }
 
