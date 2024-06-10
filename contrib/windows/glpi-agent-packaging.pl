@@ -318,6 +318,7 @@ use constant _file_feature_match => { qw(
     perl\agent\GLPI\Agent\SNMP.pm                feat_NETINV
 
     perl\agent\GLPI\Agent\Task\Deploy.pm         feat_DEPLOY
+    perl\agent\GLPI\Agent\Tools\Archive.pm       feat_DEPLOY
     perl\bin\7z.exe                                         feat_DEPLOY
     perl\bin\7z.dll                                         feat_DEPLOY
 
