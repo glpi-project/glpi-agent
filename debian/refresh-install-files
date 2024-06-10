@@ -23,7 +23,7 @@ sub wanted {
         print AGENT_TASK_NETWORK "$t\n";
     } elsif ($t =~ /glpi-esx/ || $t =~ /GLPI\/Agent\/(Task\/ESX|SOAP\/VMware)/) {
         print AGENT_TASK_ESX "$t\n";
-    } elsif ($t =~ /GLPI\/Agent\/Task\/Deploy/) {
+    } elsif ($t =~ /GLPI\/Agent\/Task\/Deploy/ || $t =~ /GLPI\/Agent\/Tools\/Archive/) {
         print AGENT_TASK_DEPLOY "$t\n";
     } elsif ($t =~ /GLPI\/Agent\/Task\/Collect/) {
         print AGENT_TASK_COLLECT "$t\n";
