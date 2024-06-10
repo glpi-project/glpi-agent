@@ -18,10 +18,6 @@ use GLPI::Agent::Config;
 use GLPI::Agent::Logger;
 use GLPI::Agent::Tools::Archive;
 
-if ($OSNAME eq 'MSWin32') {
-    plan skip_all => 'not working on Windows, but tested module not used on Windows';
-}
-
 my %archives = (
     'tar' => {
         file    => "config.tar",
@@ -79,31 +75,35 @@ my $logger = GLPI::Agent::Logger->new(
     )
 );
 
-foreach my $test (keys %archives) {
-    my $folder = tempdir(CLEANUP => 1);
-    my $file = "resources/archive/". $archives{$test}->{file};
-    ;
+SKIP: {
+    skip 'not working on Windows, but tested module not used on Windows', 4 * (scalar keys %archives)
+        if $OSNAME eq 'MSWin32';
 
-    my $archive;
-    lives_ok {
-        $archive = GLPI::Agent::Tools::Archive->new(
-            archive => $file,
-            type    => $archives{$test}->{type} // "",
-            logger  => $logger,
-        );
-    } "$test: archive object";
+    foreach my $test (keys %archives) {
+        my $folder = tempdir(CLEANUP => 1);
+        my $file = "resources/archive/". $archives{$test}->{file};
 
-    lives_ok {
-        $archive->extract(to => $folder);
-    } "$test: archive extract";
+        my $archive;
+        lives_ok {
+            $archive = GLPI::Agent::Tools::Archive->new(
+                archive => $file,
+                type    => $archives{$test}->{type} // "",
+                logger  => $logger,
+            );
+        } "$test: archive object";
 
-    $file = File::Spec->catfile($folder, $archives{$test}->{check});
-    ok(-e $file, "$test: extracted file");
+        lives_ok {
+            $archive->extract(to => $folder);
+        } "$test: archive extract";
 
-    if (-e $file) {
-        my $sha = Digest::SHA->new(256)->addfile($file);
-        is($sha->hexdigest, $archives{$test}->{sha256}, "$test: sha256 checked file");
-    } else {
-        fail "$test: sha256 checked file with missing file";
+        $file = File::Spec->catfile($folder, $archives{$test}->{check});
+        ok(-e $file, "$test: extracted file");
+
+        if (-e $file) {
+            my $sha = Digest::SHA->new(256)->addfile($file);
+            is($sha->hexdigest, $archives{$test}->{sha256}, "$test: sha256 checked file");
+        } else {
+            fail "$test: sha256 checked file with missing file";
+        }
     }
 }
