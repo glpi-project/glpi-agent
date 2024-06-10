@@ -183,8 +183,8 @@ jobs:
         perl -V
         # Compute perl-version for current week to regen perl lib cache at least each week
         perl -e '@t = localtime; print "cache-version=".$^V."-".int($t[7]/7)."\n"' >>$GITHUB_OUTPUT
-    - name: Install openssl & libxml2 via brew
-      run: brew install openssl libxml2
+    - name: Install libxml2 via brew
+      run: brew install libxml2
     - name: Update environment to find latest libxml2
       run: |
         echo "$(brew --prefix)/opt/libxml2/bin" >> $GITHUB_PATH
