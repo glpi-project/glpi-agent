@@ -330,6 +330,7 @@ fi
 %files task-deploy
 %{_datadir}/%{name}/lib/GLPI/Agent/Task/Deploy.pm
 %{_datadir}/%{name}/lib/GLPI/Agent/Task/Deploy
+%{_datadir}/%{name}/lib/GLPI/Agent/Tools/Archive.pm
 
 %files task-wakeonlan
 %{_bindir}/glpi-wakeonlan
