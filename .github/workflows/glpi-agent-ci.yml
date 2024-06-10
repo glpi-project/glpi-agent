@@ -92,7 +92,7 @@ jobs:
     - name: Install other modules
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
-        cpanm --notest --verbose Compress::Zlib Parse::EDID Archive::Extract Win32::Unicode::File
+        cpanm --notest --verbose Compress::Zlib Parse::EDID Win32::Unicode::File
       shell: cmd
     - name: Prepare Makefile
       run: perl Makefile.PL

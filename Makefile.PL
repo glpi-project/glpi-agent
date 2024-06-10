@@ -86,7 +86,6 @@ recommends 'Parse::EDID'                     => '0';
 recommends 'Net::SSH2'                       => '0';
 
 # Deploy
-recommends 'Archive::Extract'             => '0';
 recommends 'File::Copy::Recursive'        => '0';
 recommends 'Cpanel::JSON::XS'             => '0';
 recommends 'Net::Ping'                    => '0';

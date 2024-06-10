@@ -106,9 +106,6 @@ sub build_job {
                 qw/ Win32::API Win32API::Registry Win32::TieRegistry Win32::OLE
                     Win32-Daemon Win32::Job Sys::Syslog /,
 
-                # compression
-                qw/ Archive::Extract /,
-
                 # file related
                 qw/ File::Copy::Recursive File::Which /,
 

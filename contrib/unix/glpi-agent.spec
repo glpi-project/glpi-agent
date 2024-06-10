@@ -97,7 +97,6 @@ glpi-task-netdiscovery and glpi-task-netinventory
 %package task-deploy
 Summary:    Software deployment support for GLPI agent
 Requires:   %{name} = %{version}-%{release}
-Requires:   perl(Archive::Extract)
 
 %description task-deploy
 This package provides software deployment support for GLPI agent
