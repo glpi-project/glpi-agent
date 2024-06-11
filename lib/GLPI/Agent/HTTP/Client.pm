@@ -412,7 +412,7 @@ sub _getOauthAccessToken {
             grant_type      => "client_credentials",
             client_id       => $self->{oauth_client},
             client_secret   => $self->{oauth_secret},
-            scope           => ["inventory"],
+            scope           => "inventory",
         }
     );
     my $content = $json->getRawContent();
