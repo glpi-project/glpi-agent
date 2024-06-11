@@ -16,6 +16,7 @@ packaging:
 * fix #619: Get rid of Archive::Extract dependency as upstream module has not been
   updated since years and has been removed from RockyLinux 9. The module is not
   embedded with few cleanup and adapted to GLPI Agent usage context.
+* win32: Updated GLPI-AgentMonitor to v1.3.1
 
 1.9 Tue, 28 May 2024
 
