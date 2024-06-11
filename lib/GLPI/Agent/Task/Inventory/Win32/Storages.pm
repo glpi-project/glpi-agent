@@ -156,8 +156,8 @@ sub _getDrives {
 
         # First use AdapterSerialNumber as SerialNumber
         my $serial = trimWhitespace($object->{AdapterSerialNumber});
-        ($serial) = $serial =~ /^(\S+)/ unless empty($serial);
         $serial = trimWhitespace($object->{SerialNumber}) if empty($serial);
+        ($serial) = $serial =~ /^(\S+)/ unless empty($serial);
         unless (empty($serial)) {
             # Try to decode serial only for known case
             if ($drive->{MODEL} =~ /VBOX HARDDISK ATA/) {

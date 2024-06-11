@@ -5,6 +5,9 @@ Revision history for GLPI agent
 core:
 * Add support for OAuth2 authentication included in next main GLPI version.
 
+inventory:
+* fix #680: Enhanced disk storage serialnumber support on Windows (one more case)
+
 injector:
 * Add support for OAuth2 authentication
 
