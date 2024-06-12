@@ -210,7 +210,7 @@ sub sendContent {
                 grant_type      => "client_credentials",
                 client_id       => $options->{"oauth-client-id"},
                 client_secret   => $options->{"oauth-client-secret"},
-                scope           => ["inventory"],
+                scope           => "inventory",
             }
         );
         $oauth_request->header('Content-Type' => 'application/json');
