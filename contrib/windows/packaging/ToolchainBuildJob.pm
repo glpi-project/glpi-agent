@@ -39,8 +39,8 @@ sub toolchain_build_steps {
             {
                 plugin          => 'Perl::Dist::Strawberry::Step::Msys2',
                 name            => 'msys2-base',
-                version         => '20240113',
-                folder          => '2024-01-13',
+                version         => '20240507',
+                folder          => '2024-05-07',
                 url             => 'https://github.com/msys2/msys2-installer/releases/download/<folder>/<name>-x86_64-<version>.tar.xz',
                 dest            => 'msys64',
             },
@@ -91,7 +91,7 @@ sub toolchain_build_steps {
             {
                 plugin  => 'Perl::Dist::Strawberry::Step::BuildLibrary',
                 name    => 'xz',
-                version => '5.4.6',
+                version => '5.6.2',
                 url     => 'https://github.com/tukaani-project/<name>/releases/download/v<version>/<name>-<version>.tar.gz',
                 skip_if_file    => 'bin/liblzma-5__.dll',
                 skip_test       => 1,
@@ -193,8 +193,8 @@ sub toolchain_build_steps {
             {
                 plugin  => 'Perl::Dist::Strawberry::Step::BuildLibrary',
                 name    => 'libxml2',
-                version => '2.12.7',
-                url     => 'https://download.gnome.org/sources/<name>/2.12/<name>-<version>.tar.xz',
+                version => '2.13.0',
+                url     => 'https://download.gnome.org/sources/<name>/2.13/<name>-<version>.tar.xz',
                 skip_if_file    => 'bin/libxml2-2__.dll',
                 skip_test       => 1,
                 configure_help  => 1,

@@ -14,7 +14,10 @@ injector:
 packaging:
 * Update Windows MSI packing building process to use:
   - gcc 13.3.0posix-11.0.1-msvcrt-r1
+  - msys2-base 20240507
   - OpenSSL 3.3.1
+  - liblzma from xz 5.6.2
+  - libxml2 2.13.0
 * Update MacOSX packages to use OpenSSL 3.3.1
 * fix #619: Get rid of Archive::Extract dependency as upstream module has not been
   updated since years and has been removed from RockyLinux 9. The module is not
