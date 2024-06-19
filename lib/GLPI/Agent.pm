@@ -293,7 +293,8 @@ sub runTarget {
             $self->{logger}->debug("server message: $message");
         }
 
-        $target->setMaxDelay($response->expiration) if $response->expiration;
+        my $expiration = $response->expiration;
+        $target->setMaxDelay($expiration) if $expiration;
 
         # Don't plan tasks disabled by server
         my $disabled = $response->get('disabled');
