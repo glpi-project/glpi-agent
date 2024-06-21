@@ -8,6 +8,13 @@ core:
 inventory:
 * fix #680: Enhanced disk storage serialnumber support on Windows (one more case)
 
+proxy-server-plugin:
+* Enhanced SSL connection cleaning when combined with ssl-server-plugin
+
+ssl-server-plugin:
+* Don't use SSL_no_shutdown while closing connection after a fork to fully cleanup
+  connection on close.
+
 injector:
 * Add support for OAuth2 authentication
 

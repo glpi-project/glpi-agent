@@ -142,6 +142,10 @@ sub new {
         return;
     }
 
+    # Keep reference to the need to run ssl shutdown on close. When forked before
+    # closing, shutdown must be done on latest close (Proxy case)
+    ${*$client}{_ssl_no_shutdown} = 0;
+
     # Disable Timeout to leave SSL session opened until we get data
     $client->timeout(0);
 
@@ -153,8 +157,17 @@ sub new {
 sub close {
     my ($self) = @_;
 
-    # Don't shutdown SSL on close to avoid issue with Proxy server plugin as it uses forking
-    $self->SUPER::close(SSL_no_shutdown => 1);
+    # Don't shutdown SSL on close in parent to avoid issue with Proxy server plugin
+    return $self->SUPER::close(SSL_no_shutdown => 1)
+        if ${*$self}{_ssl_no_shutdown};
+
+    $self->SUPER::close();
+}
+
+sub no_ssl_shutdown {
+    my ($self, $flag) = @_;
+
+    ${*$self}{_ssl_no_shutdown} = $flag ? 1 : 0;
 }
 
 1;

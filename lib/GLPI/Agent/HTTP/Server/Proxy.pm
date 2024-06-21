@@ -249,8 +249,14 @@ sub _handle_proxy_request {
             return $self->proxy_error(429, 'Too Many Requests');
         }
 
+        # From here, signal SSL client socket should not be shutdown in parent
+        $client->no_ssl_shutdown(1) if ref($client) eq 'HTTP::Daemon::ClientConn::SSL';
+
         return 1 if $agent->fork(name => $self->name(), description => $self->name()." request");
     }
+
+    # From here SSL client socket must be shutdown properly
+    $client->no_ssl_shutdown(0) if ref($client) eq 'HTTP::Daemon::ClientConn::SSL';
 
     my $content_type = $request->header('Content-type');
     $self->debug2("$content_type type request from $remoteid") if $content_type;
