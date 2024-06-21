@@ -8,6 +8,9 @@ core:
 inventory:
 * fix #680: Enhanced disk storage serialnumber support on Windows (one more case)
 
+esx:
+* fix #691: Fix perl error while checking esx configuration template
+
 proxy-server-plugin:
 * Enhanced SSL connection cleaning when combined with ssl-server-plugin
 

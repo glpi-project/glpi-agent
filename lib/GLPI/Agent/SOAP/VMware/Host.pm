@@ -385,9 +385,9 @@ sub getVirtualMachines {
         $comment =~ s/\n/&#10;/gm if $comment;
 
         if (
-            defined($_->[0]{summary}{config}{template})
+            defined($machine->{summary}{config}{template})
             &&
-            $_->[0]{summary}{config}{template} eq 'true'
+            $machine->{summary}{config}{template} eq 'true'
             ) {
             next;
         }
