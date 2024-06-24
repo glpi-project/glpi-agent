@@ -22,6 +22,7 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
     my $seen;
+    my $found_enabled = 0;
 
     # Doesn't works on Win2003 Server
     # On Win7, we need to use SecurityCenter2
@@ -56,6 +57,7 @@ sub doInventory {
                 if (defined($enabled) && defined($uptodate)) {
                     $antivirus->{ENABLED}  =  $enabled =~ /^1.$/ ? 1 : 0;
                     $antivirus->{UPTODATE} = $uptodate =~ /^00$/ ? 1 : 0;
+                    $found_enabled++ if $antivirus->{ENABLED};
                 }
             } else {
                 $logger->debug("Found $antivirus->{NAME}")
@@ -84,6 +86,7 @@ sub doInventory {
                     $antivirus->{BASE_VERSION} = $defender->{AntivirusSignatureVersion}
                         if $defender->{AntivirusSignatureVersion};
                 }
+                $found_enabled++ if $antivirus->{ENABLED};
                 $antivirus->{COMPANY} = "Microsoft Corporation";
                 # Finally try registry for base version
                 if (!$antivirus->{BASE_VERSION}) {
@@ -133,7 +136,46 @@ sub doInventory {
                 _setNortonInfos($antivirus);
             } elsif ($antivirus->{NAME} =~ /Trend Micro Security Agent/i) {
                 _setTrendMicroSecurityAgentInfos($antivirus);
+            } elsif ($antivirus->{NAME} =~ /Cortex XDR/i) {
+                _setCortexInfos($antivirus, $logger, "C:\\Program Files\\Palo Alto Networks\\Traps\\cytool.exe");
             }
+
+            $inventory->addEntry(
+                section => 'ANTIVIRUS',
+                entry   => $antivirus
+            );
+
+            $logger->debug2("Added $antivirus->{NAME}".($antivirus->{VERSION}? " v$antivirus->{VERSION}":""))
+                if $logger;
+        }
+    }
+
+    # Try to add AV support on Windows server where no active AV is detected via WMI
+    unless ($found_enabled) {
+
+        # AV must be set as a service
+        my $services = getServices(logger  => $logger);
+
+        foreach my $support ({
+            # Cortex XDR support
+            name    => "Cortex XDR",
+            service => "cyserver",
+            command => "C:\\Program Files\\Palo Alto Networks\\Traps\\cytool.exe",
+            func    => \&_setCortexInfos,
+        }) {
+            my $antivirus;
+            my $service = $services->{$support->{service}}
+                or next;
+
+            $antivirus->{NAME} = $service->{NAME} || $support->{name};
+            $antivirus->{ENABLED} = $service->{STATUS} =~ /running/i ? 1 : 0;
+
+            if (my $cmd = $support->{command}) {
+                &{$support->{func}}($antivirus, $logger, $cmd) if canRun($cmd);
+            }
+
+            # avoid duplicates
+            next if $seen->{$antivirus->{NAME}}->{$antivirus->{VERSION}||'_undef_'}++;
 
             $inventory->addEntry(
                 section => 'ANTIVIRUS',
@@ -478,6 +520,30 @@ sub _setTrendMicroSecurityAgentInfos {
                 if $major;
         }
     }
+}
+
+sub _setCortexInfos {
+    my ($antivirus, $logger, $command) = @_;
+
+    $antivirus = {
+        NAME    => "Cortex XDRT Advanced Endpoint Protection",
+    } unless $antivirus;
+
+    $antivirus->{COMPANY} = "Palo Alto Networks";
+
+    my $version = getFirstMatch(
+        command => "$command info",
+        pattern => /^Cortex XDR .* ([0-9.]+)$/,
+        logger  => $logger
+    );
+    $antivirus->{VERSION} = $version if $version;
+
+    my $base_version = getFirstMatch(
+        command => "$command info query",
+        pattern => /^Content Version:\s+(\S+)$/i,
+        logger  => $logger
+    );
+    $antivirus->{BASE_VERSION} = $base_version if $base_version;
 }
 
 sub _getSoftwareRegistryKeys {

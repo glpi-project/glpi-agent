@@ -72,6 +72,7 @@ our @EXPORT = qw(
     getFormatedWMIDateTime
     loadUserHive
     cleanupPrivileges
+    getServices
 );
 
 my $_is64bits = undef;
@@ -696,6 +697,31 @@ sub getInterfaces {
     }
 
     return @interfaces;
+}
+
+sub getServices {
+    my (%params) = @_;
+
+    my $services = {};
+
+    foreach my $object (getWMIObjects(
+        class      => 'Win32_Service',
+        properties => [ qw/
+            Name DisplayName Description State
+            /
+        ],
+        %params
+    )) {
+        next unless $object->{Name} && $object->{DisplayName};
+
+        $services->{$object->{Name}} = {
+            NAME        => $object->{DisplayName},
+            DESCRIPTION => $object->{Description} // "",
+            STATUS      => $object->{State}       // "n/a",
+        };
+    }
+
+    return $services;
 }
 
 sub FileTimeToSystemTime {
