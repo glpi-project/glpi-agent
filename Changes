@@ -4,6 +4,8 @@ Revision history for GLPI agent
 
 core:
 * Add support for OAuth2 authentication included in next main GLPI version.
+* Reduce drift on run date keeping not randomized time reference
+* fix: Don't reset run date in hourly run for unmanaged mode
 
 inventory:
 * fix #680: Enhanced disk storage serialnumber support on Windows (one more case)

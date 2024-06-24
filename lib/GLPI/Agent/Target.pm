@@ -63,8 +63,17 @@ sub _init {
         $self->setMaxDelay($keepMaxDelay);
     }
 
+    # Disable initialDelay if next run date has still been set in a previous run and was planified in the last max delay
+    my $lastExpectedRunDateLimit = time-$self->getMaxDelay();
+    delete $self->{initialDelay} if $self->{initialDelay} && $self->{nextRunDate} && $self->{nextRunDate} >= $lastExpectedRunDateLimit;
+
+    # Setup targeted run date if necessary
+    $self->{baseRunDate} = time + ($self->{initialDelay} // $self->getMaxDelay())
+        unless $self->{baseRunDate} && $self->{baseRunDate} > $lastExpectedRunDateLimit;
+
+    # Set next run date in the future unless still set and in the expected last run limit
     $self->{nextRunDate} = $self->computeNextRunDate()
-        if (!$self->{nextRunDate} || $self->{nextRunDate} < time-$self->getMaxDelay());
+        unless $self->{nextRunDate} && $self->{nextRunDate} >= $lastExpectedRunDateLimit;
 
     $self->_saveState();
 
@@ -95,6 +104,7 @@ sub setNextRunOnExpiration {
     my ($self, $expiration) = @_;
 
     $self->{nextRunDate} = time + ($expiration // 0);
+    $self->{baseRunDate} = $self->{nextRunDate};
     $self->_saveState();
 
     # Be sure to skip next resetNextRunDate() call
@@ -115,6 +125,7 @@ sub setNextRunDateFromNow {
         $self->{_nextrundelay} = $nextRunDelay;
     }
     $self->{nextRunDate} = time + ($nextRunDelay // 0);
+    $self->{baseRunDate} = $self->{nextRunDate};
     $self->_saveState();
 
     # Remove initialDelay to support case we are still forced to run at start
@@ -127,8 +138,14 @@ sub resetNextRunDate {
     # Don't reset next run date if still set via setNextRunOnExpiration
     return if delete $self->{_expiration};
 
+    my $timeref = $self->{baseRunDate} || time;
+
+    # Reset timeref if out of range defined by maxDelay
+    $timeref = time if $timeref < time - $self->getMaxDelay() || $timeref > time + $self->getMaxDelay();
+
     $self->{_nextrundelay} = 0;
-    $self->{nextRunDate} = $self->computeNextRunDate();
+    $self->{nextRunDate} = $self->computeNextRunDate($timeref);
+    $self->{baseRunDate} = $timeref + $self->getMaxDelay();
     $self->_saveState();
 }
 
@@ -310,14 +327,14 @@ sub isGlpiServer {
     return 0;
 }
 
-# compute a run date, as current date and a random delay
-# between maxDelay / 2 and maxDelay
+# Compute a run date from time ref reduced from a little random delay
 sub computeNextRunDate {
-    my ($self) = @_;
+    my ($self, $timeref) = @_;
 
-    my $ret;
+    $timeref = time unless $timeref;
+
     if ($self->{initialDelay}) {
-        $ret = time + ($self->{initialDelay} / 2) + int rand($self->{initialDelay} / 2);
+        $timeref += $self->{initialDelay} - int(rand($self->{initialDelay}/2));
         delete $self->{initialDelay};
     } else {
         # By default, reduce randomly the delay by 0 to 3600 seconds (1 hour max)
@@ -329,10 +346,10 @@ sub computeNextRunDate {
             # Finally reduce randomly the delay by 1 hour for each 24 hours, for delay other than a day
             $max_random_delay_reduc = $self->{maxDelay} / 24;
         }
-        $ret = time + $self->{maxDelay} - int(rand($max_random_delay_reduc));
+        $timeref += $self->{maxDelay} - int(rand($max_random_delay_reduc));
     }
 
-    return $ret;
+    return $timeref;
 }
 
 sub _loadState {
@@ -341,7 +358,7 @@ sub _loadState {
     my $data = $self->{storage}->restore(name => 'target');
 
     map { $self->{$_} = $data->{$_} } grep { defined($data->{$_}) } qw/
-        maxDelay nextRunDate id
+        maxDelay nextRunDate id baseRunDate
     /;
 
     # Update us as GLPI server is recognized as so before
@@ -354,6 +371,7 @@ sub _saveState {
     my $data ={
         maxDelay    => $self->{maxDelay},
         nextRunDate => $self->{nextRunDate},
+        baseRunDate => $self->{baseRunDate},
         type        => $self->getType(),                 # needed by glpi-remote
         id          => $self->id(),                      # needed by glpi-remote
     };
