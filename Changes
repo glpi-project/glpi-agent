@@ -38,6 +38,8 @@ packaging:
   updated since years and has been removed from RockyLinux 9. The module is not
   embedded with few cleanup and adapted to GLPI Agent usage context.
 * win32: Updated GLPI-AgentMonitor to v1.3.1
+* Add --wait option support to AppImage installer. This option can only be used
+  for unmanaged cron mode to force randomization of tasks run.
 
 1.9 Tue, 28 May 2024
 

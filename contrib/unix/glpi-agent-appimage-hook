@@ -120,6 +120,7 @@ GetOptions(
     'upgrade',
     'service!',
     'cron=s',
+    'wait=i',
     'script=s',
     'version',
 ) or pod2usage(-verbose => 0);
@@ -170,6 +171,7 @@ my $install   = delete $options->{install}   // 0;
 my $uninstall = delete $options->{uninstall} // ($script && $script eq "glpi-agent-uninstall");
 my $reinstall = delete $options->{reinstall} // 0;
 my $upgrade   = delete $options->{upgrade}   // 0;
+my $wait      = delete $options->{wait}      // 0; # option to configure cron mode
 
 $install = $uninstall = 1 if $reinstall || $upgrade;
 $clean = 1 if $reinstall;
@@ -503,15 +505,27 @@ if ($install) {
         } else {
             die "--cron option can only be set to 'hourly' or 'daily'\n";
         }
+        my $wait_opt = "";
+        if ($wait) {
+            if ($wait !~ /^\d+$/) {
+                die "invalid --wait option value: it must be a delay integer value in seconds\n";
+            } elsif ($cron eq "hourly" && $wait >= 3600) {
+                die "--wait option value must be lower than 3600 for hourly cron mode\n";
+            } elsif ($cron eq "daily" && $wait >= 86400) {
+                die "--wait option value must be lower than 86400 for daily cron mode\n";
+            } else {
+                $wait_opt = "--wait $wait ";
+            }
+        }
         if (open my $fh, ">", $cronfile) {
             print $fh map { "$_\n" } (
                 "#!/bin/sh",
-                "exec '$installpath/glpi-agent' >/var/log/glpi-agent.cron.log 2>&1"
+                "exec '$installpath/glpi-agent' $wait_opt>/var/log/glpi-agent.cron.log 2>&1"
             );
             close($fh);
             chmod 0755, $cronfile;
         } else {
-            die "Failed to write cron file: $!\n";
+            die "Failed to write $cron cron file: $!\n";
         }
     }
 }
@@ -541,6 +555,9 @@ glpi-agent-linux-installer.AppImage [options]
     --service                      install agent as service (true)
     --no-service                   don't install agent as service (false)
     --cron=SCHED                   install agent as cron task (no). SCHED can be "daily" or "hourly".
+    --wait=WAIT                    time to wait before starting tasks run in cron mode.
+                                   WAIT must be a positive value in seconds and must not be greater than
+                                   the used cron mode scheduling (so <3600 for "hourly" & <86400 for "daily")
     --version                      print the installer version and exit
     -S --silent                    make installer silent (false)
     -h --help                      print this help
