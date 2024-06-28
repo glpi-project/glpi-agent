@@ -77,7 +77,7 @@ sub run {
 
     # Update PATH to include perl/bin for DLLs loading
     my $binpath = catfile($self->global->{image_dir}, 'perl/bin');
-    $ENV{PATH} .= ":$binpath";
+    $ENV{PATH} = "$binpath:$ENV{PATH}";
 
     # Without defined modules, run the tests
     my $perlbin = catfile($binpath, 'perl.exe');
@@ -106,7 +106,7 @@ sub test {
 
     # Update PATH to include perl/bin for DLLs loading
     my $binpath = catfile($self->global->{image_dir}, 'perl/bin');
-    $ENV{PATH} .= ":$binpath";
+    $ENV{PATH} = "$binpath:$ENV{PATH}";
 
     # Without defined modules, run the tests
     my $makebin = catfile($binpath, 'gmake.exe');
@@ -247,8 +247,7 @@ sub load_jobfile {
                 plugin      => 'Perl::Dist::GLPI::Agent::Step::Test',
                 # By default all possible test will be run
                 test_files  => [
-                    #~ qw(t/*.t t/*/*.t t/*/*/*.t t/*/*/*/*.t t/*/*/*/*/*.t t/*/*/*/*/*/*.t)
-                    qw(t/*.t)
+                    qw(t/*.t t/*/*.t t/*/*/*.t t/*/*/*/*.t t/*/*/*/*/*.t t/*/*/*/*/*/*.t)
                 ],
                 skip_tests  => [
                     # Fails if not run as administrator
