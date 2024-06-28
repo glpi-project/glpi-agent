@@ -6,12 +6,18 @@ core:
 * Add support for OAuth2 authentication included in next main GLPI version.
 * Reduce drift on run date keeping not randomized time reference
 * fix: Don't reset run date in hourly run for unmanaged mode
+* Control concurrent calls to not thread safe apis on windows
+* Little optimization on GLPI::Agent::XML objects check
 
 inventory:
 * fix #680: Enhanced disk storage serialnumber support on Windows (one more case)
 * fix #565: Add support for Cortex XDR Antivirus on windows.
   This is also an attempt to start antivirus support on Windows Server based on
   service detection.
+
+netdiscovery/netinventory:
+* Always send netinventory jobs end messages from runners
+* Fixed tasks blocking on windows with core concurrent calls control
 
 esx:
 * fix #691: Fix perl error while checking esx configuration template

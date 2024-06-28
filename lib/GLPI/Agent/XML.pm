@@ -33,7 +33,7 @@ sub new {
     }
 
     $self->string($params{string});
-    $self->file($params{file}) unless $self->has_xml();
+    $self->file($params{file}) unless $self->_is_xml();
 
     # Support library options set as private object attributes
     map { $self->{"_$_"} = $params{$_} } grep { defined($params{$_}) } qw(
@@ -87,6 +87,15 @@ sub _empty {
     return $self;
 }
 
+# On MSWin32, it is only intended to be called in dedicated thread
+sub _is_xml {
+    my ($self) = @_;
+
+    my $xml = $self->_xml;
+
+    return ref($xml) eq 'XML::LibXML::Document' && $xml->documentElement() ? 1 : 0;
+}
+
 sub has_xml {
     my ($self) = @_;
 
@@ -98,9 +107,7 @@ sub has_xml {
         );
     }
 
-    my $xml = $self->_xml;
-
-    return ref($xml) eq 'XML::LibXML::Document' && $xml->documentElement() ? 1 : 0;
+    return defined($self->_xml) ? 1 : 0;
 }
 
 sub string {
@@ -120,6 +127,7 @@ sub string {
     $self->_init_libxml() unless $self->{_parser};
 
     $self->_empty->_xml($self->{_parser}->parse_string(decode("UTF-8", $string)));
+    $self->_empty unless $self->_is_xml;
 
     return if $self->{_threaded};
 
@@ -143,6 +151,7 @@ sub file {
     $self->_init_libxml() unless $self->{_parser};
 
     $self->_empty->_xml($self->{_parser}->parse_file($file));
+    $self->_empty unless $self->_is_xml;
 
     return if $self->{_threaded};
 
@@ -242,11 +251,14 @@ sub write {
     }
 
     if ($hash) {
-        $self->_empty->_build_xml($hash)
-            or return;
+        $self->_empty->_build_xml($hash);
+        unless ($self->_is_xml()) {
+            $self->_empty();
+            return;
+        }
     }
 
-    return '' unless $self->has_xml();
+    return '' unless $self->_is_xml();
 
     # Support XML::LibXML setTagCompression option
     $XML::LibXML::setTagCompression = $self->{_tag_compression} ? 1 : 0 ;

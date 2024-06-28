@@ -131,6 +131,8 @@ sub run {
     my $skip_start_stop = 0;
     foreach my $job (@{$self->{jobs}}) {
         $devices_count += $job->count();
+        # Support glpi-netdiscovery --control option
+        $self->{_control} = $job->control;
         # newer server won't need START message if PID is provided on <DEVICE/>
         next if $skip_start_stop;
         $skip_start_stop = $job->skip_start_stop || any { defined($_->{PID}) } $job->devices();
@@ -187,15 +189,7 @@ sub run {
             return unless $jobid;
             my $job = $jobs{$jobid};
             $queued_count--;
-            if ($job->done) {
-                # send final message to the server before cleaning jobs
-                $self->_sendStopMessage($jobid) unless $skip_start_stop;
-
-                delete $jobs{$jobid};
-
-                # send final message to the server
-                $self->_sendStopMessage($jobid) unless $skip_start_stop;
-            }
+            delete $jobs{$jobid} if $job->done;
             $devices_count--;
             # Only reduce expiration when few devices are still to be scanned
             if ($devices_count > 4 && $expiration > time + $devices_count*$target_expiration) {
@@ -272,11 +266,20 @@ sub run {
             }
 
             # Get result PID from result
-            my $thispid = delete $result->{PID};
+            my $thispid = delete $result->{PID} // $pid;
 
             # Directly send the result message from the worker, but use job pid if
             # it was not set in result
-            $self->_sendResultMessage($result, $thispid || $pid, $device->{IP});
+            $self->_sendResultMessage($result, $thispid, $device->{IP});
+
+            # Send control messages unless not required
+            if (!$skip_start_stop || $self->{_control}) {
+                # send end message to the server for this job
+                $self->_sendStopMessage($thispid);
+
+                # send final end message to the server
+                $self->_sendStopMessage($thispid);
+            }
 
             delete $self->{logger}->{prefix} if $worker_count > 1;
 
@@ -350,11 +353,12 @@ sub _sendMessage {
 
     if ($self->{target}->isType('local')) {
         my ($handle, $file);
-        return unless $content->{DEVICE};
         my $path = $self->{target}->getPath();
         if ($path eq '-') {
+            return unless $content->{DEVICE} || $self->{_control};
             $handle = \*STDOUT;
         } else {
+            return unless $content->{DEVICE};
             $path = $self->{target}->getFullPath("netinventory");
             mkpath($path) unless -d $path;
             $file = $path . "/$ip.xml";

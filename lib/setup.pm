@@ -5,6 +5,8 @@ use strict;
 use warnings;
 use parent qw(Exporter);
 
+use English qw(-no_match_vars);
+use UNIVERSAL::require;
 use File::Spec;
 use File::Basename qw(dirname);
 
@@ -32,5 +34,15 @@ eval {
         }
     }
 };
+
+# Set DLL directory from perl exe path on MSWin32
+if ($OSNAME eq 'MSWin32') {
+    Win32::API->require();
+    my $apiSetDllDirectory = Win32::API->new(
+        'kernel32',
+        'BOOL SetDllDirectoryA(LPCSTR lpPathName)'
+    );
+    $apiSetDllDirectory->Call(dirname($^X));
+}
 
 1;

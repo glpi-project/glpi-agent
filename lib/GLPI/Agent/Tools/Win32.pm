@@ -902,6 +902,7 @@ sub FreeAgentMem {
 
 my $worker ;
 my $worker_semaphore;
+my $workers_semaphore;
 my $worker_lasterror = [];
 
 my @win32_ole_calls : shared;
@@ -918,6 +919,7 @@ sub start_Win32_OLE_Worker {
         # Request a semaphore on which worker blocks immediatly
         Thread::Semaphore->require();
         $worker_semaphore = Thread::Semaphore->new(0);
+        $workers_semaphore = Thread::Semaphore->new(1);
 
         # Start a worker thread
         $worker = threads->create( \&_win32_ole_worker );
@@ -1051,12 +1053,15 @@ sub call_not_thread_safe_api_on_win32 {
     $call->{expiration} = $expiration;
 
     if (defined($worker)) {
+        # Limit concurrent calls from running threads
+        $workers_semaphore->down();
+
         # Share the expect call
         my $call = shared_clone($call);
         my $result;
 
         if (defined($call)) {
-            # Be sure the worker block
+            # Be sure the worker blocks
             $worker_semaphore->down_nb();
 
             # Lock list calls before releasing semaphore so worker waits
@@ -1076,6 +1081,9 @@ sub call_not_thread_safe_api_on_win32 {
 
             # Be sure to always block worker on semaphore from now
             $worker_semaphore->down_nb();
+
+            # Free any concurrent thread call
+            $workers_semaphore->up();
 
             if (exists($call->{'result'})) {
                 $result = $call->{'result'};
