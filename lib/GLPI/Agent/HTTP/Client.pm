@@ -15,6 +15,7 @@ use Cpanel::JSON::XS;
 use GLPI::Agent;
 use GLPI::Agent::Logger;
 use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Expiration;
 use GLPI::Agent::Protocol::Message;
 
 use constant    _log_prefix => "[http client] ";
@@ -41,6 +42,11 @@ sub new {
     my $ssl_cert_file = $params{ssl_cert_file} || $config->{'ssl-cert-file'};
     die "non-existing client certificate file $ssl_cert_file"
         if $ssl_cert_file && ! -f $ssl_cert_file;
+
+    # We should still keep SSL certs cache if running in long running netdiscovery
+    # or netinventory task with expiration set in a dedicated thread
+    $_SSL_ca->{_expiration} = getExpirationTime()
+        if $_SSL_ca && $_SSL_ca->{_expiration} && getExpirationTime();
 
     my $self = {
         logger          => $params{logger} || GLPI::Agent::Logger->new(),
@@ -567,6 +573,8 @@ sub _KeyChain_or_KeyStore_Export {
     return $_SSL_ca->{_certs}
         if $_SSL_ca->{_expiration} && time < $_SSL_ca->{_expiration};
 
+    IO::Socket::SSL::Utils->require();
+
     # Free stored certificates
     IO::Socket::SSL::Utils::CERT_free(@{$_SSL_ca->{_certs}})
         if ref($_SSL_ca->{_certs}) eq 'ARRAY';
@@ -577,7 +585,6 @@ sub _KeyChain_or_KeyStore_Export {
     );
 
     my @certs = ();
-    IO::Socket::SSL::Utils->require();
 
     File::Temp->require();
     if ($EVAL_ERROR) {

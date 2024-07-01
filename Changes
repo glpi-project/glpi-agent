@@ -8,6 +8,7 @@ core:
 * fix: Don't reset run date in hourly run for unmanaged mode
 * Control concurrent calls to not thread safe apis on windows
 * Little optimization on GLPI::Agent::XML objects check
+* Use task expiration for SSL CA certs cache expiration when running in task threads
 
 inventory:
 * fix #680: Enhanced disk storage serialnumber support on Windows (one more case)
@@ -18,6 +19,7 @@ inventory:
 netdiscovery/netinventory:
 * Always send netinventory jobs end messages from runners
 * Fixed tasks blocking on windows with core concurrent calls control
+* Avoid to expire SSL CA certs cache in threads
 
 esx:
 * fix #691: Fix perl error while checking esx configuration template
