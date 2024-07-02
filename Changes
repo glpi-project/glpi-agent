@@ -15,6 +15,7 @@ inventory:
 * fix #565: Add support for Cortex XDR Antivirus on windows.
   This is also an attempt to start antivirus support on Windows Server based on
   service detection.
+* fix #700: Add TacticalRMM Remote_Mgmt module for windows
 
 netdiscovery/netinventory:
 * Always send netinventory jobs end messages from runners
