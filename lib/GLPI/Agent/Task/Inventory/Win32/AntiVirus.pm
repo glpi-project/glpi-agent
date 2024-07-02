@@ -154,7 +154,7 @@ sub doInventory {
     unless ($found_enabled) {
 
         # AV must be set as a service
-        my $services = getServices(logger  => $logger);
+        my $services = getServices(logger => $logger);
 
         foreach my $support ({
             # Cortex XDR support
@@ -167,7 +167,7 @@ sub doInventory {
             my $service = $services->{$support->{service}}
                 or next;
 
-            $antivirus->{NAME} = $service->{NAME} || $support->{name};
+            $antivirus->{NAME} = $support->{name} || $service->{NAME};
             $antivirus->{ENABLED} = $service->{STATUS} =~ /running/i ? 1 : 0;
 
             if (my $cmd = $support->{command}) {
@@ -532,15 +532,15 @@ sub _setCortexInfos {
     $antivirus->{COMPANY} = "Palo Alto Networks";
 
     my $version = getFirstMatch(
-        command => "$command info",
-        pattern => /^Cortex XDR .* ([0-9.]+)$/,
+        command => "\"$command\" info",
+        pattern => qr/^Cortex XDR .* ([0-9.]+)$/,
         logger  => $logger
     );
     $antivirus->{VERSION} = $version if $version;
 
     my $base_version = getFirstMatch(
-        command => "$command info query",
-        pattern => /^Content Version:\s+(\S+)$/i,
+        command => "\"$command\" info query",
+        pattern => qr/^Content Version:\s+(\S+)$/i,
         logger  => $logger
     );
     $antivirus->{BASE_VERSION} = $base_version if $base_version;
