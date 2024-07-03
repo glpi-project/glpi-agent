@@ -267,7 +267,7 @@ sub _scanPeers {
     $manager->run_on_finish(sub {
         my ($pid, $exit_code, $address) = @_;
         push @found, $address if $exit_code;
-     });
+    });
 
     foreach my $address (@addresses) {
         $manager->start($address) and next;

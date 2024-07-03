@@ -22,6 +22,12 @@ netdiscovery/netinventory:
 * Fixed tasks blocking on windows with core concurrent calls control
 * Avoid to expire SSL CA certs cache in threads
 
+deploy:
+* For job with P2P enabled, don't use hard-coded 62354 port, but agent httpd-port
+  configuration to discover listening peer agents.
+* For job with P2P enabled, use remote-workers configuration to optimize peers
+  discovery keeping 10 workers as minimum default.
+
 esx:
 * fix #691: Fix perl error while checking esx configuration template
 
