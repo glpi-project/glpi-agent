@@ -36,15 +36,20 @@ sub doInventory {
 
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
+
+    my $version   = _getVersion(logger => $logger);
     my $agentId   = _getAgentId(logger => $logger)
         or return;
 
+    my $mgmt = {
+        ID      => $agentId,
+        TYPE    => 'tacticalrmm',
+    };
+    $mgmt->{VERSION} = $version if $version;
+
     $inventory->addEntry(
         section => 'REMOTE_MGMT',
-        entry   => {
-            ID   => $agentId,
-            TYPE => 'tacticalrmm'
-        }
+        entry   => $mgmt,
     );
 }
 
@@ -63,6 +68,25 @@ sub _winBased {
     );
 
     return $agentId;
+}
+
+sub _getVersion {
+    my (%params) = @_;
+
+    my $version;
+
+    if (OSNAME eq 'MSWin32') {
+        my $command = "C:\\Program Files\\TacticalAgent\\tacticalrmm.exe";
+        if (canRun($command)) {
+            $version = getFirstMatch(
+                command => "\"$command\" --version",
+                pattern => qr/^Tactical RMM Agent:\s+(\S+)/i,
+                logger  => $params{logger}
+            );
+        }
+    }
+
+    return $version;
 }
 
 1;
