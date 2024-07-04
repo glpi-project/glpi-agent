@@ -1,4 +1,4 @@
-package GLPI::Agent::Task::Inventory::MacOS::AntiVirus;
+package GLPI::Agent::Task::Inventory::MacOS::AntiVirus::Defender;
 
 use strict;
 use warnings;
@@ -13,7 +13,6 @@ use GLPI::Agent::Tools;
 use constant    category    => "antivirus";
 
 sub isEnabled {
-    # Only MS Defender is supported
     return canRun('/usr/local/bin/mdatp');
 }
 
