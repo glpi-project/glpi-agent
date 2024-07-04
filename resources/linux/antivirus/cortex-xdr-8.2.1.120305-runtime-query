@@ -1,0 +1,8 @@
+              Name       PID           User                Status               Command
+               pmd      1092           root               Running               /opt/traps/bin/pmd
+              clad      1716       cortexu+               Running               /opt/traps/analyzerd/clad
+              dypd      1707           root               Running               /opt/traps/bin/dypdng
+              spmd      1732       cortexu+               Running               /opt/traps/analyzerd/spmd
+              lted      1862       cortexu+               Running               /opt/traps/python/payload/lted
+              pyxd      1288           root               Running               /opt/traps/python/payload/pyxd 
+
