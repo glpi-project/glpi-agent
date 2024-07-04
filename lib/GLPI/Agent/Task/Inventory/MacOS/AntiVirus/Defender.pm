@@ -44,6 +44,10 @@ sub _getMSDefender {
         UPTODATE    => 0,
     };
 
+    # Support file case for unittests if basefile is provided
+    $params{file} = $params{basefile}.".json"
+        if exists($params{basefile});
+
     my $output = getAllLines(%params)
         or return;
 

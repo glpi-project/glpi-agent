@@ -1,0 +1,6 @@
+         Name    PID         User              Status		Command
+  cortex xdr   1055        User1             Running		/Library/Application Support/PaloAltoNetworks/Traps/bin/cortex xdr.app/Contents/MacOS/cortex xdr
+   authorized    927  _traps_panw             Running		/Library/Application Support/PaloAltoNetworks/Traps/bin/authorized
+          pmd    909         root             Running		/Library/Application Support/PaloAltoNetworks/Traps/bin/pmd
+   kproc-ctrl    159         root              Loaded		com.paloaltonetworks.driver.kproc-ctrl
+
