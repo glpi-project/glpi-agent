@@ -526,7 +526,7 @@ sub _setCortexInfos {
     my ($antivirus, $logger, $command) = @_;
 
     $antivirus = {
-        NAME    => "Cortex XDRT Advanced Endpoint Protection",
+        NAME    => "Cortex XDR",
     } unless $antivirus;
 
     $antivirus->{COMPANY} = "Palo Alto Networks";
