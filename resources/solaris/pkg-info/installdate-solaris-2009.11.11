@@ -1,0 +1,12 @@
+   PKGINST:  SUNWcsr
+      NAME:  Core Solaris, (Root)
+  CATEGORY:  system
+      ARCH:  sparc
+   VERSION:  11.11,REV=2009.11.11
+   BASEDIR:  /
+    VENDOR:  Oracle Corporation
+      DESC:  core software for a specific instruction-set architecture
+  INSTDATE:  Nov 30 2018 12:44
+   HOTLINE:  Please contact your local service provider
+    STATUS:  completely installed
+

@@ -17,6 +17,7 @@ inventory:
   service detection.
 * Add support for Cortex XDR Antivirus on MacOSX and linux
 * fix #700: Add TacticalRMM Remote_Mgmt module for windows
+* Update Solaris OS installation date support
 
 netdiscovery/netinventory:
 * Always send netinventory jobs end messages from runners
