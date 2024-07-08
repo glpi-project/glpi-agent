@@ -43,6 +43,7 @@ Delete credential: Suppression d'identifiant
 No credential selected: Pas d'identifiant sélectionné
 Can't delete used credential: Impossible de supprimer un identifiant utilisé
 
+No archiving software available: Aucun programme d'archivage disponible
 Deleting results: Suppression de résultats
 No result selected: Pas de résultat sélectionné
 Can't remove file: Impossible de supprimer le fichier

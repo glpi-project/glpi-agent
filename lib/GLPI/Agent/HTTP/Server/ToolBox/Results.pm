@@ -419,7 +419,8 @@ sub handle_form {
         }
     } elsif ($form->{'submit/export'} || $form->{'submit/full-export'}) {
         $self->debug("Doing export for GLPI integration");
-        my $archiver = $self->_get_archiver();
+        my $archiver = $self->_get_archiver()
+            or return $self->errors("Download results: No archiving software available");
         my @time = localtime();
         my $tag_filter = $self->get_from_session('tag_filter');
         my $base_folder = $yaml_config->{networktask_save} || '.';
@@ -671,6 +672,8 @@ sub _register_supported_modules {
 sub _supported_archive_formats {
     my ($self) = @_;
 
+    return [''] unless $self->{_archive_formats};
+
     my @supported = map { $_->format() } sort { $a->order <=> $b->order } @{$self->{_archive_formats}};
 
     return \@supported;
@@ -678,6 +681,8 @@ sub _supported_archive_formats {
 
 sub _get_archiver {
     my ($self) = @_;
+
+    return unless $self->{_archive_formats};
 
     my $yaml_config = $self->yaml('configuration') || {};
     my $format = $yaml_config->{'archive_format'} || $self->_supported_archive_formats()->[0];
