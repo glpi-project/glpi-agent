@@ -93,6 +93,16 @@ sub run {
     my $device = $self->device
         or return;
 
+    # Get list of device IPs
+    my $ips = $device->{IPS}->{IP};
+
+    # Remove "Magic VLAN" IP address
+    foreach my $ip (@$ips) {
+        if ($ip =~ m/^172\.31\.98/) {
+            splice(@$ips,$ip,1);
+        }
+    }
+
     # Get list of device ports (e.g. radioX_ssid_idY)
     my $ports = $device->{PORTS}->{PORT};
 
