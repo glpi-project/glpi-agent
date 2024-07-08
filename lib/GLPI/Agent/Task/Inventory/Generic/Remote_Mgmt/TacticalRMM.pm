@@ -94,7 +94,7 @@ sub _getVersion {
     my $command = OSNAME eq 'MSWin32' ?
         '"C:\\Program Files\\TacticalAgent\\tacticalrmm.exe" --version'
         :
-        "rmmagent --version";
+        canRun("rmmagent") ? "rmmagent --version" : "/usr/loca/bin/rmmagent --version";
 
     return getFirstMatch(
         command => $command,
