@@ -104,7 +104,7 @@ jobs:
       run: gmake test
       shell: cmd
 
-  built-perl-windows-test:
+  windows-test-using-our-built-perl:
 
     runs-on: windows-latest
 
@@ -124,7 +124,7 @@ jobs:
     - name: Log warning on cache miss
       if: steps.built-perl-cache.outputs.cache-hit != 'true'
       run: |
-        echo '::warning title=[built-perl-windows-test] Built Perl not available in cache::You should be able to restart this job after packaging workflow run.'
+        echo '::warning title=[windows-test-using-our-built-perl] Built Perl not available in cache::You should be able to restart this job after packaging workflow run.'
     - name: Restore required perl libraries cache
       uses: actions/cache@v4
       id: perl-site-cache
