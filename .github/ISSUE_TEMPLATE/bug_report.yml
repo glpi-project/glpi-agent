@@ -102,6 +102,7 @@ body:
       label: GLPI version
       description: What is your GLPI version on server-side ?
       options:
+        - 10.0.16
         - 10.0.15
         - 10.0.14
         - 10.0.13
