@@ -6,6 +6,7 @@ use warnings;
 use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
+use Cpanel::JSON::XS;
 
 use GLPI::Agent::Tools;
 
@@ -26,6 +27,8 @@ sub isEnabled {
 
         return 1 if defined($key);
 
+    } elsif (OSNAME eq 'linux') {
+        return 1 if has_file('/etc/tacticalagent');
     }
 
     return 0;
@@ -57,6 +60,21 @@ sub _getAgentId {
     my (%params) = @_;
 
     return _winBased(%params) if OSNAME eq 'MSWin32';
+    return _linuxBased(%params) if OSNAME eq 'linux';
+}
+
+sub _linuxBased {
+    my (%params) = @_;
+
+    my $config = getAllLines(
+        file    => '/etc/tacticalagent',
+        %params
+    );
+
+    my $json = decode_json($config)
+        or return;
+
+    return $json->{agentid};
 }
 
 sub _winBased {
@@ -73,20 +91,16 @@ sub _winBased {
 sub _getVersion {
     my (%params) = @_;
 
-    my $version;
+    my $command = OSNAME eq 'MSWin32' ?
+        '"C:\\Program Files\\TacticalAgent\\tacticalrmm.exe" --version'
+        :
+        "rmmagent --version";
 
-    if (OSNAME eq 'MSWin32') {
-        my $command = "C:\\Program Files\\TacticalAgent\\tacticalrmm.exe";
-        if (canRun($command)) {
-            $version = getFirstMatch(
-                command => "\"$command\" --version",
-                pattern => qr/^Tactical RMM Agent:\s+(\S+)/i,
-                logger  => $params{logger}
-            );
-        }
-    }
-
-    return $version;
+    return getFirstMatch(
+        command => $command,
+        pattern => qr/^Tactical RMM Agent:\s+(\S+)/i,
+        %params
+    );
 }
 
 1;
