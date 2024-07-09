@@ -96,11 +96,13 @@ sub _getVersion {
         :
         canRun("rmmagent") ? "rmmagent --version" : "/usr/local/bin/rmmagent --version";
 
-    return getFirstMatch(
+    # On windows, the command seems to output a BOM on the first line
+    my $line = getSanitizedString(getFirstLine(
         command => $command,
-        pattern => qr/^Tactical RMM Agent:\s+(\S+)/i,
         %params
-    );
+    ));
+
+    return $line =~ /Tactical RMM Agent:\s+([0-9.]+)/i;
 }
 
 1;
