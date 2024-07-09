@@ -89,7 +89,7 @@ sub run {
                 or next;
             my $version = getCanonicalString(hex2char($firmwareVersion->{$key}))
                 or next;
-            next if $version eq '-';
+            next if $version eq '-' || $version eq "Registered";
 
             # Strip version string at the end of name
             $name =~ s/\s+version$//i;
