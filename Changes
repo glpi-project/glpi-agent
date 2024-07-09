@@ -1,6 +1,6 @@
 Revision history for GLPI agent
 
-1.10 not yet released
+1.10 Tue, 09 Jul 2024
 
 core:
 * Add support for OAuth2 authentication included in next main GLPI version.
@@ -18,27 +18,36 @@ inventory:
 * Add support for Cortex XDR Antivirus on MacOSX and linux
 * fix #700: Add TacticalRMM Remote_Mgmt module for windows and linux
 * Update Solaris OS installation date support
+* Updated pci.ids to 2024.06.23 version
+* Updated usb.ids to 2024.07.04 version
+* Bump Inventory task version to 1.17
 
 netdiscovery/netinventory:
 * Always send netinventory jobs end messages from runners
 * Fixed tasks blocking on windows with core concurrent calls control
 * Avoid to expire SSL CA certs cache in threads
+* Bump NetDiscovery task version to 6.3
+* Bump NetInventory task version to 6.3
 
 deploy:
 * For job with P2P enabled, don't use hard-coded 62354 port, but agent httpd-port
   configuration to discover listening peer agents.
 * For job with P2P enabled, use remote-workers configuration to optimize peers
   discovery keeping 10 workers as minimum default.
+* Bump Deploy task version to 3.2
 
 esx:
 * fix #691: Fix perl error while checking esx configuration template
+* Bump ESX task version to 2.11
 
 proxy-server-plugin:
 * Enhanced SSL connection cleaning when combined with ssl-server-plugin
+* Bump Proxy plugin version to 2.4
 
 ssl-server-plugin:
 * Don't use SSL_no_shutdown while closing connection after a fork to fully cleanup
   connection on close.
+* Bump SSL plugin version to 1.2
 
 injector:
 * Add support for OAuth2 authentication
