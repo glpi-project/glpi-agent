@@ -10,7 +10,7 @@ use base "GLPI::Agent::HTTP::Server::Plugin";
 
 use GLPI::Agent::Tools;
 
-our $VERSION = "1.1";
+our $VERSION = "1.2";
 
 sub log_prefix {
     return "[ssl server plugin] ";

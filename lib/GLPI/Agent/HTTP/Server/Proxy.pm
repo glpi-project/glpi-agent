@@ -18,7 +18,7 @@ use GLPI::Agent::HTTP::Client::GLPI;
 use GLPI::Agent::Protocol::Message;
 use GLPI::Agent::Protocol::Answer;
 
-our $VERSION = "2.3";
+our $VERSION = "2.4";
 
 sub urlMatch {
     my ($self, $path) = @_;
