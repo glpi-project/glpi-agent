@@ -14,7 +14,7 @@ include 'Module::AutoInstall';
 abstract 'GLPI unified Agent for UNIX, Linux, Windows and MacOSX';
 license 'gpl';
 repository 'https://github.com/glpi-project/glpi-agent';
-version '1.10';
+version '1.11-dev';
 perl_version '5.008';
 authors 'Teclib Editions';
 
