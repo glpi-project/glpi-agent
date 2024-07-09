@@ -18,6 +18,8 @@ inventory:
 * Add support for Cortex XDR Antivirus on MacOSX and linux
 * fix #700: Add TacticalRMM Remote_Mgmt module for windows and linux
 * Update Solaris OS installation date support
+* Updated pci.ids to 2024.06.23 version
+* Updated usb.ids to 2024.07.04 version
 
 netdiscovery/netinventory:
 * Always send netinventory jobs end messages from runners
