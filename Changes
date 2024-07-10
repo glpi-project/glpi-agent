@@ -5,6 +5,9 @@ Revision history for GLPI agent
 inventory:
 * fix #700: Add TacticalRMM Remote_Mgmt support for MacOSX
 
+netdiscovery/netinventory:
+* Skip Konica printers firmware with "Registered" set as version
+
 1.10 Tue, 09 Jul 2024
 
 core:
