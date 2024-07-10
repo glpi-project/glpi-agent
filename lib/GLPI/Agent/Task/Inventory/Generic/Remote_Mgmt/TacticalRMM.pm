@@ -29,6 +29,8 @@ sub isEnabled {
 
     } elsif (OSNAME eq 'linux') {
         return 1 if has_file('/etc/tacticalagent');
+    } elsif (OSNAME eq 'darwin') {
+        return 1 if has_file('/private/etc/tacticalagent');
     }
 
     return 0;
@@ -61,6 +63,21 @@ sub _getAgentId {
 
     return _winBased(%params) if OSNAME eq 'MSWin32';
     return _linuxBased(%params) if OSNAME eq 'linux';
+    return _macosBased(%params) if OSNAME eq 'darwin';
+}
+
+sub _macosBased {
+    my (%params) = @_;
+
+    my $config = getAllLines(
+        file    => '/private/etc/tacticalagent',
+        %params
+    );
+
+    my $json = decode_json($config)
+        or return;
+
+    return $json->{agentid};
 }
 
 sub _linuxBased {
@@ -92,9 +109,11 @@ sub _getVersion {
     my (%params) = @_;
 
     my $command = OSNAME eq 'MSWin32' ?
-        '"C:\\Program Files\\TacticalAgent\\tacticalrmm.exe" --version'
-        :
-        canRun("rmmagent") ? "rmmagent --version" : "/usr/local/bin/rmmagent --version";
+        '"C:\\Program Files\\TacticalAgent\\tacticalrmm.exe" --version' :
+        canRun("rmmagent") ? "rmmagent --version" :
+        canRun("tacticalagent") ? "tacticalagent --version" :
+        OSNAME eq 'darwin' ? "/opt/tacticalagent/tacticalagent --version" :
+        "/usr/local/bin/rmmagent --version";
 
     # On windows, the command seems to output a BOM on the first line
     my $line = getSanitizedString(getFirstLine(

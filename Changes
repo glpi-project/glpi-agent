@@ -2,6 +2,9 @@ Revision history for GLPI agent
 
 1.11 not yet released
 
+inventory:
+* fix #700: Add TacticalRMM Remote_Mgmt support for MacOSX
+
 1.10 Tue, 09 Jul 2024
 
 core:
