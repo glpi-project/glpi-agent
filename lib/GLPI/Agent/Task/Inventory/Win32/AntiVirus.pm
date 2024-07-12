@@ -131,7 +131,7 @@ sub doInventory {
             } elsif ($antivirus->{NAME} =~ /F-Secure/i) {
                 _setFSecureInfos($antivirus);
             } elsif ($antivirus->{NAME} =~ /Bitdefender/i) {
-                _setBitdefenderInfos($antivirus,$logger);
+                _setBitdefenderInfos($antivirus, $logger, "C:\\Program Files\\Bitdefender\\Endpoint Security\\product.console.exe");
             } elsif ($antivirus->{NAME} =~ /Norton|Symantec/i) {
                 _setNortonInfos($antivirus);
             } elsif ($antivirus->{NAME} =~ /Trend Micro Security Agent/i) {
@@ -162,6 +162,12 @@ sub doInventory {
             service => "cyserver",
             command => "C:\\Program Files\\Palo Alto Networks\\Traps\\cytool.exe",
             func    => \&_setCortexInfos,
+        }, {
+            # BitDefender support
+            name    => "Bitdefender Endpoint Security",
+            service => "EPSecurityService",
+            command => "C:\\Program Files\\Bitdefender\\Endpoint Security\\product.console.exe",
+            func    => \&_setBitdefenderInfos,
         }) {
             my $antivirus;
             my $service = $services->{$support->{service}}
@@ -402,7 +408,52 @@ sub _setFSecureInfos {
 }
 
 sub _setBitdefenderInfos {
-    my ($antivirus) = @_;
+    my ($antivirus, $logger, $command) = @_;
+
+    # Use given default command, but try to find it if installation path is not the default one
+    my $command_found = canRun($command);
+    unless ($command_found) {
+        my $installpath = _getSoftwareRegistryKeys(
+            'BitDefender/Endpoint Security',
+            [ 'InstallPath' ],
+            sub {
+                my ($reg) = @_;
+                foreach my $key (keys(%{$reg})) {
+                    next unless $key =~ /^\{[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\}\/$/is;
+                    next unless $reg->{$key}->{"Install/"} && $reg->{$key}->{"Install/"}->{"/InstallPath"};
+                    return $reg->{$key}->{"Install/"}->{"/InstallPath"};
+                }
+            }
+        );
+        if ($installpath) {
+            $command = $installpath . ($installpath =~ /\\$/ ? "" : "\\") ."product.console.exe";
+            $command_found = canRun($command);
+        }
+    }
+
+    # Don't check datas in registry if Bitdefender Endpoint Security Tools is found
+    if ($command_found) {
+        my $version = getFirstLine(command => "\"$command\" /c GetVersion product", logger => $logger);
+        $antivirus->{VERSION} = $version if $version;
+        my $base_version = getFirstLine(command => "\"$command\" /c GetVersion antivirus", logger => $logger);
+        $antivirus->{BASE_VERSION} = $base_version if $base_version;
+        # Don't check if up-to-date with command if still reported by WMI on Windows Desktop
+        unless (defined($antivirus->{UPTODATE})) {
+            my @update_status = getAllLines(command => "\"$command\" /c GetUpdateStatus product", logger => $logger);
+            my ($attempt_time) = map { /^lastAttemptedTime: (\d+)$/ } grep { /^lastAttemptedTime:/ } @update_status;
+            my ($success_time) = map { /^lastSucceededTime: (\d+)$/ } grep { /^lastSucceededTime:/ } @update_status;
+            my $uptodate = $attempt_time && $success_time && int($attempt_time) == int($success_time) ? 1 : 0;
+            if ($uptodate) {
+                @update_status = getAllLines(command => "\"$command\" /c GetUpdateStatus antivirus", logger => $logger);
+                ($attempt_time) = map { /^lastAttemptedTime: (\d+)$/ } grep { /^lastAttemptedTime:/ } @update_status;
+                ($success_time) = map { /^lastSucceededTime: (\d+)$/ } grep { /^lastSucceededTime:/ } @update_status;
+                $uptodate += 1 if $attempt_time && $success_time && int($attempt_time) == int($success_time);
+            }
+            $antivirus->{UPTODATE} = $uptodate > 1 ? 1 : 0;
+        }
+        $antivirus->{COMPANY} = "Bitdefender" unless $antivirus->{COMPANY};
+        return;
+    }
 
     my $bitdefenderReg = _getSoftwareRegistryKeys(
         'BitDefender/About',
@@ -552,7 +603,7 @@ sub _getSoftwareRegistryKeys {
     my $reg;
     if (is64bit()) {
         $reg = getRegistryKey(
-            path => 'HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/'.$base,
+            path        => 'HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/'.$base,
             # Important for remote inventory optimization
             required    => $values,
         );

@@ -4,6 +4,8 @@ Revision history for GLPI agent
 
 inventory:
 * fix #700: Add TacticalRMM Remote_Mgmt support for MacOSX
+* fix #711: Update Bitdefender AV support on Windows, and also update enable support
+  on Windows Server OS.
 
 netdiscovery/netinventory:
 * Skip Konica printers firmware with "Registered" set as version
