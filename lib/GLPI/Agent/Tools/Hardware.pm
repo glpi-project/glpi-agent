@@ -1274,7 +1274,7 @@ sub _getLLDPInfo {
             # Add mac only if different than SYSMAC
             push @{$connection->{MAC}}, $mac if $mac && $mac ne $connection->{SYSMAC};
             if(empty($connection->{MAC})) {
-                my ($extracted) = $suffix =~ /^\d+\.(.*)\.\d+$/;
+                my ($extracted) = _getElement($suffix, -2);
                 if ($extracted =~ /^\d+$/) {
                     $connection->{IFNUMBER} = $extracted;
                 }
