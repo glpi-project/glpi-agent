@@ -1195,6 +1195,8 @@ sub _getLLDPInfo {
         $snmp->walk('.1.3.6.1.4.1.9.5.1.4.1.1.11.1') || # Cisco portIfIndex
         $snmp->walk('.1.3.6.1.2.1.17.1.4.1.2');         # dot1dBasePortIfIndex
 
+    my $ifPhysAddress = $snmp->walk('.1.3.6.1.2.1.2.2.1.6');
+    
     # each lldp variable matches the following scheme:
     # $prefix.x.y.z = $value
     # whereas y is either a port or an interface id
@@ -1270,14 +1272,12 @@ sub _getLLDPInfo {
                 }
             }
         } elsif ($PortIdSubtype eq '3') { # Mac address
-            my $mac = alt2canonical($portId) || getCanonicalMacAddress($lldpRemPortId->{$suffix});
+            my $id = _getElement($suffix, -2);
+            my $mac = alt2canonical($ifPhysAddress->{$id}) || alt2canonical($portId) || getCanonicalMacAddress($lldpRemPortId->{$suffix});
             # Add mac only if different than SYSMAC
             push @{$connection->{MAC}}, $mac if $mac && $mac ne $connection->{SYSMAC};
-            if(empty($connection->{MAC})) {
-                my ($extracted) = _getElement($suffix, -2);
-                if ($extracted =~ /^\d+$/) {
-                    $connection->{IFNUMBER} = $extracted;
-                }
+            if(empty($connection->{IFNUMBER})) {
+                $connection->{IFNUMBER} = $id if ($id =~ /^\d+$/);
             }
         } elsif ($PortIdSubtype eq '1' || $PortIdSubtype eq '5' || $PortIdSubtype eq '7') { # Interface alias or interface name or "local", "local" should be the remote IFNUMBER
             if ($portId =~ /^\d+$/) {
