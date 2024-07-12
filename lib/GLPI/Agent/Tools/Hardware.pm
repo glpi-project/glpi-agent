@@ -1273,6 +1273,12 @@ sub _getLLDPInfo {
             my $mac = alt2canonical($portId) || getCanonicalMacAddress($lldpRemPortId->{$suffix});
             # Add mac only if different than SYSMAC
             push @{$connection->{MAC}}, $mac if $mac && $mac ne $connection->{SYSMAC};
+            if(empty($connection->{MAC})) {
+                my ($extracted) = $suffix =~ /^\d+\.(.*)\.\d+$/;
+                if ($extracted =~ /^\d+$/) {
+                    $connection->{IFNUMBER} = $extracted;
+                }
+            }
         } elsif ($PortIdSubtype eq '1' || $PortIdSubtype eq '5' || $PortIdSubtype eq '7') { # Interface alias or interface name or "local", "local" should be the remote IFNUMBER
             if ($portId =~ /^\d+$/) {
                 $connection->{IFNUMBER} = $portId;
