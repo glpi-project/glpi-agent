@@ -11,8 +11,6 @@ use GLPI::Agent::Tools::Network;
 use GLPI::Agent::Tools::SNMP;
 use GLPI::Agent::SNMP::Device;
 
-use Net::IP qw(ip_is_ipv4);
-
 our @EXPORT = qw(
     getDeviceInfo
     getDeviceFullInfo
@@ -1306,21 +1304,6 @@ sub _getLLDPInfo {
                                               $port2interface->{$id};
 
         $results->{$interface_id} = $connection;
-
-        # Associate IP address with device
-        # RFC1213-MIB::atPhysAddress.54.1.192.168.0.128 = Hex-STRING: 00 0B 82 54 42 84
-        my $atPhysAddresses = $snmp->walk('.1.3.6.1.2.1.3.1.1.2') || {}; # atPhysAddress
-        if ($atPhysAddresses) {
-            foreach my $index (keys(%{$atPhysAddresses})) {
-                my $atPhysAddress = getCanonicalMacAddress($atPhysAddresses->{$index});
-                if ($atPhysAddress eq $connection->{SYSMAC}) {
-                    # Extract device IPv4 from index
-                    my $atLogicAddress = _getElement($index, -4) . '.' . _getElement($index, -3) . '.' . _getElement($index, -2) . '.'. _getElement($index, -1);
-                    push @{$connection->{IP}}, $atLogicAddress if Net::IP::ip_is_ipv4($atLogicAddress);
-                    last;
-                }
-            }
-        }
     }
 
     return $results;
