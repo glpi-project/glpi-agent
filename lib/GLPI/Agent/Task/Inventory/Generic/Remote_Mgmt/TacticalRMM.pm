@@ -121,6 +121,7 @@ sub _getVersion {
         %params
     ));
 
+    return unless $line;
     return $line =~ /Tactical RMM Agent:\s+([0-9.]+)/i;
 }
 
