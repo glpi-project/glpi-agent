@@ -659,7 +659,7 @@ sub _KeyChain_or_KeyStore_Export {
             # Convert each crt file to base64 encoded cer file and concatenate in certchain file
             File::Glob->require();
             foreach my $certfile (File::Glob::bsd_glob("$certdir/*")) {
-                if ($certfile =~ m{^$certdir/(.*\.crt)$}) {
+                if ($certfile =~ m{/([^/]+\.crt)$}) {
                     getAllLines(
                         command => "certutil -encode $1 temp.cer",
                         logger  => $logger

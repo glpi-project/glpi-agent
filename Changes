@@ -6,6 +6,8 @@ inventory:
 * fix #700: Add TacticalRMM Remote_Mgmt support for MacOSX
 * fix #711: Update Bitdefender AV support on Windows, and also update enable support
   on Windows Server OS.
+* fix #716: Don't fail on regexp error while running from a user folder which contains
+  a parenthesis
 
 netdiscovery/netinventory:
 * Skip Konica printers firmware with "Registered" set as version
