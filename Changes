@@ -12,6 +12,10 @@ inventory:
 netdiscovery/netinventory:
 * Skip Konica printers firmware with "Registered" set as version
 
+packaging:
+* Update Windows MSI packing building process to use:
+  - libxml2 2.13.3
+
 1.10 Tue, 09 Jul 2024
 
 core:
