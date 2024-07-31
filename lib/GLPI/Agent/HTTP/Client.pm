@@ -620,14 +620,14 @@ sub _KeyChain_or_KeyStore_Export {
         $certdir =~ s{\\}{/}g;
         if (-d $certdir) {
             my @certCommands = (
-			    "certutil -Silent -Split -Store CA",
-			    "certutil -Silent -Split -Store Root",
-			    "certutil -Silent -Split -Enterprise -Store CA",
-			    "certutil -Silent -Split -Enterprise -Store Root",
-			    "certutil -Silent -Split -GroupPolicy -Store CA",
-			    "certutil -Silent -Split -GroupPolicy -Store Root",
-			    "certutil -Silent -Split -User -Store CA",
-			    "certutil -Silent -Split -User -Store Root"
+                "certutil -Silent -Split -Store CA",
+                "certutil -Silent -Split -Store Root",
+                "certutil -Silent -Split -Enterprise -Store CA",
+                "certutil -Silent -Split -Enterprise -Store Root",
+                "certutil -Silent -Split -GroupPolicy -Store CA",
+                "certutil -Silent -Split -GroupPolicy -Store Root",
+                "certutil -Silent -Split -User -Store CA",
+                "certutil -Silent -Split -User -Store Root"
             );
             $logger->debug2("Changing to '$certdir' temporary folder");
             chdir $certdir;
