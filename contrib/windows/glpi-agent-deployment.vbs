@@ -328,6 +328,24 @@ Function isNightly(strng)
    Exit Function
 End Function
 
+' Major version 1 and Minor version greater than 7 doesn't support x86
+Function doesNotSupportX86(strng)
+   Dim regEx, matches, major, minor
+   Set regEx = New RegExp
+   regEx.Global = true
+   regEx.Pattern = "^([0-9]+)\.([0-9]+)"
+   Set matches = regEx.Execute(strng)
+   doesNotSupportX86 = False
+   If matches.count > 0 Then
+      major = matches(0).SubMatches(0)
+      minor = matches(0).SubMatches(1)
+      If major = 1 And minor > 7 Then
+         doesNotSupportX86 = True
+      End If
+   End If
+   Exit Function
+End Function
+
 Function IsInstallationNeeded(strSetupVersion, strSetupArchitecture, strSystemArchitecture)
    Dim strCurrentSetupVersion
    ' Compare the current version, whether it exists, with strSetupVersion
@@ -575,6 +593,14 @@ If (strSystemArchitecture = "x86") And (SetupArchitecture = "x64") Then
    ShowMessage("It isn't possible to execute a 64-bit setup on a 32-bit operative system.")
    ShowMessage("Deployment aborted!")
    WScript.Quit 3
+End If
+
+' Check if we are trying to installed version not supporting x86
+If (SetupArchitecture = "x86") And doesNotSupportX86(SetupVersion) Then
+   ' Support of 32-bit operative system has since discontinued since 1.8
+   ShowMessage("GLPI-Agent v" & SetupVersion & " doesn't support installation on a 32-bit operative system.")
+   ShowMessage("Deployment aborted!")
+   WScript.Quit 4
 End If
 
 bInstall = False
