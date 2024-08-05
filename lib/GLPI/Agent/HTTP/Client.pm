@@ -632,8 +632,9 @@ sub _KeyChain_or_KeyStore_Export {
             $logger->debug2("Changing to '$certdir' temporary folder");
             chdir $certdir;
 
-            while (my ($i, $command) = each @certCommands) {
-                my $storeDirname = "$i";
+            foreach my $command (@certCommands) {
+                my ($kind, $store) = $command =~ /-Split( -\w+)? -Store (\w+)$/;
+                my $storeDirname = $kind && $kind =~ /^ -(\w+)$/ ? "$1-$store" : $store;
                 mkdir $storeDirname;
                 chdir $storeDirname;
                 getAllLines(
@@ -648,7 +649,7 @@ sub _KeyChain_or_KeyStore_Export {
             # Convert each crt file to base64 encoded cer file and concatenate in certchain file
             File::Glob->require();
             foreach my $certfile (File::Glob::bsd_glob("$certdir/*/*")) {
-                if ($certfile =~ m{/([^/]+\.crt)$}) {
+                if ($certfile =~ m{/([^/]+/[^/]+\.crt)$}) {
                     getAllLines(
                         command => "certutil -encode $1 temp.cer",
                         logger  => $logger
