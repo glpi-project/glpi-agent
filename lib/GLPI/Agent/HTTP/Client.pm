@@ -619,47 +619,37 @@ sub _KeyChain_or_KeyStore_Export {
         my $certdir = $tmpdir->dirname;
         $certdir =~ s{\\}{/}g;
         if (-d $certdir) {
+            my @certCommands = (
+                "certutil -Silent -Split -Store CA",
+                "certutil -Silent -Split -Store Root",
+                "certutil -Silent -Split -Enterprise -Store CA",
+                "certutil -Silent -Split -Enterprise -Store Root",
+                "certutil -Silent -Split -GroupPolicy -Store CA",
+                "certutil -Silent -Split -GroupPolicy -Store Root",
+                "certutil -Silent -Split -User -Store CA",
+                "certutil -Silent -Split -User -Store Root"
+            );
             $logger->debug2("Changing to '$certdir' temporary folder");
             chdir $certdir;
 
+            foreach my $command (@certCommands) {
+                my ($kind, $store) = $command =~ /-Split( -\w+)? -Store (\w+)$/;
+                my $storeDirname = $kind && $kind =~ /^ -(\w+)$/ ? "$1-$store" : $store;
+                mkdir $storeDirname;
+                chdir $storeDirname;
+                getAllLines(
+                    command => $command,
+                    logger  => $logger
+                );
+                chdir "..";
+            }
+
             # Export certificates from keystore as crt files
-            getAllLines(
-                command => "certutil -Silent -Split -Store CA",
-                logger  => $logger
-            );
-            getAllLines(
-                command => "certutil -Silent -Split -Store Root",
-                logger  => $logger
-            );
-            getAllLines(
-                command => "certutil -Silent -Split -Enterprise -Store CA",
-                logger  => $logger
-            );
-            getAllLines(
-                command => "certutil -Silent -Split -Enterprise -Store Root",
-                logger  => $logger
-            );
-            getAllLines(
-                command => "certutil -Silent -Split -GroupPolicy -Store CA",
-                logger  => $logger
-            );
-            getAllLines(
-                command => "certutil -Silent -Split -GroupPolicy -Store Root",
-                logger  => $logger
-            );
-            getAllLines(
-                command => "certutil -Silent -Split -User -Store CA",
-                logger  => $logger
-            );
-            getAllLines(
-                command => "certutil -Silent -Split -User -Store Root",
-                logger  => $logger
-            );
 
             # Convert each crt file to base64 encoded cer file and concatenate in certchain file
             File::Glob->require();
-            foreach my $certfile (File::Glob::bsd_glob("$certdir/*")) {
-                if ($certfile =~ m{/([^/]+\.crt)$}) {
+            foreach my $certfile (File::Glob::bsd_glob("$certdir/*/*")) {
+                if ($certfile =~ m{/([^/]+/[^/]+\.crt)$}) {
                     getAllLines(
                         command => "certutil -encode $1 temp.cer",
                         logger  => $logger
