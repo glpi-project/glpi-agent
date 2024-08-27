@@ -2,6 +2,9 @@ Revision history for GLPI agent
 
 1.11 not yet released
 
+core:
+* Prevent certificates overwriting during export from Windows Keystore
+
 inventory:
 * fix #700: Add TacticalRMM Remote_Mgmt support for MacOSX
 * fix #711: Update Bitdefender AV support on Windows, and also update enable support
@@ -11,6 +14,7 @@ inventory:
 
 netdiscovery/netinventory:
 * Skip Konica printers firmware with "Registered" set as version
+* Enhanced Hikvision devices support
 
 packaging:
 * Update Windows MSI packing building process to use:
