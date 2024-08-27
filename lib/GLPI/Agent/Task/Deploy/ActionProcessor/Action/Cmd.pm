@@ -76,19 +76,25 @@ sub _runOnWindows {
 
     $fd->seek(0, SEEK_SET);
 
-    my $buf;
-    while(my $line = readline($fd)) {
+    my $buf = '';
+    while (my $line = readline($fd)) {
         $buf .= $line;
     }
     close $fd;
-    $self->debug2("Run: ".$buf);
+
+    if (empty($buf)) {
+        $self->debug2("Run: Got no output");
+    } else {
+        $self->debug2("Run: ".$buf);
+    }
 
     my $errMsg = '';
-    if ($exitcode eq '293') {
+    if ($exitcode && $exitcode eq '293') {
         $errMsg = "timeout";
     }
 
-    return ($buf, $errMsg, $exitcode);
+    # Report ERROR_NOT_SUPPORTED (50) on not defined exitcode
+    return ($buf, $errMsg, $exitcode // 50);
 }
 
 

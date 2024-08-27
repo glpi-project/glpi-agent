@@ -16,6 +16,9 @@ netdiscovery/netinventory:
 * Skip Konica printers firmware with "Registered" set as version
 * Enhanced Hikvision devices support
 
+deploy:
+* Avoid perl syntax error when running Powershell script from Deploy task on windows
+
 packaging:
 * Update Windows MSI packing building process to use:
   - libxml2 2.13.3
