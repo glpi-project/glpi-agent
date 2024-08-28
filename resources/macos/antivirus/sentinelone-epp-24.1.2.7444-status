@@ -2,7 +2,7 @@ Agent
    Version:                           23.4.1.7125
    ID:                                xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
    Install Date:                      16/04/2024, 16:22:18
-   Missing Authorizations:            
+   Missing Authorizations:
    ES Framework:                      started
    Agent Operational State:           enabled
    Remote Profiler:                   not running
