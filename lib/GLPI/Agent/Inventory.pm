@@ -567,6 +567,12 @@ sub computeChecksum {
             # For software category, GLPI requires we also keep os category
             next if $section eq 'OPERATINGSYSTEM' && $keep_os;
             delete $self->{content}->{$section};
+            # For user category, we must also clean up LASTLOGGEDUSER & DATELASTLOGGEDUSER
+            # from always kept HARDWARE section to not confuse server
+            if ($section eq 'USERS') {
+                delete $self->{content}->{HARDWARE}->{LASTLOGGEDUSER};
+                delete $self->{content}->{HARDWARE}->{DATELASTLOGGEDUSER};
+            }
         }
         $self->isPartial(1);
     }

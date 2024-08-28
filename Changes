@@ -11,6 +11,8 @@ inventory:
   on Windows Server OS.
 * fix #716: Don't fail on regexp error while running from a user folder which contains
   a parenthesis
+* fix #748: Don't include lastloggeduser in hardware section in partial inventory
+  if users section is being deleted after no change detected
 
 netdiscovery/netinventory:
 * Skip Konica printers firmware with "Registered" set as version
