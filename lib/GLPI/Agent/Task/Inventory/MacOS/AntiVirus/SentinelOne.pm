@@ -58,17 +58,16 @@ sub _getSentinelOne {
     } else {
         $params{file} = $params{basefile}."-status";
     }
-    my $base_version = getFirstMatch(
-        pattern => qr/^\s.*staticSignatures:\s.*(\([0-9]+\))/i,
-        %params
-    );
-    $antivirus->{BASE_VERSION} = $base_version if $base_version;
-
+    my @lines = getAllLines(%params);
+    my $base_version_line = first { /^\s+staticSignatures:\s/i } @lines;
+    $antivirus->{BASE_VERSION} = $1
+        if $base_version_line && $base_version_line =~ /^\s+staticSignatures:.*(\([0-9]+\))/i;
     my $status = getFirstMatch(
         pattern => qr/^\s.*Protection.*(enabled)$/i,
         %params
     );
-    $antivirus->{ENABLED} = 1 if $status && $status =~ /^enabled$/i; 
+    $antivirus->{ENABLED} = 1 if first { /^\s+Protection:\s+enabled$/i } @lines;
+
     
     return $antivirus;
 }
