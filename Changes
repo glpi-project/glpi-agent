@@ -21,6 +21,10 @@ netdiscovery/netinventory:
 deploy:
 * Avoid perl syntax error when running Powershell script from Deploy task on windows
 
+proxy-server-plugin:
+* Always evaluate only_local_store to yes when glpi_protocol is set and no server is
+  configured so default required format remains json
+
 packaging:
 * Update Windows MSI packing building process to use:
   - libxml2 2.13.3

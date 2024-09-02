@@ -26,7 +26,7 @@ use GLPI::Agent::XML::Response;
 use GLPI::Agent::Target::Server;
 use GLPI::Agent::Protocol::Answer;
 
-plan tests => 55;
+plan tests => 57;
 
 my $logger = GLPI::Agent::Logger->new(
     logger => [ 'Test' ]
@@ -265,6 +265,16 @@ subtest "Supported xml PROLOG query" => sub {
     check_error(200, { REPLY => { PROLOG_FREQ => "24", RESPONSE => "SEND" } }, "Supported xml PROLOG query", "xml");
 };
 
+# Check response on INVENTORY request depends on only_local_store by default
+is($proxy->config("only_local_store"), 1, "Only local store on not configured proxy by default");
+_request(
+    content         => "<?xml version='1.0' encoding='UTF-8' ?><REQUEST><QUERY>INVENTORY</QUERY><DEVICEID>foo</DEVICEID></REQUEST>",
+);
+subtest "Unsupported xml INVENTORY query on no configuration" => sub {
+    check_error(500, "No local storage for inventory");
+};
+
+$proxy->config("only_local_store", 0);
 _request(
     content         => "<?xml version='1.0' encoding='UTF-8' ?><REQUEST><QUERY>INVENTORY</QUERY><DEVICEID>foo</DEVICEID></REQUEST>",
 );

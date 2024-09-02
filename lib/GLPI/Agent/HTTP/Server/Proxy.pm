@@ -90,6 +90,12 @@ sub init {
     $self->{only_local_store} = $self->config('only_local_store') !~ /^0|no$/i ? 1 : 0;
     $self->{glpi_protocol}    = $self->config('glpi_protocol')    !~ /^0|no$/i ? 1 : 0;
 
+    # Set finally we will only store locally if no server is indeed configured and glpi_protocol is set
+    if ($self->config('glpi_protocol') && scalar(grep { $_->isType('server') } $self->{server}->{agent}->getTargets()) == 0) {
+        $self->debug("Forcing only local storing as no glpi server is configured and glpi_protocol is set");
+        $self->{only_local_store} = 1;
+    }
+
     # Handles request status
     $self->{status} = {};
 
