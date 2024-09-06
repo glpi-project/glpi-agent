@@ -59,9 +59,6 @@ sub _getSentinelOne {
         $params{file} = $params{basefile}."-status";
     }
     my @lines = getAllLines(%params);
-    my $base_version_line = first { /^\s+staticSignatures:\s/i } @lines;
-    $antivirus->{BASE_VERSION} = $1
-        if $base_version_line && $base_version_line =~ /^\s+staticSignatures:.*(\([0-9]+\))/i;
     my $status = getFirstMatch(
         pattern => qr/^\s.*Protection.*(enabled)$/i,
         %params
