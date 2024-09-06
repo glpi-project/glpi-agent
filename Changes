@@ -27,7 +27,9 @@ proxy-server-plugin:
 
 packaging:
 * Update Windows MSI packing building process to use:
+  - OpenSSL 3.3.2
   - libxml2 2.13.3
+* Update MacOSX packages to use OpenSSL 3.3.2
 
 1.10 Tue, 09 Jul 2024
 
