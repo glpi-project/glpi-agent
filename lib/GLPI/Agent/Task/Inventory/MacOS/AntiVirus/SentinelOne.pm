@@ -65,7 +65,6 @@ sub _getSentinelOne {
     );
     $antivirus->{ENABLED} = 1 if first { /^\s+Protection:\s+enabled$/i } @lines;
 
-    
     return $antivirus;
 }
 
