@@ -63,6 +63,12 @@
     <SetProperty Id="CMDLINE_AGENTMONITOR_NEWTICKET_URL" Before="AppSearch" Value="[AGENTMONITOR_NEWTICKET_URL]" />
     <SetProperty Id="AGENTMONITOR_NEWTICKET_URL"         After="AppSearch"  Value="[CMDLINE_AGENTMONITOR_NEWTICKET_URL]"><![CDATA[CMDLINE_AGENTMONITOR_NEWTICKET_URL<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
+    <Property Id="AGENTMONITOR_NEWTICKET_SCREENSHOT" Secure="yes">
+      <RegistrySearch Id="NewTicket_ScreenShot" Root="HKLM" Key="[%agent_regpath%]\Monitor" Name="NewTicket-Screenshot" Type="raw" />
+    </Property>
+    <SetProperty Id="CMDLINE_AGENTMONITOR_NEWTICKET_SCREENSHOT" Before="AppSearch" Value="[AGENTMONITOR_NEWTICKET_SCREENSHOT]" />
+    <SetProperty Id="AGENTMONITOR_NEWTICKET_SCREENSHOT"         After="AppSearch"  Value="[CMDLINE_AGENTMONITOR_NEWTICKET_SCREENSHOT]"><![CDATA[CMDLINE_AGENTMONITOR_NEWTICKET_SCREENSHOT<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
     <Property Id="ADD_FIREWALL_EXCEPTION" Secure="yes">
       <RegistrySearch Id="AddFirewallException" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="AddFirewallException" Type="raw" />
     </Property>
@@ -385,6 +391,7 @@
 
     <!-- Monitor configuration defaults -->
     <SetProperty Id="AGENTMONITOR_NEWTICKET_URL"  Action="AGENTMONITOR_NEWTICKET_URL_Default" After="LaunchConditions"  Value=""><![CDATA[NOT AGENTMONITOR_NEWTICKET_URL]]></SetProperty>
+    <SetProperty Id="AGENTMONITOR_NEWTICKET_SCREENSHOT" Action="AGENTMONITOR_NEWTICKET_SCREENSHOT_Default" After="LaunchConditions"  Value="1"><![CDATA[NOT AGENTMONITOR_NEWTICKET_SCREENSHOT OR AGENTMONITOR_NEWTICKET_SCREENSHOT<>"0"]]></SetProperty>
 
     <!-- Fix properties handled as a checkbox, they must be undefined to uncheck the CB -->
     <SetProperty Id="QUICKINSTALL"            Sequence="ui"   Action="QUICKINSTALL_Unset"             After="CostFinalize"  Value=""><![CDATA[QUICKINSTALL<>"1"]]></SetProperty>

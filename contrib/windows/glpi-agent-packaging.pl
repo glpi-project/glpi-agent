@@ -593,6 +593,7 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[  </RegistryKey>\n];
                 $result .= $ident ."  ". qq[  <RegistryKey Root="HKLM" Key="$regpath\\Monitor">\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="NewTicket-URL" Type="string" Value="[AGENTMONITOR_NEWTICKET_URL]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="NewTicket-Screenshot" Type="integer" Value="[AGENTMONITOR_NEWTICKET_SCREENSHOT]" />\n];
                 $result .= $ident ."  ". qq[  </RegistryKey>\n];
             }
             $result .= $ident ."  ". qq[</Component>\n];

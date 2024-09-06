@@ -30,6 +30,9 @@ packaging:
   - OpenSSL 3.3.2
   - libxml2 2.13.3
 * Update MacOSX packages to use OpenSSL 3.3.2
+* Windows MSI installer now supports AGENTMONITOR_NEWTICKET_SCREENSHOT as option to
+  configure if GLPI-AgentMonitor should always create a screenshot on new ticket.
+  The default set value is 1 and means to always create a screenshot.
 
 1.10 Tue, 09 Jul 2024
 
