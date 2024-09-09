@@ -36,6 +36,14 @@ my %av_tests = (
         VERSION         => "8.2.1.47908",
         BASE_VERSION    => "1270-79108",
     },
+    'sentinelone-epp-24.1.2.7444' => {
+        _module         => "SentinelOne",
+        _funcion        => "_getSentinelOne",
+        COMPANY         => "Sentinel Labs Inc.",
+        NAME            => "SentinelOne EPP",
+        ENABLED         => 1,
+        VERSION         => "24.1.2.7444",
+    },
 );
 
 plan tests =>
