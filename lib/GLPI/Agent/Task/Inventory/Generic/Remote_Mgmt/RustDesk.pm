@@ -41,7 +41,7 @@ sub doInventory {
         if(OSNAME eq 'MSWin32'){
             GLPI::Agent::Tools::Win32->require();
             my $installLocation = GLPI::Agent::Tools::Win32::getRegistryValue(
-                path   => "SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/RustDesk/InstallLocation",
+                path   => "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/RustDesk/InstallLocation",
                 logger => $logger
             );
             $command = (empty($installLocation) ? 'C:\Program Files\RustDesk' : $installLocation) . '\rustdesk.exe';
