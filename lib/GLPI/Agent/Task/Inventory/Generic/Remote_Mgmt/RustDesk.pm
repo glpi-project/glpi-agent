@@ -39,20 +39,12 @@ sub doInventory {
     unless (defined($RustDeskID) && length($RustDeskID)) {
         my $command = 'rustdesk';
         if(OSNAME eq 'MSWin32'){
-            my $Registry;
-            my $installLocation;
-            Win32::TieRegistry->require();
-            Win32::TieRegistry->import(
-                Delimiter   => '/',
-                ArrayValues => 0,
-                TiedRef     => \$Registry
+            GLPI::Agent::Tools::Win32->require();
+            my $installLocation = GLPI::Agent::Tools::Win32::getRegistryValue(
+                path   => "SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/RustDesk/InstallLocation",
+                logger => $logger
             );
-
-            my $key = $Registry->Open('LMachine/SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/RustDesk', { Access => Win32::TieRegistry::KEY_READ() });
-
-            if(defined($key)){ $installLocation = $key->GetValue('InstallLocation') . '\rustdesk.exe'; }
-
-            $command = (defined($installLocation) && length($installLocation)) ? $installLocation : 'C:\Program Files\RustDesk\rustdesk.exe';
+            $command = (empty($installLocation) ? 'C:\Program Files\RustDesk' : $installLocation) . '\rustdesk.exe';
         }
         if (canRun($command)) {
             $command = '"'.$command.'"' if OSNAME eq 'MSWin32';
