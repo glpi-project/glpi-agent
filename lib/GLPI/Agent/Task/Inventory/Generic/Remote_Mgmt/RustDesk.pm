@@ -37,7 +37,15 @@ sub doInventory {
     # Add support for --get-id parameter available since RustDesk 1.2 as id becomes empty in conf
     # Only works starting with RustDesk v1.2.2
     unless (defined($RustDeskID) && length($RustDeskID)) {
-        my $command = OSNAME eq 'MSWin32' ? 'C:\Program Files\RustDesk\rustdesk.exe' : 'rustdesk';
+        my $command = 'rustdesk';
+        if(OSNAME eq 'MSWin32'){
+            GLPI::Agent::Tools::Win32->require();
+            my $installLocation = GLPI::Agent::Tools::Win32::getRegistryValue(
+                path   => "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/RustDesk/InstallLocation",
+                logger => $logger
+            );
+            $command = (empty($installLocation) ? 'C:\Program Files\RustDesk' : $installLocation) . '\rustdesk.exe';
+        }
         if (canRun($command)) {
             $command = '"'.$command.'"' if OSNAME eq 'MSWin32';
             my $required = 1;
