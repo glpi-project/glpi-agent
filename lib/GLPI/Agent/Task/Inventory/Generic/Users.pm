@@ -156,8 +156,12 @@ sub _getLastUser {
 
     my ($lastuser, $lastlogged);
 
-    my @lines = getAllLines(%params)
-        or return;
+    my @lines = getAllLines(%params);
+    unless (@lines) {
+        $params{command} = 'last';
+        @lines = getAllLines(%params)
+            or return;
+    }
 
     foreach my $last (@lines) {
         next if $last =~ /^(reboot|shutdown)/;
