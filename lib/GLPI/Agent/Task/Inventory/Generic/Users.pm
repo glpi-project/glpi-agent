@@ -150,7 +150,7 @@ sub _getLoggedUsers {
 
 sub _getLastUser {
     my (%params) = (
-        command => 'last',
+        command => 'last -w',
         @_
     );
 
