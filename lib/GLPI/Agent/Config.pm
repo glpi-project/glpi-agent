@@ -337,7 +337,7 @@ sub _checkContent {
         die "Config: use either 'ca-cert-file' or 'ca-cert-dir' option, not both\n";
     }
 
-    # logger backend without a logfile isn't enoguh
+    # logger backend without a logfile isn't enough
     if ($self->{'logger'} =~ /file/i && ! $self->{'logfile'}) {
         die "Config: usage of 'file' logger backend makes 'logfile' option mandatory\n";
     }
