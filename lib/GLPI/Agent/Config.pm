@@ -53,6 +53,7 @@ my $default = {
     'server'                  => undef,
     'ssl-cert-file'           => undef,
     'ssl-fingerprint'         => undef,
+    'ssl-keystore'            => undef,
     'tag'                     => undef,
     'tasks'                   => undef,
     'timeout'                 => 180,

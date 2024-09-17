@@ -61,6 +61,7 @@ sub new {
         ca_cert_file    => $ca_cert_file,
         ssl_cert_file   => $ssl_cert_file,
         ssl_fingerprint => $params{ssl_fingerprint} || $config->{'ssl-fingerprint'},
+        ssl_keystore    => $params{ssl_keystore} || $config->{'ssl-keystore'},
         _vardir         => $config->{'vardir'},
     };
     bless $self, $class;
@@ -569,6 +570,9 @@ sub _KeyChain_or_KeyStore_Export {
         }
     }
 
+    # Support --ssl-keystore=none option
+    return if $self->{ssl_keystore} && $self->{ssl_keystore} =~ /^none$/i;
+
     # Read certificates are cached for one hour after the service is started
     return $_SSL_ca->{_certs}
         if $_SSL_ca->{_expiration} && time < $_SSL_ca->{_expiration};
@@ -606,6 +610,36 @@ sub _KeyChain_or_KeyStore_Export {
         @certs = IO::Socket::SSL::Utils::PEM_file2certs($file)
             if -s $file;
     } else {
+        my @certCommands;
+        if ($self->{ssl_keystore})  {
+            foreach my $case (split(/,+/, $self->{ssl_keystore})) {
+                $case = trimWhitespace($case);
+                if ($case =~ /^(Store|Enterprise|GroupPolicy|User)?-?(CA|Root)$/) {
+                    my $store = $2 =~ /CA/i ? "CA" : "Root";
+                    my $option = $1 ? " -$1" : "";
+                    push @certCommands, "certutil -Silent -Split$option -Store $store";
+                } else {
+                    $logger->debug("Unsupported ssl-keystore option definition: $case");
+                }
+            }
+        } else {
+            @certCommands = (
+                "certutil -Silent -Split -Store CA",
+                "certutil -Silent -Split -Store Root",
+                "certutil -Silent -Split -Enterprise -Store CA",
+                "certutil -Silent -Split -Enterprise -Store Root",
+                "certutil -Silent -Split -GroupPolicy -Store CA",
+                "certutil -Silent -Split -GroupPolicy -Store Root",
+                "certutil -Silent -Split -User -Store CA",
+                "certutil -Silent -Split -User -Store Root"
+            );
+        }
+
+        unless (@certCommands) {
+            $logger->debug("No keystore to export server certificates from");
+            return
+        }
+
         # Windows keystore support
         Cwd->require();
         my $cwd = Cwd::cwd();
@@ -619,16 +653,6 @@ sub _KeyChain_or_KeyStore_Export {
         my $certdir = $tmpdir->dirname;
         $certdir =~ s{\\}{/}g;
         if (-d $certdir) {
-            my @certCommands = (
-                "certutil -Silent -Split -Store CA",
-                "certutil -Silent -Split -Store Root",
-                "certutil -Silent -Split -Enterprise -Store CA",
-                "certutil -Silent -Split -Enterprise -Store Root",
-                "certutil -Silent -Split -GroupPolicy -Store CA",
-                "certutil -Silent -Split -GroupPolicy -Store Root",
-                "certutil -Silent -Split -User -Store CA",
-                "certutil -Silent -Split -User -Store Root"
-            );
             $logger->debug2("Changing to '$certdir' temporary folder");
             chdir $certdir;
 

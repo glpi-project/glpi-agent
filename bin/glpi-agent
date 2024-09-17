@@ -70,6 +70,7 @@ GetOptions(
     'scan-profiles',
     'server|s=s',
     'ssl-fingerprint=s',
+    'ssl-keystore=s',
     'tag|t=s',
     'tasks=s',
     'timeout=i',

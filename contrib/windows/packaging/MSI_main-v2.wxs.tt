@@ -251,6 +251,12 @@
     <SetProperty Id="CMDLINE_SSL_FINGERPRINT" Before="AppSearch" Value="[SSL_FINGERPRINT]" />
     <SetProperty Id="SSL_FINGERPRINT"         After="AppSearch"  Value="[CMDLINE_SSL_FINGERPRINT]"><![CDATA[CMDLINE_SSL_FINGERPRINT<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
+    <Property Id="SSL_KEYSTORE" Secure="yes">
+      <RegistrySearch Id="SSLKeyStore" Root="HKLM" Key="[%agent_regpath%]" Name="ssl-keystore" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_SSL_KEYSTORE" Before="AppSearch" Value="[SSL_KEYSTORE]" />
+    <SetProperty Id="SSL_KEYSTORE"         After="AppSearch"  Value="[CMDLINE_SSL_KEYSTORE]"><![CDATA[CMDLINE_SSL_KEYSTORE<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
     <Property Id="SSL_CERT_FILE" Secure="yes">
       <RegistrySearch Id="SSLCertFile" Root="HKLM" Key="[%agent_regpath%]" Name="ssl-cert-file" Type="raw"/>
     </Property>

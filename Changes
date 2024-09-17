@@ -4,6 +4,7 @@ Revision history for GLPI agent
 
 core:
 * Prevent certificates overwriting during export from Windows Keystore
+* Add new option to specify or disable Windows KeyStore support
 
 inventory:
 * fix #700: Add TacticalRMM Remote_Mgmt support for MacOSX
