@@ -614,7 +614,7 @@ sub _KeyChain_or_KeyStore_Export {
         if ($self->{ssl_keystore})  {
             foreach my $case (split(/,+/, $self->{ssl_keystore})) {
                 $case = trimWhitespace($case);
-                if ($case =~ /^(Store|Enterprise|GroupPolicy|User)?-?(CA|Root)$/) {
+                if ($case =~ /^(Service|Enterprise|GroupPolicy|User)?-?(My|CA|Root)$/) {
                     my $store = $2 =~ /CA/i ? "CA" : "Root";
                     my $option = $1 ? " -$1" : "";
                     push @certCommands, "certutil -Silent -Split$option -Store $store";
