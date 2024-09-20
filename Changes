@@ -35,6 +35,7 @@ packaging:
   configure if GLPI-AgentMonitor should always create a screenshot on new ticket.
   The default set value is 1 and means to always create a screenshot.
 * Updated Windows packages 7-Zip commandline tools to v24.08
+* win32: Updated GLPI-AgentMonitor to v1.4.0
 
 1.10 Tue, 09 Jul 2024
 
