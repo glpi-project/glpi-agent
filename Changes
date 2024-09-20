@@ -29,7 +29,7 @@ proxy-server-plugin:
 packaging:
 * Update Windows MSI packing building process to use:
   - OpenSSL 3.3.2
-  - libxml2 2.13.3
+  - libxml2 2.13.4
 * Update MacOSX packages to use OpenSSL 3.3.2
 * Windows MSI installer now supports AGENTMONITOR_NEWTICKET_SCREENSHOT as option to
   configure if GLPI-AgentMonitor should always create a screenshot on new ticket.
