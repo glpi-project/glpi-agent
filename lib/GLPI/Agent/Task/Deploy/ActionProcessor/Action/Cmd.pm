@@ -10,6 +10,8 @@ use UNIVERSAL::require;
 
 use English qw(-no_match_vars);
 
+use GLPI::Agent::Tools;
+
 sub _evaluateRet {
     my ($retChecks, $buf, $exitStatus) = @_;
 
