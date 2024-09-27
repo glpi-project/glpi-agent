@@ -4,6 +4,7 @@ Revision history for GLPI agent
 
 netdiscovery/netinventory:
 * fix #768: Added Aerohive devices support
+* fix #769: Added Intelbras devices support
 
 1.11 Tue, 24 Sep 2024
 
