@@ -133,7 +133,7 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
             return;
         }
 
-        # log server error message is set
+        # log server error message if set
         if ($answer->status eq 'error' || !$response->is_success()) {
             my $message = $answer->get('message');
             $logger->error(_log_prefix . "server error: $message")
