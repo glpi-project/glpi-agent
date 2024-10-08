@@ -72,7 +72,7 @@ sub _getVideos {
             );
             if ($videokey) {
                 foreach my $subkey (keys(%{$videokey})) {
-                    next unless $subkey =~ m{/$} && defined($videokey->{$subkey}) && ref($videokey->{$subkey}) eq "HASH";
+                    next unless $subkey =~ m{/$} && defined($videokey->{$subkey}) && ref($videokey->{$subkey});
                     my $thispnpdeviceid = _pnpdeviceid($videokey->{$subkey}->{"/MatchingDeviceId"})
                         or next;
                     next unless $thispnpdeviceid eq $pnpdeviceid;
