@@ -88,6 +88,8 @@ sub getInterfacesWithAddresses {
             $interface->{IPGATEWAY}     = $self->{_config}->{IPGATEWAY};
         } else {
             $interface->{IPADDRESS6}    = $address->[0];
+            # Remove any win32 scope IP from local IPv6 address
+            $interface->{IPADDRESS6} =~ s/%\d+$//;
             $interface->{IPMASK6}       = getNetworkMaskIPv6($address->[1]);
             $interface->{IPSUBNET6}     = getSubnetAddressIPv6(
                 $interface->{IPADDRESS6},
