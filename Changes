@@ -2,6 +2,10 @@ Revision history for GLPI agent
 
 1.12 not yet released
 
+core:
+* fix #780: Avoid module loading path check error on windows if path includes a
+  parenthesis
+
 inventory:
 * Fix rare windows perl error during drives, ipv6 network or videos inventory
 

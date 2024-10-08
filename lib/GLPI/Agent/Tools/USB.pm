@@ -25,13 +25,15 @@ sub new {
 
     # Load any related sub-module
     my ($sub_modules_path) = $INC{module2file(__PACKAGE__)} =~ /(.*)\.pm/;
+    $sub_modules_path =~ s{\\}{/}g if $OSNAME eq 'MSWin32';
+    my ($sub_path_check) = module2file(__PACKAGE__) =~ /(.*)\.pm/;
+    $sub_path_check =~ s{\\}{/}g if $OSNAME eq 'MSWin32';
 
     foreach my $file (File::Glob::bsd_glob("$sub_modules_path/*.pm")) {
         if ($OSNAME eq 'MSWin32') {
             $file =~ s{\\}{/}g;
-            $sub_modules_path =~ s{\\}{/}g;
         }
-        next unless $file =~ m{$sub_modules_path/(\S+)\.pm$};
+        next unless $file =~ m{$sub_path_check/(\S+)\.pm$};
 
         my $module = __PACKAGE__ . "::" . $1;
         # reload can be set by unittests
