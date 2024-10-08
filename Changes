@@ -2,6 +2,9 @@ Revision history for GLPI agent
 
 1.12 not yet released
 
+inventory:
+* Fix rare windows perl error during drives, ipv6 network or videos inventory
+
 netdiscovery/netinventory:
 * fix #768: Added Aerohive devices support
 * fix #769: Added Intelbras devices support
