@@ -50,8 +50,9 @@ sub _getCanonicalURL {
         $url->scheme('http');
         # Eventually split on a slash to get host and path
         if ($string =~ m{^([^/]+)[/](.*)$}) {
-            $url->host($1);
-            $url->path($2 // '');
+            my ($host, $path) = ($1, $2);
+            $url->host($host);
+            $url->path($path // '');
         } else {
             $url->host($string);
             $url->path('');
