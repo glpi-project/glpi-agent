@@ -24,22 +24,28 @@ sub _evaluateRet {
         if ($retCheck->{type} eq 'okCode') {
             foreach (@{$retCheck->{values}}) {
                 if ($exitStatus == $_) {
-                    return [ 1, "exit status is ok: $_" ];
+                    return [ 1, "ok, got expected exit status: $_" ];
                 }
             }
+            return [ 0, "not expected exit status: $exitStatus" ];
+
         } elsif ($retCheck->{type} eq 'okPattern') {
             foreach (@{$retCheck->{values}}) {
                 next unless length($_);
                 if ($$buf =~ /$_/) {
-                    return [ 1, "ok pattern found in log: /$_/" ];
+                    return [ 1, "ok, pattern found in log: /$_/" ];
                 }
             }
+            return [ 0, "expected pattern not found in log" ];
+
         } elsif ($retCheck->{type} eq 'errorCode') {
             foreach (@{$retCheck->{values}}) {
                 if ($exitStatus == $_) {
-                    return [ 0, "exit status is not ok: `$_'" ];
+                    return [ 0, "found unwanted exit status: $exitStatus" ];
                 }
             }
+            return [ 1, "ok, not an unwanted exit status: $exitStatus" ];
+
         } elsif ($retCheck->{type} eq 'errorPattern') {
             foreach (@{$retCheck->{values}}) {
                 next unless length($_);
@@ -47,9 +53,11 @@ sub _evaluateRet {
                     return [ 0, "error pattern found in log: /$_/" ];
                 }
             }
+            return [ 1, "ok, error pattern not found in log" ];
         }
     }
-    return [ 0, '' ];
+
+    return [ 1, "nothing to check" ];
 }
 
 sub _runOnUnix {

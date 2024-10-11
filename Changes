@@ -16,6 +16,11 @@ netdiscovery/netinventory:
 * fix #768: Added Aerohive devices support
 * fix #769: Added Intelbras devices support
 
+deploy:
+* Fix checks on command run and clarify reason of success or failure. This fixes
+  "return code is not" and "command output doesn't contain" checks which was always
+  failing.
+
 1.11 Tue, 24 Sep 2024
 
 core:
