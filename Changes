@@ -5,6 +5,8 @@ Revision history for GLPI agent
 core:
 * fix #780: Avoid module loading path check error on windows if path includes a
   parenthesis
+* fix #789: Avoid warning on commandline about possible confusion when reading quoted
+  configuration value including a dash from configuration file
 
 inventory:
 * Fix rare windows perl error during drives, ipv6 network or videos inventory

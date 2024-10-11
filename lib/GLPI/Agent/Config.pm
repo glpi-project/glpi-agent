@@ -256,11 +256,7 @@ sub loadFromFile {
 
             # Extract value from quotes or clean any comment including preceding spaces
             if ($val =~ /^(['"])([^\1]*)\1/) {
-                my ($quote, $extract) = ( $1, $2 );
-                $val =~ s/\s*#.+$//;
-                warn "Config: We may have been confused for $key quoted value, our extracted value: '$extract'\n"
-                    if ($val ne "$quote$extract$quote");
-                $val = $extract ;
+                $val = $2;
             } else {
                 $val =~ s/\s*#.+$//;
             }
@@ -277,11 +273,7 @@ sub loadFromFile {
         } elsif ($line =~ /^\s*include\s+(.+)$/i) {
             my $include = $1;
             if ($include =~ /^(['"])([^\1]*)\1/) {
-                my ($quote, $extract) = ( $1, $2 );
-                $include =~ s/\s*#.+$//;
-                warn "Config: We may have been confused for include quoted path, our extracted path: '$extract'\n"
-                    if ($include ne "$quote$extract$quote");
-                $include = $extract ;
+                $include = $2;
             } else {
                 $include =~ s/\s*#.+$//;
             }
