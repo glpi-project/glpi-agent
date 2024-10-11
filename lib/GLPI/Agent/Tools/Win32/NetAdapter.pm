@@ -28,7 +28,7 @@ sub getInterfaces {
 
     return $self->getInterfacesWithAddresses() if $self->hasAddresses();
 
-    return unless $self->{_config}->{MACADDR};
+    return unless $self->{_config}->{MACADDR} || $self->_getDescription() =~ /vpn/i;
 
     return $self->getBaseInterface();
 }

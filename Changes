@@ -11,6 +11,8 @@ core:
 
 inventory:
 * Fix rare windows perl error during drives, ipv6 network or videos inventory
+* Always keep disabled network interface on windows if it includes "vpn" string
+  in description
 
 netdiscovery/netinventory:
 * fix #768: Added Aerohive devices support
