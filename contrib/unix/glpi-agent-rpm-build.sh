@@ -93,8 +93,11 @@ fi
 for rpm in $(eval "rpmspec -q $BUILD_OPTS contrib/unix/glpi-agent.spec")
 do
     BASE=${rpm%-$VER-$REV*}
-    ARCH=${rpm##*.}
-    [ -e "$RPMDIR/$ARCH/$rpm.rpm" ] || exit 1
-    echo "$BASE-rpm: $(ls -l $RPMDIR/$ARCH/$rpm.rpm)"
-    [ -n "$GITHUB_REF" ] && echo "$BASE-rpm=$RPMDIR/$ARCH/$rpm.rpm" >>$GITHUB_OUTPUT
+    RPM="$RPMDIR/noarch/${rpm%.*}.noarch.rpm"
+    if [ ! -e "$RPM" ]; then
+        echo "$RPM not found" >&2
+        exit 1
+    fi
+    [ -n "$GITHUB_REF" ] && echo "$BASE-rpm=$RPM" >>$GITHUB_OUTPUT
+    echo "$BASE-rpm: $(ls -l $RPM)"
 done
