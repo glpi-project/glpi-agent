@@ -75,6 +75,193 @@ my %tests = (
             GUID        => '{DDE01862-B0C0-4715-AF6C-51D31172EBF9}',
         },
     ],
+    'vpn-down' => [            {
+                DESCRIPTION => 'Fortinet Virtual Ethernet Adapter (NDIS 6.30)',
+                GUID        => '{4CB24B28-7970-4249-8D9F-C1B75E98DF09}',
+                MACADDR     => '00:FE:00:00:00:01',
+                MTU         => undef,
+                PNPDEVICEID => 'ROOT\\NET\\0000',
+                SPEED       => 100,
+                STATUS      => 'Down',
+                TYPE        => 'ethernet',
+                VIRTUALDEV  => 1,
+                dns         => undef
+            },
+            {
+                DESCRIPTION => 'Realtek USB GbE Family Controller #2',
+                DNSDomain   => 'sample.org',
+                GUID        => '{B039FEDD-F8DC-4A5D-98BF-CCF184B86F65}',
+                IPADDRESS   => '10.178.0.178',
+                IPDHCP      => '10.178.0.1',
+                IPGATEWAY   => '10.178.0.1',
+                IPMASK      => '255.255.255.0',
+                IPSUBNET    => '10.178.0.0',
+                MACADDR     => '83:00:00:09:00:FD',
+                MTU         => undef,
+                PNPDEVICEID => 'USB\\VID_0BDA&PID_8153\\001000001',
+                SPEED       => 1000,
+                STATUS      => 'Up',
+                TYPE        => 'ethernet',
+                VIRTUALDEV  => 0,
+                dns         => '127.0.0.1'
+            },
+            {
+                DESCRIPTION => 'Realtek USB GbE Family Controller #2',
+                DNSDomain   => 'sample.org',
+                GUID        => '{B039FEDD-F8DC-4A5D-98BF-CCF184B86F65}',
+                IPADDRESS6  => 'fe80::3cdb:7f48:22b1:4ec4',
+                IPMASK6     => 'ffff:ffff:ffff:ffff::',
+                IPSUBNET6   => 'fe80::',
+                MACADDR     => '83:00:00:09:00:FD',
+                MTU         => undef,
+                PNPDEVICEID => 'USB\\VID_0BDA&PID_8153\\001000001',
+                SPEED       => 1000,
+                STATUS      => 'Up',
+                TYPE        => 'ethernet',
+                VIRTUALDEV  => 0,
+                dns         => '127.0.0.1'
+            },
+            {
+                DESCRIPTION => 'Intel(R) Wi-Fi 6 AX201 160MHz',
+                GUID        => '{31DEAC2D-2194-4511-AA54-787CD1765558}',
+                MACADDR     => '45:00:00:00:FF:14',
+                MTU         => undef,
+                PCIID       => '8086:A0F0:4070:8086',
+                PNPDEVICEID => 'PCI\\VEN_8086&DEV_A0F0&SUBSYS_40708086&REV_20\\3&11583659&0&A3',
+                SPEED       => 144,
+                STATUS      => 'Down',
+                TYPE        => 'wifi',
+                VIRTUALDEV  => 0,
+                dns         => undef
+            },
+            {
+                DESCRIPTION => 'Bluetooth Device (Personal Area Network)',
+                GUID        => '{C6D0BB76-E0FA-4780-AFA2-78AC0E1849A0}',
+                MACADDR     => '45:00:00:00:FD:12',
+                MTU         => undef,
+                PNPDEVICEID => 'BTH\\MS_BTHPAN\\6&2f62bcfe&0&2',
+                SPEED       => 3,
+                STATUS      => 'Down',
+                TYPE        => 'ethernet',
+                VIRTUALDEV  => 1,
+                dns         => undef
+            },
+            {
+                DESCRIPTION => 'Fortinet SSL VPN Virtual Ethernet Adapter',
+                GUID        => '{E68EB6CC-9580-4151-80E2-2DA4DC27AF81}',
+                MACADDR     => undef,
+                MTU         => undef,
+                PNPDEVICEID => 'ROOT\\NET\\0001',
+                SPEED       => 100000,
+                STATUS      => 'Down',
+                TYPE        => 'ethernet',
+                VIRTUALDEV  => 1,
+                dns         => undef
+            }
+    ],
+    'vpn-up' => [
+        {
+            DESCRIPTION => 'Fortinet Virtual Ethernet Adapter (NDIS 6.30)',
+            GUID        => '{4CB24B28-7970-4249-8D9F-C1B75E98DF09}',
+            MACADDR     => '00:FE:00:00:00:01',
+            MTU         => undef,
+            PNPDEVICEID => 'ROOT\\NET\\0000',
+            SPEED       => 100,
+            STATUS      => 'Down',
+            TYPE        => 'ethernet',
+            VIRTUALDEV  => 1,
+            dns         => undef
+        },
+        {
+            DESCRIPTION => 'Realtek USB GbE Family Controller #2',
+            GUID        => '{B039FEDD-F8DC-4A5D-98BF-CCF184B86F65}',
+            MACADDR     => '83:00:00:09:00:FD',
+            MTU         => undef,
+            PNPDEVICEID => 'USB\\VID_0BDA&PID_8153\\001000001',
+            STATUS      => 'Down',
+            TYPE        => 'ethernet',
+            VIRTUALDEV  => 0,
+            dns         => undef
+        },
+        {
+            DESCRIPTION => 'Intel(R) Wi-Fi 6 AX201 160MHz',
+            GUID        => '{31DEAC2D-2194-4511-AA54-787CD1765558}',
+            IPADDRESS   => '192.168.0.254',
+            IPDHCP      => '192.168.0.102',
+            IPGATEWAY   => '192.168.0.102',
+            IPMASK      => '255.255.255.0',
+            IPSUBNET    => '192.168.0.0',
+            MACADDR     => '45:00:00:00:FF:14',
+            MTU         => undef,
+            PCIID       => '8086:A0F0:4070:8086',
+            PNPDEVICEID => 'PCI\\VEN_8086&DEV_A0F0&SUBSYS_40708086&REV_20\\3&11583659&0&A3',
+            SPEED       => 144,
+            STATUS      => 'Up',
+            TYPE        => 'wifi',
+            VIRTUALDEV  => 0,
+            dns         => '127.0.0.1'
+        },
+        {
+            DESCRIPTION => 'Intel(R) Wi-Fi 6 AX201 160MHz',
+            GUID        => '{31DEAC2D-2194-4511-AA54-787CD1765558}',
+            IPADDRESS6  => 'fe80::3a27:1bd1:1148:0d87',
+            IPMASK6     => 'ffff:ffff:ffff:ffff::',
+            IPSUBNET6   => 'fe80::',
+            MACADDR     => '45:00:00:00:FF:14',
+            MTU         => undef,
+            PCIID       => '8086:A0F0:4070:8086',
+            PNPDEVICEID => 'PCI\\VEN_8086&DEV_A0F0&SUBSYS_40708086&REV_20\\3&11583659&0&A3',
+            SPEED       => 144,
+            STATUS      => 'Up',
+            TYPE        => 'wifi',
+            VIRTUALDEV  => 0,
+            dns         => '127.0.0.1'
+        },
+        {
+            DESCRIPTION => 'Bluetooth Device (Personal Area Network)',
+            GUID        => '{C6D0BB76-E0FA-4780-AFA2-78AC0E1849A0}',
+            MACADDR     => '45:00:00:00:FD:12',
+            MTU         => undef,
+            PNPDEVICEID => 'BTH\\MS_BTHPAN\\6&2f62bcfe&0&2',
+            SPEED       => 3,
+            STATUS      => 'Down',
+            TYPE        => 'ethernet',
+            VIRTUALDEV  => 1,
+            dns         => undef
+        },
+        {
+            DESCRIPTION => 'Fortinet SSL VPN Virtual Ethernet Adapter',
+            GUID        => '{E68EB6CC-9580-4151-80E2-2DA4DC27AF81}',
+            IPADDRESS   => '10.177.0.17',
+            IPDHCP      => undef,
+            IPGATEWAY   => undef,
+            IPMASK      => '255.255.255.255',
+            IPSUBNET    => '10.177.0.17',
+            MACADDR     => '00:00:A0:00:00:01',
+            MTU         => undef,
+            PNPDEVICEID => 'ROOT\\NET\\0001',
+            SPEED       => 100000,
+            STATUS      => 'Up',
+            TYPE        => 'ethernet',
+            VIRTUALDEV  => 1,
+            dns         => '127.0.0.1'
+        },
+        {
+            DESCRIPTION => 'Fortinet SSL VPN Virtual Ethernet Adapter',
+            GUID        => '{E68EB6CC-9580-4151-80E2-2DA4DC27AF81}',
+            IPADDRESS6  => 'fe80::485a:6ef8:5cc4:45e1',
+            IPMASK6     => 'ffff:ffff:ffff:ffff::',
+            IPSUBNET6   => 'fe80::',
+            MACADDR     => '00:00:A0:00:00:01',
+            MTU         => undef,
+            PNPDEVICEID => 'ROOT\\NET\\0001',
+            SPEED       => 100000,
+            STATUS      => 'Up',
+            TYPE        => 'ethernet',
+            VIRTUALDEV  => 1,
+            dns         => '127.0.0.1'
+        }
+    ],
     xp => [
         {
             dns         => undef,
@@ -490,6 +677,12 @@ foreach my $test (keys %tests) {
         $tests{$test},
         "$test sample"
     );
+    unless ($tests{$test} && @{$tests{$test}}) {
+        Data::Dumper->require();
+        my $dumper = Data::Dumper->new([\@interfaces], ["\$tests{$test}"])->Useperl(1)->Indent(1)->Quotekeys(0)->Sortkeys(1)->Pad("        ");
+        $dumper->{xpad} = "    ";
+        print STDERR "====\nCURRENT RESULTS: ", $dumper->Dump();
+    }
 }
 
 SKIP: {
