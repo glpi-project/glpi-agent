@@ -715,7 +715,6 @@ jobs:
         VERSION: ${{ needs.setup-release.outputs.version }}
     - name: Quick tests
       run: |
-        sudo rm /etc/apt/sources.list.d/microsoft-prod.list
         echo ====
         echo Install libfuse2 as required by AppImage
         sudo apt update
