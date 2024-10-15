@@ -536,7 +536,6 @@ jobs:
           libsocket-getaddrinfo-perl libuniversal-require-perl liburi-perl \
           libwww-perl libxml-libxml-perl libyaml-perl                      \
           libossp-uuid-perl libcpanel-json-xs-perl devscripts
-        sudo apt dist-upgrade
       shell: bash
     - name: Build debian packages
       id: debbuild
@@ -585,7 +584,6 @@ jobs:
       run: |
         sudo rm /etc/apt/sources.list.d/microsoft-prod.list
         sudo apt update
-        sudo apt dist-upgrade
         sudo apt -y install rpm devscripts \
             libfile-which-perl libuniversal-require-perl libmodule-install-perl
       shell: bash
@@ -692,7 +690,6 @@ jobs:
       run: |
         sudo rm /etc/apt/sources.list.d/microsoft-prod.list
         sudo apt update
-        sudo apt dist-upgrade
         sudo apt -y install pipx zsync
       shell: bash
     # We use AppImage Builder development version as 1.1 is failing
