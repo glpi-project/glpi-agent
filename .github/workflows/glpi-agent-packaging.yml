@@ -688,11 +688,23 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Install build dependencies packages
+      run: |
+        sudo rm /etc/apt/sources.list.d/microsoft-prod.list
+        sudo apt update
+        sudo apt dist-upgrade
+        sudo apt -y install pipx zsync
+      shell: bash
     # We use AppImage Builder development version as 1.1 is failing
     - name: Install AppImage Builder development version
       id: install-appimage-builder
       run: |
-        pip3 install git+https://github.com/AppImageCrafters/appimage-builder.git
+        if command -v pipx >/dev/null; then
+          echo ~/.local/bin >> $GITHUB_PATH
+          pipx install git+https://github.com/AppImageCrafters/appimage-builder.git
+        else
+          pip3 install git+https://github.com/AppImageCrafters/appimage-builder.git
+        fi
       shell: bash
     - uses: actions/download-artifact@v4
       with:
