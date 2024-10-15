@@ -536,6 +536,7 @@ jobs:
           libsocket-getaddrinfo-perl libuniversal-require-perl liburi-perl \
           libwww-perl libxml-libxml-perl libyaml-perl                      \
           libossp-uuid-perl libcpanel-json-xs-perl devscripts
+        sudo apt dist-upgrade
       shell: bash
     - name: Build debian packages
       id: debbuild
