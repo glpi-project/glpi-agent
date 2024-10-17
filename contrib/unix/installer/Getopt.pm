@@ -19,6 +19,7 @@ my @options = (
     'no-question|Q',
     'extract=s',
     'force',
+    'full-inventory-postpone=i',
     'help|h',
     'install',
     'list',
@@ -128,6 +129,7 @@ glpi-agent-linux-installer [options]
     --scan-profiles                set to scan user profiles (false)
     --backend-collect-timeout=TIME set timeout for inventory modules execution (30)
     -t --tag=TAG                   configure tag to define in inventories
+    --full-inventory-postpone=NUM  set number of possible full inventory postpone (14)
 
   RemoteInventory specific options:
     --remote=REMOTE[,REMOTE]...    list of remotes for remoteinventory task

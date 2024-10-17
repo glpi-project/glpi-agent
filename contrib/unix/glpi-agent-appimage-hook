@@ -75,6 +75,7 @@ GetOptions(
     'debug+',
     'delaytime=i',
     'force',
+    'full-inventory-postpone=i',
     'html',
     'json',
     'lazy',
@@ -590,6 +591,7 @@ glpi-agent-linux-installer.AppImage [options]
     --json                         save the inventory as JSON (false)
     --force                        always send data to server (false)
     --backend-collect-timeout=TIME timeout for inventory modules execution (30)
+    --full-inventory-postpone=NUM  set number of possible full inventory postpone (14)
 
 =head2 Remote inventory task specific options
 
