@@ -218,7 +218,7 @@ sub toolchain_build_steps {
             {
                 plugin  => 'Perl::Dist::Strawberry::Step::BuildLibrary',
                 name    => 'libssh2',
-                version => '1.11.0',
+                version => '1.11.1',
                 url     => 'https://www.libssh2.org/download/<name>-<version>.tar.xz',
                 skip_if_file    => 'bin/libssh2-1__.dll',
                 skip_test       => 1,
