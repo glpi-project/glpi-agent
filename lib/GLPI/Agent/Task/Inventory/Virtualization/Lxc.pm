@@ -102,10 +102,17 @@ sub  _getVirtualMachine {
                 if $val =~ $mac_address_pattern;
         }
 
-        if ($key eq 'lxc.cgroup.memory.limit_in_bytes' || $key eq 'lxc.cgroup2.memory.max') {
-            $val .= "b" if $val =~ /[KMGTP]$/i;
-            $container->{MEMORY} = getCanonicalSize($val, 1024);
-        }
+    	if ($key eq 'lxc.cgroup.memory.limit_in_bytes' || $key eq 'lxc.cgroup2.memory.max') {
+    	    if ($val =~ /[KMGTP]$/i) {
+    		$val .= "b";
+    		$container->{MEMORY} = getCanonicalSize($val, 1024);
+    	    } elsif ($val =~ /^\d+$/) {
+    		# Plain numeric value in bytes, convert to MB
+    		$container->{MEMORY} = int($val / (1024 * 1024));
+    	    } else {
+    		$container->{MEMORY} = getCanonicalSize($val, 1024);
+    	    }
+    	}	
 
         # Update container name in Proxmox environment
         if ($proxmox && ($key eq 'lxc.uts.name' || $key eq 'lxc.utsname')) {
