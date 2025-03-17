@@ -680,6 +680,9 @@ sub _setSentinelOneInfos {
         if first { /^Self-Protection:\s+On$/i } @lines
         && first { /^SentinelMonitor is loaded$/i } @lines
         && first { /^SentinelAgent is loaded$/i } @lines;
+
+    # Not supported so we just assume it is updated when enabled.
+    $antivirus->{UPTODATE} = $antivirus->{ENABLED};
 }
 
 sub _getSoftwareRegistryKeys {
