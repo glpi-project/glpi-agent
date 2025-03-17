@@ -1,0 +1,3118 @@
+
+use utf8;
+
+$results = [
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '30/06/2009',
+        'NAME' => '50onPaletteServer',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '20/02/2011',
+        'NAME' => 'ARDAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.4'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'ARM Help',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '4.7.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'AU Lab',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '2.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'AVRCPAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.3.8'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'About Xcode',
+        'SYSTEM_CATEGORY' => 'Developer',
+        'VERSION' => '169.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '26/08/2010',
+        'NAME' => 'Accessibility Inspector',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '2.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '26/08/2010',
+        'NAME' => 'Accessibility Verifier',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '1.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'AddPrinter',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.5'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'AddressBookManager',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.0.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'AddressBookSync',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.0.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '11/01/2011',
+        'NAME' => 'Adium',
+        'PUBLISHER' => 'The Adium Team',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '1.4.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '11/11/2010',
+        'NAME' => 'Adobe Flash Player Install Manager',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '10.1.102.64'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '23/09/2010',
+        'NAME' => 'Adobe Reader',
+        'PUBLISHER' => 'Adobe Systems Inc.',
+        'SYSTEM_CATEGORY' => 'Applications/Adobe Reader 9',
+        'VERSION' => '9.4.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '23/03/2011',
+        'NAME' => 'Adobe Reader Updater',
+        'PUBLISHER' => 'Adobe Systems Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Caches',
+        'USERNAME' => 'lubrano',
+        'VERSION' => '9.4.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '02/03/2011',
+        'NAME' => 'Adobe Updater',
+        'PUBLISHER' => 'Adobe Systems Inc.',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => 'Adobe Updater 6.2.0.1474'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => "Agent de la borne d\x{2019}acc\x{e8}s AirPort",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.5.5'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'Aide-mémoire',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '7.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'Alerts Daemon',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Aperçu',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '5.0.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '20/02/2011',
+        'NAME' => 'App Store',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '21/07/2009',
+        'NAME' => 'Apple80211Agent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.2.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'AppleFileServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'AppleGraphicsWarning',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.0.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '18/03/2011',
+        'NAME' => 'AppleMobileDeviceHelper',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '18/03/2011',
+        'NAME' => 'AppleMobileSync',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'AppleScript Runner',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Application Loader',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '1.4'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Assistant Boot Camp',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '3.0.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '13/01/2011',
+        'NAME' => 'Assistant Installation de Microsoft Office',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2011',
+        'VERSION' => '14.0.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'Assistant Installation de Microsoft Office 2008',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => 'Assistant de certification',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '01/07/2009',
+        'NAME' => 'Assistant migration',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '3.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '31/07/2009',
+        'NAME' => 'Assistant réglages',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.6'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Assistant réglages Bluetooth',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.3.8'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'Assistant réglages de réseau',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.6'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'AutoImporter',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Automator',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '2.1.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Automator Launcher',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Automator Runner',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'Bibliothèque de projets Microsoft',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '23/07/2008',
+        'NAME' => 'Bienvenue sur Leopard',
+        'SYSTEM_CATEGORY' => 'Library/Documentation',
+        'VERSION' => '8.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'BigTop',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '4.7.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Bluetooth Diagnostics Utility',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '2.3.6'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Bluetooth Explorer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '2.3.6'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'BluetoothAudioAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.3.8'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'BluetoothCamera',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'BluetoothUIServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.3.8'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '18/07/2006',
+        'NAME' => 'Bonjour Browser',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '1.5.6'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'Brother Contrôleur d\'état',
+        'PUBLISHER' => 'Brother Industries',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '3.00'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '29/06/2009',
+        'NAME' => 'Brother Scanner',
+        'PUBLISHER' => 'Brother Industries',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => '2.0.2'
+    },
+    {
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Build Applet',
+        'PUBLISHER' => 'Python Software Foundation.',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '2.5.4'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => 'CCacheServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.5.10'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'CHUD Remover',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '4.7.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '15/06/2009',
+        'NAME' => 'CIJAutoSetupTool',
+        'PUBLISHER' => 'CANON INC.',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1.7.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '15/06/2009',
+        'NAME' => 'CIJScannerRegister',
+        'PUBLISHER' => 'CANON INC.',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => '1.0.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'CPUPalette',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '4.7.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => 'Calculette',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '4.5.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '15/06/2009',
+        'NAME' => 'Canon IJ Printer Utility',
+        'PUBLISHER' => 'CANON INC.',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '7.17.10'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '15/06/2009',
+        'NAME' => 'Canon IJScanner1',
+        'PUBLISHER' => 'CANON INC.',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => '1.0.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '15/06/2009',
+        'NAME' => 'Canon IJScanner2',
+        'PUBLISHER' => 'CANON INC.',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => '1.0.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'Capture',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '1.5'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => "Carnet d\x{2019}adresses",
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '5.0.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '13/01/2011',
+        'NAME' => 'Centre de téléchargement Microsoft',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2011',
+        'VERSION' => '14.0.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '02/07/2009',
+        'NAME' => 'CharacterPalette',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0.4'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'Chess',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '2.4.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'ChineseHandwriting',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'ChineseTextConverterService',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '15/02/2010',
+        'NAME' => 'Cisco AnyConnect VPN Client',
+        'SYSTEM_CATEGORY' => 'Applications/Cisco',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '13/03/2011',
+        'NAME' => 'Cisco Network Assistant',
+        'PUBLISHER' => 'Macrovision',
+        'SYSTEM_CATEGORY' => 'Cisco_Network_Assistant',
+        'USERNAME' => 'lubrano',
+        'VERSION' => '8.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '02/07/2009',
+        'NAME' => 'Clipboard Viewer',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '1.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '20/11/2009',
+        'NAME' => 'CocoaPacketAnalyzer',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '0.66'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '28/05/2009',
+        'NAME' => 'Colorimètre numérique',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '3.7.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '16/06/2009',
+        'NAME' => 'CompactPhotosmart',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '3.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'Configuration actions de dossier',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.1.4'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Configuration audio et MIDI',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '3.0.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '13/01/2011',
+        'NAME' => 'Connexion Bureau à Distance',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '2.1.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '07/04/2009',
+        'NAME' => 'Console',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '10.6.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '26/08/2010',
+        'NAME' => 'Core Image Fun House',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '2.1.43'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'CoreLocationAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '12.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'CoreServicesUIAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '41.5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'CrashReporterPrefs',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '10.6.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Création de page Web',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '20/02/2011',
+        'NAME' => 'Dashboard',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '1.7'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Dashcode',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '3.0.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'Database Events',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0.4'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '18/06/2009',
+        'NAME' => 'Deskjet',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '3.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => 'Diagnostic réseau',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.1.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Dictionnaire',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '2.1.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'DiskImageMounter',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.6.5'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'DiskImages UI Agent',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 287
+    },
+    {
+        'ARCH' => 'PowerPC',
+        'INSTALLDATE' => '17/11/2009',
+        'NAME' => 'DivX Community',
+        'SYSTEM_CATEGORY' => 'Applications/DivX',
+        'VERSION' => '1.1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '28/12/2009',
+        'NAME' => 'DivX Converter',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '1.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '28/12/2009',
+        'NAME' => 'DivX Player',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '7.2 (build 10_0_0_183)'
+    },
+    {
+        'ARCH' => 'PowerPC',
+        'INSTALLDATE' => '17/11/2009',
+        'NAME' => 'DivX Products',
+        'SYSTEM_CATEGORY' => 'Applications/DivX',
+        'VERSION' => '1.1.0'
+    },
+    {
+        'ARCH' => 'PowerPC',
+        'INSTALLDATE' => '17/11/2009',
+        'NAME' => 'DivX Support',
+        'SYSTEM_CATEGORY' => 'Applications/DivX',
+        'VERSION' => '1.1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '17/11/2009',
+        'NAME' => 'DivXUpdater',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '1.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '20/02/2011',
+        'NAME' => 'Dock',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.7'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '08/03/2011',
+        'NAME' => 'DockPlistEdit',
+        'SYSTEM_CATEGORY' => 'Library/Parallels',
+        'VERSION' => '6.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'EM64T Help',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '4.7.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '09/07/2009',
+        'NAME' => 'EPIJAutoSetupTool2',
+        'PUBLISHER' => 'SEIKO EPSON',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '8.02'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '09/07/2009',
+        'NAME' => 'EPSON Scanner',
+        'PUBLISHER' => 'EPSON',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => '5.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '25/04/2009',
+        'NAME' => 'Embed',
+        'SYSTEM_CATEGORY' => 'Library/Scripts',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '09/07/2009',
+        'NAME' => 'Epson Printer Utility Lite',
+        'PUBLISHER' => 'Epson',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '8.02'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '02/07/2009',
+        'NAME' => 'Equation Editor',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '12.1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '20/02/2011',
+        'NAME' => 'Exposé',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '1.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '25/04/2009',
+        'NAME' => 'Extract',
+        'SYSTEM_CATEGORY' => 'Library/Scripts',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'File Sync',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5.0.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'FileMerge',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '2.5'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'FileSyncAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5.0.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '20/02/2011',
+        'NAME' => 'Finder',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.6.7'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'Folder Actions Dispatcher',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => 'FontRegistryUIAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'FontSyncScripting',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.0.6'
+    },
+    {
+        'INSTALLDATE' => '30/12/2009',
+        'NAME' => 'Free42-Binary',
+        'SYSTEM_CATEGORY' => 'opt/local',
+        'VERSION' => undef
+    },
+    {
+        'INSTALLDATE' => '30/12/2009',
+        'NAME' => 'Free42-Decimal',
+        'SYSTEM_CATEGORY' => 'opt/local',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '22/07/2009',
+        'NAME' => 'Front Row',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.2.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '01/07/2009',
+        'NAME' => 'GarageBand',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '4.1.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '24/02/2011',
+        'NAME' => 'GoogleTalkPlugin',
+        'PUBLISHER' => 'Google Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '1.9.2.1599'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '24/02/2011',
+        'NAME' => 'GoogleVoiceAndVideoUninstaller',
+        'PUBLISHER' => 'Google Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '1.9.2.1599'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '07/04/2009',
+        'NAME' => 'Grapher',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '2.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'HALLab',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '1.6'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'HP Printer Utility',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '8.1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'HP Scanner 3',
+        'PUBLISHER' => 'Hewlett-Packard Company',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => '3.2.9'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'HP Utility',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '4.8.5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '25/07/2009',
+        'NAME' => 'HPFaxBackend',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '3.1.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '24/07/2009',
+        'NAME' => 'HPScanner',
+        'PUBLISHER' => 'Hewlett-Packard Company',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => '1.1.52'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '26/08/2010',
+        'NAME' => 'Help Indexer',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '4.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => 'HelpViewer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5.0.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'IA32 Help',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '4.7.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '26/08/2010',
+        'NAME' => 'IORegistryExplorer',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '2.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '26/08/2010',
+        'NAME' => 'Icon Composer',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '2.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Image Capture Extension',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Image Capture Web Server',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'Image Events',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.1.4'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'ImageCaptureService',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'IncompatibleAppDisplay',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '300.4'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Informations Système',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '10.6.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'InkServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '16/06/2009',
+        'NAME' => 'Inkjet',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '3.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '16/06/2009',
+        'NAME' => 'Inkjet1',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '2.1.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '16/06/2009',
+        'NAME' => 'Inkjet3',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '2.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '16/06/2009',
+        'NAME' => 'Inkjet4',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '2.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '16/06/2009',
+        'NAME' => 'Inkjet5',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '2.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '16/06/2009',
+        'NAME' => 'Inkjet6',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '16/06/2009',
+        'NAME' => 'Inkjet8',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '2.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/02/2010',
+        'NAME' => 'Install Helper',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'Installation à distance de Mac OS X',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '1.1.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Instruments',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '2.7'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Interface Builder',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '3.2.5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '18/03/2011',
+        'NAME' => 'Jar Bundler',
+        'SYSTEM_CATEGORY' => 'usr/share',
+        'VERSION' => '13.4.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '18/03/2011',
+        'NAME' => 'Jar Launcher',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '13.4.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '18/03/2011',
+        'NAME' => 'Java VisualVM',
+        'SYSTEM_CATEGORY' => 'usr/share',
+        'VERSION' => '13.4.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '18/03/2011',
+        'NAME' => 'Java Web Start',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '13.4.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => 'KerberosAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.5.10'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'KeyboardSetupAssistant',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.5.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '11/06/2009',
+        'NAME' => 'KeyboardViewer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => 'Keychain Scripting',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '4.0.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/05/2009',
+        'NAME' => 'KoreanIM',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '11/06/2009',
+        'NAME' => 'Kotoeri',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '4.2.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '18/03/2011',
+        'NAME' => "Lanceur d\x{2019}applets",
+        'SYSTEM_CATEGORY' => 'usr/share',
+        'VERSION' => '13.4.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Language Chooser',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 20
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '22/06/2009',
+        'NAME' => 'Laserjet',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Lecteur DVD',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '5.4'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '01/07/2009',
+        'NAME' => 'Lexmark Scanner',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => '3.2.45'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '01/07/2009',
+        'NAME' => 'LexmarkCUPSDriver',
+        'PUBLISHER' => 'Lexmark International',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1.1.26'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '25/07/2009',
+        'NAME' => 'License',
+        'SYSTEM_CATEGORY' => 'Library/Documentation',
+        'VERSION' => 11
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Livre des polices',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '2.2.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '09/03/2011',
+        'NAME' => 'Log Viewer',
+        'SYSTEM_CATEGORY' => 'Library/Frameworks',
+        'VERSION' => 17289
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Mail',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '4.4'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'MakePDF',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'MallocDebug',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '1.7.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'ManagedClient',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'MassStorageCamera',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '25/04/2009',
+        'NAME' => 'Match',
+        'SYSTEM_CATEGORY' => 'Library/Scripts',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '22/02/2011',
+        'NAME' => 'Meeting Center',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'USERNAME' => 'lubrano',
+        'VERSION' => '3.9.14.0'
+    },
+    {
+        'ARCH' => 'PowerPC',
+        'INSTALLDATE' => '13/01/2010',
+        'NAME' => 'MemoryCard Ejector',
+        'SYSTEM_CATEGORY' => 'Applications/Vodafone Mobile Connect',
+        'VERSION' => '1.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '13/01/2011',
+        'NAME' => 'Microsoft AutoUpdate',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '2.3.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'Microsoft Cert Manager',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'Microsoft Chart Converter',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '13/01/2011',
+        'NAME' => 'Microsoft Clip Gallery',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2011',
+        'VERSION' => '14.0.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '13/01/2011',
+        'NAME' => 'Microsoft Communicator',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '13.0.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'Microsoft Database Daemon',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'Microsoft Database Utility',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'Microsoft Document Connection',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'Microsoft Entourage',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'Microsoft Excel',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'Microsoft Graph',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '11/11/2010',
+        'NAME' => 'Microsoft Help Viewer',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '1.1.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '02/07/2009',
+        'NAME' => 'Microsoft Messenger',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '6.0.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '13/01/2011',
+        'NAME' => 'Microsoft Outlook',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2011',
+        'VERSION' => '14.0.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'Microsoft PowerPoint',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'ARCH' => 'PowerPC',
+        'INSTALLDATE' => '06/12/2007',
+        'NAME' => 'Microsoft Query',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '10.0.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '13/01/2011',
+        'NAME' => 'Microsoft Ship Asserts',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '1.1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'Microsoft Sync Services',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'Microsoft Word',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => 'MiniTerm',
+        'SYSTEM_CATEGORY' => 'usr/libexec',
+        'VERSION' => '1.5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '20/02/2011',
+        'NAME' => 'Mise à jour de logiciels',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '4.0.6'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '31/07/2009',
+        'NAME' => "Moniteur d\x{2019}activit\x{e9}",
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '10.6'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'My Day',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '01/08/2009',
+        'NAME' => 'MÀJ du programme interne Bluetooth',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '2.0.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => 'NetAuthAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '09/03/2011',
+        'NAME' => 'Network Connect',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => 17289
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '09/03/2011',
+        'NAME' => 'Network Diagnostic Utility',
+        'SYSTEM_CATEGORY' => 'Library/Frameworks',
+        'VERSION' => 17289
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '25/02/2010',
+        'NAME' => 'Network Recording Player',
+        'PUBLISHER' => 'WebEx Communications',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'USERNAME' => 'lubrano',
+        'VERSION' => '2.2.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '17/09/2010',
+        'NAME' => 'Nimbuzz',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '1.2.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'OBEXAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.3.8'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => 'ODSAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.4.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '16/06/2009',
+        'NAME' => 'Officejet',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '3.0'
+    },
+    {
+        'ARCH' => 'PowerPC',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'Open XML for Charts',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'ARCH' => 'PowerPC',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'Open XML for Excel',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '26/08/2010',
+        'NAME' => 'OpenGL Driver Monitor',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '1.5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'OpenGL Profiler',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '4.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '26/08/2010',
+        'NAME' => 'OpenGL Shader Builder',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '2.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '01/02/2010',
+        'NAME' => 'OpenOffice',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '3.2.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'Organigramme hiérarchique',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => "Outil d\x{2019}\x{e9}talonnage du moniteur",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '4.6'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '29/06/2009',
+        'NAME' => 'P-touch Status Monitor',
+        'PUBLISHER' => 'Brother Industries',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '2.00'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '02/07/2009',
+        'NAME' => 'PMC Index',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '4.5.0'
+    },
+    {
+        'INSTALLDATE' => '30/12/2009',
+        'NAME' => 'PSPP',
+        'SYSTEM_CATEGORY' => 'opt/local',
+        'VERSION' => '@VERSION@'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'PTPCamera',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0.4'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'PackageMaker',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '3.0.4'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'PacketLogger',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '2.3.6'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '08/03/2011',
+        'NAME' => 'Parallels Desktop',
+        'PUBLISHER' => 'Parallels Holdings',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '6.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '08/03/2011',
+        'NAME' => 'Parallels Mounter',
+        'PUBLISHER' => 'Parallels Holdings',
+        'SYSTEM_CATEGORY' => 'Library/Parallels',
+        'VERSION' => '6.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '21/03/2011',
+        'NAME' => 'Parallels Service',
+        'PUBLISHER' => 'Parallels Holdings',
+        'SYSTEM_CATEGORY' => 'Library/Parallels',
+        'VERSION' => '6.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '08/03/2011',
+        'NAME' => 'Parallels Transporter',
+        'PUBLISHER' => 'Parallels Holdings',
+        'SYSTEM_CATEGORY' => 'Library/Parallels',
+        'VERSION' => '6.0.11994.637942'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '20/02/2011',
+        'NAME' => 'ParentalControls',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '02/07/2009',
+        'NAME' => "Partage d\x{2019}\x{e9}cran",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.1.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Photo Booth',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '3.0.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '16/06/2009',
+        'NAME' => 'Photosmart',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '4.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '16/06/2009',
+        'NAME' => 'PhotosmartPro',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '3.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '26/08/2010',
+        'NAME' => 'Pixie',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '2.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'PluginIM',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'PowerPC Help',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '4.7.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '02/07/2009',
+        'NAME' => 'PreferenceSyncClient',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '01/07/2009',
+        'NAME' => 'Premiers contacts avec GarageBand',
+        'SYSTEM_CATEGORY' => 'Library/Documentation',
+        'VERSION' => '1.0.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '01/07/2009',
+        'NAME' => 'Premiers contacts avec iMovie 08',
+        'SYSTEM_CATEGORY' => 'Library/Documentation',
+        'VERSION' => '1.0.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '01/07/2009',
+        'NAME' => 'Premiers contacts avec iWeb',
+        'SYSTEM_CATEGORY' => 'Library/Documentation',
+        'VERSION' => '1.0.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Printer Setup Utility',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'PrinterProxy',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.5'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '26/01/2010',
+        'NAME' => 'Prism',
+        'PUBLISHER' => 'Contributors',
+        'SYSTEM_CATEGORY' => 'zimbra/zdesktop',
+        'USERNAME' => 'lubrano',
+        'VERSION' => '0.9.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '20/02/2011',
+        'NAME' => 'Problem Reporter',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.6.6'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/06/2009',
+        'NAME' => "Programme d\x{2019}installation",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '4.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '25/04/2009',
+        'NAME' => 'Proof',
+        'SYSTEM_CATEGORY' => 'Library/Scripts',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Property List Editor',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '5.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '18/03/2011',
+        'NAME' => 'Préférences Java',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '13.4.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/06/2009',
+        'NAME' => 'Préférences Système',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '7.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '18/03/2011',
+        'NAME' => 'PubSubAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0.5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '08/07/2009',
+        'NAME' => 'Python',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.5.4'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '08/07/2009',
+        'NAME' => 'Python Launcher',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.5.4'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Quartz Composer',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '4.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '26/08/2010',
+        'NAME' => 'Quartz Composer Visualizer',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '1.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Quartz Debug',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '4.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'QuickTime Player',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '10.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '09/04/2009',
+        'NAME' => 'QuickTime Player 7',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '7.6.6'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'Rappels Microsoft Office',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'INSTALLDATE' => '15/06/2009',
+        'NAME' => 'Raster2CanonIJ',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Reggie SE',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '4.7.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '25/04/2009',
+        'NAME' => 'Remove',
+        'SYSTEM_CATEGORY' => 'Library/Scripts',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '25/04/2009',
+        'NAME' => 'Rename',
+        'SYSTEM_CATEGORY' => 'Library/Scripts',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '26/08/2010',
+        'NAME' => 'Repeat After Me',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '1.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '18/07/2009',
+        'NAME' => 'Résolution des conflits',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'SCIM',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '4.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '20/01/2011',
+        'NAME' => 'SLLauncher',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '26/08/2010',
+        'NAME' => 'SRLanguageModeler',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '1.9'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '18/03/2011',
+        'NAME' => 'Safari',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '5.0.4'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '01/07/2009',
+        'NAME' => 'Samsung Scanner',
+        'PUBLISHER' => 'Samsung Electronics Co.',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => '2.00.29'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Saturn',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '4.7.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'ScreenReaderUIServer',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.4.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'ScreenSaverEngine',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.0.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'SecurityAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'SecurityFixer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.6'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '21/05/2009',
+        'NAME' => 'SecurityProxy',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/07/2009',
+        'NAME' => 'ServerJoiner',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.6.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'Service de résumé',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '09/03/2011',
+        'NAME' => 'Session Timer',
+        'SYSTEM_CATEGORY' => 'Library/Frameworks',
+        'VERSION' => 17289
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '25/04/2009',
+        'NAME' => 'Set Info',
+        'SYSTEM_CATEGORY' => 'Library/Scripts',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Shark',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '4.7.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '25/04/2009',
+        'NAME' => 'Show Info',
+        'SYSTEM_CATEGORY' => 'Library/Scripts',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '13/01/2011',
+        'NAME' => 'Signalement d\'erreurs Microsoft',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '2.2.5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '08/02/2010',
+        'NAME' => 'Skype',
+        'PUBLISHER' => 'Skype Technologies S.A.',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '2.8.0.851'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '26/08/2010',
+        'NAME' => 'SleepX',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '2.7'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/06/2007',
+        'NAME' => 'SolidWorks eDrawings',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '1.0A'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '20/02/2011',
+        'NAME' => 'Spaces',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '1.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'SpeakableItems',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.7.8'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '29/05/2009',
+        'NAME' => 'Speech Startup',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.8.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '29/05/2009',
+        'NAME' => 'SpeechFeedbackWindow',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.8.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '29/05/2009',
+        'NAME' => 'SpeechRecognitionServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.11.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '12/07/2009',
+        'NAME' => 'SpeechService',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.10.35'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '12/07/2009',
+        'NAME' => 'SpeechSynthesisServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.10.35'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Spin Control',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '0.9'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'SpindownHD',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '4.7.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '24/07/2009',
+        'NAME' => 'Spotlight',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/12/2010',
+        'NAME' => 'Supprimer Office',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2008',
+        'VERSION' => '12.2.8'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '18/07/2009',
+        'NAME' => 'SyncDiagnostics',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '18/07/2009',
+        'NAME' => 'SyncServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '13/01/2011',
+        'NAME' => 'SyncServicesAgent',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2011',
+        'VERSION' => '14.0.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Syncrospector',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '5.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'System Events',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.3.4'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'SystemUIServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.6'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '07/07/2009',
+        'NAME' => 'TCIM',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'TWAINBridge',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'TamilIM',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Terminal',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '2.1.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '27/06/2009',
+        'NAME' => 'TextEdit',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '1.6'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '02/07/2009',
+        'NAME' => 'Thread Viewer',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '1.4'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '06/03/2011',
+        'NAME' => 'Thunderbird',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '3.1.9'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'Ticket Viewer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '20/02/2011',
+        'NAME' => 'Time Machine',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '1.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '21/07/2009',
+        'NAME' => 'Transfert de podcast',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '2.0.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => "Transfert d\x{2019}images",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '6.0.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => "Trousseau d\x{2019}acc\x{e8}s",
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '4.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '01/07/2009',
+        'NAME' => 'TrueCrypt',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '6.2.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Type1Camera',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Type2Camera',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Type3Camera',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Type4Camera',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Type5Camera',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Type6Camera',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Type7Camera',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Type8Camera',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'URL Access Scripting',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.1.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'USB Prober',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '4.0.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '15/02/2010',
+        'NAME' => 'Uninstall AnyConnect',
+        'SYSTEM_CATEGORY' => 'Applications/Cisco',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '13/03/2011',
+        'NAME' => 'Uninstall Cisco Network Assistant',
+        'PUBLISHER' => 'Macrovision',
+        'SYSTEM_CATEGORY' => 'Cisco_Network_Assistant/Uninstall_Cisco Network Assistant',
+        'USERNAME' => 'lubrano',
+        'VERSION' => '8.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '17/11/2009',
+        'NAME' => 'Uninstall DivX for Mac',
+        'SYSTEM_CATEGORY' => 'Applications/DivX',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '03/07/2009',
+        'NAME' => 'UnmountAssistantAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'UserNotificationCenter',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Utilitaire AirPort',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '5.5.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'Utilitaire AppleScript',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.1.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'Utilitaire ColorSync',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '4.6.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Utilitaire RAID',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '1.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Utilitaire VoiceOver',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '3.4.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '13/01/2011',
+        'NAME' => 'Utilitaire de base de données Microsoft',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2011',
+        'VERSION' => '14.0.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Utilitaire de disque',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '11.5.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '01/07/2009',
+        'NAME' => 'Utilitaire de l\'imprimante Lexmark',
+        'PUBLISHER' => 'Lexmark International',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1.2.10'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '25/06/2009',
+        'NAME' => 'Utilitaire de réseau',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '1.4.6'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => "Utilitaire d\x{2019}annuaire",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '18/06/2009',
+        'NAME' => "Utilitaire d\x{2019}archive",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.6'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => "Utilitaire d\x{2019}emplacement de m\x{e9}moire",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.4.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => "Utilitaire d\x{2019}emplacement d\x{2019}extension",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.4.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '27/12/2009',
+        'NAME' => 'VPNClient',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '4.9.01.0180'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/10/2010',
+        'NAME' => 'VidyoDesktop',
+        'SYSTEM_CATEGORY' => 'Applications/Vidyo',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '19/10/2010',
+        'NAME' => 'VidyoDesktop Uninstaller',
+        'SYSTEM_CATEGORY' => 'Applications/Vidyo',
+        'VERSION' => '2.0.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'VietnameseIM',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '12/03/2011',
+        'NAME' => 'VirtualBox',
+        'PUBLISHER' => 'Oracle',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '4.0.4'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '13/01/2010',
+        'NAME' => 'Vodafone Mobile Connect',
+        'SYSTEM_CATEGORY' => 'Applications/Vodafone Mobile Connect',
+        'VERSION' => 'Vodafone Mobile Connect 3G 2.11.04'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'VoiceOver',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.4.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'VoiceOver Quickstart',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.4.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '04/11/2009',
+        'NAME' => 'WMV Player',
+        'PUBLISHER' => 'Telestream Inc.',
+        'SYSTEM_CATEGORY' => 'Applications/Flip4Mac',
+        'VERSION' => '2.3.1.2'
+    },
+    {
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'WebKitPluginHost',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Developer/SDKs',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '20/10/2009',
+        'NAME' => 'WiFi Scanner',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '16/06/2009',
+        'NAME' => 'Wireshark',
+        'PUBLISHER' => 'Wireshark Development Team',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '1.2.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '23/07/2009',
+        'NAME' => 'Wish',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '8.4.19'
+    },
+    {
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'X11',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '2.3.6'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Xcode',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '3.2.5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'Yahoo! Sync',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.3'
+    },
+    {
+        'INSTALLDATE' => '12/11/2009',
+        'NAME' => 'Yahoo! Zimbra Desktop',
+        'SYSTEM_CATEGORY' => 'zimbra/zdesktop',
+        'USERNAME' => 'lubrano',
+        'VERSION' => undef
+    },
+    {
+        'INSTALLDATE' => '30/12/2009',
+        'NAME' => 'Yap',
+        'SYSTEM_CATEGORY' => 'opt/local',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => 'Zimbra Desktop',
+        'PUBLISHER' => 'VMware Inc.',
+        'SYSTEM_CATEGORY' => 'zimbra/zdesktop',
+        'USERNAME' => 'lubrano',
+        'VERSION' => '1.0.4'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => 'Zimbra Desktop désinstallateur',
+        'SYSTEM_CATEGORY' => 'zimbra/zdesktop',
+        'USERNAME' => 'lubrano',
+        'VERSION' => '1.0.4'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '02/07/2009',
+        'NAME' => 'ZoneMonitor',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '22/02/2011',
+        'NAME' => 'asannotation2',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'USERNAME' => 'lubrano',
+        'VERSION' => '7.19.11.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '03/07/2009',
+        'NAME' => 'check_afp',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '09/07/2009',
+        'NAME' => 'commandtoescp',
+        'PUBLISHER' => 'SEIKO EPSON',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '8.02'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '15/06/2009',
+        'NAME' => 'commandtohp',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1.11'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => 'dotmacfx',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'eaptlstrust',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '23/04/2010',
+        'NAME' => 'fax',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '4.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'g-coul',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'USERNAME' => 'lubrano',
+        'VERSION' => '6.5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'h-color-hp- imprimante couleur',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'USERNAME' => 'lubrano',
+        'VERSION' => '6.5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'h-coul',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'USERNAME' => 'lubrano',
+        'VERSION' => '6.5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'h-nb-toshiba- photocopieur multifonctions noir et blanc',
+        'PUBLISHER' => 'Toshiba',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'USERNAME' => 'lubrano',
+        'VERSION' => '6.5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'h-nb1',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'USERNAME' => 'lubrano',
+        'VERSION' => '6.5'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '10/06/2010',
+        'NAME' => 'hpPreProcessing',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1.0.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => 'hpdot4d',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '3.7.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '30/03/2009',
+        'NAME' => 'hprastertojpeg',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1.0.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'iCal',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '4.0.4'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'iCal Helper',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '4.0.4'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => 'iChat',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '5.0.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => 'iChatAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5.0.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '01/07/2009',
+        'NAME' => 'iMovie',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '7.1.4'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/02/2007',
+        'NAME' => 'iStumbler',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => 'Release 98'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'iSync',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '3.1.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'iSync Plug-in Maker',
+        'SYSTEM_CATEGORY' => 'Developer/Applications',
+        'VERSION' => '3.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '07/10/2009',
+        'NAME' => 'iTerm',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '0.10'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '18/03/2011',
+        'NAME' => 'iTunes',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '10.2.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '01/07/2009',
+        'NAME' => 'iWeb',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '2.0.4'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => 'kcSync',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.0.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'loginwindow',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.1.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '16/04/2009',
+        'NAME' => 'pdftopdf',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '09/07/2009',
+        'NAME' => 'pdftopdf2',
+        'PUBLISHER' => 'SEIKO EPSON',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '8.02'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'quicklookd',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'quicklookd32',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '09/07/2009',
+        'NAME' => 'rastertoescpII',
+        'PUBLISHER' => 'SEIKO EPSON',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '8.02'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '23/04/2010',
+        'NAME' => 'rastertofax',
+        'PUBLISHER' => 'Hewlett-Packard Development Company',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '4.1'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '07/07/2010',
+        'NAME' => 'rcd',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.6'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '20/02/2011',
+        'NAME' => 'store_helper',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '18/07/2009',
+        'NAME' => 'syncuid',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5.2'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '15/02/2010',
+        'NAME' => 'vpndownloader',
+        'SYSTEM_CATEGORY' => 'opt/cisco',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'webdav_cert_ui',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.8.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '19/05/2009',
+        'NAME' => 'wxPerl',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '09/07/2008',
+        'NAME' => "\x{c0} propos d\x{2019}AHT",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Library/Documentation',
+        'VERSION' => '1.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '05/01/2011',
+        'NAME' => 'Échange de fichiers Bluetooth',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '2.3.8'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '24/04/2009',
+        'NAME' => 'Éditeur AppleScript',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '2.3'
+    },
+    {
+        'ARCH' => 'Intel',
+        'INSTALLDATE' => '13/01/2011',
+        'NAME' => 'Éditeur d\'équations Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications/Microsoft Office 2011',
+        'VERSION' => '14.0.0'
+    }
+];

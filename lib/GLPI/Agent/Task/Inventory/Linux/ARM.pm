@@ -12,8 +12,8 @@ use GLPI::Agent::Tools;
 sub isEnabled {
     my (%params) = @_;
 
-    return Uname("-m") =~ /^arm|aarch64/ if $params{remote};
-    return $Config{archname} =~ /^arm/;
+    return Uname("-m") =~ /^(arm|aarch64)/ if $params{remote};
+    return $Config{archname} =~ /^(arm|aarch64)/;
 }
 
 sub doInventory {

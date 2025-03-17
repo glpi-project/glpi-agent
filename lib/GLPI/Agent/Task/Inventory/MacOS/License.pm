@@ -43,7 +43,7 @@ sub doInventory {
         );
     }
 
-    foreach my $transmitFile (@transmitFiles) {
+    foreach my $transmitFile (sort @transmitFiles) {
         my $info = _getTransmitLicenses(
             command => "plutil -convert xml1 -o - '$transmitFile'"
         );
@@ -54,7 +54,7 @@ sub doInventory {
 
     # VMware
     my @vmwareFiles = Glob('"/Library/Application Support/VMware Fusion/license-*"');
-    foreach my $vmwareFile (@vmwareFiles) {
+    foreach my $vmwareFile (sort @vmwareFiles) {
         my %info;
         # e.g:
         # LicenseType = "Site"

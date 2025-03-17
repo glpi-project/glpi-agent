@@ -324,17 +324,24 @@ sub _handle_root {
         return 500;
     }
 
+    my $trust = $self->_isTrusted($clientIp);
     my @server_targets =
-        map { { name => $_->getUrl(), date => $_->getFormatedNextRunDate() } }
+        map { { id => $_->id(), target => $trust ? $_->getUrl() : '', date => $_->getFormatedNextRunDate() } }
         grep { $_->isType('server') }
         $self->{agent}->getTargets();
 
     my @local_targets =
-        map { { name => $_->getPath(), date => $_->getFormatedNextRunDate() } }
+        map { { id => $_->id(), target => $trust ? $_->getFullPath() : '', date => $_->getFormatedNextRunDate() } }
         grep { $_->isType('local') }
         $self->{agent}->getTargets();
 
-    my $trust = $self->_isTrusted($clientIp);
+    my %planned_tasks = ();
+    if ($trust) {
+        map {
+            $planned_tasks{$_->id()} = join(", ", $_->plannedTasks());
+        } $self->{agent}->getTargets();
+    }
+
     my @listening_plugins = ();
     my %plugins_url = ();
     if ($trust) {
@@ -376,6 +383,7 @@ sub _handle_root {
         server_targets => \@server_targets,
         local_targets  => \@local_targets,
         sessions       => \@sessions,
+        planned_tasks  => \%planned_tasks,
     };
 
     my $response = HTTP::Response->new(
@@ -478,23 +486,30 @@ sub _handle_now {
         $headers->header('Content-Type' => 'text/html');
 
         if (@targets) {
-            my $query = uri_unescape($request->uri()->query());
-            if ($query) {
-                my %event = map { /^([^=]+)=(.*)$/ } grep { /[^=]=/ } split('&', $query);
-                foreach my $target (@targets) {
-                    my $id = $target->id;
-                    my $event = GLPI::Agent::Event->new(%event);
-                    next if $event->target && $event->target ne $target->id;
-                    # Only support partial event requests via /now
-                    if ($event->name && $event->partial && $target->addEvent($event)) {
-                        $logger->debug($log_prefix.$event->name." triggering event on $id");
-                    } else {
-                        $logger->debug($log_prefix."unsupported event for $id target: ".($event->name ? $event->dump_as_string() : substr($query, 0, 255)));
-                    }
-                }
+            my $query = uri_unescape($request->uri()->query()) || "";
+            my %event = map { /^([^=]+)=(.*)$/ } grep { /[^=]=/ } split('&', $query);
+            # Support runnow with partial set without category
+            $event{runnow} = "yes" if empty($query) || !$event{"partial"} || !$event{category};
+            my $event = GLPI::Agent::Event->new(%event);
+            if ($event->runnow) {
+                $trace = "rescheduling next contact for all targets";
+                $trace .= $event->delay > 0 ? " in ".$event->delay."s" : " right now";
+                $trace .= " for ".$event->task unless $event->task && $event->task eq "all";
             } else {
-                map { $_->setNextRunDateFromNow() } @targets;
-                $trace = "rescheduling next contact for all targets right now";
+                $trace = "rescheduling next run for ".$event->name." event";
+            }
+            foreach my $target (@targets) {
+                my $id = $target->id // "";
+                next if $event->target && $event->target ne $id;
+                if ($event->name && $event->httpd_support && $target->addEvent($event)) {
+                    $logger->debug($log_prefix.$event->name." triggering event on $id");
+                } else {
+                    ($code, $message, $trace) = (
+                        400, "Bad request",
+                        "unsupported event for $id target: ".($event->name ? $event->dump_as_string() : substr($query, 0, 255))
+                    );
+                    last
+                }
             }
         } else {
             $code    = 403;

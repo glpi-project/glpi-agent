@@ -27,6 +27,8 @@ sub doInventory {
     my $hostname;
     if ($assetname_support == 2) {
         $hostname = getHostname();
+    } elsif ($assetname_support == 3) {
+        $hostname = getHostname(fqdn => 1);
     } else {
         $hostname = getHostname(short => 1);
     }

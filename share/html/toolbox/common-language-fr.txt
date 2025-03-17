@@ -17,6 +17,7 @@ Remotes: Inventaires distants
 
 
 Inventory tasks: Tâches d'inventaire
+Agent home: Index agent
 
 Edit: Éditer
 Update: Mettre à jour

@@ -42,6 +42,7 @@ our @EXPORT = qw(
     getAllLines
     getLinesCount
     compareVersion
+    glpiVersion
     canRun
     canRead
     hex2char
@@ -231,6 +232,7 @@ sub getCanonicalManufacturer {
         broadcom   |
         compaq     |
         dell       |
+        epson      |
         fujitsu    |
         hitachi    |
         ibm        |
@@ -376,6 +378,15 @@ sub compareVersion {
         );
 }
 
+# Return a version as an integer to be used in versions comparison
+sub glpiVersion {
+    my ($version) = @_;
+
+    return 0 unless $version && $version =~ /^v?(\d+)(?:\.(\d+))?(?:\.(\d+))?/;
+
+    return int($1) * 1_000_000 + int($2 // 0) * 1000 + int($3 // 0);
+}
+
 sub getUtf8String {
     my ($string) = @_;
 
@@ -411,6 +422,9 @@ sub getSanitizedString {
 
 sub trimWhitespace {
     my ($value) = @_;
+
+    return unless defined($value);
+
     $value =~ s/^\s+//;
     $value =~ s/\s+$//;
     $value =~ s/\s+/ /g;

@@ -1,0 +1,20 @@
++-o AppleBacklightDisplay  <class AppleBacklightDisplay, id 0x100000de6, registered, matched, active, busy 0 (0 ms), retain 8>
+    {
+      "IOClass" = "AppleBacklightDisplay"
+      "CFBundleIdentifier" = "com.apple.iokit.IOGraphicsFamily"
+      "IOProviderClass" = "IODisplayConnect"
+      "DisplayProductID" = 41002
+      "IODisplayEDID" = <00ffffffffffff0006102aa0000000000a180104a51d1278026fb1a7554c9e250c505400000001010101010101010101010101010101e26800a0a0402e60302036001eb31000001a000000fc00436f6c6f72204c43440a2020200000001000000000000000000000000000000000001000000000000000000000000000000075>
+      "IODisplayPrefsKey" = "IOService:/AppleACPIPlatformExpert/PCI0@0/AppleACPIPCI/IGPU@2/AppleIntelFramebuffer@0/display0/AppleBacklightDisplay-610-a02a"
+      "IODisplayGUID" = 436849163854938112
+      "IOProbeScore" = 3000
+      "IODisplayParameters" = {"commit"={"reg"=0},"linear-brightness-probe"={"min"=0,"max"=1385,"value"=315},"fade-time2"={"min"=0,"max"=10000,"value"=4000},"ggsc"={"min"=0,"max"=65536,"value"=65536},"vblm"={"min"=0,"max"=196608,"value"=65536},"dsyp"={"min"=0,"max"=2,"value"=2},"rgsc"={"min"=0,"max"=65536,"value"=65536},"fade-style"={"min"=0,"max"=10,"value"=0},"fade-time1"={"min"=0,"max"=10000,"value"=500},"bgsc"={"min"=0,"max"=65536,"value"=65536},"brightness-probe"={"min"=0,"max"=1024,"value"=575},"fade-time3"={"min"=0,"max"=10000,"value"=500},"bklt"={"min"=0,"max"=1388,"value"=378},"linear-brightness"={"min"=0,"max"=1385,"value"=315},"brightness"={"min"=0,"max"=1024,"value"=575},"brightness-fade"={"min"=0,"max"=1023,"value"=0},"usable-linear-brightness"={"min"=23,"max"=1385,"value"=315},"ownr"=4294968317}
+      "IOPowerManagement" = {"CapabilityFlags"=49152,"MaxPowerState"=3,"CurrentPowerState"=3}
+      "IOMatchCategory" = "IODefaultMatchCategory"
+      "IODisplayAttributes" = {"IODisplayAttributes"=<676174760000000073676c6604000000726c6f630100000063706220020000006364670080808000676c666400000000>}
+      "IODisplayConnectFlags" = <00080000>
+      "CFBundleIdentifierKernel" = "com.apple.iokit.IOGraphicsFamily"
+      "DisplayVendorID" = 1552
+      "DisplayParameterHandlerUsesCharPtr" = Yes
+      "DisplaySerialNumber" = 0
+    }

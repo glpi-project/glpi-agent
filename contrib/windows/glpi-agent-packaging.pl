@@ -7,6 +7,7 @@ use Win32::TieRegistry qw( KEY_READ );
 use File::Spec;
 use Cwd qw(abs_path);
 use File::Spec::Functions qw(catfile);
+use Data::UUID;
 
 use constant {
     PACKAGE_REVISION    => "1", #BEWARE: always start with 1
@@ -20,12 +21,12 @@ use lib 'lib';
 use GLPI::Agent::Version;
 
 # HACK: make "use Perl::Dist::GLPI::Agent::Step::XXX" works as included plugin
-map { $INC{"Perl/Dist/GLPI/Agent/Step/$_.pm"} = __FILE__ } qw(Update OutputMSI Test InstallModules);
+map { $INC{"Perl/Dist/GLPI/Agent/Step/$_.pm"} = __FILE__ } qw(Update OutputMSI Test ToolChain InstallPerlCore InstallModules Github);
 
 # Perl::Dist::Strawberry doesn't detect WiX 3.11 which is installed on windows github images
 # Algorithm imported from Perl::Dist::Strawberry::Step::OutputMSM_MSI::_detect_wix_dir
 my $wixbin_dir;
-for my $v (qw/3.0 3.5 3.6 3.11/) {
+for my $v (qw/3.14 3.11 3.6 3.5 3.0/) {
     my $WIX_REGISTRY_KEY = "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows Installer XML/$v";
     # 0x200 = KEY_WOW64_32KEY
     my $r = Win32::TieRegistry->new($WIX_REGISTRY_KEY => { Access => KEY_READ|0x200, Delimiter => q{/} });
@@ -74,7 +75,7 @@ if ($ENV{GITHUB_REF} && $ENV{GITHUB_REF} =~ m|refs/tags/(.+)$|) {
 }
 
 sub build_app {
-    my ($bits, $notest) = @_;
+    my ($arch, $notest) = @_;
 
     my $package_rev = $ENV{PACKAGE_REVISION} || PACKAGE_REVISION;
 
@@ -90,10 +91,12 @@ sub build_app {
         agent_vertag    => $versiontag // '',
         agent_fullname  => $provider.' Agent',
         agent_rootdir   => $provider.'-Agent',
+        agent_localguid => Data::UUID->new()->create_str(),
         agent_regpath   => "Software\\$provider-Agent",
         service_name    => lc($provider).'-agent',
         msi_sharedir    => 'contrib/windows/packaging',
-        arch            => $bits == 32 ? "x86" : "x64",
+        arch            => $arch,
+        _dllsuffix      => $arch eq "x86" ? '_' : '__',
         _restore_step   => PERL_BUILD_STEPS,
     );
 
@@ -125,9 +128,15 @@ while ( @ARGV ) {
     }
 }
 
-foreach my $bits (sort values(%do)) {
-    print "Building $bits bits packages...\n";
-    my $app = build_app($bits, $notest);
+# Still select a defaut arch if none has been selected
+$do{x64} = 64 unless keys(%do);
+
+die "32 bits packaging build no more supported\n"
+    if $do{x86};
+
+foreach my $arch (sort keys(%do)) {
+    print "Building $arch packages...\n";
+    my $app = build_app($arch, $notest);
     $app->do_job();
     # global_dump_FINAL.txt must exist in debug_dir if all steps have been passed
     exit(1) unless -e catfile($app->global->{debug_dir}, 'global_dump_FINAL.txt');
@@ -138,27 +147,102 @@ print "All packages building processing passed\n";
 exit(0);
 
 package
+    Perl::Dist::GLPI::Agent::Step::ToolChain;
+
+use parent 'Perl::Dist::Strawberry::Step::BinaryToolsAndLibs';
+
+use File::Spec::Functions qw(catfile catdir);
+
+sub run {
+    my ($self) = @_;
+
+    foreach my $p (@{$self->{config}->{packages}}) {
+        $self->_install($p);
+        $self->boss->message(5, "pkg='$p->{name}'");
+    }
+}
+
+sub _install {
+    my ($self, $pkg) = @_;
+    my $name = $pkg->{name};
+    $self->boss->message(1, "installing package '$name'\n");
+
+    my $file       = $pkg->{file};
+    my $install_to = $pkg->{install_to} || '';
+
+    # Unpack the archive
+    my $tgz = catfile($self->global->{download_dir}, $file);
+    my $tgt = catdir($self->global->{image_dir}, $install_to);
+    $self->_extract($tgz, $tgt);
+}
+
+package
+    Perl::Dist::GLPI::Agent::Step::InstallPerlCore;
+
+use parent 'Perl::Dist::Strawberry::Step::InstallPerlCore';
+
+use Text::Patch;
+use File::Copy qw(copy);
+use File::Slurp;
+use Text::Diff;
+
+sub _patch_file {
+    my ($self, $new, $dst, $dir, $tt_vars, $no_backup) = @_;
+
+    # We only need to replace patch case
+    return $self->SUPER::_patch_file($new, $dst, $dir, $tt_vars, $no_backup)
+        unless $new =~ /\.patch$/;
+
+    $self->boss->message(5, "_patch_file: applying patch on '$dst'\n");
+    copy($dst, "$dst.backup") if !$no_backup && -f $dst && !-f "$dst.backup";
+    my $diff = read_file($new);
+    my $indata = read_file($dst);
+    my $outdata = patch($indata, $diff, STYLE=>"Unified");
+
+    my $r = $self->_unset_ro($dst);
+    write_file($dst, $outdata);
+    $self->_restore_ro($dst, $r);
+
+    write_file("$dst.diff", diff("$dst.backup", $dst)) if -f "$dst.backup";
+}
+
+package
+    Perl::Dist::GLPI::Agent::Step::Github;
+
+use parent 'Perl::Dist::Strawberry::Step';
+
+sub run {
+    my ($self) = @_;
+
+    foreach my $s (@{$self->{config}->{downloads}}) {
+        $self->_download($s);
+        $self->boss->message(5, "downloaded='$s->{name}'");
+    }
+}
+
+sub _download {
+    my ($self, $src) = @_;
+    my $name    = $src->{name};
+    my $project = $src->{project};
+    my $release = $src->{release};
+    my $folder  = $self->boss->resolve_name($src->{folder});
+    my $url     = "https://github.com/$project/releases/download/$release/".$src->{file};
+
+    $self->boss->message(1, "installing $name $release from github $project\n");
+
+    $self->boss->mirror_url($url, $folder);
+}
+
+package
     Perl::Dist::GLPI::Agent::Step::Test;
 
 use parent 'Perl::Dist::Strawberry::Step';
 
 use File::Spec::Functions qw(catfile catdir);
+use File::Glob qw(:glob);
 
 sub run {
     my $self = shift;
-
-    # If modules are defined, just install the modules
-    if ($self->{config}->{modules}) {
-        my @list = map {
-            {
-                module => $_,
-                skiptest => 1,
-                install_to => 'site',
-            }
-        } @{$self->{config}->{modules}};
-        $self->install_modlist(@list) or die "FAILED to install test modules\n";
-        return;
-    }
 
     # Update PATH to include perl/bin for DLLs loading
     my $binpath = catfile($self->global->{image_dir}, 'perl/bin');
@@ -166,21 +250,38 @@ sub run {
 
     # Without defined modules, run the tests
     my $perlbin = catfile($binpath, 'perl.exe');
-    my $makebin = catfile($binpath, 'gmake.exe');
 
     my $makefile_pl_cmd = [ $perlbin, "Makefile.PL"];
     $self->boss->message(2, "Test: gonna run perl Makefile.PL");
     my $rv = $self->execute_standard($makefile_pl_cmd);
     die "ERROR: TEST, perl Makefile.PL\n" unless (defined $rv && $rv == 0);
-
-    # Only test files compilation
-    my $make_test_cmd = [ $makebin, "test", "TEST_FILES=t/01compile.t" ];
-    $self->boss->message(2, "Test: gonna run gmake test");
-    $rv = $self->execute_standard($make_test_cmd);
-    die "ERROR: TEST, make test\n" unless (defined $rv && $rv == 0);
 }
 
-sub test {}
+sub test {
+    my $self = shift;
+
+    # Update PATH to include perl/bin for DLLs loading
+    my $binpath = catfile($self->global->{image_dir}, 'perl/bin');
+    $ENV{PATH} .= ":$binpath";
+
+    # Without defined modules, run the tests
+    my $makebin = catfile($binpath, 'gmake.exe');
+
+    my @test_files = qw(t/01compile.t);
+    @test_files = map { bsd_glob($_) } @{$self->{config}->{test_files}}
+        if ref($self->{config}->{test_files}) && @{$self->{config}->{test_files}};
+    if (@test_files && ref($self->{config}->{skip_tests}) && @{$self->{config}->{skip_tests}}) {
+        my %skip_tests = map { $_ => 1 } @{$self->{config}->{skip_tests}};
+        @test_files = grep { not $skip_tests{$_} } @test_files;
+    }
+
+    # Only test files compilation
+    my $make_test_cmd = [ $makebin, "test" ];
+    push @{$make_test_cmd}, "TEST_FILES=@test_files" if @test_files;
+    $self->boss->message(2, "Test: gonna run gmake test");
+    my $rv = $self->execute_standard($make_test_cmd);
+    die "ERROR: TEST, make test\n" unless (defined $rv && $rv == 0);
+}
 
 package
     Perl::Dist::GLPI::Agent::Step::InstallModules;
@@ -244,6 +345,7 @@ use constant _file_feature_match => { qw(
     perl\agent\GLPI\Agent\SNMP.pm                feat_NETINV
 
     perl\agent\GLPI\Agent\Task\Deploy.pm         feat_DEPLOY
+    perl\agent\GLPI\Agent\Tools\Archive.pm       feat_DEPLOY
     perl\bin\7z.exe                                         feat_DEPLOY
     perl\bin\7z.dll                                         feat_DEPLOY
 
@@ -398,7 +500,16 @@ sub _tree2xml {
         # see: http://stackoverflow.com/questions/10358989/wix-using-keypath-on-components-directories-files-registry-etc-etc
         $feat = $self->_get_dir_feature($dir_id);
         $result .= $ident ."  ". qq[<Component Id="$component_id" Guid="{$component_guid}" KeyPath="yes" Feature="$feat">\n];
-        $result .= $ident ."  ". qq[    <CreateFolder />\n];
+        if ($dir_id eq 'd_install') {
+            $result .= $ident ."    ". qq[  <CreateFolder>\n];
+            $result .= $ident ."    ". qq[    <util:PermissionEx GenericAll="yes" User="CREATOR OWNER" />\n];
+            $result .= $ident ."    ". qq[    <util:PermissionEx GenericAll="yes" User="LocalSystem" />\n];
+            $result .= $ident ."    ". qq[    <util:PermissionEx GenericAll="yes" User="Administrators" />\n];
+            $result .= $ident ."    ". qq[    <util:PermissionEx GenericWrite="no" GenericExecute="yes" GenericRead="yes" User="AuthenticatedUser" />\n];
+            $result .= $ident ."    ". qq[  </CreateFolder>\n];
+        } else {
+            $result .= $ident ."  ". qq[    <CreateFolder />\n];
+        }
         if ($dir_id eq 'd_var') {
             $result .= $ident ."  ". qq[    <util:RemoveFolderEx On="uninstall" Property="UNINSTALL_VAR" />\n];
         } elsif ($dir_id eq 'd_etc') {
@@ -409,18 +520,6 @@ sub _tree2xml {
             $result .= $ident ."  ". qq[    <RemoveFolder Id="rm.$dir_id" On="uninstall" />\n];
         }
         $result .= $ident ."  ". qq[</Component>\n];
-        # Also add virtual folder properties under d_install
-        if ($dir_id eq 'd_install') {
-            foreach my $id (qw(_LOCALDIR)) {
-                $result .= $ident ."  ". qq[<Directory Id="$id">\n];
-                ($component_id, $component_guid) = $self->_gen_component_id(lc($id).".create");
-                $result .= $ident ."    ". qq[<Component Id="$component_id" Guid="{$component_guid}" KeyPath="yes" Feature="$feat">\n];
-                $result .= $ident ."    ". qq[  <CreateFolder />\n];
-                $result .= $ident ."    ". qq[  <RemoveFolder Id="rm.] .lc($id). qq[" On="uninstall" />\n];
-                $result .= $ident ."    ". qq[</Component>\n];
-                $result .= $ident ."  ". qq[</Directory>\n];
-            }
-        }
     }
 
     if (scalar(@f) > 0) {
@@ -436,17 +535,31 @@ sub _tree2xml {
             # see: http://stackoverflow.com/questions/10358989/wix-using-keypath-on-components-directories-files-registry-etc-etc
             $result .= $ident ."  ". qq[<Component Id="$component_id" Guid="{$component_guid}" Feature="$this_feat">\n];
             $result .= $ident ."  ". qq[  <File Id="$file_id" Name="$file_basename" ShortName="$file_shortname" Source="$f->{full_name}" KeyPath="yes"$vital />\n];
-            # Add service, registry and firewall definitions on feat_AGENT
+            # Only add service setup on feat_AGENT
             if ($this_feat eq "feat_AGENT") {
                 my $servicename = $self->global->{service_name};
-                my $installversion = $self->global->{agent_version};
-                my $regpath = "Software\\".$self->global->{_provider}."-Agent";
                 $result .= $ident ."  ". qq[  <ServiceInstall Name="$servicename" Start="auto"\n];
                 $result .= $ident ."  ". qq[                  ErrorControl="normal" DisplayName="!(loc.ServiceDisplayName)" Description="!(loc.ServiceDescription)" Interactive="no"\n];
                 $result .= $ident ."  ". qq[                  Type="ownProcess" Arguments='-I"[INSTALLDIR]perl\\agent" -I"[INSTALLDIR]perl\\site\\lib" -I"[INSTALLDIR]perl\\vendor\\lib" -I"[INSTALLDIR]perl\\lib" "[INSTALLDIR]perl\\bin\\glpi-win32-service"'>\n];
                 $result .= $ident ."  ". qq[    <util:ServiceConfig FirstFailureActionType="restart" SecondFailureActionType="restart" ThirdFailureActionType="restart" RestartServiceDelayInSeconds="60" />\n];
                 $result .= $ident ."  ". qq[  </ServiceInstall>\n];
                 $result .= $ident ."  ". qq[  <ServiceControl Id="SetupService" Name="$servicename" Start="install" Stop="both" Remove="both" Wait="yes" />\n];
+            } elsif ($file_id eq "f_agentmonitor_exe") {
+                my $regpath = "Software\\Microsoft\\Windows\\CurrentVersion\\Run";
+                # Install GLPI-AgentMonitor only when required
+                $result .= $ident ."  ". qq[  <Condition>AGENTMONITOR=1 AND EXECMODE=1</Condition>\n];
+                # Add registry entry dedicated to GLPI-AgentMonitor autorun
+                $result .= $ident ."  ". qq[  <RegistryValue Root="HKLM" Key="$regpath" Name="GLPI-AgentMonitor" Type="string" Value="[#f_agentmonitor_exe]" />\n];
+                # Add Start menu shortcut for GLPI-AgentMonitor
+                $result .= $ident ."  ". qq[  <Shortcut Id="AgentMonitorStartMenu" Advertise="yes" Directory="ProgramMenuFolder" Name="GLPI Agent Monitor" WorkingDirectory="d_perl_bin" Icon="agentmonitor.ico" />\n];
+            }
+            # Add dedicated component for registry just after feat_AGENT
+            if ($this_feat eq "feat_AGENT") {
+                my $installversion = $self->global->{agent_version};
+                my $regpath = "Software\\".$self->global->{_provider}."-Agent";
+                ($component_id, $component_guid) = $self->_gen_component_id("registry");
+                $result .= $ident ."  ". qq[</Component>\n];
+                $result .= $ident ."  ". qq[<Component Id="$component_id" Guid="{$component_guid}" Feature="$this_feat">\n];
                 $result .= $ident ."  ". qq[  <RegistryKey Root="HKLM" Key="$regpath">\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="additional-content" Type="string" Value="[ADDITIONAL_CONTENT]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="debug" Type="string" Value="[DEBUG]" />\n];
@@ -464,10 +577,16 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[    <RegistryValue Name="scan-profiles" Type="string" Value="[SCAN_PROFILES]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="no-p2p" Type="string" Value="[NO_P2P]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="timeout" Type="string" Value="[TIMEOUT]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="snmp-retries" Type="string" Value="[SNMP_RETRIES]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="delaytime" Type="string" Value="[DELAYTIME]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="backend-collect-timeout" Type="string" Value="[BACKEND_COLLECT_TIMEOUT]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="full-inventory-postpone" Type="string" Value="[FULL_INVENTORY_POSTPONE]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="glpi-version" Type="string" Value="[GLPI_VERSION]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="no-task" Type="string" Value="[NO_TASK]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="no-category" Type="string" Value="[NO_CATEGORY]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="required-category" Type="string" Value="[REQUIRED_CATEGORY]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="esx-itemtype" Type="string" Value="[ESX_ITEMTYPE]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="itemtype" Type="string" Value="[ITEMTYPE]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="no-compression" Type="string" Value="[NO_COMPRESSION]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="html" Type="string" Value="[HTML]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="json" Type="string" Value="[JSON]" />\n];
@@ -476,12 +595,15 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[    <RegistryValue Name="no-ssl-check" Type="string" Value="[NO_SSL_CHECK]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="user" Type="string" Value="[USER]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="password" Type="string" Value="[PASSWORD]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="oauth-client-id" Type="string" Value="[OAUTH_CLIENT_ID]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="oauth-client-secret" Type="string" Value="[OAUTH_CLIENT_SECRET]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="proxy" Type="string" Value="[PROXY]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="tasks" Type="string" Value="[TASKS]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="ca-cert-dir" Type="string" Value="[CA_CERT_DIR]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="ca-cert-file" Type="string" Value="[CA_CERT_FILE]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="ssl-cert-file" Type="string" Value="[SSL_CERT_FILE]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="ssl-fingerprint" Type="string" Value="[SSL_FINGERPRINT]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="ssl-keystore" Type="string" Value="[SSL_KEYSTORE]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="vardir" Type="string" Value="[VARDIR]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="listen" Type="string" Value="[LISTEN]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="remote" Type="string" Value="[REMOTE]" />\n];
@@ -501,14 +623,10 @@ sub _tree2xml {
                 # Add registry entry dedicated to deployment vbs check
                 $result .= $ident ."  ". qq[    <RegistryValue Name="Version" Type="string" Value="$installversion" />\n];
                 $result .= $ident ."  ". qq[  </RegistryKey>\n];
-            } elsif ($file_id eq "f_agentmonitor_exe") {
-                my $regpath = "Software\\Microsoft\\Windows\\CurrentVersion\\Run";
-                # Install GLPI-AgentMonitor only when required
-                $result .= $ident ."  ". qq[  <Condition>AGENTMONITOR=1 AND EXECMODE=1</Condition>\n];
-                # Add registry entry dedicated to GLPI-AgentMonitor autorun
-                $result .= $ident ."  ". qq[  <RegistryValue Root="HKLM" Key="$regpath" Name="GLPI-AgentMonitor" Type="string" Value="[#f_agentmonitor_exe]" />\n];
-                # Add Start menu shortcut for GLPI-AgentMonitor
-                $result .= $ident ."  ". qq[  <Shortcut Id="AgentMonitorStartMenu" Advertise="yes" Directory="ProgramMenuFolder" Name="GLPI Agent Monitor" WorkingDirectory="d_perl_bin" Icon="agentmonitor.ico" />\n];
+                $result .= $ident ."  ". qq[  <RegistryKey Root="HKLM" Key="$regpath\\Monitor">\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="NewTicket-URL" Type="string" Value="[AGENTMONITOR_NEWTICKET_URL]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="NewTicket-Screenshot" Type="integer" Value="[AGENTMONITOR_NEWTICKET_SCREENSHOT]" />\n];
+                $result .= $ident ."  ". qq[  </RegistryKey>\n];
             }
             $result .= $ident ."  ". qq[</Component>\n];
         }
@@ -576,12 +694,6 @@ sub run {
 
     my $dest = catfile($self->global->{image_dir}, 'perl/agent/GLPI/Agent/Version.pm');
     $t->process($version, $vars, $dest) || die $t->error();
-
-    # Update default conf to include conf.d folder
-    open CONF, ">>", catfile($self->global->{image_dir}, 'etc/agent.cfg')
-        or die "Can't open default conf: $!\n";
-    print CONF "include 'conf.d/'\n";
-    close(CONF);
 }
 
 package
@@ -589,8 +701,8 @@ package
 
 use parent qw(Perl::Dist::Strawberry);
 
-use File::Path qw(remove_tree);
-use File::Spec::Functions qw(canonpath);
+use File::Path qw(remove_tree make_path);
+use File::Spec::Functions qw(canonpath catdir);
 use File::Glob qw(:glob);
 use Time::HiRes qw(usleep);
 use PerlBuildJob;
@@ -614,16 +726,39 @@ sub create_dirs {
     foreach my $global (qw(image_dir build_dir debug_dir env_dir)) {
         my $dir = $self->global->{$global}
             or next;
-        remove_tree($dir) if -d $dir;
+        if (-d $dir) {
+            my $delete = '';
+            if ($global eq 'build_dir') {
+                $delete = catdir($dir, "msi");
+                next unless -d $delete;
+            } else {
+                $delete = $dir;
+            }
 
-        # We may have some issue with fs synchro, be ready to wait a little
-        my $timeout = time + 10;
-        while (-d $dir && time < $timeout) {
-            usleep(100000);
+            remove_tree($delete) or die "ERROR: cannot delete '$delete'\n";
+
+            # We may have some issue with fs synchro, be ready to wait a little
+            my $timeout = time + 10;
+            while ($delete && -d $delete && time < $timeout) {
+                usleep(100000);
+            }
         }
+        -d $dir or make_path($dir) or die "ERROR: cannot create '$dir'\n";
     }
 
-    $self->SUPER::create_dirs();
+    my $wdir = $self->global->{working_dir};
+    unless (-d $wdir) {
+        make_path($wdir) or die "ERROR: cannot create '$wdir'\n";
+    }
+
+    make_path(catdir($self->global->{env_dir}, 'temp'));
+    make_path(catdir($self->global->{env_dir}, 'AppDataRoaming'));
+    make_path(catdir($self->global->{env_dir}, 'AppDataLocal'));
+    make_path(catdir($self->global->{env_dir}, 'UserProfile'));
+
+    # Create only if not exists
+    -d $self->global->{restore_dir} or make_path($self->global->{restore_dir}) or die "ERROR: cannot create '".$self->global->{restore_dir}."'\n";
+    -d $self->global->{output_dir}  or make_path($self->global->{output_dir})  or die "ERROR: cannot create '".$self->global->{output_dir}."'\n";
 }
 
 sub ask_about_restorepoint {
@@ -646,9 +781,10 @@ sub ask_about_restorepoint {
     return $restorepoint;
 }
 
-sub build_job_pre {
-    my ($self) = @_;
-    $self->SUPER::build_job_pre();
+sub create_buildmachine {
+    my ($self, $job, $restorepoint) = @_;
+
+    $self->SUPER::create_buildmachine($job, $restorepoint);
 
     my $provider = $self->global->{_provider};
     my $version = $self->global->{agent_version};
@@ -658,76 +794,13 @@ sub build_job_pre {
     $self->global->{output_basename} = "$provider-Agent-$version-$arch" ;
 }
 
-sub build_job_post {
-    my ($self) = @_;
-    $self->SUPER::build_job_post();
-}
-
 sub load_jobfile {
     my ($self) = @_;
 
-    my $job = build_job($self->global->{arch}, $self->global->{_revision});
-    push @{$job->{build_job_steps}},
-        ### NEXT STEP ###########################
-        {
-            plugin => 'Perl::Dist::GLPI::Agent::Step::Test',
-        }
-        unless $self->global->{_no_test} ;
-    push @{$job->{build_job_steps}}, $self->_other_job_steps();
-
-    return $job;
-}
-
-sub _other_job_steps {
-    my ($self) = @_;
-    return
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
-        commands => [
-            # Cleanup modules and files used for tests
-            { do=>'removedir', args=>[ '<image_dir>/perl/site/lib' ] },
-            { do=>'createdir', args=>[ '<image_dir>/perl/site/lib' ] },
-            { do=>'removefile', args=>[ '<image_dir>/perl/bin/gmake.exe' ] },
-            # updates for glpi-agent
-            { do=>'createdir', args=>[ '<image_dir>/perl/agent' ] },
-            { do=>'createdir', args=>[ '<image_dir>/var' ] },
-            { do=>'createdir', args=>[ '<image_dir>/logs' ] },
-            { do=>'movefile', args=>[ '<image_dir>/perl/bin/perl.exe', '<image_dir>/perl/bin/glpi-agent.exe' ] },
-            { do=>'copydir', args=>[ 'lib/GLPI', '<image_dir>/perl/agent/GLPI' ] },
-            { do=>'copydir', args=>[ 'lib/GLPI', '<image_dir>/perl/agent/GLPI' ] },
-            { do=>'copydir', args=>[ 'etc', '<image_dir>/etc' ] },
-            { do=>'createdir', args=>[ '<image_dir>/etc/conf.d' ] },
-            { do=>'copydir', args=>[ 'bin', '<image_dir>/perl/bin' ] },
-            { do=>'copydir', args=>[ 'share', '<image_dir>/share' ] },
-            { do=>'copyfile', args=>[ 'contrib/windows/packaging/setup.pm', '<image_dir>/perl/lib' ] },
-        ],
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::GLPI::Agent::Step::Update',
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::Strawberry::Step::OutputZIP', # no options needed
-    },
-    ### NEXT STEP ###########################
-    {
-        plugin => 'Perl::Dist::GLPI::Agent::Step::OutputMSI',
-        exclude  => [
-            #'dirname\subdir1\subdir2',
-            #'dirname\file.pm',
-        ],
-        #BEWARE: msi_upgrade_code is a fixed value for all same arch releases (for ever)
-        msi_upgrade_code    => $self->global->{arch} eq 'x64' ? '0DEF72A8-E5EE-4116-97DC-753718E19CD5' : '7F25A9A4-BCAE-4C15-822D-EAFBD752CFEC',
-        app_publisher       => "Teclib'",
-        url_about           => 'https://glpi-project.org/',
-        url_help            => 'https://glpi-project.org/discussions/',
-        msi_root_dir        => 'GLPI-Agent',
-        msi_main_icon       => 'contrib/windows/packaging/glpi-agent.ico',
-        msi_license_rtf     => 'contrib/windows/packaging/gpl-2.0.rtf',
-        msi_dialog_bmp      => 'contrib/windows/packaging/GLPI-Agent_Dialog.bmp',
-        msi_banner_bmp      => 'contrib/windows/packaging/GLPI-Agent_Banner.bmp',
-        msi_debug           => 0,
-    };
+    return build_job(
+        $self->global->{arch},
+        $self->global->{_revision},
+        $self->global->{_no_test},
+        $self->global->{_dllsuffix},
+    );
 }

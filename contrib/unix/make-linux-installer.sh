@@ -4,7 +4,6 @@ HERE="`pwd`"
 
 cd "${0%/*}"
 
-: ${VERSION:=1.4}
 : ${DISTRO:=linux}
 
 while [ -n "$1" ]

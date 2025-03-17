@@ -105,5 +105,5 @@
       $ip_range{$edit} ?
         "update' alt='"._("Update") :
         "add' alt='"._("Add") }'><i class='primary ti ti-device-floppy'></i>{ $ip_range{$edit} ? _("Update") : _("Add IP range") }</button>
-    <button type='submit' class='big-button secondary-button' name='submit/back-to-list' formnovalidate='1' value='1' alt='{_("Go back to list")}'><i class='primary ti ti-x'></i>{_("Go back to list")}</button>
+    <button type='submit' class='big-button secondary-button' name='submit/back-to-list' formnovalidate='1' value='1' alt='{_("Go back to list")}'><i class='primary ti ti-list'></i>{_("Go back to list")}</button>
   </form>

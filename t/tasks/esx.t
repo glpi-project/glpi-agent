@@ -87,7 +87,7 @@ foreach my $test (keys %tests) {
         }
     );
 
-    # ensure a calll to LWP::UserAgent->new() return our mock agent
+    # ensure a call to LWP::UserAgent->new() return our mock agent
     $module->mock(new => sub { return $mock; });
 
     # Mock deviceid to fix inventory with the expected one

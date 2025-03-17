@@ -156,6 +156,13 @@ sub download {
         die;
     }
 
+    # Use port from configuration, it is available from datastore object
+    my $port = $self->{datastore}->{config}->{'httpd-port'} || 62354;
+
+    # Use remote-workers from configuration as max_worker, but keep 10 as minimum default
+    my $workers = $self->{datastore}->{config}->{'remote-workers'} || 10;
+    $workers = 10 unless $workers >= 10;
+
     my @peers;
     if ($self->{p2p}) {
         GLPI::Agent::Task::Deploy::P2P->require();
@@ -165,10 +172,11 @@ sub download {
             my $p2p = GLPI::Agent::Task::Deploy::P2P->new(
                 scan_timeout    => 1,
                 datastore       => $self->{datastore},
+                max_worker      => $workers,
                 logger          => $self->{logger}
             );
             eval {
-                @peers = $p2p->findPeers(62354);
+                @peers = $p2p->findPeers($port);
                 $self->{p2pnet} = $p2p;
             };
             $self->{logger}->debug("failed to enable P2P: $EVAL_ERROR")
@@ -187,13 +195,13 @@ sub download {
 
         # try to download from the same peer as last part, if defined
         if ($lastPeer) {
-            my $success = $self->_downloadPeer($lastPeer, $sha512, $path);
+            my $success = $self->_downloadPeer($lastPeer, $sha512, $path, $port);
             next PART if $success;
         }
 
         # try to download from peers
         foreach my $peer (@peers) {
-            my $success = $self->_downloadPeer($peer, $sha512, $path);
+            my $success = $self->_downloadPeer($peer, $sha512, $path, $port);
             if ($success) {
                 $lastPeer = $peer;
                 next PART;
@@ -233,9 +241,9 @@ sub _getNextPathUpdateTime {
 }
 
 sub _downloadPeer {
-    my ($self, $peer, $sha512, $path) = @_;
+    my ($self, $peer, $sha512, $path, $port) = @_;
 
-    my $source = 'http://'.$peer.':62354/deploy/getFile/';
+    my $source = 'http://'.$peer.':'.$port.'/deploy/getFile/';
 
     return $self->_download($source, $sha512, $path, $peer);
 }

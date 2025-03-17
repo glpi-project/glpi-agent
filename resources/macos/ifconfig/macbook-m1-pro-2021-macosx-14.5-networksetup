@@ -1,0 +1,40 @@
+
+Hardware Port: Ethernet Adapter (en5)
+Device: en5
+Ethernet Address: AA:AA:AA:AA:AA:AD
+
+Hardware Port: ThinkPad Lan
+Device: en8
+Ethernet Address: AA:AA:AA:AA:AA:DA
+
+Hardware Port: Ethernet Adapter (en6)
+Device: en6
+Ethernet Address: AA:AA:AA:AA:AA:BA
+
+Hardware Port: Ethernet Adapter (en7)
+Device: en7
+Ethernet Address: AA:AA:AA:AA:AA:BB
+
+Hardware Port: Thunderbolt Bridge
+Device: bridge0
+Ethernet Address: AA:AA:AA:AA:AA:BC
+
+Hardware Port: Wi-Fi
+Device: en0
+Ethernet Address: AA:AA:AA:AA:AA:CC
+
+Hardware Port: Thunderbolt 1
+Device: en1
+Ethernet Address: AA:AA:AA:AA:AA:BC
+
+Hardware Port: Thunderbolt 2
+Device: en2
+Ethernet Address: AA:AA:AA:AA:AA:BD
+
+Hardware Port: Thunderbolt 3
+Device: en3
+Ethernet Address: AA:AA:AA:AA:AA:CA
+
+VLAN Configurations
+===================
+

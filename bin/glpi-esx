@@ -29,6 +29,7 @@ GetOptions(
     'password=s',
     'directory=s', # deprecated in favour of path or stdout
     'path=s',
+    't|timeout=i',
     'stdout',
     'tag=s',
     'debug+',
@@ -37,6 +38,8 @@ GetOptions(
     'dump',
     'dumpfile=s',
     'json',
+    'glpi-version=s',
+    'esx-itemtype=s',
 ) or pod2usage(-verbose => 0);
 
 pod2usage(-verbose => 0, -exitstatus => 0) if $options->{help};
@@ -51,7 +54,7 @@ if ($options->{version}) {
 }
 
 my $config = GLPI::Agent::Config->new(
-    options => { map { $_ => $options->{$_} } qw{debug tag json} }
+    options => { map { $_ => $options->{$_} } qw{debug tag json glpi-version esx-itemtype} }
 );
 
 my $logger = GLPI::Agent::Logger->new(config => $config);
@@ -66,6 +69,9 @@ my $esx = GLPI::Agent::Task::ESX->new(
         basevardir => File::Temp->newdir(CLEANUP => 1),
     ),
 );
+
+# Set timeout to use during first http connection attempt
+$esx->timeout($config->{timeout}) if $options->{timeout};
 
 inventory_from_dump($options->{dumpfile})
     if $options->{dumpfile};
@@ -90,6 +96,10 @@ if (!$esx->connect(
 )) {
     die "Connection failure: ".$esx->lastError()."\n";
 }
+
+# Reset timeout to a minimum value for inventory related requests
+my $safe_timeout = $config->{'backend-collect-timeout'} // 60;
+$esx->timeout($safe_timeout) if $options->{timeout} && $options->{timeout} < $safe_timeout;
 
 $esx->serverInventory($options->{path}, $options->{dump} ? \&dump_from_hostfullinfo : undef);
 
@@ -195,9 +205,12 @@ glpi-esx --host <host> --user <user> --password <password> --path <directory or 
     --user username        user name
     --password xxxx        user password
     --path path            output directory or file
+    -t --timeout sec       connection attempt timeout in seconds (defaults to 180)
     --stdout               dump inventory on stdout (enabled by default if no path is set)
     --tag tag              tag for the inventoried machine
     --json                 use json as format for generated inventories
+    --glpi-version VERSION set targeted glpi version to enable supported features
+    --esx-itemtype=TYPE    set ESX asset type for target supporting genericity like GLPI 11+
 
   Advanced options:
     --dump                 also dump esx host full info datas in a *-hostfullinfo.dump file

@@ -36,7 +36,7 @@ sub doInventory {
         %env = %ENV;
     }
 
-    foreach my $key (keys %env) {
+    foreach my $key (sort keys %env) {
         $inventory->addEntry(
             section => 'ENVS',
             entry   => {

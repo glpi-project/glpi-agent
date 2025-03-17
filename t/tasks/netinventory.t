@@ -484,7 +484,7 @@ foreach my $test (keys(%responses)) {
     } @{$responses{$test}->{SNMPQUERY}};
 }
 
-my $plan_tests_count = 6 * keys(%responses);
+my $plan_tests_count = 7 * keys(%responses);
 foreach my $case (values(%responses)) {
     next unless $case->{SNMPQUERY};
     $plan_tests_count += scalar(@{$case->{SNMPQUERY}});
@@ -514,9 +514,12 @@ $client_module->mock('send', sub {
 
         # In workers, store %params to be sent later in testing process
         if ($test_pid != $$) {
-            store \%params, "$storable_tempdir/sent-$$";
+            my $index = 0;
+            # More than one send can be done by workers
+            while (-e "$storable_tempdir/sent-$$-$index") { $index++; }
+            store \%params, "$storable_tempdir/sent-$$-$index";
         } else {
-            ok ($responses{$case}->{index}->{$sent}--, "Sent $query message");
+            ok ($responses{$case}->{index}->{$sent}--, "Sent $query message for $case case: $responses{$case}->{index}->{$sent}\n$sent");
         }
     }
 
@@ -561,6 +564,10 @@ foreach my $case (keys(%responses)) {
         $client->send(%{$sent});
         unlink $file;
     }
+
+    # Check if a message has not been sent
+    my $not_sent = grep { $_ } values(%{$responses{$case}->{index}});
+    ok($not_sent == 0, "All messages sent for $case case ($not_sent not sent)");
 
     ok(
         @{ $task->{jobs} || [] } == $responses{$case}->{cmp}->{jobs},

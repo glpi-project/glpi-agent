@@ -8,5 +8,5 @@
         $OUT .= Text::Template::fill_in_file("$template_path/$tpl", HASH => $hash)
           || "Error loading $tpl template: $Text::Template::ERROR";
       }}
-    <button type='submit' class='big-button secondary-button' name='submit/back-to-list' formnovalidate='1' value='1' alt='{_("Go back to list")}'><i class='primary ti ti-x'></i>{_("Go back to list")}</button>
+    <button type='submit' class='big-button secondary-button' name='submit/back-to-list' formnovalidate='1' value='1' alt='{_("Go back to list")}'><i class='primary ti ti-list'></i>{_("Go back to list")}</button>
   </form>

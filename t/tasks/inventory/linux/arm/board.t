@@ -64,6 +64,18 @@ my %arm = (
             SSN     => "00000000acf9d788"
         }
     ],
+    'linux-raspberry-pi-3-model-b-on-bookworm' => [
+        {
+            'model'     => "Raspberry Pi 3 Model B Rev 1.2",
+            'revision'  => "a02082",
+            'serial'    => "00000000438df421"
+        },
+        {
+            MMODEL  => "Raspberry Pi 3 Model B Rev 1.2",
+            MSN     => "a02082",
+            SSN     => "00000000438df421"
+        }
+    ],
     # Case without information as not arm board
     'linux-686-1' => [ { 'not-a-board' => 1 } , { MMODEL => 'not-a-board' } ]
 );

@@ -124,13 +124,13 @@ sub _getDrives {
             FREE        => $object->{FreeSpace},
             FILESYSTEM  => $object->{FileSystem},
             LABEL       => $object->{Label},
-            LETTER      => $object->{Name} =~ m/^\\\\\?\\Volume/ ?
+            LETTER      => $object->{Name} && $object->{Name} =~ m/^\\\\\?\\Volume/ ?
                 $object->{Label} : $object->{Name} || $object->{Caption},
             SERIAL      => _encodeSerialNumber($object->{SerialNumber}),
             SYSTEMDRIVE => $object->{DriveLetter} ?
                 (lc($object->{DriveLetter}) eq $systemDrive) : '',
             TOTAL       => $object->{Capacity},
-            TYPE        => $type[$object->{DriveType}],
+            TYPE        => $type[$object->{DriveType} // 0],
             VOLUMN      => $object->{Label},
         };
 

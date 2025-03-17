@@ -96,9 +96,6 @@ sub getSnmpHostname {
 sub getSerial {
     my ($self) = @_;
 
-    my $device = $self->device
-        or return;
-
     my $serial = getCanonicalString($self->get(snInfoSerialNr) || $self->get(moduleSerial));
     unless ($serial) {
         my @sysdescr = $self->_getInfosFromDescr();

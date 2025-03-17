@@ -5,6 +5,7 @@ use warnings;
 
 use lib './lib';
 use setup;
+use lib $setup{libdir};
 
 use File::Spec;
 

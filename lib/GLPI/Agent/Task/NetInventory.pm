@@ -107,6 +107,9 @@ sub isEnabled {
 sub run {
     my ($self, %params) = @_;
 
+    # Just reset event if run as an event to not trigger another one
+    $self->resetEvent();
+
     my $abort = 0;
     $SIG{TERM} = sub { $abort = 1; };
 
@@ -120,11 +123,19 @@ sub run {
     my ($max_threads) = sort { $b <=> $a } map { int($_->max_threads()) }
         @{$self->{jobs}};
 
+    # On windows, max_threads should not be upper than 60 due to a perl limitation
+    if ($OSNAME eq 'MSWin32' && $max_threads > 60) {
+        $self->{logger}->info("Limiting threads from $max_threads to 60 on MSWin32");
+        $max_threads = 60;
+    }
+
     # count devices and check skip_start_stop
     my $devices_count   = 0;
     my $skip_start_stop = 0;
     foreach my $job (@{$self->{jobs}}) {
         $devices_count += $job->count();
+        # Support glpi-netdiscovery --control option
+        $self->{_control} = $job->control;
         # newer server won't need START message if PID is provided on <DEVICE/>
         next if $skip_start_stop;
         $skip_start_stop = $job->skip_start_stop || any { defined($_->{PID}) } $job->devices();
@@ -181,15 +192,7 @@ sub run {
             return unless $jobid;
             my $job = $jobs{$jobid};
             $queued_count--;
-            if ($job->done) {
-                # send final message to the server before cleaning jobs
-                $self->_sendStopMessage($jobid) unless $skip_start_stop;
-
-                delete $jobs{$jobid};
-
-                # send final message to the server
-                $self->_sendStopMessage($jobid) unless $skip_start_stop;
-            }
+            delete $jobs{$jobid} if $job->done;
             $devices_count--;
             # Only reduce expiration when few devices are still to be scanned
             if ($devices_count > 4 && $expiration > time + $devices_count*$target_expiration) {
@@ -209,7 +212,9 @@ sub run {
 
         # Enqueue as device as possible for each job
         foreach my $pid (@pids) {
-            my $job = $jobs{$pid};
+            # job may has just been done & deleted in run_on_finish() manager callback
+            my $job = $jobs{$pid}
+                or next;
             next if $job->no_more || $job->max_in_queue;
             my $device = $job->nextdevice
                 or next;
@@ -264,11 +269,20 @@ sub run {
             }
 
             # Get result PID from result
-            my $thispid = delete $result->{PID};
+            my $thispid = delete $result->{PID} // $pid;
 
             # Directly send the result message from the worker, but use job pid if
             # it was not set in result
-            $self->_sendResultMessage($result, $thispid || $pid, $device->{IP});
+            $self->_sendResultMessage($result, $thispid, $device->{IP});
+
+            # Send control messages unless not required
+            if (!$skip_start_stop || $self->{_control}) {
+                # send end message to the server for this job
+                $self->_sendStopMessage($thispid);
+
+                # send final end message to the server
+                $self->_sendStopMessage($thispid);
+            }
 
             delete $self->{logger}->{prefix} if $worker_count > 1;
 
@@ -342,14 +356,14 @@ sub _sendMessage {
 
     if ($self->{target}->isType('local')) {
         my ($handle, $file);
-        my $device = $content->{DEVICE}
-            or return;
         my $path = $self->{target}->getPath();
         if ($path eq '-') {
+            return unless $content->{DEVICE} || $self->{_control};
             $handle = \*STDOUT;
         } else {
-            $path .= "/netinventory";
-            mkpath($path);
+            return unless $content->{DEVICE};
+            $path = $self->{target}->getFullPath("netinventory");
+            mkpath($path) unless -d $path;
             $file = $path . "/$ip.xml";
         }
 
@@ -475,10 +489,14 @@ sub _queryDevice {
                 authprotocol => $credential->{AUTHPROTOCOL},
                 privpassword => $credential->{PRIVPASSPHRASE} // $credential->{PRIVPASSWORD},
                 privprotocol => $credential->{PRIVPROTOCOL},
+                retries      => $self->{config}->{'snmp-retries'} // 0,
             );
         };
         die "SNMP communication error: $EVAL_ERROR" if $EVAL_ERROR;
     }
+
+    my $glpi_version = $self->{target}->isType('server') ? $self->{target}->getTaskVersion('inventory') : '';
+    $glpi_version = $self->{config}->{'glpi-version'} if empty($glpi_version);
 
     my $result = getDeviceFullInfo(
         id      => $device->{ID},
@@ -487,7 +505,7 @@ sub _queryDevice {
         config  => $self->{config},
         logger  => $self->{logger},
         # Include glpi version if known so modules can verify it for supported feature
-        glpi    => $self->{target}->isType('server') ? $self->{target}->getTaskVersion('inventory') : '',
+        glpi    => $glpi_version,
         datadir => $self->{datadir}
     );
 

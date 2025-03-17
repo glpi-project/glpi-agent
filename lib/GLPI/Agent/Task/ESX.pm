@@ -12,6 +12,7 @@ use GLPI::Agent::HTTP::Client::Fusion;
 use GLPI::Agent::Logger;
 use GLPI::Agent::Inventory;
 use GLPI::Agent::SOAP::VMware;
+use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::UUID;
 
 use GLPI::Agent::Task::ESX::Version;
@@ -34,10 +35,13 @@ sub connect {
 
     my $url = 'https://' . $params{host} . '/sdk/vimService';
 
-    my $vpbs =
-      GLPI::Agent::SOAP::VMware->new(url => $url, vcenter => 1 );
+    my $vpbs = GLPI::Agent::SOAP::VMware->new(
+        url     => $url,
+        vcenter => 1,
+        timeout => $self->timeout(),
+    );
     if ( !$vpbs->connect( $params{user}, $params{password} ) ) {
-        $self->lastError($vpbs->{lastError});
+        $self->lastError($vpbs->lastError() || "Connection failure");
         return;
     }
 
@@ -53,10 +57,17 @@ sub createInventory {
 
     my $host = $vpbs->getHostFullInfo($id);
 
+    # Set known glpi version to enable or disable supported features
+    my $glpi_version = $self->{target}->isType('server') ? $self->{target}->getTaskVersion('inventory') : '';
+    $glpi_version = $self->{config}->{'glpi-version'} if empty($glpi_version);
+    $host->enableFeaturesForGlpiVersion($glpi_version);
+
     my $inventory = GLPI::Agent::Inventory->new(
         datadir  => $self->{datadir},
         logger   => $self->{logger},
+        glpi     => $glpi_version,
         tag      => $tag,
+        itemtype => empty($self->{config}->{'esx-itemtype'}) ? "Computer" : $self->{config}->{'esx-itemtype'},
         # deviceid can be set and so reused from previous netscan
         deviceid => $deviceid
     );
@@ -66,6 +77,16 @@ sub createInventory {
     $inventory->setBios( $host->getBiosInfo() );
 
     $inventory->setHardware( $host->getHardwareInfo() );
+
+    # Add a virtual memory component to report total memory size for system. This remains
+    # an extrapolated total size based on the reported available system memory size.
+    my $memory = $inventory->getHardware("MEMORY");
+    if ($memory) {
+        $inventory->addEntry(
+            section => 'MEMORIES',
+            entry   => _esxTotalMemory($memory),
+        );
+    }
 
     $inventory->setOperatingSystem( $host->getOperatingSystemInfo() );
 
@@ -116,6 +137,27 @@ sub createInventory {
 
 }
 
+# Return a total size memory component with capacity rounded to the upper multiple of
+# 1GB if size is lower than 16GB, 4GB for greater size but lower than 100GB and 16GB
+# for even larger values. With $size given in MB.
+sub _esxTotalMemory {
+    my ($size) = @_;
+
+    return unless $size && $size =~ /^\d+$/;
+
+    my $base = $size < 16384 ? 1024 : $size >= 102400 ? 16384 : 4096;
+    my $capacity = (int(int($size)/$base)+1) * $base;
+
+    return {
+        CAPACITY     => $capacity,
+        CAPTION      => "ESX Guessed Total Memory",
+        DESCRIPTION  => "ESX Memory",
+        TYPE         => "Total",
+        MANUFACTURER => "VMware",
+        NUMSLOTS     => "0",
+    };
+}
+
 sub getHostIds {
     my ($self) = @_;
 
@@ -125,10 +167,12 @@ sub getHostIds {
 sub run {
     my ($self) = @_;
 
+    # Just reset event if run as an event to not trigger another one
+    $self->resetEvent();
+
     $self->{client} = GLPI::Agent::HTTP::Client::Fusion->new(
         logger  => $self->{logger},
         config  => $self->{config},
-        timeout => $self->timeout(),
     );
     die unless $self->{client};
 
@@ -328,15 +372,21 @@ sub serverInventory {
 sub lastError {
     my ($self, $error) = @_;
 
+    $self->{lastError} = $self->{esx}->lastError()
+        if $self->{esx};
+
     $self->{lastError} = $error if $error;
 
-    return $self->{lastError} || "n/a";
+    return $self->{lastError};
 }
 
 sub timeout {
     my ($self, $timeout) = @_;
 
     $self->{_timeout} = $timeout if defined($timeout);
+
+    # Set http client timeout if required
+    $self->{vpbs}->timeout($timeout) if $timeout && $self->{vpbs};
 
     return $self->{_timeout} || $self->{config}->{"backend-collect-timeout"} // 60;
 }

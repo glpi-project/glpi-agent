@@ -45,6 +45,9 @@ my %tests = (
     },
     '7ter' => {
         USB001 => '55PKB5Z11418880717'
+    },
+    'hp-printer' => {
+        USB001 => 'CNBW7CX921'
     }
 );
 

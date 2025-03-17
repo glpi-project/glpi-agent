@@ -12,10 +12,13 @@ use Time::HiRes qw(usleep);
 # By convention, we just use 5 chars string as possible internal IPC messages.
 # IPC_LEAVE from children is supported and is only really useful while debugging.
 # IPC_EVENT can be used to handle events recognized in parent
+# IPC_EFILE can be used to handle events recognized in parent and is used on MSWin32
+#           when transmitted event is too big for IPC
 # IPC_ABORT can be used to abort a forked process
 use constant IPC_LEAVE  => 'LEAVE';
 use constant IPC_EVENT  => 'EVENT';
 use constant IPC_ABORT  => 'ABORT';
+use constant IPC_EFILE  => 'EFILE';
 
 use parent 'GLPI::Agent';
 
@@ -107,8 +110,8 @@ sub run {
         foreach my $target (@targets) {
             my $date = $target->getFormatedNextRunDate();
             my $id   = $target->id();
-            my $name = $target->getName();
-            $logger->info("target $id: next run: $date - $name");
+            my $info = $target->isType('local') ? $target->getFullPath() : $target->getName();
+            $logger->info("target $id: next run: $date - $info");
         }
     }
 
@@ -122,25 +125,67 @@ sub run {
 
         $self->_reloadConfIfNeeded();
 
+        # Still get next event, as we don't want to handle job events here but in events_cb called from sleep
+        my $event = $target->nextEvent();
+
         if ($target->paused()) {
+
+            # Reset target responses
+            $target->responses({});
+
             # Leave immediately if we passed in terminate method
             last if $self->{_terminate};
 
-        } elsif (my $event = $target->getEvent()) {
+        } elsif ($event && !$event->job) {
+            # Always remove event from list
+            $target->delEvent($event);
 
-            my $net_error = 0;
-            eval {
-                $net_error = $self->runTargetEvent($target, $event);
-            };
-            $logger->error($EVAL_ERROR) if ($EVAL_ERROR && $logger);
-            if ($net_error) {
-                # Prefer to retry event later on net error
-                $event->rundate(time + 60);
-                $target->addEvent($event);
+            my $responses = $target->responses();
+
+            # Contact server if required and cache responses
+            if ($event->taskrun) {
+                if ((!ref($responses) || !$responses->{CONTACT}) && $target->isGlpiServer()) {
+                    $responses->{CONTACT} = $self->getContact($target, [$target->plannedTasks()]);
+                }
+                if ((!ref($responses) || !$responses->{PROLOG}) && $target->isType('server') && $event->task =~ /^net(discovery|inventory)$/i) {
+                    $responses->{PROLOG} = $self->getProlog($target);
+                }
+                if ($target->isType('server')) {
+                    # Fail event on no expected response from server
+                    unless (ref($responses) && (ref($responses->{CONTACT}) || ref($responses->{PROLOG}))) {
+                        $logger->error("Failed to handle run event for ".$event->task) if $logger && $event->task;
+                        next;
+                    }
+
+                    # Keep target responses
+                    $target->responses($responses);
+                }
             }
 
+            eval {
+                $self->runTargetEvent($target, $event, $responses);
+            };
+            $logger->error($EVAL_ERROR) if ($EVAL_ERROR && $logger);
+
             # Leave immediately if we passed in terminate method
             last if $self->{_terminate};
+
+            # Reschedule if required
+            if ($event->taskrun && $event->get('reschedule')) {
+                # First set rundate to now, than reset next run date
+                $target->setNextRunDateFromNow();
+                $target->resetNextRunDate();
+
+                # This is also safe to reset target responses
+                $target->responses({});
+
+                if ($logger) {
+                    my $date = $target->getFormatedNextRunDate();
+                    my $id   = $target->id();
+                    my $name = $target->getName();
+                    $logger->info("target $id: next run: $date - $name");
+                }
+            }
 
             # We should run service optimization after all targets can be run
             $self->{_run_optimization} = scalar($self->getTargets());
@@ -207,34 +252,62 @@ sub _reloadConfIfNeeded {
 }
 
 sub runTargetEvent {
-    my ($self, $target, $event) = @_;
+    my ($self, $target, $event, $responses) = @_;
 
-    return unless $event->name && $event->task;
+    # Just ignore event if invalid
+    return unless $event && $event->name && $event->task;
 
-    $self->{logger}->debug("target ".$target->id().": ".$event->name()." event for ".$event->task()." task");
+    my $task = $event->task;
+    my %modulesmap = qw(
+        netdiscovery    NetDiscovery
+        netinventory    NetInventory
+        remoteinventory RemoteInventory
+        esx             ESX
+        wakeonlan       WakeOnLan
+    );
+    my $realtask = $modulesmap{$task} || ucfirst($task);
+
+    $self->{logger}->debug("target ".$target->id().": ".$event->name()." event for $realtask task")
+        unless $event->runnow;
 
     $self->{event} = $event;
 
-    if ($event && $event->init) {
+    if ($event->init) {
         eval {
             # We don't need to fork for init event
-            $self->runTaskReal($target, ucfirst($event->task));
+            $self->runTaskReal($target, $realtask);
         };
+
+    } elsif ($event->runnow) {
+        $target->triggerRunTasksNow($event);
+
+    } elsif (ref($responses)) {
+        my $server_response = $responses->{PROLOG};
+        if ($responses->{CONTACT}) {
+            # Be sure to use expected response for task
+            my $task_server = $target->getTaskServer($task) // 'glpi';
+            $server_response = $responses->{CONTACT}
+                if $task_server eq 'glpi';
+        }
+        eval {
+            $self->runTask($target, $realtask, $server_response);
+        };
+        $self->{logger}->error($EVAL_ERROR) if $EVAL_ERROR;
+        $self->setStatus($target->paused() ? 'paused' : 'waiting');
+
     } else {
         # Simulate CONTACT server response
         my $contact = GLPI::Agent::Protocol::Contact->new(
-            tasks => { $event->task => { params => [ $event->params ] }}
+            tasks => { $task => { params => [ $event->params ] }}
         );
         eval {
-            $self->runTask($target, ucfirst($event->task), $contact);
+            $self->runTask($target, $realtask, $contact);
         };
         $self->{logger}->error($EVAL_ERROR) if $EVAL_ERROR;
         $self->setStatus($target->paused() ? 'paused' : 'waiting');
     }
 
     delete $self->{event};
-
-    return 0;
 }
 
 sub runTask {
@@ -293,13 +366,11 @@ sub handleTaskCache {
 sub handleTaskEvent {
     my ($self, $name, $task) = @_;
 
-    return unless $task;
-    my $event = $task->event()
-        or return;
+    return unless $task && GLPI::Agent::Protocol::Message->require();
 
-    if (GLPI::Agent::Protocol::Message->require()) {
+    foreach my $event ($task->events()) {
         my $message = GLPI::Agent::Protocol::Message->new(message => $event->dump_for_message());
-        $self->forked_process_event("TASKEVENT,$name,".$message->getRawContent());
+        $self->forked_process_event("TASKEVENT,".($event->task||$name).",".$message->getRawContent());
     }
 }
 
@@ -453,6 +524,7 @@ sub handleChildren {
         my $child = $self->{_fork}->{$pid};
 
         # Check if any forked process is communicating
+        my @messages;
         delete $child->{in} unless $child->{in} && $child->{in}->opened;
         while ($child->{in} && $child->{pollin} && $child->{poll} && &{$child->{poll}}($child->{pollin})) {
             my $msg = " " x 5;
@@ -465,13 +537,37 @@ sub handleChildren {
                         if $child->{in}->sysread($len, 2);
                     if ($len) {
                         my $event;
-                        $self->_trigger_event($event)
+                        push @messages, $event
                             if $child->{in}->sysread($event, $len);
+                    }
+                } elsif ($msg eq IPC_EFILE) {
+                    my $len;
+                    $len = unpack("S", $len)
+                        if $child->{in}->sysread($len, 2);
+                    if ($len>2) {
+                        my ($event, $size, $file);
+                        $size = unpack("S", $size)
+                            if $child->{in}->sysread($size, 2);
+                        if ($child->{in}->sysread($file, $len-2)) {
+                            $event = GLPI::Agent::Tools::Win32::readEventFile($file, $size);
+                            if (!defined($event) || length($event) != $size) {
+                                # Limit log rate of IPC_EVENT event read failure from IPC_EFILE
+                                if (!$self->{_efile_logger_failure_timeout} || time > $self->{_efile_logger_failure_timeout}) {
+                                    $self->{logger}->debug2($child->{name} . "[$pid] failed to read IPC_EVENT from $file file");
+                                    $self->{_efile_logger_failure_timeout} = time + 5;
+                                }
+                            } else {
+                                push @messages, $event;
+                            }
+                        }
                     }
                 }
             }
             $count++;
         }
+
+        # Trigger events after they have been read
+        map { $self->_trigger_event($_) } @messages;
 
         # Check if any forked process has been finished
         waitpid($pid, WNOHANG)
@@ -638,13 +734,19 @@ sub forked_process_event {
     return unless $self->forked() && defined($event);
 
     return unless length($event);
-    if (length($event) > 65535) {
+    # On MSWin32, syswrite can block if header+size+event is greater than 512 bytes
+    if (length($event) > 505 && $OSNAME eq 'MSWin32') {
         my ($type) = split(",", $event)
             or return;
         $type = substr($event, 0, 64) if length($type) > 64;
         # Just ignore too big logger event like full inventory content logged at debug2 level
         return if $type eq 'LOGGER';
-        $self->{logger}->error("Skipping $type too long forked process event");
+
+        # Convert event to efile: event content in a file
+        my $file = GLPI::Agent::Tools::Win32::getEventFile($self->{vardir}, $event);
+        my $efile = pack("S", length($event)).$file;
+        $self->{_ipc_out}->syswrite(IPC_EFILE.pack("S", length($efile)).$efile);
+        GLPI::Agent::Tools::Win32::setPoller($self->{_ipc_pollin});
         return;
     }
 

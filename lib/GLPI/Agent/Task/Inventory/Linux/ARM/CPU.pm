@@ -37,7 +37,7 @@ sub _getCPUsFromProc {
     # https://github.com/joyent/libuv/issues/812
     foreach my $cpu (getCPUsFromProc(@_)) {
         push @cpus, {
-            ARCH  => 'arm',
+            ARCH  => $cpu->{'cpu architecture'} && $cpu->{'cpu architecture'} =~ /^(\d+)/ && int($1) >= 8 ? 'aarch64' : 'arm',
             NAME  => $cpu->{'model name'} || $cpu->{processor}
         };
     }

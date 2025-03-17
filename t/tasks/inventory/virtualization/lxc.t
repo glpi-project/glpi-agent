@@ -23,7 +23,7 @@ my %container_tests = (
             NAME    => 'config',
             VMTYPE  => 'lxc',
             STATUS  => STATUS_OFF,
-            MEMORY  => '2048000',
+            MEMORY  => '1',
             MAC     => '01:23:45:67:89:0a',
             VCPU    => 4
         }
@@ -55,7 +55,7 @@ my %container_tests = (
             VMTYPE  => 'lxc',
             STATUS  => STATUS_RUNNING,
             MAC     => 'fa:ee:26:ef:6b:1c',
-            MEMORY  => 2147483648,
+            MEMORY  => 2048,
             VCPU    => 2
         }
     },

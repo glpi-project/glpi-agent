@@ -66,6 +66,26 @@ my %lsusb_tests = (
             SERIAL       => '28A1CC69D1D8AE4585EDA53F7CD6CB88',
             MANUFACTURER => 'ﾩSymbol Technologies, Inc, 2002'
         }
+    ],
+    'apc-ups' => [
+        {
+            NAME         => 'Smart-UPS 1000 RM FW:669.19.I USB FW:11.03',
+            VENDORID     => '051d',
+            PRODUCTID    => '0002',
+            SUBCLASS     => '0',
+            CLASS        => '3',
+            SERIAL       => 'AS1042245614',
+            MANUFACTURER => 'American Power Conversion'
+        },
+        {
+            NAME         => 'Smart-UPS_1500 FW:UPS 03.5 / ID=1018',
+            VENDORID     => '051d',
+            PRODUCTID    => '0003',
+            SUBCLASS     => '0',
+            CLASS        => '3',
+            SERIAL       => 'AS2032166823',
+            MANUFACTURER => 'American Power Conversion'
+        }
     ]
 );
 
@@ -109,6 +129,15 @@ my %usb_tests = (
             CAPTION      => re('^BCM5880 Secure Applications Processor')
         },
         {
+            NAME         => re('^Duosense Transparent Electromagnetic Digitizer'),
+            VENDORID     => '1b96',
+            SUBCLASS     => '0',
+            CLASS        => '0',
+            PRODUCTID    => '0001',
+            MANUFACTURER => 'N-Trig',
+            CAPTION      => re('^Duosense Transparent Electromagnetic Digitizer')
+        },
+        {
             NAME         => re('^PocketMouse Pro'),
             VENDORID     => '047d',
             SUBCLASS     => '1',
@@ -127,7 +156,29 @@ my %usb_tests = (
             SERIAL       => '28A1CC69D1D8AE4585EDA53F7CD6CB88',
             CAPTION      => re('^Bar Code Scanner')
         }
-    ]
+     ],
+    'apc-ups' => [
+        {
+            NAME         => re('Uninterruptible Power Supply'),
+            VENDORID     => '051d',
+            PRODUCTID    => '0002',
+            SUBCLASS     => '0',
+            CLASS        => '3',
+            SERIAL       => 'AS1042245614',
+            MANUFACTURER => re('American Power Conversion'),
+            CAPTION      => re('^Uninterruptible Power Supply')
+        },
+        {
+            NAME         => re('UPS'),
+            VENDORID     => '051d',
+            PRODUCTID    => '0003',
+            SUBCLASS     => '0',
+            CLASS        => '3',
+            SERIAL       => 'AS2032166823',
+            MANUFACTURER => re('American Power Conversion'),
+            CAPTION      => re('^UPS')
+        }
+   ]
 );
 
 plan tests =>

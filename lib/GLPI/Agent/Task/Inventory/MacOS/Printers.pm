@@ -24,7 +24,7 @@ sub doInventory {
     my $infos = getSystemProfilerInfos(type => 'SPPrintersDataType', logger => $logger);
     my $info = $infos->{Printers};
 
-    foreach my $printer (keys %$info) {
+    foreach my $printer (sort keys %$info) {
         next unless ref($info->{printer}) eq 'HASH';
 
         $inventory->addEntry(

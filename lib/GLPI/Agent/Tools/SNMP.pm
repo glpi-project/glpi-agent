@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use base 'Exporter';
 
+use Encode qw(decode);
+
 use GLPI::Agent::Tools;
 
 our @EXPORT = qw(
@@ -13,6 +15,7 @@ our @EXPORT = qw(
     getCanonicalConstant
     getCanonicalMemory
     getCanonicalCount
+    getCanonicalDate
     isInteger
     getRegexpOidMatch
 );
@@ -50,12 +53,16 @@ sub getCanonicalString {
     # reduce linefeeds which can be found in descriptions or comments
     $value =~ s/\p{Control}+\n/\n/g;
 
+    # Decode string before attempting any truncate on invalid char
+    $value = decode('UTF-8', $value);
+
     # truncate after first invalid character but keep newline as valid
     $value =~ s/[^\p{Print}\n].*$//;
 
     # Finally cleanup EOL if some is remaining at the end
     chomp($value);
 
+    # Finally return decoded string
     return $value;
 }
 
@@ -142,6 +149,63 @@ sub getRegexpOidMatch {
     $match =~ s/\./\\./g;
 
     return qr/^$match/;
+}
+
+my %M = qw(Jan 1 Feb 2 Mar 3 Apr 4 May 5 Jun 6 Jul 7 Aug 8 Sep 9 Oct 10 Nov 11 Dec 12);
+my $months = join('|', keys(%M));
+my $days   = "Mon|Tue|Wed|Thu|Fri|Sat|Sun";
+my $first  = join("|", map { "0?$_" } 1..9);
+my $month  = join("|", $first, 10..12);
+my $month2 = join("|", map { sprintf("%02d", $_) } 1..12);
+my $day    = join("|", $first, 10..31);
+my $day2   = join("|", map { sprintf("%02d", $_) } 1..31);
+my $hour   = join("|", map { sprintf("%02d", $_) } 0..23);
+my $min    = join("|", map { sprintf("%02d", $_) } 0..59);
+my $sec    = $min;
+my $year   = "[1-9][0-9]{3}";
+
+# Return date if possible
+sub getCanonicalDate {
+    my ($value) = @_;
+
+    return if empty($value);
+
+    # Match on 'D M d H:i:s Y'
+    if ($value =~ /^(?:$days) ($months) +($day) (?:$hour):(?:$min):(?:$sec) .*($year)$/) {
+        return sprintf("%4d-%02d-%02d", $3, $M{$1}, $2);
+    }
+
+    # Match 'D M d, Y H:i:s' as in "Wed Aug 01, 2012 05:50:43PM"
+    if ($value =~ /^(?:$days) ($months) +($day), ($year) /) {
+        return sprintf("%4d-%02d-%02d", $3, $M{$1}, $2);
+    }
+
+    # Match on 'Y-m-d\TH:i:sZ' and others with same prefix
+    if ($value =~ /^($year)-($month)-($day)/) {
+        return sprintf("%4d-%02d-%02d", $1, $2, $3);
+    }
+
+    # Match on 'd/m/Y H:i:s' and others
+    if ($value =~ m{^($day)/($month)/($year)} ) {
+        return sprintf("%4d-%02d-%02d", $3, $2, $1);
+    }
+
+    # Match on 'm/d/Y'
+    if ($value =~ m{^($month)/($day)/($year)} ) {
+        return sprintf("%4d-%02d-%02d", $3, $1, $2);
+    }
+
+    # Match on 'd.m.Y'
+    if ($value =~ /^($day)\.($month)\.($year)/ ) {
+        return sprintf("%4d-%02d-%02d", $3, $2, $1);
+    }
+
+    # Match on 'Ymd'
+    if ($value =~ /^($year)($month2)($day2)$/ ) {
+        return sprintf("%4d-%02d-%02d", $1, $2, $3);
+    }
+
+    return;
 }
 
 1;

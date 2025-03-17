@@ -35,8 +35,8 @@
   <String Id="WolDescription">All the necessary files to wake up equipements in your network.</String>
 
   <!-- custom text for service registration -->
-  <String Id="ServiceDisplayName">[AgentName]</String>
-  <String Id="ServiceDescription">[AgentName] is an inventory agent. It is intended to upload system inventory toward a GLPI server on a regular basis.</String>
+  <String Id="ServiceDisplayName">[%agent_fullname%]</String>
+  <String Id="ServiceDescription">[%agent_fullname%] is an inventory agent. It is intended to upload system inventory toward a GLPI server on a regular basis.</String>
 
   <!-- custom text for target setup dialog -->
   <String Id="TargetSetupDlg_Title">[ProductName] Target Setup</String>
@@ -65,19 +65,22 @@
   <String Id="SSLFingerPrintDescription">Fingerprint of SSL certificate to trust</String>
   <String Id="NoSSLCheckDescription">Disable SSL check (for security reason, only use it for debugging)</String>
 
-  <!-- custom text for server target Proxy options setup dialog -->
-  <String Id="ProxySetupDlgTitle">[ProductName] Setup</String>
-  <String Id="ProxySetupDlg_Title">{\WixUI_Font_Title}Remote Targets Proxy Options</String>
-  <String Id="ProxySetupDlgDescription">Set Proxy options.</String>
-  <String Id="ProxySetupGroup">Proxy Options</String>
+  <!-- custom text for server target options setup dialog -->
+  <String Id="ServerSetupDlgTitle">[ProductName] Setup</String>
+  <String Id="ServerSetupDlg_Title">{\WixUI_Font_Title}Server Target Options</String>
+  <String Id="ServerSetupDlgDescription">Set server target options.</String>
+  <String Id="ProxyServerSetupGroup">Proxy Options</String>
   <String Id="ProxyServerDescription">Proxy server</String>
-  <String Id="ProxyUserDescription">Proxy server authentication user</String>
-  <String Id="ProxyPasswordDescription">Proxy server authentication password</String>
+  <String Id="ServerAuthenticationSetupGroup">Authentication Options</String>
+  <String Id="BasicAuthenticationUserDescription">Basic authentication user</String>
+  <String Id="BasicAuthenticationPasswordDescription">Basic authentication password</String>
+  <String Id="OAuthAuthenticationClientIdDescription">OAuth Client ID</String>
+  <String Id="OAuthAuthenticationClientSecretDescription">OAuth Client secret</String>
 
   <!-- custom text for execution mode setup dialog -->
   <String Id="ExecModeDlgTitle">[ProductName] Setup</String>
   <String Id="ExecModeDlg_Title">{\WixUI_Font_Title}Choose an Execution Mode</String>
-  <String Id="ExecModeDlgDescription">Choose which way you want [AgentName] to be executed.</String>
+  <String Id="ExecModeDlgDescription">Choose which way you want [%agent_fullname%] to be executed.</String>
   <String Id="ExecModeDlgGroup">Execution Mode</String>
   <String Id="ExecModeDlgService">As a Windows Service</String>
   <String Id="ExecModeDlgTaskScheduler">As a Windows Task</String>
@@ -180,7 +183,7 @@
   <String Id="LicenseAgreementDlg_Title">[ProductName] Setup</String>
 
   <!-- some other custom dialog texts -->
-  <String Id="SetupTypeDlgTypicalText">Installs the most common program features, including Inventory, Deploy and Collect tasks support.</String>
+  <String Id="SetupTypeDlgTypicalText">Installs the most common program features with only Inventory and RemoteInventory tasks support.</String>
   <String Id="SetupTypeDlgCompleteText">All program features will be installed.</String>
   <String Id="ProgressDlgTitleInstalling">{\WixUI_Font_Title}Installing [ProductName]</String>
   <String Id="RunningAgent">Running GLPI Agent, this may take a while...</String>

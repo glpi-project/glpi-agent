@@ -26,7 +26,7 @@ sub new {
         if (@{$self->{_last_lines}}) {
             push @{$self->{_last_lines}}, $line;
         } elsif (!defined($section)) {
-            $section = "" if $line =~ /not released yet/;
+            $section = "" if $line =~ /not yet released|not release yet/;
             push @{$self->{_first_lines}}, $line;
         } elsif ($line =~ /^$/) {
             $section = "";

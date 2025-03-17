@@ -5,6 +5,7 @@ use warnings;
 
 use Config;
 use English qw(-no_match_vars);
+use File::Find;
 use File::Path qw(mkpath);
 use File::stat;
 use Storable;
@@ -29,6 +30,11 @@ sub new {
             mkpath($params{directory});
         };
         die "Can't create $params{directory}: $EVAL_ERROR" if $EVAL_ERROR;
+
+        # Migrate files from oldvardir if exists
+        if ($params{oldvardir} && -d $params{oldvardir}) {
+            _migrateVarDir($params{oldvardir}, $params{directory});
+        }
     }
 
     if (! -w $params{directory} && !$params{read_only}) {
@@ -45,6 +51,40 @@ sub new {
     bless $self, $class;
 
     return $self;
+}
+
+# Migrate vardir content tree
+sub _migrateVarDir {
+    my ($from, $to) = @_;
+
+    return unless $from && -d $from && $to && -d $to;
+
+    my $path_offset = length($from);
+    my @deletedir = ($from);
+
+    File::Find::find(
+        {
+            wanted => sub {
+                if (-l) {
+                    unlink $_;
+                    return;
+                }
+                return if $_ eq $from;
+                my $dest = $to.substr($File::Find::name, $path_offset);
+                if (-d) {
+                    mkdir $dest unless -d $dest;
+                    unshift @deletedir, $_;
+                } else {
+                    rename $_, $dest;
+                }
+            },
+            no_chdir => 1,
+        },
+        $from
+    );
+
+    # Recursively delete old dirs
+    map { rmdir $_ } @deletedir;
 }
 
 sub getDirectory {

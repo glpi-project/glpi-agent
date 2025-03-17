@@ -15,12 +15,17 @@ my @options = (
     'color',
     'cron=i',
     'debug|d=i',
+    'delaytime=i',
     'distro=s',
     'no-question|Q',
+    'esx-itemtype=s',
     'extract=s',
     'force',
+    'full-inventory-postpone=i',
+    'glpi-version=s',
     'help|h',
     'install',
+    'itemtype=s',
     'list',
     'local|l=s',
     'logger=s',
@@ -40,6 +45,7 @@ my @options = (
     'reinstall',
     'remote=s',
     'remote-workers=i',
+    'required-category=s',
     'runnow',
     'scan-homedirs',
     'scan-profiles',
@@ -118,6 +124,10 @@ glpi-agent-linux-installer [options]
     -s --server=URI                configure agent GLPI server
     -l --local=PATH                configure local path to store inventories
 
+  Target scheduling options:
+    --delaytime=LIMIT              maximum delay before target tasks first run, in seconds (3600)
+                                   It also defines the maximum delay on network error.
+
   Task selection options:
     --no-task=TASK[,TASK]...       configure task to not run
     --tasks=TASK1[,TASK]...[,...]  configure tasks to run in a given order
@@ -128,6 +138,12 @@ glpi-agent-linux-installer [options]
     --scan-profiles                set to scan user profiles (false)
     --backend-collect-timeout=TIME set timeout for inventory modules execution (30)
     -t --tag=TAG                   configure tag to define in inventories
+    --full-inventory-postpone=NUM  set number of possible full inventory postpone (14)
+    --required-category=CATEGORY   list of category required even when postponing full inventory
+    --itemtype=TYPE                set asset type for target supporting genericity like GLPI 11+
+
+  ESX task specific options:
+    --esx-itemtype=TYPE            set ESX asset type for target supporting genericity like GLPI 11+
 
   RemoteInventory specific options:
     --remote=REMOTE[,REMOTE]...    list of remotes for remoteinventory task
@@ -166,6 +182,9 @@ glpi-agent-linux-installer [options]
     --service                      setup the agent as service (true)
     --cron                         setup the agent as cron task running hourly (false)
 
+  Other options:
+    --glpi-version=<VERSION>       set targeted glpi version to enable supported features
+
   Installer options:
     --install                      install the agent (true)
     --uninstall                    uninstall the agent (false)
@@ -182,7 +201,7 @@ glpi-agent-linux-installer [options]
                                      - "snap": don't install but extract snap package
     --runnow                       run agent tasks on installation (false)
     --type=INSTALL_TYPE            select type of installation (typical)
-                                     - "typical" to only install inventory task
+                                     - "typical" to only install computer inventory and remote inventory tasks
                                      - "network" to install glpi-agent and network related tasks
                                      - "all" to install all tasks
                                      - or tasks to install in a comma-separated list

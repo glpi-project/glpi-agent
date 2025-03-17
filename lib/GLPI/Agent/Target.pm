@@ -29,6 +29,7 @@ sub new {
         maxDelay     => $params{maxDelay} || 3600,
         errMaxDelay  => $errMaxDelay,
         initialDelay => $params{delaytime},
+        _glpi        => $params{glpi} // '',
         _events      => [],
         _next_event  => {},
     };
@@ -50,6 +51,7 @@ sub _init {
 
     $self->{storage} = GLPI::Agent::Storage->new(
         logger    => $self->{logger},
+        oldvardir => $params{oldvardir} // "",
         directory => $params{vardir}
     );
 
@@ -63,8 +65,17 @@ sub _init {
         $self->setMaxDelay($keepMaxDelay);
     }
 
+    # Disable initialDelay if next run date has still been set in a previous run and was planified in the last max delay
+    my $lastExpectedRunDateLimit = time-$self->getMaxDelay();
+    delete $self->{initialDelay} if $self->{initialDelay} && $self->{nextRunDate} && $self->{nextRunDate} >= $lastExpectedRunDateLimit;
+
+    # Setup targeted run date if necessary
+    $self->{baseRunDate} = time + ($self->{initialDelay} // $self->getMaxDelay())
+        unless $self->{baseRunDate} && $self->{baseRunDate} > $lastExpectedRunDateLimit;
+
+    # Set next run date in the future unless still set and in the expected last run limit
     $self->{nextRunDate} = $self->computeNextRunDate()
-        if (!$self->{nextRunDate} || $self->{nextRunDate} < time-$self->getMaxDelay());
+        unless $self->{nextRunDate} && $self->{nextRunDate} >= $lastExpectedRunDateLimit;
 
     $self->_saveState();
 
@@ -73,7 +84,7 @@ sub _init {
         ($self->isType("server") ? "server contact" : "tasks run") .
         " planned " .
         ($self->{nextRunDate} < time ? "now" : "for ".localtime($self->{nextRunDate}))
-    );
+    ) if $self->{initialDelay};
 
     # Disable initialDelay if next run date has still been set in a previous run to a later time
     delete $self->{initialDelay} if $self->{initialDelay} && $self->{nextRunDate} && $self->{nextRunDate} > time;
@@ -95,6 +106,7 @@ sub setNextRunOnExpiration {
     my ($self, $expiration) = @_;
 
     $self->{nextRunDate} = time + ($expiration // 0);
+    $self->{baseRunDate} = $self->{nextRunDate};
     $self->_saveState();
 
     # Be sure to skip next resetNextRunDate() call
@@ -115,6 +127,7 @@ sub setNextRunDateFromNow {
         $self->{_nextrundelay} = $nextRunDelay;
     }
     $self->{nextRunDate} = time + ($nextRunDelay // 0);
+    $self->{baseRunDate} = $self->{nextRunDate};
     $self->_saveState();
 
     # Remove initialDelay to support case we are still forced to run at start
@@ -127,8 +140,14 @@ sub resetNextRunDate {
     # Don't reset next run date if still set via setNextRunOnExpiration
     return if delete $self->{_expiration};
 
+    my $timeref = $self->{baseRunDate} || time;
+
+    # Reset timeref if out of range defined by maxDelay
+    $timeref = time if $timeref < time - $self->getMaxDelay() || $timeref > time + $self->getMaxDelay();
+
     $self->{_nextrundelay} = 0;
-    $self->{nextRunDate} = $self->computeNextRunDate();
+    $self->{nextRunDate} = $self->computeNextRunDate($timeref);
+    $self->{baseRunDate} = $timeref + $self->getMaxDelay();
     $self->_saveState();
 }
 
@@ -155,17 +174,71 @@ sub triggerTaskInitEvents {
     }
 }
 
-sub addEvent {
+sub triggerRunTasksNow {
     my ($self, $event) = @_;
 
+    # $tasks must be set to "all" to trigger all tasks
+    return unless $event && $event->runnow && $self->{tasks} && @{$self->{tasks}};
+
+    my %plannedTasks = map { lc($_) => 1 } @{$self->{tasks}};
+    my $task = $event->task;
+    my $all = $task && $task eq "all" ? 1 : 0;
+    my @tasks = $all ? @{$self->{tasks}} : split(/,+/, $task);
+    my $reschedule_index = $all ? scalar(@tasks) : 0;
+    foreach my $runtask (map { lc($_) } @tasks) {
+        $reschedule_index--;
+        next unless $plannedTasks{$runtask};
+
+        my %event = (
+            taskrun => 1,
+            task    => $runtask,
+            # runnow event can still have been delayed itself
+            delay   => 0,
+        );
+
+        # permit to reschedule on last task run
+        $event{reschedule} = 1
+            if $all && $reschedule_index == 0;
+
+        # Add any supported params
+        if ($runtask eq "inventory") {
+            my $full    = $event->get("full");
+            my $partial = $event->get("partial");
+            if (defined($full)) {
+                $event{"full"} = $full;
+            } elsif (defined($partial)) {
+                $event{"partial"} = $partial;
+            } else {
+                $event{"full"} = 1;
+            }
+        }
+
+        $self->addEvent(GLPI::Agent::Event->new(%event), 1);
+    }
+
+    # Also reset cached responses
+    delete $self->{_responses};
+}
+
+sub addEvent {
+    my ($self, $event, $safe) = @_;
+
     # event name is mandatory
-    return unless $event->name;
+    return unless $event && $event->name;
 
     my $logger = $self->{logger};
     my $logprefix = $self->{_logprefix};
 
     # Check for supported events
-    if ($event->partial) {
+    if (!$event->job && ($event->runnow || $event->taskrun)) {
+        unless ($event->task) {
+            $logger->debug("$logprefix Not supported ".$event->name." event without task");
+            return 0;
+        }
+        $logger->debug("$logprefix Adding ".$event->name." event for ".$event->task." task".
+            ($event->task ne "all" && $event->task !~ /,/ ? "" : "s")
+        );
+    } elsif ($event->partial) {
         unless ($event->category) {
             $logger->debug("$logprefix Not supported partial inventory request without selected category");
             return 0;
@@ -206,7 +279,7 @@ sub addEvent {
     if (@{$self->{_events}} >= 1024) {
         $logger->debug("$logprefix Event requests overflow, skipping new event");
         return 0;
-    } elsif ($self->{_next_event}) {
+    } elsif ($self->{_next_event} && !$safe) {
         my $nexttime = $self->{_next_event}->{$event->name};
         if ($nexttime && time < $nexttime) {
             $logger->debug("$logprefix Skipping too early new ".$event->name()." event");
@@ -244,17 +317,15 @@ sub delEvent {
         if $self->{_next_event};
 
     # Cleanup event list
-    $self->{_events} = [ grep { $_->name ne $event->name } @{$self->{_events}} ]
+    $self->{_events} = [ grep { $_->name ne $event->name || (($event->init || $event->maintenance || $event->taskrun) && $_->task ne $event->task) } @{$self->{_events}} ];
 }
 
-sub getEvent {
-    my ($self, $name) = @_;
-    if ($name) {
-        my ($event) = grep { $_->name eq $name } @{$self->{_events}};
-        return $event;
-    }
+sub nextEvent {
+    my ($self) = @_;
+
     return unless @{$self->{_events}} && time >= $self->{_events}->[0]->rundate;
-    return shift @{$self->{_events}};
+
+    return $self->{_events}->[0];
 }
 
 sub paused {
@@ -310,14 +381,14 @@ sub isGlpiServer {
     return 0;
 }
 
-# compute a run date, as current date and a random delay
-# between maxDelay / 2 and maxDelay
+# Compute a run date from time ref reduced from a little random delay
 sub computeNextRunDate {
-    my ($self) = @_;
+    my ($self, $timeref) = @_;
 
-    my $ret;
+    $timeref = time unless $timeref;
+
     if ($self->{initialDelay}) {
-        $ret = time + ($self->{initialDelay} / 2) + int rand($self->{initialDelay} / 2);
+        $timeref += $self->{initialDelay} - int(rand($self->{initialDelay}/2));
         delete $self->{initialDelay};
     } else {
         # By default, reduce randomly the delay by 0 to 3600 seconds (1 hour max)
@@ -329,10 +400,10 @@ sub computeNextRunDate {
             # Finally reduce randomly the delay by 1 hour for each 24 hours, for delay other than a day
             $max_random_delay_reduc = $self->{maxDelay} / 24;
         }
-        $ret = time + $self->{maxDelay} - int(rand($max_random_delay_reduc));
+        $timeref += $self->{maxDelay} - int(rand($max_random_delay_reduc));
     }
 
-    return $ret;
+    return $timeref;
 }
 
 sub _loadState {
@@ -341,7 +412,7 @@ sub _loadState {
     my $data = $self->{storage}->restore(name => 'target');
 
     map { $self->{$_} = $data->{$_} } grep { defined($data->{$_}) } qw/
-        maxDelay nextRunDate id
+        maxDelay nextRunDate id baseRunDate
     /;
 
     # Update us as GLPI server is recognized as so before
@@ -354,6 +425,7 @@ sub _saveState {
     my $data ={
         maxDelay    => $self->{maxDelay},
         nextRunDate => $self->{nextRunDate},
+        baseRunDate => $self->{baseRunDate},
         type        => $self->getType(),                 # needed by glpi-remote
         id          => $self->id(),                      # needed by glpi-remote
     };
@@ -384,6 +456,18 @@ sub _needToReloadState {
     $self->{_next_reload_check} = time+30;
 
     return $self->{storage}->modified(name => 'target');
+}
+
+sub getTaskVersion {
+    my ($self) = @_;
+
+    return $self->{_glpi};
+}
+
+sub responses {
+    my ($self, $responses) = @_;
+    return $self->{_responses} unless defined($responses);
+    $self->{_responses} = $responses;
 }
 
 1;

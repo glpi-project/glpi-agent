@@ -293,6 +293,29 @@ sub _getProcessesBusybox {
     return @processes;
 }
 
+my $qrProcessWithNameSpace = qr/^ \s*
+    (\S+) \s+
+    (\S+) \s+
+    (\S+) \s+
+    (\S+) \s+
+    (\S+) \s+
+    (\S+) \s+
+    (\S+) \s+
+    (\S+) \s+
+    (\S.*\S)
+    /x;
+
+my $qrProcessWithoutNameSpace = qr/^ \s*
+    (\S+) \s+
+    (\S+) \s+
+    (\S+) \s+
+    (\S+) \s+
+    (\S+) \s+
+    (\S+) \s+
+    (\S+) \s+
+    (\S.*\S)
+    /x;
+
 sub _getProcessesOther {
     my (%params) = (
         command =>
@@ -300,6 +323,29 @@ sub _getProcessesOther {
             (OSNAME() eq 'solaris' ? 'comm' : 'command'),
         @_
     );
+
+    # Support a parameter to only keep processes from the same namespace
+    # Useful to exclude processes from docker or lxc containers on linux
+    my $sameNameSpace = delete $params{namespace} // "";
+    if (OSNAME eq "solaris") {
+        $sameNameSpace = 0;
+    } elsif ($sameNameSpace && $sameNameSpace eq "same") {
+        # Extract namespace number from the system first process
+        $sameNameSpace = getFirstLine(command => "ps --no-headers -o cgroupns 1", logger => $params{logger});
+        if ($sameNameSpace && $sameNameSpace =~ /^\d+$/) {
+            $sameNameSpace = int($sameNameSpace);
+            $params{command} = "ps -A -o user,pid,pcpu,pmem,vsz,tty,etime,cgroupns,command";
+        } else {
+            $sameNameSpace = 0;
+        }
+    } else {
+        $sameNameSpace = 0;
+    }
+
+    my $filter = delete $params{filter};
+    $filter = 0 unless ref($filter) eq "Regexp";
+
+    my $qrLine = $sameNameSpace ? $qrProcessWithNameSpace : $qrProcessWithoutNameSpace;
 
     my @lines = getAllLines(%params)
         or return;
@@ -314,17 +360,7 @@ sub _getProcessesOther {
 
     foreach my $line (@lines) {
 
-        next unless $line =~
-            /^ \s*
-            (\S+) \s+
-            (\S+) \s+
-            (\S+) \s+
-            (\S+) \s+
-            (\S+) \s+
-            (\S+) \s+
-            (\S+) \s+
-            (\S.*\S)
-            /x;
+        next unless $line =~ $qrLine;
 
         my $user  = $1;
         my $pid   = $2;
@@ -333,7 +369,12 @@ sub _getProcessesOther {
         my $vsz   = $5;
         my $tty   = $6;
         my $etime = $7;
-        my $cmd   = $8;
+        my $ns    = $sameNameSpace ? $8 : 0;
+        my $cmd   = $sameNameSpace ? $9 : $8;
+
+        next if $sameNameSpace && $ns && $ns =~ /^\d+$/ && int($ns) != $sameNameSpace;
+
+        next if $filter && $cmd !~ $filter;
 
         push @processes, {
             USER          => $user,

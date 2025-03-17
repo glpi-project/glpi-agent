@@ -24,7 +24,7 @@ sub isEnabled {
         maxdepth    => 1,
     );
 
-    return defined($key) ? 1 : 0;
+    return defined($key) && keys(%{$key}) ? 1 : 0;
 }
 
 sub doInventory {

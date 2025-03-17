@@ -1,6 +1,537 @@
 Revision history for GLPI agent
 
-1.7 not yet released
+1.14 not yet released
+
+1.13 Thu, 13 Mar 2025
+
+core:
+* fix #851: glpi-agent should also try to request CONTACT after GLPI 10+ answer on PROLOG
+* Reworked target responses caching for event handling
+* Support 'none' as proxy configuration to not try to use proxy set in environment variables
+
+inventory:
+* On windows, don't cache system is not 64 bits for the service lifetime as this can
+  be the result of a failed WMI call at the service start.
+* Fix PostgreSQL inventory when password is given by dedicated databaseinventory plugin
+* Add "required-category" configuration support to always include listed categories in
+  partial inventory generated while postponing full inventory. You can need to setup this
+  option if you're using GLPI rules based on possibly not changing inventory part. For
+  example, you can set it to "network" if you use rules to set asset location from asset
+  ip address or network.
+* Add "itemtype" configuration support to handle requirement for servers supporting genericity
+  like GLPI 11+. Remark: This option is shared with remoteinventory task.
+* fix #857: Support Microsoft Defender AV detection on Windows Server
+* PR #869: Fix Proxmox/LXC memory conversion
+* fix #868: Support SentinelOne Agent as AV on Windows Server
+* Updated pci.ids to 2025.03.09 version
+* Bump Inventory task version to 1.20
+
+remoteinventory:
+* Add "itemtype" configuration support to handle requirement for servers supporting genericity
+  like GLPI 11+. Remark: This option is shared with inventory task.
+* Bump RemoteInventory task version to 1.7
+
+netdiscovery/netinventory:
+* PR #836 from @eduardomozart: Enhanced HP wireless printers by reporting wifi ports
+  as wireless
+* Fix network ports ip support to avoid wrong allocation in rare cases, seen on a Ricoh printer
+* Fix switch known macaddresses analysis
+* fix #870: Add support for TP-Link Omada linux appliances
+* Updated sysobject.ids
+* Bump NetDiscovery task version to 6.6
+* Bump NetInventory task version to 6.6
+
+deploy:
+* fix #854: Deploy task was not run when forced via httpd interface
+* Bump Deploy task version to 3.5
+
+esx:
+* Add "esx-itemtype" configuration support to handle requirement for servers supporting genericity
+  like GLPI 11+.
+* Bump ESX task version to 2.13
+
+packaging:
+* Update Windows packaging to use:
+  - Perl 5.40.1 built using Perl::Dist::StrawBerry perl library processing
+  - OpenSSL 3.4.1
+  - msys2-base 20241208
+  - liblzma from xz 5.6.4
+  - libxml2 2.13.6
+  - dmidecode 3.6
+* Update MacOSX packages to use perl 5.40.1 and OpenSSL 3.4.1
+* Fix Windows MSI installer server targets options panel:
+  - User and password are for Basic Authentication support
+  - Add OAuth Authentication fields (requires GLPI 11+)
+
+1.12 Fri, 24 Jan 2025
+
+core:
+* fix #780: Avoid module loading path check error on windows if path includes a
+  parenthesis
+* fix #789: Avoid warning on commandline about possible confusion when reading quoted
+  configuration value including a dash from configuration file
+* fix #790: Fix server URL parsing when it doesn't include scheme
+* Add glpi-version configuration support to handle inventory_format dependent features
+* Handle /now request as an event. If inventory task run is triggered, it will now
+  always by default generate a full inventory. /now supports a query string with the
+  following possible values:
+  - partial=yes or partial=1 to force a partial inventory
+  - full=yes or full=1 to force a full inventory (the default)
+  - task=all (the default) or "all" replaced by a comma-separated list of tasks
+  - delay=0 (the default) can be set with the number of seconds to delay the tasks run
+* Changes to index page from httpd interface:
+  - "Force an inventory" link text is replaced by "Force running all targets planned tasks"
+    to reflect the real behavior of the related action
+  - Added a "Force an inventory" to only trigger inventory task for all targets
+  - Targets list also show target planned tasks for trusted clients
+* Refacto: Add Logger api to register a callback permitting to collect journaling events
+* Fix ToolBox job events support
+* Support ssl-keystore=system-ssl-ca on MacOSX to force using system known public CAs
+* Cleanup server url in log and server vardir with automatic migration
+
+inventory:
+* Fix rare windows perl error during drives, ipv6 network or videos inventory
+* Always keep disabled network interface on windows if it includes "vpn" string
+  in description
+* Add glpi-version configuration support to handle inventory_format dependent features
+  - Remove check alerting on invalid storage interface for GLPI >= 10.0.4
+* fix #811: Fix network interface inventory on lxc linux container, but also fix
+  few other cases where more interfaces are found due to interface name aliasing
+* Fix --partial option when used with glpi-agent script
+* Update getProcesses() API to permit filtering and report processes only in the same
+  namespace to not list containers processes. Refacto inventory module using this API.
+* Add support for Trellix/McAfee agent as Antivirus on windows
+* fix #827: Fix usb devices inventory on linux which have 0002 as PRODUCTID and are not root hub
+* fix #652: Fix usb printers serialnumber on windows stripping leading zeros
+* Updated pci.ids to 2025.01.13 version
+* Updated usb.ids to 2025.01.14 version
+* Bump Inventory task version to 1.19
+
+remoteinventory:
+* Store remote inventory part checksums in dedicated state files and support maintenance
+  event to cleanup state files older than 30 days
+* Bump RemoteInventory task version to 1.6
+
+netdiscovery/netinventory:
+* fix #768: Added Aerohive devices support
+* fix #769: Added Intelbras devices support
+* don't send discovery xml to server target for remoteinventory task event initiated
+  from toolbox
+* fix #781: Filter invalid firmware date on HP peripherals
+* Added Raritan PDU devices support
+* Updated sysobject.ids
+* Added Avaya J100 series IP Phones support
+* Updated Lexmark printers support
+* Added Bachmann PDU devices support
+* Added RNX PDU devices support
+* Updated sysobject.ids
+* Bump NetDiscovery task version to 6.5
+* Bump NetInventory task version to 6.5
+
+deploy:
+* Fix checks on command run and clarify reason of success or failure. This fixes
+  "return code is not" and "command output doesn't contain" checks which was always
+  failing.
+* fix #804: Don't scan network and broadcast addresses when using P2P
+* Fix sha512 file checks to also accept provided digest in upper case
+* Bump Deploy task version to 3.4
+
+collect:
+* Fix sha512 file check to also accep provided digest in upper case
+* Change 'checkSumSHA2' file check meaning to compute sha256
+* Add 'checkSumSHA256' params support for file checking to replace 'checkSumSHA2' one
+  and it is mandatory over its alias 'checkSumSHA2'
+* Bump Collect task version to 2.10
+
+esx:
+* Support reporting of ESX virtualmachines ip and operating system. It requires
+  inventory_format schema v1.1.36 on server-side included in GLPI v10.0.17.
+* Add --glpi-version option support to glpi-esx script
+* Add guessed Total ESX memory size as memory component
+* Bump ESX task version to 2.12
+
+toolbox:
+* Fix task log reset for enabled tasks
+* Fix enabled jobs start up
+* Fix event logger support to update counters even when debug is not enabled
+* Bump ToolBox plugin version to 1.5
+
+packaging:
+* Update Windows MSI packing building process to use:
+  - OpenSSL 3.4.0
+  - libssh2 1.11.1
+  - libxml2 2.13.5
+  - libiconv 1.18
+* Update MacOSX packages to use OpenSSL 3.4.0
+* fix #816: Support --delaytime option in linux perl installer
+* fix #797: Use option to disable local package gpg check when installing with dnf
+  in linux perl installer
+
+1.11 Tue, 24 Sep 2024
+
+core:
+* Prevent certificates overwriting during export from Windows Keystore
+* Add new option to specify or disable Windows KeyStore support
+
+inventory:
+* fix #700: Add TacticalRMM Remote_Mgmt support for MacOSX
+* fix #711: Update Bitdefender AV support on Windows, and also update enable support
+  on Windows Server OS.
+* fix #716: Don't fail on regexp error while running from a user folder which contains
+  a parenthesis
+* fix #748: Don't include lastloggeduser in hardware section in partial inventory
+  if users section is being deleted after no change detected
+* Updated pci.ids to 2024.09.20 version
+* Bump Inventory task version to 1.18
+
+netdiscovery/netinventory:
+* Skip Konica printers firmware with "Registered" set as version
+* Enhanced Hikvision devices support
+* Updated sysobject.ids
+* Bump NetDiscovery task version to 6.4
+* Bump NetInventory task version to 6.4
+
+deploy:
+* Avoid perl syntax error when running Powershell script from Deploy task on windows
+* Bump Deploy task version to 3.3
+
+proxy-server-plugin:
+* Always evaluate only_local_store to yes when glpi_protocol is set and no server is
+  configured so default required format remains json
+* Bump Proxy plugin version to 2.5
+
+packaging:
+* Update Windows MSI packing building process to use:
+  - OpenSSL 3.3.2
+  - libxml2 2.13.4
+* Update MacOSX packages to use OpenSSL 3.3.2
+* Windows MSI installer now supports AGENTMONITOR_NEWTICKET_SCREENSHOT as option to
+  configure if GLPI-AgentMonitor should always create a screenshot on new ticket.
+  The default set value is 1 and means to always create a screenshot.
+* Updated Windows packages 7-Zip commandline tools to v24.08
+* win32: Updated GLPI-AgentMonitor to v1.4.0
+
+1.10 Tue, 09 Jul 2024
+
+core:
+* Add support for OAuth2 authentication included in next main GLPI version.
+* Reduce drift on run date keeping not randomized time reference
+* fix: Don't reset run date in hourly run for unmanaged mode
+* Control concurrent calls to not thread safe apis on windows
+* Little optimization on GLPI::Agent::XML objects check
+* Use task expiration for SSL CA certs cache expiration when running in task threads
+
+inventory:
+* fix #680: Enhanced disk storage serialnumber support on Windows (one more case)
+* fix #565: Add support for Cortex XDR Antivirus on windows.
+  This is also an attempt to start antivirus support on Windows Server based on
+  service detection.
+* Add support for Cortex XDR Antivirus on MacOSX and linux
+* fix #700: Add TacticalRMM Remote_Mgmt module for windows and linux
+* Update Solaris OS installation date support
+* Updated pci.ids to 2024.06.23 version
+* Updated usb.ids to 2024.07.04 version
+* Bump Inventory task version to 1.17
+
+netdiscovery/netinventory:
+* Always send netinventory jobs end messages from runners
+* Fixed tasks blocking on windows with core concurrent calls control
+* Avoid to expire SSL CA certs cache in threads
+* Bump NetDiscovery task version to 6.3
+* Bump NetInventory task version to 6.3
+
+deploy:
+* For job with P2P enabled, don't use hard-coded 62354 port, but agent httpd-port
+  configuration to discover listening peer agents.
+* For job with P2P enabled, use remote-workers configuration to optimize peers
+  discovery keeping 10 workers as minimum default.
+* Bump Deploy task version to 3.2
+
+esx:
+* fix #691: Fix perl error while checking esx configuration template
+* Bump ESX task version to 2.11
+
+proxy-server-plugin:
+* Enhanced SSL connection cleaning when combined with ssl-server-plugin
+* Bump Proxy plugin version to 2.4
+
+ssl-server-plugin:
+* Don't use SSL_no_shutdown while closing connection after a fork to fully cleanup
+  connection on close.
+* Bump SSL plugin version to 1.2
+
+injector:
+* Add support for OAuth2 authentication
+
+packaging:
+* Update Windows MSI packing building process to use:
+  - gcc 13.3.0posix-11.0.1-msvcrt-r1
+  - msys2-base 20240507
+  - OpenSSL 3.3.1
+  - liblzma from xz 5.6.2
+  - libxml2 2.13.2
+* Update MacOSX packages to use OpenSSL 3.3.1
+* fix #619: Get rid of Archive::Extract dependency as upstream module has not been
+  updated since years and has been removed from RockyLinux 9. The module is not
+  embedded with few cleanup and adapted to GLPI Agent usage context.
+* win32: Updated GLPI-AgentMonitor to v1.3.1
+* Add --wait option support to AppImage installer. This option can only be used
+  for unmanaged cron mode to force randomization of tasks run.
+
+1.9 Tue, 28 May 2024
+
+inventory:
+* fix #676: Always include OPERATINGSYSTEM section if SOFTWARES one is in partial
+  inventory as this is required by GLPI. This fixes issues with full-inventory-postpone
+  new feature introduced in 1.8 and with --partial glpi-inventory script option.
+* fix #673: Fix support of network port type on MacOSX
+* fix #675: Enhanced MSSQL database inventory on Windows by discovering installed
+  instances.
+* fix #680: Enhanced disk storage serialnumber support on Windows
+* Bump Inventory task version to 1.16
+
+remoteinventory:
+* fix special characters handling in passwords
+* Bump RemoteInventory task version to 1.5
+
+netdiscovery/netinventory:
+* fix #642: Support snmp-retries configuration parameter to set snmp requests
+  maximum retries in place of the default of 0.
+  glpi-netdiscovery & glpi-netinventory supports --retries option.
+* Bump NetDiscovery task version to 6.2
+* Bump NetInventory task version to 6.2
+
+deploy:
+* Fix: Avoid possible crash on windows while using WTS for User Interactions
+* Bump Deploy task version to 3.1
+
+toolbox:
+* fix #582, #596, #671: UTF-8 and special characters are now supported in user and
+  password for RemoteInventory credentials
+* Bump ToolBox plugin version to 1.4
+
+packaging:
+* Fix: Call SetDllDirectory system API to help finding provided DLL libraries on windows
+* Fix: Fix OpenSSL to use zlib1__.dll provided library
+* Fix: full-inventory-postpone not fully integrated in registry by windows MSI installer
+
+1.8 Wed, 15 May 2024
+
+core:
+* Parallel::ForkManager must not use more than 60 workers on MSWin32 due to a
+  perl limitation on this operating system
+* Refacto events management to permit a task to trigger another one
+* IPC long messages only have size limitation on windows
+* Add new IPC message type to handle too long IPC_EVENT messages on windows
+* Refacto XML parsing of plist files on MacOSX
+
+inventory:
+* Fix network default route discovery on linux
+* Fix virtualmachine inventory on computer providing vmware-cmd command
+* fix #589: Make additional-content option works as before when merging a json list
+* Add new 'full-inventory-postpone' option which default to 14. The agent will try
+  to submit partial inventory with only changed categories to limit the inventory
+  size most of the time. The option can only be used with GLPI 10 and its JSON format.
+* Update inventory to be generated in a consistent order as required by new
+  'full-inventory-postpone' option to detect changes
+* Update glpi-agent script with --full-inventory-postpone option support
+* Update glpi-agent script with --full option support to force a full inventory
+* fix #611: Wrong bios value as array on win32 bios when using WMI in proxmox vm
+* fix #609: Fix rustdesk remote management version analysis
+* fix #630: Enhanced support for linux on Raspberry Pi 3
+* Fix ioreg command output parsing on MacOSX to avoid Deep Recursion perl warning
+* Fix software publisher analysis in software inventory on MacOSX
+* Enhance #430 fix: Don't make edid mandatory if monitor SERIAL & CAPTION are still
+  found. This fixes monitors inventory on Apple M1.
+* Fix MacOSX software arch should be set in ARCH field
+* Fix Lenovo T24v-10 monitor serial number inventory
+* Add base code to support usb device update on MSWin32, mainly to report expected
+  or fix serialnumber for specific device with well-know method to get required
+  datas. This base code is required to fix #650.
+* fix #651: Detect missing prefix for BenQ monitors serialnumber
+* Updated pci.ids to 2024.05.14 version
+* Updated usb.ids to 2024.03.18 version
+
+remoteinventory:
+* Limit the number of attempts and reported errors when libssh2 fails but ssh command
+  works. Libssh2 attempts will be disabled for a minute on failed attempt.
+* Clarify debug, warning and error messages
+
+netdiscovery/netinventory:
+* Keep device mac address found via snmp during netdiscovery as this is the one
+  which will be reported during netinventory. This will fix duplication issues
+  while using "(by mac)" import & update rules in GLPI.
+* fix #574: Updated page counters support for Ricoh printers
+  Also updated with refacto in dedicated MibSupport module page counters support
+  for Canon printers
+  Add scanned counter on Ricoh
+  Add page counters support for Xerox and Konica printers
+* Added page counters support for Canon LPB7660 models
+* Added Konica printer firmwares support
+* Prevent multi-threading issues on win32 due to Netbios datas parsing
+* Enhanced Brother devices support
+* When looking for privateoid rule in MibSupport search, the rule must match on
+  defined value, even if the private oid returns zero.
+* fix #590: Add Pantum printer support
+* Fix RemoteInventory not run during netscan if any of the other tests is failing,
+  meaning RemoteInventory was functionnal only if at least ping works or the
+  targeted computer was in the same network (arp works).
+* Add support for Socomec PDU
+* fix #653: Some values like LOCATION or CONTACT can be wrongly encoded
+* Add Dell MibSupport dedicated module
+* PR #657: Improve Ubnt serial and SSID detection, thanks to @eduardomozart
+* PR #658: Improve Aruba SSID detection, thanks to @eduardomozart
+* Updated sysobject.ids
+
+deploy:
+* Force agent to run a partial software inventory after the deploy task is done
+  if this has been set as a requirement in any job sent by the server
+
+proxy-server-plugin:
+* Fix issues due to wrong support of long IPC messages
+
+toolbox:
+* fix #532: Make libssh2 use the right place when looking for known_hosts file
+  on windows
+* Fix RemoteInventory can not be started during netscan
+
+packaging:
+* [SECURITY] New fix for CVE-2024-28240: A local user could modify the GLPI Agent
+  configuration to gain higher privileges if installed on windows with MSI packaging.
+  The fix is now based on our own CustomAction Dll which not rely on our capacity
+  to run an external command requiring elevated privilege.
+  So it is far more robust than preivous one.
+* Update Windows MSI packing building process to use:
+  - gcc 13.2.0posix-18.1.5-11.0.1-msvcrt-r8
+  - msys2-base 20240113
+  - zlib 1.3.1
+  - OpenSSL 3.2.1
+  - libssh2 1.11.0
+  - liblzma from xz 5.4.6
+  - libxml2 2.12.7
+  - StrawBerry Perl 5.38.2
+* Windows MSI installer is only provided for x64
+* Fix MSI "Back" button on "VerifyReady" dialog in Repair or Remove mode
+* Updated Windows packages 7-Zip commandline tools to v23.01
+* Fix the way Glpi-AgentMonitor is stopped during upgrade to prevent service
+  installation issues
+* Remove Deploy & Collect tasks from Typical installation on windows
+* On MacOSX, by default, only enable inventory task on MacOSX. You'll have now to
+  explicitely enable required tasks in an "etc/conf.d" ".cfg" file.
+* Windows MSI installer now supports AGENTMONITOR_NEWTICKET_URL as option to configure
+  GLPI-AgentMonitor new ticket url.
+* win32: Updated GLPI-AgentMonitor to v1.3.0
+
+1.7.3 Wed, 03 Apr 2024
+
+packaging:
+* Fix LOCAL was set to installation folder during windows MSI installation v1.7.2,
+  even if LOCAL was not used or it was set empty in installer UI
+* Enhanced CVE-2024-28241 fix to only apply folder security if install folder and
+  eventually LOCAL folder are subfolders of system "Program Files" folder
+* Fix MSI to reuse InstallDir set in registry on upgrade
+
+1.7.2 Mon, 25 Mar 2024
+
+packaging:
+* [SECURITY] Fix CVE-2024-28241: A local user could modify the GLPI-Agent installation
+  to gain higher privileges, but only on windows with MSI packaging when GLPI Agent
+  is not installed in the default installation folder
+* [SECURITY] Fix CVE-2024-28240: A local user could modify the GLPI Agent configuration
+  to gain higher privileges if installed on windows with MSI packaging
+* Update MacOSX to use perl 5.38.2, OpenSSL 3.2.1 and zlib 1.3.1
+
+1.7.1 Fri, 22 Dec 2023
+
+core:
+* fix #567: Test ssl-fingerprint option as an empty array to still try to export
+  windows keystore or macosx keychain for SSL certificate validation checks
+  This fixes SSL connection issues appeared with 1.7 release on windows & macosx.
+
+1.7 Thu, 21 Dec 2023
+
+core:
+* Make alt2canonical() always return a mac address in lower case if found one
+* Fix HTTP::Client API to support timeout update
+* Move runPowerShell() API remote case support in RemoteInventory API
+* Update httpd default page to show targets id and server url or local path only
+  for trusted clients
+* Update local target API to support getFullPath() & setFullPath() calls
+* Handle '.' local target when run as a service to save inventories in vardir
+* Reduce internal IPC event supported size
+* To optimize IPC support, read all event messages before triggering events
+* fix #560: Skip export of keystore on win32 or keychain on MacOSX if any one of
+  ca-cert-file, ca-cert-dir or ssl-fingerprint options is used
+
+inventory:
+* PR #531: Add SentinelOne Antivirus support on Linux, thanks to @MarcSamD
+* Feature: Update support assetname-support as option for agent on most unix
+  if 1 (the default), the short hostname is used as asset name
+  if 2, the as-is hostname (can be fqdn) is used as asset name
+  if 3, the fqdn hostname is used as asset name
+  this feature does not apply on MacOS or Windows
+  this feature now works for remote ssh and for option 3, it requires perl installed
+  on targeted computer and perl mode enabled on defined remote.
+* Feature: Make assetname-support option also works to compute agent deviceid when
+  unknown
+* Fix video card memory inventory on win32
+* fix #554: Network inventory may be missing on linux with faulty default route parsing
+* Add network speed discovery for wireless network devices on linux
+* Fix rpm software summary encoding for rpm-based software inventory
+* Bump Inventory task version to 1.15
+
+remoteinventory:
+* Fix connection timeout API to support timeout update 
+* Update win32 fqdn inventory
+* Add timezone inventory support
+* Fix OS FQDN and domain for ssh remote inventory
+* Add printers inventory support for ssh remote inventory with perl mode
+* Fix error preventing software inventory of windows remote from a win32 agent
+* Fix typo in ConnectTimeout option use with ssh command mode
+* Add '--stricthostkeychecking' option to glpi-remote, supported values are the same
+  than StrictHostKeyChecking ssh option (see ssh_config man page), default to 'accept-new'.
+* Bump RemoteInventory task version to 1.4
+
+netdiscovery/netinventory:
+* Enhanced Toshiba printers support
+* Fix LLDP support
+* Update timeout to backend-collect-timeout configuration when scanning ESX or
+  RemoteInventory after a successful scan requested by ToolBox
+* Fix possible concurrency error leading to an unrecoverable blocked task
+* Use new local target API to set expected saving folder
+* Bump NetDiscovery task version to 6.1
+* Bump NetInventory task version to 6.1
+* Updated sysobject.ids
+
+esx:
+* Fix first connection timeout support
+* Added --timeout option support to glpi-esx
+* Fix wrong 'n/a' ko status report to tasks managed by GLPI Inventory plugin
+* Bump ESX task version to 2.10
+
+toolbox:
+* fix #533: Fix Toolbox export buttons in inventory results
+* Fix wrong remote inventory results when using a short timeout for quickier detection
+* Handle agent folder as vardir folder when agent is running as a service
+* Fix netscan task fails to submit remote inventories with JSON protocol
+* Fix locking on logger IPC events when running netscan for server target on win32
+* Bump ToolBox plugin version to 1.3
+
+injector:
+* fix #537: Make -x, --xml-ua & --json-ua options equivalent and update help text
+
+packaging:
+* Update MacOSX packages to use OpenSSL 3.2.0
+* Update MacOSX packaging to use "com.teclib.glpi-agent" as AppID and service identifier
+* Fix linux installer typo preventing configuration update when required
+
+1.6.1 Fri, 17 Nov 2023
+
+core:
+* fix #530: Also include Mozilla::CA default store when including windows keystore
+  or macosx keychains certificates as IO::Socket::SSL can't no more use them since
+  LWP::Protocol::https update.
+  This fixes SSL connection issues appeared with 1.6 release.
 
 1.6 Wed, 15 Nov 2023
 
@@ -109,7 +640,7 @@ packaging:
 * fix #446: Always add Sys::Hostname dependency to rpm packaging
 * fix #493: Add support for CONFIG=reset option for MSI Installer
 * fix #522: Fix etc, log & var folders are not deleted from installation folder on MSI uninstall
-* fix #527: Support AlmaLinux 9.2 in linux perl installer"
+* fix #527: Support AlmaLinux 9.2 in linux perl installer
 * win32: Updated GLPI-AgentMonitor to v1.2.3 with spanish and russian translation
 
 contrib:

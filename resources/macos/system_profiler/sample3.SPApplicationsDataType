@@ -1,0 +1,2911 @@
+
+Applications:
+
+    Cyberduck:
+
+      Version: 8.6.0
+      Obtained from: Identified Developer
+      Last Modified: 30/05/2023 14:36
+      Signed by: Developer ID Application: David Kocher (G69SCX94XU), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/Cyberduck.app
+      Kind: 64-bit
+
+    Microsoft PowerPoint:
+
+      Version: 16.66.1
+      Obtained from: Identified Developer
+      Last Modified: 19/07/2023 14:16
+      Signed by: Developer ID Application: Microsoft Corporation (UBF8T346G9), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/Microsoft PowerPoint.app
+      Kind: 64-bit
+
+    ApE:
+
+      Version: 3.1.4
+      Obtained from: Unknown
+      Last Modified: 14/03/2022 18:07
+      Location: /Applications/ApE.app
+      Kind: 64-bit
+
+    Microsoft Excel:
+
+      Version: 16.66.1
+      Obtained from: Identified Developer
+      Last Modified: 19/07/2023 14:14
+      Signed by: Developer ID Application: Microsoft Corporation (UBF8T346G9), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/Microsoft Excel.app
+      Kind: 64-bit
+
+    Microsoft Word:
+
+      Version: 16.66.1
+      Obtained from: Identified Developer
+      Last Modified: 19/07/2023 14:17
+      Signed by: Developer ID Application: Microsoft Corporation (UBF8T346G9), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/Microsoft Word.app
+      Kind: 64-bit
+
+    11-0247-srvimp.inra:
+
+      Version: 15
+      Obtained from: Unknown
+      Last Modified: 06/06/2020 09:02
+      Location: /Users/fbudar/Library/Printers/11-0247-srvimp.inra.local.app
+      Kind: 64-bit
+
+    Foxit PDF Editor:
+
+      Version: 11.1.2.0420
+      Obtained from: Identified Developer
+      Last Modified: 21/07/2023 13:48
+      Signed by: Developer ID Application: Foxit Corporation (8GN47HTP75), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/Foxit PDF Editor.app
+      Kind: 64-bit
+
+    Firefox:
+
+      Version: 124.0.1
+      Obtained from: Identified Developer
+      Last Modified: 25/03/2024 11:31
+      Signed by: Developer ID Application: Mozilla Corporation (43AQ936H96), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/Firefox.app
+      Kind: 64-bit
+      Get Info String: Firefox 124.0.1
+
+    OneDrive:
+
+      Version: 24.050.0310
+      Obtained from: Identified Developer
+      Last Modified: 02/04/2024 08:35
+      Signed by: Developer ID Application: Microsoft Corporation (UBF8T346G9), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/OneDrive.app
+      Kind: 64-bit
+
+    FoxitPDFEditorUpdateService:
+
+      Version: 11.1.2
+      Obtained from: Identified Developer
+      Last Modified: 02/04/2024 09:39
+      Signed by: Developer ID Application: Foxit Corporation (8GN47HTP75), Developer ID Certification Authority, Apple Root CA
+      Location: /Users/fbudar/Library/Application Support/Foxit Software/Addon/Foxit PDF Editor/FoxitPDFEditorUpdateService.app
+      Kind: 64-bit
+
+    Papers 3 (Legacy):
+
+      Version: 3.4.25
+      Obtained from: Identified Developer
+      Last Modified: 13/10/2014 13:27
+      Signed by: Developer ID Application: Labtiva Inc (FY6R4ETYH7), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/Papers 3 (Legacy).app
+      Kind: 64-bit
+      Get Info String: Papers version 3.4 (3.4.25), Copyright 2007-2020 Papersapp.com
+
+    Fiji:
+
+      Version: 1
+      Obtained from: Unknown
+      Last Modified: 28/03/2024 16:30
+      Location: /Applications/Fiji.app
+      Kind: 64-bit
+      Get Info String: Fiji for macOS
+
+    SnapGene Viewer:
+
+      Version: 7.0.1
+      Obtained from: Identified Developer
+      Last Modified: 20/06/2023 22:26
+      Signed by: Developer ID Application: GSL Biotech LLC (WVCV9Q8Y78), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/SnapGene Viewer.app
+      Kind: 64-bit
+      Get Info String: SnapGene® Viewer 7.0.1, Copyright GSL Biotech 2004-2023
+
+    PyMOL:
+
+      Version: 2.5.5
+      Obtained from: Identified Developer
+      Last Modified: 11/04/2023 18:35
+      Signed by: Developer ID Application: Schrodinger (26SDDJ756N), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/PyMOL.app
+      Kind: 64-bit
+
+    Microsoft Teams classic:
+
+      Version: 1.00.627656
+      Obtained from: Identified Developer
+      Last Modified: 11/10/2023 08:31
+      Signed by: Developer ID Application: Microsoft Corporation (UBF8T346G9), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/Microsoft Teams classic.app
+      Kind: 64-bit
+      Get Info String: 1.6.00.27656
+
+    Microsoft AutoUpdate:
+
+      Version: 4,69
+      Obtained from: Identified Developer
+      Last Modified: 13/03/2024 11:45
+      Signed by: Developer ID Application: Microsoft Corporation (UBF8T346G9), Developer ID Certification Authority, Apple Root CA
+      Location: /Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app
+      Kind: 64-bit
+
+    Safari:
+
+      Version: 15.6.1
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:20
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Applications/Safari.app
+      Kind: 64-bit
+      Get Info String: 15.6.1, Copyright © 2003-2022 Apple Inc.
+
+    Cortex XDR Agent:
+
+      Version: 7.9.101
+      Obtained from: Identified Developer
+      Last Modified: 11/03/2024 16:19
+      Signed by: Developer ID Application: Palo Alto Networks (PXPZ95SK77), Developer ID Certification Authority, Apple Root CA
+      Location: /Library/Application Support/PaloAltoNetworks/Traps/bin/Cortex XDR Agent.app
+      Kind: 64-bit
+
+    Cortex XDR Uninstaller:
+
+      Version: 7.9.101
+      Obtained from: Identified Developer
+      Last Modified: 11/03/2024 16:19
+      Signed by: Developer ID Application: Palo Alto Networks (PXPZ95SK77), Developer ID Certification Authority, Apple Root CA
+      Location: /Library/Application Support/PaloAltoNetworks/Traps/bin/Cortex XDR Uninstaller.app
+      Kind: 64-bit
+
+    Cortex XDR Configuration Wizard:
+
+      Version: 7.9.101
+      Obtained from: Identified Developer
+      Last Modified: 11/03/2024 16:19
+      Signed by: Developer ID Application: Palo Alto Networks (PXPZ95SK77), Developer ID Certification Authority, Apple Root CA
+      Location: /Library/Application Support/PaloAltoNetworks/Traps/bin/Cortex XDR Configuration Wizard.app
+      Kind: 64-bit
+
+    Cortex XDR:
+
+      Version: 7.9.101
+      Obtained from: Identified Developer
+      Last Modified: 11/03/2024 16:19
+      Signed by: Developer ID Application: Palo Alto Networks (PXPZ95SK77), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/Cortex XDR.app
+      Kind: 64-bit
+
+    GoogleUpdater:
+
+      Version: 122.0.6234.0
+      Obtained from: Identified Developer
+      Last Modified: 04/03/2024 15:32
+      Signed by: Developer ID Application: Google LLC (EQHXZ8M8AV), Developer ID Certification Authority, Apple Root CA
+      Location: /Users/admin/Library/Application Support/Google/GoogleUpdater/122.0.6234.0/GoogleUpdater.app
+      Kind: 64-bit
+
+    Skype Entreprise:
+
+      Version: 16.30.32
+      Obtained from: Identified Developer
+      Last Modified: 23/09/2023 17:24
+      Signed by: Developer ID Application: Skype Communications S.a.r.l (AL798K98FX), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/Skype for Business.app
+      Kind: 64-bit
+
+    zoom:
+
+      Version: 5.16.10 (25689)
+      Obtained from: Identified Developer
+      Last Modified: 18/12/2023 09:28
+      Signed by: Developer ID Application: Zoom Video Communications, Inc. (BJ4HAAB9B3), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/zoom.us.app
+      Kind: 64-bit
+
+    RStudio:
+
+      Version: 2023.06.1+524
+      Obtained from: Identified Developer
+      Last Modified: 07/07/2023 04:10
+      Signed by: Developer ID Application: RStudio Inc. (FYF2F5GFX4), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/RStudio.app
+      Kind: 64-bit
+      Get Info String: RStudio 2023.06.1+524, © 2009-2023 Posit Software, PBC
+
+    R:
+
+      Version: R 3.6.3 GUI 1.70 El Capitan build
+      Obtained from: Unknown
+      Last Modified: 19/07/2023 17:22
+      Location: /Applications/R.app
+      Kind: 64-bit
+
+    Xcode:
+
+      Version: 12,4
+      Obtained from: Apple
+      Last Modified: 09/01/2021 00:51
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Applications/Xcode.app
+      Kind: 64-bit
+
+    Accessibility Inspector:
+
+      Version: 5,0
+      Obtained from: Apple
+      Last Modified: 22/12/2020 05:59
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Applications/Xcode.app/Contents/Applications/Accessibility Inspector.app
+      Kind: 64-bit
+
+    FileMerge:
+
+      Version: 2,11
+      Obtained from: Apple
+      Last Modified: 19/12/2020 03:37
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Applications/Xcode.app/Contents/Applications/FileMerge.app
+      Kind: 64-bit
+
+    Reality Composer:
+
+      Version: 1,5
+      Obtained from: Apple
+      Last Modified: 22/12/2020 07:21
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Applications/Xcode.app/Contents/Applications/RealityComposer.app
+      Kind: 64-bit
+
+    Instruments:
+
+      Version: 12,4
+      Obtained from: Apple
+      Last Modified: 02/04/2019 20:03
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Applications/Xcode.app/Contents/Applications/Instruments.app
+      Kind: 64-bit
+
+    Create ML:
+
+      Version: 2,0
+      Obtained from: Apple
+      Last Modified: 22/12/2020 04:59
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Applications/Xcode.app/Contents/Applications/Create ML.app
+      Kind: 64-bit
+
+    Simulator:
+
+      Version: 12,4
+      Obtained from: Apple
+      Last Modified: 19/12/2020 00:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app
+      Kind: 64-bit
+
+    Xcode Server Builder:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 22/12/2020 07:41
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Applications/Xcode.app/Contents/Developer/Applications/Xcode Server Builder.app
+      Kind: 64-bit
+
+    IGV_2.16:
+
+      Version: 2.16.2
+      Obtained from: Identified Developer
+      Last Modified: 14/07/2023 06:29
+      Signed by: Developer ID Application: THE BROAD INSTITUTE INC (R787A9V6VV), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/IGV_2.16.2.app
+      Kind: 64-bit
+
+    CMake:
+
+      Version: 3.27.6
+      Obtained from: Identified Developer
+      Last Modified: 20/09/2023 16:41
+      Signed by: Developer ID Application: Kitware Inc. (W38PE5Y733), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/CMake.app
+      Kind: 64-bit
+
+    FinchTV:
+
+      Version: 1.3.0
+      Obtained from: Unknown
+      Last Modified: 02/04/2012 17:17
+      Location: /Applications/FinchTV.app
+      Kind: 64-bit
+      Get Info String: 1.3.0, © Geospiza Inc. 2004-2005
+
+    AppleMobileDeviceHelper:
+
+      Version: 5,0
+      Obtained from: Apple
+      Last Modified: 28/08/2023 17:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Library/Apple/System/Library/PrivateFrameworks/MobileDevice.framework/Versions/A/AppleMobileDeviceHelper.app
+      Kind: 64-bit
+
+    AppleMobileSync:
+
+      Version: 5,0
+      Obtained from: Apple
+      Last Modified: 28/08/2023 17:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Library/Apple/System/Library/PrivateFrameworks/MobileDevice.framework/Versions/A/AppleMobileSync.app
+      Kind: 64-bit
+
+    MobileDeviceUpdater:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 28/08/2023 17:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Library/Apple/System/Library/PrivateFrameworks/MobileDevice.framework/Versions/A/Resources/MobileDeviceUpdater.app
+      Kind: 64-bit
+
+    SerialCloner 2-6-1:
+
+      Version: 2.6.1
+      Obtained from: Identified Developer
+      Last Modified: 19/07/2023 17:38
+      Signed by: Developer ID Application: Franck Perez, Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/SerialCloner2-6/SerialCloner 2-6-1.app
+      Kind: 32-bit (Unsupported)
+      Get Info String: Serial Cloner 2.6.1 (c) F. Perez, SerialBasics 2004-2013
+
+    MRT:
+
+      Version: 1,62
+      Obtained from: Apple
+      Last Modified: 05/06/2020 17:48
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Library/Apple/System/Library/CoreServices/MRT.app
+      Kind: 64-bit
+
+    EPSON Scanner:
+
+      Version: 5.7.24
+      Obtained from: Identified Developer
+      Last Modified: 06/10/2015 02:23
+      Signed by: Developer ID Application: EPSON (TXAEAV5RN4), Developer ID Certification Authority, Apple Root CA
+      Location: /Library/Image Capture/Devices/EPSON Scanner.app
+      Kind: 64-bit
+      Get Info String: 5.7.24, Copyright(C) Seiko Epson Corporation 2002-2015 All rights reserved.
+
+    Canon IJScanner4:
+
+      Version: 4.0.0
+      Obtained from: Identified Developer
+      Last Modified: 26/06/2014 05:00
+      Signed by: Developer ID Application: Canon Inc. (XE2XNRRXZ5), Developer ID Certification Authority, Apple Root CA
+      Location: /Library/Image Capture/Devices/Canon IJScanner4.app
+      Kind: 64-bit
+      Get Info String: Canon IJScanner4 version 4.0.0, Copyright CANON INC. 2009-2014
+
+    Cocoa-AppleScript Applet:
+
+      Version: 1,0
+      Obtained from: Unknown
+      Last Modified: 06/06/2020 07:39
+      Location: /Library/Application Support/Script Editor/Templates/Cocoa-AppleScript Applet.app
+      Kind: 64-bit
+
+    commandFilter:
+
+      Version: 1,71
+      Obtained from: Identified Developer
+      Last Modified: 19/08/2015 17:00
+      Signed by: Developer ID Application: EPSON (TXAEAV5RN4), Developer ID Certification Authority, Apple Root CA
+      Location: /Library/Printers/EPSON/Fax/Filter/commandFilter.app
+      Kind: 64-bit
+      Get Info String: Copyright(C) Seiko Epson Corporation 2012-2015. All rights reserved.
+
+    rastertoepfax:
+
+      Version: 1,71
+      Obtained from: Identified Developer
+      Last Modified: 19/08/2015 17:00
+      Signed by: Developer ID Application: EPSON (TXAEAV5RN4), Developer ID Certification Authority, Apple Root CA
+      Location: /Library/Printers/EPSON/Fax/Filter/rastertoepfax.app
+      Kind: 64-bit
+      Get Info String: Copyright(C) Seiko Epson Corporation 2009-2015. All rights reserved.
+
+    GlobalProtect:
+
+      Version: 6.0.5-30
+      Obtained from: Identified Developer
+      Last Modified: 19/07/2023 13:46
+      Signed by: Developer ID Application: Palo Alto Networks (PXPZ95SK77), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/GlobalProtect.app
+      Kind: 64-bit
+
+    Microsoft Outlook:
+
+      Version: 16.66.1
+      Obtained from: Identified Developer
+      Last Modified: 19/07/2023 15:44
+      Signed by: Developer ID Application: Microsoft Corporation (UBF8T346G9), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/Microsoft Outlook.app
+      Kind: 64-bit
+
+    Kyocera Print Panel:
+
+      Version: 5.4.0516
+      Obtained from: Identified Developer
+      Last Modified: 19/07/2023 14:10
+      Signed by: Developer ID Application: Kyocera Document Solutions Inc. (52JSFZ9F97), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/Kyocera Print Panel.app
+      Kind: 64-bit
+
+    Microsoft OneNote:
+
+      Version: 16.66.1
+      Obtained from: Identified Developer
+      Last Modified: 19/07/2023 14:14
+      Signed by: Developer ID Application: Microsoft Corporation (UBF8T346G9), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/Microsoft OneNote.app
+      Kind: 64-bit
+      Get Info String: SZLONGVERSION
+
+    GIMP-2:
+
+      Version: 2.10.32
+      Obtained from: Identified Developer
+      Last Modified: 13/06/2022 01:18
+      Signed by: Developer ID Application: GNOME Foundation (T25BQ8HSJF), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/GIMP-2.10.app
+      Kind: 64-bit
+      Get Info String: 2.10, © 2001-2018 The GIMP Team
+
+    Google Chrome:
+
+      Version: 103.0.5060.134
+      Obtained from: Identified Developer
+      Last Modified: 19/07/2022 01:10
+      Signed by: Developer ID Application: Google LLC (EQHXZ8M8AV), Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/Google Chrome.app
+      Kind: 64-bit
+      Get Info String: Google Chrome 103.0.5060.134, Copyright 2022 Google LLC. All rights reserved.
+
+    UnRarX:
+
+      Version: UnRarX version 2.2
+      Obtained from: Unknown
+      Last Modified: 07/07/2006 04:57
+      Location: /Applications/UnRarX.app
+      Kind: 32-bit (Unsupported)
+      Get Info String: UnRarX Version 2.2
+
+    CodonCode Aligner:
+
+      Version: 5.1.4
+      Obtained from: Identified Developer
+      Last Modified: 19/12/2014 16:59
+      Signed by: Developer ID Application: CodonCode Corporation, Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/CodonCode Aligner/CodonCode Aligner.app
+      Kind: 32/64-bit
+      Get Info String: CodonCode Aligner 5.1.4, Copyright © 2002-2014 CodonCode Corporation
+
+    Moniteur de réception de fax:
+
+      Version: 1,71
+      Obtained from: Identified Developer
+      Last Modified: 19/08/2015 17:00
+      Signed by: Developer ID Application: EPSON (TXAEAV5RN4), Developer ID Certification Authority, Apple Root CA
+      Location: /Library/Printers/EPSON/Fax/Utility/Fax Receive Monitor.app
+      Kind: 64-bit
+      Get Info String: 1.71, Copyright(C) Seiko Epson Corporation 2009-2015. All rights reserved.
+
+    FAX Utility:
+
+      Version: 1,73
+      Obtained from: Identified Developer
+      Last Modified: 19/08/2015 17:00
+      Signed by: Developer ID Application: EPSON (TXAEAV5RN4), Developer ID Certification Authority, Apple Root CA
+      Location: /Library/Printers/EPSON/Fax/Utility/FAX Utility.app
+      Kind: 64-bit
+      Get Info String: 1.73, Copyright(C) Seiko Epson Corporation 2009-2015. All rights reserved.
+
+    EPFaxAutoSetupTool:
+
+      Version: 1,71
+      Obtained from: Identified Developer
+      Last Modified: 19/08/2015 17:00
+      Signed by: Developer ID Application: EPSON (TXAEAV5RN4), Developer ID Certification Authority, Apple Root CA
+      Location: /Library/Printers/EPSON/Fax/AutoSetupTool/EPFaxAutoSetupTool.app
+      Kind: 64-bit
+      Get Info String: Copyright(C) Seiko Epson Corporation 2009-2015. All rights reserved.
+
+    epsonfax:
+
+      Version: 1,71
+      Obtained from: Identified Developer
+      Last Modified: 19/08/2015 17:00
+      Signed by: Developer ID Application: EPSON (TXAEAV5RN4), Developer ID Certification Authority, Apple Root CA
+      Location: /Library/Printers/EPSON/Fax/FaxIOSupport/epsonfax.app
+      Kind: 64-bit
+      Get Info String: Copyright(C) Seiko Epson Corporation 2009-2015. All rights reserved.
+
+    rastertokpsl:
+
+      Version: 1.0.3629
+      Obtained from: Identified Developer
+      Last Modified: 19/07/2023 14:10
+      Signed by: Developer ID Application: Kyocera Document Solutions Inc. (52JSFZ9F97), Developer ID Certification Authority, Apple Root CA
+      Location: /Library/Printers/Kyocera/kpsl/rastertokpsl.app
+      Kind: 32/64-bit
+
+    rastertopcl_F:
+
+      Version: 5.4.0401
+      Obtained from: Identified Developer
+      Last Modified: 19/07/2023 14:10
+      Signed by: Developer ID Application: Kyocera Document Solutions Inc. (52JSFZ9F97), Developer ID Certification Authority, Apple Root CA
+      Location: /Library/Printers/Kyocera/pcl/rastertopcl_F.app
+      Kind: 32/64-bit
+
+    Remove:
+
+      Obtained from: Apple
+      Last Modified: 18/01/2012 02:52
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Library/Scripts/ColorSync/Remove.app
+      Kind: 64-bit
+
+    Proof:
+
+      Obtained from: Apple
+      Last Modified: 18/01/2012 02:52
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Library/Scripts/ColorSync/Proof.app
+      Kind: 64-bit
+
+    Match:
+
+      Obtained from: Apple
+      Last Modified: 18/01/2012 02:52
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Library/Scripts/ColorSync/Match.app
+      Kind: 64-bit
+
+    Embed:
+
+      Obtained from: Apple
+      Last Modified: 18/01/2012 02:52
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Library/Scripts/ColorSync/Embed.app
+      Kind: 64-bit
+
+    Extract:
+
+      Obtained from: Apple
+      Last Modified: 18/01/2012 02:52
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Library/Scripts/ColorSync/Extract.app
+      Kind: 64-bit
+
+    Show Info:
+
+      Obtained from: Apple
+      Last Modified: 18/01/2012 02:52
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Library/Scripts/ColorSync/Show Info.app
+      Kind: 64-bit
+
+    Rename:
+
+      Obtained from: Apple
+      Last Modified: 18/01/2012 02:52
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Library/Scripts/ColorSync/Rename.app
+      Kind: 64-bit
+
+    Set Info:
+
+      Obtained from: Apple
+      Last Modified: 18/01/2012 02:52
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Library/Scripts/ColorSync/Set Info.app
+      Kind: 64-bit
+
+    Canon IJScanner2:
+
+      Version: 4.0.0
+      Obtained from: Identified Developer
+      Last Modified: 26/06/2014 05:00
+      Signed by: Developer ID Application: Canon Inc. (XE2XNRRXZ5), Developer ID Certification Authority, Apple Root CA
+      Location: /Library/Image Capture/Devices/Canon IJScanner2.app
+      Kind: 64-bit
+      Get Info String: Canon IJScanner2 version 4.0.0, Copyright CANON INC. 2009-2014
+
+    Canon IJScanner6:
+
+      Version: 4.0.0
+      Obtained from: Identified Developer
+      Last Modified: 26/06/2014 05:00
+      Signed by: Developer ID Application: Canon Inc. (XE2XNRRXZ5), Developer ID Certification Authority, Apple Root CA
+      Location: /Library/Image Capture/Devices/Canon IJScanner6.app
+      Kind: 64-bit
+      Get Info String: Canon IJScanner6 version 4.0.0, Copyright CANON INC. 2009-2014
+
+    AirScanLegacyDiscovery:
+
+      Version: 15
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:04
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Library/Image Capture/Support/LegacyDeviceDiscoveryHelpers/AirScanLegacyDiscovery.app
+      Kind: 64-bit
+
+    Save as Foxit PDF:
+
+      Version: 11.1.2
+      Obtained from: Identified Developer
+      Last Modified: 21/07/2023 13:48
+      Signed by: Developer ID Application: Foxit Corporation (8GN47HTP75), Developer ID Certification Authority, Apple Root CA
+      Location: /Users/admin-pri/Library/PDF Services/Save as Foxit PDF.app
+      Kind: 64-bit
+
+    Setup:
+
+      Version: 1.0.135.0
+      Obtained from: Unknown
+      Last Modified: 03/04/2007 12:28
+      Location: /Users/admin-pri/Desktop/Adobe Photoshop CS3/Setup.app
+      Kind: 32-bit (Unsupported)
+      Get Info String: 1.0.135.0, Copyright © 2005-2007 Adobe Systems Incorporated. All rights reserved.
+
+    Reset Serial Cloner:
+
+      Version: 
+      Obtained from: Identified Developer
+      Last Modified: 19/07/2023 17:38
+      Signed by: Developer ID Application: Franck Perez, Developer ID Certification Authority, Apple Root CA
+      Location: /Applications/SerialCloner2-6/Companion Software/Reset Serial Cloner.app
+      Kind: 32-bit (Unsupported)
+      Get Info String: 
+
+    Python:
+
+      Version: 3.8.2
+      Obtained from: Apple
+      Last Modified: 19/07/2023 17:33
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.8/Resources/Python.app
+      Kind: 64-bit
+      Get Info String: 3.8.2, (c) 2001-2016 Python Software Foundation.
+
+    11-0247-srvimp.inra:
+
+      Version: 15
+      Obtained from: Unknown
+      Last Modified: 06/06/2020 09:02
+      Location: /Users/admin/Library/Printers/11-0247-srvimp.inra.local.app
+      Kind: 64-bit
+
+    TextEdit:
+
+      Version: 1,15
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:02
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/TextEdit.app
+      Kind: 64-bit
+
+    Terminal:
+
+      Version: 2,10
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:44
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Utilities/Terminal.app
+      Kind: 64-bit
+
+    Mail:
+
+      Version: 13,4
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Mail.app
+      Kind: 64-bit
+
+    Aide-mémoire:
+
+      Version: 10,2
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:06
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Stickies.app
+      Kind: 64-bit
+
+    Calendrier:
+
+      Version: 11,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:10
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Calendar.app
+      Kind: 64-bit
+
+    Aperçu:
+
+      Version: 11,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:51
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Preview.app
+      Kind: 64-bit
+
+    Plans:
+
+      Version: 2,1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:22
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Maps.app
+      Kind: 64-bit
+
+    Capture d’écran:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 06:28
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Utilities/Screenshot.app
+      Kind: 64-bit
+
+    Notes:
+
+      Version: 4,7
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:27
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Notes.app
+      Kind: 64-bit
+
+    Contacts:
+
+      Version: 12,0
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Contacts.app
+      Kind: 64-bit
+
+    Préférences Système:
+
+      Version: 14,0
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/System Preferences.app
+      Kind: 64-bit
+
+    Programme d’installation:
+
+      Version: 6.2.0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:13
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Installer.app
+      Kind: 64-bit
+
+    Utilitaire d’archive:
+
+      Version: 10,15
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Applications/Archive Utility.app
+      Kind: 64-bit
+
+    DiskImageMounter:
+
+      Version: 559.100.2
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:41
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/DiskImageMounter.app
+      Kind: 64-bit
+
+    Photos:
+
+      Version: 5,0
+      Obtained from: Apple
+      Last Modified: 08/06/2020 04:20
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Photos.app
+      Kind: 64-bit
+
+    PTPCamera:
+
+      Version: 10,1
+      Obtained from: Apple
+      Last Modified: 18/06/2020 04:08
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Image Capture/Devices/PTPCamera.app
+      Kind: 64-bit
+      Get Info String: 10.1, © Copyright 2004-2014 Apple Inc., all rights reserved.
+
+    Messages:
+
+      Version: 13,0
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Messages.app
+      Kind: 64-bit
+
+    Captive Network Assistant:
+
+      Version: 5,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:15
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Captive Network Assistant.app
+      Kind: 64-bit
+
+    App Store:
+
+      Version: 3,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 10:30
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/App Store.app
+      Kind: 64-bit
+
+    Configuration des actions de dossier:
+
+      Version: 1,2
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:47
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Applications/Folder Actions Setup.app
+      Kind: 64-bit
+
+    ARDAgent:
+
+      Version: 3.9.8
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/RemoteManagement/ARDAgent.app
+      Kind: 64-bit
+
+    Assistant d’évaluation:
+
+      Version: 4,6
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:17
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Applications/Feedback Assistant.app
+      Kind: 64-bit
+
+    QuickTime Player:
+
+      Version: 10,5
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/QuickTime Player.app
+      Kind: 64-bit
+      Get Info String: 10.4, Copyright © 2009-2019 Apple Inc. All Rights Reserved.
+
+    Automator:
+
+      Version: 2,10
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Automator.app
+      Kind: 64-bit
+
+    Launchpad:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 06:29
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Launchpad.app
+      Kind: 64-bit
+
+    Mission Control:
+
+      Version: 1,2
+      Obtained from: Apple
+      Last Modified: 06/06/2020 06:29
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Mission Control.app
+      Kind: 64-bit
+
+    Dictaphone:
+
+      Version: 2,1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:57
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/VoiceMemos.app
+      Kind: 64-bit
+
+    Musique:
+
+      Version: 1.0.6
+      Obtained from: Apple
+      Last Modified: 29/06/2020 04:56
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Music.app
+      Kind: 64-bit
+      Get Info String: Music 1.0.6.10, © 2000–2020 Apple Inc. All rights reserved.
+
+    Livres:
+
+      Version: 2,4
+      Obtained from: Apple
+      Last Modified: 07/08/2020 06:43
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Books.app
+      Kind: 64-bit
+
+    Utilitaire d’annuaire:
+
+      Version: 6,0
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Applications/Directory Utility.app
+      Kind: 64-bit
+
+    Podcasts:
+
+      Version: 1.0.0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:25
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Podcasts.app
+      Kind: 64-bit
+
+    Diagnostics sans fil:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:18
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Applications/Wireless Diagnostics.app
+      Kind: 64-bit
+
+    Rappels:
+
+      Version: 7,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:31
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Reminders.app
+      Kind: 64-bit
+
+    Informations système:
+
+      Version: 10,14
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Utilities/System Information.app
+      Kind: 64-bit
+
+    FaceTime:
+
+      Version: 5,0
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/FaceTime.app
+      Kind: 64-bit
+
+    Livre des polices:
+
+      Version: 10,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:27
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Font Book.app
+      Kind: 64-bit
+
+    TV:
+
+      Version: 1.0.6
+      Obtained from: Apple
+      Last Modified: 19/06/2020 06:56
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/TV.app
+      Kind: 64-bit
+      Get Info String: TV 1.0.6.8, © 2000–2020 Apple Inc. All rights reserved.
+
+    Finder:
+
+      Version: 10.15.8
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Finder.app
+      Kind: 64-bit
+      Get Info String: macOS Finder 10.15.8
+
+    Gestion du stockage:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Applications/Storage Management.app
+      Kind: 64-bit
+
+    À propos de ce Mac:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Applications/About This Mac.app
+      Kind: 64-bit
+
+    Récents:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Finder.app/Contents/Applications/Recents.app
+      Kind: 64-bit
+
+    iCloud Drive:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Finder.app/Contents/Applications/iCloud Drive.app
+      Kind: 64-bit
+
+    Ordinateur:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Finder.app/Contents/Applications/Computer.app
+      Kind: 64-bit
+
+    Réseau:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Finder.app/Contents/Applications/Network.app
+      Kind: 64-bit
+
+    AirDrop:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Finder.app/Contents/Applications/AirDrop.app
+      Kind: 64-bit
+
+    Récents:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Finder.app/Contents/Applications/All My Files.app
+      Kind: 64-bit
+
+    Transfert d’images:
+
+      Version: 8,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:22
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Image Capture.app
+      Kind: 64-bit
+
+    Assistant Boot Camp:
+
+      Version: 6.1.0
+      Obtained from: Apple
+      Last Modified: 08/06/2020 03:18
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Utilities/Boot Camp Assistant.app
+      Kind: 64-bit
+
+    Calculette:
+
+      Version: 10.15.4
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:33
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Calculator.app
+      Kind: 64-bit
+      Get Info String: 10.14, Copyright © 2000-2018, Apple Inc.
+
+    Utilitaire ColorSync:
+
+      Version: 4.14.0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:00
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Utilities/ColorSync Utility.app
+      Kind: 64-bit
+
+    Utilitaire AirPort:
+
+      Version: 6.3.9
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:28
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Utilities/AirPort Utility.app
+      Kind: 64-bit
+      Get Info String: 6.3.9, Copyright 2001 -2019 Apple Inc.
+
+    Utilitaire de disque:
+
+      Version: 19,0
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Utilities/Disk Utility.app
+      Kind: 64-bit
+
+    Utilitaire VoiceOver:
+
+      Version: 10
+      Obtained from: Apple
+      Last Modified: 07/08/2020 05:30
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Utilities/VoiceOver Utility.app
+      Kind: 64-bit
+
+    Time Machine:
+
+      Version: 1,3
+      Obtained from: Apple
+      Last Modified: 06/06/2020 06:29
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Time Machine.app
+      Kind: 64-bit
+
+    Localiser:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/FindMy.app
+      Kind: 64-bit
+
+    Échange de fichiers Bluetooth:
+
+      Version: 7.0.6
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Utilities/Bluetooth File Exchange.app
+      Kind: 64-bit
+      Get Info String: 7.0.6, Copyright © 2002-2019 Apple Inc. All rights reserved.
+
+    Dictionnaire:
+
+      Version: 2.3.0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:15
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Dictionary.app
+      Kind: 64-bit
+
+    System Events:
+
+      Version: 1.3.6
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:54
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/System Events.app
+      Kind: 64-bit
+
+    PIPAgent:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:21
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/PIPAgent.app
+      Kind: 64-bit
+
+    KeyboardSetupAssistant:
+
+      Version: 10,7
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:27
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/KeyboardSetupAssistant.app
+      Kind: 64-bit
+
+    Assistant de certification:
+
+      Version: 5,0
+      Obtained from: Apple
+      Last Modified: 15/06/2020 04:20
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Certificate Assistant.app
+      Kind: 64-bit
+
+    Widget Bourse:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:02
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/StocksWidget.app
+      Kind: 64-bit
+
+    Photo Library Migration Utility:
+
+      Version: 2,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:38
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Photo Library Migration Utility.app
+      Kind: 64-bit
+
+    LocationMenu:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 06:33
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/LocationMenu.app
+      Kind: 64-bit
+
+    NowPlayingWidgetContainer:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 10/06/2020 03:01
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/NowPlayingWidgetContainer.app
+      Kind: 64-bit
+
+    Language Chooser:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 29/10/2020 00:43
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Language Chooser.app
+      Kind: 64-bit
+
+    Spotlight:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 17/06/2020 06:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Spotlight.app
+      Kind: 64-bit
+
+    Database Events:
+
+      Version: 1.0.6
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:59
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Database Events.app
+      Kind: 64-bit
+
+    Java Web Start:
+
+      Version: 15.0.1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:36
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Java Web Start.app
+      Kind: 64-bit
+
+    Assistant réglages:
+
+      Version: 10,10
+      Obtained from: Apple
+      Last Modified: 29/10/2020 00:42
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Setup Assistant.app
+      Kind: 64-bit
+
+    OSDUIHelper:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:12
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/OSDUIHelper.app
+      Kind: 64-bit
+
+    RegisterPluginIMApp:
+
+      Version: 20
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:34
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/RegisterPluginIMApp.app
+      Kind: 64-bit
+
+    Installer Progress:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:28
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Installer Progress.app
+      Kind: 64-bit
+
+    ScreenSaverEngine:
+
+      Version: 5,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:59
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/ScreenSaverEngine.app
+      Kind: 64-bit
+
+    CoreServicesUIAgent:
+
+      Version: 340,3
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:13
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/CoreServicesUIAgent.app
+      Kind: 64-bit
+      Get Info String: Copyright © 2009 Apple Inc.
+
+    ARDAgent:
+
+      Version: 3.9.8
+      Obtained from: Apple
+      Last Modified: 18/06/2020 03:50
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/RemoteManagement/ARDAgent.app
+      Kind: 64-bit
+
+    Siri:
+
+      Version: 200.6.1
+      Obtained from: Apple
+      Last Modified: 11/06/2020 02:24
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Siri.app
+      Kind: 64-bit
+
+    Dock:
+
+      Version: 1,8
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:58
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Dock.app
+      Kind: 64-bit
+      Get Info String: Dock 1.8
+
+    loginwindow:
+
+      Version: 9,0
+      Obtained from: Apple
+      Last Modified: 15/06/2020 05:08
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/loginwindow.app
+      Kind: 64-bit
+
+    screencaptureui:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:02
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/screencaptureui.app
+      Kind: 64-bit
+
+    Mise à jour de logiciels:
+
+      Version: 6
+      Obtained from: Apple
+      Last Modified: 03/09/2020 04:34
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Software Update.app
+      Kind: 64-bit
+      Get Info String: Software Update version 4.0, Copyright © 2000-2009, Apple Inc. All rights reserved.
+
+    ManagedClient:
+
+      Version: 12,3
+      Obtained from: Apple
+      Last Modified: 08/06/2020 03:28
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/ManagedClient.app
+      Kind: 64-bit
+
+    ControlStrip:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 11/06/2020 02:21
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/ControlStrip.app
+      Kind: 64-bit
+
+    AVB Audio Configuration:
+
+      Version: 850,1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:08
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/AVB Audio Configuration.app
+      Kind: 64-bit
+
+    BluetoothUIServer:
+
+      Version: 7.0.6
+      Obtained from: Apple
+      Last Modified: 30/06/2020 06:37
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/BluetoothUIServer.app
+      Kind: 64-bit
+      Get Info String: 7.0.6, Copyright © 2002-2019 Apple Inc. All rights reserved.
+
+    Centre de notifications:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:59
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/NotificationCenter.app
+      Kind: 64-bit
+
+    Météo:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:12
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Weather.app
+      Kind: 64-bit
+
+    HindiIM:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:33
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Input Methods/HindiIM.app
+      Kind: 64-bit
+
+    TCIM:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:27
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Input Methods/TCIM.app
+      Kind: 64-bit
+
+    JapaneseIM:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:26
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Input Methods/JapaneseIM.app
+      Kind: 64-bit
+
+    TrackpadIM:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:30
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Input Methods/TrackpadIM.app
+      Kind: 64-bit
+
+    TYIM:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:27
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Input Methods/TYIM.app
+      Kind: 64-bit
+
+    PluginIM:
+
+      Version: 20
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:34
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Input Methods/PluginIM.app
+      Kind: 64-bit
+
+    50onPaletteServer:
+
+      Version: 1.1.0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:32
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Input Methods/50onPaletteServer.app
+      Kind: 64-bit
+
+    CharacterPalette:
+
+      Version: 2.0.1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:42
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Input Methods/CharacterPalette.app
+      Kind: 64-bit
+
+    AinuIM:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:27
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Input Methods/AinuIM.app
+      Kind: 64-bit
+
+    VietnameseIM:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:28
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Input Methods/VietnameseIM.app
+      Kind: 64-bit
+
+    KoreanIM:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:33
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Input Methods/KoreanIM.app
+      Kind: 64-bit
+
+    Assistive Control:
+
+      Version: 2,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:37
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Input Methods/Assistive Control.app
+      Kind: 64-bit
+
+    SCIM:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:27
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Input Methods/SCIM.app
+      Kind: 64-bit
+
+    Dictée vocale:
+
+      Version: 6.0.60.1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:28
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Input Methods/DictationIM.app
+      Kind: 64-bit
+
+    ImageCaptureService:
+
+      Version: 6,7
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:21
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Services/ImageCaptureService.app
+      Kind: 64-bit
+
+    Service de résumé:
+
+      Version: 2,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:09
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Services/SummaryService.app
+      Kind: 64-bit
+
+    ChineseTextConverterService:
+
+      Version: 2,1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 06:31
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Services/ChineseTextConverterService.app
+      Kind: 64-bit
+      Get Info String: Chinese Text Converter 1.1
+
+    Présentation de VoiceOver:
+
+      Version: 10
+      Obtained from: Apple
+      Last Modified: 07/08/2020 05:30
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/ScreenReader.framework/Versions/A/Resources/VoiceOver Quickstart.app
+      Kind: 64-bit
+
+    syncuid:
+
+      Version: 8,1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:32
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/SyncServicesUI.framework/Versions/A/Resources/syncuid.app
+      Kind: 64-bit
+      Get Info String: 4.0, Copyright Apple Computer Inc. 2004
+
+    AddPrinter:
+
+      Version: 15
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:03
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/AddPrinter.app
+      Kind: 64-bit
+
+    Maison:
+
+      Version: 4,0
+      Obtained from: Apple
+      Last Modified: 12/06/2020 03:05
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Home.app
+      Kind: 64-bit
+
+    Échecs:
+
+      Version: 3,17
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:57
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Chess.app
+      Kind: 64-bit
+      Get Info String: 3.17, Copyright 2003–2017 Apple Inc.
+
+    HelpViewer:
+
+      Version: 6,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:13
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/HelpViewer.app
+      Kind: 64-bit
+
+    Siri:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 06:28
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Siri.app
+      Kind: 64-bit
+
+    Grapher:
+
+      Version: 2,7
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:30
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Utilities/Grapher.app
+      Kind: 64-bit
+
+    Trousseaux d’accès:
+
+      Version: 10,5
+      Obtained from: Apple
+      Last Modified: 24/07/2023 16:23
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Utilities/Keychain Access.app
+      Kind: 64-bit
+
+    Configuration audio et MIDI:
+
+      Version: 3,5
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:02
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Utilities/Audio MIDI Setup.app
+      Kind: 64-bit
+      Get Info String: 3.5, Copyright 2002-2019 Apple, Inc.
+
+    Éditeur de script:
+
+      Version: 2,11
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:40
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Utilities/Script Editor.app
+      Kind: 64-bit
+
+    Colorimètre numérique:
+
+      Version: 5,15
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:06
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Utilities/Digital Color Meter.app
+      Kind: 64-bit
+      Get Info String: 5.15, © Copyright 2001-2019 Apple Inc. All Rights Reserved.
+
+    Moniteur d’activité:
+
+      Version: 10,14
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:28
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Utilities/Activity Monitor.app
+      Kind: 64-bit
+
+    Assistant migration:
+
+      Version: 10,15
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:36
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Utilities/Migration Assistant.app
+      Kind: 64-bit
+
+    Console:
+
+      Version: 1,1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:14
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Utilities/Console.app
+      Kind: 64-bit
+
+    Bourse:
+
+      Version: 2,5
+      Obtained from: Apple
+      Last Modified: 25/06/2020 06:03
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Stocks.app
+      Kind: 64-bit
+
+    Photo Booth:
+
+      Version: 11,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:50
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Applications/Photo Booth.app
+      Kind: 64-bit
+
+    Visualiseur de ticket:
+
+      Version: 4,1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:07
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Applications/Ticket Viewer.app
+      Kind: 64-bit
+
+    Partage d’écran:
+
+      Version: 1.7.2
+      Obtained from: Apple
+      Last Modified: 18/06/2020 03:49
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Applications/Screen Sharing.app
+      Kind: 64-bit
+
+    Lecteur DVD:
+
+      Version: 6,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:48
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Applications/DVD Player.app
+      Kind: 64-bit
+
+    Utilitaire de réseau:
+
+      Version: 1.9.2
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:27
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Applications/Network Utility.app
+      Kind: 64-bit
+      Get Info String: 1.9.2, Copyright © 2000–2017 Apple Inc. All rights reserved.
+
+    Étalonnage de moniteur:
+
+      Version: 4.11.0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:46
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/ColorSync/Calibrators/Display Calibrator.app
+      Kind: 64-bit
+      Get Info String: 4.11.0, Copyright 2018 Apple, Inc.
+
+    iCloud Drive:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 24/08/2020 06:46
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/CloudDocsDaemon.framework/Versions/A/Resources/iCloud Drive.app
+      Kind: 64-bit
+
+    Programme de téléchargement de parole:
+
+      Version: 9.0.15
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:05
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/SpeechObjects.framework/Versions/A/SpeechDataInstallerd.app
+      Kind: 64-bit
+
+    SpeechRecognitionServer:
+
+      Version: 9.0.15
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:04
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/SpeechObjects.framework/Versions/A/SpeechRecognitionServer.app
+      Kind: 64-bit
+
+    AskPermissionUI:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:20
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/AskPermission.framework/Versions/A/Resources/AskPermissionUI.app
+      Kind: 64-bit
+
+    CIMFindInputCodeTool:
+
+      Version: 104
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:25
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/CoreChineseEngine.framework/Versions/A/SharedSupport/CIMFindInputCodeTool.app
+      Kind: 64-bit
+
+    nbagent:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:05
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/Noticeboard.framework/Versions/A/Resources/nbagent.app
+      Kind: 64-bit
+
+    AccessibilityVisualsAgent:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:27
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/AccessibilitySupport.framework/Versions/A/Resources/AccessibilityVisualsAgent.app
+      Kind: 64-bit
+
+    IMAutomaticHistoryDeletionAgent:
+
+      Version: 10,0
+      Obtained from: Apple
+      Last Modified: 15/06/2020 03:58
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/IMDPersistence.framework/IMAutomaticHistoryDeletionAgent.app
+      Kind: 64-bit
+
+    STMUIHelper:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:16
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/StorageManagement.framework/Versions/A/Resources/STMUIHelper.app
+      Kind: 64-bit
+
+    UASharedPasteboardProgressUI:
+
+      Version: 54,1
+      Obtained from: Apple
+      Last Modified: 19/06/2020 05:51
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/UserActivity.framework/Agents/UASharedPasteboardProgressUI.app
+      Kind: 64-bit
+
+    Calibration Assistant:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:08
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/AmbientDisplay.framework/Versions/A/Resources/Calibration Assistant.app
+      Kind: 64-bit
+
+    AXVisualSupportAgent:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:31
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/UniversalAccess.framework/Versions/A/Resources/AXVisualSupportAgent.app
+      Kind: 64-bit
+
+    universalAccessAuthWarn:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:33
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/UniversalAccess.framework/Versions/A/Resources/universalAccessAuthWarn.app
+      Kind: 64-bit
+
+    UniversalAccessHUD:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:34
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/UniversalAccess.framework/Versions/A/Resources/UniversalAccessHUD.app
+      Kind: 64-bit
+
+    DFRHUD:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:32
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/UniversalAccess.framework/Versions/A/Resources/DFRHUD.app
+      Kind: 64-bit
+
+    ParentalControls:
+
+      Version: 4,1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:11
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/FamilyControls.framework/Versions/A/Resources/ParentalControls.app
+      Kind: 64-bit
+      Get Info String: 2.0, Copyright Apple Inc. 2007-2019
+
+    storeuid:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:58
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/CommerceKit.framework/Versions/A/Resources/storeuid.app
+      Kind: 64-bit
+
+    eaptlstrust:
+
+      Version: 13,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:47
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/EAP8021X.framework/Support/eaptlstrust.app
+      Kind: 64-bit
+
+    Résolution des conflits:
+
+      Version: 8,1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:33
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/SyncServicesUI.framework/Versions/A/Resources/Conflict Resolver.app
+      Kind: 64-bit
+      Get Info String: 1.0, Copyright Apple Computer Inc. 2004
+
+    IMTransferAgent:
+
+      Version: 10,0
+      Obtained from: Apple
+      Last Modified: 15/06/2020 04:01
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/IMTransferServices.framework/IMTransferAgent.app
+      Kind: 64-bit
+
+    AOSPushRelay:
+
+      Version: 1,07
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:39
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/AOSKit.framework/Versions/A/Helpers/AOSPushRelay.app
+      Kind: 64-bit
+
+    AOSHeartbeat:
+
+      Version: 1,07
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:40
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/AOSKit.framework/Versions/A/Helpers/AOSHeartbeat.app
+      Kind: 64-bit
+
+    AOSAlertManager:
+
+      Version: 1,07
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:39
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/AOSKit.framework/Versions/A/Helpers/AOSAlertManager.app
+      Kind: 64-bit
+
+    Famille:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:26
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/FamilyNotification.framework/Versions/A/Resources/Family.app
+      Kind: 64-bit
+
+    FindMyMacMessenger:
+
+      Version: 4,1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:02
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/FindMyMac.framework/Versions/A/Resources/FindMyMacMessenger.app
+      Kind: 64-bit
+
+    FollowUpUI:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:27
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/CoreFollowUp.framework/Versions/A/Resources/FollowUpUI.app
+      Kind: 64-bit
+
+    imagent:
+
+      Version: 10,0
+      Obtained from: Apple
+      Last Modified: 15/06/2020 03:59
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/IMCore.framework/imagent.app
+      Kind: 64-bit
+
+    identityservicesd:
+
+      Version: 10,0
+      Obtained from: Apple
+      Last Modified: 18/06/2020 03:49
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/IDS.framework/identityservicesd.app
+      Kind: 64-bit
+
+    IDSRemoteURLConnectionAgent:
+
+      Version: 10,0
+      Obtained from: Apple
+      Last Modified: 18/06/2020 03:49
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/IDSFoundation.framework/IDSRemoteURLConnectionAgent.app
+      Kind: 64-bit
+
+    DiskImages UI Agent:
+
+      Version: 559.100.2
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:40
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/DiskImages.framework/Versions/A/Resources/DiskImages UI Agent.app
+      Kind: 64-bit
+
+    AppSSOAgent:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:49
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/AppSSO.framework/Support/AppSSOAgent.app
+      Kind: 64-bit
+
+    SpeechSynthesizerAuditor:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 07/08/2020 05:30
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/ScreenReader.framework/Versions/A/Resources/SpeechSynthesizerAuditor.app
+      Kind: 64-bit
+
+    ScreenReaderUIServer:
+
+      Version: 10
+      Obtained from: Apple
+      Last Modified: 07/08/2020 05:29
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/ScreenReader.framework/Versions/A/Resources/ScreenReaderUIServer.app
+      Kind: 64-bit
+
+    KerberosMenuExtra:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:50
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/AppSSOKerberos.framework/Support/KerberosMenuExtra.app
+      Kind: 64-bit
+
+    AquaAppearanceHelper:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:07
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/Resources/AquaAppearanceHelper.app
+      Kind: 64-bit
+
+    iCloudUserNotificationsd:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:35
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/AOSAccounts.framework/Versions/A/Resources/iCloudUserNotificationsd.app
+      Kind: 64-bit
+
+    SoftwareUpdateNotificationManager:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 03/09/2020 04:35
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/PrivateFrameworks/SoftwareUpdate.framework/Versions/A/Resources/SoftwareUpdateNotificationManager.app
+      Kind: 64-bit
+
+    VirtualScanner:
+
+      Version: 4,1
+      Obtained from: Apple
+      Last Modified: 18/06/2020 04:08
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Image Capture/Devices/VirtualScanner.app
+      Kind: 64-bit
+
+    Type4Camera:
+
+      Version: 10,1
+      Obtained from: Apple
+      Last Modified: 18/06/2020 04:08
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Image Capture/Devices/Type4Camera.app
+      Kind: 64-bit
+      Get Info String: 10.1, © Copyright 2001-2014 Apple Inc. All rights reserved.
+
+    MassStorageCamera:
+
+      Version: 10,1
+      Obtained from: Apple
+      Last Modified: 18/06/2020 04:08
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Image Capture/Devices/MassStorageCamera.app
+      Kind: 64-bit
+      Get Info String: 10.1, © Copyright 2000-2014 Apple Inc. All rights reserved.
+
+    AirScanScanner:
+
+      Version: 15
+      Obtained from: Apple
+      Last Modified: 06/06/2020 06:58
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Image Capture/Devices/AirScanScanner.app
+      Kind: 64-bit
+
+    AutoImporter:
+
+      Version: 6,7
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:21
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Image Capture/Support/Application/AutoImporter.app
+      Kind: 64-bit
+
+    MakePDF:
+
+      Version: 10,1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:20
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Image Capture/Automatic Tasks/MakePDF.app
+      Kind: 64-bit
+      Get Info String: 10.1, © Copyright 2003-2015 Apple Inc. All rights reserved.
+
+    Création de page web:
+
+      Version: 10,1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:21
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Image Capture/Automatic Tasks/Build Web Page.app
+      Kind: 64-bit
+      Get Info String: 10.1, © Copyright 2003-2014 Apple  Inc. All rights reserved.
+
+    Python:
+
+      Version: 2.7.16
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:04
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Frameworks/Python.framework/Versions/2.7/Resources/Python.app
+      Kind: 64-bit
+      Get Info String: 2.7.16, (c) 2001-2016 Python Software Foundation.
+
+    quicklookd:
+
+      Version: 5,0
+      Obtained from: Apple
+      Last Modified: 18/06/2020 04:09
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Frameworks/QuickLook.framework/Versions/A/Resources/quicklookd.app
+      Kind: 64-bit
+      Get Info String: 5.0, Copyright Apple Inc. 2007-2013
+
+    qlmanage:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 18/06/2020 04:08
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Frameworks/QuickLook.framework/Versions/A/Resources/qlmanage.app
+      Kind: 64-bit
+
+    Simulateur de widget:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:55
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Frameworks/NotificationCenter.framework/Versions/A/Resources/Widget Simulator.app
+      Kind: 64-bit
+
+    SpeechSynthesisServer:
+
+      Version: 9.0.24
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:33
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/SpeechSynthesis.framework/Versions/A/SpeechSynthesisServer.app
+      Kind: 64-bit
+      Get Info String: 9.0.24
+
+    FontRegistryUIAgent:
+
+      Version: 81,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 06:33
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/ATS.framework/Versions/A/Support/FontRegistryUIAgent.app
+      Kind: 64-bit
+      Get Info String: Copyright © 2008-2013 Apple Inc.
+
+    AddressBookSync:
+
+      Version: 11,0
+      Obtained from: Apple
+      Last Modified: 22/06/2020 05:25
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Frameworks/AddressBook.framework/Helpers/AddressBookSync.app
+      Kind: 64-bit
+
+    AddressBookManager:
+
+      Version: 11,0
+      Obtained from: Apple
+      Last Modified: 22/06/2020 05:24
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Frameworks/AddressBook.framework/Versions/A/Helpers/AddressBookManager.app
+      Kind: 64-bit
+
+    AddressBookSourceSync:
+
+      Version: 11,0
+      Obtained from: Apple
+      Last Modified: 22/06/2020 05:24
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Frameworks/AddressBook.framework/Versions/A/Helpers/AddressBookSourceSync.app
+      Kind: 64-bit
+
+    ABAssistantService:
+
+      Version: 11,0
+      Obtained from: Apple
+      Last Modified: 22/06/2020 05:25
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Frameworks/AddressBook.framework/Versions/A/Helpers/ABAssistantService.app
+      Kind: 64-bit
+
+    Jumelage de la SmartCard:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 15/06/2020 04:13
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Frameworks/CryptoTokenKit.framework/ctkbind.app
+      Kind: 64-bit
+
+    WebKitPluginHost:
+
+      Version: 609
+      Obtained from: Apple
+      Last Modified: 01/09/2020 07:33
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Frameworks/WebKit.framework/Versions/A/Frameworks/WebKitLegacy.framework/Versions/A/WebKitPluginHost.app
+      Kind: 64-bit
+
+    QuickLookUIHelper:
+
+      Version: 5,0
+      Obtained from: Apple
+      Last Modified: 18/06/2020 04:09
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Frameworks/Quartz.framework/Versions/A/Frameworks/QuickLookUI.framework/Versions/A/Resources/QuickLookUIHelper.app
+      Kind: 64-bit
+      Get Info String: 5.0, Copyright Apple Inc. 2007-2013
+
+    Quick Look Simulator:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 18/06/2020 04:09
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Frameworks/Quartz.framework/Versions/A/Frameworks/QuickLookUI.framework/Versions/A/Resources/Quick Look Simulator.app
+      Kind: 64-bit
+
+    Wish:
+
+      Version: 8.5.9
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:39
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Frameworks/Tk.framework/Versions/8.5/Resources/Wish.app
+      Kind: 64-bit
+      Get Info String: Wish Shell 8.5.9,
+Copyright © 1989-2022 Tcl Core Team,
+Copyright © 2002-2022 Daniel A. Steffen,
+Copyright © 2001-2009 Apple Inc.,
+Copyright © 2001-2002 Jim Ingham & Ian Reid
+
+    SyncServer:
+
+      Version: 8,1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:32
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Frameworks/SyncServices.framework/Versions/A/Resources/SyncServer.app
+      Kind: 64-bit
+      Get Info String: © 2002-2003 Apple
+
+    PrinterProxy:
+
+      Version: 15
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:02
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/Print.framework/Versions/A/Plugins/PrinterProxy.app
+      Kind: 64-bit
+
+    TamilIM:
+
+      Version: 1,6
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:32
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Input Methods/TamilIM.app
+      Kind: 64-bit
+      Get Info String: Tamil Input Method 1.5
+
+    EmojiFunctionRowIM:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:39
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Input Methods/EmojiFunctionRowIM.app
+      Kind: 64-bit
+
+    PressAndHold:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:33
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/Input Methods/PressAndHold.app
+      Kind: 64-bit
+
+    Problem Reporter:
+
+      Version: 10,13
+      Obtained from: Apple
+      Last Modified: 30/10/2020 07:15
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Problem Reporter.app
+      Kind: 64-bit
+
+    rcd:
+
+      Version: 360
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:19
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/rcd.app
+      Kind: 64-bit
+      Get Info String: 360
+
+    Utilitaire de logement de mémoire:
+
+      Version: 1.5.3
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:00
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Memory Slot Utility.app
+      Kind: 64-bit
+
+    UIKitSystem:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:57
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/UIKitSystem.app
+      Kind: 64-bit
+
+    Jeux:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:58
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Games.app
+      Kind: 64-bit
+
+    PowerChime:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 06:59
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/PowerChime.app
+      Kind: 64-bit
+
+    Menu des scripts:
+
+      Version: 1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 06:32
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Script Menu.app
+      Kind: 64-bit
+
+    Utilitaire AppleScript:
+
+      Version: 1.1.2
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:27
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/AppleScript Utility.app
+      Kind: 64-bit
+
+    ReportPanic:
+
+      Version: 10,13
+      Obtained from: Apple
+      Last Modified: 30/10/2020 07:16
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/ReportPanic.app
+      Kind: 64-bit
+
+    VoiceOver:
+
+      Version: 10
+      Obtained from: Apple
+      Last Modified: 07/08/2020 05:30
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/VoiceOver.app
+      Kind: 64-bit
+
+    KeyboardAccessAgent:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:32
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/KeyboardAccessAgent.app
+      Kind: 64-bit
+
+    Agent de la borne d’accès AirPort:
+
+      Version: 2.2.1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 06:27
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/AirPort Base Station Agent.app
+      Kind: 64-bit
+      Get Info String: 2.2.1 (221.7), Copyright © 2006-2013 Apple Inc. All Rights Reserved.
+
+    UnmountAssistantAgent:
+
+      Version: 5,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:03
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/UnmountAssistantAgent.app
+      Kind: 64-bit
+
+    CalendarFileHandler:
+
+      Version: 8,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:04
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/CalendarFileHandler.app
+      Kind: 64-bit
+
+    UniversalAccessControl:
+
+      Version: 7,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:33
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/UniversalAccessControl.app
+      Kind: 64-bit
+
+    AirPlayUIAgent:
+
+      Version: 2,0
+      Obtained from: Apple
+      Last Modified: 28/08/2020 11:16
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/AirPlayUIAgent.app
+      Kind: 64-bit
+
+    CoreLocationAgent:
+
+      Version: 2394.0.22
+      Obtained from: Apple
+      Last Modified: 06/06/2020 10:19
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/CoreLocationAgent.app
+      Kind: 64-bit
+      Get Info String: Copyright © 2013 Apple Inc.
+
+    EscrowSecurityAlert:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 18/06/2020 04:00
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/EscrowSecurityAlert.app
+      Kind: 64-bit
+
+    ScriptMonitor:
+
+      Version: 1.0.1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 06:34
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/ScriptMonitor.app
+      Kind: 64-bit
+
+    Install Command Line Developer Tools:
+
+      Version: 2373
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:03
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Install Command Line Developer Tools.app
+      Kind: 64-bit
+
+    Appareils jumelés:
+
+      Version: 1.9.5
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:21
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Paired Devices.app
+      Kind: 64-bit
+
+    Utilitaire de logement d’extension:
+
+      Version: 2,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:01
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Expansion Slot Utility.app
+      Kind: 64-bit
+
+    AppleFileServer:
+
+      Version: 2,1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 06:00
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/AppleFileServer.app
+      Kind: 64-bit
+
+    Pass Viewer:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:16
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Pass Viewer.app
+      Kind: 64-bit
+
+    Image Events:
+
+      Version: 1.1.6
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:57
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Image Events.app
+      Kind: 64-bit
+
+    Jar Launcher:
+
+      Version: 15.0.1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:36
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Jar Launcher.app
+      Kind: 64-bit
+
+    SpacesTouchBarAgent:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:51
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/SpacesTouchBarAgent.app
+      Kind: 64-bit
+
+    TextInputSwitcher:
+
+      Version: 1,1
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:29
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/TextInputSwitcher.app
+      Kind: 64-bit
+
+    ThermalTrap:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:03
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/ThermalTrap.app
+      Kind: 64-bit
+
+    SSMenuAgent:
+
+      Version: 3.9.8
+      Obtained from: Apple
+      Last Modified: 18/06/2020 03:56
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/RemoteManagement/SSMenuAgent.app
+      Kind: 64-bit
+
+    Keychain Circle Notification:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 15/06/2020 04:18
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Keychain Circle Notification.app
+      Kind: 64-bit
+
+    NetAuthAgent:
+
+      Version: 6,2
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:50
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/NetAuthAgent.app
+      Kind: 64-bit
+
+    Dwell Control:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:37
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Dwell Control.app
+      Kind: 64-bit
+
+    AddressBookUrlForwarder:
+
+      Version: 11,0
+      Obtained from: Apple
+      Last Modified: 22/06/2020 05:25
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/AddressBookUrlForwarder.app
+      Kind: 64-bit
+
+    SocialPushAgent:
+
+      Version: 62
+      Obtained from: Apple
+      Last Modified: 06/06/2020 06:02
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/SocialPushAgent.app
+      Kind: 64-bit
+
+    WiFiAgent:
+
+      Version: 13,0
+      Obtained from: Apple
+      Last Modified: 28/08/2020 09:56
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/WiFiAgent.app
+      Kind: 64-bit
+      Get Info String: 13.0, Copyright © 2012-2017 Apple Inc. All rights reserved.
+
+    Assistant réglages Bluetooth:
+
+      Version: 7.0.6
+      Obtained from: Apple
+      Last Modified: 30/06/2020 06:40
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Bluetooth Setup Assistant.app
+      Kind: 64-bit
+      Get Info String: 7.0.6, Copyright © 2002-2019 Apple Inc. All rights reserved.
+
+    DiscHelper:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:40
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/DiscHelper.app
+      Kind: 64-bit
+
+    Install in Progress:
+
+      Version: 3,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:36
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Install in Progress.app
+      Kind: 64-bit
+
+    NowPlayingTouchUI:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 10/06/2020 02:55
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/NowPlayingTouchUI.app
+      Kind: 64-bit
+
+    OBEXAgent:
+
+      Version: 7.0.6
+      Obtained from: Apple
+      Last Modified: 30/06/2020 06:39
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/OBEXAgent.app
+      Kind: 64-bit
+      Get Info String: 7.0.6, Copyright © 2002-2019 Apple Inc. All rights reserved.
+
+    TextInputMenuAgent:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:30
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/TextInputMenuAgent.app
+      Kind: 64-bit
+
+    Programme d’installation d’Automator:
+
+      Version: 2,10
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:21
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/Automator Installer.app
+      Kind: 64-bit
+
+    SystemUIServer:
+
+      Version: 1,7
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:27
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/SystemUIServer.app
+      Kind: 64-bit
+      Get Info String: SystemUIServer version 1.7, Copyright 2000-2010 Apple Computer, Inc.
+
+    PodcastsAuthAgent:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 09:05
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/PodcastsAuthAgent.app
+      Kind: 64-bit
+
+    iCloud:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:46
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/iCloud.app
+      Kind: 64-bit
+
+    UserNotificationCenter:
+
+      Version: 3.3.0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:03
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/UserNotificationCenter.app
+      Kind: 64-bit
+
+    FolderActionsDispatcher:
+
+      Version: 1,0
+      Obtained from: Apple
+      Last Modified: 06/06/2020 08:47
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/FolderActionsDispatcher.app
+      Kind: 64-bit
+
+    ODSAgent:
+
+      Version: 1,8
+      Obtained from: Apple
+      Last Modified: 06/06/2020 06:26
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/ODSAgent.app
+      Kind: 64-bit
+      Get Info String: 1.8 (180.9), Copyright © 2007-2009 Apple Inc. All Rights Reserved.
+
+    RapportUIAgent:
+
+      Version: 1.9.5
+      Obtained from: Apple
+      Last Modified: 06/06/2020 07:22
+      Signed by: Software Signing, Apple Code Signing Certification Authority, Apple Root CA
+      Location: /System/Library/CoreServices/RapportUIAgent.app
+      Kind: 64-bit
+

@@ -73,10 +73,12 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    foreach my $process (getProcesses(logger => $logger)) {
-        # match only if an qemu instance
-        next if $process->{CMD} =~ /^\[/;
-        next if $process->{CMD} !~ /(qemu|kvm|qemu-kvm|qemu-system\S+) .*\S/x;
+    # check only qemu instances
+    foreach my $process (getProcesses(
+        filter    => qr/(qemu|kvm|qemu-kvm|qemu-system\S+) .*\S/x,
+        namespace => "same",
+        logger    => $logger,
+    )) {
 
         # Don't inventory qemu guest agent as a virtualmachine
         next if $process->{CMD} =~ /qemu-ga/;

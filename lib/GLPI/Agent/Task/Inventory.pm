@@ -123,6 +123,9 @@ sub run {
         deviceid => $self->{deviceid},
         datadir  => $self->{datadir},
         logger   => $self->{logger},
+        glpi     => $self->{target}->getTaskVersion('inventory'),
+        required => $self->{config}->{'required-category'} // [],
+        itemtype => empty($self->{config}->{'itemtype'}) ? "Computer" : $self->{config}->{'itemtype'},
         tag      => $tag
     );
 
@@ -161,7 +164,7 @@ sub run {
     # Set inventory expected format before running inventory
     my $format = 'json';
     if ($self->{target}->isType('local')) {
-        $format = $self->{target}->{format} unless $self->{partial};
+        $format = $self->{target}->{format} unless $inventory->isPartial();
     } elsif (!$self->{target}->isGlpiServer()) {
         # This includes server other than glpi and listener target
         $format = 'xml';
@@ -193,20 +196,21 @@ sub setupEvent {
         return;
     }
 
-    unless ($event->partial) {
-        $self->{logger}->debug("Only support partial inventory events for Inventory task");
+    unless ($event->taskrun || $event->partial) {
+        $self->{logger}->debug("Only support taskrun or partial inventory events for Inventory task");
         return;
     }
 
-    # Set inventory as partial one
-    $self->{inventory}->isPartial(1);
+    # Set inventory full/partial status
+    $self->{inventory}->isFull(!$event->partial && $event->taskrun && $event->get("full"));
+    $self->{inventory}->isPartial(!$self->{inventory}->isFull());
 
-    # Support event with category defined
-    if ($event->category) {
+    # Support partial event with category defined only if partial
+    if ($event->partial && $event->category) {
         my %keep = map { lc($_) => 1 } grep { ! $self->{disabled}->{$_} } split(/,+/, $event->category);
         unless (keys(%keep)) {
             $self->{logger}->info("Nothing to inventory on partial inventory event");
-            return;
+            return 0;
         }
         my @categories = $self->getCategories();
         my $valid = 0;
@@ -219,7 +223,7 @@ sub setupEvent {
         }
         unless ($valid) {
             $self->{logger}->error("Invalid partial inventory event with no supported category");
-            return;
+            return 0;
         }
         my $cached = $self->cachedata();
         if ($cached) {
@@ -230,18 +234,19 @@ sub setupEvent {
             # also need to get hardware and bios category to keep them in cache
             $keep{hardware} = 1;
             $keep{bios} = 1;
+            # For software category, GLPI requires we also keep os category
+            $keep{os} = 1 if $keep{software};
             $self->keepcache(1);
         }
         foreach my $category (@categories) {
             $self->{disabled}->{$category} = 1 unless $keep{$category};
         }
-    } else {
-        $self->{logger}->error("No category property on partial inventory event");
-        return;
+
+        # We have to skip checksum computing for such partial event
+        $self->{nochecksum} = 1;
     }
 
-    # Setup partial inventory
-    return $self->{partial} = 1;
+    return 1;
 }
 
 sub submit {
@@ -250,7 +255,7 @@ sub submit {
     my $inventory = $self->{inventory};
 
     # Keep cached data for next partial inventory
-    if ($self->{partial} && $self->keepcache() && !$self->cachedata()) {
+    if ($inventory->isPartial() && $self->keepcache() && !$self->cachedata()) {
         my $keep = {};
         foreach my $section (qw(BIOS HARDWARE)) {
             my $content = $inventory->getSection($section)
@@ -262,7 +267,7 @@ sub submit {
 
     if ($self->{target}->isType('local')) {
 
-        my $file = $inventory->save($self->{target}->getPath());
+        my $file = $inventory->save($self->{target}->getFullPath());
         $self->{logger}->info("Inventory ".($file eq '-' ? "dumped on standard output" : "saved in $file"))
             if $file;
 
@@ -563,8 +568,9 @@ sub _feedInventory {
     $versionprovider->{ETIME} = time() - $begin
         if $versionprovider;
 
-    # Don't compute checksum on partial inventory
-    $self->{inventory}->computeChecksum() unless $self->{partial} || $self->{nochecksum};
+    # Don't compute checksum on partial inventory or with glpi-inventory script
+    $self->{inventory}->computeChecksum($self->{config}->{'full-inventory-postpone'} =~ /^\d+$/ ? int($self->{config}->{'full-inventory-postpone'}) : 0)
+        unless $self->{nochecksum};
 }
 
 sub _injectContent {

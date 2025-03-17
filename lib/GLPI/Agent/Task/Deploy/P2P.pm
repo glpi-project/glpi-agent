@@ -28,6 +28,12 @@ sub new {
         p2pnet        => {}
     };
 
+    # On windows, max_workers should not be bigger than 60 due to a perl limitation
+    if ($OSNAME eq 'MSWin32' && $self->{max_workers} > 60) {
+        $self->{logger}->info("Limiting workers from $self->{max_workers} to 60 on MSWin32");
+        $self->{max_workers} = 60;
+    }
+
     bless $self, $class;
 
     return $self;
@@ -181,9 +187,15 @@ sub _getPotentialPeers {
         push @end,   $ip_bytes[$idx] | (255 - $mask_bytes[$idx]);
     }
 
+    # ipEnd must not be the broadcast ip
+    $end[3]--;
+
     my $ipStart = join('.', @start);
     my $ipEnd   = join('.', @end);
     return if $ipStart eq $ipEnd;
+
+    # ipStart is here the network address to avoid
+    my $ipNetwork = $ipStart;
 
     # Get ip interval before this interface ip
     my $ipIntervalBefore = Net::IP->new($ipStart.' - '.$address->{ip})
@@ -224,6 +236,14 @@ sub _getPotentialPeers {
     $ipStart = $ipIntervalBefore->ip();
     $beforeCount = $ipIntervalBefore->size() - 1;
 
+    # Still skip first address if it's the network address
+    if ($ipStart eq $ipNetwork) {
+        ++$ipIntervalBefore;
+        $beforeCount--;
+        $afterCount++;
+        $ipStart = $ipIntervalBefore->ip() if defined($ipIntervalBefore);
+    }
+
     # Now add ips before
     my @peers;
     while (defined($ipIntervalBefore) && $beforeCount-->0) {
@@ -261,7 +281,7 @@ sub _scanPeers {
     $manager->run_on_finish(sub {
         my ($pid, $exit_code, $address) = @_;
         push @found, $address if $exit_code;
-     });
+    });
 
     foreach my $address (@addresses) {
         $manager->start($address) and next;

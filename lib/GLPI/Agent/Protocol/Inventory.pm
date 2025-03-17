@@ -334,10 +334,14 @@ sub converted {
     my $merge = $self->{_merge_content};
     if ($merge) {
         foreach my $key (keys(%{$merge})) {
-            if (! $content->{$key} || ref($merge->{$key}) ne 'HASH') {
+            if (! $content->{$key} || (ref($merge->{$key}) ne 'HASH' && ref($merge->{$key}) ne 'ARRAY')) {
                 $content->{$key} = $merge->{$key};
             } else {
-                if (ref($content->{$key}) eq 'HASH') {
+                if (ref($content->{$key}) eq 'ARRAY' && ref($merge->{$key}) eq 'ARRAY') {
+                    foreach my $item (@{$merge->{$key}}) {
+                        push @{$content->{$key}}, $item;
+                    }
+                } elsif (ref($content->{$key}) eq 'HASH') {
                     foreach my $leaf (keys(%{$merge->{$key}})) {
                         $content->{$key}->{$leaf} = $merge->{$key}->{$leaf};
                     }

@@ -1,0 +1,66 @@
+
+#include <windows.h>
+
+#define xstr(s)                 str(s)
+#define str(s)                  #s
+
+#if !(MAJOR>0)
+#error "MAJOR must be set to a positive integer"
+#endif
+
+#if !(MINOR>0)
+#error "MINOR must be set to a positive integer"
+#endif
+
+#if !REVISION
+#define VER_VERSIONINFO_STR     xstr(MAJOR.MINOR)
+#else
+#define VER_VERSIONINFO_STR     xstr(MAJOR.MINOR.REVISION)
+#endif
+#define VER_FILE_VERSION        MAJOR,MINOR,REVISION,0
+
+#define VER_ORIGINAL_FILENAME   "ca.dll"
+#define VER_DLL_MANIFEST        "ca.dll.manifest"
+#define VER_INTERNAL_NAME       "ca"
+#define VER_FILE_FLAGS_MASK     VS_FFI_FILEFLAGSMASK
+#define VER_FILE_FLAGS          0
+#define VER_FILE_TYPE           VFT_DLL
+#define VER_FILE_SUBTYPE        VFT2_UNKNOWN
+#define VER_FILE_OS             VOS__WINDOWS32
+#define VER_FILE_DESCRIPTION    "CustomActions for GLPI Agent"
+#define VER_COMPANY_NAME        "teclib-edition.com"
+#define VER_LEGAL_COPYRIGHT     "Copyright (c) GLPI Project"
+#define VER_PRODUCT_NAME        "GLPI-Agent Installer"
+
+VS_VERSION_INFO VERSIONINFO
+    FILEVERSION     VER_FILE_VERSION
+    PRODUCTVERSION  VER_FILE_VERSION
+    FILEFLAGS       VER_FILE_FLAGS
+    FILEFLAGSMASK   VER_FILE_FLAGS_MASK
+    FILEOS          VER_FILE_OS
+    FILETYPE        VER_FILE_TYPE
+    FILESUBTYPE     VER_FILE_SUBTYPE
+BEGIN
+BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName",        VER_COMPANY_NAME
+            VALUE "FileDescription",    VER_FILE_DESCRIPTION
+            VALUE "FileVersion",        VER_VERSIONINFO_STR
+            VALUE "InternalName",       VER_INTERNAL_NAME
+            VALUE "LegalCopyright",     VER_LEGAL_COPYRIGHT
+            VALUE "OriginalFilename",   VER_ORIGINAL_FILENAME
+            VALUE "ProductName",        VER_PRODUCT_NAME
+            VALUE "ProductVersion",     VER_VERSIONINFO_STR
+        END
+    END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 0x04E4        /* English 0x409 + Windows ANSI codepage 0x04E4 */
+    END
+END
+
+#define MANIFEST_RESOURCE_ID 1
+MANIFEST_RESOURCE_ID RT_MANIFEST VER_DLL_MANIFEST

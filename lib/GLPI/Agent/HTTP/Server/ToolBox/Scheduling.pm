@@ -53,8 +53,8 @@ sub yaml_config_specs {
             icon        => "clock-edit",
             index       => 60, # index in navbar
         },
-        iprange_yaml  => {
-            category    => "Scheduling",
+        scheduling_yaml => {
+            category    => "Toolbox plugin configuration",
             type        => $self->isyes($yaml_config->{'updating_support'}) ? "option" : "readonly",
             value       => $yaml_config->{'scheduling_yaml'} || (
                 $self->isyes($yaml_config->{'updating_support'}) ? "" : "[default]"),

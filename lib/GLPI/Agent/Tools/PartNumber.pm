@@ -27,7 +27,9 @@ sub new {
         my %priority = ();
         my ($_classpath) = $INC{module2file(__PACKAGE__)} =~ /^(.*)\.pm$/;
         $_classpath =~ s{\\}{/}g if $OSNAME eq 'MSWin32';
-        my $subclass_path_re = qr/$_classpath\/(\S+)\.pm$/;
+        my ($_modulepath) = module2file(__PACKAGE__) =~ /^(.*)\.pm$/;
+        $_modulepath =~ s{\\}{/}g if $OSNAME eq 'MSWin32';
+        my $subclass_path_re = qr/$_modulepath\/(\S+)\.pm$/;
         foreach my $file (File::Glob::bsd_glob("$_classpath/*.pm")) {
             $file =~ s{\\}{/}g if $OSNAME eq 'MSWin32';
             my ($class) = $file =~ $subclass_path_re

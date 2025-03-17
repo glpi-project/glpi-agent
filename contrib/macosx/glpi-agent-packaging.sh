@@ -1,12 +1,12 @@
 #! /bin/bash
 
 # PERL: https://www.perl.org/get.html
-# SSL:  https://www.openssl.org/source/
+# SSL:  https://github.com/openssl/openssl/releases
 # ZLIB: https://www.zlib.net/
-: ${PERL_VERSION:=5.36.0}
-: ${OPENSSL_VERSION:=3.1.4}
-: ${ZLIB_VERSION:=1.3}
-: ${ZLIB_SHA256:=ff0ba4c292013dbc27530b3a81e1f9a813cd39de01ca5e0f8bf355702efa593e}
+: ${PERL_VERSION:=5.40.1}
+: ${OPENSSL_VERSION:=3.4.1}
+: ${ZLIB_VERSION:=1.3.1}
+: ${ZLIB_SHA256:=9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23}
 
 : ${BUILDER_NAME:="Guillaume Bougard (teclib)"}
 : ${BUILDER_MAIL:="gbougard_at_teclib.com"}
@@ -85,6 +85,22 @@ case "$(uname -s) $ARCH" in
         exit 1
         ;;
 esac
+
+# Check notarization requirements
+if [ "$NOTARIZE" == "yes" ]; then
+    if [ -z "$NOTARIZE_USER" ]; then
+        echo "Can't planify notarization with empty NOTARIZE_USER" >&2
+        exit 4
+    fi
+    if [ -z "$NOTARIZE_PASSWORD" ]; then
+        echo "Can't planify notarization with empty NOTARIZE_PASSWORD" >&2
+        exit 5
+    fi
+    if [ -z "$NOTARIZE_TEAMID" ]; then
+        echo "Can't planify notarization with empty NOTARIZE_TEAMID" >&2
+        exit 6
+    fi
+fi
 
 export MACOSX_DEPLOYMENT_TARGET
 
@@ -216,15 +232,16 @@ echo ========
 if [ ! -d "build/openssl-$OPENSSL_VERSION" ]; then
     echo ======== Build openssl $OPENSSL_VERSION
     ARCHIVE="openssl-$OPENSSL_VERSION.tar.gz"
-    OPENSSL_URL="https://www.openssl.org/source/$ARCHIVE"
-    [ -e "$ARCHIVE" ] || curl -so "$ARCHIVE" "$OPENSSL_URL"
+    OPENSSL_URL="https://github.com/openssl/openssl/releases/download/openssl-$OPENSSL_VERSION/$ARCHIVE"
+    [ -e "$ARCHIVE" ] || curl -sLo "$ARCHIVE" "$OPENSSL_URL"
 
     # Eventually verify archive
     if [ -n "$SHASUM" ]; then
-        [ -e "$ARCHIVE.sha256" ] || curl -so "$ARCHIVE.sha256" "$OPENSSL_URL.sha256"
+        [ -e "$ARCHIVE.sha256" ] || curl -sLo "$ARCHIVE.sha256" "$OPENSSL_URL.sha256"
         read SHA256 x <<<$( $SHASUM -a 256 $ARCHIVE )
         read EXPECTED x <<<$( cat $ARCHIVE.sha256 )
-        if [ "$SHA256" == "$EXPECTED" ]; then
+        # Don't abort build if sha256 is empty as this happens on github
+        if [ -z "$EXPECTED" -o "$SHA256" == "$EXPECTED" ]; then
             echo "OpenSSL $OPENSSL_VERSION ready for building..."
         else
             echo "Can't build OpenSSL $OPENSSL_VERSION, source archive sha256 digest mismatch"
@@ -312,7 +329,7 @@ cpanm --notest -v --installdeps --no-man-pages $CPANM_OPTS .
 
 echo '===== Installing more perl module deps ====='
 cpanm --notest -v --no-man-pages  $CPANM_OPTS LWP::Protocol::https             \
-    HTTP::Daemon Proc::Daemon Archive::Extract File::Copy::Recursive           \
+    HTTP::Daemon Proc::Daemon File::Copy::Recursive                            \
     URI::Escape Net::Ping Parallel::ForkManager Net::SNMP Net::NBName DateTime \
     Thread::Queue Parse::EDID YAML::Tiny Data::UUID Cpanel::JSON::XS
 # Crypt::DES Crypt::Rijndael are commented as Crypt::DES fails to build on MacOSX
@@ -413,6 +430,9 @@ sed -i .4.bak -Ee "s/^logger *=.*/logger = File/" $AGENT_CFG
 sed -i .5.bak -Ee "s/^#?logfile *=.*/logfile = \/var\/log\/glpi-agent.log/" $AGENT_CFG
 sed -i .6.bak -Ee "s/^#?logfile-maxsize *=.*/logfile-maxsize = 10/" $AGENT_CFG
 sed -i .7.bak -Ee "s/^#?include \"conf\.d\/\"/include \"conf.d\"/" $AGENT_CFG
+# By default, only enable inventory task on MacOSX
+sed -i .8.bak -Ee "/^#tasks = inventory/ a\\
+tasks = inventory" $AGENT_CFG
 rm -f $AGENT_CFG*.bak
 
 echo "Create build-info.plist..."
@@ -424,7 +444,7 @@ cat >pkg/build-info.plist <<-BUILD_INFO
 	    <key>distribution_style</key>
 	    <true/>
 	    <key>identifier</key>
-	    <string>org.glpi-project.glpi-agent</string>
+	    <string>com.teclib.glpi-agent</string>
 	    <key>install_location</key>
 	    <string>/</string>
 	    <key>name</key>
@@ -459,7 +479,7 @@ fi
 	    </dict>
 BUILD_INFO
 fi
-if [ -n "$NOTARIZE_USER" -a -n "$NOTARIZE_PASSWORD" -a -n "$NOTARIZE_TEAMID" -a "$NOTARIZE" == "yes" ]; then
+if [ "$NOTARIZE" == "yes" ]; then
     cat >>pkg/build-info.plist <<-BUILD_INFO
 	    <key>notarization_info</key>
 	    <dict>
@@ -518,7 +538,7 @@ cat >pkg/Distribution.xml <<-CUSTOM
 	<?xml version="1.0" encoding="utf-8" standalone="no"?>
 	<installer-gui-script minSpecVersion="2">
 	    <title>GLPI-Agent $VERSION ($ARCH)</title>
-	    <pkg-ref id="org.glpi-project.glpi-agent" version="$VERSION" onConclusion="none">$PKG</pkg-ref>
+	    <pkg-ref id="com.teclib.glpi-agent" version="$VERSION" onConclusion="none">$PKG</pkg-ref>
 	    <license file="License.txt" mime-type="text/plain" />
 	    <background file="background.png" uti="public.png" alignment="bottomleft"/>
 	    <background-darkAqua file="background.png" uti="public.png" alignment="bottomleft"/>
@@ -526,12 +546,12 @@ cat >pkg/Distribution.xml <<-CUSTOM
 	    <options customize="never" require-scripts="false" hostArchitectures="$ARCH"/>
 	    <choices-outline>
 	        <line choice="default">
-	            <line choice="org.glpi-project.glpi-agent"/>
+	            <line choice="com.teclib.glpi-agent"/>
 	        </line>
 	    </choices-outline>
 	    <choice id="default"/>
-	    <choice id="org.glpi-project.glpi-agent" visible="false">
-	        <pkg-ref id="org.glpi-project.glpi-agent"/>
+	    <choice id="com.teclib.glpi-agent" visible="false">
+	        <pkg-ref id="com.teclib.glpi-agent"/>
 	    </choice>
 	    <os-version min="$MACOSX_DEPLOYMENT_TARGET" />
 	</installer-gui-script>
@@ -557,7 +577,7 @@ cat >pkg/payload/Applications/GLPI-Agent/Contents/Info.plist <<-INFO_PLIST
 	    <key>CFBundleExecutable</key>
 	    <string>glpi-agent</string>
 	    <key>CFBundleIdentifier</key>
-	    <string>org.glpi-project.glpi-agent</string>
+	    <string>com.teclib.glpi-agent</string>
 	    <key>CFBundleInfoDictionaryVersion</key>
 	    <string>6.0</string>
 	    <key>CFBundlePackageType</key>
@@ -566,8 +586,28 @@ cat >pkg/payload/Applications/GLPI-Agent/Contents/Info.plist <<-INFO_PLIST
 	</plist>
 INFO_PLIST
 
+# Disable aborting on error to handle notarization failure
+[ "$NOTARIZE" == "yes" ] && set +e
+
 echo "Build package"
 ./munkipkg pkg
+
+# Analyze return code
+if [ "$?" != "0" ]; then
+    # If pkg file was generated, it means we failed on notarization
+    # Then we can forget notarization unless on release (nightly build case)
+    if [ -s "$PKG" -a "$NOTARIZE" == "yes" -a -z "${TAGNAME##nightly-*}" ]; then
+        echo "By-passing notarization check"
+        # On Github Actions run, add a warning to the build workflow
+        [ -n "$GITHUB_REF" ] && echo "::warning title=Notarization failure for MacOSX $PKG build::By-passing notarization check"
+        NOTARIZE="no"
+    else
+        exit 7
+    fi
+fi
+
+# Enable back shell aborting on error
+set -e
 
 mv -vf "pkg/build/$PKG" "build/$PKG"
 
@@ -575,7 +615,7 @@ mv -vf "pkg/build/$PKG" "build/$PKG"
 [ -n "$INSTSIGNID" ] && pkgutil --check-signature "build/$PKG"
 
 # Notarization check
-[ -n "$NOTARIZE_USER" -a -n "$NOTARIZE_PASSWORD" -a -n "$NOTARIZE_TEAMID" -a "$NOTARIZE" == "yes" ] && xcrun stapler validate "build/$PKG"
+[ "$NOTARIZE" == "yes" ] && xcrun stapler validate "build/$PKG"
 
 rm -f "build/$DMG"
 echo "Create DMG"

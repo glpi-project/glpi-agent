@@ -44,7 +44,7 @@ jobs:
       macosx-notarization: ${{ steps.set-version.outputs.macosx-notarization }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set version
       id: set-version
       run: |
@@ -180,31 +180,55 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        arch: [ x64, x86 ]
+        arch: [ x64 ]
 
     if: ${{ needs.setup-release.outputs.build == 'yes' }}
     needs: setup-release
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Create folders for cached datas
       run: |
+        mkdir C:\Strawberry-perl-for-GLPI-Agent_build\download
         mkdir C:\Strawberry-perl-for-GLPI-Agent_build\restore
-        mkdir C:\Strawberry-perl-for-GLPI-Agent_build\tools
       shell: cmd
     - name: Restore points cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
+      id: built-perl-cache
       with:
         path: |
-            C:/Strawberry-perl-for-GLPI-Agent_build/tools
             C:/Strawberry-perl-for-GLPI-Agent_build/restore
-        key: windows-packaging-cache-${{ matrix.arch }}-${{ hashFiles('contrib\windows\glpi-agent-packaging.pl', 'contrib\windows\packaging\*') }}
+        key: windows-packaging-perl-cache-${{ matrix.arch }}-${{ hashFiles('contrib\windows\glpi-agent-extlibs-build.pl', 'contrib\windows\glpi-agent-packaging.pl', 'contrib\windows\packaging\*') }}
+    - name: Restore ca.dll points cache
+      uses: actions/cache@v4
+      id: built-ca-dll-cache
+      with:
+        path: contrib/windows/packaging/tools/ca/ca.dll
+        key: windows-packaging-ca-dll-cache-${{ matrix.arch }}-${{ hashFiles('contrib\windows\glpi-agent-extlibs-build.pl', 'contrib\windows\packaging\ToolchainBuildJob.pm', 'contrib\windows\packaging\CustomActionDllBuildJob.pm', 'contrib\windows\packaging\tools\ca\Makefile', 'contrib\windows\packaging\tools\ca\dll\*') }}
+    - name: Restore Toolchain points cache
+      uses: actions/cache@v4
+      id: built-extlibs-cache
+      if: steps.built-perl-cache.outputs.cache-hit != 'true' || steps.built-ca-dll-cache.outputs.cache-hit != 'true'
+      with:
+        path: |
+            C:/Strawberry-perl-for-GLPI-Agent_build/download/winlibs*.zip
+            C:/Strawberry-perl-for-GLPI-Agent_build/download/extlibs.zip
+        key: windows-packaging-extlibs-cache-${{ matrix.arch }}-${{ hashFiles('contrib\windows\glpi-agent-extlibs-build.pl', 'contrib\windows\packaging\ToolchainBuildJob.pm', 'contrib\windows\packaging\*.patch') }}
     - name: List files in cached paths
       if: success() || failure()
       run: |
+        dir C:\Strawberry-perl-for-GLPI-Agent_build\download
         dir C:\Strawberry-perl-for-GLPI-Agent_build\restore
-        dir C:\Strawberry-perl-for-GLPI-Agent_build\tools
+        dir contrib\windows\packaging\tools\ca
       shell: cmd
+    - name: Restore required perl libraries cache
+      uses: actions/cache@v4
+      id: perl-site-cache
+      with:
+        path: |
+            C:\Strawberry\perl\site\lib
+            C:\Strawberry\perl\site\bin
+        key: built-perl-windows-packaging-perl-site-cache-${{ matrix.arch }}-${{ hashFiles('contrib\windows\glpi-agent-extlibs-build.pl', 'contrib\windows\glpi-agent-packaging.pl', 'contrib\windows\packaging\*') }}
     - name: Update environment
       run: |
         echo 'C:\Strawberry\perl\bin'      >> $GITHUB_PATH
@@ -218,22 +242,26 @@ jobs:
         perl -V
       shell: cmd
     - name: Install Module::Install
+      if: steps.perl-site-cache.outputs.cache-hit != 'true'
       run: cpan -T Module::Install
       shell: cmd
     - name: Prepare Makefile
       run: perl Makefile.PL
       shell: cmd
-    - name: Install Perl::Dist::Strawberry
+    - name: Install latest Perl::Dist::Strawberry from github
+      if: steps.perl-site-cache.outputs.cache-hit != 'true'
       run: |
-        cpanm --notest --verbose Perl::Dist::Strawberry
+        cpanm --notest --verbose https://github.com/StrawberryPerl/Perl-Dist-Strawberry.git
       shell: cmd
-    - name: Fix Perl::Dist::Strawberry for perl 5.34
+    - name: Build Extlibs with Perl Toolchain
+      if: steps.built-perl-cache.outputs.cache-hit != 'true' && steps.built-extlibs-cache.outputs.cache-hit != 'true'
       run: |
-        perl -i -pe "s/makefile.mk/Makefile/" C:\Strawberry\perl\site\lib\Perl\Dist\Strawberry\Step\InstallPerlCore.pm
+        perl contrib\windows\glpi-agent-extlibs-build.pl --arch ${{ matrix.arch }}
       shell: cmd
-    - name: Fix Perl::Dist::Strawberry to support patching perl 5.34
+    - name: Build ca.dll with Perl Toolchain
+      if: steps.built-ca-dll-cache.outputs.cache-hit != 'true'
       run: |
-        perl -i -pe "s/use Text::Diff;/use Text::Diff;use Text::Patch;/" C:\Strawberry\perl\site\lib\Perl\Dist\Strawberry\Step.pm
+        perl contrib\windows\glpi-agent-extlibs-build.pl --arch ${{ matrix.arch }} --cadll
       shell: cmd
     - name: Build package
       run: |
@@ -274,18 +302,18 @@ jobs:
       shell: cmd
     - name: Upload windows built artifacts
       if: success() || failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: Windows-Build
+        name: Windows-Build-${{ matrix.arch }}
         path: C:\Strawberry-perl-for-GLPI-Agent_build\output
     - name: Upload debug MSI-Build artifacts
       if: failure() #success() || failure() # Only enable on failure or when debugging is required
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: MSI-Build-Debug
+        name: MSI-Build-Debug-${{ matrix.arch }}
         path: C:\Strawberry-perl-for-GLPI-Agent_build\build\msi
     - name: VirusTotal Scan
-      uses: crazy-max/ghaction-virustotal@v3
+      uses: crazy-max/ghaction-virustotal@v4
       if: ${{ needs.setup-release.outputs.create-release == 'yes' || startsWith(needs.setup-release.outputs.tag_name, 'nightly') }}
       with:
         vt_api_key: ${{ secrets.VT_API_KEY }}
@@ -301,25 +329,25 @@ jobs:
         VT_API_KEY: ${{ secrets.VT_API_KEY }}
     - name: Upload VirusTotal Report
       if: ${{ vars.VT_SKIP_REPORT_ANALYSIS != 'yes' && ( needs.setup-release.outputs.create-release == 'yes' || startsWith(needs.setup-release.outputs.tag_name, 'nightly') ) }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: VirusTotal-Report
+        name: VirusTotal-Report-${{ matrix.arch }}
         path: C:\Strawberry-perl-for-GLPI-Agent_build\output\*.json
     - name: Upload Portable Archive Asset
       id: upload-portable-archive-asset
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
-      uses: fiddlermikey/upload-release-assets@d33b61be358467363a2fd6532baabd54722875ed
+      uses: shogo82148/actions-upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.setup-release.outputs.upload_url }}
-        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\glpi-agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.zip
-        asset_name: glpi-agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.zip
+        asset_path: C:\Strawberry-perl-for-GLPI-Agent_build\output\GLPI-Agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.zip
+        asset_name: GLPI-Agent-${{ needs.setup-release.outputs.version }}-${{ matrix.arch }}.zip
         asset_content_type: application/zip
     - name: Upload MSI Installer Asset
       id: upload-msi-asset
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
-      uses: fiddlermikey/upload-release-assets@d33b61be358467363a2fd6532baabd54722875ed
+      uses: shogo82148/actions-upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -343,9 +371,9 @@ jobs:
     needs: setup-release
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Restore points cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           contrib/macosx/*.gz
@@ -359,14 +387,14 @@ jobs:
         key: macosx-packaging-restore-points-${{ matrix.os }}-${{ matrix.arch }}-${{ hashFiles('contrib/macosx/glpi-agent-packaging.sh') }}
     - name: Import Application Signing Cert
       id: application-signing-cert
-      uses: apple-actions/import-codesign-certs@v2
+      uses: slidoapp/import-codesign-certs@1923310662e8682dd05b76b612b53301f431cd5d
       if: ${{ needs.setup-release.outputs.macosx-signing == 'yes' && vars.MACOSX_SIGNING != 'no' }}
       with:
         p12-file-base64: ${{ secrets.MACOSX_APPLICATION_P12 }}
         p12-password: ${{ secrets.MACOSX_P12_PASSWORD }}
     - name: Import Installer Signing Cert
       id: installer-signing-cert
-      uses: apple-actions/import-codesign-certs@v2
+      uses: slidoapp/import-codesign-certs@1923310662e8682dd05b76b612b53301f431cd5d
       if: ${{ needs.setup-release.outputs.macosx-signing == 'yes' && vars.MACOSX_SIGNING != 'no' }}
       with:
         p12-file-base64: ${{ secrets.MACOSX_INSTALLER_P12 }}
@@ -401,6 +429,7 @@ jobs:
         NOTARIZE_PASSWORD: ${{ secrets.MACOSX_NOTARIZE_PASSWORD }}
         NOTARIZE_TEAMID: ${{ vars.MACOSX_NOTARIZE_TEAMID }}
         MACOSX_NOTARIZE: ${{ needs.setup-release.outputs.macosx-notarization }}
+        TAGNAME: ${{ needs.setup-release.outputs.tag_name }}
       shell: bash
     - name: List generated files
       if: success() || failure()
@@ -409,15 +438,15 @@ jobs:
       shell: bash
     - name: Upload MacOSX built artifacts
       if: success() || failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: MacOSX-Build
+        name: MacOSX-Build-${{ matrix.arch }}
         path: |
           contrib/macosx/build/*.pkg
           contrib/macosx/build/*.dmg
     - name: Upload MacOSX Perl building debug artifacts
       if: success() || failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: MacOSX-Perl-Config-${{ matrix.arch }}
         path: |
@@ -431,7 +460,7 @@ jobs:
     - name: Upload MacOSX PKG installer
       id: upload-macosx-pkg-asset
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
-      uses: fiddlermikey/upload-release-assets@d33b61be358467363a2fd6532baabd54722875ed
+      uses: shogo82148/actions-upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -442,7 +471,7 @@ jobs:
     - name: Upload MacOSX DMG installer image
       id: upload-macosx-dmg-asset
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
-      uses: fiddlermikey/upload-release-assets@d33b61be358467363a2fd6532baabd54722875ed
+      uses: shogo82148/actions-upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -459,20 +488,20 @@ jobs:
     needs: setup-release
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: snapcore/action-build@v1
       id: snapcraft
       env:
         TERM: ${{ env.TERM }}:${{ needs.setup-release.outputs.version }}
     - name: Upload Snap built artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Snap-Build
         path: ${{ steps.snapcraft.outputs.snap }}
     - name: Upload Snap Package
       id: upload-linux-snap-asset
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
-      uses: fiddlermikey/upload-release-assets@d33b61be358467363a2fd6532baabd54722875ed
+      uses: shogo82148/actions-upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -489,9 +518,10 @@ jobs:
     needs: setup-release
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install build dependencies packages
       run: |
+        sudo rm /etc/apt/sources.list.d/microsoft-prod.list
         sudo apt update
         sudo apt -y install dpkg-dev debhelper libmodule-install-perl      \
           libclone-perl libdigest-sha-perl libfile-copy-recursive-perl     \
@@ -526,7 +556,7 @@ jobs:
         lintian --profile debian --show-overrides -L ">=pedantic"
       shell: bash
     - name: Upload built deb artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Debian-Build
         path: |
@@ -550,9 +580,10 @@ jobs:
     needs: setup-release
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install build dependencies packages
       run: |
+        sudo rm /etc/apt/sources.list.d/microsoft-prod.list
         sudo apt update
         sudo apt -y install rpm devscripts \
             libfile-which-perl libuniversal-require-perl libmodule-install-perl
@@ -576,13 +607,13 @@ jobs:
             glpi-agent-task-esx glpi-agent-cron
       shell: bash
     - name: Upload built rpm artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: RPM-Build
         path: |
           ${{ steps.rpmbuild.outputs.rpmdir }}/noarch/*.rpm
     - name: Upload rpm sources artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: RPM-Sources
         path: |
@@ -606,14 +637,14 @@ jobs:
     needs: [ setup-release, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging ]
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/download-artifact@v3
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
       with:
         name: RPM-Build
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Debian-Build
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Snap-Build
     - name: Build installer
@@ -633,7 +664,7 @@ jobs:
       env:
         VERSION: ${{ needs.setup-release.outputs.version }}
     - name: Upload built installer artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Linux-Installer-Build
         path: |
@@ -655,14 +686,25 @@ jobs:
     needs: [ setup-release, linux-debian-packaging ]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+    - name: Install build dependencies packages
+      run: |
+        sudo rm /etc/apt/sources.list.d/microsoft-prod.list
+        sudo apt update
+        sudo apt -y install pipx zsync
+      shell: bash
     # We use AppImage Builder development version as 1.1 is failing
     - name: Install AppImage Builder development version
       id: install-appimage-builder
       run: |
-        pip3 install git+https://github.com/AppImageCrafters/appimage-builder.git
+        if command -v pipx >/dev/null; then
+          echo ~/.local/bin >> $GITHUB_PATH
+          pipx install git+https://github.com/AppImageCrafters/appimage-builder.git
+        else
+          pip3 install git+https://github.com/AppImageCrafters/appimage-builder.git
+        fi
       shell: bash
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Debian-Build
     - name: Make AppImage
@@ -691,7 +733,7 @@ jobs:
       env:
         VERSION: ${{ needs.setup-release.outputs.version }}
     - name: Upload built installer artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Linux-AppImage-Build
         path: |
@@ -719,9 +761,10 @@ jobs:
     needs: setup-release
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install build dependencies packages
       run: |
+        sudo rm /etc/apt/sources.list.d/microsoft-prod.list
         sudo apt update
         sudo apt -y install libmodule-install-perl libuniversal-require-perl \
           libwww-perl libdigest-sha-perl
@@ -741,7 +784,7 @@ jobs:
       env:
         VERSION: ${{ needs.setup-release.outputs.version }}
     - name: Upload built archive artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Sources
         path: |
@@ -763,7 +806,44 @@ jobs:
     needs: [ setup-release, windows-packaging, macosx-packaging, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging, linux-installer, sources ]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        name: Linux-Installer-Build
+    - uses: actions/download-artifact@v4
+      with:
+        name: RPM-Build
+    - uses: actions/download-artifact@v4
+      with:
+        name: Debian-Build
+    - uses: actions/download-artifact@v4
+      with:
+        name: Snap-Build
+    - uses: actions/download-artifact@v4
+      with:
+        name: Linux-AppImage-Build
+    - uses: actions/download-artifact@v4
+      with:
+        pattern: MacOSX-Build-*
+        merge-multiple: true
+    - uses: actions/download-artifact@v4
+      with:
+        pattern: Windows-Build-*
+        merge-multiple: true
+    - uses: actions/download-artifact@v4
+      with:
+        name: Sources
+    - name: Generate and upload sha256 file
+      id: upload-sha256-asset
+      run: |
+        # Clean up not published files from Debian-Build
+        rm -f *.buildinfo *.changes
+        sha256sum *$VERSION* > glpi-agent-$VERSION.sha256
+        gh release upload ${{ needs.setup-release.outputs.tag_name }} glpi-agent-$VERSION.sha256
+      shell: bash
+      env:
+        VERSION: ${{ needs.setup-release.outputs.version }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Publish release
       id: publish-release
       run: |
@@ -817,40 +897,42 @@ jobs:
     needs: [ setup-release, windows-packaging, macosx-packaging, linux-snap-packaging, linux-debian-packaging, linux-rpm-packaging, linux-installer, sources ]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         repository: ${{ github.repository_owner }}/glpi-project.github.io
         token: ${{ secrets.PUBLISHING_TOKEN }}
         fetch-depth: 0
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Linux-Installer-Build
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: RPM-Build
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Debian-Build
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Snap-Build
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: Linux-AppImage-Build
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
-        name: MacOSX-Build
+        pattern: MacOSX-Build-*
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+        merge-multiple: true
+    - uses: actions/download-artifact@v4
       with:
-        name: Windows-Build
+        pattern: Windows-Build-*
         path: glpi-agent
-    - uses: actions/download-artifact@v3
+        merge-multiple: true
+    - uses: actions/download-artifact@v4
       with:
         name: Sources
         path: glpi-agent
@@ -882,7 +964,11 @@ jobs:
         # Get script to prepare page
         curl -L -s -o github-nightly-description.sh https://github.com/glpi-project/glpi-agent/raw/develop/tools/github-nightly-description.sh
         chmod +x github-nightly-description.sh
-        ./github-nightly-description.sh --header --version ${{ needs.setup-release.outputs.version }} >index.md.new
+        cd glpi-agent
+        echo "Generating glpi-agent ${{ needs.setup-release.outputs.version }} packages sha256 file"
+        sha256sum *${{ needs.setup-release.outputs.version }}* > glpi-agent-${{ needs.setup-release.outputs.version }}.sha256
+        cd ..
+        ./github-nightly-description.sh --header --version ${{ needs.setup-release.outputs.version }} >glpi-agent/index.md.new
         git config --local user.email "${{ needs.setup-release.outputs.user-email }}"
         git config --local user.name "${{ needs.setup-release.outputs.user-name }}"
         egrep '^# ' glpi-agent/index.md | \
@@ -891,14 +977,20 @@ jobs:
             VERSION="${version#v}"
             if (( --COUNT > 0 )); then
                 echo "Keeping glpi-agent $VERSION build"
+                if [ ! -e glpi-agent/glpi-agent-$VERSION.sha256 ]; then
+                    cd glpi-agent
+                    echo "Generating glpi-agent $VERSION packages sha256 file"
+                    sha256sum *$VERSION* > glpi-agent-$VERSION.sha256
+                    cd ..
+                fi
                 read date time tz <<<$(git log -n1 --pretty=%ci -- glpi-agent/glpi-agent_${VERSION}_all.deb)
-                ./github-nightly-description.sh --version $VERSION --date "$date $time UTC" >>index.md.new
+                ./github-nightly-description.sh --version $VERSION --date "$date $time UTC" >>glpi-agent/index.md.new
             else
                 echo "Removing glpi-agent $VERSION build"
-                git filter-branch --prune-empty -f --index-filter "git rm --cached --ignore-unmatch glpi-agent/*$VERSION*" HEAD
+                git filter-branch --prune-empty -f --index-filter "git rm --cached --ignore-unmatch *$VERSION*" HEAD
             fi
         done
-        mv -vf index.md.new glpi-agent/index.md
+        mv -vf glpi-agent/index.md.new glpi-agent/index.md
         rm -f github-nightly-description.sh
         echo "Repository status:"
         git status

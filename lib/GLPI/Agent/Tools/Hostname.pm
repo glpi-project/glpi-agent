@@ -30,13 +30,22 @@ BEGIN {
 sub getHostname {
     my (%params) = @_;
 
+    my $hostname;
+
     my $remote = $GLPI::Agent::Tools::remote;
-    return $remote->getRemoteHostname() if $remote;
+    if ($remote) {
+        if ($params{fqdn}) {
+            $hostname = $remote->getRemoteFQDN()
+                and $hostname =~ s/\.$//;  # the module may return a trailing dot
+        }
+        # Fallback on getgetRemoteHostname if fqdn was requested and failed
+        $hostname = $remote->getRemoteHostname()
+            if empty($hostname);
+    } else {
+        $hostname = $OSNAME eq 'MSWin32' ? _getHostnameWindows() : _getHostnameUnix(%params);
+    }
 
-    my $hostname = $OSNAME eq 'MSWin32' ?
-        _getHostnameWindows() :
-        _getHostnameUnix()    ;
-
+    # Support assetname-support = 1 option
     if ($params{short}) {
         $hostname =~ s/\..*$//;
     }
@@ -45,9 +54,23 @@ sub getHostname {
 }
 
 sub _getHostnameUnix {
+    my (%params) = @_;
 
-    Sys::Hostname->require();
-    return Sys::Hostname::hostname();
+    my $hostname;
+
+    if ($params{fqdn}) {
+        Net::Domain->require();
+        my $fqdn = Net::Domain::hostfqdn();
+        unless (empty($fqdn)) {
+            $fqdn =~ s/\.$//;  # the module may return a trailing dot
+            $hostname = $fqdn;
+        }
+    } else {
+        Sys::Hostname->require();
+        $hostname = Sys::Hostname::hostname();
+    }
+
+    return $hostname;
 }
 
 sub _getHostnameWindows {

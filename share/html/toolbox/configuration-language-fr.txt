@@ -9,14 +9,15 @@ Scheduling YAML file: Fichier YAML des planifications
 Default page: Page d'accueil
 Navigation bar: Barre de navigation
 Show Credentials in navigation bar: Afficher la navigation vers les identifiants
-Show Inventory in navigation bar: Afficher la navigation vers l'inventaire
+Show Inventory tasks in navigation bar: Afficher la navigation vers les tâches d'inventaire
 Show IP Ranges in navigation bar: Afficher la navigation vers les plages IP
 Show Remotes in navigation bar: Afficher la navigation vers les inventaires distants
 Show Results in navigation bar: Afficher la navigation vers les résultats
 Show Scheduling in navigation bar: Afficher la navigation vers la planification
 Show Raw YAML navigation: Afficher la navigation vers le YAML brute
+Show agent home navigation: Afficher la navigation vers la page index de l'agent
 Network task: Tâche réseau
-Base folder to save XML: Dossier de base pour sauver les fichiers XML
+Base folder to save inventory files: Dossier de base pour sauver les fichiers d'inventaire
 Network task threads number options: Options du nombre de threads pour le scan réseau
 Network task SNMP timeout options: Options du délai SNMP maximum pour le scan réseau
 Defaut columns for results list view: Colonnes par défaut pour la liste des résultats

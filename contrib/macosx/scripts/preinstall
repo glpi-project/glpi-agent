@@ -6,6 +6,13 @@ DEST="$2"
 INSTALL_PATH="${DEST%/}/Applications/GLPI-Agent"
 
 # Stop service and unload plist file if present
+# Case for glpi-agent > 1.6.1
+if [ -e /Library/LaunchDaemons/com.teclib.glpi-agent.plist ]; then
+    echo "Stopping service"
+    sudo launchctl stop com.teclib.glpi-agent
+    sudo launchctl unload /Library/LaunchDaemons/com.teclib.glpi-agent.plist
+fi
+# Case for glpi-agent <= 1.6.1
 if [ -e /Library/LaunchDaemons/org.glpi-project.glpi-agent.plist ]; then
     echo "Stopping service"
     sudo launchctl stop org.glpi-project.glpi-agent

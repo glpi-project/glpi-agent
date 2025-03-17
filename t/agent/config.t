@@ -167,6 +167,7 @@ ok (scalar(@{$c->{'httpd-trust'}}) == 4);
 
 SKIP: {
     skip ('test for Windows only', 7) if ($OSNAME ne 'MSWin32');
+    skip ('registry access can only be tested as admin', 7) if system("net session 2>nul");
     my $settings = GLPI::Test::Utils::openWin32Registry();
     ok (defined $settings);
     my $testValue = time;

@@ -210,7 +210,7 @@ sub _WTSFreeMemory {
     eval {
         my $apiWTSFreeMemory = Win32::API->new(
             'wtsapi32',
-            'VOID WTSFreeMemory( PVOID pMemory )'
+            'VOID WTSFreeMemory( UINT_PTR pMemory )'
         );
         $apiWTSFreeMemory->Call($pMemory);
     };

@@ -41,7 +41,7 @@ sub success {
 
     $self->on_failure("got sha512 file hash match for $path");
     $self->on_success("got sha512 file hash mismatch for $path, found $sha512");
-    return ( $sha512 ne $expected );
+    return ( $sha512 ne lc($expected) );
 }
 
 1;

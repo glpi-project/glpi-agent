@@ -22,6 +22,9 @@ my $default = {
     'conf-reload-interval'    => 0,
     'debug'                   => undef,
     'delaytime'               => 3600,
+    'esx-itemtype'            => undef,
+    'glpi-version'            => undef,
+    'itemtype'                => undef,
     'remote-scheduling'       => 0,
     'remote-workers'          => 1,
     'force'                   => undef,
@@ -39,6 +42,8 @@ my $default = {
     'no-compression'          => undef,
     'no-task'                 => [],
     'no-p2p'                  => undef,
+    'oauth-client-id'         => undef,
+    'oauth-client-secret'     => undef,
     'password'                => undef,
     'proxy'                   => undef,
     'httpd-ip'                => undef,
@@ -51,12 +56,16 @@ my $default = {
     'server'                  => undef,
     'ssl-cert-file'           => undef,
     'ssl-fingerprint'         => undef,
+    'ssl-keystore'            => undef,
     'tag'                     => undef,
     'tasks'                   => undef,
     'timeout'                 => 180,
     'user'                    => undef,
     'vardir'                  => undef,
     'assetname-support'       => 1,
+    'full-inventory-postpone' => 14,
+    'required-category'       => [],
+    'snmp-retries'            => 0,
 };
 
 my $confReloadIntervalMinValue = 60;
@@ -251,11 +260,7 @@ sub loadFromFile {
 
             # Extract value from quotes or clean any comment including preceding spaces
             if ($val =~ /^(['"])([^\1]*)\1/) {
-                my ($quote, $extract) = ( $1, $2 );
-                $val =~ s/\s*#.+$//;
-                warn "Config: We may have been confused for $key quoted value, our extracted value: '$extract'\n"
-                    if ($val ne "$quote$extract$quote");
-                $val = $extract ;
+                $val = $2;
             } else {
                 $val =~ s/\s*#.+$//;
             }
@@ -272,11 +277,7 @@ sub loadFromFile {
         } elsif ($line =~ /^\s*include\s+(.+)$/i) {
             my $include = $1;
             if ($include =~ /^(['"])([^\1]*)\1/) {
-                my ($quote, $extract) = ( $1, $2 );
-                $include =~ s/\s*#.+$//;
-                warn "Config: We may have been confused for include quoted path, our extracted path: '$extract'\n"
-                    if ($include ne "$quote$extract$quote");
-                $include = $extract ;
+                $include = $2;
             } else {
                 $include =~ s/\s*#.+$//;
             }
@@ -333,7 +334,7 @@ sub _checkContent {
         die "Config: use either 'ca-cert-file' or 'ca-cert-dir' option, not both\n";
     }
 
-    # logger backend without a logfile isn't enoguh
+    # logger backend without a logfile isn't enough
     if ($self->{'logger'} =~ /file/i && ! $self->{'logfile'}) {
         die "Config: usage of 'file' logger backend makes 'logfile' option mandatory\n";
     }
@@ -346,6 +347,7 @@ sub _checkContent {
             httpd-trust
             no-task
             no-category
+            required-category
             tasks
             ssl-fingerprint
     /) {
@@ -421,6 +423,7 @@ sub getTargets {
                     path       => $path,
                     html       => $self->{html},
                     json       => $self->{json},
+                    glpi       => $self->{"glpi-version"},
                 );
         }
     }
@@ -435,6 +438,7 @@ sub getTargets {
                 basevardir => $params{vardir},
                 url        => $url,
                 tag        => $self->{tag},
+                glpi       => $self->{"glpi-version"},
             );
         }
     }
@@ -451,6 +455,7 @@ sub getTargets {
                 logger     => $params{logger},
                 delaytime  => $self->{delaytime},
                 basevardir => $params{vardir},
+                glpi       => $self->{"glpi-version"},
             );
     }
 

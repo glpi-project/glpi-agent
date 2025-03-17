@@ -203,24 +203,17 @@ sub terminate {
         if ($self->{current_task});
 }
 
-sub runTarget {
-    my ($self, $target) = @_;
+sub getContact {
+    my ($self, $target, $plannedTasks) = @_;
 
-    if ($target->isType('local') || $target->isType('server')) {
-        $self->{logger}->info("target $target->{id}: " . $target->getType() . " " . $target->getName());
-    }
+    my $response;
 
-    # the prolog/contact dialog must be done once for all tasks,
-    # but only for server targets
-    my ($response, $contact_response);
-    my $client;
-    my @plannedTasks = $target->plannedTasks();
     if ($target->isGlpiServer()) {
         GLPI::Agent::HTTP::Client::GLPI->require();
         return $self->{logger}->error("GLPI Protocol library can't be loaded")
             if $EVAL_ERROR;
 
-        $client = GLPI::Agent::HTTP::Client::GLPI->new(
+        my $client = GLPI::Agent::HTTP::Client::GLPI->new(
             logger  => $self->{logger},
             config  => $self->{config},
             agentid => uuid_to_string($self->{agentid}),
@@ -236,7 +229,7 @@ sub runTarget {
             $httpd_conf{"httpd-port"} = $self->{server}->{port};
         }
 
-        my %enabled = map { lc($_) => 1 } @plannedTasks;
+        my %enabled = map { lc($_) => 1 } @{$plannedTasks};
         my $contact = GLPI::Agent::Protocol::Contact->new(
             logger              => $self->{logger},
             deviceid            => $self->{deviceid},
@@ -293,7 +286,8 @@ sub runTarget {
             $self->{logger}->debug("server message: $message");
         }
 
-        $target->setMaxDelay($response->expiration) if $response->expiration;
+        my $expiration = $response->expiration;
+        $target->setMaxDelay($expiration) if $expiration;
 
         # Don't plan tasks disabled by server
         my $disabled = $response->get('disabled');
@@ -305,14 +299,14 @@ sub runTarget {
                 $self->{_disabled_remoteinventory} = delete $disabled{remoteinventory};
                 # Never disable inventory if force option is used
                 delete $disabled{inventory} if $self->{config}->{force};
-                @plannedTasks = grep { ! exists($disabled{lc($_)}) } @plannedTasks;
+                $response->{plannedTasks} = [ grep { ! exists($disabled{lc($_)}) } @{$plannedTasks} ];
             } elsif (!ref($disabled)) {
                 $disabled = lc($disabled);
                 # Only disable inventory if force option is not set
                 if ($disabled ne "inventory" || !$self->{config}->{force}) {
-                    @plannedTasks = grep {
-                        lc($_) ne $disabled
-                    } @plannedTasks;
+                    $response->{plannedTasks} = [
+                        grep { lc($_) ne $disabled } @{$plannedTasks}
+                    ];
                 }
             }
         }
@@ -321,7 +315,7 @@ sub runTarget {
         # Handle tasks informations returned by server in CONTACT answer
         if (ref($tasks) eq "HASH") {
             # Only keep task server support for planned tasks
-            foreach my $task (map { lc($_) } @plannedTasks) {
+            foreach my $task (map { lc($_) } @{$plannedTasks}) {
                 next unless ref($tasks->{$task}) eq 'HASH';
 
                 # Keep task supporting announced by server
@@ -342,18 +336,28 @@ sub runTarget {
                             $self->{config}->{"no-category"} = $no_category;
                         }
                     }
+                    # Handle required-category set by server on inventory task
+                    if ($tasks->{inventory}->{"required-category"}) {
+                        my $required_category = [ sort split(/,+/, $tasks->{inventory}->{"required-category"}) ];
+                        unless (@{$self->{config}->{"required-category"}} && join(",", sort @{$self->{config}->{"required-category"}}) eq join(",", @{$required_category})) {
+                            $self->{logger}->debug("set required-category configuration to: ".$tasks->{inventory}->{"required-category"});
+                            $self->{config}->{"required-category"} = $required_category;
+                        }
+                    }
                 }
             }
         }
-
-        # Keep contact response
-        $contact_response = $response;
     }
 
-    # By default, PROLOG request could be avoided when communicating with a GLPI server
-    # But it still may be required if we detect server supports any task due to glpiinventory plugin
-    if ($target->isType('server') && $target->doProlog()) {
+    return $response;
+}
 
+sub getProlog {
+    my ($self, $target) = @_;
+
+    my $response;
+
+    if ($target->isType('server')) {
         return unless GLPI::Agent::HTTP::Client::OCS->require();
 
         my $agentid;
@@ -363,10 +367,10 @@ sub runTarget {
         $agentid = uuid_to_string($self->{agentid})
             unless $target->isGlpiServer();
 
-        $client = GLPI::Agent::HTTP::Client::OCS->new(
+        my $client = GLPI::Agent::HTTP::Client::OCS->new(
             logger  => $self->{logger},
             config  => $self->{config},
-            agentid =>  $agentid,
+            agentid => $agentid,
         );
 
         return unless GLPI::Agent::XML::Query::Prolog->require();
@@ -392,7 +396,6 @@ sub runTarget {
             unless ($target->isGlpiServer()) {
                 $self->{logger}->info("$target->{id} answer shows it supports GLPI Agent protocol");
                 $target->isGlpiServer('true');
-                return $self->runTarget($target) unless $response->expiration;
             }
         } else {
             # update target
@@ -404,12 +407,72 @@ sub runTarget {
         }
     }
 
+    return $response;
+}
+
+sub runTarget {
+    my ($self, $target, $responses_only) = @_;
+
+    if ($target->isType('local') || $target->isType('server')) {
+        $self->{logger}->info("target $target->{id}: " . $target->getType() . " " . $target->getName());
+    }
+
+    # the prolog/contact dialog must be done once for all tasks,
+    # but only for server targets
+    my @plannedTasks = $target->plannedTasks();
+    my @requests = ();
+    my $responses = {};
+    push @requests, 'CONTACT' if $target->isGlpiServer();
+    push @requests, 'PROLOG' if !@requests && $target->isType('server');
+    my %requested = qw(CONTACT 0 PROLOG 0);
+
+    while (@requests) {
+        my $request = shift @requests;
+        next if $responses->{$request};
+
+        my $response;
+        $requested{$request} = 1;
+
+        if ($request eq 'CONTACT') {
+
+            $response = $self->getContact($target, \@plannedTasks);
+            # Still return on error
+            return $response if $response && !ref($response);
+
+            # Update plannedTasks
+            if (ref($response) && $response->{plannedTasks}) {
+                my $plannedTasks = delete $response->{plannedTasks};
+                @plannedTasks = @{$plannedTasks};
+            }
+
+            # Check condition where we also need to request PROLOG after a CONTACT
+            push @requests, 'PROLOG'
+                if ref($response) && $target->doProlog() && !$requested{PROLOG};
+
+        # By default, PROLOG request could be avoided when communicating with a GLPI server
+        # But it still may be required if we detect server supports any task due to glpiinventory plugin
+        } elsif ($request eq 'PROLOG') {
+
+            $response = $self->getProlog($target, \@plannedTasks);
+            # Still return on error
+            return $response if $response && !ref($response);
+
+            push @requests, 'CONTACT'
+                if ref($response) && $target->isGlpiServer() && !$requested{CONTACT};
+        }
+
+        $responses->{$request} = $response if ref($response);
+    }
+
+    # Used when running tasks after a taskrun event
+    return $responses if $responses_only;
+
     foreach my $name (@plannedTasks) {
-        my $server_response = $response;
-        if ($contact_response) {
+        my $server_response = $responses->{PROLOG} // $responses->{CONTACT};
+        if ($responses->{CONTACT}) {
             # Be sure to use expected response for task
             my $task_server = $target->getTaskServer($name) // 'glpi';
-            $server_response = $contact_response
+            $server_response = $responses->{CONTACT}
                 if $task_server eq 'glpi';
         }
         eval {
@@ -464,7 +527,7 @@ sub runTaskReal {
     # init event first initiates maintenance event on deploy task
     if ($self->{event} && $self->{event}->init) {
         my $event = $task->newEvent();
-        $target->addEvent($event) if $event && $event->name;
+        $target->addEvent($event, 1) if $event && $event->name;
         return;
     }
 
@@ -583,7 +646,15 @@ sub _handlePersistentState {
 
     if (!$self->{deviceid} && !$data->{deviceid}) {
         # compute an unique agent identifier, based on host name and current time
-        my $hostname = getHostname();
+        my %config = ();
+        if ($self->{config}->{'assetname-support'}) {
+            if ($self->{config}->{'assetname-support'} == 1) {
+                $config{short} = 1;
+            } elsif ($self->{config}->{'assetname-support'} == 3) {
+                $config{fqdn} = 1;
+            }
+        }
+        my $hostname = getHostname(%config);
 
         my ($year, $month , $day, $hour, $min, $sec) =
             (localtime (time))[5, 4, 3, 2, 1, 0];

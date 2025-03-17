@@ -38,7 +38,7 @@ sub success {
     return 0 unless (defined($sha512) && $sha512);
 
     $self->on_failure($self->{path} . " has wrong sha512 file hash, found $sha512");
-    return ( $sha512 eq $expected );
+    return ( $sha512 eq lc($expected) );
 }
 
 1;

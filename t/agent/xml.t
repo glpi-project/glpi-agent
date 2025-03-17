@@ -14,6 +14,7 @@ use File::Temp qw(tempdir);
 use UNIVERSAL::require;
 use Encode qw(decode);
 use XML::LibXML;
+use Data::Dumper;
 
 use GLPI::Agent::XML;
 use GLPI::Agent::Tools;
@@ -347,6 +348,7 @@ File::Find::find({
 # Skip files wrongly handled by XML::TreePP in specific case we don't care about
 my @skip_treepp_test = qw(
     resources/esx/esx-4.1.0-1/RetrieveProperties.soap
+    resources/macos/system_profiler/SPCardReaderDataType2.xml
 );
 
 my %file_cases = (
@@ -384,6 +386,131 @@ my %file_cases = (
                 'PROLOG_FREQ' => '1'
             }
         },
+    },
+    "resources/macos/system_profiler/SPCardReaderDataType2.xml" => {
+        options => {
+            is_plist => 1,
+        },
+        dump => {
+            plist => [
+                {
+                    _SPCommandLineArguments => [
+                        '/usr/sbin/system_profiler',
+                        '-nospawn',
+                        '-xml',
+                        'SPCardReaderDataType',
+                        '-detailLevel',
+                        'full'
+                    ],
+                    _SPCompletionInterval => '0.060505032539367676',
+                    _SPResponseTime => '0.079851984977722168',
+                    _dataType => 'SPCardReaderDataType',
+                    _detailLevel => -1,
+                    _items => [],
+                    _parentDataType => 'SPHardwareDataType',
+                    _properties => {
+                        _name => {
+                            _isColumn => 'NO',
+                            _isOutlineColumn => 'NO',
+                            _order => 0
+                        },
+                        bsd_name => {
+                            _order => 260
+                        },
+                        detachable_drive => {
+                            _order => 240
+                        },
+                        file_system => {
+                            _order => 250
+                        },
+                        free_space => {
+                            _deprecated => undef,
+                            _order => 200
+                        },
+                        free_space_in_bytes => {
+                            _isByteSize => undef,
+                            _order => 200
+                        },
+                        mount_point => {
+                            _order => 270
+                        },
+                        removable_media => {
+                            _order => 220
+                        },
+                        size => {
+                            _deprecated => undef,
+                            _order => 210
+                        },
+                        size_in_bytes => {
+                            _isByteSize => undef,
+                            _order => 210
+                        },
+                        spcardreader => {
+                            _order => 10
+                        },
+                        'spcardreader_card_manufacturer-id' => {
+                            _order => 140
+                        },
+                        spcardreader_card_manufacturing_date => {
+                            _order => 170
+                        },
+                        spcardreader_card_oemid => {
+                            _order => 130
+                        },
+                        spcardreader_card_productname => {
+                            _order => 120
+                        },
+                        spcardreader_card_productrevision => {
+                            _order => 150
+                        },
+                        spcardreader_card_serialnumber => {
+                            _order => 160
+                        },
+                        spcardreader_card_specversion => {
+                            _order => 180
+                        },
+                        'spcardreader_device-id' => {
+                            _order => 50
+                        },
+                        'spcardreader_link-speed' => {
+                            _order => 110
+                        },
+                        'spcardreader_link-width' => {
+                            _order => 100
+                        },
+                        'spcardreader_product-id' => {
+                            _order => 40
+                        },
+                        'spcardreader_revision-id' => {
+                            _order => 80,
+                            _suppressLocalization => undef
+                        },
+                        spcardreader_serialnumber => {
+                            _order => 90
+                        },
+                        'spcardreader_subsystem-id' => {
+                            _order => 70
+                        },
+                        'spcardreader_subsystem_vendor-id' => {
+                            _order => 60
+                        },
+                        'spcardreader_vendor-id' => {
+                            _order => 30
+                        },
+                        volumes => {
+                            _detailLevel => 0
+                        },
+                        writable => {
+                            _order => 230
+                        }
+                    },
+                    _timeStamp => '2022-10-06T16:43:05Z',
+                    _versionInfo => {
+                        'com.apple.SystemProfiler.SPCardReaderReporter' => '2.7'
+                    }
+                }
+            ]
+        }
     },
 );
 
@@ -495,6 +622,11 @@ foreach my $file (sort @xml_files) {
             $file_cases{$file}->{dump},
             "<$file> file expected hash"
         );
+        unless (keys(%{$file_cases{$file}}) && $file_cases{$file}->{dump}) {
+            my $dumper = Data::Dumper->new([{dump => $dump}], ["hash"])->Useperl(1)->Indent(1)->Quotekeys(0)->Sortkeys(1)->Pad("    ");
+            $dumper->{xpad} = "    ";
+            print STDERR "====\nCURRENT DUMP: ", $dumper->Dump();
+        }
     }
 
     if ($tpp && !grep { $_ eq $file } @skip_treepp_test) {

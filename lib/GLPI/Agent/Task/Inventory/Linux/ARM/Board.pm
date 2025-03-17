@@ -34,7 +34,7 @@ sub _getBios {
         # List of well-known inventory values we can import
         # Search for cpuinfo value from the given list
         my %infos = (
-            MMODEL  => [ 'hardware' ],
+            MMODEL  => [ 'hardware', 'model' ],
             MSN     => [ 'revision' ],
             SSN     => [ 'serial' ]
         );

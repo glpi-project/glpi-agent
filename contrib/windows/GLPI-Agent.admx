@@ -73,6 +73,17 @@
             <string>0</string>
           </falseValue>
         </boolean>
+        <text id="GLPI_full-inventory-postpone" key="SOFTWARE\GLPI-Agent" valueName="full-inventory-postpone" required="true" />
+        <text id="GLPI_required-category" key="SOFTWARE\GLPI-Agent" valueName="required-category" />
+        <text id="GLPI_itemtype" key="SOFTWARE\GLPI-Agent" valueName="itemtype" />
+        <boolean id="GLPI_json" key="SOFTWARE\GLPI-Agent" valueName="json">
+          <trueValue>
+            <string>1</string>
+          </trueValue>
+          <falseValue>
+            <string>0</string>
+          </falseValue>
+        </boolean>
       </elements>
     </policy>
     <policy name="GLPI_CONFIGURE32on64" class="Machine" displayName="$(string.GLPI_CONFIGURE32on64)" explainText="$(string.GLPI_CONFIGURE_EXPLAIN)" presentation="$(presentation.GLPI_CONFIGURE)" key="SOFTWARE\Wow6432Node\GLPI-Agent">
@@ -130,6 +141,17 @@
           </falseValue>
         </boolean>
         <boolean id="GLPI_no-httpd" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="no-httpd">
+          <trueValue>
+            <string>1</string>
+          </trueValue>
+          <falseValue>
+            <string>0</string>
+          </falseValue>
+        </boolean>
+        <text id="GLPI_full-inventory-postpone" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="full-inventory-postpone" required="true" />
+        <text id="GLPI_required-category" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="required-category" />
+        <text id="GLPI_itemtype" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="itemtype" />
+        <boolean id="GLPI_json" key="SOFTWARE\Wow6432Node\GLPI-Agent" valueName="json">
           <trueValue>
             <string>1</string>
           </trueValue>

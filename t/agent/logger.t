@@ -144,25 +144,25 @@ ok(
 is(
     getStderrOutput(sub { $logger->debug('message'); }),
     "[debug] message",
-    'debug message formating'
+    'debug message formatting'
 );
 
 is(
     getStderrOutput(sub { $logger->info('message'); }),
     "[info] message",
-    'info message formating'
+    'info message formatting'
 );
 
 is(
     getStderrOutput(sub { $logger->warning('message'); }),
     "[warning] message",
-    'warning message formating'
+    'warning message formatting'
 );
 
 is(
     getStderrOutput(sub { $logger->error('message'); }),
     "[error] message",
-    'error message formating'
+    'error message formatting'
 );
 
 $logger = GLPI::Agent::Logger->new(
@@ -199,25 +199,25 @@ $logger = GLPI::Agent::Logger->new(
 is(
     getStderrOutput(sub { $logger->debug('message'); }),
     "\033[1;1m[debug]\033[0m message",
-    'debug message color formating'
+    'debug message color formatting'
 );
 
 is(
     getStderrOutput(sub { $logger->info('message'); }),
     "\033[1;34m[info]\033[0m message",
-    'info message color formating'
+    'info message color formatting'
 );
 
 is(
     getStderrOutput(sub { $logger->warning('message'); }),
     "\033[1;35m[warning] message\033[0m",
-    'warning message color formating'
+    'warning message color formatting'
 );
 
 is(
     getStderrOutput(sub { $logger->error('message'); }),
     "\033[1;31m[error] message\033[0m",
-    'error message color formating'
+    'error message color formatting'
 );
 
 # Test just updating color config
@@ -228,7 +228,7 @@ $logger = GLPI::Agent::Logger->new(
 is(
     getStderrOutput(sub { $logger->error('message'); }),
     "[error] message",
-    'error message after color formating removed'
+    'error message after color formatting removed'
 );
 
 # file backend tests
@@ -274,25 +274,25 @@ ok(
 like(
     getFileOutput($logfile, sub { $logger->debug('message'); }),
     qr/^\[... ... .. ..:..:.. ....\]\[debug\] message/,
-    'debug message formating'
+    'debug message formatting'
 );
 
 like(
     getFileOutput($logfile, sub { $logger->info('message'); }),
     qr/^\[... ... .. ..:..:.. ....\]\[info\] message/,
-    'info message formating'
+    'info message formatting'
 );
 
 like(
     getFileOutput($logfile, sub { $logger->warning('message'); }),
     qr/^\[... ... .. ..:..:.. ....\]\[warning\] message/,
-    'warning message formating'
+    'warning message formatting'
 );
 
 like(
     getFileOutput($logfile, sub { $logger->error('message'); }),
     qr/^\[... ... .. ..:..:.. ....\]\[error\] message/,
-    'error message formating'
+    'error message formatting'
 );
 
 $logfile = "$tmpdir/test3";

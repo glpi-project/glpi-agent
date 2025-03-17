@@ -53,8 +53,7 @@ sub _getBatteriesFromSysClass {
     foreach my $psu (Glob("/sys/class/power_supply/*")) {
         my $type = getFirstLine(file => "$psu/type")
             or next;
-        my $present = getFirstLine(file => "$psu/present")
-            or next;
+        next unless getFirstLine(file => "$psu/present");
         next unless $type eq "Battery" && has_file("$psu/capacity");
         my $battery = _getBatteryFromSysClass(
             psu     => $psu,

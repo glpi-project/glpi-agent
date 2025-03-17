@@ -5,8 +5,6 @@ use warnings;
 
 use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 
-use version;
-
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Hardware;
 use GLPI::Agent::Tools::SNMP;
@@ -18,6 +16,7 @@ use constant    linux       => enterprises . '.8072.3.2.10' ;
 
 use constant    ucddavis    => enterprises . '.2021' ;
 use constant    checkpoint  => enterprises . '.2620' ;
+use constant    socomec     => enterprises . '.4555' ;
 use constant    synology    => enterprises . '.6574' ;
 use constant    ubnt        => enterprises . '.41112' ;
 
@@ -67,6 +66,12 @@ use constant    hrSWRunName     => iso . '.25.4.2.1.2';
 use constant    ubntUniFi               => ubnt . '.1.6' ;
 use constant    unifiApSystemModel      => ubntUniFi . '.3.3.0' ;
 use constant    unifiApSystemVersion    => ubntUniFi . '.3.6.0' ;
+
+# SOCOMECUPS7-MIB
+use constant    upsIdent    => socomec . '.1.1.7.1.1' ;
+use constant    upsIdentModel                   => upsIdent . '.1.0' ;
+use constant    upsIdentSerialNumber            => upsIdent . '.2.0' ;
+use constant    upsIdentAgentSoftwareVersion    => upsIdent . '.5.0' ;
 
 our $mibSupport = [
     {
@@ -140,6 +145,16 @@ sub getType {
         return 'NETWORKING';
     }
 
+    # Socomec UPS detection
+    my $socomecModel = $self->get(upsIdentModel);
+    if ($socomecModel) {
+        $device->{_Appliance} = {
+            MODEL           => $socomecModel,
+            MANUFACTURER    => 'Socomec'
+        };
+        return 'NETWORKING';
+    }
+
     # sysDescr analysis
     my $sysDescr =  getCanonicalString($self->get(sysDescr));
     if ($sysDescr) {
@@ -189,6 +204,11 @@ sub getType {
             if ($self->_hasProcess('sfestreamer')) {
                 $device->{_Appliance}->{MODEL} = 'FMC';
                 $device->{_Appliance}->{MANUFACTURER} = 'Cisco';
+                return 'NETWORKING';
+            } elsif ($sysDescr && $sysDescr =~ /^(Omada .*)$/i) {
+                # Omada models TP-Link detection
+                $device->{_Appliance}->{MODEL} = $1;
+                $device->{_Appliance}->{MANUFACTURER} = 'TP-Link';
                 return 'NETWORKING';
             }
             return $match->{type};
@@ -254,6 +274,8 @@ sub getSerial {
     } elsif ($manufacturer eq 'Ubiquiti' && $device->{MAC}) {
         $serial = $device->{MAC};
         $serial =~ s/://g;
+    } elsif ($manufacturer eq 'Socomec') {
+        $serial = $self->get(upsIdentSerialNumber);
     } elsif ($device->{_Appliance} && $device->{_Appliance}->{SERIAL}) {
         $serial = $device->{_Appliance}->{SERIAL};
     }
@@ -296,8 +318,8 @@ sub run {
             push @{$device->{STORAGES}}, $storage;
         }
 
-        my $glpi_version = $device->{glpi} ? version->parse($device->{glpi}) : 0;
-        if (!$glpi_version || $glpi_version > version->parse('10.0.10')) {
+        my $glpi_version = $device->{glpi} ? glpiVersion($device->{glpi}) : 0;
+        if (!$glpi_version || $glpi_version > glpiVersion('10.0.10')) {
             my $volumesNames      = $self->walk(syno_raidName) // {};
             my $volumesFreeSizes  = $self->walk(syno_raidFreeSize) // {};
             my $volumesTotalSizes = $self->walk(syno_raidTotalSize) // {};
@@ -351,6 +373,19 @@ sub run {
                 DESCRIPTION     => "Unifi AP System version",
                 TYPE            => "system",
                 VERSION         => getCanonicalString($unifiApSystemVersion),
+                MANUFACTURER    => $manufacturer
+            };
+        }
+    } elsif ($manufacturer eq 'Socomec') {
+        my $upsIdentAgentSoftwareVersion = $self->get(upsIdentAgentSoftwareVersion);
+        if (defined($upsIdentAgentSoftwareVersion)) {
+            my ($name, $version) = ($self->getModel(), getCanonicalString($upsIdentAgentSoftwareVersion));
+            ($name, $version) = ($1, $2) if $version =~ /^(.*) v([0-9.]+)$/;
+            $firmware = {
+                NAME            => $name,
+                DESCRIPTION     => "Socomec ".$self->getModel()." software version",
+                TYPE            => "system",
+                VERSION         => $version,
                 MANUFACTURER    => $manufacturer
             };
         }

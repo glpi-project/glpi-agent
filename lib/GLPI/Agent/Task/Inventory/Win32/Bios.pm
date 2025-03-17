@@ -7,6 +7,7 @@ use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 
+use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Win32;
 use GLPI::Agent::Tools::Generic;
 
@@ -75,9 +76,13 @@ sub doInventory {
                 SerialNumber SMBIOSAssetTag
             / ]
     )) {
-        $bios->{ENCLOSURESERIAL} = $object->{SerialNumber} ;
-        $bios->{SSN}             = $object->{SerialNumber} unless $bios->{SSN};
-        $bios->{ASSETTAG}        = $object->{SMBIOSAssetTag};
+        if ($object->{SerialNumber}) {
+            $bios->{ENCLOSURESERIAL} = $object->{SerialNumber};
+            $bios->{SSN}             = $object->{SerialNumber}
+                unless $bios->{SSN};
+        }
+        $bios->{ASSETTAG} = $object->{SMBIOSAssetTag}
+            unless empty($object->{SMBIOSAssetTag});
     }
 
     foreach my $object (getWMIObjects(
@@ -86,16 +91,22 @@ sub doInventory {
                 SerialNumber Product Manufacturer
             / ]
     )) {
-        $bios->{MSN}             = $object->{SerialNumber};
-        $bios->{MMODEL}          = $object->{Product};
-        $bios->{SSN}             = $object->{SerialNumber}
-            unless $bios->{SSN};
-        $bios->{SMANUFACTURER}   = $object->{Manufacturer}
-            unless $bios->{SMANUFACTURER};
-
+        unless (empty($object->{SerialNumber})) {
+            $bios->{MSN} = $object->{SerialNumber};
+            $bios->{SSN} = $object->{SerialNumber}
+                unless $bios->{SSN};
+        }
+        $bios->{MMODEL} = $object->{Product};
+        unless (empty($object->{Manufacturer})) {
+            $bios->{MMANUFACTURER} = $object->{Manufacturer};
+            $bios->{SMANUFACTURER} = $object->{Manufacturer}
+                unless $bios->{SMANUFACTURER};
+        }
     }
 
     foreach (keys %$bios) {
+        # Handle case we have an array of one string in place of the expected string
+        $bios->{$_} = shift @{$bios->{$_}} if ref($bios->{$_}) eq 'ARRAY';
         $bios->{$_} =~ s/\s+$// if $bios->{$_};
         delete $bios->{$_} if isInvalidBiosValue($bios->{$_});
     }

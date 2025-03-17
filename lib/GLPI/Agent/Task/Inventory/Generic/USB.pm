@@ -37,11 +37,6 @@ sub _getDevices {
         next unless $device->{PRODUCTID};
         next unless $device->{VENDORID};
 
-        # ignore the USB Hub
-        next if
-            $device->{PRODUCTID} eq "0001" ||
-            $device->{PRODUCTID} eq "0002" ;
-
         if (defined($device->{SERIAL}) && length($device->{SERIAL}) < 5) {
             $device->{SERIAL} = undef;
         }
@@ -99,7 +94,7 @@ sub _getDevicesFromLsusb {
             if ($iSerial =~ /S\/N:([^: ]+)/) {
                 $device->{SERIAL} = $1;
             } elsif (!empty($iSerial) && $iSerial !~ /:/) {
-                $device->{SERIAL} = $1;
+                $device->{SERIAL} = $iSerial;
             }
         } elsif ($line =~ /^\s*bInterfaceClass\s*(\d+)/i) {
             $device->{CLASS} = $1;

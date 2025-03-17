@@ -81,9 +81,12 @@ if (@jobs_order) {
     my @target_tooltip;
     if ($target && $targets{$target}) {
       @target_tooltip = ( $targets{$target}->[0], encode('UTF-8', encode_entities($targets{$target}->[1])));
-    } else {
+    } elsif (!$default_local || $default_local eq '.') {
       $target = _("Agent folder");
       @target_tooltip = ( local => $target );
+    } else {
+      $target = _("Configured folder");
+      @target_tooltip = ( local => "<tt>$default_local</tt>" );
     }
     push @configuration, _("Target").":&nbsp;
             <div class='with-tooltip'>$target
@@ -435,14 +438,14 @@ if (@jobs_order) {
       checked = document.getElementById('show-log-'+task).checked;
       last_run_date = this.getResponseHeader('X-Inventory-LastRunDate');
       if (!freezed_log[task]) \{
-        if (this.getResponseHeader('X-Inventory-Output') === 'full') \{
+        if (this.getResponseHeader('X-Inventory-Output') === 'full' || (output_index[task] > 0 && index < output_index[task])) \{
           output.innerHTML = this.responseText;
           output.scrollTop = 0;
         \} else \{
           output.innerHTML += this.responseText;
           if (index && output_index[task] != index ) output.scrollTop = output.scrollHeight;
         \}
-        if (index) output_index[task] = index;
+        if (index >= 0) output_index[task] = index;
       \}
       running = this.getResponseHeader('X-Inventory-Status') === 'running' ? true : false;
       aborted = this.getResponseHeader('X-Inventory-Status') === 'aborted' ? true : false;

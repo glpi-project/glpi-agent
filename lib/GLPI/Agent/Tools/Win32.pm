@@ -72,13 +72,22 @@ our @EXPORT = qw(
     getFormatedWMIDateTime
     loadUserHive
     cleanupPrivileges
+    getServices
 );
 
 my $_is64bits = undef;
+my $_is64bits_expiration;
+my $_is64bits_nextcheck = 1;
 sub is64bit {
     # Cache is64bit() result in a private module variable to avoid a lot of wmi
     # calls and as this value won't change during the service/task lifetime
-    return $_is64bits if defined($_is64bits);
+    # Anyway we make the cached value expirable if we didn't detected it as 64bits
+    # and in the case WMI request failed. This guaranty to retry the request and not
+    # cache a wrong value for the service lifetime in some rare cases.
+    return $_is64bits if $_is64bits ||
+        ($_is64bits_expiration && time < $_is64bits_expiration);
+    $_is64bits_expiration = time + $_is64bits_nextcheck;
+    $_is64bits_nextcheck = $_is64bits_nextcheck >= 2000 ? 3600 : $_is64bits_nextcheck * 2;
     return $_is64bits =
         any { $_->{AddressWidth} eq 64 }
         getWMIObjects(
@@ -275,9 +284,9 @@ sub getRegistryValue {
 sub getRegistryKeyValue {
     my ($key, $valueName, $withType) = @_;
 
-    Win32API::Registry->require()
-        # Only really required for tests
-        or return $withType ? [ $key->{"/$valueName"}, $key->{"/$valueName"} =~ /^0x/ ? 4 : 1 ] : $key->{"/$valueName"};
+    # Required for RemoteInventory or tests
+    return $withType ? [ $key->{"/$valueName"}, $key->{"/$valueName"} =~ /^0x/ ? 4 : 1 ] : $key->{"/$valueName"}
+        if $GLPI::Agent::Tools::remote || !Win32API::Registry->require();
 
     my ($valType, $valData, $dLen) = (0, "", 0);
 
@@ -553,27 +562,24 @@ sub runCommand {
 sub runPowerShell {
     my (%params) = @_;
 
+    my $remote = $GLPI::Agent::Tools::remote;
+
     my $script = delete $params{script}
         or return;
 
-    my ($fh, $psOption);
-    if ($GLPI::Agent::Tools::remote) {
-        $psOption = "-encodedCommand " . encode_base64(encode("UTF16-LE", $script), "");
-    } else {
-        # Keeps File::Temp object in %params so temporary file is removed while leaving
-        $fh = File::Temp->new(
-            TEMPLATE    => 'get-appxpackage-XXXXXX',
-            SUFFIX      => '.ps1'
-        );
-        print $fh $script;
-        close( $fh);
-        my $file = $fh->filename;
-        return unless $file && -f $file;
-        $psOption = "-File $file";
-    }
+    return $remote->runPowerShell(script => $script) if $remote;
 
-    return map { decode("UTF-8", $_) } getAllLines(
-        command => "powershell -NonInteractive -ExecutionPolicy Unrestricted $psOption",
+    my $fh = File::Temp->new(
+        TEMPLATE    => 'get-appxpackage-XXXXXX',
+        SUFFIX      => '.ps1'
+    );
+    print $fh $script;
+    close $fh;
+    my $file = $fh->filename;
+    return unless $file && -f $file;
+
+    return map { my $line = $_ ; $line =~ s/\r$//; decode("UTF-8", $line) } getAllLines(
+        command => "powershell -NonInteractive -ExecutionPolicy Unrestricted -File $file",
         %params
     );
 }
@@ -699,6 +705,32 @@ sub getInterfaces {
     }
 
     return @interfaces;
+}
+
+sub getServices {
+    my (%params) = @_;
+
+    my $services = {};
+
+    foreach my $object (getWMIObjects(
+        class      => 'Win32_Service',
+        properties => [ qw/
+            Name DisplayName Description State PathName
+            /
+        ],
+        %params
+    )) {
+        next unless $object->{Name} && $object->{DisplayName};
+
+        $services->{$object->{Name}} = {
+            NAME        => $object->{DisplayName},
+            DESCRIPTION => $object->{Description} // "",
+            STATUS      => $object->{State}       // "n/a",
+            PATHNAME    => $object->{PathName}    // "",
+        };
+    }
+
+    return $services;
 }
 
 sub FileTimeToSystemTime {
@@ -879,6 +911,7 @@ sub FreeAgentMem {
 
 my $worker ;
 my $worker_semaphore;
+my $workers_semaphore;
 my $worker_lasterror = [];
 
 my @win32_ole_calls : shared;
@@ -895,6 +928,7 @@ sub start_Win32_OLE_Worker {
         # Request a semaphore on which worker blocks immediatly
         Thread::Semaphore->require();
         $worker_semaphore = Thread::Semaphore->new(0);
+        $workers_semaphore = Thread::Semaphore->new(1);
 
         # Start a worker thread
         $worker = threads->create( \&_win32_ole_worker );
@@ -945,7 +979,7 @@ sub _keepOleLastError {
         if ($error != 0x80004005 && $error != 0x80020003) {
             $worker_lasterror = [ $error, $known_ole_errors{$error} ];
             my $logger = GLPI::Agent::Logger->new();
-            $logger->debug("Win32::OLE ERROR: ".($known_ole_errors{$error}||$lasterror));
+            $logger->debug2("Win32::OLE ERROR: ".($known_ole_errors{$error}||$lasterror));
         }
     } else {
         $worker_lasterror = [];
@@ -1028,12 +1062,15 @@ sub call_not_thread_safe_api_on_win32 {
     $call->{expiration} = $expiration;
 
     if (defined($worker)) {
+        # Limit concurrent calls from running threads
+        $workers_semaphore->down();
+
         # Share the expect call
         my $call = shared_clone($call);
         my $result;
 
         if (defined($call)) {
-            # Be sure the worker block
+            # Be sure the worker blocks
             $worker_semaphore->down_nb();
 
             # Lock list calls before releasing semaphore so worker waits
@@ -1053,6 +1090,9 @@ sub call_not_thread_safe_api_on_win32 {
 
             # Be sure to always block worker on semaphore from now
             $worker_semaphore->down_nb();
+
+            # Free any concurrent thread call
+            $workers_semaphore->up();
 
             if (exists($call->{'result'})) {
                 $result = $call->{'result'};
@@ -1116,6 +1156,35 @@ sub setPoller {
 sub getPoller {
     my ($poller) = @_;
     return $poller->down_nb();
+}
+
+sub getEventFile {
+    my ($folder, $event) = @_;
+
+    my $template = "efile-XXXXXXXXXXX";
+    my ($fh, $filename) = File::Temp::tempfile($template, DIR => $folder, SUFFIX => '.evt');
+    binmode($fh);
+    print $fh $event;
+    close $fh;
+
+    return $filename;
+}
+
+sub readEventFile {
+    my ($file, $size) = @_;
+
+    return unless -e $file && $size > 0;
+
+    my $event;
+    if (open my $fh, "<", $file) {
+        binmode($fh);
+        read($fh, $event, $size);
+        close $fh;
+    }
+
+    unlink $file;
+
+    return $event;
 }
 
 sub getFormatedWMIDateTime {

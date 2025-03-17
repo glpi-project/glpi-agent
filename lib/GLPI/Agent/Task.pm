@@ -114,6 +114,18 @@ sub event {
     return $self->{event};
 }
 
+sub events {
+    my ($self) = @_;
+
+    my @events;
+    my $next = $self->resetEvent();
+    push @events, $next if defined($next);
+    $next = delete $self->{_events};
+    push @events, @{$next} if defined($next);
+
+    return @events;
+}
+
 sub resetEvent {
     my ($self, $event) = @_;
 
@@ -122,6 +134,12 @@ sub resetEvent {
     } else {
         return delete $self->{event};
     }
+}
+
+sub addEvent {
+    my ($self, $event) = @_;
+
+    push @{$self->{_events}}, $event;
 }
 
 sub newEvent {}

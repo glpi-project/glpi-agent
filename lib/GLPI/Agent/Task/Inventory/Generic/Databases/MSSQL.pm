@@ -5,6 +5,8 @@ use English qw(-no_match_vars);
 use strict;
 use warnings;
 
+use UNIVERSAL::require;
+
 use parent 'GLPI::Agent::Task::Inventory::Generic::Databases';
 
 use GLPI::Agent::Tools;
@@ -39,8 +41,27 @@ sub _getDatabaseService {
     my $credentials = delete $params{credentials};
     return [] unless $credentials && ref($credentials) eq 'ARRAY';
 
-    # Add SQLExpress default credential when trying default credential
+    # Handle default credentials case
     if (@{$credentials} == 1 && !keys(%{$credentials->[0]})) {
+        # On windows, we can discover instance names in registry
+        if (OSNAME eq 'MSWin32') {
+            GLPI::Agent::Tools::Win32->require();
+            my $instances = GLPI::Agent::Tools::Win32::getRegistryKey(
+                path => 'HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Microsoft SQL Server/Instance Names/SQL',
+            );
+            foreach my $key (%{$instances}) {
+                # Only consider valuename keys
+                my ($instance) = $key =~ m{^/(.+)$}
+                    or next;
+                # Default credentials will still match MSSQLSERVER instance
+                next if $instance eq 'MSSQLSERVER';
+                push @{$credentials}, {
+                    type        => "_discovered_instance",
+                    instance    => $instance,
+                };
+            }
+        }
+        # Add SQLExpress default credential when trying default credential
         push @{$credentials}, {
             type    => "login_password",
             socket  => "localhost\\SQLExpress",
@@ -197,6 +218,8 @@ sub _mssqlOptions {
             $credential->{password} =~ s/"/\\"/g;
             $options .= ' -P "'.$credential->{password}.'"' ;
         }
+    } elsif ($credential->{type} eq "_discovered_instance" && $credential->{instance}) {
+        $options .= " -S .\\$credential->{instance}" ;
     }
 
     return $options;

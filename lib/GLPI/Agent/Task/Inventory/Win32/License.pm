@@ -74,7 +74,11 @@ sub doInventory {
 
 sub _getSeenProducts {
     return unless $seenProducts;
-    return grep { defined $_->{KEY} } values(%{$seenProducts});
+    return ( sort {
+        (($a->{NAME} // '')     cmp ($b->{NAME} // ''))     ||
+        (($a->{FULLNAME} // '') cmp ($b->{FULLNAME} // '')) ||
+        ( $a->{KEY}             cmp  $b->{KEY})
+    } grep { defined $_->{KEY} } values(%{$seenProducts}) );
 }
 
 sub _scanWmiSoftwareLicensingProducts {

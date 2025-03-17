@@ -5,6 +5,7 @@ use warnings;
 
 use Test::Deep;
 use Test::More;
+use Test::NoWarnings;
 
 use GLPI::Agent::Tools::Linux;
 
@@ -1058,7 +1059,7 @@ my %ipaddrshow_tests = (
             IPMASK      => '255.255.252.0'
         },
         {
-            DESCRIPTION => 'wlan0:0',
+            DESCRIPTION => 'wlan0',
             MACADDR     => '00:1a:6b:0d:78:03',
             STATUS      => 'Up',
             IPADDRESS   => '192.168.1.11',
@@ -1075,11 +1076,6 @@ my %ipaddrshow_tests = (
         },
         {
             DESCRIPTION => 'eth0',
-            MACADDR     => 'f0:1f:af:0f:a4:0c',
-            STATUS      => 'Up',
-        },
-        {
-            DESCRIPTION => 'eth0:0',
             MACADDR     => 'f0:1f:af:0f:a4:0c',
             STATUS      => 'Up',
             IPADDRESS   => '192.168.1.11',
@@ -1117,10 +1113,6 @@ my %ipaddrshow_tests = (
         {
             DESCRIPTION => 'eth0',
             MACADDR     => 'e4:11:5b:ed:36:0c',
-            STATUS      => 'Up',
-        },
-        {
-            DESCRIPTION => 'eth0:srv',
             IPADDRESS   => '10.10.220.100',
             IPSUBNET    => '10.10.220.100',
             IPMASK      => '255.255.255.255',
@@ -1151,7 +1143,7 @@ my %ipaddrshow_tests = (
             STATUS      => 'Up',
         },
         {
-            DESCRIPTION => 'macvlan0@eth0',
+            DESCRIPTION => 'macvlan0',
             IPADDRESS6  => 'fe80::260f:e9bb:60de:58f4',
             IPSUBNET6   => 'fe80::',
             IPMASK6     => 'ffff:ffff:ffff:ffff::',
@@ -1172,9 +1164,10 @@ my %ipaddrshow_tests = (
 my %gateway_tests = (
     'default-gateway-1' => '192.168.1.254',
     'default-gateway-2' => '192.168.1.254',
+    'default-gateway-3' => '192.168.1.254',
 );
 
-plan tests =>
+plan tests => 1 +
     (scalar keys %udev_tests)     +
     (scalar keys %cpuinfo_tests)  +
     (scalar keys %hal_tests)      +

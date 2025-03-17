@@ -133,11 +133,18 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
             return;
         }
 
-        # log server error message is set
+        # log server error message if set
         if ($answer->status eq 'error' || !$response->is_success()) {
             my $message = $answer->get('message');
-            $logger->error(_log_prefix . "server error: $message")
-                if $message;
+            # More accurately handle important errors
+            if ($message) {
+                if ($message =~ /^(JSON does not validate. Violations):.*"(.+)" does not match to .*->properties:(.+)$/s) {
+                    $logger->debug(_log_prefix . "server error: $message");
+                    $logger->error(_log_prefix . "server error: $1: unsupported '$2'value as '$3' field value");
+                } else {
+                    $logger->error(_log_prefix . "server error: $message");
+                }
+            }
             return;
         }
 

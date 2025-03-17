@@ -252,6 +252,24 @@ my %arm = (
             NAME  => 'ARMv7 Processor rev 4 (v7l)'
         }
     ],
+    'linux-raspberry-pi-3-model-b-on-bookworm' => [
+        {
+            ARCH  => 'aarch64',
+            NAME  => '0'
+        },
+        {
+            ARCH  => 'aarch64',
+            NAME  => '1'
+        },
+        {
+            ARCH  => 'aarch64',
+            NAME  => '2'
+        },
+        {
+            ARCH  => 'aarch64',
+            NAME  => '3'
+        }
+    ],
 );
 
 my %mips = (

@@ -20,7 +20,7 @@ sub doInventory {
 
     my $inventory = $params{inventory};
 
-    my $softwares = _getSoftwaresList(logger => $params{logger}, format => 'xml');
+    my $softwares = _getSoftwaresList(logger => $params{logger});
     return unless $softwares;
 
     foreach my $software (@$softwares) {
@@ -38,15 +38,16 @@ sub _getSoftwaresList {
 
     my $localTimeOffset = detectLocalTimeOffset();
     $infos = getSystemProfilerInfos(
-        %params,
         type            => 'SPApplicationsDataType',
-        localTimeOffset => $localTimeOffset
+        localTimeOffset => $localTimeOffset,
+        format          => 'xml',
+        %params
     );
 
     my $info = $infos->{Applications};
 
     my @softwares;
-    for my $name (keys %$info) {
+    for my $name (sort keys %$info) {
         my $app = $info->{$name};
 
         # Windows application found by Parallels (issue #716)
@@ -54,14 +55,55 @@ sub _getSoftwaresList {
             $app->{'Get Info String'} &&
             $app->{'Get Info String'} =~ /^\S+, [A-Z]:\\/;
 
+        my $version = $app->{'Version'};
+        # Cleanup dotted version from spaces
+        $version =~ s/ \. /./g unless empty($version);
         my $soft = {
             NAME      => $name,
-            VERSION   => $app->{'Version'},
+            VERSION   => $version,
         };
 
-        $soft->{PUBLISHER} = $app->{'Get Info String'} if $app->{'Get Info String'};
+        my $source = $app->{'Obtained from'} // '';
+        if ($source eq 'Apple' || ($app->{'Location'} && $app->{'Location'} =~ m{/System/Library/(CoreServices|Frameworks)/})) {
+            $soft->{PUBLISHER} = 'Apple';
+        } elsif ($source eq 'Identified Developer' && $app->{'Signed by'}) {
+            my ($developer) = $app->{'Signed by'} =~ /^Developer ID Application: ([^,]*),?/;
+            $developer = $1 if !empty($developer) && $developer =~ /^(.*)\s+\(.*\)$/;
+            $developer =~ s/\s*Incorporated.*/ Inc./i unless empty($developer);
+            $developer =~ s/\s*Corporation.*//i unless empty($developer);
+            $soft->{PUBLISHER} = $developer unless empty($developer);
+        }
+        # Finally try to guess publisher from copyright found in Get Info String
+        unless (defined($soft->{PUBLISHER}) || empty($app->{'Get Info String'})) {
+            my @publisher = split(/,\s+/, $app->{'Get Info String'});
+            my $publisher;
+            if (grep { /\bApple\b/i } @publisher) {
+                $publisher = 'Apple';
+            } else {
+                ($publisher) = grep { /(\(C\)|\x{a9}|Copyright|\x{ef}\x{bf}\x{bd})/i } @publisher;
+                unless (empty($publisher)) {
+                    $publisher = $1 if $publisher =~ /\sby\s(.*)/i;
+                    $publisher =~ s/.*(\(C\)|\x{a9}|Copyright|\x{ef}\x{bf}\x{bd})\s*//gi;
+                    $publisher =~ s/\s*All rights reserved\.?\s*//i;
+                    $publisher =~ s/\s*Incorporated.*/ Inc./i;
+                    $publisher =~ s/\s*Corporation.*//i;
+                    $publisher =~ s/\s*\d+(\s*-\s*\d+)?\s*//g;
+                    $soft->{PUBLISHER} = $publisher unless empty($publisher);
+                }
+            }
+            $soft->{PUBLISHER} = $publisher unless empty($publisher);
+            unless (defined($soft->{PUBLISHER})) {
+                my $editor = getCanonicalManufacturer($app->{'Get Info String'});
+                $soft->{PUBLISHER} = $editor unless $editor eq $app->{'Get Info String'};
+            }
+        }
+        unless (defined($soft->{PUBLISHER})) {
+            my $editor = getCanonicalManufacturer($name);
+            $soft->{PUBLISHER} = $editor unless $editor eq $name;
+        }
+
         $soft->{INSTALLDATE} = $app->{'Last Modified'} if $app->{'Last Modified'};
-        $soft->{COMMENTS} = '[' . $app->{'Kind'} . ']' if $app->{'Kind'};
+        $soft->{ARCH} = $app->{'Kind'} if $app->{'Kind'};
 
         my ($category, $username) = _extractSoftwareSystemCategoryAndUserName($app->{'Location'});
         $soft->{SYSTEM_CATEGORY} = $category if $category;

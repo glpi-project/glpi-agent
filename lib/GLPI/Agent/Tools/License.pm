@@ -67,7 +67,7 @@ sub getAdobeLicenses {
         }
     }
 
-    foreach my $key (keys %data) {
+    foreach my $key (sort keys %data) {
         next unless $data{$key}{SN} || $data{$key}{with};
 
         push @licenses, {
@@ -98,7 +98,8 @@ sub getAdobeLicensesWithoutSqlite {
         }
     }
 
-    while (my ($product, $component) = each %products) {
+    foreach my $product (sort keys %products) {
+        my $component = $products{$product};
         $copyContent = $contentFileAdobe;
         my $regex = $product.'\{\|\}[a-zA-Z0-9\-_]+SN([0-9]{24})';
         $copyContent =~ /$regex/;

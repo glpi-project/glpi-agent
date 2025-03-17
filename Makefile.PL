@@ -14,7 +14,7 @@ include 'Module::AutoInstall';
 abstract 'GLPI unified Agent for UNIX, Linux, Windows and MacOSX';
 license 'gpl';
 repository 'https://github.com/glpi-project/glpi-agent';
-version '1.7-dev';
+version '1.14-dev';
 perl_version '5.008';
 authors 'Teclib Editions';
 
@@ -86,7 +86,6 @@ recommends 'Parse::EDID'                     => '0';
 recommends 'Net::SSH2'                       => '0';
 
 # Deploy
-recommends 'Archive::Extract'             => '0';
 recommends 'File::Copy::Recursive'        => '0';
 recommends 'Cpanel::JSON::XS'             => '0';
 recommends 'Net::Ping'                    => '0';

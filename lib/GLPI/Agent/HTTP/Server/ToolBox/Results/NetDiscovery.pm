@@ -193,7 +193,7 @@ sub _getDevices {
 
     # Get stored credentials & ip_range for devices from local target storage
     my $yaml_config = $self->{results}->yaml('configuration') || {};
-    my $path = $yaml_config->{networktask_save} // '.';
+    my $path = $yaml_config->{networktask_save} || '.';
 
     # Make sure path exists as folder before accessing storage
     mkdir $path unless -d $path;

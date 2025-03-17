@@ -10,6 +10,7 @@ use UNIVERSAL::require;
 use Encode qw(encode is_utf8);
 
 use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Archive;
 
 sub new {
     my ($class, %params) = @_;
@@ -121,12 +122,10 @@ sub prepare {
                     unlink($tarballpath);
                 }
             } else {
-                Archive::Extract->require;
-                $Archive::Extract::DEBUG=1;
-                my $ae = Archive::Extract->new( archive => $finalFilePath );
-                if (!$ae) {
-                    $logger->info("Failed to create Archive::Extract object");
-                } elsif (!$ae->extract( to => $self->{path} )) {
+                my $archive = GLPI::Agent::Tools::Archive->new( archive => $finalFilePath );
+                if (!$archive) {
+                    $logger->info("Failed to create Archive object");
+                } elsif (!$archive->extract( to => $self->{path} )) {
                     $logger->debug("Failed to extract '$finalFilePath'");
                 }
                 # We ignore failure here because one my have activated the

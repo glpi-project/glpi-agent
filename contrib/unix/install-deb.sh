@@ -61,6 +61,7 @@ downloadurlesx=$BaseUrl\glpi-agent-task-esx_$version\_all.deb
 # Setup dependencies for Agent Core
 echo "Installing agent dependencies"
 {
+    apt update
     apt-get -y install dmidecode hwdata ucf hdparm
     apt-get -y install perl libuniversal-require-perl libwww-perl libparse-edid-perl
     apt-get -y install libproc-daemon-perl libfile-which-perl libhttp-daemon-perl

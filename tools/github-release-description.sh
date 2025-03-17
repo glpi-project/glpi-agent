@@ -40,8 +40,7 @@ Don't forget to follow our [installation documentation](https://glpi-agent.readt
 ## Windows
 Arch | Windows installer | Windows portable archive
 ---|:---|:---
-64 bits | [GLPI-Agent-$VERSION-x64.msi]($REPO/releases/download/$TAG/GLPI-Agent-$VERSION-x64.msi) | [glpi-agent-$VERSION-x64.zip]($REPO/releases/download/$TAG/glpi-agent-$VERSION-x64.zip)
-32 bits | [GLPI-Agent-$VERSION-x86.msi]($REPO/releases/download/$TAG/GLPI-Agent-$VERSION-x86.msi) | [glpi-agent-$VERSION-x86.zip]($REPO/releases/download/$TAG/glpi-agent-$VERSION-x86.zip)
+64 bits | [GLPI-Agent-$VERSION-x64.msi]($REPO/releases/download/$TAG/GLPI-Agent-$VERSION-x64.msi) | [GLPI-Agent-$VERSION-x64.zip]($REPO/releases/download/$TAG/GLPI-Agent-$VERSION-x64.zip)
 
 ## MacOSX
 
@@ -97,6 +96,9 @@ WakeOnLan | [glpi-agent-task-wakeonlan-${VERSION}${RPMREV}.noarch.rpm]($REPO/rel
 Cron | [glpi-agent-cron-${VERSION}${RPMREV}.noarch.rpm]($REPO/releases/download/$TAG/glpi-agent-cron-${VERSION}${RPMREV}.noarch.rpm)
 
 ## Sources
-[GLPI-Agent-${VERSION}.tar.gz](GLPI-Agent-${VERSION}.tar.gz)
+[GLPI-Agent-${VERSION}.tar.gz]($REPO/releases/download/$TAG/GLPI-Agent-${VERSION}.tar.gz)
+
+## SHA256 sums
+All sha256 sums for released filed can be retrieved from [glpi-agent-${VERSION}.sha256]($REPO/releases/download/$TAG/glpi-agent-${VERSION}.sha256).
 
 DESCRIPTION

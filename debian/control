@@ -55,7 +55,6 @@ Depends:
  ${misc:Depends},
  ${perl:Depends},
  ucf,
- lsb-base,
  libnet-cups-perl,
  libnet-ip-perl,
  libnet-ssh2-perl,

@@ -7,6 +7,8 @@ use Config;
 use Digest::SHA;
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
+use File::Glob;
+use File::stat;
 
 use GLPI::Agent::Logger;
 use GLPI::Agent::Tools;
@@ -98,7 +100,7 @@ my %fields = (
                             CLASS SUBCLASS NAME/ ],
     USERS            => [ qw/LOGIN DOMAIN/ ],
     VIRTUALMACHINES  => [ qw/MEMORY NAME UUID STATUS SUBSYSTEM VMTYPE VCPU
-                             MAC COMMENT OWNER SERIAL IMAGE/ ],
+                             MAC COMMENT OWNER SERIAL IMAGE IPADDRESS OPERATINGSYSTEM/ ],
     VOLUME_GROUPS    => [ qw/VG_NAME PV_COUNT LV_COUNT ATTR SIZE FREE VG_UUID
                              VG_EXTENT_SIZE/ ],
     VERSIONPROVIDER  => [ qw/NAME VERSION COMMENTS PERL_EXE PERL_VERSION PERL_ARGS
@@ -111,7 +113,11 @@ my %checks = (
     },
     STORAGES => {
         STATUS    => qr/^(up|down)$/,
-        INTERFACE => qr/^(SCSI|HDC|IDE|USB|1394|SATA|SAS|ATAPI)$/
+        INTERFACE => {
+            # Check can be ignored since GLPI 10.0.4
+            not_since   => glpiVersion('10.0.4'),
+            regexp      => qr/^(SCSI|HDC|IDE|USB|1394|SATA|SAS|ATAPI)$/
+        }
     },
     VIRTUALMACHINES => {
         STATUS => qr/^(running|blocked|idle|paused|shutdown|crashed|dying|off)$/
@@ -127,6 +133,39 @@ my %checks = (
     }
 );
 
+# Map category to related fields when not matching directly for required-category support
+my %categoryMap = (
+    os              => [ "OPERATINGSYSTEM" ],
+    battery         => [ "BATTERIES" ],
+    controller      => [ "CONTROLLERS" ],
+    cpu             => [ "CPUS" ],
+    database        => [ "DATABASES_SERVICES" ],
+    drive           => [ "DRIVES" ],
+    environment     => [ "ENVS" ],
+    input           => [ "INPUTS" ],
+    licenseinfo     => [ "LICENSEINFOS" ],
+    local_group     => [ "LOCAL_GROUPS" ],
+    local_user      => [ "LOCAL_USERS" ],
+    lvm             => [ "LOGICAL_VOLUMES", "PHYSICAL_VOLUMES", "VOLUME_GROUPS" ],
+    memory          => [ "MEMORIES" ],
+    modem           => [ "MODEMS" ],
+    monitor         => [ "MONITORS" ],
+    network         => [ "NETWORKS" ],
+    port            => [ "PORTS" ],
+    psu             => [ "POWERSUPPLIES" ],
+    printer         => [ "PRINTERS" ],
+    process         => [ "PROCESSES" ],
+    slot            => [ "SLOTS" ],
+    software        => [ "SOFTWARES", "OPERATINGSYSTEM" ], # Softwares require operatingsystem in GLPI
+    sound           => [ "SOUNDS" ],
+    storage         => [ "STORAGES" ],
+    video           => [ "VIDEOS" ],
+    usb             => [ "USBDEVICES" ],
+    user            => [ "USERS" ],
+    virtualmachine  => [ "VIRTUALMACHINES" ],
+    provider        => [ "VERSIONPROVIDER" ],
+);
+
 # convert fields list into fields hashes, for fast lookup
 foreach my $section (keys %fields) {
     $fields{$section} = { map { $_ => 1 } @{$fields{$section}} };
@@ -138,9 +177,13 @@ sub new {
     my $self = {
         deviceid       => $params{deviceid},
         datadir        => $params{datadir},
+        statedir       => $params{statedir} // '',
         logger         => $params{logger} || GLPI::Agent::Logger->new(),
         fields         => \%fields,
         _format        => '',
+        _glpi_version  => glpiVersion('v10'),
+        _required      => $params{required} // [],
+        _itemtype      => empty($params{itemtype}) ? "Computer" : $params{itemtype},
         content        => {
             HARDWARE => {
                 VMSYSTEM => "Physical" # Default value
@@ -150,6 +193,9 @@ sub new {
         }
     };
     bless $self, $class;
+
+    $self->{_glpi_version} = glpiVersion($params{glpi})
+        if $params{glpi};
 
     $self->setTag($params{tag});
     $self->{last_state_file} = $params{statedir} . '/last_state.json'
@@ -182,6 +228,14 @@ sub setFormat {
     my ($self, $format) = @_;
 
     $self->{_format} = $format // 'json';
+}
+
+sub isFull {
+    my ($self, $full) = @_;
+
+    return $self->{_full} unless defined($full);
+
+    $self->{_full} = $full;
 }
 
 sub isPartial {
@@ -240,7 +294,7 @@ sub getContent {
             deviceid    => $self->getDeviceId(),
             content     => $self->{content},
             partial     => $self->isPartial(),
-            itemtype    => "Computer",
+            itemtype    => empty($self->{_itemtype}) ? "Computer" : $self->{_itemtype},
         );
 
         # Support json file on additional-content with json output
@@ -345,7 +399,13 @@ sub addEntry {
         # sanitize value
         my $value = getSanitizedString($entry->{$field});
         # check value if appliable
-        if ($checks->{$field}) {
+        if (ref($checks->{$field}) eq 'HASH') {
+            if ($checks->{$field}->{regexp} && $checks->{$field}->{not_since} && $checks->{$field}->{not_since} > $self->{_glpi_version}) {
+                $self->{logger}->debug(
+                    "invalid value $value for field $field for section $section"
+                ) unless $value =~ $checks->{$field}->{regexp};
+            }
+        } elsif ($checks->{$field}) {
             $self->{logger}->debug(
                 "invalid value $value for field $field for section $section"
             ) unless $value =~ $checks->{$field};
@@ -452,13 +512,9 @@ sub setTag {
 
 }
 
-my @checked_sections = sort qw(
-    HARDWARE    BIOS        MEMORIES    SLOTS       REGISTRY    CONTROLLERS
-    MONITORS    PORTS       STORAGES    DRIVES      INPUTS      MODEMS
-    NETWORKS    PRINTERS    SOUNDS      SOFTWARES   VIDEOS      CPUS
-    ANTIVIRUS   BATTERIES   FIREWALL    OPERATINGSYSTEM         LICENSEINFOS
-    VIRTUALMACHINES
-);
+my %always_keep_sections = map { $_ => 1 } qw(BIOS HARDWARE);
+my %dont_check_sections = map { $_ => 1 } qw(ACCESSLOG VERSIONPROVIDER);
+my @checked_sections = sort grep { ! $dont_check_sections{$_} } keys(%fields);
 
 sub _checksum {
     my ($key, $ref, $sha, $len) = @_;
@@ -485,9 +541,17 @@ sub _checksum {
 }
 
 sub computeChecksum {
-    my ($self) = @_;
+    my ($self, $postpone_config) = @_;
 
     my $logger = $self->{logger};
+
+    # Use alternate state file for remote inventory
+    # Old state files have to be cleaned by remoteinventory task maintenance event
+    if ($self->getRemote() && $self->{statedir}) {
+        my $remoteid = $self->getHardware("UUID") || $self->getBios("SSN")
+            || $self->getBios("MSN") || $self->getDeviceId();
+        $self->{last_state_file} = $self->{statedir}."/last_remote_state-$remoteid.json";
+    }
 
     my $last_state;
     if ($self->{last_state_file} && !$self->{last_state_content}) {
@@ -510,7 +574,36 @@ sub computeChecksum {
     }
     $last_state = GLPI::Agent::Protocol::Message->new() unless $last_state;
 
-    my $save_state = 0;
+    # Prepare to postpone full inventory when required
+    my $postpone = 0;
+    my $current_count = $last_state->get('_postpone_count') // '0';
+
+    # Reset current_count if partial is not forced
+    $current_count = $postpone_config if $current_count > $postpone_config && !$self->isPartial();
+
+    $postpone = ($current_count =~ /^\d+$/ ? int($current_count)+1 : 1) % ($postpone_config+1)
+        if $postpone_config;
+
+    # Reset to current_count+1 if partial is forced even after a full should has been sent
+    $postpone = $current_count+1 if $self->isPartial() && $current_count >= $postpone_config;
+
+    # Always disable postpone if format is not json
+    $postpone = 0 unless $self->getFormat() eq 'json';
+
+    # Support required-category configuration
+    my %keep_section;
+    if ($postpone && ref($self->{_required}) eq "ARRAY" && scalar(@{$self->{_required}})) {
+        foreach my $category (@{$self->{_required}}) {
+            if ($categoryMap{$category}) {
+                map { $keep_section{$_} = 1 } @{$categoryMap{$category}};
+            } else {
+                $keep_section{uc($category)} = 1;
+            }
+        }
+    }
+
+    my @delete_sections;
+    my $keep_os = 0;
     foreach my $section (@checked_sections) {
         my ($sha, $len) = _checksum($section, $self->{content}->{$section});
         my $state = $last_state->get($section);
@@ -518,16 +611,28 @@ sub computeChecksum {
             if (defined($state)) {
                 $logger->debug("Section $section has disappeared since last inventory");
                 $last_state->delete($section);
-                $save_state++;
+                # On missing section, a full inventory must be submitted
+                $postpone = 0;
             }
             next;
         }
         my $digest = $sha->hexdigest;
 
         # check if the section did change since the last run
-        next if ref($state) eq 'HASH' &&
+        if (
+            ref($state) eq 'HASH' &&
             defined($state->{len}) && $state->{len} == $len &&
-            defined($state->{digest}) && $state->{digest} eq $digest;
+            defined($state->{digest}) && $state->{digest} eq $digest
+        ) {
+            # In the case we will be able to postpone full inventory, keep section as to be removed
+            if ($postpone && !($always_keep_sections{$section} || $keep_section{$section})) {
+                push @delete_sections, $section;
+            }
+            next;
+        }
+
+        # For software category, GLPI requires we also keep os category
+        $keep_os = 1 if $section eq 'SOFTWARES';
 
         $logger->debug("Section $section has changed since last inventory");
 
@@ -538,12 +643,38 @@ sub computeChecksum {
                 len    => $len,
             }
         );
-        $save_state++;
     }
+
+    # Reset postpone if a full inventory is forced
+    if ($postpone && $self->isFull()) {
+        $postpone = 0;
+    }
+
+    # If we can postpone full inventory, remove section and set inventory as partial
+    if ($postpone && @delete_sections) {
+        foreach my $section (@delete_sections) {
+            # For software category, GLPI requires we also keep os category
+            next if $section eq 'OPERATINGSYSTEM' && $keep_os;
+            delete $self->{content}->{$section};
+            # For user category, we must also clean up LASTLOGGEDUSER & DATELASTLOGGEDUSER
+            # from always kept HARDWARE section to not confuse server
+            if ($section eq 'USERS') {
+                delete $self->{content}->{HARDWARE}->{LASTLOGGEDUSER};
+                delete $self->{content}->{HARDWARE}->{DATELASTLOGGEDUSER};
+            }
+        }
+        $self->isPartial(1);
+    }
+
+    $logger->debug("Full inventory ".
+        ($postpone_config && $self->isPartial() ? "postponed: $postpone/$postpone_config" : "kept")
+    );
+
+    $last_state->merge(_postpone_count => $postpone) if $postpone_config;
 
     $self->{last_state_content} = $last_state;
 
-    $self->_saveLastState() if $save_state;
+    $self->_saveLastState();
 }
 
 sub _saveLastState {
@@ -564,6 +695,39 @@ sub _saveLastState {
     } else {
         $logger->debug("last state file is not defined, last state not saved");
     }
+
+    # Clean up old state files to still cleanup on single run or out of remoteinventory task context
+    $self->canCleanupOldRemoteStateFile() if $self->getRemote();
+}
+
+my ($remoteStateFileTimeout, $remoteStateFileCount);
+sub canCleanupOldRemoteStateFile {
+    my ($self) = @_;
+
+    # Don't try to cleanup if still done during the last hour in the same process
+    return $remoteStateFileCount if $remoteStateFileTimeout && time < $remoteStateFileTimeout;
+    $remoteStateFileTimeout = time + 3600;
+
+    my $logger = $self->{logger};
+
+    # Expire remote state files older than 30 days
+    my $maxage = time - 30 * 86400;
+    $remoteStateFileCount = 0;
+    foreach my $file (File::Glob::bsd_glob($self->{statedir}."/last_remote_state-*.json")) {
+        my $st = stat($file)
+            or next;
+
+        if ($st->mtime > $maxage) {
+            $remoteStateFileCount++;
+            next;
+        }
+
+        unlink $file;
+        $logger->debug("deleted old remote state file: ".$file);
+    }
+
+    # Return number of seen files still to be eventually cleanup
+    return $remoteStateFileCount;
 }
 
 sub credentials {

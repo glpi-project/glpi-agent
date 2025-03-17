@@ -43,7 +43,9 @@ GetOptions(
     'protocol=s@',
     'threads=i',
     'timeout=i',
+    'retries=i',
     'backend-collect-timeout=s',
+    'glpi_version=s',
     'v1',
     'v2c',
     'control',
@@ -86,6 +88,10 @@ while ($options->{host} && @{$options->{host}} > @{$options->{port}}) {
 while ($options->{host} && @{$options->{host}} > @{$options->{protocol}}) {
     push @{$options->{protocol}}, $options->{protocol}[0] || '';
 }
+
+# Reset retries as snmp-retries in options
+$options->{'snmp-retries'} = delete $options->{'retries'}
+    if exists($options->{'retries'});
 
 my $id = 0;
 my @devices;
@@ -182,8 +188,10 @@ glpi-netinventory [options] [--host <host>|--file <file>]
     --community <STRING>   community string (public)
     --credentials <STRING> SNMP credentials (version:1,community:public)
     --timeout <TIME>       SNMP timeout, in seconds (15)
+    --retries              SNMP requets maximum retries (0)
     --backend-collect-timeout <TIME>
                            base expiration timeout, in seconds (180)
+    --glpi-version VERSION set targeted glpi version to enable supported features
     --type <TYPE>          force device type
     --threads <COUNT>      number of inventory threads (1)
     --control              output control messages
@@ -285,7 +293,11 @@ In the case version is set to 3:
 
 Set SNMP timeout, in seconds.
 
-=item B<--backen-collect-timeout> I<TIME>
+=item B<--retries> I<NUMBER>
+
+Set maximum number of retries a SNMP request can be sent again after no response.
+
+=item B<--backend-collect-timeout> I<TIME>
 
 Set base expiration timeout, in seconds. It is used to set one device scan:
 180 by default, means 900 (5x180) by device.

@@ -1,0 +1,2539 @@
+
+use utf8;
+
+$results = [
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => '11-0247-srvimp.inra',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'USERNAME' => 'fbudar',
+        'VERSION' => 15
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => '11-0247-srvimp.inra_0',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'USERNAME' => 'admin',
+        'VERSION' => 15
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => '50onPaletteServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.1.0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/22/2020',
+        'NAME' => 'ABAssistantService',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '11,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'AOSAlertManager',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,07'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'AOSHeartbeat',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,07'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'AOSPushRelay',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,07'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'ARDAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.9.8'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/18/2020',
+        'NAME' => 'ARDAgent_0',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.9.8'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'AVB Audio Configuration',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '850,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'AXVisualSupportAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '12/22/2020',
+        'NAME' => 'Accessibility Inspector',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Xcode.app',
+        'VERSION' => '5,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'AccessibilityVisualsAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'AddPrinter',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 15
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/22/2020',
+        'NAME' => 'AddressBookManager',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '11,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/22/2020',
+        'NAME' => 'AddressBookSourceSync',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '11,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/22/2020',
+        'NAME' => 'AddressBookSync',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '11,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/22/2020',
+        'NAME' => 'AddressBookUrlForwarder',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '11,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => "Agent de la borne d\x{2019}acc\x{e8}s AirPort",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.2.1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Aide-mémoire',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '10,2'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'AinuIM',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'AirDrop',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '08/28/2020',
+        'NAME' => 'AirPlayUIAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'AirScanLegacyDiscovery',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => 15
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'AirScanScanner',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 15
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '03/14/2020',
+        'NAME' => 'ApE',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '3.1.4'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Aperçu',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '11,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'App Store',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '3,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'AppSSOAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Appareils jumelés',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.9.5'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'AppleFileServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '08/28/2020',
+        'NAME' => 'AppleMobileDeviceHelper',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Library/Apple',
+        'VERSION' => '5,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '08/28/2020',
+        'NAME' => 'AppleMobileSync',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Library/Apple',
+        'VERSION' => '5,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'AquaAppearanceHelper',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'AskPermissionUI',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/08/2020',
+        'NAME' => 'Assistant Boot Camp',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '6.1.0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/15/2020',
+        'NAME' => 'Assistant de certification',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => "Assistant d\x{2019}\x{e9}valuation",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '4,6'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Assistant migration',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '10,15'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '10/29/2020',
+        'NAME' => 'Assistant réglages',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10,10'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/30/2020',
+        'NAME' => 'Assistant réglages Bluetooth',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '7.0.6'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Assistive Control',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'AutoImporter',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6,7'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Automator',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '2,10'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/30/2020',
+        'NAME' => 'BluetoothUIServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '7.0.6'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/25/2020',
+        'NAME' => 'Bourse',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '2,5'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'CIMFindInputCodeTool',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 104
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '09/20/2020',
+        'NAME' => 'CMake',
+        'PUBLISHER' => 'Kitware Inc.',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '3.27.6'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Calculette',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '10.15.4'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'CalendarFileHandler',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '8,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Calendrier',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '11,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Calibration Assistant',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/26/2020',
+        'NAME' => 'Canon IJScanner2',
+        'PUBLISHER' => 'Canon Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => '4.0.0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/26/2020',
+        'NAME' => 'Canon IJScanner4',
+        'PUBLISHER' => 'Canon Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => '4.0.0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/26/2020',
+        'NAME' => 'Canon IJScanner6',
+        'PUBLISHER' => 'Canon Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => '4.0.0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Captive Network Assistant',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => "Capture d\x{2019}\x{e9}cran",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Centre de notifications',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'CharacterPalette',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.0.1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'ChineseTextConverterService',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Cocoa-AppleScript Applet',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '32/64-bit',
+        'INSTALLDATE' => '12/19/2020',
+        'NAME' => 'CodonCode Aligner',
+        'PUBLISHER' => 'CodonCode',
+        'SYSTEM_CATEGORY' => 'Applications/CodonCode Aligner',
+        'VERSION' => '5.1.4'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Colorimètre numérique',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '5,15'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Configuration audio et MIDI',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '3,5'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Configuration des actions de dossier',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,2'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Console',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'Contacts',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '12,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/11/2020',
+        'NAME' => 'ControlStrip',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'CoreLocationAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2394.0.22'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'CoreServicesUIAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '340,3'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '03/11/2020',
+        'NAME' => 'Cortex XDR',
+        'PUBLISHER' => 'Palo Alto Networks',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '7.9.101'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '03/11/2020',
+        'NAME' => 'Cortex XDR Agent',
+        'PUBLISHER' => 'Palo Alto Networks',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '7.9.101'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '03/11/2020',
+        'NAME' => 'Cortex XDR Configuration Wizard',
+        'PUBLISHER' => 'Palo Alto Networks',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '7.9.101'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '03/11/2020',
+        'NAME' => 'Cortex XDR Uninstaller',
+        'PUBLISHER' => 'Palo Alto Networks',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '7.9.101'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '12/22/2020',
+        'NAME' => 'Create ML',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Xcode.app',
+        'VERSION' => '2,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Création de page web',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '05/30/2020',
+        'NAME' => 'Cyberduck',
+        'PUBLISHER' => 'David Kocher',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '8.6.0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'DFRHUD',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Database Events',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0.6'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Diagnostics sans fil',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Dictaphone',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '2,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Dictionnaire',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '2.3.0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Dictée vocale',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0.60.1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'DiscHelper',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'DiskImageMounter',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '559.100.2'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'DiskImages UI Agent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '559.100.2'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Dock',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,8'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Dwell Control',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '08/19/2020',
+        'NAME' => 'EPFaxAutoSetupTool',
+        'PUBLISHER' => 'EPSON',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1,71'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '10/06/2020',
+        'NAME' => 'EPSON Scanner',
+        'PUBLISHER' => 'EPSON',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => '5.7.24'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '01/18/2020',
+        'NAME' => 'Embed',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Library/Scripts',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'EmojiFunctionRowIM',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/18/2020',
+        'NAME' => 'EscrowSecurityAlert',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '01/18/2020',
+        'NAME' => 'Extract',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Library/Scripts',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '08/19/2020',
+        'NAME' => 'FAX Utility',
+        'PUBLISHER' => 'EPSON',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1,73'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'FaceTime',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '5,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Famille',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '03/28/2020',
+        'NAME' => 'Fiji',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => 1
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '12/19/2020',
+        'NAME' => 'FileMerge',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Xcode.app',
+        'VERSION' => '2,11'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '04/02/2020',
+        'NAME' => 'FinchTV',
+        'PUBLISHER' => 'Geospiza Inc.',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '1.3.0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'FindMyMacMessenger',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '4,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'Finder',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.15.8'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '03/25/2020',
+        'NAME' => 'Firefox',
+        'PUBLISHER' => 'Mozilla',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '124.0.1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'FolderActionsDispatcher',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'FollowUpUI',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'FontRegistryUIAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '81,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/21/2020',
+        'NAME' => 'Foxit PDF Editor',
+        'PUBLISHER' => 'Foxit',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '11.1.2.0420'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '04/02/2020',
+        'NAME' => 'FoxitPDFEditorUpdateService',
+        'PUBLISHER' => 'Foxit',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'USERNAME' => 'fbudar',
+        'VERSION' => '11.1.2'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/13/2020',
+        'NAME' => 'GIMP-2',
+        'PUBLISHER' => 'GNOME Foundation',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '2.10.32'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'Gestion du stockage',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/19/2020',
+        'NAME' => 'GlobalProtect',
+        'PUBLISHER' => 'Palo Alto Networks',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '6.0.5-30'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/19/2020',
+        'NAME' => 'Google Chrome',
+        'PUBLISHER' => 'Google LLC',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '103.0.5060.134'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '03/04/2020',
+        'NAME' => 'GoogleUpdater',
+        'PUBLISHER' => 'Google LLC',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'USERNAME' => 'admin',
+        'VERSION' => '122.0.6234.0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Grapher',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '2,7'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'HelpViewer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'HindiIM',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/18/2020',
+        'NAME' => 'IDSRemoteURLConnectionAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/14/2020',
+        'NAME' => 'IGV_2.16',
+        'PUBLISHER' => 'THE BROAD INSTITUTE INC',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '2.16.2'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/15/2020',
+        'NAME' => 'IMAutomaticHistoryDeletionAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/15/2020',
+        'NAME' => 'IMTransferAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Image Events',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.1.6'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'ImageCaptureService',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6,7'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'Informations système',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '10,14'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Install Command Line Developer Tools',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 2373
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Install in Progress',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Installer Progress',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '04/02/2020',
+        'NAME' => 'Instruments',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Xcode.app',
+        'VERSION' => '12,4'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'JapaneseIM',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Jar Launcher',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '15.0.1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Java Web Start',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '15.0.1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Jeux',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/15/2020',
+        'NAME' => 'Jumelage de la SmartCard',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'KerberosMenuExtra',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'KeyboardAccessAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'KeyboardSetupAssistant',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10,7'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/15/2020',
+        'NAME' => 'Keychain Circle Notification',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'KoreanIM',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/19/2020',
+        'NAME' => 'Kyocera Print Panel',
+        'PUBLISHER' => 'Kyocera Document Solutions Inc.',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '5.4.0516'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '10/29/2020',
+        'NAME' => 'Language Chooser',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Launchpad',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Lecteur DVD',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Livre des polices',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '10,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '08/07/2020',
+        'NAME' => 'Livres',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '2,4'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'Localiser',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'LocationMenu',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/05/2020',
+        'NAME' => 'MRT',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Library/Apple',
+        'VERSION' => '1,62'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'Mail',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '13,4'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/12/2020',
+        'NAME' => 'Maison',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '4,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'MakePDF',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/08/2020',
+        'NAME' => 'ManagedClient',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '12,3'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/18/2020',
+        'NAME' => 'MassStorageCamera',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '01/18/2020',
+        'NAME' => 'Match',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Library/Scripts',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Menu des scripts',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 1
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'Messages',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '13,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '03/13/2020',
+        'NAME' => 'Microsoft AutoUpdate',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '4,69'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/19/2020',
+        'NAME' => 'Microsoft Excel',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '16.66.1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/19/2020',
+        'NAME' => 'Microsoft OneNote',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '16.66.1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/19/2020',
+        'NAME' => 'Microsoft Outlook',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '16.66.1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/19/2020',
+        'NAME' => 'Microsoft PowerPoint',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '16.66.1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '10/11/2020',
+        'NAME' => 'Microsoft Teams classic',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '1.00.627656'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/19/2020',
+        'NAME' => 'Microsoft Word',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '16.66.1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '09/03/2020',
+        'NAME' => 'Mise à jour de logiciels',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 6
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Mission Control',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1,2'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '08/28/2020',
+        'NAME' => 'MobileDeviceUpdater',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Library/Apple',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '08/19/2020',
+        'NAME' => 'Moniteur de réception de fax',
+        'PUBLISHER' => 'EPSON',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1,71'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => "Moniteur d\x{2019}activit\x{e9}",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '10,14'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/29/2020',
+        'NAME' => 'Musique',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1.0.6'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Météo',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'NetAuthAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6,2'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Notes',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '4,7'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/10/2020',
+        'NAME' => 'NowPlayingTouchUI',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/10/2020',
+        'NAME' => 'NowPlayingWidgetContainer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/30/2020',
+        'NAME' => 'OBEXAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '7.0.6'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'ODSAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,8'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'OSDUIHelper',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '04/02/2020',
+        'NAME' => 'OneDrive',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '24.050.0310'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'Ordinateur',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'PIPAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/18/2020',
+        'NAME' => 'PTPCamera',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '10/13/2020',
+        'NAME' => 'Papers 3 (Legacy)',
+        'PUBLISHER' => 'Labtiva Inc',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '3.4.25'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'ParentalControls',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '4,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/18/2020',
+        'NAME' => "Partage d\x{2019}\x{e9}cran",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.7.2'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Pass Viewer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Photo Booth',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '11,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Photo Library Migration Utility',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/08/2020',
+        'NAME' => 'Photos',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '5,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Plans',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '2,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'PluginIM',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 20
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Podcasts',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1.0.0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'PodcastsAuthAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'PowerChime',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'PressAndHold',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'PrinterProxy',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 15
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '10/30/2020',
+        'NAME' => 'Problem Reporter',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10,13'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Programme de téléchargement de parole',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '9.0.15'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => "Programme d\x{2019}installation",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.2.0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => "Programme d\x{2019}installation d\x{2019}Automator",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2,10'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '01/18/2020',
+        'NAME' => 'Proof',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Library/Scripts',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'Préférences Système',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '14,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '08/07/2020',
+        'NAME' => 'Présentation de VoiceOver',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 10
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '04/11/2020',
+        'NAME' => 'PyMOL',
+        'PUBLISHER' => 'Schrodinger',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '2.5.5'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/19/2020',
+        'NAME' => 'Python',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Library/Developer',
+        'VERSION' => '3.8.2'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Python_0',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.7.16'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/18/2020',
+        'NAME' => 'Quick Look Simulator',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/18/2020',
+        'NAME' => 'QuickLookUIHelper',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'QuickTime Player',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '10,5'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/19/2020',
+        'NAME' => 'R',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => 'R 3.6.3 GUI 1.70 El Capitan build'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/07/2020',
+        'NAME' => 'RStudio',
+        'PUBLISHER' => 'RStudio Inc.',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '2023.06.1+524'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Rappels',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '7,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'RapportUIAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.9.5'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '12/22/2020',
+        'NAME' => 'Reality Composer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Xcode.app',
+        'VERSION' => '1,5'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'RegisterPluginIMApp',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 20
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '01/18/2020',
+        'NAME' => 'Remove',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Library/Scripts',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '01/18/2020',
+        'NAME' => 'Rename',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Library/Scripts',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '10/30/2020',
+        'NAME' => 'ReportPanic',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10,13'
+    },
+    {
+        'ARCH' => '32-bit (Unsupported)',
+        'INSTALLDATE' => '07/19/2020',
+        'NAME' => 'Reset Serial Cloner',
+        'PUBLISHER' => 'Franck Perez',
+        'SYSTEM_CATEGORY' => 'Applications/SerialCloner2-6',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'Récents',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'Récents_0',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'Réseau',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Résolution des conflits',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '8,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'SCIM',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/18/2020',
+        'NAME' => 'SSMenuAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.9.8'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'STMUIHelper',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'Safari',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '15.6.1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/21/2020',
+        'NAME' => 'Save as Foxit PDF',
+        'PUBLISHER' => 'Foxit',
+        'SYSTEM_CATEGORY' => 'Library/PDF Services',
+        'USERNAME' => 'admin-pri',
+        'VERSION' => '11.1.2'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '08/07/2020',
+        'NAME' => 'ScreenReaderUIServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 10
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'ScreenSaverEngine',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'ScriptMonitor',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0.1'
+    },
+    {
+        'ARCH' => '32-bit (Unsupported)',
+        'INSTALLDATE' => '07/19/2020',
+        'NAME' => 'SerialCloner 2-6-1',
+        'PUBLISHER' => 'Franck Perez',
+        'SYSTEM_CATEGORY' => 'Applications/SerialCloner2-6',
+        'VERSION' => '2.6.1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Service de résumé',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '01/18/2020',
+        'NAME' => 'Set Info',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Library/Scripts',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => '32-bit (Unsupported)',
+        'INSTALLDATE' => '04/03/2020',
+        'NAME' => 'Setup',
+        'PUBLISHER' => 'Adobe Systems Inc.',
+        'USERNAME' => 'admin-pri',
+        'VERSION' => '1.0.135.0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '01/18/2020',
+        'NAME' => 'Show Info',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Library/Scripts',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Simulateur de widget',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '12/19/2020',
+        'NAME' => 'Simulator',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Xcode.app',
+        'VERSION' => '12,4'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/11/2020',
+        'NAME' => 'Siri',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '200.6.1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Siri_0',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '09/23/2020',
+        'NAME' => 'Skype Entreprise',
+        'PUBLISHER' => 'Skype Communications S.a.r.l',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '16.30.32'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/20/2020',
+        'NAME' => 'SnapGene Viewer',
+        'PUBLISHER' => 'GSL Biotech LLC',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '7.0.1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'SocialPushAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 62
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '09/03/2020',
+        'NAME' => 'SoftwareUpdateNotificationManager',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'SpacesTouchBarAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'SpeechRecognitionServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '9.0.15'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'SpeechSynthesisServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '9.0.24'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '08/07/2020',
+        'NAME' => 'SpeechSynthesizerAuditor',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/17/2020',
+        'NAME' => 'Spotlight',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'SyncServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '8,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'System Events',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.3.6'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'SystemUIServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,7'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'TCIM',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/19/2020',
+        'NAME' => 'TV',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1.0.6'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'TYIM',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'TamilIM',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,6'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Terminal',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '2,10'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'TextEdit',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1,15'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'TextInputMenuAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'TextInputSwitcher',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'ThermalTrap',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Time Machine',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1,3'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'TrackpadIM',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => "Transfert d\x{2019}images",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '8,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => "Trousseaux d\x{2019}acc\x{e8}s",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '10,5'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/18/2020',
+        'NAME' => 'Type4Camera',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/19/2020',
+        'NAME' => 'UASharedPasteboardProgressUI',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '54,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'UIKitSystem',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '32-bit (Unsupported)',
+        'INSTALLDATE' => '07/07/2020',
+        'NAME' => 'UnRarX',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => 'UnRarX version 2.2'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'UniversalAccessControl',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '7,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'UniversalAccessHUD',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'UnmountAssistantAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'UserNotificationCenter',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.3.0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Utilitaire AirPort',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '6.3.9'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Utilitaire AppleScript',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.1.2'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Utilitaire ColorSync',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '4.14.0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '08/07/2020',
+        'NAME' => 'Utilitaire VoiceOver',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => 10
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'Utilitaire de disque',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '19,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Utilitaire de logement de mémoire',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.5.3'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => "Utilitaire de logement d\x{2019}extension",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Utilitaire de réseau',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.9.2'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => "Utilitaire d\x{2019}annuaire",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => "Utilitaire d\x{2019}archive",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10,15'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'VietnameseIM',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/18/2020',
+        'NAME' => 'VirtualScanner',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '4,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Visualiseur de ticket',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '4,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '08/07/2020',
+        'NAME' => 'VoiceOver',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 10
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '09/01/2020',
+        'NAME' => 'WebKitPluginHost',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 609
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '08/28/2020',
+        'NAME' => 'WiFiAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '13,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Widget Bourse',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Wish',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '8.5.9'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '01/09/2020',
+        'NAME' => 'Xcode',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '12,4'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '12/22/2020',
+        'NAME' => 'Xcode Server Builder',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Xcode.app',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '08/19/2020',
+        'NAME' => 'commandFilter',
+        'PUBLISHER' => 'EPSON',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1,71'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'eaptlstrust',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '13,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '08/19/2020',
+        'NAME' => 'epsonfax',
+        'PUBLISHER' => 'EPSON',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1,71'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'iCloud',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'iCloud Drive',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '08/24/2020',
+        'NAME' => 'iCloud Drive_0',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'iCloudUserNotificationsd',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/18/2020',
+        'NAME' => 'identityservicesd',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/15/2020',
+        'NAME' => 'imagent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/15/2020',
+        'NAME' => 'loginwindow',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '9,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'nbagent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/18/2020',
+        'NAME' => 'qlmanage',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/18/2020',
+        'NAME' => 'quicklookd',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '08/19/2020',
+        'NAME' => 'rastertoepfax',
+        'PUBLISHER' => 'EPSON',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1,71'
+    },
+    {
+        'ARCH' => '32/64-bit',
+        'INSTALLDATE' => '07/19/2020',
+        'NAME' => 'rastertokpsl',
+        'PUBLISHER' => 'Kyocera Document Solutions Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1.0.3629'
+    },
+    {
+        'ARCH' => '32/64-bit',
+        'INSTALLDATE' => '07/19/2020',
+        'NAME' => 'rastertopcl_F',
+        'PUBLISHER' => 'Kyocera Document Solutions Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '5.4.0401'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'rcd',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 360
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'screencaptureui',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'storeuid',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'syncuid',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '8,1'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'universalAccessAuthWarn',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '12/18/2020',
+        'NAME' => 'zoom',
+        'PUBLISHER' => 'Zoom Video Communications',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '5.16.10 (25689)'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'À propos de ce Mac',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1,0'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '07/24/2020',
+        'NAME' => 'Échange de fichiers Bluetooth',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '7.0.6'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Échecs',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '3,17'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Éditeur de script',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '2,11'
+    },
+    {
+        'ARCH' => '64-bit',
+        'INSTALLDATE' => '06/06/2020',
+        'NAME' => 'Étalonnage de moniteur',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '4.11.0'
+    }
+];

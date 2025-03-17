@@ -16,13 +16,30 @@ sub new {
     # Check for supported events
     # 1. init:
     #  - init event are triggered when the service starts
-    # 2. partial inventory:
+    #  - can't be triggered via http request
+    # 2. runnow:
+    #  - can be trigerred by /now http requests from agent HTTP UI or GLPI
+    #  - must be evaluated before partial inventory as it can use "partial" param
+    #  - can be used to trigger one or more tasks via task or tasks param
+    #  - can be delayed using delay param to provide a delay value in seconds
+    #  - inventory task can be forced to full by setting full param to "1" or "yes"
+    # 3. taskrun:
+    #  - can be trigerred by /now http requests or following a runnow event
+    #  - must be evaluated before partial inventory as it can use "partial" param
+    #  - task is mandatory and can only be used to trigger a planned task
+    #  - can be delayed using delay param to provide a delay value in seconds
+    #  - for inventory task:
+    #    - full or partial params can be to "1" or "yes"
+    #    - full default is 1 and has precedence other partial if the 2 are defined
+    # 4. partial inventory:
     #  - can be trigerred by /now http requests
     #  - can be requested by glpi-inventory run via --partial parameter
-    # 3. maintenance: internal event to trigger maintenance needs
+    # 5. maintenance: internal event to trigger maintenance needs
     #  - for deploy, it cleans up storage from file parts when too old
-    # 4. job:
+    #  - can't be triggered via http request
+    # 6. job:
     #  - job events are created by toolbox managed inventory tasks
+    #  - can't be triggered via http request
     if ($params{init} && $params{init} =~ /^yes|1$/i) {
         # Partial inventory request on given categories
         $self = {
@@ -30,7 +47,45 @@ sub new {
             _task    => $params{task} // '',
             _name    => "init",
             _rundate => $params{rundate} // 0,
+            _httpd   => 0,
         };
+    } elsif ($params{runnow} && $params{runnow} =~ /^yes|1$/i) {
+        # Run now request
+        $self = {
+            _runnow  => 1,
+            _name    => "run now",
+            _task    => $params{task} || $params{tasks} || 'all',
+            _delay   => $params{delay} // 0,
+            _httpd   => 1,
+        };
+        # Store any other params
+        foreach my $key (grep { $_ !~ /^runnow|tasks?|delay$/ } keys(%params)) {
+            $self->{_params}->{$key} = $params{$key} // "";
+        }
+    } elsif ($params{taskrun} && $params{taskrun} =~ /^yes|1$/i) {
+        # Run task request eventually following a runnow event
+        $self = {
+            _taskrun => 1,
+            _name    => "run",
+            _task    => $params{task} // '',
+            _delay   => $params{delay} // 0,
+            _httpd   => 1,
+            _params  => {
+                # Support parameter to reset target next rundate on task run
+                reschedule => $params{reschedule} // 0,
+            }
+        };
+        # Store any other supported params
+        if ($params{task} && $params{task} eq "inventory") {
+            if (defined($params{full})) {
+                $self->{_params}->{full} = $params{full} =~ /^yes|1$/i ? 1 : 0;
+            } elsif (defined($params{partial})) {
+                $self->{_params}->{full} = $params{partial} =~ /^yes|1$/i ? 0 : 1;
+            } else {
+                # Always default to full when full and partial are not set
+                $self->{_params}->{full} = 1;
+            }
+        }
     } elsif ($params{partial} && $params{partial} =~ /^yes|1$/i) {
         # Partial inventory request on given categories
         $self = {
@@ -38,6 +93,7 @@ sub new {
             _task     => "inventory",
             _name     => "partial inventory",
             _category => $params{category} // '',
+            _httpd    => 1,
         };
         # Store any other params (can be used by database partial inventory requests)
         foreach my $key (grep { $_ ne 'partial' } keys(%params)) {
@@ -50,6 +106,7 @@ sub new {
             _task        => $params{task} // '',
             _name        => $params{name} // "maintenance",
             _delay       => $params{delay} // 0,
+            _httpd       => 0,
         };
     } elsif ($params{name} && $params{job} && $params{job} =~ /^yes|1$/i) {
         $self = {
@@ -57,6 +114,7 @@ sub new {
             _name    => $params{name},
             _rundate => $params{rundate} // 0,
             _task    => $params{task} // 'unknown',
+            _httpd   => 0,
         };
     }
 
@@ -95,6 +153,16 @@ sub job {
     return $self->{_job} // 0;
 }
 
+sub runnow {
+    my ($self) = @_;
+    return $self->{_runnow} // 0;
+}
+
+sub taskrun {
+    my ($self) = @_;
+    return $self->{_taskrun} // 0;
+}
+
 # Event attributes
 
 sub task {
@@ -117,6 +185,12 @@ sub params {
     return $self->{_params} // {};
 }
 
+sub get {
+    my ($self, $key) = @_;
+    return unless $key && ref($self->{_params}) eq "HASH";
+    return $self->{_params}->{$key};
+}
+
 sub delay {
     my ($self) = @_;
     return $self->{_delay} // 0;
@@ -128,6 +202,11 @@ sub rundate {
     $self->{_rundate} = $rundate if $rundate;
 
     return $self->{_rundate} // 0;
+}
+
+sub httpd_support {
+    my ($self) = @_;
+    return $self->{_httpd} // 0;
 }
 
 sub dump_as_string {

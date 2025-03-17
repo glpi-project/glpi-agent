@@ -1,0 +1,75 @@
+Agent
+   Version:                           24.1.2.7444
+   ID:                                xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+   Install Date:                      16/04/2024, 16:22:18
+   Missing Authorizations:
+   ES Framework:                      started
+   Agent Operational State:           enabled
+   Remote Profiler:                   not running
+   Agent Network Monitoring:          started
+   Network Extension:                 running
+   Network Extension Content Filter:  active
+   Ready:                             yes
+   Protection:                        enabled
+   Infected:                          no
+   Network Quarantine:                no
+   Compatible OS:                     compatible
+Command
+   Authentication:                    enabled
+Daemons
+   Services
+      Agent Helper:                   ready
+      Agent UI:                       ready
+      Cleaner:                        ready
+      Control Service:                ready
+      Framework:                      ready
+      Guard:                          ready
+      Helper Service:                 ready
+      Lib Hooks Service:              ready
+      Lib Logs Service:               ready
+      Shell:                          ready
+   Integrity
+      sentineld:                      ok
+      sentineld_guard:                ok
+      sentineld_helper:               ok
+      sentineld_shell:                not running
+      sentineld_updater:              not running
+Launchd
+   agent-helper:                      valid
+   agent-ui:                          valid
+   sentinel-extensions:               valid
+   sentineld:                         valid
+   sentineld-guard:                   valid
+   sentineld-helper:                  valid
+   sentineld-shell:                   valid
+Management
+   Server:                            https://***SRV***.sentinelone.net
+   Site Key:                          *****SITE_KEY******
+   Last Seen:                         25/07/2024, 16:09:55
+   Connected:                         yes
+Assets
+   agentCompatibility:                signed by SentinelOne - not indexed - versioned (120231220110307)
+   arbiter:                           signed by SentinelOne - not indexed - versioned (120231211081250)
+   blacklist:                         empty asset
+   blacklistAdd:                      signed by SentinelOne - not indexed - not versioned
+   blacklistBase:                     signed by SentinelOne - not indexed - not versioned
+   certExclusion:                     signed by SentinelOne - not indexed - not versioned
+   deviceControl:                     signed by SentinelOne - indexed - not versioned
+   devicesData:                       signed by SentinelOne - not indexed - versioned (120231220110307)
+   firewallControl:                   signed by SentinelOne - indexed - not versioned
+   globalData:                        signed by SentinelOne - not indexed - not versioned
+   locations:                         signed by SentinelOne - indexed - not versioned
+   mgmtConfig:                        signed by SentinelOne - not indexed - not versioned
+   networkQuarantineControlRules:     signed by SentinelOne - indexed - not versioned
+   offlinekey:                        signed by SentinelOne - not indexed - not versioned
+   pathExclusion:                     signed by SentinelOne - not indexed - not versioned
+   scopeDetails:                      empty asset
+   whitelist:                         empty asset
+   whitelistAdd:                      signed by SentinelOne - not indexed - not versioned
+   whitelistBase:                     signed by SentinelOne - not indexed - not versioned
+   whitelistExtended:                 signed by SentinelOne - not indexed - versioned (120231220110307)
+Global assets
+   dynamicEngine:                     signed by SentinelOne - not indexed - versioned (120231211083910) (Embedded asset)
+   signaturesWhitelist:               signed by SentinelOne - not indexed - versioned (120231220110307) (Embedded asset)
+   spawnerToolsIdentities:            signed by SentinelOne - not indexed - versioned (120231211083910) (Embedded asset)
+   staticSignatures:                  signed by SentinelOne - not indexed - versioned (120240430133940) - Command asset ID: 00000**ID**00000 - Applied at: 2024-07-18T04:34:32Z

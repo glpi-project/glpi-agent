@@ -58,6 +58,7 @@ sub new {
     );
 
     $self->{_url} = $params{url};
+    $self->{_lang} = 'en-US';
     $self->{_winrm} = $params{winrm} // 0;
     $self->{_noauth} = $params{user} && $params{password} ? 0 : 1;
 
@@ -75,7 +76,7 @@ sub new {
 sub abort {
     my ( $self, $message ) = @_;
     $self->lasterror($message);
-    $self->{logger}->debug($message) if $self->{logger};
+    $self->{logger}->debug2($message) if $self->{logger};
     return;
 }
 
@@ -125,8 +126,8 @@ sub _send {
         my $envelope = Envelope->new($xml->dump_as_hash());
         if ($envelope->header->action->is("fault")) {
             my $code = $envelope->body->fault->errorCode;
-            return $self->abort("WMI resource not available") if $code && $code eq '2150858752';
-            $self->debug2("Raw client xml request: ".$xml);
+            return $self->abort("WMI ".($self->{_resource_class} ? $self->{_resource_class}." " : "")."resource not available") if $code && $code eq '2150858752';
+            $self->debug2("Raw client xml request: ".$message);
             $self->debug2("Raw server xml answer: ".$response->content);
             my $text = $envelope->body->fault->reason->text;
             return $self->abort($text || $response->status_line);
@@ -166,6 +167,13 @@ sub identify {
 
     $self->debug2("Identify response: ".$identify->ProductVendor." - ".$identify->ProductVersion);
 
+    # Get remote lang as default lang for future exchanges
+    my $lang = $envelope->attribute('xml:lang');
+    if ($lang) {
+        $self->{_lang} = $lang;
+        $self->debug2("Identify response language: ".$lang);
+    }
+
     return $identify;
 }
 
@@ -174,6 +182,7 @@ sub enumerate {
 
     my @items;
     my $class = $params{query} ? '*' : $params{class};
+    $self->{_resource_class} = $class unless $class eq '*';
     my $url = $self->resource_url($class, $params{moniker});
 
     my $messageid = MessageID->new();
@@ -208,8 +217,8 @@ sub enumerate {
             $action,
             $messageid,
             MaxEnvelopeSize->new(512000),
-            Locale->new("en-US"),
-            DataLocale->new("en-US"),
+            Locale->new($self->{_lang}),
+            DataLocale->new($self->{_lang}),
             $sid,
             $operationid,
             SequenceId->new(),
@@ -308,6 +317,9 @@ sub enumerate {
 
     # Send End to remote
     $self->end($operationid);
+
+    # Forget what resource was requested
+    delete $self->{_resource_class};
 
     return @items;
 }
@@ -421,8 +433,8 @@ sub runmethod {
             $action,
             $messageid,
             MaxEnvelopeSize->new(512000),
-            Locale->new("en-US"),
-            DataLocale->new("en-US"),
+            Locale->new($self->{_lang}),
+            DataLocale->new($self->{_lang}),
             $sid,
             $operationid,
             SequenceId->new(),
@@ -526,8 +538,8 @@ sub shell {
             $action,
             $messageid,
             MaxEnvelopeSize->new(512000),
-            Locale->new("en-US"),
-            DataLocale->new("en-US"),
+            Locale->new($self->{_lang}),
+            DataLocale->new($self->{_lang}),
             $sid,
             $operationid,
             SequenceId->new(),
@@ -593,8 +605,8 @@ sub shell {
             $action,
             $messageid,
             MaxEnvelopeSize->new(512000),
-            Locale->new("en-US"),
-            DataLocale->new("en-US"),
+            Locale->new($self->{_lang}),
+            DataLocale->new($self->{_lang}),
             $sid,
             $operationid,
             SequenceId->new(),
@@ -687,8 +699,8 @@ sub receive {
                 Action->new("receive"),
                 $messageid,
                 MaxEnvelopeSize->new(512000),
-                Locale->new("en-US"),
-                DataLocale->new("en-US"),
+                Locale->new($self->{_lang}),
+                DataLocale->new($self->{_lang}),
                 $sid,
                 $operationid,
                 SequenceId->new(),
@@ -779,8 +791,8 @@ sub signal {
             Action->new("signal"),
             $messageid,
             MaxEnvelopeSize->new(512000),
-            Locale->new("en-US"),
-            DataLocale->new("en-US"),
+            Locale->new($self->{_lang}),
+            DataLocale->new($self->{_lang}),
             $sid,
             $operationid,
             SequenceId->new(),
@@ -837,8 +849,8 @@ sub delete {
             Action->new("delete"),
             $messageid,
             MaxEnvelopeSize->new(512000),
-            Locale->new("en-US"),
-            DataLocale->new("en-US"),
+            Locale->new($self->{_lang}),
+            DataLocale->new($self->{_lang}),
             $sid,
             $operationid,
             SequenceId->new(),

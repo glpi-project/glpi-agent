@@ -17,11 +17,28 @@ $Data::Dumper::Terse = 1;
 die "JSON::Validator perl module required\n"
     unless JSON::Validator->require();
 
-print "Loading inventory schema from url...\n";
-print inventory_schema,"\n";
+my $schema = inventory_schema;
+if ($ARGV[0] && $ARGV[0] eq "--schema" ) {
+    shift @ARGV;
+    $schema = shift @ARGV;
+    if (-e $schema) {
+        print "Loading schema from $schema file...\n";
+        $schema = "file://$schema";
+    } else {
+        die "Schema file not found: $schema\n";
+    }
+} elsif ($ARGV[0] && $ARGV[0] eq "--help" ) {
+    print "$0 [--schema FILE] JSON FILES
+        --schema FILE   use given file as JSON schema\n";
+    print "\nValidate given json files against GLPI inventory schema or given schema file\n\n";
+    exit(0);
+} else {
+    print "Loading inventory schema from url...\n";
+    print $schema,"\n";
+}
 
 my $jv = JSON::Validator->new();
-$jv->load_and_validate_schema(inventory_schema)
+$jv->load_and_validate_schema($schema)
     or die "Failed to validate inventory schema against the OpenAPI specification\n";
 
 print "Inventory schema loaded\n---\n";

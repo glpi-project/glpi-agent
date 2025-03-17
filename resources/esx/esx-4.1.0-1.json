@@ -278,6 +278,16 @@
          "vmsystem": "Physical",
          "workgroup": "teclib.local"
       },
+      "memories": [
+         {
+            "capacity": 8192,
+            "caption": "ESX Guessed Total Memory",
+            "type": "Total",
+            "description": "ESX Memory",
+            "manufacturer": "VMware",
+            "numslots": 0
+         }
+      ],
       "networks": [
          {
             "description": "vmk0",

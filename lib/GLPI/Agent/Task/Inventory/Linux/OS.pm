@@ -59,7 +59,7 @@ sub _getOperatingSystemInstallDate {
 
 sub _rpmBasesystemInstallDate {
     my (%params) = (
-        command => 'rpm -qa --queryformat \'%{INSTALLTIME}\n\' basesystem',
+        command => 'rpm -q --queryformat \'%{INSTALLTIME}\n\' basesystem',
         @_
     );
 

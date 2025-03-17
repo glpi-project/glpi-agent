@@ -1,0 +1,2814 @@
+
+use utf8;
+
+$results = [
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => '50onPaletteServer',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.1.0'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '14/09/2010',
+        'NAME' => 'AAM Registration Notifier',
+        'PUBLISHER' => 'Adobe Systems Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '1.5.113.0'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '14/09/2010',
+        'NAME' => 'AAM Updates Notifier',
+        'PUBLISHER' => 'Adobe Systems Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '1.5.113.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'ABAssistantService',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '11.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AMSEngagementViewService',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AOSAlertManager',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.07'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AOSHeartbeat',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.07'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AOSPushRelay',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.07'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AOSUIPrefPaneLauncher',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'ARDAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.9.8'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AVB Audio Configuration',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1040.6'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AXVisualSupportAgent',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AccessibilityVisualsAgent',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Acrobat Update Helper',
+        'PUBLISHER' => 'Adobe Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '1.2.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AddressBookManager',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '11.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AddressBookSourceSync',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '11.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AddressBookSync',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '11.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AddressBookUrlForwarder',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '11.0'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '14/06/2017',
+        'NAME' => 'Adobe AIR Application Installer',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '1.5.3'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '08/09/2010',
+        'NAME' => 'Adobe AIR Application Installer_0',
+        'SYSTEM_CATEGORY' => 'Library/Frameworks',
+        'VERSION' => '1.5.3'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '14/06/2017',
+        'NAME' => 'Adobe AIR Uninstaller',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '1.5.3'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '08/09/2010',
+        'NAME' => 'Adobe AIR Updater',
+        'SYSTEM_CATEGORY' => 'Library/Frameworks',
+        'VERSION' => '1.5.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '17/04/2024',
+        'NAME' => 'Adobe Acrobat Reader',
+        'PUBLISHER' => 'Adobe Inc.',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '24.002.20687'
+    },
+    {
+        'ARCH' => 'Other',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Adobe Acrobat Updater',
+        'PUBLISHER' => 'Adobe Systems Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '1.2.2'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '14/09/2010',
+        'NAME' => 'Adobe Application Manager',
+        'PUBLISHER' => 'Adobe Systems Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '1.5.113.0'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '14/06/2017',
+        'NAME' => 'Adobe Elements 9 Organizer',
+        'PUBLISHER' => 'Adobe Systems Inc.',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '9.0.2.(20101217.p.9699)'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '09/07/2012',
+        'NAME' => 'Adobe Help',
+        'SYSTEM_CATEGORY' => 'Applications/Adobe',
+        'VERSION' => '3.2.1.650'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '09/07/2012',
+        'NAME' => 'Adobe Photoshop Elements',
+        'PUBLISHER' => 'Adobe Systems Inc.',
+        'SYSTEM_CATEGORY' => 'Applications/Adobe Photoshop Elements 9',
+        'VERSION' => '9.0 (20100905.m.9093)'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Aide Cadran',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Aide-me\x{301}moire",
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '10.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AinuIM',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AirDrop',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AirPlayUIAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AirPort Base Station Agent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.2.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AirScanScanner',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 16
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Ajouter une imprimante',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 17
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '14/06/2017',
+        'NAME' => 'ApE',
+        'PUBLISHER' => 'A plasmid EditorM. Wayne Davis',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '2.0.51'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Aperc\x{327}u",
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '11.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'App Store',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '3.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AppSSOAgent',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Appareils jumele\x{301}s",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.6.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AppleSpell',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.4'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AquaAppearanceHelper',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AskPermissionUI',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Assistant Boot Camp',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '6.1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Assistant de certification',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Assistant d\x{2019}effacement",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Assistant d\x{2019}e\x{301}valuation",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Assistant migration',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '12.7'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Assistant re\x{301}glages",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.10'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Assistant re\x{301}glages Bluetooth",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '9.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Assistive Control',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'AutomationModeUI',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Automator',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '2.10'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Automator Application Stub',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "A\x{300} propos de ce Mac",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'BluetoothUIServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '9.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'BluetoothUIService',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Bourse',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '4.3.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'CIMFindInputCodeTool',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 104
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Calculette',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '10.16'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'CalendarFileHandler',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '8.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Calendrier',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '11.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Calibration Assistant',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '26/06/2014',
+        'NAME' => 'Canon IJScanner2',
+        'PUBLISHER' => 'Canon Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => '4.0.0'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '26/06/2014',
+        'NAME' => 'Canon IJScanner4',
+        'PUBLISHER' => 'Canon Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => '4.0.0'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '26/06/2014',
+        'NAME' => 'Canon IJScanner6',
+        'PUBLISHER' => 'Canon Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => '4.0.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Captive Network Assistant',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Capture d\x{2019}e\x{301}cran",
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Centre de contro\x{302}le",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Centre de notifications',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'CharacterPalette',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.0.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'ChineseTextConverterService',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'CinematicFramingOnboardingUI',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'ClassroomStudentMenuExtra',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Colorime\x{300}tre nume\x{301}rique",
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '5.22'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Commande universelle',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Configuration audio et MIDI',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '3.5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Configuration des actions de dossier',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.2'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '14/06/2017',
+        'NAME' => "Connexion Bureau a\x{300} Distance",
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '2.1.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Console',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Contacts',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '2498.5.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'ControlStrip',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'CoreLocationAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2667.4.3.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'CoreServicesUIAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 369
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Cre\x{301}ation de page web",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '04/11/2023',
+        'NAME' => 'Cyberduck',
+        'PUBLISHER' => 'David Kocher',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '8.7.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'DFRHUD',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '04/06/2013',
+        'NAME' => 'DNA Strider',
+        'SYSTEM_CATEGORY' => 'Applications/DNA Strider 1.5a9 Folder',
+        'VERSION' => '1.5a8'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Database Events',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0.6'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Diagnostics Reporter',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Diagnostics sans fil',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '11.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Dictaphone',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '2.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Dicte\x{301}e vocale",
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.1.27'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Dictionnaire',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '2.3.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'DiscHelper',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'DiskImageMounter',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'DiskImages UI Agent',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '623.100.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Dock',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.8'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Dwell Control',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '19/08/2015',
+        'NAME' => 'EPFaxAutoSetupTool',
+        'PUBLISHER' => 'EPSON',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1.71'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '06/10/2015',
+        'NAME' => 'EPSON Scanner',
+        'PUBLISHER' => 'EPSON',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => '5.7.24'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'EmojiFunctionRowIM',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '14/06/2017',
+        'NAME' => 'EnzymeX',
+        'PUBLISHER' => 'Mek&Tosj.',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => 'EnzymeX 3.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'EscrowSecurityAlert',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '09/07/2012',
+        'NAME' => 'ExtendScript Toolkit',
+        'PUBLISHER' => 'Adobe Systems Inc.',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => 'ESTK CS5 3.5.0.52'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "E\x{301}change de fichiers Bluetooth",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '9.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "E\x{301}checs",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '3.18'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "E\x{301}diteur de script",
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '2.11'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "E\x{301}talonnage de moniteur",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '4.14'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '19/08/2015',
+        'NAME' => 'FAX Utility',
+        'PUBLISHER' => 'EPSON',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1.73'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'FaceTime',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '5.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Famille',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Family (OSX)',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '14/06/2017',
+        'NAME' => 'Fiji',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '26/04/2023',
+        'NAME' => 'FileZilla',
+        'PUBLISHER' => 'Tim Kosse',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '3.64.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'FindMyMacMessenger',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '4.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Finder',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '12.5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '10/04/2024',
+        'NAME' => 'Firefox',
+        'PUBLISHER' => 'Mozilla',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '124.0.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'FolderActionsDispatcher',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'FollowUpUI',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'FontRegistryUIAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '81.0'
+    },
+    {
+        'ARCH' => 'Other',
+        'INSTALLDATE' => '08/08/2022',
+        'NAME' => 'GIMP',
+        'PUBLISHER' => 'Simone Lehmann',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '2.8.14p2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Game Center',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '12/03/2013',
+        'NAME' => 'GarageBand',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/GarageBand.localized',
+        'VERSION' => '6.0.5'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '15/06/2017',
+        'NAME' => 'GarageBand_0',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '10.2.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Gestion du stockage',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '21/03/2023',
+        'NAME' => 'Google Chrome',
+        'PUBLISHER' => 'Google LLC',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '111.0.5563.110'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '07/12/2023',
+        'NAME' => 'GoogleUpdater',
+        'PUBLISHER' => 'Google LLC',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'USERNAME' => 'agoulut',
+        'VERSION' => '121.0.6167.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Grapher',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '2.8'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '25/10/2017',
+        'NAME' => 'HP Device Monitor Manager',
+        'PUBLISHER' => 'HP Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '5.37.1'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '25/10/2017',
+        'NAME' => 'HP Fax Archive',
+        'PUBLISHER' => 'HP Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '5.37.1'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '25/10/2017',
+        'NAME' => 'HP Product Research Manager',
+        'PUBLISHER' => 'HP Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '10.37.1'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '25/10/2017',
+        'NAME' => 'HP Scanner 3',
+        'PUBLISHER' => 'HP Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => '4.9.4'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '25/10/2017',
+        'NAME' => 'HP Utility',
+        'PUBLISHER' => 'HP Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '5.37.1'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '14/08/2018',
+        'NAME' => 'HPScanner',
+        'PUBLISHER' => 'HP Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Image Capture',
+        'VERSION' => '1.10.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'HelpViewer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '7.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'HindiIM',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Horloge',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'IDSRemoteURLConnectionAgent',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'IMAutomaticHistoryDeletionAgent',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'IMTransferAgent',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Image Events',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.1.6'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '14/06/2017',
+        'NAME' => 'Image Lab',
+        'PUBLISHER' => 'Bio-Rad Labs. Inc.',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '5.2'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '23/07/2013',
+        'NAME' => 'ImageJ',
+        'SYSTEM_CATEGORY' => 'Applications/ImageJ',
+        'VERSION' => '10.2'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '23/07/2013',
+        'NAME' => 'ImageJ64',
+        'SYSTEM_CATEGORY' => 'Applications/ImageJ',
+        'VERSION' => '10.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Informations syste\x{300}me",
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '11.0'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '14/06/2017',
+        'NAME' => 'Inkscape',
+        'PUBLISHER' => 'Inkscape Developers',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '0.91'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Install Command Line Developer Tools',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 2395
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Installation en cours',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Installer Progress',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'JapaneseIM-KanaTyping',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'JapaneseIM-RomajiTyping',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'JavaLauncher',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 319
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Jumelage de la SmartCard',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'KerberosMenuExtra',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'KeyboardAccessAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 10
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'KeyboardSetupAssistant',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Keychain Circle Notification',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '15/06/2017',
+        'NAME' => 'Keynote',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '7.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'KoreanIM',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '29/03/2023',
+        'NAME' => 'Kyocera Print Panel',
+        'PUBLISHER' => 'Kyocera Document Solutions Inc.',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '5.4.0516'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Language Chooser',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Launchpad',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Lecteur DVD',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'LinkedNotesUIService',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Livre des polices',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '10.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Livres',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '4.4'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Localiser',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '3.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'LocationMenu',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '14/09/2010',
+        'NAME' => 'LogTransport2',
+        'PUBLISHER' => 'Adobe Systems Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '2.0.1.011'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '14/06/2017',
+        'NAME' => 'Lync',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '14.0.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '30/05/2022',
+        'NAME' => 'MRT',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Library/Apple',
+        'VERSION' => '1.93'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'MTLReplayer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Mail',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '16.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Maison',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '6.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'MakePDF',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'ManagedClient',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '14.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'MassStorageCamera',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1742.6.1'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '27/10/2022',
+        'NAME' => 'Mendeley Reference Manager',
+        'PUBLISHER' => 'Elsevier Inc.',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '2.80.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Menu des scripts',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 1
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Messages',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '14.0'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '14/06/2017',
+        'NAME' => 'Messenger',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '8.0.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Me\x{301}te\x{301}o",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '17/04/2024',
+        'NAME' => 'Microsoft AutoUpdate',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '4.70'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '29/02/2016',
+        'NAME' => 'Microsoft Error Reporting',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '2.2.9'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '21/02/2024',
+        'NAME' => 'Microsoft Excel',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '16.79.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '17/04/2024',
+        'NAME' => 'Microsoft OneNote',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '16.84'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '21/02/2024',
+        'NAME' => 'Microsoft Outlook',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '16.79.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '21/02/2024',
+        'NAME' => 'Microsoft PowerPoint',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '16.79.2'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '29/02/2016',
+        'NAME' => 'Microsoft Ship Asserts',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '1.1.4'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '08/11/2023',
+        'NAME' => 'Microsoft Teams classic',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '1.00.627656'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '21/02/2024',
+        'NAME' => 'Microsoft Word',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '16.79.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Mise a\x{300} jour de logiciels",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 6
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Mission Control',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1.2'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '19/08/2015',
+        'NAME' => "Moniteur de re\x{301}ception de fax",
+        'PUBLISHER' => 'EPSON',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1.71'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Moniteur d\x{2019}activite\x{301}",
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '10.14'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Musique',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1.2.5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '01/02/2021',
+        'NAME' => 'NativeMessagingHost',
+        'PUBLISHER' => 'Adobe Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '5.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '01/02/2021',
+        'NAME' => 'NativeMessagingHost_0',
+        'PUBLISHER' => 'Adobe Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '5.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'NetAuthAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Notes',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '4.9'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'NowPlayingTouchUI',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '15/06/2017',
+        'NAME' => 'Numbers',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '4.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'OBEXAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '9.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'ODSAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.9'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'OSDUIHelper',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '25/04/2024',
+        'NAME' => 'OneDrive',
+        'PUBLISHER' => 'Microsoft',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '24.065.0331'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '21/10/2017',
+        'NAME' => 'OnyX',
+        'PUBLISHER' => 'Joel BARRIERE',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '3.3.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'OpenSpell',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Ordinateur',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'PIPAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'PTPCamera',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1742.6.1'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '15/06/2017',
+        'NAME' => 'Pages',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '6.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'ParentalControls',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '4.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Partage d\x{2019}e\x{301}cran",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Pass Viewer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Photo Booth',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '12.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Photo Library Migration Utility',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Photos',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '7.0'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '09/07/2012',
+        'NAME' => 'PhotoshopdotcomInspirationBrowser',
+        'PUBLISHER' => 'Adobe Systems Inc.',
+        'SYSTEM_CATEGORY' => 'Applications/Adobe',
+        'VERSION' => '3.07'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Plans',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '3.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'PluginIM',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 25
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Podcasts',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1.1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'PodcastsAuthAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'PowerChime',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'PressAndHold',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Pre\x{301}fe\x{301}rences Syste\x{300}me",
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '15.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Pre\x{301}sentation de VoiceOver",
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 10
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'PrinterProxy',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 20
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Problem Reporter',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.13'
+    },
+    {
+        'ARCH' => 'Arm',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Programme de mise a\x{300} jour Rosetta\x{a0}2",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Programme de te\x{301}le\x{301}chargement de parole",
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '9.0.59.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Programme d\x{2019}installation",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.2.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Programme d\x{2019}installation de profil",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Programme d\x{2019}installation d\x{2019}Automator",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.10'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Programme d\x{2019}installation d\x{2019}apps iOS",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Quick Look Simulator',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'QuickLookUIHelper',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'QuickTime Player',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '10.5'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '14/06/2017',
+        'NAME' => 'R',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => 'R 3.1.3 GUI 1.65 Mavericks build'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '14/06/2017',
+        'NAME' => 'RStudio',
+        'PUBLISHER' => 'RStudio Inc.',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '0.98.1103'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Raccourcis',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '5.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Rappels',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '7.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'RapportUIAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.6.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'RegisterPluginIMApp',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 25
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Re\x{301}cents",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Re\x{301}seau",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Re\x{301}solution des conflits",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '8.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'SCIM',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'SSMenuAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.9.8'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'STMUIHelper',
+        'PUBLISHER' => 'Seagate',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '10/04/2024',
+        'NAME' => 'Safari',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '17.4.1'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '25/10/2017',
+        'NAME' => 'ScanEventHandler',
+        'PUBLISHER' => 'HP Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1.4.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'ScreenReaderUIServer',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 10
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'ScreenSaverEngine',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'ScriptMonitor',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Service de re\x{301}sume\x{301}",
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.0'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '14/09/2010',
+        'NAME' => 'Setup',
+        'PUBLISHER' => 'Adobe Systems Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '3.5.15.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'ShortcutDroplet',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Shortcuts Events',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Siri',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Siri_0',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3105.3.1'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '08/11/2023',
+        'NAME' => 'Skype Entreprise',
+        'PUBLISHER' => 'Skype Communications S.a.r.l',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '16.30.32'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '08/12/2011',
+        'NAME' => 'SnapNDrag',
+        'PUBLISHER' => 'Yellow Mug Software',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '2.6.5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'SoftwareUpdateNotificationManager',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'SpacesTouchBarAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'SpeechRecognitionServer',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '9.0.59.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'SpeechService',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '9.0.88.6'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'SpeechSynthesisServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '9.0.88.6'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'SpeechSynthesizerAuditor',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Spotlight',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Spotlight_0',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '03/01/2024',
+        'NAME' => 'Support Tool',
+        'PUBLISHER' => 'F-Secure',
+        'SYSTEM_CATEGORY' => 'Applications/F-Secure',
+        'VERSION' => '3.0.51507'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'SyncServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '8.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'System Events',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.3.6'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'SystemUIServer',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.7'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'TCIM',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'TV',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1.2.5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'TYIM',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'TamilIM',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.6'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '08/09/2010',
+        'NAME' => 'Template',
+        'SYSTEM_CATEGORY' => 'Library/Frameworks',
+        'VERSION' => '1.5.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Temps d\x{2019}e\x{301}cran",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '3.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Terminal',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '2.12.7'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'TextEdit',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1.17'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'TextInputMenuAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'TextInputSwitcher',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'ThermalTrap',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Time Machine',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '1.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'TrackpadIM',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Transfert d\x{2019}images",
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '8.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Trousseaux d\x{2019}acce\x{300}s",
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '11.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'UASharedPasteboardProgressUI',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '54.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'UIKitSystem',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '14/09/2010',
+        'NAME' => 'Uninstall Product',
+        'PUBLISHER' => 'Adobe Systems Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '3.5.15.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '03/01/2024',
+        'NAME' => "Uninstall WithSecure\x{2122} Elements Agent",
+        'PUBLISHER' => 'F-Secure',
+        'SYSTEM_CATEGORY' => 'Applications/F-Secure',
+        'VERSION' => '3.0.51507'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'UniversalAccessControl',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '7.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'UnmountAssistantAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5.0'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '05/04/2022',
+        'NAME' => 'Untitled',
+        'SYSTEM_CATEGORY' => 'Users/admin',
+        'VERSION' => '3_5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'UserNotificationCenter',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '72.100'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Utilitaire AirPort',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '6.3.9'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Utilitaire AppleScript',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.1.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Utilitaire ColorSync',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '12.0.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Utilitaire VoiceOver',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => 10
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Utilitaire de disque',
+        'SYSTEM_CATEGORY' => 'System/Applications',
+        'VERSION' => '21.5'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Utilitaire de logement de me\x{301}moire",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.5.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Utilitaire de logement d\x{2019}extension",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '2.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Utilitaire de re\x{301}seau",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.9.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Utilitaire d\x{2019}annuaire",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '6.2'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => "Utilitaire d\x{2019}archive",
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.15'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '14/06/2017',
+        'NAME' => 'VLC',
+        'PUBLISHER' => 'VideoLAN',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '2.2.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'VietnameseIM',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'VirtualScanner',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1742.6.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Visualiseur de ticket',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '4.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'VoiceOver',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 10
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'WebKitPluginHost',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 613
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'WiFiAgent',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '17.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'WidgetKit Simulator',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Wish',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '8.5.9'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '03/01/2024',
+        'NAME' => "WithSecure\x{2122} Elements Agent",
+        'PUBLISHER' => 'F-Secure',
+        'SYSTEM_CATEGORY' => 'Applications/F-Secure',
+        'VERSION' => '3.0.51507'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '03/01/2024',
+        'NAME' => "WithSecure\x{2122} XFENCE",
+        'PUBLISHER' => 'F-Secure',
+        'SYSTEM_CATEGORY' => 'Applications/F-Secure',
+        'VERSION' => '3.0.51507'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'XCPreviewAgent',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '13.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'XCPreviewAgent_0',
+        'SYSTEM_CATEGORY' => 'System/iOSSupport',
+        'VERSION' => '13.3'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '14/06/2017',
+        'NAME' => 'XMind',
+        'PUBLISHER' => 'XMind Ltd.',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '8_Update_1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '24/04/2024',
+        'NAME' => 'XProtect',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Library/Apple',
+        'VERSION' => 131
+    },
+    {
+        'ARCH' => 'Other',
+        'INSTALLDATE' => '14/06/2017',
+        'NAME' => 'XQuartz',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'Applications/Utilities',
+        'VERSION' => '2.7.7'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'Xcode Previews',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '13.3'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '14/09/2010',
+        'NAME' => 'adobe_licutil',
+        'PUBLISHER' => 'Adobe Systems Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => 'Adobe License Utility 1.0.0.15 (BuildVersion: 1.0; BuildDate: Mon Aug 23 2010 21:49:00)'
+    },
+    {
+        'ARCH' => 'Other',
+        'INSTALLDATE' => '24/05/2022',
+        'NAME' => 'com.apple.ctcategories',
+        'SYSTEM_CATEGORY' => 'Library/HTTPStorages',
+        'USERNAME' => 'admin',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => 'Other',
+        'INSTALLDATE' => '08/08/2022',
+        'NAME' => 'com.microsoft.openxml',
+        'SYSTEM_CATEGORY' => 'Library/Application Scripts',
+        'USERNAME' => 'agoulut',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => 'Other',
+        'INSTALLDATE' => '20/05/2022',
+        'NAME' => 'com.microsoft.openxml_0',
+        'SYSTEM_CATEGORY' => 'Library/Containers',
+        'USERNAME' => 'admin',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => 'Other',
+        'INSTALLDATE' => '20/05/2022',
+        'NAME' => 'com.microsoft.openxml_1',
+        'SYSTEM_CATEGORY' => 'Library/Application Scripts',
+        'USERNAME' => 'admin',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '19/08/2015',
+        'NAME' => 'commandFilter',
+        'PUBLISHER' => 'EPSON',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1.71'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '26/09/2016',
+        'NAME' => 'commandtohp',
+        'PUBLISHER' => 'HP Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '2.4.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'eaptlstrust',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '13.0'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '19/08/2015',
+        'NAME' => 'epsonfax',
+        'PUBLISHER' => 'EPSON',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1.71'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '25/05/2017',
+        'NAME' => 'fax',
+        'PUBLISHER' => 'HP Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '5.17.3'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '03/01/2024',
+        'NAME' => 'fsavd',
+        'PUBLISHER' => 'F-Secure',
+        'SYSTEM_CATEGORY' => 'Library/F-Secure',
+        'VERSION' => '3.0.51507'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '17/04/2024',
+        'NAME' => 'fschotfix',
+        'PUBLISHER' => 'F-Secure',
+        'SYSTEM_CATEGORY' => 'Library/F-Secure',
+        'VERSION' => '3.0.51507'
+    },
+    {
+        'ARCH' => 'Other',
+        'INSTALLDATE' => '30/05/2022',
+        'NAME' => 'group.is.workflow',
+        'SYSTEM_CATEGORY' => 'Library/Application Scripts',
+        'USERNAME' => 'agoulut',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => 'Other',
+        'INSTALLDATE' => '24/05/2022',
+        'NAME' => 'group.is.workflow_0',
+        'SYSTEM_CATEGORY' => 'Library/Application Scripts',
+        'USERNAME' => 'admin',
+        'VERSION' => undef
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '25/05/2017',
+        'NAME' => 'hpPreProcessing',
+        'PUBLISHER' => 'HP Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1.7.2'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '25/10/2017',
+        'NAME' => 'hpdot4d',
+        'PUBLISHER' => 'HP Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '4.17.1'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '25/10/2017',
+        'NAME' => 'hpdot4d_0',
+        'PUBLISHER' => 'HP Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '5.3.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'iCloud',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'iCloud Drive',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'iCloudUserNotificationsd',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'iCloud Drive',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '15/06/2017',
+        'NAME' => 'iMovie',
+        'SYSTEM_CATEGORY' => 'Applications',
+        'VERSION' => '10.1.6'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'identityservicesd',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'imagent',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '10.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'loginwindow',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '9.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'nbagent',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '25/05/2017',
+        'NAME' => 'pdftopdf',
+        'PUBLISHER' => 'HP Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '2.7.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'qlmanage',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'quicklookd',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '5.0'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '19/08/2015',
+        'NAME' => 'rastertoepfax',
+        'PUBLISHER' => 'EPSON',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1.71'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '25/05/2017',
+        'NAME' => 'rastertofax',
+        'PUBLISHER' => 'HP Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '5.17.3'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '29/03/2023',
+        'NAME' => 'rastertokpsl',
+        'PUBLISHER' => 'Kyocera Document Solutions Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '1.0.3629'
+    },
+    {
+        'ARCH' => 'Intel (x86_64)',
+        'INSTALLDATE' => '29/03/2023',
+        'NAME' => 'rastertopcl_F',
+        'PUBLISHER' => 'Kyocera Document Solutions Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Printers',
+        'VERSION' => '5.4.0401'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'rcd',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => 361
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'screencaptureui',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'sociallayerd',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'storeuid',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'syncuid',
+        'PUBLISHER' => 'Apple',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '8.1'
+    },
+    {
+        'ARCH' => 'Universal',
+        'INSTALLDATE' => '26/02/2024',
+        'NAME' => 'universalAccessAuthWarn',
+        'SYSTEM_CATEGORY' => 'System/Library',
+        'VERSION' => '1.0'
+    },
+    {
+        'ARCH' => 'Intel (i386)',
+        'INSTALLDATE' => '09/07/2012',
+        'NAME' => '{F0915E53-C75D-4FF2-ADCB-4D4DB79927F6}',
+        'PUBLISHER' => 'Adobe Systems Inc.',
+        'SYSTEM_CATEGORY' => 'Library/Application Support',
+        'VERSION' => '3.5.15.0'
+    }
+];

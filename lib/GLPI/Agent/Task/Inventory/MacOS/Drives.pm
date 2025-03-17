@@ -77,7 +77,7 @@ sub doInventory {
     }
 
     # add filesystems to the inventory
-    foreach my $key (keys %filesystems) {
+    foreach my $key (sort keys %filesystems) {
         $inventory->addEntry(
             section => 'DRIVES',
             entry   => $filesystems{$key}

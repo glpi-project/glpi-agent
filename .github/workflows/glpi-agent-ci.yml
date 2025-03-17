@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install packages
       run: |
         sudo apt -y install cpanminus libmodule-install-perl libxml-libxml-perl \
@@ -57,7 +57,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Update environment
       run: |
         echo 'C:\Strawberry\perl\bin'      >> $GITHUB_PATH
@@ -73,7 +73,7 @@ jobs:
         perl -e "@t = localtime; print 'cache-version='.$^V.'-'.int($t[7]/7)" >>%GITHUB_OUTPUT%
       shell: cmd
     - name: Restore perl lib cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       id: cache
       with:
         path: |
@@ -92,7 +92,7 @@ jobs:
     - name: Install other modules
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
-        cpanm --notest --verbose Compress::Zlib Parse::EDID Archive::Extract Win32::Unicode::File
+        cpanm --notest --verbose Compress::Zlib Parse::EDID Win32::Unicode::File
       shell: cmd
     - name: Prepare Makefile
       run: perl Makefile.PL
@@ -104,12 +104,73 @@ jobs:
       run: gmake test
       shell: cmd
 
+  windows-test-using-our-built-perl:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Create folders for cached datas
+      run: |
+        mkdir C:\Strawberry-perl-for-GLPI-Agent_build\restore
+      shell: cmd
+    - name: Restore built perl from packaging cache
+      uses: actions/cache/restore@v4
+      id: built-perl-cache
+      with:
+        path: |
+            C:/Strawberry-perl-for-GLPI-Agent_build/restore
+        key: windows-packaging-perl-cache-x64-${{ hashFiles('contrib\windows\glpi-agent-extlibs-build.pl', 'contrib\windows\glpi-agent-packaging.pl', 'contrib\windows\packaging\*') }}
+    - name: Log warning on cache miss
+      if: steps.built-perl-cache.outputs.cache-hit != 'true'
+      run: |
+        echo '::warning title=[windows-test-using-our-built-perl] Built Perl not available in cache::You should be able to restart this job after packaging workflow run.'
+    - name: Restore required perl libraries cache
+      uses: actions/cache@v4
+      id: perl-site-cache
+      if: steps.built-perl-cache.outputs.cache-hit == 'true'
+      with:
+        path: |
+            C:\Strawberry\perl\site\lib
+            C:\Strawberry\perl\site\bin
+        key: built-perl-windows-test-perl-site-cache-x64-${{ hashFiles('contrib\windows\glpi-agent-extlibs-build.pl', 'contrib\windows\glpi-agent-packaging.pl', 'contrib\windows\packaging\*') }}
+    - name: Update environment
+      if: steps.built-perl-cache.outputs.cache-hit == 'true'
+      run: |
+        echo 'C:\Strawberry\perl\bin'      >> $GITHUB_PATH
+        echo 'C:\Strawberry\perl\site\bin' >> $GITHUB_PATH
+        echo 'C:\Strawberry\c\bin'         >> $GITHUB_PATH
+      shell: bash
+    - name: Install Module::Install
+      if: steps.built-perl-cache.outputs.cache-hit == 'true' && steps.perl-site-cache.outputs.cache-hit != 'true'
+      run: cpan -T Module::Install
+      shell: cmd
+    - name: Prepare Makefile
+      if: steps.built-perl-cache.outputs.cache-hit == 'true'
+      run: perl Makefile.PL
+      shell: cmd
+    - name: Install latest Perl::Dist::Strawberry from github
+      if: steps.built-perl-cache.outputs.cache-hit == 'true' && steps.perl-site-cache.outputs.cache-hit != 'true'
+      run: |
+        cpanm --notest --verbose https://github.com/StrawberryPerl/Perl-Dist-Strawberry.git
+      shell: cmd
+    - name: Run tests script
+      if: steps.built-perl-cache.outputs.cache-hit == 'true'
+      run: perl contrib/windows/glpi-agent-built-perl-tests.pl
+      shell: cmd
+    - name: Upload windows built artifacts
+      if: success() || failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: Built-Perl-Windows-Test-Debug
+        path: C:\Strawberry-perl-for-GLPI-Agent_build\output
+
   macos-test:
 
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Update environment
       run: |
         PERL_PREFIX=$(perl -MConfig -e 'print $Config{prefix}')
@@ -122,14 +183,14 @@ jobs:
         perl -V
         # Compute perl-version for current week to regen perl lib cache at least each week
         perl -e '@t = localtime; print "cache-version=".$^V."-".int($t[7]/7)."\n"' >>$GITHUB_OUTPUT
-    - name: Install openssl & libxml2 via brew
-      run: brew install openssl libxml2
+    - name: Install libxml2 via brew
+      run: brew install libxml2
     - name: Update environment to find latest libxml2
       run: |
         echo "$(brew --prefix)/opt/libxml2/bin" >> $GITHUB_PATH
     - name: Restore perl lib cache
       id: cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
             /usr/local/Cellar/perl/*/lib/perl5/site_perl

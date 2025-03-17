@@ -121,6 +121,9 @@ sub isEnabled {
 sub run {
     my ($self) = @_;
 
+    # Just reset event if run as an event to not trigger another one
+    $self->resetEvent();
+
     my $abort = 0;
     $SIG{TERM} = sub { $abort = 1; };
 
@@ -166,6 +169,12 @@ sub run {
     # Extract greatest max_threads from jobs
     my ($max_threads) = sort { $b <=> $a } map { int($_->max_threads()) }
         @{$self->{jobs}};
+
+    # On windows, max_threads should not be upper than 60 due to a perl limitation
+    if ($OSNAME eq 'MSWin32' && $max_threads > 60) {
+        $self->{logger}->info("Limiting threads from $max_threads to 60 on MSWin32");
+        $max_threads = 60;
+    }
 
     # Prepare fork manager
     my $tempdir = $self->{target}->getStorage()->getDirectory();
@@ -300,7 +309,9 @@ sub run {
 
         # Enqueue as ip as possible for each job
         foreach my $jobid (@jobs) {
-            my $job = $jobs{$jobid};
+            # job may has just been done & deleted in run_on_finish() manager callback
+            my $job = $jobs{$jobid}
+                or next;
             next unless $job->ranges;
             next if $job->max_in_queue;
             my $range = $job->range;
@@ -397,7 +408,9 @@ sub run {
                     }
                 }
 
-                $self->_sendResultMessage($result, $jobid);
+                # Don't send xml discovery inventory to server on computer remote inventory
+                $self->_sendResultMessage($result, $jobid)
+                    unless $authremote && $self->{target}->isType('server');
 
                 # Eventually chain with netinventory when requested
                 if ($job->netscan) {
@@ -452,10 +465,17 @@ sub run {
                         };
                         my $credentials = first { $_->{ID} eq $authremote } @{$jobaddress->{remote_credentials}};
                         if ($credentials && $found) {
-                            my $path;
-                            $path = $self->{target}->getPath() if $self->{target}->isType('local');
-                            # When target path is agent folder, inventory should be saved in inventory subfolder
-                            $path .= '/inventory' if $path eq '.';
+
+                            # Reset timeout to backend-collect-timeout as first set one is only for discovery
+                            $timeout = $self->{config}->{"backend-collect-timeout"};
+                            $found->timeout($timeout);
+
+                            my ($path, $agentfolder);
+                            if ($self->{target}->isType('local')) {
+                                $agentfolder = $self->{target}->getPath() eq '.' ? 'inventory' : '';
+                                # When target path is agent folder, inventory should be saved in inventory subfolder
+                                $path = $self->{target}->getFullPath($agentfolder);
+                            }
                             # As we still have run the connection part in _scanAddressByRemote(), we reuse the connected object
                             if ($credentials->{TYPE} eq 'esx') {
                                 $found->serverInventory($path, $collectdeviceid, $deviceid);
@@ -463,9 +483,8 @@ sub run {
                                 # Setup a remote inventory as it is done in GLPI::Agent::Task::RemoteInventory
                                 GLPI::Agent::Task::Inventory->require();
 
-                                # Update local target path if the case it has been set to agent folder
-                                $self->{target}->setPath($path)
-                                    if $self->{target}->isType('local');
+                                # Update local target path in the case it has been updated
+                                $self->{target}->setFullPath($path) if $agentfolder;
 
                                 my $task = GLPI::Agent::Task::Inventory->new(
                                     logger      => $self->{logger},
@@ -615,8 +634,8 @@ sub _sendMessage {
         } else {
             # We don't have to save control messages
             return unless $content->{DEVICE};
-            $path .= "/netdiscovery";
-            mkpath($path);
+            $path = $self->{target}->getFullPath("netdiscovery");
+            mkpath($path) unless -d $path;
             $ip = $content->{DEVICE}->[0]->{IP};
             $file = $path . "/$ip.xml";
         }
@@ -676,14 +695,15 @@ sub _scanAddress {
 
     # Then scan for standard network datas
     %device = (
-        %device,
         $INC{'Net/NBName.pm'}    ? $self->_scanAddressByNetbios($params) : (),
         $INC{'Net/Ping.pm'}      ? $self->_scanAddressByPing($params)    : (),
         $self->{arp}             ? $self->_scanAddressByArp($params)     : (),
+        %device,
     );
 
     # don't report anything without a minimal amount of information
     return unless
+        $device{AUTHREMOTE}   ||
         $device{MAC}          ||
         $device{SNMPHOSTNAME} ||
         $device{DNSHOSTNAME}  ||
@@ -791,9 +811,11 @@ sub _scanAddressByNetbios {
 
     return if $params->{walk};
 
-    my $nb = Net::NBName->new();
-
-    my $ns = $nb->node_status($params->{ip});
+    my $ns;
+    eval {
+        my $nb = Net::NBName->new();
+        $ns = $nb->node_status($params->{ip});
+    };
 
     $self->{logger}->debug(
         sprintf "- scanning %s with netbios: %s",
@@ -805,8 +827,11 @@ sub _scanAddressByNetbios {
     my %device;
     foreach my $rr ($ns->names()) {
         my $suffix = $rr->suffix();
-        my $G      = $rr->G();
-        my $name   = $rr->name();
+        next unless defined($suffix);
+        my $G = $rr->G()
+            or next;
+        my $name = $rr->name()
+            or next;
         if ($suffix == 0 && $G eq 'GROUP') {
             $device{WORKGROUP} = getSanitizedString($name);
         }
@@ -921,6 +946,7 @@ sub _scanAddressBySNMPReal {
                 authprotocol => $params{credential}->{AUTHPROTOCOL},
                 privpassword => $params{credential}->{PRIVPASSPHRASE} // $params{credential}->{PRIVPASSWORD},
                 privprotocol => $params{credential}->{PRIVPROTOCOL},
+                retries      => $self->{config}->{'snmp-retries'} // 0,
             );
         };
     }
@@ -965,7 +991,6 @@ sub _scanAddressByRemote {
             } else {
                 $error = $esxscan->lastError();
                 my %errors = (
-                    'n/a'                    => '',
                     '405 Method Not Allowed' => 'not supporting VMWare SOAP API'
                 );
                 $error = $errors{$error} if $errors{$error};
@@ -987,6 +1012,7 @@ sub _scanAddressByRemote {
             $url->scheme($credential->{TYPE});
 
             my $remote = GLPI::Agent::Task::RemoteInventory::Remote->new(
+                config  => $self->{config},
                 logger  => $self->{logger},
                 url     => $url->as_string(),
                 timeout => $params->{timeout},

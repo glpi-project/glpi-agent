@@ -607,12 +607,13 @@ sub getInterfacesInfosFromIoctl {
     return unless $params{interface};
 
     # We don't support this feature on remote inventory
-    return if $GLPI::Agent::Tools::remote;
+    return { ERROR => "syscall not remotely supported" }
+        if $GLPI::Agent::Tools::remote;
 
     my $logger = $params{logger};
 
     socket(my $socket, PF_INET, SOCK_DGRAM, 0)
-        or return ;
+        or return { ERROR => "can't open socket" };
 
     # Pack command in ethtool_cmd struct
     my $cmd = pack("L3SC6L2SC2L3", ETHTOOL_GSET);
@@ -621,7 +622,8 @@ sub getInterfacesInfosFromIoctl {
     my $request = pack("a16p", $params{interface}, $cmd);
 
     my $retval = ioctl($socket, SIOCETHTOOL, $request) || -1;
-    return if ($retval < 0);
+    return { ERROR => "$!" }
+        if $retval < 0;
 
     # Unpack returned datas
     my @datas = unpack("L3SC6L2SC2L3", $cmd);
@@ -634,6 +636,7 @@ sub getInterfacesInfosFromIoctl {
     # Forget speed value if got unknown speed special value
     if ($datas->{SPEED} == SPEED_UNKNOWN) {
         delete $datas->{SPEED};
+        $datas->{ERROR} = "unknown speed found";
         $logger->debug2("Unknown speed found on $params{interface}")
             if $logger;
     }
@@ -650,7 +653,7 @@ sub getInterfacesFromIp {
     my @lines = getAllLines(%params)
         or return;
 
-    my (@interfaces, @addresses, $interface);
+    my (@interfaces, @addresses, $interface, $iname);
 
     foreach my $line (@lines) {
         if ($line =~ /^\d+:\s+(\S+): <([^>]+)>/) {
@@ -660,8 +663,10 @@ sub getInterfacesFromIp {
                     if !any { $_->{DESCRIPTION} eq $interface->{DESCRIPTION} } @addresses;
                 push @interfaces, @addresses;
                 undef @addresses;
+                undef $iname;
             } elsif ($interface) {
                 push @interfaces, $interface;
+                undef $iname;
             }
 
             my ($name, $flags) = ($1, $2);
@@ -684,7 +689,7 @@ sub getInterfacesFromIp {
                 IPMASK6     => $mask,
                 IPSUBNET6   => $subnet,
                 STATUS      => $interface->{STATUS},
-                DESCRIPTION => $interface->{DESCRIPTION},
+                DESCRIPTION => $iname // $interface->{DESCRIPTION},
                 MACADDR     => $interface->{MACADDR}
             };
         } elsif ($line =~ /
@@ -696,7 +701,18 @@ sub getInterfacesFromIp {
             my $address = $1;
             my $mask    = getNetworkMask($2);
             my $subnet  = getSubnetAddress($address, $mask);
-            my $name    = $3;
+
+            # Update interface name on first found inet entry, next ones could be
+            # a wifi alias
+            $iname = $3 if empty($iname);
+
+            # But keep still defined description if new name is indeed an alias
+            $iname = $interface->{DESCRIPTION}
+                if $iname =~ /^$interface->{DESCRIPTION}\W/;
+
+            # Replace current interface description if an alias of found iname
+            $interface->{DESCRIPTION} = $iname
+                if $interface->{DESCRIPTION} =~ /^$iname\W/;
 
             # the name associated with the address differs from the current
             # interface if the address is actually attached to an alias
@@ -705,7 +721,7 @@ sub getInterfacesFromIp {
                 IPMASK      => $mask,
                 IPSUBNET    => $subnet,
                 STATUS      => $interface->{STATUS},
-                DESCRIPTION => $name,
+                DESCRIPTION => $iname,
                 MACADDR     => $interface->{MACADDR}
             };
         }
@@ -735,14 +751,17 @@ sub getDefaultGatewayFromIp {
     my ($gateway, $metric);
 
     foreach (@lines) {
-        next unless /^default\s+(.*)$/;
-        my %infos = split(/\s+/, $1);
+        my ($info) = /^default\s+(.*)$/
+            or next;
+        my ($thisvia) = $info =~ /\bvia\s+(\S+)\b/
+            or next;
+        my ($thismetric) = $info =~ /\bmetric\s+(\d+)\b/;
         # Only keep route with lower metric
-        if ($infos{metric}) {
-            next if $metric && int($infos{metric}) >= $metric;
-            $metric = int($infos{metric});
+        if ($thismetric) {
+            next if $metric && int($thismetric) >= $metric;
+            $metric = int($thismetric);
         }
-        $gateway = $infos{via} // '';
+        $gateway = $thisvia;
     }
 
     return $gateway;

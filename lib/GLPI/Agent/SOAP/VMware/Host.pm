@@ -29,6 +29,20 @@ sub _asArray {
                             ()   ;
 }
 
+sub enableFeaturesForGlpiVersion {
+    my ($self, $version) = @_;
+
+    return if empty($version);
+
+    $self->{glpi} = glpiVersion($version);
+}
+
+sub supportGlpiVersion {
+    my ($self, $version) = @_;
+
+    return exists($self->{glpi}) && $self->{glpi} >= glpiVersion($version);
+}
+
 sub getBootTime {
     my ($self) = @_;
 
@@ -385,9 +399,9 @@ sub getVirtualMachines {
         $comment =~ s/\n/&#10;/gm if $comment;
 
         if (
-            defined($_->[0]{summary}{config}{template})
+            defined($machine->{summary}{config}{template})
             &&
-            $_->[0]{summary}{config}{template} eq 'true'
+            $machine->{summary}{config}{template} eq 'true'
             ) {
             next;
         }
@@ -407,6 +421,36 @@ sub getVirtualMachines {
         if (is_uuid_string($uuid)) {
             my @uuid_parts = unpack("A2A2A2A2xA2A2xA2A2xA2A2xA2A2A2A2A2A2", $uuid);
             $vmInventory->{SERIAL} = "VMware-".join(' ', @uuid_parts[0..7]).'-'.join(' ', @uuid_parts[8..15]);
+        }
+
+        # At least Glpi version 10.0.17 will include required schema to validate following fields
+        if ($self->supportGlpiVersion('10.0.17')) {
+            $vmInventory->{IPADDRESS} = $machine->{summary}{guest}{ipAddress}
+                unless empty($machine->{summary}{guest}{ipAddress});
+            unless (empty($machine->{summary}{guest}{guestFullName})) {
+                $vmInventory->{OPERATINGSYSTEM}->{FULL_NAME} = $machine->{summary}{guest}{guestFullName};
+            }
+            unless (empty($machine->{guest}{hostName})) {
+                $vmInventory->{OPERATINGSYSTEM}->{FQDN} = $machine->{guest}{hostName};
+            }
+            if (ref($machine->{guest}{net})) {
+                my @guestnet = ref($machine->{guest}{net}) eq 'ARRAY' ?
+                    @{$machine->{guest}{net}} : ($machine->{guest}{net});
+                foreach my $guestnet (@guestnet) {
+                    next unless ref($guestnet->{dnsConfig});
+                    my $dnsConfig = ref($guestnet->{dnsConfig}) eq 'HASH' ?
+                        $guestnet->{dnsConfig} : $guestnet->{dnsConfig}->[0];
+                    next if ref($dnsConfig) ne 'HASH' || empty($dnsConfig->{domainName});
+                    $vmInventory->{OPERATINGSYSTEM}->{DNS_DOMAIN} = $dnsConfig->{domainName};
+                    last;
+                }
+            }
+            unless (empty($machine->{summary}{runtime}{bootTime})) {
+                my ($bootdate, $boottime) =
+                    $machine->{summary}{runtime}{bootTime} =~ /^([0-9-]+).(\d+:\d+:\d+)/;
+                $boottime = "$bootdate $boottime" if $bootdate && $boottime;
+                $vmInventory->{OPERATINGSYSTEM}->{BOOT_TIME} = $boottime if $boottime;
+            }
         }
 
         push @virtualMachines, $vmInventory;

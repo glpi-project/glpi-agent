@@ -53,7 +53,7 @@ sub _getDatabaseService {
         $params{options} = "";
         $params{options} .= " -h '$credential->{host}'"  if $credential->{host};
         $params{options} .= " -p $credential->{port}"    if $credential->{port};
-        $params{options} .= " -U '$credential->{login}'" if $credential->{login};
+        $params{options} .= " -U $credential->{login}" if $credential->{login};
 
         unless ($params{options}) {
             my $id = getFirstLine(command => "id -u");
@@ -196,6 +196,7 @@ sub _psqlPgpassFile {
         $fh = File::Temp->new(
             TEMPLATE    => 'pgpass-XXXXXX',
             SUFFIX      => '.conf',
+            PERMS       => 0600, ## no critic
         );
         print $fh join(":",
             $credential->{host} || "*",

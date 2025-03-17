@@ -18,7 +18,7 @@ use GLPI::Agent::HTTP::Client::GLPI;
 use GLPI::Agent::Protocol::Message;
 use GLPI::Agent::Protocol::Answer;
 
-our $VERSION = "2.3";
+our $VERSION = "2.5";
 
 sub urlMatch {
     my ($self, $path) = @_;
@@ -89,6 +89,12 @@ sub init {
     # Normalize only_local_store
     $self->{only_local_store} = $self->config('only_local_store') !~ /^0|no$/i ? 1 : 0;
     $self->{glpi_protocol}    = $self->config('glpi_protocol')    !~ /^0|no$/i ? 1 : 0;
+
+    # Set finally we will only store locally if no server is indeed configured and glpi_protocol is set
+    if ($self->config('glpi_protocol') && scalar(grep { $_->isType('server') } $self->{server}->{agent}->getTargets()) == 0) {
+        $self->debug("Forcing only local storing as no glpi server is configured and glpi_protocol is set");
+        $self->{only_local_store} = 1;
+    }
 
     # Handles request status
     $self->{status} = {};
@@ -249,8 +255,14 @@ sub _handle_proxy_request {
             return $self->proxy_error(429, 'Too Many Requests');
         }
 
+        # From here, signal SSL client socket should not be shutdown in parent
+        $client->no_ssl_shutdown(1) if ref($client) eq 'HTTP::Daemon::ClientConn::SSL';
+
         return 1 if $agent->fork(name => $self->name(), description => $self->name()." request");
     }
+
+    # From here SSL client socket must be shutdown properly
+    $client->no_ssl_shutdown(0) if ref($client) eq 'HTTP::Daemon::ClientConn::SSL';
 
     my $content_type = $request->header('Content-type');
     $self->debug2("$content_type type request from $remoteid") if $content_type;

@@ -108,7 +108,6 @@ Optional Perl modules:
 
 Mandatory Perl modules:
 
-* Archive::Extract
 * Digest::SHA
 * File::Copy::Recursive
 * Cpanel::JSON::XS

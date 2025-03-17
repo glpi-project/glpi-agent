@@ -202,7 +202,7 @@ my %printer_pagecounters_variables = (
                                                   # value and use it to flag a call out of service techs.
                                                   # Hint: Increasing rate = bad paper pickup roller types.
             '.1.3.6.1.2.1.43.10.2.1.4.1.1'        #Default Value
-            ]
+        ]
     },
     BLACK      => {
         oid   => '.1.3.6.1.4.1.1347.42.2.2.1.1.3.1.1' #Kyocera specific non-MFP counter
@@ -212,16 +212,10 @@ my %printer_pagecounters_variables = (
     },
     RECTOVERSO => { },
     SCANNED    => {
-        oid   => [
-            '.1.3.6.1.4.1.1347.46.10.1.1.5.3',    #Kyocera MFP specific counter ( total scan counter)
-            '.1.3.6.1.4.1.1602.1.11.1.3.1.4.501'  #Canon specific counter
-        ]
+        oid   => '.1.3.6.1.4.1.1347.46.10.1.1.5.3'    #Kyocera MFP specific counter ( total scan counter)
     },
     PRINTTOTAL => {
-        oid   => [
-            '.1.3.6.1.4.1.1347.42.3.1.1.1.1.1',   #Kyocera MFP specific counter
-            '.1.3.6.1.4.1.1602.1.11.1.3.1.4.301'  #Canon specific counter
-        ]
+        oid   => '.1.3.6.1.4.1.1347.42.3.1.1.1.1.1'   #Kyocera MFP specific counter
     },
     PRINTBLACK => {
         oid   => '.1.3.6.1.4.1.1347.42.3.1.2.1.1.1.1' #Kyocera MFP specific counter
@@ -230,28 +224,13 @@ my %printer_pagecounters_variables = (
         oid   => '.1.3.6.1.4.1.1347.42.3.1.2.1.1.1.3' #Kyocera MFP specific counter
     },
     COPYTOTAL  => {
-        oid   => [
-            '.1.3.6.1.4.1.1347.42.3.1.1.1.1.2',   #Kyocera MFP specific counter
-            '.1.3.6.1.4.1.1602.1.11.1.3.1.4.101'  #Canon specific counter
-        ]
+        oid   => '.1.3.6.1.4.1.1347.42.3.1.1.1.1.2'   #Kyocera MFP specific counter
     },
     COPYBLACK  => {
-        oid   => [
-            '.1.3.6.1.4.1.1347.42.3.1.2.1.1.2.1', #Kyocera MFP specific counter
-            '.1.3.6.1.4.1.1602.1.11.1.3.1.4.113'  #Canon specific counter
-        ]
-    },
-    COPYBLACK_A3  => {
-        oid   => '.1.3.6.1.4.1.1602.1.11.1.3.1.4.112' #Canon specific counter
+        oid   => '.1.3.6.1.4.1.1347.42.3.1.2.1.1.2.1' #Kyocera MFP specific counter
     },
     COPYCOLOR  => {
-        oid   => [
-            '.1.3.6.1.4.1.1347.42.3.1.2.1.1.2.3', #Kyocera MFP specific counter
-            '.1.3.6.1.4.1.1602.1.11.1.3.1.4.123'  #Canon specific counter
-        ]
-    },
-    COPYCOLOR_A3  => {
-        oid   => '.1.3.6.1.4.1.1602.1.11.1.3.1.4.122' #Canon specific counter
+        oid   => '.1.3.6.1.4.1.1347.42.3.1.2.1.1.2.3' #Kyocera MFP specific counter
     },
     FAXTOTAL   => {
         oid   => '.1.3.6.1.4.1.1347.42.3.1.1.1.1.4'  #Kyocera MFP specific counter
@@ -423,9 +402,21 @@ sub _getSysObjectIDInfo {
             ) if $logger;
             return $match;
         }
+
+        # fallback to partial match
+        while (my ($device_partial_id) = $device_id =~ /^(\d+.*)\.\d+$/) {
+            $match = $sysobjectid{$manufacturer_id . '.' . $device_partial_id};
+            if ($match) {
+                $logger->debug(
+                    "partial match for sysobjectID $params{id} on partial SysObject ID"
+                ) if $logger;
+                return $match;
+            }
+            $device_id = $device_partial_id;
+        }
     }
 
-    # fallback to partial match
+    # fallback to partial match on manufacturer only
     $match = $sysobjectid{$manufacturer_id};
     if ($match) {
         $logger->debug(
@@ -634,8 +625,10 @@ sub _setGenericProperties {
     foreach my $suffix (sort keys %{$results}) {
         my $value = $results->{$suffix};
         next unless $value;
+        # value must match IFNUMBER
+        my $portindex = first { defined($ports->{$_}->{IFNUMBER}) && $ports->{$_}->{IFNUMBER} eq $value } keys(%{$ports});
         # safety checks
-        if (! exists $ports->{$value}) {
+        unless ($portindex) {
             $logger->debug(
                 "unknown interface $value for IP address $suffix, ignoring"
             ) if $logger;
@@ -645,8 +638,8 @@ sub _setGenericProperties {
             $logger->debug("invalid IP address $suffix") if $logger;
             next;
         }
-        $ports->{$value}->{IP} = $suffix;
-        push @{$ports->{$value}->{IPS}->{IP}}, $suffix;
+        $ports->{$portindex}->{IP} = $suffix;
+        push @{$ports->{$portindex}->{IPS}->{IP}}, $suffix;
     }
 
     $device->{PORTS}->{PORT} = $ports;
@@ -870,7 +863,9 @@ sub _setKnownMacAddresses {
     # start with mac addresses seen on default VLAN
     my $addresses = _getKnownMacAddresses(
         snmp           => $snmp,
+        macaddresses   => '.1.3.6.1.2.1.17.4.3.1.1', # dot1dTpFdbAddress
         address2port   => '.1.3.6.1.2.1.17.4.3.1.2', # dot1dTpFdbPort
+        macstatus      => '.1.3.6.1.2.1.17.4.3.1.3', # dot1dTpFdbStatus
         port2interface => '.1.3.6.1.2.1.17.1.4.1.2', # dot1dBasePortIfIndex
     );
 
@@ -885,7 +880,9 @@ sub _setKnownMacAddresses {
     # add additional mac addresses for other VLANs
     $addresses = _getKnownMacAddresses(
         snmp           => $snmp,
+        macaddresses   => '.1.3.6.1.2.1.17.7.1.2.2.1.1', # dot1qTpFdbAddress
         address2port   => '.1.3.6.1.2.1.17.7.1.2.2.1.2', # dot1qTpFdbPort
+        macstatus      => '.1.3.6.1.2.1.17.7.1.2.2.1.3', # dot1qTpFdbStatus
         port2interface => '.1.3.6.1.2.1.17.1.4.1.2',     # dot1dBasePortIfIndex
     );
 
@@ -919,7 +916,9 @@ sub _setKnownMacAddresses {
             $snmp->switch_vlan_context($vlan);
             my $mac_addresses = _getKnownMacAddresses(
                 snmp           => $snmp,
+                macaddresses   => '.1.3.6.1.2.1.17.4.3.1.1', # dot1dTpFdbAddress
                 address2port   => '.1.3.6.1.2.1.17.4.3.1.2', # dot1dTpFdbPort
+                macstatus      => '.1.3.6.1.2.1.17.4.3.1.3', # dot1dTpFdbStatus
                 port2interface => '.1.3.6.1.2.1.17.1.4.1.2', # dot1dBasePortIfIndex
             );
             next unless $mac_addresses;
@@ -1001,27 +1000,40 @@ sub _getKnownMacAddresses {
     my $snmp   = $params{snmp};
 
     my $results;
+    my $macaddresses   = $params{macaddresses} ? $snmp->walk($params{macaddresses}) : {};
     my $address2port   = $snmp->walk($params{address2port});
     my $port2interface = $snmp->walk($params{port2interface});
+    my $macstatus      = $params{macstatus} ? $snmp->walk($params{macstatus}) : {};
 
-    # dot1dTpFdbPort values matches the following scheme:
+    # dot1dTpFdbAddress is the known mac addresses table
+    # dot1dTpFdbStatus is the mac addresses status table, only learned(3) ones should be kept
+
+    # dot1dTpFdbPort values may match one of the following scheme:
     # $prefix.a.b.c.d.e.f = $port
-
-    # dot1qTpFdbPort values matches the following scheme:
     # $prefix.$vlan.a.b.c.d.e.f = $port
 
     # in both case, the last 6 elements of the OID constitutes
     # the mac address in decimal format
+
     foreach my $suffix (sort keys %{$address2port}) {
         my $port_id      = $address2port->{$suffix};
         my $interface_id = $port2interface->{$port_id};
         next unless defined $interface_id;
 
-        my @bytes = split(/\./, $suffix);
-        shift @bytes while @bytes > 6;
-
-        push @{$results->{$interface_id}},
-            sprintf "%02x:%02x:%02x:%02x:%02x:%02x", @bytes;
+        if ($macaddresses && $macaddresses->{$suffix}) {
+            my $mac = getCanonicalMacAddress($macaddresses->{$suffix});
+            next unless $mac;
+            # Assume mac status is learned(3) if not found
+            my $status = $macstatus && defined($macstatus->{$suffix}) && $macstatus->{$suffix} =~ /(\d+)/ ? int($1) : 3;
+            next unless $status == 3;
+            push @{$results->{$interface_id}}, $mac;
+        } else {
+            my @bytes = split(/\./, $suffix);
+            shift @bytes while @bytes > 6;
+            next unless @bytes == 6;
+            push @{$results->{$interface_id}},
+                sprintf "%02x:%02x:%02x:%02x:%02x:%02x", @bytes;
+        }
     }
 
     return $results;
@@ -1250,56 +1262,54 @@ sub _getLLDPInfo {
         }
 
         my $connection = {
-            SYSMAC => lc(alt2canonical($mac)) || lc(alt2canonical(getCanonicalString($mac)))
+            SYSMAC => alt2canonical($mac) || alt2canonical(getCanonicalString($mac)) || getCanonicalMacAddress($mac)
         };
         $connection->{SYSDESCR} = $sysdescr if $sysdescr;
         $connection->{SYSNAME} = $sysname if $sysname;
 
         # portId is either a port number or a port mac address, duplicating chassisId
         my $PortIdSubtype = "";
-        $PortIdSubtype = getCanonicalString($lldpRemPortIdSubtype->{suffix}) || ""
-            if $lldpRemPortIdSubtype && $lldpRemPortIdSubtype->{suffix};
-        my $portId = $lldpRemPortId->{$suffix};
+        $PortIdSubtype = getCanonicalString($lldpRemPortIdSubtype->{$suffix})
+            if $lldpRemPortIdSubtype && !empty($lldpRemPortIdSubtype->{$suffix});
+        my $portId = getCanonicalString($lldpRemPortId->{$suffix} // "");
         # As before we need to guess portId type if not set
         if (!$PortIdSubtype) {
-            if ($portId =~ /^0x[0-9a-f]{12}$/i) {
-                my $thismac = lc(alt2canonical($portId));
-                push @{$connection->{MAC}}, $thismac unless $thismac eq $connection->{SYSMAC};
-            } else {
-                $portId = getCanonicalString($portId);
+            if ($portId =~ $mac_address_pattern) {
+                my $thismac = alt2canonical($portId);
+                push @{$connection->{MAC}}, $thismac unless !$thismac || $thismac eq $connection->{SYSMAC};
+            } elsif (!empty($portId)) {
                 if ($portId =~ /^\d+$/) {
                     $connection->{IFNUMBER} = $portId;
                 } else {
-                    my $maybe_mac = lc(alt2canonical($portId));
-                    if ($maybe_mac) {
-                        push @{$connection->{MAC}}, $maybe_mac unless $maybe_mac eq $connection->{SYSMAC};
+                    my $maybe_mac = alt2canonical($portId) || getCanonicalMacAddress($portId);
+                    if ($maybe_mac && $maybe_mac ne $connection->{SYSMAC}) {
+                        # Add mac only if different than SYSMAC
+                        push @{$connection->{MAC}}, $maybe_mac;
                     } else {
                         $connection->{IFDESCR} = $portId;
                     }
                 }
             }
         } elsif ($PortIdSubtype eq '3') { # Mac address
-            push @{$connection->{MAC}}, lc(alt2canonical($portId));
-        } elsif ($PortIdSubtype eq '7') { # "local" should be the remote IFNUMBER
-            $portId = getCanonicalString($portId);
+            my $mac = alt2canonical($portId) || getCanonicalMacAddress($lldpRemPortId->{$suffix});
+            # Add mac only if different than SYSMAC
+            push @{$connection->{MAC}}, $mac if $mac && $mac ne $connection->{SYSMAC};
+        } elsif ($PortIdSubtype eq '1' || $PortIdSubtype eq '5' || $PortIdSubtype eq '7') { # Interface alias or interface name or "local", "local" should be the remote IFNUMBER
             if ($portId =~ /^\d+$/) {
                 $connection->{IFNUMBER} = $portId;
-            } else {
+            } elsif ($portId) {
                 $connection->{IFDESCR} = $portId;
             }
         }
 
         my $ifdescr = getCanonicalString($lldpRemPortDesc->{$suffix});
-        if (defined($ifdescr)) {
+        unless (empty($ifdescr)) {
             # Sometime ifnumber is indeed set as ifdescr
-            if ($ifdescr =~ /^\d+$/ && !defined($connection->{IFNUMBER})) {
+            if ($ifdescr =~ /^\d+$/ && empty($connection->{IFNUMBER})) {
                 $connection->{IFNUMBER} = $ifdescr;
-            } elsif (!$connection->{IFDESCR}) {
+            } elsif (empty($connection->{IFDESCR})) {
                 $connection->{IFDESCR} = $ifdescr;
             }
-        } else {
-            $logger->debug("LLDP support: skipping portId $portId ($PortIdSubtype)")
-                if $PortIdSubtype;
         }
 
         my $id           = _getElement($suffix, -2);
@@ -1364,13 +1374,13 @@ sub _getCDPInfo {
         if ($deviceId =~ /^0x/) {
             if (length($deviceId) == 14) {
                 # let's assume it is a mac address if the length is 6 bytes
-                $connection->{SYSMAC} = lc(alt2canonical($deviceId));
+                $connection->{SYSMAC} = alt2canonical($deviceId);
             } else {
                 # otherwise it's may be an hex-encode hostname
                 $deviceId = getCanonicalString($deviceId);
                 if ($deviceId =~ /^[0-9A-Fa-f]{12}$/) {
                     # let's assume it is a mac address if the length is 12 chars
-                    $connection->{SYSMAC} = lc(alt2canonical($deviceId));
+                    $connection->{SYSMAC} = alt2canonical($deviceId);
                 } elsif (!$connection->{SYSNAME}) {
                     $connection->{SYSNAME} = $deviceId;
                 }
@@ -1381,11 +1391,11 @@ sub _getCDPInfo {
 
         if ($connection->{SYSNAME} &&
             $connection->{SYSNAME} =~ /^SIP([A-F0-9a-f]*)$/) {
-            $connection->{SYSMAC} = lc(alt2canonical("0x".$1));
+            $connection->{SYSMAC} = alt2canonical("0x".$1);
         } elsif ($connection->{SYSNAME} &&
             $connection->{SYSNAME} =~ /^SIP-(.*)$/ &&
             $deviceId =~ /^$1([0-9A-Fa-f]{12})$/) {
-            $connection->{SYSMAC} = lc(alt2canonical("0x".$1));
+            $connection->{SYSMAC} = alt2canonical("0x".$1);
         }
 
         # warning: multiple neighbors announcement for the same interface

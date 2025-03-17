@@ -57,6 +57,9 @@ sub isEnabled {
 sub run {
     my ($self, %params) = @_;
 
+    # Just reset event if run as an event to not trigger another one
+    $self->resetEvent();
+
     my @methods = $params{methods} ? @{$params{methods}} : qw/ethernet udp/;
 
     METHODS: foreach my $method (@methods) {

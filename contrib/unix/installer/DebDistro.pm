@@ -205,8 +205,8 @@ sub install_cron {
         or die "Can't create hourly crontab for glpi-agent: $!\n";
     print $cron q{#!/bin/bash
 
-NAME=glpi-agent-cron
-LOG=/var/log/$NAME.log
+NAME=glpi-agent
+LOG=/var/log/$NAME-cron.log
 
 exec >>$LOG 2>&1
 

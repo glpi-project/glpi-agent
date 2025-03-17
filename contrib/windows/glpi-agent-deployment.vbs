@@ -2,7 +2,7 @@
 '  ------------------------------------------------------------------------
 '  glpi-agent-deployment.vbs
 '  Copyright (C) 2010-2017 by the FusionInventory Development Team.
-'  Copyright (C) 2021 by the Teclib SAS
+'  Copyright (C) 2021-2024 by the Teclib SAS
 '  ------------------------------------------------------------------------
 '
 '  LICENSE
@@ -28,14 +28,15 @@
 '  ------------------------------------------------------------------------
 '
 '  @package   GLPI Agent
-'  @file      .\contrib\windows\glpi-agent-deployment.vbs
+'  @version   1.13
+'  @file      contrib/windows/glpi-agent-deployment.vbs
 '  @author(s) Benjamin Accary <meldrone@orange.fr>
 '             Christophe Pujol <chpujol@gmail.com>
 '             Marc Caissial <marc.caissial@zenitique.fr>
 '             Tomas Abad <tabadgp@gmail.com>
 '             Guillaume Bougard <gbougard@teclib.com>
 '  @copyright Copyright (c) 2010-2017 FusionInventory Team
-'             Copyright (c) 2021 Teclib SAS
+'             Copyright (c) 2021-2024 Teclib SAS
 '  @license   GNU GPL version 2 or (at your option) any later version
 '             http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html
 '  @link      http://www.glpi-project.org/
@@ -64,12 +65,12 @@ Dim Setup, SetupArchitecture, SetupLocation, SetupNightlyLocation, SetupOptions,
 ' SetupVersion
 '    Setup version with the pattern <major>.<minor>.<release>[-<package>]
 '
-SetupVersion = "1.6"
+SetupVersion = "1.13"
 
 ' When using a nightly built version, uncomment the following SetupVersion definition line
 ' replacing gitABCDEFGH with the most recent git revision found on the nightly builds site
 ' In that case, SetupNightlyLocation will be selected as location in place of SetupLocation
-'SetupVersion = "1.7-gitABCDEFGH"
+'SetupVersion = "1.14-gitABCDEFGH"
 
 ' SetupLocation
 '    Depending on your needs or your environment, you can use either a HTTP or
@@ -327,6 +328,24 @@ Function isNightly(strng)
    Exit Function
 End Function
 
+' Major version 1 and Minor version greater than 7 doesn't support x86
+Function doesNotSupportX86(strng)
+   Dim regEx, matches, major, minor
+   Set regEx = New RegExp
+   regEx.Global = true
+   regEx.Pattern = "^([0-9]+)\.([0-9]+)"
+   Set matches = regEx.Execute(strng)
+   doesNotSupportX86 = False
+   If matches.count > 0 Then
+      major = matches(0).SubMatches(0)
+      minor = matches(0).SubMatches(1)
+      If major = 1 And minor > 7 Then
+         doesNotSupportX86 = True
+      End If
+   End If
+   Exit Function
+End Function
+
 Function IsInstallationNeeded(strSetupVersion, strSetupArchitecture, strSystemArchitecture)
    Dim strCurrentSetupVersion
    ' Compare the current version, whether it exists, with strSetupVersion
@@ -574,6 +593,14 @@ If (strSystemArchitecture = "x86") And (SetupArchitecture = "x64") Then
    ShowMessage("It isn't possible to execute a 64-bit setup on a 32-bit operative system.")
    ShowMessage("Deployment aborted!")
    WScript.Quit 3
+End If
+
+' Check if we are trying to installed version not supporting x86
+If (SetupArchitecture = "x86") And doesNotSupportX86(SetupVersion) Then
+   ' Support of 32-bit operative system has since discontinued since 1.8
+   ShowMessage("GLPI-Agent v" & SetupVersion & " doesn't support installation on a 32-bit operative system.")
+   ShowMessage("Deployment aborted!")
+   WScript.Quit 4
 End If
 
 bInstall = False

@@ -136,7 +136,7 @@ sub install {
         $self->_prepareDistro();
         my $command = $self->{_yum} ? "yum -y install @rpms" :
             $self->{_zypper} ? "zypper -n install -y --allow-unsigned-rpm @rpms" :
-            $self->{_dnf} ? "dnf -y install @rpms" : "";
+            $self->{_dnf} ? "dnf -y install --setopt=localpkg_gpgcheck=0 @rpms" : "";
         die "Unsupported rpm based platform\n" unless $command;
         my $err = $self->system($command);
         if ($? >> 8 && $self->{_yum} && $self->downgradeAllowed()) {

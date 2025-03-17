@@ -62,6 +62,18 @@ sub init {
 
     return unless $self->read_yaml();
 
+    # Update networktask_save folder is running as a service and folder set to '.'
+    my $yaml_config = $self->yaml('configuration') || {};
+    if (empty($yaml_config->{'networktask_save'}) || $yaml_config->{'networktask_save'} eq '.') {
+        my $agent = $self->{toolbox}->{server}->{agent};
+        if (($OSNAME eq 'MSWin32' && ref($agent) eq 'GLPI::Agent::Daemon::Win32') || getppid() == 1) {
+            # We are running as a service and we must fix networktask_save to vardir
+            $yaml_config->{'networktask_save'} = $agent->{vardir};
+            $self->need_save("configuration");
+            $self->write_yaml();
+        }
+    }
+
     $self->_load_jobs();
 }
 
@@ -73,7 +85,7 @@ sub yaml_config_specs {
             category    => "Navigation bar",
             type        => $self->isyes($yaml_config->{'updating_support'}) ? "bool" : "readonly",
             value       => $self->yesno($yaml_config->{'inventory_navbar'} || 1),
-            text        => "Show Inventory in navigation bar",
+            text        => "Show Inventory tasks in navigation bar",
             navbar      => "Inventory tasks",
             link        => $self->index(),
             icon        => "subtask",
@@ -85,6 +97,7 @@ sub yaml_config_specs {
             value       => $yaml_config->{'threads_options'} || '1|5|10|20|40',
             text        => "Network task threads number options",
             tips        => "threads number options separated by pipes,\nfirst value used as default threads\n(default=1|5|10|20|40)",
+            only_if     => $self->isyes($yaml_config->{'inventory_navbar'}),
         },
         timeout_options  => {
             category    => "Network task",
@@ -92,13 +105,15 @@ sub yaml_config_specs {
             value       => $yaml_config->{'timeout_options'} || '1|2|5|10|30|60',
             text        => "Network task timeout options",
             tips        => "Timeout options separated by pipes,\nfirst value used as default timeout\n(default=1|2|5|10|30|60)",
+            only_if     => $self->isyes($yaml_config->{'inventory_navbar'}),
         },
         networktask_save  => {
             category    => "Network task",
             type        => $self->isyes($yaml_config->{'updating_support'}) ? "text" : "readonly",
             value       => $yaml_config->{'networktask_save'} || '.',
-            text        => "Base folder to save XML",
+            text        => "Base folder to save inventory files",
             tips        => "Base folder may be relative to the agent folder",
+            only_if     => $self->isyes($yaml_config->{'inventory_navbar'}),
         },
         inventory_tags  => {
             category    => "Inventories",
@@ -106,6 +121,7 @@ sub yaml_config_specs {
             value       => $yaml_config->{'inventory_tags'} || '',
             text        => "List of tags",
             tips        => "Tags separated by commas\nYou can use it to separate inventory files by site",
+            only_if     => $self->isyes($yaml_config->{'inventory_navbar'}),
         },
     };
 }
@@ -224,10 +240,13 @@ sub update_template_hash {
         next if $target->isType('listener');
         my $id = $target->id()
             or next;
-        $hash->{targets}->{$id} = [ $target->getType(), $target->getName() ];
+        $hash->{targets}->{$id} = [ $target->getType(), $target->isType('local') ? $target->getFullPath() : $target->getName() ];
     }
     # Default target when creating a new task
     $hash->{default_target} = $hash->{targets}->{server0} ? 'server0' : '';
+
+    # Default folder: '.' means "Agent Folder"
+    $hash->{default_local} = $yaml_config->{networktask_save} // '.';
 
     # Set running task
     $hash->{outputid} = $self->{taskid} || '';
@@ -512,9 +531,10 @@ sub _submit_update {
         my $rundate = $self->_get_next_run_date($edit, $job, $job->{last_run_date});
         $event->rundate($rundate);
         $job->{next_run_date} = $rundate;
-        # Re-schedule event
+        # Re-schedule event if enabled
         $self->{toolbox}->{target}->delEvent($event);
-        $self->{toolbox}->{target}->addEvent($event);
+        $self->{toolbox}->{target}->addEvent($event)
+            if $self->isyes($job->{enabled});
 
         # Reset edited entry
         $edit = $newname;
@@ -651,7 +671,12 @@ sub _submit_runnow {
 
         # We need to reschedule event if enabled
         if ($self->isyes($job->{enabled})) {
-            my $event = $self->{toolbox}->{target}->getEvent($name);
+            my %event = (
+                job     => 1,
+                name    => $name,
+                task    => $job->{type} eq 'local' ? "inventory" : "netscan",
+            );
+            my $event = GLPI::Agent::Event->new(%event);
             # To find next run date, we need to reset not_before time by setting it to now/last_run_date
             my $rundate = $self->_get_next_run_date($name, $job, $job->{last_run_date});
             $event->rundate($rundate);
@@ -666,32 +691,26 @@ sub _submit_runnow {
 sub event_logger {
     my ($self) = @_;
 
-    # We always set verbosity higher to debug2 so we can analyse any debug level
-    # messages.
-    my $logger = GLPI::Agent::Logger->new( verbosity => 2 );
+    my $logger = GLPI::Agent::Logger->new();
 
-    # Hack logger to add ourself as backend so our addMessage callback is always
-    # called on logging message in any thread
-    push @{$logger->{backends}}, $self;
+    # Setup logger with callback to collect logger messages at all level
+    my $agent = $self->{toolbox}->{server}->{agent};
+    my $taskid = $self->{taskid};
+    my $messages = $self->{tasks}->{$taskid}->{messages};
+
+    $logger->register_event_cb(sub {
+        my (%params) = @_;
+
+        return unless $params{level} && $params{message};
+
+        if ($agent->forked()) {
+            $agent->forked_process_event("LOGGER,$taskid,[$params{level}] $params{message}");
+        } else {
+            push @{$messages}, "[$params{level}] $params{message}";
+        }
+    });
 
     return $logger;
-}
-
-# To use ourself as a logger backend in a multi-threaded process
-sub addMessage {
-    my ($self, %params) = @_;
-
-    return unless $params{level} && $params{message};
-
-    my $agent = $self->{toolbox}->{server}->{agent};
-
-    my $taskid = $self->{taskid};
-    if ($agent->forked()) {
-        $agent->forked_process_event("LOGGER,$taskid,[$params{level}] $params{message}");
-    } else {
-        my $messages = $self->{tasks}->{$taskid}->{messages};
-        push @{$messages}, "[$params{level}] $params{message}";
-    }
 }
 
 sub netscan {
@@ -842,7 +861,7 @@ sub netscan {
 
     # If not using an agent target, create a local target and update it to run now
     unless ($target) {
-        my $path = $yaml_config->{networktask_save} // '.';
+        my $path = $yaml_config->{networktask_save} || '.';
 
         # Make sure path exists as folder
         mkdir $path unless -d $path;
@@ -854,15 +873,20 @@ sub netscan {
             basevardir => $agent->{vardir},
             path       => $path
         );
+
+        # When running as a service we need to use vardir as default local folder
+        $target->setFullPath($agent->{vardir})
+            if $path eq '.' && (($OSNAME eq 'MSWin32' && ref($agent) eq 'GLPI::Agent::Daemon::Win32') || getppid() == 1);
     }
 
     # Create an NetDiscovery task
     my $netdisco = GLPI::Agent::Task::NetDiscovery->new(
-        config       => $agent->{config},
-        datadir      => $agent->{datadir},
-        logger       => $logger,
-        target       => $target,
-        deviceid     => $agent->{deviceid},
+        config      => $agent->{config},
+        datadir     => $agent->{datadir},
+        logger      => $logger,
+        target      => $target,
+        deviceid    => $agent->{deviceid},
+        agentid     => $agent->{agentid},
     );
 
     # Compute ranges
@@ -965,8 +989,7 @@ sub _run_local {
 
     # If not using an agent target, create a local target and update it to run now
     unless ($target) {
-        my $path = !$yaml_config->{networktask_save} || $yaml_config->{networktask_save} eq '.' ?
-            "inventory" : $yaml_config->{networktask_save}."/inventory";
+        my $path = $yaml_config->{networktask_save} || '.';
 
         # Make sure path exists as folder
         mkdir $path unless -d $path;
@@ -978,6 +1001,10 @@ sub _run_local {
             basevardir => $agent->{vardir},
             path       => $path
         );
+
+        # When running as a service we need to use vardir as default local folder
+        $target->setFullPath($agent->{vardir})
+            if $path eq '.' && (($OSNAME eq 'MSWin32' && ref($agent) eq 'GLPI::Agent::Daemon::Win32') || getppid() == 1);
     }
 
     # Create an Inventory task
@@ -1024,8 +1051,9 @@ sub events_cb {
             $jobs = $self->yaml(jobs);
         }
         # Time to check if we need to run a job
-        my $event = $self->{toolbox}->{target}->getEvent();
+        my $event = $self->{toolbox}->{target}->nextEvent();
         return 0 unless $event && $event->job;
+        $self->{toolbox}->{target}->delEvent($event);
         my $name = $event->name;
         my $job  = $jobs->{$name};
         if ($job && $job->{type} && $self->isyes($job->{enabled})) {

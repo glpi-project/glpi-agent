@@ -1,0 +1,40 @@
+
+Hardware Port: USB 10/100/1000 LAN
+Device: en35
+Ethernet Address: 98:00:43:0f:00:03
+
+Hardware Port: Wi-Fi
+Device: en0
+Ethernet Address: f8:00:c2:05:00:01
+
+Hardware Port: iPhone USB
+Device: en37
+Ethernet Address: d6:00:da:5b:00:05
+
+Hardware Port: Bluetooth PAN
+Device: en6
+Ethernet Address: f8:00:c2:17:00:06
+
+Hardware Port: Thunderbolt 1
+Device: en1
+Ethernet Address: 82:00:1c:a5:00:02
+
+Hardware Port: Thunderbolt 2
+Device: en2
+Ethernet Address: 82:00:1c:a5:00:03
+
+Hardware Port: Thunderbolt 3
+Device: en3
+Ethernet Address: 82:00:1c:a5:00:00
+
+Hardware Port: Thunderbolt 4
+Device: en4
+Ethernet Address: 82:00:1c:a5:00:01 
+
+Hardware Port: Thunderbolt Bridge
+Device: bridge0
+Ethernet Address: 82:00:1c:a5:00:03
+
+VLAN Configurations
+===================
+

@@ -43,6 +43,13 @@ sub currentStep {
     return $self->{_currentStep} = $step eq 'end' ? '' : $step;
 }
 
+sub requiresSoftwaresInventory {
+    my ($self) = @_;
+
+    return ref($self->{requires}) eq 'HASH' &&
+        $self->{requires}->{'softwares-inventory'} ? 1 : 0;
+}
+
 sub setStatus {
     my ($self, %params) = @_;
 

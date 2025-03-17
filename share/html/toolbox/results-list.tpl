@@ -134,8 +134,8 @@
     }}
     </div>
     <hr/>
-    <button class='big-button' type='submit' name='submit/export' alt='{_"Download results"}' title='{_"Results will be filtered by tag if set"}'><i class='primary ti ti-download'></i>{_"Download results"}</button>
-    <button class='big-button' type='submit' name='submit/full-export' alt='{_"Download full scan datas"}' title='{_"No filtering by tag will be applied"}'><i class='primary ti ti-world-download'></i>{_"Download full scan datas"}</button>
+    <button class='big-button' type='submit' name='submit/export' value='1' alt='{_"Download results"}' title='{_"Results will be filtered by tag if set"}'><i class='primary ti ti-download'></i>{_"Download results"}</button>
+    <button class='big-button' type='submit' name='submit/full-export' value='1' alt='{_"Download full scan datas"}' title='{_"No filtering by tag will be applied"}'><i class='primary ti ti-world-download'></i>{_"Download full scan datas"}</button>
   </form>
   <script>
   function toggle_all(from) \{

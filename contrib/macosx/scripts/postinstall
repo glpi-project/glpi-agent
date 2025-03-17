@@ -40,7 +40,7 @@ if [ "$DEST" != "/" ]; then
 fi
 
 echo "Only Tiger or newer OS supported, using LaunchDaemons plists"
-TMPPLIST="$(touch org.glpi-project.glpi-agent.plist && echo org.glpi-project.glpi-agent.plist || mktemp -t org.glpi-project.glpi-agent)"
+TMPPLIST="$(touch com.teclib.glpi-agent.plist && echo com.teclib.glpi-agent.plist || mktemp -t com.teclib.glpi-agent)"
 TPATH="/Library/LaunchDaemons"
 cat >"$TMPPLIST" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
@@ -48,7 +48,7 @@ cat >"$TMPPLIST" <<PLIST
 <plist version="1.0">
 <dict>
 	<key>Label</key>
-	<string>org.glpi-project.glpi-agent</string>
+	<string>com.teclib.glpi-agent</string>
 	<key>ProgramArguments</key>
 	<array>
 		<string>$INSTALL_PATH/bin/glpi-agent</string>
@@ -65,17 +65,17 @@ cat >"$TMPPLIST" <<PLIST
 </plist>
 PLIST
 if [ -s "$TMPPLIST" ]; then
-    sudo rm -f $TPATH/org.glpi-project.glpi-agent.plist
-    sudo cp -f "$TMPPLIST" $TPATH/org.glpi-project.glpi-agent.plist
-    sudo chown root:wheel $TPATH/org.glpi-project.glpi-agent.plist
-    sudo chmod 644 $TPATH/org.glpi-project.glpi-agent.plist
+    sudo rm -f $TPATH/com.teclib.glpi-agent.plist
+    sudo cp -f "$TMPPLIST" $TPATH/com.teclib.glpi-agent.plist
+    sudo chown root:wheel $TPATH/com.teclib.glpi-agent.plist
+    sudo chmod 644 $TPATH/com.teclib.glpi-agent.plist
     rm -f "$TMPPLIST"
 
     echo 'Loading Service'
-    sudo launchctl load $TPATH/org.glpi-project.glpi-agent.plist
+    sudo launchctl load $TPATH/com.teclib.glpi-agent.plist
 
     echo 'Starting Service'
-    sudo launchctl start org.glpi-project.glpi-agent
+    sudo launchctl start com.teclib.glpi-agent
 else
     echo "Failed to create service"
 fi

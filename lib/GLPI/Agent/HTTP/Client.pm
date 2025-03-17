@@ -5,18 +5,26 @@ use warnings;
 
 use English qw(-no_match_vars);
 use URI;
+use HTTP::Request;
 use HTTP::Status;
 use LWP::UserAgent;
 use UNIVERSAL::require;
+use Digest::SHA qw(sha256_hex);
+use Cpanel::JSON::XS;
 
 use GLPI::Agent;
 use GLPI::Agent::Logger;
 use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Expiration;
+use GLPI::Agent::Protocol::Message;
 
 use constant    _log_prefix => "[http client] ";
 
 # Keep SSL_ca for storing read local certificate store at the class level
 my $_SSL_ca;
+
+# Keep Oauth2 access token
+my $oauth2;
 
 sub new {
     my ($class, %params) = @_;
@@ -35,10 +43,17 @@ sub new {
     die "non-existing client certificate file $ssl_cert_file"
         if $ssl_cert_file && ! -f $ssl_cert_file;
 
+    # We should still keep SSL certs cache if running in long running netdiscovery
+    # or netinventory task with expiration set in a dedicated thread
+    $_SSL_ca->{_expiration} = getExpirationTime()
+        if $_SSL_ca && $_SSL_ca->{_expiration} && getExpirationTime();
+
     my $self = {
         logger          => $params{logger} || GLPI::Agent::Logger->new(),
         user            => $params{user}     || $config->{'user'},
         password        => $params{password} || $config->{'password'},
+        oauth_client    => $params{oauth_client} || $config->{'oauth-client-id'},
+        oauth_secret    => $params{oauth_secret} || $config->{'oauth-client-secret'},
         ssl_set         => 0,
         no_ssl_check    => $params{no_ssl_check} || $config->{'no-ssl-check'},
         no_compress     => $params{no_compress}  || $config->{'no-compression'},
@@ -46,6 +61,7 @@ sub new {
         ca_cert_file    => $ca_cert_file,
         ssl_cert_file   => $ssl_cert_file,
         ssl_fingerprint => $params{ssl_fingerprint} || $config->{'ssl-fingerprint'},
+        ssl_keystore    => $params{ssl_keystore} || $config->{'ssl-keystore'},
         _vardir         => $config->{'vardir'},
     };
     bless $self, $class;
@@ -61,8 +77,9 @@ sub new {
 
     my $proxy = $params{proxy} || $config->{'proxy'};
     if ($proxy) {
-        $self->{ua}->proxy(['http', 'https'], $proxy);
-    }  else {
+        $self->{ua}->proxy(['http', 'https'], $proxy)
+            unless $proxy eq 'none';
+    } else {
         $self->{ua}->env_proxy();
     }
 
@@ -88,6 +105,13 @@ sub new {
     );
 
     return $self;
+}
+
+sub timeout {
+    my ($self, $timeout) = @_;
+
+    # Get/set LWP::UserAgent timeout as required
+    return $self->{ua}->timeout($timeout);
 }
 
 sub request {
@@ -120,6 +144,31 @@ sub request {
             _log_prefix .
             "Using '".$proxy_uri->as_string()."' as proxy for $scheme protocol"
         );
+    }
+
+    # Try to set Bearer header if oauth2 access token has still been requested
+    if ($oauth2) {
+        my $key = $url->as_string;
+        if ($oauth2->{$key}) {
+            # Update access token using current url clone if expired
+            $self->_getOauthAccessToken($url->clone())
+                if time >= $oauth2->{$key}->{expires};
+
+            if ($oauth2->{$key}) {
+                # Add token bearer as Authorization header
+                $request->header(Authorization => "Bearer " . $oauth2->{$key}->{token});
+
+                $logger->debug(
+                    _log_prefix .
+                    "submitting request with access token authorization"
+                );
+            } else {
+                $logger->debug(
+                    _log_prefix .
+                    "no more oauth access token authorization available"
+                );
+            }
+        }
     }
 
     my $result = HTTP::Response->new( 500 );
@@ -166,7 +215,47 @@ sub request {
     if (!$result->is_success()) {
         # authentication required
         if ($result->code() == 401) {
-            if ($self->{user} && $self->{password}) {
+            if ($self->{oauth_client} && $self->{oauth_secret}) {
+                # Get access token using current url clone
+                $self->_getOauthAccessToken($url->clone());
+
+                my $oauth_token = $oauth2->{$url->as_string};
+                if ($oauth_token) {
+                    # Add token bearer as Authorization header
+                    $request->header(Authorization => "Bearer " . $oauth_token->{token});
+
+                    $logger->debug(
+                        _log_prefix .
+                        "authentication required, submitting request with access token authorization"
+                    );
+
+                    # replay request
+                    eval {
+                        if ($OSNAME eq 'MSWin32' && $scheme eq 'https') {
+                            alarm $self->{ua}->{timeout};
+                        }
+                        $result = $self->{ua}->request($request, $file);
+                        alarm 0;
+                    };
+                    if (!$result->is_success()) {
+                        my $error = $result->code() == 401 ?
+                            "authentication required, wrong access token" :
+                            "authentication required, error status: " . $result->status_line();
+                        my $message = $result->content();
+                        if (length($message)) {
+                            my $contentType = $result->header('content-type');
+                            $message = $self->uncompress($message, $contentType) if $contentType && $contentType =~ /x-compress/;
+                            if ($message && $message =~ /^{/) {
+                                my $content = GLPI::Agent::Protocol::Message->new(message => $message);
+                                if ($content->status eq 'error' && $content->get('message')) {
+                                    $error = $content->get('message');
+                                }
+                            }
+                        }
+                        $logger->error(_log_prefix . $error);
+                    }
+                }
+            } elsif ($self->{user} && $self->{password}) {
                 $logger->debug(
                     _log_prefix .
                     "authentication required, submitting credentials"
@@ -217,11 +306,30 @@ sub request {
                     );
                 }
             } else {
+                my $error = "authentication required, no credentials available";
+
+                # Try to extract error message if given
+                if ($result->header('content-length')) {
+                    my $contentType = $result->header('content-type');
+                    my $message = $result->content();
+                    $message = $self->uncompress($message, $contentType) if $contentType && $contentType =~ /x-compress/;
+                    if ($message && $message =~ /^{/) {
+                        my $content = GLPI::Agent::Protocol::Message->new(message => $message);
+                        if ($content->status eq 'error' && $content->get('message')) {
+                            $error = $content->get('message');
+                        }
+                    } elsif ($message && $message =~ /^</) {
+                        if (GLPI::Agent::XML->require()) {
+                            my $xml = GLPI::Agent::XML->new(string => $message);
+                            my $tree = $xml->dump_as_hash();
+                            ($error) = grep { $_ } split("\n", $tree->{REPLY}->{ERROR})
+                                if $tree && ref($tree->{REPLY}) eq 'HASH' && exists($tree->{REPLY}->{ERROR});
+                        }
+                    }
+                }
+
                 # abort
-                $logger->error(
-                    _log_prefix .
-                    "authentication required, no credentials available"
-                );
+                $logger->error(_log_prefix . $error);
             }
 
         } elsif ($result->code() == 407) {
@@ -278,6 +386,95 @@ sub request {
     return $result;
 }
 
+sub _getOauthAccessToken {
+    my ($self, $url) = @_;
+
+    if (empty($self->{oauth_client}) || empty($self->{oauth_secret})) {
+        $self->{logger}->error(
+            _log_prefix .
+            "oauth access token missing"
+        );
+        return;
+    }
+
+    my $key = $url->as_string;
+    # Cleanup eventually still stored token
+    delete $oauth2->{$key};
+
+    # Guess access token api path from url
+    my $path = $url->path();
+    $path = $1 if $path =~ /^(.*)(marketplace|plugins).*$/;
+    $path =~ s{/+$}{};
+    $path .= '/' unless empty($path);
+    $path .= 'api.php/token';
+    $url->path($path);
+
+    $self->{logger}->debug(
+        _log_prefix .
+        "authentication required, querying oauth access token on ".$url->as_string
+    );
+
+    my $request = HTTP::Request->new(POST => $url);
+    my $json = GLPI::Agent::Protocol::Message->new(
+        message => {
+            grant_type      => "client_credentials",
+            client_id       => $self->{oauth_client},
+            client_secret   => $self->{oauth_secret},
+            scope           => "inventory",
+        }
+    );
+    my $content = $json->getRawContent();
+    $request->header('Content-Type' => 'application/json');
+    $request->header('Content-Length' => length($content));
+    $request->content($content);
+
+    # Don't log secrets
+    my $sha256 = sha256_hex($content);
+    $content =~ s/client_id":"[^"]*"/client_id":"CLIENT_ID"/;
+    $content =~ s/client_secret":"[^"]*"/client_secret":"CLIENT_SECRET"/;
+    $self->{logger}->debug2(_log_prefix . "sending message: (real content sha256sum: $sha256)\n$content");
+
+    # play token request
+    my $result;
+    eval {
+        if ($OSNAME eq 'MSWin32' && $url->scheme() eq 'https') {
+            alarm $self->{ua}->{timeout};
+        }
+        $result = $self->{ua}->request($request);
+        alarm 0;
+    };
+
+    unless ($result) {
+        $self->{logger}->error(_log_prefix . "Failed to request oauth access token: no response");
+        return;
+    }
+
+    my $message = $result->content();
+    my $contentType = $result->header('content-type');
+    $self->{logger}->debug2(_log_prefix . "received message: ($contentType)\n$message")
+        if length($message) && $contentType;
+
+    if ($result->is_success()) {
+        if (length($message) && $contentType =~ m{application/json}i) {
+            my $content = GLPI::Agent::Protocol::Message->new(message => $message);
+            my $token = $content->converted();
+            if ($token->{token_type} && $token->{token_type} eq 'Bearer' && !empty($token->{access_token})) {
+                $oauth2->{$key} = {
+                    token   => $token->{access_token},
+                    expires => time + ($token->{expires_in} && $token->{expires_in} =~ /^\d+$/ ? $token->{expires_in} : 60),
+                };
+                $self->{logger}->debug(_log_prefix . "Bearer oauth token received (expiration: $token->{expires_in}s)\n");
+            } else {
+                $self->{logger}->error(_log_prefix . "Unsupported token returned from oauth server");
+            }
+        } else {
+            $self->{logger}->error(_log_prefix . "Unsupported response returned from oauth server");
+        }
+    } else {
+        $self->{logger}->error(_log_prefix . "Failed to request oauth access token: ".$result->status_line());
+    }
+}
+
 sub _setSSLOptions {
     my ($self) = @_;
 
@@ -308,10 +505,7 @@ sub _setSSLOptions {
         }
 
         # Support keychain on Darwin and keystore on MSWin32
-        # But not if ca-cert-dir option is used
-        my $SSL_ca;
-        $SSL_ca = $self->_KeyChain_or_KeyStore_Export()
-            unless $self->{ca_cert_dir};
+        my $SSL_ca = $self->_KeyChain_or_KeyStore_Export();
 
         if ($LWP::VERSION >= 6) {
             $self->{ua}->ssl_opts(SSL_ca_file => $self->{ca_cert_file})
@@ -360,7 +554,11 @@ sub _setSSLOptions {
 sub _KeyChain_or_KeyStore_Export {
     my ($self) = @_;
 
+    # Only MacOSX and MSWin32 are supported
     return unless $OSNAME =~ /^darwin|MSWin32$/;
+
+    # But we don't need to extract anything if we still use an option to authenticate server certificate
+    return if $self->{ca_cert_file} || $self->{ca_cert_dir} || (ref($self->{ssl_fingerprint}) eq 'ARRAY' && @{$self->{ssl_fingerprint}});
 
     my $logger = $self->{logger};
     my $vardir = $self->{_vardir};
@@ -373,9 +571,18 @@ sub _KeyChain_or_KeyStore_Export {
         }
     }
 
+    # Support --ssl-keystore=none option
+    return if $self->{ssl_keystore} && $self->{ssl_keystore} =~ /^none$/i;
+
     # Read certificates are cached for one hour after the service is started
     return $_SSL_ca->{_certs}
         if $_SSL_ca->{_expiration} && time < $_SSL_ca->{_expiration};
+
+    IO::Socket::SSL::Utils->require();
+
+    # Free stored certificates
+    IO::Socket::SSL::Utils::CERT_free(@{$_SSL_ca->{_certs}})
+        if ref($_SSL_ca->{_certs}) eq 'ARRAY';
 
     $logger->debug(
         _log_prefix .
@@ -383,7 +590,7 @@ sub _KeyChain_or_KeyStore_Export {
     );
 
     my @certs = ();
-    IO::Socket::SSL::Utils->require();
+    my $loadMozillaCA = 1;
 
     File::Temp->require();
     if ($EVAL_ERROR) {
@@ -398,13 +605,52 @@ sub _KeyChain_or_KeyStore_Export {
             SUFFIX      => ".pem",
         );
         my $file = $tmpfile->filename;
+        my $command = "security find-certificate -a -p";
+
+        # Support --ssl-keystore=system-ssl-ca option on MacOSX
+        if ($self->{ssl_keystore} && $self->{ssl_keystore} =~ /^system-ssl-ca$/i) {
+            $command .= " /System/Library/Keychains/SystemRootCertificates.keychain";
+            # In that case, we don't need to load Mozilla::CA
+            $loadMozillaCA = 0;
+        }
+
         getAllLines(
-            command => "security find-certificate -a -p > '$file'",
-            logger  => $logger
+             command => "$command > '$file'",
+             logger  => $logger
         );
         @certs = IO::Socket::SSL::Utils::PEM_file2certs($file)
             if -s $file;
     } else {
+        my @certCommands;
+        if ($self->{ssl_keystore})  {
+            foreach my $case (split(/,+/, $self->{ssl_keystore})) {
+                $case = trimWhitespace($case);
+                if ($case =~ /^(Service|Enterprise|GroupPolicy|User)?-?(My|CA|Root)$/) {
+                    my $store = $2 =~ /CA/i ? "CA" : "Root";
+                    my $option = $1 ? " -$1" : "";
+                    push @certCommands, "certutil -Silent -Split$option -Store $store";
+                } else {
+                    $logger->debug("Unsupported ssl-keystore option definition: $case");
+                }
+            }
+        } else {
+            @certCommands = (
+                "certutil -Silent -Split -Store CA",
+                "certutil -Silent -Split -Store Root",
+                "certutil -Silent -Split -Enterprise -Store CA",
+                "certutil -Silent -Split -Enterprise -Store Root",
+                "certutil -Silent -Split -GroupPolicy -Store CA",
+                "certutil -Silent -Split -GroupPolicy -Store Root",
+                "certutil -Silent -Split -User -Store CA",
+                "certutil -Silent -Split -User -Store Root"
+            );
+        }
+
+        unless (@certCommands) {
+            $logger->debug("No keystore to export server certificates from");
+            return
+        }
+
         # Windows keystore support
         Cwd->require();
         my $cwd = Cwd::cwd();
@@ -421,44 +667,26 @@ sub _KeyChain_or_KeyStore_Export {
             $logger->debug2("Changing to '$certdir' temporary folder");
             chdir $certdir;
 
+            my @deletefolder;
+            foreach my $command (@certCommands) {
+                my ($kind, $store) = $command =~ /-Split( -\w+)? -Store (\w+)$/;
+                my $storeDirname = $kind && $kind =~ /^ -(\w+)$/ ? "$1-$store" : $store;
+                mkdir $storeDirname;
+                chdir $storeDirname;
+                getAllLines(
+                    command => $command,
+                    logger  => $logger
+                );
+                chdir "..";
+                push @deletefolder, $storeDirname;
+            }
+
             # Export certificates from keystore as crt files
-            getAllLines(
-                command => "certutil -Silent -Split -Store CA",
-                logger  => $logger
-            );
-            getAllLines(
-                command => "certutil -Silent -Split -Store Root",
-                logger  => $logger
-            );
-            getAllLines(
-                command => "certutil -Silent -Split -Enterprise -Store CA",
-                logger  => $logger
-            );
-            getAllLines(
-                command => "certutil -Silent -Split -Enterprise -Store Root",
-                logger  => $logger
-            );
-            getAllLines(
-                command => "certutil -Silent -Split -GroupPolicy -Store CA",
-                logger  => $logger
-            );
-            getAllLines(
-                command => "certutil -Silent -Split -GroupPolicy -Store Root",
-                logger  => $logger
-            );
-            getAllLines(
-                command => "certutil -Silent -Split -User -Store CA",
-                logger  => $logger
-            );
-            getAllLines(
-                command => "certutil -Silent -Split -User -Store Root",
-                logger  => $logger
-            );
 
             # Convert each crt file to base64 encoded cer file and concatenate in certchain file
             File::Glob->require();
-            foreach my $certfile (File::Glob::bsd_glob("$certdir/*")) {
-                if ($certfile =~ m{^$certdir/(.*\.crt)$}) {
+            foreach my $certfile (File::Glob::bsd_glob("$certdir/*/*")) {
+                if ($certfile =~ m{/([^/]+/[^/]+\.crt)$}) {
                     getAllLines(
                         command => "certutil -encode $1 temp.cer",
                         logger  => $logger
@@ -470,10 +698,20 @@ sub _KeyChain_or_KeyStore_Export {
                 unlink $certfile;
             }
 
+            # Cleanup temp subfolders
+            map { rmdir $_ } @deletefolder;
+
             # Get back to current dir
             $logger->debug2("Changing back to '$cwd' folder");
             chdir $cwd;
         }
+    }
+
+    # Always include default CA file from Mozilla::CA
+    if ($loadMozillaCA && Mozilla::CA->require()) {
+        my $cacert = Mozilla::CA::SSL_ca_file();
+        push @certs, IO::Socket::SSL::Utils::PEM_file2certs($cacert)
+            if -e $cacert;
     }
 
     # Update class level datas
@@ -545,6 +783,7 @@ sub _compressGzip {
 sub _uncompressGzip {
     my ($self, $data) = @_;
 
+    File::Temp->require();
     my $in = File::Temp->new();
     print $in $data;
     close $in;
@@ -555,6 +794,12 @@ sub _uncompressGzip {
     );
 
     return $result;
+}
+
+sub END {
+    # Free eventually stored certificates
+    IO::Socket::SSL::Utils::CERT_free(@{$_SSL_ca->{_certs}})
+        if ref($_SSL_ca->{_certs}) eq 'ARRAY';
 }
 
 1;

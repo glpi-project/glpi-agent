@@ -10,7 +10,7 @@ use GLPI::Agent::Tools::Unix;
 
 sub isEnabled {
     return 0 if OSNAME eq 'MSWin32';
-    return grep { $_->{CMD} =~ /^asm_pmon/ } getProcesses();
+    return scalar(getProcesses(filter => qr/^asm_pmon/, namespace => "same"));
 }
 
 sub doInventory {
@@ -20,7 +20,7 @@ sub doInventory {
     my $logger    = $params{logger};
 
     # First get asm_pmon process
-    my ($asm_pmon) = grep { $_->{CMD} =~ /^asm_pmon/ } getProcesses(logger => $logger)
+    my ($asm_pmon) = getProcesses(filter => qr/^asm_pmon/, namespace => "same", logger => $logger)
         or return;
 
     my $user  = $asm_pmon->{USER};
@@ -63,7 +63,7 @@ sub doInventory {
         $inventory->addEntry(
             section => 'DRIVES',
             entry   => {
-                LABEL   => $diskgroup->{NAME},
+                LABEL   => $name,
                 VOLUMN  => 'diskgroup',
                 TOTAL   => $diskgroup->{TOTAL},
                 FREE    => $diskgroup->{FREE}

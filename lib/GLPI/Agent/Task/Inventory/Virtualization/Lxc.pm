@@ -103,7 +103,7 @@ sub  _getVirtualMachine {
         }
 
         if ($key eq 'lxc.cgroup.memory.limit_in_bytes' || $key eq 'lxc.cgroup2.memory.max') {
-            $val .= "b" if $val =~ /[KMGTP]$/i;
+            $val .= $val =~ /[KMGTP]$/i ? "b" : $val =~ /^\d+$/ ? "bytes" : "";
             $container->{MEMORY} = getCanonicalSize($val, 1024);
         }
 

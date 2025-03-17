@@ -7,6 +7,7 @@ use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use English qw(-no_match_vars);
 
+use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Win32;
 
 use constant    category    => "printer";
@@ -121,6 +122,8 @@ sub _getUSBPrinterSerial {
     my $containerId = _getUSBContainerID($usbprint_key, $portName);
     if ($containerId) {
         my $serial = _getUSBSerialFromContainerID($usb_key, $containerId);
+        # Cleanup any zero at the beginning
+        $serial =~ s/^0+// unless empty($serial);
         return $serial if $serial;
     }
 

@@ -18,7 +18,7 @@ use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Hostname;
 use GLPI::Agent::Tools::UUID;
 
-our $VERSION = "1.2";
+our $VERSION = "1.5";
 
 my %api_match = (
     version             => \&_version,
@@ -287,6 +287,7 @@ sub yaml_config_specs {
             type        => "readonly",
             value       => $self->yesno($self->config('raw_edition')),
             text        => "Raw YAML edition authorization",
+            only_if     => $self->isyes($yaml_config->{'yaml_navbar'}),
         },
         yaml_navbar => {
             category    => "Navigation bar",
@@ -493,15 +494,15 @@ sub read_yaml {
 sub reload_yaml_on_change {
     my ($self) = @_;
 
-    return unless $self->{_yaml_loaded_time};
-
-    my $reload_needed = 0;
-    foreach my $file (keys(%{$self->{_yaml_loaded_time}})) {
-        my $mtime = stat($file)->mtime;
-        if ($mtime > $self->{_yaml_loaded_time}->{$file}) {
-            $reload_needed++;
-            $self->debug("Reloading YAML files on $file update");
-            last;
+    my $reload_needed = $self->{_yaml_loaded_time} ? 0 : 1;
+    unless ($reload_needed) {
+        foreach my $file (keys(%{$self->{_yaml_loaded_time}})) {
+            my $mtime = stat($file)->mtime;
+            if ($mtime > $self->{_yaml_loaded_time}->{$file}) {
+                $reload_needed++;
+                $self->debug("Reloading YAML files on $file update");
+                last;
+            }
         }
     }
 
@@ -823,7 +824,8 @@ sub _index {
         foreach my $config_specs (@config_specs) {
             foreach my $key (keys(%{$config_specs})) {
                 my $category = delete $config_specs->{$key}->{category};
-                $hash->{configuration_specs}->{$category}->{$key} = $config_specs->{$key};
+                $hash->{configuration_specs}->{$category}->{$key} = $config_specs->{$key}
+                    if !exists($config_specs->{$key}->{only_if}) || $config_specs->{$key}->{only_if};
             }
         }
         $hash->{title} = "ToolBox plugin Configuration";

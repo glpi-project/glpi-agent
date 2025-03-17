@@ -5,6 +5,7 @@ use warnings;
 
 use parent 'GLPI::Agent::Task::Inventory';
 
+use English qw(-no_match_vars);
 use Parallel::ForkManager;
 
 use GLPI::Agent::Tools;
@@ -18,6 +19,9 @@ sub isEnabled {
         $self->{logger}->debug("Remote inventory task execution disabled: no supported target");
         return 0;
     }
+
+    # Always enable task maintenance event
+    return 1 if $self->event && $self->event->maintenance;
 
     # Always enable remoteinventory task if remote option is set
     return 1 if $self->{config}->{remote};
@@ -41,6 +45,29 @@ sub isEnabled {
 sub run {
     my ($self, %params) = @_;
 
+    # Reset event checking if this is a maintenance event
+    my $event = $self->resetEvent();
+    if ($event && $event->maintenance && $event->name) {
+        my $name = $event->name;
+        my $targetid = $self->{target}->id;
+        $self->{logger}->debug("Inventory task $name event for $targetid target");
+        my $remoteinv = GLPI::Agent::Inventory->new(
+            statedir => $self->{target}->getStorage()->getDirectory(),
+            logger   => $self->{logger},
+            itemtype => empty($self->{config}->{'itemtype'}) ? "Computer" : $self->{config}->{'itemtype'},
+        );
+        my $continue = $remoteinv->canCleanupOldRemoteStateFile();
+        if ($continue) {
+            my $nextEvent = $self->newEvent();
+            $self->{logger}->debug("Planning another $name event for $targetid target in ".$nextEvent->delay()."s");
+            $self->resetEvent($nextEvent);
+        } else {
+            # Don't restart event if datastore has been fully cleaned up
+            $self->{logger}->debug("No need to plan another $name event for $targetid target");
+        }
+        return;
+    }
+
     my $remotes = GLPI::Agent::Task::RemoteInventory::Remotes->new(
         config  => $self->{config},
         storage => $self->{target}->getStorage(),
@@ -48,6 +75,12 @@ sub run {
     );
 
     my $worker_count = $remotes->count() > 1 ? $self->{config}->{'remote-workers'} : 0;
+
+    # On windows, worker_count should not be upper than 60 due to a perl limitation
+    if ($OSNAME eq 'MSWin32' && $worker_count > 60) {
+        $self->{logger}->info("Limiting workers count from $worker_count to 60 on MSWin32");
+        $worker_count = 60;
+    }
 
     my $start = time;
 
@@ -123,6 +156,18 @@ sub run {
 
     my $timing = time - $start;
     $self->{logger}->debug("Remote inventory task run in $timing seconds");
+}
+
+sub newEvent {
+    my ($self) = @_;
+
+    return GLPI::Agent::Event->new(
+        name        => "remoteinventory maintenance",
+        task        => "remoteinventory",
+        maintenance => "yes",
+        target      => $self->{target}->id(),
+        delay       => 3600,
+    );
 }
 
 1;

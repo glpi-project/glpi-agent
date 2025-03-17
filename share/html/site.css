@@ -39,6 +39,15 @@ a:hover {
   padding-bottom: 1.5em;
 }
 
+#force {
+  margin-top: 2.5em;
+}
+
 .section {
   text-align: left;
+}
+
+#tasks {
+  font-size: 12px;
+  margin-top: 0.5em;
 }

@@ -30,6 +30,8 @@
     <Property Id="UPGRADEDIR" Secure="yes">
       <RegistrySearch Id="InstallDir" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="InstallDir" Type="raw" />
     </Property>
+    <!-- Reuse InstallDir set in registry if possible -->
+    <SetProperty Id="INSTALLDIR" After="AppSearch" Value="[UPGRADEDIR]"><![CDATA[INSTALLDIR="" AND UPGRADEDIR<>"" AND CMDLINE_CONFIG<>"reset"]]></SetProperty>
 
     <Property Id="QUICKINSTALL" Secure="yes">
       <RegistrySearch Id="QuickInstall" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="QuickInstall" Type="raw" />
@@ -54,6 +56,18 @@
     </Property>
     <SetProperty Id="CMDLINE_AGENTMONITOR" Before="AppSearch" Value="[AGENTMONITOR]" />
     <SetProperty Id="AGENTMONITOR"         After="AppSearch"  Value="[CMDLINE_AGENTMONITOR]"><![CDATA[CMDLINE_AGENTMONITOR<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
+    <Property Id="AGENTMONITOR_NEWTICKET_URL" Secure="yes">
+      <RegistrySearch Id="NewTicket_URL" Root="HKLM" Key="[%agent_regpath%]\Monitor" Name="NewTicket-URL" Type="raw" />
+    </Property>
+    <SetProperty Id="CMDLINE_AGENTMONITOR_NEWTICKET_URL" Before="AppSearch" Value="[AGENTMONITOR_NEWTICKET_URL]" />
+    <SetProperty Id="AGENTMONITOR_NEWTICKET_URL"         After="AppSearch"  Value="[CMDLINE_AGENTMONITOR_NEWTICKET_URL]"><![CDATA[CMDLINE_AGENTMONITOR_NEWTICKET_URL<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
+    <Property Id="AGENTMONITOR_NEWTICKET_SCREENSHOT" Secure="yes">
+      <RegistrySearch Id="NewTicket_ScreenShot" Root="HKLM" Key="[%agent_regpath%]\Monitor" Name="NewTicket-Screenshot" Type="raw" />
+    </Property>
+    <SetProperty Id="CMDLINE_AGENTMONITOR_NEWTICKET_SCREENSHOT" Before="AppSearch" Value="[AGENTMONITOR_NEWTICKET_SCREENSHOT]" />
+    <SetProperty Id="AGENTMONITOR_NEWTICKET_SCREENSHOT"         After="AppSearch"  Value="[CMDLINE_AGENTMONITOR_NEWTICKET_SCREENSHOT]"><![CDATA[CMDLINE_AGENTMONITOR_NEWTICKET_SCREENSHOT<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="ADD_FIREWALL_EXCEPTION" Secure="yes">
       <RegistrySearch Id="AddFirewallException" Root="HKLM" Key="[%agent_regpath%]\Installer" Name="AddFirewallException" Type="raw" />
@@ -95,7 +109,9 @@
       <RegistrySearch Id="Local" Root="HKLM" Key="[%agent_regpath%]" Name="local" Type="raw"/>
     </Property>
     <SetProperty Id="CMDLINE_LOCAL"   Before="AppSearch" Value="[LOCAL]" />
-    <SetProperty Id="LOCAL"           After="AppSearch"  Value="[CMDLINE_LOCAL]"><![CDATA[CMDLINE_LOCAL<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+    <!-- Also compare to INSTALLDIR to fix wrongly set LOCAL in 1.7.2 -->
+    <SetProperty Id="LOCAL"           After="AppSearch"  Value="[CMDLINE_LOCAL]"><![CDATA[CMDLINE_LOCAL<>"" OR LOCAL=INSTALLDIR OR CMDLINE_CONFIG="reset"]]></SetProperty>
+    <SetDirectory Id="_LOCALDIR"      Before="CostFinalize" Value="[LOCAL]" />
 
     <Property Id="ADDITIONAL_CONTENT" Secure="yes">
       <RegistrySearch Id="AdditionalContent" Root="HKLM" Key="[%agent_regpath%]" Name="additional-content" Type="raw"/>
@@ -175,6 +191,12 @@
     <SetProperty Id="CMDLINE_TIMEOUT" Before="AppSearch" Value="[TIMEOUT]" />
     <SetProperty Id="TIMEOUT"         After="AppSearch"  Value="[CMDLINE_TIMEOUT]"><![CDATA[CMDLINE_TIMEOUT<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
+    <Property Id="SNMP_RETRIES" Secure="yes">
+      <RegistrySearch Id="SnmpRetries" Root="HKLM" Key="[%agent_regpath%]" Name="snmp-retries" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_SNMP_RETRIES" Before="AppSearch" Value="[SNMP_RETRIES]" />
+    <SetProperty Id="SNMP_RETRIES"         After="AppSearch"  Value="[CMDLINE_SNMP_RETRIES]"><![CDATA[CMDLINE_SNMP_RETRIES<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
     <Property Id="DELAYTIME" Secure="yes">
       <RegistrySearch Id="DelayTime" Root="HKLM" Key="[%agent_regpath%]" Name="delaytime" Type="raw"/>
     </Property>
@@ -211,6 +233,24 @@
     <SetProperty Id="CMDLINE_NO_CATEGORY" Before="AppSearch" Value="[NO_CATEGORY]" />
     <SetProperty Id="NO_CATEGORY"         After="AppSearch"  Value="[CMDLINE_NO_CATEGORY]"><![CDATA[CMDLINE_NO_CATEGORY<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
+    <Property Id="REQUIRED_CATEGORY" Secure="yes">
+      <RegistrySearch Id="RequiredCategory" Root="HKLM" Key="[%agent_regpath%]" Name="required-category" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_REQUIRED_CATEGORY" Before="AppSearch" Value="[REQUIRED_CATEGORY]" />
+    <SetProperty Id="REQUIRED_CATEGORY"         After="AppSearch"  Value="[CMDLINE_REQUIRED_CATEGORY]"><![CDATA[CMDLINE_REQUIRED_CATEGORY<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
+    <Property Id="ITEMTYPE" Secure="yes">
+      <RegistrySearch Id="ItemType" Root="HKLM" Key="[%agent_regpath%]" Name="itemtype" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_ITEMTYPE" Before="AppSearch" Value="[ITEMTYPE]" />
+    <SetProperty Id="ITEMTYPE"         After="AppSearch"  Value="[CMDLINE_ITEMTYPE]"><![CDATA[CMDLINE_ITEMTYPE<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
+    <Property Id="ESX_ITEMTYPE" Secure="yes">
+      <RegistrySearch Id="EsxItemType" Root="HKLM" Key="[%agent_regpath%]" Name="esx-itemtype" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_ESX_ITEMTYPE" Before="AppSearch" Value="[ESX_ITEMTYPE]" />
+    <SetProperty Id="ESX_ITEMTYPE"         After="AppSearch"  Value="[CMDLINE_ESX_ITEMTYPE]"><![CDATA[CMDLINE_ESX_ITEMTYPE<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
     <Property Id="CA_CERT_DIR" Secure="yes">
       <RegistrySearch Id="CACertDir" Root="HKLM" Key="[%agent_regpath%]" Name="ca-cert-dir" Type="raw"/>
     </Property>
@@ -228,6 +268,12 @@
     </Property>
     <SetProperty Id="CMDLINE_SSL_FINGERPRINT" Before="AppSearch" Value="[SSL_FINGERPRINT]" />
     <SetProperty Id="SSL_FINGERPRINT"         After="AppSearch"  Value="[CMDLINE_SSL_FINGERPRINT]"><![CDATA[CMDLINE_SSL_FINGERPRINT<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
+    <Property Id="SSL_KEYSTORE" Secure="yes">
+      <RegistrySearch Id="SSLKeyStore" Root="HKLM" Key="[%agent_regpath%]" Name="ssl-keystore" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_SSL_KEYSTORE" Before="AppSearch" Value="[SSL_KEYSTORE]" />
+    <SetProperty Id="SSL_KEYSTORE"         After="AppSearch"  Value="[CMDLINE_SSL_KEYSTORE]"><![CDATA[CMDLINE_SSL_KEYSTORE<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="SSL_CERT_FILE" Secure="yes">
       <RegistrySearch Id="SSLCertFile" Root="HKLM" Key="[%agent_regpath%]" Name="ssl-cert-file" Type="raw"/>
@@ -258,6 +304,18 @@
     </Property>
     <SetProperty Id="CMDLINE_USER" Before="AppSearch" Value="[USER]" />
     <SetProperty Id="USER"         After="AppSearch"  Value="[CMDLINE_USER]"><![CDATA[CMDLINE_USER<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
+    <Property Id="OAUTH_CLIENT_ID" Secure="yes">
+      <RegistrySearch Id="OAuthClientId" Root="HKLM" Key="[%agent_regpath%]" Name="oauth-client-id" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_OAUTH_CLIENT_ID" Before="AppSearch" Value="[OAUTH_CLIENT_ID]" />
+    <SetProperty Id="OAUTH_CLIENT_ID"         After="AppSearch"  Value="[CMDLINE_OAUTH_CLIENT_ID]"><![CDATA[CMDLINE_OAUTH_CLIENT_ID<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
+    <Property Id="OAUTH_CLIENT_SECRET" Secure="yes">
+      <RegistrySearch Id="OAuthClientSecret" Root="HKLM" Key="[%agent_regpath%]" Name="oauth-client-secret" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_OAUTH_CLIENT_SECRET" Before="AppSearch" Value="[OAUTH_CLIENT_SECRET]" />
+    <SetProperty Id="OAUTH_CLIENT_SECRET"         After="AppSearch"  Value="[CMDLINE_OAUTH_CLIENT_SECRET]"><![CDATA[CMDLINE_OAUTH_CLIENT_SECRET<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
     <Property Id="REMOTE" Secure="yes">
       <RegistrySearch Id="Remote" Root="HKLM" Key="[%agent_regpath%]" Name="remote" Type="raw"/>
@@ -313,80 +371,99 @@
     <SetProperty Id="CMDLINE_VARDIR" Before="AppSearch" Value="[VARDIR]" />
     <SetProperty Id="VARDIR"         After="AppSearch"  Value="[CMDLINE_VARDIR]"><![CDATA[CMDLINE_VARDIR<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
+    <Property Id="FULL_INVENTORY_POSTPONE" Secure="yes">
+      <RegistrySearch Id="FullInventoryPostpone" Root="HKLM" Key="[%agent_regpath%]" Name="full-inventory-postpone" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_FULL_INVENTORY_POSTPONE" Before="AppSearch" Value="[FULL_INVENTORY_POSTPONE]" />
+    <SetProperty Id="FULL_INVENTORY_POSTPONE"         After="AppSearch"  Value="[CMDLINE_FULL_INVENTORY_POSTPONE]"><![CDATA[CMDLINE_FULL_INVENTORY_POSTPONE<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
+    <Property Id="GLPI_VERSION" Secure="yes">
+      <RegistrySearch Id="GlpiVersion" Root="HKLM" Key="[%agent_regpath%]" Name="glpi-version" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_GLPI_VERSION" Before="AppSearch" Value="[GLPI_VERSION]" />
+    <SetProperty Id="GLPI_VERSION"         After="AppSearch"  Value="[CMDLINE_GLPI_VERSION]"><![CDATA[CMDLINE_GLPI_VERSION<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
     <!-- Configuration defaults after handling command line and registry checks -->
-    <SetProperty Id="DEBUG"                   Action="DEBUG_Default"                    After="SetDEBUG"                    Value="0">NOT DEBUG</SetProperty>
-    <SetProperty Id="LOGGER"                  Action="LOGGER_Default"                   After="SetLOGGER"                   Value="file">NOT LOGGER</SetProperty>
-    <SetProperty Id="LOGFILE_MAXSIZE"         Action="LOGFILE_MAXSIZE_Default"          After="SetLOGFILE_MAXSIZE"          Value="4">NOT LOGFILE_MAXSIZE</SetProperty>
-    <SetProperty Id="NO_HTTPD"                Action="NO_HTTPD_Default"                 After="SetNO_HTTPD"                 Value="0">NOT NO_HTTPD</SetProperty>
-    <SetProperty Id="HTTPD_IP"                Action="HTTPD_IP_Default"                 After="SetHTTPD_IP"                 Value="0.0.0.0">NOT HTTPD_IP</SetProperty>
-    <SetProperty Id="HTTPD_PORT"              Action="HTTPD_PORT_Default"               After="SetHTTPD_PORT"               Value="62354">NOT HTTPD_PORT</SetProperty>
-    <SetProperty Id="HTTPD_TRUST"             Action="HTTPD_TRUST_Default"              After="SetHTTPD_TRUST"              Value="127.0.0.1/32">NOT HTTPD_TRUST</SetProperty>
-    <SetProperty Id="SCAN_HOMEDIRS"           Action="SCAN_HOMEDIRS_Default"            After="SetSCAN_HOMEDIRS"            Value="0">NOT SCAN_HOMEDIRS</SetProperty>
-    <SetProperty Id="SCAN_PROFILES"           Action="SCAN_PROFILES_Default"            After="SetSCAN_PROFILES"            Value="0">NOT SCAN_PROFILES</SetProperty>
-    <SetProperty Id="TIMEOUT"                 Action="TIMEOUT_Default"                  After="SetTIMEOUT"                  Value="180">NOT TIMEOUT</SetProperty>
-    <SetProperty Id="DELAYTIME"               Action="DELAYTIME_Default"                After="SetDELAYTIME"                Value="3600">NOT DELAYTIME</SetProperty>
-    <SetProperty Id="NO_COMPRESSION"          Action="NO_COMPRESSION_Default"           After="SetNO_COMPRESSION"           Value="0">NOT NO_COMPRESSION</SetProperty>
-    <SetProperty Id="NO_P2P"                  Action="NO_P2P_Default"                   After="SetNO_P2P"                   Value="0">NOT NO_P2P</SetProperty>
-    <SetProperty Id="REMOTE_WORKERS"          Action="REMOTE_WORKERS_Default"           After="SetREMOTE_WORKERS"           Value="1">NOT REMOTE_WORKERS</SetProperty>
-    <SetProperty Id="HTML"                    Action="HTML_Default"                     After="SetHTML"                     Value="0">NOT HTML</SetProperty>
-    <SetProperty Id="JSON"                    Action="JSON_Default"                     After="SetJSON"                     Value="0">NOT JSON</SetProperty>
-    <SetProperty Id="LAZY"                    Action="LAZY_Default"                     After="SetLAZY"                     Value="1">NOT LAZY</SetProperty>
-    <SetProperty Id="LISTEN"                  Action="LISTEN_Default"                   After="SetLISTEN"                   Value="0">NOT LISTEN</SetProperty>
-    <SetProperty Id="NO_SSL_CHECK"            Action="NO_SSL_CHECK_Default"             After="SetNO_SSL_CHECK"             Value="0">NOT NO_SSL_CHECK</SetProperty>
-    <SetProperty Id="CONF_RELOAD_INTERVAL"    Action="CONF_RELOAD_INTERVAL_Default"     After="SetCONF_RELOAD_INTERVAL"     Value="0">NOT CONF_RELOAD_INTERVAL</SetProperty>
-    <SetProperty Id="BACKEND_COLLECT_TIMEOUT" Action="BACKEND_COLLECT_TIMEOUT_Default"  After="SetBACKEND_COLLECT_TIMEOUT"  Value="180">NOT BACKEND_COLLECT_TIMEOUT</SetProperty>
+    <SetProperty Id="DEBUG"                   Action="DEBUG_Default"                    After="LaunchConditions"  Value="0"><![CDATA[NOT DEBUG OR (DEBUG<>"1" AND DEBUG<>"2")]]></SetProperty>
+    <SetProperty Id="LOGGER"                  Action="LOGGER_Default"                   After="LaunchConditions"  Value="file"><![CDATA[NOT LOGGER]]></SetProperty>
+    <SetProperty Id="LOGFILE_MAXSIZE"         Action="LOGFILE_MAXSIZE_Default"          After="LaunchConditions"  Value="4"><![CDATA[NOT LOGFILE_MAXSIZE]]></SetProperty>
+    <SetProperty Id="NO_HTTPD"                Action="NO_HTTPD_Default"                 After="LaunchConditions"  Value="0"><![CDATA[NOT NO_HTTPD OR NO_HTTPD<>"1"]]></SetProperty>
+    <SetProperty Id="HTTPD_IP"                Action="HTTPD_IP_Default"                 After="LaunchConditions"  Value="0.0.0.0"><![CDATA[NOT HTTPD_IP]]></SetProperty>
+    <SetProperty Id="HTTPD_PORT"              Action="HTTPD_PORT_Default"               After="LaunchConditions"  Value="62354"><![CDATA[NOT HTTPD_PORT]]></SetProperty>
+    <SetProperty Id="HTTPD_TRUST"             Action="HTTPD_TRUST_Default"              After="LaunchConditions"  Value="127.0.0.1/32"><![CDATA[NOT HTTPD_TRUST]]></SetProperty>
+    <SetProperty Id="SCAN_HOMEDIRS"           Action="SCAN_HOMEDIRS_Default"            After="LaunchConditions"  Value="0"><![CDATA[NOT SCAN_HOMEDIRS OR SCAN_HOMEDIRS<>"1"]]></SetProperty>
+    <SetProperty Id="SCAN_PROFILES"           Action="SCAN_PROFILES_Default"            After="LaunchConditions"  Value="0"><![CDATA[NOT SCAN_PROFILES OR SCAN_PROFILES<>"1"]]></SetProperty>
+    <SetProperty Id="TIMEOUT"                 Action="TIMEOUT_Default"                  After="LaunchConditions"  Value="180"><![CDATA[NOT TIMEOUT]]></SetProperty>
+    <SetProperty Id="SNMP_RETRIES"            Action="SNMP_RETRIES_Default"             After="LaunchConditions"  Value="0"><![CDATA[NOT SNMP_RETRIES]]></SetProperty>
+    <SetProperty Id="DELAYTIME"               Action="DELAYTIME_Default"                After="LaunchConditions"  Value="3600"><![CDATA[NOT DELAYTIME]]></SetProperty>
+    <SetProperty Id="NO_COMPRESSION"          Action="NO_COMPRESSION_Default"           After="LaunchConditions"  Value="0"><![CDATA[NOT NO_COMPRESSION OR NO_COMPRESSION<>"1"]]></SetProperty>
+    <SetProperty Id="NO_P2P"                  Action="NO_P2P_Default"                   After="LaunchConditions"  Value="0"><![CDATA[NOT NO_P2P OR NO_P2P<>"1"]]></SetProperty>
+    <SetProperty Id="REMOTE_WORKERS"          Action="REMOTE_WORKERS_Default"           After="LaunchConditions"  Value="1"><![CDATA[NOT REMOTE_WORKERS]]></SetProperty>
+    <SetProperty Id="HTML"                    Action="HTML_Default"                     After="LaunchConditions"  Value="0"><![CDATA[NOT HTML OR HTML<>"1"]]></SetProperty>
+    <SetProperty Id="JSON"                    Action="JSON_Default"                     After="LaunchConditions"  Value="0"><![CDATA[NOT JSON OR JSON<>"1"]]></SetProperty>
+    <SetProperty Id="LAZY"                    Action="LAZY_Default"                     After="LaunchConditions"  Value="1"><![CDATA[NOT LAZY OR LAZY<>"0"]]></SetProperty>
+    <SetProperty Id="LISTEN"                  Action="LISTEN_Default"                   After="LaunchConditions"  Value="0"><![CDATA[NOT LISTEN OR LISTEN<>"1"]]></SetProperty>
+    <SetProperty Id="NO_SSL_CHECK"            Action="NO_SSL_CHECK_Default"             After="LaunchConditions"  Value="0"><![CDATA[NOT NO_SSL_CHECK OR NO_SSL_CHECK<>"1"]]></SetProperty>
+    <SetProperty Id="CONF_RELOAD_INTERVAL"    Action="CONF_RELOAD_INTERVAL_Default"     After="LaunchConditions"  Value="0"><![CDATA[NOT CONF_RELOAD_INTERVAL]]></SetProperty>
+    <SetProperty Id="BACKEND_COLLECT_TIMEOUT" Action="BACKEND_COLLECT_TIMEOUT_Default"  After="LaunchConditions"  Value="180"><![CDATA[NOT BACKEND_COLLECT_TIMEOUT]]></SetProperty>
+    <SetProperty Id="FULL_INVENTORY_POSTPONE" Action="FULL_INVENTORY_POSTPONE_Default"  After="LaunchConditions"  Value="14"><![CDATA[NOT FULL_INVENTORY_POSTPONE]]></SetProperty>
 
     <!-- Installer configuration defaults -->
-    <SetProperty Id="QUICKINSTALL"            Action="QUICKINSTALL_Default"             After="SetQUICKINSTALL"             Value="1">NOT QUICKINSTALL</SetProperty>
-    <SetProperty Id="ADD_FIREWALL_EXCEPTION"  Action="ADD_FIREWALL_EXCEPTION_Default"   After="SetADD_FIREWALL_EXCEPTION"   Value="1">NOT ADD_FIREWALL_EXCEPTION</SetProperty>
-    <SetProperty Id="EXECMODE"                Action="EXECMODE_Default"                 After="SetEXECMODE"                 Value="1">NOT EXECMODE</SetProperty>
-    <SetProperty Id="RUNNOW"                  Action="RUNNOW_Default"                   After="SetRUNNOW"                   Value="0">NOT RUNNOW</SetProperty>
-    <SetProperty Id="AGENTMONITOR"            Action="AGENTMONITOR_Default"             After="SetAGENTMONITOR"             Value="0">NOT AGENTMONITOR</SetProperty>
-    <SetProperty Id="TASK_FREQUENCY"          Action="TASK_FREQUENCY_Default"           After="SetTASK_FREQUENCY"           Value="hourly">NOT TASK_FREQUENCY</SetProperty>
-    <SetProperty Id="TASK_MINUTE_MODIFIER"    Action="TASK_MINUTE_MODIFIER_Default"     After="SetTASK_MINUTE_MODIFIER"     Value="15">NOT TASK_MINUTE_MODIFIER</SetProperty>
-    <SetProperty Id="TASK_HOURLY_MODIFIER"    Action="TASK_HOURLY_MODIFIER_Default"     After="SetTASK_HOURLY_MODIFIER"     Value="1">NOT TASK_HOURLY_MODIFIER</SetProperty>
-    <SetProperty Id="TASK_DAILY_MODIFIER"     Action="TASK_DAILY_MODIFIER_Default"      After="SetTASK_DAILY_MODIFIER"      Value="1">NOT TASK_DAILY_MODIFIER</SetProperty>
+    <SetProperty Id="QUICKINSTALL"            Action="QUICKINSTALL_Default"             After="LaunchConditions"  Value="1"><![CDATA[NOT QUICKINSTALL OR QUICKINSTALL<>"0"]]></SetProperty>
+    <SetProperty Id="ADD_FIREWALL_EXCEPTION"  Action="ADD_FIREWALL_EXCEPTION_Default"   After="LaunchConditions"  Value="1"><![CDATA[NOT ADD_FIREWALL_EXCEPTION OR ADD_FIREWALL_EXCEPTION<>"0"]]></SetProperty>
+    <SetProperty Id="EXECMODE"                Action="EXECMODE_Default"                 After="LaunchConditions"  Value="1"><![CDATA[NOT EXECMODE OR (EXECMODE<>"2" AND EXECMODE<>"3")]]></SetProperty>
+    <SetProperty Id="RUNNOW"                  Action="RUNNOW_Default"                   After="LaunchConditions"  Value="0"><![CDATA[NOT RUNNOW OR RUNNOW<>"1"]]></SetProperty>
+    <SetProperty Id="AGENTMONITOR"            Action="AGENTMONITOR_Default"             After="LaunchConditions"  Value="0"><![CDATA[NOT AGENTMONITOR OR AGENTMONITOR<>"1"]]></SetProperty>
+    <SetProperty Id="TASK_FREQUENCY"          Action="TASK_FREQUENCY_Default"           After="LaunchConditions"  Value="hourly"><![CDATA[NOT TASK_FREQUENCY]]></SetProperty>
+    <SetProperty Id="TASK_MINUTE_MODIFIER"    Action="TASK_MINUTE_MODIFIER_Default"     After="LaunchConditions"  Value="15"><![CDATA[NOT TASK_MINUTE_MODIFIER]]></SetProperty>
+    <SetProperty Id="TASK_HOURLY_MODIFIER"    Action="TASK_HOURLY_MODIFIER_Default"     After="LaunchConditions"  Value="1"><![CDATA[NOT TASK_HOURLY_MODIFIER]]></SetProperty>
+    <SetProperty Id="TASK_DAILY_MODIFIER"     Action="TASK_DAILY_MODIFIER_Default"      After="LaunchConditions"  Value="1"><![CDATA[NOT TASK_DAILY_MODIFIER]]></SetProperty>
+
+    <!-- Monitor configuration defaults -->
+    <SetProperty Id="AGENTMONITOR_NEWTICKET_URL"  Action="AGENTMONITOR_NEWTICKET_URL_Default" After="LaunchConditions"  Value=""><![CDATA[NOT AGENTMONITOR_NEWTICKET_URL]]></SetProperty>
+    <SetProperty Id="AGENTMONITOR_NEWTICKET_SCREENSHOT" Action="AGENTMONITOR_NEWTICKET_SCREENSHOT_Default" After="LaunchConditions"  Value="1"><![CDATA[NOT AGENTMONITOR_NEWTICKET_SCREENSHOT OR AGENTMONITOR_NEWTICKET_SCREENSHOT<>"0"]]></SetProperty>
 
     <!-- Fix properties handled as a checkbox, they must be undefined to uncheck the CB -->
-    <SetProperty Id="QUICKINSTALL" Sequence="ui" Action="QUICKINSTALL_Unset" After="AppSearch" Value=""><![CDATA[QUICKINSTALL<>"1"]]></SetProperty>
-    <SetProperty Id="NO_HTTPD"     Sequence="ui" Action="NO_HTTPD_Unset"     After="AppSearch" Value=""><![CDATA[NOT NO_HTTPD OR NO_HTTPD<>"0"]]></SetProperty>
-    <SetProperty Id="ADD_FIREWALL_EXCEPTION" Sequence="ui" Action="ADD_FIREWALL_EXCEPTION_Unset" After="AppSearch" Value=""><![CDATA[ADD_FIREWALL_EXCEPTION<>"1"]]></SetProperty>
-    <SetProperty Id="_EXECMODE_RADIO_BUTTON" Sequence="ui" Action="ExecModeRadio_Service" After="AppSearch" Value="1"><![CDATA[NOT EXECMODE OR (EXECMODE<>"1" AND EXECMODE<>"2" AND EXECMODE<>"3")]]></SetProperty>
-    <SetProperty Id="_EXECMODE_RADIO_BUTTON" Sequence="ui" Action="ExecModeRadio_Tasks"   After="AppSearch" Value="2"><![CDATA[EXECMODE="2"]]></SetProperty>
-    <SetProperty Id="_EXECMODE_RADIO_BUTTON" Sequence="ui" Action="ExecModeRadio_Manual"  After="AppSearch" Value="3"><![CDATA[EXECMODE="3"]]></SetProperty>
-    <SetProperty Id="SCAN_HOMEDIRS" Sequence="ui" Action="SCAN_HOMEDIRS_Unset" After="AppSearch" Value=""><![CDATA[SCAN_HOMEDIRS<>"1"]]></SetProperty>
-    <SetProperty Id="SCAN_PROFILES" Sequence="ui" Action="SCAN_PROFILES_Unset" After="AppSearch" Value=""><![CDATA[SCAN_PROFILES<>"1"]]></SetProperty>
-    <SetProperty Id="NO_P2P"        Sequence="ui" Action="NO_P2P_Unset"        After="AppSearch" Value=""><![CDATA[NO_P2P<>"1"]]></SetProperty>
-    <SetProperty Id="RUNNOW"        Sequence="ui" Action="RUNNOW_Unset"        After="AppSearch" Value=""><![CDATA[RUNNOW<>"1"]]></SetProperty>
-    <SetProperty Id="AGENTMONITOR"  Sequence="ui" Action="AGENTMONITOR_Unset"  After="AppSearch" Value=""><![CDATA[AGENTMONITOR<>"1"]]></SetProperty>
-    <SetProperty Id="NO_SSL_CHECK"  Sequence="ui" Action="NO_SSL_CHECK_Unset"  After="AppSearch" Value=""><![CDATA[NO_SSL_CHECK<>"1"]]></SetProperty>
-    <SetProperty Id="LAZY"          Sequence="ui" Action="LAZY_Unset"          After="AppSearch" Value=""><![CDATA[LAZY<>"1"]]></SetProperty>
+    <SetProperty Id="QUICKINSTALL"            Sequence="ui"   Action="QUICKINSTALL_Unset"             After="CostFinalize"  Value=""><![CDATA[QUICKINSTALL<>"1"]]></SetProperty>
+    <SetProperty Id="NO_HTTPD"                Sequence="ui"   Action="NO_HTTPD_Unset"                 After="CostFinalize"  Value=""><![CDATA[NO_HTTPD<>"0"]]></SetProperty>
+    <SetProperty Id="ADD_FIREWALL_EXCEPTION"  Sequence="ui"   Action="ADD_FIREWALL_EXCEPTION_Unset"   After="CostFinalize"  Value=""><![CDATA[ADD_FIREWALL_EXCEPTION<>"1"]]></SetProperty>
+    <SetProperty Id="_EXECMODE_RADIO_BUTTON"  Sequence="ui"   Action="ExecModeRadio_Service"          After="CostFinalize"  Value="1"><![CDATA[NOT EXECMODE OR (EXECMODE<>"1" AND EXECMODE<>"2" AND EXECMODE<>"3")]]></SetProperty>
+    <SetProperty Id="_EXECMODE_RADIO_BUTTON"  Sequence="ui"   Action="ExecModeRadio_Tasks"            After="CostFinalize"  Value="2"><![CDATA[EXECMODE="2"]]></SetProperty>
+    <SetProperty Id="_EXECMODE_RADIO_BUTTON"  Sequence="ui"   Action="ExecModeRadio_Manual"           After="CostFinalize"  Value="3"><![CDATA[EXECMODE="3"]]></SetProperty>
+    <SetProperty Id="SCAN_HOMEDIRS"           Sequence="ui"   Action="SCAN_HOMEDIRS_Unset"            After="CostFinalize"  Value=""><![CDATA[SCAN_HOMEDIRS<>"1"]]></SetProperty>
+    <SetProperty Id="SCAN_PROFILES"           Sequence="ui"   Action="SCAN_PROFILES_Unset"            After="CostFinalize"  Value=""><![CDATA[SCAN_PROFILES<>"1"]]></SetProperty>
+    <SetProperty Id="NO_P2P"                  Sequence="ui"   Action="NO_P2P_Unset"                   After="CostFinalize"  Value=""><![CDATA[NO_P2P<>"1"]]></SetProperty>
+    <SetProperty Id="RUNNOW"                  Sequence="ui"   Action="RUNNOW_Unset"                   After="CostFinalize"  Value=""><![CDATA[RUNNOW<>"1"]]></SetProperty>
+    <SetProperty Id="AGENTMONITOR"            Sequence="ui"   Action="AGENTMONITOR_Unset"             After="CostFinalize"  Value=""><![CDATA[AGENTMONITOR<>"1"]]></SetProperty>
+    <SetProperty Id="NO_SSL_CHECK"            Sequence="ui"   Action="NO_SSL_CHECK_Unset"             After="CostFinalize"  Value=""><![CDATA[NO_SSL_CHECK<>"1"]]></SetProperty>
+    <SetProperty Id="LAZY"                    Sequence="ui"   Action="LAZY_Unset"                     After="CostFinalize"  Value=""><![CDATA[LAZY<>"1"]]></SetProperty>
 
     <!-- Fix properties having to be written later in registry -->
-    <SetProperty Id="QUICKINSTALL" Sequence="ui" Action="QUICKINSTALL_UnsetForReg" Before="ExecuteAction" Value="0"><![CDATA[NOT QUICKINSTALL OR QUICKINSTALL<>"1"]]></SetProperty>
-    <SetProperty Id="NO_HTTPD"     Sequence="ui" Action="NO_HTTPD_SetForReg"       Before="ExecuteAction" Value="1"><![CDATA[NOT NO_HTTPD OR NO_HTTPD<>"0"]]></SetProperty>
-    <SetProperty Id="ADD_FIREWALL_EXCEPTION" Sequence="ui" Action="ADD_FIREWALL_EXCEPTION_UnsetForReg" Before="ExecuteAction" Value="0"><![CDATA[NOT ADD_FIREWALL_EXCEPTION OR ADD_FIREWALL_EXCEPTION<>"1"]]></SetProperty>
-    <SetProperty Id="EXECMODE"     Sequence="ui" Action="EXECMODE_Update"          Before="ExecuteAction" Value="[_EXECMODE_RADIO_BUTTON]" />
-    <SetProperty Id="SCAN_HOMEDIRS" Sequence="ui" Action="SCAN_HOMEDIRS_UnsetForReg" Before="ExecuteAction" Value="0"><![CDATA[NOT SCAN_HOMEDIRS OR SCAN_HOMEDIRS<>"1"]]></SetProperty>
-    <SetProperty Id="SCAN_PROFILES" Sequence="ui" Action="SCAN_PROFILES_UnsetForReg" Before="ExecuteAction" Value="0"><![CDATA[NOT SCAN_PROFILES OR SCAN_PROFILES<>"1"]]></SetProperty>
-    <SetProperty Id="NO_P2P"       Sequence="ui" Action="NO_P2P_SetForReg"         Before="ExecuteAction" Value="0"><![CDATA[NOT NO_P2P OR NO_P2P<>"1"]]></SetProperty>
-    <SetProperty Id="RUNNOW"       Sequence="ui" Action="RUNNOW_SetForReg"         Before="ExecuteAction" Value="0"><![CDATA[NOT RUNNOW OR RUNNOW<>"1"]]></SetProperty>
-    <SetProperty Id="AGENTMONITOR" Sequence="ui" Action="AGENTMONITOR_SetForReg"   Before="ExecuteAction" Value="0"><![CDATA[NOT AGENTMONITOR OR AGENTMONITOR<>"1"]]></SetProperty>
-    <SetProperty Id="HTML"         Sequence="ui" Action="HTML_SetForReg"           Before="ExecuteAction" Value="0"><![CDATA[NOT HTML OR HTML<>"1"]]></SetProperty>
-    <SetProperty Id="JSON"         Sequence="ui" Action="JSON_SetForReg"           Before="ExecuteAction" Value="0"><![CDATA[NOT JSON OR JSON<>"1"]]></SetProperty>
-    <SetProperty Id="LAZY"         Sequence="ui" Action="LAZY_SetForReg"           Before="ExecuteAction" Value="0"><![CDATA[NOT LAZY OR LAZY<>"1"]]></SetProperty>
-    <SetProperty Id="LISTEN"       Sequence="ui" Action="LISTEN_SetForReg"         Before="ExecuteAction" Value="0"><![CDATA[NOT LISTEN OR LISTEN<>"1"]]></SetProperty>
-    <SetProperty Id="NO_SSL_CHECK" Sequence="ui" Action="NO_SSL_CHECK_Update"      Before="ExecuteAction" Value="0"><![CDATA[NOT NO_SSL_CHECK OR NO_SSL_CHECK<>"1"]]></SetProperty>
-    <SetProperty Id="NO_COMPRESSION" Sequence="ui" Action="NO_COMPRESSION_SetForReg" Before="ExecuteAction" Value="0"><![CDATA[NOT NO_COMPRESSION OR NO_COMPRESSION<>"1"]]></SetProperty>
-    <SetProperty Id="TASK_FREQUENCY"       Sequence="ui" Action="TASK_FREQUENCY_SetForReg"         After="AppSearch" Value="hourly"><![CDATA[NOT TASK_FREQUENCY OR (TASK_FREQUENCY<>"minute" AND TASK_FREQUENCY<>"hourly" AND TASK_FREQUENCY<>"daily")]]></SetProperty>
-    <SetProperty Id="TASK_MINUTE_MODIFIER" Sequence="ui" Action="TASK_MINUTE_MODIFIER_SetForReg"   After="AppSearch" Value="15"><![CDATA[NOT TASK_MINUTE_MODIFIER OR TASK_MINUTE_MODIFIER < 1 OR TASK_MINUTE_MODIFIER > 1439]]></SetProperty>
-    <SetProperty Id="TASK_HOURLY_MODIFIER" Sequence="ui" Action="TASK_HOURLY_MODIFIER_SetForReg"   After="AppSearch" Value="1"><![CDATA[NOT TASK_HOURLY_MODIFIER OR TASK_HOURLY_MODIFIER < 1 OR TASK_HOURLY_MODIFIER > 23]]></SetProperty>
-    <SetProperty Id="TASK_DAILY_MODIFIER"  Sequence="ui" Action="TASK_DAILY_MODIFIER_SetForReg"    After="AppSearch" Value="1"><![CDATA[NOT TASK_DAILY_MODIFIER OR TASK_DAILY_MODIFIER < 1 OR TASK_DAILY_MODIFIER > 365]]></SetProperty>
+    <SetProperty Id="QUICKINSTALL"            Sequence="ui"   Action="QUICKINSTALL_UnsetForReg"             Before="ExecuteAction"  Value="0"><![CDATA[NOT QUICKINSTALL OR QUICKINSTALL<>"1"]]></SetProperty>
+    <SetProperty Id="NO_HTTPD"                Sequence="ui"   Action="NO_HTTPD_SetForReg"                   Before="ExecuteAction"  Value="1"><![CDATA[NOT NO_HTTPD OR NO_HTTPD<>"0"]]></SetProperty>
+    <SetProperty Id="ADD_FIREWALL_EXCEPTION"  Sequence="ui"   Action="ADD_FIREWALL_EXCEPTION_UnsetForReg"   Before="ExecuteAction"  Value="0"><![CDATA[NOT ADD_FIREWALL_EXCEPTION OR ADD_FIREWALL_EXCEPTION<>"1"]]></SetProperty>
+    <SetProperty Id="EXECMODE"                Sequence="ui"   Action="EXECMODE_Update"                      Before="ExecuteAction"  Value="[_EXECMODE_RADIO_BUTTON]" />
+    <SetProperty Id="SCAN_HOMEDIRS"           Sequence="ui"   Action="SCAN_HOMEDIRS_UnsetForReg"            Before="ExecuteAction"  Value="0"><![CDATA[NOT SCAN_HOMEDIRS OR SCAN_HOMEDIRS<>"1"]]></SetProperty>
+    <SetProperty Id="SCAN_PROFILES"           Sequence="ui"   Action="SCAN_PROFILES_UnsetForReg"            Before="ExecuteAction"  Value="0"><![CDATA[NOT SCAN_PROFILES OR SCAN_PROFILES<>"1"]]></SetProperty>
+    <SetProperty Id="NO_P2P"                  Sequence="ui"   Action="NO_P2P_SetForReg"                     Before="ExecuteAction"  Value="0"><![CDATA[NOT NO_P2P OR NO_P2P<>"1"]]></SetProperty>
+    <SetProperty Id="RUNNOW"                  Sequence="ui"   Action="RUNNOW_SetForReg"                     Before="ExecuteAction"  Value="0"><![CDATA[NOT RUNNOW OR RUNNOW<>"1"]]></SetProperty>
+    <SetProperty Id="AGENTMONITOR"            Sequence="ui"   Action="AGENTMONITOR_SetForReg"               Before="ExecuteAction"  Value="0"><![CDATA[NOT AGENTMONITOR OR AGENTMONITOR<>"1"]]></SetProperty>
+    <SetProperty Id="HTML"                    Sequence="ui"   Action="HTML_SetForReg"                       Before="ExecuteAction"  Value="0"><![CDATA[NOT HTML OR HTML<>"1"]]></SetProperty>
+    <SetProperty Id="JSON"                    Sequence="ui"   Action="JSON_SetForReg"                       Before="ExecuteAction"  Value="0"><![CDATA[NOT JSON OR JSON<>"1"]]></SetProperty>
+    <SetProperty Id="LAZY"                    Sequence="ui"   Action="LAZY_SetForReg"                       Before="ExecuteAction"  Value="0"><![CDATA[NOT LAZY OR LAZY<>"1"]]></SetProperty>
+    <SetProperty Id="LISTEN"                  Sequence="ui"   Action="LISTEN_SetForReg"                     Before="ExecuteAction"  Value="0"><![CDATA[NOT LISTEN OR LISTEN<>"1"]]></SetProperty>
+    <SetProperty Id="NO_SSL_CHECK"            Sequence="ui"   Action="NO_SSL_CHECK_Update"                  Before="ExecuteAction"  Value="0"><![CDATA[NOT NO_SSL_CHECK OR NO_SSL_CHECK<>"1"]]></SetProperty>
+    <SetProperty Id="NO_COMPRESSION"          Sequence="ui"   Action="NO_COMPRESSION_SetForReg"             Before="ExecuteAction"  Value="0"><![CDATA[NOT NO_COMPRESSION OR NO_COMPRESSION<>"1"]]></SetProperty>
+
+    <SetProperty Id="TASK_FREQUENCY"          Sequence="ui"   Action="TASK_FREQUENCY_SetForReg"         After="LaunchConditions"  Value="hourly"><![CDATA[NOT TASK_FREQUENCY OR (TASK_FREQUENCY<>"minute" AND TASK_FREQUENCY<>"hourly" AND TASK_FREQUENCY<>"daily")]]></SetProperty>
+    <SetProperty Id="TASK_MINUTE_MODIFIER"    Sequence="ui"   Action="TASK_MINUTE_MODIFIER_SetForReg"   After="LaunchConditions"  Value="15"><![CDATA[NOT TASK_MINUTE_MODIFIER OR TASK_MINUTE_MODIFIER < 1 OR TASK_MINUTE_MODIFIER > 1439]]></SetProperty>
+    <SetProperty Id="TASK_HOURLY_MODIFIER"    Sequence="ui"   Action="TASK_HOURLY_MODIFIER_SetForReg"   After="LaunchConditions"  Value="1"><![CDATA[NOT TASK_HOURLY_MODIFIER OR TASK_HOURLY_MODIFIER < 1 OR TASK_HOURLY_MODIFIER > 23]]></SetProperty>
+    <SetProperty Id="TASK_DAILY_MODIFIER"     Sequence="ui"   Action="TASK_DAILY_MODIFIER_SetForReg"    After="LaunchConditions"  Value="1"><![CDATA[NOT TASK_DAILY_MODIFIER OR TASK_DAILY_MODIFIER < 1 OR TASK_DAILY_MODIFIER > 365]]></SetProperty>
 
     <!-- After LaunchConditions means also after AppSearch and there is more sequence number free space there -->
-    <SetProperty Id="UNINSTALL_VAR" After="LaunchConditions" Value="[UPGRADEDIR]var"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
-    <SetProperty Id="UNINSTALL_ETC" After="LaunchConditions" Value="[UPGRADEDIR]etc"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
-    <SetProperty Id="UNINSTALL_LOG" After="LaunchConditions" Value="[UPGRADEDIR]logs"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
+    <SetProperty Id="UNINSTALL_VAR"   After="LaunchConditions"  Value="[UPGRADEDIR]var"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
+    <SetProperty Id="UNINSTALL_ETC"   After="LaunchConditions"  Value="[UPGRADEDIR]etc"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
+    <SetProperty Id="UNINSTALL_LOG"   After="LaunchConditions"  Value="[UPGRADEDIR]logs"><![CDATA[UPGRADEDIR AND REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE]]></SetProperty>
 
     <Icon Id="i_main_ico" SourceFile="$(var.FileMainIcon)" />
     <Icon Id="agentmonitor.ico" SourceFile="$(var.FileMainIcon)" />
@@ -404,19 +481,43 @@
     <CustomAction Id="SetDefaultLogFile"   Property="LOGFILE" Value="[INSTALLDIR]logs\glpi-agent.log" Execute="firstSequence" />
     <CustomAction Id="SetDefaultVarDir"    Property="VARDIR"  Value="[INSTALLDIR]var" Execute="firstSequence" />
 
+[%- IF bits==32 %]
     <CustomAction Id="SetDeleteFirewallExceptionCmd" Property="DeleteFirewallException" Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;!(loc.FirewallExceptionName)&quot;" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetDeleteFirewallExceptionCmd" Property="DeleteFirewallException" Value="&quot;[System64Folder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;!(loc.FirewallExceptionName)&quot;" Execute="immediate" />
+[%- END %]
     <CustomAction Id="DeleteFirewallException" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+[%- IF bits==32 %]
     <CustomAction Id="SetAddFirewallExceptionInCmd" Property="AddFirewallExceptionIn" Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall add rule name=&quot;!(loc.FirewallExceptionName)&quot; program=&quot;[#f_agent_exe]&quot; description=&quot;!(loc.FirewallExceptionDescription)&quot; protocol=TCP dir=in localport=[HTTPD_PORT] action=allow" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetAddFirewallExceptionInCmd" Property="AddFirewallExceptionIn" Value="&quot;[System64Folder]netsh.exe&quot; advfirewall firewall add rule name=&quot;!(loc.FirewallExceptionName)&quot; program=&quot;[#f_agent_exe]&quot; description=&quot;!(loc.FirewallExceptionDescription)&quot; protocol=TCP dir=in localport=[HTTPD_PORT] action=allow" Execute="immediate" />
+[%- END %]
     <CustomAction Id="AddFirewallExceptionIn" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+[%- IF bits==32 %]
     <CustomAction Id="SetAddFirewallExceptionOutCmd" Property="AddFirewallExceptionOut" Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall add rule name=&quot;!(loc.FirewallExceptionName)&quot; program=&quot;[#f_agent_exe]&quot; description=&quot;!(loc.OutgoingFirewallExceptionDescription)&quot; dir=out action=allow" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetAddFirewallExceptionOutCmd" Property="AddFirewallExceptionOut" Value="&quot;[System64Folder]netsh.exe&quot; advfirewall firewall add rule name=&quot;!(loc.FirewallExceptionName)&quot; program=&quot;[#f_agent_exe]&quot; description=&quot;!(loc.OutgoingFirewallExceptionDescription)&quot; dir=out action=allow" Execute="immediate" />
+[%- END %]
     <CustomAction Id="AddFirewallExceptionOut" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
     <!-- GLPI Agent 1.0 to 1.2 installers was creating wrongly named firewall rules, prepare CustomAction to clean up them -->
+[%- IF bits==32 %]
     <CustomAction Id="SetDeleteWrongFirewallRuleInCmd"  Property="DeleteFirewallWrongIn"  Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;program=description= embedded HTTP server incoming traffic&quot;" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetDeleteWrongFirewallRuleInCmd"  Property="DeleteFirewallWrongIn"  Value="&quot;[System64Folder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;program=description= embedded HTTP server incoming traffic&quot;" Execute="immediate" />
+[%- END %]
     <CustomAction Id="DeleteFirewallWrongIn" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+[%- IF bits==32 %]
     <CustomAction Id="SetDeleteWrongFirewallRuleOutCmd" Property="DeleteFirewallWrongOut" Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;program=description= outgoing traffic&quot;" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetDeleteWrongFirewallRuleOutCmd" Property="DeleteFirewallWrongOut" Value="&quot;[System64Folder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;program=description= outgoing traffic&quot;" Execute="immediate" />
+[%- END %]
     <CustomAction Id="DeleteFirewallWrongOut" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+[%- IF bits==32 %]
     <CustomAction Id="SetDeleteWrongFirewallRuleExeCmd" Property="DeleteFirewallWrongExe" Value="&quot;[SystemFolder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;program=[#f_agent_exe]&quot;" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetDeleteWrongFirewallRuleExeCmd" Property="DeleteFirewallWrongExe" Value="&quot;[System64Folder]netsh.exe&quot; advfirewall firewall delete rule name=&quot;program=[#f_agent_exe]&quot;" Execute="immediate" />
+[%- END %]
     <CustomAction Id="DeleteFirewallWrongExe" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
     <CustomAction Id="SetForceRun" Property="ForceRun" Value="&quot;[#f_glpiagent]&quot; --set-forcerun" Execute="immediate" />
@@ -424,28 +525,84 @@
     <CustomAction Id="SetRunNow" Property="RunNow" Value="&quot;[#f_glpiagent]&quot; --force" Execute="immediate" />
     <CustomAction Id="RunNow" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
+[%- IF bits==32 %]
     <CustomAction Id="SetEndTask" Property="EndTask" Value="&quot;[SystemFolder]schtasks.exe&quot; /tn &quot;$(var.AgentName)&quot; /end" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetEndTask" Property="EndTask" Value="&quot;[System64Folder]schtasks.exe&quot; /tn &quot;$(var.AgentName)&quot; /end" Execute="immediate" />
+[%- END %]
     <CustomAction Id="EndTask" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+[%- IF bits==32 %]
     <CustomAction Id="SetDeleteTask" Property="DeleteTask" Value="&quot;[SystemFolder]schtasks.exe&quot; /f /tn &quot;$(var.AgentName)&quot; /delete" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetDeleteTask" Property="DeleteTask" Value="&quot;[System64Folder]schtasks.exe&quot; /f /tn &quot;$(var.AgentName)&quot; /delete" Execute="immediate" />
+[%- END %]
     <CustomAction Id="DeleteTask" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+[%- IF bits==32 %]
     <CustomAction Id="SetTaskMinute" Property="TaskMinute" Value="&quot;[SystemFolder]schtasks.exe&quot; /f /tn &quot;$(var.AgentName)&quot; /create /ru system /tr '&quot;[#f_glpiagent]&quot;' /sc minute /mo [TASK_MINUTE_MODIFIER]" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetTaskMinute" Property="TaskMinute" Value="&quot;[System64Folder]schtasks.exe&quot; /f /tn &quot;$(var.AgentName)&quot; /create /ru system /tr '&quot;[#f_glpiagent]&quot;' /sc minute /mo [TASK_MINUTE_MODIFIER]" Execute="immediate" />
+[%- END %]
     <CustomAction Id="TaskMinute" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+[%- IF bits==32 %]
     <CustomAction Id="SetTaskHourly" Property="TaskHourly" Value="&quot;[SystemFolder]schtasks.exe&quot; /f /tn &quot;$(var.AgentName)&quot; /create /ru system /tr '&quot;[#f_glpiagent]&quot;' /sc hourly /mo [TASK_HOURLY_MODIFIER]" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetTaskHourly" Property="TaskHourly" Value="&quot;[System64Folder]schtasks.exe&quot; /f /tn &quot;$(var.AgentName)&quot; /create /ru system /tr '&quot;[#f_glpiagent]&quot;' /sc hourly /mo [TASK_HOURLY_MODIFIER]" Execute="immediate" />
+[%- END %]
     <CustomAction Id="TaskHourly" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+[%- IF bits==32 %]
     <CustomAction Id="SetTaskDaily" Property="TaskDaily" Value="&quot;[SystemFolder]schtasks.exe&quot; /f /tn &quot;$(var.AgentName)&quot; /create /ru system /tr '&quot;[#f_glpiagent]&quot;' /sc daily /mo [TASK_DAILY_MODIFIER]" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetTaskDaily" Property="TaskDaily" Value="&quot;[System64Folder]schtasks.exe&quot; /f /tn &quot;$(var.AgentName)&quot; /create /ru system /tr '&quot;[#f_glpiagent]&quot;' /sc daily /mo [TASK_DAILY_MODIFIER]" Execute="immediate" />
+[%- END %]
     <CustomAction Id="TaskDaily" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
+    <!-- Support dedicated CustomActions to handle CVE-2024-28241 -->
+[%- IF bits==32 %]
+    <CustomAction Id="SetFixInstallDir" Property="FixInstallDir" Value="&quot;[SystemFolder]icacls.exe&quot; &quot;[INSTALLDIR].&quot; /inheritance:r" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetFixInstallDir" Property="FixInstallDir" Value="&quot;[System64Folder]icacls.exe&quot; &quot;[INSTALLDIR].&quot; /inheritance:r" Execute="immediate" />
+[%- END %]
+    <CustomAction Id="FixInstallDir" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+    <CustomAction Id="UpdateLocalDir" Property="LOCAL" Value="[LOCAL]\" Execute="immediate" />
+[%- IF bits==32 %]
+    <CustomAction Id="SetFixLocalDir" Property="FixLocalDir" Value="&quot;[SystemFolder]icacls.exe&quot; &quot;[LOCAL].&quot; /inheritance:r" Execute="immediate" />
+[%- ELSE %]
+    <CustomAction Id="SetFixLocalDir" Property="FixLocalDir" Value="&quot;[System64Folder]icacls.exe&quot; &quot;[LOCAL].&quot; /inheritance:r" Execute="immediate" />
+[%- END %]
+    <CustomAction Id="FixLocalDir" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+
+    <!-- Support dedicated CheckElevated CustomAction to handle CVE-2024-28240 -->
+    <CustomAction Id='CheckElevated' BinaryKey='CustomActionBinary' DllEntry='CheckElevatedCustomAction' Execute='immediate' Return='check' />
+    <Binary Id='CustomActionBinary' SourceFile='contrib\windows\packaging\tools\ca\ca.dll' />
+
     <InstallExecuteSequence>
+      <Custom Action="CheckElevated" Before="LaunchConditions"><![CDATA[Installed AND (NOT REMOVE~="ALL")]]></Custom>
+
       <!-- InstallExecuteSequence is used to define Custom Actions that fire after the UI is finished and the install is starting to execute -->
       <Custom Action="CA_SetARPInstallLoc"    Before="RegisterProduct" />
-      <Custom Action="SetDefaultLogFile"      After="CostFinalize">NOT LOGFILE</Custom>
-      <Custom Action="SetDefaultVarDir"       After="CostFinalize">NOT VARDIR</Custom>
+      <Custom Action="SetDefaultLogFile"      After="CostFinalize"><![CDATA[NOT LOGFILE]]></Custom>
+      <Custom Action="SetDefaultVarDir"       After="CostFinalize"><![CDATA[NOT VARDIR]]></Custom>
 
-      <Custom Action="WixCloseApplications"   Before="InstallValidate"/>
+      <Custom Action="WixCloseApplications"   Before="StopServices"/>
 
       <!-- We need to use higher sequence numbers for AppSearch and LaunchConditions to have enough sequence room to schedule all properties related custom actions -->
-      <AppSearch Sequence="100" />
-      <LaunchConditions Sequence="200" />
+      <AppSearch Sequence="200" />
+      <LaunchConditions Sequence="400" />
+
+[%- IF bits==32 %]
+      <Custom Action="SchedSecureObjects" After="CreateFolders"><![CDATA[NOT (INSTALLDIR<<ProgramFilesFolder AND (NOT LOCAL OR LOCAL<<ProgramFilesFolder)) AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SetFixInstallDir" After="SchedSecureObjects"><![CDATA[NOT (INSTALLDIR<<ProgramFilesFolder AND (NOT LOCAL OR LOCAL<<ProgramFilesFolder)) AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="FixInstallDir" After="SetFixInstallDir"><![CDATA[NOT (INSTALLDIR<<ProgramFilesFolder AND (NOT LOCAL OR LOCAL<<ProgramFilesFolder)) AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SetFixLocalDir" After="SchedSecureObjects"><![CDATA[LOCAL<>"" AND NOT (INSTALLDIR<<ProgramFilesFolder AND LOCAL<<ProgramFilesFolder) AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="FixLocalDir" After="SetFixLocalDir"><![CDATA[LOCAL<>"" AND NOT (INSTALLDIR<<ProgramFilesFolder AND LOCAL<<ProgramFilesFolder) AND NOT REMOVE~="ALL"]]></Custom>
+[%- ELSE %]
+      <Custom Action="SchedSecureObjects_x64" After="CreateFolders"><![CDATA[NOT (INSTALLDIR<<ProgramFiles64Folder AND (NOT LOCAL OR LOCAL<<ProgramFiles64Folder)) AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SetFixInstallDir" After="SchedSecureObjects_x64"><![CDATA[NOT (INSTALLDIR<<ProgramFiles64Folder AND (NOT LOCAL OR LOCAL<<ProgramFiles64Folder)) AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="FixInstallDir" After="SetFixInstallDir"><![CDATA[NOT (INSTALLDIR<<ProgramFiles64Folder AND (NOT LOCAL OR LOCAL<<ProgramFiles64Folder)) AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SetFixLocalDir" After="SchedSecureObjects_x64"><![CDATA[LOCAL<>"" AND NOT (INSTALLDIR<<ProgramFiles64Folder AND LOCAL<<ProgramFiles64Folder) AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="FixLocalDir" After="SetFixLocalDir"><![CDATA[LOCAL<>"" AND NOT (INSTALLDIR<<ProgramFiles64Folder AND LOCAL<<ProgramFiles64Folder) AND NOT REMOVE~="ALL"]]></Custom>
+[%- END %]
+      <Custom Action="UpdateLocalDir" Before="CostFinalize"><![CDATA[LOCAL<>"" AND NOT LOCAL>>"\" AND NOT REMOVE~="ALL"]]></Custom>
 
       <!-- Schedule custom action to always remove windows task if exists -->
       <Custom Action="SetEndTask" Before="EndTask" />
@@ -456,23 +613,23 @@
       <InstallServices>EXECMODE=1</InstallServices>
       <StartServices>EXECMODE=1</StartServices>
       <!-- Only support util:ServiceConfig when expecting to be installed as service -->
-      <Custom Action="SchedServiceConfig" After="InstallServices">EXECMODE=1 AND NOT REMOVE~="ALL"</Custom>
+      <Custom Action="SchedServiceConfig" After="InstallServices"><![CDATA[EXECMODE=1 AND NOT REMOVE~="ALL"]]></Custom>
 
       <!-- Schedule custom action to create windows task if necessary -->
-      <Custom Action="SetTaskMinute" After="InstallServices">EXECMODE=2 AND TASK_FREQUENCY~="minute" AND NOT REMOVE~="ALL"</Custom>
-      <Custom Action="TaskMinute" After="InstallServices">EXECMODE=2 AND TASK_FREQUENCY~="minute" AND NOT REMOVE~="ALL"</Custom>
-      <Custom Action="SetTaskHourly" After="InstallServices">EXECMODE=2 AND TASK_FREQUENCY~="hourly" AND NOT REMOVE~="ALL"</Custom>
-      <Custom Action="TaskHourly" After="InstallServices">EXECMODE=2 AND TASK_FREQUENCY~="hourly" AND NOT REMOVE~="ALL"</Custom>
-      <Custom Action="SetTaskDaily" After="InstallServices">EXECMODE=2 AND TASK_FREQUENCY~="daily" AND NOT REMOVE~="ALL"</Custom>
-      <Custom Action="TaskDaily" After="InstallServices">EXECMODE=2 AND TASK_FREQUENCY~="daily" AND NOT REMOVE~="ALL"</Custom>
+      <Custom Action="SetTaskMinute" After="InstallServices"><![CDATA[EXECMODE=2 AND TASK_FREQUENCY~="minute" AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="TaskMinute" After="InstallServices"><![CDATA[EXECMODE=2 AND TASK_FREQUENCY~="minute" AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SetTaskHourly" After="InstallServices"><![CDATA[EXECMODE=2 AND TASK_FREQUENCY~="hourly" AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="TaskHourly" After="InstallServices"><![CDATA[EXECMODE=2 AND TASK_FREQUENCY~="hourly" AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SetTaskDaily" After="InstallServices"><![CDATA[EXECMODE=2 AND TASK_FREQUENCY~="daily" AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="TaskDaily" After="InstallServices"><![CDATA[EXECMODE=2 AND TASK_FREQUENCY~="daily" AND NOT REMOVE~="ALL"]]></Custom>
 
       <!-- Schedule custom action to set forcerun, also by-passing lazy option for not service exec modes -->
-      <Custom Action="SetForceRun" Before="ForceRun">RUNNOW=1 AND NOT REMOVE~="ALL"</Custom>
-      <Custom Action="ForceRun" Before="StartServices">RUNNOW=1 AND NOT REMOVE~="ALL"</Custom>
+      <Custom Action="SetForceRun" Before="ForceRun"><![CDATA[RUNNOW=1 AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="ForceRun" Before="StartServices"><![CDATA[RUNNOW=1 AND NOT REMOVE~="ALL"]]></Custom>
 
       <!-- Schedule custom action to support runnow option for not service exec modes -->
-      <Custom Action="SetRunNow" Before="RunNow">RUNNOW=1 AND NOT EXECMODE=1 AND NOT REMOVE~="ALL"</Custom>
-      <Custom Action="RunNow" Before="InstallFinalize">RUNNOW=1 AND NOT EXECMODE=1 AND NOT REMOVE~="ALL"</Custom>
+      <Custom Action="SetRunNow" Before="RunNow"><![CDATA[RUNNOW=1 AND NOT EXECMODE=1 AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="RunNow" Before="InstallFinalize"><![CDATA[RUNNOW=1 AND NOT EXECMODE=1 AND NOT REMOVE~="ALL"]]></Custom>
 
       <!-- GLPI Agent 1.0 to 1.2 installers was creating wrongly named firewall rules, be sure to clean up them on any new install -->
       <Custom Action="SetDeleteWrongFirewallRuleInCmd" Before="DeleteFirewallWrongIn" />
@@ -485,30 +642,33 @@
       <!-- Schedule custom action to install/uninstall firewall exception rules -->
       <Custom Action="SetDeleteFirewallExceptionCmd" Before="DeleteFirewallException" />
       <Custom Action="DeleteFirewallException" Before="RemoveFiles" />
-      <Custom Action="SetAddFirewallExceptionInCmd" Before="AddFirewallExceptionIn">ADD_FIREWALL_EXCEPTION=1 AND NOT REMOVE~="ALL"</Custom>
-      <Custom Action="AddFirewallExceptionIn" After="InstallFiles">ADD_FIREWALL_EXCEPTION=1 AND NOT REMOVE~="ALL"</Custom>
-      <Custom Action="SetAddFirewallExceptionOutCmd" Before="AddFirewallExceptionOut">ADD_FIREWALL_EXCEPTION=1 AND NOT REMOVE~="ALL"</Custom>
-      <Custom Action="AddFirewallExceptionOut" After="InstallFiles">ADD_FIREWALL_EXCEPTION=1 AND NOT REMOVE~="ALL"</Custom>
+      <Custom Action="SetAddFirewallExceptionInCmd" Before="AddFirewallExceptionIn"><![CDATA[ADD_FIREWALL_EXCEPTION=1 AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="AddFirewallExceptionIn" After="InstallFiles"><![CDATA[ADD_FIREWALL_EXCEPTION=1 AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="SetAddFirewallExceptionOutCmd" Before="AddFirewallExceptionOut"><![CDATA[ADD_FIREWALL_EXCEPTION=1 AND NOT REMOVE~="ALL"]]></Custom>
+      <Custom Action="AddFirewallExceptionOut" After="InstallFiles"><![CDATA[ADD_FIREWALL_EXCEPTION=1 AND NOT REMOVE~="ALL"]]></Custom>
     </InstallExecuteSequence>
 
     <InstallUISequence>
+      <Custom Action="CheckElevated" Before="LaunchConditions"><![CDATA[Installed AND (NOT REMOVE~="ALL")]]></Custom>
       <!-- InstallUISequence is used to define a dialog or Custom Action that fires in the UI sequence of events during the install -->
-      <Custom Action="CA_GetARPInstallLoc"    Before="CostInitialize">UPGRADINGPRODUCTCODE AND UPGRADEDIR</Custom>
+      <Custom Action="CA_GetARPInstallLoc"    Before="CostInitialize"><![CDATA[UPGRADINGPRODUCTCODE AND UPGRADEDIR]]></Custom>
       <!-- Better set ProgressDlg to be after MigrateFeatureStates so we can safely insert SetProperties before ExecuteAction -->
       <Show Dialog="ProgressDlg"              After="MigrateFeatureStates" />
       <!-- We need to use higher sequence numbers for AppSearch and LaunchConditions to have enough sequence room to schedule all properties related custom actions -->
-      <AppSearch Sequence="100" />
-      <LaunchConditions Sequence="200" />
+      <AppSearch Sequence="200" />
+      <LaunchConditions Sequence="400" />
     </InstallUISequence>
 
-    <Condition Message="Cannot install on Windows 9x or ME systems.">VersionNT</Condition>
-    <Condition Message="Cannot install on Windows NT 4.0 or Windows 2000 systems.">VersionNT &gt; 500</Condition>
+    <Condition Message="Cannot install on Windows 9x or ME systems."><![CDATA[VersionNT]]></Condition>
+    <Condition Message="Cannot install on Windows NT 4.0 or Windows 2000 systems."><![CDATA[VersionNT > 500]]></Condition>
 
     <UIRef Id='WixUI_MyInstallDlg' />
     <UIRef Id='WixUI_ErrorProgressText' />
     <UIRef Id='WixUI_Common' />
 
     <UI Id="WixUI_MyInstallDlg">
+      <Error Id="25000">Only administrators can modify $(var.AgentName) installation</Error>
+
       <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
       <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
       <TextStyle Id="WixUI_Font_Title"  FaceName="Tahoma" Size="9" Bold="yes" />
@@ -540,11 +700,11 @@
 
       <Publish Dialog="InstallDirDlg"         Control="Back"   Event="NewDialog" Value="LicenseDlg">1</Publish>
       <Publish Dialog="InstallDirDlg"         Control="Next"   Event="SetTargetPath" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
-      <Publish Dialog="InstallDirDlg"         Control="Next"   Event="DoAction" Value="WixUIValidatePath" Order="2">NOT WIXUI_DONTVALIDATEPATH</Publish>
+      <Publish Dialog="InstallDirDlg"         Control="Next"   Event="DoAction" Value="WixUIValidatePath" Order="2"><![CDATA[NOT WIXUI_DONTVALIDATEPATH]]></Publish>
       <Publish Dialog="InstallDirDlg"         Control="Next"   Event="SpawnDialog" Value="InvalidDirDlg" Order="3"><![CDATA[NOT WIXUI_DONTVALIDATEPATH AND WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
       <Publish Dialog="InstallDirDlg"         Control="Next"   Event="DoAction" Value="SetDefaultLogFile" Order="4">1</Publish>
       <Publish Dialog="InstallDirDlg"         Control="Next"   Event="DoAction" Value="SetDefaultVarDir" Order="5">1</Publish>
-      <Publish Dialog="InstallDirDlg"         Control="Next"   Event="NewDialog" Value="SetupTypeDlg" Order="6">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
+      <Publish Dialog="InstallDirDlg"         Control="Next"   Event="NewDialog" Value="SetupTypeDlg" Order="6"><![CDATA[WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"]]></Publish>
       <Publish Dialog="InstallDirDlg"         Control="ChangeFolder" Property="_BrowseProperty" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
       <Publish Dialog="InstallDirDlg"         Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
 
@@ -557,35 +717,35 @@
       <Publish Dialog="CustomizeDlg"          Control="Back"   Event="NewDialog" Value="SetupTypeDlg" Order="2">NOT Installed</Publish>
       <Publish Dialog="CustomizeDlg"          Control="Next"   Event="NewDialog" Value="D_TargetSetupDlg">1</Publish>
 
-      <Publish Dialog="D_TargetSetupDlg"      Control="Back"   Event="NewDialog" Value="CustomizeDlg" Order="1">WixUI_InstallMode = "InstallCustom" OR WixUI_InstallMode = "Change"</Publish>
-      <Publish Dialog="D_TargetSetupDlg"      Control="Back"   Event="NewDialog" Value="SetupTypeDlg" Order="2">WixUI_InstallMode = "InstallTypical" OR WixUI_InstallMode = "InstallComplete"</Publish>
+      <Publish Dialog="D_TargetSetupDlg"      Control="Back"   Event="NewDialog" Value="CustomizeDlg" Order="1"><![CDATA[WixUI_InstallMode = "InstallCustom" OR WixUI_InstallMode = "Change"]]></Publish>
+      <Publish Dialog="D_TargetSetupDlg"      Control="Back"   Event="NewDialog" Value="SetupTypeDlg" Order="2"><![CDATA[WixUI_InstallMode = "InstallTypical" OR WixUI_InstallMode = "InstallComplete"]]></Publish>
       <Publish Dialog="D_TargetSetupDlg"      Control="Next"   Property="_LOCALDIR" Value="[LOCAL]" Order="1">1</Publish>
-      <Publish Dialog="D_TargetSetupDlg"      Control="Next"   Event="NewDialog" Value="VerifyReadyDlg" Order="2">QUICKINSTALL</Publish>
-      <Publish Dialog="D_TargetSetupDlg"      Control="Next"   Event="NewDialog" Value="ServerSSLSetupDlg" Order="3">NOT QUICKINSTALL AND SERVER</Publish>
-      <Publish Dialog="D_TargetSetupDlg"      Control="Next"   Event="NewDialog" Value="ExecModeDlg" Order="4">NOT QUICKINSTALL AND NOT SERVER</Publish>
-      <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Property="_LOCALDIR" Value="[INSTALLDIR]" Order="2">NOT LOCAL</Publish>
-      <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Property="_LOCALDIR" Value="[LOCAL]" Order="3">LOCAL</Publish>
-      <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Event="SetTargetPath" Value="_LOCALDIR" Order="4">NOT WIXUI_DONTVALIDATEPATH</Publish>
-      <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Event="DoAction" Value="WixUIValidatePath" Order="5">NOT WIXUI_DONTVALIDATEPATH</Publish>
+      <Publish Dialog="D_TargetSetupDlg"      Control="Next"   Event="NewDialog" Value="VerifyReadyDlg" Order="2"><![CDATA[QUICKINSTALL]]></Publish>
+      <Publish Dialog="D_TargetSetupDlg"      Control="Next"   Event="NewDialog" Value="ServerSSLSetupDlg" Order="3"><![CDATA[NOT QUICKINSTALL AND SERVER]]></Publish>
+      <Publish Dialog="D_TargetSetupDlg"      Control="Next"   Event="NewDialog" Value="ExecModeDlg" Order="4"><![CDATA[NOT QUICKINSTALL AND NOT SERVER]]></Publish>
+      <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Property="_LOCALDIR" Value="[INSTALLDIR]" Order="2"><![CDATA[NOT LOCAL]]></Publish>
+      <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Property="_LOCALDIR" Value="[LOCAL]" Order="3"><![CDATA[LOCAL]]></Publish>
+      <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Event="SetTargetPath" Value="_LOCALDIR" Order="4"><![CDATA[NOT WIXUI_DONTVALIDATEPATH]]></Publish>
+      <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Event="DoAction" Value="WixUIValidatePath" Order="5"><![CDATA[NOT WIXUI_DONTVALIDATEPATH]]></Publish>
       <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Property="_LOCALDIR" Value="[INSTALLDIR]" Order="6"><![CDATA[NOT WIXUI_DONTVALIDATEPATH AND WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
       <Publish Dialog="D_TargetSetupDlg"      Control="ChangeLocal" Event="SpawnDialog" Value="BrowseLocalDlg" Order="7">1</Publish>
 
       <Publish Dialog="ServerSSLSetupDlg"     Control="Back"   Event="NewDialog" Value="D_TargetSetupDlg">1</Publish>
-      <Publish Dialog="ServerSSLSetupDlg"     Control="Next"   Event="NewDialog" Value="ProxySetupDlg">1</Publish>
+      <Publish Dialog="ServerSSLSetupDlg"     Control="Next"   Event="NewDialog" Value="ServerSetupDlg">1</Publish>
 
-      <Publish Dialog="ProxySetupDlg"         Control="Back"   Event="NewDialog" Value="ServerSSLSetupDlg">1</Publish>
-      <Publish Dialog="ProxySetupDlg"         Control="Next"   Event="NewDialog" Value="ExecModeDlg">1</Publish>
+      <Publish Dialog="ServerSetupDlg"         Control="Back"   Event="NewDialog" Value="ServerSSLSetupDlg">1</Publish>
+      <Publish Dialog="ServerSetupDlg"         Control="Next"   Event="NewDialog" Value="ExecModeDlg">1</Publish>
 
-      <Publish Dialog="ExecModeDlg"           Control="Back"   Event="NewDialog" Value="ProxySetupDlg" Order="1">SERVER</Publish>
-      <Publish Dialog="ExecModeDlg"           Control="Back"   Event="NewDialog" Value="D_TargetSetupDlg" Order="2">NOT SERVER</Publish>
+      <Publish Dialog="ExecModeDlg"           Control="Back"   Event="NewDialog" Value="ServerSetupDlg" Order="1"><![CDATA[SERVER]]></Publish>
+      <Publish Dialog="ExecModeDlg"           Control="Back"   Event="NewDialog" Value="D_TargetSetupDlg" Order="2"><![CDATA[NOT SERVER]]></Publish>
       <Publish Dialog="ExecModeDlg"           Control="Next"   Event="NewDialog" Value="HTTPServerSetupDlg" Order="1"><![CDATA[_EXECMODE_RADIO_BUTTON<>"2"]]></Publish>
-      <Publish Dialog="ExecModeDlg"           Control="Next"   Event="NewDialog" Value="TaskModeDlg" Order="2">_EXECMODE_RADIO_BUTTON="2"</Publish>
+      <Publish Dialog="ExecModeDlg"           Control="Next"   Event="NewDialog" Value="TaskModeDlg" Order="2"><![CDATA[_EXECMODE_RADIO_BUTTON="2"]]></Publish>
 
       <Publish Dialog="TaskModeDlg"           Control="Back"   Event="NewDialog" Value="ExecModeDlg">1</Publish>
       <Publish Dialog="TaskModeDlg"           Control="Next"   Event="NewDialog" Value="HTTPServerSetupDlg">1</Publish>
 
       <Publish Dialog="HTTPServerSetupDlg"    Control="Back"   Event="NewDialog" Value="ExecModeDlg" Order="1"><![CDATA[_EXECMODE_RADIO_BUTTON<>"2"]]></Publish>
-      <Publish Dialog="HTTPServerSetupDlg"    Control="Back"   Event="NewDialog" Value="TaskModeDlg" Order="2">_EXECMODE_RADIO_BUTTON="2"</Publish>
+      <Publish Dialog="HTTPServerSetupDlg"    Control="Back"   Event="NewDialog" Value="TaskModeDlg" Order="2"><![CDATA[_EXECMODE_RADIO_BUTTON="2"]]></Publish>
       <Publish Dialog="HTTPServerSetupDlg"    Control="Next"   Event="NewDialog" Value="MiscelaneousOptionsDlg">1</Publish>
 
       <Publish Dialog="MiscelaneousOptionsDlg" Control="Back"   Event="NewDialog" Value="HTTPServerSetupDlg">1</Publish>
@@ -597,9 +757,9 @@
       <Publish Dialog="DebugOptionsDlg"       Control="Back"   Event="NewDialog" Value="AdvancedOptionsDlg">1</Publish>
       <Publish Dialog="DebugOptionsDlg"       Control="Next"   Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
 
-      <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"</Publish>
-      <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="D_TargetSetupDlg" Order="2">QUICKINSTALL</Publish>
-      <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="DebugOptionsDlg" Order="3">NOT QUICKINSTALL</Publish>
+      <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="D_TargetSetupDlg" Order="1"><![CDATA[QUICKINSTALL]]></Publish>
+      <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="DebugOptionsDlg" Order="2"><![CDATA[NOT QUICKINSTALL]]></Publish>
+      <Publish Dialog="VerifyReadyDlg"        Control="Back"   Event="NewDialog" Value="MaintenanceTypeDlg" Order="3"><![CDATA[WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"]]></Publish>
 
       <Publish Dialog="MaintenanceWelcomeDlg" Control="Next"   Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
       <!-- Reinstall feat_AGENT feature on Change case so service could be reinstalled and restarted, registry values saved and firewall exception setup -->
@@ -620,7 +780,7 @@
         <Control Id="Description" Type="Text" X="25" Y="23" Width="340" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.LicenseAgreementDlgDescription)" />
         <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.LicenseAgreementDlgTitle)" />
         <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)">
-          <Publish Event="SpawnWaitDialog" Value="WaitForCostingDlg">!(wix.WixUICostingPopupOptOut) OR CostingComplete = 1</Publish>
+          <Publish Event="SpawnWaitDialog" Value="WaitForCostingDlg"><![CDATA[!(wix.WixUICostingPopupOptOut) OR CostingComplete = 1]]></Publish>
         </Control>
         <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
         <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
@@ -707,25 +867,30 @@
         <Control Id="NoSSLCheckCB" Type="CheckBox" X="322" Y="210" Width="10" Height="10" CheckBoxValue="1" Property="NO_SSL_CHECK" />
       </Dialog>
 
-      <!-- Dedicated dialog to setup server proxy options -->
-      <Dialog Id="ProxySetupDlg" Width="370" Height="270" Title="!(loc.ProxySetupDlgTitle)">
+      <!-- Dedicated dialog to setup server options -->
+      <Dialog Id="ServerSetupDlg" Width="370" Height="270" Title="!(loc.ServerSetupDlgTitle)">
         <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Text="Bmp_MainBanner" TabSkip="no" />
         <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
         <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
-        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Text="!(loc.ProxySetupDlg_Title)" Transparent="yes" NoPrefix="yes" />
-        <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Text="!(loc.ProxySetupDlgDescription)" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Text="!(loc.ServerSetupDlg_Title)" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Text="!(loc.ServerSetupDlgDescription)" Transparent="yes" NoPrefix="yes" />
         <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" />
         <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
         <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
           <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
         </Control>
-        <Control Id="ProxySetupDlgGrp" Type="GroupBox" X="15" Y="70" Width="340" Height="140" Text="!(loc.ProxySetupGroup)" />
-        <Control Id="ProxyServerDescription" Type="Text" X="25" Y="88" Width="320" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.ProxyServerDescription)" />
-        <Control Id="ProxyServer" Type="Edit" X="25" Y="100" Width="320" Height="15" Property="PROXY" />
-        <Control Id="ProxyUserDescription" Type="Text" X="25" Y="130" Width="320" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.ProxyUserDescription)" />
-        <Control Id="ProxyUser" Type="Edit" X="25" Y="142" Width="320" Height="15" Property="USER" />
-        <Control Id="ProxyPasswordDescription" Type="Text" X="25" Y="172" Width="320" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.ProxyPasswordDescription)" />
-        <Control Id="ProxyPassword" Type="Edit" X="25" Y="184" Width="320" Height="15" Password="yes" Property="PASSWORD" />
+        <Control Id="ProxySetupDlgGrp" Type="GroupBox" X="15" Y="50" Width="340" Height="42" Text="!(loc.ProxyServerSetupGroup)" />
+        <Control Id="ProxyServerDescription" Type="Text" X="25" Y="60" Width="320" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.ProxyServerDescription)" />
+        <Control Id="ProxyServer" Type="Edit" X="25" Y="72" Width="320" Height="15" Property="PROXY" />
+        <Control Id="ServerAuthenticationSetupDlgGrp" Type="GroupBox" X="15" Y="95" Width="340" Height="134" Text="!(loc.ServerAuthenticationSetupGroup)" />
+        <Control Id="BasicAuthenticationUserDescription" Type="Text" X="25" Y="105" Width="320" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.BasicAuthenticationUserDescription)" />
+        <Control Id="BasicAuthenticationUser" Type="Edit" X="25" Y="117" Width="320" Height="15" Property="USER" />
+        <Control Id="BasicAuthenticationPasswordDescription" Type="Text" X="25" Y="134" Width="320" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.BasicAuthenticationPasswordDescription)" />
+        <Control Id="BasicAuthenticationPassword" Type="Edit" X="25" Y="146" Width="320" Height="15" Password="yes" Property="PASSWORD" />
+        <Control Id="OAuthAuthenticationClientIdDescription" Type="Text" X="25" Y="165" Width="320" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.OAuthAuthenticationClientIdDescription)" />
+        <Control Id="OAuthAuthenticationClientId" Type="Edit" X="25" Y="177" Width="320" Height="15" Property="OAUTH_CLIENT_ID" />
+        <Control Id="OAuthAuthenticationClientSecretDescription" Type="Text" X="25" Y="194" Width="320" Height="10" Transparent="yes" NoPrefix="yes" Text="!(loc.OAuthAuthenticationClientSecretDescription)" />
+        <Control Id="OAuthAuthenticationClientSecret" Type="Edit" X="25" Y="206" Width="320" Height="15" Password="yes" Property="OAUTH_CLIENT_SECRET" />
       </Dialog>
 
       <!-- Dedicated dialog to select execution mode, only service or manual for now -->
@@ -1000,22 +1165,35 @@
         </Directory> <!-- INSTALLDIR -->
       </Directory>   <!-- ProgramFilesFolder -->
 
+      <Directory Id="_LOCALDIR">
+        <Component Id="LocalDir" Guid="$(var.LocalDirGuid)" KeyPath="yes" Feature="feat_AGENT">
+          <CreateFolder>
+            <util:PermissionEx GenericAll="yes" User="CREATOR OWNER" />
+            <util:PermissionEx GenericAll="yes" User="LocalSystem" />
+            <util:PermissionEx GenericAll="yes" User="Administrators" />
+            <util:PermissionEx GenericExecute="yes" GenericRead="yes" User="AuthenticatedUser" />
+          </CreateFolder>
+          <RemoveFolder Id="rm.local" On="uninstall" />
+          <Condition><![CDATA[LOCAL<>""]]></Condition>
+        </Component>
+      </Directory>
+
       <Directory Id="ProgramMenuFolder" />
 
     </Directory>     <!-- TARGETDIR -->
 
 [%- IF bits==32 %]
-    <util:CloseApplication Id="CloseGlpiAgentMonitor" Target="GLPI-AgentMonitor-x86.exe" EndSessionMessage="yes" RebootPrompt="no"></util:CloseApplication>
+    <util:CloseApplication Id="CloseGlpiAgentMonitor" Target="GLPI-AgentMonitor-x86.exe" TerminateProcess="0" RebootPrompt="no"></util:CloseApplication>
 [%- ELSE %]
-    <util:CloseApplication Id="CloseGlpiAgentMonitor" Target="GLPI-AgentMonitor-x64.exe" EndSessionMessage="yes" RebootPrompt="no"></util:CloseApplication>
+    <util:CloseApplication Id="CloseGlpiAgentMonitor" Target="GLPI-AgentMonitor-x64.exe" TerminateProcess="0" RebootPrompt="no"></util:CloseApplication>
 [%- END %]
 
     <Feature Id="feat_MSI"  Title="!(loc.ProductTitle)" Description="!(loc.ProductDescription)" Level="1" Display="expand" Absent="disallow">
       <!-- feat_AGENT permits to use "Change" requests to entirely (re-)configure the agent -->
       <Feature Id="feat_AGENT" Display="hidden" Absent="disallow" />
       <Feature Id="feat_NETINV"  Title="!(loc.NetInventory)" Description="!(loc.NetInventoryDescription)" Level="1000" />
-      <Feature Id="feat_DEPLOY"  Title="!(loc.Deploy)" Description="!(loc.DeployDescription)" Level="3" />
-      <Feature Id="feat_COLLECT" Title="!(loc.Collect)" Description="!(loc.CollectDescription)" Level="3" />
+      <Feature Id="feat_DEPLOY"  Title="!(loc.Deploy)" Description="!(loc.DeployDescription)" Level="1000" />
+      <Feature Id="feat_COLLECT" Title="!(loc.Collect)" Description="!(loc.CollectDescription)" Level="1000" />
       <Feature Id="feat_ESX"     Title="!(loc.Esx)" Description="!(loc.EsxDescription)" Level="1000" />
       <!-- Level=0: WOL still not supported in this installer -->
       <Feature Id="feat_WOL"     Title="!(loc.Wol)" Description="!(loc.WolDescription)" Level="0" />

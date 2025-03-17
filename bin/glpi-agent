@@ -5,12 +5,14 @@ use warnings;
 
 use lib './lib';
 use setup;
+use lib $setup{libdir};
 
 use English qw(-no_match_vars);
 use Getopt::Long;
 use Pod::Usage;
 
 use GLPI::Agent;
+use GLPI::Agent::Event;
 
 Getopt::Long::Configure( "no_ignorecase" );
 
@@ -32,9 +34,14 @@ GetOptions(
     'no-fork',
     'debug+',
     'delaytime=s',
+    'esx-itemtype=s',
     'force|f',
+    'full',
+    'full-inventory-postpone=i',
+    'glpi-version=s',
     'help|h',
     'html',
+    'itemtype=s',
     'json',
     'lazy',
     'list-tasks',
@@ -50,6 +57,8 @@ GetOptions(
     'no-compression|C',
     'no-task=s',
     'no-p2p',
+    'oauth-client-id=s',
+    'oauth-client-secret=s',
     'partial=s',
     'password|p=s',
     'pidfile:s',
@@ -61,11 +70,13 @@ GetOptions(
     'listen',
     'remote=s',
     'remote-workers=i',
+    'required-category=s',
     'set-forcerun',
     'scan-homedirs',
     'scan-profiles',
     'server|s=s',
     'ssl-fingerprint=s',
+    'ssl-keystore=s',
     'tag|t=s',
     'tasks=s',
     'timeout=i',
@@ -116,6 +127,11 @@ if ($options->{daemon}) {
         print STDERR $EVAL_ERROR;
         exit 1;
     }
+}
+
+if ($options->{full}) {
+    # Disable full inventory postpone if requested
+    $options->{'full-inventory-postpone'} = 0;
 }
 
 die "given '$options->{vardir}' vardir folder doesn't exist\n"
@@ -183,12 +199,12 @@ if ($options->{'set-forcerun'}) {
 if ($options->{partial}) {
     die "--partial option not compatible with --daemon\n"
         if $options->{daemon};
-    $agent->{event} = {
+    $agent->{event} = GLPI::Agent::Event->new(
         name        => "partial inventory",
         task        => "inventory",
         partial     => 1,
         category    => $options->{partial},
-    };
+    );
 }
 
 if ($options->{credentials}) {
@@ -265,6 +281,14 @@ glpi-agent [options] [--server server|--local path]
     --partial=CATEGORY             make a partial inventory of given category
                                      items, this option implies --json
     --credentials                  set credentials to support database inventory
+    --full-inventory-postpone=NUM  set number of possible full inventory postpone (14)
+    --full                         force inventory task to generate a full inventory
+    --required-category=CATEGORY   list of category required even when postponing full inventory
+    --itemtype=TYPE                set asset type for target supporting genericity like GLPI 11+
+                                   Remark: This option is also used by RemoteInventory task
+
+  ESX task specific options:
+    --esx-itemtype=TYPE            set ESX asset type for target supporting genericity like GLPI 11+
 
   RemoteInventory task specific options:
     --remote=REMOTE[,REMOTE]...    specify a list of remotes to process in place
@@ -298,6 +322,10 @@ glpi-agent [options] [--server server|--local path]
     --listen                       enable listener target if no local or
                                    server target is defined
 
+  Server authentication:
+    --oauth-client-id=ID           oauth client id to request oauth access token
+    --oauth-client-secret=SECRET   oauth client secret to request oauth access token
+
   Logging options:
     --logger=BACKEND               logger backend (stderr)
     --logfile=FILE                 log file
@@ -323,6 +351,7 @@ glpi-agent [options] [--server server|--local path]
     --vardir=PATH                  use specified path as storage folder for agent
                                      persistent datas
 
+    --glpi-version=<VERSION>       set targeted glpi version to enable supported features
     --version                      print the version and exit
     --no-win32-ole-workaround      [win32 only] disable win32 work-around
                                      used to better handle Win32::OLE apis.
@@ -551,6 +580,30 @@ Setup credentials for database inventory
 CREDENTIALS should be a list of "key:value" separated by commas like in:
 For example: --credentials="type:login_password,login:root,password:********,use:postgresql,params_id:0"
 
+=item B<--full-inventory-postpone>=I<NUM>
+
+Set the number of time the agent can decide to generate a partial inventory with only
+changed category before generating a full inventory.
+
+=item B<--full>
+
+Force inventory task to generate a full inventory even if B<full-inventory-postpone> option
+is set. Indeed this is equivalent to set B<--full-inventory-postpone=0>.
+
+=item B<--required-category>=I<CATEGORY>
+
+Force inventory task to always include given category if B<full-inventory-postpone> option
+is set and the current inventory task run involves to generate a partial inventory.
+
+Multiple values can be specified, using comma as a separator. List of categories is the same than the one for I<--no-category> option,
+but I<bios> and I<harware> categories are always implied and can be omitted as they are still required for normal inventory import.
+
+=item B<--itemtype>=I<TYPE>
+
+Allow to set JSON inventory itemtype to I<TYPE>. This feature requires a target supporting genericity, like GLPI 11+.
+
+When expected asset itemtype in GLPI 11+ is B<Server>, I<itemtype> option value must be set to B<\Glpi\CustomAsset\Server>.
+
 =item B<--scan-homedirs>
 
 Allow the agent to scan home directories for virtual machines.
@@ -582,6 +635,18 @@ agent.
 
 =back
 
+=head2 ESX task specific options
+
+=over
+
+=item B<--esx-itemtype>=I<TYPE>
+
+Allow to set ESX JSON inventory itemtype to I<TYPE>. This feature requires a target supporting genericity, like GLPI 11+.
+
+When expected ESX asset itemtype in GLPI 11+ is B<Esx>, I<esx-itemtype> option value must be set to B<\Glpi\CustomAsset\Esx>.
+
+=back
+
 =head2 Package deployment task specific options
 
 =over
@@ -600,7 +665,7 @@ Do not use peer to peer to download files.
 
 Use I<PROXY> as HTTP proxy.
 
-By default, the agent uses HTTP_PROXY environment variable.
+By default, the agent uses HTTP_PROXY environment variable unless option value is defined to B<none>.
 
 =item B<-u> I<USER>, B<--user>=I<USER>
 
@@ -659,6 +724,20 @@ Multiple values can be specified, using comma as a separator.
 This option should be used if no local or server target is defined and
 the agent still needs to answer http requests. B<--no-httpd> should not be set
 and B<--httpd-trust> should be set to enable trusted remote clients.
+
+=back
+
+=head2 Server authentication
+
+=over
+
+=item B<--oauth-client-id>=I<ID>
+
+The OAuth client id required to authenticate against GLPI >= 11.
+
+=item B<--oauth-client-secret>=I<SECRET>
+
+The OAuth client secret required to authenticate against GLPI >= 11.
 
 =back
 

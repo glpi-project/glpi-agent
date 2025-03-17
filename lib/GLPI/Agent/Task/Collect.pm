@@ -152,6 +152,9 @@ sub _validateAnswer {
 sub run {
     my ($self) = @_;
 
+    # Just reset event if run as an event to not trigger another one
+    $self->resetEvent();
+
     $self->{client} = GLPI::Agent::HTTP::Client::Fusion->new(
         logger  => $self->{logger},
         config  => $self->{config},
@@ -420,14 +423,16 @@ sub _findFile {
                     my $sha = Digest::SHA->new('512');
                     $sha->addfile( $File::Find::name, 'b' );
                     return
-                        if $sha->hexdigest ne $params{filter}{checkSumSHA512};
+                        if $sha->hexdigest ne lc($params{filter}{checkSumSHA512});
                 }
 
-                if ( $params{filter}{checkSumSHA2} ) {
-                    my $sha = Digest::SHA->new('2');
+                # checkSumSHA2 is an historic feature and was indeed sha256 at the time of this code original writing
+                my $expectedSha256 = $params{filter}{checkSumSHA256} || $params{filter}{checkSumSHA2};
+                if (!empty($expectedSha256)) {
+                    my $sha = Digest::SHA->new('256');
                     $sha->addfile( $File::Find::name, 'b' );
                     return
-                        if $sha->hexdigest ne $params{filter}{checkSumSHA2};
+                        if $sha->hexdigest ne lc($expectedSha256);
                 }
 
                 $params{logger}->debug2("Found file: ".$File::Find::name)

@@ -90,6 +90,19 @@
         <checkBox refId="GLPI_scan-homedirs" defaultChecked="false">scan-homedirs</checkBox>
         <checkBox refId="GLPI_scan-profiles" defaultChecked="false">scan-profiles</checkBox>
         <checkBox refId="GLPI_no-httpd">no-httpd</checkBox>
+        <textBox refId="GLPI_full-inventory-postpone">
+          <label>full-inventory-postpone</label>
+          <defaultValue>14</defaultValue>
+        </textBox>
+        <textBox refId="GLPI_required-category">
+          <label>required-category</label>
+          <defaultValue></defaultValue>
+        </textBox>
+        <textBox refId="GLPI_itemtype">
+          <label>itemtype</label>
+          <defaultValue></defaultValue>
+        </textBox>
+        <checkBox refId="GLPI_json">json</checkBox>
       </presentation>
     </presentationTable>
   </resources>

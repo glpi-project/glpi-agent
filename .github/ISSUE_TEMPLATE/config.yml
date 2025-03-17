@@ -1,4 +1,6 @@
 contact_links:
+  - name: GLPI-Agent Official and Public FAQ
+    url: https://faq.teclib.com/02_FAQ/Agent/
   - name: GLPI-Agent Discussions
     url: https://github.com/glpi-project/glpi-agent/discussions/
     about: You can ask questions and find answers on our github Discussionsn section.

@@ -46,8 +46,10 @@ sub doInventory {
     my $xorgData;
 
     my $xorgPid;
-    foreach my $process (getProcesses(logger  => $logger)) {
-        next unless $process->{CMD} =~ m{
+    my ($process) = getProcesses(
+        namespace => "same",
+        logger    => $logger,
+        filter    => qr{
             ^
             (?:
                 /usr/bin
@@ -59,10 +61,9 @@ sub doInventory {
                 /usr/libexec
             )
             /X
-        }x;
-        $xorgPid = $process->{PID};
-        last;
-    }
+        }x
+    );
+    $xorgPid = $process->{PID} if $process;
 
     if ($xorgPid) {
         my $fd = 0;

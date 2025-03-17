@@ -88,12 +88,26 @@ sub _log {
 
     chomp($message);
 
+    if (ref($self->{_event_cb}) eq "CODE") {
+        &{$self->{_event_cb}}(
+            level => $level,
+            message => $message
+        );
+        return if $params{skip_log};
+    }
+
     foreach my $backend (@{$self->{backends}}) {
         $backend->addMessage (
             level => $level,
             message => $message
         );
     }
+}
+
+sub register_event_cb {
+    my ($self, $callback) = @_;
+
+    $self->{_event_cb} = $callback;
 }
 
 sub reload {
@@ -107,21 +121,29 @@ sub reload {
 sub debug_level {
     my ($self) = @_;
 
+    return LOG_DEBUG2-LOG_INFO if $self->{_event_cb};
+
     return $self->{verbosity} > LOG_INFO ? $self->{verbosity} - LOG_INFO : 0;
 }
 
 sub debug2 {
     my ($self, $message) = @_;
 
-    return unless $self->{verbosity} >= LOG_DEBUG2;
-    $self->_log(level => 'debug2', message => $message);
+    return unless $self->{verbosity} >= LOG_DEBUG2 || $self->{_event_cb};
+    $self->_log(
+        level => 'debug2', message => $message,
+        skip_log => $self->{verbosity} < LOG_DEBUG2 ? 1 : 0,
+    );
 }
 
 sub debug {
     my ($self, $message) = @_;
 
-    return unless $self->{verbosity} >= LOG_DEBUG;
-    $self->_log(level => 'debug', message => $message);
+    return unless $self->{verbosity} >= LOG_DEBUG || $self->{_event_cb};
+    $self->_log(
+        level => 'debug', message => $message,
+        skip_log => $self->{verbosity} < LOG_DEBUG ? 1 : 0,
+    );
 }
 
 sub debug_result {

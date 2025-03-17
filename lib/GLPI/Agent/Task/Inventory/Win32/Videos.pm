@@ -50,9 +50,9 @@ sub _getVideos {
 
         my $video = {
             CHIPSET => $object->{VideoProcessor},
-            MEMORY  => $object->{AdapterRAM},
             NAME    => $object->{Name},
         };
+        $video->{MEMORY} = $object->{AdapterRAM} if $object->{AdapterRAM} && $object->{AdapterRAM} > 0;
 
         if ($object->{CurrentHorizontalResolution}) {
             $video->{RESOLUTION} =
@@ -72,17 +72,23 @@ sub _getVideos {
             );
             if ($videokey) {
                 foreach my $subkey (keys(%{$videokey})) {
-                    next unless $subkey =~ m{/$} && defined($videokey->{$subkey});
+                    next unless $subkey =~ m{/$} && defined($videokey->{$subkey}) && ref($videokey->{$subkey});
                     my $thispnpdeviceid = _pnpdeviceid($videokey->{$subkey}->{"/MatchingDeviceId"})
                         or next;
                     next unless $thispnpdeviceid eq $pnpdeviceid;
                     if (defined($videokey->{$subkey}->{"/HardwareInformation.qwMemorySize"})) {
-                        my $memorysize = unpack("Q", $videokey->{$subkey}->{"/HardwareInformation.qwMemorySize"});
-                        $video->{MEMORY} = $memorysize;
+                        my $memorysize = $videokey->{$subkey}->{"/HardwareInformation.qwMemorySize"} =~ /^\d+$/ ?
+                            int($videokey->{$subkey}->{"/HardwareInformation.qwMemorySize"})
+                            : unpack("Q", $videokey->{$subkey}->{"/HardwareInformation.qwMemorySize"});
+                        $video->{MEMORY} = $memorysize if $memorysize && $memorysize > 0;
                         last;
                     } elsif (defined($videokey->{$subkey}->{"/HardwareInformation.MemorySize"})) {
-                        my $memorysize = unpack("L", $videokey->{$subkey}->{"/HardwareInformation.MemorySize"});
-                        $video->{MEMORY} = $memorysize;
+                        my $memorysize = $videokey->{$subkey}->{"/HardwareInformation.MemorySize"} =~ /^0x/ ?
+                            hex2dec($videokey->{$subkey}->{"/HardwareInformation.MemorySize"})
+                            : $videokey->{$subkey}->{"/HardwareInformation.MemorySize"} =~ /^\d+$/ ?
+                            int($videokey->{$subkey}->{"/HardwareInformation.MemorySize"})
+                            : unpack("L", $videokey->{$subkey}->{"/HardwareInformation.MemorySize"});
+                        $video->{MEMORY} = $memorysize if $memorysize && $memorysize > 0;
                         last;
                     }
                 }

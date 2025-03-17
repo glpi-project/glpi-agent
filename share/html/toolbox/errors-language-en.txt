@@ -43,6 +43,7 @@ Delete credential:
 No credential selected:
 Can't delete used credential:
 
+No archiving software available:
 Deleting results:
 No result selected:
 Can't remove file:

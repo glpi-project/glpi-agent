@@ -144,7 +144,7 @@ sub getFirmwareDateByMibSupport {
 
     return unless $self->{MIBSUPPORT};
 
-    return $self->{MIBSUPPORT}->getMethod('getFirmwareDate');
+    return getCanonicalDate($self->{MIBSUPPORT}->getMethod('getFirmwareDate'));
 }
 
 sub getMacAddressByMibSupport {
@@ -269,7 +269,6 @@ sub setSerial {
             '.1.3.6.1.4.1.248.14.1.1.9.1.10.1',      # Hirschman MIB
             '.1.3.6.1.4.1.253.8.53.3.2.1.3.1',       # Xerox-MIB
             '.1.3.6.1.4.1.367.3.2.1.2.1.4.0',        # Ricoh-MIB
-            '.1.3.6.1.4.1.641.2.1.2.1.6.1',          # Lexmark-MIB
             '.1.3.6.1.4.1.1602.1.2.1.4.0',           # Canon-MIB
             '.1.3.6.1.4.1.2435.2.3.9.4.2.1.5.5.1.0', # Brother-MIB
             '.1.3.6.1.4.1.318.1.1.4.1.5.0',          # MasterSwitch-MIB
@@ -333,7 +332,7 @@ sub setFirmware {
         NAME            => $self->{MODEL} || 'device',
         DESCRIPTION     => 'device firmware',
         TYPE            => 'device',
-        DATE            => $self->getFirmwareDateByMibSupport(),
+        DATE            => $self->getFirmwareDateByMibSupport() // undef,
         VERSION         => $self->{FIRMWARE},
         MANUFACTURER    => $self->{MANUFACTURER}
     });
@@ -440,7 +439,7 @@ sub setModel {
     }
 
     # reset manufacturer by rule as real vendor based on first model word
-    if (exists $self->{MODEL}) {
+    unless (empty($self->{MODEL})) {
         my ($first_word) = $self->{MODEL} =~ /(\S+)/;
         my $result = $sysmodel_first_word{lc($first_word)};
         if ($result && $result->{manufacturer}) {
