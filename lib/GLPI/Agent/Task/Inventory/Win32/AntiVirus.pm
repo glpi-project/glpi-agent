@@ -666,8 +666,8 @@ sub _setSentinelOneInfos {
     $antivirus->{COMPANY} = "Sentinel Labs Inc.";
 
     my $version = getFirstMatch(
-        pattern => qr/^SentinelOne.* ([0-9.]+)$/,
-        command => "\"$command\" version",
+        pattern => qr/^Monitor Build id:\s+([0-9.]+)/,
+        command => "\"$command\" status",
         logger  => $logger
     );
     $antivirus->{VERSION} = $version if $version;
