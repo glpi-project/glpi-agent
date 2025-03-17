@@ -665,24 +665,13 @@ sub _setSentinelOneInfos {
 
     $antivirus->{COMPANY} = "Sentinel Labs Inc.";
 
-    my $version = getFirstMatch(
-        pattern => qr/^Monitor Build id:\s+([0-9.]+)/,
-        command => "\"$command\" status",
-        logger  => $logger
-    );
-    $antivirus->{VERSION} = $version if $version;
-
     my @lines = getAllLines(
         command => "\"$command\" status",
         logger  => $logger
     );
-    $antivirus->{ENABLED} = 1
-        if first { /^Disable State: Not disabled/i } @lines
-        && first { /^Self-Protection:\s+On$/i } @lines
-        && first { /^SentinelMonitor is loaded$/i } @lines
-        && first { /^SentinelAgent is loaded$/i } @lines;
-    $antivirus->{ENABLED} = 0
-        if first { /^Disable State: Agent disabled/i } @lines;
+    my $version = (first { /^Monitor Build id:/ } @lines) =~ /^Monitor Build id:\s+([0-9.]+)/ ? $1 : "";
+    $antivirus->{VERSION} = $version if $version;
+    $antivirus->{ENABLED} = (first { /^Disable State: Agent disabled/i } @lines) ? 0 : 1;
 
     # Not supported so we just assume it is updated when enabled.
     $antivirus->{UPTODATE} = $antivirus->{ENABLED};
