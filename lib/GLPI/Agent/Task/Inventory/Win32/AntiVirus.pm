@@ -677,9 +677,12 @@ sub _setSentinelOneInfos {
         logger  => $logger
     );
     $antivirus->{ENABLED} = 1
-        if first { /^Self-Protection:\s+On$/i } @lines
+        if first { /^Disable State: Not disabled/i } @lines
+        && first { /^Self-Protection:\s+On$/i } @lines
         && first { /^SentinelMonitor is loaded$/i } @lines
         && first { /^SentinelAgent is loaded$/i } @lines;
+    $antivirus->{ENABLED} = 0
+        if first { /^Disable State: Agent disabled/i } @lines;
 
     # Not supported so we just assume it is updated when enabled.
     $antivirus->{UPTODATE} = $antivirus->{ENABLED};
