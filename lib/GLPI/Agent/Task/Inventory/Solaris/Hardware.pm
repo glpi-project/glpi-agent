@@ -50,7 +50,7 @@ sub doInventory {
                 command => '/usr/sbin/zoneadm -z global list -p',
                 logger  => $logger
             );
-            if ($hardware->{UUID} eq '') {
+            if (empty($hardware->{UUID})) {
                 $hardware->{UUID} = _getUUIDGlobal( logger  => $logger );
             }
         }
