@@ -50,12 +50,30 @@ sub doInventory {
                 command => '/usr/sbin/zoneadm -z global list -p',
                 logger  => $logger
             );
+            if ($hardware->{UUID} eq '') {
+                $hardware->{UUID} = _getUUIDGlobal( logger  => $logger );
+            }
         }
     } elsif ($arch eq 'sparc') {
         $hardware->{UUID} = _getUUID( logger  => $logger );
     }
 
     $inventory->setHardware($hardware);
+}
+
+sub _getUUIDGlobal {
+    my (%params) = (
+        command => 'virtinfo -u',
+        @_
+    );
+
+    my $line = getFirstLine(%params);
+    return unless $line;
+
+    my @info = split(/: /, $line);
+    my $uuid = $info[1];
+
+    return $uuid;
 }
 
 sub _getUUID {
