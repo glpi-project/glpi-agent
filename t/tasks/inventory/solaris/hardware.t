@@ -11,9 +11,7 @@ use GLPI::Agent::Tools::Solaris;
 use GLPI::Agent::Task::Inventory::Solaris::Hardware;
 
 my %virtinfo_tests = (
-    'sample1' => {
-        'Domain UUID' => '915fbcf6-2b64-48ba-9b7b-05df341428be',
-    },
+    'sample1' => '915fbcf6-2b64-48ba-9b7b-05df341428be',
 );
 
 plan tests => 1;
