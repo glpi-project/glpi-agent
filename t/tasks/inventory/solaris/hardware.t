@@ -18,6 +18,6 @@ plan tests => (scalar keys %virtinfo_tests) + 1;
 
 foreach my $test (keys %virtinfo_tests) {
     my $file   = "resources/solaris/virtinfo/$test";
-    my $result = GLPI::Agent::Task::Inventory::Solaris::Hardware::_getUUIDGlobal(file => $file);virtinfo_tests
+    my $result = GLPI::Agent::Task::Inventory::Solaris::Hardware::_getUUIDGlobal(file => $file);
     is($result, $virtinfo_tests{$test}, "virtinfo parsing: $test");
 }
