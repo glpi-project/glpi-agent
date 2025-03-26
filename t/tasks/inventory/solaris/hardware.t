@@ -16,6 +16,8 @@ my %virtinfo_tests = (
     },
 );
 
+plan tests => (scalar keys %virtinfo_tests) + 1;
+
 foreach my $test (keys %virtinfo_tests) {
     my $file   = "resources/solaris/virtinfo/$test";
     my $result = GLPI::Agent::Task::Inventory::Solaris::Hardware::_getUUIDGlobal(file => $file);
