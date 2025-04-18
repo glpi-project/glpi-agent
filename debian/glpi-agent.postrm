@@ -7,7 +7,7 @@ case "$1" in
   purge)
     for ext in '~' '%' .bak .ucf-new .ucf-old .ucf-dist;  do
         for conf in agent inventory-server-plugin ssl-server-plugin server-test-plugin \
-            proxy-server-plugin proxy2-server-plugin toolbox-plugin
+            proxy-server-plugin proxy2-server-plugin
         do
             rm -f /etc/glpi-agent/$conf.cfg$ext
         done
@@ -18,7 +18,7 @@ case "$1" in
 
     # remove the configuration file itself
     for conf in agent inventory-server-plugin ssl-server-plugin server-test-plugin \
-        proxy-server-plugin proxy2-server-plugin toolbox-plugin
+        proxy-server-plugin proxy2-server-plugin
     do
         rm -f /etc/glpi-agent/$conf.cfg
     done
@@ -27,14 +27,14 @@ case "$1" in
     # and finally clear it out from the ucf database
     if which ucf >/dev/null; then
         for conf in agent inventory-server-plugin ssl-server-plugin server-test-plugin \
-            proxy-server-plugin proxy2-server-plugin toolbox-plugin
+            proxy-server-plugin proxy2-server-plugin
         do
             ucf --purge /etc/glpi-agent/$conf.cfg
         done
     fi
     if which ucfr >/dev/null; then
         for conf in agent inventory-server-plugin ssl-server-plugin server-test-plugin \
-            proxy-server-plugin proxy2-server-plugin toolbox-plugin
+            proxy-server-plugin proxy2-server-plugin
         do
             ucfr --purge glpi-agent /etc/glpi-agent/$conf.cfg
         done

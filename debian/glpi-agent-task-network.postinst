@@ -7,8 +7,7 @@ case "$1" in
   configure)
     [ -d "/etc/glpi-agent" ] || mkdir "/etc/glpi-agent"
     [ -d "/etc/glpi-agent/conf.d" ] || mkdir "/etc/glpi-agent/conf.d"
-    for conf in agent inventory-server-plugin ssl-server-plugin server-test-plugin \
-        proxy-server-plugin proxy2-server-plugin basic-authentication-server-plugin
+    for conf in toolbox-plugin snmp-advanced-support
     do
         ucf /usr/share/glpi-agent/etc/$conf.cfg /etc/glpi-agent/$conf.cfg
         ucfr glpi-agent /etc/glpi-agent/$conf.cfg
