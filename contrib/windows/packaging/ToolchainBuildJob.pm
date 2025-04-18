@@ -62,7 +62,6 @@ sub toolchain_build_steps {
                     { title => 'BASH',  run => 'bash',  args => [ '--version' ] },
                     { title => 'PATCH', run => 'patch', args => [ '--version' ] },
                     { title => 'UNAME', run => 'uname', args => [ '--version' ] },
-                    { title => 'DIFF',  run => 'diff',  args => [ '--version' ] },
                 ],
             },
             ### NEXT STEP 5 : Build zlib library ###############################
