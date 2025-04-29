@@ -12,7 +12,7 @@ BEGIN {
 
 use InstallerVersion;
 
-my $DEBREVISION = "1";
+my $DEBREVISION = "2";
 my $DEBVERSION = InstallerVersion::VERSION();
 # Add package a revision on official releases
 $DEBVERSION .= "-$DEBREVISION" unless $DEBVERSION =~ /-.+$/;

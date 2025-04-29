@@ -12,7 +12,7 @@ BEGIN {
 
 use InstallerVersion;
 
-my $RPMREVISION = "1";
+my $RPMREVISION = "2";
 my $RPMVERSION = InstallerVersion::VERSION();
 # Add package a revision on official releases
 $RPMVERSION .= "-$RPMREVISION" unless $RPMVERSION =~ /-.+$/;
