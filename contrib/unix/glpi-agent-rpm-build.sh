@@ -39,7 +39,8 @@ if [ ! -e lib -a ! -e tools/make-release.sh ]; then
     exit 1
 fi
 
-VER="1.14-2"
+VER=
+REV="2"
 if [ -n "${GITHUB_REF%refs/tags/*}" -o -z "$VER" ]; then
     VER=$(perl -Ilib -MGLPI::Agent::Version -e '$v = $GLPI::Agent::Version::VERSION; $v =~ s/-.*//; print $v')
 fi
