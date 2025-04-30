@@ -8,7 +8,7 @@ use parent 'GLPI::Agent::Task::Inventory::Module';
 use GLPI::Agent::Tools;
 
 sub isEnabled {
-  return canRead('/etc/os-release');
+    return canRead('/etc/os-release');
 }
 
 sub doInventory {
@@ -22,6 +22,14 @@ sub doInventory {
     # by checking /etc/debian_version
     _fixDebianOS(file => '/etc/debian_version', os => $os)
         if canRead('/etc/debian_version');
+
+    # Handle Astra Linux version information
+    _fixAstraOS(file => '/etc/astra/build_version', os => $os)
+        if canRead('/etc/astra/build_version');
+
+    # Handle Astra Linux license information
+    _fixAstraLicense(file => '/etc/astra_license', os => $os)
+        if canRead('/etc/astra_license');
 
     # Handle CentOS case as version is not well-defined on this distro
     # See https://bugs.centos.org/view.php?id=8359
@@ -55,6 +63,50 @@ sub _fixDebianOS {
     my $debian_version = getFirstLine(%params);
     $os->{VERSION} = $debian_version
         if $debian_version && $debian_version =~ /^\d/;
+}
+
+sub _fixAstraOS {
+    my (%params) = @_;
+
+    my $os = $params{os} // {};
+
+    my $astra_version = getFirstLine(%params);
+    $os->{VERSION} = $astra_version
+        if $astra_version && $astra_version =~ /^\d/;
+}
+
+sub _fixAstraLicense {
+    my (%params) = @_;
+
+    my $os = $params{os} // {};
+    my @lines = getAllLines(%params) or return;
+
+    foreach my $line (@lines) {
+        if ($line =~ /^DESCRIPTION="?(.*?)"?$/) {
+            my $edition = $1;
+            
+            my $security_level = 'unknown';
+            
+            if ($edition =~ /^([^\s()]+)\s*\(/) {
+                $security_level = $1;
+            }
+            elsif ($edition =~ /\(([^\s()]+)\)/) {
+                $security_level = $1;
+            }
+            elsif ($edition =~ /\(([^)]+)\)/) {
+                ($security_level) = split(/\s+/, $1);
+            }
+            
+            $security_level =~ s/^\s+|\s+$//g;
+            $security_level = 'unknown' unless $security_level;
+            
+            $os->{FULL_NAME} =~ s/\(.*?\)//g;
+            $os->{FULL_NAME} =~ s/\s+$//;
+            $os->{FULL_NAME} .= " (Security level: $security_level)";
+            
+            last;
+        }
+    }
 }
 
 sub _fixCentOS {
