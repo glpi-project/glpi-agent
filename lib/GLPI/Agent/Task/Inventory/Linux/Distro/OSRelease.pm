@@ -23,13 +23,9 @@ sub doInventory {
     _fixDebianOS(file => '/etc/debian_version', os => $os)
         if canRead('/etc/debian_version');
 
-    # Handle Astra Linux version information
-    _fixAstraOS(file => '/etc/astra/build_version', os => $os)
+    # Handle Astra Linux information
+    _fixAstraOS(os => $os)
         if canRead('/etc/astra/build_version');
-
-    # Handle Astra Linux license information
-    _fixAstraLicense(file => '/etc/astra_license', os => $os)
-        if canRead('/etc/astra_license');
 
     # Handle CentOS case as version is not well-defined on this distro
     # See https://bugs.centos.org/view.php?id=8359
@@ -67,45 +63,28 @@ sub _fixDebianOS {
 
 sub _fixAstraOS {
     my (%params) = @_;
+    my $os = $params{os} ||= {};
 
-    my $os = $params{os} // {};
+    if (my $version = getFirstLine(file => '/etc/astra/build_version')) {
+        $os->{VERSION} = $version if $version =~ /^\d/;
+    }
 
-    my $astra_version = getFirstLine(%params);
-    $os->{VERSION} = $astra_version
-        if $astra_version && $astra_version =~ /^\d/;
-}
+    return unless canRead('/etc/astra_license');
 
-sub _fixAstraLicense {
-    my (%params) = @_;
+    if (my ($edition) = map { /^DESCRIPTION="?(.*?)"?$/ ? $1 : () }
+                        getAllLines(file => '/etc/astra_license'))
+    {
+        my $security_level =
+            $edition =~ /^([^\s()]+)\s*\(/    ? $1 :
+            $edition =~ /\(([^\s()]+)\)/      ? $1 :
+            $edition =~ /\(([^)]+)\)/         ? (split(/\s+/, $1))[0] :
+            'unknown';
 
-    my $os = $params{os} // {};
-    my @lines = getAllLines(%params) or return;
+        $security_level =~ s/^\s+|\s+$//g;
+        $security_level = 'unknown' unless $security_level;
 
-    foreach my $line (@lines) {
-        if ($line =~ /^DESCRIPTION="?(.*?)"?$/) {
-            my $edition = $1;
-            
-            my $security_level = 'unknown';
-            
-            if ($edition =~ /^([^\s()]+)\s*\(/) {
-                $security_level = $1;
-            }
-            elsif ($edition =~ /\(([^\s()]+)\)/) {
-                $security_level = $1;
-            }
-            elsif ($edition =~ /\(([^)]+)\)/) {
-                ($security_level) = split(/\s+/, $1);
-            }
-            
-            $security_level =~ s/^\s+|\s+$//g;
-            $security_level = 'unknown' unless $security_level;
-            
-            $os->{FULL_NAME} =~ s/\(.*?\)//g;
-            $os->{FULL_NAME} =~ s/\s+$//;
-            $os->{FULL_NAME} .= " (Security level: $security_level)";
-            
-            last;
-        }
+        $os->{FULL_NAME} =~ s/\(.*?\)|\s+$//g;
+        $os->{FULL_NAME} .= " (Security level: $security_level)";
     }
 }
 
