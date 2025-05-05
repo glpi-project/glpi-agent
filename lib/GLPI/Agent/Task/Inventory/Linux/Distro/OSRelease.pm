@@ -71,20 +71,20 @@ sub _fixAstraOS {
 
     return unless canRead('/etc/astra_license');
 
-    if (my ($edition) = map { /^DESCRIPTION="?(.*?)"?$/ ? $1 : () }
-                        getAllLines(file => '/etc/astra_license'))
-    {
+    if (my ($edition) = getFirstMatch(
+        pattern => qr/^DESCRIPTION="?(.*?)"?$/,
+        file    => '/etc/astra_license'
+    )) {
         my $security_level =
             $edition =~ /^([^\s()]+)\s*\(/    ? $1 :
             $edition =~ /\(([^\s()]+)\)/      ? $1 :
             $edition =~ /\(([^)]+)\)/         ? (split(/\s+/, $1))[0] :
             'unknown';
 
-        $security_level =~ s/^\s+|\s+$//g;
-        $security_level = 'unknown' unless $security_level;
-
-        $os->{FULL_NAME} =~ s/\(.*?\)|\s+$//g;
-        $os->{FULL_NAME} .= " (Security level: $security_level)";
+        $security_level = trimWhitespace($security_level) || 'unknown';
+        
+        $os->{FULL_NAME} =~ s/\(.*?\)//g;
+        $os->{FULL_NAME} = trimWhitespace($os->{FULL_NAME}) . " (Security level: $security_level)"
     }
 }
 
