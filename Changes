@@ -8,6 +8,9 @@ core:
 inventory:
 * fix #917: Fix CrowndStrike Falcon antivirus support on linux
 
+injector:
+* fix #921: Provide an agentid on json submission when sending content from stdin
+
 packaging:
 * Update Windows packaging to use:
   - gcc 15.1.0posix-12.0.0-msvcrt-r1

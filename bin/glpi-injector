@@ -129,7 +129,7 @@ sub loadstdin {
     my $content;
     undef $RS;
     $content = <STDIN>;
-    push @failedFiles, 'STDIN DATA' unless sendContent($content);
+    push @failedFiles, 'STDIN DATA' unless sendContent($content, $content =~ /^{/ ? newagentid() : undef);
 }
 
 sub sendContent {
@@ -279,7 +279,10 @@ sub sendContent {
         } elsif ($content =~ /^{/) {
             eval {
                 my $json = decode_json($content);
-                if ($json->{status} eq "error") {
+                if (!$json || !$json->{status}) {
+                    warn "Unexpected server answer: ".($content//"empty content")."\n";
+                    undef $content;
+                } elsif ($json->{status} eq "error") {
                     $error = $json->{message} // "Server failed to import" .
                         ($options->{debug} ? "" : ", use --debug option to debug");
                 } elsif ($json->{status} eq "pending" && $res->header('GLPI-Request-ID')) {
