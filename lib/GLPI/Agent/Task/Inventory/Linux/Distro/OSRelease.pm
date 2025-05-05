@@ -71,7 +71,7 @@ sub _fixAstraOS {
 
     return unless canRead('/etc/astra_license');
 
-    if (my ($edition) = getFirstMatch(
+    if (my $edition = getFirstMatch(
         pattern => qr/^DESCRIPTION="?(.*?)"?$/,
         file    => '/etc/astra_license'
     )) {
@@ -84,7 +84,7 @@ sub _fixAstraOS {
         $security_level = trimWhitespace($security_level) || 'unknown';
         
         $os->{FULL_NAME} =~ s/\(.*?\)//g;
-        $os->{FULL_NAME} = trimWhitespace($os->{FULL_NAME}) . " (Security level: $security_level)"
+        $os->{FULL_NAME} = trimWhitespace($os->{FULL_NAME}) . " (Security level: $security_level)";
     }
 }
 
