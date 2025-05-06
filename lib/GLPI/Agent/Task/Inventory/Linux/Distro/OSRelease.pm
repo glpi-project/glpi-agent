@@ -82,7 +82,6 @@ sub _fixAstraOS {
             'unknown';
 
         $security_level = trimWhitespace($security_level) || 'unknown';
-        
         $os->{FULL_NAME} =~ s/\(.*?\)//g;
         $os->{FULL_NAME} = trimWhitespace($os->{FULL_NAME}) . " (Security level: $security_level)";
     }
