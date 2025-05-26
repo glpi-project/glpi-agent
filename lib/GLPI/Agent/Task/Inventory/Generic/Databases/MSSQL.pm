@@ -126,7 +126,7 @@ sub _getDatabaseService {
                 or next;
 
             my ($size) = _runSql(
-                sql => "USE $db_name ; EXEC sp_spaceused",
+                sql => "USE [$db_name] ; EXEC sp_spaceused",
                 %params
             ) =~ /^$db_name;([0-9.]+\s*\S+);/;
             if ($size) {
@@ -138,7 +138,7 @@ sub _getDatabaseService {
 
             # Find update date
             my ($updated) = _runSql(
-                sql => "USE $db_name ; SELECT TOP(1) modify_date FROM sys.objects ORDER BY modify_date DESC",
+                sql => "USE [$db_name] ; SELECT TOP(1) modify_date FROM sys.objects ORDER BY modify_date DESC",
                 %params
             ) =~ /^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/;
 
