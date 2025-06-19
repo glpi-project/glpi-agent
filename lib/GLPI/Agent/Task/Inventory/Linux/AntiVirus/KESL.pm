@@ -43,29 +43,29 @@ sub _getKESLInfo {
     };
 
     my $service_status = getFirstLine(
-        command => 'LANG=en_US.UTF-8 systemctl is-active kesl.service',
+        command => 'systemctl is-active kesl.service',
         %params
     );
     $av->{ENABLED} = $service_status && $service_status eq 'active' ? 1 : 0;
 
     my @app_info = getAllLines(
-        command => 'LANG=en_US.UTF-8 kesl-control --app-info',
+        command => 'kesl-control --app-info',
         %params
     );
 
     foreach my $line (@app_info) {
 
-        if (!$av->{VERSION} && $line =~ /Version:\s+([\d.]+)/) {
+        if (!$av->{VERSION} && $line =~ /^Version:\s+([\d.]+)/) {
             $av->{VERSION} = $1;
             next;
         }
 
-        if (!$av->{EXPIRATION} && $line =~ /license expiration date:\s+([\d-]+\s[\d:]+)/i) {
+        if (!$av->{EXPIRATION} && $line =~ /license expiration date:\s+([\d-]+)/i) {
             $av->{EXPIRATION} = $1;
             next;
         }
 
-        if (!$av->{BASE_VERSION} && $line =~ /Last release date of databases:\s+([\d-]+\s[\d:]+)/) {
+        if (!$av->{BASE_VERSION} && $line =~ /^Last release date of databases:\s+([\d-]+)/) {
             $av->{BASE_VERSION} = $1;
             next;
         }

@@ -62,11 +62,23 @@ sub _getDrWebInfo {
     );
 
     foreach my $line (@baseinfo) {
-        if ($line =~ /Virus database timestamp:\s+(.+)/) {
-            $av->{BASE_VERSION} = $1;
+        if ($line =~ /^Virus database timestamp:\s+(\d+)-(\w+)-(\d+)/) {
+            my $month_num = month($2) || 0;
+            $av->{BASE_VERSION} = sprintf("%d-%02d-%02d", $1, $month_num, $3);
             last;
         }
     }
+
+    my $expiration = getFirstMatch(
+        command => 'drweb-ctl license',
+        pattern => qr/expires (\d+-\w+-\d+)/,
+        %params
+    );
+    if ($expiration && $expiration =~ /^(\d+)-(\w+)-(\d+)$/) {
+        my $m = month($2);
+        $av->{EXPIRATION} = sprintf("%d-%02d-%02d", $1, $m, $3) if $m;
+    }
+
 
     return $av;
 }
