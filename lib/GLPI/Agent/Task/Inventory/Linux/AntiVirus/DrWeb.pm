@@ -42,7 +42,7 @@ sub _getDrWebInfo {
     };
 
     my $version_output = getFirstLine(
-        command => 'LANG=C drweb-ctl --version',
+        command => 'drweb-ctl --version',
         %params
     );
 
@@ -51,13 +51,13 @@ sub _getDrWebInfo {
     }
 
     my $service_status = getFirstLine(
-        command => 'LANG=C systemctl is-active drweb-configd.service',
+        command => 'systemctl is-active drweb-configd.service',
         %params
     );
     $av->{ENABLED} = $service_status && $service_status eq 'active' ? 1 : 0;
 
     my @baseinfo = getAllLines(
-        command => 'LANG=C drweb-ctl baseinfo',
+        command => 'drweb-ctl baseinfo',
         %params
     );
 
