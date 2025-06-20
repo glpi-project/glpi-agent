@@ -32,13 +32,12 @@ sub doInventory {
 
 sub _getDrWebInfo {
     my (%params) = @_;
-    my $logger = $params{logger};
 
     my $av = {
         NAME     => 'Dr.Web',
-        COMPANY  => 'Doctor Web',  
-        ENABLED  => 0,               
-        UPTODATE => 0,               
+        COMPANY  => 'Doctor Web',
+        ENABLED  => 0,
+        UPTODATE => 0,
     };
 
     my $version_output = getFirstLine(
