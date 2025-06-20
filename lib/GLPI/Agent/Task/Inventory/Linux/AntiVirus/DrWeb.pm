@@ -62,10 +62,8 @@ sub _getDrWebInfo {
     );
 
     foreach my $line (@baseinfo) {
-        if ($line =~ /^Virus database timestamp:\s+(\d+)-(\w+)-(\d+)/) {
-            my $month_num = month($2) || 0;
-            $av->{BASE_VERSION} = sprintf("%d-%02d-%02d", $1, $month_num, $3);
-            last;
+        if ($line =~ /^Virus database timestamp:\s+(\S+)/) {
+            $av->{BASE_VERSION} = $1;
         }
     }
 
