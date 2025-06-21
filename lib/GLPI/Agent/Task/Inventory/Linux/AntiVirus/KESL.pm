@@ -33,7 +33,6 @@ sub doInventory {
 
 sub _getKESLInfo {
     my (%params) = @_;
-    my $logger = $params{logger};
 
     my $av = {
         NAME     => 'Kaspersky Endpoint Security for Linux',
