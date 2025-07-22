@@ -701,13 +701,18 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: Debian-Build
-    - name: Make AppImage
-      id: make-appimage
+    - name: Prepare AppImage build
+      id: prepare-appimage
       run: |
-        contrib/unix/make-linux-appimage.sh --version $VERSION
+        contrib/unix/make-linux-appimage.sh --prepare --version $VERSION
       shell: bash
       env:
         VERSION: ${{ needs.setup-release.outputs.version }}
+    - uses: AppImageCrafters/build-appimage@master
+      with:
+        recipe: "./build/AppImageBuilder.yml"
+      env:
+        UPDATE_INFO: gh-releases-zsync|glpi-project|glpi-agent|latest|glpi-agent-*-x86_64.AppImage.zsync
     - name: Quick tests
       run: |
         echo ====
