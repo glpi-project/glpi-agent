@@ -238,7 +238,7 @@ AppImage:
   update-information: None
   sign-key: None
   arch: $ARCH
-  comp: xz
+  comp: zstd
 
 APPIMAGEBUILDER_YAML
 
