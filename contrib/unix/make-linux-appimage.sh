@@ -288,7 +288,7 @@ if ! type appimage-builder >/dev/null 2>&1; then
     exit 1
 fi
 
-appimage-builder --skip-build --appdir build/AppDir --recipe build/AppImageBuilder.yml
+appimage-builder --appdir build/AppDir --recipe build/AppImageBuilder.yml
 
 chmod +x *.AppImage
 
