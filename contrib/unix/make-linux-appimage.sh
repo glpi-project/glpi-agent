@@ -240,6 +240,7 @@ AppImage:
   update-information: None
   sign-key: None
   arch: $ARCH
+  comp: xz
 
 APPIMAGEBUILDER_YAML
 
