@@ -165,8 +165,6 @@ cat >build/AppImageBuilder.yml <<APPIMAGEBUILDER_YAML
 version: 1
 
 AppDir:
-  path: ./build/AppDir
-
   app_info:
     id: org.glpi_project.glpi_agent
     name: glpi-agent
