@@ -21,6 +21,9 @@ netdiscovery/netinventory:
   parent to better handle connections
 * fix #989: Support Maintenance Cartridge level inventory on Epson printers
 
+collect:
+* Refacto to modularize collect functions
+
 packaging:
 * Update Windows packaging to use:
   - gcc 15.1.0posix-13.0.0-msvcrt-r3
