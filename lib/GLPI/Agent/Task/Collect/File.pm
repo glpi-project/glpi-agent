@@ -5,6 +5,7 @@ use warnings;
 
 use parent 'GLPI::Agent::Task::Collect::Common';
 
+use Digest::SHA;
 use File::Basename;
 use File::Find;
 use File::stat;

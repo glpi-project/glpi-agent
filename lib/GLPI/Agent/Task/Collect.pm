@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use parent 'GLPI::Agent::Task';
 
-use Digest::SHA;
 use English qw(-no_match_vars);
 use File::Glob;
 use UNIVERSAL::require;
