@@ -23,7 +23,7 @@ sub new {
     return $self;
 }
 
-sub validateSpec {
+sub _validateSpec {
     my ($self, $base, $key, $spec) = @_;
 
     if (ref($spec) eq 'HASH') {
@@ -33,7 +33,7 @@ sub validateSpec {
         }
         $self->{logger}->debug2("$key mandatory values are present in job");
         foreach my $attribute (keys(%{$spec})) {
-            return 0 unless $self->validateSpec($base->{$key}, $attribute, $spec->{$attribute});
+            return 0 unless $self->_validateSpec($base->{$key}, $attribute, $spec->{$attribute});
         }
         return 1;
     }
@@ -52,6 +52,64 @@ sub validateSpec {
     }
 
     1;
+}
+
+sub validateAnswer {
+    my ($self, %params) = @_;
+
+    my $modules = $params{modules};
+    my $json_validation = $params{json_validation};
+    unless (ref($modules) && ref($json_validation)) {
+        $self->{logger}->debug("Validation failure");
+        return 0;
+    }
+
+    my $answer = $params{answer};
+    unless (defined($answer)) {
+        $self->{logger}->debug("Bad JSON: No answer from server.");
+        return 0;
+    }
+
+    if (ref($answer) ne 'HASH') {
+        $self->{logger}->debug("Bad JSON: Bad answer from server. Not a hash reference.");
+        return 0;
+    }
+
+    if (!defined($answer->{jobs}) || ref($answer->{jobs}) ne 'ARRAY') {
+        $self->{logger}->debug("Bad JSON: Missing jobs");
+        return 0;
+    }
+
+    foreach my $job (@{$answer->{jobs}}) {
+
+        foreach (qw/uuid function/) {
+            if (!defined($job->{$_})) {
+                $self->{logger}->debug("Bad JSON: Missing key '$_' in job");
+                return 0;
+            }
+        }
+
+        my $function = $job->{function};
+        unless (exists($modules->{$function})) {
+            $self->{logger}->debug("Bad JSON: not supported 'function' key value in job");
+            return 0;
+        }
+
+        my $validation = $json_validation->{$function};
+        unless (ref($validation)) {
+            $self->{logger}->debug("Bad JSON: Can't validate job");
+            return 0;
+        }
+
+        foreach my $attribute (keys(%{$validation})) {
+            unless ($self->_validateSpec($job, $attribute, $validation->{$attribute})) {
+                $self->{logger}->debug("Bad JSON: '$function' job JSON format is not valid");
+                return 0;
+            }
+        }
+    }
+
+    return 1;
 }
 
 1;

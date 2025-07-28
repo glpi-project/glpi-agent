@@ -53,57 +53,6 @@ sub isEnabled {
     return 1;
 }
 
-sub _validateAnswer {
-    my ($self, $answer) = @_;
-
-    if (!defined($answer)) {
-        $self->{logger}->debug("Bad JSON: No answer from server.");
-        return 0;
-    }
-
-    if (ref($answer) ne 'HASH') {
-        $self->{logger}->debug("Bad JSON: Bad answer from server. Not a hash reference.");
-        return 0;
-    }
-
-    if (!defined($answer->{jobs}) || ref($answer->{jobs}) ne 'ARRAY') {
-        $self->{logger}->debug("Bad JSON: Missing jobs");
-        return 0;
-    }
-
-    my $check = GLPI::Agent::Task::Collect::Common->new(logger => $self->{logger});
-
-    foreach my $job (@{$answer->{jobs}}) {
-
-        foreach (qw/uuid function/) {
-            if (!defined($job->{$_})) {
-                $self->{logger}->debug("Bad JSON: Missing key '$_' in job");
-                return 0;
-            }
-        }
-
-        my $function = $job->{function};
-        if (!exists($modules{$function})) {
-            $self->{logger}->debug("Bad JSON: not supported 'function' key value in job");
-            return 0;
-        }
-
-        if (!exists($json_validation{$function})) {
-            $self->{logger}->debug("Bad JSON: Can't validate job");
-            return 0;
-        }
-
-        foreach my $attribute (keys(%{$json_validation{$function}})) {
-            unless ($check->validateSpec($job, $attribute, $json_validation{$function}->{$attribute})) {
-                $self->{logger}->debug("Bad JSON: '$function' job JSON format is not valid");
-                return 0;
-            }
-        }
-    }
-
-    return 1;
-}
-
 sub run {
     my ($self) = @_;
 
@@ -178,7 +127,12 @@ sub _processRemote {
         return;
     }
 
-    return unless $self->_validateAnswer($answer);
+    my $check = GLPI::Agent::Task::Collect::Common->new(logger => $self->{logger});
+    return unless $check->validateAnswer(
+        answer          => $answer,
+        modules         => \%modules,
+        json_validation => \%json_validation,
+    );
 
     my @jobs = @{$answer->{jobs}}
         or die "no jobs provided, aborting";
