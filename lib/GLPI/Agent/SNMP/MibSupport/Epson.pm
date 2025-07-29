@@ -13,8 +13,8 @@ use constant    model   => epson . '.1.2.2.1.1.1.2.1' ;
 use constant    serial  => epson . '.1.2.2.1.1.1.5.1' ;
 use constant    fw_base => epson . '.1.2.2.2.1.1' ;
 
-use constant    maintenance_level => epson . '.1.2.2.28.1.1.2.1.5';
-use constant    maintenance_label => epson . '.1.2.2.28.1.1.5.1.5';
+use constant    cartridge_level => epson . '.1.2.2.28.1.1.2';
+use constant    cartridge_label => epson . '.1.2.2.28.1.1.5';
 
 our $mibSupport = [
     {
@@ -58,10 +58,17 @@ sub run {
         }
     }
 
-    # Add maintenance cartridge level
-    my $maintenance = hex2char($self->get(maintenance_label));
-    if ($maintenance && $maintenance =~ /maintenance/i) {
-        $device->{CARTRIDGES}->{MAINTENANCEKIT} = $self->get(maintenance_level);
+    # Search for any maintenance cartridge level
+    my $cartridges = $self->walk(cartridge_label);
+    if ($cartridges) {
+        my $levels = $self->walk(cartridge_level);
+        foreach my $key (sort keys(%{$cartridges})) {
+            my $label = hex2char($cartridges->{$key});
+            next unless $label && $label =~ /maintenance/i;
+            next unless defined($levels->{$key});
+            $device->{CARTRIDGES}->{MAINTENANCEKIT} = $levels->{$key};
+            last;
+        }
     }
 }
 
