@@ -120,13 +120,22 @@ sub doInventory {
             if length($hostID) && length($guestID);
 
     } elsif ($type eq 'Docker') {
-        # In docker, dmidecode can be run and so UUID & SSN must be overided
+        # As docker now supports cgroupv2, we should first look containerid in mountinfo
         my $containerid = getFirstMatch(
-            file    => '/proc/1/cgroup',
-            pattern => qr|/docker/([0-9a-f]{12})|,
+            file    => '/proc/self/mountinfo',
+            pattern => qr|/docker/containers/([0-9a-f]{12})|,
             logger  => $params{logger}
         );
+        # Then check in legacy place
+        unless ($containerid) {
+            $containerid = getFirstMatch(
+                file    => '/proc/1/cgroup',
+                pattern => qr|/docker/([0-9a-f]{12})|,
+                logger  => $params{logger}
+            );
+        }
 
+        # In docker, dmidecode can be run so UUID & SSN must be overided
         $inventory->setHardware({ UUID => $containerid || '' });
         $inventory->setBios({ SSN  => '' });
 
