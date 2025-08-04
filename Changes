@@ -12,6 +12,7 @@ inventory:
 * fix #971: Support smbios parsing to enhance memory inventory on Solaris
 * fix #979: Detect if running in Docker container before hardware virtualmachine
   and enhanced Docker support when using cgroupv2
+* Fix Trellix AV Endpoint reported version on windows
 
 netdiscovery/netinventory:
 * fix #922: Add Radware Alteon Load Balancer support

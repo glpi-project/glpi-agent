@@ -293,6 +293,16 @@ sub _setMcAfeeInfos {
         $antivirus->{COMPANY} = "Trellix" unless $antivirus->{COMPANY};
     }
 
+    my $endpointReg = _getSoftwareRegistryKeys('McAfee/Endpoint/ATP', [
+        qw(enabled ProductVersion BuildNumber)
+    ]);
+    if ($endpointReg) {
+        my $version = $endpointReg->{ProductVersion};
+        $version .= "." . $endpointReg->{BuildNumber} if $version && $endpointReg->{BuildNumber};
+        $antivirus->{VERSION} = $version if $version;
+        $antivirus->{ENABLED} = hex2dec($endpointReg->{enabled}) ? 1 : 0;
+    }
+
     my %properties = (
         BASE_VERSION    => [ qw(AVDatVersion    AVDatVersionMinor) ],
     );
