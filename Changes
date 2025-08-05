@@ -22,6 +22,9 @@ netdiscovery/netinventory:
 * fix #960: Add Juniper device MibSupport to merge virtual ports with physical
   parent to better handle connections
 * fix #989: Support Maintenance Cartridge level inventory on Epson printers
+* fix #991: Add support for SNMPv3 sha224, sha256, sha384, sha512 auth protocols
+  and also aes192c and aes256c (Cisco version) priv protocols with Net::SNMP v6.0.1
+  dependency.
 
 packaging:
 * Update Windows packaging to use:

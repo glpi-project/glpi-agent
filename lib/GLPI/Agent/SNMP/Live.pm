@@ -6,11 +6,16 @@ use warnings;
 use parent 'GLPI::Agent::SNMP';
 
 use English qw(-no_match_vars);
+use UNIVERSAL::require;
 use Net::SNMP;
 use Net::SNMP qw/SNMP_PORT :snmp/;
 
 use GLPI::Agent::Config;
 use GLPI::Agent::Tools;
+
+# Fix support for sha(224|256|384|512) authprotocols and aes256c privprotocol if using Net::SNMP v6.0.1
+GLPI::Agent::SNMP::Security::USM->require()
+    if Net::SNMP->VERSION eq "v6.0.1";
 
 my ($config, $config_load_timeout);
 my $config_file = "snmp-advanced-support.cfg";

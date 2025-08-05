@@ -83,6 +83,10 @@
             <option{$authprotocol ? "" : " selected"}></option>
             <option{$authprotocol eq "md5" ? " selected" : ""}>md5</option>
             <option{$authprotocol eq "sha" ? " selected" : ""}>sha</option>
+            <option{$authprotocol eq "sha224" ? " selected" : ""}>sha224</option>
+            <option{$authprotocol eq "sha256" ? " selected" : ""}>sha256</option>
+            <option{$authprotocol eq "sha384" ? " selected" : ""}>sha384</option>
+            <option{$authprotocol eq "sha512" ? " selected" : ""}>sha512</option>
           </select>
         </div>
         <label for='authpass'>{_"Authentication password"}</label>
@@ -99,6 +103,10 @@
             <option{$privprotocol eq "des" ? " selected" : ""}>des</option>
             <option{$privprotocol eq "aes" ? " selected" : ""}>aes</option>
             <option{$privprotocol eq "3des" ? " selected" : ""}>3des</option>
+            <option{$privprotocol eq "cfb192-aes" ? " selected" : ""}>cfb192-aes (draft protocol)</option>
+            <option{$privprotocol eq "cfb256-aes" ? " selected" : ""}>cfb256-aes (draft protocol)</option>
+            <option{$privprotocol eq "aes192c" ? " selected" : ""}>aes192c (cisco protocol)</option>
+            <option{$privprotocol eq "aes256c" ? " selected" : ""}>aes256c (cisco protocol)</option>
           </select>
         </div>
         <label for='authpass'>{_"Privacy password"}</label>
