@@ -30,7 +30,7 @@ jobs:
           libtest-mockmodule-perl libtest-mockobject-perl libtest-nowarnings-perl \
           libtest-exception-perl libtest-perl-critic-perl libtest-pod-perl \
           libextutils-helpers-perl libextutils-installpaths-perl libmodule-build-tiny-perl \
-          libtest-cpan-meta-perl
+          libtest-cpan-meta-perl libcrypt-des-perl
     - name: Check environment
       id: check-version
       run: |
@@ -208,7 +208,7 @@ jobs:
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
         cpanm --sudo --installdeps --verbose --notest .
-        cpanm --sudo --verbose --notest Parse::EDID
+        cpanm --sudo --verbose --notest Parse::EDID Crypt::DES
     - name: Prepare Makefile
       run: perl Makefile.PL
     - name: Run make
