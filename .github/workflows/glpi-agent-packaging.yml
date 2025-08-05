@@ -530,7 +530,7 @@ jobs:
           libtest-mockobject-perl libtext-template-perl                    \
           libsocket-getaddrinfo-perl libuniversal-require-perl liburi-perl \
           libwww-perl libxml-libxml-perl libyaml-perl                      \
-          libcrypt-des-perl \
+          libcrypt-des-perl libdigest-hmac-perl \
           libossp-uuid-perl libcpanel-json-xs-perl devscripts
       shell: bash
     - name: Build debian packages
