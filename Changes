@@ -29,12 +29,12 @@ netdiscovery/netinventory:
 packaging:
 * Update Windows packaging to use:
   - gcc 15.1.0posix-13.0.0-msvcrt-r4
-  - OpenSSL 3.5.1
+  - OpenSSL 3.5.2
   - liblzma from xz 5.8.1
   - libxml2 2.14.5
   - msys2-base 20250622
   - 7-Zip v25.00
-* Update MacOSX packages to use OpenSSL 3.5.1
+* Update MacOSX packages to use OpenSSL 3.5.2
 
 1.15 Mon, 09 Jun 2025
 
