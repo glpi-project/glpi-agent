@@ -356,7 +356,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-latest
+          - os: macos-14
             arch: x86_64
           - os: macos-latest
             arch: arm64
