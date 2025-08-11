@@ -28,7 +28,7 @@ netdiscovery/netinventory:
 
 packaging:
 * Update Windows packaging to use:
-  - gcc 15.1.0posix-13.0.0-msvcrt-r4
+  - gcc 15.2.0posix-13.0.0-msvcrt-r1
   - OpenSSL 3.5.2
   - liblzma from xz 5.8.1
   - libxml2 2.14.5
