@@ -356,9 +356,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-14
+          - os: macos-latest
             arch: x86_64
-          - os: macos-14
+          - os: macos-latest
             arch: arm64
 
     if: ${{ needs.setup-release.outputs.build == 'yes' }}
@@ -366,6 +366,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Image version
+      id: runner-info
+      run: echo "image-version=$ImageVersion" >>$GITHUB_OUTPUT
+      shell: bash
     - name: Restore points cache
       uses: actions/cache@v4
       with:
@@ -378,7 +382,7 @@ jobs:
           contrib/macosx/build/openssl*
           contrib/macosx/build/zlib*
           contrib/macosx/build/Applications
-        key: macosx-packaging-restore-points-${{ matrix.os }}-${{ matrix.arch }}-${{ hashFiles('contrib/macosx/glpi-agent-packaging.sh') }}
+        key: ${{ matrix.os }}-${{ matrix.arch }}-packaging-restore-points-${{ runner.os }}-${{ runner.arch }}-${{ steps.runner-info.outputs.image-version }}-${{ hashFiles('contrib/macosx/glpi-agent-packaging.sh') }}
     - name: Import Application Signing Cert
       id: application-signing-cert
       uses: slidoapp/import-codesign-certs@1923310662e8682dd05b76b612b53301f431cd5d
