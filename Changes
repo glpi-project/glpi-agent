@@ -13,6 +13,7 @@ inventory:
 * fix #979: Detect if running in Docker container before hardware virtualmachine
   and enhanced Docker support when using cgroupv2
 * Fix Trellix AV Endpoint reported version on windows
+* fix #993, #994: Solaris Zones virtualization support update
 
 remoteinventory:
 * fix RedHat RHN systemid set as WINPRODID
