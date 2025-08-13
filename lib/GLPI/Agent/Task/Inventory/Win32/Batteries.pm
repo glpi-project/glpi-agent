@@ -55,6 +55,10 @@ sub _getBatteriesFromPowercfg {
 
     my $folder = delete $params{folder} // '.';
     $folder =~ s{/}{\\}g;
+
+    # Check to support RemoteInventory
+    $folder = '.' unless has_folder($folder);
+
     my $xmlfile = $folder.'\batteries.xml';
 
     # Just run command to generate xmlfile, we don't care about any output
@@ -66,9 +70,12 @@ sub _getBatteriesFromPowercfg {
     $xmlfile =~ s{\\}{/}g;
     return unless has_file($xmlfile) || ($params{file} && has_file($params{file}));
 
+    # Support RemoteInventory
+    my $xmlcontent = getAllLines(file => $xmlfile);
+
     my $xml = GLPI::Agent::XML->new(
         force_array => [ qw(Battery) ],
-        file        => $xmlfile,
+        string      => $xmlcontent,
         %params
     );
 

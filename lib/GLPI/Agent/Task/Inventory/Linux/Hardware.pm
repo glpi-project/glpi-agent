@@ -85,7 +85,8 @@ sub _getRHNSystemId {
 
     return unless has_file($file);
     return unless GLPI::Agent::XML->require();
-    my $xml = GLPI::Agent::XML->new(file => $file)
+    my $content = getAllLines(file => $file);
+    my $xml = GLPI::Agent::XML->new(string => $content)
         or return;
     my $h = $xml->dump_as_hash();
     foreach (@{$h->{params}{param}{value}{struct}{member}}) {
