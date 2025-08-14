@@ -30,6 +30,8 @@ netdiscovery/netinventory:
 * fix #991: Add support for SNMPv3 sha224, sha256, sha384, sha512 auth protocols
   and also aes192c and aes256c (Cisco version) priv protocols with Net::SNMP v6.0.1
   dependency.
+* fix #990: Add Tp-Link devices support and we also accept MAC address configured
+  as static for connected device discovery
 
 packaging:
 * Update Windows packaging to use:

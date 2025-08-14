@@ -1035,7 +1035,8 @@ sub _getKnownMacAddresses {
             next unless $mac;
             # Assume mac status is learned(3) if not found
             my $status = $macstatus && defined($macstatus->{$suffix}) && $macstatus->{$suffix} =~ /(\d+)/ ? int($1) : 3;
-            next unless $status == 3;
+            # Accepted status could be 3 for "learned" and 5 for "mgmt" (mac also setup as static in the device)
+            next unless $status == 3 || $status == 5;
             push @{$results->{$interface_id}}, $mac;
         } else {
             my @bytes = split(/\./, $suffix);
