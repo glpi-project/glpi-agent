@@ -39,7 +39,7 @@ packaging:
   - OpenSSL 3.5.2
   - liblzma from xz 5.8.1
   - libxml2 2.14.5
-  - msys2-base 20250622
+  - msys2-base 20250830
   - 7-Zip v25.01
 * Update MacOSX packages to use OpenSSL 3.5.2
 
