@@ -6,7 +6,7 @@ use parent 'Exporter';
 use ToolchainBuildJob;
 
 use constant {
-    PERL_VERSION       => "5.40.2",
+    PERL_VERSION       => "5.42.0",
     # Tag for dmidecode release on glpi-project/dmidecode
     DMIDECODE_VERSION  => "3.6-update-1",
     # Tag for Glpi-AgentMonitor release on glpi-project/glpi-agentmonitor
@@ -73,18 +73,13 @@ sub build_job {
                 'contrib/windows/packaging/agentexe.rc.tt'  => 'win32/perlexe.rc',
                 'contrib/windows/packaging/Makefile.patch'  => 'win32/GNUmakefile',
                 'contrib/windows/packaging/makedef.patch'   => 'makedef.pl',
-                'contrib/windows/packaging/23179.patch'     => '*', # backport of https://github.com/Perl/perl5/pull/23179
-                '<dist_sharedir>/perl-5.40/posix_bessel.patch' => '*',
-                'contrib/windows/packaging/CVE-2025-40909.patch' => '*',
                 'config_H.gc'   => {
                     HAS_MKSTEMP             => 'define',
                     HAS_BUILTIN_CHOOSE_EXPR => 'define',
-                    HAS_ISFINITE            => 'define', # part of https://github.com/Perl/perl5/pull/22257
                 },
                 'config.gc'     => {  # see Step.pm for list of default updates
                     d_builtin_choose_expr => 'define',
                     d_mkstemp             => 'define',
-                    d_isfinite            => 'define', # part of https://github.com/Perl/perl5/pull/22257
                     osvers                => '10',
                 },
             },

@@ -1,7 +1,7 @@
 --- makedef.pl.orig
 +++ makedef.pl
-@@ -459,6 +459,16 @@
-     ++$skip{Perl_thread_locale_term};
+@@ -465,6 +465,16 @@
+     ++$skip{PL_main_thread};
  }
  
 +if ($define{NO_LOCALE})
