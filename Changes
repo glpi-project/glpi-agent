@@ -14,6 +14,7 @@ inventory:
   and enhanced Docker support when using cgroupv2
 * Fix Trellix AV Endpoint reported version on windows
 * fix #993, #994: Solaris Zones virtualization support update
+* PR #996: Added RuDesktop remote management inventory support
 
 remoteinventory:
 * fix RedHat RHN systemid set as WINPRODID
