@@ -15,6 +15,7 @@ inventory:
 * Fix Trellix AV Endpoint reported version on windows
 * fix #993, #994: Solaris Zones virtualization support update
 * PR #996: Added RuDesktop remote management inventory support
+* PR #1003: Add ESET Endpoint Antivirus for Linux support
 
 remoteinventory:
 * fix RedHat RHN systemid set as WINPRODID

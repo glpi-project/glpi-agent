@@ -47,6 +47,7 @@ sub _getEEAInfo {
     };
 
     my $version = getFirstMatch(
+        file    => $params{upd_version}, # Only used by tests
         pattern => qr/\(eea\)\s*([0-9.]+)/,
         command => upd . " -version",
         %params
@@ -54,12 +55,14 @@ sub _getEEAInfo {
     $av->{VERSION} = $version if $version;
 
     my $service_status = getFirstLine(
+        file    => $params{svc_status}, # Only used by tests
         command => 'systemctl is-active eea.service',
         %params
     );
     $av->{ENABLED} = $service_status && $service_status eq 'active' ? 1 : 0;
 
     my $expiration = getFirstMatch(
+        file    => $params{lic_status}, # Only used by tests
         command => lic . ' --status',
         pattern => qr/License Validity:\s*(\d{4}-\d{2}-\d{2})/,
         %params
@@ -67,6 +70,7 @@ sub _getEEAInfo {
     $av->{EXPIRATION} = $expiration if $expiration;
 
     my $base_version = getFirstMatch(
+        file    => $params{upd_modules}, # Only used by tests
         command => upd . ' --list-modules',
         pattern => qr/EM002\s*(\d+\s*\(\d+\))\s*Detection engine$/,
         %params
