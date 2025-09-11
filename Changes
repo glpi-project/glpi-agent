@@ -34,6 +34,7 @@ netdiscovery/netinventory:
   dependency.
 * fix #990: Add Tp-Link devices support and we also accept MAC address configured
   as static for connected device discovery
+* fix #900: Add Veritas NetBackup linux Appliance support
 
 packaging:
 * Update Windows packaging to use:

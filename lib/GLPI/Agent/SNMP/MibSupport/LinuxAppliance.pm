@@ -59,8 +59,9 @@ use constant    snmpEngine      => snmpModules . '.10.2.1';
 use constant    snmpEngineID    => snmpEngine . '.1.0';
 
 # HOST-RESOURCES-MIB
-use constant    hrStorageEntry  => iso . '.25.2.3.1.3';
-use constant    hrSWRunName     => iso . '.25.4.2.1.2';
+use constant    hrStorageEntry      => iso . '.25.2.3.1.3';
+use constant    hrSWRunName         => iso . '.25.4.2.1.2';
+use constant    hrSWInstalledName   => iso . '.25.6.3.1.2';
 
 # UBNT-UniFi-MIB
 use constant    ubntUniFi               => ubnt . '.1.6' ;
@@ -246,6 +247,10 @@ sub getType {
                 $device->{_Appliance}->{MODEL} = $1;
                 $device->{_Appliance}->{MANUFACTURER} = 'TP-Link';
                 return 'NETWORKING';
+            } elsif ($self->_hasInstalled(qr/^VRTSnbserver-/)) {
+                $device->{_Appliance}->{MODEL} = 'Veritas NetBackup';
+                $device->{_Appliance}->{MANUFACTURER} = 'Veritas Technologies LLC';
+                return 'NETWORKING';
             }
             return $match->{type};
         }
@@ -263,6 +268,19 @@ sub _hasProcess {
     return unless $self->{hrSWRunName};
 
     return any { getCanonicalString($_) eq $name } values(%{$self->{hrSWRunName}});
+}
+
+sub _hasInstalled {
+    my ($self, $qrName) = @_;
+
+    return unless $qrName;
+
+    # Cache the walk result in the case we have to answer many _hasInstalled() calls
+    $self->{hrSWInstalledName} ||= $self->walk(hrSWInstalledName);
+
+    return unless $self->{hrSWInstalledName};
+
+    return any { getCanonicalString($_) =~ $qrName } values(%{$self->{hrSWInstalledName}});
 }
 
 sub getModel {
