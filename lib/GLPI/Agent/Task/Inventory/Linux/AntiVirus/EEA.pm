@@ -82,6 +82,9 @@ sub _getEEAInfo {
     # Let's consider that we are up to date if the antivirus database is less than 2 days old.
     if ($base_version =~ /\((\d{4})(\d{2})(\d{2})\)$/) {
         my $two_days_ago = time - 2 * 24 * 60 * 60;
+        if ($params{test_date}) { # Only used by tests
+            $two_days_ago = mktime(split('-', $params{test_date})) - 2 * 24 * 60 * 60;
+        }
 
         $av->{UPTODATE} = mktime(0, 0, 0, $3, $2-1, $1-1900) > $two_days_ago ? 1 : 0;
     }
