@@ -63,6 +63,17 @@ sub getIp {
     return $ip;
 }
 
+sub getMacAddress {
+    my ($self) = @_;
+
+    my $device = $self->device
+        or return;
+
+    return if $device->{MAC};
+
+    return getCanonicalMacAddress($self->get(hwMACAddress));
+}
+
 sub getManufacturer {
     my ($self) = @_;
 
@@ -118,12 +129,6 @@ sub run {
             MANUFACTURER    => "Radware"
         };
         $device->addFirmware($firmware);
-    }
-
-    # Fallback mac address if not set
-    unless ($device->{MAC}) {
-        $device->{MAC} = getCanonicalMacAddress($self->get(hwMACAddress));
-        $device->{INFO}->{MAC} = $device->{MAC};
     }
 }
 
