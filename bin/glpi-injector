@@ -33,7 +33,9 @@ GetOptions(
     'recursive|R',
     'file|f=s',
     'no-ssl-check',
+    'ca-cert-file=s',
     'ssl-cert-file=s',
+    'ssl-fingerprint=s',
     'proxy|P=s',
     'url|u=s',
     'useragent=s',
@@ -174,17 +176,26 @@ sub sendContent {
     my $request = HTTP::Request->new( POST => $options->{url} );
 
     my $info = "";
-    if ($options->{"no-ssl-check"} || $options->{"ssl-cert-file"}) {
+    if ($options->{"no-ssl-check"} || $options->{"ssl-cert-file"} || $options->{"ca-cert-file"} || $options->{"ssl-fingerprint"}) {
         my $url = $request->uri();
         if ($url->scheme() eq 'https') {
             if ($ua->can('ssl_opts')) {
                 IO::Socket::SSL->require();
+                if ($options->{debug}) {
+                    no warnings;
+                    $IO::Socket::SSL::DEBUG = 1;
+                }
                 if ($options->{"no-ssl-check"}) {
                     $ua->ssl_opts(verify_hostname => 0, SSL_verify_mode => 0);
                     $info = " (ssl check disabled)";
-                } elsif ($options->{"ssl-cert-file"}) {
-                    $ua->ssl_opts(SSL_cert_file => $options->{"ssl-cert-file"});
-                    $info = " (ssl cert file)";
+                } else {
+                    $info = " (ssl check enabled)";
+                    $ua->ssl_opts(SSL_ca_file => $options->{"ca-cert-file"})
+                        if $options->{"ca-cert-file"};
+                    $ua->ssl_opts(SSL_cert_file => $options->{"ssl-cert-file"})
+                        if $options->{"ssl-cert-file"};
+                    $ua->ssl_opts(SSL_fingerprint => $options->{"ssl-fingerprint"})
+                        if $options->{"ssl-fingerprint"} && $IO::Socket::SSL::VERSION >= 1.967;
                 }
             } else {
                 $info = " (unsupported ssl options)";
@@ -259,6 +270,18 @@ sub sendContent {
 
     $request->content($options->{"no-compression"} ? $content : compress($content));
     my $res = $ua->request($request);
+
+    if ($options->{"no-ssl-check"} && $options->{"debug"}) {
+        # fingerprint IO::Socket::SSL API is only available since IO::Socket::SSL v1.967
+        if ($IO::Socket::SSL::VERSION >= 1.967) {
+            my $fingerprint;
+            my ($socket) = $ua->conn_cache->get_connections('https');
+            $fingerprint = $socket->get_fingerprint() if $socket;
+            if ($fingerprint) {
+                print "SSL server certificate fingerprint: $fingerprint\n";
+            }
+        }
+    }
 
     my $error;
     eval {
@@ -352,6 +375,7 @@ glpi-injector - A tool to push inventory in an OCS Inventory or compatible serve
 glpi-injector [-h|--help] [-R|--recursive] [-r|--remove] [-v|--verbose] [--debug]
     [--useragent <user-agent>|-x|--xml-ua|--json-ua] [-C|--no-compression]
     [--no-ssl-check] [--ssl-cert-file <private certificate file>] [[-P|--proxy] <proxy url>]
+    [--ca-cert-file <CA certificate file>] [--ss <CA certificate file>]
     [[-f|--file] <file>|[-d|--directory] <directory>|--stdin] [-u|--url] <url>
 
   Options:
@@ -368,7 +392,9 @@ glpi-injector [-h|--help] [-R|--recursive] [-r|--remove] [-v|--verbose] [--debug
     -x --xml-ua --json-ua
                    use Client version found in XML or JSON as User-Agent for POST
     --no-ssl-check do not check server SSL certificate
+    --ca-cert-file=FILE CA certificates file
     --ssl-cert-file client certificate file
+    --ssl-fingerprint=FINGERPRINT Trust server certificate on its SSL fingerprint
     -C --no-compression don't compress sent XML inventories
     -P --proxy=PROXY proxy address
     --oauth-client-id

@@ -36,6 +36,9 @@ netdiscovery/netinventory:
   as static for connected device discovery
 * fix #900: Add Veritas NetBackup linux Appliance support
 
+injector:
+* Add support for --ca-cert-file and --ssl-fingerprint options
+
 packaging:
 * Update Windows packaging to use:
   - Perl 5.42.0 built using Perl::Dist::StrawBerry perl library processing
