@@ -99,7 +99,7 @@ sub doInventory {
             entry => {
                 NAME      => $values->{name},
                 UUID      => $values->{uuid},
-                VCPU      => $values->{vcpu},
+                VCPU      => $values->{vcpu} || 1,
                 MEMORY    => $values->{mem},
                 STATUS    => STATUS_RUNNING,
                 SUBSYSTEM => $values->{vmtype},
