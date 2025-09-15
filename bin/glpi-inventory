@@ -28,6 +28,7 @@ GetOptions(
     'assetname-support=i',
     'additional-content=s',
     'backend-collect-timeout=s',
+    'category=s',
     'credentials=s@',
     'glpi_version=s',
     'html',
@@ -111,6 +112,7 @@ glpi-inventory [options]
     --scan-profiles                scan user profiles (false)
     --html                         save the inventory as HTML (false)
     --json                         save the inventory as JSON (false)
+    --category=CATEGORY            include items only from given categories
     --no-category=CATEGORY         do not list given category items
     --partial=CATEGORY             make a partial inventory of given category
                                      items, this option implies --json

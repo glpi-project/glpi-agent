@@ -35,11 +35,12 @@ sub isEnabled {
                 # Add a GLPI client to each param with a category and a use property
                 # and if related category is not disabled
                 my %disabled = map { $_ => 1 } @{$self->{config}->{'no-category'}};
+                my %enabled = map { $_ => 1 } @{$self->{config}->{'category'}};
                 my @params;
-                my $cant_load_glpi_client = 0;
+            my $cant_load_glpi_client = 0;
                 foreach my $param (@{$tasks->{inventory}->{params}}) {
                     my @validated;
-                    if (!$param->{category} || $disabled{$param->{category}}) {
+                    if (!$param->{category} || $disabled{$param->{category}} || (%enabled && ! exists $enabled{ $param->{category} })) {
                     } elsif ($param->{params_id}) {
                         # Here we must handle the case of remotely triggered events
                         my @categories = map { trimWhitespace($_) } split(/,+/, $param->{category});
@@ -154,6 +155,9 @@ sub run {
     $self->{disabled}  = {
         map { $_ => 1 } @{$self->{config}->{'no-category'}}
     };
+    $self->{enabled}  = {
+        map { $_ => 1 } @{$self->{config}->{'category'}}
+    };
 
     # Support inventory event
     if ($event && !$self->setupEvent()) {
@@ -207,7 +211,7 @@ sub setupEvent {
 
     # Support partial event with category defined only if partial
     if ($event->partial && $event->category) {
-        my %keep = map { lc($_) => 1 } grep { ! $self->{disabled}->{$_} } split(/,+/, $event->category);
+        my %keep = map { lc($_) => 1 } grep { ! $self->{disabled}->{$_} && (!%{ $self->{enabled} } || $self->{enabled}->{$_}) } split(/,+/, $event->category);
         unless (keys(%keep)) {
             $self->{logger}->info("Nothing to inventory on partial inventory event");
             return 0;
@@ -413,7 +417,7 @@ sub _initModulesList {
         if (defined(*{$module."::category"})) {
             no strict 'refs'; ## no critic (ProhibitNoStrict)
             my $category = &{$module."::category"}();
-            if ($category && $self->{disabled}->{$category}) {
+            if ($category && ($self->{disabled}->{$category} || ( %{ $self->{enabled} } && !exists $self->{enabled}->{$category} ))) {
                 $logger->debug2("module $module disabled: '$category' category disabled");
                 $self->{modules}->{$module}->{enabled} = 0;
                 next;
@@ -532,6 +536,7 @@ sub _runModule {
             datadir       => $self->{datadir},
             inventory     => $self->{inventory},
             no_category   => $self->{disabled},
+            category      => $self->{enabled},
             logger        => $self->{logger},
             registry      => $self->{registry},
             params        => $self->{params},

@@ -23,6 +23,7 @@ GetOptions(
     'assetname-support=i',
     'additional-content=s',
     'backend-collect-timeout=s',
+    'category=s',
     'ca-cert-dir=s',
     'ca-cert-file=s',
     'conf-file=s',
@@ -265,6 +266,7 @@ glpi-agent [options] [--server server|--local path]
     --tasks=TASK1[,TASK]...[,...]  run given tasks in given order
 
   Inventory task specific options:
+    --category=CATEGORY            include items only from given categories
     --no-category=CATEGORY         do not list given category items
     --list-categories              list supported categories
     --scan-homedirs                scan user home directories (false)
