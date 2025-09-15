@@ -47,6 +47,11 @@ sub _parseProcessList {
             $values->{uuid} = $1;
         } elsif ($option =~ m/^enable-kvm/) {
             $values->{vmtype} = "kvm";
+        } elsif ($option =~ m/^smp (\S+)$/) {
+            my ($cpus) = grep { /^(?:cpus=)?\d+$/ } split(/,/, $1);
+            if ($cpus && $cpus =~ /(\d+)$/) {
+                $values->{vcpu} = int($1);
+            }
         }
 
         if ($option =~ /smbios/) {
@@ -94,7 +99,7 @@ sub doInventory {
             entry => {
                 NAME      => $values->{name},
                 UUID      => $values->{uuid},
-                VCPU      => 1,
+                VCPU      => $values->{vcpu} || 1,
                 MEMORY    => $values->{mem},
                 STATUS    => STATUS_RUNNING,
                 SUBSYSTEM => $values->{vmtype},
