@@ -37,7 +37,7 @@ sub isEnabled {
                 my %disabled = map { $_ => 1 } @{$self->{config}->{'no-category'}};
                 my %enabled = map { $_ => 1 } @{$self->{config}->{'category'}};
                 my @params;
-            my $cant_load_glpi_client = 0;
+                my $cant_load_glpi_client = 0;
                 foreach my $param (@{$tasks->{inventory}->{params}}) {
                     my @validated;
                     if (!$param->{category} || $disabled{$param->{category}} || (%enabled && ! exists $enabled{ $param->{category} })) {
