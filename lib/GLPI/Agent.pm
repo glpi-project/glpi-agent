@@ -336,6 +336,13 @@ sub getContact {
                             $self->{config}->{"no-category"} = $no_category;
                         }
                     }
+                    if ($tasks->{inventory}->{"category"}) {
+                        my $category = [ sort split(/,+/, $tasks->{inventory}->{"category"}) ];
+                        unless (@{$self->{config}->{"category"}} && join(",", sort @{$self->{config}->{"category"}}) eq join(",", @{$category})) {
+                            $self->{logger}->debug("set category configuration to: ".$tasks->{inventory}->{"category"});
+                            $self->{config}->{"category"} = $category;
+                        }
+                    }
                     # Handle required-category set by server on inventory task
                     if ($tasks->{inventory}->{"required-category"}) {
                         my $required_category = [ sort split(/,+/, $tasks->{inventory}->{"required-category"}) ];

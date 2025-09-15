@@ -16,6 +16,7 @@ use GLPI::Agent::Tools;
 my $default = {
     'additional-content'      => undef,
     'backend-collect-timeout' => 180,
+    'category'                => [],
     'ca-cert-dir'             => undef,
     'ca-cert-file'            => undef,
     'color'                   => undef,
@@ -350,6 +351,7 @@ sub _checkContent {
             server
             httpd-trust
             no-task
+            category
             no-category
             required-category
             tasks
