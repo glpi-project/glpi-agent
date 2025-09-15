@@ -47,10 +47,10 @@ sub _parseProcessList {
             $values->{uuid} = $1;
         } elsif ($option =~ m/^enable-kvm/) {
             $values->{vmtype} = "kvm";
-        } elsif ($option =~ m/^smp ([^\s,]+)/) {
-            my ($cpus) = split(/,/, $1);
-            if ($cpus =~ /^\d+$/) {
-                $values->{vcpu} = int($cpus);
+        } elsif ($option =~ m/^smp (\S+)$/) {
+            my ($cpus) = grep { /^(?:cpus=)?\d+$/ } split(/,/, $1);
+            if ($cpus && $cpus =~ /(\d+)$/) {
+                $values->{vcpu} = int($1);
             }
         }
 
