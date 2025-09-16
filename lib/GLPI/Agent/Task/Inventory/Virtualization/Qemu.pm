@@ -45,7 +45,7 @@ sub _parseProcessList {
             $values->{mem} = getCanonicalSize($1);
         } elsif ($option =~ m/^uuid (\S+)/) {
             $values->{uuid} = $1;
-        } elsif ($option =~ m/^enable-kvm/) {
+        } elsif ($option =~ m/^enable-kvm|accel=kvm/) {
             $values->{vmtype} = "kvm";
         } elsif ($option =~ m/^smp (\S+)$/) {
             my ($cpus) = grep { /^(?:cpus=)?\d+$/ } split(/,/, $1);

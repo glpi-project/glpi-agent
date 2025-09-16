@@ -16,6 +16,7 @@ inventory:
 * fix #993, #994: Solaris Zones virtualization support update
 * PR #996: Added RuDesktop remote management inventory support
 * PR #1003: Add ESET Endpoint Antivirus for Linux support
+* PR #1010: Update vCpu support for Qemu virtualization
 
 remoteinventory:
 * fix RedHat RHN systemid set as WINPRODID
