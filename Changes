@@ -36,6 +36,7 @@ netdiscovery/netinventory:
 * fix #990: Add Tp-Link devices support and we also accept MAC address configured
   as static for connected device discovery
 * fix #900: Add Veritas NetBackup linux Appliance support
+* fix #995: Update Sindoh printers support
 
 injector:
 * Add support for --ca-cert-file and --ssl-fingerprint options

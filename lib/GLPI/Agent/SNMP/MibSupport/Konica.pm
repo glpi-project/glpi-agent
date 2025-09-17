@@ -13,6 +13,7 @@ use constant    enterprises => '.1.3.6.1.4.1' ;
 use constant    konica  => enterprises . '.18334';
 
 use constant    konicaSysobjectID   => konica . '.1.1.1.2' ;
+use constant    sindohSysobjectID   => konica . '.1.2.1.2' ;
 
 use constant    konicaModel => konica . '.1.1.1.1.6.2.1.0';
 
@@ -34,6 +35,10 @@ our $mibSupport = [
     {
         name        => "konica-printer",
         sysobjectid => getRegexpOidMatch(konicaSysobjectID)
+    },
+    {
+        name        => "sindoh-printer",
+        sysobjectid => getRegexpOidMatch(sindohSysobjectID)
     }
 ];
 
