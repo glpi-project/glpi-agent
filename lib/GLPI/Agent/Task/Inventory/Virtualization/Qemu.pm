@@ -1,16 +1,27 @@
 package GLPI::Agent::Task::Inventory::Virtualization::Qemu;
-# With Qemu 0.10.X, some option will be added to get more and easly information (UUID, memory, ...)
 
 use strict;
 use warnings;
 
 use parent 'GLPI::Agent::Task::Inventory::Module';
 
+use UNIVERSAL::require;
+
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Unix;
 use GLPI::Agent::Tools::Virtualization;
 
 sub isEnabled {
+    # On win32, we have to search for any existing qemu process
+    if (OSNAME eq 'MSWin32') {
+        GLPI::Agent::Tools::Win32->use();
+        my $running_qemu = first { $_->{Name} =~ /^qemu-system-/ } getWMIObjects(
+            class      => "Win32_Process",
+            properties => [ qw/Name/ ]
+        );
+        return $running_qemu ? 1 : 0;
+    }
+
     # Avoid duplicated entry with libvirt
     return if canRun('virsh');
 
@@ -38,9 +49,10 @@ sub _parseProcessList {
             $values->{name} = $1 if !$values->{name};
         } elsif ($option =~ m/^name ([^\s,]+)/) {
             $values->{name} = $1;
-        } elsif ($option =~ m/^m .*size=(\S+)/) {
+        } elsif ($option =~ m/^m (?:size=)?(\S+)/) {
             my ($mem) = split(/,/,$1);
-            $values->{mem} = getCanonicalSize($mem);
+            $mem .= "b" unless $mem =~ /^\d+$/;
+            $values->{mem} = getCanonicalSize($mem, 1024);
         } elsif ($option =~ m/^m (\S+)/) {
             $values->{mem} = getCanonicalSize($1);
         } elsif ($option =~ m/^uuid (\S+)/) {
@@ -48,9 +60,17 @@ sub _parseProcessList {
         } elsif ($option =~ m/^enable-kvm|accel=kvm/) {
             $values->{vmtype} = "kvm";
         } elsif ($option =~ m/^smp (\S+)$/) {
-            my ($cpus) = grep { /^(?:cpus=)?\d+$/ } split(/,/, $1);
+            my @cpu_args = split(/,/, $1);
+            my ($cpus) = grep { /^(?:cpus=)?\d+$/ } @cpu_args;
             if ($cpus && $cpus =~ /(\d+)$/) {
                 $values->{vcpu} = int($1);
+            } else {
+                my ($cores) = grep { /^(?:cores=)?\d+$/ } @cpu_args;
+                my ($threads) = grep { /^(?:threads=)?\d+$/ } @cpu_args;
+                my ($sockets) = grep { /^(?:sockets=)?\d+$/ } @cpu_args;
+                $values->{vcpu} = int($1 || 1) if $cores && $cores =~ /(\d+)$/;
+                $values->{vcpu} *= int($1 || 1) if $threads && $threads =~ /(\d+)$/;
+                $values->{vcpu} *= int($1 || 1) if $sockets && $sockets =~ /(\d+)$/;
             }
         }
 
@@ -72,6 +92,19 @@ sub _parseProcessList {
     return $values;
 }
 
+sub _win32ProcessList {
+    GLPI::Agent::Tools::Win32->use();
+
+    return map {
+        {
+            CMD => $_->{CommandLine}
+        }
+    } grep { $_->{Name} =~ /^qemu-system-/ && !empty($_->{CommandLine}) } getWMIObjects(
+        class      => "Win32_Process",
+        properties => [ qw/Name CommandLine/ ]
+    );
+}
+
 sub doInventory {
     my (%params) = @_;
 
@@ -79,7 +112,7 @@ sub doInventory {
     my $logger    = $params{logger};
 
     # check only qemu instances
-    foreach my $process (getProcesses(
+    foreach my $process (OSNAME eq 'MSWin32' ? _win32ProcessList() : getProcesses(
         filter    => qr/(qemu|kvm|qemu-kvm|qemu-system\S+) .*\S/x,
         namespace => "same",
         logger    => $logger,

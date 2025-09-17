@@ -64,7 +64,17 @@ my @tests = (
 'qemu-system-x86_64 -m 4G -smp 4 -cpu IvyBridge -cdrom .\VMware-VMvisor-Installer-8.0U3e-24677879.x86_64.iso -boot d -vga std -nic user -device usb-ehci -device usb-host,vendorid=0x058F,productid=0x6387 -d guest_errors,unimp,pcall -D qemu_debug.log',
         _result => {
             name   => '.\VMware-VMvisor-Installer-8.0U3e-24677879.x86_64.iso',
-            mem    => undef,
+            mem    => 4096,
+            vcpu   => 4,
+            vmtype => 'qemu',
+        }
+    },
+    {
+        CMD =>
+'qemu-system-x86_64 -m 4G -smp cores=2,threads=2,sockets=1 -cpu IvyBridge -cdrom .\VMware-VMvisor-Installer-8.0U3e-24677879.x86_64.iso -boot d -vga std -nic user -device usb-ehci -device usb-host,vendorid=0x058F,productid=0x6387 -d guest_errors,unimp,pcall -D qemu_debug.log',
+        _result => {
+            name   => '.\VMware-VMvisor-Installer-8.0U3e-24677879.x86_64.iso',
+            mem    => 4096,
             vcpu   => 4,
             vmtype => 'qemu',
         }
