@@ -103,10 +103,10 @@
             <option{$privprotocol eq "des" ? " selected" : ""}>des</option>
             <option{$privprotocol eq "aes" ? " selected" : ""}>aes</option>
             <option{$privprotocol eq "3des" ? " selected" : ""}>3des</option>
-            <option{$privprotocol eq "cfb192-aes" ? " selected" : ""}>cfb192-aes (draft protocol)</option>
-            <option{$privprotocol eq "cfb256-aes" ? " selected" : ""}>cfb256-aes (draft protocol)</option>
-            <option{$privprotocol eq "aes192c" ? " selected" : ""}>aes192c (cisco protocol)</option>
-            <option{$privprotocol eq "aes256c" ? " selected" : ""}>aes256c (cisco protocol)</option>
+            <option{$privprotocol eq "cfb192-aes" ? " selected" : ""} value="cfb192-aes">cfb192-aes (draft protocol)</option>
+            <option{$privprotocol eq "cfb256-aes" ? " selected" : ""} value="cfb256-aes">cfb256-aes (draft protocol)</option>
+            <option{$privprotocol eq "aes192c" ? " selected" : ""} value="aes192c">aes192c (cisco protocol)</option>
+            <option{$privprotocol eq "aes256c" ? " selected" : ""} value="aes256c">aes256c (cisco protocol)</option>
           </select>
         </div>
         <label for='authpass'>{_"Privacy password"}</label>
