@@ -19,6 +19,8 @@ inventory:
 * PR #1010: Update vCpu support for Qemu virtualization
 * fix #957: Support Qemu virtualization inventory on windows
 * fix #955: Add support for SimpleHelp remote_management inventory
+* fix #1017: Don't cleanup cpu on win32 from (R) trademark to keep cpu naming
+  the same between OS
 
 remoteinventory:
 * fix RedHat RHN systemid set as WINPRODID

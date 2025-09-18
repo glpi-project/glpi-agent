@@ -97,7 +97,6 @@ sub _getCPUs {
         my $name = $dmidecodeInfo->{NAME};
         unless ($name) {
             $name = trimWhitespace($registryInfo->{'/ProcessorNameString'} || $object->{Name});
-            $name =~ s/\((R|TM)\)//gi if $name;
         }
 
         my $cpu = {

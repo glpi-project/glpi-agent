@@ -49,7 +49,7 @@ my %tests = (
     '2003' => [
         {
             ID           => 'BFEBFBFF00000F29',
-            NAME         => 'Intel Xeon CPU 3.06GHz',
+            NAME         => 'Intel(R) Xeon(TM) CPU 3.06GHz',
             SERIAL       => undef,
             MANUFACTURER => 'Intel',
             DESCRIPTION  => 'x86 Family 15 Model 2 Stepping 9',
@@ -62,7 +62,7 @@ my %tests = (
         },
         {
             ID           => '0000000000000000',
-            NAME         => 'Intel Xeon CPU 3.06GHz',
+            NAME         => 'Intel(R) Xeon(TM) CPU 3.06GHz',
             SERIAL       => undef,
             MANUFACTURER => 'Intel',
             DESCRIPTION  => 'x86 Family 15 Model 2 Stepping 9',
@@ -77,7 +77,7 @@ my %tests = (
     '2003SP2' => [
         {
             ID           => '0FEBBBFF00010676',
-            NAME         => 'Intel Xeon CPU E5440 @ 2.83GHz',
+            NAME         => 'Intel(R) Xeon(R) CPU E5440 @ 2.83GHz',
             SERIAL       => undef,
             MANUFACTURER => 'Intel',
             DESCRIPTION  => 'x86 Family 6 Model 23 Stepping 6',
@@ -90,7 +90,7 @@ my %tests = (
         },
         {
             ID           => '0FEBBBFF00000676',
-            NAME         => 'Intel Xeon CPU E5440 @ 2.83GHz',
+            NAME         => 'Intel(R) Xeon(R) CPU E5440 @ 2.83GHz',
             SERIAL       => undef,
             MANUFACTURER => 'Intel',
             DESCRIPTION  => 'x86 Family 6 Model 23 Stepping 6',
