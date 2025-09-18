@@ -159,6 +159,20 @@ sub run {
         map { $_ => 1 } @{$self->{config}->{'category'}}
     };
 
+    if (keys(%{$self->{enabled}})) {
+        # Be sure at least bios and hardware category are enabled via category option
+        foreach my $category (qw(bios hardware)) {
+            $self->{logger}->debug("$category not enabled, forcing as it is required")
+                unless $self->{enabled}->{$category};
+            $self->{enabled}->{$category} = 1;
+        }
+        # Software category requires os to be enabled too
+        if ($self->{enabled}->{software} && !$self->{enabled}->{os}) {
+            $self->{logger}->debug("Forcing os category as required by software one")
+            $self->{enabled}->{os} = 1;
+        }
+    }
+
     # Support inventory event
     if ($event && !$self->setupEvent()) {
         $self->{logger}->info("Skipping Inventory task event on ".$self->{target}->id());
