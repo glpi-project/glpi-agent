@@ -9,7 +9,8 @@ use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::SNMP;
 
 # See MIKROTIK-MIB
-use constant    mikrotikExperimentalModule  => '.1.3.6.1.4.1.14988.1' ;
+use constant    mikrotik    => '.1.3.6.1.4.1.14988' ;
+use constant    mikrotikExperimentalModule  => mikrotik . '.1' ;
 use constant    mtxrSystem => mikrotikExperimentalModule  .'.1.7' ;
 
 use constant    mtxrSerialNumber    => mtxrSystem . '.3.0' ;
@@ -18,7 +19,7 @@ use constant    mtxrFirmwareVersion => mtxrSystem . '.4.0' ;
 our $mibSupport = [
     {
         name        => "mikrotik",
-        sysobjectid => getRegexpOidMatch(mikrotikExperimentalModule)
+        sysobjectid => getRegexpOidMatch(mikrotik)
     }
 ];
 

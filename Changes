@@ -43,6 +43,7 @@ netdiscovery/netinventory:
 * fix #995: Update Sindoh printers support
 * fix #959: Add Avocent KVM support
 * Add FoxGate devices support
+* Update Mikrotik devices support
 
 injector:
 * Add support for --ca-cert-file and --ssl-fingerprint options
