@@ -51,12 +51,10 @@ our $mibSupport = [
     }
 ];
 
-my $sysobjectid;
-
 sub _getOlderSysInfo {
     my ($self, $info) = @_;
-    $sysobjectid = $self->get(sysObjectID) unless $sysobjectid;
-    return $self->get($sysobjectid . ".1.1.1." . $info);
+    $self->{_sysobjectid} = $self->get(sysObjectID) unless $self->{_sysobjectid};
+    return $self->get($self->{_sysobjectid} . ".1.1.1." . $info);
 }
 
 sub getFirmware {
@@ -75,6 +73,8 @@ sub getMacAddress {
         or return;
 
     $macaddr = getCanonicalString($macaddr);
+    # On some older devices, mac address may be shifted by a bootutil software
+    $macaddr = getCanonicalString($self->_getOlderSysInfo("8.0")) if $macaddr =~ /^TP-LINK/;
     $macaddr =~ s/-/:/g;
 
     return getCanonicalMacAddress($macaddr);
@@ -105,7 +105,13 @@ sub getSerial {
     my $serial = $self->get(tpSysInfoSerialNum) || $self->_getOlderSysInfo("7.0")
         or return;
 
-    return getCanonicalString($serial);
+    $serial = getCanonicalString($serial);
+    # On some older devices, mac address may be shifted by a bootutil software
+    $serial = getCanonicalString($self->_getOlderSysInfo("8.0")) if $serial =~ /^TP-LINK/;
+    # On some older devices from new generation, tpSysInfoSerialNum may still not be present
+    $serial = getCanonicalString($self->get(tpSysInfoMacAddr)) if $serial =~ /days/;
+
+    return $serial;
 }
 
 sub run {
@@ -127,7 +133,7 @@ sub run {
 
     # Older TP-Link device won't find data under recent oid and it seems we have to
     # look for values under oid given by sysObjectID
-    if ($sysobjectid) {
+    if ($self->{_sysobjectid}) {
         my $hardware_version = $self->_getOlderSysInfo("5.0");
         if ($hardware_version) {
             $device->addFirmware({
