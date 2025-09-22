@@ -33,7 +33,7 @@ my %tests = (
     '7' => [
         {
             ID           => 'BFEBFBFF000206A7',
-            NAME         => 'Intel Core i5-2300 CPU @ 2.80GHz',
+            NAME         => 'Intel(R) Core(TM) i5-2300 CPU @ 2.80GHz',
             SERIAL       => undef,
             MANUFACTURER => 'Intel',
             DESCRIPTION  => 'x86 Family 6 Model 42 Stepping 7',
@@ -148,7 +148,7 @@ my %tests = (
     '2008-with-2-different-cpus' => [
         {
             ID           => 'BFEBFBFF000106A5',
-            NAME         => 'Intel Xeon CPU E5504 @ 2.00GHz',
+            NAME         => 'Intel(R) Xeon(R) CPU E5504 @ 2.00GHz',
             SERIAL       => undef,
             MANUFACTURER => 'Intel',
             DESCRIPTION  => 'Intel64 Family 6 Model 26 Stepping 5',
@@ -161,7 +161,7 @@ my %tests = (
         },
         {
             ID           => 'BFEBFBFF000106A5',
-            NAME         => 'Intel Xeon CPU E5506 @ 2.13GHz',
+            NAME         => 'Intel(R) Xeon(R) CPU E5506 @ 2.13GHz',
             SERIAL       => undef,
             MANUFACTURER => 'Intel',
             DESCRIPTION  => 'Intel64 Family 6 Model 26 Stepping 5',

@@ -7129,7 +7129,7 @@ my %cpu_tests = (
     'freebsd-8.1' => [
         {
             ID             => 'BFEBFBFF00020652',
-            NAME           => 'Intel Core i5 CPU M 430 @ 2.27GHz',
+            NAME           => 'Intel(R) Core(TM) i5 CPU M 430 @ 2.27GHz',
             EXTERNAL_CLOCK => '1066',
             SPEED          => '2270',
             THREAD         => '2',
@@ -7145,7 +7145,7 @@ my %cpu_tests = (
     'hp-dl180' => [
         {
             ID             => 'BFEBFBFF000106A5',
-            NAME           => 'Intel Xeon CPU E5504 @ 2.00GHz',
+            NAME           => 'Intel(R) Xeon(R) CPU E5504 @ 2.00GHz',
             EXTERNAL_CLOCK => '532',
             SPEED          => '2000',
             THREAD         => '1',
@@ -7171,7 +7171,7 @@ my %cpu_tests = (
     'rhel-3.4' => [
         {
             ID             => 'BFEBFBFF00000F41',
-            NAME           => 'Intel Xeon CPU 2.80GHz',
+            NAME           => 'Intel(R) Xeon(TM) CPU 2.80GHz',
             EXTERNAL_CLOCK => '200',
             SPEED          => '2800',
             SERIAL         => undef,
@@ -7184,7 +7184,7 @@ my %cpu_tests = (
         },
         {
             ID             => 'BFEBFBFF00000F41',
-            NAME           => 'Intel Xeon CPU 2.80GHz',
+            NAME           => 'Intel(R) Xeon(TM) CPU 2.80GHz',
             EXTERNAL_CLOCK => '200',
             SPEED          => '2800',
             SERIAL         => undef,
@@ -7201,7 +7201,7 @@ my %cpu_tests = (
     'rhel-4.3' => [
         {
             ID             => 'BFEBFBFF00000F29',
-            NAME           => 'Intel Xeon',
+            NAME           => 'Intel Xeon(tm)',
             EXTERNAL_CLOCK => '133',
             SPEED          => '2666',
             SERIAL         => undef,
@@ -7214,7 +7214,7 @@ my %cpu_tests = (
         },
         {
             ID             => 'BFEBFBFF00000F29',
-            NAME           => 'Intel Xeon',
+            NAME           => 'Intel Xeon(tm)',
             EXTERNAL_CLOCK => '133',
             SPEED          => '2666',
             SERIAL         => undef,
@@ -7244,7 +7244,7 @@ my %cpu_tests = (
     'rhel-5.6' => [
         {
             ID             => 'BFEBFBFF000206C2',
-            NAME           => 'Intel Xeon CPU E5620 @ 2.40GHz',
+            NAME           => 'Intel(R) Xeon(R) CPU E5620 @ 2.40GHz',
             EXTERNAL_CLOCK => '5860',
             SPEED          => '2400',
             THREAD         => '2',
@@ -7258,7 +7258,7 @@ my %cpu_tests = (
         },
         {
             ID             => 'BFEBFBFF000206C2',
-            NAME           => 'Intel Xeon CPU E5620 @ 2.40GHz',
+            NAME           => 'Intel(R) Xeon(R) CPU E5620 @ 2.40GHz',
             EXTERNAL_CLOCK => '5860',
             SPEED          => '2400',
             THREAD         => '2',
@@ -7274,7 +7274,7 @@ my %cpu_tests = (
     'rhel-6.3-esx-1vcpu' => [
         {
             ID             => '0FABFBFF000206A7',
-            NAME           => 'Intel Core i5-2500S CPU @ 2.70GHz',
+            NAME           => 'Intel(R) Core(TM) i5-2500S CPU @ 2.70GHz',
            SPEED          => '2700',
             SERIAL         => undef,
             MANUFACTURER   => 'GenuineIntel',
@@ -7339,7 +7339,7 @@ my %cpu_tests = (
             MODEL           => 63,
             MANUFACTURER    => 'Intel',
             ID              => 'BFEBFBFF000306F2',
-            NAME            => 'Intel Xeon CPU E5-2699 v3 @ 2.30GHz',
+            NAME            => 'Intel(R) Xeon(R) CPU E5-2699 v3 @ 2.30GHz',
             FAMILYNUMBER    => 6,
             STEPPING        => 2,
             SERIAL          => undef,
@@ -7351,7 +7351,7 @@ my %cpu_tests = (
             ID              => 'BFEBFBFF000306F2',
             STEPPING        => 2,
             FAMILYNUMBER    => 6,
-            NAME            => 'Intel Xeon CPU E5-2699 v3 @ 2.30GHz',
+            NAME            => 'Intel(R) Xeon(R) CPU E5-2699 v3 @ 2.30GHz',
             SERIAL          => undef,
             FAMILYNAME      => 'Xeon',
             THREAD          => '2',
@@ -7363,7 +7363,7 @@ my %cpu_tests = (
     'S3000AHLX' => [
         {
             ID             => 'BFEBFBFF000006F6',
-            NAME           => 'Intel Core2 CPU 6600 @ 2.40GHz',
+            NAME           => 'Intel(R) Core(TM)2 CPU 6600 @ 2.40GHz',
             EXTERNAL_CLOCK => '266',
             SPEED          => '2400',
             SERIAL         => undef,
@@ -7378,7 +7378,7 @@ my %cpu_tests = (
     'S5000VSA' => [
         {
             ID             => 'BFEBFBFF000006F6',
-            NAME           => 'Intel Xeon CPU 5120 @ 1.86GHz',
+            NAME           => 'Intel(R) Xeon(R) CPU 5120 @ 1.86GHz',
             EXTERNAL_CLOCK => '1066',
             SPEED          => '1860',
             THREAD         => '1',
@@ -7392,7 +7392,7 @@ my %cpu_tests = (
         },
         {
             ID             => 'BFEBFBFF000006F6',
-            NAME           => 'Intel Xeon CPU 5120 @ 1.86GHz',
+            NAME           => 'Intel(R) Xeon(R) CPU 5120 @ 1.86GHz',
             EXTERNAL_CLOCK => '1066',
             SPEED          => '1860',
             THREAD         => '1',
@@ -7408,7 +7408,7 @@ my %cpu_tests = (
     'linux-1' => [
         {
             ID             => 'BFEBFBFF0001067A',
-            NAME           => 'Intel Core2 Duo CPU E8400 @ 3.00GHz',
+            NAME           => 'Intel(R) Core(TM)2 Duo CPU E8400 @ 3.00GHz',
             EXTERNAL_CLOCK => '333',
             SPEED          => '3000',
             THREAD         => '1',
@@ -7536,7 +7536,7 @@ my %cpu_tests = (
     'windows-7' => [
         {
             ID             => 'BFEBFBFF000206A7',
-            NAME           => 'Intel Core i5-2300 CPU @ 2.80GHz',
+            NAME           => 'Intel(R) Core(TM) i5-2300 CPU @ 2.80GHz',
             EXTERNAL_CLOCK => '100',
             SPEED          => '2800',
             SERIAL         => undef,
@@ -7552,7 +7552,7 @@ my %cpu_tests = (
     'windows-7.2' => [
         {
             ID             => '178BFBFF00100F62',
-            NAME           => 'AMD Athlon II X2 245 Processor',
+            NAME           => 'AMD Athlon(tm) II X2 245 Processor',
             EXTERNAL_CLOCK => '200',
             SPEED          => '2900',
             SERIAL         => undef,
@@ -7573,7 +7573,7 @@ my %cpu_tests = (
             ID              => 'BFEBFBFF000206A7',
             MANUFACTURER    => 'Intel(R) Corporation',
             MODEL           => '42',
-            NAME            => 'Intel Core i5-2450M CPU @ 2.50GHz',
+            NAME            => 'Intel(R) Core(TM) i5-2450M CPU @ 2.50GHz',
             SERIAL          => 'Not Supported by CPU',
             SPEED           => '2500',
             STEPPING        => '7',
