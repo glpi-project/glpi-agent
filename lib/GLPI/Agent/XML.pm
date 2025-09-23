@@ -10,9 +10,10 @@ use Encode qw(encode decode);
 
 use GLPI::Agent::Tools;
 
-# We need to use a dedicated worker thread to support XML::LibXML on win32 as
-# libxml2 DLL is not fully threads-safe if few contexts
-my $need_dedicated_thread = $OSNAME eq "MSWin32" ? 1 : 0;
+# We may need to use a dedicated worker thread to support XML::LibXML on win32 if
+# libxml2 DLL is not fully threads-safe in some contexts
+#my $need_dedicated_thread = $OSNAME eq "MSWin32" ? 1 : 0;
+my $need_dedicated_thread = 0;
 if ($need_dedicated_thread) {
     GLPI::Agent::Tools::Win32->require() or die $@;
     GLPI::Agent::Tools::Win32::start_Win32_OLE_Worker();

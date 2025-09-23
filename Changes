@@ -2,6 +2,9 @@ Revision history for GLPI agent
 
 1.16 not yet released
 
+core:
+* On windows, permit to use libxml2 built libraries in different threads
+
 inventory:
 * PR #931: Added DrWeb & Karpersky Endpoint for Linux antivirus support on linux
 * fix #963: Software inventory with scan-profiles option fixed for Azure AD users
@@ -26,6 +29,7 @@ remoteinventory:
 * fix RedHat RHN systemid set as WINPRODID
 * fix battery inventory on windows
 * fix SessionID WsMan class support
+* fix #1011: Fix crash on windows when running remote windows inventory
 
 netdiscovery/netinventory:
 * fix #922: Add Radware Alteon Load Balancer support
