@@ -49,4 +49,12 @@ sub uuid {
     return $self->{_uuid} = $uuid;
 }
 
+package
+    SessionID;
+
+use parent
+    'Node';
+
+use constant    xmlns   => 'p';
+
 1;

@@ -82,7 +82,14 @@ sub _load_class {
     my ($class, $namespace) = @_;
 
     unless ($INC{"$class.pm"}) {
-        if (-e "$wsman_classes_path/$class.pm") {
+        # SessionID class support is included in SessionId module
+        if ($class eq "SessionID") {
+            my $module = "GLPI::Agent::SOAP::WsMan::SessionId";
+            $module->require();
+            warn "Failure while loading $class: $EVAL_ERROR\n"
+                if $EVAL_ERROR;
+            $INC{"$class.pm"} = $INC{module2file($module)};
+        } elsif (-e "$wsman_classes_path/$class.pm") {
             my $module = "GLPI::Agent::SOAP::WsMan::$class";
             $module->require();
             warn "Failure while loading $class: $EVAL_ERROR\n"

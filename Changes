@@ -25,6 +25,7 @@ inventory:
 remoteinventory:
 * fix RedHat RHN systemid set as WINPRODID
 * fix battery inventory on windows
+* fix SessionID WsMan class support
 
 netdiscovery/netinventory:
 * fix #922: Add Radware Alteon Load Balancer support
