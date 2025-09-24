@@ -1,0 +1,77 @@
+<!-- HPONCFG VERSION = "6.0.0.0" -->
+<!-- Generated 09/23/25 12:09:21 -->
+<RIBCL VERSION="2.1">
+ <LOGIN USER_LOGIN="Administrator" PASSWORD="password">
+  <DIR_INFO MODE="write">
+  <MOD_DIR_CONFIG>
+    <DIR_AUTHENTICATION_ENABLED VALUE = "N"/>
+    <DIR_LOCAL_USER_ACCT VALUE = "Y"/>
+    <DIR_SERVER_ADDRESS VALUE = ""/>
+    <DIR_SERVER_PORT VALUE = "636"/>
+    <DIR_OBJECT_DN VALUE = ""/>
+    <DIR_OBJECT_PASSWORD VALUE = ""/>
+    <DIR_USER_CONTEXT_1 VALUE = ""/>
+    <DIR_USER_CONTEXT_2 VALUE = ""/>
+    <DIR_USER_CONTEXT_3 VALUE = ""/>
+  </MOD_DIR_CONFIG>
+  </DIR_INFO>
+  <RIB_INFO MODE="write">
+  <MOD_NETWORK_SETTINGS>
+    <SPEED_AUTOSELECT VALUE = "Y"/>
+    <NIC_SPEED VALUE = "10"/>
+    <FULL_DUPLEX VALUE = "N"/>
+    <DHCP_ENABLE VALUE = "Y"/>
+    <DHCP_GATEWAY VALUE = "Y"/>
+    <DHCP_DNS_SERVER VALUE = "Y"/>
+    <DHCP_STATIC_ROUTE VALUE = "Y"/>
+    <DHCP_WINS_SERVER VALUE = "Y"/>
+    <REG_WINS_SERVER VALUE = "Y"/>
+    <IP_ADDRESS VALUE = "192.168.50.84"/>
+    <SUBNET_MASK VALUE = "255.255.254.0"/>
+    <GATEWAY_IP_ADDRESS VALUE = "192.168.51.254"/>
+    <DNS_NAME VALUE = "LUBSHVH51"/>
+    <DOMAIN_NAME VALUE = "ilo.dc"/>
+    <PRIM_DNS_SERVER value = "172.17.3.251"/>
+    <SEC_DNS_SERVER value = "172.17.2.251"/>
+    <TER_DNS_SERVER value = "0.0.0.0"/>
+    <PRIM_WINS_SERVER value = "0.0.0.0"/>
+    <SEC_WINS_SERVER value = "0.0.0.0"/>
+    <STATIC_ROUTE_1 DEST = "0.0.0.0" GATEWAY = "0.0.0.0"/>
+    <STATIC_ROUTE_2 DEST = "0.0.0.0" GATEWAY = "0.0.0.0"/>
+    <STATIC_ROUTE_3 DEST = "0.0.0.0" GATEWAY = "0.0.0.0"/>
+  </MOD_NETWORK_SETTINGS>
+  </RIB_INFO>
+  <USER_INFO MODE="write">
+  <ADD_USER
+    USER_NAME = "Admin"
+    USER_LOGIN = "Admin"
+    PASSWORD = "%user_password%">
+    <ADMIN_PRIV value = "Y"/>
+    <REMOTE_CONS_PRIV value = "Y"/>
+    <RESET_SERVER_PRIV value = "Y"/>
+    <VIRTUAL_MEDIA_PRIV value = "Y"/>
+    <CONFIG_ILO_PRIV value = "Y"/>
+  </ADD_USER>
+  <ADD_USER
+    USER_NAME = "ASSECO"
+    USER_LOGIN = "ASSECO"
+    PASSWORD = "%user_password%">
+    <ADMIN_PRIV value = "Y"/>
+    <REMOTE_CONS_PRIV value = "Y"/>
+    <RESET_SERVER_PRIV value = "Y"/>
+    <VIRTUAL_MEDIA_PRIV value = "Y"/>
+    <CONFIG_ILO_PRIV value = "Y"/>
+  </ADD_USER>
+  <ADD_USER
+    USER_NAME = "getprice"
+    USER_LOGIN = "getprice"
+    PASSWORD = "%user_password%">
+    <ADMIN_PRIV value = "Y"/>
+    <REMOTE_CONS_PRIV value = "Y"/>
+    <RESET_SERVER_PRIV value = "Y"/>
+    <VIRTUAL_MEDIA_PRIV value = "Y"/>
+    <CONFIG_ILO_PRIV value = "Y"/>
+  </ADD_USER>
+  </USER_INFO>
+ </LOGIN>
+</RIBCL>

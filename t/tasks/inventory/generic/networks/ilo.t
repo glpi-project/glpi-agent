@@ -29,11 +29,39 @@ my %tests = (
         TYPE        => 'ethernet',
         MANAGEMENT  => 'iLO',
         DESCRIPTION => 'Management Interface - HP iLO',
-        IPSUBNET    => undef
+    },
+    'sample3' => {
+        STATUS      => 'Up',
+        TYPE        => 'ethernet',
+        MANAGEMENT  => 'iLO',
+        DESCRIPTION => 'Management Interface - HP iLO',
+        IPMASK      => '255.255.254.0',
+    },
+    'sample4' => {
+        STATUS      => 'Down',
+        TYPE        => 'ethernet',
+        MANAGEMENT  => 'iLO',
+        DESCRIPTION => 'Management Interface - HP iLO',
+        SPEED       => '10',
+        IPGATEWAY   => '192.168.51.254',
+        IPADDRESS   => '192.168.50.84',
+        IPMASK      => '255.255.254.0',
+        IPSUBNET    => '192.168.50.0'
+    },
+    'sample3+4' => {
+        STATUS      => 'Up',
+        TYPE        => 'ethernet',
+        MANAGEMENT  => 'iLO',
+        DESCRIPTION => 'Management Interface - HP iLO',
+        SPEED       => '10',
+        IPGATEWAY   => '192.168.51.254',
+        IPADDRESS   => '192.168.50.84',
+        IPMASK      => '255.255.254.0',
+        IPSUBNET    => '192.168.50.0'
     }
 );
 
-plan tests => (2 * scalar keys %tests) + 1;
+plan tests => (2 * scalar keys %tests) + 1 + 1;
 
 my $inventory = GLPI::Test::Inventory->new();
 
@@ -45,3 +73,10 @@ foreach my $test (keys %tests) {
         $inventory->addEntry(section => 'NETWORKS', entry => $interface);
     } 'no unknown fields';
 }
+
+# Test merge of sample3 + sampl4
+my $file = "resources/linux/hponcfg/sample3";
+my $interface = GLPI::Agent::Task::Inventory::Generic::Networks::iLO::_parseHponcfg(file => $file);
+$file = "resources/linux/hponcfg/sample4";
+$interface = GLPI::Agent::Task::Inventory::Generic::Networks::iLO::_parseHponcfg(file => $file, entry => $interface);
+cmp_deeply($interface, $tests{'sample3+4'}, 'sample3 & sample4 merged');
