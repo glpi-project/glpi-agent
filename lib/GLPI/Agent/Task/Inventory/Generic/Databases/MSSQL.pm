@@ -43,8 +43,8 @@ sub _getDatabaseService {
 
     # Handle default credentials case
     if (@{$credentials} == 1 && !keys(%{$credentials->[0]})) {
-        # On windows, we can discover instance names in registry
-        if (OSNAME eq 'MSWin32') {
+        # On windows, we can discover instance names in registry but not during tests
+        if (OSNAME eq 'MSWin32' && !$params{istest}) {
             GLPI::Agent::Tools::Win32->require();
             my $instances = GLPI::Agent::Tools::Win32::getRegistryKey(
                 path => 'HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Microsoft SQL Server/Instance Names/SQL',
