@@ -67,7 +67,7 @@ sub build_job {
             perl_debug => 0,    # can be overridden by --perl_debug=N option
             perl_64bitint => 1, # ignored on 64bit, can be overridden by --perl_64bitint | --noperl_64bitint option
             # Remove not required locale support to fix a locale support issue
-            buildoptextra => '-DNO_LOCALE',
+            buildoptextra => '-DNO_LOCALE -std=c23',
             patch => { #DST paths are relative to the perl src root
                 'contrib/windows/packaging/agentexe.ico'    => 'win32/agentexe.ico',
                 'contrib/windows/packaging/agentexe.rc.tt'  => 'win32/perlexe.rc',
