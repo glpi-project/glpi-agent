@@ -50,6 +50,8 @@ netdiscovery/netinventory:
 * fix #959: Add Avocent KVM support
 * Add FoxGate devices support
 * Update Mikrotik devices support
+* fix #1026: Update LLDP support fixing connection detection on few Cisco, Dell,
+  Mikrotik and TP-Link devices
 
 injector:
 * Add support for --ca-cert-file and --ssl-fingerprint options

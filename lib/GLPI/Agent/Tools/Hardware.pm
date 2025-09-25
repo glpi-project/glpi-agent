@@ -1228,6 +1228,9 @@ sub _getLLDPInfo {
     my $logger = $params{logger};
 
     my $results;
+    my $lldpLocPortIdType    = $device->walk('.1.0.8802.1.1.2.1.3.7.1.2');
+    my $lldpLocPortId        = $device->walk('.1.0.8802.1.1.2.1.3.7.1.3');
+    my $lldpLocPortDesc      = $device->walk('.1.0.8802.1.1.2.1.3.7.1.4');
     my $ChassisIdSubType     = $device->walk('.1.0.8802.1.1.2.1.4.1.1.4');
     my $lldpRemChassisId     = $device->walk('.1.0.8802.1.1.2.1.4.1.1.5');
     my $lldpRemPortIdSubtype = $device->walk('.1.0.8802.1.1.2.1.4.1.1.6');
@@ -1240,6 +1243,55 @@ sub _getLLDPInfo {
     my $port2interface =
         $device->walk('.1.3.6.1.4.1.9.5.1.4.1.1.11.1') || # Cisco portIfIndex
         $device->walk('.1.3.6.1.2.1.17.1.4.1.2');         # dot1dBasePortIfIndex
+
+    # Update/fix port to interface mapping
+    if ($lldpLocPortIdType && $lldpLocPortId && $lldpLocPortDesc && $params{ports}) {
+        my %portId;
+        my %portDesc;
+        my %ignore;
+        # Firstly index know ports IFNAME and MAC as portid and IFDESCR as port description
+        # Always ignore duplicated values
+        foreach my $port (keys(%{$params{ports}})) {
+            next if empty($params{ports}->{$port}->{IFNAME});
+            my $name = $params{ports}->{$port}->{IFNAME};
+            $portId{$name} = $port;
+            unless (empty($params{ports}->{$port}->{MAC})) {
+                my $mac = getCanonicalMacAddress($params{ports}->{$port}->{MAC});
+                if ($mac) {
+                    if (defined($portId{$mac})) {
+                        delete $portId{$mac};
+                        $ignore{$mac} = 1;
+                    }
+                    $portId{$mac} = $port unless $ignore{$mac};
+                }
+            }
+            unless (empty($params{ports}->{$port}->{IFDESCR})) {
+                my $descr = $params{ports}->{$port}->{IFDESCR};
+                if (defined($portDesc{$descr})) {
+                    delete $portDesc{$descr};
+                    $ignore{$descr} = 1;
+                }
+                $portDesc{$descr} = $port unless $ignore{$descr};
+            }
+        }
+        # Then update port2interface with expected interface
+        foreach my $port (keys(%{$lldpLocPortIdType})) {
+            my $type = $lldpLocPortIdType->{$port};
+            my $portid = $type == 3 ? getCanonicalMacAddress($lldpLocPortId->{$port})
+                : getCanonicalString($lldpLocPortId->{$port});
+            # First try to match on portid
+            if ($portid && $portId{$portid}) {
+                $port2interface->{$port} = $portId{$portid};
+                next;
+            }
+            # Fallback on IFDESCR matching
+            my $descr = getCanonicalString($lldpLocPortDesc->{$port});
+            if ($descr && $portDesc{$descr}) {
+                $port2interface->{$port} = $portDesc{$descr};
+                next;
+            }
+        }
+    }
 
     # each lldp variable matches the following scheme:
     # $prefix.x.y.z = $value
