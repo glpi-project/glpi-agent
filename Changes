@@ -60,12 +60,12 @@ packaging:
 * Update Windows packaging to use:
   - Perl 5.42.0 built using Perl::Dist::StrawBerry perl library processing
   - gcc 15.2.0posix-13.0.0-msvcrt-r1
-  - OpenSSL 3.5.3
+  - OpenSSL 3.5.4
   - liblzma from xz 5.8.1
   - libxml2 2.15.0
   - msys2-base 20250830
   - 7-Zip v25.01
-* Update MacOSX packages to use perl 5.42.0 and OpenSSL 3.5.3
+* Update MacOSX packages to use perl 5.42.0 and OpenSSL 3.5.4
 
 1.15 Mon, 09 Jun 2025
 
