@@ -52,6 +52,7 @@ netdiscovery/netinventory:
 * Update Mikrotik devices support
 * fix #1026: Update LLDP support fixing connection detection on few Cisco, Dell,
   Mikrotik and TP-Link devices
+* Add Tiesse devices support
 
 injector:
 * Add support for --ca-cert-file and --ssl-fingerprint options
