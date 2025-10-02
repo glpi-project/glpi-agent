@@ -272,7 +272,7 @@ textarea {
   text-align: center;
 }
 
-.counter-cell label {
+.counter-cell span {
   font: bold 16px Arial, Helvetica;
 }
 

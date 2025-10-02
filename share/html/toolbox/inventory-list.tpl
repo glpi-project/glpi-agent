@@ -203,15 +203,15 @@ if (@jobs_order) {
               <div class='progress-col'>
                 <div class='counters-row'>
                   <div class='counter-cell'>
-                    <label>";
+                    <span>";
       if ($task->{islocal}) {
-        $OUT .= _("Local inventory")."</label>
+        $OUT .= _("Local inventory")."</span>
                   <div class='counters-row'>
                     <span class='counter' id='$taskid-inventory-count'>".($task->{inventory_count} || 0)."</span>
                   </div>
                 </div>";
       } else {
-        $OUT .= _("Created inventories")."</label>
+        $OUT .= _("Created inventories")."</span>
                   <div class='counters-row'>
                     <span class='counter' id='$taskid-inventory-count' title='"._("Should match devices with SNMP support count")."'>
                       ".($task->{inventory_count} || 0).($task->{inventory_count} && $task->{snmp_support} ? "/".$task->{snmp_support} : "")."
@@ -219,7 +219,7 @@ if (@jobs_order) {
                   </div>
                 </div>
                 <div class='counter-cell'>
-                  <label>"._("Scanned IPs")."</label>
+                  <span>"._("Scanned IPs")."</span>
                   <div class='counters-row'>
                     <span class='counter' id='$taskid-scanned' title='"._("Scanned IPs for this IP range")."'>
                       ".($task->{count} || 0).($task->{count} && $task->{count} < $task->{maxcount} ? "/".$task->{maxcount} : "")."
@@ -227,7 +227,7 @@ if (@jobs_order) {
                   </div>
                 </div>
                 <div class='counter-cell'>
-                  <label>"._("Devices with SNMP support")."</label>
+                  <span>"._("Devices with SNMP support")."</span>
                   <div class='counters-row'>
                     <span class='counter' id='$taskid-snmp' title='"._("IPs for which we found a device supporting SNMP with provided credentials")."'>
                       ".($task->{snmp_support} || 0).($task->{snmp_support} && $task->{count} ? "/".$task->{count} : "")."
@@ -235,7 +235,7 @@ if (@jobs_order) {
                   </div>
                 </div>
                 <div class='counter-cell'>
-                  <label>"._("IPs without SNMP response")."</label>
+                  <span>"._("IPs without SNMP response")."</span>
                   <div class='counters-row'>
                     <span class='counter' id='$taskid-others' title='"._("These IPs are responding to ping or are found in ARP table")."\n".
                       _("But we didn't find any device supporting SNMP with provided credentials")."'>
@@ -244,7 +244,7 @@ if (@jobs_order) {
                   </div>
                 </div>
                 <div class='counter-cell'>
-                  <label>"._("IPs without PING response")."</label>
+                  <span>"._("IPs without PING response")."</span>
                   <div class='counters-row'>
                     <span class='counter' id='$taskid-unknown' title='"._("IPs not responding to ping and not seen in ARP table")."'>
                       ".($task->{unknown} || 0).($task->{unknown} && $task->{count} ? "/".$task->{count} : "")."

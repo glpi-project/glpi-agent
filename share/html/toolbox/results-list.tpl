@@ -3,19 +3,19 @@
     <div class='counter-cell' title='{_"Number of devices seen by network scan other all results"}
 {_"A seen device is identified by its IPs and tag"}
 {_"A local inventory can be included as seen if its IP has been scanned by a network scan task"}'>
-      <label>{_"IPs seen by Network Scan"}</label>
+      <span>{_"IPs seen by Network Scan"}</span>
       <div class='counters-row'>
         <span class='counter'>{$netscan_count}/{$list_count}</span>
       </div>
     </div>
     <div class='counter-cell' title='{_"Number of Network Inventory other all scanned IPs"}'>
-      <label>{_"Network Scan Inventory count"}</label>
+      <span>{_"Network Scan Inventory count"}</span>
       <div class='counters-row'>
         <span class='counter'>{$netscan_inventory_count}/{$list_count}</span>
       </div>
     </div>
     <div class='counter-cell' title='{_"Number of local inventory other all scanned IPs"}'>
-      <label>{_"Local Inventory count"}</label>
+      <span>{_"Local Inventory count"}</span>
       <div class='counters-row'>
         <span class='counter'>{$local_inventory_count}/{$list_count}</span>
       </div>

@@ -25,7 +25,7 @@
       }</div>
       <div class='display-option list-option'>
         {_"Display (number of items)"}
-        <select class='display-option' onchange="document.getElementById('display').value = this.value; submit();">{
+        <select class='display-option' id='display-option' onchange="document.getElementById('display').value = this.value; submit();">{
         foreach my $opt (@display_options) {
           $OUT .= "
           <option".($display && $display eq $opt ? " selected" : "").
