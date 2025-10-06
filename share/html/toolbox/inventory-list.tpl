@@ -437,8 +437,10 @@ if (@jobs_order) {
       index = this.getResponseHeader('X-Inventory-Index');
       checked = document.getElementById('show-log-'+task).checked;
       last_run_date = this.getResponseHeader('X-Inventory-LastRunDate');
+      running = this.getResponseHeader('X-Inventory-Status') === 'running' ? true : false;
       if (!freezed_log[task]) \{
-        if (this.getResponseHeader('X-Inventory-Output') === 'full' || (output_index[task] > 0 && index < output_index[task])) \{
+        // Reset content when receiving full inventory or when an active task just started
+        if (this.getResponseHeader('X-Inventory-Output') === 'full' || (running && index === null)) \{
           output.innerHTML = this.responseText;
           output.scrollTop = 0;
         \} else \{
@@ -447,7 +449,6 @@ if (@jobs_order) {
         \}
         if (index >= 0) output_index[task] = index;
       \}
-      running = this.getResponseHeader('X-Inventory-Status') === 'running' ? true : false;
       aborted = this.getResponseHeader('X-Inventory-Status') === 'aborted' ? true : false;
       failed  = this.getResponseHeader('X-Inventory-Status') === 'failed'  ? true : false;
       inventory_count = this.getResponseHeader('X-Inventory-Count');
