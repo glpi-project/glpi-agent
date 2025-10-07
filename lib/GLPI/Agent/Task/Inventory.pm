@@ -595,7 +595,7 @@ sub _injectContent {
         my $json = GLPI::Agent::Protocol::Message->new(
             file => $file,
         );
-        $content = $json->get('content');
+        $content = $json->get('content', transform => "upperkeys");
         unless ($content) {
             $self->{logger}->error(
                 "failing to import $file file content in the inventory"

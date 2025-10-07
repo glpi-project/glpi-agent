@@ -138,9 +138,7 @@ foreach my $test (keys %tests) {
     } "$test: set json format";
 
     # Fix version client with the test one to avoid false positive while agent version is evolving
-    $inventory->mergeContent({
-        versionclient => $tests{$test}->{client}
-    });
+    $inventory->{content}->{VERSIONCLIENT} = $tests{$test}->{client};
 
     my $content;
     lives_ok {

@@ -88,13 +88,35 @@ sub set {
 }
 
 sub get {
-    my ($self, $what) = @_;
+    my ($self, $what, $transform, $how) = @_;
 
     return unless defined($self->{_message});
 
-    return $self->{_message}->{$what} if defined($what);
+    if (defined($what)) {
+        return _uppercase_keys($self->{_message}->{$what})
+            if $transform && $how && $transform eq "transform" && $how eq "upperkeys";
+
+        return $self->{_message}->{$what};
+    }
 
     return $self->{_message};
+}
+
+sub _uppercase_keys {
+    my ($ref) = shift;
+
+    if (ref($ref) eq "HASH") {
+        my $newref = {};
+        foreach my $key (keys(%{$ref})) {
+            $newref->{uc($key)} = _uppercase_keys($ref->{$key});
+        }
+        return $newref;
+    } elsif (ref($ref) eq "ARRAY") {
+        return [ map { _uppercase_keys($_) } @{$ref} ];
+    }
+
+    # Not a ref, just return unmodified value
+    return $ref;
 }
 
 sub merge {

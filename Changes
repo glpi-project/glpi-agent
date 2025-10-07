@@ -25,6 +25,7 @@ inventory:
 * fix #1017: Don't cleanup cpu on win32 from (R) trademark to keep cpu naming
   the same between OS
 * fix #1023: Improve iLO ip address resolution on Windows
+* Fix additional content merged into json even when not required on partial content
 
 remoteinventory:
 * fix RedHat RHN systemid set as WINPRODID

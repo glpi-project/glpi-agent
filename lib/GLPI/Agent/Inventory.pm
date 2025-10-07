@@ -297,10 +297,6 @@ sub getContent {
             itemtype    => empty($self->{_itemtype}) ? "Computer" : $self->{_itemtype},
         );
 
-        # Support json file on additional-content with json output
-        $content->mergeContent(content => delete $self->{_json_merge})
-            if $self->{_json_merge};
-
         # Normalize content to follow inventory format specs from https://github.com/glpi-project/inventory_format
         $content->normalize($params{server_version});
 
@@ -334,11 +330,6 @@ sub mergeContent {
     my ($self, $content) = @_;
 
     die "no content to merge\n" unless $content;
-
-    if ($self->getFormat() eq 'json') {
-        $self->{_json_merge} = $content;
-        return;
-    }
 
     foreach my $section (keys %$content) {
         if (ref $content->{$section} eq 'ARRAY') {
