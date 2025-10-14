@@ -16,12 +16,21 @@ use constant    tiesse  => ".1.3.6.1.4.1.4799" ;
 
 use constant    privatePhysicalDescr  => tiesse . ".3.2.6023.0";
 
+use constant    privateFirmware       => tiesse . ".200.1.0";
+use constant    privateSerialNumber   => tiesse . ".200.2.0";
+
 our $mibSupport = [
     {
         name        => "tiesse",
         sysobjectid => getRegexpOidMatch(tiesse)
     }
 ];
+
+sub getFirmware {
+    my ($self) = @_;
+
+    return getCanonicalString($self->get(privateFirmware));
+}
 
 sub getModel {
     my ($self) = @_;
@@ -36,6 +45,12 @@ sub getModel {
 
 sub getManufacturer {
     return "Tiesse";
+}
+
+sub getSerial {
+    my ($self) = @_;
+
+    return getCanonicalString($self->get(privateSerialNumber));
 }
 
 sub getType {
