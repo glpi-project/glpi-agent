@@ -56,6 +56,7 @@ netdiscovery/netinventory:
 * Add Tiesse devices support
 * fix #1001: Add HTek phones support
 * fix #1034: Add Hitachi Vantara storage devices support
+* Add Fortinet module to report passive element of a HA stack
 
 injector:
 * Add support for --ca-cert-file and --ssl-fingerprint options
