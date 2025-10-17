@@ -70,7 +70,7 @@ packaging:
   - gcc 15.2.0posix-13.0.0-msvcrt-r1
   - OpenSSL 3.5.4
   - liblzma from xz 5.8.1
-  - libxml2 2.15.0
+  - libxml2 2.15.1
   - msys2-base 20250830
   - 7-Zip v25.01
 * Update MacOSX packages to use perl 5.42.0 and OpenSSL 3.5.4
