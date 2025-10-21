@@ -42,10 +42,10 @@ sub getComponents {
         # Replace components with found HA devices
         my $index = $self->walk(fgHaStatsIndex);
         if (ref($index) eq "HASH") {
-            delete $device->{COMPONENTS};
             my @index = sort values(%{$index});
             foreach my $index (@index) {
-                my $serial = getCanonicalString($self->get(fgHaStatsSerial.".".$index));
+                my $serial = getCanonicalString($self->get(fgHaStatsSerial.".".$index))
+                    or next;
                 push @components, {
                     INDEX            => $index,
                     NAME             => getCanonicalString($self->get(fgHaStatsHostname.".".$index)),
@@ -55,6 +55,8 @@ sub getComponents {
                     TYPE             => 'chassis',
                 };
             }
+            return unless @components;
+            delete $device->{COMPONENTS};
         }
     }
 
