@@ -248,10 +248,8 @@ jobs:
     - name: Install latest Perl::Dist::Strawberry from github
       if: steps.perl-site-cache.outputs.cache-hit != 'true'
       run: |
-        cpanm --notest --verbose https://github.com/StrawberryPerl/Perl-Dist-Strawberry.git
-        cp contrib\windows\packaging\perl-dist-strawberry.patch C:\Strawberry\perl\site
-        cd C:\Strawberry\perl\site
-        patch --binary -i perl-dist-strawberry.patch -p1
+        # Use patched Perl::Dist::Strawberry for GH Actions build
+        cpanm --notest --verbose https://github.com/g-bougard/Perl-Dist-Strawberry.git
       shell: cmd
     - name: Prepare for remote Code Signing
       if: ${{ needs.setup-release.outputs.win32-signing == 'yes' }}
