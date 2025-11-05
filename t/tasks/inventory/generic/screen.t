@@ -126,6 +126,20 @@ my %edid_tests = (
         SERIAL       => 'T4BEE00C112089502411',
         DESCRIPTION  => '12/2021'
     },
+    'acer-s240l.1' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'S240HL',
+        ALTSERIAL    => 'LU50D0068536',
+        SERIAL       => 'LU50D0066120232a8536',
+        DESCRIPTION  => '12/2016'
+    },
+    'acer-s240l.2' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'S240HL',
+        ALTSERIAL    => 'LU50D0018514',
+        SERIAL       => 'LU50D00120118b478514',
+        DESCRIPTION  => '1/2012'
+    },
     'acer-sa240y' => {
         MANUFACTURER => 'Acer Technologies',
         CAPTION      => 'SA240Y',

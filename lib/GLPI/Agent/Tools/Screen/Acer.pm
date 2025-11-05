@@ -77,6 +77,7 @@ __DATA__
     00f7    V193
     0133    V193HQV
     0239    Acer V193L
+    0289    S240HL
     02cc    Acer V243HL
     02d4    Acer G236HL
     0319    Acer H226HQL

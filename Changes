@@ -26,6 +26,7 @@ inventory:
   the same between OS
 * fix #1023: Improve iLO ip address resolution on Windows
 * Fix additional content merged into json even when not required on partial content
+* Update support for Acer S240L monitors inventory
 
 remoteinventory:
 * fix RedHat RHN systemid set as WINPRODID
