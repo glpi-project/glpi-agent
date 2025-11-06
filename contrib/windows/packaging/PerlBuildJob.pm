@@ -212,8 +212,8 @@ sub build_job {
             ],
             install     => [
                 { do => 'createdir', args => [ '<image_dir>/perl/vendor/lib/auto/<module>' ] },
-                { do => 'copyfile', args => [ '<build_dir>/<folder>/<module>.pm', '<image_dir>/perl/vendor/lib/<module>.pm' ] },
-                { do => 'copyfile', args => [ '<build_dir>/<folder>/<_libdll>', '<image_dir>/perl/vendor/lib/auto/<module>/<_libdll>' ] },
+                { do => 'copyfile', args => [ '<module>.pm', '<image_dir>/perl/vendor/lib/<module>.pm' ] },
+                { do => 'copyfile', args => [ '<_libdll>',   '<image_dir>/perl/vendor/lib/auto/<module>/<_libdll>' ] },
             ],
         },
         ### NEXT STEP 10 : Sign MSI ############################################
