@@ -23,7 +23,7 @@ use lib 'lib';
 use GLPI::Agent::Version;
 
 # HACK: make "use Perl::Dist::GLPI::Agent::Step::XXX" works as included plugin
-map { $INC{"Perl/Dist/GLPI/Agent/Step/$_.pm"} = __FILE__ } qw(Update OutputMSI Test ToolChain InstallPerlCore InstallModules Github);
+map { $INC{"Perl/Dist/GLPI/Agent/Step/$_.pm"} = __FILE__ } qw(Update OutputMSI Test ToolChain InstallPerlCore InstallModules Github BuildModule);
 
 # Perl::Dist::Strawberry doesn't detect WiX 3.11 which is installed on windows github images
 # Algorithm imported from Perl::Dist::Strawberry::Step::OutputMSM_MSI::_detect_wix_dir
@@ -281,6 +281,143 @@ sub _patch_file {
     $self->_restore_ro($dst, $r);
 
     write_file("$dst.diff", diff("$dst.backup", $dst)) if -f "$dst.backup";
+}
+
+package
+    Perl::Dist::GLPI::Agent::Step::BuildModule;
+
+use parent 'Perl::Dist::Strawberry::Step';
+
+use File::Spec::Functions qw(catfile catdir);
+use File::Slurp           qw(read_file);
+use File::Path            qw(make_path);
+
+use Perl::Dist::Strawberry::Step::FilesAndDirs;
+
+sub check {
+    my $self = shift;
+    $self->SUPER::check(@_);
+    my $m = $self->{config}->{module};
+    die "ERROR: param 'module' not defined" unless defined $m;
+    die "ERROR: param 'module' has to be a module name string" if ref($m);
+}
+
+sub _buildlib {
+    my ($self) = @_;
+
+    my $folder = catdir($self->global->{build_dir}, $self->_resolve($self->{config}->{buildlib_folder}//''));
+    make_path($folder) unless -d $folder;
+    my $wd = $self->_push_dir($folder);
+
+    return $self->_commands('buildlib', $self->{config}->{buildlib});
+}
+
+sub run {
+    my ($self) = @_;
+
+    if ($self->{config}->{skip_if_file}) {
+        my $file = $self->_resolve($self->{config}->{skip_if_file});
+        if (-e $file) {
+            $self->boss->message(2, "* skipping as still built");
+            return;
+        }
+    }
+
+    my $name = $self->{config}->{module}
+        or die "ERROR: Missing module name";
+    $self->boss->message(1, "installing module '$name'\n");
+
+    my $url = $self->{config}->{url}
+        or die "ERROR: Missing module url";
+    my $install_to = $self->{config}->{install_to} // ''; # relative to build_dir
+
+    # Download the file
+    $url = $self->_resolve($url);
+    my $tgz = $self->boss->mirror_url($url, $self->global->{download_dir});
+
+    # Unpack the archive
+    my $tgt = catdir($self->global->{build_dir}, $install_to);
+
+    $self->_extract($tgz, $tgt);
+
+    $self->{config}->{buildlib} and $self->_buildlib()
+        or die "ERROR: buildlib failure\n";
+
+    my $folder = catdir($self->global->{build_dir}, $self->_resolve($self->{config}->{folder}//''));
+    my $wd = $self->_push_dir($folder);
+
+    my $swig_lib = catdir($self->global->{image_dir}, 'c', 'lib', 'swig');
+    $self->{config}->{swig} and $self->_commands('swig', $self->{config}->{swig}, undef, { SWIG_LIB => $swig_lib })
+        or die "ERROR: swig failure\n";
+
+    # Find perl opts to resolve it in build command
+    if ($self->{config}->{build}) {
+        foreach my $o (qw(opts ldopts libdll)) {
+            if ($self->{config}->{$o}) {
+                my $result = $self->_commands('_'.$o, $self->{config}->{$o}, "get")
+                    or die "ERROR: _$o failure\n";
+                $self->{config}->{"_$o"} = $result;
+            }
+        }
+    }
+
+    $self->{config}->{build} and $self->_commands('build', $self->{config}->{build})
+        or die "ERROR: build failure\n";
+
+    if (ref($self->{config}->{install}) eq 'ARRAY') {
+        my $install = Perl::Dist::Strawberry::Step::FilesAndDirs->new();
+        $install->{boss} = $self->{boss};
+        $install->{config}->{commands} = [
+            map {
+                my $cmd = $_;
+                {
+                    do      => $cmd->{do},
+                    args    => [ map { $self->_resolve($_) } @{$cmd->{args}} ],
+                }
+            } @{$self->{config}->{install}}
+        ];
+        $install->run()
+            or die "ERROR: Failed to install $name\n";
+    }
+
+    $self->boss->message(5, "pkg='$name'");
+}
+
+sub _resolve {
+    my ($self, $string) = @_;
+    map { $self->{config}->{$_} && $string =~ s/<$_>/$self->{config}->{$_}/g } qw(
+        module version folder src absolute_src dllsuffix prefix install_prefix _libdll _opts _ldopts
+    );
+    return $string;
+}
+
+sub _commands {
+    my ($self, $stage, $commands, $output, $env) = @_;
+
+    $self->boss->message(2, "* $stage commands run stage");
+
+    foreach my $cmdref (@{$commands}) {
+        my @command;
+        if (ref($cmdref)) {
+            @command = map { $self->_resolve($_) } @{$cmdref};
+        } else {
+            @command = split(/\s+/, $self->_resolve($cmdref));
+        }
+
+        $self->boss->message(2, "* running: @command");
+
+        my $file = catfile($self->global->{debug_dir}, $stage."_output.txt");
+        if ($output) {
+            $self->execute_special(\@command, $file, undef, $env)
+                and return 0;
+            return read_file($file);
+        } else {
+            $self->execute_special(\@command, $file, undef, $env)
+                and return 0;
+        }
+    }
+
+    return 1;
 }
 
 package

@@ -22,7 +22,7 @@ use ToolchainBuildJob;
 
 BEGIN {
     # HACK: make "use Perl::Dist::ToolChain::Step::XXX" works as included plugin
-    map { $INC{"Perl/Dist/Strawberry/Step/$_.pm"} = __FILE__ } qw(Control BuildLibrary ToolChain ToolChainUpdate Msys2 Msys2Package BuildPackage PackageZIP);
+    map { $INC{"Perl/Dist/Strawberry/Step/$_.pm"} = __FILE__ } qw(Control BuildLibrary ToolChain ToolChainUpdate Msys2 Msys2Package BuildPackage PackageZIP BinaryTool);
 }
 
 my $provider = $GLPI::Agent::Version::PROVIDER;
@@ -261,6 +261,87 @@ sub _extract {
         unless -d catdir($self->global->{build_dir}, 'mingw64');
 
     $self->boss->message(2, "* toolchain still installed");
+}
+
+package
+    Perl::Dist::Strawberry::Step::BinaryTool;
+
+use parent qw(Perl::Dist::Strawberry::Step::BinaryToolsAndLibs);
+
+use File::Spec::Functions qw(catfile);
+
+use Perl::Dist::Strawberry::Step::FilesAndDirs;
+
+sub check {
+    my $self = shift;
+
+    my $url = $self->{config}->{url}
+        or die "ERROR: package url is missing";
+    $url = $self->_resolve($url);
+    unless ($self->boss->test_url($url)) {
+        $self->boss->message(0, "ERROR: invalid URL '$url'\n");
+        die "ERROR: invalid URL(s) found, cannot continue\n";
+    }
+
+    return 1;
+}
+
+sub run {
+    my ($self) = @_;
+
+    my $name = $self->{config}->{name};
+    my $url  = $self->_resolve($self->{config}->{url});
+    my $file = $self->_resolve($self->{config}->{file});
+
+    if ($self->{config}->{not_if_file}) {
+        my $file = catfile($self->global->{build_dir}, $self->_resolve($self->{config}->{not_if_file}));
+        return $self->boss->message(1, "package '$name' still installed\n")
+            if -e $file;
+    }
+
+    $self->boss->message(1, "installing package '$name'\n");
+
+    my $tgz = catfile($self->global->{download_dir}, $file);
+
+    if (-e $tgz) {
+        $self->message(3, "* already downloaded")
+    } else {
+        # Download the file
+        my $downloaded = $self->boss->mirror_url($url, $self->global->{download_dir});
+
+        # Rename file if needed
+        if ($downloaded ne $tgz) {
+            rename $downloaded, $tgz
+                or die "ERROR: Can't rename $downloaded to $tgz\n";
+        }
+    }
+
+    $self->_extract($tgz, $self->global->{build_dir});
+
+    if (ref($self->{config}->{install}) eq 'ARRAY') {
+        my $install = Perl::Dist::Strawberry::Step::FilesAndDirs->new();
+        $install->{boss} = $self->{boss};
+        $install->{config}->{commands} = [
+            map {
+                my $cmd = $_;
+                {
+                    do      => $cmd->{do},
+                    args    => [ map { $self->_resolve($_) } @{$cmd->{args}} ],
+                }
+            } @{$self->{config}->{install}}
+        ];
+        $install->run()
+            or die "ERROR: Failed to install $name\n";
+    }
+}
+
+sub _resolve {
+    my ($self, $string) = @_;
+    $self->{config}->{build_dir} = $self->global->{build_dir};
+    map { $self->{config}->{$_} && $string =~ s/<$_>/$self->{config}->{$_}/g } qw(
+        file name version folder build_dir
+    );
+    return $string;
 }
 
 package
