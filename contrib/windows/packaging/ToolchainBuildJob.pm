@@ -52,7 +52,22 @@ sub toolchain_build_steps {
                 skip_if_file    => 'usr/bin/patch.exe',
                 dest            => 'msys64',
             },
-            ### NEXT STEP 4 : Toolchain check ##################################
+            ### NEXT STEP 4 : Install swig #####################################
+            # Swig is required by iec61850 perl module build
+            {
+                plugin      => 'Perl::Dist::Strawberry::Step::BinaryTool',
+                name        => 'swig',
+                version     => '4.4.0',
+                url         => 'https://sourceforge.net/projects/swig/files/swigwin/swigwin-<version>/<file>/download',
+                file        => 'swigwin-<version>.zip',
+                not_if_file => 'swigwin-<version>/swig.exe',
+                install     => [
+                    { do => 'createdir', args => [ '<image_dir>/c/lib' ] },
+                    { do => 'copydir',  args => [ '<build_dir>/<name>win-<version>/Lib', '<image_dir>/c/lib/swig' ] },
+                    { do => 'copyfile', args => [ '<build_dir>/<name>win-<version>/swig.exe', '<image_dir>/c/bin/swig.exe' ] },
+                ],
+            },
+            ### NEXT STEP 5 : Toolchain check ##################################
             {
                 plugin      => 'Perl::Dist::Strawberry::Step::Control',
                 commands    => [
@@ -64,7 +79,7 @@ sub toolchain_build_steps {
                     { title => 'UNAME', run => 'uname', args => [ '--version' ] },
                 ],
             },
-            ### NEXT STEP 5 : Build zlib library ###############################
+            ### NEXT STEP 6 : Build zlib library ###############################
             {
                 plugin  => 'Perl::Dist::Strawberry::Step::BuildLibrary',
                 name    => 'zlib',
@@ -86,14 +101,14 @@ sub toolchain_build_steps {
                     'BINARY_PATH=<prefix>/bin', 'INCLUDE_PATH=<prefix>/include', 'LIBRARY_PATH=<prefix>/lib'
                 ],
             },
-            ### NEXT STEP 6 : Sign zlib1__.dll #################################
+            ### NEXT STEP 7 : Sign zlib1__.dll #################################
             {
                 plugin => 'CustomCodeSigning',
                 files  => [
                     '<image_dir>/c/bin/zlib1__.dll',
                 ],
             },
-             ### NEXT STEP 7 : Build xz library ################################
+            ### NEXT STEP 8 : Build xz library #################################
             {
                 plugin  => 'Perl::Dist::Strawberry::Step::BuildLibrary',
                 name    => 'xz',
@@ -113,14 +128,14 @@ sub toolchain_build_steps {
                 make_use_cpus   => 1,
                 install_opts    => [ 'install', 'doc_DATA='],
             },
-            ### NEXT STEP 8 : Sign liblzma-5__.dll #############################
+            ### NEXT STEP 9 : Sign liblzma-5__.dll #############################
             {
                 plugin => 'CustomCodeSigning',
                 files  => [
                     '<image_dir>/c/bin/liblzma-5__.dll',
                 ],
             },
-            ### NEXT STEP 9 : Build libiconv library ###########################
+            ### NEXT STEP 10 : Build libiconv library ##########################
             {
                 plugin  => 'Perl::Dist::Strawberry::Step::BuildLibrary',
                 name    => 'libiconv',
@@ -167,7 +182,7 @@ sub toolchain_build_steps {
                     ],
                 },
             },
-            ### NEXT STEP 10 : Sign libiconv dlls ##############################
+            ### NEXT STEP 11 : Sign libiconv dlls ##############################
             {
                 plugin => 'CustomCodeSigning',
                 files  => [
@@ -175,7 +190,7 @@ sub toolchain_build_steps {
                     '<image_dir>/c/bin/libcharset-1__.dll',
                 ],
             },
-            ### NEXT STEP 11 : Build openssl library ###########################
+            ### NEXT STEP 12 : Build openssl library ###########################
             {
                 plugin  => 'Perl::Dist::Strawberry::Step::BuildLibrary',
                 name    => 'openssl',
@@ -210,7 +225,7 @@ sub toolchain_build_steps {
                 make_use_cpus   => 1,
                 install_opts    => [ 'install_runtime', 'install_dev' ],
             },
-            ### NEXT STEP 12 : Sign OpenSSL dlls ###############################
+            ### NEXT STEP 13 : Sign OpenSSL dlls ###############################
             {
                 plugin => 'CustomCodeSigning',
                 files  => [
@@ -218,7 +233,7 @@ sub toolchain_build_steps {
                     '<image_dir>/c/bin/libssl-3__.dll',
                 ],
             },
-            ### NEXT STEP 13 : Build libxml2 library ###########################
+            ### NEXT STEP 14 : Build libxml2 library ###########################
             {
                 plugin  => 'Perl::Dist::Strawberry::Step::BuildLibrary',
                 name    => 'libxml2',
@@ -243,14 +258,14 @@ sub toolchain_build_steps {
                 make_opts       => [ 'libxml2.la' ],
                 install_opts    => [ 'install', 'bin_PROGRAMS=', 'noinst_LTLIBRARIES=', 'cmake_DATA=', 'dist_m4data_DATA=', 'examples_DATA=' ],
             },
-            ### NEXT STEP 14 : Sign libxml2-16__.dll ###########################
+            ### NEXT STEP 15 : Sign libxml2-16__.dll ###########################
             {
                 plugin => 'CustomCodeSigning',
                 files  => [
                     '<image_dir>/c/bin/libxml2-16__.dll',
                 ],
             },
-            ### NEXT STEP 15 : Build libssh2 library ###########################
+            ### NEXT STEP 16 : Build libssh2 library ###########################
             {
                 plugin  => 'Perl::Dist::Strawberry::Step::BuildLibrary',
                 name    => 'libssh2',
@@ -268,21 +283,21 @@ sub toolchain_build_steps {
                 make_use_cpus   => 1,
                 install_opts    => [ 'install', 'dist_man_MANS=' ],
             },
-            ### NEXT STEP 16 : Sign libssh2-1__.dll ############################
+            ### NEXT STEP 17 : Sign libssh2-1__.dll ############################
             {
                 plugin => 'CustomCodeSigning',
                 files  => [
                     '<image_dir>/c/bin/libssh2-1__.dll',
                 ],
             },
-            ### NEXT STEP 17 : Few cleanup #####################################
+            ### NEXT STEP 18 : Few cleanup #####################################
             {
                 plugin          => 'Perl::Dist::Strawberry::Step::ToolChainUpdate',
                 commands        => [
                     { do => 'removefile', args=>[ '<image_dir>/c/bin/c_rehash' ] },
                 ],
             },
-            ### NEXT STEP 18 : Make zips #######################################
+            ### NEXT STEP 19 : Make zips #######################################
             {
                 plugin  => 'Perl::Dist::Strawberry::Step::PackageZIP',
             },
