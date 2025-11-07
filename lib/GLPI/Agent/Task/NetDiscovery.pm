@@ -158,6 +158,14 @@ sub run {
         );
     }
 
+    GLPI::Agent::IEC61850::Device->require();
+    if ($EVAL_ERROR) {
+        $self->{logger}->info(
+            "Can't load GLPI::Agent::IEC61850::Device, iec61850 detection " .
+            "can't be used"
+        );
+    }
+
     # Preload MibSupport
     GLPI::Agent::SNMP::MibSupport::preload(
         config  => $self->{config},
@@ -693,6 +701,7 @@ sub _scanAddress {
 
     # Then scan for standard network datas
     %device = (
+        $INC{'GLPI/Agent/IEC61850/Device.pm'} ? $self->_scanAddressByIEC61850($params) : (),
         $INC{'Net/NBName.pm'}    ? $self->_scanAddressByNetbios($params) : (),
         $INC{'Net/Ping.pm'}      ? $self->_scanAddressByPing($params)    : (),
         $self->{arp}             ? $self->_scanAddressByArp($params)     : (),
@@ -1045,6 +1054,33 @@ sub _scanAddressByRemote {
     }
 
     return %device;
+}
+
+sub _scanAddressByIEC61850 {
+    my ($self, $params) = @_;
+
+    return if $params->{walk};
+
+    my $infos;
+    eval {
+        my $device = GLPI::Agent::IEC61850::Device->new(
+            timeout => $params->{timeout} || 1,
+            logger  => $self->{logger},
+        );
+        $infos = $device->scan($params->{ip}, $params->{port});
+    };
+
+    return $EVAL_ERROR if $EVAL_ERROR;
+
+    $self->{logger}->debug(
+        sprintf "- scanning %s with iec61850: %s",
+        $params->{ip},
+        $infos ? 'success' : 'no result'
+    );
+
+    return unless $infos;
+
+    return %{$infos};
 }
 
 sub _sendStartMessage {
