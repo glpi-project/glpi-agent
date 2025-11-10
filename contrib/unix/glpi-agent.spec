@@ -256,6 +256,7 @@ install -m 644 -D  contrib/unix/%{name}.service %{buildroot}%{_unitdir}/%{name}.
 %{_datadir}/%{name}/lib/GLPI/Agent/HTTP/Server/SecondaryProxy.pm
 %{_datadir}/%{name}/lib/GLPI/Agent/HTTP/Server/SSL.pm
 %{_datadir}/%{name}/lib/GLPI/Agent/HTTP/Server/Test.pm
+%{_datadir}/%{name}/lib/GLPI/Agent/IEC61850*
 %{_datadir}/%{name}/lib/GLPI/Agent/Inventory.pm
 %{_datadir}/%{name}/lib/GLPI/Agent/Logger*
 %{_datadir}/%{name}/lib/GLPI/Agent/SOAP/WsMan*
