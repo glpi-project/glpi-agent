@@ -3,7 +3,8 @@ package GLPI::Agent::IEC61850::Protocol;
 use strict;
 use warnings;
 
-use iec61850;
+use English qw(-no_match_vars);
+use UNIVERSAL::require;
 
 use GLPI::Agent::Tools;
 
@@ -14,6 +15,10 @@ use constant ACSI_CLASS_DATA_OBJECT => $iec61850::ACSI_CLASS_DATA_OBJECT;
 use constant logger_prefix  => "[iec61850] ";
 
 use constant PhyNamVariables    => [ qw(model hwRev vendor serNum swRev owner location) ];
+
+# Just try to load iec61850 module, if finally not loaded network tasks will detect it
+# by checking %INC and won't just not use this library if not seen there
+iec61850->require();
 
 sub new {
     my ($class, %params) = @_;
