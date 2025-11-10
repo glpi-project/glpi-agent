@@ -8,10 +8,6 @@ use UNIVERSAL::require;
 
 use GLPI::Agent::Tools;
 
-use constant IED_ERROR_OK           => $iec61850::IED_ERROR_OK;
-use constant IEC61850_FC_DC         => $iec61850::IEC61850_FC_DC;
-use constant ACSI_CLASS_DATA_OBJECT => $iec61850::ACSI_CLASS_DATA_OBJECT;
-
 use constant logger_prefix  => "[iec61850] ";
 
 use constant PhyNamVariables    => [ qw(model hwRev vendor serNum swRev owner location) ];
@@ -45,7 +41,7 @@ sub connect {
     iec61850::IedConnection_setConnectTimeout($con, $timeout);
 
     my $error = iec61850::IedConnection_connect($con, $host, $port || 102);
-    if ($error != IED_ERROR_OK) {
+    if ($error != $iec61850::IED_ERROR_OK) {
         $self->{logger}->debug(logger_prefix."Connection error: ".iec61850::IedClientError_toString($error));
         return 0;
     }
@@ -71,14 +67,14 @@ sub scan {
     my $maxDevices = 1;
 
     my $error = iec61850::IedConnection_getDeviceModelFromServer($self->{_connection});
-    if ($error != IED_ERROR_OK) {
+    if ($error != $iec61850::IED_ERROR_OK) {
         $self->{logger}->debug(logger_prefix."getDeviceModelFromServer error: ".iec61850::IedClientError_toString($error));
         return;
     }
 
     my $deviceList;
     ($deviceList, $error) = iec61850::IedConnection_getServerDirectory($self->{_connection}, 0);
-    if ($error != IED_ERROR_OK) {
+    if ($error != $iec61850::IED_ERROR_OK) {
         $self->{logger}->debug(logger_prefix."getServerDirectory error: ".iec61850::IedClientError_toString($error));
         return;
     } elsif (!defined($deviceList)) {
@@ -105,7 +101,7 @@ sub _getLogicalDeviceDirectory {
     $self->{Description} = $device;
 
     my ($logicalNodes, $error) = iec61850::IedConnection_getLogicalDeviceDirectory($self->{_connection}, $device);
-    if ($error != IED_ERROR_OK) {
+    if ($error != $iec61850::IED_ERROR_OK) {
         $self->{logger}->debug(logger_prefix."getLogicalDeviceDirectory error: ".iec61850::IedClientError_toString($error));
         return;
     } elsif (!defined($logicalNodes)) {
@@ -131,8 +127,8 @@ sub _getLogicalDeviceDirectory {
 sub _getLogicalNodeDirectory {
     my ($self, $logicalNode) = @_;
 
-    my ($dataObjects, $error) = iec61850::IedConnection_getLogicalNodeDirectory($self->{_connection}, $logicalNode, ACSI_CLASS_DATA_OBJECT);
-    if ($error != IED_ERROR_OK) {
+    my ($dataObjects, $error) = iec61850::IedConnection_getLogicalNodeDirectory($self->{_connection}, $logicalNode, $iec61850::ACSI_CLASS_DATA_OBJECT);
+    if ($error != $iec61850::IED_ERROR_OK) {
         $self->{logger}->debug(logger_prefix."getLogicalNodeDirectory error: ".iec61850::IedClientError_toString($error));
         return;
     } elsif (!defined($dataObjects)) {
@@ -161,8 +157,8 @@ sub _getVariables {
 
     foreach my $var (@{$variables}) {
         my $ref = $dataObjectVariables.".".$var;
-        my ($value, $error) = iec61850::IedConnection_readStringValue($self->{_connection}, $ref, IEC61850_FC_DC);
-        if ($error != IED_ERROR_OK) {
+        my ($value, $error) = iec61850::IedConnection_readStringValue($self->{_connection}, $ref, $iec61850::IEC61850_FC_DC);
+        if ($error != $iec61850::IED_ERROR_OK) {
             $self->{logger}->debug(logger_prefix."readStringValue error for $ref: ".iec61850::IedClientError_toString($error));
             next;
         } elsif (empty($value)) {
