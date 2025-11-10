@@ -161,8 +161,14 @@ sub run {
     GLPI::Agent::IEC61850::Device->require();
     if ($EVAL_ERROR) {
         $self->{logger}->info(
-            "Can't load GLPI::Agent::IEC61850::Device, iec61850 detection " .
+            "Can't load GLPI::Agent::IEC61850::Device, iec61850 devices detection " .
             "can't be used"
+        );
+    }
+    unless ($INC{'iec61850.pm'}) {
+        $self->{logger}->info(
+            "Can't load iec61850 perl library, iec61850 devices detection " .
+            "won't be used"
         );
     }
 
@@ -701,10 +707,10 @@ sub _scanAddress {
 
     # Then scan for standard network datas
     %device = (
-        $INC{'GLPI/Agent/IEC61850/Device.pm'} ? $self->_scanAddressByIEC61850($params) : (),
-        $INC{'Net/NBName.pm'}    ? $self->_scanAddressByNetbios($params) : (),
-        $INC{'Net/Ping.pm'}      ? $self->_scanAddressByPing($params)    : (),
-        $self->{arp}             ? $self->_scanAddressByArp($params)     : (),
+        $INC{'iec61850.pm'}   ? $self->_scanAddressByIEC61850($params) : (),
+        $INC{'Net/NBName.pm'} ? $self->_scanAddressByNetbios($params)  : (),
+        $INC{'Net/Ping.pm'}   ? $self->_scanAddressByPing($params)     : (),
+        $self->{arp}          ? $self->_scanAddressByArp($params)      : (),
         %device,
     );
 
