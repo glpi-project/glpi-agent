@@ -10,17 +10,15 @@ use GLPI::Agent::Tools::SNMP;
 
 use GLPI::Agent::IEC61850::Protocol;
 
-use constant discovery => [ qw( SNMPHOSTNAME TYPE )];
-use constant inventory => [ qw( INFO )];
-
-my $discovery_infos = {
+my $infos = {
     FIRMWARE        => [ qw( PhyNam swRev    ) ],
     LOCATION        => [ qw( PhyNam location ) ],
     MODEL           => [ qw( PhyNam model    ) ],
     SERIAL          => [ qw( PhyNam serNum   ) ],
     MANUFACTURER    => [ qw( PhyNam vendor   ) ],
     CONTACT         => [ qw( PhyNam owner    ) ],
-    DESCRIPTION     => [ qw( Description     ) ],
+    IEDNAME         => [ qw( Name            ) ],
+    HARDWARE        => [ qw( PhyNam hwRev    ) ],
 };
 
 sub new {
@@ -28,7 +26,11 @@ sub new {
 
     my $self = {
         logger  => $params{logger},
+        glpi    => $params{glpi}    // '',
         timeout => $params{timeout} // 60,
+        infos   => {
+            TYPE    => "NETWORKING",
+        },
     };
 
     bless $self, $class;
@@ -53,28 +55,70 @@ sub scan {
 
     $self->{protocol} = $protocol;
 
-    return $self->getDiscoveryInfo();
-}
-
-sub getDiscoveryInfo {
-    my ($self) = @_;
-
-    return unless $self->{protocol};
-
-    my $info = {};
-
     # Filter out to only keep discovery infos
-    foreach my $infokey (sort keys(%{$discovery_infos})) {
-        my $request = $discovery_infos->{$infokey};
-        my $value = getCanonicalString($self->{protocol}->getVariable(@{$request}));
+    foreach my $infokey (sort keys(%{$infos})) {
+        my $request = $infos->{$infokey};
+        my $value = getCanonicalString($protocol->getVariable(@{$request}));
         next if empty($value);
-        $info->{$infokey} = $value;
+        $self->{infos}->{$infokey} = $value;
     }
 
-    # Set type
-    $info->{TYPE} = "NETWORKING";
+    # Set itemtype depending on server version or glpi-version option
+    my $glpi_version = $self->{glpi} ? glpiVersion($self->{glpi}) : 0;
+    if ($glpi_version && $glpi_version >= glpiVersion('11')) {
+        # Set ITEMTYPE to IED
+        $self->{infos}->{ITEMTYPE} = "Glpi\\CustomAsset\\IedAsset";
+    }
 
-    return $info;
+    # Keep hardware version for complete inventory
+    $self->{hardware} = delete $self->{infos}->{HARDWARE};
+
+    return $self->{infos};
+}
+
+sub inventory {
+    my ($self, $result) = @_;
+
+    $self->{infos}->{MAC} = $result->{MAC}
+        if $result->{MAC};
+    $self->{infos}->{NAME} = delete $self->{infos}->{IEDNAME}
+        if $self->{infos}->{IEDNAME};
+
+    if ($result->{IP}) {
+        $self->{infos}->{IPS} = {
+            IP  => $result->{IP},
+        };
+    }
+
+    my @firmwares = (
+        {
+            NAME            => ($self->{infos}->{MODEL} || 'Electronic device')." firmware",
+            DESCRIPTION     => 'Electronic device firmware',
+            TYPE            => 'ied',
+            VERSION         => $self->{infos}->{FIRMWARE},
+            MANUFACTURER    => $self->{infos}->{MANUFACTURER}
+        }
+    );
+
+    if ($self->{hardware}) {
+        push @firmwares, {
+            NAME            => ($self->{infos}->{MODEL} || 'Electronic device')." hardware",
+            DESCRIPTION     => 'Electronic device hardware',
+            TYPE            => 'ied',
+            VERSION         => $self->{hardware},
+            MANUFACTURER    => $self->{infos}->{MANUFACTURER}
+        };
+    }
+
+    my $itemtype = delete $self->{infos}->{ITEMTYPE};
+
+    my $inventory = {
+        INFO        => $self->{infos},
+        ITEMTYPE    => $itemtype,
+        FIRMWARES   => \@firmwares,
+    };
+
+    return $inventory;
 }
 
 1;
