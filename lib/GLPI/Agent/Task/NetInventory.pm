@@ -343,7 +343,7 @@ sub _logExpirationHours {
 }
 
 sub _sendMessage {
-    my ($self, $content, $ip) = @_;
+    my ($self, $content, $ip, $itemtype) = @_;
 
     # Load GLPI::Agent::XML::Query as late as possible
     return unless GLPI::Agent::XML::Query->require();
@@ -351,6 +351,7 @@ sub _sendMessage {
     my $message = GLPI::Agent::XML::Query->new(
         deviceid => $self->{deviceid} || 'foo',
         query    => 'SNMPQUERY',
+        itemtype => $itemtype,
         content  => $content
     );
 
@@ -437,6 +438,9 @@ sub _sendExitMessage {
 sub _sendResultMessage {
     my ($self, $result, $pid, $ip) = @_;
 
+    # Prepare to move ITEMTYPE if defined to the expected place
+    my $itemtype = delete $result->{ITEMTYPE};
+
     my $content = {
         DEVICE        => $result,
         MODULEVERSION => $VERSION,
@@ -447,7 +451,7 @@ sub _sendResultMessage {
     $content->{STORAGES} = delete $result->{STORAGES}
         if $result->{STORAGES};
 
-    $self->_sendMessage($content, $ip);
+    $self->_sendMessage($content, $ip, $itemtype);
 }
 
 sub _queryDevice {

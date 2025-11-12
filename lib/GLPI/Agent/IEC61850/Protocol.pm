@@ -97,8 +97,8 @@ sub scan {
 sub _getLogicalDeviceDirectory {
     my ($self, $device) = @_;
 
-    # Keep found device as description
-    $self->{Description} = $device;
+    # Keep found device as name
+    $self->{Name} = $device;
 
     my ($logicalNodes, $error) = iec61850::IedConnection_getLogicalDeviceDirectory($self->{_connection}, $device);
     if ($error != $iec61850::IED_ERROR_OK) {

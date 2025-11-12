@@ -420,12 +420,20 @@ sub run {
                     }
                 }
 
+                # Handle IEC61850 case
+                my $iec61850_case = delete $result->{_iecdevice};
+                if ($iec61850_case) {
+                    my $iedname = delete $result->{IEDNAME};
+                    $result->{DNSHOSTNAME} = $iedname
+                        if $result->{DNSHOSTNAME} && $result->{IP} && $result->{DNSHOSTNAME} eq $result->{IP};
+                }
+
                 # Don't send xml discovery inventory to server on computer remote inventory
                 $self->_sendResultMessage($result, $jobid)
-                    unless $authremote && $self->{target}->isType('server');
+                    unless $authremote && $self->{target}->isType('server') || $iec61850_case;
 
                 # Eventually chain with netinventory when requested
-                if ($job->netscan) {
+                if ($job->netscan && !$iec61850_case) {
                     my $timeout = 15;
                     if ($authsnmp) {
                         my $credentials = [
@@ -523,6 +531,15 @@ sub run {
 
                     # Finish with return code to update task expiration
                     $manager->finish(1, { timeout => $timeout });
+
+                } elsif ($iec61850_case) {
+                    $result = $iec61850_case->inventory($result);
+                    GLPI::Agent::Task::NetInventory->require();
+
+                    my $inventory = GLPI::Agent::Task::NetInventory->new(
+                        map { $_ => $self->{$_} } qw(config datadir target deviceid logger agentid)
+                    );
+                    $inventory->_sendResultMessage($result, $jobid);
                 }
             }
 
@@ -626,7 +643,7 @@ sub abort {
 }
 
 sub _sendMessage {
-    my ($self, $content) = @_;
+    my ($self, $content, $itemtype) = @_;
 
     # Load GLPI::Agent::XML::Query as late as possible
     return unless GLPI::Agent::XML::Query->require();
@@ -634,6 +651,7 @@ sub _sendMessage {
     my $message = GLPI::Agent::XML::Query->new(
         deviceid => $self->{deviceid} || 'foo',
         query    => 'NETDISCOVERY',
+        itemtype => $itemtype,
         content  => $content
     );
 
@@ -720,6 +738,7 @@ sub _scanAddress {
         $device{MAC}          ||
         $device{SNMPHOSTNAME} ||
         $device{DNSHOSTNAME}  ||
+        $device{IEDNAME}      ||
         $device{NETBIOSNAME};
 
     $device{IP} = $params->{ip};
@@ -1067,10 +1086,14 @@ sub _scanAddressByIEC61850 {
 
     return if $params->{walk};
 
-    my $infos;
+    my $glpi_version = $self->{target}->isType('server') ? $self->{target}->getTaskVersion('inventory') : '';
+    $glpi_version = $self->{config}->{'glpi-version'} if empty($glpi_version);
+
+    my ($device, $infos);
     eval {
-        my $device = GLPI::Agent::IEC61850::Device->new(
+        $device = GLPI::Agent::IEC61850::Device->new(
             timeout => $params->{timeout} || 1,
+            glpi    => $glpi_version || '',
             logger  => $self->{logger},
         );
         $infos = $device->scan($params->{ip}, $params->{port});
@@ -1086,7 +1109,7 @@ sub _scanAddressByIEC61850 {
 
     return unless $infos;
 
-    return %{$infos};
+    return _iecdevice => $device, %{$infos};
 }
 
 sub _sendStartMessage {
@@ -1140,11 +1163,14 @@ sub _sendBlockMessage {
 sub _sendResultMessage {
     my ($self, $result, $pid) = @_;
 
+    # Prepare to move ITEMTYPE if defined to the expected place
+    my $itemtype = delete $result->{ITEMTYPE};
+
     $self->_sendMessage({
         DEVICE        => [$result],
         MODULEVERSION => $VERSION,
         PROCESSNUMBER => $pid
-    });
+    }, $itemtype);
 }
 
 1;
