@@ -45,7 +45,7 @@ GetOptions(
     'timeout=i',
     'retries=i',
     'backend-collect-timeout=s',
-    'glpi_version=s',
+    'glpi-version=s',
     'v1',
     'v2c',
     'control',
