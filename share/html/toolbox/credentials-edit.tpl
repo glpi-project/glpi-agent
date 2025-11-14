@@ -49,6 +49,8 @@
           <label for='winrm'>winrm</label>
           <input type="radio" name="input/type" id="esx" value="esx" onchange="type_change(this)"{$type eq "esx" ? " checked" : ""}/>
           <label for='esx'>esx</label>
+          <input type="radio" name="input/type" id="iec61850" value="iec61850" onchange="type_change(this)"{$type eq "iec61850" ? " checked" : ""}/>
+          <label for='iec61850'>iec61850</label>
         </div>
       </div>
     </div>
@@ -116,15 +118,15 @@
         </div>
       </div>
     </div>
-    <div class='form-edit-row' id='remote-options' style='display: {$type ne "snmp" ? "flex" : "none"}'>
+    <div class='form-edit-row' id='remote-options' style='display: {$type !~ /^snmp|iec61850$/  ? "flex" : "none"}'>
       <div class='form-edit'>
         <label for='remoteuser'>{_"Username"}</label>
-        <input class='input-row' type='text' id='remoteuser' name='input/remoteuser' value='{$remoteuser}' size='12' autocomplete='new-password'{$type eq "snmp" ? " disabled" : ""} required />
+        <input class='input-row' type='text' id='remoteuser' name='input/remoteuser' value='{$remoteuser}' size='12' autocomplete='new-password'{$type =~ /^snmp|iec61850$/ ? " disabled" : ""} required />
       </div>
       <div class='form-edit'>
         <label for='remotepass'>{_"Authentication password"}</label>
         <div class='form-edit-row'>
-          <input class='input-row'  type='password' id='remotepass' name='input/remotepass' value='{$remotepass}' size='24' autocomplete='new-password'{$type eq "snmp" ? " disabled" : ""}/>
+          <input class='input-row'  type='password' id='remotepass' name='input/remotepass' value='{$remotepass}' size='24' autocomplete='new-password'{$type =~ /^snmp|iec61850$/ ? " disabled" : ""}/>
           <i class='pass-eye ti ti-eye' onclick='show_password(this, "remotepass")' title='{_"Show password"}'></i>
         </div>
       </div>
@@ -265,6 +267,14 @@
     \} else \{
       document.getElementById("advanced-options").style = "display: flex";
       document.getElementById("port").disabled = false;
+    \}
+    if (type.value === "iec61850") \{
+      document.getElementById("remote-options").style = "display: none";
+      document.getElementById("advanced-options").style = "display: flex";
+      document.getElementById("port").placeholder = "102";
+      document.getElementById("port").enabled = true;
+      document.getElementById("remoteuser").disabled = true;
+      document.getElementById("remotepass").disabled = true;
     \}
   \}
   function show_password(i,id) \{

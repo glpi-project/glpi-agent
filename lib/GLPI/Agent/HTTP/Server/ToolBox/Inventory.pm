@@ -806,18 +806,19 @@ sub netscan {
             } else {
                 # ESX & RemoteInventory related credentials
                 return $self->errors("Missing username on credentials: ".($cred->{name}||$credential))
-                    unless defined($cred->{username});
+                    unless defined($cred->{username}) || $cred->{type} =~ /^iec61850$/;
                 return $self->errors("Missing password on credentials: ".($cred->{name}||$credential))
-                    unless defined($cred->{password}) || $cred->{type} eq 'ssh';
+                    unless defined($cred->{password}) || $cred->{type} =~ /^iec61850|ssh$/;
                 $CRED = {
                     # brackets are here cosmetic for task logs and will be filtered in
                     # GLPI::Agent::HTTP::Server::ToolBox::Results::NetDiscovery
                     ID  => "[$credential]"
                 };
                 # Complete CRED with required and defined attributes
-                my @map = qw{type username password};
-                push @map, qw{mode port}
-                    unless $cred->{type} eq 'esx';
+                my @map =
+                    $cred->{type} eq 'iec61850' ? qw{type port} :
+                    $cred->{type} eq 'iec61850' ? qw{type username password} :
+                    qw{type username password mode port};
                 map { $CRED->{uc($_)} = $cred->{$_} } grep { $cred->{$_} } @map;
             }
             if ($CRED) {
@@ -1132,10 +1133,12 @@ sub _analyse_event {
         if ($task->{workers}->[$worker]) {
             $task->{count}++;
             $task->{unknown}++
-                if !$task->{snmp}->[$worker] && !$task->{ping}->[$worker] && !$task->{arp}->[$worker];
+                if !$task->{snmp}->[$worker] && !$task->{iec61850}->[$worker] && !$task->{ping}->[$worker] && !$task->{arp}->[$worker];
         }
     } elsif ($event =~ /^\[debug\] #(\d+), - scanning .* with SNMP, .*: (.*)/) {
         $task->{snmp}->[int($1)] = $2 eq 'success';
+    } elsif ($event =~ /^\[debug\] #(\d+), - scanning .* with iec61850: (.*)/) {
+        $task->{iec61850}->[int($1)] = $2 eq 'success';
     } elsif ($event =~ /^\[debug\] #(\d+), - scanning .* with .* ping: (.*)/) {
         $task->{ping}->[int($1)] = $2 eq 'success';
         _update_others($task);
@@ -1148,12 +1151,13 @@ sub _analyse_event {
         $self->update_results();
     } elsif ($event =~ /^\[info\] #(\d+), Netinventory result for .* saved in/) {
         my $worker = int($1);
-        $task->{inventory_count}++ if $task->{workers}->[$worker] && $task->{snmp}->[$worker];
+        $task->{inventory_count}++ if $task->{workers}->[$worker] && ($task->{snmp}->[$worker] || $task->{iec61850}->[$worker]);
         $self->update_results();
     } elsif ($event =~ /^\[warning\] job \d+ aborted/) {
         $task->{aborted} = 1;
     } elsif ($event =~ /network scan done/) {
         delete $task->{snmp};
+        delete $task->{iec61850};
         delete $task->{ping};
         delete $task->{arp};
         delete $task->{threads};
