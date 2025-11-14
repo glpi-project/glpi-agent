@@ -381,14 +381,15 @@ sub run {
                 if ref($self->{client}) eq "GLPI::Agent::HTTP::Client::OCS" && $worker_count > 1;
 
             my $jobaddress = {
-                ip                  => $blockip,
-                snmp_ports          => $range->{ports},
-                snmp_domains        => $range->{domains},
-                entity              => $range->{entity},
-                pid                 => $jobid,
-                timeout             => $job->timeout,
-                snmp_credentials    => $range->{snmp_credentials}   || $job->snmp_credentials,
-                remote_credentials  => $range->{remote_credentials} || $job->remote_credentials
+                ip                   => $blockip,
+                snmp_ports           => $range->{ports},
+                snmp_domains         => $range->{domains},
+                entity               => $range->{entity},
+                pid                  => $jobid,
+                timeout              => $job->timeout,
+                iec61850_credentials => $range->{iec61850_credentials} || $job->iec61850_credentials,
+                snmp_credentials     => $range->{snmp_credentials}     || $job->snmp_credentials,
+                remote_credentials   => $range->{remote_credentials}   || $job->remote_credentials
             };
             $jobaddress->{walk} = $range->{walk} if $range->{walk};
 
@@ -535,13 +536,14 @@ sub run {
                     $manager->finish(1, { timeout => $timeout });
 
                 } elsif ($iec61850_case) {
+                    my $ip = $result->{IP};
                     $result = $iec61850_case->inventory($result);
                     GLPI::Agent::Task::NetInventory->require();
 
                     my $inventory = GLPI::Agent::Task::NetInventory->new(
                         map { $_ => $self->{$_} } qw(config datadir target deviceid logger agentid)
                     );
-                    $inventory->_sendResultMessage($result, $jobid);
+                    $inventory->_sendResultMessage($result, $jobid, $ip);
                 }
             }
 
@@ -1008,7 +1010,7 @@ sub _scanAddressByRemote {
 
     foreach my $credential (@{$params->{remote_credentials}}) {
 
-        next unless $credential->{TYPE};
+        next unless $credential->{TYPE} && $credential->{TYPE} =~ /^esx|ssh|winrm$/;
 
         if ($credential->{TYPE} eq 'esx') {
 
@@ -1091,23 +1093,31 @@ sub _scanAddressByIEC61850 {
     my $glpi_version = $self->{target}->isType('server') ? $self->{target}->getTaskVersion('inventory') : '';
     $glpi_version = $self->{config}->{'glpi-version'} if empty($glpi_version);
 
+    # Include no credentials case by default if none set
+    push @{$params->{iec61850_credentials}}, {}
+        unless @{$params->{iec61850_credentials}};
+
     my ($device, $infos);
-    eval {
-        $device = GLPI::Agent::IEC61850::Device->new(
-            timeout => $params->{timeout} || 1,
-            glpi    => $glpi_version || '',
-            logger  => $self->{logger},
+    foreach my $credential (@{$params->{iec61850_credentials}}) {
+        eval {
+            $device = GLPI::Agent::IEC61850::Device->new(
+                timeout => $params->{timeout} || 1,
+                glpi    => $glpi_version || '',
+                logger  => $self->{logger},
+            );
+            $infos = $device->scan($params->{ip}, $credential->{PORT});
+        };
+        $self->{logger}->debug(
+            sprintf "- scanning %s%s with iec61850: %s",
+            $params->{ip},
+            $credential->{PORT} && $credential->{PORT} ne "102" ? ':'.$credential->{PORT} : '',
+            $infos ? 'success' : 'no result'
         );
-        $infos = $device->scan($params->{ip}, $params->{port});
-    };
+        # Skip next credentials on first connection success
+        last if $infos;
+    }
 
     return $EVAL_ERROR if $EVAL_ERROR;
-
-    $self->{logger}->debug(
-        sprintf "- scanning %s with iec61850: %s",
-        $params->{ip},
-        $infos ? 'success' : 'no result'
-    );
 
     return unless $infos;
 

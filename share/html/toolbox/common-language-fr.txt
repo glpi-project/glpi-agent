@@ -25,6 +25,8 @@ Delete: Supprimer
 Rename: Renommer
 Revert selection: Inverser la sélection
 
+Anonymous: Anonyme
+
 yes: oui
 no: non
 

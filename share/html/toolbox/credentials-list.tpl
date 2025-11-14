@@ -78,9 +78,9 @@ if (@credentials_order) {
             <ul class='config'>
               <li class='config'>
                 <div class='with-tooltip'>
-                  ".($community ? _("Community").":&nbsp;".$community : _("Username").":&nbsp;".$username)."
+                  ".($community ? _("Community").":&nbsp;".$community : $username ? _("Username").":&nbsp;".$username : _("Anonymous"))."
                     <div class='tooltip right-tooltip'>
-                      <p>".($community ? _("Community").":&nbsp;".$community : _("Username").":&nbsp;".$username)."</p>".($authprotocol ? "
+                      <p>".($community ? _("Community").":&nbsp;".$community : $type ne "iec61850" ? _("Username").":&nbsp;".$username : "")."</p>".($authprotocol ? "
                       <p>"._("Authentication protocol").":&nbsp;".$authprotocol."</p>" : "").($privprotocol ? "
                       <p>"._("Privacy protocol").":&nbsp;".$privprotocol."</p>" : "").($port ? "
                       <p>"._("Port").":&nbsp;".$port."</p>" : "").($protocol ? "

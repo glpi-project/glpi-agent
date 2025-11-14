@@ -25,6 +25,8 @@ Delete:
 Rename:
 Revert selection:
 
+Anonymous:
+
 yes:
 no:
 

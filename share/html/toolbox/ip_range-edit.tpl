@@ -53,7 +53,7 @@
                   <div class='tooltip right-tooltip'>".($cred->{type} ? "
                     <p>"._("Type").":&nbsp;".$cred->{type}."</p>" : "").((!$cred->{type} || $cred->{type} eq "snmp") && $cred->{snmpversion} ? "
                     <p>"._("SNMP version").":&nbsp;".$cred->{snmpversion}."</p>" : "")."
-                    <p>".((!$cred->{type} || $cred->{type} eq "snmp") && $cred->{snmpversion} && $cred->{snmpversion} ne "v3" ? _("Community").":&nbsp;".$cred->{community} : _("Username").":&nbsp;".$cred->{username})."</p>".($cred->{description} ? "
+                    <p>".((!$cred->{type} || $cred->{type} eq "snmp") && $cred->{snmpversion} && $cred->{snmpversion} ne "v3" ? _("Community").":&nbsp;".$cred->{community} : $cred->{username} ? _("Username").":&nbsp;".$cred->{username} : _("Anonymous"))."</p>".($cred->{description} ? "
                     <p>"._("Description").":&nbsp;".encode('UTF-8', $cred->{description})."</p>" : "")."
                     <i></i>
                   </div>
@@ -75,7 +75,7 @@
             my $title = $cred->{type} ? _("Type").":&nbsp;".$cred->{type} : "";
             $title .= (length($title) ? "\n" : "")._("SNMP version").":&nbsp;".$cred->{snmpversion}
               if (!$cred->{type} || $cred->{type} eq "snmp") && $cred->{snmpversion};
-            $title .= (length($title) ? "\n" : "").((!$cred->{type} || $cred->{type} eq "snmp") && $cred->{snmpversion} && $cred->{snmpversion} ne "v3" ? _("Community").":&nbsp;".$cred->{community} : _("Username").":&nbsp;".$cred->{username});
+            $title .= (length($title) ? "\n" : "").((!$cred->{type} || $cred->{type} eq "snmp") && $cred->{snmpversion} && $cred->{snmpversion} ne "v3" ? _("Community").":&nbsp;".$cred->{community} : $cred->{username} ? _("Username").":&nbsp;".$cred->{username} : _("Anonymous"));
             my $description = $cred->{description};
             if ($description) {
               $description =~ s/[']/\\'/g;

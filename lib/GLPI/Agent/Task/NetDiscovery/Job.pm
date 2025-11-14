@@ -163,15 +163,16 @@ sub ranges {
     # After _queue has been defined, return the queue ranges count
     return scalar(@{$self->{_queue}->{ranges}}) if $self->{_queue};
 
-    my ($snmp_credentials, $remote_credentials) = $self->_getValidCredentials();
+    my ($snmp_credentials, $remote_credentials, $iec61850_credentials) = $self->_getValidCredentials();
 
     $self->{_queue} = {
-        in_queue            => 0,
-        snmp_credentials    => $snmp_credentials   // [],
-        remote_credentials  => $remote_credentials // [],
-        ranges              => [],
-        size                => 0,
-        done                => 0,
+        in_queue             => 0,
+        snmp_credentials     => $snmp_credentials     // [],
+        remote_credentials   => $remote_credentials   // [],
+        iec61850_credentials => $iec61850_credentials // [],
+        ranges               => [],
+        size                 => 0,
+        done                 => 0,
     };
 
     my @ranges = ();
@@ -188,9 +189,10 @@ sub ranges {
         };
         # Support ToolBox model where credentials are linked to range
         if ($range->{NAME}) {
-            my ($snmp_credentials, $remote_credentials) = $self->_getValidCredentials($range->{NAME});
-            $thisrange->{snmp_credentials}   = $snmp_credentials   // [];
-            $thisrange->{remote_credentials} = $remote_credentials // [];
+            my ($snmp_credentials, $remote_credentials, $iec61850_credentials) = $self->_getValidCredentials($range->{NAME});
+            $thisrange->{snmp_credentials}     = $snmp_credentials     // [];
+            $thisrange->{remote_credentials}   = $remote_credentials   // [];
+            $thisrange->{iec61850_credentials} = $iec61850_credentials // [];
         }
         push @ranges, $thisrange;
     }
@@ -214,11 +216,20 @@ sub remote_credentials {
     return $self->{_queue}->{remote_credentials};
 }
 
+sub iec61850_credentials {
+    my ($self) = @_;
+
+    return unless $self->{_queue};
+
+    return $self->{_queue}->{iec61850_credentials};
+}
+
 sub _getValidCredentials {
     my ($self, $name) = @_;
 
     my @snmp_credentials = ();
     my @remote_credentials = ();
+    my @iec61850_credentials = ();
 
     # Support ToolBox model where credentials are linked to range
     return if $name && ref($self->{_credentials}) ne 'HASH';
@@ -226,9 +237,9 @@ sub _getValidCredentials {
 
     my $credentials = $name ? $self->{_credentials}->{$name} : $self->{_credentials};
 
-    my ($snmp, $valid_snmp, $invalid_snmp, $remote, $valid_remote, $invalid_remote) = (0, 0, 0, 0, 0, 0);
+    my ($snmp, $valid_snmp, $invalid_snmp, $remote, $valid_remote, $invalid_remote, $iec61850, $valid_iec61850, $invalid_iec61850) = (0, 0, 0, 0, 0, 0, 0, 0, 0);
     foreach my $credential (@{$credentials}) {
-        next if $credential->{TYPE} && $credential->{TYPE} !~ /^snmp|esx|ssh|winrm$/;
+        next if $credential->{TYPE} && $credential->{TYPE} !~ /^snmp|esx|ssh|winrm|iec61850$/;
         # Support no credentials type as legacy snmp credentials
         if (!$credential->{TYPE} || $credential->{TYPE} eq 'snmp') {
             $snmp++;
@@ -237,42 +248,45 @@ sub _getValidCredentials {
                 unless ($credential->{USERNAME}) {
                     $self->{logger}->warning("No username defined for a SNMPv3 credential")
                         unless $invalid_snmp++;
-                    $invalid_snmp++;
                     next;
                 }
                 # DES support is required
                 unless (Crypt::DES->require()) {
                     $self->{logger}->warning("Crypt::DES perl module required for SNMPv3 credentials")
                         unless $invalid_snmp++;
-                    $invalid_snmp++;
                     next;
                 }
             } elsif (!$credential->{COMMUNITY}) {
                 $self->{logger}->warning("No community defined for a credential")
                     unless $invalid_snmp++;
-                $invalid_snmp++;
                 next;
             }
             $valid_snmp++;
             push @snmp_credentials, $credential;
+        } elsif ($credential->{TYPE} eq 'iec61850') {
+            $iec61850++;
+            if (defined($credential->{PORT}) && ($credential->{PORT} !~ /^\d+$/ || ($credential->{PORT} < 0 || $credential->{PORT} > 65535))) {
+                $self->{logger}->warning("Not valid port defined for a $credential->{TYPE} credential")
+                    unless $invalid_iec61850++;
+                next;
+            }
+            $valid_iec61850++;
+            push @iec61850_credentials, $credential;
         } else {
             $remote++;
             unless (defined($credential->{USERNAME}) && length($credential->{USERNAME})) {
                 $self->{logger}->warning("No username defined for a $credential->{TYPE} credential")
                     unless $invalid_remote++;
-                $invalid_remote++;
                 next;
             }
             if ($credential->{TYPE} =~ /^esx|winrm$/ && (!defined($credential->{PASSWORD}) || !length($credential->{PASSWORD}))) {
                 $self->{logger}->warning("No password defined for a $credential->{TYPE} credential")
                     unless $invalid_remote++;
-                $invalid_remote++;
                 next;
             }
             if ($credential->{TYPE} =~ /^ssh|winrm$/ && defined($credential->{PORT}) && ($credential->{PORT} !~ /^\d+$/ || ($credential->{PORT} < 0 || $credential->{PORT} > 65535))) {
                 $self->{logger}->warning("Not valid port defined for a $credential->{TYPE} credential")
                     unless $invalid_remote++;
-                $invalid_remote++;
                 next;
             }
             $valid_remote++;
@@ -286,7 +300,10 @@ sub _getValidCredentials {
     $self->{logger}->warning("No valid remote credential defined for this scan")
         unless !$remote || $valid_remote;
 
-    return \@snmp_credentials, \@remote_credentials;
+    $self->{logger}->warning("No valid iec61850 credential defined for this scan")
+        unless !$iec61850 || $valid_iec61850;
+
+    return \@snmp_credentials, \@remote_credentials, \@iec61850_credentials;
 }
 
 sub _getSNMPPorts {

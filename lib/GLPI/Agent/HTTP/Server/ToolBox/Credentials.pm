@@ -184,9 +184,9 @@ sub _submit_add {
             # Supported keys
             @keys = qw(snmpversion community description username authprotocol authpassword privprotocol privpassword port protocol);
         } else {
-            if ($type !~ /^ssh|winrm|esx$/) {
+            if ($type !~ /^ssh|winrm|esx|iec61850$/) {
                 return $self->errors("New credential: Unsupported remote inventory type");
-            } elsif (!(defined($form->{"input/remoteuser"}) && length($form->{"input/remoteuser"}))) {
+            } elsif ($type !~ /^iec61850$/ && !(defined($form->{"input/remoteuser"}) && length($form->{"input/remoteuser"}))) {
                 return $self->errors("New credential: Username is mandatory for remote inventory types");
             } elsif ($type =~ /^winrm|esx$/ && !(defined($form->{"input/remotepass"}) && length($form->{"input/remotepass"}))) {
                 return $self->errors(sprintf("New credential: Password is mandatory for this remote inventory type: %s", $type));
@@ -261,9 +261,9 @@ sub _submit_update {
             # Supported keys
             @keys = qw(snmpversion community description username authprotocol authpassword privprotocol privpassword port protocol type);
         } else {
-            if ($type !~ /^ssh|winrm|esx$/) {
+            if ($type !~ /^ssh|winrm|esx|iec61850$/) {
                 return $self->errors("Credential update: Unsupported remote inventory type");
-            } elsif (!(defined($form->{"input/remoteuser"}) && length($form->{"input/remoteuser"}))) {
+            } elsif ($type !~ /^iec61850$/ && !(defined($form->{"input/remoteuser"}) && length($form->{"input/remoteuser"}))) {
                 return $self->errors("Credential update: Username is mandatory for remote inventory types");
             } elsif ($type =~ /^winrm|esx$/ && !(defined($form->{"input/remotepass"}) && length($form->{"input/remotepass"}))) {
                 return $self->errors(sprintf("Credential update: Password is mandatory for this remote inventory type: %s", $type));
