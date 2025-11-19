@@ -44,7 +44,7 @@ sub new {
         if $ssl_cert_file && ! -f $ssl_cert_file;
 
     my $ssl_key_file = $params{ssl_key_file} || $config->{'ssl-key-file'};
-    die "non-existing client certificate file $ssl_key_file"
+    die "non-existing client private key file $ssl_key_file"
         if $ssl_key_file && ! -f $ssl_key_file;
 
     # We should still keep SSL certs cache if running in long running netdiscovery
