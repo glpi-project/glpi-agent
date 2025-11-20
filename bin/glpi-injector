@@ -35,6 +35,7 @@ GetOptions(
     'no-ssl-check',
     'ca-cert-file=s',
     'ssl-cert-file=s',
+    'ssl-key-file=s',
     'ssl-fingerprint=s',
     'proxy|P=s',
     'url|u=s',
@@ -393,7 +394,8 @@ glpi-injector [-h|--help] [-R|--recursive] [-r|--remove] [-v|--verbose] [--debug
                    use Client version found in XML or JSON as User-Agent for POST
     --no-ssl-check do not check server SSL certificate
     --ca-cert-file=FILE CA certificates file
-    --ssl-cert-file client certificate file
+    --ssl-cert-file=FILE client certificate file
+    --ssl-key-file=FILE client private key file (asumed included in cert file if missing)
     --ssl-fingerprint=FINGERPRINT Trust server certificate on its SSL fingerprint
     -C --no-compression don't compress sent XML inventories
     -P --proxy=PROXY proxy address
