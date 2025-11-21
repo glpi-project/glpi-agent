@@ -43,12 +43,6 @@ sub _init {
 
     my $logger = $self->{logger};
 
-    # target identity
-    $self->{id} = $params{id};
-
-    # Initialize logger prefix
-    $self->{_logprefix} = "[target $self->{id}]";
-
     $self->{storage} = GLPI::Agent::Storage->new(
         logger    => $self->{logger},
         oldvardir => $params{oldvardir} // "",
@@ -59,6 +53,12 @@ sub _init {
 
     # handle persistent state
     $self->_loadState();
+
+    # Always reset target identity to avoid reusing if after a target reconfiguration
+    $self->{id} = $params{id};
+
+    # Initialize logger prefix after id has been eventually reset
+    $self->{_logprefix} = "[target $self->{id}]";
 
     # Update maxDelay from provided config when not a server
     unless ($self->isType('server')) {

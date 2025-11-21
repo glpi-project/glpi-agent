@@ -4,6 +4,8 @@ Revision history for GLPI agent
 
 core:
 * On windows, permit to use libxml2 built libraries in different threads
+* Reset target id after loading saved state to avoir re-using same id after a
+  target configuration update
 
 inventory:
 * PR #931: Added DrWeb & Karpersky Endpoint for Linux antivirus support on linux
