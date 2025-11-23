@@ -542,6 +542,7 @@ sub _setSSLOptions {
                 ca_cert_file => $self->{ca_cert_file},
                 ca_cert_dir  => $self->{ca_cert_dir},
                 ssl_cert_file => $self->{ssl_cert_file},
+                ssl_key_file => $self->{ssl_key_file},
                 ssl_fingerprint => $self->{ssl_fingerprint},
                 ssl_ca => $SSL_ca,
             );
