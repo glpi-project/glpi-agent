@@ -84,6 +84,8 @@ GetOptions(
     'vardir=s',
     'version',
     'wait|w=s',
+    "ssl-cert-file=s",
+    "ssl-key-file=s",
     # Platform specific option
     'no-win32-ole-workaround'
 ) or pod2usage(-verbose => 0);
@@ -312,6 +314,10 @@ glpi-agent [options] [--server server|--local path]
     -C --no-compression            do not compress communication with server
                                      (false)
     --timeout=TIME                 connection timeout, in seconds (180)
+
+    --ssl-cert-file=FILE           ssl client certificate file
+    --ssl-key-file=FILE            ssl client private key file
+                                   (asumed included in cert file if missing)
 
   Web interface options:
     --no-httpd                     disable embedded web server (false)
@@ -696,6 +702,15 @@ Do not check server SSL certificate.
 =item B<--timeout>=I<TIME>
 
 Timeout for server connections.
+
+=item B<--ssl-cert-file>=I<FILE>
+
+SSL client certificate filename.
+
+=item B<--ssl-key-file>=I<FILE>
+
+SSL client private key filename.
+If missing, assumed is included in cert file
 
 =back
 

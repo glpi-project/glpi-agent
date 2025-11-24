@@ -55,6 +55,7 @@ my $default = {
     'scan-profiles'           => undef,
     'server'                  => undef,
     'ssl-cert-file'           => undef,
+    'ssl-key-file'            => undef,
     'ssl-fingerprint'         => undef,
     'ssl-keystore'            => undef,
     'tag'                     => undef,

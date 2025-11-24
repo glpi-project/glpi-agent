@@ -43,6 +43,10 @@ sub new {
     die "non-existing client certificate file $ssl_cert_file"
         if $ssl_cert_file && ! -f $ssl_cert_file;
 
+    my $ssl_key_file = $params{ssl_key_file} || $config->{'ssl-key-file'};
+    die "non-existing client private key file $ssl_key_file"
+        if $ssl_key_file && ! -f $ssl_key_file;
+
     # We should still keep SSL certs cache if running in long running netdiscovery
     # or netinventory task with expiration set in a dedicated thread
     $_SSL_ca->{_expiration} = getExpirationTime()
@@ -60,6 +64,7 @@ sub new {
         ca_cert_dir     => $ca_cert_dir,
         ca_cert_file    => $ca_cert_file,
         ssl_cert_file   => $ssl_cert_file,
+        ssl_key_file    => $ssl_key_file,
         ssl_fingerprint => $params{ssl_fingerprint} || $config->{'ssl-fingerprint'},
         ssl_keystore    => $params{ssl_keystore} || $config->{'ssl-keystore'},
         _vardir         => $config->{'vardir'},
@@ -514,6 +519,9 @@ sub _setSSLOptions {
                 if $self->{ca_cert_dir};
             $self->{ua}->ssl_opts(SSL_cert_file => $self->{ssl_cert_file})
                 if $self->{ssl_cert_file};
+            $self->{ua}->ssl_opts(SSL_key_file => $self->{ssl_key_file})
+                if $self->{ssl_key_file};
+
             $self->{ua}->ssl_opts(SSL_fingerprint => $self->{ssl_fingerprint})
                 if $self->{ssl_fingerprint} && $IO::Socket::SSL::VERSION >= 1.967;
             # Use SSL_ca option to support system keychain or keystore to add
@@ -534,6 +542,7 @@ sub _setSSLOptions {
                 ca_cert_file => $self->{ca_cert_file},
                 ca_cert_dir  => $self->{ca_cert_dir},
                 ssl_cert_file => $self->{ssl_cert_file},
+                ssl_key_file => $self->{ssl_key_file},
                 ssl_fingerprint => $self->{ssl_fingerprint},
                 ssl_ca => $SSL_ca,
             );
