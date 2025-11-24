@@ -6,6 +6,10 @@ core:
 * On windows, permit to use libxml2 built libraries in different threads
 * Reset target id after loading saved state to avoir re-using same id after a
   target configuration update
+* PR #1051: Add support for ssk-key-file option helping to setup inventory
+  authentication via ssl client certificate. This option permit to specify a
+  dedicated file for private key and avoid to have to merge it into file defined
+  by ssl-cert-file option.
 
 inventory:
 * PR #931: Added DrWeb & Karpersky Endpoint for Linux antivirus support on linux
@@ -63,6 +67,7 @@ netdiscovery/netinventory:
 
 injector:
 * Add support for --ca-cert-file and --ssl-fingerprint options
+* PR #1051: Add support for --ssl-key-file option
 
 toolbox:
 * fix log output when following a running task
@@ -77,6 +82,7 @@ packaging:
   - msys2-base 20250830
   - 7-Zip v25.01
 * Update MacOSX packages to use perl 5.42.0 and OpenSSL 3.5.4
+* Add support for SSL_KEY_FILE option on windows installer
 
 1.15 Mon, 09 Jun 2025
 
