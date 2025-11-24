@@ -195,6 +195,8 @@ sub sendContent {
                         if $options->{"ca-cert-file"};
                     $ua->ssl_opts(SSL_cert_file => $options->{"ssl-cert-file"})
                         if $options->{"ssl-cert-file"};
+                    $ua->ssl_opts(SSL_key_file => $options->{"ssl-key-file"})
+                        if $options->{"ssl-key-file"};
                     $ua->ssl_opts(SSL_fingerprint => $options->{"ssl-fingerprint"})
                         if $options->{"ssl-fingerprint"} && $IO::Socket::SSL::VERSION >= 1.967;
                 }
