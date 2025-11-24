@@ -106,6 +106,7 @@ GetOptions(
     'scan-profiles',
     'server|s=s',
     'ssl-cert-file=s',
+    'ssl-key-file=s',
     'ssl-fingerprint=s',
     'tag|t=s',
     'tasks=s',
@@ -619,6 +620,7 @@ glpi-agent-linux-installer.AppImage [options]
     --ca-cert-dir=DIRECTORY        CA certificates directory
     --ca-cert-file=FILE            CA certificate file
     --ssl-cert-file=FILE           Client certificate file
+    --ssl-key-file=FILE            Client private key file
     --ssl-fingerprint=FINGERPRINT  Trust server certificate if its SSL fingerprint
                                    matches the given one
     --no-ssl-check                 do not check server SSL certificate (false)
