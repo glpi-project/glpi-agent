@@ -281,6 +281,12 @@
     <SetProperty Id="CMDLINE_SSL_CERT_FILE" Before="AppSearch" Value="[SSL_CERT_FILE]" />
     <SetProperty Id="SSL_CERT_FILE"         After="AppSearch"  Value="[CMDLINE_SSL_CERT_FILE]"><![CDATA[CMDLINE_SSL_CERT_FILE<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
+    <Property Id="SSL_KEY_FILE" Secure="yes">
+      <RegistrySearch Id="SSLKeyFile" Root="HKLM" Key="[%agent_regpath%]" Name="ssl-key-file" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_SSL_KEY_FILE" Before="AppSearch" Value="[SSL_KEY_FILE]" />
+    <SetProperty Id="SSL_KEY_FILE"         After="AppSearch"  Value="[CMDLINE_SSL_KEY_FILE]"><![CDATA[CMDLINE_SSL_KEY_FILE<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
     <Property Id="NO_COMPRESSION" Secure="yes">
       <RegistrySearch Id="NoCompression" Root="HKLM" Key="[%agent_regpath%]" Name="no-compression" Type="raw"/>
     </Property>
