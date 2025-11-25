@@ -81,8 +81,19 @@ sub inventory {
 
     $self->{infos}->{MAC} = $result->{MAC}
         if $result->{MAC};
-    $self->{infos}->{NAME} = delete $self->{infos}->{IEDNAME}
-        if $self->{infos}->{IEDNAME};
+
+    if ($self->{infos}->{IEDNAME}) {
+        my $name = delete $self->{infos}->{IEDNAME};
+
+        # Cleanup name from manufacturer related suffix
+        map {
+            $name =~ s/$_//;
+        } (
+            qr/A_Allg$/, # Suffix seen on logical device name Siemens devices
+        );
+
+        $self->{infos}->{NAME} = $name;
+    }
 
     if ($result->{IP}) {
         $self->{infos}->{IPS} = {
