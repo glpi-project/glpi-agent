@@ -109,6 +109,9 @@ packaging:
   - Fix Net::NBName warnings
 * Update MacOSX packages to use perl 5.42.0 and OpenSSL 3.5.4
 * Add support for SSL_KEY_FILE option on windows installer
+* Update linux snap packaging to use:
+  - Perl 5.42.0
+  - libiec61850 v1.6.1
 
 1.15 Mon, 09 Jun 2025
 

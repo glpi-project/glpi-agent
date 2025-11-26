@@ -76,9 +76,9 @@ apps:
 parts:
   perl:
     plugin: make
-    source: https://www.cpan.org/src/5.0/perl-5.36.0.tar.gz
-    # checksum from https://www.cpan.org/src/5.0/perl-5.36.0.tar.gz.sha256.txt
-    source-checksum: sha256/e26085af8ac396f62add8a533c3a0ea8c8497d836f0689347ac5abd7b7a4e00a
+    source: https://www.cpan.org/src/5.0/perl-5.42.0.tar.gz
+    # checksum from https://www.cpan.org/src/5.0/perl-5.42.0.tar.gz.sha256.txt
+    source-checksum: sha256/e093ef184d7f9a1b9797e2465296f55510adb6dab8842b0c3ed53329663096dc
     override-build: |
       rm -f config.sh Policy.sh
       unset ARCHOPT
@@ -93,7 +93,7 @@ parts:
         -Dusemultiplicity -Duse64bitint $ARCHOPT                           \
         -Aeval:privlib=.../../lib -Aeval:scriptdir=.../../bin              \
         -Aeval:vendorprefix=.../.. -Aeval:vendorlib=.../../lib
-      make -j24
+      make -j4
       make install.perl DESTDIR="$SNAPCRAFT_PART_INSTALL"
       export PATH=$SNAPCRAFT_PART_INSTALL/usr/share/glpi-agent/bin:$PATH
       
@@ -116,6 +116,21 @@ parts:
       YAML::Tiny Data::UUID Digest::SHA
       #Net::PCAP Net::Write::Layer2
       MODULES
+      # Build and install iec61850 support
+      IEC612850_VERSION=1.6.1
+      curl -L -o $IEC612850_VERSION.tar.gz https://github.com/g-bougard/libiec61850/archive/refs/tags/$IEC612850_VERSION.tar.gz
+      tar xzf $IEC612850_VERSION.tar.gz
+      cd libiec61850-$IEC612850_VERSION
+      make CFLAGS=-fPIC
+      cd iec61850-perl
+      swig -Wall -O -I../src/common/inc -I../src/iec61850/inc -I../src/mms/inc -I../src/goose -perl5 iec61850.i
+      OPTS=`perl -MConfig -e 'print join(" ", @Config{qw(ccflags optimize cccdlflags)}, "-I$Config{archlib}/CORE")'`
+      INSTALLARCHLIB=`perl -MConfig -e 'print $Config{installarchlib}'`
+      SITEARCHLIB=`perl -MConfig -e 'print $Config{installsitearch}'`
+      gcc -c iec61850_wrap.c -I$INSTALLARCHLIB/CORE -I../src/common/inc -I../src/iec61850/inc -I../src/mms/inc -I../hal/inc -I../src/logging -I../src/r_session $OPTS -fmax-errors=5 -Wno-deprecated-declarations
+      mkdir -p $SITEARCHLIB/auto/iec61850
+      gcc -shared iec61850_wrap.o ../build/libiec61850.a -o $SITEARCHLIB/auto/iec61850/iec61850.so
+      cp -vf iec61850.pm $SITEARCHLIB
     build-packages:
      - curl
      - libssl-dev
@@ -124,6 +139,7 @@ parts:
      - libcupsimage2-dev
      - libxml2-dev
      - libssh2-1-dev
+     - swig
     stage-packages:
      - libcupsimage2
      - libcupsfilters1
