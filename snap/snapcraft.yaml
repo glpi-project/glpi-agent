@@ -117,10 +117,10 @@ parts:
       #Net::PCAP Net::Write::Layer2
       MODULES
       # Build and install iec61850 support
-      IEC612850_VERSION=1.6.1
-      curl -L -o $IEC612850_VERSION.tar.gz https://github.com/g-bougard/libiec61850/archive/refs/tags/$IEC612850_VERSION.tar.gz
-      tar xzf $IEC612850_VERSION.tar.gz
-      cd libiec61850-$IEC612850_VERSION
+      IEC61850_VERSION=1.6.1
+      curl -L -o $IEC61850_VERSION.tar.gz https://github.com/g-bougard/libiec61850/archive/refs/tags/$IEC61850_VERSION.tar.gz
+      tar xzf $IEC61850_VERSION.tar.gz
+      cd libiec61850-$IEC61850_VERSION
       make CFLAGS=-fPIC
       cd iec61850-perl
       swig -Wall -O -I../src/common/inc -I../src/iec61850/inc -I../src/mms/inc -I../src/goose -perl5 iec61850.i
