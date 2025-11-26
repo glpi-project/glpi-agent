@@ -87,6 +87,7 @@ packaging:
 * Update linux snap packaging to use:
   - Perl 5.42.0
   - libiec61850 v1.6.1
+* Include libiec61850 v1.6.1 static version in linux debian glpi-agent-task-network package
 
 1.15 Mon, 09 Jun 2025
 

@@ -2,6 +2,11 @@
 
 include /usr/share/dpkg/pkg-info.mk
 
+IEC61850_VERSION    = 1.6.1
+IEC61850_OPTS       = $(shell perl -MConfig -e 'print join(" ", @Config{qw(ccflags optimize cccdlflags)}, "-I$$Config{archlib}/CORE")')
+IEC61850_FOLDER     = libiec61850-$(IEC61850_VERSION)
+PERL_INSTALLARCHLIB = $(shell perl -MConfig -e 'print $$Config{installarchlib}')
+
 # Skip all tests but the only really important for Debian & linux
 TEST_FILES = t/01compile.t t/agent/tools/linux.t \
 	$(shell echo t/tasks/inventory/linux/*.t t/tasks/inventory/linux/*/*.t)
@@ -20,6 +25,15 @@ override_dh_auto_test:
 
 override_dh_auto_build:
 	dh_auto_build
+	# Build and install libiec61850 support
+	curl -L -o $(IEC61850_VERSION).tar.gz https://github.com/g-bougard/libiec61850/archive/refs/tags/$(IEC61850_VERSION).tar.gz
+	tar xzf $(IEC61850_VERSION).tar.gz
+	make -C $(IEC61850_FOLDER) CFLAGS=-fPIC
+	swig -Wall -O -I$(IEC61850_FOLDER)/src/common/inc -I$(IEC61850_FOLDER)/src/iec61850/inc -I$(IEC61850_FOLDER)/src/mms/inc -I$(IEC61850_FOLDER)/src/goose -perl5 $(IEC61850_FOLDER)/iec61850-perl/iec61850.i
+	gcc -c $(IEC61850_FOLDER)/iec61850-perl/iec61850_wrap.c -I$(PERL_INSTALLARCHLIB)/CORE -I$(IEC61850_FOLDER)/src/common/inc -I$(IEC61850_FOLDER)/src/iec61850/inc -I$(IEC61850_FOLDER)/src/mms/inc -I$(IEC61850_FOLDER)/hal/inc -I$(IEC61850_FOLDER)/src/logging -I$(IEC61850_FOLDER)/src/r_session $(IEC61850_OPTS) -fmax-errors=5 -Wno-deprecated-declarations -o $(IEC61850_FOLDER)/iec61850-perl/iec61850_wrap.o
+	mkdir -p blib/lib/auto/iec61850
+	gcc -shared $(IEC61850_FOLDER)/iec61850-perl/iec61850_wrap.o $(IEC61850_FOLDER)/build/libiec61850.a -o blib/lib/auto/iec61850/iec61850.so
+	cp -vf $(IEC61850_FOLDER)/iec61850-perl/iec61850.pm blib/lib
 	perl debian/refresh-install-files
 
 # Use gzip compression to keep best compatibility with older debian/ubuntu distros
