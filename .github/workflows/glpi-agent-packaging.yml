@@ -530,9 +530,9 @@ jobs:
           libtest-compile-perl libtest-deep-perl libtest-nowarnings-perl   \
           libtest-exception-perl libtest-mockmodule-perl                   \
           libtest-mockobject-perl libtext-template-perl                    \
-          libsocket-getaddrinfo-perl libuniversal-require-perl liburi-perl \
+          libuniversal-require-perl liburi-perl                            \
           libwww-perl libxml-libxml-perl libyaml-perl                      \
-          libcrypt-des-perl libdigest-hmac-perl \
+          libcrypt-des-perl libdigest-hmac-perl                            \
           libossp-uuid-perl libcpanel-json-xs-perl devscripts
       shell: bash
     - name: Build debian packages
@@ -688,7 +688,7 @@ jobs:
       run: |
         sudo rm /etc/apt/sources.list.d/microsoft-prod.list
         sudo apt update
-        sudo apt -y install pipx zsync
+        sudo apt -y install pipx zsync swig
       shell: bash
     # We use AppImage Builder development version as 1.1 is failing
     - name: Install AppImage Builder development version

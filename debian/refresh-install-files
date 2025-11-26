@@ -19,7 +19,7 @@ sub wanted {
     $t =~ s,usr/share/glpi-agent/script/,usr/bin/,;
     if (/\/man1\//) {
         # dh_installmans
-    } elsif ($t =~ /glpi-net/ || $t =~ /GLPI\/Agent\/(SNMP|Task\/Net|HTTP\/Server\/ToolBox)/) {
+    } elsif ($t =~ /glpi-net/ || $t =~ /GLPI\/Agent\/(SNMP|IEC61850|Task\/Net|HTTP\/Server\/ToolBox)/ || $t =~ /iec61850\.(so|pm)$/) {
         print AGENT_TASK_NETWORK "$t\n";
     } elsif ($t =~ /glpi-esx/ || $t =~ /GLPI\/Agent\/(Task\/ESX|SOAP\/VMware)/) {
         print AGENT_TASK_ESX "$t\n";

@@ -33,7 +33,6 @@ Build-Depends-Indep:
  libtest-mockmodule-perl <!nocheck>,
  libtest-mockobject-perl <!nocheck>,
  libtext-template-perl <!nocheck>,
- libsocket-getaddrinfo-perl <!nocheck>,
  libuniversal-require-perl <!nocheck>,
  liburi-perl <!nocheck>,
  libwww-perl <!nocheck>,
@@ -41,6 +40,7 @@ Build-Depends-Indep:
  libyaml-perl <!nocheck>,
  libossp-uuid-perl <!nocheck>,
  libdatetime-perl <!nocheck>,
+ swig,
  perl,
  ucf
 Standards-Version: 4.5.1
@@ -74,8 +74,7 @@ Depends:
  libhttp-daemon-perl,
  libyaml-tiny-perl,
  libossp-uuid-perl,
- libdatetime-perl,
- libsocket-getaddrinfo-perl
+ libdatetime-perl
 Suggests: smartmontools, read-edid
 Recommends: libio-socket-ssl-perl, dmidecode, hdparm, fdisk | util-linux (<< 2.29.2-3~), net-tools
 Description: hardware and software inventory tool (client)
