@@ -689,7 +689,7 @@ jobs:
       run: |
         sudo rm /etc/apt/sources.list.d/microsoft-prod.list
         sudo apt update
-        sudo apt -y install pipx zsync swig
+        sudo apt -y install pipx zsync
       shell: bash
     # We use AppImage Builder development version as 1.1 is failing
     - name: Install AppImage Builder development version

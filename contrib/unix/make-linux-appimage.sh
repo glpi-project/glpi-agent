@@ -190,7 +190,6 @@ AppDir:
       - glpi-agent-task-esx
       - glpi-agent-task-network
       - libcrypt-rijndael-perl
-      - libiec61850-glpi-agent
 
   after_bundle:
     - find build/AppDir -type f -name '*.pod' -delete
