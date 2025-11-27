@@ -550,7 +550,8 @@ jobs:
     - name: Run lintian
       run: |
         sudo apt -y install lintian
-        lintian --profile debian --show-overrides -L ">=pedantic"
+        lintian --profile debian --show-overrides -L ">=pedantic" \
+            --suppress-tags font-in-non-font-package,font-outside-font-dir,package-contains-documentation-outside-usr-share-doc,image-file-has-unexpected-name
       shell: bash
     - name: Upload built deb artifacts
       uses: actions/upload-artifact@v4

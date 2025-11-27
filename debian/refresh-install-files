@@ -4,22 +4,26 @@ use strict;
 use warnings;
 
 use File::Find;
+use Config;
+
+my ($INSTALLVENDORARCH) = $Config{installvendorarch} =~ m{^/?([^/].+)$};
 
 open AGENT, ">debian/glpi-agent.install";
 open AGENT_TASK_DEPLOY, ">debian/glpi-agent-task-deploy.install";
 open AGENT_TASK_NETWORK, ">debian/glpi-agent-task-network.install";
 open AGENT_TASK_ESX, ">debian/glpi-agent-task-esx.install";
 open AGENT_TASK_COLLECT, ">debian/glpi-agent-task-collect.install";
+open AGENT_LIBIEC61850, ">debian/libiec61850-glpi-agent.install";
 
 find({ wanted => \&wanted, no_chdir=>1}, 'blib');
 sub wanted {
     my $t = $File::Find::name;
     return unless -f $t;
-    $t =~ s,blib/,usr/share/glpi-agent/,;
-    $t =~ s,usr/share/glpi-agent/script/,usr/bin/,;
+    $t =~ s,blib/lib/,usr/share/glpi-agent/lib/,;
+    $t =~ s,blib/script/,usr/bin/,;
     if (/\/man1\//) {
         # dh_installmans
-    } elsif ($t =~ /glpi-net/ || $t =~ /GLPI\/Agent\/(SNMP|IEC61850|Task\/Net|HTTP\/Server\/ToolBox)/ || $t =~ /iec61850\.(so|pm)$/) {
+    } elsif ($t =~ /glpi-net/ || $t =~ /GLPI\/Agent\/(SNMP|Task\/Net|HTTP\/Server\/ToolBox)/) {
         print AGENT_TASK_NETWORK "$t\n";
     } elsif ($t =~ /glpi-esx/ || $t =~ /GLPI\/Agent\/(Task\/ESX|SOAP\/VMware)/) {
         print AGENT_TASK_ESX "$t\n";
@@ -27,6 +31,8 @@ sub wanted {
         print AGENT_TASK_DEPLOY "$t\n";
     } elsif ($t =~ /GLPI\/Agent\/Task\/Collect/) {
         print AGENT_TASK_COLLECT "$t\n";
+    } elsif ($t =~ /GLPI\/Agent\/IEC61850/) {
+        print AGENT_LIBIEC61850 "$t\n";
     } elsif ($t !~ m,/.exists,) {
         # Skip .exists files
         print AGENT "$t\n";
@@ -48,3 +54,7 @@ print AGENT "contrib/unix/glpi-agent.service lib/systemd/system\n";
 # Dedicated network tasks configuration files
 print AGENT_TASK_NETWORK "etc/toolbox-plugin.cfg /usr/share/glpi-agent/etc\n";
 print AGENT_TASK_NETWORK "etc/snmp-advanced-support.cfg /usr/share/glpi-agent/etc\n";
+
+# libiec61850 dedicated support
+print AGENT_LIBIEC61850 "$INSTALLVENDORARCH/iec61850.pm\n";
+print AGENT_LIBIEC61850 "$INSTALLVENDORARCH/auto/iec61850/iec61850.so\n";

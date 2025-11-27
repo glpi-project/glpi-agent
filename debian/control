@@ -142,6 +142,7 @@ Architecture: all
 Depends:
  ${misc:Depends},
  ${perl:Depends},
+ ucf,
  glpi-agent (>= ${binary:Version}),
  libcrypt-des-perl,
  libdigest-hmac-perl,
@@ -154,3 +155,13 @@ Description: network device discovery for GLPI Agent
  Echo Ping, TimeStamp ping, arp table lookup and NetBIOS request:
   - networking devices discovery within an IP range
   - identify unknown MAC addresses
+
+Package: libiec61850-glpi-agent
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${perl:Depends},
+ glpi-agent-task-network (>= ${binary:Version})
+Description: IEC61850 protocol perl library support for GLPI Agent
+ This package is required to discover and inventory devices supporting
+ iec61850 protocol with glpi-agent network tasks.
