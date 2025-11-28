@@ -14,7 +14,6 @@ Source0:     %{name}-%{version}-%{release}.tar.gz
 Requires: perl(LWP)
 Requires: perl(Net::SSLeay)
 Requires: perl(Proc::Daemon)
-Requires: perl(Socket::GetAddrInfo)
 Requires: perl(DateTime)
 Requires: perl(Sys::Hostname)
 Requires: perl(XML::LibXML)
