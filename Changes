@@ -65,6 +65,7 @@ netdiscovery/netinventory:
 * fix #1034: Add Hitachi Vantara storage devices support
 * Add Fortinet module to report passive element of a HA stack
 * Add support for Telco Systems T-Mark devices
+* Add support for Nokia devices
 
 injector:
 * Add support for --ca-cert-file and --ssl-fingerprint options
