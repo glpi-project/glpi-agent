@@ -67,8 +67,8 @@ sub run {
     unless (empty($sysHwRevision)) {
         my $model = $device->{MODEL} ? $device->{MODEL}." " : "";
         my $sysHardware = {
-            NAME            => ($device->{MODEL} ? $device->{MODEL}." " : "")."hardware",
-            DESCRIPTION     => "hardware revision",
+            NAME            => $model."hardware",
+            DESCRIPTION     => $model."hardware revision",
             TYPE            => "device",
             VERSION         => $sysHwRevision,
             MANUFACTURER    => "Telco Systems"
