@@ -631,89 +631,26 @@ sub _KeyChain_or_KeyStore_Export {
         @certs = IO::Socket::SSL::Utils::PEM_file2certs($file)
             if -s $file;
     } else {
-        my @certCommands;
-        if ($self->{ssl_keystore})  {
-            foreach my $case (split(/,+/, $self->{ssl_keystore})) {
-                $case = trimWhitespace($case);
-                if ($case =~ /^(Service|Enterprise|GroupPolicy|User)?-?(My|CA|Root)$/) {
-                    my $store = $2 =~ /CA/i ? "CA" : "Root";
-                    my $option = $1 ? " -$1" : "";
-                    push @certCommands, "certutil -Silent -Split$option -Store $store";
-                } else {
-                    $logger->debug("Unsupported ssl-keystore option definition: $case");
-                }
-            }
+        GLPI::Agent::Tools::Win32::KeyStore->use();
+        if ($EVAL_ERROR) {
+            $logger->debug("Failed to load KeyStore support: $EVAL_ERROR");
         } else {
-            @certCommands = (
-                "certutil -Silent -Split -Store CA",
-                "certutil -Silent -Split -Store Root",
-                "certutil -Silent -Split -Enterprise -Store CA",
-                "certutil -Silent -Split -Enterprise -Store Root",
-                "certutil -Silent -Split -GroupPolicy -Store CA",
-                "certutil -Silent -Split -GroupPolicy -Store Root",
-                "certutil -Silent -Split -User -Store CA",
-                "certutil -Silent -Split -User -Store Root"
-            );
-        }
-
-        unless (@certCommands) {
-            $logger->debug("No keystore to export server certificates from");
-            return
-        }
-
-        # Windows keystore support
-        Cwd->require();
-        my $cwd = Cwd::cwd();
-
-        # Create a temporary folder in vardir to cd & export certificates
-        my $tmpdir = File::Temp->newdir(
-            TEMPLATE    => "$basename-export-XXXXXX",
-            DIR         => $vardir,
-            TMPDIR      => 1,
-        );
-        my $certdir = $tmpdir->dirname;
-        $certdir =~ s{\\}{/}g;
-        if (-d $certdir) {
-            $logger->debug2("Changing to '$certdir' temporary folder");
-            chdir $certdir;
-
-            my @deletefolder;
-            foreach my $command (@certCommands) {
-                my ($kind, $store) = $command =~ /-Split( -\w+)? -Store (\w+)$/;
-                my $storeDirname = $kind && $kind =~ /^ -(\w+)$/ ? "$1-$store" : $store;
-                mkdir $storeDirname;
-                chdir $storeDirname;
-                getAllLines(
-                    command => $command,
-                    logger  => $logger
-                );
-                chdir "..";
-                push @deletefolder, $storeDirname;
-            }
-
-            # Export certificates from keystore as crt files
-
-            # Convert each crt file to base64 encoded cer file and concatenate in certchain file
-            File::Glob->require();
-            foreach my $certfile (File::Glob::bsd_glob("$certdir/*/*")) {
-                if ($certfile =~ m{/([^/]+/[^/]+\.crt)$}) {
-                    getAllLines(
-                        command => "certutil -encode $1 temp.cer",
-                        logger  => $logger
-                    );
-                    push @certs, IO::Socket::SSL::Utils::PEM_file2cert("$certdir/temp.cer")
-                        if -s "$certdir/temp.cer";
-                    unlink "$certdir/temp.cer";
+            GLPI::Agent::Tools::Win32::KeyStore->import("getKeyStore");
+            if ($self->{ssl_keystore})  {
+                foreach my $case (split(/,+/, $self->{ssl_keystore})) {
+                    $case = uc(trimWhitespace($case));
+                    if ($case =~ /^(CA|ROOT|TRUST|MY)$/) {
+                        push @certs, getKeyStore(
+                            logger  => $logger,
+                            store   => $case
+                        );
+                    } else {
+                        $logger->debug("Unsupported ssl-keystore option definition: $case");
+                    }
                 }
-                unlink $certfile;
             }
-
-            # Cleanup temp subfolders
-            map { rmdir $_ } @deletefolder;
-
-            # Get back to current dir
-            $logger->debug2("Changing back to '$cwd' folder");
-            chdir $cwd;
+            push @certs, getKeyStore(logger  => $logger)
+                unless @certs;
         }
     }
 
