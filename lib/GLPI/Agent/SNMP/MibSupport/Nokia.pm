@@ -221,7 +221,11 @@ sub getComponents {
         push @components, $component;
     }
 
-    return \@components;
+    return [
+        sort {
+            $a->{CONTAINEDININDEX} <=> $b->{CONTAINEDININDEX} && $a->{INDEX} <=> $b->{INDEX}
+        } @components
+    ];
 }
 
 1;
