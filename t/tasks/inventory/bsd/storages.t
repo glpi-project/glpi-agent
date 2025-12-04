@@ -62,26 +62,66 @@ my %tests_mfiutil = (
 
 my $tests_sysctl = {
     pfsense1 => {
-        'content'  => [
+        content => [
             {
                 DESCRIPTION  => '<QEMU HARDDISK 1.0> ATA-7 device',
                 NAME         => 'ada0',
                 TYPE         => 'disk',
                 SERIALNUMBER => 'QM00001',
-                DISKSIZE => 4294967296,
-                MODEL => 'QEMU HARDDISK 1.0'
+                DISKSIZE     => 4294,
+                MODEL        => 'QEMU HARDDISK 1.0'
             },
             {
                 DESCRIPTION  => '<QEMU QEMU DVD-ROM 1.0> Removable CD-ROM SCSI device',
                 NAME         => 'cd0',
                 TYPE         => 'cdrom',
                 SERIALNUMBER => 'QM00003',
-                DISKSIZE => 0,
-                MODEL => 'QEMU QEMU DVD-ROM 1.0'
+                DISKSIZE     => 0,
+                MODEL        => 'QEMU QEMU DVD-ROM 1.0'
             }
         ],
         dmesgFile  => 'dmesg',
         sysctlFile => 'kern.geom.confxml'
+    },
+    'freebsd-14.3-RELEASE-p5' => {
+        content => [
+            {
+                DESCRIPTION  => '<ST1000NM0011 SN03> ATA8-ACS SATA 3.x device',
+                NAME         => 'ada0',
+                TYPE         => 'disk',
+                SERIALNUMBER => 'Z1N3PC1B',
+                DISKSIZE     => 1000204,
+                MODEL        => 'ST1000NM0011 SN03'
+            },
+            {
+                DESCRIPTION  => '<ST1000NM0011 SN03> ATA8-ACS SATA 3.x device',
+                NAME         => 'ada1',
+                TYPE         => 'disk',
+                SERIALNUMBER => 'Z1N3PN8K',
+                DISKSIZE     => 1000204,
+                MODEL        => 'ST1000NM0011 SN03'
+            }
+        ],
+        dmesgFile  => 'dmesg-freebsd-14.3',
+        sysctlFile => 'kern.geom.conf.xml-freebsd-14.3'
+    },
+    'freebsd-14.3-RELEASE-p5-empty-dmesg' => {
+        content => [
+            {
+                DESCRIPTION  => 'ST1000NM0033-9ZM173',
+                NAME         => 'ada0',
+                TYPE         => 'disk',
+                DISKSIZE     => 1000204
+            },
+            {
+                DESCRIPTION  => 'ST1000NM000A-2J3100',
+                NAME         => 'ada1',
+                TYPE         => 'disk',
+                DISKSIZE     => 1000204
+            }
+        ],
+        dmesgFile  => 'dmesg-freebsd-14.3-empty',
+        sysctlFile => 'kern.geom.conf.xml-freebsd-14.3'
     }
 };
 

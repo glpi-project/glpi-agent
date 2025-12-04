@@ -50,7 +50,7 @@ sub _getStorages {
                 if ($geom->{provider}
                     && $geom->{provider}->{config}
                     && $geom->{provider}->{config}->{descr});
-            $device->{DISKSIZE} = $geom->{provider}->{mediasize}
+            $device->{DISKSIZE} = getCanonicalSize($geom->{provider}->{mediasize}."bytes")
                 if ($geom->{provider}
                     && defined $geom->{provider}->{mediasize});
             $device->{TYPE} = _retrieveDeviceTypeFromName($device->{NAME});
@@ -84,10 +84,26 @@ sub _extractDataFromDmesg {
 
     my $storages = $params{storages};
 
-    my $dmesgLines = getAllLines(
-        command => 'dmesg',
-        %params
-    );
+    my $dmesgLines;
+
+    # Check if called during unittests before checking well-known system dmesg.boot file
+    if (empty($params{file}) && has_file('/var/run/dmesg.boot')) {
+        $dmesgLines = getAllLines(
+            file    => '/var/run/dmesg.boot',
+            %params
+        );
+    }
+
+    # Fallback on dmesg output but it can be empty and so not reliable
+    if (empty($dmesgLines)) {
+        $dmesgLines = getAllLines(
+            command => 'dmesg',
+            %params
+        );
+    }
+
+    return if empty($dmesgLines);
+
     for my $storage (@$storages) {
         next unless $storage->{NAME};
         $storage->{MODEL} = getFirstMatch(

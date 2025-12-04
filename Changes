@@ -34,6 +34,7 @@ inventory:
 * Fix additional content merged into json even when not required on partial content
 * Update support for Acer S240L monitors inventory
 * Don't inventory Surface Display as monitor on windows
+* fix #1050: Fix Storage inventory support on FreeBSD
 
 remoteinventory:
 * fix RedHat RHN systemid set as WINPRODID

@@ -1,0 +1,1393 @@
+kern.geom.confxml: <mesh>
+  <class id="0xffffffff81b452c0">
+    <name>FD</name>
+  </class>
+  <class id="0xffffffff81ab95b8">
+    <name>RAID</name>
+  </class>
+  <class id="0xffffffff81b3be18">
+    <name>SWAP</name>
+    <geom id="0xfffff800065aca00">
+      <class ref="0xffffffff81b3be18"/>
+      <name>swap</name>
+      <rank>3</rank>
+	<consumer id="0xfffff800038f1a80">
+	  <geom ref="0xfffff800065aca00"/>
+	  <provider ref="0xfffff80003647e00"/>
+	  <mode>r1w1e0</mode>
+	</consumer>
+    </geom>
+  </class>
+  <class id="0xffffffff81ab8120">
+    <name>PART</name>
+    <geom id="0xfffff800741e7000">
+      <class ref="0xffffffff81ab8120"/>
+      <name>ada1</name>
+      <rank>2</rank>
+      <config>
+	<scheme>GPT</scheme>
+	<entries>128</entries>
+	<first>40</first>
+	<last>1953525127</last>
+	<fwsectors>63</fwsectors>
+	<fwheads>16</fwheads>
+	<state>OK</state>
+	<modified>false</modified>
+      </config>
+	<consumer id="0xfffff8009983d300">
+	  <geom ref="0xfffff800741e7000"/>
+	  <provider ref="0xfffff80003931800"/>
+	  <mode>r1w1e2</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff80038778800">
+	  <geom ref="0xfffff800741e7000"/>
+	  <mode>r1w1e1</mode>
+	  <name>ada1p9</name>
+	  <mediasize>849880924160</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>150323941376</stripeoffset>
+	  <config>
+	    <start>293601448</start>
+	    <end>1953525127</end>
+	    <index>9</index>
+	    <type>freebsd-ufs</type>
+	    <offset>150323941376</offset>
+	    <length>849880924160</length>
+	    <label></label>
+	    <rawtype>516e7cb6-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>18589eb6-bdfa-11f0-aa8e-0cc47a7478d3</rawuuid>
+	    <efimedia>HD(9,GPT,18589eb6-bdfa-11f0-aa8e-0cc47a7478d3,0x118000a8,0x62f06ce0)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff800746afb00">
+	  <geom ref="0xfffff800741e7000"/>
+	  <mode>r0w0e0</mode>
+	  <name>ada1p8</name>
+	  <mediasize>21474836480</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>128849104896</stripeoffset>
+	  <config>
+	    <start>251658408</start>
+	    <end>293601447</end>
+	    <index>8</index>
+	    <type>freebsd-ufs</type>
+	    <offset>128849104896</offset>
+	    <length>21474836480</length>
+	    <label></label>
+	    <rawtype>516e7cb6-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>184e4580-bdfa-11f0-aa8e-0cc47a7478d3</rawuuid>
+	    <efimedia>HD(8,GPT,184e4580-bdfa-11f0-aa8e-0cc47a7478d3,0xf0000a8,0x2800000)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff80105768d00">
+	  <geom ref="0xfffff800741e7000"/>
+	  <mode>r0w0e0</mode>
+	  <name>ada1p7</name>
+	  <mediasize>53687091200</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>75162013696</stripeoffset>
+	  <config>
+	    <start>146800808</start>
+	    <end>251658407</end>
+	    <index>7</index>
+	    <type>freebsd-ufs</type>
+	    <offset>75162013696</offset>
+	    <length>53687091200</length>
+	    <label></label>
+	    <rawtype>516e7cb6-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>1843f527-bdfa-11f0-aa8e-0cc47a7478d3</rawuuid>
+	    <efimedia>HD(7,GPT,1843f527-bdfa-11f0-aa8e-0cc47a7478d3,0x8c000a8,0x6400000)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff80128426100">
+	  <geom ref="0xfffff800741e7000"/>
+	  <mode>r0w0e0</mode>
+	  <name>ada1p6</name>
+	  <mediasize>4294967296</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>70867046400</stripeoffset>
+	  <config>
+	    <start>138412200</start>
+	    <end>146800807</end>
+	    <index>6</index>
+	    <type>freebsd-ufs</type>
+	    <offset>70867046400</offset>
+	    <length>4294967296</length>
+	    <label></label>
+	    <rawtype>516e7cb6-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>183ca874-bdfa-11f0-aa8e-0cc47a7478d3</rawuuid>
+	    <efimedia>HD(6,GPT,183ca874-bdfa-11f0-aa8e-0cc47a7478d3,0x84000a8,0x800000)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff8006fc5b100">
+	  <geom ref="0xfffff800741e7000"/>
+	  <mode>r0w0e0</mode>
+	  <name>ada1p5</name>
+	  <mediasize>59055800320</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>11811246080</stripeoffset>
+	  <config>
+	    <start>23068840</start>
+	    <end>138412199</end>
+	    <index>5</index>
+	    <type>freebsd-ufs</type>
+	    <offset>11811246080</offset>
+	    <length>59055800320</length>
+	    <label></label>
+	    <rawtype>516e7cb6-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>1831b8f1-bdfa-11f0-aa8e-0cc47a7478d3</rawuuid>
+	    <efimedia>HD(5,GPT,1831b8f1-bdfa-11f0-aa8e-0cc47a7478d3,0x16000a8,0x6e00000)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff80087379c00">
+	  <geom ref="0xfffff800741e7000"/>
+	  <mode>r0w0e0</mode>
+	  <name>ada1p4</name>
+	  <mediasize>1073741824</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>10737504256</stripeoffset>
+	  <config>
+	    <start>20971688</start>
+	    <end>23068839</end>
+	    <index>4</index>
+	    <type>freebsd-ufs</type>
+	    <offset>10737504256</offset>
+	    <length>1073741824</length>
+	    <label></label>
+	    <rawtype>516e7cb6-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>182275bc-bdfa-11f0-aa8e-0cc47a7478d3</rawuuid>
+	    <efimedia>HD(4,GPT,182275bc-bdfa-11f0-aa8e-0cc47a7478d3,0x14000a8,0x200000)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff800c9ffb100">
+	  <geom ref="0xfffff800741e7000"/>
+	  <mode>r0w0e0</mode>
+	  <name>ada1p3</name>
+	  <mediasize>8589934592</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>2147569664</stripeoffset>
+	  <config>
+	    <start>4194472</start>
+	    <end>20971687</end>
+	    <index>3</index>
+	    <type>freebsd-swap</type>
+	    <offset>2147569664</offset>
+	    <length>8589934592</length>
+	    <label></label>
+	    <rawtype>516e7cb5-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>18195283-bdfa-11f0-aa8e-0cc47a7478d3</rawuuid>
+	    <efimedia>HD(3,GPT,18195283-bdfa-11f0-aa8e-0cc47a7478d3,0x4000a8,0x1000000)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff800785b6700">
+	  <geom ref="0xfffff800741e7000"/>
+	  <mode>r0w0e0</mode>
+	  <name>ada1p2</name>
+	  <mediasize>2147483648</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>86016</stripeoffset>
+	  <config>
+	    <start>168</start>
+	    <end>4194471</end>
+	    <index>2</index>
+	    <type>freebsd-ufs</type>
+	    <offset>86016</offset>
+	    <length>2147483648</length>
+	    <label></label>
+	    <rawtype>516e7cb6-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>180ff94d-bdfa-11f0-aa8e-0cc47a7478d3</rawuuid>
+	    <efimedia>HD(2,GPT,180ff94d-bdfa-11f0-aa8e-0cc47a7478d3,0xa8,0x400000)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff800ca705500">
+	  <geom ref="0xfffff800741e7000"/>
+	  <mode>r0w0e0</mode>
+	  <name>ada1p1</name>
+	  <mediasize>65536</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>20480</stripeoffset>
+	  <config>
+	    <start>40</start>
+	    <end>167</end>
+	    <index>1</index>
+	    <type>freebsd-boot</type>
+	    <offset>20480</offset>
+	    <length>65536</length>
+	    <label></label>
+	    <rawtype>83bd6b9d-7f41-11dc-be0b-001560b84f0f</rawtype>
+	    <rawuuid>17f4ad11-bdfa-11f0-aa8e-0cc47a7478d3</rawuuid>
+	    <efimedia>HD(1,GPT,17f4ad11-bdfa-11f0-aa8e-0cc47a7478d3,0x28,0x80)</efimedia>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff800063dd400">
+      <class ref="0xffffffff81ab8120"/>
+      <name>ada0</name>
+      <rank>2</rank>
+      <config>
+	<scheme>GPT</scheme>
+	<entries>128</entries>
+	<first>34</first>
+	<last>1953525134</last>
+	<fwsectors>63</fwsectors>
+	<fwheads>16</fwheads>
+	<state>OK</state>
+	<modified>false</modified>
+      </config>
+	<consumer id="0xfffff800064b6d80">
+	  <geom ref="0xfffff800063dd400"/>
+	  <provider ref="0xfffff800063de700"/>
+	  <mode>r8w8e15</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff80003647200">
+	  <geom ref="0xfffff800063dd400"/>
+	  <mode>r1w1e1</mode>
+	  <name>ada0p9</name>
+	  <mediasize>779014035456</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>221190833152</stripeoffset>
+	  <config>
+	    <start>432013346</start>
+	    <end>1953525133</end>
+	    <index>9</index>
+	    <type>freebsd-ufs</type>
+	    <offset>221190833152</offset>
+	    <length>779014035456</length>
+	    <label></label>
+	    <rawtype>516e7cb6-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>d2006a8f-c9a1-11e5-8b04-0cc47a7478d3</rawuuid>
+	    <efimedia>HD(9,GPT,d2006a8f-c9a1-11e5-8b04-0cc47a7478d3,0x19c00022,0x5ab06d6c)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff80003647400">
+	  <geom ref="0xfffff800063dd400"/>
+	  <mode>r1w1e1</mode>
+	  <name>ada0p8</name>
+	  <mediasize>17179869184</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>204010963968</stripeoffset>
+	  <config>
+	    <start>398458914</start>
+	    <end>432013345</end>
+	    <index>8</index>
+	    <type>freebsd-ufs</type>
+	    <offset>204010963968</offset>
+	    <length>17179869184</length>
+	    <label></label>
+	    <rawtype>516e7cb6-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>ca420dc2-c9a1-11e5-8b04-0cc47a7478d3</rawuuid>
+	    <efimedia>HD(8,GPT,ca420dc2-c9a1-11e5-8b04-0cc47a7478d3,0x17c00022,0x2000000)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff80003647600">
+	  <geom ref="0xfffff800063dd400"/>
+	  <mode>r1w1e1</mode>
+	  <name>ada0p7</name>
+	  <mediasize>53687091200</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>150323872768</stripeoffset>
+	  <config>
+	    <start>293601314</start>
+	    <end>398458913</end>
+	    <index>7</index>
+	    <type>freebsd-ufs</type>
+	    <offset>150323872768</offset>
+	    <length>53687091200</length>
+	    <label></label>
+	    <rawtype>516e7cb6-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>c279eccd-c9a1-11e5-8b04-0cc47a7478d3</rawuuid>
+	    <efimedia>HD(7,GPT,c279eccd-c9a1-11e5-8b04-0cc47a7478d3,0x11800022,0x6400000)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff80003647800">
+	  <geom ref="0xfffff800063dd400"/>
+	  <mode>r1w1e1</mode>
+	  <name>ada0p6</name>
+	  <mediasize>96636764160</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>53687108608</stripeoffset>
+	  <config>
+	    <start>104857634</start>
+	    <end>293601313</end>
+	    <index>6</index>
+	    <type>freebsd-ufs</type>
+	    <offset>53687108608</offset>
+	    <length>96636764160</length>
+	    <label></label>
+	    <rawtype>516e7cb6-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>b6771134-c9a1-11e5-8b04-0cc47a7478d3</rawuuid>
+	    <efimedia>HD(6,GPT,b6771134-c9a1-11e5-8b04-0cc47a7478d3,0x6400022,0xb400000)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff80003647a00">
+	  <geom ref="0xfffff800063dd400"/>
+	  <mode>r1w1e1</mode>
+	  <name>ada0p5</name>
+	  <mediasize>32212254720</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>21474853888</stripeoffset>
+	  <config>
+	    <start>41943074</start>
+	    <end>104857633</end>
+	    <index>5</index>
+	    <type>freebsd-ufs</type>
+	    <offset>21474853888</offset>
+	    <length>32212254720</length>
+	    <label></label>
+	    <rawtype>516e7cb6-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>aaa64117-c9a1-11e5-8b04-0cc47a7478d3</rawuuid>
+	    <efimedia>HD(5,GPT,aaa64117-c9a1-11e5-8b04-0cc47a7478d3,0x2800022,0x3c00000)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff80003647c00">
+	  <geom ref="0xfffff800063dd400"/>
+	  <mode>r1w1e1</mode>
+	  <name>ada0p4</name>
+	  <mediasize>2147483648</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>19327370240</stripeoffset>
+	  <config>
+	    <start>37748770</start>
+	    <end>41943073</end>
+	    <index>4</index>
+	    <type>freebsd-ufs</type>
+	    <offset>19327370240</offset>
+	    <length>2147483648</length>
+	    <label></label>
+	    <rawtype>516e7cb6-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>977ed612-c9a1-11e5-8b04-0cc47a7478d3</rawuuid>
+	    <efimedia>HD(4,GPT,977ed612-c9a1-11e5-8b04-0cc47a7478d3,0x2400022,0x400000)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff80003647e00">
+	  <geom ref="0xfffff800063dd400"/>
+	  <mode>r1w1e0</mode>
+	  <name>ada0p3</name>
+	  <mediasize>17179869184</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>2147501056</stripeoffset>
+	  <config>
+	    <start>4194338</start>
+	    <end>37748769</end>
+	    <index>3</index>
+	    <type>freebsd-swap</type>
+	    <offset>2147501056</offset>
+	    <length>17179869184</length>
+	    <label></label>
+	    <rawtype>516e7cb5-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>745cf6d2-c9a1-11e5-8b04-0cc47a7478d3</rawuuid>
+	    <efimedia>HD(3,GPT,745cf6d2-c9a1-11e5-8b04-0cc47a7478d3,0x400022,0x2000000)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff80003646100">
+	  <geom ref="0xfffff800063dd400"/>
+	  <mode>r1w1e1</mode>
+	  <name>ada0p2</name>
+	  <mediasize>2146959360</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>541696</stripeoffset>
+	  <config>
+	    <start>1058</start>
+	    <end>4194337</end>
+	    <index>2</index>
+	    <type>freebsd-ufs</type>
+	    <offset>541696</offset>
+	    <length>2146959360</length>
+	    <label></label>
+	    <rawtype>516e7cb6-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>670df194-c9a1-11e5-8b04-0cc47a7478d3</rawuuid>
+	    <efimedia>HD(2,GPT,670df194-c9a1-11e5-8b04-0cc47a7478d3,0x422,0x3ffc00)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff80003646300">
+	  <geom ref="0xfffff800063dd400"/>
+	  <mode>r0w0e0</mode>
+	  <name>ada0p1</name>
+	  <mediasize>524288</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>17408</stripeoffset>
+	  <config>
+	    <start>34</start>
+	    <end>1057</end>
+	    <index>1</index>
+	    <type>freebsd-boot</type>
+	    <offset>17408</offset>
+	    <length>524288</length>
+	    <label></label>
+	    <rawtype>83bd6b9d-7f41-11dc-be0b-001560b84f0f</rawtype>
+	    <rawuuid>670cdd55-c9a1-11e5-8b04-0cc47a7478d3</rawuuid>
+	    <efimedia>HD(1,GPT,670cdd55-c9a1-11e5-8b04-0cc47a7478d3,0x22,0x400)</efimedia>
+	  </config>
+	</provider>
+    </geom>
+  </class>
+  <class id="0xffffffff81ab6d80">
+    <name>LABEL</name>
+    <geom id="0xfffff8003850a300">
+      <class ref="0xffffffff81ab6d80"/>
+      <name>ada1p4</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff800c4678300">
+	  <geom ref="0xfffff8003850a300"/>
+	  <provider ref="0xfffff80087379c00"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff8008d572a00">
+	  <geom ref="0xfffff8003850a300"/>
+	  <mode>r0w0e0</mode>
+	  <name>ufsid/69117eb5fa86c6e9</name>
+	  <mediasize>1073741824</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>10737504256</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>1073741824</length>
+	    <seclength>2097152</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff8007024e800">
+      <class ref="0xffffffff81ab6d80"/>
+      <name>ada1p4</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff80126efb280">
+	  <geom ref="0xfffff8007024e800"/>
+	  <provider ref="0xfffff80087379c00"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff80068710100">
+	  <geom ref="0xfffff8007024e800"/>
+	  <mode>r0w0e0</mode>
+	  <name>gptid/182275bc-bdfa-11f0-aa8e-0cc47a7478d3</name>
+	  <mediasize>1073741824</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>10737504256</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>1073741824</length>
+	    <seclength>2097152</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff800197ff600">
+      <class ref="0xffffffff81ab6d80"/>
+      <name>ada1p5</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff800cd115700">
+	  <geom ref="0xfffff800197ff600"/>
+	  <provider ref="0xfffff8006fc5b100"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff80071829800">
+	  <geom ref="0xfffff800197ff600"/>
+	  <mode>r0w0e0</mode>
+	  <name>ufsid/69117eb5501a6f09</name>
+	  <mediasize>59055800320</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>11811246080</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>59055800320</length>
+	    <seclength>115343360</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff800520d7700">
+      <class ref="0xffffffff81ab6d80"/>
+      <name>ada1p5</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff8005c52f800">
+	  <geom ref="0xfffff800520d7700"/>
+	  <provider ref="0xfffff8006fc5b100"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff80073ebaa00">
+	  <geom ref="0xfffff800520d7700"/>
+	  <mode>r0w0e0</mode>
+	  <name>gptid/1831b8f1-bdfa-11f0-aa8e-0cc47a7478d3</name>
+	  <mediasize>59055800320</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>11811246080</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>59055800320</length>
+	    <seclength>115343360</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff80003931e00">
+      <class ref="0xffffffff81ab6d80"/>
+      <name>ada1p6</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff80078c14b00">
+	  <geom ref="0xfffff80003931e00"/>
+	  <provider ref="0xfffff80128426100"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff80059549b00">
+	  <geom ref="0xfffff80003931e00"/>
+	  <mode>r0w0e0</mode>
+	  <name>ufsid/69117eb6c63aaff1</name>
+	  <mediasize>4294967296</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>70867046400</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>4294967296</length>
+	    <seclength>8388608</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff8006c468800">
+      <class ref="0xffffffff81ab6d80"/>
+      <name>ada1p6</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff80094f1da00">
+	  <geom ref="0xfffff8006c468800"/>
+	  <provider ref="0xfffff80128426100"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff80041e09000">
+	  <geom ref="0xfffff8006c468800"/>
+	  <mode>r0w0e0</mode>
+	  <name>gptid/183ca874-bdfa-11f0-aa8e-0cc47a7478d3</name>
+	  <mediasize>4294967296</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>70867046400</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>4294967296</length>
+	    <seclength>8388608</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff800749c3100">
+      <class ref="0xffffffff81ab6d80"/>
+      <name>ada1p7</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff801184fd080">
+	  <geom ref="0xfffff800749c3100"/>
+	  <provider ref="0xfffff80105768d00"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff800b3ed4d00">
+	  <geom ref="0xfffff800749c3100"/>
+	  <mode>r0w0e0</mode>
+	  <name>ufsid/69117eb6ea957b5f</name>
+	  <mediasize>53687091200</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>75162013696</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>53687091200</length>
+	    <seclength>104857600</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff8009bd9ae00">
+      <class ref="0xffffffff81ab6d80"/>
+      <name>ada1p7</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff8001dddc800">
+	  <geom ref="0xfffff8009bd9ae00"/>
+	  <provider ref="0xfffff80105768d00"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff8005ed05600">
+	  <geom ref="0xfffff8009bd9ae00"/>
+	  <mode>r0w0e0</mode>
+	  <name>gptid/1843f527-bdfa-11f0-aa8e-0cc47a7478d3</name>
+	  <mediasize>53687091200</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>75162013696</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>53687091200</length>
+	    <seclength>104857600</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff80129b81300">
+      <class ref="0xffffffff81ab6d80"/>
+      <name>ada1p8</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff8004996dc80">
+	  <geom ref="0xfffff80129b81300"/>
+	  <provider ref="0xfffff800746afb00"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff8008e2f4900">
+	  <geom ref="0xfffff80129b81300"/>
+	  <mode>r0w0e0</mode>
+	  <name>ufsid/69117eb696a113b3</name>
+	  <mediasize>21474836480</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>128849104896</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>21474836480</length>
+	    <seclength>41943040</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff8009bd9a000">
+      <class ref="0xffffffff81ab6d80"/>
+      <name>ada1p8</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff80122169380">
+	  <geom ref="0xfffff8009bd9a000"/>
+	  <provider ref="0xfffff800746afb00"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff8009231b000">
+	  <geom ref="0xfffff8009bd9a000"/>
+	  <mode>r0w0e0</mode>
+	  <name>gptid/184e4580-bdfa-11f0-aa8e-0cc47a7478d3</name>
+	  <mediasize>21474836480</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>128849104896</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>21474836480</length>
+	    <seclength>41943040</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff800acc57300">
+      <class ref="0xffffffff81ab6d80"/>
+      <name>ada1p2</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff8006ad28d00">
+	  <geom ref="0xfffff800acc57300"/>
+	  <provider ref="0xfffff800785b6700"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff800cd1e2a00">
+	  <geom ref="0xfffff800acc57300"/>
+	  <mode>r0w0e0</mode>
+	  <name>ufsid/69117eb57c933db7</name>
+	  <mediasize>2147483648</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>86016</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>2147483648</length>
+	    <seclength>4194304</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff8009bd9aa00">
+      <class ref="0xffffffff81ab6d80"/>
+      <name>ada1p2</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff80041301780">
+	  <geom ref="0xfffff8009bd9aa00"/>
+	  <provider ref="0xfffff800785b6700"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff800667e6500">
+	  <geom ref="0xfffff8009bd9aa00"/>
+	  <mode>r0w0e0</mode>
+	  <name>gptid/180ff94d-bdfa-11f0-aa8e-0cc47a7478d3</name>
+	  <mediasize>2147483648</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>86016</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>2147483648</length>
+	    <seclength>4194304</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff800c9c93100">
+      <class ref="0xffffffff81ab6d80"/>
+      <name>ada1p3</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff8010bcc0b80">
+	  <geom ref="0xfffff800c9c93100"/>
+	  <provider ref="0xfffff800c9ffb100"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff8007c7f8400">
+	  <geom ref="0xfffff800c9c93100"/>
+	  <mode>r0w0e0</mode>
+	  <name>gptid/18195283-bdfa-11f0-aa8e-0cc47a7478d3</name>
+	  <mediasize>8589934592</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>2147569664</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>8589934592</length>
+	    <seclength>16777216</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff800b0565400">
+      <class ref="0xffffffff81ab6d80"/>
+      <name>ada1p1</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff800064b7780">
+	  <geom ref="0xfffff800b0565400"/>
+	  <provider ref="0xfffff800ca705500"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff8000b4df900">
+	  <geom ref="0xfffff800b0565400"/>
+	  <mode>r0w0e0</mode>
+	  <name>gptid/17f4ad11-bdfa-11f0-aa8e-0cc47a7478d3</name>
+	  <mediasize>65536</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>20480</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>65536</length>
+	    <seclength>128</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff80003931600">
+      <class ref="0xffffffff81ab6d80"/>
+      <name>ada0p1</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff80003952e80">
+	  <geom ref="0xfffff80003931600"/>
+	  <provider ref="0xfffff80003646300"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff80003931500">
+	  <geom ref="0xfffff80003931600"/>
+	  <mode>r0w0e0</mode>
+	  <name>gptid/670cdd55-c9a1-11e5-8b04-0cc47a7478d3</name>
+	  <mediasize>524288</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>17408</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>524288</length>
+	    <seclength>1024</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+  </class>
+  <class id="0xffffffff81ab6b58">
+    <name>VFS</name>
+    <geom id="0xfffff80082b1a300">
+      <class ref="0xffffffff81ab6b58"/>
+      <name>ffs.ada1p9</name>
+      <rank>3</rank>
+	<consumer id="0xfffff8003474fd00">
+	  <geom ref="0xfffff80082b1a300"/>
+	  <provider ref="0xfffff80038778800"/>
+	  <mode>r1w1e1</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff800063de200">
+      <class ref="0xffffffff81ab6b58"/>
+      <name>ffs.ada0p9</name>
+      <rank>3</rank>
+	<consumer id="0xfffff80006605a80">
+	  <geom ref="0xfffff800063de200"/>
+	  <provider ref="0xfffff80003647200"/>
+	  <mode>r1w1e1</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff8000656cd00">
+      <class ref="0xffffffff81ab6b58"/>
+      <name>ffs.ada0p8</name>
+      <rank>3</rank>
+	<consumer id="0xfffff80006605b00">
+	  <geom ref="0xfffff8000656cd00"/>
+	  <provider ref="0xfffff80003647400"/>
+	  <mode>r1w1e1</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff8000656b800">
+      <class ref="0xffffffff81ab6b58"/>
+      <name>ffs.ada0p7</name>
+      <rank>3</rank>
+	<consumer id="0xfffff80006605b80">
+	  <geom ref="0xfffff8000656b800"/>
+	  <provider ref="0xfffff80003647600"/>
+	  <mode>r1w1e1</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff8000656a300">
+      <class ref="0xffffffff81ab6b58"/>
+      <name>ffs.ada0p6</name>
+      <rank>3</rank>
+	<consumer id="0xfffff80006605c00">
+	  <geom ref="0xfffff8000656a300"/>
+	  <provider ref="0xfffff80003647800"/>
+	  <mode>r1w1e1</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80006684800">
+      <class ref="0xffffffff81ab6b58"/>
+      <name>ffs.ada0p5</name>
+      <rank>3</rank>
+	<consumer id="0xfffff80006604000">
+	  <geom ref="0xfffff80006684800"/>
+	  <provider ref="0xfffff80003647a00"/>
+	  <mode>r1w1e1</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80003932600">
+      <class ref="0xffffffff81ab6b58"/>
+      <name>ffs.ada0p4</name>
+      <rank>3</rank>
+	<consumer id="0xfffff800064b7480">
+	  <geom ref="0xfffff80003932600"/>
+	  <provider ref="0xfffff80003647c00"/>
+	  <mode>r1w1e1</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80006616800">
+      <class ref="0xffffffff81ab6b58"/>
+      <name>ffs.ada0p2</name>
+      <rank>3</rank>
+	<consumer id="0xfffff80006604180">
+	  <geom ref="0xfffff80006616800"/>
+	  <provider ref="0xfffff80003646100"/>
+	  <mode>r1w1e1</mode>
+	</consumer>
+    </geom>
+  </class>
+  <class id="0xffffffff81ab61a0">
+    <name>Flashmap</name>
+  </class>
+  <class id="0xffffffff81ab5f38">
+    <name>DISK</name>
+    <geom id="0xfffff800035c0a00">
+      <class ref="0xffffffff81ab5f38"/>
+      <name>ada1</name>
+      <rank>1</rank>
+      <config>
+      </config>
+	<provider id="0xfffff80003931800">
+	  <geom ref="0xfffff800035c0a00"/>
+	  <mode>r1w1e2</mode>
+	  <name>ada1</name>
+	  <mediasize>1000204886016</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>0</stripeoffset>
+	  <config>
+	    <fwheads>16</fwheads>
+	    <fwsectors>63</fwsectors>
+	    <rotationrate>7200</rotationrate>
+	    <ident>WRF021GF</ident>
+	    <lunid>5000c500d57275fc</lunid>
+	    <descr>ST1000NM000A-2J3100</descr>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff800063de800">
+      <class ref="0xffffffff81ab5f38"/>
+      <name>ada0</name>
+      <rank>1</rank>
+      <config>
+      </config>
+	<provider id="0xfffff800063de700">
+	  <geom ref="0xfffff800063de800"/>
+	  <mode>r8w8e15</mode>
+	  <name>ada0</name>
+	  <mediasize>1000204886016</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>0</stripeoffset>
+	  <config>
+	    <fwheads>16</fwheads>
+	    <fwsectors>63</fwsectors>
+	    <rotationrate>7200</rotationrate>
+	    <ident>Z1W4RM6J</ident>
+	    <lunid>5000c500877b2270</lunid>
+	    <descr>ST1000NM0033-9ZM173</descr>
+	  </config>
+	</provider>
+    </geom>
+  </class>
+  <class id="0xffffffff81ab5c00">
+    <name>DEV</name>
+    <geom id="0xfffff8000f984c00">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ufsid/69117eb5fa86c6e9</name>
+      <rank>4</rank>
+	<consumer id="0xfffff8011ad71d00">
+	  <geom ref="0xfffff8000f984c00"/>
+	  <provider ref="0xfffff8008d572a00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff8003262c700">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>gptid/182275bc-bdfa-11f0-aa8e-0cc47a7478d3</name>
+      <rank>4</rank>
+	<consumer id="0xfffff8000d643180">
+	  <geom ref="0xfffff8003262c700"/>
+	  <provider ref="0xfffff80068710100"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff800884aac00">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ufsid/69117eb5501a6f09</name>
+      <rank>4</rank>
+	<consumer id="0xfffff8006d216080">
+	  <geom ref="0xfffff800884aac00"/>
+	  <provider ref="0xfffff80071829800"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff8001982e200">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>gptid/1831b8f1-bdfa-11f0-aa8e-0cc47a7478d3</name>
+      <rank>4</rank>
+	<consumer id="0xfffff8009a512e80">
+	  <geom ref="0xfffff8001982e200"/>
+	  <provider ref="0xfffff80073ebaa00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff8012c1a8a00">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ufsid/69117eb6c63aaff1</name>
+      <rank>4</rank>
+	<consumer id="0xfffff80018df1b80">
+	  <geom ref="0xfffff8012c1a8a00"/>
+	  <provider ref="0xfffff80059549b00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80047e43300">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>gptid/183ca874-bdfa-11f0-aa8e-0cc47a7478d3</name>
+      <rank>4</rank>
+	<consumer id="0xfffff800392a0e80">
+	  <geom ref="0xfffff80047e43300"/>
+	  <provider ref="0xfffff80041e09000"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80096d94d00">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ufsid/69117eb6ea957b5f</name>
+      <rank>4</rank>
+	<consumer id="0xfffff800801fc500">
+	  <geom ref="0xfffff80096d94d00"/>
+	  <provider ref="0xfffff800b3ed4d00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff8001982e500">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>gptid/1843f527-bdfa-11f0-aa8e-0cc47a7478d3</name>
+      <rank>4</rank>
+	<consumer id="0xfffff800ad834380">
+	  <geom ref="0xfffff8001982e500"/>
+	  <provider ref="0xfffff8005ed05600"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80045ba2400">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ufsid/69117eb696a113b3</name>
+      <rank>4</rank>
+	<consumer id="0xfffff80077380200">
+	  <geom ref="0xfffff80045ba2400"/>
+	  <provider ref="0xfffff8008e2f4900"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80057cd0200">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>gptid/184e4580-bdfa-11f0-aa8e-0cc47a7478d3</name>
+      <rank>4</rank>
+	<consumer id="0xfffff8007e796600">
+	  <geom ref="0xfffff80057cd0200"/>
+	  <provider ref="0xfffff8009231b000"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80072164000">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ufsid/69117eb57c933db7</name>
+      <rank>4</rank>
+	<consumer id="0xfffff80107d71400">
+	  <geom ref="0xfffff80072164000"/>
+	  <provider ref="0xfffff800cd1e2a00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff8005bd3ee00">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>gptid/180ff94d-bdfa-11f0-aa8e-0cc47a7478d3</name>
+      <rank>4</rank>
+	<consumer id="0xfffff8012b193800">
+	  <geom ref="0xfffff8005bd3ee00"/>
+	  <provider ref="0xfffff800667e6500"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80016064400">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada1p9</name>
+      <rank>3</rank>
+	<consumer id="0xfffff80083f75380">
+	  <geom ref="0xfffff80016064400"/>
+	  <provider ref="0xfffff80038778800"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff800c61c9a00">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada1p8</name>
+      <rank>3</rank>
+	<consumer id="0xfffff800737f3600">
+	  <geom ref="0xfffff800c61c9a00"/>
+	  <provider ref="0xfffff800746afb00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff8002d66c700">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada1p7</name>
+      <rank>3</rank>
+	<consumer id="0xfffff8009983d780">
+	  <geom ref="0xfffff8002d66c700"/>
+	  <provider ref="0xfffff80105768d00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff800ca705300">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada1p6</name>
+      <rank>3</rank>
+	<consumer id="0xfffff8007b7b7780">
+	  <geom ref="0xfffff800ca705300"/>
+	  <provider ref="0xfffff80128426100"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff8004757d900">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada1p5</name>
+      <rank>3</rank>
+	<consumer id="0xfffff800542e8100">
+	  <geom ref="0xfffff8004757d900"/>
+	  <provider ref="0xfffff8006fc5b100"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80030b2ee00">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada1p4</name>
+      <rank>3</rank>
+	<consumer id="0xfffff8012176f380">
+	  <geom ref="0xfffff80030b2ee00"/>
+	  <provider ref="0xfffff80087379c00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff800385e5b00">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>gptid/18195283-bdfa-11f0-aa8e-0cc47a7478d3</name>
+      <rank>4</rank>
+	<consumer id="0xfffff80111a56380">
+	  <geom ref="0xfffff800385e5b00"/>
+	  <provider ref="0xfffff8007c7f8400"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80068a6f000">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada1p3</name>
+      <rank>3</rank>
+	<consumer id="0xfffff8002059a780">
+	  <geom ref="0xfffff80068a6f000"/>
+	  <provider ref="0xfffff800c9ffb100"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80068a2fa00">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada1p2</name>
+      <rank>3</rank>
+	<consumer id="0xfffff8000fe61300">
+	  <geom ref="0xfffff80068a2fa00"/>
+	  <provider ref="0xfffff800785b6700"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff8012a972c00">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>gptid/17f4ad11-bdfa-11f0-aa8e-0cc47a7478d3</name>
+      <rank>4</rank>
+	<consumer id="0xfffff8009d963800">
+	  <geom ref="0xfffff8012a972c00"/>
+	  <provider ref="0xfffff8000b4df900"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80032e4ec00">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada1p1</name>
+      <rank>3</rank>
+	<consumer id="0xfffff80093089d80">
+	  <geom ref="0xfffff80032e4ec00"/>
+	  <provider ref="0xfffff800ca705500"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80003931700">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>gptid/670cdd55-c9a1-11e5-8b04-0cc47a7478d3</name>
+      <rank>4</rank>
+	<consumer id="0xfffff8000362da00">
+	  <geom ref="0xfffff80003931700"/>
+	  <provider ref="0xfffff80003931500"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff8000651be00">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada1</name>
+      <rank>2</rank>
+	<consumer id="0xfffff8000362db00">
+	  <geom ref="0xfffff8000651be00"/>
+	  <provider ref="0xfffff80003931800"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80003647300">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada0p9</name>
+      <rank>3</rank>
+	<consumer id="0xfffff80003952080">
+	  <geom ref="0xfffff80003647300"/>
+	  <provider ref="0xfffff80003647200"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80003647500">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada0p8</name>
+      <rank>3</rank>
+	<consumer id="0xfffff80003952280">
+	  <geom ref="0xfffff80003647500"/>
+	  <provider ref="0xfffff80003647400"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80003647700">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada0p7</name>
+      <rank>3</rank>
+	<consumer id="0xfffff80003952480">
+	  <geom ref="0xfffff80003647700"/>
+	  <provider ref="0xfffff80003647600"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80003647900">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada0p6</name>
+      <rank>3</rank>
+	<consumer id="0xfffff800064b6d00">
+	  <geom ref="0xfffff80003647900"/>
+	  <provider ref="0xfffff80003647800"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80003647b00">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada0p5</name>
+      <rank>3</rank>
+	<consumer id="0xfffff80003952680">
+	  <geom ref="0xfffff80003647b00"/>
+	  <provider ref="0xfffff80003647a00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80003647d00">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada0p4</name>
+      <rank>3</rank>
+	<consumer id="0xfffff80003952880">
+	  <geom ref="0xfffff80003647d00"/>
+	  <provider ref="0xfffff80003647c00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80003646000">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada0p3</name>
+      <rank>3</rank>
+	<consumer id="0xfffff80003952a80">
+	  <geom ref="0xfffff80003646000"/>
+	  <provider ref="0xfffff80003647e00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80003646200">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada0p2</name>
+      <rank>3</rank>
+	<consumer id="0xfffff80003952c00">
+	  <geom ref="0xfffff80003646200"/>
+	  <provider ref="0xfffff80003646100"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff800063dd100">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada0p1</name>
+      <rank>3</rank>
+	<consumer id="0xfffff80003952e00">
+	  <geom ref="0xfffff800063dd100"/>
+	  <provider ref="0xfffff80003646300"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff800035c0b00">
+      <class ref="0xffffffff81ab5c00"/>
+      <name>ada0</name>
+      <rank>2</rank>
+	<consumer id="0xfffff80003951200">
+	  <geom ref="0xfffff800035c0b00"/>
+	  <provider ref="0xfffff800063de700"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+  </class>
+  <class id="0xffffffff81a3d490">
+    <name>MD</name>
+  </class>
+</mesh>
+
