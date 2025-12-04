@@ -139,6 +139,10 @@ sub _getScreensFromWindows {
         next unless $object->{PNPDeviceID};
         next unless $object->{Availability} == 3;
 
+        # Ignore "Surface Display" type which is not a connecter monitor and may
+        # expose a wrong serialnumber
+        next if $object->{MonitorType} && $object->{MonitorType} =~ /^Surface Display$/i;
+
         push @screens, {
             id           => $object->{PNPDeviceID},
             NAME         => $object->{Caption},

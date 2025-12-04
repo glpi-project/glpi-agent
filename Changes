@@ -33,6 +33,7 @@ inventory:
 * fix #1023: Improve iLO ip address resolution on Windows
 * Fix additional content merged into json even when not required on partial content
 * Update support for Acer S240L monitors inventory
+* Don't inventory Surface Display as monitor on windows
 
 remoteinventory:
 * fix RedHat RHN systemid set as WINPRODID
