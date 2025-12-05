@@ -229,7 +229,7 @@ You can import the .json file in your inventory server with the glpi-injector to
 F<glpi-esx> creates inventory of remote ESX/ESXi and vCenter VMware.
 It uses the SOAP interface of the remote server.
 
-Supported systems:
+Supported systems start from:
 
 =over 4
 

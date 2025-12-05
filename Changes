@@ -69,6 +69,10 @@ netdiscovery/netinventory:
 * Add support for Telco Systems T-Mark devices
 * Add support for Nokia devices
 
+esx:
+* Update glpi-esx man page to explain supported ESX/vCenter versions are indeed
+  the first versions we support and not the only ones
+
 injector:
 * Add support for --ca-cert-file and --ssl-fingerprint options
 * PR #1051: Add support for --ssl-key-file option
