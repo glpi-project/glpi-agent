@@ -857,14 +857,14 @@ sub _priv_password
       '(?:(?:cfb)?128-?)?aes(?:-?128)?',        PRIV_PROTOCOL_AESCFB128,
       quotemeta PRIV_PROTOCOL_AESCFB128,        PRIV_PROTOCOL_AESCFB128,
       quotemeta PRIV_PROTOCOL_DRAFT_AESCFB128,  PRIV_PROTOCOL_AESCFB128,
-      '(?:(?:cfb)?192-?)aes(?:-?128)?',         PRIV_PROTOCOL_DRAFT_AESCFB192,
+      '(?:(?:cfb)?192-?)aes(?:-?192)?',         PRIV_PROTOCOL_DRAFT_AESCFB192,
       quotemeta PRIV_PROTOCOL_DRAFT_AESCFB192,  PRIV_PROTOCOL_DRAFT_AESCFB192,
-      '(?:(?:cfb)?256-?)aes(?:-?128)?',         PRIV_PROTOCOL_DRAFT_AESCFB256,
+      '(?:(?:cfb)?256-?)aes(?:-?256)?',         PRIV_PROTOCOL_DRAFT_AESCFB256,
       quotemeta PRIV_PROTOCOL_DRAFT_AESCFB256,  PRIV_PROTOCOL_DRAFT_AESCFB256,
       quotemeta PRIV_PROTOCOL_AESCFB192_CISCO,  PRIV_PROTOCOL_AESCFB192_CISCO,
       quotemeta PRIV_PROTOCOL_AESCFB256_CISCO,  PRIV_PROTOCOL_AESCFB256_CISCO,
-      'aes192c', PRIV_PROTOCOL_AESCFB192_CISCO,
-      'aes256c', PRIV_PROTOCOL_AESCFB256_CISCO,
+      'aes192c',                                PRIV_PROTOCOL_AESCFB192_CISCO,
+      'aes256c',                                PRIV_PROTOCOL_AESCFB256_CISCO,
    };
 
    sub _priv_protocol
