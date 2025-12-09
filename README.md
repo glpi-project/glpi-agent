@@ -145,9 +145,18 @@ Tools:
 * Usb.ids
 * SysObject.ids: [sysobject.ids](https://github.com/glpi-project/sysobject.ids)
 
-## Related contribs
+## Forking/Contributors
 
 See [CONTRIB](CONTRIB.md) to find references to GLPI Agent related scritps/files
+
+We would like to ask you few things in the context of a fork:
+1. Do not change/remove the LICENSE file
+2. Do not change/remove any lines in the [Changes](Changes) file that do not relate to your own code.
+   This is really important to keep the changelog coherent between forks and will facilitate
+   your life if you need to follow our own changes.
+
+Don't hesitate to add any entry in [Changes](Changes) or [CONTRIB](CONTRIB.md) to describe the
+purpose of your changes.
 
 ## Contacts
 
@@ -179,6 +188,8 @@ Copyright 2011-2021 [Teclib Editions](https://www.teclib-edition.com/)
 
 This software is licensed under the terms of GPLv2+, see LICENSE file for
 details.
+
+When forking, please, don't delete this file.
 
 ## Additional pieces of software
 
