@@ -139,9 +139,13 @@ sub _getScreensFromWindows {
         next unless $object->{PNPDeviceID};
         next unless $object->{Availability} == 3;
 
-        # Ignore "Surface Display" type which is not a connecter monitor and may
-        # expose a wrong serialnumber
-        next if $object->{MonitorType} && $object->{MonitorType} =~ /^Surface Display$/i;
+        # We have to ignore "Surface Display" type which is not a connected
+        # external monitor and expose a wrong serialnumber
+        if ($object->{MonitorType} && $object->{MonitorType} =~ /^Surface Display$/i) {
+            # We also have to filter out the related WMIMonitorConnectionParams object
+            @screens = grep { $_->{id} =~ /^$object->{PNPDeviceID}$/i } @screens;
+            next;
+        }
 
         push @screens, {
             id           => $object->{PNPDeviceID},
