@@ -1,11 +1,15 @@
 Windows specific command and file samples
 
 wmi: wmi queries results
-- *-CIM_LogicalDevice: wmic path CIM_LogicalDevice get /Format:list
+- *-CIM_LogicalDevice:
+   wmic /Output:CIM_LogicalDevice.wmi Path CIM_LogicalDevice Get /Format:list
 - all instances of class Win32_NetworkAdapter :
-   wmic /OUTPUT:C:\networkAdapters_7.wmi Path Win32_NetworkAdapter Get /FORMAT:list
+   wmic /Output:Win32_NetworkAdapter.wmi Path Win32_NetworkAdapter Get /Format:list
 - all instances of class Win32_NetworkAdapterConfiguration :
-   wmic /OUTPUT:C:\networkAdapterConfigurations_7.wmi Path Win32_NetworkAdapterConfiguration Get /FORMAT:list
+   wmic /Output:Win32_NetworkAdapterConfiguration.wmi Path Win32_NetworkAdapterConfiguration Get /Format:list
+- all instances of class WMIMonitorConnectionParams and Win32_DesktopMonitor used for monitors inventory:
+   wmic /Output:WMIMonitorConnectionParams.wmi /namespace:\\root\wmi Path WMIMonitorConnectionParams Get /Format:list
+   wmic /Output:Win32_DesktopMonitor.wmi Path Win32_DesktopMonitor Get /Format:list
 
 registry: registry exports
 
