@@ -73,6 +73,7 @@ netdiscovery/netinventory:
 * Add support for Telco Systems T-Mark devices
 * Add support for Nokia devices
 * Add used scan ip in device ip list if missing
+* Add D-Link devices support
 
 esx:
 * Update glpi-esx man page to explain supported ESX/vCenter versions are indeed
