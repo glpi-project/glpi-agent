@@ -344,6 +344,13 @@ sub _getDevice {
     # Find ip
     $device->setIp();
 
+    # Always add requested ip in IPS IP list if none was set
+    my $ip_address = qr/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/;
+    my $ip = $params{snmp}->peer_address();
+    unless (!$ip || $ip !~ $ip_address || (ref($device->{IPS}) eq "HASH" && ref($device->{IPS}->{IP}) eq "ARRAY" && first { $_ eq $ip } @{$device->{IPS}->{IP}})) {
+        push @{$device->{IPS}->{IP}}, $ip;
+    }
+
     return $device;
 }
 

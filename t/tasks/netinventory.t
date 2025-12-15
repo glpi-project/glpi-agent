@@ -155,6 +155,9 @@ my %responses = (
     <DEVICE>
       <INFO>
         <ID>86</ID>
+        <IPS>
+          <IP>10.0.0.1</IP>
+        </IPS>
         <LOCATION>datacenter</LOCATION>
         <NAME>oyapock CR2</NAME>
         <TYPE>NETWORKING</TYPE>
@@ -214,6 +217,9 @@ my %responses = (
       <INFO>
         <COMMENTS>RICOH Aficio MP 171 1.00.1 / RICOH Network Printer C model / RICOH Network Scanner C model / RICOH Network Facsimile C model</COMMENTS>
         <ID>84</ID>
+        <IPS>
+          <IP>10.0.0.2</IP>
+        </IPS>
         <LOCATION>C0172</LOCATION>
         <MANUFACTURER>Ricoh</MANUFACTURER>
         <NAME>Aficio MP 171</NAME>
@@ -372,6 +378,9 @@ my %responses = (
     <DEVICE>
       <INFO>
         <ID>86</ID>
+        <IPS>
+          <IP>10.0.0.1</IP>
+        </IPS>
         <LOCATION>datacenter</LOCATION>
         <NAME>oyapock CR2</NAME>
         <TYPE>NETWORKING</TYPE>
@@ -391,6 +400,9 @@ my %responses = (
       <INFO>
         <COMMENTS>RICOH Aficio MP 171 1.00.1 / RICOH Network Printer C model / RICOH Network Scanner C model / RICOH Network Facsimile C model</COMMENTS>
         <ID>84</ID>
+        <IPS>
+          <IP>10.0.0.2</IP>
+        </IPS>
         <LOCATION>C0172</LOCATION>
         <MANUFACTURER>Ricoh</MANUFACTURER>
         <NAME>Aficio MP 171</NAME>
@@ -411,6 +423,9 @@ my %responses = (
       <INFO>
         <COMMENTS>EPSON Built-in 10Base-T/100Base-TX Print Server</COMMENTS>
         <ID>84</ID>
+        <IPS>
+          <IP>10.0.10.1</IP>
+        </IPS>
         <MANUFACTURER>Epson</MANUFACTURER>
         <NAME>AL-CX11-CF9D9F</NAME>
         <TYPE>NETWORKING</TYPE>

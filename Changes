@@ -70,6 +70,7 @@ netdiscovery/netinventory:
 * Add Fortinet module to report passive element of a HA stack
 * Add support for Telco Systems T-Mark devices
 * Add support for Nokia devices
+* Add used scan ip in device ip list if missing
 
 esx:
 * Update glpi-esx man page to explain supported ESX/vCenter versions are indeed

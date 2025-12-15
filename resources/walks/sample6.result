@@ -4,6 +4,9 @@
     <DEVICE>
       <INFO>
         <ID>0</ID>
+        <IPS>
+          <IP>127.0.0.1</IP>
+        </IPS>
         <MEMORY>1</MEMORY>
         <RAM>8161</RAM>
       </INFO>
