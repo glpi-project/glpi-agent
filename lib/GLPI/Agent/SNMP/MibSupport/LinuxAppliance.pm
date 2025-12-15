@@ -6,7 +6,7 @@ use warnings;
 use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 
 use GLPI::Agent::Tools;
-use GLPI::Agent::Tools::Hardware;
+use GLPI::Agent::SNMP::Hardware;
 use GLPI::Agent::Tools::SNMP;
 
 use constant    iso         => '.1.3.6.1.2.1';

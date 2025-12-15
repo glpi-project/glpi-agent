@@ -411,7 +411,7 @@ use constant _file_feature_match => { qw(
 )};
 
 use constant _feature_rematch => {
-    feat_NETINV     => qr/^perl\\agent\\glpi\\agent\\(snmp|task\\net|tools\\hardware|tools\\snmp)/i,
+    feat_NETINV     => qr/^perl\\agent\\glpi\\agent\\(snmp|task\\net|tools\\snmp|http\\server\\toolbox)/i,
     feat_DEPLOY     => qr/^perl\\agent\\glpi\\agent\\(task\\deploy|tools\\archive)/i,
     feat_COLLECT    => qr/^perl\\agent\\glpi\\agent\\task\\collect/i,
     feat_ESX        => qr/^perl\\agent\\glpi\\agent\\(soap\\vmware|task\\esx)/i,

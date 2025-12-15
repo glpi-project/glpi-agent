@@ -8,7 +8,7 @@ use Test::More;
 
 use GLPI::Agent::SNMP::Device;
 use GLPI::Agent::SNMP::Mock;
-use GLPI::Agent::Tools::Hardware;
+use GLPI::Agent::SNMP::Hardware;
 use GLPI::Agent::Tools::SNMP;
 
 my @mac_tests = (
@@ -290,7 +290,7 @@ foreach my $test (@cdp_info_extraction_tests) {
         snmp => GLPI::Agent::SNMP::Mock->new(hash => $test->[0])
     );
 
-    my $cdp_info = GLPI::Agent::Tools::Hardware::_getCDPInfo(
+    my $cdp_info = GLPI::Agent::SNMP::Hardware::_getCDPInfo(
         device => $device,
     );
 
@@ -306,7 +306,7 @@ foreach my $test (@mac_addresses_extraction_tests) {
         snmp => GLPI::Agent::SNMP::Mock->new(hash => $test->[0])
     );
 
-    my $mac_addresses = GLPI::Agent::Tools::Hardware::_getKnownMacAddresses(
+    my $mac_addresses = GLPI::Agent::SNMP::Hardware::_getKnownMacAddresses(
         device         => $device,
         address2port   => '.1.3.6.1.2.1.17.4.3.1.2',
         port2interface => '.1.3.6.1.2.1.17.1.4.1.2',
@@ -324,7 +324,7 @@ foreach my $test (@mac_addresses_addition_tests) {
         snmp => GLPI::Agent::SNMP::Mock->new(hash => $test->[0])
     );
 
-    GLPI::Agent::Tools::Hardware::_setKnownMacAddresses(
+    GLPI::Agent::SNMP::Hardware::_setKnownMacAddresses(
         device => $device,
         ports  => $test->[1],
     );
@@ -341,7 +341,7 @@ foreach my $test (@trunk_ports_extraction_tests) {
         snmp => GLPI::Agent::SNMP::Mock->new(hash => $test->[0])
     );
 
-    my $trunk_ports = GLPI::Agent::Tools::Hardware::_getTrunkPorts(
+    my $trunk_ports = GLPI::Agent::SNMP::Hardware::_getTrunkPorts(
         device => $device,
     );
 
@@ -354,27 +354,27 @@ foreach my $test (@trunk_ports_extraction_tests) {
 
 my $oid = '0.1.2.3.4.5.6.7.8.9';
 is(
-    GLPI::Agent::Tools::Hardware::_getElement($oid, 0),
+    GLPI::Agent::SNMP::Hardware::_getElement($oid, 0),
     0,
     'index 0'
 );
 is(
-    GLPI::Agent::Tools::Hardware::_getElement($oid, -1),
+    GLPI::Agent::SNMP::Hardware::_getElement($oid, -1),
     9,
     'index -1'
 );
 is(
-    GLPI::Agent::Tools::Hardware::_getElement($oid, -2),
+    GLPI::Agent::SNMP::Hardware::_getElement($oid, -2),
     8,
     'index -2'
 );
 cmp_deeply(
-    [ GLPI::Agent::Tools::Hardware::_getElements($oid, 0, 3) ],
+    [ GLPI::Agent::SNMP::Hardware::_getElements($oid, 0, 3) ],
     [ qw/0 1 2 3/ ],
     'getElements with index 0 to 3'
 );
 cmp_deeply(
-    [ GLPI::Agent::Tools::Hardware::_getElements($oid, -4, -1) ],
+    [ GLPI::Agent::SNMP::Hardware::_getElements($oid, -4, -1) ],
     [ qw/6 7 8 9/ ],
     'getElements with index -4 to -1'
 );

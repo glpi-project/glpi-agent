@@ -1,4 +1,4 @@
-package GLPI::Agent::Tools::Hardware;
+package GLPI::Agent::SNMP::Hardware;
 
 use strict;
 use warnings;
@@ -1896,7 +1896,7 @@ __END__
 
 =head1 NAME
 
-GLPI::Agent::Tools::Hardware - Hardware-related functions
+GLPI::Agent::SNMP::Hardware - Hardware-related functions
 
 =head1 DESCRIPTION
 

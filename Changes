@@ -12,6 +12,8 @@ core:
   authentication via ssl client certificate. This option permit to specify a
   dedicated file for private key and avoid to have to merge it into file defined
   by ssl-cert-file option.
+* Move GLPI::Agent::Tools::Hardware as GLPI::Agent::SNMP::Hardware to regroup
+  SNMP dedicated code and simplify packaging
 
 inventory:
 * PR #931: Added DrWeb & Karpersky Endpoint for Linux antivirus support on linux

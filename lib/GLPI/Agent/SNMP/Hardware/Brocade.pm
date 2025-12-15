@@ -1,4 +1,4 @@
-package GLPI::Agent::Tools::Hardware::Brocade;
+package GLPI::Agent::SNMP::Hardware::Brocade;
 
 use strict;
 use warnings;
@@ -66,7 +66,7 @@ sub getConnectedWWNs {
         $wwn = getCanonicalMacAddress($wwn);
         next unless $wwn;
 
-        my $idx = GLPI::Agent::Tools::Hardware::_getElement($suffix, 1);
+        my $idx = GLPI::Agent::SNMP::Hardware::_getElement($suffix, 1);
         next unless $idx;
 
         push @{$results->{$idx}}, $wwn;
@@ -80,7 +80,7 @@ __END__
 
 =head1 NAME
 
-GLPI::Agent::Tools::Hardware::Brocade - Inventory module for Brocade fibre channel switches
+GLPI::Agent::SNMP::Hardware::Brocade - Inventory module for Brocade fibre channel switches
 
 =head1 DESCRIPTION
 

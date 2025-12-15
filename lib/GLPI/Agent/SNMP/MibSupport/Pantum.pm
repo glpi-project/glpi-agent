@@ -61,7 +61,7 @@ sub run {
     # Consumable level: most manufacturers reports trees under .1.3.6.1.2.1.43.11.1.1.x.1 oids
     # where Pantum manufacturer decided to use directly each oids when they are using only one consumable
 
-    # Same as in GLPI::Agent::Tools::Hardware
+    # Same as in GLPI::Agent::SNMP::Hardware
     my %consumable_types = (
          3 => 'TONER',
          4 => 'WASTETONER',

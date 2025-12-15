@@ -13,7 +13,7 @@ use File::Path qw(mkpath);
 
 use GLPI::Agent::Version;
 use GLPI::Agent::Tools;
-use GLPI::Agent::Tools::Hardware;
+use GLPI::Agent::SNMP::Hardware;
 use GLPI::Agent::Tools::Network;
 use GLPI::Agent::Tools::Expiration;
 use GLPI::Agent::HTTP::Client::OCS;

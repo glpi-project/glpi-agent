@@ -323,7 +323,6 @@ fi
 %{_datadir}/%{name}/lib/GLPI/Agent/Task/NetInventory*
 %{_datadir}/%{name}/lib/GLPI/Agent/Tools/SNMP.pm
 %{_datadir}/%{name}/lib/GLPI/Agent/SNMP*
-%{_datadir}/%{name}/lib/GLPI/Agent/Tools/Hardware*
 %{_datadir}/%{name}/lib/GLPI/Agent/HTTP/Server/ToolBox*
 %{_datadir}/%{name}/html/toolbox
 

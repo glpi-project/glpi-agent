@@ -29,6 +29,6 @@ all_vars_ok(
         '$clientIp' => 1, # GLPI::Agent::HTTP::Server
         '$num'      => 1, # Task::Inventory::Input::Solaris::Networks
         '$i'        => 1, # GLPI::Agent::Tools::Solaris
-        '$type'     => 1, # GLPI::Agent::Tools::Hardware
+        '$type'     => 1, # GLPI::Agent::SNMP::Hardware
     }
 );

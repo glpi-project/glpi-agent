@@ -1,4 +1,4 @@
-package GLPI::Agent::Tools::Hardware::Qlogic;
+package GLPI::Agent::SNMP::Hardware::Qlogic;
 
 use strict;
 use warnings;
@@ -94,7 +94,7 @@ sub getConnectedWWNs {
         $wwn = getCanonicalMacAddress($wwn);
         next unless $wwn;
 
-        my $idx = GLPI::Agent::Tools::Hardware::_getElement($suffix, 0);
+        my $idx = GLPI::Agent::SNMP::Hardware::_getElement($suffix, 0);
         next unless $idx;
 
         push @{$results->{$idx}}, $wwn;
@@ -121,7 +121,7 @@ __END__
 
 =head1 NAME
 
-GLPI::Agent::Tools::Hardware::Qlogic - Inventory module for Qlogic fibre channel switches
+GLPI::Agent::SNMP::Hardware::Qlogic - Inventory module for Qlogic fibre channel switches
 
 =head1 DESCRIPTION
 
