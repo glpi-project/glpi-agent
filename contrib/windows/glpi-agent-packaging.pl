@@ -385,27 +385,11 @@ use Data::Dump            qw(pp);
 use Template;
 
 use constant _dir_id_match => { qw(
-    perl            d_perl
-    perl\bin        d_perl_bin
-    var             d_var
-    logs            d_logs
-    etc             d_etc
-    perl\agent\glpi\agent\task\netinventory  d_netinventory_task
-    perl\agent\glpi\agent\task\netdiscovery  d_netinv_discovery_task
-    perl\agent\glpi\agent\snmp               d_netinv_snmp
-    perl\agent\glpi\agent\snmp\device        d_netinv_device
-    perl\agent\glpi\agent\snmp\mibsupport    d_netinv_mibsupport
-    perl\agent\glpi\agent\tools\hardware     d_netinv_hardware
-    perl\agent\glpi\agent\task\deploy        d_deploy
-    perl\agent\glpi\agent\task\deploy\actionprocessor        d_deploy_ap
-    perl\agent\glpi\agent\task\deploy\actionprocessor\action d_deploy_action
-    perl\agent\glpi\agent\task\deploy\checkprocessor         d_deploy_cp
-    perl\agent\glpi\agent\task\deploy\datastore              d_deploy_ds
-    perl\agent\glpi\agent\task\deploy\usercheck              d_deploy_uc
-    perl\agent\glpi\agent\task\collect       d_collect
-    perl\agent\glpi\agent\task\esx           d_esx_task
-    perl\agent\glpi\agent\soap\vmware        d_esx_vmware
-    perl\agent\glpi\agent\task\wakeonlan     d_wol
+    perl                                                     d_perl
+    perl\bin                                                 d_perl_bin
+    var                                                      d_var
+    logs                                                     d_logs
+    etc                                                      d_etc
 )};
 
 use constant _file_feature_match => { qw(
@@ -415,27 +399,24 @@ use constant _file_feature_match => { qw(
     glpi-netinventory.bat                                   feat_NETINV
     perl\bin\glpi-netdiscovery                              feat_NETINV
     perl\bin\glpi-netinventory                              feat_NETINV
-    perl\agent\GLPI\Agent\Task\NetInventory.pm   feat_NETINV
-    perl\agent\GLPI\Agent\Task\NetDiscovery.pm   feat_NETINV
-    perl\agent\GLPI\Agent\Tools\Hardware.pm      feat_NETINV
-    perl\agent\GLPI\Agent\Tools\SNMP.pm          feat_NETINV
-    perl\agent\GLPI\Agent\SNMP.pm                feat_NETINV
 
-    perl\agent\GLPI\Agent\Task\Deploy.pm         feat_DEPLOY
-    perl\agent\GLPI\Agent\Tools\Archive.pm       feat_DEPLOY
     perl\bin\7z.exe                                         feat_DEPLOY
     perl\bin\7z.dll                                         feat_DEPLOY
 
-    perl\agent\GLPI\Agent\Task\Collect.pm        feat_COLLECT
-
     glpi-esx.bat                                            feat_ESX
     perl\bin\glpi-esx                                       feat_ESX
-    perl\agent\GLPI\Agent\Task\ESX.pm            feat_ESX
 
     glpi-wakeonlan.bat                                      feat_WOL
     perl\bin\glpi-wakeonlan                                 feat_WOL
-    perl\agent\GLPI\Agent\Task\WakeOnLan.pm      feat_WOL
 )};
+
+use constant _feature_rematch => {
+    feat_NETINV     => qr/^perl\\agent\\glpi\\agent\\(snmp|task\\net|tools\\hardware|tools\\snmp)/i,
+    feat_DEPLOY     => qr/^perl\\agent\\glpi\\agent\\(task\\deploy|tools\\archive)/i,
+    feat_COLLECT    => qr/^perl\\agent\\glpi\\agent\\task\\collect/i,
+    feat_ESX        => qr/^perl\\agent\\glpi\\agent\\(soap\\vmware|task\\esx)/i,
+    feat_WOL        => qr/^perl\\agent\\glpi\\agent\\task\\wakeonlan/i,
+};
 
 sub run {
     my $self = shift;
@@ -531,24 +512,6 @@ sub run {
 
 }
 
-sub _get_dir_feature {
-    my ($self, $dir_id) = @_;
-
-    if ($dir_id =~ /^d_netinv/) {
-        return "feat_NETINV";
-    } elsif ($dir_id =~ /^d_deploy/) {
-        return "feat_DEPLOY";
-    } elsif ($dir_id =~ /^d_collect/) {
-        return "feat_COLLECT";
-    } elsif ($dir_id =~ /^d_esx/) {
-        return "feat_ESX";
-    } elsif ($dir_id =~ /^d_wol/) {
-        return "feat_WOL";
-    }
-
-    return "feat_MSI";
-}
-
 sub _tree2xml {
     my ($self, $root, $mark, $not_root) = @_;
 
@@ -575,7 +538,13 @@ sub _tree2xml {
         # put KeyPath to the component as Directory does not have KeyPath attribute
         # if a Component has KeyPath="yes", then the directory this component is installed to becomes a key path
         # see: http://stackoverflow.com/questions/10358989/wix-using-keypath-on-components-directories-files-registry-etc-etc
-        $feat = $self->_get_dir_feature($dir_id);
+
+        # Fix directory feature
+        my $image_dir = canonpath($self->global->{image_dir});
+        (my $short_name = canonpath($root->{short_name})) =~ s/^\Q$image_dir\E[\\]*//;
+        my ($this_feat) = grep { $short_name =~ _feature_rematch->{$_} } keys(%{&_feature_rematch});
+        $feat = $this_feat if defined($this_feat);
+
         $result .= $ident ."  ". qq[<Component Id="$component_id" Guid="{$component_guid}" KeyPath="yes" Feature="$feat">\n];
         if ($dir_id eq 'd_install') {
             $result .= $ident ."    ". qq[  <CreateFolder>\n];
@@ -605,8 +574,12 @@ sub _tree2xml {
             my $file_basename = basename($f->{full_name});
             my $file_shortname = $self->_get_short_basename($f->{full_name});
             ($component_id, $component_guid) = $self->_gen_component_id($file_shortname."files");
-            # Get specific file feature or take the one from the parent folder or even the default one
-            my $this_feat = _file_feature_match->{$f->{short_name}} || $feat;
+            # Eventually fix file feature
+            my $this_feat = _file_feature_match->{$f->{short_name}};
+            unless ($this_feat) {
+                ($this_feat) = grep { $f->{short_name} =~ _feature_rematch->{$_} } keys(%{&_feature_rematch});
+                $this_feat = $feat unless $this_feat;
+            }
             my $vital = $this_feat eq "feat_AGENT" ? ' Vital="yes"' : "";
             # in 1file/component scenario set KeyPath on file, not on Component
             # see: http://stackoverflow.com/questions/10358989/wix-using-keypath-on-components-directories-files-registry-etc-etc
