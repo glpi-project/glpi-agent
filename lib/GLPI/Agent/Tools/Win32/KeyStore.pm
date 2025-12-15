@@ -89,40 +89,54 @@ sub getKeyStore {
             $count++;
             my $certName = " " x 256;
             my $length = CertGetNameStringA($pPrev, CERT_NAME_SIMPLE_DISPLAY_TYPE, 0, 0, $certName, 256);
-            if ($length) {
-                $certName = trimWhitespace($certName);
-                $logger->debug(_log_prefix."$store-$count: Importing $certName")
-                    if $logger;
-            }
+            # Buffer includes null char at the end, skip on empty certificate name
+            next unless $length > 1;
+            $certName = trimWhitespace(substr($certName, 0, $length-1));
             my $buffer = Win32::API::ReadMemory($pPrev, 3*16);
             if (empty($buffer)) {
-                $logger->debug(_log_prefix."Failed to copy CERT_CONTEXT ($count)")
+                $logger->debug(_log_prefix."Failed to copy CERT_CONTEXT ($count) for '$certName' certificate")
                     if $logger;
                 next;
             }
             my ($dwCertEncodingType, $pbCertEncoded, $cbCertEncoded) = unpack("Q*", $buffer);
             next unless $dwCertEncodingType && $dwCertEncodingType == X509_ASN_ENCODING;
             unless ($pbCertEncoded && $cbCertEncoded) {
-                $logger->debug(_log_prefix."Got wrong CERT_CONTEXT copy ($count)")
+                $logger->debug(_log_prefix."Got wrong CERT_CONTEXT copy ($count) for '$certName' certificate")
                     if $logger;
                 next;
             }
             my $certbuffer = Win32::API::ReadMemory($pbCertEncoded, $cbCertEncoded);
             if (empty($certbuffer)) {
-                $logger->debug(_log_prefix."Failed to copy certificate content ($count)")
+                $logger->debug(_log_prefix."Failed to copy '$certName' certificate content ($count)")
                     if $logger;
                 next;
             }
             my $bio = Net::SSLeay::BIO_new(Net::SSLeay::BIO_s_mem());
             my $rv = Net::SSLeay::BIO_write($bio, $certbuffer);
             unless ($rv == $cbCertEncoded) {
-                $logger->debug(_log_prefix."Failed to import certificate content ($count)")
+                $logger->debug(_log_prefix."Failed to import '$certName' certificate content ($count)")
                     if $logger;
-                Net::SSLeay::BIO_free($bio) if $rv > 0;
+                Net::SSLeay::BIO_free($bio);
                 next;
             }
+
             my $cert = Net::SSLeay::d2i_X509_bio($bio);
             Net::SSLeay::BIO_free($bio);
+             # On error, just skip it and log errors for diagnostic if required
+            unless ($cert) {
+               # Drop all errors before continuing to next Net::SSLeay call will fail
+                while (my $rv = Net::SSLeay::ERR_get_error()) {
+                    $logger->debug2(_log_prefix."Failed to import '$certName' certificate content: ".Net::SSLeay::ERR_error_string($rv))
+                        if $logger;
+                }
+                $logger->debug(_log_prefix."$store-$count: '$certName' certificate skipped on import error")
+                    if $logger;
+                next;
+            }
+
+            $logger->debug(_log_prefix."$store-$count: Importing '$certName'")
+                if $logger;
+
             push @certs, $cert;
         }
 
