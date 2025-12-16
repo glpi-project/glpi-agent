@@ -5,8 +5,6 @@ use warnings;
 
 use parent 'GLPI::Agent::Task';
 
-use constant DEVICE_PER_MESSAGE => 4;
-
 use English qw(-no_match_vars);
 use Time::localtime;
 use Time::HiRes qw(usleep);
