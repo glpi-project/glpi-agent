@@ -88,6 +88,9 @@ injector:
 toolbox:
 * fix log output when following a running task
 
+collect:
+* Refacto to modularize collect functions
+
 packaging:
 * Update Windows packaging to use:
   - Perl 5.42.0 built using Perl::Dist::StrawBerry perl library processing

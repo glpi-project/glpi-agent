@@ -4,11 +4,9 @@ use strict;
 use warnings;
 use parent 'GLPI::Agent::Task';
 
-use Digest::SHA;
 use English qw(-no_match_vars);
-use File::Basename;
-use File::Find;
-use File::stat;
+use File::Glob;
+use UNIVERSAL::require;
 
 use GLPI::Agent;
 use GLPI::Agent::Logger;
@@ -16,47 +14,33 @@ use GLPI::Agent::Tools;
 use GLPI::Agent::HTTP::Client::Fusion;
 
 use GLPI::Agent::Task::Collect::Version;
+use GLPI::Agent::Task::Collect::Common;
 
 our $VERSION = GLPI::Agent::Task::Collect::Version::VERSION;
 
-my %functions = (
-    getFromRegistry => \&_getFromRegistry,
-    findFile        => \&_findFile,
-# As decided by developers team, the runCommand function is disabled for the moment.
-#    runCommand      => \&_runCommand,
-    getFromWMI      => \&_getFromWMI
-);
+my %modules;
+my %json_validation;
 
-# How to validate JSON for retreived jobs
-sub _OPTIONAL  { 0 }
-sub _MANDATORY { 1 }
-sub _OPTIONAL_EXCLUSIVE { 2 }
-my %json_validation = (
-    getFromRegistry => {
-        path   => _MANDATORY
-    },
-    findFile => {
-        dir       => _MANDATORY,
-        limit     => _MANDATORY,
-        recursive => _MANDATORY,
-        filter    => {
-            regex          => _OPTIONAL,
-            sizeEquals     => _OPTIONAL,
-            sizeGreater    => _OPTIONAL,
-            sizeLower      => _OPTIONAL,
-            checkSumSHA512 => _OPTIONAL,
-            checkSumSHA2   => _OPTIONAL,
-            name           => _OPTIONAL,
-            iname          => _OPTIONAL,
-            is_file        => _MANDATORY,
-            is_dir         => _MANDATORY
-        }
-    },
-    getFromWMI => {
-        class      => _MANDATORY,
-        properties => _MANDATORY
+unless (keys(%modules)) {
+    my ($_classpath) = $INC{module2file(__PACKAGE__)} =~ /^(.*)\.pm$/;
+    $_classpath =~ s{\\}{/}g if $OSNAME eq 'MSWin32';
+    my ($_modulepath) = module2file(__PACKAGE__) =~ /^(.*)\.pm$/;
+    $_modulepath =~ s{\\}{/}g if $OSNAME eq 'MSWin32';
+    my $subclass_path_re = qr/$_modulepath\/(\S+)\.pm$/;
+    foreach my $file (File::Glob::bsd_glob("$_classpath/*.pm")) {
+        $file =~ s{\\}{/}g if $OSNAME eq 'MSWin32';
+        my ($class) = $file =~ $subclass_path_re
+            or next;
+        next if $class eq "Version" or $class eq "Common";
+        my $module = __PACKAGE__ . "::" . $class;
+        $module->require()
+            or next;
+        next if $module->disabled;
+        next unless $module->function;
+        $modules{$module->function} = $module;
+        $json_validation{$module->function} = $module->json_validation;
     }
-);
+}
 
 sub isEnabled {
     my ($self) = @_;
@@ -64,86 +48,6 @@ sub isEnabled {
     unless ($self->{target}->isType('server')) {
         $self->{logger}->debug("Collect task only compatible with server target");
         return;
-    }
-
-    return 1;
-}
-
-sub _validateSpec {
-    my ($self, $base, $key, $spec) = @_;
-
-    if (ref($spec) eq 'HASH') {
-        if (!exists($base->{$key})) {
-            $self->{logger}->debug("$key mandatory values are missing in job");
-            return 0;
-        }
-        $self->{logger}->debug2("$key mandatory values are present in job");
-        foreach my $attribute (keys(%{$spec})) {
-            return 0 unless $self->_validateSpec($base->{$key}, $attribute, $spec->{$attribute});
-        }
-        return 1;
-    }
-
-    if ($spec == _MANDATORY) {
-        if (!exists($base->{$key})) {
-            $self->{logger}->debug("$key mandatory value is missing in job");
-            return 0;
-        }
-        $self->{logger}->debug2("$key mandatory value is present in job");
-        return 1;
-    }
-
-    if ($spec == _OPTIONAL && exists($base->{$key})) {
-        $self->{logger}->debug2("$key optional value is present in job");
-    }
-
-    1;
-}
-
-sub _validateAnswer {
-    my ($self, $answer) = @_;
-
-    if (!defined($answer)) {
-        $self->{logger}->debug("Bad JSON: No answer from server.");
-        return 0;
-    }
-
-    if (ref($answer) ne 'HASH') {
-        $self->{logger}->debug("Bad JSON: Bad answer from server. Not a hash reference.");
-        return 0;
-    }
-
-    if (!defined($answer->{jobs}) || ref($answer->{jobs}) ne 'ARRAY') {
-        $self->{logger}->debug("Bad JSON: Missing jobs");
-        return 0;
-    }
-
-    foreach my $job (@{$answer->{jobs}}) {
-
-        foreach (qw/uuid function/) {
-            if (!defined($job->{$_})) {
-                $self->{logger}->debug("Bad JSON: Missing key '$_' in job");
-                return 0;
-            }
-        }
-
-        my $function = $job->{function};
-        if (!exists($functions{$function})) {
-            $self->{logger}->debug("Bad JSON: not supported 'function' key value in job");
-            return 0;
-        }
-
-        if (!exists($json_validation{$function})) {
-            $self->{logger}->debug("Bad JSON: Can't validate job");
-            return 0;
-        }
-
-        foreach my $attribute (keys(%{$json_validation{$function}})) {
-            if (!$self->_validateSpec( $job, $attribute, $json_validation{$function}->{$attribute} )) {
-                $self->{logger}->debug("Bad JSON: '$function' job JSON format is not valid");
-                return 0;
-            }
-        }
     }
 
     return 1;
@@ -223,7 +127,12 @@ sub _processRemote {
         return;
     }
 
-    return unless $self->_validateAnswer($answer);
+    my $check = GLPI::Agent::Task::Collect::Common->new(logger => $self->{logger});
+    return unless $check->validateAnswer(
+        answer          => $answer,
+        modules         => \%modules,
+        json_validation => \%json_validation,
+    );
 
     my @jobs = @{$answer->{jobs}}
         or die "no jobs provided, aborting";
@@ -245,21 +154,24 @@ JOB:
 
         $self->{logger}->debug2("Collect job has uuid: ".$job->{uuid});
 
-        if ( !$job->{function} ) {
+        my $function = $job->{function};
+        unless ($function) {
             $self->{logger}->error("function key missing");
             next;
         }
 
-        if ( !defined( $functions{ $job->{function} } ) ) {
-            $self->{logger}->error("Bad function '$job->{function}'");
+        unless (defined($modules{$function})) {
+             $self->{logger}->error("Bad function '$function'");
             next;
         }
 
-        my @results = &{ $functions{ $job->{function} } }(
+        my $module = $modules{$function};
+        my $collect = $module->new(
             logger  => $self->{logger},
-            %{$job}
+            job     => $job
         );
 
+        my @results = $collect->results();
         my $count = int(@results);
 
         # Add an empty hash ref so send an answer with _cpt=0
@@ -329,211 +241,6 @@ JOB:
     }
 
     return $self;
-}
-
-sub _encodeRegistryValueForCollect {
-    my ($value, $type) = @_ ;
-
-    # Dump REG_BINARY/REG_RESOURCE_LIST/REG_FULL_RESOURCE_DESCRIPTOR as hex strings
-    if (defined($type) && ($type == 3 || $type >= 8)) {
-        $value = join(" ", map { sprintf "%02x", ord } split(//, $value));
-    }
-
-    return $value;
-}
-
-my @RegistryType = qw/REG_NONE  REG_SZ  REG_EXPAND_SZ   REG_BINARY  REG_DWORD
-    REG_DWORD_BIG_ENDIAN    REG_LINK    REG_MULTI_SZ    REG_RESOURCE_LIST
-    REG_FULL_RESOURCE_DESCRIPTOR    REG_RESOURCE_REQUIREMENTS_LIST  REG_QWORD
-/;
-
-sub _getFromRegistry {
-    my %params = @_;
-
-    return unless GLPI::Agent::Tools::Win32->require();
-
-    $params{logger}->debug("Looking for '$params{path}' registry key...")
-        if $params{logger};
-
-    # Here we need to retrieve values with their type, getRegistryValue API
-    # has been modify to support withtype flag as param
-    my $values = GLPI::Agent::Tools::Win32::getRegistryValue(
-        path     => $params{path},
-        withtype => 1
-    );
-
-    return unless $values;
-
-    my $result = {};
-    if (ref($values) eq 'HASH') {
-        foreach my $k (keys %$values) {
-            # Skip sub keys
-            next if ($k =~ m|/$|);
-            my ($value, $type) = @{$values->{$k}};
-            $result->{$k} = _encodeRegistryValueForCollect($value, $type);
-            $params{logger}->debug2("Found $RegistryType[$type] value: ".$result->{$k})
-                if $params{logger};
-        }
-    } else {
-        my ($k) = $params{path} =~ m|([^/]+)$| ;
-        my ($value,$type) = @{$values};
-        if (ref($value) eq 'ARRAY') {
-            my @values = map { _encodeRegistryValueForCollect($_) } @{$value};
-            $result->{$k} = join(",", @values);
-            map { $params{logger}->debug2("Found $RegistryType[$type] value: $_") } @{$value}
-                if $params{logger};
-        } else {
-            $result->{$k} = _encodeRegistryValueForCollect($value,$type);
-            $params{logger}->debug2("Found $RegistryType[$type] value: ".$result->{$k})
-                if $params{logger};
-        }
-    }
-
-    return ($result);
-}
-
-sub _findFile {
-    my %params = (
-        dir     => '/',
-        limit   => 50,
-        @_
-    );
-
-    return unless -d $params{dir};
-
-    $params{logger}->debug("Looking for file under '$params{dir}' folder")
-        if $params{logger};
-
-    my @results;
-
-    File::Find::find(
-        {
-            wanted => sub {
-                if (!$params{recursive} && $File::Find::name ne $params{dir}) {
-                    $File::Find::prune = 1  # Don't recurse.
-                }
-
-                if (   $params{filter}{is_dir}
-                    && !$params{filter}{checkSumSHA512}
-                    && !$params{filter}{checkSumSHA2} )
-                {
-                    return unless -d $File::Find::name;
-                }
-
-                if ( $params{filter}{is_file} ) {
-                    return unless -f $File::Find::name;
-                }
-
-                my $filename = basename($File::Find::name);
-
-                if ( $params{filter}{name} ) {
-                    return if $filename ne $params{filter}{name};
-                }
-
-                if ( $params{filter}{iname} ) {
-                    return if lc($filename) ne lc( $params{filter}{iname} );
-                }
-
-                if ( $params{filter}{regex} ) {
-                    my $re = qr($params{filter}{regex});
-                    return unless $File::Find::name =~ $re;
-                }
-
-                my $st   = stat($File::Find::name);
-                my $size = $st->size;
-                if ( $params{filter}{sizeEquals} ) {
-                    return unless $size == $params{filter}{sizeEquals};
-                }
-
-                if ( $params{filter}{sizeGreater} ) {
-                    return if $size < $params{filter}{sizeGreater};
-                }
-
-                if ( $params{filter}{sizeLower} ) {
-                    return if $size > $params{filter}{sizeLower};
-                }
-
-                if ( $params{filter}{checkSumSHA512} ) {
-                    my $sha = Digest::SHA->new('512');
-                    $sha->addfile( $File::Find::name, 'b' );
-                    return
-                        if $sha->hexdigest ne lc($params{filter}{checkSumSHA512});
-                }
-
-                # checkSumSHA2 is an historic feature and was indeed sha256 at the time of this code original writing
-                my $expectedSha256 = $params{filter}{checkSumSHA256} || $params{filter}{checkSumSHA2};
-                if (!empty($expectedSha256)) {
-                    my $sha = Digest::SHA->new('256');
-                    $sha->addfile( $File::Find::name, 'b' );
-                    return
-                        if $sha->hexdigest ne lc($expectedSha256);
-                }
-
-                $params{logger}->debug2("Found file: ".$File::Find::name)
-                    if $params{logger};
-
-                push @results, {
-                    size => $size,
-                    path => $File::Find::name
-                };
-                goto DONE if @results >= $params{limit};
-            },
-            no_chdir => 1
-
-        },
-        $params{dir}
-    );
-    DONE:
-
-    return @results;
-}
-
-sub _runCommand {
-    my %params = @_;
-
-    my $line;
-
-    if ( $params{filter}{firstMatch} ) {
-        $line = getFirstMatch(
-            command => $params{command},
-            pattern => $params{filter}{firstMatch}
-        );
-    }
-    elsif ( $params{filter}{firstLine} ) {
-        $line = getFirstLine( command => $params{command} );
-
-    }
-    elsif ( $params{filter}{lineCount} ) {
-        $line = getLinesCount( command => $params{command} );
-    }
-    else {
-        $line = getAllLines( command => $params{command} );
-
-    }
-
-    return ( { output => $line } );
-}
-
-sub _getFromWMI {
-    my %params = @_;
-
-    return unless GLPI::Agent::Tools::Win32->require();
-
-    return unless $params{properties};
-    return unless $params{class};
-
-    # Split given properties if possible
-    $params{properties} = [ split(/[, ]+/, $params{properties}[0]) ]
-        if $params{properties}[0] =~ /[, ]/;
-
-    my @results;
-
-    my @objects = GLPI::Agent::Tools::Win32::getWMIObjects(%params);
-    foreach my $object (@objects) {
-        push @results, $object;
-    }
-
-    return @results;
 }
 
 1;
