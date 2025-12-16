@@ -74,6 +74,8 @@ netdiscovery/netinventory:
 * Add support for Nokia devices
 * Add used scan ip in device ip list if missing
 * Add D-Link devices support
+* Fix glpi-netdiscovery and glpi-netinventory scripts to support semicolon or comma
+  in SNMP v3 password
 
 esx:
 * Update glpi-esx man page to explain supported ESX/vCenter versions are indeed

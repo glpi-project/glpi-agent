@@ -132,10 +132,38 @@ if ($options->{v1} || $options->{v2c}) {
 if ($options->{community}) {
     $credentials->{COMMUNITY} = $options->{community};
 } elsif (defined $options->{credentials}) {
-    foreach my $parameter (split(',', $options->{credentials})) {
-        my ($key, $value) = split(':', $parameter);
+    my $specification = $options->{credentials};
+    while (!empty($specification)) {
+        my ($key, $remaining) = $specification =~ /^(\w+):(.*)$/;
+        # Handle wrong key definition skipping to next option
+        if (empty($key)) {
+            my ($wrong) = $specification =~ /^([^,]+)/;
+            print STDERR "Skipping malformed credentials definition: $wrong\n"
+                unless empty($wrong);
+            $specification =~ s/^[^,]+//;
+            $specification =~ s/^,+//;
+            next;
+        }
+        if (empty($remaining)) {
+            $credentials->{uc($key)} = "";
+            last;
+        }
+        # Use remaining string as value unless it contains another definition
+        # It also means value can contain comma or semi-colon while this can't
+        # be understood as a new credentials value definition
+        # Here .*? means it is greedy for $value other than .* for $next
+        my ($value, $next) = $remaining =~ /^(.*?)(,\w+:.*)$/;
+        if (empty($next)) {
+            $value = $remaining;
+            undef $specification;
+        } else {
+            $specification = $next;
+            $specification =~ s/^,//;
+        }
         $credentials->{uc($key)} = $value;
     }
+    die "Invalid credentials definition\n"
+        unless $credentials->{VERSION} && ($credentials->{COMMUNITY} || $credentials->{USERNAME});
 } else {
     $credentials->{COMMUNITY} = 'public';
 }

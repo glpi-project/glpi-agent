@@ -13,6 +13,7 @@ use Pod::Usage;
 use GLPI::Agent::Target::Local;
 use GLPI::Agent::Task::NetDiscovery;
 use GLPI::Agent::Task::NetDiscovery::Job;
+use GLPI::Agent::Tools;
 use GLPI::Agent::Config;
 use GLPI::Agent::Logger;
 use GLPI::Agent::Version;
@@ -107,12 +108,40 @@ if ($options->{community}) {
 } elsif ($options->{credentials}) {
     foreach my $specification (@{$options->{credentials}}) {
         my $credential = { ID => $credentials_id++ };
-        foreach my $parameter (split(',', $specification)) {
-            my ($key, $value) = split(':', $parameter);
+        while (!empty($specification)) {
+            my ($key, $remaining) = $specification =~ /^(\w+):(.*)$/;
+            # Handle wrong key definition skipping to next option
+            if (empty($key)) {
+                my ($wrong) = $specification =~ /^([^,]+)/;
+                print STDERR "Skipping malformed credentials definition: $wrong\n"
+                    unless empty($wrong);
+                $specification =~ s/^[^,]+//;
+                $specification =~ s/^,+//;
+                next;
+            }
+            if (empty($remaining)) {
+                $credential->{uc($key)} = "";
+                last;
+            }
+            # Use remaining string as value unless it contains another definition
+            # It also means value can contain comma or semi-colon while this can't
+            # be understood as a new credentials value definition
+            # Here .*? means it is greedy for $value other than .* for $next
+            my ($value, $next) = $remaining =~ /^(.*?)(,\w+:.*)$/;
+            if (empty($next)) {
+                $value = $remaining;
+                undef $specification;
+            } else {
+                $specification = $next;
+                $specification =~ s/^,//;
+            }
             $credential->{uc($key)} = $value;
         }
-        push @credentials, $credential;
+        push @credentials, $credential
+            if keys(%{$credential}) > 1;
     }
+    die "No valid credentials defined\n"
+        unless @credentials && grep { $_->{VERSION} && ($_->{COMMUNITY} || $_->{USERNAME}) } @credentials;
 } else {
     push @credentials, {
         ID        => $credentials_id++,
