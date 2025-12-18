@@ -19,6 +19,7 @@ Documentation=man:glpi-agent
 After=syslog.target network.target
 
 [Service]
+Environment="OPTIONS="
 ExecStart=/usr/bin/glpi-agent --daemon --no-fork $OPTIONS
 ExecReload=/bin/kill -HUP $MAINPID
 CapabilityBoundingSet=~CAP_SYS_PTRACE
