@@ -609,28 +609,31 @@ sub _setGenericProperties {
             $highspeed_value * 1000 * 1000 : $speed_value;
     }
 
+    my $ips     = $device->walk('.1.3.6.1.2.1.4.20.1.1');
     my $results = $device->walk('.1.3.6.1.2.1.4.20.1.2');
     # each result matches the following scheme:
-    # $prefix.$i.$j.$k.$l = $value
-    # with $i.$j.$k.$l as IP address, and $value as port id
+    # $prefix.$i.$j.$k.$l(.$m) = $value
+    # with $i.$j.$k.$l as IP address, $m could also be used and $value as port id
     foreach my $suffix (sort keys %{$results}) {
+        my $ip = $ips->{$suffix} || $suffix;
+        if (!$ip || $ip !~ /^$ip_address_pattern$/) {
+            $logger->debug("invalid IP address for $suffix suffix".($ip ? ": $ip" : "")) if $logger;
+            next;
+        }
         my $value = $results->{$suffix};
-        next unless $value;
+        next if empty($value);
         # value must match IFNUMBER
         my $portindex = first { defined($ports->{$_}->{IFNUMBER}) && $ports->{$_}->{IFNUMBER} eq $value } keys(%{$ports});
         # safety checks
         unless ($portindex) {
             $logger->debug(
-                "unknown interface $value for IP address $suffix, ignoring"
+                "unknown interface $value for IP address $ip, ignoring"
             ) if $logger;
             next;
         }
-        if ($suffix !~ /^$ip_address_pattern$/) {
-            $logger->debug("invalid IP address $suffix") if $logger;
-            next;
-        }
-        $ports->{$portindex}->{IP} = $suffix;
-        push @{$ports->{$portindex}->{IPS}->{IP}}, $suffix;
+        $ports->{$portindex}->{IP} = $ip;
+        next if $ports->{$portindex}->{IPS}->{IP} && grep { $_ eq $ip } @{$ports->{$portindex}->{IPS}->{IP}};
+        push @{$ports->{$portindex}->{IPS}->{IP}}, $ip;
     }
 
     # Try IP-MIB when no IP was found
@@ -644,8 +647,9 @@ sub _setGenericProperties {
                 my ($type, $len, @data) = split(/[.]/, $key);
                 next unless $type && $len && (($type == 1 && $len == 4) || ($type == 2 && $len == 16));
                 if ($type == 1) {
-                    my $ipv4 = join(".", @data);
-                    $port->{IP} = $ipv4 unless $port->{IP} && $port->{IP} =~ /^(?:\d+)(?:\.\d+){3}$/;
+                    my $ipv4 = join(".", @data[0..3]);
+                    $port->{IP} = $ipv4 unless $port->{IP} && $port->{IP} =~ /^$ip_address_pattern$/;
+                    next if $port->{IPS}->{IP} && grep { $_ eq $ipv4 } @{$port->{IPS}->{IP}};
                     push @{$port->{IPS}->{IP}}, $ipv4;
                 } else { # type 2
                     @data = map { sprintf("%x", $data[$_*2]*256+$data[$_*2+1]) } 0..7;
@@ -653,6 +657,7 @@ sub _setGenericProperties {
                     $ipv6 =~ s/::+/::/g;
                     # Keep IPv4 as interface ip if set
                     $port->{IP} = $ipv6 unless $port->{IP};
+                    next if $port->{IPS}->{IP} && grep { $_ eq $ipv6 } @{$port->{IPS}->{IP}};
                     push @{$port->{IPS}->{IP}}, $ipv6;
                 }
             }
