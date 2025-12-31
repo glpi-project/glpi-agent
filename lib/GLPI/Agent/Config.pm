@@ -195,6 +195,7 @@ sub _loadFromRegistry {
         path        => "HKEY_LOCAL_MACHINE/SOFTWARE/$provider-Agent/*",
         withtype    => 1
     );
+    return unless ref($settings) eq 'HASH';
 
     foreach my $rawKey (keys %$settings) {
         my $key = lc($rawKey);
