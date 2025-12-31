@@ -187,25 +187,18 @@ sub _loadDefaults {
 sub _loadFromRegistry {
     my ($self) = @_;
 
-    my $Registry;
     Win32::TieRegistry->require();
-    Win32::TieRegistry->import(
-        Delimiter   => '/',
-        ArrayValues => 0,
-        TiedRef     => \$Registry
-    );
-
-    my $machKey = $Registry->Open('LMachine', {
-        Access => Win32::TieRegistry::KEY_READ()
-    }) or die "Config: Can't open HKEY_LOCAL_MACHINE key: $EXTENDED_OS_ERROR\n";
+    GLPI::Agent::Tools::Win32->require();
 
     my $provider = $GLPI::Agent::Version::PROVIDER;
-    my $settings = $machKey->{"SOFTWARE/$provider-Agent"};
+    my $settings = GLPI::Agent::Tools::Win32::getRegistryValue(
+        path        => "HKEY_LOCAL_MACHINE/SOFTWARE/$provider-Agent/*",
+        withtype    => 1
+    );
 
     foreach my $rawKey (keys %$settings) {
-        next unless $rawKey =~ /^\/(\S+)/;
-        my $key = lc($1);
-        my ($val, $type) = $settings->GetValue($key);
+        my $key = lc($rawKey);
+        my ($val, $type) = @{$settings->{$rawKey}};
 
         if ($type == Win32::TieRegistry::REG_SZ()) {
             $val =~ s/\s+$//;
