@@ -68,7 +68,7 @@ sub _getMachines {
 
         my $machine = {
             NAME      => $info{'displayName'} // $info{'displayname'},
-            VCPU      => $info{'numvcpus'},
+            VCPU      => $info{'numvcpus'} // 1,
             UUID      => $info{'uuid.bios'},
             MEMORY    => $info{'memsize'},
             STATUS    => STATUS_RUNNING,
