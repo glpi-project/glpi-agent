@@ -59,7 +59,7 @@ sub _getMachines {
     # skip first line
     shift @lines;
     
-    my $subsystem = ($^O eq 'MSWin32') ? "VmWare Workstation" : "VmWare Fusion";
+    my $subsystem = (OSNAME eq 'MSWin32') ? "VmWare Workstation" : "VmWare Fusion";
     my @machines;
     foreach my $line (@lines) {
         next unless has_file($line);
