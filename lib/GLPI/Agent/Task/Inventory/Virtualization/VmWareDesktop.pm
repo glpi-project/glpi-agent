@@ -14,7 +14,8 @@ use GLPI::Agent::Tools::Virtualization;
 sub isEnabled {
     return
         canRun('/Library/Application Support/VMware Fusion/vmrun') ||
-        canRun('vmrun');
+        canRun('vmrun') ||
+        canRun('C:\\\\Program Files (x86)\\\\VMware\\\\VMware Workstation\\\\vmrun.exe');
 }
 
 sub doInventory {
@@ -23,8 +24,22 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $command = canRun('vmrun') ?
-        'vmrun list' : "'/Library/Application Support/VMware Fusion/vmrun' list";
+    my $command;
+    
+    if (canRun('vmrun')) {
+        $command = 'vmrun list';
+    }
+    elsif (canRun('/Library/Application Support/VMware Fusion/vmrun')) {
+        $command = "'/Library/Application Support/VMware Fusion/vmrun' list";
+    }
+    elsif (canRun('C:\\\\Program Files (x86)\\\\VMware\\\\VMware Workstation\\\\vmrun.exe')) {
+        # specify Workstation target with -T ws
+        $command = '"C:\\\\Program Files (x86)\\\\VMware\\\\VMware Workstation\\\\vmrun.exe" list';
+    }
+    else {
+        return;
+    }
+
 
     foreach my $machine (_getMachines(
         command => $command, logger => $logger
@@ -43,7 +58,8 @@ sub _getMachines {
 
     # skip first line
     shift @lines;
-
+    
+    my $subsystem = ($^O eq 'MSWin32') ? "VmWare Workstation" : "VmWare Fusion";
     my @machines;
     foreach my $line (@lines) {
         next unless has_file($line);
@@ -51,12 +67,12 @@ sub _getMachines {
         my %info = _getMachineInfo(file => $line, logger => $params{logger});
 
         my $machine = {
-            NAME      => $info{'displayName'},
-            VCPU      => 1,
+            NAME      => $info{'displayname'},
+            VCPU      => $info{'numvcpus'},
             UUID      => $info{'uuid.bios'},
             MEMORY    => $info{'memsize'},
             STATUS    => STATUS_RUNNING,
-            SUBSYSTEM => "VmWare Fusion",
+            SUBSYSTEM => $subsystem,
             VMTYPE    => "VmWare",
         };
 
