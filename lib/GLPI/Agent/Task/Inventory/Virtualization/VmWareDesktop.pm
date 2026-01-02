@@ -67,7 +67,7 @@ sub _getMachines {
         my %info = _getMachineInfo(file => $line, logger => $params{logger});
 
         my $machine = {
-            NAME      => $info{'displayname'},
+            NAME      => $info{'displayName'} // $info{'displayname'},
             VCPU      => $info{'numvcpus'},
             UUID      => $info{'uuid.bios'},
             MEMORY    => $info{'memsize'},
