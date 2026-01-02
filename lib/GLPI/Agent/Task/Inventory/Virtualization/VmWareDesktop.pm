@@ -33,7 +33,6 @@ sub doInventory {
         $command = "'/Library/Application Support/VMware Fusion/vmrun' list";
     }
     elsif (canRun('C:\\\\Program Files (x86)\\\\VMware\\\\VMware Workstation\\\\vmrun.exe')) {
-        # specify Workstation target with -T ws
         $command = '"C:\\\\Program Files (x86)\\\\VMware\\\\VMware Workstation\\\\vmrun.exe" list';
     }
     else {
@@ -74,6 +73,7 @@ sub _getMachines {
             STATUS    => STATUS_RUNNING,
             SUBSYSTEM => $subsystem,
             VMTYPE    => "VmWare",
+            COMMENT   => $info{'annotation'},
         };
 
         push @machines, $machine;
