@@ -15,7 +15,7 @@ sub isEnabled {
     return
         canRun('/Library/Application Support/VMware Fusion/vmrun') ||
         canRun('vmrun') ||
-        canRun('C:\\\\Program Files (x86)\\\\VMware\\\\VMware Workstation\\\\vmrun.exe');
+        canRun('C:/Program Files (x86)/VMware/VMWare Workstation/vmrun.exe');
 }
 
 sub doInventory {
@@ -32,8 +32,8 @@ sub doInventory {
     elsif (canRun('/Library/Application Support/VMware Fusion/vmrun')) {
         $command = "'/Library/Application Support/VMware Fusion/vmrun' list";
     }
-    elsif (canRun('C:\\\\Program Files (x86)\\\\VMware\\\\VMware Workstation\\\\vmrun.exe')) {
-        $command = '"C:\\\\Program Files (x86)\\\\VMware\\\\VMware Workstation\\\\vmrun.exe" list';
+    elsif (canRun('C:/Program Files (x86)/VMware/VMWare Workstation/vmrun.exe')) {
+        $command = "'C:/Program Files (x86)/VMware/VMWare Workstation/vmrun.exe' list";
     }
     else {
         return;
