@@ -2,7 +2,10 @@
 
 use strict;
 use warnings;
+
 use lib 't/lib';
+
+use English qw(-no_match_vars);
 use File::Temp qw(tempdir);
 use UNIVERSAL::require;
 use Config;
@@ -28,6 +31,12 @@ our $TASKVERSION = GLPI::Agent::Task::NetInventory::Version::VERSION;
 
 GLPI::Agent::Task::NetInventory->use();
 GLPI::Agent::Task::NetInventory::Job->use();
+
+# Avoid concurrency issues when testing on windows
+if ($OSNAME eq 'MSWin32') {
+    GLPI::Agent::Tools::Win32->require();
+    GLPI::Agent::Tools::Win32::start_Win32_OLE_Worker();
+}
 
 # Setup a target with a Test logger and debug
 my $logger = GLPI::Agent::Logger->new(

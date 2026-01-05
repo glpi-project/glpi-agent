@@ -5,6 +5,7 @@ use warnings;
 
 use lib 't/lib';
 
+use English qw(-no_match_vars);
 use UNIVERSAL::require;
 use File::Temp qw(tempdir);
 
@@ -20,6 +21,12 @@ use GLPI::Agent::Config;
 use GLPI::Agent::Target;
 
 GLPI::Agent::Task::RemoteInventory->use();
+
+# Avoid concurrency issues when testing on windows
+if ($OSNAME eq 'MSWin32') {
+    GLPI::Agent::Tools::Win32->require();
+    GLPI::Agent::Tools::Win32::start_Win32_OLE_Worker();
+}
 
 my $vardir = tempdir(CLEANUP => 1);
 
