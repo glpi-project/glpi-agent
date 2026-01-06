@@ -216,12 +216,16 @@ if ($options->{credentials}) {
 }
 
 eval {
-    $agent->init(options => $options);
-
     if ($OSNAME eq 'MSWin32' && ! $options->{'no-win32-ole-workaround'}) {
         # From here we may need to avoid crashes due to not thread-safe Win32::OLE
         GLPI::Agent::Tools::Win32->require();
         GLPI::Agent::Tools::Win32::start_Win32_OLE_Worker();
+    }
+
+    $agent->init(options => $options);
+
+    if ($OSNAME eq 'MSWin32' && ! $options->{'no-win32-ole-workaround'}) {
+        # Then start logger worker after agent config has been loaded on MSWin32
         GLPI::Agent::Tools::Win32::setupWorkerLogger(config => $agent->{config});
     }
 
