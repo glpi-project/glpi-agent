@@ -20,11 +20,22 @@ use GLPI::Agent::Protocol::Message;
 
 use constant    _log_prefix => "[http client] ";
 
-# Keep SSL_ca for storing read local certificate store at the class level
-my $_SSL_ca;
+# Renew CA store cache if older than an hour
+use constant    CA_STORE_CACHE_EXPIRATION => 3600;
+
+# Keep flag to check if we still cleaned/read CA certificates
+my $_ca_read = 0;
 
 # Keep Oauth2 access token
 my $oauth2;
+
+my $keyStoreApi;
+
+if ($OSNAME eq "MSWin32") {
+    GLPI::Agent::Tools::Win32::KeyStore->require()
+        or die "Failed to load KeyStore support: $EVAL_ERROR\n";
+    $keyStoreApi = GLPI::Agent::Tools::Win32::KeyStore->new();
+}
 
 sub new {
     my ($class, %params) = @_;
@@ -46,11 +57,6 @@ sub new {
     my $ssl_key_file = $params{ssl_key_file} || $config->{'ssl-key-file'};
     die "non-existing client private key file $ssl_key_file"
         if $ssl_key_file && ! -f $ssl_key_file;
-
-    # We should still keep SSL certs cache if running in long running netdiscovery
-    # or netinventory task with expiration set in a dedicated thread
-    $_SSL_ca->{_expiration} = getExpirationTime()
-        if $_SSL_ca && $_SSL_ca->{_expiration} && getExpirationTime();
 
     my $self = {
         logger          => $params{logger} || GLPI::Agent::Logger->new(),
@@ -108,6 +114,10 @@ sub new {
         $self->{compression} eq 'gzip' ? "application/x-compress-gzip" :
                                          "application/json"
     );
+
+    # Store object uid to be used with keyStoreApi on MSWin32
+    $self->{_uid} = $keyStoreApi->getNewClientUid()
+        if $OSNAME eq "MSWin32";
 
     return $self;
 }
@@ -573,7 +583,7 @@ sub _KeyChain_or_KeyStore_Export {
     my $logger = $self->{logger};
     my $vardir = $self->{_vardir};
     my $basename = $OSNAME eq 'darwin'  ? "keychain" : "keystore";
-    unless (defined($_SSL_ca)) {
+    unless ($_ca_read) {
         # Just clean up file that could have been created by glpi-agent v1.3
         if ($vardir && -d $vardir) {
             my $obsolete = "$vardir/$basename-export.pem";
@@ -585,30 +595,23 @@ sub _KeyChain_or_KeyStore_Export {
     return if $self->{ssl_keystore} && $self->{ssl_keystore} =~ /^none$/i;
 
     # Read certificates are cached for one hour after the service is started
-    return $_SSL_ca->{_certs}
-        if $_SSL_ca->{_expiration} && time < $_SSL_ca->{_expiration};
-
-    IO::Socket::SSL::Utils->require();
-
-    # Free stored certificates
-    IO::Socket::SSL::Utils::CERT_free(@{$_SSL_ca->{_certs}})
-        if ref($_SSL_ca->{_certs}) eq 'ARRAY';
+    return $self->{_CA_certs}
+        if $self->{_CA_expiration} && time < $self->{_CA_expiration};
 
     $logger->debug(
         _log_prefix .
-        ($_SSL_ca ? "Updating" : "Reading") . " $basename known certificates"
+        ($_ca_read++ ? "Updating" : "Reading") . " $basename known certificates"
     );
 
-    my @certs = ();
-    my $loadMozillaCA = 1;
-
-    File::Temp->require();
-    if ($EVAL_ERROR) {
-        $logger->error("Can't load File::Temp to export $basename certificates");
-        return;
-    }
+    my $certs = [];
 
     if ($OSNAME eq 'darwin') {
+        File::Temp->require();
+        if ($EVAL_ERROR) {
+            $logger->error("Can't load File::Temp to export $basename certificates");
+            return;
+        }
+
         my $tmpfile = File::Temp->new(
             TEMPLATE    => "$basename-export-XXXXXX",
             DIR         => $vardir,
@@ -617,53 +620,55 @@ sub _KeyChain_or_KeyStore_Export {
         my $file = $tmpfile->filename;
         my $command = "security find-certificate -a -p";
 
+        IO::Socket::SSL::Utils->require();
+
+        # Free stored certificates
+        IO::Socket::SSL::Utils::CERT_free(@{$self->{_CA_certs}})
+            if ref($self->{_CA_certs}) eq 'ARRAY';
+
         # Support --ssl-keystore=system-ssl-ca option on MacOSX
         if ($self->{ssl_keystore} && $self->{ssl_keystore} =~ /^system-ssl-ca$/i) {
             $command .= " /System/Library/Keychains/SystemRootCertificates.keychain";
-            # In that case, we don't need to load Mozilla::CA
-            $loadMozillaCA = 0;
+        } else {
+            # Or include default CA file from Mozilla::CA
+            Mozilla::CA->require();
+            my $cacert = Mozilla::CA::SSL_ca_file();
+            push @{$certs}, IO::Socket::SSL::Utils::PEM_file2certs($cacert)
+                if -e $cacert;
         }
 
         getAllLines(
              command => "$command > '$file'",
              logger  => $logger
         );
-        @certs = IO::Socket::SSL::Utils::PEM_file2certs($file)
+        push @{$certs}, IO::Socket::SSL::Utils::PEM_file2certs($file)
             if -s $file;
     } else {
-        GLPI::Agent::Tools::Win32::KeyStore->use();
-        if ($EVAL_ERROR) {
-            $logger->debug("Failed to load KeyStore support: $EVAL_ERROR");
-        } else {
-            GLPI::Agent::Tools::Win32::KeyStore->import("getKeyStore");
-            if ($self->{ssl_keystore})  {
-                foreach my $case (split(/,+/, $self->{ssl_keystore})) {
-                    $case = uc(trimWhitespace($case));
-                    if ($case =~ /^(CA|ROOT|TRUST|MY)$/) {
-                        push @certs, getKeyStore(
-                            logger  => $logger,
-                            store   => $case
-                        );
-                    } else {
-                        $logger->debug("Unsupported ssl-keystore option definition: $case");
-                    }
-                }
-            }
-            push @certs, getKeyStore(logger  => $logger)
-                unless @certs;
-        }
-    }
+        Mozilla::CA->require();
 
-    # Always include default CA file from Mozilla::CA
-    if ($loadMozillaCA && Mozilla::CA->require()) {
-        my $cacert = Mozilla::CA::SSL_ca_file();
-        push @certs, IO::Socket::SSL::Utils::PEM_file2certs($cacert)
-            if -e $cacert;
+        $keyStoreApi->loadDefaultCaFile(
+            expiration  => CA_STORE_CACHE_EXPIRATION,
+            file        => Mozilla::CA::SSL_ca_file()
+        );
+
+        $keyStoreApi->loadKeyStore(
+            expiration  => CA_STORE_CACHE_EXPIRATION,
+            store       => $self->{ssl_keystore} // "",
+            logger      => $logger
+        );
+
+        $certs = $keyStoreApi->getCAs();
+
+        # As soon as we are about to store the list of used CA certificates,
+        # we have to lock the KeyStore
+        $keyStoreApi->lockKeyStore($self->{_uid});
     }
 
     # Update class level datas
-    $_SSL_ca->{_expiration} = time + 3600;
-    return $_SSL_ca->{_certs} = \@certs;
+    $self->{_CA_expiration} = time + CA_STORE_CACHE_EXPIRATION;
+    $self->{_CA_certs} = $certs;
+
+    return $certs;
 }
 
 sub compress {
@@ -743,10 +748,11 @@ sub _uncompressGzip {
     return $result;
 }
 
-sub END {
-    # Free eventually stored certificates
-    IO::Socket::SSL::Utils::CERT_free(@{$_SSL_ca->{_certs}})
-        if ref($_SSL_ca->{_certs}) eq 'ARRAY';
+sub DESTROY {
+    my ($self) = @_;
+
+    $keyStoreApi->unlockKeyStore($self->{_uid})
+        if $OSNAME eq 'MSWin32' && $keyStoreApi;
 }
 
 1;
