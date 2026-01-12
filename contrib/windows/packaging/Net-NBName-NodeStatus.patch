@@ -1,0 +1,23 @@
+diff -Naur a/vendor/lib/Net/NBName/NodeStatus.pm b/vendor/lib/Net/NBName/NodeStatus.pm
+--- a/vendor/lib/Net/NBName/NodeStatus.pm	2025-12-30 11:17:20.551072218 +0100
++++ b/vendor/lib/Net/NBName/NodeStatus.pm	2025-12-30 11:19:34.647521033 +0100
+@@ -22,13 +22,18 @@
+         my $num_names = unpack("C", substr($resp, 56));
+         my $name_data = substr($resp, 57);
+ 
++        # Fix num_names if response is still truncated
++        $num_names = int(length($name_data)/18)+1 if $num_names;
++
+         for (my $i = 0; $i < $num_names; $i++) {
+             my $rr_data = substr($name_data, 18*$i, 18);
+             push @rr, Net::NBName::NodeStatus::RR->new($rr_data);
+         }
+ 
++        # Don't try to extract MAC on missing data
+         $mac_address = join "-", map { sprintf "%02X", $_ }
+-            unpack("C*", substr($name_data, 18 * $num_names, 6));
++            unpack("C*", substr($name_data, 18 * $num_names, 6))
++                if length($name_data) >= 18 * $num_names + 6;
+     }
+ 
+     my $self = {'names' => \@rr, 'mac_address' => $mac_address};

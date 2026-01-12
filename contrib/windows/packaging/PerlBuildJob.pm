@@ -281,6 +281,9 @@ sub build_job {
                 { do=>'copydir', args=>[ 'bin', '<image_dir>/perl/bin' ] },
                 { do=>'copydir', args=>[ 'share', '<image_dir>/share' ] },
                 { do=>'copyfile', args=>[ 'contrib/windows/packaging/setup.pm', '<image_dir>/perl/lib' ] },
+                # Fix Net::NBName
+                { do=>'apply_patch', args=>[ 'contrib/windows/packaging/Net-NBName-NodeStatus.patch', '<image_dir>/perl/vendor/lib/Net/NBName/NodeStatus.pm', 1 ] },
+                { do=>'apply_patch', args=>[ 'contrib/windows/packaging/Net-NBName-NodeStatus-RR.patch', '<image_dir>/perl/vendor/lib/Net/NBName/NodeStatus/RR.pm', 1 ] },
             ],
         },
         ### NEXT STEP 14 : Sign MSI ############################################

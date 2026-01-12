@@ -1,0 +1,13 @@
+diff -Naur a/vendor/lib/Net/NBName/NodeStatus/RR.pm b/vendor/lib/Net/NBName/NodeStatus/RR.pm
+--- a/vendor/lib/Net/NBName/NodeStatus/RR.pm	2025-12-30 11:17:49.751169950 +0100
++++ b/vendor/lib/Net/NBName/NodeStatus/RR.pm	2025-12-30 11:19:00.735407529 +0100
+@@ -17,6 +17,9 @@
+     $name =~ tr/\x00-\x19/\./; # replace ctrl chars with "."
+     $name =~ s/\s+//g;
+ 
++    # Keep flags defined to avoid warnings on truncated rr_data
++    $flags = 0 unless defined($flags);
++
+     my $self = {};
+     $self->{'name'} = $name;
+     $self->{'suffix'} = $suffix;
