@@ -751,8 +751,15 @@ sub _uncompressGzip {
 sub DESTROY {
     my ($self) = @_;
 
+    # Unlock KeyStore API on MSWin32 so it can free reserved memory if necessary
     $keyStoreApi->unlockKeyStore($self->{_uid})
         if $OSNAME eq 'MSWin32' && $keyStoreApi;
+
+    # Don't forget to free stored CA certs On MacOSX
+    if ($OSNAME eq 'darwin' && ref($self->{_CA_certs}) eq 'ARRAY') {
+        IO::Socket::SSL::Utils->require();
+        IO::Socket::SSL::Utils::CERT_free(@{$self->{_CA_certs}});
+    }
 }
 
 1;

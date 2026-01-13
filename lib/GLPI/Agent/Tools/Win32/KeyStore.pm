@@ -65,7 +65,6 @@ my %tid    : shared = ();
 
 # Use a semaphore for loading as loading should be done by one thread and
 # other threads should wait until loading is done
-my $loading : shared = 0;
 my $loadingSemaphore = Thread::Semaphore->new();
 
 # Shared configuration
@@ -82,8 +81,6 @@ my %orderedSupportedKeyStore = qw(
     TRUST           3
     MY              4
 );
-
-my $reload = 0;
 
 # Only one instance of this object can be used
 my $sharedApi;
@@ -140,7 +137,7 @@ sub loadKeyStore {
         next unless $store;
 
         if ($certs{$store}) {
-            if (!$reload && $expiration && time < $expiration) {
+            if ($expiration && time < $expiration) {
                 $total += scalar(@{$certs{$store}});
                 next;
             } else {
@@ -235,11 +232,10 @@ sub loadKeyStore {
     $logger->debug(_log_prefix."No certificate found in (@stores) keystores")
         if !$total && $logger && @stores > 1;
 
-    # Update expiration
+    # Now we can update expiration
     $expiration = time + ($params{expiration} // 3600);
 
     # Release any thread which eventually tried to run loading concurrently
-    $loading = $reload = 0;
     $loadingSemaphore->up();
 }
 
@@ -252,18 +248,12 @@ sub loadDefaultCaFile {
     lock(%locked);
 
     # Continue to use current default ca store if still used by other threads
-    # or if another one is still loading keystore
-    return if $locked > 1 || $loading;
-
-    $loading = 1;
+    return if $locked > 1;
 
     return unless $params{file};
 
     # Keep current loaded keyStore if not expired
     return if ref($certs{"Mozilla::CA"}) eq "ARRAY" && $expiration && time < $expiration;
-
-    # Flag we are reloading keystore
-    $reload = 1;
 
     return unless -s $params{file};
 
@@ -284,8 +274,6 @@ sub loadDefaultCaFile {
     }
 
     $certs{"Mozilla::CA"} = shared_clone(\@certs);
-
-    $expiration = time + ($params{expiration} // 3600);
 }
 
 sub getCAs {
