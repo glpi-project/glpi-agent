@@ -143,7 +143,7 @@ sub _getScreensFromWindows {
         # external monitor and expose a wrong serialnumber
         if ($object->{MonitorType} && $object->{MonitorType} =~ /^Surface Display$/i) {
             # We also have to filter out the related WMIMonitorConnectionParams object
-            @screens = grep { $_->{id} =~ /^$object->{PNPDeviceID}$/i } @screens;
+            @screens = grep { $_->{id} =~ /^$object->{PNPDeviceID}(_\d+)?$/i } @screens;
             next;
         }
 
