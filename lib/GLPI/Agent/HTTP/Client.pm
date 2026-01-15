@@ -408,6 +408,7 @@ sub _getOauthAccessToken {
 
     # Guess access token api path from url
     my $path = $url->path();
+    $path = $1 if $path =~ /^(.*)(front\/inventory\.php)$/;
     $path = $1 if $path =~ /^(.*)(marketplace|plugins).*$/;
     $path =~ s{/+$}{};
     $path .= '/' unless empty($path);

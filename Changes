@@ -16,6 +16,7 @@ core:
   SNMP dedicated code and simplify packaging
 * fix #1073: On windows, use our API to correctly decode registry values while
   getting configuration from registry
+* Support URLs finishing by /front/inventory.php for OAuth authentication
 
 inventory:
 * PR #931: Added DrWeb & Karpersky Endpoint for Linux antivirus support on linux
