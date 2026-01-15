@@ -17,6 +17,8 @@ core:
 * fix #1073: On windows, use our API to correctly decode registry values while
   getting configuration from registry
 * Support URLs finishing by /front/inventory.php for OAuth authentication
+* fix #1048: Rework Windows KeyStore support to be more reliable and performant
+  using native api
 
 inventory:
 * PR #931: Added DrWeb & Karpersky Endpoint for Linux antivirus support on linux
