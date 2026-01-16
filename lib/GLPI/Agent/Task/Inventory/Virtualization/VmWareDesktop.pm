@@ -73,7 +73,7 @@ sub _getMachines {
             STATUS    => STATUS_RUNNING,
             SUBSYSTEM => $subsystem,
             VMTYPE    => "VmWare",
-            COMMENT   => $info{'annotation'},
+            COMMENT   => $info{'annotation'} // "",
         };
 
         push @machines, $machine;
