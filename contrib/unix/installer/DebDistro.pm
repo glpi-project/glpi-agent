@@ -24,6 +24,7 @@ my %DebPackages = (
     "glpi-agent-task-esx"       => qr/^esx$/i,
     "glpi-agent-task-deploy"    => qr/^deploy$/i,
     #"glpi-agent-task-wakeonlan" => qr/^wakeonlan|wol$/i,
+    "libiec61850-glpi-agent"    => qr/^iec61850$/i,
 );
 
 my %DebInstallTypes = (
@@ -38,6 +39,19 @@ my %DebInstallTypes = (
     network => [ qw(
         glpi-agent
         glpi-agent-task-network
+    ) ],
+    "all+iec61850"  => [ qw(
+        glpi-agent
+        glpi-agent-task-network
+        glpi-agent-task-collect
+        glpi-agent-task-esx
+        glpi-agent-task-deploy
+        libiec61850-glpi-agent
+    ) ],
+    iec61850 => [ qw(
+        glpi-agent
+        glpi-agent-task-network
+        libiec61850-glpi-agent
     ) ],
 );
 

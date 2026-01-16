@@ -204,6 +204,8 @@ glpi-agent-linux-installer [options]
                                      - "typical" to only install computer inventory and remote inventory tasks
                                      - "network" to install glpi-agent and network related tasks
                                      - "all" to install all tasks
+                                     - "iec61850" to install glpi-agent, network related tasks and libiec61850 protocol support
+                                     - "all+iec61850" to install all tasks and libiec61850 protocol support
                                      - or tasks to install in a comma-separated list
     -v --verbose                   make verbose install (false)
     --version                      print the installer version and exit
