@@ -87,6 +87,10 @@ sub init {
 sub _extract_deb {
     my ($self, $deb) = @_;
     my $pkg = $deb."_${DEBVERSION}_all.deb";
+    if ($deb eq "libiec61850-glpi-agent") {
+        # Actually only x86_64 arch is supported for libiec61850-glpi-agent
+        $pkg = $deb."_${DEBVERSION}_amd64.deb";
+    }
     $self->verbose("Extracting $pkg ...");
     $self->{_archive}->extract("pkg/deb/$pkg")
         or die "Failed to extract $pkg: $!\n";
