@@ -650,6 +650,7 @@ jobs:
     - name: Build installer
       id: installer-build
       run: |
+        mv */*.rpm .
         contrib/unix/make-linux-installer.sh --version $VERSION --rpm *.rpm \
             contrib/unix/glpi-agent.init.redhat \
             --deb *.deb --snap *.snap
