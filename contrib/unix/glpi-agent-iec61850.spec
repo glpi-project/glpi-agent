@@ -34,7 +34,7 @@ BuildRequires: swig
 This package enables iec61850 protocol support for GLPI agent netdiscovery task
 
 %prep
-%setup -q -C -n %{name}-%{version}-%{release}
+%setup -q -n libiec61850-%{iec61850_version}
 %build
 make %{?_smp_mflags} CFLAGS="-fPIC -O2 %{iec61850_hardening}" CPP_FLAGS="%{iec61850_ldopts}"
 swig -Wall -O -Isrc/common/inc -Isrc/iec61850/inc -Isrc/mms/inc -Isrc/goose -perl5 iec61850-perl/iec61850.i
