@@ -117,6 +117,7 @@ NetInventory | [glpi-agent-task-network_${VERSION}_all.deb](glpi-agent-task-netw
 ESX | [glpi-agent-task-esx_${VERSION}_all.deb](glpi-agent-task-esx_${VERSION}_all.deb)
 Collect | [glpi-agent-task-collect_${VERSION}_all.deb](glpi-agent-task-collect_${VERSION}_all.deb)
 Deploy | [glpi-agent-task-deploy_${VERSION}_all.deb](glpi-agent-task-deploy_${VERSION}_all.deb)
+IEC61850 | [lib61850-glpi-agent_${VERSION}_amd64.deb](lib61850-glpi-agent_${VERSION}_amd64.deb)
 
 ### RPM packages
 
@@ -131,6 +132,7 @@ Collect | [glpi-agent-task-collect-${VERSION}.noarch.rpm](glpi-agent-task-collec
 Deploy | [glpi-agent-task-deploy-${VERSION}.noarch.rpm](glpi-agent-task-deploy-${VERSION}.noarch.rpm)
 WakeOnLan | [glpi-agent-task-wakeonlan-${VERSION}.noarch.rpm](glpi-agent-task-wakeonlan-${VERSION}.noarch.rpm)
 Cron | [glpi-agent-cron-${VERSION}.noarch.rpm](glpi-agent-cron-${VERSION}.noarch.rpm)
+IEC61850 | [glpi-agent-iec61850-${VERSION}.x86_64.rpm](glpi-agent-iec61850-${VERSION}.x86_64.rpm)
 
 ## Sources <a href="#sources-${VERSION//./-}">#</a> {#sources-${VERSION//./-}}
 

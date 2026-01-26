@@ -25,6 +25,7 @@ my %RpmPackages = (
     "glpi-agent-task-deploy"    => qr/^deploy$/i,
     "glpi-agent-task-wakeonlan" => qr/^wakeonlan|wol$/i,
     "glpi-agent-cron"           => 0,
+    "glpi-agent-iec61850"       => qr/^iec61850$/i,
 );
 
 my %RpmInstallTypes = (
@@ -40,6 +41,20 @@ my %RpmInstallTypes = (
     network => [ qw(
         glpi-agent
         glpi-agent-task-network
+    ) ],
+    "all+iec61850"  => [ qw(
+        glpi-agent
+        glpi-agent-task-network
+        glpi-agent-task-collect
+        glpi-agent-task-esx
+        glpi-agent-task-deploy
+        glpi-agent-task-wakeonlan
+        glpi-agent-iec61850
+    ) ],
+    iec61850 => [ qw(
+        glpi-agent
+        glpi-agent-task-network
+        glpi-agent-iec61850
     ) ],
 );
 
@@ -74,6 +89,10 @@ sub init {
 sub _extract_rpm {
     my ($self, $rpm) = @_;
     my $pkg = "$rpm-$RPMVERSION.noarch.rpm";
+    if ($rpm eq "glpi-agent-iec61850") {
+        # Actually only x86_64 arch is supported for libiec61850-glpi-agent
+        $pkg = $rpm."-${RPMVERSION}.x86_64.rpm";
+    }
     $self->verbose("Extracting $pkg ...");
     $self->{_archive}->extract("pkg/rpm/$pkg")
         or die "Failed to extract $pkg: $!\n";

@@ -3,6 +3,8 @@
 : ${UNITDIR:=/usr/lib/systemd/system}
 : ${OTHER_OPTS:=}
 : ${RPMBUILD:=rpmbuild}
+: ${IEC61850_BASE_URL:=https://github.com/g-bougard/libiec61850/archive/refs/tags}
+: ${IEC61850_VERSION:=1.6.1}
 
 while [ -n "$1" ]
 do
@@ -73,6 +75,12 @@ SRCDIR=`rpm --eval "%{_sourcedir}"`
 rm -f $SRCDIR/*.tar.gz
 cp glpi-agent-$VER-$REV$DISTRO.tar.gz "$SRCDIR"
 
+# Also download libiec61850
+if [ ! -s "$SRCDIR/iec61850-${IEC61850_VERSION}.tar.gz" ]; then
+    echo "Downloading libiec61850-${IEC61850_VERSION}.tar.gz..."
+    curl -L -o "$SRCDIR/libiec61850-${IEC61850_VERSION}.tar.gz" ${IEC61850_BASE_URL}/${IEC61850_VERSION}.tar.gz
+fi
+
 # Prepare rpmbuild options
 BUILD_OPTS="-D 'rev $REV'"
 [ -n "$DISTRO" ]     && BUILD_OPTS="$BUILD_OPTS -D 'dist $DISTRO'"
@@ -80,6 +88,12 @@ BUILD_OPTS="-D 'rev $REV'"
 
 echo "Running '$RPMBUILD -ba $BUILD_OPTS $OTHER_OPTS contrib/unix/glpi-agent.spec' ..."
 eval "$RPMBUILD -ba $BUILD_OPTS $OTHER_OPTS contrib/unix/glpi-agent.spec"
+
+# Set rpmbuild options for libiec61850 build
+BUILD_IEC61850_OPTS="$BUILD_OPTS -D 'iec61850_version $IEC61850_VERSION' -D 'version $VER'"
+
+echo "Running '$RPMBUILD -ba $BUILD_IEC61850_OPTS $OTHER_OPTS contrib/unix/glpi-agent-iec61850.spec' ..."
+eval "$RPMBUILD -ba $BUILD_IEC61850_OPTS $OTHER_OPTS contrib/unix/glpi-agent-iec61850.spec"
 
 # Output rpms path for GH Actions uploads
 RPMDIR=$(rpm --eval "%{_rpmdir}")
@@ -94,6 +108,19 @@ for rpm in $(eval "rpmspec -q $BUILD_OPTS contrib/unix/glpi-agent.spec")
 do
     BASE=${rpm%-$VER-$REV*}
     RPM="$RPMDIR/noarch/${rpm%.*}.noarch.rpm"
+    if [ ! -e "$RPM" ]; then
+        echo "$RPM not found" >&2
+        exit 1
+    fi
+    [ -n "$GITHUB_REF" ] && echo "$BASE-rpm=$RPM" >>$GITHUB_OUTPUT
+    echo "$BASE-rpm: $(ls -l $RPM)"
+done
+
+ARCH=$(uname -m)
+for rpm in $(eval "rpmspec -q $BUILD_IEC61850_OPTS contrib/unix/glpi-agent-iec61850.spec")
+do
+    BASE=${rpm%-$VER-$REV*}
+    RPM="$RPMDIR/$ARCH/${rpm%.*}.$ARCH.rpm"
     if [ ! -e "$RPM" ]; then
         echo "$RPM not found" >&2
         exit 1

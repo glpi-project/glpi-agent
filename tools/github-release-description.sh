@@ -82,6 +82,7 @@ NetInventory | [glpi-agent-task-network_${VERSION}${DEBREV}_all.deb]($REPO/relea
 ESX | [glpi-agent-task-esx_${VERSION}${DEBREV}_all.deb]($REPO/releases/download/$TAG/glpi-agent-task-esx_${VERSION}${DEBREV}_all.deb)
 Collect | [glpi-agent-task-collect_${VERSION}${DEBREV}_all.deb]($REPO/releases/download/$TAG/glpi-agent-task-collect_${VERSION}${DEBREV}_all.deb)
 Deploy | [glpi-agent-task-deploy_${VERSION}${DEBREV}_all.deb]($REPO/releases/download/$TAG/glpi-agent-task-deploy_${VERSION}${DEBREV}_all.deb)
+IEC61850 | [lib61850-glpi-agent_${VERSION}${DEBREV}_amd64.deb]($REPO/releases/download/$TAG/lib61850-glpi-agent_${VERSION}${DEBREV}_amd64.deb)
 
 ### RPM packages
 RPM packages are arch independents and installation may require some repository setups, better use [glpi-agent-${VERSION}-linux-installer.pl]($REPO/releases/download/$TAG/glpi-agent-${VERSION}-linux-installer.pl) when possible.
@@ -94,6 +95,7 @@ Collect | [glpi-agent-task-collect-${VERSION}${RPMREV}.noarch.rpm]($REPO/release
 Deploy | [glpi-agent-task-deploy-${VERSION}${RPMREV}.noarch.rpm]($REPO/releases/download/$TAG/glpi-agent-task-deploy-${VERSION}${RPMREV}.noarch.rpm)
 WakeOnLan | [glpi-agent-task-wakeonlan-${VERSION}${RPMREV}.noarch.rpm]($REPO/releases/download/$TAG/glpi-agent-task-wakeonlan-${VERSION}${RPMREV}.noarch.rpm)
 Cron | [glpi-agent-cron-${VERSION}${RPMREV}.noarch.rpm]($REPO/releases/download/$TAG/glpi-agent-cron-${VERSION}${RPMREV}.noarch.rpm)
+IEC61850 | [glpi-agent-iec61850-${VERSION}${RPMREV}.x86_64.rpm]($REPO/releases/download/$TAG/glpi-agent-iec61850-${VERSION}${RPMREV}.x86_64.rpm)
 
 ## Sources
 [GLPI-Agent-${VERSION}.tar.gz]($REPO/releases/download/$TAG/GLPI-Agent-${VERSION}.tar.gz)

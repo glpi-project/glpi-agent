@@ -599,10 +599,11 @@ jobs:
             ${{ steps.rpmbuild.outputs.glpi-agent-task-deploy-rpm }} \
             ${{ steps.rpmbuild.outputs.glpi-agent-task-wakeonlan-rpm }} \
             ${{ steps.rpmbuild.outputs.glpi-agent-task-esx-rpm }} \
-            ${{ steps.rpmbuild.outputs.glpi-agent-cron-rpm }}
+            ${{ steps.rpmbuild.outputs.glpi-agent-cron-rpm }} \
+            ${{ steps.rpmbuild.outputs.glpi-agent-iec61850-rpm }}
         sudo rpm -e glpi-agent glpi-agent-task-network glpi-agent-task-collect \
             glpi-agent-task-deploy glpi-agent-task-wakeonlan \
-            glpi-agent-task-esx glpi-agent-cron
+            glpi-agent-task-esx glpi-agent-cron glpi-agent-iec61850
       shell: bash
     - name: Upload built rpm artifacts
       uses: actions/upload-artifact@v4
@@ -610,6 +611,7 @@ jobs:
         name: RPM-Build
         path: |
           ${{ steps.rpmbuild.outputs.rpmdir }}/noarch/*.rpm
+          ${{ steps.rpmbuild.outputs.rpmdir }}/x86_64/*.rpm
     - name: Upload rpm sources artifacts
       uses: actions/upload-artifact@v4
       with:
