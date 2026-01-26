@@ -45,6 +45,7 @@ inventory:
 * Don't inventory Surface Display as monitor on windows
 * fix #1050: Fix Storage inventory support on FreeBSD
 * Enhanced HP Dock Station inventory on windows setting expected serialnumber
+* Updated usb.ids to 2025.12.13 version
 
 remoteinventory:
 * fix RedHat RHN systemid set as WINPRODID
