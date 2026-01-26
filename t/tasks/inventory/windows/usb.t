@@ -26,6 +26,9 @@ if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
     plan skip_all => 'thread support required';
 }
 
+# Required to make win11-hp-dock-G5-station test work on linux
+our $OSNAME = "MSWin32";
+
 Test::NoWarnings->use();
 
 GLPI::Agent::Task::Inventory::Win32::USB->require();
@@ -133,6 +136,16 @@ my %tests = (
             VENDORID     => '05E0',
             PRODUCTID    => '1200'
         }
+    ],
+    "win11-hp-dock-G5-station" => [
+        {
+            MANUFACTURER => 'HP, Inc',
+            NAME         => 'Dock G5',
+            CAPTION      => 'Dock G5',
+            SERIAL       => '0XX1234567',
+            VENDORID     => '03F0',
+            PRODUCTID    => '046B'
+        }
     ]
 );
 
@@ -140,15 +153,16 @@ plan tests => (2 * scalar keys %tests) + 1;
 
 my $inventory = GLPI::Agent::Inventory->new();
 
-my $module = Test::MockModule->new(
-    'GLPI::Agent::Task::Inventory::Win32::USB'
+my @mock = map { Test::MockModule->new($_) } qw(
+    GLPI::Agent::Task::Inventory::Win32::USB
+    GLPI::Agent::Tools::Win32
 );
 
 foreach my $test (keys %tests) {
-    $module->mock(
+    map { $_->mock(
         'getWMIObjects',
         mockGetWMIObjects($test)
-    );
+    )} @mock;
 
     my @devices = GLPI::Agent::Task::Inventory::Win32::USB::_getDevices(datadir => './share');
     cmp_deeply(

@@ -220,6 +220,38 @@ my %tests = (
             $OSNAME = $RealOSNAME;
         },
     },
+    "21-win11-hp-dock-G5-station" => {
+        setup   => sub {
+            return if $OSNAME eq "MSWin32";
+            # Pretend we are in MSWin32 environment
+            $OSNAME = "MSWin32";
+        },
+        config  => {
+            vendorid    => '03F0',
+            productid   => '046B',
+            name        => 'HP USB-C Dock G5',
+            caption     => 'HP USB-C Dock G5',
+        },
+        code    => sub {
+            my ($dev) = shift;
+            ref($dev) eq 'GLPI::Agent::Tools::USB::HP'
+                or die "Wrong device class\n";
+            $dev->update_by_ids();
+            $dev->update();
+        },
+        dump    => {
+            MANUFACTURER => 'HP, Inc',
+            NAME         => 'Dock G5',
+            CAPTION      => 'Dock G5',
+            SERIAL       => '0XX1234567',
+            VENDORID     => '03F0',
+            PRODUCTID    => '046B'
+        },
+        reset   => sub {
+            $OSNAME = $RealOSNAME;
+        },
+        wmimock => "win11-hp-dock-G5-station",
+    }
 );
 
 plan tests => 3 * (scalar keys %tests) + 1;
@@ -229,6 +261,17 @@ foreach my $test (sort keys %tests) {
     my $setup;
     $setup = &{$tests{$test}->{setup}}()
         if $tests{$test}->{setup};
+
+    my $module;
+    if ($tests{$test}->{wmimock}) {
+        $module = Test::MockModule->new(
+            'GLPI::Agent::Tools::Win32'
+        );
+        $module->mock(
+            'getWMIObjects',
+            mockGetWMIObjects($tests{$test}->{wmimock})
+        );
+    }
 
     # Include reload in object parameters while test index >= 20
     my ($testindex) = $test =~ /^(\d+)-/;

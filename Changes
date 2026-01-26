@@ -44,6 +44,7 @@ inventory:
 * Update support for Acer S240L monitors inventory
 * Don't inventory Surface Display as monitor on windows
 * fix #1050: Fix Storage inventory support on FreeBSD
+* Enhanced HP Dock Station inventory on windows setting expected serialnumber
 
 remoteinventory:
 * fix RedHat RHN systemid set as WINPRODID
