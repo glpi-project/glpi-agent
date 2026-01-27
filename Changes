@@ -103,14 +103,14 @@ packaging:
 * Update Windows packaging to use:
   - Perl 5.42.0 built using Perl::Dist::StrawBerry perl library processing
   - gcc 15.2.0posix-13.0.0-msvcrt-r5
-  - OpenSSL 3.5.4
+  - OpenSSL 3.5.5
   - liblzma from xz 5.8.1
   - libxml2 2.15.1
   - msys2-base 20251213
   - 7-Zip v25.01
   - libiec61850 v1.6.1
   - Fix Net::NBName warnings
-* Update MacOSX packages to use perl 5.42.0 and OpenSSL 3.5.4
+* Update MacOSX packages to use perl 5.42.0 and OpenSSL 3.5.5
 * Add support for SSL_KEY_FILE option on windows installer
 * Update linux snap packaging to use:
   - Perl 5.42.0
