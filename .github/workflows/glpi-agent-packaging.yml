@@ -605,12 +605,17 @@ jobs:
             glpi-agent-task-deploy glpi-agent-task-wakeonlan \
             glpi-agent-task-esx glpi-agent-cron glpi-agent-iec61850
       shell: bash
-    - name: Upload built rpm artifacts
+    - name: Upload built rpm noarch artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: RPM-Build
+        name: RPM-Build-noarch
         path: |
           ${{ steps.rpmbuild.outputs.rpmdir }}/noarch/*.rpm
+    - name: Upload built rpm x86_64 artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: RPM-Build-x86_64
+        path: |
           ${{ steps.rpmbuild.outputs.rpmdir }}/x86_64/*.rpm
     - name: Upload rpm sources artifacts
       uses: actions/upload-artifact@v4
@@ -640,7 +645,8 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/download-artifact@v4
       with:
-        name: RPM-Build
+        name: RPM-Build-*
+        merge-multiple: true
     - uses: actions/download-artifact@v4
       with:
         name: Debian-Build
@@ -650,7 +656,6 @@ jobs:
     - name: Build installer
       id: installer-build
       run: |
-        mv */*.rpm .
         contrib/unix/make-linux-installer.sh --version $VERSION --rpm *.rpm \
             contrib/unix/glpi-agent.init.redhat \
             --deb *.deb --snap *.snap
@@ -813,7 +818,8 @@ jobs:
         name: Linux-Installer-Build
     - uses: actions/download-artifact@v4
       with:
-        name: RPM-Build
+        name: RPM-Build-*
+        merge-multiple: true
     - uses: actions/download-artifact@v4
       with:
         name: Debian-Build
@@ -909,8 +915,9 @@ jobs:
         path: glpi-agent
     - uses: actions/download-artifact@v4
       with:
-        name: RPM-Build
+        name: RPM-Build-*
         path: glpi-agent
+        merge-multiple: true
     - uses: actions/download-artifact@v4
       with:
         name: Debian-Build
