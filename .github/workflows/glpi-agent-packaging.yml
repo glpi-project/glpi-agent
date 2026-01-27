@@ -645,7 +645,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/download-artifact@v4
       with:
-        name: RPM-Build-*
+        pattern: RPM-Build-*
         merge-multiple: true
     - uses: actions/download-artifact@v4
       with:
@@ -818,7 +818,7 @@ jobs:
         name: Linux-Installer-Build
     - uses: actions/download-artifact@v4
       with:
-        name: RPM-Build-*
+        pattern: RPM-Build-*
         merge-multiple: true
     - uses: actions/download-artifact@v4
       with:
@@ -915,7 +915,7 @@ jobs:
         path: glpi-agent
     - uses: actions/download-artifact@v4
       with:
-        name: RPM-Build-*
+        pattern: RPM-Build-*
         path: glpi-agent
         merge-multiple: true
     - uses: actions/download-artifact@v4
