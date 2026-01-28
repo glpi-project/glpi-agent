@@ -104,7 +104,7 @@ packaging:
   - Perl 5.42.0 built using Perl::Dist::StrawBerry perl library processing
   - gcc 15.2.0posix-13.0.0-msvcrt-r5
   - OpenSSL 3.5.5
-  - liblzma from xz 5.8.1
+  - liblzma from xz 5.8.2
   - libxml2 2.15.1
   - msys2-base 20251213
   - 7-Zip v25.01
