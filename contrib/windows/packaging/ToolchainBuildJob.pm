@@ -194,7 +194,7 @@ sub toolchain_build_steps {
             {
                 plugin  => 'Perl::Dist::Strawberry::Step::BuildLibrary',
                 name    => 'openssl',
-                version => '3.5.4',
+                version => '3.5.5',
                 url     => 'https://github.com/openssl/openssl/releases/download/<name>-<version>/<name>-<version>.tar.gz',
                 skip_if_file    => 'bin/openssl.exe',
                 skip_test       => 1,
@@ -212,7 +212,7 @@ sub toolchain_build_steps {
                         'enable-rfc3779', 'enable-camellia', 'enable-capieng',
                         'enable-idea', 'enable-mdc2', 'enable-rc5',
                         'enable-static-engine', 'no-module', 'no-tests',
-                        'no-legacy', 'no-makedepend', 'no-docs',
+                        'no-legacy', 'no-makedepend', 'no-docs', 'no-quic',
                         '--prefix=<prefix>', '--libdir=lib',
                         '--openssldir=ssl',
                         '--with-zlib-lib=zlib1<dllsuffix>',
