@@ -118,6 +118,7 @@ packaging:
 * New packaging to provide libiec61850 v1.6.1 static library api support on linux:
   - libiec61850-glpi-agent for debian packaging
   - glpi-agent-iec61850 for rpm packaging
+* win32: Updated GLPI-AgentMonitor to v1.4.2
 
 1.15 Mon, 09 Jun 2025
 
