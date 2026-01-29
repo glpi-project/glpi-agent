@@ -118,7 +118,7 @@ sub _getMemories {
                 MANUFACTURER     => $manufacturer // $defaults{Manufacturer}
             };
 
-            if ($info->{'Size'} && $info->{'Size'} =~ /^(\d+ \s .B)$/x) {
+            if ($info->{'Size'} && $info->{'Size'} =~ /^(\d+ \s .i?B)$/x) {
                 $memory->{CAPACITY} = getCanonicalSize($1, 1024);
             }
 
@@ -161,7 +161,7 @@ sub _getMemories {
                 TYPE     => $info->{'Type'},
             };
 
-            if ($info->{'Installed Size'} && $info->{'Installed Size'} =~ /^(\d+\s*.B)/i) {
+            if ($info->{'Installed Size'} && $info->{'Installed Size'} =~ /^(\d+\s*.i?B)/i) {
                 $memory->{CAPACITY} = getCanonicalSize($1, 1024);
             }
 

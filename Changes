@@ -110,6 +110,7 @@ packaging:
   - 7-Zip v25.01
   - libiec61850 v1.6.1
   - Fix Net::NBName warnings
+  - dmidecode 3.7
 * Update MacOSX packages to use perl 5.42.0 and OpenSSL 3.5.5
 * Add support for SSL_KEY_FILE option on windows installer
 * Update linux snap packaging to use:

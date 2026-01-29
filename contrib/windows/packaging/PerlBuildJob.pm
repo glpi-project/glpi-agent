@@ -8,7 +8,7 @@ use ToolchainBuildJob;
 use constant {
     PERL_VERSION       => "5.42.0",
     # Tag for dmidecode release on glpi-project/dmidecode
-    DMIDECODE_VERSION  => "3.6-update-1",
+    DMIDECODE_VERSION  => "3.7",
     # Tag for Glpi-AgentMonitor release on glpi-project/glpi-agentmonitor
     GAMONITOR_VERSION  => "1.4.2",
     PERL_BUILD_STEPS   => 13,
