@@ -9,7 +9,9 @@ use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Virtualization;
 
 sub isEnabled {
-    return canRun('lxd') && canRun('lxc');
+    # lxd is now based on snap install, checking /snapd/bin/lxd file is more accurate
+    # Ubuntu installs lxd & lxc as script installers so previous condition was no more correct.
+    return canRun('/snapd/bin/lxd') && canRun('lxc');
 }
 
 sub doInventory {
