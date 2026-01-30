@@ -85,6 +85,7 @@ netdiscovery/netinventory:
 * Fix glpi-netdiscovery and glpi-netinventory scripts to support semicolon or comma
   in SNMP v3 password
 * fix #1065: Invalid ips defined on FortiGate 100
+* Support sysObjectID set as string
 
 esx:
 * Update glpi-esx man page to explain supported ESX/vCenter versions are indeed

@@ -381,7 +381,7 @@ sub _getSysObjectIDInfo {
     my $prefix = qr/(?:
         SNMPv2-SMI::enterprises |
         iso\.3\.6\.1\.4\.1      |
-        \.1\.3\.6\.1\.4\.1
+        \.?1\.3\.6\.1\.4\.1
     )/x;
     my ($manufacturer_id, $device_id) =
         $params{id} =~ /^ $prefix \. (\d+) (?:\. ([\d.]+))? $/x;
