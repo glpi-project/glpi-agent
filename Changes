@@ -49,6 +49,7 @@ inventory:
 * fix #1089: Fix Samsung LF24T450F monitor serialnumber
 * PR #1076: Enhanced VmWare Desktop workstation virtualmachine support
 * Updated usb.ids to 2025.12.13 version
+* Updated pci.ids to 2026.01.31 version
 
 remoteinventory:
 * fix RedHat RHN systemid set as WINPRODID
@@ -88,6 +89,7 @@ netdiscovery/netinventory:
   in SNMP v3 password
 * fix #1065: Invalid ips defined on FortiGate 100
 * Support sysObjectID set as string
+* Updated sysobject.ids
 
 esx:
 * Update glpi-esx man page to explain supported ESX/vCenter versions are indeed
