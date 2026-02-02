@@ -2,7 +2,7 @@ Revision history for GLPI agent
 
 Warning for developers: Don't change/remove any entry which doesn't concern your code
 
-1.16 not yet released
+1.16 Mon, 02 Feb 2026
 
 core:
 * On windows, permit to use libxml2 built libraries in different threads
@@ -49,12 +49,15 @@ inventory:
 * fix #1089: Fix Samsung LF24T450F monitor serialnumber
 * PR #1076: Enhanced VmWare Desktop workstation virtualmachine support
 * Updated usb.ids to 2025.12.13 version
+* Updated pci.ids to 2026.01.31 version
+* Bump Inventory task version to 1.23
 
 remoteinventory:
 * fix RedHat RHN systemid set as WINPRODID
 * fix battery inventory on windows
 * fix SessionID WsMan class support
 * fix #1011: Fix crash on windows when running remote windows inventory
+* Bump RemoteInventory task version to 1.9
 
 netdiscovery/netinventory:
 * fix #922: Add Radware Alteon Load Balancer support
@@ -88,6 +91,9 @@ netdiscovery/netinventory:
   in SNMP v3 password
 * fix #1065: Invalid ips defined on FortiGate 100
 * Support sysObjectID set as string
+* Updated sysobject.ids
+* Bump NetDiscovery task version to 7.0
+* Bump NetInventory task version to 7.0
 
 esx:
 * Update glpi-esx man page to explain supported ESX/vCenter versions are indeed
@@ -99,9 +105,11 @@ injector:
 
 toolbox:
 * fix log output when following a running task
+* Bump ToolBox plugin version to 1.7
 
 collect:
 * Refacto to modularize collect functions
+* Bump Collect task version to 3.0
 
 packaging:
 * Update Windows packaging to use:
