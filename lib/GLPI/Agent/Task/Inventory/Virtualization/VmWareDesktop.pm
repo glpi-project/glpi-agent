@@ -25,7 +25,7 @@ sub doInventory {
     my $logger    = $params{logger};
 
     my $command;
-    
+
     if (canRun('vmrun')) {
         $command = 'vmrun list';
     }
@@ -57,7 +57,7 @@ sub _getMachines {
 
     # skip first line
     shift @lines;
-    
+
     my $subsystem = (OSNAME eq 'MSWin32') ? "VmWare Workstation" : "VmWare Fusion";
     my @machines;
     foreach my $line (@lines) {
