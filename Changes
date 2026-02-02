@@ -46,6 +46,7 @@ inventory:
 * fix #1050: Fix Storage inventory support on FreeBSD
 * Enhanced HP Dock Station inventory on windows setting expected serialnumber
 * For Lxd virtualization, check lxd full path so test is correct on latest Ubuntu
+* fix #1089: Fix Samsung LF24T450F monitor serialnumber
 * Updated usb.ids to 2025.12.13 version
 
 remoteinventory:
