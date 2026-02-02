@@ -82,7 +82,7 @@ NetInventory | [glpi-agent-task-network_${VERSION}${DEBREV}_all.deb]($REPO/relea
 ESX | [glpi-agent-task-esx_${VERSION}${DEBREV}_all.deb]($REPO/releases/download/$TAG/glpi-agent-task-esx_${VERSION}${DEBREV}_all.deb)
 Collect | [glpi-agent-task-collect_${VERSION}${DEBREV}_all.deb]($REPO/releases/download/$TAG/glpi-agent-task-collect_${VERSION}${DEBREV}_all.deb)
 Deploy | [glpi-agent-task-deploy_${VERSION}${DEBREV}_all.deb]($REPO/releases/download/$TAG/glpi-agent-task-deploy_${VERSION}${DEBREV}_all.deb)
-IEC61850 | [lib61850-glpi-agent_${VERSION}${DEBREV}_amd64.deb]($REPO/releases/download/$TAG/lib61850-glpi-agent_${VERSION}${DEBREV}_amd64.deb)
+IEC61850 | [libiec61850-glpi-agent_${VERSION}${DEBREV}_amd64.deb]($REPO/releases/download/$TAG/libiec61850-glpi-agent_${VERSION}${DEBREV}_amd64.deb)
 
 ### RPM packages
 RPM packages are arch independents and installation may require some repository setups, better use [glpi-agent-${VERSION}-linux-installer.pl]($REPO/releases/download/$TAG/glpi-agent-${VERSION}-linux-installer.pl) when possible.
