@@ -90,6 +90,7 @@ netdiscovery/netinventory:
 * Fix glpi-netdiscovery and glpi-netinventory scripts to support semicolon or comma
   in SNMP v3 password
 * fix #1065: Invalid ips defined on FortiGate 100
+* fix #1093: Fix rpm packaging where base package requires task-network one
 * Support sysObjectID set as string
 * Updated sysobject.ids
 * Bump NetDiscovery task version to 7.0
