@@ -33,7 +33,7 @@ sub update {
     )) {
         next if empty($object->{ChassisPackageType}) || empty($object->{ChassisTypeDescription}) || empty($object->{Name}) || empty($object->{SerialNumber});
 
-        next unless $object->{ChassisPackageType} =~ /$\d+$/ && $object->{ChassisPackageType} == 12;
+        next unless $object->{ChassisPackageType} =~ /^\d+$/ && $object->{ChassisPackageType} == 12;
 
         $self->serial($object->{SerialNumber});
         $self->{_name} = $object->{Name}." ".$object->{ChassisTypeDescription};
