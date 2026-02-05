@@ -105,7 +105,10 @@ sub _getWithSecureClient {
     }
 
     # is wsavd process running?
-    my $ps = getFirstLine(command => '/bin/ps aux | /usr/bin/grep "[w]savd"');
+    my $ps = getFirstLine(
+        command => '/bin/ps aux | /usr/bin/grep "[w]savd"',
+        logger  => $logger
+    );
     $antivirus->{ENABLED} = $ps ? 1 : 0;
 
     return $antivirus;
