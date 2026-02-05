@@ -48,7 +48,10 @@ sub _getWithSecureClient {
     };
 
     # wsav --version output
-    my @lines = getAllLines(command => '/usr/local/bin/wsav --version 2>/dev/null');
+    my @lines = getAllLines(
+        command => '/usr/local/bin/wsav --version',
+        logger  => $logger
+    );
     return unless @lines;
 
     foreach my $line (@lines) {
