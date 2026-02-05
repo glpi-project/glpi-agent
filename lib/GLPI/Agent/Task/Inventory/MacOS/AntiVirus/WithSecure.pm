@@ -108,11 +108,11 @@ sub _getWithSecureClient {
 
     # is wsavd process running?
     my ($ps) = getProcesses(
-        namespace => "same",
-        filter    => qr/wsavd/,
-        logger    => $logger
+        filter => qr/wsavd/,
+        logger => $logger
     );
     $antivirus->{ENABLED} = $ps ? 1 : 0;
+    
     return $antivirus;
 }
 
