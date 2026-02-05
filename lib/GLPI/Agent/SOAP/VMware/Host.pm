@@ -453,6 +453,9 @@ sub getVirtualMachines {
                 $boottime = "$bootdate $boottime" if $bootdate && $boottime;
                 $vmInventory->{OPERATINGSYSTEM}->{BOOT_TIME} = $boottime if $boottime;
             }
+            # Anyway don't keep OPERATINGSYSTEM if we don't have a FULL_NAME for it
+            delete $vmInventory->{OPERATINGSYSTEM}
+                if empty($vmInventory->{OPERATINGSYSTEM}->{FULL_NAME});
         }
 
         push @virtualMachines, $vmInventory;
