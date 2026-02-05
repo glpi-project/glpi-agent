@@ -6,6 +6,7 @@ use warnings;
 use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Unix;
 
 # Maximum number of days for the AV database to be considered as "up-to-date"
 use constant MAX_AGE_DAYS => 2;
@@ -52,6 +53,7 @@ sub _getWithSecureClient {
         command => '/usr/local/bin/wsav --version',
         logger  => $logger
     );
+    
     return unless @lines;
 
     foreach my $line (@lines) {
@@ -105,12 +107,12 @@ sub _getWithSecureClient {
     }
 
     # is wsavd process running?
-    my $ps = getFirstLine(
-        command => '/bin/ps aux | /usr/bin/grep "[w]savd"',
-        logger  => $logger
+    my ($ps) = getProcesses(
+        namespace => "same",
+        filter    => qr/wsavd/,
+        logger    => $logger
     );
     $antivirus->{ENABLED} = $ps ? 1 : 0;
-
     return $antivirus;
 }
 
