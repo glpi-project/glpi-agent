@@ -867,6 +867,13 @@ my %edid_tests = (
         MANUFACTURER => 'Lenovo Group Limited',
         SERIAL       => 'V905BAYH'
     },
+    'philips-243V7' => {
+        ALTSERIAL    => '00001b42',
+        CAPTION      => 'PHL 243V7',
+        DESCRIPTION  => '26/2020',
+        MANUFACTURER => 'Philips Consumer Electronics Company',
+        SERIAL       => '006978'
+    },
     'samsung-s22e390' => {
         MANUFACTURER => 'Samsung Electric Company',
         CAPTION      => 'S22E390',
