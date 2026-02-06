@@ -4,6 +4,9 @@ Warning for developers: Don't change/remove any entry which doesn't concern your
 
 1.17 not yet released
 
+netdiscovery/netinventory:
+* fix #1091: Support "contextname" field for SNMPv3 credentials option
+
 esx:
 * fix #1084: Don't keep VM OS if full_name has not been discovered
 

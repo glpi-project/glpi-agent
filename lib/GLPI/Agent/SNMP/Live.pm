@@ -90,6 +90,8 @@ sub new {
             if $params{privprotocol};
         $options{'-privpassword'} = $params{privpassword}
             if $params{privpassword};
+        $self->{context}          = $params{contextname}
+            if $params{contextname};
     } else { # snmpv2c && snmpv1 #
         $options{'-community'} = $params{community};
         $self->{community} = $params{community};
@@ -148,6 +150,7 @@ sub switch_vlan_context {
 
     my $error;
     if ($version eq 'snmpv3') {
+        $self->{_original_context} = $self->{context} if $self->{context} && empty($self->{_original_context});
         $self->{context} = 'vlan-' . $vlan_id;
     } else {
         # save original session
@@ -168,7 +171,7 @@ sub reset_original_context {
     my ($self) = @_;
 
     if ($self->{session}->version() == SNMP_VERSION_3) {
-        $self->{context} = "";
+        $self->{context} = empty($self->{_original_context}) ? "" : delete $self->{_original_context};
     } else {
         $self->{session} = $self->{oldsession};
         delete $self->{oldsession};

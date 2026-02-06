@@ -493,6 +493,7 @@ sub _queryDevice {
                 authprotocol => $credential->{AUTHPROTOCOL},
                 privpassword => $credential->{PRIVPASSPHRASE} // $credential->{PRIVPASSWORD},
                 privprotocol => $credential->{PRIVPROTOCOL},
+                contextname  => $credential->{CONTEXTNAME},
                 retries      => $self->{config}->{'snmp-retries'} // 0,
             );
             $snmp->testSession();
