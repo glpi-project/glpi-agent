@@ -19,12 +19,12 @@ sub isEnabled {
             # Important for remote inventory optimization
             required    => [ 'ID (read only)' ],
             maxdepth    => 3,
-        ) && $key && keys(%{$key})
+        ) and ref($key) && keys(%{$key})
     } qw(
         HKEY_LOCAL_MACHINE/SYSTEM/LiteManager
         HKEY_LOCAL_MACHINE/SOFTWARE/LiteManager
     );
-    return $key && keys(%{$key});
+    return ref($key) && keys(%{$key});
 }
 
 sub doInventory {
