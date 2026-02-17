@@ -4,6 +4,10 @@ Warning for developers: Don't change/remove any entry which doesn't concern your
 
 1.17 not yet released
 
+core:
+* Don't truncate submitted data with GLPI::Agent::HTTP::Client::Fusion when submitting
+  in a POST request. This is the case when submitting very long data for Collect task.
+
 inventory:
 * fix #1100: Fix LiteManager remote management inventory
 

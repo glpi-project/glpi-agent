@@ -34,9 +34,11 @@ sub _prepareVal {
 
     return '' unless length($val);
 
-# forbid to long argument.
-    while (length(URI::Escape::uri_escape_utf8($val)) > 1500) {
-        $val =~ s/^.{5}/…/;
+    # Forbid too long argument on GET request
+    if ($self->{_method} && $self->{_method} eq 'GET') {
+        while (length(URI::Escape::uri_escape_utf8($val)) > 1500) {
+            $val =~ s/^.{5}/…/;
+        }
     }
 
     return URI::Escape::uri_escape_utf8($val);
@@ -50,6 +52,7 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
 
     my $method = (exists($params{method}) && $params{method} =~ /^GET|POST$/) ?
         $params{method} : 'GET' ;
+    $self->{_method} = $method;
 
     my $urlparams = 'action='.uri_escape($params{args}->{action});
     my $referer = '';
