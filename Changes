@@ -16,6 +16,8 @@ esx:
 packaging:
 * fix #1093: Fix rpm packaging where base package requires task-network one
 * fix #1077: Enable Crypt::DES & Crypt::Rijndael in MacOS build to support SNMPv3
+* Update Windows packaging to use:
+  - 7-Zip v26.00
 
 1.16 Mon, 02 Feb 2026
 
