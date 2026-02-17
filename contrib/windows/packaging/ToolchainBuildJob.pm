@@ -83,7 +83,7 @@ sub toolchain_build_steps {
             {
                 plugin  => 'Perl::Dist::Strawberry::Step::BuildLibrary',
                 name    => 'zlib',
-                version => '1.3.1',
+                version => '1.3.2',
                 url     => 'https://www.zlib.net/<name>-<version>.tar.gz',
                 skip_configure  => 1,
                 build_in_srcdir => 1,
