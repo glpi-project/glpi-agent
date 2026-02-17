@@ -9,6 +9,7 @@ inventory:
 
 netdiscovery/netinventory:
 * fix #1091: Support "contextname" field for SNMPv3 credentials option
+* fix #1104: Updated Hikvision devices support
 
 esx:
 * fix #1084: Don't keep VM OS if full_name has not been discovered

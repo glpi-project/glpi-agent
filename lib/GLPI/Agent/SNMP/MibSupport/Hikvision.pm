@@ -14,10 +14,17 @@ use constant hikvision  => '.1.3.6.1.4.1.39165';
 use constant hikvisionModel   => hikvision . '.1.1.0';
 use constant hikvisionMac  => hikvision . '.1.4.0';
 
+use constant hikvision2 => '.1.3.6.1.4.1.50001';
+use constant hikEntity  => hikvision2 .'.1';
+use constant hikEntityIndex => hikEntity .'.3.0';
+
 our $mibSupport = [
     {
         name    => "hikvision",
         sysobjectid => getRegexpOidMatch(hikvision)
+    },{
+        name    => "hikvision-50001",
+        sysobjectid => getRegexpOidMatch(hikvision2)
     },{
         name    => "hikvision-model",
         privateoid => hikvisionModel
@@ -34,6 +41,11 @@ sub getManufacturer {
 
 sub getSerial {
     my ($self) = @_;
+
+    my $entityIndex = $self->get(hikEntityIndex);
+    unless (empty($entityIndex)) {
+        return getCanonicalString($entityIndex);
+    }
 
     my $serial = getCanonicalString($self->get(hikvisionMac))
         or return;
@@ -61,6 +73,7 @@ sub getSnmpHostname {
     my $device = $self->device
         or return;
 
+    return if empty($device->{MODEL});
     return $device->{MODEL}.'_'.$serial;
 }
 
