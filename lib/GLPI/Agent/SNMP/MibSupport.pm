@@ -59,7 +59,10 @@ sub new {
         if ($mib_support->{privateoid}) {
             next unless defined($device->get($mib_support->{privateoid}));
             $logger->debug("PrivateOID match: $mibname mib support enabled") if $logger;
-            $self->{_SUPPORT}->{$module} = $module->new( device => $device );
+            $self->{_SUPPORT}->{$module} = $module->new(
+                device      => $device,
+                mibsupport  => $mibname,
+            );
             next;
         }
         # Last supported case to match against sysorid

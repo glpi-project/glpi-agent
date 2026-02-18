@@ -5,6 +5,7 @@ use warnings;
 
 #use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 
+use GLPI::Agent::Tools;
 #use GLPI::Agent::Tools::SNMP;
 
 # Default priority to permit to priorize a MibSupport module other another
@@ -60,6 +61,13 @@ sub support {
     my ($self) = @_;
 
     return $self->{_mibsupport};
+}
+
+sub is {
+    my ($self, $support) = @_;
+
+    return if empty($support) || empty($self->{_mibsupport});
+    return $self->{_mibsupport} eq $support ? 1 : 0;
 }
 
 sub get {
