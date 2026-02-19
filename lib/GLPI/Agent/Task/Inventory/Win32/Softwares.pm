@@ -456,7 +456,13 @@ sub _getAppxPackages {
 
         # Add package on empty line
         if (!$line && ($package->{NAME} || $package->{FOLDER} || $package->{VERSION})) {
-            push @{$list}, $package;
+            if ($package->{NAME}) {
+                push @{$list}, $package;
+            } elsif (defined($logger)) {
+                # We ignore any package without name as this is required by inventory format
+                my $dump = join("; ", map { $_ => $package->{$_} } keys(%{$package}));
+                $logger->debug2("Ignored uwp package: $dump");
+            }
             $package = { FROM => 'uwp' };
             next;
         }
