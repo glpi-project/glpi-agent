@@ -7,6 +7,8 @@ use warnings;
 
 use parent 'GLPI::Agent::Task::Inventory::Generic::Databases';
 
+use version;
+
 use GLPI::Agent::Tools;
 use GLPI::Agent::Inventory::DatabaseService;
 
@@ -68,11 +70,23 @@ sub _getDatabaseService {
         }
 
         my ($name, $manufacturer) = qw(PostgreSQL PostgreSQL);
-        my $version = _runSql(
+        my $server_version = _runSql(
             sql     => "SHOW server_version",
             %params
         )
             or next;
+
+        my ($version) = $server_version =~ /^([0-9.]+)/
+            or next;
+
+        # name should be set to cluster name
+        unless (version->parse($version =~ /^\d/ ? "v$version" : $version) < version->parse("v9.5")) {
+            my $clustername = _runSql(
+                sql     => "SHOW cluster_name",
+                %params
+            );
+            $name = $clustername unless empty($clustername);
+        }
 
         my $dbs_size = 0;
         my $lastboot = _date(_runSql(
