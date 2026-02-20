@@ -49,6 +49,7 @@ my $server = {
 my @events;
 $agent->mock( fork   => sub { 0 } );
 $agent->mock( forked => sub { 0 } );
+$agent->mock( fork_exit => sub { 0 } );
 $agent->mock( forked_process_event => sub { shift; push @events, shift; } );
 
 # Mock GLPI client
@@ -68,8 +69,11 @@ $ocs_client_module->mock('send', sub {
     my ($self, %params) = @_;
     my ($test) = $params{url} =~ m/\?test=(.*)$/;
     return GLPI::Agent::XML::Response->new(
-        content => "<REPLY></REPLY>",
+        content => "<REPLY><RESPONSE>SEND</RESPONSE></REPLY>",
     ) if $test && $test eq "sent";;
+    return GLPI::Agent::XML::Response->new(
+        content => "<REPLY><PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE></REPLY>",
+    ) if $test && $test eq "prolog";;
 });
 
 my $proxy;
@@ -147,19 +151,20 @@ _request( "GLPI-Proxy-ID" => "1,2,$agentid,4" );
 is( $response->status_line, "404 PROXY-LOOP-DETECTED", "proxy loop error (2)" );
 
 sub check_error {
-    is( $response->code, $_[0], "Expected ".($_[2]//$_[0])." response" );
+    my (undef, undef, $line) = caller;
+    is( $response->code, $_[0], "Expected ".($_[2]//$_[0])." response (l.$line)" );
     if ($_[3] && $_[3] eq 'xml') {
         my $resp = GLPI::Agent::XML::Response->new(
             content => $response->content
         );
         my $hash = { REPLY => $resp->getContent() };
-        is_deeply($hash, $_[1], "Expected ".($_[2]//$_[1])." error message in response");
+        is_deeply($hash, $_[1], "Expected ".($_[2]//$_[1])." error message in xml response (l.$line)");
     } elsif ($_[3] && $_[3] eq 'json') {
         my $json = Cpanel::JSON::XS->new;
         my $hash = $json->decode($response->content);
-        is_deeply($hash, $_[1], "Expected ".($_[2]//$_[1])." error message in response");
+        is_deeply($hash, $_[1], "Expected ".($_[2]//$_[1])." error message in json response (l.$line)");
     } else {
-        is( $response->content, $_[1], "Expected ".($_[2]//$_[1])." error message in response");
+        is( $response->content, $_[1], "Expected ".($_[2]//$_[1])." error message in response (l.$line)");
     }
 }
 
@@ -215,8 +220,8 @@ subtest "Unsupported uncompressed Content-type" => sub {
 _request(
     content         => ".",
 );
-subtest "Unsupported compressed Content-type with bad content" => sub {
-    check_error(403, "Unsupported Content-type");
+subtest "Unsupported compressed content" => sub {
+    check_error(403, "Unsupported Compressed Content");
 };
 
 # json content-type only supported for new protocol
@@ -224,7 +229,7 @@ _request(
     content         => compress("{}"),
 );
 subtest "Unsupported Content-type with compressed json on legacy protocol" => sub {
-    check_error(403, "Unsupported Content-type");
+    check_error(403, "Unsupported JSON Content");
 };
 
 # xml failure
@@ -262,7 +267,15 @@ _request(
     content         => "<?xml version='1.0' encoding='UTF-8' ?><REQUEST><QUERY>PROLOG</QUERY><DEVICEID>foo</DEVICEID></REQUEST>",
 );
 subtest "Supported xml PROLOG query" => sub {
-    check_error(200, { REPLY => { PROLOG_FREQ => "24", RESPONSE => "SEND" } }, "Supported xml PROLOG query", "xml");
+    check_error(200, {
+        disabled    => [ qw(netdiscovery netinventory esx collect deploy wakeonlan) ],
+        expiration  => 24,
+        message     => "contact on only storing proxy agent",
+        status      => "ok",
+        tasks       => {
+            inventory   => {}
+        }
+    }, "Supported xml PROLOG query with JSON answer", "json");
 };
 
 # Check response on INVENTORY request depends on only_local_store by default
@@ -279,7 +292,7 @@ _request(
     content         => "<?xml version='1.0' encoding='UTF-8' ?><REQUEST><QUERY>INVENTORY</QUERY><DEVICEID>foo</DEVICEID></REQUEST>",
 );
 subtest "Supported xml INVENTORY query" => sub {
-    check_error(200, { REPLY => "" }, "Supported xml INVENTORY query", "xml");
+    check_error(200, { REPLY => { RESPONSE => "SEND" } }, "Supported xml INVENTORY query", "xml");
 };
 
 # Wrong configuration
@@ -295,7 +308,7 @@ my $local_store = File::Temp->newdir();
 $proxy->config("local_store", $local_store);
 _request();
 subtest "only only_local_store with inventory saved" => sub {
-    check_error(200, { REPLY => "" }, "Supported xml INVENTORY query stored", "xml");
+    check_error(200, { REPLY => { RESPONSE => "SEND" } }, "Supported xml INVENTORY query stored", "xml");
 };
 SKIP: {
     skip ('chmod not working as expected on Win32', 1)
@@ -323,7 +336,7 @@ subtest "failing to pass inventory to server" => sub {
 $glpi->{url} = URI->new("http://glpi-project.test/glpi?test=sent");
 _request();
 subtest "send inventory to server" => sub {
-    check_error(200, { REPLY => "" }, "Inventory sent to server0", "xml");
+    check_error(200, { REPLY => { RESPONSE => "SEND" } }, "Inventory sent to server0", "xml");
 };
 
 #
@@ -336,14 +349,14 @@ _request(
     "GLPI-Agent-ID" => $agentid
 );
 subtest "Unsupported xml content with new protocol" => sub {
-    check_error(403, "Not a legacy CONTACT");
+    check_error(403, "Unsupported query");
 };
 
 _request(
     content         => "<?xml version='1.0' encoding='UTF-8' ?><REQUEST><QUERY>PROLOG</QUERY></REQUEST>",
 );
 subtest "Unsupported xml content with new protocol" => sub {
-    check_error(403, "No deviceid in CONTACT");
+    check_error(403, "PROLOG query without deviceid");
 };
 
 _request(
@@ -363,15 +376,12 @@ subtest "Supported xml PROLOG query" => sub {
 
 # Same request but with a server set
 $proxy->config("only_local_store", 0);
-$glpi->{url} = URI->new("http://glpi-project.test/glpi");
+$glpi->{url} = URI->new("http://glpi-project.test/glpi?test=prolog");
 $glpi->isGlpiServer(1);
 $agent->{targets} = [ $glpi ];
 _request();
 subtest "Supported xml PROLOG query with GLPI server" => sub {
-    check_error(202, {
-        expiration  => '0',
-        status      => "pending",
-    }, "Supported xml PROLOG query with JSON answer", "json");
+    check_error(200, { REPLY => { PROLOG_FREQ => "24", RESPONSE => "SEND" } }, "Supported xml PROLOG query", "xml");
 };
 
 # json content-type only supported for new protocol with glpi-agent-id header, but not valid
@@ -386,7 +396,7 @@ subtest "Unsupported compressed json content with new protocol" => sub {
 
 $proxy->config("local_store", $local_store."XXX");
 _request(
-    content         => compress('{ "action": "contact" }'),
+    content         => compress('{ "action": "contact", "deviceid": "foo" }'),
     "Content-Type"  => "application/x-compress-zlib",
     "GLPI-Agent-ID" => $agentid
 );
@@ -396,7 +406,7 @@ subtest "JSON message but not existing store" => sub {
 
 $proxy->config("local_store", $local_store."XXX");
 _request(
-    content         => '{ "action": "contact" }',
+    content         => '{ "action": "contact", "deviceid": "foo" }',
     "Content-Type"  => "application/json",
     "GLPI-Agent-ID" => $agentid
 );
@@ -407,7 +417,7 @@ subtest "JSON message but not existing store" => sub {
 $proxy->config("local_store", "");
 $proxy->config("only_local_store", 1);
 _request(
-    content         => '{ "action": "inventory" }',
+    content         => '{ "action": "inventory", "deviceid": "foo" }',
     "Content-Type"  => "application/json",
     "GLPI-Agent-ID" => $agentid
 );

@@ -31,7 +31,7 @@ sub new {
         'GLPI-Agent-ID' => is_uuid_string($params{agentid}) ?
             $params{agentid} : uuid_to_string($params{agentid})
     )
-        if defined($params{agentid});
+        unless empty($params{agentid});
 
     return $self;
 }

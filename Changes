@@ -20,6 +20,13 @@ netdiscovery/netinventory:
 esx:
 * fix #1084: Don't keep VM OS if full_name has not been discovered
 
+proxy-server-plugin:
+* Enhancement:
+  - Refacto
+  - Fix glpi target protocol detection for client agents
+  - Netdiscovery and Netinventory tasks are now supported
+* Bump Proxy plugin version to 3.0
+
 packaging:
 * fix #1093: Fix rpm packaging where base package requires task-network one
 * fix #1077: Enable Crypt::DES & Crypt::Rijndael in MacOS build to support SNMPv3
