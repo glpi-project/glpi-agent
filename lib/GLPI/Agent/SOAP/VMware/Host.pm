@@ -6,6 +6,7 @@ use warnings;
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Virtualization;
 use GLPI::Agent::Tools::UUID;
+use GLPI::Agent::Tools::Generic;
 
 sub new {
     my ($class, %params) = @_;
@@ -73,10 +74,13 @@ sub getBiosInfo {
     };
 
     if (ref($systemInfo->{otherIdentifyingInfo}) eq 'HASH') {
-        $bios->{ASSETTAG} = $systemInfo->{otherIdentifyingInfo}->{identifierValue};
+        my $assettag = $systemInfo->{otherIdentifyingInfo}->{identifierValue};
+        $bios->{ASSETTAG} = $assettag
+            unless isInvalidBiosValue($assettag);
     }
     elsif (ref($systemInfo->{otherIdentifyingInfo}) eq 'ARRAY') {
         foreach (@{$systemInfo->{otherIdentifyingInfo}}) {
+            next if isInvalidBiosValue($_->{identifierValue});
             if ($_->{identifierType}->{key} eq 'ServiceTag') {
                 # In the case we found more than one ServiceTag, assume there will be
                 # only two, the first being the chassis S/N, the second the system S/N

@@ -19,6 +19,7 @@ netdiscovery/netinventory:
 
 esx:
 * fix #1084: Don't keep VM OS if full_name has not been discovered
+* Filter out invalid BIOS values
 
 proxy-server-plugin:
 * Enhancement:

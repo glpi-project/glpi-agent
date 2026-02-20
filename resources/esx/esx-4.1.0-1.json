@@ -2,7 +2,6 @@
    "action": "inventory",
    "content": {
       "bios": {
-         "assettag": " To Be Filled By O.E.M.",
          "bdate": "2009-02-04T00:00:00Z",
          "bversion": "S39_3B27",
          "smanufacturer": "Sun Microsystems",
