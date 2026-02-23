@@ -33,6 +33,7 @@ packaging:
 * fix #1093: Fix rpm packaging where base package requires task-network one
 * fix #1077: Enable Crypt::DES & Crypt::Rijndael in MacOS build to support SNMPv3
 * Update Windows packaging to use:
+  - gcc 15.2.0posix-13.0.0-msvcrt-r6
   - zlib 1.3.2
   - 7-Zip v26.00
 * Update MacOSX packages to use zlib 1.3.2
