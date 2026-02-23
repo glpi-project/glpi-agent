@@ -7,6 +7,8 @@ Warning for developers: Don't change/remove any entry which doesn't concern your
 core:
 * Don't truncate submitted data with GLPI::Agent::HTTP::Client::Fusion when submitting
   in a POST request. This is the case when submitting very long data for Collect task.
+* Keep all the server tasks config, not only the planned ones to be sure glpi version
+  check works even when inventory task is not planned.
 
 inventory:
 * fix #1100: Fix LiteManager remote management inventory

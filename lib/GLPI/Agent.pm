@@ -315,7 +315,7 @@ sub getContact {
         # Handle tasks informations returned by server in CONTACT answer
         if (ref($tasks) eq "HASH") {
             # Only keep task server support for planned tasks
-            foreach my $task (map { lc($_) } @{$plannedTasks}) {
+            foreach my $task (keys(%{$tasks})) {
                 next unless ref($tasks->{$task}) eq 'HASH';
 
                 # Keep task supporting announced by server
@@ -327,7 +327,7 @@ sub getContact {
                 );
 
                 # Handle inventory task configuration
-                if ($task eq "inventory") {
+                if (lc($task) eq "inventory") {
                     # Handle no-category set by server on inventory task
                     if ($tasks->{inventory}->{"no-category"}) {
                         my $no_category = [ sort split(/,+/, $tasks->{inventory}->{"no-category"}) ];
