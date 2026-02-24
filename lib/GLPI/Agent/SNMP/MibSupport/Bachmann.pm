@@ -26,6 +26,18 @@ our $mibSupport = [
     }
 ];
 
+sub getType {
+    my ($self) = @_;
+
+    my $device = $self->device
+        or return;
+
+    # From GLPI 12.0.0, this device can be reported as PDU
+    my $glpi_version = $device->{glpi} ? glpiVersion($device->{glpi}) : 0;
+    return $glpi_version && $glpi_version >= glpiVersion('12.0.0') ?
+        "PDU" : "NETWORKING";
+}
+
 sub getManufacturer {
     my ($self) = @_;
 
@@ -72,6 +84,7 @@ sub run {
         $device->addFirmware($hwRevision);
     }
 }
+
 1;
 
 __END__

@@ -21,6 +21,7 @@ use constant discovery => [ qw(
 # STORAGES is specified in inventory.schema.json and can be used to inventory SAN disks
 use constant inventory => [ qw(
         INFO PORTS MODEMS FIRMWARES SIMCARDS PAGECOUNTERS CARTRIDGES COMPONENTS STORAGES DRIVES
+        PDU
     )];
 
 # common base variables

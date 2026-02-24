@@ -19,6 +19,11 @@ netdiscovery/netinventory:
 * fix #1091: Support "contextname" field for SNMPv3 credentials option
 * fix #1104: Updated Hikvision devices support
 * fix #1106: Updated Eaton PDU devices support
+* New feature: PDU support preview for glpi 12
+  * PDU type supported if glpi-version is 12 or greater
+  * Updated Raritan PDUs support with plugs listing support
+  * Updated RNX PDUs support with plugs listing support
+  * Updated Bachmann PDUs support
 
 esx:
 * fix #1084: Don't keep VM OS if full_name has not been discovered
