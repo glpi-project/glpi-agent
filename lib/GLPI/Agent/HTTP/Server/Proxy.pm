@@ -129,8 +129,11 @@ sub events_cb {
         return;
     }
 
-    my ($reqid, $dump) = $event =~ /^PROXYREQ,([^,]*),(.*)$/ms
+    my ($name, $reqid, $dump) = $event =~ /^PROXYREQ,([^,]*),([^,]*),(.*)$/ms
         or return 0;
+
+    # Plugin can be Proxy or SecondaryProxy, so we need to avoid events we don't own
+    return 0 unless $name eq $self->name();
 
     if ($dump =~ /^\{/) {
         my $answer = GLPI::Agent::Protocol::Answer->new(
@@ -307,7 +310,7 @@ sub _handle_proxy_request {
             # Remove answer when it is the finally expected one
             unless ($answer->http_code() == 202) {
                 delete $self->{answer}->{$self->{requestid}};
-                $agent->forked_process_event("PROXYREQ,$self->{requestid},DELETE");
+                $agent->forked_process_event("PROXYREQ,".$self->name().",$self->{requestid},DELETE");
                 $self->debug("Forgetting $self->{requestid} request status as last one expected from $remoteid");
             }
 
@@ -477,7 +480,7 @@ sub _handle_glpi_protocol_request {
         proxyids    => $proxyid,
         expiration  => $expiration."s",
     );
-    $agent->forked_process_event("PROXYREQ,$requestid,".$answer->dump());
+    $agent->forked_process_event("PROXYREQ,".$self->name().",$requestid,".$answer->dump());
 
     # Notify client with pending status
     $self->_send($answer);
@@ -523,13 +526,13 @@ sub _handle_glpi_protocol_request {
     if ($answer->status ne "error") {
         if ($answer->status eq "ok") {
             $answer->success;
-            $agent->forked_process_event("PROXYREQ,$requestid,".(int(time-$timer)+1));
+            $agent->forked_process_event("PROXYREQ,".$self->name().",$requestid,".(int(time-$timer)+1));
         } elsif ($answer->status eq "pending") {
             # Case server is another proxy returning a pending status
-            $agent->forked_process_event("PROXYREQ,$requestid,".(int(time-$timer)+$answer->expiration));
+            $agent->forked_process_event("PROXYREQ,".$self->name().",$requestid,".(int(time-$timer)+$answer->expiration));
         }
     }
-    $agent->forked_process_event("PROXYREQ,$requestid,".$answer->dump());
+    $agent->forked_process_event("PROXYREQ,".$self->name().",$requestid,".$answer->dump());
 
     return $answer->http_code;
 }
