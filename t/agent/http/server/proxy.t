@@ -26,7 +26,7 @@ use GLPI::Agent::XML::Response;
 use GLPI::Agent::Target::Server;
 use GLPI::Agent::Protocol::Answer;
 
-plan tests => 57;
+plan tests => 58;
 
 my $logger = GLPI::Agent::Logger->new(
     logger => [ 'Test' ]
@@ -86,6 +86,9 @@ lives_ok {
 lives_ok {
     $proxy->init();
 } "proxy initialization";
+
+my $proxyname = $proxy->name();
+is( $proxyname, "Proxy", "proxy plugin internal name" );
 
 # We don't test maxrate
 $proxy->config("maxrate", 0);
@@ -448,14 +451,14 @@ _request();
 subtest "JSON inventory pending request but ko" => sub {
     check_error(202, { status => "pending", expiration => "10s" }, "JSON inventory action stored", "json");
 };
-like(shift @events, qr/^PROXYREQ,[0-9A-F]{8},.*"status":"pending"/, "Pending inventory event");
-like(shift @events, qr/^PROXYREQ,[0-9A-F]{8},.*"message":"server0 forward failure"/, "Pending inventory event not sent");
+like(shift @events, qr/^PROXYREQ,$proxyname,[0-9A-F]{8},.*"status":"pending"/, "Pending inventory event");
+like(shift @events, qr/^PROXYREQ,$proxyname,[0-9A-F]{8},.*"message":"server0 forward failure"/, "Pending inventory event not sent");
 
 $glpi->{url} = URI->new("http://glpi-project.test/glpi?test=sent");
 _request();
 subtest "JSON inventory pending request and ok" => sub {
     check_error(202, { status => "pending", expiration => "10s" }, "JSON inventory action stored", "json");
 };
-like(shift @events, qr/^PROXYREQ,[0-9A-F]{8},.*"status":"pending"/, "Pending inventory event");
-like(shift @events, qr/^PROXYREQ,[0-9A-F]{8},\d+$/, "Pending inventory timing event");
-like(shift @events, qr/^PROXYREQ,[0-9A-F]{8},.*"status":"ok"/, "Pending inventory event sent");
+like(shift @events, qr/^PROXYREQ,$proxyname,[0-9A-F]{8},.*"status":"pending"/, "Pending inventory event");
+like(shift @events, qr/^PROXYREQ,$proxyname,[0-9A-F]{8},\d+$/, "Pending inventory timing event");
+like(shift @events, qr/^PROXYREQ,$proxyname,[0-9A-F]{8},.*"status":"ok"/, "Pending inventory event sent");
