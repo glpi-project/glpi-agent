@@ -3,12 +3,7 @@ package GLPI::Agent::HTTP::Server::SecondaryProxy;
 use strict;
 use warnings;
 
-use English qw(-no_match_vars);
-
 use base "GLPI::Agent::HTTP::Server::Proxy";
-
-use GLPI::Agent::Tools;
-use GLPI::Agent::HTTP::Client::OCS;
 
 our $VERSION = "1.1";
 
