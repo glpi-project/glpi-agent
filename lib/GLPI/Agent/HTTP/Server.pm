@@ -791,6 +791,8 @@ sub handleRequests {
 
     return unless $self->{listener}; # init() call failed
 
+    my $agent = $self->{agent};
+
     # Avoid an error as Socket::VERSION may contain underscore
     my ($SocketVersion) = split('_',$Socket::VERSION);
 
@@ -813,9 +815,14 @@ sub handleRequests {
 
         # Upgrade to SSL if required
         my $ssl = $self->{listeners}->{$port}->{ssl};
-        if ($ssl && !$ssl->upgrade_SSL($client)) {
-            $self->{logger}->debug($log_prefix . "HTTPD can't start SSL session");
-            next;
+        if ($ssl) {
+            # Handle SSL upgrade in fork
+            next if $agent->fork(name => "ssl-request", description => "ssl request");
+            unless ($ssl->upgrade_SSL($client)) {
+                $self->{logger}->debug($log_prefix . "HTTPD can't start SSL session");
+                next unless $agent->forked();
+                $agent->fork_exit(logger => $self->{logger}, name => "ssl-request");
+            }
         }
 
         my $family = sockaddr_family($socket);
@@ -832,6 +839,10 @@ sub handleRequests {
         }
         my $request = $client->get_request();
         $self->_handle_plugins($client, $request, $clientIp, $self->{listeners}->{$port}->{plugins}, MaxKeepAlive);
+
+        # Exit here if we forked to handle a ssl request
+        $agent->fork_exit(logger => $self->{logger}, name => "ssl-request")
+            if $ssl && $agent->forked();
     }
 
     return unless $self->{listener}; # in case of config reload()
@@ -844,9 +855,13 @@ sub handleRequests {
     $got_connection++;
 
     # Upgrade to SSL if required
-    if ($self->{_ssl} && !$self->{_ssl}->upgrade_SSL($client)) {
-        $self->{logger}->debug($log_prefix . "HTTPD can't start SSL session");
-        return $got_connection;
+    if ($self->{_ssl}) {
+        # Handle SSL upgrade in fork
+        return $got_connection if $agent->fork(name => "ssl-request", description => "ssl request");
+        unless ($self->{_ssl}->upgrade_SSL($client)) {
+            $self->{logger}->debug($log_prefix . "HTTPD can't start SSL session");
+            $agent->fork_exit(logger => $self->{logger}, name => "ssl-request");
+        }
     }
 
     my $family = sockaddr_family($socket);
@@ -863,6 +878,10 @@ sub handleRequests {
     }
     my $request = $client->get_request();
     $self->_handle($client, $request, $clientIp, MaxKeepAlive);
+
+    # Exit here if we dispatched a ssl request
+    $agent->fork_exit(logger => $self->{logger}, name => "ssl-request")
+        if $self->{_ssl} && $agent->forked();
 
     $self->{_timer_event} = time+10
         if ($self->{_timer_event} > time+10);

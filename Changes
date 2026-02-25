@@ -9,6 +9,7 @@ core:
   in a POST request. This is the case when submitting very long data for Collect task.
 * Keep all the server tasks config, not only the planned ones to be sure glpi version
   check works even when inventory task is not planned.
+* Fork incoming httpd request before upgrading to SSL when SSL HTTP plugin is enabled
 
 inventory:
 * fix #1100: Fix LiteManager remote management inventory
@@ -37,6 +38,12 @@ proxy-server-plugin:
   - Don't handle internal event we don't own when proxy and secondary proxy are
     enabled at the same time
 * Bump Proxy plugin version to 3.0
+
+ssl-server-plugin:
+* Enhancement:
+  - Preload SSL context to keep it alive along service life
+  - The plugin is now supported on windows platform
+* Bump Proxy plugin version to 2.0
 
 packaging:
 * fix #1093: Fix rpm packaging where base package requires task-network one

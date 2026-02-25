@@ -10,7 +10,7 @@ use base "GLPI::Agent::HTTP::Server::Plugin";
 
 use GLPI::Agent::Tools;
 
-our $VERSION = "1.2";
+our $VERSION = "2.0";
 
 sub log_prefix {
     return "[ssl server plugin] ";
@@ -89,6 +89,14 @@ sub init {
     $self->debug2("Key file:         $self->{'key_file'}");
     $self->debug2("Cipher:           ".($self->{cipher}//"n/a"));
 
+    # Prepare SSL Server Context
+    $self->{context} = IO::Socket::SSL::SSL_Context->new(
+        SSL_server      => 1,
+        SSL_version     => $self->{cipher} // "",
+        SSL_cert_file   => $self->{cert_file},
+        SSL_key_file    => $self->{key_file},
+    );
+
     # Activate SSL Debug if Stderr is in backends
     my $DEBUG_SSL = 0;
     $DEBUG_SSL = grep { ref($_) =~/Stderr$/ } @{$self->{logger}{backends}}
@@ -130,10 +138,8 @@ sub new {
     eval {
         # SSL upgrade client
         IO::Socket::SSL->start_SSL($client,
-            SSL_version     => $plugin->{cipher} // "",
             SSL_server      => 1,
-            SSL_cert_file   => $plugin->{cert_file},
-            SSL_key_file    => $plugin->{key_file},
+            SSL_reuse_ctx   => $plugin->{context},
         ) or die "Failed to upgrade socket to SSL: $IO::Socket::SSL::SSL_ERROR\n";
     };
     if ($EVAL_ERROR) {
