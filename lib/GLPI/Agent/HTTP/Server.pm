@@ -201,12 +201,6 @@ sub _handle {
             if ($plugin->urlMatch($path)) {
                 undef $error_400;
                 last SWITCH unless $plugin->supported_method($method);
-                # Only support trusted client if required
-                if ($plugin->forbid_not_trusted() && !$self->_isTrusted($clientIp)) {
-                    $status = 403;
-                    $client->send_error(403);
-                    last SWITCH;
-                }
                 $status = $plugin->handle($client, $request, $clientIp);
                 last SWITCH if $status;
             }
@@ -246,6 +240,20 @@ sub _handle {
     $client->close();
 }
 
+sub _handle_plugins_control {
+    my ($self, $client, $clientIp, $plugins) = @_;
+
+    foreach my $plugin (@{$plugins}) {
+        next if $plugin->disabled();
+        # Only support trusted client if required
+        return 403 if $plugin->forbid_not_trusted() && !$self->_isTrusted($clientIp);
+        # Early handle of rate limitation
+        return 429 if $plugin->rate_limited($clientIp);
+    }
+
+    return 0;
+}
+
 sub _handle_plugins {
     my ($self, $client, $request, $clientIp, $plugins, $maxKeepAlive) = @_;
 
@@ -268,12 +276,6 @@ sub _handle_plugins {
         if ($plugin->urlMatch($path)) {
             $match = 1;
             last unless ($plugin->supported_method($method));
-            # Only support trusted client if required
-            if ($plugin->forbid_not_trusted() && !$self->_isTrusted($clientIp)) {
-                $status = 403;
-                $client->send_error(403);
-                last;
-            }
             $status = $plugin->handle($client, $request, $clientIp);
             $self->{_timer_event} = time+10
                 if ($self->{_timer_event} > time+10);
@@ -813,18 +815,6 @@ sub handleRequests {
 
         $got_connection++;
 
-        # Upgrade to SSL if required
-        my $ssl = $self->{listeners}->{$port}->{ssl};
-        if ($ssl) {
-            # Handle SSL upgrade in fork
-            next if $agent->fork(name => "ssl-request", description => "ssl request");
-            unless ($ssl->upgrade_SSL($client)) {
-                $self->{logger}->debug($log_prefix . "HTTPD can't start SSL session");
-                next unless $agent->forked();
-                $agent->fork_exit(logger => $self->{logger}, name => "ssl-request");
-            }
-        }
-
         my $family = sockaddr_family($socket);
         my $iaddr  = $family == AF_INET  ? unpack_sockaddr_in($socket)  :
                      $family == AF_INET6 ? unpack_sockaddr_in6($socket) :
@@ -837,7 +827,33 @@ sub handleRequests {
             my (undef, $iaddr) = sockaddr_in($socket);
             $clientIp = inet_ntoa($iaddr);
         }
+
+        my $ssl = $self->{listeners}->{$port}->{ssl};
+        my @plugins = @{$self->{listeners}->{$port}->{plugins}};
+        unshift @plugins, $ssl if $ssl;
+        my $error_status = $self->_handle_plugins_control($client, $clientIp, \@plugins);
+        # Upgrade to SSL if required
+        if ($ssl) {
+            # Handle SSL upgrade in fork
+            next if $agent->fork(name => "ssl-request", description => "ssl request");
+            unless ($ssl->upgrade_SSL($client)) {
+                $self->{logger}->debug($log_prefix . "HTTPD can't start SSL session");
+                next unless $agent->forked();
+                $agent->fork_exit(logger => $self->{logger}, name => "ssl-request");
+            }
+        }
+
         my $request = $client->get_request();
+
+        # Return status error, eventually into SSL connection
+        if ($error_status) {
+            $client->send_status_line($error_status);
+            $self->{logger}->debug($log_prefix . "response status $error_status");
+            $agent->fork_exit(logger => $self->{logger}, name => "ssl-request")
+                if $ssl && $agent->forked();
+            next;
+        }
+
         $self->_handle_plugins($client, $request, $clientIp, $self->{listeners}->{$port}->{plugins}, MaxKeepAlive);
 
         # Exit here if we forked to handle a ssl request
@@ -854,16 +870,6 @@ sub handleRequests {
 
     $got_connection++;
 
-    # Upgrade to SSL if required
-    if ($self->{_ssl}) {
-        # Handle SSL upgrade in fork
-        return $got_connection if $agent->fork(name => "ssl-request", description => "ssl request");
-        unless ($self->{_ssl}->upgrade_SSL($client)) {
-            $self->{logger}->debug($log_prefix . "HTTPD can't start SSL session");
-            $agent->fork_exit(logger => $self->{logger}, name => "ssl-request");
-        }
-    }
-
     my $family = sockaddr_family($socket);
     my $iaddr  = $family == AF_INET  ? unpack_sockaddr_in($socket)  :
                  $family == AF_INET6 ? unpack_sockaddr_in6($socket) :
@@ -876,7 +882,31 @@ sub handleRequests {
         my (undef, $iaddr) = sockaddr_in($socket);
         $clientIp = inet_ntoa($iaddr);
     }
+
+    my @plugins = @{$self->{_plugins}};
+    unshift @plugins, $self->{_ssl} if $self->{_ssl};
+    my $error_status = $self->_handle_plugins_control($client, $clientIp, \@plugins);
+
+    # Upgrade to SSL if required
+    if ($self->{_ssl}) {
+        # Handle SSL upgrade in fork
+        return $got_connection if $agent->fork(name => "ssl-request", description => "ssl request");
+        unless ($self->{_ssl}->upgrade_SSL($client)) {
+            $self->{logger}->debug($log_prefix . "HTTPD can't start SSL session");
+            $agent->fork_exit(logger => $self->{logger}, name => "ssl-request");
+        }
+    }
+
     my $request = $client->get_request();
+
+    if ($error_status) {
+        $client->send_status_line($error_status);
+        $self->{logger}->debug($log_prefix . "response status $error_status");
+        $agent->fork_exit(logger => $self->{logger}, name => "ssl-request")
+            if $self->{_ssl} && $agent->forked();
+        return $got_connection;
+    }
+
     $self->_handle($client, $request, $clientIp, MaxKeepAlive);
 
     # Exit here if we dispatched a ssl request

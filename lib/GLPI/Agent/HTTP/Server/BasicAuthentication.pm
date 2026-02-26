@@ -82,12 +82,6 @@ sub supported_method {
 sub handle {
     my ($self, $client, $request, $clientIp) = @_;
 
-    # rate limit by ip to avoid abuse
-    if ($self->rate_limited($clientIp)) {
-        $client->send_error(429); # Too Many Requests
-        return 429;
-    }
-
     my $auth = $request->header('Authorization');
     unless ($auth) {
         my $response = HTTP::Response->new(

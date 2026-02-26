@@ -185,11 +185,6 @@ sub handle {
     undef $requestid unless defined($requestid) && $requestid =~ /^[0-9A-F]{8}$/;
     $self->{requestid} = $requestid;
 
-    # rate limit by ip to avoid abuse
-    if ($self->rate_limited($clientIp)) {
-        return $self->proxy_error(429, 'Too Many Requests');
-    }
-
     if ($self->{request} eq 'apiversion') {
         my $response = HTTP::Response->new(
             200,
@@ -203,8 +198,11 @@ sub handle {
         return 200;
     }
 
+    # Get fork name which is ssl-request when still forked if ssl plugin is enabled
+    my $name = $agent->forked() ? "ssl-request" : $self->name();
+
     # check against max_proxy_threads
-    my $current_requests = $agent->forked(name => $self->name());
+    my $current_requests = $agent->forked(name => $name);
     if ($current_requests >= $self->config('max_proxy_threads')) {
         return $self->proxy_error(429, 'Too Many Requests');
     }

@@ -10,6 +10,7 @@ core:
 * Keep all the server tasks config, not only the planned ones to be sure glpi version
   check works even when inventory task is not planned.
 * Fork incoming httpd request before upgrading to SSL when SSL HTTP plugin is enabled
+* Refacto: HTTP server plugins controls support was optimized
 
 inventory:
 * fix #1100: Fix LiteManager remote management inventory

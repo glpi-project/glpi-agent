@@ -87,12 +87,6 @@ sub handle {
     my $logger = $self->{logger};
     my $target = $self->{target};
 
-    # rate limit by ip to avoid abuse
-    if ($self->rate_limited($clientIp)) {
-        $client->send_error(429); # Too Many Requests
-        return 429;
-    }
-
     if ($self->{request} eq 'apiversion') {
         my $response = HTTP::Response->new(
             200,
