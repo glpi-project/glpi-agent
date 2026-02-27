@@ -246,7 +246,8 @@ sub _getDevice {
 
     my $device = GLPI::Agent::SNMP::Device->new(
         snmp   => $params{snmp},
-        glpi   => $params{glpi} // '', # glpi server version if we need to check feature support
+        # glpi server version if we need to check feature support
+        glpi   => $params{glpi} // $config->{"glpi-version"},
         logger => $logger
     );
 
