@@ -26,6 +26,9 @@ netdiscovery/netinventory:
   * Updated Raritan PDUs support with plugs listing support
   * Updated RNX PDUs support with plugs listing support
   * Updated Bachmann PDUs support
+* Updated Juniper device support:
+  * Fix connections detection
+  * Enhanced stacking support
 
 esx:
 * fix #1084: Don't keep VM OS if full_name has not been discovered
