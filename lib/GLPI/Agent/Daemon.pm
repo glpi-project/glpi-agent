@@ -15,10 +15,14 @@ use Time::HiRes qw(usleep);
 # IPC_EFILE can be used to handle events recognized in parent and is used on MSWin32
 #           when transmitted event is too big for IPC
 # IPC_ABORT can be used to abort a forked process
+# IPC_RNAME can be used to rename a child process to correctly answer when counting
+#           then during forked(name => $name) calls. This is used when a process
+#           is forked early if SSL HTTP server plugin is used.
 use constant IPC_LEAVE  => 'LEAVE';
 use constant IPC_EVENT  => 'EVENT';
 use constant IPC_ABORT  => 'ABORT';
 use constant IPC_EFILE  => 'EFILE';
+use constant IPC_RNAME  => 'RNAME';
 
 use parent 'GLPI::Agent';
 
@@ -346,7 +350,7 @@ sub runTask {
 
         $self->runTaskReal($target, $name, $response);
 
-        $self->fork_exit(0);
+        $self->fork_exit();
     }
 }
 
@@ -531,6 +535,13 @@ sub handleChildren {
             if ($child->{in}->sysread($msg, 5)) {
                 if ($msg eq IPC_LEAVE) {
                     $self->child_exit($pid);
+                } elsif ($msg eq IPC_RNAME) {
+                    my ($len, $name);
+                    $len = unpack("S", $len)
+                        if $child->{in}->sysread($len, 2);
+                    if ($len && $child->{in}->sysread($name, $len)) {
+                        $child->{name} = $name;
+                    }
                 } elsif ($msg eq IPC_EVENT) {
                     my $len;
                     $len = unpack("S", $len)
@@ -601,10 +612,10 @@ sub sleep {
         } else {
             if ($self->{_shorter_delay}) {
                 if (time < $self->{_shorter_delay}) {
-                    usleep 100000;
+                    usleep 20000;
                 } else {
-                    usleep 1000000;
                     delete $self->{_shorter_delay};
+                    usleep 1000000;
                 }
             } else {
                 usleep 1000000;
@@ -617,8 +628,17 @@ sub sleep {
 sub fork {
     my ($self, %params) = @_;
 
-    # Only fork if we are authorized
-    return unless $self->{_fork};
+    # Only fork if we are still not forked in that ase, we just need to rename
+    # the fork in parent
+    unless ($self->{_fork}) {
+        my $lname = length($params{name} // "");
+        if ($lname) {
+            $self->{_ipc_out}->syswrite(IPC_RNAME.pack("S", $lname).$params{name});
+            GLPI::Agent::Tools::Win32::setPoller($self->{_ipc_pollin})
+                if $OSNAME eq 'MSWin32';
+        }
+        return;
+    }
 
     my ($child_ipc, $parent_ipc, $ipc_poller);
     my $logger = $self->{logger};
@@ -783,6 +803,8 @@ sub fork_exit {
 
     if ($self->{_ipc_out}) {
         $self->{_ipc_out}->syswrite(IPC_LEAVE);
+        GLPI::Agent::Tools::Win32::setPoller($self->{_ipc_pollin})
+            if $OSNAME eq 'MSWin32';
         $self->{_ipc_out}->close();
         delete $self->{_ipc_out};
     }

@@ -11,6 +11,9 @@ core:
   check works even when inventory task is not planned.
 * Fork incoming httpd request before upgrading to SSL when SSL HTTP plugin is enabled
 * Refacto: HTTP server plugins controls support was optimized
+* Add new IPC message type to rename forked for SSL connections processes after
+  HTTP server plugin using it is known.
+* Reduced waiting when IPC or HTTP server is used to make them more responsive
 
 inventory:
 * fix #1100: Fix LiteManager remote management inventory

@@ -198,11 +198,8 @@ sub handle {
         return 200;
     }
 
-    # Get fork name which is ssl-request when still forked if ssl plugin is enabled
-    my $name = $agent->forked() ? "ssl-request" : $self->name();
-
     # check against max_proxy_threads
-    my $current_requests = $agent->forked(name => $name);
+    my $current_requests = $agent->forked(name => $self->name());
     if ($current_requests >= $self->config('max_proxy_threads')) {
         return $self->proxy_error(429, 'Too Many Requests');
     }
@@ -223,7 +220,7 @@ sub handle {
 
     $client->close();
 
-    $agent->fork_exit(logger => $self, name => $self->name());
+    $agent->fork_exit();
 
     return $retcode;
 }

@@ -839,7 +839,7 @@ sub handleRequests {
             unless ($ssl->upgrade_SSL($client)) {
                 $self->{logger}->debug($log_prefix . "HTTPD can't start SSL session");
                 next unless $agent->forked();
-                $agent->fork_exit(logger => $self->{logger}, name => "ssl-request");
+                $agent->fork_exit();
             }
         }
 
@@ -849,16 +849,14 @@ sub handleRequests {
         if ($error_status) {
             $client->send_status_line($error_status);
             $self->{logger}->debug($log_prefix . "response status $error_status");
-            $agent->fork_exit(logger => $self->{logger}, name => "ssl-request")
-                if $ssl && $agent->forked();
+            $agent->fork_exit() if $ssl;
             next;
         }
 
         $self->_handle_plugins($client, $request, $clientIp, $self->{listeners}->{$port}->{plugins}, MaxKeepAlive);
 
         # Exit here if we forked to handle a ssl request
-        $agent->fork_exit(logger => $self->{logger}, name => "ssl-request")
-            if $ssl && $agent->forked();
+        $agent->fork_exit() if $ssl;
     }
 
     return unless $self->{listener}; # in case of config reload()
@@ -893,7 +891,7 @@ sub handleRequests {
         return $got_connection if $agent->fork(name => "ssl-request", description => "ssl request");
         unless ($self->{_ssl}->upgrade_SSL($client)) {
             $self->{logger}->debug($log_prefix . "HTTPD can't start SSL session");
-            $agent->fork_exit(logger => $self->{logger}, name => "ssl-request");
+            $agent->fork_exit();
         }
     }
 
@@ -902,16 +900,14 @@ sub handleRequests {
     if ($error_status) {
         $client->send_status_line($error_status);
         $self->{logger}->debug($log_prefix . "response status $error_status");
-        $agent->fork_exit(logger => $self->{logger}, name => "ssl-request")
-            if $self->{_ssl} && $agent->forked();
+        $agent->fork_exit() if $self->{_ssl};
         return $got_connection;
     }
 
     $self->_handle($client, $request, $clientIp, MaxKeepAlive);
 
     # Exit here if we dispatched a ssl request
-    $agent->fork_exit(logger => $self->{logger}, name => "ssl-request")
-        if $self->{_ssl} && $agent->forked();
+    $agent->fork_exit() if $self->{_ssl};
 
     $self->{_timer_event} = time+10
         if ($self->{_timer_event} > time+10);
