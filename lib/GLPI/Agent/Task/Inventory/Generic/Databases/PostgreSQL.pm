@@ -10,6 +10,7 @@ use parent 'GLPI::Agent::Task::Inventory::Generic::Databases';
 use version;
 
 use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Unix;
 use GLPI::Agent::Inventory::DatabaseService;
 
 sub isEnabled {
@@ -45,10 +46,17 @@ sub _getDatabaseService {
     # Still cleanup PG environment
     delete $ENV{PGPASSFILE};
 
+    # List of instance to loop on when using default credentials
+    my @instances;
+
+    my ($uid, $cansudo);
+
     foreach my $credential (@{$credentials}) {
-        GLPI::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
-        my $passfile = _psqlPgpassFile($credential);
-        $ENV{PGPASSFILE} = $passfile->filename if $passfile;
+        unless (@instances) {
+            GLPI::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
+            my $passfile = _psqlPgpassFile($credential);
+            $ENV{PGPASSFILE} = $passfile->filename if $passfile;
+        }
 
         delete $params{sudo};
 
@@ -58,14 +66,46 @@ sub _getDatabaseService {
         $params{options} .= " -U \"$credential->{login}\"" unless empty($credential->{login});
 
         unless ($params{options}) {
-            my $id = getFirstLine(command => "id -u");
-            if (defined($id) && $id eq "0") {
-                $params{sudo} = 'su postgres -c "%s"';
-            } elsif (canRun("sudo")) {
-                my $sudo = getFirstLine(command => "sudo -nu postgres echo true");
-                if ($sudo && $sudo eq "true") {
-                    $params{sudo} = 'sudo -nu postgres %s';
+
+            # List postgresql processes and analyze parameters
+            unless (@instances) {
+                @instances = getProcesses(
+                    filter    => qr/(?:postgres|postmaster)\s/,
+                    checkexe  => qr/(?:postgres|postmaster)$/,
+                    namespace => "same",
+                    logger    => $params{logger}
+                );
+            }
+
+            my $user = "postgres";
+            my $cmd;
+            if (@instances) {
+                my $instance = shift @instances;
+                # Filter out possible command injection try
+                if ($instance->{CMD} && $instance->{CMD} !~ /[;"&|`\$<>[:cntrl:]]/) {
+                    $user = $instance->{USER};
+                    $cmd = $instance->{CMD};
+                    unless (defined($uid)) {
+                        $uid = getFirstLine(command => "id -u");
+                        if (canRun("sudo")) {
+                            my $sudo = getFirstLine(command => "sudo -nu $user echo true");
+                            $cansudo = $sudo && $sudo eq "true";
+                        }
+                    }
                 }
+            }
+
+            if (defined($uid) && $uid eq "0") {
+                $params{sudo} = 'su '.$user.' -c "%s"';
+            } elsif ($cansudo) {
+                $params{sudo} = 'sudo -nu '.$user.' %s';
+            }
+
+            if ($cmd && $params{sudo}) {
+                my $request = sprintf($params{sudo}, "$cmd -C unix_socket_directories");
+                my $unix_socket_directories = getFirstLine(command => $request, logger => $params{logger});
+                $params{options} = " -h \"$unix_socket_directories\""
+                    unless empty($unix_socket_directories);
             }
         }
 
@@ -147,6 +187,8 @@ sub _getDatabaseService {
 
         # Cleanup PG environment
         delete $ENV{PGPASSFILE};
+
+        redo if @instances;
     }
 
     return \@dbs;
@@ -168,10 +210,10 @@ sub _runSql {
     my $options = delete $params{options};
     my $command = "psql".$options;
     $command .= " -Anqtw -F, -c \"$sql\" connect_timeout=30";
-    if (!$options) {
+    if ($params{sudo}) {
         my $sudo = delete $params{sudo};
-        $command =~ s/"/\\"/g if $sudo && $sudo =~ /^su /;
-        $command = sprintf($sudo, $command) if $sudo;
+        $command =~ s/"/\\"/g if $sudo =~ /^su /;
+        $command = sprintf($sudo, $command);
     }
 
     # Only to support unittests

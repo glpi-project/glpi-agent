@@ -345,6 +345,9 @@ sub _getProcessesOther {
     my $filter = delete $params{filter};
     $filter = 0 unless ref($filter) eq "Regexp";
 
+    my $checkexe = delete $params{checkexe};
+    $checkexe = 0 unless ref($checkexe) eq "Regexp";
+
     my $qrLine = $sameNameSpace ? $qrProcessWithNameSpace : $qrProcessWithoutNameSpace;
 
     my @lines = getAllLines(%params)
@@ -386,6 +389,14 @@ sub _getProcessesOther {
             STARTED       => _getProcessStartTime($localtime, $etime),
             CMD           => $cmd
         };
+    }
+
+    # We may want to validate exe field in the case command line has been changed by the process
+    if ($checkexe) {
+        @processes = grep {
+            my $exe = getFirstLine(command => "readlink -m -q /proc/$_->{PID}/exe", logger => $params{logger});
+            defined($exe) && $exe =~ $checkexe;
+        } @processes;
     }
 
     return @processes;

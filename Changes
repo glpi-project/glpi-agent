@@ -15,7 +15,7 @@ core:
 inventory:
 * fix #1100: Fix LiteManager remote management inventory
 * Always ignore inventory uwp packages without name on windows
-* Updated PostgreSQL database inventory
+* Updated PostgreSQL database inventory with multi-instance support on linux
 
 netdiscovery/netinventory:
 * fix #1091: Support "contextname" field for SNMPv3 credentials option
