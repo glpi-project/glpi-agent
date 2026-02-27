@@ -246,7 +246,7 @@ sub getContact {
             message => $contact,
         );
         unless ($response) {
-            $self->{logger}->error("No supported answer from server at ".$target->getUrl());
+            $self->{logger}->error("Failed to request contact with server at ".$target->getUrl());
             # Always fallback on legacy XML-based protocol on error
             $target->isGlpiServer('false');
             # Return true on net error
@@ -385,7 +385,7 @@ sub getProlog {
             message => $prolog
         );
         unless ($response) {
-            $self->{logger}->error("No supported answer from server at ".$target->getUrl());
+            $self->{logger}->error("Failed to request prolog with server at ".$target->getUrl());
             # Return true on net error
             return 1;
         }
