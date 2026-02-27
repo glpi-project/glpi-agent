@@ -167,8 +167,8 @@ sub close {
     return $self->SUPER::close(SSL_no_shutdown => 1)
         if ${*$self}{_ssl_no_shutdown};
 
-    # Leave client time to cleanly shutdown SSL connections
-    $self->SUPER::close(SSL_fast_shutdown => 0);
+    # Cleanly shutdown SSL connections
+    $self->SUPER::close();
 }
 
 sub no_ssl_shutdown {
