@@ -715,12 +715,8 @@ sub _handle_legacy_protocol_request {
 sub proxy_error {
     my ($self, $rc, $error) = @_;
 
-    return $rc unless $self->{client};
-
-    my $header = HTTP::Headers->new('Content-Type' => 'text/plain; charset=utf-8');
-    my $response = HTTP::Response->new($rc, $error, $header, $error);
-
-    $self->{client}->send_response($response);
+    $self->{client}->send_status_line($rc, $error)
+        if $self->{client};
 
     return $rc;
 }

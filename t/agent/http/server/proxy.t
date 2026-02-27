@@ -112,6 +112,7 @@ $proxy->urlMatch($request->uri);
 my $client = Test::MockObject::Extends->new(HTTP::Daemon::ClientConn->new());
 my $response;
 $client->mock(send_response => sub { shift; $response = shift; });
+$client->mock(send_status_line => sub { shift; $response = "@_"; });
 lives_ok {
     $proxy->handle($client, $request, $ip);
 } "handle GET apiversion";
@@ -120,16 +121,16 @@ is( $response->content, $GLPI::Agent::HTTP::Server::Proxy::VERSION, "returned ap
 is( $response->status_line, "200 OK", "GET apiversion status" );
 
 sub _request {
-    if ($_[0] && $_[0] =~ /^GET|POST$/) {
-        my $method = shift;
-        my $url = shift;
-        $request = HTTP::Request->new($method => $url);
+    my %args = @_;
+    if (my $get = delete $args{GET}) {
+        $request = HTTP::Request->new(GET => $get);
+    } elsif (my $post = delete $args{POST}) {
+        $request = HTTP::Request->new(POST => $post);
     }
-    if ($_[0] && $_[0] =~ /^content$/) {
-        shift;
-        $request->content(shift);
+    if (my $content = delete $args{content}) {
+        $request->content($content);
     }
-    $request->header(@_) if @_;
+    $request->header(%args) if keys(%args);
     $proxy->urlMatch($request->uri);
     $proxy->handle($client, $request, $ip);
 }
@@ -155,6 +156,12 @@ is( $response->status_line, "404 PROXY-LOOP-DETECTED", "proxy loop error (2)" );
 
 sub check_error {
     my (undef, undef, $line) = caller;
+    if (!ref($response)) {
+        my ($code, $content) = $response =~ /^(\d+)\s+(.*)$/;
+        is( $code, $_[0], "Expected ".($_[2]//$_[0])." response (l.$line)" );
+        is( $content, $_[1], "Expected ".($_[2]//$_[1])." error message in response (l.$line)");
+        return;
+    }
     is( $response->code, $_[0], "Expected ".($_[2]//$_[0])." response (l.$line)" );
     if ($_[3] && $_[3] eq 'xml') {
         my $resp = GLPI::Agent::XML::Response->new(
