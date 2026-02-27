@@ -37,16 +37,16 @@ sub _getMasterKey {
     my ($self) = @_;
 
     my $device = $self->device
-        or return;
+        or return ".0";
 
     # Return cached value for this device
     return $device->{_master} if defined($device->{_master});
 
     my $role = $self->walk(jnxVirtualChassisMemberRole)
-        or return;
+        or return ".0";
 
     my $index = first { isInteger($role->{$_}) && $role->{$_} == 1 } keys(%{$role});
-    return $device->{_master} = ".$index";
+    return $device->{_master} = empty($index) ? ".0" : ".$index";
 }
 
 sub getFirmware {
