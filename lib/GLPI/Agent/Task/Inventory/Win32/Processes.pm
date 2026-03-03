@@ -5,6 +5,8 @@ use warnings;
 
 use parent 'GLPI::Agent::Task::Inventory::Module';
 
+use Time::HiRes qw(usleep);
+
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Win32;
 
@@ -32,21 +34,26 @@ sub _getProcesses {
 
     my @processes;
 
+    my $cpucount = 0;
+    foreach my $proc (getWMIObjects(
+        class      => 'Win32_Processor',
+        properties => [ qw/NumberOfCores/ ]
+    )) {
+        $cpucount += int($proc->{NumberOfCores});
+    }
+    $cpucount = 1 unless $cpucount;
+
     my ($computerSystem) = getWMIObjects(
         class      => 'Win32_ComputerSystem',
-        properties => [ qw/
-            Name TotalPhysicalMemory
-        / ]
+        properties => [ qw/Name TotalPhysicalMemory/ ]
     );
     my $computer = uc($computerSystem->{Name});
-    my $totalmem = $computerSystem->{TotalPhysicalMemory} // 0;
+    my $totalmem = $computerSystem->{TotalPhysicalMemory} || 0;
 
+    my %Processes;
     foreach my $object (getWMIObjects(
         class      => 'Win32_Process',
-        properties => [ qw/
-            CommandLine ProcessId VirtualSize WorkingSetSize
-            CreationDate CSName Name
-        / ],
+        properties => [ qw/CommandLine ProcessId CreationDate CSName Name/ ],
         method     => 'GetOwner',
         params     => [ 'User', 'Domain' ],
         User       => [ 'string', '' ],
@@ -57,35 +64,77 @@ sub _getProcesses {
             Domain  => 'DOMAIN'
         }
     )) {
-        # Skip System Idle Process entry
-        next if empty($object->{CommandLine}) && $object->{Name} =~ /System Idle Process/i;
+        # Always skip System Idle Process entry
+        next unless $object->{ProcessId};
 
         my $process = {
-            PID           => $object->{ProcessId},
-            VIRTUALMEMORY => getCanonicalSize(($object->{VirtualSize}//0)." bytes", 1024),
-            CMD           => $object->{CommandLine} // $object->{Name},
+            PID => $object->{ProcessId},
+            CMD => $object->{CommandLine} // $object->{Name},
         };
 
-        my $user = $object->{LOGIN};
+        my $user = $object->{LOGIN} // "";
         $user .= '@' . $object->{DOMAIN} unless empty($object->{DOMAIN}) ||
             $object->{DOMAIN} eq "NT AUTHORITY" ||
             ($computer && uc($object->{DOMAIN}) eq $computer);
         $process->{USER} = empty($user) ? $object->{Name} : $user;
 
-        my ($year, $month, $day, $hour, $minute, $second) =
-            $object->{CreationDate} =~ /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})\.\d+/;
-        $process->{STARTED} = sprintf(
-            "%04d-%02d-%02d %02d:%02d:%02d",
-            $year, $month, $day, $hour, $minute, $second
-        );
-
-        $process->{MEM} = sprintf("%.02f", ($object->{WorkingSetSize}//0)/$totalmem*100)
-            if $totalmem;
+        unless (empty($object->{CreationDate})) {
+            my ($year, $month, $day, $hour, $minute, $second) =
+                $object->{CreationDate} =~ /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})\.\d+/;
+            $process->{STARTED} = sprintf(
+                "%04d-%02d-%02d %02d:%02d:%02d",
+                $year, $month, $day, $hour, $minute, $second
+            );
+        }
 
         # Filter out on missing required field
-        next if empty($process->{CMD}) || empty($process->{USER}) || empty($process->{PID});
+        next if empty($process->{CMD}) || empty($process->{USER});
+
+        # Index process for performance data analysis
+        $Processes{$process->{PID}} = $process;
 
         push @processes, $process;
+    }
+
+    # Prepare processes stats to query
+    my @perfs = (
+        class      => 'Win32_PerfRawData_PerfProc_Process',
+        properties => [ qw/
+            IDProcess Timestamp_Sys100NS PercentProcessorTime
+            VirtualBytes WorkingSet
+        / ]
+    );
+
+    # Forget our recent load to capture more real workload
+    usleep(100000);
+
+    # Get first performance datas
+    my @firststats = getWMIObjects(@perfs);
+
+    # Wait a little to leave other processes update performance datas
+    usleep(500000);
+
+    # Get last performance datas
+    my @laststats = getWMIObjects(@perfs);
+
+    my %first = map { $_->{IDProcess} => $_ } @firststats;
+    foreach my $perf (@laststats) {
+        # We can skip pid 0 which is not relevant
+        my $pid = $perf->{IDProcess}
+            or next;
+        # Skip unknown process as may be new process
+        next unless $Processes{$pid} && $first{$pid};
+        # Compute stat
+        my $period = $perf->{Timestamp_Sys100NS} - $first{$pid}->{Timestamp_Sys100NS};
+        next unless $period > 0;
+        my $proctime = $perf->{PercentProcessorTime} - $first{$pid}->{PercentProcessorTime};
+        next unless $proctime >= 0;
+        my $usage = 100*$proctime/$period/$cpucount;
+        $Processes{$pid}->{CPUUSAGE} = sprintf("%.2f", $usage);
+        $Processes{$pid}->{VIRTUALMEMORY} = getCanonicalSize($perf->{VirtualBytes}." bytes", 1024)
+            if $perf->{VirtualBytes};
+        $Processes{$pid}->{MEM} = sprintf("%.02f", 100*$perf->{WorkingSetSize}/$totalmem)
+            if $perf->{WorkingSetSize} && $totalmem;
     }
 
     return @processes;
