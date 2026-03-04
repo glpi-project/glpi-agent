@@ -22,10 +22,17 @@ use constant fgHaStatsIndex     => fgHaStatsEntry . '.1';
 use constant fgHaStatsSerial    => fgHaStatsEntry . '.2';
 use constant fgHaStatsHostname  => fgHaStatsEntry . '.11';
 
+# FORTINET-FORTIAP-MIB (Series F & G)
+use constant fnFortiAPMib   => fortinet . '.120';
+use constant fnApGSerial    => fnFortiAPMib . '.1.2.0';
+use constant fnApGFirmware  => fnFortiAPMib . '.1.1.0';
+
 our $mibSupport = [
     {
         name        => "fortinet",
-        sysobjectid => getRegexpOidMatch(fnFortiGateMib)
+	# Added .120 branch for FortiAP (F and G series)
+	match       => qr/^12356\.(101|120)\./,
+        # sysobjectid => getRegexpOidMatch(fnFortiGateMib . "|" . fnFortiAPMib)
     }
 ];
 
@@ -66,8 +73,23 @@ sub getComponents {
 sub getSerial {
     my ($self) = @_;
 
+    # (FortiAP F/G)
+    if ($self->is(fnFortiAPMib)) {
+        return getCanonicalString($self->get(fnApGSerial));
+    }
+
     return getCanonicalString($self->get(fnSysSerial));
 }
+
+sub getFirmware {
+    my ($self) = @_;
+
+    # Si és FortiAP branca .120
+    if ($self->is(fnFortiAPMib)) {
+        return getCanonicalString($self->get(fnApGFirmware));
+    }
+}
+
 
 1;
 
