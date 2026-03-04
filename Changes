@@ -34,6 +34,7 @@ netdiscovery/netinventory:
 * Updated Juniper device support:
   * Fix connections detection
   * Enhanced stacking support
+* fix #1119: Updated Riello UPS devices support
 
 esx:
 * fix #1084: Don't keep VM OS if full_name has not been discovered
