@@ -30,23 +30,30 @@ use constant fnApGFirmware  => fnFortiAPMib . '.1.1.0';
 our $mibSupport = [
     {
         name        => "fortinet",
-	# Added .120 branch for FortiAP (F and G series)
-	match       => qr/^12356\.(101|120)\./,
-        # sysobjectid => getRegexpOidMatch(fnFortiGateMib . "|" . fnFortiAPMib)
+        # FortiGate (.101)
+        sysobjectid => getRegexpOidMatch(fnFortiGateMib)
+    },
+    {
+        name        => "fortiAP",
+        # FortiAP F/G Serie (.120)
+        sysobjectid => getRegexpOidMatch(fnFortiAPMib)
     }
 ];
 
 sub getComponents {
     my ($self) = @_;
 
-    my $device = $self->device
-        or return;
+    my $device = $self->device or return;
+
+    # SEGURETAT: Posem el check ABANS de qualsevol altra operació
+    return unless $device->{COMPONENTS} && 
+                  $device->{COMPONENTS}->{COMPONENT} && 
+                  ref($device->{COMPONENTS}->{COMPONENT}) eq 'ARRAY';
 
     my @components;
     my $components = $device->{COMPONENTS}->{COMPONENT};
 
     if (scalar @{$components}) {
-        # Replace components with found HA devices
         my $index = $self->walk(fgHaStatsIndex);
         if (ref($index) eq "HASH") {
             my @index = sort values(%{$index});
@@ -62,7 +69,7 @@ sub getComponents {
                     TYPE             => 'chassis',
                 };
             }
-            return unless @components;
+            # Un cop processats els HA, eliminem els components originals
             delete $device->{COMPONENTS};
         }
     }
@@ -73,21 +80,22 @@ sub getComponents {
 sub getSerial {
     my ($self) = @_;
 
-    # (FortiAP F/G)
-    if ($self->is(fnFortiAPMib)) {
-        return getCanonicalString($self->get(fnApGSerial));
+    # FortiAP F/G Series (.120)
+    if ($self->is("fortiAP")) {
+	    my $serial = getCanonicalString($self->get(fnApGSerial)));
+            return getCanonicalString($self->get(fnSysSerial));
     }
-
-    return getCanonicalString($self->get(fnSysSerial));
 }
 
 sub getFirmware {
     my ($self) = @_;
 
-    # Si és FortiAP branca .120
     if ($self->is(fnFortiAPMib)) {
         return getCanonicalString($self->get(fnApGFirmware));
     }
+    return unless $self->is("fortiAP");
+
+    return getCanonicalString($self->get(fnApGFirmware));
 }
 
 
