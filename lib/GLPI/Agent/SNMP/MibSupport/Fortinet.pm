@@ -45,7 +45,6 @@ sub getComponents {
 
     my $device = $self->device or return;
 
-    # SEGURETAT: Posem el check ABANS de qualsevol altra operació
     return unless $device->{COMPONENTS} && 
                   $device->{COMPONENTS}->{COMPONENT} && 
                   ref($device->{COMPONENTS}->{COMPONENT}) eq 'ARRAY';
@@ -69,7 +68,6 @@ sub getComponents {
                     TYPE             => 'chassis',
                 };
             }
-            # Un cop processats els HA, eliminem els components originals
             delete $device->{COMPONENTS};
         }
     }
