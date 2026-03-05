@@ -78,11 +78,12 @@ sub getComponents {
 sub getSerial {
     my ($self) = @_;
 
-    # FortiAP F/G Series (.120)
     if ($self->is("fortiAP")) {
-	    my $serial = getCanonicalString($self->get(fnApGSerial)));
-            return getCanonicalString($self->get(fnSysSerial));
+	    my $serial = getCanonicalString($self->get(fnApGSerial));
+            return getCanonicalString($serial) if $serial;
+	    return $serial unless empty($serial);
     }
+    return getCanonicalString($self->get(fnSysSerial));
 }
 
 sub getFirmware {
