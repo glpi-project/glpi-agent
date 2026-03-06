@@ -10,7 +10,7 @@ use constant {
     # Tag for dmidecode release on glpi-project/dmidecode
     DMIDECODE_VERSION  => "3.7",
     # Tag for Glpi-AgentMonitor release on glpi-project/glpi-agentmonitor
-    GAMONITOR_VERSION  => "1.4.2",
+    GAMONITOR_VERSION  => "1.5.0",
     PERL_BUILD_STEPS   => 13,
 };
 
