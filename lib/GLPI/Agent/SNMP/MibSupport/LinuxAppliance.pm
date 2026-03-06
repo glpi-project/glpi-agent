@@ -209,9 +209,11 @@ sub getType {
     # SNMP-FRAMEWORK-MIB: Analyze snmpEngineID which can gives:
     #  - IANA private OID Number to identify manufacturer
     #  - A unique identifier which can be IP, Mac or serialnumber
+    # Note: The same logic is re-used in SnmpFramework MIBSupport module but
+    #       with a lower priority
     my $snmpEngineID = hex2char($self->get(snmpEngineID));
     $snmpEngineID = hex2char("0x".$snmpEngineID) if defined($snmpEngineID) && $snmpEngineID =~ /^[0-9a-fA-F]+$/ && !(length($snmpEngineID)%2);
-    if ($snmpEngineID) {
+    if ($snmpEngineID && length($snmpEngineID) >= 4) {
         my @decode = unpack("C5", $snmpEngineID);
         my $manufacturerid = (($decode[0] & 0x7f) * 16777216) + ($decode[1] * 65536) + $decode[2] * 256 + $decode[3];
         my $match = getManufacturerIDInfo($manufacturerid);
@@ -220,7 +222,7 @@ sub getType {
                 MODEL           => $match->{model} // "",
                 MANUFACTURER    => $match->{manufacturer}
             };
-            if ($decode[0] & 0x80) {
+            if ($decode[0] & 0x80 && @decode >= 5) {
                 my $remaining = substr($snmpEngineID, 5);
                 if ($decode[4] == 3) {
                     # Remaining is a MAC to be used as serial
@@ -234,7 +236,7 @@ sub getType {
                 } elsif ($decode[4] >= 128) {
                     # Remaining is device specific, just get an hex-string for the bytes
                     $device->{_Appliance}->{SERIAL} = unpack("H*", $remaining);
-               }
+                }
             }
             # Try to identify device
             # Cisco FMC/FTD appliance detection, lookup for an existing process

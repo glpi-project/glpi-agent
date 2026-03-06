@@ -35,6 +35,7 @@ netdiscovery/netinventory:
   * Fix connections detection
   * Enhanced stacking support
 * fix #1119: Updated Riello UPS devices support
+* fix #1109: Added support for WatchGuard devices
 
 esx:
 * fix #1084: Don't keep VM OS if full_name has not been discovered

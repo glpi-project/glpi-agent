@@ -79,7 +79,7 @@ sub new {
         my $mibname = $supported->{name}
             or next;
         my $module = $supported->{module};
-        $logger->debug2("sysorid: $mibname mib support enabled") if $logger;
+        $logger->debug("sysorid table match: $mibname mib support enabled") if $logger;
         $self->{_SUPPORT}->{$module} = $module->new(
             device      => $device,
             mibsupport  => $mibname,
