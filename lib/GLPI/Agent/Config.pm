@@ -6,7 +6,6 @@ use warnings;
 use English qw(-no_match_vars);
 use File::Spec;
 use Cwd qw(abs_path);
-use Getopt::Long;
 use UNIVERSAL::require;
 
 use GLPI::Agent::Version;
