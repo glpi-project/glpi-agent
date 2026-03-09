@@ -8,7 +8,6 @@ use setup;
 
 use English qw(-no_match_vars) ;
 use Getopt::Long;
-use Pod::Usage;
 use UNIVERSAL::require;
 use File::Temp;
 
@@ -22,7 +21,7 @@ my $options = {
     path    => '-'
 };
 
-GetOptions(
+unless (GetOptions(
     $options,
     'host=s',
     'user=s',
@@ -40,9 +39,15 @@ GetOptions(
     'json',
     'glpi-version=s',
     'esx-itemtype=s',
-) or pod2usage(-verbose => 0);
+)) {
+    Pod::Usage->use();
+    pod2usage(-verbose => 0);
+}
 
-pod2usage(-verbose => 0, -exitstatus => 0) if $options->{help};
+if ($options->{help}) {
+    Pod::Usage->use();
+    pod2usage(-verbose => 0, -exitstatus => 0);
+}
 
 if ($options->{version}) {
     my $PROVIDER = $GLPI::Agent::Version::PROVIDER;
@@ -79,10 +84,10 @@ inventory_from_dump($options->{dumpfile})
 $options->{path} = '-' if $options->{stdout};
 $options->{path} = $options->{directory} unless $options->{path};
 
-pod2usage(-verbose => 0) unless
-    $options->{host}      &&
-    $options->{user}      &&
-    $options->{password};
+unless ($options->{host} && $options->{user} && $options->{password}) {
+    Pod::Usage->use();
+    pod2usage(-verbose => 0);
+}
 
 if ($options->{dump}) {
     die "Data::Dumper perl module needed for --dump option. Please install it.\n"

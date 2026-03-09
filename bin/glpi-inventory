@@ -6,10 +6,10 @@ use warnings;
 use lib './lib';
 use setup;
 
+use UNIVERSAL::require;
 use English qw(-no_match_vars);
 use Getopt::Long;
 use File::Temp;
-use Pod::Usage;
 
 use GLPI::Agent::Task::Inventory;
 use GLPI::Agent::Target::Local;
@@ -23,7 +23,7 @@ my $options = {
     config => 'none'
 };
 
-GetOptions(
+unless (GetOptions(
     $options,
     'assetname-support=i',
     'additional-content=s',
@@ -43,7 +43,10 @@ GetOptions(
     'debug+',
     'help',
     'version',
-) or pod2usage(-verbose => 0);
+)) {
+    Pod::Usage->use();
+    pod2usage(-verbose => 0);
+}
 
 if ($options->{version}) {
     my $PROVIDER = $GLPI::Agent::Version::PROVIDER;
@@ -54,7 +57,11 @@ if ($options->{version}) {
         ;
     exit 0;
 }
-pod2usage(-verbose => 0, -exitval => 0) if $options->{help};
+
+if ($options->{help}) {
+    Pod::Usage->use();
+    pod2usage(-verbose => 0, -exitstatus => 0);
+}
 
 my $event;
 if ($options->{partial}) {

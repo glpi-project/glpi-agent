@@ -7,11 +7,11 @@ use lib './lib';
 use setup;
 
 use Compress::Zlib;
+use UNIVERSAL::require;
 use English qw(-no_match_vars);
 use Fcntl qw(:flock);
 use Getopt::Long;
 use LWP::UserAgent;
-use Pod::Usage;
 use Cpanel::JSON::XS;
 use Data::UUID;
 
@@ -52,7 +52,10 @@ GetOptions(
 );
 
 $OUTPUT_AUTOFLUSH = 1;
-pod2usage(-verbose => 0, -exitstatus => 0) if $options->{help};
+if ($options->{help}) {
+    Pod::Usage->use();
+    pod2usage(-verbose => 0, -exitstatus => 0);
+}
 
 $options->{verbose} = 1 if $options->{debug};
 
@@ -63,6 +66,7 @@ if ($options->{stdin}) {
 } elsif ($options->{directory}) {
     loaddirectory($options->{directory});
 } else {
+    Pod::Usage->use();
     pod2usage();
 }
 if (@failedFiles) {

@@ -6,9 +6,9 @@ use warnings;
 use lib './lib';
 use setup;
 
+use UNIVERSAL::require;
 use English qw(-no_match_vars);
 use Getopt::Long;
-use Pod::Usage;
 
 use GLPI::Agent::Task::NetInventory;
 use GLPI::Agent::Task::NetInventory::Job;
@@ -32,7 +32,7 @@ my $options = {
     threads => 1
 };
 
-GetOptions(
+unless (GetOptions(
     $options,
     'type=s',
     'host=s@',
@@ -52,7 +52,10 @@ GetOptions(
     'debug+',
     'help',
     'version',
-) or pod2usage(-verbose => 0);
+)) {
+    Pod::Usage->use();
+    pod2usage(-verbose => 0);
+}
 
 if ($options->{version}) {
     my $PROVIDER = $GLPI::Agent::Version::PROVIDER;
@@ -63,11 +66,18 @@ if ($options->{version}) {
         ;
     exit 0;
 }
-pod2usage(-verbose => 0, -exitval => 0) if $options->{help};
 
-pod2usage(
-    -message => "no host nor file given, aborting\n", -verbose => 0
-) unless $options->{host} or $options->{file};
+if ($options->{help}) {
+    Pod::Usage->use();
+    pod2usage(-verbose => 0, -exitstatus => 0);
+}
+
+unless ($options->{host} or $options->{file}) {
+    Pod::Usage->use();
+    pod2usage(
+        -message => "no host nor file given, aborting\n", -verbose => 0
+    );
+}
 
 # Split host, port and protocol options on comma
 foreach my $opt (qw(host port protocol)) {
@@ -116,10 +126,13 @@ if ($options->{file}) {
 my $credentials = { ID => 1 };
 
 if ($options->{type}) {
-    pod2usage(
-        -message => "invalid type '$options->{type}', aborting\n",
-        -verbose => 0
-    ) unless any { $options->{type} eq $_ } values %types;
+    unless (any { $options->{type} eq $_ } values %types) {
+        Pod::Usage->use();
+        pod2usage(
+            -message => "invalid type '$options->{type}', aborting\n",
+            -verbose => 0
+        );
+    }
     map { $_->{TYPE} = $options->{type} } @devices;
 }
 

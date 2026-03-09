@@ -9,8 +9,8 @@ use lib $setup{libdir};
 
 use File::Spec;
 
+use UNIVERSAL::require;
 use Getopt::Long;
-use Pod::Usage;
 
 use GLPI::Agent::Daemon::Win32;
 
@@ -22,7 +22,7 @@ Getopt::Long::Configure( "no_ignorecase" );
 
 my %options = ();
 
-GetOptions(
+unless (GetOptions(
     \%options,
     'register',
     'delete',
@@ -31,9 +31,15 @@ GetOptions(
     'libdir|l=s',
     'program|p=s',
     'help'
-) or pod2usage(-verbose => 0);
+)) {
+    Pod::Usage->use();
+    pod2usage(-verbose => 0);
+}
 
-pod2usage(-verbose => 0, -exitstatus => 0) if $options{help};
+if ($options->{help}) {
+    Pod::Usage->use();
+    pod2usage(-verbose => 0, -exitstatus => 0);
+}
 
 my $progfile  = File::Spec->rel2abs( __FILE__ );
 my $directory = File::Spec->rel2abs( '..', $progfile );

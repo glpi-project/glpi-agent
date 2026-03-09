@@ -6,9 +6,9 @@ use warnings;
 use lib './lib';
 use setup;
 
+use UNIVERSAL::require;
 use English qw(-no_match_vars);
 use Getopt::Long;
-use Pod::Usage;
 
 use GLPI::Agent::Target::Local;
 use GLPI::Agent::Task::NetDiscovery;
@@ -23,7 +23,7 @@ our $options = {
     threads => 1
 };
 
-GetOptions(
+unless (GetOptions(
     $options,
     'file=s',
     'first|host=s',
@@ -46,7 +46,10 @@ GetOptions(
     'inventory|i',
     'save|s=s',
     'version'
-) or pod2usage(-verbose => 0);
+)) {
+    Pod::Usage->use();
+    pod2usage(-verbose => 0);
+}
 
 if ($options->{version}) {
     my $PROVIDER = $GLPI::Agent::Version::PROVIDER;
@@ -57,20 +60,32 @@ if ($options->{version}) {
         ;
     exit 0;
 }
-pod2usage(-verbose => 0, -exitval => 0) if $options->{help};
+
+if ($options->{help}) {
+    Pod::Usage->use();
+    pod2usage(-verbose => 0, -exitval => 0);
+}
 
 # Set a default ipadress if none is given while using file option
 $options->{first} = '1.1.1.1'
     if $options->{file} && ! $options->{first};
 
-pod2usage(
-    -message => "\nno first or host address, aborting\n", -verbose => 0
-) unless $options->{first};
+unless ($options->{first}) {
+    Pod::Usage->use();
+    pod2usage(
+        -message => "\nno first or host address, aborting\n", -verbose => 0
+    );
+}
+
 $options->{last} = $options->{first}
     if !$options->{last} || $options->{file};
-pod2usage(
-    -message => "\nsave folder must exist, aborting\n", -verbose => 0
-) if ($options->{save} && ! -d $options->{save});
+
+if ($options->{save} && ! -d $options->{save}) {
+    Pod::Usage->use();
+    pod2usage(
+        -message => "\nsave folder must exist, aborting\n", -verbose => 0
+    );
+}
 
 if ($OSNAME eq 'MSWin32' && $options->{threads} > 1) {
     GLPI::Agent::Tools::Win32->require();

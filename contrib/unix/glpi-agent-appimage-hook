@@ -4,8 +4,8 @@ use strict;
 use warnings;
 
 use Fcntl;
+use UNIVERSAL::require;
 use Getopt::Long;
-use Pod::Usage;
 use File::Path qw(make_path remove_tree);
 
 use GLPI::Agent::Version;
@@ -64,7 +64,7 @@ Getopt::Long::Configure("bundling");
 
 my $options = {};
 
-GetOptions(
+unless (GetOptions(
     $options,
 # Configuration options
     'backend-collect-timeout=i',
@@ -129,9 +129,15 @@ GetOptions(
     'wait=i',
     'script=s',
     'version',
-) or pod2usage(-verbose => 0);
+)) {
+    Pod::Usage->use();
+    pod2usage(-verbose => 0);
+}
 
-pod2usage(-verbose => 1, -exitstatus => 0) if $options->{help};
+if ($options->{help}) {
+    Pod::Usage->use();
+    pod2usage(-verbose => 1, -exitstatus => 0);
+}
 
 my $VERSION = $GLPI::Agent::Version::VERSION;
 

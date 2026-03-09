@@ -14,6 +14,7 @@ core:
 * Add new IPC message type to rename forked for SSL connections processes after
   HTTP server plugin using it is known.
 * Reduced waiting when IPC or HTTP server is used to make them more responsive
+* fix #1121: Delay Pod::Usage loading when really required to optimize startup
 
 inventory:
 * fix #1100: Fix LiteManager remote management inventory

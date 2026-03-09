@@ -7,9 +7,9 @@ use lib './lib';
 use setup;
 use lib $setup{libdir};
 
+use UNIVERSAL::require;
 use English qw(-no_match_vars);
 use Getopt::Long;
-use Pod::Usage;
 
 use GLPI::Agent;
 use GLPI::Agent::Event;
@@ -18,7 +18,7 @@ Getopt::Long::Configure( "no_ignorecase" );
 
 my $options = {};
 
-GetOptions(
+unless (GetOptions(
     $options,
     'assetname-support=i',
     'additional-content=s',
@@ -88,9 +88,15 @@ GetOptions(
     "ssl-key-file=s",
     # Platform specific option
     'no-win32-ole-workaround'
-) or pod2usage(-verbose => 0);
+)) {
+    Pod::Usage->use();
+    pod2usage(-verbose => 0);
+}
 
-pod2usage(-verbose => 0, -exitstatus => 0) if $options->{help};
+if ($options->{help}) {
+    Pod::Usage->use();
+    pod2usage(-verbose => 0, -exitstatus => 0);
+}
 
 if ($options->{version}) {
     map { print $_."\n" } $GLPI::Agent::VERSION_STRING,
