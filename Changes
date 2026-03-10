@@ -22,6 +22,7 @@ inventory:
 * Updated PostgreSQL database inventory with multi-instance support on linux
 * fix #1095: Support WithSecure AntiVirus on MacOSX
 * fix #153: Support processes inventory on win32
+* Don't die but ignore additional content injection when using unsupported format
 
 netdiscovery/netinventory:
 * fix #1091: Support "contextname" field for SNMPv3 credentials option

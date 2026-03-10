@@ -329,7 +329,10 @@ sub getField {
 sub mergeContent {
     my ($self, $content) = @_;
 
-    die "no content to merge\n" unless $content;
+    unless ($content) {
+        $self->{logger}->debug("No content to merge");
+        return;
+    }
 
     foreach my $section (keys %$content) {
         if (ref $content->{$section} eq 'ARRAY') {
@@ -368,12 +371,24 @@ sub addEntry {
     my ($self, %params) = @_;
 
     my $entry = $params{entry};
-    die "no entry" unless $entry;
+    unless ($entry) {
+        $self->{logger}->debug("No entry to add");
+        return;
+    }
 
     my $section = $params{section};
+    unless ($section) {
+        $self->{logger}->debug("No section for insertion");
+        return;
+    }
+
     my $fields = $fields{$section};
+    unless ($fields) {
+        $self->{logger}->debug("No field support for $section insertion");
+        return;
+    }
+
     my $checks = $checks{$section};
-    die "unknown section $section" unless $fields;
 
     foreach my $field (keys %$entry) {
         if (!$fields->{$field}) {

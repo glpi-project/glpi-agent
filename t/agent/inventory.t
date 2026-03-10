@@ -12,8 +12,9 @@ use Test::More;
 use GLPI::Agent;
 use GLPI::Agent::Logger;
 use GLPI::Agent::Inventory;
+use GLPI::Agent::Protocol::Message;
 
-plan tests => 20;
+plan tests => 24;
 
 my $logger = GLPI::Agent::Logger->new(
     logger => [ 'Test' ],
@@ -41,18 +42,24 @@ cmp_deeply(
     'initial state'
 );
 
-throws_ok {
-    $inventory->addEntry(
-        section => 'FOOS',
-    );
-} qr/^no entry/, 'no entry';
+$inventory->addEntry(
+    section => 'FOOS',
+);
+is(
+    $logger->{backends}->[0]->{message},
+    'No entry to add',
+    'no entry'
+);
 
-throws_ok {
-    $inventory->addEntry(
-        section => 'FOOS',
-        entry   => { bar => 1 }
-    );
-} qr/^unknown section FOOS/, 'unknown section';
+$inventory->addEntry(
+    section => 'FOOS',
+    entry   => { bar => 1 }
+);
+is(
+    $logger->{backends}->[0]->{message},
+    'No field support for FOOS insertion',
+    'unknown section'
+);
 
 $inventory->addEntry(
     section => 'ENVS',
@@ -310,4 +317,51 @@ is(
     $inventory->{content}->{OPERATINGSYSTEM}->{NOT_SUPPORTED_FIELD},
     undef,
     'operatingsystem section merge not supported field'
+);
+
+# Test json content merge
+$inventory->setFormat('json');
+is(
+    $inventory->getFormat(),
+    'json',
+    'setFormat/getFormat works as expected'
+);
+
+my $json = GLPI::Agent::Protocol::Message->new(
+    logger  => $logger,
+    message => '{
+    "content": {
+        "field1": "value1",
+        "category":[
+            {
+                "field2":"value2",
+                "field3":"value3"
+            },
+            {
+                "field2":"value4",
+                "field3":"value5"
+            }
+        ]
+    }
+}'
+);
+
+is(
+    ref($json),
+    'GLPI::Agent::Protocol::Message',
+    'we have a json content'
+);
+
+my $json_content = $json->get('content', transform => "upperkeys");
+is(
+    ref($json_content),
+    'HASH',
+    'we have a hash before merging'
+);
+
+$inventory->mergeContent($json_content);
+is(
+    $inventory->{content}->{CATEGORY},
+    undef,
+    'category section not merged as not a supported format'
 );
