@@ -23,6 +23,7 @@ inventory:
 * fix #1095: Support WithSecure AntiVirus on MacOSX
 * fix #153: Support processes inventory on win32
 * Don't die but ignore additional content injection when using unsupported format
+* fix #1125: Fix MeshCentral remote_mgmt support on linux
 
 netdiscovery/netinventory:
 * fix #1091: Support "contextname" field for SNMPv3 credentials option

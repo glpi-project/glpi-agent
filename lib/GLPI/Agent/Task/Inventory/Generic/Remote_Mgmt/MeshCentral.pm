@@ -9,6 +9,12 @@ use English qw(-no_match_vars);
 
 use GLPI::Agent::Tools;
 
+my @linuxPath = qw(
+    /etc/systemd/system/meshagent.service
+    /usr/lib/systemd/system/meshagent.service
+    /lib/systemd/system/meshagent.service
+);
+
 sub isEnabled {
     my (%params) = @_;
 
@@ -32,7 +38,7 @@ sub isEnabled {
     }
 
     return unless OSNAME eq 'linux';
-    return has_file('/etc/systemd/system/meshagent.service');
+    return first { has_file($_) } @linuxPath;
 }
 
 sub doInventory {
@@ -75,11 +81,18 @@ sub _winBased {
 sub _linuxBased {
     my (%params) = @_;
 
-    my $command = getFirstLine(
-        file    => "/etc/systemd/system/meshagent.service",
+    my $service = first { has_file($_) } qw{
+        /etc/systemd/system/meshagent.service
+        /usr/lib/systemd/system/meshagent.service
+        /lib/systemd/system/meshagent.service
+    };
+
+    my $command = getFirstMatch(
+        file    => $service,
         pattern => qr/Ex.*=(.*)\s\-/,
         logger  => $params{logger},
     );
+    return if empty($command);
 
     return getFirstLine(
         command => "${command} -nodeid",
