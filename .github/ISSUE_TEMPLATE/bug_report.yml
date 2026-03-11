@@ -91,13 +91,13 @@ body:
       label: GLPI version
       description: What is your GLPI version on server-side ?
       options:
+        - 11.0.6
         - 11.0.5
         - 11.0.4
-        - 11.0.3
         - 11.0.x (Details in additional context below)
+        - 10.0.24
         - 10.0.23
         - 10.0.22
-        - 10.0.21
         - 10.0.x (Details in additional context below)
         - Other (Details in additional context below)
         - development release (Details in additional context below)
@@ -111,10 +111,10 @@ body:
       label: GLPIInventory plugin or other plugin version
       description: What is your GLPIInventory or FusionInventory for GLPI plugin version on server-side ?
       options:
-        - GLPI Inventory v1.6.5
-        - GLPI Inventory v1.6.4
+        - GLPI Inventory v1.6.7
+        - GLPI Inventory v1.6.6
+        - GLPI Inventory v1.5.7
         - GLPI Inventory v1.5.6
-        - GLPI Inventory v1.5.5
         - GLPI Inventory v1.x.x (Details in additional context below)
         - FusionInventory for GLPI (Details in additional context below)
         - Other (Details in additional context below)
