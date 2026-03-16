@@ -159,18 +159,14 @@ sub run {
     }
 
     GLPI::Agent::IEC61850::Device->require();
-    if ($EVAL_ERROR) {
-        $self->{logger}->info(
-            "Can't load GLPI::Agent::IEC61850::Device, iec61850 devices detection " .
-            "can't be used"
-        );
-    }
-    unless ($INC{'iec61850.pm'}) {
-        $self->{logger}->info(
-            "Can't load iec61850 perl library, iec61850 devices detection " .
-            "won't be used"
-        );
-    }
+    push @{$self->{_library_failure}}, "Failed to load GLPI::Agent::IEC61850::Device, iec61850 protocol discovery not supported"
+        if $EVAL_ERROR;
+    push @{$self->{_library_failure}}, "Failed to load iec61850 perl library, iec61850 protocol discovery not supported"
+        unless $INC{'iec61850.pm'};
+
+    # Store glpi_version for this run
+    $self->{glpi_version} = $self->{target}->isType('server') ? $self->{target}->getTaskVersion('inventory') : '';
+    $self->{glpi_version} = $self->{config}->{'glpi-version'} if empty($self->{glpi_version});
 
     # Preload MibSupport
     GLPI::Agent::SNMP::MibSupport::preload(
@@ -396,14 +392,24 @@ sub run {
             if ($result && $result->{IP}) {
                 $result->{ENTITY} = $range->{entity} if defined($range->{entity});
 
+                my $authsnmp = $result->{AUTHSNMP};
+                # Don't keep AUTHIEC as not supported server-side
+                my $authiec  = delete $result->{AUTHIEC};
+
+                # Handle IEC61850 case
+                if ($authiec) {
+                    my $iedname = delete $result->{IEDNAME};
+                    $result->{DNSHOSTNAME} = $iedname
+                        if $result->{DNSHOSTNAME} && $result->{IP} && $result->{DNSHOSTNAME} eq $result->{IP};
+                }
+
                 # Keep _found private attribut from the result
                 my $found = delete $result->{_found};
 
-                my $authsnmp = $result->{AUTHSNMP};
                 my $deviceid;
                 # AUTHREMOTE can be set in results but is not actually supported by GLPI
                 my $authremote = delete $result->{AUTHREMOTE};
-                if (($authsnmp || $authremote) && $job->localtask) {
+                if (($authsnmp || $authremote || $authiec) && $job->localtask) {
                     # Don't keep authsnmp in result for local task
                     delete $result->{AUTHSNMP};
                     # For TooBox, we keep used authsnmp|authremote & ip_range for results page in target storage
@@ -421,25 +427,38 @@ sub run {
                     }
                 }
 
-                # Handle IEC61850 case
-                my $iec61850_case = delete $result->{_iecdevice};
-                if ($iec61850_case) {
-                    my $iedname = delete $result->{IEDNAME};
-                    $result->{DNSHOSTNAME} = $iedname
-                        if $result->{DNSHOSTNAME} && $result->{IP} && $result->{DNSHOSTNAME} eq $result->{IP};
-                }
-
                 # Don't send xml discovery inventory to server on computer remote inventory
                 $self->_sendResultMessage($result, $jobid)
-                    unless $authremote && $self->{target}->isType('server') || $iec61850_case;
+                    unless $authremote && $self->{target}->isType('server');
 
                 # Eventually chain with netinventory when requested
-                if ($job->netscan && !$iec61850_case) {
+                if ($job->netscan) {
                     my $timeout = 15;
-                    if ($authsnmp) {
-                        my $credentials = [
-                            grep { $_->{ID} eq $authsnmp } @{$jobaddress->{snmp_credentials}}
-                        ];
+                    if ($authsnmp || $authiec) {
+                        my $credentials = [];
+                        push @{$credentials}, grep { $_->{ID} eq $authsnmp } @{$jobaddress->{snmp_credentials}}
+                            unless empty($authsnmp);
+                        push @{$credentials}, grep { $_->{ID} eq $authiec  } @{$jobaddress->{iec61850_credentials}}
+                            unless empty($authiec);
+
+                        my $device = {
+                            ID          => 0,
+                            IP          => $blockip,
+                        };
+
+                        unless (empty($authsnmp)) {
+                            $device->{AUTHSNMP_ID} = $authsnmp;
+                            my $credential = first { $_->{ID} eq $authsnmp } @{$credentials};
+                            if ($credential) {
+                                $credential->{PORT} = $result->{AUTHPORT}
+                                    if $result->{AUTHPORT};
+                                $credential->{PROTOCOL} = $result->{AUTHPROTOCOL}
+                                    if $result->{AUTHPROTOCOL};
+                            }
+                        }
+
+                        $device->{AUTHIEC_ID}  = $authiec
+                            unless empty($authiec);
 
                         GLPI::Agent::Task::NetInventory->require();
                         my $inventory = GLPI::Agent::Task::NetInventory->new(
@@ -456,15 +475,7 @@ sub run {
                                     TIMEOUT       => $timeout,
                                     NO_START_STOP => 1
                                 },
-                                devices => [
-                                    {
-                                        ID          => 0,
-                                        IP          => $blockip,
-                                        PORT        => $result->{AUTHPORT}     // '',
-                                        PROTOCOL    => $result->{AUTHPROTOCOL} // '',
-                                        AUTHSNMP_ID => $authsnmp
-                                    }
-                                ],
+                                devices     => [ $device ],
                                 credentials => $credentials,
                             )
                         ];
@@ -532,16 +543,6 @@ sub run {
 
                     # Finish with return code to update task expiration
                     $manager->finish(1, { timeout => $timeout });
-
-                } elsif ($iec61850_case) {
-                    my $ip = $result->{IP};
-                    $result = $iec61850_case->inventory($result);
-                    GLPI::Agent::Task::NetInventory->require();
-
-                    my $inventory = GLPI::Agent::Task::NetInventory->new(
-                        map { $_ => $self->{$_} } qw(config datadir target deviceid logger agentid)
-                    );
-                    $inventory->_sendResultMessage($result, $jobid, $ip);
                 }
             }
 
@@ -720,9 +721,10 @@ sub _scanAddress {
         %device = $self->_scanAddressByRemote($params);
     }
 
-    # Skip snmp scanning if got an authenticated result
-    unless (!$INC{'Net/SNMP.pm'} || $device{AUTHREMOTE}) {
-        %device = $self->_scanAddressBySNMP($params);
+    # This is time to share one time if we failed to load iec61850 protocol support libraries
+    if ($self->{_library_failure}) {
+        my $errors = delete $self->{_library_failure};
+        map { $self->{logger}->info($_) } @{$errors};
     }
 
     # Then scan for standard network datas
@@ -731,6 +733,9 @@ sub _scanAddress {
         $INC{'Net/NBName.pm'} ? $self->_scanAddressByNetbios($params)  : (),
         $INC{'Net/Ping.pm'}   ? $self->_scanAddressByPing($params)     : (),
         $self->{arp}          ? $self->_scanAddressByArp($params)      : (),
+        # We need to skip snmp scanning if got an authenticated result
+        $INC{'Net/SNMP.pm'} && !$device{AUTHREMOTE}
+                              ? $self->_scanAddressBySNMP($params)     : (),
         %device,
     );
 
@@ -745,9 +750,8 @@ sub _scanAddress {
 
     $device{IP} = $params->{ip};
 
-    if ($device{MAC}) {
-        $device{MAC} =~ tr/A-F/a-f/;
-    }
+    $device{MAC} = getCanonicalMacAddress($device{MAC})
+        unless empty($device{MAC});
 
     return \%device;
 }
@@ -1089,38 +1093,34 @@ sub _scanAddressByIEC61850 {
 
     return if $params->{walk};
 
-    my $glpi_version = $self->{target}->isType('server') ? $self->{target}->getTaskVersion('inventory') : '';
-    $glpi_version = $self->{config}->{'glpi-version'} if empty($glpi_version);
-
-    # Include no credentials case by default if none set
-    push @{$params->{iec61850_credentials}}, {}
-        unless @{$params->{iec61850_credentials}};
-
     my ($device, $infos);
     foreach my $credential (@{$params->{iec61850_credentials}}) {
         eval {
             $device = GLPI::Agent::IEC61850::Device->new(
                 timeout => $params->{timeout} || 1,
-                glpi    => $glpi_version || '',
+                glpi    => $self->{glpi_version} || '',
                 logger  => $self->{logger},
             );
             $infos = $device->scan($params->{ip}, $credential->{PORT});
         };
         $self->{logger}->debug(
-            sprintf "- scanning %s%s with iec61850: %s",
+            sprintf "- scanning %s%s with iec61850, %s: %s",
             $params->{ip},
             $credential->{PORT} && $credential->{PORT} ne "102" ? ':'.$credential->{PORT} : '',
-            $infos ? 'success' : 'no result'
+            isInteger($credential->{ID}) ? "credential #".$credential->{ID} : $credential->{ID}." credential",
+            $infos ? 'success' : $EVAL_ERROR ? 'not supported' : 'no result'
         );
-        # Skip next credentials on first connection success
-        last if $infos;
-    }
 
-    return $EVAL_ERROR if $EVAL_ERROR;
+        next unless $infos;
+
+        # Skip next credentials on first connection success and store credentials id
+        $infos->{AUTHIEC} = $credential->{ID};
+        last;
+    }
 
     return unless $infos;
 
-    return _iecdevice => $device, %{$infos};
+    return %{$infos};
 }
 
 sub _sendStartMessage {

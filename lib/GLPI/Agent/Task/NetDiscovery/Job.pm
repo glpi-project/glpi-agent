@@ -303,6 +303,10 @@ sub _getValidCredentials {
     $self->{logger}->warning("No valid iec61850 credential defined for this scan")
         unless !$iec61850 || $valid_iec61850;
 
+    # Include no iec61850 credential case by default if none set
+    push @iec61850_credentials, { ID => "no", PORT => 102 }
+        unless @iec61850_credentials;
+
     return \@snmp_credentials, \@remote_credentials, \@iec61850_credentials;
 }
 

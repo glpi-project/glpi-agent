@@ -62,12 +62,12 @@ sub credential {
     my $credential;
 
     if (!defined($self->{_credentials})) {
-        $self->{logger}->warning("No SNMP credential defined for this job");
+        $self->{logger}->warning("No credential defined for this job");
     } elsif (!@{$self->{_credentials}}) {
-        $self->{logger}->warning("No SNMP credential provided for this job")
+        $self->{logger}->warning("No credential provided for this job")
     } else {
         ($credential) = first { $_->{ID} eq $id } @{$self->{_credentials}}
-            or $self->{logger}->warning("No SNMP credential with $id ID provided");
+            or $self->{logger}->warning("No credential with $id ID provided");
     }
 
     return $credential;

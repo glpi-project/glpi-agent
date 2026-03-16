@@ -40,6 +40,7 @@ netdiscovery/netinventory:
 * fix #1119: Updated Riello UPS devices support
 * fix #1109: Added support for WatchGuard devices
 * Fix Sophos devices serialnumber inventory
+* Refacto IEC61850 protocol support to also use it during netinventory task
 
 esx:
 * fix #1084: Don't keep VM OS if full_name has not been discovered

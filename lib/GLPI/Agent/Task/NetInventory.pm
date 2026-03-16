@@ -16,6 +16,7 @@ use GLPI::Agent::Tools;
 use GLPI::Agent::SNMP::Hardware;
 use GLPI::Agent::Tools::Network;
 use GLPI::Agent::Tools::Expiration;
+use GLPI::Agent::Tools::SNMP;
 use GLPI::Agent::HTTP::Client::OCS;
 # We need to preload MibSupport configuration before running threads
 use GLPI::Agent::SNMP::MibSupport;
@@ -112,6 +113,16 @@ sub run {
 
     my $abort = 0;
     $SIG{TERM} = sub { $abort = 1; };
+
+    GLPI::Agent::IEC61850::Device->require();
+    push @{$self->{_library_failure}}, "Failed to load GLPI::Agent::IEC61850::Device, iec61850 protocol inventory not supported"
+        if $EVAL_ERROR;
+    push @{$self->{_library_failure}}, "Failed to load iec61850 perl library, iec61850 protocol inventory not supported"
+        unless $INC{'iec61850.pm'};
+
+    # Store glpi_version for this run
+    $self->{glpi_version} = $self->{target}->isType('server') ? $self->{target}->getTaskVersion('inventory') : '';
+    $self->{glpi_version} = $self->{config}->{'glpi-version'} if empty($self->{glpi_version});
 
     # Preload MibSupport
     GLPI::Agent::SNMP::MibSupport::preload(
@@ -242,21 +253,19 @@ sub run {
             $self->{logger}->{prefix} = sprintf($jid_pattern, $job_count)
                 unless $self->{logger}->{prefix};
 
-            my $result;
-            eval {
-                $result = $self->_queryDevice(
-                    pid         => $pid,
-                    timeout     => $job->timeout(),
-                    credential  => $job->credential($device->{AUTHSNMP_ID}),
-                    device      => $device
-                );
-            };
-            if ($EVAL_ERROR) {
-                chomp $EVAL_ERROR;
+            my $result = $self->_queryDevice(
+                pid     => $pid,
+                job     => $job,
+                device  => $device
+            );
+            unless (ref($result)) {
+                my $error = empty($result) ?
+                    "Failed netinventory processing on ".$device->{IP} : $result;
+
                 $result = {
                     ERROR => {
                         ID      => $device->{ID},
-                        MESSAGE => $EVAL_ERROR
+                        MESSAGE => $error
                     }
                 };
 
@@ -265,7 +274,7 @@ sub run {
                 # Inserted back device PID in result if set by server
                 $result->{PID} = $device->{PID} if defined($device->{PID});
 
-                $self->{logger}->error("$EVAL_ERROR");
+                $self->{logger}->error($error);
             }
 
             # Get result PID from result
@@ -457,66 +466,136 @@ sub _sendResultMessage {
 sub _queryDevice {
     my ($self, %params) = @_;
 
-    my $credential  = $params{credential};
-    my $device      = $params{device};
+    my $job = $params{job};
+    my $device = $params{device};
 
-    $self->{logger}->debug(
-        "full snmp scan of $device->{IP}" .
-        ( $device->{PORT} ? ' on port ' . $device->{PORT} : '' ) .
-        ( $device->{PROTOCOL} ? ' via ' . $device->{PROTOCOL} : '' ) .
-        " with credentials " . $device->{AUTHSNMP_ID}
-    );
+    my $credential;
+    my $have_credential = 0;
 
-    my $snmp;
-    if ($device->{FILE}) {
-        GLPI::Agent::SNMP::Mock->require();
-        eval {
-            $snmp = GLPI::Agent::SNMP::Mock->new(
-                ip   => $device->{IP},
-                file => $device->{FILE}
-            );
-        };
-        die "SNMP emulation error: $EVAL_ERROR" if $EVAL_ERROR;
-    } else {
-        eval {
-            GLPI::Agent::SNMP::Live->require();
-            # AUTHPASSPHRASE & PRIVPASSPHRASE are deprecated but still used by FusionInventory for GLPI plugin
-            $snmp = GLPI::Agent::SNMP::Live->new(
-                version      => $credential->{VERSION},
-                hostname     => $device->{IP},
-                port         => $device->{PORT},
-                domain       => $device->{PROTOCOL},
-                timeout      => $params{timeout} || 15,
-                community    => $credential->{COMMUNITY},
-                username     => $credential->{USERNAME},
-                authpassword => $credential->{AUTHPASSPHRASE} // $credential->{AUTHPASSWORD},
-                authprotocol => $credential->{AUTHPROTOCOL},
-                privpassword => $credential->{PRIVPASSPHRASE} // $credential->{PRIVPASSWORD},
-                privprotocol => $credential->{PRIVPROTOCOL},
-                contextname  => $credential->{CONTEXTNAME},
-                retries      => $self->{config}->{'snmp-retries'} // 0,
-            );
-            $snmp->testSession();
-        };
-        die "SNMP communication error: $EVAL_ERROR" if $EVAL_ERROR;
+    my $result;
+
+    if ($INC{'iec61850.pm'}) {
+        $credential = $device->{AUTHIEC_ID} ?
+            $job->credential($device->{AUTHIEC_ID}) : { ID  => "no", PORT => 102 };
+    } elsif ($self->{_library_failure}) {
+        # This is time to share one time if we failed to load iec61850 protocol support libraries
+        my $errors = delete $self->{_library_failure};
+        map { $self->{logger}->info($_) } @{$errors};
     }
 
-    my $glpi_version = $self->{target}->isType('server') ? $self->{target}->getTaskVersion('inventory') : '';
-    $glpi_version = $self->{config}->{'glpi-version'} if empty($glpi_version);
+    if ($credential && !$device->{FILE}) {
+        $have_credential++;
 
-    my $result = getDeviceFullInfo(
-        id      => $device->{ID},
-        type    => $device->{TYPE},
-        snmp    => $snmp,
-        config  => $self->{config},
-        logger  => $self->{logger},
-        # Include glpi version if known so modules can verify it for supported feature
-        glpi    => $glpi_version,
-        datadir => $self->{datadir}
-    );
+        # Normalize port with 102 as default port
+        my $port = $credential->{PORT} && isInteger($credential->{PORT}) ?
+            int($credential->{PORT}) : 102;
+        $port = 102 unless $port > 0 && $port <= 65535;
+
+        eval {
+            my $iecdevice = GLPI::Agent::IEC61850::Device->new(
+                timeout => $job->timeout() || 1,
+                glpi    => $self->{glpi_version} || '',
+                logger  => $self->{logger},
+            );
+            $result = $iecdevice->scan($device->{IP}, $port);
+            $result = $iecdevice->inventory($result)
+                if $result;
+        };
+
+        $self->{logger}->debug(
+            sprintf "iec61850 scan of %s%s with %s: %s",
+            $device->{IP},
+            $port != 102 ? ':'.$port : '',
+            isInteger($credential->{ID}) ? "credential #".$credential->{ID} : $credential->{ID}." credential",
+            $result ? 'success' : $EVAL_ERROR ? 'not supported' : 'no result'
+        );
+
+    }
+
+    $credential = $job->credential($device->{AUTHSNMP_ID})
+        if $device->{AUTHSNMP_ID};
+
+    if ($device->{AUTHSNMP_ID} && $credential) {
+        my ($snmp, $error);
+        $have_credential++;
+
+        $self->{logger}->debug(
+            "full snmp scan of $device->{IP}" .
+            ( $credential->{PORT} ? ' on port ' . $credential->{PORT} : '' ) .
+            ( $credential->{PROTOCOL} ? ' via ' . $credential->{PROTOCOL} : '' ) .
+            " with credentials " . $device->{AUTHSNMP_ID}
+        );
+
+        if ($device->{FILE}) {
+            GLPI::Agent::SNMP::Mock->require();
+            eval {
+                $snmp = GLPI::Agent::SNMP::Mock->new(
+                    ip   => $device->{IP},
+                    file => $device->{FILE}
+                );
+            };
+            $error = "SNMP emulation error: $EVAL_ERROR"
+                if $EVAL_ERROR;
+        } else {
+            eval {
+                GLPI::Agent::SNMP::Live->require();
+                # AUTHPASSPHRASE & PRIVPASSPHRASE are deprecated but still used by FusionInventory for GLPI plugin
+                $snmp = GLPI::Agent::SNMP::Live->new(
+                    version      => $credential->{VERSION},
+                    hostname     => $device->{IP},
+                    timeout      => $job->timeout() || 15,
+                    community    => $credential->{COMMUNITY},
+                    username     => $credential->{USERNAME},
+                    authpassword => $credential->{AUTHPASSPHRASE} // $credential->{AUTHPASSWORD},
+                    authprotocol => $credential->{AUTHPROTOCOL},
+                    privpassword => $credential->{PRIVPASSPHRASE} // $credential->{PRIVPASSWORD},
+                    privprotocol => $credential->{PRIVPROTOCOL},
+                    contextname  => $credential->{CONTEXTNAME},
+                    port         => $credential->{PORT} // 161,
+                    domain       => $credential->{PROTOCOL} // "udp",
+                    retries      => $self->{config}->{'snmp-retries'} // 0,
+                );
+                $snmp->testSession();
+            };
+            $error = "SNMP communication error: $EVAL_ERROR"
+                if $EVAL_ERROR;
+        }
+
+        if ($error) {
+            chomp($error);
+            $self->{logger}->debug("full snmp scan of $device->{IP} failure: $error");
+            return $error;
+        } else {
+            my $snmpresult = getDeviceFullInfo(
+                id      => $device->{ID},
+                type    => $device->{TYPE},
+                snmp    => $snmp,
+                config  => $self->{config},
+                logger  => $self->{logger},
+                # Include glpi version if known so modules can verify it for supported feature
+                glpi    => $self->{glpi_version} || '',
+                datadir => $self->{datadir}
+            );
+
+            # Merge snmp result
+            foreach my $key (keys(%{$snmpresult})) {
+                $result->{$key} = $snmpresult->{$key};
+            }
+        }
+    }
+
+    # Check no credential error
+    my $credential_error = "";
+    $credential_error = "no iec61850 credential provided"
+        if !$have_credential && $device->{AUTHIEC_ID};
+
+    $credential_error .= ($credential_error ? ", " : "")."no SNMP credential provided"
+        if !$have_credential && $device->{AUTHSNMP_ID};
+
+    return $credential_error unless $have_credential;
 
     # Inserted back device PID in result if set by server
-    $result->{PID} = $device->{PID} if defined($device->{PID});
+    $result->{PID} = $device->{PID} if $result && defined($device->{PID});
 
     return $result;
 }
