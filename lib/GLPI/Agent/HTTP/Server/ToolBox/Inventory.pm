@@ -817,7 +817,7 @@ sub netscan {
                 # Complete CRED with required and defined attributes
                 my @map =
                     $cred->{type} eq 'iec61850' ? qw{type port} :
-                    $cred->{type} eq 'iec61850' ? qw{type username password} :
+                    $cred->{type} eq 'esx'      ? qw{type username password} :
                     qw{type username password mode port};
                 map { $CRED->{uc($_)} = $cred->{$_} } grep { $cred->{$_} } @map;
             }
