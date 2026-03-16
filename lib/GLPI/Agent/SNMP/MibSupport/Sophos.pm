@@ -14,9 +14,9 @@ use constant sophosMIB          => '.1.3.6.1.4.1.2604';
 use constant sfosXGMIB          => sophosMIB . '.5';
 use constant sfosXGDeviceInfo   => sfosXGMIB . '.1.1';
 
-use constant sfosDeviceName         => sfosXGDeviceInfo . '.1.0';
 use constant sfosDeviceType         => sfosXGDeviceInfo . '.2.0';
 use constant sfosDeviceFWVersion    => sfosXGDeviceInfo . '.3.0';
+use constant sfosDeviceAppKey       => sfosXGDeviceInfo . '.4.0';
 use constant sfosWebcatVersion      => sfosXGDeviceInfo . '.5.0';
 use constant sfosIPSVersion         => sfosXGDeviceInfo . '.6.0';
 
@@ -42,7 +42,7 @@ sub getFirmware {
 sub getSerial {
     my ($self) = @_;
 
-    return getCanonicalString($self->get(sfosDeviceName));
+    return getCanonicalString($self->get(sfosDeviceAppKey));
 }
 
 sub run {
