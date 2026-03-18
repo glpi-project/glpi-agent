@@ -43,16 +43,17 @@ our $mibSupport = [
 sub getComponents {
     my ($self) = @_;
 
-    my $device = $self->device or return;
+    my $device = $self->device
+        or return;
 
-    return unless $device->{COMPONENTS} && 
-                  $device->{COMPONENTS}->{COMPONENT} && 
+    return unless ref($device->{COMPONENTS}) eq 'HASH' &&
                   ref($device->{COMPONENTS}->{COMPONENT}) eq 'ARRAY';
 
     my @components;
     my $components = $device->{COMPONENTS}->{COMPONENT};
 
     if (scalar @{$components}) {
+        # Replace components with found HA devices
         my $index = $self->walk(fgHaStatsIndex);
         if (ref($index) eq "HASH") {
             my @index = sort values(%{$index});
@@ -68,6 +69,7 @@ sub getComponents {
                     TYPE             => 'chassis',
                 };
             }
+            return unless @components;
             delete $device->{COMPONENTS};
         }
     }
@@ -79,19 +81,16 @@ sub getSerial {
     my ($self) = @_;
 
     if ($self->is("fortiAP")) {
-	    my $serial = getCanonicalString($self->get(fnApGSerial));
-            return getCanonicalString($serial) if $serial;
-	    return $serial unless empty($serial);
+        my $serial = getCanonicalString($self->get(fnApGSerial));
+        return $serial unless empty($serial);
     }
+
     return getCanonicalString($self->get(fnSysSerial));
 }
 
 sub getFirmware {
     my ($self) = @_;
 
-    if ($self->is(fnFortiAPMib)) {
-        return getCanonicalString($self->get(fnApGFirmware));
-    }
     return unless $self->is("fortiAP");
 
     return getCanonicalString($self->get(fnApGFirmware));
