@@ -22,10 +22,21 @@ use constant fgHaStatsIndex     => fgHaStatsEntry . '.1';
 use constant fgHaStatsSerial    => fgHaStatsEntry . '.2';
 use constant fgHaStatsHostname  => fgHaStatsEntry . '.11';
 
+# FORTINET-FORTIAP-MIB (Series F & G)
+use constant fnFortiAPMib   => fortinet . '.120';
+use constant fnApGSerial    => fnFortiAPMib . '.1.2.0';
+use constant fnApGFirmware  => fnFortiAPMib . '.1.1.0';
+
 our $mibSupport = [
     {
         name        => "fortinet",
+        # FortiGate (.101)
         sysobjectid => getRegexpOidMatch(fnFortiGateMib)
+    },
+    {
+        name        => "fortiAP",
+        # FortiAP F/G Serie (.120)
+        sysobjectid => getRegexpOidMatch(fnFortiAPMib)
     }
 ];
 
@@ -34,6 +45,9 @@ sub getComponents {
 
     my $device = $self->device
         or return;
+
+    return unless ref($device->{COMPONENTS}) eq 'HASH' &&
+                  ref($device->{COMPONENTS}->{COMPONENT}) eq 'ARRAY';
 
     my @components;
     my $components = $device->{COMPONENTS}->{COMPONENT};
@@ -66,8 +80,22 @@ sub getComponents {
 sub getSerial {
     my ($self) = @_;
 
+    if ($self->is("fortiAP")) {
+        my $serial = getCanonicalString($self->get(fnApGSerial));
+        return $serial unless empty($serial);
+    }
+
     return getCanonicalString($self->get(fnSysSerial));
 }
+
+sub getFirmware {
+    my ($self) = @_;
+
+    return unless $self->is("fortiAP");
+
+    return getCanonicalString($self->get(fnApGFirmware));
+}
+
 
 1;
 
