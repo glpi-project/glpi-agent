@@ -129,13 +129,24 @@ sub _getLocalGroups {
 }
 
 sub _getLoggedUsers {
+    my (%params) = @_;
+
+    my $logger = $params{logger};
+
     # Use loginctl if available as more accurate than who when users has more than
     # 32 chars in length. This can happen when computer is connected to an AD
     if (canRun("loginctl")) {
         my $json_content = getAllLines(
             command => "loginctl --output json list-users",
-            @_
+            logger  => $logger
         );
+        # --output argument may not output expected result depending on loginctl version
+        if (empty($json_content) || $json_content !~ /^\[/) {
+            $json_content = getAllLines(
+                command => "loginctl --json=short list-users",
+                logger  => $logger
+            );
+        }
         unless (empty($json_content)) {
             Cpanel::JSON::XS->require();
             Cpanel::JSON::XS->import("decode_json");
@@ -146,11 +157,20 @@ sub _getLoggedUsers {
             if (ref($json) eq "ARRAY") {
                 my @users;
                 my %seen;
+                my $uid_min = 1000;
+                if (has_file("/etc/login.defs")) {
+                    my $uid = getFirstMatch(
+                        file    => "/etc/login.defs",
+                        pattern => qr/^UID_MIN\s+(\d+)/,
+                        logger  => $logger
+                    );
+                    $uid_min = int($uid) unless empty($uid);
+                }
                 foreach my $logged (@{$json}) {
                     next if empty($logged->{user});
-                    # Only keep users with uid >= 1000, others are root or system
+                    # Only keep users with uid >= UID_MIN, others are root or system
                     # users and may be "logged" as service
-                    next unless $logged->{uid} && $logged->{uid} >= 1000;
+                    next unless $logged->{uid} && $logged->{uid} >= $uid_min;
                     next if $seen{$logged->{user}}++;
                     push @users, { LOGIN => $logged->{user} };
                 }
@@ -160,43 +180,66 @@ sub _getLoggedUsers {
     }
 
     # if we cannot use loginctl, then we get login PIDs, then user UIDs, then full names via `id`
-    my @pids = getAllLines(
-            command => "who --users",
-            @_
-        );
-    foreach (@pids) {
-        my @pid_string = split(/\s+/, $_);
-        $_ = $pid_string[6];
+    my @ppids;
+    foreach (getAllLines(
+        command => "who --users",
+        logger  => $logger
+    )) {
+        my @fields = split(/\s+/, $_);
+        next unless $fields[6] =~ /^\d+$/;
+        push @ppids, $fields[6];
     }
 
-    my $pids_comma = join(",", @pids);
-    my @uids_raw = getAllLines(
-            command => "ps -o user:128 -p $pids_comma",
-            @_
-        );
+    return _legacyGetLoggedUsers(%params)
+        unless @ppids;
 
+    my @logged_uids = getAllLines(
+        command => "ps --no-headers -o uid --ppid " . join(",", @ppids),
+        logger  => $logger
+    );
+
+    return _legacyGetLoggedUsers(%params)
+        unless @logged_uids;
+
+    my %uids;
     my @uids;
-    foreach (@uids_raw) {
-        # https://programming-idioms.org/idiom/22/convert-string-to-integer/294/perl
-        my $uid = $_ + 0;
-        if ($uid > 0) {
-            push @uids, $uid;
-        }
+    foreach my $uid (@logged_uids) {
+        next unless $uid =~ /(\d+)/;
+        next if int($1) == 0 || $uids{$1};
+        $uids{$1} = 1;
+        push @uids, $1;
     }
 
-    # https://stackoverflow.com/a/7829
-    my %uid_hash   = map { $_, 1 } @uids;
-    @uids = keys %uid_hash;
+    return _legacyGetLoggedUsers(%params)
+        unless @uids;
+
+    my @users = getAllLines(
+        command => "id -un @uids",
+        logger  => $logger
+    );
+
+    return _legacyGetLoggedUsers(%params)
+        unless @users;
+
+    return map { { LOGIN => $_ } } @users;
+}
+
+sub _legacyGetLoggedUsers {
+    my (%params) = (
+        command => 'who',
+        @_
+    );
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my @users;
+    my $seen;
 
-    my $uids_space = join " ", @uids;
-    my @users_raw = getAllLines(
-            command => "id -un $uids_space",
-            @_
-        );
-    foreach (@users_raw) {
-        push @users, { LOGIN => $_ };
+    foreach my $line (@lines) {
+        next unless $line =~ /^(\S+)/;
+        next if $seen->{$1}++;
+        push @users, { LOGIN => $1 };
     }
 
     return @users;
