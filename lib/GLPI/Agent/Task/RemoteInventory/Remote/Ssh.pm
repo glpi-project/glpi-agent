@@ -641,6 +641,10 @@ sub remoteTimeZone {
         ));
     }
 
+    # Validate timezone offset as it has to match ^[+-][0-9]{4}$ format
+    $tz_offset = "+$tz_offset"
+        if defined($tz_offset) && $tz_offset =~ /^[0-9]{4}$/;
+
     $tz->{NAME}   = $tz_name // $fallback
         unless empty($tz_name) && empty($fallback);
     $tz->{OFFSET} = $tz_offset

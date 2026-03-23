@@ -26,6 +26,9 @@ inventory:
 * fix #1125: Fix MeshCentral remote_mgmt support on linux
 * fix #1072: Better users inventory support on linux domain computers
 
+remoteinventory:
+* fix #998: Fix inventory timezone offset format for UnixWare
+
 netdiscovery/netinventory:
 * fix #1091: Support "contextname" field for SNMPv3 credentials option
 * fix #1104: Updated Hikvision devices support
