@@ -49,6 +49,7 @@ netdiscovery/netinventory:
 * fix #1131: Added Aten/Voltronic UPS devices support
 * Added Meinberg devices support
 * Added Siemens Sicam devices support
+* fix #1132: Added AKCP devices support
 
 esx:
 * fix #1084: Don't keep VM OS if full_name has not been discovered
