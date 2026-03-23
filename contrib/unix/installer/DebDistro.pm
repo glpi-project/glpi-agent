@@ -164,7 +164,7 @@ sub install {
         my @debs = sort values(%pkgs);
         my @options = ( "-y" );
         push @options, "--allow-downgrades" if $self->downgradeAllowed();
-        my $command = "apt @options install @debs 2>/dev/null";
+        my $command = "apt install @options @debs 2>/dev/null";
         my $err = $self->run($command);
         die "Failed to install glpi-agent\n" if $err;
         $self->{_installed} = \@debs;
@@ -190,7 +190,7 @@ sub uninstall {
         @debs == 1 ? "Uninstalling glpi-agent package..." :
             "Uninstalling ".scalar(@debs)." glpi-agent related packages..."
     );
-    my $err = $self->run("apt -y purge --autoremove @debs 2>/dev/null");
+    my $err = $self->run("apt purge -y --autoremove @debs 2>/dev/null");
     die "Failed to uninstall glpi-agent\n" if $err;
 
     map { delete $self->{_packages}->{$_} } @debs;
