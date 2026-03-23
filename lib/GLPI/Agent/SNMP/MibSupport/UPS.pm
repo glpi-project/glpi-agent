@@ -34,8 +34,6 @@ use constant    upsIdentManufacturer        => upsMIB  .'.1.1.1.0' ;
 use constant    upsIdentModel               => upsMIB  .'.1.1.2.0' ;
 use constant    upsIdentUPSSoftwareVersion  => upsMIB  .'.1.1.3.0' ;
 
-my $match = apc.'|'.upsMIB;
-
 our $mibSupport = [
     {
         name        => "apc",
