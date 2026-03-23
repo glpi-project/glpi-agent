@@ -495,6 +495,8 @@ sub remoteTestFile {
 sub remoteTestLink {
     my ($self, $link) = @_;
 
+    return 0 if empty($link);
+
     my $command = "test -h '$link'";
 
     # Support Net::SSH2 facilities to exec command
