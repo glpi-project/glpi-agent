@@ -68,8 +68,8 @@ __END__
 
 =head1 NAME
 
-GLPI::Agent::SNMP::MibSupport::UPS - Inventory module for APC modules
+GLPI::Agent::SNMP::MibSupport::Voltronic - Inventory module for Voltronic based devices
 
 =head1 DESCRIPTION
 
-The module enhances APC devices support.
+The module enhances Voltronic devices support.
