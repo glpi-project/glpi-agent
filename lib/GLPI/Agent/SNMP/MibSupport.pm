@@ -84,23 +84,6 @@ sub new {
             device      => $device,
             mibsupport  => $mibname,
         );
-        delete $sysorid_mib_support{$miboid};
-    }
-
-    # Fallback for oid-based modules: if the device does not advertise the MIB
-    # in its sysORID table, try probing it with a walk to handle devices that
-    # implement standard MIBs but omit sysORID advertising (e.g. Ubnt UAP)
-    foreach my $miboid (keys %sysorid_mib_support) {
-        my $supported = $sysorid_mib_support{$miboid};
-        my $mibname = $supported->{name}
-            or next;
-        my $module = $supported->{module};
-        next unless defined($device->walk($miboid));
-        $logger->debug("oid walk fallback: $mibname mib support enabled") if $logger;
-        $self->{_SUPPORT}->{$module} = $module->new(
-            device      => $device,
-            mibsupport  => $mibname,
-        );
     }
 
     # Now sort modules by priority

@@ -29,8 +29,7 @@ our $mibSupport = [
     #    sysobjectid => getRegexpOidMatch(enterprises . '.ENTREPRISE.X.Y')
     #},
     # Example of mib support by checking snmp agent exposed mib support
-    # via sysORID entries, with automatic walk fallback if the device does
-    # not advertise the MIB in its sysORID table
+    # via sysORID entries
     #{
     #    name    => "mibName",
     #    oid     => mibOID
