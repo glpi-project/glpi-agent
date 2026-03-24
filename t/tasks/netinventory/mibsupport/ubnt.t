@@ -12,11 +12,12 @@ use GLPI::Agent::SNMP::Device;
 use GLPI::Agent::SNMP::MibSupport::Ubnt;
 
 # Port test data: index => { IFDESCR, IFTYPE, expected_IFNAME }
-# Covers Atheros-based 2.4GHz (wifi0apX) interface.
+# Covers Atheros-based 2.4GHz (wifi0apX) and 5GHz (wifi1apX) interfaces.
 # The UBNT-UniFi-MIB unifiVapName table maps VAP indices (0-7) to interface names;
 # unifiVapEssid maps the same indices to SSID names.
 my %port_data = (
     9  => { IFDESCR => 'wifi0ap3', IFTYPE => 71, IFNAME => 'TempSensor (2.4GHz)' },
+    11 => { IFDESCR => 'wifi1ap5', IFTYPE => 71, IFNAME => 'TestNet_Corp (5GHz)' },
 );
 
 # 2 assertions per port (IFNAME + IFALIAS) + 1 NoWarnings
