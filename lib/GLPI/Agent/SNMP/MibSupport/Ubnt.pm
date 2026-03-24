@@ -103,17 +103,11 @@ sub run {
 
                     unless (empty($ifname)) {
                         # Annotate the SSID with the radio frequency band
-                        if ($ifdescr =~ m/^ra\d+$/) {
-                            # MediaTek 2.4GHz radio (ra0, ra1, ...)
+                        if ($ifdescr =~ m/^(?:ra|wifi0ap)\d+$/) {
+                            # MediaTek (ra0, ra1, ...) or Atheros (wifi0ap0, wifi0ap1, ...) 2.4GHz radio
                             $ifname .= " (2.4GHz)";
-                        } elsif ($ifdescr =~ m/^rai\d+$/) {
-                            # MediaTek 5GHz radio (rai0, rai1, ...)
-                            $ifname .= " (5GHz)";
-                        } elsif ($ifdescr =~ m/^wifi0ap\d+$/) {
-                            # Atheros 2.4GHz radio (wifi0ap0, wifi0ap1, ...)
-                            $ifname .= " (2.4GHz)";
-                        } elsif ($ifdescr =~ m/^wifi1ap\d+$/) {
-                            # Atheros 5GHz radio (wifi1ap4, wifi1ap5, ...)
+                        } elsif ($ifdescr =~ m/^(?:rai|wifi1ap)\d+$/) {
+                            # MediaTek (rai0, rai1, ...) or Atheros (wifi1ap4, wifi1ap5, ...) 5GHz radio
                             $ifname .= " (5GHz)";
                         }
 
