@@ -11,9 +11,10 @@ use GLPI::Agent::SNMP::Mock;
 use GLPI::Agent::SNMP::Device;
 use GLPI::Agent::SNMP::MibSupport::Dot11;
 
-# Port test data: index => { IFDESCR, IFTYPE, MAC, expected_IFNAME }
+# Port test data: index => { IFDESCR, IFTYPE, expected_IFNAME }
+# No MAC field: the new code matches by ifIndex, not by MAC address.
 my %port_data = (
-    9  => { IFDESCR => 'wifi0ap3', IFTYPE => 71, MAC => '32:5a:4c:2d:db:0f', IFNAME => 'TempSensor' },
+    9  => { IFDESCR => 'wifi0ap3', IFTYPE => 71, IFNAME => 'TempSensor' },
 );
 
 # 2 assertions per port (IFNAME + IFALIAS) + 1 NoWarnings
@@ -30,7 +31,6 @@ foreach my $idx (keys %port_data) {
         $idx => {
             IFDESCR => $port_data{$idx}{IFDESCR},
             IFTYPE  => $port_data{$idx}{IFTYPE},
-            MAC     => $port_data{$idx}{MAC},
         }
     );
 }
