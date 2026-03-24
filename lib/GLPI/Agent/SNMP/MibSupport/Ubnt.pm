@@ -20,11 +20,6 @@ use constant unifiVapName         => ubnt . '.1.6.1.2.1.7';
 use constant unifiApSystemVersion => ubnt . '.1.6.3.6.0';
 use constant unifiApSystemModel   => ubnt . '.1.6.3.3.0';
 
-# See IEEE 802.11 MIB
-
-use constant dot11DesiredSSID => '.1.2.840.10036.1.1.1.9';
-use constant dot11StationID   => '.1.2.840.10036.1.1.1.1';
-
 our $mibSupport = [
     {
         name    => "ubnt",
@@ -33,11 +28,6 @@ our $mibSupport = [
     {
         name    => "ubnt-unifi",
         sysobjectid => getRegexpOidMatch(ubnt)
-    },
-    {
-        name        => "ubnt-dot11",
-        sysobjectid => getRegexpOidMatch(ubnt),
-        oid         => '.1.2.840.10036'
     }
 ];
 
@@ -122,46 +112,6 @@ sub run {
 
                     last;
                 }
-            }
-        }
-    } else {
-        # Fallback method: IEEE 802.11 MIB (for Qualcomm-based devices like UAP-AC-Lite)
-        # which use wifi0apX / wifi1apX interface naming and do not expose UBNT-UniFi-MIB OIDs
-
-        # Get list of BSSID MAC addresses indexed by interface index
-        my $dot11StationIDValues = $self->walk(dot11StationID) || {};
-        # Get list of SSID names indexed by interface index
-        my $dot11DesiredSSIDValues = $self->walk(dot11DesiredSSID) || {};
-
-        return unless %$dot11StationIDValues && %$dot11DesiredSSIDValues;
-
-        foreach my $index (keys(%$dot11StationIDValues)) {
-            # Get BSSID MAC address for this interface index
-            my $wlanMacAddress = getCanonicalMacAddress($dot11StationIDValues->{$index})
-                or next;
-
-            foreach my $port (keys(%$ports)) {
-                # Only process IEEE 802.11 (WiFi) ports
-                my $iftype = $device->{PORTS}->{PORT}->{$port}->{IFTYPE};
-                next unless defined($iftype) && $iftype == 71;
-
-                # Match port by MAC address
-                my $ifMacAddress = $device->{PORTS}->{PORT}->{$port}->{MAC};
-                next unless defined($ifMacAddress) && $ifMacAddress eq $wlanMacAddress;
-
-                my $ifDescr = $device->{PORTS}->{PORT}->{$port}->{IFDESCR} // "";
-
-                # Defines the port alias with the name of the radio interface (e.g. wifi0apX)
-                $device->{PORTS}->{PORT}->{$port}->{IFALIAS} = $ifDescr
-                    unless empty($ifDescr);
-
-                # Replaces the radio port name with its respective SSID name
-                my $ifname = getCanonicalString($dot11DesiredSSIDValues->{$index});
-                unless (empty($ifname)) {
-                    $device->{PORTS}->{PORT}->{$port}->{IFNAME} = $ifname;
-                }
-
-                last;
             }
         }
     }
