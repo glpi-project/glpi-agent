@@ -17,7 +17,9 @@ contact_links:
   - name: GLPI Community forum
     url: https://forum.glpi-project.org/
     about: You can find answers and also ask questions on the forum.
-  - name: GLPI english community Telegram channel
+  - name: GLPI Telegram community
     url: https://t.me/glpien
-  - name: GLPI-Community Discord channel
+    about: GLPI english community Telegram channel
+  - name: GLPI Discord community
     url: https://discord.gg/5a7G364tm3
+    about: GLPI-Community Discord channel
