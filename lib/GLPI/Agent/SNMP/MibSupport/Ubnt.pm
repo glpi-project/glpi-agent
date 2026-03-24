@@ -67,24 +67,26 @@ sub run {
     my $device = $self->device
         or return;
 
-    # Get list of device ports (e.g. raX, raiX etc.)
+    # Get list of device ports (e.g. raX, raiX, wifi0apX, wifi1apX etc.)
     my $ports = $device->{PORTS}->{PORT};
 
     # Get list of SSID
     my $unifiVapEssidValues = $self->walk(unifiVapEssid) || {};
-    # Get list of Radios (e.g. ra0, rai0 etc.)
+    # Get list of Radios (e.g. ra0, rai0, wifi0ap0, wifi1ap0 etc.)
     my $unifiVapNameValues = $self->walk(unifiVapName) || {};
     # The list of Radios is co-related to the list of SSIDs
-    # $unifiVapNameValues->{0} = ra0
+    # $unifiVapNameValues->{0} = ra0      (MediaTek-based devices)
+    # $unifiVapNameValues->{0} = wifi0ap0 (Atheros-based devices)
     # $unifiVapEssidValues->{0} = <SSID>
 
     if (%$unifiVapEssidValues) {
-        # Primary method: UBNT-UniFi-MIB (for MediaTek-based devices with ra/rai interfaces)
+        # UBNT-UniFi-MIB (for MediaTek-based devices with ra/rai interfaces
+        # and Atheros-based devices with wifi0apX/wifi1apX interfaces)
         foreach my $port (keys(%$ports)) {
-            # For each device Radio port (raX, raiX etc.)
-            # If you have more than one SSID there will also be more raX, raiX for each SSID.
+            # For each device Radio port (raX, raiX, wifi0apX, wifi1apX etc.)
+            # If you have more than one SSID there will also be more interfaces for each SSID.
             my $ifdescr = $device->{PORTS}->{PORT}->{$port}->{IFDESCR};
-            next unless defined($ifdescr) && $ifdescr =~ /^ra/;
+            next unless defined($ifdescr) && $ifdescr =~ /^(?:ra|wifi\d+ap)/;
 
             # Replaces the port iftype from "Ethernet" (6) to "WiFi" (71)
             if ($device->{PORTS}->{PORT}->{$port}->{IFTYPE} && $device->{PORTS}->{PORT}->{$port}->{IFTYPE} == 6) {
@@ -92,18 +94,26 @@ sub run {
             }
 
             foreach my $index (keys(%$unifiVapNameValues)) {
-                # Compares the device's current radio port name to the AP's radio list (e.g. raX eq raX)
+                # Compares the device's current radio port name to the AP's radio list
                 if ($ifdescr eq $unifiVapNameValues->{$index}) {
-                    # Defines the port alias with the name of the radio (e.g. raX)
+                    # Defines the port alias with the name of the radio interface
                     $device->{PORTS}->{PORT}->{$port}->{IFALIAS} = $ifdescr;
                     # Replaces the radio port name with its respective <SSID>
                     my $ifname = getCanonicalString($unifiVapEssidValues->{$index});
 
                     unless (empty($ifname)) {
-                        # raX and raiX are the network interfaces for the 2.4GHz and 5GHz radios respectively
+                        # Annotate the SSID with the radio frequency band
                         if ($ifdescr =~ m/^ra\d+$/) {
+                            # MediaTek 2.4GHz radio (ra0, ra1, ...)
                             $ifname .= " (2.4GHz)";
                         } elsif ($ifdescr =~ m/^rai\d+$/) {
+                            # MediaTek 5GHz radio (rai0, rai1, ...)
+                            $ifname .= " (5GHz)";
+                        } elsif ($ifdescr =~ m/^wifi0ap\d+$/) {
+                            # Atheros 2.4GHz radio (wifi0ap0, wifi0ap1, ...)
+                            $ifname .= " (2.4GHz)";
+                        } elsif ($ifdescr =~ m/^wifi1ap\d+$/) {
+                            # Atheros 5GHz radio (wifi1ap4, wifi1ap5, ...)
                             $ifname .= " (5GHz)";
                         }
 

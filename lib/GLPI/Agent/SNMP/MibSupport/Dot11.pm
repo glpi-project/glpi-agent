@@ -49,8 +49,9 @@ sub run {
             unless empty($ifDescr);
 
         # Replaces the radio port name with its respective SSID name
+        # (only if no vendor-specific module has already set a richer value)
         my $ifname = getCanonicalString($dot11DesiredSSIDValues->{$index});
-        $port->{IFNAME} = $ifname unless empty($ifname);
+        $port->{IFNAME} = $ifname unless empty($ifname) || defined($port->{IFNAME});
     }
 }
 
