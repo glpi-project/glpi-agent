@@ -16,7 +16,7 @@ use constant dot11StationID   => '.1.2.840.10036.1.1.1.1';
 our $mibSupport = [
     {
         name    => "dot11",
-        oid     => '.1.2.840.10036'
+        walkoid => dot11DesiredSSID
     }
 ];
 

@@ -33,6 +33,11 @@ our $mibSupport = [
     #{
     #    name    => "mibName",
     #    oid     => mibOID
+    #},
+    # Example of mib support by probing if a table OID returns any data
+    #{
+    #    name    => "mibName",
+    #    walkoid => mibOID
     #}
 ];
 

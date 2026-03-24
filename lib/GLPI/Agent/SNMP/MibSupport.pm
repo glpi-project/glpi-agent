@@ -65,6 +65,15 @@ sub new {
             );
             next;
         }
+        if ($mib_support->{walkoid}) {
+            next unless defined($device->walk($mib_support->{walkoid}));
+            $logger->debug("WalkOID match: $mibname mib support enabled") if $logger;
+            $self->{_SUPPORT}->{$module} = $module->new(
+                device      => $device,
+                mibsupport  => $mibname,
+            );
+            next;
+        }
         # Last supported case to match against sysorid
         my $miboid = $mib_support->{oid}
             or next;
