@@ -16,8 +16,8 @@ use GLPI::Agent::SNMP::MibSupport::Ubnt;
 # The UBNT-UniFi-MIB unifiVapName table maps VAP indices to interface names;
 # unifiVapEssid maps the same indices to SSID names.
 my %port_data = (
-    6  => { IFDESCR => 'wifi0ap0', IFTYPE => 71, IFNAME => 'TestNet - Visitantes_2.4Ghz (2.4GHz)' },
-    10 => { IFDESCR => 'wifi1ap4', IFTYPE => 71, IFNAME => 'TestNet - Visitantes_5Ghz (5GHz)' },
+    6  => { IFDESCR => 'wifi0ap0', IFTYPE => 71, IFNAME => 'TestNet - Visitantes_2.4GHz (2.4GHz)' },
+    10 => { IFDESCR => 'wifi1ap4', IFTYPE => 71, IFNAME => 'TestNet - Visitantes_5GHz (5GHz)' },
 );
 
 # 2 assertions per port (IFNAME + IFALIAS) + 1 NoWarnings
