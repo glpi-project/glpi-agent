@@ -14,7 +14,7 @@
 .1.3.6.1.2.1.2.2.1.6.11 = Hex-STRING: 24 5A 4C 2F DB 0F
 .1.3.6.1.4.1.41112.1.6.1.2.1.6.0 = STRING: "TestNet - Visitantes_2.4GHz"
 .1.3.6.1.4.1.41112.1.6.1.2.1.6.4 = STRING: "TestNet - Visitantes_5GHz"
-.1.3.6.1.4.1.41112.1.6.1.2.1.6.5 = STRING: "TestNet - Corp"
+.1.3.6.1.4.1.41112.1.6.1.2.1.6.5 = STRING: "TestNet_Corp"
 .1.3.6.1.4.1.41112.1.6.1.2.1.7.0 = STRING: "wifi0ap0"
 .1.3.6.1.4.1.41112.1.6.1.2.1.7.4 = STRING: "wifi1ap4"
 .1.3.6.1.4.1.41112.1.6.1.2.1.7.5 = STRING: "wifi1ap5"

@@ -19,7 +19,7 @@ use GLPI::Agent::SNMP::MibSupport::Ubnt;
 my %port_data = (
     6  => { IFDESCR => 'wifi0ap0',   IFTYPE => 71, IFNAME => 'TestNet - Visitantes_2.4GHz (2.4GHz)' },
     10 => { IFDESCR => 'wifi1ap4',   IFTYPE => 71, IFNAME => 'TestNet - Visitantes_5GHz (5GHz)'     },
-    11 => { IFDESCR => 'wifi1ap5.620', IFTYPE => 6,  IFNAME => 'TestNet - Corp (VLAN 620)'           },
+    11 => { IFDESCR => 'wifi1ap5.620', IFTYPE => 6,  IFNAME => 'TestNet_Corp (5GHz, VLAN 620)'           },
 );
 
 # 2 assertions per port (IFNAME + IFALIAS) + 1 NoWarnings

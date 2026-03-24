@@ -113,15 +113,23 @@ sub run {
                     my $ifname = getCanonicalString($unifiVapEssidValues->{$index});
 
                     unless (empty($ifname)) {
-                        if (defined $vlan_id) {
-                            # VLAN sub-interface: annotate with the VLAN ID
-                            $ifname .= " (VLAN $vlan_id)";
-                        } elsif ($parent_ifdescr =~ m/^(?:ra|wifi0ap)\d+$/) {
+                        # Determine the radio frequency band from the parent interface name
+                        my $band;
+                        if ($parent_ifdescr =~ m/^(?:ra|wifi0ap)\d+$/) {
                             # MediaTek (ra0, ra1, ...) or Atheros (wifi0ap0, wifi0ap1, ...) 2.4GHz radio
-                            $ifname .= " (2.4GHz)";
+                            $band = "2.4GHz";
                         } elsif ($parent_ifdescr =~ m/^(?:rai|wifi1ap)\d+$/) {
                             # MediaTek (rai0, rai1, ...) or Atheros (wifi1ap4, wifi1ap5, ...) 5GHz radio
-                            $ifname .= " (5GHz)";
+                            $band = "5GHz";
+                        }
+
+                        # Annotate the SSID with band and/or VLAN ID
+                        if (defined $band && defined $vlan_id) {
+                            $ifname .= " ($band, VLAN $vlan_id)";
+                        } elsif (defined $band) {
+                            $ifname .= " ($band)";
+                        } elsif (defined $vlan_id) {
+                            $ifname .= " (VLAN $vlan_id)";
                         }
 
                         $device->{PORTS}->{PORT}->{$port}->{IFNAME} = $ifname;
