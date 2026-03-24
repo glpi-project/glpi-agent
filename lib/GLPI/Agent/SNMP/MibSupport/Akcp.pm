@@ -35,6 +35,18 @@ sub getMacAddress {
     return getCanonicalMacAddress(getCanonicalString($self->get(sensorProbeMAC)));
 }
 
+sub getSerial {
+    my ($self) = @_;
+
+    my $macaddress = $self->getMacAddress()
+        or return;
+
+    # Replace any colon by dash
+    $macaddress =~ s/:/-/g;
+
+    return $macaddress;
+}
+
 sub getModel {
     my ($self) = @_;
 
