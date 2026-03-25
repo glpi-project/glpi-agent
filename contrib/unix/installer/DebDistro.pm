@@ -10,7 +10,13 @@ BEGIN {
     $INC{"DebDistro.pm"} = __FILE__;
 }
 
+use Fcntl qw(:flock);
 use InstallerVersion;
+
+# Maximum time in seconds to wait for APT/DPKG locks to be released
+my $APT_LOCK_WAIT_MAX = 300;
+# Interval in seconds between lock-availability checks
+my $APT_LOCK_RETRY_INTERVAL = 10;
 
 my $DEBREVISION = "1";
 my $DEBVERSION = InstallerVersion::VERSION();
@@ -99,6 +105,96 @@ sub _extract_deb {
     return $pwd =~ /\s/ ? "'$pwd/$pkg'" : "$pwd/$pkg";
 }
 
+sub _check_dpkg_state {
+    my ($self) = @_;
+
+    # dpkg --audit exits non-zero when packages are in a broken state
+    # (half-installed, half-configured, triggers-awaited, triggers-pending,
+    # or packages with missing/unmet dependencies) and prints a description
+    # of each problem.  Exit status 0 means the database is consistent.
+    my $audit = qx{dpkg --audit 2>&1};
+    if ($? != 0) {
+        $self->info("WARNING: dpkg has reported package inconsistencies:");
+        $self->info("  $_") for grep { /\S/ } split(/\n/, $audit);
+        $self->info("Fix the broken packages before retrying:");
+        $self->info("  sudo dpkg --configure -a");
+        $self->info("  sudo apt --fix-broken install");
+        die "Inconsistent dpkg state detected, aborting installation\n";
+    }
+}
+
+sub _wait_for_apt_lock {
+    my ($self) = @_;
+
+    # Honour the timeout configured in APT itself; fall back to the built-in default.
+    # apt-config dump outputs lines like: Binary::apt::DPkg::Lock::Timeout "120";
+    # A value of 0 (APT default) or -1 means "no timeout / wait forever", which
+    # would cause the installer to hang indefinitely, so fall back in those cases.
+    my $max_wait = $APT_LOCK_WAIT_MAX;
+    my $timeout_cfg = qx{apt-config dump 'Binary::apt::DPkg::Lock::Timeout' 2>/dev/null};
+    if ($timeout_cfg && $timeout_cfg =~ /Binary::apt::DPkg::Lock::Timeout\s+"(-?\d+)"/) {
+        my $apt_timeout = int($1);
+        if ($apt_timeout > 0) {
+            $max_wait = $apt_timeout;
+            $self->verbose("Using APT lock timeout from apt config: ${max_wait}s");
+        } else {
+            $self->verbose("APT lock timeout is ${apt_timeout} (no limit); using built-in default: ${max_wait}s");
+        }
+    }
+
+    # All lock files that serialise APT/DPKG operations
+    my @lock_files = (
+        "/var/lib/dpkg/lock-frontend",
+        "/var/lib/dpkg/lock",
+        "/var/cache/apt/archives/lock",
+    );
+
+    my $waited   = 0;
+    my $reported = 0;
+    while (1) {
+        my @locked;
+        foreach my $lockfile (@lock_files) {
+            next unless -e $lockfile;
+            if (open(my $fh, '<', $lockfile)) {
+                # Try a non-blocking exclusive lock; if it fails the file is
+                # already held by another process.
+                if (!flock($fh, LOCK_EX | LOCK_NB)) {
+                    push @locked, $lockfile;
+                } else {
+                    flock($fh, LOCK_UN);
+                }
+                close($fh);
+            }
+        }
+
+        last unless @locked; # All clear — proceed with installation
+
+        if (!$reported) {
+            $self->info("APT/DPKG is currently locked by another process.");
+            $self->info("Waiting up to ${max_wait}s for the lock to be released...");
+            $reported = 1;
+        }
+
+        if ($waited >= $max_wait) {
+            $self->info("Still locked: " . join(", ", @locked));
+            die "APT/DPKG lock still held after ${max_wait}s.\n"
+              . "To identify the locking process, run:\n"
+              . "  fuser " . join(" ", @locked) . "\n"
+              . "Stop that process, then retry the installation.\n";
+        }
+
+        sleep($APT_LOCK_RETRY_INTERVAL);
+        $waited += $APT_LOCK_RETRY_INTERVAL;
+        $self->info(
+            "Still waiting for APT/DPKG lock to be released... "
+            . "(${waited}s / ${max_wait}s)"
+        );
+    }
+
+    $self->info("APT/DPKG lock is now available, proceeding with installation.")
+        if $reported;
+}
+
 sub install {
     my ($self) = @_;
 
@@ -164,6 +260,12 @@ sub install {
         my @debs = sort values(%pkgs);
         my @options = ( "-y" );
         push @options, "--allow-downgrades" if $self->downgradeAllowed();
+
+        # Pre-flight: detect broken dpkg state and wait for any APT/DPKG locks
+        # before invoking apt so the user always gets actionable diagnostics.
+        $self->_check_dpkg_state();
+        $self->_wait_for_apt_lock();
+
         my $command = "apt install @options @debs 2>/dev/null";
         my $err = $self->run($command);
         die "Failed to install glpi-agent\n" if $err;
