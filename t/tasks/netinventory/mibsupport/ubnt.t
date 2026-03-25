@@ -17,7 +17,7 @@ use GLPI::Agent::SNMP::MibSupport::Ubnt;
 my %initial_ports = (
     6  => { IFDESCR => 'wifi0ap0',      IFTYPE => 6 },
     10 => { IFDESCR => 'wifi1ap4',      IFTYPE => 6 },
-    11 => { IFDESCR => 'wifi1ap5.620',  IFTYPE => 6 },
+    25 => { IFDESCR => 'wifi1ap5.620',  IFTYPE => 6 },
 );
 
 # Expected port data after run(): IFTYPE corrected to 71 (WiFi),
@@ -26,16 +26,20 @@ my %expected_ports = (
     6  => {
         IFDESCR => 'wifi0ap0',
         IFTYPE  => 71,
-        IFNAME  => 'TestNet - Visitantes_2.4GHz (2.4GHz)',
+        # SSID from device uses lowercase 'h' ("Ghz"); band annotation appended
+        # by Ubnt.pm uses uppercase 'H' ("GHz").
+        IFNAME  => 'TestNet - Visitantes_2.4Ghz (2.4GHz)',
         IFALIAS => 'wifi0ap0',
     },
     10 => {
         IFDESCR => 'wifi1ap4',
         IFTYPE  => 71,
-        IFNAME  => 'TestNet - Visitantes_5GHz (5GHz)',
+        # SSID from device uses lowercase 'h' ("Ghz"); band annotation appended
+        # by Ubnt.pm uses uppercase 'H' ("GHz").
+        IFNAME  => 'TestNet - Visitantes_5Ghz (5GHz)',
         IFALIAS => 'wifi1ap4',
     },
-    11 => {
+    25 => {
         IFDESCR => 'wifi1ap5.620',
         IFTYPE  => 71,
         IFNAME  => 'TestNet_Corp (5GHz, VLAN 620)',
