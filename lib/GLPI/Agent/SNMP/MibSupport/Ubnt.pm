@@ -84,9 +84,9 @@ sub run {
     foreach my $port (keys(%$ports)) {
         # For each device Radio port (raX, raiX, wifi0apX, wifi1apX etc.)
         # Also handles VLAN sub-interfaces such as wifi1ap5.620 created
-        # when a RADIUS server assigns a dynamic VLAN via 802.1X.
+        # when a RADIUS server assigns a dynamic VLAN via 802.1X
         my $ifdescr = $device->{PORTS}->{PORT}->{$port}->{IFDESCR};
-        next unless defined($ifdescr) && $ifdescr =~ /^(?:ra|wifi\d+ap)\d+(?:\.\d+)?$/;
+        next unless defined($ifdescr) && $ifdescr =~ /^(?:ra\d+|rai\d+|wifi\d+ap\d+)(?:\.\d+)?$/;
 
         # Replaces the port iftype from "Ethernet" (6) to "WiFi" (71)
         # UBNT APs erroneously classify WiFi interfaces as Ethernet in SNMP
@@ -96,7 +96,7 @@ sub run {
         }
 
         # Detect VLAN sub-interfaces (e.g. wifi1ap5.620): strip the VLAN
-        # suffix to obtain the parent interface name for SSID lookup.
+        # suffix to obtain the parent interface name for SSID lookup
         my ($parent_ifdescr, $vlan_id);
         if ($ifdescr =~ /^(.+)\.(\d+)$/) {
             $parent_ifdescr = $1;
