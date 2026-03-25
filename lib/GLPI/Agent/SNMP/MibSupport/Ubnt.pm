@@ -85,8 +85,8 @@ sub run {
         # For each device Radio port (raX, raiX, wifi0apX, wifi1apX etc.)
         # Also handles VLAN sub-interfaces such as wifi1ap5.620 created
         # when a RADIUS server assigns a dynamic VLAN via 802.1X
-        my $ifdescr = $device->{PORTS}->{PORT}->{$port}->{IFDESCR};
-        next unless defined($ifdescr) && $ifdescr =~ /^(?:ra\d+|rai\d+|wifi\d+ap\d+)(?:\.\d+)?$/;
+        my $ifdescr = getCanonicalString($device->{PORTS}->{PORT}->{$port}->{IFDESCR});
+        next unless defined($ifdescr) && $ifdescr =~ /^(?:ra\d+|rai\d+|wifi\d+ap\d+)(?:\.(\d+))?$/;
 
         # Replaces the port iftype from "Ethernet" (6) to "WiFi" (71)
         # UBNT APs erroneously classify WiFi interfaces as Ethernet in SNMP
@@ -107,7 +107,8 @@ sub run {
 
         foreach my $index (keys(%$unifiVapNameValues)) {
             # Compares the device's current radio port (or its parent) to the AP's radio list
-            if ($parent_ifdescr eq $unifiVapNameValues->{$index}) {
+            my $vapName = getCanonicalString($unifiVapNameValues->{$index});
+            if ($parent_ifdescr eq $vapName) {
                 # Defines the port alias with the name of the radio interface
                 $device->{PORTS}->{PORT}->{$port}->{IFALIAS} = $ifdescr;
                 # Replaces the radio port name with its respective <SSID>
