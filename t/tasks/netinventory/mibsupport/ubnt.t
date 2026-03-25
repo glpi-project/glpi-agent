@@ -10,18 +10,11 @@ use Test::NoWarnings;
 
 use GLPI::Agent::SNMP::Mock;
 use GLPI::Agent::SNMP::Device;
+use GLPI::Agent::SNMP::Hardware;
 use GLPI::Agent::SNMP::MibSupport::Ubnt;
 
-# Initial port data for seeding (before run): UBNT APs erroneously report
-# WiFi interfaces as Ethernet (IFTYPE=6) via SNMP.
-my %initial_ports = (
-    6  => { IFDESCR => 'wifi0ap0',      IFTYPE => 6 },
-    10 => { IFDESCR => 'wifi1ap4',      IFTYPE => 6 },
-    25 => { IFDESCR => 'wifi1ap5.620',  IFTYPE => 6 },
-);
-
-# Expected port data after run(): IFTYPE corrected to 71 (WiFi),
-# IFNAME set to SSID with band/VLAN annotation, IFALIAS set to interface name.
+# Expected port data after run(): IFNAME set to SSID with band/VLAN annotation
+# and IFALIAS set to interface name
 my %expected_ports = (
     6  => {
         IFDESCR => 'wifi0ap0',
@@ -51,15 +44,9 @@ my $snmp = GLPI::Agent::SNMP::Mock->new(
 );
 my $device = GLPI::Agent::SNMP::Device->new('snmp' => $snmp);
 
-# Pre-populate device ports (normally done by NetInventory task before mibsupport runs)
-foreach my $idx (keys %initial_ports) {
-    $device->addPort(
-        $idx => {
-            IFDESCR => $initial_ports{$idx}{IFDESCR},
-            IFTYPE  => $initial_ports{$idx}{IFTYPE},
-        }
-    );
-}
+GLPI::Agent::SNMP::Hardware::_setGenericProperties(
+    device => $device
+);
 
 my $mibsupport = GLPI::Agent::SNMP::MibSupport::Ubnt->new('device' => $device);
 $mibsupport->run();
