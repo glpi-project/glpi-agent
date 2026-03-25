@@ -186,15 +186,8 @@ sub _wait_for_apt_lock {
         my @locked;
         foreach my $lockfile (@lock_files) {
             next unless -e $lockfile;
-            if (open(my $fh, '<', $lockfile)) {
-                # Try a non-blocking exclusive lock; if it fails the file is
-                # already held by another process.
-                if (!flock($fh, LOCK_EX | LOCK_NB)) {
-                    push @locked, $lockfile;
-                } else {
-                    flock($fh, LOCK_UN);
-                }
-                close($fh);
+            if (_lock_holder_info($lockfile)) {
+                push @locked, $lockfile;
             }
         }
 
