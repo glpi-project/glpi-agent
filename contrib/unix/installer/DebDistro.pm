@@ -123,6 +123,35 @@ sub _check_dpkg_state {
     }
 }
 
+sub _lock_holder_info {
+    my ($lockfile) = @_;
+
+    # Resolve the inode of the lock file so we can match it in /proc/locks.
+    my @st = stat($lockfile);
+    return "" unless @st;
+    my $inode = $st[1];
+
+    # /proc/locks format (one entry per line):
+    #   id: TYPE ADVISORY WRITE pid maj:min:inode start end
+    # The inode field is decimal; device numbers are hex.
+    open(my $fh, '<', '/proc/locks') or return "";
+    while (my $line = <$fh>) {
+        next unless $line =~ /\bWRITE\b\s+(\d+)\s+[0-9a-f]+:[0-9a-f]+:(\d+)\b/i;
+        my ($pid, $lock_inode) = ($1, $2);
+        next unless $lock_inode == $inode;
+        close($fh);
+        # Retrieve the process name from the kernel comm file (always available).
+        my $name = "";
+        if (open(my $ch, '<', "/proc/$pid/comm")) {
+            chomp($name = <$ch> // "");
+            close($ch);
+        }
+        return $name ? "$name (PID $pid)" : "PID $pid";
+    }
+    close($fh);
+    return "";
+}
+
 sub _wait_for_apt_lock {
     my ($self) = @_;
 
@@ -170,16 +199,21 @@ sub _wait_for_apt_lock {
         last unless @locked; # All clear — proceed with installation
 
         if (!$reported) {
-            $self->info("APT/DPKG is currently locked by another process.");
+            # Identify which process is holding the first lock we found.
+            my $holder = _lock_holder_info($locked[0]);
+            $self->info("APT/DPKG is currently locked"
+                . ($holder ? " by $holder" : " by another process") . ".");
             $self->info("Waiting up to ${max_wait}s for the lock to be released...");
             $reported = 1;
         }
 
         if ($waited >= $max_wait) {
-            $self->info("Still locked: " . join(", ", @locked));
-            die "APT/DPKG lock still held after ${max_wait}s.\n"
-              . "To identify the locking process, run:\n"
-              . "  fuser " . join(" ", @locked) . "\n"
+            my @details = map {
+                my $h = _lock_holder_info($_);
+                $h ? "$_ (held by $h)" : $_;
+            } @locked;
+            die "APT/DPKG lock still held after ${max_wait}s: "
+              . join(", ", @details) . "\n"
               . "Stop that process, then retry the installation.\n";
         }
 

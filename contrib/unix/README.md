@@ -1,8 +1,26 @@
-# Testing the Linux Installer Locally
+# GLPI Agent — Linux Installer Developer Guide
 
-This guide explains how to build the self-extracting Perl installer script
-and how to exercise the new APT/DPKG lock-contention and broken-dpkg-state
-preflight checks introduced by fix #1136.
+This directory contains the scripts and Perl modules that make up the
+self-extracting Linux installer for GLPI Agent, as well as helper scripts for
+building Debian and RPM packages.
+
+---
+
+## Directory overview
+
+| File / directory | Purpose |
+|------------------|---------|
+| `make-linux-installer.sh` | Builds the self-extracting `glpi-agent-*-installer.pl` script |
+| `installer/` | Perl modules embedded into the installer (`LinuxDistro`, `DebDistro`, `RpmDistro`, `SnapInstall`, …) |
+| `install-deb.sh` | Unattended Debian/Ubuntu installation helper (downloads and installs from a release) |
+| `install-deb-README.md` | Documentation for `install-deb.sh` |
+| `glpi-agent.spec` / `glpi-agent-iec61850.spec` | RPM spec files |
+| `glpi-agent-rpm-build.sh` | Builds RPM packages |
+| `glpi-agent.service` | systemd unit file |
+| `glpi-agent.cron` | cron job template |
+| `glpi-agent-appimage-hook` | AppImage post-build hook |
+| `make-linux-appimage.sh` | Builds the AppImage release artifact |
+| `glpi-agent-portable.sh` | Portable (no-install) launcher wrapper |
 
 ---
 
@@ -10,13 +28,13 @@ preflight checks introduced by fix #1136.
 
 | Requirement | Notes |
 |-------------|-------|
-| Debian/Ubuntu host or VM | Tests below require `dpkg`, `apt`, and `flock` |
+| Debian/Ubuntu, Fedora/RHEL, or compatible host | Or a VM / container |
 | Perl ≥ 5.10 | `perl --version` |
-| `bash` | for `make-linux-installer.sh` |
-| Root / sudo access | `apt install` requires root |
-| Built `.deb` packages **or** packages downloaded from a release | See *Build the installer* below |
+| `bash` | For `make-linux-installer.sh` |
+| Root / sudo access | `apt`/`dnf`/`rpm` require root at install time |
+| `.deb` or `.rpm` packages | Download from a release or build locally (see below) |
 
-### Install Perl test dependencies (once)
+### Install Perl test dependencies (Debian/Ubuntu, once)
 
 ```bash
 sudo apt install -y libuniversal-require-perl \
@@ -26,34 +44,29 @@ sudo apt install -y libuniversal-require-perl \
 
 ---
 
-## 1. Run the existing unit tests
+## Building the self-extracting installer
 
-These tests cover distro detection and do **not** require packages or root:
+`make-linux-installer.sh` concatenates all installer Perl modules into a single
+executable script and optionally embeds distribution packages inside it.
 
-```bash
-cd /path/to/glpi-agent
-perl t/installer/linux-perl-installer.t
+### Syntax
+
+```
+bash make-linux-installer.sh [--version VERSION] [--distro NAME]
+     [--deb PKG.deb ...] [--rpm PKG.rpm ...] [--snap PKG.snap]
+     [--deps DEP ...] [--config FILE ...]
 ```
 
-Expected output: `91 tests passed, no warnings`.
+### With real packages (recommended for release testing)
 
----
-
-## 2. Build the self-extracting installer script
-
-`contrib/unix/make-linux-installer.sh` concatenates all installer Perl modules
-into a single self-contained script.
-
-### With real `.deb` packages
-
-Download release packages (replace `X.Y` with the version you want to test):
+Download the packages for the version you want to test:
 
 ```bash
-VERSION=X.Y
+VERSION=1.17
 wget https://github.com/glpi-project/glpi-agent/releases/download/${VERSION}/glpi-agent_${VERSION}_all.deb
 ```
 
-Then build:
+Then build the installer:
 
 ```bash
 cd contrib/unix
@@ -66,140 +79,142 @@ bash make-linux-installer.sh \
 The resulting script is written to the repository root as
 `glpi-agent-${VERSION}-debian-installer.pl`.
 
-### Without packages (skeleton / syntax test only)
+To bundle multiple packages (e.g. also include the network task):
+
+```bash
+bash make-linux-installer.sh \
+  --version "${VERSION}" \
+  --distro  debian \
+  --deb     ../../glpi-agent_${VERSION}_all.deb \
+            ../../glpi-agent-task-network_${VERSION}_all.deb
+```
+
+### Skeleton build (no packages — syntax/structure check only)
 
 ```bash
 cd contrib/unix
-bash make-linux-installer.sh --version 1.99-test --distro debian
+bash make-linux-installer.sh --version 1.99-dev
 ```
 
 This produces a valid, executable script with an empty package archive — useful
-for checking that the concatenation and Perl syntax are correct.
+for verifying module syntax and installer logic without real packages.
 
 ---
 
-## 3. Run the installer (normal happy path)
+## Running the installer
+
+### Basic install (service mode)
 
 ```bash
-sudo perl glpi-agent-${VERSION}-debian-installer.pl \
-  --type    typical \
-  --server  https://your-glpi-server/
+sudo perl glpi-agent-${VERSION}-linux-installer.pl \
+  --type   typical \
+  --server https://your-glpi-server/
 ```
 
-You should see `apt install` output (stdout only — stderr remains suppressed via
-`2>/dev/null` as in the original code) and the agent starting as a service.
+### Common options
+
+| Option | Description |
+|--------|-------------|
+| `--type typical` | Install the base agent only (default) |
+| `--type all` | Install all task packages |
+| `--type network` | Install base agent + network tasks |
+| `--server URL` | GLPI server URL |
+| `--no-question` | Non-interactive / silent mode |
+| `--runnow` | Trigger an inventory immediately after install |
+| `--cron` | Install as an hourly cron job instead of a service |
+| `--verbose` | Show detailed progress output |
+
+### Uninstall
+
+```bash
+sudo perl glpi-agent-${VERSION}-linux-installer.pl --uninstall
+```
 
 ---
 
-## 4. Simulate APT/DPKG lock contention
+## Running the unit tests
 
-This verifies that `_wait_for_apt_lock` detects and reports lock contention
-and eventually times out with a clear message.
-
-### Simulate a held dpkg frontend lock
+The test suite lives in `t/installer/` and covers distro detection for all
+supported Linux distributions. It does **not** require packages, root, or
+network access.
 
 ```bash
-# Terminal 1 — hold the lock for 60 seconds
-sudo flock /var/lib/dpkg/lock-frontend sleep 60 &
-
-# Terminal 2 — run the installer; it should print wait messages every 10 s
-sudo perl glpi-agent-${VERSION}-debian-installer.pl --type typical
+cd /path/to/glpi-agent
+perl t/installer/linux-perl-installer.t
 ```
 
-Expected output every 10 seconds (up to 300 s total):
+Expected output: all tests pass with no warnings.
+
+---
+
+## Iterating on installer module changes
+
+The Perl modules under `installer/` are embedded verbatim into the final script
+by `make-linux-installer.sh`. The development loop is:
+
+1. Edit a module (e.g. `installer/DebDistro.pm`)
+2. Check syntax: `perl -I contrib/unix/installer -c contrib/unix/installer/DebDistro.pm`
+3. Run unit tests: `perl t/installer/linux-perl-installer.t`
+4. Rebuild the installer script: `bash contrib/unix/make-linux-installer.sh --version 1.99-dev`
+5. Test the rebuilt script on a Debian/Ubuntu system
+
+---
+
+## Simulating failure scenarios (Debian/Ubuntu)
+
+### APT/DPKG lock contention
+
+Hold a lock in one terminal and run the installer in another to verify it
+detects the holder and waits up to the configured timeout:
+
+```bash
+# Terminal 1 — hold the dpkg frontend lock
+sudo flock /var/lib/dpkg/lock-frontend sleep 120 &
+
+# Terminal 2 — installer should print the locking process name/PID and wait
+sudo perl glpi-agent-${VERSION}-linux-installer.pl --type typical
+```
+
+Expected output (printed every 10 s):
 
 ```
-APT/DPKG is currently locked by another process.
+APT/DPKG is currently locked by sleep (PID 1234).
 Waiting up to 300s for the lock to be released...
 Still waiting for APT/DPKG lock to be released... (10s / 300s)
-Still waiting for APT/DPKG lock to be released... (20s / 300s)
 ...
 ```
 
-After killing the lock holder (`kill %1` in Terminal 1) the installer
-continues normally. If the lock is held for the full 300 s the installer
-exits non-zero with:
+Release the lock with `kill %1` in Terminal 1; the installer then continues.
+If the lock is held for the full timeout the installer exits non-zero with the
+process name, PID, and lock file path.
 
-```
-APT/DPKG lock still held after 300s.
-To identify the locking process, run:
-  fuser /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock /var/cache/apt/archives/lock
-Stop that process, then retry the installation.
-```
+### Broken dpkg state
 
-### Quick timeout test (reduce wait in a one-off run)
-
-Edit `DebDistro.pm` temporarily and set `$APT_LOCK_WAIT_MAX = 20`, rebuild the
-installer with `make-linux-installer.sh`, hold the lock, and confirm the
-installer fails within ~30 seconds.
-
----
-
-## 5. Simulate a broken dpkg state
-
-This verifies that `_check_dpkg_state` catches inconsistencies before touching
-`apt`.
-
-### Method A — leave a package half-configured
+Unpack a package without configuring it to trigger `dpkg --audit`:
 
 ```bash
-# Unpack without configuring (intentionally broken)
-sudo dpkg --unpack /tmp/some-package.deb
+# Download a small package
+apt-get download hello
 
-# Now run the installer — it should abort immediately
-sudo perl glpi-agent-${VERSION}-debian-installer.pl --type typical
+# Unpack only (intentionally half-configured)
+sudo dpkg --unpack ./hello_*.deb
+
+# Run the installer — it should abort immediately with remediation steps
+sudo perl glpi-agent-${VERSION}-linux-installer.pl --type typical
+
+# Restore the system
+sudo dpkg --configure -a
+sudo apt --fix-broken install -y
 ```
 
 Expected output:
 
 ```
 WARNING: dpkg has reported package inconsistencies:
-  <dpkg --audit output lines here>
+  <dpkg --audit lines>
 Fix the broken packages before retrying:
   sudo dpkg --configure -a
   sudo apt --fix-broken install
 Inconsistent dpkg state detected, aborting installation
 ```
 
-Exit code is non-zero (`echo $?` → non-zero).
-
-### Method B — simulate dpkg --audit output without actually breaking anything
-
-To exercise the error path without modifying any real packages, temporarily
-install a package in the "unpack-only" state and then clean up:
-
-```bash
-# Download any small package without installing it
-apt-get download hello 2>/dev/null || apt-get download base-files
-
-# Unpack it without running its postinst (leaves it half-configured)
-sudo dpkg --unpack ./hello_*.deb 2>/dev/null || sudo dpkg --unpack ./base-files_*.deb
-
-# Run the installer — it should abort immediately with the dpkg audit error
-sudo perl glpi-agent-${VERSION}-debian-installer.pl --type typical
-
-# Clean up the intentionally broken state
-sudo dpkg --configure -a
-sudo apt --fix-broken install -y
-```
-
----
-
-## 6. Verify the success path is unchanged
-
-After all the tests above, confirm a clean install still works end-to-end:
-
-```bash
-# Ensure dpkg state is clean first
-sudo dpkg --configure -a
-sudo apt --fix-broken install -y
-
-# Install
-sudo perl glpi-agent-${VERSION}-debian-installer.pl \
-  --type   typical \
-  --server https://your-glpi-server/ \
-  --runnow
-```
-
-The installer should proceed without any lock or audit messages and the agent
-should run its first inventory immediately.
