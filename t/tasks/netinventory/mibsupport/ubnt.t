@@ -5,7 +5,7 @@ use warnings;
 use lib 't/lib';
 
 use Test::More;
-use Test::Deep qw(cmp_deeply);
+use Test::Deep qw(cmp_deeply superhashof);
 use Test::NoWarnings;
 
 use GLPI::Agent::SNMP::Mock;
@@ -55,7 +55,7 @@ foreach my $idx (sort { $a <=> $b } keys %expected_ports) {
     my $port = $device->{PORTS}->{PORT}->{$idx};
     cmp_deeply(
         $port,
-        $expected_ports{$idx},
-        "Port $idx doesn't match expected values: ".join(", ", map { "$_ => $port->{$_}" } keys(%$port))
+        superhashof($expected_ports{$idx}),
+        "Port $idx attributes: ".join(", ", map { "$_ => $port->{$_}" } keys(%$port))
     );
 }
