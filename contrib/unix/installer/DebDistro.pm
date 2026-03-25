@@ -60,8 +60,10 @@ sub init {
 
     # Store installation status for each supported package
     foreach my $deb (keys(%DebPackages)) {
-        my $version = qx(dpkg-query --show --showformat='\${Version}' $deb 2>/dev/null);
+        my $query = qx(dpkg-query -s $deb 2>/dev/null);
         next if $?;
+        next unless $query =~ /^Status:\s+install ok installed$/mi;
+        my ($version) = $query =~ /^Version:\s+(.*)$/mi;
         $version =~ s/^\d+://;
         $self->{_packages}->{$deb} = $version;
     }

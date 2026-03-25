@@ -83,6 +83,8 @@ packaging:
 * Update MacOSX packages to use zlib 1.3.2
 * win32: Updated GLPI-AgentMonitor to v1.5.0
 * fix #1038: Make linux perl installer working on LinuxMint
+* fix #1138: Fix linux perl installer as it was falsely detecting agent as still
+  installed after an apt-get remove on debian-based distro
 
 1.16 Mon, 02 Feb 2026
 
