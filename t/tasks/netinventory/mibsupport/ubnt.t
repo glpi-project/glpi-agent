@@ -26,16 +26,12 @@ my %expected_ports = (
     6  => {
         IFDESCR => 'wifi0ap0',
         IFTYPE  => 71,
-        # SSID from device uses lowercase 'h' ("Ghz"); band annotation appended
-        # by Ubnt.pm uses uppercase 'H' ("GHz").
         IFNAME  => 'TestNet - Visitantes_2.4Ghz (2.4GHz)',
         IFALIAS => 'wifi0ap0',
     },
     10 => {
         IFDESCR => 'wifi1ap4',
         IFTYPE  => 71,
-        # SSID from device uses lowercase 'h' ("Ghz"); band annotation appended
-        # by Ubnt.pm uses uppercase 'H' ("GHz").
         IFNAME  => 'TestNet - Visitantes_5Ghz (5GHz)',
         IFALIAS => 'wifi1ap4',
     },
