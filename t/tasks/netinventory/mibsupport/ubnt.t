@@ -40,7 +40,7 @@ my %expected_ports = (
 plan tests => scalar(keys %expected_ports) + 1;
 
 my $snmp = GLPI::Agent::SNMP::Mock->new(
-    file => "resources/walks/sample07.walk"
+    file => "resources/walks/sample7.walk"
 );
 my $device = GLPI::Agent::SNMP::Device->new('snmp' => $snmp);
 
