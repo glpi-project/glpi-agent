@@ -86,8 +86,8 @@ To bundle multiple packages (e.g. also include the network task):
 bash make-linux-installer.sh \
   --version "${VERSION}" \
   --distro  debian \
-  --deb     ../../glpi-agent_${VERSION}_all.deb \
-            ../../glpi-agent-task-network_${VERSION}_all.deb
+  --deb     ../../glpi-agent_${VERSION}*_all.deb \
+            ../../glpi-agent-task-network_${VERSION}*_all.deb
 ```
 
 ---
