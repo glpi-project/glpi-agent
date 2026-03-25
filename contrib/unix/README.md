@@ -62,8 +62,9 @@ bash make-linux-installer.sh [--version VERSION] [--distro NAME]
 Download the packages for the version you want to test:
 
 ```bash
-VERSION=1.16
-wget https://github.com/glpi-project/glpi-agent/releases/download/${VERSION}/glpi-agent_${VERSION}_all.deb
+VERSION="1.16"
+DOWNLOAD_URL=$(curl -sL "https://api.github.com/repos/glpi-project/glpi-agent/releases/tags/${VERSION}" | grep -o 'https://github.com/[^" ]*/glpi-agent_[^" ]*_all\.deb' | head -n 1)
+wget $DOWNLOAD_URL
 ```
 
 Then build the installer:
@@ -73,7 +74,7 @@ cd contrib/unix
 bash make-linux-installer.sh \
   --version "${VERSION}" \
   --distro  debian \
-  --deb     ../../glpi-agent_${VERSION}_all.deb
+  --deb     ../../glpi-agent_${VERSION}*_all.deb
 ```
 
 The resulting script is written to the repository root as
@@ -99,6 +100,7 @@ bash make-linux-installer.sh \
 sudo perl glpi-agent-${VERSION}-linux-installer.pl \
   --type   typical \
   --server https://your-glpi-server/
+  --verbose
 ```
 
 ### Common options
