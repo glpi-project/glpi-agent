@@ -4,6 +4,21 @@ Warning for developers: Don't change/remove any entry which doesn't concern your
 
 1.17 not yet released
 
+installer:
+* fix #1136: Improve Debian/Ubuntu installer robustness:
+  - Detect broken dpkg package states (half-installed, half-configured,
+    triggers-pending/awaited) via dpkg --audit before attempting installation
+    and abort with actionable remediation steps (dpkg --configure -a /
+    apt --fix-broken install)
+  - Detect APT/DPKG lock contention via non-blocking flock probe on
+    /var/lib/dpkg/lock-frontend, /var/lib/dpkg/lock and
+    /var/cache/apt/archives/lock; identify the holding process name and PID
+    directly from /proc/locks and /proc/<pid>/comm; wait with per-interval
+    progress messages before failing with a clear diagnostic
+  - Respect Binary::apt::DPkg::Lock::Timeout from APT configuration as the
+    effective wait ceiling; fall back to a 300s built-in default when the
+    key is absent, 0 (APT default — no limit) or -1 (wait forever)
+
 core:
 * Don't truncate submitted data with GLPI::Agent::HTTP::Client::Fusion when submitting
   in a POST request. This is the case when submitting very long data for Collect task.
