@@ -18,6 +18,7 @@ use constant    ucddavis    => enterprises . '.2021' ;
 use constant    checkpoint  => enterprises . '.2620' ;
 use constant    socomec     => enterprises . '.4555' ;
 use constant    synology    => enterprises . '.6574' ;
+use constant    tplink      => enterprises . '.11863' ;
 use constant    ubnt        => enterprises . '.41112' ;
 
 use constant    ucdExperimental => ucddavis . '.13' ;
@@ -84,6 +85,11 @@ use constant    qVendorId       => quantum . '.1.1.4.0';
 use constant    qProdId         => quantum . '.1.1.5.0';
 use constant    qProdRev        => quantum . '.1.1.6.0';
 use constant    qSerialNumber   => quantum . '.1.1.12.0';
+
+# TP-Link
+use constant    tplinkModel     => tplink . '.20.1.1.2.0';
+use constant    tplinkFirmware  => tplink . '.20.1.1.3.0';
+use constant    tplinkMacID     => tplink . '.20.1.3.1.0';
 
 our $mibSupport = [
     {
@@ -180,14 +186,25 @@ sub getType {
         return 'NETWORKING';
     }
 
+    # TP-Link detection before sysDescr analysis
+    my $tplinkModel = getCanonicalString($self->get(tplinkModel));
+    if ($tplinkModel) {
+        $device->{_Appliance} = {
+            MODEL           => $tplinkModel,
+            FIRMWARE        => getCanonicalString($self->get(tplinkFirmware)),
+            SERIAL          => getCanonicalString($self->get(tplinkMacID)),
+            MANUFACTURER    => 'TP-Link'
+        };
+        return 'NETWORKING';
+    }
+
     # sysDescr analysis
     my $sysDescr =  getCanonicalString($self->get(sysDescr));
     if ($sysDescr) {
         # TP-Link detection
-        if ($sysDescr =~ /^Linux (TL-\S+) ([0-9.]+) #1/i) {
+        if ($sysDescr =~ /^Linux (TL-\S+) [0-9.]+ #1/i) {
             $device->{_Appliance} = {
                 MODEL           => $1,
-                FIRMWARE        => $2,
                 MANUFACTURER    => 'TP-Link'
             };
             return 'NETWORKING';
@@ -305,6 +322,16 @@ sub getManufacturer {
     return $device->{_Appliance}->{MANUFACTURER};
 }
 
+sub getFirmware {
+    my ($self) = @_;
+
+    my $device = $self->device
+        or return;
+
+    return unless $device->{_Appliance} && $device->{_Appliance}->{FIRMWARE};
+    return $device->{_Appliance}->{FIRMWARE};
+}
+
 sub getSerial {
     my ($self) = @_;
 
@@ -342,7 +369,6 @@ sub getSerial {
             }
         }
     }
-
 
     return $serial;
 }
@@ -453,22 +479,6 @@ sub run {
                 MANUFACTURER    => $manufacturer
             };
         }
-    } elsif ($manufacturer eq 'TP-Link' && $device->{_Appliance} && $device->{_Appliance}->{FIRMWARE}) {
-        $firmware = {
-            NAME            => $self->getModel(),
-            DESCRIPTION     => "Firmware version",
-            TYPE            => "system",
-            VERSION         => $device->{_Appliance}->{FIRMWARE},
-            MANUFACTURER    => $manufacturer
-        };
-    } elsif ($device->{_Appliance} && $device->{_Appliance}->{_QUANTUM}) {
-        $firmware = {
-            NAME            => $self->getModel(),
-            DESCRIPTION     => "Product revision number",
-            TYPE            => "system",
-            VERSION         => $device->{_Appliance}->{FIRMWARE},
-            MANUFACTURER    => $manufacturer
-        };
     }
     $device->addFirmware($firmware) if $firmware;
 }

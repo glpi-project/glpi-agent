@@ -8,6 +8,7 @@ use parent 'GLPI::Agent::SNMP::MibSupportTemplate';
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::SNMP;
 
+use constant    sysDescr    => '.1.3.6.1.2.1.1.1.0';
 use constant    sysObjectID => '.1.3.6.1.2.1.1.2.0';
 
 # See TPLINK-MIB
@@ -16,6 +17,7 @@ use constant    tplink  => '.1.3.6.1.4.1.11863';
 
 use constant    switch      => tplink . '.1';
 use constant    tplinkMgmt  => tplink . '.6';
+use constant    eap         => tplink . '.10.1';
 
 use constant    l2manageswitch  => switch . '.1';
 
@@ -28,7 +30,6 @@ use constant    tpSysInfoMacAddr        => tplinkSysInfoMIBObjects . '.7.0';
 use constant    tpSysInfoSerialNum      => tplinkSysInfoMIBObjects . '.8.0';
 
 # TPLINK-DOT1Q-VLAN-MIB
-#.1.3.6.1.4.1.11863.6.14.1.2.1.1.1
 
 use constant    tplinkDot1qVlanMIBObjects   => tplinkMgmt . '.14.1';
 
@@ -43,6 +44,10 @@ use constant    vlanTagPortMemberAdd    => vlanConfig . '.1.1.3';
 use constant    vlanUntagPortMemberAdd  => vlanConfig . '.1.1.4';
 use constant    vlanPortMemberRemove    => vlanConfig . '.1.1.5';
 use constant    dot1qVlanStatus         => vlanConfig . '.1.1.6';
+
+# Other
+
+use constant    linux       => tplink . '.3.2.10';
 
 our $mibSupport = [
     {
@@ -82,6 +87,13 @@ sub getMacAddress {
 
 sub getModel {
     my ($self) = @_;
+
+    # Model can be in sysDescr for linux based devices
+    my $sysObjectID = getCanonicalString($self->get(sysObjectID));
+    if ($sysObjectID eq linux || $sysObjectID eq eap) {
+        my $sysDescr = getCanonicalString($self->get(sysDescr));
+        return $1 if $sysDescr =~ /^Linux\s+(.+)\s+[0-9.]+\s+#1/i;
+    }
 
     my $device = $self->device
         or return;
