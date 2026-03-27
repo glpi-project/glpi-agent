@@ -182,7 +182,7 @@ jobs:
         perl --version
         perl -V
         # Compute perl-version for current week to regen perl lib cache at least each week
-        perl -e '@t = localtime; print "cache-version=".$^V."-".int($t[7]/7)."\n"' >>$GITHUB_OUTPUT
+        perl -e '@t = localtime; print "cache-version=".$^V."-".int(1+$t[7]/7)."\n"' >>$GITHUB_OUTPUT
     - name: Install libxml2 via brew
       run: brew install libxml2
     - name: Update environment to find latest libxml2
@@ -193,8 +193,8 @@ jobs:
       uses: actions/cache@v5
       with:
         path: |
-            /usr/local/Cellar/perl/*/lib/perl5/site_perl
-            /usr/local/Cellar/perl/*/bin
+            /opt/homebrew/Cellar/perl/*/lib/perl5/site_perl
+            /opt/homebrew/Cellar/perl/*/bin
         key: macos-test-perl-${{ steps.check-version.outputs.cache-version }}-lib-cache-${{ hashFiles('Makefile.PL', '.github/workflows/glpi-agent-ci.yml') }}
     - name: Install Module::Install
       if: steps.cache.outputs.cache-hit != 'true'
