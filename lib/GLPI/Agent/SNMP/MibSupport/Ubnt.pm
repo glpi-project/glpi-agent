@@ -67,42 +67,71 @@ sub run {
     my $device = $self->device
         or return;
 
-    # Get list of device ports (e.g. raX, raiX etc.)
+    # Get list of device ports (e.g. raX, raiX, wifi0apX, wifi1apX etc.)
     my $ports = $device->{PORTS}->{PORT};
 
     # Get list of SSID
     my $unifiVapEssidValues = $self->walk(unifiVapEssid) || {};
-    # Get list of Radios (e.g. ra0, rai0 etc.)
+    # Get list of Radios (e.g. ra0, rai0, wifi0ap0, wifi1ap0 etc.)
     my $unifiVapNameValues = $self->walk(unifiVapName) || {};
     # The list of Radios is co-related to the list of SSIDs
-    # $unifiVapNameValues->{0} = ra0
+    # $unifiVapNameValues->{0} = ra0      (MediaTek-based devices)
+    # $unifiVapNameValues->{0} = wifi0ap0 (Atheros-based devices)
     # $unifiVapEssidValues->{0} = <SSID>
 
+    # UBNT-UniFi-MIB (for MediaTek-based devices with ra/rai interfaces
+    # and Atheros-based devices with wifi0apX/wifi1apX interfaces)
     foreach my $port (keys(%$ports)) {
-        # For each device Radio port (raX, raiX etc.)
-        # If you have more than one SSID there will also be more raX, raiX for each SSID.
-        my $ifdescr = $device->{PORTS}->{PORT}->{$port}->{IFDESCR};
-        next unless defined($ifdescr) && $ifdescr =~ /^ra/;
+        # For each device Radio port (raX, raiX, wifi0apX, wifi1apX etc.)
+        # Also handles VLAN sub-interfaces such as wifi1ap5.620 created
+        # when a RADIUS server assigns a dynamic VLAN via 802.1X
+        my $ifdescr = getCanonicalString($device->{PORTS}->{PORT}->{$port}->{IFDESCR});
+        next unless defined($ifdescr) && $ifdescr =~ /^(?:ra\d+|rai\d+|wifi\d+ap\d+)(?:\.(\d+))?$/;
 
         # Replaces the port iftype from "Ethernet" (6) to "WiFi" (71)
+        # UBNT APs erroneously classify WiFi interfaces as Ethernet in SNMP
+        # (see https://github.com/glpi-project/glpi-agent/pull/657)
         if ($device->{PORTS}->{PORT}->{$port}->{IFTYPE} && $device->{PORTS}->{PORT}->{$port}->{IFTYPE} == 6) {
             $device->{PORTS}->{PORT}->{$port}->{IFTYPE} = 71;
         }
 
+        # Detect VLAN sub-interfaces (e.g. wifi1ap5.620): strip the VLAN
+        # suffix to obtain the parent interface name for SSID lookup
+        my ($parent_ifdescr, $vlan_id);
+        if ($ifdescr =~ /^(.+)\.(\d+)$/) {
+            $parent_ifdescr = $1;
+            $vlan_id        = $2;
+        } else {
+            $parent_ifdescr = $ifdescr;
+        }
+
         foreach my $index (keys(%$unifiVapNameValues)) {
-            # Compares the device's current radio port name to the AP's radio list (e.g. raX eq raX)
-            if ($ifdescr eq $unifiVapNameValues->{$index}) {
-                # Defines the port alias with the name of the radio (e.g. raX)
+            # Compares the device's current radio port (or its parent) to the AP's radio list
+            my $vapName = getCanonicalString($unifiVapNameValues->{$index});
+            if ($parent_ifdescr eq $vapName) {
+                # Defines the port alias with the name of the radio interface
                 $device->{PORTS}->{PORT}->{$port}->{IFALIAS} = $ifdescr;
                 # Replaces the radio port name with its respective <SSID>
                 my $ifname = getCanonicalString($unifiVapEssidValues->{$index});
 
                 unless (empty($ifname)) {
-                    # raX and raiX are the network interfaces for the 2.4GHz and 5GHz radios respectively
-                    if ($ifdescr =~ m/^ra\d+$/) {
-                        $ifname .= " (2.4GHz)";
-                    } elsif ($ifdescr =~ m/^rai\d+$/) {
-                        $ifname .= " (5GHz)";
+                    # Determine the radio frequency band from the parent interface name
+                    my $band;
+                    if ($parent_ifdescr =~ m/^(?:ra|wifi0ap)\d+$/) {
+                        # MediaTek (ra0, ra1, ...) or Atheros (wifi0ap0, wifi0ap1, ...) 2.4GHz radio
+                        $band = "2.4GHz";
+                    } elsif ($parent_ifdescr =~ m/^(?:rai|wifi1ap)\d+$/) {
+                        # MediaTek (rai0, rai1, ...) or Atheros (wifi1ap4, wifi1ap5, ...) 5GHz radio
+                        $band = "5GHz";
+                    }
+
+                    # Annotate the SSID with band and/or VLAN ID
+                    if (defined $band && defined $vlan_id) {
+                        $ifname .= " ($band, VLAN $vlan_id)";
+                    } elsif (defined $band) {
+                        $ifname .= " ($band)";
+                    } elsif (defined $vlan_id) {
+                        $ifname .= " (VLAN $vlan_id)";
                     }
 
                     $device->{PORTS}->{PORT}->{$port}->{IFNAME} = $ifname;
