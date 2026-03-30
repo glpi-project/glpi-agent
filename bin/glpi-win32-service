@@ -36,7 +36,7 @@ unless (GetOptions(
     pod2usage(-verbose => 0);
 }
 
-if ($options->{help}) {
+if ($options{help}) {
     Pod::Usage->use();
     pod2usage(-verbose => 0, -exitstatus => 0);
 }
