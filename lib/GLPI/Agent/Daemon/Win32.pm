@@ -72,15 +72,25 @@ sub RegisterService {
     my ($self, %options) = @_;
 
     my $libdir = $options{libdir} || $self->{libdir} ;
-    my $params = '"' . $options{program} . '"';
+    my $params = "";
 
     # Try to compute libdir from this module file if still not absolute
     $libdir = abs_path(File::Spec->rel2abs('../../../../..', __FILE__))
         unless ($libdir && File::Spec->file_name_is_absolute($libdir) && -d $libdir);
 
-    # Add path to lib if setup
-    $params = '-I"' . $libdir . '" ' . $params
-        if ($libdir && -d $libdir);
+    # Add perllib paths
+    if ($libdir && -d $libdir) {
+        $params = '-I"' . $libdir . '" ';
+        if ($libdir =~ /^(.*)agent$/) {
+            my $basedir = $1;
+            map { $params .= '-I"'.$_.'" ' } grep { -d $1 }
+                map { $basedir.$_ } qw(site/lib vendor/lib lib);
+        }
+        $params =~ s{/}{\\}g;
+    }
+
+    # Also include perl program to run as a service
+    $params .= '"' . $options{program} . '"';
 
     my $service = {
         name       => $self->name( $options{name} ),
