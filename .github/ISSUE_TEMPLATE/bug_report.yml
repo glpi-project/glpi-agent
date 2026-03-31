@@ -77,9 +77,9 @@ body:
       label: GLPI Agent version
       description: What GLPI agent version is triggering this issue ?
       options:
+        - v1.17
         - v1.16
         - v1.15
-        - v1.14
         - Nightly build (git version in additional context below)
         - Other (Details in additional context below)
       multiple: true
