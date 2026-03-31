@@ -70,7 +70,7 @@ ssl-server-plugin:
 * Enhancement:
   - Preload SSL context to keep it alive along service life
   - The plugin is now supported on windows platform
-* Bump Proxy plugin version to 2.0
+* Bump SSL plugin version to 2.0
 
 packaging:
 * fix #1093: Fix rpm packaging where base package requires task-network one
