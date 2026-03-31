@@ -4,6 +4,10 @@ Warning for developers: Don't change/remove any entry which doesn't concern your
 
 1.18 not yet released
 
+packaging:
+* Update Windows packaging to use:
+  - gcc 15.2.0posix-14.0.0-msvcrt-r7
+
 1.17 Tue, 31 Mar 2026
 
 core:
