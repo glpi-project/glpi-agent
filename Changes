@@ -25,6 +25,7 @@ inventory:
 * Don't die but ignore additional content injection when using unsupported format
 * fix #1125: Fix MeshCentral remote_mgmt support on linux
 * fix #1072: Better users inventory support on linux domain computers
+* Updated pci.ids to 2026.03.29 version
 
 remoteinventory:
 * fix #998: Fix inventory timezone offset format for UnixWare
@@ -52,6 +53,7 @@ netdiscovery/netinventory:
 * fix #1132: Added AKCP devices support
 * fix #1141: Updated TP-Link devices support
 * fix #1135: Updated Cisco Meraki devices support
+* Updated sysobject.ids
 
 esx:
 * fix #1084: Don't keep VM OS if full_name has not been discovered
