@@ -2,7 +2,7 @@ Revision history for GLPI agent
 
 Warning for developers: Don't change/remove any entry which doesn't concern your code
 
-1.17 not yet released
+1.17 Tue, 31 Mar 2026
 
 core:
 * Don't truncate submitted data with GLPI::Agent::HTTP::Client::Fusion when submitting
@@ -26,9 +26,11 @@ inventory:
 * fix #1125: Fix MeshCentral remote_mgmt support on linux
 * fix #1072: Better users inventory support on linux domain computers
 * Updated pci.ids to 2026.03.29 version
+* Bump Inventory task version to 1.24
 
 remoteinventory:
 * fix #998: Fix inventory timezone offset format for UnixWare
+* Bump RemoteInventory task version to 1.10
 
 netdiscovery/netinventory:
 * fix #1091: Support "contextname" field for SNMPv3 credentials option
@@ -54,10 +56,13 @@ netdiscovery/netinventory:
 * fix #1141: Updated TP-Link devices support
 * fix #1135: Updated Cisco Meraki devices support
 * Updated sysobject.ids
+* Bump NetDiscovery task version to 7.1
+* Bump NetInventory task version to 7.1
 
 esx:
 * fix #1084: Don't keep VM OS if full_name has not been discovered
 * Filter out invalid BIOS values
+* Bump ESX task version to 2.15
 
 proxy-server-plugin:
 * Enhancement:
