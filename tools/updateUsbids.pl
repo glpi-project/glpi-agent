@@ -11,6 +11,10 @@ use LWP::UserAgent;
 use Changelog;
 use GLPI::Agent::Tools;
 
+# Set maximum time to get an answer and time to wait between each try
+my $maxdelay = time + 300;
+my $trydelay = 15;
+
 # Touch usb.ids file with stored date to make mirror API works as expected
 my ($date, $time) = getFirstMatch(
     file    => "share/usb.ids",
@@ -20,17 +24,27 @@ system("touch -d '$date $time' share/usb.ids") if $date && $time;
 
 my $ua = LWP::UserAgent->new();
 
-my $response = $ua->mirror(
-    "http://www.linux-usb.org/usb.ids",
-    "share/usb.ids"
-);
+my $response;
+while (time<=$maxdelay && !($response && $response->is_success())) {
 
-if ($response->status_line =~ /Not Modified/) {
-    print "share/usb.ids is still up-to-date\n";
-    exit(0);
+    if ($response) {
+        print "Retrying in ${trydelay}s after: ".$response->status_line()."\n";
+        sleep $trydelay;
+    }
+
+    $response = $ua->mirror(
+        "http://www.linux-usb.org/usb.ids",
+        "share/usb.ids"
+    );
+
+    if ($response->status_line =~ /Not Modified/) {
+        print "share/usb.ids is still up-to-date\n";
+        exit(0);
+    }
 }
 
-die unless $response->is_success();
+die "Update failed: ".$response->status_line()."\n"
+    unless $response->is_success();
 
 my $version = getFirstMatch(
     file    => "share/usb.ids",
