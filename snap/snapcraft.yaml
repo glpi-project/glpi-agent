@@ -76,9 +76,9 @@ apps:
 parts:
   perl:
     plugin: make
-    source: https://www.cpan.org/src/5.0/perl-5.42.1.tar.gz
-    # checksum from https://www.cpan.org/src/5.0/perl-5.42.1.tar.gz.sha256.txt
-    source-checksum: sha256/6f84e6dc8cce97181d1c6aeeb552c13775c91ded3c6c73743c9211af87b16bf8
+    source: https://www.cpan.org/src/5.0/perl-5.42.2.tar.gz
+    # checksum from https://www.cpan.org/src/5.0/perl-5.42.2.tar.gz.sha256.txt
+    source-checksum: sha256/9384e8deb75b7b1695e5637971b752281aaecd025a3d5d4734d33c1d0adfee47
     override-build: |
       rm -f config.sh Policy.sh
       unset ARCHOPT

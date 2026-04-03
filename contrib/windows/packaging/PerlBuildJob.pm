@@ -6,7 +6,7 @@ use parent 'Exporter';
 use ToolchainBuildJob;
 
 use constant {
-    PERL_VERSION       => "5.42.1",
+    PERL_VERSION       => "5.42.2",
     # Tag for dmidecode release on glpi-project/dmidecode
     DMIDECODE_VERSION  => "3.7",
     # Tag for Glpi-AgentMonitor release on glpi-project/glpi-agentmonitor

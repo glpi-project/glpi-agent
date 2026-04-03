@@ -6,7 +6,10 @@ Warning for developers: Don't change/remove any entry which doesn't concern your
 
 packaging:
 * Update Windows packaging to use:
+  - Perl 5.42.2
   - gcc 15.2.0posix-14.0.0-msvcrt-r7
+* Update MacOSX packages to use perl 5.42.2
+* Update linux snap packaging to use perl 5.42.2
 
 1.17 Tue, 31 Mar 2026
 
