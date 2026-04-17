@@ -177,7 +177,7 @@ sub init {
     # Pages may require some initialization
     map { $_->init() } grep { $_->need_init() } values(%{$self->{_pages}});
 
-    # Stil update Result page
+    # Still update Result page
     $self->{_results}->xml_analysis() if $self->{_results};
 
     $self->{_errors} = [];
