@@ -983,6 +983,10 @@ jobs:
         while read dash agent version x
         do
             VERSION="${version#v}"
+            # Skip version if files has been removed from repository
+            if [ -z "$(ls glpi-agent/*$VERSION* 2>/dev/null)" ]; then
+                continue
+            fi
             if (( --COUNT > 0 )); then
                 echo "Keeping glpi-agent $VERSION build"
                 if [ ! -e glpi-agent/glpi-agent-$VERSION.sha256 ]; then
