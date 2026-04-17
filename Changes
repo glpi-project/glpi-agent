@@ -13,6 +13,9 @@ packaging:
 * Update MacOSX packages to use perl 5.42.2 and OpenSSL 3.5.6
 * Update linux snap packaging to use perl 5.42.2
 
+toolbox:
+* Fix configuration reloading to only reload it when really required
+
 1.17 Tue, 31 Mar 2026
 
 core:

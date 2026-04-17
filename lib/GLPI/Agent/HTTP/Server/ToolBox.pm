@@ -485,6 +485,10 @@ sub read_yaml {
 sub reload_yaml_on_change {
     my ($self) = @_;
 
+    # Handle yaml in parent for pages
+    return $self->{toolbox}->reload_yaml_on_change()
+        if $self->{toolbox};
+
     my $reload_needed = $self->{_yaml_loaded_time} ? 0 : 1;
     unless ($reload_needed) {
         foreach my $file (keys(%{$self->{_yaml_loaded_time}})) {
