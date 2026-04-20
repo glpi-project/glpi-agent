@@ -250,7 +250,7 @@ sub update_template_hash {
 
     my $tag_filter = $self->get_from_session('tag_filter');
     my $devices = $self->{_devices} || {};
-    if (defined($tag_filter) && length($tag_filter)) {
+    unless (empty($tag_filter)) {
         $devices = {
             map { $_ => $self->{_devices}->{$_} }
                 grep {
@@ -422,11 +422,14 @@ sub handle_form {
         my $archiver = $self->_get_archiver()
             or return $self->errors("Download results: No archiving software available");
         my @time = localtime();
-        my $tag_filter = $self->get_from_session('tag_filter');
+        my $tag_filter = $self->get_from_session('tag_filter') // "";
+        my $tag_name = $tag_filter;
+        # Clean up tag filter if used in filename
+        $tag_name =~ s/[^0-9a-z-]+/_/g;
         my $base_folder = $yaml_config->{networktask_save} || '.';
         my $file = sprintf("%s/%s%s-%d-%02d-%02d-%02dh%02d.%s", $base_folder,
             $form->{'submit/export'} ? "scan-results" : "full-datas-export",
-            $tag_filter ne "" ? "-tag_$tag_filter" : "",
+            $tag_name,
             $time[5] + 1900, $time[4]+1, $time[3], $time[2], $time[1],
             $archiver->file_extension()
         );

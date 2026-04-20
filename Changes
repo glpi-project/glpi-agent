@@ -18,6 +18,7 @@ packaging:
 
 toolbox:
 * Fix configuration reloading to only reload it when really required
+* Fix undefined error on Results page while tag_filter is not set
 
 1.17 Tue, 31 Mar 2026
 

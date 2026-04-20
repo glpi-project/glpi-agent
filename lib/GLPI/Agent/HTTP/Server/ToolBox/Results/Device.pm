@@ -40,7 +40,7 @@ sub ips {
 
 sub tag {
     my ($self) = @_;
-    return $self->{tag} || '';
+    return $self->{tag} // '';
 }
 
 sub type {
