@@ -11,7 +11,7 @@ use GLPI::Agent::Tools::Virtualization;
 sub isEnabled {
     # lxd is now based on snap install, checking /snapd/bin/lxd file is more accurate
     # Ubuntu installs lxd & lxc as script installers so previous condition was no more correct.
-    return canRun('/snapd/bin/lxd') && canRun('lxc');
+    return canRun('/snap/bin/lxd') && canRun('lxc');
 }
 
 sub doInventory {
