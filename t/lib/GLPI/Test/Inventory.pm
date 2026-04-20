@@ -20,7 +20,11 @@ sub new {
         )
     );
 
-    return $class->SUPER::new(logger => $logger);
+    # Tests should target glpi v11 support by default
+    return $class->SUPER::new(
+        glpi   => "11",
+        logger => $logger
+    );
 }
 
 1;

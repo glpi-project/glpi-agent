@@ -34,7 +34,7 @@ sub _getSystemProfilerInfosXML {
             string => $xmlStr,
             %params
         );
-    } elsif ($params{type} =~ /^SP(SerialATA|DiscBurning|CardReader|USB|FireWire)DataType$/) {
+    } elsif ($params{type} =~ /^SP(NVMe|SerialATA|DiscBurning|CardReader|USB|FireWire)DataType$/) {
         $info->{storages} = _extractStoragesFromXml(
             type   => $params{type},
             string => $xmlStr,

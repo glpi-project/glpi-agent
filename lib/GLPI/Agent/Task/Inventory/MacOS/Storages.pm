@@ -21,6 +21,7 @@ sub doInventory {
     my $logger    = $params{logger};
 
     foreach my $storage (
+        _getNVMeStorages(logger => $logger),
         _getSerialATAStorages(logger => $logger),
         _getDiscBurningStorages(logger => $logger),
         _getCardReaderStorages(logger => $logger),
@@ -32,6 +33,43 @@ sub doInventory {
             entry   => $storage
         );
     }
+}
+
+sub _getNVMeStorages {
+    my (%params) = @_;
+
+    my $infos = getSystemProfilerInfos(
+        type   => 'SPNVMeDataType',
+        format => 'xml',
+        %params
+    );
+    return unless $infos->{storages};
+    my @storages = ();
+    foreach my $name (sort keys %{$infos->{storages}}) {
+        my $hash = $infos->{storages}->{$name};
+        next unless $hash->{partition_map_type};
+        next if $hash->{_name} =~ /controller/i;
+        my $storage = {
+            NAME         => $hash->{bsd_name} || $hash->{_name},
+            MANUFACTURER => getCanonicalManufacturer($hash->{_name}),
+            TYPE         => 'Disk drive',
+            INTERFACE    => 'NVME',
+            SERIAL       => $hash->{device_serial},
+            MODEL        => $hash->{device_model} || $hash->{_name},
+            FIRMWARE     => $hash->{device_revision},
+            DESCRIPTION  => $hash->{_name}
+        };
+
+        _setDiskSize($hash, $storage);
+
+        # Cleanup manufacturer from model
+        $storage->{MODEL} =~ s/\s*$storage->{MANUFACTURER}\s*//i
+            if $storage->{MODEL};
+
+        push @storages, _sanitizedHash($storage);
+    }
+
+    return @storages;
 }
 
 sub _getSerialATAStorages {

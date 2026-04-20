@@ -69,6 +69,22 @@ my %testsSerialATA = (
     'macbook-SPSerialATADataType.xml' => []
 );
 
+my %testsNVMe = (
+    'SPNVMeDataType.xml' => [
+        {
+            DESCRIPTION => 'APPLE SSD AP0512Q',
+            DISKSIZE => 477102,
+            FIRMWARE => '561.100.',
+            INTERFACE => 'NVME',
+            MANUFACTURER => 'Apple',
+            MODEL => 'SSD AP0512Q',
+            NAME => 'disk0',
+            SERIAL => '0ba016ebe08d5c1d',
+            TYPE => 'Disk drive'
+        }
+    ],
+);
+
 my %testsDiscBurning = (
     'SPDiscBurningDataType.xml' => [
         {
@@ -268,6 +284,7 @@ my %testsFireWireStorage = (
 );
 
 my $nbTests = scalar (keys %testsSerialATA)
+    + scalar (keys %testsNVMe)
     + scalar (keys %testsDiscBurning)
     + scalar (keys %testsCardReader)
     + scalar (keys %testsUSBStorage)
@@ -286,6 +303,28 @@ foreach my $test (keys %testsSerialATA) {
             $storages,
             [ sort { compare() } @{$testsSerialATA{$test}} ],
             "testsSerialATA $test: parsing"
+        );
+    } else {
+        my $dumper = Data::Dumper->new([$storages], [$test])->Useperl(1)->Indent(1)->Quotekeys(0)->Sortkeys(1)->Pad("    ");
+        $dumper->{xpad} = "    ";
+        print STDERR $dumper->Dump();
+        fail "$test: still no result integrated";
+    }
+    lives_ok {
+        $inventory->addEntry(section => 'STORAGES', entry => $_)
+            foreach @storages;
+    } "$test: registering";
+}
+
+foreach my $test (keys %testsNVMe) {
+    my $file = "resources/macos/system_profiler/$test";
+    my @storages = GLPI::Agent::Task::Inventory::MacOS::Storages::_getNVMeStorages(file => $file);
+    my $storages = [ sort { compare() } @storages ];
+    if (ref($testsNVMe{$test}) eq 'ARRAY') {
+        cmp_deeply(
+            $storages,
+            [ sort { compare() } @{$testsNVMe{$test}} ],
+            "testsNVMe $test: parsing"
         );
     } else {
         my $dumper = Data::Dumper->new([$storages], [$test])->Useperl(1)->Indent(1)->Quotekeys(0)->Sortkeys(1)->Pad("    ");
