@@ -7,7 +7,7 @@ name: GLPI Agent Packaging
 env:
   publish_development_build: no
   number_of_development_build_to_keep: 3
-  number_of_nightly_build_to_keep: 3
+  number_of_nightly_build_to_keep: 1
   macosx_notarize_support: yes
 
 on:
