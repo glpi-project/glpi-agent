@@ -997,7 +997,7 @@ jobs:
                 fi
                 read date time tz <<<$(git log -n1 --pretty=%ci -- glpi-agent/glpi-agent_${VERSION}_all.deb)
                 ./github-nightly-description.sh --version $VERSION --date "$date $time UTC" >>glpi-agent/index.md.new
-            else
+            elif [ "$VERSION" != "${{ needs.setup-release.outputs.version }}" ]; then
                 echo "Removing glpi-agent $VERSION build"
                 git filter-branch --prune-empty -f --index-filter "git rm --cached --ignore-unmatch *$VERSION*" HEAD
             fi
@@ -1007,13 +1007,16 @@ jobs:
         echo "Repository status:"
         git status
         ls -lt glpi-agent
-        # Prepare commit
-        echo "Adding GLPI-Agent ${{ needs.setup-release.outputs.version }} build"
-        git add glpi-agent/*
-        git commit -m "Add GLPI-Agent ${{ needs.setup-release.outputs.version }} build"
-        # Force commit
-        git push --force
-        git status
+        # Still handle case nightly has been pushed manually so there's no change to commit
+        if git status --porcelain | grep -qE '^\?\? .*${{ needs.setup-release.outputs.version }}'; then
+            # Prepare commit
+            echo "Adding GLPI-Agent ${{ needs.setup-release.outputs.version }} build"
+            git add glpi-agent/*
+            git commit -m "Add GLPI-Agent ${{ needs.setup-release.outputs.version }} build"
+            # Force commit
+            git push --force
+            git status
+        fi
       shell: bash
       env:
         FILTER_BRANCH_SQUELCH_WARNING: 1
