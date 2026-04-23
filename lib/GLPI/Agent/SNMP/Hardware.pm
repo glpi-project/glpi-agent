@@ -1482,8 +1482,8 @@ sub _getCDPInfo {
         }
 
         if ($connection->{SYSNAME} &&
-            $connection->{SYSNAME} =~ /^SIP([A-F0-9a-f]*)$/) {
-            $connection->{SYSMAC} = alt2canonical("0x".$1);
+            $connection->{SYSNAME} =~ /^(SIP|T29|T23G)([A-F0-9a-f]*)$/) {
+            $connection->{SYSMAC} = alt2canonical("0x".$2);
         } elsif ($connection->{SYSNAME} &&
             $connection->{SYSNAME} =~ /^SIP-(.*)$/ &&
             $deviceId =~ /^$1([0-9A-Fa-f]{12})$/) {
