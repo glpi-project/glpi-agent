@@ -128,6 +128,10 @@ sub install {
                     $self->verbose("$pkg still installed and up-to-date");
                     delete $pkgs{$pkg};
                 } else {
+                    if ($self->{_packages}->{$pkg} =~ /-{git|dev}/ && !$self->downgradeAllowed()) {
+                        $self->verbose("Allowing downgrade on nightly or development build");
+                        $self->allowDowngrade();
+                    }
                     $self->verbose("$pkg will be upgraded");
                 }
             }
