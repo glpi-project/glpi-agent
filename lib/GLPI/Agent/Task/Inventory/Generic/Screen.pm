@@ -372,7 +372,9 @@ sub _getScreens {
             $screens{$serial} = $screen ;
         } else {
             foreach my $key (keys(%$screen)) {
-                if (exists($screens{$serial}->{$key})) {
+                next if empty($screen->{$key});
+                # We only merge new values
+                unless (empty($screens{$serial}->{$key})) {
                     if ($screens{$serial}->{$key} ne $screen->{$key} && $params{logger}) {
                         $params{logger}->warning(
                             "Not merging not coherent $key value for screen associated to $serial serial number"
