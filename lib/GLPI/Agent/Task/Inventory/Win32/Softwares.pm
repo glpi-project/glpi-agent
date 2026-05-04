@@ -85,7 +85,7 @@ sub doInventory {
     foreach my $hotfix (@$hotfixes) {
         # skip fixes already found in generic software list,
         # without checking version information
-        next if $seen->{$hotfix->{NAME}};
+        next if empty($hotfix->{NAME}) || $seen->{$hotfix->{NAME}};
         _addSoftware(inventory => $inventory, entry => $hotfix);
     }
 
@@ -331,10 +331,13 @@ sub _getHotfixesList {
 sub _addSoftware {
     my (%params) = @_;
 
-    my $entry = $params{entry};
+    my $entry = $params{entry}
+        or return;
+
+    return if empty($entry->{NAME});
 
     # avoid duplicates
-    return if $seen->{$entry->{NAME}}->{$entry->{ARCH}}{$entry->{VERSION} || '_undef_'}++;
+    return if $seen->{$entry->{NAME}}->{$entry->{ARCH} || '_noarch_'}{$entry->{VERSION} || '_undef_'}++;
 
     $params{inventory}->addEntry(section => 'SOFTWARES', entry => $entry);
 }

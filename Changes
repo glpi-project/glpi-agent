@@ -8,6 +8,8 @@ inventory:
 * fix #1149: Support NVMe SSD storage disks on MacOSX
 * fix #1150: Fix lxd containers inventory on linux
 * fix #1158: Fix possible use of uninitialized warning during monitor inventory
+* fix #1159: Fix possible use of uninitialized value in hash element warning during
+  windows software inventory
 
 toolbox:
 * Fix configuration reloading to only reload it when really required
