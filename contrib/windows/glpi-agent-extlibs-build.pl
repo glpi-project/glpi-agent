@@ -307,7 +307,8 @@ sub run {
         $self->message(3, "* already downloaded")
     } else {
         # Download the file
-        my $downloaded = $self->boss->mirror_url($url, $self->global->{download_dir});
+        my $downloaded = $self->boss->mirror_url($url, $self->global->{download_dir})
+            or die "failed to download package\n";
 
         # Rename file if needed
         if ($downloaded ne $tgz) {
@@ -408,6 +409,23 @@ sub _resolve {
     return $string;
 }
 
+sub mirror_archive {
+    my ($self, $url_or_ref) = @_;
+
+    my @urls = ref($url_or_ref) eq 'ARRAY' ? @{$url_or_ref} : ($url_or_ref);
+
+    foreach my $url (@urls) {
+        $url = $self->_resolve($url);
+        $self->boss->message(2, "* archive url: $url");
+        my $archive = $self->boss->mirror_url($url, $self->global->{download_dir});
+        return $archive if $archive && -s $archive;
+    }
+
+    $self->boss->message(2, "* has no valid url for archive");
+
+    return "";
+}
+
 sub run {
     my ($self) = @_;
 
@@ -420,9 +438,8 @@ sub run {
         $self->boss->message(2, "* $folder still extracted: skipping archive download and extraction");
     } else {
         # Download library archive
-        my $url = $self->_resolve($self->{config}->{url});
-        $self->boss->message(2, "* archive url: $url");
-        my $archive = $self->boss->mirror_url($url, $self->global->{download_dir});
+        my $archive = $self->mirror_archive($self->{config}->{url})
+            or die "failed to download archive\n";
         $self->_extract($archive, $self->global->{build_dir});
         $self->boss->message(2, "* running shell to initialize msys64 environment and install patch");
         # Initialize msys64 environment and synchronize pacman db command at the same time
@@ -547,9 +564,8 @@ sub run {
         );
     } else {
         # Download library archive
-        my $url = $self->_resolve($self->{config}->{url});
-        $self->boss->message(2, "* archive url: $url");
-        my $archive = $self->boss->mirror_url($url, $self->global->{download_dir});
+        my $archive = $self->mirror_archive($self->{config}->{url})
+            or die "failed to download archive\n";
         $self->_extract($archive, $self->global->{build_dir});
     }
 
@@ -572,7 +588,8 @@ sub run {
         my $wd = $self->_push_dir($src);
         foreach my $url (@{$self->{config}->{patches}}) {
             $url = $self->_resolve($url);
-            my $patch = $self->boss->mirror_url($url, $self->global->{download_dir});
+            my $patch = $self->boss->mirror_url($url, $self->global->{download_dir})
+                or die "failed to download patch\n";
             my ($patch_name) = $url =~ m|.*/([^/]+)$|;
             $self->boss->message(2, "* applying patch: $patch_name");
             my $option = $self->{config}->{patches_option} || '-p1';

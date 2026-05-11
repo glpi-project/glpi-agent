@@ -140,7 +140,10 @@ sub toolchain_build_steps {
                 plugin  => 'Perl::Dist::Strawberry::Step::BuildLibrary',
                 name    => 'libiconv',
                 version => '1.19',
-                url     => 'https://ftp.gnu.org/gnu/<name>/<name>-<version>.tar.gz',
+                url     => [
+                    'https://ftp.gnu.org/gnu/<name>/<name>-<version>.tar.gz',
+                    'https://mirrors.kernel.org/gnu/<name>/<name>-<version>.tar.gz',
+                ],
                 skip_if_file    => 'bin/libiconv-2__.dll',
                 skip_test       => 1,
                 configure_help  => 1,
