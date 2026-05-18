@@ -231,13 +231,27 @@ sub extract {
         for my $method (@methods) {
             $self->debug( "# Extracting with ->$method\n" );
 
+            # For safety, some backends populate files() before extraction (bin tar/unzip)
+            # others during or after. We should try to check whenever possible.
             my $rv = $self->$method;
 
             ### a positive extraction
             if( $rv and $rv ne METHOD_NA ) {
                 $self->debug( "# Extraction succeeded\n" );
-                $self->_extractor($method);
-                last;
+                
+                # Security check: ensure no path traversal occurred
+                if ($self->files && @{$self->files}) {
+                    foreach my $file (@{$self->files}) {
+                        if ($file =~ m{^\s*/} || $file =~ m{\.\./}) {
+                            $self->_error("Security error: path traversal detected in archive: $file");
+                            $ok = 0;
+                            last;
+                        }
+                    }
+                }
+                
+                $self->_extractor($method) if $ok;
+                last if $ok;
 
             ### method is not available
             } elsif ( $rv and $rv eq METHOD_NA ) {
@@ -253,9 +267,10 @@ sub extract {
         unless( $self->_extractor ) {
             my $diag = $fail ? "Extract failed due to errors" :
                        $na   ? "Extract failed; no extractors available" :
+                       !$ok  ? "Extract aborted for security reasons" :
                        '';
 
-            $self->_error($diag);
+            $self->_error($diag) if $diag;
             $ok = 0;
         }
     }
