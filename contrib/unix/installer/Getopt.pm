@@ -16,6 +16,7 @@ my @options = (
     'cron=i',
     'debug|d=i',
     'delaytime=i',
+    'deploy-public-key=s',
     'distro=s',
     'no-question|Q',
     'esx-itemtype=s',
@@ -152,6 +153,8 @@ glpi-agent-linux-installer [options]
   Package deployment task specific options:
     --no-p2p                       set to not use peer to peer to download
                                    deploy task packages
+    --deploy-public-key=KEY        configure public key to verify signed deployment
+                                   packages (hex string or path to public key file)
 
   Network options:
     -P --proxy=PROXY               proxy address
