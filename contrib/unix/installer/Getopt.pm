@@ -50,6 +50,7 @@ my @options = (
     'runnow',
     'scan-homedirs',
     'scan-profiles',
+    'secure-extraction',
     'server|s=s',
     'service=i',
     'silent|S',
