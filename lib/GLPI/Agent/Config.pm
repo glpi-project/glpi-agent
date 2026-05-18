@@ -64,6 +64,7 @@ my $default = {
     'vardir'                  => undef,
     'assetname-support'       => 1,
     'deploy-public-key'       => undef,
+    'secure-extraction'       => 'no',
     'full-inventory-postpone' => 14,
     'required-category'       => [],
     'snmp-retries'            => 0,
