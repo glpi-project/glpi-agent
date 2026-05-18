@@ -189,7 +189,10 @@ SKIP: {
     
     # We can't easily create a real malicious tar.gz with .. here without external tools
     # but we can mock the files() method of Archive object to simulate one.
-    my $archive = GLPI::Agent::Tools::Archive->new( archive => $archive_path );
+    my $archive = GLPI::Agent::Tools::Archive->new(
+        archive => $archive_path,
+        secure  => 1,
+    );
     if ($archive) {
         # Force a malicious file list
         $archive->files(['valid.txt', '../../../../etc/passwd']);
@@ -197,7 +200,19 @@ SKIP: {
         no warnings 'redefine';
         local *GLPI::Agent::Tools::Archive::_untar_at = sub { 1 };
         
-        ok(!$archive->extract(to => $zip_slip_dir), "Archive extraction fails if traversal detected");
+        ok(!$archive->extract(to => $zip_slip_dir), "Archive extraction fails if traversal detected (hardened)");
+    }
+    
+    # Verify it succeeds if secure is off (default/backward compatibility)
+    my $archive2 = GLPI::Agent::Tools::Archive->new(
+        archive => $archive_path,
+        secure  => 0,
+    );
+    if ($archive2) {
+        $archive2->files(['valid.txt', '../../../../etc/passwd']);
+        no warnings 'redefine';
+        local *GLPI::Agent::Tools::Archive::_untar_at = sub { 1 };
+        ok($archive2->extract(to => $zip_slip_dir), "Archive extraction succeeds if traversal detected but secure is off");
     }
 }
 
