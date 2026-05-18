@@ -16,6 +16,8 @@ use GLPI::Agent::Task::Deploy::Datastore;
 use GLPI::Agent::Task::Deploy::File;
 use GLPI::Agent::Task::Deploy::Job;
 use GLPI::Agent::Event;
+use GLPI::Agent::Tools qw(first getAllLines getFileHandle);
+use Digest::SHA;
 
 use GLPI::Agent::Task::Deploy::Version;
 
@@ -59,7 +61,7 @@ sub _validateAnswer {
     foreach my $k (keys %{$answer->{associatedFiles}}) {
         foreach (qw/mirrors multiparts name p2p-retention-duration p2p uncompress/) {
             if (!defined($answer->{associatedFiles}->{$k}->{$_})) {
-                $$msgRef = "Missing key `$_' in associatedFiles";
+                $$msgRef = "Missing key \`$_' in associatedFiles";
                 return;
             }
         }
@@ -67,7 +69,7 @@ sub _validateAnswer {
     foreach my $job (@{$answer->{jobs}}) {
         foreach (qw/uuid associatedFiles actions checks/) {
             if (!defined($job->{$_})) {
-                $$msgRef = "Missing key `$_' in jobs";
+                $$msgRef = "Missing key \`$_' in jobs";
                 return;
             }
 
@@ -276,6 +278,34 @@ sub processRemote {
         $logger->debug2("Preparation for job $job->{uuid}...");
 
         $job->currentStep('prepare');
+
+        # Load public key before extraction to prevent bypass if archive tries to overwrite it
+        my $publicKey = $self->{config}->{'deploy-public-key'};
+        my $publicKeyContent;
+        if ($publicKey) {
+            if (-f $publicKey) {
+                # Security check: public key file must not be world-writable
+                my @stat = stat($publicKey);
+                if ($^O ne 'MSWin32' && @stat && ($stat[2] & 2)) {
+                    $logger->error("Security error: public key file $publicKey is world-writable");
+                    $job->next_on_usercheck(type => 'after_failure');
+                    $job->setStatus(
+                        status => 'ko',
+                        msg    => 'Security error: insecure public key'
+                    );
+                    next JOB;
+                }
+                my $handle = getFileHandle(file => $publicKey, logger => $logger);
+                if ($handle) {
+                    $publicKeyContent = <$handle>;
+                    close $handle;
+                    $publicKeyContent =~ s/\s+//g;
+                }
+            } else {
+                $publicKeyContent = $publicKey;
+            }
+        }
+
         if (!$workdir->prepare()) {
             # USER INTERACTION on preparation failure
             $job->next_on_usercheck(type => 'after_failure');
@@ -286,6 +316,16 @@ sub processRemote {
             );
             next JOB;
         } else {
+            # Verify signature if a public key is defined in configuration
+            if ($publicKeyContent && !$self->_verifySignature(workdir => $workdir, publicKey => $publicKeyContent)) {
+                $job->next_on_usercheck(type => 'after_failure');
+                $job->setStatus(
+                    status => 'ko',
+                    msg    => 'Security error: invalid signature'
+                );
+                next JOB;
+            }
+
             $job->setStatus(
                 status => 'ok',
                 msg    => 'success'
@@ -407,12 +447,126 @@ sub processRemote {
     return @$jobList ? 1 : 0 ;
 }
 
+sub _verifySignature {
+    my ($self, %params) = @_;
+    my $workdirPath = $params{workdir}->path();
+    my $logger = $self->{logger};
+    my $publicKey = $params{publicKey} || $self->{config}->{'deploy-public-key'};
+
+    # If no public key is defined, we skip the signature verification
+    return 1 unless $publicKey;
+
+    my $sigFile = first { -f $_ } map { File::Spec->catfile($workdirPath, $_) } qw(signature.sig manifest.sig);
+
+    if (!$sigFile) {
+        $logger->error("Security error: signature file missing in $workdirPath");
+        return 0;
+    }
+
+    # Lazy loading of Crypt::Ed25519
+    unless (Crypt::Ed25519->require()) {
+        $logger->error("Security error: Crypt::Ed25519 perl module required for signature verification");
+        return 0;
+    }
+
+    # Handle public key as a file path or direct hex string
+    if (-f $publicKey) {
+        # Security check: public key file must not be world-writable
+        my @stat = stat($publicKey);
+        if ($^O ne 'MSWin32' && @stat && ($stat[2] & 2)) {
+            $logger->error("Security error: public key file $publicKey is world-writable");
+            return 0;
+        }
+        my $handle = getFileHandle(file => $publicKey, logger => $logger);
+        if ($handle) {
+            $publicKey = <$handle>;
+            close $handle;
+            $publicKey =~ s/\s+//g;
+        }
+    }
+
+    my $pubKeyBin = pack("H*", $publicKey);
+    if (length($pubKeyBin) != 32) {
+        $logger->error("Security error: invalid public key length (expected 32 bytes hex-encoded)");
+        return 0;
+    }
+
+    my $content = getAllLines(file => $sigFile);
+    # Support format: <signature_hex>\n<manifest_content>
+    # or manifest with signature at the end: <manifest_content>\n# Signature: <signature_hex>
+    my ($sigHex, $manifestContent);
+    if ($content =~ /^([a-f0-9]{128})\r?\n(.*)/s) {
+        $sigHex = $1;
+        $manifestContent = $2;
+    } elsif ($content =~ /^(.*)\r?\n# Signature: ([a-f0-9]{128})\s*$/s) {
+        $manifestContent = $1;
+        $sigHex = $2;
+    } else {
+        $logger->error("Security error: unknown signature file format in $sigFile");
+        return 0;
+    }
+
+    my $signature = pack("H*", $sigHex);
+    if (!Crypt::Ed25519::verify($manifestContent, $signature, $pubKeyBin)) {
+        $logger->error("Security error: invalid signature for $sigFile");
+        return 0;
+    }
+
+    $logger->info("Signature verified for deployment package in $workdirPath");
+
+    # Verify each file in manifest
+    foreach my $line (split /\r?\n/, $manifestContent) {
+        next if $line =~ /^\s*$/ || $line =~ /^#/;
+        my ($expectedHash, $fileName) = $line =~ /^([a-f0-9]{128})\s+(.*)$/;
+        if (!$expectedHash || !$fileName) {
+            $logger->debug("Skipping invalid manifest line: $line");
+            next;
+        }
+
+        # Security check: ensure fileName doesn't try to go out of workdir
+        if ($fileName =~ m{\.\./} || File::Spec->file_name_is_absolute($fileName)) {
+            $logger->error("Security error: invalid file path in manifest: $fileName");
+            return 0;
+        }
+
+        my $filePath = File::Spec->catfile($workdirPath, $fileName);
+        if (!-f $filePath) {
+            $logger->error("Security error: file '$fileName' missing from workdir");
+            return 0;
+        }
+
+        my $actualHash = $self->_getSha512ByFile($filePath);
+        if ($actualHash ne $expectedHash) {
+            $logger->error("Security error: hash mismatch for $fileName");
+            return 0;
+        }
+        $logger->debug("Integrity OK for $fileName");
+    }
+
+    return 1;
+}
+
+sub _getSha512ByFile {
+    my ($self, $filePath) = @_;
+
+    my $sha = Digest::SHA->new('512');
+    my $sha512;
+    eval {
+        $sha->addfile($filePath, 'b');
+        $sha512 = $sha->hexdigest;
+    };
+    if ($@) {
+        $self->{logger}->debug("SHA512 failure for $filePath: $@");
+    }
+    return $sha512;
+}
+
 sub run {
     my ($self) = @_;
 
     # Turn off localised output for commands
-    $ENV{LC_ALL} = 'C'; # Turn off localised output for commands
-    $ENV{LANG} = 'C'; # Turn off localised output for commands
+    $ENV{LC_ALL} = 'C';
+    $ENV{LANG} = 'C';
 
     my $logger = $self->{logger};
 
@@ -529,6 +683,30 @@ This module uses SSL certificat to authentificat the server. You may have
 to point F<--ca-cert-file> or F<--ca-cert-dir> to your public certificat.
 
 If the P2P option is turned on, the agent will looks for peer in its network. The network size will be limited at 255 machines.
+
+=head2 Signed packages support
+
+The agent can verify the authenticity and integrity of deployment packages if a
+public key is configured via the C<deploy-public-key> option.
+
+When this option is set, the agent expects a C<signature.sig> or C<manifest.sig>
+file at the root of the deployment package. This file must contain an Ed25519
+signature followed by a manifest listing all files in the package and their
+SHA-512 hashes.
+
+Format of the signature file:
+<64-bytes-hex-signature>
+<sha512> <filename1>
+<sha512> <filename2>
+...
+
+The verification process:
+1. Lazily loads C<Crypt::Ed25519> module.
+2. Verifies the Ed25519 signature of the manifest using the configured public key.
+3. For each file listed in the manifest, verifies its SHA-512 hash matches the actual file content.
+
+If the verification fails at any step, the deployment task is aborted with a
+security error.
 
 =head1 FUNCTIONS
 
