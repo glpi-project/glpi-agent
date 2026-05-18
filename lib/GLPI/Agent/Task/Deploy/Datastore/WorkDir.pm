@@ -16,9 +16,10 @@ sub new {
     my ($class, %params) = @_;
 
     my $self = {
-        path  => $params{path},
+        path   => $params{path},
         logger => $params{logger},
-        files => []
+        config => $params{config},
+        files  => []
     };
 
     die "$class: Path '".$self->{path}."' doesn't exit\n"
@@ -122,7 +123,11 @@ sub prepare {
                     unlink($tarballpath);
                 }
             } else {
-                my $archive = GLPI::Agent::Tools::Archive->new( archive => $finalFilePath );
+                my $is_secure = $self->{config} && $self->{config}->{'secure-extraction'} && $self->{config}->{'secure-extraction'} eq 'yes';
+                my $archive = GLPI::Agent::Tools::Archive->new(
+                    archive => $finalFilePath,
+                    secure  => $is_secure,
+                );
                 if (!$archive) {
                     $logger->info("Failed to create Archive object");
                 } elsif (!$archive->extract( to => $self->{path} )) {

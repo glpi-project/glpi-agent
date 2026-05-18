@@ -708,6 +708,14 @@ The verification process:
 If the verification fails at any step, the deployment task is aborted with a
 security error.
 
+=head2 Secure extraction
+
+For hardened configurations, it is strongly recommended to enable the
+C<secure-extraction> option. When enabled, the agent will reject any deployment
+package containing files with path traversal attempts (..) or absolute paths.
+This provides protection against Zip Slip attacks, ensuring that a malicious
+package cannot overwrite sensitive system files or the public key itself.
+
 =head1 FUNCTIONS
 
 =head2 isEnabled ( $self )

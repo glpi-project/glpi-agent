@@ -136,6 +136,7 @@ my $Mapping = {  # binary program           # pure perl module
             archive => $params{archive},
             logger  => $params{logger} || GLPI::Agent::Logger->new(),
             type    => $params{type} || "",
+            secure  => $params{secure} || 0,
         };
 
         ### make sure we have an absolute path ###
