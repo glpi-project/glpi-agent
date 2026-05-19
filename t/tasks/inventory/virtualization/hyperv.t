@@ -42,7 +42,6 @@ my %tests = (
             VCPU      => undef,
             MEMORY    => undef,
             DRIVES    => [],
-            HOSTNAME  => 'NITROGENIO',
         },
         {
             VMTYPE    => 'HyperV',
@@ -53,7 +52,6 @@ my %tests = (
             VCPU      => undef,
             MEMORY    => undef,
             DRIVES    => [],
-            HOSTNAME  => 'NITROGENIO',
         },
         {
             SUBSYSTEM => 'MS HyperV',
@@ -64,7 +62,6 @@ my %tests = (
             VCPU      => undef,
             MEMORY    => undef,
             DRIVES    => [],
-            HOSTNAME  => 'NITROGENIO',
         }
     ],
     '2008' => [
@@ -80,7 +77,6 @@ my %tests = (
                 { VOLUMN => 'C:\VMs\vm-disco.vhdx',        TOTAL => 102400, LABEL => 'vm-disco.vhdx' },
                 { VOLUMN => '\\\\nas01\VMs\vm-datos.vhdx',  TOTAL => 512000, LABEL => 'vm-datos.vhdx' },
             ],
-            HOSTNAME  => 'SRV00093.example.com',
         },
     ],
     'qa' => [
@@ -95,7 +91,6 @@ my %tests = (
             DRIVES    => [
                 { VOLUMN => 'C:\HyperV\vm2.vhdx', TOTAL => 12288, LABEL => 'vm2.vhdx' },
             ],
-            HOSTNAME  => 'WIN-7B9M4DMJ09Q.eridcservices.com',
         },
         {
             VMTYPE    => 'HyperV',
@@ -109,7 +104,6 @@ my %tests = (
                 { VOLUMN => 'C:\HyperV\vm1.vhdx',            TOTAL => 16384, LABEL => 'vm1.vhdx' },
                 { VOLUMN => 'C:\HyperV\pruebadediscosl.vhdx', TOTAL => 5120,  LABEL => 'pruebadediscosl.vhdx' },
             ],
-            HOSTNAME  => 'WIN-7B9M4DMJ09Q.eridcservices.com',
         },
     ],
 

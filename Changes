@@ -39,6 +39,8 @@ inventory:
 * fix #1158: Fix possible use of uninitialized warning during monitor inventory
 * fix #1159: Fix possible use of uninitialized value in hash element warning during
   windows software inventory
+* Add DRIVES support for Hyper-V VMs: collect virtual hard disk paths and
+  sizes via MSVM_StorageAllocationSettingData WMI class
 
 netdiscovery/netinventory:
 * fix #1161: Add support for devices like Ubnt which annouce IEEE802.11 support
