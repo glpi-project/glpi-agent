@@ -46,7 +46,7 @@ our $ed_available = 1;
     package Crypt::Ed25519;
     sub require { return $main::ed_available }
     sub verify {
-        my ($msg, $sig_bin, $pub_bin) = @_;
+        my ($msg, $pub_bin, $sig_bin) = @_;
         # For testing, we consider it valid if signature hex ends with '01'
         return unpack("H*", $sig_bin) =~ /01$/;
     }

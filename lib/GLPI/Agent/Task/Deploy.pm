@@ -507,7 +507,7 @@ sub _verifySignature {
     }
 
     my $signature = pack("H*", $sigHex);
-    if (!Crypt::Ed25519::verify($manifestContent, $signature, $pubKeyBin)) {
+    if (!Crypt::Ed25519::verify($manifestContent, $pubKeyBin, $signature)) {
         $logger->error("Security error: invalid signature for $sigFile");
         return 0;
     }
@@ -693,6 +693,9 @@ When this option is set, the agent expects a C<signature.sig> or C<manifest.sig>
 file at the root of the deployment package. This file must contain an Ed25519
 signature followed by a manifest listing all files in the package and their
 SHA-512 hashes.
+
+The B<glpi-sign-package.pl> tool, located in the C<tools/> directory of the 
+agent repository, can be used to generate these signatures.
 
 Format of the signature file:
 <64-bytes-hex-signature>
