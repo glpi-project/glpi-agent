@@ -2,6 +2,29 @@
 
 use strict;
 use warnings;
+
+# Smart fallback to GLPI Agent bundled Perl if Crypt::Ed25519 is missing
+BEGIN {
+    my $has_ed25519 = eval { require Crypt::Ed25519; 1 };
+    if (!$has_ed25519) {
+        my @bundled_perls;
+        if ($^O eq 'MSWin32') {
+            push @bundled_perls, 
+                'C:\\Program Files\\GLPI-Agent\\perl\\bin\\perl.exe',
+                'C:\\Program Files (x86)\\GLPI-Agent\\perl\\bin\\perl.exe';
+        } elsif ($^O eq 'darwin') {
+            push @bundled_perls, '/Applications/GLPI-Agent/bin/perl';
+        }
+
+        foreach my $bundled_perl (@bundled_perls) {
+            if (-x $bundled_perl && $^X ne $bundled_perl) {
+                print "Crypt::Ed25519 missing. Automatically switching to GLPI Agent Perl ($bundled_perl)...\n";
+                exec($bundled_perl, $0, @ARGV) or die "Failed to execute $bundled_perl: $!\n";
+            }
+        }
+    }
+}
+
 use Digest::SHA;
 use UNIVERSAL::require;
 use File::Find;
