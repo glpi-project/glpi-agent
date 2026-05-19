@@ -117,7 +117,8 @@ Depends:
  liburi-perl,
  libfile-copy-recursive-perl,
  libdigest-sha-perl,
- libparallel-forkmanager-perl
+ libparallel-forkmanager-perl,
+ libcrypt-ed25519-perl
 Description: software and file deployment support for GLPI
  With this module, GLPI can accept software deployment
  request from an GLPI server with a FusionInventory compatible plugin.

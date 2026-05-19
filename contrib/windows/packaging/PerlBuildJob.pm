@@ -130,6 +130,7 @@ sub build_job {
                 qw/ Crypt::Rijndael /,
                 qw/ Digest-SHA /,
                 qw/ Digest-MD5 Digest-SHA1 Digest::HMAC /, # Required for SNMP v3 authentication
+                qw/ Crypt::Ed25519 /,
 
                 # date/time
                 qw/ DateTime DateTime::TimeZone::Local::Win32 /,
@@ -237,6 +238,8 @@ sub build_job {
                 # Also move DLLs required by modules
                 _movedll('libxml2-16', $dllsuffix),
                 _movedll('liblzma-5', $dllsuffix),
+                _movedll('libcharset-1', $dllsuffix),
+                _movedll('libiconv-2', $dllsuffix),
                 _movedll('libcharset-1', $dllsuffix),
                 _movedll('libiconv-2', $dllsuffix),
                 _movedll('libcrypto-3', $dllsuffix),
