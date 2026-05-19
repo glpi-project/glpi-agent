@@ -111,7 +111,7 @@ my %tests = (
 
 plan tests => (2 * scalar keys %tests) + 1;
 
-my $inventory = GLPI::Agent::Inventory->new();
+my $inventory = GLPI::Agent::Inventory->new(glpi => '10.0.25');
 
 # fake Tools::Win32, instead of Task::Inventory::Virtualization::HyperV, as
 # it is loaded at runtime
@@ -125,7 +125,7 @@ foreach my $test (keys %tests) {
         mockGetWMIObjects($test)
     );
 
-    my @machines = GLPI::Agent::Task::Inventory::Virtualization::HyperV::_getVirtualMachines();
+    my @machines = GLPI::Agent::Task::Inventory::Virtualization::HyperV::_getVirtualMachines($inventory);
     cmp_deeply(
         \@machines,
         $tests{$test},

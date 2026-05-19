@@ -217,6 +217,12 @@ sub getRemote {
     return $self->{_remote} || '';
 }
 
+sub supportsGlpiVersion {
+    my ($self, $version) = @_;
+
+    return $self->{_glpi_version} >= glpiVersion($version);
+}
+
 sub setRemote {
     my ($self, $task) = @_;
 

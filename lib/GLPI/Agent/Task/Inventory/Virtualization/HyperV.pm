@@ -20,7 +20,7 @@ sub doInventory {
 
     my $inventory = $params{inventory};
 
-    foreach my $machine (_getVirtualMachines()) {
+    foreach my $machine (_getVirtualMachines($inventory)) {
         $inventory->addEntry(
             section => 'VIRTUALMACHINES', entry => $machine
         );
@@ -28,6 +28,7 @@ sub doInventory {
 }
 
 sub _getVirtualMachines {
+    my ($inventory) = @_;
 
     GLPI::Agent::Tools::Win32->require();
 
@@ -127,7 +128,10 @@ sub _getVirtualMachines {
             UUID      => $biosguid{$object->{Name}},
             MEMORY    => $memory{$object->{Name}},
             VCPU      => $vcpu{$object->{Name}},
-            STORAGES  => $storages{$object->{Name}} // [],
+            ($inventory && $inventory->supportsGlpiVersion('10.0.25')
+                ? (STORAGES => $storages{$object->{Name}} // [])
+                : ()
+            ),
         };
 
         push @machines, $machine;
