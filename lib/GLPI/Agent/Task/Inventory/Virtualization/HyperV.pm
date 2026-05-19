@@ -71,22 +71,12 @@ sub _getVirtualMachines {
         $biosguid{$1} =~ tr/{}//d;
     }
 
-    # Index VHD sizes by file path using PowerShell Get-VHD
-    # Size is in bytes, convert to MB
-    my %vhd_size;
-    my $script = 'Get-VM | Get-VMHardDiskDrive | ForEach-Object { Get-VHD $_.Path } | Select-Object Path, Size | ForEach-Object { Write-Output ($_.Path + "|" + $_.Size) }';
-    for my $line (GLPI::Agent::Tools::Win32::runPowerShell(script => $script)) {
-        next unless $line =~ /^(.+)\|(\d+)$/;
-        my ($path, $size) = ($1, $2);
-        $vhd_size{lc($path)} = int($size / 1024 / 1024);
-    }
-
     my %drives;
     foreach my $object (GLPI::Agent::Tools::Win32::getWMIObjects(
         moniker    => 'winmgmts://./root/virtualization/v2',
         altmoniker => 'winmgmts://./root/virtualization',
         class      => 'MSVM_StorageAllocationSettingData',
-        properties => [ qw/InstanceID HostResource ResourceType/ ]
+        properties => [ qw/InstanceID HostResource ResourceType VirtualQuantity VirtualQuantityUnits/ ]
     )) {
         next unless defined $object->{ResourceType} && $object->{ResourceType} == 31;
         next unless $object->{HostResource};
@@ -96,11 +86,14 @@ sub _getVirtualMachines {
         my $path = ref($object->{HostResource}) eq 'ARRAY'
                      ? $object->{HostResource}[0]
                      : $object->{HostResource};
-        my $name = (split /[\\\/]/, $path)[-1];
+        my $units = $object->{VirtualQuantityUnits} // '';
+        my $size_mb =
+            $units eq 'byte * 2^20' ? $object->{VirtualQuantity} :
+            $units eq 'byte'        ? int($object->{VirtualQuantity} / 1024 / 1024) :
+                                      $object->{VirtualQuantity} // 0;
         push @{$drives{$vm_guid}}, {
             VOLUMN => $path,
-            TOTAL  => $vhd_size{lc($path)} // 0,
-            LABEL  => $name,
+            TOTAL  => $size_mb,
         };
     }
 

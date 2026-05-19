@@ -74,8 +74,8 @@ my %tests = (
             VCPU      => 2,
             MEMORY    => 2048,
             DRIVES    => [
-                { VOLUMN => 'C:\VMs\vm-disco.vhdx',        TOTAL => 102400, LABEL => 'vm-disco.vhdx' },
-                { VOLUMN => '\\\\nas01\VMs\vm-datos.vhdx',  TOTAL => 512000, LABEL => 'vm-datos.vhdx' },
+                { VOLUMN => 'C:\VMs\vm-disco.vhdx',        TOTAL => 102400 },
+                { VOLUMN => '\\\\nas01\VMs\vm-datos.vhdx',  TOTAL => 512000 },
             ],
         },
     ],
@@ -89,7 +89,7 @@ my %tests = (
             VCPU      => 4,
             MEMORY    => 2048,
             DRIVES    => [
-                { VOLUMN => 'C:\HyperV\vm2.vhdx', TOTAL => 12288, LABEL => 'vm2.vhdx' },
+                { VOLUMN => 'C:\HyperV\vm2.vhdx', TOTAL => 12288 },
             ],
         },
         {
@@ -101,8 +101,8 @@ my %tests = (
             VCPU      => 4,
             MEMORY    => 4096,
             DRIVES    => [
-                { VOLUMN => 'C:\HyperV\vm1.vhdx',            TOTAL => 16384, LABEL => 'vm1.vhdx' },
-                { VOLUMN => 'C:\HyperV\pruebadediscosl.vhdx', TOTAL => 5120,  LABEL => 'pruebadediscosl.vhdx' },
+                { VOLUMN => 'C:\HyperV\vm1.vhdx',            TOTAL => 16384 },
+                { VOLUMN => 'C:\HyperV\pruebadediscosl.vhdx', TOTAL => 5120  },
             ],
         },
     ],
@@ -112,20 +112,6 @@ my %tests = (
 plan tests => (2 * scalar keys %tests) + 1;
 
 my $inventory = GLPI::Agent::Inventory->new();
-
-# PowerShell Get-VHD output lines per test case (path|size_bytes|filesize_bytes)
-my %powershell_vhd = (
-    'unknown' => [],
-    '2008'    => [
-        'C:\VMs\vm-disco.vhdx|107374182400',
-        '\\\\nas01\VMs\vm-datos.vhdx|536870912000',
-    ],
-    'qa'      => [
-        'C:\HyperV\vm2.vhdx|12884901888',
-        'C:\HyperV\vm1.vhdx|17179869184',
-        'C:\HyperV\pruebadediscosl.vhdx|5368709120',
-    ],
-);
 
 # fake Tools::Win32, instead of Task::Inventory::Virtualization::HyperV, as
 # it is loaded at runtime
@@ -137,10 +123,6 @@ foreach my $test (keys %tests) {
     $module->mock(
         'getWMIObjects',
         mockGetWMIObjects($test)
-    );
-    $module->mock(
-        'runPowerShell',
-        sub { return @{$powershell_vhd{$test} // []} }
     );
 
     my @machines = GLPI::Agent::Task::Inventory::Virtualization::HyperV::_getVirtualMachines();
