@@ -41,7 +41,7 @@ my %tests = (
             UUID      => undef,
             VCPU      => undef,
             MEMORY    => undef,
-            DRIVES    => [],
+            STORAGES  => [],
         },
         {
             VMTYPE    => 'HyperV',
@@ -51,7 +51,7 @@ my %tests = (
             UUID      => undef,
             VCPU      => undef,
             MEMORY    => undef,
-            DRIVES    => [],
+            STORAGES  => [],
         },
         {
             SUBSYSTEM => 'MS HyperV',
@@ -61,7 +61,7 @@ my %tests = (
             UUID      => undef,
             VCPU      => undef,
             MEMORY    => undef,
-            DRIVES    => [],
+            STORAGES  => [],
         }
     ],
     '2008' => [
@@ -73,7 +73,7 @@ my %tests = (
             UUID      => undef,
             VCPU      => 2,
             MEMORY    => 2048,
-            DRIVES    => [
+            STORAGES  => [
                 { VOLUMN => 'C:\VMs\vm-disco.vhdx',        TOTAL => 102400 },
                 { VOLUMN => '\\\\nas01\VMs\vm-datos.vhdx',  TOTAL => 512000 },
             ],
@@ -88,7 +88,7 @@ my %tests = (
             UUID      => undef,
             VCPU      => 4,
             MEMORY    => 2048,
-            DRIVES    => [
+            STORAGES  => [
                 { VOLUMN => 'C:\HyperV\vm2.vhdx', TOTAL => 12288 },
             ],
         },
@@ -100,7 +100,7 @@ my %tests = (
             UUID      => undef,
             VCPU      => 4,
             MEMORY    => 4096,
-            DRIVES    => [
+            STORAGES  => [
                 { VOLUMN => 'C:\HyperV\vm1.vhdx',            TOTAL => 16384 },
                 { VOLUMN => 'C:\HyperV\pruebadediscosl.vhdx', TOTAL => 5120  },
             ],
