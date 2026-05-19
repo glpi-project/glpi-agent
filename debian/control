@@ -121,6 +121,7 @@ Architecture: all
 Depends:
  ${misc:Depends},
  glpi-agent (>= ${binary:Version}),
+ libcrypt-ed25519-perl,
  libdigest-sha-perl,
  libfile-copy-recursive-perl,
  libjson-pp-perl,
