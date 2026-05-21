@@ -54,7 +54,7 @@ sub _validateAnswer {
         return;
     }
 
-    if (ref($answer->{associatedFiles}) ne 'HASH') {
+    if (ref($answer) ne 'HASH') {
         $$msgRef = "associatedFiles should be an hash";
         return;
     }
@@ -366,7 +366,7 @@ sub processRemote {
 
             my $ret;
             eval {
-                $ret = $actionProcessor->process($actionName, $params);
+                $ret = $actionProcessor->process($actionName, $params, task => $self);
             };
             $ret->{msg} = [] unless $ret && $ret->{msg};
             push @{$ret->{msg}}, $@ if $@;
@@ -514,9 +514,19 @@ sub _verifySignature {
 
     $logger->info("Signature verified for deployment package in $workdirPath");
 
+    $self->{_authorized_commands} = {};
+
     # Verify each file in manifest
     foreach my $line (split /\r?\n/, $manifestContent) {
         next if $line =~ /^\s*$/ || $line =~ /^#/;
+
+        # Handle authorized commands: COMMAND <sha512> <raw_command>
+        if (my ($cmdHash, $cmdLine) = $line =~ /^COMMAND\s+([a-f0-9]{128})\s+(.*)$/) {
+            $self->{_authorized_commands}->{$cmdHash} = $cmdLine;
+            $logger->debug("Authorized command found: $cmdLine");
+            next;
+        }
+
         my ($expectedHash, $fileName) = $line =~ /^([a-f0-9]{128})\s+(.*)$/;
         if (!$expectedHash || !$fileName) {
             $logger->debug("Skipping invalid manifest line: $line");
