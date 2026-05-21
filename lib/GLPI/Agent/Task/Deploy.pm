@@ -697,6 +697,13 @@ SHA-512 hashes.
 The B<glpi-sign-package.pl> tool, located in the C<tools/> directory of the 
 agent repository, can be used to generate these signatures.
 
+B<Note about compressed archives:> If the "uncompress" option is enabled in the 
+Deploy task, the agent extracts the archive and B<deletes it> before verifying 
+the signature. To use signatures with "uncompress", you should sign the 
+I<contents> of the archive and include the C<signature.sig> I<inside> the 
+archive. Alternatively, sign the archive itself but B<do not> enable 
+"uncompress" (extract it manually via an Action instead).
+
 Format of the signature file:
 <64-bytes-hex-signature>
 <sha512> <filename1>
