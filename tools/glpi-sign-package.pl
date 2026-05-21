@@ -168,6 +168,34 @@ secret seed.
 
 =back
 
+=head1 SIGNING ARCHIVES
+
+If you intend to use a compressed archive (e.g., C<.zip>, C<.tar.gz>) with the 
+GLPI Server, be careful how you handle the signature if the B<"uncompress"> 
+option is enabled in the Deploy task.
+
+When "uncompress" is checked, the agent extracts the archive and then B<deletes> 
+the original archive file before verifying the signature.
+
+You have two correct ways to handle archives:
+
+=head2 Method A: Sign the contents (Recommended for "uncompress")
+
+1. Place all your uncompressed files in a directory.
+2. Run C<glpi-sign-package.pl> on that directory. This creates C<signature.sig>.
+3. Compress the directory contents B<including> the C<signature.sig> file into 
+   a single archive.
+4. Upload the archive to GLPI and B<check> the "uncompress" option.
+
+=head2 Method B: Sign the archive itself (For manual extraction)
+
+1. Compress your files into an archive.
+2. Place the archive in a directory by itself.
+3. Run C<glpi-sign-package.pl> on that directory.
+4. Upload both the archive and the generated C<signature.sig> to GLPI.
+5. B<DO NOT check> the "uncompress" option. You will have to extract the archive 
+   manually using a command in your deployment action.
+
 =head1 EXAMPLES
 
 =head2 Sign a directory using a PEM key
