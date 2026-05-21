@@ -14,6 +14,7 @@ inventory:
 netdiscovery/netinventory:
 * fix #1161: Add support for devices like Ubnt which annouce IEEE802.11 support
   in their sysORID table
+* fix #1164: Add support for Digi Anywhere modems
 
 toolbox:
 * Fix configuration reloading to only reload it when really required
