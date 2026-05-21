@@ -177,7 +177,8 @@ sub _setValue {
     my ($self, $oid, $value) = @_;
 
     # Optimization: use 6 first oid digits as tree root key as they don't often change
-    my ($root, $nextoidpart) = $oid =~ /^(\.\d+\.\d+\.\d+\.\d+\.\d+\.\d+)(.*)$/
+    # But keep apart IEEE802dot11 base root of 4 digits
+    my ($root, $nextoidpart) = $oid =~ /^(\.1\.2\.840\.10036|\.\d+\.\d+\.\d+\.\d+\.\d+\.\d+)(.*)$/
         or return;
     # Prepare walk tree roots with empty node while not exist
     # 1st value node will contain sub-nodes
@@ -214,7 +215,8 @@ sub _setValue {
 sub _getValue {
     my ($self, $oid, $walk) = @_;
 
-    my ($root, $nextoidpart) = $oid =~ /^(\.\d+\.\d+\.\d+\.\d+\.\d+\.\d+)(.*)$/
+    # Keep apart IEEE802dot11 base root of 4 digits
+    my ($root, $nextoidpart) = $oid =~ /^(\.1\.2\.840\.10036|\.\d+\.\d+\.\d+\.\d+\.\d+\.\d+)(.*)$/
         or return;
     return unless exists($self->{_walk}->{$root});
     $oid = $nextoidpart;
