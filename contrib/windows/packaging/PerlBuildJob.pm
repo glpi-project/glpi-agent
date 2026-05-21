@@ -66,7 +66,9 @@ sub build_job {
             cf_email   => 'strawberry-perl@project', #IMPORTANT: keep 'strawberry-perl' before @
             perl_debug => 0,    # can be overridden by --perl_debug=N option
             perl_64bitint => 1, # ignored on 64bit, can be overridden by --perl_64bitint | --noperl_64bitint option
-            # Remove not required locale support to fix a locale support issue
+            # Remove not required locale support to fix a locale support issue.
+            # Keep GNU17: Perl propagates these flags to XS modules, and some
+            # bundled dependencies such as Crypt::Rijndael are not C23-clean.
             buildoptextra => '-DNO_LOCALE -std=gnu17',
             no_patch_backup => 1,
             patch => { #DST paths are relative to the perl src root
