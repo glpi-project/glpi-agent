@@ -31,19 +31,21 @@ use File::Find;
 use Getopt::Long;
 use File::Spec;
 
-my ($dir, $key_file, $help);
+my ($dir, $key_file, @commands, $help);
 
 GetOptions(
-    'dir=s' => \$dir,      # Directory of the package to sign
-    'key=s' => \$key_file, # File containing the private key
-    'help'  => \$help,
+    'dir=s'     => \$dir,      # Directory of the package to sign
+    'key=s'     => \$key_file, # File containing the private key
+    'command=s' => \@commands, # Commands to authorize
+    'help'      => \$help,
 );
 
 if ($help || !$dir || !$key_file) {
-    print "Usage: $0 --dir <directory> --key <private_key_file>\n";
+    print "Usage: $0 --dir <directory> --key <private_key_file> [--command \"cmd1\"] [--command \"cmd2\"]\n";
     print "\nOptions:\n";
     print "  --dir <directory>  Directory containing the files to be deployed\n";
     print "  --key <file>       File containing your Ed25519 private key (hex or PEM format)\n";
+    print "  --command <cmd>    Authorize a specific command (can be repeated)\n";
     exit;
 }
 
@@ -105,6 +107,13 @@ foreach my $file (sort @files) {
     $manifest .= $sha->hexdigest . " $file\n";
 }
 
+# 2b. Add authorized commands to manifest
+foreach my $cmd (@commands) {
+    my $sha = Digest::SHA->new(512);
+    $sha->add($cmd);
+    $manifest .= "COMMAND " . $sha->hexdigest . " $cmd\n";
+}
+
 # 3. Sign the manifest
 # GAAS version of Crypt::Ed25519:
 # generate_keypair($seed) returns ($public_32, $private_64)
@@ -129,11 +138,12 @@ glpi-sign-package.pl - Sign a deployment package for GLPI Agent
 
 =head1 SYNOPSIS
 
-glpi-sign-package.pl --dir <directory> --key <private_key_file>
+glpi-sign-package.pl --dir <directory> --key <private_key_file> [--command "cmd1"]
 
 Options:
   --dir <directory>  Directory containing the files to be signed
   --key <file>       File containing your Ed25519 private key
+  --command <cmd>    Authorize a specific shell command (can be repeated)
   --help             Display this help message
 
 =head1 DESCRIPTION
@@ -144,9 +154,10 @@ to be used with the GLPI Agent C<Deploy> task.
 It performs the following steps:
 1. Scans the target directory for all files (excluding existing signatures).
 2. Calculates a SHA-512 hash for each file.
-3. Generates a manifest containing these hashes and their relative paths.
-4. Signs the manifest using the provided Ed25519 private key.
-5. Writes the signature and the manifest into a C<signature.sig> file at the 
+3. Adds SHA-512 hashes for any authorized commands provided via --command.
+4. Generates a manifest containing these hashes.
+5. Signs the manifest using the provided Ed25519 private key.
+6. Writes the signature and the manifest into a C<signature.sig> file at the 
    root of the target directory.
 
 =head1 KEY FORMATS
@@ -198,9 +209,9 @@ You have two correct ways to handle archives:
 
 =head1 EXAMPLES
 
-=head2 Sign a directory using a PEM key
+=head2 Sign a directory and authorize a command
 
-  perl tools/glpi-sign-package.pl --dir /path/to/payload --key my_private.key
+  perl tools/glpi-sign-package.pl --dir /path/to/payload --key my_private.key --command "sh install.sh"
 
 =head2 Sign a directory using a hex key
 
