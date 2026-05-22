@@ -239,9 +239,9 @@ sub extract {
             ### a positive extraction
             if( $rv and $rv ne METHOD_NA ) {
                 $self->debug( "# Extraction succeeded\n" );
-                
-                # Security check: ensure no path traversal occurred
-                if ($self->files && @{$self->files}) {
+
+                # Security check: ensure no path traversal occurred (only when secure mode is enabled)
+                if ($self->{secure} && $self->files && @{$self->files}) {
                     foreach my $file (@{$self->files}) {
                         if ($file =~ m{^\s*/} || $file =~ m{\.\./}) {
                             $self->_error("Security error: path traversal detected in archive: $file");
@@ -250,7 +250,7 @@ sub extract {
                         }
                     }
                 }
-                
+
                 $self->_extractor($method) if $ok;
                 last if $ok;
 
