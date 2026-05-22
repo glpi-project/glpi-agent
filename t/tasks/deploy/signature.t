@@ -12,6 +12,7 @@ use Digest::SHA;
 use GLPI::Agent::Task::Deploy;
 use GLPI::Agent::Config;
 use GLPI::Agent::Logger;
+use GLPI::Agent::Tools::Archive;
 
 my $logger = GLPI::Agent::Logger->new(logger => ['Stderr']);
 my $config = GLPI::Agent::Config->new();
@@ -186,7 +187,7 @@ SKIP: {
 {
     my $zip_slip_dir = tempdir(CLEANUP => 1);
     my $archive_path = File::Spec->catfile($zip_slip_dir, 'malicious.tar.gz');
-    
+
     # We can't easily create a real malicious tar.gz with .. here without external tools
     # but we can mock the files() method of Archive object to simulate one.
     my $archive = GLPI::Agent::Tools::Archive->new(
@@ -194,25 +195,36 @@ SKIP: {
         secure  => 1,
     );
     if ($archive) {
-        # Force a malicious file list
-        $archive->files(['valid.txt', '../../../../etc/passwd']);
-        # Mock a backend success
+        # Mock the extraction to set files during the extract call
         no warnings 'redefine';
-        local *GLPI::Agent::Tools::Archive::_untar_at = sub { 1 };
-        
-        ok(!$archive->extract(to => $zip_slip_dir), "Archive extraction fails if traversal detected (hardened)");
+        local *GLPI::Agent::Tools::Archive::_untar_at = sub {
+            my ($self) = @_;
+            # Populate malicious files during extraction
+            $self->files(['valid.txt', '../../../../etc/passwd']);
+            return 1;
+        };
+
+        ok(!$archive->extract(to => $zip_slip_dir), "Archive extraction fails if traversal detected (secure=>1)");
+    } else {
+        fail("Failed to create archive object for secure test");
     }
-    
+
     # Verify it succeeds if secure is off (default/backward compatibility)
     my $archive2 = GLPI::Agent::Tools::Archive->new(
         archive => $archive_path,
         secure  => 0,
     );
     if ($archive2) {
-        $archive2->files(['valid.txt', '../../../../etc/passwd']);
         no warnings 'redefine';
-        local *GLPI::Agent::Tools::Archive::_untar_at = sub { 1 };
-        ok($archive2->extract(to => $zip_slip_dir), "Archive extraction succeeds if traversal detected but secure is off");
+        local *GLPI::Agent::Tools::Archive::_untar_at = sub {
+            my ($self) = @_;
+            # Populate malicious files during extraction
+            $self->files(['valid.txt', '../../../../etc/passwd']);
+            return 1;
+        };
+        ok($archive2->extract(to => $zip_slip_dir), "Archive extraction succeeds if traversal detected but secure=>0");
+    } else {
+        fail("Failed to create archive object for insecure test");
     }
 }
 
