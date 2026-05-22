@@ -770,6 +770,8 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[    <RegistryValue Name="backend-collect-timeout" Type="string" Value="[BACKEND_COLLECT_TIMEOUT]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="full-inventory-postpone" Type="string" Value="[FULL_INVENTORY_POSTPONE]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="glpi-version" Type="string" Value="[GLPI_VERSION]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="deploy-public-key" Type="string" Value="[DEPLOY_PUBLIC_KEY]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="secure-extraction" Type="string" Value="[SECURE_EXTRACTION]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="no-task" Type="string" Value="[NO_TASK]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="no-category" Type="string" Value="[NO_CATEGORY]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="required-category" Type="string" Value="[REQUIRED_CATEGORY]" />\n];
