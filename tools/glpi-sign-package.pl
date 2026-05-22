@@ -160,6 +160,31 @@ It performs the following steps:
 6. Writes the signature and the manifest into a C<signature.sig> file at the 
    root of the target directory.
 
+=head1 KEY GENERATION
+
+The agent requires an Ed25519 key pair.
+
+=head2 Using OpenSSL (Recommended)
+
+1. Generate the private key in PEM (PKCS#8) format:
+
+  openssl genpkey -algorithm ed25519 -outform PEM -out private.key
+
+2. Extract the public key in hexadecimal (64 characters) for the agent 
+   configuration (C<deploy-public-key>):
+
+  openssl pkey -in private.key -pubout -outform DER | tail -c 32 | xxd -p -c 32
+
+=head2 Using ssh-keygen
+
+1. Generate the key pair:
+
+  ssh-keygen -t ed25519 -f ./my_private.key -N ""
+
+2. The private key format might need conversion if the agent's perl 
+   Crypt::Ed25519 module doesn't support the RFC4716 format directly. 
+   Using OpenSSL is generally more portable for this script.
+
 =head1 KEY FORMATS
 
 The tool supports Ed25519 private keys in the following formats:
