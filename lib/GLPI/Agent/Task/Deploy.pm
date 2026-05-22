@@ -54,7 +54,7 @@ sub _validateAnswer {
         return;
     }
 
-    if (ref($answer) ne 'HASH') {
+    if (ref($answer->{associatedFiles}) ne 'HASH') {
         $$msgRef = "associatedFiles should be an hash";
         return;
     }
@@ -300,6 +300,14 @@ sub processRemote {
                     $publicKeyContent = <$handle>;
                     close $handle;
                     $publicKeyContent =~ s/\s+//g;
+                } else {
+                    $logger->error("Failed to read public key file: $publicKey");
+                    $job->next_on_usercheck(type => 'after_failure');
+                    $job->setStatus(
+                        status => 'ko',
+                        msg    => 'Security error: cannot read public key file'
+                    );
+                    next JOB;
                 }
             } else {
                 $publicKeyContent = $publicKey;
@@ -482,6 +490,9 @@ sub _verifySignature {
             $publicKey = <$handle>;
             close $handle;
             $publicKey =~ s/\s+//g;
+        } else {
+            $logger->error("Failed to read public key file in _verifySignature: $publicKey");
+            return 0;
         }
     }
 
@@ -534,7 +545,7 @@ sub _verifySignature {
         }
 
         # Security check: ensure fileName doesn't try to go out of workdir
-        if ($fileName =~ m{\.\./} || File::Spec->file_name_is_absolute($fileName)) {
+        if ($fileName =~ m{\.\.[/\\]} || File::Spec->file_name_is_absolute($fileName)) {
             $logger->error("Security error: invalid file path in manifest: $fileName");
             return 0;
         }

@@ -121,7 +121,7 @@ sub do {
         $sha->add($params->{exec});
         my $cmdHash = $sha->hexdigest;
 
-        if (!$task->{_authorized_commands}->{$cmdHash}) {
+        if (!defined($task->{_authorized_commands}) || ref($task->{_authorized_commands}) ne 'HASH' || !$task->{_authorized_commands}->{$cmdHash}) {
             my $msg = "Security error: command not authorized in signed manifest: $params->{exec}";
             $self->{_logger}->error($msg);
             return {

@@ -56,6 +56,7 @@ unless (Crypt::Ed25519->require()) {
 
 my $content;
 if (open my $kh, '<', $key_file) {
+    binmode($kh);
     $content = do { local $/; <$kh> };
     close $kh;
 } else {
@@ -104,7 +105,10 @@ foreach my $file (sort @files) {
     my $path = File::Spec->catfile($dir, $file);
     my $sha = Digest::SHA->new(512);
     $sha->addfile($path, 'b');
-    $manifest .= $sha->hexdigest . " $file\n";
+    # Normalize path separators to forward slashes
+    my $normalized_file = $file;
+    $normalized_file =~ s{\\}{/}g;
+    $manifest .= $sha->hexdigest . " $normalized_file\n";
 }
 
 # 2b. Add authorized commands to manifest
@@ -125,6 +129,7 @@ my $signature_hex = unpack("H*", $signature_bin);
 # 4. Write signature.sig
 my $sig_file = File::Spec->catfile($dir, 'signature.sig');
 open my $sh, '>', $sig_file or die "Can't write signature file '$sig_file': $!";
+binmode($sh);
 print $sh $signature_hex, "\n", $manifest;
 close $sh;
 
