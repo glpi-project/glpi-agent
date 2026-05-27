@@ -41,7 +41,7 @@ my %tests = (
             UUID      => undef,
             VCPU      => undef,
             MEMORY    => undef,
-            STORAGES  => [],
+            DRIVES  => [],
         },
         {
             VMTYPE    => 'HyperV',
@@ -51,7 +51,7 @@ my %tests = (
             UUID      => undef,
             VCPU      => undef,
             MEMORY    => undef,
-            STORAGES  => [],
+            DRIVES  => [],
         },
         {
             SUBSYSTEM => 'MS HyperV',
@@ -61,7 +61,7 @@ my %tests = (
             UUID      => undef,
             VCPU      => undef,
             MEMORY    => undef,
-            STORAGES  => [],
+            DRIVES  => [],
         }
     ],
     '2008' => [
@@ -73,7 +73,7 @@ my %tests = (
             UUID      => undef,
             VCPU      => 2,
             MEMORY    => 2048,
-            STORAGES  => [
+            DRIVES  => [
                 { VOLUMN => 'C:\VMs\vm-disco.vhdx',        TOTAL => 102400 },
                 { VOLUMN => '\\\\nas01\VMs\vm-datos.vhdx',  TOTAL => 512000 },
             ],
@@ -81,16 +81,18 @@ my %tests = (
     ],
     'qa' => [
         {
-            VMTYPE    => 'HyperV',
-            SUBSYSTEM => 'MS HyperV',
-            NAME      => 'vm2',
-            STATUS    => STATUS_RUNNING,
-            UUID      => undef,
-            VCPU      => 4,
-            MEMORY    => 2048,
-            STORAGES  => [
+            VMTYPE          => 'HyperV',
+            SUBSYSTEM       => 'MS HyperV',
+            NAME            => 'vm2',
+            STATUS          => STATUS_RUNNING,
+            UUID            => undef,
+            VCPU            => 4,
+            MEMORY          => 2048,
+            DRIVES        => [
                 { VOLUMN => 'C:\HyperV\vm2.vhdx', TOTAL => 12288 },
             ],
+            IPADDRESS       => '172.25.2.239',
+            OPERATINGSYSTEM => { FULL_NAME => 'Ubuntu 6.8.0' },
         },
         {
             VMTYPE    => 'HyperV',
@@ -100,7 +102,7 @@ my %tests = (
             UUID      => undef,
             VCPU      => 4,
             MEMORY    => 4096,
-            STORAGES  => [
+            DRIVES  => [
                 { VOLUMN => 'C:\HyperV\vm1.vhdx',            TOTAL => 16384 },
                 { VOLUMN => 'C:\HyperV\pruebadediscosl.vhdx', TOTAL => 5120  },
             ],
@@ -113,6 +115,14 @@ plan tests => (2 * scalar keys %tests) + 1;
 
 my $inventory = GLPI::Agent::Inventory->new(glpi => '10.0.25');
 
+my %vhd_sizes = (
+    'C:\VMs\vm-disco.vhdx'                => 107374182400,   # 102400 MB
+    '\\\\nas01\VMs\vm-datos.vhdx'          => 536870912000,   # 512000 MB
+    'C:\HyperV\vm2.vhdx'                  =>  12884901888,   #  12288 MB
+    'C:\HyperV\vm1.vhdx'                  =>  17179869184,   #  16384 MB
+    'C:\HyperV\pruebadediscosl.vhdx'      =>   5368709120,   #   5120 MB
+);
+
 # fake Tools::Win32, instead of Task::Inventory::Virtualization::HyperV, as
 # it is loaded at runtime
 my $module = Test::MockModule->new(
@@ -124,6 +134,11 @@ foreach my $test (keys %tests) {
         'getWMIObjects',
         mockGetWMIObjects($test)
     );
+    $module->mock('runPowerShell', sub {
+        my (%params) = @_;
+        my ($path) = $params{script} =~ /"([^"]+)"/;
+        return $vhd_sizes{$path} // 0;
+    });
 
     my @machines = GLPI::Agent::Task::Inventory::Virtualization::HyperV::_getVirtualMachines($inventory);
     cmp_deeply(

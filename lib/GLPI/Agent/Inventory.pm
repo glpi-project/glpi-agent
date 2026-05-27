@@ -101,7 +101,7 @@ my %fields = (
     USERS            => [ qw/LOGIN DOMAIN/ ],
     VIRTUALMACHINES  => [ qw/MEMORY NAME UUID STATUS SUBSYSTEM VMTYPE VCPU
                              MAC COMMENT OWNER SERIAL IMAGE IPADDRESS OPERATINGSYSTEM
-                             STORAGES/ ],
+                             DRIVES/ ],
     VOLUME_GROUPS    => [ qw/VG_NAME PV_COUNT LV_COUNT ATTR SIZE FREE VG_UUID
                              VG_EXTENT_SIZE/ ],
     VERSIONPROVIDER  => [ qw/NAME VERSION COMMENTS PERL_EXE PERL_VERSION PERL_ARGS
@@ -415,8 +415,8 @@ sub addEntry {
             delete $entry->{$field};
             next;
         }
-        # sanitize value
-        my $value = getSanitizedString($entry->{$field});
+        # sanitize value (skip refs like arrayrefs/hashrefs)
+        my $value = ref($entry->{$field}) ? $entry->{$field} : getSanitizedString($entry->{$field});
         # check value if appliable
         if (ref($checks->{$field}) eq 'HASH') {
             if ($checks->{$field}->{regexp} && $checks->{$field}->{not_since} && $checks->{$field}->{not_since} > $self->{_glpi_version}) {

@@ -19,8 +19,9 @@ sub doInventory {
     my (%params) = @_;
 
     my $inventory = $params{inventory};
+    my $logger    = $params{logger};
 
-    foreach my $machine (_getVirtualMachines($inventory)) {
+    foreach my $machine (_getVirtualMachines($inventory, $logger)) {
         $inventory->addEntry(
             section => 'VIRTUALMACHINES', entry => $machine
         );
@@ -28,11 +29,21 @@ sub doInventory {
 }
 
 sub _getVirtualMachines {
-    my ($inventory) = @_;
+    my ($inventory, $logger) = @_;
 
     GLPI::Agent::Tools::Win32->require();
 
     my @machines;
+
+    # Determine once whether GLPI supports extended VM fields
+    my $extended = $inventory && $inventory->supportsGlpiVersion('10.0.25');
+    if ($extended) {
+        $logger->debug("Hyper-V: GLPI supports extended VM fields (DRIVES, IPADDRESS, OPERATINGSYSTEM)")
+            if $logger;
+    } else {
+        $logger->debug("Hyper-V: GLPI version does not support extended VM fields (requires 10.0.25+), collecting basic inventory only")
+            if $logger;
+    }
 
     # index memory, cpu and BIOS UUID information
     my %memory;
@@ -72,30 +83,86 @@ sub _getVirtualMachines {
         $biosguid{$1} =~ tr/{}//d;
     }
 
-    my %storages;
-    foreach my $object (GLPI::Agent::Tools::Win32::getWMIObjects(
-        moniker    => 'winmgmts://./root/virtualization/v2',
-        altmoniker => 'winmgmts://./root/virtualization',
-        class      => 'MSVM_StorageAllocationSettingData',
-        properties => [ qw/InstanceID HostResource ResourceType VirtualQuantity VirtualQuantityUnits/ ]
-    )) {
-        next unless defined $object->{ResourceType} && $object->{ResourceType} == 31;
-        next unless $object->{HostResource};
-        my $id = $object->{InstanceID} // '';
-        next unless $id =~ /^Microsoft:([^\\]+)/;
-        my $vm_guid = $1;
-        my $path = ref($object->{HostResource}) eq 'ARRAY'
-                     ? $object->{HostResource}[0]
-                     : $object->{HostResource};
-        my $units = $object->{VirtualQuantityUnits} // '';
-        my $size_mb =
-            $units eq 'byte * 2^20' ? $object->{VirtualQuantity} :
-            $units eq 'byte'        ? int($object->{VirtualQuantity} / 1024 / 1024) :
-                                      $object->{VirtualQuantity} // 0;
-        push @{$storages{$vm_guid}}, {
-            VOLUMN => $path,
-            TOTAL  => $size_mb,
-        };
+    my %drives;
+    my %kvp;
+    if ($extended) {
+        foreach my $object (GLPI::Agent::Tools::Win32::getWMIObjects(
+            moniker    => 'winmgmts://./root/virtualization/v2',
+            altmoniker => 'winmgmts://./root/virtualization',
+            class      => 'MSVM_StorageAllocationSettingData',
+            properties => [ qw/InstanceID HostResource ResourceType/ ]
+        )) {
+            next unless defined $object->{ResourceType} && $object->{ResourceType} == 31;
+            next unless $object->{HostResource};
+            my $id = $object->{InstanceID} // '';
+            next unless $id =~ /^Microsoft:([^\\]+)/;
+            my $vm_guid = $1;
+            my $path = ref($object->{HostResource}) eq 'ARRAY'
+                         ? $object->{HostResource}[0]
+                         : $object->{HostResource};
+
+            # Skip ISO images — Get-VHD does not support them
+            if ($path =~ /\.iso$/i) {
+                $logger->debug("Hyper-V: skipping ISO image '$path'")
+                    if $logger;
+                next;
+            }
+
+            my ($size_bytes) = GLPI::Agent::Tools::Win32::runPowerShell(
+                script => 'Get-VHD -Path "' . $path . '" | Select-Object -ExpandProperty Size'
+            );
+            if (!$size_bytes) {
+                # Distinguish between avhdx (checkpoint) and regular vhdx
+                if ($path =~ /\.avhdx$/i) {
+                    $logger->debug("Hyper-V: could not retrieve size for checkpoint '$path' - checkpoints may require the VM to be running or merged")
+                        if $logger;
+                } else {
+                    $logger->warning("Hyper-V: could not retrieve size for VHD '$path' via Get-VHD (check path, permissions or VM state)")
+                        if $logger;
+                }
+            } else {
+                $logger->debug2("Hyper-V: VHD '$path' size = $size_bytes bytes")
+                    if $logger;
+            }
+            my $size_mb = $size_bytes ? int($size_bytes / 1024 / 1024) : 0;
+            push @{$drives{$vm_guid}}, {
+                VOLUMN => $path,
+                TOTAL  => $size_mb,
+            };
+        }
+
+        foreach my $object (GLPI::Agent::Tools::Win32::getWMIObjects(
+            moniker    => 'winmgmts://./root/virtualization/v2',
+            altmoniker => 'winmgmts://./root/virtualization',
+            class      => 'Msvm_KvpExchangeComponent',
+            properties => [ qw/SystemName GuestIntrinsicExchangeItems/ ]
+        )) {
+            my $vm_guid = $object->{SystemName} // next;
+            my $items   = $object->{GuestIntrinsicExchangeItems} // next;
+            $items = [$items] unless ref($items) eq 'ARRAY';
+            foreach my $xml (@$items) {
+                $xml =~ s/&quot;/"/g;
+                my ($name) = $xml =~ m{<PROPERTY NAME="Name"[^>]*><VALUE>([^<]*)</VALUE>};
+                my ($data) = $xml =~ m{<PROPERTY NAME="Data"[^>]*><VALUE>([^<]*)</VALUE>};
+                next unless defined $name && defined $data && length($data);
+                if ($name eq 'NetworkAddressIPv4') {
+                    my ($ip) = split(/;/, $data);
+                    $kvp{$vm_guid}{IPADDRESS} = $ip if $ip;
+                } elsif ($name eq 'OSName') {
+                    $kvp{$vm_guid}{OSName} = $data;
+                } elsif ($name eq 'OSVersion') {
+                    $kvp{$vm_guid}{OSVersion} = $data;
+                }
+            }
+        }
+
+        if (%kvp) {
+            $logger->debug2("Hyper-V: KVP guest data found for " . scalar(keys %kvp) . " VM(s)")
+                if $logger;
+        } else {
+            $logger->debug("Hyper-V: no KVP guest data found - Hyper-V Integration Services may not be installed in guest VMs")
+                if $logger;
+        }
     }
 
     foreach my $object (GLPI::Agent::Tools::Win32::getWMIObjects(
@@ -120,6 +187,10 @@ sub _getVirtualMachines {
             $object->{EnabledState} == 32776 ? STATUS_BLOCKED  :
             $object->{EnabledState} == 32777 ? STATUS_BLOCKED  :
                                                STATUS_OFF      ;
+
+        $logger->debug2("Hyper-V: found VM '$object->{ElementName}' (GUID: $object->{Name}), status=$status")
+            if $logger;
+
         my $machine = {
             SUBSYSTEM => 'MS HyperV',
             VMTYPE    => 'HyperV',
@@ -128,15 +199,38 @@ sub _getVirtualMachines {
             UUID      => $biosguid{$object->{Name}},
             MEMORY    => $memory{$object->{Name}},
             VCPU      => $vcpu{$object->{Name}},
-            ($inventory && $inventory->supportsGlpiVersion('10.0.25')
-                ? (STORAGES => $storages{$object->{Name}} // [])
-                : ()
-            ),
         };
 
-        push @machines, $machine;
+        if ($extended) {
+            $machine->{DRIVES} = $drives{$object->{Name}} // [];
+            my $vm_kvp = $kvp{$object->{Name}};
+            if ($vm_kvp) {
+                $machine->{IPADDRESS} = $vm_kvp->{IPADDRESS}
+                    if defined $vm_kvp->{IPADDRESS};
+                if ($vm_kvp->{OSName} || $vm_kvp->{OSVersion}) {
+                    my $full_name = join(' ',
+                        grep { defined $_ && length $_ }
+                        $vm_kvp->{OSName}, $vm_kvp->{OSVersion}
+                    );
+                    $machine->{OPERATINGSYSTEM} = { FULL_NAME => $full_name }
+                        if $full_name;
+                }
+                $logger->debug2(
+                    "Hyper-V: VM '$machine->{NAME}' KVP data: " .
+                    "ip=" . ($machine->{IPADDRESS} // 'N/A') . ", " .
+                    "os=" . ($machine->{OPERATINGSYSTEM}{FULL_NAME} // 'N/A')
+                ) if $logger;
+            } else {
+                $logger->debug2("Hyper-V: VM '$machine->{NAME}': no KVP guest data (Integration Services may not be installed)")
+                    if $logger;
+            }
+        }
 
+        push @machines, $machine;
     }
+
+    $logger->debug("Hyper-V: inventory complete, " . scalar(@machines) . " virtual machine(s) found")
+        if $logger;
 
     return @machines;
 }
