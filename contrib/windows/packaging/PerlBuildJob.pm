@@ -127,7 +127,7 @@ sub build_job {
 
                 # crypto
                 { module => 'https://github.com/g-bougard/Crypt-DES/releases/download/2.07_01/Crypt-DES-2.07_01.tar.gz' }, # Patched Crypt::DES
-                qw/ Crypt::Rijndael /,
+                { module => 'https://cpan.metacpan.org/authors/id/L/LE/LEONT/Crypt-Rijndael-1.16.tar.gz' }, # Pin Crypt::Rijndael for perl 5.42 compatibility
                 qw/ Digest-SHA /,
                 qw/ Digest-MD5 Digest-SHA1 Digest::HMAC /, # Required for SNMP v3 authentication
 
