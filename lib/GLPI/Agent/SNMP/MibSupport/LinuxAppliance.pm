@@ -19,6 +19,7 @@ use constant    checkpoint  => enterprises . '.2620' ;
 use constant    socomec     => enterprises . '.4555' ;
 use constant    synology    => enterprises . '.6574' ;
 use constant    tplink      => enterprises . '.11863' ;
+use constant    digi        => enterprises . '.40083' ;
 use constant    ubnt        => enterprises . '.41112' ;
 
 use constant    ucdExperimental => ucddavis . '.13' ;
@@ -90,6 +91,11 @@ use constant    qSerialNumber   => quantum . '.1.1.12.0';
 use constant    tplinkModel     => tplink . '.20.1.1.2.0';
 use constant    tplinkFirmware  => tplink . '.20.1.1.3.0';
 use constant    tplinkMacID     => tplink . '.20.1.3.1.0';
+
+# Digi Anywhere modem
+use constant    systemInfoTable_serial_number   => digi . '.6.1.0';
+use constant    systemInfoTable_fw_version      => digi . '.6.2.0';
+use constant    systemInfoTable_model           => digi . '.6.3.0';
 
 our $mibSupport = [
     {
@@ -182,6 +188,18 @@ sub getType {
             FIRMWARE        => getCanonicalString($self->get(qProdRev)),
             SERIAL          => getCanonicalString($self->get(qSerialNumber)),
             _QUANTUM        => 1,
+        };
+        return 'NETWORKING';
+    }
+
+    # Digi Anywhere modem Appliance detection
+    my $digiSerial = getCanonicalString($self->get(systemInfoTable_serial_number));
+    if ($digiSerial) {
+        $device->{_Appliance} = {
+            MODEL           => getCanonicalString($self->get(systemInfoTable_model)),
+            MANUFACTURER    => 'Digi',
+            FIRMWARE        => getCanonicalString($self->get(systemInfoTable_fw_version)),
+            SERIAL          => $digiSerial,
         };
         return 'NETWORKING';
     }

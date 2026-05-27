@@ -101,6 +101,7 @@ sub build_app {
         _dllsuffix      => $arch eq "x86" ? '_' : '__',
         _restore_step   => PERL_BUILD_STEPS,
         codesigning     => $sign,
+        cpan_url        => 'https://www.cpan.org/',
     );
 
     $app->parse_options(
