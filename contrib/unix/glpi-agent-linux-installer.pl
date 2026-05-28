@@ -27,7 +27,7 @@ if ($options->{help}) {
 
 my $version = InstallerVersion::VERSION();
 if ($options->{version}) {
-    print "GLPI-Agent installer for ", InstallerVersion::DISTRO(), " v$version\n";
+    print "Daraban-Agent installer for ", InstallerVersion::DISTRO(), " v$version\n";
     exit 0;
 }
 
@@ -71,7 +71,7 @@ unless ($uninstall) {
     my $archive = Archive->new();
     $distro->extract($archive, $extract);
     if ($install || $reinstall) {
-        $distro->info("Installing glpi-agent v$version...");
+        $distro->info("Installing daraban-agent v$version...");
         $distro->install();
     }
 }

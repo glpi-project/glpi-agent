@@ -1,8 +1,8 @@
 ## Disabling debug package
 %global debug_package %{nil}
 
-Name:        glpi-agent
-Summary:     GLPI inventory agent
+Name:        daraban-agent
+Summary:     Daraban inventory agent
 Group:       Applications/System
 License:     GPLv2+
 URL:         https://glpi-project.org/
@@ -47,11 +47,11 @@ BuildRequires: sed
 # excluding internal requires and windows stuff
 # excluding perl(setup) and windows stuff
 %{?perl_default_filter}
-%global __provides_exclude %{?__provides_exclude:%__provides_exclude|}^perl\\(setup\\)$
-%global __requires_exclude %{?__requires_exclude:%__requires_exclude|}^perl\\(Win32|setup\\)$
+%global __provides_exclude %{?__provides_exclude:%__provides_exclude|}^perl\(setup\)$
+%global __requires_exclude %{?__requires_exclude:%__requires_exclude|}^perl\(Win32|setup\)$
 
 %description
-GLPI Agent is an application designed to help a network
+Daraban Agent is an application designed to help a network
 or system administrator to keep track of the hardware and software
 configurations of computers that are installed on the network.
 
@@ -60,68 +60,68 @@ inventory support or with a FusionInventory compatible GLPI plugin.
 
 You can add additional packages for optional tasks:
 
-* glpi-agent-task-network
+* daraban-agent-task-network
     Network Discovery and Inventory
-* glpi-agent-inventory
+* daraban-agent-inventory
     Local inventory
-* glpi-agent-task-deploy
+* daraban-agent-task-deploy
     Package deployment
-* glpi-agent-task-esx
+* daraban-agent-task-esx
     vCenter/ESX/ESXi remote inventory
-* glpi-agent-task-collect
+* daraban-agent-task-collect
     Custom information retrieval
-* glpi-agent-task-wakeonlan
+* daraban-agent-task-wakeonlan
     Wake on lan task
 
 You can also install the following package if you prefer to start the agent via
 a cron scheduled each hour:
-* glpi-agent-cron
+* daraban-agent-cron
 
 
 %package task-esx
-Summary:    vCenter/ESX/ESXi inventoy task for GLPI agent
+Summary:    vCenter/ESX/ESXi inventoy task for Daraban agent
 Requires:   %{name} = %{version}-%{release}
 
 %description task-esx
-glpi-agent-task-ESX ask the running service agent to inventory a
+daraban-agent-task-ESX ask the running service agent to inventory a
 VMWare vCenter/ESX/ESXi server through SOAP interface
 
 %package task-network
-Summary:    NetDiscovery and NetInventory task for GLPI agent
+Summary:    NetDiscovery and NetInventory task for Daraban agent
 Requires:   %{name} = %{version}-%{release}
 
 %description task-network
-glpi-task-netdiscovery and glpi-task-netinventory
+daraban-task-netdiscovery and daraban-task-netinventory
 
 %package task-deploy
-Summary:    Software deployment support for GLPI agent
+Summary:    Software deployment support for Daraban agent
 Requires:   %{name} = %{version}-%{release}
 
 %description task-deploy
-This package provides software deployment support for GLPI agent
+This package provides software deployment support for Daraban agent
 
 %package task-wakeonlan
-Summary:    WakeOnLan task for GLPI agent
+Summary:    WakeOnLan task for Daraban agent
 Requires:   %{name} = %{version}-%{release}
 
 %description task-wakeonlan
-glpi-task-wakeonlan
+daraban-task-wakeonlan
 
 %package task-collect
-Summary:    Custom information retrieval support for GLPI agent
+Summary:    Custom information retrieval support for Daraban agent
 Requires:   %{name} = %{version}-%{release}
 
 %description task-collect
 This package provides custom information retrieval support for
-GLPI agent
+Daraban agent
 
 %package cron
-Summary:    Cron for GLPI agent
+Summary:    Cron for Daraban agent
 Requires:   %{name} = %{version}-%{release}
 Requires:   cronie
 
 %description cron
-GLPI agent cron task
+Daraban agent cron task
 
 
 %prep
@@ -143,7 +143,7 @@ sed \
 
 cat <<EOF | tee %{name}.conf
 #
-# GLPI Agent Configuration File
+# Daraban Agent Configuration File
 # used by hourly cron job to override the %{name}.cfg setup.
 #
 # /!\
@@ -348,24 +348,3 @@ fi
 %changelog
 * Mon Jan 9 2023 Guillaume Bougard <gbougard AT teclib DOT com>
 - Set Parallel::ForkManager dependency
-- Don't miss to include new GLPI::Agent::Event module
-
-* Wed Mar 16 2022 Guillaume Bougard <gbougard AT teclib DOT com>
-- Set Net::SSH2 dependency as weak dependency
-- Add Net::CUPS & Parse::EDID as weak dependency
-
-* Fri Mar 4 2022 Guillaume Bougard <gbougard AT teclib DOT com>
-- Add Net::SSH2 dependency for remoteinventory support
-
-* Fri Jun 11 2021 Guillaume Bougard <gbougard AT teclib DOT com>
-- Update to support new GLPI Agent protocol
-
-* Mon May 10 2021 Guillaume Bougard <gbougard AT teclib DOT com>
-- Updates to make official and generic GLPI Agent rpm packages
-- Remove dmidecode, perl(Net::CUPS) & perl(Parse::EDID) dependencies as they are
-  indeed only recommended
-- Replace auto-generated systemd scriptlets with raw scriplets and don't even try
-  to enable the service on install as this is useless without a server defined in conf
-
-* Thu Sep 17 2020 Johan Cwiklinski <jcwiklinski AT teclib DOT com>
-- Package of GLPI Agent, based on GLPI Agent officials specfile

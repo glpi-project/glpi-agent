@@ -6,8 +6,8 @@
 %global iec61850_hardening  -fstack-protector-strong -D_FORTIFY_SOURCE=2
 %global iec61850_ldopts     -Wl,-z,relro,-z,now -D_FORTIFY_SOURCE=2
 
-Name:        glpi-agent-iec61850
-Summary:     iec61850 library perl interface for glpi-agent
+Name:        daraban-agent-iec61850
+Summary:     iec61850 library perl interface for daraban-agent
 Group:       Applications/System
 License:     GPLv2+
 URL:         https://glpi-project.org/
@@ -16,7 +16,7 @@ Version:     %{version}
 Release:     %{?rev}%{?dist}
 Source0:     libiec61850-%{iec61850_version}.tar.gz
 
-Requires:    glpi-agent-task-network = %{version}-%{release}
+Requires:    daraban-agent-task-network = %{version}-%{release}
 
 BuildRequires: coreutils
 #BuildRequires: findutils
@@ -31,7 +31,7 @@ BuildRequires: perl(Config)
 BuildRequires: swig
 
 %description
-This package enables iec61850 protocol support for GLPI agent netdiscovery task
+This package enables iec61850 protocol support for Daraban agent netdiscovery task
 
 %prep
 %setup -q -n libiec61850-%{iec61850_version}

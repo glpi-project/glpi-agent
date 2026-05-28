@@ -1,15 +1,15 @@
-name: glpi-agent
+name: daraban-agent
 base: core20
-summary: GLPI Agent runs inventory and other tasks on the behalf of a GLPI server
+summary: Daraban Agent runs inventory and other tasks on the behalf of a GLPI server
 description: |
-  GLPI Agent is an agent intended to run automatic inventory task (and possibly others)
+  Daraban Agent is an agent intended to run automatic inventory task (and possibly others)
   on the behalf of its configured GLPI server (https://glpi-project.org/).
   
   It starts as a daemon but does nothing by default. You must set its server
   configuration before expecting an inventory can be submitted to your
   GLPI server. The following command should be used for that purpose:
   
-  sudo snap set glpi-agent server=http://your-glpi-server/
+  sudo snap set daraban-agent server=http://your-glpi-server/
 icon: share/html/logo.png
 license: GPL-2.0
 issues: https://github.com/glpi-project/glpi-agent/issues
@@ -18,13 +18,13 @@ website: https://glpi-project.org/
 
 confinement: classic
 
-adopt-info: glpi-agent
+adopt-info: daraban-agent
 
 architectures:
  - build-on: amd64
 
 apps:
-  glpi-agent:
+  daraban-agent:
     command: usr/bin/glpi-agent
     environment:
       LANG: C
@@ -158,7 +158,7 @@ parts:
       - -usr/share/glpi-agent/lib/**/.meta
       - -usr/share/glpi-agent/lib/**/.packlist
 
-  glpi-agent:
+  daraban-agent:
     after: [perl]
     plugin: make
     source: .
@@ -182,21 +182,21 @@ parts:
           snapcraftctl set-grade "stable"
           ;;
       esac
-      perl Makefile.PL PREFIX=/usr SYSCONFDIR=/etc/glpi-agent \
-        LOCALSTATEDIR=/var/snap/glpi-agent/common VERSION="$VERSION" \
+      perl Makefile.PL PREFIX=/usr SYSCONFDIR=/etc/daraban-agent \
+        LOCALSTATEDIR=/var/snap/daraban-agent/common VERSION="$VERSION" \
         COMMENTS="Built for snap on $(date -u +'%F %R')"
       make
-      make install DESTDIR=$SNAPCRAFT_PART_INSTALL SNAPDIR=/snap/glpi-agent/current
-      mkdir -p $SNAPCRAFT_PART_INSTALL/etc/glpi-agent
-      cp -a etc/*.cfg $SNAPCRAFT_PART_INSTALL/etc/glpi-agent
+      make install DESTDIR=$SNAPCRAFT_PART_INSTALL SNAPDIR=/snap/daraban-agent/current
+      mkdir -p $SNAPCRAFT_PART_INSTALL/etc/daraban-agent
+      cp -a etc/*.cfg $SNAPCRAFT_PART_INSTALL/etc/daraban-agent
       # We will use SNAP_DATA folder to support configuration with snap command
-      echo "include /var/snap/glpi-agent/current" >>$SNAPCRAFT_PART_INSTALL/etc/glpi-agent/agent.cfg
-      # HTTP plugins configuration files should include .local file from /var/snap/glpi-agent/current
-      sed -ri -e 's/^include "/include "\/var\/snap\/glpi-agent\/current\//' $SNAPCRAFT_PART_INSTALL/etc/glpi-agent/*-plugin.cfg
-      # SNMP Advanced configuration file should include .local file from /var/snap/glpi-agent/current
-      sed -ri -e 's/^include "/include "\/var\/snap\/glpi-agent\/current\//' $SNAPCRAFT_PART_INSTALL/etc/glpi-agent/snmp-advanced-support.cfg
+      echo "include /var/snap/daraban-agent/current" >>$SNAPCRAFT_PART_INSTALL/etc/daraban-agent/agent.cfg
+      # HTTP plugins configuration files should include .local file from /var/snap/daraban-agent/current
+      sed -ri -e 's/^include "/include "\/var\/snap\/daraban-agent\/current\//' $SNAPCRAFT_PART_INSTALL/etc/daraban-agent/*-plugin.cfg
+      # SNMP Advanced configuration file should include .local file from /var/snap/daraban-agent/current
+      sed -ri -e 's/^include "/include "\/var\/snap\/daraban-agent\/current\//' $SNAPCRAFT_PART_INSTALL/etc/daraban-agent/snmp-advanced-support.cfg
       # Script should start with built perl
-      sed -ri -e 's/#!/#!\/snap\/glpi-agent\/current/' $SNAPCRAFT_PART_INSTALL/usr/bin/glpi-*
+      sed -ri -e 's/#!/#!\/snap\/daraban-agent\/current/' $SNAPCRAFT_PART_INSTALL/usr/bin/glpi-*
     build-packages:
      - git
     stage-packages:
@@ -211,7 +211,7 @@ parts:
       - usr/bin/lsusb
       - sbin/hdparm
       - usr/sbin/dmidecode
-      - etc/glpi-agent
+      - etc/daraban-agent
       - usr/share/glpi-agent
       - lib
       - -lib/hdparm
