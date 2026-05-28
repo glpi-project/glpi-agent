@@ -121,6 +121,10 @@ my %checks = (
         }
     },
     VIRTUALMACHINES => {
+        DRIVES => {
+            not_before  => glpiVersion('12'),
+            as_ref      => 'DRIVES',
+        },
         IPADDRESS => {
             not_before  => glpiVersion('10.0.17'),
         },
@@ -415,8 +419,8 @@ sub addEntry {
             delete $entry->{$field};
             next;
         }
-        # sanitize value (skip refs like arrayrefs/hashrefs)
-        my $value = ref($entry->{$field}) ? $entry->{$field} : getSanitizedString($entry->{$field});
+        # sanitize value
+        my $value = getSanitizedString($entry->{$field});
         # check value if appliable
         if (ref($checks->{$field}) eq 'HASH') {
             if ($checks->{$field}->{regexp} && $checks->{$field}->{not_since} && $checks->{$field}->{not_since} > $self->{_glpi_version}) {
