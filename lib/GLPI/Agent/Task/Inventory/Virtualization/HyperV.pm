@@ -21,7 +21,7 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    foreach my $machine (_getVirtualMachines($inventory, $logger)) {
+    foreach my $machine (_getVirtualMachines(%params)) {
         $inventory->addEntry(
             section => 'VIRTUALMACHINES', entry => $machine
         );
@@ -29,16 +29,28 @@ sub doInventory {
 }
 
 sub _getVirtualMachines {
-    my ($inventory, $logger) = @_;
+    my (%params) = @_;
+    my $inventory = $params{inventory};
+    my $logger    = $params{logger};
 
     GLPI::Agent::Tools::Win32->require();
 
     my @machines;
 
-    # Determine once whether GLPI supports extended VM fields
-    my $extended = $inventory && $inventory->supportsGlpiVersion('10.0.25');
-    if ($extended) {
+    # Determine once whether GLPI supports extended VM fields:
+    #   0 = basic inventory only
+    #   1 = GLPI >= 10.0.25: IPADDRESS and OPERATINGSYSTEM supported
+    #   2 = GLPI >= 12: DRIVES also supported (pending inventory_format PR)
+    my $extended = 0;
+    if ($inventory) {
+        $extended = $inventory->supportsGlpiVersion('12')     ? 2 :
+                    $inventory->supportsGlpiVersion('10.0.25') ? 1 : 0;
+    }
+    if ($extended >= 2) {
         $logger->debug("Hyper-V: GLPI supports extended VM fields (DRIVES, IPADDRESS, OPERATINGSYSTEM)")
+            if $logger;
+    } elsif ($extended == 1) {
+        $logger->debug("Hyper-V: GLPI supports extended VM fields (IPADDRESS, OPERATINGSYSTEM)")
             if $logger;
     } else {
         $logger->debug("Hyper-V: GLPI version does not support extended VM fields (requires 10.0.25+), collecting basic inventory only")
@@ -85,7 +97,7 @@ sub _getVirtualMachines {
 
     my %drives;
     my %kvp;
-    if ($extended) {
+    if ($extended > 1) {
         foreach my $object (GLPI::Agent::Tools::Win32::getWMIObjects(
             moniker    => 'winmgmts://./root/virtualization/v2',
             altmoniker => 'winmgmts://./root/virtualization',
@@ -103,7 +115,7 @@ sub _getVirtualMachines {
 
             # Skip ISO images — Get-VHD does not support them
             if ($path =~ /\.iso$/i) {
-                $logger->debug("Hyper-V: skipping ISO image '$path'")
+                $logger->debug2("Hyper-V: skipping ISO image '$path'")
                     if $logger;
                 next;
             }
@@ -130,7 +142,8 @@ sub _getVirtualMachines {
                 TOTAL  => $size_mb,
             };
         }
-
+    }
+    if ($extended) {
         foreach my $object (GLPI::Agent::Tools::Win32::getWMIObjects(
             moniker    => 'winmgmts://./root/virtualization/v2',
             altmoniker => 'winmgmts://./root/virtualization',
@@ -201,8 +214,10 @@ sub _getVirtualMachines {
             VCPU      => $vcpu{$object->{Name}},
         };
 
-        if ($extended) {
+        if ($extended > 1) {
             $machine->{DRIVES} = $drives{$object->{Name}} // [];
+        }
+        if ($extended) {
             my $vm_kvp = $kvp{$object->{Name}};
             if ($vm_kvp) {
                 $machine->{IPADDRESS} = $vm_kvp->{IPADDRESS}

@@ -113,7 +113,7 @@ my %tests = (
 
 plan tests => (2 * scalar keys %tests) + 1;
 
-my $inventory = GLPI::Agent::Inventory->new(glpi => '10.0.25');
+my $inventory = GLPI::Agent::Inventory->new(glpi => '12');
 
 my %vhd_sizes = (
     'C:\VMs\vm-disco.vhdx'                => 107374182400,   # 102400 MB
@@ -140,7 +140,7 @@ foreach my $test (keys %tests) {
         return $vhd_sizes{$path} // 0;
     });
 
-    my @machines = GLPI::Agent::Task::Inventory::Virtualization::HyperV::_getVirtualMachines($inventory);
+    my @machines = GLPI::Agent::Task::Inventory::Virtualization::HyperV::_getVirtualMachines(inventory => $inventory);
     cmp_deeply(
         \@machines,
         $tests{$test},
