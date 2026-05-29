@@ -489,7 +489,12 @@ sub getFileHandle {
             local $SIG{PIPE} = 'IGNORE' if $OSNAME eq 'solaris';
             my $cmdpid;
             if (ref($params{command}) eq "ARRAY") {
-                $cmdpid  = open($handle, '-|', @{$params{command}}, $nostderr);
+                # Duplicate STDERR to select null stderr before forking
+                open(my $OLDSTDERR, ">&", \*STDERR);
+                open(STDERR, ">", $OSNAME eq 'MSWin32' ? "nul" : "/dev/null");
+                $cmdpid  = open($handle, '-|', @{$params{command}});
+                # Reset STDERR after we forked the command
+                open(STDERR, ">&", $OLDSTDERR);
             } else {
                 $cmdpid  = open($handle, '-|', $params{command}." ".$nostderr);
             }
