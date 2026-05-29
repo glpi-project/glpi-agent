@@ -10,6 +10,8 @@ use File::Basename;
 use File::Find;
 use File::stat;
 
+use GLPI::Agent::Tools;
+
 use constant    function        => "findFile";
 
 use constant    OPTIONAL        => 0;
@@ -35,12 +37,6 @@ use constant    json_validation => {
 
 sub results {
     my ($self) = @_;
-
-    my %params = (
-        dir     => '/',
-        limit   => 50,
-        @_
-    );
 
     return unless -d $self->{dir};
 
