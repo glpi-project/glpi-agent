@@ -244,6 +244,11 @@ sub run {
                 }
             );
 
+            # On connection error, permit to identify concerned ESX host
+            $self->{logger}->error(
+                "Failed to connect to ".$job->{host}." ".(empty($job->{user}) ? "without user" : "as ".$job->{user})
+            );
+
             next;
         }
 
