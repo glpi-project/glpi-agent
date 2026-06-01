@@ -270,7 +270,7 @@ sub request {
                         $logger->error(_log_prefix . $error);
                     }
                 }
-            } elsif ($self->{user} && $self->{password}) {
+            } elsif ($self->{user} && $self->{password} && $result->header('www-authenticate')) {
                 $logger->debug(
                     _log_prefix .
                     "authentication required, submitting credentials"
