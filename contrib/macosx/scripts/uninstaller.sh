@@ -5,8 +5,13 @@ INSTALLPATH="`pwd`"
 cd ..
 
 echo "Stopping and unloading service"
-sudo launchctl stop com.teclib.glpi-agent
-sudo launchctl unload /Library/LaunchDaemons/com.teclib.glpi-agent.plist
+MACOS_MAJOR=$(sw_vers -productVersion | cut -d. -f1)
+if [ "$MACOS_MAJOR" -ge 13 ] 2>/dev/null; then
+    sudo launchctl bootout system /Library/LaunchDaemons/com.teclib.glpi-agent.plist 2>/dev/null || true
+else
+    sudo launchctl stop com.teclib.glpi-agent
+    sudo launchctl unload /Library/LaunchDaemons/com.teclib.glpi-agent.plist
+fi
 
 # Still wait until process has been stopped
 read PID XXX <<<`ps -ec -o pid,command | grep glpi-agent`

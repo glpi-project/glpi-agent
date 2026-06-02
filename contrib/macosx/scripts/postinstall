@@ -42,12 +42,15 @@ fi
 echo "Only Tiger or newer OS supported, using LaunchDaemons plists"
 TMPPLIST="$(touch com.teclib.glpi-agent.plist && echo com.teclib.glpi-agent.plist || mktemp -t com.teclib.glpi-agent)"
 TPATH="/Library/LaunchDaemons"
+MACOS_MAJOR=$(sw_vers -productVersion | cut -d. -f1)
 cat >"$TMPPLIST" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
 	<key>Label</key>
+	<string>com.teclib.glpi-agent</string>
+	<key>AssociatedBundleIdentifiers</key>
 	<string>com.teclib.glpi-agent</string>
 	<key>ProgramArguments</key>
 	<array>
@@ -72,10 +75,14 @@ if [ -s "$TMPPLIST" ]; then
     rm -f "$TMPPLIST"
 
     echo 'Loading Service'
-    sudo launchctl load $TPATH/com.teclib.glpi-agent.plist
-
-    echo 'Starting Service'
-    sudo launchctl start com.teclib.glpi-agent
+    if [ "$MACOS_MAJOR" -ge 13 ] 2>/dev/null; then
+        # macOS 13 Ventura and later: launchctl load is deprecated
+        sudo launchctl bootstrap system $TPATH/com.teclib.glpi-agent.plist
+    else
+        sudo launchctl load $TPATH/com.teclib.glpi-agent.plist
+        echo 'Starting Service'
+        sudo launchctl start com.teclib.glpi-agent
+    fi
 else
     echo "Failed to create service"
 fi
