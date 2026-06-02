@@ -26,6 +26,26 @@ fi
 sudo chown -R root:wheel "$INSTALL_PATH"
 sudo chmod -R 755 "$INSTALL_PATH"
 
+# Ask for GLPI server URL via native dialog (skipped in unattended installs)
+CONSOLE_USER=$(stat -f "%Su" /dev/console 2>/dev/null)
+if [ -n "$CONSOLE_USER" ] && [ "$CONSOLE_USER" != "root" ] && [ "$CONSOLE_USER" != "loginwindow" ]; then
+    SERVER_URL=$(sudo -u "$CONSOLE_USER" osascript 2>/dev/null <<'APPLESCRIPT'
+set dialog_result to display dialog "Enter the GLPI server URL:" & return & return & "Example: https://glpi.company.com/" & return & "Leave empty to configure later in:" & return & "/Applications/GLPI-Agent/etc/agent.cfg" default answer "https://" with title "GLPI Agent" buttons {"Skip", "OK"} default button "OK" with icon note
+if button returned of dialog_result is "OK" then
+    return text returned of dialog_result
+end if
+return ""
+APPLESCRIPT
+    )
+fi
+# Write server URL to conf.d if a non-empty value was provided
+if [ -n "$SERVER_URL" ] && [ "$SERVER_URL" != "https://" ]; then
+    echo "server = $SERVER_URL" > "$INSTALL_PATH/etc/conf.d/01-server.cfg"
+    chown root:wheel "$INSTALL_PATH/etc/conf.d/01-server.cfg"
+    chmod 644 "$INSTALL_PATH/etc/conf.d/01-server.cfg"
+    echo "Server configured: $SERVER_URL"
+fi
+
 # Fix installed script with INSTALL_PATH
 if [ "$DEST" != "/" ]; then
     for SCRIPT in agent/setup.pm agent/GLPI/Agent/Config.pm \
