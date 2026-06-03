@@ -48,6 +48,8 @@ my %tests = (
             PNPDEVICEID => 'PCI\VEN_10EC&DEV_8168&SUBSYS_84321043&REV_06\4&87D54EE&0&00E5',
             PCIID       => '10EC:8168:8432:1043',
             GUID        => '{442CDFAD-10E9-45B6-8CF9-C829034793B0}',
+            MANUFACTURER => 'Realtek',
+            MODEL       => 'Realtek PCIe GBE Family Controller',
         },
         {
             dns         => '192.168.0.254',
@@ -63,6 +65,8 @@ my %tests = (
             PNPDEVICEID => 'PCI\VEN_10EC&DEV_8168&SUBSYS_84321043&REV_06\4&87D54EE&0&00E5',
             PCIID       => '10EC:8168:8432:1043',
             GUID        => '{442CDFAD-10E9-45B6-8CF9-C829034793B0}',
+            MANUFACTURER => 'Realtek',
+            MODEL       => 'Realtek PCIe GBE Family Controller',
         },
         {
             dns         => undef,
@@ -73,6 +77,8 @@ my %tests = (
             VIRTUALDEV  => 0,
             PNPDEVICEID => 'BTH\MS_BTHPAN\7&42D85A8&0&2',
             GUID        => '{DDE01862-B0C0-4715-AF6C-51D31172EBF9}',
+            MANUFACTURER => 'Microsoft',
+            MODEL       => 'Périphérique Bluetooth (réseau personnel)',
         },
     ],
     'vpn-down' => [            {
@@ -85,7 +91,9 @@ my %tests = (
                 STATUS      => 'Down',
                 TYPE        => 'ethernet',
                 VIRTUALDEV  => 1,
-                dns         => undef
+                dns         => undef,
+                MANUFACTURER => 'Fortinet',
+                MODEL       => 'Fortinet Virtual Ethernet Adapter (NDIS 6.30)'
             },
             {
                 DESCRIPTION => 'Realtek USB GbE Family Controller #2',
@@ -103,7 +111,9 @@ my %tests = (
                 STATUS      => 'Up',
                 TYPE        => 'ethernet',
                 VIRTUALDEV  => 0,
-                dns         => '127.0.0.1'
+                dns         => '127.0.0.1',
+                MANUFACTURER => 'Realtek',
+                MODEL       => 'Realtek USB GbE Family Controller'
             },
             {
                 DESCRIPTION => 'Realtek USB GbE Family Controller #2',
@@ -119,7 +129,9 @@ my %tests = (
                 STATUS      => 'Up',
                 TYPE        => 'ethernet',
                 VIRTUALDEV  => 0,
-                dns         => '127.0.0.1'
+                dns         => '127.0.0.1',
+                MANUFACTURER => 'Realtek',
+                MODEL       => 'Realtek USB GbE Family Controller'
             },
             {
                 DESCRIPTION => 'Intel(R) Wi-Fi 6 AX201 160MHz',
@@ -132,7 +144,9 @@ my %tests = (
                 STATUS      => 'Down',
                 TYPE        => 'wifi',
                 VIRTUALDEV  => 0,
-                dns         => undef
+                dns         => undef,
+                MANUFACTURER => 'Intel',
+                MODEL       => 'Intel(R) Wi-Fi 6 AX201 160MHz'
             },
             {
                 DESCRIPTION => 'Bluetooth Device (Personal Area Network)',
@@ -144,7 +158,9 @@ my %tests = (
                 STATUS      => 'Down',
                 TYPE        => 'ethernet',
                 VIRTUALDEV  => 1,
-                dns         => undef
+                dns         => undef,
+                MANUFACTURER => 'Microsoft',
+                MODEL       => 'Bluetooth Device (Personal Area Network)'
             },
             {
                 DESCRIPTION => 'Fortinet SSL VPN Virtual Ethernet Adapter',
@@ -156,7 +172,9 @@ my %tests = (
                 STATUS      => 'Down',
                 TYPE        => 'ethernet',
                 VIRTUALDEV  => 1,
-                dns         => undef
+                dns         => undef,
+                MANUFACTURER => 'Fortinet Inc',
+                MODEL       => 'Fortinet SSL VPN Virtual Ethernet Adapter'
             }
     ],
     'vpn-up' => [
@@ -170,7 +188,9 @@ my %tests = (
             STATUS      => 'Down',
             TYPE        => 'ethernet',
             VIRTUALDEV  => 1,
-            dns         => undef
+            dns         => undef,
+            MANUFACTURER => 'Fortinet',
+            MODEL       => 'Fortinet Virtual Ethernet Adapter (NDIS 6.30)'
         },
         {
             DESCRIPTION => 'Realtek USB GbE Family Controller #2',
@@ -181,7 +201,9 @@ my %tests = (
             STATUS      => 'Down',
             TYPE        => 'ethernet',
             VIRTUALDEV  => 0,
-            dns         => undef
+            dns         => undef,
+            MANUFACTURER => 'Realtek',
+            MODEL       => 'Realtek USB GbE Family Controller'
         },
         {
             DESCRIPTION => 'Intel(R) Wi-Fi 6 AX201 160MHz',
@@ -199,7 +221,9 @@ my %tests = (
             STATUS      => 'Up',
             TYPE        => 'wifi',
             VIRTUALDEV  => 0,
-            dns         => '127.0.0.1'
+            dns         => '127.0.0.1',
+            MANUFACTURER => 'Intel',
+            MODEL       => 'Intel(R) Wi-Fi 6 AX201 160MHz'
         },
         {
             DESCRIPTION => 'Intel(R) Wi-Fi 6 AX201 160MHz',
@@ -215,7 +239,9 @@ my %tests = (
             STATUS      => 'Up',
             TYPE        => 'wifi',
             VIRTUALDEV  => 0,
-            dns         => '127.0.0.1'
+            dns         => '127.0.0.1',
+            MANUFACTURER => 'Intel',
+            MODEL       => 'Intel(R) Wi-Fi 6 AX201 160MHz'
         },
         {
             DESCRIPTION => 'Bluetooth Device (Personal Area Network)',
@@ -227,7 +253,9 @@ my %tests = (
             STATUS      => 'Down',
             TYPE        => 'ethernet',
             VIRTUALDEV  => 1,
-            dns         => undef
+            dns         => undef,
+            MANUFACTURER => 'Microsoft',
+            MODEL       => 'Bluetooth Device (Personal Area Network)'
         },
         {
             DESCRIPTION => 'Fortinet SSL VPN Virtual Ethernet Adapter',
@@ -244,7 +272,9 @@ my %tests = (
             STATUS      => 'Up',
             TYPE        => 'ethernet',
             VIRTUALDEV  => 1,
-            dns         => '127.0.0.1'
+            dns         => '127.0.0.1',
+            MANUFACTURER => 'Fortinet Inc',
+            MODEL       => 'Fortinet SSL VPN Virtual Ethernet Adapter'
         },
         {
             DESCRIPTION => 'Fortinet SSL VPN Virtual Ethernet Adapter',
@@ -259,7 +289,9 @@ my %tests = (
             STATUS      => 'Up',
             TYPE        => 'ethernet',
             VIRTUALDEV  => 1,
-            dns         => '127.0.0.1'
+            dns         => '127.0.0.1',
+            MANUFACTURER => 'Fortinet Inc',
+            MODEL       => 'Fortinet SSL VPN Virtual Ethernet Adapter'
         }
     ],
     xp => [
@@ -270,7 +302,9 @@ my %tests = (
             MACADDR     => '50:50:54:50:30:30',
             STATUS      => 'Down',
             MTU         => undef,
-            DESCRIPTION => 'Minipuerto WAN (PPTP)'
+            DESCRIPTION => 'Minipuerto WAN (PPTP)',
+            MANUFACTURER => 'Microsoft',
+            MODEL       => 'Minipuerto WAN (PPTP)'
         },
         {
             dns         => undef,
@@ -279,7 +313,9 @@ my %tests = (
             MACADDR     => '33:50:6F:45:30:30',
             STATUS      => 'Down',
             MTU         => undef,
-            DESCRIPTION => 'Minipuerto WAN (PPPOE)'
+            DESCRIPTION => 'Minipuerto WAN (PPPOE)',
+            MANUFACTURER => 'Microsoft',
+            MODEL       => 'Minipuerto WAN (PPPOE)'
         },
         {
             dns         => undef,
@@ -288,7 +324,9 @@ my %tests = (
             MACADDR     => '26:0F:20:52:41:53',
             STATUS      => 'Down',
             MTU         => undef,
-            DESCRIPTION => 'Minipuerto del administrador de paquetes'
+            DESCRIPTION => 'Minipuerto del administrador de paquetes',
+            MANUFACTURER => 'Microsoft',
+            MODEL       => 'Minipuerto del administrador de paquetes'
         },
         {
             dns         => '10.36.6.100',
@@ -305,6 +343,8 @@ my %tests = (
             DESCRIPTION => 'Broadcom NetXtreme Gigabit Ethernet - Teefer2 Miniport',
             IPADDRESS   => '10.36.6.30',
             DNSDomain   => 'sociedad.imaginaria.es',
+            MANUFACTURER => 'Broadcom',
+            MODEL       => 'Broadcom NetXtreme Gigabit Ethernet'
         },
         {
             dns         => undef,
@@ -313,7 +353,9 @@ my %tests = (
             MACADDR     => '00:14:C2:0D:B0:FB',
             STATUS      => 'Down',
             MTU         => undef,
-            DESCRIPTION => 'Minipuerto del administrador de paquetes'
+            DESCRIPTION => 'Minipuerto del administrador de paquetes',
+            MANUFACTURER => 'Microsoft',
+            MODEL       => 'Minipuerto del administrador de paquetes'
         },
         {
             dns         => undef,
@@ -322,7 +364,9 @@ my %tests = (
             MACADDR     => '00:14:C2:0D:B0:FB',
             STATUS      => 'Down',
             MTU         => undef,
-            DESCRIPTION => 'Teefer2 Miniport'
+            DESCRIPTION => 'Teefer2 Miniport',
+            MANUFACTURER => 'Symantec',
+            MODEL       => 'Teefer2 Miniport'
         },
         {
             dns         => undef,
@@ -331,7 +375,9 @@ my %tests = (
             MACADDR     => '26:0F:20:52:41:53',
             STATUS      => 'Down',
             MTU         => undef,
-            DESCRIPTION => 'Teefer2 Miniport'
+            DESCRIPTION => 'Teefer2 Miniport',
+            MANUFACTURER => 'Symantec',
+            MODEL       => 'Teefer2 Miniport'
         }
     ],
     '10-net'    => [
@@ -351,7 +397,9 @@ my %tests = (
             GUID        => '{FD7B5BF5-2E4B-4CA4-0000-F633D86283A1}',
             dns         => '192.168.2.2',
             TYPE        => 'ethernet',
-            MTU         => undef
+            MTU         => undef,
+            MANUFACTURER => 'DisplayLink Corp.',
+            MODEL       => 'DisplayLink Network Adapter NCM'
         },
         {
             DESCRIPTION => 'Targus Giga Ethernet',
@@ -367,7 +415,9 @@ my %tests = (
             GUID        => '{FD7B5BF5-2E4B-4CA4-0000-F633D86283A1}',
             dns         => '192.168.2.2',
             TYPE        => 'ethernet',
-            MTU         => undef
+            MTU         => undef,
+            MANUFACTURER => 'DisplayLink Corp.',
+            MODEL       => 'DisplayLink Network Adapter NCM'
         },
         {
             DESCRIPTION => 'Hyper-V Virtual Ethernet Adapter',
@@ -384,7 +434,9 @@ my %tests = (
             IPDHCP      => undef,
             IPGATEWAY   => undef,
             MTU         => undef,
-            dns         => undef
+            dns         => undef,
+            MANUFACTURER => 'Microsoft',
+            MODEL       => 'Hyper-V Virtual Ethernet Adapter'
         },
         {
             DESCRIPTION => 'Hyper-V Virtual Ethernet Adapter',
@@ -399,7 +451,9 @@ my %tests = (
             GUID        => '{F2274B7D-033B-4FD1-B721-6B1E0E48D26D}',
             TYPE        => 'ethernet',
             MTU         => undef,
-            dns         => undef
+            dns         => undef,
+            MANUFACTURER => 'Microsoft',
+            MODEL       => 'Hyper-V Virtual Ethernet Adapter'
         },
         {
             DESCRIPTION => 'Bluetooth Device (Personal Area Network) #3',
@@ -411,7 +465,9 @@ my %tests = (
             GUID        => '{73513F19-5210-45E7-9CB5-6DB761D8291A}',
             TYPE        => 'ethernet',
             MTU         => undef,
-            dns         => undef
+            dns         => undef,
+            MANUFACTURER => 'Microsoft',
+            MODEL       => 'Bluetooth Device (Personal Area Network)'
         },
         {
             DESCRIPTION => 'TAP-Windows Adapter V9 #3',
@@ -423,7 +479,9 @@ my %tests = (
             GUID        => '{201DE880-FE07-47BE-0000-A3ABDE40367F}',
             TYPE        => 'ethernet',
             MTU         => undef,
-            dns         => undef
+            dns         => undef,
+            MANUFACTURER => 'TAP-Windows Provider V9',
+            MODEL       => 'TAP-Windows Adapter V9'
         },
         {
             DESCRIPTION => 'Intel(R) Dual Band Wireless-AC 8260',
@@ -435,7 +493,9 @@ my %tests = (
             GUID        => '{05CAEBD3-9408-4A3D-0000-EB10577755E3}',
             TYPE        => 'wifi',
             MTU         => undef,
-            dns         => undef
+            dns         => undef,
+            MANUFACTURER => 'Intel',
+            MODEL       => 'Intel(R) Dual Band Wireless-AC 8260'
         }
     ]
 );
