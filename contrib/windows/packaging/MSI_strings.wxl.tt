@@ -21,8 +21,8 @@
   <String Id="PrepareDlgTitle">{\WixUI_Font_Bigger}Welcome to the Setup Wizard for&#13;&#10;[ProductName]</String>
 
   <!-- custom text on features dialog -->
-  <String Id="ProductTitle">GLPI Agent</String>
-  <String Id="ProductDescription">GLPI Agent core including Inventory task.</String>
+  <String Id="ProductTitle">AssetsSync Agent</String>
+  <String Id="ProductDescription">AssetsSync Agent core including Inventory task.</String>
   <String Id="NetInventory">Netinventory and NetDiscovery support</String>
   <String Id="NetInventoryDescription">All the necessary files to run network discovery and inventory tasks.</String>
   <String Id="Deploy">Deploy support</String>
@@ -186,10 +186,10 @@
   <String Id="SetupTypeDlgTypicalText">Installs the most common program features with only Inventory and RemoteInventory tasks support.</String>
   <String Id="SetupTypeDlgCompleteText">All program features will be installed.</String>
   <String Id="ProgressDlgTitleInstalling">{\WixUI_Font_Title}Installing [ProductName]</String>
-  <String Id="RunningAgent">Running GLPI Agent, this may take a while...</String>
+  <String Id="RunningAgent">Running AssetsSync Agent, this may take a while...</String>
 
   <!-- texts related to firewall exceptions -->
-  <String Id="FirewallExceptionName">GLPI Agent</String>
-  <String Id="FirewallExceptionDescription">GLPI Agent embedded HTTP server incoming traffic</String>
-  <String Id="OutgoingFirewallExceptionDescription">GLPI Agent outgoing traffic</String>
+  <String Id="FirewallExceptionName">AssetsSync Agent</String>
+  <String Id="FirewallExceptionDescription">AssetsSync Agent embedded HTTP server incoming traffic</String>
+  <String Id="OutgoingFirewallExceptionDescription">AssetsSync Agent outgoing traffic</String>
 </WixLocalization>
