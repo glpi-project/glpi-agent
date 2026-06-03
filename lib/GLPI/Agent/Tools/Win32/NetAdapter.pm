@@ -46,6 +46,8 @@ sub getBaseInterface {
         VIRTUALDEV  => $self->_isVirtual()
     };
 
+    $interface->{MANUFACTURER} = $self->_getManufacturer() if $self->_getManufacturer();
+    $interface->{MODEL}        = $self->_getModel()        if $self->_getModel();
     $interface->{PCIID}     = $self->_getPciid() if $self->_getPciid();
     $interface->{GUID}      = $self->_getGUID() if $self->_getGUID();
     $interface->{DNSDomain} = $self->{_config}->{DNSDomain} if $self->{_config}->{DNSDomain};
@@ -140,7 +142,29 @@ sub _getObjectIndex {
     return defined($self->{InterfaceIndex}) ? $self->{InterfaceIndex} : $self->{Index};
 }
 
-# Getters try get Information on MSFT_NetAdapter || Win32_NetworkAdapter
+sub _getManufacturer {
+    my ($self) = @_;
+
+    # MSFT_NetAdapter (Win8+) exposes DriverProvider as the manufacturer
+    return $self->{DriverProvider} if $self->{DriverProvider};
+
+    # Win32_NetworkAdapter (legacy) has Manufacturer
+    return $self->{Manufacturer} if $self->{Manufacturer};
+
+    return;
+}
+
+sub _getModel {
+    my ($self) = @_;
+
+    # MSFT_NetAdapter (Win8+) exposes DriverDescription as the model name
+    return $self->{DriverDescription} if $self->{DriverDescription};
+
+    # Win32_NetworkAdapter (legacy) has Name which reflects the adapter model
+    return $self->{Name} if $self->{Name};
+
+    return;
+}
 
 sub _getGUID {
     my ($self) = @_;
