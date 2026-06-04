@@ -417,7 +417,6 @@ my %tests = (
             IPGATEWAY   => '192.168.10.254',
             MACADDR     => '20:47:47:90:78:42',
             STATUS      => 'Up',
-            dns         => undef,
             IPSUBNET    => '192.168.10.0',
             MTU         => undef,
             IPDHCP      => undef,
