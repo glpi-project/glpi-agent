@@ -59,7 +59,7 @@ my %tests = (
             IPADDRESS6  => 'fe80::311a:2127:dded:6618',
             MTU         => undef,
             IPSUBNET6   => 'fe80::',
-            DESCRIPTION => 'Realtek PCIe GBE Family Controller',
+            DESCRIPTION => 'Connexion au réseau local',
             VIRTUALDEV  => 0,
             SPEED       => 100,
             PNPDEVICEID => 'PCI\VEN_10EC&DEV_8168&SUBSYS_84321043&REV_06\4&87D54EE&0&00E5',
@@ -73,7 +73,7 @@ my %tests = (
             MTU         => undef,
             MACADDR     => '00:26:83:12:FB:0B',
             STATUS      => 'Down',
-            DESCRIPTION => "Périphérique Bluetooth (réseau personnel)",
+            DESCRIPTION => 'Connexion réseau Bluetooth',
             VIRTUALDEV  => 0,
             PNPDEVICEID => 'BTH\MS_BTHPAN\7&42D85A8&0&2',
             GUID        => '{DDE01862-B0C0-4715-AF6C-51D31172EBF9}',
@@ -96,7 +96,7 @@ my %tests = (
                 MODEL       => 'Fortinet Virtual Ethernet Adapter (NDIS 6.30)'
             },
             {
-                DESCRIPTION => 'Realtek USB GbE Family Controller #2',
+                DESCRIPTION => 'Ethernet 4',
                 DNSDomain   => 'sample.org',
                 GUID        => '{B039FEDD-F8DC-4A5D-98BF-CCF184B86F65}',
                 IPADDRESS   => '10.178.0.178',
@@ -116,7 +116,7 @@ my %tests = (
                 MODEL       => 'Realtek USB GbE Family Controller'
             },
             {
-                DESCRIPTION => 'Realtek USB GbE Family Controller #2',
+                DESCRIPTION => 'Ethernet 4',
                 DNSDomain   => 'sample.org',
                 GUID        => '{B039FEDD-F8DC-4A5D-98BF-CCF184B86F65}',
                 IPADDRESS6  => 'fe80::3cdb:7f48:22b1:4ec4',
@@ -134,7 +134,7 @@ my %tests = (
                 MODEL       => 'Realtek USB GbE Family Controller'
             },
             {
-                DESCRIPTION => 'Intel(R) Wi-Fi 6 AX201 160MHz',
+                DESCRIPTION => 'Wi-Fi',
                 GUID        => '{31DEAC2D-2194-4511-AA54-787CD1765558}',
                 MACADDR     => '45:00:00:00:FF:14',
                 MTU         => undef,
@@ -149,7 +149,7 @@ my %tests = (
                 MODEL       => 'Intel(R) Wi-Fi 6 AX201 160MHz'
             },
             {
-                DESCRIPTION => 'Bluetooth Device (Personal Area Network)',
+                DESCRIPTION => 'Connexion réseau Bluetooth',
                 GUID        => '{C6D0BB76-E0FA-4780-AFA2-78AC0E1849A0}',
                 MACADDR     => '45:00:00:00:FD:12',
                 MTU         => undef,
@@ -163,7 +163,7 @@ my %tests = (
                 MODEL       => 'Bluetooth Device (Personal Area Network)'
             },
             {
-                DESCRIPTION => 'Fortinet SSL VPN Virtual Ethernet Adapter',
+                DESCRIPTION => 'Ethernet 3',
                 GUID        => '{E68EB6CC-9580-4151-80E2-2DA4DC27AF81}',
                 MACADDR     => undef,
                 MTU         => undef,
@@ -179,7 +179,7 @@ my %tests = (
     ],
     'vpn-up' => [
         {
-            DESCRIPTION => 'Fortinet Virtual Ethernet Adapter (NDIS 6.30)',
+            DESCRIPTION => 'Ethernet 2',
             GUID        => '{4CB24B28-7970-4249-8D9F-C1B75E98DF09}',
             MACADDR     => '00:FE:00:00:00:01',
             MTU         => undef,
@@ -193,7 +193,7 @@ my %tests = (
             MODEL       => 'Fortinet Virtual Ethernet Adapter (NDIS 6.30)'
         },
         {
-            DESCRIPTION => 'Realtek USB GbE Family Controller #2',
+            DESCRIPTION => 'Ethernet 4',
             GUID        => '{B039FEDD-F8DC-4A5D-98BF-CCF184B86F65}',
             MACADDR     => '83:00:00:09:00:FD',
             MTU         => undef,
@@ -206,7 +206,7 @@ my %tests = (
             MODEL       => 'Realtek USB GbE Family Controller'
         },
         {
-            DESCRIPTION => 'Intel(R) Wi-Fi 6 AX201 160MHz',
+            DESCRIPTION => 'Wi-Fi',
             GUID        => '{31DEAC2D-2194-4511-AA54-787CD1765558}',
             IPADDRESS   => '192.168.0.254',
             IPDHCP      => '192.168.0.102',
@@ -226,7 +226,7 @@ my %tests = (
             MODEL       => 'Intel(R) Wi-Fi 6 AX201 160MHz'
         },
         {
-            DESCRIPTION => 'Intel(R) Wi-Fi 6 AX201 160MHz',
+            DESCRIPTION => 'Wi-Fi',
             GUID        => '{31DEAC2D-2194-4511-AA54-787CD1765558}',
             IPADDRESS6  => 'fe80::3a27:1bd1:1148:0d87',
             IPMASK6     => 'ffff:ffff:ffff:ffff::',
@@ -244,7 +244,7 @@ my %tests = (
             MODEL       => 'Intel(R) Wi-Fi 6 AX201 160MHz'
         },
         {
-            DESCRIPTION => 'Bluetooth Device (Personal Area Network)',
+            DESCRIPTION => 'Connexion réseau Bluetooth',
             GUID        => '{C6D0BB76-E0FA-4780-AFA2-78AC0E1849A0}',
             MACADDR     => '45:00:00:00:FD:12',
             MTU         => undef,
@@ -258,7 +258,7 @@ my %tests = (
             MODEL       => 'Bluetooth Device (Personal Area Network)'
         },
         {
-            DESCRIPTION => 'Fortinet SSL VPN Virtual Ethernet Adapter',
+            DESCRIPTION => 'Ethernet 3',
             GUID        => '{E68EB6CC-9580-4151-80E2-2DA4DC27AF81}',
             IPADDRESS   => '10.177.0.17',
             IPDHCP      => undef,
@@ -277,7 +277,7 @@ my %tests = (
             MODEL       => 'Fortinet SSL VPN Virtual Ethernet Adapter'
         },
         {
-            DESCRIPTION => 'Fortinet SSL VPN Virtual Ethernet Adapter',
+            DESCRIPTION => 'Ethernet 3',
             GUID        => '{E68EB6CC-9580-4151-80E2-2DA4DC27AF81}',
             IPADDRESS6  => 'fe80::485a:6ef8:5cc4:45e1',
             IPMASK6     => 'ffff:ffff:ffff:ffff::',
@@ -420,7 +420,8 @@ my %tests = (
             dns         => undef,
             IPSUBNET    => '192.168.10.0',
             MTU         => undef,
-            dns         => 'company.local',
+            IPDHCP      => undef,
+            dns         => '192.168.10.250',
             DESCRIPTION => 'LoadBalance',
             IPADDRESS   => '192.168.10.250',
             VIRTUALDEV  => 1,
@@ -454,7 +455,7 @@ my %tests = (
             MODEL       => 'DisplayLink Network Adapter NCM'
         },
         {
-            DESCRIPTION => 'Targus Giga Ethernet',
+            DESCRIPTION => 'Ethernet 4',
             DNSDomain   => 'contoso.com',
             IPADDRESS6  => 'fe80::2c1f:9a1f:dedd:699c',
             IPMASK6     => 'ffff:ffff:ffff:ffff::',
@@ -472,7 +473,7 @@ my %tests = (
             MODEL       => 'DisplayLink Network Adapter NCM'
         },
         {
-            DESCRIPTION => 'Hyper-V Virtual Ethernet Adapter',
+            DESCRIPTION => 'vEthernet (Default Switch)',
             IPADDRESS   => '172.17.141.1',
             IPMASK      => '255.255.255.240',
             IPSUBNET    => '172.17.141.0',
@@ -491,7 +492,7 @@ my %tests = (
             MODEL       => 'Hyper-V Virtual Ethernet Adapter'
         },
         {
-            DESCRIPTION => 'Hyper-V Virtual Ethernet Adapter',
+            DESCRIPTION => 'vEthernet (Default Switch)',
             IPADDRESS6  => 'fe80::e1b8:381c:382e:d940',
             IPMASK6     => 'ffff:ffff:ffff:ffff::',
             IPSUBNET6   => 'fe80::',
@@ -508,7 +509,7 @@ my %tests = (
             MODEL       => 'Hyper-V Virtual Ethernet Adapter'
         },
         {
-            DESCRIPTION => 'Bluetooth Device (Personal Area Network) #3',
+            DESCRIPTION => 'Connexion réseau Bluetooth 3',
             MACADDR     => '44:85:00:00:00:5F',
             PNPDEVICEID => 'BTH\\MS_BTHPAN\\6&12f29cde&1&2',
             SPEED       => '3',
@@ -522,7 +523,7 @@ my %tests = (
             MODEL       => 'Bluetooth Device (Personal Area Network)'
         },
         {
-            DESCRIPTION => 'TAP-Windows Adapter V9 #3',
+            DESCRIPTION => 'Ethernet 9',
             MACADDR     => '00:FF:20:00:00:80',
             PNPDEVICEID => 'ROOT\\NET\\0000',
             SPEED       => '100',
@@ -536,7 +537,7 @@ my %tests = (
             MODEL       => 'TAP-Windows Adapter V9'
         },
         {
-            DESCRIPTION => 'Intel(R) Dual Band Wireless-AC 8260',
+            DESCRIPTION => 'Wi-Fi',
             MACADDR     => '44:85:00:00:00:5B',
             PCIID       => '8086:24F3:0130:8086',
             PNPDEVICEID => 'PCI\\VEN_8086&DEV_24F3&SUBSYS_01308086&REV_3A\\448500000000005B00',
