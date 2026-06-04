@@ -760,7 +760,7 @@ my %regval_tests = (
     }
 );
 
-my $win32_only_test_count = 13;
+my $win32_only_test_count = 7;
 
 plan tests =>
     (scalar keys %tests) + $win32_only_test_count +
