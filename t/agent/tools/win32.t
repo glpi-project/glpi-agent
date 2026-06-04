@@ -48,8 +48,6 @@ my %tests = (
             PNPDEVICEID => 'PCI\VEN_10EC&DEV_8168&SUBSYS_84321043&REV_06\4&87D54EE&0&00E5',
             PCIID       => '10EC:8168:8432:1043',
             GUID        => '{442CDFAD-10E9-45B6-8CF9-C829034793B0}',
-            MANUFACTURER => 'Realtek',
-            MODEL       => 'Realtek PCIe GBE Family Controller',
         },
         {
             dns         => '192.168.0.254',
@@ -65,8 +63,6 @@ my %tests = (
             PNPDEVICEID => 'PCI\VEN_10EC&DEV_8168&SUBSYS_84321043&REV_06\4&87D54EE&0&00E5',
             PCIID       => '10EC:8168:8432:1043',
             GUID        => '{442CDFAD-10E9-45B6-8CF9-C829034793B0}',
-            MANUFACTURER => 'Realtek',
-            MODEL       => 'Realtek PCIe GBE Family Controller',
         },
         {
             dns         => undef,
@@ -77,8 +73,6 @@ my %tests = (
             VIRTUALDEV  => 0,
             PNPDEVICEID => 'BTH\MS_BTHPAN\7&42D85A8&0&2',
             GUID        => '{DDE01862-B0C0-4715-AF6C-51D31172EBF9}',
-            MANUFACTURER => 'Microsoft',
-            MODEL       => 'Périphérique Bluetooth (réseau personnel)',
         },
     ],
     'vpn-down' => [            {
@@ -92,8 +86,6 @@ my %tests = (
                 TYPE        => 'ethernet',
                 VIRTUALDEV  => 1,
                 dns         => undef,
-                MANUFACTURER => 'Fortinet',
-                MODEL       => 'Fortinet Virtual Ethernet Adapter (NDIS 6.30)'
             },
             {
                 DESCRIPTION => 'Ethernet 4',
@@ -112,8 +104,6 @@ my %tests = (
                 TYPE        => 'ethernet',
                 VIRTUALDEV  => 0,
                 dns         => '127.0.0.1',
-                MANUFACTURER => 'Realtek',
-                MODEL       => 'Realtek USB GbE Family Controller'
             },
             {
                 DESCRIPTION => 'Ethernet 4',
@@ -130,8 +120,6 @@ my %tests = (
                 TYPE        => 'ethernet',
                 VIRTUALDEV  => 0,
                 dns         => '127.0.0.1',
-                MANUFACTURER => 'Realtek',
-                MODEL       => 'Realtek USB GbE Family Controller'
             },
             {
                 DESCRIPTION => 'Wi-Fi',
@@ -145,8 +133,6 @@ my %tests = (
                 TYPE        => 'wifi',
                 VIRTUALDEV  => 0,
                 dns         => undef,
-                MANUFACTURER => 'Intel',
-                MODEL       => 'Intel(R) Wi-Fi 6 AX201 160MHz'
             },
             {
                 DESCRIPTION => 'Connexion réseau Bluetooth',
@@ -159,8 +145,6 @@ my %tests = (
                 TYPE        => 'ethernet',
                 VIRTUALDEV  => 1,
                 dns         => undef,
-                MANUFACTURER => 'Microsoft',
-                MODEL       => 'Bluetooth Device (Personal Area Network)'
             },
             {
                 DESCRIPTION => 'Ethernet 3',
@@ -173,8 +157,6 @@ my %tests = (
                 TYPE        => 'ethernet',
                 VIRTUALDEV  => 1,
                 dns         => undef,
-                MANUFACTURER => 'Fortinet Inc',
-                MODEL       => 'Fortinet SSL VPN Virtual Ethernet Adapter'
             }
     ],
     'vpn-up' => [
@@ -189,8 +171,6 @@ my %tests = (
             TYPE        => 'ethernet',
             VIRTUALDEV  => 1,
             dns         => undef,
-            MANUFACTURER => 'Fortinet',
-            MODEL       => 'Fortinet Virtual Ethernet Adapter (NDIS 6.30)'
         },
         {
             DESCRIPTION => 'Ethernet 4',
@@ -202,8 +182,6 @@ my %tests = (
             TYPE        => 'ethernet',
             VIRTUALDEV  => 0,
             dns         => undef,
-            MANUFACTURER => 'Realtek',
-            MODEL       => 'Realtek USB GbE Family Controller'
         },
         {
             DESCRIPTION => 'Wi-Fi',
@@ -222,8 +200,6 @@ my %tests = (
             TYPE        => 'wifi',
             VIRTUALDEV  => 0,
             dns         => '127.0.0.1',
-            MANUFACTURER => 'Intel',
-            MODEL       => 'Intel(R) Wi-Fi 6 AX201 160MHz'
         },
         {
             DESCRIPTION => 'Wi-Fi',
@@ -240,8 +216,6 @@ my %tests = (
             TYPE        => 'wifi',
             VIRTUALDEV  => 0,
             dns         => '127.0.0.1',
-            MANUFACTURER => 'Intel',
-            MODEL       => 'Intel(R) Wi-Fi 6 AX201 160MHz'
         },
         {
             DESCRIPTION => 'Connexion réseau Bluetooth',
@@ -254,8 +228,6 @@ my %tests = (
             TYPE        => 'ethernet',
             VIRTUALDEV  => 1,
             dns         => undef,
-            MANUFACTURER => 'Microsoft',
-            MODEL       => 'Bluetooth Device (Personal Area Network)'
         },
         {
             DESCRIPTION => 'Ethernet 3',
@@ -273,8 +245,6 @@ my %tests = (
             TYPE        => 'ethernet',
             VIRTUALDEV  => 1,
             dns         => '127.0.0.1',
-            MANUFACTURER => 'Fortinet Inc',
-            MODEL       => 'Fortinet SSL VPN Virtual Ethernet Adapter'
         },
         {
             DESCRIPTION => 'Ethernet 3',
@@ -290,8 +260,6 @@ my %tests = (
             TYPE        => 'ethernet',
             VIRTUALDEV  => 1,
             dns         => '127.0.0.1',
-            MANUFACTURER => 'Fortinet Inc',
-            MODEL       => 'Fortinet SSL VPN Virtual Ethernet Adapter'
         }
     ],
     xp => [
@@ -303,8 +271,6 @@ my %tests = (
             STATUS      => 'Down',
             MTU         => undef,
             DESCRIPTION => 'Minipuerto WAN (PPTP)',
-            MANUFACTURER => 'Microsoft',
-            MODEL       => 'Minipuerto WAN (PPTP)'
         },
         {
             dns         => undef,
@@ -314,8 +280,6 @@ my %tests = (
             STATUS      => 'Down',
             MTU         => undef,
             DESCRIPTION => 'Minipuerto WAN (PPPOE)',
-            MANUFACTURER => 'Microsoft',
-            MODEL       => 'Minipuerto WAN (PPPOE)'
         },
         {
             dns         => undef,
@@ -325,8 +289,6 @@ my %tests = (
             STATUS      => 'Down',
             MTU         => undef,
             DESCRIPTION => 'Minipuerto del administrador de paquetes',
-            MANUFACTURER => 'Microsoft',
-            MODEL       => 'Minipuerto del administrador de paquetes'
         },
         {
             dns         => '10.36.6.100',
@@ -343,8 +305,6 @@ my %tests = (
             DESCRIPTION => 'Conexión de área local 2',
             IPADDRESS   => '10.36.6.30',
             DNSDomain   => 'sociedad.imaginaria.es',
-            MANUFACTURER => 'Broadcom',
-            MODEL       => 'Broadcom NetXtreme Gigabit Ethernet'
         },
         {
             dns         => undef,
@@ -354,8 +314,6 @@ my %tests = (
             STATUS      => 'Down',
             MTU         => undef,
             DESCRIPTION => 'Minipuerto del administrador de paquetes',
-            MANUFACTURER => 'Microsoft',
-            MODEL       => 'Minipuerto del administrador de paquetes'
         },
         {
             dns         => undef,
@@ -365,8 +323,6 @@ my %tests = (
             STATUS      => 'Down',
             MTU         => undef,
             DESCRIPTION => 'Teefer2 Miniport',
-            MANUFACTURER => 'Symantec',
-            MODEL       => 'Teefer2 Miniport'
         },
         {
             dns         => undef,
@@ -376,8 +332,6 @@ my %tests = (
             STATUS      => 'Down',
             MTU         => undef,
             DESCRIPTION => 'Teefer2 Miniport',
-            MANUFACTURER => 'Symantec',
-            MODEL       => 'Teefer2 Miniport'
         }
     ],
     'loadbalance' => [
@@ -392,8 +346,6 @@ my %tests = (
             PNPDEVICEID => 'PCI\VEN_14E4&DEV_165F&SUBSYS_05E51028&REV_00\000020474790784200',
             PCIID       => '14E4:165F:05E5:1028',
             GUID        => '{B1DF2CEB-92D7-4A5A-A548-658D9859D452}',
-            MANUFACTURER => 'Microsoft',
-            MODEL       => 'Broadcom NetXtreme Gigabit Ethernet',
             TYPE        => 'ethernet',
         },
         {
@@ -407,8 +359,6 @@ my %tests = (
             PNPDEVICEID => 'PCI\VEN_14E4&DEV_165F&SUBSYS_05E51028&REV_00\000020474790784401',
             PCIID       => '14E4:165F:05E5:1028',
             GUID        => '{3FFB051A-B08E-41F6-A9AE-BFEFD0538A59}',
-            MANUFACTURER => 'Microsoft',
-            MODEL       => 'Broadcom NetXtreme Gigabit Ethernet',
             TYPE        => 'ethernet',
         },
         {
@@ -427,8 +377,6 @@ my %tests = (
             SPEED       => 2000,
             PNPDEVICEID => 'COMPOSITEBUS\MS_IMPLAT_MP\{1280DFA8-1A33-437E-88B0-238F0C879599}',
             GUID        => '{1280DFA8-1A33-437E-88B0-238F0C879599}',
-            MANUFACTURER => 'Microsoft',
-            MODEL       => 'Microsoft Network Adapter Multiplexor Driver',
             TYPE        => 'ethernet',
         }
     ],
@@ -450,8 +398,6 @@ my %tests = (
             dns         => '192.168.2.2',
             TYPE        => 'ethernet',
             MTU         => undef,
-            MANUFACTURER => 'DisplayLink Corp.',
-            MODEL       => 'DisplayLink Network Adapter NCM'
         },
         {
             DESCRIPTION => 'Ethernet 4',
@@ -468,8 +414,6 @@ my %tests = (
             dns         => '192.168.2.2',
             TYPE        => 'ethernet',
             MTU         => undef,
-            MANUFACTURER => 'DisplayLink Corp.',
-            MODEL       => 'DisplayLink Network Adapter NCM'
         },
         {
             DESCRIPTION => 'vEthernet (Default Switch)',
@@ -487,8 +431,6 @@ my %tests = (
             IPGATEWAY   => undef,
             MTU         => undef,
             dns         => undef,
-            MANUFACTURER => 'Microsoft',
-            MODEL       => 'Hyper-V Virtual Ethernet Adapter'
         },
         {
             DESCRIPTION => 'vEthernet (Default Switch)',
@@ -504,8 +446,6 @@ my %tests = (
             TYPE        => 'ethernet',
             MTU         => undef,
             dns         => undef,
-            MANUFACTURER => 'Microsoft',
-            MODEL       => 'Hyper-V Virtual Ethernet Adapter'
         },
         {
             DESCRIPTION => 'Connexion réseau Bluetooth 3',
@@ -518,8 +458,6 @@ my %tests = (
             TYPE        => 'ethernet',
             MTU         => undef,
             dns         => undef,
-            MANUFACTURER => 'Microsoft',
-            MODEL       => 'Bluetooth Device (Personal Area Network)'
         },
         {
             DESCRIPTION => 'Ethernet 9',
@@ -532,8 +470,6 @@ my %tests = (
             TYPE        => 'ethernet',
             MTU         => undef,
             dns         => undef,
-            MANUFACTURER => 'TAP-Windows Provider V9',
-            MODEL       => 'TAP-Windows Adapter V9'
         },
         {
             DESCRIPTION => 'Wi-Fi',
@@ -546,8 +482,6 @@ my %tests = (
             TYPE        => 'wifi',
             MTU         => undef,
             dns         => undef,
-            MANUFACTURER => 'Intel',
-            MODEL       => 'Intel(R) Dual Band Wireless-AC 8260'
         }
     ]
 );
