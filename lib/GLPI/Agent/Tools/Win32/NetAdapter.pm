@@ -143,6 +143,8 @@ sub _getObjectIndex {
     return defined($self->{InterfaceIndex}) ? $self->{InterfaceIndex} : $self->{Index};
 }
 
+# Getters try get Information on MSFT_NetAdapter || Win32_NetworkAdapter
+
 sub _getGUID {
     my ($self) = @_;
 
