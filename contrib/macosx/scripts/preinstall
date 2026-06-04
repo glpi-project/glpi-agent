@@ -6,17 +6,26 @@ DEST="$2"
 INSTALL_PATH="${DEST%/}/Applications/GLPI-Agent"
 
 # Stop service and unload plist file if present
+MACOS_MAJOR=$(sw_vers -productVersion | cut -d. -f1)
 # Case for glpi-agent > 1.6.1
 if [ -e /Library/LaunchDaemons/com.teclib.glpi-agent.plist ]; then
     echo "Stopping service"
-    sudo launchctl stop com.teclib.glpi-agent
-    sudo launchctl unload /Library/LaunchDaemons/com.teclib.glpi-agent.plist
+    if [ "${MACOS_MAJOR:-0}" -ge 13 ]; then
+        sudo launchctl bootout system /Library/LaunchDaemons/com.teclib.glpi-agent.plist
+    else
+        sudo launchctl stop com.teclib.glpi-agent
+        sudo launchctl unload /Library/LaunchDaemons/com.teclib.glpi-agent.plist
+    fi
 fi
 # Case for glpi-agent <= 1.6.1
 if [ -e /Library/LaunchDaemons/org.glpi-project.glpi-agent.plist ]; then
     echo "Stopping service"
-    sudo launchctl stop org.glpi-project.glpi-agent
-    sudo launchctl unload /Library/LaunchDaemons/org.glpi-project.glpi-agent.plist
+    if [ "${MACOS_MAJOR:-0}" -ge 13 ]; then
+        sudo launchctl bootout system /Library/LaunchDaemons/org.glpi-project.glpi-agent.plist
+    else
+        sudo launchctl stop org.glpi-project.glpi-agent
+        sudo launchctl unload /Library/LaunchDaemons/org.glpi-project.glpi-agent.plist
+    fi
     sudo rm -f /Library/LaunchDaemons/org.glpi-project.glpi-agent.plist
 fi
 

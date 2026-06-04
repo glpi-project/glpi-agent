@@ -21,6 +21,9 @@ toolbox:
 * Fix undefined error on Results page while tag_filter is not set
 
 packaging:
+* fix: Update macOS postinstall, preinstall and uninstaller to use launchctl
+  bootstrap/bootout on macOS 13 Ventura and later, where launchctl load/unload
+  is deprecated and returns an error
 * Update Windows packaging to use:
   - Perl 5.42.2
   - gcc 16.1.0posix-14.0.0-msvcrt-r2
