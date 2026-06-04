@@ -5,7 +5,7 @@ use warnings;
 use lib 't/lib';
 
 use English qw(-no_match_vars);
-use Test::More tests => 5;
+use Test::More tests => 6;
 use Test::MockModule;
 
 use GLPI::Agent::Inventory;
@@ -52,7 +52,7 @@ $mock_win32->mock('getInterfaces', sub {
             SPEED       => '2000',
             STATUS      => 'Up',
             TYPE        => 'ethernet',
-            VIRTUALDEV  => 0
+            VIRTUALDEV  => 1
         }
     );
 });
@@ -79,3 +79,4 @@ is($networks[1]->{MANUFACTURER}, 'Broadcom Inc. and subsidiaries', 'Hardware Man
 
 # Check LoadBalance (No PCIID, remains Microsoft)
 is($networks[2]->{MANUFACTURER}, 'Microsoft', 'Virtual LoadBalance interface retains original Microsoft manufacturer');
+is($networks[2]->{VIRTUALDEV}, 1, 'Virtual LoadBalance interface is correctly identified as a virtualdev');

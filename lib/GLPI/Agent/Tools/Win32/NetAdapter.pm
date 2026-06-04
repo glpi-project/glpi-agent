@@ -117,6 +117,9 @@ sub _isVirtual {
     # as physical but with PNPDeviceID starting by ROOT
     return 1 if $self->_getPNPDeviceID() =~ /^ROOT/;
 
+    # MSFT_NetAdapter (Win8+) explicitly flags virtual adapters
+    return $self->{Virtual} =~ /^1|true/i ? 1 : 0 if defined($self->{Virtual});
+
     # PhysicalAdapter only work on OS > XP
     my $physical = $self->{HardwareInterface} || $self->{PhysicalAdapter};
     return $physical =~ /^1|true/i ? 0 : 1 if defined($physical);
