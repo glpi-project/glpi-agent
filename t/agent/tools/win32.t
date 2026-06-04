@@ -380,6 +380,54 @@ my %tests = (
             MODEL       => 'Teefer2 Miniport'
         }
     ],
+    'loadbalance' => [
+        {
+            MACADDR     => '20:47:47:90:78:42',
+            STATUS      => 'Up',
+            MTU         => undef,
+            DESCRIPTION => 'Ethernet',
+            VIRTUALDEV  => 0,
+            SPEED       => 1000,
+            PNPDEVICEID => 'PCI\VEN_14E4&DEV_165F&SUBSYS_05E51028&REV_00\000020474790784200',
+            PCIID       => '14E4:165F:05E5:1028',
+            GUID        => '{B1DF2CEB-92D7-4A5A-A548-658D9859D452}',
+            MANUFACTURER => 'Microsoft',
+            MODEL       => 'Broadcom NetXtreme Gigabit Ethernet',
+            TYPE        => 'ethernet',
+        },
+        {
+            MACADDR     => '20:47:47:90:78:44',
+            STATUS      => 'Up',
+            MTU         => undef,
+            DESCRIPTION => 'Ethernet 2',
+            VIRTUALDEV  => 0,
+            SPEED       => 1000,
+            PNPDEVICEID => 'PCI\VEN_14E4&DEV_165F&SUBSYS_05E51028&REV_00\000020474790784401',
+            PCIID       => '14E4:165F:05E5:1028',
+            GUID        => '{3FFB051A-B08E-41F6-A9AE-BFEFD0538A59}',
+            MANUFACTURER => 'Microsoft',
+            MODEL       => 'Broadcom NetXtreme Gigabit Ethernet',
+            TYPE        => 'ethernet',
+        },
+        {
+            DNSDomain   => 'company.local',
+            IPMASK      => '255.255.255.0',
+            IPGATEWAY   => '192.168.10.254',
+            MACADDR     => '20:47:47:90:78:42',
+            STATUS      => 'Up',
+            IPSUBNET    => '192.168.10.0',
+            MTU         => undef,
+            DESCRIPTION => 'LoadBalance',
+            IPADDRESS   => '192.168.10.250',
+            VIRTUALDEV  => 1,
+            SPEED       => 2000,
+            PNPDEVICEID => 'COMPOSITEBUS\MS_IMPLAT_MP\{1280DFA8-1A33-437E-88B0-238F0C879599}',
+            GUID        => '{1280DFA8-1A33-437E-88B0-238F0C879599}',
+            MANUFACTURER => 'Microsoft',
+            MODEL       => 'Microsoft Network Adapter Multiplexor Driver',
+            TYPE        => 'ethernet',
+        }
+    ],
     '10-net'    => [
         {
             DESCRIPTION => 'Targus Giga Ethernet',
@@ -712,7 +760,7 @@ my %regval_tests = (
     }
 );
 
-my $win32_only_test_count = 7;
+my $win32_only_test_count = 13;
 
 plan tests =>
     (scalar keys %tests) + $win32_only_test_count +
