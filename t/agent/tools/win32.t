@@ -41,7 +41,7 @@ my %tests = (
             IPDHCP      => '192.168.0.254',
             IPSUBNET    => '192.168.0.0',
             MTU         => undef,
-            DESCRIPTION => 'Realtek PCIe GBE Family Controller',
+            DESCRIPTION => 'Connexion au réseau local',
             IPADDRESS   => '192.168.0.1',
             VIRTUALDEV  => 0,
             SPEED       => 100,
@@ -82,7 +82,7 @@ my %tests = (
         },
     ],
     'vpn-down' => [            {
-                DESCRIPTION => 'Fortinet Virtual Ethernet Adapter (NDIS 6.30)',
+                DESCRIPTION => 'Ethernet 2',
                 GUID        => '{4CB24B28-7970-4249-8D9F-C1B75E98DF09}',
                 MACADDR     => '00:FE:00:00:00:01',
                 MTU         => undef,
@@ -340,7 +340,7 @@ my %tests = (
             IPDHCP      => '10.36.6.100',
             IPSUBNET    => '10.36.6.0',
             MTU         => undef,
-            DESCRIPTION => 'Broadcom NetXtreme Gigabit Ethernet - Teefer2 Miniport',
+            DESCRIPTION => 'Conexión de área local 2',
             IPADDRESS   => '10.36.6.30',
             DNSDomain   => 'sociedad.imaginaria.es',
             MANUFACTURER => 'Broadcom',
@@ -384,6 +384,7 @@ my %tests = (
         {
             MACADDR     => '20:47:47:90:78:42',
             STATUS      => 'Up',
+            dns         => undef,
             MTU         => undef,
             DESCRIPTION => 'Ethernet',
             VIRTUALDEV  => 0,
@@ -398,6 +399,7 @@ my %tests = (
         {
             MACADDR     => '20:47:47:90:78:44',
             STATUS      => 'Up',
+            dns         => undef,
             MTU         => undef,
             DESCRIPTION => 'Ethernet 2',
             VIRTUALDEV  => 0,
@@ -415,8 +417,10 @@ my %tests = (
             IPGATEWAY   => '192.168.10.254',
             MACADDR     => '20:47:47:90:78:42',
             STATUS      => 'Up',
+            dns         => undef,
             IPSUBNET    => '192.168.10.0',
             MTU         => undef,
+            dns         => 'company.local',
             DESCRIPTION => 'LoadBalance',
             IPADDRESS   => '192.168.10.250',
             VIRTUALDEV  => 1,
@@ -430,7 +434,7 @@ my %tests = (
     ],
     '10-net'    => [
         {
-            DESCRIPTION => 'Targus Giga Ethernet',
+            DESCRIPTION => 'Ethernet 4',
             DNSDomain   => 'contoso.com',
             IPADDRESS   => '192.168.0.2',
             IPDHCP      => '192.168.2.2',
