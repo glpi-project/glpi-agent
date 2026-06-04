@@ -28,7 +28,7 @@ sub getInterfaces {
 
     return $self->getInterfacesWithAddresses() if $self->hasAddresses();
 
-    return unless $self->{_config}->{MACADDR} || $self->_getDescription() =~ /vpn/i;
+    return unless $self->{_config}->{MACADDR} || $self->_getHardwareDescription() =~ /vpn/i;
 
     return $self->getBaseInterface();
 }
@@ -122,8 +122,8 @@ sub _isVirtual {
     return $physical =~ /^1|true/i ? 0 : 1 if defined($physical);
 
     # http://forge.fusioninventory.org/issues/1166
-    my $description = $self->_getDescription();
-    return 1 if $description && $description =~ /RAS/ && $description =~ /Adapter/i;
+    my $hwDescription = $self->_getHardwareDescription();
+    return 1 if $hwDescription && $hwDescription =~ /RAS/ && $hwDescription =~ /Adapter/i;
 
     return 0;
 }
@@ -178,10 +178,31 @@ sub _getPNPDeviceID {
     return $self->{PnPDeviceID} || $self->{PNPDeviceID};
 }
 
-sub _getDescription {
+sub _getHardwareDescription {
     my ($self) = @_;
 
     return $self->{InterfaceDescription} || $self->{_config}->{DESCRIPTION};
+}
+
+sub _getConnectionName {
+    my ($self) = @_;
+
+    # MSFT_NetAdapter (Win8+) exposes Name as the connection name
+    return $self->{Name} if $self->{InterfaceDescription} && $self->{Name};
+
+    # Win32_NetworkAdapter (legacy) exposes NetConnectionID
+    return $self->{NetConnectionID} if $self->{NetConnectionID};
+
+    return;
+}
+
+sub _getDescription {
+    my ($self) = @_;
+
+    my $connectionName = $self->_getConnectionName();
+    return $connectionName if $connectionName;
+
+    return $self->_getHardwareDescription();
 }
 
 1;
