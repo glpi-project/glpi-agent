@@ -40,7 +40,7 @@ sub getBaseInterface {
         PNPDEVICEID => $self->_getPNPDeviceID(),
         MACADDR     => $self->{_config}->{MACADDR},
         DESCRIPTION => $self->_getDescription(),
-        STATUS      => $self->{_config}->{STATUS},
+        STATUS      => $self->_getStatus(),
         MTU         => $self->{_config}->{MTU},
         dns         => $self->{_config}->{dns},
         VIRTUALDEV  => $self->_isVirtual()
@@ -203,6 +203,23 @@ sub _getDescription {
     return $connectionName if $connectionName;
 
     return $self->_getHardwareDescription();
+}
+
+sub _getStatus {
+    my ($self) = @_;
+
+    # MSFT_NetAdapter uses MediaConnectState: 1 = Connected, 2 = Disconnected
+    if (defined $self->{MediaConnectState}) {
+        return $self->{MediaConnectState} == 1 ? 'Up' : 'Down';
+    }
+
+    # Win32_NetworkAdapter uses NetConnectionStatus: 2 = Connected, 7 = Media Disconnected
+    if (defined $self->{NetConnectionStatus}) {
+        return $self->{NetConnectionStatus} == 2 ? 'Up' : 'Down';
+    }
+
+    # Fallback to IPEnabled from Win32_NetworkAdapterConfiguration
+    return $self->{_config}->{STATUS};
 }
 
 1;
