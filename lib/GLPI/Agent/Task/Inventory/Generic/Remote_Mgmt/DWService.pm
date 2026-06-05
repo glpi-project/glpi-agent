@@ -46,7 +46,7 @@ sub _get_base_paths {
         }
         
         # macOS fallback
-        push @paths, '/Library/DWAgent' if $^O eq 'darwin';
+        push @paths, '/Library/DWAgent' if OSNAME eq 'darwin';
         
         # Linux fallbacks
         push @paths, '/usr/share/dwagent', '/opt/dwagent' if $^O eq 'linux';
