@@ -30,7 +30,7 @@ sub _get_base_paths {
         push @paths, 'C:/Program Files/DWAgent', 'C:/Program Files (x86)/DWAgent';
     } else {
         # Dynamic process detection on Unix systems (Linux / macOS)
-        my $ps_cmd = $^O eq 'darwin' ? 'ps -A -o command' : 'ps -e -o args';
+        my $ps_cmd = OSNAME eq 'darwin' ? 'ps -A -o command' : 'ps -e -o args';
         
         if (open(my $ph, '-|', "$ps_cmd 2>/dev/null")) {
             while (my $line = <$ph>) {
