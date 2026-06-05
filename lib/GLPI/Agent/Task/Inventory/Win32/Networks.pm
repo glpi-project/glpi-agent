@@ -6,6 +6,7 @@ use warnings;
 use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Generic;
 use GLPI::Agent::Tools::Network;
 use GLPI::Agent::Tools::Win32;
 
@@ -45,6 +46,18 @@ sub doInventory {
         if ($interface->{PNPDEVICEID} && !$interface->{TYPE}) {
             my $type = _getMediaType($interface->{PNPDEVICEID}, $keys);
             $interface->{TYPE} = $type if defined($type);
+        }
+
+        if ($interface->{PCIID}) {
+            my ($vendor_id) = split(':', $interface->{PCIID});
+            if ($vendor_id) {
+                my $vendor = getPCIDeviceVendor(
+                    id      => lc($vendor_id),
+                    datadir => $params{datadir},
+                    logger  => $params{logger}
+                );
+                $interface->{MANUFACTURER} = $vendor->{name} if $vendor && $vendor->{name};
+            }
         }
 
         $inventory->addEntry(
