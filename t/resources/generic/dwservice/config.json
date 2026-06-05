@@ -1,0 +1,15 @@
+{
+ "enabled": true,
+ "key": "xxXXxXXxxXxxxXXXxxXX",
+ "listen_port": 7950,
+ "nodes": [
+  {
+   "id": "ND123456",
+   "port": "443",
+   "server": "node123456.dwservice.net"
+  }
+ ],
+ "password": "eJwLr8jyDfDx806rSA/x8C/wdIlwS/cqqcx3r6gqcI4CAKV6Cto=",
+ "url_download": "https://site000.dwservice.net/",
+ "url_primary": "https://www.dwservice.net/"
+}

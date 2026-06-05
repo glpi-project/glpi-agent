@@ -7,7 +7,7 @@ use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use GLPI::Agent::Tools;
 use Fcntl qw(SEEK_SET);
-use JSON::PP;
+use Cpanel::JSON::XS;
 
 # --- Helper: Dynamically find installation paths ---
 sub _get_base_paths {
@@ -30,19 +30,18 @@ sub _get_base_paths {
         push @paths, 'C:/Program Files/DWAgent', 'C:/Program Files (x86)/DWAgent';
     } else {
         # Dynamic process detection on Unix systems (Linux / macOS)
-        my $ps_cmd = OSNAME eq 'darwin' ? 'ps -A -o command' : 'ps -e -o args';
+        GLPI::Agent::Tools::Unix->require();
+        my @processes = GLPI::Agent::Tools::Unix::getProcesses();
         
-        if (open(my $ph, '-|', "$ps_cmd 2>/dev/null")) {
-            while (my $line = <$ph>) {
-                # Matches absolute paths in memory, extracting the base directory
-                # macOS: /Library/DWAgent/native/DWAgentSvc.app/... -> /Library/DWAgent
-                # Linux: /usr/share/dwagent/native/dwagsvc -> /usr/share/dwagent
-                if ($line =~ m{(/.*?)/native/DWAgentSvc\.app}i || 
-                    $line =~ m{(/.*?)/native/dwag(?:svc|ent)}i) {
-                    push @paths, $1;
-                }
+        foreach my $process (@processes) {
+            my $line = $process->{CMD};
+            # Matches absolute paths in memory, extracting the base directory
+            # macOS: /Library/DWAgent/native/DWAgentSvc.app/... -> /Library/DWAgent
+            # Linux: /usr/share/dwagent/native/dwagsvc -> /usr/share/dwagent
+            if ($line =~ m{(/.*?)/native/DWAgentSvc\.app}i || 
+                $line =~ m{(/.*?)/native/dwag(?:svc|ent)}i) {
+                push @paths, $1;
             }
-            close($ph);
         }
         
         # macOS fallback
@@ -84,12 +83,18 @@ sub doInventory {
     $logger->debug("DWService: Active installation found at $base_path");
 
     # 2. Extract the unique ID (key) from config.json
+    my $json_text = getAllLines(
+        file   => "$base_path/config.json",
+        logger => $logger
+    );
+
+    if (empty($json_text)) {
+        $logger->debug("DWService: config.json not found or is empty");
+        return;
+    }
+
     my $config;
     eval {
-        local $/; 
-        open(my $fh, '<:encoding(UTF-8)', "$base_path/config.json") or die "Cannot open config: $!";
-        my $json_text = <$fh>;
-        close($fh);
         $config = decode_json($json_text);
     };
 
@@ -132,7 +137,7 @@ sub doInventory {
 sub _extract_shm_data {
     my ($shm_file, $logger) = @_;
 
-    unless (-f $shm_file) {
+    unless (has_file($shm_file)) {
         $logger->debug("DWService: SHM memory file not found. The agent might be offline.");
         return;
     }
@@ -141,18 +146,24 @@ sub _extract_shm_data {
     
     # Eval block catches failures in case DWService alters the binary structure in the future
     eval {
-        open(my $fh, '<:raw', $shm_file) or die "Cannot open file: $!";
+        my $content = getAllLines(
+            file   => $shm_file,
+            mode   => '<:raw',
+            logger => $logger
+        );
+
+        die "Cannot read $shm_file" unless defined $content;
 
         # Read the first 4 bytes (header length)
-        my $len_bytes;
-        read($fh, $len_bytes, 4) == 4 or die "Could not read header length";
+        my $len_bytes = substr($content, 0, 4);
+        die "Could not read header length" unless length($len_bytes) == 4;
         
         # Unpack as unsigned 32-bit Big-Endian integer
         my $len_def = unpack("N", $len_bytes);
 
         # Read the JSON header describing the byte offsets
-        my $json_header;
-        read($fh, $json_header, $len_def) == $len_def or die "Could not read JSON header";
+        my $json_header = substr($content, 4, $len_def);
+        die "Could not read JSON header" unless length($json_header) == $len_def;
         
         my $fields = decode_json($json_header);
 
@@ -164,22 +175,16 @@ sub _extract_shm_data {
             if (exists $fields->{$target}) {
                 my $data_pos  = $fields->{$target}->{'pos'};
                 my $data_size = $fields->{$target}->{'size'};
-                my $raw_value;
 
-                # Seek to the absolute position: 4 (length int) + JSON header length + data offset
-                seek($fh, 4 + $len_def + $data_pos, SEEK_SET);
-
-                # Read the fixed block of bytes
-                read($fh, $raw_value, $data_size);
+                # Read the fixed block of bytes: 4 (length int) + JSON header length + data offset
+                my $raw_value = substr($content, 4 + $len_def + $data_pos, $data_size);
 
                 # DWService pads strings with spaces (" "), clear them with regex
-                $raw_value =~ s/\s+$//;
+                $raw_value =~ s/\s+$// if defined $raw_value;
                 
                 $extracted_data{$target} = $raw_value if defined $raw_value && $raw_value ne "";
             }
         }
-        
-        close($fh);
     };
 
     if ($@) {
