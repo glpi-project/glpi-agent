@@ -74,7 +74,7 @@ sub doInventory {
 
     # 1. Locate the valid installation path
     foreach my $path (_get_base_paths()) {
-        if (-f "$path/config.json") {
+        if (has_file("$path/config.json")) {
             $base_path = $path;
             last;
         }
