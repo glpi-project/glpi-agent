@@ -23,7 +23,7 @@ sub _get_base_paths {
         ) {
             my $install_loc = GLPI::Agent::Tools::Win32::getRegistryValue(path => "$reg_key/InstallLocation");
             $install_loc =~ s{[\\/]+$}{} if $install_loc;
-            push @paths, $install_loc if $install_loc && -d $install_loc;
+            push @paths, $install_loc if $install_loc && has_folder($install_loc);
         }
         
         # Windows fallbacks
