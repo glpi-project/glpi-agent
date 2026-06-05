@@ -9,8 +9,6 @@ use GLPI::Agent::Tools;
 use Fcntl qw(SEEK_SET);
 use JSON::PP;
 
-our $runMeIfTheseChecksFailed = 1;
-
 # --- Helper: Dynamically find installation paths ---
 sub _get_base_paths {
     my @paths;
