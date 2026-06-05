@@ -155,6 +155,19 @@ sub run {
         map { $_ => 1 } @{$self->{config}->{'no-category'}}
     };
 
+    # Validate no-category parameter against supported categories
+    if (@{$self->{config}->{'no-category'}}) {
+        my @categories = $self->getCategories();
+        my $invalid_category = 0;
+        foreach my $category (@{$self->{config}->{'no-category'}}) {
+            unless (any { $_ eq $category } @categories) {
+                $self->{logger}->error("Unknown category '$category' in no-category parameter");
+                $invalid_category = 1;
+            }
+        }
+        return if $invalid_category;
+    }
+
     # Support inventory event
     if ($event && !$self->setupEvent()) {
         $self->{logger}->info("Skipping Inventory task event on ".$self->{target}->id());
