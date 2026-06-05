@@ -54,7 +54,7 @@ sub _get_base_paths {
     
     # Remove duplicates and ensure the directory exists
     my %seen;
-    return grep { $_ && -d $_ && !$seen{$_}++ } @paths;
+    return grep { $_ && has_folder($_) && !$seen{$_}++ } @paths;
 }
 
 sub isEnabled {
