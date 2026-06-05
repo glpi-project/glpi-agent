@@ -116,13 +116,6 @@ sub doInventory {
 
     $logger->debug("DWService: Preparing for inventory -> ID: $display_name, NAME: $display_name");
     
-    # --- Commented out state and sessions_status extractions ---
-    # if ($shm_data && $shm_data->{'state'}) {
-    #      $logger->debug("DWService Extra Info: Current Agent state -> " . $shm_data->{'state'});
-    # }
-    # if ($shm_data && $shm_data->{'sessions_status'} && $shm_data->{'sessions_status'} ne '{}' && $shm_data->{'sessions_status'} ne '[]') {
-    #      $logger->debug("DWService Extra Info: The agent has active sessions! -> " . $shm_data->{'sessions_status'});
-    # }
 
     # 4. Feed the GLPI Inventory structure
     $inventory->addEntry(
