@@ -49,7 +49,7 @@ sub _get_base_paths {
         push @paths, '/Library/DWAgent' if OSNAME eq 'darwin';
         
         # Linux fallbacks
-        push @paths, '/usr/share/dwagent', '/opt/dwagent' if $^O eq 'linux';
+        push @paths, '/usr/share/dwagent', '/opt/dwagent' if OSNAME eq 'linux';
     }
     
     # Remove duplicates and ensure the directory exists
