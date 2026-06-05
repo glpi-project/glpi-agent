@@ -26,7 +26,14 @@ sub _get_base_paths {
             push @paths, $install_loc if $install_loc && has_folder($install_loc);
         }
         
-        # Windows fallbacks
+        # Windows fallbacks using environment variables
+        foreach my $env (qw(ProgramFiles ProgramFiles(x86) ProgramW6432)) {
+            if (my $pf = $ENV{$env}) {
+                $pf =~ s{\\}{/}g;
+                push @paths, "$pf/DWAgent";
+            }
+        }
+        # Hardcoded ultimate fallbacks
         push @paths, 'C:/Program Files/DWAgent', 'C:/Program Files (x86)/DWAgent';
     } else {
         # Dynamic process detection on Unix systems (Linux / macOS)
