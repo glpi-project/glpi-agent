@@ -14,7 +14,7 @@ sub _get_base_paths {
     my @paths;
     
     if (OSNAME eq 'MSWin32') {
-        require GLPI::Agent::Tools::Win32;
+        GLPI::Agent::Tools::Win32->require();
         
         # Check standard registry keys and WOW6432Node
         foreach my $reg_key (
