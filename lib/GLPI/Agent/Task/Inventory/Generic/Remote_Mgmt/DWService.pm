@@ -13,7 +13,7 @@ use JSON::PP;
 sub _get_base_paths {
     my @paths;
     
-    if ($^O eq 'MSWin32') {
+    if (OSNAME eq 'MSWin32') {
         require GLPI::Agent::Tools::Win32;
         
         # Check standard registry keys and WOW6432Node
