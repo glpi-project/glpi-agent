@@ -119,7 +119,7 @@ sub doInventory {
     # Fallback logic for Display Name: try friendly name, otherwise fall back to unique ID.
     my $display_name = $dw_name ? $dw_name : $dw_id;
 
-    $logger->debug("DWService: Preparing for inventory -> ID: $display_name, NAME: $display_name");
+    $logger->debug("DWService: Preparing for inventory -> ID: $dw_id, NAME: $display_name");
     
 
     # 4. Feed the GLPI Inventory structure
