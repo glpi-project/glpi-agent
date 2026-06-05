@@ -18,6 +18,9 @@ Getopt::Long::Configure( "no_ignorecase" );
 
 my $options = {};
 
+# Support Windows standard help argument /?
+map { $_ = '--help' if $_ eq '/?' } @ARGV;
+
 unless (GetOptions(
     $options,
     'assetname-support=i',

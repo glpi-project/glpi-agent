@@ -21,6 +21,9 @@ my $options = {
     path    => '-'
 };
 
+# Support Windows standard help argument /?
+map { $_ = '--help' if $_ eq '/?' } @ARGV;
+
 unless (GetOptions(
     $options,
     'host=s',

@@ -26,6 +26,9 @@ my @failedFiles;
 # Set bundling to support aggregated options. It also make single char options case sensitive.
 Getopt::Long::Configure("bundling");
 
+# Support Windows standard help argument /?
+map { $_ = '--help' if $_ eq '/?' } @ARGV;
+
 GetOptions(
     $options,
     'help|h',

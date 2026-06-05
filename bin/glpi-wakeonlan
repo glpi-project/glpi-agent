@@ -19,6 +19,9 @@ my $options = {
     debug => 0,
 };
 
+# Support Windows standard help argument /?
+map { $_ = '--help' if $_ eq '/?' } @ARGV;
+
 GetOptions(
     $options,
     'mac=s',

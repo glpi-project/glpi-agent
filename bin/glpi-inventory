@@ -23,6 +23,9 @@ my $options = {
     config => 'none'
 };
 
+# Support Windows standard help argument /?
+map { $_ = '--help' if $_ eq '/?' } @ARGV;
+
 unless (GetOptions(
     $options,
     'assetname-support=i',

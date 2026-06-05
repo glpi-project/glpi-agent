@@ -32,6 +32,9 @@ my $options = {
     threads => 1
 };
 
+# Support Windows standard help argument /?
+map { $_ = '--help' if $_ eq '/?' } @ARGV;
+
 unless (GetOptions(
     $options,
     'type=s',
