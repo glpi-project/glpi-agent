@@ -60,7 +60,7 @@ sub _get_base_paths {
 sub isEnabled {
     # Check if config.json exists in any of the found paths
     foreach my $path (_get_base_paths()) {
-        return 1 if -f "$path/config.json";
+        return 1 if has_file("$path/config.json");
     }
     return;
 }
