@@ -21,6 +21,37 @@ sub doInventory {
     my @interfaces = getInterfaces()
         or return;
 
+    my %statistics;
+
+    my @stats = getWMIObjects(
+        moniker    => 'winmgmts://./root/StandardCimv2',
+        class      => 'MSFT_NetAdapterStatisticsSettingData',
+        properties => [ qw/Name ReceivedBytes SentBytes ReceivedPacketErrors OutboundPacketErrors/ ]
+    );
+
+    if (@stats) {
+        foreach my $stat (@stats) {
+            $statistics{$stat->{Name}} = {
+                ifinoctets  => $stat->{ReceivedBytes},
+                ifoutoctets => $stat->{SentBytes},
+                ifinerrors  => $stat->{ReceivedPacketErrors},
+                ifouterrors => $stat->{OutboundPacketErrors}
+            } if $stat->{Name};
+        }
+    } else {
+        foreach my $stat (getWMIObjects(
+            class      => 'Win32_PerfRawData_Tcpip_NetworkInterface',
+            properties => [ qw/Name BytesReceivedPersec BytesSentPersec PacketsReceivedErrors PacketsOutboundErrors/ ]
+        )) {
+            $statistics{$stat->{Name}} = {
+                ifinoctets  => $stat->{BytesReceivedPersec},
+                ifoutoctets => $stat->{BytesSentPersec},
+                ifinerrors  => $stat->{PacketsReceivedErrors},
+                ifouterrors => $stat->{PacketsOutboundErrors}
+            } if $stat->{Name};
+        }
+    }
+
     my $inventory = $params{inventory};
     my (@gateways, @dns);
 
@@ -47,6 +78,26 @@ sub doInventory {
             $interface->{TYPE} = $type if defined($type);
         }
 
+        if (my $stat = $statistics{$interface->{DESCRIPTION}} || $statistics{$interface->{MODEL} || ''}) {
+            my $seen_key = "seen_" . ($interface->{MACADDR} || '') . "_" . ($interface->{DESCRIPTION} || '');
+            if (!$statistics{$seen_key}) {
+                $statistics{$seen_key} = 1;
+                my $network_port = {
+                name        => $interface->{DESCRIPTION},
+                mac         => $interface->{MACADDR},
+                ifinoctets  => $stat->{ifinoctets},
+                ifoutoctets => $stat->{ifoutoctets},
+                ifinerrors  => $stat->{ifinerrors},
+                ifouterrors => $stat->{ifouterrors},
+                ifmtu       => $interface->{MTU},
+                ifspeed     => $interface->{SPEED}
+            };
+            $inventory->addEntry(
+                section => 'NETWORKPORTS',
+                entry   => $network_port
+            );
+            }
+        }
         $inventory->addEntry(
             section => 'NETWORKS',
             entry   => $interface
