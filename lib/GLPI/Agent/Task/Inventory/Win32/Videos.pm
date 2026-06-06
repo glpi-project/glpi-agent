@@ -6,6 +6,7 @@ use warnings;
 use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Generic;
 use GLPI::Agent::Tools::Win32;
 
 use constant    category    => "video";
@@ -62,6 +63,9 @@ sub _getVideos {
         }
 
         my $pnpdeviceid = _pnpdeviceid($object->{PNPDeviceID});
+
+        my $found_specific_driver = 0;
+
         if ($pnpdeviceid) {
             # Try to get memory from registry
             my $videokey = getRegistryKey(
@@ -75,7 +79,10 @@ sub _getVideos {
                     next unless $subkey =~ m{/$} && defined($videokey->{$subkey}) && ref($videokey->{$subkey});
                     my $thispnpdeviceid = _pnpdeviceid($videokey->{$subkey}->{"/MatchingDeviceId"})
                         or next;
+                    
                     next unless $thispnpdeviceid eq $pnpdeviceid;
+                    $found_specific_driver = 1;
+
                     if (defined($videokey->{$subkey}->{"/HardwareInformation.qwMemorySize"})) {
                         my $memorysize = $videokey->{$subkey}->{"/HardwareInformation.qwMemorySize"} =~ /^\d+$/ ?
                             int($videokey->{$subkey}->{"/HardwareInformation.qwMemorySize"})
@@ -91,6 +98,41 @@ sub _getVideos {
                         $video->{MEMORY} = $memorysize if $memorysize && $memorysize > 0;
                         last;
                     }
+                }
+            }
+        }
+
+        # Fallback for generic drivers (e.g. Microsoft Basic Display Adapter)
+        # If no specific registry key was found matching the PNPDeviceID, it means a generic driver is in use.
+        if (!$found_specific_driver) {
+            if ($object->{PNPDeviceID} =~ /PCI\\VEN_(\S{4})&DEV_(\S{4})/i) {
+                my $vendor_id = lc($1);
+                my $device_id = lc($2);
+                
+                my $vendor = getPCIDeviceVendor(id => $vendor_id, %params);
+                
+                if ($vendor && $vendor->{devices}->{$device_id}) {
+                    my $device_name = $vendor->{devices}->{$device_id}->{name};
+                    my $vendor_name = $vendor->{name};
+                    
+                    my ($pci_name, $pci_chipset);
+                    if ($device_name =~ /^(.*)\s+\[(.*)\]$/) {
+                        $pci_name = $1;
+                        $pci_chipset = $2;
+                    }
+                    
+                    my $manufacturer;
+                    if ($object->{PNPDeviceID} =~ /SUBSYS_(\S{4})(\S{4})/i) {
+                        my $subvendor_id = lc($2);
+                        if ($subvendor_id ne '0000') {
+                            my $subvendor = getPCIDeviceVendor(id => $subvendor_id, %params);
+                            $manufacturer = $subvendor->{name} if $subvendor;
+                            $pci_name = $manufacturer.' '.$pci_name if $manufacturer && $pci_name;
+                        }
+                    }
+                    
+                    $video->{CHIPSET} = $pci_chipset || $device_name;
+                    $video->{NAME}    = $pci_name || $vendor_name;
                 }
             }
         }
