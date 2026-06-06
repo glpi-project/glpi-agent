@@ -48,10 +48,6 @@ my %tests = (
     ],
     'intel+nvidia' => [
         {
-            CHIPSET     => undef,
-            NAME        => 'Microsoft Remote Display Adapter',
-            RESOLUTION  => '1920x1080',
-        }, {
             CHIPSET     => 'Intel(R) HD Graphics Family',
             MEMORY      => 1024,
             NAME        => 'Intel(R) HD Graphics 4600',

@@ -48,6 +48,9 @@ sub _getVideos {
     )) {
         next unless $object->{Name};
 
+        # Exclude Remote Display Adapter (RDP) across all languages by checking PNPDeviceID
+        next if $object->{PNPDeviceID} && $object->{PNPDeviceID} =~ /REMOTEDISPLAY/i;
+
         my $video = {
             CHIPSET => $object->{VideoProcessor},
             NAME    => $object->{Name},
