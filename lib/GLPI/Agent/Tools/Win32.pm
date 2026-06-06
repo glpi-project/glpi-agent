@@ -645,7 +645,7 @@ sub getInterfaces {
     my @networkAdapter = getWMIObjects(
         moniker    => 'winmgmts://./root/StandardCimv2',
         class      => 'MSFT_NetAdapter',
-        properties => [ qw/InterfaceIndex PnPDeviceID Speed HardwareInterface InterfaceGuid InterfaceDescription InterfaceType DriverProvider DriverDescription Name MediaConnectState Virtual/ ]
+        properties => [ qw/InterfaceIndex PnPDeviceID Speed HardwareInterface InterfaceGuid InterfaceDescription InterfaceType DriverProvider DriverDescription Name MediaConnectState Virtual MtuSize/ ]
     );
 
     if (!@networkAdapter) {

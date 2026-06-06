@@ -41,7 +41,7 @@ sub getBaseInterface {
         MACADDR     => $self->{_config}->{MACADDR},
         DESCRIPTION => $self->_getDescription(),
         STATUS      => $self->_getStatus(),
-        MTU         => $self->{_config}->{MTU},
+        MTU         => $self->_getMtu(),
         dns         => $self->{_config}->{dns},
         VIRTUALDEV  => $self->_isVirtual()
     };
@@ -170,6 +170,18 @@ sub _getModel {
 }
 
 # Getters try get Information on MSFT_NetAdapter || Win32_NetworkAdapter
+
+sub _getMtu {
+    my ($self) = @_;
+
+    # MSFT_NetAdapter (Win8+) exposes MtuSize
+    return $self->{MtuSize} if $self->{MtuSize};
+
+    # Fallback to Win32_NetworkAdapterConfiguration MTU which might be unset
+    return $self->{_config}->{MTU} if $self->{_config}->{MTU};
+
+    return undef;
+}
 
 sub _getGUID {
     my ($self) = @_;
