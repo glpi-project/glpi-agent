@@ -41,8 +41,6 @@ my %tests = (
         {
             mac => '20:47:47:90:78:42',
             name => 'LoadBalance',
-            ifmtu => undef,
-            ifspeed => 2000,
             ifinoctets => 1403973923755,
             ifoutoctets => 726370059830,
             ifinerrors => 0,
@@ -53,8 +51,6 @@ my %tests = (
         {
             mac => 'F4:6D:04:97:2D:3E',
             name => 'Connexion au réseau local',
-            ifmtu => undef,
-            ifspeed => 100,
             ifinoctets => 1403627350071,
             ifoutoctets => 364462371847,
             ifinerrors => 0,
