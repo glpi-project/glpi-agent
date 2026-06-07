@@ -43,7 +43,8 @@ sub getBaseInterface {
         STATUS      => $self->_getStatus(),
         MTU         => $self->_getMtu(),
         dns         => $self->{_config}->{dns},
-        VIRTUALDEV  => $self->_isVirtual()
+        VIRTUALDEV  => $self->_isVirtual(),
+        _IFNUMBER   => $self->_getObjectIndex()
     };
 
     $interface->{MANUFACTURER} = $self->_getManufacturer() if $self->_getManufacturer();
