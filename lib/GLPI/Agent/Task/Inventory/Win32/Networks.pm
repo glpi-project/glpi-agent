@@ -24,33 +24,35 @@ sub doInventory {
 
     my %statistics;
 
-    my @stats = getWMIObjects(
+    my @modern_stats = getWMIObjects(
         moniker    => 'winmgmts://./root/StandardCimv2',
         class      => 'MSFT_NetAdapterStatisticsSettingData',
         properties => [ qw/Name ReceivedBytes SentBytes ReceivedPacketErrors OutboundPacketErrors/ ]
     );
 
-    if (@stats) {
-        foreach my $stat (@stats) {
-            $statistics{$stat->{Name}} = {
-                ifinoctets  => $stat->{ReceivedBytes},
-                ifoutoctets => $stat->{SentBytes},
-                ifinerrors  => $stat->{ReceivedPacketErrors},
-                ifouterrors => $stat->{OutboundPacketErrors}
-            } if $stat->{Name};
-        }
-    } else {
-        foreach my $stat (getWMIObjects(
-            class      => 'Win32_PerfRawData_Tcpip_NetworkInterface',
-            properties => [ qw/Name BytesReceivedPersec BytesSentPersec PacketsReceivedErrors PacketsOutboundErrors/ ]
-        )) {
-            $statistics{$stat->{Name}} = {
-                ifinoctets  => $stat->{BytesReceivedPersec},
-                ifoutoctets => $stat->{BytesSentPersec},
-                ifinerrors  => $stat->{PacketsReceivedErrors},
-                ifouterrors => $stat->{PacketsOutboundErrors}
-            } if $stat->{Name};
-        }
+    foreach my $stat (@modern_stats) {
+        $statistics{$stat->{Name}} = {
+            ifinoctets  => $stat->{ReceivedBytes},
+            ifoutoctets => $stat->{SentBytes},
+            ifinerrors  => $stat->{ReceivedPacketErrors},
+            ifouterrors => $stat->{OutboundPacketErrors}
+        } if $stat->{Name};
+    }
+
+    my @legacy_stats = getWMIObjects(
+        class      => 'Win32_PerfRawData_Tcpip_NetworkInterface',
+        properties => [ qw/Name BytesReceivedPersec BytesSentPersec PacketsReceivedErrors PacketsOutboundErrors/ ]
+    );
+
+    foreach my $stat (@legacy_stats) {
+        # Keep modern stats if they exist (they map nicely by DESCRIPTION)
+        # But populate legacy ones too for adapters that only show up here
+        $statistics{$stat->{Name}} //= {
+            ifinoctets  => $stat->{BytesReceivedPersec},
+            ifoutoctets => $stat->{BytesSentPersec},
+            ifinerrors  => $stat->{PacketsReceivedErrors},
+            ifouterrors => $stat->{PacketsOutboundErrors}
+        } if $stat->{Name};
     }
 
     my $inventory = $params{inventory};
@@ -63,7 +65,20 @@ sub doInventory {
         required    => [ qw/PnpInstanceID MediaSubType/ ],
     ) if grep { $_->{PNPDEVICEID}} @interfaces;
 
+    # The legacy WMI class Win32_PerfRawData_Tcpip_NetworkInterface lacks strict linkage properties (like MAC or GUID).
+    # When multiple physical NICs of the exact same model exist, Windows natively assigns them sequential suffixes
+    # (e.g. "_2", " _3") based on their PnP enumeration order. Since getInterfaces natively arrays them
+    # in this exact same index order, we generate sequential lookup strings here to map them 1:1 reliably.
+    my %model_counts;
     foreach my $interface (@interfaces) {
+        my $lookup_name = $interface->{MODEL} || '';
+        if ($lookup_name) {
+            $interface->{_MODEL_COUNT} = ++$model_counts{$lookup_name};
+            if ($interface->{_MODEL_COUNT} > 1) {
+                $lookup_name .= ' _' . $interface->{_MODEL_COUNT};
+            }
+        }
+
         push @gateways, $interface->{IPGATEWAY}
             if $interface->{IPGATEWAY};
         push @dns, $interface->{dns}
@@ -91,7 +106,9 @@ sub doInventory {
             }
         }
 
-        if (my $stat = $statistics{$interface->{DESCRIPTION}} || $statistics{$interface->{MODEL} || ''}) {
+        if (my $stat = $statistics{$interface->{DESCRIPTION}} || ($lookup_name && $statistics{$lookup_name})) {
+            # getInterfaces() duplicates adapters in the array if they have multiple IP addresses.
+            # We track them by MAC and DESCRIPTION so we only inject one NETWORKPORTS block per physical card.
             my $seen_key = "seen_" . ($interface->{MACADDR} || '') . "_" . ($interface->{DESCRIPTION} || '');
             if (!$statistics{$seen_key}) {
                 $statistics{$seen_key} = 1;
