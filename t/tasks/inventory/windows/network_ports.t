@@ -39,22 +39,22 @@ package main;
 my %tests = (
     'loadbalance' => [
         {
-            mac => '20:47:47:90:78:42',
-            name => 'LoadBalance',
-            ifinoctets => 1403973923755,
-            ifoutoctets => 726370059830,
-            ifinerrors => 0,
-            ifouterrors => 0
+            MAC => '20:47:47:90:78:42',
+            NAME => 'LoadBalance',
+            IFINOCTETS => 1403973923755,
+            IFOUTOCTETS => 726370059830,
+            IFINERRORS => 0,
+            IFOUTERRORS => 0
         }
     ],
     '7' => [
         {
-            mac => 'F4:6D:04:97:2D:3E',
-            name => 'Connexion au réseau local',
-            ifinoctets => 1403627350071,
-            ifoutoctets => 364462371847,
-            ifinerrors => 0,
-            ifouterrors => 0
+            MAC => 'F4:6D:04:97:2D:3E',
+            NAME => 'Connexion au réseau local',
+            IFINOCTETS => 1403627350071,
+            IFOUTOCTETS => 364462371847,
+            IFINERRORS => 0,
+            IFOUTERRORS => 0
         }
     ]
 );
