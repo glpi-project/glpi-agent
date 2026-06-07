@@ -100,13 +100,14 @@ sub doInventory {
             if (!$statistics{$seen_key}) {
                 $statistics{$seen_key} = 1;
                 my $network_port = {
-                NAME        => $interface->{DESCRIPTION},
-                MAC         => $interface->{MACADDR},
-                IFINOCTETS  => $stat->{ifinoctets},
-                IFOUTOCTETS => $stat->{ifoutoctets},
-                IFINERRORS  => $stat->{ifinerrors},
-                IFOUTERRORS => $stat->{ifouterrors}
-            };
+                    NAME        => $interface->{DESCRIPTION},
+                    MAC         => $interface->{MACADDR},
+                    IFNUMBER    => $interface->{_IFNUMBER},
+                    IFINOCTETS  => $stat->{ifinoctets},
+                    IFOUTOCTETS => $stat->{ifoutoctets},
+                    IFINERRORS  => $stat->{ifinerrors},
+                    IFOUTERRORS => $stat->{ifouterrors}
+                };
             $inventory->addEntry(
                 section => 'NETWORK_PORTS',
                 entry   => $network_port
@@ -114,6 +115,7 @@ sub doInventory {
             }
         }
         delete $interface->{_MODEL_COUNT};
+        delete $interface->{_IFNUMBER};
         $inventory->addEntry(
             section => 'NETWORKS',
             entry   => $interface

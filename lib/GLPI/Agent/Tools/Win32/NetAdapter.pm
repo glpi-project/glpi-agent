@@ -43,7 +43,8 @@ sub getBaseInterface {
         STATUS      => $self->{_config}->{STATUS},
         MTU         => $self->{_config}->{MTU},
         dns         => $self->{_config}->{dns},
-        VIRTUALDEV  => $self->_isVirtual()
+        VIRTUALDEV  => $self->_isVirtual(),
+        _IFNUMBER   => $self->_getObjectIndex()
     };
 
     $interface->{PCIID}     = $self->_getPciid() if $self->_getPciid();
