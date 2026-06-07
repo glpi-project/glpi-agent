@@ -127,6 +127,8 @@ sub doInventory {
             }
         }
 
+        delete $interface->{_MODEL_COUNT};
+
         $inventory->addEntry(
             section => 'NETWORKS',
             entry   => $interface
