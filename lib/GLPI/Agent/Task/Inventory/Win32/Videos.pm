@@ -124,7 +124,6 @@ sub _getVideos {
                             $pci_name = $manufacturer.' '.$pci_name if $manufacturer && $pci_name;
                         }
                     }
-                    
                     $video->{CHIPSET} = $pci_chipset || $device_name;
                     $video->{NAME}    = $pci_name || $vendor_name;
                 }
