@@ -96,12 +96,12 @@ sub doInventory {
             if (!$statistics{$seen_key}) {
                 $statistics{$seen_key} = 1;
                 my $network_port = {
-                NAME        => $interface->{DESCRIPTION},
-                MAC         => $interface->{MACADDR},
-                IFINOCTETS  => $stat->{ifinoctets},
-                IFOUTOCTETS => $stat->{ifoutoctets},
-                IFINERRORS  => $stat->{ifinerrors},
-                IFOUTERRORS => $stat->{ifouterrors}
+                name        => $interface->{DESCRIPTION},
+                mac         => $interface->{MACADDR},
+                ifinoctets  => $stat->{ifinoctets},
+                ifoutoctets => $stat->{ifoutoctets},
+                ifinerrors  => $stat->{ifinerrors},
+                ifouterrors => $stat->{ifouterrors}
             };
             $inventory->addEntry(
                 section => 'NETWORKPORTS',
