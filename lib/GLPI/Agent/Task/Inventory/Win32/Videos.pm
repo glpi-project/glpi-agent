@@ -104,7 +104,7 @@ sub _getVideos {
 
         # Fallback for generic drivers (e.g. Microsoft Basic Display Adapter)
         # If no specific registry key was found matching the PNPDeviceID, it means a generic driver is in use.
-        if (!$found_specific_driver) {
+        unless ($found_specific_driver || empty($object->{PNPDeviceID})) {
             if ($object->{PNPDeviceID} =~ /PCI\\VEN_(\S{4})&DEV_(\S{4})/i) {
                 my $vendor_id = lc($1);
                 my $device_id = lc($2);
@@ -112,8 +112,8 @@ sub _getVideos {
                 my $vendor = getPCIDeviceVendor(id => $vendor_id, %params);
                 
                 if ($vendor && $vendor->{devices}->{$device_id}) {
-                    my $device_name = $vendor->{devices}->{$device_id}->{name};
-                    my $vendor_name = $vendor->{name};
+                    my $device_name = $vendor->{devices}->{$device_id}->{name} // '';
+                    my $vendor_name = $vendor->{name} // '';
                     
                     my ($pci_name, $pci_chipset);
                     if ($device_name =~ /^(.*)\s+\[(.*)\]$/) {
@@ -121,9 +121,8 @@ sub _getVideos {
                         $pci_chipset = $2;
                     }
                     
-                    my $manufacturer;
-                    if ($object->{PNPDeviceID} =~ /SUBSYS_(\S{4})(\S{4})/i) {
-                        my $subvendor_id = lc($2);
+                    if ($object->{PNPDeviceID} =~ /SUBSYS_\S{4}(\S{4})/i) {
+                        my $subvendor_id = lc($1);
                         if ($subvendor_id ne '0000') {
                             my $subvendor = getPCIDeviceVendor(id => $subvendor_id, %params);
                             $manufacturer = $subvendor->{name} if $subvendor;
