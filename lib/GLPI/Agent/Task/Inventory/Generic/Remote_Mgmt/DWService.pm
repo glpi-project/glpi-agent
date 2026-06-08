@@ -163,14 +163,14 @@ sub _extract_shm_data {
 
         # Read the first 4 bytes (header length)
         my $len_bytes = substr($content, 0, 4);
-        die "Could not read header length" unless length($len_bytes) == 4;
+        die "Could not read header length\n" unless length($len_bytes) == 4;
         
         # Unpack as unsigned 32-bit Big-Endian integer
         my $len_def = unpack("N", $len_bytes);
 
         # Read the JSON header describing the byte offsets
         my $json_header = substr($content, 4, $len_def);
-        die "Could not read JSON header" unless length($json_header) == $len_def;
+        die "Could not read JSON header\n" unless length($json_header) == $len_def;
         
         my $fields = decode_json($json_header);
 
@@ -180,16 +180,16 @@ sub _extract_shm_data {
 
         foreach my $target (@target_fields) {
             if (exists $fields->{$target}) {
-                my $data_pos  = $fields->{$target}->{'pos'};
-                my $data_size = $fields->{$target}->{'size'};
+                next if empty($fields->{$target}->{'pos'}) || $fields->{$target}->{'pos'} !~ /^\d+$/;
+                next if empty($fields->{$target}->{'size'}) || $fields->{$target}->{'size'} !~ /^\d+$/;
+                my $data_pos  = int($fields->{$target}->{'pos'});
+                my $data_size = int($fields->{$target}->{'size'});
 
                 # Read the fixed block of bytes: 4 (length int) + JSON header length + data offset
-                my $raw_value = substr($content, 4 + $len_def + $data_pos, $data_size);
-
                 # DWService pads strings with spaces (" "), clear them with regex
-                $raw_value =~ s/\s+$// if defined $raw_value;
+                my $raw_value = trimWhitespace(substr($content, 4 + $len_def + $data_pos, $data_size));
                 
-                $extracted_data{$target} = $raw_value if defined $raw_value && $raw_value ne "";
+                $extracted_data{$target} = $raw_value unless empty($raw_value);
             }
         }
     };

@@ -47,7 +47,7 @@ $tools_module->mock(
         my ($path) = @_;
         return 1 if $path eq 'C:\Program Files\DWAgent';
         return 1 if $path eq '/usr/share/dwagent';
-        return GLPI::Agent::Tools::has_folder($path);
+        return $tools_module->original('has_folder')->($path);
     }
 );
 
@@ -70,7 +70,7 @@ $tools_module->mock(
         if ($file eq '/usr/share/dwagent/sharedmem/status_config.shm') {
             return 1;
         }
-        return $original_has_file->($file);
+        return $tools_module->original('has_file')->($file);
     }
 );
 
@@ -86,7 +86,7 @@ $tools_module->mock(
         if ($file && ($file eq 'C:\Program Files\DWAgent/sharedmem/status_config.shm' || $file eq 'C:\Program Files\DWAgent\sharedmem\status_config.shm' || $file eq '/usr/share/dwagent/sharedmem/status_config.shm')) {
             $params{file} = "$test_base/sharedmem/status_config.shm";
         }
-        return $original_getAllLines->(%params);
+        return $tools_module->original('getAllLines')->(%params);
     }
 );
 
