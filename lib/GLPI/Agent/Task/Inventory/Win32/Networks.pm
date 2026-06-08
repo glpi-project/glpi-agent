@@ -21,40 +21,43 @@ sub doInventory {
     my @interfaces = getInterfaces()
         or return;
 
+    my $inventory = $params{inventory};
+
     my %statistics;
 
-    my @modern_stats = getWMIObjects(
-        moniker    => 'winmgmts://./root/StandardCimv2',
-        class      => 'MSFT_NetAdapterStatisticsSettingData',
-        properties => [ qw/Name ReceivedBytes SentBytes ReceivedPacketErrors OutboundPacketErrors/ ]
-    );
+    if ($inventory->{_glpi_version} >= glpiVersion('12')) {
+        my @modern_stats = getWMIObjects(
+            moniker    => 'winmgmts://./root/StandardCimv2',
+            class      => 'MSFT_NetAdapterStatisticsSettingData',
+            properties => [ qw/Name ReceivedBytes SentBytes ReceivedPacketErrors OutboundPacketErrors/ ]
+        );
 
-    foreach my $stat (@modern_stats) {
-        $statistics{$stat->{Name}} = {
-            ifinoctets  => $stat->{ReceivedBytes},
-            ifoutoctets => $stat->{SentBytes},
-            ifinerrors  => $stat->{ReceivedPacketErrors},
-            ifouterrors => $stat->{OutboundPacketErrors}
-        } if $stat->{Name};
+        foreach my $stat (@modern_stats) {
+            $statistics{$stat->{Name}} = {
+                ifinoctets  => $stat->{ReceivedBytes},
+                ifoutoctets => $stat->{SentBytes},
+                ifinerrors  => $stat->{ReceivedPacketErrors},
+                ifouterrors => $stat->{OutboundPacketErrors}
+            } if $stat->{Name};
+        }
+
+        my @legacy_stats = getWMIObjects(
+            class      => 'Win32_PerfRawData_Tcpip_NetworkInterface',
+            properties => [ qw/Name BytesReceivedPersec BytesSentPersec PacketsReceivedErrors PacketsOutboundErrors/ ]
+        );
+
+        foreach my $stat (@legacy_stats) {
+            # Keep modern stats if they exist (they map nicely by DESCRIPTION)
+            # But populate legacy ones too for adapters that only show up here
+            $statistics{$stat->{Name}} //= {
+                ifinoctets  => $stat->{BytesReceivedPersec},
+                ifoutoctets => $stat->{BytesSentPersec},
+                ifinerrors  => $stat->{PacketsReceivedErrors},
+                ifouterrors => $stat->{PacketsOutboundErrors}
+            } if $stat->{Name};
+        }
     }
 
-    my @legacy_stats = getWMIObjects(
-        class      => 'Win32_PerfRawData_Tcpip_NetworkInterface',
-        properties => [ qw/Name BytesReceivedPersec BytesSentPersec PacketsReceivedErrors PacketsOutboundErrors/ ]
-    );
-
-    foreach my $stat (@legacy_stats) {
-        # Keep modern stats if they exist (they map nicely by DESCRIPTION)
-        # But populate legacy ones too for adapters that only show up here
-        $statistics{$stat->{Name}} //= {
-            ifinoctets  => $stat->{BytesReceivedPersec},
-            ifoutoctets => $stat->{BytesSentPersec},
-            ifinerrors  => $stat->{PacketsReceivedErrors},
-            ifouterrors => $stat->{PacketsOutboundErrors}
-        } if $stat->{Name};
-    }
-
-    my $inventory = $params{inventory};
     my (@gateways, @dns);
 
     my $keys;
@@ -93,25 +96,27 @@ sub doInventory {
             $interface->{TYPE} = $type if defined($type);
         }
 
-        if (my $stat = $statistics{$interface->{DESCRIPTION}} || ($lookup_name && $statistics{$lookup_name})) {
-            # getInterfaces() duplicates adapters in the array if they have multiple IP addresses.
-            # We track them by MAC and DESCRIPTION so we only inject one NETWORKPORTS block per physical card.
-            my $seen_key = "seen_" . ($interface->{MACADDR} || '') . "_" . ($interface->{DESCRIPTION} || '');
-            if (!$statistics{$seen_key}) {
-                $statistics{$seen_key} = 1;
-                my $network_port = {
-                    NAME        => $interface->{DESCRIPTION},
-                    MAC         => $interface->{MACADDR},
-                    IFNUMBER    => $interface->{_IFNUMBER},
-                    IFINOCTETS  => $stat->{ifinoctets},
-                    IFOUTOCTETS => $stat->{ifoutoctets},
-                    IFINERRORS  => $stat->{ifinerrors},
-                    IFOUTERRORS => $stat->{ifouterrors}
-                };
-            $inventory->addEntry(
-                section => 'NETWORK_PORTS',
-                entry   => $network_port
-            );
+        if ($inventory->{_glpi_version} >= glpiVersion('12')) {
+            if (my $stat = $statistics{$interface->{DESCRIPTION}} || ($lookup_name && $statistics{$lookup_name})) {
+                # getInterfaces() duplicates adapters in the array if they have multiple IP addresses.
+                # We track them by MAC and DESCRIPTION so we only inject one NETWORKPORTS block per physical card.
+                my $seen_key = "seen_" . ($interface->{MACADDR} || '') . "_" . ($interface->{DESCRIPTION} || '');
+                if (!$statistics{$seen_key}) {
+                    $statistics{$seen_key} = 1;
+                    my $network_port = {
+                        NAME        => $interface->{DESCRIPTION},
+                        MAC         => $interface->{MACADDR},
+                        IFNUMBER    => $interface->{_IFNUMBER},
+                        IFINOCTETS  => $stat->{ifinoctets},
+                        IFOUTOCTETS => $stat->{ifoutoctets},
+                        IFINERRORS  => $stat->{ifinerrors},
+                        IFOUTERRORS => $stat->{ifouterrors}
+                    };
+                    $inventory->addEntry(
+                        section => 'NETWORK_PORTS',
+                        entry   => $network_port
+                    );
+                }
             }
         }
         delete $interface->{_MODEL_COUNT};

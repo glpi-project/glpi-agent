@@ -27,7 +27,7 @@ Test::NoWarnings->use();
 GLPI::Agent::Task::Inventory::Win32::Networks->require();
 
 package MockInventory;
-sub new { bless { sections => {} }, shift }
+sub new { bless { sections => {}, _glpi_version => 12_000_000 }, shift }
 sub addEntry {
     my ($self, %params) = @_;
     push @{$self->{sections}->{$params{section}}}, $params{entry};
