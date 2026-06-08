@@ -101,7 +101,9 @@ sub doInventory {
                 ifinoctets  => $stat->{ifinoctets},
                 ifoutoctets => $stat->{ifoutoctets},
                 ifinerrors  => $stat->{ifinerrors},
-                ifouterrors => $stat->{ifouterrors}
+                ifouterrors => $stat->{ifouterrors},
+                ifmtu       => $interface->{MTU},
+                ifspeed     => $interface->{SPEED}
             };
             $inventory->addEntry(
                 section => 'NETWORKPORTS',
