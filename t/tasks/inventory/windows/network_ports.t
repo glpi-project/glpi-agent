@@ -47,20 +47,12 @@ my %tests = (
             IFOUTERRORS => 0
         }
     ],
-    'broadcom' => [
+    '7' => [
         {
-            MAC => '20:47:47:90:78:42',
-            NAME => 'Ethernet',
-            IFINOCTETS => 1412918786473,
+            MAC => 'F4:6D:04:97:2D:3E',
+            NAME => 'Connexion au réseau local',
+            IFINOCTETS => 1403627350071,
             IFOUTOCTETS => 364462371847,
-            IFINERRORS => 0,
-            IFOUTERRORS => 0
-        },
-        {
-            MAC => '20:47:47:90:78:44',
-            NAME => 'Ethernet 2',
-            IFINOCTETS => 70987676,
-            IFOUTOCTETS => 80987676,
             IFINERRORS => 0,
             IFOUTERRORS => 0
         }
