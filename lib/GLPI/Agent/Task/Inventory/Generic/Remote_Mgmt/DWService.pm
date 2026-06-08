@@ -158,7 +158,7 @@ sub _extract_shm_data {
             logger => $logger
         );
 
-        die "Cannot read $shm_file" unless defined $content;
+        die "Cannot read $shm_file\n" if empty($content);
 
         # Read the first 4 bytes (header length)
         my $len_bytes = substr($content, 0, 4);
