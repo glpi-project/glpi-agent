@@ -79,7 +79,6 @@ sub _getVideos {
                     next unless $subkey =~ m{/$} && defined($videokey->{$subkey}) && ref($videokey->{$subkey});
                     my $thispnpdeviceid = _pnpdeviceid($videokey->{$subkey}->{"/MatchingDeviceId"})
                         or next;
-                    
                     next unless $thispnpdeviceid eq $pnpdeviceid;
                     $found_specific_driver = 1;
 
@@ -108,24 +107,20 @@ sub _getVideos {
             if ($object->{PNPDeviceID} =~ /PCI\\VEN_(\S{4})&DEV_(\S{4})/i) {
                 my $vendor_id = lc($1);
                 my $device_id = lc($2);
-                
                 my $vendor = getPCIDeviceVendor(id => $vendor_id, %params);
-                
                 if ($vendor && $vendor->{devices}->{$device_id}) {
                     my $device_name = $vendor->{devices}->{$device_id}->{name} // '';
                     my $vendor_name = $vendor->{name} // '';
-                    
                     my ($pci_name, $pci_chipset);
                     if ($device_name =~ /^(.*)\s+\[(.*)\]$/) {
                         $pci_name = $1;
                         $pci_chipset = $2;
                     }
-                    
                     if ($object->{PNPDeviceID} =~ /SUBSYS_\S{4}(\S{4})/i) {
                         my $subvendor_id = lc($1);
                         if ($subvendor_id ne '0000') {
                             my $subvendor = getPCIDeviceVendor(id => $subvendor_id, %params);
-                            my $manufacturer = $subvendor->{name} if $subvendor;
+                            my $manufacturer = $subvendor ? $subvendor->{name} : '';
                             $pci_name = $manufacturer.' '.$pci_name if $manufacturer && $pci_name;
                         }
                     }
