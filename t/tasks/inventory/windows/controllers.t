@@ -21,6 +21,12 @@ BEGIN {
     push @INC, "t/lib/fake/windows" if $OSNAME ne "MSWin32";
 }
 
+use Config;
+# check thread support availability
+if (!$Config{usethreads} || $Config{usethreads} ne "define") {
+    plan skip_all => "thread support required";
+}
+
 GLPI::Agent::Task::Inventory::Win32::Controllers->require();
 
 my %tests = (
