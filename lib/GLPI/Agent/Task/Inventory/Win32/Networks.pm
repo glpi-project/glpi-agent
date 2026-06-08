@@ -121,7 +121,7 @@ sub doInventory {
                 IFOUTERRORS => $stat->{ifouterrors}
             };
             $inventory->addEntry(
-                section => 'NETWORK_PORTS',
+                section => 'NETWORKPORTS',
                 entry   => $network_port
             );
             }

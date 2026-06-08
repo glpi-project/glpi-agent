@@ -102,15 +102,15 @@ foreach my $test (keys %tests) {
         inventory => $inventory,
     );
     
-    ok(exists $inventory->{sections}->{NETWORK_PORTS}, "$test generates NETWORK_PORTS");
+    ok(exists $inventory->{sections}->{NETWORKPORTS}, "$test generates NETWORKPORTS");
     
-    my $ports = $inventory->{sections}->{NETWORK_PORTS} || [];
+    my $ports = $inventory->{sections}->{NETWORKPORTS} || [];
     
     
     cmp_deeply(
         $ports,
         bag(@{$tests{$test}}),
-        "$test sample NETWORK_PORTS matches expected counters"
+        "$test sample NETWORKPORTS matches expected counters"
     );
 }
 
