@@ -104,7 +104,7 @@ sub _getVideos {
 
         # Fallback for generic drivers (e.g. Microsoft Basic Display Adapter)
         # If no specific registry key was found matching the PNPDeviceID, it means a generic driver is in use.
-        unless ($found_specific_driver || empty($object->{PNPDeviceID})) {
+        if (!$found_specific_driver && !empty($object->{PNPDeviceID})) {
             if ($object->{PNPDeviceID} =~ /PCI\\VEN_(\S{4})&DEV_(\S{4})/i) {
                 my $vendor_id = lc($1);
                 my $device_id = lc($2);
@@ -125,7 +125,7 @@ sub _getVideos {
                         my $subvendor_id = lc($1);
                         if ($subvendor_id ne '0000') {
                             my $subvendor = getPCIDeviceVendor(id => $subvendor_id, %params);
-                            $manufacturer = $subvendor->{name} if $subvendor;
+                            my $manufacturer = $subvendor->{name} if $subvendor;
                             $pci_name = $manufacturer.' '.$pci_name if $manufacturer && $pci_name;
                         }
                     }
