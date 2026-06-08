@@ -51,7 +51,6 @@ $tools_module->mock(
     }
 );
 
-my $original_has_file = \&GLPI::Agent::Tools::has_file;
 $tools_module->mock(
     'has_file',
     sub {
@@ -74,7 +73,6 @@ $tools_module->mock(
     }
 );
 
-my $original_getAllLines = \&GLPI::Agent::Tools::getAllLines;
 $tools_module->mock(
     'getAllLines',
     sub {

@@ -38,15 +38,14 @@ sub _get_base_paths {
     } else {
         # Dynamic process detection on Unix systems (Linux / macOS)
         GLPI::Agent::Tools::Unix->require();
-        my @processes = GLPI::Agent::Tools::Unix::getProcesses();
+        my @processes = GLPI::Agent::Tools::Unix::getProcesses(
+            filter    => qr{native/(dwag(?:ent|svc|entsvc\.app))}i,
+            namespace => "same"
+        );
         
         foreach my $process (@processes) {
-            my $line = $process->{CMD};
-            # Matches absolute paths in memory, extracting the base directory
-            # macOS: /Library/DWAgent/native/DWAgentSvc.app/... -> /Library/DWAgent
-            # Linux: /usr/share/dwagent/native/dwagsvc -> /usr/share/dwagent
-            if ($line =~ m{(/.*?)/native/DWAgentSvc\.app}i || 
-                $line =~ m{(/.*?)/native/dwag(?:svc|ent)}i) {
+            # We use this regex solely to extract the base installation directory (e.g. /usr/share/dwagent)
+            if ($process->{CMD} =~ m{(/.*?)/native/}i) {
                 push @paths, $1;
             }
         }
@@ -186,7 +185,7 @@ sub _extract_shm_data {
                 my $data_size = int($fields->{$target}->{'size'});
 
                 # Read the fixed block of bytes: 4 (length int) + JSON header length + data offset
-                # DWService pads strings with spaces (" "), clear them with regex
+                # DWService pads strings with spaces (" "), clear them with trimWhitespace
                 my $raw_value = trimWhitespace(substr($content, 4 + $len_def + $data_pos, $data_size));
                 
                 $extracted_data{$target} = $raw_value unless empty($raw_value);
