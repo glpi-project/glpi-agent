@@ -38,6 +38,13 @@ my %tests = (
             RESOLUTION  => '1920x1080',
         }
     ],
+    'microsoft-basic-display' => [
+        {
+            CHIPSET     => 'UHD Graphics 600',
+            NAME        => 'GeminiLake',
+            RESOLUTION  => '1920x1080',
+        }
+    ],
     'nvidia-geforce-rtx-2060-super' => [
         {
             CHIPSET     => 'NVIDIA GeForce RTX 2060 SUPER',
