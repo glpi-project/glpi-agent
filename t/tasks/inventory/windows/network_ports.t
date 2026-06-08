@@ -40,8 +40,17 @@ my %tests = (
     'loadbalance' => [
         {
             MAC => '20:47:47:90:78:42',
+            NAME => 'LoadBalance',
+            IFINOCTETS => 1403973923755,
+            IFOUTOCTETS => 726370059830,
+            IFINERRORS => 0,
+            IFOUTERRORS => 0
+        }
+    ],
+    'broadcom' => [
+        {
+            MAC => '20:47:47:90:78:42',
             NAME => 'Ethernet',
-            IFNUMBER => 13,
             IFINOCTETS => 1412918786473,
             IFOUTOCTETS => 364462371847,
             IFINERRORS => 0,
@@ -50,18 +59,8 @@ my %tests = (
         {
             MAC => '20:47:47:90:78:44',
             NAME => 'Ethernet 2',
-            IFNUMBER => 8,
             IFINOCTETS => 70987676,
             IFOUTOCTETS => 80987676,
-            IFINERRORS => 0,
-            IFOUTERRORS => 0
-        },
-        {
-            MAC => '20:47:47:90:78:42',
-            NAME => 'LoadBalance',
-            IFNUMBER => 4,
-            IFINOCTETS => 1403973923755,
-            IFOUTOCTETS => 726370059830,
             IFINERRORS => 0,
             IFOUTERRORS => 0
         }
