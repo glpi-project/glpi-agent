@@ -63,7 +63,10 @@ $tools_module->mock(
         if ($file eq 'C:\Program Files\DWAgent/sharedmem/status_config.shm' || $file eq 'C:\Program Files\DWAgent\sharedmem\status_config.shm') {
             return 1;
         }
-        # Map Linux path
+        # Map Linux paths
+        if ($file eq '/etc/dwagent') {
+            return 1;
+        }
         if ($file eq '/usr/share/dwagent/config.json') {
             return 1;
         }
@@ -89,6 +92,9 @@ $tools_module->mock(
     sub {
         my (%params) = @_;
         my $file = $params{file};
+        if ($file && $file eq '/etc/dwagent') {
+            $params{file} = "$test_base/linux/etc-dwagent";
+        }
         if ($file && ($file eq 'C:\Program Files\DWAgent/config.json' || $file eq 'C:\Program Files\DWAgent\config.json'
                 || $file eq '/usr/share/dwagent/config.json' || $file eq '/Library/DWAgent/config.json')) {
             $params{file} = "$test_base/config.json";
