@@ -6,7 +6,6 @@ use warnings;
 use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use GLPI::Agent::Tools;
-use Fcntl qw(SEEK_SET);
 use Cpanel::JSON::XS;
 
 # --- Helper: Dynamically find installation paths ---
@@ -21,17 +20,18 @@ sub _get_base_paths {
             'HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/DWAgent',
             'HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/Microsoft/Windows/CurrentVersion/Uninstall/DWAgent'
         ) {
-            my $install_loc = GLPI::Agent::Tools::Win32::getRegistryValue(path => "$reg_key/InstallLocation");
-            $install_loc =~ s{[\\/]+$}{} if $install_loc;
-            push @paths, $install_loc if $install_loc && has_folder($install_loc);
+            my $install_loc = GLPI::Agent::Tools::Win32::getRegistryValue(path => "$reg_key/InstallLocation")
+                or next;
+            $install_loc =~ s{[\\/]+$}{};
+            push @paths, $install_loc if has_folder($install_loc);
         }
         
         # Windows fallbacks using environment variables
         foreach my $env (qw(ProgramFiles ProgramFiles(x86) ProgramW6432)) {
-            if (my $pf = $ENV{$env}) {
-                $pf =~ s{\\}{/}g;
-                push @paths, "$pf/DWAgent";
-            }
+            my $pf = $ENV{$env}
+                or next;
+            $pf =~ s{\\}{/}g;
+            push @paths, "$pf/DWAgent";
         }
         # Hardcoded ultimate fallbacks
         push @paths, 'C:/Program Files/DWAgent', 'C:/Program Files (x86)/DWAgent';
@@ -109,21 +109,18 @@ sub doInventory {
         return;
     }
 
-    my $dw_id = $config->{key} if $config;
-
-    if (!$dw_id) {
+    unless ($config && $config->{key}) {
         $logger->debug("DWService: Could not extract 'key' from config.json");
         return;
     }
 
+    my $dw_id = $config->{key};
+
     # 3. Intercept local data from shared memory (SHM)
     my $shm_data = _extract_shm_data("$base_path/sharedmem/status_config.shm", $logger);
     
-    # Extract the friendly name (if available)
-    my $dw_name = $shm_data->{'name'} if $shm_data;
-    
-    # Fallback logic for Display Name: try friendly name, otherwise fall back to unique ID.
-    my $display_name = $dw_name ? $dw_name : $dw_id;
+    # Fallback logic for Display Name: try extracted friendly name, otherwise fall back to unique ID.
+    my $display_name = $shm_data && exists($shm_data->{'name'}) ? $shm_data->{'name'} : $dw_id;
 
     $logger->debug("DWService: Preparing for inventory -> ID: $dw_id, NAME: $display_name");
     
