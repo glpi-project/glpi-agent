@@ -80,7 +80,6 @@ sub _getVideos {
         }
 
         my $pnpdeviceid = _pnpdeviceid($object->{PNPDeviceID});
-
         if ($pnpdeviceid) {
             # Try to get memory from registry
             my $videokey = getRegistryKey(
@@ -95,7 +94,6 @@ sub _getVideos {
                     my $thispnpdeviceid = _pnpdeviceid($videokey->{$subkey}->{"/MatchingDeviceId"})
                         or next;
                     next unless $thispnpdeviceid eq $pnpdeviceid;
-
                     if (defined($videokey->{$subkey}->{"/HardwareInformation.qwMemorySize"})) {
                         my $memorysize = $videokey->{$subkey}->{"/HardwareInformation.qwMemorySize"} =~ /^\d+$/ ?
                             int($videokey->{$subkey}->{"/HardwareInformation.qwMemorySize"})
