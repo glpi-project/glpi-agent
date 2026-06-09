@@ -44,9 +44,9 @@ sub doInventory {
 
         my $pnp_name = $object->{PNPDeviceID} ? $pnp_names{$object->{PNPDeviceID}} : undef;
 
-        my $name         = $pnp_name || $object->{Name};
+        my $name         = $object->{Name};
         my $manufacturer = $object->{Manufacturer};
-        my $caption      = $object->{Caption};
+        my $caption      = $pnp_name || $object->{Caption};
 
         if ($object->{PNPDeviceID}) {
             if ($object->{PNPDeviceID} =~ /PCI\\VEN_(\S{4})&DEV_(\S{4})/) {
@@ -63,7 +63,7 @@ sub doInventory {
                     $manufacturer = $vendor->{name} if $vendor->{name};
                     if ($vendor->{devices}->{$device_id}) {
                         my $entry = $vendor->{devices}->{$device_id};
-                        $name = $subdevice_id && $entry->{subdevices}->{$subdevice_id} ?
+                        $caption = $subdevice_id && $entry->{subdevices}->{$subdevice_id} ?
                             $entry->{subdevices}->{$subdevice_id}->{name} :
                             $entry->{name};
                     }
@@ -77,7 +77,7 @@ sub doInventory {
                     $manufacturer = $vendor->{name} if $vendor->{name};
                     if ($vendor->{devices}->{$device_id}) {
                         my $entry = $vendor->{devices}->{$device_id};
-                        $name = $entry->{name} if $entry->{name};
+                        $caption = $entry->{name} if $entry->{name};
                     }
                 }
             }
