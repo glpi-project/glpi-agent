@@ -35,26 +35,28 @@ sub _get_base_paths {
         }
         # Hardcoded ultimate fallbacks
         push @paths, 'C:/Program Files/DWAgent', 'C:/Program Files (x86)/DWAgent';
-    } else {
-        # Dynamic process detection on Unix systems (Linux / macOS)
-        GLPI::Agent::Tools::Unix->require();
-        my @processes = GLPI::Agent::Tools::Unix::getProcesses(
-            filter    => qr{native/(dwag(?:ent|svc|entsvc\.app))}i,
-            namespace => "same"
-        );
-        
-        foreach my $process (@processes) {
-            # We use this regex solely to extract the base installation directory (e.g. /usr/share/dwagent)
-            if ($process->{CMD} =~ m{(/.*?)/native/}i) {
-                push @paths, $1;
+    } elsif (OSNAME eq 'darwin') {
+        # macOS: extract install path from LaunchDaemon plist
+        my $plist = '/Library/LaunchDaemons/net.dwservice.agsvc.plist';
+        if (has_file($plist)) {
+            my $path = _get_path_from_plist($plist);
+            push @paths, $path if $path;
+        }
+        # Static fallback
+        push @paths, '/Library/DWAgent';
+    } elsif (OSNAME eq 'linux') {
+        # Linux: /etc/dwagent is a JSON config written by the installer with the install path
+        if (has_file('/etc/dwagent')) {
+            my $json_text = getAllLines(file => '/etc/dwagent');
+            unless (empty($json_text)) {
+                eval {
+                    my $conf = decode_json($json_text);
+                    push @paths, $conf->{path} if $conf && $conf->{path};
+                };
             }
         }
-        
-        # macOS fallback
-        push @paths, '/Library/DWAgent' if OSNAME eq 'darwin';
-        
-        # Linux fallbacks
-        push @paths, '/usr/share/dwagent', '/opt/dwagent' if OSNAME eq 'linux';
+        # Static fallbacks
+        push @paths, '/usr/share/dwagent', '/opt/dwagent';
     }
     
     # Remove duplicates and ensure the directory exists
@@ -196,6 +198,18 @@ sub _extract_shm_data {
     }
 
     return \%extracted_data;
+}
+
+# --- Internal Helper: Extract install path from a macOS LaunchDaemon plist ---
+# The plist ProgramArguments first string is the executable, e.g.:
+#   /Library/DWAgent/native/DWAgentSvc.app/Contents/MacOS/DWAgentSvc
+# We match the path up to /native/ to get the install directory.
+sub _get_path_from_plist {
+    my ($plist) = @_;
+    return getFirstMatch(
+        file    => $plist,
+        pattern => qr{<string>(/.+?)/native/}
+    );
 }
 
 1;
