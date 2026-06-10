@@ -14,5 +14,5 @@ plan(skip_all => 'Test::Whitespaces required')
 
 Test::Whitespaces->use({
     dirs   => [ qw/lib bin t/],
-    ignore => [ qr/~$/, qr/mock\.t$/, qr/cisco\.t$/, qr/\.plist$/ ],
+    ignore => [ qr/~$/, qr/mock.t$/, qr/cisco.t$/ ],
 });
