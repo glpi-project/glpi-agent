@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>net.dwservice.agsvc</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Library/DWAgent/native/DWAgentSvc.app/Contents/MacOS/DWAgentSvc</string>
+		<string>/Library/DWAgent</string>
+		<string>run</string>
+	</array>
+	<key>OnDemand</key>
+	<false/>
+	<key>StandardErrorPath</key>
+	<string>/Library/DWAgent/native/service.log</string>
+	<key>StandardOutPath</key>
+	<string>/Library/DWAgent/native/service.log</string>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>KeepAlive</key>
+	<true/>
+	<key>ExitTimeOut</key>
+	<integer>60</integer>
+</dict>
+</plist>

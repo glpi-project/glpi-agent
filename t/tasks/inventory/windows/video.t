@@ -42,6 +42,7 @@ my %tests = (
         {
             CHIPSET     => 'UHD Graphics 600',
             NAME        => 'GeminiLake',
+            PCISLOT     => '00:02.0',
             RESOLUTION  => '1920x1080',
         }
     ],
