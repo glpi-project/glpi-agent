@@ -110,6 +110,8 @@ sub mockGetRegistryKey {
         # We can mock getRegistryKey or better _getRegistryKey to cover getRegistryValue
         my $path = $params{path} || $params{keyName};
         my $last_elt = (split(/\//, $path))[-1];
+        # Replace ampersand by dash as '&' char is not suitable in a filename
+        $last_elt =~ s/\&/-/g;
         my $file = "resources/win32/registry/$test-$last_elt.reg";
         return loadRegistryDump($file);
     };
@@ -122,6 +124,8 @@ sub loadRegistryDump {
     my $root_key = {};
     my $current_key = $root_key;
     my $current_variable;
+
+    return unless -e $file;
 
     open (my $handle, '<', $file) or die "can't open $file: $ERRNO";
 
