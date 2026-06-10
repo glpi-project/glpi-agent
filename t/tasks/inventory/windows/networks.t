@@ -100,14 +100,14 @@ foreach my $test (keys %tests) {
     sub addEntry { my ($self, %params) = @_; push @{$self->{entries}}, $params{entry} }
     sub setHardware { }
     package main;
-    
+
     my $inventory = MockInventory->new();
-    
+
     my $net_mod = Test::MockModule->new('GLPI::Agent::Task::Inventory::Win32::Networks');
     $net_mod->mock('getInterfaces', sub {
         return ({ PNPDEVICEID => 'BTH\MS_BTHPAN\6&1AAC2CAC&0&2' });
     });
-    
+
     GLPI::Agent::Task::Inventory::Win32::Networks::doInventory(inventory => $inventory);
     is($inventory->{entries}->[0]->{TYPE}, 'bluetooth', "$test sample, doInventory TYPE assignment");
 }
