@@ -74,4 +74,3 @@ foreach my $test (keys %tests) {
             foreach @controllers;
     } "$test: registering";
 }
-
