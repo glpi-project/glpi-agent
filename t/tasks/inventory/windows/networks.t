@@ -89,5 +89,4 @@ foreach my $test (keys %tests) {
             "$test sample, $deviceId device"
         );
     }
-
 }
