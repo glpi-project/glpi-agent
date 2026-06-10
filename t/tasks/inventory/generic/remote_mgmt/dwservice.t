@@ -23,6 +23,9 @@ BEGIN {
 
 plan tests => 10;
 
+# Mock has_file and has_folder to look in our test directory instead of the real C:/Program Files/DWAgent
+my $test_base = "resources/generic/dwservice";
+
 # Mock getRegistryKey for Win32
 my $win32_module = Test::MockModule->new(
     'GLPI::Agent::Tools::Win32'
@@ -30,7 +33,7 @@ my $win32_module = Test::MockModule->new(
 $win32_module->mock(
     '_getRegistryKey',
     sub {
-        return loadRegistryDump("t/resources/generic/dwservice/dwservice-win32-uninstall.reg");
+        return loadRegistryDump("$test_base/dwservice-win32-uninstall.reg");
     }
 );
 
@@ -38,8 +41,6 @@ $win32_module->mock(
 my $tools_module = Test::MockModule->new(
     'GLPI::Agent::Task::Inventory::Generic::Remote_Mgmt::DWService'
 );
-# Mock has_file and has_folder to look in our test directory instead of the real C:/Program Files/DWAgent
-my $test_base = "t/resources/generic/dwservice";
 
 $tools_module->mock(
     'has_folder',
@@ -117,12 +118,9 @@ $tools_module->mock(
     sub { return $mock_osname; }
 );
 
-# Use a standard logger with Stderr backend so debug messages don't crash the test
+# Use a test logger so debug messages don't crash the test
 my $logger = GLPI::Agent::Logger->new(
-    config => {
-        debug  => 2,
-        logger => ['Stderr']
-    }
+    logger => [ 'Test' ]
 );
 my $inventory = GLPI::Agent::Inventory->new(logger => $logger);
 
