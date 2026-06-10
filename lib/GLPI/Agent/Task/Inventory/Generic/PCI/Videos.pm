@@ -48,10 +48,11 @@ sub _getVideos {
         ($name, $chipset) = $vendor->{devices}->{$device_id}->{name} =~ /^(.*)\s+\[(.*)\]$/
             if !$chipset && $vendor && exists($vendor->{devices}->{$device_id}->{name});
 
+        my $manufacturer;
         if ($device->{PCISUBSYSTEMID}) {
             my ($vendor_id) = split (/:/, $device->{PCISUBSYSTEMID});
             my $vendor = getPCIDeviceVendor(id => $vendor_id, @_);
-            my $manufacturer = $vendor ? $vendor->{name} : '';
+            $manufacturer = $vendor->{name} if $vendor;
             $name = $manufacturer.' '.$name if $manufacturer && $name;
         }
 

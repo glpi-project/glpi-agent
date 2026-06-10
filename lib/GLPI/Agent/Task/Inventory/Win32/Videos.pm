@@ -65,6 +65,21 @@ sub _getVideos {
                 $object->{CurrentVerticalResolution};
         }
 
+        if ($object->{PNPDeviceID}) {
+            my $pnp_id = $object->{PNPDeviceID};
+            $pnp_id =~ s{\\}{/}g;
+            my $enum_key = getRegistryKey(
+                path     => "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Enum/$pnp_id",
+                required => [ qw/LocationInformation/ ]
+            );
+            if ($enum_key && $enum_key->{"/LocationInformation"}) {
+                my $loc = $enum_key->{"/LocationInformation"};
+                if ($loc =~ /\((\d+),\s*(\d+),\s*(\d+)\)$/ || $loc =~ /PCI bus (\d+),\s*device (\d+),\s*function (\d+)/i) {
+                    $video->{PCISLOT} = sprintf("%02x:%02x.%x", $1, $2, $3);
+                }
+            }
+        }
+
         my $pnpdeviceid = _pnpdeviceid($object->{PNPDeviceID});
 
         my $found_specific_driver = 0;

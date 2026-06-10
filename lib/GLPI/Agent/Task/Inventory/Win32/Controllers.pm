@@ -59,6 +59,21 @@ sub _getControllers {
         # avoid duplicates
         next if $seen{$controller->{VENDORID}}->{$controller->{PRODUCTID}}++;
 
+        if ($controller->{deviceid}) {
+            my $pnp_id = $controller->{deviceid};
+            $pnp_id =~ s{\\}{/}g;
+            my $enum_key = getRegistryKey(
+                path     => "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Enum/$pnp_id",
+                required => [ qw/LocationInformation/ ]
+            );
+            if ($enum_key && $enum_key->{"/LocationInformation"}) {
+                my $loc = $enum_key->{"/LocationInformation"};
+                if ($loc =~ /\((\d+),\s*(\d+),\s*(\d+)\)$/ || $loc =~ /PCI bus (\d+),\s*device (\d+),\s*function (\d+)/i) {
+                    $controller->{PCISLOT} = sprintf("%02x:%02x.%x", $1, $2, $3);
+                }
+            }
+        }
+
         delete $controller->{deviceid};
 
         my $vendor_id    = lc($controller->{VENDORID});
@@ -99,16 +114,26 @@ sub _getControllersFromWMI {
         foreach my $object (getWMIObjects(
             class      => $class,
             properties => [ qw/
-                Name Manufacturer Caption DeviceID
+                Name Manufacturer Caption DeviceID PNPDeviceID
             /]
         )) {
 
+            # For most WMI controller classes (Win32_USBController, Win32_IDEController,
+            # etc.), DeviceID already contains the full PCI path like
+            # PCI\VEN_8086&DEV_3185&SUBSYS_00000000&REV_06\3&11583659&0&10.
+            # For Win32_VideoController, Microsoft chose a different convention:
+            # DeviceID is just a generic "VideoController1", while the actual PCI
+            # path lives in PNPDeviceID.
+            # So the assignment uses PNPDeviceID when it starts with PCI\,
+            # falling back to DeviceID otherwise.
             push @controllers, {
                 NAME         => $object->{Name},
                 MANUFACTURER => $object->{Manufacturer},
                 CAPTION      => $object->{Caption},
                 TYPE         => $object->{Caption},
-                deviceid     => $object->{DeviceID},
+                deviceid     => ($object->{PNPDeviceID} && $object->{PNPDeviceID} =~ /^PCI\\/i)
+                    ? $object->{PNPDeviceID}
+                    : $object->{DeviceID},
             };
         }
     }
