@@ -5,9 +5,10 @@ use warnings;
 
 use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use GLPI::Agent::Tools;
-use Fcntl qw(SEEK_SET);
+use UNIVERSAL::require;
 use Cpanel::JSON::XS;
+
+use GLPI::Agent::Tools;
 
 # --- Helper: Dynamically find installation paths ---
 sub _get_base_paths {
@@ -21,40 +22,51 @@ sub _get_base_paths {
             'HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/DWAgent',
             'HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/Microsoft/Windows/CurrentVersion/Uninstall/DWAgent'
         ) {
-            my $install_loc = GLPI::Agent::Tools::Win32::getRegistryValue(path => "$reg_key/InstallLocation");
-            $install_loc =~ s{[\\/]+$}{} if $install_loc;
-            push @paths, $install_loc if $install_loc && has_folder($install_loc);
+            my $install_loc = GLPI::Agent::Tools::Win32::getRegistryValue(path => "$reg_key/InstallLocation")
+                or next;
+            $install_loc =~ s{[\\/]+$}{};
+            push @paths, $install_loc if has_folder($install_loc);
         }
         
         # Windows fallbacks using environment variables
         foreach my $env (qw(ProgramFiles ProgramFiles(x86) ProgramW6432)) {
-            if (my $pf = $ENV{$env}) {
-                $pf =~ s{\\}{/}g;
-                push @paths, "$pf/DWAgent";
-            }
+            my $pf = $ENV{$env}
+                or next;
+            $pf =~ s{\\}{/}g;
+            push @paths, "$pf/DWAgent";
         }
         # Hardcoded ultimate fallbacks
         push @paths, 'C:/Program Files/DWAgent', 'C:/Program Files (x86)/DWAgent';
-    } else {
-        # Dynamic process detection on Unix systems (Linux / macOS)
-        GLPI::Agent::Tools::Unix->require();
-        my @processes = GLPI::Agent::Tools::Unix::getProcesses(
-            filter    => qr{native/(dwag(?:ent|svc|entsvc\.app))}i,
-            namespace => "same"
-        );
-        
-        foreach my $process (@processes) {
-            # We use this regex solely to extract the base installation directory (e.g. /usr/share/dwagent)
-            if ($process->{CMD} =~ m{(/.*?)/native/}i) {
-                push @paths, $1;
+    } elsif (OSNAME eq 'darwin') {
+        # macOS: extract install path from LaunchDaemon plist
+        my $plist = '/Library/LaunchDaemons/net.dwservice.agsvc.plist';
+        if (has_file($plist)) {
+            my $path = _get_path_from_plist($plist);
+            eval {
+                GLPI::Agent::XML->require();
+                my $xml = GLPI::Agent::XML->new(
+                    file     => $plist,
+                    is_plist => 1,
+                )->dump_as_hash();
+                my $path = $xml->{plist}->{ProgramArguments}->[1];
+                push @paths, $path if $path;
+            };
+        }
+        # Static fallback
+        push @paths, '/Library/DWAgent';
+    } elsif (OSNAME eq 'linux') {
+        # Linux: /etc/dwagent is a JSON config written by the installer with the install path
+        if (has_file('/etc/dwagent')) {
+            my $json_text = getAllLines(file => '/etc/dwagent');
+            unless (empty($json_text)) {
+                eval {
+                    my $conf = decode_json($json_text);
+                    push @paths, $conf->{path} if $conf && $conf->{path};
+                };
             }
         }
-        
-        # macOS fallback
-        push @paths, '/Library/DWAgent' if OSNAME eq 'darwin';
-        
-        # Linux fallbacks
-        push @paths, '/usr/share/dwagent', '/opt/dwagent' if OSNAME eq 'linux';
+        # Static fallbacks
+        push @paths, '/usr/share/dwagent', '/opt/dwagent';
     }
     
     # Remove duplicates and ensure the directory exists
@@ -109,21 +121,18 @@ sub doInventory {
         return;
     }
 
-    my $dw_id = $config->{key} if $config;
-
-    if (!$dw_id) {
+    unless ($config && $config->{key}) {
         $logger->debug("DWService: Could not extract 'key' from config.json");
         return;
     }
 
+    my $dw_id = $config->{key};
+
     # 3. Intercept local data from shared memory (SHM)
     my $shm_data = _extract_shm_data("$base_path/sharedmem/status_config.shm", $logger);
     
-    # Extract the friendly name (if available)
-    my $dw_name = $shm_data->{'name'} if $shm_data;
-    
-    # Fallback logic for Display Name: try friendly name, otherwise fall back to unique ID.
-    my $display_name = $dw_name ? $dw_name : $dw_id;
+    # Fallback logic for Display Name: try extracted friendly name, otherwise fall back to unique ID.
+    my $display_name = $shm_data && exists($shm_data->{'name'}) ? $shm_data->{'name'} : $dw_id;
 
     $logger->debug("DWService: Preparing for inventory -> ID: $dw_id, NAME: $display_name");
     
@@ -199,6 +208,18 @@ sub _extract_shm_data {
     }
 
     return \%extracted_data;
+}
+
+# --- Internal Helper: Extract install path from a macOS LaunchDaemon plist ---
+# The plist ProgramArguments first string is the executable, e.g.:
+#   /Library/DWAgent/native/DWAgentSvc.app/Contents/MacOS/DWAgentSvc
+# We match the path up to /native/ to get the install directory.
+sub _get_path_from_plist {
+    my ($plist) = @_;
+    return getFirstMatch(
+        file    => $plist,
+        pattern => qr{<string>(/.+?)/native/}
+    );
 }
 
 1;
