@@ -94,4 +94,3 @@ foreach my $test (keys %tests) {
     is($bt_info->{MANUFACTURER}, 'Realtek Semiconductor Corp.', "$test sample, Bluetooth parent manufacturer");
     is($bt_info->{MODEL}, 'Realtek Bluetooth Adapter', "$test sample, Bluetooth parent model");
 }
-
