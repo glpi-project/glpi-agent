@@ -37,7 +37,7 @@ my %tests = (
     },
 );
 
-my $plan = 3; # Base 1 + 2 tests for bluetooth info
+my $plan = 4; # Base 1 + 2 tests for bluetooth info + 1 for doInventory TYPE
 foreach my $test (keys %tests) {
     $plan += scalar (keys %{$tests{$test}});
 }
@@ -93,4 +93,21 @@ foreach my $test (keys %tests) {
     my $bt_info = GLPI::Agent::Task::Inventory::Win32::Networks::_getBluetoothParentInfo('BTH\MS_BTHPAN\6&1AAC2CAC&0&2');
     is($bt_info->{MANUFACTURER}, 'Realtek Semiconductor Corp.', "$test sample, Bluetooth parent manufacturer");
     is($bt_info->{MODEL}, 'Realtek Bluetooth Adapter', "$test sample, Bluetooth parent model");
+
+    # Test doInventory for TYPE assignment
+    package MockInventory;
+    sub new { bless { entries => [] }, shift }
+    sub addEntry { my ($self, %params) = @_; push @{$self->{entries}}, $params{entry} }
+    sub setHardware { }
+    package main;
+    
+    my $inventory = MockInventory->new();
+    
+    my $net_mod = Test::MockModule->new('GLPI::Agent::Task::Inventory::Win32::Networks');
+    $net_mod->mock('getInterfaces', sub {
+        return ({ PNPDEVICEID => 'BTH\MS_BTHPAN\6&1AAC2CAC&0&2' });
+    });
+    
+    GLPI::Agent::Task::Inventory::Win32::Networks::doInventory(inventory => $inventory);
+    is($inventory->{entries}->[0]->{TYPE}, 'bluetooth', "$test sample, doInventory TYPE assignment");
 }
