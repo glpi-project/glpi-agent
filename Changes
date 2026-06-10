@@ -26,7 +26,7 @@ packaging:
   is deprecated and returns an error
 * Update Windows packaging to use:
   - Perl 5.42.2
-  - gcc 16.1.0posix-14.0.0-msvcrt-r2
+  - gcc 16.1.0posix-14.0.0-msvcrt-r3
   - OpenSSL 3.5.7
   - libxml2 2.15.3
 * Update MacOSX packages to use perl 5.42.2 and OpenSSL 3.5.7
