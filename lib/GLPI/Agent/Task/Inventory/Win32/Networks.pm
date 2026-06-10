@@ -49,7 +49,7 @@ sub doInventory {
                 $interface->{MODEL}        = $parentInfo->{MODEL}        if $parentInfo->{MODEL};
             }
         }
-        
+
         if ($interface->{PNPDEVICEID} && !$interface->{TYPE}) {
             my $type = _getMediaType($interface->{PNPDEVICEID}, $keys);
             $interface->{TYPE} = $type if defined($type);
