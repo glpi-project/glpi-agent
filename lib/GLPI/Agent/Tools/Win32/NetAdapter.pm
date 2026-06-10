@@ -48,6 +48,8 @@ sub getBaseInterface {
 
     $interface->{MANUFACTURER} = $self->_getManufacturer() if $self->_getManufacturer();
     $interface->{MODEL}        = $self->_getModel()        if $self->_getModel();
+    $interface->{DRIVER} = sprintf("%s [%s]", $interface->{MODEL}, $interface->{MANUFACTURER})
+        if $interface->{MODEL} && $interface->{MANUFACTURER};
     $interface->{PCIID}     = $self->_getPciid() if $self->_getPciid();
     $interface->{GUID}      = $self->_getGUID() if $self->_getGUID();
     $interface->{DNSDomain} = $self->{_config}->{DNSDomain} if $self->{_config}->{DNSDomain};

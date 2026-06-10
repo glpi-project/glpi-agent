@@ -49,14 +49,20 @@ sub doInventory {
         }
 
         if ($interface->{PCIID}) {
-            my ($vendor_id) = split(':', $interface->{PCIID});
+            my ($vendor_id, $device_id) = split(':', $interface->{PCIID});
             if ($vendor_id) {
                 my $vendor = getPCIDeviceVendor(
                     id      => lc($vendor_id),
                     datadir => $params{datadir},
                     logger  => $params{logger}
                 );
-                $interface->{MANUFACTURER} = $vendor->{name} if $vendor && $vendor->{name};
+                if ($vendor) {
+                    $interface->{MANUFACTURER} = $vendor->{name} if $vendor->{name};
+                    if ($device_id && $vendor->{devices} && $vendor->{devices}->{lc($device_id)}) {
+                        my $device_name = $vendor->{devices}->{lc($device_id)}->{name};
+                        $interface->{MODEL} = $device_name if $device_name;
+                    }
+                }
             }
         }
 
