@@ -9,10 +9,6 @@ use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Network;
 use GLPI::Agent::Tools::Win32;
 
-our @runAfter = (
-    'GLPI::Agent::Task::Inventory::Win32::USB'
-);
-
 use constant    category    => "network";
 
 sub isEnabled {
@@ -49,7 +45,7 @@ sub doInventory {
         if ($interface->{PNPDEVICEID} && $interface->{PNPDEVICEID} =~ /^BTH/i) {
             $interface->{TYPE} = 'bluetooth';
 
-            my $parentInfo = _getBluetoothParentInfo($interface->{PNPDEVICEID}, $inventory);
+            my $parentInfo = _getBluetoothParentInfo($interface->{PNPDEVICEID});
             if ($parentInfo) {
                 $interface->{MANUFACTURER} = $parentInfo->{MANUFACTURER} if $parentInfo->{MANUFACTURER};
                 $interface->{MODEL}        = $parentInfo->{MODEL}        if $parentInfo->{MODEL};
@@ -103,7 +99,7 @@ sub _getMediaType {
 }
 
 sub _getBluetoothParentInfo {
-    my ($deviceid, $inventory) = @_;
+    my ($deviceid) = @_;
 
     my $info;
 
@@ -131,73 +127,46 @@ sub _getBluetoothParentInfo {
                 my $parentDeviceId = Encode::decode('UTF-16LE', $buffer);
                 $parentDeviceId =~ s/\0.*//;
 
-                my $matched_usb;
-                if ($inventory) {
-                    my $usbDevices = $inventory->getSection('USBDEVICES');
-                    if ($usbDevices) {
-                        if (my ($vid, $pid, $serial) = $parentDeviceId =~ /^USB\\VID_([0-9A-F]+)&PID_([0-9A-F]+)\\(.*)/i) {
-                            for (my $i = 0; $i < @$usbDevices; $i++) {
-                                my $dev = $usbDevices->[$i];
-                                my $dvid = $dev->{VENDORID} || '';
-                                my $dpid = $dev->{PRODUCTID} || '';
-                                my $dser = $dev->{SERIAL} || '';
-                                
-                                # Support the manufacturer pseudo-serial workaround present in USB.pm
-                                my $clean_serial = $serial;
-                                $clean_serial = $1 if $clean_serial =~ /^S\/N:([0-9A-F]+)/i;
-                                
-                                if (lc($dvid) eq lc($vid) && lc($dpid) eq lc($pid) && (lc($dser) eq lc($clean_serial) || $dser eq '')) {
-                                    $matched_usb = splice(@$usbDevices, $i, 1);
-                                    last;
-                                }
-                            }
+                # Always query ID databases first
+                if ($parentDeviceId =~ /^USB\\VID_([0-9A-F]+)&PID_([0-9A-F]+)/i) {
+                    my $vid = $1;
+                    my $pid = $2;
+                    UNIVERSAL::require('GLPI::Agent::Tools::Generic');
+                    if ($GLPI::Agent::Tools::Generic::VERSION || defined(&GLPI::Agent::Tools::Generic::getUSBDeviceVendor)) {
+                        my $vendor = GLPI::Agent::Tools::Generic::getUSBDeviceVendor(id => lc($vid));
+                        if ($vendor) {
+                            $info->{MANUFACTURER} = $vendor->{name} if $vendor->{name};
+                            my $device = $vendor->{devices}->{lc($pid)};
+                            $info->{MODEL} = $device->{name} if $device && $device->{name};
+                        }
+                    }
+                } elsif ($parentDeviceId =~ /^PCI\\VEN_([0-9A-F]+)&DEV_([0-9A-F]+)/i) {
+                    my $ven = $1;
+                    my $dev = $2;
+                    UNIVERSAL::require('GLPI::Agent::Tools::Generic');
+                    if ($GLPI::Agent::Tools::Generic::VERSION || defined(&GLPI::Agent::Tools::Generic::getPCIDeviceVendor)) {
+                        my $vendor = GLPI::Agent::Tools::Generic::getPCIDeviceVendor(id => lc($ven));
+                        if ($vendor) {
+                            $info->{MANUFACTURER} = $vendor->{name} if $vendor->{name};
+                            my $device = $vendor->{devices}->{lc($dev)};
+                            $info->{MODEL} = $device->{name} if $device && $device->{name};
                         }
                     }
                 }
 
-                if ($matched_usb) {
-                    $info->{MANUFACTURER} = $matched_usb->{MANUFACTURER} if $matched_usb->{MANUFACTURER};
-                    $info->{MODEL}        = $matched_usb->{NAME} || $matched_usb->{CAPTION};
-                } else {
-                    if ($parentDeviceId =~ /^USB\\VID_([0-9A-F]+)&PID_([0-9A-F]+)/i) {
-                        my $vid = $1;
-                        my $pid = $2;
-                        UNIVERSAL::require('GLPI::Agent::Tools::Generic');
-                        if ($GLPI::Agent::Tools::Generic::VERSION || defined(&GLPI::Agent::Tools::Generic::getUSBDeviceVendor)) {
-                            my $vendor = GLPI::Agent::Tools::Generic::getUSBDeviceVendor(id => lc($vid));
-                            if ($vendor) {
-                                $info->{MANUFACTURER} = $vendor->{name} if $vendor->{name};
-                                my $device = $vendor->{devices}->{lc($pid)};
-                                $info->{MODEL} = $device->{name} if $device && $device->{name};
-                            }
-                        }
-                    } elsif ($parentDeviceId =~ /^PCI\\VEN_([0-9A-F]+)&DEV_([0-9A-F]+)/i) {
-                        my $ven = $1;
-                        my $dev = $2;
-                        UNIVERSAL::require('GLPI::Agent::Tools::Generic');
-                        if ($GLPI::Agent::Tools::Generic::VERSION || defined(&GLPI::Agent::Tools::Generic::getPCIDeviceVendor)) {
-                            my $vendor = GLPI::Agent::Tools::Generic::getPCIDeviceVendor(id => lc($ven));
-                            if ($vendor) {
-                                $info->{MANUFACTURER} = $vendor->{name} if $vendor->{name};
-                                my $device = $vendor->{devices}->{lc($dev)};
-                                $info->{MODEL} = $device->{name} if $device && $device->{name};
-                            }
-                        }
-                    }
+                # Fallback to WMI if either manufacturer or model is missing
+                if (!$info->{MANUFACTURER} || !$info->{MODEL}) {
+                    my $wmiQueryId = $parentDeviceId;
+                    $wmiQueryId =~ s/\\/\\\\/g;
+                    my ($parentDev) = GLPI::Agent::Tools::Win32::getWMIObjects(
+                        class      => 'Win32_PnPEntity',
+                        properties => [ qw/Manufacturer Caption/ ],
+                        query      => "SELECT Manufacturer, Caption FROM Win32_PnPEntity WHERE PNPDeviceID='$wmiQueryId'"
+                    );
 
-                    if (!$info->{MANUFACTURER} || !$info->{MODEL}) {
-                        my $wmiQueryId = $parentDeviceId;
-                        $wmiQueryId =~ s/\\/\\\\/g;
-                        my ($parentDev) = GLPI::Agent::Tools::Win32::getWMIObjects(
-                            class      => 'Win32_PnPEntity',
-                            properties => [ qw/Manufacturer Caption/ ],
-                            query      => "SELECT Manufacturer, Caption FROM Win32_PnPEntity WHERE PNPDeviceID='$wmiQueryId'"
-                        );
-
-                        if ($parentDev) {
-                            $info->{MANUFACTURER} = $parentDev->{Manufacturer} if !$info->{MANUFACTURER} && $parentDev->{Manufacturer};
-                            $info->{MODEL}        = $parentDev->{Caption}      if !$info->{MODEL}        && $parentDev->{Caption};
-                        }
+                    if ($parentDev) {
+                        $info->{MANUFACTURER} = $parentDev->{Manufacturer} if !$info->{MANUFACTURER} && $parentDev->{Manufacturer};
+                        $info->{MODEL}        = $parentDev->{Caption}      if !$info->{MODEL}        && $parentDev->{Caption};
                     }
                 }
             }
