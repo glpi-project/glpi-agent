@@ -32,10 +32,10 @@ GLPI::Agent::Task::Inventory::Win32::Sounds->require();
 my %tests = (
     'logitech-h390' => [
         {
-            CAPTION      => 'H390 headset with microphone',
+            CAPTION      => 'USB Audio Device',
             DESCRIPTION  => 'USB Audio Device',
             MANUFACTURER => 'Logitech, Inc.',
-            NAME         => 'USB Audio Device',
+            NAME         => 'H390 headset with microphone',
         }
     ],
 );
