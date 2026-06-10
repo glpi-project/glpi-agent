@@ -14,12 +14,15 @@ use constant    LISTED_CATEGORY_COUNT   => 37;
 plan(skip_all => 'Author test, set $ENV{TEST_AUTHOR} to a true value to run')
     if !$ENV{TEST_AUTHOR};
 
+plan(skip_all => 'Data::UUID required')
+    unless Data::UUID->require();
+
 # Check all categtories are listed in glpi-agent pod part
 
 plan tests => 2;
 
 my %categories;
-foreach my $line (getAllLines(command => "bin/glpi-agent --list-categories")) {
+foreach my $line (getAllLines(command => "$^X bin/glpi-agent --list-categories")) {
     chomp($line);
     next unless $line =~ /^ - (.+)$/;
     $categories{$1} = 1;
