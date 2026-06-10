@@ -41,7 +41,6 @@ sub _get_base_paths {
         # macOS: extract install path from LaunchDaemon plist
         my $plist = '/Library/LaunchDaemons/net.dwservice.agsvc.plist';
         if (has_file($plist)) {
-            my $path = _get_path_from_plist($plist);
             eval {
                 GLPI::Agent::XML->require();
                 my $xml = GLPI::Agent::XML->new(
@@ -98,7 +97,7 @@ sub doInventory {
     }
 
     return unless $base_path;
-    $logger->debug("DWService: Active installation found at $base_path");
+    $logger->debug("DWService: Active installation found at $base_path") if $logger;
 
     # 2. Extract the unique ID (key) from config.json
     my $json_text = getAllLines(
@@ -107,7 +106,7 @@ sub doInventory {
     );
 
     if (empty($json_text)) {
-        $logger->debug("DWService: config.json not found or is empty");
+        $logger->debug("DWService: config.json not found or is empty") if $logger;
         return;
     }
 
@@ -117,12 +116,12 @@ sub doInventory {
     };
 
     if ($@) {
-        $logger->debug("DWService: Failed to parse config.json - $@");
+        $logger->debug("DWService: Failed to parse config.json - $@") if $logger;
         return;
     }
 
     unless ($config && $config->{key}) {
-        $logger->debug("DWService: Could not extract 'key' from config.json");
+        $logger->debug("DWService: Could not extract 'key' from config.json") if $logger;
         return;
     }
 
@@ -134,7 +133,7 @@ sub doInventory {
     # Fallback logic for Display Name: try extracted friendly name, otherwise fall back to unique ID.
     my $display_name = $shm_data && exists($shm_data->{'name'}) ? $shm_data->{'name'} : $dw_id;
 
-    $logger->debug("DWService: Preparing for inventory -> ID: $dw_id, NAME: $display_name");
+    $logger->debug("DWService: Preparing for inventory -> ID: $dw_id, NAME: $display_name") if $logger;
 
 
     # 4. Feed the GLPI Inventory structure
@@ -153,7 +152,7 @@ sub _extract_shm_data {
     my ($shm_file, $logger) = @_;
 
     unless (has_file($shm_file)) {
-        $logger->debug("DWService: SHM memory file not found. The agent might be offline.");
+        $logger->debug("DWService: SHM memory file not found. The agent might be offline.") if $logger;
         return;
     }
 
@@ -203,23 +202,11 @@ sub _extract_shm_data {
     };
 
     if ($@) {
-        $logger->debug("DWService: Failed to extract data from SHM - $@");
+        $logger->debug("DWService: Failed to extract data from SHM - $@") if $logger;
         return;
     }
 
     return \%extracted_data;
-}
-
-# --- Internal Helper: Extract install path from a macOS LaunchDaemon plist ---
-# The plist ProgramArguments first string is the executable, e.g.:
-#   /Library/DWAgent/native/DWAgentSvc.app/Contents/MacOS/DWAgentSvc
-# We match the path up to /native/ to get the install directory.
-sub _get_path_from_plist {
-    my ($plist) = @_;
-    return getFirstMatch(
-        file    => $plist,
-        pattern => qr{<string>(/.+?)/native/}
-    );
 }
 
 1;
