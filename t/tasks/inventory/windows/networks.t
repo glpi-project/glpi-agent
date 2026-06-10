@@ -37,7 +37,7 @@ my %tests = (
     },
 );
 
-my $plan = 1; # Base 1 test
+my $plan = 1;
 foreach my $test (keys %tests) {
     $plan += scalar (keys %{$tests{$test}});
 }
