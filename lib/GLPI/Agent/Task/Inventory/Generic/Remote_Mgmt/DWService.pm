@@ -5,8 +5,10 @@ use warnings;
 
 use parent 'GLPI::Agent::Task::Inventory::Module';
 
-use GLPI::Agent::Tools;
+use UNIVERSAL::require;
 use Cpanel::JSON::XS;
+
+use GLPI::Agent::Tools;
 
 # --- Helper: Dynamically find installation paths ---
 sub _get_base_paths {
@@ -40,7 +42,15 @@ sub _get_base_paths {
         my $plist = '/Library/LaunchDaemons/net.dwservice.agsvc.plist';
         if (has_file($plist)) {
             my $path = _get_path_from_plist($plist);
-            push @paths, $path if $path;
+            eval {
+                GLPI::Agent::XML->require();
+                my $xml = GLPI::Agent::XML->new(
+                    file     => $plist,
+                    is_plist => 1,
+                )->dump_as_hash();
+                my $path = $xml->{plist}->{ProgramArguments}->[1];
+                push @paths, $path if $path;
+            };
         }
         # Static fallback
         push @paths, '/Library/DWAgent';
