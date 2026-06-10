@@ -43,14 +43,14 @@ sub doInventory {
         delete $interface->{GUID};
 
         if ($interface->{PNPDEVICEID} && $interface->{PNPDEVICEID} =~ /^BTH/i) {
-            $interface->{TYPE} = 'bluetooth';
-
             my $parentInfo = _getBluetoothParentInfo($interface->{PNPDEVICEID});
             if ($parentInfo) {
                 $interface->{MANUFACTURER} = $parentInfo->{MANUFACTURER} if $parentInfo->{MANUFACTURER};
                 $interface->{MODEL}        = $parentInfo->{MODEL}        if $parentInfo->{MODEL};
             }
-        } elsif ($interface->{PNPDEVICEID} && !$interface->{TYPE}) {
+        }
+        
+        if ($interface->{PNPDEVICEID} && !$interface->{TYPE}) {
             my $type = _getMediaType($interface->{PNPDEVICEID}, $keys);
             $interface->{TYPE} = $type if defined($type);
         }
