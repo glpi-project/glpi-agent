@@ -6,7 +6,6 @@ use warnings;
 use parent 'GLPI::Agent::Task::Inventory::Module';
 
 use GLPI::Agent::Tools;
-use GLPI::Agent::Tools::Generic;
 use GLPI::Agent::Tools::Network;
 use GLPI::Agent::Tools::Win32;
 
@@ -48,23 +47,6 @@ sub doInventory {
             $interface->{TYPE} = $type if defined($type);
         }
 
-        if ($interface->{PCIID}) {
-            my ($vendor_id, $device_id) = split(':', $interface->{PCIID});
-            if ($vendor_id) {
-                my $vendor = getPCIDeviceVendor(
-                    id      => lc($vendor_id),
-                    datadir => $params{datadir},
-                    logger  => $params{logger}
-                );
-                if ($vendor) {
-                    $interface->{MANUFACTURER} = $vendor->{name} if $vendor->{name};
-                    if ($device_id && $vendor->{devices} && $vendor->{devices}->{lc($device_id)}) {
-                        my $device_name = $vendor->{devices}->{lc($device_id)}->{name};
-                        $interface->{MODEL} = $device_name if $device_name;
-                    }
-                }
-            }
-        }
 
         $inventory->addEntry(
             section => 'NETWORKS',
