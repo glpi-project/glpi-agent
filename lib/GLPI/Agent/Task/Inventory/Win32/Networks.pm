@@ -47,7 +47,6 @@ sub doInventory {
             $interface->{TYPE} = $type if defined($type);
         }
 
-
         $inventory->addEntry(
             section => 'NETWORKS',
             entry   => $interface
