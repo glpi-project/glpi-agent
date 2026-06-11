@@ -127,20 +127,17 @@ sub _getBluetoothParentInfo {
                 my $parentDeviceId = Encode::decode('UTF-16LE', $buffer);
                 $parentDeviceId =~ s/\0.*//;
 
-                # Fallback to WMI if either manufacturer or model is missing
-                if (!$info->{MANUFACTURER} || !$info->{MODEL}) {
-                    my $wmiQueryId = $parentDeviceId;
-                    $wmiQueryId =~ s/\\/\\\\/g;
-                    my ($parentDev) = GLPI::Agent::Tools::Win32::getWMIObjects(
-                        class      => 'Win32_PnPEntity',
-                        properties => [ qw/Manufacturer Caption/ ],
-                        query      => "SELECT Manufacturer, Caption FROM Win32_PnPEntity WHERE PNPDeviceID='$wmiQueryId'"
-                    );
+                my $wmiQueryId = $parentDeviceId;
+                $wmiQueryId =~ s/\\/\\\\/g;
+                my ($parentDev) = GLPI::Agent::Tools::Win32::getWMIObjects(
+                    class      => 'Win32_PnPEntity',
+                    properties => [ qw/Manufacturer Caption/ ],
+                    query      => "SELECT Manufacturer, Caption FROM Win32_PnPEntity WHERE PNPDeviceID='$wmiQueryId'"
+                );
 
-                    if ($parentDev) {
-                        $info->{MANUFACTURER} = $parentDev->{Manufacturer} if !$info->{MANUFACTURER} && $parentDev->{Manufacturer};
-                        $info->{MODEL}        = $parentDev->{Caption}      if !$info->{MODEL}        && $parentDev->{Caption};
-                    }
+                if ($parentDev) {
+                    $info->{MANUFACTURER} = $parentDev->{Manufacturer} if $parentDev->{Manufacturer};
+                    $info->{MODEL}        = $parentDev->{Caption}      if $parentDev->{Caption};
                 }
             }
         }
