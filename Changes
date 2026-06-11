@@ -30,6 +30,8 @@ netdiscovery/netinventory:
 * fix #1202: Update StormShield SNS support
 * Fix CDP integration to support connected device with an empty or zero-ed
   cdpCacheVersion field
+* PR #1189: Add Eltex devices support and discard phantom network ports
+  reported by some Eltex firmwares for non-existent interfaces
 
 packaging:
 * Update Windows packaging to use:
