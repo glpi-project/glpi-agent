@@ -127,33 +127,6 @@ sub _getBluetoothParentInfo {
                 my $parentDeviceId = Encode::decode('UTF-16LE', $buffer);
                 $parentDeviceId =~ s/\0.*//;
 
-                # Always query ID databases first
-                if ($parentDeviceId =~ /^USB\\VID_([0-9A-F]+)&PID_([0-9A-F]+)/i) {
-                    my $vid = $1;
-                    my $pid = $2;
-                    UNIVERSAL::require('GLPI::Agent::Tools::Generic');
-                    if ($GLPI::Agent::Tools::Generic::VERSION || defined(&GLPI::Agent::Tools::Generic::getUSBDeviceVendor)) {
-                        my $vendor = GLPI::Agent::Tools::Generic::getUSBDeviceVendor(id => lc($vid));
-                        if ($vendor) {
-                            $info->{MANUFACTURER} = $vendor->{name} if $vendor->{name};
-                            my $device = $vendor->{devices}->{lc($pid)};
-                            $info->{MODEL} = $device->{name} if $device && $device->{name};
-                        }
-                    }
-                } elsif ($parentDeviceId =~ /^PCI\\VEN_([0-9A-F]+)&DEV_([0-9A-F]+)/i) {
-                    my $ven = $1;
-                    my $dev = $2;
-                    UNIVERSAL::require('GLPI::Agent::Tools::Generic');
-                    if ($GLPI::Agent::Tools::Generic::VERSION || defined(&GLPI::Agent::Tools::Generic::getPCIDeviceVendor)) {
-                        my $vendor = GLPI::Agent::Tools::Generic::getPCIDeviceVendor(id => lc($ven));
-                        if ($vendor) {
-                            $info->{MANUFACTURER} = $vendor->{name} if $vendor->{name};
-                            my $device = $vendor->{devices}->{lc($dev)};
-                            $info->{MODEL} = $device->{name} if $device && $device->{name};
-                        }
-                    }
-                }
-
                 # Fallback to WMI if either manufacturer or model is missing
                 if (!$info->{MANUFACTURER} || !$info->{MODEL}) {
                     my $wmiQueryId = $parentDeviceId;
