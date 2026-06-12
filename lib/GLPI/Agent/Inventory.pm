@@ -116,7 +116,7 @@ my %checks = (
         INTERFACE => {
             # Check can be ignored since GLPI 10.0.4
             not_since   => glpiVersion('10.0.4'),
-            regexp      => qr/^(SCSI|HDC|IDE|USB|1394|SATA|SAS|ATAPI)$/
+            regexp      => qr/^(SCSI|HDC|IDE|USB|1394|SATA|SAS|ATAPI|NVME|RAID)$/i
         }
     },
     VIRTUALMACHINES => {
