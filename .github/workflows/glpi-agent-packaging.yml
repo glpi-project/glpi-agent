@@ -485,7 +485,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
-    - uses: snapcore/action-build@v1
+    - uses: TerryHowe/action-build@edf78ca622b1eb99b69f09420bb19f77e4f84ac1
       id: snapcraft
       env:
         TERM: ${{ env.TERM }}:${{ needs.setup-release.outputs.version }}
