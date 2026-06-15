@@ -487,6 +487,8 @@ jobs:
     - uses: actions/checkout@v6
     - uses: TerryHowe/action-build@edf78ca622b1eb99b69f09420bb19f77e4f84ac1
       id: snapcraft
+      snapcraft-channel: 8.x/stable
+      snapcraft-args: pack
       env:
         TERM: ${{ env.TERM }}:${{ needs.setup-release.outputs.version }}
     - name: Upload Snap built artifacts
