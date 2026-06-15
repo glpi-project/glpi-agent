@@ -62,6 +62,40 @@ my %tests = (
             MANUFACTURER => 'SEAGATE',
             TYPE         => 'disk'
         }
+    ],
+    sample2 => [
+        {
+            NAME         => 'a0e32s0',
+            DISKSIZE     => '953344',
+            DESCRIPTION  => 'SAS',
+            MODEL        => 'MG03ACA1',
+            MANUFACTURER => 'TOSHIBA',
+            TYPE         => 'disk'
+        },
+        {
+            NAME         => 'a0e32s1',
+            DISKSIZE     => '953344',
+            DESCRIPTION  => 'SAS',
+            MODEL        => 'ST1000NM0055-1V4',
+            MANUFACTURER => 'Seagate',
+            TYPE         => 'disk'
+        },
+        {
+            NAME         => 'a0e32s2',
+            DISKSIZE     => '953344',
+            DESCRIPTION  => 'SAS',
+            MODEL        => 'MG03ACA1',
+            MANUFACTURER => 'TOSHIBA',
+            TYPE         => 'disk'
+        },
+        {
+            NAME         => 'a0e32s3',
+            DISKSIZE     => '953344',
+            DESCRIPTION  => 'SAS',
+            MODEL        => 'ST1000NM0055-1V4',
+            MANUFACTURER => 'Seagate',
+            TYPE         => 'disk'
+        }
     ]
 );
 

@@ -26,20 +26,28 @@ sub _parseMegasasctl {
 
     my @storages;
     foreach my $line (@lines) {
-        unless( $line =~ /\s*([a-z]\d[a-z]\d+[a-z]\d+)\s+(\S+)\s+(\S+)\s*(\S+)\s+\S+\s+\S+\s*/ ){ next; }
-        my ( $disk_addr, $vendor, $model, $size ) = ( $1, $2, $3, $4 );
+        chomp($line);
 
-        if ( $size =~ /(\d+)GiB/ ){
-            $size = $1 * 1024;
+        my ($disk_addr, $info, $size) = split(/\s\s+/, $line);
+        next unless $disk_addr && $disk_addr =~ /^[a-z]\d[a-z]\d+[a-z]\d+$/;
+
+        my ($vendor, $model) = $info =~ /(\S+)\s(\S+)$/;
+
+        if ($vendor && $vendor eq "ATA") {
+            $vendor = getCanonicalManufacturer($model);
+            $vendor = "" if $vendor eq $model;
         }
 
-        my $storage;
-        $storage->{NAME} = $disk_addr;
-        $storage->{MANUFACTURER} = $vendor;
-        $storage->{MODEL} = $model;
-        $storage->{DESCRIPTION} = 'SAS';
-        $storage->{TYPE} = 'disk';
-        $storage->{DISKSIZE} = $size;
+        $size = 0 unless defined($size) && $size =~ /^\d+/;
+
+        my $storage = {
+            NAME            => $disk_addr,
+            MANUFACTURER    => $vendor // "",
+            MODEL           => $model,
+            DESCRIPTION     => 'SAS',
+            TYPE            => 'disk',
+            DISKSIZE        => int(getCanonicalSize($size)),
+        };
 
         push @storages, $storage;
     }
