@@ -155,7 +155,7 @@ sub _parseSnapYaml {
         } elsif ($line =~ /^[\s-]/) {
             next;
         } elsif ($line =~ /^installed:\s+.*\(.*\)\s+(\d+\S+)/) {
-            $snap->{FILESIZE} = getCanonicalSize($1, 1024) * 1048576;
+            $snap->{FILESIZE} = int(getCanonicalSize($1, 1024) * 1048576);
         } elsif ($line =~ $mapping_match_qr) {
             $snap->{$mapping{$1}} = $2;
         }

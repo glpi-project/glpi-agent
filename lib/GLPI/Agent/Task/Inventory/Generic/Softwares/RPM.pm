@@ -57,7 +57,7 @@ sub _getPackagesList {
             NAME        => $infos[0],
             ARCH        => $infos[1],
             VERSION     => $infos[2],
-            FILESIZE    => $infos[4],
+            FILESIZE    => int($infos[4]),
             COMMENTS    => $infos[6],
             FROM        => 'rpm',
             SYSTEM_CATEGORY => $infos[7]

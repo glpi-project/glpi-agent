@@ -10,6 +10,7 @@ inventory:
 * fix #1158: Fix possible use of uninitialized warning during monitor inventory
 * fix #1159: Fix possible use of uninitialized value in hash element warning during
   windows software inventory
+* Fix software filesize inventory support, essentialy for Snap packages
 
 netdiscovery/netinventory:
 * fix #1161: Add support for devices like Ubnt which annouce IEEE802.11 support
