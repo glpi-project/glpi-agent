@@ -17,6 +17,7 @@ inventory:
 * Fix software filesize inventory support, essentialy for Snap packages
 * fix #1171: Fix megasasctl output parsing
 * fix #1162: Fix MSSQL database inventory for Always On cluster instances
+* fix #1144: Fix crash on obsolete windows during processes inventory
 
 netdiscovery/netinventory:
 * fix #1161: Add support for devices like Ubnt which annouce IEEE802.11 support

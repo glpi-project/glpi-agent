@@ -52,7 +52,7 @@ sub _getProcesses {
 
     my %Processes;
     foreach my $object (getWMIObjects(
-        class      => 'Win32_Process',
+        query      => 'SELECT * FROM Win32_Process WHERE ProcessId>0',
         properties => [ qw/CommandLine ProcessId CreationDate CSName Name/ ],
         method     => 'GetOwner',
         params     => [ 'User', 'Domain' ],
