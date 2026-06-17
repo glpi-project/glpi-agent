@@ -143,10 +143,10 @@ sub switch_vlan_context {
     my $version_id = $self->{session}->version();
 
     my $version =
-        $version_id == SNMP_VERSION_1  ? 'snmpv1'  :
-        $version_id == SNMP_VERSION_2C ? 'snmpv2c' :
-        $version_id == SNMP_VERSION_3  ? 'snmpv3'  :
-                                          undef;
+        $version_id == &SNMP_VERSION_1  ? 'snmpv1'  :
+        $version_id == &SNMP_VERSION_2C ? 'snmpv2c' :
+        $version_id == &SNMP_VERSION_3  ? 'snmpv3'  :
+                                           undef;
 
     my $error;
     if ($version eq 'snmpv3') {

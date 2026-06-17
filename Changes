@@ -6,6 +6,7 @@ Warning for developers: Don't change/remove any entry which doesn't concern your
 
 core:
 * fix #1194: Fix ssl-keystore option support on windows
+* fix #1193: Fix constant usage not recognized in perl 5.16
 
 inventory:
 * fix #1149: Support NVMe SSD storage disks on MacOSX
