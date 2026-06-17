@@ -4,6 +4,9 @@ Warning for developers: Don't change/remove any entry which doesn't concern your
 
 1.18 not yet released
 
+core:
+* fix #1194: Fix ssl-keystore option support on windows
+
 inventory:
 * fix #1149: Support NVMe SSD storage disks on MacOSX
 * fix #1150: Fix lxd containers inventory on linux

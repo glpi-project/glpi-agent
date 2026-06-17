@@ -93,10 +93,11 @@ sub new {
     my @supported = sort {
         $orderedSupportedKeyStore{$a} <=> $orderedSupportedKeyStore{$b}
     } keys(%orderedSupportedKeyStore);
+    my $supported = join('|', @supported);
 
     my $self = {
         supported   => \@supported,
-        qrSupported => qr/^(@supported)$/i,
+        qrSupported => qr/^(?:$supported)$/i,
     };
 
     $sharedApi = bless $self, $class;
