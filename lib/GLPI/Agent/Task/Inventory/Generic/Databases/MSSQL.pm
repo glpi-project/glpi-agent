@@ -106,7 +106,7 @@ sub _getDatabaseService {
             sql => "SELECT sqlserver_start_time FROM sys.dm_os_sys_info",
             %params
         );
-        $starttime =~ s/\..*$//;
+        $starttime =~ s/\..*$// unless empty($starttime);
 
         my $dbs = GLPI::Agent::Inventory::DatabaseService->new(
             type            => "mssql",
@@ -115,7 +115,7 @@ sub _getDatabaseService {
             manufacturer    => $manufacturer,
             port            => $credential->{port} // "1433",
             is_active       => 1,
-            last_boot_date  => $starttime,
+            last_boot_date  => $starttime // "",
         );
 
         foreach my $db (_runSql(
@@ -125,22 +125,23 @@ sub _getDatabaseService {
             my ($db_name, $db_create, $state) = $db =~ /^(\S+);([^.]*)\.\d+;(\d+)$/
                 or next;
 
-            my ($size) = _runSql(
+            my $size = _runSql(
                 sql => "USE [$db_name] ; EXEC sp_spaceused",
                 %params
-            ) =~ /^$db_name;([0-9.]+\s*\S+);/;
-            if ($size) {
-                $size = getCanonicalSize($size, 1024);
+            );
+            if (!empty($size) && $size =~ /^$db_name;([0-9.]+\s*\S+);/) {
+                $size = getCanonicalSize($1, 1024);
                 $dbs_size += $size;
             } else {
-                undef $size;
+                $size = 0;
             }
 
             # Find update date
-            my ($updated) = _runSql(
+            my $updated = _runSql(
                 sql => "USE [$db_name] ; SELECT TOP(1) modify_date FROM sys.objects ORDER BY modify_date DESC",
                 %params
-            ) =~ /^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/;
+            );
+            $updated = !empty($updated) && $updated =~ /^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/ ? $1 : "";
 
             $dbs->addDatabase(
                 name            => $db_name,
