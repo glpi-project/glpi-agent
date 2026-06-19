@@ -18,6 +18,7 @@ inventory:
 * fix #1171: Fix megasasctl output parsing
 * fix #1162: Fix MSSQL database inventory for Always On cluster instances
 * fix #1144: Fix crash on obsolete windows during processes inventory
+* fix #1089: Fix Samsung LF22T450F monitor serialnumber
 
 netdiscovery/netinventory:
 * fix #1161: Add support for devices like Ubnt which annouce IEEE802.11 support
