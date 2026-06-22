@@ -5,13 +5,17 @@ use warnings;
 
 use parent 'GLPI::Agent::Task::Collect::Common';
 
+use UNIVERSAL::require;
+
 use constant    function    => "getFromWMI";
 
+use constant    OPTIONAL        => 0;
 use constant    MANDATORY       => 1;
 
 use constant    json_validation => {
     class      => MANDATORY,
-    properties => MANDATORY
+    properties => MANDATORY,
+    timeout    => OPTIONAL,
 };
 
 sub results {
@@ -33,7 +37,7 @@ sub results {
         push @results, $object;
     }
 
-    return @results;
+    return \@results;
 }
 
 1;

@@ -26,6 +26,11 @@ netdiscovery/netinventory:
 * fix #1164: Add support for Digi Anywhere modems
 * Add NetApp cluster support
 
+collect:
+* Security Advisory GHSA-mgcf-xgv7-5w4x: Validate server-controlled regular expression
+  in find file collect jobs. Limit regex size to 255 chars and abort job on regex
+  compilation error. And added timeout support.
+
 toolbox:
 * Fix configuration reloading to only reload it when really required
 * Fix undefined error on Results page while tag_filter is not set
