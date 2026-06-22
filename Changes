@@ -29,6 +29,8 @@ netdiscovery/netinventory:
 toolbox:
 * Fix configuration reloading to only reload it when really required
 * Fix undefined error on Results page while tag_filter is not set
+* Security Advisory GHSA-cwg9-jj5m-pq4q: Fix stored XSS via SNMP community/authprotocol
+  credential fields
 
 packaging:
 * fix: Update macOS postinstall, preinstall and uninstaller to use launchctl

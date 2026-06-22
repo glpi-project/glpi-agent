@@ -74,7 +74,7 @@ sub update_template_hash {
     my $credentials = $self->yaml('credentials') || {};
     my $yaml_config = $self->yaml('configuration') || {};
 
-    # Update Text::Template HASH but protect some values by encoding html entities
+    # Update Text::Template HASH but protect values by encoding html entities
     foreach my $base (qw(credentials)) {
         $hash->{$base} = {};
         next unless $yaml->{$base};
@@ -83,9 +83,7 @@ sub update_template_hash {
             foreach my $key (keys(%{$entry})) {
                 my $value = $entry->{$key};
                 next unless defined($value);
-                $value = encode('UTF-8', encode_entities($value))
-                    if $key =~ /^name|description|username|authpassword|privpassword$/;
-                $hash->{$base}->{$name}->{$key} = $value;
+                $hash->{$base}->{$name}->{$key} = encode('UTF-8', encode_entities($value));
             }
         }
     }
