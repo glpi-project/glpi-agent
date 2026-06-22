@@ -19,6 +19,8 @@ inventory:
 * fix #1162: Fix MSSQL database inventory for Always On cluster instances
 * fix #1144: Fix crash on obsolete windows during processes inventory
 * fix #1089: Fix Samsung LF22T450F monitor serialnumber
+* Security Advisory GHSA-vwv6-85p7-mjvc: Fix using not validated username in Oracle
+  database inventory su command usage
 
 netdiscovery/netinventory:
 * fix #1161: Add support for devices like Ubnt which annouce IEEE802.11 support

@@ -384,7 +384,7 @@ sub _runSql {
                     filter      => qr/^asm_pmon_$ENV{ORACLE_SID}/,
                     logger      => $params{logger}
                 );
-                $user = $asm_pmon->{USER} if $asm_pmon;
+                $user = $asm_pmon->{USER} if $asm_pmon && $asm_pmon =~ /^[+0-9A-Z_a-z]+$/;
                 $env = "ORACLE_SID=$ENV{ORACLE_SID}";
             }
             foreach my $key (qw(ORACLE_HOME ORACLE_BASE LD_LIBRARY_PATH)) {
@@ -393,6 +393,7 @@ sub _runSql {
                 $env .= "$key='$ENV{$key}'";
             }
             if ($env) {
+                $env =~ s/'/\\'/g;
                 $command = sprintf("su $user -c '%s %s'", $env, $command);
             } else {
                 $command = sprintf("su $user -c '%s'", $command);
