@@ -148,7 +148,7 @@ sub _submit_add {
     # Validate input/name before updating
     my $name = $form->{'input/name'};
     if ($name && exists($credentials->{$name})) {
-        $name = encode('UTF-8', $name);
+        $name = encode('UTF-8', encode_entities($name));
         return $self->errors("New credential: An entry still exists with that name: '$name'");
     }
     if ($form->{'input/name'}) {
@@ -158,7 +158,7 @@ sub _submit_add {
         if ($type eq 'snmp') {
             if (!$form->{"input/snmpversion"}) {
                 return $self->errors("New credential: SNMP version is mandatory");
-            } elsif ($form->{"input/snmpversion"} !~ /v1|v2c|v3/) {
+            } elsif ($form->{"input/snmpversion"} !~ /^v1|v2c|v3$/) {
                 return $self->errors("New credential: Wrong SNMP version");
             } elsif ($form->{"input/snmpversion"} =~ /v1|v2c/ && !$form->{"input/community"}) {
                 return $self->errors("New credential: Community is mandatory with version: ".$form->{"input/snmpversion"});
@@ -197,9 +197,9 @@ sub _submit_add {
             } elsif (grep { m{^checkbox/mode/} && $form->{$_} eq 'on'} keys(%{$form})) {
                 my @modes = map { m{^checkbox/mode/(.*)$} } grep { m{^checkbox/mode/} } keys(%{$form});
                 foreach my $mode (@modes) {
-                    return $self->errors(sprintf("New credential: Unsupported mode for SSH removeinventory: %s", $mode))
+                    return $self->errors(sprintf("New credential: Unsupported mode for SSH removeinventory: %s", encode('UTF-8', encode_entities($mode))))
                         if $type eq 'ssh' && $mode !~ /^ssh|libssh2|perl$/;
-                    return $self->errors(sprintf("New credential: Unsupported mode for WINRM removeinventory: %s", $mode))
+                    return $self->errors(sprintf("New credential: Unsupported mode for WINRM removeinventory: %s", encode('UTF-8', encode_entities($mode))))
                         if $type eq 'winrm' && $mode !~ /^ssl$/;
                 }
                 $form->{'input/mode'} = join(",", @modes);
@@ -245,7 +245,7 @@ sub _submit_update {
         if ($type eq 'snmp') {
             if (!$form->{"input/snmpversion"}) {
                 return $self->errors("Credential update: SNMP version is mandatory");
-            } elsif ($form->{"input/snmpversion"} !~ /v1|v2c|v3/) {
+            } elsif ($form->{"input/snmpversion"} !~ /^v1|v2c|v3$/) {
                 return $self->errors("Credential update: Wrong SNMP version");
             } elsif ($form->{"input/snmpversion"} =~ /v1|v2c/ && !$form->{"input/community"}) {
                 return $self->errors("Credential update: Community is mandatory with version: ".$form->{"input/snmpversion"});
@@ -274,9 +274,9 @@ sub _submit_update {
             } elsif (grep { m{^checkbox/mode/} && $form->{$_} eq 'on'} keys(%{$form})) {
                 my @modes = map { m{^checkbox/mode/(.*)$} } grep { m{^checkbox/mode/} } keys(%{$form});
                 foreach my $mode (@modes) {
-                    return $self->errors(sprintf("Credential update: Unsupported mode for SSH removeinventory: %s", $mode))
+                    return $self->errors(sprintf("Credential update: Unsupported mode for SSH removeinventory: %s", encode('UTF-8', encode_entities($mode))))
                         if $type eq 'ssh' && $mode !~ /^ssh|libssh2|perl$/;
-                    return $self->errors(sprintf("Credential update: Unsupported mode for WINRM removeinventory: %s", $mode))
+                    return $self->errors(sprintf("Credential update: Unsupported mode for WINRM removeinventory: %s", encode('UTF-8', encode_entities($mode))))
                         if $type eq 'winrm' && $mode !~ /^ssl$/;
                 }
                 $form->{'input/mode'} = join(",", @modes);
@@ -299,7 +299,7 @@ sub _submit_update {
         my $newname = $form->{'input/name'};
         if (defined($newname) && length($newname) && $newname ne $edit) {
             if (exists($credentials->{$newname})) {
-                $newname = encode('UTF-8', $newname);
+                $newname = encode('UTF-8', encode_entities($newname));
                 return $self->errors("Rename credentials: An entry still exists with that name: '$newname'");
             }
 
@@ -346,7 +346,7 @@ sub _submit_update {
             if exists($credentials->{$edit}->{port});
         $self->need_save(credentials);
     } else {
-        $self->errors("Credential update: No such credential: '$edit'");
+        $self->errors("Credential update: No such credential: '".encode('UTF-8', encode_entities($edit))."'");
         $self->reset_edit();
     }
 }
@@ -363,7 +363,7 @@ sub _submit_delete {
         unless @delete;
 
     my $used = $self->_used_credentials(\@delete);
-    return $self->errors("Delete credential: Can't delete used credential: ".$used)
+    return $self->errors("Delete credential: Can't delete used credential: ".encode('UTF-8', encode_entities($used)))
         if $used;
 
     foreach my $name (@delete) {

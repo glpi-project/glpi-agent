@@ -137,7 +137,7 @@ sub _submit_add {
     # Validate input/name before updating
     my $name = trimWhitespace($form->{'input/name'} || $form->{'edit'} || "");
     if ($name && exists($scheduling->{$name})) {
-        $name = encode('UTF-8', $name);
+        $name = encode('UTF-8', encode_entities($name));
         return $self->errors("New scheduling: An entry still exists with that name: '$name'");
     }
     if ($name) {
@@ -245,7 +245,7 @@ sub _submit_update {
         my $newname = $form->{'input/name'};
         if (defined($newname) && length($newname) && $newname ne $edit) {
             if (exists($scheduling->{$newname})) {
-                $newname = encode('UTF-8', $newname);
+                $newname = encode('UTF-8', encode_entities($newname));
                 return $self->errors("Rename scheduling: An entry still exists with that name: '$newname'");
             }
 
@@ -285,7 +285,7 @@ sub _submit_update {
         }
         $self->need_save(scheduling);
     } else {
-        $self->errors("Scheduling update: No such scheduling: '$edit'");
+        $self->errors("Scheduling update: No such scheduling: '".encode('UTF-8', encode_entities($edit))."'");
         $self->reset_edit();
     }
 }
@@ -311,7 +311,7 @@ sub _submit_delete {
         foreach my $scheduling (@{$job->{scheduling}}) {
             next if exists($used{$scheduling});
             next unless exists($delete{$scheduling});
-            $used{$scheduling} = encode('UTF-8', $scheduling);
+            $used{$scheduling} = encode('UTF-8', encode_entities($scheduling));
             delete $delete{$scheduling};
             last unless --$keys;
         }

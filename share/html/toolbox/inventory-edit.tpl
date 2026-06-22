@@ -161,7 +161,7 @@
             foreach my $tag (@tag_options) {
               my $encoded = encode('UTF-8', encode_entities($tag));
               $OUT .= "
-            <option id='option-$tag'".
+            <option id='option-$encoded'".
                   ( $edit_tag && $edit_tag eq $tag ? " selected" : "" ).
                   " value='$encoded'>$encoded</option>"
             }}

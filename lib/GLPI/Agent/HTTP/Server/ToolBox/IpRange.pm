@@ -173,7 +173,7 @@ sub _submit_add {
     # Validate input/name before updating
     my $name = trimWhitespace($form->{'input/name'} || $form->{'edit'} || "");
     if ($name && exists($ip_range->{$name})) {
-        $name = encode('UTF-8', $name);
+        $name = encode('UTF-8', encode_entities($name));
         return $self->errors("New IP range: An entry still exists with that name: '$name'");
     }
     if ($name) {
@@ -291,7 +291,7 @@ sub _submit_update {
         }
         $self->need_save(ip_range);
     } else {
-        $self->errors("IP range update: No such IP range: '$edit'");
+        $self->errors("IP range update: No such IP range: '".encode('UTF-8', encode_entities($edit))."'");
         $self->reset_edit();
     }
 }
@@ -321,7 +321,7 @@ sub _submit_delete {
         foreach my $iprange (@{$config->{ip_range}}) {
             next if exists($used{$iprange});
             next unless exists($delete{$iprange});
-            $used{$iprange} = encode('UTF-8', $iprange);
+            $used{$iprange} = encode('UTF-8', encode_entities($iprange));
             delete $delete{$iprange};
             last unless --$keys;
         }
@@ -390,7 +390,7 @@ sub _submit_rmcredential {
 
     foreach my $name (@selected) {
         unless ($ip_range->{$name}) {
-            $name = encode('UTF-8', $name);
+            $name = encode('UTF-8', encode_entities($name));
             $self->errors("IP range credential removing: No such IP range: $name");
             next;
         }
