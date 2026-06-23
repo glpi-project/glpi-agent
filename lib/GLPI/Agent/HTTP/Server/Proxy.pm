@@ -22,7 +22,7 @@ use GLPI::Agent::Protocol::Answer;
 use GLPI::Agent::HTTP::Server::Proxy::Message;
 use GLPI::Agent::HTTP::Server::Proxy::Reply;
 
-our $VERSION = "3.0";
+our $VERSION = "3.1";
 
 sub urlMatch {
     my ($self, $path) = @_;
