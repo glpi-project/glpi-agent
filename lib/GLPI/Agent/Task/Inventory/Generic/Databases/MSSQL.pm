@@ -41,6 +41,9 @@ sub _getDatabaseService {
     my $credentials = delete $params{credentials};
     return [] unless $credentials && ref($credentials) eq 'ARRAY';
 
+    # Only login_password can be submitted by server
+    $credentials = [ grep { !empty($_->{type}) && $_->{type} eq "login_password" } @{$credentials} ];
+
     # Handle default credentials case
     if (@{$credentials} == 1 && !keys(%{$credentials->[0]})) {
         # On windows, we can discover instance names in registry but not during tests
@@ -64,7 +67,7 @@ sub _getDatabaseService {
         # Add SQLExpress default credential when trying default credential
         push @{$credentials}, {
             type    => "login_password",
-            socket  => "localhost\\SQLExpress",
+            socket  => "tcp:localhost\\SQLExpress",
         };
     }
 
@@ -75,6 +78,9 @@ sub _getDatabaseService {
         unless canRun('sqlcmd');
 
     foreach my $credential (@{$credentials}) {
+
+        delete $ENV{SQLCMDPASSWORD};
+
         GLPI::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
         $params{options} = _mssqlOptions($credential) // "-l 5";
 
@@ -125,8 +131,11 @@ sub _getDatabaseService {
             my ($db_name, $db_create, $state) = $db =~ /^(\S+);([^.]*)\.\d+;(\d+)$/
                 or next;
 
-            my $size = _runSql(
-                sql => "USE [$db_name] ; EXEC sp_spaceused",
+            my $escaped_db_name = $db_name;
+            $escaped_db_name =~ s/]/]]/g;
+
+            my ($size) = _runSql(
+                sql => "USE [$escaped_db_name] ; EXEC sp_spaceused",
                 %params
             );
             if (!empty($size) && $size =~ /^$db_name;([0-9.]+\s*\S+);/) {
@@ -137,8 +146,8 @@ sub _getDatabaseService {
             }
 
             # Find update date
-            my $updated = _runSql(
-                sql => "USE [$db_name] ; SELECT TOP(1) modify_date FROM sys.objects ORDER BY modify_date DESC",
+            my ($updated) = _runSql(
+                sql => "USE [$escaped_db_name] ; SELECT TOP(1) modify_date FROM sys.objects ORDER BY modify_date DESC",
                 %params
             );
             $updated = !empty($updated) && $updated =~ /^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/ ? $1 : "";
@@ -166,9 +175,19 @@ sub _runSql {
     my $sql = delete $params{sql}
         or return;
 
+    File::Temp->require();
+
+    my $sqlfile = File::Temp->new(
+        TEMPLATE    => 'mssql-XXXXXX',
+        SUFFIX      => '.sql',
+    );
+    return unless $sqlfile;
+    print $sqlfile $sql;
+    close($sqlfile);
+
     my $command = $params{sqlcmd} // "sqlcmd";
     $command .= " ".$params{options} if defined($params{options});
-    $command .= " -X1 -t 30 -K ReadOnly -r1 -W -h -1 -s \";\" -Q \"$sql\"";
+    $command .= ' -X1 -t 30 -K ReadOnly -r1 -W -h -1 -s ";" -No -i "'.$sqlfile->filename.'"';
 
     # Only to support unittests
     if ($params{file}) {
@@ -201,6 +220,20 @@ sub _runSql {
     }
 }
 
+sub _getSanitizedHostname {
+    my $string = trimWhitespace(getSanitizedString(@_));
+
+    return if empty($string);
+
+    # Clean string but keep colon (:) to also support IPv6 address as hostname
+    $string =~ s/[^-.0-9:A-Z_a-z]//g;
+
+    # Validate hostname length
+    return if length($string) > 253;
+
+    return $string;
+}
+
 sub _mssqlOptions {
     my ($credential) = @_;
 
@@ -208,19 +241,23 @@ sub _mssqlOptions {
 
     my $options = "-l 5";
     if ($credential->{type} eq "login_password") {
-        if ($credential->{host}) {
+        $credential->{host} = _getSanitizedHostname($credential->{host});
+        unless (empty($credential->{host})) {
             $options  = "-l 30";
             $options .= " -S $credential->{host}" ;
-            $options .= ",$credential->{port}" if $credential->{port};
+            $options .= ",$credential->{port}" if !empty($credential->{port}) && $credential->{port} =~ /^[1-9]\d*$/ && int($credential->{port}) <= 65535;
         }
-        $options .= " -U $credential->{login}" if $credential->{login};
-        $options .= " -S $credential->{socket}" if ! $credential->{host} && $credential->{socket};
-        if ($credential->{password}) {
-            $credential->{password} =~ s/"/\\"/g;
-            $options .= ' -P "'.$credential->{password}.'"' ;
+        unless (empty($credential->{login}) || $credential->{login} !~ /^[#\$\-0-9\@A-Z\\_a-z]+$/) {
+            $options .= $credential->{login} =~ /^\w+$/ ? " -U $credential->{login}" : " -U '$credential->{login}'";
         }
-    } elsif ($credential->{type} eq "_discovered_instance" && $credential->{instance}) {
-        $options .= " -S .\\$credential->{instance}" ;
+        $options .= " -S $credential->{socket}" if empty($credential->{host}) && !empty($credential->{socket})
+            && $credential->{socket} =~ /^tcp:[\-.0-9:A-Z_a-z]+(?:\\[\$\w]+)?(?:,\d+)?$/;
+        # Set password as environment variable
+        $ENV{SQLCMDPASSWORD} = $credential->{password}
+            unless empty($credential->{password});
+    } elsif ($credential->{type} eq "_discovered_instance" && !empty($credential->{instance})) {
+        $options .= " -S .\\$credential->{instance}"
+            if $credential->{instance} =~ /^[\$\w]+$/;
     }
 
     return $options;
