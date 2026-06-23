@@ -441,6 +441,20 @@ sub _runSql {
     }
 }
 
+sub _getSanitizedHostname {
+    my $string = trimWhitespace(getSanitizedString(@_));
+
+    return if empty($string);
+
+    # Clean string but keep colon (:) to also support IPv6 address as hostname
+    $string =~ s/[^-.0-9:A-Z_a-z]//g;
+
+    # Validate hostname length
+    return if length($string) > 253;
+
+    return $string;
+}
+
 sub _oracleConnect {
     my ($params, $credential) = @_;
 
@@ -448,23 +462,44 @@ sub _oracleConnect {
 
     return unless $credential->{type};
 
+    map { $credential->{$_} = getSanitizedString($credential->{$_}) } grep {
+        !empty($credential->{$_})
+    } qw(login password socket host port);
+
     if ($credential->{type} eq "login_password" && $credential->{login} && $credential->{password}) {
 
         my ($login, $as) = $credential->{login} =~ /^(\S+)(?:\s+AS\s+(\S+))?$/i;
 
         $as = "SYSDBA" if !$as && $login =~ /^SYS/i;
 
-        my $options = "CONNECT $login";
-        $options .= "/".$credential->{password};
+        my $options = "CONNECT ".($login // "");
+        # Validate password with Oracle supported chars for password and quote it if it contains special characters
+        if ($credential->{password} =~ /^[!#-%'-)+-:?-{}~]+$/i) {
+            if ($credential->{password} =~ /^\w+$/) {
+                $options .= "/".$credential->{password};
+            } else {
+                $options .= '/"'.$credential->{password}.'"';
+            }
+        }
 
         $params->{remote} = 0;
         if ($credential->{socket} && $credential->{socket} =~ /^connect:(.*)$/) {
-            $options .= "\@$1";
+            my $connect = trimWhitespace($1);
+            # remove possible illegal chars
+            $connect =~ s/[\\']//g;
+            if ($connect =~ /\s/) {
+                $options .= "\@'$connect'";
+            } else {
+                $options .= "\@$connect";
+            }
             $params->{remote} = 1;
         } elsif ($credential->{host}) {
-            $options .= "\@$credential->{host}";
-            $options .= ":$credential->{port}" if $credential->{port};
-            $params->{remote} = 1;
+            my $host = _getSanitizedHostname($credential->{host});
+            unless (empty($host)) {
+                $options .= "\@$host";
+                $options .= ":$credential->{port}" if !empty($credential->{port}) && $credential->{port} =~ /^\d+$/ && int($credential->{port}) <= 65535;
+                $params->{remote} = 1;
+            }
         }
         $options .= " AS $as" if $as;
         $params->{connect} = $options;

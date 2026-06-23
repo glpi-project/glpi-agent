@@ -360,13 +360,26 @@ sub _runSql {
 sub _db2Connect {
     my ($credential) = @_;
 
-    return unless $credential->{type};
+    return if empty($credential->{type}) || $credential->{type} ne "login_password";
 
-    my $connect = "";
-    if ($credential->{type} eq "login_password" && $credential->{login} && $credential->{socket} && $credential->{password}) {
-        $connect  = "CONNECT TO ".$credential->{socket};
-        $connect .= " USER ".$credential->{login};
+    map { $credential->{$_} = getSanitizedString($credential->{$_}) } grep {
+        !empty($credential->{$_})
+    } qw(login password socket);
+
+    return if empty($credential->{socket}) || $credential->{socket} !~ /^[\--:=A-Z_]+$/i;
+
+    my $connect = "CONNECT TO ".$credential->{socket};
+
+    return $connect if empty($credential->{login}) || $credential->{login} !~ /^\w+(?:[@\\]\w+)?$/ || empty($credential->{password});
+
+    $connect .= " USER ".$credential->{login};
+
+    # Password has to be quoted if it contains space ! " ' () , or eol
+    if ($credential->{password} =~ /^[#-&*+\--~]+$/) {
         $connect .= " USING ".$credential->{password};
+    } else {
+        $credential->{password} =~ s/'/''/g;
+        $connect .= " USING '".$credential->{password}."'";
     }
 
     return $connect;
