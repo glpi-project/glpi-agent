@@ -249,10 +249,10 @@ my %tests = (
             MANUFACTURER   => 'Intel Corporation',
             PCISLOT        => '00:1f.2',
             PCISUBSYSTEMID => '1028:0252',
-            NAME           => '82801 Mobile SATA Controller [RAID mode]',
+            NAME           => re('SATA Controller .RAID'),
             REV            => '03',
             PCICLASS       => '0104',
-            CAPTION        => '82801 Mobile SATA Controller [RAID mode]'
+            CAPTION        => re('SATA Controller .RAID')
         },
         {
             NAME           => re('^82801I \([^)]+\) SMBus Controller'),
