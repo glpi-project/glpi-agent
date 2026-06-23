@@ -29,6 +29,8 @@ inventory:
   command injection with crafted database name
 * [SECURITY] Fix CVE-2026-52764: Fixed Mssql inventory module allowed command injection
   with compromised glpi server
+* Updated pci.ids to 2026.06.21 version
+* Updated usb.ids to 2026.06.10 version
 
 netdiscovery/netinventory:
 * fix #1161: Add support for devices like Ubnt which annouce IEEE802.11 support
