@@ -39,6 +39,10 @@ proxy-server-plugin:
 * [SECURITY] Fix CVE-2026-42187: When local_store is enabled, Proxy plugin can allow
   arbitrary file write
 
+deploy:
+* [SECURITY] Fix CVE-2026-52768: Fix GLPI::Agent::Tools::Archive to mimic unzip
+  command and to block possible path traversal during zip archive extraction
+
 toolbox:
 * Fix configuration reloading to only reload it when really required
 * Fix undefined error on Results page while tag_filter is not set
