@@ -23,6 +23,8 @@ inventory:
   database inventory su command usage
 * [SECURITY] Fix CVE-2026-52765: Sanitize credentials provided by server for DB2
   and Oracle database inventory
+* [SECURITY] Fix CVE-2026-45621: MongoDB inventory module allows JavaScript injection
+  via unescaped login credential field provided by database-inventory glpi plugin
 
 netdiscovery/netinventory:
 * fix #1161: Add support for devices like Ubnt which annouce IEEE802.11 support
