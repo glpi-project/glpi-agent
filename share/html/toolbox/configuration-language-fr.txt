@@ -11,7 +11,6 @@ Navigation bar: Barre de navigation
 Show Credentials in navigation bar: Afficher la navigation vers les identifiants
 Show Inventory tasks in navigation bar: Afficher la navigation vers les tâches d'inventaire
 Show IP Ranges in navigation bar: Afficher la navigation vers les plages IP
-Show Remotes in navigation bar: Afficher la navigation vers les inventaires distants
 Show Results in navigation bar: Afficher la navigation vers les résultats
 Show Scheduling in navigation bar: Afficher la navigation vers la planification
 Show Raw YAML navigation: Afficher la navigation vers le YAML brute
@@ -41,9 +40,6 @@ Disable MibSupport in agent: Désactiver le support de MIB dans l'agent
 MibSupport YAML file: Fichier YAML pour le support de MIB
 Session timeout: Délai d'expiration de la session
 Other fields to show in dedicated section: Autres champs à afficher dans une section dédiée
-Show remote password: Afficher les mots de passe d'inventaire distant
-Allow remotes administration: Autoriser la gestion des inventaires distants
-Show remotes expiration time: Afficher la date d'expiration des inventaires distants
 
 Backup YAML: Sauvegarde du YAML
 

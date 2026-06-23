@@ -58,6 +58,7 @@ toolbox:
 * [SECURITY] Fix CVE-2026-40936: Toolbox can only register file it generated and
   guaranty only Toolbox generated file can be deleted
 * [SECURITY] Fix CVE-2026-49285: OS Command Injection in Results export
+* [SECURITY] Fix CVE-2026-TODO: Remove deprecated remotes management
 
 packaging:
 * fix: Update macOS postinstall, preinstall and uninstaller to use launchctl

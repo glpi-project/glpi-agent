@@ -12,7 +12,6 @@ IP Ranges: Plages IP
 IP range: Plage IP
 Credentials: Identifiants
 Scheduling: Planification
-Remotes: Inventaires distants
 
 
 
