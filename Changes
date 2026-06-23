@@ -33,6 +33,10 @@ collect:
   in find file collect jobs. Limit regex size to 255 chars and abort job on regex
   compilation error. And added timeout support.
 
+proxy-server-plugin:
+* [SECURITY] Fix CVE-2026-42187: When local_store is enabled, Proxy plugin can allow
+  arbitrary file write
+
 toolbox:
 * Fix configuration reloading to only reload it when really required
 * Fix undefined error on Results page while tag_filter is not set

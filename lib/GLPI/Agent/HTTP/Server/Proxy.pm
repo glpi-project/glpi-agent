@@ -417,7 +417,14 @@ sub _handle_glpi_protocol_request {
 
     if ($local_store && $action ne "contact") {
         my $file = $local_store;
-        my $json = ($message->get("deviceid") || $agentid).".json";
+        my $raw_id = $message->get("deviceid") || $agentid;
+
+        unless ($raw_id =~ /^[\w\-\.]+$/) {
+            $self->error("Invalid deviceid format from $remoteid");
+            return $self->proxy_error(400, "Invalid deviceid");
+        }
+
+        my $json = "$raw_id.json";
         $file =~ s|/*$||;
         $file .= "/$json";
         $self->debug("Saving $json from $remoteid in $local_store");
