@@ -25,6 +25,8 @@ inventory:
   and Oracle database inventory
 * [SECURITY] Fix CVE-2026-45621: MongoDB inventory module allows JavaScript injection
   via unescaped login credential field provided by database-inventory glpi plugin
+* [SECURITY] Fix CVE-2026-46615: Fixed Mysql and PostgreSQL inventory module allowed
+  command injection with crafted database name
 
 netdiscovery/netinventory:
 * fix #1161: Add support for devices like Ubnt which annouce IEEE802.11 support

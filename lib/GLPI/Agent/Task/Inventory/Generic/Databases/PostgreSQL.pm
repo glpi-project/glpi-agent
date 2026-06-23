@@ -45,6 +45,9 @@ sub _getDatabaseService {
 
     # Still cleanup PG environment
     delete $ENV{PGPASSFILE};
+    delete $ENV{PGHOST};
+    delete $ENV{PGPORT};
+    delete $ENV{PGUSER};
 
     # List of instance to loop on when using default credentials
     my @instances;
@@ -52,20 +55,20 @@ sub _getDatabaseService {
     my ($uid, $cansudo);
 
     foreach my $credential (@{$credentials}) {
+        my $passfile;
         unless (@instances) {
             GLPI::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
-            my $passfile = _psqlPgpassFile($credential);
+            $passfile = _psqlPgpassFile($credential);
             $ENV{PGPASSFILE} = $passfile->filename if $passfile;
+            $ENV{PGHOST} = $credential->{host}  unless empty($credential->{host});
+            $ENV{PGPORT} = $credential->{port}  unless empty($credential->{port});
+            $ENV{PGUSER} = $credential->{login} unless empty($credential->{login});
         }
 
         delete $params{sudo};
+        delete $params{uid};
 
-        $params{options} = "";
-        $params{options} .= " -h \"$credential->{host}\""  unless empty($credential->{host});
-        $params{options} .= " -p $credential->{port}"      if $credential->{port} && $credential->{port} =~ /^\d+$/;
-        $params{options} .= " -U \"$credential->{login}\"" unless empty($credential->{login});
-
-        unless ($params{options}) {
+        unless ($ENV{PGHOST}) {
 
             # List postgresql processes and analyze parameters
             unless (@instances) {
@@ -83,7 +86,9 @@ sub _getDatabaseService {
                 my $instance = shift @instances;
                 # Filter out possible command injection try
                 if ($instance->{CMD} && $instance->{CMD} !~ /[;"&|`\$<>[:cntrl:]]/) {
-                    $user = $instance->{USER};
+                    # Only support safe users
+                    $user = $instance->{USER}
+                        if $instance->{USER} && $instance->{USER} =~ /^[-_0-9A-Za-z]+$/;
                     $cmd = $instance->{CMD};
                     unless (defined($uid)) {
                         $uid = getFirstLine(command => "id -u");
@@ -102,6 +107,8 @@ sub _getDatabaseService {
             }
 
             if ($cmd && $params{sudo}) {
+                # Required to change sqlfile ownership
+                $params{uid} = getpwnam($user);
                 my $request = sprintf($params{sudo}, "$cmd -C unix_socket_directories");
                 my $unix_socket_directories = getFirstLine(command => $request, logger => $params{logger});
                 $params{options} = " -h \"$unix_socket_directories\""
@@ -149,8 +156,15 @@ sub _getDatabaseService {
             %params
         )) {
             my ($db, $oid) = split(",",$dbinfo);
+            next if empty($oid) || $oid !~ /^\d+$/;
+            # Use db name ad Dollar-Quoted string constant for safety
+            my $ctag = "db$oid";
+            while ($db =~ /[\$]$ctag[\$]/) {
+                $ctag .= "_" . int(rand(10));
+            }
+            $ctag = '$'.$ctag.'$';
             my $size = _runSql(
-                sql => "SELECT pg_size_pretty(pg_database_size('$db'))",
+                sql => "SELECT pg_size_pretty(pg_database_size($ctag$db$ctag))",
                 %params
             );
             if ($size) {
@@ -187,6 +201,9 @@ sub _getDatabaseService {
 
         # Cleanup PG environment
         delete $ENV{PGPASSFILE};
+        delete $ENV{PGHOST};
+        delete $ENV{PGPORT};
+        delete $ENV{PGUSER};
 
         redo if @instances;
     }
@@ -207,10 +224,31 @@ sub _runSql {
     my $sql = delete $params{sql}
         or return;
 
+    $params{logger}->debug2("Running sql request: $sql") if $params{logger};
+
+    File::Temp->require();
+
+    my $psql = File::Temp->new(
+        TEMPLATE    => 'psql-XXXXXX',
+        SUFFIX      => '.sql',
+    );
+    return unless $psql;
+    print $psql $sql, ";\n";
+    close($psql);
+
+    my $sqlfile = $psql->filename
+        or return;
+    return unless -s $sqlfile;
+
     my $options = delete $params{options};
-    my $command = "psql".$options;
-    $command .= " -Anqtw -F, -c \"$sql\" connect_timeout=30";
+    my $command = "psql";
+    $command .= $options unless empty($options);
+    $command .= " -Anqtw -F, -f \"$sqlfile\" connect_timeout=30";
     if ($params{sudo}) {
+        if ($params{uid}) {
+            my $uid = delete $params{uid};
+            chown $uid, -1, $sqlfile;
+        }
         my $sudo = delete $params{sudo};
         $command =~ s/"/\\"/g if $sudo =~ /^su /;
         $command = sprintf($sudo, $command);
@@ -240,6 +278,20 @@ sub _runSql {
     }
 }
 
+sub _getSanitizedHostname {
+    my $string = trimWhitespace(getSanitizedString(@_));
+
+    return if empty($string);
+
+    # Clean string but keep colon (:) to also support IPv6 address as hostname
+    $string =~ s/[^-.0-9:A-Z_a-z]//g;
+
+    # Validate hostname length
+    return if length($string) > 253;
+
+    return $string;
+}
+
 sub _psqlPgpassFile {
     my ($credential) = @_;
 
@@ -249,17 +301,29 @@ sub _psqlPgpassFile {
     if ($credential->{type} eq "login_password" && $credential->{password}) {
         File::Temp->require();
 
+        # Sanitize login_password credentials
+        $credential->{host} = _getSanitizedHostname($credential->{host});
+        # Limit login format to only safe characters
+        delete $credential->{login} unless empty($credential->{login}) || $credential->{login} =~ /^[-.0-9\@A-Z_a-z]+$/i;
+        delete $credential->{port} unless empty($credential->{port}) || ($credential->{port} =~ /^\d+$/ && int($credential->{port}) <= 65535);
+
+        my $host = $credential->{host} // '';
+        $host =~ s/:/\\:/g;
+
+        my $pwd = $credential->{password};
+        $pwd =~ s/:/\\:/g;
+
         $fh = File::Temp->new(
             TEMPLATE    => 'pgpass-XXXXXX',
             SUFFIX      => '.conf',
             PERMS       => 0600, ## no critic
         );
         print $fh join(":",
-            $credential->{host} || "*",
+            $host || "*",
             $credential->{port} || "*",
             "*",
-            $credential->{login} || "*",
-            $credential->{password}
+            empty($credential->{login}) ? "*" : $credential->{login},
+            $pwd
         ), "\n";
         close($fh);
     }

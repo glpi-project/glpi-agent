@@ -84,6 +84,9 @@ sub _getDatabaseService {
             sql => "SHOW DATABASES",
             %params
         )) {
+            my $name = $db;
+            # Double any simple quote in db name to support quote in database name
+            $db =~ s/'/''/g;
             my $size = _runSql(
                 sql => "SELECT sum(data_length+index_length) FROM information_schema.TABLES WHERE table_schema = '$db'",
                 %params
@@ -108,7 +111,7 @@ sub _getDatabaseService {
             ));
 
             $dbs->addDatabase(
-                name            => $db,
+                name            => $name,
                 size            => $size,
                 is_active       => 1,
                 creation_date   => $created,
@@ -137,9 +140,20 @@ sub _runSql {
     my $sql = delete $params{sql}
         or return;
 
+    File::Temp->require();
+
+    my $src = File::Temp->new(
+        TEMPLATE    => 'mysql-XXXXXX',
+        SUFFIX      => '.sql',
+    );
+    return unless $src;
+    my $source = "source ".$src->filename;
+    print $src $sql;
+    close($src);
+
     my $command = "mysql";
     $command .= $params{extra} if defined($params{extra});
-    $command .= " -q -sN -e \"$sql\"";
+    $command .= " -q -sN -e \"$source\"";
 
     # Only to support unittests
     if ($params{file}) {
