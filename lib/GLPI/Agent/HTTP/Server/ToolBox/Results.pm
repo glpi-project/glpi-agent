@@ -465,8 +465,9 @@ sub handle_form {
             }
         }
         if ($count && $archiver->save_archive()) {
-            $self->info("Sent archive: $file");
-            $form->{'send_file'} = $file;
+            $self->info("Sending archive: $file");
+            # Register generated archive and set it can be removed in a minute
+            $form->{'send_file'} = $self->send_file_register($file, time + 60);
         } elsif ($count) {
             $self->error("Failed to prepare $file export archive: $!");
             $self->errors("Can't prepare archive: $file: $!");
