@@ -2,7 +2,7 @@ Revision history for GLPI agent
 
 Warning for developers: Don't change/remove any entry which doesn't concern your code
 
-1.18 not yet released
+1.18 Tue, 23 Jun 2026
 
 core:
 * fix #1194: Fix ssl-keystore option support on windows
@@ -31,25 +31,31 @@ inventory:
   with compromised glpi server
 * Updated pci.ids to 2026.06.21 version
 * Updated usb.ids to 2026.06.10 version
+* Bump Inventory task version to 1.25
 
 netdiscovery/netinventory:
 * fix #1161: Add support for devices like Ubnt which annouce IEEE802.11 support
   in their sysORID table
 * fix #1164: Add support for Digi Anywhere modems
 * Add NetApp cluster support
+* Bump NetDiscovery task version to 7.2
+* Bump NetInventory task version to 7.2
 
 collect:
 * Security Advisory GHSA-mgcf-xgv7-5w4x: Validate server-controlled regular expression
   in find file collect jobs. Limit regex size to 255 chars and abort job on regex
   compilation error. And added timeout support.
+* Bump Collect task version to 3.1
 
 proxy-server-plugin:
 * [SECURITY] Fix CVE-2026-42187: When local_store is enabled, Proxy plugin can allow
   arbitrary file write
+* Bump Proxy plugin version to 3.1
 
 deploy:
 * [SECURITY] Fix CVE-2026-52768: Fix GLPI::Agent::Tools::Archive to mimic unzip
   command and to block possible path traversal during zip archive extraction
+* Bump Deploy task version to 3.6
 
 toolbox:
 * Fix configuration reloading to only reload it when really required
@@ -61,6 +67,7 @@ toolbox:
   guaranty only Toolbox generated file can be deleted
 * [SECURITY] Fix CVE-2026-49285: OS Command Injection in Results export
 * [SECURITY] Fix CVE-2026-TODO: Remove deprecated remotes management
+* Bump ToolBox plugin version to 2.0
 
 packaging:
 * fix: Update macOS postinstall, preinstall and uninstaller to use launchctl
