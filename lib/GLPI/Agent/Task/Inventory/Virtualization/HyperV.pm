@@ -159,7 +159,11 @@ sub _getVirtualMachines {
                 next unless defined $name && defined $data && length($data);
                 if ($name eq 'NetworkAddressIPv4') {
                     my ($ip) = split(/;/, $data);
-                    $kvp{$vm_guid}{IPADDRESS} = $ip if $ip;
+                    if ($ip && $ip =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/) {
+                        $kvp{$vm_guid}{IPADDRESS} = $ip;
+                    } else {
+                        $kvp{$vm_guid}{IP_DEPRECATED} = 1;
+                    }
                 } elsif ($name eq 'OSName') {
                     $kvp{$vm_guid}{OSName} = $data;
                 } elsif ($name eq 'OSVersion') {
@@ -174,6 +178,32 @@ sub _getVirtualMachines {
         } else {
             $logger->debug("Hyper-V: no KVP guest data found - Hyper-V Integration Services may not be installed in guest VMs")
                 if $logger;
+        }
+
+        # Fallback for hosts where KVP NetworkAddressIPv4 keys are deprecated.
+        # Msvm_GuestNetworkAdapterConfiguration provides IP addresses in newer Hyper-V versions.
+        my $need_fallback = grep { $_->{IP_DEPRECATED} } values %kvp;
+        if ($need_fallback) {
+            $logger->debug("Hyper-V: KVP IP keys deprecated, falling back to Msvm_GuestNetworkAdapterConfiguration")
+                if $logger;
+            foreach my $object (GLPI::Agent::Tools::Win32::getWMIObjects(
+                moniker    => 'winmgmts://./root/virtualization/v2',
+                class      => 'Msvm_GuestNetworkAdapterConfiguration',
+                properties => [ qw/InstanceID IPAddresses/ ]
+            )) {
+                my $instance_id = $object->{InstanceID} // next;
+                my $ips         = $object->{IPAddresses} // next;
+                my ($vm_guid)   = $instance_id =~ m{GuestNetwork\\([^\\]+)}i;
+                next unless $vm_guid;
+                next if defined $kvp{$vm_guid}{IPADDRESS};
+                $ips = [$ips] unless ref($ips) eq 'ARRAY';
+                for my $ip (@$ips) {
+                    if ($ip =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/) {
+                        $kvp{$vm_guid}{IPADDRESS} = $ip;
+                        last;
+                    }
+                }
+            }
         }
     }
 
