@@ -198,6 +198,12 @@ toolbox:
   configuration field
 * Bump ToolBox plugin version to 2.1
 
+collect:
+* New features:
+  * Support Registry existence check
+  * Support Registry defined value check
+  * Support in-depth registry values collect (max 10 depth levels)
+
 packaging:
 * Update Windows packaging to use:
   - Perl 5.44.0
