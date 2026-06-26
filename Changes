@@ -10,6 +10,12 @@ netdiscovery/netinventory:
 * Use more ordered processing to make debug output more predictable
 * Add support for InfoBlox networking devices
 
+collect:
+* New features:
+  * Support Registry existence check
+  * Support Registry defined value check
+  * Support in-depth registry values collect (max 10 depth levels)
+
 packaging:
 * Update Windows packaging to use:
   - 7-Zip v26.02
