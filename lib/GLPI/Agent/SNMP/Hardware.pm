@@ -1473,6 +1473,11 @@ sub _getCDPInfo {
                 if ($deviceId =~ /^[0-9A-Fa-f]{12}$/) {
                     # let's assume it is a mac address if the length is 12 chars
                     $connection->{SYSMAC} = alt2canonical($deviceId);
+                } elsif ($model =~ /^\w+$/ && $deviceId =~ /^$model([0-9A-Fa-f]{12})$/) {
+                    # let's check if it is model + mac address, case for Yealink phones
+                    $connection->{SYSMAC} = alt2canonical($1);
+                    $connection->{SYSNAME} = $deviceId
+                        if empty($connection->{SYSNAME});
                 } elsif (!$connection->{SYSNAME}) {
                     $connection->{SYSNAME} = $deviceId;
                 }
@@ -1488,6 +1493,12 @@ sub _getCDPInfo {
             $connection->{SYSNAME} =~ /^SIP-(.*)$/ &&
             $deviceId =~ /^$1([0-9A-Fa-f]{12})$/) {
             $connection->{SYSMAC} = alt2canonical("0x".$1);
+        } elsif ($connection->{SYSNAME} &&
+            empty($connection->{SYSMAC}) &&
+            $model =~ /^\w+$/ &&
+            $connection->{SYSNAME} =~ /^$model([0-9A-Fa-f]{12})$/) {
+            # Assume if SYSNAME is model + mac address, case for Yealink phones
+            $connection->{SYSMAC} = alt2canonical($1);
         }
 
         # warning: multiple neighbors announcement for the same interface
