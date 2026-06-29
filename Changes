@@ -7,6 +7,7 @@ Warning for developers: Don't change/remove any entry which doesn't concern your
 netdiscovery/netinventory:
 * Make vlan context switching ordered
 * fix #1154: Extract address MAC of connected Yealink phones using CDP
+* Use more ordered processing to make debug output more predictable
 
 packaging:
 * Update Windows packaging to use:

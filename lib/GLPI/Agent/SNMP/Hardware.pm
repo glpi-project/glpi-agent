@@ -978,7 +978,7 @@ sub _addKnownMacAddresses {
     my $logger        = $params{logger};
     my $mac_addresses = $params{addresses};
 
-    foreach my $port_id (keys %$mac_addresses) {
+    foreach my $port_id (sort keys %$mac_addresses) {
         # safety check
         if (! exists $ports->{$port_id}) {
             $logger->debug(
@@ -1092,7 +1092,7 @@ sub _setConnectedDevices {
 
     my $lldp_info = _getLLDPInfo(%params);
     if ($lldp_info) {
-        foreach my $interface_id (keys %$lldp_info) {
+        foreach my $interface_id (sort keys %$lldp_info) {
             # safety check
             if (! exists $ports->{$interface_id}) {
                 $logger->debug(
@@ -1113,7 +1113,7 @@ sub _setConnectedDevices {
 
     my $cdp_info = _getCDPInfo(%params);
     if ($cdp_info) {
-        foreach my $interface_id (keys %$cdp_info) {
+        foreach my $interface_id (sort keys %$cdp_info) {
             # safety check
             if (! exists $ports->{$interface_id}) {
                 $logger->debug(
@@ -1168,7 +1168,7 @@ sub _setConnectedDevices {
 
     my $edp_info = _getEDPInfo(%params);
     if ($edp_info) {
-        foreach my $interface_id (keys %$edp_info) {
+        foreach my $interface_id (sort keys %$edp_info) {
             # safety check
             if (! exists $ports->{$interface_id}) {
                 $logger->debug(
@@ -1210,7 +1210,7 @@ sub _setConnectedDevices {
     }
 }
 
-sub _sortChassisIdSuffix {
+sub _sortOidSuffix {
     my ($a, $b) = @_;
     my @a = split('\.', $a);
     my @b = split('\.', $b);
@@ -1322,7 +1322,7 @@ sub _getLLDPInfo {
     );
 
     # Always parse LLDP infos in the same order
-    foreach my $suffix (sort { _sortChassisIdSuffix($a, $b) } keys(%{$lldpRemChassisId})) {
+    foreach my $suffix (sort { _sortOidSuffix($a, $b) } keys(%{$lldpRemChassisId})) {
         my $mac = $lldpRemChassisId->{$suffix};
         my $sysdescr = getCanonicalString($lldpRemSysDesc->{$suffix});
         my $sysname = getCanonicalString($lldpRemSysName->{$suffix});
@@ -1434,9 +1434,9 @@ sub _getCDPInfo {
     # $prefix.x.y = $value
     # whereas x is the port number
 
-    while (my ($suffix, $ip) = each %{$cdpCacheAddress}) {
+    foreach my $suffix (sort { _sortOidSuffix($a, $b) } keys(%{$cdpCacheAddress})) {
         my $interface_id = _getElement($suffix, -2);
-        $ip = hex2canonical($ip);
+        my $ip = hex2canonical($cdpCacheAddress->{$suffix});
         next if (!defined($ip) || $ip eq '0.0.0.0');
 
         my $sysdescr = getCanonicalString($cdpCacheVersion->{$suffix});
@@ -1543,7 +1543,8 @@ sub _getEDPInfo {
     # - y1.y2.y3.y4.y5.y6: the remote mac address
     # - z1.z2...zz: the vlan name in ASCII
 
-    while (my ($suffix, $ip) = each %{$edpNeighborVlanIpAddress}) {
+    foreach my $suffix (sort { _sortOidSuffix($a, $b) } keys(%{$edpNeighborVlanIpAddress})) {
+        my $ip = $edpNeighborVlanIpAddress->{$suffix};
         next if (!defined($ip) || $ip eq '0.0.0.0');
 
         my $interface_id = _getElement($suffix, 0);
@@ -1593,7 +1594,7 @@ sub _setVlans {
     # port to interface mapping
     my $port2interface = $device->walk('.1.3.6.1.2.1.17.1.4.1.2'); # dot1dBasePortIfIndex
 
-    foreach my $port_id (keys %$vlans) {
+    foreach my $port_id (sort { $a <=> $b } keys %$vlans) {
         # safety check
         if (! exists $ports->{$port_id}) {
             # Handle case where port_id is indeed an index from LLDP vlan datas like Extreme Networks devices
@@ -1760,7 +1761,7 @@ sub _setTrunkPorts {
     my $ports  = $params{ports};
     my $logger = $params{logger};
 
-    foreach my $port_id (keys %$trunk_ports) {
+    foreach my $port_id (sort { $a <=> $b } keys %$trunk_ports) {
         # safety check
         if (! exists $ports->{$port_id}) {
             $logger->debug(
@@ -1843,7 +1844,7 @@ sub _setAggregatePorts {
 
     my $lacp_info = _getLACPInfo(%params);
     if ($lacp_info) {
-        foreach my $interface_id (keys %$lacp_info) {
+        foreach my $interface_id (sort keys %$lacp_info) {
             # safety check
             if (!$ports->{$interface_id}) {
                 $logger->debug(
@@ -1857,7 +1858,7 @@ sub _setAggregatePorts {
 
     my $pagp_info = _getPAGPInfo(%params);
     if ($pagp_info) {
-        foreach my $interface_id (keys %$pagp_info) {
+        foreach my $interface_id (sort keys %$pagp_info) {
             # safety check
             if (!$ports->{$interface_id}) {
                 $logger->debug(
