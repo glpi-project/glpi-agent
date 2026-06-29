@@ -933,7 +933,7 @@ sub _setKnownMacAddresses {
 
         # get additional associated mac addresses from those vlans
         my @mac_addresses = ();
-        foreach my $vlan (@vlans) {
+        foreach my $vlan (sort { $a <=> $b } @vlans) {
             $logger->debug("switching SNMP context to vlan $vlan") if $logger;
             $device->switch_vlan_context($vlan);
             my $mac_addresses = _getKnownMacAddresses(

@@ -4,6 +4,9 @@ Warning for developers: Don't change/remove any entry which doesn't concern your
 
 1.19 not yet released
 
+netdiscovery/netinventory:
+* Make vlan context switching ordered
+
 packaging:
 * Update Windows packaging to use:
   - 7-Zip v26.02
