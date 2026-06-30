@@ -77,7 +77,7 @@ toolbox:
 * [SECURITY] Fix CVE-2026-40936: Toolbox can only register file it generated and
   guaranty only Toolbox generated file can be deleted
 * [SECURITY] Fix CVE-2026-49285: OS Command Injection in Results export
-* [SECURITY] Fix CVE-2026-TODO: Remove deprecated remotes management
+* [SECURITY] Fix CVE-2026-58199: Remove deprecated remotes management
 * Bump ToolBox plugin version to 2.0
 
 packaging:
