@@ -111,6 +111,9 @@ sub _getVirtualMachines {
             my $path = ref($object->{HostResource}) eq 'ARRAY'
                          ? $object->{HostResource}[0]
                          : $object->{HostResource};
+            # WMI may return strings as raw UTF-8 bytes without Perl's UTF-8 flag set.
+            # Decoding ensures non-ASCII characters in any locale serialize correctly to JSON.
+            utf8::decode($path) if $path && !utf8::is_utf8($path);
 
             # Skip ISO images — Get-VHD does not support them
             if ($path =~ /\.iso$/i) {
