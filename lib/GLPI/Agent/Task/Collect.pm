@@ -173,6 +173,7 @@ JOB:
         my $module = $modules{$function};
         my $collect = $module->new(
             logger  => $self->{logger},
+            plugin  => $self->{target}->getTaskVersion("collect") // "1.0.0",
             job     => $job
         );
 
