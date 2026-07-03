@@ -29,7 +29,7 @@ sub new {
 sub pluginSupport {
     my ($self, $version) = @_;
 
-    return (glpiVersion($version) >= $self->{plugin}) ? 1 : 0;
+    return (glpiVersion($version) <= $self->{plugin}) ? 1 : 0;
 }
 
 sub _validateSpec {
