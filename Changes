@@ -15,6 +15,7 @@ collect:
   * Support Registry existence check
   * Support Registry defined value check
   * Support in-depth registry values collect (max 10 depth levels)
+* With Glpi-Inventory plugin >= v1.6.9, we can submit multiple registry values one by one
 
 packaging:
 * Update Windows packaging to use:

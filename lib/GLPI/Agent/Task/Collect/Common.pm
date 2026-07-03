@@ -11,16 +11,25 @@ use constant    OPTIONAL            => 0;
 use constant    MANDATORY           => 1;
 use constant    OPTIONAL_EXCLUSIVE  => 2;
 
+use GLPI::Agent::Tools;
+
 sub new {
     my ($class, %params) = @_;
 
     my $self = $params{job} // {};
 
     $self->{logger} = $params{logger};
+    $self->{plugin} = glpiVersion($params{plugin} // "1.0.0");
 
     bless $self, $class;
 
     return $self;
+}
+
+sub pluginSupport {
+    my ($self, $version) = @_;
+
+    return (glpiVersion($version) >= $self->{plugin}) ? 1 : 0;
 }
 
 sub _validateSpec {

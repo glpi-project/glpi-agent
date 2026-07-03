@@ -68,14 +68,27 @@ sub results {
 
     return unless $values;
 
+    # Glpi-Inventory plugin >= v1.6.9 supports multiple values submission one by one
+    my $updated_plugin = $self->pluginSupport("1.6.9");
+
+    my $results = [];
     my $result = {};
     if (ref($values) eq 'HASH') {
         foreach my $k (keys %$values) {
             # Skip sub keys
             next if ($k =~ m|/$|);
             my ($value, $type) = @{$values->{$k}};
-            $result->{$k} = _encodeRegistryValueForCollect($value, $type);
-            $self->{logger}->debug2("Found".(defined($type) && $type < scalar(@RegistryType) ? " ".$RegistryType[$type] : "")." value for $k: ".$result->{$k});
+            if ($updated_plugin) {
+                $value = _encodeRegistryValueForCollect($value, $type) // "";
+                push @{$results}, {
+                    _path   => $k,
+                    _value  => $value,
+                };
+                $self->{logger}->debug2("Found".(defined($type) && $type < scalar(@RegistryType) ? " ".$RegistryType[$type] : "")." value for $k: ".$value);
+            } else {
+                $result->{$k} = _encodeRegistryValueForCollect($value, $type) // "";
+                $self->{logger}->debug2("Found".(defined($type) && $type < scalar(@RegistryType) ? " ".$RegistryType[$type] : "")." value for $k: ".$result->{$k});
+            }
         }
     } else {
         my ($k) = $self->{path} =~ m|([^/]+)$| ;
@@ -88,9 +101,13 @@ sub results {
             $result->{$k} = _encodeRegistryValueForCollect($value,$type);
             $self->{logger}->debug2("Found".(defined($type) && $type < scalar(@RegistryType) ? " ".$RegistryType[$type] : "")." value: ".$result->{$k});
         }
+        push @{$results}, {
+            _path   => $k,
+            _value  => $result->{$k},
+        } if $updated_plugin;
     }
 
-    return [ $result ];
+    return $updated_plugin ? $results : [ $result ];
 }
 
 sub _exists() {
