@@ -195,16 +195,23 @@ JOB:
         $results = [] unless ref($results) eq 'ARRAY';
 
         my $count = int(@{$results});
+        my $cpt = $count;
+
+        # Glpi-Inventory plugin >= v1.6.9 supports multiple values submission one by one
+        # and if we can add the _count value at least for registry collect
+        my $updated_plugin = $collect->pluginSupport("1.6.9");
 
         # Add an empty hash ref so send an answer with _cpt=0
         push @{$results}, {} unless $count ;
 
         foreach my $result (@{$results}) {
             next unless ref($result) eq 'HASH';
-            next unless ( !$count || keys %$result );
+            next unless !$cpt || keys %$result;
             $result->{uuid}   = $job->{uuid};
             $result->{action} = "setAnswer";
-            $result->{_cpt}   = $count;
+            $result->{_count} = $count
+                if $updated_plugin && $count == $cpt;
+            $result->{_cpt}   = $cpt;
             $result->{_glpi_csrf_token} = $token
                 if $token ;
             $result->{_sid}   = $job->{_sid}
@@ -212,11 +219,11 @@ JOB:
             $answer = $self->{client}->send(
                url      => $remoteUrl,
                method   => $method,
-               filename => sprintf('collect_%s_%s.js', $job->{uuid}, $count),
+               filename => sprintf('collect_%s_%s.js', $job->{uuid}, $cpt),
                args     => $result
             );
             $token = $answer && exists($answer->{token}) ? $answer->{token} : '';
-            $count--;
+            $cpt--;
 
             # Handle CSRF access denied
             if ($has_csrf_token && empty($token)) {
