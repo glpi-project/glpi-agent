@@ -163,8 +163,8 @@ sub _recursive() {
 
     # First handle values in this leaf
     foreach my $k (sort keys(%{$key})) {
-        # Skip sub keys by now
-        if ($k =~ m|/$|) {
+        # Skip sub keys by now, but keep / as it is the key default registry value
+        if ($k =~ m|/$| && $k ne '/') {
             push @subkeys, $k if $depth > 0;
         } else {
             ($k) = $k =~ m|([^/]+)$|;
