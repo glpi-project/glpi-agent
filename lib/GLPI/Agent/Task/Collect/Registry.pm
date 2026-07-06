@@ -22,12 +22,20 @@ use constant    json_validation => {
     depth   => OPTIONAL,
 };
 
+use constant    REG_BINARY          => 3;
+use constant    REG_MULTI_SZ        => 7;
+use constant    REG_RESOURCE_LIST   => 8;
+
 sub _encodeRegistryValueForCollect {
     my ($value, $type) = @_ ;
 
+    return $value unless defined($type);
+
     # Dump REG_BINARY/REG_RESOURCE_LIST/REG_FULL_RESOURCE_DESCRIPTOR as hex strings
-    if (defined($type) && ($type == 3 || $type >= 8)) {
+    if ($type == REG_BINARY || $type >= REG_RESOURCE_LIST) {
         $value = join(" ", map { sprintf "%02x", ord } split(//, $value));
+    } elsif ($type == REG_MULTI_SZ && ref($value) eq 'ARRAY') {
+        $value = join(",", @{$value});
     }
 
     return $value;
@@ -93,14 +101,8 @@ sub results {
     } else {
         my ($k) = $self->{path} =~ m|([^/]+)$| ;
         my ($value, $type) = @{$values};
-        if (ref($value) eq 'ARRAY') {
-            my @values = map { _encodeRegistryValueForCollect($_) } @{$value};
-            $result->{$k} = join(",", @values);
-            map { $self->{logger}->debug2("Found".(defined($type) && $type < scalar(@RegistryType) ? " ".$RegistryType[$type] : "")." value: $_") } @{$value};
-        } else {
-            $result->{$k} = _encodeRegistryValueForCollect($value,$type);
-            $self->{logger}->debug2("Found".(defined($type) && $type < scalar(@RegistryType) ? " ".$RegistryType[$type] : "")." value: ".$result->{$k});
-        }
+        $result->{$k} = _encodeRegistryValueForCollect($value,$type);
+        $self->{logger}->debug2("Found".(defined($type) && $type < scalar(@RegistryType) ? " ".$RegistryType[$type] : "")." value: ".$result->{$k});
         push @{$results}, {
             _path   => $k,
             _value  => $result->{$k},
