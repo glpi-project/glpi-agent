@@ -159,10 +159,6 @@ sub run {
     }
 
     GLPI::Agent::IEC61850::Device->require();
-    push @{$self->{_library_failure}}, "Failed to load GLPI::Agent::IEC61850::Device, iec61850 protocol discovery not supported"
-        if $EVAL_ERROR;
-    push @{$self->{_library_failure}}, "Failed to load iec61850 perl library, iec61850 protocol discovery not supported"
-        unless $INC{'iec61850.pm'};
 
     # Store glpi_version for this run
     $self->{glpi_version} = $self->{target}->isType('server') ? $self->{target}->getTaskVersion('inventory') : '';
@@ -273,6 +269,12 @@ sub run {
     # no need more worker than ips to scan
     my $worker_count = $max_threads > $max_count ? $max_count : $max_threads;
     my $queued_count = 0;
+
+    # This is time to share only one time if we failed to load iec61850 protocol support libraries
+    GLPI::Agent::IEC61850::Protocol::not_supported(
+        logger  => $self->{logger},
+        message => "iec61850 protocol discovery will be skipped"
+    ) if $INC{'GLPI/Agent/IEC61850/Protocol.pm'} && ! $INC{'iec61850.pm'};
 
     $self->{logger}->debug("using $worker_count netdiscovery worker".($worker_count > 1 ? "s" : ""));
     $manager->set_max_procs($worker_count > 1 ? $worker_count : 0);
@@ -719,12 +721,6 @@ sub _scanAddress {
     # First eventually try to scan with remote credentials
     if ($params->{remote_credentials}) {
         %device = $self->_scanAddressByRemote($params);
-    }
-
-    # This is time to share one time if we failed to load iec61850 protocol support libraries
-    if ($self->{_library_failure}) {
-        my $errors = delete $self->{_library_failure};
-        map { $self->{logger}->info($_) } @{$errors};
     }
 
     # Then scan for standard network datas
