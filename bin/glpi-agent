@@ -677,6 +677,16 @@ When expected ESX asset itemtype in GLPI 11+ is B<Esx>, I<esx-itemtype> option v
 
 Do not use peer to peer to download files.
 
+=item B<--deploy-public-key>=I<HEX_STRING_OR_PATH>
+
+Specify the public key for deployment signature verification.
+Can be a hex string or a path to a public key file.
+
+=item B<--secure-extraction>=I<yes|no>
+
+Enable or disable secure extraction to prevent path traversal/zip slip vulnerabilities.
+Default is 'no'.
+
 =back
 
 =head2 Server target specific options

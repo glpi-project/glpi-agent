@@ -15,6 +15,11 @@
    This script makes fusioninventory-compatible xml from netdisco data.
    Stoatwblr says even if it is ugly and slow, it works ;-)
 
+## Tools
+
+ * [glpi-sign-package.pl](tools/glpi-sign-package.pl):
+   A tool to sign deployment packages using Ed25519 keys. It generates a signed manifest (signature.sig) for use with the Deploy task.
+
 ## Other contribs
 
  * Windows:

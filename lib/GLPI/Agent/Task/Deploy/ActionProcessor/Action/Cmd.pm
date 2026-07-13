@@ -9,6 +9,7 @@ use Fcntl qw(SEEK_SET);
 use UNIVERSAL::require;
 
 use English qw(-no_match_vars);
+use Digest::SHA;
 
 use GLPI::Agent::Tools;
 
@@ -112,6 +113,23 @@ sub do {
     my ($self, $params) = @_;
 
     return { 0, ["Internal agent error"]} unless $params->{exec};
+
+    # Security check: if a public key is set, the command MUST be in the signed manifest
+    my $task = $self->{_task};
+    if ($task && $task->{config}->{'deploy-public-key'}) {
+        my $sha = Digest::SHA->new(512);
+        $sha->add($params->{exec});
+        my $cmdHash = $sha->hexdigest;
+
+        if (!defined($task->{_authorized_commands}) || ref($task->{_authorized_commands}) ne 'HASH' || !$task->{_authorized_commands}->{$cmdHash}) {
+            my $msg = "Security error: command not authorized in signed manifest: $params->{exec}";
+            $self->{_logger}->error($msg);
+            return {
+                status => 0,
+                msg    => [$msg],
+            };
+        }
+    }
 
     my %envsSaved;
 

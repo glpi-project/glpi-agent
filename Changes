@@ -24,6 +24,10 @@ core:
 * fix #1194: Fix ssl-keystore option support on windows
 * fix #1193: Fix constant usage not recognized in perl 5.16
 
+deploy:
+* Add support for signed deployment packages using Ed25519 signature
+* Add glpi-sign-package.pl tool to sign deployment packages
+
 inventory:
 * fix #1149: Support NVMe SSD storage disks on MacOSX
 * fix #1150: Fix lxd containers inventory on linux

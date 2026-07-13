@@ -389,6 +389,18 @@
     <SetProperty Id="CMDLINE_GLPI_VERSION" Before="AppSearch" Value="[GLPI_VERSION]" />
     <SetProperty Id="GLPI_VERSION"         After="AppSearch"  Value="[CMDLINE_GLPI_VERSION]"><![CDATA[CMDLINE_GLPI_VERSION<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
+    <Property Id="DEPLOY_PUBLIC_KEY" Secure="yes">
+      <RegistrySearch Id="DeployPublicKey" Root="HKLM" Key="[%agent_regpath%]" Name="deploy-public-key" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_DEPLOY_PUBLIC_KEY" Before="AppSearch" Value="[DEPLOY_PUBLIC_KEY]" />
+    <SetProperty Id="DEPLOY_PUBLIC_KEY"         After="AppSearch"  Value="[CMDLINE_DEPLOY_PUBLIC_KEY]"><![CDATA[CMDLINE_DEPLOY_PUBLIC_KEY<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
+    <Property Id="SECURE_EXTRACTION" Secure="yes">
+      <RegistrySearch Id="SecureExtraction" Root="HKLM" Key="[%agent_regpath%]" Name="secure-extraction" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_SECURE_EXTRACTION" Before="AppSearch" Value="[SECURE_EXTRACTION]" />
+    <SetProperty Id="SECURE_EXTRACTION"         After="AppSearch"  Value="[CMDLINE_SECURE_EXTRACTION]"><![CDATA[CMDLINE_SECURE_EXTRACTION<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
     <!-- Configuration defaults after handling command line and registry checks -->
     <SetProperty Id="DEBUG"                   Action="DEBUG_Default"                    After="LaunchConditions"  Value="0"><![CDATA[NOT DEBUG OR (DEBUG<>"1" AND DEBUG<>"2")]]></SetProperty>
     <SetProperty Id="LOGGER"                  Action="LOGGER_Default"                   After="LaunchConditions"  Value="file"><![CDATA[NOT LOGGER]]></SetProperty>
@@ -413,6 +425,7 @@
     <SetProperty Id="CONF_RELOAD_INTERVAL"    Action="CONF_RELOAD_INTERVAL_Default"     After="LaunchConditions"  Value="0"><![CDATA[NOT CONF_RELOAD_INTERVAL]]></SetProperty>
     <SetProperty Id="BACKEND_COLLECT_TIMEOUT" Action="BACKEND_COLLECT_TIMEOUT_Default"  After="LaunchConditions"  Value="180"><![CDATA[NOT BACKEND_COLLECT_TIMEOUT]]></SetProperty>
     <SetProperty Id="FULL_INVENTORY_POSTPONE" Action="FULL_INVENTORY_POSTPONE_Default"  After="LaunchConditions"  Value="14"><![CDATA[NOT FULL_INVENTORY_POSTPONE]]></SetProperty>
+    <SetProperty Id="SECURE_EXTRACTION"       Action="SECURE_EXTRACTION_Default"        After="LaunchConditions"  Value="no"><![CDATA[NOT SECURE_EXTRACTION OR (SECURE_EXTRACTION<>"yes" AND SECURE_EXTRACTION<>"no")]]></SetProperty>
 
     <!-- Installer configuration defaults -->
     <SetProperty Id="QUICKINSTALL"            Action="QUICKINSTALL_Default"             After="LaunchConditions"  Value="1"><![CDATA[NOT QUICKINSTALL OR QUICKINSTALL<>"0"]]></SetProperty>

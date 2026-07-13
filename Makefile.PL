@@ -91,6 +91,7 @@ recommends 'Cpanel::JSON::XS'             => '0';
 recommends 'Net::Ping'                    => '0';
 recommends 'Parallel::ForkManager'        => '0';
 recommends 'URI::Escape'                  => '0';
+recommends 'Crypt::Ed25519'               => '0';
 
 # Network
 recommends 'Net::NBName' => '0';

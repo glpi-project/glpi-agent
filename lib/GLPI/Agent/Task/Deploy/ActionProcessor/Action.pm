@@ -11,6 +11,7 @@ sub new {
 
     my $self = {
         _logger => $params{logger},
+        _task   => $params{task},
     };
 
     if ($params{action}) {
