@@ -115,9 +115,9 @@ sub _getVirtualMachines {
             # Decoding ensures non-ASCII characters in any locale serialize correctly to JSON.
             utf8::decode($path) if $path && !utf8::is_utf8($path);
 
-            # Skip ISO images — Get-VHD does not support them
-            if ($path =~ /\.iso$/i) {
-                $logger->debug2("Hyper-V: skipping ISO image '$path'")
+            # Skip file types unsupported by Get-VHD (ISOs, virtual floppy disks)
+            if ($path =~ /\.(?:iso|vfd)$/i) {
+                $logger->debug2("Hyper-V: skipping unsupported file type '$path'")
                     if $logger;
                 next;
             }
@@ -152,14 +152,16 @@ sub _getVirtualMachines {
             class      => 'Msvm_KvpExchangeComponent',
             properties => [ qw/SystemName GuestIntrinsicExchangeItems/ ]
         )) {
-            my $vm_guid = $object->{SystemName} // next;
-            my $items   = $object->{GuestIntrinsicExchangeItems} // next;
+            my $vm_guid = $object->{SystemName}
+                or next;
+            my $items   = $object->{GuestIntrinsicExchangeItems}
+                or next;
             $items = [$items] unless ref($items) eq 'ARRAY';
             foreach my $xml (@$items) {
                 $xml =~ s/&quot;/"/g;
                 my ($name) = $xml =~ m{<PROPERTY NAME="Name"[^>]*><VALUE>([^<]*)</VALUE>};
                 my ($data) = $xml =~ m{<PROPERTY NAME="Data"[^>]*><VALUE>([^<]*)</VALUE>};
-                next unless defined $name && defined $data && length($data);
+                next if empty($name) || empty($data);
                 if ($name eq 'NetworkAddressIPv4') {
                     my ($ip) = split(/;/, $data);
                     if ($ip && $ip =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/) {
@@ -194,8 +196,10 @@ sub _getVirtualMachines {
                 class      => 'Msvm_GuestNetworkAdapterConfiguration',
                 properties => [ qw/InstanceID IPAddresses/ ]
             )) {
-                my $instance_id = $object->{InstanceID} // next;
-                my $ips         = $object->{IPAddresses} // next;
+                my $instance_id = $object->{InstanceID}
+                    or next;
+                my $ips         = $object->{IPAddresses}
+                    or next;
                 my ($vm_guid)   = $instance_id =~ m{GuestNetwork\\([^\\]+)}i;
                 next unless $vm_guid;
                 next if defined $kvp{$vm_guid}{IPADDRESS};
@@ -256,7 +260,7 @@ sub _getVirtualMachines {
                     if defined $vm_kvp->{IPADDRESS};
                 if ($vm_kvp->{OSName} || $vm_kvp->{OSVersion}) {
                     my $full_name = join(' ',
-                        grep { defined $_ && length $_ }
+                        grep { !empty($_) }
                         $vm_kvp->{OSName}, $vm_kvp->{OSVersion}
                     );
                     $machine->{OPERATINGSYSTEM} = { FULL_NAME => $full_name }

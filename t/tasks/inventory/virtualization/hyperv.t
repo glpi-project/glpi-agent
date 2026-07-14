@@ -108,6 +108,23 @@ my %tests = (
             ],
         },
     ],
+    # Veeam File-Level Restore appliance: has a .vfd floppy disk that must be
+    # skipped (Get-VHD does not support .vfd), plus a .avhdx checkpoint disk.
+    'veeam-flr' => [
+        {
+            VMTYPE    => 'HyperV',
+            SUBSYSTEM => 'MS HyperV',
+            NAME      => 'VeeamFLR_SG73COMP1_85f38199',
+            STATUS    => STATUS_RUNNING,
+            UUID      => undef,
+            VCPU      => 2,
+            MEMORY    => 2048,
+            DRIVES    => [
+                { VOLUMN => 'C:\VeeamFLR\5k4y4gms.4n3\disk0_C.avhdx', TOTAL => 102400 },
+            ],
+            IPADDRESS => '10.95.162.58',
+        },
+    ],
 
 );
 
@@ -116,11 +133,13 @@ plan tests => (2 * scalar keys %tests) + 1;
 my $inventory = GLPI::Agent::Inventory->new(glpi => '12');
 
 my %vhd_sizes = (
-    'C:\VMs\vm-disco.vhdx'                => 107374182400,   # 102400 MB
-    '\\\\nas01\VMs\vm-datos.vhdx'          => 536870912000,   # 512000 MB
-    'C:\HyperV\vm2.vhdx'                  =>  12884901888,   #  12288 MB
-    'C:\HyperV\vm1.vhdx'                  =>  17179869184,   #  16384 MB
-    'C:\HyperV\pruebadediscosl.vhdx'      =>   5368709120,   #   5120 MB
+    'C:\VMs\vm-disco.vhdx'                                                           => 107374182400,   # 102400 MB
+    '\\\\nas01\VMs\vm-datos.vhdx'                                                     => 536870912000,   # 512000 MB
+    'C:\HyperV\vm2.vhdx'                                                             =>  12884901888,   #  12288 MB
+    'C:\HyperV\vm1.vhdx'                                                             =>  17179869184,   #  16384 MB
+    'C:\HyperV\pruebadediscosl.vhdx'                                                 =>   5368709120,   #   5120 MB
+    'C:\VeeamFLR\5k4y4gms.4n3\disk0_C.avhdx'                                        => 107374182400,   # 102400 MB
+    'C:\ClusterStorage\Volume1\VM\VM-Testing\Virtual Hard Disks\VM-Testing.vhdx'     =>  53687091200,   #  51200 MB
 );
 
 # fake Tools::Win32, instead of Task::Inventory::Virtualization::HyperV, as
