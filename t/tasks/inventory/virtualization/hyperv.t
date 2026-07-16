@@ -108,6 +108,21 @@ my %tests = (
             ],
         },
     ],
+    # VM in paused state (EnabledState=9, CIM Quiesce) must map to STATUS_PAUSED
+    'paused' => [
+        {
+            VMTYPE    => 'HyperV',
+            SUBSYSTEM => 'MS HyperV',
+            NAME      => 'VM-Testing',
+            STATUS    => STATUS_PAUSED,
+            UUID      => undef,
+            VCPU      => 2,
+            MEMORY    => 1024,
+            DRIVES    => [
+                { VOLUMN => 'C:\ClusterStorage\Volume1\VM\VM-Testing\Virtual Hard Disks\VM-Testing.vhdx', TOTAL => 51200 },
+            ],
+        },
+    ],
     # Veeam File-Level Restore appliance: has a .vfd floppy disk that must be
     # skipped (Get-VHD does not support .vfd), plus a .avhdx checkpoint disk.
     'veeam-flr' => [

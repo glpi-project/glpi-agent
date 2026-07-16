@@ -227,6 +227,7 @@ sub _getVirtualMachines {
         my $status =
             $object->{EnabledState} == 2     ? STATUS_RUNNING  :
             $object->{EnabledState} == 3     ? STATUS_OFF      :
+            $object->{EnabledState} == 9     ? STATUS_PAUSED   :
             $object->{EnabledState} == 32768 ? STATUS_PAUSED   :
             $object->{EnabledState} == 32769 ? STATUS_OFF      :
             $object->{EnabledState} == 32770 ? STATUS_BLOCKED  :
