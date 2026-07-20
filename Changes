@@ -6,6 +6,7 @@ Warning for developers: Don't change/remove any entry which doesn't concern your
 
 inventory:
 * fix #1089: Updated Samsung LF22T450F monitor model support
+* fix #1200: Add ClamAV antivirus detection support on linux
 
 netdiscovery/netinventory:
 * Make vlan context switching ordered
