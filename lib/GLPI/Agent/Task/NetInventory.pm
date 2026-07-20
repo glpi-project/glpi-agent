@@ -114,7 +114,12 @@ sub run {
     my $abort = 0;
     $SIG{TERM} = sub { $abort = 1; };
 
-    GLPI::Agent::IEC61850::Device->require();
+    # Don't try to load other libraries not required during snmp simulation
+    my $simul = ref($self->{jobs}) eq "ARRAY" && scalar(@{$self->{jobs}}) == 1 ? $self->{jobs}->[0]->snmp_simulation : 0;
+
+    unless ($simul) {
+        GLPI::Agent::IEC61850::Device->require();
+    }
 
     # Store glpi_version for this run
     $self->{glpi_version} = $self->{target}->isType('server') ? $self->{target}->getTaskVersion('inventory') : '';
@@ -164,7 +169,7 @@ sub run {
     GLPI::Agent::IEC61850::Protocol::not_supported(
         logger  => $self->{logger},
         message => "iec61850 protocol inventory will be skipped"
-    ) if $INC{'GLPI/Agent/IEC61850/Protocol.pm'} && ! $INC{'iec61850.pm'};
+    ) if !$simul && $INC{'GLPI/Agent/IEC61850/Protocol.pm'} && ! $INC{'iec61850.pm'};
 
     # Prepare fork manager
     $self->{logger}->debug("using $worker_count netinventory worker".($worker_count > 1 ? "s" : ""));

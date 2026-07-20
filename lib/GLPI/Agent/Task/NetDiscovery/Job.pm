@@ -8,6 +8,7 @@ use English qw(-no_match_vars);
 use Net::IP;
 
 use GLPI::Agent::Logger;
+use GLPI::Agent::Tools;
 
 sub new {
     my ($class, %params) = @_;
@@ -33,6 +34,11 @@ sub pid {
 sub timeout {
     my ($self) = @_;
     return $self->{_params}->{TIMEOUT} || 60;
+}
+
+sub snmp_simulation {
+    my ($self) = @_;
+    return empty($self->{_snmpwalk}) ? 0 : 1;
 }
 
 sub max_threads {
