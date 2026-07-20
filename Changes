@@ -13,6 +13,7 @@ netdiscovery/netinventory:
 * Use more ordered processing to make debug output more predictable
 * Add support for InfoBlox networking devices
 * Refacto IEC61850 protocol support to log only one time it is not supported
+* fix #1202: Update StormShield SNS support
 
 packaging:
 * Update Windows packaging to use:
