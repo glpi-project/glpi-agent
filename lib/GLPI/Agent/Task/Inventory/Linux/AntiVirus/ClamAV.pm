@@ -54,7 +54,7 @@ sub _getClamAVInfo {
 
     # Get actual status
     my $is_enabled = 0;
-    my $canrun_systemctl = canRun($systemctl_bin);
+    my $canrun_systemctl = defined($params{clamscan_is_active}) || canRun($systemctl_bin);
     if ($canrun_systemctl) {
         my $status = getFirstLine(
             command => $params{clamscan_is_active} ? "" : [ $systemctl_bin, 'is-active', 'clamav-daemon' ],
