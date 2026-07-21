@@ -56,7 +56,7 @@ sub _altserial {
 1;
 
 __DATA__
-# List of model indexed by their hexdecimal model number in EDID block
+# List of model indexed by their hexadecimal model number in EDID block
     0018    B223W
     0019    V173
     001a    V193W
@@ -109,6 +109,7 @@ __DATA__
     0772    V247Y
     0783    AL1923
     033a    B226WL
+    09b3    K242HYL
     1228    ACER P1206P
     1701    ACER P1203
     1716    Acer P1283

@@ -91,6 +91,13 @@ my %edid_tests = (
         SERIAL       => 'T2JEE0140160e81f4223',
         DESCRIPTION  => '16/2020'
     },
+    'acer-k242hyl' => {
+        MANUFACTURER => 'Acer Technologies',
+        CAPTION      => 'K242HYL',
+        ALTSERIAL    => 'TBNSA003853B',
+        SERIAL       => 'TBNSA0031432100d853B',
+        DESCRIPTION  => '43/2021'
+    },
     'acer-p1203' => {
         MANUFACTURER => 'Acer Technologies',
         CAPTION      => 'ACER P1203',

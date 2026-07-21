@@ -8,6 +8,7 @@ inventory:
 * fix #1089: Updated Samsung LF22T450F monitor model support
 * fix #1200: Add ClamAV antivirus detection support on linux
 * fix #1200: Add Wazuh antivirus detection support on linux
+* fix #1089: Updated Acer K242HYL monitor model support
 
 netdiscovery/netinventory:
 * Make vlan context switching ordered
