@@ -20,7 +20,10 @@ netdiscovery/netinventory:
 
 packaging:
 * Update Windows packaging to use:
+  - Perl 5.44.0
   - 7-Zip v26.02
+* Update MacOSX packages to use perl 5.44.0
+* Update linux snap packaging to use perl 5.44.0
 
 1.18 Tue, 23 Jun 2026
 

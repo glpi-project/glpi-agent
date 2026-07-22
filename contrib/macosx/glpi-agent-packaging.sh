@@ -3,7 +3,7 @@
 # PERL: https://www.perl.org/get.html
 # SSL:  https://github.com/openssl/openssl/releases
 # ZLIB: https://www.zlib.net/
-: ${PERL_VERSION:=5.42.2}
+: ${PERL_VERSION:=5.44.0}
 : ${OPENSSL_VERSION:=3.5.7}
 : ${ZLIB_VERSION:=1.3.2}
 : ${ZLIB_SHA256:=bb329a0a2cd0274d05519d61c667c062e06990d72e125ee2dfa8de64f0119d16}
