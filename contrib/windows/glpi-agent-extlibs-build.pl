@@ -304,7 +304,7 @@ sub run {
     my $tgz = catfile($self->global->{download_dir}, $file);
 
     if (-e $tgz) {
-        $self->message(3, "* already downloaded")
+        $self->boss->message(3, "* already downloaded");
     } else {
         # Download the file
         my $downloaded = $self->boss->mirror_url($url, $self->global->{download_dir})
