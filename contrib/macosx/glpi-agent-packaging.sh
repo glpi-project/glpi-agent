@@ -66,7 +66,7 @@ done
 case "$(uname -s) $ARCH" in
     Darwin*x86_64)
         echo "GLPI-Agent MacOSX Packaging for $ARCH..."
-        : ${MACOSX_DEPLOYMENT_TARGET:=10.10}
+        : ${MACOSX_DEPLOYMENT_TARGET:=10.12}
         OPENSSL_CONFIG="darwin64-x86_64-cc"
         ;;
     Darwin*arm64)
