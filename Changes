@@ -10,6 +10,8 @@ inventory:
 * fix #1200: Add Wazuh antivirus detection support on linux
 * fix #1089: Updated Acer K242HYL monitor model support
 * PR #1176: Enhanced Network interfaces inventory on windows
+* Add DRIVES support for Hyper-V VMs: collect virtual hard disk paths and
+  provisioned sizes via MSVM_StorageAllocationSettingData WMI class
 
 netdiscovery/netinventory:
 * Make vlan context switching ordered
@@ -39,8 +41,7 @@ inventory:
 * fix #1158: Fix possible use of uninitialized warning during monitor inventory
 * fix #1159: Fix possible use of uninitialized value in hash element warning during
   windows software inventory
-* Add DRIVES support for Hyper-V VMs: collect virtual hard disk paths and
-  provisioned sizes via MSVM_StorageAllocationSettingData WMI class
+* fix #1162: Fix MSSQL database inventory for Always On cluster instances
 
 netdiscovery/netinventory:
 * fix #1161: Add support for devices like Ubnt which annouce IEEE802.11 support

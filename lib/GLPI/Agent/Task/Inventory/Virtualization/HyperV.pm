@@ -123,7 +123,8 @@ sub _getVirtualMachines {
             }
 
             my ($size_bytes) = GLPI::Agent::Tools::Win32::runPowerShell(
-                script => 'Get-VHD -Path "' . $path . '" | Select-Object -ExpandProperty Size'
+                script   => 'Get-VHD -Path "' . $path . '" | Select-Object -ExpandProperty Size',
+                TEMPLATE => 'get-vhd-size-XXXXXX',
             );
             if (!$size_bytes) {
                 # Distinguish between avhdx (checkpoint) and regular vhdx
@@ -251,8 +252,8 @@ sub _getVirtualMachines {
             VCPU      => $vcpu{$object->{Name}},
         };
 
-        if ($extended > 1) {
-            $machine->{DRIVES} = $drives{$object->{Name}} // [];
+        if ($extended > 1 && $drives{$object->{Name}} && @{$drives{$object->{Name}}}) {
+            $machine->{DRIVES} = $drives{$object->{Name}};
         }
         if ($extended) {
             my $vm_kvp = $kvp{$object->{Name}};

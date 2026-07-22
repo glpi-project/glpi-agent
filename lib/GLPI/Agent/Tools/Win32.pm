@@ -573,7 +573,7 @@ sub runPowerShell {
     return $remote->runPowerShell(script => $script) if $remote;
 
     my $fh = File::Temp->new(
-        TEMPLATE    => 'get-appxpackage-XXXXXX',
+        TEMPLATE    => $params{TEMPLATE} // 'get-appxpackage-XXXXXX',
         SUFFIX      => '.ps1'
     );
     print $fh $script;

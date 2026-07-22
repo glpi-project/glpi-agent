@@ -41,7 +41,6 @@ my %tests = (
             UUID      => undef,
             VCPU      => undef,
             MEMORY    => undef,
-            DRIVES  => [],
         },
         {
             VMTYPE    => 'HyperV',
@@ -51,7 +50,6 @@ my %tests = (
             UUID      => undef,
             VCPU      => undef,
             MEMORY    => undef,
-            DRIVES  => [],
         },
         {
             SUBSYSTEM => 'MS HyperV',
@@ -61,7 +59,6 @@ my %tests = (
             UUID      => undef,
             VCPU      => undef,
             MEMORY    => undef,
-            DRIVES  => [],
         }
     ],
     '2008' => [
