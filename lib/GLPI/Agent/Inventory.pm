@@ -508,6 +508,8 @@ sub _checkEntry {
         }
         $entry->{$field} = $value;
     }
+
+    return $entry;
 }
 
 sub setEntry {
