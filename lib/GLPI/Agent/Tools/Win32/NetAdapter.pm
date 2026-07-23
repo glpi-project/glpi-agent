@@ -226,8 +226,8 @@ sub _getStatus {
     my ($self) = @_;
 
     # MSFT_NetAdapter uses MediaConnectState: 1 = Connected, 2 = Disconnected
-    if (defined $self->{MediaConnectState}) {
-        return $self->{MediaConnectState} == 1 ? 'Up' : 'Down';
+    if (defined($self->{MediaConnectState}) && $self->{MediaConnectState} =~ /^\d+$/) {
+        return int($self->{MediaConnectState}) == 1 ? 'Up' : 'Down';
     }
 
     # Win32_NetworkAdapter uses NetConnectionStatus: 2 = Connected, 7 = Media Disconnected
