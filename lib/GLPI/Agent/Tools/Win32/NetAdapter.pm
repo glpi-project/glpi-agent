@@ -41,13 +41,13 @@ sub getBaseInterface {
         MACADDR     => $self->{_config}->{MACADDR},
         DESCRIPTION => $self->_getDescription(),
         STATUS      => $self->_getStatus(),
-        MTU         => $self->_getMtu(),
         dns         => $self->{_config}->{dns},
         VIRTUALDEV  => $self->_isVirtual()
     };
 
     $interface->{MANUFACTURER} = $self->_getManufacturer() if $self->_getManufacturer();
     $interface->{MODEL}        = $self->_getModel()        if $self->_getModel();
+    $interface->{MTU}          = $self->_getMtu()          if $self->_getMtu();
     $interface->{PCIID}     = $self->_getPciid() if $self->_getPciid();
     $interface->{GUID}      = $self->_getGUID() if $self->_getGUID();
     $interface->{DNSDomain} = $self->{_config}->{DNSDomain} if $self->{_config}->{DNSDomain};
