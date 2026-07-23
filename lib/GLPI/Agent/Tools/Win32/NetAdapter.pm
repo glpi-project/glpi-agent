@@ -231,8 +231,8 @@ sub _getStatus {
     }
 
     # Win32_NetworkAdapter uses NetConnectionStatus: 2 = Connected, 7 = Media Disconnected
-    if (defined $self->{NetConnectionStatus}) {
-        return $self->{NetConnectionStatus} == 2 ? 'Up' : 'Down';
+    if (defined($self->{NetConnectionStatus}) && $self->{NetConnectionStatus} =~ /^\d+$/) {
+        return int($self->{NetConnectionStatus}) == 2 ? 'Up' : 'Down';
     }
 
     # Fallback to IPEnabled from Win32_NetworkAdapterConfiguration
