@@ -122,9 +122,11 @@ sub _getVirtualMachines {
                 next;
             }
 
+            (my $ps_path = $path) =~ s/'/''/g;
             my ($size_bytes) = GLPI::Agent::Tools::Win32::runPowerShell(
-                script   => 'Get-VHD -Path "' . $path . '" | Select-Object -ExpandProperty Size',
+                script   => "Get-VHD -Path '" . $ps_path . "' | Select-Object -ExpandProperty Size",
                 TEMPLATE => 'get-vhd-size-XXXXXX',
+                logger   => $logger,
             );
             if (!$size_bytes) {
                 # Distinguish between avhdx (checkpoint) and regular vhdx

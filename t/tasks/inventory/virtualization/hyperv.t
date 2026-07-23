@@ -71,8 +71,9 @@ my %tests = (
             VCPU      => 2,
             MEMORY    => 2048,
             DRIVES  => [
-                { VOLUMN => 'C:\VMs\vm-disco.vhdx',        TOTAL => 102400 },
-                { VOLUMN => '\\\\nas01\VMs\vm-datos.vhdx',  TOTAL => 512000 },
+                { VOLUMN => 'C:\VMs\vm-disco.vhdx',           TOTAL => 102400 },
+                { VOLUMN => '\\\\nas01\VMs\vm-datos.vhdx',    TOTAL => 512000 },
+                { VOLUMN => '\\\\nas02\C$\VMs\vm-admin.vhdx', TOTAL =>  20480 },
             ],
         },
     ],
@@ -152,6 +153,7 @@ my %vhd_sizes = (
     'C:\HyperV\pruebadediscosl.vhdx'                                                 =>   5368709120,   #   5120 MB
     'C:\VeeamFLR\5k4y4gms.4n3\disk0_C.avhdx'                                        => 107374182400,   # 102400 MB
     'C:\ClusterStorage\Volume1\VM\VM-Testing\Virtual Hard Disks\VM-Testing.vhdx'     =>  53687091200,   #  51200 MB
+    '\\\\nas02\C$\VMs\vm-admin.vhdx'                                                =>  21474836480,   #  20480 MB
 );
 
 # fake Tools::Win32, instead of Task::Inventory::Virtualization::HyperV, as
@@ -167,7 +169,8 @@ foreach my $test (keys %tests) {
     );
     $module->mock('runPowerShell', sub {
         my (%params) = @_;
-        my ($path) = $params{script} =~ /"([^"]+)"/;
+        my ($path) = $params{script} =~ /'([^']+)'/;
+        $path =~ s/''/'/g if $path;   # unescape PS single-quoted '' → '
         return $vhd_sizes{$path} // 0;
     });
 
