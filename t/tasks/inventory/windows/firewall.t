@@ -1,7 +1,8 @@
-#!/usr/bin/perl
+﻿#!/usr/bin/perl
 
 use strict;
 use warnings;
+use utf8;
 use lib 't/lib';
 
 use English qw(-no_match_vars);
@@ -62,13 +63,13 @@ my %expectedProfilesForInventory = (
         {
             STATUS  => STATUS_OFF,
             PROFILE => 'DomainProfile',
-            DESCRIPTION => 'Carte Intel(R) PRO/1000 MT pour station de travail',
+            DESCRIPTION => 'Connexion au réseau local',
             IPADDRESS => '0.0.0.1'
         },
         {
             STATUS  => STATUS_OFF,
             PROFILE => 'DomainProfile',
-            DESCRIPTION => 'Carte Intel(R) PRO/1000 MT pour station de travail',
+            DESCRIPTION => 'Connexion au réseau local',
             IPADDRESS6 => 'fe81::fe81:fe81:fe81:fe81'
         },
         {
@@ -92,13 +93,13 @@ my %expectedProfilesForInventory = (
         {
             STATUS  => STATUS_ON,
             PROFILE => 'StandardProfile',
-            DESCRIPTION => 'Intel(R) PRO/1000 MT Desktop Adapter',
+            DESCRIPTION => 'Ethernet',
             IPADDRESS => '0.0.0.9'
         },
         {
             STATUS  => STATUS_ON,
             PROFILE => 'StandardProfile',
-            DESCRIPTION => 'Intel(R) PRO/1000 MT Desktop Adapter',
+            DESCRIPTION => 'Ethernet',
             IPADDRESS6 => 'fe82::fe82:fe82:fe82:fe82'
         }
     ]
