@@ -180,7 +180,7 @@ sub _getMtu {
     # Fallback to Win32_NetworkAdapterConfiguration MTU which might be unset
     return $self->{_config}->{MTU} if $self->{_config}->{MTU};
 
-    return undef;
+    return;
 }
 
 sub _getGUID {
