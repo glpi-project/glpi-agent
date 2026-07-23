@@ -9,6 +9,7 @@ inventory:
 * fix #1200: Add ClamAV antivirus detection support on linux
 * fix #1200: Add Wazuh antivirus detection support on linux
 * fix #1089: Updated Acer K242HYL monitor model support
+* PR #1176: Enhanced Network interfaces inventory on windows
 
 netdiscovery/netinventory:
 * Make vlan context switching ordered
