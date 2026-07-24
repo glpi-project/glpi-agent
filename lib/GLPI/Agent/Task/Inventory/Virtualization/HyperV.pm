@@ -82,16 +82,59 @@ sub _getVirtualMachines {
     }
 
     my %biosguid;
+    my %serial;
     foreach my $object (GLPI::Agent::Tools::Win32::getWMIObjects(
         moniker    => 'winmgmts://./root/virtualization/v2',
         altmoniker => 'winmgmts://./root/virtualization',
         class      => 'MSVM_VirtualSystemSettingData',
-        properties => [ qw/InstanceID BIOSGUID/ ]
+        properties => [ qw/InstanceID BIOSGUID BIOSSerialNumber/ ]
     )) {
         my $id = $object->{InstanceID};
-        next unless $object->{BIOSGUID} && $id =~ /^Microsoft:([^\\]+)/;
-        $biosguid{$1} = $object->{BIOSGUID};
-        $biosguid{$1} =~ tr/{}//d;
+        next unless $id =~ /^Microsoft:([^\\]+)/;
+        my $vm_guid = $1;
+        if ($object->{BIOSGUID}) {
+            $biosguid{$vm_guid} = $object->{BIOSGUID};
+            $biosguid{$vm_guid} =~ tr/{}//d;
+        }
+        $serial{$vm_guid} = $object->{BIOSSerialNumber}
+            if $object->{BIOSSerialNumber};
+    }
+
+    my %mac;
+    foreach my $object (GLPI::Agent::Tools::Win32::getWMIObjects(
+        moniker    => 'winmgmts://./root/virtualization/v2',
+        altmoniker => 'winmgmts://./root/virtualization',
+        class      => 'Msvm_SyntheticEthernetPortSettingData',
+        properties => [ qw/InstanceID Address/ ]
+    )) {
+        my $id = $object->{InstanceID}
+            or next;
+        next unless $id =~ /^Microsoft:([^\\]+)/;
+        my $vm_guid = $1;
+        next if defined $mac{$vm_guid};
+        my $addr = $object->{Address}
+            or next;
+        $addr =~ s/(..)(?=.)/$1:/g;
+        $mac{$vm_guid} = uc($addr);
+    }
+    # Fallback for Generation 1 VMs using legacy emulated adapters
+    if (!%mac) {
+        foreach my $object (GLPI::Agent::Tools::Win32::getWMIObjects(
+            moniker    => 'winmgmts://./root/virtualization/v2',
+            altmoniker => 'winmgmts://./root/virtualization',
+            class      => 'Msvm_EmulatedEthernetPortSettingData',
+            properties => [ qw/InstanceID Address/ ]
+        )) {
+            my $id = $object->{InstanceID}
+                or next;
+            next unless $id =~ /^Microsoft:([^\\]+)/;
+            my $vm_guid = $1;
+            next if defined $mac{$vm_guid};
+            my $addr = $object->{Address}
+                or next;
+            $addr =~ s/(..)(?=.)/$1:/g;
+            $mac{$vm_guid} = uc($addr);
+        }
     }
 
     my %drives;
@@ -253,6 +296,8 @@ sub _getVirtualMachines {
             MEMORY    => $memory{$object->{Name}},
             VCPU      => $vcpu{$object->{Name}},
         };
+        $machine->{SERIAL} = $serial{$object->{Name}} if $serial{$object->{Name}};
+        $machine->{MAC}    = $mac{$object->{Name}}    if $mac{$object->{Name}};
 
         if ($extended > 1 && $drives{$object->{Name}} && @{$drives{$object->{Name}}}) {
             $machine->{DRIVES} = $drives{$object->{Name}};

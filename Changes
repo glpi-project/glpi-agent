@@ -12,6 +12,10 @@ inventory:
 * PR #1176: Enhanced Network interfaces inventory on windows
 * Add DRIVES support for Hyper-V VMs: collect virtual hard disk paths and
   provisioned sizes via MSVM_StorageAllocationSettingData WMI class
+* Add SERIAL and MAC support for Hyper-V VMs: collect BIOSSerialNumber from
+  MSVM_VirtualSystemSettingData and first MAC address from
+  Msvm_SyntheticEthernetPortSettingData, with fallback to
+  Msvm_EmulatedEthernetPortSettingData for Generation 1 legacy adapters
 
 netdiscovery/netinventory:
 * Make vlan context switching ordered
