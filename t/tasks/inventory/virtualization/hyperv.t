@@ -71,7 +71,9 @@ my %tests = (
             VCPU      => 2,
             MEMORY    => 2048,
             SERIAL    => '2008-SN-0001',
-            MAC       => '00:11:22:AA:BB:01',
+            NETWORKS  => [
+                { DESCRIPTION => 'Network Adapter', MACADDR => '00:11:22:AA:BB:01' },
+            ],
             DRIVES  => [
                 { VOLUMN => 'C:\VMs\vm-disco.vhdx',           TOTAL => 102400 },
                 { VOLUMN => '\\\\nas01\VMs\vm-datos.vhdx',    TOTAL => 512000 },
@@ -89,7 +91,10 @@ my %tests = (
             VCPU            => 4,
             MEMORY          => 2048,
             SERIAL          => 'QA-SN-0002',
-            MAC             => '00:11:22:AA:BB:02',
+            NETWORKS        => [
+                { DESCRIPTION => 'Network Adapter',   MACADDR => '00:11:22:AA:BB:02' },
+                { DESCRIPTION => 'Network Adapter 2', MACADDR => 'DE:AD:BE:EF:00:02' },
+            ],
             DRIVES        => [
                 { VOLUMN => 'C:\HyperV\vm2.vhdx', TOTAL => 12288 },
             ],
@@ -105,7 +110,9 @@ my %tests = (
             VCPU      => 4,
             MEMORY    => 4096,
             SERIAL    => 'QA-SN-0003',
-            MAC       => '00:11:22:AA:BB:03',
+            NETWORKS  => [
+                { DESCRIPTION => 'Network Adapter', MACADDR => '00:11:22:AA:BB:03' },
+            ],
             DRIVES  => [
                 { VOLUMN => 'C:\HyperV\vm1.vhdx',            TOTAL => 16384 },
                 { VOLUMN => 'C:\HyperV\pruebadediscosl.vhdx', TOTAL => 5120  },
@@ -123,7 +130,9 @@ my %tests = (
             VCPU      => 2,
             MEMORY    => 1024,
             SERIAL    => 'PAUSED-SN-0004',
-            MAC       => '00:11:22:AA:BB:04',
+            NETWORKS  => [
+                { DESCRIPTION => 'Network Adapter', MACADDR => '00:11:22:AA:BB:04' },
+            ],
             DRIVES    => [
                 { VOLUMN => 'C:\ClusterStorage\Volume1\VM\VM-Testing\Virtual Hard Disks\VM-Testing.vhdx', TOTAL => 51200 },
             ],
@@ -141,7 +150,9 @@ my %tests = (
             VCPU      => 2,
             MEMORY    => 2048,
             SERIAL    => 'VEEAM-SN-0005',
-            MAC       => '00:11:22:AA:BB:05',
+            NETWORKS  => [
+                { DESCRIPTION => 'Network Adapter', MACADDR => '00:11:22:AA:BB:05' },
+            ],
             DRIVES    => [
                 { VOLUMN => 'C:\VeeamFLR\5k4y4gms.4n3\disk0_C.avhdx', TOTAL => 102400 },
             ],

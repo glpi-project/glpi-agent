@@ -100,40 +100,44 @@ sub _getVirtualMachines {
             if $object->{BIOSSerialNumber};
     }
 
-    my %mac;
+    my %networks;
     foreach my $object (GLPI::Agent::Tools::Win32::getWMIObjects(
         moniker    => 'winmgmts://./root/virtualization/v2',
         altmoniker => 'winmgmts://./root/virtualization',
         class      => 'Msvm_SyntheticEthernetPortSettingData',
-        properties => [ qw/InstanceID Address/ ]
+        properties => [ qw/InstanceID ElementName Address/ ]
     )) {
         my $id = $object->{InstanceID}
             or next;
         next unless $id =~ /^Microsoft:([^\\]+)/;
         my $vm_guid = $1;
-        next if defined $mac{$vm_guid};
         my $addr = $object->{Address}
             or next;
         $addr =~ s/(..)(?=.)/$1:/g;
-        $mac{$vm_guid} = uc($addr);
+        push @{$networks{$vm_guid}}, {
+            DESCRIPTION => $object->{ElementName} // 'Network Adapter',
+            MACADDR     => uc($addr),
+        };
     }
     # Fallback for Generation 1 VMs using legacy emulated adapters
-    if (!%mac) {
+    if (!%networks) {
         foreach my $object (GLPI::Agent::Tools::Win32::getWMIObjects(
             moniker    => 'winmgmts://./root/virtualization/v2',
             altmoniker => 'winmgmts://./root/virtualization',
             class      => 'Msvm_EmulatedEthernetPortSettingData',
-            properties => [ qw/InstanceID Address/ ]
+            properties => [ qw/InstanceID ElementName Address/ ]
         )) {
             my $id = $object->{InstanceID}
                 or next;
             next unless $id =~ /^Microsoft:([^\\]+)/;
             my $vm_guid = $1;
-            next if defined $mac{$vm_guid};
             my $addr = $object->{Address}
                 or next;
             $addr =~ s/(..)(?=.)/$1:/g;
-            $mac{$vm_guid} = uc($addr);
+            push @{$networks{$vm_guid}}, {
+                DESCRIPTION => $object->{ElementName} // 'Network Adapter',
+                MACADDR     => uc($addr),
+            };
         }
     }
 
@@ -296,8 +300,8 @@ sub _getVirtualMachines {
             MEMORY    => $memory{$object->{Name}},
             VCPU      => $vcpu{$object->{Name}},
         };
-        $machine->{SERIAL} = $serial{$object->{Name}} if $serial{$object->{Name}};
-        $machine->{MAC}    = $mac{$object->{Name}}    if $mac{$object->{Name}};
+        $machine->{SERIAL}   = $serial{$object->{Name}}   if $serial{$object->{Name}};
+        $machine->{NETWORKS} = $networks{$object->{Name}} if $networks{$object->{Name}};
 
         if ($extended > 1 && $drives{$object->{Name}} && @{$drives{$object->{Name}}}) {
             $machine->{DRIVES} = $drives{$object->{Name}};
