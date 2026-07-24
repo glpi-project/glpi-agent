@@ -9,6 +9,7 @@ use English qw(-no_match_vars);
 use UNIVERSAL::require;
 
 use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Network qw(alt2canonical);
 use GLPI::Agent::Tools::Virtualization;
 
 sub isEnabled {
@@ -111,12 +112,11 @@ sub _getVirtualMachines {
             or next;
         next unless $id =~ /^Microsoft:([^\\]+)/;
         my $vm_guid = $1;
-        my $addr = $object->{Address}
+        my $mac = alt2canonical($object->{Address})
             or next;
-        $addr =~ s/(..)(?=.)/$1:/g;
         push @{$networks{$vm_guid}}, {
             DESCRIPTION => $object->{ElementName} // 'Network Adapter',
-            MACADDR     => uc($addr),
+            MACADDR     => $mac,
         };
     }
     # Fallback for Generation 1 VMs using legacy emulated adapters
@@ -131,12 +131,11 @@ sub _getVirtualMachines {
                 or next;
             next unless $id =~ /^Microsoft:([^\\]+)/;
             my $vm_guid = $1;
-            my $addr = $object->{Address}
+            my $mac = alt2canonical($object->{Address})
                 or next;
-            $addr =~ s/(..)(?=.)/$1:/g;
             push @{$networks{$vm_guid}}, {
                 DESCRIPTION => $object->{ElementName} // 'Network Adapter',
-                MACADDR     => uc($addr),
+                MACADDR     => $mac,
             };
         }
     }

@@ -72,7 +72,7 @@ my %tests = (
             MEMORY    => 2048,
             SERIAL    => '2008-SN-0001',
             NETWORKS  => [
-                { DESCRIPTION => 'Network Adapter', MACADDR => '00:11:22:AA:BB:01' },
+                { DESCRIPTION => 'Network Adapter', MACADDR => '00:11:22:aa:bb:01' },
             ],
             DRIVES  => [
                 { VOLUMN => 'C:\VMs\vm-disco.vhdx',           TOTAL => 102400 },
@@ -92,8 +92,8 @@ my %tests = (
             MEMORY          => 2048,
             SERIAL          => 'QA-SN-0002',
             NETWORKS        => [
-                { DESCRIPTION => 'Network Adapter',   MACADDR => '00:11:22:AA:BB:02' },
-                { DESCRIPTION => 'Network Adapter 2', MACADDR => 'DE:AD:BE:EF:00:02' },
+                { DESCRIPTION => 'Network Adapter',   MACADDR => '00:11:22:aa:bb:02' },
+                { DESCRIPTION => 'Network Adapter 2', MACADDR => 'de:ad:be:ef:00:02' },
             ],
             DRIVES        => [
                 { VOLUMN => 'C:\HyperV\vm2.vhdx', TOTAL => 12288 },
@@ -111,7 +111,7 @@ my %tests = (
             MEMORY    => 4096,
             SERIAL    => 'QA-SN-0003',
             NETWORKS  => [
-                { DESCRIPTION => 'Network Adapter', MACADDR => '00:11:22:AA:BB:03' },
+                { DESCRIPTION => 'Network Adapter', MACADDR => '00:11:22:aa:bb:03' },
             ],
             DRIVES  => [
                 { VOLUMN => 'C:\HyperV\vm1.vhdx',            TOTAL => 16384 },
@@ -131,7 +131,7 @@ my %tests = (
             MEMORY    => 1024,
             SERIAL    => 'PAUSED-SN-0004',
             NETWORKS  => [
-                { DESCRIPTION => 'Network Adapter', MACADDR => '00:11:22:AA:BB:04' },
+                { DESCRIPTION => 'Network Adapter', MACADDR => '00:11:22:aa:bb:04' },
             ],
             DRIVES    => [
                 { VOLUMN => 'C:\ClusterStorage\Volume1\VM\VM-Testing\Virtual Hard Disks\VM-Testing.vhdx', TOTAL => 51200 },
@@ -151,7 +151,7 @@ my %tests = (
             MEMORY    => 2048,
             SERIAL    => 'VEEAM-SN-0005',
             NETWORKS  => [
-                { DESCRIPTION => 'Network Adapter', MACADDR => '00:11:22:AA:BB:05' },
+                { DESCRIPTION => 'Network Adapter', MACADDR => '00:11:22:aa:bb:05' },
             ],
             DRIVES    => [
                 { VOLUMN => 'C:\VeeamFLR\5k4y4gms.4n3\disk0_C.avhdx', TOTAL => 102400 },
