@@ -1,0 +1,16 @@
+{
+ "State": {
+  "ProtectionStatus": {
+   "RTFSEnabled": {
+    "Active": {
+     "ce_val": 1
+    }
+   },
+   "RTFSWorking": {
+    "Active": {
+     "ce_val": 1
+    }
+   }
+  }
+ }
+}

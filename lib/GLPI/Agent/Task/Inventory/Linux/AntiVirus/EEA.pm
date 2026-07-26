@@ -22,12 +22,26 @@ sub doInventory {
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
 
-    my $antivirus = _getEEAInfo(logger => $logger);
+    my $antivirus = _getEEAInfo(logger => $logger, %params);
     if ($antivirus) {
+        my $public_id = delete $antivirus->{_PUBLIC_ID};
         $inventory->addEntry(
             section => 'ANTIVIRUS',
             entry   => $antivirus
         );
+
+        if ($public_id) {
+            my $lic_name = $antivirus->{NAME};
+            $lic_name =~ s/\s+for\s+(?:macOS|Linux|Windows)//i if defined($lic_name);
+            $inventory->addEntry(
+                section => 'LICENSEINFOS',
+                entry   => {
+                    NAME      => $lic_name,
+                    FULLNAME  => $lic_name,
+                    PRODUCTID => $public_id,
+                }
+            );
+        }
 
         $logger->debug2("Added $antivirus->{NAME}" .
             ($antivirus->{VERSION} ? " v$antivirus->{VERSION}" : "") .
@@ -68,6 +82,14 @@ sub _getEEAInfo {
         %params
     );
     $av->{EXPIRATION} = $expiration if $expiration;
+
+    my $public_id = getFirstMatch(
+        file    => $params{lic_status}, # Only used by tests
+        command => lic . ' --status',
+        pattern => qr/Public ID:\s*(\S+)/,
+        %params
+    );
+    $av->{_PUBLIC_ID} = $public_id if $public_id;
 
     my $base_version = getFirstMatch(
         file    => $params{upd_modules}, # Only used by tests

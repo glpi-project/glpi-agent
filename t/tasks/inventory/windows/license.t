@@ -59,7 +59,7 @@ my %licensing_tests = (
         OEM        => 0,
     },
 );
-plan tests => scalar (keys %tests) + scalar (keys %licensing_tests) + 11 ;
+plan tests => scalar (keys %tests) + scalar (keys %licensing_tests) + 14 ;
 
 foreach my $test (keys %tests) {
     my $key = loadRegistryDump("resources/win32/registry/$test.reg");
@@ -125,3 +125,9 @@ GLPI::Agent::Task::Inventory::Win32::License::_scanWmiSoftwareLicensingProducts(
 # License was still read from registry, no license added, but replaced by WMI Information
 ok( @licenses == 1 );
 ok( $licenses[0]->{'KEY'} eq 'XXXXX-XXXXX-XXXXX-XXXXX-WE9H9' );
+
+$key = loadRegistryDump("resources/win32/registry/eset_license.reg");
+my $eset_lic = GLPI::Agent::Task::Inventory::Win32::License::_getESETLicense($key);
+ok( $eset_lic->{'NAME'} eq 'ESET Endpoint Security' );
+ok( $eset_lic->{'FULLNAME'} eq 'ESET Endpoint Security 10.1.2050.0' );
+ok( $eset_lic->{'PRODUCTID'} eq '3EA-ABC-DEF' );
