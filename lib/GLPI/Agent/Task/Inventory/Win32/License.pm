@@ -58,6 +58,10 @@ sub doInventory {
 
     push @licenses, getAdobeLicensesWithoutSqlite($fileAdobe) if has_file($fileAdobe);
 
+    # ESET
+    my $esetLicense = _getESETLicense();
+    push @licenses, $esetLicense if $esetLicense;
+
     _scanWmiSoftwareLicensingProducts();
 
     push @licenses, _getSeenProducts();
@@ -213,6 +217,60 @@ sub _getOfficeLicense {
     }
 
     return $license;
+}
+
+sub _getESETLicense {
+    my ($key) = @_;
+
+    my $required = [ qw(WebLicensePublicId ProductName ProductVersion) ];
+    my $esetReg = $key;
+    if ($esetReg && !$esetReg->{'/WebLicensePublicId'} && $esetReg->{'SOFTWARE/'}) {
+        $esetReg = $esetReg->{'SOFTWARE/'}->{'ESET/'}->{'ESET Security/'}->{'CurrentVersion/'}->{'Info/'};
+    }
+
+    unless ($esetReg && $esetReg->{'/WebLicensePublicId'}) {
+        $esetReg = getRegistryKey(
+            path     => 'HKEY_LOCAL_MACHINE/SOFTWARE/ESET/ESET Security/CurrentVersion/Info',
+            required => $required,
+        );
+        if ((!$esetReg || !$esetReg->{'/WebLicensePublicId'}) && is64bit()) {
+            $esetReg = getRegistryKey(
+                path     => 'HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/ESET/ESET Security/CurrentVersion/Info',
+                required => $required,
+            );
+        }
+    }
+
+    if ($esetReg && $esetReg->{'/WebLicensePublicId'}) {
+        my $fullname = $esetReg->{'/ProductName'} || 'ESET Endpoint Security';
+        $fullname .= " " . $esetReg->{'/ProductVersion'}
+            if $esetReg->{'/ProductVersion'};
+        return {
+            NAME      => $esetReg->{'/ProductName'} || 'ESET Endpoint Security',
+            FULLNAME  => $fullname,
+            PRODUCTID => $esetReg->{'/WebLicensePublicId'},
+        };
+    }
+
+    # Fallback: try ermm.exe
+    my $ermm = 'C:\Program Files\ESET\ESET Security\ermm.exe';
+    return unless canRun($ermm);
+
+    my $output = getAllLines(command => "\"$ermm\" get license-info");
+    return unless $output;
+
+    my $data;
+    eval {
+        Cpanel::JSON::XS->require();
+        $data = Cpanel::JSON::XS::decode_json($output);
+    };
+    return unless $data && $data->{result} && $data->{result}->{public_id};
+
+    return {
+        NAME      => 'ESET Endpoint Security',
+        FULLNAME  => 'ESET Endpoint Security',
+        PRODUCTID => $data->{result}->{public_id},
+    };
 }
 
 1;
