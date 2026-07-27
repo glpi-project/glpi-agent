@@ -17,6 +17,8 @@ inventory:
   adapters (name + MAC address) from Msvm_SyntheticEthernetPortSettingData as
   a NETWORKS array, with fallback to Msvm_EmulatedEthernetPortSettingData for
   Generation 1 legacy adapters
+* PR #1185: Improve sound NAME and MANUFACTURER resolution on windows using PnP
+  and hardware ID databases
 
 netdiscovery/netinventory:
 * Make vlan context switching ordered

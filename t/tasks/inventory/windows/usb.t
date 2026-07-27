@@ -146,6 +146,15 @@ my %tests = (
             VENDORID     => '03F0',
             PRODUCTID    => '046B'
         }
+    ],
+    'logitech-h390' => [
+        {
+            CAPTION      => 'H390 headset with microphone',
+            MANUFACTURER => 'Logitech, Inc.',
+            NAME         => 'H390 headset with microphone',
+            PRODUCTID    => '0A8F',
+            VENDORID     => '046D',
+        }
     ]
 );
 
