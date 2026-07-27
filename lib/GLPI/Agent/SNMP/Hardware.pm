@@ -1133,7 +1133,7 @@ sub _setConnectedDevices {
                 my $match = 0;
 
                 # Try different case to find LLDP/CDP connection match
-                if ($lldp_connection->{SYSDESCR} && !empty($cdp_connection) && $cdp_connection->{SYSDESCR} eq $lldp_connection->{SYSDESCR}) {
+                if ($lldp_connection->{SYSDESCR} && !empty($cdp_connection->{SYSDESCR}) && $cdp_connection->{SYSDESCR} eq $lldp_connection->{SYSDESCR}) {
                     $match ++;
                 } elsif ($lldp_connection->{SYSNAME} && $cdp_connection->{SYSNAME}) {
                     my $cdp_test = getCanonicalMacAddress($cdp_connection->{SYSNAME});
