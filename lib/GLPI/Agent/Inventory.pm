@@ -100,7 +100,7 @@ my %fields = (
                             CLASS SUBCLASS NAME/ ],
     USERS            => [ qw/LOGIN DOMAIN/ ],
     VIRTUALMACHINES  => [ qw/MEMORY NAME UUID STATUS SUBSYSTEM VMTYPE VCPU
-                             COMMENT OWNER SERIAL IMAGE IPADDRESS OPERATINGSYSTEM
+                             MAC COMMENT OWNER SERIAL IMAGE IPADDRESS OPERATINGSYSTEM
                              DRIVES NETWORKS/ ],
     VOLUME_GROUPS    => [ qw/VG_NAME PV_COUNT LV_COUNT ATTR SIZE FREE VG_UUID
                              VG_EXTENT_SIZE/ ],
