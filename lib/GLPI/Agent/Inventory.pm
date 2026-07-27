@@ -100,7 +100,8 @@ my %fields = (
                             CLASS SUBCLASS NAME/ ],
     USERS            => [ qw/LOGIN DOMAIN/ ],
     VIRTUALMACHINES  => [ qw/MEMORY NAME UUID STATUS SUBSYSTEM VMTYPE VCPU
-                             MAC COMMENT OWNER SERIAL IMAGE IPADDRESS OPERATINGSYSTEM/ ],
+                             MAC COMMENT OWNER SERIAL IMAGE IPADDRESS OPERATINGSYSTEM
+                             DRIVES NETWORKS/ ],
     VOLUME_GROUPS    => [ qw/VG_NAME PV_COUNT LV_COUNT ATTR SIZE FREE VG_UUID
                              VG_EXTENT_SIZE/ ],
     VERSIONPROVIDER  => [ qw/NAME VERSION COMMENTS PERL_EXE PERL_VERSION PERL_ARGS
@@ -120,6 +121,14 @@ my %checks = (
         }
     },
     VIRTUALMACHINES => {
+        DRIVES => {
+            not_before  => glpiVersion('12'),
+            as_ref      => 'DRIVES',
+        },
+        NETWORKS => {
+            not_before  => glpiVersion('10.0.17'),
+            as_ref      => 'NETWORKS',
+        },
         IPADDRESS => {
             not_before  => glpiVersion('10.0.17'),
         },
@@ -214,6 +223,12 @@ sub getRemote {
     my ($self) = @_;
 
     return $self->{_remote} || '';
+}
+
+sub supportsGlpiVersion {
+    my ($self, $version) = @_;
+
+    return $self->{_glpi_version} >= glpiVersion($version);
 }
 
 sub setRemote {

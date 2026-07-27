@@ -10,6 +10,13 @@ inventory:
 * fix #1200: Add Wazuh antivirus detection support on linux
 * fix #1089: Updated Acer K242HYL monitor model support
 * PR #1176: Enhanced Network interfaces inventory on windows
+* Add DRIVES support for Hyper-V VMs: collect virtual hard disk paths and
+  provisioned sizes via MSVM_StorageAllocationSettingData WMI class
+* Add SERIAL and network adapters support for Hyper-V VMs: collect
+  BIOSSerialNumber from MSVM_VirtualSystemSettingData and all virtual network
+  adapters (name + MAC address) from Msvm_SyntheticEthernetPortSettingData as
+  a NETWORKS array, with fallback to Msvm_EmulatedEthernetPortSettingData for
+  Generation 1 legacy adapters
 
 netdiscovery/netinventory:
 * Make vlan context switching ordered
