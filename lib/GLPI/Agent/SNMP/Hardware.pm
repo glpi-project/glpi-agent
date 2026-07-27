@@ -1133,7 +1133,7 @@ sub _setConnectedDevices {
                 my $match = 0;
 
                 # Try different case to find LLDP/CDP connection match
-                if ($lldp_connection->{SYSDESCR} && $cdp_connection->{SYSDESCR} eq $lldp_connection->{SYSDESCR}) {
+                if ($lldp_connection->{SYSDESCR} && !empty($cdp_connection) && $cdp_connection->{SYSDESCR} eq $lldp_connection->{SYSDESCR}) {
                     $match ++;
                 } elsif ($lldp_connection->{SYSNAME} && $cdp_connection->{SYSNAME}) {
                     my $cdp_test = getCanonicalMacAddress($cdp_connection->{SYSNAME});
@@ -1439,15 +1439,17 @@ sub _getCDPInfo {
         my $ip = hex2canonical($cdpCacheAddress->{$suffix});
         next if (!defined($ip) || $ip eq '0.0.0.0');
 
-        my $sysdescr = getCanonicalString($cdpCacheVersion->{$suffix});
-        my $model    = getCanonicalString($cdpCachePlatform->{$suffix});
-        next unless $sysdescr && $model;
+        my $model = getCanonicalString($cdpCachePlatform->{$suffix})
+            or next;
 
         my $connection = {
             IP       => $ip,
-            SYSDESCR => $sysdescr,
             MODEL    => $model,
         };
+
+        my $sysdescr = getCanonicalString($cdpCacheVersion->{$suffix});
+        $connection->{SYSDESCR} = $sysdescr
+            if $sysdescr;
 
         # cdpCacheDevicePort is either a port number or a port description
         my $devicePort = $cdpCacheDevicePort->{$suffix};

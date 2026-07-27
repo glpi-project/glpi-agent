@@ -25,6 +25,8 @@ netdiscovery/netinventory:
 * Add support for InfoBlox networking devices
 * Refacto IEC61850 protocol support to log only one time it is not supported
 * fix #1202: Update StormShield SNS support
+* Fix CDP integration to support connected device with an empty or zero-ed
+  cdpCacheVersion field
 
 packaging:
 * Update Windows packaging to use:
