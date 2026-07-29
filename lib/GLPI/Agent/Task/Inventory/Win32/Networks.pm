@@ -50,8 +50,8 @@ sub doInventory {
             # Keep modern stats if they exist (they map nicely by DESCRIPTION)
             # But populate legacy ones too for adapters that only show up here
             $statistics{$stat->{Name}} //= {
-                ifinoctets  => $stat->{BytesReceivedPersec},
-                ifoutoctets => $stat->{BytesSentPersec},
+                ifinbytes  => $stat->{BytesReceivedPersec},
+                ifoutbytes => $stat->{BytesSentPersec},
                 ifinerrors  => $stat->{PacketsReceivedErrors},
                 ifouterrors => $stat->{PacketsOutboundErrors}
             } if $stat->{Name};
