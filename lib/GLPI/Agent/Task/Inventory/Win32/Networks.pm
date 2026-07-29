@@ -25,7 +25,7 @@ sub doInventory {
 
     my %statistics;
 
-    if ($inventory->{_glpi_version} >= glpiVersion('12')) {
+    if ($inventory->supportsGlpiVersion('12')) {
         my @modern_stats = getWMIObjects(
             moniker    => 'winmgmts://./root/StandardCimv2',
             class      => 'MSFT_NetAdapterStatisticsSettingData',
