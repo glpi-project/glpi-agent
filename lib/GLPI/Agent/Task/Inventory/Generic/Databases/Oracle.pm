@@ -388,15 +388,16 @@ sub _runSql {
                 $env = "ORACLE_SID=$ENV{ORACLE_SID}";
             }
             foreach my $key (qw(ORACLE_HOME ORACLE_BASE LD_LIBRARY_PATH)) {
-                next unless $ENV{$key};
+                my $value = $ENV{$key}
+                    or next;
+                $value =~ s/'/\\'/g;
                 $env .= " " if $env;
-                $env .= "$key='$ENV{$key}'";
+                $env .= "$key='$value'";
             }
             if ($env) {
-                $env =~ s/'/\\'/g;
-                $command = sprintf("su $user -c '%s %s'", $env, $command);
+                $command = [ "su", $user, "-c", "$env $command" ];
             } else {
-                $command = sprintf("su $user -c '%s'", $command);
+                $command = [ "su", $user, "-c", $command ];
             }
             # Make temp file readable by oracle
             if ($params{gid}) {

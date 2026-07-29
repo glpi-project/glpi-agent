@@ -19,6 +19,7 @@ inventory:
   Generation 1 legacy adapters
 * PR #1185: Improve sound NAME and MANUFACTURER resolution on windows using PnP
   and hardware ID databases
+* Fix Oracle database inventory when using su and environment variables
 
 netdiscovery/netinventory:
 * Make vlan context switching ordered
