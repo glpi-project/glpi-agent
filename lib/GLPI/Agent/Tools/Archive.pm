@@ -838,8 +838,14 @@ sub _unzip_az {
     for my $member ($zip->members) {
         push @files, $member->{fileName};
 
+        # Remove any path traversal attempt like unzip command does
+        my @filepath = File::Spec->splitpath($member->{fileName});
+        my @path = File::Spec->splitdir($filepath[1]);
+        $filepath[1] = File::Spec->catdir( grep { $_ !~ /^\.\.?$/ } @path );
+        my $filepath = File::Spec->catpath(@filepath);
+
         ### file to extract to, to avoid the above problem
-        my $to = File::Spec->catfile( $extract_dir, $member->{fileName} );
+        my $to = File::Spec->catfile( $extract_dir, $filepath );
 
         unless( $zip->extractMember($member, $to) == &Archive::Zip::AZ_OK ) {
             return $self->_error("Extraction of '$member->{fileName}' from '".$self->archive."' failed");

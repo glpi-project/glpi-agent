@@ -2,7 +2,48 @@ Revision history for GLPI agent
 
 Warning for developers: Don't change/remove any entry which doesn't concern your code
 
-1.18 not yet released
+1.19 not yet released
+
+inventory:
+* fix #1089: Updated Samsung LF22T450F monitor model support
+* fix #1200: Add ClamAV antivirus detection support on linux
+* fix #1200: Add Wazuh antivirus detection support on linux
+* fix #1089: Updated Acer K242HYL monitor model support
+* PR #1176: Enhanced Network interfaces inventory on windows
+* Add DRIVES support for Hyper-V VMs: collect virtual hard disk paths and
+  provisioned sizes via MSVM_StorageAllocationSettingData WMI class
+* Add SERIAL and network adapters support for Hyper-V VMs: collect
+  BIOSSerialNumber from MSVM_VirtualSystemSettingData and all virtual network
+  adapters (name + MAC address) from Msvm_SyntheticEthernetPortSettingData as
+  a NETWORKS array, with fallback to Msvm_EmulatedEthernetPortSettingData for
+  Generation 1 legacy adapters
+* PR #1185: Improve sound NAME and MANUFACTURER resolution on windows using PnP
+  and hardware ID databases
+* Fix Oracle database inventory when using su and environment variables
+
+netdiscovery/netinventory:
+* Make vlan context switching ordered
+* fix #1154: Extract address MAC of connected Yealink phones using CDP
+* Use more ordered processing to make debug output more predictable
+* Add support for InfoBlox networking devices
+* Refacto IEC61850 protocol support to log only one time it is not supported
+* fix #1202: Update StormShield SNS support
+* Fix CDP integration to support connected device with an empty or zero-ed
+  cdpCacheVersion field
+
+packaging:
+* Update Windows packaging to use:
+  - Perl 5.44.0
+  - 7-Zip v26.02
+* Update MacOSX packages to use perl 5.44.0:
+  - Minimum supported MacOSX version changed to 10.12
+* Update linux snap packaging to use perl 5.44.0
+
+1.18 Tue, 23 Jun 2026
+
+core:
+* fix #1194: Fix ssl-keystore option support on windows
+* fix #1193: Fix constant usage not recognized in perl 5.16
 
 inventory:
 * fix #1149: Support NVMe SSD storage disks on MacOSX
@@ -10,23 +51,72 @@ inventory:
 * fix #1158: Fix possible use of uninitialized warning during monitor inventory
 * fix #1159: Fix possible use of uninitialized value in hash element warning during
   windows software inventory
+* Fix software filesize inventory support, essentialy for Snap packages
+* fix #1171: Fix megasasctl output parsing
+* fix #1162: Fix MSSQL database inventory for Always On cluster instances
+* fix #1144: Fix crash on obsolete windows during processes inventory
+* fix #1089: Fix Samsung LF22T450F monitor serialnumber
+* Security Advisory GHSA-vwv6-85p7-mjvc: Fix using not validated username in Oracle
+  database inventory su command usage
+* [SECURITY] Fix CVE-2026-52765: Sanitize credentials provided by server for DB2
+  and Oracle database inventory
+* [SECURITY] Fix CVE-2026-45621: MongoDB inventory module allows JavaScript injection
+  via unescaped login credential field provided by database-inventory glpi plugin
+* [SECURITY] Fix CVE-2026-46615: Fixed Mysql and PostgreSQL inventory module allowed
+  command injection with crafted database name
+* [SECURITY] Fix CVE-2026-52764: Fixed Mssql inventory module allowed command injection
+  with compromised glpi server
+* Updated pci.ids to 2026.06.21 version
+* Updated usb.ids to 2026.06.10 version
+* Bump Inventory task version to 1.25
 
 netdiscovery/netinventory:
 * fix #1161: Add support for devices like Ubnt which annouce IEEE802.11 support
   in their sysORID table
 * fix #1164: Add support for Digi Anywhere modems
+* Add NetApp cluster support
+* Bump NetDiscovery task version to 7.2
+* Bump NetInventory task version to 7.2
+
+collect:
+* Security Advisory GHSA-mgcf-xgv7-5w4x: Validate server-controlled regular expression
+  in find file collect jobs. Limit regex size to 255 chars and abort job on regex
+  compilation error. And added timeout support.
+* Bump Collect task version to 3.1
+
+proxy-server-plugin:
+* [SECURITY] Fix CVE-2026-42187: When local_store is enabled, Proxy plugin can allow
+  arbitrary file write
+* Bump Proxy plugin version to 3.1
+
+deploy:
+* [SECURITY] Fix CVE-2026-52768: Fix GLPI::Agent::Tools::Archive to mimic unzip
+  command and to block possible path traversal during zip archive extraction
+* Bump Deploy task version to 3.6
 
 toolbox:
 * Fix configuration reloading to only reload it when really required
 * Fix undefined error on Results page while tag_filter is not set
+* Security Advisory GHSA-cwg9-jj5m-pq4q: Fix stored XSS via SNMP community/authprotocol
+  credential fields
+* Security Advisory GHSA-mvgv-2h85-5jg8: Fix XSS via Tag and Name fields
+* [SECURITY] Fix CVE-2026-40936: Toolbox can only register file it generated and
+  guaranty only Toolbox generated file can be deleted
+* [SECURITY] Fix CVE-2026-49285: OS Command Injection in Results export
+* [SECURITY] Fix CVE-2026-58199: Remove deprecated remotes management
+* Bump ToolBox plugin version to 2.0
 
 packaging:
+* fix: Update macOS postinstall, preinstall and uninstaller to use launchctl
+  bootstrap/bootout on macOS 13 Ventura and later, where launchctl load/unload
+  is deprecated and returns an error
 * Update Windows packaging to use:
   - Perl 5.42.2
-  - gcc 16.1.0posix-14.0.0-msvcrt-r2
-  - OpenSSL 3.5.6
+  - gcc 16.1.0posix-14.0.0-msvcrt-r3
+  - OpenSSL 3.5.7
   - libxml2 2.15.3
-* Update MacOSX packages to use perl 5.42.2 and OpenSSL 3.5.6
+  - msys2-base 20260611
+* Update MacOSX packages to use perl 5.42.2 and OpenSSL 3.5.7
 * Update linux snap packaging to use perl 5.42.2
 * fix #1143: Update linux perl installer to allow downgrade when installing other
   a nightly build

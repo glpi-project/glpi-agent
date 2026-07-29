@@ -16,6 +16,18 @@ use constant PhyNamVariables    => [ qw(model hwRev vendor serNum swRev owner lo
 # by checking %INC and won't just not use this library if not seen there
 iec61850->require();
 
+my $logged = 0;
+sub not_supported {
+    my (%params) = @_;
+
+    unless ($logged) {
+        $logged = 1;
+        if ($params{logger}) {
+            $params{logger}->info("Failed to load iec61850 perl library".($params{message} ? ", $params{message}" : ""));
+        }
+    }
+}
+
 sub new {
     my ($class, %params) = @_;
 

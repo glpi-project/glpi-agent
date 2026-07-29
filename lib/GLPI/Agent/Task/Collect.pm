@@ -16,6 +16,10 @@ use GLPI::Agent::HTTP::Client::Fusion;
 use GLPI::Agent::Task::Collect::Version;
 use GLPI::Agent::Task::Collect::Common;
 
+use constant    MIN_TIMEOUT         => 10;
+use constant    MAX_TIMEOUT_FACTOR  => 20;
+use constant    MAX_DEFAULT_TIMEOUT => 3600;
+
 our $VERSION = GLPI::Agent::Task::Collect::Version::VERSION;
 
 my %modules;
@@ -171,13 +175,30 @@ JOB:
             job     => $job
         );
 
-        my @results = $collect->results();
-        my $count = int(@results);
+        my $maxtimeout = MAX_TIMEOUT_FACTOR * int($self->{config}->{'backend-collect-timeout'})
+            || MAX_DEFAULT_TIMEOUT;
+        my $timeout = int( !$self->{timeout} || $self->{timeout} !~ /^\d+$/ ?
+            $self->{config}->{'backend-collect-timeout'} : $self->{timeout}
+        );
+        # Keep a minimum timeout or a maximun one
+        $timeout = $timeout < MIN_TIMEOUT ? MIN_TIMEOUT : $timeout > $maxtimeout ? $maxtimeout : $timeout;
+
+        my $results = runFunction(
+            module      => $module,
+            function    => "results",
+            logger      => $self->{logger},
+            timeout     => $timeout,
+            params      => $collect,
+        );
+
+        $results = [] unless ref($results) eq 'ARRAY';
+
+        my $count = int(@{$results});
 
         # Add an empty hash ref so send an answer with _cpt=0
-        push @results, {} unless $count ;
+        push @{$results}, {} unless $count ;
 
-        foreach my $result (@results) {
+        foreach my $result (@{$results}) {
             next unless ref($result) eq 'HASH';
             next unless ( !$count || keys %$result );
             $result->{uuid}   = $job->{uuid};

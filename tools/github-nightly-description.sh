@@ -117,7 +117,7 @@ NetInventory | [glpi-agent-task-network_${VERSION}_all.deb](glpi-agent-task-netw
 ESX | [glpi-agent-task-esx_${VERSION}_all.deb](glpi-agent-task-esx_${VERSION}_all.deb)
 Collect | [glpi-agent-task-collect_${VERSION}_all.deb](glpi-agent-task-collect_${VERSION}_all.deb)
 Deploy | [glpi-agent-task-deploy_${VERSION}_all.deb](glpi-agent-task-deploy_${VERSION}_all.deb)
-IEC61850 | [lib61850-glpi-agent_${VERSION}_amd64.deb](lib61850-glpi-agent_${VERSION}_amd64.deb)
+IEC61850 | [libiec61850-glpi-agent_${VERSION}_amd64.deb](libiec61850-glpi-agent_${VERSION}_amd64.deb)
 
 ### RPM packages
 

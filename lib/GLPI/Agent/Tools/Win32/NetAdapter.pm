@@ -28,7 +28,7 @@ sub getInterfaces {
 
     return $self->getInterfacesWithAddresses() if $self->hasAddresses();
 
-    return unless $self->{_config}->{MACADDR} || $self->_getDescription() =~ /vpn/i;
+    return unless $self->{_config}->{MACADDR} || $self->_getHardwareDescription() =~ /vpn/i;
 
     return $self->getBaseInterface();
 }
@@ -40,13 +40,15 @@ sub getBaseInterface {
         PNPDEVICEID => $self->_getPNPDeviceID(),
         MACADDR     => $self->{_config}->{MACADDR},
         DESCRIPTION => $self->_getDescription(),
-        STATUS      => $self->{_config}->{STATUS},
-        MTU         => $self->{_config}->{MTU},
+        STATUS      => $self->_getStatus(),
         dns         => $self->{_config}->{dns},
         VIRTUALDEV  => $self->_isVirtual(),
         _IFNUMBER   => $self->_getObjectIndex()
     };
 
+    $interface->{MANUFACTURER} = $self->_getManufacturer() if $self->_getManufacturer();
+    $interface->{MODEL}        = $self->_getModel()        if $self->_getModel();
+    $interface->{MTU}          = $self->_getMtu()          if $self->_getMtu();
     $interface->{PCIID}     = $self->_getPciid() if $self->_getPciid();
     $interface->{GUID}      = $self->_getGUID() if $self->_getGUID();
     $interface->{DNSDomain} = $self->{_config}->{DNSDomain} if $self->{_config}->{DNSDomain};
@@ -116,13 +118,16 @@ sub _isVirtual {
     # as physical but with PNPDeviceID starting by ROOT
     return 1 if $self->_getPNPDeviceID() =~ /^ROOT/;
 
+    # MSFT_NetAdapter (Win8+) explicitly flags virtual adapters
+    return $self->{Virtual} =~ /^1|true/i ? 1 : 0 if defined($self->{Virtual});
+
     # PhysicalAdapter only work on OS > XP
     my $physical = $self->{HardwareInterface} || $self->{PhysicalAdapter};
     return $physical =~ /^1|true/i ? 0 : 1 if defined($physical);
 
     # http://forge.fusioninventory.org/issues/1166
-    my $description = $self->_getDescription();
-    return 1 if $description && $description =~ /RAS/ && $description =~ /Adapter/i;
+    my $hwDescription = $self->_getHardwareDescription();
+    return 1 if $hwDescription && $hwDescription =~ /RAS/ && $hwDescription =~ /Adapter/i;
 
     return 0;
 }
@@ -141,7 +146,43 @@ sub _getObjectIndex {
     return defined($self->{InterfaceIndex}) ? $self->{InterfaceIndex} : $self->{Index};
 }
 
+sub _getManufacturer {
+    my ($self) = @_;
+
+    # MSFT_NetAdapter (Win8+) exposes DriverProvider as the manufacturer
+    return $self->{DriverProvider} if $self->{DriverProvider};
+
+    # Win32_NetworkAdapter (legacy) has Manufacturer
+    return $self->{Manufacturer} if $self->{Manufacturer};
+
+    return;
+}
+
+sub _getModel {
+    my ($self) = @_;
+
+    # MSFT_NetAdapter (Win8+) exposes DriverDescription as the model name
+    return $self->{DriverDescription} if $self->{DriverDescription};
+
+    # Win32_NetworkAdapter (legacy) has Name which reflects the adapter model
+    return $self->{Name} if $self->{Name};
+
+    return;
+}
+
 # Getters try get Information on MSFT_NetAdapter || Win32_NetworkAdapter
+
+sub _getMtu {
+    my ($self) = @_;
+
+    # MSFT_NetAdapter (Win8+) exposes MtuSize
+    return $self->{MtuSize} if $self->{MtuSize};
+
+    # Fallback to Win32_NetworkAdapterConfiguration MTU which might be unset
+    return $self->{_config}->{MTU} if $self->{_config}->{MTU};
+
+    return;
+}
 
 sub _getGUID {
     my ($self) = @_;
@@ -155,10 +196,48 @@ sub _getPNPDeviceID {
     return $self->{PnPDeviceID} || $self->{PNPDeviceID};
 }
 
-sub _getDescription {
+sub _getHardwareDescription {
     my ($self) = @_;
 
     return $self->{InterfaceDescription} || $self->{_config}->{DESCRIPTION};
+}
+
+sub _getConnectionName {
+    my ($self) = @_;
+
+    # MSFT_NetAdapter (Win8+) exposes Name as the connection name
+    return $self->{Name} if $self->{InterfaceDescription} && $self->{Name};
+
+    # Win32_NetworkAdapter (legacy) exposes NetConnectionID
+    return $self->{NetConnectionID} if $self->{NetConnectionID};
+
+    return;
+}
+
+sub _getDescription {
+    my ($self) = @_;
+
+    my $connectionName = $self->_getConnectionName();
+    return $connectionName if $connectionName;
+
+    return $self->_getHardwareDescription();
+}
+
+sub _getStatus {
+    my ($self) = @_;
+
+    # MSFT_NetAdapter uses MediaConnectState: 1 = Connected, 2 = Disconnected
+    if (defined($self->{MediaConnectState}) && $self->{MediaConnectState} =~ /^\d+$/) {
+        return int($self->{MediaConnectState}) == 1 ? 'Up' : 'Down';
+    }
+
+    # Win32_NetworkAdapter uses NetConnectionStatus: 2 = Connected, 7 = Media Disconnected
+    if (defined($self->{NetConnectionStatus}) && $self->{NetConnectionStatus} =~ /^\d+$/) {
+        return int($self->{NetConnectionStatus}) == 2 ? 'Up' : 'Down';
+    }
+
+    # Fallback to IPEnabled from Win32_NetworkAdapterConfiguration
+    return $self->{_config}->{STATUS};
 }
 
 1;

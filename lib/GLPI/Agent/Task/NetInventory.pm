@@ -114,11 +114,12 @@ sub run {
     my $abort = 0;
     $SIG{TERM} = sub { $abort = 1; };
 
-    GLPI::Agent::IEC61850::Device->require();
-    push @{$self->{_library_failure}}, "Failed to load GLPI::Agent::IEC61850::Device, iec61850 protocol inventory not supported"
-        if $EVAL_ERROR;
-    push @{$self->{_library_failure}}, "Failed to load iec61850 perl library, iec61850 protocol inventory not supported"
-        unless $INC{'iec61850.pm'};
+    # Don't try to load other libraries not required during snmp simulation
+    my $simul = ref($self->{jobs}) eq "ARRAY" && scalar(@{$self->{jobs}}) == 1 ? $self->{jobs}->[0]->snmp_simulation : 0;
+
+    unless ($simul) {
+        GLPI::Agent::IEC61850::Device->require();
+    }
 
     # Store glpi_version for this run
     $self->{glpi_version} = $self->{target}->isType('server') ? $self->{target}->getTaskVersion('inventory') : '';
@@ -163,6 +164,12 @@ sub run {
 
     # no need more workers than devices to scan
     my $worker_count = $max_threads > $devices_count ? $devices_count : $max_threads;
+
+    # This is time to share only one time if we failed to load iec61850 protocol support libraries
+    GLPI::Agent::IEC61850::Protocol::not_supported(
+        logger  => $self->{logger},
+        message => "iec61850 protocol inventory will be skipped"
+    ) if !$simul && $INC{'GLPI/Agent/IEC61850/Protocol.pm'} && ! $INC{'iec61850.pm'};
 
     # Prepare fork manager
     $self->{logger}->debug("using $worker_count netinventory worker".($worker_count > 1 ? "s" : ""));
@@ -477,10 +484,6 @@ sub _queryDevice {
     if ($INC{'iec61850.pm'}) {
         $credential = $device->{AUTHIEC_ID} ?
             $job->credential($device->{AUTHIEC_ID}) : { ID  => "no", PORT => 102 };
-    } elsif ($self->{_library_failure}) {
-        # This is time to share one time if we failed to load iec61850 protocol support libraries
-        my $errors = delete $self->{_library_failure};
-        map { $self->{logger}->info($_) } @{$errors};
     }
 
     if ($credential && !$device->{FILE}) {

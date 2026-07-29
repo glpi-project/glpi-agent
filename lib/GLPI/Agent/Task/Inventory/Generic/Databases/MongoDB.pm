@@ -11,6 +11,7 @@ use Cpanel::JSON::XS;
 use English qw(-no_match_vars);
 use POSIX qw(strftime);
 use File::Temp;
+use URI::Escape;
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::Inventory::DatabaseService;
@@ -51,11 +52,9 @@ sub _getDatabaseService {
 
     foreach my $credential (@{$credentials}) {
         GLPI::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
+        _sanitize($credential);
         my $rcfile = _mongoRcFile($credential);
         $params{rcfile} = $rcfile->filename if $rcfile;
-
-        # Keep port as we need it to set --port option
-        $params{port} = $credential->{port} if $credential->{port};
 
         my ($name, $manufacturer) = qw(MongoDB MongoDB);
         my $version = _runJs(
@@ -136,9 +135,10 @@ sub _getDatabaseService {
                     undef $size;
                 }
 
+                my $sql = "db.getSiblingDB('".uri_escape_utf8($db)."').runCommand({'ping': 1}).ok";
                 my $ping = _runJs(
-                    sql     => "db.getSiblingDB('$db').runCommand({'ping': 1}).ok",
-                    script  => "try { print(db.getSiblingDB('$db').runCommand({'ping': 1}).ok) } " .
+                    sql     => $sql,
+                    script  => "try { print($sql) } " .
                         "catch(e) { print('ERR('+e.codeName+'): '+e.errmsg) }",
                     %params
                 );
@@ -161,9 +161,8 @@ sub _getDatabaseService {
 
         push @dbs, $dbs;
 
-        # Always forget rcfile and port
+        # Always forget rcfile
         delete $params{rcfile};
-        delete $params{port};
     }
 
     return \@dbs;
@@ -222,6 +221,19 @@ sub _runJs {
     }
 }
 
+sub _sanitize {
+    my ($credential) = @_;
+
+    foreach my $key (keys(%{$credential})) {
+        if ($key eq 'port') {
+            delete $credential->{port}
+                unless $credential->{port} && $credential->{port} =~ /^\d+$/ && int($credential->{port}) <= 65535;
+        } else {
+            $credential->{$key} = uri_escape_utf8($credential->{$key});
+        }
+    }
+}
+
 sub _connectUrl {
     my ($credential) = @_;
 
@@ -248,12 +260,10 @@ sub _mongoRcFile {
             SUFFIX      => '.js',
         );
         my $conn = _connectUrl($credential);
-        if ($credential->{login}) {
+        unless (empty($credential->{login})) {
             $conn .= "','" . $credential->{login};
-            if ($credential->{password}) {
-                my $password = $credential->{password};
-                $password =~ s/'/\\'/g;
-                $conn .= "','" . $password;
+            unless (empty($credential->{password})) {
+                $conn .= "','" . $credential->{password};
             }
         }
         print $fh "try { db = connect('$conn') }\n";

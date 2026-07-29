@@ -113,7 +113,7 @@ if (@jobs_order) {
       push @configuration, _("Timeout").sprintf(": %ds", $config->{timeout})
         if $config->{timeout};
     }
-    push @configuration, _("Tag").": ".$config->{tag}
+    push @configuration, _("Tag").": ".encode('UTF-8', encode_entities($config->{tag}))
       if defined($config->{tag}) && length($config->{tag});
     my @scheduling;
     if (ref($scheduling) eq 'ARRAY') {

@@ -76,9 +76,10 @@ sub doInventory {
     # in this exact same index order, we generate sequential lookup strings here to map them 1:1 reliably.
     my %model_counts;
     foreach my $interface (@interfaces) {
-        my $lookup_name = $interface->{DESCRIPTION} || '';
-        if ($lookup_name) {
-            $interface->{_MODEL_COUNT} = ++$model_counts{$lookup_name};
+        my $lookup_base = $interface->{MODEL} || $interface->{DESCRIPTION} || '';
+        my $lookup_name = $lookup_base;
+        if ($lookup_base) {
+            $interface->{_MODEL_COUNT} = ++$model_counts{$lookup_base};
             if ($interface->{_MODEL_COUNT} > 1) {
                 $lookup_name .= ' _' . $interface->{_MODEL_COUNT};
             }
@@ -100,7 +101,7 @@ sub doInventory {
         }
 
         if ($inventory->supportsGlpiVersion('12.0.0')) {
-            if (my $stat = ($lookup_name ? $statistics{$lookup_name} : undef) || $statistics{$interface->{DESCRIPTION}}) {
+            if (my $stat = ($lookup_name ? $statistics{$lookup_name} : undef) || $statistics{$interface->{MODEL}} || $statistics{$interface->{DESCRIPTION}}) {
                 # getInterfaces() duplicates adapters in the array if they have multiple IP addresses.
                 # We track them by MAC and DESCRIPTION so we only inject one block of stats per physical card.
                 my $seen_key = "seen_" . ($interface->{MACADDR} || '') . "_" . ($interface->{DESCRIPTION} || '');

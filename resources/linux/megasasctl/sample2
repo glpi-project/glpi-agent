@@ -1,0 +1,8 @@
+a0       PERC H730 Adapter        bios:6.33.01.0_4.16.0 fw:4.290.00-8334 encl:1 ldrv:1  rbld:30% batt:good/3920mV/44C
+a0d0      1862GiB RAID 5   1x3  optimal
+      row  0:  a0e32s0   a0e32s1   a0e32s2 
+hot spares  :  a0e32s3 
+a0e32s0       ATA TOSHIBA MG03ACA1    931GiB  a0d0  online  
+a0e32s1       ATA ST1000NM0055-1V4    931GiB  a0d0  online  
+a0e32s2       ATA TOSHIBA MG03ACA1    931GiB  a0d0  online  
+a0e32s3       ATA ST1000NM0055-1V4    931GiB        hotspare

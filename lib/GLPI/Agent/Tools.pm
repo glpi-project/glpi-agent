@@ -470,11 +470,12 @@ sub getFileHandle {
         }
         if ($params{command}) {
             # limit log command size if too large like for powershell commands
-            my $logcommand = ref($params{command}) eq "ARRAY" ? "@{$params{command}}" : $params{command};
-            while (length($logcommand)>120 && $logcommand =~ /\w\s+\w/) {
-                ($logcommand) = $logcommand =~ /^(.*\w)\s+\w+/;
-                $logcommand .= " ...";
+            my $logcommand = "";
+            my @command = ref($params{command}) eq "ARRAY" ? @{$params{command}} : split(/\s+/, $params{command});
+            while (@command && length($logcommand) + length($command[0]) < 120) {
+                $logcommand .= (length($logcommand) ? " " : "") . shift(@command);
             }
+            $logcommand .= " ..." if @command;
             # FIXME: 'Bad file descriptor' error message on Windows
             $params{logger}->debug2("executing $logcommand")
                 if $params{logger} && $params{logger}->debug_level();

@@ -28,7 +28,7 @@
 '  ------------------------------------------------------------------------
 '
 '  @package   GLPI Agent
-'  @version   1.17
+'  @version   1.18
 '  @file      contrib/windows/glpi-agent-deployment.vbs
 '  @author(s) Benjamin Accary <meldrone@orange.fr>
 '             Christophe Pujol <chpujol@gmail.com>
@@ -65,12 +65,12 @@ Dim Setup, SetupArchitecture, SetupLocation, SetupNightlyLocation, SetupOptions,
 ' SetupVersion
 '    Setup version with the pattern <major>.<minor>.<release>[-<package>]
 '
-SetupVersion = "1.17"
+SetupVersion = "1.18"
 
 ' When using a nightly built version, uncomment the following SetupVersion definition line
 ' replacing gitABCDEFGH with the most recent git revision found on the nightly builds site
 ' In that case, SetupNightlyLocation will be selected as location in place of SetupLocation
-'SetupVersion = "1.18-gitABCDEFGH"
+'SetupVersion = "1.19-gitABCDEFGH"
 
 ' SetupLocation
 '    Depending on your needs or your environment, you can use either a HTTP or

@@ -203,7 +203,7 @@ sub _submit_add_alias {
     # Validate input/alias before adding
     my $alias = trimWhitespace($form->{'input/alias'} || $form->{'edit'} || "");
     if ($alias && $aliases && exists($aliases->{$alias})) {
-        $alias = encode('UTF-8', $alias);
+        $alias = encode('UTF-8', encode_entities($alias));
         return $self->errors("New MIBSupport alias: An entry still exists with that name: '$alias'");
     }
     if ($alias) {
@@ -238,7 +238,7 @@ sub _submit_update_alias {
     # Validate input/alias before updating
     my $alias = trimWhitespace($form->{'input/alias'} || $form->{'edit'} || "");
     if ($alias && $alias ne $form->{'edit'} && $aliases && exists($aliases->{$alias})) {
-        $alias = encode('UTF-8', $alias);
+        $alias = encode('UTF-8', encode_entities($alias));
         return $self->errors("Update MIBSupport alias: An entry still exists with that name: '$alias'");
     }
     if ($alias) {
@@ -315,7 +315,7 @@ sub _submit_add_rule {
     # Validate input/rule before adding
     my $rule = trimWhitespace($form->{'input/rule'} || $form->{'edit'} || "");
     if ($rule && $rules && exists($rules->{$rule})) {
-        $rule = encode('UTF-8', $rule);
+        $rule = encode('UTF-8', encode_entities($rule));
         return $self->errors("New MIBSupport rule: An entry still exists with that name: '$rule'");
     }
     if ($rule) {
@@ -358,7 +358,7 @@ sub _submit_update_rule {
     # Validate input/rule before updating
     my $rule = trimWhitespace($form->{'input/rule'} || $form->{'edit'} || "");
     if ($rule && $rule ne $form->{'edit'} && $rules && exists($rules->{$rule})) {
-        $rule = encode('UTF-8', $rule);
+        $rule = encode('UTF-8', encode_entities($rule));
         return $self->errors("Update MIBSupport rule: An entry still exists with that name: '$rule'");
     }
     if ($rule) {
@@ -404,7 +404,7 @@ sub _submit_add_sysobjectid {
     # Validate input/name before adding
     my $name = trimWhitespace($form->{'input/name'} || $form->{'edit'} || "");
     if ($name && $sysobjectid && exists($sysobjectid->{$name})) {
-        $name = encode('UTF-8', $name);
+        $name = encode('UTF-8', encode_entities($name));
         return $self->errors("New MIBSupport sysobjectid: An entry still exists with that name: '$name'");
     }
     if ($name) {
@@ -446,7 +446,7 @@ sub _submit_update_sysobjectid {
     # Validate input/name before updating
     my $name = trimWhitespace($form->{'input/name'} || $form->{'edit'} || "");
     if ($name && $name ne $form->{'edit'} && $sysobjectid && exists($sysobjectid->{$name})) {
-        $name = encode('UTF-8', $name);
+        $name = encode('UTF-8', encode_entities($name));
         return $self->errors("Update MIBSupport sysobjectid: An entry still exists with that name: '$name'");
     }
     if ($name) {
@@ -491,7 +491,7 @@ sub _submit_add_sysorid {
     # Validate input/name before adding
     my $name = trimWhitespace($form->{'input/name'} || $form->{'edit'} || "");
     if ($name && $mibsupport && exists($mibsupport->{$name})) {
-        $name = encode('UTF-8', $name);
+        $name = encode('UTF-8', encode_entities($name));
         return $self->errors("New MIBSupport match: An entry still exists with that name: '$name'");
     }
     if ($name) {
@@ -533,7 +533,7 @@ sub _submit_update_sysorid {
     # Validate input/name before updating
     my $name = trimWhitespace($form->{'input/name'} || $form->{'edit'} || "");
     if ($name && $name ne $form->{'edit'} && $mibsupport && exists($mibsupport->{$name})) {
-        $name = encode('UTF-8', $name);
+        $name = encode('UTF-8', encode_entities($name));
         return $self->errors("Update MIBSupport match: An entry still exists with that name: '$name'");
     }
     if ($name) {

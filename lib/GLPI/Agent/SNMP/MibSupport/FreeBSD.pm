@@ -20,6 +20,10 @@ our $mibSupport = [
     {
         name        => "FreeBSD",
         sysobjectid => getRegexpOidMatch(freebsd)
+    },
+    {
+        name        => "stormshield",
+        sysobjectid => getRegexpOidMatch(stormshield)
     }
 ];
 
@@ -27,7 +31,7 @@ sub _is_stormshield {
     my ($self) = @_;
 
     if (!defined $self->{STORMSHIELD}) {
-        $self->{STORMSHIELD} = $self->get(stormshield_model) ? 1 : 0;
+        $self->{STORMSHIELD} = $self->is("stormshield") || $self->get(stormshield_model) ? 1 : 0;
     }
 
     return $self->{STORMSHIELD};
@@ -81,8 +85,9 @@ __END__
 
 =head1 NAME
 
-GLPI::Agent::SNMP::MibSupport::FreeBSD - Inventory module for FreeBSD
+GLPI::Agent::SNMP::MibSupport::FreeBSD - Inventory module for FreeBSD or FreeBSD-based
+devices like StormShield ones
 
 =head1 DESCRIPTION
 
-The module enhances FreeBSD devices support.
+The module enhances FreeBSD and StormShield devices support.

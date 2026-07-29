@@ -389,9 +389,9 @@ sub _norm {
 
     return unless defined($entry->{$value});
 
-    if ($norm eq "integer" && $entry->{$value} =~ /^\d+$/) {
-        # Make sure to use value as integer
-        $entry->{$value} += 0;
+    if ($norm eq "integer" && $entry->{$value} =~ /^\d+/) {
+        # Make sure to use value as integer after number conversion
+        $entry->{$value} = int($entry->{$value} + 0);
     } elsif ($norm eq "string") {
         $entry->{$value} .= "" ;
     } elsif ($norm eq "boolean") {
@@ -427,7 +427,7 @@ sub _norm {
                 if $self->{logger};
             delete $entry->{$value};
         }
-    } elsif ($norm =~ /^integer$/) {
+    } elsif ($norm eq "integer") {
         $self->{logger}->debug("inventory format: Removing $entrykey $value value as not of $norm type: '$entry->{$value}'")
             if $self->{logger};
         delete $entry->{$value};

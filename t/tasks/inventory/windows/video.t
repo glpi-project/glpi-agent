@@ -38,6 +38,14 @@ my %tests = (
             RESOLUTION  => '1920x1080',
         }
     ],
+    'microsoft-basic-display' => [
+        {
+            CHIPSET     => 'Intel(R) BXT Mobile/Desktop Gra',
+            NAME        => 'Adaptador de Vídeo Básico da Microsoft',
+            PCISLOT     => '00:02.0',
+            RESOLUTION  => '1920x1080',
+        }
+    ],
     'nvidia-geforce-rtx-2060-super' => [
         {
             CHIPSET     => 'NVIDIA GeForce RTX 2060 SUPER',
@@ -48,10 +56,6 @@ my %tests = (
     ],
     'intel+nvidia' => [
         {
-            CHIPSET     => undef,
-            NAME        => 'Microsoft Remote Display Adapter',
-            RESOLUTION  => '1920x1080',
-        }, {
             CHIPSET     => 'Intel(R) HD Graphics Family',
             MEMORY      => 1024,
             NAME        => 'Intel(R) HD Graphics 4600',

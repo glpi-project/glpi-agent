@@ -6,8 +6,8 @@ use parent 'Exporter';
 use constant {
     # Toolchain setup
     TOOLCHAIN_BASE_URL  => 'https://github.com/brechtsanders/winlibs_mingw/releases/download',
-    TOOLCHAIN_VERSION   => '16.1.0posix-14.0.0-msvcrt-r2',
-    TOOLCHAIN_ARCHIVE   => 'winlibs-x86_64-posix-seh-gcc-16.1.0-mingw-w64msvcrt-14.0.0-r2.zip'
+    TOOLCHAIN_VERSION   => '16.1.0posix-14.0.0-msvcrt-r3',
+    TOOLCHAIN_ARCHIVE   => 'winlibs-x86_64-posix-seh-gcc-16.1.0-mingw-w64msvcrt-14.0.0-r3.zip'
 };
 
 sub toolchain_build_steps {
@@ -39,8 +39,8 @@ sub toolchain_build_steps {
             {
                 plugin          => 'Perl::Dist::Strawberry::Step::Msys2',
                 name            => 'msys2-base',
-                version         => '20260322',
-                folder          => '2026-03-22',
+                version         => '20260611',
+                folder          => '2026-06-11',
                 url             => 'https://github.com/msys2/msys2-installer/releases/download/<folder>/<name>-x86_64-<version>.tar.xz',
                 dest            => 'msys64',
             },
@@ -197,7 +197,7 @@ sub toolchain_build_steps {
             {
                 plugin  => 'Perl::Dist::Strawberry::Step::BuildLibrary',
                 name    => 'openssl',
-                version => '3.5.6',
+                version => '3.5.7',
                 url     => 'https://github.com/openssl/openssl/releases/download/<name>-<version>/<name>-<version>.tar.gz',
                 skip_if_file    => 'bin/openssl.exe',
                 skip_test       => 1,

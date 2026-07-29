@@ -48,6 +48,9 @@ sub _getVideos {
     )) {
         next unless $object->{Name};
 
+        # Exclude Remote Display Adapter (RDP) across all languages by checking PNPDeviceID
+        next if $object->{PNPDeviceID} && $object->{PNPDeviceID} =~ /REMOTEDISPLAY/i;
+
         my $video = {
             CHIPSET => $object->{VideoProcessor},
             NAME    => $object->{Name},
@@ -59,6 +62,21 @@ sub _getVideos {
                 $object->{CurrentHorizontalResolution} .
                 "x" .
                 $object->{CurrentVerticalResolution};
+        }
+
+        if ($object->{PNPDeviceID}) {
+            my $pnp_id = $object->{PNPDeviceID};
+            $pnp_id =~ s{\\}{/}g;
+            my $enum_key = getRegistryKey(
+                path     => "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Enum/$pnp_id",
+                required => [ qw/LocationInformation/ ]
+            );
+            if ($enum_key && $enum_key->{"/LocationInformation"}) {
+                my $loc = $enum_key->{"/LocationInformation"};
+                if ($loc =~ /\((\d+),\s*(\d+),\s*(\d+)\)$/ || $loc =~ /PCI bus (\d+),\s*device (\d+),\s*function (\d+)/i) {
+                    $video->{PCISLOT} = sprintf("%02x:%02x.%x", $1, $2, $3);
+                }
+            }
         }
 
         my $pnpdeviceid = _pnpdeviceid($object->{PNPDeviceID});

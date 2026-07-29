@@ -258,7 +258,7 @@ sub update_template_hash {
                     defined($tag) && $tag eq $tag_filter;
                 } keys(%{$self->{_devices}})
         };
-        $hash->{tag_filter} = $tag_filter;
+        $hash->{tag_filter} = encode('UTF-8', encode_entities($tag_filter));
     }
     $self->{columns} = $yaml_config->{'default_columns'} || 'name';
     $hash->{columns} = [ map { [ $_, $self->{_columns}->{$_}->{text} ] }
@@ -302,7 +302,7 @@ sub update_template_hash {
         $hash->{next_on_deletion} = $self->get_from_session('next_on_deletion') ? 1 : 0;
         $hash->{tasks} = $self->{tasks};
     }
-    $hash->{tags} = [ split(/,/, $yaml_config->{'inventory_tags'} || '') ];
+    $hash->{tags} = [ map { encode('UTF-8', encode_entities($_)) } split(/,/, $yaml_config->{'inventory_tags'} || '') ];
     $hash->{do} = delete $self->{_do} || '';
     $hash->{title} = "Results";
 
@@ -465,8 +465,9 @@ sub handle_form {
             }
         }
         if ($count && $archiver->save_archive()) {
-            $self->info("Sent archive: $file");
-            $form->{'send_file'} = $file;
+            $self->info("Sending archive: $file");
+            # Register generated archive and set it can be removed in a minute
+            $form->{'send_file'} = $self->send_file_register($file, time + 60);
         } elsif ($count) {
             $self->error("Failed to prepare $file export archive: $!");
             $self->errors("Can't prepare archive: $file: $!");

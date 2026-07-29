@@ -54,7 +54,8 @@ my %network_ports_tests = (
     'loadbalance' => [
         superhashof({
             MACADDR => '20:47:47:90:78:42',
-            DESCRIPTION => 'Broadcom NetXtreme Gigabit Ethernet',
+            MODEL => 'Broadcom NetXtreme Gigabit Ethernet',
+            DESCRIPTION => 'Ethernet',
             IFINBYTES => 1412918786473,
             IFOUTBYTES => 364462371847,
             IFINERRORS => 0,
@@ -62,7 +63,8 @@ my %network_ports_tests = (
         }),
         superhashof({
             MACADDR => '20:47:47:90:78:44',
-            DESCRIPTION => 'Broadcom NetXtreme Gigabit Ethernet',
+            MODEL => 'Broadcom NetXtreme Gigabit Ethernet',
+            DESCRIPTION => 'Ethernet 2',
             IFINBYTES => 70987676,
             IFOUTBYTES => 80987676,
             IFINERRORS => 0,
@@ -70,7 +72,8 @@ my %network_ports_tests = (
         }),
         superhashof({
             MACADDR => '20:47:47:90:78:42',
-            DESCRIPTION => 'Microsoft Network Adapter Multiplexor Driver',
+            MODEL => 'Microsoft Network Adapter Multiplexor Driver',
+            DESCRIPTION => 'LoadBalance',
             IFINBYTES => 1403973923755,
             IFOUTBYTES => 726370059830,
             IFINERRORS => 0,

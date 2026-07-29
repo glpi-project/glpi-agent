@@ -121,7 +121,7 @@ sub reload {
 sub debug_level {
     my ($self) = @_;
 
-    return LOG_DEBUG2-LOG_INFO if $self->{_event_cb};
+    return &LOG_DEBUG2-&LOG_INFO if $self->{_event_cb};
 
     return $self->{verbosity} > LOG_INFO ? $self->{verbosity} - LOG_INFO : 0;
 }

@@ -3,8 +3,8 @@
 # PERL: https://www.perl.org/get.html
 # SSL:  https://github.com/openssl/openssl/releases
 # ZLIB: https://www.zlib.net/
-: ${PERL_VERSION:=5.42.2}
-: ${OPENSSL_VERSION:=3.5.6}
+: ${PERL_VERSION:=5.44.0}
+: ${OPENSSL_VERSION:=3.5.7}
 : ${ZLIB_VERSION:=1.3.2}
 : ${ZLIB_SHA256:=bb329a0a2cd0274d05519d61c667c062e06990d72e125ee2dfa8de64f0119d16}
 
@@ -66,7 +66,7 @@ done
 case "$(uname -s) $ARCH" in
     Darwin*x86_64)
         echo "GLPI-Agent MacOSX Packaging for $ARCH..."
-        : ${MACOSX_DEPLOYMENT_TARGET:=10.10}
+        : ${MACOSX_DEPLOYMENT_TARGET:=10.12}
         OPENSSL_CONFIG="darwin64-x86_64-cc"
         ;;
     Darwin*arm64)
@@ -328,11 +328,16 @@ perl Makefile.PL
 cpanm --notest -v --installdeps --no-man-pages $CPANM_OPTS .
 
 echo '===== Installing more perl module deps ====='
-cpanm --notest -v --no-man-pages  $CPANM_OPTS LWP::Protocol::https             \
+cpanm --notest -v --no-man-pages $CPANM_OPTS LWP::Protocol::https              \
     HTTP::Daemon Proc::Daemon File::Copy::Recursive                            \
     URI::Escape Net::Ping Parallel::ForkManager Net::SNMP Net::NBName DateTime \
-    Thread::Queue Parse::EDID YAML::Tiny Data::UUID Cpanel::JSON::XS           \
-    Crypt::DES Crypt::Rijndael
+    Thread::Queue Parse::EDID YAML::Tiny Data::UUID Cpanel::JSON::XS
+
+echo '===== Installing patched Crypt::DES perl module ====='
+cpanm --notest -v --no-man-pages $CPANM_OPTS \
+    https://github.com/g-bougard/Crypt-DES/releases/download/2.07_01/Crypt-DES-2.07_01.tar.gz
+cpanm --notest -v --no-man-pages $CPANM_OPTS Crypt::Rijndael
+
 # Net::Write::Layer2 depends on Net::PCAP but it fails on MacOSX
 
 rm -rf "$ROOT/pkg/payload${BUILD_PREFIX%%/*}"

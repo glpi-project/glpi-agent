@@ -18,7 +18,7 @@ use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Hostname;
 use GLPI::Agent::Tools::UUID;
 
-our $VERSION = "1.7";
+our $VERSION = "2.0";
 
 my %api_match = (
     version             => \&_version,
@@ -51,7 +51,7 @@ sub urlMatch {
     }
 
     # We also need to serve file to send like for archives after a redirect
-    if ($self->{_send_file}->{$path}) {
+    if ($self->{_send_file} && $self->{_send_file}->{$path}) {
         $self->{request} = $path;
         $api_match{$path} = \&_send_file;
         return 1;
@@ -188,6 +188,17 @@ sub init {
     my $yaml = $self->yaml() || {};
     my $yaml_config = $yaml->{configuration} || {};
     $self->{_session_timeout} = $yaml_config->{session_timeout} || 86400;
+
+    # Finally check if we need to remove expired send_file possibly lost on shutdown
+    my $base_folder = $yaml_config->{networktask_save} || '.';
+    foreach my $file (File::Glob::bsd_glob("$base_folder/*.delete_me")) {
+        if ($OSNAME eq 'MSWin32') {
+            $file =~ s{\\}{/}g;
+        }
+        unlink $file;
+        $file =~ s/\.delete_me$//;
+        unlink $file if -e $file;
+    }
 }
 
 sub handle {
@@ -729,11 +740,36 @@ sub _index {
     # If the submitted form requires to download a file, send a redirect as response
     if ($form && $form->{send_file}) {
         my $referer = $request->header('Referer');
-        $form->{send_file} =~ s|^\./||;
-        my $request = $self->config('url_path')."/".$self->{request}."/files/".$form->{send_file};
-        $self->{_send_file}->{$request} = $form->{send_file};
-        my $url = $referer."/files/".$form->{send_file};
+        my $registered;
+        $registered = delete $self->{_registered_send_file}->{$form->{send_file}}
+            if $self->{_registered_send_file};
+        unless ($referer && $registered) {
+            $self->info("unsupported send_file request from $clientIp");
+            $client->send_error(404);
+            return 404;
+        }
+        $registered =~ s|^\./||;
+        my $request = $self->config('url_path')."/".$self->{request}."/files/".$registered;
+        $self->{_send_file}->{$request} = $registered;
+        $self->{_file_uuid}->{$request} = $form->{send_file};
+        my $url = $referer."/files/".$registered;
         return $self->_send_file_redirect($client, $url);
+    }
+
+    # Handle send_file expiration
+    if ($self->{_send_file_expiration}) {
+        my @uuids = keys(%{$self->{_send_file_expiration}});
+        if (@uuids) {
+            my $now = time;
+            foreach my $uuid (@uuids) {
+                next if $self->{_send_file_expiration}->{$uuid} > $now;
+                delete $self->{_send_file_expiration}->{$uuid};
+                next unless $self->{_registered_send_file}->{$uuid};
+                my $file = delete $self->{_registered_send_file}->{$uuid};
+                unlink $file if -e $file;
+                unlink "$file.delete_me" if -e "$file.delete_me";
+            }
+        }
     }
 
     my $yaml_config = $self->yaml()->{configuration} || {};
@@ -895,11 +931,46 @@ sub _send_file_redirect {
     return 302;
 }
 
+sub send_file_register {
+    my ($self, $file, $expiration) = @_;
+
+    return $self->{toolbox}->send_file_register($file, $expiration)
+        if $self->{toolbox};
+
+    return unless -e $file;
+
+    my $uuid;
+    while (empty($uuid) || exists($self->{_registered_send_file}->{$uuid})) {
+        $uuid = uuid_to_string(create_uuid());
+    }
+
+    # Set file expiration
+    if ($expiration) {
+        $expiration = time + 60 unless $expiration > 0;
+        $self->{_send_file_expiration}->{$uuid} = $expiration;
+
+        # Create a delete file to support deletion if agent is stopped before expiration
+        my $fh;
+        if (open($fh,">", "$file.delete_me")) {
+            print $fh $expiration;
+            close($fh);
+        } else {
+            $self->error("Failed to create archive delete_me file: $!");
+        }
+    }
+
+    $self->{_registered_send_file}->{$uuid} = $file;
+
+    return $uuid;
+}
+
 sub _send_file {
     my ($self, $client) = @_;
 
     my $file_url = $self->{request};
-    my $file_path = $self->{_send_file} && $self->{_send_file}->{$file_url};
+    my $file_path;
+    $file_path = delete $self->{_send_file}->{$file_url}
+        if $self->{_send_file};
 
     unless ($file_path && -e $file_path) {
         $self->error("send file failure for $file_url");
@@ -909,8 +980,13 @@ sub _send_file {
 
     $client->send_file_response($file_path);
 
-    # Finally delete the file
-    unlink $file_path;
+    # Finally delete the file if an expiration was set
+    my $uuid = $self->{_file_uuid} ? delete $self->{_file_uuid}->{$file_url} // "" : "";
+    if ($self->{_send_file_expiration} && $self->{_send_file_expiration}->{$uuid}) {
+        unlink $file_path;
+        unlink $file_path.".delete_me" if -e $file_path.".delete_me";
+        delete $self->{_send_file_expiration}->{$uuid};
+    }
 
     return 200;
 }

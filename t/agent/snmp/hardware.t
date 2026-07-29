@@ -52,11 +52,20 @@ my @cdp_info_extraction_tests = (
     [
         {
             '.1.3.6.1.4.1.9.9.23.1.2.1.1.4.24.7' => [ 'STRING', '0xc0a8148b' ],
+            '.1.3.6.1.4.1.9.9.23.1.2.1.1.5.24.7' => [ 'STRING', '' ],
             '.1.3.6.1.4.1.9.9.23.1.2.1.1.6.24.7' => [ 'STRING', 'SIPE05FB981A7A7' ],
             '.1.3.6.1.4.1.9.9.23.1.2.1.1.7.24.7' => [ 'STRING', 'Port 1' ],
             '.1.3.6.1.4.1.9.9.23.1.2.1.1.8.24.7' => [ 'STRING', 'Cisco IP Phone SPA508G' ],
         },
-        undef,
+        {
+            24 => {
+                SYSMAC   => 'e0:5f:b9:81:a7:a7',
+                IFDESCR  => 'Port 1',
+                MODEL    => 'Cisco IP Phone SPA508G',
+                IP       => '192.168.20.139',
+                SYSNAME  => 'SIPE05FB981A7A7'
+            }
+        },
         'CDP info extraction, missing CDP cache version'
     ],
     [

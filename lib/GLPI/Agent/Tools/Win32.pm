@@ -573,7 +573,7 @@ sub runPowerShell {
     return $remote->runPowerShell(script => $script) if $remote;
 
     my $fh = File::Temp->new(
-        TEMPLATE    => 'get-appxpackage-XXXXXX',
+        TEMPLATE    => $params{TEMPLATE} // 'get-appxpackage-XXXXXX',
         SUFFIX      => '.ps1'
     );
     print $fh $script;
@@ -645,14 +645,14 @@ sub getInterfaces {
     my @networkAdapter = getWMIObjects(
         moniker    => 'winmgmts://./root/StandardCimv2',
         class      => 'MSFT_NetAdapter',
-        properties => [ qw/InterfaceIndex PnPDeviceID Speed HardwareInterface InterfaceGuid InterfaceDescription InterfaceType/ ]
+        properties => [ qw/InterfaceIndex PnPDeviceID Speed HardwareInterface InterfaceGuid InterfaceDescription InterfaceType DriverProvider DriverDescription Name MediaConnectState Virtual MtuSize/ ]
     );
 
     if (!@networkAdapter) {
         # Legacy for Win<8
         @networkAdapter = getWMIObjects(
             class      => 'Win32_NetworkAdapter',
-            properties => [ qw/Index InterfaceIndex PNPDeviceID Speed PhysicalAdapter GUID/ ]
+            properties => [ qw/Index InterfaceIndex PNPDeviceID Speed PhysicalAdapter GUID Manufacturer Name NetConnectionID NetConnectionStatus/ ]
         );
     }
 

@@ -1,6 +1,6 @@
 --- makedef.pl.orig
 +++ makedef.pl
-@@ -465,6 +465,16 @@
+@@ -397,6 +397,16 @@
      ++$skip{PL_main_thread};
  }
  

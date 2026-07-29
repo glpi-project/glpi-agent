@@ -319,7 +319,7 @@ sub _submit_add {
     # Validate input/name before updating
     my $name = $form->{'input/name'};
     if ($name && exists($jobs->{$name})) {
-        $name = encode('UTF-8', $name);
+        $name = encode('UTF-8', encode_entities($name));
         return $self->errors("New task: An entry still exists with that name: '$name'");
     }
     if ($form->{'input/name'}) {
@@ -415,7 +415,7 @@ sub _submit_update {
         my $newname = $form->{'input/name'};
         if (defined($newname) && length($newname) && $newname ne $edit) {
             if (exists($jobs->{$newname})) {
-                $newname = encode('UTF-8', $newname);
+                $newname = encode('UTF-8', encode_entities($newname));
                 return $self->errors("Rename task: An entry still exists with that name: '$newname'");
             }
 
@@ -540,7 +540,7 @@ sub _submit_update {
         $edit = $newname;
         $self->edit($edit);
     } else {
-        $self->errors("Update task: No such task: '$edit'");
+        $self->errors("Update task: No such task: '".encode('UTF-8', encode_entities($edit))."'");
         $self->reset_edit();
     }
 }
@@ -556,7 +556,7 @@ sub _submit_delete {
         my $job = $jobs->{$name};
         if ($job) {
             if ($self->isyes($job->{enabled})) {
-                $self->errors(sprintf("Update task: Can't delete enabled task: &laquo;&nbsp;%s&nbsp;&raquo;", encode('UTF-8', $name)));
+                $self->errors(sprintf("Update task: Can't delete enabled task: &laquo;&nbsp;%s&nbsp;&raquo;", encode('UTF-8', encode_entities($name))));
                 next;
             }
             delete $jobs->{$name};
@@ -739,9 +739,9 @@ sub netscan {
         (($name && $_->{name} eq $name) || (@{$ip_ranges} == 1 && grep { $ip_ranges->[0] eq $_ } @{$_->{ip_ranges}}))
         && (!$_->{ip} || $_->{ip} eq $ip || !$ip)
     } values(%{$self->{tasks}});
-    return $self->errors("A $procname is still running for an IP on that range: $ip, ".$running->{name})
+    return $self->errors("A $procname is still running for an IP on that range: $ip, ".encode('UTF-8', encode_entities($running->{name})))
         if ($running && $ip && $running->{ip});
-    return $self->errors("A $procname is still running for that IP range: ".$running->{name})
+    return $self->errors("A $procname is still running for that IP range: ".encode('UTF-8', encode_entities($running->{name})))
         if $running;
 
     my $agent = $self->{toolbox}->{server}->{agent};
@@ -774,9 +774,9 @@ sub netscan {
         foreach my $credential (@{$range_cred}) {
             my $CRED;
             my $cred = $credentials->{$credential}
-                or return $self->errors("No such credentials: $credential");
+                or return $self->errors("No such credentials: ".encode('UTF-8', encode_entities($credential)));
             if (!defined($cred->{type}) || $cred->{type} eq 'snmp') {
-                return $self->errors("Missing version on credentials: ".($cred->{name}||$credential))
+                return $self->errors("Missing version on credentials: ".encode('UTF-8', encode_entities($cred->{name}||$credential)))
                     unless defined($cred->{snmpversion});
                 $CRED = {
                     TYPE    => 'snmp',
@@ -792,7 +792,7 @@ sub netscan {
                     $CRED->{COMMUNITY} = $cred->{community} || "public";
                 } elsif ($cred->{snmpversion} eq 'v3') {
                     $CRED->{USERNAME} = $cred->{username}
-                        or return $self->errors("Missing username on credentials: ".($cred->{name}||$credential));
+                        or return $self->errors("Missing username on credentials: ".encode('UTF-8', encode_entities($cred->{name}||$credential)));
                     $CRED->{AUTHPASSWORD} = $cred->{authpassword} || '';
                     $CRED->{AUTHPROTOCOL} = $cred->{authprotocol} || '';
                     $CRED->{PRIVPASSWORD} = $cred->{privpassword} || '';
@@ -805,9 +805,9 @@ sub netscan {
 
             } else {
                 # ESX & RemoteInventory related credentials
-                return $self->errors("Missing username on credentials: ".($cred->{name}||$credential))
+                return $self->errors("Missing username on credentials: ".encode('UTF-8', encode_entities($cred->{name}||$credential)))
                     unless defined($cred->{username}) || $cred->{type} =~ /^iec61850$/;
-                return $self->errors("Missing password on credentials: ".($cred->{name}||$credential))
+                return $self->errors("Missing password on credentials: ".encode('UTF-8', encode_entities($cred->{name}||$credential)))
                     unless defined($cred->{password}) || $cred->{type} =~ /^iec61850|ssh$/;
                 $CRED = {
                     # brackets are here cosmetic for task logs and will be filtered in

@@ -35,6 +35,13 @@ sub timeout {
     return $self->{_params}->{TIMEOUT} || 60;
 }
 
+sub snmp_simulation {
+    my ($self) = @_;
+    return 0 unless $self->{_count} == 1;
+    my ($device) = $self->devices;
+    return empty($device->{FILE}) ? 0 : 1;
+}
+
 sub max_threads {
     my ($self) = @_;
     return $self->{_params}->{THREADS_QUERY} || 1;

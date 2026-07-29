@@ -9,10 +9,12 @@ use UNIVERSAL::require;
 
 use constant    function        => "getFromRegistry";
 
+use constant    OPTIONAL        => 0;
 use constant    MANDATORY       => 1;
 
 use constant    json_validation => {
-    path    => MANDATORY
+    path    => MANDATORY,
+    timeout => OPTIONAL,
 };
 
 sub _encodeRegistryValueForCollect {
@@ -79,7 +81,7 @@ sub results {
         }
     }
 
-    return ($result);
+    return [ $result ];
 }
 
 1;

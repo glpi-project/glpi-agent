@@ -12,7 +12,6 @@ IP range:
 IP Ranges:
 Credentials:
 Scheduling:
-Remotes:
 Tag:
 DeviceID:
 AgentID:
