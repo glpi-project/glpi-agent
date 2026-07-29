@@ -103,8 +103,8 @@ sub _getBluetoothParentInfo {
 
     my $info;
 
-    UNIVERSAL::require('Win32::API');
-    return $info unless $Win32::API::VERSION;
+    Win32::API->require()
+        or return;
 
     require Encode;
 
