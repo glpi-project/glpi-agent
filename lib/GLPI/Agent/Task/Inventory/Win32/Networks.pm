@@ -126,7 +126,7 @@ sub _getBluetoothParentInfo {
             my $buffer = "\0" x 512;
             if ($CM_Get_Device_IDW->Call($dnParentInst, $buffer, 256, 0) == 0) {
                 my $parentDeviceId = Encode::decode('UTF-16LE', $buffer);
-                $parentDeviceId =~ s/\0.*//;
+                $parentDeviceId = getSanitizedString($parentDeviceId);
 
                 my $wmiQueryId = $parentDeviceId;
                 $wmiQueryId =~ s/\\/\\\\/g;
