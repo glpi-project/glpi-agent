@@ -22,7 +22,9 @@ plan(skip_all => 'Data::UUID required')
 plan tests => 2;
 
 my %categories;
-foreach my $line (getAllLines(command => "$^X bin/glpi-agent --list-categories")) {
+my @command = qw(bin/glpi-agent --list-categories);
+unshift @command, $EXECUTABLE_NAME if $OSNAME eq 'MSWin32';
+foreach my $line (getAllLines(command => \@command)) {
     chomp($line);
     next unless $line =~ /^ - (.+)$/;
     $categories{$1} = 1;
