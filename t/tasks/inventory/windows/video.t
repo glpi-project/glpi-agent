@@ -40,8 +40,8 @@ my %tests = (
     ],
     'microsoft-basic-display' => [
         {
-            CHIPSET     => 'UHD Graphics 600',
-            NAME        => 'GeminiLake',
+            CHIPSET     => 'Intel(R) BXT Mobile/Desktop Gra',
+            NAME        => 'Adaptador de Vídeo Básico da Microsoft',
             PCISLOT     => '00:02.0',
             RESOLUTION  => '1920x1080',
         }
