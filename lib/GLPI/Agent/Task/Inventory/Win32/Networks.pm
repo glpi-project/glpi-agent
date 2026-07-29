@@ -41,6 +41,9 @@ sub doInventory {
             } if $stat->{Name};
         }
 
+        # Note: Despite their names, BytesReceivedPersec and BytesSentPersec in
+        # Win32_PerfRawData_Tcpip_NetworkInterface actually represent total cumulative bytes,
+        # not a rate per second.
         my @legacy_stats = getWMIObjects(
             class      => 'Win32_PerfRawData_Tcpip_NetworkInterface',
             properties => [ qw/Name BytesReceivedPersec BytesSentPersec PacketsReceivedErrors PacketsOutboundErrors/ ]
@@ -73,7 +76,7 @@ sub doInventory {
     # in this exact same index order, we generate sequential lookup strings here to map them 1:1 reliably.
     my %model_counts;
     foreach my $interface (@interfaces) {
-        my $lookup_name = $interface->{MODEL} || '';
+        my $lookup_name = $interface->{DESCRIPTION} || '';
         if ($lookup_name) {
             $interface->{_MODEL_COUNT} = ++$model_counts{$lookup_name};
             if ($interface->{_MODEL_COUNT} > 1) {
@@ -96,26 +99,17 @@ sub doInventory {
             $interface->{TYPE} = $type if defined($type);
         }
 
-        if ($inventory->{_glpi_version} >= glpiVersion('12')) {
-            if (my $stat = $statistics{$interface->{DESCRIPTION}} || ($lookup_name && $statistics{$lookup_name})) {
+        if ($inventory->supportsGlpiVersion('12.0.0')) {
+            if (my $stat = ($lookup_name ? $statistics{$lookup_name} : undef) || $statistics{$interface->{DESCRIPTION}}) {
                 # getInterfaces() duplicates adapters in the array if they have multiple IP addresses.
-                # We track them by MAC and DESCRIPTION so we only inject one NETWORKPORTS block per physical card.
+                # We track them by MAC and DESCRIPTION so we only inject one block of stats per physical card.
                 my $seen_key = "seen_" . ($interface->{MACADDR} || '') . "_" . ($interface->{DESCRIPTION} || '');
                 if (!$statistics{$seen_key}) {
                     $statistics{$seen_key} = 1;
-                    my $network_port = {
-                        NAME        => $interface->{DESCRIPTION},
-                        MAC         => $interface->{MACADDR},
-                        IFNUMBER    => $interface->{_IFNUMBER},
-                        IFINBYTES  => $stat->{ifinbytes},
-                        IFOUTBYTES => $stat->{ifoutbytes},
-                        IFINERRORS  => $stat->{ifinerrors},
-                        IFOUTERRORS => $stat->{ifouterrors}
-                    };
-                    $inventory->addEntry(
-                        section => 'NETWORK_PORTS',
-                        entry   => $network_port
-                    );
+                    $interface->{IFINBYTES}  = $stat->{ifinbytes};
+                    $interface->{IFOUTBYTES} = $stat->{ifoutbytes};
+                    $interface->{IFINERRORS}  = $stat->{ifinerrors};
+                    $interface->{IFOUTERRORS} = $stat->{ifouterrors};
                 }
             }
         }

@@ -65,13 +65,13 @@ my %fields = (
     MODEMS           => [ qw/DESCRIPTION NAME TYPE MODEL/ ],
     MONITORS         => [ qw/BASE64 CAPTION DESCRIPTION MANUFACTURER SERIAL
                              UUENCODE NAME TYPE ALTSERIAL PORT/ ],
-    NETWORK_PORTS    => [ qw/NAME MAC IFNUMBER IFINBYTES IFOUTBYTES IFINERRORS IFOUTERRORS/ ],
     NETWORKS         => [ qw/DESCRIPTION MANUFACTURER MODEL MANAGEMENT TYPE
                              VIRTUALDEV MACADDR WWN DRIVER FIRMWARE PCIID
                              PCISLOT PNPDEVICEID MTU SPEED STATUS SLAVES BASE
                              IPADDRESS IPSUBNET IPMASK IPDHCP IPGATEWAY
                              IPADDRESS6 IPSUBNET6 IPMASK6 WIFI_BSSID WIFI_SSID
-                             WIFI_MODE WIFI_VERSION/ ],
+                             WIFI_MODE WIFI_VERSION IFINBYTES IFOUTBYTES
+                             IFINERRORS IFOUTERRORS/ ],
     PHYSICAL_VOLUMES => [ qw/DEVICE PV_PE_COUNT PV_UUID FORMAT ATTR
                              SIZE FREE PE_SIZE VG_UUID/ ],
     PORTS            => [ qw/CAPTION DESCRIPTION NAME TYPE/ ],
@@ -151,7 +151,7 @@ my %categoryMap = (
     memory          => [ "MEMORIES" ],
     modem           => [ "MODEMS" ],
     monitor         => [ "MONITORS" ],
-    network         => [ "NETWORKS", "NETWORK_PORTS" ],
+    network         => [ "NETWORKS" ],
     port            => [ "PORTS" ],
     psu             => [ "POWERSUPPLIES" ],
     printer         => [ "PRINTERS" ],
