@@ -34,8 +34,8 @@ sub doInventory {
 
         foreach my $stat (@modern_stats) {
             $statistics{$stat->{Name}} = {
-                ifinoctets  => $stat->{ReceivedBytes},
-                ifoutoctets => $stat->{SentBytes},
+                ifinbytes  => $stat->{ReceivedBytes},
+                ifoutbytes => $stat->{SentBytes},
                 ifinerrors  => $stat->{ReceivedPacketErrors},
                 ifouterrors => $stat->{OutboundPacketErrors}
             } if $stat->{Name};
