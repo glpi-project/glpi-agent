@@ -108,11 +108,12 @@ sub _getBluetoothParentInfo {
 
     require Encode;
 
-    my $CM_Locate_DevNodeW = Win32::API->new('cfgmgr32.dll', 'CM_Locate_DevNodeW', 'PPI', 'I');
-    my $CM_Get_Parent      = Win32::API->new('cfgmgr32.dll', 'CM_Get_Parent', 'PII', 'I');
-    my $CM_Get_Device_IDW  = Win32::API->new('cfgmgr32.dll', 'CM_Get_Device_IDW', 'IPII', 'I');
-
-    return $info unless $CM_Locate_DevNodeW && $CM_Get_Parent && $CM_Get_Device_IDW;
+    my $CM_Locate_DevNodeW = Win32::API->new('cfgmgr32.dll', 'CM_Locate_DevNodeW', 'PPI', 'I')
+        or return;
+    my $CM_Get_Parent      = Win32::API->new('cfgmgr32.dll', 'CM_Get_Parent', 'PII', 'I')
+        or return;
+    my $CM_Get_Device_IDW  = Win32::API->new('cfgmgr32.dll', 'CM_Get_Device_IDW', 'IPII', 'I')
+        or return;
 
     my $deviceIdW = Encode::encode('UTF-16LE', $deviceid . "\0");
     my $devInst = pack('L', 0);
