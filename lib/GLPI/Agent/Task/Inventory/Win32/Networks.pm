@@ -107,8 +107,8 @@ sub doInventory {
                         NAME        => $interface->{DESCRIPTION},
                         MAC         => $interface->{MACADDR},
                         IFNUMBER    => $interface->{_IFNUMBER},
-                        IFINOCTETS  => $stat->{ifinoctets},
-                        IFOUTOCTETS => $stat->{ifoutoctets},
+                        IFINBYTES  => $stat->{ifinbytes},
+                        IFOUTBYTES => $stat->{ifoutbytes},
                         IFINERRORS  => $stat->{ifinerrors},
                         IFOUTERRORS => $stat->{ifouterrors}
                     };
