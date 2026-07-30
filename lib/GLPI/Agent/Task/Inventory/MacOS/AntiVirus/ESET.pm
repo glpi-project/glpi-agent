@@ -88,9 +88,13 @@ sub _getESETInfo {
     }
 
     # Get detection engine version from `upd --list-modules`
+    if ($params{upd_modules}) {
+        # For unit tests
+        $params{file} = $params{upd_modules};
+    } else {
+        $params{command} = [ "$basepath/upd", "--list-modules" ];
+    }
     my $base_version = getFirstMatch(
-        file    => $params{upd_modules}, # For unit tests
-        command => $basepath ? [ "$basepath/upd", "--list-modules" ] : undef,
         pattern => qr/EM002\s*(\d+\s*\(\d+\))\s*Detection engine$/,
         %params
     );
