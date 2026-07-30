@@ -8,6 +8,7 @@ use parent 'GLPI::Agent::Task::Inventory::Module';
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Network;
 use GLPI::Agent::Tools::Win32;
+use GLPI::Agent::Tools::Win32::Bluetooth;
 
 use constant    category    => "network";
 
@@ -43,7 +44,7 @@ sub doInventory {
         delete $interface->{GUID};
 
         if ($interface->{PNPDEVICEID} && $interface->{PNPDEVICEID} =~ /^BTH/i) {
-            my $parentInfo = _getBluetoothParentInfo($interface->{PNPDEVICEID});
+            my $parentInfo = getBluetoothParentInfo($interface->{PNPDEVICEID});
             if ($parentInfo) {
                 $interface->{MANUFACTURER} = $parentInfo->{MANUFACTURER} if $parentInfo->{MANUFACTURER};
                 $interface->{MODEL}        = $parentInfo->{MODEL}        if $parentInfo->{MODEL};
@@ -96,55 +97,6 @@ sub _getMediaType {
             $subtype eq '0x00000002' ? 'wifi'      :
             $subtype eq '0x00000007' ? 'bluetooth' :
                                        undef;
-}
-
-sub _getBluetoothParentInfo {
-    my ($deviceid) = @_;
-
-    my $info;
-
-    Win32::API->require()
-        or return;
-
-    require Encode;
-
-    my $CM_Locate_DevNodeW = Win32::API->new('cfgmgr32.dll', 'CM_Locate_DevNodeW', 'PPI', 'I')
-        or return;
-    my $CM_Get_Parent      = Win32::API->new('cfgmgr32.dll', 'CM_Get_Parent', 'PII', 'I')
-        or return;
-    my $CM_Get_Device_IDW  = Win32::API->new('cfgmgr32.dll', 'CM_Get_Device_IDW', 'IPII', 'I')
-        or return;
-
-    my $deviceIdW = Encode::encode('UTF-16LE', $deviceid . "\0");
-    my $devInst = pack('L', 0);
-
-    if ($CM_Locate_DevNodeW->Call($devInst, $deviceIdW, 0) == 0) {
-        my $dnDevInst = unpack('L', $devInst);
-        my $parentInst = pack('L', 0);
-        if ($CM_Get_Parent->Call($parentInst, $dnDevInst, 0) == 0) {
-            my $dnParentInst = unpack('L', $parentInst);
-            my $buffer = "\0" x 512;
-            if ($CM_Get_Device_IDW->Call($dnParentInst, $buffer, 256, 0) == 0) {
-                my $parentDeviceId = Encode::decode('UTF-16LE', $buffer);
-                $parentDeviceId = getSanitizedString($parentDeviceId);
-
-                my $wmiQueryId = $parentDeviceId;
-                $wmiQueryId =~ s/\\/\\\\/g;
-                my ($parentDev) = GLPI::Agent::Tools::Win32::getWMIObjects(
-                    class      => 'Win32_PnPEntity',
-                    properties => [ qw/Manufacturer Caption/ ],
-                    query      => "SELECT Manufacturer, Caption FROM Win32_PnPEntity WHERE PNPDeviceID='$wmiQueryId'"
-                );
-
-                if ($parentDev) {
-                    $info->{MANUFACTURER} = $parentDev->{Manufacturer} if $parentDev->{Manufacturer};
-                    $info->{MODEL}        = $parentDev->{Caption}      if $parentDev->{Caption};
-                }
-            }
-        }
-    }
-
-    return $info;
 }
 
 1;
