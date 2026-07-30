@@ -66,11 +66,13 @@ sub _getESETInfo {
     $antivirus->{VERSION} = $version if $version;
 
     # Get product name and license info from `lic --status`
-    my @lic_lines = getAllLines(
-        file    => $params{lic_status}, # For unit tests
-        command => $basepath ? [ "$basepath/lic", "--status" ] : undef,
-        %params
-    );
+    if ($params{lic_status}) {
+        # For unit tests
+        $params{file} = $params{lic_status};
+    } else {
+        $params{command} = [ "$basepath/lic", "-status" ];
+    }
+    my @lic_lines = getAllLines(%params);
     foreach my $line (@lic_lines) {
         if ($line =~ /^Product name:\s*(.+)/) {
             $antivirus->{NAME} //= $1;
