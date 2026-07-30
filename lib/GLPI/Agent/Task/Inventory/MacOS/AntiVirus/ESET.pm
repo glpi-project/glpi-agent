@@ -47,7 +47,15 @@ sub doInventory {
 sub _getESETInfo {
     my (%params) = @_;
     my $basepath = $params{basepath} || _getESETBasePath();
-    return unless $basepath || $params{upd_version};
+    
+    my $basepath;
+    if ($params{upd_version}) {
+        $params{file} = $params{upd_version};
+    } else {
+        $basepath = _getESETBasePath()
+            or return;
+        $params{command} = [ "$basepath/upd", "-version" ];
+    }
 
     my $antivirus = {
         COMPANY  => 'ESET',
