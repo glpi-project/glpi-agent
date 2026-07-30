@@ -59,7 +59,7 @@ sub doInventory {
     push @licenses, getAdobeLicensesWithoutSqlite($fileAdobe) if has_file($fileAdobe);
 
     # ESET
-    my $esetLicense = _getESETLicense();
+    my $esetLicense = _getESETLicense(logger => $params{logger});
     push @licenses, $esetLicense if $esetLicense;
 
     _scanWmiSoftwareLicensingProducts();
