@@ -256,7 +256,10 @@ sub _getESETLicense {
     my $ermm = 'C:\Program Files\ESET\ESET Security\ermm.exe';
     return unless canRun($ermm);
 
-    my $output = getAllLines(command => "\"$ermm\" get license-info");
+    my $output = getAllLines(
+        command => [ $ermm, "get", "license-info" ],
+        %params
+    );
     return unless $output;
 
     my $data;
