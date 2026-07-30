@@ -147,12 +147,12 @@ sub _getESETLicenses {
             $public_id //= $1;
         }
     }
+    return unless $public_id;
     unless ($product_name) {
         if ($lic_cmd && $lic_cmd =~ /\/([^\/]+)\.app\//) {
             $product_name = $1;
         }
     }
-    return unless $public_id;
 
     return {
         NAME      => $product_name,
