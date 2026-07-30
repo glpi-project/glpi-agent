@@ -20,7 +20,7 @@ sub _getESETBasePath {
     foreach my $path (@eset_app_paths) {
         return $path if canRun("$path/upd");
     }
-    return;
+    return '';
 }
 
 sub isEnabled {
