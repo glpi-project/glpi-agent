@@ -6,7 +6,6 @@ use lib 't/lib';
 
 use English qw(-no_match_vars);
 use Test::More;
-use Test::MockModule;
 use UNIVERSAL::require;
 
 use GLPI::Test::Utils;
