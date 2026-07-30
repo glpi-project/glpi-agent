@@ -18,14 +18,38 @@ sub isEnabled {
 sub doInventory {
     my (%params) = @_;
 
+    my $inventory = $params{inventory};
+
+    my (@gateways, @dns);
+
+    foreach my $interface (_getInterfaces($inventory)) {
+        push @gateways, $interface->{IPGATEWAY}
+            if $interface->{IPGATEWAY};
+        push @dns, $interface->{dns}
+            if $interface->{dns};
+
+        $inventory->addEntry(
+            section => 'NETWORKS',
+            entry   => $interface
+        );
+    }
+
+    $inventory->setHardware({
+        DEFAULTGATEWAY => join('/', uniq @gateways),
+        DNS            => join('/', uniq @dns),
+    });
+
+}
+
+sub _getInterfaces {
+    my ($inventory) = @_;
+
     my @interfaces = getInterfaces()
         or return;
 
-    my $inventory = $params{inventory};
-
     my %statistics;
 
-    if ($inventory->supportsGlpiVersion('12')) {
+    if ($inventory && $inventory->supportsGlpiVersion('12.0.0')) {
         my @modern_stats = getWMIObjects(
             moniker    => 'winmgmts://./root/StandardCimv2',
             class      => 'MSFT_NetAdapterStatisticsSettingData',
@@ -61,8 +85,6 @@ sub doInventory {
         }
     }
 
-    my (@gateways, @dns);
-
     my $keys;
     $keys = getRegistryKey(
         path   => "HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Control/Network/{4D36E972-E325-11CE-BFC1-08002BE10318}",
@@ -70,37 +92,27 @@ sub doInventory {
         required    => [ qw/PnpInstanceID MediaSubType/ ],
     ) if grep { $_->{PNPDEVICEID}} @interfaces;
 
-    # The legacy WMI class Win32_PerfRawData_Tcpip_NetworkInterface lacks strict linkage properties (like MAC or GUID).
-    # When multiple physical NICs of the exact same model exist, Windows natively assigns them sequential suffixes
-    # (e.g. "_2", " _3") based on their PnP enumeration order. Since getInterfaces natively arrays them
-    # in this exact same index order, we generate sequential lookup strings here to map them 1:1 reliably.
     my %model_counts;
     foreach my $interface (@interfaces) {
-        my $lookup_base = $interface->{MODEL} || $interface->{DESCRIPTION} || '';
-        my $lookup_name = $lookup_base;
-        if ($lookup_base) {
-            $interface->{_MODEL_COUNT} = ++$model_counts{$lookup_base};
-            if ($interface->{_MODEL_COUNT} > 1) {
-                $lookup_name .= ' _' . $interface->{_MODEL_COUNT};
-            }
-        }
-
-        push @gateways, $interface->{IPGATEWAY}
-            if $interface->{IPGATEWAY};
-        push @dns, $interface->{dns}
-            if $interface->{dns};
-
-        # Cleanup not necessary values
-        delete $interface->{dns};
-        delete $interface->{DNSDomain};
-        delete $interface->{GUID};
-
         if ($interface->{PNPDEVICEID} && !$interface->{TYPE}) {
             my $type = _getMediaType($interface->{PNPDEVICEID}, $keys);
             $interface->{TYPE} = $type if defined($type);
         }
 
-        if ($inventory->supportsGlpiVersion('12.0.0')) {
+        if ($inventory && $inventory->supportsGlpiVersion('12.0.0')) {
+            # The legacy WMI class Win32_PerfRawData_Tcpip_NetworkInterface lacks strict linkage properties (like MAC or GUID).
+            # When multiple physical NICs of the exact same model exist, Windows natively assigns them sequential suffixes
+            # (e.g. "_2", " _3") based on their PnP enumeration order. Since getInterfaces natively arrays them
+            # in this exact same index order, we generate sequential lookup strings here to map them 1:1 reliably.
+            my $lookup_base = $interface->{MODEL} || $interface->{DESCRIPTION} || '';
+            my $lookup_name = $lookup_base;
+            if ($lookup_base) {
+                $interface->{_MODEL_COUNT} = ++$model_counts{$lookup_base};
+                if ($interface->{_MODEL_COUNT} > 1) {
+                    $lookup_name .= ' _' . $interface->{_MODEL_COUNT};
+                }
+            }
+
             if (my $stat = ($lookup_name ? $statistics{$lookup_name} : undef) || $statistics{$interface->{MODEL}} || $statistics{$interface->{DESCRIPTION}}) {
                 # getInterfaces() duplicates adapters in the array if they have multiple IP addresses.
                 # We track them by MAC and DESCRIPTION so we only inject one block of stats per physical card.
@@ -113,20 +125,14 @@ sub doInventory {
                     $interface->{IFOUTERRORS} = $stat->{ifouterrors};
                 }
             }
+            delete $interface->{_MODEL_COUNT};
         }
-        delete $interface->{_MODEL_COUNT};
-        delete $interface->{_IFNUMBER};
-        $inventory->addEntry(
-            section => 'NETWORKS',
-            entry   => $interface
-        );
+        delete $interface->{dns};
+        delete $interface->{DNSDomain};
+        delete $interface->{GUID};
     }
 
-    $inventory->setHardware({
-        DEFAULTGATEWAY => join('/', uniq @gateways),
-        DNS            => join('/', uniq @dns),
-    });
-
+    return @interfaces;
 }
 
 sub _getMediaType {

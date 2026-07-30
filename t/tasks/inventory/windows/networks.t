@@ -28,16 +28,7 @@ Test::NoWarnings->use();
 
 GLPI::Agent::Task::Inventory::Win32::Networks->require();
 
-package MockInventory;
-sub new { bless { sections => {}, _glpi_version => 12_000_000 }, shift }
-sub supportsGlpiVersion { 1 }
-sub addEntry {
-    my ($self, %params) = @_;
-    push @{$self->{sections}->{$params{section}}}, $params{entry};
-}
-sub setHardware { }
-
-package main;
+use GLPI::Agent::Inventory;
 
 my %tests = (
     xp => {
@@ -52,33 +43,58 @@ my %tests = (
 
 my %network_ports_tests = (
     'loadbalance' => [
-        superhashof({
-            MACADDR => '20:47:47:90:78:42',
-            MODEL => 'Broadcom NetXtreme Gigabit Ethernet',
-            DESCRIPTION => 'Ethernet',
-            IFINBYTES => 1412918786473,
-            IFOUTBYTES => 364462371847,
-            IFINERRORS => 0,
-            IFOUTERRORS => 0
-        }),
-        superhashof({
-            MACADDR => '20:47:47:90:78:44',
-            MODEL => 'Broadcom NetXtreme Gigabit Ethernet',
-            DESCRIPTION => 'Ethernet 2',
-            IFINBYTES => 70987676,
-            IFOUTBYTES => 80987676,
-            IFINERRORS => 0,
-            IFOUTERRORS => 0
-        }),
-        superhashof({
-            MACADDR => '20:47:47:90:78:42',
-            MODEL => 'Microsoft Network Adapter Multiplexor Driver',
-            DESCRIPTION => 'LoadBalance',
-            IFINBYTES => 1403973923755,
-            IFOUTBYTES => 726370059830,
-            IFINERRORS => 0,
-            IFOUTERRORS => 0
-        })
+          {
+            'DESCRIPTION' => 'Ethernet',
+            'IFINBYTES' => '1412918786473',
+            'IFINERRORS' => '0',
+            'IFOUTBYTES' => '364462371847',
+            'IFOUTERRORS' => '0',
+            'MACADDR' => '20:47:47:90:78:42',
+            'MANUFACTURER' => 'Microsoft',
+            'MODEL' => 'Broadcom NetXtreme Gigabit Ethernet',
+            'PCIID' => '14E4:165F:05E5:1028',
+            'PNPDEVICEID' => 'PCI\\VEN_14E4&DEV_165F&SUBSYS_05E51028&REV_00\\000020474790784200',
+            'SPEED' => 1000,
+            'STATUS' => 'Up',
+            'TYPE' => 'ethernet',
+            'VIRTUALDEV' => 0
+          },
+          {
+            'DESCRIPTION' => 'Ethernet 2',
+            'IFINBYTES' => '70987676',
+            'IFINERRORS' => '0',
+            'IFOUTBYTES' => '80987676',
+            'IFOUTERRORS' => '0',
+            'MACADDR' => '20:47:47:90:78:44',
+            'MANUFACTURER' => 'Microsoft',
+            'MODEL' => 'Broadcom NetXtreme Gigabit Ethernet',
+            'PCIID' => '14E4:165F:05E5:1028',
+            'PNPDEVICEID' => 'PCI\\VEN_14E4&DEV_165F&SUBSYS_05E51028&REV_00\\000020474790784401',
+            'SPEED' => 1000,
+            'STATUS' => 'Up',
+            'TYPE' => 'ethernet',
+            'VIRTUALDEV' => 0
+          },
+          {
+            'DESCRIPTION' => 'LoadBalance',
+            'IFINBYTES' => '1403973923755',
+            'IFINERRORS' => '0',
+            'IFOUTBYTES' => '726370059830',
+            'IFOUTERRORS' => '0',
+            'IPADDRESS' => '192.168.10.250',
+            'IPDHCP' => undef,
+            'IPGATEWAY' => '192.168.10.254',
+            'IPMASK' => '255.255.255.0',
+            'IPSUBNET' => '192.168.10.0',
+            'MACADDR' => '20:47:47:90:78:42',
+            'MANUFACTURER' => 'Microsoft',
+            'MODEL' => 'Microsoft Network Adapter Multiplexor Driver',
+            'PNPDEVICEID' => 'COMPOSITEBUS\\MS_IMPLAT_MP\\{1280DFA8-1A33-437E-88B0-238F0C879599}',
+            'SPEED' => 2000,
+            'STATUS' => 'Up',
+            'TYPE' => 'ethernet',
+            'VIRTUALDEV' => 1
+          }
     ]
 );
 
@@ -86,7 +102,7 @@ my $plan = 1;
 foreach my $test (keys %tests) {
     $plan += scalar (keys %{$tests{$test}});
 }
-$plan += scalar(keys %network_ports_tests) * 2;
+$plan += scalar(keys %network_ports_tests);
 plan tests => $plan;
 
 foreach my $test (keys %tests) {
@@ -127,19 +143,15 @@ foreach my $test (keys %network_ports_tests) {
         sub { return {}; }
     );
 
-    my $inventory = MockInventory->new();
+    my $inventory = GLPI::Agent::Inventory->new(glpi => '12.0.0');
 
-    GLPI::Agent::Task::Inventory::Win32::Networks::doInventory(
-        inventory => $inventory,
+    my @ports = GLPI::Agent::Task::Inventory::Win32::Networks::_getInterfaces(
+        $inventory
     );
 
-    ok(exists $inventory->{sections}->{NETWORKS}, "$test generates NETWORKS");
-
-    my $ports = $inventory->{sections}->{NETWORKS} || [];
-
     cmp_deeply(
-        $ports,
-        superbagof(@{$network_ports_tests{$test}}),
+        \@ports,
+        $network_ports_tests{$test},
         "$test sample NETWORKS matches expected counters"
     );
 }
