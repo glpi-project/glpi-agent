@@ -128,19 +128,16 @@ sub _getESETInfo {
     # Check if real-time protection is enabled in settings.json
     my $rtp_enabled = 0;
     my $settings_file = $params{settings_file} || '/Library/Application Support/ESET/Security/var/confd/settings.json';
-    if (-r $settings_file && open(my $fh, '<', $settings_file)) {
-        local $/ = undef;
-        my $content = <$fh>;
-        close($fh);
+    if (has_file($settings_file)) {
+        $params{file} = $settings_file;
+        my $content = getAllLines(%params);
         if ($content) {
-            my $json = eval { decode_json($content) };
-            if (!$@ && ref($json) eq 'HASH') {
-                my $prot_status = $json->{State}->{ProtectionStatus};
-                if (ref($prot_status) eq 'HASH') {
-                    my $rtfs_enabled = $prot_status->{RTFSEnabled}->{Active}->{ce_val};
-                    $rtp_enabled = ($rtfs_enabled && $rtfs_enabled == 1) ? 1 : 0;
-                }
-            }
+            eval {
+                my $json = decode_json($content);
+                my $rtfs_enabled = $json->{State}->{ProtectionStatus}->{RTFSEnabled}->{Active}->{ce_val};
+                $rtp_enabled = 1
+                    if $rtfs_enabled && $rtfs_enabled == 1;
+            };
         }
     }
 
