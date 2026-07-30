@@ -9,9 +9,10 @@ use English qw(-no_match_vars);
 use Test::More;
 use Test::MockModule;
 use UNIVERSAL::require;
-use Test::Deep qw(cmp_deeply superbagof superhashof);
+use Test::Deep;
 
 use GLPI::Test::Utils;
+use GLPI::Agent::Inventory;
 
 BEGIN {
     # use mock modules for non-available ones
@@ -27,8 +28,6 @@ if (!$Config{usethreads} || $Config{usethreads} ne 'define') {
 Test::NoWarnings->use();
 
 GLPI::Agent::Task::Inventory::Win32::Networks->require();
-
-use GLPI::Agent::Inventory;
 
 my %tests = (
     xp => {
@@ -102,7 +101,7 @@ my $plan = 1;
 foreach my $test (keys %tests) {
     $plan += scalar (keys %{$tests{$test}});
 }
-$plan += scalar(keys %network_ports_tests);
+$plan += scalar(keys %network_ports_tests) * 2;
 plan tests => $plan;
 
 foreach my $test (keys %tests) {
@@ -143,15 +142,33 @@ foreach my $test (keys %network_ports_tests) {
         sub { return {}; }
     );
 
-    my $inventory = GLPI::Agent::Inventory->new(glpi => '12.0.0');
-
     my @ports = GLPI::Agent::Task::Inventory::Win32::Networks::_getInterfaces(
-        $inventory
+        glpi12_support => 1
     );
+
+    # The returned ports contain dns and GUID which are cleaned up by doInventory.
+    # We clean them up here before cmp_deeply and addEntry.
+    foreach my $port (@ports) {
+        delete $port->{dns};
+        delete $port->{DNSDomain};
+        delete $port->{GUID};
+    }
 
     cmp_deeply(
         \@ports,
         $network_ports_tests{$test},
         "$test sample NETWORKS matches expected counters"
     );
+
+    # Prove we don't break expected inventory format
+    my $inventory = GLPI::Agent::Inventory->new(glpi => '12.0.0');
+    eval {
+        foreach my $port (@ports) {
+            $inventory->addEntry(
+                section => 'NETWORKS',
+                entry   => $port
+            );
+        }
+    };
+    is($EVAL_ERROR, '', "addEntry does not throw exceptions for $test ports");
 }

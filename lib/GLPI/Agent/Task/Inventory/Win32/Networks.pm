@@ -22,11 +22,18 @@ sub doInventory {
 
     my (@gateways, @dns);
 
-    foreach my $interface (_getInterfaces($inventory)) {
+    foreach my $interface (_getInterfaces(
+        glpi12_support => $inventory->supportsGlpiVersion('12.0.0')
+    )) {
         push @gateways, $interface->{IPGATEWAY}
             if $interface->{IPGATEWAY};
         push @dns, $interface->{dns}
             if $interface->{dns};
+
+        # Cleanup not necessary values
+        delete $interface->{dns};
+        delete $interface->{DNSDomain};
+        delete $interface->{GUID};
 
         $inventory->addEntry(
             section => 'NETWORKS',
@@ -42,14 +49,14 @@ sub doInventory {
 }
 
 sub _getInterfaces {
-    my ($inventory) = @_;
+    my (%params) = @_;
 
     my @interfaces = getInterfaces()
         or return;
 
     my %statistics;
 
-    if ($inventory && $inventory->supportsGlpiVersion('12.0.0')) {
+    if ($params{glpi12_support}) {
         my @modern_stats = getWMIObjects(
             moniker    => 'winmgmts://./root/StandardCimv2',
             class      => 'MSFT_NetAdapterStatisticsSettingData',
@@ -99,7 +106,7 @@ sub _getInterfaces {
             $interface->{TYPE} = $type if defined($type);
         }
 
-        if ($inventory && $inventory->supportsGlpiVersion('12.0.0')) {
+        if ($params{glpi12_support}) {
             # The legacy WMI class Win32_PerfRawData_Tcpip_NetworkInterface lacks strict linkage properties (like MAC or GUID).
             # When multiple physical NICs of the exact same model exist, Windows natively assigns them sequential suffixes
             # (e.g. "_2", " _3") based on their PnP enumeration order. Since getInterfaces natively arrays them
@@ -107,10 +114,8 @@ sub _getInterfaces {
             my $lookup_base = $interface->{MODEL} || $interface->{DESCRIPTION} || '';
             my $lookup_name = $lookup_base;
             if ($lookup_base) {
-                $interface->{_MODEL_COUNT} = ++$model_counts{$lookup_base};
-                if ($interface->{_MODEL_COUNT} > 1) {
-                    $lookup_name .= ' _' . $interface->{_MODEL_COUNT};
-                }
+                my $model_count = ++$model_counts{$lookup_base};
+                $lookup_name .= ' _' . $model_count if $model_count > 1;
             }
 
             if (my $stat = ($lookup_name ? $statistics{$lookup_name} : undef) || $statistics{$interface->{MODEL}} || $statistics{$interface->{DESCRIPTION}}) {
@@ -125,11 +130,7 @@ sub _getInterfaces {
                     $interface->{IFOUTERRORS} = $stat->{ifouterrors};
                 }
             }
-            delete $interface->{_MODEL_COUNT};
         }
-        delete $interface->{dns};
-        delete $interface->{DNSDomain};
-        delete $interface->{GUID};
     }
 
     return @interfaces;
