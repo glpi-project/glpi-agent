@@ -36,6 +36,7 @@ netdiscovery/netinventory:
 packaging:
 * Update Windows packaging to use:
   - Perl 5.44.0
+  - gcc 16.1.0posix-14.0.0-msvcrt-r4
   - 7-Zip v26.02
 * Update MacOSX packages to use perl 5.44.0:
   - Minimum supported MacOSX version changed to 10.12
