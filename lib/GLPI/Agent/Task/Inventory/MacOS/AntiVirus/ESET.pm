@@ -46,15 +46,9 @@ sub doInventory {
 
 sub _getESETInfo {
     my (%params) = @_;
-    my $basepath = $params{basepath} || _getESETBasePath();
-    
     my $basepath;
-    if ($params{upd_version}) {
-        $params{file} = $params{upd_version};
-    } else {
-        $basepath = _getESETBasePath()
-            or return;
-        $params{command} = [ "$basepath/upd", "-version" ];
+    if (!$params{upd_version}) {
+        $basepath = _getESETBasePath() or return;
     }
 
     my $antivirus = {
@@ -63,22 +57,22 @@ sub _getESETInfo {
         UPTODATE => 0,
     };
 
-    # Get product version from `upd -version`
+    # Get product version from `upd --version`
     # Output: "/Applications/.../upd (ees_mac) 9.1.3100.0" or with test file
+    my %ver_params = %params;
+    $ver_params{file} = $params{upd_version} if $params{upd_version};
+    $ver_params{command} = [ "$basepath/upd", "--version" ] unless $params{upd_version};
     my $version = getFirstMatch(
         pattern => qr/\((?:ee[a-z_]+)\)\s*([0-9.]+)/,
-        %params
+        %ver_params
     );
     $antivirus->{VERSION} = $version if $version;
 
     # Get product name and license info from `lic --status`
-    if ($params{lic_status}) {
-        # For unit tests
-        $params{file} = $params{lic_status};
-    } else {
-        $params{command} = [ "$basepath/lic", "-status" ];
-    }
-    my @lic_lines = getAllLines(%params);
+    my %lic_params = %params;
+    $lic_params{file} = $params{lic_status} if $params{lic_status};
+    $lic_params{command} = [ "$basepath/lic", "--status" ] unless $params{lic_status};
+    my @lic_lines = getAllLines(%lic_params);
     foreach my $line (@lic_lines) {
         if ($line =~ /^Product name:\s*(.+)/) {
             $antivirus->{NAME} //= $1;
@@ -94,15 +88,12 @@ sub _getESETInfo {
     }
 
     # Get detection engine version from `upd --list-modules`
-    if ($params{upd_modules}) {
-        # For unit tests
-        $params{file} = $params{upd_modules};
-    } else {
-        $params{command} = [ "$basepath/upd", "--list-modules" ];
-    }
+    my %mod_params = %params;
+    $mod_params{file} = $params{upd_modules} if $params{upd_modules};
+    $mod_params{command} = [ "$basepath/upd", "--list-modules" ] unless $params{upd_modules};
     my $base_version = getFirstMatch(
         pattern => qr/EM002\s*(\d+\s*\(\d+\))\s*Detection engine$/,
-        %params
+        %mod_params
     );
     $antivirus->{BASE_VERSION} = $base_version if $base_version;
 
@@ -128,12 +119,11 @@ sub _getESETInfo {
     my $startd_running = 0;
     if ($start_cmd) {
         my $filter = quotemeta($start_cmd);
-        # For unit tests
-        $params{file} = $params{ps_status}
-            if $params{ps_status};
+        my %ps_params = %params;
+        $ps_params{file} = $params{ps_status} if $params{ps_status};
         my ($ps) = getProcesses(
             filter => qr/$filter/i,
-            %params
+            %ps_params
         );
         $startd_running = $ps ? 1 : 0;
     }
@@ -142,8 +132,11 @@ sub _getESETInfo {
     my $rtp_enabled = 0;
     my $settings_file = $params{settings_file} || '/Library/Application Support/ESET/Security/var/confd/settings.json';
     if (has_file($settings_file)) {
-        $params{file} = $settings_file;
-        my $content = getAllLines(%params);
+        my @lines = getAllLines(
+            file   => $settings_file,
+            logger => $params{logger}
+        );
+        my $content = join("", @lines);
         if ($content) {
             eval {
                 my $json = decode_json($content);

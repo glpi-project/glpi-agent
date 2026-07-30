@@ -128,8 +128,9 @@ sub _getESETLicenses {
     unless ($params{file}) {
         foreach my $path (@eset_lic_paths) {
             if (canRun($path)) {
-            $lic_cmd = $path;
-            last;
+                $lic_cmd = $path;
+                last;
+            }
         }
         return unless $lic_cmd;
     }
@@ -141,11 +142,11 @@ sub _getESETLicenses {
 
     my ($product_name, $public_id);
     foreach my $line (@lines) {
-        if ($line =~ /^Product name:\s*(.+)/) {
-            $product_name //= $1;
-            $product_name =~ s/\s+for\s+(?:macOS|Linux|Windows)//i if defined($product_name);
+        last if empty($line) && $product_name;
+        if ($line =~ /^Product name:\s*(.+?)(?:\s+for\s+(?:macOS|Linux|Windows))?$/i) {
+            $product_name = $1;
         } elsif ($line =~ /^Public ID:\s*(\S+)/) {
-            $public_id //= $1;
+            $public_id = $1;
         }
     }
     return unless $public_id;

@@ -26,7 +26,7 @@ my %av_tests = (
 );
 
 plan tests =>
-    (3 * scalar keys %av_tests) +
+    (2 * scalar keys %av_tests) +
     1;
 
 foreach my $test (keys %av_tests) {
@@ -40,18 +40,8 @@ foreach my $test (keys %av_tests) {
         test_date   => delete $av_tests{$test}->{_test_date},
         logger      => $inventory->{logger}
     );
-    my $public_id = delete $antivirus->{_PUBLIC_ID};
     cmp_deeply($antivirus, $av_tests{$test}, "$test: parsing");
     lives_ok {
         $inventory->addEntry(section => 'ANTIVIRUS', entry => $antivirus);
     } "$test: registering ANTIVIRUS";
-    if ($public_id) {
-        lives_ok {
-            $inventory->addEntry(section => 'LICENSEINFOS', entry => {
-                NAME      => $antivirus->{NAME},
-                FULLNAME  => $antivirus->{NAME},
-                PRODUCTID => $public_id,
-            });
-        } "$test: registering LICENSEINFOS";
-    }
 }

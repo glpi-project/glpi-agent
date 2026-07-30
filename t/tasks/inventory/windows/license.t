@@ -127,7 +127,7 @@ ok( @licenses == 1 );
 ok( $licenses[0]->{'KEY'} eq 'XXXXX-XXXXX-XXXXX-XXXXX-WE9H9' );
 
 $key = loadRegistryDump("resources/win32/registry/eset_license.reg");
-my $eset_lic = GLPI::Agent::Task::Inventory::Win32::License::_getESETLicense($key);
+my $eset_lic = GLPI::Agent::Task::Inventory::Win32::License::_getESETLicense(registry => $key);
 ok( $eset_lic->{'NAME'} eq 'ESET Endpoint Security' );
 ok( $eset_lic->{'FULLNAME'} eq 'ESET Endpoint Security 10.1.2050.0' );
 ok( $eset_lic->{'PRODUCTID'} eq '3EA-ABC-DEF' );

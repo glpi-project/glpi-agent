@@ -220,13 +220,10 @@ sub _getOfficeLicense {
 }
 
 sub _getESETLicense {
-    my ($key) = @_;
+    my (%params) = @_;
 
-    my $required = [ qw(WebLicensePublicId ProductName ProductVersion) ];
-    my $esetReg = $key;
-    if ($esetReg && !$esetReg->{'/WebLicensePublicId'} && $esetReg->{'SOFTWARE/'}) {
-        $esetReg = $esetReg->{'SOFTWARE/'}->{'ESET/'}->{'ESET Security/'}->{'CurrentVersion/'}->{'Info/'};
-    }
+    my $required = [ qw(WebLicensePublicId ProductName ProductVersion InstallDir) ];
+    my $esetReg = $params{registry};
 
     unless ($esetReg && $esetReg->{'/WebLicensePublicId'}) {
         $esetReg = getRegistryKey(
@@ -254,13 +251,18 @@ sub _getESETLicense {
 
     # Fallback: try ermm.exe
     my $ermm = 'C:\Program Files\ESET\ESET Security\ermm.exe';
-    return unless canRun($ermm);
+    if ($esetReg && $esetReg->{'/InstallDir'}) {
+        $ermm = $esetReg->{'/InstallDir'} . '\ermm.exe';
+    }
+    return unless $params{file} || canRun($ermm);
 
-    my $output = getAllLines(
-        command => [ $ermm, "get", "license-info" ],
+    my @lines = getAllLines(
+        file    => $params{file},
+        command => "\"$ermm\" get license-info",
         %params
     );
-    return unless $output;
+    return unless @lines;
+    my $output = join("", @lines);
 
     my $data;
     eval {
