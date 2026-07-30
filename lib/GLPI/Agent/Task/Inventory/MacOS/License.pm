@@ -125,13 +125,14 @@ sub _getESETLicenses {
     );
 
     my $lic_cmd;
-    foreach my $path (@eset_lic_paths) {
-        if (canRun($path)) {
+    unless ($params{file}) {
+        foreach my $path (@eset_lic_paths) {
+            if (canRun($path)) {
             $lic_cmd = $path;
             last;
         }
+        return unless $lic_cmd;
     }
-    return unless $lic_cmd || $params{file};
 
     $params{command} = [ $lic_cmd, "--status" ] if $lic_cmd;
 
