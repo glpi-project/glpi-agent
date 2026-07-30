@@ -122,10 +122,11 @@ sub _getESETInfo {
     my $startd_running = 0;
     if ($start_cmd) {
         my $filter = quotemeta($start_cmd);
+        # For unit tests
+        $params{file} = $params{ps_status}
+            if $params{ps_status};
         my ($ps) = getProcesses(
-            file   => $params{ps_status}, # For unit tests
             filter => qr/$filter/i,
-            logger => $params{logger},
             %params
         );
         $startd_running = $ps ? 1 : 0;
