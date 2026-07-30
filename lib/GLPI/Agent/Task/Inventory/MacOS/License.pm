@@ -133,10 +133,10 @@ sub _getESETLicenses {
     }
     return unless $lic_cmd || $params{file};
 
-    my @lines = getAllLines(
-        command => $lic_cmd ? [ $lic_cmd, "--status" ] : undef,
-        %params
-    ) or return;
+    $params{command} = [ $lic_cmd, "--status" ] if $lic_cmd;
+
+    my @lines = getAllLines(%params)
+        or return;
 
     my ($product_name, $public_id);
     foreach my $line (@lines) {
