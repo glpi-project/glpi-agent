@@ -66,8 +66,6 @@ sub _getESETInfo {
     # Get product version from `upd -version`
     # Output: "/Applications/.../upd (ees_mac) 9.1.3100.0" or with test file
     my $version = getFirstMatch(
-        file    => $params{upd_version}, # For unit tests
-        command => $basepath ? [ "$basepath/upd", "-version" ] : undef,
         pattern => qr/\((?:ee[a-z_]+)\)\s*([0-9.]+)/,
         %params
     );
