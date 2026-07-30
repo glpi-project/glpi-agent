@@ -103,7 +103,7 @@ sub _getESETInfo {
     # Parse com.eset.protection plist to find daemon command (e.g. startd) using built-in XML parser
     my $daemon_plist = $params{daemon_plist} || '/Library/LaunchDaemons/com.eset.protection.plist';
     my $start_cmd;
-    if (-r $daemon_plist) {
+    if (has_file($daemon_plist)) {
         GLPI::Agent::XML->require();
         my $xml = eval { GLPI::Agent::XML->new(file => $daemon_plist, is_plist => 1)->dump_as_hash() };
         if (!$@ && $xml && $xml->{plist}) {
