@@ -69,7 +69,7 @@ sub _getESETInfo {
     $antivirus->{VERSION} = $version if $version;
 
     # Get product name and license info from `lic --status`
-    my %lic_params = %params;
+    my %lic_params = ( logger => $params{logger} );
     $lic_params{file} = $params{lic_status} if $params{lic_status};
     $lic_params{command} = [ "$basepath/lic", "--status" ] unless $params{lic_status};
     my @lic_lines = getAllLines(%lic_params);
