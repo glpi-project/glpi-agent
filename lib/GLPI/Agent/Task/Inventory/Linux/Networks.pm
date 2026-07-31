@@ -166,7 +166,7 @@ sub _getInterfaces {
                 my $speed = getFirstLine(
                     file => "/sys/class/net/$interface->{DESCRIPTION}/speed"
                 );
-                $interface->{SPEED} = ($speed && $speed =~ /^\d+$/ && $speed > 0 && $speed != SPEED_UNKNOWN && $speed != SPEED_UNKNOWN_32) ? $speed : 0;
+                $interface->{SPEED} = ($speed && $speed =~ /^\d+$/ && $speed != SPEED_UNKNOWN && $speed != SPEED_UNKNOWN_32) ? $speed : 0;
             }
             if (!$interface->{SPEED} && has_folder("/sys/class/net/$interface->{DESCRIPTION}/wireless")) {
                 my $speed;
