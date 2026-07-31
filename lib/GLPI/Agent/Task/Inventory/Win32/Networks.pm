@@ -8,6 +8,7 @@ use parent 'GLPI::Agent::Task::Inventory::Module';
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Network;
 use GLPI::Agent::Tools::Win32;
+use GLPI::Agent::Tools::Win32::Bluetooth;
 
 use constant    category    => "network";
 
@@ -41,6 +42,14 @@ sub doInventory {
         delete $interface->{dns};
         delete $interface->{DNSDomain};
         delete $interface->{GUID};
+
+        if ($interface->{PNPDEVICEID} && $interface->{PNPDEVICEID} =~ /^BTH/i) {
+            my $parentInfo = getBluetoothParentInfo($interface->{PNPDEVICEID});
+            if ($parentInfo) {
+                $interface->{MANUFACTURER} = $parentInfo->{MANUFACTURER} if $parentInfo->{MANUFACTURER};
+                $interface->{MODEL}        = $parentInfo->{MODEL}        if $parentInfo->{MODEL};
+            }
+        }
 
         if ($interface->{PNPDEVICEID} && !$interface->{TYPE}) {
             my $type = _getMediaType($interface->{PNPDEVICEID}, $keys);
