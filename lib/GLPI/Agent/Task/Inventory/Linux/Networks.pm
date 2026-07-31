@@ -153,12 +153,19 @@ sub _getInterfaces {
             );
         }
 
+        if (!$interface->{MTU} && canRead("/sys/class/net/$interface->{DESCRIPTION}/mtu")) {
+            my $mtu = getFirstLine(
+                file => "/sys/class/net/$interface->{DESCRIPTION}/mtu"
+            );
+            $interface->{MTU} = $mtu if $mtu && $mtu =~ /^\d+$/ && $mtu > 0;
+        }
+
         if (defined($interface->{STATUS}) && $interface->{STATUS} eq 'Up') {
             if (canRead("/sys/class/net/$interface->{DESCRIPTION}/speed")) {
                 my $speed = getFirstLine(
                     file => "/sys/class/net/$interface->{DESCRIPTION}/speed"
                 );
-                $interface->{SPEED} = $speed && $speed > 0 ? $speed : 0;
+                $interface->{SPEED} = ($speed && $speed =~ /^\d+$/ && $speed > 0 && $speed != SPEED_UNKNOWN && $speed != SPEED_UNKNOWN_32) ? $speed : 0;
             }
             if (!$interface->{SPEED} && has_folder("/sys/class/net/$interface->{DESCRIPTION}/wireless")) {
                 my $speed;
