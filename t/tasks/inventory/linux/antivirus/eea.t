@@ -43,5 +43,5 @@ foreach my $test (keys %av_tests) {
     cmp_deeply($antivirus, $av_tests{$test}, "$test: parsing");
     lives_ok {
         $inventory->addEntry(section => 'ANTIVIRUS', entry => $antivirus);
-    } "$test: registering";
+    } "$test: registering ANTIVIRUS";
 }

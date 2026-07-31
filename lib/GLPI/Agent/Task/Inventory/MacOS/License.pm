@@ -79,6 +79,10 @@ sub doInventory {
         }
     }
 
+    # ESET
+    my $esetLicense = _getESETLicenses(logger => $logger);
+    push @found, $esetLicense if $esetLicense;
+
     foreach my $license (@found) {
         $inventory->addEntry(section => 'LICENSEINFOS', entry => $license);
     }
@@ -109,6 +113,53 @@ sub _getTransmitLicenses {
         NAME     => "Transmit",
         FULLNAME => "Panic's Transmit",
         KEY      => $val{KEY}
+    };
+}
+
+sub _getESETLicenses {
+    my (%params) = @_;
+
+    my @eset_lic_paths = (
+        '/Applications/ESET Endpoint Security.app/Contents/MacOS/lic',
+        '/Applications/ESET Endpoint Antivirus.app/Contents/MacOS/lic',
+    );
+
+    my $lic_cmd;
+    unless ($params{file}) {
+        foreach my $path (@eset_lic_paths) {
+            if (canRun($path)) {
+                $lic_cmd = $path;
+                last;
+            }
+        }
+        return unless $lic_cmd;
+    }
+
+    $params{command} = [ $lic_cmd, "--status" ] if $lic_cmd;
+
+    my @lines = getAllLines(%params)
+        or return;
+
+    my ($product_name, $public_id);
+    foreach my $line (@lines) {
+        last if empty($line) && $product_name;
+        if ($line =~ /^Product name:\s*(.+?)(?:\s+for\s+(?:macOS|Linux|Windows))?$/i) {
+            $product_name = $1;
+        } elsif ($line =~ /^Public ID:\s*(\S+)/) {
+            $public_id = $1;
+        }
+    }
+    return unless $public_id;
+    unless ($product_name) {
+        if ($lic_cmd && $lic_cmd =~ /\/([^\/]+)\.app\//) {
+            $product_name = $1;
+        }
+    }
+
+    return {
+        NAME      => $product_name,
+        FULLNAME  => $product_name,
+        PRODUCTID => $public_id,
     };
 }
 

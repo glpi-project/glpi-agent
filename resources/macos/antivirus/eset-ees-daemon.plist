@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AssociatedBundleIdentifiers</key>
+	<string>com.eset.ees.g2</string>
+	<key>Label</key>
+	<string>com.eset.protection</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Applications/ESET Endpoint Security.app/Contents/MacOS/startd</string>
+	</array>
+	<key>KeepAlive</key>
+	<true/>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>ProcessType</key>
+	<string>Interactive</string>
+	<key>SoftResourceLimits</key>
+	<dict>
+		<key>NumberOfFiles</key>
+		<integer>2048</integer>
+	</dict>
+	<key>HardResourceLimits</key>
+	<dict>
+		<key>NumberOfFiles</key>
+		<integer>2048</integer>
+	</dict>
+	<key>ExitTimeOut</key>
+	<integer>60</integer>
+</dict>
+</plist>

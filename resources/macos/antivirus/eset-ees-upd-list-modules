@@ -1,0 +1,16 @@
+EM000	  1043 (20250708)	Update module
+EM001	1638.2 (20260703)	Antivirus and antispyware scanner module
+EM002	 33566 (20260726)	Detection engine
+EM003	  1362 (20260512)	Archive support module
+EM004	1238.6 (20260703)	Advanced heuristics module
+EM017	  2085 (20260625)	Translation support module
+EM019	  1513 (20260527)	Internet protection module
+EM020	  1092 (20260604)	Web content filter module
+EM022	  1136 (20260702)	Database module
+EM023	 28679 (20260726)	Rapid Response module
+EM024	  1158 (20260608)	Direct Cloud communication module
+EM029	  1071 (20260129)	Mac/Linux support module
+EM039	2233.5 (20260526)	Configuration module
+EM045	  1097 (20260505)	Cryptographic protocol support module
+EM052	  1025 (20260427)	Cleaner module
+EM060	  1560 (20260724)	Vulnerability & patch management module

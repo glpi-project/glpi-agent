@@ -360,7 +360,7 @@ sub _setESETInfos {
 
     my $esetReg = _getSoftwareRegistryKeys(
         'ESET/ESET Security/CurrentVersion/Info',
-        [ qw(ProductVersion ScannerVersion ProductName AppDataDir) ]
+        [ qw(ProductVersion ScannerVersion ProductName AppDataDir ProductCode) ]
     );
     return unless $esetReg;
 
@@ -373,6 +373,25 @@ sub _setESETInfos {
         if $esetReg->{"/ScannerVersion"};
     $antivirus->{NAME} = $esetReg->{"/ProductName"}
         if $esetReg->{"/ProductName"};
+
+    unless ($antivirus->{COMPANY}) {
+        if ($esetReg->{"/ProductCode"}) {
+            my $uninstallReg = getRegistryKey(
+                path     => 'HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/' . $esetReg->{"/ProductCode"},
+                required => [ 'Publisher' ]
+            );
+            if (!$uninstallReg && is64bit()) {
+                $uninstallReg = getRegistryKey(
+                    path     => 'HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/Microsoft/Windows/CurrentVersion/Uninstall/' . $esetReg->{"/ProductCode"},
+                    required => [ 'Publisher' ]
+                );
+            }
+            $antivirus->{COMPANY} = $uninstallReg->{"/Publisher"}
+                if $uninstallReg && $uninstallReg->{"/Publisher"};
+        }
+        $antivirus->{COMPANY} = "ESET, spol. s r.o."
+            unless $antivirus->{COMPANY};
+    }
 
     # Look at license file
     if ($esetReg->{"/AppDataDir"} && has_folder($esetReg->{"/AppDataDir"}.'/License')) {

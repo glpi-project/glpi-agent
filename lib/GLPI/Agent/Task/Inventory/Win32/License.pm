@@ -58,6 +58,10 @@ sub doInventory {
 
     push @licenses, getAdobeLicensesWithoutSqlite($fileAdobe) if has_file($fileAdobe);
 
+    # ESET
+    my $esetLicense = _getESETLicense(logger => $params{logger});
+    push @licenses, $esetLicense if $esetLicense;
+
     _scanWmiSoftwareLicensingProducts();
 
     push @licenses, _getSeenProducts();
@@ -213,6 +217,73 @@ sub _getOfficeLicense {
     }
 
     return $license;
+}
+
+sub _getESETLicense {
+    my (%params) = @_;
+
+    my $required = [ qw(WebLicensePublicId ProductName ProductVersion InstallDir) ];
+    my $esetReg = $params{registry};
+
+    unless ($esetReg && $esetReg->{'/WebLicensePublicId'}) {
+        $esetReg = getRegistryKey(
+            path     => 'HKEY_LOCAL_MACHINE/SOFTWARE/ESET/ESET Security/CurrentVersion/Info',
+            required => $required,
+        );
+        if ((!$esetReg || !$esetReg->{'/WebLicensePublicId'}) && is64bit()) {
+            $esetReg = getRegistryKey(
+                path     => 'HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/ESET/ESET Security/CurrentVersion/Info',
+                required => $required,
+            );
+        }
+    }
+
+    if ($esetReg && $esetReg->{'/WebLicensePublicId'}) {
+        my $fullname = $esetReg->{'/ProductName'} || 'ESET Endpoint Security';
+        $fullname .= " " . $esetReg->{'/ProductVersion'}
+            if $esetReg->{'/ProductVersion'};
+        return {
+            NAME      => $esetReg->{'/ProductName'} || 'ESET Endpoint Security',
+            FULLNAME  => $fullname,
+            PRODUCTID => $esetReg->{'/WebLicensePublicId'},
+        };
+    }
+
+    # Fallback: try ermm.exe
+    my $ermm;
+    if ($esetReg && $esetReg->{'/InstallDir'}) {
+        $ermm = $esetReg->{'/InstallDir'} . '\ermm.exe';
+    } else {
+        # Fallback: try environment variables then hardcoded paths
+        if ($ENV{ProgramFiles}) {
+            $ermm = "$ENV{ProgramFiles}\\ESET\\ESET Security\\ermm.exe";
+        } elsif ($ENV{'ProgramFiles(x86)'}) {
+            $ermm = "$ENV{'ProgramFiles(x86)'}\\ESET\\ESET Security\\ermm.exe";
+        } else {
+            $ermm = 'C:\Program Files\ESET\ESET Security\ermm.exe';
+        }
+    }
+    return unless $params{file} || canRun($ermm);
+
+    my $output  = getAllLines(
+        command => [ $ermm, "get", "license-info" ],
+        %params
+    )
+        or return;
+
+    my $productid;
+    eval {
+        Cpanel::JSON::XS->require();
+        my $data = Cpanel::JSON::XS::decode_json($output);
+        $productid = $data->{result}->{public_id};
+    };
+    return if empty($productid);
+
+    return {
+        NAME      => 'ESET Endpoint Security',
+        FULLNAME  => 'ESET Endpoint Security',
+        PRODUCTID => $productid,
+    };
 }
 
 1;

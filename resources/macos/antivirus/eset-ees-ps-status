@@ -1,0 +1,5 @@
+USER   PID %CPU %MEM      VSZ TT     ELAPSED COMMAND
+root   538  0.0  0.2 435552368 ??    03-20:49:16 /Applications/ESET Management Agent.app/Contents/MacOS/ERAAgent
+root   546  0.0  0.0 435403696 ??    03-20:49:16 /Applications/ESET Endpoint Security.app/Contents/MacOS/startd
+root   594  0.0  0.1 435419600 ??    03-20:49:15 /Applications/ESET Endpoint Security.app/Contents/MacOS/licensed
+root   600  0.0  0.0 435360064 ??    03-20:49:15 /Applications/ESET Endpoint Security.app/Contents/Helpers/ESET Real-time File System Protection.app/Contents/MacOS/ESET Real-time File System Protection
