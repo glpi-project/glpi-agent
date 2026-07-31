@@ -14,7 +14,7 @@ use GLPI::Agent::Task::Inventory::MacOS::AntiVirus::ESET;
 
 my %av_tests = (
     'eset-ees' => {
-        _test_date      => "126-7-26-12-0-0", # 2026-07-26 - encoded for mktime(sec,min,hour,mday,mon-1,year-1900)
+        _test_date      => [ 0, 0, 0, 26, 7, 2026 ], # 2026-07-26
         COMPANY         => "ESET",
         NAME            => "ESET Endpoint Security for macOS",
         ENABLED         => 1,
