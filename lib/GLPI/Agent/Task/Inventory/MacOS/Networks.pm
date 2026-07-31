@@ -64,12 +64,12 @@ sub _getInterfaces {
             : getAllLines(command => 'netstat -ib', logger => $params{logger});
         foreach my $line (@netstat_lines) {
             # Looking for Link layer line: Name Mtu Network Address Ipkts Ierrs Ibytes Opkts Oerrs Obytes Coll
-            if ($line =~ /^(\S+)\s+\d+\s+<Link#\d+>\s+(?:(?:[a-fA-F0-9:]+:[a-fA-F0-9:]+)\s+)?(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/) {
+            if ($line =~ /^(\S+)\s+\d+\s+<Link#\d+>\s+[a-fA-F0-9:]+\s+\d+\s+(\d+)\s+(\d+)\s+\d+\s+(\d+)\s+(\d+)/) {
                 $statistics{$1} = {
-                    ifinerrors  => $3,
-                    ifinbytes   => $4,
-                    ifouterrors => $6,
-                    ifoutbytes  => $7,
+                    ifinerrors  => $2,
+                    ifinbytes   => $3,
+                    ifouterrors => $4,
+                    ifoutbytes  => $5,
                 };
             }
         }
