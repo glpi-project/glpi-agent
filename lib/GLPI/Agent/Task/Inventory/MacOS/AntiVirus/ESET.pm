@@ -72,8 +72,7 @@ sub _getESETInfo {
     my %lic_params = ( logger => $params{logger} );
     $lic_params{file} = $params{lic_status} if $params{lic_status};
     $lic_params{command} = [ "$basepath/lic", "--status" ] unless $params{lic_status};
-    my @lic_lines = getAllLines(%lic_params);
-    foreach my $line (@lic_lines) {
+    foreach my $line (getAllLines(%lic_params)) {
         if ($line =~ /^Product name:\s*(.+)/) {
             $antivirus->{NAME} //= $1;
         } elsif ($line =~ /^License Validity:\s*(\d{4}-\d{2}-\d{2})/) {
