@@ -803,7 +803,7 @@ foreach my $test (keys %tests) {
     my $nets = GLPI::Agent::Task::Inventory::MacOS::Networks::_getInterfaces(%args);
     if (ref($tests{$test}) eq 'ARRAY' && scalar(@{$tests{$test}})) {
         cmp_deeply($nets, $tests{$test}, $test);
-        
+
         my $inventory = GLPI::Agent::Inventory->new(glpi => '12.0.0');
         eval {
             foreach my $port (@{$nets}) {

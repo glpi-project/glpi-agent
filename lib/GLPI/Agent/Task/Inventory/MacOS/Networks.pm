@@ -59,7 +59,7 @@ sub _getInterfaces {
 
     if ($params{glpi12_support}) {
         my %statistics;
-        my @netstat_lines = $params{netstat_file} 
+        my @netstat_lines = $params{netstat_file}
             ? getAllLines(file => $params{netstat_file}, logger => $params{logger})
             : getAllLines(command => 'netstat -ib', logger => $params{logger});
         foreach my $line (@netstat_lines) {
