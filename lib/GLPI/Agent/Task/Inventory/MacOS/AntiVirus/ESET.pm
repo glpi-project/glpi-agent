@@ -59,7 +59,7 @@ sub _getESETInfo {
 
     # Get product version from `upd --version`
     # Output: "/Applications/.../upd (ees_mac) 9.1.3100.0" or with test file
-    my %ver_params = %params;
+    my %ver_params = ( logger => $params{logger} );
     $ver_params{file} = $params{upd_version} if $params{upd_version};
     $ver_params{command} = [ "$basepath/upd", "--version" ] unless $params{upd_version};
     my $version = getFirstMatch(
