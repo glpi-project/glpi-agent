@@ -6,6 +6,7 @@ use warnings;
 use Data::Dumper;
 
 use Test::Deep;
+use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
 

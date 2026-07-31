@@ -214,8 +214,9 @@ sub _parseIfconfig {
         if ($line =~ /media (\S+)/ && empty($interface->{TYPE})) {
             $interface->{TYPE} = $1;
         }
-        if ($line =~ /media: \S+ \((?:(\d+)G)?(\d+)?base[^ ]* <.*>\)/i) {
-            $interface->{SPEED} = $1 ? $1 * 1000 : $2;
+        if ($line =~ /media: \S+ \(([^ ]+)/i) {
+            my $speed = getCanonicalInterfaceSpeed($1);
+            $interface->{SPEED} = $speed if defined($speed);
         }
         if ($line =~ /status:\s+active/i) {
             $interface->{STATUS} = 'Up';

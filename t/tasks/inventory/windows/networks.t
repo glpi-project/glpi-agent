@@ -10,6 +10,7 @@ use Test::More;
 use Test::MockModule;
 use UNIVERSAL::require;
 use Test::Deep;
+use Test::Exception;
 
 use GLPI::Test::Utils;
 use GLPI::Agent::Inventory;
