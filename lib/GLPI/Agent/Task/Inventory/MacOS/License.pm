@@ -80,7 +80,7 @@ sub doInventory {
     }
 
     # ESET
-    my $esetLicense = _getESETLicenses(logger => $logger, %params);
+    my $esetLicense = _getESETLicenses(logger => $logger);
     push @found, $esetLicense if $esetLicense;
 
     foreach my $license (@found) {
