@@ -256,13 +256,11 @@ sub _getESETLicense {
     }
     return unless $params{file} || canRun($ermm);
 
-    my @lines = getAllLines(
-        file    => $params{file},
-        command => "\"$ermm\" get license-info",
+    my $output  = getAllLines(
+        command => [ $ermm, "get", "license-info" ],
         %params
-    );
-    return unless @lines;
-    my $output = join("", @lines);
+    )
+        or return;
 
     my $data;
     eval {
