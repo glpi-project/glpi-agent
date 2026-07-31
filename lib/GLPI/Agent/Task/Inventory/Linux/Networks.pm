@@ -158,7 +158,7 @@ sub _getInterfaces {
                 file   => "/sys/class/net/$interface->{DESCRIPTION}/mtu",
                 logger => $logger
             );
-            $interface->{MTU} = $mtu if $mtu && $mtu =~ /^\d+$/ && $mtu > 0;
+            $interface->{MTU} = $mtu if $mtu && $mtu =~ /^\d+$/;
         }
 
         if (defined($interface->{STATUS}) && $interface->{STATUS} eq 'Up') {
