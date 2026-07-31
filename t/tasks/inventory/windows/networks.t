@@ -162,13 +162,12 @@ foreach my $test (keys %network_ports_tests) {
 
     # Prove we don't break expected inventory format
     my $inventory = GLPI::Agent::Inventory->new(glpi => '12.0.0');
-    eval {
+    lives_ok {
         foreach my $port (@ports) {
             $inventory->addEntry(
                 section => 'NETWORKS',
                 entry   => $port
             );
         }
-    };
-    is($EVAL_ERROR, '', "addEntry does not throw exceptions for $test ports");
+    } "addEntry does not throw exceptions for $test ports";
 }
