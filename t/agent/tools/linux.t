@@ -653,7 +653,8 @@ my %ifconfig_tests = (
             DESCRIPTION => 'eth0',
             IPMASK      => '255.255.255.0',
             IPADDRESS   => '192.168.0.5',
-            IPADDRESS6  => 'fe80::a6ba:dbff:fea5:f5fa/64'
+            IPADDRESS6  => 'fe80::a6ba:dbff:fea5:f5fa/64',
+            MTU         => 1500,
         },
         {
             DESCRIPTION => 'lo',
@@ -662,17 +663,20 @@ my %ifconfig_tests = (
             IPMASK      => '255.0.0.0',
             IPADDRESS   => '127.0.0.1',
             IPADDRESS6  => '::1/128',
+            MTU         => 16436,
         },
         {
             MACADDR     => '4E:8C:81:ED:9B:35',
             DESCRIPTION => 'pan0',
             STATUS      => 'Down',
             TYPE        => 'ethernet',
+            MTU         => 1500,
         },
         {
             DESCRIPTION => 'sit0',
             STATUS      => 'Down',
             TYPE        => undef,
+            MTU         => 1480,
         },
         {
             MACADDR     => '00:24:D6:6F:81:3A',
@@ -681,7 +685,8 @@ my %ifconfig_tests = (
             DESCRIPTION => 'wlan0',
             IPMASK      => '255.255.192.0',
             IPADDRESS   => '78.251.91.204',
-            IPADDRESS6  => 'fe80::224:d6ff:fe6f:813a/64'
+            IPADDRESS6  => 'fe80::224:d6ff:fe6f:813a/64',
+            MTU         => 1500,
         }
     ],
     'linux-bonding' => [
@@ -689,6 +694,7 @@ my %ifconfig_tests = (
             IPMASK      => '255.255.255.0',
             MACADDR     => '00:50:56:AD:00:0E',
             DESCRIPTION => 'bond0',
+            MTU         => 1500,
             STATUS      => 'Up',
             TYPE        => 'ethernet',
             IPADDRESS6  => 'fe80::250:56ff:fead:e/64',
@@ -698,7 +704,8 @@ my %ifconfig_tests = (
             MACADDR     => '00:50:56:AD:00:0E',
             DESCRIPTION => 'eth0',
             STATUS      => 'Up',
-            TYPE        => 'ethernet'
+            TYPE        => 'ethernet',
+            MTU         => 1500,
         },
         {
             IPMASK      => '255.0.0.0',
@@ -706,7 +713,8 @@ my %ifconfig_tests = (
             STATUS      => 'Up',
             TYPE        => undef,
             IPADDRESS6  => '::1/128',
-            IPADDRESS   => '127.0.0.1'
+            IPADDRESS   => '127.0.0.1',
+            MTU         => 16436,
         }
     ],
     'linux-rhel5.6' => [
@@ -714,6 +722,7 @@ my %ifconfig_tests = (
             IPMASK      => '255.255.252.0',
             MACADDR     => '00:1E:68:2F:85:D8',
             DESCRIPTION => 'eth0',
+            MTU         => 1500,
             STATUS      => 'Up',
             TYPE        => 'ethernet',
             IPADDRESS6  => 'fe80::21e:68ff:fe2f:85d8/64',
@@ -725,56 +734,64 @@ my %ifconfig_tests = (
             STATUS      => 'Up',
             TYPE        => undef,
             IPADDRESS6  => '::1/128',
-            IPADDRESS   => '127.0.0.1'
+            IPADDRESS   => '127.0.0.1',
+            MTU         => 16436,
         },
         {
             MACADDR     => '00:1E:68:2F:85:D8',
             DESCRIPTION => 'peth0',
             STATUS      => 'Up',
             TYPE        => 'ethernet',
-            IPADDRESS6  => 'fe80::21e:68ff:fe2f:85d8/64'
+            IPADDRESS6  => 'fe80::21e:68ff:fe2f:85d8/64',
+            MTU         => 1500,
         },
         {
             MACADDR     => 'FE:FF:FF:FF:FF:FF',
             DESCRIPTION => 'vif1.0',
             STATUS      => 'Up',
             TYPE        => 'ethernet',
-            IPADDRESS6  => 'fe80::fcff:ffff:feff:ffff/64'
+            IPADDRESS6  => 'fe80::fcff:ffff:feff:ffff/64',
+            MTU         => 1500,
         },
         {
             MACADDR     => 'FE:FF:FF:FF:FF:FF',
             DESCRIPTION => 'vif2.0',
             STATUS      => 'Up',
             TYPE        => 'ethernet',
-            IPADDRESS6  => 'fe80::fcff:ffff:feff:ffff/64'
+            IPADDRESS6  => 'fe80::fcff:ffff:feff:ffff/64',
+            MTU         => 1500,
         },
         {
             MACADDR     => 'FE:FF:FF:FF:FF:FF',
             DESCRIPTION => 'vif3.0',
             STATUS      => 'Up',
             TYPE        => 'ethernet',
-            IPADDRESS6  => 'fe80::fcff:ffff:feff:ffff/64'
+            IPADDRESS6  => 'fe80::fcff:ffff:feff:ffff/64',
+            MTU         => 1500,
         },
         {
             MACADDR     => 'FE:FF:FF:FF:FF:FF',
             DESCRIPTION => 'vif4.0',
             STATUS      => 'Up',
             TYPE        => 'ethernet',
-            IPADDRESS6  => 'fe80::fcff:ffff:feff:ffff/64'
+            IPADDRESS6  => 'fe80::fcff:ffff:feff:ffff/64',
+            MTU         => 1500,
         },
         {
             MACADDR     => 'FE:FF:FF:FF:FF:FF',
             DESCRIPTION => 'vif5.0',
             STATUS      => 'Up',
             TYPE        => 'ethernet',
-            IPADDRESS6  => 'fe80::fcff:ffff:feff:ffff/64'
+            IPADDRESS6  => 'fe80::fcff:ffff:feff:ffff/64',
+            MTU         => 1500,
         },
         {
             MACADDR     => 'FE:FF:FF:FF:FF:FF',
             DESCRIPTION => 'vif6.0',
             STATUS      => 'Up',
             TYPE        => 'ethernet',
-            IPADDRESS6  => 'fe80::fcff:ffff:feff:ffff/64'
+            IPADDRESS6  => 'fe80::fcff:ffff:feff:ffff/64',
+            MTU         => 1500,
         }
     ],
     'linux-fc17' => [
@@ -782,6 +799,7 @@ my %ifconfig_tests = (
             IPMASK      => '255.255.0.0',
             MACADDR     => '00:23:ae:8c:33:b6',
             DESCRIPTION => 'em1',
+            MTU         => 1500,
             STATUS      => 'Up',
             TYPE        => 'ethernet',
             IPADDRESS6  => 'fe80::223:aeff:fe8c:33b6',
@@ -791,6 +809,7 @@ my %ifconfig_tests = (
     'linux-el8' => [
         {
             DESCRIPTION => 'docker0',
+            MTU         => 1500,
             IPADDRESS   => '172.17.0.1',
             IPMASK      => '255.255.0.0',
             MACADDR     => '02:42:0c:d5:0f:d7',
@@ -801,25 +820,29 @@ my %ifconfig_tests = (
             DESCRIPTION => 'eth0',
             MACADDR     => 'e4:11:5b:ed:36:0c',
             STATUS      => 'Up',
-            TYPE        => 'ethernet'
+            TYPE        => 'ethernet',
+            MTU         => 1500,
         },
         {
             DESCRIPTION => 'eth1',
             TYPE        => 'ethernet',
             STATUS      => 'Down',
-            MACADDR     => 'e4:11:5b:ed:36:38'
+            MACADDR     => 'e4:11:5b:ed:36:38',
+            MTU         => 1500,
         },
         {
             DESCRIPTION => 'eth2',
             MACADDR     => 'e4:11:5b:ed:36:0e',
             STATUS      => 'Down',
             TYPE        => 'ethernet',
+            MTU         => 1500,
         },
         {
             DESCRIPTION => 'eth3',
             STATUS      => 'Down',
             TYPE        => 'ethernet',
-            MACADDR     => 'e4:11:5b:ed:36:3a'
+            MACADDR     => 'e4:11:5b:ed:36:3a',
+            MTU         => 1500,
         },
         {
             DESCRIPTION => 'eth0:srv',
@@ -828,11 +851,13 @@ my %ifconfig_tests = (
             MACADDR     => 'e4:11:5b:ed:36:0c',
             STATUS      => 'Up',
             TYPE        => 'ethernet',
+            MTU         => 1500,
         },
         {
             DESCRIPTION => 'lo',
             IPADDRESS6  => '::1',
             STATUS      => 'Up',
+            MTU         => 65536,
         },
         {
             DESCRIPTION => 'macvlan0',
@@ -842,6 +867,7 @@ my %ifconfig_tests = (
             MACADDR     => '4e:05:62:03:69:e7',
             STATUS      => 'Up',
             TYPE        => 'ethernet',
+            MTU         => 1500,
         }
     ]
 );
@@ -906,6 +932,7 @@ my %ipaddrshow_tests = (
         },
         {
             DESCRIPTION => 'wlan0',
+            MTU         => 1500,
             MACADDR     => 'e8:39:df:3f:7d:ef',
             STATUS      => 'Up',
         },
@@ -969,6 +996,7 @@ my %ipaddrshow_tests = (
         },
         {
             DESCRIPTION => 'eql',
+            MTU         => 576,
             MACADDR     => undef,
             STATUS      => 'Down',
         },
@@ -976,11 +1004,13 @@ my %ipaddrshow_tests = (
             DESCRIPTION => 'sit0',
             MACADDR     => undef,
             STATUS      => 'Down',
+            MTU         => 1480,
         },
         {
             DESCRIPTION => 'wlan0',
             MACADDR     => '0f:0f:0f:0f:0f:0f',
             STATUS      => 'Up',
+            MTU         => 1500,
         }
     ],
     # RHEL 5.6
@@ -1019,6 +1049,7 @@ my %ipaddrshow_tests = (
         },
         {
             DESCRIPTION => 'sit0',
+            MTU         => 1480,
             MACADDR     => undef,
             STATUS      => 'Down',
         },
@@ -1084,13 +1115,15 @@ my %ipaddrshow_tests = (
         },
         {
             DESCRIPTION => 'bond0',
+            MTU         => 1500,
             MACADDR     => '8e:b2:64:1a:0b:00',
             STATUS      => 'Up'
         },
         {
             DESCRIPTION => 'br0',
             STATUS      => 'Up',
-            MACADDR     => 'aa:4b:c2:02:31:15'
+            MACADDR     => 'aa:4b:c2:02:31:15',
+            MTU         => 1500,
         },
     ],
     'ip_addr-el8' => [
@@ -1121,6 +1154,7 @@ my %ipaddrshow_tests = (
         },
         {
             DESCRIPTION => 'eth2',
+            MTU         => 1500,
             STATUS      => 'Down',
             MACADDR     => 'e4:11:5b:ed:36:0e',
         },
@@ -1128,11 +1162,13 @@ my %ipaddrshow_tests = (
             DESCRIPTION => 'eth1',
             STATUS      => 'Down',
             MACADDR     => 'e4:11:5b:ed:36:38',
+            MTU         => 1500,
         },
         {
             DESCRIPTION => 'eth3',
             STATUS      => 'Down',
             MACADDR     => 'e4:11:5b:ed:36:3a',
+            MTU         => 1500,
         },
         {
             DESCRIPTION => 'macvlan0',

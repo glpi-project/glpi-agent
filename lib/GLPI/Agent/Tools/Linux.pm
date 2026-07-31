@@ -544,6 +544,9 @@ sub getInterfacesFromIfconfig {
             }
 
         }
+        if ($line =~ /MTU:?(\d+)/i || $line =~ /mtu (\d+)/i) {
+            $interface->{MTU} = $1;
+        }
         if ($line =~ /
             inet \s ($ip_address_pattern) \s+
             netmask \s ($ip_address_pattern) \s+
@@ -677,6 +680,9 @@ sub getInterfacesFromIp {
                 DESCRIPTION => $name,
                 STATUS      => $status
             };
+            if ($line =~ /mtu\s+(\d+)/i) {
+                $interface->{MTU} = $1;
+            }
         } elsif ($line =~ /link\/\S+ ($any_mac_address_pattern)?/) {
             $interface->{MACADDR} = $1;
         } elsif ($line =~ /inet6 (\S+)\/(\d{1,2})/) {
