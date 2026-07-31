@@ -70,7 +70,8 @@ my %fields = (
                              PCISLOT PNPDEVICEID MTU SPEED STATUS SLAVES BASE
                              IPADDRESS IPSUBNET IPMASK IPDHCP IPGATEWAY
                              IPADDRESS6 IPSUBNET6 IPMASK6 WIFI_BSSID WIFI_SSID
-                             WIFI_MODE WIFI_VERSION/ ],
+                             WIFI_MODE WIFI_VERSION IFINBYTES IFOUTBYTES
+                             IFINERRORS IFOUTERRORS/ ],
     PHYSICAL_VOLUMES => [ qw/DEVICE PV_PE_COUNT PV_UUID FORMAT ATTR
                              SIZE FREE PE_SIZE VG_UUID/ ],
     PORTS            => [ qw/CAPTION DESCRIPTION NAME TYPE/ ],

@@ -298,6 +298,7 @@ sub getCanonicalInterfaceSpeed {
         $unit eq 'gb' ? $value * 1000         :
         $unit eq 'mb' ? $value                :
         $unit eq 'kb' ? int($value / 1000)    :
+        $unit eq 'ba' ? $value                :
                         undef                 ;
 }
 

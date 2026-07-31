@@ -28,7 +28,10 @@ sub doInventory {
         $default = $routes->{'0.0.0.0'} || $routes->{'default'};
     }
 
-    my @interfaces = _getInterfaces(logger => $logger);
+    my @interfaces = _getInterfaces(
+        logger => $logger,
+        glpi12_support => $inventory->supportsGlpiVersion('12.0.0')
+    );
     foreach my $interface (@interfaces) {
         # if the default gateway address and the interface address belongs to
         # the same network, that's the gateway for this network
@@ -53,6 +56,20 @@ sub _getInterfaces {
     my $logger = $params{logger};
 
     my @interfaces = _getInterfacesBase(logger => $logger);
+
+    my %statistics;
+    if ($params{glpi12_support}) {
+        foreach my $line (getAllLines(file => '/proc/net/dev', logger => $logger)) {
+            if ($line =~ /^\s*([^:]+):\s*(\d+)\s+\d+\s+(\d+)\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+(\d+)\s+\d+\s+(\d+)/) {
+                $statistics{$1} = {
+                    ifinbytes  => $2,
+                    ifinerrors  => $3,
+                    ifoutbytes => $4,
+                    ifouterrors => $5,
+                };
+            }
+        }
+    }
 
     foreach my $interface (@interfaces) {
         $interface->{IPSUBNET} = getSubnetAddress(
@@ -131,12 +148,20 @@ sub _getInterfaces {
             );
         }
 
+        if (!$interface->{MTU} && canRead("/sys/class/net/$interface->{DESCRIPTION}/mtu")) {
+            my $mtu = getFirstLine(
+                file   => "/sys/class/net/$interface->{DESCRIPTION}/mtu",
+                logger => $logger
+            );
+            $interface->{MTU} = $mtu if $mtu && $mtu =~ /^\d+$/;
+        }
+
         if (defined($interface->{STATUS}) && $interface->{STATUS} eq 'Up') {
             if (canRead("/sys/class/net/$interface->{DESCRIPTION}/speed")) {
                 my $speed = getFirstLine(
                     file => "/sys/class/net/$interface->{DESCRIPTION}/speed"
                 );
-                $interface->{SPEED} = $speed && $speed > 0 ? $speed : 0;
+                $interface->{SPEED} = ($speed && $speed =~ /^\d+$/ && $speed != SPEED_UNKNOWN && $speed != SPEED_UNKNOWN_32) ? $speed : 0;
             }
             if (!$interface->{SPEED} && has_folder("/sys/class/net/$interface->{DESCRIPTION}/wireless")) {
                 my $speed;
@@ -181,6 +206,14 @@ sub _getInterfaces {
             # Report zero speed in case the interface went from up to down
             # or the server has non-zero interface speed
             $interface->{SPEED} = 0;
+        }
+
+        if ($params{glpi12_support} && $statistics{$interface->{DESCRIPTION}}) {
+            my $stat = $statistics{$interface->{DESCRIPTION}};
+            $interface->{IFINBYTES}  = $stat->{ifinbytes};
+            $interface->{IFOUTBYTES} = $stat->{ifoutbytes};
+            $interface->{IFINERRORS}  = $stat->{ifinerrors};
+            $interface->{IFOUTERRORS} = $stat->{ifouterrors};
         }
     }
 

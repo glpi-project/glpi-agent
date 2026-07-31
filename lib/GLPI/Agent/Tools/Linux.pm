@@ -5,9 +5,10 @@ use warnings;
 use parent 'Exporter';
 
 # Constant for ethtool system call
-use constant SIOCETHTOOL   =>     0x8946 ; # See linux/sockios.h
-use constant ETHTOOL_GSET  => 0x00000001 ; # See linux/ethtool.h
-use constant SPEED_UNKNOWN =>      65535 ; # See linux/ethtool.h, to be read as -1
+use constant SIOCETHTOOL      =>     0x8946 ; # See linux/sockios.h
+use constant ETHTOOL_GSET     => 0x00000001 ; # See linux/ethtool.h
+use constant SPEED_UNKNOWN    =>      65535 ; # See linux/ethtool.h, to be read as -1
+use constant SPEED_UNKNOWN_32 => 4294967295 ; # See linux/ethtool.h, to be read as -1
 
 use English qw(-no_match_vars);
 use File::Basename qw(basename dirname);
@@ -18,6 +19,8 @@ use GLPI::Agent::Tools::Unix;
 use GLPI::Agent::Tools::Network;
 
 our @EXPORT = qw(
+    SPEED_UNKNOWN
+    SPEED_UNKNOWN_32
     getDevicesFromUdev
     getDevicesFromHal
     getDevicesFromProc
@@ -544,6 +547,9 @@ sub getInterfacesFromIfconfig {
             }
 
         }
+        if ($line =~ /(?:MTU:?|mtu )(\d+)/i) {
+            $interface->{MTU} = $1;
+        }
         if ($line =~ /
             inet \s ($ip_address_pattern) \s+
             netmask \s ($ip_address_pattern) \s+
@@ -634,7 +640,7 @@ sub getInterfacesInfosFromIoctl {
     };
 
     # Forget speed value if got unknown speed special value
-    if ($datas->{SPEED} == SPEED_UNKNOWN) {
+    if ($datas->{SPEED} == SPEED_UNKNOWN || $datas->{SPEED} == SPEED_UNKNOWN_32) {
         delete $datas->{SPEED};
         $datas->{ERROR} = "unknown speed found";
         $logger->debug2("Unknown speed found on $params{interface}")
@@ -677,6 +683,9 @@ sub getInterfacesFromIp {
                 DESCRIPTION => $name,
                 STATUS      => $status
             };
+            if ($line =~ /mtu\s+(\d+)/i) {
+                $interface->{MTU} = $1;
+            }
         } elsif ($line =~ /link\/\S+ ($any_mac_address_pattern)?/) {
             $interface->{MACADDR} = $1;
         } elsif ($line =~ /inet6 (\S+)\/(\d{1,2})/) {
