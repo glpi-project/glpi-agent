@@ -60,17 +60,12 @@ sub _getInterfaces {
     my %statistics;
     if ($params{glpi12_support}) {
         foreach my $line (getAllLines(file => '/proc/net/dev', logger => $logger)) {
-            if ($line =~ /^\s*([^:]+):\s*(.+)$/) {
-                my $name = $1;
-                my @values = split(/\s+/, trimWhitespace($2));
-                # Format:
-                # RX: bytes(0), packets(1), errs(2), drop(3), fifo(4), frame(5), compressed(6), multicast(7)
-                # TX: bytes(8), packets(9), errs(10), drop(11), fifo(12), colls(13), carrier(14), compressed(15)
-                $statistics{$name} = {
-                    ifinbytes  => $values[0],
-                    ifinerrors  => $values[2],
-                    ifoutbytes => $values[8],
-                    ifouterrors => $values[10],
+            if ($line =~ /^\s*([^:]+):\s*(\d+)\s+\d+\s+(\d+)\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+(\d+)\s+\d+\s+(\d+)/) {
+                $statistics{$1} = {
+                    ifinbytes  => $2,
+                    ifinerrors  => $3,
+                    ifoutbytes => $4,
+                    ifouterrors => $5,
                 };
             }
         }
