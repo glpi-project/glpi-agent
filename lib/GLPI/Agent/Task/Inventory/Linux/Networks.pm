@@ -155,7 +155,8 @@ sub _getInterfaces {
 
         if (!$interface->{MTU} && canRead("/sys/class/net/$interface->{DESCRIPTION}/mtu")) {
             my $mtu = getFirstLine(
-                file => "/sys/class/net/$interface->{DESCRIPTION}/mtu"
+                file   => "/sys/class/net/$interface->{DESCRIPTION}/mtu",
+                logger => $logger
             );
             $interface->{MTU} = $mtu if $mtu && $mtu =~ /^\d+$/ && $mtu > 0;
         }
