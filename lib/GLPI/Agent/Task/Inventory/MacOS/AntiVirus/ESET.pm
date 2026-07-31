@@ -131,11 +131,10 @@ sub _getESETInfo {
     my $rtp_enabled = 0;
     my $settings_file = $params{settings_file} || '/Library/Application Support/ESET/Security/var/confd/settings.json';
     if (has_file($settings_file)) {
-        my @lines = getAllLines(
+        my $content = getAllLines(
             file   => $settings_file,
             logger => $params{logger}
         );
-        my $content = join("", @lines);
         if ($content) {
             eval {
                 my $json = decode_json($content);
