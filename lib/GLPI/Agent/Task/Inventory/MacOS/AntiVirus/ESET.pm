@@ -87,7 +87,7 @@ sub _getESETInfo {
     }
 
     # Get detection engine version from `upd --list-modules`
-    my %mod_params = %params;
+    my %mod_params = ( logger => $params{logger} );
     $mod_params{file} = $params{upd_modules} if $params{upd_modules};
     $mod_params{command} = [ "$basepath/upd", "--list-modules" ] unless $params{upd_modules};
     my $base_version = getFirstMatch(
