@@ -150,8 +150,10 @@ sub _getESETInfo {
     # Up-to-date heuristic (same as Linux EEA)
     if ($base_version && $base_version =~ /\((\d{4})(\d{2})(\d{2})\)$/) {
         my $two_days_ago = time - 2 * 24 * 60 * 60;
-        if ($params{test_date}) { # For unit tests
-            $two_days_ago = mktime(split('-', $params{test_date})) - 2 * 24 * 60 * 60;
+        if (ref($params{test_date}) eq 'ARRAY') { # For unit tests
+            $params{test_date}->[4] -= 1;
+            $params{test_date}->[5] -= 1900;
+            $two_days_ago = mktime(@{$params{test_date}}) - 2 * 24 * 60 * 60;
         }
         $antivirus->{UPTODATE} = mktime(0, 0, 0, $3, $2-1, $1-1900) > $two_days_ago ? 1 : 0;
     }
