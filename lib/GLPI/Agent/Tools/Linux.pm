@@ -547,7 +547,7 @@ sub getInterfacesFromIfconfig {
             }
 
         }
-        if ($line =~ /MTU:?(\d+)/i || $line =~ /mtu (\d+)/i) {
+        if ($line =~ /(?:MTU:?|mtu )(\d+)/i) {
             $interface->{MTU} = $1;
         }
         if ($line =~ /
