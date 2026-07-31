@@ -118,7 +118,7 @@ sub _getESETInfo {
     my $startd_running = 0;
     if ($start_cmd) {
         my $filter = quotemeta($start_cmd);
-        my %ps_params = %params;
+        my %ps_params = ( logger => $params{logger} );
         $ps_params{file} = $params{ps_status} if $params{ps_status};
         my ($ps) = getProcesses(
             filter => qr/$filter/i,
