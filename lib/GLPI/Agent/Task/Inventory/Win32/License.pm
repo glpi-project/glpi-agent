@@ -250,9 +250,18 @@ sub _getESETLicense {
     }
 
     # Fallback: try ermm.exe
-    my $ermm = 'C:\Program Files\ESET\ESET Security\ermm.exe';
+    my $ermm;
     if ($esetReg && $esetReg->{'/InstallDir'}) {
         $ermm = $esetReg->{'/InstallDir'} . '\ermm.exe';
+    } else {
+        # Fallback: try environment variables then hardcoded paths
+        if ($ENV{ProgramFiles}) {
+            $ermm = "$ENV{ProgramFiles}\\ESET\\ESET Security\\ermm.exe";
+        } elsif ($ENV{'ProgramFiles(x86)'}) {
+            $ermm = "$ENV{'ProgramFiles(x86)'}\\ESET\\ESET Security\\ermm.exe";
+        } else {
+            $ermm = 'C:\Program Files\ESET\ESET Security\ermm.exe';
+        }
     }
     return unless $params{file} || canRun($ermm);
 
