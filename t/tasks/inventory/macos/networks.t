@@ -10,6 +10,7 @@ use Test::More;
 use Test::NoWarnings;
 
 use GLPI::Agent::Task::Inventory::MacOS::Networks;
+use GLPI::Agent::Inventory;
 
 my %tests = (
     'macosx-01' => [
@@ -216,6 +217,7 @@ my %tests = (
             IPADDRESS6  => 'fe80::b:c:d:a',
             IPMASK      => '255.255.254.0',
             MACADDR     => 'AA:AA:AA:AA:AA:CC',
+            SPEED       => 1200,
             MTU         => 1500,
             STATUS      => 'Up',
             TYPE        => 'wifi',
@@ -475,7 +477,12 @@ my %tests = (
             IPMASK      => '255.255.255.0',
             IPSUBNET    => '192.168.0.0',
             MACADDR     => '98:00:43:0f:00:03',
+            SPEED       => 1000,
             MTU         => 1500,
+            IFINERRORS  => 1,
+            IFINBYTES   => 50,
+            IFOUTERRORS => 2,
+            IFOUTBYTES  => 100,
             STATUS      => 'Up',
             TYPE        => 'ethernet',
             VIRTUALDEV  => 0
@@ -697,6 +704,7 @@ my %tests = (
             IPMASK      => '255.255.224.0',
             IPSUBNET    => '10.71.96.0',
             MACADDR     => '3c:36:00:60:88:11',
+            SPEED       => 1000,
             MTU         => 1500,
             STATUS      => 'Up',
             TYPE        => 'ethernet',
@@ -770,7 +778,7 @@ my %tests = (
     ],
 );
 
-plan tests => (scalar keys %tests)*2 + 1;
+plan tests => (scalar keys %tests)*3 + 1;
 
 foreach my $test (keys %tests) {
     my $ifconfig_file = "resources/macos/ifconfig/$test";
@@ -782,12 +790,30 @@ foreach my $test (keys %tests) {
     );
     ok( $netsetup, "_parseNetworkSetup() for $test" );
 
-    my $nets = GLPI::Agent::Task::Inventory::MacOS::Networks::_getInterfaces(
+    my $netstat_file = "resources/macos/ifconfig/$test-netstat";
+    my $wdutil_file = "resources/macos/ifconfig/$test-wdutil";
+    my %args = (
         file        => $ifconfig_file,
         netsetup    => $netsetup
     );
+    $args{netstat_file} = $netstat_file if -e $netstat_file;
+    $args{wdutil_file}  = $wdutil_file if -e $wdutil_file;
+    $args{glpi12_support} = 1 if -e $netstat_file;
+
+    my $nets = GLPI::Agent::Task::Inventory::MacOS::Networks::_getInterfaces(%args);
     if (ref($tests{$test}) eq 'ARRAY' && scalar(@{$tests{$test}})) {
         cmp_deeply($nets, $tests{$test}, $test);
+        
+        my $inventory = GLPI::Agent::Inventory->new(glpi => '12.0.0');
+        eval {
+            foreach my $port (@{$nets}) {
+                $inventory->addEntry(
+                    section => 'NETWORKS',
+                    entry   => $port
+                );
+            }
+        };
+        ok(!$@, "addEntry() doesn't throw exceptions for $test");
     } else {
         my $dumper = Data::Dumper->new([$nets], [$test])->Useperl(1)->Indent(1)->Quotekeys(0)->Sortkeys(1)->Pad("    ");
         $dumper->{xpad} = "    ";

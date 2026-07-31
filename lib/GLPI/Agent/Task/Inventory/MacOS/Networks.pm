@@ -26,7 +26,10 @@ sub doInventory {
     my $routes = getRoutingTable(logger => $logger);
     my $default = $routes->{'0.0.0.0'} // $routes->{'default'};
 
-    my $interfaces = _getInterfaces(logger => $logger);
+    my $interfaces = _getInterfaces(
+        logger => $logger,
+        glpi12_support => $inventory->supportsGlpiVersion('12.0.0')
+    );
     foreach my $interface (@{$interfaces}) {
         # if the default gateway address and the interface address belongs to
         # the same network, that's the gateway for this network
@@ -54,7 +57,58 @@ sub _getInterfaces {
         %params
     );
 
+    if ($params{glpi12_support}) {
+        my %statistics;
+        my @netstat_lines = $params{netstat_file} 
+            ? getAllLines(file => $params{netstat_file}, logger => $params{logger})
+            : getAllLines(command => 'netstat -ib', logger => $params{logger});
+        foreach my $line (@netstat_lines) {
+            # Looking for Link layer line: Name Mtu Network Address Ipkts Ierrs Ibytes Opkts Oerrs Obytes Coll
+            if ($line =~ /^(\S+)\s+\d+\s+<Link#\d+>\s+(?:(?:[a-fA-F0-9:]+:[a-fA-F0-9:]+)\s+)?(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/) {
+                $statistics{$1} = {
+                    ifinerrors  => $3,
+                    ifinbytes   => $4,
+                    ifouterrors => $6,
+                    ifoutbytes  => $7,
+                };
+            }
+        }
+
+        foreach my $interface (@{$interfaces}) {
+            my $sys_name = $interface->{_system_name} || $interface->{DESCRIPTION};
+            if ($statistics{$sys_name}) {
+                my $stat = $statistics{$sys_name};
+                $interface->{IFINBYTES}   = $stat->{ifinbytes};
+                $interface->{IFOUTBYTES}  = $stat->{ifoutbytes};
+                $interface->{IFINERRORS}  = $stat->{ifinerrors};
+                $interface->{IFOUTERRORS} = $stat->{ifouterrors};
+            }
+        }
+    }
+
+    my %wifi_rates;
+    my $current_wifi_if;
+    my @wdutil_lines = $params{wdutil_file}
+        ? getAllLines(file => $params{wdutil_file}, logger => $params{logger})
+        : getAllLines(command => 'wdutil info', logger => $params{logger});
+    foreach my $line (@wdutil_lines) {
+        if ($line =~ /Interface Name\s+:\s+(\S+)/) {
+            $current_wifi_if = $1;
+        } elsif ($current_wifi_if && $line =~ /Tx Rate\s+:\s+([\d\.]+)\s+Mbps/i) {
+            $wifi_rates{$current_wifi_if} = int($1);
+            undef $current_wifi_if;
+        }
+    }
+
     foreach my $interface (@{$interfaces}) {
+        my $sys_name = $interface->{_system_name} || $interface->{DESCRIPTION};
+        if ($wifi_rates{$sys_name} && !$interface->{SPEED}) {
+            $interface->{SPEED} = $wifi_rates{$sys_name};
+        }
+    }
+
+    foreach my $interface (@{$interfaces}) {
+        delete $interface->{_system_name};
         next unless $interface->{IPADDRESS} && $interface->{IPMASK};
         $interface->{IPSUBNET} = getSubnetAddress(
             $interface->{IPADDRESS},
@@ -112,9 +166,10 @@ sub _parseIfconfig {
             # new interface
             push @interfaces, $interface if $interface;
             $interface = {
-                STATUS      => 'Down',
-                DESCRIPTION => $netsetup->{$1} ? $netsetup->{$1}->{description} : $1,
-                VIRTUALDEV  => $netsetup->{$1} ? 0 : 1
+                STATUS       => 'Down',
+                _system_name => $1,
+                DESCRIPTION  => $netsetup->{$1} ? $netsetup->{$1}->{description} : $1,
+                VIRTUALDEV   => $netsetup->{$1} ? 0 : 1
             };
             $interface->{MACADDR} = $netsetup->{$1}->{macaddr}
                 if $netsetup->{$1} && $netsetup->{$1}->{macaddr};
@@ -159,8 +214,8 @@ sub _parseIfconfig {
         if ($line =~ /media (\S+)/ && empty($interface->{TYPE})) {
             $interface->{TYPE} = $1;
         }
-        if ($line =~ /media: \S+ \((\d+)baseTX <.*>\)/) {
-            $interface->{SPEED} = $1;
+        if ($line =~ /media: \S+ \((?:(\d+)G)?(\d+)?base[^ ]* <.*>\)/i) {
+            $interface->{SPEED} = $1 ? $1 * 1000 : $2;
         }
         if ($line =~ /status:\s+active/i) {
             $interface->{STATUS} = 'Up';

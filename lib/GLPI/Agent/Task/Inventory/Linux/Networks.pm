@@ -28,7 +28,10 @@ sub doInventory {
         $default = $routes->{'0.0.0.0'} || $routes->{'default'};
     }
 
-    my @interfaces = _getInterfaces(logger => $logger);
+    my @interfaces = _getInterfaces(
+        logger => $logger,
+        glpi12_support => $inventory->supportsGlpiVersion('12.0.0')
+    );
     foreach my $interface (@interfaces) {
         # if the default gateway address and the interface address belongs to
         # the same network, that's the gateway for this network
@@ -53,6 +56,25 @@ sub _getInterfaces {
     my $logger = $params{logger};
 
     my @interfaces = _getInterfacesBase(logger => $logger);
+
+    my %statistics;
+    if ($params{glpi12_support}) {
+        foreach my $line (getAllLines(file => '/proc/net/dev', logger => $logger)) {
+            if ($line =~ /^\s*([^:]+):\s*(.+)$/) {
+                my $name = $1;
+                my @values = split(/\s+/, trimWhitespace($2));
+                # Format:
+                # RX: bytes(0), packets(1), errs(2), drop(3), fifo(4), frame(5), compressed(6), multicast(7)
+                # TX: bytes(8), packets(9), errs(10), drop(11), fifo(12), colls(13), carrier(14), compressed(15)
+                $statistics{$name} = {
+                    ifinbytes  => $values[0],
+                    ifinerrors  => $values[2],
+                    ifoutbytes => $values[8],
+                    ifouterrors => $values[10],
+                };
+            }
+        }
+    }
 
     foreach my $interface (@interfaces) {
         $interface->{IPSUBNET} = getSubnetAddress(
@@ -181,6 +203,14 @@ sub _getInterfaces {
             # Report zero speed in case the interface went from up to down
             # or the server has non-zero interface speed
             $interface->{SPEED} = 0;
+        }
+
+        if ($params{glpi12_support} && $statistics{$interface->{DESCRIPTION}}) {
+            my $stat = $statistics{$interface->{DESCRIPTION}};
+            $interface->{IFINBYTES}  = $stat->{ifinbytes};
+            $interface->{IFOUTBYTES} = $stat->{ifoutbytes};
+            $interface->{IFINERRORS}  = $stat->{ifinerrors};
+            $interface->{IFOUTERRORS} = $stat->{ifouterrors};
         }
     }
 
