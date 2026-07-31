@@ -262,17 +262,18 @@ sub _getESETLicense {
     )
         or return;
 
-    my $data;
+    my $productid;
     eval {
         Cpanel::JSON::XS->require();
-        $data = Cpanel::JSON::XS::decode_json($output);
+        my $data = Cpanel::JSON::XS::decode_json($output);
+        $productid = $data->{result}->{public_id};
     };
-    return unless $data && $data->{result} && $data->{result}->{public_id};
+    return if empty($productid);
 
     return {
         NAME      => 'ESET Endpoint Security',
         FULLNAME  => 'ESET Endpoint Security',
-        PRODUCTID => $data->{result}->{public_id},
+        PRODUCTID => $productid,
     };
 }
 
