@@ -805,15 +805,14 @@ foreach my $test (keys %tests) {
         cmp_deeply($nets, $tests{$test}, $test);
 
         my $inventory = GLPI::Agent::Inventory->new(glpi => '12.0.0');
-        eval {
+        lives_ok {
             foreach my $port (@{$nets}) {
                 $inventory->addEntry(
                     section => 'NETWORKS',
                     entry   => $port
                 );
             }
-        };
-        ok(!$@, "addEntry() doesn't throw exceptions for $test");
+        } "addEntry() doesn't throw exceptions for $test";
     } else {
         my $dumper = Data::Dumper->new([$nets], [$test])->Useperl(1)->Indent(1)->Quotekeys(0)->Sortkeys(1)->Pad("    ");
         $dumper->{xpad} = "    ";
