@@ -67,12 +67,11 @@ cmp_deeply(
 );
 
 my $inventory = GLPI::Agent::Inventory->new(glpi => '12.0.0');
-eval {
+lives_ok {
     foreach my $port (@interfaces) {
         $inventory->addEntry(
             section => 'NETWORKS',
             entry   => $port
         );
     }
-};
-ok(!$@, "addEntry() doesn't throw exceptions for Linux networks");
+} "addEntry() doesn't throw exceptions for Linux networks";
