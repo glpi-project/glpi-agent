@@ -165,7 +165,8 @@ F:var/mail
 F:var/opt
 F:var/spool
 R:mail
-a:0:0:777Z:Q1UjAZ8b+Ffvgl10kRbACKOtFgZTw=
+a:0:0:777
+Z:Q1UjAZ8b+Ffvgl10kRbACKOtFgZTw=
 F:var/spool/cron
 R:crontabs
 a:0:0:777
