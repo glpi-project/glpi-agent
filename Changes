@@ -20,6 +20,8 @@ inventory:
 * PR #1185: Improve sound NAME and MANUFACTURER resolution on windows using PnP
   and hardware ID databases
 * Fix Oracle database inventory when using su and environment variables
+* Added software inventory support for Alpine Package Keeper (apk),
+  the default package manager on Alpine Linux
 
 netdiscovery/netinventory:
 * Make vlan context switching ordered

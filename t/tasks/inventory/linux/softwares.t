@@ -22,6 +22,7 @@ use GLPI::Agent::Task::Inventory::Generic::Softwares::Nix;
 use GLPI::Agent::Task::Inventory::Generic::Softwares::Pacman;
 use GLPI::Agent::Task::Inventory::Generic::Softwares::Snap;
 use GLPI::Agent::Task::Inventory::Generic::Softwares::Flatpak;
+use GLPI::Agent::Task::Inventory::Generic::Softwares::APK;
 
 my $rpm_packages = [
     {
@@ -399,6 +400,45 @@ my $pacman_packages = [
     }
 ];
 
+my $apk_packages = [
+    {
+        FROM      => 'apk',
+        NAME      => 'acl-libs',
+        VERSION   => '2.3.2-r1',
+        ARCH      => 'x86_64',
+        FILESIZE  => 34576,
+        COMMENTS  => 'Access control list utilities (libraries)',
+        PUBLISHER => 'Natanael Copa <ncopa@alpinelinux.org>'
+    },
+    {
+        FROM      => 'apk',
+        NAME      => 'agetty',
+        VERSION   => '2.42.1-r0',
+        ARCH      => 'x86_64',
+        FILESIZE  => 60664,
+        COMMENTS  => 'agetty program from util-linux',
+        PUBLISHER => 'Natanael Copa <ncopa@alpinelinux.org>'
+    },
+    {
+        FROM      => 'apk',
+        NAME      => 'alpine-base',
+        VERSION   => '3.24.1-r0',
+        ARCH      => 'x86_64',
+        FILESIZE  => 0,
+        COMMENTS  => 'Meta package for minimal alpine base',
+        PUBLISHER => 'Natanael Copa <ncopa@alpinelinux.org>'
+    },
+    {
+        FROM      => 'apk',
+        NAME      => 'alpine-baselayout',
+        VERSION   => '3.7.2-r1',
+        ARCH      => 'x86_64',
+        FILESIZE  => 6552,
+        COMMENTS  => 'Alpine base dir structure and init scripts',
+        PUBLISHER => 'Natanael Copa <ncopa@alpinelinux.org>'
+    }
+];
+
 my $snap_packages = [
     {
         COMMENTS    => 'KDE Frameworks 5',
@@ -567,7 +607,7 @@ my $flatpak_packages = [
     },
 ];
 
-plan tests => 12 + (scalar(@{$flatpak_packages}) + 1);
+plan tests => 14 + (scalar(@{$flatpak_packages}) + 1);
 
 my $inventory = GLPI::Test::Inventory->new();
 
@@ -613,6 +653,15 @@ lives_ok {
     $inventory->addEntry(section => 'SOFTWARES', entry => $_)
         foreach @$packages;
 } 'pacman: registering';
+
+$packages = GLPI::Agent::Task::Inventory::Generic::Softwares::APK::_getPackagesList(
+    file => "resources/linux/packaging/apk"
+);
+cmp_deeply($packages, $apk_packages, 'apk: parsing');
+lives_ok {
+    $inventory->addEntry(section => 'SOFTWARES', entry => $_)
+        foreach @$packages;
+} 'apk: registering';
 
 ok(
     !GLPI::Agent::Task::Inventory::Generic::Softwares::Gentoo::_equeryNeedsWildcard(
