@@ -532,7 +532,14 @@ sub handleChildren {
         delete $child->{in} unless $child->{in} && $child->{in}->opened;
         while ($child->{in} && $child->{pollin} && $child->{poll} && &{$child->{poll}}($child->{pollin})) {
             my $msg = " " x 5;
-            if ($child->{in}->sysread($msg, 5)) {
+            my $read = $child->{in}->sysread($msg, 5);
+            unless ($read) {
+                # 0 == EOF (peer closed), undef == error. The descriptor stays  
+                # readable forever, so stop polling it and forget the child. 
+                $self->child_exit($pid);
+                last;
+           }
+           if ($read) {
                 if ($msg eq IPC_LEAVE) {
                     $self->child_exit($pid);
                 } elsif ($msg eq IPC_RNAME) {
