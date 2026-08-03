@@ -32,6 +32,11 @@ my $defaults = {
     # walk() api call. If set to 0, Net::SNMP will always try to use get-bulk-requests. If a device
     # doesn't support this kind of request, this option must be kept to 1 or it won't be supported.
     maxrepetitions  => 1,
+    # By default, we try to discover if a device supports bulk requests but this can be disabled if that
+    # check makes trouble.
+    "skip-bulk-support-discovery" => 0,
+    # By default, we test on mib-2.system if a device supports bulk requests
+    "bulk-support-discovery-oid" => '.1.3.6.1.2.1.1',
 };
 
 sub new {
@@ -72,7 +77,7 @@ sub new {
         $config->{oids} = \@oids;
 
         # Check values which must be a positive integer
-        foreach my $key (qw(maxrepetitions)) {
+        foreach my $key (qw(maxrepetitions skip-bulk-support-discovery)) {
             if (empty($config->{$key}) || $config->{$key} !~ /^\d+$/) {
                 $config->{$key} = $defaults->{$key};
             } else {
@@ -80,9 +85,19 @@ sub new {
             }
         }
 
+        # Check bulk-support-discovery-oid is an oid if set
+        unless (empty($config->{"bulk-support-discovery-oid"})) {
+            delete $config->{"bulk-support-discovery-oid"}
+                unless $config->{"bulk-support-discovery-oid"} =~ /^\.(?:\d+\.)+\d+$/;
+        }
+
         # Reload config not before one minute
         $config_load_timeout = time + 60;
     }
+
+    # Prepare for get-bulk-request support check
+    $self->{bulk_support} = 1
+        unless $version eq "snmpv1" || $config->{"skip-bulk-support-discovery"};
 
     # shared options
     my %options = (
@@ -140,6 +155,18 @@ sub testSession {
 
     my $version_id = $self->{session}->version();
     die "no version set on snmp session\n" unless defined($version_id);
+
+    # Test if get-bulk-request is supported to enhance walk() api performance.
+    # But we need to run the test only if maxrepetitions is set to 1 which is the default.
+    # Also if we get an answer if means the session is established so we can return earlier.
+    if ($version_id != SNMP_VERSION_1 && $self->{bulk_support} && $config->{maxrepetitions} == 1) {
+        # Try to get 2 entries using walk api on configured oid or on mib-2.system
+        my $test = $self->walk($config->{"bulk-support-discovery-oid"} // $defaults->{"bulk-support-discovery-oid"}, 5);
+        # Bulk support and session are validated if we got expected entries;
+        return if $test;
+        # Finally disable bulk support for this device if test failed
+        delete $self->{bulk_support};
+    }
 
     # No need to test SNMPv3 session as still established
     return if $version_id == SNMP_VERSION_3;
@@ -218,19 +245,27 @@ sub get {
 }
 
 sub walk {
-    my ($self, $oid) = @_;
+    my ($self, $oid, $check) = @_;
 
     return unless $oid;
+
+    my $maxrepetitions = $check // $config->{maxrepetitions};
 
     my $session = $self->{vlan_session} // $self->{session};
     my %options = (-baseoid => $oid);
     $options{'-contextname'}    = $self->{context} if defined($self->{context});
-    $options{'-maxrepetitions'} = $config->{maxrepetitions}
-        if $session->version() != SNMP_VERSION_1 && $config->{maxrepetitions};
+    $options{'-maxrepetitions'} = $maxrepetitions
+        if $session->version() != SNMP_VERSION_1 && $maxrepetitions &&
+            # But set maxrepetitions only if forced or if test on the device failed
+            ($maxrepetitions > 1 || !$self->{bulk_support});
 
     my $response = $session->get_table(%options);
 
-    return unless $response;
+    return unless ref($response) eq 'HASH';
+
+    # Still return quickly when only testing if get-bulk-request is supported
+    return scalar(keys(%{$response})) > 1 ? 1 : 0
+        if $check;
 
     my $values;
     my $offset = length($oid) + 1;
