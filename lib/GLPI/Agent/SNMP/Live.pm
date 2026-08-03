@@ -28,6 +28,10 @@ my $defaults = {
     # and only one has to respond to validate session. If none provides any answer, this means there's
     # no device or the device is not reachable
     oids    => '.1.3.6.1.2.1.1.1.0',
+    # maxrepetitions is the default value for -maxrepetitions Net::SNMP get_table() parameter during our
+    # walk() api call. If set to 0, Net::SNMP will always try to use get-bulk-requests. If a device
+    # doesn't support this kind of request, this option must be kept to 1 or it won't be supported.
+    maxrepetitions  => 1,
 };
 
 sub new {
@@ -66,6 +70,15 @@ sub new {
         die "invalid 'oids' configuration in $snmp_advanced_support_cfg\n"
             if $oids ne $defaults->{oids} && scalar(grep { /^\.(?:\d+\.)+\d+$/ } @oids) != scalar(@oids);
         $config->{oids} = \@oids;
+
+        # Check values which must be a positive integer
+        foreach my $key (qw(maxrepetitions)) {
+            if (empty($config->{$key}) || $config->{$key} !~ /^\d+$/) {
+                $config->{$key} = $defaults->{$key};
+            } else {
+                $config->{$key} = int($config->{$key});
+            }
+        }
 
         # Reload config not before one minute
         $config_load_timeout = time + 60;
@@ -212,7 +225,8 @@ sub walk {
     my $session = $self->{vlan_session} // $self->{session};
     my %options = (-baseoid => $oid);
     $options{'-contextname'}    = $self->{context} if defined($self->{context});
-    $options{'-maxrepetitions'} = 1                if $session->version() != SNMP_VERSION_1;
+    $options{'-maxrepetitions'} = $config->{maxrepetitions}
+        if $session->version() != SNMP_VERSION_1 && $config->{maxrepetitions};
 
     my $response = $session->get_table(%options);
 
