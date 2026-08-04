@@ -604,25 +604,26 @@ sub sleep {
     map { $_->events_cb() } @{$self->{_events_cb}}
         if defined($self->{_events_cb});
 
-    eval {
-        local $SIG{PIPE} = 'IGNORE';
-        # Check for http interface messages, default timeout is 1 second
-        if ($self->{server} && $self->{server}->handleRequests()) {
-            $self->{_shorter_delay} = time + 60;
+    if ($self->{server}) {
+        my $handleRequests;
+        eval {
+            local $SIG{PIPE} = 'IGNORE';
+            # Check for http interface messages, default timeout is 1 second
+            $handleRequests = $self->{server}->handleRequests();
+        };
+        $self->{logger}->error($EVAL_ERROR) if $EVAL_ERROR && $self->{logger};
+        $self->{_shorter_delay} = time + 60
+            if $handleRequests;
+    } elsif ($self->{_shorter_delay}) {
+        if (time < $self->{_shorter_delay}) {
+            usleep 20000;
         } else {
-            if ($self->{_shorter_delay}) {
-                if (time < $self->{_shorter_delay}) {
-                    usleep 20000;
-                } else {
-                    delete $self->{_shorter_delay};
-                    usleep 1000000;
-                }
-            } else {
-                usleep 1000000;
-            }
+            delete $self->{_shorter_delay};
+            usleep 1000000;
         }
-    };
-    $self->{logger}->error($EVAL_ERROR) if ($EVAL_ERROR && $self->{logger});
+    } else {
+        usleep 1000000;
+    }
 }
 
 sub fork {
