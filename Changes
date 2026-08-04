@@ -35,6 +35,10 @@ netdiscovery/netinventory:
 * PR #1189: Add Eltex devices support and discard phantom network ports
   reported by some Eltex firmwares for non-existent interfaces
 
+deploy:
+* [SECURITY] Fix CVE-2026-63444: Fix possible OS command injection via
+  server-controlled archive filename
+
 packaging:
 * Update Windows packaging to use:
   - Perl 5.44.0

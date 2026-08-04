@@ -104,10 +104,12 @@ sub prepare {
         my $finalFilePath = File::Spec->catdir($self->{path}, $file->{name_local});
 
         if ($file->{uncompress}) {
-            if(canRun('7z')) {
+            if (canRun('7z')) {
                 my $tarball;
-                foreach (`7z x -o\"$self->{path}\" \"$finalFilePath\"`) {
-                    chomp;
+                foreach (getAllLines(
+                    command => [ "7z", "x", "-o$self->{path}", $finalFilePath ],
+                    logger  => $logger,
+                )) {
                     $logger->debug2("7z: $_");
                     if (/Extracting\s+(.*\.tar)$/) {
                         $tarball = $1;
@@ -115,8 +117,10 @@ sub prepare {
                 }
                 if ($tarball && ($finalFilePath =~ /tgz$/i || $finalFilePath =~ /tar\.(gz|xz|bz2)$/i)) {
                     my $tarballpath = File::Spec->catdir($self->{path}, $tarball);
-                    foreach (`7z x -o\"$self->{path}\" \"$tarballpath\"`) {
-                        chomp;
+                    foreach (getAllLines(
+                        command => [ "7z", "x", "-o$self->{path}", $tarballpath ],
+                        logger  => $logger,
+                    )) {
                         $logger->debug2("7z: $_");
                     }
                     unlink($tarballpath);

@@ -8,6 +8,7 @@ use warnings;
 use parent 'GLPI::Agent::Task';
 
 use UNIVERSAL::require;
+use File::Spec;
 
 use GLPI::Agent::HTTP::Client::Fusion;
 use GLPI::Agent::Storage;
@@ -63,6 +64,12 @@ sub _validateAnswer {
                 return;
             }
         }
+        # Check name is a simple filename and doesn't include a path
+        my @path = File::Spec->splitpath($answer->{associatedFiles}->{$k}->{name});
+        unless ($path[2] && $path[2] eq $answer->{associatedFiles}->{$k}->{name} && $path[2] !~ /^\.\.?$/) {
+            $$msgRef = "Invalid file name in associatedFiles";
+            return;
+        }
     }
     foreach my $job (@{$answer->{jobs}}) {
         foreach (qw/uuid associatedFiles actions checks/) {
@@ -70,11 +77,17 @@ sub _validateAnswer {
                 $$msgRef = "Missing key `$_' in jobs";
                 return;
             }
+        }
 
-            if (ref($job->{actions}) ne 'ARRAY') {
-                $$msgRef = "jobs/actions must be an array";
-                return;
-            }
+        if (ref($job->{actions}) ne 'ARRAY') {
+            $$msgRef = "jobs/actions must be an array";
+            return;
+        }
+
+        # Validate uuid format as it could be used in workdir path
+        unless ($job->{uuid} =~ /^[0-9a-f-]+$/i) {
+            $$msgRef = "job/uuid wrong format";
+            return;
         }
     }
 
