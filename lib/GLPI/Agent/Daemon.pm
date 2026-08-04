@@ -532,44 +532,43 @@ sub handleChildren {
         delete $child->{in} unless $child->{in} && $child->{in}->opened;
         while ($child->{in} && $child->{pollin} && $child->{poll} && &{$child->{poll}}($child->{pollin})) {
             my $msg = " " x 5;
-            if ($child->{in}->sysread($msg, 5)) {
-                if ($msg eq IPC_LEAVE) {
-                    $self->child_exit($pid);
-                } elsif ($msg eq IPC_RNAME) {
-                    my ($len, $name);
-                    $len = unpack("S", $len)
-                        if $child->{in}->sysread($len, 2);
-                    if ($len && $child->{in}->sysread($name, $len)) {
-                        $child->{name} = $name;
-                    }
-                } elsif ($msg eq IPC_EVENT) {
-                    my $len;
-                    $len = unpack("S", $len)
-                        if $child->{in}->sysread($len, 2);
-                    if ($len) {
-                        my $event;
-                        push @messages, $event
-                            if $child->{in}->sysread($event, $len);
-                    }
-                } elsif ($msg eq IPC_EFILE) {
-                    my $len;
-                    $len = unpack("S", $len)
-                        if $child->{in}->sysread($len, 2);
-                    if ($len>2) {
-                        my ($event, $size, $file);
-                        $size = unpack("S", $size)
-                            if $child->{in}->sysread($size, 2);
-                        if ($child->{in}->sysread($file, $len-2)) {
-                            $event = GLPI::Agent::Tools::Win32::readEventFile($file, $size);
-                            if (!defined($event) || length($event) != $size) {
-                                # Limit log rate of IPC_EVENT event read failure from IPC_EFILE
-                                if (!$self->{_efile_logger_failure_timeout} || time > $self->{_efile_logger_failure_timeout}) {
-                                    $self->{logger}->debug2($child->{name} . "[$pid] failed to read IPC_EVENT from $file file");
-                                    $self->{_efile_logger_failure_timeout} = time + 5;
-                                }
-                            } else {
-                                push @messages, $event;
+            last unless $child->{in}->sysread($msg, 5);
+            if ($msg eq IPC_LEAVE) {
+                $self->child_exit($pid);
+            } elsif ($msg eq IPC_RNAME) {
+                my ($len, $name);
+                $len = unpack("S", $len)
+                    if $child->{in}->sysread($len, 2);
+                if ($len && $child->{in}->sysread($name, $len)) {
+                    $child->{name} = $name;
+                }
+            } elsif ($msg eq IPC_EVENT) {
+                my $len;
+                $len = unpack("S", $len)
+                    if $child->{in}->sysread($len, 2);
+                if ($len) {
+                    my $event;
+                    push @messages, $event
+                        if $child->{in}->sysread($event, $len);
+                }
+            } elsif ($msg eq IPC_EFILE) {
+                my $len;
+                $len = unpack("S", $len)
+                    if $child->{in}->sysread($len, 2);
+                if ($len>2) {
+                    my ($event, $size, $file);
+                    $size = unpack("S", $size)
+                        if $child->{in}->sysread($size, 2);
+                    if ($child->{in}->sysread($file, $len-2)) {
+                        $event = GLPI::Agent::Tools::Win32::readEventFile($file, $size);
+                        if (!defined($event) || length($event) != $size) {
+                            # Limit log rate of IPC_EVENT event read failure from IPC_EFILE
+                            if (!$self->{_efile_logger_failure_timeout} || time > $self->{_efile_logger_failure_timeout}) {
+                                $self->{logger}->debug2($child->{name} . "[$pid] failed to read IPC_EVENT from $file file");
+                                $self->{_efile_logger_failure_timeout} = time + 5;
                             }
+                        } else {
+                            push @messages, $event;
                         }
                     }
                 }
