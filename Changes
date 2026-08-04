@@ -2,6 +2,8 @@ Revision history for GLPI agent
 
 Warning for developers: Don't change/remove any entry which doesn't concern your code
 
+1.20 not yet released
+
 1.19 Tue, 04 Aug 2026
 
 inventory:
