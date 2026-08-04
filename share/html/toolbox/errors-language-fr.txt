@@ -49,6 +49,7 @@ No result selected: Pas de résultat sélectionné
 Can't remove file: Impossible de supprimer le fichier
 
 Can't prepare archive: Impossible de préparer l'archive
+Missing base folder: Dossier de base manquant
 
 New MIBSupport alias: Nouvel alias pour MIBSupport
 Update MIBSupport alias: Mise à jour d'alias pour MIBSupport

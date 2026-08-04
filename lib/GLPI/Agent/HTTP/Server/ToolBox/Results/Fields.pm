@@ -46,6 +46,8 @@ sub fields {
 
 sub analyze {}
 
+sub forget {}
+
 sub update_xml {}
 
 sub update_template_hash {}

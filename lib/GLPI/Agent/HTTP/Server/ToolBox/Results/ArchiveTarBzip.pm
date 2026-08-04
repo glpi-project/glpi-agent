@@ -39,10 +39,17 @@ sub add_file {
 sub save_archive {
     my ($self) = @_;
 
-    my $command = "tar cjf ".join(" ", $self->{_filename}, @{$self->{_files}});
-    $self->debug("Running command: $command");
+    my @command = (
+        "tar",
+        "cjf",
+        $self->{_filename},
+        @{$self->{_files}}
+    );
 
-    return defined(getAllLines( command => $command ));
+    return defined(getAllLines(
+        command => \@command,
+        logger  => $self->{logger}
+    ));
 }
 
 1;

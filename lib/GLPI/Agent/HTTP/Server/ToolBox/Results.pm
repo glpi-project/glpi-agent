@@ -427,6 +427,8 @@ sub handle_form {
         # Clean up tag filter if used in filename
         $tag_name =~ s/[^0-9a-z-]+/_/g;
         my $base_folder = $yaml_config->{networktask_save} || '.';
+        return $self->errors("Can't prepare archive: Missing base folder")
+            unless -d $base_folder;
         my $file = sprintf("%s/%s%s-%d-%02d-%02d-%02dh%02d.%s", $base_folder,
             $form->{'submit/export'} ? "scan-results" : "full-datas-export",
             $tag_name,
@@ -464,7 +466,7 @@ sub handle_form {
                 $count++;
             }
         }
-        if ($count && $archiver->save_archive()) {
+        if ($count && $archiver->save_archive() && -s $file) {
             $self->info("Sending archive: $file");
             # Register generated archive and set it can be removed in a minute
             $form->{'send_file'} = $self->send_file_register($file, time + 60);

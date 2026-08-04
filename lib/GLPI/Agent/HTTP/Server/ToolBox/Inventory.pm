@@ -833,6 +833,18 @@ sub netscan {
         }
     }
 
+    my $target;
+    if ($targetid) {
+        ($target) = grep { $_->id() eq $targetid } $agent->getTargets();
+    }
+
+    # Validate base folder before forking if necessary
+    unless ($target) {
+        my $base_folder = $yaml_config->{networktask_save} || '.';
+        return $self->errors("Missing base folder: $base_folder")
+            unless -d $base_folder;
+    }
+
     # From here we can continue in a forked process
     return $taskid if $agent->fork(
         name        => $procname,
@@ -855,17 +867,9 @@ sub netscan {
         ID => 2, VERSION => "2c", COMMUNITY => 'public'
     } unless @credentials || keys(%credentials);
 
-    my $target;
-    if ($targetid) {
-        ($target) = grep { $_->id() eq $targetid } $agent->getTargets();
-    }
-
     # If not using an agent target, create a local target and update it to run now
     unless ($target) {
         my $path = $yaml_config->{networktask_save} || '.';
-
-        # Make sure path exists as folder
-        mkdir $path unless -d $path;
 
         GLPI::Agent::Target::Local->require();
         $target = GLPI::Agent::Target::Local->new(
@@ -970,6 +974,19 @@ sub _run_local {
 
     # From here we can continue in a forked process
     my $agent = $self->{toolbox}->{server}->{agent};
+
+    my $target;
+    if ($targetid) {
+        ($target) = grep { $_->id() eq $targetid } $agent->getTargets();
+    }
+
+    # But validate base folder before forking if necessary
+    unless ($target) {
+        my $base_folder = $yaml_config->{networktask_save} || '.';
+        return $self->errors("Missing base folder: $base_folder")
+            unless -d $base_folder;
+    }
+
     return if $agent->fork(
         name        => $procname,
         description => "$procname request",
@@ -983,17 +1000,9 @@ sub _run_local {
     my $starttime = gettimeofday();
     $logger->info("Running $task->{name} task...");
 
-    my $target;
-    if ($targetid) {
-        ($target) = grep { $_->id() eq $targetid } $agent->getTargets();
-    }
-
     # If not using an agent target, create a local target and update it to run now
     unless ($target) {
         my $path = $yaml_config->{networktask_save} || '.';
-
-        # Make sure path exists as folder
-        mkdir $path unless -d $path;
 
         GLPI::Agent::Target::Local->require();
         $target = GLPI::Agent::Target::Local->new(

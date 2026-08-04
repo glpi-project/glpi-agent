@@ -13,6 +13,7 @@ use URI::Escape;
 use HTML::Entities;
 use Encode qw(decode encode);
 use File::stat;
+use Cwd qw(abs_path);
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Hostname;
@@ -1233,6 +1234,14 @@ sub _configuration {
                     # Make YAML invalid if a YAML file configuration has been changed
                     $invalidated++ if $config_specs->{$key}->{'yaml_base'};
                 } elsif ($current ne $value) {
+                    # In the case of network_save, we must check folder exists
+                    if ($key eq "networktask_save") {
+                        $value = abs_path($value);
+                        unless ($value && -d $value) {
+                            $self->errors("Missing base folder".($value ? ": $value" : ""));
+                            next;
+                        }
+                    }
                     $self->debug2("$key set to: $value");
                     $yaml_config->{$key} = $value;
                     $self->need_save("configuration");

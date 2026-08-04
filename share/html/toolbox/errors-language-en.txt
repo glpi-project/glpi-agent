@@ -49,6 +49,7 @@ No result selected:
 Can't remove file:
 
 Can't prepare archive:
+Missing base folder:
 
 New MIBSupport alias:
 Update MIBSupport alias:

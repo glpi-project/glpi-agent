@@ -40,10 +40,17 @@ sub add_file {
 sub save_archive {
     my ($self) = @_;
 
-    my $command = $self->{_command}." a -bb0 -bd -spf ".join(" ", $self->{_filename}, @{$self->{_files}});
-    $self->debug("Running command: $command");
+    my @command = (
+        $self->{_command},
+        qw(a -bb0 -bd -spf), # 7z options
+        $self->{_filename},
+        @{$self->{_files}}
+    );
 
-    return defined(getAllLines( command => $command ));
+    return defined(getAllLines(
+        command => \@command,
+        logger  => $self->{logger}
+    ));
 }
 
 1;

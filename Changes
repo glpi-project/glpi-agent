@@ -39,6 +39,10 @@ deploy:
 * [SECURITY] Fix CVE-2026-63444: Fix possible OS command injection via
   server-controlled archive filename
 
+toolbox:
+* [SECURITY] Fix CVE-2026-63375: Fix OS Command Injection via base folder
+  configuration field
+
 packaging:
 * Update Windows packaging to use:
   - Perl 5.44.0
