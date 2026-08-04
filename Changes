@@ -22,6 +22,8 @@ inventory:
 * Fix Oracle database inventory when using su and environment variables
 * Added software inventory support for Alpine Package Keeper (apk),
   the default package manager on Alpine Linux
+* Updated pci.ids to 2026.08.04 version
+* Updated usb.ids to 2026.06.26 version
 
 netdiscovery/netinventory:
 * Make vlan context switching ordered
@@ -34,6 +36,7 @@ netdiscovery/netinventory:
   cdpCacheVersion field
 * PR #1189: Add Eltex devices support and discard phantom network ports
   reported by some Eltex firmwares for non-existent interfaces
+* Updated sysobject.ids
 
 deploy:
 * [SECURITY] Fix CVE-2026-63444: Fix possible OS command injection via
