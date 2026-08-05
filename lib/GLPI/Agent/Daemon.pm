@@ -7,7 +7,7 @@ use Cwd;
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 use POSIX ":sys_wait_h"; # WNOHANG
-use Time::HiRes qw(usleep);
+use Time::HiRes qw(gettimeofday tv_interval usleep);
 
 # By convention, we just use 5 chars string as possible internal IPC messages.
 # IPC_LEAVE from children is supported and is only really useful while debugging.
@@ -593,9 +593,14 @@ sub handleChildren {
 sub sleep {
     my ($self) = @_;
 
+    my $timetosleep = [gettimeofday];
+
     # Check if any forked process has been finished or is speaking
+    # Then expire _shorter_delay if it's time
     if ($self->handleChildren()) {
         $self->{_shorter_delay} = time + 60;
+    } elsif ($self->{_shorter_delay} && time > $self->{_shorter_delay}) {
+        delete $self->{_shorter_delay};
     }
 
     # Trigger an empty event to permit sanity checks
@@ -613,16 +618,12 @@ sub sleep {
         $self->{logger}->error($EVAL_ERROR) if $EVAL_ERROR && $self->{logger};
         $self->{_shorter_delay} = time + 60
             if $handleRequests;
-    } elsif ($self->{_shorter_delay}) {
-        if (time < $self->{_shorter_delay}) {
-            usleep 20000;
-        } else {
-            delete $self->{_shorter_delay};
-            usleep 1000000;
-        }
-    } else {
-        usleep 1000000;
     }
+
+    # Prepare to sleep the appropriate time less the time took to handle children and HTTP requests
+    # Shorter delay applies when we expect other exchanges soon and as we want to be responsive
+    my $usleep = ($self->{_shorter_delay} ? 20000 : 1000000) - tv_interval($timetosleep);
+    usleep $usleep if $usleep > 0;
 }
 
 sub fork {
