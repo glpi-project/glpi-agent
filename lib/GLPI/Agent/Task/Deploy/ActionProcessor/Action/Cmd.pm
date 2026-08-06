@@ -63,6 +63,10 @@ sub _evaluateRet {
 sub _runOnUnix {
     my ($self, $params) = @_;
 
+    # plugin command HTML form submits \r at the end of each line when defining
+    # a command. We need to remove them as not well interpreted in call shell.
+    $params->{exec} =~ s/\r\n/\n/g;
+
     my $buf = `$params->{exec} 2>&1` || '';
     my $errMsg = "$ERRNO";
 
