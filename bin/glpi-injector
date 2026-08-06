@@ -293,7 +293,8 @@ sub sendContent {
     my $error;
     eval {
         $content = $res->content;
-        if ($res->header('Content-type') =~ /x-compress-zlib/) {
+        my $content_type = $res->header('Content-type') // "";
+        if ($content_type =~ /x-compress-zlib/) {
             print "DEBUG: Uncompressing received content\n" if $options->{debug};
             $content = uncompress($content);
         }
