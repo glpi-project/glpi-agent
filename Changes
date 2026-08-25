@@ -256,7 +256,7 @@ packaging:
 
 core:
 * On windows, permit to use libxml2 built libraries in different threads
-* Reset target id after loading saved state to avoir re-using same id after a
+* Reset target id after loading saved state to avoid re-using same id after a
   target configuration update
 * PR #1051: Add support for ssk-key-file option helping to setup inventory
   authentication via ssl client certificate. This option permit to specify a
