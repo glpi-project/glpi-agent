@@ -24,7 +24,7 @@ sub getBluetoothParentInfo {
         or return;
     my $CM_Get_Parent      = Win32::API->new('cfgmgr32.dll', 'CM_Get_Parent', 'PII', 'I')
         or return;
-    my $CM_Get_Device_ID_Size = Win32::API->new('cfgmgr32.dll', 'CM_Get_Device_ID_Size', 'PPII', 'I')
+    my $CM_Get_Device_ID_Size = Win32::API->new('cfgmgr32.dll', 'CM_Get_Device_ID_Size', 'PII', 'I')
         or return;
     my $CM_Get_Device_IDW  = Win32::API->new('cfgmgr32.dll', 'CM_Get_Device_IDW', 'IPII', 'I')
         or return;
