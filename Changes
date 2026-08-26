@@ -9,6 +9,10 @@ core:
 * fix #1041: Fix a bug where we can loop forever waiting a forked process linked to
   a task run. The problem was identified on recent MacOSX systems.
 
+inventory:
+* fix #1226: Fix regression in network interface inventory on windows related to
+  failing bluetooth inventory
+
 deploy:
 * on unix/linux, replace all wrongly formatted eol in command to execute to avoid
   errors due to \r chars
