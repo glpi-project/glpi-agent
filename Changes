@@ -8,6 +8,7 @@ core:
 * daemon: Avoid to sleep in a perl eval
 * fix #1041: Fix a bug where we can loop forever waiting a forked process linked to
   a task run. The problem was identified on recent MacOSX systems.
+* Little enhancement of service optimization handling on windows
 
 inventory:
 * fix #1226: Fix regression in network interface inventory on windows related to

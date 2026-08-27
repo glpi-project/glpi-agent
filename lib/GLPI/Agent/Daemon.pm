@@ -224,7 +224,7 @@ sub run {
 
         # Call service optimization after all target has been run
         if (defined($self->{_run_optimization}) && $self->{_run_optimization}-- <= 1) {
-            $self->RunningServiceOptimization();
+            $self->RunningServiceOptimization(freemem => 1);
             delete $self->{_run_optimization};
         }
 
@@ -877,7 +877,9 @@ sub loadHttpInterface {
 }
 
 sub ApplyServiceOptimizations {
-    my ($self) = @_;
+    my ($self, %params) = @_;
+
+    return if $params{paused};
 
     # Preload all IDS databases to avoid reload them all the time during inventory
     my @planned = map { $_->plannedTasks() } $self->getTargets();

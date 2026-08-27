@@ -178,7 +178,9 @@ sub StartService {
             my @targets = $self->getTargets();
             if ( scalar(grep { $_->paused() } @targets) == @targets ) {
                 $self->{last_state} = SERVICE_PAUSED;
-                $self->ApplyServiceOptimizations();
+                $self->ApplyServiceOptimizations(
+                    map { $_ => 1 } qw( no_safetime_restart freemem paused )
+                );
             } else {
                 $self->{last_state} = SERVICE_PAUSE_PENDING;
             }
@@ -338,26 +340,27 @@ sub Continue {
 }
 
 sub ApplyServiceOptimizations {
-    my ($self) = @_;
+    my ($self, %params) = @_;
 
     # Setup worker Logger after service Logger
-    GLPI::Agent::Tools::Win32::setupWorkerLogger(config => $self->{config});
+    GLPI::Agent::Tools::Win32::setupWorkerLogger(config => $self->{config})
+        unless $params{paused};
 
-    $self->SUPER::ApplyServiceOptimizations();
+    $self->SUPER::ApplyServiceOptimizations(%params);
 
     # Win32 only service optimization
 
     # Preload is64bit result to avoid a lot of WMI calls
-    is64bit();
+    is64bit() unless $params{paused};
 
     # Also call running service optimization to free memory
-    $self->RunningServiceOptimization();
+    $self->RunningServiceOptimization(%params);
 }
 
 sub RunningServiceOptimization {
-    my ($self) = @_;
+    my ($self, %params) = @_;
 
-    return if $self->{_optimization_rundate} && time < $self->{_optimization_rundate};
+    return if !$params{freemem} && $self->{_optimization_rundate} && time < $self->{_optimization_rundate};
 
     # win32 platform needs optimization
     if ($self->{logger} && $self->{logger}->debug_level()) {
@@ -379,7 +382,7 @@ sub RunningServiceOptimization {
     $self->{_MaxPageFileUsage} = 2*$PageFileUsage unless $self->{_MaxPageFileUsage};
 
     # Check if it's time to restart ourself
-    if ($self->{_service_safetime} && $PageFileUsage > $self->{_MaxPageFileUsage} && time > $self->{_service_safetime}) {
+    if (!$params{no_safetime_restart} && $self->{_service_safetime} && $PageFileUsage > $self->{_MaxPageFileUsage} && time > $self->{_service_safetime}) {
         $self->{_service_safetime} += 3600;
         $self->{logger}->info("Restarting myself as ".$self->displayname()." service");
         my $restart = 'start /b "" cmd /S /C "net stop '.$self->name().' && net start '.$self->name().'" >nul';
