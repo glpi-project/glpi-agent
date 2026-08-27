@@ -13,6 +13,12 @@ inventory:
 * fix #1226: Fix regression in network interface inventory on windows related to
   failing bluetooth inventory
 
+netdiscovery/netinventory:
+* Moved debug level iec61850 protocol debugging to debug2 level
+* fix #1234: Update iec61850 protocol support to better clean resources. On windows,
+  this fixes a continuous cpu load after netdiscovery or netinvento task run due to
+  a not released thread.
+
 deploy:
 * on unix/linux, replace all wrongly formatted eol in command to execute to avoid
   errors due to \r chars
