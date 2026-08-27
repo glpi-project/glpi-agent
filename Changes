@@ -19,6 +19,8 @@ netdiscovery/netinventory:
 * fix #1234: Update iec61850 protocol support to better clean resources. On windows,
   this fixes a continuous cpu load after netdiscovery or netinvento task run due to
   a not released thread.
+* Refacto snmp session handling fixing context reset when using SNMP v3 and vlan
+  context switching is involved
 
 deploy:
 * on unix/linux, replace all wrongly formatted eol in command to execute to avoid

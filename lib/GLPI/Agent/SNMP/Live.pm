@@ -9,16 +9,18 @@ use English qw(-no_match_vars);
 use UNIVERSAL::require;
 use Net::SNMP;
 use Net::SNMP qw/SNMP_PORT :snmp/;
+use File::Spec;
 
 use GLPI::Agent::Config;
 use GLPI::Agent::Tools;
+
+use constant    cfg_file    => "snmp-advanced-support.cfg";
 
 # Fix support for sha(224|256|384|512) authprotocols and aes256c privprotocol if using Net::SNMP v6.0.1
 GLPI::Agent::SNMP::Security::USM->require()
     if Net::SNMP->VERSION eq "v6.0.1";
 
 my ($config, $config_load_timeout);
-my $config_file = "snmp-advanced-support.cfg";
 
 # etc/snmp-advanced-support.cfg configuration file can be use to change GLPI::Agent::SNMP::Live behavior
 my $defaults = {
@@ -46,23 +48,24 @@ sub new {
         _hostname => $params{hostname} // "not given",
     };
 
-     # Load snmp-advanced-support.cfg configuration at worst one time by minute
+    # Load snmp-advanced-support.cfg configuration at worst one time by minute
     unless ($self->{_oids} && $config && $config_load_timeout && $config_load_timeout >= time) {
         $config = GLPI::Agent::Config->new(
             defaults => $defaults,
             options  => { config => "none" },
         );
 
-        my $confdir = $config->confdir();
+        my $snmp_advanced_support_cfg = File::Spec->catfile($config->confdir(), cfg_file);
         $config->loadFromFile({
-            file => "$confdir/$config_file",
-        }) if -f "$confdir/$config_file";
+            file => $snmp_advanced_support_cfg,
+        }) if -f $snmp_advanced_support_cfg;
 
         # Normalize configuration
-        my @oids = map { trimWhitespace($_); /^\./ ? $_ : ".$_" } split(/,+/, $config->{oids});
-        die "invalid 'oids' configuration in $confdir/$config_file\n"
-            if $config->{oids} ne $defaults->{oids} && scalar(grep { /^\.(?:\d+\.)+\d+$/ } @oids) != scalar(@oids);
-        $self->{_oids} = \@oids;
+        my $oids = $config->{oids};
+        my @oids = map { trimWhitespace($_); /^\./ ? $_ : ".$_" } split(/,+/, $oids);
+        die "invalid 'oids' configuration in $snmp_advanced_support_cfg\n"
+            if $oids ne $defaults->{oids} && scalar(grep { /^\.(?:\d+\.)+\d+$/ } @oids) != scalar(@oids);
+        $config->{oids} = \@oids;
 
         # Reload config not before one minute
         $config_load_timeout = time + 60;
@@ -92,7 +95,9 @@ sub new {
             if $params{privpassword};
         $self->{context}          = $params{contextname}
             if $params{contextname};
-    } else { # snmpv2c && snmpv1 #
+    } else { # snmpv2c && snmpv1
+        # Save common options if we need them for vlan switching
+        $self->{session_options} = { %options };
         $options{'-community'} = $params{community};
         $self->{community} = $params{community};
     }
@@ -126,55 +131,52 @@ sub testSession {
     # No need to test SNMPv3 session as still established
     return if $version_id == SNMP_VERSION_3;
 
+    my $oids = $config->{oids} || $defaults->{oids};
     my $response = $self->{session}->get_request(
-        -varbindlist => $self->{_oids},
+        -varbindlist => $oids,
     );
     die "no response from $host host\n"
         unless $response;
     die "missing response from $host host\n"
-        unless first { defined($response->{$_}) } @{$self->{_oids}};
+        unless first { defined($response->{$_}) } @{$oids};
     die "no response from $host host\n"
-        if grep { $response->{$_} && $response->{$_} =~ /No response from remote host/ } @{$self->{_oids}} == scalar(@{$self->{_oids}});
+        if scalar(grep { $response->{$_} && $response->{$_} =~ /No response from remote host/ } @{$config->{oids}}) == scalar(@{$oids});
 }
 
 sub switch_vlan_context {
     my ($self, $vlan_id) = @_;
 
-    my $version_id = $self->{session}->version();
-
-    my $version =
-        $version_id == &SNMP_VERSION_1  ? 'snmpv1'  :
-        $version_id == &SNMP_VERSION_2C ? 'snmpv2c' :
-        $version_id == &SNMP_VERSION_3  ? 'snmpv3'  :
-                                           undef;
-
-    my $error;
-    if ($version eq 'snmpv3') {
-        $self->{_original_context} = $self->{context} if $self->{context} && empty($self->{_original_context});
+    if ($self->{session}->version() == &SNMP_VERSION_3) {
+        $self->{_original_context} = $self->{context} // ""
+            unless defined($self->{_original_context});
         $self->{context} = 'vlan-' . $vlan_id;
     } else {
-        # save original session
-        $self->{oldsession} = $self->{session} unless $self->{oldsession};
-        ($self->{session}, $error) = Net::SNMP->session(
-            -timeout   => $self->{session}->timeout(),
-            -retries   => $self->{session}->retries(),
-            -version   => $version,
-            -hostname  => $self->{session}->hostname(),
+        my $error;
+
+        # create dedicated vlan_session
+        $self->{vlan_session}->close() if $self->{vlan_session};
+        ($self->{vlan_session}, $error) = Net::SNMP->session(
+            %{$self->{session_options}},
             -community => $self->{community} . '@' . $vlan_id
         );
-    }
 
-    die $error."\n" unless $self->{session};
+        die $error."\n" unless $self->{vlan_session};
+    }
 }
 
 sub reset_original_context {
     my ($self) = @_;
 
     if ($self->{session}->version() == SNMP_VERSION_3) {
-        $self->{context} = empty($self->{_original_context}) ? "" : delete $self->{_original_context};
-    } else {
-        $self->{session} = $self->{oldsession};
-        delete $self->{oldsession};
+        my $original_context = delete $self->{_original_context};
+        if (empty($original_context)) {
+            delete $self->{context};
+        } else {
+            $self->{context} = $original_context;
+        }
+    } elsif ($self->{vlan_session}) {
+        $self->{vlan_session}->close();
+        delete $self->{vlan_session};
     }
 }
 
@@ -183,7 +185,7 @@ sub get {
 
     return unless $oid;
 
-    my $session = $self->{session};
+    my $session = $self->{vlan_session} // $self->{session};
     my %options = (-varbindlist => [$oid]);
     $options{'-contextname'} = $self->{context} if defined($self->{context});
 
@@ -207,7 +209,7 @@ sub walk {
 
     return unless $oid;
 
-    my $session = $self->{session};
+    my $session = $self->{vlan_session} // $self->{session};
     my %options = (-baseoid => $oid);
     $options{'-contextname'}    = $self->{context} if defined($self->{context});
     $options{'-maxrepetitions'} = 1                if $session->version() != SNMP_VERSION_1;
@@ -235,6 +237,13 @@ sub peer_address {
         or return;
 
     return $transport->peer_address();
+}
+
+sub DESTROY {
+    my ($self) = @_;
+
+    $self->{vlan_session}->close() if $self->{vlan_session};
+    $self->{session}->close() if $self->{session};
 }
 
 1;
