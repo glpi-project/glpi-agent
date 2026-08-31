@@ -186,6 +186,9 @@ build_perl () {
         fi
     fi
 
+    # Disable getaddrinfo native support on MacOSX, perl will use an emulated version from Socket module
+    BUILD_NO_GETADDRINFO="-Dd_getaddrinfo=undef -Dd_gai_strerror=undef -Dd_getnameinfo=undef"
+
     cd build
     [ -d "perl-$PERL_VERSION" ] || tar xzf "../$PERL_ARCHIVE"
     cd "perl-$PERL_VERSION"
@@ -194,6 +197,7 @@ build_perl () {
         ./Configure -de -Dprefix=$BUILD_PREFIX -Duserelocatableinc -DNDEBUG    \
             -Dman1dir=none -Dman3dir=none -Dusethreads -UDEBUGGING             \
             -Dusemultiplicity -Duse64bitint -Darch=$ARCH                       \
+            $BUILD_NO_GETADDRINFO                                              \
             -Aeval:privlib=.../../lib -Aeval:scriptdir=.../../bin              \
             -Aeval:vendorprefix=.../.. -Aeval:vendorlib=.../../agent           \
             -Accflags="$SDKFLAGS $EXTRA_PERL_CCFLAGS"                          \

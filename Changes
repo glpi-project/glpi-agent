@@ -31,6 +31,7 @@ packaging:
   - gcc 16.2.0posix-14.0.0-msvcrt-r1
   - OpenSSL 3.5.8
 * Update MacOSX packages to use OpenSSL 3.5.8
+  - disable getaddrinfo native support in perl to avoid crash on tahoe
 
 1.19 Tue, 04 Aug 2026
 
