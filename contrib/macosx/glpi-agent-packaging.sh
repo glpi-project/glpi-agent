@@ -186,17 +186,9 @@ build_perl () {
         fi
     fi
 
-    PATCHPERL_URL="https://raw.githubusercontent.com/gugod/patchperl-packing/master/patchperl"
-    [ -e patchperl ] || curl -so patchperl  "$PATCHPERL_URL"
     cd build
     [ -d "perl-$PERL_VERSION" ] || tar xzf "../$PERL_ARCHIVE"
     cd "perl-$PERL_VERSION"
-    if [ ! -e patchperl ]; then
-        cp -a ../../patchperl .
-        chmod +x patchperl
-        chmod -R +w .
-        ./patchperl
-    fi
     if [ ! -e Makefile ]; then
         rm -f config.sh Policy.sh
         ./Configure -de -Dprefix=$BUILD_PREFIX -Duserelocatableinc -DNDEBUG    \
