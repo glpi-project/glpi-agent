@@ -13,6 +13,9 @@ our @EXPORT = qw(
 sub getBluetoothParentInfo {
     my ($deviceid) = @_;
 
+    # Using Win32::API can only be done locally, so skip it on remote inventory
+    return if $GLPI::Agent::Tools::remote;
+
     my $info;
 
     Win32::API->require()

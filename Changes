@@ -14,6 +14,9 @@ inventory:
 * fix #1226: Fix regression in network interface inventory on windows related to
   failing bluetooth inventory
 
+remoteinventory:
+* Don't use dll calls for bluetooth network adapters remote inventory
+
 netdiscovery/netinventory:
 * Moved debug level iec61850 protocol debugging to debug2 level
 * fix #1234: Update iec61850 protocol support to better clean resources. On windows,
