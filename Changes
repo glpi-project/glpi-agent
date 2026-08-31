@@ -24,6 +24,18 @@ netdiscovery/netinventory:
   a not released thread.
 * Refacto snmp session handling fixing context reset when using SNMP v3 and vlan
   context switching is involved
+* PR #1219: Support bulk snmp requests via maxrepetitions, skip-bulk-support-discovery
+  and bulk-support-discovery-oid options in "snmp-advanced-support.cfg"
+  * maxrepetitions: if set to 1, the default, glpi-agent will test each device to know
+    if it supports bulk requests and then use Net::SNMP library default for the device.
+    If set to 0, force to use Net::SNMP library default as maxrepetitions value, usually 25.
+    Can be set to any arbitrary positive integer to force maxrepetitions.
+  * skip-bulk-support-discovery: if set to 0, the default, glpi-agent will try to
+    discover if devices support snmp bulk request. Any other value will disable bulk support
+    discovery.
+  * bulk-support-discovery-oid: defaults to ".1.3.6.1.2.1.1" (mib-2.system OID)
+    This option permits to set snmp oid on which bulk support should be tested if
+    bulk support discovery is enabled (the defeault).
 
 deploy:
 * on unix/linux, replace all wrongly formatted eol in command to execute to avoid
