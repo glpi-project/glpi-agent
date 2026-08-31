@@ -35,7 +35,7 @@ netdiscovery/netinventory:
     discovery.
   * bulk-support-discovery-oid: defaults to ".1.3.6.1.2.1.1" (mib-2.system OID)
     This option permits to set snmp oid on which bulk support should be tested if
-    bulk support discovery is enabled (the defeault).
+    bulk support discovery is enabled (the default).
 
 deploy:
 * on unix/linux, replace all wrongly formatted eol in command to execute to avoid
