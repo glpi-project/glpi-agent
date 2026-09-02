@@ -186,22 +186,18 @@ build_perl () {
         fi
     fi
 
-    PATCHPERL_URL="https://raw.githubusercontent.com/gugod/patchperl-packing/master/patchperl"
-    [ -e patchperl ] || curl -so patchperl  "$PATCHPERL_URL"
+    # Disable getaddrinfo native support on MacOSX, perl will use an emulated version from Socket module
+    BUILD_NO_GETADDRINFO="-Dd_getaddrinfo=undef -Dd_gai_strerror=undef -Dd_getnameinfo=undef"
+
     cd build
     [ -d "perl-$PERL_VERSION" ] || tar xzf "../$PERL_ARCHIVE"
     cd "perl-$PERL_VERSION"
-    if [ ! -e patchperl ]; then
-        cp -a ../../patchperl .
-        chmod +x patchperl
-        chmod -R +w .
-        ./patchperl
-    fi
     if [ ! -e Makefile ]; then
         rm -f config.sh Policy.sh
         ./Configure -de -Dprefix=$BUILD_PREFIX -Duserelocatableinc -DNDEBUG    \
             -Dman1dir=none -Dman3dir=none -Dusethreads -UDEBUGGING             \
             -Dusemultiplicity -Duse64bitint -Darch=$ARCH                       \
+            $BUILD_NO_GETADDRINFO                                              \
             -Aeval:privlib=.../../lib -Aeval:scriptdir=.../../bin              \
             -Aeval:vendorprefix=.../.. -Aeval:vendorlib=.../../agent           \
             -Accflags="$SDKFLAGS $EXTRA_PERL_CCFLAGS"                          \
