@@ -1057,7 +1057,7 @@ sub events_cb {
     if (!defined($event) && $self->{toolbox}->{target}) {
         my $jobs = $self->yaml(jobs);
         unless (defined($jobs)) {
-            return unless $self->reload_yaml_on_change();
+            return unless $self->read_yaml();
             $jobs = $self->yaml(jobs);
         }
         # Time to check if we need to run a job

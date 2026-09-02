@@ -41,6 +41,9 @@ deploy:
 * on unix/linux, replace all wrongly formatted eol in command to execute to avoid
   errors due to \r chars
 
+toolbox:
+* fix #1237: Make sure scheduled netscan jobs are planified when service is started
+
 packaging:
 * Update Windows packaging to use:
   - gcc 16.2.0posix-14.0.0-msvcrt-r1
