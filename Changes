@@ -13,6 +13,7 @@ core:
 inventory:
 * fix #1226: Fix regression in network interface inventory on windows related to
   failing bluetooth inventory
+* fix #1208: Fix localhost ssh pubkey inventory to limit requests
 
 remoteinventory:
 * Don't use dll calls for bluetooth network adapters remote inventory
