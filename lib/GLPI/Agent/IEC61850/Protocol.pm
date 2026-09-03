@@ -224,7 +224,11 @@ sub _load {
 sub _dump {
     my ($self) = @_;
 
-    my $file = ($self->{_scan}->{Name} ? $self->{_scan}->{Name}."-" : "").$self->{ip}.".iec-dump";
+    # Sanitize name before creating .iec-dump file
+    my $name = $self->{_scan}->{Name} ? $self->{_scan}->{Name} : "";
+    $name =~ s/\W/_/g;
+    $name .= '-' unless empty($name);
+    my $file = $name.$self->{ip}.".iec-dump";
 
     my $count = 0;
     if (open my $fh, '>', $file) {
