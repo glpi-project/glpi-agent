@@ -498,6 +498,8 @@ sub _queryDevice {
             my $iecdevice = GLPI::Agent::IEC61850::Device->new(
                 timeout => $job->timeout() || 1,
                 glpi    => $self->{glpi_version} || '',
+                dump    => $self->{config}->{"iec-dump"} // 0,
+                file    => $self->{config}->{"iec-file"} // '',
                 logger  => $self->{logger},
             );
             $result = $iecdevice->scan($device->{IP}, $port);

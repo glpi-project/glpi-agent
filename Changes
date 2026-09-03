@@ -41,6 +41,8 @@ netdiscovery/netinventory:
   supported oid. The fix makes MibSupport based on private oid check more reliable.
 * netinventory task should not report snmp error when iec61850 protocol inventory
   was successful
+* Support --iec-dump and --iec-file on glpi-netdiscovery and glpi-netinventory scripts
+  to permit iec61850 protocol support debugging
 
 deploy:
 * on unix/linux, replace all wrongly formatted eol in command to execute to avoid

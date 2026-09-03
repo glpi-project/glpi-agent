@@ -37,6 +37,8 @@ unless (GetOptions(
     'type=s',
     'host=s@',
     'file=s@',
+    'iec-file=s',
+    'iec-dump',
     'community=s',
     'credentials=s',
     'port=s@',
@@ -72,7 +74,7 @@ if ($options->{help}) {
     pod2usage(-verbose => 0, -exitstatus => 0);
 }
 
-unless ($options->{host} or $options->{file}) {
+unless ($options->{host} || $options->{file} || $options->{'iec-file'}) {
     Pod::Usage->use();
     pod2usage(
         -message => "no host nor file given, aborting\n", -verbose => 0
@@ -226,6 +228,8 @@ glpi-netinventory [options] [--host <host>|--file <file>]
     --port <PORT[,PORT2]>  SNMP port (161)
     --protocol <PROT[,P2]> SNMP protocol/domain (udp/ipv4)
     --file <FILE>          snmpwalk output file
+    --iec-file <FILE>      iec61850 datas file to emulate iec61850 protocol support
+    --iec-dump             dump iec61850 scanned datas in .iec61850-dump file
     --community <STRING>   community string (public)
     --credentials <STRING> SNMP credentials (version:1,community:public)
     --timeout <TIME>       SNMP timeout, in seconds (15)

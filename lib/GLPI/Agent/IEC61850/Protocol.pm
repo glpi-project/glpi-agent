@@ -36,6 +36,9 @@ sub new {
         logger  => $params{logger},
         timeout => $params{timeout} // 60, # In second
         ip      => $params{ip},
+        port    => $params{port} // 102,
+        dump    => $params{dump} // 0,
+        file    => $params{file} // '',
         _scan   => {},
     };
 
@@ -45,7 +48,10 @@ sub new {
 }
 
 sub connect {
-    my ($self, $host, $port) = @_;
+    my ($self) = @_;
+
+    # Emulate connect when a dump file is provided
+    return -s $self->{file} if $self->{file};
 
     my $con = iec61850::IedConnection_create();
 
@@ -56,7 +62,10 @@ sub connect {
     my $timeout = $self->{timeout} * 1000;
     iec61850::IedConnection_setConnectTimeout($con, $timeout);
 
-    my $error = iec61850::IedConnection_connect($con, $host, $port || 102);
+    my $ip   = $self->{ip};
+    my $port = $self->{port} || 102;
+
+    my $error = iec61850::IedConnection_connect($con, $ip, $port);
     if ($error != $iec61850::IED_ERROR_OK) {
         $self->{logger}->debug2(logger_prefix."Connection error: ".iec61850::IedClientError_toString($error));
         return 0;
@@ -65,7 +74,7 @@ sub connect {
     # Also configure timeout on requests
     iec61850::IedConnection_setRequestTimeout($con, $timeout);
 
-    $self->{logger}->debug2(logger_prefix."Connected to $host:".($port || 102));
+    $self->{logger}->debug2(logger_prefix."Connected to $ip:$port");
 
     return $con;
 }
@@ -80,6 +89,8 @@ sub disconnect {
 
 sub scan {
     my ($self) = @_;
+
+    return $self->_load() if $self->{file};
 
     my $maxDevices = 1;
 
@@ -109,13 +120,15 @@ sub scan {
     }
 
     iec61850::LinkedList_destroy($deviceList);
+
+    $self->_dump() if $self->{dump};
 }
 
 sub _getLogicalDeviceDirectory {
     my ($self, $device) = @_;
 
     # Keep found device as name
-    $self->{Name} = $device;
+    $self->{_scan}->{Name} = $device;
 
     my ($logicalNodes, $error) = iec61850::IedConnection_getLogicalDeviceDirectory($self->{_connection}, $device);
     if ($error != $iec61850::IED_ERROR_OK) {
@@ -132,6 +145,8 @@ sub _getLogicalDeviceDirectory {
         if ($lnName =~ /^LPHD\d+$/) {
             $self->{logger}->debug2(logger_prefix."Scanning $device/$lnName logical node directory");
             $self->_getLogicalNodeDirectory("$device/$lnName");
+            # Keep logicalNode as Node for debugging while dumping
+            $self->{_scan}->{Node} = $lnName if $self->{dump};
             # No need to continue on next logicalNode as we reached the one with required datas
             last;
         }
@@ -183,6 +198,53 @@ sub _getVariables {
             next;
         }
         $self->{_scan}->{$dataObject}->{$var} = $value;
+    }
+}
+
+sub _load {
+    my ($self) = @_;
+
+    return unless $self->{file} && -s $self->{file};
+
+    my $count = 0;
+    foreach my $line (getAllLines(file => $self->{file})) {
+        $count++;
+        if ($line =~ /^(.+)\.([^.]+): (.*)$/) {
+            $self->{_scan}->{$1}->{$2} = $3;
+        } elsif ($line =~ /^(.+): (.*)$/) {
+            $self->{_scan}->{$1} = $2;
+        } else {
+            $count--;
+        }
+    }
+
+    $self->{logger}->debug2(logger_prefix."Loaded $count data lines from $self->{file}");
+}
+
+sub _dump {
+    my ($self) = @_;
+
+    my $file = ($self->{_scan}->{Name} ? $self->{_scan}->{Name}."-" : "").$self->{ip}.".iec-dump";
+
+    my $count = 0;
+    if (open my $fh, '>', $file) {
+        foreach my $key (sort keys(%{$self->{_scan}})) {
+            next unless defined($self->{_scan}->{$key});
+            if (ref($self->{_scan}->{$key}) eq "HASH") {
+                foreach my $subkey (sort keys(%{$self->{_scan}->{$key}})) {
+                    next unless defined($self->{_scan}->{$key}->{$subkey});
+                    print $fh "$key.$subkey: $self->{_scan}->{$key}->{$subkey}\n";
+                    $count++;
+                }
+            } else {
+                print $fh "$key: $self->{_scan}->{$key}\n";
+                $count++;
+            }
+        }
+        close $fh;
+        $self->{logger}->info(logger_prefix."Dumped $count iec61850 inventory datas in $file");
+    } else {
+        $self->{logger}->error(logger_prefix."Failed to open $file for writing: $!");
     }
 }
 

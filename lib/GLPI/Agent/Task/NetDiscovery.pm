@@ -1100,6 +1100,8 @@ sub _scanAddressByIEC61850 {
             $device = GLPI::Agent::IEC61850::Device->new(
                 timeout => $params->{timeout} || 1,
                 glpi    => $self->{glpi_version} || '',
+                dump    => $self->{config}->{"iec-dump"} // 0,
+                file    => $self->{config}->{"iec-file"} // '',
                 logger  => $self->{logger},
             );
             $infos = $device->scan($params->{ip}, $credential->{PORT});

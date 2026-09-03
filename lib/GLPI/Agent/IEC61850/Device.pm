@@ -28,6 +28,8 @@ sub new {
         logger  => $params{logger},
         glpi    => $params{glpi}    // '',
         timeout => $params{timeout} // 60,
+        dump    => $params{dump}    // 0,
+        file    => $params{file}    // '',
         infos   => {
             TYPE    => "NETWORKING",
         },
@@ -44,9 +46,13 @@ sub scan {
     my $protocol = GLPI::Agent::IEC61850::Protocol->new(
         timeout => $self->{timeout},
         logger  => $self->{logger},
+        ip      => $ip // '',
+        port    => $port // 102,
+        dump    => $self->{dump},
+        file    => $self->{file},
     );
 
-    $protocol->connect($ip, $port)
+    $protocol->connect()
         or return;
 
     $protocol->scan();
