@@ -57,7 +57,9 @@ sub new {
             }
         }
         if ($mib_support->{privateoid}) {
-            next unless defined($device->get($mib_support->{privateoid}));
+            my $check = $device->get($mib_support->{privateoid});
+            # Buggy devices like SiemensSicam can answer NULL or empty string on any requested but not suported oid
+            next unless !empty($check) && $check ne "NULL";
             $logger->debug("PrivateOID match: $mibname mib support enabled") if $logger;
             $self->{_SUPPORT}->{$module} = $module->new(
                 device      => $device,
