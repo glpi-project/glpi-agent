@@ -39,6 +39,8 @@ netdiscovery/netinventory:
     bulk support discovery is enabled (the default).
 * fix #1229: Devices like SiemensSicam can answer with NULL or empty string on not
   supported oid. The fix makes MibSupport based on private oid check more reliable.
+* netinventory task should not report snmp error when iec61850 protocol inventory
+  was successful
 
 deploy:
 * on unix/linux, replace all wrongly formatted eol in command to execute to avoid

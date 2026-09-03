@@ -564,11 +564,7 @@ sub _queryDevice {
                 if $EVAL_ERROR;
         }
 
-        if ($error) {
-            chomp($error);
-            $self->{logger}->debug("full snmp scan of $device->{IP} failure: $error");
-            return $error;
-        } else {
+        if (!$error) {
             my $snmpresult = getDeviceFullInfo(
                 id      => $device->{ID},
                 type    => $device->{TYPE},
@@ -584,6 +580,10 @@ sub _queryDevice {
             foreach my $key (keys(%{$snmpresult})) {
                 $result->{$key} = $snmpresult->{$key};
             }
+        } elsif (!$result) {
+            chomp($error);
+            $self->{logger}->debug("full snmp scan of $device->{IP} failure: $error");
+            return $error;
         }
     }
 
