@@ -36,6 +36,7 @@ sub new {
         logger  => $params{logger},
         timeout => $params{timeout} // 60, # In second
         ip      => $params{ip},
+        _scan   => {},
     };
 
     bless $self, $class;
@@ -181,7 +182,7 @@ sub _getVariables {
             # Just skip eventually not defined or empty values
             next;
         }
-        $self->{$dataObject}->{$var} = $value;
+        $self->{_scan}->{$dataObject}->{$var} = $value;
     }
 }
 
@@ -190,9 +191,9 @@ sub getVariable {
 
     return if empty($dataObject);
 
-    return $self->{$dataObject} unless ref($self->{$dataObject}) eq "HASH" && !empty($variable);
+    return $self->{_scan}->{$dataObject} unless ref($self->{_scan}->{$dataObject}) eq "HASH" && !empty($variable);
 
-    return $self->{$dataObject}->{$variable};
+    return $self->{_scan}->{$dataObject}->{$variable};
 }
 
 sub DESTROY {
