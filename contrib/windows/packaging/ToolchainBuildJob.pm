@@ -48,7 +48,7 @@ sub toolchain_build_steps {
             {
                 plugin          => 'Perl::Dist::Strawberry::Step::Msys2Package',
                 name            => 'msys2-utils',
-                install         => [ qw( patch diffutils ) ],
+                install         => [ qw( patch diffutils pkg-config ) ],
                 skip_if_file    => 'usr/bin/patch.exe',
                 dest            => 'msys64',
             },
