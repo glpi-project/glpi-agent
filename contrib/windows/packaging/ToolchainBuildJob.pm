@@ -250,7 +250,7 @@ sub toolchain_build_steps {
                     '--host=x86_64-w64-mingw32', '--build=x86_64-w64-mingw32', '--srcdir=<src>', '--prefix=<prefix>',
                     '--enable-static=no', '--enable-shared=yes', '--disable-dependency-tracking',
                     '--without-python', '--with-modules', '--with-threads=win32',
-                    '--with-iconv=<prefix>', '--with-zlib=<prefix>', '--with-lzma=<prefix>',
+                    '--with-iconv=<prefix>', '--with-zlib=<prefix>',
                     'CFLAGS=-O2 -I<prefix>/include -D__USE_MINGW_ANSI_STDIO=1', 'LDFLAGS=-L<prefix>/lib',
                 ],
                 post_configure  => [
