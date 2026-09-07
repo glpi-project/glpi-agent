@@ -55,6 +55,7 @@ packaging:
 * Update Windows packaging to use:
   - gcc 16.2.0posix-14.0.0-msvcrt-r1
   - OpenSSL 3.5.8
+  - libxml2 2.15.4
 * Update MacOSX packages to use OpenSSL 3.5.8
   - disable getaddrinfo native support in perl to avoid crash on tahoe
 
