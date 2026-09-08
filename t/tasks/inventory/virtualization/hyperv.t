@@ -92,7 +92,7 @@ my %tests = (
             MEMORY          => 2048,
             SERIAL          => 'QA-SN-0002',
             NETWORKS        => [
-                { DESCRIPTION => 'Network Adapter',   MACADDR => '00:11:22:aa:bb:02' },
+                { DESCRIPTION => 'Network Adapter',   MACADDR => '00:11:22:aa:bb:02', IPADDRESS => '172.25.2.239' },
                 { DESCRIPTION => 'Network Adapter 2', MACADDR => 'de:ad:be:ef:00:02' },
             ],
             DRIVES        => [
@@ -151,7 +151,7 @@ my %tests = (
             MEMORY    => 2048,
             SERIAL    => 'VEEAM-SN-0005',
             NETWORKS  => [
-                { DESCRIPTION => 'Network Adapter', MACADDR => '00:11:22:aa:bb:05' },
+                { DESCRIPTION => 'Network Adapter', MACADDR => '00:11:22:aa:bb:05', IPADDRESS => '10.95.162.58' },
             ],
             DRIVES    => [
                 { VOLUMN => 'C:\VeeamFLR\5k4y4gms.4n3\disk0_C.avhdx', TOTAL => 102400 },

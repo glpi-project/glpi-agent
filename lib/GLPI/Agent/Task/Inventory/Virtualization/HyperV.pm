@@ -310,6 +310,15 @@ sub _getVirtualMachines {
             if ($vm_kvp) {
                 $machine->{IPADDRESS} = $vm_kvp->{IPADDRESS}
                     if defined $vm_kvp->{IPADDRESS};
+                # Also attach the resolved IP to the first network adapter so
+                # GLPI can create the corresponding NetworkPort/IPAddress: the
+                # flat VIRTUALMACHINES.IPADDRESS field has no consumer on the
+                # server side, only NETWORKS[].IPADDRESS does. KVP only gives
+                # one IP per VM, not per adapter, so we can't tell which NIC
+                # it belongs to when there is more than one.
+                if (defined $machine->{IPADDRESS} && $machine->{NETWORKS} && @{$machine->{NETWORKS}}) {
+                    $machine->{NETWORKS}[0]{IPADDRESS} = $machine->{IPADDRESS};
+                }
                 if ($vm_kvp->{OSName} || $vm_kvp->{OSVersion}) {
                     my $full_name = join(' ',
                         grep { !empty($_) }
