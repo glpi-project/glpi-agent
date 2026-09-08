@@ -458,14 +458,14 @@ _request();
 subtest "JSON inventory pending request but ko" => sub {
     check_error(202, { status => "pending", expiration => "10s" }, "JSON inventory action stored", "json");
 };
-like(shift @events, qr/^PROXYREQ,$proxyname,[0-9A-F]{8},.*"status":"pending"/, "Pending inventory event");
-like(shift @events, qr/^PROXYREQ,$proxyname,[0-9A-F]{8},.*"message":"server0 forward failure"/, "Pending inventory event not sent");
+like(shift @events, qr/^PROXYREQ,$proxyname,[0-9A-F]{8}\@[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12},.*"status":"pending"/, "Pending inventory event");
+like(shift @events, qr/^PROXYREQ,$proxyname,[0-9A-F]{8}\@[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12},.*"message":"server0 forward failure"/, "Pending inventory event not sent");
 
 $glpi->{url} = URI->new("http://glpi-project.test/glpi?test=sent");
 _request();
 subtest "JSON inventory pending request and ok" => sub {
     check_error(202, { status => "pending", expiration => "10s" }, "JSON inventory action stored", "json");
 };
-like(shift @events, qr/^PROXYREQ,$proxyname,[0-9A-F]{8},.*"status":"pending"/, "Pending inventory event");
-like(shift @events, qr/^PROXYREQ,$proxyname,[0-9A-F]{8},\d+$/, "Pending inventory timing event");
-like(shift @events, qr/^PROXYREQ,$proxyname,[0-9A-F]{8},.*"status":"ok"/, "Pending inventory event sent");
+like(shift @events, qr/^PROXYREQ,$proxyname,[0-9A-F]{8}\@[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12},.*"status":"pending"/, "Pending inventory event");
+like(shift @events, qr/^PROXYREQ,$proxyname,[0-9A-F]{8}\@[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12},\d+$/, "Pending inventory timing event");
+like(shift @events, qr/^PROXYREQ,$proxyname,[0-9A-F]{8}\@[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12},.*"status":"ok"/, "Pending inventory event sent");

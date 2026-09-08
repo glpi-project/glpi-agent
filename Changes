@@ -48,6 +48,9 @@ deploy:
 * on unix/linux, replace all wrongly formatted eol in command to execute to avoid
   errors due to \r chars
 
+proxy-server-plugin:
+* fix #1211: Fix pending status when using chained proxy agents
+
 toolbox:
 * fix #1237: Make sure scheduled netscan jobs are planified when service is started
 

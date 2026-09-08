@@ -102,6 +102,7 @@ sub init {
 
     # Handles request status
     $self->{status} = {};
+    $self->{status_update_expiration} = 0;
 
     # Register events callback to support communication with our forked processes
     if (ref($self->{server}->{agent}) =~ /Daemon/) {
@@ -113,9 +114,11 @@ sub events_cb {
     my ($self, $event) = @_;
 
     unless (defined($event)) {
-        # On no event, just check reqid timeouts
-        return unless defined($self->{reqtimeout});
-        my $count = scalar(@{$self->{reqtimeout}});
+        # On no event, check to update reqid status or reqid timeouts
+        return unless ref($self->{reqtimeout}) eq "ARRAY";
+        my $count = scalar(@{$self->{reqtimeout}})
+            or return;
+        # First delete any expired request
         while ($count--) {
             my $answer = $self->{reqtimeout}->[0];
             last unless time > $answer->{timeout};
@@ -126,6 +129,27 @@ sub events_cb {
                 delete $self->{reqtimeout};
             }
         }
+
+        # Then check to update one status
+        return unless $self->{status_update_expiration} && time >= $self->{status_update_expiration};
+
+        my $todo;
+        my $next = 0;
+        foreach my $status (@{$self->{reqtimeout}}) {
+            # Only pending status has an expiration
+            my $expiration = $status->{expires}
+                or next;
+            # Find next expiration or set update todo on first found expired
+            if (defined($todo) || time < $expiration) {
+                $next = $expiration unless $next && $next < $expiration;
+            } else {
+                # Found status on which update is required
+                $todo = $status;
+            }
+        }
+        # Set next status update expiration before sending update and eventually get a new expiration
+        $self->{status_update_expiration} = $next;
+        $self->_request_pending_update($todo) if defined($todo);
         return;
     }
 
@@ -139,16 +163,29 @@ sub events_cb {
         my $answer = GLPI::Agent::Protocol::Answer->new(
             message => $dump,
         );
+        # Only set expires to require a later status update on the real answer which is alway the second
+        if ($self->{answer}->{$reqid}) {
+            if ($answer->status eq 'pending') {
+                my $reqstatus = first { $_->{id} eq $reqid } @{$self->{reqtimeout}};
+                $reqstatus->{expires} = time + $answer->expiration;
+                $self->{status_update_expiration} = $reqstatus->{expires}
+                    unless $self->{status_update_expiration} && $self->{status_update_expiration} <= $reqstatus->{expires};
+            }
+        } else {
+            # Add a timeout so the request memory could be freed even if the client won't ask for
+            push @{$self->{reqtimeout}}, {
+                timeout => time + 3600,
+                id      => $reqid,
+                expires => 0,
+            };
+        }
+        # Now keep answer, next update with pending status, meaning we submitted to another proxy will
+        # initiate an udpate status delay
         $self->{answer}->{$reqid} = $answer;
-        # Add a timeout so the request memory could be freed even if the client won't ask for
-        push @{$self->{reqtimeout}}, {
-            timeout => time + 3600,
-            id      => $reqid,
-        };
     } elsif ($dump =~ /^\d+$/) {
         # Handle last 30 proxyreq timing to optimize expiration returned to proxy clients
         my $timing = int($dump);
-        if (!$self->{_proxyreq_expiration} || $self->{_proxyreq_expiration} < $timing) {
+        if (!$self->{_proxyreq_expiration} || ($self->{_proxyreq_timing} && @{$self->{_proxyreq_timing}} <= 30) || $self->{_proxyreq_expiration} < $timing) {
             $self->{_proxyreq_expiration} = $timing;
         }
         push @{$self->{_proxyreq_timing}}, $timing;
@@ -299,13 +336,14 @@ sub _handle_proxy_request {
 
     if ($self->{requestid} && $request->method() eq "GET") {
         $self->debug("Asked for $self->{requestid} request status from $remoteid");
-        my $answer = $self->{answer}->{$self->{requestid}};
-        if ($answer && $answer->agentid eq $agentid) {
+        my $reqkey = $self->{requestid}.'@'.$agentid;
+        my $answer = $self->{answer}->{$reqkey};
+        if ($answer) {
 
             # Remove answer when it is the finally expected one
             unless ($answer->http_code() == 202) {
-                delete $self->{answer}->{$self->{requestid}};
-                $agent->forked_process_event("PROXYREQ,".$self->name().",$self->{requestid},DELETE");
+                delete $self->{answer}->{$reqkey};
+                $agent->forked_process_event("PROXYREQ,".$self->name().",$reqkey,DELETE");
                 $self->debug("Forgetting $self->{requestid} request status as last one expected from $remoteid");
             }
 
@@ -470,6 +508,7 @@ sub _handle_glpi_protocol_request {
         $self->{requestid} = join('', map { sprintf("%02X", int(rand(256))) } 1..4);
     }
     my $requestid = $self->{requestid};
+    my $reqkey = $requestid.'@'.$agentid;
 
     # From here we must tell client the request has been accepted and then
     # try to send inventory to servers
@@ -478,11 +517,10 @@ sub _handle_glpi_protocol_request {
         httpcode    => 202,
         httpstatus  => "ACCEPTED",
         status      => "pending",
-        agentid     => $agentid,
         proxyids    => $proxyid,
         expiration  => $expiration."s",
     );
-    $agent->forked_process_event("PROXYREQ,".$self->name().",$requestid,".$answer->dump());
+    $agent->forked_process_event("PROXYREQ,".$self->name().",$reqkey,".$answer->dump());
 
     # Notify client with pending status
     $self->_send($answer);
@@ -497,8 +535,9 @@ sub _handle_glpi_protocol_request {
     my $proxyclient = GLPI::Agent::HTTP::Client::GLPI->new(
         logger  => $self->{logger},
         config  => $agent->{config},
-        agentid => $agentid,
+        agentid => uuid_to_string($agent->{agentid}),
         proxyid => $proxyid,
+        requestid => $requestid,
     );
 
     foreach my $target (@servers) {
@@ -528,13 +567,13 @@ sub _handle_glpi_protocol_request {
     if ($answer->status ne "error") {
         if ($answer->status eq "ok") {
             $answer->success;
-            $agent->forked_process_event("PROXYREQ,".$self->name().",$requestid,".(int(time-$timer)+1));
+            $agent->forked_process_event("PROXYREQ,".$self->name().",$reqkey,".(int(time-$timer)+1));
         } elsif ($answer->status eq "pending") {
             # Case server is another proxy returning a pending status
-            $agent->forked_process_event("PROXYREQ,".$self->name().",$requestid,".(int(time-$timer)+$answer->expiration));
+            $agent->forked_process_event("PROXYREQ,".$self->name().",$reqkey,".(int(time-$timer)+$answer->expiration));
         }
     }
-    $agent->forked_process_event("PROXYREQ,".$self->name().",$requestid,".$answer->dump());
+    $agent->forked_process_event("PROXYREQ,".$self->name().",$reqkey,".$answer->dump());
 
     return $answer->http_code;
 }
@@ -714,6 +753,60 @@ sub _handle_legacy_protocol_request {
     $client->send_response($response);
 
     return $response->code();
+}
+
+sub _request_pending_update {
+    my ($self, $status) = @_;
+
+    # status is a hash woth 'timeout', 'id' and 'expires' fields
+    my $requestid = substr($status->{id}, 0, 8);
+
+    my $agent = $self->{server}->{agent};
+    my $agentid = uuid_to_string($agent->{agentid});
+    my @servers = grep { $_->isGlpiServer() } $agent->getTargets()
+        or return;
+
+    # Prepare a client to prepare request
+    my $proxyclient = GLPI::Agent::HTTP::Client::GLPI->new(
+        logger    => $self->{logger},
+        config    => $agent->{config},
+        agentid   => $agentid,
+        requestid => $requestid,
+    );
+
+    my $answer = $self->{answer}->{$status->{id}};
+
+    foreach my $target (@servers) {
+        $self->debug("Requesting status update for $requestid to ".$target->getName());
+        my $sent = $proxyclient->send(
+            method  => "GET",
+            url     => $target->getUrl(),
+            pending => "pass",
+        );
+        unless ($sent) {
+            $self->error("Failed to submit $requestid status update to ".$target->getName()." server");
+            next;
+        }
+        $self->debug2("$requestid status update submitted to ".$target->getName());
+
+        # Save status and update status list
+        if ($sent->status eq 'ok') {
+            $status->{expires} = 0;
+            $answer->set($sent->get);
+            $answer->success;
+        } elsif ($answer->status eq 'pending') {
+            $status->{expires} = time + $sent->expiration;
+            $status->{timeout} = time + 3600;
+            $self->{status_update_expiration} = $status->{expires}
+                unless $self->{status_update_expiration} && $self->{status_update_expiration} <= $status->{expires};
+        } else {
+            $status->{expires} = time + 60;
+            next;
+        }
+
+        # We only care about first server/proxy good answer
+        last;
+    }
 }
 
 sub proxy_error {

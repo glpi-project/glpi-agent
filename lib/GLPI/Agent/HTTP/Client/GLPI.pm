@@ -28,7 +28,9 @@ sub new {
     $self->{ua}->default_header('Pragma' => 'no-cache');
 
     # Set requestid if in debug mode
-    if ($self->{logger}->debug_level()) {
+    if ($params{requestid} && $params{requestid} =~ /^[0-9A-F]{8}$/) {
+        $requestid = $params{requestid};
+    } elsif ($self->{logger}->debug_level()) {
         $requestid = join('', map { sprintf("%02X", int(rand(256))) } 1..4);
     } else {
         undef $requestid;
@@ -61,22 +63,27 @@ sub send { ## no critic (ProhibitBuiltinHomonyms)
     }
 
     my $url = ref($params{url}) eq 'URI' ? $params{url} : URI->new($params{url});
-    my $message = ref($params{message}) eq 'HASH' ?
-        GLPI::Agent::Protocol::Message->new(
-            message => $params{message},
-        )
-        : $params{message};
+    my $request;
+    if ($params{method} && $params{method} eq "GET") {
+        $request = HTTP::Request->new(GET => $url);
+    } else {
+        my $message = ref($params{message}) eq 'HASH' ?
+            GLPI::Agent::Protocol::Message->new(
+                message => $params{message},
+            )
+            : $params{message};
 
-    my $request_content = $message->getContent();
-    $logger->debug2(_log_prefix . "sending message:\n$request_content");
+        my $request_content = $message->getContent();
+        $logger->debug2(_log_prefix . "sending message:\n$request_content");
 
-    $request_content = $self->compress($request_content);
-    unless ($request_content) {
-        $logger->error(_log_prefix . 'inflating problem');
-        return;
+        $request_content = $self->compress($request_content);
+        unless ($request_content) {
+            $logger->error(_log_prefix . 'inflating problem');
+            return;
+        }
+        $request = HTTP::Request->new(POST => $url);
+        $request->content($request_content);
     }
-    my $request = HTTP::Request->new(POST => $url);
-    $request->content($request_content);
 
     my $answer;
     my $try = 1;
