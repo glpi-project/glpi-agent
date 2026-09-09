@@ -14,6 +14,7 @@ inventory:
 * fix #1226: Fix regression in network interface inventory on windows related to
   failing bluetooth inventory
 * fix #1208: Fix localhost ssh pubkey inventory to limit requests
+* fix #1207: Fix Parse::EDID warnings on headless linux system
 
 remoteinventory:
 * Don't use dll calls for bluetooth network adapters remote inventory

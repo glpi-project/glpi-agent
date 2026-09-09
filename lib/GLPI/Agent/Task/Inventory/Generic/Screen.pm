@@ -347,7 +347,7 @@ sub _getScreens {
     foreach my $screen (@screens) {
         next unless $screen->{edid} || ($screen->{SERIAL} && $screen->{CAPTION});
 
-        if ($screen->{edid}) {
+        unless (empty($screen->{edid}) || length($screen->{edid}) < 128) {
             my $info = _getEdidInfo(
                 edid    => $screen->{edid},
                 logger  => $params{logger},
@@ -367,7 +367,8 @@ sub _getScreens {
         }
 
         # Add or merge found values
-        my $serial = $screen->{SERIAL} || $screen->{BASE64};
+        my $serial = $screen->{SERIAL} || $screen->{BASE64}
+            or next;
         if (!exists($screens{$serial})) {
             $screens{$serial} = $screen ;
         } else {
