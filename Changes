@@ -113,6 +113,13 @@ toolbox:
   configuration field
 * Bump ToolBox plugin version to 2.1
 
+collect:
+* New features:
+  * Support Registry existence check
+  * Support Registry defined value check
+  * Support in-depth registry values collect (max 10 depth levels)
+* With Glpi-Inventory plugin >= v1.6.9, we can submit multiple registry values one by one
+
 packaging:
 * Update Windows packaging to use:
   - Perl 5.44.0
