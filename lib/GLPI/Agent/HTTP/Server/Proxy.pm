@@ -408,8 +408,9 @@ sub _handle_proxy_request {
         if $content_type =~ m|^application/json$|i;
 
     # Fallback here to legacy passive proxy mode, only for XML inventory submission
+    # Also Content-Type could be set with encoding like Android Inventory Agent with 'application/xml;charset=utf-8'
     return $self->_handle_legacy_protocol_request($agentid, $remoteid, $content, $clientIp)
-        if $content_type =~ m|^application/xml$|i;
+        if $content_type =~ m|^application/xml|i;
 
     $self->info("Unsupported '$content_type' Content-type header provided in $self->{request} request from $clientIp");
     return $self->proxy_error(403, 'Unsupported Content-type');

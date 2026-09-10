@@ -51,6 +51,8 @@ deploy:
 
 proxy-server-plugin:
 * fix #1211: Fix pending status when using chained proxy agents
+* fix #461: Fix again XML content-type support for inventories sent by android agent
+  which was reverted by mistake with v1.17 refacto
 
 toolbox:
 * fix #1237: Make sure scheduled netscan jobs are planified when service is started
