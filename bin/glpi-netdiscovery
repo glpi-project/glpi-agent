@@ -44,6 +44,7 @@ unless (GetOptions(
     'v2c',
     'control',
     'debug+',
+    'features=s',
     'help',
     'inventory|i',
     'save|s=s',
@@ -233,6 +234,8 @@ glpi-netdiscovery [options] --first <address> --last <address>
     --retries              SNMP requets maximum retries (0)
     --backend-collect-timeout <TIME>
                            base expiration timeout, in seconds (180)
+    --features=[FEATURE][,FEATURE]
+                           list of internal features to enable
     --entity <ENTITY>      GLPI entity
     --threads <COUNT>      number of discovery threads (1)
     --glpi-version VERSION set targeted glpi version to enable supported features

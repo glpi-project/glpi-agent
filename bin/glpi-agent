@@ -86,6 +86,7 @@ unless (GetOptions(
     'wait|w=s',
     "ssl-cert-file=s",
     "ssl-key-file=s",
+    "features=s",
     # Platform specific option
     'no-win32-ole-workaround'
 )) {
@@ -354,6 +355,7 @@ glpi-agent [options] [--server server|--local path]
     --conf-file=FILE                   configuration file
     --conf-reload-interval=<SECONDS>   number of seconds between two
                                          configuration reloadings
+    --features=[FEATURE][,FEATURE] list of internal features to enable
 
   Execution mode options:
     -w --wait=LIMIT                maximum delay before execution,

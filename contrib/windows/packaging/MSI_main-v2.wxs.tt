@@ -125,6 +125,12 @@
     <SetProperty Id="CMDLINE_DEBUG"   Before="AppSearch" Value="[DEBUG]" />
     <SetProperty Id="DEBUG"           After="AppSearch"  Value="[CMDLINE_DEBUG]"><![CDATA[CMDLINE_DEBUG<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
 
+    <Property Id="FEATURES" Secure="yes">
+      <RegistrySearch Id="Features" Root="HKLM" Key="[%agent_regpath%]" Name="features" Type="raw"/>
+    </Property>
+    <SetProperty Id="CMDLINE_FEATURES"   Before="AppSearch" Value="[FEATURES]" />
+    <SetProperty Id="FEATURES"           After="AppSearch"  Value="[CMDLINE_FEATURES]"><![CDATA[CMDLINE_FEATURES<>"" OR CMDLINE_CONFIG="reset"]]></SetProperty>
+
     <Property Id="LOGGER" Secure="yes">
       <RegistrySearch Id="Logger" Root="HKLM" Key="[%agent_regpath%]" Name="logger" Type="raw"/>
     </Property>

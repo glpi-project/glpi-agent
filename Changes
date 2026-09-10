@@ -9,6 +9,7 @@ core:
 * fix #1041: Fix a bug where we can loop forever waiting a forked process linked to
   a task run. The problem was identified on recent MacOSX systems.
 * Little enhancement of service optimization handling on windows
+* support new "features" option/configuration to be used as advanced configuration enabler
 
 inventory:
 * fix #1226: Fix regression in network interface inventory on windows related to
@@ -44,6 +45,9 @@ netdiscovery/netinventory:
   was successful
 * Support --iec-dump and --iec-file on glpi-netdiscovery and glpi-netinventory scripts
   to permit iec61850 protocol support debugging
+* Support SKIP_CDP_ON_IPPHONE as possible value for "features" option/configuration to
+  disable CDP support on port where an ip phone as been detected. It permits to report
+  the port as a hub of 2 known mac addresses where a computer is connected behind.
 
 deploy:
 * on unix/linux, replace all wrongly formatted eol in command to execute to avoid

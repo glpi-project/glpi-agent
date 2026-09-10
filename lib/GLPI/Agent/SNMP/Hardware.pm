@@ -237,12 +237,22 @@ my %printer_pagecounters_variables = (
     }
 );
 
+# Feature to disable CDP support on ports where an IP Phone is connected
+my $_SKIP_CDP_ON_IPPHONE;
+sub SKIP_CDP_ON_IPPHONE {
+    return scalar(@_) ? $_SKIP_CDP_ON_IPPHONE = $_[0] : $_SKIP_CDP_ON_IPPHONE // 0;
+}
+
 sub _getDevice {
     my (%params) = @_;
 
     my $datadir = $params{datadir};
     my $logger  = $params{logger};
     my $config  = $params{config};
+
+    # Support SKIP_CDP_ON_IPPHONE feature
+    SKIP_CDP_ON_IPPHONE($config->{features}->{SKIP_CDP_ON_IPPHONE})
+        if $config && ref($config->{features}) && exists($config->{features}->{SKIP_CDP_ON_IPPHONE});
 
     my $device = GLPI::Agent::SNMP::Device->new(
         snmp   => $params{snmp},
@@ -969,6 +979,45 @@ sub _setKnownMacAddresses {
             );
         }
     }
+
+    # Analyze found MAC addresses behind connections also detected as CDP connection
+    foreach my $key (sort keys(%{$ports})) {
+        my $port = $ports->{$key}
+            or next;
+        next unless $port->{CONNECTIONS} && $port->{CONNECTIONS}->{CDP};
+        my $conn = $port->{CONNECTIONS}->{CONNECTION}
+            or next;
+        # Always remove MAC array on CDP connections
+        my $mac = delete $conn->{MAC}
+            or next;
+
+        next unless ref($mac) eq 'ARRAY' && @{$mac};
+        my $portnum = $port->{IFNUMBER} // $key;
+        if (@{$mac} == 1) {
+            if (empty($conn->{SYSMAC})) {
+                # We can fix CDP connection and set SYSMAC not set by CDP analysis
+                $logger->debug2("Found MAC address for CDP connection on port[$portnum]: $mac->[0]") if $logger;
+                $conn->{SYSMAC} = $mac->[0];
+            } elsif ($conn->{SYSMAC} ne $mac->[0]) {
+                $logger->debug2("Known MAC address doesn't match CDP one on port[$portnum]: $mac->[0]") if $logger;
+                $conn->{MAC} = $mac;
+            } else {
+                $logger->debug2("Known MAC address matches CDP one on port[$portnum]") if $logger;
+            }
+        } elsif (@{$mac} == 2) {
+            if (empty($conn->{SYSMAC})) {
+                $logger->debug2("Found 2 MAC addresses without knowing any MAC on CDP connection on port[$portnum]") if $logger;
+            } else {
+                my @other = grep { $_ ne $conn->{SYSMAC} } @{$mac};
+                if (@other == 2) {
+                    $logger->debug2("Found 2 MAC addresses without MAC match on CDP connection on port[$portnum]") if $logger;
+                } elsif (@other == 1) {
+                    $logger->debug2("Found another MAC address on CDP connection on port[$portnum]: @other") if $logger;
+                }
+            }
+        }
+        delete $port->{CONNECTIONS}->{CONNECTION} unless keys(%{$conn});
+    }
 }
 
 sub _addKnownMacAddresses {
@@ -990,11 +1039,14 @@ sub _addKnownMacAddresses {
 
         my $port = $ports->{$port_id};
 
-        # connected device has already been identified through CDP/LLDP
+        # connected device has already been identified through CDP/LLDP and may still
+        # have a mac connection detected via LLDP
         next if
             exists $port->{CONNECTIONS} &&
             exists $port->{CONNECTIONS}->{CDP} &&
-            $port->{CONNECTIONS}->{CDP};
+            $port->{CONNECTIONS}->{CDP} &&
+            exists $port->{CONNECTIONS}->{CONNECTION} &&
+            $port->{CONNECTIONS}->{CONNECTION}->{MAC};
 
         # get at list of already associated addresses, if any
         # as well as the port own mac address, if known
@@ -1476,6 +1528,7 @@ sub _getCDPInfo {
                     # let's assume it is a mac address if the length is 12 chars
                     $connection->{SYSMAC} = alt2canonical($deviceId);
                 } elsif ($model =~ /^\w+$/ && $deviceId =~ /^$model([0-9A-Fa-f]{12})$/) {
+                    next if SKIP_CDP_ON_IPPHONE;
                     # let's check if it is model + mac address, case for Yealink phones
                     $connection->{SYSMAC} = alt2canonical($1);
                     $connection->{SYSNAME} = $deviceId
@@ -1490,15 +1543,18 @@ sub _getCDPInfo {
 
         if ($connection->{SYSNAME} &&
             $connection->{SYSNAME} =~ /^SIP([A-F0-9a-f]*)$/) {
+            next if SKIP_CDP_ON_IPPHONE;
             $connection->{SYSMAC} = alt2canonical("0x".$1);
         } elsif ($connection->{SYSNAME} &&
             $connection->{SYSNAME} =~ /^SIP-(.*)$/ &&
             $deviceId =~ /^$1([0-9A-Fa-f]{12})$/) {
+            next if SKIP_CDP_ON_IPPHONE;
             $connection->{SYSMAC} = alt2canonical("0x".$1);
         } elsif ($connection->{SYSNAME} &&
             empty($connection->{SYSMAC}) &&
             $model =~ /^\w+$/ &&
             $connection->{SYSNAME} =~ /^$model([0-9A-Fa-f]{12})$/) {
+            next if SKIP_CDP_ON_IPPHONE;
             # Assume if SYSNAME is model + mac address, case for Yealink phones
             $connection->{SYSMAC} = alt2canonical($1);
         }

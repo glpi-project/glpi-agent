@@ -66,6 +66,7 @@ my $default = {
     'full-inventory-postpone' => 14,
     'required-category'       => [],
     'snmp-retries'            => 0,
+    'features'                => undef,
 };
 
 my $confReloadIntervalMinValue = 60;
@@ -356,6 +357,19 @@ sub _checkContent {
             $self->{$option} = [split(/,+/, $self->{$option})];
         } else {
             $self->{$option} = [];
+        }
+    }
+    # boolean multi-values options, the default separator is a ',' and is transformed as a hash ref
+    foreach my $option (qw/
+            features
+    /) {
+        next unless exists($self->{$option});
+        # Check if defined AND SCALAR
+        # to avoid split a ARRAY ref or HASH ref...
+        if ($self->{$option} && ref($self->{$option}) eq '') {
+            $self->{$option} = { map { $_ => 1 } split(/,+/, $self->{$option}) };
+        } else {
+            $self->{$option} = {};
         }
     }
 
