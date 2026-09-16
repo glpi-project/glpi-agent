@@ -285,6 +285,21 @@ sub toolchain_build_steps {
                 ],
                 make_use_cpus   => 1,
                 install_opts    => [ 'install', 'dist_man_MANS=' ],
+                patches         => [
+                    # Patches from debian project, see https://salsa.debian.org/debian/libssh2/-/tree/master/debian/patches
+                    # and https://github.com/libssh2/libssh2/issues/1925#issuecomment-5134621911
+                    'libssh2/libssh-unconst-backport.patch',
+                    'libssh2/CVE-2025-15661.patch', # Fix CVE-2025-15661
+                    'libssh2/CVE-2026-7598.patch',  # Fix CVE-2026-7598
+                    'libssh2/CVE-2026-55199.patch', # Fix CVE-2026-55199
+                    'libssh2/CVE-2026-55200.patch', # Fix CVE-2026-55200
+                    'libssh2/CVE-2026-58050.patch', # Fix CVE-2026-58050
+                    'libssh2/CVE-2026-58051.patch', # Fix CVE-2026-58051
+                    'libssh2/CVE-2026-66032.patch', # Fix CVE-2026-66032
+                    'libssh2/CVE-2026-66033.patch', # Fix CVE-2026-66033
+                    'libssh2/CVE-2026-66034.patch', # Fix CVE-2026-66034
+                    'libssh2/CVE-2026-66035.patch', # Fix CVE-2026-66035
+                ],
             },
             ### NEXT STEP 17 : Sign libssh2-1__.dll ############################
             {

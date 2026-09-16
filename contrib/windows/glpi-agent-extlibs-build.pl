@@ -484,7 +484,7 @@ package
 
 use parent qw(Perl::Dist::Strawberry::Step::Msys2);
 
-use File::Spec::Functions qw(catdir catfile splitpath);
+use File::Spec::Functions qw(catdir catfile splitpath rel2abs);
 use File::Path qw(make_path remove_tree);
 use File::Find;
 use File::Slurp qw(write_file);
@@ -585,16 +585,40 @@ sub run {
     $self->{config}->{prefix} =~ s{\\}{/}g;
 
     if ($self->{config}->{patches} && @{$self->{config}->{patches}}) {
+        # Get fullpath for patches if specified as file relative to packaging folder
+        my $index = -1;
+        my $patches = $self->{config}->{patches};
+        my $max = scalar(@{$patches});
+        while (++$index < $max) {
+            next if $patches->[$index] =~ /^http/;
+            my $abs_path = rel2abs(catfile("contrib/windows/packaging", $patches->[$index]));
+            $abs_path =~ s{\\}{/}g;
+            $patches->[$index] = $abs_path;
+        }
+
         my $wd = $self->_push_dir($src);
-        foreach my $url (@{$self->{config}->{patches}}) {
-            $url = $self->_resolve($url);
-            my $patch = $self->boss->mirror_url($url, $self->global->{download_dir})
-                or die "failed to download patch\n";
-            my ($patch_name) = $url =~ m|.*/([^/]+)$|;
+        foreach my $url (@{$patches}) {
+            my ($patch_name) = $url =~ m|.*/([^/]+)$|
+                or die "Unsupported patch definition: $url\n";
+            my $patch;
+            if ($url =~ /^http/) {
+                $url = $self->_resolve($url);
+                $patch = $self->boss->mirror_url($url, $self->global->{download_dir})
+                    or die "failed to download $patch_name patch\n";
+                $patch = rel2abs($patch, "../..");
+                $patch =~ s{\\}{/}g;
+                die "failed to get absolute path for $patch_name patch\n"
+                    unless -e $patch;
+            } elsif (-e $url) {
+                $patch = $url;
+            } else {
+                $self->boss->message(2, "* $patch file not found");
+                next;
+            }
             $self->boss->message(2, "* applying patch: $patch_name");
             my $option = $self->{config}->{patches_option} || '-p1';
             $self->execute_special(
-                [catfile($self->global->{build_dir}, 'msys64', 'msys2_shell.cmd'), '-no-start', '-defterm', '-c', "patch $option < ../../download/$patch_name"],
+                [catfile($self->global->{build_dir}, 'msys64', 'msys2_shell.cmd'), '-no-start', '-defterm', '-c', "patch $option < $patch"],
             ) and die "Unable to apply $self->{config}->{name} patch\n";
         }
     }
