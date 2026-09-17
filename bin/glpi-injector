@@ -216,6 +216,7 @@ sub sendContent {
         # Guess access token api path from url
         my $url = $request->uri()->clone();
         my $path = $url->path();
+        $path = $1 if $path =~ /^(.*)(front\/inventory\.php)$/;
         $path = $1 if $path =~ /^(.*)(marketplace|plugins).*$/;
         $path =~ s{/+$}{};
         $path .= '/' if length($path);
