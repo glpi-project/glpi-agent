@@ -62,8 +62,6 @@ sub new {
         logger          => $params{logger} || GLPI::Agent::Logger->new(),
         user            => $params{user}     || $config->{'user'},
         password        => $params{password} || $config->{'password'},
-        oauth_client    => $params{oauth_client} || $config->{'oauth-client-id'},
-        oauth_secret    => $params{oauth_secret} || $config->{'oauth-client-secret'},
         ssl_set         => 0,
         no_ssl_check    => $params{no_ssl_check} || $config->{'no-ssl-check'},
         no_compress     => $params{no_compress}  || $config->{'no-compression'},
@@ -74,6 +72,7 @@ sub new {
         ssl_fingerprint => $params{ssl_fingerprint} || $config->{'ssl-fingerprint'},
         ssl_keystore    => $params{ssl_keystore} || $config->{'ssl-keystore'},
         _vardir         => $config->{'vardir'},
+        _config         => $config,
     };
     bless $self, $class;
 
@@ -166,8 +165,7 @@ sub request {
         my $key = $url->as_string;
         if ($oauth2->{$key}) {
             # Update access token using current url clone if expired
-            $self->_getOauthAccessToken($url->clone())
-                if time >= $oauth2->{$key}->{expires};
+            $self->_getOauthAccessToken($url->clone());
 
             if ($oauth2->{$key}) {
                 # Add token bearer as Authorization header
@@ -230,9 +228,9 @@ sub request {
     if (!$result->is_success()) {
         # authentication required
         if ($result->code() == 401) {
-            if ($self->{oauth_client} && $self->{oauth_secret}) {
-                # Get access token using current url clone
-                $self->_getOauthAccessToken($url->clone());
+            my $has_authenticate = empty($result->header('www-authenticate')) ? 0 : 1;
+            # Get access token using current url clone if possible
+            if (!$has_authenticate && $self->_getOauthAccessToken($url->clone())) {
 
                 my $oauth_token = $oauth2->{$url->as_string};
                 if ($oauth_token) {
@@ -270,7 +268,7 @@ sub request {
                         $logger->error(_log_prefix . $error);
                     }
                 }
-            } elsif ($self->{user} && $self->{password} && $result->header('www-authenticate')) {
+            } elsif ($has_authenticate && $self->{user} && $self->{password}) {
                 $logger->debug(
                     _log_prefix .
                     "authentication required, submitting credentials"
@@ -404,17 +402,26 @@ sub request {
 sub _getOauthAccessToken {
     my ($self, $url) = @_;
 
-    if (empty($self->{oauth_client}) || empty($self->{oauth_secret})) {
+    my $key = $url->as_string;
+
+    # Use cached token when possible
+    return 1 if defined($oauth2) && exists($oauth2->{$key}) && time >= $oauth2->{$key}->{expires};
+
+    return 0 unless $self->{_config};
+
+    my ($oauth_client_id, $oauth_client_secret) = $self->{_config}->getOAuth($key)
+        or return 0;
+
+    if (empty($oauth_client_id) || empty($oauth_client_secret)) {
         $self->{logger}->error(
             _log_prefix .
-            "oauth access token missing"
+            "bad oauth access configuration"
         );
-        return;
+        return 0;
     }
 
-    my $key = $url->as_string;
     # Cleanup eventually still stored token
-    delete $oauth2->{$key};
+    delete $oauth2->{$key} if defined($oauth2);
 
     # Guess access token api path from url
     my $path = $url->path();
@@ -434,8 +441,8 @@ sub _getOauthAccessToken {
     my $json = GLPI::Agent::Protocol::Message->new(
         message => {
             grant_type      => "client_credentials",
-            client_id       => $self->{oauth_client},
-            client_secret   => $self->{oauth_secret},
+            client_id       => $oauth_client_id,
+            client_secret   => $oauth_client_secret,
             scope           => "inventory",
         }
     );
@@ -446,8 +453,8 @@ sub _getOauthAccessToken {
 
     # Don't log secrets
     my $sha256 = sha256_hex($content);
-    $content =~ s/client_id":"[^"]*"/client_id":"CLIENT_ID"/;
-    $content =~ s/client_secret":"[^"]*"/client_secret":"CLIENT_SECRET"/;
+    $content =~ s/client_id":"[^"]*"/client_id":"OAUTH_CLIENT_ID"/;
+    $content =~ s/client_secret":"[^"]*"/client_secret":"OAUTH_CLIENT_SECRET"/;
     $self->{logger}->debug2(_log_prefix . "sending message: (real content sha256sum: $sha256)\n$content");
 
     # play token request
@@ -462,7 +469,7 @@ sub _getOauthAccessToken {
 
     unless ($result) {
         $self->{logger}->error(_log_prefix . "Failed to request oauth access token: no response");
-        return;
+        return 0;
     }
 
     my $message = $result->content();
@@ -480,6 +487,7 @@ sub _getOauthAccessToken {
                     expires => time + ($token->{expires_in} && $token->{expires_in} =~ /^\d+$/ ? $token->{expires_in} : 60),
                 };
                 $self->{logger}->debug(_log_prefix . "Bearer oauth token received (expiration: $token->{expires_in}s)\n");
+                return 1;
             } else {
                 $self->{logger}->error(_log_prefix . "Unsupported token returned from oauth server");
             }
@@ -489,6 +497,8 @@ sub _getOauthAccessToken {
     } else {
         $self->{logger}->error(_log_prefix . "Failed to request oauth access token: ".$result->status_line());
     }
+
+    return 0;
 }
 
 sub _setSSLOptions {

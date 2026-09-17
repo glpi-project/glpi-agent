@@ -349,6 +349,8 @@ sub _checkContent {
             required-category
             tasks
             ssl-fingerprint
+            oauth-client-id
+            oauth-client-secret
     /) {
         next unless exists($self->{$option});
         # Check if defined AND SCALAR
@@ -444,8 +446,17 @@ sub getTargets {
     if ($self->{server}) {
         GLPI::Agent::Target::Server->require();
         GLPI::Agent::Target::Server->reset();
+
+        # Reset supported oauth in case of reloading
+        delete $self->{_oauth};
+        my $oauth = {};
+        push @{$oauth->{id}}, @{$self->{'oauth-client-id'}}
+            if ref($self->{'oauth-client-id'}) eq 'ARRAY';
+        push @{$oauth->{secret}}, @{$self->{'oauth-client-secret'}}
+            if ref($self->{'oauth-client-secret'}) eq 'ARRAY';
+
         foreach my $url (@{$self->{server}}) {
-            push @targets, GLPI::Agent::Target::Server->new(
+            my $server = GLPI::Agent::Target::Server->new(
                 logger     => $params{logger},
                 delaytime  => $self->{delaytime},
                 basevardir => $params{vardir},
@@ -453,7 +464,24 @@ sub getTargets {
                 tag        => $self->{tag},
                 glpi       => $self->{"glpi-version"},
             );
+
+            # Index OAuth by server target url
+            my $url = $server->getUrl();
+            if ($oauth->{id} && @{$oauth->{id}}) {
+                my $oauth_id = shift @{$oauth->{id}};
+                $self->{_oauth}->{$url}->{id} = $oauth_id unless empty($oauth_id);
+            }
+            if ($oauth->{secret} && @{$oauth->{secret}}) {
+                my $oauth_secret = shift @{$oauth->{secret}};
+                $self->{_oauth}->{$url}->{secret} = $oauth_secret unless empty($oauth_secret);
+            }
+
+            push @targets, $server;
         }
+
+        # Store oauth keys to optimize getOAuth() API
+        $self->{_oauth}->{_keys} = [ keys(%{$self->{_oauth}}) ]
+            if $self->{_oauth};
     }
 
     # Only add listener target if no other target has been defined and
@@ -473,6 +501,30 @@ sub getTargets {
     }
 
     return \@targets;
+}
+
+sub getOAuth {
+    my ($self, $url) = @_;
+
+    return unless $self->{_oauth} && $self->{_oauth}->{_keys};
+
+    my $urllen = length($url)
+        or return;
+
+    my ($id, $secret);
+    foreach my $key (@{$self->{_oauth}->{_keys}}) {
+        my $matchlen = length($key);
+        next if $urllen < $matchlen;
+        my $urltest = substr($url, 0, $matchlen);
+        next unless $url eq $urltest;
+        $id = $self->{_oauth}->{$key}->{id}
+            unless empty($self->{_oauth}->{$key}->{id});
+        $secret = $self->{_oauth}->{$key}->{secret}
+            unless empty($self->{_oauth}->{$key}->{secret});
+        last;
+    }
+
+    return ($id, $secret);
 }
 
 1;
