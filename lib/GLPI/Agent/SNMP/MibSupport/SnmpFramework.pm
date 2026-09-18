@@ -68,7 +68,10 @@ sub _engineIdDevice {
                     $device->{_engineIdData}->{SERIAL} = getCanonicalMacAddress($remaining);
                 } elsif ($decode[4] == 4) {
                     # Remaining is text, administratively assigned
-                    $device->{_engineIdData}->{SERIAL} = getCanonicalString($remaining);
+                    my $freetext = getCanonicalString($remaining);
+                    # Assume it is a serialnumber unless matching model
+                    $device->{_engineIdData}->{SERIAL} = $freetext
+                        unless empty($freetext) || first { $device->{$_} && lc($freetext) eq lc($device->{$_}) } qw(MODEL);
                 } elsif ($decode[4] == 5) {
                     # Remaining is bytes, administratively assigned
                     $device->{_engineIdData}->{SERIAL} = unpack("H*", $remaining);

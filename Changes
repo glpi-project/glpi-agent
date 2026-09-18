@@ -50,6 +50,7 @@ netdiscovery/netinventory:
 * Support SKIP_CDP_ON_IPPHONE as possible value for "features" option/configuration to
   disable CDP support on port where an ip phone as been detected. It permits to report
   the port as a hub of 2 known mac addresses where a computer is connected behind.
+* Don't use snmpEngineID free text as serial if known to be the model
 
 deploy:
 * on unix/linux, replace all wrongly formatted eol in command to execute to avoid
