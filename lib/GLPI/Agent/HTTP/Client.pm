@@ -62,6 +62,7 @@ sub new {
         logger          => $params{logger} || GLPI::Agent::Logger->new(),
         user            => $params{user}     || $config->{'user'},
         password        => $params{password} || $config->{'password'},
+        _oauth          => $params{oauth} // {},
         ssl_set         => 0,
         no_ssl_check    => $params{no_ssl_check} || $config->{'no-ssl-check'},
         no_compress     => $params{no_compress}  || $config->{'no-compression'},
@@ -72,7 +73,6 @@ sub new {
         ssl_fingerprint => $params{ssl_fingerprint} || $config->{'ssl-fingerprint'},
         ssl_keystore    => $params{ssl_keystore} || $config->{'ssl-keystore'},
         _vardir         => $config->{'vardir'},
-        _config         => $config,
     };
     bless $self, $class;
 
@@ -399,6 +399,14 @@ sub request {
     return $result;
 }
 
+sub setOAuth {
+    my ($self, $oauth) = @_;
+
+    return unless ref($oauth) eq 'HASH';
+
+    $self->{_oauth} = $oauth;
+}
+
 sub _getOauthAccessToken {
     my ($self, $url) = @_;
 
@@ -407,9 +415,10 @@ sub _getOauthAccessToken {
     # Use cached token when possible
     return 1 if defined($oauth2) && exists($oauth2->{$key}) && time >= $oauth2->{$key}->{expires};
 
-    return 0 unless $self->{_config};
+    my $oauth_client_id = $self->{_oauth}->{client_id}
+        or return 0;
 
-    my ($oauth_client_id, $oauth_client_secret) = $self->{_config}->getOAuth($key)
+    my $oauth_client_secret = $self->{_oauth}->{client_secret}
         or return 0;
 
     if (empty($oauth_client_id) || empty($oauth_client_secret)) {

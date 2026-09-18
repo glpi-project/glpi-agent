@@ -65,6 +65,7 @@ sub isEnabled {
                                             logger  => $self->{logger},
                                             config  => $self->{config},
                                             agentid => $self->{agentid},
+                                            oauth   => $self->{target}->getOAuthCredentials(),
                                         );
                                         $this_param->{_glpi_url} = $self->{target}->getUrl();
                                         push @validated, $this_param;
@@ -290,6 +291,7 @@ sub submit {
             logger  => $self->{logger},
             config  => $self->{config},
             agentid => $self->{agentid},
+            oauth   => $self->{target}->getOAuthCredentials(),
         );
 
         my $response = $client->send(
@@ -311,6 +313,7 @@ sub submit {
             logger  => $self->{logger},
             config  => $self->{config},
             agentid => $self->{agentid},
+            oauth   => $self->{target}->getOAuthCredentials(),
         );
 
         return $self->{logger}->error("Can't load Inventory XML Query API")

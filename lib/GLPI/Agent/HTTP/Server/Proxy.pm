@@ -543,6 +543,7 @@ sub _handle_glpi_protocol_request {
 
     foreach my $target (@servers) {
         $self->debug("Submitting $action from $remoteid to ".$target->getName());
+        $proxyclient->setOAuth($target->getOAuthCredentials());
         my $sent = $proxyclient->send(
             url     => $target->getUrl(),
             pending => "pass",
@@ -725,6 +726,7 @@ sub _handle_legacy_protocol_request {
 
         my $count = 0;
         foreach my $target (@servers) {
+            $proxyclient->setOAuth($target->getOAuthCredentials());
             $self->debug("Submitting inventory from $remoteid to ".$target->getName());
             my $sent = $proxyclient->send(
                 url     => $target->getUrl(),
@@ -778,6 +780,7 @@ sub _request_pending_update {
     my $answer = $self->{answer}->{$status->{id}};
 
     foreach my $target (@servers) {
+        $proxyclient->setOAuth($target->getOAuthCredentials());
         $self->debug("Requesting status update for $requestid to ".$target->getName());
         my $sent = $proxyclient->send(
             method  => "GET",

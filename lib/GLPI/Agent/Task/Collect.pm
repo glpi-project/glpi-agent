@@ -66,6 +66,7 @@ sub run {
     $self->{client} = GLPI::Agent::HTTP::Client::Fusion->new(
         logger  => $self->{logger},
         config  => $self->{config},
+        oauth   => $self->{target}->getOAuthCredentials(),
     );
 
     my $globalRemoteConfig = $self->{client}->send(

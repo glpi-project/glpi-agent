@@ -173,6 +173,7 @@ sub run {
     $self->{client} = GLPI::Agent::HTTP::Client::Fusion->new(
         logger  => $self->{logger},
         config  => $self->{config},
+        oauth   => $self->{target}->getOAuthCredentials(),
     );
     die unless $self->{client};
 
@@ -293,6 +294,7 @@ sub serverInventory {
                 logger  => $self->{logger},
                 config  => $self->{config},
                 agentid => uuid_to_string($self->{agentid}),
+                oauth   => $self->{target}->getOAuthCredentials(),
             );
 
             GLPI::Agent::Protocol::Inventory->require();
@@ -311,6 +313,7 @@ sub serverInventory {
             $self->{serverclient} = GLPI::Agent::HTTP::Client::OCS->new(
                 logger  => $self->{logger},
                 config  => $self->{config},
+                oauth   => $self->{target}->getOAuthCredentials(),
             );
 
             GLPI::Agent::XML::Query::Inventory->require();

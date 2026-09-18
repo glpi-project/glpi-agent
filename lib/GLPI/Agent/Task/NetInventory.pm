@@ -404,6 +404,7 @@ sub _sendMessage {
             $self->{client} = GLPI::Agent::HTTP::Client::OCS->new(
                 logger  => $self->{logger},
                 config  => $self->{config},
+                oauth   => $self->{target}->getOAuthCredentials(),
             );
         }
 

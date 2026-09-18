@@ -161,6 +161,21 @@ sub getTaskVersion {
     return $self->{_server_task_support}->{$task}->{version} // $self->{_glpi} // '';
 }
 
+sub getOAuthCredentials {
+    my ($self) = @_;
+
+    return $self->{_oauth} // {};
+}
+
+sub setOAuthCredentials {
+    my ($self, $id, $secret) = @_;
+
+    $self->{_oauth} = {
+        client_id       => $id,
+        client_secret   => $secret,
+    };
+}
+
 1;
 
 __END__

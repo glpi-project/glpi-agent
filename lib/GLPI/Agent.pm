@@ -217,6 +217,7 @@ sub getContact {
             logger  => $self->{logger},
             config  => $self->{config},
             agentid => uuid_to_string($self->{agentid}),
+            oauth   => $target->getOAuthCredentials(),
         );
 
         return $self->{logger}->error("Can't load GLPI Protocol CONTACT library")
@@ -371,6 +372,7 @@ sub getProlog {
             logger  => $self->{logger},
             config  => $self->{config},
             agentid => $agentid,
+            oauth   => $target->getOAuthCredentials(),
         );
 
         return unless GLPI::Agent::XML::Query::Prolog->require();
