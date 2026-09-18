@@ -332,8 +332,7 @@ cpanm --notest -v --no-man-pages $CPANM_OPTS LWP::Protocol::https              \
 echo '===== Installing patched Crypt::DES perl module ====='
 cpanm --notest -v --no-man-pages $CPANM_OPTS \
     https://github.com/g-bougard/Crypt-DES/releases/download/2.07_01/Crypt-DES-2.07_01.tar.gz
-cpanm --notest -v --no-man-pages $CPANM_OPTS Crypt::Rijndael
-
+cpanm --notest -v --no-man-pages $CPANM_OPTS Crypt::Rijndael Crypt::Ed25519
 # Net::Write::Layer2 depends on Net::PCAP but it fails on MacOSX
 
 rm -rf "$ROOT/pkg/payload${BUILD_PREFIX%%/*}"
