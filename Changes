@@ -72,7 +72,7 @@ packaging:
   - Patched libssh2 v1.11.1 to fix CVE-2025-15661, CVE-2026-7598, CVE-2026-55199,
     CVE-2026-55200, CVE-2026-58050, CVE-2026-58051, CVE-2026-66032, CVE-2026-66033,
     CVE-2026-66034 and CVE-2026-66035
-
+* win32: Updated GLPI-AgentMonitor to v1.5.1
 * Update MacOSX packages to use OpenSSL 3.5.8
   - disable getaddrinfo native support in perl to avoid crash on tahoe
 
