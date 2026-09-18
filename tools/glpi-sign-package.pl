@@ -9,7 +9,7 @@ BEGIN {
     if (!$has_ed25519) {
         my @bundled_perls;
         if ($^O eq 'MSWin32') {
-            push @bundled_perls, 
+            push @bundled_perls,
                 'C:\\Program Files\\GLPI-Agent\\perl\\bin\\perl.exe',
                 'C:\\Program Files (x86)\\GLPI-Agent\\perl\\bin\\perl.exe';
         } elsif ($^O eq 'darwin') {
@@ -153,7 +153,7 @@ Options:
 
 =head1 DESCRIPTION
 
-This tool creates a signed manifest (C<signature.sig>) for a directory intended 
+This tool creates a signed manifest (C<signature.sig>) for a directory intended
 to be used with the GLPI Agent C<Deploy> task.
 
 It performs the following steps:
@@ -162,7 +162,7 @@ It performs the following steps:
 3. Adds SHA-512 hashes for any authorized commands provided via --command.
 4. Generates a manifest containing these hashes.
 5. Signs the manifest using the provided Ed25519 private key.
-6. Writes the signature and the manifest into a C<signature.sig> file at the 
+6. Writes the signature and the manifest into a C<signature.sig> file at the
    root of the target directory.
 
 =head1 KEY GENERATION
@@ -175,7 +175,7 @@ The agent requires an Ed25519 key pair.
 
   openssl genpkey -algorithm ed25519 -outform PEM -out private.key
 
-2. Extract the public key in hexadecimal (64 characters) for the agent 
+2. Extract the public key in hexadecimal (64 characters) for the agent
    configuration (C<deploy-public-key>):
 
   openssl pkey -in private.key -pubout -outform DER | tail -c 32 | xxd -p -c 32
@@ -186,8 +186,8 @@ The agent requires an Ed25519 key pair.
 
   ssh-keygen -t ed25519 -f ./my_private.key -N ""
 
-2. The private key format might need conversion if the agent's perl 
-   Crypt::Ed25519 module doesn't support the RFC4716 format directly. 
+2. The private key format might need conversion if the agent's perl
+   Crypt::Ed25519 module doesn't support the RFC4716 format directly.
    Using OpenSSL is generally more portable for this script.
 
 =head1 KEY FORMATS
@@ -202,7 +202,7 @@ The tool supports Ed25519 private keys in the following formats:
   MC4CAQAwBQYDK2VwBCIEIMUWFFWvbK9uT2P1mNVviQzshQhRMm7440fImmCYW8Jj
   -----END PRIVATE KEY-----
 
-=item * B<Raw Hex>: A 64-character hexadecimal string representing the 32-byte 
+=item * B<Raw Hex>: A 64-character hexadecimal string representing the 32-byte
 secret seed.
 
   c5161455af6caf6e4f63f598d56f890cec850851326ef8e347c89a60985bc263
@@ -211,11 +211,11 @@ secret seed.
 
 =head1 SIGNING ARCHIVES
 
-If you intend to use a compressed archive (e.g., C<.zip>, C<.tar.gz>) with the 
-GLPI Server, be careful how you handle the signature if the B<"uncompress"> 
+If you intend to use a compressed archive (e.g., C<.zip>, C<.tar.gz>) with the
+GLPI Server, be careful how you handle the signature if the B<"uncompress">
 option is enabled in the Deploy task.
 
-When "uncompress" is checked, the agent extracts the archive and then B<deletes> 
+When "uncompress" is checked, the agent extracts the archive and then B<deletes>
 the original archive file before verifying the signature.
 
 You have two correct ways to handle archives:
@@ -224,7 +224,7 @@ You have two correct ways to handle archives:
 
 1. Place all your uncompressed files in a directory.
 2. Run C<glpi-sign-package.pl> on that directory. This creates C<signature.sig>.
-3. Compress the directory contents B<including> the C<signature.sig> file into 
+3. Compress the directory contents B<including> the C<signature.sig> file into
    a single archive.
 4. Upload the archive to GLPI and B<check> the "uncompress" option.
 
@@ -234,7 +234,7 @@ You have two correct ways to handle archives:
 2. Place the archive in a directory by itself.
 3. Run C<glpi-sign-package.pl> on that directory.
 4. Upload both the archive and the generated C<signature.sig> to GLPI.
-5. B<DO NOT check> the "uncompress" option. You will have to extract the archive 
+5. B<DO NOT check> the "uncompress" option. You will have to extract the archive
    manually using a command in your deployment action.
 
 =head1 EXAMPLES
