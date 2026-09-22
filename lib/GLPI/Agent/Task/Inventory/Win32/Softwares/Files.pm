@@ -71,9 +71,11 @@ sub _getSoftwareFromFile {
         FROM            => "inventory-files",
     };
 
-    # major/minor from the product version (e.g. "3.2" => 3, 2)
-    my $version = $info->{ProductVersion} || $info->{FileVersion};
-    if (defined($version) && $version =~ /^(\d+)\.(\d+)/) {
+    # Some resources store the version comma-separated (e.g. "8, 2, 95, 150")
+    $software->{VERSION} =~ s/\s*,\s*/./g if defined $software->{VERSION};
+
+    # major/minor from the first two version numbers, whatever the separator
+    if (defined($software->{VERSION}) && $software->{VERSION} =~ /(\d+)\D+(\d+)/) {
         $software->{VERSION_MAJOR} = $1;
         $software->{VERSION_MINOR} = $2;
     }
