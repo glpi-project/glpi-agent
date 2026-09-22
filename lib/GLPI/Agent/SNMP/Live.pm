@@ -156,6 +156,18 @@ sub testSession {
     my $version_id = $self->{session}->version();
     die "no version set on snmp session\n" unless defined($version_id);
 
+    # Some devices can still report usmStatsNotInTimeWindows.0 without encryption.
+    # In that case, we have to test the session to validate encryption protocol is
+    # fully supported
+    my $can_skip_snmpv3_session_testing = 1;
+    if ($version_id == SNMP_VERSION_3) {
+        # PDU error must be cleared before calling var_bind_list() method
+        $self->{session}->{_pdu}->_error_clear();
+        my $var_bind_list = $self->{session}->var_bind_list();
+        $can_skip_snmpv3_session_testing = 0
+            if ref($var_bind_list) eq 'HASH' && $var_bind_list->{'1.3.6.1.6.3.15.1.1.2.0'};
+    }
+
     # Test if get-bulk-request is supported to enhance walk() api performance.
     # But we need to run the test only if maxrepetitions is set to 1 which is the default.
     # Also if we get an answer if means the session is established so we can return earlier.
@@ -169,7 +181,7 @@ sub testSession {
     }
 
     # No need to test SNMPv3 session as still established
-    return if $version_id == SNMP_VERSION_3;
+    return if $version_id == SNMP_VERSION_3 && $can_skip_snmpv3_session_testing;
 
     my $oids = $config->{oids} || $defaults->{oids};
     my $response = $self->{session}->get_request(

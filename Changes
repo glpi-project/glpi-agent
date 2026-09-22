@@ -51,6 +51,8 @@ netdiscovery/netinventory:
   disable CDP support on port where an ip phone as been detected. It permits to report
   the port as a hub of 2 known mac addresses where a computer is connected behind.
 * Don't use snmpEngineID free text as serial if known to be the model
+* fix #1240: Enhance Siemens devices support while using SNMP v3 and which can answer with
+  an unexpected usmStatsNotInTimeWindows.0 PDU report during connection validation.
 
 deploy:
 * on unix/linux, replace all wrongly formatted eol in command to execute to avoid
