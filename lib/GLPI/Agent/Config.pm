@@ -52,6 +52,7 @@ my $default = {
     'remote'                  => undef,
     'scan-homedirs'           => undef,
     'scan-profiles'           => undef,
+    'inventory-files'         => [],
     'server'                  => undef,
     'ssl-cert-file'           => undef,
     'ssl-key-file'            => undef,
@@ -351,6 +352,7 @@ sub _checkContent {
             ssl-fingerprint
             oauth-client-id
             oauth-client-secret
+            inventory-files
     /) {
         next unless exists($self->{$option});
         # Check if defined AND SCALAR

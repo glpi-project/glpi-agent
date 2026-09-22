@@ -41,6 +41,7 @@ unless (GetOptions(
     'glpi-version=s',
     'help|h',
     'html',
+    'inventory-files=s',
     'itemtype=s',
     'json',
     'lazy',
@@ -282,6 +283,7 @@ glpi-agent [options] [--server server|--local path]
     --list-categories              list supported categories
     --scan-homedirs                scan user home directories (false)
     --scan-profiles                scan user profiles (false)
+    --inventory-files=FILES        report given files as software (win32, comma-separated)
     --html                         save the inventory as HTML (false)
     --json                         save the inventory as JSON (false)
     -f --force                     always send data to server (false)
@@ -635,6 +637,12 @@ Allow the agent to scan home directories for virtual machines.
 =item B<--scan-profiles>
 
 Allow the agent to scan user profiles for software.
+
+=item B<--inventory-files>=I<FILES>
+
+Report the given files as software (win32 only). Multiple files can be specified,
+using comma as a separator. For each existing file, its version resource
+(product name, version, company), architecture and creation date are collected.
 
 =item B<--html|--json>
 

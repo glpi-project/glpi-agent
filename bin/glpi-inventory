@@ -31,6 +31,7 @@ unless (GetOptions(
     'credentials=s@',
     'glpi_version=s',
     'html',
+    'inventory-files=s',
     'itemtype=s',
     'json',
     'no-category=s',
@@ -116,6 +117,7 @@ glpi-inventory [options]
   Options:
     --scan-homedirs                scan use home directories (false)
     --scan-profiles                scan user profiles (false)
+    --inventory-files=FILES        report given files as software (win32, comma-separated)
     --html                         save the inventory as HTML (false)
     --json                         save the inventory as JSON (false)
     --no-category=CATEGORY         do not list given category items
