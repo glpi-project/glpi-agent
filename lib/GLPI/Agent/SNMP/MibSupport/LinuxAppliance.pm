@@ -97,6 +97,22 @@ use constant    systemInfoTable_serial_number   => digi . '.6.1.0';
 use constant    systemInfoTable_fw_version      => digi . '.6.2.0';
 use constant    systemInfoTable_model           => digi . '.6.3.0';
 
+# GS-GRP-MIB
+use constant    grandstream     => enterprises . '.42397';
+use constant    productFamily   => grandstream . '.1';
+
+use constant    grp     => productFamily . '.1';
+use constant    partNo      => grp . '.1.1.0';
+use constant    firmware    => grp . '.1.3';
+use constant    versionBoot     => firmware . '.1.0';
+use constant    versionCore     => firmware . '.2.0';
+use constant    versionProg     => firmware . '.3.0';
+use constant    versionLocale   => firmware . '.4.0';
+use constant    versionResource => firmware . '.5.0';
+
+use constant    gxp     => productFamily . '.3';
+use constant    gxp_SN  => gxp . '.1.0.0';
+
 our $mibSupport = [
     {
         name        => "linuxAppliance",
@@ -229,6 +245,25 @@ sub getType {
         }
     }
 
+    # GrandStream detection after sysDescr analysis
+    my $gxp_SN = getCanonicalString($self->get(gxp_SN));
+    my $partNo = empty($gxp_SN) ? getCanonicalString($self->get(partNo)) : '';
+    if ($gxp_SN || $partNo) {
+        $device->{_Appliance} = {
+            MANUFACTURER    => 'GrandStream'
+        };
+        $device->{_Appliance}->{SERIAL} = $gxp_SN unless empty($gxp_SN);
+        # Extract model and mac address from linux system name
+        if ($sysDescr) {
+            my ($model, $mac) = $sysDescr =~ /^Linux (g\S+)_(\S{12})?/i;
+            $device->{_Appliance}->{MODEL} = $model unless empty($model);
+            $device->{_Appliance}->{MAC} = getCanonicalMacAddress($mac) unless empty($mac) || $mac !~ /^[0-9a-f]+$/i;
+        }
+        my $versionProg = getCanonicalString($self->get(versionProg));
+        $device->{_Appliance}->{FIRMWARE} = $versionProg unless empty($versionProg);
+        return 'NETWORKING';
+    }
+
     # Printer detection
     my $prtGeneralPrinterName = $self->get(prtGeneralPrinterName);
     if ($prtGeneralPrinterName) {
@@ -318,6 +353,16 @@ sub _hasInstalled {
     return unless $self->{hrSWInstalledName};
 
     return any { getCanonicalString($_) =~ $qrName } values(%{$self->{hrSWInstalledName}});
+}
+
+sub getMacAddress {
+    my ($self) = @_;
+
+    my $device = $self->device
+        or return;
+
+    return unless $device->{_Appliance} && $device->{_Appliance}->{MAC};
+    return $device->{_Appliance}->{MAC};
 }
 
 sub getModel {
@@ -494,6 +539,50 @@ sub run {
                 DESCRIPTION     => "Socomec ".$self->getModel()." software version",
                 TYPE            => "system",
                 VERSION         => $version,
+                MANUFACTURER    => $manufacturer
+            };
+        }
+    } elsif ($manufacturer eq 'GrandStream') {
+        my $versionBoot = $self->get(versionBoot);
+        if (defined($versionBoot)) {
+            $firmware = {
+                NAME            => $self->getModel(),
+                DESCRIPTION     => "Firmware version of boot loader",
+                TYPE            => "boot",
+                VERSION         => getCanonicalString($versionBoot),
+                MANUFACTURER    => $manufacturer
+            };
+            $device->addFirmware($firmware) if $firmware;
+        }
+        my $versionCore = $self->get(versionCore);
+        if (defined($versionCore)) {
+            $firmware = {
+                NAME            => $self->getModel(),
+                DESCRIPTION     => "Firmware version of core",
+                TYPE            => "core",
+                VERSION         => getCanonicalString($versionCore),
+                MANUFACTURER    => $manufacturer
+            };
+            $device->addFirmware($firmware) if $firmware;
+        }
+        my $versionLocale = $self->get(versionLocale);
+        if (defined($versionLocale)) {
+            $firmware = {
+                NAME            => $self->getModel(),
+                DESCRIPTION     => "Firmware version of locale",
+                TYPE            => "locale",
+                VERSION         => getCanonicalString($versionLocale),
+                MANUFACTURER    => $manufacturer
+            };
+            $device->addFirmware($firmware) if $firmware;
+        }
+        my $versionResource = $self->get(versionResource);
+        if (defined($versionResource)) {
+            $firmware = {
+                NAME            => $self->getModel(),
+                DESCRIPTION     => "Firmware version of resource",
+                TYPE            => "resource",
+                VERSION         => getCanonicalString($versionResource),
                 MANUFACTURER    => $manufacturer
             };
         }
