@@ -126,8 +126,7 @@ sub build_job {
                 qw/ HTTP-Server-Simple LWP::Protocol::https LWP::UserAgent /,
 
                 # crypto
-                { module => 'https://github.com/g-bougard/Crypt-DES/releases/download/2.07_01/Crypt-DES-2.07_01.tar.gz' }, # Patched Crypt::DES
-                qw/ Crypt::Rijndael /,
+                qw/ Crypt::DES Crypt::Rijndael /,
                 qw/ Digest-SHA /,
                 qw/ Digest-MD5 Digest-SHA1 Digest::HMAC /, # Required for SNMP v3 authentication
 

@@ -96,7 +96,7 @@ Mandatory Perl modules:
 
 Optional Perl modules:
 
-* Crypt::DES, for SNMPv3 support
+* Crypt::DES and Crypt::Rijndael for SNMPv3 support
 
 ### Wake on LAN task
 
