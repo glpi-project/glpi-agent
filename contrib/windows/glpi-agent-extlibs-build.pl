@@ -61,7 +61,7 @@ my %args = (
     clean       => 0,
     cadll       => 0,
     codesigning => 0,
-    cpus        => 0,
+    cpus        => $ENV{NUMBER_OF_PROCESSORS} // 1,
 );
 while ( @ARGV ) {
     my $arg = shift @ARGV;
@@ -73,12 +73,16 @@ while ( @ARGV ) {
         %do = ( x86 => 32, x64 => 64);
     } elsif ($arg eq "--no-test") {
         $args{no_test} = 1;
-    } elsif ($arg eq "--clean") {
+    } elsif ($arg eq "--clean" && !$args{cadll}) {
         $args{clean} = 1;
     } elsif ($arg eq "--cadll") {
+        # --cadll is not compatible with --clean option
         $args{cadll} = 1;
+        $args{clean} = 0;
     } elsif ($arg =~ /^--code-signing=(.*)$/) {
         $args{codesigning} = 1 if $1 =~ /^yes|1$/i;
+    } elsif ($arg =~ /^--cpus=(\d+)$/) {
+        $args{cpus} = int($1);
     } else {
         warn "Unsupported option: $arg\n";
     }
@@ -89,17 +93,6 @@ $do{x64} = 64 unless keys(%do);
 
 die "32 bits toolchain build not supported\n"
     if $do{x86};
-
-my $cpus = 0;
-if (open my $fh, "-|", "wmic cpu get NumberOfCores") {
-    while (<$fh>) {
-        next unless /^(\d+)/;
-        my $count = int($1);
-        $args{cpus} = $count if $count > 1;
-        last;
-    }
-    close($fh);
-}
 
 foreach my $arch (sort keys(%do)) {
     if ($args{cadll}) {
