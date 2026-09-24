@@ -2,7 +2,7 @@ Revision history for GLPI agent
 
 Warning for developers: Don't change/remove any entry which doesn't concern your code
 
-1.20 not yet released
+1.20 Thu, 24 Sep 2026
 
 core:
 * daemon: Avoid to sleep in a perl eval
@@ -21,9 +21,12 @@ inventory:
   failing bluetooth inventory
 * fix #1208: Fix localhost ssh pubkey inventory to limit requests
 * fix #1207: Fix Parse::EDID warnings on headless linux system
+* Updated pci.ids to 2026.09.24 version
+* Bump Inventory task version to 1.27
 
 remoteinventory:
 * Don't use dll calls for bluetooth network adapters remote inventory
+* Bump RemoteInventory task version to 1.11
 
 netdiscovery/netinventory:
 * Moved debug level iec61850 protocol debugging to debug2 level
@@ -57,10 +60,13 @@ netdiscovery/netinventory:
 * fix #1240: Enhance Siemens devices support while using SNMP v3 and which can answer with
   an unexpected usmStatsNotInTimeWindows.0 PDU report during connection validation.
 * fix #1241: Enhanced GrandStream IP Phones inventory
+* Bump NetDiscovery task version to 8.0
+* Bump NetInventory task version to 8.0
 
 deploy:
 * on unix/linux, replace all wrongly formatted eol in command to execute to avoid
   errors due to \r chars
+* Bump Deploy task version to 3.8
 
 proxy-server-plugin:
 * Security Advisory GHSA-mhx2-67pp-9pmv: When local_store is enabled, Proxy plugin can
@@ -68,9 +74,11 @@ proxy-server-plugin:
 * fix #1211: Fix pending status when using chained proxy agents
 * fix #461: Fix again XML content-type support for inventories sent by android agent
   which was reverted by mistake with v1.17 refacto
+* Bump Proxy plugin version to 3.2
 
 toolbox:
 * fix #1237: Make sure scheduled netscan jobs are planified when service is started
+* Bump ToolBox plugin version to 2.2
 
 packaging:
 * Update Windows packaging to use:
