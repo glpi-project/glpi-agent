@@ -77,9 +77,9 @@ body:
       label: GLPI Agent version
       description: What GLPI agent version is triggering this issue ?
       options:
+        - v1.20
         - v1.19
         - v1.18
-        - v1.17
         - Nightly build (git version in additional context below)
         - Other (Details in additional context below)
       multiple: true
@@ -91,13 +91,15 @@ body:
       label: GLPI version
       description: What is your GLPI version on server-side ?
       options:
+        - 12.0.0-rc2
+        - 12.0.0-rc1
+        - 11.0.9
         - 11.0.8
         - 11.0.7
-        - 11.0.6
         - 11.0.x (Details in additional context below)
-        - 10.0.24
-        - 10.0.23
-        - 10.0.22
+        - 10.0.27
+        - 10.0.26
+        - 10.0.25
         - 10.0.x (Details in additional context below)
         - Other (Details in additional context below)
         - development release (Details in additional context below)
@@ -111,10 +113,10 @@ body:
       label: GLPIInventory plugin or other plugin version
       description: What is your GLPIInventory or FusionInventory for GLPI plugin version on server-side ?
       options:
-        - GLPI Inventory v1.6.7
-        - GLPI Inventory v1.6.6
+        - GLPI Inventory v1.6.10
+        - GLPI Inventory v1.6.9
+        - GLPI Inventory v1.5.8
         - GLPI Inventory v1.5.7
-        - GLPI Inventory v1.5.6
         - GLPI Inventory v1.x.x (Details in additional context below)
         - FusionInventory for GLPI (Details in additional context below)
         - Other (Details in additional context below)
