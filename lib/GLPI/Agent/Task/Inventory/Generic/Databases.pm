@@ -8,6 +8,8 @@ use parent 'GLPI::Agent::Task::Inventory::Module';
 use UNIVERSAL::require;
 use English qw(-no_match_vars);
 
+use GLPI::Agent::Tools;
+
 use constant    category    => "database";
 
 sub isEnabled {
@@ -53,7 +55,22 @@ sub _credentials {
                 my $credentials = $answer->get('credentials');
                 if ($status eq 'ok' && $credentials) {
                     if (@{$credentials}) {
-                        push @credentials, @{$credentials};
+                        my @validated;
+                        foreach my $cred (@{$credentials}) {
+                            next unless ref($cred) eq "HASH";
+                            if (first { !empty($cred->{$_}) && $cred->{$_} ne getSanitizedString($cred->{$_}) } keys(%{$cred})) {
+                                $logger->debug("Found invalid credential for credentials id ".$param->{params_id})
+                                    if $logger;
+                                next;
+                            }
+                            push @validated, $cred;
+                        }
+                        if (@validated) {
+                            push @credentials, @validated;
+                        } else {
+                            $logger->debug("No valid credential returned for credentials id ".$param->{params_id})
+                                if $logger;
+                        }
                     } else {
                         $logger->debug("No credential returned for credentials id ".$param->{params_id})
                             if $logger;

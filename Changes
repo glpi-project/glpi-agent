@@ -14,6 +14,9 @@ core:
   setting a much oauth access as configured servers
 
 inventory:
+* Security Advisory GHSA-q2j6-54g3-jhcj: Validate credentials values doesn't contain
+  any control character before using it. This invalidated any mysql configuration
+  injection attempt from a compromised glpi server.
 * fix #1226: Fix regression in network interface inventory on windows related to
   failing bluetooth inventory
 * fix #1208: Fix localhost ssh pubkey inventory to limit requests

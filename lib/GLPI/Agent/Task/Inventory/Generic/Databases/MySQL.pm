@@ -43,9 +43,9 @@ sub _getDatabaseService {
     foreach my $credential (@{$credentials}) {
         GLPI::Agent::Task::Inventory::Generic::Databases::trying_credentials($params{logger}, $credential);
         # Be sure to forget previous credential option between loops
-        delete $params{extra};
+        delete $params{extra_file};
         my $extra_file = _mysqlOptionsFile($credential);
-        $params{extra} = " --defaults-extra-file=".$extra_file->filename
+        $params{extra_file} = $extra_file->filename
             if $extra_file;
 
         my ($name, $manufacturer) = qw(MySQL Oracle);
@@ -142,6 +142,8 @@ sub _runSql {
 
     File::Temp->require();
 
+    $params{logger}->debug2("Running sql request: $sql") if $params{logger};
+
     my $src = File::Temp->new(
         TEMPLATE    => 'mysql-XXXXXX',
         SUFFIX      => '.sql',
@@ -151,9 +153,10 @@ sub _runSql {
     print $src $sql;
     close($src);
 
-    my $command = "mysql";
-    $command .= $params{extra} if defined($params{extra});
-    $command .= " -q -sN -e \"$source\"";
+    my @command = ("mysql");
+    push @command, "--defaults-extra-file=".$params{extra_file}
+        unless empty($params{extra_file});
+    push @command, "-q", "-sN",  "-e", $source;
 
     # Only to support unittests
     if ($params{file}) {
@@ -163,10 +166,10 @@ sub _runSql {
         $params{file} .= "-" . lc($sql);
         unless ($params{istest}) {
             print STDERR "\nGenerating $params{file} for new MySQL test case...\n";
-            system("$command >$params{file}");
+            system("@command >$params{file}");
         }
     } else {
-        $params{command} = $command;
+        $params{command} = \@command;
     }
 
     if (wantarray) {
