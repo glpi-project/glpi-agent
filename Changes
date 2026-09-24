@@ -21,6 +21,7 @@ inventory:
   failing bluetooth inventory
 * fix #1208: Fix localhost ssh pubkey inventory to limit requests
 * fix #1207: Fix Parse::EDID warnings on headless linux system
+* Updated pci.ids to 2026.09.24 version
 
 remoteinventory:
 * Don't use dll calls for bluetooth network adapters remote inventory
