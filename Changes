@@ -60,6 +60,8 @@ deploy:
   errors due to \r chars
 
 proxy-server-plugin:
+* Security Advisory GHSA-mhx2-67pp-9pmv: When local_store is enabled, Proxy plugin can
+  allow arbitrary .xml file overwrite
 * fix #1211: Fix pending status when using chained proxy agents
 * fix #461: Fix again XML content-type support for inventories sent by android agent
   which was reverted by mistake with v1.17 refacto

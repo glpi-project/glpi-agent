@@ -625,6 +625,11 @@ sub _handle_legacy_protocol_request {
         return $self->proxy_error(403, "$query query without deviceid");
     }
 
+    unless ($deviceid =~ /^[\w\-\.]+$/) {
+        $self->error("Invalid deviceid format from $remoteid");
+        return $self->proxy_error(400, "Invalid deviceid");
+    }
+
     $remoteid = $deviceid . '@' . $clientIp;
     $self->info("$query query from $remoteid");
 
