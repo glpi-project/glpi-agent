@@ -451,6 +451,7 @@ sub _initModulesList {
                 registry      => $self->{registry},
                 scan_homedirs => $config->{'scan-homedirs'},
                 scan_profiles => $config->{'scan-profiles'},
+                inventory_files => $config->{'inventory-files'},
                 remote        => $self->getRemote(),
             }
         );
@@ -550,6 +551,7 @@ sub _runModule {
             params        => $self->{params},
             scan_homedirs => $self->{config}->{'scan-homedirs'},
             scan_profiles => $self->{config}->{'scan-profiles'},
+            inventory_files => $self->{config}->{'inventory-files'},
             assetname_support => $self->{config}->{'assetname-support'},
         }
     );
