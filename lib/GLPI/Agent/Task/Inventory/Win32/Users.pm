@@ -15,6 +15,8 @@ use constant    other_categories
                             => qw(local_user local_group);
 use constant    category    => "user";
 
+our $WINDOWS_UPN_AS_LOGIN;
+
 sub isEnabled {
     return 1;
 }
@@ -24,6 +26,9 @@ sub doInventory {
 
     my $inventory = $params{inventory};
     my $logger    = $params{logger};
+
+    # Handle features
+    $WINDOWS_UPN_AS_LOGIN = $params{features}->{WINDOWS_UPN_AS_LOGIN} ? 1 : 0;
 
     unless ($params{no_category}->{local_user}) {
         foreach my $user (getUsers(
@@ -138,7 +143,7 @@ sub _getLoggedUsers {
     return @users;
 }
 
-sub _getLastUser {
+sub _getFallbackLastUser {
     my %params = @_;
 
     my $user;
@@ -149,11 +154,7 @@ sub _getLastUser {
         %params
     );
     if ($system && $system->{Name} && $system->{UserName}) {
-        my $user = {
-            DOMAIN  => $system->{UserName},
-            LOGIN   => $system->{Name}
-        };
-        if ($user->{DOMAIN} =~ /^([^\\]*)\\(.*)$/) {
+        if ($system->{UserName} =~ /^([^\\]*)\\(.*)$/) {
             $user->{DOMAIN} = $1 unless $1 eq '.';
             $user->{LOGIN}  = $2;
             # Handle AzureAD case
@@ -166,27 +167,55 @@ sub _getLastUser {
                 }
             }
         }
-        return $user;
     }
 
-    return unless any {
-        $user = getRegistryValue(path => "HKEY_LOCAL_MACHINE/$_", %params)
-    } (
-        'SOFTWARE/Microsoft/Windows/CurrentVersion/Authentication/LogonUI/LastLoggedOnSAMUser',
-        'SOFTWARE/Microsoft/Windows/CurrentVersion/Authentication/LogonUI/LastLoggedOnUser',
-        'SOFTWARE/Microsoft/Windows NT/CurrentVersion/Winlogon/DefaultUserName',
-        'SOFTWARE/Microsoft/Windows NT/CurrentVersion/Winlogon/LastUsedUsername'
+    return $user;
+}
+
+sub _getLastUser {
+    my %params = @_;
+
+    my $user;
+
+    unless ($WINDOWS_UPN_AS_LOGIN) {
+        $user = _getFallbackLastUser(%params);
+        return $user if ref($user);
+    }
+
+    my @registry_tries = (
+        'SOFTWARE/Microsoft/Windows/CurrentVersion/Authentication/LogonUI/LastLoggedOnSAMUser'
     );
+    my $LastLoggedOnUser = 'SOFTWARE/Microsoft/Windows/CurrentVersion/Authentication/LogonUI/LastLoggedOnUser';
+    if ($WINDOWS_UPN_AS_LOGIN) {
+        # Try first $LastLoggedOnUser when feature is set
+        unshift @registry_tries, $LastLoggedOnUser;
+    } else {
+        push @registry_tries, $LastLoggedOnUser;
+    }
+    push @registry_tries,
+        'SOFTWARE/Microsoft/Windows NT/CurrentVersion/Winlogon/DefaultUserName',
+        'SOFTWARE/Microsoft/Windows NT/CurrentVersion/Winlogon/LastUsedUsername';
+
+    return _getFallbackLastUser(%params) unless any {
+        $user = getRegistryValue(path => "HKEY_LOCAL_MACHINE/$_", %params)
+    } @registry_tries;
 
     # LastLoggedOnSAMUser becomes the mandatory value to detect last logged on user
+    # unless WINDOWS_UPN_AS_LOGIN feature is set
     if ($user =~ /^([^\\]*)\\(.*)$/) {
         $user = {
             DOMAIN  => $1,
             LOGIN   => $2
         };
         # Update domain if just a dot
-        $user->{DOMAIN} = $system->{Name}
-            if $user->{DOMAIN} eq '.' && $system && $system->{Name};
+        if ($user->{DOMAIN} eq '.') {
+            my ($system) = getWMIObjects(
+                class      => 'Win32_ComputerSystem',
+                properties => [ qw/Name/ ],
+                %params
+            );
+            $user->{DOMAIN} = $system->{Name} if $system && $system->{Name};
+        }
         if ($user->{DOMAIN} eq '.') {
             my ($useraccount) = getUsers(
                 login => $user->{LOGIN},
@@ -203,7 +232,20 @@ sub _getLastUser {
                 $user->{DOMAIN}    = $2;
             }
         }
+    } elsif ($user =~ /^[^@]+\@.+$/) {
+        # Set domain and use UPN as login
+        $user = {
+            LOGIN   => $user
+        };
+        # Try to set _fullname from fallback to avoid duplicating the user after
+        # _getLoggedUsers() call
+        my $fallback = _getFallbackLastUser(%params);
+        if (ref($fallback) && $fallback->{LOGIN} && $fallback->{DOMAIN}) {
+            $user->{_fullname} = $fallback->{LOGIN}.'@'.$fallback->{DOMAIN};
+        }
     }
+
+    return _getFallbackLastUser(%params) unless ref($user);
 
     return $user;
 }

@@ -4,6 +4,10 @@ Warning for developers: Don't change/remove any entry which doesn't concern your
 
 1.21 not yet released
 
+inventory:
+* Experimental feature: Support WINDOWS_UPN_AS_LOGIN as 'features' parameter key
+  to better report UPN as user login on windows
+
 1.20 Thu, 24 Sep 2026
 
 core:

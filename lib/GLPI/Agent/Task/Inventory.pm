@@ -539,18 +539,19 @@ sub _runModule {
     runFunction(
         module   => $module,
         function => "doInventory",
-        logger => $logger,
+        logger   => $logger,
         timeout  => $self->{config}->{'backend-collect-timeout'},
-        params => {
-            datadir       => $self->{datadir},
-            inventory     => $self->{inventory},
-            no_category   => $self->{disabled},
-            logger        => $self->{logger},
-            registry      => $self->{registry},
-            params        => $self->{params},
-            scan_homedirs => $self->{config}->{'scan-homedirs'},
-            scan_profiles => $self->{config}->{'scan-profiles'},
+        params   => {
+            datadir           => $self->{datadir},
+            inventory         => $self->{inventory},
+            no_category       => $self->{disabled},
+            logger            => $self->{logger},
+            registry          => $self->{registry},
+            params            => $self->{params},
+            scan_homedirs     => $self->{config}->{'scan-homedirs'},
+            scan_profiles     => $self->{config}->{'scan-profiles'},
             assetname_support => $self->{config}->{'assetname-support'},
+            features          => $self->{config}->{'features'},
         }
     );
     $self->{modules}->{$module}->{done} = 1;

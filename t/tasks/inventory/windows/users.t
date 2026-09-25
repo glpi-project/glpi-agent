@@ -43,6 +43,10 @@ my %tests = (
         DOMAIN    => 'nowhere.org',
         _fullname => 'JohnDoe@AzureAD'
     },
+    '11-test-WINDOWS_UPN_AS_LOGIN' => {
+        LOGIN     => 'test@example.com',
+        _fullname => 'TEST@EXAMPLE'
+    },
 );
 
 plan tests => scalar (keys %tests) + 1;
@@ -76,11 +80,15 @@ foreach my $test (keys %tests) {
         mockGetWMIObjects($test)
     );
 
+    # Set features
+    $GLPI::Agent::Task::Inventory::Win32::Users::WINDOWS_UPN_AS_LOGIN = $test =~ /WINDOWS_UPN_AS_LOGIN$/ ? 1 : 0;
+
     my $user = GLPI::Agent::Task::Inventory::Win32::Users::_getLastUser();
 
     cmp_deeply(
         $user,
         $tests{$test},
-        "$test: _getLastUser()"
+        "$test: _getLastUser()".
+        ($GLPI::Agent::Task::Inventory::Win32::Users::WINDOWS_UPN_AS_LOGIN ? ' - WINDOWS_UPN_AS_LOGIN enabled' : '')
     );
 }

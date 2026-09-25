@@ -41,6 +41,7 @@ unless (GetOptions(
     'tag|t=s',
     'verbose',
     'debug+',
+    'features=s',
     'help',
     'version',
 )) {
