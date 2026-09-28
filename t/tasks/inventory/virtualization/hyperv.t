@@ -92,14 +92,25 @@ my %tests = (
             MEMORY          => 2048,
             SERIAL          => 'QA-SN-0002',
             NETWORKS        => [
-                { DESCRIPTION => 'Network Adapter',   MACADDR => '00:11:22:aa:bb:02' },
+                { DESCRIPTION => 'Network Adapter',   MACADDR => '00:11:22:aa:bb:02', IPADDRESS => '172.25.2.239' },
                 { DESCRIPTION => 'Network Adapter 2', MACADDR => 'de:ad:be:ef:00:02' },
             ],
             DRIVES        => [
                 { VOLUMN => 'C:\HyperV\vm2.vhdx', TOTAL => 12288 },
             ],
             IPADDRESS       => '172.25.2.239',
-            OPERATINGSYSTEM => { FULL_NAME => 'Ubuntu 6.8.0' },
+            # No OSBuildNumber/OSMajorVersion for this VM - VERSION and
+            # KERNEL_VERSION both fall back to OSVersion, which on Linux is
+            # kernel-shaped (uname -r), not the real distro version. FQDN
+            # mirrors how SOAP/VMware/Host.pm reports the guest's own
+            # hostname for ESX VMs.
+            OPERATINGSYSTEM => {
+                NAME           => 'Ubuntu',
+                VERSION        => '6.8.0',
+                KERNEL_VERSION => '6.8.0',
+                FULL_NAME      => 'Ubuntu 6.8.0',
+                FQDN           => 'srv-ubuntu-02.eridcservices.com',
+            },
         },
         {
             VMTYPE    => 'HyperV',
@@ -117,6 +128,16 @@ my %tests = (
                 { VOLUMN => 'C:\HyperV\vm1.vhdx',            TOTAL => 16384 },
                 { VOLUMN => 'C:\HyperV\pruebadediscosl.vhdx', TOTAL => 5120  },
             ],
+            # Real client data (RHEL 9.8 guest): OSMajorVersion carries the
+            # actual distro version, distinct from the kernel-shaped
+            # OSVersion/OSBuildNumber - this is the preferred path, not the
+            # OSVersion fallback exercised by vm2 above.
+            OPERATINGSYSTEM => {
+                NAME           => 'Red Hat Enterprise Linux',
+                VERSION        => '9.8',
+                KERNEL_VERSION => '5.14.0-687.39.1.el9_8.x86_64',
+                FULL_NAME      => 'Red Hat Enterprise Linux 9.8',
+            },
         },
     ],
     # VM in paused state (EnabledState=9, CIM Quiesce) must map to STATUS_PAUSED
@@ -151,7 +172,7 @@ my %tests = (
             MEMORY    => 2048,
             SERIAL    => 'VEEAM-SN-0005',
             NETWORKS  => [
-                { DESCRIPTION => 'Network Adapter', MACADDR => '00:11:22:aa:bb:05' },
+                { DESCRIPTION => 'Network Adapter', MACADDR => '00:11:22:aa:bb:05', IPADDRESS => '10.95.162.58' },
             ],
             DRIVES    => [
                 { VOLUMN => 'C:\VeeamFLR\5k4y4gms.4n3\disk0_C.avhdx', TOTAL => 102400 },
