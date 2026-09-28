@@ -39,8 +39,8 @@ sub toolchain_build_steps {
             {
                 plugin          => 'Perl::Dist::Strawberry::Step::Msys2',
                 name            => 'msys2-base',
-                version         => '20260611',
-                folder          => '2026-06-11',
+                version         => '20260927',
+                folder          => '2026-09-27',
                 url             => 'https://github.com/msys2/msys2-installer/releases/download/<folder>/<name>-x86_64-<version>.tar.xz',
                 dest            => 'msys64',
             },
@@ -48,7 +48,7 @@ sub toolchain_build_steps {
             {
                 plugin          => 'Perl::Dist::Strawberry::Step::Msys2Package',
                 name            => 'msys2-utils',
-                install         => [ qw( patch diffutils pkg-config ) ],
+                install         => [ qw( patch diffutils pkg-config perl ) ],
                 skip_if_file    => 'usr/bin/patch.exe',
                 dest            => 'msys64',
             },

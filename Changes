@@ -8,6 +8,10 @@ inventory:
 * Experimental feature: Support WINDOWS_UPN_AS_LOGIN as 'features' parameter key
   to better report UPN as user login on windows
 
+packaging:
+* Update Windows packaging to use:
+  - msys2-base 20260927
+
 1.20 Thu, 24 Sep 2026
 
 core:
