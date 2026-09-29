@@ -484,9 +484,11 @@ sub _verifySignature {
         return 0;
     }
 
-    # Lazy loading of Crypt::Ed25519
-    unless (Crypt::Ed25519->require()) {
-        $logger->error("Security error: Crypt::Ed25519 perl module required for signature verification");
+    # Prefer the original backend, and use CryptX on Debian/Ubuntu.
+    my $ed25519_available = Crypt::Ed25519->require();
+    my $cryptx_available = !$ed25519_available && Crypt::PK::Ed25519->require();
+    unless ($ed25519_available || $cryptx_available) {
+        $logger->error("Security error: Crypt::Ed25519 or Crypt::PK::Ed25519 perl module required for signature verification");
         return 0;
     }
 
@@ -531,7 +533,14 @@ sub _verifySignature {
     }
 
     my $signature = pack("H*", $sigHex);
-    if (!Crypt::Ed25519::verify($manifestContent, $pubKeyBin, $signature)) {
+    my $verified = $ed25519_available
+        ? Crypt::Ed25519::verify($manifestContent, $pubKeyBin, $signature)
+        : eval {
+            my $public_key = Crypt::PK::Ed25519->new();
+            $public_key->import_key_raw($pubKeyBin, 'public');
+            $public_key->verify_message($signature, $manifestContent);
+        };
+    if (!$verified) {
         $logger->error("Security error: invalid signature for $sigFile");
         return 0;
     }
@@ -746,7 +755,7 @@ Format of the signature file:
 ...
 
 The verification process:
-1. Lazily loads C<Crypt::Ed25519> module.
+1. Lazily loads C<Crypt::Ed25519> or C<Crypt::PK::Ed25519>.
 2. Verifies the Ed25519 signature of the manifest using the configured public key.
 3. For each file listed in the manifest, verifies its SHA-512 hash matches the actual file content.
 

@@ -43,6 +43,7 @@ my $task = GLPI::Agent::Task::Deploy->new(
 
 # Mock Crypt::Ed25519
 our $ed_available = 1;
+our $cryptx_available = 0;
 {
     package Crypt::Ed25519;
     sub require { return $main::ed_available }
@@ -53,6 +54,18 @@ our $ed_available = 1;
     }
 }
 $INC{'Crypt/Ed25519.pm'} = 1;
+
+{
+    package Crypt::PK::Ed25519;
+    sub require { return $main::cryptx_available }
+    sub new { return bless {}, shift }
+    sub import_key_raw { return 1 }
+    sub verify_message {
+        my ($self, $signature) = @_;
+        return unpack("H*", $signature) =~ /01$/;
+    }
+}
+$INC{'Crypt/PK/Ed25519.pm'} = 1;
 
 # Helper to create a workdir with files
 sub create_workdir {
@@ -110,6 +123,18 @@ is($task->_verifySignature(workdir => $wd6), 0, "Fail if signature invalid");
 
 # 7. Valid signature but file missing from manifest
 my $good_sig = ('0' x 126) . '01';
+
+# CryptX is the Debian/Ubuntu backend when Crypt::Ed25519 is unavailable.
+$ed_available = 0;
+$cryptx_available = 1;
+my $wd_cryptx = create_workdir({
+    'signature.sig' => $good_sig . "\n" . $manifest,
+    'file1.txt'     => 'content1'
+});
+is($task->_verifySignature(workdir => $wd_cryptx), 1, "Verify using Crypt::PK::Ed25519 fallback");
+$ed_available = 1;
+$cryptx_available = 0;
+
 my $wd7 = create_workdir({
     'signature.sig' => $good_sig . "\n" . $manifest,
     # file1.txt is missing

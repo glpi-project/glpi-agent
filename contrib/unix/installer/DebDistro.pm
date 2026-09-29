@@ -116,6 +116,8 @@ sub install {
             $pkgs{$pkg} = 1 if $pkg;
         }
     }
+    $pkgs{"libcryptx-perl"} = 1
+        if $self->{_options}->{"deploy-public-key"};
 
     # Check installed packages
     if ($self->{_packages}) {
@@ -138,6 +140,11 @@ sub install {
         }
     }
 
+    if ($pkgs{"libcryptx-perl"}) {
+        my $status = qx{dpkg-query -W -f='\${Status}' libcryptx-perl 2>/dev/null};
+        delete $pkgs{"libcryptx-perl"} if $status =~ /^install ok installed$/;
+    }
+
     # Don't install skipped packages
     map { delete $pkgs{$_} } keys(%{$self->{_skip}});
 
@@ -148,6 +155,7 @@ sub install {
         map { $pkgs{$_} = $_ } $self->getDeps("deb");
 
         foreach my $pkg (@pkgs) {
+            next if $pkg eq "libcryptx-perl";
             $pkgs{$pkg} = $self->_extract_deb($pkg);
         }
 
