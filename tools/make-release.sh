@@ -147,6 +147,8 @@ MAJORVERSION=${VERSION%%.*}
 MINORVERSION=${VERSION%%-*}
 MINORVERSION=${MINORVERSION#*.}
 MINORVERSION=${MINORVERSION%.*}
+# Ignore a distributor suffix such as _EM for numeric version calculations.
+MINORVERSION=${MINORVERSION%%_*}
 NEXTMINOR=$((MINORVERSION+1))
 
 # Also update SetupVersion in VBS
