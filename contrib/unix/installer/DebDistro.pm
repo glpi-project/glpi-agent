@@ -162,7 +162,10 @@ sub install {
         map { $pkgs{$_} = $_ } $self->getDeps("deb");
 
         foreach my $pkg (@pkgs) {
-            next if $pkg eq "libcryptx-perl";
+            if ($pkg eq "libcryptx-perl") {
+                $pkgs{$pkg} = $pkg;
+                next;
+            }
             $pkgs{$pkg} = $self->_extract_deb($pkg);
         }
 
