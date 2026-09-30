@@ -515,7 +515,7 @@ REDHAT_SUPPORT_PRODUCT_VERSION="9.2"'
 
 plan tests =>
     (6 * scalar keys %distros) +
-    1;
+    3;
 
 my $fh;
 
@@ -563,3 +563,6 @@ foreach my $test (keys(%distros)) {
     ok((!defined($distro->{_version}) && !defined($distros{$test}->{version})) || $distro->{_version} eq $distros{$test}->{version}, "$test distro version matches: found >".($distro->{_version}//'>undef<')."<");
     ok((!defined($distro->{_release}) && !defined($distros{$test}->{release})) || $distro->{_release} eq $distros{$test}->{release}, "$test distro release matches: found >".($distro->{_release}//'>undef<')."<");
 }
+
+is(DebDistro::_deb_file_version('1.20_EM-1'), '1.20+EM-1', 'Debian archive filenames use the normalized package version');
+is(DebDistro::_deb_file_version('1.20-1'), '1.20-1', 'Debian archive filenames preserve standard package versions');
