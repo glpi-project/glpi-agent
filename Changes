@@ -10,7 +10,9 @@ inventory:
 
 packaging:
 * Update Windows packaging to use:
+  - OpenSSL 3.5.9
   - msys2-base 20260927
+* Update MacOSX packages to use OpenSSL 3.5.9
 
 1.20 Thu, 24 Sep 2026
 
