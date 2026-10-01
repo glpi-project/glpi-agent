@@ -8,6 +8,8 @@ inventory:
 * Experimental feature: Support WINDOWS_UPN_AS_LOGIN as 'features' parameter key
   to better report UPN as user login on windows
 * Report no monitor serial for buggy LG E2011 monitors
+* fix #1247: Fix v1.20 regression: OAuth token doesn't expire
+  Also enhanced token cache support
 
 packaging:
 * Update Windows packaging to use:

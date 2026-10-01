@@ -162,10 +162,10 @@ sub request {
 
     # Try to set Bearer header if oauth2 access token has still been requested
     if ($oauth2) {
-        my $key = $url->as_string;
+        my $key = _getOauthCacheKey($url);
         if ($oauth2->{$key}) {
             # Update access token using current url clone if expired
-            $self->_getOauthAccessToken($url->clone());
+            $self->_getOauthAccessToken($url);
 
             if ($oauth2->{$key}) {
                 # Add token bearer as Authorization header
@@ -230,9 +230,10 @@ sub request {
         if ($result->code() == 401) {
             my $has_authenticate = empty($result->header('www-authenticate')) ? 0 : 1;
             # Get access token using current url clone if possible
-            if (!$has_authenticate && $self->_getOauthAccessToken($url->clone())) {
+            if (!$has_authenticate && $self->_getOauthAccessToken($url)) {
 
-                my $oauth_token = $oauth2->{$url->as_string};
+                my $key = _getOauthCacheKey($url);
+                my $oauth_token = $oauth2->{$key};
                 if ($oauth_token) {
                     # Add token bearer as Authorization header
                     $request->header(Authorization => "Bearer " . $oauth_token->{token});
@@ -407,13 +408,22 @@ sub setOAuth {
     $self->{_oauth} = $oauth;
 }
 
+sub _getOauthCacheKey {
+    my ($url) = @_;
+
+    my $keyurl = $url->clone;
+    $keyurl->query(undef);
+
+    return $keyurl->as_string;
+}
+
 sub _getOauthAccessToken {
     my ($self, $url) = @_;
 
-    my $key = $url->as_string;
+    my $key = _getOauthCacheKey($url);
 
     # Use cached token when possible
-    return 1 if defined($oauth2) && exists($oauth2->{$key}) && time >= $oauth2->{$key}->{expires};
+    return 1 if defined($oauth2) && exists($oauth2->{$key}) && time < $oauth2->{$key}->{expires};
 
     my $oauth_client_id = $self->{_oauth}->{client_id}
         or return 0;
@@ -439,14 +449,17 @@ sub _getOauthAccessToken {
     $path =~ s{/+$}{};
     $path .= '/' unless empty($path);
     $path .= 'api.php/token';
-    $url->path($path);
+
+    my $tokenurl = $url->clone;
+    $tokenurl->path($path);
+    $tokenurl->query(undef);
 
     $self->{logger}->debug(
         _log_prefix .
-        "authentication required, querying oauth access token on ".$url->as_string
+        "authentication required, querying oauth access token on ".$tokenurl->as_string
     );
 
-    my $request = HTTP::Request->new(POST => $url);
+    my $request = HTTP::Request->new(POST => $tokenurl);
     my $json = GLPI::Agent::Protocol::Message->new(
         message => {
             grant_type      => "client_credentials",
@@ -469,7 +482,7 @@ sub _getOauthAccessToken {
     # play token request
     my $result;
     eval {
-        if ($OSNAME eq 'MSWin32' && $url->scheme() eq 'https') {
+        if ($OSNAME eq 'MSWin32' && $tokenurl->scheme() eq 'https') {
             alarm $self->{ua}->{timeout};
         }
         $result = $self->{ua}->request($request);
