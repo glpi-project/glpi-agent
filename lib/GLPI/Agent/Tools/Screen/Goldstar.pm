@@ -11,6 +11,9 @@ my $eisa_id_match = qr/4b21$/ ;
 sub serial {
     my ($self) = @_;
 
+    # Model like E2011 can report a wrong serial number
+    return '' if $self->{_serial} =~ /SerialNumber/i;
+
     # Revert serial and altserial when eisa_id matches
     return $self->_altserial if ($self->eisa_id =~ $eisa_id_match);
 

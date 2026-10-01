@@ -874,6 +874,13 @@ my %edid_tests = (
         MANUFACTURER => 'Lenovo Group Limited',
         SERIAL       => 'V905BAYH'
     },
+    'lg-E2011' => {
+        CAPTION      => 'E2011',
+        DESCRIPTION  => '9/2015',
+        MANUFACTURER => 'Goldstar Company Ltd',
+        # Model with wrong serialnumber
+        SERIAL       => '',
+    },
     'philips-243V7' => {
         ALTSERIAL    => '00001b42',
         CAPTION      => 'PHL 243V7',
