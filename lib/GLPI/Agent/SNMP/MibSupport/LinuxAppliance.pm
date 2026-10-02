@@ -110,8 +110,14 @@ use constant    versionProg     => firmware . '.3.0';
 use constant    versionLocale   => firmware . '.4.0';
 use constant    versionResource => firmware . '.5.0';
 
-use constant    gxp     => productFamily . '.3';
-use constant    gxp_SN  => gxp . '.1.0.0';
+use constant    gxp         => productFamily . '.3';
+use constant    gxp_PartNo  => gxp . '.1.0.0';
+
+use constant    gxp_firmware    => gxp . '.3';
+use constant    gxp_versionBoot => gxp_firmware . '.1.0.0';
+use constant    gxp_versionCore => gxp_firmware . '.2.0.0';
+use constant    gxp_versionBase => gxp_firmware . '.3.0.0';
+use constant    gxp_versionProg => gxp_firmware . '.4.0.0';
 
 our $mibSupport = [
     {
@@ -246,20 +252,19 @@ sub getType {
     }
 
     # GrandStream detection after sysDescr analysis
-    my $gxp_SN = getCanonicalString($self->get(gxp_SN));
-    my $partNo = empty($gxp_SN) ? getCanonicalString($self->get(partNo)) : '';
-    if ($gxp_SN || $partNo) {
+    my $GrandStream_PartNo = getCanonicalString($self->get(gxp_PartNo) // $self->get(partNo));
+    if ($GrandStream_PartNo) {
         $device->{_Appliance} = {
             MANUFACTURER    => 'GrandStream'
         };
-        $device->{_Appliance}->{SERIAL} = $gxp_SN unless empty($gxp_SN);
         # Extract model and mac address from linux system name
         if ($sysDescr) {
             my ($model, $mac) = $sysDescr =~ /^Linux (g\S+)_(\S{12})?/i;
             $device->{_Appliance}->{MODEL} = $model unless empty($model);
             $device->{_Appliance}->{MAC} = getCanonicalMacAddress($mac) unless empty($mac) || $mac !~ /^[0-9a-f]+$/i;
+            $device->{_Appliance}->{SERIAL} = $mac unless empty($mac);
         }
-        my $versionProg = getCanonicalString($self->get(versionProg));
+        my $versionProg = getCanonicalString($self->get(versionProg) // $self->get(gxp_versionProg));
         $device->{_Appliance}->{FIRMWARE} = $versionProg unless empty($versionProg);
         return 'NETWORKING';
     }
@@ -543,7 +548,7 @@ sub run {
             };
         }
     } elsif ($manufacturer eq 'GrandStream') {
-        my $versionBoot = $self->get(versionBoot);
+        my $versionBoot = $self->get(versionBoot) // $self->get(gxp_versionBoot);
         if (defined($versionBoot)) {
             $firmware = {
                 NAME            => $self->getModel(),
@@ -554,7 +559,7 @@ sub run {
             };
             $device->addFirmware($firmware) if $firmware;
         }
-        my $versionCore = $self->get(versionCore);
+        my $versionCore = $self->get(versionCore) // $self->get(gxp_versionCore);
         if (defined($versionCore)) {
             $firmware = {
                 NAME            => $self->getModel(),
@@ -575,16 +580,27 @@ sub run {
                 MANUFACTURER    => $manufacturer
             };
             $device->addFirmware($firmware) if $firmware;
-        }
-        my $versionResource = $self->get(versionResource);
-        if (defined($versionResource)) {
-            $firmware = {
-                NAME            => $self->getModel(),
-                DESCRIPTION     => "Firmware version of resource",
-                TYPE            => "resource",
-                VERSION         => getCanonicalString($versionResource),
-                MANUFACTURER    => $manufacturer
-            };
+            my $versionResource = $self->get(versionResource);
+            if (defined($versionResource)) {
+                $firmware = {
+                    NAME            => $self->getModel(),
+                    DESCRIPTION     => "Firmware version of resource",
+                    TYPE            => "resource",
+                    VERSION         => getCanonicalString($versionResource),
+                    MANUFACTURER    => $manufacturer
+                };
+            }
+        } else {
+            my $versionBase = $self->get(gxp_versionBase);
+            if (defined($versionBase)) {
+                $firmware = {
+                    NAME            => $self->getModel(),
+                    DESCRIPTION     => "Firmware Base version",
+                    TYPE            => "base",
+                    VERSION         => getCanonicalString($versionBase),
+                    MANUFACTURER    => $manufacturer
+                };
+            }
         }
     }
     $device->addFirmware($firmware) if $firmware;
