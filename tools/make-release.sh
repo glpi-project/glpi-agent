@@ -147,6 +147,8 @@ MAJORVERSION=${VERSION%%.*}
 MINORVERSION=${VERSION%%-*}
 MINORVERSION=${MINORVERSION#*.}
 MINORVERSION=${MINORVERSION%.*}
+# Ignore a distributor suffix such as _EM for numeric version calculations.
+MINORVERSION=${MINORVERSION%%_*}
 NEXTMINOR=$((MINORVERSION+1))
 
 # Also update SetupVersion in VBS
@@ -193,7 +195,11 @@ if [ -n "$DEBFULLNAME" -a -n "$DEBEMAIL" ]; then
         if [ "${VERSION%-*}" = "$VERSION" -a -z "$DEBREV" ]; then
             DEBREV="-1"
         fi
-        dch -b -D unstable --newversion "$EPOCH:$VERSION$DEBREV" "New upstream release $VERSION"
+        DEBVERSION=$VERSION
+        case "$DEBVERSION" in
+            *_*) DEBVERSION="${DEBVERSION%%_*}+${DEBVERSION#*_}" ;;
+        esac
+        dch -b -D unstable --newversion "$EPOCH:$DEBVERSION$DEBREV" "New upstream release $VERSION"
     fi
 else
     echo "No github user or email set, aborting" >&2

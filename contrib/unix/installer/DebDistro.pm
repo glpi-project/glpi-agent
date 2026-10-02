@@ -88,10 +88,11 @@ sub init {
 
 sub _extract_deb {
     my ($self, $deb) = @_;
-    my $pkg = $deb."_${DEBVERSION}_all.deb";
+    my $fileVersion = _deb_file_version($DEBVERSION);
+    my $pkg = $deb."_${fileVersion}_all.deb";
     if ($deb eq "libiec61850-glpi-agent") {
         # Actually only x86_64 arch is supported for libiec61850-glpi-agent
-        $pkg = $deb."_${DEBVERSION}_amd64.deb";
+        $pkg = $deb."_${fileVersion}_amd64.deb";
     }
     $self->verbose("Extracting $pkg ...");
     $self->{_archive}->extract("pkg/deb/$pkg")
@@ -99,6 +100,12 @@ sub _extract_deb {
     my $pwd = $ENV{PWD} || qx/pwd/;
     chomp($pwd);
     return $pwd =~ /\s/ ? "'$pwd/$pkg'" : "$pwd/$pkg";
+}
+
+sub _deb_file_version {
+    my ($version) = @_;
+    $version =~ tr/_/+/;
+    return $version;
 }
 
 sub install {
@@ -116,6 +123,8 @@ sub install {
             $pkgs{$pkg} = 1 if $pkg;
         }
     }
+    $pkgs{"libcryptx-perl"} = 1
+        if $self->{_options}->{"deploy-public-key"};
 
     # Check installed packages
     if ($self->{_packages}) {
@@ -138,6 +147,11 @@ sub install {
         }
     }
 
+    if ($pkgs{"libcryptx-perl"}) {
+        my $status = qx{dpkg-query -W -f='\${Status}' libcryptx-perl 2>/dev/null};
+        delete $pkgs{"libcryptx-perl"} if $status =~ /^install ok installed$/;
+    }
+
     # Don't install skipped packages
     map { delete $pkgs{$_} } keys(%{$self->{_skip}});
 
@@ -148,6 +162,10 @@ sub install {
         map { $pkgs{$_} = $_ } $self->getDeps("deb");
 
         foreach my $pkg (@pkgs) {
+            if ($pkg eq "libcryptx-perl") {
+                $pkgs{$pkg} = $pkg;
+                next;
+            }
             $pkgs{$pkg} = $self->_extract_deb($pkg);
         }
 

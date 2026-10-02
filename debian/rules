@@ -22,7 +22,7 @@ DEB_AGENT_COMMENTS ?= Built by Debian,Source time: $(shell date -u +'%F %R' -d @
 	dh $@
 
 override_dh_auto_configure:
-	dh_auto_configure -- PREFIX=/usr SYSCONFDIR=/etc/glpi-agent LOCALSTATEDIR=/var/lib/glpi-agent VERSION=$(DEB_VERSION_UPSTREAM_REVISION) COMMENTS="$(DEB_AGENT_COMMENTS)"
+	dh_auto_configure -- PREFIX=/usr SYSCONFDIR=/etc/glpi-agent LOCALSTATEDIR=/var/lib/glpi-agent VERSION=$(subst +EM,_EM,$(DEB_VERSION_UPSTREAM_REVISION)) COMMENTS="$(DEB_AGENT_COMMENTS)"
 
 override_dh_auto_test:
 	dh_auto_test -- TEST_FILES="$(TEST_FILES)"
