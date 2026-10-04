@@ -143,7 +143,11 @@ sub findPeers {
     # Save peers list and status
     $self->{datastore}->saveP2PNet($self->{p2pnet}) if ($self->{datastore});
 
-    return @peers;
+    # Only return peers still seen as active after scanning, as when returning
+    # the peers list from the p2pnet cache
+    return grep {
+        $self->{p2pnet}->{$_}->{active}
+    } @{$self->{p2pnet}->{peers}};
 }
 
 sub forgetPeer {

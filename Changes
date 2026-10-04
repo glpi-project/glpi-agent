@@ -14,6 +14,11 @@ inventory:
 netdiscovery/netinventory:
 * Updated GrandStream IP phones support
 
+deploy:
+* fix #1248: P2P findPeers() was returning every potential peer of the subnet
+  instead of the ones that really answered the scan probe, making every file
+  part download try every dead address with a 1s timeout
+
 packaging:
 * Update Windows packaging to use:
   - gcc 16.2.0posix-14.0.0-msvcrt-r2

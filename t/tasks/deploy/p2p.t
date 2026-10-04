@@ -146,7 +146,7 @@ my %find_tests = (
     },
 );
 
-plan tests => scalar @tests + keys(%find_tests);
+plan tests => scalar @tests + keys(%find_tests) + 1;
 
 my $logger = GLPI::Agent::Logger->new(
     logger => [ 'Test' ]
@@ -160,6 +160,36 @@ foreach my $test (@tests) {
     my $max = $test->{max} // 6;
     my @peers = $p2p->_getPotentialPeers($test->{address}, $max);
     cmp_deeply(\@peers, $test->{result}, $test->{name});
+}
+
+# findPeers() must only return peers that really answered the scan probe,
+# not every potential peer of the subnet
+SKIP: {
+    skip 'findPeers() filtering test only supported on linux', 1
+        unless $OSNAME eq 'linux';
+
+    GLPI::Agent::Tools::Linux->require()
+        or skip "Can't load GLPI::Agent::Tools::Linux: $EVAL_ERROR", 1;
+
+    my $p2p_local = GLPI::Agent::Task::Deploy::P2P->new(
+        logger => $logger
+    );
+
+    no warnings 'redefine', 'once';
+    local *GLPI::Agent::Tools::Linux::getInterfacesFromIfconfig = sub {
+        return { IPADDRESS => '192.0.2.10', IPMASK => '255.255.255.0', STATUS => 'up' };
+    };
+    local *GLPI::Agent::Task::Deploy::P2P::_scanPeers = sub {
+        my ($self, $port, @addresses) = @_;
+        return grep { $_ eq '192.0.2.11' } @addresses;
+    };
+
+    my @peers = $p2p_local->findPeers(62354);
+    cmp_deeply(
+        \@peers,
+        [ '192.0.2.11' ],
+        "findPeers() only returns peers answering the scan"
+    );
 }
 
 SKIP: {
