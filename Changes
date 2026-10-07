@@ -10,6 +10,8 @@ inventory:
 * Report no monitor serial for buggy LG E2011 monitors
 * fix #1247: Fix v1.20 regression: OAuth token doesn't expire
   Also enhanced token cache support
+* Support detecting ssh daemon port on windows and avoid to check ssh public key on
+  no response
 
 netdiscovery/netinventory:
 * Updated GrandStream IP phones support
