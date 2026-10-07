@@ -18,6 +18,7 @@ packaging:
 * Update Windows packaging to use:
   - gcc 16.2.0posix-14.0.0-msvcrt-r2
   - OpenSSL 3.5.9
+  - 7-Zip v26.04
   - msys2-base 20260927
 * Update MacOSX packages to use OpenSSL 3.5.9
 
