@@ -358,16 +358,21 @@ sub _getVirtualMachines {
                     $os->{FQDN} = $vm_kvp->{FQDN}
                         if !empty($vm_kvp->{FQDN});
 
-                    # VERSION: prefer OSMajorVersion (the real distro/product
-                    # version), falling back to OSVersion when it's missing -
-                    # on Linux guests OSVersion is kernel-shaped, not ideal,
-                    # but still better than leaving VERSION empty.
+                    # VERSION: only from OSMajorVersion (the real distro/product
+                    # version). No fallback to OSVersion: per hv_kvp_daemon.c
+                    # (kvp_get_os_info()), OSVersion/OSBuildNumber always come
+                    # from uname() - the kernel release string - while
+                    # OSMajorVersion is the only field sourced from
+                    # /etc/os-release's VERSION_ID. When OSMajorVersion is
+                    # absent there is no distro version available at all, and
+                    # presenting the kernel string as VERSION is actively
+                    # wrong (e.g. kernel "6.8.0" reported as if it were an
+                    # Ubuntu version), not just a degraded approximation.
                     my $version = $vm_kvp->{OSMajorVersion};
                     if (!empty($version) && !empty($vm_kvp->{OSMinorVersion})
                         && index($version, $vm_kvp->{OSMinorVersion}) < 0) {
                         $version .= '.' . $vm_kvp->{OSMinorVersion};
                     }
-                    $version = $vm_kvp->{OSVersion} if empty($version);
                     $os->{VERSION} = $version
                         if !empty($version);
 
@@ -379,7 +384,13 @@ sub _getVirtualMachines {
                     $os->{KERNEL_VERSION} = $kernel_version
                         if !empty($kernel_version);
 
-                    my $full_name = join(' ', grep { !empty($_) } $os->{NAME}, $os->{VERSION});
+                    # Local copies, not $os->{NAME}/$os->{VERSION} directly in
+                    # the grep list: grep/map alias $_ to each list element,
+                    # which autovivifies a non-existent hash key just by
+                    # referencing it - silently adding VERSION => undef to
+                    # $os even when it was never set above.
+                    my ($name_part, $version_part) = ($os->{NAME}, $os->{VERSION});
+                    my $full_name = join(' ', grep { !empty($_) } $name_part, $version_part);
                     $os->{FULL_NAME} = $full_name
                         if $full_name;
 

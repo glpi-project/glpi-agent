@@ -99,16 +99,18 @@ my %tests = (
                 { VOLUMN => 'C:\HyperV\vm2.vhdx', TOTAL => 12288 },
             ],
             IPADDRESS       => '172.25.2.239',
-            # No OSBuildNumber/OSMajorVersion for this VM - VERSION and
-            # KERNEL_VERSION both fall back to OSVersion, which on Linux is
-            # kernel-shaped (uname -r), not the real distro version. FQDN
-            # mirrors how SOAP/VMware/Host.pm reports the guest's own
-            # hostname for ESX VMs.
+            # No OSBuildNumber/OSMajorVersion for this VM - per
+            # hv_kvp_daemon.c, OSVersion is always the kernel release string
+            # (uname -r), never the distro version, so it only feeds
+            # KERNEL_VERSION here, never VERSION. With no OSMajorVersion
+            # there's no distro version available at all, so VERSION stays
+            # unset and FULL_NAME is NAME alone. FQDN mirrors how
+            # SOAP/VMware/Host.pm reports the guest's own hostname for ESX
+            # VMs.
             OPERATINGSYSTEM => {
                 NAME           => 'Ubuntu',
-                VERSION        => '6.8.0',
                 KERNEL_VERSION => '6.8.0',
-                FULL_NAME      => 'Ubuntu 6.8.0',
+                FULL_NAME      => 'Ubuntu',
                 FQDN           => 'srv-ubuntu-02.eridcservices.com',
             },
         },
