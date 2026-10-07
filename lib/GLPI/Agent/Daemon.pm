@@ -773,9 +773,11 @@ sub forked_process_event {
 
     # Send IPC_EVENT in one message to prevent concurrent syswrite() calls from
     # Parallel::ForkManager children to mix up messages
-    $self->{_ipc_out}->syswrite(IPC_EVENT.pack("S", length($event)).$event);
-    GLPI::Agent::Tools::Win32::setPoller($self->{_ipc_pollin})
-        if $OSNAME eq 'MSWin32';
+    if ($self->{_ipc_out}) {
+        $self->{_ipc_out}->syswrite(IPC_EVENT.pack("S", length($event)).$event);
+        GLPI::Agent::Tools::Win32::setPoller($self->{_ipc_pollin})
+            if $OSNAME eq 'MSWin32';
+    }
 }
 
 sub abort_child {
