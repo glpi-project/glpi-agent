@@ -940,8 +940,13 @@ sub start_Win32_OLE_Worker {
     return $worker;
 }
 
+my $default_timeout = 180;
 sub setupWorkerLogger {
     my (%params) = @_;
+
+    # Keep backend-collect-timeout config as default_timeout
+    $default_timeout = $params{config}->{'backend-collect-timeout'}
+        if $params{config} && $params{config}->{'backend-collect-timeout'};
 
     # Just create a new Logger object in worker to update default module configuration
     return defined(GLPI::Agent::Logger->new(%params))
@@ -1054,7 +1059,7 @@ sub call_not_thread_safe_api_on_win32 {
 
     # Reset timeout as shared between threads
     my $now = time;
-    my $expiration = getExpirationTime() || $now + 180;
+    my $expiration = getExpirationTime() || $now + $default_timeout;
 
     # Reduce expiration time by 10% of the remaining time to leave a chance to
     # the caller to compute any result. By default, the reducing should be 2 seconds.
