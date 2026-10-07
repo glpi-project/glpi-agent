@@ -132,13 +132,14 @@ sub loadKeyStore {
     }
 
     my $total = 0;
+    my $expired = !$expiration || time > $expiration ? 1 : 0;
 
     foreach my $store (@stores) {
 
         next unless $store;
 
         if ($certs{$store}) {
-            if ($expiration && time < $expiration) {
+            if (!$expired) {
                 $total += scalar(@{$certs{$store}});
                 next;
             } else {
@@ -233,8 +234,9 @@ sub loadKeyStore {
     $logger->debug(_log_prefix."No certificate found in (@stores) keystores")
         if !$total && $logger && @stores > 1;
 
-    # Now we can update expiration
-    $expiration = time + ($params{expiration} // 3600);
+    # Now we can reset expiration
+    $expiration = time + ($params{expiration} // 3600)
+        if $expired;
 
     # Release any thread which eventually tried to run loading concurrently
     $loadingSemaphore->up();
@@ -329,9 +331,21 @@ sub unlockKeyStore {
     # Check if it's time to free keyStore datas
     if (!$locked && $expiration && $expiration <= time) {
         foreach my $key (keys(%certs)) {
+            my $certlist = delete $certs{$key};
             next unless ref($certs{$key}) eq "ARRAY";
-            Net::SSLeay::X509_free($_) for @{$certs{$key}};
+            Net::SSLeay::X509_free($_) for @{$certlist};
         }
+    }
+}
+
+sub freeKeyStore {
+    my ($self) = @_;
+
+    lock(%locked);
+
+    foreach my $key (keys(%certs)) {
+        my $certlist = delete $certs{$key};
+        Net::SSLeay::X509_free($_) for @{$certlist};
     }
 }
 
@@ -341,20 +355,6 @@ my $_GetCurrentThreadId = Win32::API::More->Import(
 
 sub _tid {
     return GetCurrentThreadId();
-}
-
-sub END {
-    eval {
-        lock(%locked);
-        return if $locked || scalar(values(%tid));
-
-        my @stores = keys(%certs);
-        foreach my $key (@stores) {
-            my $store = delete $certs{$key};
-            next unless ref($store) eq "ARRAY";
-            Net::SSLeay::X509_free($_) for @{$store};
-        }
-    };
 }
 
 1;

@@ -408,6 +408,10 @@ sub terminate {
         delete $self->{worker_thread};
     }
 
+    # Free windows KeyStore cache memory if loaded
+    GLPI::Agent::Tools::Win32::KeyStore->freeKeyStore()
+        if $INC{'GLPI/Agent/Tools/Win32/KeyStore.pm'};
+
     $self->SUPER::terminate();
 
     threads->exit();
