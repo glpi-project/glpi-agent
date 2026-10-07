@@ -106,7 +106,7 @@ sub _getControllersFromWMI {
     my @controllers;
 
     foreach my $class (qw/
-        Win32_FloppyController Win32_IDEController Win32_SCSIController
+        Win32_IDEController Win32_SCSIController
         Win32_VideoController Win32_InfraredDevice Win32_USBController
         Win32_1394Controller Win32_PCMCIAController CIM_LogicalDevice
     /) {
