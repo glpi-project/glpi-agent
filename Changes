@@ -2,6 +2,12 @@ Revision history for GLPI agent
 
 Warning for developers: Don't change/remove any entry which doesn't concern your code
 
+1.22 not released yet
+
+deploy:
+* Add support for signed deployment packages using Ed25519 signature
+* Add glpi-sign-package.pl tool to sign deployment packages
+
 1.21 Thu, 08 Oct 2026
 
 core:
@@ -187,10 +193,6 @@ packaging:
 core:
 * fix #1194: Fix ssl-keystore option support on windows
 * fix #1193: Fix constant usage not recognized in perl 5.16
-
-deploy:
-* Add support for signed deployment packages using Ed25519 signature
-* Add glpi-sign-package.pl tool to sign deployment packages
 
 inventory:
 * fix #1149: Support NVMe SSD storage disks on MacOSX
