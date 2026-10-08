@@ -3,6 +3,6 @@ package GLPI::Agent::Task::Inventory::Version;
 use strict;
 use warnings;
 
-use constant VERSION => "1.27";
+use constant VERSION => "1.28";
 
 1;
