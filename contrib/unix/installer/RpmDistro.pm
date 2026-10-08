@@ -192,6 +192,11 @@ sub _prepareDistro {
     my $v = int($self->{_version} =~ /^(\d+)/ ? $1 : 0)
         or return;
 
+    if ($v >= 8 && $self->{_name} =~ /oracle linux|rocky|almalinux|centos/i) {
+        my $ret = $self->run("dnf -y install 'dnf-command(config-manager)'");
+        die "Can't install DNF config-manager plugin\n" if $ret;
+    }
+
     # Enable repo for RedHat or CentOS
     if ($self->{_name} =~ /red\s?hat/i) {
         # Since RHEL 8, enable codeready-builder repo
