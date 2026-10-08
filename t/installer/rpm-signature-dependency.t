@@ -46,4 +46,20 @@ like($commands[1], qr/'perl\(Crypt::PK::Ed25519\)'/, 'Signed installation reques
 ok(!grep(/Crypt::PK::Ed25519/, @extracted), 'Crypto dependency is not extracted as an embedded agent RPM');
 is(scalar(@commands), 2, 'Both installations execute the package manager');
 
+{
+    no warnings 'redefine';
+    my @preparation;
+    local *LinuxDistro::verbose = sub { return; };
+    local *LinuxDistro::run = sub {
+        push @preparation, $_[1];
+        die "Reached repository setup\n" if $_[1] =~ /config-manager --set-enabled/;
+        return 0;
+    };
+    my $rocky = bless { _name => 'Rocky Linux', _version => '9.7' }, 'RpmDistro';
+    eval { $rocky->_prepareDistro(); };
+    like($@, qr/Reached repository setup/, 'Rocky repository preparation reaches CRB');
+    is($preparation[0], "dnf -y install 'dnf-command(config-manager)'", 'Install config-manager before using it on minimal Rocky');
+    is($preparation[1], 'dnf config-manager --set-enabled crb', 'Enable CRB after installing the plugin');
+}
+
 done_testing();
