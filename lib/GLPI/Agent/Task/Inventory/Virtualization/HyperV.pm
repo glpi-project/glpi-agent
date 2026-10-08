@@ -221,7 +221,36 @@ sub _getVirtualMachines {
                 } elsif ($name eq 'OSName') {
                     $kvp{$vm_guid}{OSName} = $data;
                 } elsif ($name eq 'OSVersion') {
+                    # On Linux guests, this is the kernel release string
+                    # (uname -r), not the distro version - see OSMajorVersion
+                    # below for the real distro/product version. Kept as a
+                    # fallback for VERSION and as the source for KERNEL_VERSION.
                     $kvp{$vm_guid}{OSVersion} = $data;
+                } elsif ($name eq 'OSBuildNumber') {
+                    # Genuine Windows build number on Windows guests; on Linux
+                    # guests the KVP daemon repurposes this key for the same
+                    # kernel release string as OSVersion. Either way it's the
+                    # best source for KERNEL_VERSION, preferred over OSVersion.
+                    $kvp{$vm_guid}{OSBuildNumber} = $data;
+                } elsif ($name eq 'OSMajorVersion') {
+                    # The real distro/product version on Linux (e.g. "9.8" for
+                    # RHEL 9.8, from /etc/os-release VERSION_ID) - distinct
+                    # from OSVersion/OSBuildNumber, which are kernel-shaped.
+                    $kvp{$vm_guid}{OSMajorVersion} = $data;
+                } elsif ($name eq 'OSMinorVersion') {
+                    $kvp{$vm_guid}{OSMinorVersion} = $data;
+                } elsif ($name eq 'FullyQualifiedDomainName') {
+                    # This is the guest OS own hostname/FQDN, as reported by
+                    # the guest itself via Integration Services - not the
+                    # Hyper-V host's, nor the VM's display name (ElementName).
+                    # Reported under OPERATINGSYSTEM.FQDN, mirroring how
+                    # SOAP/VMware/Host.pm already reports the ESX guest's own
+                    # hostname (VIRTUALMACHINES.HOSTNAME was tried and
+                    # reverted from this same PR: a previous attempt reported
+                    # the Hyper-V host's own FQDN there, which does not
+                    # belong on a VM entry - this is a different, per-guest
+                    # value using the already-accepted field for it).
+                    $kvp{$vm_guid}{FQDN} = $data;
                 }
             }
         }
@@ -310,17 +339,68 @@ sub _getVirtualMachines {
             if ($vm_kvp) {
                 $machine->{IPADDRESS} = $vm_kvp->{IPADDRESS}
                     if defined $vm_kvp->{IPADDRESS};
-                if ($vm_kvp->{OSName} || $vm_kvp->{OSVersion}) {
-                    my $full_name = join(' ',
-                        grep { !empty($_) }
-                        $vm_kvp->{OSName}, $vm_kvp->{OSVersion}
-                    );
-                    $machine->{OPERATINGSYSTEM} = { FULL_NAME => $full_name }
+                # Also attach the resolved IP to the first network adapter so
+                # GLPI can create the corresponding NetworkPort/IPAddress: the
+                # flat VIRTUALMACHINES.IPADDRESS field has no consumer on the
+                # server side, only NETWORKS[].IPADDRESS does. KVP only gives
+                # one IP per VM, not per adapter, so we can't tell which NIC
+                # it belongs to when there is more than one.
+                if (defined $machine->{IPADDRESS} && $machine->{NETWORKS} && @{$machine->{NETWORKS}}) {
+                    $machine->{NETWORKS}[0]{IPADDRESS} = $machine->{IPADDRESS};
+                }
+                if ($vm_kvp->{OSName} || $vm_kvp->{OSVersion} || $vm_kvp->{OSBuildNumber} || $vm_kvp->{OSMajorVersion} || $vm_kvp->{FQDN}) {
+                    my $os = {};
+                    $os->{NAME} = $vm_kvp->{OSName}
+                        if !empty($vm_kvp->{OSName});
+
+                    # Guest's own hostname/FQDN, mirroring how SOAP/VMware/Host.pm
+                    # already reports it for ESX VMs (OPERATINGSYSTEM.FQDN).
+                    $os->{FQDN} = $vm_kvp->{FQDN}
+                        if !empty($vm_kvp->{FQDN});
+
+                    # VERSION: only from OSMajorVersion (the real distro/product
+                    # version). No fallback to OSVersion: per hv_kvp_daemon.c
+                    # (kvp_get_os_info()), OSVersion/OSBuildNumber always come
+                    # from uname() - the kernel release string - while
+                    # OSMajorVersion is the only field sourced from
+                    # /etc/os-release's VERSION_ID. When OSMajorVersion is
+                    # absent there is no distro version available at all, and
+                    # presenting the kernel string as VERSION is actively
+                    # wrong (e.g. kernel "6.8.0" reported as if it were an
+                    # Ubuntu version), not just a degraded approximation.
+                    my $version = $vm_kvp->{OSMajorVersion};
+                    if (!empty($version) && !empty($vm_kvp->{OSMinorVersion})
+                        && index($version, $vm_kvp->{OSMinorVersion}) < 0) {
+                        $version .= '.' . $vm_kvp->{OSMinorVersion};
+                    }
+                    $os->{VERSION} = $version
+                        if !empty($version);
+
+                    # KERNEL_VERSION: prefer OSBuildNumber, falling back to
+                    # OSVersion if that's the only kernel-shaped value we got.
+                    my $kernel_version = !empty($vm_kvp->{OSBuildNumber})
+                        ? $vm_kvp->{OSBuildNumber}
+                        : $vm_kvp->{OSVersion};
+                    $os->{KERNEL_VERSION} = $kernel_version
+                        if !empty($kernel_version);
+
+                    # Local copies, not $os->{NAME}/$os->{VERSION} directly in
+                    # the grep list: grep/map alias $_ to each list element,
+                    # which autovivifies a non-existent hash key just by
+                    # referencing it - silently adding VERSION => undef to
+                    # $os even when it was never set above.
+                    my ($name_part, $version_part) = ($os->{NAME}, $os->{VERSION});
+                    my $full_name = join(' ', grep { !empty($_) } $name_part, $version_part);
+                    $os->{FULL_NAME} = $full_name
                         if $full_name;
+
+                    $machine->{OPERATINGSYSTEM} = $os
+                        if %$os;
                 }
                 $logger->debug2(
                     "Hyper-V: VM '$machine->{NAME}' KVP data: " .
                     "ip=" . ($machine->{IPADDRESS} // 'N/A') . ", " .
+                    "fqdn=" . ($machine->{OPERATINGSYSTEM}{FQDN} // 'N/A') . ", " .
                     "os=" . ($machine->{OPERATINGSYSTEM}{FULL_NAME} // 'N/A')
                 ) if $logger;
             } else {
