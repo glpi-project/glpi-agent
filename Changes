@@ -17,6 +17,7 @@ inventory:
   Also enhanced token cache support
 * Support detecting ssh daemon port on windows and avoid to check ssh public key on
   no response
+* Updated pci.ids to 2026.10.07 version
 
 netdiscovery/netinventory:
 * Updated GrandStream IP phones support

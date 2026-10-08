@@ -1,8 +1,8 @@
 #
 #	List of PCI IDs
 #
-#	Version: 2026.09.24
-#	Date:    2026-09-24 03:15:01
+#	Version: 2026.10.07
+#	Date:    2026-10-07 03:15:02
 #
 #	Maintained by Albert Pool, Martin Mares, and other volunteers from
 #	the PCI ID Project at https://pci-ids.ucw.cz/.
@@ -3131,7 +3131,7 @@
 		148c 2373  Radeon RX 470
 		148c 2377  Red Devil RX 580 8G Golden
 		148c 2378  Radeon RX 580
-		148c 2379  Radeon RX 570 4G [Red Dragon]
+		148c 2379  Radeon RX 570 [Red Dragon]
 		148c 2391  Radeon RX 590 [Red Devil]
 		1682 9470  Radeon RX 470
 		1682 9480  Radeon RX 480
@@ -9718,6 +9718,12 @@
 		1761 1134  Pickering Interfaces 50-297-044
 		1761 1135  Pickering Interfaces 50-297-050
 		1761 1139  Pickering Interfaces 50-297-113
+		1761 4442  50-190-001
+		1761 4443  50-190-002
+		1761 4444  50-190-101
+		1761 4445  50-190-102
+		1761 4446  50-190-201
+		1761 4447  50-190-207
 # MIL-STD-1553B Board
 		e1c5 0001  TE1-PCI
 		e1c5 0005  TA1-PCI
@@ -13675,6 +13681,7 @@
 	2900  GB100 [Reserved Dev ID A]
 	2901  GB100 [B200]
 	2909  GB100 [HGX B200 168GB]
+	290a  GB100 [B200]
 	2920  GB100 [TS4 / B100]
 	2924  GB100
 	2925  GB100
@@ -13749,11 +13756,18 @@
 	2f98  TB500 RP x2
 	2f99  TB500 RP x1
 	3000  GR100 [Reserved Dev ID A]
+	3002  GR100
 	3021  GR100 [PCIe Faber]
 	3040  GR100 [Reserved Dev ID B]
-	30c0  GR102
+	3041  GR100
+	307e  GR100
+	3080  GR102 [Reserved Dev ID A]
+	30c0  GR102 [Reserved Dev ID B]
+	30ff  GR102
 	3180  GB110 [Reserved Dev ID A]
 	3182  GB110 [B300 SXM6 AC]
+	3183  GB110
+	3184  GB110
 	31a1  GB110 [GB300 MaxQ]
 	31c0  GB110 [Reserved Dev ID B]
 	31c2  GB110 [GB300]
@@ -24380,6 +24394,7 @@
 		1761 3320  50-297A-050
 		1761 3321  50-297A-056
 		1761 3353  50-110B-121
+		1761 335d  50-190A-002
 		1761 3366  41-625-004
 		1761 3368  50-297A-130
 		1761 3372  50-297A-122
@@ -28174,6 +28189,7 @@
 		1dd8 500f  DSC2-200 50/100/200G 2-port 32G RAM 64G eMMC G2 DPU R4-T
 		1dd8 5200  DSC3-2Q400 100/200/400G 2-port DDR5 128G eMMC G3 Services Card
 		1dd8 5201  POLLARA-1Q400 100/200/400G 1-port Card
+		1dd8 5400  ROCm Emulated RDMA NIC
 	1003  DSC Ethernet Controller VF
 		1dd8 100e  Distributed Services Card
 		1dd8 4000  Naples 100Gb 2-port QSFP28 x16 8GB
@@ -30672,7 +30688,13 @@
 2159  AIC Semiconductor (Shanghai) Co., Ltd.
 	8d90  AIC8800M80X2P Network controller
 215a  Suzhou Ruixin Integrated Circuit Technology Co., Ltd.
+	0301  D35 Family [DFU-3531]
+	0302  D35 Family [DFU-3512]
+	0303  D35 Family [DFU-3520]
+	0304  D35 Family [CIM-5000L]
+	0305  D35 Family [DFU-3541C]
 215e  SmarCo HT Tech Inc.
+2165  Dnotitia Inc.
 21b4  Hunan Goke Microelectronics Co., Ltd
 21c3  21st Century Computer Corp.
 22b8  Flex-Logix Technologies
