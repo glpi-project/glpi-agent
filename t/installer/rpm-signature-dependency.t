@@ -14,7 +14,7 @@ my @extracted;
 {
     no warnings 'redefine';
     local *RpmDistro::_extract_rpm = sub {
-        my ($self, $package) = @_;
+        my $package = $_[1];
         push @extracted, $package;
         return "$package.rpm";
     };
@@ -33,6 +33,9 @@ my @extracted;
             _options => { 'deploy-public-key' => $signed ? ('a' x 64) : '' },
             _skip => { dmidecode => 1 },
             _type => 'inventory,deploy,collect',
+            _name => 'Fedora',
+            _version => 'test',
+            _release => 'Fedora test',
         }, 'RpmDistro';
         $distro->install();
     }
