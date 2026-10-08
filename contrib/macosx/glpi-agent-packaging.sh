@@ -329,9 +329,8 @@ cpanm --notest -v --no-man-pages $CPANM_OPTS LWP::Protocol::https              \
     URI::Escape Net::Ping Parallel::ForkManager Net::SNMP Net::NBName DateTime \
     Thread::Queue Parse::EDID YAML::Tiny Data::UUID Cpanel::JSON::XS
 
-echo '===== Installing Crypt::DES & Crypt::Rijndael perl modules ====='
-cpanm --notest -v --no-man-pages $CPANM_OPTS Crypt::DES Crypt::Rijndael
-
+echo '===== Installing Crypt::DES, Crypt::Rijndael & Crypt::Ed25519 perl modules ====='
+cpanm --notest -v --no-man-pages $CPANM_OPTS Crypt::DES Crypt::Rijndael Crypt::Ed25519
 # Net::Write::Layer2 depends on Net::PCAP but it fails on MacOSX
 
 rm -rf "$ROOT/pkg/payload${BUILD_PREFIX%%/*}"

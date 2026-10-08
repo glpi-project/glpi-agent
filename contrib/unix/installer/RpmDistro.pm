@@ -115,6 +115,8 @@ sub install {
         }
     }
     $pkgs{"glpi-agent-cron"} = 1 if $self->{_cron};
+    $pkgs{"perl(Crypt::PK::Ed25519)"} = 1
+        if $self->{_options}->{"deploy-public-key"};
 
     # Check installed packages
     if ($self->{_packages}) {
@@ -147,6 +149,10 @@ sub install {
         map { $pkgs{$_} = $_ } $self->getDeps("rpm");
 
         foreach my $pkg (@pkgs) {
+            if ($pkg eq "perl(Crypt::PK::Ed25519)") {
+                $pkgs{$pkg} = "'$pkg'";
+                next;
+            }
             $pkgs{$pkg} = $self->_extract_rpm($pkg);
         }
 
@@ -185,6 +191,11 @@ sub _prepareDistro {
 
     my $v = int($self->{_version} =~ /^(\d+)/ ? $1 : 0)
         or return;
+
+    if ($v >= 8 && $self->{_name} =~ /oracle linux|rocky|almalinux|centos/i) {
+        my $ret = $self->run("dnf -y install 'dnf-command(config-manager)'");
+        die "Can't install DNF config-manager plugin\n" if $ret;
+    }
 
     # Enable repo for RedHat or CentOS
     if ($self->{_name} =~ /red\s?hat/i) {

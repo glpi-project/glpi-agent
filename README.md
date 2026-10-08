@@ -113,6 +113,10 @@ Mandatory Perl modules:
 * Cpanel::JSON::XS
 * URI::Escape
 
+Optional Perl modules:
+
+* Crypt::Ed25519, for signed packages support
+
 Mandatory Perl modules for P2P Support:
 * Net::Ping
 * Parallel::ForkManager
