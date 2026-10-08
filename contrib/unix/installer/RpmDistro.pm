@@ -115,6 +115,8 @@ sub install {
         }
     }
     $pkgs{"glpi-agent-cron"} = 1 if $self->{_cron};
+    $pkgs{"perl(Crypt::PK::Ed25519)"} = 1
+        if $self->{_options}->{"deploy-public-key"};
 
     # Check installed packages
     if ($self->{_packages}) {
@@ -147,6 +149,10 @@ sub install {
         map { $pkgs{$_} = $_ } $self->getDeps("rpm");
 
         foreach my $pkg (@pkgs) {
+            if ($pkg eq "perl(Crypt::PK::Ed25519)") {
+                $pkgs{$pkg} = "'$pkg'";
+                next;
+            }
             $pkgs{$pkg} = $self->_extract_rpm($pkg);
         }
 
