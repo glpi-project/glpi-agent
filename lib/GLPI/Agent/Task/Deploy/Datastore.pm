@@ -129,13 +129,14 @@ sub getP2PNet {
 }
 
 sub saveP2PNet {
-    my ($self, $peers) = @_;
+    my ($self, $peers, $force) = @_;
 
     return unless $self->{p2pnetstorage};
 
     # Avoid to save the peers cache too often. This is not even critical if
     # the p2pnet peers cache is not saved after the last updates
-    if (!$self->{save_expiration} || time > $self->{save_expiration}) {
+    # But $force can be set by caller if needed
+    if (!$self->{save_expiration} || time > $self->{save_expiration} || $force) {
         $self->{p2pnetstorage}->save( name => "p2pnet", data => $peers );
         $self->{save_expiration} = time + 60;
     }

@@ -4,6 +4,12 @@ Warning for developers: Don't change/remove any entry which doesn't concern your
 
 1.22 not yet released
 
+deploy:
+* p2p support optimization: Refacto to transform findPeers() to return as quickly
+  as possible with a limited number of available peers. The method is also callable
+  again to obtain new possible peers when previous don't have requested file parts.
+  This should reduce a lot the duration of peer discovery phase for most peers.
+
 1.21 Thu, 08 Oct 2026
 
 core:

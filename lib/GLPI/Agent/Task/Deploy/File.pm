@@ -171,6 +171,7 @@ sub download {
         } else {
             my $p2p = GLPI::Agent::Task::Deploy::P2P->new(
                 scan_timeout    => 1,
+                max_scan        => 32,
                 datastore       => $self->{datastore},
                 max_worker      => $workers,
                 logger          => $self->{logger}
@@ -181,8 +182,16 @@ sub download {
             };
             $self->{logger}->debug("failed to enable P2P: $EVAL_ERROR")
                 if $EVAL_ERROR;
+            # But continue only if we finally found at least one available peer
+            while (!@peers && $self->{p2pnet} && $self->{p2pnet}->hasPotentialPeers()) {
+                eval {
+                    @peers = $self->{p2pnet}->findPeers($port);
+                };
+                $self->{logger}->debug("failed to find new P2P peers: $EVAL_ERROR")
+                    if $EVAL_ERROR;
+            }
         }
-    };
+    }
 
     my $lastPeer;
     my $nextPathUpdate = _getNextPathUpdateTime();
@@ -200,7 +209,8 @@ sub download {
         }
 
         # try to download from peers
-        foreach my $peer (@peers) {
+        while (@peers) {
+            my $peer = shift @peers;
             my $success = $self->_downloadPeer($peer, $sha512, $path, $port);
             if ($success) {
                 $lastPeer = $peer;
@@ -210,6 +220,17 @@ sub download {
             if ( time - $nextPathUpdate > 0 ) {
                 $path = $self->normalizedPartFilePath($sha512);
                 $nextPathUpdate = _getNextPathUpdateTime();
+            }
+
+            # Try to get next P2P peers
+            if ($self->{p2p}) {
+                while (!@peers && $self->{p2pnet} && $self->{p2pnet}->hasPotentialPeers()) {
+                    eval {
+                        @peers = $self->{p2pnet}->findPeers($port);
+                    };
+                    $self->{logger}->debug("failed to find new P2P peers: $EVAL_ERROR")
+                        if $EVAL_ERROR;
+                }
             }
         }
 

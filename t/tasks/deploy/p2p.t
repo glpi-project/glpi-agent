@@ -153,8 +153,17 @@ my $logger = GLPI::Agent::Logger->new(
 );
 
 my $p2p = GLPI::Agent::Task::Deploy::P2P->new(
-    logger => $logger
+    max_scan    => 8,
+    logger      => $logger
 );
+
+# Set interfaces address to loopback only
+$p2p->{addresses} = [
+    {
+        ip   => "127.0.0.0",
+        mask => "255.255.255.224"
+    }
+];
 
 foreach my $test (@tests) {
     my $max = $test->{max} // 6;

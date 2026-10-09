@@ -25,6 +25,7 @@ sub new {
         scan_timeout  => $params{scan_timeout}  || 5,
         max_peers     => $params{max_peers}     || 512,
         max_size      => $params{max_size}      || 5000,
+        max_scan      => $params{max_scan}      || 32,
         p2pnet        => {}
     };
 
@@ -39,111 +40,124 @@ sub new {
     return $self;
 }
 
+sub hasPotentialPeers {
+    my ($self) = @_;
+
+    return $self->{potential_peers} && @{$self->{potential_peers}} ? 1 : 0;
+}
+
 sub findPeers {
     my ($self, $port) = @_;
 
     $self->{logger}->info("looking for a peer in the network");
 
-    if ((!$self->{p2pnet} || !$self->{p2pnet}->{peers}) && $self->{datastore}) {
-        $self->{p2pnet} = $self->{datastore}->getP2PNet() || {};
-    }
+    # Only apply this logic after all potential peers have been scanned
+    unless ($self->{potential_peers} && @{$self->{potential_peers}}) {
+        # Read cached file if required
+        if ((!$self->{p2pnet} || !$self->{p2pnet}->{peers}) && $self->{datastore}) {
+            $self->{p2pnet} = $self->{datastore}->getP2PNet() || {};
+        }
 
-    # We don't want to update the peer list if some exist and none has expired
-    if ($self->{p2pnet} && $self->{p2pnet}->{peerscount}) {
-        my $now = time;
-        if (! any { $self->{p2pnet}->{$_}->{expires} < $now } @{$self->{p2pnet}->{peers}}) {
-            return grep {
-                $self->{p2pnet}->{$_}->{active}
-            } @{$self->{p2pnet}->{peers}};
+        # We don't want to update the peer list if some exist and none has expired
+        if ($self->{p2pnet} && $self->{p2pnet}->{peerscount}) {
+            my $now = time;
+            if (! any { $self->{p2pnet}->{$_}->{expires} < $now } @{$self->{p2pnet}->{peers}}) {
+                return grep {
+                    $self->{p2pnet}->{$_}->{active}
+                } @{$self->{p2pnet}->{peers}};
+            }
         }
     }
 
-    my @interfaces;
+    # Get interfaces adresses on first call
+    unless ($self->{addresses}) {
+        my @interfaces;
 
-    if ($OSNAME eq 'linux') {
-        GLPI::Agent::Tools::Linux->require();
-        @interfaces = GLPI::Agent::Tools::Linux::getInterfacesFromIfconfig();
+        if ($OSNAME eq 'linux') {
+            GLPI::Agent::Tools::Linux->require();
+            @interfaces = GLPI::Agent::Tools::Linux::getInterfacesFromIfconfig();
 
-    } elsif ($OSNAME eq 'MSWin32') {
-        GLPI::Agent::Tools::Win32->require();
-        @interfaces = GLPI::Agent::Tools::Win32::getInterfaces();
-    }
+        } elsif ($OSNAME eq 'MSWin32') {
+            GLPI::Agent::Tools::Win32->require();
+            @interfaces = GLPI::Agent::Tools::Win32::getInterfaces();
+        }
 
-    if (!@interfaces) {
-        $self->{logger}->info("No network interfaces found");
-        return;
-    }
+        if (!@interfaces) {
+            $self->{logger}->info("No network interfaces found");
+            return;
+        }
 
-    my @addresses;
+        foreach my $interface (@interfaces) {
+            # if interface has both ip and netmask setup then push the address
+            next unless $interface->{IPADDRESS};
+            next unless $interface->{IPMASK};
+            next unless lc($interface->{STATUS}) eq 'up';
 
-    foreach my $interface (@interfaces) {
-        #if interface has both ip and netmask setup then push the address
-        next unless $interface->{IPADDRESS};
-        next unless $interface->{IPMASK};
-        next unless lc($interface->{STATUS}) eq 'up';
-
-        push @addresses, {
-            ip   => $interface->{IPADDRESS},
-            mask => $interface->{IPMASK}
-        };
-    }
-
-    if (!@addresses) {
-        $self->{logger}->info("No local address found");
-        return;
-    }
-
-    my @potential_peers;
-
-    foreach my $address (@addresses) {
-        push @potential_peers, $self->_getPotentialPeers($address);
-    }
-
-    if (!@potential_peers) {
-        $self->{logger}->info("No neighbour address found");
-        return;
-    }
-
-    my %peers;
-    # Keep previously known addresses only if still in potential peers
-    foreach my $peer (@potential_peers) {
-        if ($self->{p2pnet}->{$peer}) {
-            $peers{$peer} = $self->{p2pnet}->{$peer};
-        } else {
-            $peers{$peer} = {
-                expires => time + $self->{cache_timeout},
-                active  => 1
+            push @{$self->{addresses}}, {
+                ip   => $interface->{IPADDRESS},
+                mask => $interface->{IPMASK}
             };
         }
     }
 
-    # Only keep active peers in the list
-    my @peers = grep {
-        $peers{$_}->{active}
-    } keys(%peers);
+    # Get potential peers from interfaces addresses when potential list is empty
+    unless ($self->{potential_peers} && @{$self->{potential_peers}}) {
+
+        unless ($self->{addresses} && @{$self->{addresses}}) {
+            $self->{logger}->info("No local address found");
+            return;
+        }
+
+        $self->{potential_peers} = [];
+        foreach my $address (@{$self->{addresses}}) {
+            push @{$self->{potential_peers}}, $self->_getPotentialPeers($address);
+        }
+
+        unless (@{$self->{potential_peers}}) {
+            $self->{logger}->info("No neighbour address found");
+            return;
+        }
+    }
+
+    # Keep previously known addresses only if still in potential peers
+    my $now = time;
+    my @peers;
+    my $max_to_scan = $self->{max_scan};
+    while (@{$self->{potential_peers}} && $max_to_scan > 0) {
+        my $peer = shift @{$self->{potential_peers}};
+        next if $self->{p2pnet}->{$peer} && !$self->{p2pnet}->{$peer}->{active} && $now < $self->{p2pnet}->{$peer}->{expires};
+        $self->{p2pnet}->{$peer}->{expires} = $now + $self->{cache_timeout};
+        $self->{p2pnet}->{$peer}->{active}  = 1;
+        $max_to_scan--;
+        push @peers, $peer;
+    }
 
     # Finally filter out the list from the ones not responding
-    my @active_peers = $self->_scanPeers( $port, @peers);
+    my @active_peers = $self->_scanPeers($port, @peers);
 
+    $now = time;
     my %not_active = map { $_ => 0 } @peers;
     foreach my $peer (@active_peers) {
         delete $not_active{$peer};
     }
     foreach my $peer (keys(%not_active)) {
-        $peers{$peer} = {
-            expires => time + $self->{cache_timeout},
-            active  => 0
-        };
+        $self->{p2pnet}->{$peer}->{expires} = $now + $self->{cache_timeout};
+        $self->{p2pnet}->{$peer}->{active}  = 0;
     }
 
-    $self->{p2pnet} = \%peers;
-    $self->{p2pnet}->{peers} = \@peers;
-    $self->{p2pnet}->{peerscount} = @peers;
+    if (@active_peers) {
+        my %peers = map { $_ => 1 } @{$self->{p2pnet}->{peers} // []};
+        push @{$self->{p2pnet}->{peers}}, grep { !$peers{$_} } @active_peers;
+        $self->{p2pnet}->{peerscount} = scalar(@{$self->{p2pnet}->{peers}});
+    }
 
     # Save peers list and status
-    $self->{datastore}->saveP2PNet($self->{p2pnet}) if ($self->{datastore});
+    if ($self->{datastore}) {
+        my $force = $self->{potential_peers} && @{$self->{potential_peers}} ? 0 : 1;
+        $self->{datastore}->saveP2PNet($self->{p2pnet}, $force);
+    }
 
-    return @peers;
+    return @active_peers;
 }
 
 sub forgetPeer {
@@ -151,20 +165,20 @@ sub forgetPeer {
 
     return unless $self->{p2pnet} && $self->{p2pnet}->{$peer};
 
-    $self->{p2pnet}->{$peer} = {
-        expires => time + $self->{cache_timeout},
-        active  => 0
-    };
+    my $now = time;
+
+    $self->{p2pnet}->{$peer}->{expires} = $now + $self->{cache_timeout};
+    $self->{p2pnet}->{$peer}->{active}  = 0;
 
     # Update active peers list
     my @peers = grep {
-        $self->{p2pnet}->{$_}->{active}
+        $self->{p2pnet}->{$_}->{active} && $self->{p2pnet}->{$peer}->{expires} < $now
     } @{$self->{p2pnet}->{peers}};
     $self->{p2pnet}->{peers} = \@peers;
     $self->{p2pnet}->{peerscount} = @peers;
 
     # Save peers list and status
-    $self->{datastore}->saveP2PNet($self->{p2pnet}) if ($self->{datastore});
+    $self->{datastore}->saveP2PNet($self->{p2pnet}) if $self->{datastore};
 }
 
 sub _getPotentialPeers {
