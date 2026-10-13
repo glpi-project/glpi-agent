@@ -42,6 +42,7 @@ jobs:
       win32-signing: ${{ steps.set-version.outputs.win32-signing }}
       macosx-signing: ${{ steps.set-version.outputs.macosx-signing }}
       macosx-notarization: ${{ steps.set-version.outputs.macosx-notarization }}
+      rpm-signing: ${{ steps.set-version.outputs.rpm-signing }}
 
     steps:
     - uses: actions/checkout@v6
@@ -54,6 +55,13 @@ jobs:
             echo "win32-signing=yes" >>$GITHUB_OUTPUT
         else
             echo "win32-signing=no" >>$GITHUB_OUTPUT
+        fi
+        if [ "${{ vars.RPM_SIGNING }}" == "no" ]; then
+            RPM_SIGNING="no"
+        elif [ -n "$RPMSIGN_HOST" ]; then
+            RPM_SIGNING="yes"
+        else
+            RPM_SIGNING="no"
         fi
         if [ -n "$APPSIGNID" -a -n "$INSTSIGNID" ]; then
             echo "macosx-signing=yes" >>$GITHUB_OUTPUT
@@ -120,6 +128,7 @@ jobs:
                 echo "build=yes" >>$GITHUB_OUTPUT
                 echo "tag_name=development-$VERSION" >>$GITHUB_OUTPUT
                 NOTARIZE="no"
+                RPM_SIGNING="no"
             fi
         fi
         echo "version=$VERSION" >>$GITHUB_OUTPUT
@@ -146,6 +155,8 @@ jobs:
         # Set user and mail for nightly release
         echo "user-name=$(git log --format='%an' HEAD^!)" >>$GITHUB_OUTPUT
         echo "user-email=$(git log --format='%ae' HEAD^!)" >>$GITHUB_OUTPUT
+        # Set if rpm-signing is required
+        echo "rpm-signing=$RPM_SIGNING" >>$GITHUB_OUTPUT
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -153,6 +164,7 @@ jobs:
         CODESIGN_HOST: ${{ secrets.CODESIGN_HOST }}
         APPSIGNID: ${{ vars.MACOSX_APPSIGNID }}
         INSTSIGNID: ${{ vars.MACOSX_INSTSIGNID }}
+        RPMSIGN_HOST: ${{ secrets.RPMSIGN_HOST }}
     - name: Generate release description
       id: github-release-body
       if: ${{ steps.set-version.outputs.create-release == 'yes' }}
@@ -589,13 +601,41 @@ jobs:
         sudo apt -y install rpm devscripts \
             libfile-which-perl libuniversal-require-perl libmodule-install-perl
       shell: bash
+    - name: Prepare for remote Rpm Signing
+      if: ${{ needs.setup-release.outputs.rpm-signing == 'yes' }}
+      run: |
+        mkdir ~/.ssh
+        chmod 700 ~/.ssh
+        echo "$RPMSIGN_KNOWNHOST"                  > ~/.ssh/known_hosts
+        echo "$RPMSIGN_PRIVATE"                    > ~/.ssh/rpmsign.key
+        echo "Host rpmsign"                        > ~/.ssh/config
+        echo "    HostName $RPMSIGN_HOST"          >>~/.ssh/config
+        echo "    Port $RPMSIGN_PORT"              >>~/.ssh/config
+        echo "    User $RPMSIGN_USER"              >>~/.ssh/config
+        echo "    IdentityFile ~/.ssh/rpmsign.key" >>~/.ssh/config
+        chmod 600 ~/.ssh/*
+      shell: bash
+      env:
+        RPMSIGN_KNOWNHOST: ${{ secrets.RPMSIGN_KNOWNHOST }}
+        RPMSIGN_PRIVATE: ${{ secrets.RPMSIGN_PRIVATE }}
+        RPMSIGN_HOST: ${{ secrets.RPMSIGN_HOST }}
+        RPMSIGN_USER: ${{ secrets.RPMSIGN_USER }}
+        RPMSIGN_PORT: ${{ secrets.RPMSIGN_PORT }}
     - name: Build rpm packages
       id: rpmbuild
       run: |
-        contrib/unix/glpi-agent-rpm-build.sh --nodeps
+        contrib/unix/glpi-agent-rpm-build.sh --nodeps --sign $RPM_SIGNING
       shell: bash
+      env:
+        RPM_SIGNING: ${{ needs.setup-release.outputs.rpm-signing }}
     - name: Test rpm local install & uninstall
       run: |
+        if [ "$RPM_SIGNING" == "yes" ]; then
+            # We can cleanup signing environment
+            rm -f private.key ~/.ssh/config ~/.ssh/known_hosts
+            # Import rpm gpg public key for install testing
+            rpm --import contrib/unix/RPM-GPG-KEY-teclib
+        fi
         sudo rpm -ivh --nodeps ${{ steps.rpmbuild.outputs.glpi-agent-rpm }} \
             ${{ steps.rpmbuild.outputs.glpi-agent-task-network-rpm }} \
             ${{ steps.rpmbuild.outputs.glpi-agent-task-collect-rpm }} \
@@ -608,12 +648,15 @@ jobs:
             glpi-agent-task-deploy glpi-agent-task-wakeonlan \
             glpi-agent-task-esx glpi-agent-cron glpi-agent-iec61850
       shell: bash
+      env:
+        RPM_SIGNING: ${{ needs.setup-release.outputs.rpm-signing }}
     - name: Upload built rpm noarch artifacts
       uses: actions/upload-artifact@v7
       with:
         name: RPM-Build-noarch
         path: |
           ${{ steps.rpmbuild.outputs.rpmdir }}/noarch/*.rpm
+          contrib/unix/RPM-GPG-KEY-teclib
     - name: Upload built rpm x86_64 artifacts
       uses: actions/upload-artifact@v7
       with:
@@ -632,7 +675,7 @@ jobs:
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
       run: |
         RPMDIR=`rpm --eval "%{_rpmdir}"`
-        gh release upload ${{ needs.setup-release.outputs.tag_name }} $RPMDIR/*/*.rpm
+        gh release upload ${{ needs.setup-release.outputs.tag_name }} $RPMDIR/*/*.rpm contrib/unix/RPM-GPG-KEY-teclib
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -660,11 +703,11 @@ jobs:
       id: installer-build
       run: |
         contrib/unix/make-linux-installer.sh --version $VERSION --rpm *.rpm \
-            contrib/unix/glpi-agent.init.redhat \
+            contrib/unix/glpi-agent.init.redhat contrib/unix/RPM-GPG-KEY-teclib \
             --deb *.deb --snap *.snap
         mv glpi-agent-$VERSION-linux-installer.pl glpi-agent-$VERSION-with-snap-linux-installer.pl
         contrib/unix/make-linux-installer.sh --version $VERSION --rpm *.rpm \
-            contrib/unix/glpi-agent.init.redhat \
+            contrib/unix/glpi-agent.init.redhat contrib/unix/RPM-GPG-KEY-teclib \
             --deb *.deb
         ls -l
         sha1sum *.rpm *.deb *.snap *.pl
@@ -848,7 +891,7 @@ jobs:
       run: |
         # Clean up not published files from Debian-Build
         rm -f *.buildinfo *.changes
-        sha256sum *$VERSION* > glpi-agent-$VERSION.sha256
+        sha256sum *$VERSION* RPM-GPG-KEY-teclib > glpi-agent-$VERSION.sha256
         gh release upload ${{ needs.setup-release.outputs.tag_name }} glpi-agent-$VERSION.sha256
       shell: bash
       env:
@@ -977,7 +1020,7 @@ jobs:
         chmod +x github-nightly-description.sh
         cd glpi-agent
         echo "Generating glpi-agent ${{ needs.setup-release.outputs.version }} packages sha256 file"
-        sha256sum *${{ needs.setup-release.outputs.version }}* > glpi-agent-${{ needs.setup-release.outputs.version }}.sha256
+        sha256sum *${{ needs.setup-release.outputs.version }}* RPM-GPG-KEY-teclib > glpi-agent-${{ needs.setup-release.outputs.version }}.sha256
         cd ..
         ./github-nightly-description.sh --header --version ${{ needs.setup-release.outputs.version }} >glpi-agent/index.md.new
         git config --local user.email "${{ needs.setup-release.outputs.user-email }}"

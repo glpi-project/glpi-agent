@@ -86,6 +86,8 @@ IEC61850 | [libiec61850-glpi-agent_${VERSION}${DEBREV}_amd64.deb]($REPO/releases
 
 ### RPM packages
 RPM packages are arch independents and installation may require some repository setups, better use [glpi-agent-${VERSION}-linux-installer.pl]($REPO/releases/download/$TAG/glpi-agent-${VERSION}-linux-installer.pl) when possible.
+
+RPM packages are signed. If not still done, you should import our public key in rpm database: [RPM-GPG-KEY-teclib]($REPO/releases/download/$TAG/RPM-GPG-KEY-teclib)
 Task |Packages
 ---|:---
 Inventory| [glpi-agent-${VERSION}${RPMREV}.noarch.rpm]($REPO/releases/download/$TAG/glpi-agent-${VERSION}${RPMREV}.noarch.rpm)

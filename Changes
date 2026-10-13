@@ -10,6 +10,9 @@ deploy:
   again to obtain new possible peers when previous don't have requested file parts.
   This should reduce a lot the duration of peer discovery phase for most peers.
 
+packaging:
+* Support rpm packaging signing
+
 1.21 Thu, 08 Oct 2026
 
 core:
