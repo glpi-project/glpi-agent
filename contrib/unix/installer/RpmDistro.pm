@@ -150,6 +150,15 @@ sub install {
             $pkgs{$pkg} = $self->_extract_rpm($pkg);
         }
 
+        # Try to import rpm gpg pubkey
+        if ($self->{_archive}->content("pkg/rpm/RPM-GPG-KEY-teclib")) {
+            $self->{_archive}->extract("pkg/rpm/RPM-GPG-KEY-teclib")
+                or die "Failed to extract RPM-GPG-KEY-teclib: $!\n";
+            $self->verbose("Importing rpm signing public key ...");
+            $self->system("rpm --import RPM-GPG-KEY-teclib");
+            unlink "RPM-GPG-KEY-teclib";
+        }
+
         if (!$self->{_skip}->{dmidecode} && qx{uname -m 2>/dev/null} =~ /^(i.86|x86_64)$/ && ! $self->which("dmidecode")) {
             $self->verbose("Trying to also install dmidecode ...");
             $pkgs{dmidecode} = "dmidecode";
