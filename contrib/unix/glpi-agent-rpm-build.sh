@@ -6,7 +6,7 @@
 : ${IEC61850_BASE_URL:=https://github.com/g-bougard/libiec61850/archive/refs/tags}
 : ${IEC61850_VERSION:=1.6.1}
 : ${RPM_SIGNING:=no}
-: ${RPMSIGN_COMMAND:=ssh -T -o StrictHostKeyChecking=yes -i private.key rpmsign rpmsign}
+: ${RPMSIGN_COMMAND:=ssh -T -o StrictHostKeyChecking=yes rpmsign rpmsign}
 
 while [ -n "$1" ]
 do

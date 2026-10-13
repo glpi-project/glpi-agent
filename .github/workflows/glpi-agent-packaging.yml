@@ -605,12 +605,15 @@ jobs:
       if: ${{ needs.setup-release.outputs.rpm-signing == 'yes' }}
       run: |
         mkdir ~/.ssh
-        echo "$RPMSIGN_KNOWNHOST"             > ~/.ssh/known_hosts
-        echo "$RPMSIGN_PRIVATE"               > private.key
-        echo "Host rpmsign"                   > ~/.ssh/config
-        echo "    HostName $RPMSIGN_HOST"     >>~/.ssh/config
-        echo "    Port $RPMSIGN_PORT"         >>~/.ssh/config
-        echo "    User $RPMSIGN_USER"         >>~/.ssh/config
+        chmod 700 ~/.ssh
+        echo "$RPMSIGN_KNOWNHOST"                  > ~/.ssh/known_hosts
+        echo "$RPMSIGN_PRIVATE"                    > ~/.ssh/rpmsign.key
+        echo "Host rpmsign"                        > ~/.ssh/config
+        echo "    HostName $RPMSIGN_HOST"          >>~/.ssh/config
+        echo "    Port $RPMSIGN_PORT"              >>~/.ssh/config
+        echo "    User $RPMSIGN_USER"              >>~/.ssh/config
+        echo "    IdentityFile ~/.ssh/rpmsign.key" >>~/.ssh/config
+        chmod 600 ~/.ssh/*
       shell: bash
       env:
         RPMSIGN_KNOWNHOST: ${{ secrets.RPMSIGN_KNOWNHOST }}
