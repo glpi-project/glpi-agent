@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 : ${UNITDIR:=/usr/lib/systemd/system}
 : ${OTHER_OPTS:=}
