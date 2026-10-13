@@ -5,6 +5,8 @@
 : ${RPMBUILD:=rpmbuild}
 : ${IEC61850_BASE_URL:=https://github.com/g-bougard/libiec61850/archive/refs/tags}
 : ${IEC61850_VERSION:=1.6.1}
+: ${RPM_SIGNING:=no}
+: ${RPMSIGN_COMMAND:=ssh -T -o StrictHostKeyChecking=yes -i private.key rpmsign rpmsign}
 
 while [ -n "$1" ]
 do
@@ -19,6 +21,10 @@ do
         --rev)
             shift
             REV="$1"
+            ;;
+        --sign)
+            shift
+            RPM_SIGNING="$1"
             ;;
         --nodeps)
             [ -n "$OTHER_OPTS" ] && OTHER_OPTS="$OTHER_OPTS "
@@ -112,6 +118,14 @@ do
         echo "$RPM not found" >&2
         exit 1
     fi
+    if [ "$RPM_SIGNING" == "yes" ]; then
+        mv "$RPM" "${RPM%.rpm}-orig.rpm"
+        cat "${RPM%.rpm}-orig.rpm" | $RPMSIGN_COMMAND "$RPM" >"$RPM"
+        if [ ! -s "$RPM" ]; then
+            echo "$Failed to sign RPM" >&2
+            exit 1
+        fi
+    fi
     [ -n "$GITHUB_REF" ] && echo "$BASE-rpm=$RPM" >>$GITHUB_OUTPUT
     echo "$BASE-rpm: $(ls -l $RPM)"
 done
@@ -124,6 +138,14 @@ do
     if [ ! -e "$RPM" ]; then
         echo "$RPM not found" >&2
         exit 1
+    fi
+    if [ "$RPM_SIGNING" == "yes" ]; then
+        mv "$RPM" "${RPM%.rpm}-orig.rpm"
+        cat "${RPM%.rpm}-orig.rpm" | $RPMSIGN_COMMAND "$RPM" >"$RPM"
+        if [ ! -s "$RPM" ]; then
+            echo "$Failed to sign RPM" >&2
+            exit 1
+        fi
     fi
     [ -n "$GITHUB_REF" ] && echo "$BASE-rpm=$RPM" >>$GITHUB_OUTPUT
     echo "$BASE-rpm: $(ls -l $RPM)"
