@@ -653,6 +653,7 @@ jobs:
         name: RPM-Build-noarch
         path: |
           ${{ steps.rpmbuild.outputs.rpmdir }}/noarch/*.rpm
+          contrib/unix/RPM-GPG-KEY-teclib
     - name: Upload built rpm x86_64 artifacts
       uses: actions/upload-artifact@v7
       with:
@@ -671,7 +672,7 @@ jobs:
       if: ${{ needs.setup-release.outputs.create-release == 'yes' }}
       run: |
         RPMDIR=`rpm --eval "%{_rpmdir}"`
-        gh release upload ${{ needs.setup-release.outputs.tag_name }} $RPMDIR/*/*.rpm
+        gh release upload ${{ needs.setup-release.outputs.tag_name }} $RPMDIR/*/*.rpm contrib/unix/RPM-GPG-KEY-teclib
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -887,7 +888,7 @@ jobs:
       run: |
         # Clean up not published files from Debian-Build
         rm -f *.buildinfo *.changes
-        sha256sum *$VERSION* > glpi-agent-$VERSION.sha256
+        sha256sum *$VERSION* RPM-GPG-KEY-teclib > glpi-agent-$VERSION.sha256
         gh release upload ${{ needs.setup-release.outputs.tag_name }} glpi-agent-$VERSION.sha256
       shell: bash
       env:
@@ -1016,7 +1017,7 @@ jobs:
         chmod +x github-nightly-description.sh
         cd glpi-agent
         echo "Generating glpi-agent ${{ needs.setup-release.outputs.version }} packages sha256 file"
-        sha256sum *${{ needs.setup-release.outputs.version }}* > glpi-agent-${{ needs.setup-release.outputs.version }}.sha256
+        sha256sum *${{ needs.setup-release.outputs.version }}* RPM-GPG-KEY-teclib > glpi-agent-${{ needs.setup-release.outputs.version }}.sha256
         cd ..
         ./github-nightly-description.sh --header --version ${{ needs.setup-release.outputs.version }} >glpi-agent/index.md.new
         git config --local user.email "${{ needs.setup-release.outputs.user-email }}"
