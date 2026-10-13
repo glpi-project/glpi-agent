@@ -128,7 +128,7 @@ jobs:
                 echo "build=yes" >>$GITHUB_OUTPUT
                 echo "tag_name=development-$VERSION" >>$GITHUB_OUTPUT
                 NOTARIZE="no"
-                RPM_SIGNING="yes"
+                RPM_SIGNING="no"
             fi
         fi
         echo "version=$VERSION" >>$GITHUB_OUTPUT
