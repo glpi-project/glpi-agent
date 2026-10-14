@@ -7,6 +7,11 @@ VERSION="$TAG"
 
 : ${REPO:=https://github.com/glpi-project/glpi-agent}
 
+# Use GITHUB_REPOSITORY to set REPO when run from GH Actions
+if [ -n "$GITHUB_REPOSITORY" ]; then
+    REPO="https://github.com/$GITHUB_REPOSITORY"
+fi
+
 while [ -n "$1" ]
 do
     case "$1" in
