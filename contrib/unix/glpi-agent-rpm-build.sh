@@ -125,6 +125,8 @@ do
             echo "$Failed to sign RPM" >&2
             exit 1
         fi
+        # Cleanup not signed rpm
+        rm -f "${RPM%.rpm}-orig.rpm"
     fi
     [ -n "$GITHUB_REF" ] && echo "$BASE-rpm=$RPM" >>$GITHUB_OUTPUT
     echo "$BASE-rpm: $(ls -l $RPM)"
@@ -146,6 +148,8 @@ do
             echo "$Failed to sign RPM" >&2
             exit 1
         fi
+        # Cleanup not signed rpm
+        rm -f "${RPM%.rpm}-orig.rpm"
     fi
     [ -n "$GITHUB_REF" ] && echo "$BASE-rpm=$RPM" >>$GITHUB_OUTPUT
     echo "$BASE-rpm: $(ls -l $RPM)"
