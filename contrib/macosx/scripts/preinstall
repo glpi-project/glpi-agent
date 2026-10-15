@@ -44,4 +44,9 @@ if [ "$PID" !=  "" ]; then
     fi
 fi
 
+# Save existing configuration before upgrading
+if [ -d "$INSTALL_PATH/etc/conf.d" -o -d "$INSTALL_PATH/var" ]; then
+    sudo tar cf glpi-agent-conf-on-upgrade.tar -C "$INSTALL_PATH" etc/conf.d var
+fi
+
 exit 0

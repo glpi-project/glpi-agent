@@ -123,6 +123,7 @@ fi
 [ -d build ] || mkdir build
 [ -d pkg/payload ] || mkdir -p pkg/payload
 
+rm -rf pkg/Resources pkg/scripts
 cp -a Resources pkg/Resources
 cp -a scripts pkg/scripts
 

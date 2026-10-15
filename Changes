@@ -15,6 +15,7 @@ deploy:
 
 packaging:
 * Support rpm packaging signing
+* Updated MacOSX packages to keep configuration during upgrade
 
 1.21 Thu, 08 Oct 2026
 

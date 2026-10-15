@@ -15,6 +15,12 @@ if [ ! -e "$INSTALL_PATH/etc/cacert.pem" -o "$INSTALL_PATH/etc/cacert.pem" -ot "
     sudo cp -af "cacert.pem" "$INSTALL_PATH/etc/"
 fi
 
+# Restore configuration during upgrade
+if [ -e "glpi-agent-conf-on-upgrade.tar" ]; then
+    sudo tar xf glpi-agent-conf-on-upgrade.tar -C "$INSTALL_PATH"
+    sudo rm -f glpi-agent-conf-on-upgrade.tar
+fi
+
 # dmidecode can be provided for intel platforms
 [ -e /usr/local/bin/dmidecode ] && sudo rm -f /usr/local/bin/dmidecode
 if [ -e dmidecode ]; then
