@@ -9,6 +9,7 @@ use English qw(-no_match_vars);
 use POSIX 'strftime';
 use Time::Local;
 use UNIVERSAL::require;
+use Cpanel::JSON::XS;
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::XML;
@@ -19,6 +20,29 @@ our @EXPORT = qw(
     getBootTime
     detectLocalTimeOffset
 );
+
+sub _getSystemProfilerInfosJSON {
+    my (%params) = @_;
+
+    my $type = delete $params{type};
+
+    my $command = [ "/usr/sbin/system_profiler", "-json" ];
+    push @{$command}, $type unless empty($type);
+
+    my $infos = getAllLines(
+        command => $command,
+        %params
+    );
+    my $decoded_infos;
+    eval {
+        $decoded_infos = decode_json($infos);
+    };
+
+    return $decoded_infos->{$type}
+        if ref($decoded_infos) eq 'HASH' && $type && exists($decoded_infos->{$type});
+
+    return $decoded_infos;
+}
 
 sub _getSystemProfilerInfosXML {
     my (%params) = @_;
@@ -214,6 +238,9 @@ sub getSystemProfilerInfos {
 
     return _getSystemProfilerInfosXML(%params)
         if defined($params{format}) && $params{format} eq 'xml';
+
+    return _getSystemProfilerInfosJSON(%params)
+        if defined($params{format}) && $params{format} eq 'json';
 
     my @lines = getAllLines(
         command => $params{type} ?
