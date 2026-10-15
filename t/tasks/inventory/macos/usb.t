@@ -8,6 +8,7 @@ use Test::Deep;
 use Test::Exception;
 use Test::More;
 use Test::NoWarnings;
+use Data::Dumper;
 
 use GLPI::Test::Inventory;
 use GLPI::Agent::Task::Inventory::MacOS::USB;
@@ -107,7 +108,19 @@ my %tests = (
     ]
 );
 
-plan tests => (2 * scalar keys %tests) + 1;
+my %thunderbolt_tests = (
+    'no_hardware' => [],
+    'UltraStudio-4K' => [
+        {
+            CAPTION         => 'UltraStudio 4K',
+            MANUFACTURER    => 'Blackmagic Design',
+            NAME            => 'UltraStudio 4K',
+            SERIAL          => 'C4M4XXXXXXXXX8AQ'
+        }
+    ],
+);
+
+plan tests => (2 * scalar keys %tests) + (2 * scalar keys %thunderbolt_tests) + 1;
 
 my $inventory = GLPI::Test::Inventory->new();
 
@@ -119,4 +132,23 @@ foreach my $test (keys %tests) {
         $inventory->addEntry(section => 'USBDEVICES', entry => $_)
             foreach @devices;
     } "$test: registering";
+}
+
+foreach my $test (keys %thunderbolt_tests) {
+    my $file = "resources/macos/system_profiler/SPThunderboltDataType-$test.json";
+    my @devices = GLPI::Agent::Task::Inventory::MacOS::USB::_getThunderbolt(file => $file);
+    if (@devices && !@{$thunderbolt_tests{$test}}) {
+        use Data::Dumper;
+        my $dumper = Data::Dumper->new([\@devices], [$test])->Useperl(1)->Indent(1)->Quotekeys(0)->Sortkeys(1)->Pad("    ");
+        $dumper->{xpad} = "    ";
+        print STDERR $dumper->Dump();
+        fail "$test: result still not integrated";
+        pass "$test: registering";
+    } else {
+        cmp_deeply(\@devices, $thunderbolt_tests{$test}, "$test: parsing");
+        lives_ok {
+            $inventory->addEntry(section => 'USBDEVICES', entry => $_)
+                foreach @devices;
+        } "$test: registering";
+    }
 }

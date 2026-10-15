@@ -4,6 +4,9 @@ Warning for developers: Don't change/remove any entry which doesn't concern your
 
 1.22 not yet released
 
+inventory:
+* fix #1239: Support Thunderbolt devices inventory on MacOSX
+
 deploy:
 * p2p support optimization: Refacto to transform findPeers() to return as quickly
   as possible with a limited number of available peers. The method is also callable

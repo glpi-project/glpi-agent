@@ -1,0 +1,88 @@
+{
+  "SPThunderboltDataType" : [
+    {
+      "_items" : [
+        {
+          "_name" : "UltraStudio 4K",
+          "device_id_key" : "0xA12D",
+          "device_name_key" : "UltraStudio 4K",
+          "device_revision_key" : "0x3",
+          "mode_key" : "thunderbolt_two",
+          "receptacle_2_tag" : {
+            "current_speed_key" : "Up to 20 Gb/s",
+            "lc_version_key" : "0.14.0",
+            "link_status_key" : "0x7",
+            "receptacle_status_key" : "receptacle_no_devices_connected"
+          },
+          "receptacle_upstream_ambiguous_tag" : {
+            "cm_asn_key" : "C4M4XXXXXXXXX8AQ",
+            "cm_version_key" : "1.0.16",
+            "current_speed_key" : "20 Gb/s",
+            "lc_version_key" : "0.14.0",
+            "link_status_key" : "0x2",
+            "receptacle_status_key" : "receptacle_connected"
+          },
+          "route_string_key" : "1",
+          "switch_uid_key" : "0x00040000XXXXXXXX",
+          "switch_version_key" : "22.1",
+          "vendor_id_key" : "0x4",
+          "vendor_name_key" : "Blackmagic Design"
+        }
+      ],
+      "_name" : "thunderboltusb4_bus_3",
+      "device_name_key" : "Mac Studio",
+      "domain_uuid_key" : "934EEAFC-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+      "receptacle_1_tag" : {
+        "current_speed_key" : "20 Gb/s",
+        "link_status_key" : "0x2",
+        "receptacle_id_key" : "4",
+        "receptacle_status_key" : "receptacle_connected"
+      },
+      "route_string_key" : "0",
+      "switch_uid_key" : "0x05AC71XXXXXXXXXX",
+      "vendor_name_key" : "Apple Inc."
+    },
+    {
+      "_name" : "thunderboltusb4_bus_2",
+      "device_name_key" : "Mac Studio",
+      "domain_uuid_key" : "08E57095-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+      "receptacle_1_tag" : {
+        "current_speed_key" : "Up to 40 Gb/s",
+        "link_status_key" : "0x100",
+        "receptacle_id_key" : "3",
+        "receptacle_status_key" : "receptacle_no_devices_connected"
+      },
+      "route_string_key" : "0",
+      "switch_uid_key" : "0x05AC71XXXXXXXXXX",
+      "vendor_name_key" : "Apple Inc."
+    },
+    {
+      "_name" : "thunderboltusb4_bus_1",
+      "device_name_key" : "Mac Studio",
+      "domain_uuid_key" : "C6C5EDBB-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+      "receptacle_1_tag" : {
+        "current_speed_key" : "Up to 40 Gb/s",
+        "link_status_key" : "0x100",
+        "receptacle_id_key" : "2",
+        "receptacle_status_key" : "receptacle_no_devices_connected"
+      },
+      "route_string_key" : "0",
+      "switch_uid_key" : "0x05AC71XXXXXXXXXX",
+      "vendor_name_key" : "Apple Inc."
+    },
+    {
+      "_name" : "thunderboltusb4_bus_0",
+      "device_name_key" : "Mac Studio",
+      "domain_uuid_key" : "47B2EBC2-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+      "receptacle_1_tag" : {
+        "current_speed_key" : "Up to 40 Gb/s",
+        "link_status_key" : "0x100",
+        "receptacle_id_key" : "1",
+        "receptacle_status_key" : "receptacle_no_devices_connected"
+      },
+      "route_string_key" : "0",
+      "switch_uid_key" : "0x05AC71XXXXXXXXXX",
+      "vendor_name_key" : "Apple Inc."
+    }
+  ]
+}
