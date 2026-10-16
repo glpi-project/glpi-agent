@@ -76,6 +76,12 @@ sub get {
     return $self->{_device} && $self->{_device}->get($oid);
 }
 
+sub get_first {
+    my ($self, $oid) = @_;
+
+    return $self->{_device} && $self->{_device}->get_first($oid);
+}
+
 sub walk {
     my ($self, $oid) = @_;
 
