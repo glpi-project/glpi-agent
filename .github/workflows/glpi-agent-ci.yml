@@ -207,6 +207,9 @@ jobs:
     - name: Install deps
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
+        # OpenSSL v4 is now the default, see https://github.com/actions/runner-images/issues/14856
+        # Net::SSLeay fails to build with new default OpenSSL v4 so we need to use still installed OpenSSL v3
+        export OPENSSL_PREFIX="$(brew --prefix openssl@3)"
         cpanm --sudo --installdeps --verbose --notest .
         cpanm --sudo --verbose --notest Parse::EDID Crypt::DES Digest::HMAC
     - name: Prepare Makefile
