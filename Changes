@@ -8,7 +8,8 @@ inventory:
 * fix #1239: Support Thunderbolt devices inventory on MacOSX
 
 netdiscovery/netinventory:
-* fix #1258: Updated Brocade devices support
+* fix #1253: Updated Brocade devices support
+* fix #1256: Updated Huawei devices support
 
 deploy:
 * p2p support optimization: Refacto to transform findPeers() to return as quickly
