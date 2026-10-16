@@ -188,6 +188,9 @@ jobs:
     - name: Update environment to find latest libxml2
       run: |
         echo "$(brew --prefix)/opt/libxml2/bin" >> $GITHUB_PATH
+    - name: Update environment to use openssl v3 as v4 is now the default
+      run: |
+        echo "$(brew --prefix openssl@3)/bin" >> $GITHUB_PATH
     - name: Restore perl lib cache
       id: cache
       uses: actions/cache@v5
@@ -210,8 +213,8 @@ jobs:
         # OpenSSL v4 is now the default, see https://github.com/actions/runner-images/issues/14856
         # Net::SSLeay fails to build with new default OpenSSL v4 so we need to use still installed OpenSSL v3
         export OPENSSL_PREFIX="$(brew --prefix openssl@3)"
-        cpanm --sudo --installdeps --verbose --notest .
-        cpanm --sudo --verbose --notest Parse::EDID Crypt::DES Digest::HMAC
+        cpanm --sudo --installdeps --verbose --notest . && \
+          cpanm --sudo --verbose --notest Parse::EDID Crypt::DES Digest::HMAC
     - name: Prepare Makefile
       run: perl Makefile.PL
     - name: Run make
