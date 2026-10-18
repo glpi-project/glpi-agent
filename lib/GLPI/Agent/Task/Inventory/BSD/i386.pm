@@ -39,7 +39,6 @@ sub doInventory {
 
     # OpenBSD: without kern.allowkmem, dmidecode can't read /dev/mem
     # but system identification and cpu details are still available via sysctl
-    my @packages;
     if (OSNAME eq 'openbsd') {
         # hw.model is the cpu model, keep it before SMODEL is set to hw.product
         if ($bios->{SMODEL}) {
@@ -60,8 +59,6 @@ sub doInventory {
         $bios->{SMODEL}        = $hw{product}  if $hw{product};
         $bios->{SSN}           = $hw{serialno} if $hw{serialno};
         $inventory->setHardware({ UUID => uc($hw{uuid}) }) if $hw{uuid};
-
-        @packages = _getOpenBSDCpuPackages(logger => $logger);
     }
 
     $inventory->setBios($bios);
@@ -73,14 +70,17 @@ sub doInventory {
     return if $params{no_category}->{cpu};
 
     # one entry by cpu package when topology is known
-    if (@packages) {
-        foreach my $package (@packages) {
-            $inventory->addEntry(
-                section => 'CPUS',
-                entry   => { %{$cpu}, %{$package} }
-            );
+    if (OSNAME eq 'openbsd') {
+        my @packages = _getOpenBSDCpuPackages(cpu => $cpu, logger => $logger);
+        if (@packages) {
+            foreach my $package (@packages) {
+                $inventory->addEntry(
+                    section => 'CPUS',
+                    entry   => $package
+                );
+            }
+            return;
         }
-        return;
     }
 
     while ($count--) {
@@ -97,18 +97,17 @@ sub doInventory {
 sub _getOpenBSDCpuPackages {
     my (%params) = @_;
 
-    # Check if called during unittests before checking well-known system dmesg.boot file
-    $params{file} = '/var/run/dmesg.boot'
-        if empty($params{file}) && has_file('/var/run/dmesg.boot');
-    return if empty($params{file});
-
-    my @lines = getAllLines(%params)
+    my @lines = getAllLines(
+        file => '/var/run/dmesg.boot',
+        %params
+    )
         or return;
 
-    # dmesg.boot can still contain messages from previous boots
+    # dmesg.boot is appended at each boot, only keep messages from the last one,
+    # each boot starts with the kernel version banner
     my $start = 0;
     foreach my $index (0 .. $#lines) {
-        $start = $index if $lines[$index] =~ /^cpu0 at /;
+        $start = $index if $lines[$index] =~ /^OpenBSD \d+\.\d+ \(/;
     }
 
     my %packages;
@@ -120,12 +119,13 @@ sub _getOpenBSDCpuPackages {
     my @packages;
     foreach my $package (sort { $a <=> $b } keys(%packages)) {
         my $cores = $packages{$package};
-        my $threads = 0;
+        my $threads = 1;
         foreach my $core (keys(%{$cores})) {
             my $count = scalar(keys(%{$cores->{$core}}));
             $threads = $count if $count > $threads;
         }
         push @packages, {
+            %{$params{cpu}},
             CORE    => scalar(keys(%{$cores})),
             THREAD  => $threads,
         };
