@@ -6,6 +6,7 @@ Warning for developers: Don't change/remove any entry which doesn't concern your
 
 inventory:
 * fix #1239: Support Thunderbolt devices inventory on MacOSX
+* PR #1257: Updated OpenBSD bios and cpu inventory support on amd64
 
 netdiscovery/netinventory:
 * fix #1253: Updated Brocade devices support
