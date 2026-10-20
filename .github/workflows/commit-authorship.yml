@@ -60,10 +60,10 @@ jobs:
                 break 2
               fi
               if [ "$MESS" -ne 0 ]; then
-                while IFS=$'\t' read name email; do
-                    [ "$MESSLOOP" -eq 0 ] && echo "${sha:0:12} - $name <$email>"
-                    if echo "$name" | grep -iqE "$pattern" || echo "$email" | grep -iqE "$pattern"; then
-                        echo "::error title=AI-authored commit::${sha:0:12} — '$name <$email>' matches '$pattern'"
+                while IFS=$'\t' read co_name co_email; do
+                    [ "$MESSLOOP" -eq 0 ] && echo "${sha:0:12} - $co_name <$co_email>"
+                    if echo "$co_name" | grep -iqE "$pattern" || echo "$co_email" | grep -iqE "$pattern"; then
+                        echo "::error title=AI-authored commit::${sha:0:12} — '$co_name <$co_email>' matches '$pattern'"
                         FAIL=1
                         break 3
                     fi
