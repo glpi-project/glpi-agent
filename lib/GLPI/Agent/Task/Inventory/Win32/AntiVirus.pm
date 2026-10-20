@@ -167,7 +167,7 @@ sub doInventory {
             command => "SentinelCtl.exe",
             func    => \&_setSentinelOneInfos,
         }, {
-            # CronwdStrike support
+            # CrowdStrike support
             name    => "CrowdStrike Falcon Sensor",
             service => "csagent",
             path    => "C:\\Program Files\\CrowdStrike",
