@@ -7,7 +7,7 @@ use lib 't/lib';
 use Config;
 use English qw(-no_match_vars);
 
-$ENV{TZ} = 'CET';
+$ENV{TZ} = 'UTC';
 
 use Test::Deep;
 use Test::Exception;
@@ -95,7 +95,7 @@ my $rpm_packages = [
         PUBLISHER   => 'Mageia.Org',
         NAME        => 'xfsprogs',
         COMMENTS    => 'Utilities for managing the XFS filesystem',
-        INSTALLDATE => '25/03/2012',
+        INSTALLDATE => '24/03/2012',
         FILESIZE    => '3628382',
         FROM        => 'rpm',
         ARCH        => 'x86_64',
