@@ -172,9 +172,13 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - name: Update environment
+      id: update-env
       run: |
         PERL_PREFIX=$(perl -MConfig -e 'print $Config{prefix}')
         echo "$PERL_PREFIX/bin" >> $GITHUB_PATH
+        # OpenSSL v4 is now the default, see https://github.com/actions/runner-images/issues/14856
+        # Net::SSLeay fails to build with new default OpenSSL v4 so we need to use still installed OpenSSL v3
+        echo "openssl-prefix=$(brew --prefix openssl@3)" >>$GITHUB_OUTPUT
     - name: Check environment
       id: check-version
       run: |
@@ -203,6 +207,8 @@ jobs:
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
         cpan -T Module::Install
+      env:
+        OPENSSL_PREFIX: ${{ steps.update-env.outputs.openssl-prefix }}
     - name: Install cpanminus
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
@@ -210,11 +216,10 @@ jobs:
     - name: Install deps
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
-        # OpenSSL v4 is now the default, see https://github.com/actions/runner-images/issues/14856
-        # Net::SSLeay fails to build with new default OpenSSL v4 so we need to use still installed OpenSSL v3
-        export OPENSSL_PREFIX="$(brew --prefix openssl@3)"
         cpanm --sudo --installdeps --verbose --notest . && \
           cpanm --sudo --verbose --notest Parse::EDID Crypt::DES Digest::HMAC
+      env:
+        OPENSSL_PREFIX: ${{ steps.update-env.outputs.openssl-prefix }}
     - name: Prepare Makefile
       run: perl Makefile.PL
     - name: Run make
