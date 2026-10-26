@@ -73,10 +73,8 @@ Depends:
  libxml-libxml-perl,
  libyaml-perl,
  libyaml-tiny-perl,
- pci.ids,
  pciutils,
  ucf,
- usb.ids,
  usbutils,
 Recommends:
  dmidecode,
