@@ -490,7 +490,7 @@ jobs:
 
   linux-snap-packaging:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     if: ${{ needs.setup-release.outputs.build == 'yes' }}
     needs: setup-release
@@ -731,7 +731,7 @@ jobs:
 
   linux-appimage:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     if: ${{ needs.setup-release.outputs.build == 'yes' }}
     needs: [ setup-release, linux-debian-packaging ]
