@@ -1,82 +1,92 @@
 Source: glpi-agent
+Standards-Version: 4.7.3
+Maintainer: Guillaume Bougard <gbougard@teclib.com>
+Uploaders:
+ Guillaume Bougard <gbougard@teclib.com>,
 Section: net
 Testsuite: autopkgtest-pkg-perl
-Priority: optional
-Maintainer: Guillaume Bougard <gbougard@teclib.com>
-Uploaders: Guillaume Bougard <gbougard@teclib.com>
-Build-Depends: debhelper-compat (= 13)
+Build-Depends:
+ debhelper-compat (= 13),
 Build-Depends-Indep:
+ dh-sequence-cruft,
  libclone-perl <!nocheck>,
+ libcpanel-json-xs-perl <!nocheck>,
+ libdatetime-perl <!nocheck>,
  libdigest-sha-perl <!nocheck>,
  libfile-copy-recursive-perl <!nocheck>,
  libfile-which-perl <!nocheck>,
  libhttp-cookies-perl <!nocheck>,
  libhttp-daemon-perl <!nocheck>,
  libhttp-proxy-perl <!nocheck>,
- libhttp-server-simple-perl <!nocheck>,
  libhttp-server-simple-authen-perl <!nocheck>,
+ libhttp-server-simple-perl <!nocheck>,
  libio-capture-perl <!nocheck>,
+ libio-socket-ssl-perl <!nocheck>,
  libipc-run-perl <!nocheck>,
- libcpanel-json-xs-perl <!nocheck>,
  libjson-pp-perl <!nocheck>,
  libmodule-install-perl,
  libnet-ip-perl <!nocheck>,
  libnet-snmp-perl <!nocheck>,
- libio-socket-ssl-perl <!nocheck>,
+ libossp-uuid-perl <!nocheck>,
+ libparallel-forkmanager-perl <!nocheck>,
  libparse-edid-perl <!nocheck>,
  libproc-daemon-perl <!nocheck>,
- libparallel-forkmanager-perl <!nocheck>,
  libtest-compile-perl <!nocheck>,
  libtest-deep-perl <!nocheck>,
- libtest-nowarnings-perl <!nocheck>,
  libtest-exception-perl <!nocheck>,
  libtest-mockmodule-perl <!nocheck>,
  libtest-mockobject-perl <!nocheck>,
+ libtest-nowarnings-perl <!nocheck>,
  libtext-template-perl <!nocheck>,
  libuniversal-require-perl <!nocheck>,
  liburi-perl <!nocheck>,
  libwww-perl <!nocheck>,
  libxml-libxml-perl <!nocheck>,
  libyaml-perl <!nocheck>,
- libossp-uuid-perl <!nocheck>,
- libdatetime-perl <!nocheck>,
- swig,
  perl,
- ucf
-Standards-Version: 4.5.1
+ swig,
+ ucf,
+Vcs-Browser: https://github.com/glpi-project/glpi-agent
 Vcs-Git: https://github.com/glpi-project/glpi-agent.git
 Homepage: https://glpi-project.org/
-Vcs-Browser: https://github.com/glpi-project/glpi-agent
-Rules-Requires-Root: binary-targets
 
 Package: glpi-agent
 Architecture: all
 Depends:
  ${misc:Depends},
  ${perl:Depends},
- ucf,
+ libcpanel-json-xs-perl,
+ libdatetime-perl,
+ libfile-which-perl,
+ libhttp-daemon-perl,
+ libjson-pp-perl,
  libnet-cups-perl,
  libnet-ip-perl,
  libnet-ssh2-perl,
- libwww-perl,
+ libossp-uuid-perl,
+ libparallel-forkmanager-perl,
  libparse-edid-perl,
  libproc-daemon-perl,
- libparallel-forkmanager-perl,
+ libtext-template-perl,
  libuniversal-require-perl,
- libfile-which-perl,
+ libwww-perl,
  libxml-libxml-perl,
  libyaml-perl,
- libtext-template-perl,
- libcpanel-json-xs-perl,
- libjson-pp-perl,
- pciutils,
- usbutils,
- libhttp-daemon-perl,
  libyaml-tiny-perl,
- libossp-uuid-perl,
- libdatetime-perl
-Suggests: smartmontools, read-edid
-Recommends: libio-socket-ssl-perl, dmidecode, hdparm, fdisk | util-linux (<< 2.29.2-3~), net-tools
+ pci.ids,
+ pciutils,
+ ucf,
+ usb.ids,
+ usbutils,
+Recommends:
+ dmidecode,
+ hdparm,
+ fdisk,
+ libio-socket-ssl-perl,
+ net-tools,
+Suggests:
+ read-edid,
+ smartmontools,
 Description: hardware and software inventory tool (client)
  GLPI Agent is an application designed to help a network
  or system administrator to keep track of the hardware and software
@@ -98,7 +108,7 @@ Depends:
  ${perl:Depends},
  glpi-agent (>= ${binary:Version}),
  libhttp-cookies-perl,
- libjson-pp-perl
+ libjson-pp-perl,
 Description: ESX and ESXi inventory for GLPI Agent
  Do remote inventory of your ESX, ESXi, vCenter server using the SOAP interface.
  You can import the generated .xml files in:
@@ -113,11 +123,11 @@ Architecture: all
 Depends:
  ${misc:Depends},
  glpi-agent (>= ${binary:Version}),
- libjson-pp-perl,
- liburi-perl,
- libfile-copy-recursive-perl,
  libdigest-sha-perl,
- libparallel-forkmanager-perl
+ libfile-copy-recursive-perl,
+ libjson-pp-perl,
+ libparallel-forkmanager-perl,
+ liburi-perl,
 Description: software and file deployment support for GLPI
  With this module, GLPI can accept software deployment
  request from an GLPI server with a FusionInventory compatible plugin.
@@ -147,9 +157,9 @@ Depends:
  libcrypt-des-perl,
  libdigest-hmac-perl,
  libnet-ip-perl,
- libnet-snmp-perl,
  libnet-nbname-perl,
- libparallel-forkmanager-perl
+ libnet-snmp-perl,
+ libparallel-forkmanager-perl,
 Description: network device discovery for GLPI Agent
  This module scans your networks to quickly identify its hosts with SNMP,
  Echo Ping, TimeStamp ping, arp table lookup and NetBIOS request:
@@ -161,7 +171,7 @@ Architecture: any
 Depends:
  ${shlibs:Depends},
  ${perl:Depends},
- glpi-agent-task-network (>= ${binary:Version})
+ glpi-agent-task-network (>= ${binary:Version}),
 Description: IEC61850 protocol perl library support for GLPI Agent
  This package is required to discover and inventory devices supporting
  iec61850 protocol with glpi-agent network tasks.

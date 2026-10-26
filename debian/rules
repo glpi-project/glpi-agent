@@ -30,8 +30,8 @@ override_dh_auto_test:
 override_dh_auto_build:
 	dh_auto_build
 
-	# Fix glpi-agent.service other service dependency
-	sed -ri -e 's/syslog.target\s*//' contrib/unix/glpi-agent.service
+	# Fix glpi-agent.service other service dependency and create debian/glpi-agent.service
+	sed -r -e 's/syslog.target\s*//' contrib/unix/glpi-agent.service >debian/glpi-agent.service
 
 	# Build libiec61850 support
 	curl -L -o $(IEC61850_VERSION).tar.gz https://github.com/g-bougard/libiec61850/archive/refs/tags/$(IEC61850_VERSION).tar.gz

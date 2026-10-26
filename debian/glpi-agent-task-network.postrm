@@ -19,13 +19,13 @@ case "$1" in
     done
 
     # and finally clear it out from the ucf database
-    if which ucf >/dev/null; then
+    if command -v ucf >/dev/null; then
         for conf in toolbox-plugin snmp-advanced-support
         do
             ucf --purge /etc/glpi-agent/$conf.cfg
         done
     fi
-    if which ucfr >/dev/null; then
+    if command -v ucfr >/dev/null; then
         for conf in toolbox-plugin snmp-advanced-support
         do
             ucfr --purge glpi-agent /etc/glpi-agent/$conf.cfg

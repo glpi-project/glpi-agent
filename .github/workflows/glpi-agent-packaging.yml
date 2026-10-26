@@ -548,7 +548,7 @@ jobs:
           libuniversal-require-perl liburi-perl                            \
           libwww-perl libxml-libxml-perl libyaml-perl                      \
           libcrypt-des-perl libdigest-hmac-perl                            \
-          libossp-uuid-perl libcpanel-json-xs-perl devscripts swig
+          libossp-uuid-perl libcpanel-json-xs-perl devscripts dh-cruft swig
       shell: bash
     - name: Build debian packages
       id: debbuild
@@ -565,7 +565,7 @@ jobs:
     - name: Run lintian
       run: |
         sudo apt -y install lintian
-        lintian --profile debian --show-overrides -L ">=pedantic" \
+        lintian --profile debian --show-overrides -L ">=pedantic" --tag-display-limit 0 \
             --suppress-tags font-in-non-font-package,font-outside-font-dir,package-contains-documentation-outside-usr-share-doc,image-file-has-unexpected-name
       shell: bash
     - name: Upload built deb artifacts
