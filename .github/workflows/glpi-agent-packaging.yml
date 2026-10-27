@@ -634,7 +634,7 @@ jobs:
             # We can cleanup signing environment
             rm -f private.key ~/.ssh/config ~/.ssh/known_hosts
             # Import rpm gpg public key for install testing
-            rpm --import contrib/unix/RPM-GPG-KEY-teclib
+            sudo rpm --import contrib/unix/RPM-GPG-KEY-teclib
         fi
         sudo rpm -ivh --nodeps ${{ steps.rpmbuild.outputs.glpi-agent-rpm }} \
             ${{ steps.rpmbuild.outputs.glpi-agent-task-network-rpm }} \
