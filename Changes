@@ -20,6 +20,13 @@ deploy:
   again to obtain new possible peers when previous don't have requested file parts.
   This should reduce a lot the duration of peer discovery phase for most peers.
 
+collect:
+* New features:
+  * Support Registry existence check
+  * Support Registry defined value check
+  * Support in-depth registry values collect (max 10 depth levels)
+* With Glpi-Inventory plugin >= v1.6.9, we can submit multiple registry values one by one
+
 packaging:
 * Support rpm packaging signing
 * Updated MacOSX packages to keep configuration during upgrade
