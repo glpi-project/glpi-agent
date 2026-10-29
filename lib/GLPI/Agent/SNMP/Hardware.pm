@@ -5,6 +5,7 @@ use warnings;
 use parent 'Exporter';
 
 use English qw(-no_match_vars);
+use Net::IP qw(:PROC);
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Network;
@@ -1392,13 +1393,15 @@ sub _getLLDPInfo {
         my $subtype = $ChassisIdSubType->{$suffix} || "n/a";
         unless ($subtype eq '4') {
             if ($logger) {
-                my $info = ($sysname || "no name") . ", " .
-                    (getCanonicalString($mac) || "no chassis id") . ", " .
-                    ($sysdescr || "no description");
+                my $name  = $sysname  || "no name";
+                my $chassisId = getCanonicalString(hex2char($lldpRemChassisId->{$suffix}) || "no chassis id");
+                my $descr = $sysdescr || "no description";
                 if ($not_supported_subtype{$subtype}) {
-                    $logger->debug("LLDP support: skipping $not_supported_subtype{$subtype}: $info");
+                    $chassisId = _decodeBinaryNetworkAddress(hex2char($lldpRemChassisId->{$suffix}))
+                        if $subtype eq '5' && !ip_get_version($chassisId);
+                    $logger->debug("LLDP support: skipping $not_supported_subtype{$subtype}: $name, $chassisId, $descr");
                 } else {
-                    $logger->debug("LLDP support: ChassisId subtype $subtype not supported for <$info>, please report this issue");
+                    $logger->debug("LLDP support: ChassisId subtype $subtype not supported for $name, $chassisId, $descr, please report this issue");
                 }
             }
             next;
@@ -1466,6 +1469,29 @@ sub _getLLDPInfo {
     }
 
     return $results;
+}
+
+sub _decodeBinaryNetworkAddress {
+    my ($networkaddress) = @_;
+
+    return "empty network address" if empty($networkaddress);
+
+    my @bytes = unpack("C*", $networkaddress);
+
+    my $family = shift(@bytes);
+
+    return "unsupported family for network address"
+        unless $family && $family =~ /^\d+$/ && $family >= 1 && $family <=2;
+
+    # family is 1 for IPv4 or 2 for IPv6
+    if ($family == 1) {
+        return "malformed ipv4 network address" unless scalar(@bytes) == 4;
+        return join(".", @bytes) if $family == 1;
+    }
+
+    # Group bytes in unsigned 16-bits shorts for IPv6
+    my @shorts = unpack("n*", pack("C*", @bytes));
+    return ip_compress_address(join(":", map { sprintf("%x", $_) } @shorts), 6);
 }
 
 sub _getCDPInfo {
