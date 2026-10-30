@@ -497,11 +497,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
-    - name: Upgrade system before running snapcraft
-      run: |
-        sudo apt update
-        sudo apt -y install apparmor
-      shell: bash
     - uses: TerryHowe/action-build@edf78ca622b1eb99b69f09420bb19f77e4f84ac1
       id: snapcraft
       with:
