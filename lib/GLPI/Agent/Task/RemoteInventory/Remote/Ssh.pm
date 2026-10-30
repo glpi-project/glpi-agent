@@ -316,6 +316,12 @@ sub getRemoteFileHandle {
         $self->_connect();
         my $chan = $self->{_ssh2}->channel();
         if ($chan) {
+            if (ref($command) eq "ARRAY") {
+                my @args;
+                ($command, @args) = @{$command};
+                map { $command .= " " . quotemeta($_) } @args;
+            }
+            # Ignore remote stderr
             $chan->ext_data('ignore');
             $self->{logger}->debug2("[libssh2] Running \"$command\"...");
             if ($chan->exec("LANG=C $command")) {
@@ -331,7 +337,7 @@ sub getRemoteFileHandle {
     }
 
     return getFileHandle(
-        command => [ $self->_ssh(), $command ],
+        command => [ $self->_ssh(), ref($params{command}) eq "ARRAY" ? @{$params{command}} : $command ],
         logger  => $self->{logger},
         local   => 1
     );

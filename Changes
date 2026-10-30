@@ -9,6 +9,9 @@ inventory:
 * PR #1257: Updated OpenBSD bios and cpu inventory support on amd64
 * Enhance Dell Docking Station inventory on windows by detecting expected serialnumber
 
+remoteinventory:
+* Support opening commands passed by array ref
+
 netdiscovery/netinventory:
 * fix #1253: Updated Brocade devices support
 * fix #1256: Updated Huawei devices support

@@ -109,6 +109,11 @@ sub getRemoteFileHandle {
 
     # Still run command via WinRM and return an in-memory scalar handle
     if ($params{command}) {
+        if (ref($params{command}) eq "ARRAY") {
+            my ($command, @args) = @{$params{command}};
+            map { $command .= " " . quotemeta($_) } @args;
+            $params{command} = $command;
+        }
         $shell = $self->{_winrm}->shell($params{command}." 2>nul");
     } elsif ($params{file}) {
         $params{file} =~ s|/|\\|g;
