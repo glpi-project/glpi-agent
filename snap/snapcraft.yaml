@@ -1,5 +1,5 @@
 name: glpi-agent
-base: core22
+base: core24
 summary: GLPI Agent runs inventory and other tasks on the behalf of a GLPI server
 description: |
   GLPI Agent is an agent intended to run automatic inventory task (and possibly others)
