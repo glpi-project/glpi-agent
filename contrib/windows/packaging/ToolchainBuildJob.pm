@@ -139,7 +139,7 @@ sub toolchain_build_steps {
             {
                 plugin  => 'Perl::Dist::Strawberry::Step::BuildLibrary',
                 name    => 'libiconv',
-                version => '1.19',
+                version => '1.19.1',
                 url     => [
                     'https://ftp.gnu.org/gnu/<name>/<name>-<version>.tar.gz',
                     'https://mirrors.kernel.org/gnu/<name>/<name>-<version>.tar.gz',
