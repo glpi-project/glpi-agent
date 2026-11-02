@@ -161,7 +161,6 @@ sub toolchain_build_steps {
                 patches         => [
                     'https://github.com/msys2/MINGW-packages/raw/master/mingw-w64-libiconv/0002-fix-cr-for-awk-in-configure.all.patch',
                     'https://github.com/msys2/MINGW-packages/raw/master/mingw-w64-libiconv/0003-add-cp65001-as-utf8-alias.patch',
-                    'https://github.com/msys2/MINGW-packages/raw/master/mingw-w64-libiconv/fix-pointer-buf.patch',
                 ],
                 post_configure  => [
                     # We don't need to install man pages & binaries
