@@ -1,5 +1,5 @@
 name: glpi-agent
-base: core20
+base: core24
 summary: GLPI Agent runs inventory and other tasks on the behalf of a GLPI server
 description: |
   GLPI Agent is an agent intended to run automatic inventory task (and possibly others)
@@ -20,8 +20,8 @@ confinement: classic
 
 adopt-info: glpi-agent
 
-architectures:
- - build-on: amd64
+platforms:
+  amd64:
 
 apps:
   glpi-agent:
@@ -141,14 +141,14 @@ parts:
      - libssh2-1-dev
      - swig
     stage-packages:
-     - libcupsimage2
-     - libcupsfilters1
-     - libcups2
-     - libssl1.1
+     - libcupsimage2t64
+     - libcupsfilters2t64
+     - libcups2t64
+     - libssl3t64
      - libxml2
      - libavahi-client3
      - libavahi-common3
-     - libssh2-1
+     - libssh2-1t64
     stage:
       - usr/lib
       - usr/share/glpi-agent/bin/perl
@@ -162,9 +162,6 @@ parts:
     after: [perl]
     plugin: make
     source: .
-    build-environment:
-     - VERSION: "${TERM#*:}"
-     - TERM: "${TERM%:*}"
     override-build: |
       export PATH=$SNAPCRAFT_STAGE/usr/share/glpi-agent/bin:$PATH
       if [ -z "$VERSION" ]; then
@@ -173,13 +170,13 @@ parts:
           VERSION="${VERSION%-dev}-git$(git rev-parse --short HEAD)"
         fi
       fi
-      snapcraftctl set-version "$VERSION"
+      craftctl set version="$VERSION"
       case "$VERSION" in
         *-dev|*-git*|*-beta*|*-test*)
-          snapcraftctl set-grade "devel"
+          craftctl set grade="devel"
           ;;
         *)
-          snapcraftctl set-grade "stable"
+          craftctl set grade="stable"
           ;;
       esac
       perl Makefile.PL PREFIX=/usr SYSCONFDIR=/etc/glpi-agent \
@@ -203,8 +200,7 @@ parts:
      - pciutils
      - usbutils
      - hdparm
-     - try:
-       - dmidecode
+     - dmidecode
     stage:
       - usr/bin/glpi-*
       - usr/bin/lspci

@@ -490,20 +490,18 @@ jobs:
 
   linux-snap-packaging:
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     if: ${{ needs.setup-release.outputs.build == 'yes' }}
     needs: setup-release
 
     steps:
     - uses: actions/checkout@v6
-    - uses: TerryHowe/action-build@edf78ca622b1eb99b69f09420bb19f77e4f84ac1
+    - uses: canonical/snapcraft-multiarch-action@v1
       id: snapcraft
       with:
-        snapcraft-channel: 8.x/stable
-        snapcraft-args: pack
-      env:
-        TERM: ${{ env.TERM }}:${{ needs.setup-release.outputs.version }}
+        environment: |
+          VERSION=${{ needs.setup-release.outputs.version }}
     - name: Upload Snap built artifacts
       uses: actions/upload-artifact@v7
       with:
