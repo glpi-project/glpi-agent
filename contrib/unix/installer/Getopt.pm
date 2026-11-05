@@ -26,6 +26,7 @@ my @options = (
     'help|h',
     'install',
     'itemtype=s',
+    'json',
     'list',
     'local|l=s',
     'logger=s',
@@ -136,6 +137,7 @@ glpi-agent-linux-installer [options]
     --no-category=CATEGORY         configure category items to not inventory
     --scan-homedirs                set to scan user home directories (false)
     --scan-profiles                set to scan user profiles (false)
+    --json                         save the inventory as JSON (false)
     --backend-collect-timeout=TIME set timeout for inventory modules execution (30)
     -t --tag=TAG                   configure tag to define in inventories
     --full-inventory-postpone=NUM  set number of possible full inventory postpone (14)
