@@ -497,7 +497,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
-    - uses: canonical/snapcraft-multiarch-action@v1
+    - uses: g-bougard/snapcraft-multiarch-action@8038048298e41a594aaeed264439782f50b108cd
       id: snapcraft
       with:
         environment: |
