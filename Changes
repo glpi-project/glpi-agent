@@ -17,6 +17,8 @@ netdiscovery/netinventory:
 * fix #1256: Updated Huawei devices support
 * fix #1261: Support dot1dTpFdbStatus = other(1) for connected devices MAC detection
   This is the case when using Authenticated-MAC or NAC on Huawei devices.
+* fix #1264: Fix Dahua based devices inventory, including Amcrest, IntelBras & Lorex
+  devices.
 
 deploy:
 * p2p support optimization: Refacto to transform findPeers() to return as quickly
