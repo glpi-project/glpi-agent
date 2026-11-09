@@ -169,7 +169,7 @@ sub doInventory {
         }, {
             # CrowdStrike support
             name    => "CrowdStrike Falcon Sensor",
-            service => "csagent",
+            service => "CSFalconService",
             path    => "C:\\Program Files\\CrowdStrike",
             command => "CSSensorSettings.exe",
             func    => \&_setCrowdStrikeInfos,

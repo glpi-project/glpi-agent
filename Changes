@@ -8,6 +8,7 @@ inventory:
 * fix #1239: Support Thunderbolt devices inventory on MacOSX
 * PR #1257: Updated OpenBSD bios and cpu inventory support on amd64
 * Enhance Dell Docking Station inventory on windows by detecting expected serialnumber
+* Fix CrowdStrike AV inventory on windows
 
 remoteinventory:
 * Support opening commands passed by array ref
