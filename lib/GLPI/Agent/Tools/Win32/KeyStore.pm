@@ -122,6 +122,9 @@ sub loadKeyStore {
             # Strip prefix for previously supported store values used until v1.15
             $store =~ s/^\w+-// if $store =~ /^(User|Service|Enterprise|GroupPolicy)-/i;
             if ($store =~ $self->{qrSupported}) {
+                # Use canonical store name: config values read from registry are UTF-8 flagged
+                # and would break Win32::API buffer overflow sentinel check
+                $store = first { $store eq $_ } @{$self->{supported}};
                 push @stores, $store;
             } else {
                 $logger->debug(_log_prefix."Unsupported ssl-keystore option definition: $case");
