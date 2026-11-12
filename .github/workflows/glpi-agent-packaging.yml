@@ -501,14 +501,23 @@ jobs:
     - name: Wait for Snap Store connectivity
       timeout-minutes: 5
       run: |
+        set +e
+        errfile=$(mktemp -u --suffix=-err.txt)
         for i in $(seq 1 30); do
-          code=$(curl -sS -o /dev/null --connect-timeout 3 -m 5 \
-                   -w '%{http_code}' https://api.snapcraft.io/ 2>/dev/null || true)
-          if [ -n "$code" -a "$code" == "200" ]; then
+          code=$(curl -s -o /dev/null --connect-timeout 3 -m 5 -w '%{http_code}%output{'$errfile'}%{errormsg}' https://api.snapcraft.io/)
+          if [ -n "$code" -a "${code:0:1}" == "2" ]; then
             [ $i -gt 1 ] && echo "api.snapcraft.io reachable (HTTP $code) after $i attempt(s)"
             exit 0
           fi
-          echo "Attempt $i/30: api.snapcraft.io unreachable (HTTP ${code:-000})"
+          echo -n "Attempt $i/30: api.snapcraft.io unreachable"
+          if [ -s "$errfile" ]; then
+            err=$(<"$errfile")
+            echo ", $err"
+          elif [ -n "$code" ]; then
+            echo ", HTTP: $code"
+          else
+            echo
+          fi
           sleep 1
         done
         echo "::error::api.snapcraft.io unreachable after 30 attempts, aborting snap build"
