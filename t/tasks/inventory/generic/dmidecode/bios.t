@@ -62,6 +62,18 @@ my %tests = (
             MMODEL        => '0XD762',
             BVERSION      => 'A06'
     },
+    'qemu-broken' => {
+            MMANUFACTURER => undef,
+            SSN           => undef,
+            SKUNUMBER     => undef,
+            ASSETTAG      => undef,
+            BMANUFACTURER => 'SeaBIOS',
+            MSN           => undef,
+            SMODEL        => 'Standard PC (i440FX + PIIX, 1996)',
+            SMANUFACTURER => 'QEMU',
+            MMODEL        => undef,
+            BVERSION      => '1.16.3-alt3'
+    },
     'openbsd-3.7' => {
             MMANUFACTURER => 'Tekram Technology Co., Ltd.',
             SSN           => undef,

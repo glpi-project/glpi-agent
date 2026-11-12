@@ -13,6 +13,7 @@ inventory:
 * PR #1257: Updated OpenBSD bios and cpu inventory support on amd64
 * Enhance Dell Docking Station inventory on windows by detecting expected serialnumber
 * Fix CrowdStrike AV inventory on windows
+* fix #1265: Fix malformed Qemu BDATE field
 
 remoteinventory:
 * Support opening commands passed by array ref

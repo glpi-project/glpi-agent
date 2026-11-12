@@ -73,6 +73,10 @@ sub _getBios {
     $bios->{SSN} = lc($system_info->{'UUID'})
         if $bios->{MMODEL} && $bios->{MMODEL} eq "VirtualBox" && !$bios->{SSN} && !$bios->{MSN} && !empty($system_info->{'UUID'});
 
+    # Remove BDATE in the case of broken value reported by dmidecode
+    delete $bios->{BDATE}
+        unless empty($bios->{BDATE}) || $bios->{BDATE} =~ m{^\d{1,2}/\d{1,2}/\d+$};
+
     return $bios;
 }
 
