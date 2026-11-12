@@ -491,6 +491,7 @@ jobs:
   linux-snap-packaging:
 
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     if: ${{ needs.setup-release.outputs.build == 'yes' }}
     needs: setup-release
@@ -499,6 +500,7 @@ jobs:
     - uses: actions/checkout@v6
     - uses: g-bougard/snapcraft-multiarch-action@8038048298e41a594aaeed264439782f50b108cd
       id: snapcraft
+      timeout-minutes: 20
       with:
         environment: |
           VERSION=${{ needs.setup-release.outputs.version }}
