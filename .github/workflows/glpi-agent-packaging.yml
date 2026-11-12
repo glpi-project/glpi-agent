@@ -498,6 +498,21 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
+    - name: Wait for Snap Store connectivity
+      timeout-minutes: 5
+      run: |
+        for i in $(seq 1 30); do
+          code=$(curl -sS -o /dev/null --connect-timeout 3 -m 5 \
+                   -w '%{http_code}' https://api.snapcraft.io/ 2>/dev/null || true)
+          if [ -n "$code" -a "$code" == "200" ]; then
+            [ $i -gt 1 ] && echo "api.snapcraft.io reachable (HTTP $code) after $i attempt(s)"
+            exit 0
+          fi
+          echo "Attempt $i/30: api.snapcraft.io unreachable (HTTP ${code:-000})"
+          sleep 1
+        done
+        echo "::error::api.snapcraft.io unreachable after 30 attempts, aborting snap build"
+        exit 1
     - uses: g-bougard/snapcraft-multiarch-action@8038048298e41a594aaeed264439782f50b108cd
       id: snapcraft
       timeout-minutes: 20
