@@ -5,6 +5,8 @@ use warnings;
 
 use parent 'GLPI::Agent::Task::Collect::Common';
 
+use GLPI::Agent::Tools;
+
 use constant    function    => "runCommand";
 
 # As decided by developers team, the runCommand function is disabled for the moment.
