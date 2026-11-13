@@ -184,6 +184,10 @@ sub request {
         }
     }
 
+    # Manage current alarm timeout if set
+    my $current_alarm_timeout = alarm 0;
+    $current_alarm_timeout += time if $current_alarm_timeout;
+
     my $result = HTTP::Response->new( 500 );
     eval {
         if ($OSNAME eq 'MSWin32' && $scheme eq 'https') {
@@ -192,6 +196,12 @@ sub request {
         $result = $self->{ua}->request($request, $file);
         alarm 0;
     };
+
+    # Reset timeout if needed
+    if ($current_alarm_timeout) {
+        my $timeout = $current_alarm_timeout - time;
+        alarm $timeout if $timeout > 0;
+    }
 
     # Debug SSL support status when no requesting security
     if ($self->{no_ssl_check}) {
@@ -251,6 +261,13 @@ sub request {
                         $result = $self->{ua}->request($request, $file);
                         alarm 0;
                     };
+
+                    # Reset timeout if needed
+                    if ($current_alarm_timeout) {
+                        my $timeout = $current_alarm_timeout - time;
+                        alarm $timeout if $timeout > 0;
+                    }
+
                     if (!$result->is_success()) {
                         my $error = $result->code() == 401 ?
                             "authentication required, wrong access token" :
@@ -308,6 +325,13 @@ sub request {
                         $result = $self->{ua}->request($request, $file);
                         alarm 0;
                     };
+
+                    # Reset timeout if needed
+                    if ($current_alarm_timeout) {
+                        my $timeout = $current_alarm_timeout - time;
+                        alarm $timeout if $timeout > 0;
+                    }
+
                     last if $result->is_success();
                     $logger->debug(_log_prefix."$authen authentication failed");
                 }
@@ -479,6 +503,10 @@ sub _getOauthAccessToken {
     $content =~ s/client_secret":"[^"]*"/client_secret":"OAUTH_CLIENT_SECRET"/;
     $self->{logger}->debug2(_log_prefix . "sending message: (real content sha256sum: $sha256)\n$content");
 
+    # Manage current alarm timeout if set
+    my $current_alarm_timeout = alarm 0;
+    $current_alarm_timeout += time if $current_alarm_timeout;
+
     # play token request
     my $result;
     eval {
@@ -488,6 +516,12 @@ sub _getOauthAccessToken {
         $result = $self->{ua}->request($request);
         alarm 0;
     };
+
+    # Reset timeout if needed
+    if ($current_alarm_timeout) {
+        $current_alarm_timeout -= time;
+        alarm $current_alarm_timeout if $current_alarm_timeout > 0;
+    }
 
     unless ($result) {
         $self->{logger}->error(_log_prefix . "Failed to request oauth access token: no response");
