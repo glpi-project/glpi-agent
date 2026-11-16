@@ -42,6 +42,8 @@ sub doInventory {
         path        => "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Office",
         # Important for remote inventory optimization
         required    => $required_for_office,
+        maxdepth    => 3,
+        skip_subkey => [ "ClickToRun" ],
     );
     _scanOfficeLicences($officeKey) if $officeKey;
 
@@ -52,6 +54,8 @@ sub doInventory {
             path        => "HKEY_LOCAL_MACHINE/SOFTWARE/Wow6432Node/Microsoft/Office",
             # Important for remote inventory optimization
             required    => $required_for_office,
+            maxdepth    => 3,
+            skip_subkey => [ "ClickToRun" ],
         );
         _scanOfficeLicences($officeKey32) if $officeKey32;
     }

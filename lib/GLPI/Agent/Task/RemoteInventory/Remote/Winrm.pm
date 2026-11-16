@@ -391,6 +391,14 @@ sub getRemoteRegistryKey {
         nodebug => $params{nodebug} // 1,
     );
 
+    # Replace required params by HASH ref on first call, if will be kept during
+    # recursive calls
+    my $required = ref($params{required}) eq "ARRAY" ? {} : $params{required};
+    map { $required->{lc($_)} = 1 } @{$params{required}}
+        if ref($params{required}) eq "ARRAY";
+    # Keep updated required params
+    $params{required} = $required if ref($required) != $params{required};
+
     if ($values && $values->{exitcode} == 0 && $values->{values}) {
         my $keys  = $values->{values};
         my $types = $values->{types};
@@ -402,7 +410,7 @@ sub getRemoteRegistryKey {
                 # We don't care about default and unsupported value types
                 next unless length($key) && $type && $METHODBYTYPE{$type};
                 # Use required values to optimize registry key tree reading
-                next unless !$params{required} || first { $key eq $_ } @{$params{required}};
+                next unless !ref($required) || $required->{lc($key)};
                 $hash->{"/$key"} = $self->getRemoteRegistryValue(
                     %params,
                     path    => "$params{path}/$key",
@@ -432,8 +440,18 @@ sub getRemoteRegistryKey {
         nodebug => $params{nodebug} // 0,
     );
 
+    # Replace skip_subkey params by HASH ref on first call, if will be kept during
+    # recursive calls
+    my $skip_subkey = ref($params{skip_subkey}) eq "ARRAY" ? {} : $params{skip_subkey};
+    map { $params{skip_subkey}->{lc($_)} = 1 } @{$params{skip_subkey}}
+        if ref($params{skip_subkey}) eq "ARRAY";
+    # Keep updated skip_subkey params
+    $params{skip_subkey} = $skip_subkey if ref($skip_subkey) != $params{skip_subkey};
+
     if ($subkeys && $subkeys->{exitcode} == 0 && $subkeys->{keys} && ref($subkeys->{keys}) eq 'ARRAY') {
         foreach my $key (@{$subkeys->{keys}}) {
+            # We can be asked to skip subkeys for remote inventory optimization
+            next if ref($skip_subkey) && $skip_subkey->{lc($key)};
             # We can be asked to skip keys for remote inventory optimization
             $hash->{"$key/"} = $self->getRemoteRegistryKey(
                 %params,

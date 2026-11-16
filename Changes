@@ -19,6 +19,7 @@ inventory:
 
 remoteinventory:
 * Support opening commands passed by array ref
+* fix #1258: Fix remote registry parsing support and optimize it for LicenseInfo inventory
 
 netdiscovery/netinventory:
 * fix #1253: Updated Brocade devices support
