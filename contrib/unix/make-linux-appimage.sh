@@ -2,9 +2,9 @@
 
 set -e
 
-ROOT="`pwd`"
+ROOT="$(pwd)"
 
-: ${ARCH:=x86_64}
+: "${ARCH:=x86_64}"
 
 PREPARE="no"
 
@@ -126,7 +126,7 @@ chmod +x build/AppDir/etc/init.d/glpi-agent
 [ -d build/local/glpi-agent ] || mkdir -p build/local/glpi-agent
 for f in *.deb
 do
-    cp -avf $f build/local/glpi-agent
+    cp -avf "$f" build/local/glpi-agent
 done
 
 # Create local debian repository for appimage-builder integration
@@ -140,7 +140,7 @@ if [ -n "$CONFIG" ]; then
     mkdir build/AppDir/config
     for conf in $CONFIG
     do
-        cp -af $conf build/AppDir/config
+        cp -af "$conf" build/AppDir/config
         FILES="$FILES config/${conf##*/}"
     done
 fi
@@ -158,7 +158,7 @@ case "$ARCH" in
 esac
 
 # When running in GH Actions, LOCAL_SOURCE_FILE should be set to used docker path
-: ${LOCAL_SOURCE_FILE:=$ROOT/build}
+: "${LOCAL_SOURCE_FILE:=$ROOT/build}"
 
 # First insert installer version definitions
 cat >build/AppImageBuilder.yml <<APPIMAGEBUILDER_YAML
@@ -296,6 +296,6 @@ fi
 
 appimage-builder --appdir build/AppDir --recipe build/AppImageBuilder.yml
 
-chmod +x *.AppImage
+chmod +x ./*.AppImage
 
-ls -l *.AppImage
+ls -l ./*.AppImage

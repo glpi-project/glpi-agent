@@ -1,10 +1,10 @@
 #! /bin/bash
 
-HERE="`pwd`"
+HERE="$(pwd)"
 
-cd "${0%/*}"
+cd "${0%/*}" || exit 1
 
-: ${DISTRO:=linux}
+: "${DISTRO:=linux}"
 
 while [ -n "$1" ]
 do
@@ -93,7 +93,7 @@ if [ -z "$VERSION" ]; then
 fi
 
 [ -d build ] || mkdir build
-cd build
+cd build || exit
 
 unset FILES
 
@@ -103,7 +103,7 @@ if [ -n "$RPMS" ]; then
     mkdir pkg/rpm
     for rpm in $RPMS
     do
-        cp -af $rpm pkg/rpm
+        cp -af "$rpm" pkg/rpm
         FILES="$FILES pkg/rpm/${rpm##*/}"
     done
 fi
@@ -114,7 +114,7 @@ if [ -n "$DEBS" ]; then
     mkdir pkg/deb
     for deb in $DEBS
     do
-        cp -af $deb pkg/deb
+        cp -af "$deb" pkg/deb
         FILES="$FILES pkg/deb/${deb##*/}"
     done
 fi
@@ -133,8 +133,8 @@ if [ -n "$DEPS" ]; then
                 continue
                 ;;
         esac
-        [ -d "$DEST" ] || mkdir $DEST
-        cp -af $dep $DEST
+        [ -d "$DEST" ] || mkdir "$DEST"
+        cp -af "$dep" "$DEST"
         FILES="$FILES $DEST/${dep##*/}"
     done
 fi
@@ -143,7 +143,7 @@ if [ -n "$SNAP" ]; then
     [ -d pkg ] || mkdir pkg
     rm -rf pkg/snap
     mkdir pkg/snap
-    cp -af $SNAP pkg/snap
+    cp -af "$SNAP" pkg/snap
     FILES="$FILES pkg/snap/${SNAP##*/}"
 fi
 
@@ -152,7 +152,7 @@ if [ -n "$CONFIG" ]; then
     mkdir config
     for conf in $CONFIG
     do
-        cp -af $conf config
+        cp -af "$conf" config
         FILES="$FILES config/${conf##*/}"
     done
 fi
@@ -178,7 +178,7 @@ INSTALLER_VERSION_MODULE
 # Add libs
 for lib in Getopt LinuxDistro RpmDistro DebDistro SnapInstall Archive
 do
-    egrep -v "^1;$" ../installer/$lib.pm >>glpi-agent-linux-installer.pl
+    grep -Ev "^1;$" ../installer/$lib.pm >>glpi-agent-linux-installer.pl
 done
 
 # Add files to Archive lib
@@ -192,7 +192,7 @@ if [ -n "$FILES" ]; then
     do
         [ -s "$file" ] || continue
         cat >>glpi-agent-linux-installer.pl <<ARCHIVE_DEF
-    [ "$file" => $(stat --printf=%s $file) ],
+    [ "$file" => $(stat --printf=%s "$file") ],
 ARCHIVE_DEF
     done
 fi
@@ -203,7 +203,7 @@ cat >>glpi-agent-linux-installer.pl <<ARCHIVE_DEF
 ARCHIVE_DEF
 
 # Cleanup base script
-sed -e 's/^use lib.*/# Auto-generated glpi-agent v$VERSION linux installer/' \
+sed -e "s/^use lib.*/# Auto-generated glpi-agent v$VERSION linux installer/" \
     -e 's/^#!.*/package main;/' \
     ../glpi-agent-linux-installer.pl >>glpi-agent-linux-installer.pl
 
@@ -215,7 +215,7 @@ ARCHIVE_DEF
     for file in $FILES
     do
         [ -s "$file" ] || continue
-        cat $file >>glpi-agent-linux-installer.pl
+        cat "$file" >>glpi-agent-linux-installer.pl
     done
 fi
 
@@ -227,7 +227,7 @@ fi
 
 # install script
 chmod +x glpi-agent-linux-installer.pl
-cp -a glpi-agent-linux-installer.pl $HERE/glpi-agent-$VERSION-$DISTRO-installer.pl
+cp -a glpi-agent-linux-installer.pl "$HERE/glpi-agent-$VERSION-$DISTRO-installer.pl"
 
 cd ..
 rm -rf build

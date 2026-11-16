@@ -3,19 +3,19 @@
 # PERL: https://www.perl.org/get.html
 # SSL:  https://github.com/openssl/openssl/releases
 # ZLIB: https://www.zlib.net/
-: ${PERL_VERSION:=5.44.0}
-: ${OPENSSL_VERSION:=3.5.9}
-: ${ZLIB_VERSION:=1.3.2}
-: ${ZLIB_SHA256:=bb329a0a2cd0274d05519d61c667c062e06990d72e125ee2dfa8de64f0119d16}
+: "${PERL_VERSION:=5.44.0}"
+: "${OPENSSL_VERSION:=3.5.9}"
+: "${ZLIB_VERSION:=1.3.2}"
+: "${ZLIB_SHA256:=bb329a0a2cd0274d05519d61c667c062e06990d72e125ee2dfa8de64f0119d16}"
 
-: ${BUILDER_NAME:="Guillaume Bougard (teclib)"}
-: ${BUILDER_MAIL:="gbougard_at_teclib.com"}
+: "${BUILDER_NAME:="Guillaume Bougard (teclib)"}"
+: "${BUILDER_MAIL:="gbougard_at_teclib.com"}"
 
-: ${APPSIGNID:=}
-: ${INSTSIGNID:=}
-: ${NOTARIZE:=no}
+: "${APPSIGNID:=}"
+: "${INSTSIGNID:=}"
+: "${NOTARIZE:=no}"
 
-let SIGNED=0
+(( SIGNED=0 ))
 
 set -e
 
@@ -23,7 +23,7 @@ export LC_ALL=C LANG=C
 
 ROOT="${0%/*}"
 cd "$ROOT"
-ROOT="`pwd`"
+ROOT="$(pwd)"
 
 while [ -n "$1" ]
 do
@@ -62,16 +62,16 @@ HELP
 done
 
 # Check platform we are running on
-: ${ARCH:=$(uname -m)}
+: "${ARCH:=$(uname -m)}"
 case "$(uname -s) $ARCH" in
     Darwin*x86_64)
         echo "GLPI-Agent MacOSX Packaging for $ARCH..."
-        : ${MACOSX_DEPLOYMENT_TARGET:=10.12}
+        : "${MACOSX_DEPLOYMENT_TARGET:=10.12}"
         OPENSSL_CONFIG="darwin64-x86_64-cc"
         ;;
     Darwin*arm64)
         echo "GLPI-Agent MacOSX Packaging for $ARCH..."
-        : ${MACOSX_DEPLOYMENT_TARGET:=11.0}
+        : "${MACOSX_DEPLOYMENT_TARGET:=11.0}"
         OPENSSL_CONFIG="darwin64-arm64-cc"
         # Try to disable annoying warning
         EXTRA_PERL_CCFLAGS="-Wno-compound-token-split-by-macro -Wno-deprecated-declarations"
@@ -131,8 +131,8 @@ cp -a scripts pkg/scripts
 [ "$ARCH" == "x86_64" ] || rm -f pkg/scripts/dmidecode
 
 # Perl build configuration
-[ -e ~/.curlrc ] && egrep -q '^insecure' ~/.curlrc || echo insecure >>~/.curlrc
-OPENSSL_CONFIG_OPTS="zlib --with-zlib-include='$ROOT/build/zlib' --with-zlib-lib='$ROOT/build/zlib/zlib.a'"
+[ -e ~/.curlrc ] && grep -Eq '^insecure' ~/.curlrc || echo insecure >>~/.curlrc
+OPENSSL_CONFIG_OPTS=(zlib "--with-zlib-include='$ROOT/build/zlib'" "--with-zlib-lib='$ROOT/build/zlib/zlib.a'")
 CPANM_OPTS="--build-args=\"OTHERLDFLAGS='-Wl,-search_paths_first'\""
 SHASUM="$( which shasum 2>/dev/null )"
 
@@ -149,11 +149,11 @@ fi
 
 build_static_zlib () {
     cd "$ROOT"
-    echo ======== Build zlib $ZLIB_VERSION
+    echo "======== Build zlib $ZLIB_VERSION"
     ARCHIVE="zlib-$ZLIB_VERSION.tar.gz"
     ZLIB_URL="https://www.zlib.net/$ARCHIVE"
     [ -e "$ARCHIVE" ] || curl -so "$ARCHIVE" "$ZLIB_URL"
-    read SHA256 x <<<$( $SHASUM -a 256 $ARCHIVE )
+    read -r SHA256 _ <<<"$( "$SHASUM" -a 256 "$ARCHIVE" )"
     if [ "$SHA256" == "$ZLIB_SHA256" ]; then
         echo "Zlib $ZLIB_VERSION ready for building..."
     else
@@ -164,13 +164,13 @@ build_static_zlib () {
     [ -d "$ROOT/build/zlib" ] || mkdir -p "$ROOT/build/zlib"
     cd "$ROOT/build/zlib"
     [ -e Makefile ] || CFLAGS="$SDKFLAGS" \
-        ../../zlib-$ZLIB_VERSION/configure --static --libdir="$PWD" --includedir="$PWD"
+        "../../zlib-$ZLIB_VERSION/configure" --static --libdir="$PWD" --includedir="$PWD"
     make libz.a
 }
 
 build_perl () {
     cd "$ROOT"
-    echo ======== Build perl $PERL_VERSION
+    echo "======== Build perl $PERL_VERSION"
     PERL_ARCHIVE="perl-$PERL_VERSION.tar.gz"
     PERL_URL="https://www.cpan.org/src/5.0/$PERL_ARCHIVE"
     [ -e "$PERL_ARCHIVE" ] || curl -so "$PERL_ARCHIVE" "$PERL_URL"
@@ -178,8 +178,8 @@ build_perl () {
     # Eventually verify archive
     if [ -n "$SHASUM" ]; then
         [ -e "$PERL_ARCHIVE.sha1" ] || curl -so "$PERL_ARCHIVE.sha1.txt" "$PERL_URL.sha1.txt"
-        read SHA1 x <<<$( $SHASUM $PERL_ARCHIVE )
-        if [ "$SHA1" == "$(cat $PERL_ARCHIVE.sha1.txt)" ]; then
+        read -r SHA1 _ <<<"$( "$SHASUM" "$PERL_ARCHIVE" )"
+        if [ "$SHA1" == "$(cat "$PERL_ARCHIVE.sha1.txt")" ]; then
             echo "Perl $PERL_VERSION ready for building..."
         else
             echo "Can't build perl $PERL_VERSION, source archive sha1 digest mismatch"
@@ -188,7 +188,7 @@ build_perl () {
     fi
 
     # Disable getaddrinfo native support on MacOSX, perl will use an emulated version from Socket module
-    BUILD_NO_GETADDRINFO="-Dd_getaddrinfo=undef -Dd_gai_strerror=undef -Dd_getnameinfo=undef"
+    BUILD_NO_GETADDRINFO=(-Dd_getaddrinfo=undef -Dd_gai_strerror=undef -Dd_getnameinfo=undef)
 
     cd build
     [ -d "perl-$PERL_VERSION" ] || tar xzf "../$PERL_ARCHIVE"
@@ -197,8 +197,8 @@ build_perl () {
         rm -f config.sh Policy.sh
         ./Configure -de -Dprefix=$BUILD_PREFIX -Duserelocatableinc -DNDEBUG    \
             -Dman1dir=none -Dman3dir=none -Dusethreads -UDEBUGGING             \
-            -Dusemultiplicity -Duse64bitint -Darch=$ARCH                       \
-            $BUILD_NO_GETADDRINFO                                              \
+            -Dusemultiplicity -Duse64bitint -Darch="$ARCH"                     \
+            "${BUILD_NO_GETADDRINFO[@]}"                                       \
             -Aeval:privlib=.../../lib -Aeval:scriptdir=.../../bin              \
             -Aeval:vendorprefix=.../.. -Aeval:vendorlib=.../../agent           \
             -Accflags="$SDKFLAGS $EXTRA_PERL_CCFLAGS"                          \
@@ -227,7 +227,7 @@ echo ========
 
 # 4. Download and Build OpenSSL
 if [ ! -d "build/openssl-$OPENSSL_VERSION" ]; then
-    echo ======== Build openssl $OPENSSL_VERSION
+    echo "======== Build openssl $OPENSSL_VERSION"
     ARCHIVE="openssl-$OPENSSL_VERSION.tar.gz"
     OPENSSL_URL="https://github.com/openssl/openssl/releases/download/openssl-$OPENSSL_VERSION/$ARCHIVE"
     [ -e "$ARCHIVE" ] || curl -sLo "$ARCHIVE" "$OPENSSL_URL"
@@ -235,10 +235,10 @@ if [ ! -d "build/openssl-$OPENSSL_VERSION" ]; then
     # Eventually verify archive
     if [ -n "$SHASUM" ]; then
         [ -e "$ARCHIVE.sha256" ] || curl -sLo "$ARCHIVE.sha256" "$OPENSSL_URL.sha256"
-        read SHA256 x <<<$( $SHASUM -a 256 $ARCHIVE )
-        read EXPECTED x <<<$( cat $ARCHIVE.sha256 )
+        read -r SHA256 _ <<<"$( "$SHASUM" -a 256 "$ARCHIVE" )"
+        read -r EXPECTED _ <<<"$( cat "$ARCHIVE.sha256")"
         # Don't abort build if sha256 is empty as this happens on github
-        if [ -z "$EXPECTED" -o "$SHA256" == "$EXPECTED" ]; then
+        if [ -z "$EXPECTED" ] || [ "$SHA256" == "$EXPECTED" ]; then
             echo "OpenSSL $OPENSSL_VERSION ready for building..."
         else
             echo "Can't build OpenSSL $OPENSSL_VERSION, source archive sha256 digest mismatch"
@@ -249,7 +249,7 @@ if [ ! -d "build/openssl-$OPENSSL_VERSION" ]; then
     # Uncompress OpenSSL
     if [ ! -d "openssl-$OPENSSL_VERSION" ]; then
         rm -rf "openssl-$OPENSSL_VERSION"
-        tar xzf $ARCHIVE
+        tar xzf "$ARCHIVE"
     fi
 
     [ -e "$ROOT/zlib-$ZLIB_VERSION/zlib.h" ] \
@@ -260,8 +260,8 @@ if [ ! -d "build/openssl-$OPENSSL_VERSION" ]; then
     cd build/openssl
 
     CFLAGS="$SDKFLAGS -Wno-deprecated-declarations" \
-    ../../openssl-$OPENSSL_VERSION/Configure $OPENSSL_CONFIG no-autoerrinit no-shared \
-        --prefix="/openssl" $OPENSSL_CONFIG_OPTS
+    "../../openssl-$OPENSSL_VERSION/Configure" "$OPENSSL_CONFIG" no-autoerrinit no-shared \
+        --prefix="/openssl" "${OPENSSL_CONFIG_OPTS[@]}"
     make
 
     # Only install static lib from build folder
@@ -280,11 +280,11 @@ export OPENSSL_PREFIX="$ROOT/build/openssl-$OPENSSL_VERSION/openssl"
 # but it will fail if it is built for a different ARCH, so just replace it with what is
 # expected by Net::SSLeay
 if [ -n "$LOCAL_ARCH" ]; then
-    cat >$OPENSSL_PREFIX/bin/openssl <<-OPENSSL
+    cat >"$OPENSSL_PREFIX/bin/openssl" <<-OPENSSL
     #!/bin/sh
     echo OpenSSL $OPENSSL_VERSION
 OPENSSL
-    chmod +x $OPENSSL_PREFIX/bin/openssl
+    chmod +x "$OPENSSL_PREFIX/bin/openssl"
 fi
 
 # 5. Install cpanm
@@ -297,11 +297,11 @@ if [ ! -e "build$BUILD_PREFIX/bin/cpanm" ]; then
 fi
 
 # 6. Still install modules needing compilation
-while read modules
+while read -r module
 do
-    [ -z "${modules%%#*}" ] && continue
-    echo ======== Install $modules
-    cpanm --notest -v --no-man-pages $CPANM_OPTS $modules
+    [ -z "${module%%#*}" ] && continue
+    echo "======== Install $module"
+    cpanm --notest -v --no-man-pages "$CPANM_OPTS" "$module"
 done <<MODULES
 Module::Install
 Sub::Identify Params::Validate HTML::Parser Compress::Zlib Digest::SHA
@@ -317,21 +317,21 @@ fi
 
 # Prepare glpi-agent sources
 cd ../..
-rm -rf build MANIFEST MANIFEST.bak *.tar.gz
+rm -rf build MANIFEST MANIFEST.bak ./*.tar.gz
 [ -e Makefile ] && make clean
 perl Makefile.PL
 
 # Install required agent modules
-cpanm --notest -v --installdeps --no-man-pages $CPANM_OPTS .
+cpanm --notest -v --installdeps --no-man-pages "$CPANM_OPTS" .
 
 echo '===== Installing more perl module deps ====='
-cpanm --notest -v --no-man-pages $CPANM_OPTS LWP::Protocol::https              \
+cpanm --notest -v --no-man-pages "CPANM_OPTS" LWP::Protocol::https              \
     HTTP::Daemon Proc::Daemon File::Copy::Recursive                            \
     URI::Escape Net::Ping Parallel::ForkManager Net::SNMP Net::NBName DateTime \
     Thread::Queue Parse::EDID YAML::Tiny Data::UUID Cpanel::JSON::XS
 
 echo '===== Installing Crypt::DES & Crypt::Rijndael perl modules ====='
-cpanm --notest -v --no-man-pages $CPANM_OPTS Crypt::DES Crypt::Rijndael
+cpanm --notest -v --no-man-pages "$CPANM_OPTS" Crypt::DES Crypt::Rijndael
 
 # Net::Write::Layer2 depends on Net::PCAP but it fails on MacOSX
 
@@ -346,13 +346,13 @@ mkdir "$ROOT/pkg/payload$BUILD_PREFIX/bin"
 cp -a "$ROOT/build$BUILD_PREFIX/bin/perl" "$ROOT/pkg/payload$BUILD_PREFIX/bin/perl"
 
 # Finalize sources
-if [ -n "$GITHUB_REF" -a -z "${GITHUB_REF%refs/tags/*}" ]; then
+if [ -n "$GITHUB_REF" ] && [ -z "${GITHUB_REF%refs/tags/*}" ]; then
     VERSION="${GITHUB_REF#refs/tags/}"
 else
-    read Version equals VERSION <<<$( egrep "^VERSION = " Makefile | head -1 )
+    read -r _ _ VERSION <<<"$( grep -E "^VERSION = " Makefile | head -1 )"
 fi
 
-if [ -z "${VERSION#*-dev}" -a -n "$GITHUB_SHA" ]; then
+if [ -z "${VERSION#*-dev}" ] && [ -n "$GITHUB_SHA" ]; then
     VERSION="${VERSION%-dev}-git${GITHUB_SHA:0:8}"
 fi
 
@@ -397,21 +397,21 @@ make install DESTDIR="$ROOT/pkg/payload"
 echo "Installed."
 
 # Don't keep .packlist file generated during installation
-rm -rf $ROOT/pkg/payload$BUILD_PREFIX/agent/auto
+rm -rf "$ROOT/pkg/payload$BUILD_PREFIX/agent/auto"
 
 # Cleanup unused static library
-find $ROOT/pkg/payload$BUILD_PREFIX -name libperl.a -delete
+find "$ROOT/pkg/payload$BUILD_PREFIX" -name libperl.a -delete
 
 cd "$ROOT"
 
 # Cleanup fat-files from not targeted arch
-if [ "$ARCH" == "arm64" -a -n "$LOCAL_ARCH" ]; then
-    let COUNT=1
+if [ "$ARCH" == "arm64" ] && [ -n "$LOCAL_ARCH" ]; then
+    (( COUNT=1 ))
     echo "===== Filtering $LOCAL_ARCH arch from binaries ====="
-    while read file
+    while read -r file
     do
         printf "%02d: " $((COUNT++))
-        ditto -arch $ARCH "$file" "$file.arm64"
+        ditto -arch "$ARCH" "$file" "$file.arm64"
         mv -f "$file.arm64" "$file"
         lipo -info "$file"
     done <<CHECK_ARCH
@@ -517,11 +517,11 @@ REQUIREMENTS
 # Code signing
 if [ -n "$APPSIGNID" ]; then
     echo "Signing code..."
-    while read file
+    while read -r file
     do
         [ -e "$file" ] || continue
         codesign --options runtime -s "$APPSIGNID" --timestamp "$file" \
-            && let ++SIGNED
+            && (( ++SIGNED ))
     done <<CODE_SIGNING
 pkg/payload/Applications/GLPI-Agent/bin/perl
 pkg/scripts/dmidecode
@@ -590,13 +590,11 @@ INFO_PLIST
 [ "$NOTARIZE" == "yes" ] && set +e
 
 echo "Build package"
-./munkipkg pkg
-
-# Analyze return code
-if [ "$?" != "0" ]; then
+# Build package and analyze in case of error
+if ! ./munkipkg pkg; then
     # If pkg file was generated, it means we failed on notarization
     # Then we can forget notarization unless on release (nightly build case)
-    if [ -s "$PKG" -a "$NOTARIZE" == "yes" -a -z "${TAGNAME##nightly-*}" ]; then
+    if [ -s "$PKG" ] && [ "$NOTARIZE" == "yes" ] && [ -z "${TAGNAME##nightly-*}" ]; then
         echo "By-passing notarization check"
         # On Github Actions run, add a warning to the build workflow
         [ -n "$GITHUB_REF" ] && echo "::warning title=Notarization failure for MacOSX $PKG build::By-passing notarization check"

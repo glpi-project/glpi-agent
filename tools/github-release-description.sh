@@ -5,7 +5,7 @@ set -e
 TAG="${GITHUB_REF#*refs/tags/}"
 VERSION="$TAG"
 
-: ${REPO:=https://github.com/glpi-project/glpi-agent}
+: "${REPO:=https://github.com/glpi-project/glpi-agent}"
 
 # Use GITHUB_REPOSITORY to set REPO when run from GH Actions
 if [ -n "$GITHUB_REPOSITORY" ]; then
@@ -27,7 +27,7 @@ do
     shift
 done
 
-if [ -z "$TAG" -o "$TAG" == "$GITHUB_REF" ]; then
+if [ -z "$TAG" ] || [ "$TAG" == "$GITHUB_REF" ]; then
     echo "GITHUB_REF is not referecing a tag" >&2
     exit 1
 fi

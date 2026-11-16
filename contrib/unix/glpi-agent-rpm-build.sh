@@ -1,12 +1,12 @@
 #! /bin/bash
 
-: ${UNITDIR:=/usr/lib/systemd/system}
-: ${OTHER_OPTS:=}
-: ${RPMBUILD:=rpmbuild}
-: ${IEC61850_BASE_URL:=https://github.com/g-bougard/libiec61850/archive/refs/tags}
-: ${IEC61850_VERSION:=1.6.1}
-: ${RPM_SIGNING:=no}
-: ${RPMSIGN_COMMAND:=ssh -T -o StrictHostKeyChecking=yes rpmsign rpmsign}
+: "${UNITDIR:=/usr/lib/systemd/system}"
+: "${OTHER_OPTS:=}"
+: "${RPMBUILD:=rpmbuild}"
+: "${IEC61850_BASE_URL:=https://github.com/g-bougard/libiec61850/archive/refs/tags}"
+: "${IEC61850_VERSION:=1.6.1}"
+: "${RPM_SIGNING:=no}"
+: "${RPMSIGN_COMMAND:=ssh -T -o StrictHostKeyChecking=yes rpmsign rpmsign}"
 
 while [ -n "$1" ]
 do
@@ -39,16 +39,16 @@ do
     shift
 done
 
-: ${DIST:=$( rpm --eval "%{?dist}" 2>/dev/null )}
+: "${DIST:=$( rpm --eval "%{?dist}" 2>/dev/null )}"
 DIST=${DIST#.}
 
-if [ ! -e lib -a ! -e tools/make-release.sh ]; then
+if [ ! -e lib ] && [ ! -e tools/make-release.sh ]; then
     echo "This script MUST be run from the root of glpi-agent sources" >&2
     exit 1
 fi
 
 VER=${GITHUB_REF#refs/tags/}
-if [ -n "${GITHUB_REF%refs/tags/*}" -o -z "$VER" ]; then
+if [ -n "${GITHUB_REF%refs/tags/*}" ] || [ -z "$VER" ]; then
     VER=$(perl -Ilib -MGLPI::Agent::Version -e '$v = $GLPI::Agent::Version::VERSION; $v =~ s/-.*//; print $v')
 fi
 if [ -z "$REV" ]; then
@@ -58,33 +58,38 @@ if [ -z "$REV" ]; then
     elif [ -z "${GITHUB_REF%refs/tags/*}" ]; then
         REV=1
     else
-        REV=$([ -n "$GITHUB_SHA" ] && echo $GITHUB_SHA| cut -c 1-8 || git log --pretty=format:%h -n 1)
+        if [ -n "$GITHUB_SHA" ]; then
+            REV="${GITHUB_SHA:0:8}"
+        else
+            REV="$(git log --pretty=format:%h -n 1)"
+        fi
         [ -n "$REV" ] && REV="git$REV" || REV=1
     fi
 fi
 
 [ -z "$DIST" ] && unset DISTRO || DISTRO=".$DIST"
-rm -f glpi-agent-$VER-$REV$DISTRO.tar.gz
+rm -f "glpi-agent-$VER-$REV$DISTRO.tar.gz"
 echo "Preparing glpi-agent-$VER-$REV$DISTRO ..."
-tools/make-release.sh --no-git $VER-$REV$DISTRO
+tools/make-release.sh --no-git "$VER-$REV$DISTRO"
 
 echo "Checking if a dedicated dist script exists..."
-[ -n "$DIST" -a -x contrib/unix/rpmbuild.$DIST.sh ] && source contrib/unix/rpmbuild.$DIST.sh
+# shellcheck source=/dev/null
+[ -n "$DIST" ] && [ -x "contrib/unix/rpmbuild.$DIST.sh" ] && source "contrib/unix/rpmbuild.$DIST.sh"
 
 perl Makefile.PL
 rm -f MANIFEST
 make manifest
-make dist DISTVNAME=glpi-agent-$VER-$REV$DISTRO
+make dist DISTVNAME="glpi-agent-$VER-$REV$DISTRO"
 
-SRCDIR=`rpm --eval "%{_sourcedir}"`
+SRCDIR="$(rpm --eval "%{_sourcedir}")"
 [ -d "$SRCDIR" ] || mkdir -p "$SRCDIR"
-rm -f $SRCDIR/*.tar.gz
-cp glpi-agent-$VER-$REV$DISTRO.tar.gz "$SRCDIR"
+rm -f "$SRCDIR"/*.tar.gz
+cp "glpi-agent-$VER-$REV$DISTRO.tar.gz" "$SRCDIR"
 
 # Also download libiec61850
 if [ ! -s "$SRCDIR/iec61850-${IEC61850_VERSION}.tar.gz" ]; then
     echo "Downloading libiec61850-${IEC61850_VERSION}.tar.gz..."
-    curl -L -o "$SRCDIR/libiec61850-${IEC61850_VERSION}.tar.gz" ${IEC61850_BASE_URL}/${IEC61850_VERSION}.tar.gz
+    curl -L -o "$SRCDIR/libiec61850-${IEC61850_VERSION}.tar.gz" "${IEC61850_BASE_URL}/${IEC61850_VERSION}.tar.gz"
 fi
 
 # Prepare rpmbuild options
@@ -106,51 +111,57 @@ RPMDIR=$(rpm --eval "%{_rpmdir}")
 SRPMDIR=$(rpm --eval "%{_srcrpmdir}")
 echo "RPMDIR: $RPMDIR"
 if [ -n "$GITHUB_OUTPUT" ]; then
-    echo "rpmdir=$RPMDIR" >>$GITHUB_OUTPUT
-    echo "srcdir=$SRCDIR" >>$GITHUB_OUTPUT
-    echo "srpmdir=$SRPMDIR" >>$GITHUB_OUTPUT
+    {
+        echo "rpmdir=$RPMDIR"
+        echo "srcdir=$SRCDIR"
+        echo "srpmdir=$SRPMDIR"
+    } >>"$GITHUB_OUTPUT"
 fi
 for rpm in $(eval "rpmspec -q $BUILD_OPTS contrib/unix/glpi-agent.spec")
 do
-    BASE=${rpm%-$VER-$REV*}
+    BASE=${rpm%"-$VER-$REV"*}
     RPM="$RPMDIR/noarch/${rpm%.*}.noarch.rpm"
     if [ ! -e "$RPM" ]; then
         echo "$RPM not found" >&2
         exit 1
     fi
     if [ "$RPM_SIGNING" == "yes" ]; then
-        mv "$RPM" "${RPM%.rpm}-orig.rpm"
-        cat "${RPM%.rpm}-orig.rpm" | $RPMSIGN_COMMAND "$RPM" >"$RPM"
+        RPM_NAME="$RPM"
+        RPM_ORIG="${RPM%.rpm}-orig.rpm"
+        mv "$RPM" "$RPM_ORIG"
+        cat "$RPM_ORIG" | "$RPMSIGN_COMMAND" "$RPM_NAME" >"$RPM"
         if [ ! -s "$RPM" ]; then
-            echo "$Failed to sign RPM" >&2
+            echo "Failed to sign RPM" >&2
             exit 1
         fi
         # Cleanup not signed rpm
         rm -f "${RPM%.rpm}-orig.rpm"
     fi
-    [ -n "$GITHUB_REF" ] && echo "$BASE-rpm=$RPM" >>$GITHUB_OUTPUT
-    echo "$BASE-rpm: $(ls -l $RPM)"
+    [ -n "$GITHUB_REF" ] && echo "$BASE-rpm=$RPM" >>"$GITHUB_OUTPUT"
+    echo "$BASE-rpm: $(ls -l "$RPM")"
 done
 
 ARCH=$(uname -m)
 for rpm in $(eval "rpmspec -q $BUILD_IEC61850_OPTS contrib/unix/glpi-agent-iec61850.spec")
 do
-    BASE=${rpm%-$VER-$REV*}
+    BASE=${rpm%"-$VER-$REV"*}
     RPM="$RPMDIR/$ARCH/${rpm%.*}.$ARCH.rpm"
     if [ ! -e "$RPM" ]; then
         echo "$RPM not found" >&2
         exit 1
     fi
     if [ "$RPM_SIGNING" == "yes" ]; then
-        mv "$RPM" "${RPM%.rpm}-orig.rpm"
-        cat "${RPM%.rpm}-orig.rpm" | $RPMSIGN_COMMAND "$RPM" >"$RPM"
+        RPM_NAME="$RPM"
+        RPM_ORIG="${RPM%.rpm}-orig.rpm"
+        mv "$RPM" "$RPM_ORIG"
+        cat "$RPM_ORIG" | "$RPMSIGN_COMMAND" "$RPM_NAME" >"$RPM"
         if [ ! -s "$RPM" ]; then
-            echo "$Failed to sign RPM" >&2
+            echo "Failed to sign RPM" >&2
             exit 1
         fi
         # Cleanup not signed rpm
         rm -f "${RPM%.rpm}-orig.rpm"
     fi
-    [ -n "$GITHUB_REF" ] && echo "$BASE-rpm=$RPM" >>$GITHUB_OUTPUT
-    echo "$BASE-rpm: $(ls -l $RPM)"
+    [ -n "$GITHUB_REF" ] && echo "$BASE-rpm=$RPM" >>"$GITHUB_OUTPUT"
+    echo "$BASE-rpm: $(ls -l "$RPM")"
 done

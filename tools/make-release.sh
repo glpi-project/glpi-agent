@@ -10,7 +10,7 @@
 
 set -e
 
-: ${RELEASEBRANCH:=develop}
+: "${RELEASEBRANCH:=develop}"
 
 while [ -n "$1" ]
 do
@@ -76,14 +76,14 @@ if [ "$GIT" != "no" ]; then
     BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
     # Verify we are on release branch or still on the right branch
-    if [ "$BRANCH" != "$RELEASEBRANCH" -a "$BRANCH" != "release/$VERSION" ]; then
+    if [ "$BRANCH" != "$RELEASEBRANCH" ] && [ "$BRANCH" != "release/$VERSION" ]; then
         echo "Not on $RELEASEBRANCH or release/$VERSION branch" >&2
         exit 2
     fi
 
     echo
     echo ----
-    if [ "$BRANCH" = "$RELEASEBRANCH" ] && ! git checkout -b release/$VERSION; then
+    if [ "$BRANCH" = "$RELEASEBRANCH" ] && ! git checkout -b "release/$VERSION"; then
         echo "Can't create dedicated release branch" >&2
         exit 3
     fi
@@ -182,15 +182,16 @@ sed -ri -e "s/.* (not released yet|not yet released)/$VERSION $RELEASE_DATE/" Ch
 sed -ri -e "s/^version '.*';$/version '$VERSION';/" Makefile.PL
 
 # Update debian changelog with new entry log using current git user
-export DEBFULLNAME="$(git config --get user.name)"
-export DEBEMAIL="$(git config --get user.email)"
-: ${DEBFULLNAME:=$(git log --pretty=format:"%an" -n 1)}
-: ${DEBEMAIL:=$(git log --pretty=format:"%ae" -n 1)}
-if [ -n "$DEBFULLNAME" -a -n "$DEBEMAIL" ]; then
-    if [ -z "$DEBCHANGELOG" -o "$DEBCHANGELOG" != "skip" ]; then
-        CURRENT=$(dpkg-parsechangelog -S version)
+DEBFULLNAME="$(git config --get user.name)"
+DEBEMAIL="$(git config --get user.email)"
+export DEBFULLNAME DEBEMAIL
+: "${DEBFULLNAME:=$(git log --pretty=format:"%an" -n 1)}"
+: "${DEBEMAIL:=$(git log --pretty=format:"%ae" -n 1)}"
+if [ -n "$DEBFULLNAME" ] && [ -n "$DEBEMAIL" ]; then
+    if [ -z "$DEBCHANGELOG" ] || [ "$DEBCHANGELOG" != "skip" ]; then
+        CURRENT="$(dpkg-parsechangelog -S version)"
         EPOCH=${CURRENT%%:*}
-        if [ "${VERSION%-*}" = "$VERSION" -a -z "$DEBREV" ]; then
+        if [ "${VERSION%-*}" = "$VERSION" ] && [ -z "$DEBREV" ]; then
             DEBREV="-1"
         fi
         dch -b -D unstable --newversion "$EPOCH:$VERSION$DEBREV" "New upstream release $VERSION"
@@ -217,16 +218,16 @@ if [ "$MERGE" = "no" ]; then
 fi
 
 # 7. Make tag on commit
-git tag $VERSION
+git tag "$VERSION"
 
 echo
 echo ----
 # 8. Make release branch merge into RELEASEBRANCH
-git checkout $RELEASEBRANCH
-git merge --no-ff release/$VERSION -m "Merge $VERSION release branch into $RELEASEBRANCH"
+git checkout "$RELEASEBRANCH"
+git merge --no-ff "release/$VERSION" -m "Merge $VERSION release branch into $RELEASEBRANCH"
 
 # 9. Delete release branch
-git branch -d release/$VERSION
+git branch -d "release/$VERSION"
 
 # 10. Output publishing instructions
 cat <<PUBLISHING

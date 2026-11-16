@@ -1,7 +1,7 @@
 #!/bin/bash
 
-cd "${0%/*}"
-INSTALLPATH="`pwd`"
+cd "${0%/*}" || exit 1
+INSTALLPATH="$(pwd)"
 cd ..
 
 echo "Stopping and unloading service"
@@ -14,17 +14,18 @@ else
 fi
 
 # Still wait until process has been stopped
-read PID XXX <<<`ps -ec -o pid,command | grep glpi-agent`
+# shellcheck disable=SC2009
+read -r PID _ <<<"$(ps -ec -o pid,command | grep glpi-agent)"
 if [ "$PID" !=  "" ]; then
-    let TIMEOUT=300
-    while sudo kill -0 $PID 2>/dev/null
+    (( TIMEOUT=300 ))
+    while sudo kill -0 "$PID" 2>/dev/null
     do
         sleep .1
         (( --TIMEOUT )) || break
     done
     if [ "$TIMEOUT" == "0" ]; then
         echo "killing process: $PID"
-        sudo kill $PID
+        sudo kill "$PID"
     fi
 fi
 
@@ -33,10 +34,10 @@ if [ -d "$INSTALLPATH/etc/conf.d" ]; then
     cp -af "$INSTALLPATH/etc/conf.d" /tmp
 fi
 
-while read FILE
+while read -r FILE
 do
   echo "removing '$FILE'"
-  [ -n "$FILE" -a -e "$FILE" ] || continue
+  [ -n "$FILE" ] && [ -e "$FILE" ] || continue
   sudo rm -f -R "$FILE"
 done <<-FILES
     $INSTALLPATH
@@ -46,4 +47,4 @@ done <<-FILES
 FILES
 
 # Unregister package
-sudo pkgutil --forget com.teclib.glpi-agent $INSTALLPATH
+sudo pkgutil --forget com.teclib.glpi-agent "$INSTALLPATH"

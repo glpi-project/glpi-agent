@@ -1057,7 +1057,7 @@ jobs:
         ./github-nightly-description.sh --header --version ${{ needs.setup-release.outputs.version }} >glpi-agent/index.md.new
         git config --local user.email "${{ needs.setup-release.outputs.user-email }}"
         git config --local user.name "${{ needs.setup-release.outputs.user-name }}"
-        egrep '^# ' glpi-agent/index.md | \
+        grep -E '^# ' glpi-agent/index.md | \
         while read dash agent version x
         do
             VERSION="${version#v}"

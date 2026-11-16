@@ -11,15 +11,24 @@
 #    depending on current computer. This permits to run the agent on different
 #    computers if they have different hostname.
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")" || exit 1
 
-: ${APPIMAGE:=}
+: "${APPIMAGE:=}"
 
 if [ -z "$APPIMAGE" ]; then
     OTHERS=""
-    for appimage in $(ls -1t glpi-agent*.AppImage 2>/dev/null)
+    # Select newest AppImage
+    for appimage in glpi-agent*.AppImage
     do
+        [ -e "$appimage" ] || continue
         if [ -z "$APPIMAGE" ]; then
+            APPIMAGE="$appimage"
+        elif [ "$appimage" -nt "$APPIMAGE" ]; then
+            if [ -n "$OTHERS" ]; then
+                OTHERS="$APPIMAGE $OTHERS"
+            else
+                OTHERS="$APPIMAGE"
+            fi
             APPIMAGE="$appimage"
         else
             [ -n "$OTHERS" ] && OTHERS="$OTHERS "
@@ -64,7 +73,7 @@ if [ ! -d etc ]; then
     echo "Copying etc folder from AppImage..."
     OFFSET=$("$APPIMAGE" --appimage-offset)
     [ -d mnt ] || mkdir mnt
-    if ! mount "$APPIMAGE" mnt/ -o offset=$OFFSET; then
+    if ! mount "$APPIMAGE" mnt/ -o offset="$OFFSET"; then
         echo "Failed to mount AppImage" >&2
         exit 1
     fi

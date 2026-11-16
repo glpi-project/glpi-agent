@@ -42,18 +42,18 @@ HEADER
 fi
 
 # Support x86 MSI is still available
-if [ -e "glpi-agent/GLPI-Agent-$VERSION-x86.msi" -a -e "glpi-agent/GLPI-Agent-$VERSION-x86.zip" ]; then
+if [ -e "glpi-agent/GLPI-Agent-$VERSION-x86.msi" ] && [ -e "glpi-agent/GLPI-Agent-$VERSION-x86.zip" ]; then
     MSI_X86="32 bits | [GLPI-Agent-$VERSION-x86.msi](GLPI-Agent-$VERSION-x86.msi) | [GLPI-Agent-$VERSION-x86.zip](GLPI-Agent-$VERSION-x86.zip)"
 fi
 
 # Set size for linux installers
 LININST="~9M"
 if [ -e "glpi-agent-${VERSION}-linux-installer.pl" ]; then
-    read LININST X <<<$(LANG=C ls -sh glpi-agent-${VERSION}-linux-installer.pl)
+    read -r LININST _ <<<"$(LANG=C ls -sh "glpi-agent-${VERSION}-linux-installer.pl")"
 fi
 LINBIGINST="~41M"
 if [ -e "glpi-agent-${VERSION}-with-snap-linux-installer.pl" ]; then
-    read LINBIGINST X <<<$(LANG=C ls -sh glpi-agent-${VERSION}-with-snap-linux-installer.pl)
+    read -r LINBIGINST _ <<<"$(LANG=C ls -sh "glpi-agent-${VERSION}-with-snap-linux-installer.pl")"
 fi
 
 cat <<DESCRIPTION
