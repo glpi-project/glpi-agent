@@ -43,7 +43,7 @@ collect:
 
 packaging:
 * Support rpm packaging signing
-* Updated MacOSX packages to keep configuration during upgrade
+* Updated MacOSX packages to keep configuration during upgrade and use zlib 1.4
 * Update Windows packaging to use:
   - gcc 16.2.0posix-23.1.3-14.0.0-msvcrt-r3
   - zlib 1.4
