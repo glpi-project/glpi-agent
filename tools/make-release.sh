@@ -8,8 +8,6 @@
 #  - merging the release branch
 #  - deleting the release branch
 
-set -e
-
 : "${RELEASEBRANCH:=develop}"
 
 while [ -n "$1" ]
@@ -68,6 +66,13 @@ if [ -z "$VERSION" ]; then
     echo "No version provided argument" >&2
     exit 1
 fi
+
+# Set DEBFULLNAME & DEBEMAIL before enabling exit on error
+DEBFULLNAME="$(git config --get user.name)"
+DEBEMAIL="$(git config --get user.email)"
+export DEBFULLNAME DEBEMAIL
+
+set -e
 
 # Be sure to run from parent folder
 [ -e Makefile.PL ] || cd "${0%/*}/.."
@@ -182,11 +187,8 @@ sed -ri -e "s/.* (not released yet|not yet released)/$VERSION $RELEASE_DATE/" Ch
 sed -ri -e "s/^version '.*';$/version '$VERSION';/" Makefile.PL
 
 # Update debian changelog with new entry log using current git user
-DEBFULLNAME="$(git config --get user.name)"
-DEBEMAIL="$(git config --get user.email)"
-export DEBFULLNAME DEBEMAIL
-: "${DEBFULLNAME:=$(git log --pretty=format:"%an" -n 1)}"
-: "${DEBEMAIL:=$(git log --pretty=format:"%ae" -n 1)}"
+[ -z "$DEBFULLNAME" ] && DEBFULLNAME="$(git log --pretty=format:"%an" -n 1)"
+[ -z "$DEBEMAIL" ]    && DEBEMAIL="$(git log --pretty=format:"%ae" -n 1)"
 if [ -n "$DEBFULLNAME" ] && [ -n "$DEBEMAIL" ]; then
     if [ -z "$DEBCHANGELOG" ] || [ "$DEBCHANGELOG" != "skip" ]; then
         CURRENT="$(dpkg-parsechangelog -S version)"
