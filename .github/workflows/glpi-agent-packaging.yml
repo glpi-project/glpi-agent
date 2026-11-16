@@ -107,6 +107,10 @@ jobs:
                         echo "build=no" >>$GITHUB_OUTPUT
                         exit 0
                     fi
+                    # Notarization can be disabled temporarily until license agreements are signed again
+                    if [ "${{ vars.MACOSX_NIGHTLY_NOTARIZE }}" != "yes" ]; then
+                        NOTARIZE="no"
+                    fi
                 else
                     TYPE=development
                 fi
