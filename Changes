@@ -49,6 +49,7 @@ packaging:
   - zlib 1.4
   - libiconv 1.19.1
   - 7-Zip v26.06
+  - swig 4.5.1
 * Linux snap packaging upgraded to use core24
 
 1.21 Thu, 08 Oct 2026

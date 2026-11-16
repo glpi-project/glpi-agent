@@ -57,7 +57,7 @@ sub toolchain_build_steps {
             {
                 plugin      => 'Perl::Dist::Strawberry::Step::BinaryTool',
                 name        => 'swig',
-                version     => '4.4.0',
+                version     => '4.5.1',
                 url         => 'https://sourceforge.net/projects/swig/files/swigwin/swigwin-<version>/<file>/download',
                 file        => 'swigwin-<version>.zip',
                 not_if_file => 'swigwin-<version>/swig.exe',
