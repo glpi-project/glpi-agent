@@ -126,6 +126,7 @@ Depends:
  libjson-pp-perl,
  libparallel-forkmanager-perl,
  liburi-perl,
+Recommends: libcryptx-perl
 Description: software and file deployment support for GLPI
  With this module, GLPI can accept software deployment
  request from an GLPI server with a FusionInventory compatible plugin.

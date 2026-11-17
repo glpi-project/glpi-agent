@@ -30,6 +30,8 @@ netdiscovery/netinventory:
   devices.
 
 deploy:
+* Add support for signed deployment packages using Ed25519 signature
+* Add glpi-sign-package.pl tool to sign deployment packages
 * p2p support optimization: Refacto to transform findPeers() to return as quickly
   as possible with a limited number of available peers. The method is also callable
   again to obtain new possible peers when previous don't have requested file parts.

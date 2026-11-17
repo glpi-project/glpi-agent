@@ -103,6 +103,11 @@
           <defaultValue></defaultValue>
         </textBox>
         <checkBox refId="GLPI_json">json</checkBox>
+        <textBox refId="GLPI_deploy-public-key">
+          <label>deploy-public-key</label>
+          <defaultValue></defaultValue>
+        </textBox>
+        <checkBox refId="GLPI_secure-extraction" defaultChecked="false">secure-extraction</checkBox>
       </presentation>
     </presentationTable>
   </resources>

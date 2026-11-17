@@ -46,7 +46,7 @@ sub failed {
 }
 
 sub process {
-    my ($self, $actionName, $params) = @_;
+    my ($self, $actionName, $params, %args) = @_;
 
     my $ret;
 
@@ -56,7 +56,8 @@ sub process {
         $self->{_logger}->debug2("Processing $actionName action...");
         my $action = GLPI::Agent::Task::Deploy::ActionProcessor::Action->new(
             logger  => $self->{_logger},
-            action  => $actionName
+            action  => $actionName,
+            task    => $args{task},
         );
         $ret = $action->do($params);
     } else {
