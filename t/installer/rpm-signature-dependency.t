@@ -12,6 +12,11 @@ my @commands;
 my @extracted;
 
 {
+    package MockRpmArchive;
+    sub content { return; }
+}
+
+{
     no warnings 'redefine';
     local *RpmDistro::_extract_rpm = sub {
         my $package = $_[1];
@@ -30,6 +35,7 @@ my @extracted;
 
     foreach my $signed (0, 1) {
         my $distro = bless {
+            _archive => bless({}, 'MockRpmArchive'),
             _options => { 'deploy-public-key' => $signed ? ('a' x 64) : '' },
             _skip => { dmidecode => 1 },
             _type => 'inventory,deploy,collect',
