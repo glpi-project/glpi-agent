@@ -264,6 +264,33 @@ my $deb_packages = [
         VERSION  => '0.24.2',
         FILESIZE => '0',
         SYSTEM_CATEGORY => 'base'
+    },
+    {
+        FROM     => 'deb',
+        NAME     => 'gcc-13',
+        ARCH     => 'amd64',
+        VERSION  => '13.4.0-10ubuntu1',
+        FILESIZE => '600064',
+        INSTALLDATE => "23/10/2026",
+        SYSTEM_CATEGORY => 'devel'
+    },
+    {
+        FROM     => 'deb',
+        NAME     => 'gcc-13-base',
+        ARCH     => 'amd64',
+        VERSION  => '13.4.0-10ubuntu1',
+        FILESIZE => '97280',
+        INSTALLDATE => "23/10/2026",
+        SYSTEM_CATEGORY => 'libs'
+    },
+    {
+        FROM     => 'deb',
+        NAME     => 'gcc-13-x86-64-linux-gnu',
+        ARCH     => 'amd64',
+        VERSION  => '13.4.0-10ubuntu1',
+        FILESIZE => '63053824',
+        INSTALLDATE => "23/10/2026",
+        SYSTEM_CATEGORY => 'devel'
     }
 ];
 

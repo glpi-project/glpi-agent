@@ -15,3 +15,6 @@ aspell-fr	all	0.50-3-7	636	text
 at	amd64	3.1.12-1	220	admin	install ok installed
 vlc-nox	amd64	2.2.2-5ubuntu0.16.04.4	9270	video	deinstall ok config-files
 jcagent	amd64	0.24.2		base	install ok installed
+gcc-13	amd64	13.4.0-10ubuntu1	586	devel	install ok installed	gcc-13	1792764998
+gcc-13-base	amd64	13.4.0-10ubuntu1	95	libs	install ok installed	gcc-13-base:amd64	1792764999
+gcc-13-x86-64-linux-gnu	amd64	13.4.0-10ubuntu1	61576	devel	install ok installed	gcc-13-x86-64-linux-gnu	1792764998
