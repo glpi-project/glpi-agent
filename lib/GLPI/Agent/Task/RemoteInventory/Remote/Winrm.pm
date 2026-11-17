@@ -397,7 +397,7 @@ sub getRemoteRegistryKey {
     map { $required->{lc($_)} = 1 } @{$params{required}}
         if ref($params{required}) eq "ARRAY";
     # Keep updated required params
-    $params{required} = $required if ref($required) != $params{required};
+    $params{required} = $required if ref($required) && $require != $params{required};
 
     if ($values && $values->{exitcode} == 0 && $values->{values}) {
         my $keys  = $values->{values};
@@ -446,7 +446,7 @@ sub getRemoteRegistryKey {
     map { $params{skip_subkey}->{lc($_)} = 1 } @{$params{skip_subkey}}
         if ref($params{skip_subkey}) eq "ARRAY";
     # Keep updated skip_subkey params
-    $params{skip_subkey} = $skip_subkey if ref($skip_subkey) != $params{skip_subkey};
+    $params{skip_subkey} = $skip_subkey if ref($skip_subkey) && $skip_subkey != $params{skip_subkey};
 
     if ($subkeys && $subkeys->{exitcode} == 0 && $subkeys->{keys} && ref($subkeys->{keys}) eq 'ARRAY') {
         foreach my $key (@{$subkeys->{keys}}) {
