@@ -18,7 +18,7 @@ inventory:
 * fix #1265: Fix malformed Qemu BDATE field
 * fix #1269:
   * Filter out invalid cpu serial WMI value on windows
-  * Support installation date inventory for linux debian packages
+  * Support installation date in linux debian softwares inventory
 
 remoteinventory:
 * Support opening commands passed by array ref
