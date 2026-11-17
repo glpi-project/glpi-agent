@@ -294,8 +294,9 @@ sub processRemote {
 
         # Load public key before extraction to prevent bypass if archive tries to overwrite it
         my $publicKey = $self->{config}->{'deploy-public-key'};
+        my $signaturesEnabled = defined($publicKey) && length($publicKey);
         my $publicKeyContent;
-        if ($publicKey) {
+        if ($signaturesEnabled) {
             if (-f $publicKey) {
                 # Security check: public key file must not be world-writable
                 my @stat = stat($publicKey);
@@ -312,7 +313,7 @@ sub processRemote {
                 if ($handle) {
                     $publicKeyContent = <$handle>;
                     close $handle;
-                    $publicKeyContent =~ s/\s+//g;
+                    $publicKeyContent =~ s/\s+//g if defined($publicKeyContent);
                 } else {
                     $logger->error("Failed to read public key file: $publicKey");
                     $job->next_on_usercheck(type => 'after_failure');
@@ -324,6 +325,15 @@ sub processRemote {
                 }
             } else {
                 $publicKeyContent = $publicKey;
+            }
+            unless (defined($publicKeyContent) && $publicKeyContent =~ /\A[0-9a-fA-F]{64}\z/) {
+                $logger->error("Security error: invalid public key (expected 32 bytes hex-encoded)");
+                $job->next_on_usercheck(type => 'after_failure');
+                $job->setStatus(
+                    status => 'ko',
+                    msg    => 'Security error: invalid public key'
+                );
+                next JOB;
             }
         }
 
@@ -338,7 +348,7 @@ sub processRemote {
             next JOB;
         } else {
             # Verify signature if a public key is defined in configuration
-            if ($publicKeyContent && !$self->_verifySignature(workdir => $workdir, publicKey => $publicKeyContent)) {
+            if ($signaturesEnabled && !$self->_verifySignature(workdir => $workdir, publicKey => $publicKeyContent)) {
                 $job->next_on_usercheck(type => 'after_failure');
                 $job->setStatus(
                     status => 'ko',
@@ -475,7 +485,7 @@ sub _verifySignature {
     my $publicKey = $params{publicKey} || $self->{config}->{'deploy-public-key'};
 
     # If no public key is defined, we skip the signature verification
-    return 1 unless $publicKey;
+    return 1 unless defined($publicKey) && length($publicKey);
 
     my $sigFile = first { -f $_ } map { File::Spec->catfile($workdirPath, $_) } qw(signature.sig manifest.sig);
 
@@ -504,18 +514,18 @@ sub _verifySignature {
         if ($handle) {
             $publicKey = <$handle>;
             close $handle;
-            $publicKey =~ s/\s+//g;
+            $publicKey =~ s/\s+//g if defined($publicKey);
         } else {
             $logger->error("Failed to read public key file in _verifySignature: $publicKey");
             return 0;
         }
     }
 
-    my $pubKeyBin = pack("H*", $publicKey);
-    if (length($pubKeyBin) != 32) {
+    if (!defined($publicKey) || $publicKey !~ /\A[0-9a-fA-F]{64}\z/) {
         $logger->error("Security error: invalid public key length (expected 32 bytes hex-encoded)");
         return 0;
     }
+    my $pubKeyBin = pack("H*", $publicKey);
 
     my $content = getAllLines(file => $sigFile);
     # Support format: <signature_hex>\n<manifest_content>

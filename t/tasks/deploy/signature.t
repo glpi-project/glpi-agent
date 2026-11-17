@@ -108,6 +108,12 @@ my $wd4 = create_workdir({ 'signature.sig' => 'foo' });
 is($task->_verifySignature(workdir => $wd4), 0, "Fail if public key length invalid");
 $task->{config}->{'deploy-public-key'} = '0' x 64;
 
+foreach my $invalid_key ('0', 'g' x 64) {
+    $task->{config}->{'deploy-public-key'} = $invalid_key;
+    is($task->_verifySignature(workdir => $wd4), 0, "Reject invalid hexadecimal key: $invalid_key");
+}
+$task->{config}->{'deploy-public-key'} = '0' x 64;
+
 # 5. Unknown signature file format
 my $wd5 = create_workdir({ 'signature.sig' => 'not_a_hex_signature_of_128_chars' });
 is($task->_verifySignature(workdir => $wd5), 0, "Fail if signature file format unknown");

@@ -26,6 +26,7 @@ BEGIN {
 }
 
 use Digest::SHA;
+use Cwd qw(abs_path);
 use UNIVERSAL::require;
 use File::Find;
 use Getopt::Long;
@@ -89,20 +90,20 @@ if (length($seed) != 32) {
 # 2. Generate manifest (SHA-512 of each file)
 my $manifest = "";
 my @files;
-my $abs_dir = File::Spec->rel2abs($dir);
+my $abs_dir = abs_path($dir);
+die "Can't find package directory '$dir'\n" unless defined($abs_dir) && -d $abs_dir;
 
-File::Find::find(sub {
+File::Find::find({ no_chdir => 1, wanted => sub {
     return if -d $_;
-    return if $_ eq 'signature.sig' || $_ eq 'manifest.sig';
+    my (undef, undef, $name) = File::Spec->splitpath($_);
+    return if $name eq 'signature.sig' || $name eq 'manifest.sig';
 
-    # Calculate relative path from the root of $dir
-    # We use $abs_dir calculated outside find() because find() chdirs into directories
-    my $rel_path = File::Spec->abs2rel(File::Spec->rel2abs($_), $abs_dir);
+    my $rel_path = File::Spec->abs2rel($File::Find::name, $abs_dir);
     push @files, $rel_path;
-}, $dir);
+} }, $abs_dir);
 
 foreach my $file (sort @files) {
-    my $path = File::Spec->catfile($dir, $file);
+    my $path = File::Spec->catfile($abs_dir, $file);
     my $sha = Digest::SHA->new(512);
     $sha->addfile($path, 'b');
     # Normalize path separators to forward slashes
@@ -127,7 +128,7 @@ my $signature_bin = Crypt::Ed25519::sign($manifest, $pub_bin, $priv_bin);
 my $signature_hex = unpack("H*", $signature_bin);
 
 # 4. Write signature.sig
-my $sig_file = File::Spec->catfile($dir, 'signature.sig');
+my $sig_file = File::Spec->catfile($abs_dir, 'signature.sig');
 open my $sh, '>', $sig_file or die "Can't write signature file '$sig_file': $!";
 binmode($sh);
 print $sh $signature_hex, "\n", $manifest;
