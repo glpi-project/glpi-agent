@@ -181,7 +181,6 @@ my %tests = (
             NAME         => 'AMD EPYC 7302 16-Core Processor',
             FAMILYNUMBER => '23',
             MODEL        => '49',
-            SERIAL       => 'None',
             SPEED        => '2994',
             STEPPING     => '0',
             THREAD       => '1',
