@@ -129,7 +129,7 @@ do
         RPM_NAME="$RPM"
         RPM_ORIG="${RPM%.rpm}-orig.rpm"
         mv "$RPM" "$RPM_ORIG"
-        cat "$RPM_ORIG" | "$RPMSIGN_COMMAND" "$RPM_NAME" >"$RPM"
+        cat "$RPM_ORIG" | $RPMSIGN_COMMAND "$RPM_NAME" >"$RPM"
         if [ ! -s "$RPM" ]; then
             echo "Failed to sign RPM" >&2
             exit 1
@@ -154,7 +154,7 @@ do
         RPM_NAME="$RPM"
         RPM_ORIG="${RPM%.rpm}-orig.rpm"
         mv "$RPM" "$RPM_ORIG"
-        cat "$RPM_ORIG" | "$RPMSIGN_COMMAND" "$RPM_NAME" >"$RPM"
+        cat "$RPM_ORIG" | $RPMSIGN_COMMAND "$RPM_NAME" >"$RPM"
         if [ ! -s "$RPM" ]; then
             echo "Failed to sign RPM" >&2
             exit 1
