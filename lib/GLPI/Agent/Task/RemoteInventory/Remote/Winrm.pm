@@ -397,7 +397,7 @@ sub getRemoteRegistryKey {
     map { $required->{lc($_)} = 1 } @{$params{required}}
         if ref($params{required}) eq "ARRAY";
     # Keep updated required params
-    $params{required} = $required if ref($required) && $require != $params{required};
+    $params{required} = $required if ref($required) && $required != $params{required};
 
     if ($values && $values->{exitcode} == 0 && $values->{values}) {
         my $keys  = $values->{values};
