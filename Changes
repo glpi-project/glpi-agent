@@ -16,6 +16,7 @@ inventory:
 * Enhance Dell Docking Station inventory on windows by detecting expected serialnumber
 * Fix CrowdStrike AV inventory on windows
 * fix #1265: Fix malformed Qemu BDATE field
+* fix #1269: Filter out invalid cpu serial WMI value on windows
 
 remoteinventory:
 * Support opening commands passed by array ref

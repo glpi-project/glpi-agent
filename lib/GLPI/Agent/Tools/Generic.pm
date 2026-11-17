@@ -84,6 +84,7 @@ sub isInvalidBiosValue {
         ^(?:
             N/A                                |
             None                               |
+            Null                               |
             Unknown                            |
             Not \s* Specified                  |
             Not \s* Present                    |

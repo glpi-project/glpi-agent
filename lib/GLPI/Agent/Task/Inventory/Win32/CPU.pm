@@ -121,6 +121,8 @@ sub _getCPUs {
             }
         }
 
+        # Remove serial as for bios if not valid
+        delete $cpu->{SERIAL} if isInvalidBiosValue($cpu->{SERIAL});
         if ($cpu->{SERIAL}) {
             $cpu->{SERIAL} =~ s/\s//g;
         }
