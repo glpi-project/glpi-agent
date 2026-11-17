@@ -304,7 +304,11 @@ do
     cpanm --notest -v --no-man-pages "$CPANM_OPTS" "$module"
 done <<MODULES
 Module::Install
-Sub::Identify Params::Validate HTML::Parser Compress::Zlib Digest::SHA
+Sub::Identify
+Params::Validate
+HTML::Parser
+Compress::Zlib
+Digest::SHA
 Net::SSLeay
 MODULES
 
@@ -326,8 +330,8 @@ cpanm --notest -v --installdeps --no-man-pages "$CPANM_OPTS" .
 
 echo '===== Installing more perl module deps ====='
 cpanm --notest -v --no-man-pages "CPANM_OPTS" LWP::Protocol::https              \
-    HTTP::Daemon Proc::Daemon File::Copy::Recursive                            \
-    URI::Escape Net::Ping Parallel::ForkManager Net::SNMP Net::NBName DateTime \
+    HTTP::Daemon Proc::Daemon File::Copy::Recursive                             \
+    URI::Escape Net::Ping Parallel::ForkManager Net::SNMP Net::NBName DateTime  \
     Thread::Queue Parse::EDID YAML::Tiny Data::UUID Cpanel::JSON::XS
 
 echo '===== Installing Crypt::DES & Crypt::Rijndael perl modules ====='
