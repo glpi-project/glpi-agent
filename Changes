@@ -55,6 +55,7 @@ packaging:
   - 7-Zip v26.06
   - swig 4.5.1
 * Linux snap packaging upgraded to use core24
+* Fix Windows packaging not supporting FEATURES option
 
 1.21 Thu, 08 Oct 2026
 

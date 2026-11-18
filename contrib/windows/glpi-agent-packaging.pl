@@ -796,6 +796,7 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[    <RegistryValue Name="listen" Type="string" Value="[LISTEN]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="remote" Type="string" Value="[REMOTE]" />\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="remote-workers" Type="string" Value="[REMOTE_WORKERS]" />\n];
+                $result .= $ident ."  ". qq[    <RegistryValue Name="features" Type="string" Value="[FEATURES]" />\n];
                 $result .= $ident ."  ". qq[  </RegistryKey>\n];
                 $result .= $ident ."  ". qq[  <RegistryKey Root="HKLM" Key="$regpath\\Installer">\n];
                 $result .= $ident ."  ". qq[    <RegistryValue Name="InstallDir" Type="string" Value="[INSTALLDIR]" />\n];
