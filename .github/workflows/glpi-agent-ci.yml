@@ -50,7 +50,7 @@ jobs:
         make test
     - name: Run Author tests
       run: |
-        make test TEST_AUTHOR=1 TEST_FILES="t/02critic.t t/03var.t t/04pod-syntax.t t/06pod-spelling.t t/06pod-listed-categories.t t/07whitespaces.t t/09cpanmeta.t"
+        make test TEST_AUTHOR=1 TEST_FILES="t/02critic.t t/03var.t t/04pod-syntax.t t/06pod-spelling.t t/06pod-listed-categories.t t/07whitespaces.t t/09cpanmeta.t t/10win32-wxs-validation.t"
 
   windows-test:
 

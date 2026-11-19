@@ -28,18 +28,24 @@ map { $INC{"Perl/Dist/GLPI/Agent/Step/$_.pm"} = __FILE__ } qw(Update OutputMSI T
 # Perl::Dist::Strawberry doesn't detect WiX 3.11 which is installed on windows github images
 # Algorithm imported from Perl::Dist::Strawberry::Step::OutputMSM_MSI::_detect_wix_dir
 my $wixbin_dir;
-for my $v (qw/3.14 3.11 3.6 3.5 3.0/) {
-    my $WIX_REGISTRY_KEY = "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows Installer XML/$v";
-    # 0x200 = KEY_WOW64_32KEY
-    my $r = Win32::TieRegistry->new($WIX_REGISTRY_KEY => { Access => KEY_READ|0x200, Delimiter => q{/} });
-    next unless $r;
-    my $d = $r->TiedRef->{'InstallRoot'};
-    next unless $d && -d $d && -f "$d/candle.exe" && -f "$d/light.exe";
-    $wixbin_dir = $d;
-    last;
-}
+if (grep { /^--no-build$/i } @ARGV) {
+    mkdir "build/windows/wixbin" unless -d "build/windows/wixbin";
+    system("touch build/windows/wixbin/candle.exe");
+    system("touch build/windows/wixbin/light.exe");
+} else {
+    for my $v (qw/3.14 3.11 3.6 3.5 3.0/) {
+        my $WIX_REGISTRY_KEY = "HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Windows Installer XML/$v";
+        # 0x200 = KEY_WOW64_32KEY
+        my $r = Win32::TieRegistry->new($WIX_REGISTRY_KEY => { Access => KEY_READ|0x200, Delimiter => q{/} });
+        next unless $r;
+        my $d = $r->TiedRef->{'InstallRoot'};
+        next unless $d && -d $d && -f "$d/candle.exe" && -f "$d/light.exe";
+        $wixbin_dir = $d;
+        last;
+    }
 
-die "Can't find WiX installation root in regitry\n" unless $wixbin_dir;
+    die "Can't find WiX installation root in regitry\n" unless $wixbin_dir;
+}
 
 my $provider = $GLPI::Agent::Version::PROVIDER;
 my $version = $GLPI::Agent::Version::VERSION;
@@ -77,7 +83,7 @@ if ($ENV{GITHUB_REF} && $ENV{GITHUB_REF} =~ m|refs/tags/(.+)$|) {
 }
 
 sub build_app {
-    my ($arch, $notest, $sign) = @_;
+    my ($arch, $notest, $sign, $skip_build) = @_;
 
     my $package_rev = $ENV{PACKAGE_REVISION} || PACKAGE_REVISION;
 
@@ -102,13 +108,14 @@ sub build_app {
         _restore_step   => PERL_BUILD_STEPS,
         codesigning     => $sign,
         cpan_url        => 'https://www.cpan.org/',
+        skip_build      => $skip_build,
     );
 
     $app->parse_options(
         -job            => "glpi-agent packaging",
-        -image_dir      => "C:\\Strawberry-perl-for-$provider-Agent",
-        -working_dir    => "C:\\Strawberry-perl-for-$provider-Agent_build",
-        -wixbin_dir     => $wixbin_dir,
+        -image_dir      => $skip_build ? "build/windows/image"   : "C:\\Strawberry-perl-for-$provider-Agent",
+        -working_dir    => $skip_build ? "build/windows/working" : "C:\\Strawberry-perl-for-$provider-Agent_build",
+        -wixbin_dir     => $skip_build ? "build/windows/wixbin"  : $wixbin_dir,
         -notest_modules,
         -nointeractive,
         -restorepoints,
@@ -120,6 +127,7 @@ sub build_app {
 my %do = ();
 my $notest = 0;
 my $sign   = 0;
+my $skip_build = 0;
 while ( @ARGV ) {
     my $arg = shift @ARGV;
     if ($arg eq "--arch") {
@@ -132,6 +140,8 @@ while ( @ARGV ) {
         $notest = 1;
     } elsif ($arg =~ /^--code-signing=(.*)$/) {
         $sign = 1 if $1 =~ /^yes|1$/i;
+    } elsif ($arg eq "--no-build") {
+        $skip_build = 1;
     } else {
         warn "Unsupported option: $arg\n";
     }
@@ -145,7 +155,7 @@ die "32 bits packaging build no more supported\n"
 
 foreach my $arch (sort keys(%do)) {
     print "Building $arch packages...\n";
-    my $app = build_app($arch, $notest, $sign);
+    my $app = build_app($arch, $notest, $sign, $skip_build);
     $app->do_job();
     # global_dump_FINAL.txt must exist in debug_dir if all steps have been passed
     exit(1) unless -e catfile($app->global->{debug_dir}, 'global_dump_FINAL.txt');
@@ -521,6 +531,7 @@ use File::Spec::Functions qw(canonpath catdir catfile);
 use File::Basename;
 use Data::Dump            qw(pp);
 use Template;
+use XML::LibXML;
 
 use constant _dir_id_match => { qw(
     perl                                                     d_perl
@@ -530,8 +541,10 @@ use constant _dir_id_match => { qw(
     etc                                                      d_etc
 )};
 
+# /perl/bin/glpi-agent.exe is here for testing on linux when --no-build is used
 use constant _file_feature_match => { qw(
     perl\bin\glpi-agent.exe                                 feat_AGENT
+    /perl/bin/glpi-agent.exe                                feat_AGENT
 
     glpi-netdiscovery.bat                                   feat_NETINV
     glpi-netinventory.bat                                   feat_NETINV
@@ -622,6 +635,11 @@ sub run {
     $t->process($f3, \%vars, catfile($bdir, 'Variables-v2.wxi')) || die $t->error();
     $t->process($f4, \%vars, catfile($bdir, 'MSI_strings.wxl')) || die $t->error();
 
+    # Validate generated wxs
+    $self->_validate_wxs(catfile($bdir, 'MSI_main-v2.wxs'));
+
+    return if $self->global->{skip_build};
+
     my $rv;
     my $candle_exe = $self->{candle_exe};
     my $light_exe = $self->{light_exe};
@@ -648,6 +666,123 @@ sub run {
     $self->{data}->{output}->{msi_sha1} = $self->sha1_file($msi_file); # will change after we sign MSI
     $self->{data}->{output}->{msi_guid} = $msi_guid;
 
+}
+
+sub _validate_wxs {
+    my ($self, $xml) = @_;
+
+    my $failure = 0;
+    my %found;
+
+    warn "    INFO: WXS file valdation: $xml\n";
+
+    my $parser = XML::LibXML->new(
+        load_ext_dtd    => 0,
+        no_network      => 1,
+        no_blanks       => 1,
+        pedantic_parser => 1,
+    )
+        or die "ERROR: WXS xml parser not available\n";
+
+    my $dom = $parser->load_xml(location => $xml)
+        or die "ERROR: WXS failed to parse file: $xml\n";
+
+    die "ERROR: WXS invalid xml: $xml".(ref($dom) ? " - ".ref($dom) : "")."\n"
+        unless ref($dom) eq "XML::LibXML::Document";
+
+    my $root = $dom->documentElement();
+
+    # Software\GLPI-Agent\Installer\Version is only defined for scripts and so
+    # can't be set on command line
+    my %config = (
+        'Software\GLPI-Agent\Installer' => [ "Version" ],
+    );
+
+    foreach my $node ($root->getElementsByTagName("RegistrySearch")) {
+        my $key = $node->getAttribute("Key");
+        my $name = $node->getAttribute("Name");
+        #~ warn "$key: $name\n";
+        push @{$config{$key}}, $name;
+    }
+    die "ERROR: WXS no RegistrySearch node found: $xml\n"
+        unless keys(%config);
+
+    my @RegistryKey = $root->getElementsByTagName("RegistryKey")
+        or die "ERROR: WXS no RegistryKey node found: $xml\n";
+
+    foreach my $regkey (@RegistryKey) {
+        my $found = 0;
+        my $key = $regkey->getAttribute("Key");
+        foreach my $regvalue ($regkey->childNodes()) {
+            my $tag = $regvalue->nodeName;
+            unless ($tag && $tag eq "RegistryValue") {
+                warn "    WARNING: Unexpected $tag node under $key RegistryKey: ".$regvalue->toString()."\n";
+                $failure++;
+                next;
+            }
+            my $name = $regvalue->getAttribute("Name");
+            unless ($name && $name =~ /^[a-z][0-9a-z-]*$/i) {
+                warn "    WARNING: Unexpected Name attribut under $key RegistryKey: ".$regvalue->toString()."\n";
+                $failure++;
+                next;
+            }
+            unless (grep { $_ eq $name } @{$config{$key}}) {
+                warn "    WARNING: Unexpected option support under $key RegistryKey: ".$regvalue->toString()."\n";
+                $failure++;
+                next;
+            }
+            $found++;
+            $found{$name} = 1;
+        }
+        unless ($found && $config{$key} && $found == @{$config{$key}}) {
+            if ($found > @{$config{$key}}) {
+                my $options = join(", ", sort keys(%found));
+                warn "    WARNING: Too much RegistryKey option definitions found: $options\n";
+                $failure++;
+            } else {
+                my $options = join(", ", grep { !$found{$_} } @{$config{$key}});
+                warn "    WARNING: Missing RegistryKey option definitions: $options\n";
+                $failure++;
+            }
+        }
+        warn "    INFO: WXS defines $found options under $key\n";
+    }
+
+    # Compare with configuration parameters from lib/GLPI/Agent/Config.pm
+    # But first set configuration option not supported in msi installation
+    my %not_in_windows = map { $_ => 1 } qw(
+        assetname-support
+        color
+        force
+        logfacility
+        remote-scheduling
+    );
+
+    my $cfg_module;
+    open $cfg_module, "<", "lib/GLPI/Agent/Config.pm"
+        or die "    ERROR: WXS Can't read Config module: $!\n";
+    my @default;
+    my $default;
+    while (my $line = <$cfg_module>) {
+        next if !$default && $line =~ /^my \$default = \{$/ && ++$default;
+        next unless $default; # Wait to find $default definition
+        last if $line =~ /^};$/; # Leave when $default definition has been read
+        unless ($line =~ /^\s+'([0-9a-z-]+)'\s*=>/) {
+            warn "    WARNING: Unexpected \$default entry: $1\n";
+            $failure++;
+            next;
+        }
+        my $option = $1;
+        next if $found{$option} || $not_in_windows{$option};
+        warn "    WARNING: Missing option support: $option\n";
+        $failure++;
+    }
+    close($cfg_module);
+
+    die "ERROR: WXS validation failure\n" if $failure == 1;
+    die "ERROR: WXS validation failures: $failure\n" if $failure;
+
+    warn "    INFO: WXS file looks good\n";
 }
 
 sub _tree2xml {
@@ -749,72 +884,91 @@ sub _tree2xml {
                 $result .= $ident ."  ". qq[</Component>\n];
                 $result .= $ident ."  ". qq[<Component Id="$component_id" Guid="{$component_guid}" Feature="$this_feat">\n];
                 $result .= $ident ."  ". qq[  <RegistryKey Root="HKLM" Key="$regpath">\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="additional-content" Type="string" Value="[ADDITIONAL_CONTENT]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="debug" Type="string" Value="[DEBUG]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="local" Type="string" Value="[LOCAL]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="logger" Type="string" Value="[LOGGER]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="logfile" Type="string" Value="[LOGFILE]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="logfile-maxsize" Type="string" Value="[LOGFILE_MAXSIZE]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="server" Type="string" Value="[SERVER]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="no-httpd" Type="string" Value="[NO_HTTPD]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="httpd-ip" Type="string" Value="[HTTPD_IP]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="httpd-port" Type="string" Value="[HTTPD_PORT]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="httpd-trust" Type="string" Value="[HTTPD_TRUST]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="tag" Type="string" Value="[TAG]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="scan-homedirs" Type="string" Value="[SCAN_HOMEDIRS]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="scan-profiles" Type="string" Value="[SCAN_PROFILES]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="no-p2p" Type="string" Value="[NO_P2P]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="timeout" Type="string" Value="[TIMEOUT]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="snmp-retries" Type="string" Value="[SNMP_RETRIES]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="delaytime" Type="string" Value="[DELAYTIME]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="backend-collect-timeout" Type="string" Value="[BACKEND_COLLECT_TIMEOUT]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="full-inventory-postpone" Type="string" Value="[FULL_INVENTORY_POSTPONE]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="glpi-version" Type="string" Value="[GLPI_VERSION]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="no-task" Type="string" Value="[NO_TASK]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="no-category" Type="string" Value="[NO_CATEGORY]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="required-category" Type="string" Value="[REQUIRED_CATEGORY]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="esx-itemtype" Type="string" Value="[ESX_ITEMTYPE]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="itemtype" Type="string" Value="[ITEMTYPE]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="no-compression" Type="string" Value="[NO_COMPRESSION]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="html" Type="string" Value="[HTML]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="json" Type="string" Value="[JSON]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="lazy" Type="string" Value="[LAZY]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="conf-reload-interval" Type="string" Value="[CONF_RELOAD_INTERVAL]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="no-ssl-check" Type="string" Value="[NO_SSL_CHECK]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="user" Type="string" Value="[USER]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="password" Type="string" Value="[PASSWORD]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="oauth-client-id" Type="string" Value="[OAUTH_CLIENT_ID]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="oauth-client-secret" Type="string" Value="[OAUTH_CLIENT_SECRET]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="proxy" Type="string" Value="[PROXY]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="tasks" Type="string" Value="[TASKS]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="ca-cert-dir" Type="string" Value="[CA_CERT_DIR]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="ca-cert-file" Type="string" Value="[CA_CERT_FILE]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="ssl-cert-file" Type="string" Value="[SSL_CERT_FILE]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="ssl-fingerprint" Type="string" Value="[SSL_FINGERPRINT]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="ssl-keystore" Type="string" Value="[SSL_KEYSTORE]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="vardir" Type="string" Value="[VARDIR]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="listen" Type="string" Value="[LISTEN]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="remote" Type="string" Value="[REMOTE]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="remote-workers" Type="string" Value="[REMOTE_WORKERS]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="features" Type="string" Value="[FEATURES]" />\n];
+
+                # By convention, msi command line options are in upper case and dash are replace by underscore
+                foreach my $key (qw(
+                    additional-content
+                    backend-collect-timeout
+                    ca-cert-dir
+                    ca-cert-file
+                    conf-reload-interval
+                    debug
+                    delaytime
+                    esx-itemtype
+                    features
+                    full-inventory-postpone
+                    glpi-version
+                    html
+                    httpd-ip
+                    httpd-port
+                    httpd-trust
+                    itemtype
+                    json
+                    lazy
+                    listen
+                    local
+                    logfile
+                    logfile-maxsize
+                    logger
+                    no-category
+                    no-compression
+                    no-httpd
+                    no-p2p
+                    no-ssl-check
+                    no-task
+                    oauth-client-id
+                    oauth-client-secret
+                    password
+                    proxy
+                    remote
+                    remote-workers
+                    required-category
+                    scan-homedirs
+                    scan-profiles
+                    server
+                    snmp-retries
+                    ssl-cert-file
+                    ssl-fingerprint
+                    ssl-key-file
+                    ssl-keystore
+                    tag
+                    tasks
+                    timeout
+                    user
+                    vardir
+                )) {
+                    my $option = uc($key);
+                    $option =~ s/-/_/g;
+                    $result .= $ident ."  ". qq[    <RegistryValue Name="$key" Type="string" Value="[$option]" />\n];
+                }
                 $result .= $ident ."  ". qq[  </RegistryKey>\n];
+                # Installer dedicated options
                 $result .= $ident ."  ". qq[  <RegistryKey Root="HKLM" Key="$regpath\\Installer">\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="InstallDir" Type="string" Value="[INSTALLDIR]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="ExecMode" Type="string" Value="[EXECMODE]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="QuickInstall" Type="string" Value="[QUICKINSTALL]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="AddFirewallException" Type="string" Value="[ADD_FIREWALL_EXCEPTION]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="RunNow" Type="string" Value="[RUNNOW]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="TaskFrequency" Type="string" Value="[TASK_FREQUENCY]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="TaskMinuteModifier" Type="string" Value="[TASK_MINUTE_MODIFIER]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="TaskHourlyModifier" Type="string" Value="[TASK_HOURLY_MODIFIER]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="TaskDailyModifier" Type="string" Value="[TASK_DAILY_MODIFIER]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="AgentMonitor" Type="string" Value="[AGENTMONITOR]" />\n];
+                foreach my ($key, $option) (qw(
+                    InstallDir              INSTALLDIR
+                    ExecMode                EXECMODE
+                    QuickInstall            QUICKINSTALL
+                    AddFirewallException    ADD_FIREWALL_EXCEPTION
+                    RunNow                  RUNNOW
+                    TaskFrequency           TASK_FREQUENCY
+                    TaskMinuteModifier      TASK_MINUTE_MODIFIER
+                    TaskHourlyModifier      TASK_HOURLY_MODIFIER
+                    TaskDailyModifier       TASK_DAILY_MODIFIER
+                    AgentMonitor            AGENTMONITOR
+                )) {
+                    $result .= $ident ."  ". qq[    <RegistryValue Name="$key" Type="string" Value="[$option]" />\n];
+                }
                 # Add registry entry dedicated to deployment vbs check
                 $result .= $ident ."  ". qq[    <RegistryValue Name="Version" Type="string" Value="$installversion" />\n];
                 $result .= $ident ."  ". qq[  </RegistryKey>\n];
+                # Handle Agent-Monitor options with type
                 $result .= $ident ."  ". qq[  <RegistryKey Root="HKLM" Key="$regpath\\Monitor">\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="NewTicket-URL" Type="string" Value="[AGENTMONITOR_NEWTICKET_URL]" />\n];
-                $result .= $ident ."  ". qq[    <RegistryValue Name="NewTicket-Screenshot" Type="integer" Value="[AGENTMONITOR_NEWTICKET_SCREENSHOT]" />\n];
+                foreach my ($key, $option) ((
+                    "NewTicket-URL"         => [ "string",  "AGENTMONITOR_NEWTICKET_URL" ],
+                    "NewTicket-Screenshot"  => [ "integer", "AGENTMONITOR_NEWTICKET_SCREENSHOT" ],
+                )) {
+                    $result .= $ident ."  ". qq[    <RegistryValue Name="$key" Type="$option->[0]" Value="[$option->[1]]" />\n];
+                }
                 $result .= $ident ."  ". qq[  </RegistryKey>\n];
             }
             $result .= $ident ."  ". qq[</Component>\n];
@@ -991,5 +1145,6 @@ sub load_jobfile {
         $self->global->{_revision},
         $self->global->{_no_test},
         $self->global->{_dllsuffix},
+        $self->global->{skip_build},
     );
 }

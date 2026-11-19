@@ -11,13 +11,13 @@ use constant {
     DMIDECODE_VERSION  => "3.7",
     # Tag for Glpi-AgentMonitor release on glpi-project/glpi-agentmonitor
     GAMONITOR_VERSION  => "1.5.1",
-    PERL_BUILD_STEPS   => 13,
+    PERL_BUILD_STEPS   => 14,
 };
 
 our @EXPORT = qw(build_job PERL_VERSION PERL_BUILD_STEPS);
 
 sub build_job {
-    my ($arch, $rev, $notest, $dllsuffix) = @_;
+    my ($arch, $rev, $notest, $dllsuffix, $skip_build) = @_;
 ### job description for building GLPI Agent
 
 #Available '<..>' macros:
@@ -38,6 +38,7 @@ sub build_job {
         ### FIRST STEP 0 : Binaries donwloads ##################################
         {
             plugin  => 'Perl::Dist::GLPI::Agent::Step::ToolChain',
+            disable => $skip_build,
             packages => [
                 {
                     name        => 'winlibs-x86_64',
@@ -53,6 +54,7 @@ sub build_job {
         ### NEXT STEP 1 Binaries cleanup #######################################
         {
             plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
+            disable => $skip_build,
             commands => [
                 { do => 'movedir', args => [ '<image_dir>/mingw64', '<image_dir>/c' ] },
                 { do => 'removefile_recursive', args => [ '<image_dir>/c', qr/.+\.la$/i ] }, # https://rt.cpan.org/Public/Bug/Display.html?id=127184
@@ -62,6 +64,7 @@ sub build_job {
         ### NEXT STEP 2 Build perl #############################################
         {
             plugin     => 'Perl::Dist::GLPI::Agent::Step::InstallPerlCore',
+            disable    => $skip_build,
             url        => 'https://www.cpan.org/src/5.0/perl-'.PERL_VERSION.'.tar.gz',
             cf_email   => 'strawberry-perl@project', #IMPORTANT: keep 'strawberry-perl' before @
             perl_debug => 0,    # can be overridden by --perl_debug=N option
@@ -90,20 +93,32 @@ sub build_job {
                 'Copying'  => '<image_dir>/licenses/perl/Copying',
             },
         },
-        ### NEXT STEP 3 : Sign perl DLL ########################################
+        ### NEXT STEP 3 Faked built perl when build is skipped #################
+        {
+            plugin     => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
+            disable    => !$skip_build,
+            commands => [
+                { do => 'createdir', args => [ '<image_dir>/perl/bin' ] },
+                { do => 'copyfile', args => [ 'lib/GLPI/Agent.pm', '<image_dir>/perl/bin/perl.exe', 1 ] },
+            ],
+        },
+        ### NEXT STEP 4 : Sign perl DLL ########################################
         {
             plugin => 'CustomCodeSigning',
+            disable => $skip_build,
             files  => [
                 '<image_dir>/perl/bin/perl'.$MAJOR.$MINOR.'.dll',
             ],
         },
-        ### NEXT STEP 4 Upgrade CPAN modules ###################################
+        ### NEXT STEP 5 Upgrade CPAN modules ###################################
         {
             plugin => 'Perl::Dist::Strawberry::Step::UpgradeCpanModules',
+            disable => $skip_build,
         },
-        ### NEXT STEP 5 Install needed modules with agent dependencies #########
+        ### NEXT STEP 6 Install needed modules with agent dependencies #########
         {
             plugin => 'Perl::Dist::GLPI::Agent::Step::InstallModules',
+            disable => $skip_build,
             modules => [
                 # IPC related
                 qw/ IPC-Run /,
@@ -146,14 +161,16 @@ sub build_job {
                 #qw/ Net::Write::Layer2 /,
             ],
         },
-        ### NEXT STEP 6 ########################################################
+        ### NEXT STEP 7 ########################################################
         {
             plugin => 'Perl::Dist::Strawberry::Step::FixShebang',
+            disable => $skip_build,
             shebang => '#!perl',
         },
-        ### NEXT STEP 7 Clean up ###############################################
+        ### NEXT STEP 8 Clean up ###############################################
         {
             plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
+            #~ disable => $skip_build,
             commands => [
                 # cleanup (remove unwanted files/dirs)
                 { do=>'removefile', args=>[ '<image_dir>/perl/vendor/lib/Crypt/._test.pl', '<image_dir>/perl/vendor/lib/DBD/testme.tmp.pl' ] },
@@ -168,9 +185,10 @@ sub build_job {
                 { do=>'removefile_recursive', args=>[ '<image_dir>/perl', qr/\.pod$/i ] },
             ],
         },
-        ### NEXT STEP 8 Install modules for test ###############################
+        ### NEXT STEP 9 Install modules for test ###############################
         {
             plugin => 'Perl::Dist::GLPI::Agent::Step::InstallModules',
+            disable => $skip_build,
             modules => [ map {
                     {
                         module => $_,
@@ -184,9 +202,10 @@ sub build_job {
                 )
             ],
         },
-        ### NEXT STEP 9 : Install iec61850 module ##############################
+        ### NEXT STEP 10 : Install iec61850 module #############################
         {
             plugin   => 'Perl::Dist::GLPI::Agent::Step::BuildModule',
+            disable  => $skip_build,
             module   => 'iec61850',
             version  => '1.6.1',
             url      => 'https://github.com/g-bougard/libiec61850/archive/refs/tags/<version>.tar.gz',
@@ -215,17 +234,19 @@ sub build_job {
                 { do => 'copyfile', args => [ '<_libdll>',   '<image_dir>/perl/vendor/lib/auto/<module>/<_libdll>' ] },
             ],
         },
-        ### NEXT STEP 10 : Sign MSI ############################################
+        ### NEXT STEP 11 : Sign MSI ############################################
         {
             plugin => 'CustomCodeSigning',
+            disable => $skip_build,
             dlls   => [
                 '<image_dir>/perl/lib/auto',
                 '<image_dir>/perl/vendor/lib/auto',
             ],
         },
-        ### NEXT STEP 11 Clean up and finalize perl envirtonment ###############
+        ### NEXT STEP 12 Clean up and finalize perl envirtonment ###############
         {
             plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
+            disable => $skip_build,
             commands => [
                 { do=>'createdir', args=>[ '<image_dir>/perl/newbin' ] },
                 _movebin('libgcc_s_'.($arch eq 'x64' ? 'seh' : 'dw2').'-1.dll'),
@@ -258,9 +279,10 @@ sub build_job {
                 { do=>'copyfile', args=>[ 'contrib/windows/packaging/tools/'.$arch.'/7z.dll', '<image_dir>/perl/bin' ] },
             ],
         },
-        ### NEXT STEP 12 Installation with direct github download ##############
+        ### NEXT STEP 13 Installation with direct github download ##############
         {
             plugin      => 'Perl::Dist::GLPI::Agent::Step::Github',
+            disable     => $skip_build,
             downloads   => [
                 {
                     name    => 'dmidecode',
@@ -278,10 +300,10 @@ sub build_job {
                 },
             ],
         },
-        ### NEXT STEP 13 Run GLPI Agent test suite #############################
+        ### NEXT STEP 14 Run GLPI Agent test suite #############################
         {
             plugin      => 'Perl::Dist::GLPI::Agent::Step::Test',
-            disable     => $notest,
+            disable     => $notest || $skip_build,
             # By default only t/01compile.t is run
             test_files  => [
                 #~ qw(t/*.t t/*/*.t t/*/*/*.t t/*/*/*/*.t t/*/*/*/*/*.t t/*/*/*/*/*/*.t)
@@ -291,7 +313,7 @@ sub build_job {
                 #~ qw(t/agent/config.t)
             ],
         },
-        ### NEXT STEP 14 Finalize environment ##################################
+        ### NEXT STEP 15 Finalize environment ##################################
         {
             plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
             commands => [
@@ -311,27 +333,37 @@ sub build_job {
                 { do=>'copydir', args=>[ 'bin', '<image_dir>/perl/bin' ] },
                 { do=>'copydir', args=>[ 'share', '<image_dir>/share' ] },
                 { do=>'copyfile', args=>[ 'contrib/windows/packaging/setup.pm', '<image_dir>/perl/lib' ] },
+            ],
+        },
+        ### NEXT STEP 16 Patch Netbios perl module #############################
+        {
+            plugin => 'Perl::Dist::Strawberry::Step::FilesAndDirs',
+            disable => $skip_build,
+            commands => [
                 # Fix Net::NBName
                 { do=>'apply_patch', args=>[ 'contrib/windows/packaging/Net-NBName-NodeStatus.patch', '<image_dir>/perl/vendor/lib/Net/NBName/NodeStatus.pm', 1 ] },
                 { do=>'apply_patch', args=>[ 'contrib/windows/packaging/Net-NBName-NodeStatus-RR.patch', '<image_dir>/perl/vendor/lib/Net/NBName/NodeStatus/RR.pm', 1 ] },
             ],
         },
-        ### NEXT STEP 15 : Sign MSI ############################################
+        ### NEXT STEP 17 : Sign MSI ############################################
         {
             plugin => 'CustomCodeSigning',
+            disable => $skip_build,
             files  => [
                 '<image_dir>/perl/bin/glpi-agent.exe',
             ],
         },
-        ### NEXT STEP 16 Finalize release ######################################
+        ### NEXT STEP 18 Finalize release ######################################
         {
             plugin => 'Perl::Dist::GLPI::Agent::Step::Update',
+            disable => $skip_build,
         },
-        ### NEXT STEP 17 Generate Portable Archive #############################
+        ### NEXT STEP 19 Generate Portable Archive #############################
         {
             plugin => 'Perl::Dist::Strawberry::Step::OutputZIP',
+            disable => $skip_build,
         },
-        ### NEXT STEP 18 Generate MSI Package ##################################
+        ### NEXT STEP 20 Generate MSI Package ##################################
         {
             plugin => 'Perl::Dist::GLPI::Agent::Step::OutputMSI',
             exclude  => [],
@@ -347,9 +379,10 @@ sub build_job {
             msi_banner_bmp      => 'contrib/windows/packaging/GLPI-Agent_Banner.bmp',
             msi_debug           => 0,
         },
-        ### NEXT STEP 19 : Sign MSI ############################################
+        ### NEXT STEP 21 : Sign MSI ############################################
         {
             plugin => 'CustomCodeSigning',
+            disable => $skip_build,
             files  => [
                 {
                     name        => '<output_basename>.msi',
