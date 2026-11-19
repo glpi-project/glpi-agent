@@ -25,7 +25,9 @@ run(
     \my ($in, $out, $err)
 );
 
-diag "\n", map { "$_\n" } grep { /(?:INFO|WARNING|ERROR):/ } split("\n", $err);
+my @output = grep { /(?:INFO|WARNING|ERROR):/ } split("\n", $err);
+
+diag "\n", @output ? map { "$_\n" } @output : $err;
 
 ok($CHILD_ERROR >> 8 == 0, 'msi wxs is valid');
 
