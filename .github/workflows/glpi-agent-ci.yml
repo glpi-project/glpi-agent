@@ -20,7 +20,7 @@ jobs:
     - name: Install packages
       run: |
         sudo apt -y install cpanminus libmodule-install-perl libxml-libxml-perl \
-          libxml-treepp-perl libxml-xpath-perl libtemplate-perl \
+          libxml-treepp-perl libxml-xpath-perl libtemplate-perl libtext-diff-perl \
           libdatetime-perl libparallel-forkmanager-perl libparse-edid-perl \
           libcpanel-json-xs-perl libossp-uuid-perl libfile-copy-recursive-perl \
           libtext-template-perl libuniversal-require-perl libnet-ip-perl \
