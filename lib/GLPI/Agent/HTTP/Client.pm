@@ -62,6 +62,7 @@ sub new {
         logger          => $params{logger} || GLPI::Agent::Logger->new(),
         user            => $params{user}     || $config->{'user'},
         password        => $params{password} || $config->{'password'},
+        kerberos        => $params{kerberos} // 0,
         _oauth          => $params{oauth} // {},
         ssl_set         => 0,
         no_ssl_check    => $params{no_ssl_check} || $config->{'no-ssl-check'},
@@ -286,6 +287,15 @@ sub request {
                         $logger->error(_log_prefix . $error);
                     }
                 }
+            } elsif ($has_authenticate && $self->{kerberos}) {
+                $result = $self->_negotiateAuthentication(
+                    request         => $request,
+                    result          => $result,
+                    file            => $file,
+                    url             => $url,
+                    scheme          => $scheme,
+                    alarm_timeout   => $current_alarm_timeout,
+                );
             } elsif ($has_authenticate && $self->{user} && $self->{password}) {
                 $logger->debug(
                     _log_prefix .
@@ -420,6 +430,93 @@ sub request {
 
     # Always restore timeout
     $self->{ua}->timeout($current_timeout);
+
+    return $result;
+}
+
+sub _negotiateAuthentication {
+    my ($self, %params) = @_;
+
+    my $logger  = $self->{logger};
+    my $request = $params{request};
+    my $result  = $params{result};
+    my $url     = $params{url};
+
+    # Check server supports Negotiate authentication scheme
+    my @challenges = map { split(/\s*,\s*/, $_) } $result->header('www-authenticate');
+    unless (grep { /^Negotiate\b/i } @challenges) {
+        $logger->error(
+            _log_prefix .
+            "authentication required, kerberos authentication not offered by server"
+        );
+        return $result;
+    }
+
+    my $host = $url->host();
+
+    GLPI::Agent::HTTP::Kerberos->require();
+    my $kerberos = $self->{_kerberos}->{$host} //= GLPI::Agent::HTTP::Kerberos->new(
+        host    => $host,
+    );
+
+    my $token = $kerberos->token();
+    unless ($token) {
+        $logger->error(
+            _log_prefix .
+            "authentication required, " . ($kerberos->error() || "kerberos token failure")
+        );
+        # Reset kerberos object so next request can retry with a refreshed ticket
+        delete $self->{_kerberos}->{$host};
+        return $result;
+    }
+
+    $logger->debug(
+        _log_prefix .
+        "authentication required, trying kerberos with ".$kerberos->service()." service"
+    );
+
+    $request->header(Authorization => "Negotiate $token");
+
+    # replay request
+    eval {
+        if ($OSNAME eq 'MSWin32' && $params{scheme} eq 'https') {
+            alarm $self->{ua}->{timeout};
+        }
+        $result = $self->{ua}->request($request, $params{file});
+        alarm 0;
+    };
+
+    # Reset timeout if needed
+    if ($params{alarm_timeout}) {
+        my $timeout = $params{alarm_timeout} - time;
+        alarm $timeout if $timeout > 0;
+    }
+
+    # Don't keep authorization header in request as token can't be replayed
+    $request->remove_header('Authorization');
+
+    if ($result->code() == 401) {
+        $logger->error(
+            _log_prefix .
+            "authentication required, kerberos authentication refused"
+        );
+        delete $self->{_kerberos}->{$host};
+        return $result;
+    }
+
+    # Check mutual authentication if server provided a token
+    my ($mutual) = map { /^Negotiate\s+(\S+)/i } $result->header('www-authenticate');
+    if ($mutual) {
+        unless ($kerberos->verify($mutual)) {
+            $logger->error(_log_prefix . $kerberos->error());
+            delete $self->{_kerberos}->{$host};
+            # Don't trust server answer
+            return HTTP::Response->new(401, "Kerberos mutual authentication failure");
+        }
+        $logger->debug2(_log_prefix . "kerberos mutual authentication verified");
+    } else {
+        $logger->debug2(_log_prefix . "no kerberos mutual authentication token provided by server");
+    }
 
     return $result;
 }

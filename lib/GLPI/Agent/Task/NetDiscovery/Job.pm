@@ -280,12 +280,14 @@ sub _getValidCredentials {
             push @iec61850_credentials, $credential;
         } else {
             $remote++;
-            unless (defined($credential->{USERNAME}) && length($credential->{USERNAME})) {
+            # WinRM kerberos authentication relies on kerberos credentials cache or keytab
+            my $kerberos = $credential->{TYPE} eq 'winrm' && $credential->{MODE} && $credential->{MODE} =~ /(?:^|[_,])kerberos(?:$|[_,])/i ? 1 : 0;
+            unless ($kerberos || (defined($credential->{USERNAME}) && length($credential->{USERNAME}))) {
                 $self->{logger}->warning("No username defined for a $credential->{TYPE} credential")
                     unless $invalid_remote++;
                 next;
             }
-            if ($credential->{TYPE} =~ /^esx|winrm$/ && (!defined($credential->{PASSWORD}) || !length($credential->{PASSWORD}))) {
+            if (!$kerberos && $credential->{TYPE} =~ /^esx|winrm$/ && (!defined($credential->{PASSWORD}) || !length($credential->{PASSWORD}))) {
                 $self->{logger}->warning("No password defined for a $credential->{TYPE} credential")
                     unless $invalid_remote++;
                 next;

@@ -121,7 +121,7 @@
     <div class='form-edit-row' id='remote-options' style='display: {$type !~ /^snmp|iec61850$/  ? "flex" : "none"}'>
       <div class='form-edit'>
         <label for='remoteuser'>{_"Username"}</label>
-        <input class='input-row' type='text' id='remoteuser' name='input/remoteuser' value='{$remoteuser}' size='12' autocomplete='new-password'{$type =~ /^snmp|iec61850$/ ? " disabled" : ""} required />
+        <input class='input-row' type='text' id='remoteuser' name='input/remoteuser' value='{$remoteuser}' size='12' autocomplete='new-password'{$type =~ /^snmp|iec61850$/ ? " disabled" : ""}{$type eq "winrm" && $modes{kerberos} ? "" : " required"} />
       </div>
       <div class='form-edit'>
         <label for='remotepass'>{_"Authentication password"}</label>
@@ -160,6 +160,7 @@
         <div class='form-edit-row'>
           <ul>
             <li><input type='checkbox' id='ssl' name='checkbox/mode/ssl' onchange="type_change()"{$modes{ssl} ? " checked" : ""}{$type ne "winrm" ? " disabled" : ""}/>ssl</li>
+            <li><input type='checkbox' id='kerberos' name='checkbox/mode/kerberos' onchange="type_change()"{$modes{kerberos} ? " checked" : ""}{$type ne "winrm" ? " disabled" : ""}/>kerberos</li>
           </ul>
         </div>
       </div>
@@ -252,14 +253,19 @@
     if (type.value === "winrm") \{
       document.getElementById("advanced-options-winrm-mode").style = "display: flex";
       document.getElementById("ssl").disabled = false;
+      document.getElementById("kerberos").disabled = false;
       if (document.getElementById("ssl").checked) \{
         document.getElementById("port").placeholder = "5986";
       \} else \{
         document.getElementById("port").placeholder = "5985";
       \}
+      // Username & password are not required with kerberos authentication
+      document.getElementById("remoteuser").required = !document.getElementById("kerberos").checked;
     \} else \{
       document.getElementById("advanced-options-winrm-mode").style = "display: none";
       document.getElementById("ssl").disabled = true;
+      document.getElementById("kerberos").disabled = true;
+      document.getElementById("remoteuser").required = true;
     \}
     if (type.value === "esx") \{
       document.getElementById("advanced-options").style = "display: none";

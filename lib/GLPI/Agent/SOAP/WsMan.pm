@@ -60,7 +60,7 @@ sub new {
     $self->{_url} = $params{url};
     $self->{_lang} = 'en-US';
     $self->{_winrm} = $params{winrm} // 0;
-    $self->{_noauth} = $params{user} && $params{password} ? 0 : 1;
+    $self->{_noauth} = $params{kerberos} || ($params{user} && $params{password}) ? 0 : 1;
 
     bless $self, $class;
 

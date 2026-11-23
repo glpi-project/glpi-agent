@@ -12,14 +12,16 @@ use URI;
 use POSIX;
 use MIME::Base64;
 use Encode qw(decode encode);
+use Socket qw(getaddrinfo getnameinfo SOCK_STREAM NI_NAMEREQD NIx_NOSERV);
 
 use GLPI::Agent::Tools;
+use GLPI::Agent::Tools::Network;
 use GLPI::Agent::SOAP::WsMan;
 use GLPI::Agent::Tools::Win32::TimeZone;
 
 use constant    supported => 1;
 
-use constant    supported_modes => qw(ssl);
+use constant    supported_modes => qw(ssl kerberos);
 
 sub handle_url {
     my ($self, $url) = @_;
@@ -36,6 +38,23 @@ sub handle_url {
 
     $self->SUPER::handle_url($url);
 
+    # Kerberos requires the remote FQDN to compute the HTTP/fqdn service principal
+    if ($self->mode('kerberos')) {
+        my $host = $url->host;
+        if ($host =~ /^$ip_address_pattern$/ || $host =~ /:/) {
+            my $fqdn = _resolveHostname($host);
+            if ($fqdn) {
+                $self->{logger}->debug("Using $fqdn as kerberos target for $host")
+                    if $self->{logger};
+                $url->host($fqdn);
+                $self->host($fqdn);
+            } else {
+                $self->{logger}->debug("Can't resolve $host as hostname for kerberos authentication")
+                    if $self->{logger};
+            }
+        }
+    }
+
     # We need to translate url for LWP::UserAgent client
     $url->path( "/wsman/" ) unless $url->path && $url->path ne '/';
     # Remove query in the case it contains mode=ssl
@@ -47,17 +66,42 @@ sub handle_url {
     $self->{_canonical_url} = $url->canonical->as_string;
 }
 
+sub _resolveHostname {
+    my ($ip) = @_;
+
+    my ($err, @addrs) = getaddrinfo($ip, "", { socktype => SOCK_STREAM });
+    return if $err || !@addrs;
+
+    my ($nerr, $hostname) = getnameinfo($addrs[0]->{addr}, NI_NAMEREQD, NIx_NOSERV);
+    return if $nerr || !$hostname;
+
+    return $hostname;
+}
+
 sub prepare {
     my ($self) = @_;
+
+    my %auth;
+    if ($self->mode('kerberos')) {
+        $self->{logger}->debug("Using kerberos authentication, ignoring password set in url")
+            if $self->{logger} && length($self->pass());
+        $self->{logger}->debug("Kerberos authentication: remote host should be set as FQDN")
+            if $self->{logger} && ($self->host() =~ /^$ip_address_pattern$/ || $self->host() =~ /:/);
+        %auth = ( kerberos => 1 );
+    } else {
+        %auth = (
+            user        => $self->user(),
+            password    => $self->pass(),
+        );
+    }
 
     $self->{_winrm} = GLPI::Agent::SOAP::WsMan->new(
         logger      => $self->{logger},
         config      => $self->config(),
         url         => $self->{_canonical_url},
-        user        => $self->user(),
-        password    => $self->pass(),
         timeout     => $self->timeout(),
         winrm       => 1,
+        %auth,
     );
 }
 
