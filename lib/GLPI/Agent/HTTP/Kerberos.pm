@@ -6,6 +6,7 @@ use warnings;
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 use MIME::Base64;
+use Digest::SHA;
 
 # Kerberos support for HTTP Negotiate authentication (RFC 4559) based on
 # GSSAPI perl module. Credentials are taken from the current Kerberos
@@ -57,6 +58,51 @@ sub service {
     return "HTTP/".$self->{_host};
 }
 
+# Compute the RFC 5929 "tls-server-end-point" channel binding application data
+# from the DER encoded server certificate and its signature algorithm name.
+# Certificates signed with MD5 or SHA-1, or with an unknown or not hash based
+# signature algorithm, are hashed with SHA-256, otherwise the signature hash
+# algorithm is used.
+sub tlsServerEndPoint {
+    my ($der, $sigalg) = @_;
+
+    return unless defined($der) && length($der);
+
+    my $algorithm = 256;
+    if ($sigalg) {
+        if ($sigalg =~ /sha-?512[-\/](224|256)/i) {
+            $algorithm = "512$1";
+        } elsif ($sigalg =~ /sha-?(224|384|512)/i) {
+            $algorithm = $1;
+        }
+    }
+
+    return "tls-server-end-point:" . Digest::SHA->new($algorithm)->add($der)->digest;
+}
+
+# Set or reset channel binding application data used for following tokens
+sub channel_binding {
+    my ($self, $data) = @_;
+
+    delete $self->{_bindings};
+
+    return unless defined($data) && length($data);
+
+    # Address types must be set to GSS_C_AF_UNSPEC to match Windows SSPI
+    # computed bindings, GSSAPI::Binding defaults to GSS_C_AF_NULLADDR
+    my $bindings = GSSAPI::Binding->new();
+    $bindings->set_initiator(GSSAPI::GSS_C_AF_UNSPEC(), '');
+    $bindings->set_acceptor(GSSAPI::GSS_C_AF_UNSPEC(), '');
+    $bindings->set_appl_data($data);
+
+    $self->{_bindings} = $bindings;
+}
+
+sub _bindings {
+    my ($self) = @_;
+    return $self->{_bindings} // GSSAPI::GSS_C_NO_CHANNEL_BINDINGS();
+}
+
 # Return the base64 encoded token to submit in "Authorization: Negotiate" header
 # or undef on failure. Initialize a new security context on each call.
 sub token {
@@ -72,7 +118,7 @@ sub token {
         GSSAPI::OID::gss_mech_krb5(),
         GSSAPI::GSS_C_MUTUAL_FLAG(),
         0,
-        GSSAPI::GSS_C_NO_CHANNEL_BINDINGS(),
+        $self->_bindings(),
         '',
         undef,
         $otoken,
@@ -107,7 +153,7 @@ sub verify {
         GSSAPI::OID::gss_mech_krb5(),
         GSSAPI::GSS_C_MUTUAL_FLAG(),
         0,
-        GSSAPI::GSS_C_NO_CHANNEL_BINDINGS(),
+        $self->_bindings(),
         decode_base64($token),
         undef,
         $otoken,
@@ -157,6 +203,17 @@ Kerberos credentials cache or client keytab.
 The constructor. The C<host> parameter is mandatory and should be the fully
 qualified domain name of the server as the C<HTTP/host> service principal is
 used.
+
+=head2 tlsServerEndPoint($der, $sigalg)
+
+Compute the RFC 5929 C<tls-server-end-point> channel binding data from the DER
+encoded server certificate and the name of its signature algorithm.
+
+=head2 channel_binding($data)
+
+Set channel binding application data to be used with following tokens. This
+is required by WinRM over HTTPS when CbtHardeningLevel is set to Strict. Call
+it without data to not use channel binding.
 
 =head2 token()
 

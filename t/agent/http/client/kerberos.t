@@ -7,6 +7,9 @@ use lib 't/lib';
 use English qw(-no_match_vars);
 use HTTP::Request;
 use HTTP::Response;
+use MIME::Base64;
+use Digest::SHA qw(sha256 sha384 sha512);
+use URI;
 use Test::More;
 use Test::MockModule;
 
@@ -17,7 +20,7 @@ use GLPI::Test::Utils;
 
 unsetProxyEnvVar();
 
-plan tests => 7;
+plan tests => 12;
 
 my $logger = GLPI::Agent::Logger->new(
     logger  => [ 'Test' ],
@@ -25,7 +28,7 @@ my $logger = GLPI::Agent::Logger->new(
 );
 
 # Mock kerberos token provider as GSSAPI & a KDC are not available while testing
-my ($token, $verified, $kerberos_error);
+my ($token, $verified, $kerberos_error, @bindings);
 my $kerberos = Test::MockModule->new('GLPI::Agent::HTTP::Kerberos');
 $kerberos->mock(new => sub {
     my ($class, %params) = @_;
@@ -34,6 +37,29 @@ $kerberos->mock(new => sub {
 $kerberos->mock(token => sub { $token });
 $kerberos->mock(verify => sub { $verified });
 $kerberos->mock(error => sub { $kerberos_error });
+$kerberos->mock(channel_binding => sub { push @bindings, $_[1] });
+
+# Mock server certificate retrieval
+my @certificate;
+my $client_module = Test::MockModule->new('GLPI::Agent::HTTP::Client');
+$client_module->mock(_getServerCertificate => sub { @certificate });
+
+# Self-signed ECDSA certificate signed with SHA-384
+my $pem = <<'PEM';
+-----BEGIN CERTIFICATE-----
+MIIBkDCCATegAwIBAgIUajwjLstMwFkFSg3alfk9sZVhj/YwCgYIKoZIzj0EAwMw
+HTEbMBkGA1UEAwwSd2luaG9zdC5kb21haW4udGxkMCAXDTI2MTEyMzE1MTc0OVoY
+DzIxMjYxMDMwMTUxNzQ5WjAdMRswGQYDVQQDDBJ3aW5ob3N0LmRvbWFpbi50bGQw
+WTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAATeu5Swao1qIBQ7AedYx4hgdA4oyXWV
+6h/Fho3YJNhDsXz8g+/Nh9KD5VeF4V5dF45ILyD8oPULegjZh/rlbDb+o1MwUTAd
+BgNVHQ4EFgQUqMU3bN74AjclTfyApA2ES/TKyNswHwYDVR0jBBgwFoAUqMU3bN74
+AjclTfyApA2ES/TKyNswDwYDVR0TAQH/BAUwAwEB/zAKBggqhkjOPQQDAwNHADBE
+AiAfBWyo8f1dWpzqj7yUwP1Jf6O7g53wmdBy5eJdyvlg+QIgWABt019smX08yI4A
+plq92L4dnBSqY0GopDmc7B/NvDM=
+-----END CERTIFICATE-----
+PEM
+my $der = decode_base64(join('', grep { !/^-----/ } split(/\n/, $pem)));
+my $der_sha384 = "c4ef760421ad16d8e62588d212d88866c212fd8146a6690bf815f14845f093522d929de07e8092d07f2312c7f5f40a6c";
 
 # Mock LWP::UserAgent to return prepared responses and keep sent requests
 my (@responses, @requests);
@@ -58,7 +84,9 @@ sub _run {
     my (%params) = @_;
 
     @requests = ();
+    @bindings = ();
     @responses = @{$params{responses}};
+    @certificate = @{$params{certificate} // []};
     $token = $params{token};
     $verified = $params{verified} // 1;
     $kerberos_error = $params{error} // '';
@@ -68,9 +96,10 @@ sub _run {
         kerberos    => $params{kerberos} // 1,
         user        => $params{user},
         password    => $params{password},
+        no_ssl_check=> 1,
     );
 
-    my $request = HTTP::Request->new(POST => "http://winhost.domain.tld:5985/wsman/");
+    my $request = HTTP::Request->new(POST => $params{url} // "http://winhost.domain.tld:5985/wsman/");
     return $client->request($request);
 }
 
@@ -173,3 +202,133 @@ subtest "kerberos mutual authentication failure" => sub {
     is($response->code(), 401, "server answer not trusted");
     like($logger->{backends}->[0]->{message}, qr/kerberos mutual authentication failed/, "error logged");
 };
+
+subtest "no channel binding over http" => sub {
+    plan tests => 2;
+    my $response = _run(
+        token       => "dG9rZW4=",
+        certificate => [ $der, "ecdsa-with-SHA384" ],
+        responses   => [
+            _response(401, 'WWW-Authenticate' => 'Negotiate'),
+            _response(200),
+        ],
+    );
+    ok($response->is_success(), "response is success");
+    is(scalar(@bindings), 0, "channel binding not set");
+};
+
+subtest "channel binding over https" => sub {
+    plan tests => 4;
+    my $response = _run(
+        url         => "https://winhost.domain.tld:5986/wsman/",
+        token       => "dG9rZW4=",
+        certificate => [ $der, "ecdsa-with-SHA384" ],
+        responses   => [
+            _response(401, 'WWW-Authenticate' => 'Negotiate'),
+            _response(200),
+        ],
+    );
+    ok($response->is_success(), "response is success");
+    is(scalar(@bindings), 1, "channel binding set once");
+    is($bindings[0], "tls-server-end-point:".sha384($der), "tls-server-end-point binding with sha384");
+    is(unpack("H*", substr($bindings[0], 21)), $der_sha384, "binding hash matches certificate");
+};
+
+subtest "no channel binding over https without server certificate" => sub {
+    plan tests => 4;
+    my $response = _run(
+        url         => "https://winhost.domain.tld:5986/wsman/",
+        token       => "dG9rZW4=",
+        responses   => [
+            _response(401, 'WWW-Authenticate' => 'Negotiate'),
+            _response(200),
+        ],
+    );
+    ok($response->is_success(), "response is success");
+    is(scalar(@bindings), 1, "channel binding reset once");
+    ok(!defined($bindings[0]), "no channel binding data");
+    is($requests[1]->header('Authorization'), "Negotiate dG9rZW4=", "negotiate token submitted");
+};
+
+subtest "tls-server-end-point computation" => sub {
+    my %cases = (
+        'RSA-SHA256'                => \&sha256,
+        'sha256WithRSAEncryption'   => \&sha256,
+        'RSA-SHA1'                  => \&sha256,
+        'RSA-MD5'                   => \&sha256,
+        'RSASSA-PSS'                => \&sha256,
+        'ED25519'                   => \&sha256,
+        'RSA-SHA384'                => \&sha384,
+        'ecdsa-with-SHA384'         => \&sha384,
+        'RSA-SHA512'                => \&sha512,
+        'ecdsa-with-SHA512'         => \&sha512,
+    );
+    plan tests => scalar(keys(%cases)) + 5;
+    foreach my $sigalg (sort keys(%cases)) {
+        is(
+            GLPI::Agent::HTTP::Kerberos::tlsServerEndPoint($der, $sigalg),
+            "tls-server-end-point:".$cases{$sigalg}->($der),
+            "hash for $sigalg"
+        );
+    }
+    is(
+        GLPI::Agent::HTTP::Kerberos::tlsServerEndPoint($der),
+        "tls-server-end-point:".sha256($der),
+        "sha256 without signature algorithm"
+    );
+    is(
+        GLPI::Agent::HTTP::Kerberos::tlsServerEndPoint($der, "RSA-SHA512/224"),
+        "tls-server-end-point:".Digest::SHA->new(512224)->add($der)->digest,
+        "hash for RSA-SHA512/224"
+    );
+    is(
+        GLPI::Agent::HTTP::Kerberos::tlsServerEndPoint($der, "RSA-SHA224"),
+        "tls-server-end-point:".Digest::SHA->new(224)->add($der)->digest,
+        "hash for RSA-SHA224"
+    );
+    ok(!defined(GLPI::Agent::HTTP::Kerberos::tlsServerEndPoint(undef, "RSA-SHA256")), "no binding without certificate");
+    ok(!defined(GLPI::Agent::HTTP::Kerberos::tlsServerEndPoint("", "RSA-SHA256")), "no binding with empty certificate");
+};
+
+subtest "server certificate from kept-alive connection" => sub {
+    plan skip_all => "Net::SSLeay required" unless Net::SSLeay->require();
+    plan tests => 5;
+
+    $client_module->unmock('_getServerCertificate');
+
+    my $bio = Net::SSLeay::BIO_new(Net::SSLeay::BIO_s_mem());
+    Net::SSLeay::BIO_write($bio, $pem);
+    my $x509 = Net::SSLeay::PEM_read_bio_X509($bio);
+    Net::SSLeay::BIO_free($bio);
+
+    my $client = GLPI::Agent::HTTP::Client->new(
+        logger      => $logger,
+        kerberos    => 1,
+        no_ssl_check=> 1,
+    );
+    my $url = URI->new("https://winhost.domain.tld:5986/wsman/");
+
+    my @none = $client->_getServerCertificate($url);
+    is(scalar(@none), 0, "no certificate without cached connection");
+
+    my $socket = bless { cert => $x509 }, 'FakeSSLSocket';
+    $client->{ua}->conn_cache->deposit('https', 'other.domain.tld:5986', bless({}, 'FakeSSLSocket'));
+    $client->{ua}->conn_cache->deposit('https', 'winhost.domain.tld:5986', $socket);
+
+    my ($cert, $sigalg) = $client->_getServerCertificate($url);
+    is($cert, $der, "DER certificate from cached connection");
+    like($sigalg // '', qr/SHA384/i, "signature algorithm");
+    my @kept = grep { $_ == $socket } $client->{ua}->conn_cache->get_connections('https');
+    is(scalar(@kept), 1, "connection kept in cache");
+
+    @none = $client->_getServerCertificate(URI->new("https://winhost.domain.tld:443/wsman/"));
+    is(scalar(@none), 0, "no certificate for another port");
+
+    Net::SSLeay::X509_free($x509);
+};
+
+package FakeSSLSocket;
+
+sub peer_certificate { $_[0]->{cert} }
+
+sub close {}

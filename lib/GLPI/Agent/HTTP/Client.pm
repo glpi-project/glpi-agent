@@ -10,6 +10,7 @@ use HTTP::Status;
 use LWP::UserAgent;
 use UNIVERSAL::require;
 use Digest::SHA qw(sha256_hex);
+use MIME::Base64;
 use Cpanel::JSON::XS;
 
 use GLPI::Agent;
@@ -459,6 +460,27 @@ sub _negotiateAuthentication {
         host    => $host,
     );
 
+    # Bind kerberos token to the TLS channel (RFC 5929 tls-server-end-point) as
+    # required by servers enforcing Extended Protection for Authentication, like
+    # WinRM with CbtHardeningLevel set to Strict
+    if ($params{scheme} eq 'https' && !$kerberos->error()) {
+        my ($der, $sigalg) = $self->_getServerCertificate($url);
+        my $cbt = GLPI::Agent::HTTP::Kerberos::tlsServerEndPoint($der, $sigalg);
+        if ($cbt) {
+            $logger->debug2(
+                _log_prefix .
+                "using kerberos channel binding with server certificate" .
+                ($sigalg ? " signed with $sigalg" : "")
+            );
+        } else {
+            $logger->debug(
+                _log_prefix .
+                "can't get server certificate, kerberos channel binding not used"
+            );
+        }
+        $kerberos->channel_binding($cbt);
+    }
+
     my $token = $kerberos->token();
     unless ($token) {
         $logger->error(
@@ -519,6 +541,41 @@ sub _negotiateAuthentication {
     }
 
     return $result;
+}
+
+# Return DER encoded server certificate and its signature algorithm name from
+# the kept-alive connection to the given https url
+sub _getServerCertificate {
+    my ($self, $url) = @_;
+
+    return unless Net::SSLeay->require();
+
+    my $conn_cache = $self->{ua}->conn_cache()
+        or return;
+
+    # LWP caches kept-alive connections with "host:port" as key, so peek the
+    # socket by withdrawing and depositing it back
+    my $key = $url->host() . ":" . $url->port();
+    my $socket = $conn_cache->withdraw('https', $key)
+        or return;
+    $conn_cache->deposit('https', $key, $socket);
+
+    return unless $socket->can('peer_certificate');
+
+    my $cert = $socket->peer_certificate()
+        or return;
+
+    my $pem = Net::SSLeay::PEM_get_string_X509($cert)
+        or return;
+    $pem =~ s/-----(BEGIN|END) CERTIFICATE-----//g;
+    my $der = decode_base64($pem)
+        or return;
+
+    my $sigalg;
+    my $obj = Net::SSLeay::P_X509_get_signature_alg($cert);
+    $sigalg = Net::SSLeay::OBJ_nid2sn(Net::SSLeay::OBJ_obj2nid($obj)) if $obj;
+
+    return $der, $sigalg;
 }
 
 sub setOAuth {
