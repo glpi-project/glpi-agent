@@ -9,6 +9,7 @@ core:
   ssl-keystore is defined in windows registry
 * Reset current alarm signal when HTTP::Client is called during a task, for example,
   during RemoteInventory task using WinRM protocol
+* Refacto Event class support
 
 inventory:
 * fix #1239: Support Thunderbolt devices inventory on MacOSX

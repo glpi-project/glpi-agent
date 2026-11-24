@@ -72,7 +72,6 @@ if ($options->{partial}) {
         if $options->{"required-category"};
 
     $event = GLPI::Agent::Event->new(
-        task        => "inventory",
         partial     => 1,
         category    => $options->{partial},
         name        => "partial inventory",
