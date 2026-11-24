@@ -543,22 +543,61 @@ sub _negotiateAuthentication {
     return $result;
 }
 
-# Return DER encoded server certificate and its signature algorithm name from
-# the kept-alive connection to the given https url
+# Return DER encoded server certificate and its signature algorithm name for
+# the given https url, from the kept-alive connection or from a dedicated one
 sub _getServerCertificate {
     my ($self, $url) = @_;
 
     return unless Net::SSLeay->require();
 
-    my $conn_cache = $self->{ua}->conn_cache()
-        or return;
-
     # LWP caches kept-alive connections with "host:port" as key, so peek the
     # socket by withdrawing and depositing it back
     my $key = $url->host() . ":" . $url->port();
-    my $socket = $conn_cache->withdraw('https', $key)
-        or return;
-    $conn_cache->deposit('https', $key, $socket);
+    my $conn_cache = $self->{ua}->conn_cache();
+    my $socket = $conn_cache ? $conn_cache->withdraw('https', $key) : undef;
+    if ($socket) {
+        $conn_cache->deposit('https', $key, $socket);
+        my @cert = _certificateInfo($socket);
+        return @cert if @cert;
+    }
+
+    # Server may have closed the connection, like WinRM does after a 401, so
+    # just open a dedicated connection to get its certificate. Server is not
+    # authenticated here, but a wrong certificate only leads to a binding the
+    # server refuses.
+    if ($self->{ua}->proxy('https')) {
+        $self->{logger}->debug2(_log_prefix . "can't get server certificate via a proxy");
+        return;
+    }
+
+    return unless IO::Socket::SSL->require();
+
+    my $host = $url->host();
+    $socket = IO::Socket::SSL->new(
+        PeerHost        => $host,
+        PeerPort        => $url->port(),
+        Timeout         => $self->{ua}->timeout() > 30 ? 30 : $self->{ua}->timeout(),
+        SSL_verify_mode => IO::Socket::SSL::SSL_VERIFY_NONE(),
+        # Set SNI for the server to provide the expected certificate
+        $host =~ /^[0-9.]+$|:/ ? () : (SSL_hostname => $host),
+    );
+    unless ($socket) {
+        $self->{logger}->debug2(
+            _log_prefix .
+            "failed to connect to $key to get server certificate: " .
+            ($IO::Socket::SSL::SSL_ERROR || $EVAL_ERROR || $ERRNO || "unknown error")
+        );
+        return;
+    }
+
+    my @cert = _certificateInfo($socket);
+    $socket->close(SSL_fast_shutdown => 1);
+
+    return @cert;
+}
+
+sub _certificateInfo {
+    my ($socket) = @_;
 
     return unless $socket->can('peer_certificate');
 
