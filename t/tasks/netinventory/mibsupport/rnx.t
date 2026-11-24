@@ -12,7 +12,7 @@ use GLPI::Agent::SNMP::Mock;
 use GLPI::Agent::SNMP::Device;
 use GLPI::Agent::SNMP::MibSupport::RNX;
 
-plan tests => 2;
+plan tests => 3;
 
 my $snmp = GLPI::Agent::SNMP::Mock->new(
     hash => {
@@ -28,10 +28,17 @@ my $snmp = GLPI::Agent::SNMP::Mock->new(
     }
 );
 
-my $device = GLPI::Agent::SNMP::Device->new(snmp => $snmp);
-$device->{TYPE} = 'PDU';
+my $device = GLPI::Agent::SNMP::Device->new(
+    snmp => $snmp,
+    glpi => "12"
+);
 
-GLPI::Agent::SNMP::MibSupport::RNX->new(device => $device)->run();
+# Load MibSupport and set type based on glpi 12 support before running MibSupport
+$device->loadMibSupport('.1.3.6.1.4.1.55108.1.0', {});
+$device->setType();
+$device->runMibSupport();
+
+ok($device->{TYPE} eq "PDU", "check pdu type");
 
 cmp_deeply(
     $device->{PDU},
