@@ -6,7 +6,7 @@ use lib 't/lib';
 
 use English qw(-no_match_vars);
 
-use Test::Warnings;
+use Test::NoWarnings;
 use Test::More;
 
 use GLPI::Agent::Event;

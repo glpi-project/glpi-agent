@@ -6,7 +6,6 @@ use warnings;
 use lib 't/lib';
 
 use Test::More;
-#~ use Test::Warnings;
 
 use English qw(-no_match_vars);
 
