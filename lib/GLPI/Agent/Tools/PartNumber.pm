@@ -43,7 +43,7 @@ sub new {
             }
             $priority{$module} = $module->priority();
         }
-        @subclasses = sort { $priority{$a} <=> $priority{$b} } sort keys(%priority);
+        @subclasses = sort { $priority{$a} <=> $priority{$b} } keys(%priority);
     }
 
     my $self = {
