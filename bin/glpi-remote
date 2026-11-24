@@ -687,7 +687,9 @@ from a client keytab (see I<KRB5_CLIENT_KTNAME> with MIT kerberos). User and pas
 are not used. The remote host should be set by its FQDN as the I<HTTP/fqdn> service
 principal is used, an IP is resolved to its hostname via reverse DNS lookup. As WinRM
 message encryption is not supported, the WinRM service must be configured with
-I<AllowUnencrypted> set to I<true> when not using I<ssl> mode.
+I<AllowUnencrypted> set to I<true> when not using I<ssl> mode. In I<ssl> mode, the
+kerberos token is bound to the TLS channel (channel binding), so I<CbtHardeningLevel>
+can be set to I<Strict>.
 
 =back
 

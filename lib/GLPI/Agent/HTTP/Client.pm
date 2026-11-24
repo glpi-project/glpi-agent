@@ -526,19 +526,17 @@ sub _negotiateAuthentication {
         return $result;
     }
 
-    # Check mutual authentication if server provided a token
+    # Mutual authentication: the server must prove its identity with a token in
+    # its answer. A missing token is a failure too, otherwise any server could
+    # skip the check just by not providing it.
     my ($mutual) = map { /^Negotiate\s+(\S+)/i } $result->header('www-authenticate');
-    if ($mutual) {
-        unless ($kerberos->verify($mutual)) {
-            $logger->error(_log_prefix . $kerberos->error());
-            delete $self->{_kerberos}->{$host};
-            # Don't trust server answer
-            return HTTP::Response->new(401, "Kerberos mutual authentication failure");
-        }
-        $logger->debug2(_log_prefix . "kerberos mutual authentication verified");
-    } else {
-        $logger->debug2(_log_prefix . "no kerberos mutual authentication token provided by server");
+    unless ($kerberos->verify($mutual)) {
+        $logger->error(_log_prefix . $kerberos->error());
+        delete $self->{_kerberos}->{$host};
+        # Don't trust server answer
+        return HTTP::Response->new(401, "Kerberos mutual authentication failure");
     }
+    $logger->debug2(_log_prefix . "kerberos mutual authentication verified");
 
     return $result;
 }

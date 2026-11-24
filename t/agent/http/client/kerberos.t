@@ -1,395 +1,279 @@
 #!/usr/bin/perl
 
+# End-to-end test of kerberos authentication in GLPI::Agent::HTTP::Client
+#
+# A throwaway MIT Kerberos KDC is started by GLPI::Test::Kerberos and a test
+# HTTP server emulates the WinRM service authentication: it answers 401 with
+# "WWW-Authenticate: Negotiate", accepts the agent token with GSSAPI and the
+# service keytab and returns its mutual authentication token. Nothing is
+# mocked.
+#
+# This test is skipped if GSSAPI perl module or MIT Kerberos KDC tools are not
+# installed. On Debian/Ubuntu: apt install libgssapi-perl krb5-kdc krb5-admin-server krb5-user
+
 use strict;
 use warnings;
 use lib 't/lib';
 
 use English qw(-no_match_vars);
 use HTTP::Request;
-use HTTP::Response;
 use MIME::Base64;
-use Digest::SHA qw(sha256 sha384 sha512);
-use URI;
-use File::Temp;
-use UNIVERSAL::require;
 use Test::More;
-use Test::MockModule;
 
 use GLPI::Agent::Logger;
 use GLPI::Agent::HTTP::Client;
 use GLPI::Agent::HTTP::Kerberos;
+use GLPI::Agent::Tools;
+use GLPI::Test::Kerberos;
+use GLPI::Test::Server;
 use GLPI::Test::Utils;
 
 unsetProxyEnvVar();
 
-plan tests => 13;
+my $unavailable = GLPI::Test::Kerberos->unavailable();
+plan skip_all => "Kerberos test realm: $unavailable" if $unavailable;
+
+my $port = first { test_port($_) } 8080 .. 8180;
+plan skip_all => 'no port available' unless $port;
+
+# Server is reached as localhost, so the agent asks a ticket for HTTP/localhost
+my $realm = GLPI::Test::Kerberos->new(
+    services => [ 'HTTP/localhost' ],
+);
+
+plan tests => 15;
+
+# Kerberos environment set up for the test realm, the https test server resets
+# the environment before calling request handlers
+my %krb5_env = map { $_ => $ENV{$_} } grep { /^KRB5/ } keys(%ENV);
+
+sub _negotiate {
+    my (%params) = @_;
+    return sub {
+        my ($server, $cgi) = @_;
+
+        my $authorization = delete $ENV{HTTP_AUTHORIZATION} // '';
+        local @ENV{keys(%krb5_env)} = values(%krb5_env);
+        my ($client, $mutual) = $authorization =~ /^Negotiate\s+(\S+)/ ?
+            GLPI::Test::Kerberos::accept_token($1, binding => $params{binding}, strict => $params{strict}) : ();
+
+        # Emulate an authenticated account not allowed to use the service
+        undef $client if $params{refuse};
+
+        if ($client) {
+            $mutual = 'Zm9yZ2VkIHRva2Vu' if $params{forge};
+            print "HTTP/1.0 200 OK\r\n";
+            print "WWW-Authenticate: Negotiate $mutual\r\n" unless $params{no_mutual};
+            print "Content-Type: text/plain\r\n\r\n";
+            print "authenticated as $client";
+            # Echo request body like a SOAP answer would depend on it
+            my $body = $cgi->param('POSTDATA');
+            print ": $body" if defined($body) && length($body);
+        } else {
+            print "HTTP/1.0 401 Unauthorized\r\n";
+            print "WWW-Authenticate: Negotiate\r\n" unless $params{basic_only};
+            print "WWW-Authenticate: Basic realm=\"WSMAN\"\r\n";
+            print "Content-Type: text/plain\r\n\r\n";
+            print "Authentication required";
+        }
+    };
+}
+
+my $server = GLPI::Test::Server->new(port => $port);
+$server->set_dispatch({
+    '/wsman'        => _negotiate(),
+    '/forged'       => _negotiate(forge => 1),
+    '/nomutual'     => _negotiate(no_mutual => 1),
+    '/basic'        => _negotiate(basic_only => 1),
+    '/refused'      => _negotiate(refuse => 1),
+    '/strict'       => _negotiate(binding => "tls-server-end-point:unused", strict => 1),
+});
+
+# ensure the server and the KDC get stopped even if an exception is thrown, but
+# ignore exceptions caught in eval like LWP trying to load LWP::Authen::Negotiate
+$SIG{__DIE__} = sub { return if $^S; $server->stop(); $realm->stop(); };
+
+$server->background();
 
 my $logger = GLPI::Agent::Logger->new(
     logger  => [ 'Test' ],
     debug   => 2,
 );
 
-# Mock kerberos token provider as GSSAPI & a KDC are not available while testing
-my ($token, $verified, $kerberos_error, @bindings);
-my $kerberos = Test::MockModule->new('GLPI::Agent::HTTP::Kerberos');
-$kerberos->mock(new => sub {
-    my ($class, %params) = @_;
-    return bless { _host => $params{host} }, $class;
-});
-$kerberos->mock(token => sub { $token });
-$kerberos->mock(verify => sub { $verified });
-$kerberos->mock(error => sub { $kerberos_error });
-$kerberos->mock(channel_binding => sub { push @bindings, $_[1] });
-
-# Mock server certificate retrieval
-my @certificate;
-my $client_module = Test::MockModule->new('GLPI::Agent::HTTP::Client');
-$client_module->mock(_getServerCertificate => sub { @certificate });
-
-# Self-signed ECDSA certificate signed with SHA-384
-my $pem = <<'PEM';
------BEGIN CERTIFICATE-----
-MIIBkDCCATegAwIBAgIUajwjLstMwFkFSg3alfk9sZVhj/YwCgYIKoZIzj0EAwMw
-HTEbMBkGA1UEAwwSd2luaG9zdC5kb21haW4udGxkMCAXDTI2MTEyMzE1MTc0OVoY
-DzIxMjYxMDMwMTUxNzQ5WjAdMRswGQYDVQQDDBJ3aW5ob3N0LmRvbWFpbi50bGQw
-WTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAATeu5Swao1qIBQ7AedYx4hgdA4oyXWV
-6h/Fho3YJNhDsXz8g+/Nh9KD5VeF4V5dF45ILyD8oPULegjZh/rlbDb+o1MwUTAd
-BgNVHQ4EFgQUqMU3bN74AjclTfyApA2ES/TKyNswHwYDVR0jBBgwFoAUqMU3bN74
-AjclTfyApA2ES/TKyNswDwYDVR0TAQH/BAUwAwEB/zAKBggqhkjOPQQDAwNHADBE
-AiAfBWyo8f1dWpzqj7yUwP1Jf6O7g53wmdBy5eJdyvlg+QIgWABt019smX08yI4A
-plq92L4dnBSqY0GopDmc7B/NvDM=
------END CERTIFICATE-----
-PEM
-# Test only private key of the certificate
-my $key = <<'PEM';
------BEGIN PRIVATE KEY-----
-MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgoEZVBw6toYeS732k
-fc5rr7fexRNiUUVn1slVuMph8mqhRANCAATeu5Swao1qIBQ7AedYx4hgdA4oyXWV
-6h/Fho3YJNhDsXz8g+/Nh9KD5VeF4V5dF45ILyD8oPULegjZh/rlbDb+
------END PRIVATE KEY-----
-PEM
-my $der = decode_base64(join('', grep { !/^-----/ } split(/\n/, $pem)));
-my $der_sha384 = "c4ef760421ad16d8e62588d212d88866c212fd8146a6690bf815f14845f093522d929de07e8092d07f2312c7f5f40a6c";
-
-# Mock LWP::UserAgent to return prepared responses and keep sent requests
-my (@responses, @requests);
-my $ua = Test::MockModule->new('LWP::UserAgent');
-$ua->mock(request => sub {
-    my ($self, $request) = @_;
-    push @requests, $request->clone();
-    return shift(@responses);
-});
-
-sub _response {
-    my ($code, %headers) = @_;
-    my $response = HTTP::Response->new($code);
-    foreach my $header (keys(%headers)) {
-        my $values = ref($headers{$header}) ? $headers{$header} : [ $headers{$header} ];
-        $response->push_header($header => $_) foreach @{$values};
-    }
-    return $response;
-}
-
-sub _run {
+sub _client {
     my (%params) = @_;
-
-    @requests = ();
-    @bindings = ();
-    @responses = @{$params{responses}};
-    @certificate = @{$params{certificate} // []};
-    $token = $params{token};
-    $verified = $params{verified} // 1;
-    $kerberos_error = $params{error} // '';
-
-    my $client = GLPI::Agent::HTTP::Client->new(
+    return GLPI::Agent::HTTP::Client->new(
         logger      => $logger,
-        kerberos    => $params{kerberos} // 1,
+        kerberos    => 1,
+        no_ssl_check=> $params{no_ssl_check},
         user        => $params{user},
         password    => $params{password},
-        no_ssl_check=> 1,
     );
+}
 
-    my $request = HTTP::Request->new(POST => $params{url} // "http://winhost.domain.tld:5985/wsman/");
+sub _request {
+    my ($path, %params) = @_;
+    my $client = $params{client} // _client(%params);
+    my $url = ($params{scheme} // "http")."://localhost:$port$path";
+    my $request = defined($params{body}) ?
+        HTTP::Request->new(POST => $url, [ 'Content-Type' => 'application/soap+xml' ], $params{body}) :
+        HTTP::Request->new(GET => $url);
     return $client->request($request);
 }
 
-subtest "kerberos authentication success" => sub {
-    plan tests => 6;
-    my $response = _run(
-        token       => "dG9rZW4=",
-        responses   => [
-            _response(401, 'WWW-Authenticate' => [ 'Negotiate', 'Basic realm="WSMAN"' ]),
-            _response(200, 'WWW-Authenticate' => 'Negotiate bXV0dWFs'),
-        ],
-    );
-    ok($response->is_success(), "response is success");
-    is(scalar(@requests), 2, "request replayed once");
-    ok(!defined($requests[0]->header('Authorization')), "no authorization on first request");
-    is($requests[1]->header('Authorization'), "Negotiate dG9rZW4=", "negotiate token submitted");
-    unlike($requests[1]->header('Authorization'), qr/^Basic/, "basic not used");
-    like($logger->{backends}->[0]->{message} // '', qr/kerberos mutual authentication verified/, "mutual authentication verified");
-};
-
-subtest "kerberos authentication success without mutual token" => sub {
-    plan tests => 2;
-    my $response = _run(
-        token       => "dG9rZW4=",
-        responses   => [
-            _response(401, 'WWW-Authenticate' => 'Negotiate'),
-            _response(200),
-        ],
-    );
-    ok($response->is_success(), "response is success");
-    is(scalar(@requests), 2, "request replayed once");
-};
-
-subtest "kerberos preferred to basic even with credentials" => sub {
-    plan tests => 2;
-    my $response = _run(
-        token       => "dG9rZW4=",
-        user        => "user",
-        password    => "pass",
-        responses   => [
-            _response(401, 'WWW-Authenticate' => 'Basic realm="WSMAN", Negotiate'),
-            _response(200),
-        ],
-    );
-    ok($response->is_success(), "response is success");
-    is($requests[1]->header('Authorization'), "Negotiate dG9rZW4=", "negotiate token submitted");
-};
-
-subtest "negotiate not offered by server" => sub {
+subtest "authenticated with ticket from credentials cache" => sub {
     plan tests => 3;
-    my $response = _run(
-        token       => "dG9rZW4=",
-        responses   => [
-            _response(401, 'WWW-Authenticate' => 'Basic realm="WSMAN"'),
-        ],
-    );
-    is($response->code(), 401, "response is 401");
-    is(scalar(@requests), 1, "request not replayed");
-    like($logger->{backends}->[0]->{message}, qr/kerberos authentication not offered by server/, "error logged");
+    my $response = _request('/wsman');
+    ok($response->is_success(), "response is success");
+    is($response->content(), "authenticated as ".$realm->client(), "server authenticated agent");
+    like($logger->{backends}->[0]->{message}, qr/kerberos mutual authentication verified/, "server identity verified");
 };
 
-subtest "kerberos token failure" => sub {
-    plan tests => 3;
-    my $response = _run(
-        error       => "failed to get kerberos token for HTTP/winhost.domain.tld: No credentials cache found",
-        responses   => [
-            _response(401, 'WWW-Authenticate' => 'Negotiate'),
-        ],
-    );
-    is($response->code(), 401, "response is 401");
-    is(scalar(@requests), 1, "request not replayed");
-    like($logger->{backends}->[0]->{message}, qr/No credentials cache found/, "error logged");
-};
-
-subtest "kerberos authentication refused" => sub {
-    plan tests => 3;
-    my $response = _run(
-        token       => "dG9rZW4=",
-        responses   => [
-            _response(401, 'WWW-Authenticate' => 'Negotiate'),
-            _response(401, 'WWW-Authenticate' => 'Negotiate'),
-        ],
-    );
-    is($response->code(), 401, "response is 401");
-    is(scalar(@requests), 2, "request replayed once");
-    like($logger->{backends}->[0]->{message}, qr/kerberos authentication refused/, "error logged");
-};
-
-subtest "kerberos mutual authentication failure" => sub {
+subtest "forged mutual authentication token" => sub {
     plan tests => 2;
-    my $response = _run(
-        token       => "dG9rZW4=",
-        verified    => 0,
-        error       => "kerberos mutual authentication failed",
-        responses   => [
-            _response(401, 'WWW-Authenticate' => 'Negotiate'),
-            _response(200, 'WWW-Authenticate' => 'Negotiate YmFk'),
-        ],
-    );
+    my $response = _request('/forged');
     is($response->code(), 401, "server answer not trusted");
     like($logger->{backends}->[0]->{message}, qr/kerberos mutual authentication failed/, "error logged");
 };
 
-subtest "no channel binding over http" => sub {
+subtest "no mutual authentication token" => sub {
     plan tests => 2;
-    my $response = _run(
-        token       => "dG9rZW4=",
-        certificate => [ $der, "ecdsa-with-SHA384" ],
-        responses   => [
-            _response(401, 'WWW-Authenticate' => 'Negotiate'),
-            _response(200),
-        ],
-    );
-    ok($response->is_success(), "response is success");
-    is(scalar(@bindings), 0, "channel binding not set");
+    # Any server could skip mutual authentication if a missing token was accepted
+    my $response = _request('/nomutual');
+    is($response->code(), 401, "server answer not trusted");
+    like($logger->{backends}->[0]->{message}, qr/kerberos mutual authentication failed for HTTP\/localhost: no token provided by server/, "error logged");
 };
 
-subtest "channel binding over https" => sub {
-    plan tests => 4;
-    my $response = _run(
-        url         => "https://winhost.domain.tld:5986/wsman/",
-        token       => "dG9rZW4=",
-        certificate => [ $der, "ecdsa-with-SHA384" ],
-        responses   => [
-            _response(401, 'WWW-Authenticate' => 'Negotiate'),
-            _response(200),
-        ],
-    );
-    ok($response->is_success(), "response is success");
-    is(scalar(@bindings), 1, "channel binding set once");
-    is($bindings[0], "tls-server-end-point:".sha384($der), "tls-server-end-point binding with sha384");
-    is(unpack("H*", substr($bindings[0], 21)), $der_sha384, "binding hash matches certificate");
+subtest "negotiate not offered" => sub {
+    plan tests => 2;
+    my $response = _request('/basic');
+    is($response->code(), 401, "response is 401");
+    like($logger->{backends}->[0]->{message}, qr/kerberos authentication not offered by server/, "error logged");
 };
 
-subtest "no channel binding over https without server certificate" => sub {
-    plan tests => 4;
-    my $response = _run(
-        url         => "https://winhost.domain.tld:5986/wsman/",
-        token       => "dG9rZW4=",
-        responses   => [
-            _response(401, 'WWW-Authenticate' => 'Negotiate'),
-            _response(200),
-        ],
-    );
-    ok($response->is_success(), "response is success");
-    is(scalar(@bindings), 1, "channel binding reset once");
-    ok(!defined($bindings[0]), "no channel binding data");
-    is($requests[1]->header('Authorization'), "Negotiate dG9rZW4=", "negotiate token submitted");
+subtest "no ticket available" => sub {
+    plan tests => 2;
+    local $ENV{KRB5CCNAME} = 'FILE:'.$realm->file('missing.ccache');
+    my $response = _request('/wsman');
+    is($response->code(), 401, "response is 401");
+    like($logger->{backends}->[0]->{message}, qr{failed to get kerberos token for HTTP/localhost}, "error logged");
 };
 
-subtest "tls-server-end-point computation" => sub {
-    my %cases = (
-        'RSA-SHA256'                => \&sha256,
-        'sha256WithRSAEncryption'   => \&sha256,
-        'RSA-SHA1'                  => \&sha256,
-        'RSA-MD5'                   => \&sha256,
-        'RSASSA-PSS'                => \&sha256,
-        'ED25519'                   => \&sha256,
-        'RSA-SHA384'                => \&sha384,
-        'ecdsa-with-SHA384'         => \&sha384,
-        'RSA-SHA512'                => \&sha512,
-        'ecdsa-with-SHA512'         => \&sha512,
-    );
-    plan tests => scalar(keys(%cases)) + 5;
-    foreach my $sigalg (sort keys(%cases)) {
-        is(
-            GLPI::Agent::HTTP::Kerberos::tlsServerEndPoint($der, $sigalg),
-            "tls-server-end-point:".$cases{$sigalg}->($der),
-            "hash for $sigalg"
-        );
-    }
-    is(
-        GLPI::Agent::HTTP::Kerberos::tlsServerEndPoint($der),
-        "tls-server-end-point:".sha256($der),
-        "sha256 without signature algorithm"
-    );
-    is(
-        GLPI::Agent::HTTP::Kerberos::tlsServerEndPoint($der, "RSA-SHA512/224"),
-        "tls-server-end-point:".Digest::SHA->new(512224)->add($der)->digest,
-        "hash for RSA-SHA512/224"
-    );
-    is(
-        GLPI::Agent::HTTP::Kerberos::tlsServerEndPoint($der, "RSA-SHA224"),
-        "tls-server-end-point:".Digest::SHA->new(224)->add($der)->digest,
-        "hash for RSA-SHA224"
-    );
-    ok(!defined(GLPI::Agent::HTTP::Kerberos::tlsServerEndPoint(undef, "RSA-SHA256")), "no binding without certificate");
-    ok(!defined(GLPI::Agent::HTTP::Kerberos::tlsServerEndPoint("", "RSA-SHA256")), "no binding with empty certificate");
-};
-
-subtest "server certificate from kept-alive connection" => sub {
-    plan skip_all => "Net::SSLeay required" unless Net::SSLeay->require();
+subtest "several SOAP requests with the same client" => sub {
     plan tests => 3;
-
-    $client_module->unmock('_getServerCertificate');
-
-    my $bio = Net::SSLeay::BIO_new(Net::SSLeay::BIO_s_mem());
-    Net::SSLeay::BIO_write($bio, $pem);
-    my $x509 = Net::SSLeay::PEM_read_bio_X509($bio);
-    Net::SSLeay::BIO_free($bio);
-
-    my $client = GLPI::Agent::HTTP::Client->new(
-        logger      => $logger,
-        kerberos    => 1,
-        no_ssl_check=> 1,
-    );
-    my $url = URI->new("https://winhost.domain.tld:5986/wsman/");
-
-    my $socket = bless { cert => $x509 }, 'FakeSSLSocket';
-    $client->{ua}->conn_cache->deposit('https', 'other.domain.tld:5986', bless({}, 'FakeSSLSocket'));
-    $client->{ua}->conn_cache->deposit('https', 'winhost.domain.tld:5986', $socket);
-
-    my ($cert, $sigalg) = $client->_getServerCertificate($url);
-    is($cert, $der, "DER certificate from cached connection");
-    like($sigalg // '', qr/SHA384/i, "signature algorithm");
-    my @kept = grep { $_ == $socket } $client->{ua}->conn_cache->get_connections('https');
-    is(scalar(@kept), 1, "connection kept in cache");
-
-    Net::SSLeay::X509_free($x509);
+    # Like a WinRM remote inventory, each request is authenticated
+    my $client = _client();
+    foreach my $index (1..3) {
+        my $response = _request('/wsman', client => $client, body => "<request>$index</request>");
+        is($response->content(), "authenticated as ".$realm->client().": <request>$index</request>", "request $index authenticated with its body");
+    }
 };
 
-subtest "server certificate from dedicated connection" => sub {
-    plan skip_all => "fork based TLS server not supported on Windows" if $OSNAME eq 'MSWin32';
-    plan skip_all => "IO::Socket::SSL & Net::SSLeay required"
-        unless IO::Socket::SSL->require() && Net::SSLeay->require();
-    plan tests => 4;
-
-    my $tmpdir = File::Temp->newdir();
-    my $certfile = "$tmpdir/cert.pem";
-    my $keyfile  = "$tmpdir/key.pem";
-    foreach my $file ([ $certfile, $pem ], [ $keyfile, $key ]) {
-        open my $fh, '>', $file->[0] or die "can't write $file->[0]: $ERRNO";
-        print $fh $file->[1];
-        close $fh;
+subtest "same client authenticated again when a ticket is available" => sub {
+    plan tests => 2;
+    my $client = _client();
+    {
+        local $ENV{KRB5CCNAME} = 'FILE:'.$realm->file('missing.ccache');
+        is(_request('/wsman', client => $client)->code(), 401, "no ticket: response is 401");
     }
+    ok(_request('/wsman', client => $client)->is_success(), "ticket available: response is success");
+};
 
-    my $server = IO::Socket::SSL->new(
-        Listen          => 5,
-        LocalAddr       => '127.0.0.1',
-        LocalPort       => 0,
-        SSL_server      => 1,
-        SSL_cert_file   => $certfile,
-        SSL_key_file    => $keyfile,
-    ) or die "can't start TLS server: $IO::Socket::SSL::SSL_ERROR";
-    my $port = $server->sockport();
+subtest "kerberos preferred to basic even with credentials" => sub {
+    plan tests => 2;
+    my $response = _request('/wsman', user => "user", password => "password");
+    ok($response->is_success(), "response is success");
+    is($response->content(), "authenticated as ".$realm->client(), "authenticated with kerberos");
+};
 
-    my $pid = fork();
-    die "can't fork: $ERRNO" unless defined($pid);
-    unless ($pid) {
-        while (1) {
-            my $conn = $server->accept() or next;
-            $conn->close(SSL_fast_shutdown => 1);
+subtest "kerberos authentication refused" => sub {
+    plan tests => 2;
+    my $response = _request('/refused');
+    is($response->code(), 401, "response is 401");
+    like($logger->{backends}->[0]->{message}, qr/kerberos authentication refused/, "error logged");
+};
+
+subtest "no channel binding over http" => sub {
+    plan tests => 1;
+    # Channel binding only applies to TLS, a server requiring it refuses http
+    my $response = _request('/strict');
+    is($response->code(), 401, "response is 401");
+};
+
+$server->stop();
+
+# Same tests over https, with a server checking channel binding like WinRM. The
+# test server answers with HTTP/1.0 and closes the connection after the 401
+# answer, like WinRM does, so the agent has to get the server certificate with
+# a dedicated connection. The certificate is issued to 127.0.0.1 and not
+# localhost, so it is not verified, like with no-ssl-check option.
+SKIP: {
+    skip "https test server not supported on $OSNAME", 5 if $OSNAME =~ /^(MSWin32|darwin)$/;
+
+    # Channel binding the server expects, computed from its own certificate
+    my $crt = 'resources/ssl/crt/good.pem';
+    open my $fh, '<', $crt or die "can't read $crt: $ERRNO";
+    my $pem = do { local $INPUT_RECORD_SEPARATOR; <$fh> };
+    close $fh;
+    my ($base64) = $pem =~ /-----BEGIN CERTIFICATE-----(.*)-----END CERTIFICATE-----/s;
+    my $binding = GLPI::Agent::HTTP::Kerberos::tlsServerEndPoint(decode_base64($base64), "RSA-SHA256");
+    my $other   = GLPI::Agent::HTTP::Kerberos::tlsServerEndPoint("other certificate", "RSA-SHA256");
+
+    $server = GLPI::Test::Server->new(
+        port    => $port,
+        ssl     => 1,
+        crt     => $crt,
+        key     => 'resources/ssl/key/good.pem',
+    );
+    $server->set_dispatch({
+        '/wsman'    => _negotiate(),
+        # WinRM with CbtHardeningLevel set to Strict
+        '/strict'   => _negotiate(binding => $binding, strict => 1),
+        # WinRM with CbtHardeningLevel set to Relaxed
+        '/relaxed'  => _negotiate(binding => $binding),
+        # Server certificate seen by the agent is not the one of the server,
+        # like when a man-in-the-middle relays the token over its own TLS
+        # connection
+        '/mitm'     => _negotiate(binding => $other),
+    });
+    $server->background();
+
+    subtest "https: authenticated by server not checking channel binding" => sub {
+        plan tests => 1;
+        my $response = _request('/wsman', scheme => 'https', no_ssl_check => 1);
+        ok($response->is_success(), "response is success");
+    };
+
+    subtest "https: authenticated by server requiring channel binding" => sub {
+        plan tests => 2;
+        my $response = _request('/strict', scheme => 'https', no_ssl_check => 1);
+        ok($response->is_success(), "response is success");
+        is($response->content(), "authenticated as ".$realm->client(), "server authenticated agent");
+    };
+
+    subtest "https: authenticated by server checking channel binding when provided" => sub {
+        plan tests => 1;
+        my $response = _request('/relaxed', scheme => 'https', no_ssl_check => 1);
+        ok($response->is_success(), "response is success");
+    };
+
+    subtest "https: token bound to another server certificate refused" => sub {
+        plan tests => 2;
+        my $response = _request('/mitm', scheme => 'https', no_ssl_check => 1);
+        is($response->code(), 401, "response is 401");
+        like($logger->{backends}->[0]->{message}, qr/kerberos authentication refused/, "error logged");
+    };
+
+    subtest "https: several requests with the same client" => sub {
+        plan tests => 3;
+        my $client = _client(no_ssl_check => 1);
+        foreach my $index (1..3) {
+            my $response = _request('/strict', scheme => 'https', client => $client, body => "<request>$index</request>");
+            is($response->content(), "authenticated as ".$realm->client().": <request>$index</request>", "request $index authenticated with channel binding");
         }
-    }
-    $server->close(SSL_no_shutdown => 1);
+    };
 
-    my $client = GLPI::Agent::HTTP::Client->new(
-        logger      => $logger,
-        kerberos    => 1,
-        no_ssl_check=> 1,
-        proxy       => 'none',
-    );
+    $server->stop();
+}
 
-    my ($cert, $sigalg) = $client->_getServerCertificate(URI->new("https://127.0.0.1:$port/wsman/"));
-    is($cert, $der, "DER certificate from dedicated connection");
-    like($sigalg // '', qr/SHA384/i, "signature algorithm");
-
-    kill 'TERM', $pid;
-    waitpid($pid, 0);
-
-    my @none = $client->_getServerCertificate(URI->new("https://127.0.0.1:$port/wsman/"));
-    is(scalar(@none), 0, "no certificate when server is not reachable");
-
-    $client->{ua}->proxy('https', 'http://127.0.0.1:3128');
-    @none = $client->_getServerCertificate(URI->new("https://127.0.0.1:$port/wsman/"));
-    is(scalar(@none), 0, "no dedicated connection via a proxy");
-};
-
-package FakeSSLSocket;
-
-sub peer_certificate { $_[0]->{cert} }
-
-sub close {}
+$realm->stop();
