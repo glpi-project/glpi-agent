@@ -31,6 +31,8 @@ netdiscovery/netinventory:
   This is the case when using Authenticated-MAC or NAC on Huawei devices.
 * fix #1264: Fix Dahua based devices inventory, including Amcrest, IntelBras & Lorex
   devices.
+* Use system defined outlet name as plug name for RNX & Raritan PDUs and report user
+  defined outlet name as plug custom name
 
 deploy:
 * p2p support optimization: Refacto to transform findPeers() to return as quickly

@@ -97,9 +97,10 @@ sub run {
 
             foreach my $key (sort { $a <=> $b } keys(%{$systemName})) {
                 push @plugs, {
-                    NAME    => getCanonicalString($customNames->{$key}) // getCanonicalString($systemName->{$key}),
-                    NUMBER  => $key,
-                    TYPE    => $ratingType{$rating->{$key}} // "unknown",
+                    NAME        => getCanonicalString($systemName->{$key}), # SystemName used by PDU
+                    CUSTOM_NAME => getCanonicalString($customNames->{$key}) // '', # CustomName defined by user
+                    NUMBER      => $key,
+                    TYPE        => $ratingType{$rating->{$key}} // "unknown",
                 };
             }
         }
