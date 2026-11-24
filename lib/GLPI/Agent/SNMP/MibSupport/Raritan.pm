@@ -91,9 +91,10 @@ sub run {
             foreach my $key (sort { _oidkeyorder($a) <=> _oidkeyorder($b) } keys(%{$labels})) {
                 my $descriptor = getCanonicalString($descriptors->{$key}) // '';
                 push @plugs, {
-                    NAME    => getCanonicalString($names->{$key} // $labels->{$key}),
-                    NUMBER  => getCanonicalString($labels->{$key}),
-                    TYPE    => $descriptor,
+                    NAME        => getCanonicalString($labels->{$key}), # SystemName used by PDU
+                    CUSTOM_NAME => getCanonicalString($names->{$key}) // '', # CustomName defined by user
+                    NUMBER      => getCanonicalString($labels->{$key}),
+                    TYPE        => $descriptor,
                 };
             }
         }
