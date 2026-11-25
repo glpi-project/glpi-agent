@@ -7,6 +7,7 @@ use Cwd;
 use English qw(-no_match_vars);
 
 use GLPI::Agent::Task::Deploy::ActionProcessor::Action;
+use GLPI::Agent::Task::Deploy::Signature qw(actionDigest);
 
 sub new {
     my ($class, %params) = @_;
@@ -46,13 +47,20 @@ sub failed {
 }
 
 sub process {
-    my ($self, $actionName, $params) = @_;
+    my ($self, $actionName, $params, $authorized_actions) = @_;
 
     my $ret;
 
     if ($actionName eq 'checks') {
         # not an action
-    } elsif ( $actionName =~ /^cmd|copy|delete|mkdir|move$/i ) {
+    } elsif ( $actionName =~ /\A(?:cmd|copy|delete|mkdir|move)\z/i ) {
+        # undef denotes unsigned mode; an empty allowlist authorizes nothing.
+        if (defined($authorized_actions)) {
+            my $digest = eval { actionDigest($actionName, $params) };
+            unless ($digest && $authorized_actions->{$digest}) {
+                return { status => 0, msg => ['Security error: action parameters are not signed'] };
+            }
+        }
         $self->{_logger}->debug2("Processing $actionName action...");
         my $action = GLPI::Agent::Task::Deploy::ActionProcessor::Action->new(
             logger  => $self->{_logger},

@@ -37,6 +37,10 @@ netdiscovery/netinventory:
   defined outlet name as plug custom name
 
 deploy:
+* Add support for signed deployment plans and payloads using Ed25519 signatures;
+  require exact actions and parameters, reject unsigned files and disable
+  automatic archive extraction in signed mode
+* Add glpi-sign-package.pl tool to sign deployment packages and JSON plans
 * p2p support optimization: Refacto to transform findPeers() to return as quickly
   as possible with a limited number of available peers. The method is also callable
   again to obtain new possible peers when previous don't have requested file parts.

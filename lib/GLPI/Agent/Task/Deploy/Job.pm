@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use English qw(-no_match_vars);
+use Storable qw(dclone);
 
 use GLPI::Agent::Task::Deploy::UserCheck;
 use GLPI::Agent::Task::Deploy::CheckProcessor;
@@ -90,6 +91,8 @@ sub skip_on_check_failure {
 
     my $logger = $self->{logger};
     my $checks = $params{checks} || $self->{checks};
+    # CheckProcessor annotates and blesses its input; preserve the signed plan.
+    $checks = dclone($checks) if ref($checks) eq 'ARRAY';
     my $level  = $params{level} || 'job';
 
     if ( ref( $checks ) eq 'ARRAY' ) {

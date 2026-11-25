@@ -6,19 +6,21 @@ use warnings;
 use Compress::Zlib;
 use English qw(-no_match_vars);
 use File::Spec;
+use Fcntl qw(O_WRONLY O_CREAT O_EXCL);
 use UNIVERSAL::require;
 use Encode qw(encode is_utf8);
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Archive;
+use GLPI::Agent::Task::Deploy::Signature qw(validFilename payloadFiles);
 
 sub new {
     my ($class, %params) = @_;
 
     my $self = {
-        path  => $params{path},
+        path   => $params{path},
         logger => $params{logger},
-        files => []
+        files  => []
     };
 
     die "$class: Path '".$self->{path}."' doesn't exit\n"
@@ -40,9 +42,27 @@ sub addFile {
 }
 
 sub prepare {
-    my ($self) = @_;
+    my ($self, %params) = @_;
 
     my $logger = $self->{logger};
+
+    if ($params{signed}) {
+        my %seen;
+        my $valid = eval {
+            my @existing = payloadFiles($self->{path});
+            die "Nonempty staging directory\n" if @existing;
+            foreach my $file (@{$self->{files}}) {
+                die "Automatic extraction is forbidden for signed deployments\n" if $file->{uncompress};
+                die "Unsafe or duplicate payload filename\n"
+                    unless validFilename($file->{name}) && !$seen{lc($file->{name})}++;
+            }
+            1;
+        };
+        unless ($valid) {
+            $logger->error('Security error: signed deployment requires a fresh directory, unique portable filenames and uncompress disabled');
+            return;
+        }
+    }
 
     # Rebuild the complet file from the filepart
     foreach my $file (@{$self->{files}}) {
@@ -53,6 +73,13 @@ sub prepare {
             my $localCodepage = GLPI::Agent::Tools::Win32::getLocalCodepage();
             $file->{name_local} = encode($localCodepage, $file->{name})
                 if is_utf8($file->{name});
+        }
+
+        # Codepage conversion can introduce separators that were absent from
+        # the original Unicode name (for example a yen sign in a Japanese CP).
+        if ($params{signed} && !validFilename($file->{name_local})) {
+            $logger->error('Security error: unsafe encoded payload filename');
+            return;
         }
 
         # If the file will be extracted, we simplify its name to avoid problem during
@@ -69,7 +96,10 @@ sub prepare {
         my $finalFilePath = File::Spec->catdir($self->{path}, $file->{name_local});
 
         my $fh;
-        unless (open($fh, '>', $finalFilePath)) {
+        my $opened = $params{signed}
+            ? sysopen($fh, $finalFilePath, O_WRONLY | O_CREAT | O_EXCL, 0600)
+            : open($fh, '>', $finalFilePath);
+        unless ($opened) {
             $logger->debug("Failed to open '$finalFilePath': $ERRNO");
             return;
         }
