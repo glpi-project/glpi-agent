@@ -96,12 +96,14 @@ sub run {
             my $rating = $self->walk(upduMib2OutletRating);
 
             foreach my $key (sort { $a <=> $b } keys(%{$systemName})) {
-                push @plugs, {
+                my $plug = {
                     NAME        => getCanonicalString($systemName->{$key}), # SystemName used by PDU
-                    CUSTOM_NAME => getCanonicalString($customNames->{$key}) // '', # CustomName defined by user
                     NUMBER      => $key,
                     TYPE        => $ratingType{$rating->{$key}} // "unknown",
                 };
+                my $custom = getCanonicalString($customNames->{$key});
+                $plug->{CUSTOM_NAME} = $custom unless empty($custom);
+                push @plugs, $plug;
             }
         }
         $device->{PDU}->{PLUGS} = \@plugs if @plugs;

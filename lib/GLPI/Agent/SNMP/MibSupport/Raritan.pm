@@ -90,12 +90,14 @@ sub run {
 
             foreach my $key (sort { _oidkeyorder($a) <=> _oidkeyorder($b) } keys(%{$labels})) {
                 my $descriptor = getCanonicalString($descriptors->{$key}) // '';
-                push @plugs, {
+                my $plug = {
                     NAME        => getCanonicalString($labels->{$key}), # SystemName used by PDU
-                    CUSTOM_NAME => getCanonicalString($names->{$key}) // '', # CustomName defined by user
                     NUMBER      => getCanonicalString($labels->{$key}),
                     TYPE        => $descriptor,
                 };
+                my $custom = getCanonicalString($names->{$key});
+                $plug->{CUSTOM_NAME} = $custom unless empty($custom);
+                push @plugs, $plug;
             }
         }
         $device->{PDU}->{PLUGS} = \@plugs if @plugs;

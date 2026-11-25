@@ -53,13 +53,11 @@ cmp_deeply(
             },
             {
                 NAME        => 'A2',
-                CUSTOM_NAME => '',
                 NUMBER      => 2,
                 TYPE        => 'C19',
             },
             {
                 NAME        => 'B10',
-                CUSTOM_NAME => '',
                 NUMBER      => 10,
                 TYPE        => 'unknown',
             },

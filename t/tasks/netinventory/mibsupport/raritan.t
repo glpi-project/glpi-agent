@@ -53,13 +53,11 @@ cmp_deeply(
             },
             {
                 NAME        => '2',
-                CUSTOM_NAME => '',
                 NUMBER      => '2',
                 TYPE        => 'IEC 60320 C19',
             },
             {
                 NAME        => '10',
-                CUSTOM_NAME => '',
                 NUMBER      => '10',
                 TYPE        => 'IEC 60320 C13',
             },
