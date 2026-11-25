@@ -128,12 +128,13 @@ sub port {
 # A plugin can be disabled by configuration or by server
 sub disabled {
     my ($self) = @_;
-    return ($self->{disabled} && $self->{disabled} !~ /^0|no$/i) ? 1 : 0 ;
+    return $self->{_disabled} if defined($self->{_disabled});
+    return $self->{_disabled} = $self->{disabled} && $self->{disabled} !~ /^0|no$/i ? 1 : 0;
 }
 
 sub disable {
     my ($self, $reason) = @_;
-    $self->{disabled} = 1;
+    $self->{_disabled} = 1;
     $self->info($reason // "plugin disabled");
 }
 
