@@ -84,6 +84,8 @@ recommends 'Parse::EDID'                     => '0';
 
 # Remote Inventory
 recommends 'Net::SSH2'                       => '0';
+# Kerberos authentication for WinRM remote inventory
+recommends 'GSSAPI'                          => '0' if $OSNAME ne 'MSWin32';
 
 # Deploy
 recommends 'File::Copy::Recursive'        => '0';

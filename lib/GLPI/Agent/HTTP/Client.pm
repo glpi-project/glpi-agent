@@ -10,6 +10,7 @@ use HTTP::Status;
 use LWP::UserAgent;
 use UNIVERSAL::require;
 use Digest::SHA qw(sha256_hex);
+use MIME::Base64;
 use Cpanel::JSON::XS;
 
 use GLPI::Agent;
@@ -62,6 +63,7 @@ sub new {
         logger          => $params{logger} || GLPI::Agent::Logger->new(),
         user            => $params{user}     || $config->{'user'},
         password        => $params{password} || $config->{'password'},
+        kerberos        => $params{kerberos} // 0,
         _oauth          => $params{oauth} // {},
         ssl_set         => 0,
         no_ssl_check    => $params{no_ssl_check} || $config->{'no-ssl-check'},
@@ -286,6 +288,15 @@ sub request {
                         $logger->error(_log_prefix . $error);
                     }
                 }
+            } elsif ($has_authenticate && $self->{kerberos}) {
+                $result = $self->_negotiateAuthentication(
+                    request         => $request,
+                    result          => $result,
+                    file            => $file,
+                    url             => $url,
+                    scheme          => $scheme,
+                    alarm_timeout   => $current_alarm_timeout,
+                );
             } elsif ($has_authenticate && $self->{user} && $self->{password}) {
                 $logger->debug(
                     _log_prefix .
@@ -422,6 +433,186 @@ sub request {
     $self->{ua}->timeout($current_timeout);
 
     return $result;
+}
+
+sub _negotiateAuthentication {
+    my ($self, %params) = @_;
+
+    my $logger  = $self->{logger};
+    my $request = $params{request};
+    my $result  = $params{result};
+    my $url     = $params{url};
+
+    # Check server supports Negotiate authentication scheme
+    my @challenges = map { split(/\s*,\s*/, $_) } $result->header('www-authenticate');
+    unless (grep { /^Negotiate\b/i } @challenges) {
+        $logger->error(
+            _log_prefix .
+            "authentication required, kerberos authentication not offered by server"
+        );
+        return $result;
+    }
+
+    my $host = $url->host();
+
+    GLPI::Agent::HTTP::Kerberos->require();
+    my $kerberos = $self->{_kerberos}->{$host} //= GLPI::Agent::HTTP::Kerberos->new(
+        host    => $host,
+    );
+
+    # Bind kerberos token to the TLS channel (RFC 5929 tls-server-end-point) as
+    # required by servers enforcing Extended Protection for Authentication, like
+    # WinRM with CbtHardeningLevel set to Strict
+    if ($params{scheme} eq 'https' && !$kerberos->error()) {
+        my ($der, $sigalg) = $self->_getServerCertificate($url);
+        my $cbt = GLPI::Agent::HTTP::Kerberos::tlsServerEndPoint($der, $sigalg);
+        if ($cbt) {
+            $logger->debug2(
+                _log_prefix .
+                "using kerberos channel binding with server certificate" .
+                ($sigalg ? " signed with $sigalg" : "")
+            );
+        } else {
+            $logger->debug(
+                _log_prefix .
+                "can't get server certificate, kerberos channel binding not used"
+            );
+        }
+        $kerberos->channel_binding($cbt);
+    }
+
+    my $token = $kerberos->token();
+    unless ($token) {
+        $logger->error(
+            _log_prefix .
+            "authentication required, " . ($kerberos->error() || "kerberos token failure")
+        );
+        # Reset kerberos object so next request can retry with a refreshed ticket
+        delete $self->{_kerberos}->{$host};
+        return $result;
+    }
+
+    $logger->debug(
+        _log_prefix .
+        "authentication required, trying kerberos with ".$kerberos->service()." service"
+    );
+
+    $request->header(Authorization => "Negotiate $token");
+
+    # replay request
+    eval {
+        if ($OSNAME eq 'MSWin32' && $params{scheme} eq 'https') {
+            alarm $self->{ua}->{timeout};
+        }
+        $result = $self->{ua}->request($request, $params{file});
+        alarm 0;
+    };
+
+    # Reset timeout if needed
+    if ($params{alarm_timeout}) {
+        my $timeout = $params{alarm_timeout} - time;
+        alarm $timeout if $timeout > 0;
+    }
+
+    # Don't keep authorization header in request as token can't be replayed
+    $request->remove_header('Authorization');
+
+    if ($result->code() == 401) {
+        $logger->error(
+            _log_prefix .
+            "authentication required, kerberos authentication refused"
+        );
+        delete $self->{_kerberos}->{$host};
+        return $result;
+    }
+
+    # Mutual authentication: the server must prove its identity with a token in
+    # its answer. A missing token is a failure too, otherwise any server could
+    # skip the check just by not providing it.
+    my ($mutual) = map { /^Negotiate\s+(\S+)/i } $result->header('www-authenticate');
+    unless ($kerberos->verify($mutual)) {
+        $logger->error(_log_prefix . $kerberos->error());
+        delete $self->{_kerberos}->{$host};
+        # Don't trust server answer
+        return HTTP::Response->new(401, "Kerberos mutual authentication failure");
+    }
+    $logger->debug2(_log_prefix . "kerberos mutual authentication verified");
+
+    return $result;
+}
+
+# Return DER encoded server certificate and its signature algorithm name for
+# the given https url, from the kept-alive connection or from a dedicated one
+sub _getServerCertificate {
+    my ($self, $url) = @_;
+
+    return unless Net::SSLeay->require();
+
+    # LWP caches kept-alive connections with "host:port" as key, so peek the
+    # socket by withdrawing and depositing it back
+    my $key = $url->host() . ":" . $url->port();
+    my $conn_cache = $self->{ua}->conn_cache();
+    my $socket = $conn_cache ? $conn_cache->withdraw('https', $key) : undef;
+    if ($socket) {
+        $conn_cache->deposit('https', $key, $socket);
+        my @cert = _certificateInfo($socket);
+        return @cert if @cert;
+    }
+
+    # Server may have closed the connection, like WinRM does after a 401, so
+    # just open a dedicated connection to get its certificate. Server is not
+    # authenticated here, but a wrong certificate only leads to a binding the
+    # server refuses.
+    if ($self->{ua}->proxy('https')) {
+        $self->{logger}->debug2(_log_prefix . "can't get server certificate via a proxy");
+        return;
+    }
+
+    return unless IO::Socket::SSL->require();
+
+    my $host = $url->host();
+    $socket = IO::Socket::SSL->new(
+        PeerHost        => $host,
+        PeerPort        => $url->port(),
+        Timeout         => $self->{ua}->timeout() > 30 ? 30 : $self->{ua}->timeout(),
+        SSL_verify_mode => IO::Socket::SSL::SSL_VERIFY_NONE(),
+        # Set SNI for the server to provide the expected certificate
+        $host =~ /^[0-9.]+$|:/ ? () : (SSL_hostname => $host),
+    );
+    unless ($socket) {
+        $self->{logger}->debug2(
+            _log_prefix .
+            "failed to connect to $key to get server certificate: " .
+            ($IO::Socket::SSL::SSL_ERROR || $EVAL_ERROR || $ERRNO || "unknown error")
+        );
+        return;
+    }
+
+    my @cert = _certificateInfo($socket);
+    $socket->close(SSL_fast_shutdown => 1);
+
+    return @cert;
+}
+
+sub _certificateInfo {
+    my ($socket) = @_;
+
+    return unless $socket->can('peer_certificate');
+
+    my $cert = $socket->peer_certificate()
+        or return;
+
+    my $pem = Net::SSLeay::PEM_get_string_X509($cert)
+        or return;
+    $pem =~ s/-----(BEGIN|END) CERTIFICATE-----//g;
+    my $der = decode_base64($pem)
+        or return;
+
+    my $sigalg;
+    my $obj = Net::SSLeay::P_X509_get_signature_alg($cert);
+    $sigalg = Net::SSLeay::OBJ_nid2sn(Net::SSLeay::OBJ_obj2nid($obj)) if $obj;
+
+    return $der, $sigalg;
 }
 
 sub setOAuth {

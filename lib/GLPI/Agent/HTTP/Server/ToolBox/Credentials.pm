@@ -182,11 +182,13 @@ sub _submit_add {
             # Supported keys
             @keys = qw(snmpversion community description username authprotocol authpassword privprotocol privpassword port protocol);
         } else {
+            # WinRM kerberos authentication relies on kerberos credentials cache or keytab
+            my $kerberos = $type eq 'winrm' && $form->{"checkbox/mode/kerberos"} && $form->{"checkbox/mode/kerberos"} eq 'on' ? 1 : 0;
             if ($type !~ /^ssh|winrm|esx|iec61850$/) {
                 return $self->errors("New credential: Unsupported remote inventory type");
-            } elsif ($type !~ /^iec61850$/ && !(defined($form->{"input/remoteuser"}) && length($form->{"input/remoteuser"}))) {
+            } elsif ($type !~ /^iec61850$/ && !$kerberos && !(defined($form->{"input/remoteuser"}) && length($form->{"input/remoteuser"}))) {
                 return $self->errors("New credential: Username is mandatory for remote inventory types");
-            } elsif ($type =~ /^winrm|esx$/ && !(defined($form->{"input/remotepass"}) && length($form->{"input/remotepass"}))) {
+            } elsif ($type =~ /^winrm|esx$/ && !$kerberos && !(defined($form->{"input/remotepass"}) && length($form->{"input/remotepass"}))) {
                 return $self->errors(sprintf("New credential: Password is mandatory for this remote inventory type: %s", $type));
             } elsif ($type =~ /^ssh$/ && !(defined($form->{"input/remotepass"}) && length($form->{"input/remotepass"}))) {
                 $self->infos("New credential: No password for ssh remote inventory type involves you installed public key authentication");
@@ -200,7 +202,7 @@ sub _submit_add {
                     return $self->errors(sprintf("New credential: Unsupported mode for SSH removeinventory: %s", encode('UTF-8', encode_entities($mode))))
                         if $type eq 'ssh' && $mode !~ /^ssh|libssh2|perl$/;
                     return $self->errors(sprintf("New credential: Unsupported mode for WINRM removeinventory: %s", encode('UTF-8', encode_entities($mode))))
-                        if $type eq 'winrm' && $mode !~ /^ssl$/;
+                        if $type eq 'winrm' && $mode !~ /^(ssl|kerberos)$/;
                 }
                 $form->{'input/mode'} = join(",", @modes);
             }
@@ -259,11 +261,13 @@ sub _submit_update {
             # Supported keys
             @keys = qw(snmpversion community description username authprotocol authpassword privprotocol privpassword port protocol type);
         } else {
+            # WinRM kerberos authentication relies on kerberos credentials cache or keytab
+            my $kerberos = $type eq 'winrm' && $form->{"checkbox/mode/kerberos"} && $form->{"checkbox/mode/kerberos"} eq 'on' ? 1 : 0;
             if ($type !~ /^ssh|winrm|esx|iec61850$/) {
                 return $self->errors("Credential update: Unsupported remote inventory type");
-            } elsif ($type !~ /^iec61850$/ && !(defined($form->{"input/remoteuser"}) && length($form->{"input/remoteuser"}))) {
+            } elsif ($type !~ /^iec61850$/ && !$kerberos && !(defined($form->{"input/remoteuser"}) && length($form->{"input/remoteuser"}))) {
                 return $self->errors("Credential update: Username is mandatory for remote inventory types");
-            } elsif ($type =~ /^winrm|esx$/ && !(defined($form->{"input/remotepass"}) && length($form->{"input/remotepass"}))) {
+            } elsif ($type =~ /^winrm|esx$/ && !$kerberos && !(defined($form->{"input/remotepass"}) && length($form->{"input/remotepass"}))) {
                 return $self->errors(sprintf("Credential update: Password is mandatory for this remote inventory type: %s", $type));
             } elsif ($type =~ /^ssh$/ && !(defined($form->{"input/remotepass"}) && length($form->{"input/remotepass"}))) {
                 $self->infos("Credential update: No password for ssh remote inventory type involves you installed public key authentication");
@@ -277,7 +281,7 @@ sub _submit_update {
                     return $self->errors(sprintf("Credential update: Unsupported mode for SSH removeinventory: %s", encode('UTF-8', encode_entities($mode))))
                         if $type eq 'ssh' && $mode !~ /^ssh|libssh2|perl$/;
                     return $self->errors(sprintf("Credential update: Unsupported mode for WINRM removeinventory: %s", encode('UTF-8', encode_entities($mode))))
-                        if $type eq 'winrm' && $mode !~ /^ssl$/;
+                        if $type eq 'winrm' && $mode !~ /^(ssl|kerberos)$/;
                 }
                 $form->{'input/mode'} = join(",", @modes);
             }

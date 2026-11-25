@@ -648,6 +648,7 @@ glpi-remote [options] [--server server|--local path] [command] [command options]
     glpi-remote add ssh://admin:pass@192.168.43.237 --stricthostkeychecking=no
     glpi-remote add ssh://admin:pass@192.168.43.238 --no-check
     glpi-remote add winrm://admin:pass@192.168.48.250 --no-check --target server0
+    glpi-remote add "winrm://win-host.domain.tld?mode=ssl_kerberos"
     glpi-remote delete 1
     glpi-remote scan 192.168.43.1 192.168.43.254
     glpi-remote scan 10.0.0.1 10.0.10.254 --inventory -s https://myglpi/
@@ -667,6 +668,30 @@ The F<glpi-remote> tool is used to manage virtual agents known locally by F<glpi
 A virtual agent is used to make remote inventories and is essentially defined by
 a remote access. A remote access can be defined by ssh authorization for unix/linux
 platforms or WinRM authorizations for a WinRM enabled platform like win32.
+
+WinRM remotes support the following modes set with the I<mode> url parameter, modes
+can be combined using an underscore, like in I<mode=ssl_kerberos>:
+
+=over
+
+=item I<ssl>
+
+Use https to connect to WinRM service, port 5986 is used by default.
+
+=item I<kerberos>
+
+Use kerberos authentication with HTTP Negotiate scheme instead of Basic
+authentication. The GSSAPI perl module is required and a valid kerberos ticket must
+be available from the kerberos credentials cache (see I<kinit> and I<KRB5CCNAME>) or
+from a client keytab (see I<KRB5_CLIENT_KTNAME> with MIT kerberos). User and password
+are not used. The remote host should be set by its FQDN as the I<HTTP/fqdn> service
+principal is used, an IP is resolved to its hostname via reverse DNS lookup. As WinRM
+message encryption is not supported, the WinRM service must be configured with
+I<AllowUnencrypted> set to I<true> when not using I<ssl> mode. In I<ssl> mode, the
+kerberos token is bound to the TLS channel (channel binding), so I<CbtHardeningLevel>
+can be set to I<Strict>.
+
+=back
 
 =head1 OPTIONS
 

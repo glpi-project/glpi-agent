@@ -59,7 +59,8 @@ sub new {
 
     # Check for mode, name & deviceid in url params
     my $query = $url->query() // '';
-    my ($mode) = $query =~ /\bmode=(\w+)\b/;
+    # Modes can be separated by underscores or by commas as stored by ToolBox
+    my ($mode) = $query =~ /\bmode=([\w,]+)\b/;
     unless ($self->{_deviceid}) {
         # Ignore deviceid params when provided by dump
         my ($deviceid) = $query =~ /\bdeviceid=([\w.-]+)\b/;
@@ -70,7 +71,7 @@ sub new {
 
     # Update supported modes
     if ($mode) {
-        foreach my $key (split('_', lc($mode))) {
+        foreach my $key (grep { length } split(/[_,]/, lc($mode))) {
             if (grep { $_ eq $key } $self->supported_modes()) {
                 $self->{_modes}->{$key} = 1;
             } else {
