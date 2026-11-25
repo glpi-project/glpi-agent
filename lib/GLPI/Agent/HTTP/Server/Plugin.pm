@@ -202,7 +202,8 @@ sub rate_limited {
     my $tries = $self->{_rate_limitation}->{$clientIp};
 
     # First cleanup old tries
-    while (@{$tries} && $tries->[0] < $now - $maxrate_period) {
+    my $expired = $now - $maxrate_period;
+    while (@{$tries} && $tries->[0] < $expired) {
         shift @{$tries};
     }
 
