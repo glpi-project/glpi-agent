@@ -48,6 +48,8 @@ collect:
   * Support Registry defined value check
   * Support in-depth registry values collect (max 10 depth levels)
 * With Glpi-Inventory plugin >= v1.6.9, we can submit multiple registry values one by one
+* New feature: Osquery collect depending on osqueryi command and updated glpi-inventory
+  plugin
 
 packaging:
 * Support rpm packaging signing
