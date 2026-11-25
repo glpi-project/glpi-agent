@@ -237,6 +237,9 @@ subtest 'Real signatures bind the entire deployment plan' => sub {
     ok(-f $destination && !-e $victim, 'Only explicitly signed copy/delete effects occur');
 
     my $legacy_target = File::Spec->catdir($directory, 'unsigned-mode');
+    ok(!$processor->process('mkdir', { list => [$legacy_target] }, {})->{status},
+        'An empty signed policy rejects an otherwise valid action');
+    ok(!-e $legacy_target, 'Rejected action did not create the directory');
     ok($processor->process('mkdir', { list => [$legacy_target] })->{status},
         'Unconfigured legacy mode remains available');
 };

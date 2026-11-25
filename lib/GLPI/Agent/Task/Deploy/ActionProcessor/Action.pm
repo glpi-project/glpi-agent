@@ -6,11 +6,14 @@ use warnings;
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 
+use GLPI::Agent::Task::Deploy::Signature qw(actionDigest);
+
 sub new {
     my ($class, %params) = @_;
 
     my $self = {
-        _logger => $params{logger},
+        _logger             => $params{logger},
+        authorized_actions  => $params{authorized_actions},
     };
 
     if ($params{action}) {
@@ -24,6 +27,15 @@ sub new {
 }
 
 sub do {}
+
+sub isAuthorized {
+    my ($self, $name, $params) = @_;
+    my $authorized = $self->{authorized_actions};
+    # No policy means unsigned mode; an empty policy authorizes nothing.
+    return 1 unless defined($authorized);
+    my $digest = eval { actionDigest($name, $params) };
+    return $digest && $authorized->{$digest} ? 1 : 0;
+}
 
 sub sources {
     my ($self, $from) = @_;
@@ -45,6 +57,11 @@ sub debug {
 sub debug2 {
     my ($self, $message) = @_;
     $self->{_logger}->debug2($message);
+}
+
+sub error {
+    my ($self, $message) = @_;
+    $self->{_logger}->error($message);
 }
 
 1;
