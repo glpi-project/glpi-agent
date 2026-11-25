@@ -10,6 +10,7 @@ core:
 * Reset current alarm signal when HTTP::Client is called during a task, for example,
   during RemoteInventory task using WinRM protocol
 * Refacto Event class support
+* Also handle timer_event for httpd plugins setup on dedicated ports
 
 inventory:
 * fix #1239: Support Thunderbolt devices inventory on MacOSX
