@@ -6,7 +6,7 @@ use warnings;
 use English qw(-no_match_vars);
 use UNIVERSAL::require;
 
-use GLPI::Agent::Task::Deploy::Signature qw(actionDigest);
+use GLPI::Agent::Task::Deploy::Signature;
 
 sub new {
     my ($class, %params) = @_;
@@ -33,7 +33,8 @@ sub isAuthorized {
     my $authorized = $self->{authorized_actions};
     # No policy means unsigned mode; an empty policy authorizes nothing.
     return 1 unless defined($authorized);
-    my $digest = eval { actionDigest($name, $params) };
+    my $signing = GLPI::Agent::Task::Deploy::Signature->new(logger => $self->{_logger});
+    my $digest = $signing->actionDigest($name, $params);
     return $digest && $authorized->{$digest} ? 1 : 0;
 }
 

@@ -16,7 +16,7 @@ use GLPI::Agent::Task::Deploy::ActionProcessor;
 use GLPI::Agent::Task::Deploy::Datastore;
 use GLPI::Agent::Task::Deploy::File;
 use GLPI::Agent::Task::Deploy::Job;
-use GLPI::Agent::Task::Deploy::Signature qw(jobDigest actionDigest payloadFiles validFilename);
+use GLPI::Agent::Task::Deploy::Signature;
 use GLPI::Agent::Event;
 use GLPI::Agent::Tools;
 use Digest::SHA;
@@ -60,6 +60,7 @@ sub _validateAnswer {
         $$msgRef = "associatedFiles should be an hash";
         return;
     }
+    my $signature = GLPI::Agent::Task::Deploy::Signature->new();
     foreach my $k (keys %{$answer->{associatedFiles}}) {
         unless (ref($answer->{associatedFiles}->{$k}) eq 'HASH') {
             $$msgRef = "File description must be a hash";
@@ -79,7 +80,7 @@ sub _validateAnswer {
         }
         # Check name is a simple filename and doesn't include a path
         my @path = File::Spec->splitpath($answer->{associatedFiles}->{$k}->{name});
-        unless ($path[2] && $path[2] eq $answer->{associatedFiles}->{$k}->{name} && validFilename($path[2])) {
+        unless ($path[2] && $path[2] eq $answer->{associatedFiles}->{$k}->{name} && $signature->validFilename($path[2])) {
             $$msgRef = "Invalid file name in associatedFiles";
             return;
         }
@@ -217,8 +218,8 @@ sub processRemote {
 
         $logger->debug2("Checking job $job->{uuid}...");
 
-        # CHECKING
-        if (!$signaturesEnabled) {
+        # Signed jobs authenticate their checks and prompts along with their actions.
+        unless ($signaturesEnabled) {
             next if $job->skip_on_check_failure();
             $job->setStatus(status => 'ok', msg => 'all checks are ok');
             next if $job->next_on_usercheck(type => 'before');
@@ -291,7 +292,7 @@ sub processRemote {
                     redo FETCHFILE;
                 } else { # Give up...
 
-                    # USER INTERACTION after download failure
+                    # A failed download cannot authenticate the requested prompt.
                     $job->next_on_usercheck(type => 'after_download_failure') unless $signaturesEnabled;
 
                     $job->setStatus(
@@ -311,8 +312,10 @@ sub processRemote {
             msg    => 'success'
         );
 
-        # USER INTERACTION after download
-        next if !$signaturesEnabled && $job->next_on_usercheck(type => 'after_download');
+        # For signed jobs this prompt runs after verification below.
+        unless ($signaturesEnabled) {
+            next if $job->next_on_usercheck(type => 'after_download');
+        }
 
         $logger->debug2("Preparation for job $job->{uuid}...");
 
@@ -320,7 +323,7 @@ sub processRemote {
 
         my $authorizedActions;
         if (!$workdir->prepare(signed => $signaturesEnabled)) {
-            # USER INTERACTION on preparation failure
+            # A failed preparation cannot authenticate the requested prompt.
             $job->next_on_usercheck(type => 'after_failure') unless $signaturesEnabled;
 
             $job->setStatus(
@@ -328,22 +331,23 @@ sub processRemote {
                 msg    => 'failed to prepare work dir'
             );
             next JOB;
-        } else {
-            # Verify signature if a public key is defined in configuration
-            if ($signaturesEnabled && !($authorizedActions = $self->_verifySignature(
-                    workdir => $workdir, verify => $verify, job => $job))) {
+        }
+
+        if ($signaturesEnabled) {
+            $authorizedActions = $self->_verifySignature(
+                workdir => $workdir,
+                verify  => $verify,
+                job     => $job
+            );
+            unless ($authorizedActions) {
                 $job->setStatus(
                     status => 'ko',
-                    msg    => 'Security error: invalid signature'
+                    msg    => 'Security check error: signed deployment verification failed'
                 );
                 next JOB;
             }
-
-            $job->setStatus(
-                status => 'ok',
-                msg    => 'success'
-            );
         }
+        $job->setStatus(status => 'ok', msg => 'success');
 
         if ($signaturesEnabled) {
             $job->currentStep('checking');
@@ -476,14 +480,14 @@ sub _signatureVerifier {
     if ($publicKey !~ /\A[0-9a-fA-F]{64}\z/ && -f $publicKey) {
         my @stat = stat($publicKey);
         if ($^O ne 'MSWin32' && (!@stat || ($stat[2] & 022))) {
-            $logger->error("Security error: public key file $publicKey is group/world-writable or inaccessible");
+            $logger->error("Security check error: public key file $publicKey is group/world-writable or inaccessible");
             return;
         }
         $publicKey = getAllLines(file => $publicKey, local => 1, logger => $logger);
         $publicKey =~ s/\s+//g if defined($publicKey);
     }
     unless (defined($publicKey) && $publicKey =~ /\A[0-9a-fA-F]{64}\z/) {
-        $logger->error('Security error: invalid public key (expected 32 bytes hex-encoded)');
+        $logger->error('Security check error: invalid public key (expected 32 bytes hex-encoded)');
         return;
     }
     my $pubKeyBin = pack('H*', $publicKey);
@@ -491,16 +495,16 @@ sub _signatureVerifier {
         return sub { Crypt::Ed25519::verify($_[0], $pubKeyBin, $_[1]) };
     }
     if (Crypt::PK::Ed25519->require()) {
-        my $key = eval {
-            my $public_key = Crypt::PK::Ed25519->new();
+        my $public_key;
+        eval {
+            $public_key = Crypt::PK::Ed25519->new();
             $public_key->import_key_raw($pubKeyBin, 'public');
-            $public_key;
         };
-        return sub { $key->verify_message($_[1], $_[0]) } if $key;
-        $logger->error('Security error: could not import Ed25519 public key');
+        return sub { $public_key->verify_message($_[1], $_[0]) } if !$@ && $public_key;
+        $logger->error('Security check error: could not import Ed25519 public key');
         return;
     }
-    $logger->error('Security error: Crypt::Ed25519 or Crypt::PK::Ed25519 is required');
+    $logger->error('Security check error: Crypt::Ed25519 or Crypt::PK::Ed25519 is required');
     return;
 }
 
@@ -509,16 +513,13 @@ sub _verifySignature {
     my $workdirPath = $params{workdir}->path();
     my $logger = $self->{logger};
 
-    my @files = eval { payloadFiles($workdirPath) };
-    if ($@) {
-        $logger->error('Security error: unsafe payload entry');
-        return 0;
-    }
-    my @signatures = grep { $_ eq 'signature.sig' || $_ eq 'manifest.sig' } @files;
+    my $signing = GLPI::Agent::Task::Deploy::Signature->new(logger => $logger);
+    my $files = $signing->payloadFiles($workdirPath) or return;
+    my @signatures = grep { $_ eq 'signature.sig' || $_ eq 'manifest.sig' } @$files;
     my $sigFile = @signatures == 1 ? File::Spec->catfile($workdirPath, $signatures[0]) : undef;
 
     if (!$sigFile) {
-        $logger->error("Security error: signature file missing in $workdirPath");
+        $logger->error("Security check error: signature file missing in $workdirPath");
         return 0;
     }
 
@@ -538,14 +539,14 @@ sub _verifySignature {
         $manifestContent = $1;
         $sigHex = $2;
     } else {
-        $logger->error("Security error: unknown signature file format in $sigFile");
+        $logger->error("Security check error: unknown signature file format in $sigFile");
         return 0;
     }
 
     my $signature = pack("H*", $sigHex);
     my $verified = eval { $params{verify}->($manifestContent, $signature) };
     if (!$verified) {
-        $logger->error("Security error: invalid signature for $sigFile");
+        $logger->error("Security check error: invalid signature for $sigFile");
         return 0;
     }
 
@@ -553,40 +554,40 @@ sub _verifySignature {
     my $version = shift @lines;
     my $job_line = shift @lines;
     my ($expected_job) = defined($job_line) ? $job_line =~ /\AJOB ([a-f0-9]{128})\z/ : ();
-    my $actual_job = eval { jobDigest($params{job}) };
+    my $actual_job = $signing->jobDigest($params{job}) or return;
     unless (defined($version) && $version eq 'GLPI-DEPLOY-SIGNATURE 2' &&
             $expected_job && $actual_job && $actual_job eq $expected_job) {
-        $logger->error('Security error: missing or mismatched signed deployment plan (version 2 required)');
+        $logger->error('Security check error: missing or mismatched signed deployment plan (version 2 required)');
         return 0;
     }
 
     my %expected_files;
     foreach my $line (@lines) {
         my ($expectedHash, $fileName) = $line =~ /\A([a-f0-9]{128}) (.+)\z/;
-        if (!$expectedHash || !validFilename($fileName) ||
+        if (!$expectedHash || !$signing->validFilename($fileName) ||
                 $fileName eq 'signature.sig' || $fileName eq 'manifest.sig' || exists($expected_files{$fileName})) {
-            $logger->error('Security error: invalid or duplicate manifest entry');
+            $logger->error('Security check error: invalid or duplicate manifest entry');
             return 0;
         }
         $expected_files{$fileName} = $expectedHash;
         my $filePath = File::Spec->catfile($workdirPath, $fileName);
         if (!-f $filePath) {
-            $logger->error("Security error: file '$fileName' missing from workdir");
+            $logger->error("Security check error: file '$fileName' missing from workdir");
             return 0;
         }
 
         my $actualHash = $self->_getSha512ByFile($filePath) // '';
         if ($actualHash ne $expectedHash) {
-            $logger->error("Security error: hash mismatch for $fileName");
+            $logger->error("Security check error: hash mismatch for $fileName");
             return 0;
         }
         $logger->debug("Integrity OK for $fileName");
     }
 
-    foreach my $file (@files) {
+    foreach my $file (@$files) {
         next if $file eq $signatures[0];
         unless (exists($expected_files{$file})) {
-            $logger->error('Security error: unsigned payload file');
+            $logger->error('Security check error: unsigned payload file');
             return 0;
         }
     }
@@ -594,7 +595,8 @@ sub _verifySignature {
     my %authorized;
     foreach my $action (@{$params{job}->{actions}}) {
         my ($name) = keys %$action;
-        $authorized{actionDigest($name, $action->{$name})} = 1;
+        my $digest = $signing->actionDigest($name, $action->{$name}) or return;
+        $authorized{$digest} = 1;
     }
     $logger->info("Signature verified for deployment package and plan in $workdirPath");
 

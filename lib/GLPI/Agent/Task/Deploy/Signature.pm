@@ -2,32 +2,51 @@ package GLPI::Agent::Task::Deploy::Signature;
 
 use strict;
 use warnings;
-use parent 'Exporter';
-
 use Cpanel::JSON::XS;
 use Digest::SHA qw(sha512_hex);
 use File::Spec;
+use Scalar::Util qw(reftype);
 
-our @EXPORT_OK = qw(jobDigest actionDigest payloadFiles validFilename);
+sub new {
+    my ($class, %params) = @_;
+    return bless { logger => $params{logger} }, $class;
+}
 
-sub _encode {
-    return Cpanel::JSON::XS->new->utf8->canonical->encode($_[0]);
+sub _fail {
+    my ($self, $message) = @_;
+    if ($self->{logger}) {
+        $self->{logger}->error("Security check error: $message");
+        return;
+    }
+    die "$message\n";
+}
+
+sub _digest {
+    my ($self, $data) = @_;
+    my $json = eval { Cpanel::JSON::XS->new->utf8->canonical->encode($data) };
+    return $self->_fail('Cannot encode signed deployment data') if $@ || !defined($json);
+    return sha512_hex($json);
+}
+
+sub _validAction {
+    my ($self, $name, $params) = @_;
+    return defined($name) && $name =~ /\A(?:cmd|copy|move|delete|mkdir)\z/ && ref($params) eq 'HASH';
 }
 
 sub actionDigest {
-    my ($name, $params) = @_;
-    die "Unsupported signed action\n"
-        unless defined($name) && $name =~ /\A(?:cmd|copy|move|delete|mkdir)\z/ && ref($params) eq 'HASH';
-    return sha512_hex(_encode({ $name => $params }));
+    my ($self, $name, $params) = @_;
+    return $self->_fail('Unsupported signed action') unless $self->_validAction($name, $params);
+    return $self->_digest({ $name => $params });
 }
 
 sub jobDigest {
-    my ($job) = @_;
-    die "Missing signed job actions\n" unless ref($job->{actions}) eq 'ARRAY';
+    my ($self, $job) = @_;
+    return $self->_fail('Missing signed job actions')
+        unless (reftype($job) // '') eq 'HASH' && ref($job->{actions}) eq 'ARRAY';
     foreach my $action (@{$job->{actions}}) {
-        die "Invalid signed action\n" unless ref($action) eq 'HASH' && keys(%$action) == 1;
+        return $self->_fail('Invalid signed action') unless ref($action) eq 'HASH' && keys(%$action) == 1;
         my ($name) = keys %$action;
-        actionDigest($name, $action->{$name});
+        return $self->_fail('Unsupported signed action') unless $self->_validAction($name, $action->{$name});
     }
     my $description = {
         actions          => $job->{actions},
@@ -35,14 +54,14 @@ sub jobDigest {
         requires         => $job->{requires} // {},
         userinteractions => $job->{userinteractions} // $job->{userchecks} // [],
     };
-    die "Invalid signed job checks\n" unless ref($description->{checks}) eq 'ARRAY';
-    die "Invalid signed job requirements\n" unless ref($description->{requires}) eq 'HASH';
-    die "Invalid signed job interactions\n" unless ref($description->{userinteractions}) eq 'ARRAY';
-    return sha512_hex(_encode($description));
+    return $self->_fail('Invalid signed job checks') unless ref($description->{checks}) eq 'ARRAY';
+    return $self->_fail('Invalid signed job requirements') unless ref($description->{requires}) eq 'HASH';
+    return $self->_fail('Invalid signed job interactions') unless ref($description->{userinteractions}) eq 'ARRAY';
+    return $self->_digest($description);
 }
 
 sub validFilename {
-    my ($name) = @_;
+    my ($self, $name) = @_;
     # Use one portable filename policy on all platforms, including Windows ADS
     # and device names, rather than relying on the build host's File::Spec.
     return defined($name) && !ref($name) && length($name) &&
@@ -51,20 +70,20 @@ sub validFilename {
 }
 
 sub payloadFiles {
-    my ($directory) = @_;
-    opendir my $handle, $directory or die "Cannot inspect signed payload\n";
+    my ($self, $directory) = @_;
+    opendir my $handle, $directory or return $self->_fail('Cannot inspect signed payload');
     my @names = sort grep { $_ ne '.' && $_ ne '..' } readdir $handle;
     closedir $handle;
     my %seen;
     foreach my $name (@names) {
-        die "Unsafe signed payload filename\n" unless validFilename($name);
-        die "Ambiguous signed payload filename\n" if $seen{lc($name)}++;
+        return $self->_fail('Unsafe signed payload filename') unless $self->validFilename($name);
+        return $self->_fail('Ambiguous signed payload filename') if $seen{lc($name)}++;
         my $path = File::Spec->catfile($directory, $name);
         my @stat = lstat($path);
-        die "Signed payload must contain only regular, unlinked files\n"
+        return $self->_fail('Signed payload must contain only regular, unlinked files')
             unless @stat && !-l _ && -f _ && $stat[3] == 1;
     }
-    return @names;
+    return \@names;
 }
 
 1;

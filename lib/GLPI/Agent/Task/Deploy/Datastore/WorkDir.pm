@@ -12,7 +12,7 @@ use Encode qw(encode is_utf8);
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Archive;
-use GLPI::Agent::Task::Deploy::Signature qw(validFilename payloadFiles);
+use GLPI::Agent::Task::Deploy::Signature;
 
 sub new {
     my ($class, %params) = @_;
@@ -46,21 +46,24 @@ sub prepare {
 
     my $logger = $self->{logger};
 
+    my $signing;
     if ($params{signed}) {
-        my %seen;
-        my $valid = eval {
-            my @existing = payloadFiles($self->{path});
-            die "Nonempty staging directory\n" if @existing;
-            foreach my $file (@{$self->{files}}) {
-                die "Automatic extraction is forbidden for signed deployments\n" if $file->{uncompress};
-                die "Unsafe or duplicate payload filename\n"
-                    unless validFilename($file->{name}) && !$seen{lc($file->{name})}++;
-            }
-            1;
-        };
-        unless ($valid) {
-            $logger->error('Security error: signed deployment requires a fresh directory, unique portable filenames and uncompress disabled');
+        $signing = GLPI::Agent::Task::Deploy::Signature->new(logger => $logger);
+        my $existing = $signing->payloadFiles($self->{path}) or return;
+        if (@$existing) {
+            $logger->error('Security check error: signed staging directory is not empty');
             return;
+        }
+        my %seen;
+        foreach my $file (@{$self->{files}}) {
+            if ($file->{uncompress}) {
+                $logger->error('Security check error: automatic extraction is disabled for signed deployments');
+                return;
+            }
+            unless ($signing->validFilename($file->{name}) && !$seen{lc($file->{name})}++) {
+                $logger->error('Security check error: unsafe or duplicate payload filename');
+                return;
+            }
         }
     }
 
@@ -71,15 +74,14 @@ sub prepare {
         if ($OSNAME eq 'MSWin32') {
             GLPI::Agent::Tools::Win32->require;
             my $localCodepage = GLPI::Agent::Tools::Win32::getLocalCodepage();
-            $file->{name_local} = encode($localCodepage, $file->{name})
-                if is_utf8($file->{name});
-        }
-
-        # Codepage conversion can introduce separators that were absent from
-        # the original Unicode name (for example a yen sign in a Japanese CP).
-        if ($params{signed} && !validFilename($file->{name_local})) {
-            $logger->error('Security error: unsafe encoded payload filename');
-            return;
+            if (is_utf8($file->{name})) {
+                $file->{name_local} = encode($localCodepage, $file->{name});
+                # Codepage conversion can introduce path separators.
+                if ($signing && !$signing->validFilename($file->{name_local})) {
+                    $logger->error('Security check error: unsafe encoded payload filename');
+                    return;
+                }
+            }
         }
 
         # If the file will be extracted, we simplify its name to avoid problem during

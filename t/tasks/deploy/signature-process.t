@@ -19,7 +19,9 @@ use GLPI::Agent::Logger;
 use GLPI::Agent::Task::Deploy;
 use GLPI::Agent::Task::Deploy::Datastore;
 use GLPI::Agent::Task::Deploy::File;
-use GLPI::Agent::Task::Deploy::Signature qw(jobDigest);
+use GLPI::Agent::Task::Deploy::Signature;
+
+my $signing = GLPI::Agent::Task::Deploy::Signature->new();
 
 plan skip_all => 'Crypt::Ed25519 needed for real deployment verification'
     unless eval { require Crypt::Ed25519; 1 };
@@ -48,7 +50,7 @@ foreach my $case ('valid', 'changed destination', 'unsigned file', 'auto extract
             } }],
         };
         my $content = 'approved configuration';
-        my $manifest = "GLPI-DEPLOY-SIGNATURE 2\nJOB " . jobDigest($job) . "\n";
+        my $manifest = "GLPI-DEPLOY-SIGNATURE 2\nJOB " . $signing->jobDigest($job) . "\n";
         $manifest = '' if $case eq 'legacy manifest';
         $manifest .= sha512_hex($content) . " agent.cfg\n";
         my $signature = unpack('H*', Crypt::Ed25519::sign($manifest, $public, $private));

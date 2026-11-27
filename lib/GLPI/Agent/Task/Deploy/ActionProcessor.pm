@@ -60,7 +60,7 @@ sub process {
             authorized_actions => $authorized_actions,
         );
         unless ($action->isAuthorized($actionName, $params)) {
-            my $message = 'Security error: action parameters are not signed';
+            my $message = 'Security check error: action parameters are not signed';
             $action->error($message);
             return { status => 0, msg => [$message] };
         }

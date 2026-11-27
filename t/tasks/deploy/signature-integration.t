@@ -12,7 +12,7 @@ use Test::MockObject;
 
 use GLPI::Agent::Task::Deploy;
 use GLPI::Agent::Logger;
-use GLPI::Agent::Task::Deploy::Signature qw(actionDigest);
+use GLPI::Agent::Task::Deploy::Signature;
 
 sub write_file {
     my ($path, $content) = @_;
@@ -21,6 +21,8 @@ sub write_file {
     print {$handle} $content;
     close $handle or die "Can't close $path: $ERRNO";
 }
+
+my $signing = GLPI::Agent::Task::Deploy::Signature->new();
 
 my $logger = GLPI::Agent::Logger->new(logger => ['Stderr']);
 
@@ -81,7 +83,7 @@ subtest 'Signing tool and real crypto backends interoperate' => sub {
             ok($verify, 'Loaded public key and verifier');
             my $authorized = $task->_verifySignature(workdir => $workdir, verify => $verify, job => $job);
             ok($authorized, 'Real signature verifies');
-            ok($authorized->{actionDigest('cmd', { exec => $command })}, 'Complete signed action is authorized');
+            ok($authorized->{$signing->actionDigest('cmd', { exec => $command })}, 'Complete signed action is authorized');
             {
                 local *GLPI::Agent::Task::Deploy::_getSha512ByFile = sub { return; };
                 ok(!$task->_verifySignature(workdir => $workdir, verify => $verify, job => $job),

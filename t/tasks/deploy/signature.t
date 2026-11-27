@@ -12,7 +12,9 @@ use Digest::SHA;
 use GLPI::Agent::Task::Deploy;
 use GLPI::Agent::Config;
 use GLPI::Agent::Logger;
-use GLPI::Agent::Task::Deploy::Signature qw(jobDigest);
+use GLPI::Agent::Task::Deploy::Signature;
+
+my $signing = GLPI::Agent::Task::Deploy::Signature->new();
 
 my $logger = GLPI::Agent::Logger->new(logger => ['Stderr']);
 my $config = GLPI::Agent::Config->new();
@@ -35,7 +37,7 @@ sub verify_signature {
     my $verify = $task->_signatureVerifier($task->{config}->{'deploy-public-key'}) or return 0;
     return $task->_verifySignature(@_, verify => $verify, job => { actions => [] }) ? 1 : 0;
 }
-my $header = "GLPI-DEPLOY-SIGNATURE 2\nJOB " . jobDigest({ actions => [] }) . "\n";
+my $header = "GLPI-DEPLOY-SIGNATURE 2\nJOB " . $signing->jobDigest({ actions => [] }) . "\n";
 
 # Mock workdir object
 {

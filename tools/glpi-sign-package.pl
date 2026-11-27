@@ -29,7 +29,7 @@ use Cwd qw(abs_path);
 use FindBin;
 use lib "$FindBin::Bin/../lib";
 use Cpanel::JSON::XS;
-use GLPI::Agent::Task::Deploy::Signature qw(jobDigest payloadFiles);
+use GLPI::Agent::Task::Deploy::Signature;
 use UNIVERSAL::require;
 use Getopt::Long;
 use File::Spec;
@@ -65,7 +65,8 @@ if ($job_file) {
 } else {
     $job = { actions => [map { { cmd => { exec => $_ } } } @commands] };
 }
-my $job_digest = jobDigest($job);
+my $signing = GLPI::Agent::Task::Deploy::Signature->new();
+my $job_digest = $signing->jobDigest($job);
 
 # 1. Load private key
 unless (Crypt::Ed25519->require()) {
@@ -110,7 +111,7 @@ my $manifest = "GLPI-DEPLOY-SIGNATURE 2\nJOB $job_digest\n";
 my $abs_dir = abs_path($dir);
 die "Can't find package directory '$dir'\n" unless defined($abs_dir) && -d $abs_dir;
 
-my @files = grep { $_ ne 'signature.sig' && $_ ne 'manifest.sig' } payloadFiles($abs_dir);
+my @files = grep { $_ ne 'signature.sig' && $_ ne 'manifest.sig' } @{$signing->payloadFiles($abs_dir)};
 die "Remove manifest.sig before signing with signature.sig\n" if -e File::Spec->catfile($abs_dir, 'manifest.sig');
 
 foreach my $file (sort @files) {
@@ -180,7 +181,14 @@ order and JSON value types are preserved. The job UUID, download mirrors and
 cache metadata are not part of the plan; file contents are bound separately
 by the signed payload hashes.
 
-Export or assemble the actual agent-facing plan and review it before signing.
+The plan is the four fields above from a single job in the Deploy C<getJobs>
+response, not a database export or the entire server response. If you have
+a trusted preview or capture of that job, copy those fields into a JSON file.
+Otherwise, assemble the JSON from the package definition, check it against
+what the server sends, and review it before signing. This tool does not
+connect to GLPI or export jobs. Keep the JSON file outside the payload
+directory and pass it to C<--job>.
+
 A change to any signed field requires a new signature. C<--command> is a
 shortcut for a plan containing only C<{"cmd":{"exec":"..."}}> actions;
 use C<--job> when GLPI supplies additional parameters. Do not combine them.

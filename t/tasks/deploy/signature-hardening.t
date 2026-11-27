@@ -15,13 +15,31 @@ use Test::MockModule;
 
 use GLPI::Agent::Logger;
 use GLPI::Agent::Task::Deploy;
-use GLPI::Agent::Task::Deploy::Signature qw(jobDigest actionDigest validFilename);
+use GLPI::Agent::Task::Deploy::Signature;
 use GLPI::Agent::Task::Deploy::ActionProcessor;
 use GLPI::Agent::Task::Deploy::Datastore;
 use GLPI::Agent::Task::Deploy::Datastore::WorkDir;
 use GLPI::Agent::Task::Deploy::Job;
 
+my $signing = GLPI::Agent::Task::Deploy::Signature->new();
+
 my $logger = GLPI::Agent::Logger->new(logger => ['Stderr']);
+
+subtest 'Invalid signature data is reported without throwing in the agent' => sub {
+    my $logged = Test::MockObject->new();
+    my @errors;
+    $logged->mock(error => sub { push @errors, $_[1]; });
+    my $agent_signing = GLPI::Agent::Task::Deploy::Signature->new(logger => $logged);
+
+    is($agent_signing->jobDigest([]), undef, 'Non-object job is rejected');
+    is($agent_signing->actionDigest('copy', []), undef, 'Non-object parameters are rejected');
+    is($agent_signing->actionDigest('copy', { from => sub {} }), undef, 'Encoding errors are rejected');
+    is(scalar(@errors), 3, 'Each error is logged');
+    like($errors[-1], qr/^Security check error:/, 'Failure is labeled as a failed security check');
+
+    eval { $signing->jobDigest([]); };
+    like($@, qr/Missing signed job actions/, 'The standalone signer fails on invalid data');
+};
 
 sub write_file {
     my ($path, $content) = @_;
@@ -67,9 +85,9 @@ subtest 'Portable staging and no extraction before authentication' => sub {
     foreach my $name ('../outside', '..\\outside', 'C:config', '/etc/config',
             'file:stream', 'NUL.txt', 'CON', 'CONIN$', 'CONOUT$', 'COM' . chr(0xb9),
             'name.', 'name ', "line\nbreak", '.', '..') {
-        ok(!validFilename($name), "Reject unsafe name: " . unpack('H*', $name));
+        ok(!$signing->validFilename($name), "Reject unsafe name: " . unpack('H*', $name));
     }
-    ok(validFilename('payload.tar.gz'), 'Archive can be transported as an opaque file');
+    ok($signing->validFilename('payload.tar.gz'), 'Archive can be transported as an opaque file');
     my $directory = tempdir(CLEANUP => 1);
     my $datastore = GLPI::Agent::Task::Deploy::Datastore->new(
         path => $directory, config => { 'deploy-public-key' => 'a' x 64 }, logger => $logger);
@@ -145,6 +163,11 @@ subtest 'Real signatures bind the entire deployment plan' => sub {
     };
     my $processor = GLPI::Agent::Task::Deploy::ActionProcessor->new(workdir => $payload, logger => $logger);
     ok($verify->(), 'Original signed plan accepted');
+    {
+        my $signing_mock = Test::MockModule->new('GLPI::Agent::Task::Deploy::Signature');
+        $signing_mock->redefine(actionDigest => sub { return; });
+        ok(!$verify->(), 'An undefined action digest rejects the signed job');
+    }
 
     my @mutations = (
         ['copy destination', sub { $_[0]->{actions}->[1]->{copy}->{to} .= '.other'; }],
@@ -206,7 +229,7 @@ subtest 'Real signatures bind the entire deployment plan' => sub {
     write_file(File::Spec->catfile($payload, 'manifest.sig'), $original);
     ok(!$verify->(), 'Two competing signature files are rejected');
     unlink File::Spec->catfile($payload, 'manifest.sig');
-    my $manifest = 'GLPI-DEPLOY-SIGNATURE 2' . "\nJOB " . jobDigest($job) . "\n";
+    my $manifest = 'GLPI-DEPLOY-SIGNATURE 2' . "\nJOB " . $signing->jobDigest($job) . "\n";
     my $sign_manifest = sub {
         my ($content) = @_;
         write_file($signature, unpack('H*', Crypt::Ed25519::sign($content, $public, $private)) . "\n" . $content);
@@ -223,9 +246,9 @@ subtest 'Real signatures bind the entire deployment plan' => sub {
     write_file($signature, $original);
 
     my $checked = GLPI::Agent::Task::Deploy::Job->new(data => dclone($job), logger => $logger);
-    my $before = jobDigest($checked);
+    my $before = $signing->jobDigest($checked);
     ok(!$checked->skip_on_check_failure(), 'Signed check can execute');
-    is(jobDigest($checked), $before, 'Check execution does not mutate the signed plan');
+    is($signing->jobDigest($checked), $before, 'Check execution does not mutate the signed plan');
     $authorized = $verify->();
     ok($authorized, 'Original plan restored');
     $processor->starting();
