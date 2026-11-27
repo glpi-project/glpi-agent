@@ -34,6 +34,7 @@ unless (GetOptions(
     'no-fork',
     'debug+',
     'delaytime=s',
+    'deploy-public-key=s',
     'esx-itemtype=s',
     'force|f',
     'full',
@@ -308,6 +309,7 @@ glpi-agent [options] [--server server|--local path]
     --remote-workers=COUNT         maximum number of workers for remoteinventory task
 
   Package deployment task specific options:
+    --deploy-public-key=KEY        verify Deploy using an Ed25519 public key (hex or file)
     --no-p2p                       do not use peer to peer to download
                                      files (false)
 
@@ -673,6 +675,11 @@ When expected ESX asset itemtype in GLPI 11+ is B<Esx>, I<esx-itemtype> option v
 =head2 Package deployment task specific options
 
 =over
+
+=item B<--deploy-public-key>=I<KEY>
+
+Require signed Deploy plans and payloads. Specify a 64-digit hexadecimal
+Ed25519 public key or the path to a file containing it.
 
 =item B<--no-p2p>
 

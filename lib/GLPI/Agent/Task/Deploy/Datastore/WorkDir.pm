@@ -6,19 +6,21 @@ use warnings;
 use Compress::Zlib;
 use English qw(-no_match_vars);
 use File::Spec;
+use Fcntl qw(O_WRONLY O_CREAT O_EXCL);
 use UNIVERSAL::require;
 use Encode qw(encode is_utf8);
 
 use GLPI::Agent::Tools;
 use GLPI::Agent::Tools::Archive;
+use GLPI::Agent::Task::Deploy::Signature;
 
 sub new {
     my ($class, %params) = @_;
 
     my $self = {
-        path  => $params{path},
+        path   => $params{path},
         logger => $params{logger},
-        files => []
+        files  => []
     };
 
     die "$class: Path '".$self->{path}."' doesn't exit\n"
@@ -40,9 +42,30 @@ sub addFile {
 }
 
 sub prepare {
-    my ($self) = @_;
+    my ($self, %params) = @_;
 
     my $logger = $self->{logger};
+
+    my $signing;
+    if ($params{signed}) {
+        $signing = GLPI::Agent::Task::Deploy::Signature->new(logger => $logger);
+        my $existing = $signing->payloadFiles($self->{path}) or return;
+        if (@$existing) {
+            $logger->error('Security check error: signed staging directory is not empty');
+            return;
+        }
+        my %seen;
+        foreach my $file (@{$self->{files}}) {
+            if ($file->{uncompress}) {
+                $logger->error('Security check error: automatic extraction is disabled for signed deployments');
+                return;
+            }
+            unless ($signing->validFilename($file->{name}) && !$seen{lc($file->{name})}++) {
+                $logger->error('Security check error: unsafe or duplicate payload filename');
+                return;
+            }
+        }
+    }
 
     # Rebuild the complet file from the filepart
     foreach my $file (@{$self->{files}}) {
@@ -51,8 +74,14 @@ sub prepare {
         if ($OSNAME eq 'MSWin32') {
             GLPI::Agent::Tools::Win32->require;
             my $localCodepage = GLPI::Agent::Tools::Win32::getLocalCodepage();
-            $file->{name_local} = encode($localCodepage, $file->{name})
-                if is_utf8($file->{name});
+            if (is_utf8($file->{name})) {
+                $file->{name_local} = encode($localCodepage, $file->{name});
+                # Codepage conversion can introduce path separators.
+                if ($signing && !$signing->validFilename($file->{name_local})) {
+                    $logger->error('Security check error: unsafe encoded payload filename');
+                    return;
+                }
+            }
         }
 
         # If the file will be extracted, we simplify its name to avoid problem during
@@ -69,7 +98,10 @@ sub prepare {
         my $finalFilePath = File::Spec->catdir($self->{path}, $file->{name_local});
 
         my $fh;
-        unless (open($fh, '>', $finalFilePath)) {
+        my $opened = $params{signed}
+            ? sysopen($fh, $finalFilePath, O_WRONLY | O_CREAT | O_EXCL, 0600)
+            : open($fh, '>', $finalFilePath);
+        unless ($opened) {
             $logger->debug("Failed to open '$finalFilePath': $ERRNO");
             return;
         }

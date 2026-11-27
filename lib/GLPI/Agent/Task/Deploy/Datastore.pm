@@ -7,6 +7,7 @@ use English qw(-no_match_vars);
 use File::Glob;
 use File::Spec;
 use File::Path qw(make_path);
+use File::Temp qw(tempdir);
 use UNIVERSAL::require;
 
 use GLPI::Agent::Tools;
@@ -80,14 +81,23 @@ sub cleanUp {
 sub createWorkDir {
     my ($self, $uuid) = @_;
 
-    my $path = File::Spec->catdir($self->{path}, "workdir", $uuid);
-
-    make_path($path);
+    my $base = File::Spec->catdir($self->{path}, 'workdir');
+    make_path($base, { mode => 0700 });
+    my $key = $self->{config}->{'deploy-public-key'};
+    my $path;
+    if (!empty($key)) {
+        # A fresh private directory prevents previous jobs from planting links
+        # or files that would be followed during payload reconstruction.
+        $path = tempdir('signed-XXXXXXXX', DIR => $base);
+    } else {
+        $path = File::Spec->catdir($base, $uuid);
+        make_path($path);
+    }
     return unless -d $path;
 
     return GLPI::Agent::Task::Deploy::Datastore::WorkDir->new(
         path => $path,
-        logger => $self->{logger}
+        logger => $self->{logger},
     );
 }
 

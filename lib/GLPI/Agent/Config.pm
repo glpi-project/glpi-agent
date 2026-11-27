@@ -21,6 +21,7 @@ my $default = {
     'color'                   => undef,
     'conf-reload-interval'    => 0,
     'debug'                   => undef,
+    'deploy-public-key'       => undef,
     'delaytime'               => 3600,
     'esx-itemtype'            => undef,
     'features'                => undef,

@@ -46,18 +46,24 @@ sub failed {
 }
 
 sub process {
-    my ($self, $actionName, $params) = @_;
+    my ($self, $actionName, $params, $authorized_actions) = @_;
 
     my $ret;
 
     if ($actionName eq 'checks') {
         # not an action
-    } elsif ( $actionName =~ /^cmd|copy|delete|mkdir|move$/i ) {
+    } elsif ( $actionName =~ /\A(?:cmd|copy|delete|mkdir|move)\z/i ) {
         $self->{_logger}->debug2("Processing $actionName action...");
         my $action = GLPI::Agent::Task::Deploy::ActionProcessor::Action->new(
             logger  => $self->{_logger},
-            action  => $actionName
+            action  => $actionName,
+            authorized_actions => $authorized_actions,
         );
+        unless ($action->isAuthorized($actionName, $params)) {
+            my $message = 'Security check error: action parameters are not signed';
+            $action->error($message);
+            return { status => 0, msg => [$message] };
+        }
         $ret = $action->do($params);
     } else {
         $self->{_logger}->debug("Unknown action type: '$actionName'");
