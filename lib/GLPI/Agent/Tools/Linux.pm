@@ -538,7 +538,7 @@ sub getInterfacesFromIfconfig {
             next;
         }
 
-        if ($line =~ /^([\w\d\.:]+[\w\d]):?\s/) {
+        if ($line =~ /^([\w\d\.:-]+[\w\d]):?\s/) {
             # new interface
 
             $interface = {

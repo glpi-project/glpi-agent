@@ -21,6 +21,7 @@ inventory:
 * fix #1269:
   * Filter out invalid cpu serial WMI value on windows
   * Support installation date in linux debian softwares inventory
+* fix #1272: Wrong network interfaces inventory under docker
 
 remoteinventory:
 * Support opening commands passed by array ref
