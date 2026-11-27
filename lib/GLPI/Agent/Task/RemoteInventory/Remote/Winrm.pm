@@ -442,16 +442,17 @@ sub getRemoteRegistryKey {
 
     # Replace skip_subkey params by HASH ref on first call, if will be kept during
     # recursive calls
-    my $skip_subkey = ref($params{skip_subkey}) eq "ARRAY" ? {} : $params{skip_subkey};
-    map { $params{skip_subkey}->{lc($_)} = 1 } @{$params{skip_subkey}}
-        if ref($params{skip_subkey}) eq "ARRAY";
-    # Keep updated skip_subkey params
-    $params{skip_subkey} = $skip_subkey if ref($skip_subkey) && $skip_subkey != $params{skip_subkey};
+    if (ref($params{skip_subkey}) eq "ARRAY") {
+        $params{skip_subkey} = {
+            map { lc($_) => 1 } @{$params{skip_subkey}}
+        };
+    }
+    my $skip_subkey = ref($params{skip_subkey}) eq "HASH" ? $params{skip_subkey} : {};
 
     if ($subkeys && $subkeys->{exitcode} == 0 && $subkeys->{keys} && ref($subkeys->{keys}) eq 'ARRAY') {
         foreach my $key (@{$subkeys->{keys}}) {
             # We can be asked to skip subkeys for remote inventory optimization
-            next if ref($skip_subkey) && $skip_subkey->{lc($key)};
+            next if $skip_subkey->{lc($key)};
             # We can be asked to skip keys for remote inventory optimization
             $hash->{"$key/"} = $self->getRemoteRegistryKey(
                 %params,
